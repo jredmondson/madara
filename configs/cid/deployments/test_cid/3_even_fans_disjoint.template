@@ -1,0 +1,3 @@
+0 -> [0,size/3)                 // 0 sends to the first third
+size/3 -> [size/3, 2*size/3)  // size/3 sends to the second third
+2*size/3 -> [2*size/3, size)  // size*2/3 sends to the bottom third

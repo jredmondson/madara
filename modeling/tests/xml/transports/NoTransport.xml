@@ -1,0 +1,4 @@
+<transport>
+    <type>None</type>
+    <persistence>Volatile</persistence>
+</transport>

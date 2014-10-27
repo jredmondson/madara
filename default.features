@@ -1,0 +1,71 @@
+///============================================================================
+///
+/// @file       default.features
+///
+/// @brief      Defines features that control project builds.
+///
+/// @author     James Edmondson
+///
+///============================================================================
+
+
+/// @feature old
+/// Enable this feature if you would like to generate the CID heuristic
+cid                     = 0
+
+/// @feature deprecated
+/// Enable this feature if you want to generate deprecated test applications
+deprecated              = 0
+
+/// @feature docs
+/// Enable this feature if you want to generate Doxygen library documentation
+docs                    = 0
+
+/// @feature kats
+/// Enable this feature if you would like to build the 
+/// KaRL Automated Testing System
+kats                    = 0
+
+/// @feature ndds
+/// Enable this feature if you would like to generate NDDS Transports
+ndds                    = 0
+
+/// @feature opensplice
+/// Enable this feature if you would like to generate OpenSplice Transports
+
+opensplice              = 0
+
+/// @feature tests
+/// Enable this feature if you want to generate test applications
+tests                   = 1
+
+/// @feature tutorials
+/// Enable this feature if you want to generate tutorial applications
+tutorials               = 0
+
+/// @feature java
+/// Enable this feature if you want to generate a JNI port for Java
+java                    = 0
+
+/// @feature android
+/// Enable this feature if you need Android support (requires java=1)
+android                 = 0
+
+/// @feature python
+/// Enable this feature if you want to generate a Boost.Python port for Python
+python                  = 0
+
+/// @feature openjdk
+/// Enable this feature if you want to compile with OpenJDK (requires java=1)
+openjdk                 = 0
+
+/// @feature null_lock
+/// Enable this feature if you want to only use NULL locks instead of recursive
+/// locks. This is a very dangerous feature for novices and should only be done
+/// if you understand the ramifications of having a lock-free database and if
+/// it is appropriate for your applications. It will be a performance boost,
+/// of course, but it is almost unfathomable to enable this unless some kind
+/// of external locking mechanism is used at the appropriate time inside of
+/// a custom network transport (especially a read thread) and around knowledge
+/// accessor methods like get, set, and any MADARA container methods.
+null_lock                 = 0

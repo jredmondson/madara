@@ -1,0 +1,8 @@
+project {
+  requires += kats
+  after += Kats
+
+  includes += $(MADARA_ROOT)
+  libpaths += $(MADARA_ROOT)/lib
+  libs += KATS
+}

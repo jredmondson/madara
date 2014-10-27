@@ -1,0 +1,5 @@
+feature (boost) {
+  includes += $(BOOST_ROOT)
+  
+  macros += _MADARA_USING_BOOST_
+}

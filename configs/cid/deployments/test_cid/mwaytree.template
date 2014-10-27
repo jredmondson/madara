@@ -1,0 +1,2 @@
+branch = 4
+[1,size/branch+1] -> [source*branch-branch/2,source*branch+branch/2]

@@ -1,0 +1,49 @@
+<group>
+  <setup>
+    <debug />
+    <domain>isolated_domain</domain>
+    <host>localhost</host>
+    <kill>
+      <signal>2</signal>
+      <time>35</time>
+    </kill>
+    <precondition></precondition>
+    <postcondition>timeout_tests.done = 1</postcondition>
+    <!-- <realtime /> -->
+    <parallel />
+  </setup>
+  <process>
+    <debug />
+    <domain>isolated_domain</domain>
+    <barrier name="timeout_process"/>
+    <id>0</id>
+    <processes>2</processes>
+    <executable>timeout</executable>
+    <commandline>15</commandline>
+    <kill>
+      <time>5</time>
+      <!--<signal>15</signal>-->
+    </kill>
+    <precondition></precondition>
+    <postcondition>timeout_process.done = 1</postcondition>
+    <stdout>./process1.out</stdout>
+    <stderr>./process1.err</stderr>
+  </process>
+  <process>
+    <debug />
+    <domain>isolated_domain</domain>
+    <id>1</id>
+    <processes>2</processes>
+    <barrier name="timeout_process"/>
+    <executable>timeout</executable>
+    <commandline>25</commandline>
+    <kill>
+      <time>15</time>
+      <!--<signal>15</signal>-->
+    </kill>
+    <precondition></precondition>
+    <postcondition>bad_timeout_process.done = 1</postcondition>
+    <stdout>./process2.out</stdout>
+    <stderr>./process2.err</stderr>
+  </process>
+</group>

@@ -1,0 +1,10 @@
+// no deployment size specified. Use solution.size (). This means
+// that the user should specify the size via resizing solution
+
+  0 -> [0, size/2)       // 0 sends to itself and the first half
+  size/2 -> [size/2, size)     // 5 sends to itself and the second half
+  1 -> [size]              // 1 sends to everyone
+  2 -> (size)              // 2 sends to everyone but the first and last
+
+// spacing shouldn't matter. Fill in 0 -> size/2, which we excluded earlier with ) 
+0 -> size/2                // 0 sends to the size/2 process

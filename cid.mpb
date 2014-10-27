@@ -1,0 +1,20 @@
+
+feature (cid) {
+
+  dynamicflags += _USE_CID_
+
+  requires += cid
+
+  Build_Files {
+    cid.mpb
+  }
+
+  Header_Files {
+    include/madara/cid
+  }
+
+  Source_Files {
+    include/madara/cid
+  }
+}
+

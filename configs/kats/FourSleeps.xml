@@ -1,0 +1,39 @@
+<group>
+    <setup>
+        <parallel />
+        <realtime />
+        <timing />
+    </setup>
+    <sleep>
+        <realtime />
+        <timing />
+        <barrier name="four_sleeps" />
+        <id>0</id>
+        <processes>4</processes>
+        <delay>5</delay>
+    </sleep>
+    <sleep>
+        <realtime />
+        <timing />
+        <barrier name="four_sleeps" />
+        <id>1</id>
+        <processes>4</processes>
+        <delay>5</delay>
+    </sleep>
+    <sleep>
+        <realtime />
+        <timing />
+        <barrier name="four_sleeps" />
+        <id>2</id>
+        <processes>4</processes>
+        <delay>5</delay>
+    </sleep>
+    <sleep>
+        <realtime />
+        <timing />
+        <barrier name="four_sleeps" />
+        <id>3</id>
+        <processes>4</processes>
+        <delay>5</delay>
+    </sleep>
+</group>

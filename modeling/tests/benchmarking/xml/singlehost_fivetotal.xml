@@ -1,0 +1,13 @@
+<group>
+    <setup>
+        <parallel />
+        <realtime />
+        <timing />
+        <domain>barrier_benchmarks</domain>
+    </setup>
+    <group file="host5_fivetotal.xml" />
+    <group file="host4_fivetotal.xml" />
+    <group file="host3_fivetotal.xml" />
+    <group file="host2_fivetotal.xml" />
+    <group file="host1_fivetotal.xml" />
+</group>

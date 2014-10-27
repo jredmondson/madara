@@ -1,0 +1,19 @@
+feature (python) {
+
+  specific (prop:microsoft) {
+    includes += $(BOOST_ROOT)
+    includes += $(PYTHON_ROOT)/include
+
+    lit_libs += libboost_python3-vc100-mt-$(BOOST_VERSION)
+    lit_libs += python$(PYTHON_VERSION)
+    libpaths += $(BOOST_ROOT)/stage/lib
+    libpaths += $(PYTHON_ROOT)/libs
+  } else {
+    includes += $(PYTHON_ROOT)/python$(PYTHON_VERSION)
+    includes += /usr/include/boost
+    libs += boost_python-mt-$(BOOST_VERSION)
+    libs += python$(PYTHON_VERSION)
+  }
+
+  macros += _MADARA_PYTHON_CALLBACKS_
+}

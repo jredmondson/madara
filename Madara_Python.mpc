@@ -1,0 +1,34 @@
+
+project (MADARA_Python) : using_madara, using_ace, port/python/using_python {
+
+  requires += python
+  
+  after    += MADARA
+
+  specific(prop:windows) {
+    sharedname = madara.pyd
+    postbuild = python port/python/rename_lib.py
+  } else {
+    sharedname = madara
+  }
+
+  libout = $(MADARA_ROOT)/lib
+  
+  Documentation_Files {
+    port/python
+  }
+
+  Build_Files {
+    Madara_Python.mpc
+    port/python/using_python.mpb
+  }
+
+  Header_Files {
+    port/python/src
+  }
+
+  Source_Files {
+    port/python/src
+  }
+}
+

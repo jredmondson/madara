@@ -1,0 +1,29 @@
+feature (opensplice) {
+  dynamicflags += _USE_OPEN_SPLICE_
+
+  after += Splice_DDS_Transport_IDL
+ 
+  specific(prop:microsoft) {
+    macros += _CRT_SECURE_NO_WARNINGS
+    DisableSpecificWarnings += 4250
+  }
+  
+  Source_Files {
+      include/madara/transport/splice/Splice_DDS_Transport.cpp
+      include/madara/transport/splice/Splice_Transport_Read_Thread.cpp
+      include/madara/transport/splice/Splice_Knowledge_Update.cpp
+      include/madara/transport/splice/Splice_Knowledge_UpdateDcps.cpp
+      include/madara/transport/splice/Splice_Knowledge_UpdateDcps_impl.cpp
+      include/madara/transport/splice/Splice_Knowledge_UpdateSplDcps.cpp
+  }
+
+  Header_Files {
+      include/madara/transport/splice/Splice_DDS_Transport.h
+      include/madara/transport/splice/Splice_Transport_Read_Thread.h
+      include/madara/transport/splice/ccpp_Splice_Knowledge_Update.h 
+      include/madara/transport/splice/Splice_Knowledge_Update.h
+      include/madara/transport/splice/Splice_Knowledge_UpdateDcps_impl.h
+      include/madara/transport/splice/Splice_Knowledge_UpdateSplDcps.h
+      include/madara/transport/splice/Splice_Knowledge_UpdateDcps.h
+  }
+}

@@ -1,0 +1,8 @@
+spawn_rate = 1;
+simulation_cutoff = 2;
+max_speed = 5;
+lane_size = 2;
+default_phase_cut_off_time = 20;
+default_braking_time = 5;
+default_phase_time_min = 5;
+default_phase = 1;

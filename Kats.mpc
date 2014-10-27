@@ -1,0 +1,111 @@
+
+project (Kats) : using_madara, using_ace, using_splice {
+
+  requires += kats
+
+  sharedname = KATS
+  dynamicflags += KATS_BUILD_DLL
+  libout = $(MADARA_ROOT)/lib
+
+  Build_Files {
+    Kats.mpc
+    using_kats.mpb
+  }
+
+  Inline_Files {
+    include/madara/kats
+  }
+
+  Header_Files {
+    include/madara/kats
+    include/madara/utility/Log_Macros.h
+  }
+
+  Source_Files {
+    include/madara/kats/Test_Framework.cpp
+  }
+}
+
+
+project (Kats_Process) : using_kats, using_madara, using_ace {
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = kats_process
+  
+  macros += TIXML_USE_STL
+  
+  Build_Files {
+    Kats.mpc
+  }
+
+  Header_Files {
+    include/madara/utility/Log_Macros.h
+  }
+
+  Source_Files {
+    include/madara/kats/Process.cpp
+  }
+}
+
+project (Kats_Batch) : using_kats, using_madara, using_ace {
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = kats_batch
+  
+  macros += TIXML_USE_STL
+  
+  Build_Files {
+    Kats.mpc
+  }
+
+  Header_Files {
+    include/madara/utility/Log_Macros.h
+    include/madara/kats/Redeployment.h
+  }
+
+  Source_Files {
+    include/madara/kats/Batch.cpp
+    include/madara/kats/Redeployment.cpp
+  }
+}
+
+project (Kats_Sleep) : using_kats, using_madara, using_ace {
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = kats_sleep
+  
+  macros += TIXML_USE_STL
+  
+  Build_Files {
+    Kats.mpc
+  }
+
+  Header_Files {
+    include/madara/utility/Log_Macros.h
+  }
+
+  Source_Files {
+    include/madara/kats/Sleep.cpp
+  }
+}
+
+
+project (Kats_Observer) : using_kats, using_madara, using_ace {
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = kats_observer
+  
+  macros += TIXML_USE_STL
+  
+  Build_Files {
+    Kats.mpc
+  }
+
+  Header_Files {
+    include/madara/utility/Log_Macros.h
+  }
+
+  Source_Files {
+    include/madara/kats/Observer.cpp
+  }
+}

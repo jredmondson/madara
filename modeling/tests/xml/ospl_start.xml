@@ -1,0 +1,16 @@
+<group>
+    <setup>
+        <parallel />
+        <realtime />
+        <timing />
+        <transport file="transports/NoTransport.xml" />
+    </setup>
+    <process>
+        <realtime />
+        <timing />
+        <transport file="transports/NoTransport.xml" />
+        <processes></processes>
+        <executable>$(OSPL_HOME)/bin/ospl</executable>
+        <commandline>start</commandline>
+    </process>
+</group>

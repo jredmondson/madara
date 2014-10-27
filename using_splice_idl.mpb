@@ -1,0 +1,3 @@
+feature (opensplice) {
+  prebuild += $(OSPL_HOME)/bin/idlpp -I$(OSPL_HOME)/include/dcps/C++/SACPP -d include/madara/transport/splice -l cpp -S include/madara/transport/splice/Splice_Knowledge_Update.idl
+}

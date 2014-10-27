@@ -1,0 +1,3 @@
+size=10          // 10 processes in the deployment
+  0 -> [0,4]     // 0 sends to itself and 1-4
+  5 -> [5,9]     // 5 sends to itself and 6-9

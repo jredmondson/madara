@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project SYSTEM "mga.dtd">
+
+<project guid="{386B6783-DDDF-45C1-AF63-E65EA894EF49}" cdate="Thu Jun 23 12:53:11 2011" mdate="Thu Jun 23 12:53:11 2011" version="" metaguid="{0C550A87-D610-4B6A-910E-2E6D83CBDF25}" metaversion="0.4.7" metaname="KATS">
+	<name>RootFolder</name>
+	<comment></comment>
+	<author></author>
+	<folder id="id-006a-00000001" relid="0x1" childrelidcntr="0x2" kind="RootFolder" guid="{4041e6e7-ae26-4e6b-9a0e-d8dfc7fb14f6}">
+		<name>RootFolder</name>
+		<folder id="id-006a-00000002" relid="0x1" childrelidcntr="0x2" kind="Barriers" guid="{34506e42-fcc6-4b16-80ef-997197161e00}">
+			<name>barriers</name>
+			<atom id="id-0066-00000001" kind="Barrier" guid="{d5b8e428-1020-4198-98ac-5ee6a0f6d078}" relid="0x1">
+				<name>timeouts</name>
+				<attribute kind="Override" status="meta">
+					<value></value>
+				</attribute>
+			</atom>
+		</folder>
+		<folder id="id-006a-00000003" relid="0x2" childrelidcntr="0x6" kind="Processes" guid="{b89545eb-179a-4d27-80bd-9c5aece08a6d}">
+			<name>tests</name>
+			<model id="id-0065-00000016" kind="Group" guid="{ea1975f4-3923-4711-ba32-44e9f28fd9fd}" relid="0x6" childrelidcntr="0x1">
+				<name>Timeout</name>
+				<attribute kind="Debug" status="meta">
+					<value>false</value>
+				</attribute>
+				<attribute kind="Delay" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Id" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="LogLevel" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Parallel" status="meta">
+					<value>true</value>
+				</attribute>
+				<attribute kind="PostDelay" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="PostLaunch" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Postcondition" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Precondition" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Processes" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Realtime" status="meta">
+					<value>true</value>
+				</attribute>
+				<attribute kind="Stderr" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Stdin" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Stdout" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Timing" status="meta">
+					<value>true</value>
+				</attribute>
+				<attribute kind="WorkingDir" status="meta">
+					<value></value>
+				</attribute>
+				<model id="id-0065-00000017" kind="Process" role="Process" guid="{faa45b96-cce2-4372-8928-6415348b3b03}" relid="0x1" childrelidcntr="0x3">
+					<name>Actual</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="GroupConfig" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>65,61</value>
+							</regnode>
+						</regnode>
+					</regnode>
+					<attribute kind="CommandLine">
+						<value>/t $(TIMEOUT)</value>
+					</attribute>
+					<attribute kind="Debug" status="meta">
+						<value>false</value>
+					</attribute>
+					<attribute kind="Delay" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Enabled" status="meta">
+						<value>true</value>
+					</attribute>
+					<attribute kind="Executable">
+						<value>timeout</value>
+					</attribute>
+					<attribute kind="Id">
+						<value>$(ID)</value>
+					</attribute>
+					<attribute kind="LogLevel" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Order" status="meta">
+						<value>0</value>
+					</attribute>
+					<attribute kind="PostDelay" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="PostLaunch" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Postcondition" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Precondition" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Processes">
+						<value>$(PROCESSES)</value>
+					</attribute>
+					<attribute kind="Realtime" status="meta">
+						<value>true</value>
+					</attribute>
+					<attribute kind="Stderr" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Stdin" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Stdout" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Timing" status="meta">
+						<value>true</value>
+					</attribute>
+					<attribute kind="WorkingDir" status="meta">
+						<value></value>
+					</attribute>
+					<atom id="id-0066-00000005" kind="Kill" role="Kill" guid="{7494e3a4-d1f8-46a9-9955-c99b05203da5}" relid="0x1">
+						<name>Kill</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="ProcessConfig" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>69,34</value>
+								</regnode>
+							</regnode>
+						</regnode>
+						<attribute kind="Signal" status="meta">
+							<value></value>
+						</attribute>
+						<attribute kind="Time">
+							<value>$(KILLTIME)</value>
+						</attribute>
+					</atom>
+					<reference id="id-0067-00000013" kind="BarrierRef" role="BarrierRef" guid="{0befd151-ad11-4b21-9f7e-2f2be4afff69}" relid="0x3" referred="id-0066-00000001">
+						<name>timeouts</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="ProcessConfig" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>165,32</value>
+								</regnode>
+							</regnode>
+						</regnode>
+						<attribute kind="OverrideProcesses">
+							<value>false</value>
+						</attribute>
+					</reference>
+				</model>
+			</model>
+		</folder>
+	</folder>
+</project>

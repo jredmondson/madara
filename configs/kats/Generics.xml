@@ -1,0 +1,35 @@
+<group>
+    <setup>
+        <parallel />
+        <realtime />
+        <timing />
+        <transport file="transports/Splice.xml" />
+        <host>$(HOST)</host>
+        <domain>$(DOMAIN)</domain>
+        <barrier name="$(BARRIER)" />
+    </setup>
+    <process>
+        <realtime />
+        <timing />
+        <transport file="transports/Splice.xml" />
+        <host>$(HOST)</host>
+        <domain>$(DOMAIN)</domain>
+        <barrier name="$(BARRIER)" />
+        <id>$(ID)</id>
+        <processes>$(PROCESSES)</processes>
+        <delay>$(DELAY)</delay>
+        <precondition>$(PRECONDITION)</precondition>
+        <postdelay>$(POSTDELAY)</postdelay>
+        <postlaunch>$(POSTLAUNCH)</postlaunch>
+        <postcondition>$(POSTCONDITION)</postcondition>
+        <kill>
+            <time>$(KILLTIME)</time>
+            <signal>$(KILLSIG)</signal>
+        </kill>
+        <stdin>$(STDIN)</stdin>
+        <stderr>$(STDERR)</stderr>
+        <stdout>$(STDOUT)</stdout>
+        <executable>$(EXECUTABLE)</executable>
+        <commandline>$(COMMANDLINE)</commandline>
+    </process>
+</group>

@@ -1,0 +1,13 @@
+<group>
+    <setup>
+        <parallel />
+        <realtime />
+        <timing />
+        <domain>barrier_benchmarks</domain>
+    </setup>
+    <group file="host3_tentotal.xml" />
+    <group file="host2_tentotal.xml" />
+    <group file="host1_tentotal.xml" />
+    <group file="host5_tentotal.xml" />
+    <group file="host4_tentotal.xml" />
+</group>

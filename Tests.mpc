@@ -1,0 +1,1786 @@
+
+project (Test_Multicast_Mutex) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_multicast_mutex
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/multicast/test_multicast_mutex.cpp
+  }
+}
+
+project (Test_Reliable_Record) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_reliable_record
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_reliable_record.cpp
+  }
+}
+
+project (Test_Rebroadcast_Ring) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_rebroadcast_ring
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_rebroadcast_ring.cpp
+  }
+}
+
+project (Test_Barrier) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_barrier
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_barrier.cpp
+  }
+}
+
+project (Test_Counter) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_counter
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_counter.cpp
+  }
+}
+
+project (Test_Threader_Queue_Perf) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_threader_queue_perf
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/threads/test_threader_queue_perf.cpp
+  }
+}
+
+project (Test_Threader_Counter) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_threader_counter
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/threads/test_threader_counter.cpp
+  }
+}
+
+project (Test_Threader_Producer_Consumer) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_threader_producer_consumer
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/threads/test_threader_producer_consumer.cpp
+  }
+}
+
+project (Test_Threader_Hello_World) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_threader_hello_world
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/threads/test_threader_hello_world.cpp
+  }
+}
+
+project (Test_Threader_Periodic_Counter) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_threader_periodic_counter
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/threads/test_threader_periodic_counter.cpp
+  }
+}
+
+project (Test_Context_Copy) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_context_copy
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_context_copy.cpp
+  }
+}
+
+project (Test_Timed_Executor) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_timed_executor
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_timed_executor.cpp
+  }
+}
+
+project (Test_KaRL_Containers) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_karl_containers
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_karl_containers.cpp
+  }
+}
+
+project (Test_File_Rebroadcasts) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_file_rebroadcasts
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_file_rebroadcasts.cpp
+  }
+}
+
+project (Test_Multicast_Aggregate_Filters) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_multicast_aggregate_filters
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/multicast/test_multicast_aggregate_filters.cpp
+  }
+}
+
+project (Test_Multicast_Send_List) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_multicast_send_list
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/multicast/test_multicast_send_list.cpp
+  }
+}
+
+project (Test_Broadcast_Aggregate_Filters) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_broadcast_aggregate_filters
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/broadcast/test_broadcast_aggregate_filters.cpp
+  }
+}
+
+project (Test_UDP_Aggregate_Filters) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_udp_aggregate_filters
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/udp/test_udp_aggregate_filters.cpp
+  }
+}
+
+project (Test_Arrays) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_arrays
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_arrays.cpp
+  }
+}
+
+project (Network_Profiler) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = network_profiler
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/network_profiler.cpp
+  }
+}
+
+project (Test_Checkpointing) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_checkpointing
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_checkpointing.cpp
+  }
+}
+
+project (Test_Bandwidth_Monitor) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_bandwidth_monitor
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_bandwidth_monitor.cpp
+  }
+}
+
+project (Test_Packet_Scheduler) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_packet_scheduler
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_packet_scheduler.cpp
+  }
+}
+
+project (Test_Encoding) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_encoding
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_encoding.cpp
+  }
+}
+
+project (Test_QoS_Transport_Settings) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_qos_transport_settings
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_qos_transport_settings.cpp
+  }
+}
+
+project (Test_Evaluate) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_evaluate
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_evaluate.cpp
+  }
+}
+
+project (Test_Multicast_Rules) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_multicast_rules
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/multicast/test_multicast_rules.cpp
+  }
+}
+
+project (Test_Multicast_Rebroadcast) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_multicast_rebroadcast
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/multicast/test_multicast_rebroadcast.cpp
+  }
+}
+
+project (Test_Multicast_Filters) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_multicast_filters
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/multicast/test_multicast_filters.cpp
+  }
+}
+
+project (Test_UDP_Rules) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_udp_rules
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/udp/test_udp_rules.cpp
+  }
+}
+
+project (Test_UDP_Filters) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_udp_filters
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/udp/test_udp_filters.cpp
+  }
+}
+
+project (Test_UDP_Rebroadcast) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_udp_rebroadcast
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/udp/test_udp_rebroadcast.cpp
+  }
+}
+
+project (Test_Swarm_Drone) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_swarm_drone
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/swarm/test_swarm_drone.cpp
+  }
+}
+
+project (Test_Swarm_Area_Coverage) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_swarm_area_coverage
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/swarm/test_swarm_area_coverage.cpp
+  }
+}
+
+project (Test_Swarm_Terminal) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_swarm_terminal
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/swarm/test_swarm_terminal.cpp
+  }
+}
+
+project (Test_System_Calls) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_system_calls
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_system_calls.cpp
+  }
+}
+
+project (Test_Broadcast_Rules) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_broadcast_rules
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/broadcast/test_broadcast_rules.cpp
+  }
+}
+
+project (Test_Broadcast_Filters) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_broadcast_filters
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/broadcast/test_broadcast_filters.cpp
+  }
+}
+
+project (Test_Broadcast_Rebroadcast) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_broadcast_rebroadcast
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/broadcast/test_broadcast_rebroadcast.cpp
+  }
+}
+
+
+project (Test_Basic_Reasoning) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_basic_reasoning
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_basic_reasoning.cpp
+  }
+}
+
+project (Test_Latency) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_latency
+
+  requires += tests deprecated
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/deprecated/test_latency.cpp
+  }
+}
+
+project (Test_Latency_Rounds) : using_madara, using_ace, using_splice, using_cid {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_latency_rounds
+
+  requires += tests cid
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/cid/test_latency_rounds.cpp
+  }
+}
+
+project (Test_Consistency) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_consistency
+
+  requires += tests deprecated
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/deprecated/test_consistency.cpp
+  }
+}
+
+project (Test_Dissemination) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_dissemination
+
+  requires += tests deprecated
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/deprecated/test_dissemination.cpp
+  }
+}
+
+project (Test_Reasoning_Throughput) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_reasoning_throughput
+  
+  
+  requires += tests
+  
+
+  Documentation_Files {
+  }
+  
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_reasoning_throughput.cpp
+  }
+}
+
+project (Test_Files) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_files
+  
+  
+  requires += tests
+  
+
+  Documentation_Files {
+  }
+  
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_files.cpp
+  }
+}
+
+project (Test_Filters) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_filters
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_filters.cpp
+  }
+}
+
+project (Test_Key_Expansion) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_key_expansion
+  
+  
+  requires += tests
+  
+
+  Documentation_Files {
+  }
+  
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_key_expansion.cpp
+  }
+}
+
+project (Test_Print_Statement) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_print_statement
+  
+  
+  requires += tests
+  
+
+  Documentation_Files {
+  }
+  
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_print_statement.cpp
+  }
+}
+
+project (Test_Timed_Wait) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_timed_wait
+  
+  
+  requires += tests
+  
+
+  Documentation_Files {
+  }
+  
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_timed_wait.cpp
+  }
+}
+
+project (Test_Wait_With_ACE) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_wait_with_ace
+  
+  
+  requires += tests deprecated
+  
+
+  Documentation_Files {
+  }
+  
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/deprecated/test_wait_with_ace.cpp
+  }
+}
+
+
+project (Test_Distributed_Finisher) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_distributed_finisher
+  
+  
+  requires += tests deprecated
+  
+
+  Documentation_Files {
+  }
+  
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/deprecated/test_distributed_finisher.cpp
+  }
+}
+
+project (Test_Knowledge_Domains) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_knowledge_domains
+  
+  
+  requires += tests deprecated
+  
+
+  Documentation_Files {
+  }
+  
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/deprecated/test_knowledge_domains.cpp
+  }
+}
+
+project (Test_Synchronization) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_synchronization
+  
+  
+  requires += tests
+  
+
+  Documentation_Files {
+  }
+  
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_synchronization.cpp
+  }
+}
+
+project (Test_Synchronization_Three_State) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_synchronization_three_state
+  
+  
+  requires += tests
+  
+  
+  Documentation_Files {
+  }
+
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_synchronization_three_state.cpp
+  }
+}
+
+project (Test_Quality) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_quality
+  
+  
+  requires += tests deprecated
+  
+  
+  Documentation_Files {
+  }
+
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_quality.cpp
+  }
+}
+
+project (Test_Distributed_Finisher_With_Set) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_distributed_finisher_with_set
+  
+
+  requires += tests deprecated
+    
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/deprecated/test_distributed_finisher_with_set.cpp
+  }
+}
+
+
+project (Test_Splice) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_splice
+  
+  
+  requires += tests opensplice
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/splice/test_splice.cpp
+  }
+}
+
+project (Test_Splice_Rules) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_splice_rules
+  
+  
+  requires += tests opensplice
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/splice/test_splice_rules.cpp
+  }
+}
+
+project (Test_Splice_Rebroadcast) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_splice_rebroadcast
+  
+  
+  requires += tests opensplice
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/splice/test_splice_rebroadcast.cpp
+  }
+}
+
+project (Test_Splice_Filters) : using_madara, using_ace, using_splice {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_splice_filters
+  
+  
+  requires += tests opensplice
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/splice/test_splice_filters.cpp
+  }
+}
+
+
+project (Test_NDDS) : using_madara, using_ace, using_ndds {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_ndds
+  
+  
+  requires += tests ndds
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/ndds/test_ndds.cpp
+  }
+}
+
+project (Test_NDDS_Rules) : using_madara, using_ace, using_ndds {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_ndds_rules
+  
+  
+  requires += tests ndds
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/ndds/test_ndds_rules.cpp
+  }
+}
+
+project (Test_NDDS_Rebroadcast) : using_madara, using_ace, using_ndds {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_ndds_rebroadcast
+  
+  
+  requires += tests ndds
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/ndds/test_ndds_rebroadcast.cpp
+  }
+}
+
+project (Test_NDDS_Filters) : using_madara, using_ace, using_ndds {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_ndds_filters
+  
+  
+  requires += tests ndds
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/ndds/test_ndds_filters.cpp
+  }
+}
+
+
+
+project (Test_KATS_barriers) : using_madara, using_kats, using_ace {
+  requires += tests deprecated
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_kats_barriers
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/kats/test_kats_barriers.cpp
+  }
+}
+
+project (Test_KATS_syncs) : using_madara, using_kats, using_ace {
+  requires += tests deprecated
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_kats_syncs
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/kats/test_kats_syncs.cpp
+  }
+}
+
+project (Test_CID) : using_madara, using_ace, using_cid {
+  requires += tests cid deprecated
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_cid
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/cid/test_cid.cpp
+  }
+}
+
+project (Test_CID_Read_Deployment) : using_madara, using_ace, using_cid {
+  requires += tests cid deprecated
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_cid_read_deployment
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/cid/test_cid_read_deployment.cpp
+  }
+}
+
+project (Test_CID_Disjoint) : using_madara, using_ace, using_cid {
+  requires += tests cid deprecated
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_cid_disjoint
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/cid/test_cid_disjoint.cpp
+  }
+}
+
+project (Test_CID_Linked) : using_madara, using_ace, using_cid {
+  requires += tests cid deprecated
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_cid_linked
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/cid/test_cid_linked.cpp
+  }
+}
+
+
+project (Test_UDP) : using_madara, using_ace {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_udp
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/udp/test_udp.cpp
+  }
+}
+
+project (Test_Multicast) : using_madara, using_ace {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_multicast
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/multicast/test_multicast.cpp
+  }
+}
+
+project (Test_Broadcast) : using_madara, using_ace {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_broadcast
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/broadcast/test_broadcast.cpp
+  }
+}
+
+
+project (Test_ACE_Broadcast) : using_ace {
+  requires += tests deprecated
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_ace_broadcast
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/misc/test_ace_broadcast.cpp
+  }
+}
+
+
+project (Test_ACE_Multicast) : using_ace {
+  requires += tests deprecated
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_ace_multicast
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/misc/test_ace_multicast.cpp
+  }
+}
+
+project (Profile_Architecture) : using_ace, using_madara {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = profile_architecture
+  
+  Documentation_Files {
+    tests/settings
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/profile_architecture.cpp
+  }
+}
+
+project (Test_Utility) : using_ace, using_madara {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_utility
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_utility.cpp
+  }
+}
+
+project (Test_Peroidic_Wait) : using_ace, using_madara {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_periodic_wait
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_periodic_wait.cpp
+  }
+}
+
+project (Test_Primitive_Types) : using_ace, using_madara {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_primitive_types
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_primitive_types.cpp
+  }
+}
+
+project (Test_Logging) : using_ace, using_madara {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_logging
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_logging.cpp
+  }
+}

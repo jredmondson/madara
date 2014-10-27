@@ -1,0 +1,21 @@
+<group>
+    <setup>
+        <parallel />
+        <realtime />
+        <timing />
+        <domain>barrier_benchmarks</domain>
+    </setup>
+    <sleep>
+        <debug />
+        <realtime />
+        <timing />
+        <host>$(HOST)</host>
+        <domain>barrier_benchmarks</domain>
+        <barrier name="five_process" />
+        <id>3</id>
+        <processes>5</processes>
+        <delay>5</delay>
+        <stderr>$(RESULTS)/host4_fivetotal_sleep1.err</stderr>
+        <stdout>$(RESULTS)/host4_fivetotal_sleep1.out</stdout>
+    </sleep>
+</group>

@@ -1,0 +1,134 @@
+// if we are finished, exit
+.finished = car{.i}.finish_time;
+.finished
+||
+(
+  // if we are not finished, let's take a look
+  // at the car's current position, velocity,
+  // and the distance to our destination
+  .cur_x = .car{.i}.cur.x;
+  .cur_y = .car{.i}.cur.y;
+  .dest_x = .car{.i}.dest.x;
+  .dest_y = .car{.i}.dest.y;
+  .car{.i}.velocity < max_speed => ++.car{.i}.velocity;
+  .velocity = .car{.i}.velocity;
+  
+  .y_abs_diff = .y_diff = .cur_y - .dest_y;
+  .y_diff < 0 => .y_abs_diff = -.y_diff;
+  
+  .x_abs_diff = .x_diff = .cur_x - .dest_x;
+  .x_diff < 0 => .x_abs_diff = -.x_diff;
+  
+  // do we have lights ahead of us?
+  .type = map.{cur_x}.{cur_y}.type;
+  .north_light = map.{cur_x}.{cur_y}.light.north;
+  .east_light = map.{cur_x}.{cur_y}.light.east;
+  .south_light = map.{cur_x}.{cur_y}.light.south;
+  .west_light = map.{cur_x}.{cur_y}.light.west;
+  
+  // what was our previous direction?
+  .prev_direction = .car{.i}.direction;
+  
+  
+  // where would we be if we went in a direction?
+  .new_south_y = .cur_y + velocity;
+  .new_north_y = .cur_y - velocity;
+  .new_east_x = .cur_x + velocity;
+  .new_west_x = .cur_x - velocity;
+  
+  // if we have a yellow/red or our ideal spot is taken, where would we try
+  // to be?
+  .new_south_y_on_error = .cur_y + 1;
+  .new_north_y_on_error = .cur_y - 1;
+  .new_east_x_on_error = .cur_x + 1;
+  .new_west_x_on_error = .cur_x - 1;
+  
+  // do we have a red light to the north within velocity spots?
+  .north_light_red = 
+    .north_light
+    &&
+    (
+      light{.north_light}.phase != 1 
+      || 
+      light{.north_light}.switching_yellow
+    )
+    &&
+    (
+      .cur_y - light{.north_light}.y <= .velocity
+    )
+  ;
+  
+  // do we have a red/yellow light to the south?
+  .south_light_red = 
+    .south_light
+    &&
+    (
+      light{.south_light}.phase != 1 
+      || 
+      light{.south_light}.switching_yellow
+    )
+    &&
+    (
+      light{.south_light}.y - .cur_y <= .velocity
+    )
+  ;
+  
+  // do we have a yellow/red to the east?
+  .east_light_red = 
+    .east_light
+    &&
+    (
+      light{.east_light}.phase != 2 
+      || 
+      light{.east_light}.switching_yellow
+    )
+    &&
+    (
+      light{.east_light}.x - .cur_x <= .velocity
+    )
+  ;
+  
+  // how about to the west?
+  .west_light_red = 
+    .west_light
+    &&
+    (
+      light{.west_light}.phase != 2 
+      || 
+      light{.west_light}.switching_yellow
+    )
+    &&
+    (
+      .cur_x - light{.west_light}.x  <= .velocity
+    )
+  ;
+  
+  // based on the destination difference, what is our
+  // preference for direction?
+  .pref.north = .y_diff > 0;
+  .pref.south = .y_diff < 0;
+  .pref.west = .x_diff > 0;
+  .pref.east = .x_diff < 0;
+  
+  
+  // are we so close to our destination that
+  // we could simply be there within the velocity?
+  (
+    .y_abs_diff + x_abs_diff <= .velocity
+      =>
+      (
+        car{.i}.finish_time = simulation_time;
+        .car{.i}.cur.x = .dest_x;
+        .car{.i}.cur.y = .dest_y
+      )
+  )
+  ||
+  (
+    // going to have to do more work than that, I guess
+    // let's try to eradicate either our y difference
+    // or our x difference, and then we'll use what is left
+    .left_over_velocity = .velocity; 
+
+    
+  )
+)

@@ -1,0 +1,81 @@
+.cur_time = simulation_time;
+++.light{.id}.time_in_phase;
+light{.id}.switching_yellow => --.light{.id}.time_left_in_yellow;
+light{.id}.south.reinforcement = light{.id}.south.inbound - light{.id}.south.outbound;
+light{.id}.north.reinforcement = light{.id}.north.inbound - light{.id}.north.outbound;
+light{.id}.east.reinforcement = light{.id}.east.inbound - light{.id}.east.outbound;
+light{.id}.west.reinforcement = light{.id}.west.inbound - light{.id}.west.outbound;
+light{.id}.eastwest.reinforcement = light{.id}.east.reinforcement + light{.id}.west.reinforcement;
+light{.id}.northsouth.reinforcement = light{.id}.north.reinforcement + light{.id}.south.reinforcement;
+.light{.id}.northsouth.emergency = light{.id}.north.emergency || light{.id}.south.emergency;
+.light{.id}.eastwest.emergency = light{.id}.east.emergency || light{.id}.west.emergency;
+( !light{.id}.switching_yellow && (.light{.id}.rule = 1)
+  &&
+  (
+    ( light{.id}.phase == 1 && (.light{.id}.rule = 2)
+      &&
+      ( !.light{.id}.northsouth.emergency && (.light{.id}.rule = 3)
+        &&
+        ( .light{.id}.eastwest.emergency
+          ||
+          (
+            ( .light{.id}.time_in_phase > light{.id}.cut_off_time && (.light{.id}.rule = 4)
+              &&
+              ( light{.id}.east.reinforcement > 0 || light{.id}.west.reinforcement > 0 )
+            )
+            ||
+            ( .light{.id}.time_in_phase > light{.id}.time_min && (.light{.id}.rule = 5)
+              &&
+              light{.id}.eastwest.reinforcement > light{.id}.northsouth.reinforcement
+            )
+          )
+        )
+      )
+    )
+    ||
+    ( light{.id}.phase == 2 && (.light{.id}.rule = 10)
+      && 
+      ( !.light{.id}.eastwest.emergency && (.light{.id}.rule = 11)
+        && 
+        ( .light{.id}.northsouth.emergency
+          ||
+          ( .light{.id}.time_in_phase > light{.id}.cut_off_time && (.light{.id}.rule = 12)
+            &&
+            ( light{.id}.north.reinforcement > 0 || light{.id}.south.reinforcement > 0)
+          )
+          ||
+          ( .light{.id}.time_in_phase > light{.id}.time_min && (.light{.id}.rule = 13)
+            && 
+            light{.id}.northsouth.reinforcement > light{.id}.eastwest.reinforcement
+          )
+        )
+      )
+    )
+  )
+  && (light{.id}.switching_yellow = 1; .light{.id}.time_left_in_yellow = light{.id}.braking_time; .light{.id}.rule = 14)
+)
+||
+( light{.id}.switching_yellow && (.light{.id}.rule = 20)
+  &&
+  (
+    (
+      light{.id}.phase == 1 && .light{.id}.time_left_in_yellow == 0 && (.light{.id}.rule = 21) 
+        && 
+          (
+            light{.id}.phase = 2;
+            light{.id}.switching_yellow = 0;
+            .light{.id}.time_in_phase = 0;
+          )
+    ) 
+    ||
+    (
+      light{.id}.phase == 2 && .light{.id}.time_left_in_yellow == 0 && (.light{.id}.rule = 22)
+        && 
+          (
+            light{.id}.phase = 1;
+            light{.id}.switching_yellow = 0
+            .light{.id}.time_in_phase = 0;
+          )
+    ) 
+  )
+)

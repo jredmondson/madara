@@ -1,0 +1,5 @@
+project {
+  requires += cid
+
+  macros += _USE_CID_
+}

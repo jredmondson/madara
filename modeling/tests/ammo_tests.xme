@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project SYSTEM "mga.dtd">
+
+<project guid="{A00F2593-31E4-4489-A1C9-BB820DE88FF2}" cdate="Wed May 11 15:10:19 2011" mdate="Wed May 11 15:10:19 2011" version="" metaguid="{2F4ABA39-85E4-4038-A305-E7416289B565}" metaversion="0.2.0" metaname="KATS">
+	<name>RootFolder</name>
+	<comment></comment>
+	<author></author>
+	<folder id="id-006a-00000001" relid="0x1" childrelidcntr="0x5" kind="RootFolder" guid="{a8d3aad5-68a6-4eb1-9aba-a4a85385d7f0}">
+		<name>RootFolder</name>
+		<folder id="id-006a-00000002" relid="0x1" childrelidcntr="0x2" kind="Barriers" guid="{77a56bec-50e0-4de9-b91d-0f662de0fe7b}">
+			<name>Barriers</name>
+			<atom id="id-0066-00000001" kind="Barrier" guid="{a3ed45a8-7cbd-423a-8604-8124be514cb8}" relid="0x1">
+				<name>Gateway Standalone</name>
+				<attribute kind="Override">
+					<value>gateway</value>
+				</attribute>
+			</atom>
+			<atom id="id-0066-00000002" kind="Barrier" guid="{9df073f7-7011-49c2-807d-7e2cddea2354}" relid="0x2">
+				<name>large_test</name>
+				<attribute kind="Override">
+					<value>$(TEST_NAME)</value>
+				</attribute>
+			</atom>
+		</folder>
+		<folder id="id-006a-00000003" relid="0x2" childrelidcntr="0x1" kind="Processes" guid="{61e75737-3dcc-4dbf-b0c4-22a259e1a975}">
+			<name>Tests</name>
+			<model id="id-0065-00000001" kind="Group" guid="{0e5eefbb-7091-497c-8f64-600aa26a5a5f}" relid="0x1" childrelidcntr="0xb">
+				<name>GatewayLaunch</name>
+				<attribute kind="Debug">
+					<value>true</value>
+				</attribute>
+				<attribute kind="Delay">
+					<value>2</value>
+				</attribute>
+				<attribute kind="Id" status="meta">
+					<value>0</value>
+				</attribute>
+				<attribute kind="Parallel">
+					<value>true</value>
+				</attribute>
+				<attribute kind="Postcondition">
+					<value>gateway.done = 1</value>
+				</attribute>
+				<attribute kind="Precondition">
+					<value>some_condition</value>
+				</attribute>
+				<attribute kind="Processes" status="meta">
+					<value>1</value>
+				</attribute>
+				<attribute kind="Realtime">
+					<value>true</value>
+				</attribute>
+				<attribute kind="Stderr">
+					<value>gateway.err</value>
+				</attribute>
+				<attribute kind="Stdin" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Stdout">
+					<value>gateway.out</value>
+				</attribute>
+				<model id="id-0065-00000002" kind="Process" role="Process" guid="{06a82460-aa86-45c4-8189-6d73ab44b7a2}" relid="0x1" childrelidcntr="0x4">
+					<name>AndroidGatewayPlugin</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="Configuration" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>224,147</value>
+							</regnode>
+						</regnode>
+					</regnode>
+					<attribute kind="CommandLine">
+						<value>--listenPort 33289</value>
+					</attribute>
+					<attribute kind="Debug" status="meta">
+						<value>false</value>
+					</attribute>
+					<attribute kind="Delay">
+						<value>2</value>
+					</attribute>
+					<attribute kind="Executable">
+						<value>$(GATEWAY_ROOT)/build/bin/AndroidGatewayPlugin</value>
+					</attribute>
+					<attribute kind="Id">
+						<value>1</value>
+					</attribute>
+					<attribute kind="Order">
+						<value>1</value>
+					</attribute>
+					<attribute kind="Postcondition">
+						<value>androidgateway.finished=1</value>
+					</attribute>
+					<attribute kind="Precondition" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Processes">
+						<value>5</value>
+					</attribute>
+					<attribute kind="Realtime">
+						<value>true</value>
+					</attribute>
+					<attribute kind="Stderr">
+						<value>./androidgateway.err</value>
+					</attribute>
+					<attribute kind="Stdin" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Stdout">
+						<value>./androidgateway.out</value>
+					</attribute>
+					<attribute kind="WorkingDir">
+						<value>$(RESULTS)</value>
+					</attribute>
+					<atom id="id-0066-00000003" kind="Kill" role="Kill" guid="{dda513a1-f93e-43cd-a720-8e28cc6479a7}" relid="0x3">
+						<name>Kill</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>356,48</value>
+								</regnode>
+							</regnode>
+						</regnode>
+						<attribute kind="Signal">
+							<value>2</value>
+						</attribute>
+						<attribute kind="Time">
+							<value>12</value>
+						</attribute>
+					</atom>
+					<reference id="id-0067-00000001" kind="BarrierRef" role="BarrierRef" guid="{a180a407-946b-408b-9ff0-abcbc828a1ba}" relid="0x1" referred="id-0066-00000001">
+						<name>gateway</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>103,47</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+					<reference id="id-0067-00000006" kind="DomainRef" role="DomainRef" guid="{90d2808c-d6d0-4769-bca0-07813ce9d7f1}" relid="0x2" referred="id-0066-00000008">
+						<name>DomainRef</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>236,47</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+					<reference id="id-0067-00000007" kind="HostRef" role="HostRef" guid="{0574a9ff-ea66-4571-b17f-4840ddef8534}" relid="0x4" referred="id-0066-0000000a">
+						<name>$HOST</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>102,144</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+				</model>
+				<model id="id-0065-00000003" kind="Process" role="Process" guid="{895961e6-73e1-41d6-9c24-bf44771c35a2}" relid="0x4" childrelidcntr="0x4">
+					<name>GatewayCore</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="Configuration" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>58,145</value>
+							</regnode>
+						</regnode>
+					</regnode>
+					<attribute kind="CommandLine" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Debug" status="meta">
+						<value>false</value>
+					</attribute>
+					<attribute kind="Delay" status="meta">
+						<value>0</value>
+					</attribute>
+					<attribute kind="Executable">
+						<value>$(GATEWAY_ROOT)/build/bin/GatewayCore</value>
+					</attribute>
+					<attribute kind="Id" status="meta">
+						<value>0</value>
+					</attribute>
+					<attribute kind="Order" status="meta">
+						<value>0</value>
+					</attribute>
+					<attribute kind="Postcondition">
+						<value>gatewaycore.finished=1</value>
+					</attribute>
+					<attribute kind="Precondition" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Processes">
+						<value>5</value>
+					</attribute>
+					<attribute kind="Realtime">
+						<value>true</value>
+					</attribute>
+					<attribute kind="Stderr">
+						<value>./gatewaycore.err</value>
+					</attribute>
+					<attribute kind="Stdin" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Stdout">
+						<value>./gatewaycore.out</value>
+					</attribute>
+					<attribute kind="WorkingDir">
+						<value>$(RESULTS)</value>
+					</attribute>
+					<atom id="id-0066-00000004" kind="Kill" role="Kill" guid="{957de0d1-f766-4590-ae74-d1d9585190e0}" relid="0x3">
+						<name>Kill</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>356,48</value>
+								</regnode>
+							</regnode>
+						</regnode>
+						<attribute kind="Signal">
+							<value>2</value>
+						</attribute>
+						<attribute kind="Time">
+							<value>10</value>
+						</attribute>
+					</atom>
+					<reference id="id-0067-00000002" kind="BarrierRef" role="BarrierRef" guid="{2f140847-f3ba-4a53-a78b-fb419d381b04}" relid="0x1" referred="id-0066-00000001">
+						<name>gateway</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>103,47</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+					<reference id="id-0067-00000008" kind="DomainRef" role="DomainRef" guid="{ce0264fb-56f0-463e-b4ff-6471c3f24a5e}" relid="0x2" referred="id-0066-00000008">
+						<name>DomainRef</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>236,47</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+					<reference id="id-0067-00000009" kind="HostRef" role="HostRef" guid="{7fd24a72-f6e3-48df-836c-7091444f425c}" relid="0x4" referred="id-0066-0000000a">
+						<name>$HOST</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>102,144</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+				</model>
+				<model id="id-0065-00000004" kind="Process" role="Process" guid="{36b3fa05-0d60-482b-a56c-658e171f7050}" relid="0x5" childrelidcntr="0x4">
+					<name>LDAPGatewayPlugin</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="Configuration" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>219,278</value>
+							</regnode>
+						</regnode>
+					</regnode>
+					<attribute kind="CommandLine">
+						<value></value>
+					</attribute>
+					<attribute kind="Debug" status="meta">
+						<value>false</value>
+					</attribute>
+					<attribute kind="Delay">
+						<value>2</value>
+					</attribute>
+					<attribute kind="Executable">
+						<value>$(GATEWAY_ROOT)/build/bin/LdapGatewayPlugin</value>
+					</attribute>
+					<attribute kind="Id">
+						<value>4</value>
+					</attribute>
+					<attribute kind="Order">
+						<value>4</value>
+					</attribute>
+					<attribute kind="Postcondition">
+						<value>ldapgateway.finished=1</value>
+					</attribute>
+					<attribute kind="Precondition" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Processes">
+						<value>5</value>
+					</attribute>
+					<attribute kind="Realtime">
+						<value>true</value>
+					</attribute>
+					<attribute kind="Stderr">
+						<value>./ldapgateway.err</value>
+					</attribute>
+					<attribute kind="Stdin" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Stdout">
+						<value>./ldapgateway.out</value>
+					</attribute>
+					<attribute kind="WorkingDir">
+						<value>$(RESULTS)</value>
+					</attribute>
+					<atom id="id-0066-00000005" kind="Kill" role="Kill" guid="{20460f96-d65e-4ce0-a163-bbe30022d8aa}" relid="0x3">
+						<name>Kill</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>356,48</value>
+								</regnode>
+							</regnode>
+						</regnode>
+						<attribute kind="Signal">
+							<value>2</value>
+						</attribute>
+						<attribute kind="Time">
+							<value>12</value>
+						</attribute>
+					</atom>
+					<reference id="id-0067-00000003" kind="BarrierRef" role="BarrierRef" guid="{6cbe10cc-1afb-4476-824c-f6074e81f420}" relid="0x1" referred="id-0066-00000001">
+						<name>gateway</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>103,47</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+					<reference id="id-0067-0000000a" kind="DomainRef" role="DomainRef" guid="{9696a80d-9185-4dfd-9942-05acb50eb223}" relid="0x2" referred="id-0066-00000008">
+						<name>DomainRef</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>235,46</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+					<reference id="id-0067-0000000b" kind="HostRef" role="HostRef" guid="{c72b4c8a-f12c-4843-99d9-4c2c263cb80d}" relid="0x4" referred="id-0066-0000000a">
+						<name>$HOST</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>102,144</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+				</model>
+				<model id="id-0065-00000005" kind="Process" role="Process" guid="{703350a5-95bb-4f32-8940-8ddabc3b6db3}" relid="0x7" childrelidcntr="0x4">
+					<name>LocationStorePlugin</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="Configuration" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>58,278</value>
+							</regnode>
+						</regnode>
+					</regnode>
+					<attribute kind="CommandLine">
+						<value></value>
+					</attribute>
+					<attribute kind="Debug" status="meta">
+						<value>false</value>
+					</attribute>
+					<attribute kind="Delay">
+						<value>2</value>
+					</attribute>
+					<attribute kind="Executable">
+						<value>$(GATEWAY_ROOT)/build/bin/LocationStoreGatewayPlugin</value>
+					</attribute>
+					<attribute kind="Id">
+						<value>3</value>
+					</attribute>
+					<attribute kind="Order">
+						<value>3</value>
+					</attribute>
+					<attribute kind="Postcondition">
+						<value>locationstore.finished=1</value>
+					</attribute>
+					<attribute kind="Precondition" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Processes">
+						<value>5</value>
+					</attribute>
+					<attribute kind="Realtime">
+						<value>true</value>
+					</attribute>
+					<attribute kind="Stderr">
+						<value>./locationstore.err</value>
+					</attribute>
+					<attribute kind="Stdin" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Stdout">
+						<value>./locationstore.out</value>
+					</attribute>
+					<attribute kind="WorkingDir">
+						<value>$(RESULTS)</value>
+					</attribute>
+					<atom id="id-0066-00000006" kind="Kill" role="Kill" guid="{ee9383eb-fb05-43cf-a932-3cfc05584b91}" relid="0x3">
+						<name>Kill</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>356,48</value>
+								</regnode>
+							</regnode>
+						</regnode>
+						<attribute kind="Signal">
+							<value>2</value>
+						</attribute>
+						<attribute kind="Time">
+							<value>12</value>
+						</attribute>
+					</atom>
+					<reference id="id-0067-00000004" kind="BarrierRef" role="BarrierRef" guid="{eec71470-65b7-4d8d-95a4-5f55e5734e1c}" relid="0x1" referred="id-0066-00000001">
+						<name>gateway</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>103,47</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+					<reference id="id-0067-0000000c" kind="DomainRef" role="DomainRef" guid="{925815ea-eef4-43f5-bba5-70798c2eb75b}" relid="0x2" referred="id-0066-00000008">
+						<name>DomainRef</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>235,46</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+					<reference id="id-0067-0000000d" kind="HostRef" role="HostRef" guid="{bc7025e2-de83-4dea-8cbe-92914b2cc008}" relid="0x4" referred="id-0066-0000000a">
+						<name>$HOST</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="Configuration" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>102,144</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+				</model>
+				<atom id="id-0066-00000007" kind="Kill" role="Kill" guid="{fe65c76d-ed7d-4e31-8a3a-2c6ef562498f}" relid="0x9">
+					<name>Kill</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="Configuration" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>405,34</value>
+							</regnode>
+						</regnode>
+					</regnode>
+					<attribute kind="Signal" status="meta">
+						<value>0</value>
+					</attribute>
+					<attribute kind="Time" status="meta">
+						<value>0</value>
+					</attribute>
+				</atom>
+				<reference id="id-0067-00000005" kind="BarrierRef" role="BarrierRef" guid="{78344401-f11e-4877-82f0-b54039009c8c}" relid="0x3" referred="id-0066-00000002">
+					<name>$TEST_NAME</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="Configuration" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>179,32</value>
+							</regnode>
+						</regnode>
+					</regnode>
+				</reference>
+				<reference id="id-0067-0000000e" kind="DomainRef" role="DomainRef" guid="{f4ab3bc4-6e28-426e-9bc5-e8e273a6349c}" relid="0x2" referred="id-0066-00000008">
+					<name>ammo_group</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="Configuration" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>73,38</value>
+							</regnode>
+						</regnode>
+					</regnode>
+				</reference>
+				<reference id="id-0067-0000000f" kind="HostRef" role="HostRef" guid="{1da68500-84c5-4a4f-8a8c-9c9ff5d976dc}" relid="0x8" referred="id-0066-0000000a">
+					<name>$HOST</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="Configuration" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>291,32</value>
+							</regnode>
+						</regnode>
+					</regnode>
+				</reference>
+			</model>
+		</folder>
+		<folder id="id-006a-00000004" relid="0x4" childrelidcntr="0x1" kind="Domains" guid="{e421f154-16a2-4f31-bb2e-3fcd6c3b8717}">
+			<name>Domains</name>
+			<atom id="id-0066-00000008" kind="Domain" guid="{356a17d2-932f-40aa-b30f-a951adc9037a}" relid="0x1">
+				<name>ammo_group</name>
+				<attribute kind="Override" status="meta">
+					<value></value>
+				</attribute>
+			</atom>
+		</folder>
+		<folder id="id-006a-00000005" relid="0x5" childrelidcntr="0x2" kind="Hosts" guid="{92e2941e-a179-45b7-bde2-f70829d37223}">
+			<name>Hosts</name>
+			<atom id="id-0066-00000009" kind="Host" guid="{f51bd20f-667b-45e6-9f03-70822701d867}" relid="0x1">
+				<name>localhost</name>
+				<attribute kind="Override">
+					<value></value>
+				</attribute>
+			</atom>
+			<atom id="id-0066-0000000a" kind="Host" guid="{addf9788-95f1-4ca2-b7ca-ee17c59c2a27}" relid="0x2">
+				<name>$(HOST)</name>
+				<attribute kind="Override">
+					<value></value>
+				</attribute>
+			</atom>
+		</folder>
+	</folder>
+</project>

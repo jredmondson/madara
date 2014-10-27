@@ -1,0 +1,67 @@
+project (Documentation_MADARA_Java) : build_files {
+
+  requires += docs java
+
+  prebuild = javadoc -version -d java -sourcepath $(MADARA_ROOT)/port/java/src -subpackages com.madara
+  
+  custom_only = 1
+  
+  Build_Files {
+    Documentation.mpc
+  }
+}
+
+
+project (Documentation_KaRL) : doxygen_help_gen, build_files {
+
+  requires += docs
+
+  prebuild = perl $(MADARA_ROOT)/docs/get_version.pl
+
+  custom_only = 1
+  
+  Build_Files {
+    Documentation.mpc
+    doxygen_help_gen.mpb
+  }
+
+  DoxygenTypeSupport_Files {
+    Doxyfile_KaRL.dxy >> karl
+    Doxyfile_MAAL.dxy >> maal
+    Doxyfile_MAML.dxy >> maml
+  }
+}
+
+project (Documentation_CID) : doxygen_help_gen, build_files {
+
+  requires += docs cid
+
+  custom_only = 1
+  
+  Build_Files {
+    Documentation.mpc
+    doxygen_help_gen.mpb
+  }
+
+  DoxygenTypeSupport_Files {
+    Doxyfile_CID.dxy >> cid
+  }
+}
+
+project (Documentation_KATS) : doxygen_help_gen, build_files {
+
+  requires += docs kats
+
+  custom_only = 1
+  
+  Build_Files {
+    Documentation.mpc
+    doxygen_help_gen.mpb
+  }
+
+  DoxygenTypeSupport_Files {
+    Doxyfile_KATS.dxy >> kats
+  }
+}
+
+

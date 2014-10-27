@@ -1,0 +1,15 @@
+
+module Knowledge
+{
+    struct Mutex
+    {
+      string                            key;
+      string                            originator;
+      long                              clock;
+      long                              type;
+      long                              priority;
+    };
+    
+    //#pragma keylist Mutex
+    #pragma keylist    Mutex     key     
+};

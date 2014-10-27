@@ -1,0 +1,926 @@
+<?xml version="1.0"?>
+<!DOCTYPE paradigm SYSTEM "edf.dtd">
+
+<paradigm name="MADARA" version="1.1.15" guid="{5147F7F7-0ED7-4376-82A6-DF315DB61068}" cdate="Mon Oct 04 16:53:59 2010" mdate="Mon Oct 04 16:53:59 2010" >
+
+	<comment>Bringing model up to speed for high level KaRL programming</comment>
+
+	<author>James Edmondson</author>
+
+	<folder name = "RootFolder" metaref = "1000"  rootobjects = "Program" >
+		<attrdef name="Clock_Increment" metaref = "1116" valuetype = "integer" defvalue = "1">
+			<regnode name="help" value = "Increment for the underlying Lamport clock after an update"></regnode>
+		</attrdef>
+		<attrdef name="Deadline" metaref = "1001" valuetype = "double" defvalue = "-1.0">
+		</attrdef>
+		<attrdef name="Delay_Sending_Modifications" metaref = "1117" valuetype = "boolean" defvalue = "false">
+			<regnode name="help" value = "Delay sending modifications to aggregate updates"></regnode>
+		</attrdef>
+		<attrdef name="Domains" metaref = "1002" valuetype = "string" defvalue = "">
+		</attrdef>
+		<attrdef name="Double_Value" metaref = "1657" valuetype = "double" defvalue = "0.0">
+			<dispname>value</dispname>
+		</attrdef>
+		<attrdef name="Expand_Variables" metaref = "1118" valuetype = "boolean" defvalue = "false">
+			<regnode name="help" value = "Expands variable names if set to true"></regnode>
+		</attrdef>
+		<attrdef name="For_End" metaref = "1790" valuetype = "string" defvalue = "0">
+			<dispname>End</dispname>
+			<regnode name="help" value = "Last value of variable"></regnode>
+		</attrdef>
+		<attrdef name="For_Inclusive" metaref = "1791" valuetype = "boolean" defvalue = "true">
+			<dispname>Inclusive</dispname>
+			<regnode name="help" value = "Specifies whether end value is included in the variable range"></regnode>
+		</attrdef>
+		<attrdef name="For_Increment" metaref = "1792" valuetype = "string" defvalue = "1">
+			<dispname>Increment</dispname>
+			<regnode name="help" value = "Value to increment variable by each iteration"></regnode>
+		</attrdef>
+		<attrdef name="For_Start" metaref = "1793" valuetype = "string" defvalue = "0">
+			<dispname>Start</dispname>
+			<regnode name="help" value = "Initial value of variable"></regnode>
+		</attrdef>
+		<attrdef name="For_Variable" metaref = "1794" valuetype = "string" defvalue = ".i">
+			<dispname>Variable</dispname>
+			<regnode name="help" value = "Variable to iterate over"></regnode>
+		</attrdef>
+		<attrdef name="Function_Name" metaref = "1802" valuetype = "enum" defvalue = "#print">
+			<enumitem dispname = "#delete_var" value = "#delete_var"></enumitem>
+			<enumitem dispname = "#eval" value = "#eval"></enumitem>
+			<enumitem dispname = "#expand_env" value = "#expand_env"></enumitem>
+			<enumitem dispname = "#expand_statement" value = "#expand_statement"></enumitem>
+			<enumitem dispname = "#fragment" value = "#fragment"></enumitem>
+			<enumitem dispname = "#get_clock" value = "#get_clock"></enumitem>
+			<enumitem dispname = "#get_time" value = "#get_time"></enumitem>
+			<enumitem dispname = "#log_level" value = "#log_level"></enumitem>
+			<enumitem dispname = "#print" value = "#print"></enumitem>
+			<enumitem dispname = "#print_system_calls" value = "#print_system_calls"></enumitem>
+			<enumitem dispname = "#rand_double" value = "#rand_double"></enumitem>
+			<enumitem dispname = "#rand_int" value = "#rand_int"></enumitem>
+			<enumitem dispname = "#read_file" value = "#read_file"></enumitem>
+			<enumitem dispname = "#set_clock" value = "#set_clock"></enumitem>
+			<enumitem dispname = "#set_precision" value = "#set_precision"></enumitem>
+			<enumitem dispname = "#size" value = "#size"></enumitem>
+			<enumitem dispname = "#to_buffer" value = "#to_buffer"></enumitem>
+			<enumitem dispname = "#to_double" value = "#to_double"></enumitem>
+			<enumitem dispname = "#to_doubles" value = "#to_doubles"></enumitem>
+			<enumitem dispname = "#to_host_dirs" value = "#to_host_dirs"></enumitem>
+			<enumitem dispname = "#to_integer" value = "#to_integer"></enumitem>
+			<enumitem dispname = "#to_integers" value = "#to_integers"></enumitem>
+			<enumitem dispname = "#to_string" value = "#to_string"></enumitem>
+			<enumitem dispname = "#type" value = "#type"></enumitem>
+			<enumitem dispname = "#write_file" value = "#write_file"></enumitem>
+		</attrdef>
+		<attrdef name="Identifier" metaref = "1439" valuetype = "string" defvalue = "">
+			<regnode name="help" value = "Usually a host:port pairing for host identification"></regnode>
+		</attrdef>
+		<attrdef name="Index" metaref = "1658" valuetype = "string" defvalue = "">
+		</attrdef>
+		<attrdef name="Int_Value" metaref = "1659" valuetype = "integer" defvalue = "0">
+			<dispname>value</dispname>
+		</attrdef>
+		<attrdef name="Max_Wait_Time" metaref = "1119" valuetype = "double" defvalue = "-1">
+			<regnode name="help" value = "Maximum amount of time to wait, in seconds"></regnode>
+		</attrdef>
+		<attrdef name="Name" metaref = "1537" valuetype = "string" defvalue = "">
+		</attrdef>
+		<attrdef name="Period_Between_Evaluations" metaref = "1120" valuetype = "double" defvalue = "0.100">
+			<regnode name="help" value = "Period of time between evaluations to check for truth, in seconds"></regnode>
+		</attrdef>
+		<attrdef name="Send_Bandwidth_Limit" metaref = "1003" valuetype = "integer" defvalue = "-1">
+		</attrdef>
+		<attrdef name="String_Value" metaref = "1660" valuetype = "string" defvalue = "">
+			<dispname>value</dispname>
+		</attrdef>
+		<attrdef name="Total_Bandwidth_Limit" metaref = "1004" valuetype = "string" defvalue = "-1">
+		</attrdef>
+		<attrdef name="Transport_Type" metaref = "1005" valuetype = "enum" defvalue = "Multicast">
+			<enumitem dispname = "Broadcast" value = "Broadcast"></enumitem>
+			<enumitem dispname = "Multicast" value = "Multicast"></enumitem>
+			<enumitem dispname = "PrismTech DDS" value = "PrismTech DDS"></enumitem>
+			<enumitem dispname = "RTI DDS" value = "RTI DDS"></enumitem>
+			<enumitem dispname = "UDP" value = "UDP"></enumitem>
+		</attrdef>
+		<attrdef name="Types" metaref = "1536" valuetype = "enum" defvalue = "ALL_TYPES">
+			<enumitem dispname = "INTEGER" value = "INTEGER"></enumitem>
+			<enumitem dispname = "STRING" value = "STRING"></enumitem>
+			<enumitem dispname = "DOUBLE" value = "DOUBLE"></enumitem>
+			<enumitem dispname = "FLOAT" value = "FLOAT"></enumitem>
+			<enumitem dispname = "UNKNOWN_FILE_TYPE" value = "UNKNOWN_FILE_TYPE"></enumitem>
+			<enumitem dispname = "XML" value = "XML"></enumitem>
+			<enumitem dispname = "TEXT_FILE" value = "TEXT_FILE"></enumitem>
+			<enumitem dispname = "INTEGER_ARRAY" value = "INTEGER_ARRAY"></enumitem>
+			<enumitem dispname = "DOUBLE_ARRAY" value = "DOUBLE_ARRAY"></enumitem>
+			<enumitem dispname = "IMAGE_JPEG" value = "IMAGE_JPEG"></enumitem>
+			<enumitem dispname = "ALL_ARRAYS" value = "ALL_ARRAYS"></enumitem>
+			<enumitem dispname = "ALL_INTEGERS" value = "ALL_INTEGERS"></enumitem>
+			<enumitem dispname = "ALL_DOUBLES" value = "ALL_DOUBLES"></enumitem>
+			<enumitem dispname = "ALL_PRIMITIVE_TYPES" value = "ALL_PRIMITIVE_TYPES"></enumitem>
+			<enumitem dispname = "ALL_FILE_TYPES" value = "ALL_FILE_TYPES"></enumitem>
+			<enumitem dispname = "ALL_IMAGES" value = "ALL_IMAGES"></enumitem>
+			<enumitem dispname = "ALL_TEXT_FORMATS" value = "ALL_TEXT_FORMATS"></enumitem>
+			<enumitem dispname = "ALL_TYPES" value = "ALL_TYPES"></enumitem>
+			<regnode name="help" value = "Types to apply filter on"></regnode>
+		</attrdef>
+		<attrdef name="use_generic_aggregate" metaref = "1534" valuetype = "enum" defvalue = "none">
+			<enumitem dispname = "none" value = "none"></enumitem>
+			<enumitem dispname = "log_aggregate" value = "log_aggregate"></enumitem>
+		</attrdef>
+		<attrdef name="use_generic_filter" metaref = "1535" valuetype = "enum" defvalue = "none">
+			<enumitem dispname = "none" value = "none"></enumitem>
+			<enumitem dispname = "discard" value = "discard"></enumitem>
+			<enumitem dispname = "log_args" value = "log_args"></enumitem>
+		</attrdef>
+		<atom name = "Add" metaref = "1661" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_add.png"></regnode>
+		</atom>
+		<atom name = "Add_Assign" metaref = "1662" >
+			<dispname>Add Assign</dispname>
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_add_assign.png"></regnode>
+		</atom>
+		<atom name = "Array" metaref = "1663"  attributes = "Name Index">
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_array.png"></regnode>
+		</atom>
+		<atom name = "Assign" metaref = "1664" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_assign.png"></regnode>
+		</atom>
+		<atom name = "Both_Max" metaref = "1666" >
+			<dispname>Both Max</dispname>
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_both_max.png"></regnode>
+		</atom>
+		<atom name = "Both_Min" metaref = "1667" >
+			<dispname>Both Min</dispname>
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_both_min.png"></regnode>
+		</atom>
+		<atom name = "Choose_Left" metaref = "1668" >
+			<dispname>Choose Left</dispname>
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_choose_left.png"></regnode>
+		</atom>
+		<atom name = "Choose_Right" metaref = "1669" >
+			<dispname>Choose Right</dispname>
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_choose_right.png"></regnode>
+		</atom>
+		<atom name = "Divide" metaref = "1670" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_divide.png"></regnode>
+		</atom>
+		<atom name = "Does_Not_Equal" metaref = "1671" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_not_equals.png"></regnode>
+		</atom>
+		<atom name = "Double" metaref = "1672"  attributes = "Double_Value">
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_double.png"></regnode>
+		</atom>
+		<atom name = "Equals" metaref = "1673" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_equals.png"></regnode>
+		</atom>
+		<atom name = "Greater_Than" metaref = "1674" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_greater_than.png"></regnode>
+		</atom>
+		<atom name = "Greater_Than_Equal_To" metaref = "1675" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_greater_than_equals.png"></regnode>
+		</atom>
+		<atom name = "Host" metaref = "1121"  attributes = "Identifier">
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_host.png"></regnode>
+		</atom>
+		<atom name = "Implies" metaref = "1676" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_implies.png"></regnode>
+		</atom>
+		<atom name = "Integer" metaref = "1677"  attributes = "Int_Value">
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_integer.png"></regnode>
+		</atom>
+		<atom name = "Less_Than" metaref = "1678" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_less_than.png"></regnode>
+		</atom>
+		<atom name = "Less_Than_Equal_To" metaref = "1679" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_less_than_equal_to.png"></regnode>
+		</atom>
+		<atom name = "Logical_And" metaref = "1680" >
+			<dispname>And</dispname>
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_and.png"></regnode>
+		</atom>
+		<atom name = "Logical_Not" metaref = "1681" >
+			<dispname>Not</dispname>
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_not.png"></regnode>
+		</atom>
+		<atom name = "Logical_Or" metaref = "1682" >
+			<dispname>Or</dispname>
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_or.png"></regnode>
+		</atom>
+		<atom name = "Modulus" metaref = "1683" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_modulus.png"></regnode>
+		</atom>
+		<atom name = "Multiply" metaref = "1684" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_multiply.png"></regnode>
+		</atom>
+		<atom name = "Multiply_Assign" metaref = "1685" >
+			<dispname>Multiply Assign</dispname>
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_multiply_assign.png"></regnode>
+		</atom>
+		<atom name = "Negate" metaref = "1752" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_negate.png"></regnode>
+		</atom>
+		<atom name = "Predecrement" metaref = "1753" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_decrement.png"></regnode>
+		</atom>
+		<atom name = "Preincrement" metaref = "1754" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_increment.png"></regnode>
+		</atom>
+		<atom name = "String" metaref = "1686"  attributes = "String_Value">
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_string.png"></regnode>
+		</atom>
+		<atom name = "Subtract" metaref = "1687" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_subtract.png"></regnode>
+		</atom>
+		<atom name = "Subtract_Assign" metaref = "1688" >
+			<dispname>Subtract Assign</dispname>
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_subtract_assign.png"></regnode>
+		</atom>
+		<atom name = "Variable" metaref = "1538"  attributes = "Name">
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_variable.png"></regnode>
+		</atom>
+		<connection name = "Connection" metaref = "1818" >
+				<regnode name = "color" value ="0x000000"></regnode>
+				<regnode name = "dstStyle" value ="arrow"></regnode>
+				<regnode name = "srcStyle" value ="butt"></regnode>
+				<regnode name = "lineType" value ="solid"></regnode>
+			<connjoint>
+				<pointerspec name = "src">
+					<pointeritem desc = "Add"></pointeritem>
+					<pointeritem desc = "Add_Assign"></pointeritem>
+					<pointeritem desc = "Array"></pointeritem>
+					<pointeritem desc = "Assign"></pointeritem>
+					<pointeritem desc = "Both_Max"></pointeritem>
+					<pointeritem desc = "Both_Min"></pointeritem>
+					<pointeritem desc = "Choose_Left"></pointeritem>
+					<pointeritem desc = "Choose_Right"></pointeritem>
+					<pointeritem desc = "Divide"></pointeritem>
+					<pointeritem desc = "Does_Not_Equal"></pointeritem>
+					<pointeritem desc = "Double"></pointeritem>
+					<pointeritem desc = "Equals"></pointeritem>
+					<pointeritem desc = "For_Loop"></pointeritem>
+					<pointeritem desc = "Function_Reference"></pointeritem>
+					<pointeritem desc = "Greater_Than"></pointeritem>
+					<pointeritem desc = "Greater_Than_Equal_To"></pointeritem>
+					<pointeritem desc = "Implies"></pointeritem>
+					<pointeritem desc = "Integer"></pointeritem>
+					<pointeritem desc = "Less_Than"></pointeritem>
+					<pointeritem desc = "Less_Than_Equal_To"></pointeritem>
+					<pointeritem desc = "Logical_And"></pointeritem>
+					<pointeritem desc = "Logical_Not"></pointeritem>
+					<pointeritem desc = "Logical_Or"></pointeritem>
+					<pointeritem desc = "Modulus"></pointeritem>
+					<pointeritem desc = "Multiply"></pointeritem>
+					<pointeritem desc = "Multiply_Assign"></pointeritem>
+					<pointeritem desc = "Negate"></pointeritem>
+					<pointeritem desc = "Predecrement"></pointeritem>
+					<pointeritem desc = "Preincrement"></pointeritem>
+					<pointeritem desc = "String"></pointeritem>
+					<pointeritem desc = "Subtract"></pointeritem>
+					<pointeritem desc = "Subtract_Assign"></pointeritem>
+					<pointeritem desc = "System_Call"></pointeritem>
+					<pointeritem desc = "Variable"></pointeritem>
+				</pointerspec>
+				<pointerspec name = "dst">
+					<pointeritem desc = "Expression"></pointeritem>
+				</pointerspec>
+			</connjoint>
+			<connjoint>
+				<pointerspec name = "src">
+					<pointeritem desc = "Add"></pointeritem>
+					<pointeritem desc = "Add_Assign"></pointeritem>
+					<pointeritem desc = "Array"></pointeritem>
+					<pointeritem desc = "Assign"></pointeritem>
+					<pointeritem desc = "Both_Max"></pointeritem>
+					<pointeritem desc = "Both_Min"></pointeritem>
+					<pointeritem desc = "Choose_Left"></pointeritem>
+					<pointeritem desc = "Choose_Right"></pointeritem>
+					<pointeritem desc = "Divide"></pointeritem>
+					<pointeritem desc = "Does_Not_Equal"></pointeritem>
+					<pointeritem desc = "Double"></pointeritem>
+					<pointeritem desc = "Equals"></pointeritem>
+					<pointeritem desc = "For_Loop"></pointeritem>
+					<pointeritem desc = "Function_Reference"></pointeritem>
+					<pointeritem desc = "Greater_Than"></pointeritem>
+					<pointeritem desc = "Greater_Than_Equal_To"></pointeritem>
+					<pointeritem desc = "Implies"></pointeritem>
+					<pointeritem desc = "Integer"></pointeritem>
+					<pointeritem desc = "Less_Than"></pointeritem>
+					<pointeritem desc = "Less_Than_Equal_To"></pointeritem>
+					<pointeritem desc = "Logical_And"></pointeritem>
+					<pointeritem desc = "Logical_Not"></pointeritem>
+					<pointeritem desc = "Logical_Or"></pointeritem>
+					<pointeritem desc = "Modulus"></pointeritem>
+					<pointeritem desc = "Multiply"></pointeritem>
+					<pointeritem desc = "Multiply_Assign"></pointeritem>
+					<pointeritem desc = "Negate"></pointeritem>
+					<pointeritem desc = "Predecrement"></pointeritem>
+					<pointeritem desc = "Preincrement"></pointeritem>
+					<pointeritem desc = "String"></pointeritem>
+					<pointeritem desc = "Subtract"></pointeritem>
+					<pointeritem desc = "Subtract_Assign"></pointeritem>
+					<pointeritem desc = "System_Call"></pointeritem>
+					<pointeritem desc = "Variable"></pointeritem>
+				</pointerspec>
+				<pointerspec name = "dst">
+					<pointeritem desc = "Add"></pointeritem>
+					<pointeritem desc = "Add_Assign"></pointeritem>
+					<pointeritem desc = "Array"></pointeritem>
+					<pointeritem desc = "Assign"></pointeritem>
+					<pointeritem desc = "Both_Max"></pointeritem>
+					<pointeritem desc = "Both_Min"></pointeritem>
+					<pointeritem desc = "Choose_Left"></pointeritem>
+					<pointeritem desc = "Choose_Right"></pointeritem>
+					<pointeritem desc = "Divide"></pointeritem>
+					<pointeritem desc = "Does_Not_Equal"></pointeritem>
+					<pointeritem desc = "Double"></pointeritem>
+					<pointeritem desc = "Equals"></pointeritem>
+					<pointeritem desc = "For_Loop"></pointeritem>
+					<pointeritem desc = "Function_Reference"></pointeritem>
+					<pointeritem desc = "Greater_Than"></pointeritem>
+					<pointeritem desc = "Greater_Than_Equal_To"></pointeritem>
+					<pointeritem desc = "Implies"></pointeritem>
+					<pointeritem desc = "Integer"></pointeritem>
+					<pointeritem desc = "Less_Than"></pointeritem>
+					<pointeritem desc = "Less_Than_Equal_To"></pointeritem>
+					<pointeritem desc = "Logical_And"></pointeritem>
+					<pointeritem desc = "Logical_Not"></pointeritem>
+					<pointeritem desc = "Logical_Or"></pointeritem>
+					<pointeritem desc = "Modulus"></pointeritem>
+					<pointeritem desc = "Multiply"></pointeritem>
+					<pointeritem desc = "Multiply_Assign"></pointeritem>
+					<pointeritem desc = "Negate"></pointeritem>
+					<pointeritem desc = "Predecrement"></pointeritem>
+					<pointeritem desc = "Preincrement"></pointeritem>
+					<pointeritem desc = "String"></pointeritem>
+					<pointeritem desc = "Subtract"></pointeritem>
+					<pointeritem desc = "Subtract_Assign"></pointeritem>
+					<pointeritem desc = "System_Call"></pointeritem>
+					<pointeritem desc = "Variable"></pointeritem>
+				</pointerspec>
+			</connjoint>
+			<connjoint>
+				<pointerspec name = "src">
+					<pointeritem desc = "Expression"></pointeritem>
+				</pointerspec>
+				<pointerspec name = "dst">
+					<pointeritem desc = "Add"></pointeritem>
+					<pointeritem desc = "Add_Assign"></pointeritem>
+					<pointeritem desc = "Array"></pointeritem>
+					<pointeritem desc = "Assign"></pointeritem>
+					<pointeritem desc = "Both_Max"></pointeritem>
+					<pointeritem desc = "Both_Min"></pointeritem>
+					<pointeritem desc = "Choose_Left"></pointeritem>
+					<pointeritem desc = "Choose_Right"></pointeritem>
+					<pointeritem desc = "Divide"></pointeritem>
+					<pointeritem desc = "Does_Not_Equal"></pointeritem>
+					<pointeritem desc = "Double"></pointeritem>
+					<pointeritem desc = "Equals"></pointeritem>
+					<pointeritem desc = "For_Loop"></pointeritem>
+					<pointeritem desc = "Function_Reference"></pointeritem>
+					<pointeritem desc = "Greater_Than"></pointeritem>
+					<pointeritem desc = "Greater_Than_Equal_To"></pointeritem>
+					<pointeritem desc = "Implies"></pointeritem>
+					<pointeritem desc = "Integer"></pointeritem>
+					<pointeritem desc = "Less_Than"></pointeritem>
+					<pointeritem desc = "Less_Than_Equal_To"></pointeritem>
+					<pointeritem desc = "Logical_And"></pointeritem>
+					<pointeritem desc = "Logical_Not"></pointeritem>
+					<pointeritem desc = "Logical_Or"></pointeritem>
+					<pointeritem desc = "Modulus"></pointeritem>
+					<pointeritem desc = "Multiply"></pointeritem>
+					<pointeritem desc = "Multiply_Assign"></pointeritem>
+					<pointeritem desc = "Negate"></pointeritem>
+					<pointeritem desc = "Predecrement"></pointeritem>
+					<pointeritem desc = "Preincrement"></pointeritem>
+					<pointeritem desc = "String"></pointeritem>
+					<pointeritem desc = "Subtract"></pointeritem>
+					<pointeritem desc = "Subtract_Assign"></pointeritem>
+					<pointeritem desc = "System_Call"></pointeritem>
+					<pointeritem desc = "Variable"></pointeritem>
+				</pointerspec>
+			</connjoint>
+		</connection>
+		<reference name = "Aggregate_Filter_Reference" metaref = "1498">
+				<regnode name = "namePosition" value ="4"></regnode>
+			<pointerspec name = "ref">
+				<pointeritem desc = "Aggregate_Update_Filter"></pointeritem>
+			</pointerspec>
+		</reference>
+		<reference name = "Eval_Settings_Reference" metaref = "1123">
+				<regnode name = "namePosition" value ="4"></regnode>
+			<pointerspec name = "ref">
+				<pointeritem desc = "Eval_Settings"></pointeritem>
+				<pointeritem desc = "Wait_Settings"></pointeritem>
+			</pointerspec>
+		</reference>
+		<reference name = "Expression_Reference" metaref = "1539">
+				<regnode name = "namePosition" value ="4"></regnode>
+			<pointerspec name = "ref">
+				<pointeritem desc = "Expression"></pointeritem>
+			</pointerspec>
+		</reference>
+		<reference name = "Function_Reference" metaref = "1781">
+			<dispname>Function Call</dispname>
+				<regnode name = "namePosition" value ="4"></regnode>
+			<pointerspec name = "ref">
+				<pointeritem desc = "Function"></pointeritem>
+			</pointerspec>
+		</reference>
+		<reference name = "Reference_Settings_Reference" metaref = "1487">
+				<regnode name = "namePosition" value ="4"></regnode>
+			<pointerspec name = "ref">
+				<pointeritem desc = "Eval_Settings"></pointeritem>
+				<pointeritem desc = "Reference_Settings"></pointeritem>
+				<pointeritem desc = "Update_Settings"></pointeritem>
+				<pointeritem desc = "Wait_Settings"></pointeritem>
+			</pointerspec>
+		</reference>
+		<reference name = "Transport_Settings_Reference" metaref = "1440">
+				<regnode name = "namePosition" value ="4"></regnode>
+			<pointerspec name = "ref">
+				<pointeritem desc = "Transport_Settings"></pointeritem>
+			</pointerspec>
+		</reference>
+		<reference name = "Update_Filter_Reference" metaref = "1499" attributes = "Types">
+				<regnode name = "namePosition" value ="4"></regnode>
+			<pointerspec name = "ref">
+				<pointeritem desc = "Update_Filter"></pointeritem>
+			</pointerspec>
+		</reference>
+		<reference name = "Variable_Reference" metaref = "1540">
+				<regnode name = "namePosition" value ="4"></regnode>
+			<pointerspec name = "ref">
+				<pointeritem desc = "Array"></pointeritem>
+				<pointeritem desc = "Variable"></pointeritem>
+			</pointerspec>
+		</reference>
+		<reference name = "Wait_Settings_Reference" metaref = "1124">
+				<regnode name = "namePosition" value ="4"></regnode>
+			<pointerspec name = "ref">
+				<pointeritem desc = "Wait_Settings"></pointeritem>
+			</pointerspec>
+		</reference>
+		<model name = "Aggregate_Update_Filter" metaref = "1501" attributes = "use_generic_aggregate" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="transport_aggregate_filter.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<aspect name = "Program_View" metaref = "1689" attributes = "use_generic_aggregate" >
+				<dispname>Program View</dispname>
+			</aspect>
+		</model>
+		<model name = "Argument" metaref = "1803" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_arg.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<constraint name="ValidArgumentPartCardinality7" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Expression" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Argument, has to match 0..1.</dispname>
+			</constraint>
+			<role name = "Expression" metaref = "1804" kind = "Expression"></role>
+			<aspect name = "Expression_View" metaref = "1822" >
+				<part metaref = "1823" role = "Expression" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "Eval_Settings" metaref = "1128" attributes = "Expand_Variables Clock_Increment Delay_Sending_Modifications" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_reference_settings.png"></regnode>
+				<regnode name = "icon" value ="kb_update_settings.png"></regnode>
+				<regnode name = "icon" value ="kb_reference_settings.png"></regnode>
+				<regnode name = "icon" value ="kb_eval_settings.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<aspect name = "Aspect" metaref = "1824" attributes = "Expand_Variables Clock_Increment Delay_Sending_Modifications" >
+			</aspect>
+		</model>
+		<model name = "Evaluate" metaref = "1130" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_evaluate.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<constraint name="ValidEvaluatePartCardinality10" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Eval_Settings" ) -> size + self.parts( "Wait_Settings" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Evaluate, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidEvaluatePartCardinality11" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Expression" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Evaluate, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidEvaluatePartCardinality8" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Eval_Settings_Reference" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Evaluate, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidEvaluatePartCardinality9" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Expression_Reference" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Evaluate, has to match 0..1.</dispname>
+			</constraint>
+			<role name = "Eval_Settings" metaref = "1131" kind = "Eval_Settings"></role>
+			<role name = "Eval_Settings_Reference" metaref = "1132" kind = "Eval_Settings_Reference"></role>
+			<role name = "Expression" metaref = "1546" kind = "Expression"></role>
+			<role name = "Expression_Reference" metaref = "1547" kind = "Expression_Reference"></role>
+			<role name = "Wait_Settings" metaref = "1765" kind = "Wait_Settings"></role>
+			<aspect name = "Evaluate_View" metaref = "1548" >
+				<dispname>Evaluate View</dispname>
+				<part metaref = "1549" role = "Expression" primary = "yes" linked = "no"></part>
+			</aspect>
+			<aspect name = "Settings_View" metaref = "1238" >
+				<dispname>Settings View</dispname>
+				<part metaref = "1239" role = "Eval_Settings" primary = "yes" linked = "no"></part>
+				<part metaref = "1240" role = "Eval_Settings_Reference" primary = "yes" linked = "no"></part>
+				<part metaref = "1766" role = "Wait_Settings" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "Expression" metaref = "1017" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_expression.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<role name = "Add" metaref = "1691" kind = "Add"></role>
+			<role name = "Add_Assign" metaref = "1692" kind = "Add_Assign"></role>
+			<role name = "Array" metaref = "1693" kind = "Array"></role>
+			<role name = "Assign" metaref = "1694" kind = "Assign"></role>
+			<role name = "Both_Max" metaref = "1696" kind = "Both_Max"></role>
+			<role name = "Both_Min" metaref = "1697" kind = "Both_Min"></role>
+			<role name = "Choose_Left" metaref = "1698" kind = "Choose_Left"></role>
+			<role name = "Choose_Right" metaref = "1699" kind = "Choose_Right"></role>
+			<role name = "Connection" metaref = "1820" kind = "Connection"></role>
+			<role name = "Divide" metaref = "1700" kind = "Divide"></role>
+			<role name = "Does_Not_Equal" metaref = "1701" kind = "Does_Not_Equal"></role>
+			<role name = "Double" metaref = "1702" kind = "Double"></role>
+			<role name = "Equals" metaref = "1703" kind = "Equals"></role>
+			<role name = "Expression" metaref = "1704" kind = "Expression"></role>
+			<role name = "For_Loop" metaref = "1796" kind = "For_Loop"></role>
+			<role name = "Function_Reference" metaref = "1783" kind = "Function_Reference"></role>
+			<role name = "Greater_Than" metaref = "1705" kind = "Greater_Than"></role>
+			<role name = "Greater_Than_Equal_To" metaref = "1706" kind = "Greater_Than_Equal_To"></role>
+			<role name = "Implies" metaref = "1707" kind = "Implies"></role>
+			<role name = "Integer" metaref = "1708" kind = "Integer"></role>
+			<role name = "Less_Than" metaref = "1709" kind = "Less_Than"></role>
+			<role name = "Less_Than_Equal_To" metaref = "1710" kind = "Less_Than_Equal_To"></role>
+			<role name = "Logical_And" metaref = "1711" kind = "Logical_And"></role>
+			<role name = "Logical_Not" metaref = "1712" kind = "Logical_Not"></role>
+			<role name = "Logical_Or" metaref = "1713" kind = "Logical_Or"></role>
+			<role name = "Modulus" metaref = "1756" kind = "Modulus"></role>
+			<role name = "Multiply" metaref = "1714" kind = "Multiply"></role>
+			<role name = "Multiply_Assign" metaref = "1715" kind = "Multiply_Assign"></role>
+			<role name = "Negate" metaref = "1757" kind = "Negate"></role>
+			<role name = "Predecrement" metaref = "1758" kind = "Predecrement"></role>
+			<role name = "Preincrement" metaref = "1759" kind = "Preincrement"></role>
+			<role name = "String" metaref = "1716" kind = "String"></role>
+			<role name = "Subtract" metaref = "1717" kind = "Subtract"></role>
+			<role name = "Subtract_Assign" metaref = "1718" kind = "Subtract_Assign"></role>
+			<role name = "System_Call" metaref = "1807" kind = "System_Call"></role>
+			<role name = "Variable" metaref = "1585" kind = "Variable"></role>
+			<aspect name = "Expression_View" metaref = "1318" >
+				<part metaref = "1719" role = "Add" primary = "yes" linked = "no"></part>
+				<part metaref = "1720" role = "Add_Assign" primary = "yes" linked = "no"></part>
+				<part metaref = "1721" role = "Array" primary = "yes" linked = "no"></part>
+				<part metaref = "1722" role = "Assign" primary = "yes" linked = "no"></part>
+				<part metaref = "1724" role = "Both_Max" primary = "yes" linked = "no"></part>
+				<part metaref = "1725" role = "Both_Min" primary = "yes" linked = "no"></part>
+				<part metaref = "1726" role = "Choose_Left" primary = "yes" linked = "no"></part>
+				<part metaref = "1727" role = "Choose_Right" primary = "yes" linked = "no"></part>
+				<part metaref = "1821" role = "Connection" primary = "yes" linked = "no"></part>
+				<part metaref = "1728" role = "Divide" primary = "yes" linked = "no"></part>
+				<part metaref = "1729" role = "Does_Not_Equal" primary = "yes" linked = "no"></part>
+				<part metaref = "1730" role = "Double" primary = "yes" linked = "no"></part>
+				<part metaref = "1731" role = "Equals" primary = "yes" linked = "no"></part>
+				<part metaref = "1780" role = "Expression" primary = "yes" linked = "no"></part>
+				<part metaref = "1797" role = "For_Loop" primary = "yes" linked = "no"></part>
+				<part metaref = "1784" role = "Function_Reference" primary = "yes" linked = "no"></part>
+				<part metaref = "1732" role = "Greater_Than" primary = "yes" linked = "no"></part>
+				<part metaref = "1733" role = "Greater_Than_Equal_To" primary = "yes" linked = "no"></part>
+				<part metaref = "1734" role = "Implies" primary = "yes" linked = "no"></part>
+				<part metaref = "1735" role = "Integer" primary = "yes" linked = "no"></part>
+				<part metaref = "1736" role = "Less_Than" primary = "yes" linked = "no"></part>
+				<part metaref = "1737" role = "Less_Than_Equal_To" primary = "yes" linked = "no"></part>
+				<part metaref = "1738" role = "Logical_And" primary = "yes" linked = "no"></part>
+				<part metaref = "1739" role = "Logical_Not" primary = "yes" linked = "no"></part>
+				<part metaref = "1740" role = "Logical_Or" primary = "yes" linked = "no"></part>
+				<part metaref = "1760" role = "Modulus" primary = "yes" linked = "no"></part>
+				<part metaref = "1741" role = "Multiply" primary = "yes" linked = "no"></part>
+				<part metaref = "1742" role = "Multiply_Assign" primary = "yes" linked = "no"></part>
+				<part metaref = "1761" role = "Negate" primary = "yes" linked = "no"></part>
+				<part metaref = "1762" role = "Predecrement" primary = "yes" linked = "no"></part>
+				<part metaref = "1763" role = "Preincrement" primary = "yes" linked = "no"></part>
+				<part metaref = "1743" role = "String" primary = "yes" linked = "no"></part>
+				<part metaref = "1744" role = "Subtract" primary = "yes" linked = "no"></part>
+				<part metaref = "1745" role = "Subtract_Assign" primary = "yes" linked = "no"></part>
+				<part metaref = "1808" role = "System_Call" primary = "yes" linked = "no"></part>
+				<part metaref = "1586" role = "Variable" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "For_Loop" metaref = "1798" attributes = "For_Variable For_Start For_End For_Inclusive For_Increment" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_for.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<constraint name="ValidFor_LoopPartCardinality12" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Expression" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by For_Loop, has to match 0..1.</dispname>
+			</constraint>
+			<role name = "Expression" metaref = "1799" kind = "Expression"></role>
+			<aspect name = "Expression_View" metaref = "1800" attributes = "For_Variable For_Start For_End For_Inclusive For_Increment" >
+				<part metaref = "1801" role = "Expression" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "Function" metaref = "1785" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_function.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<role name = "Argument" metaref = "1809" kind = "Argument"></role>
+			<aspect name = "Aspect" metaref = "1825" >
+				<part metaref = "1811" role = "Argument" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "Get" metaref = "1141" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_get.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<constraint name="ValidGetPartCardinality13" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Variable_Reference" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Get, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidGetPartCardinality14" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Variable" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Get, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidGetPartCardinality15" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Reference_Settings_Reference" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Get, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidGetPartCardinality16" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Reference_Settings" ) -> size + self.parts( "Eval_Settings" ) -> size + self.parts( "Update_Settings" ) -> size + self.parts( "Wait_Settings" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Get, has to match 0..1.</dispname>
+			</constraint>
+			<role name = "Array" metaref = "1767" kind = "Array"></role>
+			<role name = "Eval_Settings" metaref = "1768" kind = "Eval_Settings"></role>
+			<role name = "Reference_Settings" metaref = "1142" kind = "Reference_Settings"></role>
+			<role name = "Reference_Settings_Reference" metaref = "1492" kind = "Reference_Settings_Reference"></role>
+			<role name = "Update_Settings" metaref = "1769" kind = "Update_Settings"></role>
+			<role name = "Variable" metaref = "1550" kind = "Variable"></role>
+			<role name = "Variable_Reference" metaref = "1551" kind = "Variable_Reference"></role>
+			<role name = "Wait_Settings" metaref = "1770" kind = "Wait_Settings"></role>
+			<aspect name = "Settings_View" metaref = "1244" >
+				<dispname>Settings View</dispname>
+				<part metaref = "1771" role = "Eval_Settings" primary = "yes" linked = "no"></part>
+				<part metaref = "1245" role = "Reference_Settings" primary = "yes" linked = "no"></part>
+				<part metaref = "1497" role = "Reference_Settings_Reference" primary = "yes" linked = "no"></part>
+				<part metaref = "1772" role = "Update_Settings" primary = "yes" linked = "no"></part>
+				<part metaref = "1637" role = "Variable" primary = "yes" linked = "no"></part>
+				<part metaref = "1638" role = "Variable_Reference" primary = "yes" linked = "no"></part>
+				<part metaref = "1773" role = "Wait_Settings" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "Knowledge_Base" metaref = "1069" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<role name = "Transport" metaref = "1070" kind = "Transport"></role>
+			<aspect name = "Settings_View" metaref = "1250" >
+				<dispname>Settings View</dispname>
+				<part metaref = "1251" role = "Transport" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "Print" metaref = "1162" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_print.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<aspect name = "Aspect" metaref = "1826" >
+			</aspect>
+		</model>
+		<model name = "Program" metaref = "1093" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<role name = "Aggregate_Update_Filter" metaref = "1521" kind = "Aggregate_Update_Filter"></role>
+			<role name = "Eval_Settings" metaref = "1359" kind = "Eval_Settings"></role>
+			<role name = "Evaluate" metaref = "1164" kind = "Evaluate"></role>
+			<role name = "Function" metaref = "1788" kind = "Function"></role>
+			<role name = "Get" metaref = "1165" kind = "Get"></role>
+			<role name = "Knowledge_Base" metaref = "1094" kind = "Knowledge_Base"></role>
+			<role name = "Print" metaref = "1231" kind = "Print"></role>
+			<role name = "Reference_Settings" metaref = "1360" kind = "Reference_Settings"></role>
+			<role name = "Set" metaref = "1166" kind = "Set"></role>
+			<role name = "Transport_Settings" metaref = "1437" kind = "Transport_Settings"></role>
+			<role name = "Update_Filter" metaref = "1522" kind = "Update_Filter"></role>
+			<role name = "Update_Settings" metaref = "1361" kind = "Update_Settings"></role>
+			<role name = "Variable" metaref = "1630" kind = "Variable"></role>
+			<role name = "Wait" metaref = "1167" kind = "Wait"></role>
+			<role name = "Wait_Settings" metaref = "1362" kind = "Wait_Settings"></role>
+			<aspect name = "Program_View" metaref = "1263" >
+				<dispname>Program View</dispname>
+				<part metaref = "1523" role = "Aggregate_Update_Filter" primary = "yes" linked = "no"></part>
+				<part metaref = "1363" role = "Eval_Settings" primary = "yes" linked = "no"></part>
+				<part metaref = "1264" role = "Evaluate" primary = "yes" linked = "no"></part>
+				<part metaref = "1789" role = "Function" primary = "yes" linked = "no"></part>
+				<part metaref = "1265" role = "Get" primary = "yes" linked = "no"></part>
+				<part metaref = "1266" role = "Knowledge_Base" primary = "yes" linked = "no"></part>
+				<part metaref = "1267" role = "Print" primary = "yes" linked = "no"></part>
+				<part metaref = "1364" role = "Reference_Settings" primary = "yes" linked = "no"></part>
+				<part metaref = "1268" role = "Set" primary = "yes" linked = "no"></part>
+				<part metaref = "1438" role = "Transport_Settings" primary = "yes" linked = "no"></part>
+				<part metaref = "1524" role = "Update_Filter" primary = "yes" linked = "no"></part>
+				<part metaref = "1365" role = "Update_Settings" primary = "yes" linked = "no"></part>
+				<part metaref = "1631" role = "Variable" primary = "yes" linked = "no"></part>
+				<part metaref = "1269" role = "Wait" primary = "yes" linked = "no"></part>
+				<part metaref = "1366" role = "Wait_Settings" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "Reference_Settings" metaref = "1173" attributes = "Expand_Variables" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_reference_settings.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<aspect name = "Aspect" metaref = "1827" attributes = "Expand_Variables" >
+			</aspect>
+		</model>
+		<model name = "Set" metaref = "1175" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_set.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<constraint name="ValidSetPartCardinality17" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Variable_Reference" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Set, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidSetPartCardinality18" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Variable" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Set, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidSetPartCardinality19" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Eval_Settings_Reference" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Set, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidSetPartCardinality20" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Eval_Settings" ) -> size + self.parts( "Wait_Settings" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Set, has to match 0..1.</dispname>
+			</constraint>
+			<role name = "Array" metaref = "1776" kind = "Array"></role>
+			<role name = "Eval_Settings" metaref = "1176" kind = "Eval_Settings"></role>
+			<role name = "Eval_Settings_Reference" metaref = "1177" kind = "Eval_Settings_Reference"></role>
+			<role name = "Variable" metaref = "1568" kind = "Variable"></role>
+			<role name = "Variable_Reference" metaref = "1569" kind = "Variable_Reference"></role>
+			<role name = "Wait_Settings" metaref = "1777" kind = "Wait_Settings"></role>
+			<aspect name = "Settings_View" metaref = "1271" >
+				<dispname>Settings View</dispname>
+				<part metaref = "1272" role = "Eval_Settings" primary = "yes" linked = "no"></part>
+				<part metaref = "1273" role = "Eval_Settings_Reference" primary = "yes" linked = "no"></part>
+				<part metaref = "1655" role = "Variable" primary = "yes" linked = "no"></part>
+				<part metaref = "1656" role = "Variable_Reference" primary = "yes" linked = "no"></part>
+				<part metaref = "1778" role = "Wait_Settings" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "System_Call" metaref = "1814" attributes = "Function_Name" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_system_call.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<role name = "Argument" metaref = "1815" kind = "Argument"></role>
+			<aspect name = "Program_View" metaref = "1816" attributes = "Function_Name" >
+				<dispname>Program View</dispname>
+				<part metaref = "1817" role = "Argument" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "Transport" metaref = "1107" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="transport.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<constraint name="ValidTransportPartCardinality21" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Transport_Settings_Reference" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Transport, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidTransportPartCardinality22" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Transport_Settings" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Transport, has to match 0..1.</dispname>
+			</constraint>
+			<role name = "Transport_Settings" metaref = "1108" kind = "Transport_Settings"></role>
+			<role name = "Transport_Settings_Reference" metaref = "1463" kind = "Transport_Settings_Reference"></role>
+			<aspect name = "Settings_View" metaref = "1312" >
+				<dispname>Settings View</dispname>
+				<part metaref = "1313" role = "Transport_Settings" primary = "yes" linked = "no"></part>
+				<part metaref = "1486" role = "Transport_Settings_Reference" primary = "yes" kindaspect = "Settings_View" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "Transport_Settings" metaref = "1111" attributes = "Transport_Type Domains Send_Bandwidth_Limit Deadline Total_Bandwidth_Limit" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="transport_settings.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<role name = "Aggregate_Filter_Reference" metaref = "1528" kind = "Aggregate_Filter_Reference"></role>
+			<role name = "Host" metaref = "1188" kind = "Host"></role>
+			<role name = "Update_Filter_Reference" metaref = "1529" kind = "Update_Filter_Reference"></role>
+			<aspect name = "Settings_View" metaref = "1279" attributes = "Transport_Type Domains Send_Bandwidth_Limit Deadline Total_Bandwidth_Limit" >
+				<dispname>Settings View</dispname>
+				<part metaref = "1530" role = "Aggregate_Filter_Reference" primary = "yes" linked = "no"></part>
+				<part metaref = "1389" role = "Host" primary = "yes" linked = "no"></part>
+				<part metaref = "1531" role = "Update_Filter_Reference" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "Update_Filter" metaref = "1533" attributes = "use_generic_filter" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="transport_filter.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<aspect name = "Program_View" metaref = "1751" attributes = "use_generic_filter" >
+				<dispname>Program View</dispname>
+			</aspect>
+		</model>
+		<model name = "Update_Settings" metaref = "1192" attributes = "Expand_Variables Clock_Increment" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_reference_settings.png"></regnode>
+				<regnode name = "icon" value ="kb_update_settings.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<aspect name = "Aspect" metaref = "1828" attributes = "Expand_Variables Clock_Increment" >
+			</aspect>
+		</model>
+		<model name = "Wait" metaref = "1195" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_wait.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<constraint name="ValidWaitPartCardinality23" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Wait_Settings_Reference" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Wait, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidWaitPartCardinality24" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Expression_Reference" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Wait, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidWaitPartCardinality25" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Wait_Settings" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Wait, has to match 0..1.</dispname>
+			</constraint>
+			<constraint name="ValidWaitPartCardinality26" eventmask = "0x0" depth = "1" priority = "1">
+				<![CDATA[let partCount = self.parts( "Expression" ) -> size in
+                     (partCount <= 1)]]>
+				<dispname>Multiplicity of parts, which are contained by Wait, has to match 0..1.</dispname>
+			</constraint>
+			<role name = "Expression" metaref = "1576" kind = "Expression"></role>
+			<role name = "Expression_Reference" metaref = "1577" kind = "Expression_Reference"></role>
+			<role name = "Wait_Settings" metaref = "1199" kind = "Wait_Settings"></role>
+			<role name = "Wait_Settings_Reference" metaref = "1200" kind = "Wait_Settings_Reference"></role>
+			<aspect name = "Evaluate_View" metaref = "1578" >
+				<dispname>Evaluate View</dispname>
+				<part metaref = "1579" role = "Expression" primary = "yes" linked = "no"></part>
+			</aspect>
+			<aspect name = "Settings_View" metaref = "1283" >
+				<dispname>Settings View</dispname>
+				<part metaref = "1287" role = "Wait_Settings" primary = "yes" linked = "no"></part>
+				<part metaref = "1288" role = "Wait_Settings_Reference" primary = "yes" linked = "no"></part>
+			</aspect>
+		</model>
+		<model name = "Wait_Settings" metaref = "1207" attributes = "Expand_Variables Clock_Increment Delay_Sending_Modifications Max_Wait_Time Period_Between_Evaluations" >
+				<regnode name = "namePosition" value ="4"></regnode>
+				<regnode name = "icon" value ="kb_reference_settings.png"></regnode>
+				<regnode name = "icon" value ="kb_update_settings.png"></regnode>
+				<regnode name = "icon" value ="kb_reference_settings.png"></regnode>
+				<regnode name = "icon" value ="kb_eval_settings.png"></regnode>
+				<regnode name = "icon" value ="kb_reference_settings.png"></regnode>
+				<regnode name = "icon" value ="kb_update_settings.png"></regnode>
+				<regnode name = "icon" value ="kb_reference_settings.png"></regnode>
+				<regnode name = "icon" value ="kb_wait_settings.png"></regnode>
+				<regnode name = "isTypeInfoShown" value ="true"></regnode>
+			<aspect name = "Aspect" metaref = "1829" attributes = "Expand_Variables Clock_Increment Delay_Sending_Modifications Max_Wait_Time Period_Between_Evaluations" >
+			</aspect>
+		</model>
+	</folder>
+</paradigm>

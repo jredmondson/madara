@@ -1,0 +1,47 @@
+<group>
+    <setup>
+        <parallel />
+        <realtime />
+        <timing />
+        <domain>barrier_benchmarks</domain>
+    </setup>
+    <sleep>
+        <debug />
+        <realtime />
+        <timing />
+        <host>$(HOST)</host>
+        <domain>barrier_benchmarks</domain>
+        <barrier name="three_process" />
+        <id>2</id>
+        <processes>3</processes>
+        <delay>5</delay>
+        <stderr>$(RESULTS)/host1_3total_1host_sleep3.err</stderr>
+        <stdout>$(RESULTS)/host1_3total_1host_sleep3.out</stdout>
+    </sleep>
+    <sleep>
+        <debug />
+        <realtime />
+        <timing />
+        <host>$(HOST)</host>
+        <domain>barrier_benchmarks</domain>
+        <barrier name="three_process" />
+        <id>1</id>
+        <processes>3</processes>
+        <delay>5</delay>
+        <stderr>$(RESULTS)/host1_3total_1host_sleep2.err</stderr>
+        <stdout>$(RESULTS)/host1_3total_1host_sleep2.out</stdout>
+    </sleep>
+    <sleep>
+        <debug />
+        <realtime />
+        <timing />
+        <host>$(HOST)</host>
+        <domain>barrier_benchmarks</domain>
+        <barrier name="three_process" />
+        <id>0</id>
+        <processes>3</processes>
+        <delay>5</delay>
+        <stderr>$(RESULTS)/host1_3total_1host_sleep1.err</stderr>
+        <stdout>$(RESULTS)/host1_3total_1host_sleep1.out</stdout>
+    </sleep>
+</group>

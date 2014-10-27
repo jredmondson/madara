@@ -1,0 +1,20 @@
+<group>
+    <setup>
+        <parallel />
+        <realtime />
+    </setup>
+    <process>
+        <realtime />
+        <barrier name="timeouts" />
+        <id>$(ID)</id>
+        <processes>$(PROCESSES)</processes>
+        <delay>$(DELAY)</delay>
+        <precondition>$(PRECONDITION)</precondition>
+        <postcondition>Timeout$(ID).done=1</postcondition>
+        <kill>
+            <time>$(KILLTIME)</time>
+        </kill>
+        <executable>timeout</executable>
+        <commandline>/t $(TIMEOUT)</commandline>
+    </process>
+</group>

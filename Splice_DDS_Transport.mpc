@@ -1,0 +1,14 @@
+project (Splice_DDS_Transport_IDL) : using_splice_idl, build_files {
+
+  requires += opensplice
+
+  custom_only = 1
+  
+  Build_Files {
+    $(MADARA_ROOT)/default.features
+    Splice_DDS_Transport.mpc
+    using_splice.mpb
+    using_splice_idl.mpb
+  }
+
+}

@@ -1,0 +1,36 @@
+<project name="MadaraTests" default="compile" basedir=".">
+  <description>
+    Java tests for Madara
+  </description>
+
+  <property name="src" location="src" />
+  <property name="build" location="bin" />
+  <property name="doc" location="doc" />
+  <property name="package" value="com.madara.googlecode.testing" />
+
+  <!-- Perform any required tasks -->
+  <target name="init">
+    <tstamp />
+    <mkdir dir="${build}" />
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source " >
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}"/>
+  </target>
+
+  <target name="doc"
+        description="generate the developer documentation " >
+    <mkdir dir="${doc}"/>
+    <javadoc packagenames="${package}"
+           sourcepath="${src}"
+           destdir="${doc}"
+           author="true"
+           version="true"
+           use="true"
+           windowtitle="Java Testing for Madara" />
+
+  </target>
+
+</project>

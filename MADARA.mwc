@@ -1,0 +1,14 @@
+
+workspace {
+  cmdline += -feature_file $MADARA_ROOT/default.features
+
+  docs/Documentation.mpc
+  Kats.mpc
+  Madara.mpc
+  Splice_DDS_Transport.mpc
+  NDDS_Transport.mpc
+  Madara_Python.mpc
+  Tests.mpc
+  Traffic_Lights_Ambulance.mpc
+  Tutorials.mpc
+}

@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project SYSTEM "mga.dtd">
+
+<project guid="{170EDF7A-40D2-44AA-BF0D-0D3A5A0AF561}" cdate="Mon Sep 19 13:51:53 2011" mdate="Mon Sep 19 13:51:53 2011" version="" metaguid="{4018E785-8C67-463B-9BBC-672A363F3D71}" metaversion="0.4.12" metaname="KATS">
+	<name>RootFolder</name>
+	<comment></comment>
+	<author></author>
+	<folder id="id-006a-00000001" relid="0x1" childrelidcntr="0x2" kind="RootFolder" guid="{66d5c763-87b6-40b1-98f5-281bc70098ba}">
+		<name>RootFolder</name>
+		<folder id="id-006a-00000002" relid="0x1" childrelidcntr="0x1" kind="Processes" guid="{0f245ce0-df46-4e9f-a10a-e1dc5c5e7f92}">
+			<name>Generics</name>
+			<model id="id-0065-00000001" kind="Group" guid="{af481998-3f59-4fe3-bcbc-425b1bca5fef}" relid="0x1" childrelidcntr="0x5">
+				<name>Generics</name>
+				<attribute kind="Debug" status="meta">
+					<value>false</value>
+				</attribute>
+				<attribute kind="Delay" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Duplicates" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Id" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="LogLevel" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Parallel" status="meta">
+					<value>true</value>
+				</attribute>
+				<attribute kind="PostDelay" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="PostLaunch" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Postcondition" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Precondition" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Processes" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Realtime" status="meta">
+					<value>true</value>
+				</attribute>
+				<attribute kind="Stderr" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Stdin" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Stdout" status="meta">
+					<value></value>
+				</attribute>
+				<attribute kind="Timing" status="meta">
+					<value>true</value>
+				</attribute>
+				<attribute kind="WorkingDir" status="meta">
+					<value></value>
+				</attribute>
+				<model id="id-0065-00000004" kind="Process" role="Process" guid="{c50d7405-d82f-40f1-bce5-586e62c17725}" relid="0x5" childrelidcntr="0x5">
+					<name>Generic</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="GroupConfig" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>135,187</value>
+							</regnode>
+						</regnode>
+					</regnode>
+					<attribute kind="CommandLine">
+						<value>$(COMMANDLINE)</value>
+					</attribute>
+					<attribute kind="Debug" status="meta">
+						<value>false</value>
+					</attribute>
+					<attribute kind="Delay">
+						<value>$(DELAY)</value>
+					</attribute>
+					<attribute kind="Duplicates" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Enabled" status="meta">
+						<value>true</value>
+					</attribute>
+					<attribute kind="Executable">
+						<value>$(EXECUTABLE)</value>
+					</attribute>
+					<attribute kind="Id">
+						<value>$(ID)</value>
+					</attribute>
+					<attribute kind="LogLevel" status="meta">
+						<value></value>
+					</attribute>
+					<attribute kind="Order" status="meta">
+						<value>0</value>
+					</attribute>
+					<attribute kind="PostDelay">
+						<value>$(POSTDELAY)</value>
+					</attribute>
+					<attribute kind="PostLaunch">
+						<value>$(POSTLAUNCH)</value>
+					</attribute>
+					<attribute kind="Postcondition">
+						<value>$(POSTCONDITION)</value>
+					</attribute>
+					<attribute kind="Precondition">
+						<value>$(PRECONDITION)</value>
+					</attribute>
+					<attribute kind="Processes">
+						<value>$(PROCESSES)</value>
+					</attribute>
+					<attribute kind="Realtime" status="meta">
+						<value>true</value>
+					</attribute>
+					<attribute kind="Stderr">
+						<value>$(STDERR)</value>
+					</attribute>
+					<attribute kind="Stdin">
+						<value>$(STDIN)</value>
+					</attribute>
+					<attribute kind="Stdout">
+						<value>$(STDOUT)</value>
+					</attribute>
+					<attribute kind="Timing" status="meta">
+						<value>true</value>
+					</attribute>
+					<attribute kind="WorkingDir" status="meta">
+						<value></value>
+					</attribute>
+					<atom id="id-0066-00000001" kind="Kill" role="Kill" guid="{c4a8340b-0a3b-477e-9940-44dc2a4419bd}" relid="0x5">
+						<name>Kill</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="ProcessConfig" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>41,139</value>
+								</regnode>
+							</regnode>
+						</regnode>
+						<attribute kind="Signal">
+							<value>$(KILLSIG)</value>
+						</attribute>
+						<attribute kind="Time">
+							<value>$(KILLTIME)</value>
+						</attribute>
+					</atom>
+					<reference id="id-0067-00000005" kind="DomainRef" role="DomainRef" guid="{2f97d532-a8f4-4417-a139-687d353e607d}" relid="0x1">
+						<name>$(DOMAIN)</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="GroupConfig" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>180,47</value>
+								</regnode>
+							</regnode>
+							<regnode name="ProcessConfig" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>124,12</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+					<reference id="id-0067-00000006" kind="BarrierRef" role="BarrierRef" guid="{e64bf29a-6f72-484c-be95-f46d80343449}" relid="0x2">
+						<name>$(BARRIER)</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="GroupConfig" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>89,47</value>
+								</regnode>
+							</regnode>
+							<regnode name="ProcessConfig" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>33,12</value>
+								</regnode>
+							</regnode>
+						</regnode>
+						<attribute kind="OverrideProcesses">
+							<value>false</value>
+						</attribute>
+					</reference>
+					<reference id="id-0067-00000007" kind="HostRef" role="HostRef" guid="{0fcc59a9-4636-4ed7-8983-f299a81a73c4}" relid="0x3">
+						<name>$(HOST)</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="GroupConfig" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>292,47</value>
+								</regnode>
+							</regnode>
+							<regnode name="ProcessConfig" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>229,12</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+					<reference id="id-0067-00000008" kind="TransportRef" role="TransportRef" guid="{eef4cb15-9c46-4058-8b1f-e96eef94281b}" relid="0x4" referred="id-0065-00000002">
+						<name>Splice</name>
+						<regnode name="PartRegs" status="undefined">
+							<value></value>
+							<regnode name="GroupConfig" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>411,33</value>
+								</regnode>
+							</regnode>
+							<regnode name="ProcessConfig" status="undefined">
+								<value></value>
+								<regnode name="Position" isopaque="yes">
+									<value>320,12</value>
+								</regnode>
+							</regnode>
+						</regnode>
+					</reference>
+				</model>
+				<reference id="id-0067-00000001" kind="BarrierRef" role="BarrierRef" guid="{9842e744-4280-447f-b5e2-401257045494}" relid="0x1">
+					<name>$(BARRIER)</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="GroupConfig" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>89,47</value>
+							</regnode>
+						</regnode>
+					</regnode>
+					<attribute kind="OverrideProcesses">
+						<value>false</value>
+					</attribute>
+				</reference>
+				<reference id="id-0067-00000002" kind="DomainRef" role="DomainRef" guid="{62984f91-875e-419b-aca4-4210b2d737e7}" relid="0x2">
+					<name>$(DOMAIN)</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="GroupConfig" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>180,47</value>
+							</regnode>
+						</regnode>
+					</regnode>
+				</reference>
+				<reference id="id-0067-00000003" kind="HostRef" role="HostRef" guid="{98edf6d1-5fd9-4286-bd90-0f28a5f4c673}" relid="0x3">
+					<name>$(HOST)</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="GroupConfig" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>292,47</value>
+							</regnode>
+						</regnode>
+					</regnode>
+				</reference>
+				<reference id="id-0067-00000004" kind="TransportRef" role="TransportRef" guid="{4c5c04b2-eac4-46e7-b6dd-f91f2fba3d5d}" relid="0x4" referred="id-0065-00000002">
+					<name>Splice</name>
+					<regnode name="PartRegs" status="undefined">
+						<value></value>
+						<regnode name="GroupConfig" status="undefined">
+							<value></value>
+							<regnode name="Position" isopaque="yes">
+								<value>411,33</value>
+							</regnode>
+						</regnode>
+					</regnode>
+				</reference>
+			</model>
+		</folder>
+		<folder id="id-006a-00000003" relid="0x2" childrelidcntr="0x2" kind="Transports" guid="{4c0ddaa1-e6d6-4b0a-9d48-e52c85c680eb}">
+			<name>Transports</name>
+			<model id="id-0065-00000002" kind="Transport" guid="{5ba3ff9d-ece2-41b6-9c06-8fb6830a5d74}" relid="0x1" childrelidcntr="0x0">
+				<name>Splice</name>
+				<attribute kind="Persistence" status="meta">
+					<value>Volatile</value>
+				</attribute>
+				<attribute kind="Type" status="meta">
+					<value>Splice</value>
+				</attribute>
+			</model>
+			<model id="id-0065-00000003" kind="Transport" guid="{64dc1da1-6724-44ec-9680-d029d9437931}" relid="0x2" childrelidcntr="0x0">
+				<name>NDDS</name>
+				<attribute kind="Persistence" status="meta">
+					<value>Volatile</value>
+				</attribute>
+				<attribute kind="Type">
+					<value>NDDS</value>
+				</attribute>
+			</model>
+		</folder>
+	</folder>
+</project>

@@ -1,0 +1,7 @@
+project {
+
+  Define_Custom(Map) {
+    inputext = map
+  }
+}
+

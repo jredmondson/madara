@@ -1,0 +1,9 @@
+<group>
+    <setup>
+        <realtime />
+        <timing />
+        <domain>barrier_benchmarks</domain>
+    </setup>
+    <group file="host4_fivetotal.xml" />
+    <group file="host4_tentotal.xml" />
+</group>

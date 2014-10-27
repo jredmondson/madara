@@ -1,0 +1,351 @@
+
+project (Tutorial_Hello_World) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_hello_world
+  
+  
+  requires += tutorials
+  
+  Documentation_Files {
+    tutorials
+  }
+
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tutorials/hello_world/hello_world.cpp
+  }
+}
+
+project (Tutorial_Bad_Career_Counsellor) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_bad_career_counsellor
+  
+  
+  requires += tutorials
+  
+  Documentation_Files {
+    tutorials
+  }
+
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tutorials/local_reasoning/bad_career_counsellor.cpp
+  }
+}
+
+project (Tutorial_System_Calls) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = system_calls
+  
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tutorials/system_calls/system_calls.cpp
+  }
+}
+
+project (Tutorial_Counting_Agents) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_counting_agents
+  
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tutorials/distributed_knowledge/counting_agents.cpp
+  }
+}
+
+project (Tutorial_Packet_Aggregation) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_packet_aggregation
+  
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tutorials/distributed_knowledge/packet_aggregation.cpp
+  }
+}
+
+
+project (Tutorial_Files) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_files
+  
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tutorials/system_primitives/files.cpp
+  }
+}
+
+project (Tutorial_Integer_Types) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_integer_types
+  
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tutorials/system_primitives/integer_types.cpp
+  }
+}
+
+project (Tutorial_Fractions) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_fractions
+  
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tutorials/system_primitives/fractions.cpp
+  }
+}
+
+project (Tutorial_Functions) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_functions
+  
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tutorials/system_primitives/functions.cpp
+  }
+}
+
+project (Tutorial_Controlling_Types) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_controlling_types
+  
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tutorials/system_primitives/controlling_types.cpp
+  }
+}
+
+project (Tutorial_Creating_Transports) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_custom_transport
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Header_Files {
+    tutorials/creating_transports
+  }
+
+  Source_Files {
+    tutorials/creating_transports
+  }
+}
+
+project (Tutorial_Send_Limit_Bandwidth_Filtering) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_bandwidth_filtering_send_limit
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Source_Files {
+    tutorials/advanced/bandwidth_filtering_send_limit.cpp
+  }
+}
+
+project (Tutorial_Total_Limit_Bandwidth_Filtering) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_bandwidth_filtering_total_limit
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Source_Files {
+    tutorials/advanced/bandwidth_filtering_total_limit.cpp
+  }
+}
+
+project (Tutorial_Bandwidth_Filtering) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_bandwidth_filtering
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Source_Files {
+    tutorials/advanced/bandwidth_filtering.cpp
+  }
+}
+
+
+project (Tutorial_Deadline_Filtering) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_deadline_filtering
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Source_Files {
+    tutorials/advanced/deadline_filtering.cpp
+  }
+}
+
+project (Tutorial_Adding_Events) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = tutorial_adding_events
+  
+  requires += tutorials
+
+  Documentation_Files {
+    tutorials
+  }
+  
+  Build_Files {
+    Tutorials.mpc
+  }
+
+  Source_Files {
+    tutorials/timed_executor/adding_events.cpp
+  }
+}
+

@@ -1,0 +1,6 @@
+quarter = (size - 5) / 4
+0 -> [1, 4]
+1 -> [5, quarter + 5)
+2 -> [quarter + 5, 2 * quarter + 5)
+3 -> [2 * quarter + 5, 3 * quarter + 5)
+4 -> [3 * quarter + 5, size)

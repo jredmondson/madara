@@ -1,0 +1,5 @@
+feature (android) {
+  requires += java
+
+  macros += _MADARA_ANDROID_
+}

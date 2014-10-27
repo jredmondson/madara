@@ -1,0 +1,102 @@
+<group>
+  <setup>
+    <!--<debug />-->
+    <barrier name="global_test_name"/>
+    <domain>ammo_tests</domain>
+    <host>localhost</host>
+    <id>0</id>
+    <processes>1</processes>
+    <realtime />
+    <parallel />
+  </setup>
+  <process>
+    <debug />
+    <barrier name="gateway"/>
+    <domain>ammo_group</domain>
+    <executable>$(GATEWAY_ROOT)/build/bin/GatewayCore</executable>
+    <id>0</id>
+    <processes>5</processes>
+    <commandline></commandline>
+    <kill>
+      <time>10</time>
+      <signal>2</signal>
+    </kill>
+    <precondition></precondition>
+    <postcondition>gatewaycore.finished=1</postcondition>
+    <stdout>./gatewaycore.out</stdout>
+    <stderr>./gatewaycore.err</stderr>
+    <realtime />
+  </process>
+  <process>
+    <debug />
+    <barrier name="gateway"/>
+    <domain>ammo_group</domain>
+    <id>1</id>
+    <processes>5</processes>
+    <executable>$(GATEWAY_ROOT)/build/bin/AndroidGatewayPlugin</executable>
+    <commandline>--listenPort 33289</commandline>
+    <delay>2</delay>
+    <kill>
+      <time>12</time>
+      <signal>2</signal>
+    </kill>
+    <precondition></precondition>
+    <postcondition>androidgateway.finished=1</postcondition>
+    <stdout>./androidgateway.out</stdout>
+    <stderr>./androidgateway.err</stderr>
+  </process>
+  <process>
+    <debug />
+    <barrier name="gateway"/>
+    <domain>ammo_group</domain>
+    <id>2</id>
+    <processes>5</processes>
+    <executable>$(GATEWAY_ROOT)/build/bin/TigrGatewayPlugin</executable>
+    <commandline></commandline>
+    <delay>2</delay>
+    <kill>
+      <time>12</time>
+      <signal>2</signal>
+    </kill>
+    <precondition></precondition>
+    <postcondition>tigrgateway.finished=1</postcondition>
+    <stdout>./tigrgateway.out</stdout>
+    <stderr>./tigrgateway.err</stderr>
+  </process>
+  <process>
+    <debug />
+    <barrier name="gateway"/>
+    <domain>ammo_group</domain>
+    <id>3</id>
+    <processes>5</processes>
+    <executable>$(GATEWAY_ROOT)/build/bin/LocationStoreGatewayPlugin</executable>
+    <commandline></commandline>
+    <delay>2</delay>
+    <kill>
+      <time>12</time>
+      <signal>2</signal>
+    </kill>
+    <precondition></precondition>
+    <postcondition>locationstore.finished=1</postcondition>
+    <stdout>./locationstore.out</stdout>
+    <stderr>./locationstore.err</stderr>
+  </process>
+  <process>
+    <debug />
+    <barrier name="gateway"/>
+    <domain>ammo_group</domain>
+    <id>4</id>
+    <processes>5</processes>
+    <executable>$(GATEWAY_ROOT)/build/bin/LdapGatewayPlugin</executable>
+    <commandline></commandline>
+    <delay>2</delay>
+    <kill>
+      <time>12</time>
+      <signal>2</signal>
+    </kill>
+    <precondition></precondition>
+    <postcondition>ldapgateway.finished=1</postcondition>
+    <stdout>./ldapgateway.out</stdout>
+    <stderr>./ldapgateway.err</stderr>
+  </process>
+</group>

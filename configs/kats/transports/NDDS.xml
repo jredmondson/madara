@@ -1,0 +1,4 @@
+<transport>
+    <type>NDDS</type>
+    <persistence>Volatile</persistence>
+</transport>
