@@ -52,7 +52,7 @@
 !include "VERSION.txt"
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "madara_${PRODUCT_VERSION}.exe"
+OutFile "madara_doxy_${PRODUCT_VERSION}.exe"
 InstallDir "C:\MADARA"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails hide
