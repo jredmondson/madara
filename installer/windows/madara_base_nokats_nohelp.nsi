@@ -4,7 +4,7 @@
 !define PRODUCT_NAME "MADARA"
 
 !define PRODUCT_PUBLISHER "James Edmondson"
-!define PRODUCT_WEB_SITE "http://madara.googlecode.com"
+!define PRODUCT_WEB_SITE "https://sourceforge.net/projects/madara/"
 ;!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\kats_batch.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -61,18 +61,14 @@ ShowUnInstDetails hide
 Section "debug-libs" SEC01
   SetOutPath "$INSTDIR\lib"
   SetOverwrite ifnewer
-;  File "..\..\lib\KATSd.dll"
   File "..\..\lib\MADARAd.dll"
-;  File "..\..\lib\KATSd.lib"
   File "..\..\lib\MADARAd.lib"
 SectionEnd
 
 Section "-release-libs" SEC02
   SetOutPath "$INSTDIR\lib"
   SetOverwrite ifnewer
-;  File "..\..\lib\KATS.dll"
   File "..\..\lib\MADARA.dll"
-;  File "..\..\lib\KATS.lib"
   File "..\..\lib\MADARA.lib"
   File "..\..\lib\maal.py"
   File "..\..\lib\maml.py"
@@ -111,18 +107,11 @@ SectionEnd
 Section "tests" SEC04
   SetOutPath "$INSTDIR\bin"
   File "..\..\bin\profile_architecture.exe"
+  File "..\..\bin\network_profiler.exe"
   File /r "..\..\bin\test*.exe"
   File /r "..\..\bin\tutorial*.exe"
   File "..\..\bin\system_calls.exe"
 SectionEnd
-
-;Section "-exes" SEC09
-;  SetOutPath "$INSTDIR\bin"
-;  File "..\..\bin\kats_batch.exe"
-;  File "..\..\bin\kats_observer.exe"
-;  File "..\..\bin\kats_process.exe"
-;  File "..\..\bin\kats_sleep.exe"
-;SectionEnd
 
 Section "gme" SEC05
   SetOutPath "$INSTDIR\gme"
@@ -142,26 +131,6 @@ Section "gme" SEC05
   File "..\..\modeling\Icons\sleep.jpg"
   File "..\..\modeling\Icons\XMLGenerator.png"
   File "..\..\modeling\Icons\sources.txt"
-SectionEnd
-
-Section "configs" SEC06
-  SetOutPath "$INSTDIR\configs\cid\deployments\test_cid"
-  File "..\..\configs\cid\deployments\test_cid\1_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\2_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\3_deep_tree.template"
-  File "..\..\configs\cid\deployments\test_cid\3_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\3waytree.template"
-  File "..\..\configs\cid\deployments\test_cid\3waytree_strict.template"
-  File "..\..\configs\cid\deployments\test_cid\4_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\mwaytree.template"
-  File "..\..\configs\cid\deployments\test_cid\specialized.template"
-  SetOutPath "$INSTDIR\configs\kats"
-;  File "..\..\configs\kats\FourSleeps.xml"
-;  File "..\..\configs\kats\Generics.xml"
-;  File "..\..\configs\kats\ospl_start.xml"
-;  File "..\..\configs\kats\Timeout.xml"
-;  File "..\..\configs\kats\TwoSleeps.xml"
-;  File /r "..\..\configs\kats\transports"
 SectionEnd
 
 Section "ace" SEC10
@@ -184,18 +153,12 @@ Section "ace" SEC10
 SectionEnd
 
 Section "-include" SEC07
-  SetOutPath "$INSTDIR\include\madara"
+  SetOutPath "$INSTDIR\include\
   File "..\..\include\madara\MADARA_export.h"
   
   ; copy the madara directories
-  File /r "..\..\include\madara\utility"
-  File /r "..\..\include\madara\transport"
-  File /r "..\..\include\madara\knowledge_engine"
-  File /r "..\..\include\madara\kats"
-  File /r "..\..\include\madara\expression_tree"
-  File /r "..\..\include\madara\cid"
-  File /r "..\..\include\madara\maml"
-  File /r "..\..\include\madara\maal"
+  File /r "..\..\include
+  File /r "..\..\port
   
 SectionEnd
 
@@ -251,9 +214,18 @@ Section "-vcredist" SEC11
 
 SectionEnd
 
+Section "-exes" SEC09
+  SetOutPath "$INSTDIR\bin"
+  File "..\..\bin\karl.exe"
+  File "..\..\bin\madara_version.exe"
+  File "..\..\bin\mpgen.exe"
+  File "..\..\bin\system_calls.exe"
+SectionEnd
+
 Section "-tests"
   SetOutPath "$INSTDIR"
   File /r "..\..\tests"
+  File /r "..\..\tools"
 SectionEnd
 
 Section "-tutorials"
@@ -332,7 +304,6 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Should always be included"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Help files and API documentation"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Tests for KaRL, KATS, etc."
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} "Example configuration files"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC07} "Include files for MADARA projects"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC08} "Version, License, etc."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC10} "Install ACE v6.0.1 (required if not already installed)."
@@ -354,134 +325,6 @@ Section Uninstall
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\LICENSE.txt"
   Delete "$INSTDIR\VERSION.txt"
-  Delete "$INSTDIR\include\madara\transport\ndds\Ndds_Knowledge_Update.idl"
-  Delete "$INSTDIR\include\madara\transport\ndds\Ndds_Knowledge_UpdateSupport.cxx"
-  Delete "$INSTDIR\include\madara\transport\ndds\Ndds_Knowledge_UpdatePlugin.cxx"
-  Delete "$INSTDIR\include\madara\transport\ndds\Ndds_Knowledge_Update.cxx"
-  Delete "$INSTDIR\include\madara\transport\ndds\NDDS_Transport_Read_Thread.cpp"
-  Delete "$INSTDIR\include\madara\transport\ndds\NDDS_Transport.cpp"
-  Delete "$INSTDIR\include\madara\transport\ndds\NDDS_Listener.cpp"
-  Delete "$INSTDIR\include\madara\transport\ndds\NDDS_Transport_Read_Thread.h"
-  Delete "$INSTDIR\include\madara\transport\ndds\NDDS_Transport_export.h"
-  Delete "$INSTDIR\include\madara\transport\ndds\NDDS_Transport.h"
-  Delete "$INSTDIR\include\madara\transport\ndds\NDDS_Listener.h"
-  Delete "$INSTDIR\include\madara\transport\ndds\Ndds_Knowledge_UpdateSupport.h"
-  Delete "$INSTDIR\include\madara\transport\ndds\Ndds_Knowledge_UpdatePlugin.h"
-  Delete "$INSTDIR\include\madara\transport\ndds\Ndds_Knowledge_Update.h"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Mutex_Message.idl"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Knowledge_Update.idl"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Transport_Read_Thread.cpp"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Subscriber_Listener.cpp"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Knowledge_UpdateSplDcps.cpp"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Knowledge_UpdateDcps_impl.cpp"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Knowledge_UpdateDcps.cpp"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Knowledge_Update.cpp"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_DDS_Transport.cpp"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_DataReader_Listener.cpp"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Transport_Read_Thread.h"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Subscriber_Listener.h"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Mutex_export.h"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Knowledge_UpdateSplDcps.h"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Knowledge_UpdateDcps_impl.h"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Knowledge_UpdateDcps.h"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_Knowledge_Update.h"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_DDS_Transport.h"
-  Delete "$INSTDIR\include\madara\transport\splice\Splice_DataReader_Listener.h"
-  Delete "$INSTDIR\include\madara\transport\splice\OSPL_Transport_export.h"
-  Delete "$INSTDIR\include\madara\transport\splice\ccpp_Splice_Knowledge_Update.h"
-  Delete "$INSTDIR\include\madara\transport\tcp\TCP_Transport_Read_Thread.cpp"
-  Delete "$INSTDIR\include\madara\transport\tcp\TCP_Transport.cpp"
-  Delete "$INSTDIR\include\madara\transport\tcp\TCP_Transport_Read_Thread.h"
-  Delete "$INSTDIR\include\madara\transport\tcp\TCP_Transport.h"
-  Delete "$INSTDIR\include\madara\transport\Transport.h"
-  Delete "$INSTDIR\include\madara\utility\Utility.cpp"
-  Delete "$INSTDIR\include\madara\utility\Refcounter.cpp"
-  Delete "$INSTDIR\include\madara\utility\LStack.cpp"
-  Delete "$INSTDIR\include\madara\utility\LQueue.cpp"
-  Delete "$INSTDIR\include\madara\utility\Log_Macros.cpp"
-  Delete "$INSTDIR\include\madara\utility\Utility.h"
-  Delete "$INSTDIR\include\madara\utility\Refcounter.h"
-  Delete "$INSTDIR\include\madara\utility\MADARA_Logger_export.h"
-  Delete "$INSTDIR\include\madara\utility\LStack.h"
-  Delete "$INSTDIR\include\madara\utility\LQueue.h"
-  Delete "$INSTDIR\include\madara\utility\Log_Macros.h"
-  Delete "$INSTDIR\include\madara\Thread_Pool.cpp"
-  Delete "$INSTDIR\include\madara\Thread_Pool.h"
-  Delete "$INSTDIR\include\madara\MADARA_export.h"
-  Delete "$INSTDIR\include\madara\Globals.h"
-  Delete "$INSTDIR\configs\xml\transports\Splice.xml"
-  Delete "$INSTDIR\configs\xml\transports\NoTransport.xml"
-  Delete "$INSTDIR\configs\xml\transports\NDDS.xml"
-  Delete "$INSTDIR\configs\xml\TwoSleeps.xml"
-  Delete "$INSTDIR\configs\xml\Timeout.xml"
-  Delete "$INSTDIR\configs\xml\ospl_start.xml"
-  Delete "$INSTDIR\configs\xml\Generics.xml"
-  Delete "$INSTDIR\configs\xml\FourSleeps.xml"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\specialized.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\mwaytree.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\4_even_fans_disjoint.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\3waytree_strict.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\3waytree.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\3_even_fans_disjoint.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\3_deep_tree.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\2_even_fans_disjoint.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\1_even_fans_disjoint.template"
-  Delete "$INSTDIR\gme\Icons\sources.txt"
-  Delete "$INSTDIR\gme\Icons\XMLGenerator.png"
-  Delete "$INSTDIR\gme\Icons\sleep.jpg"
-  Delete "$INSTDIR\gme\Icons\host.jpg"
-  Delete "$INSTDIR\gme\Icons\domain.jpg"
-  Delete "$INSTDIR\gme\Icons\buttongroup.jpg"
-  Delete "$INSTDIR\gme\Icons\blue_round_play_button_4180.jpg"
-  Delete "$INSTDIR\gme\Icons\blue_play.jpg"
-  Delete "$INSTDIR\gme\Icons\binoculars.jpg"
-  Delete "$INSTDIR\gme\Icons\kill.gif"
-  Delete "$INSTDIR\gme\Icons\Host.gif"
-  Delete "$INSTDIR\gme\Icons\barrier.gif"
-  Delete "$INSTDIR\gme\GenerateXML.dll"
-  Delete "$INSTDIR\gme\KATS.xmp"
-  Delete "$INSTDIR\gme\KATS.mta"
-  Delete "$INSTDIR\bin\test_wait_with_ace.exe"
-  Delete "$INSTDIR\bin\test_timed_wait.exe"
-  Delete "$INSTDIR\bin\test_synchronization_three_state.exe"
-  Delete "$INSTDIR\bin\test_synchronization.exe"
-  Delete "$INSTDIR\bin\test_reasoning_throughput.exe"
-  Delete "$INSTDIR\bin\test_quality.exe"
-  Delete "$INSTDIR\bin\test_print_statement.exe"
-  Delete "$INSTDIR\bin\test_latency.exe"
-  Delete "$INSTDIR\bin\test_knowledge_domains.exe"
-  Delete "$INSTDIR\bin\test_key_expansion.exe"
-  Delete "$INSTDIR\bin\test_kats_syncs.exe"
-  Delete "$INSTDIR\bin\test_kats_barriers.exe"
-  Delete "$INSTDIR\bin\test_files.exe"
-  Delete "$INSTDIR\bin\test_distributed_finisher_with_set.exe"
-  Delete "$INSTDIR\bin\test_distributed_finisher.exe"
-  Delete "$INSTDIR\bin\test_dissemination.exe"
-  Delete "$INSTDIR\bin\test_cid_read_deployment.exe"
-  Delete "$INSTDIR\bin\test_cid_linked.exe"
-  Delete "$INSTDIR\bin\test_cid_disjoint.exe"
-  Delete "$INSTDIR\bin\test_cid.exe"
-  Delete "$INSTDIR\bin\test_basic_reasoning.exe"
-  Delete "$INSTDIR\bin\kats_sleep.exe"
-  Delete "$INSTDIR\bin\kats_process.exe"
-  Delete "$INSTDIR\bin\kats_observer.exe"
-  Delete "$INSTDIR\bin\kats_batch.exe"
-  Delete "$INSTDIR\docs\README.txt"
-  Delete "$INSTDIR\docs\Doxyfile_MAML"
-  Delete "$INSTDIR\docs\Doxyfile_KATS"
-  Delete "$INSTDIR\docs\Doxyfile_KaRL"
-  Delete "$INSTDIR\lib\maml.py"
-  Delete "$INSTDIR\lib\maal.py"
-  Delete "$INSTDIR\lib\Madara.lib"
-  Delete "$INSTDIR\lib\Kats.lib"
-  Delete "$INSTDIR\lib\Madara.dll"
-  Delete "$INSTDIR\lib\Kats.dll"
-  Delete "$INSTDIR\lib\maml.py"
-  Delete "$INSTDIR\lib\maal.py"
-  Delete "$INSTDIR\lib\Madarad.lib"
-  Delete "$INSTDIR\lib\Katsd.lib"
-  Delete "$INSTDIR\lib\Madarad.dll"
-  Delete "$INSTDIR\lib\Katsd.dll"
 
   Delete "$SMPROGRAMS\MADARA\Uninstall.lnk"
   Delete "$SMPROGRAMS\MADARA\Website.lnk"
@@ -497,6 +340,9 @@ Section Uninstall
   RMDir /r "$INSTDIR\configs"
   RMDir /r "$INSTDIR\modeling"
   RMDir /r "$INSTDIR\tests"
+  RMDir /r "$INSTDIR\tools"
+  RMDir /r "$INSTDIR\port"
+  RMDir /r "$INSTDIR\tutorials"
   RMDir /r "$INSTDIR\bin"
   RMDir /r "$INSTDIR"
 
@@ -504,24 +350,17 @@ Section Uninstall
 
   ;ReadRegStr $0 HKLM "SOFTWARE\Microsoft" "Bob"
 
-  StrCmp $0 '' 0 revert
-   ; delete variable
-   DeleteRegValue ${env_hklm} MADARA_ROOT
-   ReadRegStr $1 ${env_hklm} PATH
+  ; delete variable
+  DeleteRegValue ${env_hklm} MADARA_ROOT
+  ReadRegStr $1 ${env_hklm} PATH
    
-   ; remove references to MADARA in the PATH variable
-   ${WordAdd} $1 ";" "-%MADARA_ROOT%\lib;%MADARA_ROOT%\bin" $2
+  ; remove references to MADARA in the PATH variable
+  ${WordAdd} $1 ";" "-%MADARA_ROOT%\lib;%MADARA_ROOT%\bin" $2
 
-   WriteRegExpandStr ${env_hklm} PATH $2
+  WriteRegExpandStr ${env_hklm} PATH $2
    
-   Goto done
-   ; revert to the old MADARA variable
-   revert:
-   WriteRegExpandStr ${env_hklm} MADARA_ROOT $0
-   ; make sure windows knows about the change
+  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
 
-   SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
-   done:
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
