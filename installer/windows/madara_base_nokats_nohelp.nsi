@@ -5,7 +5,6 @@
 
 !define PRODUCT_PUBLISHER "James Edmondson"
 !define PRODUCT_WEB_SITE "https://sourceforge.net/projects/madara/"
-;!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\kats_batch.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define env_hklm 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
@@ -272,7 +271,6 @@ SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\bin\kats_batch.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\kats_batch.exe"
@@ -286,16 +284,16 @@ Section -Post
    ; include for some of the windows messages defines
    ; HKLM (all users) vs HKCU (current user) defines
    ; set variable
-   WriteRegExpandStr ${env_hklm} MADARA_ROOT $INSTDIR
+   WriteRegExpandStr ${env_hkcu} MADARA_ROOT $INSTDIR
    
    ; read the path variable
-   ReadRegStr $1 ${env_hklm} PATH
+   ReadRegStr $1 ${env_hkcu} PATH
 
    ; remove references to MADARA in the PATH variable
    ${WordAdd} $1 ";" "+%MADARA_ROOT%\lib;%MADARA_ROOT%\bin" $2
    
    ; now add them back
-   WriteRegExpandStr ${env_hklm} PATH $2
+   WriteRegExpandStr ${env_hkcu} PATH $2
 
    ; make sure windows knows about the change
    SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
@@ -306,7 +304,6 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "MADARA libraries compiled in debug mode (optional)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Should always be included"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Help files and API documentation"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Tests for KaRL, KATS, etc."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC07} "Include files for MADARA projects"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC08} "Version, License, etc."
@@ -352,20 +349,24 @@ Section Uninstall
 
   ReadRegStr $0 ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "OldMadaraRoot"
 
-  ;ReadRegStr $0 HKLM "SOFTWARE\Microsoft" "Bob"
-
-  ; delete variable
-  DeleteRegValue ${env_hklm} MADARA_ROOT
-  ReadRegStr $1 ${env_hklm} PATH
+  StrCmp $0 '' 0 revert
+   ; delete variable
+   DeleteRegValue ${env_hkcu} MADARA_ROOT
+   ReadRegStr $1 ${env_hkcu} PATH
    
-  ; remove references to MADARA in the PATH variable
-  ${WordAdd} $1 ";" "-%MADARA_ROOT%\lib;%MADARA_ROOT%\bin" $2
+   ; remove references to MADARA in the PATH variable
+   ${WordAdd} $1 ";" "-%MADARA_ROOT%\lib;%MADARA_ROOT%\bin" $2
 
-  WriteRegExpandStr ${env_hklm} PATH $2
+   WriteRegExpandStr ${env_hkcu} PATH $2
    
-  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
+   Goto done
+   ; revert to the old MADARA variable
+   revert:
+   WriteRegExpandStr ${env_hkcu} MADARA_ROOT $0
+   ; make sure windows knows about the change
 
+   SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
+   done:
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
-  DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
 SectionEnd
