@@ -87,9 +87,6 @@ Section "docs" SEC03
   File "..\..\docs\Doxyfile_CID.dxy"
   File "..\..\docs\README.txt"
 
-  SetOutPath "$INSTDIR\docs\cid"
-  File /r ..\..\docs\cid\html\*.*
-
 ;  SetOutPath "$INSTDIR\docs\kats"
 ;  File /r ..\..\docs\kats\html\*.*
 
