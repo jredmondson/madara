@@ -52,7 +52,7 @@
 !include "VERSION.txt"
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "madara_${PRODUCT_VERSION}.exe"
+OutFile "madara_java_${PRODUCT_VERSION}.exe"
 InstallDir "C:\MADARA"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails hide
@@ -72,6 +72,7 @@ Section "-release-libs" SEC02
   File "..\..\lib\MADARA.lib"
   File "..\..\lib\maal.py"
   File "..\..\lib\maml.py"
+  File "..\..\lib\madara.jar"
 SectionEnd
 
 

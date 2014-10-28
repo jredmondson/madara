@@ -107,7 +107,7 @@ Section "tests" SEC04
   SetOutPath "$INSTDIR\bin"
   File "..\..\bin\profile_architecture.exe"
   File /r "..\..\bin\test*.exe"
-  File /r "..\..\bin\tutorial*.exe"
+;  File /r "..\..\bin\tutorial*.exe"
   File "..\..\bin\network_profiler.exe"
 SectionEnd
 
@@ -146,24 +146,23 @@ Section "ace" SEC10
   
   SetOutPath "$INSTDIR\include"
 
-  File /r $%ACE_ROOT%\ace
+  File /r /x *.obj /x *.vcxproj /x *.filters /x *.user /x *.log /x *.tlog /x *.pdb /x Debug /x Release $%ACE_ROOT%\ace
 
 SectionEnd
 
 Section "-include" SEC07
+
   SetOutPath "$INSTDIR\include\madara"
   File "..\..\include\madara\MADARA_export.h"
   
   ; copy the madara directories
-  File /r "..\..\include\madara\utility"
-  File /r "..\..\include\madara\transport"
-  File /r "..\..\include\madara\knowledge_engine"
-  File /r "..\..\include\madara\kats"
-  File /r "..\..\include\madara\expression_tree"
-  File /r "..\..\include\madara\cid"
-  File /r "..\..\include\madara\maml"
-  File /r "..\..\include\madara\maal"
+  SetOutPath "$INSTDIR\include"
+  File /r "..\..\include"
+
+  SetOutPath "$INSTDIR\port"
+  File /r "..\..\port"
   
+
 SectionEnd
 
 Section "-vcredist" SEC11
@@ -233,7 +232,7 @@ Section "-exes" SEC09
   File "..\..\bin\karl.exe"
   File "..\..\bin\madara_version.exe"
   File "..\..\bin\mpgen.exe"
-  File "..\..\bin\system_calls.exe"
+;  File "..\..\bin\system_calls.exe"
 SectionEnd
 
 Section "-basic" SEC08
