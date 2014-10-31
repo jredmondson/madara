@@ -33,7 +33,7 @@ public class LogAggregate implements AggregateFilter
    * @param context  information about current state of transport layer
    * @param variables facade for current knowledge base
    **/
-  public KnowledgeRecord filter(Packet packet, TransportContext context, Variables variables)
+  public void filter(Packet packet, TransportContext context, Variables variables)
   {
     StringBuffer buffer = new StringBuffer();
     buffer.append("Aggregate Filter args:\n");
@@ -83,8 +83,6 @@ public class LogAggregate implements AggregateFilter
     buffer.append("\n");
        
     System.out.println(buffer.toString());
-    
-    return new KnowledgeRecord(0);
   }
 }
 

@@ -20,8 +20,7 @@ public interface AggregateFilter
    * @param packet  a map of all variable names to values
    * @param context  information about current state of transport layer
    * @param variables facade for current knowledge base
-   * @return  a return value (not currently used)
    **/
-  public KnowledgeRecord filter(Packet packet, TransportContext context, Variables variables);
+  public void filter(Packet packet, TransportContext context, Variables variables);
 }
 

@@ -233,7 +233,7 @@ Madara::Transport::QoS_Transport_Settings::add_send_filter (uint32_t types,
 
 void
 Madara::Transport::QoS_Transport_Settings::add_send_filter (
-  Knowledge_Record (*function) (
+  void (*function) (
         Knowledge_Map &, const Transport::Transport_Context &,
         Knowledge_Engine::Variables &))
 {
@@ -264,7 +264,7 @@ Madara::Transport::QoS_Transport_Settings::add_receive_filter (uint32_t types,
 
 void
   Madara::Transport::QoS_Transport_Settings::add_receive_filter (
-  Knowledge_Record (*function) (
+  void (*function) (
     Knowledge_Map &, const Transport::Transport_Context &,
     Knowledge_Engine::Variables &))
 {
@@ -288,7 +288,7 @@ Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (uint32_t type
 
 void
 Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
-  Knowledge_Record (*function) (
+  void (*function) (
     Knowledge_Map &, const Transport::Transport_Context &,
     Knowledge_Engine::Variables &))
 {
@@ -455,12 +455,12 @@ Madara::Transport::QoS_Transport_Settings::filter_send (
   return send_filters_.filter (input, name, context);
 }
 
-Madara::Knowledge_Record
+void
 Madara::Transport::QoS_Transport_Settings::filter_send (
   Knowledge_Map & records,
   const Transport::Transport_Context & transport_context) const
 {
-  return send_filters_.filter (records, transport_context);
+  send_filters_.filter (records, transport_context);
 }
         
 
@@ -473,12 +473,12 @@ Madara::Transport::QoS_Transport_Settings::filter_receive (
   return receive_filters_.filter (input, name, context);
 }
       
-Madara::Knowledge_Record
+void
 Madara::Transport::QoS_Transport_Settings::filter_receive (
   Knowledge_Map & records,
   const Transport::Transport_Context & transport_context) const
 {
-  return receive_filters_.filter (records, transport_context);
+  receive_filters_.filter (records, transport_context);
 }
   
 Madara::Knowledge_Record
@@ -490,12 +490,12 @@ Madara::Transport::QoS_Transport_Settings::filter_rebroadcast (
   return rebroadcast_filters_.filter (input, name, context);
 }
 
-Madara::Knowledge_Record
+void
 Madara::Transport::QoS_Transport_Settings::filter_rebroadcast (
   Knowledge_Map & records,
   const Transport::Transport_Context & transport_context) const
 {
-  return rebroadcast_filters_.filter (records, transport_context);
+  rebroadcast_filters_.filter (records, transport_context);
 }
        
 void

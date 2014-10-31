@@ -62,7 +62,7 @@ namespace Madara
       /**
        * Constructor for function pointer
        **/
-      Aggregate_Filter (Knowledge_Record (*extern_func) (
+      Aggregate_Filter (void (*extern_func) (
         Knowledge_Map &, const Transport::Transport_Context &,
         Variables &))
         : unnamed_filter (extern_func), functor (0), type (EXTERN_UNNAMED)
@@ -96,10 +96,10 @@ namespace Madara
         return type == JAVA_CALLABLE;
       }
       
-      Knowledge_Record call_java(Knowledge_Map & recordsMap, const Transport::Transport_Context & context, Variables & vars) const
-      {
-        return Knowledge_Record ();
-      }
+      //Knowledge_Record call_java(Knowledge_Map & recordsMap, const Transport::Transport_Context & context, Variables & vars) const
+      //{
+      //  return Knowledge_Record ();
+      //}
 #endif
       
 #ifdef _MADARA_PYTHON_CALLBACKS_
@@ -152,12 +152,12 @@ namespace Madara
       }
 
       /// mapped function call for aggregate filter
-      Knowledge_Record (*unnamed_filter) (
+      void (*unnamed_filter) (
         Knowledge_Map &, const Transport::Transport_Context &,
         Variables &);
       
       /// mapped function call for aggregate filter
-      Knowledge_Record (*named_filter) (
+      void (*named_filter) (
         const char *, Knowledge_Map &, 
         const Transport::Transport_Context &,
         Variables &);

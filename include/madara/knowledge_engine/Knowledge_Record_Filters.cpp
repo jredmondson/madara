@@ -62,7 +62,7 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (uint32_t types,
 
 void
 Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
-  Knowledge_Record (*function) (
+  void (*function) (
     Knowledge_Map &, const Transport::Transport_Context &, Variables &))
 {
   if (function != 0)
@@ -418,13 +418,11 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
   return result;
 }
 
-Madara::Knowledge_Record
+void
 Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
   Knowledge_Map & records,
   const Transport::Transport_Context & transport_context) const
 {
-  Knowledge_Record result;
-
   // if there are aggregate filters
   if (aggregate_filters_.size () > 0)
   {
@@ -483,15 +481,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         jclass filterClass = env->GetObjectClass(i->java_object);
         jmethodID filterMethod = env->GetMethodID (filterClass,
           "filter",
-          "(Lcom/madara/transport/filters/Packet;Lcom/madara/transport/TransportContext;Lcom/madara/Variables;)Lcom/madara/KnowledgeRecord;");
-        jobject jresult = env->CallObjectMethod (i->java_object, filterMethod,
+          "(Lcom/madara/transport/filters/Packet;Lcom/madara/transport/TransportContext;Lcom/madara/Variables;)V");
+        env->CallVoidMethod (i->java_object, filterMethod,
           jpacket, jcontext, jvariables);
-
-        jmethodID getPtrMethod = env->GetMethodID (
-          env->GetObjectClass(jresult), "getCPtr", "()J");
-        jlong cptr = env->CallLongMethod (jresult, getPtrMethod);
-
-        result.deep_copy (*(Madara::Knowledge_Record *)cptr);
 
         jni_detach ();
       }
@@ -513,10 +505,7 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
 #endif
 
     }
-    result.set_value (Knowledge_Record::Integer (aggregate_filters_.size ()));
   }
-
-  return result;
 }
 
 size_t

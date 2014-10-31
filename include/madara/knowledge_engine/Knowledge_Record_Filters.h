@@ -84,7 +84,7 @@ namespace Madara
        * Adds an aggregate filter
        * @param function     the function that will filter the aggregation
        **/
-      void add (Knowledge_Record (*function) (
+      void add (void (*function) (
         Knowledge_Map &, const Transport::Transport_Context &,
         Variables &));
       
@@ -192,9 +192,8 @@ namespace Madara
        * Calls aggregate filter chain on the provided aggregate records
        * @param  records             the aggregate record map
        * @param  transport_context   the context of the transport
-       * @return  the result of filtering the input
        **/
-      Knowledge_Record filter (Knowledge_Map & records,
+      void filter (Knowledge_Map & records,
         const Transport::Transport_Context & transport_context) const;
 
       /**

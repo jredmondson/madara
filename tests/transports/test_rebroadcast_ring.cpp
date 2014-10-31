@@ -265,7 +265,7 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
-Madara::Knowledge_Record
+void
 write_file (Madara::Knowledge_Map & records,
   const Madara::Transport::Transport_Context & context,
   Madara::Knowledge_Engine::Variables & vars)
@@ -324,9 +324,6 @@ write_file (Madara::Knowledge_Map & records,
     vars.print (last_message.str ());
     records.clear ();
   }
-
-
-  return Madara::Knowledge_Record::Integer (1);
 }
 
 int main (int argc, char ** argv)

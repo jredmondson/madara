@@ -75,9 +75,8 @@ namespace Madara
      * @param   records           aggregate update
      * @param   transport_context the transport context
      * @param   vars              variable context
-     * @return  record with status set to UNCREATED if arg is non-file
      **/
-    MADARA_Export Knowledge_Record
+    MADARA_Export void
     log_aggregate         (
       Knowledge_Map & records,
       const Transport::Transport_Context & transport_context,

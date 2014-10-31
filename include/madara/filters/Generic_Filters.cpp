@@ -138,15 +138,12 @@ Madara::Filters::log_args (Knowledge_Engine::Function_Arguments & args,
   return result;
 }
 
-Madara::Knowledge_Record
+void
 Madara::Filters::log_aggregate (
   Knowledge_Map & records,
   const Transport::Transport_Context & transport_context,
   Knowledge_Engine::Variables & vars)
 {
-  Madara::Knowledge_Record result;
-
-  
   std::stringstream buffer;
   buffer << "Aggregate Filter Arguments:\n";
     
@@ -197,8 +194,4 @@ Madara::Filters::log_aggregate (
   }
   
   vars.print (buffer.str (), 0);
-
-  result.set_value (Knowledge_Record::Integer (records.size ()));
-
-  return result;
 }

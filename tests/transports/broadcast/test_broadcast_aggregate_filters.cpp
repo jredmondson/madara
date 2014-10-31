@@ -108,19 +108,15 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
-Madara::Knowledge_Record
+void
 discard_var4 (Madara::Knowledge_Map & records,
   const Madara::Transport::Transport_Context & context,
   Madara::Knowledge_Engine::Variables & vars)
 {
-  Madara::Knowledge_Record result;
-
   Madara::Knowledge_Map::iterator found = records.find ("var4");
 
   if (found != records.end ())
     records.erase (found);
-
-  return result;
 }
 
 int main (int argc, char ** argv)
