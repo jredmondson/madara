@@ -1,0 +1,128 @@
+<html>
+<head>
+</head>
+<body bgcolor=#ffffff text=#000000 vlink=#0000ff alink=#ff0000 link=#0000ff>
+<b>Madara - Multi-Agent Distributed Adaptive Resource Allocation</b>
+
+<hr>
+
+<p><b>Project Description</b></p>
+
+<p>
+Version: 2.0.0
+</p>
+
+<p>The purpose of the project is to develop a portable programming framework that facilitates distributed and multi-threaded programming for C++, Java, and Python. MADARA was originally developed as an agent-based middleware specifically for real-time, distributed artificial intelligence, but is now more general purpose for distributed timing, control, knowledge and reasoning, and quality-of-service.</p>
+
+<p>MADARA is composed of several tools and middleware, and the main entry point into the system is the Knowledge and Reasoning Language (KaRL) Engine, which provides a real-time scripting language for nanosecond execution times hooked into a flexible transport layer for distributed reasoning. The KaRL engine also supports object-oriented C++, Java, and Python programming through Containers, classes that provide abstractions and references for variable location within the KaRL Knowledge Base.</p>
+
+<hr>
+
+<p><b>Getting Help</b></p>
+
+<p><b>Installation</b></p>
+<p><ul>
+  <li><a href="https://sourceforge.net/p/madara/wiki/InstallationFromBinaries">Self-Extracting Installers</a> (recommended for new users testing a version)</li>
+  <li><a href="https://sourceforge.net/p/madara/wiki/InstallationFromSource">Installation from Source</a> (recommended for installation and maintenance)</li>
+</ul></p>
+
+<p><b>Usage</b></p>
+<p><ul>
+  <li><b>C++ Guide Series</b>: 
+<a href="https://sourceforge.net/p/madara/wiki/MadaraArchitecture">Architecture</a> | <a href="https://sourceforge.net/p/madara/wiki/InteractingWithTheKnowledgeBase">Knowledge Base</a> | <a href="https://sourceforge.net/p/madara/wiki/InteractingWithTheTransport">Networking</a> | <a href="https://sourceforge.net/p/madara/wiki/KnowledgeContainers">Containers</a> | <a href="https://sourceforge.net/p/madara/wiki/WorkingWithThreads">Threads</a> | <a href="https://sourceforge.net/p/madara/wiki/OptimizingKaRL">Optimizations</a></li>
+  <li><b>Library Documentation</b>: <a href="docs/cpp">C++</a> | <a href="docs/java">Java</a></li>
+  <li>Tutorials: <a href="https://sourceforge.net/p/madara/code/ci/master/tree/tutorials/README.txt">README.txt</a> | <a href="https://sourceforge.net/p/madara/code/ci/master/tree/tutorials/">Source Code</a></li>
+  <li>For code examples, see <a href="https://sourceforge.net/p/madara/code/ci/master/tree/tests/">$MADARA_ROOT/tests</a></li>
+</ul></p>
+
+<hr>
+
+<p><b>Features</b></p>
+
+<p><b>Legend</b>: <font color="darkgreen">Supported</font> | <font color="red">Unsupported but planned</font></p>
+
+<p><b>Distributed Knowledge Engine</b></p>
+<p>The KaRL engine can be used in a variety of ways, including as a high-performance NoSQL database, a standalone reasoning engine or as a networked reasoner to accomplish computation, quality-of-service, timing, and control. The following is a non-exhaustive list of some of the more interesting features.</p>
+<ul>
+  <li><font color="darkgreen">Distributed context</font></li>
+  <li> <font color="darkgreen">Multiple supported transports</font></li>
+  <li> <font color="darkgreen">Bandwidth monitoring and reactive filtering</font></li>
+  <li> <font color="darkgreen">Simulation of network interruptions and packet drops at transport layer</font></li>
+  <li> <font color="darkgreen">State checkpointing and rollback</font></li>
+  <li> <font color="darkgreen">Deadline filtering per message</font></li>
+  <li> <font color="darkgreen">Permanent rules evaluated on data arrival/synthesis</font></li>
+  <li> <font color="darkgreen">C++ Containers for maps and vectors within the knowledge base</font></li>
+  <li> <font color="darkgreen">Threads</font></li>
+  <li> <font color="darkgreen">C++ Periodic Event scheduling and execution</font></li>
+  <li> <font color="darkgreen">C++ library</font></li>
+  <li> <font color="darkgreen">Java port</font></li>
+  <li> <font color="darkgreen">Python port</font></li>
+  <li> <font color="darkgreen">Nested variable expansion (e.g., "var{.id}=5" expands to "var1=5" if .id == 1)</font></li>
+  <li> <font color="darkgreen">Consistency via global clocks and knowledge quality</font></li>
+  <li> <font color="darkgreen">Cached expression trees for one time compilation of logics</font></li>
+  <li> <font color="darkgreen">External calls to C/C++/Java/Python functions</font></li>
+  <li> <font color="darkgreen">Timed waits for real-time support</font></li>
+  <li> <font color="darkgreen">Integrated For loops</font> (our approach to sets)</li>
+  <li> <font color="darkgreen">first class support for arrays of integers and doubles</font></li>
+  <li> <font color="darkgreen">first class support for fuzzy logic (doubles)</font></li>
+  <li> <font color="darkgreen">first class support for strings</font></li>
+  <li> <font color="darkgreen">first class support for text files</font></li>
+  <li> <font color="darkgreen">first class support for images</font></li>
+  <li> <font color="darkgreen">custom type support via byte buffer martialling</font></li>
+  <li> <font color="darkgreen">System calls in the KaRL language </font></li>
+  <li> <font color="darkgreen">Logger with support for stderr, files, and sysloggers</font></li>
+  <li> <font color="darkgreen">Export of a range of variables to STL containers</font></li>
+  <li> <font color="darkgreen">Nanosecond operation execution times</font></li>
+</ul>
+
+<hr>
+
+<p><b>Pluggable Transport</b></p>
+<p>We are currently supporting a wide range of transports including UDP (unicast), broadcast, and multicast.</p>
+
+<p><b>Transports</b></p>
+<ul>
+  <li> <font color="darkgreen">IP Multicast</font></li>
+  <li> <font color="darkgreen">IP Broadcast</font></li>
+  <li> <font color="darkgreen">!PrismTech Open Splice</font></li>
+  <li> <font color="darkgreen">RTI NDDS</font></li>
+  <li> <font color="darkgreen">UDP</font></li>
+</ul>
+
+<hr>
+
+<p><b>Operating Systems and Platforms</b></p>
+
+<p>In general, MADARA will run on any system that the [http://www.dre.vanderbilt.edu/versions.html ACE middleware runs on]. Exotic system configurations tend to require [InstallationFromSource compilation from source].</p>
+
+<p><b>Operating Systems</b></p>
+<ul>
+  <li> <font color="darkgreen">Linux</font></li>
+  <li> <font color="darkgreen">Windows 95/98/Me/XP/Vista/7/8</font></li>
+  <li> <font color="darkgreen">MacOSX</font></li>
+</ul>
+
+<p><b>Platforms</b></p>
+<ul>
+  <li> <font color="darkgreen">Intel x86</font></li>
+  <li> <font color="darkgreen">Intel x64</font></li>
+  <li> <font color="darkgreen">ARM 3+</font></li>
+</ul>
+
+<p><b>Ports</b></p>
+<ul>
+  <li> <font color="darkgreen">C++</font></li>
+  <li> <font color="darkgreen">Java</font></li>
+  <li> <font color="darkgreen">Android</font></li>
+  <li> <font color="darkgreen">Python</font></li>
+</ul>
+
+<hr>
+
+<p><b>Special Thanks</b></p>
+
+<p>This software has been contributed to and used by students and staff at:</p>
+<p><table border=0"><tr><td><img src="http://madara.sourceforge.net/images/logos/vanderbilt.gif" width="200" /></td><td><img src="http://madara.sourceforge.net/images/logos/CMU_logo_stack_cmyk_red_small.png" /></td><td><img src="http://madara.sourceforge.net/images/logos/SEI_Software_Engineering_Institute.png" width="200" /></td></tr></table></p>
+
+</body>
+</html>
