@@ -51,7 +51,7 @@
 !include "VERSION.txt"
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "madara_doxy_${PRODUCT_VERSION}.exe"
+OutFile "madara_docs_${PRODUCT_VERSION}.exe"
 InstallDir "C:\MADARA"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails hide
@@ -92,11 +92,11 @@ Section "docs" SEC03
   SetOutPath "$INSTDIR\docs\karl"
   File /r ..\..\docs\karl\html\*.*
   
-  SetOutPath "$INSTDIR\docs\maml"
-  File /r ..\..\docs\maml\html\*.*
+;  SetOutPath "$INSTDIR\docs\maml"
+;  File /r ..\..\docs\maml\html\*.*
 
-  SetOutPath "$INSTDIR\docs\maal"
-  File /r ..\..\docs\maal\html\*.*
+;  SetOutPath "$INSTDIR\docs\maal"
+;  File /r ..\..\docs\maal\html\*.*
 
   CreateDirectory "$SMPROGRAMS\MADARA"
   CreateShortCut "$SMPROGRAMS\MADARA\README.lnk" "$INSTDIR\docs\README.txt"
@@ -299,7 +299,6 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Should always be included"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Help files and API documentation"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Tests for KaRL, KATS, etc."
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} "Example configuration files"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC07} "Include files for MADARA projects"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC08} "Version, License, etc."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC10} "Install ACE v6.0.1 (required if not already installed)."
