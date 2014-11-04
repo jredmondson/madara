@@ -21,7 +21,7 @@ namespace Madara
   namespace Threads
   {
     /**
-     * Abstract base class for implementing threads
+     * A facade for a user-defined Java thread class
      **/
     class Java_Thread : public Base_Thread
     {

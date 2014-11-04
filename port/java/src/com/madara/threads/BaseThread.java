@@ -47,13 +47,19 @@ public abstract class BaseThread
     return name; 
   }
   
-  /// flag from Threader indicating if thread is requested to be terminated
+  /**
+   * flag from Threader indicating if thread is requested to be terminated
+   **/
   public Integer  terminated;
   
-  /// flag from Threader indicating if thread is paused
+  /**
+   * flag from Threader indicating if thread is paused
+   **/
   public Integer  paused;
   
-  /// the unique name of the thread, set by Threader
+  /**
+   * the unique name of the thread, set by Threader
+   **/
   String name;
 }
 

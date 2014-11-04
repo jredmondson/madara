@@ -661,9 +661,10 @@ public class KnowledgeBase extends MadaraJNI
   /**
    * Loads the knowledge base from a file
    * @param filename the file to load the knowledge base from
-   * @param useid if true, read the unique ID from the file. If false, do not
+   * @param useId if true, read the unique ID from the file. If false, do not
    *              use the unique ID from the file.
    * @param settings the settings for updating values in the context from file
+   * @return the number of bytes read
    **/
    public long loadContext(String filename, boolean useId, EvalSettings settings)
    {
