@@ -990,7 +990,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::print (
   for (Madara::Knowledge_Map::const_iterator i = map_.begin ();
        i != map_.end (); 
        ++i)
-    MADARA_DEBUG (level, (LM_DEBUG, 
+    MADARA_DEBUG ((int)level, (LM_DEBUG, 
       "%s=%s\n", i->first.c_str (), i->second.to_string (", ").c_str ()));
 }
 

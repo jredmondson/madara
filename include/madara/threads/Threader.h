@@ -19,6 +19,11 @@
 #include "Worker_Thread.h"
 #include "madara/MADARA_export.h"
 
+#ifdef _MADARA_JAVA_
+#include <jni.h>
+#include "madara_jni.h"
+#endif
+
 namespace Madara
 {
   namespace Threads
@@ -82,7 +87,47 @@ namespace Madara
        **/
       void run (double hertz, const std::string name, Base_Thread * thread,
         bool paused = false);
-
+      
+#ifdef _MADARA_JAVA_
+      
+      /**
+       * Starts a new thread and executes the provided user
+       * thread once. Execution ordering is init -> execute -> cleanup.
+       * 
+       * <br>&nbsp;<br>The thread will be managed by the
+       * threader. Please do not pass the address of a thread
+       * on the stack and do not delete this memory yourself
+       * or your program will crash.
+       * @param name    unique thread name for the thread.
+       *                If possible, try to use one word or
+       *                words separated by underscores (_)
+       * @param thread  user-created thread implementation
+       * @param paused  create thread in a paused state.
+       **/
+      void run (const std::string name, jobject thread, bool paused = false);
+      
+      /**
+       * Starts a new thread and executes the provided user
+       * thread once. Execution ordering is init -> *execute -> cleanup.
+       * init and cleanup are only called once.
+       * 
+       * <br>&nbsp;<br>The thread will be managed by the
+       * threader. Please do not pass the address of a thread
+       * on the stack and do not delete this memory yourself
+       * or your program will crash.
+       * @param hertz   the intended hertz (frequency) that the thread's
+       *                execute should be ran. Hertz is in operations per
+       *                second.
+       * @param name    unique thread name for the thread.
+       *                If possible, try to use one word or
+       *                words separated by underscores (_)
+       * @param thread  user-created thread implementation
+       * @param paused  create thread in a paused state.
+       **/
+      void run (double hertz, const std::string name, jobject thread,
+        bool paused = false);
+      
+#endif
       /**
        * Wait for a specific thread to complete
        * @param name    unique thread name for the thread.

@@ -1,5 +1,10 @@
 #include "Threader.h"
 
+#ifdef _MADARA_JAVA_
+      
+#include "java\Java_Thread.h"
+
+#endif  // MADARA_JAVA
 
 Madara::Threads::Threader::Threader ()
   : control_(new Knowledge_Engine::Knowledge_Base ()), data_ (0)
@@ -40,6 +45,31 @@ Madara::Threads::Threader::run (
     worker->run ();
   }
 }
+
+#ifdef _MADARA_JAVA_
+      
+void
+Madara::Threads::Threader::run (
+  const std::string name, jobject thread, bool paused)
+{
+  if (name != "" && thread != 0)
+  {
+    run (name, new Java_Thread (thread), paused);
+  }
+}
+      
+
+void
+Madara::Threads::Threader::run (
+  double hertz, const std::string name, jobject thread, bool paused)
+{
+  if (name != "" && thread != 0)
+  {
+    run (name, new Java_Thread (thread), paused);
+  }
+}
+
+#endif // _MADARA_JAVA_
 
 void
 Madara::Threads::Threader::run (double hertz,

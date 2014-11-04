@@ -23,7 +23,7 @@
 # define DLINFO ACE_TEXT("(%P|%t) [%M] - %T - ")
 #endif
 
-extern MADARA_Logger_Export unsigned int MADARA_debug_level;
+extern MADARA_Logger_Export int MADARA_debug_level;
 
 // Defines for logging levels
 
@@ -150,5 +150,57 @@ extern MADARA_Logger_Export unsigned int MADARA_debug_level;
 #  define MADARA_ERROR_BREAK(L, X) { MADARA_ERROR (L, X); break; }
 # endif
 #endif
+
+namespace Madara
+{
+  namespace Utility
+  {
+    /**
+     * Logging levels available for MADARA library
+     **/
+    enum Log_Levels
+    {
+      LOG_EMERGENCY = 0,
+      LOG_TERMINAL_ERROR = 1,
+      LOG_NONFATAL_ERROR = 2,
+      LOG_ERROR = 3,
+      LOG_WARNING = 4,
+      LOG_MAJOR_EVENT = 5,
+      LOG_MINOR_EVENT = 6,
+      LOG_EVENT_TRACE = 7,
+      LOG_MAJOR_DEBUG_INFO = 8,
+      LOG_MINOR_DEBUG_INFO = 9,
+      LOG_DETAILED_TRACE = 10
+    };
+
+    /**
+     * Sets the log level
+     * @param level  the log level to use @see Log_Levels
+     **/
+    inline void set_log_level (int level)
+    {
+      ::MADARA_debug_level = level;
+    }
+
+    /**
+     * Gets the log level
+     * @return lthe log level being used @see Log_Levels
+     **/
+    inline int get_log_level (void)
+    {
+      return ::MADARA_debug_level;
+    }
+
+    /**
+     * Logs a simple string message
+     * @param  level  the level to log the message at
+     * @param  message the message to print to the log
+     **/
+    inline void log (int level, const char * message)
+    {
+      MADARA_DEBUG (level, (LM_DEBUG, message));
+    }
+  }
+}
 
 #endif // _MADARA_LOG_MACROS_H_

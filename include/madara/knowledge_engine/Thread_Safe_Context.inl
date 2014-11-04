@@ -548,7 +548,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::print (
 {
   // enter the mutex
   Context_Guard guard (mutex_);
-  MADARA_DEBUG (level, (LM_DEBUG, 
+  MADARA_DEBUG ((int)level, (LM_DEBUG, 
     this->expand_statement (statement).c_str ()));
 }
 

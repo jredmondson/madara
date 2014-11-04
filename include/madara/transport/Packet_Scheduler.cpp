@@ -242,7 +242,7 @@ Madara::Transport::Packet_Scheduler::print_status (
 {
   Scheduler_Guard guard (mutex_);
   
-  MADARA_DEBUG (log_level, (LM_DEBUG, 
+  MADARA_DEBUG ((int)log_level, (LM_DEBUG, 
     "%s: %Q sent, %Q dropped, %Q consec dropped\n",
     prefix, sent_messages_, dropped_messages_, consecutive_drops_));
 }

@@ -2,5 +2,5 @@
 
 #include "Log_Macros.h"
 
-MADARA_Logger_Export unsigned int MADARA_debug_level = 1;
+MADARA_Logger_Export int MADARA_debug_level = 1;
 

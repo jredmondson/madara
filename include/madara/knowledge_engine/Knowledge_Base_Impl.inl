@@ -205,7 +205,7 @@ inline void
 Madara::Knowledge_Engine::Knowledge_Base_Impl::print (
   unsigned int level) const
 {
-  MADARA_DEBUG (level, (LM_INFO, 
+  MADARA_DEBUG ((int)level, (LM_INFO, 
     "\nKnowledge in Knowledge Base:\n"));
   map_.print (level);
 }
