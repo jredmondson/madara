@@ -12,6 +12,7 @@
 #include <string>
 #include <map>
 
+namespace engine = Madara::Knowledge_Engine;
 
 static jclass knowledgeBaseClass = 0;
 static jmethodID callbackMethod = 0;
@@ -780,3 +781,77 @@ void JNICALL Java_com_madara_KnowledgeBase_00024CompiledExpression_jni_1freeComp
 //===================================================================================
 
 
+/*
+ * Class:     com_madara_KnowledgeBase
+ * Method:    jni_saveContext
+ * Signature: (JLjava/lang/String;)J
+ */
+MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1saveContext
+  (JNIEnv * env, jobject, jlong cptr, jstring filename)
+{
+  int64_t result (0);
+
+  if (cptr && filename)
+  {
+    const char * nativeFilename = env->GetStringUTFChars(filename, 0);
+    engine::Knowledge_Base * knowledge = (engine::Knowledge_Base*) cptr;
+   
+    result = knowledge->save_context (nativeFilename);
+
+    env->ReleaseStringUTFChars(filename, nativeFilename);
+  }
+
+  return result;
+}
+
+/*
+ * Class:     com_madara_KnowledgeBase
+ * Method:    jni_saveCheckpoint
+ * Signature: (JLjava/lang/String;Z)J
+ */
+MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1saveCheckpoint
+  (JNIEnv * env, jobject, jlong cptr, jstring filename, jboolean resetModifieds)
+{
+  int64_t result (0);
+
+  if (cptr && filename)
+  {
+    const char * nativeFilename = env->GetStringUTFChars(filename, 0);
+    engine::Knowledge_Base * knowledge = (engine::Knowledge_Base*) cptr;
+   
+    bool flag = resetModifieds != 0;
+
+    result = knowledge->save_checkpoint (nativeFilename, flag);
+
+    env->ReleaseStringUTFChars(filename, nativeFilename);
+  }
+
+  return result;
+}
+
+/*
+ * Class:     com_madara_KnowledgeBase
+ * Method:    jni_loadContext
+ * Signature: (JLjava/lang/String;ZJ)J
+ */
+MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1loadContext
+  (JNIEnv * env, jobject, jlong cptr, jstring filename, jboolean useId, jlong settings_ptr)
+{
+  int64_t result (0);
+
+  if (cptr && filename)
+  {
+    const char * nativeFilename = env->GetStringUTFChars(filename, 0);
+    engine::Knowledge_Base * knowledge = (engine::Knowledge_Base*) cptr;
+    engine::Knowledge_Update_Settings * settings =
+      (engine::Knowledge_Update_Settings*) settings_ptr;
+   
+    bool flag = useId != 0;
+
+    result = knowledge->load_context (nativeFilename, flag, *settings);
+
+    env->ReleaseStringUTFChars(filename, nativeFilename);
+  }
+
+  return result;
+}

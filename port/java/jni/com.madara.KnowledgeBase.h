@@ -309,6 +309,30 @@ MADARA_Export jlongArray JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeL
   
 /*
  * Class:     com_madara_KnowledgeBase
+ * Method:    jni_saveContext
+ * Signature: (JLjava/lang/String;)J
+ */
+MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1saveContext
+  (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     com_madara_KnowledgeBase
+ * Method:    jni_saveCheckpoint
+ * Signature: (JLjava/lang/String;Z)J
+ */
+MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1saveCheckpoint
+  (JNIEnv *, jobject, jlong, jstring, jboolean);
+
+/*
+ * Class:     com_madara_KnowledgeBase
+ * Method:    jni_loadContext
+ * Signature: (JLjava/lang/String;ZJ)J
+ */
+MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1loadContext
+  (JNIEnv *, jobject, jlong, jstring, jboolean, jlong);
+
+/*
+ * Class:     com_madara_KnowledgeBase
  * Method:    jni_toKnowledgeMap
  * Signature: (JLjava/lang/String;Lcom/madara/KnowledgeBase/MapReturn;)V
  */

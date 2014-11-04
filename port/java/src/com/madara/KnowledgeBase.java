@@ -52,6 +52,9 @@ public class KnowledgeBase extends MadaraJNI
   private native void jni_waitNoReturn(long cptr, long expression, long waitSettings);
   private native long[] jni_toKnowledgeList(long cptr, String subject, int start, int end);
   private native void jni_toKnowledgeMap(long cptr, String expression, MapReturn ret);
+  private native long jni_saveContext(long cptr, String filename);
+  private native long jni_saveCheckpoint(long cptr, String filename, boolean resetModifieds);
+  private native long jni_loadContext(long cptr, String filename, boolean useId, long settings);
 
   private static HashMap<Long, KnowledgeBase> knowledgeBases = new HashMap<Long, KnowledgeBase>();
   private HashMap<String, MadaraFunction> callbacks = new HashMap<String, MadaraFunction>();
@@ -645,6 +648,44 @@ public class KnowledgeBase extends MadaraJNI
     return new KnowledgeList(jni_toKnowledgeList(getCPtr(), subject, start, end));
   }
 
+  /**
+   * Saves the knowledge base to a file
+   * @param filename the file to save the knowledge base to
+   * @return the number of bytes written to the file
+   **/
+   public long saveContext(String filename)
+   {
+    return jni_saveContext(getCPtr(), filename); 
+   }
+  
+  /**
+   * Loads the knowledge base from a file
+   * @param filename the file to load the knowledge base from
+   * @param useid if true, read the unique ID from the file. If false, do not
+   *              use the unique ID from the file.
+   * @param settings the settings for updating values in the context from file
+   **/
+   public long loadContext(String filename, boolean useId, EvalSettings settings)
+   {
+    return jni_loadContext(getCPtr(), filename, useId, settings.getCPtr()); 
+   }
+  
+  /**
+   * Saves a snapshot of changes to the context since the last saveContext,
+   * saveCheckpoint, or sendModifieds. This is an incremental snapshot from
+   * last time the modification list was cleared and can be much faster than
+   * a saveContext.
+   * @param filename the file to save the knowledge base changes to
+   * @param resetModifieds if true, clear the modification list (this is a
+   *        bad idea if you should be sending modifications over a transport
+   *        as well as saving them to a file.
+   * @return the number of bytes written to the file
+   **/
+  public long saveCheckpoint(String filename, boolean resetModifieds)
+  {
+    return jni_saveCheckpoint(getCPtr(), filename, resetModifieds); 
+  }
+  
   /**
    * Fills a {@link com.madara.KnowledgeMap KnowledgeMap} with
    * {@link com.madara.KnowledgeRecord KnowledgeRecords} that match an expression.
