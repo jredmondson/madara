@@ -165,7 +165,7 @@ public class Threader extends MadaraJNI
    **/
   public void resume(String name)
   {
-   jni_terminateThread(getCPtr(), name); 
+   jni_resumeThread(getCPtr(), name); 
   }
   
   /**

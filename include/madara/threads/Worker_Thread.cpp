@@ -2,6 +2,11 @@
 #include "ace/High_Res_Timer.h"
 #include "ace/OS_NS_sys_time.h"
 
+#ifdef _MADARA_JAVA_
+#include <jni.h>
+#include "madara_jni.h"
+#endif
+
 #ifdef WIN32
 
 #include <process.h>
@@ -155,10 +160,23 @@ Madara::Threads::Worker_Thread::svc (void)
     }
 
     thread_->cleanup ();
+    
+    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+      DLINFO "Worker_Thread::Worker_Thread:" \
+      " deleting thread %s)\n", name_.c_str ()));
 
     delete thread_;
+    
+    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+      DLINFO "Worker_Thread::Worker_Thread:" \
+      " setting %s to 1)\n", finished_.get_name ().c_str ()));
 
     finished_ = 1;
+
+#ifdef _MADARA_JAVA_
+    // try detaching one more time, just to make sure.
+    ::jni_detach ();
+#endif
   }
 
   return 0;

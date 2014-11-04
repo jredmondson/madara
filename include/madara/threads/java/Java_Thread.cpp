@@ -154,15 +154,33 @@ threads::Java_Thread::check_compliance (jobject obj)
         run_method_ = env->GetMethodID(class_,
           "run", "()V" );
         init_method_ = env->GetMethodID(class_,
-          "init", "(Lcom.madara.KnowledgeBase;)V" );
+          "init", "(Lcom/madara/KnowledgeBase;)V" );
         cleanup_method_ = env->GetMethodID(class_,
           "cleanup", "()V" );
 
-        if (!run_method_ || !init_method_ || !cleanup_method_)
+        if (!run_method_)
         {
           MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
             DLINFO "threads::Java_Thread::check_compliance:" \
-            " ERROR: run, init, and cleanup must be defined.\n"));
+            " ERROR: run method must be defined.\n"));
+        
+          result = false;
+        }
+
+        if (!init_method_)
+        {
+          MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
+            DLINFO "threads::Java_Thread::check_compliance:" \
+            " ERROR: init method must be defined.\n"));
+        
+          result = false;
+        }
+
+        if (!cleanup_method_)
+        {
+          MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
+            DLINFO "threads::Java_Thread::check_compliance:" \
+            " ERROR: cleanup method must be defined.\n"));
         
           result = false;
         }
