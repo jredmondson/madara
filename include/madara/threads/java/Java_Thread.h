@@ -26,10 +26,6 @@ namespace Madara
     class Java_Thread : public Base_Thread
     {
     public:
-      /**
-       * Constructor
-       **/
-      Java_Thread (jobject obj);
 
       /**
        * Destructor
@@ -42,32 +38,64 @@ namespace Madara
       void operator= (const Java_Thread & rhs);
 
       /**
-       * Initializes thread with MADARA context
+       * Initializes Java thread with MADARA context
        * @param   context   context for querying current program state
        **/
       virtual void init (Knowledge_Engine::Knowledge_Base & context);
 
       /**
-       * Executes the main thread logic. In a Base_Thread, the
-       * execute is called once. Afterwards, cleanup is called.
+       * Executes the Java thread's logic.
        **/
       virtual void run (void);
       
       /**
-       * Calls the 
+       * Calls the Java cleanup method
        **/
       virtual void cleanup (void);
 
+      /**
+       * Creates a Java_Thread. The obj is checked for compliance before
+       * returning a Java_Thread.
+       * @param obj  a user-defined com.madara.threads.BaseThread object
+       **/
+      static Java_Thread * create (jobject obj);
+
+      /**
+       * Checks a Java object for compliance with
+       * com.madara.threads.BaseThread. Fills in class members if compliant.
+       * @param obj  a user-defined com.madara.threads.BaseThread object
+       **/
+      bool check_compliance (jobject obj);
+
     protected:
       
+      /**
+       * Constructor
+       **/
+      Java_Thread ();
+      
+      /**
+       * Initializes the Java thread implementation's control plane variables
+       * @param name the unique name for the thread
+       * @param control the control plane between Threader and threads
+       **/
+      virtual void init_control_vars (
+        Knowledge_Engine::Knowledge_Base & control);
+
       /// the Java thread implementation of com.madara.threads.BaseThread
       jobject obj_;
       
       /// the class of the Java object obj_
       jclass class_;
 
-      /// handle to the run_method_
+      /// handle to the run method
       jmethodID run_method_;
+
+      /// handle to the init method
+      jmethodID init_method_;
+      
+      /// handle to the cleanup method
+      jmethodID cleanup_method_;
     };
   }
 }

@@ -3,191 +3,233 @@
 #include "madara/utility/java/Acquire_VM.h"
 
 namespace threads = Madara::Threads;
+namespace engine = Madara::Knowledge_Engine;
 
-Madara::Threads::Java_Thread::Java_Thread (
-  jobject obj)
+threads::Java_Thread::Java_Thread ()
+  : obj_ (0), class_ (0),
+  run_method_ (0), init_method_ (0), cleanup_method_ (0)
 {
-  Madara::Utility::Java::Acquire_VM jvm;
-
-  if (jvm.env)
-  {
-    MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Madara::Threads::Java_Thread::constructor:" \
-      " allocating global reference for object.\n"));
-  
-    obj_ = (jobject) jvm.env->NewGlobalRef (obj);
-
-    if (obj_)
-    {
-      MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Madara::Threads::Java_Thread::constructor:" \
-        " allocating global reference for object's class.\n"));
-      class_ = (jclass) jvm.env->NewGlobalRef (jvm.env->GetObjectClass (obj_));
-      if (class_)
-      {
-        MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "Madara::Threads::Java_Thread::constructor:" \
-          " class and object obtained successfully.\n"));
-
-        // stash the run_method_ call because we will be running it frequently
-        run_method_ = jvm.env->GetMethodID(class_, "run", "()V" );
-      }
-      else
-      {
-        MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
-          DLINFO "Madara::Threads::Java_Thread::constructor:" \
-          " ERROR: class object inaccessible.\n"));
-      }
-    }
-    else
-    {
-      MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
-        DLINFO "Madara::Threads::Java_Thread::constructor:" \
-        " ERROR: object is invalid.\n"));
-    }
-  }
-  else
-  {
-    MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
-      DLINFO "Madara::Threads::Java_Thread::constructor:" \
-      " ERROR: unable to acquire JAVA environment.\n"));
-  }
 }
 
-Madara::Threads::Java_Thread::~Java_Thread ()
+threads::Java_Thread::~Java_Thread ()
 {
-  Madara::Utility::Java::Acquire_VM jvm;
-  if (jvm.env)
+  JNIEnv * env = ::madara_jni_get_env ();
+
+  if (env)
   {
     MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Madara::Threads::Java_Thread::destructor:" \
+      DLINFO "threads::Java_Thread::destructor:" \
       " Deleting global references.\n"));
 
-    jvm.env->DeleteGlobalRef (obj_);
-    jvm.env->DeleteGlobalRef (class_);
+    env->DeleteGlobalRef (obj_);
+    env->DeleteGlobalRef (class_);
+
+    ::jni_detach ();
   }
 }
 
 void
-Madara::Threads::Java_Thread::operator= (const Java_Thread & rhs)
+threads::Java_Thread::operator= (const Java_Thread & rhs)
 {
   MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Madara::Threads::Java_Thread::assignment:" \
+    DLINFO "threads::Java_Thread::assignment:" \
     " Checking for source not being same as dest.\n"));
 
   if (this != &rhs && obj_ != rhs.obj_)
   {
-    Madara::Utility::Java::Acquire_VM jvm;
-    threads::Java_Thread * dest = dynamic_cast <threads::Java_Thread *> (this);
-    const threads::Java_Thread * source =
-      dynamic_cast <const threads::Java_Thread *> (&rhs);
-    
-    MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Madara::Threads::Java_Thread::assignment:" \
-      " Copying source to dest.\n"));
+    JNIEnv * env = ::madara_jni_get_env ();
 
-    *dest = *source;
-
-    if (jvm.env)
+    // perform the assignment
+    if (env)
     {
       MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Madara::Threads::Java_Thread::assignment:" \
-        " Deleting global references.\n"));
+        DLINFO "threads::Java_Thread::assignment:" \
+        " Deleting global references from left hand side.\n"));
 
-      jvm.env->DeleteGlobalRef (obj_);
-      jvm.env->DeleteGlobalRef (class_);
+      env->DeleteGlobalRef (obj_);
+      env->DeleteGlobalRef (class_);
 
-      obj_ = jvm.env->NewGlobalRef (rhs.obj_);
-      class_ = (jclass) jvm.env->NewGlobalRef (rhs.class_);
+      obj_ = env->NewGlobalRef (rhs.obj_);
+      class_ = (jclass) env->NewGlobalRef (rhs.class_);
+      cleanup_method_ = rhs.cleanup_method_;
+      init_method_ = rhs.init_method_;
+      run_method_ = rhs.run_method_;
     }
   }
 }
  
 void
-Madara::Threads::Java_Thread::run (void)
+threads::Java_Thread::run (void)
 {
-  Madara::Utility::Java::Acquire_VM jvm;
+  JNIEnv * env = ::madara_jni_get_env ();
   
   MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Madara::Threads::Java_Thread::run:" \
-    " Obtaining user-defined run method.\n"));
+    DLINFO "threads::Java_Thread::run:" \
+    " Calling user-defined run method.\n"));
 
-  if (run_method_)
-  {
-    MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Madara::Threads::Java_Thread::run:" \
-      " Calling user-defined run method.\n"));
-    jvm.env->CallVoidMethod (obj_, run_method_);
-  }
-  else
-  {
-    MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
-      DLINFO "Madara::Threads::Java_Thread::run:" \
-      " ERROR: Unable to find user-defined run method.\n"));
-  }
+  env->CallVoidMethod (obj_, run_method_);
 }
 
 void
-Madara::Threads::Java_Thread::cleanup (void)
+threads::Java_Thread::cleanup (void)
 {
-  Madara::Utility::Java::Acquire_VM jvm;
+  JNIEnv * env = ::madara_jni_get_env ();
   
   MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Madara::Threads::Java_Thread::cleanup:" \
-    " Obtaining user-defined cleanup method.\n"));
+    DLINFO "threads::Java_Thread::cleanup:" \
+    " Calling user-defined cleanup method.\n"));
 
-  jmethodID call = jvm.env->GetMethodID(class_, "cleanup", "()V" );
-
-  if (call)
-  {
-    MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Madara::Threads::Java_Thread::cleanup:" \
-      " Calling user-defined cleanup method.\n"));
-
-    jvm.env->CallVoidMethod (obj_, call);
-  }
-  else
-  {
-    MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
-      DLINFO "Madara::Threads::Java_Thread::cleanup:" \
-      " ERROR: Unable to find user-defined cleanup method.\n"));
-  }
+  env->CallVoidMethod (obj_, cleanup_method_);
 }
 
 void
-Madara::Threads::Java_Thread::init (Knowledge_Engine::Knowledge_Base & context)
+threads::Java_Thread::init (engine::Knowledge_Base & context)
 {
-  Madara::Utility::Java::Acquire_VM jvm;
+  JNIEnv * env = ::madara_jni_get_env ();
   
   MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Madara::Threads::Java_Thread::init:" \
-    " Obtaining user-defined init method.\n"));
+    DLINFO "threads::Java_Thread::init:" \
+    " Creating Java KnowledgeBase from data plane.\n"));
 
-  jmethodID call = jvm.env->GetMethodID(class_, "init", "(Lcom.madara.KnowledgeBase;)V" );
+  jclass kb_class = env->FindClass ("com/madara/KnowledgeBase");
+    
+  jmethodID fromPointerCall = env->GetStaticMethodID (kb_class,
+    "fromPointer", "(JZ)Lcom/madara/KnowledgeBase;");
+    
+  jboolean manage (false);
 
-  if (call)
+  jobject jknowledge = env->CallStaticObjectMethod (kb_class,
+    fromPointerCall, (jlong) &context, manage);
+
+  MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
+    DLINFO "threads::Java_Thread::init:" \
+    " Calling user-defined init method.\n"));
+
+  env->CallVoidMethod (obj_, init_method_, jknowledge);
+}
+
+
+threads::Java_Thread *
+threads::Java_Thread::create (jobject obj)
+{
+  Java_Thread * result = new Java_Thread ();
+  
+  if (!result->check_compliance (obj))
   {
-    jclass kb_class = jvm.env->FindClass ("com/madara/KnowledgeBase");
-    
-    jmethodID fromPointerCall = jvm.env->GetStaticMethodID (kb_class,
-      "fromPointer", "(JZ)Lcom/madara/KnowledgeBase;");
-    
-    jboolean manage (false);
+    delete result;
+    result = 0;
+  }
 
-    jobject jknowledge = jvm.env->CallStaticObjectMethod (kb_class,
-      fromPointerCall, (jlong) &context, manage);
+  return result;
+}
 
+bool
+threads::Java_Thread::check_compliance (jobject obj)
+{  
+  JNIEnv * env = ::madara_jni_get_env ();
+
+  bool result (true);
+  
+  if (env)
+  {
     MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Madara::Threads::Java_Thread::init:" \
-      " Calling user-defined init method.\n"));
+      DLINFO "threads::Java_Thread::check_compliance:" \
+      " allocating global reference for object.\n"));
+  
+    obj_ = (jobject) env->NewGlobalRef (obj);
 
-    jvm.env->CallVoidMethod (obj_, call, jknowledge);
+    if (obj_)
+    {
+      MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
+        DLINFO "threads::Java_Thread::check_compliance:" \
+        " allocating global reference for object's class.\n"));
+      class_ = (jclass) env->NewGlobalRef (env->GetObjectClass (obj_));
+      if (class_)
+      {
+        MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "threads::Java_Thread::check_compliance:" \
+          " class and object obtained successfully.\n"));
+
+        // stash the method calls to minimize call time
+        run_method_ = env->GetMethodID(class_,
+          "run", "()V" );
+        init_method_ = env->GetMethodID(class_,
+          "init", "(Lcom.madara.KnowledgeBase;)V" );
+        cleanup_method_ = env->GetMethodID(class_,
+          "cleanup", "()V" );
+
+        if (!run_method_ || !init_method_ || !cleanup_method_)
+        {
+          MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
+            DLINFO "threads::Java_Thread::check_compliance:" \
+            " ERROR: run, init, and cleanup must be defined.\n"));
+        
+          result = false;
+        }
+      }
+      else
+      {
+        MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
+          DLINFO "threads::Java_Thread::check_compliance:" \
+          " ERROR: class object inaccessible.\n"));
+        
+        result = false;
+      }
+    }
+    else
+    {
+      MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
+        DLINFO "threads::Java_Thread::check_compliance:" \
+        " ERROR: object is invalid.\n"));
+
+      result = false;
+    }
   }
   else
   {
     MADARA_DEBUG (Madara::Utility::LOG_EMERGENCY, (LM_DEBUG, 
-      DLINFO "Madara::Threads::Java_Thread::init:" \
-      " ERROR: Unable to find user-defined init method.\n"));
+      DLINFO "threads::Java_Thread::check_compliance:" \
+      " ERROR: unable to acquire JAVA environment.\n"));
+
+    result = false;
   }
+
+  return result;
 }
 
+void
+threads::Java_Thread::init_control_vars (engine::Knowledge_Base & control)
+{
+  // Initialize the underlying control variables
+  threads::Base_Thread::init_control_vars (control);
+  
+  // setup the Java variables
+  JNIEnv * env = ::madara_jni_get_env ();
+  
+  MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
+    DLINFO "threads::Java_Thread::init_control_vars:" \
+    " Populating user control plane variables.\n"));
+
+  // obtain fromPointer method for com.madara.containers.Integer
+  jclass i_class = env->FindClass ("com/madara/containers/Integer");
+  jmethodID fromPointerCall = env->GetStaticMethodID (i_class,
+    "fromPointer", "(JZ)Lcom/madara/containers/Integer;");
+
+  // the user thread should not manage C++ memory. We'll do that.
+  jboolean manage (false);
+
+  // create java objects for the underlying containers
+  jobject jterminate = env->CallStaticObjectMethod (i_class,
+    fromPointerCall, (jlong) &terminate, manage);
+  jobject jpaused = env->CallStaticObjectMethod (i_class,
+    fromPointerCall, (jlong) &paused, manage);
+
+  // set the user-defined threads's containers to these new containers
+  jfieldID fieldId = env->GetFieldID(class_,
+    "terminated","Lcom/madara/containers/Integer;");
+  env->SetObjectField (obj_, fieldId, jterminate);
+  
+  fieldId = env->GetFieldID(class_,
+    "paused","Lcom/madara/containers/Integer;");
+  env->SetObjectField (obj_, fieldId, jpaused);
+}

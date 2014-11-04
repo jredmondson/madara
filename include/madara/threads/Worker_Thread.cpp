@@ -42,12 +42,9 @@ Madara::Threads::Worker_Thread::Worker_Thread (
   {
     std::stringstream base_string;
     base_string << name;
-
-    thread->terminated.set_name (
-      base_string.str () + ".terminated", *control);
-    thread->paused.set_name (
-      base_string.str () + ".paused", *control);
+    
     thread->name = name;
+    thread->init_control_vars (*control);
 
     finished_.set_name (
       base_string.str () + ".finished", *control);

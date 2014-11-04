@@ -54,7 +54,12 @@ Madara::Threads::Threader::run (
 {
   if (name != "" && thread != 0)
   {
-    run (name, new Java_Thread (thread), paused);
+    // attempt to create a Java Thread
+    Java_Thread * new_thread = Java_Thread::create (thread);
+
+    // if successful, run the thread
+    if (new_thread)
+      run (name, new_thread, paused);
   }
 }
       
@@ -65,7 +70,12 @@ Madara::Threads::Threader::run (
 {
   if (name != "" && thread != 0)
   {
-    run (name, new Java_Thread (thread), paused);
+    // attempt to create a Java Thread
+    Java_Thread * new_thread = Java_Thread::create (thread);
+
+    // if successful, run the thread
+    if (new_thread)
+      run (hertz, name, new_thread, paused);
   }
 }
 

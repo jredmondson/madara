@@ -73,6 +73,18 @@ namespace Madara
     protected:
       
       /**
+       * Initializes the Java thread implementation's control plane variables
+       * @param name the unique name for the thread
+       * @param control the control plane between Threader and threads
+       **/
+      virtual void init_control_vars (
+        Knowledge_Engine::Knowledge_Base & control)
+      {
+        terminated.set_name (name + ".terminated", control);
+        paused.set_name (name + ".paused", control);
+      }
+
+      /**
        * The unique name of your thread
        **/
       std::string name;
