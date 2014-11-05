@@ -29,6 +29,9 @@ public class KnowledgeRecord extends MadaraJNI
   private static native long[] jni_toLongArray(long cptr);
   private native int jni_getType(long cptr);
 
+  //Checks
+  private native boolean jni_isValid(long cptr);
+  
   //Free
   private native void jni_freeKnowledgeRecord(long cptr);
 
@@ -108,6 +111,16 @@ public class KnowledgeRecord extends MadaraJNI
     setCPtr(jni_KnowledgeRecord(longs));
   }
 
+
+  /**
+   * Checks if the record is valid or uncreated
+   *
+   * @return true if record has a value, false otherwise.
+   */
+  public boolean isValid()
+  {
+    return jni_isValid(getCPtr());
+  }
 
   /**
    * Converts the value to a long

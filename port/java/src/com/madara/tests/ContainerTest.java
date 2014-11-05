@@ -11,6 +11,7 @@ import com.madara.KnowledgeBase;
 import com.madara.KnowledgeRecord;
 import com.madara.containers.Vector;
 import com.madara.containers.Integer;
+import com.madara.containers.Queue;
 
 /**
  * This class is a tester for the com.madara.containers package
@@ -126,9 +127,57 @@ public class ContainerTest
       knowledge.print();
   }
   
+  public static void testQueue()
+  {
+    KnowledgeBase knowledge = new KnowledgeBase();
+    Queue queue = new Queue();
+    
+    boolean error = false;
+    
+    System.out.println("Testing Queue");
+    
+    queue.setName(knowledge, "queue");
+    
+    queue.resize(10);
+    
+    queue.enqueue(10);
+    queue.enqueue(12.5);
+    queue.enqueue("third");
+    
+    if(queue.count() == 3 && queue.size() == 10)
+    {
+      System.out.println("  SUCCESS: Queue count and size test");
+    }
+    else
+    {
+      System.out.println("  FAIL: Queue count and size test");
+      error = true;
+    }
+    
+    KnowledgeRecord value1 = queue.dequeue(true);
+    KnowledgeRecord value2 = queue.dequeue(true);
+    KnowledgeRecord value3 = queue.dequeue(true);
+    
+    if(value1.toString().equals("10") &&
+       value2.toString().equals("12.5") && value3.toString().equals("third") &&
+       queue.count() == 0)
+    {
+      System.out.println("  SUCCESS: Queue dequeue test");
+    }
+    else
+    {
+      System.out.println("  FAIL: Queue dequeue test");
+      error = true;
+    }
+    
+    if(error)
+      knowledge.print();
+  }
+  
   public static void main(String...args) throws Exception
   {
     testInteger();
     testVector();
+    testQueue();
   }
 }

@@ -102,6 +102,25 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord
 }
 
 /*
+ * Class:     com_madara_KnowledgeRecord
+ * Method:    jni_isValid
+ * Signature: (J)Z
+ */
+jboolean JNICALL Java_com_madara_KnowledgeRecord_jni_1isValid
+  (JNIEnv *, jobject, jlong cptr)
+{
+  jboolean result (false);
+  Madara::Knowledge_Record * record = (Madara::Knowledge_Record*)cptr;
+
+  if (record)
+  {
+    result = record->is_valid ();
+  }
+
+  return result;
+}
+
+/*
 * Class:     com_madara_KnowledgeRecord
 * Method:    jni_toLongValue
 * Signature: (J)J

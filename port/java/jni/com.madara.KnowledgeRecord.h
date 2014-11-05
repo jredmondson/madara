@@ -135,6 +135,14 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeList_jni_1freeKnowledgeList
   (JNIEnv *, jobject, jlongArray, jint);
   
 /*
+ * Class:     com_madara_KnowledgeRecord
+ * Method:    jni_isValid
+ * Signature: (J)Z
+ */
+MADARA_Export jboolean JNICALL Java_com_madara_KnowledgeRecord_jni_1isValid
+  (JNIEnv *, jobject, jlong);
+
+/*
  * Class:     com_madara_KnowledgeMap
  * Method:    jni_freeKnowledgeMap
  * Signature: ([JI)V
