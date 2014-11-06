@@ -119,7 +119,7 @@ Madara::Knowledge_Engine::Containers::Barrier::build_aggregate_barrier (void)
       buffer << id_;
 
       // add all other barrierer variables
-      for (int i = 1; i < participants_; ++i)
+      for (size_t i = 1; i < participants_; ++i)
       {
         buffer << " && ";
         buffer << name_;
