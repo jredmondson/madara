@@ -146,7 +146,7 @@ Downloading the source
   * Download Madara to $MY_INSTALL_DIR/madara on a Linux box
       git clone git://git.code.sf.net/p/madara/code $MY_INSTALL_DIR/madara
 
-  * Download Madara to C:\madara on a Windows box
+  * Download Madara to %MY_INSTALL_DIR%\madara on a Windows box
       svn checkout http://madara.googlecode.com/svn/trunk/ %MY_INSTALL_DIR%\madara
 
 ---------------------------------------
