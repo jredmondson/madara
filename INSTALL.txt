@@ -13,6 +13,7 @@ How to Install Madara on your system (must be done on each host)
           o Set environment variables
           o Generate the Madara project for your system
           o Compiling the Madara library on your system
+    * Validating Installation
 
 
 ========================================================
@@ -20,8 +21,8 @@ How to Install Madara on your system (must be done on each host)
 
   This file may not be up-to-date.
 
-  Please see http://code.google.com/p/madara/wiki/Installation for the
-  latest version of this document.
+  Please see http://sourceforge.net/p/madara/wiki/InstallationFromSource/
+  for the latest version of this document.
 
 ========================================================
 1. Introduction
@@ -35,25 +36,30 @@ to compile the Madara library for your particular architecture.
 2. Prerequisites
 
 You will need to download ACE and the associated MPC program (which is used
-to generate Visual Studio workspaces or GNU makefiles for the Madara source code).
+to generate Visual Studio workspaces or GNU makefiles for the Madara source
+code).
 
+For the purposes of this document, the directory you want to install all
+required libraries will be referred to as $MY_INSTALL_DIR on Linux and
+%MY_INSTALL_DIR% on Windows
 
 ACE
 --------------------------------
 ACE download and install (Linux)
 
+
   * Set environment variables
-      export ACE_ROOT=/opt/ACE_wrappers
+      export ACE_ROOT=$MY_INSTALL_DIR/ACE_wrappers
       export TAO_ROOT=$ACE_ROOT/TAO
       export LD_LIBRARY_PATH=$ACE_ROOT/lib:$TAO_ROOT/lib:$LD_LIBRARY_PATH 
       export PATH=$ACE_ROOT/bin:$TAO_ROOT/bin:$PATH
 
   * Downloading ACE+TAO+CIA
-      svn co svn://svn.dre.vanderbilt.edu/DOC/Middleware/sets-anon/ACE+TAO+CIAO /opt/ace
-      cd $ACE_ROOT/ace
-      echo "#include \"ace/config-linux.h\"" > config.h
+      svn co svn://svn.dre.vanderbilt.edu/DOC/Middleware/sets-anon/ACE+TAO+CIAO $MY_INSTALL_DIR/ace
 
   * Configuring and Generating Makefiles
+      cd $ACE_ROOT/ace
+      echo "#include \"ace/config-linux.h\"" > config.h
       cd $ACE_ROOT/include/makeinclude
       echo "include \$(ACE_ROOT)/include/makeinclude/platform_linux.GNU" > platform_macros.GNU
       cd $TAO_ROOT
@@ -64,12 +70,12 @@ ACE download and install (Linux)
 ACE download and install (Windows)
 
   * Set environment variables
-      ACE_ROOT=C:\ace\ACE_wrappers
+      ACE_ROOT=%MY_INSTALL_DIR%\ace\ACE_wrappers
       TAO_ROOT=$ACE_ROOT\TAO
       PATH=%ACE_ROOT%\lib;%TAO_ROOT%\lib;%ACE_ROOT%\bin;%TAO_ROOT%\bin;%PATH%
 
   * Downloading ACE+TAO+CIA
-      svn co svn://svn.dre.vanderbilt.edu/DOC/Middleware/sets-anon/ACE+TAO+CIAO C:\ace
+      svn co svn://svn.dre.vanderbilt.edu/DOC/Middleware/sets-anon/ACE+TAO+CIAO %MY_INSTALL_DIR%\ace
 
   * Configuring and Generating VS Solutions
       cd %ACE_ROOT%\ace
@@ -91,12 +97,16 @@ ACE download and install (Windows)
 Open Splice Community Edition
 --------------------------------
 
+  NOTE: INSTALLING OPEN SPLICE IS NOT REQUIRED. IF YOU WOULD LIKE TO JUST USE THE
+  BUILT-IN IP-BASED TRANSPORTS, THAT IS PERFECTLY FINE. PROCEED WITH THIS SECTION
+  ONLY IF YOU WOULD LIKE TO INSTALL DDS AS A TRANSPORT OPTION.
+
 Linux
 
   First, go ahead and setup the environment variables in your ~/.profile file 
   or wherever your operating system loads your environment variables from.
 
-    export OSPL_HOME=/opt/splice/HDE/x86.linux2.6
+    export OSPL_HOME=$MY_INSTALL_DIR/splice/HDE/x86.linux2.6
     export OSPL_TARGET=x86.linux2.6
     export OSPL_TMPL_PATH=$OSPL_HOME/etc/idlpp
     export OSPL_URI=file://$OSPL_HOME/etc/config/ospl.xml
@@ -104,22 +114,22 @@ Linux
     export LD_LIBRARY_PATH=$OSPL_HOME/lib:$LD_LIBRARY_PATH
     export PATH=$OSPL_HOME/bin:$PATH
 
-  The following commands extract the Open Splice download to the /opt/splice 
+  The following commands extract the Open Splice download to the $MY_INSTALL_DIR/splice 
   directory. Feel free to change this to whatever location you'd like splice to reside at:
 
-    cd /opt
+    cd $MY_INSTALL_DIR
     wget http://www.opensplice.org/releases/downloads/releases/OpenSpliceDDSV5.2-x86.linux2.6-gcc344-gnuc23-HDE.tar.gz
-    mkdir /opt/splice
-    cd /opt/splice
+    mkdir $MY_INSTALL_DIR/splice
+    cd $MY_INSTALL_DIR/splice
     tar xvf OpenSpliceDDSV5.2-x86.linux2.6-gcc344-gnuc23-HDE.tar.gz
 
 Windows
 
   * Download http://code.google.com/p/madara/downloads/detail?name=opensplice_community.zip
-  * Unzip the file to C:\
+  * Unzip the file to %MY_INSTALL_DIR%
   * Set the following environment variables
 
-     OSPL_HOME=C:\Splice\HDE\x86.win32
+     OSPL_HOME=%MY_INSTALL_DIR%\Splice\HDE\x86.win32
      OSPL_TARGET=x86.win32
      OSPL_TMPL_PATH=%OSPL_HOME%\etc\idlpp
      OSPL_URI=file://%OSPL_HOME%\etc\config\ospl.xml
@@ -133,11 +143,11 @@ Windows
 ---------------------------------------
 Downloading the source
 
-  * Download Madara to /opt/madara on a Linux box
-      svn checkout http://madara.googlecode.com/svn/trunk/ /opt/madara
+  * Download Madara to $MY_INSTALL_DIR/madara on a Linux box
+      git clone git://git.code.sf.net/p/madara/code $MY_INSTALL_DIR/madara
 
   * Download Madara to C:\madara on a Windows box
-      svn checkout http://madara.googlecode.com/svn/trunk/ C:\madara
+      svn checkout http://madara.googlecode.com/svn/trunk/ %MY_INSTALL_DIR%\madara
 
 ---------------------------------------
 Set environment variables
@@ -147,12 +157,12 @@ Set environment variables
   * Next, set the following environment variable for Madara:
 
     -- Linux 
-         export MADARA_ROOT=/opt/madara
+         export MADARA_ROOT=$MY_INSTALL_DIR/madara/code
          export LD_LIBRARY_PATH=$MADARA_ROOT/lib:$LD_LIBRARY_PATH
          export PATH=$MADARA_ROOT/bin:$PATH
 
     -- Windows 
-         MADARA_ROOT=C:\madara
+         MADARA_ROOT=%MY_INSTALL_DIR%\madara\code
          PATH=%MADARA_ROOT%\lib;%MADARA_ROOT%\bin;%PATH%
 
 ---------------------------------------
@@ -177,3 +187,13 @@ Compiling the Madara library on your system
       cd $MADARA_ROOT
       open the Madara.sln solution file
       Compile the Visual Studio solution 
+
+========================================================
+3. Validating Installation
+---------------------------------------
+
+Check MADARA version from a command prompt. If this prints out version
+information, then the library has been installed successfully.
+
+  $> madara_version
+
