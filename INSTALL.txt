@@ -157,7 +157,7 @@ Set environment variables
   * Next, set the following environment variable for Madara:
 
     -- Linux 
-         export MADARA_ROOT=$MY_INSTALL_DIR/madara/code
+         export MADARA_ROOT=$MY_INSTALL_DIR/madara
          export LD_LIBRARY_PATH=$MADARA_ROOT/lib:$LD_LIBRARY_PATH
          export PATH=$MADARA_ROOT/bin:$PATH
 
