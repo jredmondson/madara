@@ -176,7 +176,7 @@ namespace Madara
      * Checks if record exists (i.e., is not uncreated)
      * @return true if record exists, false otherwise
      **/
-    bool exists (void);
+    bool exists (void) const;
 
     /**
      * retrieves the value at an array index. If the

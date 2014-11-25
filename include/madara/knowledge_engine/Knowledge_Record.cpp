@@ -109,7 +109,7 @@ Madara::Knowledge_Record::~Knowledge_Record ()
 
 
 bool
-Madara::Knowledge_Record::exists (void)
+Madara::Knowledge_Record::exists (void) const
 {
   return status_ != UNCREATED;
 }
@@ -816,8 +816,17 @@ Madara::Knowledge_Record::operator== (const Knowledge_Record & rhs) const
 {
   Integer result (0);
 
+  // if left hand side does 
+  if (!exists ())
+  {
+    if (!rhs.exists () || rhs.is_false ())
+    {
+      result = 1;
+    }
+  }
+
   // if the left hand side is an integer
-  if (is_integer_type ())
+  else if (is_integer_type ())
   {
     Integer lhs = this->to_integer ();
 
@@ -857,6 +866,12 @@ Madara::Knowledge_Record::operator== (const Knowledge_Record & rhs) const
       result = temp == other;
     }
     
+    // check if right hand side is uncreated
+    else if (!rhs.exists ())
+    {
+      result = is_false ();
+    }
+
     // default is string to integer comparison
     else if (rhs.is_integer_type ())
     {

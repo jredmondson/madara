@@ -364,8 +364,16 @@ void test_comparisons (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
     knowledge.get (".var8").to_integer () == 1 &&
     knowledge.get (".var9").to_integer () == 1 &&
     knowledge.get (".var10").to_integer () == 1);
+  
+  ACE_DEBUG ((LM_INFO, "  Testing uncreated values comparisons\n"));
 
-
+  knowledge.evaluate (".var1 = false == 'bob'; .var2 = false == 0;");
+  knowledge.evaluate (".var3 = false == 1; .var4 = false != 1");
+  
+  assert (knowledge.get (".var1").to_integer () == 0 && 
+    knowledge.get (".var2").to_integer () == 1 &&
+    knowledge.get (".var3").to_integer () == 0 &&
+    knowledge.get (".var4").to_integer () == 1);
 }
 
 void test_doubles (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
