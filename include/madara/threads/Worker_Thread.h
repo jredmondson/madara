@@ -52,7 +52,7 @@ namespace Madara
         Base_Thread * thread,
         Knowledge_Engine::Knowledge_Base * control,
         Knowledge_Engine::Knowledge_Base * data,
-        double hertz = 0.0);
+        double hertz = -1.0);
       
       /**
        * Copy constructor

@@ -6,35 +6,16 @@
 
 #include <iostream>
 
-#ifdef WIN32
-
-#include <process.h>
-
-unsigned __stdcall broadcast_windows_glue (void * param)
-{
-  Madara::Transport::Broadcast_Transport_Read_Thread * caller = 
-    static_cast <Madara::Transport::Broadcast_Transport_Read_Thread *> (
-      param);
-  if (caller)
-    return (unsigned) caller->svc ();
-  else
-    return 0;
-}
-
-#endif
-
 Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thread (
   const Settings & settings,
   const std::string & id,
-  Madara::Knowledge_Engine::Thread_Safe_Context & context,
   const ACE_INET_Addr & address,
   ACE_SOCK_Dgram_Bcast & socket,
   Bandwidth_Monitor & send_monitor,
   Bandwidth_Monitor & receive_monitor,
   Packet_Scheduler & packet_scheduler)
-  : settings_ (settings), id_ (id), context_ (context),
-    barrier_ (2), terminated_ (false), 
-    mutex_ (), is_not_ready_ (mutex_), is_ready_ (false), address_ (address.get_port_number ()),
+  : settings_ (settings), id_ (id), context_ (0),
+    address_ (address.get_port_number ()),
     write_socket_ (socket),
     send_monitor_ (send_monitor),
     receive_monitor_ (receive_monitor),
@@ -48,14 +29,14 @@ Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thr
   if (-1 == read_socket_.open (local, 2, 0, 1))
   {
     MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thread:" \
+      DLINFO "Broadcast_Transport_Read_Thread::constructor:" \
       " Error subscribing to broadcast address %s:%d\n",
       address_.get_host_addr (), address_.get_port_number ()));
   } 
   else
   {
     MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thread:" \
+      DLINFO "Broadcast_Transport_Read_Thread::constructor:" \
       " Success subscribing to broadcast address %s:%d\n",
       address_.get_host_addr (), address_.get_port_number ()));
 
@@ -70,7 +51,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thr
   
     MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
       DLINFO
-      "Multicast_Transport_Read_Thread::Multicast_Transport_Read_Thread:" \
+      "Broadcast_Transport_Read_Thread::constructor:" \
       " default socket buff size is send=%d, rcv=%d\n",
       send_buff_size, rcv_buff_size));
   
@@ -78,7 +59,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thr
     {
       MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
         DLINFO
-        "Multicast_Transport_Read_Thread::Multicast_Transport_Read_Thread:" \
+        "Broadcast_Transport_Read_Thread::constructor:" \
         " setting send buff size to settings.queue_length (%d)\n",
         tar_buff_size));
   
@@ -90,7 +71,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thr
 
       MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
         DLINFO
-        "Multicast_Transport_Read_Thread::Multicast_Transport_Read_Thread:" \
+        "Broadcast_Transport_Read_Thread::constructor:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size));
     }
@@ -99,7 +80,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thr
     {
       MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
         DLINFO
-        "Multicast_Transport_Read_Thread::Multicast_Transport_Read_Thread:" \
+        "Broadcast_Transport_Read_Thread::constructor:" \
         " setting rcv buff size to settings.queue_length (%d)\n",
         tar_buff_size));
   
@@ -111,96 +92,59 @@ Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thr
     
       MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
         DLINFO
-        "Multicast_Transport_Read_Thread::Multicast_Transport_Read_Thread:" \
+        "Broadcast_Transport_Read_Thread::constructor:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size));
     }
     
+    // setup the receive buffer
+    if (settings_.queue_length > 0)
+      buffer_ = new char [settings_.queue_length];
+  }
+}
+
+
+void
+Madara::Transport::Broadcast_Transport_Read_Thread::init (
+  Knowledge_Engine::Knowledge_Base & knowledge)
+{
+  context_ = &(knowledge.get_context ());
+
+  if (context_)
+  {
     // check for an on_data_received ruleset
     if (settings_.on_data_received_logic.length () != 0)
     {
       MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thread:" \
+        DLINFO
+        "Broadcast_Transport_Read_Thread::init:" \
         " setting rules to %s\n", 
         settings_.on_data_received_logic.c_str ()));
 
       Madara::Expression_Tree::Interpreter interpreter;
-      on_data_received_ = context_.compile (settings_.on_data_received_logic);
+      on_data_received_ = context_->compile (settings_.on_data_received_logic);
     }
     else
     {
       MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thread:" \
+        DLINFO "Broadcast_Transport_Read_Thread::init:" \
         " no permanent rules were set\n"));
-    }
-  
-    // setup the receive buffer
-    if (settings_.queue_length > 0)
-      buffer_ = new char [settings_.queue_length];
-    
-    int result;
-
-#ifndef WIN32
-    result = this->activate ();
-#else
-    result = 0;
-    _beginthreadex(NULL, 0, broadcast_windows_glue, (void*)this, 0, 0);
-    
-#endif
-    
-    if (result != -1)
-    {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thread:" \
-        " read thread started (result = %d)\n", result));
-    }
-    else
-    {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thread:" \
-        " failed to create thread. ERRNO = %d\n", ACE_OS::last_error ()));
     }
   }
 }
 
-Madara::Transport::Broadcast_Transport_Read_Thread::~Broadcast_Transport_Read_Thread ()
+
+void
+Madara::Transport::Broadcast_Transport_Read_Thread::cleanup (void)
 {
   // close broadcast port
   if (-1 == read_socket_.close ())
   { 
     MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Broadcast_Transport_Read_Thread::close:" \
+      DLINFO "Broadcast_Transport_Read_Thread::cleanup:" \
       " Error closing broadcast socket\n"));
   }
 }
-
-int
-Madara::Transport::Broadcast_Transport_Read_Thread::close (void)
-{
-  terminated_ = true;
-
-  enter_barrier ();
-
-  return 0;
-}
-
-void
-Madara::Transport::Broadcast_Transport_Read_Thread::wait_for_ready (void)
-{
-  if (!is_ready_)
-    is_not_ready_.wait ();
-}
-
-int Madara::Transport::Broadcast_Transport_Read_Thread::enter_barrier (void)
-{
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Broadcast_Transport_Read_Thread::enter_barrier:" \
-    " beginning thread barrier for shut down of read thread\n"));
-
-  barrier_.wait ();
-  return 0;
-}
-
 
 void
 Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
@@ -274,98 +218,87 @@ Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
   }
 }
 
-int
-Madara::Transport::Broadcast_Transport_Read_Thread::svc (void)
+void
+Madara::Transport::Broadcast_Transport_Read_Thread::run (void)
 {
   ACE_Time_Value wait_time (1);
   ACE_INET_Addr  remote;
   
   // allocate a buffer to send
   char * buffer = buffer_.get_ptr ();
-  const char * print_prefix = "Broadcast_Transport_Read_Thread::svc";
+  const char * print_prefix = "Broadcast_Transport_Read_Thread::run";
   int64_t buffer_remaining = settings_.queue_length;
   
   MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
     DLINFO "%s:" \
     " entering main service loop.\n",
     print_prefix));
-    
-  while (false == terminated_.value ())
-  {
-    Knowledge_Map rebroadcast_records;
 
-    if (buffer == 0)
-    {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
-        DLINFO "%s:" \
-        " Unable to allocate buffer of size %d. Exiting thread.\n",
-        print_prefix,
-        settings_.queue_length));
-    
-      break;
-    }
-    
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+  Knowledge_Map rebroadcast_records;
+
+  if (buffer == 0)
+  {
+    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
       DLINFO "%s:" \
-      " entering a recv on the socket.\n",
-      print_prefix));
+      " Unable to allocate buffer of size %d. Exiting thread.\n",
+      print_prefix,
+      settings_.queue_length));
     
-    // read the message
-    ssize_t bytes_read = read_socket_.recv ((void *)buffer, 
-      settings_.queue_length, remote, 0, &wait_time);
+    return;
+  }
+    
+  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    DLINFO "%s:" \
+    " entering a recv on the socket.\n",
+    print_prefix));
+    
+  // read the message
+  ssize_t bytes_read = read_socket_.recv ((void *)buffer, 
+    settings_.queue_length, remote, 0, &wait_time);
  
 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " received a message header of %d bytes from %s:%d\n",
-      print_prefix,
-      bytes_read,
-      remote.get_host_addr (), remote.get_port_number ()));
-    
-    if (bytes_read > 0)
-    {
-      Message_Header * header = 0;
-
-      std::stringstream remote_host;
-      remote_host << remote.get_host_addr ();
-      remote_host << ":";
-      remote_host << remote.get_port_number ();
-
-      process_received_update (buffer, bytes_read, id_, context_,
-        *qos_settings_, send_monitor_, receive_monitor_, rebroadcast_records,
-        on_data_received_, print_prefix,
-        remote_host.str ().c_str (), header);
-      
-      if (header)
-      {
-        if (header->ttl > 0 && rebroadcast_records.size () > 0 &&
-            qos_settings_ && qos_settings_->get_participant_ttl () > 0)
-        {
-          --header->ttl;
-          header->ttl = std::min (
-            qos_settings_->get_participant_ttl (), header->ttl);
-
-          rebroadcast (print_prefix, header, rebroadcast_records);
-        }
-
-        // delete header
-        delete header;
-      }
-    }
-    else
-    {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
-        " wait timeout on new messages. Proceeding to next wait\n",
-        print_prefix));
-    }
-  }
-  
   MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
     DLINFO "%s:" \
-    " entering barrier.\n",
-    print_prefix));
+    " received a message header of %d bytes from %s:%d\n",
+    print_prefix,
+    bytes_read,
+    remote.get_host_addr (), remote.get_port_number ()));
+    
+  if (bytes_read > 0)
+  {
+    Message_Header * header = 0;
 
-  barrier_.wait ();
-  return 0;
+    std::stringstream remote_host;
+    remote_host << remote.get_host_addr ();
+    remote_host << ":";
+    remote_host << remote.get_port_number ();
+
+    process_received_update (buffer, bytes_read, id_, *context_,
+      *qos_settings_, send_monitor_, receive_monitor_, rebroadcast_records,
+      on_data_received_, print_prefix,
+      remote_host.str ().c_str (), header);
+      
+    if (header)
+    {
+      if (header->ttl > 0 && rebroadcast_records.size () > 0 &&
+          qos_settings_ && qos_settings_->get_participant_ttl () > 0)
+      {
+        --header->ttl;
+        header->ttl = std::min (
+          qos_settings_->get_participant_ttl (), header->ttl);
+
+        rebroadcast (print_prefix, header, rebroadcast_records);
+      }
+
+      // delete header
+      delete header;
+    }
+  }
+  else
+  {
+    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+      DLINFO "%s:" \
+      " wait timeout on new messages. Proceeding to next wait\n",
+      print_prefix));
+  }
 }

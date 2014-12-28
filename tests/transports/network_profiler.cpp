@@ -272,6 +272,16 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-e" || arg1 == "--threads")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> settings.read_threads;
+      }
+
+      ++i;
+    }
     else if (arg1 == "-i" || arg1 == "--id")
     {
       if (i + 1 < argc)
@@ -339,6 +349,16 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-z" || arg1 == "--read-hertz")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> settings.read_thread_hertz;
+      }
+
+      ++i;
+    }
     else
     {
       MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
@@ -349,6 +369,7 @@ void handle_arguments (int argc, char ** argv)
         " [-a|--no-latency]        do not test for latency (throughput only)\n" \
         " [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
         " [-d|--domain domain]     the knowledge domain to send and listen to\n" \
+        " [-e|--threads threads]   number of read threads\n" \
         " [-i|--id id]             the id of this agent (should be non-negative)\n" \
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         " [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
@@ -358,6 +379,7 @@ void handle_arguments (int argc, char ** argv)
         " [-s|--size size]         size of data packet to send in bytes\n" \
         " [-t|--time time]         time to burst messages for throughput test\n" \
         " [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
+        " [-z|--read-hertz hertz]  read thread hertz speed\n" \
         "\n",
         argv[0]));
       exit (0);
@@ -494,7 +516,11 @@ int main (int argc, char ** argv)
 {
   settings.type = Madara::Transport::MULTICAST;
   settings.queue_length = data_size * 1000;
- 
+
+  // unlimited hertz
+  settings.read_thread_hertz = 0.0;
+  settings.read_threads = 1;
+
   // use ACE real time scheduling class
   int prio  = ACE_Sched_Params::next_priority
     (ACE_SCHED_FIFO,

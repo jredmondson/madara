@@ -555,6 +555,8 @@ Madara::Transport::process_received_update (
   // unlock the context
   context.unlock ();
   
+  context.set_changed ();
+  
   if (!dropped)
   {
     transport_context.set_operation (
@@ -651,8 +653,6 @@ Madara::Transport::process_received_update (
       print_prefix));
   }
 
-  context.set_changed ();
-  
   return actual_updates;
 }
 

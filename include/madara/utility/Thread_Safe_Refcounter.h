@@ -29,7 +29,8 @@ namespace Madara
       Thread_Safe_Refcounter (void);
 
       /// Ctor with refcounting functionality
-      Thread_Safe_Refcounter (T * ptr, bool increase_count = false);
+      Thread_Safe_Refcounter (T * ptr,
+        bool increase_count = false, bool manage = true);
 
       /// copy Ctor
       Thread_Safe_Refcounter (const Thread_Safe_Refcounter & rhs);
@@ -76,7 +77,7 @@ namespace Madara
       struct Shim
       {
         /// Constructor.
-        Shim (T * t);
+        Shim (T * t, bool manage = true);
         
         /// Destructor.
         ~Shim (void);
@@ -89,6 +90,9 @@ namespace Madara
 
         /// Current value of the reference count.
         volatile int refcount_;
+
+        /// allow unmanaged references
+        bool manage_;
       };
 
       /// Pointer to the @a Shim.

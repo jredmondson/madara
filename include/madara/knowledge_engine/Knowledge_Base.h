@@ -77,6 +77,12 @@ namespace Madara
        * @param   original  knowledge base to copy
        **/
       Knowledge_Base (const Knowledge_Base & original);
+      
+      /**
+       * Refer to and use another knowledge base's context
+       * @param   original  knowledge base to refer to
+       **/
+      void use (Thread_Safe_Context & original);
 
       /**
        * Destructor
@@ -1049,6 +1055,9 @@ namespace Madara
       /// Pointer to actual implementation, i.e., the "bridge", which is
       /// reference counted to automate memory management. 
       Madara::Utility::Thread_Safe_Refcounter <Knowledge_Base_Impl> impl_;
+
+      /// A knowledge base can also be a facade for another knowledge base
+      Thread_Safe_Context * context_;
     };
 
   }

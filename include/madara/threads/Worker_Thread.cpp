@@ -17,9 +17,13 @@ unsigned __stdcall worker_thread_windows_glue (void * param)
     static_cast < Madara::Threads::Worker_Thread *> (
       param);
   if (caller)
+  {
     return (unsigned) caller->svc ();
+  }
   else
+  {
     return 0;
+  }
 }
 
 #endif
@@ -29,7 +33,7 @@ unsigned __stdcall worker_thread_windows_glue (void * param)
 #include <algorithm>
 
 Madara::Threads::Worker_Thread::Worker_Thread ()
-  : thread_ (0), control_ (0), data_ (0), hertz_ (0.0)
+  : thread_ (0), control_ (0), data_ (0), hertz_ (-1.0)
 {
 }
 
@@ -118,6 +122,10 @@ Madara::Threads::Worker_Thread::run (void)
 int
 Madara::Threads::Worker_Thread::svc (void)
 {
+  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+    DLINFO "Worker_Thread::svc:" \
+    " checking thread existence\n"));
+
   if (thread_)
   {
     started_ = 1;
@@ -125,50 +133,91 @@ Madara::Threads::Worker_Thread::svc (void)
     thread_->init (*data_);
 
     {
-      ACE_Time_Value current = ACE_OS::gettimeofday ();
+      ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();
       ACE_Time_Value next_epoch, poll_frequency;
       
       bool one_shot = true;
+      bool blaster = false;
 
       std::string terminated (name_ + ".terminated");
       std::string paused (name_ + ".paused");
 
       if (hertz_ > 0.0)
       {
+        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "Worker_Thread::svc:" \
+          " %s thread repeating at %f hz\n", name_.c_str (), hertz_));
+
         one_shot = false;
         poll_frequency.set (1.0 / hertz_);
         next_epoch = current + poll_frequency;
       }
+      else if (hertz_ == 0.0)
+      {
+        // infinite hertz until terminate
+        
+        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "Worker_Thread::svc:" \
+          " %s thread blasting at infinite hz\n", name_.c_str ()));
+
+        one_shot = false;
+        blaster = true;
+      }
+      else
+      {
+        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "Worker_Thread::svc:" \
+          " %s thread running once\n", name_.c_str ()));
+      }
 
       while (control_->evaluate (terminated).is_false ())
       {
+        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "Worker_Thread::svc:" \
+          " %s thread checking for pause\n", name_.c_str ()));
+
         if (control_->evaluate (paused).is_false ())
         {
+          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+            DLINFO "Worker_Thread::svc:" \
+            " %s thread calling run function\n", name_.c_str ()));
+
           thread_->run ();
         }
 
         if (one_shot)
           break;
 
-        current = ACE_OS::gettimeofday ();
+        if (!blaster)
+        {
+          current = ACE_High_Res_Timer::gettimeofday ();
+          
+          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+            DLINFO "Worker_Thread::svc:" \
+            " %s thread checking for next hertz epoch\n", name_.c_str ()));
 
-        if (current < next_epoch)
-          Madara::Utility::sleep (next_epoch - current);  
+          if (current < next_epoch)
+            Madara::Utility::sleep (next_epoch - current);  
+          
+          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+            DLINFO "Worker_Thread::svc:" \
+            " %s thread past epoch\n", name_.c_str ()));
 
-        next_epoch += poll_frequency;
+          next_epoch += poll_frequency;
+        }
       }
     }
 
     thread_->cleanup ();
     
     MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Worker_Thread::Worker_Thread:" \
+      DLINFO "Worker_Thread::svc:" \
       " deleting thread %s)\n", name_.c_str ()));
 
     delete thread_;
     
     MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Worker_Thread::Worker_Thread:" \
+      DLINFO "Worker_Thread::svc:" \
       " setting %s to 1)\n", finished_.get_name ().c_str ()));
 
     finished_ = 1;
@@ -177,6 +226,12 @@ Madara::Threads::Worker_Thread::svc (void)
     // try detaching one more time, just to make sure.
     ::jni_detach ();
 #endif
+  }
+  else
+  {
+    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+      DLINFO "Worker_Thread::svc:" \
+      " thread creation failed\n"));
   }
 
   return 0;

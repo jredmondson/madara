@@ -49,6 +49,12 @@ namespace Madara
        * Destructor
        **/
       ~Threader ();
+      
+      /**
+       * Sets the data plane for new threads
+       * @param  data_plane   The data plane for threads to use
+       **/
+      void set_data_plane (Knowledge_Engine::Knowledge_Base & data_plane);
 
       /**
        * Starts a new thread and executes the provided user
@@ -78,7 +84,8 @@ namespace Madara
        * or your program will crash.
        * @param hertz   the intended hertz (frequency) that the thread's
        *                execute should be ran. Hertz is in operations per
-       *                second.
+       *                second. 0.0 means infinite hertz rate. -1 means
+       *                a one shot thread.
        * @param name    unique thread name for the thread.
        *                If possible, try to use one word or
        *                words separated by underscores (_)
@@ -117,7 +124,8 @@ namespace Madara
        * or your program will crash.
        * @param hertz   the intended hertz (frequency) that the thread's
        *                execute should be ran. Hertz is in operations per
-       *                second.
+       *                second. 0.0 means infinite hertz rate. -1 means
+       *                a one shot thread.
        * @param name    unique thread name for the thread.
        *                If possible, try to use one word or
        *                words separated by underscores (_)

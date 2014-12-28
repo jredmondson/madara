@@ -614,7 +614,7 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::wait (
   const Wait_Settings & settings)
 {
   // get current time of day
-  ACE_Time_Value current = ACE_OS::gettimeofday ();  
+  ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();  
   ACE_Time_Value max_wait, sleep_time, next_epoch;
   ACE_Time_Value poll_frequency, last = current;
 
@@ -649,7 +649,7 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::wait (
 
   map_.unlock ();
   
-  current = ACE_OS::gettimeofday ();
+  current = ACE_High_Res_Timer::gettimeofday ();
 
   // wait for expression to be true
   while (!last_value.to_integer () &&
@@ -703,7 +703,7 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::wait (
     map_.signal ();
 
     // get current time
-    current = ACE_OS::gettimeofday ();
+    current = ACE_High_Res_Timer::gettimeofday ();
 
   } // end while (!last)
   

@@ -6,6 +6,7 @@
 #include "madara/MADARA_export.h"
 #include "madara/transport/udp/UDP_Transport_Read_Thread.h"
 #include "madara/transport/Transport.h"
+#include "madara/threads/Threader.h"
 
 #include <string>
 #include <map>
@@ -85,14 +86,19 @@ namespace Madara
       int setup (void);
     protected:
     private:
-      UDP_Transport_Read_Thread *               thread_;
-
-      bool                                      valid_setup_;
+      /// knowledge base for threads to use
+      Knowledge_Engine::Knowledge_Base          knowledge_;
+      
+      /// threads for reading knowledge updates
+      Threads::Threader                         read_threads_;
       
       std::map <std::string, ACE_INET_Addr>     addresses_;
       
       /// underlying socket for sending
-      ACE_SOCK_Dgram                            socket_;
+      ACE_SOCK_Dgram                            write_socket_;
+
+      /// The socket we are reading from
+      ACE_SOCK_Dgram                            read_socket_;
     };
   }
 }

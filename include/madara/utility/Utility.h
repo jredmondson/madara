@@ -31,7 +31,21 @@ namespace Madara
      * @return              the stringified version number
      **/
     MADARA_Export std::string to_string_version (uint32_t version);
-
+    
+    /**
+     * Replaces an old phrase with a new phrase within a string
+     * @param   source     source string to change
+     * @param   old_phrase  old phrase in the source string to replace
+     * @param   new_phrase  new phrase to replace the old phrase
+     * @param   replace_all if true, replace all instances of old phrase.
+     *                      if false, replace first instance of old phrase.
+     * @return  the number of replacements made
+     **/
+    MADARA_Export size_t string_replace (std::string & source,
+      const std::string & old_phrase,
+      const std::string & new_phrase,
+      bool replace_all = true);
+    
     /**
      * Converts the string to upper. This function will modify and return the
      * input, so make a copy if needed.

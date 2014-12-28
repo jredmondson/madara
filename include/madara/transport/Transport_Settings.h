@@ -681,6 +681,9 @@ namespace Madara
       /// Domains should be separated by commas
       std::string domains;
 
+      /// the number of read threads to start
+      uint32_t read_threads;
+
       /// Length of the buffer used to store history of events
       uint32_t queue_length;
 
@@ -732,6 +735,12 @@ namespace Madara
 
       /// time to sleep between sends and rebroadcasts
       double slack_time;
+
+      /**
+       * number of valid messages allowed to be received per second. This
+       * value can be -1 or 0.0 to go as fast as possible
+       **/
+      double read_thread_hertz;
 
 #ifdef _USE_CID_
       /// should we try to gather latencies?

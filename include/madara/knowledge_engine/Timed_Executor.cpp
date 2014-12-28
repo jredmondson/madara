@@ -45,7 +45,7 @@ Madara::Knowledge_Engine::Timed_Executor::add (const Event & new_event)
   Timed_Event timed_event;
 
   // setup times
-  ACE_Time_Value cur_time = ACE_OS::gettimeofday ();
+  ACE_Time_Value cur_time = ACE_High_Res_Timer::gettimeofday ();
 
   // create timed_event
   timed_event.first = cur_time + new_event.delay;
@@ -63,7 +63,7 @@ ACE_Time_Value
 Madara::Knowledge_Engine::Timed_Executor::remove (Timed_Event & cur_event)
 {
   // obtain current time
-  ACE_Time_Value cur_time = ACE_OS::gettimeofday ();
+  ACE_Time_Value cur_time = ACE_High_Res_Timer::gettimeofday ();
   
   mutex_.acquire ();
 
@@ -194,7 +194,7 @@ ACE_Time_Value
 Madara::Knowledge_Engine::Timed_Executor::time_until_next (void)
 {
   // get the current time
-  ACE_Time_Value cur_time = ACE_OS::gettimeofday ();
+  ACE_Time_Value cur_time = ACE_High_Res_Timer::gettimeofday ();
 
   // calculate the time left before next event is due
   cur_time = events_.top ().first - cur_time;

@@ -59,6 +59,11 @@ Madara::Transport::QoS_Transport_Settings::QoS_Transport_Settings (
     max_total_bandwidth_ = rhs->max_total_bandwidth_;
     latency_deadline_ = rhs->latency_deadline_;
   }
+  else
+  {
+    Settings * lhs = dynamic_cast <Settings *> (this);
+    *lhs = settings;
+  }
 }
 
 Madara::Transport::QoS_Transport_Settings::~QoS_Transport_Settings ()

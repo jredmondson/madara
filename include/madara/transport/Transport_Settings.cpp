@@ -3,6 +3,7 @@
 
 Madara::Transport::Settings::Settings () : 
         domains (DEFAULT_DOMAIN), 
+        read_threads (1),
         queue_length (DEFAULT_QUEUE_LENGTH), 
         deadline (DEFAULT_DEADLINE), 
         type (DEFAULT_TRANSPORT),
@@ -16,6 +17,7 @@ Madara::Transport::Settings::Settings () :
         never_exit (false),
         send_reduced_message_header (false),
         slack_time (0),
+        read_thread_hertz (30.0),
 
 #ifdef _USE_CID_
         latency_enabled (DEFAULT_LATENCY_ENABLED),
@@ -34,6 +36,7 @@ Madara::Transport::Settings::Settings () :
 
 Madara::Transport::Settings::Settings (const Settings & settings) : 
         domains (settings.domains), 
+        read_threads (settings.read_threads),
         queue_length (settings.queue_length), 
         deadline (settings.deadline), 
         type (settings.type),
@@ -47,6 +50,7 @@ Madara::Transport::Settings::Settings (const Settings & settings) :
         never_exit (settings.never_exit),
         send_reduced_message_header (settings.send_reduced_message_header),
         slack_time (settings.slack_time),
+        read_thread_hertz (settings.read_thread_hertz),
 
 #ifdef _USE_CID_
 
@@ -71,6 +75,7 @@ Madara::Transport::Settings::Settings (const Settings & settings) :
 void
 Madara::Transport::Settings::operator= (const Settings & settings)
 {
+  read_threads = settings.read_threads;
   domains = settings.domains;
   queue_length = settings.queue_length;
   deadline = settings.deadline;
@@ -87,6 +92,7 @@ Madara::Transport::Settings::operator= (const Settings & settings)
 
   send_reduced_message_header = settings.send_reduced_message_header;
   slack_time = settings.slack_time;
+  read_thread_hertz = settings.read_thread_hertz;
 
 #ifdef _USE_CID_
   latency_enabled = settings.latency_enabled;

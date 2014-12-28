@@ -18,6 +18,7 @@
 #include "madara/expression_tree/Expression_Tree.h"
 #include "madara/transport/Transport.h"
 #include "madara/transport/Message_Header.h"
+#include "madara/threads/Base_Thread.h"
 
 #include "ace/Task.h"
 #include "ace/Mutex.h"
@@ -37,7 +38,7 @@ namespace Madara
      * @brief Thread for reading knowledge updates through a Multicast
      *        datagram socket
      **/
-    class Multicast_Transport_Read_Thread : public ACE_Task<ACE_NULL_SYNCH>
+    class Multicast_Transport_Read_Thread : public Threads::Base_Thread
     {
     public:
       /**
@@ -47,7 +48,8 @@ namespace Madara
        *                   rejection of duplicates
        * @param    context    the knowledge variables to update
        * @param    address    the multicast address we will read from
-       * @param    socket     socket for sending
+       * @param    write_socket    socket for sending
+       * @param    read_socket    socket for receiving
        * @param    send_monitor    bandwidth monitor for enforcing send limits
        * @param    receive_monitor    bandwidth monitor for enforcing
        *                              receive limits
@@ -56,33 +58,29 @@ namespace Madara
       Multicast_Transport_Read_Thread (
         const Settings & settings,
         const std::string & id,
-        Knowledge_Engine::Thread_Safe_Context & context,
         const ACE_INET_Addr & address,
-        ACE_SOCK_Dgram & socket,
+        ACE_SOCK_Dgram & write_socket,
+        ACE_SOCK_Dgram_Mcast & read_socket,
         Bandwidth_Monitor & send_monitor,
         Bandwidth_Monitor & receive_monitor,
         Packet_Scheduler & packet_scheduler);
-      
+     
       /**
-      * Destructor
-      **/
-      ~Multicast_Transport_Read_Thread ();
-      
-      /**
-      * Signals the read thread to terminate
-      **/
-      int enter_barrier (void);
-      
-      /**
-      * Closes the reading socket and clean up the thread
-      **/
-      int close (void);
+       * Initializes MADARA context-related items
+       * @param   knowledge   context for querying current program state
+       **/
+      void init (Knowledge_Engine::Knowledge_Base & knowledge);
 
       /**
-      * Reads messages from a socket
-      **/
-      int svc (void);
-      
+       * Cleanup function called by thread manager
+       **/
+      void cleanup (void);
+
+      /**
+       * The main loop internals for the read thread
+       **/
+      void run (void);
+
       /**
        * Sends a rebroadcast packet.
        * @param  print_prefix     prefix to include before every log message,
@@ -96,41 +94,21 @@ namespace Madara
         Message_Header * header,
         const Knowledge_Map & records);
 
-      /**
-      * Wait for the transport to be ready
-      **/
-      void wait_for_ready (void);
-
     private:
       /// quality-of-service transport settings
-      const Settings  &          settings_;
+      const QoS_Transport_Settings  settings_;
 
       /// host:port identifier of this process
-      const std::string                                 id_;
+      const std::string          id_;
 
       /// knowledge context
-      ::Madara::Knowledge_Engine::Thread_Safe_Context & context_;
+      Knowledge_Engine::Thread_Safe_Context * context_;
       
-      /// barrier for closing and waiting on the read thread
-      ACE_Barrier barrier_;
-
-      /// atomic variable that signals termination
-      ACE_Atomic_Op<ACE_Mutex, bool>     terminated_;
-      
-      /// Mutex for use with terminated_
-      ACE_Thread_Mutex                   mutex_;
-      
-      /// Condition that is waited on my calling transport on startup
-      Madara::Transport::Condition       is_not_ready_;
-
-      /// Indicates whether the read thread is ready to accept messages
-      bool                               is_ready_;
-
       /// The multicast address we are subscribing to
       ACE_INET_Addr                      address_;
 
       /// The multicast socket we are reading from
-      ACE_SOCK_Dgram_Mcast               read_socket_;
+      ACE_SOCK_Dgram_Mcast  &            read_socket_;
       
       /// underlying socket for sending
       ACE_SOCK_Dgram      &              write_socket_;
@@ -140,9 +118,6 @@ namespace Madara
 
       /// buffer for receiving
       Madara::Utility::Scoped_Array <char>      buffer_;
-
-      /// pointer to qos_settings (if applicable)
-      const QoS_Transport_Settings *      qos_settings_;
       
       /// monitor for sending bandwidth usage
       Bandwidth_Monitor   &   send_monitor_;

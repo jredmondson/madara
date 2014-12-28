@@ -27,6 +27,11 @@ Madara::Threads::Threader::~Threader ()
   delete control_;
 }
 
+void Madara::Threads::Threader::set_data_plane (
+  Knowledge_Engine::Knowledge_Base & data_plane)
+{
+  data_ = &data_plane;
+}
 
 void
 Madara::Threads::Threader::run (

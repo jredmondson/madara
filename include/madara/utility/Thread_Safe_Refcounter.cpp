@@ -13,8 +13,9 @@ Madara::Utility::Thread_Safe_Refcounter<T>::Thread_Safe_Refcounter (void)
 
 /// Ctor with refcounting functionality
 template <typename T>
-Madara::Utility::Thread_Safe_Refcounter<T>::Thread_Safe_Refcounter (T *ptr, bool increase_count)
-  : ptr_ (new Shim (ptr))
+Madara::Utility::Thread_Safe_Refcounter<T>::Thread_Safe_Refcounter (T *ptr,
+  bool increase_count, bool manage)
+  : ptr_ (new Shim (ptr, manage))
 {
   if (increase_count)
     increment ();
@@ -22,7 +23,8 @@ Madara::Utility::Thread_Safe_Refcounter<T>::Thread_Safe_Refcounter (T *ptr, bool
 
   /// copy Ctor
 template <typename T>
-Madara::Utility::Thread_Safe_Refcounter<T>::Thread_Safe_Refcounter (const Thread_Safe_Refcounter &rhs)
+Madara::Utility::Thread_Safe_Refcounter<T>::Thread_Safe_Refcounter (
+  const Thread_Safe_Refcounter &rhs)
   : ptr_ (rhs.ptr_)
 {
   increment ();
@@ -113,7 +115,7 @@ template <typename T>
 void 
 Madara::Utility::Thread_Safe_Refcounter<T>::increment (void)
 {
-  if (ptr_)
+  if (ptr_ && ptr_->manage_)
   {
     ++ptr_->refcount_;
   }
@@ -124,7 +126,7 @@ template <typename T>
 void 
 Madara::Utility::Thread_Safe_Refcounter<T>::decrement (void)
 {
-  if (ptr_)
+  if (ptr_&& ptr_->manage_)
   {
     --ptr_->refcount_;
     if (ptr_->refcount_ <= 0)
@@ -136,15 +138,16 @@ Madara::Utility::Thread_Safe_Refcounter<T>::decrement (void)
 }
 
 template <typename T>
-Madara::Utility::Thread_Safe_Refcounter<T>::Shim::Shim (T *t)
-  : t_ (t), refcount_ (1) 
+Madara::Utility::Thread_Safe_Refcounter<T>::Shim::Shim (T *t, bool manage)
+  : t_ (t), refcount_ (1), manage_ (manage)
 {
 }
 
 template <typename T>
 Madara::Utility::Thread_Safe_Refcounter<T>::Shim::~Shim (void) 
-{ 
-  delete t_; 
+{
+  if (manage_)
+    delete t_; 
 }
 
 #endif /* _MADARA_THREADSAFE_REFCOUNTER_CPP_ */

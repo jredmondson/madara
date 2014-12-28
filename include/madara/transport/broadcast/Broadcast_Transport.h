@@ -19,6 +19,7 @@
 #include "ace/SOCK_Dgram_Bcast.h"
 #include "madara/utility/stdint.h"
 #include "madara/expression_tree/Expression_Tree.h"
+#include "madara/threads/Threader.h"
 
 
 namespace Madara
@@ -88,8 +89,11 @@ namespace Madara
 
     private:
       
-      /// thread for reading knowledge updates
-      Broadcast_Transport_Read_Thread *         thread_;
+      /// knowledge base for threads to use
+      Knowledge_Engine::Knowledge_Base         knowledge_;
+      
+      /// threads for reading knowledge updates
+      Threads::Threader                        read_threads_;
 
       /// indicates whether the transport is correctly configured
       bool                                      valid_setup_;

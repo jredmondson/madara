@@ -24,6 +24,7 @@ namespace Madara
     class Thread_Safe_Context;
     class Knolwedge_Base_Impl;
     class Variables;
+    class Knowledge_Base;
 
     /**
      * @class Compiled_Expression
@@ -36,6 +37,7 @@ namespace Madara
       friend class Thread_Safe_Context;
       friend class Knowledge_Base_Impl;
       friend class Variables;
+      friend class Knowledge_Base;
       friend class Expression_Tree::System_Call_Eval;
 
       /**

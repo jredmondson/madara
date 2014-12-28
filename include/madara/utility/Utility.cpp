@@ -217,6 +217,29 @@ Madara::Utility::string_remove (std::string & input, char unwanted)
   return input;
 }
 
+size_t
+Madara::Utility::string_replace (std::string & source,
+  const std::string & old_phrase,
+  const std::string & new_phrase,
+  bool replace_all)
+{
+  // return value
+  size_t replacements = 0;
+
+  for (std::string::size_type i = source.find (old_phrase, 0);
+    i != source.npos; i = source.find (old_phrase, i))
+  {
+    source.replace (i, old_phrase.size (), new_phrase);
+    i += new_phrase.size ();
+
+    ++replacements;
+
+    if (!replace_all)
+      break;
+  }
+
+  return replacements;
+}
 
 std::string &
 Madara::Utility::strip_comments (std::string & input)
@@ -758,13 +781,13 @@ Madara::Utility::nearest_int (double input)
 
 double Madara::Utility::sleep (double sleep_time)
 {
-  ACE_Time_Value current = ACE_OS::gettimeofday (); 
+  ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday (); 
   ACE_Time_Value actual_time;
   actual_time.set (sleep_time);
 
   sleep (actual_time);
 
-  ACE_Time_Value end = ACE_OS::gettimeofday ();
+  ACE_Time_Value end = ACE_High_Res_Timer::gettimeofday ();
   end = end - current;
   double time_taken = (double) end.sec ();
   time_taken += (double) end.usec () / 1000000;
@@ -775,16 +798,16 @@ double Madara::Utility::sleep (double sleep_time)
 
 ACE_Time_Value Madara::Utility::sleep (const ACE_Time_Value & sleep_time)
 {
-  ACE_Time_Value current = ACE_OS::gettimeofday (); 
+  ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday (); 
   ACE_Time_Value earliest = current + sleep_time;
 
   while (current < earliest)
   {
     ACE_OS::sleep (earliest - current);
-    current = ACE_OS::gettimeofday ();
+    current = ACE_High_Res_Timer::gettimeofday ();
   }
 
-  return ACE_OS::gettimeofday () - current;
+  return ACE_High_Res_Timer::gettimeofday () - current;
 }
 
 bool

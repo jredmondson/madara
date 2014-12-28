@@ -13,14 +13,15 @@
 
 #include "madara/MADARA_export.h"
 #include "madara/utility/Scoped_Array.h"
-#include "madara/transport/multicast/Multicast_Transport_Read_Thread.h"
 #include "madara/transport/QoS_Transport_Settings.h"
 #include "madara/transport/Transport.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge_engine/Knowledge_Base.h"
 #include "ace/SOCK_Dgram.h"
+#include "ace/SOCK_Dgram_Mcast.h"
 #include "madara/knowledge_engine/Knowledge_Record.h"
 #include "madara/expression_tree/Expression_Tree.h"
 #include "madara/transport/Bandwidth_Monitor.h"
+#include "madara/threads/Threader.h"
 
 namespace Madara
 {
@@ -89,9 +90,12 @@ namespace Madara
 
     private:
       
-      /// thread for reading knowledge updates
-      Multicast_Transport_Read_Thread *         thread_;
+      /// knowledge base for threads to use
+      Knowledge_Engine::Knowledge_Base         knowledge_;
       
+      /// threads for reading knowledge updates
+      Threads::Threader                        read_threads_;
+
       /// indicates whether the transport is correctly configured
       bool                                      valid_setup_;
 
@@ -102,7 +106,10 @@ namespace Madara
       std::vector <std::string>                 splitters_;
 
       /// underlying socket for sending
-      ACE_SOCK_Dgram                            socket_;
+      ACE_SOCK_Dgram                            write_socket_;
+
+      /// The multicast socket we are reading from
+      ACE_SOCK_Dgram_Mcast                      read_socket_;
     };
   }
 }

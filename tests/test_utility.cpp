@@ -14,6 +14,8 @@
 #include "ace/OS_NS_Thread.h"
 #include "ace/Sched_Params.h"
 
+namespace utility = Madara::Utility;
+
 void handle_arguments (int argc, char ** argv)
 {
   for (int i = 1; i < argc; ++i)
@@ -342,10 +344,90 @@ void test_sleep (void)
   }
 }
 
+void test_replace (void)
+{
+  std::cerr << "Testing replace...\n";
+
+  std::string base ("My milkshake brings all the boys to the yard.");
+  std::string source (base);
+  
+  std::cerr << "  Single char replace... ";
+  size_t result = utility::string_replace (source, "i", "u", true);
+
+  if (result == 2 && source == "My mulkshake brungs all the boys to the yard.")
+  {
+    std::cerr << "SUCCESS";
+  }
+  else
+  {
+    std::cerr << "FAIL";
+  }
+
+  std::cerr << "\n";
+  std::cerr << "  Word replace... ";
+
+  source = base;
+
+  result = utility::string_replace (source,
+    "milkshake brings", "crumpets bring");
+  
+  if (result == 1 && source == "My crumpets bring all the boys to the yard.")
+  {
+    std::cerr << "SUCCESS";
+  }
+  else
+  {
+    std::cerr << "FAIL";
+  }
+  std::cerr << "\n";
+
+  std::cerr << "  Multi-word replace... ";
+
+  base = "bob is a builder. bob is a boss. bob is the foreman. bob is a hoss.";
+
+  source = base;
+  
+  result = utility::string_replace (source,
+    "bob", "jake");
+  
+  if (result == 4 &&
+    source == "jake is a builder. jake is a boss. jake is the foreman. jake is a hoss.")
+  {
+    std::cerr << "SUCCESS";
+  }
+  else
+  {
+    std::cerr << "FAIL";
+  }
+
+  std::cerr << "\n";
+  std::cerr << "  Single-word replace... ";
+
+  
+  source = base;
+  
+  result = utility::string_replace (source,
+    "bob", "jake", false);
+  
+  if (result == 1 &&
+    source == "jake is a builder. bob is a boss. bob is the foreman. bob is a hoss.")
+  {
+    std::cerr << "SUCCESS";
+  }
+  else
+  {
+    std::cerr << "FAIL";
+  }
+
+  std::cerr << "\n";
+
+}
+
 int main (int argc, char ** argv)
 {
   handle_arguments (argc, argv);
   
+  test_replace ();
   test_sqrt ();
   test_version ();
   test_endian_swap ();
