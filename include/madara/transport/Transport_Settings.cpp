@@ -17,7 +17,7 @@ Madara::Transport::Settings::Settings () :
         never_exit (false),
         send_reduced_message_header (false),
         slack_time (0),
-        read_thread_hertz (30.0),
+        read_thread_hertz (0.0),
 
 #ifdef _USE_CID_
         latency_enabled (DEFAULT_LATENCY_ENABLED),
