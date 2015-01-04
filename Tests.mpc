@@ -410,6 +410,27 @@ project (Test_Arrays) : using_madara, using_ace {
   }
 }
 
+project (Network_Throughput) : using_madara, using_ace {
+  exeout = $(MADARA_ROOT)/bin
+  exename = network_throughput
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/network_throughput.cpp
+  }
+}
+
 project (Network_Profiler) : using_madara, using_ace {
   exeout = $(MADARA_ROOT)/bin
   exename = network_profiler
