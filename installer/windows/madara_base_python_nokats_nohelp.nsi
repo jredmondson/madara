@@ -4,8 +4,7 @@
 !define PRODUCT_NAME "MADARA"
 
 !define PRODUCT_PUBLISHER "James Edmondson"
-!define PRODUCT_WEB_SITE "http://madara.googlecode.com"
-;!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\kats_batch.exe"
+!define PRODUCT_WEB_SITE "https://sourceforge.net/projects/madara/"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define env_hklm 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
@@ -54,7 +53,7 @@
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "madara_python_${PRODUCT_VERSION}.exe"
 InstallDir "C:\MADARA"
-InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
+;InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails hide
 ShowUnInstDetails hide
 
@@ -142,26 +141,6 @@ Section "gme" SEC05
   File "..\..\modeling\Icons\sleep.jpg"
   File "..\..\modeling\Icons\XMLGenerator.png"
   File "..\..\modeling\Icons\sources.txt"
-SectionEnd
-
-Section "configs" SEC06
-  SetOutPath "$INSTDIR\configs\cid\deployments\test_cid"
-  File "..\..\configs\cid\deployments\test_cid\1_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\2_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\3_deep_tree.template"
-  File "..\..\configs\cid\deployments\test_cid\3_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\3waytree.template"
-  File "..\..\configs\cid\deployments\test_cid\3waytree_strict.template"
-  File "..\..\configs\cid\deployments\test_cid\4_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\mwaytree.template"
-  File "..\..\configs\cid\deployments\test_cid\specialized.template"
-  SetOutPath "$INSTDIR\configs\kats"
-;  File "..\..\configs\kats\FourSleeps.xml"
-;  File "..\..\configs\kats\Generics.xml"
-;  File "..\..\configs\kats\ospl_start.xml"
-;  File "..\..\configs\kats\Timeout.xml"
-;  File "..\..\configs\kats\TwoSleeps.xml"
-;  File /r "..\..\configs\kats\transports"
 SectionEnd
 
 Section "ace" SEC10
@@ -253,6 +232,14 @@ Section "-vcredist" SEC11
 
 SectionEnd
 
+Section "-exes" SEC09
+  SetOutPath "$INSTDIR\bin"
+  File "..\..\bin\karl.exe"
+  File "..\..\bin\madara_version.exe"
+  File "..\..\bin\mpgen.exe"
+;  File "..\..\bin\system_calls.exe"
+SectionEnd
+
 Section "-tests"
   SetOutPath "$INSTDIR"
   File /r "..\..\tests"
@@ -298,7 +285,7 @@ SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\bin\kats_batch.exe"
+  ;WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\bin\kats_batch.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\kats_batch.exe"
@@ -312,25 +299,25 @@ Section -Post
    ; include for some of the windows messages defines
    ; HKLM (all users) vs HKCU (current user) defines
    ; set variable
-   WriteRegExpandStr ${env_hklm} MADARA_ROOT $INSTDIR
+   WriteRegExpandStr ${env_hkcu} MADARA_ROOT $INSTDIR
    
    ; read the path variable
-   ReadRegStr $1 ${env_hklm} PYTHONPATH
+   ReadRegStr $1 ${env_hkcu} PYTHONPATH
 
    ; remove references to MADARA in the PATH variable
    ${WordAdd} $1 ";" "+%MADARA_ROOT%\lib" $2
    
    ; now add them back
-   WriteRegExpandStr ${env_hklm} PYTHONPATH $2
+   WriteRegExpandStr ${env_hkcu} PYTHONPATH $2
 
    ; read the path variable
-   ReadRegStr $1 ${env_hklm} PATH
+   ReadRegStr $1 ${env_hkcu} PATH
 
    ; remove references to MADARA in the PATH variable
    ${WordAdd} $1 ";" "+%MADARA_ROOT%\lib;%MADARA_ROOT%\bin" $2
    
    ; now add them back
-   WriteRegExpandStr ${env_hklm} PATH $2
+   WriteRegExpandStr ${env_hkcu} PATH $2
 
    ; make sure windows knows about the change
    SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
@@ -341,9 +328,7 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "MADARA libraries compiled in debug mode (optional)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Should always be included"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Help files and API documentation"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Tests for KaRL, KATS, etc."
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} "Example configuration files"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC07} "Include files for MADARA projects"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC08} "Version, License, etc."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC10} "Install ACE v6.0.1 (required if not already installed)."
@@ -389,22 +374,22 @@ Section Uninstall
   ;ReadRegStr $0 HKLM "SOFTWARE\Microsoft" "Bob"
 
   StrCmp $0 '' 0 revert
-   ReadRegStr $1 ${env_hklm} PATH
+   ReadRegStr $1 ${env_hkcu} PATH
    
    ; remove references to MADARA in the PATH variable
    ${WordAdd} $1 ";" "-%MADARA_ROOT%\lib;%MADARA_ROOT%\bin" $2
 
-   WriteRegExpandStr ${env_hklm} PATH $2
+   WriteRegExpandStr ${env_hkcu} PATH $2
    
-   ReadRegStr $1 ${env_hklm} PYTHONPATH
+   ReadRegStr $1 ${env_hkcu} PYTHONPATH
    
    ; remove references to MADARA in the PATH variable
    ${WordAdd} $1 ";" "-%MADARA_ROOT%\lib" $2
 
-   WriteRegExpandStr ${env_hklm} PYTHONPATH $2
+   WriteRegExpandStr ${env_hkcu} PYTHONPATH $2
    
    ; delete variable
-   DeleteRegValue ${env_hklm} MADARA_ROOT
+   DeleteRegValue ${env_hkcu} MADARA_ROOT
    
    Goto done
    ; revert to the old MADARA variable
@@ -415,6 +400,6 @@ Section Uninstall
    SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
    done:
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
-  DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
+  ;DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
 SectionEnd

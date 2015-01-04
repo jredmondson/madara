@@ -17,19 +17,18 @@
 
 #include "madara/knowledge_engine/containers/Integer.h"
 
-// default transport settings
-std::string host ("");
-const std::string default_multicast ("239.255.0.1:4150");
-Madara::Transport::QoS_Transport_Settings settings;
+// useful namespace aliases and typedefs
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
+namespace transport = Madara::Transport;
 
 typedef Madara::Knowledge_Record::Integer Integer;
 
-// keep track of time
-ACE_hrtime_t elapsed_time, maximum_time;
-ACE_High_Res_Timer timer;
+// default transport settings
+std::string host ("");
+const std::string default_multicast ("239.255.0.1:4150");
+transport::QoS_Transport_Settings settings;
 
 // number of sent and received messages
 
@@ -38,6 +37,7 @@ containers::Integer num_received;
 containers::Integer finished;
 containers::Integer payload_size;
 
+// target sends
 Integer target (1000000);
 
 engine::Compiled_Expression get_start_time;
@@ -239,7 +239,7 @@ count_received (
 
 int main (int argc, char ** argv)
 {
-  settings.type = Madara::Transport::MULTICAST;
+  settings.type = transport::MULTICAST;
   settings.queue_length = data_size * 1000;
 
   // unlimited hertz
@@ -272,10 +272,10 @@ int main (int argc, char ** argv)
   }
 
   // create a knowledge base and setup our id
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  engine::Knowledge_Base knowledge (host, settings);
   
   // setup wait settings to wait for 2 * publish_time seconds
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  engine::Wait_Settings wait_settings;
   wait_settings.max_wait_time = publish_time * 2;
   
   // get variable references for real-time, constant-time operations
@@ -294,14 +294,15 @@ int main (int argc, char ** argv)
     // set up the payload
     unsigned char * ref_file = new unsigned char[data_size];
     knowledge.set_file (".ref_file", ref_file, data_size);
-    Madara::Knowledge_Engine::Compiled_Expression payload_generation =
+    engine::Compiled_Expression payload_generation =
       knowledge.compile ("ref_file = .ref_file");
     
     knowledge.print ("Running throughput test...");
     
-    knowledge.evaluate (get_start_time);
-
     Integer i = 0;
+    payload_size = data_size;
+
+    knowledge.evaluate (get_start_time);
 
     // publish the payload repeatedly until max time has passed
     for (i = 0; i < target; ++i)
