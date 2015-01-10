@@ -1169,6 +1169,26 @@ Madara::Knowledge_Engine::Knowledge_Base::print_knowledge (
 }
 
 void
+Madara::Knowledge_Engine::Knowledge_Base::to_string (
+  std::string & target,
+  const std::string & array_delimiter,
+  const std::string & record_delimiter,
+  const std::string & key_val_delimiter) const
+{
+  if (impl_.get_ptr ())
+  {
+    impl_->to_string (target,
+      array_delimiter, record_delimiter, key_val_delimiter);
+  }
+  else if (context_)
+  {
+    context_->to_string (target,
+      array_delimiter, record_delimiter, key_val_delimiter);
+  }
+}
+
+
+void
 Madara::Knowledge_Engine::Knowledge_Base::print (
   const std::string & statement, unsigned int level) const
 {

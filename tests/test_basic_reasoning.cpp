@@ -138,6 +138,7 @@ void test_functions (Madara::Knowledge_Engine::Knowledge_Base & knowledge);
 void test_for_loops (Madara::Knowledge_Engine::Knowledge_Base & knowledge);
 void test_simplification_operators (
   Madara::Knowledge_Engine::Knowledge_Base & knowledge);
+void test_to_string (void);
 
 int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 {
@@ -172,6 +173,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   test_implies (knowledge);
   test_both_operator (knowledge);
   test_dijkstra_sync (knowledge);
+  test_to_string ();
 
   knowledge.print ();
 
@@ -267,6 +269,28 @@ void test_to_map (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   knowledge.define_function ("check_map", check_map);
 
   knowledge.evaluate ("check_map ()");
+}
+
+void test_to_string (void)
+{
+  ACE_TRACE (ACE_TEXT ("test_to_string"));
+  
+  ACE_DEBUG ((LM_INFO, "Testing to_string\n"));
+
+  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  knowledge.evaluate ("var1=10; var2='hello'; var3=15.5");
+  knowledge.evaluate ("array1[2]=5.3; array1[1]=3.4; array1[0]=0.5");
+  knowledge.evaluate ("array2[2]=1.8; array2[1]=7.2; array2[0]=3.6");
+  knowledge.evaluate ("string1='example 1'; string2='ex 2'");
+  knowledge.evaluate ("int1=23; int2=102421");
+
+  std::string db;
+  knowledge.to_string (db);
+
+  std::cerr << "To string results:\n\n";
+  std::cerr << db;
+
+  std::cerr << "\n\n";
 }
 
 void test_comparisons (Madara::Knowledge_Engine::Knowledge_Base & knowledge)

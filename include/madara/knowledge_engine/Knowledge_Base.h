@@ -826,6 +826,33 @@ namespace Madara
        **/
       void print (const std::string & statement, 
         unsigned int level = 0) const;
+      
+      /**
+       * Saves all keys and values into a string, using the underlying
+       * Knowledge_Record::to_string function. This is an optimized
+       * version that allows the specification of a target string to
+       * avoid string copying (which can be expensive with longer
+       * strings across multiple function boundaries). This function differs
+       * from Knowledge_Record to_string in that it is intended to save the
+       * database in a format that can be easily parseable. Consequently,
+       * strings are delineated in this function by being included in single
+       * quotes. Arrays are delineated with array indices [].
+       * 
+       * This is not appropriate
+       * for saving the context if it has binary data inside of it, as
+       * only the size of the data entry would be saved.
+       * @param target  where to store the resulting string operation.
+       * @param array_delimiter  for any arrays, the characters in between
+       *                         data elements.
+       * @param record_delimiter the characters to place between individual
+       *                         key/value pairs
+       * @param key_val_delimiter the characters to place between keys and
+       *                          values.
+       **/
+      void to_string (std::string & target,
+        const std::string & array_delimiter = ",",
+        const std::string & record_delimiter = ";\n",
+        const std::string & key_val_delimiter = "=") const;
 
       /**
        * Clears the knowledge base

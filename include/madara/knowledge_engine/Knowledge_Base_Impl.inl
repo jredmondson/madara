@@ -211,6 +211,17 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::print (
 }
 
 inline void
+Madara::Knowledge_Engine::Knowledge_Base_Impl::to_string (
+  std::string & target,
+  const std::string & array_delimiter,
+  const std::string & record_delimiter,
+  const std::string & key_val_delimiter) const
+{
+  map_.to_string (target,
+    array_delimiter, record_delimiter, key_val_delimiter);
+}
+
+inline void
 Madara::Knowledge_Engine::Knowledge_Base_Impl::print (
   const std::string & statement, unsigned int level) const
 {

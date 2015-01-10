@@ -990,8 +990,68 @@ Madara::Knowledge_Engine::Thread_Safe_Context::print (
   for (Madara::Knowledge_Map::const_iterator i = map_.begin ();
        i != map_.end (); 
        ++i)
+  {
     MADARA_DEBUG ((int)level, (LM_DEBUG, 
       "%s=%s\n", i->first.c_str (), i->second.to_string (", ").c_str ()));
+  }
+}
+
+// print all variables and their values
+void
+Madara::Knowledge_Engine::Thread_Safe_Context::to_string (
+  std::string & target,
+  const std::string & array_delimiter,
+  const std::string & record_delimiter,
+  const std::string & key_val_delimiter) const
+{
+  Context_Guard guard (mutex_);
+  std::stringstream buffer;
+
+  bool first = true;
+
+  for (Madara::Knowledge_Map::const_iterator i = map_.begin ();
+       i != map_.end (); 
+       ++i)
+  {
+    // separate each record with the record_delimiter
+    if (!first)
+    {
+      buffer << record_delimiter;
+    }
+
+    buffer << i->first;
+
+    // separate the key/value pairing with the key_val_delimiter
+    buffer << key_val_delimiter;
+
+    if (i->second.is_string_type ())
+    {
+      buffer << "'";
+    }
+    else if (i->second.type () == i->second.DOUBLE_ARRAY ||
+      i->second.type () == i->second.INTEGER_ARRAY)
+    {
+      buffer << "[";
+    }
+
+    // use the array_delimiter for the underlying to_string functions
+    buffer << i->second.to_string (array_delimiter);
+    
+    if (i->second.is_string_type ())
+    {
+      buffer << "'";
+    }
+    else if (i->second.type () == i->second.DOUBLE_ARRAY ||
+      i->second.type () == i->second.INTEGER_ARRAY)
+    {
+      buffer << "]";
+    }
+
+    if (first)
+      first = false;
+  }
+
+  target = buffer.str ();
 }
 
 /// Expand a string with variable expansions. This is a generic form of
