@@ -549,6 +549,21 @@ Madara::Knowledge_Engine::Variables::dec (
 }
 
 void
+Madara::Knowledge_Engine::Variables::to_string (
+  std::string & target,
+  const std::string & array_delimiter,
+  const std::string & record_delimiter,
+  const std::string & key_val_delimiter) const
+{
+  if (context_)
+    context_->to_string (target,
+      array_delimiter, record_delimiter, key_val_delimiter);
+  else
+    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
+      "Variables::to_string. Context not set correctly.\n"));
+}
+
+void
 Madara::Knowledge_Engine::Variables::print (unsigned int level) const
 {
   if (context_)
