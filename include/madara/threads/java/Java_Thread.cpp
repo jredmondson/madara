@@ -238,7 +238,7 @@ threads::Java_Thread::init_control_vars (engine::Knowledge_Base & control)
 
   // create java objects for the underlying containers
   jobject jterminate = env->CallStaticObjectMethod (i_class,
-    fromPointerCall, (jlong) &terminate, manage);
+    fromPointerCall, (jlong) &terminated, manage);
   jobject jpaused = env->CallStaticObjectMethod (i_class,
     fromPointerCall, (jlong) &paused, manage);
 

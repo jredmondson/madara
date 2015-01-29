@@ -4,6 +4,8 @@
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
 
+typedef Madara::Knowledge_Record::Integer Integer;
+
 /*
  * Class:     com_madara_containers_Queue
  * Method:    jni_Queue
@@ -94,7 +96,7 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueLong
 
   if (current)
   {
-    result = current->enqueue (Madara::Knowledge_Record(value));
+    result = current->enqueue (Madara::Knowledge_Record (Integer (value)));
   }
 
   return result;
