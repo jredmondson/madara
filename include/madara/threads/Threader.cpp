@@ -2,7 +2,7 @@
 
 #ifdef _MADARA_JAVA_
       
-#include "java\Java_Thread.h"
+#include "java/Java_Thread.h"
 
 #endif  // MADARA_JAVA
 
