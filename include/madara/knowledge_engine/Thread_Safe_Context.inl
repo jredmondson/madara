@@ -631,8 +631,16 @@ Madara::Knowledge_Engine::Thread_Safe_Context::mark_modified (
 {
   Context_Guard guard (mutex_);
   
+  // if the record is valid
   if (variable.record_ != 0)
+  {
+    // mark the changed map with the variable information
     changed_map_[variable.name_.get_ptr ()] = variable.record_;
+
+    // and set its status to modified
+    if (variable.record_->status () != Madara::Knowledge_Record::MODIFIED)
+      variable.record_->set_modified ();
+  }
 }
       
 
@@ -646,6 +654,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::mark_modified (
   const std::string * key_ptr;
   Context_Guard guard (mutex_);
   
+  // if the user needs variable expansion, do so
   if (settings.expand_variables)
   {
     key_actual = expand_statement (key);
@@ -654,10 +663,13 @@ Madara::Knowledge_Engine::Thread_Safe_Context::mark_modified (
   else
     key_ptr = &key;
 
+  // if the variable name is valid
   if (*key_ptr != "")
   {
+    // mark the changed map with the variable information
     changed_map_[*key_ptr] = &record;
-
+    
+    // and set its status to modified
     if (record.status () != Madara::Knowledge_Record::MODIFIED)
       record.set_modified ();
   }
