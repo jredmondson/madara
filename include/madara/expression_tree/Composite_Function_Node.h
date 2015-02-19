@@ -2,6 +2,8 @@
 #ifndef _COMPOSITE_FUNCTION_NODE_H_
 #define _COMPOSITE_FUNCTION_NODE_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <vector>
 #include "madara/knowledge_engine/Knowledge_Record.h"
 #include "madara/expression_tree/Composite_Ternary_Node.h"
@@ -80,5 +82,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_FUNCTION_NODE_H_ */

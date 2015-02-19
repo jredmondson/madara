@@ -1,4 +1,6 @@
 
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/expression_tree/System_Call_Node.h"
 
 
@@ -36,3 +38,5 @@ void
 Madara::Expression_Tree::System_Call_Node::accept (Madara::Expression_Tree::Visitor &visitor) const
 {
 }
+
+#endif // _MADARA_NO_KARL_

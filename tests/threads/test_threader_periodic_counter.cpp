@@ -181,10 +181,10 @@ int main (int argc, char ** argv)
     threader.run (hertz, buffer.str (), new Counter_Thread (), true);
   }
 
-  knowledge.evaluate (".start_time = #get_time()");
+  Integer start_time = utility::get_time ();
 
   threader.resume ();
-
+  
   // wait for the counter to reach the target number
   while (*counter < target)
   {
@@ -193,10 +193,13 @@ int main (int argc, char ** argv)
   }
 
   threader.terminate ();
+  
+  Integer end_time = utility::get_time ();
+  Integer total_time = end_time - start_time;
+  double total_time_in_secs = total_time;
+  total_time_in_secs /= 1000000000;
 
-  knowledge.evaluate (".end_time = #get_time();"
-    ".total_time = .end_time - .start_time;"
-    ".total_time_in_seconds = #double(.total_time) / 1000000000");
+  knowledge.set (".total_time_in_seconds", total_time_in_secs);
 
   std::cerr << "The final tally of the distributed counter was " <<
     *counter << "\n";

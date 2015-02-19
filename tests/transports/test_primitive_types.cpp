@@ -98,7 +98,8 @@ int ACE_TMAIN (int argc, char ** argv)
   settings.hosts.resize (1);
   settings.hosts[0] = default_multicast;
   handle_arguments (argc, argv);
-
+  
+#ifndef _MADARA_NO_KARL_
   settings.type = Madara::Transport::MULTICAST;
   Madara::Knowledge_Engine::Wait_Settings wait_settings;
   wait_settings.max_wait_time = 10.0;
@@ -144,6 +145,9 @@ int ACE_TMAIN (int argc, char ** argv)
   }
 
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif
   return 0;
 }

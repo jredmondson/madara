@@ -59,8 +59,10 @@ Madara::Transport::Settings settings;
 // Used for shutting down the process (Control+C modifies)
 volatile bool terminated = 0;
 
+#ifndef _MADARA_NO_KARL_
 // Compiled expressions that we expect to be called frequently
 Madara::Knowledge_Engine::Compiled_Expression expressions [NUM_TASKS];
+#endif
 
 // Timers for heartbeats
 ACE_High_Res_Timer timers[NUM_TIMERS];
@@ -137,6 +139,7 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
+#ifndef _MADARA_NO_KARL_
 /**
  * Madara function that returns a random number. No argument means to generate a
  * random number up to the limits of the stdlib.h implementation's limits. An
@@ -540,7 +543,7 @@ void compile_expressions (
   );
 
 }
-
+#endif
 
 int main (int argc, char ** argv)
 {
@@ -551,7 +554,8 @@ int main (int argc, char ** argv)
   settings.hosts[0] = default_multicast;
   settings.type = Madara::Transport::MULTICAST;
   handle_arguments (argc, argv);
-
+  
+#ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
 
   // define external functions for the knowlege base to map calls to
@@ -602,6 +606,9 @@ int main (int argc, char ** argv)
   }
 
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif
   return 0;
 }

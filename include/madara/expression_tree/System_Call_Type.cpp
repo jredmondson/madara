@@ -1,4 +1,6 @@
 
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/utility/Log_Macros.h"
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Type.h"
@@ -89,3 +91,5 @@ Madara::Expression_Tree::System_Call_Type::accept (
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_

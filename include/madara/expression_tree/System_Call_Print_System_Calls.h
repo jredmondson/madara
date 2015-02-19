@@ -2,6 +2,8 @@
 #ifndef _SYSTEM_CALL_PRINT_SYSTEM_CALLS_H_
 #define _SYSTEM_CALL_PRINT_SYSTEM_CALLS_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <string>
 #include <map>
 #include <stdexcept>
@@ -68,5 +70,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _SYSTEM_CALL_PRINT_SYSTEM_CALLS_H_ */

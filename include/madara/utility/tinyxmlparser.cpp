@@ -22,6 +22,8 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
+#ifndef _MADARA_NO_XML_
+
 #include <ctype.h>
 #include <stddef.h>
 
@@ -1633,3 +1635,5 @@ bool TiXmlText::Blank() const
   return true;
 }
 
+
+#endif // _MADARA_NO_XML_

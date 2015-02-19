@@ -1,6 +1,8 @@
 #ifndef _TREE_ITERATOR_CPP
 #define _TREE_ITERATOR_CPP
 
+#ifndef _MADARA_NO_KARL_
+
 #include <stdlib.h>
 #include <algorithm>
 #include <sstream>
@@ -145,5 +147,7 @@ Madara::Expression_Tree::Expression_Tree_Const_Iterator::operator!= (
 {
   return !(*this == rhs);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _TREE_ITERATOR_CPP */

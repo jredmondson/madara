@@ -7,10 +7,17 @@
 #include "ace/High_Res_Timer.h"
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
+#include "madara/knowledge_engine/Wait_Settings.h"
 
 
 namespace Madara
 {
+  namespace Knowledge_Engine
+  {
+    class Knowledge_Base;
+    struct Wait_Settings;
+  }
+
   namespace Utility
   {
     /**
@@ -350,7 +357,32 @@ namespace Madara
      * @return size of the file
      **/
     MADARA_Export unsigned int file_size (const std::string & filename);
+    
+    /**
+     * Waits on a knowledge record to be true without needing KaRL language
+     * @param  knowledge  the knowledge base
+     * @param  variable   the variable to wait on
+     * @param  settings   the Wait Settings. Only uses poll_frequency and
+     *                    max_wait.
+     **/
+    MADARA_Export bool wait_true (Knowledge_Engine::Knowledge_Base & knowledge,
+      const std::string & variable,
+      const Knowledge_Engine::Wait_Settings & settings =
+        Knowledge_Engine::Wait_Settings ());
 
+    
+
+    /**
+     * Waits on a knowledge record to be false without needing KaRL language
+     * @param  knowledge  the knowledge base
+     * @param  variable   the variable to wait on
+     * @param  settings   the Wait Settings. Only uses poll_frequency and
+     *                    max_wait.
+     **/
+    MADARA_Export bool wait_false (Knowledge_Engine::Knowledge_Base & knowledge,
+      const std::string & variable,
+      const Knowledge_Engine::Wait_Settings & settings =
+        Knowledge_Engine::Wait_Settings ());
     /**
      * Returns true if left < right
      **/
@@ -423,6 +455,7 @@ namespace Madara
      **/
     template <typename T>
     T bitmask_remove (T mask, T values);
+
   }
 }
 

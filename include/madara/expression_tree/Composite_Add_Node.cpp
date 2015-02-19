@@ -3,6 +3,8 @@
 #ifndef _ADD_NODE_CPP_
 #define _ADD_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 #include "madara/utility/Log_Macros.h"
 
@@ -88,5 +90,7 @@ Madara::Expression_Tree::Composite_Add_Node::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _ADD_NODE_CPP_ */

@@ -3,6 +3,8 @@
 #ifndef _EQUALITY_NODE_CPP_
 #define _EQUALITY_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 
 #include "madara/expression_tree/Component_Node.h"
@@ -92,5 +94,7 @@ Madara::Expression_Tree::Composite_Equality_Node::accept (Visitor &visitor) cons
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _EQUALITY_NODE_CPP_ */

@@ -448,6 +448,8 @@ namespace Madara
        **/
       std::string expand_statement (const std::string & statement);
 
+#ifndef _MADARA_NO_KARL_
+
       /**
        * Compiles a KaRL expression into an expression tree
        *
@@ -456,6 +458,123 @@ namespace Madara
        **/
       Compiled_Expression
         compile (const std::string & expression);
+      
+      /**
+       * Evaluates an expression
+       *
+       * @param expression      KaRL expression to evaluate
+       * @param settings        Settings for evaluating and printing
+       * @return                value of expression
+       **/
+      Madara::Knowledge_Record evaluate (
+        const std::string & expression,
+        const Eval_Settings & settings =
+          Eval_Settings ());
+
+      /**
+       * Evaluates an expression
+       *
+       * @param expression      KaRL expression to evaluate (result of compile)
+       * @param settings        Settings for evaluating and printing
+       * @return                value of expression
+       **/
+      Madara::Knowledge_Record evaluate (
+        Compiled_Expression & expression,
+        const Eval_Settings & settings =
+          Eval_Settings ());
+      
+      /**
+       * Evaluates a root-based tree (result of compile)
+       *
+       * @param root            root-based tree
+       * @param settings        Settings for evaluating and printing
+       * @return                value of expression
+       **/
+      Madara::Knowledge_Record evaluate (
+        Expression_Tree::Component_Node * root,
+        const Eval_Settings & settings =
+          Eval_Settings ());
+
+      /**
+       * Waits for an expression to be non-zero.
+       * Always disseminates modifications.
+       *
+       * @param expression      KaRL expression to wait on
+       * @param settings        Settings for the underlying expression
+       *                        evaluation and printing
+       * @return                value of expression
+       **/
+      Madara::Knowledge_Record wait (
+        const std::string & expression,
+        const Wait_Settings & settings =
+          Wait_Settings ());
+
+      /**
+       * Waits for an expression to be non-zero. Provides additional settings
+       * for fine-tuning the time to wait and atomic print statements.
+       *
+       * @param expression      KaRL expression to wait on (result of compile)
+       * @param settings        Settings for the underlying expression
+       *                        evaluation and printing
+       * @return                value of expression
+       **/
+      Madara::Knowledge_Record wait (
+        Compiled_Expression & expression,
+        const Wait_Settings & settings =
+          Wait_Settings ());
+      
+      /**
+       * Defines a function
+       * @param  name       name of the function
+       * @param  func       external function to call with this name
+       **/
+      void define_function (const std::string & name,
+        Knowledge_Record (*func) (Function_Arguments &, Variables &));
+      
+      /**
+       * Defines a named function that can distinguish the name it was called
+       * with in MADARA
+       * @param  name       name of the function
+       * @param  func       external function to call with this name
+       **/
+      void define_function (const std::string & name,
+        Knowledge_Record (*func) (const char *, Function_Arguments &, Variables &));
+      
+#ifdef _MADARA_JAVA_
+      /**
+       * Defines a named java function
+       * @param  name       name of the function
+       * @param  callable   external java object to call with this name
+       **/
+      void define_function (const std::string & name, jobject callable);
+#endif
+      
+#ifdef _MADARA_PYTHON_CALLBACKS_
+      /**
+       * Defines a named python function
+       * @param  name       name of the function
+       * @param  callable   external python function to call with this name
+       **/
+      void define_function (const std::string & name, boost::python::object callable);
+#endif
+
+      /**
+       * Defines a MADARA KaRL function
+       * @param  name       name of the function
+       * @param  expression KaRL function body       
+       **/
+      void define_function (const std::string & name,
+        const std::string & expression);
+      
+      /**
+       * Defines a MADARA KaRL function
+       * @param  name       name of the function
+       * @param  expression KaRL function body       
+       **/
+      void define_function (const std::string & name,
+        const Compiled_Expression & expression);
+      
+#endif // _MADARA_NO_KARL_
 
       /**
        * Sets a knowledge variable to a specified value
@@ -688,70 +807,6 @@ namespace Madara
           Knowledge_Reference_Settings (false)) const;
 
       /**
-       * Evaluates an expression
-       *
-       * @param expression      KaRL expression to evaluate
-       * @param settings        Settings for evaluating and printing
-       * @return                value of expression
-       **/
-      Madara::Knowledge_Record evaluate (
-        const std::string & expression,
-        const Eval_Settings & settings =
-          Eval_Settings ());
-
-      /**
-       * Evaluates an expression
-       *
-       * @param expression      KaRL expression to evaluate (result of compile)
-       * @param settings        Settings for evaluating and printing
-       * @return                value of expression
-       **/
-      Madara::Knowledge_Record evaluate (
-        Compiled_Expression & expression,
-        const Eval_Settings & settings =
-          Eval_Settings ());
-      
-      /**
-       * Evaluates a root-based tree (result of compile)
-       *
-       * @param root            root-based tree
-       * @param settings        Settings for evaluating and printing
-       * @return                value of expression
-       **/
-      Madara::Knowledge_Record evaluate (
-        Expression_Tree::Component_Node * root,
-        const Eval_Settings & settings =
-          Eval_Settings ());
-
-      /**
-       * Waits for an expression to be non-zero.
-       * Always disseminates modifications.
-       *
-       * @param expression      KaRL expression to wait on
-       * @param settings        Settings for the underlying expression
-       *                        evaluation and printing
-       * @return                value of expression
-       **/
-      Madara::Knowledge_Record wait (
-        const std::string & expression,
-        const Wait_Settings & settings =
-          Wait_Settings ());
-
-      /**
-       * Waits for an expression to be non-zero. Provides additional settings
-       * for fine-tuning the time to wait and atomic print statements.
-       *
-       * @param expression      KaRL expression to wait on (result of compile)
-       * @param settings        Settings for the underlying expression
-       *                        evaluation and printing
-       * @return                value of expression
-       **/
-      Madara::Knowledge_Record wait (
-        Compiled_Expression & expression,
-        const Wait_Settings & settings =
-          Wait_Settings ());
-
-      /**
        * Applies current time and modified to all global variables and tries
        * to send them.
        * @param settings        Settings for evaluating and printing
@@ -877,57 +932,6 @@ namespace Madara
        * previously called @ acquire.
        **/
       void release (void);
-      
-      /**
-       * Defines a function
-       * @param  name       name of the function
-       * @param  func       external function to call with this name
-       **/
-      void define_function (const std::string & name,
-        Knowledge_Record (*func) (Function_Arguments &, Variables &));
-      
-      /**
-       * Defines a named function that can distinguish the name it was called
-       * with in MADARA
-       * @param  name       name of the function
-       * @param  func       external function to call with this name
-       **/
-      void define_function (const std::string & name,
-        Knowledge_Record (*func) (const char *, Function_Arguments &, Variables &));
-      
-#ifdef _MADARA_JAVA_
-      /**
-       * Defines a named java function
-       * @param  name       name of the function
-       * @param  callable   external java object to call with this name
-       **/
-      void define_function (const std::string & name, jobject callable);
-#endif
-      
-#ifdef _MADARA_PYTHON_CALLBACKS_
-      /**
-       * Defines a named python function
-       * @param  name       name of the function
-       * @param  callable   external python function to call with this name
-       **/
-      void define_function (const std::string & name, boost::python::object callable);
-#endif
-
-      /**
-       * Defines a MADARA KaRL function
-       * @param  name       name of the function
-       * @param  expression KaRL function body       
-       **/
-      void define_function (const std::string & name,
-        const std::string & expression);
-      
-      /**
-       * Defines a MADARA KaRL function
-       * @param  name       name of the function
-       * @param  expression KaRL function body       
-       **/
-      void define_function (const std::string & name,
-        const Compiled_Expression & expression);
       
       /**
        * Attaches a transport to the Knowledge Engine. Note that the

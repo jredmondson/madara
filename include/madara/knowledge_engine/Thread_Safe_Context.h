@@ -911,6 +911,17 @@ namespace Madara
         bool clean_copy = false);
 
 
+#ifndef _MADARA_NO_KARL_
+
+      /**
+       * Compiles a KaRL expression into an expression tree
+       *
+       * @param expression         expression to compile
+       * @return                   compiled, optimized expression tree
+       **/
+      Compiled_Expression
+        compile (const std::string & expression);
+      
       /**
        * Defines an external function
        * @param  name       name of the function
@@ -991,14 +1002,32 @@ namespace Madara
                      Knowledge_Reference_Settings ());
       
       /**
-       * Compiles a KaRL expression into an expression tree
-       *
-       * @param expression         expression to compile
-       * @return                   compiled, optimized expression tree
+       * Evaluate a compiled expression. Please note that if you update
+       * any variables here, they will not be sent through any transports
+       * until you call through the Knowledge_Base.
+       * @param   expression  A compiled expressio to run.
+       * @param   settings    settings for applying the update
+       * @return              result of the evaluation
        **/
-      Compiled_Expression
-        compile (const std::string & expression);
+      Knowledge_Record evaluate (Compiled_Expression expression,
+        const Knowledge_Update_Settings & settings = 
+              Knowledge_Update_Settings ());
       
+      /**
+       * Evaluate a component node-rooted tree. Please note that if you update
+       * any variables here, they will not be sent through any transports
+       * until you call through the Knowledge_Base.
+       * @param   root        Root of an expression tree
+       * @param   settings    settings for applying the update
+       * @return              result of the evaluation
+       **/
+      Knowledge_Record evaluate (
+        Expression_Tree::Component_Node * root,
+        const Knowledge_Update_Settings & settings = 
+                    Knowledge_Update_Settings ());
+
+#endif // _MADARA_NO_KARL_
+
       /**
        * Saves all keys and values into a string, using the underlying
        * Knowledge_Record::to_string function. This is an optimized
@@ -1058,31 +1087,6 @@ namespace Madara
        **/
       size_t  to_map    (const std::string & subject,
                        std::map <std::string, Knowledge_Record> & target);
-
-      /**
-       * Evaluate a compiled expression. Please note that if you update
-       * any variables here, they will not be sent through any transports
-       * until you call through the Knowledge_Base.
-       * @param   expression  A compiled expressio to run.
-       * @param   settings    settings for applying the update
-       * @return              result of the evaluation
-       **/
-      Knowledge_Record evaluate (Compiled_Expression expression,
-        const Knowledge_Update_Settings & settings = 
-              Knowledge_Update_Settings ());
-      
-      /**
-       * Evaluate a component node-rooted tree. Please note that if you update
-       * any variables here, they will not be sent through any transports
-       * until you call through the Knowledge_Base.
-       * @param   root        Root of an expression tree
-       * @param   settings    settings for applying the update
-       * @return              result of the evaluation
-       **/
-      Knowledge_Record evaluate (
-        Expression_Tree::Component_Node * root,
-        const Knowledge_Update_Settings & settings = 
-                    Knowledge_Update_Settings ());
 
       /**
        * Saves the context to a file

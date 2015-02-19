@@ -13,6 +13,7 @@
 #include "ace/Get_Opt.h"
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/utility/Utility.h"
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
@@ -61,7 +62,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     read_and_create_files (knowledge);
   else
   {
-    knowledge.wait ("finished_transmitting", wait_settings);
+    Madara::Utility::wait_true (knowledge,
+      "finished_transmitting", wait_settings);
     write_transported_files (knowledge);
   }
 

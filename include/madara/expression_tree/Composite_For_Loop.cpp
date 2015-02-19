@@ -2,6 +2,8 @@
 #ifndef _FOR_LOOP_CPP_
 #define _FOR_LOOP_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 
 #include "madara/expression_tree/Component_Node.h"
@@ -96,5 +98,7 @@ Madara::Expression_Tree::Composite_For_Loop::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _FOR_LOOP_CPP_ */

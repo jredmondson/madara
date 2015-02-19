@@ -2,6 +2,8 @@
 #ifndef _TREE_ITERATOR_IMPL_CPP
 #define _TREE_ITERATOR_IMPL_CPP
 
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/expression_tree/Expression_Tree.h"
 #include "madara/expression_tree/Iterator_Impl.h"
 #include "madara/expression_tree/Component_Node.h"
@@ -593,6 +595,8 @@ Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::clone (
 {
   return new Level_Order_Expression_Tree_Iterator_Impl (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _TREE_ITERATOR_IMPL_CPP */
 

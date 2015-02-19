@@ -2,6 +2,8 @@
 #ifndef _COMPOSITE_LR_NODE_CPP_
 #define _COMPOSITE_LR_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/expression_tree/Composite_Binary_Node.h"
 
 // Ctor
@@ -26,5 +28,7 @@ Madara::Expression_Tree::Composite_Binary_Node::left (void) const
   return left_;
 }
 
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_LR_NODE_CPP_ */

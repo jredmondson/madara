@@ -2,6 +2,8 @@
 #ifndef _FUNCTION_NODE_CPP_
 #define _FUNCTION_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 #include <sstream>
 
@@ -221,5 +223,7 @@ Madara::Expression_Tree::Composite_Function_Node::accept (Visitor &visitor) cons
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _FUNCTION_NODE_CPP_ */

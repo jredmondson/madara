@@ -1,4 +1,5 @@
 #include "Threader.h"
+#include "madara/utility/Utility.h"
 
 #ifdef _MADARA_JAVA_
       
@@ -112,7 +113,8 @@ Madara::Threads::Threader::wait (const std::string name)
   if (found != threads_.end ())
   {
     std::string finished = found->second->finished_.get_name ();
-    control_->wait (finished);
+
+    Utility::wait_true (*control_, finished);
 
     delete found->second;
 
@@ -127,7 +129,8 @@ Madara::Threads::Threader::wait (void)
        i != threads_.end (); ++i)
   {
     std::string finished = i->second->finished_.get_name ();
-    control_->wait (finished);
+
+    Utility::wait_true (*control_, finished);
 
     delete i->second;
   }
@@ -142,7 +145,7 @@ Madara::Threads::Threader::pause (const std::string name)
 
   if (found != threads_.end ())
   {
-    control_->evaluate (name + ".paused = 1");
+    control_->set (name + ".paused", Knowledge_Record::Integer (1));
   }
 }
 
@@ -152,7 +155,7 @@ Madara::Threads::Threader::pause (void)
   for (Named_Worker_Threads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
   {
-    control_->evaluate (i->first + ".paused = 1");
+    control_->set (i->first + ".paused", Knowledge_Record::Integer (1));
   }
 }
 
@@ -163,7 +166,7 @@ Madara::Threads::Threader::resume (const std::string name)
 
   if (found != threads_.end ())
   {
-    control_->evaluate (name + ".paused = 0");
+    control_->set (name + ".paused", Knowledge_Record::Integer (0));
   }
 }
 
@@ -173,7 +176,7 @@ Madara::Threads::Threader::resume (void)
   for (Named_Worker_Threads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
   {
-    control_->evaluate (i->first + ".paused = 0");
+    control_->set (i->first + ".paused", Knowledge_Record::Integer (0));
   }
 }
 
@@ -184,7 +187,7 @@ Madara::Threads::Threader::terminate (const std::string name)
 
   if (found != threads_.end ())
   {
-    control_->evaluate (name + ".terminated = 1");
+    control_->set (name + ".terminated", Knowledge_Record::Integer (1));
   }
 }
 
@@ -194,6 +197,6 @@ Madara::Threads::Threader::terminate (void)
   for (Named_Worker_Threads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
   {
-    control_->evaluate (i->first + ".terminated = 1");
+    control_->set (i->first + ".terminated", Knowledge_Record::Integer (1));
   }
 }

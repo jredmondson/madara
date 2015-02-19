@@ -601,6 +601,8 @@ Madara::Knowledge_Engine::Variables::expand_statement (
 }
 
 
+#ifndef _MADARA_NO_KARL_
+
 // Defines a function
 void Madara::Knowledge_Engine::Variables::define_function (
   const std::string & name,
@@ -734,6 +736,8 @@ Madara::Knowledge_Engine::Variables::evaluate (
     return Madara::Knowledge_Record::Integer (0);
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 size_t
 Madara::Knowledge_Engine::Variables::to_vector (

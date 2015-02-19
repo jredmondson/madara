@@ -112,9 +112,11 @@ namespace Madara
       
       /// underlying socket for sending
       ACE_SOCK_Dgram      &              write_socket_;
-
+      
+#ifndef _MADARA_NO_KARL_
       /// data received rules, defined in Transport settings
       Madara::Knowledge_Engine::Compiled_Expression  on_data_received_;
+#endif // _MADARA_NO_KARL_
 
       /// buffer for receiving
       Madara::Utility::Scoped_Array <char>      buffer_;

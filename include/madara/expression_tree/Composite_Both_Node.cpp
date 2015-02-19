@@ -3,6 +3,8 @@
 #ifndef _COMPOSITE_BOTH_NODE_CPP
 #define _COMPOSITE_BOTH_NODE_CPP
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 #include <algorithm>
 
@@ -85,5 +87,7 @@ Madara::Expression_Tree::Composite_Both_Node::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_BOTH_NODE_CPP */

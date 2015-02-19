@@ -183,24 +183,6 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::transport_settings (void)
   return settings_;
 }
 
-inline Madara::Knowledge_Record
-Madara::Knowledge_Engine::Knowledge_Base_Impl::wait (
-  const std::string & expression)
-{
-  Compiled_Expression compiled = compile (expression);
-  Wait_Settings settings;
-  return wait (compiled, settings);
-}
-
-inline Madara::Knowledge_Record
-Madara::Knowledge_Engine::Knowledge_Base_Impl::evaluate (
-  const std::string & expression)
-{
-  Compiled_Expression compiled = compile (expression);
-  Eval_Settings settings;
-  return evaluate (compiled, settings);
-}
-
 inline void
 Madara::Knowledge_Engine::Knowledge_Base_Impl::print (
   unsigned int level) const
@@ -252,6 +234,8 @@ inline void Madara::Knowledge_Engine::Knowledge_Base_Impl::release (void)
 {
   map_.unlock ();
 }
+
+#ifndef _MADARA_NO_KARL_
 
 // Defines a function
 inline
@@ -313,6 +297,26 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::define_function (
   map_.define_function (name, expression);
 }
      
+inline Madara::Knowledge_Record
+Madara::Knowledge_Engine::Knowledge_Base_Impl::wait (
+  const std::string & expression)
+{
+  Compiled_Expression compiled = compile (expression);
+  Wait_Settings settings;
+  return wait (compiled, settings);
+}
+
+inline Madara::Knowledge_Record
+Madara::Knowledge_Engine::Knowledge_Base_Impl::evaluate (
+  const std::string & expression)
+{
+  Compiled_Expression compiled = compile (expression);
+  Eval_Settings settings;
+  return evaluate (compiled, settings);
+}
+
+#endif // _MADARA_NO_KARL_
+
 inline
 size_t
 Madara::Knowledge_Engine::Knowledge_Base_Impl::attach_transport (

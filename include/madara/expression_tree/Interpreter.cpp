@@ -1,6 +1,8 @@
 #ifndef _INTERPRETER_CPP_
 #define _INTERPRETER_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 #include <sstream>
 
@@ -5363,5 +5365,7 @@ Madara::Expression_Tree::Interpreter::interpret (Madara::Knowledge_Engine::Threa
   // If we reach this, we didn't have any symbols.
   return Expression_Tree ();
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif // _INTERPRETER_CPP_

@@ -2,6 +2,8 @@
 #ifndef _TERNARY_NODE_H_
 #define _TERNARY_NODE_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <string>
 #include <stdexcept>
 #include "madara/knowledge_engine/Knowledge_Record.h"
@@ -71,5 +73,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _TERNARY_NODE_H_ */

@@ -139,8 +139,11 @@ Madara::Threads::Worker_Thread::svc (void)
       bool one_shot = true;
       bool blaster = false;
 
-      std::string terminated (name_ + ".terminated");
-      std::string paused (name_ + ".paused");
+      Knowledge_Engine::Variable_Reference terminated;
+      Knowledge_Engine::Variable_Reference paused;
+
+      terminated = control_->get_ref (name_ + ".terminated");
+      paused = control_->get_ref (name_ + ".paused");
 
       if (hertz_ > 0.0)
       {
@@ -170,13 +173,13 @@ Madara::Threads::Worker_Thread::svc (void)
           " %s thread running once\n", name_.c_str ()));
       }
 
-      while (control_->evaluate (terminated).is_false ())
+      while (control_->get (terminated).is_false ())
       {
         MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
           DLINFO "Worker_Thread::svc:" \
           " %s thread checking for pause\n", name_.c_str ()));
 
-        if (control_->evaluate (paused).is_false ())
+        if (control_->get (paused).is_false ())
         {
           MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
             DLINFO "Worker_Thread::svc:" \

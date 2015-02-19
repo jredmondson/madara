@@ -2,6 +2,8 @@
 #ifndef _SYSTEM_CALL_TO_HOST_DIRS_H_
 #define _SYSTEM_CALL_TO_HOST_DIRS_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <string>
 #include <stdexcept>
 #include "madara/utility/stdint.h"
@@ -63,5 +65,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _SYSTEM_CALL_TO_HOST_DIRS_H_ */

@@ -2,6 +2,8 @@
 #ifndef _MODULUS_NODE_CPP_
 #define _MODULUS_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 
 #include "madara/expression_tree/Component_Node.h"
@@ -107,5 +109,7 @@ Madara::Expression_Tree::Composite_Modulus_Node::accept (Visitor& visitor) const
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _MODULUS_NODE_CPP_ */

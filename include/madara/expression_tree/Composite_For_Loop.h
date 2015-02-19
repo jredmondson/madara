@@ -2,6 +2,8 @@
 #ifndef _COMPOSITE_FOR_LOOP_H_
 #define _COMPOSITE_FOR_LOOP_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/expression_tree/Component_Node.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 #include "madara/knowledge_engine/Functions.h"
@@ -89,5 +91,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_FOR_LOOP_H_ */

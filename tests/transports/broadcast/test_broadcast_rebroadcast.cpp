@@ -141,7 +141,8 @@ int main (int argc, char ** argv)
   settings.hosts.resize (1);
   settings.hosts[0] = default_broadcast;
   handle_arguments (argc, argv);
-
+  
+#ifndef _MADARA_NO_KARL_
   settings.type = Madara::Transport::BROADCAST;
   settings.add_receive_filter (Madara::Knowledge_Record::DOUBLE,
                                Madara::Filters::discard);
@@ -209,6 +210,9 @@ int main (int argc, char ** argv)
   }
 
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif
   return 0;
 }

@@ -2,6 +2,8 @@
 #ifndef _LIST_NODE_H_
 #define _LIST_NODE_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <list>
 #include <string>
 #include <vector>
@@ -56,4 +58,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
+
 #endif /* _LIST_NODE_H_ */

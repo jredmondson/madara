@@ -58,10 +58,15 @@ Madara::Knowledge_Engine::Timed_Event_Thread::Timed_Event_Thread (
   expression << "thread.";
   expression << info_.id;
   expression << ".closed = 1";
+  
+#ifndef _MADARA_NO_KARL_
 
   thread_closed_ = info_.control_plane->compile (expression.str ());
   queued_or_terminated_ = info_.control_plane->compile (
     "queued > 0 || terminated");
+
+#endif // _MADARA_NO_KARL_
+
 }
 
 Madara::Knowledge_Engine::Timed_Event_Thread::~Timed_Event_Thread ()
@@ -115,7 +120,13 @@ Madara::Knowledge_Engine::Timed_Event_Thread::svc (void)
     if (valid > 0)
     {
       ++valid->executions;
-      Knowledge_Record result (valid->knowledge->evaluate (valid->root));
+      Knowledge_Record result (
+#ifndef _MADARA_NO_KARL_
+        valid->knowledge->evaluate (valid->root)
+#else
+        Knowledge_Record::Integer (0)
+#endif
+        );
 
       if (valid->intended_executions >= 0 &&
           valid->intended_executions == valid->executions)
@@ -161,13 +172,21 @@ Madara::Knowledge_Engine::Timed_Event_Thread::svc (void)
         wait_settings.poll_frequency = 0.5;
         wait_settings.max_wait_time = 5.0;
     
+#ifndef _MADARA_NO_KARL_
+
         // inform sleeping threads of new queued events
         info_.control_plane->wait (queued_or_terminated_, wait_settings);
+#endif // _MADARA_NO_KARL_
+
       }
     }
   }
+  
+#ifndef _MADARA_NO_KARL_
 
   info_.control_plane->evaluate (thread_closed_);
+#endif // _MADARA_NO_KARL_
+
 
   return 0;
 }

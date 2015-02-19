@@ -86,6 +86,7 @@ namespace Madara
       {
       }
       
+#ifndef _MADARA_NO_KARL_
       /**
        * Constructor for KaRL expression
        **/
@@ -96,11 +97,17 @@ namespace Madara
       {
       }
       
+#endif // _MADARA_NO_KARL_
+
       /**
        * Constructor for KaRL expression
        **/
       Function (Filters::Record_Filter * filter)
-        : function_contents (),
+        : 
+#ifndef _MADARA_NO_KARL_
+      function_contents (),
+#endif // _MADARA_NO_KARL_
+        
           extern_unnamed (0), extern_named (0),
           functor (filter), type (FUNCTOR)
       {
@@ -188,8 +195,10 @@ namespace Madara
       // internal function pointer
       Knowledge_Record (*extern_unnamed) (Function_Arguments &, Variables &);
        
+#ifndef _MADARA_NO_KARL_
       // expression tree
       Madara::Expression_Tree::Expression_Tree function_contents;
+#endif // _MADARA_NO_KARL_
 
       Filters::Record_Filter * functor;
 

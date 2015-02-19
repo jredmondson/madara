@@ -1,3 +1,6 @@
+
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/expression_tree/Visitor.h"
 #include "madara/expression_tree/Composite_Array_Reference.h"
 #include "madara/utility/Utility.h"
@@ -352,3 +355,5 @@ Madara::Expression_Tree::Composite_Array_Reference::set (double value,
   else
     return context_.set_index (expand_key (), index, value, settings);
 }
+
+#endif // _MADARA_NO_KARL_

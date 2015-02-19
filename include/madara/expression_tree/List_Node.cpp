@@ -1,3 +1,6 @@
+
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/expression_tree/Visitor.h"
 #include "madara/expression_tree/List_Node.h"
 #include "madara/utility/Utility.h"
@@ -56,3 +59,5 @@ Madara::Expression_Tree::List_Node::evaluate (
     Madara::Knowledge_Record::Integer (list_.size ()));
 }
 
+
+#endif // _MADARA_NO_KARL_

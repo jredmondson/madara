@@ -1,3 +1,5 @@
+
+#ifndef _MADARA_NO_KARL_
 #include "madara/expression_tree/Visitor.h"
 #include "madara/expression_tree/Variable_Node.h"
 #include "madara/utility/Utility.h"
@@ -398,3 +400,5 @@ Madara::Expression_Tree::Variable_Node::inc (
   else
     return context_.inc (expand_key (), settings);
 }
+
+#endif // _MADARA_NO_KARL_

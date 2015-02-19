@@ -13,6 +13,7 @@
 
 int ACE_TMAIN (int argc, char * argv[])
 {
+#ifndef _MADARA_NO_KARL_
   // debug level for logging
   MADARA_debug_level = 7;
 
@@ -93,6 +94,9 @@ int ACE_TMAIN (int argc, char * argv[])
 
   // start waiting
   knowledge.wait (expression, wait_settings);
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif
   return 0;
 }

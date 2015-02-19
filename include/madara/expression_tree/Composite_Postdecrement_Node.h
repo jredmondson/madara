@@ -2,6 +2,8 @@
 #ifndef _COMPOSITE_POSTDECREMENT_NODE_H_
 #define _COMPOSITE_POSTDECREMENT_NODE_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/expression_tree/Composite_Unary_Node.h"
 #include "madara/knowledge_engine/Knowledge_Record.h"
 #include "madara/expression_tree/Composite_Array_Reference.h"
@@ -73,5 +75,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_POSTDECREMENT_NODE_H_ */

@@ -123,7 +123,8 @@ int main (int argc, char ** argv)
 {
   settings.hosts.push_back (default_multicast);
   handle_arguments (argc, argv);
-
+  
+#ifndef _MADARA_NO_KARL_
   settings.type = Madara::Transport::MULTICAST;
   settings.add_send_filter (Madara::Filters::log_aggregate);
   settings.add_send_filter (discard_var4);
@@ -165,7 +166,10 @@ int main (int argc, char ** argv)
   }
 
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif
   return 0;
 }
 

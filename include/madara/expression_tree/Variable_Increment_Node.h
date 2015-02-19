@@ -2,6 +2,8 @@
 #ifndef _VARIABLE_INCREMENT_NODE_H_
 #define _VARIABLE_INCREMENT_NODE_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <string>
 #include <vector>
 
@@ -79,4 +81,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
+
 #endif /* _VARIABLE_INCREMENT_NODE_H_ */

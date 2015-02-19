@@ -18,8 +18,10 @@ std::vector <uint64_t> max_times;
 std::vector <uint64_t> min_times;
 std::vector <uint64_t> average_times;
 std::vector <uint64_t> compile_times;
+#ifndef _MADARA_NO_KARL_
 std::vector <Madara::Knowledge_Engine::Compiled_Expression> 
   compiled_expressions;
+#endif // _MADARA_NO_KARL_
 
 std::string profile_file =
   "$(MADARA_ROOT)/tests/settings/profile_expressions.txt";
@@ -103,6 +105,7 @@ to_legible_hertz (uint64_t hertz)
   
 }
 
+#ifndef _MADARA_NO_KARL_
 void warmup (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
   std::cout << "Warming up compilation and evaluation caches...\n";
@@ -190,6 +193,8 @@ void evaluate_expressions (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   }
 }
 
+#endif // _MADARA_NO_KARL_
+
 void print_results (void)
 {
   std::cout << "\n|" << std::setw (18) << "Expression" << "|" <<
@@ -212,6 +217,7 @@ int main (int argc, char ** argv)
 {
   handle_arguments (argc, argv);
   
+#ifndef _MADARA_NO_KARL_
   // use ACE real time scheduling class
   int prio  = ACE_Sched_Params::next_priority
     (ACE_SCHED_FIFO,
@@ -280,6 +286,9 @@ int main (int argc, char ** argv)
     "permission\n\n";
     std::cout << "*********************************************************\n";
   }
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif // _MADARA_NO_KARL_
   return 0;
 }

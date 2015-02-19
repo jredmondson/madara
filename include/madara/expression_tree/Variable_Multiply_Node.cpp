@@ -1,3 +1,5 @@
+
+#ifndef _MADARA_NO_KARL_
 #include "madara/expression_tree/Visitor.h"
 #include "madara/expression_tree/Variable_Multiply_Node.h"
 #include "madara/expression_tree/Leaf_Node.h"
@@ -136,3 +138,5 @@ Madara::Expression_Tree::Variable_Multiply_Node::evaluate (
   return rhs;
 }
 
+
+#endif // _MADARA_NO_KARL_

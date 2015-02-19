@@ -2,6 +2,8 @@
 #ifndef _COMPOSITE_PREDECREMENT_NODE_CPP_
 #define _COMPOSITE_PREDECREMENT_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 
 #include "madara/expression_tree/Component_Node.h"
@@ -88,5 +90,7 @@ Madara::Expression_Tree::Composite_Predecrement_Node::accept (Visitor &visitor) 
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_PREDECREMENT_NODE_CPP_ */

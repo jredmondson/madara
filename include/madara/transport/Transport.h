@@ -189,8 +189,11 @@ namespace Madara
       // context for knowledge base
       Madara::Knowledge_Engine::Thread_Safe_Context & context_;
       
+#ifndef _MADARA_NO_KARL_
       /// data received rules, defined in Transport settings
       Madara::Expression_Tree::Expression_Tree  on_data_received_;
+      
+#endif // _MADARA_NO_KARL_
 
       /// monitor for sending bandwidth usage
       Bandwidth_Monitor       send_monitor_;
@@ -245,7 +248,11 @@ namespace Madara
         Bandwidth_Monitor & send_monitor,
         Bandwidth_Monitor & receive_monitor,
         Knowledge_Map & rebroadcast_records,
+#ifndef _MADARA_NO_KARL_
+
         Knowledge_Engine::Compiled_Expression & on_data_received,
+#endif // _MADARA_NO_KARL_
+
         const char * print_prefix,
         const char * remote_host,
         Message_Header *& header

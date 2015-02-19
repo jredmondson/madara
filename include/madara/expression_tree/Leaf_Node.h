@@ -2,6 +2,8 @@
 #ifndef _LEAF_NODE_H_
 #define _LEAF_NODE_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <string>
 #include "madara/expression_tree/Component_Node.h"
 
@@ -82,5 +84,7 @@ namespace Madara
 
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _LEAF_NODE_H_ */

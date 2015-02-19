@@ -480,20 +480,6 @@ Madara::Knowledge_Engine::Knowledge_Base::expand_statement (
   return result;
 }
 
-Madara::Knowledge_Engine::Compiled_Expression
-Madara::Knowledge_Engine::Knowledge_Base::compile (
-  const std::string & expression)
-{
-  Compiled_Expression result;
-  
-  if (impl_.get_ptr ())
-  {
-    result = impl_->compile (expression);
-  }
-
-  return result;
-}
-
 int
 Madara::Knowledge_Engine::Knowledge_Base::set (
   const std::string & key,
@@ -987,159 +973,6 @@ Madara::Knowledge_Engine::Knowledge_Base::transport_settings (void)
   return impl_->transport_settings ();
 }
 
-Madara::Knowledge_Record
-Madara::Knowledge_Engine::Knowledge_Base::wait (
-  Compiled_Expression & expression, 
-  const Wait_Settings & settings)
-{
-  Knowledge_Record result;
-
-  if (impl_.get_ptr ())
-  {
-    result = impl_->wait (expression, settings);
-  }
-  else if (context_)
-  {
-    /**
-     * The only situation this can be useful will be if the thread safe
-     * context is being used as a shared memory structure between
-     * threads. This should not be used for processes communicating
-     * together because the wait statement is unable to send modifieds
-     * as it has zero concept of transports. The type of knowledge
-     * base handled here is a facade for another knowledge base's
-     * context.
-     **/
-    
-    ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();  
-    ACE_Time_Value max_wait, sleep_time, next_epoch;
-    ACE_Time_Value poll_frequency, last = current;
-
-    if (settings.poll_frequency >= 0)
-    {
-      max_wait.set (settings.max_wait_time);
-      max_wait = current + max_wait;
-    
-      poll_frequency.set (settings.poll_frequency);
-      next_epoch = current + poll_frequency;
-    }
-
-    // print the post statement at highest log level (cannot be masked)
-    if (settings.pre_print_statement != "")
-      context_->print (settings.pre_print_statement, MADARA_LOG_EMERGENCY);
-
-    // lock the context
-    context_->lock ();
-
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Base::wait:" \
-        " waiting on %s\n", expression.logic.c_str ()));
-
-    Madara::Knowledge_Record last_value = expression.expression.evaluate (settings);
-
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Knowledge_Base::wait:" \
-        " completed first eval to get %s\n",
-      last_value.to_string ().c_str ()));
-  
-    send_modifieds ("Knowledge_Base:wait", settings);
-
-    context_->unlock ();
-  
-    current = ACE_High_Res_Timer::gettimeofday ();
-
-    // wait for expression to be true
-    while (!last_value.to_integer () &&
-      (settings.max_wait_time < 0 || current < max_wait))
-    {
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-          DLINFO "Knowledge_Base::wait:" \
-          " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
-          current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
-          settings.poll_frequency));
-
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-          DLINFO "Knowledge_Base::wait:" \
-          " last value didn't result in success\n"));
-
-      // Unlike the other wait statements, we allow for a time based wait.
-      // To do this, we allow a user to specify a 
-      if (settings.poll_frequency > 0)
-      {
-        if (current < next_epoch)
-        {
-          sleep_time = next_epoch - current;
-          Madara::Utility::sleep (sleep_time);
-        }
-
-        next_epoch = next_epoch + poll_frequency;
-      }
-      else
-        context_->wait_for_change (true);
-
-      // relock - basically we need to evaluate the tree again, and
-      // we can't have a bunch of people changing the variables as 
-      // while we're evaluating the tree.
-      context_->lock ();
-
-    
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "Knowledge_Base::wait:" \
-          " waiting on %s\n", expression.logic.c_str ()));
-
-      last_value = expression.expression.evaluate (settings);
-    
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-          DLINFO "Knowledge_Base::wait:" \
-          " completed eval to get %s\n",
-        last_value.to_string ().c_str ()));
-  
-      send_modifieds ("Knowledge_Base:wait", settings);
-
-      context_->unlock ();
-      context_->signal ();
-
-      // get current time
-      current = ACE_High_Res_Timer::gettimeofday ();
-
-    } // end while (!last)
-  
-    if (current >= max_wait)
-    {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "Knowledge_Base::wait:" \
-          " Evaluate did not succeed. Timeout occurred.\n"));
-    }
-
-    // print the post statement at highest log level (cannot be masked)
-    if (settings.post_print_statement != "")
-      context_->print (settings.post_print_statement, MADARA_LOG_EMERGENCY);
-
-    return last_value;
-  }
-
-  return result;
-}
-
-Madara::Knowledge_Record
-Madara::Knowledge_Engine::Knowledge_Base::wait (
-  const std::string & expression, 
-  const Wait_Settings & settings)
-{
-  Knowledge_Record result;
-
-  if (impl_.get_ptr ())
-  {
-    result = impl_->wait (expression, settings);
-  }
-  else if (context_)
-  {
-    Compiled_Expression ce = context_->compile (expression);
-    result = this->wait (ce, settings);
-  }
-
-  return result;
-}
-
 void
 Madara::Knowledge_Engine::Knowledge_Base::print (
   unsigned int level) const
@@ -1252,6 +1085,22 @@ Madara::Knowledge_Engine::Knowledge_Base::release (void)
   {
     context_->unlock ();
   }
+}
+
+#ifndef _MADARA_NO_KARL_
+
+Madara::Knowledge_Engine::Compiled_Expression
+Madara::Knowledge_Engine::Knowledge_Base::compile (
+  const std::string & expression)
+{
+  Compiled_Expression result;
+  
+  if (impl_.get_ptr ())
+  {
+    result = impl_->compile (expression);
+  }
+
+  return result;
 }
 
 // evaluate a knowledge expression and choose to send any modifications
@@ -1418,6 +1267,161 @@ Madara::Knowledge_Engine::Knowledge_Base::define_function (const std::string & n
     context_->define_function (name, expression);
   }
 }
+
+Madara::Knowledge_Record
+Madara::Knowledge_Engine::Knowledge_Base::wait (
+  Compiled_Expression & expression, 
+  const Wait_Settings & settings)
+{
+  Knowledge_Record result;
+
+  if (impl_.get_ptr ())
+  {
+    result = impl_->wait (expression, settings);
+  }
+  else if (context_)
+  {
+    /**
+     * The only situation this can be useful will be if the thread safe
+     * context is being used as a shared memory structure between
+     * threads. This should not be used for processes communicating
+     * together because the wait statement is unable to send modifieds
+     * as it has zero concept of transports. The type of knowledge
+     * base handled here is a facade for another knowledge base's
+     * context.
+     **/
+    
+    ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();  
+    ACE_Time_Value max_wait, sleep_time, next_epoch;
+    ACE_Time_Value poll_frequency, last = current;
+
+    if (settings.poll_frequency >= 0)
+    {
+      max_wait.set (settings.max_wait_time);
+      max_wait = current + max_wait;
+    
+      poll_frequency.set (settings.poll_frequency);
+      next_epoch = current + poll_frequency;
+    }
+
+    // print the post statement at highest log level (cannot be masked)
+    if (settings.pre_print_statement != "")
+      context_->print (settings.pre_print_statement, MADARA_LOG_EMERGENCY);
+
+    // lock the context
+    context_->lock ();
+
+    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+        DLINFO "Knowledge_Base::wait:" \
+        " waiting on %s\n", expression.logic.c_str ()));
+
+    Madara::Knowledge_Record last_value = expression.expression.evaluate (settings);
+
+    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+        DLINFO "Knowledge_Base::wait:" \
+        " completed first eval to get %s\n",
+      last_value.to_string ().c_str ()));
+  
+    send_modifieds ("Knowledge_Base:wait", settings);
+
+    context_->unlock ();
+  
+    current = ACE_High_Res_Timer::gettimeofday ();
+
+    // wait for expression to be true
+    while (!last_value.to_integer () &&
+      (settings.max_wait_time < 0 || current < max_wait))
+    {
+      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+          DLINFO "Knowledge_Base::wait:" \
+          " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
+          current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
+          settings.poll_frequency));
+
+      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+          DLINFO "Knowledge_Base::wait:" \
+          " last value didn't result in success\n"));
+
+      // Unlike the other wait statements, we allow for a time based wait.
+      // To do this, we allow a user to specify a 
+      if (settings.poll_frequency > 0)
+      {
+        if (current < next_epoch)
+        {
+          sleep_time = next_epoch - current;
+          Madara::Utility::sleep (sleep_time);
+        }
+
+        next_epoch = next_epoch + poll_frequency;
+      }
+      else
+        context_->wait_for_change (true);
+
+      // relock - basically we need to evaluate the tree again, and
+      // we can't have a bunch of people changing the variables as 
+      // while we're evaluating the tree.
+      context_->lock ();
+
+    
+      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "Knowledge_Base::wait:" \
+          " waiting on %s\n", expression.logic.c_str ()));
+
+      last_value = expression.expression.evaluate (settings);
+    
+      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+          DLINFO "Knowledge_Base::wait:" \
+          " completed eval to get %s\n",
+        last_value.to_string ().c_str ()));
+  
+      send_modifieds ("Knowledge_Base:wait", settings);
+
+      context_->unlock ();
+      context_->signal ();
+
+      // get current time
+      current = ACE_High_Res_Timer::gettimeofday ();
+
+    } // end while (!last)
+  
+    if (current >= max_wait)
+    {
+      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "Knowledge_Base::wait:" \
+          " Evaluate did not succeed. Timeout occurred.\n"));
+    }
+
+    // print the post statement at highest log level (cannot be masked)
+    if (settings.post_print_statement != "")
+      context_->print (settings.post_print_statement, MADARA_LOG_EMERGENCY);
+
+    return last_value;
+  }
+
+  return result;
+}
+
+Madara::Knowledge_Record
+Madara::Knowledge_Engine::Knowledge_Base::wait (
+  const std::string & expression, 
+  const Wait_Settings & settings)
+{
+  Knowledge_Record result;
+
+  if (impl_.get_ptr ())
+  {
+    result = impl_->wait (expression, settings);
+  }
+  else if (context_)
+  {
+    Compiled_Expression ce = context_->compile (expression);
+    result = this->wait (ce, settings);
+  }
+
+  return result;
+}
+
+#endif // _MADARA_NO_KARL_
 
 size_t
 Madara::Knowledge_Engine::Knowledge_Base::attach_transport (

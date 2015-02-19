@@ -3,6 +3,8 @@
 #ifndef _COMPONENT_NODE_CPP_
 #define _COMPONENT_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <stdexcept>
 
 #include "madara/expression_tree/Component_Node.h"
@@ -38,6 +40,8 @@ void
 Madara::Expression_Tree::Component_Node::accept (Madara::Expression_Tree::Visitor &visitor) const
 {
 }
+
+#endif // _MADARA_NO_KARL_
 
 
 #endif /* _COMPONENT_NODE_CPP_ */

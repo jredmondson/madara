@@ -22,6 +22,8 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
+#ifndef _MADARA_NO_XML_
+
 #include <ctype.h>
 
 #ifdef TIXML_USE_STL
@@ -1837,3 +1839,5 @@ bool TiXmlPrinter::Visit( const TiXmlUnknown& unknown )
   return true;
 }
 
+
+#endif // _MADARA_NO_XML_

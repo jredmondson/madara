@@ -7,6 +7,9 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/utility/Log_Macros.h"
+#include "madara/utility/Utility.h"
+
+namespace utility = Madara::Utility;
 
 std::string host ("");
 const std::string default_broadcast ("192.168.1.255:15000");
@@ -113,7 +116,8 @@ int main (int argc, char ** argv)
 {
   settings.hosts.push_back (default_broadcast);
   handle_arguments (argc, argv);
-
+  
+#ifndef _MADARA_NO_KARL_
   settings.type = Madara::Transport::BROADCAST;
   Madara::Knowledge_Engine::Wait_Settings wait_settings;
   wait_settings.max_wait_time = 10;
@@ -124,12 +128,14 @@ int main (int argc, char ** argv)
   
   if (settings.id == 0)
   {
+
     Madara::Knowledge_Engine::Compiled_Expression compiled = 
       knowledge.compile (
         "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3"
       );
 
     knowledge.wait (compiled, wait_settings);
+
   }
   else
   {
@@ -142,6 +148,9 @@ int main (int argc, char ** argv)
   knowledge.evaluate (".updates_required = #get_clock ()");
 
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif
   return 0;
 }

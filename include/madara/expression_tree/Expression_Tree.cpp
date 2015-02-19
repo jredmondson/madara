@@ -2,6 +2,8 @@
 #ifndef _EXPRESSION_TREE_CPP_
 #define _EXPRESSION_TREE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <stdlib.h>
 #include <algorithm>
 #include <sstream>
@@ -315,5 +317,7 @@ Madara::Expression_Tree::Expression_Tree::accept (Visitor &visitor) const
 {
   root_->accept (visitor);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _EXPRESSION_TREE_CPP_ */

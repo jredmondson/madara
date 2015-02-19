@@ -3,6 +3,8 @@
 #ifndef _INTERPRETER_H_
 #define _INTERPRETER_H_
 
+#ifndef _MADARA_NO_KARL_
+
 /**
  * @file Interpreter.h
  * @author James Edmondson <jedmondson@gmail.com>
@@ -244,5 +246,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _INTERPRETER_H_ */

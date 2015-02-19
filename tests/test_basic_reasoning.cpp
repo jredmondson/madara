@@ -17,6 +17,7 @@
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
+#ifndef _MADARA_NO_KARL_
 Madara::Knowledge_Record
   return_1 (Madara::Knowledge_Engine::Function_Arguments & args,
             Madara::Knowledge_Engine::Variables & variables)
@@ -140,6 +141,8 @@ void test_simplification_operators (
   Madara::Knowledge_Engine::Knowledge_Base & knowledge);
 void test_to_string (void);
 
+#endif // _MADARA_NO_KARL_
+
 int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 {
   int retcode = parse_args (argc, argv);
@@ -148,7 +151,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     return retcode;
 
   ACE_TRACE (ACE_TEXT ("main"));
-
+  
+#ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Knowledge_Base knowledge;
 
   //knowledge.evaluate ("");
@@ -176,10 +180,14 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   test_to_string ();
 
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif // _MADARA_NO_KARL_
   return 0;
 }
 
+#ifndef _MADARA_NO_KARL_
 void test_array_math (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
   ACE_TRACE (ACE_TEXT ("test_array_math"));
@@ -1350,6 +1358,7 @@ void test_simplification_operators (
   assert (result.to_integer () == 200 && knowledge.get (".i").to_integer () == 5);
 }
 
+#endif // _MADARA_NO_KARL_
 
 int parse_args (int argc, ACE_TCHAR * argv[])
 {

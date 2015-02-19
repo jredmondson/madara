@@ -232,7 +232,9 @@ int main (int argc, char ** argv)
       std::string file_logic = utility::file_to_string (*i);
       if (file_logic != "")
       {
+#ifndef _MADARA_NO_KARL_
         knowledge.evaluate (file_logic);
+#endif // _MADARA_NO_KARL_
       }
     }
   }
@@ -240,7 +242,9 @@ int main (int argc, char ** argv)
   // evaluate any logic from the command line last
   if (logic != "")
   {
+#ifndef _MADARA_NO_KARL_
     knowledge.evaluate (logic);
+#endif // _MADARA_NO_KARL_
   }
 
   // if user requests to wait, do so before the debug print

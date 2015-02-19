@@ -3,6 +3,8 @@
 #ifndef _COMPOSITE_LESS_THAN_NODE_CPP_
 #define _COMPOSITE_LESS_THAN_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 
 #include "madara/expression_tree/Component_Node.h"
@@ -95,5 +97,7 @@ Madara::Expression_Tree::Composite_Less_Than_Node::accept (Visitor &visitor) con
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_LESS_THAN_NODE_CPP_ */

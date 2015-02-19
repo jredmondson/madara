@@ -2,6 +2,8 @@
 #ifndef _SYSTEM_CALL_PRINT_H_
 #define _SYSTEM_CALL_PRINT_H_
 
+#ifndef _MADARA_NO_KARL_
+
 /**
  * @file System_Call_Print.h
  * @author James Edmondson <jedmondson@gmail.com>
@@ -70,5 +72,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _SYSTEM_CALL_PRINT_H_ */

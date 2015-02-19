@@ -2,6 +2,8 @@
 #ifndef _DIVIDE_NODE_CPP_
 #define _DIVIDE_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 
 #include "madara/expression_tree/Composite_Binary_Node.h"
@@ -127,5 +129,7 @@ Madara::Expression_Tree::Composite_Divide_Node::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _DIVIDE_NODE_CPP_ */

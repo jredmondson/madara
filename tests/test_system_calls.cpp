@@ -64,6 +64,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 void test_system_calls (
   Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
+#ifndef _MADARA_NO_KARL_
   knowledge.evaluate (
     "sample = #read_file ('/files/sample.jpg');"
     "sample.size = #size (sample);"
@@ -107,6 +108,9 @@ void test_system_calls (
     "array_string = #to_string (array, ' ');"
     "#print ('Array with space delimiter is {array_string}.\n');"
     );
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif
 }
 
 int parse_args (int argc, ACE_TCHAR * argv[])

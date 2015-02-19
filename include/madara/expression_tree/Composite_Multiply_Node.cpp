@@ -2,6 +2,8 @@
 #ifndef _MULTIPLY_NODE_CPP_
 #define _MULTIPLY_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 
 #include "madara/expression_tree/Component_Node.h"
@@ -93,5 +95,7 @@ Madara::Expression_Tree::Composite_Multiply_Node::accept (Visitor& visitor) cons
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _MULTIPLY_NODE_CPP_ */

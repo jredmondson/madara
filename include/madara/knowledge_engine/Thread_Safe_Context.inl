@@ -293,6 +293,8 @@ Madara::Knowledge_Engine::Thread_Safe_Context::inc (
   return Knowledge_Record ();
 }
 
+#ifndef _MADARA_NO_KARL_
+
 // return whether or not the key exists
 inline bool
 Madara::Knowledge_Engine::Thread_Safe_Context::delete_expression (
@@ -302,6 +304,8 @@ Madara::Knowledge_Engine::Thread_Safe_Context::delete_expression (
 
   return interpreter_->delete_expression (expression);
 }
+
+#endif // _MADARA_NO_KARL_
 
 // return whether or not the key exists
 inline bool

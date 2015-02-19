@@ -2,6 +2,8 @@
 #ifndef _COMPOSITE_ARRAY_REFERENCE_
 #define _COMPOSITE_ARRAY_REFERENCE_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <string>
 #include <vector>
 
@@ -114,4 +116,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
+
 #endif /* _COMPOSITE_ARRAY_REFERENCE_ */

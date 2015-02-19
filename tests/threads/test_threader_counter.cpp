@@ -9,6 +9,7 @@
 #include "madara/utility/Log_Macros.h"
 #include "madara/threads/Threader.h"
 #include "madara/knowledge_engine/containers/Integer.h"
+#include "madara/utility/Utility.h"
 
 // shortcuts
 namespace engine = Madara::Knowledge_Engine;
@@ -134,8 +135,12 @@ public:
     {
       if (paused != 0)
       {
+#ifndef _MADARA_NO_KARL_
         std::string finished = "!" + paused.get_name ();
         data.wait (finished);
+#else // _MADARA_NO_KARL_
+        utility::wait_false (data, paused.get_name ());
+#endif // _MADARA_NO_KARL_
       }
 
       // increment counter
@@ -179,7 +184,7 @@ int main (int argc, char ** argv)
     threader.run (buffer.str (), new Counter_Thread (), true);
   }
 
-  knowledge.evaluate (".start_time = #get_time()");
+  Integer start_time = utility::get_time ();
 
   threader.resume ();
 
@@ -190,9 +195,12 @@ int main (int argc, char ** argv)
     utility::sleep (0.5);
   }
   
-  knowledge.evaluate (".end_time = #get_time();"
-    ".total_time = .end_time - .start_time;"
-    ".total_time_in_seconds = #double(.total_time) / 1000000000");
+  Integer end_time = utility::get_time ();
+  Integer total_time = end_time - start_time;
+  double total_time_in_secs = total_time;
+  total_time_in_secs /= 1000000000;
+
+  knowledge.set (".total_time_in_seconds", total_time_in_secs);
 
   std::cerr << "The final tally of the distributed counter was " <<
     *counter << "\n";

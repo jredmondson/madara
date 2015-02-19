@@ -49,7 +49,8 @@ void test_expansion (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 
   Madara::Knowledge_Record result;
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   knowledge.evaluate (
     ".var1 = 1; \
     .var2 = 2; \
@@ -69,7 +70,10 @@ void test_expansion (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   // test variables in conditionals
   knowledge.evaluate ("var{.var3} = .var{.var2}");
   assert (knowledge.get ("var3") == (Madara::Knowledge_Record::Integer)2);
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif // _MADARA_NO_KARL_
 
 }
 

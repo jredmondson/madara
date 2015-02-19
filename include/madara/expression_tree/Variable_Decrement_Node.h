@@ -2,6 +2,8 @@
 #ifndef _VARIABLE_DECREMENT_NODE_H_
 #define _VARIABLE_DECREMENT_NODE_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <string>
 #include <vector>
 
@@ -68,4 +70,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
+
 #endif /* _VARIABLE_DECREMENT_NODE_H_ */

@@ -47,9 +47,11 @@ Madara::Transport::Multicast_Transport_Read_Thread::init (
         "Multicast_Transport_Read_Thread::init:" \
         " setting rules to %s\n", 
         settings_.on_data_received_logic.c_str ()));
-
+      
+#ifndef _MADARA_NO_KARL_
       Madara::Expression_Tree::Interpreter interpreter;
       on_data_received_ = context_->compile (settings_.on_data_received_logic);
+#endif // _MADARA_NO_KARL_
     }
     else
     {
@@ -204,7 +206,10 @@ Madara::Transport::Multicast_Transport_Read_Thread::run (void)
 
     process_received_update (buffer, bytes_read, id_, *context_,
       settings_, send_monitor_, receive_monitor_, rebroadcast_records,
-      on_data_received_, print_prefix,
+#ifndef _MADARA_NO_KARL_
+      on_data_received_,
+#endif // _MADARA_NO_KARL_
+      print_prefix,
       remote_host.str ().c_str (), header);
       
     if (header)

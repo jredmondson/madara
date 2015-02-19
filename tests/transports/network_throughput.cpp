@@ -16,6 +16,9 @@
 #include "madara/utility/Log_Macros.h"
 
 #include "madara/knowledge_engine/containers/Integer.h"
+#include "madara/utility/Utility.h"
+
+namespace utility = Madara::Utility;
 
 // useful namespace aliases and typedefs
 
@@ -40,8 +43,6 @@ containers::Integer payload_size;
 // target sends
 Integer target (1000000);
 
-engine::Compiled_Expression get_start_time;
-engine::Compiled_Expression get_end_time;
 bool started = false;
 
 // amount of time in seconds to burst payloads
@@ -227,11 +228,13 @@ count_received (
     if (!started)
     {
       payload_size = args[0].size ();
-      vars.evaluate (get_start_time);
+      vars.set (".start_time",
+        Madara::Knowledge_Record::Integer (Madara::Utility::get_time ()));
       started = true;
     }
 
-    vars.evaluate (get_end_time);
+      vars.set (".end_time",
+        Madara::Knowledge_Record::Integer (Madara::Utility::get_time ()));
   }
 
   return args[0];
@@ -277,16 +280,16 @@ int main (int argc, char ** argv)
   // setup wait settings to wait for 2 * publish_time seconds
   engine::Wait_Settings wait_settings;
   wait_settings.max_wait_time = publish_time * 2;
+
+  Madara::Knowledge_Engine::Variable_Reference file =
+    knowledge.get_ref (".ref_file");
   
   // get variable references for real-time, constant-time operations
   num_received.set_name (".num_received", knowledge);
   num_sent.set_name (".num_sent", knowledge);
-  finished.set_name (".finished", knowledge);
+  finished.set_name ("finished", knowledge);
   payload_size.set_name (".payload_size", knowledge);
   
-  get_start_time = knowledge.compile (".start_time = #get_time()");
-  get_end_time = knowledge.compile (".end_time = #get_time()");
-
   if (settings.id == 0)
   {
     // publisher
@@ -294,37 +297,45 @@ int main (int argc, char ** argv)
     // set up the payload
     unsigned char * ref_file = new unsigned char[data_size];
     knowledge.set_file (".ref_file", ref_file, data_size);
-    engine::Compiled_Expression payload_generation =
-      knowledge.compile ("ref_file = .ref_file");
     
     knowledge.print ("Running throughput test...");
     
     Integer i = 0;
     payload_size = data_size;
 
-    knowledge.evaluate (get_start_time);
+    knowledge.set (".start_time",
+      Madara::Knowledge_Record::Integer (Madara::Utility::get_time ()));
 
     // publish the payload repeatedly until max time has passed
     for (i = 0; i < target; ++i)
     {
-      knowledge.evaluate (payload_generation);
+      knowledge.mark_modified (file);
     }
 
     num_sent = i;
-
-    knowledge.evaluate (get_end_time);
+    
+    knowledge.set (".end_time",
+      Madara::Knowledge_Record::Integer (Madara::Utility::get_time ()));
 
     finished = 1;
-
-    knowledge.evaluate (".messages = .num_sent");
+    
+    knowledge.set (".messages", knowledge.get (".num_sent").to_integer ());
   }
   else
   {
-    knowledge.wait (".finished", wait_settings);
+
+#ifndef _MADARA_NO_KARL_
+    knowledge.wait ("finished", wait_settings);
+#else
+    utility::wait_true (knowledge, "finished", wait_settings);
+
+#endif // _MADARA_NO_KARL_
+
     
-    knowledge.evaluate (".messages = .num_received");
+    knowledge.set (".messages", knowledge.get (".num_received").to_integer ());
   }
   
+#ifndef _MADARA_NO_KARL_
   knowledge.evaluate (".bytes = .messages * .payload_size");
   knowledge.evaluate (".elapsed_time = .end_time - .start_time");
   knowledge.evaluate (
@@ -332,6 +343,23 @@ int main (int argc, char ** argv)
     ".elapsed_time > 0.0 => .bytes_per_sec = .bytes / .elapsed_time");
   knowledge.evaluate (
     ".elapsed_time > 0.0 => .throughput = .messages / .elapsed_time");
+#else
+  Integer messages = knowledge.get (".messages").to_integer ();
+  Integer bytes = messages * payload_size.to_integer (); 
+  double elapsed_time = knowledge.get ("elapsed_time").to_double ();
+  elapsed_time *= 0.000000001;
+
+  if (elapsed_time > 0)
+  {
+    knowledge.set (".bytes_per_sec", bytes / elapsed_time);
+
+    Integer num_received = messages;
+    num_received /= elapsed_time;
+    knowledge.set ("throughput", num_received);
+  }
+
+
+#endif // _MADARA_NO_KARL_
 
   knowledge.print ("\nNetwork profile for transport\n");
   knowledge.print ("  Time taken:  {.elapsed_time}s\n");

@@ -34,10 +34,12 @@ Madara::Transport::Base::setup (void)
       DLINFO "Transport::Base::setup" \
       " setting rules to %s\n", 
       settings_.on_data_received_logic.c_str ()));
-
+    
+#ifndef _MADARA_NO_KARL_
     Madara::Expression_Tree::Interpreter interpreter;
     on_data_received_ = interpreter.interpret (context_,
       settings_.on_data_received_logic);
+#endif // _MADARA_NO_KARL_
   }
   else
   {
@@ -69,7 +71,10 @@ Madara::Transport::process_received_update (
   Bandwidth_Monitor & send_monitor,
   Bandwidth_Monitor & receive_monitor,
   Knowledge_Map & rebroadcast_records,
+#ifndef _MADARA_NO_KARL_
   Knowledge_Engine::Compiled_Expression & on_data_received,
+#endif // _MADARA_NO_KARL_
+
   const char * print_prefix,
   const char * remote_host,
   Message_Header *& header)
@@ -642,8 +647,11 @@ Madara::Transport::process_received_update (
       " evaluating rules in %s\n",
       print_prefix, 
       settings.on_data_received_logic.c_str ()));
-
+    
+#ifndef _MADARA_NO_KARL_
     context.evaluate (on_data_received);
+#endif // _MADARA_NO_KARL_
+
   }
   else
   {
@@ -981,18 +989,22 @@ long Madara::Transport::Base::prep_send (
     // before we send to others, we first execute rules
     if (settings_.on_data_received_logic.length () != 0)
     {
+#ifndef _MADARA_NO_KARL_
+
       MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
         DLINFO "%s:" \
         " evaluating rules in %s\n",
         print_prefix, 
         settings_.on_data_received_logic.c_str ()));
-
+      
       on_data_received_.evaluate ();
 
       MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
         DLINFO "%s:" \
         " rules have been successfully evaluated\n",
       print_prefix));
+#endif // _MADARA_NO_KARL_
+
     }
     else
     {

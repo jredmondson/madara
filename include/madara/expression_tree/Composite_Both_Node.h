@@ -1,6 +1,8 @@
 #ifndef COMPOSITE_BOTH_NODE_H
 #define COMPOSITE_BOTH_NODE_H
 
+#ifndef _MADARA_NO_KARL_
+
 
 #include "madara/expression_tree/Composite_Ternary_Node.h"
 #include "madara/knowledge_engine/Knowledge_Record.h"
@@ -59,5 +61,7 @@ namespace Madara
   }
 }
 
+
+#endif // _MADARA_NO_KARL_
 
 #endif // COMPOSITE_BOTH_NODE_H

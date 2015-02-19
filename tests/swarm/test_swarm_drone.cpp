@@ -222,7 +222,8 @@ int main (int argc, char ** argv)
   settings.hosts.resize (1);
   settings.hosts[0] = default_multicast;
   handle_arguments (argc, argv);
-
+  
+#ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
 
   // define control functions
@@ -307,6 +308,9 @@ int main (int argc, char ** argv)
   }
 
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif
   return 0;
 }

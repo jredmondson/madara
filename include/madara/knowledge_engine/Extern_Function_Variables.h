@@ -454,6 +454,30 @@ namespace Madara
           Knowledge_Engine::Knowledge_Update_Settings ());
 
       /**
+       * Checks if a knowledge location exists in the context
+       *
+       * @param key             knowledge variable location
+       * @param settings        settings for referring to knowledge variables
+       * @return                true if location has been set
+       **/
+      bool exists (const std::string & key,
+        const Knowledge_Reference_Settings & settings =
+          Knowledge_Reference_Settings (false)) const;
+      
+      /**
+       * Checks if a knowledge variable exists in the context
+       *
+       * @param variable        knowledge variable reference
+       * @param settings        settings for referring to knowledge variables
+       * @return                true if location has been set
+       **/
+      bool exists (const Variable_Reference & variable,
+        const Knowledge_Reference_Settings & settings =
+          Knowledge_Reference_Settings (false)) const;
+      
+#ifndef _MADARA_NO_KARL_
+      
+      /**
        * Compiles a KaRL expression into an expression tree. Always do this
        * before calling evaluate because it puts the expression into an
        * optimized format. Best practice is to save the Compiled_Expression
@@ -488,28 +512,6 @@ namespace Madara
         const Knowledge_Update_Settings & settings =
           Knowledge_Engine::Knowledge_Update_Settings ());
       
-      /**
-       * Checks if a knowledge location exists in the context
-       *
-       * @param key             knowledge variable location
-       * @param settings        settings for referring to knowledge variables
-       * @return                true if location has been set
-       **/
-      bool exists (const std::string & key,
-        const Knowledge_Reference_Settings & settings =
-          Knowledge_Reference_Settings (false)) const;
-      
-      /**
-       * Checks if a knowledge variable exists in the context
-       *
-       * @param variable        knowledge variable reference
-       * @param settings        settings for referring to knowledge variables
-       * @return                true if location has been set
-       **/
-      bool exists (const Variable_Reference & variable,
-        const Knowledge_Reference_Settings & settings =
-          Knowledge_Reference_Settings (false)) const;
-
       /**
        * Evaluates an expression. Recommended best practices are to compile the
        * expression into a global variable or persistent store outside of the
@@ -576,6 +578,8 @@ namespace Madara
       void define_function (const std::string & name,
         const Compiled_Expression & expression);
       
+#endif // _MADARA_NO_KARL_
+
       /**
        * Fills a vector with Knowledge Records that begin with a common subject
        * and have a finite range of integer values.

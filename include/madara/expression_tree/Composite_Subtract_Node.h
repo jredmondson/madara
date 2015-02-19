@@ -2,6 +2,8 @@
 #ifndef _COMPOSITE_SUBTRACT_NODE_H_
 #define _COMPOSITE_SUBTRACT_NODE_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/knowledge_engine/Knowledge_Record.h"
 
 namespace Madara
@@ -60,4 +62,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
+
 #endif /* _COMPOSITE_SUBTRACT_NODE_H_ */

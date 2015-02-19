@@ -33,6 +33,8 @@ Changes:
 #ifndef TINYXML_INCLUDED
 #define TINYXML_INCLUDED
 
+#ifndef _MADARA_NO_XML_
+
 #ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4530 )
@@ -1817,6 +1819,8 @@ private:
 #ifdef _MSC_VER
 #pragma warning( pop )
 #endif
+
+#endif // _MADARA_NO_XML_
 
 #endif
 

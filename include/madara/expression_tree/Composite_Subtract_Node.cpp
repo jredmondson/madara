@@ -2,6 +2,8 @@
 #ifndef _SUBTRACT_NODE_CPP_
 #define _SUBTRACT_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/expression_tree/Component_Node.h"
 #include "madara/expression_tree/Visitor.h"
 #include "madara/expression_tree/Composite_Binary_Node.h"
@@ -96,5 +98,6 @@ Madara::Expression_Tree::Composite_Subtract_Node::accept (Visitor &visitor) cons
   visitor.visit (*this);
 }
 
+#endif // _MADARA_NO_KARL_
 
 #endif /* _SUBTRACT_NODE_CPP_ */

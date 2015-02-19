@@ -3,6 +3,8 @@
 #ifndef _COMPOSITE_GREATER_THAN_NODE_CPP_
 #define _COMPOSITE_GREATER_THAN_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 
 #include "madara/expression_tree/Component_Node.h"
@@ -94,5 +96,7 @@ Madara::Expression_Tree::Composite_Greater_Than_Node::accept (Visitor &visitor) 
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_GREATER_THAN_NODE_CPP_ */

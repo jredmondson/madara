@@ -30,6 +30,14 @@ kats                    = 0
 /// Enable this feature if you would like to generate NDDS Transports
 ndds                    = 0
 
+/// @feature no_karl
+/// Enable this feature if you do not need to evaluate KaRL scripts
+no_karl                 = 0
+
+/// @feature no_xml
+/// Enable this feature if you do not need the TinyXML API
+no_xml                  = 0
+
 /// @feature opensplice
 /// Enable this feature if you would like to generate OpenSplice Transports
 

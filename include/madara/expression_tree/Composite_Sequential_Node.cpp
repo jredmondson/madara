@@ -3,6 +3,8 @@
 #ifndef _COMPOSITE_SEQUENTIAL_NODE_CPP
 #define _COMPOSITE_SEQUENTIAL_NODE_CPP
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 #include <algorithm>
 
@@ -85,5 +87,7 @@ Madara::Expression_Tree::Composite_Sequential_Node::accept (Visitor &visitor) co
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_SEQUENTIAL_NODE_CPP */

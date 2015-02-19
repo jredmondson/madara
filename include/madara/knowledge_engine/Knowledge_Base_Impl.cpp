@@ -589,6 +589,8 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::read_file (
   return result;
 }
 
+#ifndef _MADARA_NO_KARL_
+
 Madara::Knowledge_Engine::Compiled_Expression
 Madara::Knowledge_Engine::Knowledge_Base_Impl::compile (
   const std::string & expression)
@@ -801,3 +803,5 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::evaluate (
 
   return last_value;
 }
+
+#endif // _MADARA_NO_KARL_

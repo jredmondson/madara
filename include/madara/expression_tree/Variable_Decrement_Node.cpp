@@ -1,3 +1,5 @@
+
+#ifndef _MADARA_NO_KARL_
 #include "madara/expression_tree/Visitor.h"
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/Variable_Decrement_Node.h"
@@ -135,3 +137,5 @@ Madara::Expression_Tree::Variable_Decrement_Node::evaluate (
   // return the value
   return rhs;
 }
+
+#endif // _MADARA_NO_KARL_

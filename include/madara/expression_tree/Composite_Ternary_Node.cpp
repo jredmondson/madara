@@ -3,6 +3,8 @@
 #ifndef _TERNARY_NODE_CPP_
 #define _TERNARY_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <stdexcept>
 
 #include "madara/expression_tree/Composite_Ternary_Node.h"
@@ -42,5 +44,6 @@ Madara::Expression_Tree::Composite_Ternary_Node::accept (Madara::Expression_Tree
 {
 }
 
+#endif // _MADARA_NO_KARL_
 
 #endif /* _TERNARY_NODE_CPP_ */

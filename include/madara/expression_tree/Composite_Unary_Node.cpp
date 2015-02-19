@@ -2,6 +2,8 @@
 #ifndef _COMPOSITE_NODE_CPP_
 #define _COMPOSITE_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/expression_tree/Composite_Unary_Node.h"
 
 // Ctor
@@ -26,5 +28,6 @@ Madara::Expression_Tree::Composite_Unary_Node::right (void) const
   return right_;
 }
 
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_NODE_CPP_ */

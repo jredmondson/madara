@@ -1,3 +1,6 @@
+
+#ifndef _MADARA_NO_KARL_
+
 #include <sstream>
 
 #include "Barrier.h"
@@ -415,3 +418,5 @@ Madara::Knowledge_Engine::Containers::Barrier::set_quality (
     context_->set_quality (name_, quality, true, settings);
   }
 }
+
+#endif // _MADARA_NO_KARL_

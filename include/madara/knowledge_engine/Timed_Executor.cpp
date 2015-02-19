@@ -115,8 +115,10 @@ Madara::Knowledge_Engine::Timed_Executor::remove (Timed_Event & cur_event)
     wait_settings.poll_frequency = -1;
     wait_settings.max_wait_time = 5.0;
     
+#ifndef _MADARA_NO_KARL_
     // inform sleeping threads of new queued events
     control_plane_.wait ("queued > 0 || terminated", wait_settings);
+#endif // _MADARA_NO_KARL_
 
     MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
       DLINFO "Timed_Executor::remove: " \
@@ -226,7 +228,12 @@ Madara::Knowledge_Engine::fill_event (
   new_event.knowledge = &knowledge;
   new_event.period.set (period);
   new_event.delay.set (delay);
+
+#ifndef _MADARA_NO_KARL_
+
   new_event.root = knowledge.compile (expression).get_root ();
+  
+#endif // _MADARA_NO_KARL_
 
   return new_event;
 }
@@ -241,11 +248,15 @@ Madara::Knowledge_Engine::Timed_Executor::enter_barrier (void)
   MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
     DLINFO "Timed_Executor::enter_barrier: " \
     "Entering barrier.\n"));
+  
+#ifndef _MADARA_NO_KARL_
 
   control_plane_.wait (
     "closed = 0 ;>\n"
     ".i [0->threads) (thread.{.i}.closed => ++closed) ;>\n"
     "closed == threads", settings);
+  
+#endif // _MADARA_NO_KARL_
 
   MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
     DLINFO "Timed_Executor::enter_barrier: " \

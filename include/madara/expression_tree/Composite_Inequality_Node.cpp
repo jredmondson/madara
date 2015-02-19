@@ -3,6 +3,8 @@
 #ifndef _INEQUALITY_NODE_CPP_
 #define _INEQUALITY_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 
 #include "madara/expression_tree/Component_Node.h"
@@ -94,5 +96,7 @@ Madara::Expression_Tree::Composite_Inequality_Node::accept (Visitor &visitor) co
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _INEQUALITY_NODE_CPP_ */

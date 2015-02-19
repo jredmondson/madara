@@ -1,5 +1,5 @@
 
-project (Test_Multicast_Mutex) : using_madara, using_ace {
+project (Test_Multicast_Mutex) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_mutex
   
@@ -21,7 +21,7 @@ project (Test_Multicast_Mutex) : using_madara, using_ace {
   }
 }
 
-project (Test_Reliable_Record) : using_madara, using_ace {
+project (Test_Reliable_Record) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_reliable_record
   
@@ -43,7 +43,7 @@ project (Test_Reliable_Record) : using_madara, using_ace {
   }
 }
 
-project (Test_Rebroadcast_Ring) : using_madara, using_ace {
+project (Test_Rebroadcast_Ring) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_rebroadcast_ring
   
@@ -64,7 +64,7 @@ project (Test_Rebroadcast_Ring) : using_madara, using_ace {
   }
 }
 
-project (Test_Barrier) : using_madara, using_ace {
+project (Test_Barrier) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_barrier
   
@@ -85,7 +85,7 @@ project (Test_Barrier) : using_madara, using_ace {
   }
 }
 
-project (Test_Counter) : using_madara, using_ace {
+project (Test_Counter) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_counter
   
@@ -107,7 +107,7 @@ project (Test_Counter) : using_madara, using_ace {
   }
 }
 
-project (Test_Threader_Queue_Perf) : using_madara, using_ace {
+project (Test_Threader_Queue_Perf) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_queue_perf
   
@@ -129,7 +129,7 @@ project (Test_Threader_Queue_Perf) : using_madara, using_ace {
   }
 }
 
-project (Test_Threader_Counter) : using_madara, using_ace {
+project (Test_Threader_Counter) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_counter
   
@@ -151,7 +151,7 @@ project (Test_Threader_Counter) : using_madara, using_ace {
   }
 }
 
-project (Test_Threader_Producer_Consumer) : using_madara, using_ace {
+project (Test_Threader_Producer_Consumer) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_producer_consumer
   
@@ -173,7 +173,7 @@ project (Test_Threader_Producer_Consumer) : using_madara, using_ace {
   }
 }
 
-project (Test_Threader_Hello_World) : using_madara, using_ace {
+project (Test_Threader_Hello_World) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_hello_world
   
@@ -195,7 +195,7 @@ project (Test_Threader_Hello_World) : using_madara, using_ace {
   }
 }
 
-project (Test_Threader_Periodic_Counter) : using_madara, using_ace {
+project (Test_Threader_Periodic_Counter) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_periodic_counter
   
@@ -216,7 +216,7 @@ project (Test_Threader_Periodic_Counter) : using_madara, using_ace {
   }
 }
 
-project (Test_Context_Copy) : using_madara, using_ace {
+project (Test_Context_Copy) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_context_copy
   
@@ -238,7 +238,7 @@ project (Test_Context_Copy) : using_madara, using_ace {
   }
 }
 
-project (Test_Timed_Executor) : using_madara, using_ace {
+project (Test_Timed_Executor) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_timed_executor
   
@@ -260,7 +260,7 @@ project (Test_Timed_Executor) : using_madara, using_ace {
   }
 }
 
-project (Test_KaRL_Containers) : using_madara, using_ace {
+project (Test_KaRL_Containers) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_karl_containers
   
@@ -282,7 +282,7 @@ project (Test_KaRL_Containers) : using_madara, using_ace {
   }
 }
 
-project (Test_File_Rebroadcasts) : using_madara, using_ace {
+project (Test_File_Rebroadcasts) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_file_rebroadcasts
   
@@ -304,7 +304,7 @@ project (Test_File_Rebroadcasts) : using_madara, using_ace {
   }
 }
 
-project (Test_Multicast_Aggregate_Filters) : using_madara, using_ace {
+project (Test_Multicast_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_aggregate_filters
   
@@ -325,7 +325,7 @@ project (Test_Multicast_Aggregate_Filters) : using_madara, using_ace {
   }
 }
 
-project (Test_Multicast_Send_List) : using_madara, using_ace {
+project (Test_Multicast_Send_List) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_send_list
   
@@ -346,7 +346,7 @@ project (Test_Multicast_Send_List) : using_madara, using_ace {
   }
 }
 
-project (Test_Broadcast_Aggregate_Filters) : using_madara, using_ace {
+project (Test_Broadcast_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_broadcast_aggregate_filters
   
@@ -367,7 +367,7 @@ project (Test_Broadcast_Aggregate_Filters) : using_madara, using_ace {
   }
 }
 
-project (Test_UDP_Aggregate_Filters) : using_madara, using_ace {
+project (Test_UDP_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_udp_aggregate_filters
   
@@ -388,7 +388,7 @@ project (Test_UDP_Aggregate_Filters) : using_madara, using_ace {
   }
 }
 
-project (Test_Arrays) : using_madara, using_ace {
+project (Test_Arrays) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_arrays
   
@@ -410,7 +410,7 @@ project (Test_Arrays) : using_madara, using_ace {
   }
 }
 
-project (Network_Throughput) : using_madara, using_ace {
+project (Network_Throughput) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = network_throughput
   
@@ -431,7 +431,7 @@ project (Network_Throughput) : using_madara, using_ace {
   }
 }
 
-project (Network_Profiler) : using_madara, using_ace {
+project (Network_Profiler) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = network_profiler
   
@@ -453,7 +453,7 @@ project (Network_Profiler) : using_madara, using_ace {
   }
 }
 
-project (Test_Checkpointing) : using_madara, using_ace {
+project (Test_Checkpointing) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_checkpointing
   
@@ -475,7 +475,7 @@ project (Test_Checkpointing) : using_madara, using_ace {
   }
 }
 
-project (Test_Bandwidth_Monitor) : using_madara, using_ace {
+project (Test_Bandwidth_Monitor) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_bandwidth_monitor
   
@@ -497,7 +497,7 @@ project (Test_Bandwidth_Monitor) : using_madara, using_ace {
   }
 }
 
-project (Test_Packet_Scheduler) : using_madara, using_ace {
+project (Test_Packet_Scheduler) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_packet_scheduler
   
@@ -519,7 +519,7 @@ project (Test_Packet_Scheduler) : using_madara, using_ace {
   }
 }
 
-project (Test_Encoding) : using_madara, using_ace, using_splice {
+project (Test_Encoding) : using_madara, using_ace, no_karl, no_xml, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_encoding
   
@@ -541,7 +541,7 @@ project (Test_Encoding) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_QoS_Transport_Settings) : using_madara, using_ace, using_splice {
+project (Test_QoS_Transport_Settings) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_qos_transport_settings
   
@@ -563,7 +563,7 @@ project (Test_QoS_Transport_Settings) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Evaluate) : using_madara, using_ace, using_splice {
+project (Test_Evaluate) : using_madara, using_ace, no_karl, no_xml, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_evaluate
   
@@ -585,7 +585,7 @@ project (Test_Evaluate) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Multicast_Rules) : using_madara, using_ace {
+project (Test_Multicast_Rules) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_rules
   
@@ -607,7 +607,7 @@ project (Test_Multicast_Rules) : using_madara, using_ace {
   }
 }
 
-project (Test_Multicast_Rebroadcast) : using_madara, using_ace {
+project (Test_Multicast_Rebroadcast) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_rebroadcast
   
@@ -629,7 +629,7 @@ project (Test_Multicast_Rebroadcast) : using_madara, using_ace {
   }
 }
 
-project (Test_Multicast_Filters) : using_madara, using_ace {
+project (Test_Multicast_Filters) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_filters
   
@@ -651,7 +651,7 @@ project (Test_Multicast_Filters) : using_madara, using_ace {
   }
 }
 
-project (Test_UDP_Rules) : using_madara, using_ace, using_splice {
+project (Test_UDP_Rules) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_udp_rules
   
@@ -673,7 +673,7 @@ project (Test_UDP_Rules) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_UDP_Filters) : using_madara, using_ace {
+project (Test_UDP_Filters) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_udp_filters
   
@@ -695,7 +695,7 @@ project (Test_UDP_Filters) : using_madara, using_ace {
   }
 }
 
-project (Test_UDP_Rebroadcast) : using_madara, using_ace {
+project (Test_UDP_Rebroadcast) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_udp_rebroadcast
   
@@ -717,12 +717,12 @@ project (Test_UDP_Rebroadcast) : using_madara, using_ace {
   }
 }
 
-project (Test_Swarm_Drone) : using_madara, using_ace, using_splice {
+project (Test_Swarm_Drone) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_swarm_drone
   
   
-  requires += tests
+  requires += tests deprecated
 
   Documentation_Files {
   }
@@ -739,12 +739,12 @@ project (Test_Swarm_Drone) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Swarm_Area_Coverage) : using_madara, using_ace, using_splice {
+project (Test_Swarm_Area_Coverage) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_swarm_area_coverage
   
   
-  requires += tests
+  requires += tests deprecated
 
   Documentation_Files {
   }
@@ -761,12 +761,12 @@ project (Test_Swarm_Area_Coverage) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Swarm_Terminal) : using_madara, using_ace, using_splice {
+project (Test_Swarm_Terminal) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_swarm_terminal
   
   
-  requires += tests
+  requires += tests deprecated
 
   Documentation_Files {
   }
@@ -783,7 +783,7 @@ project (Test_Swarm_Terminal) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_System_Calls) : using_madara, using_ace, using_splice {
+project (Test_System_Calls) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_system_calls
   
@@ -805,7 +805,7 @@ project (Test_System_Calls) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Broadcast_Rules) : using_madara, using_ace, using_splice {
+project (Test_Broadcast_Rules) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_broadcast_rules
   
@@ -827,7 +827,7 @@ project (Test_Broadcast_Rules) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Broadcast_Filters) : using_madara, using_ace, using_splice {
+project (Test_Broadcast_Filters) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_broadcast_filters
   
@@ -849,7 +849,7 @@ project (Test_Broadcast_Filters) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Broadcast_Rebroadcast) : using_madara, using_ace, using_splice {
+project (Test_Broadcast_Rebroadcast) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_broadcast_rebroadcast
   
@@ -872,7 +872,7 @@ project (Test_Broadcast_Rebroadcast) : using_madara, using_ace, using_splice {
 }
 
 
-project (Test_Basic_Reasoning) : using_madara, using_ace, using_splice {
+project (Test_Basic_Reasoning) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_basic_reasoning
   
@@ -894,7 +894,7 @@ project (Test_Basic_Reasoning) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Latency) : using_madara, using_ace, using_splice {
+project (Test_Latency) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_latency
 
@@ -915,7 +915,7 @@ project (Test_Latency) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Latency_Rounds) : using_madara, using_ace, using_splice, using_cid {
+project (Test_Latency_Rounds) : using_madara, using_ace, using_splice, using_cid, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_latency_rounds
 
@@ -936,7 +936,7 @@ project (Test_Latency_Rounds) : using_madara, using_ace, using_splice, using_cid
   }
 }
 
-project (Test_Consistency) : using_madara, using_ace, using_splice {
+project (Test_Consistency) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_consistency
 
@@ -957,7 +957,7 @@ project (Test_Consistency) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Dissemination) : using_madara, using_ace, using_splice {
+project (Test_Dissemination) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_dissemination
 
@@ -978,7 +978,7 @@ project (Test_Dissemination) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Reasoning_Throughput) : using_madara, using_ace, using_splice {
+project (Test_Reasoning_Throughput) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_reasoning_throughput
   
@@ -1002,7 +1002,7 @@ project (Test_Reasoning_Throughput) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Files) : using_madara, using_ace, using_splice {
+project (Test_Files) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_files
   
@@ -1026,7 +1026,7 @@ project (Test_Files) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Filters) : using_madara, using_ace {
+project (Test_Filters) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_filters
   
@@ -1047,7 +1047,7 @@ project (Test_Filters) : using_madara, using_ace {
   }
 }
 
-project (Test_Key_Expansion) : using_madara, using_ace, using_splice {
+project (Test_Key_Expansion) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_key_expansion
   
@@ -1071,7 +1071,7 @@ project (Test_Key_Expansion) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Print_Statement) : using_madara, using_ace, using_splice {
+project (Test_Print_Statement) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_print_statement
   
@@ -1095,7 +1095,7 @@ project (Test_Print_Statement) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Timed_Wait) : using_madara, using_ace, using_splice {
+project (Test_Timed_Wait) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_timed_wait
   
@@ -1119,7 +1119,7 @@ project (Test_Timed_Wait) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Wait_With_ACE) : using_madara, using_ace, using_splice {
+project (Test_Wait_With_ACE) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_wait_with_ace
   
@@ -1144,7 +1144,7 @@ project (Test_Wait_With_ACE) : using_madara, using_ace, using_splice {
 }
 
 
-project (Test_Distributed_Finisher) : using_madara, using_ace, using_splice {
+project (Test_Distributed_Finisher) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_distributed_finisher
   
@@ -1168,7 +1168,7 @@ project (Test_Distributed_Finisher) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Knowledge_Domains) : using_madara, using_ace, using_splice {
+project (Test_Knowledge_Domains) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_knowledge_domains
   
@@ -1192,7 +1192,7 @@ project (Test_Knowledge_Domains) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Synchronization) : using_madara, using_ace, using_splice {
+project (Test_Synchronization) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_synchronization
   
@@ -1216,7 +1216,7 @@ project (Test_Synchronization) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Synchronization_Three_State) : using_madara, using_ace, using_splice {
+project (Test_Synchronization_Three_State) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_synchronization_three_state
   
@@ -1240,7 +1240,7 @@ project (Test_Synchronization_Three_State) : using_madara, using_ace, using_spli
   }
 }
 
-project (Test_Quality) : using_madara, using_ace, using_splice {
+project (Test_Quality) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_quality
   
@@ -1264,7 +1264,7 @@ project (Test_Quality) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Distributed_Finisher_With_Set) : using_madara, using_ace, using_splice {
+project (Test_Distributed_Finisher_With_Set) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_distributed_finisher_with_set
   
@@ -1287,7 +1287,7 @@ project (Test_Distributed_Finisher_With_Set) : using_madara, using_ace, using_sp
 }
 
 
-project (Test_Splice) : using_madara, using_ace, using_splice {
+project (Test_Splice) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_splice
   
@@ -1309,7 +1309,7 @@ project (Test_Splice) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Splice_Rules) : using_madara, using_ace, using_splice {
+project (Test_Splice_Rules) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_splice_rules
   
@@ -1331,7 +1331,7 @@ project (Test_Splice_Rules) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Splice_Rebroadcast) : using_madara, using_ace, using_splice {
+project (Test_Splice_Rebroadcast) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_splice_rebroadcast
   
@@ -1353,7 +1353,7 @@ project (Test_Splice_Rebroadcast) : using_madara, using_ace, using_splice {
   }
 }
 
-project (Test_Splice_Filters) : using_madara, using_ace, using_splice {
+project (Test_Splice_Filters) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_splice_filters
   
@@ -1376,7 +1376,7 @@ project (Test_Splice_Filters) : using_madara, using_ace, using_splice {
 }
 
 
-project (Test_NDDS) : using_madara, using_ace, using_ndds {
+project (Test_NDDS) : using_madara, using_ace, using_ndds, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_ndds
   
@@ -1398,7 +1398,7 @@ project (Test_NDDS) : using_madara, using_ace, using_ndds {
   }
 }
 
-project (Test_NDDS_Rules) : using_madara, using_ace, using_ndds {
+project (Test_NDDS_Rules) : using_madara, using_ace, using_ndds, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_ndds_rules
   
@@ -1420,7 +1420,7 @@ project (Test_NDDS_Rules) : using_madara, using_ace, using_ndds {
   }
 }
 
-project (Test_NDDS_Rebroadcast) : using_madara, using_ace, using_ndds {
+project (Test_NDDS_Rebroadcast) : using_madara, using_ace, using_ndds, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_ndds_rebroadcast
   
@@ -1442,7 +1442,7 @@ project (Test_NDDS_Rebroadcast) : using_madara, using_ace, using_ndds {
   }
 }
 
-project (Test_NDDS_Filters) : using_madara, using_ace, using_ndds {
+project (Test_NDDS_Filters) : using_madara, using_ace, using_ndds, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_ndds_filters
   
@@ -1466,7 +1466,7 @@ project (Test_NDDS_Filters) : using_madara, using_ace, using_ndds {
 
 
 
-project (Test_KATS_barriers) : using_madara, using_kats, using_ace {
+project (Test_KATS_barriers) : using_madara, using_kats, using_ace, no_karl, no_xml {
   requires += tests deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1487,7 +1487,7 @@ project (Test_KATS_barriers) : using_madara, using_kats, using_ace {
   }
 }
 
-project (Test_KATS_syncs) : using_madara, using_kats, using_ace {
+project (Test_KATS_syncs) : using_madara, using_kats, using_ace, no_karl, no_xml {
   requires += tests deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1508,7 +1508,7 @@ project (Test_KATS_syncs) : using_madara, using_kats, using_ace {
   }
 }
 
-project (Test_CID) : using_madara, using_ace, using_cid {
+project (Test_CID) : using_madara, using_ace, using_cid, no_karl, no_xml {
   requires += tests cid deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1529,7 +1529,7 @@ project (Test_CID) : using_madara, using_ace, using_cid {
   }
 }
 
-project (Test_CID_Read_Deployment) : using_madara, using_ace, using_cid {
+project (Test_CID_Read_Deployment) : using_madara, using_ace, using_cid, no_karl, no_xml {
   requires += tests cid deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1550,7 +1550,7 @@ project (Test_CID_Read_Deployment) : using_madara, using_ace, using_cid {
   }
 }
 
-project (Test_CID_Disjoint) : using_madara, using_ace, using_cid {
+project (Test_CID_Disjoint) : using_madara, using_ace, using_cid, no_karl, no_xml {
   requires += tests cid deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1571,7 +1571,7 @@ project (Test_CID_Disjoint) : using_madara, using_ace, using_cid {
   }
 }
 
-project (Test_CID_Linked) : using_madara, using_ace, using_cid {
+project (Test_CID_Linked) : using_madara, using_ace, using_cid, no_karl, no_xml {
   requires += tests cid deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1593,7 +1593,7 @@ project (Test_CID_Linked) : using_madara, using_ace, using_cid {
 }
 
 
-project (Test_UDP) : using_madara, using_ace {
+project (Test_UDP) : using_madara, using_ace, no_karl, no_xml {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -1614,7 +1614,7 @@ project (Test_UDP) : using_madara, using_ace {
   }
 }
 
-project (Test_Multicast) : using_madara, using_ace {
+project (Test_Multicast) : using_madara, using_ace, no_karl, no_xml {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -1635,7 +1635,7 @@ project (Test_Multicast) : using_madara, using_ace {
   }
 }
 
-project (Test_Broadcast) : using_madara, using_ace {
+project (Test_Broadcast) : using_madara, using_ace, no_karl, no_xml {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -1657,7 +1657,7 @@ project (Test_Broadcast) : using_madara, using_ace {
 }
 
 
-project (Test_ACE_Broadcast) : using_ace {
+project (Test_ACE_Broadcast) : using_ace, no_karl, no_xml {
   requires += tests deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1679,7 +1679,7 @@ project (Test_ACE_Broadcast) : using_ace {
 }
 
 
-project (Test_ACE_Multicast) : using_ace {
+project (Test_ACE_Multicast) : using_ace, no_karl, no_xml {
   requires += tests deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1700,7 +1700,7 @@ project (Test_ACE_Multicast) : using_ace {
   }
 }
 
-project (Profile_Architecture) : using_ace, using_madara {
+project (Profile_Architecture) : using_ace, using_madara, no_karl, no_xml {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -1722,7 +1722,7 @@ project (Profile_Architecture) : using_ace, using_madara {
   }
 }
 
-project (Test_Utility) : using_ace, using_madara {
+project (Test_Utility) : using_ace, using_madara, no_karl, no_xml {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -1743,7 +1743,7 @@ project (Test_Utility) : using_ace, using_madara {
   }
 }
 
-project (Test_Peroidic_Wait) : using_ace, using_madara {
+project (Test_Peroidic_Wait) : using_ace, using_madara, no_karl, no_xml {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -1764,7 +1764,7 @@ project (Test_Peroidic_Wait) : using_ace, using_madara {
   }
 }
 
-project (Test_Primitive_Types) : using_ace, using_madara {
+project (Test_Primitive_Types) : using_ace, using_madara, no_karl, no_xml {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -1785,7 +1785,7 @@ project (Test_Primitive_Types) : using_ace, using_madara {
   }
 }
 
-project (Test_Logging) : using_ace, using_madara {
+project (Test_Logging) : using_ace, using_madara, no_karl, no_xml {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin

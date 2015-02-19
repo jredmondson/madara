@@ -2,6 +2,8 @@
 #ifndef _COMPOSITE_MULTIPLY_NODE_H
 #define _COMPOSITE_MULTIPLY_NODE_H
 
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/expression_tree/Composite_Ternary_Node.h"
 #include "madara/knowledge_engine/Knowledge_Record.h"
 
@@ -61,5 +63,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_MULTIPLY_NODE_H */

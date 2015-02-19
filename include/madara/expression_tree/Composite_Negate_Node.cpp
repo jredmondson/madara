@@ -2,6 +2,8 @@
 #ifndef _NEGATE_NODE_CPP_
 #define _NEGATE_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 
 #include "madara/expression_tree/Component_Node.h"
@@ -81,5 +83,7 @@ Madara::Expression_Tree::Composite_Negate_Node::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _NEGATE_NODE_CPP_ */

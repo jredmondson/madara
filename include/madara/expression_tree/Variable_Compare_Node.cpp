@@ -1,3 +1,5 @@
+
+#ifndef _MADARA_NO_KARL_
 #include "madara/expression_tree/Visitor.h"
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/Variable_Compare_Node.h"
@@ -123,3 +125,5 @@ Madara::Expression_Tree::Variable_Compare_Node::evaluate (
       return lhs > value_;
   }
 }
+
+#endif // _MADARA_NO_KARL_

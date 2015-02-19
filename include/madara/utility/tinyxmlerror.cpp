@@ -22,6 +22,8 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
+#ifndef _MADARA_NO_XML_
+
 #include "tinyxml.h"
 
 // The goal of the seperate error file is to make the first
@@ -50,3 +52,5 @@ const char* TiXmlBase::errorString[ TIXML_ERROR_STRING_COUNT ] =
   "Error parsing CDATA.",
   "Error when TiXmlDocument added to document, because TiXmlDocument can only be at the root.",
 };
+
+#endif // _MADARA_NO_XML_

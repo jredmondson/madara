@@ -16,8 +16,12 @@
 
 // constructor
 Madara::Knowledge_Engine::Thread_Safe_Context::Thread_Safe_Context ()
-  : changed_ (mutex_), clock_ (0),
+  : changed_ (mutex_), clock_ (0)
+#ifndef _MADARA_NO_KARL_
+,
   interpreter_ (new Madara::Expression_Tree::Interpreter ())
+#endif // _MADARA_NO_KARL_
+
 {
   expansion_splitters_.push_back ("{");
   expansion_splitters_.push_back ("}");
@@ -26,7 +30,10 @@ Madara::Knowledge_Engine::Thread_Safe_Context::Thread_Safe_Context ()
 // destructor
 Madara::Knowledge_Engine::Thread_Safe_Context::~Thread_Safe_Context (void)
 {
+#ifndef _MADARA_NO_KARL_
   delete interpreter_;
+#endif // _MADARA_NO_KARL_
+
 }
 
 /**
@@ -1113,6 +1120,8 @@ Madara::Knowledge_Engine::Thread_Safe_Context::expand_statement (
   return builder.str ();
 }
 
+#ifndef _MADARA_NO_KARL_
+
 // defines a function by name
 void
 Madara::Knowledge_Engine::Thread_Safe_Context::define_function (
@@ -1318,6 +1327,8 @@ Madara::Knowledge_Engine::Thread_Safe_Context::evaluate (
   else
     return Knowledge_Record (Knowledge_Record::Integer (0));
 }
+
+#endif // _MADARA_NO_KARL_
 
 size_t
   Madara::Knowledge_Engine::Thread_Safe_Context::to_vector (

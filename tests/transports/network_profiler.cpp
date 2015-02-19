@@ -14,6 +14,10 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/utility/Log_Macros.h"
+#include "madara/utility/Utility.h"
+
+namespace utility = Madara::Utility;
+typedef  Madara::Knowledge_Record::Integer Integer;
 
 // default transport settings
 std::string host ("");
@@ -580,22 +584,22 @@ int main (int argc, char ** argv)
     // set up the payload
     unsigned char * ref_file = new unsigned char[data_size];
     knowledge.set_file (".ref_file", ref_file, data_size);
-    Madara::Knowledge_Engine::Compiled_Expression payload_generation =
-      knowledge.compile ("ref_file = .ref_file");
+    Madara::Knowledge_Engine::Variable_Reference file =
+      knowledge.get_ref (".ref_file");
     
     // begin latency test
     knowledge.print ("\nRunning latency test...");
 
     for (int i = 0; i < 10; ++i)
     {
-      knowledge.evaluate (payload_generation);
+      knowledge.mark_modified (file);
     
       ACE_OS::sleep (1);
     }
     
     knowledge.print (" done.\n");
 
-    knowledge.evaluate ("latency_finished = 1");
+    knowledge.set ("latency_finished");
     
     // close the transport so we can use different filters
     knowledge.close_transport ();
@@ -612,8 +616,18 @@ int main (int argc, char ** argv)
     knowledge.attach_transport (knowledge.get_id (), settings);
     
     // reannounce latency finished and wait for client before throughput test
-    knowledge.evaluate ("latency_finished = 1");
+
+    knowledge.set ("latency_finished");
+    
+    
+
+#ifndef _MADARA_NO_KARL_
+
     knowledge.wait ("ready_for_throughput", wait_settings);
+    
+#else
+    utility::wait_true (knowledge, "ready_for_throughput", wait_settings);
+#endif // _MADARA_NO_KARL_
 
     knowledge.print ("Running throughput test...");
 
@@ -631,43 +645,56 @@ int main (int argc, char ** argv)
     // publish the payload repeatedly until max time has passed
     while (maximum_time > elapsed_time)
     {
-      knowledge.evaluate (payload_generation);
+      knowledge.mark_modified (file);
       timer.stop ();
       timer.elapsed_time (elapsed_time);
     }
     
     // throughput test over
     knowledge.print (" done.\n");
-    knowledge.evaluate ("finished = 1");
+    knowledge.set ("finished");
+    
 
     // calculate latencies
     latencies.calculate ();
 
     Madara::Knowledge_Engine::Eval_Settings delay (true);
 
-    knowledge.set ("min_latency", latencies.minimum (), delay);
-    knowledge.set ("max_latency", latencies.maximum (), delay);
-    knowledge.set ("avg_latency", latencies.average (), delay);
-    
-    // roundtrip latency should be divided by 2 for actual latency
-    knowledge.evaluate (
-      "min_latency /= 2 ;"
-      "max_latency /= 2 ;"
-      "avg_latency /= 2");
+    knowledge.set ("min_latency", latencies.minimum () / 2, delay);
+    knowledge.set ("max_latency", latencies.maximum () / 2, delay);
+    knowledge.set ("avg_latency", latencies.average () / 2, delay);
 
     // rebroadcast that the throughput test is finished
-    knowledge.evaluate ("finished = 1");
+    knowledge.set ("finished");
     
     // only client knows real message throughput. Wait for it.
     knowledge.print ("Waiting for throughput results from client...");
     wait_settings.max_wait_time = 5.0;
+
+#ifndef _MADARA_NO_KARL_
+
     knowledge.wait ("throughput > 0.0", wait_settings);
+    
+#else
+    utility::wait_true (knowledge, "throughput", wait_settings);
+
+#endif // _MADARA_NO_KARL_
+
     knowledge.print (" done.\n");
 
     // send the bytes per second in the throughput test
     knowledge.print ("Sending final information to client...");
+
+#ifndef _MADARA_NO_KARL_
+
     knowledge.evaluate (
       "bytes_per_sec = #size (.ref_file) * #integer (throughput)");
+#else
+    knowledge.set ("bytes_per_sec",
+      knowledge.get ("throughput").to_integer () *
+      knowledge.get (".ref_file").size ());
+#endif // _MADARA_NO_KARL_
+
     knowledge.print (" done.\n");
   }
   else
@@ -678,8 +705,15 @@ int main (int argc, char ** argv)
     knowledge.set (ack, Madara::Knowledge_Record::Integer (-1),
       Madara::Knowledge_Engine::Eval_Settings (false, true, false));
     
+#ifndef _MADARA_NO_KARL_
+
     // other processes wait for the publisher to send the goods
     knowledge.wait ("latency_finished", wait_settings);
+    
+#else
+    utility::wait_true (knowledge, "latency_finished", wait_settings);
+
+#endif // _MADARA_NO_KARL_
 
     send_acks = false;
     
@@ -694,15 +728,22 @@ int main (int argc, char ** argv)
     
     // signal that the client is ready for the throughput test
     knowledge.print ("Ready for throughput test.\n");
-    knowledge.evaluate ("ready_for_throughput = 1");
+    knowledge.set ("ready_for_throughput");
 
     // reset num_received and re-signal ready for throughput
     knowledge.set (num_received, Madara::Knowledge_Record::Integer (0));
-    knowledge.evaluate ("ready_for_throughput = 1");
+    knowledge.set ("ready_for_throughput");
+    
+#ifndef _MADARA_NO_KARL_
 
     // other processes wait for the publisher to send the goods
     knowledge.wait ("finished", wait_settings);
     
+#else
+    utility::wait_true (knowledge, "finished", wait_settings);
+
+#endif // _MADARA_NO_KARL_
+
     knowledge.print ("Finished latency and throughput tests.\n");
 
     timer.elapsed_time (elapsed_time);
@@ -713,14 +754,40 @@ int main (int argc, char ** argv)
     
     // convert elapsed time from ns -> s and compute throughput
     knowledge.print ("Calculating throughput...");
+    
+#ifndef _MADARA_NO_KARL_
+
     knowledge.evaluate (
       "elapsed_time *= 0.000000001 ;"
       "elapsed_time > 0 => throughput = .num_received / elapsed_time");
+    
+#else
+    double elapsed_time = knowledge.get ("elapsed_time").to_double ();
+    elapsed_time *= 0.000000001;
+
+    if (elapsed_time > 0)
+    {
+      Integer num_received = knowledge.get (".num_received").to_integer ();
+      num_received /= elapsed_time;
+      knowledge.set ("throughput", num_received);
+    }
+
+#endif // _MADARA_NO_KARL_
+
     knowledge.print (" done.\n");
     
     // Wait for bytes per second from publisher
     knowledge.print ("Awaiting final data from publisher...");
+
+#ifndef _MADARA_NO_KARL_
+
     knowledge.wait ("bytes_per_sec", wait_settings);
+    
+#else
+    utility::wait_true (knowledge, "bytes_per_sec", wait_settings);
+
+#endif // _MADARA_NO_KARL_
+
     knowledge.print (" done.\n");
   }
 

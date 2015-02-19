@@ -13,6 +13,10 @@
 #include "ace/Get_Opt.h"
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/utility/Utility.h"
+
+namespace utility = Madara::Utility;
+typedef Madara::Knowledge_Record::Integer  Integer;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
@@ -61,7 +65,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     create_arrays (knowledge);
   else
   {
-    knowledge.wait ("finished_transmitting", wait_settings);
+    utility::wait_true (knowledge, "finished_transmitting", wait_settings);
     write_transported_arrays (knowledge);
   }
 
@@ -94,9 +98,14 @@ void create_arrays (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   integer_array[2] = 2;
 
   knowledge.set ("integers_vector", integer_array, 3);
-
+  
+#ifndef _MADARA_NO_KARL_
   knowledge.evaluate ("var_array[1] = 3.0");
   knowledge.evaluate ("var_array[3] = 20");
+#else
+  knowledge.set_index ("var_array", 1, 3.0);
+  knowledge.set_index ("var_array", 3, Integer(3.0));
+#endif // _MADARA_NO_KARL_
 
   knowledge.set ("finished_transmitting");
   knowledge.print ("Sending the following data sets to id 1\n");
@@ -154,9 +163,17 @@ void write_transported_arrays (
   
   knowledge.print ("var_array = [{var_array}]\n");
   std::cerr << "copying elements of var_array to var_array\n";
+    
+#ifndef _MADARA_NO_KARL_
   knowledge.evaluate ("var_array[0] = var_array[3]");
   knowledge.evaluate ("var_array[2] = var_array[1]");
   knowledge.evaluate ("var_array[8] = 100.012");
+#else
+  knowledge.set_index ("var_array", 0, knowledge.retrieve_index ("var_array", 3).to_double ());
+  knowledge.set_index ("var_array", 2, knowledge.retrieve_index ("var_array", 1).to_double ());
+  knowledge.set_index ("var_array", 8, 100.012);
+#endif // _MADARA_NO_KARL_
+
   knowledge.print ("var_array = [{var_array}]\n\n");
 }
 

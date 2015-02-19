@@ -3,6 +3,8 @@
 #ifndef _COMPOSITE_RETURN_RIGHT_NODE_CPP_
 #define _COMPOSITE_RETURN_RIGHT_NODE_CPP_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <iostream>
 #include <algorithm>
 
@@ -86,5 +88,7 @@ Madara::Expression_Tree::Composite_Return_Right_Node::accept (Visitor &visitor) 
 {
   visitor.visit (*this);
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_RETURN_RIGHT_NODE_CPP_ */

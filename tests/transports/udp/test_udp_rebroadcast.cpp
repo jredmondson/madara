@@ -140,7 +140,8 @@ alter_rebroadcast (
 int main (int argc, char ** argv)
 {
   handle_arguments (argc, argv);
-
+  
+#ifndef _MADARA_NO_KARL_
   // if the user wants us to do defaults for either host1 or 2
   if (settings.hosts.size () < 2)
   {
@@ -239,6 +240,9 @@ int main (int argc, char ** argv)
   }
 
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif
   return 0;
 }

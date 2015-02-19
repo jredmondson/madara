@@ -2,6 +2,8 @@
 #ifndef _MADARA_CONTAINERS_BARRIER_H_
 #define _MADARA_CONTAINERS_BARRIER_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <vector>
 #include <string>
 #include "madara/Lock_Type.h"
@@ -329,6 +331,8 @@ namespace Madara
 }
 
 
+
+#endif // _MADARA_NO_KARL_
 
 
 #endif // _MADARA_CONTAINERS_BARRIER_H_

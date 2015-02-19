@@ -23,8 +23,13 @@ int main (int argc, char * argv[])
     return -1;
   }
   
+  
+#ifndef _MADARA_NO_KARL_
   knowledge.evaluate (argv[1]);
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif // _MADARA_NO_KARL_
   return 0;
 }

@@ -81,7 +81,8 @@ int ACE_TMAIN (int argc, char * argv[])
   wait_settings.max_wait_time = 5;
 
   handle_arguments (argc, argv);
-
+  
+#ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Knowledge_Base knowledge;
 
   // for convenience with calcuations, set the main arguments
@@ -94,6 +95,9 @@ int ACE_TMAIN (int argc, char * argv[])
   knowledge.evaluate ("hertz = #to_double (count) / max_wait");
 
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif
   return 0;
 }

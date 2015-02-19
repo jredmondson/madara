@@ -2,6 +2,8 @@
 #ifndef _COMPONENT_NODE_H_
 #define _COMPONENT_NODE_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <string>
 #include <deque>
 #include <stdexcept>
@@ -77,5 +79,7 @@ namespace Madara
     typedef   std::deque <Component_Node *>   Component_Nodes;  
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPONENT_NODE_H_ */

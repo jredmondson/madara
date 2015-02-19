@@ -66,7 +66,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   if (retcode < 0)
     return retcode;
-
+  
+#ifndef _MADARA_NO_KARL_
   // use ACE real time scheduling class
   int prio  = ACE_Sched_Params::next_priority
     (ACE_SCHED_FIFO,
@@ -162,7 +163,10 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   }
 
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif
   return 0;
 }
 

@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <sstream>
 
+
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/utility/Log_Macros.h"
 #include "madara/knowledge_engine/containers/Barrier.h"
@@ -12,7 +13,9 @@
 
 // shortcuts
 namespace engine = Madara::Knowledge_Engine;
+#ifndef _MADARA_NO_KARL_
 namespace containers = engine::Containers;
+#endif // _MADARA_NO_KARL_
 namespace utility = Madara::Utility;
 namespace transport = Madara::Transport;
 namespace filters = Madara::Filters;
@@ -209,6 +212,7 @@ int main (int argc, char ** argv)
   // handle all user arguments
   handle_arguments (argc, argv);
   
+#ifndef _MADARA_NO_KARL_
   if (settings.type != transport::NO_TRANSPORT && settings.hosts.size () == 0)
   {
     // setup default transport as multicast
@@ -248,6 +252,9 @@ int main (int argc, char ** argv)
 
   // print the aggregate counter to the screen
   knowledge.print ();
-
+  
+#else
+  std::cout << "This test is disabled due to karl feature being disabled.\n";
+#endif // _MADARA_NO_KARL_
   return 0;
 }

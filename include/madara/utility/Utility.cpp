@@ -17,6 +17,8 @@
 #include "ace/OS_NS_sys_time.h"
 #include "ace/High_Res_Timer.h"
 
+#include "madara/knowledge_engine/Knowledge_Base.h"
+
 std::string
 Madara::Utility::get_version (void)
 {
@@ -836,4 +838,191 @@ Madara::Utility::file_size (const std::string & filename)
   }
 
   return size;
+}
+
+bool
+Madara::Utility::wait_true (
+  Knowledge_Engine::Knowledge_Base & knowledge,
+  const std::string & variable,
+  const Knowledge_Engine::Wait_Settings & settings)
+{  
+  // get current time of day
+  ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();  
+  ACE_Time_Value max_wait, sleep_time, next_epoch;
+  ACE_Time_Value poll_frequency, last = current;
+
+  Knowledge_Engine::Variable_Reference ref = knowledge.get_ref (variable);
+
+  if (settings.poll_frequency >= 0)
+  {
+    max_wait.set (settings.max_wait_time);
+    max_wait = current + max_wait;
+    
+    poll_frequency.set (settings.poll_frequency);
+    next_epoch = current + poll_frequency;
+  }
+
+  // print the post statement at highest log level (cannot be masked)
+  if (settings.pre_print_statement != "")
+    knowledge.print (settings.pre_print_statement, MADARA_LOG_EMERGENCY);
+
+  Madara::Knowledge_Record last_value = knowledge.get (ref, settings);
+
+  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+      DLINFO "Utility::wait_true:" \
+      " variable returned %s\n",
+    last_value.to_string ().c_str ()));
+  
+  current = ACE_High_Res_Timer::gettimeofday ();
+
+  // wait for expression to be true
+  while (!last_value.to_integer () &&
+    (settings.max_wait_time < 0 || current < max_wait))
+  {
+    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+        DLINFO "Utility::wait_true:" \
+        " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
+        current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
+        settings.poll_frequency));
+
+    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+        DLINFO "Utility::wait_true:" \
+        " last value didn't result in success\n"));
+
+    // Unlike the other wait statements, we allow for a time based wait.
+    // To do this, we allow a user to specify a 
+    if (settings.poll_frequency > 0)
+    {
+      if (current < next_epoch)
+      {
+        sleep_time = next_epoch - current;
+        Madara::Utility::sleep (sleep_time);
+      }
+
+      next_epoch = next_epoch + poll_frequency;
+    }
+    else
+      knowledge.wait_for_change ();
+    
+    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+        DLINFO "Knowledge_Base_Impl::wait:" \
+        " waiting on %s\n", variable.c_str ()));
+
+    last_value = knowledge.get (ref, settings);
+    
+    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+        DLINFO "Knowledge_Base_Impl::wait:" \
+        " completed eval to get %s\n",
+      last_value.to_string ().c_str ()));
+  
+    // get current time
+    current = ACE_High_Res_Timer::gettimeofday ();
+
+  } // end while (!last)
+  
+  if (current >= max_wait)
+  {
+    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+        DLINFO "Knowledge_Base_Impl::wait:" \
+        " Evaluate did not succeed. Timeout occurred.\n"));
+  }
+
+  // print the post statement at highest log level (cannot be masked)
+  if (settings.post_print_statement != "")
+    knowledge.print (settings.post_print_statement, MADARA_LOG_EMERGENCY);
+
+  return last_value.is_true ();
+}
+
+bool Madara::Utility::wait_false (
+  Knowledge_Engine::Knowledge_Base & knowledge,
+  const std::string & variable,
+  const Knowledge_Engine::Wait_Settings & settings)
+{
+  // get current time of day
+  ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();  
+  ACE_Time_Value max_wait, sleep_time, next_epoch;
+  ACE_Time_Value poll_frequency, last = current;
+
+  Knowledge_Engine::Variable_Reference ref = knowledge.get_ref (variable);
+
+  if (settings.poll_frequency >= 0)
+  {
+    max_wait.set (settings.max_wait_time);
+    max_wait = current + max_wait;
+    
+    poll_frequency.set (settings.poll_frequency);
+    next_epoch = current + poll_frequency;
+  }
+
+  // print the post statement at highest log level (cannot be masked)
+  if (settings.pre_print_statement != "")
+    knowledge.print (settings.pre_print_statement, MADARA_LOG_EMERGENCY);
+
+  Madara::Knowledge_Record last_value = !knowledge.get (ref, settings);
+
+  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+      DLINFO "Utility::wait_true:" \
+      " variable returned %s\n",
+    last_value.to_string ().c_str ()));
+  
+  current = ACE_High_Res_Timer::gettimeofday ();
+
+  // wait for expression to be true
+  while (!last_value.to_integer () &&
+    (settings.max_wait_time < 0 || current < max_wait))
+  {
+    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+        DLINFO "Utility::wait_true:" \
+        " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
+        current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
+        settings.poll_frequency));
+
+    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+        DLINFO "Utility::wait_true:" \
+        " last value didn't result in success\n"));
+
+    // Unlike the other wait statements, we allow for a time based wait.
+    // To do this, we allow a user to specify a 
+    if (settings.poll_frequency > 0)
+    {
+      if (current < next_epoch)
+      {
+        sleep_time = next_epoch - current;
+        Madara::Utility::sleep (sleep_time);
+      }
+
+      next_epoch = next_epoch + poll_frequency;
+    }
+    else
+      knowledge.wait_for_change ();
+    
+    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+        DLINFO "Knowledge_Base_Impl::wait:" \
+        " waiting on %s\n", variable.c_str ()));
+
+    last_value = !knowledge.get (ref, settings);
+    
+    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
+        DLINFO "Knowledge_Base_Impl::wait:" \
+        " completed eval to get %s\n",
+      last_value.to_string ().c_str ()));
+  
+    // get current time
+    current = ACE_High_Res_Timer::gettimeofday ();
+
+  } // end while (!last)
+  
+  if (current >= max_wait)
+  {
+    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+        DLINFO "Knowledge_Base_Impl::wait:" \
+        " Evaluate did not succeed. Timeout occurred.\n"));
+  }
+
+  // print the post statement at highest log level (cannot be masked)
+  if (settings.post_print_statement != "")
+    knowledge.print (settings.post_print_statement, MADARA_LOG_EMERGENCY);
+
+  return last_value.is_true ();
 }

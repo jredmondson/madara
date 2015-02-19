@@ -1,5 +1,5 @@
 
-project (Madara) : install, using_ace, using_splice, splice_transport, using_ndds, using_boost, ndds_transport, cid, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk {
+project (Madara) : install, using_ace, using_splice, splice_transport, using_ndds, using_boost, ndds_transport, cid, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk {
 
   sharedname = MADARA
   dynamicflags += MADARA_BUILD_DLL MADARA_LOGGER_BUILD_DLL
@@ -39,6 +39,8 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     using_boost.mpb
     using_cid.mpb
     using_madara.mpb
+    no_karl.mpb
+    no_xml.mpb
     port/python/using_python.mpb
     using_splice.mpb
     using_splice_idl.mpb
@@ -167,7 +169,7 @@ project (Madara_Jar) : using_madara, using_ace {
 }
 
 
-project (KaRL) : using_ace, using_madara {
+project (KaRL) : using_ace, using_madara, no_karl {
   exeout = $(MADARA_ROOT)/bin
   exename = karl
   

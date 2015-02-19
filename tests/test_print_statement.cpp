@@ -14,6 +14,8 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 
+typedef Madara::Knowledge_Record::Integer Integer;
+
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
@@ -51,7 +53,8 @@ void test_print_statement (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   std::string statement, exp_statement;
   
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   knowledge.evaluate (
     ".var1 = 1; \
     .var2 = 2; \
@@ -60,6 +63,15 @@ void test_print_statement (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
     .var22 = 2; \
     MyState.1.2 = 10; \
     ");
+  
+#else
+  knowledge.set (".var1", Integer (1));
+  knowledge.set (".var2", Integer (2));
+  knowledge.set (".var3", Integer (3));
+  knowledge.set (".var2is2", Integer (1));
+  knowledge.set (".var22", Integer (2));
+  knowledge.set ("MyState.1.2", Integer (10));
+#endif
 
   statement = "Hello kitty {.var1}\n";
 

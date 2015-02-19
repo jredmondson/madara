@@ -1,6 +1,8 @@
 #ifndef _COMPILED_EXPRESSION_H_
 #define _COMPILED_EXPRESSION_H_
 
+#ifndef _MADARA_NO_KARL_
+
 /**
  * @file Compiled_Expression.h
  * @author James Edmondson <jedmondson@gmail.com>
@@ -73,5 +75,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif // _COMPILED_EXPRESSION_H_

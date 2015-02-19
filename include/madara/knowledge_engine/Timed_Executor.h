@@ -40,9 +40,11 @@ namespace Madara
 
       /// time between executions in seconds
       ACE_Time_Value period;
-
+      
+#ifndef _MADARA_NO_KARL_
       /// expression to be executed (rooted Tree)
       Expression_Tree::Component_Node * root;
+#endif // _MADARA_NO_KARL_
 
       /**
        * knowledge base for executing the expression

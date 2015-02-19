@@ -22,6 +22,8 @@
 #include "madara/knowledge_engine/Knowledge_Update_Settings.h"
 #include "madara/knowledge_engine/containers/Integer.h"
 
+typedef  Madara::Knowledge_Record::Integer Integer;
+
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
@@ -214,15 +216,21 @@ void
     buffer.str ().c_str ()));
 }
 
+#ifndef _MADARA_NO_KARL_
 Madara::Knowledge_Engine::Compiled_Expression   increment_ce;
+#endif // _MADARA_NO_KARL_
 Madara::Knowledge_Engine::Variable_Reference    increment_var;
 
 Madara::Knowledge_Record
   increment_var1 (Madara::Knowledge_Engine::Function_Arguments & args,
             Madara::Knowledge_Engine::Variables & variables)
 {
+#ifndef _MADARA_NO_KARL_
   return variables.evaluate (increment_ce,
     Madara::Knowledge_Engine::Knowledge_Update_Settings (false, false));
+#else
+  return Integer (0);
+#endif // _MADARA_NO_KARL_
 }
 
 Madara::Knowledge_Record
@@ -309,8 +317,11 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   ACE_OS::thr_setprio (prio);
 
   Madara::Knowledge_Engine::Knowledge_Base knowledge;
-
+  
+#ifndef _MADARA_NO_KARL_
   increment_ce = knowledge.compile ("++.var1");
+#endif
+
   increment_var = knowledge.get_ref (".var1");
 
   if (num_runs == 0 || num_iterations == 0)
@@ -435,9 +446,11 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   test_functions[VolatileReinforcement] = test_volatile_reinforcement;
   test_functions[VolatileInference] = test_volatile_inference;
 
-
+  
+#ifndef _MADARA_NO_KARL_
   knowledge.define_function ("inc", increment_var1);
   knowledge.define_function ("no_op", no_op);
+#endif
 
   std::cerr << "Testing throughput for MADARA v" <<
     Madara::Utility::get_version () << std::endl;
@@ -585,9 +598,11 @@ uint64_t test_simple_reinforcement (
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
+#ifndef _MADARA_NO_KARL_
     // test literals in conditionals
     knowledge.evaluate ("++.var1",
       Madara::Knowledge_Engine::Eval_Settings (false, false, false));
+#endif
   }
 
   timer.stop ();
@@ -636,8 +651,9 @@ uint64_t test_compiled_sr (
      uint32_t iterations)
 {
   ACE_TRACE (ACE_TEXT ("test_compiled_sr"));
-
+  
   knowledge.clear ();
+#ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Compiled_Expression ce;
 
   ce = knowledge.compile ("++.var1");
@@ -657,11 +673,13 @@ uint64_t test_compiled_sr (
 
   timer.stop ();
   timer.elapsed_time (measured);
-
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled SR: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 
@@ -672,6 +690,7 @@ uint64_t test_compiled_sa (
   ACE_TRACE (ACE_TEXT ("test_compiled_sa"));
 
   knowledge.clear ();
+#ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Compiled_Expression ce;
 
   ce = knowledge.compile (".var1=1");
@@ -696,6 +715,9 @@ uint64_t test_compiled_sa (
     "Compiled SA: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 
@@ -706,6 +728,7 @@ uint64_t test_compiled_sfi (
   ACE_TRACE (ACE_TEXT ("test_compiled_sfi"));
 
   knowledge.clear ();
+#ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Compiled_Expression ce;
 
   ce = knowledge.compile ("inc ()");
@@ -730,6 +753,9 @@ uint64_t test_compiled_sfi (
     "Compiled SFI: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 uint64_t test_extern_call (
@@ -739,6 +765,7 @@ uint64_t test_extern_call (
   ACE_TRACE (ACE_TEXT ("test_extern_call"));
 
   knowledge.clear ();
+#ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Compiled_Expression ce;
 
   ce = knowledge.compile ("no_op ()");
@@ -763,6 +790,9 @@ uint64_t test_extern_call (
     "Extern function call: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 
@@ -774,7 +804,8 @@ uint64_t test_looped_sr (
   ACE_TRACE (ACE_TEXT ("test_looped_sr"));
 
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
@@ -807,6 +838,9 @@ uint64_t test_looped_sr (
     "Compiled Looped LR: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 /// Tests logicals operators (&&, ||)
@@ -817,7 +851,8 @@ uint64_t test_large_reinforcement (
   ACE_TRACE (ACE_TEXT ("test_large_reinforcement"));
 
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
@@ -847,6 +882,9 @@ uint64_t test_large_reinforcement (
     "Large Reinforcement: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 /// Tests logicals operators (&&, ||)
@@ -857,6 +895,7 @@ uint64_t test_compiled_lr (
   ACE_TRACE (ACE_TEXT ("test_compiled_lr"));
 
   knowledge.clear ();
+#ifndef _MADARA_NO_KARL_
 
   // keep track of time
   ACE_hrtime_t measured;
@@ -891,6 +930,9 @@ uint64_t test_compiled_lr (
     "Compiled LR: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 
@@ -902,6 +944,7 @@ uint64_t test_compiled_la (
   ACE_TRACE (ACE_TEXT ("test_compiled_la"));
 
   knowledge.clear ();
+#ifndef _MADARA_NO_KARL_
 
   // keep track of time
   ACE_hrtime_t measured;
@@ -938,6 +981,9 @@ uint64_t test_compiled_la (
     "Compiled LA: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 
@@ -949,7 +995,8 @@ uint64_t test_compiled_lfi (
   ACE_TRACE (ACE_TEXT ("test_compiled_lfi"));
 
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
@@ -983,6 +1030,9 @@ uint64_t test_compiled_lfi (
     "Compiled LFI: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 
@@ -994,7 +1044,8 @@ uint64_t test_optimal_loop (
   ACE_TRACE (ACE_TEXT ("test_optimal_loop"));
 
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
@@ -1027,6 +1078,9 @@ uint64_t test_optimal_loop (
     "Optimal Loop: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 uint64_t test_simple_inference (
@@ -1036,7 +1090,8 @@ uint64_t test_simple_inference (
   ACE_TRACE (ACE_TEXT ("test_simple_inference"));
 
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
@@ -1057,6 +1112,9 @@ uint64_t test_simple_inference (
     "Simple Inference: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 uint64_t test_normal_set (
@@ -1070,10 +1128,6 @@ uint64_t test_normal_set (
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
-
-  Madara::Knowledge_Engine::Compiled_Expression ce;
-
-  ce = knowledge.compile ("1 => ++.var1");
 
   timer.start ();
 
@@ -1103,10 +1157,6 @@ uint64_t test_get_ref (
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
 
-  Madara::Knowledge_Engine::Compiled_Expression ce;
-
-  ce = knowledge.compile ("1 => ++.var1");
-
   timer.start ();
 
   for (uint32_t i = 0; i < iterations; ++i)
@@ -1135,10 +1185,6 @@ uint64_t test_get_expand_ref (
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
-
-  Madara::Knowledge_Engine::Compiled_Expression ce;
-
-  ce = knowledge.compile ("1 => ++.var1");
 
   timer.start ();
 
@@ -1170,10 +1216,6 @@ uint64_t test_var_ref_set (
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
 
-  Madara::Knowledge_Engine::Compiled_Expression ce;
-
-  ce = knowledge.compile ("1 => ++.var1");
-
   timer.start ();
 
   Madara::Knowledge_Engine::Variable_Reference variable =
@@ -1200,7 +1242,8 @@ uint64_t test_variables_inc_var_ref (
   ACE_TRACE (ACE_TEXT ("test_variables_inc_var_ref"));
 
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
@@ -1223,6 +1266,9 @@ uint64_t test_variables_inc_var_ref (
     "Variables Inc Var Ref: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 uint64_t test_compiled_si (
@@ -1232,7 +1278,8 @@ uint64_t test_compiled_si (
   ACE_TRACE (ACE_TEXT ("test_compiled_si"));
 
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
@@ -1257,6 +1304,9 @@ uint64_t test_compiled_si (
     "Compiled SI: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 /// Tests looped simple inferences (1 => ++.var1)
@@ -1267,7 +1317,8 @@ uint64_t test_looped_si (
   ACE_TRACE (ACE_TEXT ("test_looped_si"));
 
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
@@ -1299,6 +1350,9 @@ uint64_t test_looped_si (
     "Compiled Looped LR: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 uint64_t test_large_inference (
@@ -1308,7 +1362,8 @@ uint64_t test_large_inference (
   ACE_TRACE (ACE_TEXT ("test_large_inference"));
 
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
@@ -1338,6 +1393,9 @@ uint64_t test_large_inference (
     "Large Inference: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 uint64_t test_compiled_li (
@@ -1347,7 +1405,8 @@ uint64_t test_compiled_li (
   ACE_TRACE (ACE_TEXT ("test_compiled_li"));
 
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
@@ -1381,6 +1440,9 @@ uint64_t test_compiled_li (
     "Compiled LI: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 /// Tests looped long inferences (1 => ++.var1)
@@ -1391,7 +1453,8 @@ uint64_t test_looped_li (
   ACE_TRACE (ACE_TEXT ("test_looped_lr"));
 
   knowledge.clear ();
-
+  
+#ifndef _MADARA_NO_KARL_
   // keep track of time
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
@@ -1424,6 +1487,9 @@ uint64_t test_looped_li (
     "Compiled Looped LR: ");
 
   return measured;
+#else
+  return 0;
+#endif 
 }
 
 /// Tests logicals operators (&&, ||)

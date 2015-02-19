@@ -54,7 +54,8 @@ namespace Madara
        * info for service loop
        **/
       Timed_Event_Thread_Info info_;
-
+      
+#ifndef _MADARA_NO_KARL_
       /**
        * expression for checking if events are queued or terminated
        **/
@@ -64,6 +65,8 @@ namespace Madara
        * expression for letting control plane know the thread is closed
        **/
       Compiled_Expression thread_closed_;
+#endif // _MADARA_NO_KARL_
+
     };
   }
 }

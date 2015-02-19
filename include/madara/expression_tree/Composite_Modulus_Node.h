@@ -2,6 +2,8 @@
 #ifndef _COMPOSITE_MODULUS_NODE_H
 #define _COMPOSITE_MODULUS_NODE_H
 
+#ifndef _MADARA_NO_KARL_
+
 #include "madara/expression_tree/Composite_Binary_Node.h"
 #include "madara/knowledge_engine/Knowledge_Record.h"
 
@@ -66,5 +68,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_MODULUS_NODE_H */

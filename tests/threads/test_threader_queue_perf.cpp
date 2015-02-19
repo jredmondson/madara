@@ -252,8 +252,8 @@ int main (int argc, char ** argv)
     // consumers consume as quickly as possible
     threader.run (hertz, buffer.str (), new Consumer (), true);
   }
-
-  knowledge.evaluate (".start_time = #get_time()");
+  
+  Integer start_time = utility::get_time ();
 
   // awaken all threads to start work
   threader.resume ();
@@ -266,10 +266,13 @@ int main (int argc, char ** argv)
 
   // request all threads to terminate
   threader.terminate ();
+  
+  Integer end_time = utility::get_time ();
+  Integer total_time = end_time - start_time;
+  double total_time_in_secs = total_time;
+  total_time_in_secs /= 1000000000;
 
-  knowledge.evaluate (".end_time = #get_time();"
-    ".total_time = .end_time - .start_time;"
-    ".total_time_in_seconds = #double(.total_time) / 1000000000");
+  knowledge.set (".total_time_in_seconds", total_time_in_secs);
 
   std::cerr << "The consumers completed " <<
     *jobs_completed << " jobs\n";

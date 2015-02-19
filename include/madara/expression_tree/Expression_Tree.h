@@ -3,6 +3,8 @@
 #ifndef _EXPRESSION_TREE_H_
 #define _EXPRESSION_TREE_H_
 
+#ifndef _MADARA_NO_KARL_
+
 #include <string>
 #include <stdexcept>
 #include "madara/utility/Refcounter.h"
@@ -151,5 +153,7 @@ namespace Madara
 
   }
 }
+
+#endif // _MADARA_NO_KARL_
 
 #endif /* _EXPRESSION_TREE_H_ */
