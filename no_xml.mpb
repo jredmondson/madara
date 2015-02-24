@@ -1,0 +1,3 @@
+feature (no_xml) {
+  macros += _MADARA_NO_XML_
+}
