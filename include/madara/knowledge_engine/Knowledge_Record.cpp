@@ -32,7 +32,7 @@ Madara::Knowledge_Record::set_precision (int new_precision)
 Madara::Knowledge_Record::Knowledge_Record ()
       : status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
         quality (0), write_quality (0),
-        int_value_ (0), type_ (INTEGER)
+        int_value_ (0), type_ (INTEGER), size_ (1)
 {
 }
 
