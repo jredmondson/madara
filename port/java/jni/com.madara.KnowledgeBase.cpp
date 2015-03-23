@@ -447,6 +447,8 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setFile
 
   knowledge->set_file (std::string (nativeVar), dest, (size_t)len);
 
+  delete [] dest;
+
   if (isCopy)
     env->ReleaseByteArrayElements (value, source, JNI_ABORT);
 
@@ -468,6 +470,8 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setImage
   std::memcpy (dest, source, (size_t)len);
 
   knowledge->set_jpeg (std::string (nativeVar), dest, (size_t)len);
+  
+  delete [] dest;
 
   if (isCopy)
     env->ReleaseByteArrayElements (value, source, JNI_ABORT);
@@ -602,6 +606,10 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setFileSettings
   knowledge->set_file (std::string (nativeVar), dest, (size_t)len,
     *(Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
 
+  delete dest;
+  
+  delete [] dest;
+
   if (isCopy)
     env->ReleaseByteArrayElements (value, source, JNI_ABORT);
 
@@ -624,6 +632,8 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setImageSettings
 
   knowledge->set_jpeg (std::string (nativeVar), dest, (size_t)len,
     *(Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
+  
+  delete [] dest;
 
   if (isCopy)
     env->ReleaseByteArrayElements (value, source, JNI_ABORT);
