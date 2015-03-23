@@ -40,11 +40,15 @@ public class KnowledgeBase extends MadaraJNI
   private static native void jni_setString(long cptr, String name, String value);
   private static native void jni_setIntegerArray(long cptr, String name, long[] value);
   private static native void jni_setDoubleArray(long cptr, String name, double[] value);
+  private static native void jni_setFile(long cptr, String name, byte[] value);
+  private static native void jni_setImage(long cptr, String name, byte[] value);
   private static native void jni_setIntegerSettings(long cptr, String name, long value, long settings);
   private static native void jni_setDoubleSettings(long cptr, String name, double value, long settings);
   private static native void jni_setStringSettings(long cptr, String name, String value, long settings);
   private static native void jni_setIntegerArraySettings(long cptr, String name, long[] value, long settings);
   private static native void jni_setDoubleArraySettings(long cptr, String name, double[] value, long settings);
+  private static native void jni_setFileSettings(long cptr, String name, byte[] value, long settings);
+  private static native void jni_setImageSettings(long cptr, String name, byte[] value, long settings);
   private native void jni_freeKnowledgeBase(long cptr);
   private native long jni_wait(long cptr, String expression, long waitSettings);
   private native long jni_wait(long cptr, long expression, long waitSettings);
@@ -376,7 +380,7 @@ public class KnowledgeBase extends MadaraJNI
   }
 
   /**
-   * Sets a knowledge value to a specified value.
+   * Sets a knowledge variable to a specified long array.
    *
    * @param name  knowledge name
    * @param value value to set
@@ -386,6 +390,32 @@ public class KnowledgeBase extends MadaraJNI
   {
     checkContextLock();
     jni_setIntegerArray(getCPtr(), name, value);
+  }
+
+  /**
+   * Sets a knowledge variable to a specified byte array.
+   *
+   * @param name  knowledge name
+   * @param value value to set
+   * @throws KnowledgeBaseLockedException If called from a MadaraFunction
+   **/
+  public void setFile(String name, byte[] value)
+  {
+    checkContextLock();
+    jni_setFile(getCPtr(), name, value);
+  }
+
+  /**
+   * Sets a knowledge variable to a specified byte array.
+   *
+   * @param name  knowledge name
+   * @param value value to set
+   * @throws KnowledgeBaseLockedException If called from a MadaraFunction
+   **/
+  public void setImage(String name, byte[] value)
+  {
+    checkContextLock();
+    jni_setImage(getCPtr(), name, value);
   }
 
   
@@ -458,6 +488,35 @@ public class KnowledgeBase extends MadaraJNI
   {
     checkContextLock();
     jni_setIntegerArraySettings(getCPtr(), name, value, settings.getCPtr());
+  }
+
+  
+  /**
+   * Sets a knowledge variable to a specified file byte array.
+   *
+   * @param name  knowledge name
+   * @param value value to set
+   * @param settings settings for evaluating the set command
+   * @throws KnowledgeBaseLockedException If called from a MadaraFunction
+   **/
+  public void setFile(String name, byte[] value, EvalSettings settings)
+  {
+    checkContextLock();
+    jni_setFileSettings(getCPtr(), name, value, settings.getCPtr());
+  }
+
+  /**
+   * Sets a knowledge variable to a specified image byte array.
+   *
+   * @param name  knowledge name
+   * @param value value to set
+   * @param settings settings for evaluating the set command
+   * @throws KnowledgeBaseLockedException If called from a MadaraFunction
+   **/
+  public void setImage(String name, byte[] value, EvalSettings settings)
+  {
+    checkContextLock();
+    jni_setImageSettings(getCPtr(), name, value, settings.getCPtr());
   }
 
   

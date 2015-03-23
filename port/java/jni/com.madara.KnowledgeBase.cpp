@@ -27,22 +27,22 @@ static JavaVM *jvm;
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__
   (JNIEnv * env, jobject obj)
 {
-  return (jlong) (new Madara::Knowledge_Engine::Knowledge_Base());
+  return (jlong) (new Madara::Knowledge_Engine::Knowledge_Base ());
 }
 
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_String_2ILjava_lang_String_2
   (JNIEnv * env, jobject obj, jstring host, jint transport, jstring domain)
 {
 
-  const char *nativeHost = env->GetStringUTFChars(host, 0);
-  const char *nativeDomain = env->GetStringUTFChars(domain, 0);
+  const char *nativeHost = env->GetStringUTFChars (host, 0);
+  const char *nativeDomain = env->GetStringUTFChars (domain, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
-  new Madara::Knowledge_Engine::Knowledge_Base(
-    std::string(nativeHost), transport, std::string(nativeDomain));
+  new Madara::Knowledge_Engine::Knowledge_Base (
+    std::string (nativeHost), transport, std::string (nativeDomain));
 
-  env->ReleaseStringUTFChars(host, nativeHost);
-  env->ReleaseStringUTFChars(domain, nativeDomain);
+  env->ReleaseStringUTFChars (host, nativeHost);
+  env->ReleaseStringUTFChars (domain, nativeDomain);
 
   return (jlong) knowledge;
 }
@@ -50,14 +50,14 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_Strin
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_String_2J
   (JNIEnv *env, jobject obj, jstring host, jlong settings)
 {
-  const char *nativeHost = env->GetStringUTFChars(host, 0);
+  const char *nativeHost = env->GetStringUTFChars (host, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
-  new Madara::Knowledge_Engine::Knowledge_Base(
-    std::string(nativeHost), Madara::Transport::QoS_Transport_Settings(
-    *(Madara::Transport::Settings*) settings));
+  new Madara::Knowledge_Engine::Knowledge_Base (
+    std::string (nativeHost), Madara::Transport::QoS_Transport_Settings (
+    * (Madara::Transport::Settings*) settings));
 
-  env->ReleaseStringUTFChars(host, nativeHost);
+  env->ReleaseStringUTFChars (host, nativeHost);
 
   return (jlong) knowledge;
 }
@@ -65,8 +65,8 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_Strin
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__J
   (JNIEnv * env, jobject obj, jlong original)
 {
-  return (jlong) new Madara::Knowledge_Engine::Knowledge_Base(
-  *(Madara::Knowledge_Engine::Knowledge_Base*) original);
+  return (jlong) new Madara::Knowledge_Engine::Knowledge_Base (
+  * (Madara::Knowledge_Engine::Knowledge_Base*) original);
 }
 
 
@@ -78,17 +78,17 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__J
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1evaluate__JLjava_lang_String_2J
   (JNIEnv *env, jobject obj, jlong cptr, jstring expression, jlong evalSettings)
 {
-  const char *nativeExpression = env->GetStringUTFChars(expression, 0);
+  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
   Madara::Knowledge_Engine::Eval_Settings settings =
-  *(Madara::Knowledge_Engine::Eval_Settings*) evalSettings;
+  * (Madara::Knowledge_Engine::Eval_Settings*) evalSettings;
 
-  Madara::Knowledge_Record* ret = new Madara::Knowledge_Record(
-  knowledge->evaluate(std::string(nativeExpression), settings));
+  Madara::Knowledge_Record* ret = new Madara::Knowledge_Record (
+  knowledge->evaluate (std::string (nativeExpression), settings));
 
-  env->ReleaseStringUTFChars(expression, nativeExpression);
+  env->ReleaseStringUTFChars (expression, nativeExpression);
 
   return (jlong) ret;
 }
@@ -104,12 +104,12 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1evaluate__JJJ
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
   Madara::Knowledge_Engine::Compiled_Expression compiled_expression =
-  *(Madara::Knowledge_Engine::Compiled_Expression*)expression;
+  * (Madara::Knowledge_Engine::Compiled_Expression*)expression;
   Madara::Knowledge_Engine::Eval_Settings settings =
-  *(Madara::Knowledge_Engine::Eval_Settings*) evalSettings;
+  * (Madara::Knowledge_Engine::Eval_Settings*) evalSettings;
 
-  return (jlong) new Madara::Knowledge_Record(
-  knowledge->evaluate(compiled_expression, settings));
+  return (jlong) new Madara::Knowledge_Record (
+  knowledge->evaluate (compiled_expression, settings));
 }
 
 /*
@@ -120,16 +120,16 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1evaluate__JJJ
 void JNICALL Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__JLjava_lang_String_2J
   (JNIEnv * env, jobject obj, jlong cptr, jstring expression, jlong evalSettings)
 {
-  const char *nativeExpression = env->GetStringUTFChars(expression, 0);
+  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
   Madara::Knowledge_Engine::Eval_Settings settings =
-  *(Madara::Knowledge_Engine::Eval_Settings*) evalSettings;
+  * (Madara::Knowledge_Engine::Eval_Settings*) evalSettings;
 
-  knowledge->evaluate(std::string(nativeExpression), settings);
+  knowledge->evaluate (std::string (nativeExpression), settings);
 
-  env->ReleaseStringUTFChars(expression, nativeExpression);
+  env->ReleaseStringUTFChars (expression, nativeExpression);
 }
 
 /*
@@ -143,11 +143,11 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__JJJ
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
   Madara::Knowledge_Engine::Compiled_Expression compiled_expression =
-  *(Madara::Knowledge_Engine::Compiled_Expression*)expression;
+  * (Madara::Knowledge_Engine::Compiled_Expression*)expression;
   Madara::Knowledge_Engine::Eval_Settings settings =
-  *(Madara::Knowledge_Engine::Eval_Settings*) evalSettings;
+  * (Madara::Knowledge_Engine::Eval_Settings*) evalSettings;
 
-  knowledge->evaluate(compiled_expression, settings);
+  knowledge->evaluate (compiled_expression, settings);
 }
 
 /*
@@ -158,16 +158,16 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__JJJ
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1compile
   (JNIEnv *env, jobject obj, jlong cptr, jstring expression)
 {
-  const char *nativeExpression = env->GetStringUTFChars(expression, 0);
+  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
 
   Madara::Knowledge_Engine::Compiled_Expression* ret =
-  new Madara::Knowledge_Engine::Compiled_Expression(
-    knowledge->compile(std::string(nativeExpression)));
+  new Madara::Knowledge_Engine::Compiled_Expression (
+    knowledge->compile (std::string (nativeExpression)));
 
-  env->ReleaseStringUTFChars(expression, nativeExpression);
+  env->ReleaseStringUTFChars (expression, nativeExpression);
 
   return (jlong) ret;
 }
@@ -179,32 +179,32 @@ Madara::Knowledge_Record default_madara_return_function
   JNIEnv *env;
 
 #ifndef _USING_OPENJDK_
-  jvm->AttachCurrentThread((void **)&env, NULL);
+  jvm->AttachCurrentThread ( (void **)&env, NULL);
 #else
-  jvm->AttachCurrentThread(&env, NULL);
+  jvm->AttachCurrentThread (&env, NULL);
 #endif
 
   jlong ret;
-  jlong * argsArrayNative = new jlong [args.size()];
-  for (unsigned int x = 0; x < args.size(); x++)
+  jlong * argsArrayNative = new jlong [args.size ()];
+  for (unsigned int x = 0; x < args.size (); x++)
   {
-  argsArrayNative[x] = (jlong)&(args[x]);
+  argsArrayNative[x] = (jlong)& (args[x]);
   }
 
-  jlongArray argsArray = env->NewLongArray((jsize)args.size());
-  env->SetLongArrayRegion(argsArray, 0, (jsize)args.size(), argsArrayNative);
+  jlongArray argsArray = env->NewLongArray ( (jsize)args.size ());
+  env->SetLongArrayRegion (argsArray, 0, (jsize)args.size (), argsArrayNative);
 
-  ret = env->CallStaticLongMethod(knowledgeBaseClass, callbackMethod,
-  env->NewStringUTF(name), definedFunctionsMap[std::string(name)],
+  ret = env->CallStaticLongMethod (knowledgeBaseClass, callbackMethod,
+  env->NewStringUTF (name), definedFunctionsMap[std::string (name)],
   argsArray, &variables);
 
   delete [] argsArrayNative;
 
   if (ret == 0)
-  return Madara::Knowledge_Record::Integer(0);
+  return Madara::Knowledge_Record::Integer (0);
   else
   {
-  Madara::Knowledge_Record returnValue(*(Madara::Knowledge_Record*)ret);
+  Madara::Knowledge_Record returnValue (* (Madara::Knowledge_Record*)ret);
   delete (Madara::Knowledge_Record*)ret;
   return returnValue;
   }
@@ -222,21 +222,21 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_Stri
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
   if (!knowledgeBaseClass)
   {
-  knowledgeBaseClass = (jclass)env->NewGlobalRef(env->GetObjectClass(obj));
-  callbackMethod = env->GetStaticMethodID(
-    knowledgeBaseClass, "callBack", "(Ljava/lang/String;J[JJ)J" );
+  knowledgeBaseClass = (jclass)env->NewGlobalRef (env->GetObjectClass (obj));
+  callbackMethod = env->GetStaticMethodID (
+    knowledgeBaseClass, "callBack", " (Ljava/lang/String;J[JJ)J" );
   }
 
   if (!jvm)
   {
-  env->GetJavaVM(&jvm);
+  env->GetJavaVM (&jvm);
   }
 
-  const char *nativeName = env->GetStringUTFChars(name, 0);
-  definedFunctionsMap[std::string(nativeName)] = cptr;
-  knowledge->define_function(
-  std::string(nativeName), default_madara_return_function);
-  env->ReleaseStringUTFChars(name, nativeName);
+  const char *nativeName = env->GetStringUTFChars (name, 0);
+  definedFunctionsMap[std::string (nativeName)] = cptr;
+  knowledge->define_function (
+  std::string (nativeName), default_madara_return_function);
+  env->ReleaseStringUTFChars (name, nativeName);
 }
 
 /*
@@ -248,16 +248,16 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_Stri
 void JNICALL Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2Ljava_lang_String_2
   (JNIEnv *env, jobject obj, jlong cptr, jstring name, jstring expression)
 {
-  const char *nativeExpression = env->GetStringUTFChars(expression, 0);
-  const char *nativeName = env->GetStringUTFChars(name, 0);
+  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
+  const char *nativeName = env->GetStringUTFChars (name, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  knowledge->define_function(std::string(nativeName),
-  std::string(nativeExpression));
+  knowledge->define_function (std::string (nativeName),
+  std::string (nativeExpression));
 
-  env->ReleaseStringUTFChars(name, nativeName);
-  env->ReleaseStringUTFChars(expression, nativeExpression);
+  env->ReleaseStringUTFChars (name, nativeName);
+  env->ReleaseStringUTFChars (expression, nativeExpression);
 }
 
 /*
@@ -270,11 +270,11 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_Stri
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
     (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeName = env->GetStringUTFChars(name, 0);
+  const char *nativeName = env->GetStringUTFChars (name, 0);
 
-  knowledge->define_function(std::string(nativeName), func);
+  knowledge->define_function (std::string (nativeName), func);
 
-  env->ReleaseStringUTFChars(name, nativeName);
+  env->ReleaseStringUTFChars (name, nativeName);
 }
 
 /*
@@ -286,7 +286,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1clear (JNIEnv *env, jobject obj,
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  knowledge->clear();
+  knowledge->clear ();
 }
 
 jboolean JNICALL Java_com_madara_KnowledgeBase_jni_1exists
@@ -296,11 +296,11 @@ jboolean JNICALL Java_com_madara_KnowledgeBase_jni_1exists
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeName = env->GetStringUTFChars(name, 0);
+  const char *nativeName = env->GetStringUTFChars (name, 0);
 
-  result = (jboolean) knowledge->exists(std::string(nativeName));
+  result = (jboolean) knowledge->exists (std::string (nativeName));
 
-  env->ReleaseStringUTFChars(name, nativeName);
+  env->ReleaseStringUTFChars (name, nativeName);
 
   return result;
 }
@@ -313,14 +313,15 @@ jboolean JNICALL Java_com_madara_KnowledgeBase_jni_1exists
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1get
   (JNIEnv *env, jobject obj, jlong cptr, jstring var)
 {
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  Madara::Knowledge_Record* ret = new Madara::Knowledge_Record(
-  knowledge->get(std::string(nativeVar)));
 
-  env->ReleaseStringUTFChars(var, nativeVar);
+  Madara::Knowledge_Record* ret = new Madara::Knowledge_Record (
+    knowledge->get (std::string (nativeVar)));
+
+  env->ReleaseStringUTFChars (var, nativeVar);
 
   return (jlong) ret;
 }
@@ -335,9 +336,11 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setInteger
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
-  knowledge->set(nativeVar, Madara::Knowledge_Record::Integer(value));
-  env->ReleaseStringUTFChars(var, nativeVar);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+
+  knowledge->set (nativeVar, Madara::Knowledge_Record::Integer (value));
+
+  env->ReleaseStringUTFChars (var, nativeVar);
 }
 
 /*
@@ -350,9 +353,11 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setDouble
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
-  knowledge->set(nativeVar, (double) value);
-  env->ReleaseStringUTFChars(var, nativeVar);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+
+  knowledge->set (nativeVar, (double) value);
+
+  env->ReleaseStringUTFChars (var, nativeVar);
 }
 
 /*
@@ -365,11 +370,13 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setString
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
-  const char *nativeValue = env->GetStringUTFChars(value, 0);
-  knowledge->set(nativeVar, std::string(nativeValue));
-  env->ReleaseStringUTFChars(var, nativeVar);
-  env->ReleaseStringUTFChars(value, nativeValue);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  const char *nativeValue = env->GetStringUTFChars (value, 0);
+
+  knowledge->set (nativeVar, std::string (nativeValue));
+
+  env->ReleaseStringUTFChars (var, nativeVar);
+  env->ReleaseStringUTFChars (value, nativeValue);
 }
 
 /*
@@ -382,17 +389,20 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setIntegerArray
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
-  jsize len = env->GetArrayLength(value);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  jsize len = env->GetArrayLength (value);
   jboolean isCopy;
-  jlong* intArray = env->GetLongArrayElements(value, &isCopy);
-  std::vector<Madara::Knowledge_Record::Integer> intVector(len);
+
+  jlong* intArray = env->GetLongArrayElements (value, &isCopy);
+  std::vector<Madara::Knowledge_Record::Integer> intVector (len);
   for (int x = 0; x < len; x++)
-  intVector[x] = intArray[x];
-  knowledge->set(std::string(nativeVar), intVector);
+    intVector[x] = intArray[x];
+
+  knowledge->set (std::string (nativeVar), intVector);
+
   if (isCopy)
-  env->ReleaseLongArrayElements(value, intArray, JNI_ABORT);
-  env->ReleaseStringUTFChars(var, nativeVar);
+    env->ReleaseLongArrayElements (value, intArray, JNI_ABORT);
+  env->ReleaseStringUTFChars (var, nativeVar);
 }
 
 /*
@@ -405,33 +415,81 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setDoubleArray
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
-  jsize len = env->GetArrayLength(value);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  jsize len = env->GetArrayLength (value);
   jboolean isCopy;
-  jdouble* dblArray = env->GetDoubleArrayElements(value, &isCopy);
-  std::vector<double> dblVector(len);
+
+  jdouble* dblArray = env->GetDoubleArrayElements (value, &isCopy);
+  std::vector<double> dblVector (len);
   for (int x = 0; x < len; x++)
-  dblVector[x] = dblArray[x];
-  knowledge->set(std::string(nativeVar), dblVector);
+    dblVector[x] = dblArray[x];
+  knowledge->set (std::string (nativeVar), dblVector);
+
   if (isCopy)
-  env->ReleaseDoubleArrayElements(value, dblArray, JNI_ABORT);
-  env->ReleaseStringUTFChars(var, nativeVar);
+    env->ReleaseDoubleArrayElements (value, dblArray, JNI_ABORT);
+
+  env->ReleaseStringUTFChars (var, nativeVar);
 }
+
+void JNICALL Java_com_madara_KnowledgeBase_jni_1setFile
+  (JNIEnv * env, jclass cls, jlong cptr, jstring var, jbyteArray value)
+{
+  Madara::Knowledge_Engine::Knowledge_Base* knowledge =
+  (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
+
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  jsize len = env->GetArrayLength (value);
+  jboolean isCopy;
+
+  jbyte * source = env->GetByteArrayElements (value, &isCopy);
+  unsigned char * dest = new unsigned char [len];
+  std::memcpy (dest, source, (size_t)len);
+
+  knowledge->set_file (std::string (nativeVar), dest, (size_t)len);
+
+  if (isCopy)
+    env->ReleaseByteArrayElements (value, source, JNI_ABORT);
+
+  env->ReleaseStringUTFChars (var, nativeVar);
+}
+
+void JNICALL Java_com_madara_KnowledgeBase_jni_1setImage
+  (JNIEnv * env, jclass cls, jlong cptr, jstring var, jbyteArray value)
+{
+  Madara::Knowledge_Engine::Knowledge_Base* knowledge =
+  (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
+
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  jsize len = env->GetArrayLength (value);
+  jboolean isCopy;
+
+  jbyte * source = env->GetByteArrayElements (value, &isCopy);
+  unsigned char * dest = new unsigned char [len];
+  std::memcpy (dest, source, (size_t)len);
+
+  knowledge->set_jpeg (std::string (nativeVar), dest, (size_t)len);
+
+  if (isCopy)
+    env->ReleaseByteArrayElements (value, source, JNI_ABORT);
+
+  env->ReleaseStringUTFChars (var, nativeVar);
+}
+
 
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setIntegerSettings
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jlong value, jlong settings_ptr)
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
   
   Madara::Knowledge_Engine::Eval_Settings * settings =
   (Madara::Knowledge_Engine::Eval_Settings *)settings_ptr;
   
-  knowledge->set(nativeVar, Madara::Knowledge_Record::Integer(value),
+  knowledge->set (nativeVar, Madara::Knowledge_Record::Integer (value),
   *settings);
 
-  env->ReleaseStringUTFChars(var, nativeVar);
+  env->ReleaseStringUTFChars (var, nativeVar);
 }
 
 /*
@@ -444,10 +502,10 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setDoubleSettings
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
-  knowledge->set(nativeVar, value,
-  *(Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
-  env->ReleaseStringUTFChars(var, nativeVar);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  knowledge->set (nativeVar, value,
+  * (Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
+  env->ReleaseStringUTFChars (var, nativeVar);
 }
 
 /*
@@ -460,16 +518,16 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setStringSettings
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
-  const char *nativeValue = env->GetStringUTFChars(value, 0);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  const char *nativeValue = env->GetStringUTFChars (value, 0);
 
   Madara::Knowledge_Engine::Eval_Settings * settings =
   (Madara::Knowledge_Engine::Eval_Settings *)settings_ptr;
   
-  knowledge->set(nativeVar, std::string(nativeValue), *settings);
+  knowledge->set (nativeVar, std::string (nativeValue), *settings);
 
-  env->ReleaseStringUTFChars(var, nativeVar);
-  env->ReleaseStringUTFChars(value, nativeValue);
+  env->ReleaseStringUTFChars (var, nativeVar);
+  env->ReleaseStringUTFChars (value, nativeValue);
 }
 
 /*
@@ -482,18 +540,21 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setIntegerArraySettings
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
-  jsize len = env->GetArrayLength(value);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  jsize len = env->GetArrayLength (value);
   jboolean isCopy;
-  jlong* intArray = env->GetLongArrayElements(value, &isCopy);
-  std::vector<Madara::Knowledge_Record::Integer> intVector(len);
+
+  jlong* intArray = env->GetLongArrayElements (value, &isCopy);
+  std::vector<Madara::Knowledge_Record::Integer> intVector (len);
   for (int x = 0; x < len; x++)
-  intVector[x] = intArray[x];
-  knowledge->set(std::string(nativeVar), intVector,
-  *(Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
+    intVector[x] = intArray[x];
+
+  knowledge->set (std::string (nativeVar), intVector,
+    *(Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
+
   if (isCopy)
-  env->ReleaseLongArrayElements(value, intArray, JNI_ABORT);
-  env->ReleaseStringUTFChars(var, nativeVar);
+    env->ReleaseLongArrayElements (value, intArray, JNI_ABORT);
+  env->ReleaseStringUTFChars (var, nativeVar);
 }
 
 /*
@@ -506,19 +567,70 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setDoubleArraySettings
 {
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
-  jsize len = env->GetArrayLength(value);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  jsize len = env->GetArrayLength (value);
   jboolean isCopy;
-  jdouble* dblArray = env->GetDoubleArrayElements(value, &isCopy);
-  std::vector<double> dblVector(len);
+
+  jdouble * dblArray = env->GetDoubleArrayElements (value, &isCopy);
+  std::vector<double> dblVector (len);
   for (int x = 0; x < len; x++)
-  dblVector[x] = dblArray[x];
-  knowledge->set(std::string(nativeVar), dblVector,
-  *(Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
+    dblVector[x] = dblArray[x];
+
+  knowledge->set (std::string (nativeVar), dblVector,
+    *(Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
+
   if (isCopy)
-  env->ReleaseDoubleArrayElements(value, dblArray, JNI_ABORT);
-  env->ReleaseStringUTFChars(var, nativeVar);
+    env->ReleaseDoubleArrayElements (value, dblArray, JNI_ABORT);
+  env->ReleaseStringUTFChars (var, nativeVar);
 }
+
+
+void JNICALL Java_com_madara_KnowledgeBase_jni_1setFileSettings
+  (JNIEnv * env, jclass cls, jlong cptr, jstring var, jbyteArray value, jlong settings_ptr)
+{
+  Madara::Knowledge_Engine::Knowledge_Base* knowledge =
+  (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
+
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  jsize len = env->GetArrayLength (value);
+  jboolean isCopy;
+
+  jbyte * source = env->GetByteArrayElements (value, &isCopy);
+  unsigned char * dest = new unsigned char [len];
+  std::memcpy (dest, source, (size_t)len);
+
+  knowledge->set_file (std::string (nativeVar), dest, (size_t)len,
+    *(Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
+
+  if (isCopy)
+    env->ReleaseByteArrayElements (value, source, JNI_ABORT);
+
+  env->ReleaseStringUTFChars (var, nativeVar);
+}
+
+void JNICALL Java_com_madara_KnowledgeBase_jni_1setImageSettings
+  (JNIEnv * env, jclass cls, jlong cptr, jstring var, jbyteArray value, jlong settings_ptr)
+{
+  Madara::Knowledge_Engine::Knowledge_Base* knowledge =
+  (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
+
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  jsize len = env->GetArrayLength (value);
+  jboolean isCopy;
+
+  jbyte * source = env->GetByteArrayElements (value, &isCopy);
+  unsigned char * dest = new unsigned char [len];
+  std::memcpy (dest, source, (size_t)len);
+
+  knowledge->set_jpeg (std::string (nativeVar), dest, (size_t)len,
+    *(Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
+
+  if (isCopy)
+    env->ReleaseByteArrayElements (value, source, JNI_ABORT);
+
+  env->ReleaseStringUTFChars (var, nativeVar);
+}
+
 
 /*
  * Class:   com_madara_KnowledgeBase
@@ -545,7 +657,7 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1sendModifieds__JJ
   Madara::Knowledge_Engine::Knowledge_Base * knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
   Madara::Knowledge_Engine::Eval_Settings settings = 
-  *(Madara::Knowledge_Engine::Eval_Settings*) evalSettings;
+  * (Madara::Knowledge_Engine::Eval_Settings*) evalSettings;
 
   knowledge->send_modifieds ("Knowledge_Base::send_modifieds", evalSettings);
 }
@@ -558,13 +670,13 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1sendModifieds__JJ
 MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1print__JLjava_lang_String_2
   (JNIEnv * env, jobject, jlong cptr, jstring statement)
 {
-  const char * printable = env->GetStringUTFChars(statement, 0);
+  const char * printable = env->GetStringUTFChars (statement, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge = (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
 
   knowledge->print (printable);
 
-  env->ReleaseStringUTFChars(statement, printable);
+  env->ReleaseStringUTFChars (statement, printable);
 }
 
 
@@ -591,16 +703,16 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1print__J
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1wait__JLjava_lang_String_2J
   (JNIEnv * env, jobject obj, jlong cptr, jstring expression, jlong waitSettings)
 {
-  const char *nativeExpression = env->GetStringUTFChars(expression, 0);
+  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
   Madara::Knowledge_Engine::Wait_Settings settings =
-  *(Madara::Knowledge_Engine::Wait_Settings*)waitSettings;
-  Madara::Knowledge_Record* ret = new Madara::Knowledge_Record(
-  knowledge->wait(std::string(nativeExpression), settings));
+  * (Madara::Knowledge_Engine::Wait_Settings*)waitSettings;
+  Madara::Knowledge_Record* ret = new Madara::Knowledge_Record (
+  knowledge->wait (std::string (nativeExpression), settings));
 
-  env->ReleaseStringUTFChars(expression, nativeExpression);
+  env->ReleaseStringUTFChars (expression, nativeExpression);
 
   return (jlong) ret;
 }
@@ -616,11 +728,11 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1wait__JJJ
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
   Madara::Knowledge_Engine::Compiled_Expression compiled_expression =
-  *(Madara::Knowledge_Engine::Compiled_Expression*)expression;
+  * (Madara::Knowledge_Engine::Compiled_Expression*)expression;
   Madara::Knowledge_Engine::Wait_Settings settings =
-  *(Madara::Knowledge_Engine::Wait_Settings*)waitSettings;
-  Madara::Knowledge_Record* ret = new Madara::Knowledge_Record(
-  knowledge->wait(compiled_expression, settings));
+  * (Madara::Knowledge_Engine::Wait_Settings*)waitSettings;
+  Madara::Knowledge_Record* ret = new Madara::Knowledge_Record (
+  knowledge->wait (compiled_expression, settings));
 
   return (jlong) ret;
 }
@@ -633,15 +745,15 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1wait__JJJ
 void JNICALL Java_com_madara_KnowledgeBase_jni_1waitNoReturn__JLjava_lang_String_2J
   (JNIEnv * env, jobject obj, jlong cptr, jstring expression, jlong waitSettings)
 {
-  const char *nativeExpression = env->GetStringUTFChars(expression, 0);
+  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
   Madara::Knowledge_Engine::Wait_Settings settings =
-  *(Madara::Knowledge_Engine::Wait_Settings*)waitSettings;
-  knowledge->wait(std::string(nativeExpression), settings);
+  * (Madara::Knowledge_Engine::Wait_Settings*)waitSettings;
+  knowledge->wait (std::string (nativeExpression), settings);
 
-  env->ReleaseStringUTFChars(expression, nativeExpression);
+  env->ReleaseStringUTFChars (expression, nativeExpression);
 }
 
 /*
@@ -655,10 +767,10 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1waitNoReturn__JJJ
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
   Madara::Knowledge_Engine::Compiled_Expression compiled_expression =
-  *(Madara::Knowledge_Engine::Compiled_Expression*)expression;
+  * (Madara::Knowledge_Engine::Compiled_Expression*)expression;
   Madara::Knowledge_Engine::Wait_Settings settings =
-  *(Madara::Knowledge_Engine::Wait_Settings*)waitSettings;
-  knowledge->wait(compiled_expression, settings);
+  * (Madara::Knowledge_Engine::Wait_Settings*)waitSettings;
+  knowledge->wait (compiled_expression, settings);
 }
 
 /*
@@ -684,24 +796,24 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1freeKnowledgeBase
 jlongArray JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeList
   (JNIEnv * env, jobject obj, jlong cptr, jstring subject, jint start, jint end)
 {
-  const char *nativeSubject = env->GetStringUTFChars(subject, 0);
+  const char *nativeSubject = env->GetStringUTFChars (subject, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
 
   std::vector<Madara::Knowledge_Record> returnVector;
 
-  knowledge->to_vector(std::string(nativeSubject), start, end, returnVector);
+  knowledge->to_vector (std::string (nativeSubject), start, end, returnVector);
 
-  jlongArray ret = env->NewLongArray((jsize)returnVector.size());
-  jlong * tmp = new jlong [(jsize)returnVector.size()];
+  jlongArray ret = env->NewLongArray ( (jsize)returnVector.size ());
+  jlong * tmp = new jlong [ (jsize)returnVector.size ()];
 
-  for (unsigned int x = 0; x < returnVector.size(); x++)
+  for (unsigned int x = 0; x < returnVector.size (); x++)
   {
-  tmp[x] = (jlong) new Madara::Knowledge_Record(returnVector[x]);
+  tmp[x] = (jlong) new Madara::Knowledge_Record (returnVector[x]);
   }
 
-  env->SetLongArrayRegion(ret, 0, (jsize)returnVector.size(), tmp);
+  env->SetLongArrayRegion (ret, 0, (jsize)returnVector.size (), tmp);
 
   delete [] tmp;
 
@@ -718,45 +830,45 @@ jlongArray JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeList
 void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
   (JNIEnv * env, jobject obj, jlong cptr, jstring expression, jobject jniRet)
 {
-  jclass jniRetClass = env->GetObjectClass(jniRet);
-  jclass classStrArray = env->FindClass("java/lang/String");
-  jfieldID valsID = env->GetFieldID(jniRetClass, "vals", "[J");
-  jfieldID keysID = env->GetFieldID(jniRetClass,
+  jclass jniRetClass = env->GetObjectClass (jniRet);
+  jclass classStrArray = env->FindClass ("java/lang/String");
+  jfieldID valsID = env->GetFieldID (jniRetClass, "vals", "[J");
+  jfieldID keysID = env->GetFieldID (jniRetClass,
   "keys", "[Ljava/lang/String;");
 
-  const char *nativeExpression = env->GetStringUTFChars(expression, 0);
+  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
 
   Madara::Knowledge_Engine::Knowledge_Base* knowledge =
   (Madara::Knowledge_Engine::Knowledge_Base*) cptr;
 
   std::map<std::string, Madara::Knowledge_Record> recordsMap;
 
-  knowledge->to_map(std::string(nativeExpression), recordsMap);
+  knowledge->to_map (std::string (nativeExpression), recordsMap);
 
-  env->ReleaseStringUTFChars(expression, nativeExpression);
+  env->ReleaseStringUTFChars (expression, nativeExpression);
 
 
-  jlongArray recordsArray = env->NewLongArray((jsize)recordsMap.size());
-  jlong * records = new jlong [(jsize)recordsMap.size()];
+  jlongArray recordsArray = env->NewLongArray ( (jsize)recordsMap.size ());
+  jlong * records = new jlong [ (jsize)recordsMap.size ()];
 
-  jobjectArray keysArray = env->NewObjectArray((jsize)recordsMap.size(),
+  jobjectArray keysArray = env->NewObjectArray ( (jsize)recordsMap.size (),
   classStrArray, NULL);
 
   std::map<std::string, Madara::Knowledge_Record>::iterator iter;
   int counter = 0;
-  for (iter = recordsMap.begin(); iter != recordsMap.end(); ++iter)
+  for (iter = recordsMap.begin (); iter != recordsMap.end (); ++iter)
   {
-  env->SetObjectArrayElement(keysArray, counter,
-    env->NewStringUTF(iter->first.c_str()));
-  records[counter++] = (jlong) new Madara::Knowledge_Record(iter->second);
+  env->SetObjectArrayElement (keysArray, counter,
+    env->NewStringUTF (iter->first.c_str ()));
+  records[counter++] = (jlong) new Madara::Knowledge_Record (iter->second);
   }
 
-  env->SetLongArrayRegion(recordsArray, 0, (jsize)recordsMap.size(), records);
+  env->SetLongArrayRegion (recordsArray, 0, (jsize)recordsMap.size (), records);
 
   delete [] records;
 
-  env->SetObjectField(jniRet, valsID, recordsArray);
-  env->SetObjectField(jniRet, keysID, keysArray);
+  env->SetObjectField (jniRet, valsID, recordsArray);
+  env->SetObjectField (jniRet, keysID, keysArray);
 }
 
 
@@ -793,12 +905,12 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1saveContext
 
   if (cptr && filename)
   {
-    const char * nativeFilename = env->GetStringUTFChars(filename, 0);
+    const char * nativeFilename = env->GetStringUTFChars (filename, 0);
     engine::Knowledge_Base * knowledge = (engine::Knowledge_Base*) cptr;
    
     result = knowledge->save_context (nativeFilename);
 
-    env->ReleaseStringUTFChars(filename, nativeFilename);
+    env->ReleaseStringUTFChars (filename, nativeFilename);
   }
 
   return result;
@@ -816,14 +928,14 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1saveCheckpoint
 
   if (cptr && filename)
   {
-    const char * nativeFilename = env->GetStringUTFChars(filename, 0);
+    const char * nativeFilename = env->GetStringUTFChars (filename, 0);
     engine::Knowledge_Base * knowledge = (engine::Knowledge_Base*) cptr;
    
     bool flag = resetModifieds != 0;
 
     result = knowledge->save_checkpoint (nativeFilename, flag);
 
-    env->ReleaseStringUTFChars(filename, nativeFilename);
+    env->ReleaseStringUTFChars (filename, nativeFilename);
   }
 
   return result;
@@ -841,7 +953,7 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1loadContext
 
   if (cptr && filename)
   {
-    const char * nativeFilename = env->GetStringUTFChars(filename, 0);
+    const char * nativeFilename = env->GetStringUTFChars (filename, 0);
     engine::Knowledge_Base * knowledge = (engine::Knowledge_Base*) cptr;
     engine::Knowledge_Update_Settings * settings =
       (engine::Knowledge_Update_Settings*) settings_ptr;
@@ -850,7 +962,7 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1loadContext
 
     result = knowledge->load_context (nativeFilename, flag, *settings);
 
-    env->ReleaseStringUTFChars(filename, nativeFilename);
+    env->ReleaseStringUTFChars (filename, nativeFilename);
   }
 
   return result;
