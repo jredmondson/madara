@@ -114,4 +114,11 @@ Madara::Transport::Transport_Context::get_originator (void) const
   return originator_;
 }
 
+inline void
+Madara::Transport::Transport_Context::set_records (
+  const Knowledge_Map & source)
+{
+  records_ = source;
+}
+
 #endif   // _TRANSPORT_CONTEXT_INL_

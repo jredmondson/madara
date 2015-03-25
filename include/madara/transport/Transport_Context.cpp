@@ -25,7 +25,8 @@ Madara::Transport::Transport_Context::Transport_Context (
   message_time_ (rhs.message_time_),
   current_time_ (rhs.current_time_),
   domain_ (rhs.domain_),
-  originator_ (rhs.originator_)
+  originator_ (rhs.originator_),
+  records_ (rhs.records_)
 {
 }
 
@@ -46,5 +47,6 @@ Madara::Transport::Transport_Context::operator= (
     current_time_ = rhs.current_time_;
     domain_ = rhs.domain_;
     originator_ = rhs.originator_;
+    records_ = rhs.records_;
   }
 }

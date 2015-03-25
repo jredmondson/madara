@@ -107,6 +107,7 @@ namespace Madara
 
       /**
        * Gets the current timestamp.
+       * @return   current time in seconds
        **/
       uint64_t  get_current_time (void) const;
 
@@ -115,11 +116,13 @@ namespace Madara
        * this timestamp will be the time that the message was originally
        * sent. For send operations, this timestamp is typically the same
        * as the current timestamp.
+       * @param the message time in seconds
        **/
       void set_message_time (uint64_t message_time);
 
       /**
        * Sets the current time. This should be time (NULL).
+       * @param the current time in seconds
        **/
       void set_current_time (uint64_t current_time);
 
@@ -134,28 +137,39 @@ namespace Madara
 
       /**
        * Returns the additional records stored in the context
+       * @return records to add to context
        **/
       const Knowledge_Map & get_records (void) const;
 
       /**
        * Returns the network domain
+       * @return the current knowledge domain
        **/
       const std::string & get_domain (void) const;
 
       /**
        * Sets the network domain
+       * @param domain the knowledge domain
        **/
       void set_domain (const std::string & domain);
       
       /**
        * Returns the current message originator
+       * @return the originator of current message
        **/
       const std::string & get_originator (void) const;
 
       /**
        * Sets the current message originator
+       * @param  originator  the originator of the current message
        **/
       void set_originator (const std::string & originator);
+      
+      /**
+       * Sets the current message originator
+       * @param  source  the source record map to set
+       **/
+      void set_records (const Knowledge_Map & source);
 
     private:
 

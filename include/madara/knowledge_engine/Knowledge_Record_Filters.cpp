@@ -2,6 +2,7 @@
 #include "madara/utility/Utility.h"
 #include "madara/utility/Log_Macros.h"
 #include "madara/filters/Arguments.h"
+#include <memory>
 
 #ifdef _MADARA_PYTHON_CALLBACKS_
 
@@ -243,8 +244,12 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
   {
     const Filter_Chain & chain = type_match->second;
     Function_Arguments arguments;
-    Variables variables;
-    variables.context_ = context_;
+    
+    // JVMs appear to do strange things with the stack on jni_attach
+    std::auto_ptr <Variables> heap_variables (
+      new Variables ());
+
+    heap_variables->context_ = context_;
     
     for (Filter_Chain::const_iterator i = chain.begin ();
          i != chain.end (); ++i)
@@ -294,12 +299,12 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
       // optimize selection for functors, the preferred filter impl
       if (i->is_functor ())
       {
-        result = i->functor->filter (arguments, variables);
+        result = i->functor->filter (arguments, *heap_variables.get ());
       }
       // if the function is not zero
       else if (i->is_extern_unnamed ())
       {
-        result = i->extern_unnamed (arguments, variables);
+        result = i->extern_unnamed (arguments, *heap_variables.get ());
       }
       
 #ifdef _MADARA_JAVA_
@@ -318,7 +323,7 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         jmethodID fromPointerCall = env->GetStaticMethodID (jvarClass,
           "fromPointer", "(J)Lcom/madara/Variables;");
         jobject jvariables = env->CallStaticObjectMethod (jvarClass,
-          fromPointerCall, (jlong) &variables);
+          fromPointerCall, (jlong)heap_variables.get ());
         
         // prep to create the KnowledgeList
         jmethodID listConstructor = env->GetMethodID(jlistClass,
@@ -383,7 +388,8 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
 
         // some guides have stated that we should let python handle exceptions
         result = boost::python::call <Madara::Knowledge_Record> (
-          i->python_function.ptr (), boost::ref (arguments), boost::ref (variables));
+          i->python_function.ptr (), boost::ref (arguments),
+          boost::ref (*heap_variables.get ()));
       }
 
 #endif
@@ -426,8 +432,11 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
   // if there are aggregate filters
   if (aggregate_filters_.size () > 0)
   {
-    Variables variables;
-    variables.context_ = context_;
+    // JVMs appear to do strange things with the stack on jni_attach
+    std::auto_ptr <Variables> heap_variables (
+      new Variables ());
+
+    heap_variables->context_ = context_;
     
     for (Aggregate_Filters::const_iterator i = aggregate_filters_.begin ();
          i != aggregate_filters_.end (); ++i)
@@ -435,20 +444,27 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
       // optimize selection for functors, the preferred filter impl
       if (i->is_functor ())
       {
-        i->functor->filter (records, transport_context, variables);
+        i->functor->filter (records, transport_context,
+          *heap_variables.get ());
       }
       // if the function is not zero
       else if (i->is_extern_unnamed ())
       {
-        i->unnamed_filter (records, transport_context, variables);
+        i->unnamed_filter (records, transport_context,
+          *heap_variables.get ());
       }
 
 #ifdef _MADARA_JAVA_
       else if (i->is_java_callable())
       {
+        // JVMs appear to do strange things with the stack on jni_attach
+        std::auto_ptr <Knowledge_Map> heap_records (new Knowledge_Map (records));
+        std::auto_ptr <Transport::Transport_Context> heap_context (
+          new Transport::Transport_Context (transport_context));
+
         //result = i->call_java_filter(arguments, variables);
         JNIEnv * env = jni_attach();
-
+        
         /**
          * Create the variables java object
          **/
@@ -463,19 +479,19 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           "fromPointer", "(J)Lcom/madara/Variables;");
         jobject jvariables = env->CallStaticObjectMethod (
           jvarClass,
-          varfromPointerCall, (jlong) &variables);
+          varfromPointerCall, (jlong) heap_variables.get ());
         
         jmethodID packetfromPointerCall = env->GetStaticMethodID (
           jpacketClass,
           "fromPointer", "(J)Lcom/madara/transport/filters/Packet;");
         jobject jpacket = env->CallStaticObjectMethod (jpacketClass,
-          packetfromPointerCall, (jlong)&records);
+          packetfromPointerCall, (jlong)heap_records.get ());
         
         jmethodID contextfromPointerCall = env->GetStaticMethodID (
           jcontextClass,
           "fromPointer", "(J)Lcom/madara/transport/TransportContext;");
         jobject jcontext = env->CallStaticObjectMethod (jcontextClass,
-          contextfromPointerCall, (jlong)&transport_context);
+          contextfromPointerCall, (jlong)heap_context.get ());
 
         // get the filter's class and method
         jclass filterClass = env->GetObjectClass(i->java_object);
@@ -486,6 +502,11 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           jpacket, jcontext, jvariables);
 
         jni_detach ();
+
+        // overwrite the old records
+        records = *heap_records.get ();
+
+        // the auto_ptr should clear up the heap-allocated records
       }
 #endif
       
@@ -499,7 +520,8 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         // some guides have stated that we should let python handle exceptions
         boost::python::call <Madara::Knowledge_Record> (
           i->python_function.ptr (),
-          boost::ref (records), boost::ref (transport_context), boost::ref (variables));
+          boost::ref (records), boost::ref (transport_context),
+          boost::ref (*heap_variables.get ()));
       }
 
 #endif
