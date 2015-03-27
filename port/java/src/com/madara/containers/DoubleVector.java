@@ -125,7 +125,9 @@ public class DoubleVector extends MadaraJNI
   }
   
   /**
-   * Resizes the vector
+   * Resizes the vector. A negative number (e.g. -1) can be
+   * provided to automatically resize the vector to whatever
+   * size is indicated in the knowledge base.
    *
    * @param  length   new number of elements of the vector
    */

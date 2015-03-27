@@ -43,7 +43,7 @@ namespace Madara
         /**
          * Constructor
          * @param  name       name of the vector in the knowledge base
-         * @param  size       size of the vector
+         * @param  size       size of the vector. -1 to check for size.
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  delete_vars delete indices outside of the specified range
          * @param  settings   settings for evaluating the vector
@@ -58,7 +58,7 @@ namespace Madara
         /**
          * Constructor
          * @param  name       name of the vector in the knowledge base
-         * @param  size       size of the vector
+         * @param  size       size of the vector. -1 to check for size.
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  delete_vars delete indices outside of the specified range
          * @param  settings   settings for evaluating the vector
@@ -101,7 +101,8 @@ namespace Madara
 
         /**
          * Resizes the vector
-         * @param   size   maximum size of the vector
+         * @param   size   maximum size of the vector. Can be -1 to check
+         *                 the knowledge base for size information)
          * @param  delete_vars delete indices outside of the specified range
          **/
         void resize (int size = -1, bool delete_vars = true);
