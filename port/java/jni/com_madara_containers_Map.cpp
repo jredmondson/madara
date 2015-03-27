@@ -227,3 +227,30 @@ jlong JNICALL Java_com_madara_containers_Map_jni_1toRecord
 
   return (jlong) result;
 }
+
+void JNICALL Java_com_madara_containers_Map_jni_1modify
+  (JNIEnv *, jobject, jlong cptr)
+{
+  containers::Map * current = (containers::Map *) cptr;
+  if (current)
+    current->modify ();
+}
+
+/*
+ * Class:     com_madara_containers_StringVector
+ * Method:    modifyIndex
+ * Signature: (JI)V
+ */
+void JNICALL Java_com_madara_containers_Map_jni_1modifyIndex
+  (JNIEnv * env, jobject, jlong cptr, jstring key)
+{
+  containers::Map * current = (containers::Map *) cptr;
+  if (current)
+  {
+    const char * str_key = env->GetStringUTFChars(key, 0);
+    
+    current->modify (str_key);
+
+    env->ReleaseStringUTFChars(key, str_key);
+  }
+}

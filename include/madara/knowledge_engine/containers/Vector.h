@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 #include "madara/Lock_Type.h"
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
@@ -92,6 +93,12 @@ namespace Madara
          * @param  index  the index to modify
          **/
         void modify (size_t index);
+    
+        /**
+         * Output debug information to stream
+         * @param  index  the index to modify
+         **/
+        void debug (std::ostream & output, bool show_only_modifieds = false);
     
         /**
          * Assignment operator

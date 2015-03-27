@@ -938,6 +938,15 @@ namespace Madara
               Knowledge_Update_Settings (true, true, true, false));
       
       /**
+       * Clear all modifications to the knowledge base. This action may
+       * be useful if you are wanting to keep local changes but not
+       * inform other agents (possibly due to a need to further process
+       * and verify the information). The knowledge stays in its current
+       * form (i.e., this does not roll back state or anything like that)
+       */
+      void clear_modifieds (void);
+
+      /**
        * Sends all modified variables through the attached transports.
        * @param   prefix      for logging purposes, the descriptor prefix for 
        *                      calling method

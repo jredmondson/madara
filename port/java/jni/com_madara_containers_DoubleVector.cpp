@@ -154,7 +154,7 @@ jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1toRecord__J
  * Method:    jni_toArray
  * Signature: (J)[Ljava/lang/Object;
  */
-MADARA_Export jobjectArray JNICALL Java_com_madara_containers_DoubleVector_jni_1toArray
+jobjectArray JNICALL Java_com_madara_containers_DoubleVector_jni_1toArray
   (JNIEnv * env, jobject, jlong cptr)
 {
   jclass kr_class = env->FindClass ("com/madara/KnowledgeRecord");
@@ -189,7 +189,7 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_DoubleVector_jni_1
  * Method:    jni_size
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1size
+jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1size
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
@@ -206,10 +206,36 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1size
  * Method:    jni_resize
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_DoubleVector_jni_1resize
+void JNICALL Java_com_madara_containers_DoubleVector_jni_1resize
   (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
   containers::Double_Vector * current = (containers::Double_Vector *) cptr;
   if (current)
     current->resize (length);
+}
+
+/*
+ * Class:     com_madara_containers_DoubleVector
+ * Method:    modify
+ * Signature: (J)V
+ */
+void JNICALL Java_com_madara_containers_DoubleVector_jni_1modify
+  (JNIEnv *, jobject, jlong cptr)
+{
+  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
+  if (current)
+    current->modify ();
+}
+
+/*
+ * Class:     com_madara_containers_DoubleVector
+ * Method:    modifyIndex
+ * Signature: (JI)V
+ */
+void JNICALL Java_com_madara_containers_DoubleVector_jni_1modifyIndex
+  (JNIEnv *, jobject, jlong cptr, jint index)
+{
+  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
+  if (current)
+    current->modify ((size_t)index);
 }

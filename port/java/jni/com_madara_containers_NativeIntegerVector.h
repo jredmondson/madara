@@ -109,7 +109,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1r
  * Method:    modify
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_modify
+MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1modify
   (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus

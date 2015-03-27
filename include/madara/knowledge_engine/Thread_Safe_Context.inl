@@ -702,6 +702,7 @@ inline void
 Madara::Knowledge_Engine::Thread_Safe_Context::reset_modified (void)
 {
   Context_Guard guard (mutex_);
+
   changed_map_.clear ();
   local_changed_map_.clear ();
 }
@@ -743,7 +744,12 @@ Madara::Knowledge_Engine::Thread_Safe_Context::reset_modified (
   const std::string & variable)
 {
   Context_Guard guard (mutex_);
-  changed_map_.erase (variable);
+  Knowledge_Records::const_iterator found = changed_map_.find (variable);
+
+  if (found != changed_map_.end ())
+  {
+    changed_map_.erase (found);
+  }
 }
 
 

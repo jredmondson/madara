@@ -25,6 +25,21 @@ void test_vector (void)
   vector.set (1, "value.at.1");
   vector.set (7, 7.7);
 
+  std::cout << "Vector contents (all)\n";
+  vector.debug (std::cout);
+
+  std::cout << "Vector contents (modified) before clear\n";
+  vector.debug (std::cout);
+
+  knowledge.clear_modifieds ();
+  
+  std::cout << "Vector contents (modified) after clear\n";
+  vector.debug (std::cout);
+
+  vector.set (2, "value.at.2");
+  vector.debug (std::cout);
+
+
   std::cout << "Vector results:\n";
 
   for (size_t i = 0; i < size; ++i)

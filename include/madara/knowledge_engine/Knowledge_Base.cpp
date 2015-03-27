@@ -1482,6 +1482,19 @@ Madara::Knowledge_Engine::Knowledge_Base::get_context (void)
   return *result;
 }
 
+void
+Madara::Knowledge_Engine::Knowledge_Base::clear_modifieds (void)
+{
+  if (impl_.get_ptr ())
+  {
+    impl_->clear_modifieds ();
+  }
+  else if (context_)
+  {
+    context_->reset_modified ();
+  }
+}
+
 int
 Madara::Knowledge_Engine::Knowledge_Base::send_modifieds (
   const std::string & prefix,

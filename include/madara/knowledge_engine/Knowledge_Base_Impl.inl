@@ -418,6 +418,13 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::save_context (
   return map_.save_context (filename, id_);
 }
 
+inline void
+Madara::Knowledge_Engine::Knowledge_Base_Impl::clear_modifieds (
+  void)
+{
+  map_.reset_modified ();
+}
+
 inline int64_t
 Madara::Knowledge_Engine::Knowledge_Base_Impl::save_checkpoint (
   const std::string & filename,

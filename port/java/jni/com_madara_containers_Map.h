@@ -93,7 +93,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Map_jni_1toRecord
  * Method:    modify
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_modify
+MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1modify
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -101,7 +101,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_modify
  * Method:    modifyIndex
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_modifyIndex
+MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1modifyIndex
   (JNIEnv *, jobject, jlong, jstring);
 
 #ifdef __cplusplus

@@ -44,7 +44,7 @@ void JNICALL Java_com_madara_containers_Vector_jni_1freeVector
  * Method:    jni_set
  * Signature: (JILjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1set__JILjava_lang_String_2
+void JNICALL Java_com_madara_containers_Vector_jni_1set__JILjava_lang_String_2
   (JNIEnv * env, jobject, jlong cptr, jint index, jstring value)
 {
   containers::Vector * current = (containers::Vector *) cptr;
@@ -63,7 +63,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1set__JILjava_l
  * Method:    jni_set
  * Signature: (JID)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1set__JID
+void JNICALL Java_com_madara_containers_Vector_jni_1set__JID
   (JNIEnv * env, jobject, jlong cptr, jint index, jdouble value)
 {
   containers::Vector * current = (containers::Vector *) cptr;
@@ -78,7 +78,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1set__JID
  * Method:    jni_set
  * Signature: (JIJJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1set__JIJJ
+void JNICALL Java_com_madara_containers_Vector_jni_1set__JIJJ
   (JNIEnv * env, jobject, jlong cptr, jint index, jlong type, jlong value)
 {
   containers::Vector * current = (containers::Vector *) cptr;
@@ -195,7 +195,7 @@ jlong JNICALL Java_com_madara_containers_Vector_jni_1get
  * Method:    jni_resize
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1resize
+void JNICALL Java_com_madara_containers_Vector_jni_1resize
   (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
   containers::Vector * current = (containers::Vector *) cptr;
@@ -270,4 +270,31 @@ jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArray
     }
   }
   return list;
+}
+
+
+/*
+ * Class:     com_madara_containers_StringVector
+ * Method:    modify
+ * Signature: (J)V
+ */
+void JNICALL Java_com_madara_containers_Vector_jni_1modify
+  (JNIEnv *, jobject, jlong cptr)
+{
+  containers::Vector * current = (containers::Vector *) cptr;
+  if (current)
+    current->modify ();
+}
+
+/*
+ * Class:     com_madara_containers_StringVector
+ * Method:    modifyIndex
+ * Signature: (JI)V
+ */
+void JNICALL Java_com_madara_containers_Vector_jni_1modifyIndex
+  (JNIEnv *, jobject, jlong cptr, jint index)
+{
+  containers::Vector * current = (containers::Vector *) cptr;
+  if (current)
+    current->modify ((size_t)index);
 }

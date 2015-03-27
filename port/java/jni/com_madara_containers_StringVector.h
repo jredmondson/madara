@@ -101,7 +101,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_StringVector_jni_1resize
  * Method:    modify
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_StringVector_modify
+MADARA_Export void JNICALL Java_com_madara_containers_StringVector_jni_1modify
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -109,7 +109,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_StringVector_modify
  * Method:    modifyIndex
  * Signature: (JI)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_StringVector_modifyIndex
+MADARA_Export void JNICALL Java_com_madara_containers_StringVector_jni_1modifyIndex
   (JNIEnv *, jobject, jlong, jint);
 
 #ifdef __cplusplus

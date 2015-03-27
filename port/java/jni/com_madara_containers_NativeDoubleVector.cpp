@@ -142,7 +142,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1t
 {
   Madara::Knowledge_Record * result (0);
 
-  containers::Native_Double_Vector * current = (containers::Native_Double_Vector *) cptr;
+  containers::Native_Double_Vector * current =
+    (containers::Native_Double_Vector *) cptr;
   if (current)
     result = new Madara::Knowledge_Record (current->to_record ());
 
@@ -164,7 +165,8 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_NativeDoubleVector
     jmethodID method = env->GetStaticMethodID (kr_class,
       "fromPointer", "(J)Lcom/madara/KnowledgeRecord;");
     Madara::Knowledge_Vector records;
-    containers::Native_Double_Vector * current = (containers::Native_Double_Vector *) cptr;
+    containers::Native_Double_Vector * current =
+      (containers::Native_Double_Vector *) cptr;
     current->copy_to (records);
     jsize size = (jsize)records.size ();
 
@@ -194,7 +196,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1s
 {
   jlong result (0);
 
-  containers::Native_Double_Vector * current = (containers::Native_Double_Vector *) cptr;
+  containers::Native_Double_Vector * current =
+    (containers::Native_Double_Vector *) cptr;
   if (current)
     result = (jlong) current->size ();
 
@@ -209,7 +212,24 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1s
 MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1resize
   (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
-  containers::Native_Double_Vector * current = (containers::Native_Double_Vector *) cptr;
+  containers::Native_Double_Vector * current =
+    (containers::Native_Double_Vector *) cptr;
+
   if (current)
     current->resize (length);
+}
+
+/*
+ * Class:     com_madara_containers_DoubleVector
+ * Method:    modify
+ * Signature: (J)V
+ */
+void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1modify
+  (JNIEnv *, jobject, jlong cptr)
+{
+  containers::Native_Double_Vector * current =
+    (containers::Native_Double_Vector *) cptr;
+
+  if (current)
+    current->modify ();
 }

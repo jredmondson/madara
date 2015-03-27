@@ -109,7 +109,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1re
  * Method:    modify
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_modify
+MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1modify
   (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus
