@@ -70,100 +70,105 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
 {
   int64_t buffer_remaining = (int64_t) settings_.queue_length;
   char * buffer = buffer_.get_ptr ();
-  int result = prep_rebroadcast (buffer, buffer_remaining,
-                                 settings_, print_prefix,
-                                 header, records,
-                                 packet_scheduler_);
+  int result (0);
 
-  if (result > 0)
+  if (!settings_.no_sending)
   {
-    uint64_t bytes_sent = 0;
-    uint64_t packet_size = Message_Header::get_size (buffer_.get_ptr ());
+    result = prep_rebroadcast (buffer, buffer_remaining,
+                                   settings_, print_prefix,
+                                   header, records,
+                                   packet_scheduler_);
 
-    if (packet_size > settings_.max_fragment_size)
+    if (result > 0)
     {
-      Fragment_Map map;
-      
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
-        " fragmenting %Q byte packet (%d bytes is max fragment size)\n",
-        print_prefix, packet_size, settings_.max_fragment_size));
+      uint64_t bytes_sent = 0;
+      uint64_t packet_size = Message_Header::get_size (buffer_.get_ptr ());
 
-      // fragment the message
-      frag (buffer_.get_ptr (), settings_.max_fragment_size, map);
-
-      for (Fragment_Map::iterator i = map.begin (); i != map.end (); ++i)
+      if (packet_size > settings_.max_fragment_size)
       {
-        size_t frag_size =
-          (size_t)Message_Header::get_size (i->second);
+        Fragment_Map map;
+      
+        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "%s:" \
+          " fragmenting %Q byte packet (%d bytes is max fragment size)\n",
+          print_prefix, packet_size, settings_.max_fragment_size));
 
-        for (std::map <std::string, ACE_INET_Addr>::const_iterator addr =
-          addresses_.begin (); addr != addresses_.end (); ++addr)
+        // fragment the message
+        frag (buffer_.get_ptr (), settings_.max_fragment_size, map);
+
+        for (Fragment_Map::iterator i = map.begin (); i != map.end (); ++i)
         {
-          if (addr->first != settings_.hosts[0])
-          {
-            ssize_t actual_sent = write_socket_.send (
-              i->second, frag_size, addr->second);
-            
-            // sleep between fragments, if such a slack time is specified
-            if (settings_.slack_time > 0)
-              Madara::Utility::sleep (settings_.slack_time);
+          size_t frag_size =
+            (size_t)Message_Header::get_size (i->second);
 
+          for (std::map <std::string, ACE_INET_Addr>::const_iterator addr =
+            addresses_.begin (); addr != addresses_.end (); ++addr)
+          {
+            if (addr->first != settings_.hosts[0])
+            {
+              ssize_t actual_sent = write_socket_.send (
+                i->second, frag_size, addr->second);
+            
+              // sleep between fragments, if such a slack time is specified
+              if (settings_.slack_time > 0)
+                Madara::Utility::sleep (settings_.slack_time);
+
+              MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+                DLINFO "%s:" \
+                " Send result was %d of %d byte fragment to %s\n",
+                print_prefix, actual_sent, frag_size, addr->first.c_str ()));
+
+              if (actual_sent > 0)
+              {
+                send_monitor_.add ((uint32_t)frag_size);
+                bytes_sent += actual_sent;
+              }
+            }
+          }
+        }
+      
+        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "%s:" \
+          " Sent fragments totalling %Q bytes\n",
+          print_prefix, bytes_sent));
+
+        delete_fragments (map);
+      }
+      else
+      {
+        for (std::map <std::string, ACE_INET_Addr>::const_iterator i =
+                addresses_.begin (); i != addresses_.end (); ++i)
+        {
+          if (i->first != settings_.hosts[0])
+          {
+            ssize_t actual_sent = write_socket_.send (buffer_.get_ptr (),
+              (ssize_t)result, i->second);
+            
             MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
               DLINFO "%s:" \
-              " Send result was %d of %d byte fragment to %s\n",
-              print_prefix, actual_sent, frag_size, addr->first.c_str ()));
+              " Sent %Q packet to %s\n",
+              print_prefix, packet_size, i->first.c_str ()));
 
             if (actual_sent > 0)
             {
-              send_monitor_.add ((uint32_t)frag_size);
+              send_monitor_.add ((uint32_t)actual_sent);
               bytes_sent += actual_sent;
             }
           }
         }
-      }
-      
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
-        " Sent fragments totalling %Q bytes\n",
-        print_prefix, bytes_sent));
 
-      delete_fragments (map);
-    }
-    else
-    {
-      for (std::map <std::string, ACE_INET_Addr>::const_iterator i =
-              addresses_.begin (); i != addresses_.end (); ++i)
-      {
-        if (i->first != settings_.hosts[0])
-        {
-          ssize_t actual_sent = write_socket_.send (buffer_.get_ptr (),
-            (ssize_t)result, i->second);
-            
-          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-            DLINFO "%s:" \
-            " Sent %Q packet to %s\n",
-            print_prefix, packet_size, i->first.c_str ()));
-
-          if (actual_sent > 0)
-          {
-            send_monitor_.add ((uint32_t)actual_sent);
-            bytes_sent += actual_sent;
-          }
-        }
+        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "%s:" \
+          " Sent %Q total bytes via rebroadcast\n",
+          print_prefix, bytes_sent));
       }
 
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
         DLINFO "%s:" \
-        " Sent %Q total bytes via rebroadcast\n",
-        print_prefix, bytes_sent));
+        " Send bandwidth = %d B/s\n",
+        print_prefix,
+        send_monitor_.get_bytes_per_second ()));
     }
-
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " Send bandwidth = %d B/s\n",
-      print_prefix,
-      send_monitor_.get_bytes_per_second ()));
   }
 }
   
@@ -176,87 +181,90 @@ Madara::Transport::UDP_Transport_Read_Thread::cleanup (void)
 void
 Madara::Transport::UDP_Transport_Read_Thread::run (void)
 {
-  ACE_Time_Value wait_time (1);
-  ACE_INET_Addr  remote;
-  
-  // allocate a buffer to send
-  char * buffer = buffer_.get_ptr ();
-  const char * print_prefix = "UDP_Transport_Read_Thread::run";
-  int64_t buffer_remaining = settings_.queue_length;
-  
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
-    " entering main service loop.\n",
-    print_prefix));
-    
-  Knowledge_Map rebroadcast_records;
-
-  if (buffer == 0)
+  if (!settings_.no_receiving)
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+    ACE_Time_Value wait_time (1);
+    ACE_INET_Addr  remote;
+  
+    // allocate a buffer to send
+    char * buffer = buffer_.get_ptr ();
+    const char * print_prefix = "UDP_Transport_Read_Thread::run";
+    int64_t buffer_remaining = settings_.queue_length;
+  
+    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
       DLINFO "%s:" \
-      " Unable to allocate buffer of size %d. Exiting thread.\n",
-      print_prefix,
-      settings_.queue_length));
+      " entering main service loop.\n",
+      print_prefix));
     
-    return;
-  }
+    Knowledge_Map rebroadcast_records;
+
+    if (buffer == 0)
+    {
+      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+        DLINFO "%s:" \
+        " Unable to allocate buffer of size %d. Exiting thread.\n",
+        print_prefix,
+        settings_.queue_length));
     
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
-    " entering a recv on the socket.\n",
-    print_prefix));
+      return;
+    }
     
-  // read the message
-  ssize_t bytes_read = read_socket_.recv ((void *)buffer, 
-    settings_.queue_length, remote, 0, &wait_time);
+    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+      DLINFO "%s:" \
+      " entering a recv on the socket.\n",
+      print_prefix));
+    
+    // read the message
+    ssize_t bytes_read = read_socket_.recv ((void *)buffer, 
+      settings_.queue_length, remote, 0, &wait_time);
  
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
-    " received a message header of %d bytes from %s:%d\n",
-    print_prefix,
-    bytes_read,
-    remote.get_host_addr (), remote.get_port_number ()));
-    
-  if (bytes_read > 0)
-  {
-    Message_Header * header = 0;
-
-    std::stringstream remote_host;
-    remote_host << remote.get_host_addr ();
-    remote_host << ":";
-    remote_host << remote.get_port_number ();
-
-    process_received_update (buffer, bytes_read, id_, *context_,
-      settings_, send_monitor_, receive_monitor_, rebroadcast_records,
-#ifndef _MADARA_NO_KARL_
-      on_data_received_,
-#endif // _MADARA_NO_KARL_
-      print_prefix,
-      remote_host.str ().c_str (), header);
-      
-    if (header)
-    {
-      if (header->ttl > 0 && rebroadcast_records.size () > 0 &&
-          settings_.get_participant_ttl () > 0)
-      {
-        --header->ttl;
-        header->ttl = std::min (
-          settings_.get_participant_ttl (), header->ttl);
-
-        rebroadcast (print_prefix, header, rebroadcast_records);
-      }
-
-      // delete header
-      delete header;
-    }
-  }
-  else
-  {
     MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
       DLINFO "%s:" \
-      " wait timeout on new messages. Proceeding to next wait\n",
-      print_prefix));
+      " received a message header of %d bytes from %s:%d\n",
+      print_prefix,
+      bytes_read,
+      remote.get_host_addr (), remote.get_port_number ()));
+    
+    if (bytes_read > 0)
+    {
+      Message_Header * header = 0;
+
+      std::stringstream remote_host;
+      remote_host << remote.get_host_addr ();
+      remote_host << ":";
+      remote_host << remote.get_port_number ();
+
+      process_received_update (buffer, bytes_read, id_, *context_,
+        settings_, send_monitor_, receive_monitor_, rebroadcast_records,
+  #ifndef _MADARA_NO_KARL_
+        on_data_received_,
+  #endif // _MADARA_NO_KARL_
+        print_prefix,
+        remote_host.str ().c_str (), header);
+      
+      if (header)
+      {
+        if (header->ttl > 0 && rebroadcast_records.size () > 0 &&
+            settings_.get_participant_ttl () > 0)
+        {
+          --header->ttl;
+          header->ttl = std::min (
+            settings_.get_participant_ttl (), header->ttl);
+
+          rebroadcast (print_prefix, header, rebroadcast_records);
+        }
+
+        // delete header
+        delete header;
+      }
+    }
+    else
+    {
+      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+        DLINFO "%s:" \
+        " wait timeout on new messages. Proceeding to next wait\n",
+        print_prefix));
+    }
   }
 }

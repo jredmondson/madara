@@ -788,6 +788,16 @@ namespace Madara
        * transport for more information.
        **/
       std::vector <std::string> hosts;
+
+      /**
+       * if true, never send over transport
+       **/
+      bool no_sending;
+      
+      /**
+       * if true, never receive over transport
+       **/
+      bool no_receiving;
     };
   }
 }

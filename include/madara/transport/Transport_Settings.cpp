@@ -30,7 +30,9 @@ Madara::Transport::Settings::Settings () :
         redeployment_percentage_allowed (DEFAULT_REDEPLOYMENT_PERCENTAGE),
 #endif // _USE_CID_
 
-        hosts ()
+        hosts (),
+        no_sending (false),
+        no_receiving (false)
 {
 }
 
@@ -65,7 +67,9 @@ Madara::Transport::Settings::Settings (const Settings & settings) :
         redeployment_percentage_allowed (
          settings.redeployment_percentage_allowed),
 #endif // _USE_CID_
-         hosts ()
+         hosts (),
+         no_sending (settings.no_sending),
+         no_receiving (settings.no_receiving)
 {
   hosts.resize (settings.hosts.size ());
   for (unsigned int i = 0; i < settings.hosts.size (); ++i)
@@ -110,6 +114,9 @@ Madara::Transport::Settings::operator= (const Settings & settings)
   hosts.resize (settings.hosts.size ());
   for (unsigned int i = 0; i < settings.hosts.size (); ++i)
     hosts[i] = settings.hosts[i];
+
+  no_sending = settings.no_sending;
+  no_receiving = settings.no_receiving;
 }
 
 Madara::Transport::Settings::~Settings ()

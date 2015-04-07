@@ -222,30 +222,31 @@ int
        
     } // if appropriate addresses
 
-
-    double hertz = settings_.read_thread_hertz;
-    if (hertz < 0.0)
+    if (!settings_.no_receiving)
     {
-      hertz = 0.0;
-    }
+      double hertz = settings_.read_thread_hertz;
+      if (hertz < 0.0)
+      {
+        hertz = 0.0;
+      }
     
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Multicast_Transport::constructor:" \
-      " starting %d threads at %f hertz\n", settings_.read_threads, 
-      hertz));
+      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+        DLINFO "Multicast_Transport::constructor:" \
+        " starting %d threads at %f hertz\n", settings_.read_threads, 
+        hertz));
 
-    for (uint32_t i = 0; i < settings_.read_threads; ++i)
-    {
-      std::stringstream thread_name;
-      thread_name << "read";
-      thread_name << i;
+      for (uint32_t i = 0; i < settings_.read_threads; ++i)
+      {
+        std::stringstream thread_name;
+        thread_name << "read";
+        thread_name << i;
 
-      read_threads_.run (hertz, thread_name.str (),
-        new UDP_Transport_Read_Thread (
-          settings_, id_, addresses_, write_socket_, read_socket_,
-          send_monitor_, receive_monitor_, packet_scheduler_));
+        read_threads_.run (hertz, thread_name.str (),
+          new UDP_Transport_Read_Thread (
+            settings_, id_, addresses_, write_socket_, read_socket_,
+            send_monitor_, receive_monitor_, packet_scheduler_));
+      }
     }
-
   }
 
   return this->validate_transport ();
@@ -257,45 +258,80 @@ long
 {
   const char * print_prefix = "UDP_Transport::send_data";
   
-  long result = prep_send (orig_updates, print_prefix);
+  long result (0);
 
-  if (result > 0)
+  if (!settings_.no_sending)
   {
-    uint64_t bytes_sent = 0;
-    uint64_t packet_size = Message_Header::get_size (buffer_.get_ptr ());
+    result = prep_send (orig_updates, print_prefix);
 
-    if (packet_size > settings_.max_fragment_size)
+    if (result > 0)
     {
-      Fragment_Map map;
+      uint64_t bytes_sent = 0;
+      uint64_t packet_size = Message_Header::get_size (buffer_.get_ptr ());
 
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
-        " fragmenting %Q byte packet (%d bytes is max fragment size)\n",
-        print_prefix, packet_size, settings_.max_fragment_size));
-
-      // fragment the message
-      frag (buffer_.get_ptr (), settings_.max_fragment_size, map);
-
-      for (Fragment_Map::iterator i = map.begin (); i != map.end (); ++i)
+      if (packet_size > settings_.max_fragment_size)
       {
-        size_t frag_size =
-          (size_t) Message_Header::get_size (i->second);
+        Fragment_Map map;
 
-        for (std::map <std::string, ACE_INET_Addr>::const_iterator addr =
-          addresses_.begin (); addr != addresses_.end (); ++addr)
+        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "%s:" \
+          " fragmenting %Q byte packet (%d bytes is max fragment size)\n",
+          print_prefix, packet_size, settings_.max_fragment_size));
+
+        // fragment the message
+        frag (buffer_.get_ptr (), settings_.max_fragment_size, map);
+
+        for (Fragment_Map::iterator i = map.begin (); i != map.end (); ++i)
         {
-          if (addr->first != settings_.hosts[0])
-          {
-            ssize_t actual_sent = write_socket_.send (
-              i->second, frag_size, addr->second);
-            
-            // sleep between fragments, if such a slack time is specified
-            if (settings_.slack_time > 0)
-              Madara::Utility::sleep (settings_.slack_time);
+          size_t frag_size =
+            (size_t) Message_Header::get_size (i->second);
 
+          for (std::map <std::string, ACE_INET_Addr>::const_iterator addr =
+            addresses_.begin (); addr != addresses_.end (); ++addr)
+          {
+            if (addr->first != settings_.hosts[0])
+            {
+              ssize_t actual_sent = write_socket_.send (
+                i->second, frag_size, addr->second);
+            
+              // sleep between fragments, if such a slack time is specified
+              if (settings_.slack_time > 0)
+                Madara::Utility::sleep (settings_.slack_time);
+
+              MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+                DLINFO "%s: Send result was %d of %d byte fragment to %s\n",
+                print_prefix, actual_sent, frag_size, addr->first.c_str ()));
+
+              if (actual_sent > 0)
+              {
+                send_monitor_.add ((uint32_t)actual_sent);
+                bytes_sent += actual_sent;
+              }
+            }
+          }
+        }
+      
+        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+          DLINFO "%s:" \
+          " Sent fragments totalling %Q bytes\n",
+          print_prefix, bytes_sent));
+
+        delete_fragments (map);
+      }
+      else
+      {
+        for (std::map <std::string, ACE_INET_Addr>::const_iterator i =
+          addresses_.begin (); i != addresses_.end (); ++i)
+        {
+          if (i->first != settings_.hosts[0])
+          {
+            ssize_t actual_sent = write_socket_.send (buffer_.get_ptr (),
+              (ssize_t)result, i->second);
+            
             MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-              DLINFO "%s: Send result was %d of %d byte fragment to %s\n",
-              print_prefix, actual_sent, frag_size, addr->first.c_str ()));
+              DLINFO "%s:" \
+              " Sent %Q packet to %s\n",
+              print_prefix, packet_size, i->first.c_str ()));
 
             if (actual_sent > 0)
             {
@@ -305,44 +341,14 @@ long
           }
         }
       }
-      
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
+
+      result = (long) bytes_sent;
+
+      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
         DLINFO "%s:" \
-        " Sent fragments totalling %Q bytes\n",
-        print_prefix, bytes_sent));
-
-      delete_fragments (map);
+        " Send bandwidth = %d B/s\n",
+        print_prefix, send_monitor_.get_bytes_per_second ()));
     }
-    else
-    {
-      for (std::map <std::string, ACE_INET_Addr>::const_iterator i =
-        addresses_.begin (); i != addresses_.end (); ++i)
-      {
-        if (i->first != settings_.hosts[0])
-        {
-          ssize_t actual_sent = write_socket_.send (buffer_.get_ptr (),
-            (ssize_t)result, i->second);
-            
-          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-            DLINFO "%s:" \
-            " Sent %Q packet to %s\n",
-            print_prefix, packet_size, i->first.c_str ()));
-
-          if (actual_sent > 0)
-          {
-            send_monitor_.add ((uint32_t)actual_sent);
-            bytes_sent += actual_sent;
-          }
-        }
-      }
-    }
-
-    result = (long) bytes_sent;
-
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " Send bandwidth = %d B/s\n",
-      print_prefix, send_monitor_.get_bytes_per_second ()));
   }
 
   return result;
