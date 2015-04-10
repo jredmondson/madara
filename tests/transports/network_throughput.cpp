@@ -310,6 +310,7 @@ int main (int argc, char ** argv)
     for (i = 0; i < target; ++i)
     {
       knowledge.mark_modified (file);
+      knowledge.send_modifieds ();
     }
 
     num_sent = i;
