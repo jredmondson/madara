@@ -1,7 +1,7 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 
-int ACE_TMAIN (int, ACE_TCHAR **)
+int ACE_TMAIN (int argc, ACE_TCHAR ** argv)
 {
   Madara::Knowledge_Engine::Knowledge_Base knowledge;
   
@@ -25,8 +25,12 @@ int ACE_TMAIN (int, ACE_TCHAR **)
   knowledge.print ("Testing print to stderr only\n");
 #endif // _MADARA_NO_KARL_
   
-  // try printing to system log
-  knowledge.log_to_system_log (argv[0]);
+  if (argc > 1)
+  {
+    // try printing to the system log, file, and stderr
+    knowledge.log_to_system_log (argv[0], false);
+  }
+
 #ifndef _MADARA_NO_KARL_
   knowledge.evaluate ("#print ('Testing print to syslog only\n')");
 #else
@@ -42,8 +46,12 @@ int ACE_TMAIN (int, ACE_TCHAR **)
   knowledge.print ("Testing print to stderr and file\n");
 #endif // _MADARA_NO_KARL_
 
-  // try printing to the system log, file, and stderr
-  knowledge.log_to_system_log (argv[0], false);
+  if (argc > 1)
+  {
+    // try printing to the system log, file, and stderr
+    knowledge.log_to_system_log (argv[0], false);
+  }
+
   knowledge.log_to_stderr (false);
 #ifndef _MADARA_NO_KARL_
   knowledge.evaluate ("#print ('Testing print to stderr, syslog and file\n')");
