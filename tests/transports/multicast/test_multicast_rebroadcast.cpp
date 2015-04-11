@@ -113,7 +113,7 @@ std::string source_var ("var1");
 Madara::Knowledge_Record
 alter_rebroadcast (
   Madara::Knowledge_Engine::Function_Arguments & args,
-  Madara::Knowledge_Engine::Variables & vars)
+  Madara::Knowledge_Engine::Variables &)
 {
   /**
    * for filters, first argument is the record, second argument is the var
@@ -215,3 +215,4 @@ int main (int argc, char ** argv)
 #endif
   return 0;
 }
+

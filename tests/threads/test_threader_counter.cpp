@@ -160,9 +160,6 @@ int main (int argc, char ** argv)
    * being used by threads
    **/
 
-  // temp variable for total
-  Integer total (0);
-
   // handle all user arguments
   handle_arguments (argc, argv);
   

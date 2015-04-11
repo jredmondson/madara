@@ -49,7 +49,6 @@ void test_print_statement (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
   ACE_TRACE (ACE_TEXT ("test_expansion"));
 
-  int result = 0;
   std::string statement, exp_statement;
   
   knowledge.clear ();

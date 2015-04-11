@@ -11,7 +11,7 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 
-int ACE_TMAIN (int argc, char * argv[])
+int ACE_TMAIN (int, char **)
 {
 #ifndef _MADARA_NO_KARL_
   // debug level for logging
@@ -100,3 +100,4 @@ int ACE_TMAIN (int argc, char * argv[])
 #endif
   return 0;
 }
+

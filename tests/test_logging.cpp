@@ -1,7 +1,7 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 
-int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
+int ACE_TMAIN (int, ACE_TCHAR **)
 {
   Madara::Knowledge_Engine::Knowledge_Base knowledge;
   

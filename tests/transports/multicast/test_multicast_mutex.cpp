@@ -122,7 +122,7 @@ void handle_arguments (int argc, char ** argv)
 Madara::Knowledge_Record
 maekawa_receive (
   Madara::Knowledge_Engine::Function_Arguments & args,
-  Madara::Knowledge_Engine::Variables & vars)
+  Madara::Knowledge_Engine::Variables &)
 {
   if (args.size () >= Madara::Filters::TOTAL_ARGUMENTS)
   {
@@ -137,8 +137,6 @@ maekawa_receive (
 
       if (tokens.size () == 4)
       {
-        std::string & resource_name = tokens[1];
-        std::string & requester = tokens[2];
         std::string & third_arg = tokens[3];
 
         if (third_arg == "request")

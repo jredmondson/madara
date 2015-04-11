@@ -46,10 +46,9 @@ namespace Madara
       friend class Threader;
 
       /**
-       * Initializes thread with MADARA context
-       * @param   context   context for querying current program state
+       * Initializes thread with a MADARA context
        **/
-      virtual void init (Knowledge_Engine::Knowledge_Base & context)
+      virtual void init (Knowledge_Engine::Knowledge_Base &)
       {
       }
 

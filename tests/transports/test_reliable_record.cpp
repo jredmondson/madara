@@ -15,7 +15,7 @@ void test_reliable_record (engine::Knowledge_Base & knowledge)
   record.resize (0, 2);
 }
 
-int main (int argc, char * argv[])
+int main (int, char **)
 {
   engine::Knowledge_Base knowledge;
   test_reliable_record (knowledge);

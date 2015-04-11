@@ -111,8 +111,8 @@ void handle_arguments (int argc, char ** argv)
 
 void
 discard_var4 (Madara::Knowledge_Map & records,
-  const Madara::Transport::Transport_Context & context,
-  Madara::Knowledge_Engine::Variables & vars)
+  const Madara::Transport::Transport_Context &,
+  Madara::Knowledge_Engine::Variables &)
 {
   Madara::Knowledge_Map::iterator found = records.find ("var4");
 

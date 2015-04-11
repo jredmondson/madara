@@ -283,7 +283,7 @@ void test_image_encoding (void)
   
 }
 
-int main (int argc, char * argv[])
+int main (int, char **)
 {
   test_image_encoding ();
   //test_primitive_encoding ();

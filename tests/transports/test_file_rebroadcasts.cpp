@@ -266,7 +266,7 @@ void handle_arguments (int argc, char ** argv)
 
 void
 write_file (Madara::Knowledge_Map & records,
-  const Madara::Transport::Transport_Context & context,
+  const Madara::Transport::Transport_Context &,
   Madara::Knowledge_Engine::Variables & vars)
 {
   Madara::Knowledge_Map::iterator file = records.find ("file");
@@ -292,8 +292,6 @@ write_file (Madara::Knowledge_Map & records,
       output_buffer << "\n";
 
       vars.print (output_buffer.str ());
-
-      size_t size = 0;
 
       file->second.to_file (filename.str ());
     }

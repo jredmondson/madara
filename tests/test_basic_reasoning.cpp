@@ -19,15 +19,15 @@ int parse_args (int argc, ACE_TCHAR * argv[]);
 
 #ifndef _MADARA_NO_KARL_
 Madara::Knowledge_Record
-  return_1 (Madara::Knowledge_Engine::Function_Arguments & args,
-            Madara::Knowledge_Engine::Variables & variables)
+  return_1 (Madara::Knowledge_Engine::Function_Arguments &,
+            Madara::Knowledge_Engine::Variables &)
 {
   return Madara::Knowledge_Record::Integer (1);
 }
 
 Madara::Knowledge_Record
   return_named_1 (const char * name, 
-            Madara::Knowledge_Engine::Function_Arguments & args,
+            Madara::Knowledge_Engine::Function_Arguments &,
             Madara::Knowledge_Engine::Variables & variables)
 {
   variables.set ("function_name", std::string (name));
@@ -38,21 +38,21 @@ Madara::Knowledge_Record
 }
 
 Madara::Knowledge_Record
-  return_2 (Madara::Knowledge_Engine::Function_Arguments & args,
-            Madara::Knowledge_Engine::Variables & variables)
+  return_2 (Madara::Knowledge_Engine::Function_Arguments &,
+            Madara::Knowledge_Engine::Variables &)
 {
   return Madara::Knowledge_Record::Integer (2);
 }
 
 Madara::Knowledge_Record
-  return_3 (Madara::Knowledge_Engine::Function_Arguments & args,
-            Madara::Knowledge_Engine::Variables & variables)
+  return_3 (Madara::Knowledge_Engine::Function_Arguments &,
+            Madara::Knowledge_Engine::Variables &)
 {
   return Madara::Knowledge_Record::Integer (3);
 }
 
 Madara::Knowledge_Record
-  return_var1 (Madara::Knowledge_Engine::Function_Arguments & args,
+  return_var1 (Madara::Knowledge_Engine::Function_Arguments &,
             Madara::Knowledge_Engine::Variables & variables)
 {
   return variables.get (".var1");
@@ -79,7 +79,7 @@ Madara::Knowledge_Record
 }
 
 Madara::Knowledge_Record
-  check_vector (Madara::Knowledge_Engine::Function_Arguments & args,
+  check_vector (Madara::Knowledge_Engine::Function_Arguments &,
             Madara::Knowledge_Engine::Variables & variables)
 {
   std::vector <Madara::Knowledge_Record> records;
@@ -98,7 +98,7 @@ Madara::Knowledge_Record
 }
 
 Madara::Knowledge_Record
-  check_map (Madara::Knowledge_Engine::Function_Arguments & args,
+  check_map (Madara::Knowledge_Engine::Function_Arguments &,
             Madara::Knowledge_Engine::Variables & variables)
 {
   std::map <std::string, Madara::Knowledge_Record> records;

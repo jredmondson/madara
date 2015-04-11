@@ -17,7 +17,7 @@ class Hello_World : public threads::Base_Thread
     }
 };
 
-int main (int argc, char ** argv)
+int main (int, char **)
 {
   // 2: Create a Knowledge Base
   engine::Knowledge_Base knowledge;

@@ -63,6 +63,11 @@ namespace Madara
        **/
       Function ()
         : extern_named (0), extern_unnamed (0),
+
+#ifndef _MADARA_NO_KARL_
+          function_contents (),
+#endif // _MADARA_NO_KARL_
+        
           functor (0), type (UNINITIALIZED)
       {
       }
@@ -72,6 +77,11 @@ namespace Madara
        **/
       Function (Knowledge_Record (*func) (Function_Arguments &, Variables &))
         : extern_named (0), extern_unnamed (func),
+
+#ifndef _MADARA_NO_KARL_
+          function_contents (),
+#endif // _MADARA_NO_KARL_
+        
           functor (0), type (EXTERN_UNNAMED)
       {
       }
@@ -82,6 +92,11 @@ namespace Madara
       Function (Knowledge_Record (*func) (const char *, 
         Function_Arguments &, Variables &))
         : extern_named (func), extern_unnamed (0),
+
+#ifndef _MADARA_NO_KARL_
+          function_contents (),
+#endif // _MADARA_NO_KARL_
+        
           functor (0), type (EXTERN_NAMED)
       {
       }
@@ -91,8 +106,7 @@ namespace Madara
        * Constructor for KaRL expression
        **/
       Function (const Madara::Expression_Tree::Expression_Tree & func)
-        : function_contents (func),
-          extern_unnamed (0), extern_named (0),
+        : extern_named (0), extern_unnamed (0), function_contents (func),
           functor (0), type (KARL_EXPRESSION)
       {
       }
@@ -103,16 +117,59 @@ namespace Madara
        * Constructor for KaRL expression
        **/
       Function (Filters::Record_Filter * filter)
-        : 
+        : extern_named (0), extern_unnamed (0),
+
 #ifndef _MADARA_NO_KARL_
-      function_contents (),
+          function_contents (),
 #endif // _MADARA_NO_KARL_
         
-          extern_unnamed (0), extern_named (0),
           functor (filter), type (FUNCTOR)
       {
       }
+       
+      inline bool is_extern_unnamed (void) const
+      {
+        return type == EXTERN_UNNAMED && extern_unnamed;
+      }
       
+      inline bool is_extern_named (void) const
+      {
+        return type == EXTERN_NAMED && extern_named;
+      }
+  
+      inline bool is_karl_expression (void) const
+      {
+        return type == KARL_EXPRESSION;
+      }
+      
+      inline bool is_functor (void) const
+      {
+        return functor != 0;
+      }
+
+      inline bool is_uninitialized (void) const
+      {
+        return type == UNINITIALIZED;
+      }
+
+      // internal function pointer
+      Knowledge_Record (*extern_named) (
+        const char *, Function_Arguments &, Variables &);
+
+      // internal function pointer
+      Knowledge_Record (*extern_unnamed) (Function_Arguments &, Variables &);
+       
+#ifndef _MADARA_NO_KARL_
+      // expression tree
+      Madara::Expression_Tree::Expression_Tree function_contents;
+#endif // _MADARA_NO_KARL_
+
+      Filters::Record_Filter * functor;
+
+      // type of function definition
+      int type;
+
+  
 #ifdef _MADARA_JAVA_
       jobject java_object;
       
@@ -162,48 +219,8 @@ namespace Madara
 
       boost::python::object python_function;
 #endif
-      
-      inline bool is_extern_unnamed (void) const
-      {
-        return type == EXTERN_UNNAMED && extern_unnamed;
-      }
-      
-      inline bool is_extern_named (void) const
-      {
-        return type == EXTERN_NAMED && extern_named;
-      }
-  
-      inline bool is_karl_expression (void) const
-      {
-        return type == KARL_EXPRESSION;
-      }
-      
-      inline bool is_functor (void) const
-      {
-        return functor != 0;
-      }
+   
 
-      inline bool is_uninitialized (void) const
-      {
-        return type == UNINITIALIZED;
-      }
-
-      // internal function pointer
-      Knowledge_Record (*extern_named) (
-        const char *, Function_Arguments &, Variables &);
-
-      // internal function pointer
-      Knowledge_Record (*extern_unnamed) (Function_Arguments &, Variables &);
-       
-#ifndef _MADARA_NO_KARL_
-      // expression tree
-      Madara::Expression_Tree::Expression_Tree function_contents;
-#endif // _MADARA_NO_KARL_
-
-      Filters::Record_Filter * functor;
-
-      // type of function definition
-      int type;
     };
     
   }

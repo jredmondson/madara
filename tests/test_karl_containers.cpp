@@ -838,7 +838,7 @@ void test_queue (void)
   knowledge.print ();
 }
 
-int main (int argc, char * argv[])
+int main (int , char **)
 {
   test_vector ();
   test_map ();

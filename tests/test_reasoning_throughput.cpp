@@ -222,7 +222,7 @@ Madara::Knowledge_Engine::Compiled_Expression   increment_ce;
 Madara::Knowledge_Engine::Variable_Reference    increment_var;
 
 Madara::Knowledge_Record
-  increment_var1 (Madara::Knowledge_Engine::Function_Arguments & args,
+  increment_var1 (Madara::Knowledge_Engine::Function_Arguments &,
             Madara::Knowledge_Engine::Variables & variables)
 {
 #ifndef _MADARA_NO_KARL_
@@ -234,15 +234,15 @@ Madara::Knowledge_Record
 }
 
 Madara::Knowledge_Record
-  increment_var1_through_variables (Madara::Knowledge_Engine::Function_Arguments & args,
+  increment_var1_through_variables (Madara::Knowledge_Engine::Function_Arguments &,
             Madara::Knowledge_Engine::Variables & variables)
 {
   return variables.inc (increment_var);
 }
 
 Madara::Knowledge_Record
-  no_op (Madara::Knowledge_Engine::Function_Arguments & args,
-            Madara::Knowledge_Engine::Variables & variables)
+  no_op (Madara::Knowledge_Engine::Function_Arguments &,
+            Madara::Knowledge_Engine::Variables &)
 {
   return Madara::Knowledge_Record::Integer (0);
 }
@@ -813,7 +813,6 @@ uint64_t test_looped_sr (
   // build a large chain of simple reinforcements
    std::string buffer;
 
-  unsigned max_size = iterations > 10000 ? 10000 : iterations;
   unsigned actual_iterations = iterations > 10000 ? iterations / 10000 : 1;
 
   knowledge.set (".iterations", (Madara::Knowledge_Record::Integer) iterations);
@@ -1053,7 +1052,6 @@ uint64_t test_optimal_loop (
   // build a large chain of simple reinforcements
    std::string buffer;
 
-  unsigned max_size = iterations > 10000 ? 10000 : iterations;
   unsigned actual_iterations = iterations > 10000 ? iterations / 10000 : 1;
 
   knowledge.set (".iterations", (Madara::Knowledge_Record::Integer) iterations);
@@ -1326,9 +1324,6 @@ uint64_t test_looped_si (
   // build a large chain of simple reinforcements
    std::string buffer;
 
-  unsigned max_size = iterations > 10000 ? 10000 : iterations;
-  unsigned actual_iterations = iterations > 10000 ? iterations / 10000 : 1;
-
   knowledge.set (".iterations", (Madara::Knowledge_Record::Integer) iterations);
   
   buffer = ".var2[0->.iterations) (1 => ++.var1)";
@@ -1462,7 +1457,6 @@ uint64_t test_looped_li (
   // build a large chain of simple reinforcements
    std::string buffer;
 
-  unsigned max_size = iterations > 10000 ? 10000 : iterations;
   unsigned actual_iterations = iterations > 10000 ? iterations / 10000 : 1;
 
   knowledge.set (".iterations", (Madara::Knowledge_Record::Integer) iterations);

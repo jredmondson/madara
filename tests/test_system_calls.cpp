@@ -38,7 +38,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   if (
     knowledge.get ("sample").type () == 
-       (uint32_t) knowledge.get ("sample.type").to_integer () &&
+       (int32_t) knowledge.get ("sample.type").to_integer () &&
     knowledge.get ("sample").size () == 
        (uint32_t) knowledge.get ("sample.size").to_integer () &&
     knowledge.get ("sample.clock").to_string () == "20" &&

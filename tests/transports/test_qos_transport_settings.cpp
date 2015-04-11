@@ -136,7 +136,7 @@ void test_peer_list (void)
 Madara::Knowledge_Record
 drop_non_primitives (
   Madara::Knowledge_Engine::Function_Arguments & args,
-  Madara::Knowledge_Engine::Variables & vars)
+  Madara::Knowledge_Engine::Variables &)
 {
   Madara::Knowledge_Record result;
 
@@ -166,7 +166,7 @@ drop_non_primitives (
 Madara::Knowledge_Record
 increase_clock (
   Madara::Knowledge_Engine::Function_Arguments & args,
-  Madara::Knowledge_Engine::Variables & vars)
+  Madara::Knowledge_Engine::Variables &)
 {
   Madara::Knowledge_Record result;
 
@@ -185,8 +185,8 @@ increase_clock (
  **/
 Madara::Knowledge_Record
 drop_record (
-  Madara::Knowledge_Engine::Function_Arguments & args,
-  Madara::Knowledge_Engine::Variables & vars)
+  Madara::Knowledge_Engine::Function_Arguments &,
+  Madara::Knowledge_Engine::Variables &)
 {
   return Madara::Knowledge_Record ();
 }
@@ -197,7 +197,7 @@ drop_record (
 Madara::Knowledge_Record
 no_op (
   Madara::Knowledge_Engine::Function_Arguments & args,
-  Madara::Knowledge_Engine::Variables & vars)
+  Madara::Knowledge_Engine::Variables &)
 {
   if (args.size () > 0)
     return args[0];
@@ -410,7 +410,7 @@ void test_filters (void)
   
 }
 
-int main (int argc, char * argv[])
+int main (int, char **)
 {
   test_rebroadcast_settings ();
   test_peer_list ();

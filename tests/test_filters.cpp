@@ -9,7 +9,7 @@
  **/
 Madara::Knowledge_Record
   decrement_primitives (Madara::Knowledge_Engine::Function_Arguments & args,
-  Madara::Knowledge_Engine::Variables & vars)
+  Madara::Knowledge_Engine::Variables &)
 {
   Madara::Knowledge_Record result;
 
@@ -25,7 +25,7 @@ Madara::Knowledge_Record
   return result;
 }
 
-int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
+int ACE_TMAIN (int, ACE_TCHAR **)
 {
   Madara::Knowledge_Engine::Knowledge_Record_Filters filters;
 

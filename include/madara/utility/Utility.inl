@@ -120,7 +120,6 @@ Madara::Utility::heap_sort (T * input, int size,
 {
   heapify (input, size, comparator);
 
-  int end = size - 1;
   for (int end = size - 1; end > 0; --end)
   {
     std::swap (input[end], input[0]);
@@ -129,3 +128,4 @@ Madara::Utility::heap_sort (T * input, int size,
 }
 
 #endif  // _MADARA_UTILITY_INL_
+

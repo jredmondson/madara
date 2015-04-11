@@ -101,6 +101,8 @@ public:
       timers_[index].elapsed_time (elapsed_time);
       result = Madara::Knowledge_Record::Integer (elapsed_time);
     }
+
+    return result;
   }
 
   /**
