@@ -744,12 +744,8 @@ Madara::Knowledge_Engine::Thread_Safe_Context::reset_modified (
   const std::string & variable)
 {
   Context_Guard guard (mutex_);
-  Knowledge_Records::const_iterator found = changed_map_.find (variable);
 
-  if (found != changed_map_.end ())
-  {
-    changed_map_.erase (found);
-  }
+  changed_map_.erase (variable);
 }
 
 
