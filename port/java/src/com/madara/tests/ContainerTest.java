@@ -10,6 +10,7 @@ package com.madara.tests;
 import com.madara.KnowledgeBase;
 import com.madara.KnowledgeRecord;
 import com.madara.containers.Vector;
+import com.madara.containers.DoubleVector;
 import com.madara.containers.Integer;
 import com.madara.containers.Queue;
 
@@ -174,10 +175,89 @@ public class ContainerTest
       knowledge.print();
   }
   
+  
+  public static void testDoubleVector()
+  {
+    KnowledgeBase knowledge = new KnowledgeBase();
+    DoubleVector vector = new DoubleVector();
+    
+    boolean error = false;
+    
+    System.out.println("Testing Queue");
+    
+    vector.setName(knowledge, "dblVector");
+    
+    vector.resize(10);
+    
+    vector.set(0,10);
+    vector.set(1, 12.5);
+    vector.set(2, 14.234224214);
+    vector.set(7, 341234.141222893);
+    
+    if(vector.size() == 10)
+    {
+      System.out.println("  SUCCESS: Vector size test");
+    }
+    else
+    {
+      System.out.println("  FAIL: Vector size test");
+      error = true;
+    }
+    
+    KnowledgeRecord value0 = vector.toRecord(0);
+    KnowledgeRecord value1 = vector.toRecord(1);
+    KnowledgeRecord value2 = vector.toRecord(2);
+    KnowledgeRecord value7 = vector.toRecord(7);
+    
+    if(value0.toDouble() == 10 &&
+       value1.toDouble() == 12.5 &&
+       value2.toDouble() == 14.234224214 &&
+       value7.toDouble() == 341234.141222893)
+    {
+      System.out.println("  SUCCESS: value tests at 0, 1, 2, 7");
+    }
+    else
+    {
+      System.out.println("  FAIL: value tests at 0, 1, 2, 7");
+      error = true;
+    }
+    
+    if(value1.toString().equals("12.5") &&
+       value2.toString().equals("14.234224214") &&
+       value7.toString().equals("341234.141222893"))
+    {
+      System.out.println("  SUCCESS: default precision is enough for values");
+    }
+    else
+    {
+      System.out.println("  FAIL: default precision is not enough for values");
+      error = true;
+    }
+    
+    knowledge.evaluateNoReturn("#set_precision(9)");
+    
+    if(value1.toString().equals("12.500000000") &&
+       value2.toString().equals("14.234224214") &&
+       value7.toString().equals("341234.141222893"))
+    {
+      System.out.println("  SUCCESS: setprecision(9) is enough for values");
+    }
+    else
+    {
+      System.out.println("  FAIL: setprecision(9) is not enough for values");
+      error = true;
+    }
+    
+    if(error)
+      knowledge.print();
+  }
+  
+  
   public static void main(String...args) throws Exception
   {
     testInteger();
     testVector();
     testQueue();
+    testDoubleVector();
   }
 }

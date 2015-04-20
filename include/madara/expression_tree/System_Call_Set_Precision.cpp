@@ -68,7 +68,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     Knowledge_Record::Integer new_precision = 
       nodes_[0]->evaluate (settings).to_integer ();
     MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call precision is settings the precision to %q.\n",
+      "System call precision is setting the precision to %q.\n",
       new_precision));
 
     Knowledge_Record::set_precision (new_precision);
