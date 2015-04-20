@@ -106,7 +106,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1se
 MADARA_Export jdouble JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
-  jlong result (0);
+  jdouble result (0);
 
   containers::Native_Double_Vector * current = (containers::Native_Double_Vector *) cptr;
   if (current)

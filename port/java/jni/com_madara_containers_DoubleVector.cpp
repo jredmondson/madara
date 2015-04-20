@@ -105,7 +105,7 @@ void JNICALL Java_com_madara_containers_DoubleVector_jni_1setName
 jdouble JNICALL Java_com_madara_containers_DoubleVector_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
-  jlong result (0);
+  jdouble result (0);
 
   containers::Double_Vector * current = (containers::Double_Vector *) cptr;
   if (current)
