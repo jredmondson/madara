@@ -10,6 +10,7 @@
 #include "madara/transport/QoS_Transport_Settings.h"
 
 #include <string>
+#include <string.h>
 #include <map>
 
 namespace engine = Madara::Knowledge_Engine;
@@ -443,7 +444,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setFile
 
   jbyte * source = env->GetByteArrayElements (value, &isCopy);
   unsigned char * dest = new unsigned char [len];
-  std::memcpy (dest, source, (size_t)len);
+  memcpy (dest, source, (size_t)len);
 
   knowledge->set_file (std::string (nativeVar), dest, (size_t)len);
 
@@ -467,7 +468,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setImage
 
   jbyte * source = env->GetByteArrayElements (value, &isCopy);
   unsigned char * dest = new unsigned char [len];
-  std::memcpy (dest, source, (size_t)len);
+  memcpy (dest, source, (size_t)len);
 
   knowledge->set_jpeg (std::string (nativeVar), dest, (size_t)len);
   
@@ -601,7 +602,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setFileSettings
 
   jbyte * source = env->GetByteArrayElements (value, &isCopy);
   unsigned char * dest = new unsigned char [len];
-  std::memcpy (dest, source, (size_t)len);
+  memcpy (dest, source, (size_t)len);
 
   knowledge->set_file (std::string (nativeVar), dest, (size_t)len,
     *(Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
@@ -628,7 +629,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setImageSettings
 
   jbyte * source = env->GetByteArrayElements (value, &isCopy);
   unsigned char * dest = new unsigned char [len];
-  std::memcpy (dest, source, (size_t)len);
+  memcpy (dest, source, (size_t)len);
 
   knowledge->set_jpeg (std::string (nativeVar), dest, (size_t)len,
     *(Madara::Knowledge_Engine::Eval_Settings *)settings_ptr);
