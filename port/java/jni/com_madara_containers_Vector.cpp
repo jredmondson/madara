@@ -5,6 +5,7 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
+typedef containers::Vector    Vector;
 
 /*
  * Class:     com_madara_containers_Vector
@@ -14,7 +15,7 @@ namespace containers = engine::Containers;
 jlong JNICALL Java_com_madara_containers_Vector_jni_1Vector__
   (JNIEnv * env, jobject)
 {
-  return (jlong) new containers::Vector ();
+  return (jlong) new Vector ();
 }
 
 /*
@@ -25,7 +26,15 @@ jlong JNICALL Java_com_madara_containers_Vector_jni_1Vector__
 jlong JNICALL Java_com_madara_containers_Vector_jni_1Vector__J
   (JNIEnv * env, jobject, jlong cptr)
 {
-  return (jlong) new containers::Vector (*(containers::Vector *)cptr);
+  Vector * result (0);
+  Vector * source = (Vector *) cptr;
+
+  if (source)
+  {
+    result = new Vector (*source);
+  }
+
+  return (jlong) result;
 }
 
 /*
@@ -36,7 +45,7 @@ jlong JNICALL Java_com_madara_containers_Vector_jni_1Vector__J
 void JNICALL Java_com_madara_containers_Vector_jni_1freeVector
   (JNIEnv * env, jclass, jlong cptr)
 {
-  delete (containers::Vector *) cptr;
+  delete (Vector *) cptr;
 }
 
 /*
@@ -44,17 +53,18 @@ void JNICALL Java_com_madara_containers_Vector_jni_1freeVector
  * Method:    jni_set
  * Signature: (JILjava/lang/String;)V
  */
-void JNICALL Java_com_madara_containers_Vector_jni_1set__JILjava_lang_String_2
+void JNICALL Java_com_madara_containers_Vector_jni_1setString__JILjava_lang_String_2
   (JNIEnv * env, jobject, jlong cptr, jint index, jstring value)
 {
-  containers::Vector * current = (containers::Vector *) cptr;
+  Vector * current = (Vector *) cptr;
+
   if (current)
   {
-    const char * str_value = env->GetStringUTFChars(value, 0);
+    const char * str_value = env->GetStringUTFChars (value, 0);
 
     current->set (index, str_value);
 
-    env->ReleaseStringUTFChars(value, str_value);
+    env->ReleaseStringUTFChars (value, str_value);
   }
 }
 
@@ -63,10 +73,11 @@ void JNICALL Java_com_madara_containers_Vector_jni_1set__JILjava_lang_String_2
  * Method:    jni_set
  * Signature: (JID)V
  */
-void JNICALL Java_com_madara_containers_Vector_jni_1set__JID
+void JNICALL Java_com_madara_containers_Vector_jni_1setDouble__JID
   (JNIEnv * env, jobject, jlong cptr, jint index, jdouble value)
 {
-  containers::Vector * current = (containers::Vector *) cptr;
+  Vector * current = (Vector *) cptr;
+
   if (current)
   {
     current->set (index, value);
@@ -81,47 +92,53 @@ void JNICALL Java_com_madara_containers_Vector_jni_1set__JID
 void JNICALL Java_com_madara_containers_Vector_jni_1set__JIJJ
   (JNIEnv * env, jobject, jlong cptr, jint index, jlong type, jlong value)
 {
-  containers::Vector * current = (containers::Vector *) cptr;
+  Vector * current = (Vector *) cptr;
+
   if (current)
   {
+    // set integer
     if (type == 0)
     {
       current->set (index, (Madara::Knowledge_Record::Integer)value);
     }
+    // set knowledge record
     else
     {
-      Madara::Knowledge_Record * record = (Madara::Knowledge_Record *) cptr;
+      Madara::Knowledge_Record * record = (Madara::Knowledge_Record *) value;
       
-      if (record->type () == Madara::Knowledge_Record::DOUBLE)
+      if (record)
       {
-        current->set (index, record->to_double ());
-      }
-      else if (record->type () == Madara::Knowledge_Record::DOUBLE_ARRAY)
-      {
-        current->set (index, record->to_doubles ());
-      }
-      else if (record->type () == Madara::Knowledge_Record::INTEGER)
-      {
-        current->set (index, record->to_integer ());
-      }
-      else if (record->type () == Madara::Knowledge_Record::INTEGER_ARRAY)
-      {
-        current->set (index, record->to_integers ());
-      }
-      else if (record->is_binary_file_type ())
-      {
-        size_t size;
-        unsigned char * buffer = record->to_unmanaged_buffer (size);
-        current->set_file (index, buffer, size);
-        delete [] buffer;
-      }
-      else if (record->type () == Madara::Knowledge_Record::STRING)
-      {
-        current->set (index, record->to_string ());
-      }
-      else if (record->is_string_type ())
-      {
-        current->set (index, record->to_string ());
+        if (record->type () == Madara::Knowledge_Record::DOUBLE)
+        {
+          current->set (index, record->to_double ());
+        }
+        else if (record->type () == Madara::Knowledge_Record::DOUBLE_ARRAY)
+        {
+          current->set (index, record->to_doubles ());
+        }
+        else if (record->type () == Madara::Knowledge_Record::INTEGER)
+        {
+          current->set (index, record->to_integer ());
+        }
+        else if (record->type () == Madara::Knowledge_Record::INTEGER_ARRAY)
+        {
+          current->set (index, record->to_integers ());
+        }
+        else if (record->is_binary_file_type ())
+        {
+          size_t size;
+          unsigned char * buffer = record->to_unmanaged_buffer (size);
+          current->set_file (index, buffer, size);
+          delete [] buffer;
+        }
+        else if (record->type () == Madara::Knowledge_Record::STRING)
+        {
+          current->set (index, record->to_string ());
+        }
+        else if (record->is_string_type ())
+        {
+          current->set (index, record->to_string ());
+        }
       }
     }
   }
@@ -136,10 +153,12 @@ jstring JNICALL Java_com_madara_containers_Vector_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
+  Vector * current = (Vector *) cptr;
 
-  containers::Vector * current = (containers::Vector *) cptr;
   if (current)
-    result = env->NewStringUTF(current->get_name ().c_str ());
+  {
+    result = env->NewStringUTF (current->get_name ().c_str ());
+  }
 
   return result;
 }
@@ -152,11 +171,11 @@ jstring JNICALL Java_com_madara_containers_Vector_jni_1getName
 void JNICALL Java_com_madara_containers_Vector_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
-  containers::Vector * current = (containers::Vector *) cptr;
+  Vector * current = (Vector *) cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     if (type == 0)
     {
@@ -169,7 +188,7 @@ void JNICALL Java_com_madara_containers_Vector_jni_1setName
       current->set_name (str_name, *vars);
     }
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -182,10 +201,12 @@ jlong JNICALL Java_com_madara_containers_Vector_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   Madara::Knowledge_Record * result (0);
+  Vector * current = (Vector *) cptr;
 
-  containers::Vector * current = (containers::Vector *) cptr;
   if (current)
+  {
     result = new Madara::Knowledge_Record (current->to_record (index));
+  }
 
   return (jlong) result;
 }
@@ -198,9 +219,12 @@ jlong JNICALL Java_com_madara_containers_Vector_jni_1get
 void JNICALL Java_com_madara_containers_Vector_jni_1resize
   (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
-  containers::Vector * current = (containers::Vector *) cptr;
+  Vector * current = (Vector *) cptr;
+
   if (current)
+  {
     current->resize (length);
+  }
 }
 
 /*
@@ -212,10 +236,12 @@ jlong JNICALL Java_com_madara_containers_Vector_jni_1size
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
+  Vector * current = (Vector *) cptr;
 
-  containers::Vector * current = (containers::Vector *) cptr;
   if (current)
+  {
     result = (jlong) current->size ();
+  }
 
   return (jlong) result;
 }
@@ -229,10 +255,12 @@ jlong JNICALL Java_com_madara_containers_Vector_jni_1toRecord
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   Madara::Knowledge_Record * result (0);
+  Vector * current = (Vector *) cptr;
 
-  containers::Vector * current = (containers::Vector *) cptr;
   if (current)
+  {
     result = new Madara::Knowledge_Record (current->to_record (index));
+  }
 
   return (jlong) result;
 }
@@ -250,13 +278,13 @@ jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArray
   if (kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
-      "fromPointer", "(J)Lcom/madara/KnowledgeRecord;");
+      "fromPointer", " (J)Lcom/madara/KnowledgeRecord;");
     Madara::Knowledge_Vector records;
-    containers::Vector * current = (containers::Vector *) cptr;
+    Vector * current = (Vector *) cptr;
     current->copy_to (records);
     jsize size = (jsize)records.size ();
 
-    list = env->NewObjectArray ((jsize)records.size (), kr_class, 0);
+    list = env->NewObjectArray ( (jsize)records.size (), kr_class, 0);
 
     if (method)
     {
@@ -269,6 +297,7 @@ jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArray
       }
     }
   }
+
   return list;
 }
 
@@ -281,9 +310,12 @@ jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArray
 void JNICALL Java_com_madara_containers_Vector_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Vector * current = (containers::Vector *) cptr;
+  Vector * current = (Vector *) cptr;
+
   if (current)
+  {
     current->modify ();
+  }
 }
 
 /*
@@ -294,7 +326,10 @@ void JNICALL Java_com_madara_containers_Vector_jni_1modify
 void JNICALL Java_com_madara_containers_Vector_jni_1modifyIndex
   (JNIEnv *, jobject, jlong cptr, jint index)
 {
-  containers::Vector * current = (containers::Vector *) cptr;
+  Vector * current = (Vector *) cptr;
+
   if (current)
-    current->modify ((size_t)index);
+  {
+    current->modify ( (size_t)index);
+  }
 }

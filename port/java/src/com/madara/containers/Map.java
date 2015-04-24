@@ -20,9 +20,9 @@ public class Map extends MadaraJNI
   private native long jni_Map();
   private native long jni_Map(long cptr);
   private static native void jni_freeMap(long cptr);
-  private native void jni_set(long cptr,
+  private native void jni_setString(long cptr,
     java.lang.String key, java.lang.String value);
-  private native void jni_set(long cptr,
+  private native void jni_setDouble(long cptr,
     java.lang.String key, double value);
   private native void jni_set(long cptr,
     java.lang.String key, long type, long value);
@@ -130,7 +130,7 @@ public class Map extends MadaraJNI
    */
   public void set(java.lang.String key, java.lang.String value)
   {
-    jni_set(getCPtr(), key, value);
+    jni_setString(getCPtr(), key, value);
   }
 
   /**
@@ -139,9 +139,9 @@ public class Map extends MadaraJNI
    * @param  key  the location in the map
    * @param  value   new value
    */
-  public void set(java.lang.String key, double value)
+  public void setDouble(java.lang.String key, double value)
   {
-    jni_set(getCPtr(), key, value);
+    jni_setDouble(getCPtr(), key, value);
   }
 
   /**

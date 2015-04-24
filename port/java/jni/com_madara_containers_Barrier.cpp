@@ -3,6 +3,7 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
+typedef containers::Barrier    Barrier;
 
 /*
  * Class:     com_madara_containers_Barrier
@@ -12,7 +13,7 @@ namespace containers = engine::Containers;
 JNIEXPORT jlong JNICALL Java_com_madara_containers_Barrier_jni_1Barrier__
   (JNIEnv *, jobject)
 {
-  return (jlong) new containers::Barrier ();
+  return (jlong) new Barrier ();
 }
 
 
@@ -24,7 +25,15 @@ JNIEXPORT jlong JNICALL Java_com_madara_containers_Barrier_jni_1Barrier__
 JNIEXPORT jlong JNICALL Java_com_madara_containers_Barrier_jni_1Barrier__J
   (JNIEnv *, jobject, jlong cptr)
 {
-  return (jlong) new containers::Barrier (*(containers::Barrier *)cptr);
+  Barrier * result (0);
+  Barrier * source = (Barrier *) cptr;
+
+  if (source)
+  {
+    result = new Barrier (*source);
+  }
+
+  return (jlong) result;
 }
 
 
@@ -36,7 +45,7 @@ JNIEXPORT jlong JNICALL Java_com_madara_containers_Barrier_jni_1Barrier__J
 JNIEXPORT void JNICALL Java_com_madara_containers_Barrier_jni_1freeBarrier
   (JNIEnv *, jclass, jlong cptr)
 {
-  delete (containers::Barrier *) cptr;
+  delete (Barrier *) cptr;
 }
 
 
@@ -48,7 +57,8 @@ JNIEXPORT void JNICALL Java_com_madara_containers_Barrier_jni_1freeBarrier
 JNIEXPORT void JNICALL Java_com_madara_containers_Barrier_jni_1set
   (JNIEnv *, jobject, jlong cptr, jlong value)
 {
-  containers::Barrier * current = (containers::Barrier *) cptr;
+  Barrier * current = (Barrier *) cptr;
+
   if (current)
     *current = value;
 }
@@ -64,10 +74,10 @@ JNIEXPORT jstring JNICALL Java_com_madara_containers_Barrier_jni_1getName
 {
   jstring result;
 
-  containers::Barrier * current = (containers::Barrier *) cptr;
+  Barrier * current = (Barrier *) cptr;
   if (current)
   {
-    result = env->NewStringUTF(current->get_name ().c_str ());
+    result = env->NewStringUTF (current->get_name ().c_str ());
   }
 
   return result;
@@ -81,11 +91,11 @@ JNIEXPORT jstring JNICALL Java_com_madara_containers_Barrier_jni_1getName
 JNIEXPORT void JNICALL Java_com_madara_containers_Barrier_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
-  containers::Barrier * current = (containers::Barrier *) cptr;
+  Barrier * current = (Barrier *) cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     if (type == 0)
     {
@@ -98,7 +108,7 @@ JNIEXPORT void JNICALL Java_com_madara_containers_Barrier_jni_1setName
       current->set_name (str_name, *vars);
     }
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -113,10 +123,10 @@ JNIEXPORT jstring JNICALL Java_com_madara_containers_Barrier_jni_1toString
 {
   jstring result;
 
-  containers::Barrier * current = (containers::Barrier *) cptr;
+  Barrier * current = (Barrier *) cptr;
   if (current)
   {
-    result = env->NewStringUTF(current->to_string ().c_str ());
+    result = env->NewStringUTF (current->to_string ().c_str ());
   }
 
   return result;
@@ -132,7 +142,7 @@ JNIEXPORT jdouble JNICALL Java_com_madara_containers_Barrier_jni_1toDouble
 {
   jdouble result (0.0);
 
-  containers::Barrier * current = (containers::Barrier *) cptr;
+  Barrier * current = (Barrier *) cptr;
   if (current)
   {
     result = current->to_double ();
@@ -152,7 +162,7 @@ JNIEXPORT jlong JNICALL Java_com_madara_containers_Barrier_jni_1toLong
 {
   jlong result (0);
 
-  containers::Barrier * current = (containers::Barrier *) cptr;
+  Barrier * current = (Barrier *) cptr;
   if (current)
   {
     result = current->to_integer ();
@@ -170,8 +180,12 @@ JNIEXPORT jlong JNICALL Java_com_madara_containers_Barrier_jni_1toLong
 JNIEXPORT void JNICALL Java_com_madara_containers_Barrier_jni_1next
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Barrier * current = (containers::Barrier *) cptr;
-  current->next ();
+  Barrier * current = (Barrier *) cptr;
+
+  if (current)
+  {
+    current->next ();
+  }
 }
 
 
@@ -183,8 +197,15 @@ JNIEXPORT void JNICALL Java_com_madara_containers_Barrier_jni_1next
 JNIEXPORT jboolean JNICALL Java_com_madara_containers_Barrier_jni_1isDone
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Barrier * current = (containers::Barrier *) cptr;
-  return current->is_done ();
+  jboolean result (0);
+  Barrier * current = (Barrier *) cptr;
+
+  if (current)
+  {
+    result = current->is_done ();
+  }
+
+  return result;
 }
 
 
@@ -196,8 +217,12 @@ JNIEXPORT jboolean JNICALL Java_com_madara_containers_Barrier_jni_1isDone
 JNIEXPORT void JNICALL Java_com_madara_containers_Barrier_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Barrier * current = (containers::Barrier *) cptr;
-  current->modify ();
+  Barrier * current = (Barrier *) cptr;
+
+  if (current)
+  {
+    current->modify ();
+  }
 }
 
 
@@ -209,6 +234,10 @@ JNIEXPORT void JNICALL Java_com_madara_containers_Barrier_jni_1modify
 JNIEXPORT void JNICALL Java_com_madara_containers_Barrier_jni_1resize
   (JNIEnv *, jobject, jlong cptr, jint id, jint participants)
 {
-  containers::Barrier * current = (containers::Barrier *) cptr;
-  current->resize (id, participants);
+  Barrier * current = (Barrier *) cptr;
+
+  if (current)
+  {
+    current->resize (id, participants);
+  }
 }

@@ -37,7 +37,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1freeVector
  * Method:    jni_set
  * Signature: (JILjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1set__JILjava_lang_String_2
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1setString__JILjava_lang_String_2
   (JNIEnv *, jobject, jlong, jint, jstring);
 
 /*
@@ -45,7 +45,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1set__JILjava_l
  * Method:    jni_set
  * Signature: (JID)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1set__JID
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1setDouble__JID
   (JNIEnv *, jobject, jlong, jint, jdouble);
 
 /*

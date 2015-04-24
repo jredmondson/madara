@@ -3,6 +3,8 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace threads = Madara::Threads;
+typedef threads::Threader       Threader;
+typedef engine::Knowledge_Base  Knowledge_Base;
 
 /*
  * Class:     com_madara_threads_Threader
@@ -12,7 +14,7 @@ namespace threads = Madara::Threads;
 jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__
   (JNIEnv *, jobject)
 {
-  return (jlong) new threads::Threader ();
+  return (jlong) new Threader ();
 }
 
 /*
@@ -23,7 +25,15 @@ jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__
 jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__J
   (JNIEnv *, jobject, jlong kb)
 {
-  return (jlong) new threads::Threader (*(engine::Knowledge_Base *)kb);
+  Threader * result (0);
+  Knowledge_Base * knowledge = (Knowledge_Base *) kb;
+
+  if (knowledge)
+  {
+    result = new Threader (*knowledge);
+  }
+
+  return (jlong) result;
 }
 
 /*
@@ -34,7 +44,7 @@ jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__J
 void JNICALL Java_com_madara_threads_Threader_jni_1freeThreader
   (JNIEnv *, jobject, jlong cptr)
 {
-  delete (threads::Threader *)cptr;
+  delete (Threader *)cptr;
 }
 
 /*
@@ -46,15 +56,15 @@ void JNICALL Java_com_madara_threads_Threader_jni_1run
   (JNIEnv * env, jobject, jlong cptr,
    jstring name, jobject obj, jboolean paused)
 {
-  threads::Threader * current = (threads::Threader *)cptr;
+  Threader * current = (Threader *)cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     current->run (str_name, obj, paused);
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -67,15 +77,15 @@ void JNICALL Java_com_madara_threads_Threader_jni_1runhz
   (JNIEnv * env, jobject, jlong cptr,
    jdouble hertz, jstring name, jobject obj, jboolean paused)
 {
-  threads::Threader * current = (threads::Threader *)cptr;
+  Threader * current = (Threader *)cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     current->run (hertz, str_name, obj, paused);
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -87,15 +97,15 @@ void JNICALL Java_com_madara_threads_Threader_jni_1runhz
 void JNICALL Java_com_madara_threads_Threader_jni_1pauseThread
   (JNIEnv * env, jobject, jlong cptr, jstring name)
 {
-  threads::Threader * current = (threads::Threader *)cptr;
+  Threader * current = (Threader *)cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     current->pause (str_name);
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -107,7 +117,7 @@ void JNICALL Java_com_madara_threads_Threader_jni_1pauseThread
 void JNICALL Java_com_madara_threads_Threader_jni_1pause
   (JNIEnv *, jobject, jlong cptr)
 {
-  threads::Threader * current = (threads::Threader *)cptr;
+  Threader * current = (Threader *)cptr;
 
   if (current)
   {
@@ -123,15 +133,15 @@ void JNICALL Java_com_madara_threads_Threader_jni_1pause
 void JNICALL Java_com_madara_threads_Threader_jni_1waitThread
   (JNIEnv * env, jobject, jlong cptr, jstring name)
 {
-  threads::Threader * current = (threads::Threader *)cptr;
+  Threader * current = (Threader *)cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     current->wait (str_name);
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -143,7 +153,7 @@ void JNICALL Java_com_madara_threads_Threader_jni_1waitThread
 void JNICALL Java_com_madara_threads_Threader_jni_1wait
   (JNIEnv *, jobject, jlong cptr)
 {
-  threads::Threader * current = (threads::Threader *)cptr;
+  Threader * current = (Threader *)cptr;
 
   if (current)
   {
@@ -159,15 +169,15 @@ void JNICALL Java_com_madara_threads_Threader_jni_1wait
 void JNICALL Java_com_madara_threads_Threader_jni_1terminateThread
   (JNIEnv * env, jobject, jlong cptr, jstring name)
 {
-  threads::Threader * current = (threads::Threader *)cptr;
+  Threader * current = (Threader *)cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     current->terminate (str_name);
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -179,7 +189,7 @@ void JNICALL Java_com_madara_threads_Threader_jni_1terminateThread
 void JNICALL Java_com_madara_threads_Threader_jni_1terminate
   (JNIEnv *, jobject, jlong cptr)
 {
-  threads::Threader * current = (threads::Threader *)cptr;
+  Threader * current = (Threader *)cptr;
 
   if (current)
   {
@@ -195,15 +205,15 @@ void JNICALL Java_com_madara_threads_Threader_jni_1terminate
 void JNICALL Java_com_madara_threads_Threader_jni_1resumeThread
   (JNIEnv * env, jobject, jlong cptr, jstring name)
 {
-  threads::Threader * current = (threads::Threader *)cptr;
+  Threader * current = (Threader *)cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     current->resume (str_name);
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -215,7 +225,7 @@ void JNICALL Java_com_madara_threads_Threader_jni_1resumeThread
 void JNICALL Java_com_madara_threads_Threader_jni_1resume
   (JNIEnv *, jobject, jlong cptr)
 {
-  threads::Threader * current = (threads::Threader *)cptr;
+  Threader * current = (Threader *)cptr;
 
   if (current)
   {

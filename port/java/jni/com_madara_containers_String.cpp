@@ -4,6 +4,7 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
+typedef containers::String    String;
 
 /*
  * Class:     com_madara_containers_String
@@ -13,7 +14,7 @@ namespace containers = engine::Containers;
 jlong JNICALL Java_com_madara_containers_String_jni_1String__
   (JNIEnv * env, jobject)
 {
-  return (jlong) new containers::String ();
+  return (jlong) new String ();
 }
 
 /*
@@ -24,7 +25,15 @@ jlong JNICALL Java_com_madara_containers_String_jni_1String__
 jlong JNICALL Java_com_madara_containers_String_jni_1String__J
   (JNIEnv * env, jobject, jlong cptr)
 {
-  return (jlong) new containers::String (*(containers::String *)cptr);
+  String * result (0);
+  String * source = (String *) cptr;
+
+  if (source)
+  {
+    result = new String (*source);
+  }
+
+  return (jlong) result;
 }
 
 /*
@@ -35,7 +44,7 @@ jlong JNICALL Java_com_madara_containers_String_jni_1String__J
 void JNICALL Java_com_madara_containers_String_jni_1freeString
   (JNIEnv * env, jclass, jlong cptr)
 {
-  delete (containers::String *) cptr;
+  delete (String *) cptr;
 }
 
 /*
@@ -46,14 +55,14 @@ void JNICALL Java_com_madara_containers_String_jni_1freeString
 void JNICALL Java_com_madara_containers_String_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jstring value)
 {
-  containers::String * current = (containers::String *) cptr;
+  String * current = (String *) cptr;
   if (current)
   {
-    const char * str_value = env->GetStringUTFChars(value, 0);
+    const char * str_value = env->GetStringUTFChars (value, 0);
 
     *current = str_value;
 
-    env->ReleaseStringUTFChars(value, str_value);
+    env->ReleaseStringUTFChars (value, str_value);
   }
 }
 
@@ -66,10 +75,12 @@ jstring JNICALL Java_com_madara_containers_String_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
+  String * current = (String *) cptr;
 
-  containers::String * current = (containers::String *) cptr;
   if (current)
-    result = env->NewStringUTF(current->get_name ().c_str ());
+  {
+    result = env->NewStringUTF (current->get_name ().c_str ());
+  }
 
   return result;
 }
@@ -82,11 +93,11 @@ jstring JNICALL Java_com_madara_containers_String_jni_1getName
 void JNICALL Java_com_madara_containers_String_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
-  containers::String * current = (containers::String *) cptr;
+  String * current = (String *) cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     if (type == 0)
     {
@@ -99,7 +110,7 @@ void JNICALL Java_com_madara_containers_String_jni_1setName
       current->set_name (str_name, *vars);
     }
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -112,10 +123,12 @@ jstring JNICALL Java_com_madara_containers_String_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
+  String * current = (String *) cptr;
 
-  containers::String * current = (containers::String *) cptr;
   if (current)
-    result = env->NewStringUTF(current->to_string ().c_str ());
+  {
+    result = env->NewStringUTF (current->to_string ().c_str ());
+  }
 
   return result;
 }
@@ -129,10 +142,12 @@ jdouble JNICALL Java_com_madara_containers_String_jni_1toDouble
   (JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0.0);
+  String * current = (String *) cptr;
 
-  containers::String * current = (containers::String *) cptr;
   if (current)
+  {
     result = current->to_double ();
+  }
 
   return result;
 }
@@ -146,10 +161,12 @@ jlong JNICALL Java_com_madara_containers_String_jni_1toLong
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
+  String * current = (String *) cptr;
 
-  containers::String * current = (containers::String *) cptr;
   if (current)
+  {
     result = current->to_integer ();
+  }
 
   return result;
 }
@@ -157,7 +174,10 @@ jlong JNICALL Java_com_madara_containers_String_jni_1toLong
 void JNICALL Java_com_madara_containers_String_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::String * current = (containers::String *) cptr;
+  String * current = (String *) cptr;
+
   if (current)
+  {
     current->modify ();
+  }
 }

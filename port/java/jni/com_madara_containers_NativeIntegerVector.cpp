@@ -4,6 +4,7 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
+typedef containers::Native_Integer_Vector    Native_Integer_Vector;
 
 /*
  * Class:     com_madara_containers_NativeIntegerVector
@@ -13,7 +14,7 @@ namespace containers = engine::Containers;
 MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1NativeIntegerVector__
   (JNIEnv * env, jobject)
 {
-  return (jlong) new containers::Native_Integer_Vector ();
+  return (jlong) new Native_Integer_Vector ();
 }
 
 /*
@@ -24,8 +25,15 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
 MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1NativeIntegerVector__J
   (JNIEnv * env, jobject, jlong cptr)
 {
-  return (jlong) new containers::Native_Integer_Vector (
-    *(containers::Native_Integer_Vector *)cptr);
+  Native_Integer_Vector * result (0);
+  Native_Integer_Vector * source = (Native_Integer_Vector *) cptr;
+
+  if (source)
+  {
+    result = new Native_Integer_Vector (*source);
+  }
+
+  return (jlong) result;
 }
 
 /*
@@ -36,7 +44,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
 MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1freeNativeIntegerVector
   (JNIEnv * env, jclass, jlong cptr)
 {
-  delete (containers::Native_Integer_Vector *) cptr;
+  delete (Native_Integer_Vector *) cptr;
 }
 
 /*
@@ -47,9 +55,12 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1f
 MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jint index, jdouble value)
 {
-  containers::Native_Integer_Vector * current = (containers::Native_Integer_Vector *) cptr;
+  Native_Integer_Vector * current = (Native_Integer_Vector *) cptr;
+
   if (current)
+  {
     current->set (index, value);
+  }
 }
 
 /*
@@ -61,10 +72,12 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_NativeIntegerVector_jni
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
+  Native_Integer_Vector * current = (Native_Integer_Vector *) cptr;
 
-  containers::Native_Integer_Vector * current = (containers::Native_Integer_Vector *) cptr;
   if (current)
-    result = env->NewStringUTF(current->get_name ().c_str ());
+  {
+    result = env->NewStringUTF (current->get_name ().c_str ());
+  }
 
   return result;
 }
@@ -77,12 +90,11 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_NativeIntegerVector_jni
 MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
-  containers::Native_Integer_Vector * current =
-    (containers::Native_Integer_Vector *) cptr;
+  Native_Integer_Vector * current = (Native_Integer_Vector *) cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     if (type == 0)
     {
@@ -95,7 +107,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1s
       current->set_name (str_name, *vars);
     }
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -108,11 +120,12 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   jlong result (0);
+  Native_Integer_Vector * current = (Native_Integer_Vector *) cptr;
 
-  containers::Native_Integer_Vector * current =
-    (containers::Native_Integer_Vector *) cptr;
   if (current)
+  {
     result = (*current) [index];
+  }
 
   return result;
 }
@@ -126,11 +139,12 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   Madara::Knowledge_Record * result (0);
+  Native_Integer_Vector * current = (Native_Integer_Vector *) cptr;
 
-  containers::Native_Integer_Vector * current =
-    (containers::Native_Integer_Vector *) cptr;
   if (current)
+  {
     result = new Madara::Knowledge_Record (current->to_record (index));
+  }
 
   return (jlong) result;
 }
@@ -144,11 +158,12 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
   (JNIEnv * env, jobject, jlong cptr)
 {
   Madara::Knowledge_Record * result (0);
+  Native_Integer_Vector * current = (Native_Integer_Vector *) cptr;
 
-  containers::Native_Integer_Vector * current =
-    (containers::Native_Integer_Vector *) cptr;
   if (current)
+  {
     result = new Madara::Knowledge_Record (current->to_record ());
+  }
 
   return (jlong) result;
 }
@@ -166,14 +181,14 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_NativeIntegerVecto
   if (kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
-      "fromPointer", "(J)Lcom/madara/KnowledgeRecord;");
+      "fromPointer", " (J)Lcom/madara/KnowledgeRecord;");
     Madara::Knowledge_Vector records;
-    containers::Native_Integer_Vector * current =
-      (containers::Native_Integer_Vector *) cptr;
+    Native_Integer_Vector * current =
+      (Native_Integer_Vector *) cptr;
     current->copy_to (records);
     jsize size = (jsize)records.size ();
 
-    list = env->NewObjectArray ((jsize)records.size (), kr_class, 0);
+    list = env->NewObjectArray ( (jsize)records.size (), kr_class, 0);
 
     if (method)
     {
@@ -198,12 +213,12 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
-
-  containers::Native_Integer_Vector * current =
-    (containers::Native_Integer_Vector *) cptr;
+  Native_Integer_Vector * current = (Native_Integer_Vector *) cptr;
 
   if (current)
+  {
     result = (jlong) current->size ();
+  }
 
   return (jlong) result;
 }
@@ -216,19 +231,21 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
 MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1resize
   (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
-  containers::Native_Integer_Vector * current =
-    (containers::Native_Integer_Vector *) cptr;
+  Native_Integer_Vector * current = (Native_Integer_Vector *) cptr;
 
   if (current)
+  {
     current->resize (length);
+  }
 }
 
 void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Native_Integer_Vector * current =
-    (containers::Native_Integer_Vector *) cptr;
+  Native_Integer_Vector * current = (Native_Integer_Vector *) cptr;
 
   if (current)
+  {
     current->modify ();
+  }
 }

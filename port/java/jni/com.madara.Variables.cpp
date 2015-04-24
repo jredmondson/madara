@@ -8,6 +8,13 @@
 #include "com.madara.Variables.h"
 #include "madara/knowledge_engine/Knowledge_Base.h"
 
+// define useful shorthands
+namespace engine = Madara::Knowledge_Engine;
+typedef engine::Variables Variables;
+typedef engine::Compiled_Expression   Compiled_Expression;
+typedef engine::Eval_Settings         Eval_Settings;
+typedef Madara::Knowledge_Record      Knowledge_Record;
+
 /*
 * Class:     com_madara_Variables
 * Method:    jni_evaluate
@@ -15,10 +22,17 @@
 */
 MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1evaluate__JJJ (JNIEnv * env, jobject obj, jlong cptr, jlong expression, jlong evalSettings)
 {
-  Madara::Knowledge_Engine::Variables vars = *(Madara::Knowledge_Engine::Variables*)cptr;
-  Madara::Knowledge_Engine::Compiled_Expression compiled_expression = *(Madara::Knowledge_Engine::Compiled_Expression*)expression;
-  Madara::Knowledge_Engine::Eval_Settings settings = *(Madara::Knowledge_Engine::Eval_Settings*)evalSettings;
-  return (jlong) (new Madara::Knowledge_Record(vars.evaluate(compiled_expression, settings)));
+  Knowledge_Record * result (0);
+  Variables * vars = (Variables *) cptr;
+  Compiled_Expression * compiled = (Compiled_Expression*) expression;
+  Eval_Settings * settings = (Eval_Settings*) evalSettings;
+
+  if (vars && compiled && settings)
+  {
+    result = new Knowledge_Record (vars->evaluate (*compiled, *settings));
+  }
+
+  return (jlong) result;
 }
 
 /*
@@ -28,14 +42,19 @@ MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1evaluate__JJJ (JNIEnv
 */
 MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1compile (JNIEnv *env, jobject obj, jlong cptr, jstring expression)
 {
-  const char *nativeExpression = env->GetStringUTFChars(expression, 0);
+  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
 
-  Madara::Knowledge_Engine::Variables vars = *(Madara::Knowledge_Engine::Variables*)cptr;
-  Madara::Knowledge_Engine::Compiled_Expression* ret = new Madara::Knowledge_Engine::Compiled_Expression(vars.compile(nativeExpression));
+  Variables * vars = (Variables *) cptr;
+  Compiled_Expression * result (0);
 
-  env->ReleaseStringUTFChars(expression, nativeExpression);
+  if (vars)
+  {
+    result = new Compiled_Expression (vars->compile (nativeExpression));
 
-  return (jlong) ret;
+    env->ReleaseStringUTFChars (expression, nativeExpression);
+  }
+
+  return (jlong) result;
 }
 
 /*
@@ -45,13 +64,18 @@ MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1compile (JNIEnv *env,
 */
 MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1get (JNIEnv * env, jobject obj, jlong cptr, jstring var)
 {
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
+  const char * nativeVar = env->GetStringUTFChars (var, 0);
 
-  Madara::Knowledge_Engine::Variables vars = *(Madara::Knowledge_Engine::Variables*)cptr;
-  Madara::Knowledge_Record* ret = new Madara::Knowledge_Record(vars.get(nativeVar));
+  Variables * vars = (Variables *) cptr;
+  Knowledge_Record * result (0);
 
-  env->ReleaseStringUTFChars(var, nativeVar);
-  return (jlong) ret;
+  if (vars)
+  {
+    result = new Knowledge_Record (vars->get (nativeVar));
+  }
+
+  env->ReleaseStringUTFChars (var, nativeVar);
+  return (jlong) result;
 }
 
 /*
@@ -61,13 +85,17 @@ MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1get (JNIEnv * env, jo
 */
 MADARA_Export void JNICALL Java_com_madara_Variables_jni_1set (JNIEnv *env, jobject obj, jlong cptr, jstring var, jlong recordPtr)
 {
-  const char *nativeVar = env->GetStringUTFChars(var, 0);
+  const char *nativeVar = env->GetStringUTFChars (var, 0);
 
-  Madara::Knowledge_Engine::Variables vars = *(Madara::Knowledge_Engine::Variables*)cptr;
-  Madara::Knowledge_Record record = *(Madara::Knowledge_Record*)recordPtr;
-  vars.set(nativeVar, Madara::Knowledge_Record(record));
+  Variables * vars = (Variables *) cptr;
+  Knowledge_Record * record = (Knowledge_Record*) recordPtr;
 
-  env->ReleaseStringUTFChars(var, nativeVar);
+  if (vars)
+  {
+    vars->set (nativeVar, *record);
+  }
+
+  env->ReleaseStringUTFChars (var, nativeVar);
 }
 
 

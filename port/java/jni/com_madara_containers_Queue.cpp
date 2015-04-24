@@ -3,8 +3,8 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
-
-typedef Madara::Knowledge_Record::Integer Integer;
+typedef Madara::Knowledge_Record    Knowledge_Record;
+typedef Knowledge_Record::Integer   Integer;
 
 /*
  * Class:     com_madara_containers_Queue
@@ -25,7 +25,15 @@ jlong JNICALL Java_com_madara_containers_Queue_jni_1Queue__
 jlong JNICALL Java_com_madara_containers_Queue_jni_1Queue__J
   (JNIEnv *, jobject, jlong cptr)
 {
-  return (jlong) new containers::Queue (*(containers::Queue *)cptr);
+  containers::Queue * result (0);
+  containers::Queue * source = (containers::Queue *) cptr;
+
+  if (source)
+  {
+    result = new containers::Queue (*source);
+  }
+
+  return (jlong) result;
 }
 
 /*
@@ -47,13 +55,13 @@ void JNICALL Java_com_madara_containers_Queue_jni_1freeQueue
 jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueue
   (JNIEnv *, jobject, jlong cptr, jlong record_ptr)
 {
-  containers::Queue * current = (containers::Queue *)cptr;
   jboolean result (false);
+  containers::Queue * current = (containers::Queue *)cptr;
 
   if (current)
   {
-    Madara::Knowledge_Record * record =
-      (Madara::Knowledge_Record *)record_ptr;
+    Knowledge_Record * record =
+      (Knowledge_Record *)record_ptr;
 
     if (record)
     {
@@ -72,12 +80,12 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueue
 jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueDouble
   (JNIEnv *, jobject, jlong cptr, jdouble value)
 {
-  containers::Queue * current = (containers::Queue *)cptr;
   jboolean result (false);
+  containers::Queue * current = (containers::Queue *)cptr;
 
   if (current)
   {
-    result = current->enqueue (Madara::Knowledge_Record(value));
+    result = current->enqueue (Knowledge_Record (value));
   }
 
   return result;
@@ -91,12 +99,12 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueDouble
 jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueLong
   (JNIEnv *, jobject, jlong cptr, jlong value)
 {
-  containers::Queue * current = (containers::Queue *)cptr;
   jboolean result (false);
+  containers::Queue * current = (containers::Queue *)cptr;
 
   if (current)
   {
-    result = current->enqueue (Madara::Knowledge_Record (Integer (value)));
+    result = current->enqueue (Knowledge_Record (Integer (value)));
   }
 
   return result;
@@ -110,16 +118,16 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueLong
 jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueString
   (JNIEnv * env, jobject, jlong cptr, jstring value)
 {
-  containers::Queue * current = (containers::Queue *)cptr;
   jboolean result (false);
+  containers::Queue * current = (containers::Queue *)cptr;
 
   if (current)
   {
-    const char * str_value = env->GetStringUTFChars(value, 0);
+    const char * str_value = env->GetStringUTFChars (value, 0);
 
-    result = current->enqueue (Madara::Knowledge_Record(str_value));
+    result = current->enqueue (Knowledge_Record (str_value));
 
-    env->ReleaseStringUTFChars(value, str_value);
+    env->ReleaseStringUTFChars (value, str_value);
   }
 
   return result;
@@ -133,12 +141,12 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueString
 jlong JNICALL Java_com_madara_containers_Queue_jni_1dequeue
   (JNIEnv *, jobject, jlong cptr, jboolean wait)
 {
-  containers::Queue * current = (containers::Queue *)cptr;
   jlong result (0);
+  containers::Queue * current = (containers::Queue *)cptr;
 
   if (current)
   {
-    result = (jlong) new Madara::Knowledge_Record (current->dequeue (wait));
+    result = (jlong) new Knowledge_Record (current->dequeue (wait));
   }
 
   return result;
@@ -152,12 +160,12 @@ jlong JNICALL Java_com_madara_containers_Queue_jni_1dequeue
 jlong JNICALL Java_com_madara_containers_Queue_jni_1inspect
   (JNIEnv *, jobject, jlong cptr, jint position)
 {
-  containers::Queue * current = (containers::Queue *)cptr;
   jlong result (0);
+  containers::Queue * current = (containers::Queue *)cptr;
 
   if (current)
   {
-    result = (jlong) new Madara::Knowledge_Record (current->inspect (position));
+    result = (jlong) new Knowledge_Record (current->inspect (position));
   }
 
   return result;
@@ -174,10 +182,12 @@ jstring JNICALL Java_com_madara_containers_Queue_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
-
   containers::Queue * current = (containers::Queue *) cptr;
+
   if (current)
-    result = env->NewStringUTF(current->get_name ().c_str ());
+  {
+    result = env->NewStringUTF (current->get_name ().c_str ());
+  }
 
   return result;
 }
@@ -196,7 +206,7 @@ void JNICALL Java_com_madara_containers_Queue_jni_1setName
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     if (type == 0)
     {
@@ -209,7 +219,7 @@ void JNICALL Java_com_madara_containers_Queue_jni_1setName
       current->set_name (str_name, *vars);
     }
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -221,8 +231,8 @@ void JNICALL Java_com_madara_containers_Queue_jni_1setName
 jlong JNICALL Java_com_madara_containers_Queue_jni_1size
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Queue * current = (containers::Queue *)cptr;
   jlong result (0);
+  containers::Queue * current = (containers::Queue *)cptr;
 
   if (current)
   {
@@ -240,8 +250,8 @@ jlong JNICALL Java_com_madara_containers_Queue_jni_1size
 jlong JNICALL Java_com_madara_containers_Queue_jni_1count
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Queue * current = (containers::Queue *)cptr;
   jlong result (0);
+  containers::Queue * current = (containers::Queue *)cptr;
 
   if (current)
   {

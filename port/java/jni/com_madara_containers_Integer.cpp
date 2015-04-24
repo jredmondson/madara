@@ -24,7 +24,15 @@ jlong JNICALL Java_com_madara_containers_Integer_jni_1Integer__
 jlong JNICALL Java_com_madara_containers_Integer_jni_1Integer__J
   (JNIEnv * env, jobject, jlong cptr)
 {
-  return (jlong) new containers::Integer (*(containers::Integer *)cptr);
+  containers::Integer * result (0);
+  containers::Integer * source = (containers::Integer *) cptr;
+
+  if (source)
+  {
+    result = new containers::Integer (*source);
+  }
+
+  return (jlong) result;
 }
 
 /*
@@ -47,8 +55,11 @@ void JNICALL Java_com_madara_containers_Integer_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jlong value)
 {
   containers::Integer * current = (containers::Integer *) cptr;
+
   if (current)
+  {
     *current = value;
+  }
 }
 
 /*
@@ -63,7 +74,9 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Integer_jni_1inc
   containers::Integer * current = (containers::Integer *) cptr;
 
   if (current)
-    result = ++(*current);
+  {
+    result = ++ (*current);
+  }
 
   return result;
 }
@@ -80,7 +93,9 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Integer_jni_1dec
   containers::Integer * current = (containers::Integer *) cptr;
 
   if (current)
-    result = --(*current);
+  {
+    result = -- (*current);
+  }
 
   return result;
 }
@@ -97,7 +112,9 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Integer_jni_1incValue
   containers::Integer * current = (containers::Integer *) cptr;
 
   if (current)
-    result = ((*current) += value);
+  {
+    result = ( (*current) += value);
+  }
 
   return result;
 }
@@ -114,7 +131,9 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Integer_jni_1decValue
   containers::Integer * current = (containers::Integer *) cptr;
 
   if (current)
-    result = ((*current) -= value);
+  {
+    result = ( (*current) -= value);
+  }
 
   return result;
 }
@@ -128,10 +147,12 @@ jstring JNICALL Java_com_madara_containers_Integer_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
-
   containers::Integer * current = (containers::Integer *) cptr;
+
   if (current)
-    result = env->NewStringUTF(current->get_name ().c_str ());
+  {
+    result = env->NewStringUTF (current->get_name ().c_str ());
+  }
 
   return result;
 }
@@ -149,7 +170,7 @@ void JNICALL Java_com_madara_containers_Integer_jni_1setName
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     if (type == 0)
     {
@@ -162,7 +183,7 @@ void JNICALL Java_com_madara_containers_Integer_jni_1setName
       current->set_name (str_name, *vars);
     }
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -176,10 +197,12 @@ jstring JNICALL Java_com_madara_containers_Integer_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
-
   containers::Integer * current = (containers::Integer *) cptr;
+
   if (current)
-    result = env->NewStringUTF(current->to_string ().c_str ());
+  {
+    result = env->NewStringUTF (current->to_string ().c_str ());
+  }
 
   return result;
 }
@@ -194,10 +217,12 @@ jdouble JNICALL Java_com_madara_containers_Integer_jni_1toDouble
   (JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0.0);
-
   containers::Integer * current = (containers::Integer *) cptr;
+
   if (current)
+  {
     result = current->to_double ();
+  }
 
   return result;
 }
@@ -212,10 +237,12 @@ jlong JNICALL Java_com_madara_containers_Integer_jni_1toLong
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
-
   containers::Integer * current = (containers::Integer *) cptr;
+
   if (current)
+  {
     result = current->to_integer ();
+  }
 
   return result;
 }
@@ -224,6 +251,9 @@ void JNICALL Java_com_madara_containers_Integer_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
   containers::Integer * current = (containers::Integer *) cptr;
+
   if (current)
+  {
     current->modify ();
+  }
 }

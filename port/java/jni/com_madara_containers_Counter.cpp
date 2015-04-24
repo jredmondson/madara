@@ -3,6 +3,7 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
+typedef containers::Counter    Counter;
 
 /*
  * Class:     com_madara_containers_Counter
@@ -12,7 +13,7 @@ namespace containers = engine::Containers;
 jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__
   (JNIEnv *, jobject)
 {
-  return (jlong) new containers::Counter ();
+  return (jlong) new Counter ();
 }
 
 
@@ -24,7 +25,15 @@ jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__
 jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__J
   (JNIEnv *, jobject, jlong cptr)
 {
-  return (jlong) new containers::Counter (*(containers::Counter *)cptr);
+  Counter * result (0);
+  Counter * source = (Counter *) cptr;
+
+  if (source)
+  {
+    result = new Counter (*source);
+  }
+
+  return (jlong) result;
 }
 
 
@@ -36,7 +45,7 @@ jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__J
 void JNICALL Java_com_madara_containers_Counter_jni_1freeCounter
   (JNIEnv *, jclass, jlong cptr)
 {
-  delete (containers::Counter *) cptr;
+  delete (Counter *) cptr;
 }
 
 
@@ -48,9 +57,12 @@ void JNICALL Java_com_madara_containers_Counter_jni_1freeCounter
 void JNICALL Java_com_madara_containers_Counter_jni_1set
   (JNIEnv *, jobject, jlong cptr, jlong value)
 {
-  containers::Counter * current = (containers::Counter *) cptr;
+  Counter * current = (Counter *) cptr;
+
   if (current)
+  {
     *current = value;
+  }
 }
 
 
@@ -63,10 +75,12 @@ jstring JNICALL Java_com_madara_containers_Counter_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
+  Counter * current = (Counter *) cptr;
 
-  containers::Counter * current = (containers::Counter *) cptr;
   if (current)
-    result = env->NewStringUTF(current->get_name ().c_str ());
+  {
+    result = env->NewStringUTF (current->get_name ().c_str ());
+  }
 
   return result;
 }
@@ -80,11 +94,11 @@ jstring JNICALL Java_com_madara_containers_Counter_jni_1getName
 void JNICALL Java_com_madara_containers_Counter_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
-  containers::Counter * current = (containers::Counter *) cptr;
+  Counter * current = (Counter *) cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     if (type == 0)
     {
@@ -97,7 +111,7 @@ void JNICALL Java_com_madara_containers_Counter_jni_1setName
       current->set_name (str_name, *vars);
     }
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -111,10 +125,12 @@ jstring JNICALL Java_com_madara_containers_Counter_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
+  Counter * current = (Counter *) cptr;
 
-  containers::Counter * current = (containers::Counter *) cptr;
   if (current)
-    result = env->NewStringUTF(current->to_string ().c_str ());
+  {
+    result = env->NewStringUTF (current->to_string ().c_str ());
+  }
 
   return result;
 }
@@ -129,10 +145,12 @@ jdouble JNICALL Java_com_madara_containers_Counter_jni_1toDouble
   (JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0.0);
+  Counter * current = (Counter *) cptr;
 
-  containers::Counter * current = (containers::Counter *) cptr;
   if (current)
+  {
     result = current->to_double ();
+  }
 
   return result;
 }
@@ -147,10 +165,12 @@ jlong JNICALL Java_com_madara_containers_Counter_jni_1toLong
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
+  Counter * current = (Counter *) cptr;
 
-  containers::Counter * current = (containers::Counter *) cptr;
   if (current)
+  {
     result = current->to_integer ();
+  }
 
   return result;
 }
@@ -164,8 +184,8 @@ jlong JNICALL Java_com_madara_containers_Counter_jni_1toLong
 void JNICALL Java_com_madara_containers_Counter_jni_1inc
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Counter * current = (containers::Counter *) cptr;
-  ++(*current);
+  Counter * current = (Counter *) cptr;
+  ++ (*current);
 }
 
 
@@ -177,8 +197,8 @@ void JNICALL Java_com_madara_containers_Counter_jni_1inc
 void JNICALL Java_com_madara_containers_Counter_jni_1dec
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Counter * current = (containers::Counter *) cptr;
-  --(*current);
+  Counter * current = (Counter *) cptr;
+  -- (*current);
 }
 
 
@@ -190,7 +210,7 @@ void JNICALL Java_com_madara_containers_Counter_jni_1dec
 void JNICALL Java_com_madara_containers_Counter_jni_1incValue
   (JNIEnv *, jobject, jlong cptr, jlong value)
 {
-  containers::Counter * current = (containers::Counter *) cptr;
+  Counter * current = (Counter *) cptr;
   *current += value;
 }
 
@@ -203,7 +223,7 @@ void JNICALL Java_com_madara_containers_Counter_jni_1incValue
 void JNICALL Java_com_madara_containers_Counter_jni_1decValue
   (JNIEnv *, jobject, jlong cptr, jlong value)
 {
-  containers::Counter * current = (containers::Counter *) cptr;
+  Counter * current = (Counter *) cptr;
   *current -= value;
 }
 
@@ -216,7 +236,7 @@ void JNICALL Java_com_madara_containers_Counter_jni_1decValue
 void JNICALL Java_com_madara_containers_Counter_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Counter * current = (containers::Counter *) cptr;
+  Counter * current = (Counter *) cptr;
   current->modify ();
 }
 
@@ -229,6 +249,6 @@ void JNICALL Java_com_madara_containers_Counter_jni_1modify
 void JNICALL Java_com_madara_containers_Counter_jni_1resize
   (JNIEnv *, jobject, jlong cptr, jint id, jint counters)
 {
-  containers::Counter * current = (containers::Counter *) cptr;
+  Counter * current = (Counter *) cptr;
   current->resize (id, counters);
 }

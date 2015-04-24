@@ -4,6 +4,7 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
+typedef containers::Double    Double;
 
 /*
  * Class:     com_madara_containers_Double
@@ -13,7 +14,7 @@ namespace containers = engine::Containers;
 jlong JNICALL Java_com_madara_containers_Double_jni_1Double__
   (JNIEnv * env, jobject)
 {
-  return (jlong) new containers::Double ();
+  return (jlong) new Double ();
 }
 
 /*
@@ -24,7 +25,15 @@ jlong JNICALL Java_com_madara_containers_Double_jni_1Double__
 jlong JNICALL Java_com_madara_containers_Double_jni_1Double__J
   (JNIEnv * env, jobject, jlong cptr)
 {
-  return (jlong) new containers::Double (*(containers::Double *)cptr);
+  Double * result (0);
+  Double * source = (Double *) cptr;
+
+  if (source)
+  {
+    result = new Double (*source);
+  }
+
+  return (jlong) result;
 }
 
 /*
@@ -35,7 +44,7 @@ jlong JNICALL Java_com_madara_containers_Double_jni_1Double__J
 void JNICALL Java_com_madara_containers_Double_jni_1freeDouble
   (JNIEnv * env, jclass, jlong cptr)
 {
-  delete (containers::Double *) cptr;
+  delete (Double *) cptr;
 }
 
 /*
@@ -46,9 +55,12 @@ void JNICALL Java_com_madara_containers_Double_jni_1freeDouble
 void JNICALL Java_com_madara_containers_Double_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jdouble value)
 {
-  containers::Double * current = (containers::Double *) cptr;
+  Double * current = (Double *) cptr;
+
   if (current)
+  {
     *current = value;
+  }
 }
 
 /*
@@ -60,10 +72,12 @@ jstring JNICALL Java_com_madara_containers_Double_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
+  Double * current = (Double *) cptr;
 
-  containers::Double * current = (containers::Double *) cptr;
   if (current)
-    result = env->NewStringUTF(current->get_name ().c_str ());
+  {
+    result = env->NewStringUTF (current->get_name ().c_str ());
+  }
 
   return result;
 }
@@ -76,11 +90,11 @@ jstring JNICALL Java_com_madara_containers_Double_jni_1getName
 void JNICALL Java_com_madara_containers_Double_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
-  containers::Double * current = (containers::Double *) cptr;
+  Double * current = (Double *) cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     if (type == 0)
     {
@@ -93,7 +107,7 @@ void JNICALL Java_com_madara_containers_Double_jni_1setName
       current->set_name (str_name, *vars);
     }
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -106,10 +120,12 @@ jstring JNICALL Java_com_madara_containers_Double_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
+  Double * current = (Double *) cptr;
 
-  containers::Double * current = (containers::Double *) cptr;
   if (current)
-    result = env->NewStringUTF(current->to_string ().c_str ());
+  {
+    result = env->NewStringUTF (current->to_string ().c_str ());
+  }
 
   return result;
 }
@@ -123,10 +139,12 @@ jdouble JNICALL Java_com_madara_containers_Double_jni_1toDouble
   (JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0.0);
+  Double * current = (Double *) cptr;
 
-  containers::Double * current = (containers::Double *) cptr;
   if (current)
+  {
     result = current->to_double ();
+  }
 
   return result;
 }
@@ -140,10 +158,12 @@ jlong JNICALL Java_com_madara_containers_Double_jni_1toLong
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
+  Double * current = (Double *) cptr;
 
-  containers::Double * current = (containers::Double *) cptr;
   if (current)
+  {
     result = current->to_integer ();
+  }
 
   return result;
 }
@@ -151,7 +171,10 @@ jlong JNICALL Java_com_madara_containers_Double_jni_1toLong
 void JNICALL Java_com_madara_containers_Double_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Double * current = (containers::Double *) cptr;
+  Double * current = (Double *) cptr;
+
   if (current)
+  {
     current->modify ();
+  }
 }

@@ -4,6 +4,7 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
+typedef containers::Double_Vector    Double_Vector;
 
 /*
  * Class:     com_madara_containers_DoubleVector
@@ -13,7 +14,7 @@ namespace containers = engine::Containers;
 jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1DoubleVector__
   (JNIEnv * env, jobject)
 {
-  return (jlong) new containers::Double_Vector ();
+  return (jlong) new Double_Vector ();
 }
 
 /*
@@ -24,7 +25,15 @@ jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1DoubleVector__
 jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1DoubleVector__J
   (JNIEnv * env, jobject, jlong cptr)
 {
-  return (jlong) new containers::Double_Vector (*(containers::Double_Vector *)cptr);
+  Double_Vector * result (0);
+  Double_Vector * source = (Double_Vector *) cptr;
+
+  if (source)
+  {
+    result = new Double_Vector (*source);
+  }
+
+  return (jlong) result;
 }
 
 /*
@@ -35,7 +44,7 @@ jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1DoubleVector__J
 void JNICALL Java_com_madara_containers_DoubleVector_jni_1freeDoubleVector
   (JNIEnv * env, jclass, jlong cptr)
 {
-  delete (containers::Double_Vector *) cptr;
+  delete (Double_Vector *) cptr;
 }
 
 /*
@@ -46,9 +55,12 @@ void JNICALL Java_com_madara_containers_DoubleVector_jni_1freeDoubleVector
 void JNICALL Java_com_madara_containers_DoubleVector_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jint index, jdouble value)
 {
-  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
+  Double_Vector * current = (Double_Vector *) cptr;
+
   if (current)
+  {
     current->set (index, value);
+  }
 }
 
 /*
@@ -60,10 +72,12 @@ jstring JNICALL Java_com_madara_containers_DoubleVector_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
+  Double_Vector * current = (Double_Vector *) cptr;
 
-  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
   if (current)
-    result = env->NewStringUTF(current->get_name ().c_str ());
+  {
+    result = env->NewStringUTF (current->get_name ().c_str ());
+  }
 
   return result;
 }
@@ -76,11 +90,11 @@ jstring JNICALL Java_com_madara_containers_DoubleVector_jni_1getName
 void JNICALL Java_com_madara_containers_DoubleVector_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
-  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
+  Double_Vector * current = (Double_Vector *) cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     if (type == 0)
     {
@@ -93,7 +107,7 @@ void JNICALL Java_com_madara_containers_DoubleVector_jni_1setName
       current->set_name (str_name, *vars);
     }
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -106,10 +120,12 @@ jdouble JNICALL Java_com_madara_containers_DoubleVector_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   jdouble result (0);
+  Double_Vector * current = (Double_Vector *) cptr;
 
-  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
   if (current)
+  {
     result = (*current) [index];
+  }
 
   return result;
 }
@@ -123,10 +139,12 @@ jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1toRecord__JI
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   Madara::Knowledge_Record * result (0);
+  Double_Vector * current = (Double_Vector *) cptr;
 
-  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
   if (current)
+  {
     result = new Madara::Knowledge_Record (current->to_record (index));
+  }
 
   return (jlong) result;
 }
@@ -140,10 +158,12 @@ jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1toRecord__J
   (JNIEnv * env, jobject, jlong cptr)
 {
   Madara::Knowledge_Record * result (0);
+  Double_Vector * current = (Double_Vector *) cptr;
 
-  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
   if (current)
+  {
     result = new Madara::Knowledge_Record (current->to_record ());
+  }
 
   return (jlong) result;
 }
@@ -162,13 +182,13 @@ jobjectArray JNICALL Java_com_madara_containers_DoubleVector_jni_1toArray
   if (kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
-      "fromPointer", "(J)Lcom/madara/KnowledgeRecord;");
+      "fromPointer", " (J)Lcom/madara/KnowledgeRecord;");
     Madara::Knowledge_Vector records;
-    containers::Double_Vector * current = (containers::Double_Vector *) cptr;
+    Double_Vector * current = (Double_Vector *) cptr;
     current->copy_to (records);
     jsize size = (jsize)records.size ();
 
-    list = env->NewObjectArray ((jsize)records.size (), kr_class, 0);
+    list = env->NewObjectArray ( (jsize)records.size (), kr_class, 0);
 
     if (method)
     {
@@ -193,10 +213,12 @@ jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1size
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
+  Double_Vector * current = (Double_Vector *) cptr;
 
-  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
   if (current)
+  {
     result = (jlong) current->size ();
+  }
 
   return (jlong) result;
 }
@@ -209,9 +231,12 @@ jlong JNICALL Java_com_madara_containers_DoubleVector_jni_1size
 void JNICALL Java_com_madara_containers_DoubleVector_jni_1resize
   (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
-  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
+  Double_Vector * current = (Double_Vector *) cptr;
+
   if (current)
+  {
     current->resize (length);
+  }
 }
 
 /*
@@ -222,9 +247,12 @@ void JNICALL Java_com_madara_containers_DoubleVector_jni_1resize
 void JNICALL Java_com_madara_containers_DoubleVector_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
+  Double_Vector * current = (Double_Vector *) cptr;
+
   if (current)
+  {
     current->modify ();
+  }
 }
 
 /*
@@ -235,7 +263,10 @@ void JNICALL Java_com_madara_containers_DoubleVector_jni_1modify
 void JNICALL Java_com_madara_containers_DoubleVector_jni_1modifyIndex
   (JNIEnv *, jobject, jlong cptr, jint index)
 {
-  containers::Double_Vector * current = (containers::Double_Vector *) cptr;
+  Double_Vector * current = (Double_Vector *) cptr;
+
   if (current)
-    current->modify ((size_t)index);
+  {
+    current->modify ( (size_t)index);
+  }
 }

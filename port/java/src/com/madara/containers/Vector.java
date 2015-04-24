@@ -21,8 +21,8 @@ public class Vector extends MadaraJNI
   private native long jni_Vector();
   private native long jni_Vector(long cptr);
   private static native void jni_freeVector(long cptr);
-  private native void jni_set(long cptr, int index, java.lang.String value);
-  private native void jni_set(long cptr, int index, double value);
+  private native void jni_setString(long cptr, int index, java.lang.String value);
+  private native void jni_setDouble(long cptr, int index, double value);
   private native void jni_set(long cptr, int index, long type, long value);
   private native java.lang.String jni_getName(long cptr);
   private native void jni_setName(long cptr, long type, long kb, java.lang.String name);
@@ -123,7 +123,7 @@ public class Vector extends MadaraJNI
    */
   public void set(int index, java.lang.String value)
   {
-    jni_set(getCPtr(), index, value);
+    jni_setString(getCPtr(), index, value);
   }
 
   /**
@@ -134,7 +134,7 @@ public class Vector extends MadaraJNI
    */
   public void set(int index, double value)
   {
-    jni_set(getCPtr(), index, value);
+    jni_setDouble(getCPtr(), index, value);
   }
 
   /**

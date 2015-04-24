@@ -4,6 +4,8 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
+typedef Madara::Knowledge_Record  Knowledge_Record;
+typedef Knowledge_Record::Integer Integer;
 
 /*
  * Class:     com_madara_containers_Map
@@ -24,7 +26,15 @@ jlong JNICALL Java_com_madara_containers_Map_jni_1Map__
 jlong JNICALL Java_com_madara_containers_Map_jni_1Map__J
   (JNIEnv * env, jobject, jlong cptr)
 {
-  return (jlong) new containers::Map (*(containers::Map *)cptr);
+  containers::Map * result (0);
+  containers::Map * source = (containers::Map *) cptr;
+
+  if (source)
+  {
+    result = new containers::Map (*source);
+  }
+
+  return (jlong) result;
 }
 
 /*
@@ -43,19 +53,19 @@ void JNICALL Java_com_madara_containers_Map_jni_1freeMap
  * Method:    jni_set
  * Signature: (JLjava/lang/String;Ljava/lang/String;)V
  */
-void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2Ljava_lang_String_2
+void JNICALL Java_com_madara_containers_Map_jni_1setString__JLjava_lang_String_2Ljava_lang_String_2
   (JNIEnv * env, jobject, jlong cptr, jstring key, jstring value)
 {
   containers::Map * current = (containers::Map *) cptr;
   if (current)
   {
-    const char * str_key = env->GetStringUTFChars(key, 0);
-    const char * str_value = env->GetStringUTFChars(value, 0);
+    const char * str_key = env->GetStringUTFChars (key, 0);
+    const char * str_value = env->GetStringUTFChars (value, 0);
 
     current->set (str_key, str_value);
 
-    env->ReleaseStringUTFChars(key, str_key);
-    env->ReleaseStringUTFChars(value, str_value);
+    env->ReleaseStringUTFChars (key, str_key);
+    env->ReleaseStringUTFChars (value, str_value);
   }
 }
 
@@ -64,17 +74,18 @@ void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2Ljava_
  * Method:    jni_set
  * Signature: (JLjava/lang/String;D)V
  */
-void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2D
+void JNICALL Java_com_madara_containers_Map_jni_1setDouble__JLjava_lang_String_2D
   (JNIEnv * env, jobject, jlong cptr, jstring key, jdouble value)
 {
   containers::Map * current = (containers::Map *) cptr;
+
   if (current)
   {
-    const char * str_key = env->GetStringUTFChars(key, 0);
+    const char * str_key = env->GetStringUTFChars (key, 0);
 
-    current->set (str_key, value);
+    current->set (str_key, (double) value);
 
-    env->ReleaseStringUTFChars(key, str_key);
+    env->ReleaseStringUTFChars (key, str_key);
   }
 }
 
@@ -87,52 +98,59 @@ void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2JJ
   (JNIEnv * env, jobject, jlong cptr, jstring key, jlong type, jlong value)
 {
   containers::Map * current = (containers::Map *) cptr;
+
   if (current)
   {
-    const char * str_key = env->GetStringUTFChars(key, 0);
+    const char * str_key = env->GetStringUTFChars (key, 0);
     
+    // integer set
     if (type == 0)
     {
-      current->set (str_key, (Madara::Knowledge_Record::Integer)value);
+      current->set (str_key, (Knowledge_Record::Integer)value);
     }
+    // knowledge record set
     else
     {
-      Madara::Knowledge_Record * record = (Madara::Knowledge_Record *) cptr;
+      Knowledge_Record * record = (Knowledge_Record *) value;
       
-      if (record->type () == Madara::Knowledge_Record::DOUBLE)
+      if (record)
       {
-        current->set (str_key, record->to_double ());
-      }
-      else if (record->type () == Madara::Knowledge_Record::DOUBLE_ARRAY)
-      {
-        current->set (str_key, record->to_doubles ());
-      }
-      else if (record->type () == Madara::Knowledge_Record::INTEGER)
-      {
-        current->set (str_key, record->to_integer ());
-      }
-      else if (record->type () == Madara::Knowledge_Record::INTEGER_ARRAY)
-      {
-        current->set (str_key, record->to_integers ());
-      }
-      else if (record->is_binary_file_type ())
-      {
-        size_t size;
-        unsigned char * buffer = record->to_unmanaged_buffer (size);
-        current->set_file (str_key, buffer, size);
-        delete [] buffer;
-      }
-      else if (record->type () == Madara::Knowledge_Record::STRING)
-      {
-        current->set (str_key, record->to_string ());
-      }
-      else if (record->is_string_type ())
-      {
-        current->set (str_key, record->to_string ());
+        // check the type and set accordingly
+        if (record->type () == Knowledge_Record::DOUBLE)
+        {
+          current->set (str_key, record->to_double ());
+        }
+        else if (record->type () == Knowledge_Record::DOUBLE_ARRAY)
+        {
+          current->set (str_key, record->to_doubles ());
+        }
+        else if (record->type () == Knowledge_Record::INTEGER)
+        {
+          current->set (str_key, record->to_integer ());
+        }
+        else if (record->type () == Knowledge_Record::INTEGER_ARRAY)
+        {
+          current->set (str_key, record->to_integers ());
+        }
+        else if (record->is_binary_file_type ())
+        {
+          size_t size;
+          unsigned char * buffer = record->to_unmanaged_buffer (size);
+          current->set_file (str_key, buffer, size);
+          delete [] buffer;
+        }
+        else if (record->type () == Knowledge_Record::STRING)
+        {
+          current->set (str_key, record->to_string ());
+        }
+        else if (record->is_string_type ())
+        {
+          current->set (str_key, record->to_string ());
+        }
       }
     }
 
-    env->ReleaseStringUTFChars(key, str_key);
+    env->ReleaseStringUTFChars (key, str_key);
   }
 }
 
@@ -145,10 +163,12 @@ jstring JNICALL Java_com_madara_containers_Map_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
-
   containers::Map * current = (containers::Map *) cptr;
+
   if (current)
-    result = env->NewStringUTF(current->get_name ().c_str ());
+  {
+    result = env->NewStringUTF (current->get_name ().c_str ());
+  }
 
   return result;
 }
@@ -165,7 +185,7 @@ void JNICALL Java_com_madara_containers_Map_jni_1setName
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars(name, 0);
+    const char * str_name = env->GetStringUTFChars (name, 0);
 
     if (type == 0)
     {
@@ -178,7 +198,7 @@ void JNICALL Java_com_madara_containers_Map_jni_1setName
       current->set_name (str_name, *vars);
     }
 
-    env->ReleaseStringUTFChars(name, str_name);
+    env->ReleaseStringUTFChars (name, str_name);
   }
 }
 
@@ -190,16 +210,16 @@ void JNICALL Java_com_madara_containers_Map_jni_1setName
 jlong JNICALL Java_com_madara_containers_Map_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {  
-  Madara::Knowledge_Record * result (0);
-
+  Knowledge_Record * result (0);
   containers::Map * current = (containers::Map *) cptr;
+
   if (current)
   {
-    const char * str_key = env->GetStringUTFChars(key, 0);
+    const char * str_key = env->GetStringUTFChars (key, 0);
 
-    result = new Madara::Knowledge_Record ((*current) [str_key]);
+    result = new Knowledge_Record ( (*current) [str_key]);
 
-    env->ReleaseStringUTFChars(key, str_key);
+    env->ReleaseStringUTFChars (key, str_key);
   }
 
   return (jlong) result;
@@ -213,16 +233,16 @@ jlong JNICALL Java_com_madara_containers_Map_jni_1get
 jlong JNICALL Java_com_madara_containers_Map_jni_1toRecord
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
-  Madara::Knowledge_Record * result (0);
-
+  Knowledge_Record * result (0);
   containers::Map * current = (containers::Map *) cptr;
+
   if (current)
   {
-    const char * str_key = env->GetStringUTFChars(key, 0);
+    const char * str_key = env->GetStringUTFChars (key, 0);
 
-    result = new Madara::Knowledge_Record ((*current) [str_key]);
+    result = new Knowledge_Record ( (*current) [str_key]);
 
-    env->ReleaseStringUTFChars(key, str_key);
+    env->ReleaseStringUTFChars (key, str_key);
   }
 
   return (jlong) result;
@@ -232,8 +252,11 @@ void JNICALL Java_com_madara_containers_Map_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
   containers::Map * current = (containers::Map *) cptr;
+
   if (current)
+  {
     current->modify ();
+  }
 }
 
 /*
@@ -245,12 +268,13 @@ void JNICALL Java_com_madara_containers_Map_jni_1modifyIndex
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
   containers::Map * current = (containers::Map *) cptr;
+
   if (current)
   {
-    const char * str_key = env->GetStringUTFChars(key, 0);
+    const char * str_key = env->GetStringUTFChars (key, 0);
     
     current->modify (str_key);
 
-    env->ReleaseStringUTFChars(key, str_key);
+    env->ReleaseStringUTFChars (key, str_key);
   }
 }

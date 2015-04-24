@@ -37,7 +37,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1freeMap
  * Method:    jni_set
  * Signature: (JLjava/lang/String;Ljava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2Ljava_lang_String_2
+MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setString__JLjava_lang_String_2Ljava_lang_String_2
   (JNIEnv *, jobject, jlong, jstring, jstring);
 
 /*
@@ -45,7 +45,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_
  * Method:    jni_set
  * Signature: (JLjava/lang/String;D)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2D
+MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setDouble__JLjava_lang_String_2D
   (JNIEnv *, jobject, jlong, jstring, jdouble);
 
 /*

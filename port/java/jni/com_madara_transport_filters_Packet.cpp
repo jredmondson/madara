@@ -1,6 +1,9 @@
 #include "com_madara_transport_filters_Packet.h"
 #include "madara/knowledge_engine/Knowledge_Record.h"
 
+typedef Madara::Knowledge_Map      Knowledge_Map;
+typedef Madara::Knowledge_Record   Knowledge_Record;
+
 /*
  * Class:     com_madara_transport_filters_Packet
  * Method:    jni_get
@@ -10,13 +13,17 @@ JNIEXPORT jlong JNICALL Java_com_madara_transport_filters_Packet_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jstring index)
 {
   // get the C string and the underlying map
-  const char *key = env->GetStringUTFChars(index, 0);
-  Madara::Knowledge_Map * packet = (Madara::Knowledge_Map *)cptr;
-
+  const char *key = env->GetStringUTFChars (index, 0);
+  Knowledge_Map * packet = (Knowledge_Map *)cptr;
+  Knowledge_Record * result (0);
   
-  // get the record and return the string index
-  Madara::Knowledge_Record * result = new Madara::Knowledge_Record((*packet)[key]);
-  env->ReleaseStringUTFChars(index, key);
+  if (packet)
+  {
+    // get the record and return the string index
+    result = new Knowledge_Record ((*packet)[key]);
+  }
+
+  env->ReleaseStringUTFChars (index, key);
 
   return (jlong) result;
 }
@@ -30,14 +37,17 @@ JNIEXPORT void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jstring index, jlong value)
 {
   // get the C string and the underlying map
-  const char *key = env->GetStringUTFChars(index, 0);
-  Madara::Knowledge_Map * packet = (Madara::Knowledge_Map *)cptr;
-  Madara::Knowledge_Record * result = (Madara::Knowledge_Record *)value;
+  const char * key = env->GetStringUTFChars (index, 0);
+  Knowledge_Map * packet = (Knowledge_Map *)cptr;
+  Knowledge_Record * result = (Knowledge_Record *)value;
 
-  (*packet)[key] = *result;
-  
+  if (packet && result)
+  {
+    (*packet)[key] = *result;
+  }
+
   // get the record and return the string index
-  env->ReleaseStringUTFChars(index, key);
+  env->ReleaseStringUTFChars (index, key);
 }
 
 /*
@@ -48,18 +58,23 @@ JNIEXPORT void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
 JNIEXPORT jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
   (JNIEnv * env, jobject, jlong cptr)
 {
-  Madara::Knowledge_Map * packet = (Madara::Knowledge_Map *)cptr;
-  jobjectArray result = (jobjectArray) env->NewObjectArray(
-    (jsize)packet->size(), env->FindClass("java/lang/String"),
-    env->NewStringUTF(""));
- 
-  jsize i = 0;
+  Knowledge_Map * packet = (Knowledge_Map *)cptr;
+  jobjectArray result (0);
   
-  for (Madara::Knowledge_Map::const_iterator cur = packet->begin ();
-       cur != packet->end (); ++cur, ++i)
+  if (packet)
   {
-    env->SetObjectArrayElement(
-      result, i, env->NewStringUTF(cur->first.c_str ()));
+    result = (jobjectArray) env->NewObjectArray (
+      (jsize)packet->size (), env->FindClass ("java/lang/String"),
+      env->NewStringUTF (""));
+ 
+    jsize i = 0;
+  
+    for (Knowledge_Map::const_iterator cur = packet->begin ();
+         cur != packet->end (); ++cur, ++i)
+    {
+      env->SetObjectArrayElement (
+        result, i, env->NewStringUTF (cur->first.c_str ()));
+    }
   }
 
   return result;
@@ -73,14 +88,17 @@ JNIEXPORT jboolean JNICALL Java_com_madara_transport_filters_Packet_jni_1exists
   (JNIEnv * env, jobject, jlong cptr, jstring index)
 {
   jboolean result (false);
+  Knowledge_Map * packet = (Knowledge_Map *)cptr;
 
-  // get the C string and the underlying map
-  const char *key = env->GetStringUTFChars(index, 0);
-  Madara::Knowledge_Map * packet = (Madara::Knowledge_Map *)cptr;
+  if (packet)
+  {
+    // get the C string and the underlying map
+    const char *key = env->GetStringUTFChars (index, 0);
 
-  // get the record and return the string index
-  result = packet->find (key) != packet->end (); 
-  env->ReleaseStringUTFChars(index, key);
+    // get the record and return the string index
+    result = packet->find (key) != packet->end (); 
+    env->ReleaseStringUTFChars (index, key);
+  }
 
   return result;
 }
@@ -88,19 +106,25 @@ JNIEXPORT jboolean JNICALL Java_com_madara_transport_filters_Packet_jni_1exists
 void JNICALL Java_com_madara_transport_filters_Packet_jni_1clear
   (JNIEnv *, jobject, jlong cptr)
 {
-  Madara::Knowledge_Map * packet = (Madara::Knowledge_Map *)cptr;
+  Knowledge_Map * packet = (Knowledge_Map *)cptr;
 
-  packet->clear ();
+  if (packet)
+  {
+    packet->clear ();
+  }
 }
 
 void JNICALL Java_com_madara_transport_filters_Packet_jni_1erase
   (JNIEnv * env, jobject, jlong cptr, jstring index)
 {
-  // get the C string and the underlying map
-  const char *key = env->GetStringUTFChars(index, 0);
-  Madara::Knowledge_Map * packet = (Madara::Knowledge_Map *)cptr;
+  Knowledge_Map * packet = (Knowledge_Map *)cptr;
+  const char * key = env->GetStringUTFChars (index, 0);
 
-  // erase the record
-  packet->erase (key);
-  env->ReleaseStringUTFChars(index, key);
+  if (packet)
+  {
+    // erase the record
+    packet->erase (key);
+  }
+
+  env->ReleaseStringUTFChars (index, key);
 }
