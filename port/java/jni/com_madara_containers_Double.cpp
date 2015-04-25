@@ -78,6 +78,10 @@ jstring JNICALL Java_com_madara_containers_Double_jni_1getName
   {
     result = env->NewStringUTF (current->get_name ().c_str ());
   }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
 
   return result;
 }
@@ -125,6 +129,10 @@ jstring JNICALL Java_com_madara_containers_Double_jni_1toString
   if (current)
   {
     result = env->NewStringUTF (current->to_string ().c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
   }
 
   return result;

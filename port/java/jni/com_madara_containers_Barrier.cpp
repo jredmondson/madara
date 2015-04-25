@@ -73,11 +73,15 @@ JNIEXPORT jstring JNICALL Java_com_madara_containers_Barrier_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
-
   Barrier * current = (Barrier *) cptr;
+
   if (current)
   {
     result = env->NewStringUTF (current->get_name ().c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
   }
 
   return result;
@@ -122,11 +126,15 @@ JNIEXPORT jstring JNICALL Java_com_madara_containers_Barrier_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
-
   Barrier * current = (Barrier *) cptr;
+
   if (current)
   {
     result = env->NewStringUTF (current->to_string ().c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
   }
 
   return result;

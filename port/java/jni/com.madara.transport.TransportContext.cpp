@@ -85,6 +85,10 @@ MADARA_Export jstring JNICALL Java_com_madara_transport_TransportContext_jni_1ge
   {
     result = env->NewStringUTF (context->get_domain ().c_str ());
   }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
 
   return result;
 }
@@ -141,6 +145,10 @@ MADARA_Export jstring JNICALL Java_com_madara_transport_TransportContext_jni_1ge
   if (context)
   {
     result = env->NewStringUTF (context->get_originator ().c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
   }
 
   return result;

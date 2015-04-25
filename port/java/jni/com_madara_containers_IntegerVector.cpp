@@ -77,6 +77,10 @@ jstring JNICALL Java_com_madara_containers_IntegerVector_jni_1getName
   {
     result = env->NewStringUTF (current->get_name ().c_str ());
   }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
 
   return result;
 }

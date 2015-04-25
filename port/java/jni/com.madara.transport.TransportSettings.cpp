@@ -79,6 +79,10 @@ jstring JNICALL Java_com_madara_transport_TransportSesttings_jni_1getDomains (JN
   {
     result = env->NewStringUTF (settings->domains.c_str ());
   }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
 
   return result;
 }
@@ -313,6 +317,10 @@ jstring JNICALL Java_com_madara_transport_TransportSettings_jni_1getOnDataReceiv
   if (settings)
   {
     result = env->NewStringUTF (settings->on_data_received_logic.c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
   }
 
   return result;

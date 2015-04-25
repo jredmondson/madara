@@ -124,6 +124,10 @@ jstring JNICALL Java_com_madara_EvalSettings_jni_1getPrePrintStatement
   {
     result = env->NewStringUTF (current->pre_print_statement.c_str ());
   }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
 
   return result;
 }
@@ -162,6 +166,10 @@ jstring JNICALL Java_com_madara_EvalSettings_jni_1getPostPrintStatement
   if (current)
   {
     result = env->NewStringUTF (current->post_print_statement.c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
   }
 
   return result;

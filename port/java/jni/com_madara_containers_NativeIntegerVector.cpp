@@ -78,6 +78,10 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_NativeIntegerVector_jni
   {
     result = env->NewStringUTF (current->get_name ().c_str ());
   }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
 
   return result;
 }

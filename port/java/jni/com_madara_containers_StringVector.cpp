@@ -82,6 +82,10 @@ jstring JNICALL Java_com_madara_containers_StringVector_jni_1getName
   {
     result = env->NewStringUTF (current->get_name ().c_str ());
   }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
 
   return result;
 }
@@ -127,7 +131,13 @@ jstring JNICALL Java_com_madara_containers_StringVector_jni_1get
   String_Vector * current = (String_Vector *) cptr;
 
   if (current)
+  {
     result = env->NewStringUTF ( (*current)[index].c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
 
   return result;
 }

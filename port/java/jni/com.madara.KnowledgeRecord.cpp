@@ -169,7 +169,13 @@ jstring JNICALL Java_com_madara_KnowledgeRecord_jni_1toStringValue (JNIEnv * env
   Knowledge_Record * record = (Knowledge_Record *) cptr;
 
   if (record)
+  {
     result = env->NewStringUTF (record->to_string ().c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
 
   return result;
 }
