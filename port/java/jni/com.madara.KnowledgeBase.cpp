@@ -16,6 +16,8 @@
 namespace engine = Madara::Knowledge_Engine;
 namespace transport = Madara::Transport;
 typedef Madara::Knowledge_Record::Integer Integer;
+typedef engine::Knowledge_Base         Knowledge_Base;
+typedef engine::Compiled_Expression    Compiled_Expression;
 
 static jclass knowledgeBaseClass = 0;
 static jmethodID callbackMethod = 0;
@@ -30,7 +32,7 @@ static JavaVM *jvm;
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__
   (JNIEnv * env, jobject obj)
 {
-  return (jlong) (new engine::Knowledge_Base ());
+  return (jlong) (new Knowledge_Base ());
 }
 
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_String_2ILjava_lang_String_2
@@ -40,9 +42,8 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_Strin
   const char * nativeHost = env->GetStringUTFChars (host, 0);
   const char * nativeDomain = env->GetStringUTFChars (domain, 0);
 
-  engine::Knowledge_Base * knowledge =
-   new engine::Knowledge_Base (
-     std::string (nativeHost), transport, std::string (nativeDomain));
+  Knowledge_Base * knowledge = new Knowledge_Base (
+    nativeHost, transport, nativeDomain);
 
   env->ReleaseStringUTFChars (host, nativeHost);
   env->ReleaseStringUTFChars (domain, nativeDomain);
@@ -55,12 +56,11 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_Strin
 {
   const char * nativeHost = env->GetStringUTFChars (host, 0);
   transport::Settings * settings = (Madara::Transport::Settings *) csettings;
-  engine::Knowledge_Base * knowledge (0);
+  Knowledge_Base * knowledge (0);
 
   if (settings)
   {
-    knowledge = new engine::Knowledge_Base (
-      std::string (nativeHost), *settings);
+    knowledge = new Knowledge_Base (nativeHost, *settings);
   }
 
   env->ReleaseStringUTFChars (host, nativeHost);
@@ -71,8 +71,15 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_Strin
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__J
   (JNIEnv * env, jobject obj, jlong original)
 {
-  return (jlong) new engine::Knowledge_Base (
-  * (engine::Knowledge_Base *) original);
+  Knowledge_Base * result (0);
+  Knowledge_Base * source = (Knowledge_Base *) original;
+
+  if (source)
+  {
+    result = new Knowledge_Base (*source);
+  }
+
+  return (jlong) result;
 }
 
 
@@ -84,10 +91,10 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__J
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1evaluate__JLjava_lang_String_2J
   (JNIEnv *env, jobject obj, jlong cptr, jstring expression, jlong evalSettings)
 {
-  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
-  engine::Eval_Settings * settings = (engine::Eval_Settings *)evalSettings;
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
   Madara::Knowledge_Record * result (0);
+  const char * nativeExpression = env->GetStringUTFChars (expression, 0);
+  engine::Eval_Settings * settings = (engine::Eval_Settings *)evalSettings;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   if (knowledge && settings)
   {
@@ -108,9 +115,9 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1evaluate__JLjava_lang_String_2J
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1evaluate__JJJ
   (JNIEnv *env, jobject obj, jlong cptr, jlong expression, jlong evalSettings)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
-  engine::Compiled_Expression * compiled =
-    (engine::Compiled_Expression *) expression;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
+  Compiled_Expression * compiled =
+    (Compiled_Expression *) expression;
   engine::Eval_Settings * settings = (engine::Eval_Settings*) evalSettings;
 
   jlong result (0);
@@ -131,9 +138,9 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1evaluate__JJJ
 void JNICALL Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__JLjava_lang_String_2J
   (JNIEnv * env, jobject obj, jlong cptr, jstring expression, jlong evalSettings)
 {
-  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
+  const char * nativeExpression = env->GetStringUTFChars (expression, 0);
   
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   engine::Eval_Settings * settings = (engine::Eval_Settings*) evalSettings;
 
   if (knowledge && settings)
@@ -152,9 +159,9 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__JLjava_lang_St
 void JNICALL Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__JJJ
   (JNIEnv *env, jobject obj, jlong cptr, jlong expression, jlong evalSettings)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
-  engine::Compiled_Expression * compiled =
-    (engine::Compiled_Expression *) expression;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
+  Compiled_Expression * compiled =
+    (Compiled_Expression *) expression;
   engine::Eval_Settings * settings = (engine::Eval_Settings*) evalSettings;
 
   if (knowledge && compiled && settings)
@@ -171,15 +178,15 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__JJJ
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1compile
   (JNIEnv *env, jobject obj, jlong cptr, jstring expression)
 {
-  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
+  const char * nativeExpression = env->GetStringUTFChars (expression, 0);
   
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
-  engine::Compiled_Expression* result (0);
+  Compiled_Expression* result (0);
   
   if (knowledge)
   {
-    result = new engine::Compiled_Expression (
+    result = new Compiled_Expression (
       knowledge->compile (std::string (nativeExpression)));
   }
 
@@ -236,7 +243,7 @@ Madara::Knowledge_Record default_madara_return_function
 void JNICALL Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2
   (JNIEnv *env, jobject obj, jlong cptr, jstring name)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   if (knowledge)
   {
@@ -252,7 +259,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_Stri
       env->GetJavaVM (&jvm);
     }
 
-    const char *nativeName = env->GetStringUTFChars (name, 0);
+    const char * nativeName = env->GetStringUTFChars (name, 0);
     definedFunctionsMap[std::string (nativeName)] = cptr;
 
     knowledge->define_function (
@@ -271,10 +278,10 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_Stri
 void JNICALL Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2Ljava_lang_String_2
   (JNIEnv *env, jobject obj, jlong cptr, jstring name, jstring expression)
 {
-  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
-  const char *nativeName = env->GetStringUTFChars (name, 0);
+  const char * nativeExpression = env->GetStringUTFChars (expression, 0);
+  const char * nativeName = env->GetStringUTFChars (name, 0);
   
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   knowledge->define_function (std::string (nativeName),
     std::string (nativeExpression));
@@ -291,7 +298,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_Stri
 void JNICALL Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2Lcom_madara_MadaraFunction_2
   (JNIEnv * env, jobject obj, jlong cptr, jstring name, jobject func)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   const char * nativeName = env->GetStringUTFChars (name, 0);
 
@@ -310,7 +317,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_Stri
 */
 void JNICALL Java_com_madara_KnowledgeBase_jni_1clear (JNIEnv *env, jobject obj, jlong cptr)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   if (knowledge)
   {
@@ -323,7 +330,7 @@ jboolean JNICALL Java_com_madara_KnowledgeBase_jni_1exists
 {
   jboolean result (false);
   
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   const char * nativeName = env->GetStringUTFChars (name, 0);
 
@@ -345,9 +352,9 @@ jboolean JNICALL Java_com_madara_KnowledgeBase_jni_1exists
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1get
   (JNIEnv *env, jobject obj, jlong cptr, jstring var)
 {
-  const char *nativeVar = env->GetStringUTFChars (var, 0);
+  const char * nativeVar = env->GetStringUTFChars (var, 0);
   
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   Madara::Knowledge_Record * result (0);
   if (knowledge)
@@ -368,7 +375,7 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1get
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setInteger
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jlong value)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
 
   if (knowledge)
@@ -387,7 +394,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setInteger
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setDouble
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jdouble value)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
 
   if (knowledge)
@@ -406,7 +413,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setDouble
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setString
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jstring value)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
   const char * nativeValue = env->GetStringUTFChars (value, 0);
 
@@ -427,7 +434,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setString
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setIntegerArray
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jlongArray value)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
   jsize len = env->GetArrayLength (value);
   jboolean isCopy;
@@ -457,7 +464,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setIntegerArray
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setDoubleArray
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jdoubleArray value)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
   jsize len = env->GetArrayLength (value);
   jboolean isCopy;
@@ -483,7 +490,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setDoubleArray
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setFile
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jbyteArray value)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
   jsize len = env->GetArrayLength (value);
   jboolean isCopy;
@@ -510,7 +517,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setFile
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setImage
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jbyteArray value)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
 
   jsize len = env->GetArrayLength (value);
@@ -539,7 +546,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setImage
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setIntegerSettings
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jlong value, jlong settings_ptr)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
   engine::Eval_Settings * settings = (engine::Eval_Settings *)settings_ptr;
   
@@ -559,7 +566,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setIntegerSettings
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setDoubleSettings
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jdouble value, jlong settings_ptr)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
   engine::Eval_Settings * settings = (engine::Eval_Settings *)settings_ptr;
   
@@ -579,7 +586,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setDoubleSettings
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setStringSettings
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jstring value, jlong settings_ptr)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
   const char * nativeValue = env->GetStringUTFChars (value, 0);
   engine::Eval_Settings * settings = (engine::Eval_Settings *)settings_ptr;
@@ -601,7 +608,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setStringSettings
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setIntegerArraySettings
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jlongArray value, jlong settings_ptr)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
   engine::Eval_Settings * settings = (engine::Eval_Settings *)settings_ptr;
   jsize len = env->GetArrayLength (value);
@@ -632,7 +639,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setIntegerArraySettings
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setDoubleArraySettings
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jdoubleArray value, jlong settings_ptr)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
   engine::Eval_Settings * settings = (engine::Eval_Settings *)settings_ptr;
   jsize len = env->GetArrayLength (value);
@@ -659,7 +666,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setDoubleArraySettings
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setFileSettings
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jbyteArray value, jlong settings_ptr)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
   engine::Eval_Settings * settings = (engine::Eval_Settings *)settings_ptr;
   jsize len = env->GetArrayLength (value);
@@ -685,7 +692,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setFileSettings
 void JNICALL Java_com_madara_KnowledgeBase_jni_1setImageSettings
   (JNIEnv * env, jclass cls, jlong cptr, jstring var, jbyteArray value, jlong settings_ptr)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   const char * nativeVar = env->GetStringUTFChars (var, 0);
   engine::Eval_Settings * settings = (engine::Eval_Settings *)settings_ptr;
   jsize len = env->GetArrayLength (value);
@@ -719,7 +726,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setImageSettings
 MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1sendModifieds__J
   (JNIEnv *, jobject, jlong cptr)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   if (knowledge)
   {
@@ -735,8 +742,7 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1sendModifieds__J
 MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1sendModifieds__JJ
   (JNIEnv *, jobject, jlong cptr, jlong evalSettings)
 {
-  engine::Knowledge_Base * knowledge =
-  (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   engine::Eval_Settings * settings = (engine::Eval_Settings*) evalSettings;
 
   if (knowledge && settings)
@@ -754,8 +760,7 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1print__JLjava_lang
   (JNIEnv * env, jobject, jlong cptr, jstring statement)
 {
   const char * printable = env->GetStringUTFChars (statement, 0);
-
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   if (knowledge)
   {
@@ -774,7 +779,7 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1print__JLjava_lang
 MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1print__J
   (JNIEnv *, jobject, jlong cptr)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   if (knowledge)
   {
@@ -791,11 +796,9 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1print__J
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1wait__JLjava_lang_String_2J
   (JNIEnv * env, jobject obj, jlong cptr, jstring expression, jlong waitSettings)
 {
-  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
-
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  const char * nativeExpression = env->GetStringUTFChars (expression, 0);
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   engine::Wait_Settings * settings = (engine::Wait_Settings *) waitSettings;
-
   Madara::Knowledge_Record * result (0);
 
   if (knowledge && settings)
@@ -816,8 +819,8 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1wait__JLjava_lang_String_2J
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1wait__JJJ
   (JNIEnv * env, jobject obj, jlong cptr, jlong cexpression, jlong waitSettings)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
-  engine::Compiled_Expression * compiled = (engine::Compiled_Expression *) cexpression;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
+  Compiled_Expression * compiled = (Compiled_Expression *) cexpression;
   engine::Wait_Settings * settings = (engine::Wait_Settings *) waitSettings;
   Madara::Knowledge_Record * result (0);
   
@@ -837,9 +840,9 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1wait__JJJ
 void JNICALL Java_com_madara_KnowledgeBase_jni_1waitNoReturn__JLjava_lang_String_2J
   (JNIEnv * env, jobject obj, jlong cptr, jstring expression, jlong waitSettings)
 {
-  const char *nativeExpression = env->GetStringUTFChars (expression, 0);
+  const char * nativeExpression = env->GetStringUTFChars (expression, 0);
 
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   engine::Wait_Settings * settings = (engine::Wait_Settings *) waitSettings;
 
   if (knowledge)
@@ -858,8 +861,8 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1waitNoReturn__JLjava_lang_String
 void JNICALL Java_com_madara_KnowledgeBase_jni_1waitNoReturn__JJJ
   (JNIEnv * env, jobject obj, jlong cptr, jlong expression, jlong waitSettings)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
-  engine::Compiled_Expression * compiled = (engine::Compiled_Expression *) expression;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
+  Compiled_Expression * compiled = (Compiled_Expression *) expression;
   engine::Wait_Settings * settings = (engine::Wait_Settings*) waitSettings;
 
   if (knowledge && compiled && settings)
@@ -876,7 +879,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1waitNoReturn__JJJ
 void JNICALL Java_com_madara_KnowledgeBase_jni_1freeKnowledgeBase
   (JNIEnv * env, jobject obj, jlong cptr)
 {
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   // if check is unnecessary as standard allows deletion of 0 (no-op)
   delete knowledge;
@@ -891,9 +894,9 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1freeKnowledgeBase
 jlongArray JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeList
   (JNIEnv * env, jobject obj, jlong cptr, jstring subject, jint start, jint end)
 {
-  const char *nativeSubject = env->GetStringUTFChars (subject, 0);
+  const char * nativeSubject = env->GetStringUTFChars (subject, 0);
   
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
   jlongArray ret (0);
 
   if (knowledge)
@@ -936,7 +939,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
 
   const char * nativeExpression = env->GetStringUTFChars (expression, 0);
 
-  engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
 
   if (knowledge)
   {
@@ -988,7 +991,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
 void JNICALL Java_com_madara_KnowledgeBase_00024CompiledExpression_jni_1freeCompiledExpression
   (JNIEnv * env, jobject obj, jlong cptr)
 {
-  engine::Compiled_Expression * expression = (engine::Compiled_Expression*)cptr;
+  Compiled_Expression * expression = (Compiled_Expression*)cptr;
 
   // deleting 0 is allowed by standard
   delete expression;
@@ -1009,7 +1012,7 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1saveContext
   if (cptr && filename)
   {
     const char * nativeFilename = env->GetStringUTFChars (filename, 0);
-    engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+    Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
    
     result = knowledge->save_context (nativeFilename);
 
@@ -1032,7 +1035,7 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1saveCheckpoint
   if (cptr && filename)
   {
     const char * nativeFilename = env->GetStringUTFChars (filename, 0);
-    engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+    Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
    
     bool flag = resetModifieds != 0;
 
@@ -1057,7 +1060,7 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1loadContext
   if (cptr && filename)
   {
     const char * nativeFilename = env->GetStringUTFChars (filename, 0);
-    engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
+    Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
     engine::Knowledge_Update_Settings * settings =
       (engine::Knowledge_Update_Settings*) settings_ptr;
    
