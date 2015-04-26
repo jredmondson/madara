@@ -313,7 +313,9 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1clear (JNIEnv *env, jobject obj,
   engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
 
   if (knowledge)
+  {
     knowledge->clear ();
+  }
 }
 
 jboolean JNICALL Java_com_madara_KnowledgeBase_jni_1exists
@@ -348,7 +350,7 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1get
   engine::Knowledge_Base * knowledge = (engine::Knowledge_Base *) cptr;
 
   Madara::Knowledge_Record * result (0);
-  if (result)
+  if (knowledge)
   {
     result = knowledge->get (nativeVar).clone ();
   }
