@@ -14,6 +14,7 @@ package com.madara;
 public class MadaraLog extends MadaraJNI
 {
   private static native void jni_setLogLevel(int debug);
+  private static native int jni_getLogLevel();
 
   /**
    * Sets the global debug level
@@ -23,6 +24,16 @@ public class MadaraLog extends MadaraJNI
   public static void setLogLevel(MadaraLogLevel debug)
   {
     jni_setLogLevel(debug.value());
+  }
+
+  /**
+   * Gets the global debug level
+   *
+   * @return  the log level used by MADARA
+   */
+  public static int getLogLevel()
+  {
+    return jni_getLogLevel();
   }
 
   /**

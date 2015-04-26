@@ -13,7 +13,11 @@
  * Method:    jni_setDebugLevel
  * Signature: (I)V
  */
-MADARA_Export void JNICALL Java_com_madara_MadaraLog_jni_1setLogLevel (JNIEnv *env, jclass clazz, jint debugLevel)
+void JNICALL Java_com_madara_MadaraLog_jni_1setLogLevel (JNIEnv *env, jclass clazz, jint debugLevel)
 {
   MADARA_debug_level = debugLevel;
+}
+jint JNICALL Java_com_madara_MadaraLog_jni_1getLogLevel (JNIEnv *, jclass)
+{
+  return (jint) MADARA_debug_level;
 }
