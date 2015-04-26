@@ -141,6 +141,7 @@ public class TransportSettings extends MadaraJNI
   public void free()
   {
     jni_freeSettings(getCPtr());
+    setCPtr(0);
   }
 }
 

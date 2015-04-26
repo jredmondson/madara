@@ -226,6 +226,7 @@ public class Counter extends MadaraJNI
     if (manageMemory)
     {
       jni_freeCounter(getCPtr());
+      setCPtr(0);
     }
   }
 }

@@ -571,6 +571,7 @@ public class KnowledgeBase extends MadaraJNI
     if (manageMemory)
     {
       jni_freeKnowledgeBase(getCPtr());
+      setCPtr(0);
     }
   }
 
@@ -846,6 +847,7 @@ public class KnowledgeBase extends MadaraJNI
     public void free()
     {
       jni_freeCompiledExpression(getCPtr());
+      setCPtr(0);
     }
   }
 

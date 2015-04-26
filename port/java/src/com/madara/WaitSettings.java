@@ -95,6 +95,7 @@ public class WaitSettings extends EvalSettings
   public void free()
   {
     jni_freeWaitSettings(getCPtr());
+    setCPtr(0);
   }
 }
 

@@ -175,6 +175,7 @@ public class Double extends MadaraJNI
     if (manageMemory)
     {
       jni_freeDouble(getCPtr());
+      setCPtr(0);
     }
   }
 }

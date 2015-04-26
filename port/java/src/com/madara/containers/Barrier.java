@@ -195,6 +195,7 @@ public class Barrier extends MadaraJNI
     if (manageMemory)
     {
       jni_freeBarrier(getCPtr());
+      setCPtr(0);
     }
   }
 }

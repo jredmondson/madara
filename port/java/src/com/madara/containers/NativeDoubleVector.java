@@ -210,6 +210,7 @@ public class NativeDoubleVector extends MadaraJNI
     if (manageMemory)
     {
       jni_freeNativeDoubleVector(getCPtr());
+      setCPtr(0);
     }
   }
 }

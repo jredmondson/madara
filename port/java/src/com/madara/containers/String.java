@@ -175,6 +175,7 @@ public class String extends MadaraJNI
     if (manageMemory)
     {
       jni_freeString(getCPtr());
+      setCPtr(0);
     }
   }
 }

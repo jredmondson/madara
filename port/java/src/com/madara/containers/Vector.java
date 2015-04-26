@@ -246,6 +246,7 @@ public class Vector extends MadaraJNI
     if (manageMemory)
     {
       jni_freeVector(getCPtr());
+      setCPtr(0);
     }
   }
 }

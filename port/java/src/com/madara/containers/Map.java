@@ -208,6 +208,7 @@ public class Map extends MadaraJNI
     if (manageMemory)
     {
       jni_freeMap(getCPtr());
+      setCPtr(0);
     }
   }
 }

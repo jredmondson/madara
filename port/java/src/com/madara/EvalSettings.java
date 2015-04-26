@@ -163,6 +163,7 @@ public class EvalSettings extends MadaraJNI
   public void free()
   {
     jni_freeEvalSettings(getCPtr());
+    setCPtr(0);
   }
 
 }

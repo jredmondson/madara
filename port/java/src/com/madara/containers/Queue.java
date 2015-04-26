@@ -227,6 +227,7 @@ public class Queue extends MadaraJNI
     if (manageMemory)
     {
       jni_freeQueue(getCPtr());
+      setCPtr(0);
     }
   }
 }

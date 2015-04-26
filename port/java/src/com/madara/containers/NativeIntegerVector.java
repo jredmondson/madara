@@ -203,6 +203,7 @@ public class NativeIntegerVector extends MadaraJNI
     if (manageMemory)
     {
       jni_freeNativeIntegerVector(getCPtr());
+      setCPtr(0);
     }
   }
 }

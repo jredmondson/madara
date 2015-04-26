@@ -57,6 +57,7 @@ public class KnowledgeList extends AbstractList<KnowledgeRecord>
   {
     if (knowledgeRecords == null)
       return;
+    
     jni_freeKnowledgeList(knowledgeRecords, knowledgeRecords.length);
     knowledgeRecords = null;
   }

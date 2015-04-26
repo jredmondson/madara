@@ -224,6 +224,7 @@ public class IntegerVector extends MadaraJNI
     if (manageMemory)
     {
       jni_freeIntegerVector(getCPtr());
+      setCPtr(0);
     }
   }
 }

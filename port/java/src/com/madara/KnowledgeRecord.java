@@ -190,6 +190,7 @@ public class KnowledgeRecord extends MadaraJNI
   public void free()
   {
     jni_freeKnowledgeRecord(getCPtr());
+    setCPtr(0);
   }
 
   /**

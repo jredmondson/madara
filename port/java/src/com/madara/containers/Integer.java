@@ -221,6 +221,7 @@ public class Integer extends MadaraJNI
     if (manageMemory)
     {
       jni_freeInteger(getCPtr());
+      setCPtr(0);
     }
   }
 }

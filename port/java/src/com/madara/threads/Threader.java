@@ -56,6 +56,7 @@ public class Threader extends MadaraJNI
   public void free()
   {
     jni_freeThreader(getCPtr());
+    setCPtr(0);
   }
   
   /**

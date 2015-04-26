@@ -245,6 +245,7 @@ public class QoSTransportSettings extends TransportSettings
   public void free()
   {
     jni_freeQoSTransportSettings(getCPtr());
+    setCPtr(0);
   }
 }
 

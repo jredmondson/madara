@@ -208,6 +208,7 @@ public class StringVector extends MadaraJNI
     if (manageMemory)
     {
       jni_freeStringVector(getCPtr());
+      setCPtr(0);
     }
   }
 }

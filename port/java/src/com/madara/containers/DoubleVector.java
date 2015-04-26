@@ -224,6 +224,7 @@ public class DoubleVector extends MadaraJNI
     if (manageMemory)
     {
       jni_freeDoubleVector(getCPtr());
+      setCPtr(0);
     }
   }
 }
