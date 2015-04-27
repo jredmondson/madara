@@ -17,7 +17,7 @@ typedef engine::Wait_Settings         Wait_Settings;
 * Method:    jni_current
 * Signature: ()J
 */
-MADARA_Export jlong JNICALL Java_com_madara_WaitSettings_jni_1current__(JNIEnv * env, jclass clazz)
+MADARA_Export jlong JNICALL Java_com_madara_WaitSettings_jni_1waitSettings__(JNIEnv * env, jclass clazz)
 {
   return (jlong) new Wait_Settings();
 }
@@ -27,7 +27,7 @@ MADARA_Export jlong JNICALL Java_com_madara_WaitSettings_jni_1current__(JNIEnv *
 * Method:    jni_current
 * Signature: (J)J
 */
-MADARA_Export jlong JNICALL Java_com_madara_WaitSettings_jni_1current__J (JNIEnv * env, jclass clazz, jlong original)
+MADARA_Export jlong JNICALL Java_com_madara_WaitSettings_jni_1waitSettings__J (JNIEnv * env, jclass clazz, jlong original)
 {
   jlong result (0);
   Wait_Settings * source = (Wait_Settings *) original;

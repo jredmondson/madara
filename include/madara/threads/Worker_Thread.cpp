@@ -129,6 +129,11 @@ Madara::Threads::Worker_Thread::svc (void)
   if (thread_)
   {
     started_ = 1;
+    
+#ifdef _MADARA_JAVA_
+    // try detaching one more time, just to make sure.
+    ::jni_attach ();
+#endif
 
     thread_->init (*data_);
 
