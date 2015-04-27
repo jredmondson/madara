@@ -30,7 +30,7 @@ jlong JNICALL Java_com_madara_EvalSettings_jni_1getDefaultEvalSettings (JNIEnv *
  * Method:  jni_current
  * Signature: ()J
  */
-jlong JNICALL Java_com_madara_EvalSettings_jni_1current__ (JNIEnv *env, jclass clazz)
+jlong JNICALL Java_com_madara_EvalSettings_jni_1evalSettings__ (JNIEnv *env, jclass clazz)
 {
   return (jlong) (new Eval_Settings ());
 }
@@ -40,7 +40,7 @@ jlong JNICALL Java_com_madara_EvalSettings_jni_1current__ (JNIEnv *env, jclass c
  * Method:  jni_current
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_EvalSettings_jni_1current__J
+jlong JNICALL Java_com_madara_EvalSettings_jni_1evalSettings__J
   (JNIEnv *env, jclass clazz, jlong original)
 {
   jlong result (0);
