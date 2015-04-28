@@ -5,6 +5,7 @@
 #ifdef _MADARA_JAVA_
 #include <jni.h>
 #include "madara_jni.h"
+#include "madara/utility/java/Acquire_VM.h"
 #endif
 
 #ifdef WIN32
@@ -132,7 +133,7 @@ Madara::Threads::Worker_Thread::svc (void)
     
 #ifdef _MADARA_JAVA_
     // try detaching one more time, just to make sure.
-    ::jni_attach ();
+    Madara::Utility::Java::Acquire_VM jvm;
 #endif
 
     thread_->init (*data_);
@@ -229,11 +230,6 @@ Madara::Threads::Worker_Thread::svc (void)
       " setting %s to 1)\n", finished_.get_name ().c_str ()));
 
     finished_ = 1;
-
-#ifdef _MADARA_JAVA_
-    // try detaching one more time, just to make sure.
-    ::jni_detach ();
-#endif
   }
   else
   {

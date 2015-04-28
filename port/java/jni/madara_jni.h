@@ -10,6 +10,7 @@ MADARA_Export jint JNI_OnLoad(JavaVM *vm, void *reserved);
 MADARA_Export void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved);
 #endif
 
+MADARA_Export bool madara_jni_is_attached ();
 MADARA_Export JNIEnv* madara_jni_get_env();
 
 MADARA_Export JavaVM* madara_jni_jvm();

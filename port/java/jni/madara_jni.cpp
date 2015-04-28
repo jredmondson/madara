@@ -29,13 +29,28 @@ MADARA_Export void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
   madara_JVM = NULL;
 }
 
+bool madara_jni_is_attached ()
+{
+  JNIEnv * env (0);
+
+  if (madara_JVM)
+  {
+    madara_JVM->GetEnv ( (void**)&env, JNI_VERSION_1_6);
+  }
+
+  return env != 0;
+}
+
 MADARA_Export JNIEnv* madara_jni_get_env()
 {
   JNIEnv* env;
-  madara_JVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-  if (env == 0) //Thread is not attached
+  if (madara_JVM)
   {
-    madara_JVM->AttachCurrentThread((void**)&env, NULL);
+    madara_JVM->GetEnv((void**)&env, JNI_VERSION_1_6);
+    if (env == 0) //Thread is not attached
+    {
+      madara_JVM->AttachCurrentThread((void**)&env, NULL);
+    }
   }
   return env;
 }

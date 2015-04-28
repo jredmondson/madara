@@ -24,23 +24,20 @@ namespace Madara
       class Acquire_VM
       {
       public:
-        /**
-         * Constructor attaches thread to VM if necessary
-         **/
         Acquire_VM ()
         {
+          needs_detach = !madara_jni_is_attached();
           env = madara_jni_get_env ();
         }
 
-        /**
-         * Destructor detaches from VM
-         **/
         ~Acquire_VM()
         {
-          jni_detach();
+          if (needs_detach)
+            jni_detach();
         }
 
         JNIEnv * env;
+        bool needs_detach;
       };
     }
   }
