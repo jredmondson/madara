@@ -3,6 +3,8 @@
 #ifndef _KNOWLEDGE_RECORD_INL_
 #define _KNOWLEDGE_RECORD_INL_
 
+#include <algorithm>
+
 /**
 * @file Knowledge_Record.h
 * @author James Edmondson <jedmondson@gmail.com>
