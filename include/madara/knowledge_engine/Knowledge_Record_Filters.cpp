@@ -11,6 +11,14 @@
 
 #endif
 
+#ifdef _MADARA_JAVA_
+
+#include <jni.h>
+#include "madara_jni.h"
+#include "madara/utility/java/Acquire_VM.h"
+
+#endif
+
 Madara::Knowledge_Engine::Knowledge_Record_Filters::Knowledge_Record_Filters ()
   : context_ (0)
 {
@@ -310,26 +318,25 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
 #ifdef _MADARA_JAVA_
       else if (i->is_java_callable())
       {
-        //result = i->call_java_filter(arguments, variables);
-        JNIEnv * env = jni_attach();
+        Madara::Utility::Java::Acquire_VM jvm;
         
         /**
          * Create the variables java object
          **/
 
-        jclass jvarClass = env->FindClass ("com/madara/Variables");
-        jclass jlistClass = env->FindClass ("com/madara/KnowledgeList");
+        jclass jvarClass = jvm.env->FindClass ("com/madara/Variables");
+        jclass jlistClass = jvm.env->FindClass ("com/madara/KnowledgeList");
         
-        jmethodID fromPointerCall = env->GetStaticMethodID (jvarClass,
+        jmethodID fromPointerCall = jvm.env->GetStaticMethodID (jvarClass,
           "fromPointer", "(J)Lcom/madara/Variables;");
-        jobject jvariables = env->CallStaticObjectMethod (jvarClass,
+        jobject jvariables = jvm.env->CallStaticObjectMethod (jvarClass,
           fromPointerCall, (jlong)heap_variables.get ());
         
         // prep to create the KnowledgeList
-        jmethodID listConstructor = env->GetMethodID(jlistClass,
+        jmethodID listConstructor = jvm.env->GetMethodID(jlistClass,
           "<init>", "([J)V");
         
-        jlongArray ret = env->NewLongArray((jsize)arguments.size());
+        jlongArray ret = jvm.env->NewLongArray((jsize)arguments.size());
         jlong * tmp = new jlong [(jsize)arguments.size()];
 
         for (unsigned int x = 0; x < arguments.size(); x++)
@@ -337,27 +344,27 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           tmp[x] = (jlong) arguments[x].clone ();
         }
 
-        env->SetLongArrayRegion(ret, 0, (jsize)arguments.size(), tmp);
+        jvm.env->SetLongArrayRegion(ret, 0, (jsize)arguments.size(), tmp);
         delete [] tmp;
         
         // create the KnowledgeList
-        jobject jlist = env->NewObject (jlistClass, listConstructor, ret);
+        jobject jlist = jvm.env->NewObject (jlistClass, listConstructor, ret);
 
         // get the filter's class
-        jclass filterClass = env->GetObjectClass(i->java_object);
+        jclass filterClass = jvm.env->GetObjectClass(i->java_object);
         
         // get the filter method
-        jmethodID filterMethod = env->GetMethodID (filterClass,
+        jmethodID filterMethod = jvm.env->GetMethodID (filterClass,
           "filter",
           "(Lcom/madara/KnowledgeList;Lcom/madara/Variables;)Lcom/madara/KnowledgeRecord;");
         
         // call the filter and hold the result
-        jobject jresult = env->CallObjectMethod (i->java_object,
+        jobject jresult = jvm.env->CallObjectMethod (i->java_object,
           filterMethod, jlist, jvariables);
 
-        jmethodID getPtrMethod = env->GetMethodID (
-          env->GetObjectClass(jresult), "getCPtr", "()J");
-        jlong cptr = env->CallLongMethod (jresult, getPtrMethod);
+        jmethodID getPtrMethod = jvm.env->GetMethodID (
+          jvm.env->GetObjectClass(jresult), "getCPtr", "()J");
+        jlong cptr = jvm.env->CallLongMethod (jresult, getPtrMethod);
         
         bool do_delete = true;
         //We need to see if they returned an arg we sent them, or a new value     
@@ -374,8 +381,6 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
 
         if (do_delete)
           delete (Knowledge_Record*)cptr;
-
-        jni_detach ();
       }
 #endif
       
@@ -457,6 +462,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
 #ifdef _MADARA_JAVA_
       else if (i->is_java_callable())
       {
+        // manage VM attachment
+        Madara::Utility::Java::Acquire_VM jvm;
+
         // JVMs appear to do strange things with the stack on jni_attach
         std::auto_ptr <Knowledge_Map> heap_records (new Knowledge_Map (records));
         std::auto_ptr <Transport::Transport_Context> heap_context (
@@ -468,40 +476,38 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         /**
          * Create the variables java object
          **/
-        jclass jvarClass = env->FindClass ("com/madara/Variables");
-        jclass jpacketClass = env->FindClass (
+        jclass jvarClass = jvm.env->FindClass ("com/madara/Variables");
+        jclass jpacketClass = jvm.env->FindClass (
           "com/madara/transport/filters/Packet");
-        jclass jcontextClass = env->FindClass (
+        jclass jcontextClass = jvm.env->FindClass (
           "com/madara/transport/TransportContext");
         
-        jmethodID varfromPointerCall = env->GetStaticMethodID (
+        jmethodID varfromPointerCall = jvm.env->GetStaticMethodID (
           jvarClass,
           "fromPointer", "(J)Lcom/madara/Variables;");
-        jobject jvariables = env->CallStaticObjectMethod (
+        jobject jvariables = jvm.env->CallStaticObjectMethod (
           jvarClass,
           varfromPointerCall, (jlong) heap_variables.get ());
         
-        jmethodID packetfromPointerCall = env->GetStaticMethodID (
+        jmethodID packetfromPointerCall = jvm.env->GetStaticMethodID (
           jpacketClass,
           "fromPointer", "(J)Lcom/madara/transport/filters/Packet;");
-        jobject jpacket = env->CallStaticObjectMethod (jpacketClass,
+        jobject jpacket = jvm.env->CallStaticObjectMethod (jpacketClass,
           packetfromPointerCall, (jlong)heap_records.get ());
         
-        jmethodID contextfromPointerCall = env->GetStaticMethodID (
+        jmethodID contextfromPointerCall = jvm.env->GetStaticMethodID (
           jcontextClass,
           "fromPointer", "(J)Lcom/madara/transport/TransportContext;");
-        jobject jcontext = env->CallStaticObjectMethod (jcontextClass,
+        jobject jcontext = jvm.env->CallStaticObjectMethod (jcontextClass,
           contextfromPointerCall, (jlong)heap_context.get ());
 
         // get the filter's class and method
-        jclass filterClass = env->GetObjectClass(i->java_object);
-        jmethodID filterMethod = env->GetMethodID (filterClass,
+        jclass filterClass = jvm.env->GetObjectClass(i->java_object);
+        jmethodID filterMethod = jvm.env->GetMethodID (filterClass,
           "filter",
           "(Lcom/madara/transport/filters/Packet;Lcom/madara/transport/TransportContext;Lcom/madara/Variables;)V");
-        env->CallVoidMethod (i->java_object, filterMethod,
+        jvm.env->CallVoidMethod (i->java_object, filterMethod,
           jpacket, jcontext, jvariables);
-
-        jni_detach ();
 
         // overwrite the old records
         records = *heap_records.get ();

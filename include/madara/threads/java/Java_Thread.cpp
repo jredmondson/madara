@@ -13,18 +13,17 @@ threads::Java_Thread::Java_Thread ()
 
 threads::Java_Thread::~Java_Thread ()
 {
-  JNIEnv * env = ::madara_jni_get_env ();
+  // manage VM attachment
+  Madara::Utility::Java::Acquire_VM jvm;
 
-  if (env)
+  if (jvm.env != 0)
   {
     MADARA_DEBUG (Madara::Utility::LOG_MAJOR_EVENT, (LM_DEBUG, 
       DLINFO "threads::Java_Thread::destructor:" \
       " Deleting global references.\n"));
 
-    env->DeleteGlobalRef (obj_);
-    env->DeleteGlobalRef (class_);
-
-    ::jni_detach ();
+    jvm.env->DeleteGlobalRef (obj_);
+    jvm.env->DeleteGlobalRef (class_);
   }
 }
 
