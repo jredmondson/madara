@@ -211,9 +211,9 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::print (
 }
 
 inline void
-Madara::Knowledge_Engine::Knowledge_Base_Impl::clear (void)
+Madara::Knowledge_Engine::Knowledge_Base_Impl::clear (bool erase)
 {
-  map_.clear ();
+  map_.clear (erase);
 }
 
 inline void

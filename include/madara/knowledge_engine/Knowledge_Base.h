@@ -911,8 +911,10 @@ namespace Madara
 
       /**
        * Clears the knowledge base
+       * @param  erase   If true, completely erase keys.
+       *                 If false, reset knowledge
        **/
-      void clear (void);
+      void clear (bool erase = false);
 
       /**
        * Clears the knowledge base

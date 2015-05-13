@@ -800,9 +800,11 @@ namespace Madara
       void print (const std::string & statement, unsigned int level) const;
 
       /**
-       * Clears all variables and their values
-       **/
-      void clear (void);
+      * Clears the context
+      * @param  erase   If true, completely erase keys.
+      *                 If false, reset knowledge
+      **/
+      void clear (bool erase = false);
 
       /**
        * Locks the mutex on this context. Warning: this will cause

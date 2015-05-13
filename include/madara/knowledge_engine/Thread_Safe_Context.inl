@@ -558,20 +558,23 @@ Madara::Knowledge_Engine::Thread_Safe_Context::print (
 
 // clear all variables and their values
 inline void
-Madara::Knowledge_Engine::Thread_Safe_Context::clear (void)
+Madara::Knowledge_Engine::Thread_Safe_Context::clear (bool erase)
 {
   // enter the mutex
   Context_Guard guard (mutex_);
 
-  // we no longer blow everything away to allow for cached variables
-  // in the expression tree. If we allow this clear, there will be
-  // segmentation faults if the tree is used later.
-  //map_.clear ();
-
-  for (Madara::Knowledge_Map::iterator i = map_.begin (); 
-       i != map_.end (); ++i)
+  if (erase)
   {
-    i->second.reset_value ();
+    map_.clear ();
+  }
+
+  else
+  {
+    for (Madara::Knowledge_Map::iterator i = map_.begin ();
+      i != map_.end (); ++i)
+    {
+      i->second.reset_value ();
+    }
   }
 
   changed_map_.clear ();

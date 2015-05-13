@@ -805,9 +805,11 @@ namespace Madara
         const std::string & key_val_delimiter = "=") const;
 
       /**
-       * Clears the knowledge base
-       **/
-      void clear (void);
+      * Clears the knowledge base
+      * @param  erase   If true, completely erase keys.
+      *                 If false, reset knowledge
+      **/
+      void clear (bool erase = false);
 
       /**
        * Clears the knowledge base

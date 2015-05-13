@@ -1036,15 +1036,15 @@ Madara::Knowledge_Engine::Knowledge_Base::print (
 }
 
 void
-Madara::Knowledge_Engine::Knowledge_Base::clear (void)
+Madara::Knowledge_Engine::Knowledge_Base::clear (bool erase)
 {
   if (impl_.get_ptr ())
   {
-    impl_->clear ();
+    impl_->clear (erase);
   }
   else if (context_)
   {
-    context_->clear ();
+    context_->clear (erase);
   }
 }
 
