@@ -34,6 +34,13 @@ namespace Madara
     {
     public:
       /**
+       * Destructor
+       **/
+      virtual ~Record_Filter ()
+      {
+      }
+
+      /**
        * User-implementable method for performing a filter on network
        * data. This is a pure abstract function that must be overridden
        * when implementing a subclass.
