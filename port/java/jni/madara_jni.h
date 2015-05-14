@@ -5,7 +5,7 @@
 #include <jni.h>
 #include "madara/MADARA_export.h"
 
-MADARA_Export jint JNI_OnLoad(JavaVM *vm, void *reserved);
+MADARA_Export jint JNICALL JNI_OnLoad (JavaVM *vm, void *reserved);
 MADARA_Export void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved);
 
 MADARA_Export bool madara_jni_is_attached ();
