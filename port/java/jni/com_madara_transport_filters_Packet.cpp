@@ -9,7 +9,7 @@ typedef Madara::Knowledge_Record   Knowledge_Record;
  * Method:    jni_get
  * Signature: (JLjava/lang/String;)J
  */
-JNIEXPORT jlong JNICALL Java_com_madara_transport_filters_Packet_jni_1get
+jlong JNICALL Java_com_madara_transport_filters_Packet_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jstring index)
 {
   // get the C string and the underlying map
@@ -33,7 +33,7 @@ JNIEXPORT jlong JNICALL Java_com_madara_transport_filters_Packet_jni_1get
  * Method:    jni_set
  * Signature: (JLjava/lang/String;J)V
  */
-JNIEXPORT void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
+void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jstring index, jlong value)
 {
   // get the C string and the underlying map
@@ -55,7 +55,7 @@ JNIEXPORT void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
  * Method:    jni_get_keys
  * Signature: (J)[Ljava/lang/String;
  */
-JNIEXPORT jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
+jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
   (JNIEnv * env, jobject, jlong cptr)
 {
   Knowledge_Map * packet = (Knowledge_Map *)cptr;
@@ -84,7 +84,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get
  * Method:    jni_exists
  * Signature: (JLjava/lang/String;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_madara_transport_filters_Packet_jni_1exists
+jboolean JNICALL Java_com_madara_transport_filters_Packet_jni_1exists
   (JNIEnv * env, jobject, jlong cptr, jstring index)
 {
   jboolean result (false);

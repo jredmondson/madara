@@ -22,6 +22,7 @@
 #include "ace/Condition_T.h"
 #include "ace/Guard_T.h"
 #include "madara/utility/Log_Macros.h"
+#include "madara/utility/Thread_Safe_Refcounter.h"
 #include "ace/High_Res_Timer.h"
 
 #ifdef _USE_CID_
@@ -675,6 +676,18 @@ namespace Madara
       }
 
 #endif //  _USE_CID_
+
+      /**
+       * Loads the settings from a file
+       * @param  filename    the file to load from
+       **/
+      virtual void load (const std::string filename);
+
+      /**
+      * Saves the settings from a file
+      * @param  filename    the file to load from
+      **/
+      virtual void save (const std::string filename) const;
 
       /// All class members are accessible to users for easy setup
 

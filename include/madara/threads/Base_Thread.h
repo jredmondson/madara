@@ -73,7 +73,6 @@ namespace Madara
       
       /**
        * Initializes the Java thread implementation's control plane variables
-       * @param name the unique name for the thread
        * @param control the control plane between Threader and threads
        **/
       virtual void init_control_vars (

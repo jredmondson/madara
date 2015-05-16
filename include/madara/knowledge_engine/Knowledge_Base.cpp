@@ -1562,6 +1562,12 @@ Madara::Knowledge_Engine::Knowledge_Base::to_vector (
   return result;
 }
 
+void Madara::Knowledge_Engine::Knowledge_Base::facade_for (
+  Thread_Safe_Context & context)
+{
+  context_ = &context;
+}
+
 /**
   * Fills a variable map with Knowledge Records that match an expression.
   * At the moment, this expression must be of the form "subject*"
@@ -1593,7 +1599,7 @@ Madara::Knowledge_Engine::Knowledge_Base::to_map (
 
 int64_t
 Madara::Knowledge_Engine::Knowledge_Base::save_context (
-  const std::string & filename)
+  const std::string & filename) const
 {
   int64_t result = 0;
   

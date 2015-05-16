@@ -413,7 +413,7 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::to_map (
 
 inline int64_t
 Madara::Knowledge_Engine::Knowledge_Base_Impl::save_context (
-  const std::string & filename)
+  const std::string & filename) const
 {
   return map_.save_context (filename, id_);
 }

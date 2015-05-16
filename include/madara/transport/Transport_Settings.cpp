@@ -1,23 +1,28 @@
 #include "Transport_Settings.h"
 #include "Fragmentation.h"
+#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/containers/String_Vector.h"
+
+namespace containers = Madara::Knowledge_Engine::Containers;
+typedef Madara::Knowledge_Record::Integer  Integer;
 
 Madara::Transport::Settings::Settings () : 
-        domains (DEFAULT_DOMAIN), 
-        read_threads (1),
-        queue_length (DEFAULT_QUEUE_LENGTH), 
-        deadline (DEFAULT_DEADLINE), 
-        type (DEFAULT_TRANSPORT),
-        max_fragment_size (62000),
-        fragment_queue_length (5),
-        reliability (DEFAULT_RELIABILITY),
-        id (DEFAULT_ID),
-        processes (DEFAULT_PROCESSES),
-        on_data_received_logic (),
-        delay_launch (false),
-        never_exit (false),
-        send_reduced_message_header (false),
-        slack_time (0),
-        read_thread_hertz (0.0),
+  domains (DEFAULT_DOMAIN), 
+  read_threads (1),
+  queue_length (DEFAULT_QUEUE_LENGTH), 
+  deadline (DEFAULT_DEADLINE), 
+  type (DEFAULT_TRANSPORT),
+  max_fragment_size (62000),
+  fragment_queue_length (5),
+  reliability (DEFAULT_RELIABILITY),
+  id (DEFAULT_ID),
+  processes (DEFAULT_PROCESSES),
+  on_data_received_logic (),
+  delay_launch (false),
+  never_exit (false),
+  send_reduced_message_header (false),
+  slack_time (0),
+  read_thread_hertz (0.0),
 
 #ifdef _USE_CID_
         latency_enabled (DEFAULT_LATENCY_ENABLED),
@@ -30,9 +35,9 @@ Madara::Transport::Settings::Settings () :
         redeployment_percentage_allowed (DEFAULT_REDEPLOYMENT_PERCENTAGE),
 #endif // _USE_CID_
 
-        hosts (),
-        no_sending (false),
-        no_receiving (false)
+  hosts (),
+  no_sending (false),
+  no_receiving (false)
 {
 }
 
@@ -132,3 +137,80 @@ Madara::Transport::Settings::~Settings ()
   }
 }
 
+
+/**
+* Loads the settings from a file
+* @param  filename    the file to load from
+**/
+void
+Madara::Transport::Settings::load (const std::string filename)
+{
+  Knowledge_Engine::Knowledge_Base knowledge;
+  knowledge.load_context (filename);
+
+  read_threads = (uint32_t) knowledge.get ("transport.read_threads").to_integer ();
+  domains = knowledge.get ("transport.domains").to_string ();
+  queue_length = (uint32_t)knowledge.get ("transport.queue_length").to_integer ();
+  deadline = (uint32_t)knowledge.get ("transport.deadline").to_integer ();
+  type = (uint32_t)knowledge.get ("transport.type").to_integer ();
+  max_fragment_size = (uint32_t)knowledge.get ("transport.max_fragment_size").to_integer ();
+  fragment_queue_length = (uint32_t)knowledge.get ("transport.fragment_queue_length").to_integer ();
+  reliability = (uint32_t)knowledge.get ("transport.reliability").to_integer ();
+  id = (uint32_t)knowledge.get ("transport.id").to_integer ();
+  processes = (uint32_t)knowledge.get ("transport.processes").to_integer ();
+
+  on_data_received_logic = knowledge.get ("transport.on_data_received_logic").to_string ();
+  delay_launch = knowledge.get ("transport.delay_launch").is_true ();
+  never_exit = knowledge.get ("transport.never_exit").is_true ();
+
+  send_reduced_message_header = knowledge.get ("transport.send_reduced_message_header").is_true ();
+  slack_time = knowledge.get ("transport.slack_time").to_double ();
+  read_thread_hertz = knowledge.get ("transport.read_thread_hertz").to_double ();
+
+  containers::String_Vector kb_hosts ("transport.hosts", knowledge);
+
+  hosts.resize (kb_hosts.size ());
+  for (unsigned int i = 0; i < hosts.size (); ++i)
+    hosts[i] = kb_hosts[i];
+
+  no_sending = knowledge.get ("transport.no_sending").is_true ();
+  no_receiving = knowledge.get ("transport.no_receiving").is_true ();
+}
+
+void
+Madara::Transport::Settings::save (const std::string filename) const
+{
+  Knowledge_Engine::Knowledge_Base knowledge;
+
+  containers::String_Vector kb_hosts ("transport.hosts", knowledge,
+    (int)hosts.size ());
+
+  knowledge.set ("transport.read_threads", Integer (read_threads));
+  knowledge.set ("transport.domains", domains);
+  knowledge.set ("transport.queue_length", Integer (queue_length));
+  knowledge.set ("transport.deadline", Integer (deadline));
+  knowledge.set ("transport.type", Integer (type));
+  knowledge.set ("transport.max_fragment_size", Integer (max_fragment_size));
+  knowledge.set ("transport.fragment_queue_length",
+    Integer (fragment_queue_length));
+  knowledge.set ("transport.reliability", Integer (reliability));
+  knowledge.set ("transport.id", Integer (id));
+  knowledge.set ("transport.processes", Integer (processes));
+
+  knowledge.set ("transport.on_data_received_logic", on_data_received_logic);
+  knowledge.set ("transport.delay_launch", Integer (delay_launch));
+  knowledge.set ("transport.never_exit", Integer (never_exit));
+
+  knowledge.set ("transport.send_reduced_message_header",
+    Integer (send_reduced_message_header));
+  knowledge.set ("transport.slack_time", slack_time);
+  knowledge.set ("transport.read_thread_hertz", read_thread_hertz);
+
+  for (size_t i = 0; i < hosts.size (); ++i)
+    kb_hosts.set (i, hosts[i]);
+
+  knowledge.set ("transport.no_sending", Integer (no_sending));
+  knowledge.set ("transport.no_receiving", Integer (no_receiving));
+
+  knowledge.save_context (filename);
+}

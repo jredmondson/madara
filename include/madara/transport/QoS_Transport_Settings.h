@@ -595,6 +595,18 @@ namespace Madara
        **/
        double get_deadline (void) const;
 
+       /**
+       * Loads the settings from a file
+       * @param  filename    the file to load from
+       **/
+       virtual void load (const std::string filename);
+
+       /**
+       * Saves the settings from a file
+       * @param  filename    the file to load from
+       **/
+       virtual void save (const std::string filename) const;
+
     private:
        
       /**

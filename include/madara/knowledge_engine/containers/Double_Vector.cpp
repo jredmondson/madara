@@ -85,6 +85,21 @@ Madara::Knowledge_Engine::Containers::Double_Vector::operator= (
   }
 }
 
+void
+Madara::Knowledge_Engine::Containers::Double_Vector::push_back (
+  type value, bool delete_vars)
+{
+  if (context_ && name_ != "")
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    size_t i = size ();
+    resize ((int)i + 1);
+    set (i, value);
+  }
+}
+
 Madara::Knowledge_Engine::Variable_Reference
 Madara::Knowledge_Engine::Containers::Double_Vector::get_size_ref (void)
 {
@@ -280,7 +295,7 @@ Madara::Knowledge_Engine::Containers::Double_Vector::exchange (
     size_t other_size = other.vector_.size ();
     size_t this_size = this->vector_.size ();
 
-    for (unsigned int i = 0; i < this_size; ++i)
+    for (size_t i = 0; i < this_size; ++i)
     {
       // temp = this[i];
       Knowledge_Record temp = context_->get (this->vector_[i], settings_);
@@ -472,7 +487,7 @@ Madara::Knowledge_Engine::Containers::Double_Vector::exists (
 
 int
 Madara::Knowledge_Engine::Containers::Double_Vector::set (
-  unsigned int index,
+  size_t index,
   type value, 
   const Knowledge_Update_Settings & settings)
 {
@@ -503,7 +518,7 @@ Madara::Knowledge_Engine::Containers::Double_Vector::set (
     if (vector_.size () < value.size ())
       resize ((int)value.size (), false);
 
-    for (unsigned int i = 0; i < value.size (); ++i)
+    for (size_t i = 0; i < value.size (); ++i)
     {
       context_->set (vector_[i], value[i], settings);
     }
@@ -530,7 +545,7 @@ Madara::Knowledge_Engine::Containers::Double_Vector::set_settings (
 
 void
 Madara::Knowledge_Engine::Containers::Double_Vector::set_quality (
-  unsigned int index,
+  size_t index,
   uint32_t quality,
   const Knowledge_Reference_Settings & settings)
 {

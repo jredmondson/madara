@@ -32,8 +32,8 @@ namespace Madara
       class MADARA_Export Vector_N
       {
       public:
-        /// A vector of unsigned ints is the supported indexing method
-        typedef  std::vector <unsigned int>   Index;
+        /// A vector of size_ts is the supported indexing method
+        typedef  std::vector <size_t>   Index;
         
         /**
          * Default constructor
@@ -102,7 +102,7 @@ namespace Madara
         /**
          * Retrieves a copy of the record from the map.
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -122,7 +122,7 @@ namespace Madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        Knowledge_Record operator () (unsigned int x) const; 
+        Knowledge_Record operator () (size_t x) const; 
       
         /**
          * Retrieves a copy of the record from the vector.
@@ -131,7 +131,7 @@ namespace Madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        Knowledge_Record operator () (unsigned int x, unsigned int y) const; 
+        Knowledge_Record operator () (size_t x, size_t y) const; 
       
         /**
          * Retrieves a copy of the record from the vector.
@@ -141,8 +141,8 @@ namespace Madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        Knowledge_Record operator () (unsigned int x, unsigned int y,
-          unsigned int z) const;
+        Knowledge_Record operator () (size_t x, size_t y,
+          size_t z) const;
       
         /**
          * Retrieves a copy of the record from the vector.
@@ -153,14 +153,14 @@ namespace Madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        Knowledge_Record operator () (unsigned int i1, unsigned int i2,
-          unsigned int i3, unsigned int i4) const;
+        Knowledge_Record operator () (size_t i1, size_t i2,
+          size_t i3, size_t i4) const;
 
         /**
          * Read a file into the index
          * @param filename           file to read
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -176,7 +176,7 @@ namespace Madara
          * Read a file into the index
          * @param filename           file to read
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -193,7 +193,7 @@ namespace Madara
         /**
          * Atomically sets the value of an index to an arbitrary string.
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -211,7 +211,7 @@ namespace Madara
         /**
          * Atomically sets the value of an index to an arbitrary string.
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -231,7 +231,7 @@ namespace Madara
         /**
          * Atomically sets the value of an index to a JPEG image
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -249,7 +249,7 @@ namespace Madara
         /**
          * Atomically sets the value of an index to a JPEG image
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -270,7 +270,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -289,7 +289,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -310,7 +310,7 @@ namespace Madara
          * Sets an index within an array to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -331,7 +331,7 @@ namespace Madara
          * Sets an index within an array to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -354,7 +354,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -375,7 +375,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -398,7 +398,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -417,7 +417,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -438,7 +438,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -456,7 +456,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -476,7 +476,7 @@ namespace Madara
          * Sets an index within an array to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -497,7 +497,7 @@ namespace Madara
          * Sets an index within an array to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -520,7 +520,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -541,7 +541,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -564,7 +564,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -583,7 +583,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -604,7 +604,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -622,7 +622,7 @@ namespace Madara
          * Sets a knowledge variable to a specified value
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />
@@ -650,7 +650,7 @@ namespace Madara
          * Sets the quality of writing to a certain variable from this entity
          *
          * @param  index  the index of the variable entry. Type Index is
-         *                a typdef of a STL vector of unsigned ints, so
+         *                a typdef of a STL vector of size_ts, so
          *                fill this vector with location information. For
          *                instance, to access array[1][5][8], you could
          *                pass an index initialized in the following way:<br />

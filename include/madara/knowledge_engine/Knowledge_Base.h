@@ -1038,7 +1038,7 @@ namespace Madara
        * @param   filename    name of the file to open
        * @return  total bytes written
        **/
-      int64_t save_context (const std::string & filename);
+      int64_t save_context (const std::string & filename) const;
       
       /**
        * Saves a checkpoint of a list of changes to a file
@@ -1091,6 +1091,14 @@ namespace Madara
        **/
       void wait_for_change (void);
 
+      /**
+       * Change the knowledge base to become a facade for another context.
+       * It is extremely important that the context stays within scope for
+       * the duration of the life of this Knowledge Base. Otherwise, the
+       * Knowledge Base will eventually point to invalid memory
+       * @param  target   the target context to manipulate
+       **/
+      void facade_for (Thread_Safe_Context & target);
 
     private:
 

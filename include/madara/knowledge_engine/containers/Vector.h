@@ -97,8 +97,9 @@ namespace Madara
         void modify (size_t index);
     
         /**
-         * Output debug information to stream
-         * @param  index  the index to modify
+         * Output debug information to stream. This is non functional
+         * @param  output  a stream to output debug information to
+         * @param  show_only_modifieds  if true, only show modifieds
          **/
         void debug (std::ostream & output, bool show_only_modifieds = false);
     
@@ -107,6 +108,14 @@ namespace Madara
          * @param  rhs    value to copy
          **/
         void operator= (const Vector & rhs);
+
+        /**
+        * Pushes the value to the end of the array after incrementing the
+        * array size.
+        * @param  value       the value to place at the end of the array
+        * @param  delete_vars delete indices outside of the specified range
+        **/
+        void push_back (Knowledge_Record value, bool delete_vars = true);
 
         /**
          * Resizes the vector
@@ -209,7 +218,7 @@ namespace Madara
          * @param filename           file to read
          * @param index              index within vector
          */
-        int read_file (unsigned int index, 
+        int read_file (size_t index, 
                        const std::string & filename);
       
         /**
@@ -218,7 +227,7 @@ namespace Madara
          * @param index              index within vector
          * @param settings           settings to use when evaluating/updating
          */
-        int read_file (unsigned int index, 
+        int read_file (size_t index, 
                        const std::string & filename, 
           const Knowledge_Update_Settings & settings);
       
@@ -229,7 +238,7 @@ namespace Madara
          * @param   size      indicates the size of the value buffer
          * @return   0 if the value was set. -1 if null key
          **/
-        int set_file (unsigned int index,
+        int set_file (size_t index,
           const unsigned char * value, size_t size);
       
         /**
@@ -240,7 +249,7 @@ namespace Madara
          * @param   settings  settings for applying the update
          * @return   0 if the value was set. -1 if null key
          **/
-        int set_file (unsigned int index,
+        int set_file (size_t index,
           const unsigned char * value, size_t size, 
           const Knowledge_Update_Settings & settings);
       
@@ -251,7 +260,7 @@ namespace Madara
          * @param   size      indicates the size of the value buffer
          * @return   0 if the value was set. -1 if null key
          **/
-        int set_jpeg (unsigned int index,
+        int set_jpeg (size_t index,
           const unsigned char * value, size_t size);
               
         /**
@@ -262,7 +271,7 @@ namespace Madara
          * @param   settings  settings for applying the update
          * @return   0 if the value was set. -1 if null key
          **/
-        int set_jpeg (unsigned int index,
+        int set_jpeg (size_t index,
           const unsigned char * value, size_t size, 
           const Knowledge_Update_Settings & settings);
         
@@ -274,7 +283,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           Madara::Knowledge_Record::Integer value = 
             Madara::Knowledge_Record::MODIFIED);
 
@@ -287,7 +296,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           Madara::Knowledge_Record::Integer value, 
           const Knowledge_Update_Settings & settings);
 
@@ -300,7 +309,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set_index (unsigned int index,
+        int set_index (size_t index,
           size_t sub_index,
           Madara::Knowledge_Record::Integer value);
         
@@ -314,7 +323,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set_index (unsigned int index,
+        int set_index (size_t index,
           size_t sub_index,
           Madara::Knowledge_Record::Integer value,
           const Knowledge_Update_Settings & settings);
@@ -328,7 +337,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           const Madara::Knowledge_Record::Integer * value,
           uint32_t size);
        
@@ -342,7 +351,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           const Madara::Knowledge_Record::Integer * value,
           uint32_t size,
           const Knowledge_Update_Settings & settings);
@@ -355,7 +364,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           const std::vector <Knowledge_Record::Integer> & value);
        
         /**
@@ -367,7 +376,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           const std::vector <Knowledge_Record::Integer> & value,
           const Knowledge_Update_Settings & settings);
        
@@ -379,7 +388,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index, double value);
+        int set (size_t index, double value);
 
         /**
          * Sets a knowledge variable to a specified value
@@ -390,7 +399,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index, double value, 
+        int set (size_t index, double value, 
           const Knowledge_Update_Settings & settings);
         
         /**
@@ -402,7 +411,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set_index (unsigned int index,
+        int set_index (size_t index,
           size_t sub_index,
           double value);
 
@@ -416,7 +425,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set_index (unsigned int index,
+        int set_index (size_t index,
           size_t sub_index,
           double value,
           const Knowledge_Update_Settings & settings);
@@ -430,7 +439,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           const double * value,
           uint32_t size);
        
@@ -444,7 +453,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           const double * value,
           uint32_t size,
           const Knowledge_Update_Settings & settings);
@@ -457,7 +466,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           const std::vector <double> & value);
         
         /**
@@ -469,7 +478,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           const std::vector <double> & value,
           const Knowledge_Update_Settings & settings);
         
@@ -481,7 +490,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index, const std::string & value);
+        int set (size_t index, const std::string & value);
         
         /**
          * Sets a knowledge variable to a specified value
@@ -492,7 +501,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index, const std::string & value, 
+        int set (size_t index, const std::string & value, 
           const Knowledge_Update_Settings & settings);
         
         /**
@@ -510,7 +519,7 @@ namespace Madara
          * @param quality         quality of writing to this location
          * @param settings        settings for referring to knowledge variables
          **/
-        void set_quality (unsigned int index, uint32_t quality,
+        void set_quality (size_t index, uint32_t quality,
                const Knowledge_Reference_Settings & settings =
                        Knowledge_Reference_Settings (false));
       

@@ -116,13 +116,13 @@ namespace Madara
        * this timestamp will be the time that the message was originally
        * sent. For send operations, this timestamp is typically the same
        * as the current timestamp.
-       * @param the message time in seconds
+       * @param message_time the message time in seconds
        **/
       void set_message_time (uint64_t message_time);
 
       /**
        * Sets the current time. This should be time (NULL).
-       * @param the current time in seconds
+       * @param current_time the current time in seconds
        **/
       void set_current_time (uint64_t current_time);
 

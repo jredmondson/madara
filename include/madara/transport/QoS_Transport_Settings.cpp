@@ -1,4 +1,10 @@
 #include "madara/transport/QoS_Transport_Settings.h"
+#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/containers/String_Vector.h"
+#include "madara/knowledge_engine/containers/Map.h"
+
+namespace containers = Madara::Knowledge_Engine::Containers;
+typedef Madara::Knowledge_Record::Integer  Integer;
 
 Madara::Transport::QoS_Transport_Settings::QoS_Transport_Settings ()
   : Settings (), rebroadcast_ttl_ (0),
@@ -636,4 +642,94 @@ double
 Madara::Transport::QoS_Transport_Settings::get_deadline (void) const
 {
   return latency_deadline_;
+}
+
+void
+Madara::Transport::QoS_Transport_Settings::load (const std::string filename)
+{
+  Settings::load (filename);
+
+  Knowledge_Engine::Knowledge_Base knowledge;
+  knowledge.load_context (filename);
+
+  containers::Map trusted_peers ("transport.trusted_peers", knowledge);
+  containers::Map banned_peers ("transport.banned_peers_", knowledge);
+
+  rebroadcast_ttl_ = (unsigned char)knowledge.get (
+    "transport.rebroadcast_ttl").to_integer ();
+  participant_rebroadcast_ttl_ = (unsigned char)knowledge.get (
+    "transport.participant_rebroadcast_ttl").to_integer ();
+
+  std::vector <std::string> trusted_keys, banned_keys;
+
+  trusted_peers.keys (trusted_keys);
+  banned_peers.keys (banned_keys);
+
+  for (size_t i = 0; i < trusted_keys.size (); ++i)
+  {
+    trusted_peers_[trusted_keys[i]] = 1;
+  }
+
+  for (size_t i = 0; i < banned_keys.size (); ++i)
+  {
+    banned_peers_[banned_keys[i]] = 1;
+  }
+
+  packet_drop_rate_ = knowledge.get (
+    "transport.packet_drop_rate").to_double ();
+  packet_drop_type_ = (int)knowledge.get (
+    "transport.packet_drop_type").to_integer ();
+  packet_drop_burst_ = (uint64_t)knowledge.get (
+    "transport.packet_drop_burst").to_integer ();
+
+  max_send_bandwidth_ = (int64_t)knowledge.get (
+    "transport.max_send_bandwidth").to_integer ();
+  max_total_bandwidth_ = (int64_t)knowledge.get (
+    "transport.max_total_bandwidth").to_integer ();
+
+  latency_deadline_ = knowledge.get (
+    "transport.latency_deadline").to_double ();
+}
+
+void
+Madara::Transport::QoS_Transport_Settings::save (
+  const std::string filename) const
+{
+  // Save the underlying base settings first
+  Settings::save (filename);
+
+  // then load the savings
+  Knowledge_Engine::Knowledge_Base knowledge;
+  knowledge.load_context (filename);
+
+  containers::Map trusted_peers ("transport.trusted_peers", knowledge);
+  containers::Map banned_peers ("transport.banned_peers_", knowledge);
+
+  knowledge.set ("transport.rebroadcast_ttl", Integer (rebroadcast_ttl_));
+  knowledge.set ("transport.participant_rebroadcast_ttl",
+    Integer (participant_rebroadcast_ttl_));
+
+  for (std::map <std::string, int>::const_iterator i = trusted_peers_.begin ();
+    i != trusted_peers_.end (); ++i)
+  {
+    trusted_peers.set (i->first, Integer (1));
+  }
+
+  for (std::map <std::string, int>::const_iterator i = banned_peers_.begin ();
+    i != banned_peers_.end (); ++i)
+  {
+    banned_peers.set (i->first, Integer (1));
+  }
+
+  knowledge.set ("transport.packet_drop_rate", packet_drop_rate_);
+  knowledge.set ("transport.packet_drop_type", Integer (packet_drop_type_));
+  knowledge.set ("transport.packet_drop_burst", Integer (packet_drop_burst_));
+
+  knowledge.set ("transport.max_send_bandwidth",
+    Integer (max_send_bandwidth_));
+  knowledge.set ("transport.max_total_bandwidth",
+    Integer (max_total_bandwidth_));
+  knowledge.set ("transport.latency_deadline", latency_deadline_);
+
+  knowledge.save_context (filename);
 }

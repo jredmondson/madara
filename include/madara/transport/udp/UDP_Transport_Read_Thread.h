@@ -38,7 +38,6 @@ namespace Madara
        * @param    settings   Transport settings
        * @param    id      host:port identifier of this process, to allow for 
        *                   rejection of duplicates
-       * @param    context    the knowledge variables to update
        * @param    addresses    the ACE socket addresses to communicate with 
        * @param    write_socket    socket for sending
        * @param    read_socket    socket for receiving

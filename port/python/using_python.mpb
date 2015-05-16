@@ -1,20 +1,31 @@
 feature (python) {
 
-  specific (prop:microsoft) {
-    includes += $(BOOST_ROOT)
-    includes += $(PYTHON_ROOT)/include
+  specific (prop:static, prop:gnuace) {
+    macros += BOOST_PYTHON_STATIC_LIB
+  }
 
-    lit_libs += libboost_python3-vc100-mt-$(BOOST_VERSION)
-    //lit_libs += python$(PYTHON_VERSION)
-    libpaths += $(BOOST_ROOT)/stage/lib
-    //libpaths += $(PYTHON_ROOT)/libs
-  } else {
+  specific (prop:static, prop:vc12) {
+    lit_libs += libboost_python3-vc120-mt-$(BOOST_VERSION)
+    macros += BOOST_PYTHON_STATIC_LIB
+  }
+
+  specific (!prop:static,gnuace) {
+    lit_libs += boost_python3-vc120-mt-$(BOOST_VERSION)
+  }
+
+  specific (!prop:microsoft) {
     includes += $(PYTHON_ROOT)/python$(PYTHON_VERSION)
     includes += /usr/include/boost
     libs += boost_python-mt-$(BOOST_VERSION)
     libs += python$(PYTHON_VERSION)
+  } else {
+    includes += $(BOOST_ROOT)
+    includes += $(PYTHON_ROOT)/include
+
+    libpaths += $(BOOST_ROOT)/stage/lib
+    libpaths += $(PYTHON_ROOT)/libs
+    DisableSpecificWarnings += 4267
   }
 
   macros += _MADARA_PYTHON_CALLBACKS_
-  macros += BOOST_PYTHON_STATIC_LIB
 }

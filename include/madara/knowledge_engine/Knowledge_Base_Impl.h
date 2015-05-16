@@ -913,7 +913,7 @@ namespace Madara
        * @param   filename    name of the file to open
        * @return  total bytes written
        **/
-      int64_t save_context (const std::string & filename);
+      int64_t save_context (const std::string & filename) const;
       
       /**
        * Saves a checkpoint of a list of changes to a file

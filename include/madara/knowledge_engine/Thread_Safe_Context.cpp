@@ -1451,7 +1451,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::copy (
 int64_t
 Madara::Knowledge_Engine::Thread_Safe_Context::save_context (
   const std::string & filename,
-  const std::string & id)
+  const std::string & id) const
 {
   MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
       DLINFO "Thread_Safe_Context::save_context:" \
@@ -1493,7 +1493,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_context (
     // lock the context
     Context_Guard guard (mutex_);
 
-    for (Knowledge_Map::iterator i = map_.begin ();
+    for (Knowledge_Map::const_iterator i = map_.begin ();
          i != map_.end (); ++i)
     {
       // get the encoded size of the record for checking buffer boundaries
@@ -1676,7 +1676,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::load_context (
 int64_t
 Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
   const std::string & filename,
-  const std::string & id)
+  const std::string & id) const
 {
   MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
       DLINFO "Thread_Safe_Context::save_checkpoint:" \

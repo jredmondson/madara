@@ -103,6 +103,22 @@ Madara::Knowledge_Engine::Containers::String_Vector::get_size_ref (void)
   return ref;
 }
 
+
+void
+Madara::Knowledge_Engine::Containers::String_Vector::push_back (
+  type value, bool delete_vars)
+{
+  if (context_ && name_ != "")
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    size_t i = size ();
+    resize ((int)i + 1);
+    set (i, value);
+  }
+}
+
 void
 Madara::Knowledge_Engine::Containers::String_Vector::resize (
   int size, bool delete_vars)
@@ -443,7 +459,7 @@ Madara::Knowledge_Engine::Containers::String_Vector::exists (
 
 int
 Madara::Knowledge_Engine::Containers::String_Vector::set (
-  unsigned int index,
+  size_t index,
   const type & value)
 {
   int result = -1;
@@ -460,7 +476,7 @@ Madara::Knowledge_Engine::Containers::String_Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::String_Vector::set (
-  unsigned int index,
+  size_t index,
   const type & value, 
   const Knowledge_Update_Settings & settings)
 {
@@ -490,7 +506,7 @@ Madara::Knowledge_Engine::Containers::String_Vector::set (
     if (vector_.size () < value.size ())
       resize ((int)value.size (), false);
 
-    for (unsigned int i = 0; i < value.size (); ++i)
+    for (size_t i = 0; i < value.size (); ++i)
     {
       context_->set (vector_[i], value[i], settings_);
     }
@@ -515,7 +531,7 @@ Madara::Knowledge_Engine::Containers::String_Vector::set (
     if (vector_.size () < value.size ())
       resize ((int)value.size (), false);
 
-    for (unsigned int i = 0; i < value.size (); ++i)
+    for (size_t i = 0; i < value.size (); ++i)
     {
       context_->set (vector_[i], value[i], settings);
     }
@@ -541,7 +557,7 @@ Madara::Knowledge_Engine::Containers::String_Vector::set_settings (
 
 void
 Madara::Knowledge_Engine::Containers::String_Vector::set_quality (
-  unsigned int index,
+  size_t index,
   uint32_t quality,
   const Knowledge_Reference_Settings & settings)
 {

@@ -94,6 +94,16 @@ namespace Madara
         void operator= (const Buffer_Vector & rhs);
 
         /**
+        * Pushes the value to the end of the array after incrementing the
+        * array size.
+        * @param  value       the value to place at the end of the array
+        * @param  size        the size of the buffer at value
+        * @param  delete_vars delete indices outside of the specified range
+        **/
+        void push_back (const unsigned char * value, size_t size,
+          bool delete_vars = true);
+
+        /**
          * Resizes the vector
          * @param   size   maximum size of the vector. Can be -1 to check
          *                 the knowledge base for size information)
@@ -194,7 +204,7 @@ namespace Madara
          * @param filename           file to read
          * @param index              index within vector
          */
-        int read_file (unsigned int index, 
+        int read_file (size_t index, 
                        const std::string & filename);
       
         /**
@@ -203,7 +213,7 @@ namespace Madara
          * @param index              index within vector
          * @param settings           settings to use when evaluating/updating
          */
-        int read_file (unsigned int index, 
+        int read_file (size_t index, 
                        const std::string & filename, 
           const Knowledge_Update_Settings & settings);
       
@@ -213,7 +223,7 @@ namespace Madara
          * @param   value     new value of the variable
          * @return   0 if the value was set. -1 if null key
          **/
-        int set (unsigned int index, const Knowledge_Record & value);
+        int set (size_t index, const Knowledge_Record & value);
       
         /**
          * Atomically sets the value of an index to an arbitrary string
@@ -223,7 +233,7 @@ namespace Madara
          * @param   size      indicates the size of the value buffer
          * @return   0 if the value was set. -1 if null key
          **/
-        int set_file (unsigned int index,
+        int set_file (size_t index,
           const unsigned char * value, size_t size);
       
         /**
@@ -235,7 +245,7 @@ namespace Madara
          * @param   settings  settings for applying the update
          * @return   0 if the value was set. -1 if null key
          **/
-        int set_file (unsigned int index,
+        int set_file (size_t index,
           const unsigned char * value, size_t size, 
           const Knowledge_Update_Settings & settings);
       
@@ -246,7 +256,7 @@ namespace Madara
          * @param   size      indicates the size of the value buffer
          * @return   0 if the value was set. -1 if null key
          **/
-        int set_jpeg (unsigned int index,
+        int set_jpeg (size_t index,
           const unsigned char * value, size_t size);
       
         /**
@@ -257,7 +267,7 @@ namespace Madara
          * @param   settings  settings for applying the update
          * @return   0 if the value was set. -1 if null key
          **/
-        int set_jpeg (unsigned int index,
+        int set_jpeg (size_t index,
           const unsigned char * value, size_t size, 
           const Knowledge_Update_Settings & settings);
       
@@ -276,7 +286,7 @@ namespace Madara
          * @param quality         quality of writing to this location
          * @param settings        settings for referring to knowledge variables
          **/
-        void set_quality (unsigned int index, uint32_t quality,
+        void set_quality (size_t index, uint32_t quality,
                const Knowledge_Reference_Settings & settings =
                        Knowledge_Reference_Settings (false));
       

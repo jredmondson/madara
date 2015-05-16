@@ -84,6 +84,21 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::operator= (
   }
 }
 
+void
+Madara::Knowledge_Engine::Containers::Buffer_Vector::push_back (
+  const unsigned char * value, size_t size, bool delete_vars)
+{
+  if (context_ && name_ != "")
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    size_t i = this->size ();
+    resize ((int)i + 1);
+    set_file (i, value, size);
+  }
+}
+
 
 Madara::Knowledge_Engine::Variable_Reference
 Madara::Knowledge_Engine::Containers::Buffer_Vector::get_size_ref (void)
@@ -433,7 +448,7 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::exists (
  
 int
 Madara::Knowledge_Engine::Containers::Buffer_Vector::read_file (
-  unsigned int index,
+  size_t index,
   const std::string & filename)
 {
   int result = -1;
@@ -451,7 +466,7 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::read_file (
 
 int
 Madara::Knowledge_Engine::Containers::Buffer_Vector::read_file (
-  unsigned int index,
+  size_t index,
   const std::string & filename, 
   const Knowledge_Update_Settings & settings)
 {
@@ -470,7 +485,7 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::read_file (
 
 int
 Madara::Knowledge_Engine::Containers::Buffer_Vector::set_file (
-  unsigned int index,
+  size_t index,
   const unsigned char * value, size_t size)
 {
   int result = -1;
@@ -487,7 +502,7 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::set_file (
  
 int
 Madara::Knowledge_Engine::Containers::Buffer_Vector::set (
-  unsigned int index, const Knowledge_Record & value)
+  size_t index, const Knowledge_Record & value)
 {
   int result = -1;
   
@@ -504,7 +519,7 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::set (
  
 int
 Madara::Knowledge_Engine::Containers::Buffer_Vector::set_file (
-  unsigned int index,
+  size_t index,
   const unsigned char * value, size_t size, 
   const Knowledge_Update_Settings & settings)
 {
@@ -523,7 +538,7 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::set_file (
 
 int
 Madara::Knowledge_Engine::Containers::Buffer_Vector::set_jpeg (
-  unsigned int index,
+  size_t index,
   const unsigned char * value, size_t size)
 {
   int result = -1;
@@ -540,7 +555,7 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::set_jpeg (
 
 int
 Madara::Knowledge_Engine::Containers::Buffer_Vector::set_jpeg (
-  unsigned int index,
+  size_t index,
   const unsigned char * value, size_t size, 
   const Knowledge_Update_Settings & settings)
 {
@@ -571,7 +586,7 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::set_settings (
 
 void
 Madara::Knowledge_Engine::Containers::Buffer_Vector::set_quality (
-  unsigned int index,
+  size_t index,
   uint32_t quality,
   const Knowledge_Reference_Settings & settings)
 {

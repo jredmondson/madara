@@ -94,7 +94,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::operator[] (const Index & index)
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -108,7 +108,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::operator[] (const Index & index)
   
 Madara::Knowledge_Record
 Madara::Knowledge_Engine::Containers::Vector_N::operator () (
-  unsigned int x) const
+  size_t x) const
 {
   Knowledge_Record result;
 
@@ -131,7 +131,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::operator () (
 
 Madara::Knowledge_Record
 Madara::Knowledge_Engine::Containers::Vector_N::operator () (
-  unsigned int x, unsigned int y) const
+  size_t x, size_t y) const
 {
   Knowledge_Record result;
   Knowledge_Update_Settings keep_local (true);
@@ -156,7 +156,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::operator () (
   
 Madara::Knowledge_Record
 Madara::Knowledge_Engine::Containers::Vector_N::operator () (
-  unsigned int x, unsigned int y, unsigned int z) const
+  size_t x, size_t y, size_t z) const
 {
   Knowledge_Record result;
   Knowledge_Update_Settings keep_local (true);
@@ -185,7 +185,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::operator () (
 
 Madara::Knowledge_Record
 Madara::Knowledge_Engine::Containers::Vector_N::operator () (
-  unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4) const
+  size_t i1, size_t i2, size_t i3, size_t i4) const
 {
   Knowledge_Record result;
   Knowledge_Update_Settings keep_local (true);
@@ -228,7 +228,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::read_file (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -256,7 +256,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::read_file (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -283,7 +283,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set_file (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -311,7 +311,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set_file (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -338,7 +338,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set_jpeg (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -366,7 +366,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set_jpeg (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -393,7 +393,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -421,7 +421,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -449,7 +449,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set_index (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -478,7 +478,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set_index (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -506,7 +506,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -535,7 +535,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -562,7 +562,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -590,7 +590,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -617,7 +617,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -645,7 +645,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -673,7 +673,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set_index (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -702,7 +702,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set_index (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -730,7 +730,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -759,7 +759,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -786,7 +786,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -814,7 +814,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -841,7 +841,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -869,7 +869,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];
@@ -908,7 +908,7 @@ Madara::Knowledge_Engine::Containers::Vector_N::set_quality (
     std::stringstream buffer;
     buffer << name_;
     
-    for (unsigned int i = 0; i < index.size (); ++i)
+    for (size_t i = 0; i < index.size (); ++i)
     {
       buffer << ".";
       buffer << index[i];

@@ -7,6 +7,9 @@
 #include <iomanip>
 #include <string>
 
+namespace transport = Madara::Transport;
+typedef  transport::QoS_Transport_Settings  QoS_Transport_Settings;
+
 void test_rebroadcast_settings (void)
 { 
   Madara::Transport::QoS_Transport_Settings settings;
@@ -410,11 +413,219 @@ void test_filters (void)
   
 }
 
+void test_save_and_load ()
+{
+  QoS_Transport_Settings source_settings, loaded_settings;
+
+  source_settings.add_banned_peer ("banned_website");
+  source_settings.add_banned_peer ("banned_user");
+  source_settings.add_banned_peer ("banned_computer");
+
+  source_settings.add_trusted_peer ("trusted_website");
+  source_settings.add_trusted_peer ("trusted_user");
+  source_settings.add_trusted_peer ("trusted_computer");
+
+  source_settings.deadline = 10;
+  source_settings.delay_launch = true;
+  source_settings.domains = "my_domain";
+  source_settings.fragment_queue_length = 32000;
+  source_settings.hosts.push_back ("localhost:15000");
+  source_settings.hosts.push_back ("localhost:15001");
+  source_settings.id = 1;
+  source_settings.max_fragment_size = 61350;
+  source_settings.never_exit = 1;
+  source_settings.no_receiving = 1;
+  source_settings.no_sending = 1;
+  source_settings.on_data_received_logic = "on_data_received_check == 1";
+  source_settings.processes = 10;
+  source_settings.queue_length = 1500000;
+  source_settings.read_threads = 5;
+  source_settings.read_thread_hertz = 15000;
+  source_settings.reliability = transport::RELIABLE;
+  source_settings.send_reduced_message_header = true;
+  source_settings.slack_time = 0.2;
+  source_settings.type = transport::UDP;
+
+
+  std::cerr << "Saving QoS Settings...\n";
+
+  source_settings.save ("test_qos_settings.kb");
+
+
+  std::cerr << "Loading QoS Settings...\n";
+
+  loaded_settings.load ("test_qos_settings.kb");
+
+  std::cerr << "Checking loaded QoS Settings...\n";
+
+  std::cerr << "  Checking trusted peers... ";
+  if (loaded_settings.is_trusted ("trusted_website") &&
+    loaded_settings.is_trusted ("trusted_user") &&
+    loaded_settings.is_trusted ("trusted_computer"))
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking banned peers... ";
+  if (!loaded_settings.is_trusted ("banned_website") &&
+    !loaded_settings.is_trusted ("banned_user") &&
+    !loaded_settings.is_trusted ("banned_computer"))
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking deadline... ";
+  if (loaded_settings.deadline == 10)
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking delay launch... ";
+  if (loaded_settings.delay_launch == true)
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking domain... ";
+  if (loaded_settings.domains == "my_domain")
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking frag queue length... ";
+  if (loaded_settings.fragment_queue_length == 32000)
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking hosts... ";
+  if (loaded_settings.hosts.size () == 2 &&
+    loaded_settings.hosts[0] == "localhost:15000" &&
+    loaded_settings.hosts[1] == "localhost:15001")
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+
+  std::cerr << "  Checking id and processes... ";
+  if (loaded_settings.id == 1 && loaded_settings.processes == 10)
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking receive and send suppression... ";
+  if (loaded_settings.no_receiving && loaded_settings.no_sending)
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking never exit... ";
+  if (loaded_settings.never_exit)
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking read thread settings... ";
+  if (loaded_settings.read_threads == 5 &&
+    loaded_settings.read_thread_hertz == 15000)
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking queue length and frag size... ";
+  if (loaded_settings.max_fragment_size == 61350 &&
+    loaded_settings.queue_length == 1500000)
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking reduced header setting... ";
+  if (loaded_settings.send_reduced_message_header)
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking type and reliability... ";
+  if (loaded_settings.reliability == transport::RELIABLE &&
+    loaded_settings.type == transport::UDP)
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+
+  std::cerr << "  Checking on data received and slack time... ";
+  if (loaded_settings.on_data_received_logic == "on_data_received_check == 1" &&
+    loaded_settings.slack_time == 0.2)
+  {
+    std::cerr << "SUCCESS.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+  }
+}
+
 int main (int, char **)
 {
   test_rebroadcast_settings ();
   test_peer_list ();
   test_filters ();
+  test_save_and_load ();
 
   return 0;
 }

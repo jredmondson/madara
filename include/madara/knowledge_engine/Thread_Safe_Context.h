@@ -1099,7 +1099,7 @@ namespace Madara
        *                      >0 if successful (number of bytes written)
        **/
       int64_t save_context (const std::string & filename,
-        const std::string & id = "");
+        const std::string & id = "") const;
       
       /**
        * Loads the context from a file
@@ -1123,7 +1123,7 @@ namespace Madara
        **/
 
       int64_t save_checkpoint (const std::string & filename,
-        const std::string & id = "");
+        const std::string & id = "") const;
       
     private:
       /**

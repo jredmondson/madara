@@ -100,6 +100,14 @@ namespace Madara
         void operator= (const String_Vector & rhs);
 
         /**
+        * Pushes the value to the end of the array after incrementing the
+        * array size.
+        * @param  value       the value to place at the end of the array
+        * @param  delete_vars delete indices outside of the specified range
+        **/
+        void push_back (type value, bool delete_vars = true);
+
+        /**
          * Resizes the vector
          * @param   size   maximum size of the vector. Can be -1 to check
          *                 the knowledge base for size information)
@@ -207,7 +215,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           const type & value);
 
         /**
@@ -219,7 +227,7 @@ namespace Madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (unsigned int index,
+        int set (size_t index,
           const type & value, 
           const Knowledge_Update_Settings & settings);
         
@@ -260,7 +268,7 @@ namespace Madara
          * @param quality         quality of writing to this location
          * @param settings        settings for referring to knowledge variables
          **/
-        void set_quality (unsigned int index, uint32_t quality,
+        void set_quality (size_t index, uint32_t quality,
                const Knowledge_Reference_Settings & settings =
                        Knowledge_Reference_Settings (false));
       

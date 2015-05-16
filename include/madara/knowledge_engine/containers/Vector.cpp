@@ -129,6 +129,48 @@ Madara::Knowledge_Engine::Containers::Vector::get_size_ref (void)
   return ref;
 }
 
+void Madara::Knowledge_Engine::Containers::Vector::push_back (
+  Knowledge_Record value, bool delete_vars)
+{
+  if (context_ && name_ != "")
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    size_t i = size ();
+
+    resize ((int)i + 1);
+
+    if (value.type () == Knowledge_Record::DOUBLE)
+    {
+      set (i, value.to_double ());
+    }
+    else if (value.type () == Knowledge_Record::STRING)
+    {
+      set (i, value.to_string ());
+    }
+    else if (value.type () == Knowledge_Record::INTEGER_ARRAY)
+    {
+      set (i, value.to_integers ());
+    }
+    else if (value.type () == Knowledge_Record::DOUBLE_ARRAY)
+    {
+      set (i, value.to_doubles ());
+    }
+    else if (value.is_binary_file_type ())
+    {
+      size_t size;
+      unsigned char * unmanaged = value.to_unmanaged_buffer (size);
+      set (i, (char *)unmanaged, size);
+      delete [] unmanaged;
+    }
+    else
+    {
+      set (i, value.to_integer ());
+    }
+  }
+}
+
 void
 Madara::Knowledge_Engine::Containers::Vector::resize (
   int size, bool delete_vars)
@@ -469,7 +511,7 @@ Madara::Knowledge_Engine::Containers::Vector::exists (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::read_file (
-  unsigned int index,
+  size_t index,
   const std::string & filename)
 {
   int result = -1;
@@ -486,7 +528,7 @@ Madara::Knowledge_Engine::Containers::Vector::read_file (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::read_file (
-  unsigned int index,
+  size_t index,
   const std::string & filename, 
   const Knowledge_Update_Settings & settings)
 {
@@ -504,7 +546,7 @@ Madara::Knowledge_Engine::Containers::Vector::read_file (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set_file (
-  unsigned int index,
+  size_t index,
   const unsigned char * value, size_t size)
 {
   int result = -1;
@@ -521,7 +563,7 @@ Madara::Knowledge_Engine::Containers::Vector::set_file (
   
 int
 Madara::Knowledge_Engine::Containers::Vector::set_file (
-  unsigned int index,
+  size_t index,
   const unsigned char * value, size_t size, 
   const Knowledge_Update_Settings & settings)
 {
@@ -539,7 +581,7 @@ Madara::Knowledge_Engine::Containers::Vector::set_file (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set_jpeg (
-  unsigned int index,
+  size_t index,
   const unsigned char * value, size_t size)
 {
   int result = -1;
@@ -556,7 +598,7 @@ Madara::Knowledge_Engine::Containers::Vector::set_jpeg (
   
 int
 Madara::Knowledge_Engine::Containers::Vector::set_jpeg (
-  unsigned int index,
+  size_t index,
   const unsigned char * value, size_t size, 
   const Knowledge_Update_Settings & settings)
 {
@@ -573,7 +615,7 @@ Madara::Knowledge_Engine::Containers::Vector::set_jpeg (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   Knowledge_Record::Integer value)
 {
   int result = -1;
@@ -590,7 +632,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   Knowledge_Record::Integer value, 
   const Knowledge_Update_Settings & settings)
 {
@@ -608,7 +650,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set_index (
-  unsigned int index,
+  size_t index,
   size_t sub_index,
   Knowledge_Record::Integer value)
 {
@@ -626,7 +668,7 @@ Madara::Knowledge_Engine::Containers::Vector::set_index (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set_index (
-  unsigned int index,
+  size_t index,
   size_t sub_index,
   Knowledge_Record::Integer value,
   const Knowledge_Update_Settings & settings)
@@ -645,7 +687,7 @@ Madara::Knowledge_Engine::Containers::Vector::set_index (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   const Madara::Knowledge_Record::Integer * value,
   uint32_t size)
 {
@@ -663,7 +705,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   const Madara::Knowledge_Record::Integer * value,
   uint32_t size,
   const Knowledge_Update_Settings & settings)
@@ -682,7 +724,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   const std::vector <Knowledge_Record::Integer> & value)
 {
   int result = -1;
@@ -699,7 +741,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
  
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   const std::vector <Knowledge_Record::Integer> & value,
   const Knowledge_Update_Settings & settings)
 {
@@ -717,7 +759,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   double value)
 {
   int result = -1;
@@ -734,7 +776,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   double value, 
   const Knowledge_Update_Settings & settings)
 {
@@ -752,7 +794,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set_index (
-  unsigned int index,
+  size_t index,
   size_t sub_index,
   double value)
 {
@@ -770,7 +812,7 @@ Madara::Knowledge_Engine::Containers::Vector::set_index (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set_index (
-  unsigned int index,
+  size_t index,
   size_t sub_index,
   double value,
   const Knowledge_Update_Settings & settings)
@@ -789,7 +831,7 @@ Madara::Knowledge_Engine::Containers::Vector::set_index (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   const double * value,
   uint32_t size)
 {
@@ -807,7 +849,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   const double * value,
   uint32_t size,
   const Knowledge_Update_Settings & settings)
@@ -826,7 +868,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   const std::vector <double> & value)
 {
   int result = -1;
@@ -843,7 +885,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   const std::vector <double> & value,
   const Knowledge_Update_Settings & settings)
 {
@@ -861,7 +903,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   const std::string & value)
 {
   int result = -1;
@@ -878,7 +920,7 @@ Madara::Knowledge_Engine::Containers::Vector::set (
 
 int
 Madara::Knowledge_Engine::Containers::Vector::set (
-  unsigned int index,
+  size_t index,
   const std::string & value, 
   const Knowledge_Update_Settings & settings)
 {
@@ -909,7 +951,7 @@ Madara::Knowledge_Engine::Containers::Vector::set_settings (
 
 void
 Madara::Knowledge_Engine::Containers::Vector::set_quality (
-  unsigned int index,
+  size_t index,
   uint32_t quality,
   const Knowledge_Reference_Settings & settings)
 {
