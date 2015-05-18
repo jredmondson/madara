@@ -130,7 +130,7 @@ Madara::Knowledge_Engine::Containers::Vector::get_size_ref (void)
 }
 
 void Madara::Knowledge_Engine::Containers::Vector::push_back (
-  Knowledge_Record value, bool delete_vars)
+  Knowledge_Record value)
 {
   if (context_ && name_ != "")
   {

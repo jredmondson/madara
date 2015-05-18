@@ -103,9 +103,8 @@ namespace Madara
         * Pushes the value to the end of the array after incrementing the
         * array size.
         * @param  value       the value to place at the end of the array
-        * @param  delete_vars delete indices outside of the specified range
         **/
-        void push_back (type value, bool delete_vars = true);
+        void push_back (type value);
 
         /**
          * Resizes the vector

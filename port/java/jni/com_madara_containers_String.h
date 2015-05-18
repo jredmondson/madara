@@ -41,6 +41,14 @@ MADARA_Export void JNICALL Java_com_madara_containers_String_jni_1set
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
+* Class:     com_madara_containers_StringVector
+* Method:    jni_pushback
+* Signature: (JLjava/lang/String;)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_StringVector_jni_1pushback
+(JNIEnv *, jobject, jlong, jstring);
+
+/*
  * Class:     com_madara_containers_String
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;

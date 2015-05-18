@@ -41,6 +41,14 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1se
   (JNIEnv *, jobject, jlong, jint, jdouble);
 
 /*
+* Class:     com_madara_containers_NativeDoubleVector
+* Method:    jni_pushback
+* Signature: (JD)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1pushback
+(JNIEnv *, jobject, jlong, jdouble);
+
+/*
  * Class:     com_madara_containers_NativeDoubleVector
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;

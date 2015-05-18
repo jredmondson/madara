@@ -63,6 +63,17 @@ void JNICALL Java_com_madara_containers_DoubleVector_jni_1set
   }
 }
 
+void JNICALL Java_com_madara_containers_DoubleVector_jni_1pushback
+(JNIEnv *, jobject, jlong cptr, jdouble value)
+{
+  Double_Vector * current = (Double_Vector *)cptr;
+
+  if (current)
+  {
+    current->push_back (value);
+  }
+}
+
 /*
  * Class:     com_madara_containers_DoubleVector
  * Method:    jni_getName

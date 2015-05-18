@@ -86,7 +86,7 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::operator= (
 
 void
 Madara::Knowledge_Engine::Containers::Buffer_Vector::push_back (
-  const unsigned char * value, size_t size, bool delete_vars)
+  const unsigned char * value, size_t size)
 {
   if (context_ && name_ != "")
   {

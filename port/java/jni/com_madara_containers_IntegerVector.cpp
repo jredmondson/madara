@@ -5,6 +5,8 @@
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
 
+typedef  Madara::Knowledge_Record::Integer   Integer;
+
 /*
  * Class:     com_madara_containers_IntegerVector
  * Method:    jni_IntegerVector
@@ -59,6 +61,17 @@ void JNICALL Java_com_madara_containers_IntegerVector_jni_1set
   if (current)
   {
     current->set (index, value);
+  }
+}
+
+void JNICALL Java_com_madara_containers_IntegerVector_jni_1pushback
+(JNIEnv *, jobject, jlong cptr, jlong value)
+{
+  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+
+  if (current)
+  {
+    current->push_back (Integer (value));
   }
 }
 

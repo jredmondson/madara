@@ -144,6 +144,19 @@ void JNICALL Java_com_madara_containers_Vector_jni_1set__JIJJ
   }
 }
 
+void JNICALL Java_com_madara_containers_Vector_jni_1pushback
+(JNIEnv *, jobject, jlong cptr, jlong value_ptr)
+{
+  Vector * current = (Vector *)cptr;
+
+  if (current)
+  {
+    Madara::Knowledge_Record * record = (Madara::Knowledge_Record *) value_ptr;
+
+    current->push_back (*record);
+  }
+}
+
 /*
  * Class:     com_madara_containers_Vector
  * Method:    jni_getName

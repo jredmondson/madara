@@ -49,6 +49,42 @@ void JNICALL Java_com_madara_containers_Map_jni_1freeMap
 }
 
 /*
+* Class:     com_madara_containers_Map
+* Method:    jni_clear
+* Signature: (JZ)V
+*/
+void JNICALL Java_com_madara_containers_Map_jni_1clear
+(JNIEnv *, jobject, jlong cptr, jboolean clear_variables)
+{
+  containers::Map * current = (containers::Map *) cptr;
+
+  if (current)
+  {
+    current->clear (clear_variables);
+  }
+}
+
+/*
+* Class:     com_madara_containers_Map
+* Method:    jni_erase
+* Signature: (JLjava/lang/String;)V
+*/
+void JNICALL Java_com_madara_containers_Map_jni_1erase
+(JNIEnv * env, jobject, jlong cptr, jstring key)
+{
+  containers::Map * current = (containers::Map *) cptr;
+
+  if (current)
+  {
+    const char * str_key = env->GetStringUTFChars (key, 0);
+
+    current->erase (str_key);
+
+    env->ReleaseStringUTFChars (key, str_key);
+  }
+}
+
+/*
  * Class:     com_madara_containers_Map
  * Method:    jni_set
  * Signature: (JLjava/lang/String;Ljava/lang/String;)V

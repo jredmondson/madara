@@ -105,8 +105,7 @@ Madara::Knowledge_Engine::Containers::String_Vector::get_size_ref (void)
 
 
 void
-Madara::Knowledge_Engine::Containers::String_Vector::push_back (
-  type value, bool delete_vars)
+Madara::Knowledge_Engine::Containers::String_Vector::push_back (type value)
 {
   if (context_ && name_ != "")
   {

@@ -33,6 +33,22 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1freeMap
   (JNIEnv *, jclass, jlong);
 
 /*
+* Class:     com_madara_containers_Map
+* Method:    jni_clear
+* Signature: (JZ)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1clear
+(JNIEnv *, jobject, jlong, jboolean);
+
+/*
+* Class:     com_madara_containers_Map
+* Method:    jni_erase
+* Signature: (JLjava/lang/String;)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1erase
+(JNIEnv *, jobject, jlong, jstring);
+
+/*
  * Class:     com_madara_containers_Map
  * Method:    jni_set
  * Signature: (JLjava/lang/String;Ljava/lang/String;)V

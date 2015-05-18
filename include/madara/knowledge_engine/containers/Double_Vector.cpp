@@ -86,8 +86,7 @@ Madara::Knowledge_Engine::Containers::Double_Vector::operator= (
 }
 
 void
-Madara::Knowledge_Engine::Containers::Double_Vector::push_back (
-  type value, bool delete_vars)
+Madara::Knowledge_Engine::Containers::Double_Vector::push_back (type value)
 {
   if (context_ && name_ != "")
   {

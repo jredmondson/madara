@@ -67,6 +67,21 @@ void JNICALL Java_com_madara_containers_StringVector_jni_1set
   }
 }
 
+void JNICALL Java_com_madara_containers_StringVector_jni_1pushback
+(JNIEnv * env, jobject, jlong cptr, jstring value)
+{
+  String_Vector * current = (String_Vector *)cptr;
+
+  if (current)
+  {
+    const char * str_value = env->GetStringUTFChars (value, 0);
+
+    current->push_back (str_value);
+
+    env->ReleaseStringUTFChars (value, str_value);
+  }
+}
+
 /*
  * Class:     com_madara_containers_StringVector
  * Method:    jni_getName

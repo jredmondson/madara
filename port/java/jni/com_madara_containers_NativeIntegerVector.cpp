@@ -53,13 +53,24 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1f
  * Signature: (JIJ)V
  */
 MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1set
-  (JNIEnv * env, jobject, jlong cptr, jint index, jdouble value)
+  (JNIEnv * env, jobject, jlong cptr, jint index, jlong value)
 {
   Native_Integer_Vector * current = (Native_Integer_Vector *) cptr;
 
   if (current)
   {
     current->set (index, value);
+  }
+}
+
+void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1pushback
+(JNIEnv *, jobject, jlong cptr, jlong value)
+{
+  Native_Integer_Vector * current = (Native_Integer_Vector *)cptr;
+
+  if (current)
+  {
+    current->push_back (value);
   }
 }
 

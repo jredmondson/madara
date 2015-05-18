@@ -98,10 +98,8 @@ namespace Madara
         * array size.
         * @param  value       the value to place at the end of the array
         * @param  size        the size of the buffer at value
-        * @param  delete_vars delete indices outside of the specified range
         **/
-        void push_back (const unsigned char * value, size_t size,
-          bool delete_vars = true);
+        void push_back (const unsigned char * value, size_t size);
 
         /**
          * Resizes the vector

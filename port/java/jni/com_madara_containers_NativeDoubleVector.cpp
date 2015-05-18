@@ -11,7 +11,7 @@ typedef containers::Native_Double_Vector    Native_Double_Vector;
  * Method:    jni_NativeDoubleVector
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1NativeDoubleVector__
+jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1NativeDoubleVector__
   (JNIEnv *, jobject)
 {
   return (jlong) new Native_Double_Vector ();
@@ -22,7 +22,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1N
  * Method:    jni_NativeDoubleVector
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1NativeDoubleVector__J
+jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1NativeDoubleVector__J
   (JNIEnv * env, jobject, jlong cptr)
 {
   Native_Double_Vector * result (0);
@@ -41,7 +41,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1N
  * Method:    jni_freeNativeDoubleVector
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1freeNativeDoubleVector
+void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1freeNativeDoubleVector
   (JNIEnv * env, jclass, jlong cptr)
 {
   delete (Native_Double_Vector *) cptr;
@@ -52,7 +52,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1fr
  * Method:    jni_set
  * Signature: (JID)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1set
+void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jint index, jdouble value)
 {
   Native_Double_Vector * current = (Native_Double_Vector *) cptr;
@@ -63,12 +63,23 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1se
   }
 }
 
+void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1pushback
+(JNIEnv *, jobject, jlong cptr, jdouble value)
+{
+  Native_Double_Vector * current = (Native_Double_Vector *)cptr;
+
+  if (current)
+  {
+    current->push_back (value);
+  }
+}
+
 /*
  * Class:     com_madara_containers_NativeDoubleVector
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1getName
+jstring JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -91,7 +102,7 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_NativeDoubleVector_jni_
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1setName
+void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
   Native_Double_Vector * current = (Native_Double_Vector *) cptr;
@@ -120,7 +131,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1se
  * Method:    jni_get
  * Signature: (JI)D
  */
-MADARA_Export jdouble JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1get
+jdouble JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   jdouble result (0);
@@ -137,7 +148,7 @@ MADARA_Export jdouble JNICALL Java_com_madara_containers_NativeDoubleVector_jni_
  * Method:    jni_toRecord
  * Signature: (JI)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1toRecord__JI
+jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1toRecord__JI
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   Madara::Knowledge_Record * result (0);
@@ -154,7 +165,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1t
  * Method:    jni_toRecord
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1toRecord__J
+jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1toRecord__J
   (JNIEnv * env, jobject, jlong cptr)
 {
   Madara::Knowledge_Record * result (0);
@@ -172,7 +183,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1t
  * Method:    jni_toArray
  * Signature: (J)[Ljava/lang/Object;
  */
-MADARA_Export jobjectArray JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1toArray
+jobjectArray JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1toArray
   (JNIEnv * env, jobject, jlong cptr)
 {
   jclass kr_class = env->FindClass ("com/madara/KnowledgeRecord");
@@ -208,7 +219,7 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_NativeDoubleVector
  * Method:    jni_size
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1size
+jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1size
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
@@ -226,7 +237,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1s
  * Method:    jni_resize
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1resize
+void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1resize
   (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
   Native_Double_Vector * current =
