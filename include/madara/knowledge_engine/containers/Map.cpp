@@ -301,10 +301,35 @@ Madara::Knowledge_Engine::Containers::Map::exchange (
 }
 
 void
-Madara::Knowledge_Engine::Containers::Map::clear (void)
+Madara::Knowledge_Engine::Containers::Map::clear (bool clear_knowledge)
 {
   Guard guard (mutex_);
-  map_.clear ();
+
+  if (clear_knowledge)
+  {
+    std::vector <std::string> keys;
+    this->keys (keys);
+
+    for (size_t i = 0; i < keys.size (); ++i)
+      this->erase (keys[i]);
+  }
+  else
+  {
+    map_.clear ();
+  }
+}
+
+void
+Madara::Knowledge_Engine::Containers::Map::erase (const std::string & key)
+{
+  // find the key in the internal map
+  Internal_Map::iterator found = map_.find (key);
+
+  // delete the variable if it has been found
+  if (found != map_.end ())
+  {
+    context_->delete_variable (found->second.get_name ());
+  }
 }
 
 std::string

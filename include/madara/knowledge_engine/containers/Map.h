@@ -166,11 +166,18 @@ namespace Madara
           Variables & knowledge, bool sync_keys = true);
 
         /**
-         * Clears the map. This does not change anything within the knowledge
-         * base.
+         * Clears the map
+         * @param  clear_knowledge  if true, clear the underlying knowledge
+         *                          base as well as the keys in the local map
          **/
-        void clear (void);
-        
+        void clear (bool clear_knowledge = true);
+
+        /**
+        * Erases a variable from the map
+        * @param  key  the variable to delete from the map
+        **/
+        void erase (const std::string & key);
+
         /**
          * Read a file into a location in the map
          * @param filename     file to read

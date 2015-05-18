@@ -259,6 +259,13 @@ Madara::Transport::QoS_Transport_Settings::add_send_filter (
 }
 
 void
+Madara::Transport::QoS_Transport_Settings::add_receive_filter (
+Filters::Aggregate_Filter * functor)
+{
+  receive_filters_.add (functor);
+}
+
+void
 Madara::Transport::QoS_Transport_Settings::add_receive_filter (uint32_t types,
   Madara::Knowledge_Record (*function) (
     Knowledge_Engine::Function_Arguments &, Knowledge_Engine::Variables &))
