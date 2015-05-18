@@ -26,6 +26,7 @@ Madara::Filters::Peer_Discovery::filter (
   if (!initialized_)
   {
     peers_.set_name (prefix_, vars);
+    initialized_ = true;
   }
 
   std::string originator (transport_context.get_originator ());

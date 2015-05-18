@@ -172,6 +172,8 @@ int main (int argc, char ** argv)
     std::cerr << keys[i] << "\n";
   }
 
+  knowledge.print ();
+
 #else
   std::cout << "This test is disabled due to karl feature being disabled.\n";
 #endif
