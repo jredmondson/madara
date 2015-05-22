@@ -14,6 +14,9 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 
+namespace engine = Madara::Knowledge_Engine;
+typedef Madara::Knowledge_Record  Knowledge_Record;
+
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
@@ -118,6 +121,7 @@ Madara::Knowledge_Record
 
 
 // test functions
+void test_arrays (void);
 void test_array_math (Madara::Knowledge_Engine::Knowledge_Base &  knowledge);
 void test_to_vector (Madara::Knowledge_Engine::Knowledge_Base &  knowledge);
 void test_to_map (Madara::Knowledge_Engine::Knowledge_Base &  knowledge);
@@ -159,6 +163,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   // run tests
 //  test_tree_compilation (knowledge);
+  test_arrays ();
   test_array_math (knowledge);
   test_mathops (knowledge);
   test_functions (knowledge);
@@ -1401,3 +1406,26 @@ int parse_args (int argc, ACE_TCHAR * argv[])
   return 0;
 }
 
+void test_arrays (void)
+{
+  ACE_DEBUG ((LM_INFO, "Testing inline array creation ([0,1,2])\n"));
+
+  engine::Knowledge_Base knowledge;
+
+  Madara::Knowledge_Record result = knowledge.evaluate ("my_array = [0, 1, 2]");
+
+
+  assert (result.type () == Madara::Knowledge_Record::INTEGER_ARRAY &&
+    result.retrieve_index (0).to_integer () == 0 &&
+    result.retrieve_index (1).to_integer () == 1 &&
+    result.retrieve_index (2).to_integer () == 2);
+
+
+  result = knowledge.evaluate (
+    "some_var = 1;> my_array = [some_var, some_var + 5, 2]");
+
+  assert (result.type () == Madara::Knowledge_Record::INTEGER_ARRAY &&
+    result.retrieve_index (0).to_integer () == 1 &&
+    result.retrieve_index (1).to_integer () == 6 &&
+    result.retrieve_index (2).to_integer () == 2);
+}

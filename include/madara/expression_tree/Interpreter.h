@@ -218,6 +218,29 @@ namespace Madara
                            int & accumulated_precedence,
                            ::std::list<Symbol *>& list,
                            bool build_argument_list = false);
+
+
+      /**
+      * Handles a parenthesis
+      * @param    context    interpreter context
+      * @param    input      expression to compile
+      * @param    i          current position in expression
+      * @param    accumulated_precedence  current precedence
+      * @param    list       list of symbols in tree that are free
+      * @param    lastValidInput          last valid symbol that was read
+      * @param    handled    whether or not the pos should be incremented
+      * @param    build_argument_list  if true, focuses on building a
+      *                                list instead of an expression tree
+      **/
+      void handle_array (
+        Madara::Knowledge_Engine::Thread_Safe_Context & context,
+        const std::string &input,
+        std::string::size_type &i,
+        Symbol *& lastValidInput,
+        bool & handled,
+        int & accumulated_precedence,
+        ::std::list<Symbol *>& list);
+
       /**
        * Handles a parenthesis
        * @param    context    interpreter context

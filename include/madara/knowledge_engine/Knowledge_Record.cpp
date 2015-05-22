@@ -191,6 +191,7 @@ Madara::Knowledge_Record::deep_copy (const Knowledge_Record & source)
       size_t temp;
       size_ = source.size_;
       type_ = source.type_;
+      status_ = source.status_;
       file_value_ = source.to_unmanaged_buffer (temp);
     }
   }

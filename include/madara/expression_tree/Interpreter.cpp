@@ -15,6 +15,7 @@
 #include "madara/expression_tree/Variable_Increment_Node.h"
 #include "madara/expression_tree/Variable_Multiply_Node.h"
 #include "madara/expression_tree/List_Node.h"
+#include "madara/expression_tree/Composite_Const_Array.h"
 #include "madara/expression_tree/Composite_Negate_Node.h"
 #include "madara/expression_tree/Composite_Postdecrement_Node.h"
 #include "madara/expression_tree/Composite_Postincrement_Node.h"
@@ -1355,7 +1356,32 @@ namespace Madara
       std::string name_;
       Madara::Knowledge_Engine::Thread_Safe_Context & context_;
     };
-    
+
+    /**
+    * @class Array
+    * @brief Iterative looping node of the parse tree
+    */
+
+    class Const_Array : public Ternary_Operator
+    {
+    public:
+      /// constructor
+      Const_Array (
+        Madara::Knowledge_Engine::Thread_Safe_Context & context);
+
+      /// destructor
+      virtual ~Const_Array (void);
+
+      /// returns the precedence level
+      //virtual int precedence (void);
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent Expression_Tree node
+      virtual Component_Node *build (void);
+
+      Madara::Knowledge_Engine::Thread_Safe_Context & context_;
+    };
+
     /**
     * @class For_Loop
     * @brief Iterative looping node of the parse tree
@@ -1737,6 +1763,35 @@ Madara::Expression_Tree::Function::build ()
 {
   return new Composite_Function_Node (name_, context_, nodes_);
 }
+
+
+
+// constructor
+Madara::Expression_Tree::Const_Array::Const_Array (
+  Madara::Knowledge_Engine::Thread_Safe_Context & context)
+  : Ternary_Operator (0, 0, VARIABLE_PRECEDENCE), context_ (context)
+{
+}
+
+// destructor
+Madara::Expression_Tree::Const_Array::~Const_Array (void)
+{
+}
+
+// returns the precedence level
+int
+Madara::Expression_Tree::Const_Array::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent Expression_Tree node
+Madara::Expression_Tree::Component_Node *
+Madara::Expression_Tree::Const_Array::build ()
+{
+  return new Composite_Const_Array (nodes_);
+}
+
 
 
 
@@ -4787,6 +4842,37 @@ Madara::Expression_Tree::Interpreter::main_loop (
     string_insert (input, i, accumulated_precedence, 
       list, lastValidInput);
   }
+  else if (i < input.length () && input[i] == '[')
+  {
+    // save the function name and update i
+    Const_Array * object = new Const_Array (context);
+    object->add_precedence (accumulated_precedence);
+
+    bool handled = false;
+
+    ::std::list<Symbol *> param_list;
+
+    int local_precedence = 0;
+    Symbol * local_last_valid = 0;
+
+    ++i;
+
+    // we have an array
+    handle_array (context, input, i, local_last_valid, handled,
+      local_precedence, param_list);
+
+    object->nodes_.resize (param_list.size ());
+    int cur = 0;
+
+    for (::std::list<Symbol *>::iterator arg = param_list.begin ();
+      arg != param_list.end (); ++arg, ++cur)
+    {
+      object->nodes_[cur] = (*arg)->build ();
+    }
+
+    precedence_insert (object, list);
+    lastValidInput = 0;
+  }
   else if (input[i] == '#')
   {
     handled = true;
@@ -5195,6 +5281,84 @@ Madara::Expression_Tree::Interpreter::main_loop (
     // skip whitespace
   }
 }
+
+
+void
+Madara::Expression_Tree::Interpreter::handle_array (
+Madara::Knowledge_Engine::Thread_Safe_Context & context,
+const std::string &input, std::string::size_type &i,
+Madara::Expression_Tree::Symbol *& lastValidInput,
+bool & handled, int & accumulated_precedence,
+::std::list<Madara::Expression_Tree::Symbol *>& master_list)
+{
+  /* handle parenthesis is a lot like handling a new interpret.
+  the difference is that we have to worry about how the calling
+  function has its list setup */
+
+  accumulated_precedence += PARENTHESIS_PRECEDENCE;
+  int initial_precedence = accumulated_precedence;
+
+  ::std::list<Symbol *> list;
+
+  handled = false;
+  bool closed = false;
+  while (i < input.length ())
+  {
+    main_loop (context, input, i, lastValidInput,
+      handled, accumulated_precedence, list, true);
+
+    if (input[i] == ']')
+    {
+      handled = true;
+      closed = true;
+      ++i;
+      accumulated_precedence -= PARENTHESIS_PRECEDENCE;
+      break;
+    }
+    else if (input[i] == ',')
+    {
+      ++i;
+      while (list.size ())
+      {
+        master_list.push_back (list.back ());
+        list.pop_back ();
+      }
+      accumulated_precedence = initial_precedence;
+    }
+    else if (i == input.length () - 1)
+    {
+      break;
+    }
+  }
+
+  if (!closed)
+  {
+    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_DEBUG, DLINFO
+      "\nKARL COMPILE ERROR: " \
+      "Forgot to close parenthesis in %s.\n", input.c_str ()));
+  }
+
+  if (list.size () > 0)
+  {
+    if (list.size () > 1)
+    {
+      MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_DEBUG, DLINFO
+        "\nKARL COMPILE ERROR: " \
+        "A parenthesis was closed, leaving multiple list items (there should "
+        "be a max of 1) in %s.\n", input.c_str ()));
+    }
+
+    while (list.size ())
+    {
+      master_list.push_back (list.back ());
+      list.pop_back ();
+    }
+  }
+
+  list.clear ();
+}
+
+
 
 void 
 Madara::Expression_Tree::Interpreter::handle_parenthesis (

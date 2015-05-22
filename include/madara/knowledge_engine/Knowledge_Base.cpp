@@ -1615,6 +1615,26 @@ Madara::Knowledge_Engine::Knowledge_Base::save_context (
   return result;
 }
 
+
+int64_t
+Madara::Knowledge_Engine::Knowledge_Base::save_as_karl (
+  const std::string & filename) const
+{
+  int64_t result = 0;
+
+  if (impl_.get_ptr ())
+  {
+    result = impl_->save_as_karl (filename);
+  }
+  else if (context_)
+  {
+    result = context_->save_as_karl (filename);
+  }
+
+  return result;
+}
+
+
 int64_t
 Madara::Knowledge_Engine::Knowledge_Base::save_checkpoint (
   const std::string & filename,

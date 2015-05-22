@@ -29,19 +29,19 @@ namespace Madara
       Leaf_Node (const Knowledge_Record & item);
       
       /**
-       * Constructor
+       * Integer Constructor
        * @param   item    value of the node
        **/
       Leaf_Node (Madara::Knowledge_Record::Integer item);
       
       /**
-       * Constructor
+       * Double Constructor
        * @param   item    value of the node
        **/
       Leaf_Node (double item);
 
       /**
-       * Constructor
+       * String Constructor
        * @param   item    value of the node
        **/
       Leaf_Node (const std::string &item);

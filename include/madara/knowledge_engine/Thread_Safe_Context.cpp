@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <sstream>
 
 #include <string.h>
@@ -1553,6 +1554,103 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_context (
 
   return meta.size;
 }
+
+
+int64_t
+Madara::Knowledge_Engine::Thread_Safe_Context::save_as_karl (
+const std::string & filename) const
+{
+  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG,
+    DLINFO "Thread_Safe_Context::save_as_karl:" \
+    " opening file %s\n", filename.c_str ()));
+
+  int64_t bytes_written (0);
+  std::stringstream buffer;
+  std::ofstream file;
+  file.open (filename);
+
+  if (file.is_open ())
+  {
+    // lock the context
+    Context_Guard guard (mutex_);
+
+    for (Knowledge_Map::const_iterator i = map_.begin ();
+      i != map_.end (); ++i)
+    {
+      buffer << i->first;
+      buffer << "=";
+
+      if (!i->second.is_binary_file_type ())
+      {
+        // record is a non binary file type
+        if (i->second.is_string_type ())
+        {
+          // strings require quotation marks
+          buffer << "\"";
+        }
+        else if (i->second.type () == Knowledge_Record::INTEGER_ARRAY ||
+          i->second.type () == Knowledge_Record::DOUBLE_ARRAY)
+        {
+          // arrays require brackets
+          buffer << "[";
+        }
+
+        buffer << i->second;
+        if (i->second.is_string_type ())
+        {
+          // strings require quotation marks
+          buffer << "\"";
+        }
+        else if (i->second.type () == Knowledge_Record::INTEGER_ARRAY ||
+          i->second.type () == Knowledge_Record::DOUBLE_ARRAY)
+        {
+          // arrays require brackets
+          buffer << "]";
+        }
+      }
+      else
+      {
+        buffer << "#read_file ('";
+
+        std::string path = Utility::extract_path (filename);
+
+        if (path == "")
+          path = ".";
+
+        path += "/";
+        path += i->first;
+
+        if (i->second.type () == Knowledge_Record::IMAGE_JPEG)
+        {
+          path += ".jpg";
+        }
+        else
+        {
+          path += ".dat";
+        }
+
+        Utility::write_file (path,
+          (void *)i->second.file_value_.get_ptr (), i->second.size ());
+        buffer << path;
+
+
+        buffer << "')";
+      }
+
+      buffer << ";\n";
+    }
+
+    std::string result = buffer.str ();
+    file << result;
+
+    bytes_written = (int64_t) result.size ();
+
+    file.close ();
+  }
+
+  return bytes_written;
+}
+
 
 int64_t
 Madara::Knowledge_Engine::Thread_Safe_Context::load_context (

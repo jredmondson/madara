@@ -418,6 +418,13 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::save_context (
   return map_.save_context (filename, id_);
 }
 
+inline int64_t
+Madara::Knowledge_Engine::Knowledge_Base_Impl::save_as_karl (
+const std::string & filename) const
+{
+  return map_.save_as_karl (filename);
+}
+
 inline void
 Madara::Knowledge_Engine::Knowledge_Base_Impl::clear_modifieds (
   void)

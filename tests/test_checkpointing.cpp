@@ -46,6 +46,7 @@ void test_checkpointing (void)
   
   std::cerr << "Test 1: saving 50k knowledge record to test1_orig.kkb.\n";
 
+  context.save_as_karl ("test1_orig.karl");
   context.save_context ("test1_orig.kkb", "test_context");
 
   std::cerr << "Test 2: loading test1_orig.kkb.\n";
@@ -80,6 +81,7 @@ void test_checkpointing (void)
   
   std::cerr << "Test 3: saving context\n";
 
+  context_copy.save_as_karl ("test3_bigger.karl");
   context_copy.save_context ("test3_bigger.kkb", id);
   
   std::cerr << "Test 3: loading context\n";
@@ -105,6 +107,7 @@ void test_checkpointing (void)
   
   std::cerr << "Test 3: saving context\n";
 
+  context_copy.save_as_karl ("test4_resave.karl");
   context_copy.save_context ("test4_resave.kkb", id);
   
   std::cerr << "Test 4: loading context into a knowledge base\n";
@@ -129,11 +132,13 @@ void test_checkpointing (void)
   knowledge.print ();
   
   std::cerr << "Test 5: Adding extra_var to context and saving\n";
-  
+
+  context_copy.save_as_karl ("test4_bigger.karl");
+  context_copy.save_context ("test4_bigger.kkb", "Extra Var Context");
+
   context_copy.set ("extra_var", 5.0,
     Madara::Knowledge_Engine::Knowledge_Update_Settings (false, false, false, false));
 
-  context_copy.save_context ("test4_bigger.kkb", "Extra Var Context");
   context_copy.save_checkpoint ("test4_bigger.kkb", "Extra Var Context");
   
   std::cerr << "Test 5: Loading new context\n";
@@ -227,6 +232,7 @@ void test_checkpointing (void)
   
   std::cerr << "Test 8: Printing .invisible value\n";
   knowledge.print (".invisible = {.invisible}\n");
+  knowledge.save_as_karl ("test4_bigger.karl");
   knowledge.save_checkpoint ("test4_bigger.kkb", "Invisible Var Context");
   
   std::cerr << "Test 8: Loading checkpoint\n";

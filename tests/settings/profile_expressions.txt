@@ -41,6 +41,14 @@ my.id = my.name + ':' + my.job
 x = 0.5
 y = 0.3
 z = 0.2
+[0, 1, 2]
+[x, y, z]
+[x, 1, 2]
+[0, y, 2]
+[0, 1, z]
+b = [0, 1, 2]
+b = [x, y, z]
+b = [x, 1, 2]
 x * y * z
 q = x * y * z
 #fragment (my.name, 2, 7)

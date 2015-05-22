@@ -1035,11 +1035,18 @@ namespace Madara
       
       /**
        * Saves the context to a file
-       * @param   filename    name of the file to open
+       * @param   filename    name of the file to save to
        * @return  total bytes written
        **/
       int64_t save_context (const std::string & filename) const;
-      
+
+      /**
+      * Saves the context to a file as karl assignments, rather than binary
+      * @param   filename    name of the file to save to
+      * @return  total bytes written
+      **/
+      int64_t save_as_karl (const std::string & filename) const;
+
       /**
        * Saves a checkpoint of a list of changes to a file
        * @param   filename    name of the file to open
