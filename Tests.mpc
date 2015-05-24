@@ -1145,7 +1145,7 @@ project (Test_AES_256) : using_madara, using_ace, using_splice, no_karl, no_xml 
   exename = test_aes_256
   
   
-  requires += tests
+  requires += tests ssl
   
 
   Documentation_Files {

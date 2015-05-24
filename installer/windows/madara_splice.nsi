@@ -170,7 +170,7 @@ Section "ace" SEC10
   
   SetOutPath "$INSTDIR\include"
 
-  File /r $%ACE_ROOT%\ace
+  File /r /x *.obj /x *.vcxproj /x *.filters /x *.user /x *.log /x *.tlog /x *.pdb /x Static_Debug /x Static_Release /x Debug /x Release $%ACE_ROOT%\ace
 
 SectionEnd
 
@@ -262,7 +262,7 @@ Section "-vcredist" SEC11
     # From http://blogs.msdn.com/astebner/archive/2007/02/07/update-regarding-silent-install-of-the-vc-8-0-runtime-vcredist-packages.aspx
     # “qb!” for progress with no cancel, “qb” for progress and cancel, “qn” for no interaction
 
-    DetailPrint "Installing VC 10 64-bit Redistributable."  
+    DetailPrint "Installing VC 12 64-bit Redistributable."  
 
     ExecWait '$INSTDIR\vcredist\vcredist_x64.exe /q' $0 # Only progress bar
     DetailPrint "vcredist_x64 SP1 Update returned $0"
@@ -283,7 +283,7 @@ Section "-vcredist" SEC11
   sp1_not_exists:
     # From http://blogs.msdn.com/astebner/archive/2007/02/07/update-regarding-silent-install-of-the-vc-8-0-runtime-vcredist-packages.aspx
     # “qb!” for progress with no cancel, “qb” for progress and cancel, “qn” for no interaction
-    DetailPrint "Installing VC 10 32-bit Redistributable."  
+    DetailPrint "Installing VC 12 32-bit Redistributable."  
     ExecWait '$INSTDIR\vcredist\vcredist_x86.exe /q' $0 # Only progress bar
     DetailPrint "vcredist_x86 SP1 Update returned $0"
 
@@ -293,20 +293,10 @@ Section "-vcredist" SEC11
 SectionEnd
 
 Section "-include" SEC07
-  SetOutPath "$INSTDIR\include\madara"
-  File "..\..\include\madara\MADARA_export.h"
-  File "..\..\include\madara\Thread_Pool.h"
-  File "..\..\include\madara\Thread_Pool.cpp"
+  SetOutPath "$INSTDIR\include"
   
   ; copy the madara directories
-  File /r "..\..\include\madara\utility"
-  File /r "..\..\include\madara\transport"
-  File /r "..\..\include\madara\knowledge_engine"
-  File /r "..\..\include\madara\kats"
-  File /r "..\..\include\madara\expression_tree"
-  File /r "..\..\include\madara\cid"
-  File /r "..\..\include\madara\maml"
-  File /r "..\..\include\madara\maal"
+  File /r "..\..\include\madara"
   
 SectionEnd
 

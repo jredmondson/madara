@@ -110,7 +110,7 @@ Section "tests" SEC04
   File "..\..\bin\network_profiler.exe"
   File /r "..\..\bin\test*.exe"
 ;  File /r "..\..\bin\tutorial*.exe"
-;  File "..\..\bin\system_calls.exe"
+  File "..\..\bin\system_calls.exe"
 SectionEnd
 
 Section "gme" SEC05
@@ -148,21 +148,15 @@ Section "ace" SEC10
   
   SetOutPath "$INSTDIR\include"
 
-  File /r /x *.obj /x *.vcxproj /x *.filters /x *.user /x *.log /x *.tlog /x *.pdb /x Debug /x Release $%ACE_ROOT%\ace
+  File /r /x *.obj /x *.vcxproj /x *.filters /x *.user /x *.log /x *.tlog /x *.pdb /x Static_Debug /x Static_Release /x Debug /x Release $%ACE_ROOT%\ace
 
 SectionEnd
 
 Section "-include" SEC07
-
-  SetOutPath "$INSTDIR\include\madara"
-  File "..\..\include\madara\MADARA_export.h"
+  SetOutPath "$INSTDIR\include"
   
   ; copy the madara directories
-  SetOutPath "$INSTDIR\include"
-  File /r "..\..\include"
-
-  SetOutPath "$INSTDIR\port"
-  File /r "..\..\port"
+  File /r "..\..\include\madara"
   
 SectionEnd
 
@@ -188,7 +182,7 @@ Section "-vcredist" SEC11
     # From http://blogs.msdn.com/astebner/archive/2007/02/07/update-regarding-silent-install-of-the-vc-8-0-runtime-vcredist-packages.aspx
     # “qb!” for progress with no cancel, “qb” for progress and cancel, “qn” for no interaction
 
-    DetailPrint "Installing VC 10 64-bit Redistributable."  
+    DetailPrint "Installing VC 12 64-bit Redistributable."  
 
     ExecWait '$INSTDIR\vcredist\vcredist_x64.exe /q' $0 # Only progress bar
     DetailPrint "vcredist_x64 SP1 Update returned $0"
@@ -209,7 +203,7 @@ Section "-vcredist" SEC11
   sp1_not_exists:
     # From http://blogs.msdn.com/astebner/archive/2007/02/07/update-regarding-silent-install-of-the-vc-8-0-runtime-vcredist-packages.aspx
     # “qb!” for progress with no cancel, “qb” for progress and cancel, “qn” for no interaction
-    DetailPrint "Installing VC 10 32-bit Redistributable."  
+    DetailPrint "Installing VC 12 32-bit Redistributable."  
     ExecWait '$INSTDIR\vcredist\vcredist_x86.exe /q' $0 # Only progress bar
     DetailPrint "vcredist_x86 SP1 Update returned $0"
 
@@ -223,7 +217,7 @@ Section "-exes" SEC09
   File "..\..\bin\karl.exe"
   File "..\..\bin\madara_version.exe"
   File "..\..\bin\mpgen.exe"
-;  File "..\..\bin\system_calls.exe"
+  File "..\..\bin\system_calls.exe"
 SectionEnd
 
 Section "-tests"
