@@ -560,8 +560,8 @@ void Madara::Knowledge_Engine::Knowledge_Record_Filters::filter_decode (
   unsigned char * source, int size, int max_size) const
 {
   // decode from back to front
-  for (Filters::Buffer_Filters::const_reverse_iterator i = buffer_filters_.crbegin ();
-    i != buffer_filters_.crend (); ++i)
+  for (Filters::Buffer_Filters::const_reverse_iterator i = buffer_filters_.rbegin ();
+    i != buffer_filters_.rend (); ++i)
   {
     (*i)->decode (source, size, max_size);
   }
