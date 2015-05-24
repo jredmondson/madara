@@ -18,6 +18,7 @@
 #include "madara/MADARA_export.h"
 #include "madara/filters/Aggregate_Filter.h"
 #include "madara/filters/Record_Filter.h"
+#include "madara/filters/Buffer_Filter.h"
 #include "madara/knowledge_engine/Knowledge_Record_Filters.h"
 
 #ifdef _MADARA_JAVA_
@@ -113,7 +114,13 @@ namespace Madara
        *                     will be managed by the underlying infrastructure
        **/
       void add_send_filter (Filters::Aggregate_Filter * filter);
-      
+
+      /**
+      * Adds a buffer filter to the chain
+      * @param   filter     an instance of a buffer filter
+      **/
+      void add_filter (Filters::Buffer_Filter * filter);
+
       /**
        * Adds a filter that will be applied to certain types after receiving
        * and before applying to the local knowledge base
@@ -327,7 +334,12 @@ namespace Madara
        * @param   types   the types to clear the filters of
        **/
       void clear_receive_filters (uint32_t types);
-      
+
+      /**
+      * Clears the list of buffer filters
+      **/
+      void clear_buffer_filters (void);
+
       /**
        * Clears the list of receive time aggregate filters
        **/
@@ -403,7 +415,25 @@ namespace Madara
        **/
       void filter_rebroadcast (Knowledge_Map & records,
         const Transport::Transport_Context & transport_context) const;
-      
+
+      /**
+      * Calls encode on the the buffer filter chain
+      * @param   source           the source and destination buffer
+      * @param   size             the amount of data in the buffer in bytes
+      * @param   max_size         the amount of bytes the buffer can hold
+      * @return  the new size after encoding
+      **/
+      int filter_encode (unsigned char * source, int size, int max_size) const;
+
+      /**
+      * Calls decode on the the buffer filter chain
+      * @param   source           the source and destination buffer
+      * @param   size             the amount of data in the buffer in bytes
+      * @param   max_size         the amount of bytes the buffer can hold
+      * @return  the new size after encoding
+      **/
+      int filter_decode (unsigned char * source, int size, int max_size) const;
+
       /**
        * Prints the number of filters chained for each type to the
        * send filter
@@ -472,6 +502,12 @@ namespace Madara
        * @return  the number of types that have filters
        **/
       size_t get_number_of_receive_filtered_types (void) const;
+
+      /**
+      * Returns the number of buffer filters
+      * @return  the number of buffer filters
+      **/
+      size_t get_number_of_buffer_filters (void) const;
 
       /**
        * Adds a trusted peer. By default, all peers are trusted unless
@@ -654,6 +690,11 @@ namespace Madara
        * A container for filters applied before sending from this host
        **/
       Knowledge_Engine::Knowledge_Record_Filters  send_filters_;
+
+      /**
+       * buffer filters have an encode and decode method
+       **/
+      Filters::Buffer_Filters   buffer_filters_;
 
       /**
        * Rate for dropping packets

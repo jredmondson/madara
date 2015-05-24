@@ -1,0 +1,11 @@
+feature(ssl) {
+  
+  Source_Files {
+    include/madara/filters/ssl
+  }
+
+  Header_Files {
+    include/madara/filters/ssl
+  }
+
+}

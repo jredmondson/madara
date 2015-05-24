@@ -1,0 +1,15 @@
+feature(ssl) {
+  libpaths += $(SSL_ROOT)/lib
+
+  specific(prop:windows) {
+    includes += $(SSL_ROOT)/inc32
+    lit_libs += libeay32 ssleay32
+    libpaths += $(SSL_ROOT)/out32dll
+  } else {
+    lit_libs += ssl crypto
+
+    // Include the kerberos path
+    includes += /usr/kerberos/include
+  }
+  includes += $(SSL_ROOT)/include
+}

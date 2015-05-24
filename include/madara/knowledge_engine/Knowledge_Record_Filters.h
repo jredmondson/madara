@@ -23,6 +23,7 @@
 #include "madara/MADARA_export.h"
 #include "madara/filters/Record_Filter.h"
 #include "madara/filters/Aggregate_Filter.h"
+#include "madara/filters/Buffer_Filter.h"
 
 #ifdef _MADARA_JAVA_
   #include <jni.h>
@@ -93,7 +94,14 @@ namespace Madara
        * @param filter     the functor that will filter the aggregation
        **/
       void add (Filters::Aggregate_Filter * filter);
-      
+
+      /**
+      * Adds a buffer filter to be applied to the message buffer just before
+      * a send, before a receive, and just before a rebroadcast
+      * @param filter     the functor that will filter the message buffer
+      **/
+      void add (Filters::Buffer_Filter * filter);
+
       /**
        * Adds an individual record filter functor
        * @param   types      the types to add the filter to
@@ -158,6 +166,11 @@ namespace Madara
       void clear_aggregate_filters (void);
 
       /**
+      * Clears the buffer filters
+      **/
+      void clear_buffer_filters (void);
+
+      /**
        * Filters an input according to its filter chain.
        *
        * <p>The arguments passed to the filter are the following:</p>
@@ -197,6 +210,24 @@ namespace Madara
         const Transport::Transport_Context & transport_context) const;
 
       /**
+      * Calls encode on the the buffer filter chain
+      * @param   source           the source and destination buffer
+      * @param   size             the amount of data in the buffer in bytes
+      * @param   max_size         the amount of bytes the buffer can hold
+      * @return  the new size after encoding
+      **/
+      void filter_encode (unsigned char * source, int size, int max_size) const;
+
+      /**
+      * Calls decode on the the buffer filter chain
+      * @param   source           the source and destination buffer
+      * @param   size             the amount of data in the buffer in bytes
+      * @param   max_size         the amount of bytes the buffer can hold
+      * @return  the new size after encoding
+      **/
+      void filter_decode (unsigned char * source, int size, int max_size) const;
+
+      /**
        * Prints the number of filters chained for each type
        **/
       void print_num_filters (void) const;
@@ -213,6 +244,12 @@ namespace Madara
        **/
       size_t get_number_of_aggregate_filters (void) const;
 
+      /**
+      * Returns the number of buffer filters
+      * @return  the number of buffer filters
+      **/
+      size_t get_number_of_buffer_filters (void) const;
+
     protected:
       /**
        * Container for mapping types to filter chains
@@ -223,6 +260,11 @@ namespace Madara
        * List of aggregate filters
        **/
       Aggregate_Filters  aggregate_filters_;
+
+      /**
+       * List of buffer filters
+       **/
+      Filters::Buffer_Filters     buffer_filters_;
 
       /**
        * Context used by this filter

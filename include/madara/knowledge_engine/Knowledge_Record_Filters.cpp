@@ -92,6 +92,16 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
 
 void
 Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
+Filters::Buffer_Filter * functor)
+{
+  if (functor != 0)
+  {
+    buffer_filters_.push_back (functor);
+  }
+}
+
+void
+Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
   uint32_t types,
   Filters::Record_Filter * functor)
 {
@@ -218,6 +228,13 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::clear_aggregate_filters (
 }
 
 void
+Madara::Knowledge_Engine::Knowledge_Record_Filters::clear_buffer_filters (
+void)
+{
+  buffer_filters_.clear ();
+}
+
+void
 Madara::Knowledge_Engine::Knowledge_Record_Filters::print_num_filters (
   void) const
 {
@@ -233,6 +250,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::print_num_filters (
   
   MADARA_DEBUG (0, (LM_DEBUG,
     "%d chained aggregate filters\n", aggregate_filters_.size ()));
+
+  MADARA_DEBUG (0, (LM_DEBUG,
+    "%d chained buffer filters\n", buffer_filters_.size ()));
 }
 
 
@@ -536,6 +556,28 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
   }
 }
 
+void Madara::Knowledge_Engine::Knowledge_Record_Filters::filter_decode (
+  unsigned char * source, int size, int max_size) const
+{
+  // decode from back to front
+  for (Filters::Buffer_Filters::const_reverse_iterator i = buffer_filters_.crbegin ();
+    i != buffer_filters_.crend (); ++i)
+  {
+    (*i)->decode (source, size, max_size);
+  }
+}
+
+void Madara::Knowledge_Engine::Knowledge_Record_Filters::filter_encode (
+  unsigned char * source, int size, int max_size) const
+{
+  // encode from front to back
+  for (Filters::Buffer_Filters::const_iterator i = buffer_filters_.begin ();
+    i != buffer_filters_.end (); ++i)
+  {
+    (*i)->encode (source, size, max_size);
+  }
+}
+
 size_t
 Madara::Knowledge_Engine::Knowledge_Record_Filters::get_number_of_filtered_types (
   void) const
@@ -548,4 +590,11 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::get_number_of_aggregate_filt
   void) const
 {
   return aggregate_filters_.size ();
+}
+
+size_t
+Madara::Knowledge_Engine::Knowledge_Record_Filters::get_number_of_buffer_filters (
+void) const
+{
+  return buffer_filters_.size ();
 }

@@ -27,6 +27,7 @@ Madara::Transport::QoS_Transport_Settings::QoS_Transport_Settings (
     rebroadcast_filters_ (settings.rebroadcast_filters_),
     receive_filters_ (settings.receive_filters_),
     send_filters_ (settings.send_filters_),
+    buffer_filters_ (settings.buffer_filters_),
     packet_drop_rate_ (settings.packet_drop_burst_),
     packet_drop_type_ (settings.packet_drop_type_),
     packet_drop_burst_ (settings.packet_drop_burst_),
@@ -55,6 +56,7 @@ Madara::Transport::QoS_Transport_Settings::QoS_Transport_Settings (
     participant_rebroadcast_ttl_ = rhs->participant_rebroadcast_ttl_;
     trusted_peers_ = rhs->trusted_peers_;
     banned_peers_ = rhs->banned_peers_;
+    buffer_filters_ = rhs->buffer_filters_;
     send_filters_ = rhs->send_filters_;
     receive_filters_ = rhs->receive_filters_;
     rebroadcast_filters_ = rhs->rebroadcast_filters_;
@@ -96,6 +98,7 @@ Madara::Transport::QoS_Transport_Settings::operator= (
     banned_peers_ = rhs.banned_peers_;
     send_filters_ = rhs.send_filters_;
     receive_filters_ = rhs.receive_filters_;
+    buffer_filters_ = rhs.buffer_filters_;
     rebroadcast_filters_ = rhs.rebroadcast_filters_;
     packet_drop_rate_ = rhs.packet_drop_rate_;
     packet_drop_type_ = rhs.packet_drop_type_;
@@ -263,6 +266,13 @@ Madara::Transport::QoS_Transport_Settings::add_receive_filter (
 Filters::Aggregate_Filter * functor)
 {
   receive_filters_.add (functor);
+}
+
+void
+Madara::Transport::QoS_Transport_Settings::add_filter (
+Filters::Buffer_Filter * functor)
+{
+  buffer_filters_.push_back (functor);
 }
 
 void
@@ -480,7 +490,37 @@ Madara::Transport::QoS_Transport_Settings::filter_send (
 {
   send_filters_.filter (records, transport_context);
 }
-        
+   
+
+int
+Madara::Transport::QoS_Transport_Settings::filter_encode (
+  unsigned char * source, int size, int max_size) const
+{
+  // encode from front to back
+  for (Filters::Buffer_Filters::const_iterator i = buffer_filters_.begin ();
+    i != buffer_filters_.end (); ++i)
+  {
+    size = (*i)->encode (source, size, max_size);
+  }
+
+  return size;
+}
+
+
+int
+Madara::Transport::QoS_Transport_Settings::filter_decode (
+unsigned char * source, int size, int max_size) const
+{
+  // decode from back to front
+  for (Filters::Buffer_Filters::const_reverse_iterator i = buffer_filters_.crbegin ();
+    i != buffer_filters_.crend (); ++i)
+  {
+    size = (*i)->decode (source, size, max_size);
+  }
+
+  return size;
+}
+
 
 Madara::Knowledge_Record
 Madara::Transport::QoS_Transport_Settings::filter_receive (
@@ -580,6 +620,13 @@ Madara::Transport::QoS_Transport_Settings::get_number_of_receive_aggregate_filte
   void) const
 {
   return receive_filters_.get_number_of_aggregate_filters ();
+}
+
+size_t
+Madara::Transport::QoS_Transport_Settings::get_number_of_buffer_filters (
+void) const
+{
+  return buffer_filters_.size ();
 }
 
 void

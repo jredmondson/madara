@@ -82,7 +82,7 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
     if (result > 0)
     {
       uint64_t bytes_sent = 0;
-      uint64_t packet_size = Message_Header::get_size (buffer_.get_ptr ());
+      uint64_t packet_size = (uint64_t)result;
 
       if (packet_size > settings_.max_fragment_size)
       {

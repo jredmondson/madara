@@ -82,8 +82,7 @@ Madara::Transport::process_received_update (
   // reset header to 0, so it is safe to delete
   header = 0;
   
-  // setup buffer remaining, used by the knowledge record read method
-  int64_t buffer_remaining = (int64_t) bytes_read;
+  int max_buffer_size = (int)bytes_read;
 
   // tell the receive bandwidth monitor about the transaction
   receive_monitor.add (bytes_read);
@@ -94,10 +93,26 @@ Madara::Transport::process_received_update (
     print_prefix,
     receive_monitor.get_bytes_per_second ()));
 
-  buffer_remaining = (int64_t)bytes_read;
   bool is_reduced = false;
   bool is_fragment = false;
   bool previously_defragged = false;
+
+  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG,
+    DLINFO "%s:" \
+    " calling decode filters on %d bytes\n",
+    print_prefix, bytes_read));
+
+  // call decodes, if applicable
+  bytes_read = (uint32_t)settings.filter_decode ((unsigned char *)buffer,
+    max_buffer_size, max_buffer_size);
+
+  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG,
+    DLINFO "%s:" \
+    " Decoding resulted in %d final bytes\n",
+    print_prefix, bytes_read));
+
+  // setup buffer remaining, used by the knowledge record read method
+  int64_t buffer_remaining = (int64_t)bytes_read;
 
   // clear the rebroadcast records
   rebroadcast_records.clear ();
@@ -681,6 +696,7 @@ Madara::Transport::prep_rebroadcast (
   {
     // keep track of the message_size portion of buffer
     uint64_t * message_size = (uint64_t *)buffer;
+    int max_buffer_size = (int)buffer_remaining;
 
     // the number of updates will be the size of the records map
     header->updates = uint32_t (records.size ());
@@ -701,10 +717,18 @@ Madara::Transport::prep_rebroadcast (
     
       MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
         DLINFO "%s:" \
-        " %d updates prepped for rebroadcast packet\n",
+        " %d bytes prepped for rebroadcast packet\n",
         print_prefix, size));
 
       result = size;
+
+      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG,
+        DLINFO "%s:" \
+        " calling encode filters\n",
+        print_prefix));
+
+      settings.filter_encode ((unsigned char *)buffer,
+        result, max_buffer_size);
     }
     else
     {
@@ -929,6 +953,9 @@ long Madara::Transport::Base::prep_send (
   // compute size of this header
   header->size = header->encoded_size ();
 
+  // keep track of the maximum buffer size for encoding
+  int max_buffer_size = (int)buffer_remaining;
+
   // set the update to the end of the header
   char * update = header->write (buffer, buffer_remaining);
   uint64_t * message_size = (uint64_t *)buffer;
@@ -1013,9 +1040,16 @@ long Madara::Transport::Base::prep_send (
         " no permanent rules were set\n",
         print_prefix));
     }
-
-    // send the buffer contents to the multicast address
   }
+
+  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG,
+    DLINFO "%s:" \
+    " calling encode filters\n",
+    print_prefix));
+
+  // buffer is ready encoding
+  size = (long)settings_.filter_encode ((unsigned char *)buffer_.get_ptr (),
+    (int)size, max_buffer_size);
 
   delete header;
 

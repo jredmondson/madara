@@ -1140,6 +1140,30 @@ project (Test_Timed_Wait) : using_madara, using_ace, using_splice, no_karl, no_x
   }
 }
 
+project (Test_AES_256) : using_madara, using_ace, using_splice, no_karl, no_xml {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_aes_256
+  
+  
+  requires += tests
+  
+
+  Documentation_Files {
+  }
+  
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/ssl/test_aes_256.cpp
+  }
+}
+
 project (Test_Wait_With_ACE) : using_madara, using_ace, using_splice, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_wait_with_ace
@@ -1653,6 +1677,27 @@ project (Test_Multicast) : using_madara, using_ace, no_karl, no_xml {
 
   Source_Files {
     tests/transports/multicast/test_multicast.cpp
+  }
+}
+
+project (Test_Multicast_SSL) : using_madara, using_ace, no_karl, no_xml {
+  requires += tests ssl
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_multicast_ssl
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/multicast/test_multicast_ssl.cpp
   }
 }
 

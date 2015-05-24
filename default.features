@@ -77,3 +77,9 @@ openjdk                 = 0
 /// a custom network transport (especially a read thread) and around knowledge
 /// accessor methods like get, set, and any MADARA container methods.
 null_lock                 = 0
+
+
+/// @feature ssl
+/// Enable this feature if you want SSL support
+ssl                       = 0
+
