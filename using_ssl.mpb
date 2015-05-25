@@ -1,4 +1,6 @@
 feature(ssl) {
+  macros += _USE_SSL_
+
   libpaths += $(SSL_ROOT)/lib
 
   specific(prop:windows) {

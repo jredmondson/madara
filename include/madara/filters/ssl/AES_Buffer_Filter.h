@@ -7,8 +7,10 @@
  * @file AES_Buffer_Filter.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains a filter functor for aggregate records
+ * This file contains a filter functor for 256 bit AES encryption
  **/
+
+#ifdef _USE_SSL_
 
 #include <string>
 
@@ -30,6 +32,12 @@ namespace Madara
       * Constructor
       **/
       AES_Buffer_Filter ();
+
+      /**
+      * Copy constructor
+      * @param  input   the buffer filter to copy
+      **/
+      AES_Buffer_Filter (const AES_Buffer_Filter & input);
 
       /**
       * 256 bit key constructor
@@ -78,5 +86,7 @@ namespace Madara
     };
   }
 }
+
+#endif // _USE_SSL_
 
 #endif  // _MADARA_FILTERS_SSL_AES_H_

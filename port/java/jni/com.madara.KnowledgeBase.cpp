@@ -998,6 +998,23 @@ void JNICALL Java_com_madara_KnowledgeBase_00024CompiledExpression_jni_1freeComp
 }  
 //===================================================================================
 
+jlong JNICALL Java_com_madara_KnowledgeBase_jni_1saveAsKarl
+(JNIEnv * env, jobject, jlong cptr, jstring filename)
+{
+  int64_t result (0);
+
+  if (cptr && filename)
+  {
+    const char * nativeFilename = env->GetStringUTFChars (filename, 0);
+    Knowledge_Base * knowledge = (Knowledge_Base *)cptr;
+
+    result = knowledge->save_as_karl (nativeFilename);
+
+    env->ReleaseStringUTFChars (filename, nativeFilename);
+  }
+
+  return result;
+}
 
 /*
  * Class:     com_madara_KnowledgeBase

@@ -44,54 +44,26 @@
  * 
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
-package com.madara;
+package com.madara.filters;
 
-
-import com.madara.transport.filters.AggregateFilter;
-import com.madara.transport.TransportContext;
-import com.madara.transport.filters.RecordFilter;
-
-/**
- * Abstract class that insures loading of libMADARA.so and holds the C pointer
- */
-public abstract class MadaraJNI
+public interface BufferFilter
 {
-  static
-  {
-    System.loadLibrary("ACE");
-    System.loadLibrary("MADARA");
-  }
-
   /**
-   * C pointer to an object
-   */
-  private long cptr = 0;
-
+   * Encodes a buffer
+   * @param buffer  a map of all variable names to values
+   * @param size    the initial size of the buffer
+   * @param maxSize the maximum size of the buffer
+   * @return the new size of the buffer contents
+   **/
+  public long encode(byte[] buffer, long size, long maxSize);
+   
   /**
-   * Set the C pointer to the object
-   *
-   * @param cptr C Pointer
-   */
-  protected void setCPtr(long cptr)
-  {
-    this.cptr = cptr;
-  }
-
-  /**
-   * @return The C pointer of this object for passing to JNI functions
-   */
-  public long getCPtr()
-  {
-    return cptr;
-  }
-
-  /**
-   * @return &lt;ClassName&gt;[&lt;C Pointer&gt;]
-   * @see java.lang.Object#toString ()
-   */
-  public String toString()
-  {
-    return getClass().getName() + "[" + cptr + "]";
-  }
+   * Decodes a buffer
+   * @param buffer  a map of all variable names to values
+   * @param size    the initial size of the buffer
+   * @param maxSize the maximum size of the buffer
+   * @return the new size of the buffer contents
+   **/
+  public long decode(byte[] buffer, long size, long maxSize);
 }
 

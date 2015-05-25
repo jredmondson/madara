@@ -44,54 +44,88 @@
  * 
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
-package com.madara;
+package com.madara.filters.ssl;
 
+import com.madara.MadaraJNI;
+import com.madara.filters.BufferFilter;
 
-import com.madara.transport.filters.AggregateFilter;
-import com.madara.transport.TransportContext;
-import com.madara.transport.filters.RecordFilter;
-
-/**
- * Abstract class that insures loading of libMADARA.so and holds the C pointer
- */
-public abstract class MadaraJNI
+public class AesBufferFilter extends MadaraJNI implements BufferFilter
 {
-  static
+  private native long jni_AesBufferFilter();
+  private native long jni_AesBufferFilter(long cptr);
+  private static native void jni_freeAesBufferFilter(long cptr);
+  private native long jni_encode(long cptr, byte[] buffer, long size,
+    long maxSize);
+  private native long jni_decode(long cptr, byte[] buffer, long size,
+    long maxSize);
+  private native int jni_generateKey(long cptr, java.lang.String password);
+  
+  private boolean manageMemory = true;
+
+  /**
+   * Default constructor
+   **/
+  public AesBufferFilter()
   {
-    System.loadLibrary("ACE");
-    System.loadLibrary("MADARA");
+    setCPtr(jni_AesBufferFilter());
   }
 
   /**
-   * C pointer to an object
-   */
-  private long cptr = 0;
-
-  /**
-   * Set the C pointer to the object
-   *
-   * @param cptr C Pointer
-   */
-  protected void setCPtr(long cptr)
+   * Copy constructor
+   * @param input  instance to copy
+   **/
+  public AesBufferFilter(AesBufferFilter input)
   {
-    this.cptr = cptr;
+    setCPtr(jni_AesBufferFilter(input.getCPtr()));
   }
 
   /**
-   * @return The C pointer of this object for passing to JNI functions
-   */
-  public long getCPtr()
+   * Encodes a buffer
+   * @param buffer  a map of all variable names to values
+   * @param size    the initial size of the buffer
+   * @param maxSize the maximum size of the buffer
+   * @return the new size of the buffer contents
+   **/
+  @Override
+  public long encode(byte[] buffer, long size, long maxSize)
   {
-    return cptr;
+    return jni_encode(getCPtr(), buffer, size, maxSize);
   }
-
+   
   /**
-   * @return &lt;ClassName&gt;[&lt;C Pointer&gt;]
-   * @see java.lang.Object#toString ()
-   */
-  public String toString()
+   * Decodes a buffer
+   * @param buffer  a map of all variable names to values
+   * @param size    the initial size of the buffer
+   * @param maxSize the maximum size of the buffer
+   * @return the new size of the buffer contents
+   **/
+  @Override
+  public long decode(byte[] buffer, long size, long maxSize)
   {
-    return getClass().getName() + "[" + cptr + "]";
+    return jni_decode(getCPtr(), buffer, size, maxSize);
+  }
+  
+  /**
+   * Generates a 256 bit AES key from a password
+   * @param password  a password to use
+   * @return 0 if successful, non zero otherwise
+   **/
+  public int generateKey(java.lang.String password)
+  {
+    return jni_generateKey(getCPtr(), password);
+  }
+  
+  /**
+   * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
+   * called before an instance gets garbage collected
+   */
+  public void free()
+  {
+    if (manageMemory)
+    {
+      jni_freeAesBufferFilter(getCPtr());
+      setCPtr(0);
+    }
   }
 }
 

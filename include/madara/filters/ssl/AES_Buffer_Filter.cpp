@@ -1,3 +1,6 @@
+
+#ifdef  _USE_SSL_
+
 #include <string.h>
 #include <openssl/evp.h>
 #include <openssl/aes.h>
@@ -10,6 +13,14 @@ Madara::Filters::AES_Buffer_Filter::AES_Buffer_Filter ()
   : key_ (new unsigned char[32]), iv_ (new unsigned char[16])
 {
   memset ((void *)key_.get_ptr (), 0, 32);
+  memset ((void *)iv_.get_ptr (), 0, 16);
+}
+
+Madara::Filters::AES_Buffer_Filter::AES_Buffer_Filter (
+  const AES_Buffer_Filter & input)
+  : key_ (new unsigned char[32]), iv_ (new unsigned char[16])
+{
+  memcpy (key_.get_ptr (), input.key_.get_ptr (), 32);
   memset ((void *)iv_.get_ptr (), 0, 16);
 }
 
@@ -104,3 +115,5 @@ Madara::Filters::AES_Buffer_Filter::decode (
 
   return result_length;
 }
+
+#endif // _USE_SSL_

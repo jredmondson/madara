@@ -60,6 +60,34 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1freeQoSTranspor
   delete settings;
 }
 
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1saveQoS
+(JNIEnv * env, jobject, jlong cptr, jstring filename)
+{
+  if (cptr && filename)
+  {
+    const char * nativeFilename = env->GetStringUTFChars (filename, 0);
+    QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+    settings->save (nativeFilename);
+
+    env->ReleaseStringUTFChars (filename, nativeFilename);
+  }
+}
+
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1loadQoS
+(JNIEnv * env, jobject, jlong cptr, jstring filename)
+{
+  if (cptr && filename)
+  {
+    const char * nativeFilename = env->GetStringUTFChars (filename, 0);
+    QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+    settings->load (nativeFilename);
+
+    env->ReleaseStringUTFChars (filename, nativeFilename);
+  }
+}
+
 /*
  * Class:     com_madara_transport_QoSTransportSettings
  * Method:    jni_addRebroadcastFilter

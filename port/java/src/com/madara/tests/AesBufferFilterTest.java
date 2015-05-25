@@ -44,54 +44,85 @@
  * 
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
-package com.madara;
 
+package com.madara.tests;
 
-import com.madara.transport.filters.AggregateFilter;
-import com.madara.transport.TransportContext;
-import com.madara.transport.filters.RecordFilter;
+import com.madara.filters.ssl.AesBufferFilter;
+import java.lang.String;
 
 /**
- * Abstract class that insures loading of libMADARA.so and holds the C pointer
+ * This class is a tester for the AesBufferFilter class
  */
-public abstract class MadaraJNI
+public class AesBufferFilterTest
 {
-  static
+  public static void testAesBufferFilter()
   {
-    System.loadLibrary("ACE");
-    System.loadLibrary("MADARA");
+    AesBufferFilter filter = new AesBufferFilter ();
+    
+    byte [] buffer = new byte [500];
+    
+    buffer[0] = 'H';
+    buffer[1] = 'e';
+    buffer[2] = 'l';
+    buffer[3] = 'l';
+    buffer[4] = 'o';
+    buffer[5] = ' ';
+    buffer[6] = 'W';
+    buffer[7] = 'o';
+    buffer[8] = 'r';
+    buffer[9] = 'l';
+    buffer[10] = 'd';
+    buffer[11] = '!';
+    buffer[12] = 0;
+    buffer[13] = 0;
+    
+    String plaintext = new String(buffer,0,(int)13);
+    
+    long size = filter.encode(buffer, 13, 500);
+    
+    String encoded = new String(buffer,0,(int)size);
+    
+    if (!plaintext.equals(encoded))
+    {
+      System.out.println("Plaintext was not equal to encoded. SUCCESS");
+    }
+    else
+    {
+      System.out.println("Plaintext was equal to encoded. FAIL");
+    }
+    
+    size = filter.decode(buffer, size, size);
+    
+    String decoded = new String(buffer,0,(int)size);
+    
+    if (!encoded.equals(decoded))
+    {
+      System.out.println("Encoded was not equal to decoded. SUCCESS");
+    }
+    else
+    {
+      System.out.println("Encoded was equal to decoded. FAIL");
+    }
+    
+    if (plaintext.equals(decoded))
+    {
+      System.out.println("Plaintext was equal to decoded. SUCCESS");
+    }
+    else
+    {
+      System.out.println("Plaintext was not equal to decoded. FAIL");
+    }
+    
+    /**
+     * Normally we would not need to do this when passing this to a settings.
+     * However, in this case, we should clean up.
+     **/
+    filter.free();
+    
   }
-
-  /**
-   * C pointer to an object
-   */
-  private long cptr = 0;
-
-  /**
-   * Set the C pointer to the object
-   *
-   * @param cptr C Pointer
-   */
-  protected void setCPtr(long cptr)
+  
+  public static void main(String...args) throws Exception
   {
-    this.cptr = cptr;
-  }
-
-  /**
-   * @return The C pointer of this object for passing to JNI functions
-   */
-  public long getCPtr()
-  {
-    return cptr;
-  }
-
-  /**
-   * @return &lt;ClassName&gt;[&lt;C Pointer&gt;]
-   * @see java.lang.Object#toString ()
-   */
-  public String toString()
-  {
-    return getClass().getName() + "[" + cptr + "]";
+    testAesBufferFilter();
   }
 }
-

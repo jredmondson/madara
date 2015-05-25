@@ -46,6 +46,40 @@ jlong JNICALL Java_com_madara_transport_TransportSettings_jni_1Settings__J (JNIE
   return result;
 }
 
+
+void JNICALL Java_com_madara_transport_TransportSettings_jni_1save
+(JNIEnv * env, jobject, jlong cptr, jstring filename)
+{
+  if (cptr && filename)
+  {
+    const char * nativeFilename = env->GetStringUTFChars (filename, 0);
+    Settings * settings = (Settings *)cptr;
+
+    settings->save (nativeFilename);
+
+    env->ReleaseStringUTFChars (filename, nativeFilename);
+  }
+}
+
+/*
+* Class:     com_madara_transport_TransportSettings
+* Method:    jni_load
+* Signature: (JLjava/lang/String;)J
+*/
+void JNICALL Java_com_madara_transport_TransportSettings_jni_1load
+(JNIEnv * env, jobject, jlong cptr, jstring filename)
+{
+  if (cptr && filename)
+  {
+    const char * nativeFilename = env->GetStringUTFChars (filename, 0);
+    Settings * settings = (Settings *)cptr;
+
+    settings->load (nativeFilename);
+
+    env->ReleaseStringUTFChars (filename, nativeFilename);
+  }
+}
+
 /*
 * Class:     com_madara_transport_TransportSettings
 * Method:    jni_setDomains

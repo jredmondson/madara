@@ -1140,7 +1140,7 @@ project (Test_Timed_Wait) : using_madara, using_ace, using_splice, no_karl, no_x
   }
 }
 
-project (Test_AES_256) : using_madara, using_ace, using_splice, no_karl, no_xml {
+project (Test_AES_256) : using_madara, using_ace, using_ssl, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_aes_256
   
@@ -1680,7 +1680,7 @@ project (Test_Multicast) : using_madara, using_ace, no_karl, no_xml {
   }
 }
 
-project (Test_Multicast_SSL) : using_madara, using_ace, no_karl, no_xml {
+project (Test_Multicast_SSL) : using_madara, using_ssl, using_ace, no_karl, no_xml {
   requires += tests ssl
   
   exeout = $(MADARA_ROOT)/bin

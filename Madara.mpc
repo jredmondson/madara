@@ -37,6 +37,8 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     null_lock.mpb
     using_ace.mpb
     using_boost.mpb
+    using_ssl.mpb
+    ssl_filters.mpb
     using_cid.mpb
     using_madara.mpb
     no_karl.mpb

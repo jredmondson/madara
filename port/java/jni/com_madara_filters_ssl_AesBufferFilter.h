@@ -46,59 +46,59 @@
 *********************************************************************/
 #include <jni.h>
 #include "madara/MADARA_export.h"
-/* Header for class com_madara_transport_filters_Packet */
+/* Header for class com_madara_filters_ssl_AesBufferFilter */
 
-#ifndef _Included_com_madara_transport_filters_Packet
-#define _Included_com_madara_transport_filters_Packet
+#ifndef _Included_com_madara_filters_ssl_AesBufferFilter
+#define _Included_com_madara_filters_ssl_AesBufferFilter
 #ifdef __cplusplus
 extern "C" {
 #endif
 /*
- * Class:     com_madara_transport_filters_Packet
- * Method:    jni_get
- * Signature: (JLjava/lang/String;)J
+ * Class:     com_madara_filters_ssl_AesBufferFilter
+ * Method:    jni_AesBufferFilter
+ * Signature: ()J
  */
-MADARA_Export  jlong JNICALL Java_com_madara_transport_filters_Packet_jni_1get
-  (JNIEnv *, jobject, jlong, jstring);
+MADARA_Export jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__
+  (JNIEnv *, jobject);
 
 /*
- * Class:     com_madara_transport_filters_Packet
- * Method:    jni_set
- * Signature: (JLjava/lang/String;J)V
+ * Class:     com_madara_filters_ssl_AesBufferFilter
+ * Method:    jni_AesBufferFilter
+ * Signature: (J)J
  */
-MADARA_Export  void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
-  (JNIEnv *, jobject, jlong, jstring, jlong);
-
-/*
- * Class:     com_madara_transport_filters_Packet
- * Method:    jni_get_keys
- * Signature: (J)[Ljava/lang/String;
- */
-MADARA_Export  jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
+MADARA_Export jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__J
   (JNIEnv *, jobject, jlong);
 
 /*
- * Class:     com_madara_transport_filters_Packet
- * Method:    jni_exists
- * Signature: (JLjava/lang/String;)Z
- */
-MADARA_Export  jboolean JNICALL Java_com_madara_transport_filters_Packet_jni_1exists
-  (JNIEnv *, jobject, jlong, jstring);
-
-/*
- * Class:     com_madara_transport_filters_Packet
- * Method:    jni_clear
+ * Class:     com_madara_filters_ssl_AesBufferFilter
+ * Method:    jni_freeAesBufferFilter
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_transport_filters_Packet_jni_1clear
-  (JNIEnv *, jobject, jlong);
+MADARA_Export void JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1freeAesBufferFilter
+  (JNIEnv *, jclass, jlong);
 
 /*
- * Class:     com_madara_transport_filters_Packet
- * Method:    jni_erase
- * Signature: (JLjava/lang/String;)V
+ * Class:     com_madara_filters_ssl_AesBufferFilter
+ * Method:    jni_encode
+ * Signature: (J[BJJ)J
  */
-MADARA_Export void JNICALL Java_com_madara_transport_filters_Packet_jni_1erase
+MADARA_Export jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1encode
+  (JNIEnv *, jobject, jlong, jbyteArray, jlong, jlong);
+
+/*
+ * Class:     com_madara_filters_ssl_AesBufferFilter
+ * Method:    jni_decode
+ * Signature: (J[BJJ)J
+ */
+MADARA_Export jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1decode
+  (JNIEnv *, jobject, jlong, jbyteArray, jlong, jlong);
+
+/*
+ * Class:     com_madara_filters_ssl_AesBufferFilter
+ * Method:    jni_generateKey
+ * Signature: (JLjava/lang/String;)I
+ */
+MADARA_Export jint JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1generateKey
   (JNIEnv *, jobject, jlong, jstring);
 
 #ifdef __cplusplus
