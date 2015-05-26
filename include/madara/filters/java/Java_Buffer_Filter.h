@@ -16,7 +16,7 @@
 
 #include <string>
 
-#include "madara/MADARA_Export.h"
+#include "madara/MADARA_export.h"
 #include "madara/utility/Scoped_Array.h"
 #include "../Buffer_Filter.h"
 
