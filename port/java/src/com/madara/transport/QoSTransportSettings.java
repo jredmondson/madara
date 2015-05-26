@@ -46,10 +46,12 @@
  *********************************************************************/
 package com.madara.transport;
 
+import com.madara.MadaraJNI;
 import com.madara.KnowledgeType;
 import com.madara.MadaraFunction;
 import com.madara.transport.filters.AggregateFilter;
 import com.madara.transport.filters.RecordFilter;
+import com.madara.filters.BufferFilter;
 
 public class QoSTransportSettings extends TransportSettings {
 
@@ -59,6 +61,14 @@ public class QoSTransportSettings extends TransportSettings {
 
   private static native void jni_freeQoSTransportSettings(long cptr);
 
+  private native void jni_addBufferFilter(long cptr, long filter);
+  
+  private native void jni_addBufferFilterObj(long cptr, BufferFilter filter);
+  
+  private native void jni_clearBufferFilters(long cptr);
+  
+  private native int jni_getNumberOfBufferFilters(long cptr);
+  
   private native void jni_addRebroadcastFilter(long cptr, int type, RecordFilter filter);
 
   private native void jni_addRebroadcastFilter(long cptr, AggregateFilter filter);
@@ -101,12 +111,41 @@ public class QoSTransportSettings extends TransportSettings {
 
   private native void jni_updateDropRate(long cptr, double percentage, int type, int burstamount);
 
-  public QoSTransportSettings() {
+  public QoSTransportSettings()
+  {
     setCPtr(jni_QoSTransportSettings());
   }
 
-  public QoSTransportSettings(QoSTransportSettings transportSettings) {
+  public QoSTransportSettings(QoSTransportSettings transportSettings)
+  {
     setCPtr(jni_QoSTransportSettings(transportSettings.getCPtr()));
+  }
+
+  /**
+   * Adds a BufferFilter to the filter chain. Buffer filters are applied just
+   * after all other filters on send and before all other filters on receive.
+   *
+   * @param filter a filter to encode and decode buffers
+   */
+  public void addFilter(BufferFilter filter)
+  {
+    if (filter instanceof MadaraJNI)
+    {
+      MadaraJNI superClass = (MadaraJNI)filter;
+      jni_addBufferFilter(getCPtr(), superClass.getCPtr());
+    }
+    else
+    {
+      jni_addBufferFilterObj(getCPtr(), filter);
+    }
+  }
+
+  /**
+   * Clears the list of buffer filters
+   */
+  public void clearBufferFilters()
+  {
+    jni_clearBufferFilters(getCPtr());
   }
 
   /**
@@ -116,7 +155,8 @@ public class QoSTransportSettings extends TransportSettings {
    * @param type the types to add the filter to
    * @param filter Madara callback function
    */
-  public void addRebroadcastFilter(KnowledgeType type, RecordFilter filter) {
+  public void addRebroadcastFilter(KnowledgeType type, RecordFilter filter)
+  {
     jni_addRebroadcastFilter(getCPtr(), type.value(), filter);
   }
 
@@ -126,7 +166,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param filter Madara callback function
    */
-  public void addRebroadcastFilter(AggregateFilter filter) {
+  public void addRebroadcastFilter(AggregateFilter filter)
+  {
     jni_addRebroadcastFilter(getCPtr(), filter);
   }
 
@@ -136,7 +177,8 @@ public class QoSTransportSettings extends TransportSettings {
    * @param type the types to add the filter to
    * @param filter Madara callback function
    */
-  public void addSendFilter(KnowledgeType type, RecordFilter filter) {
+  public void addSendFilter(KnowledgeType type, RecordFilter filter)
+  {
     jni_addSendFilter(getCPtr(), type.value(), filter);
   }
 
@@ -146,7 +188,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param filter Madara callback function
    */
-  public void addSendFilter(AggregateFilter filter) {
+  public void addSendFilter(AggregateFilter filter)
+  {
     jni_addSendFilter(getCPtr(), filter);
   }
 
@@ -157,7 +200,8 @@ public class QoSTransportSettings extends TransportSettings {
    * @param type the types to add the filter to
    * @param filter Madara callback function
    */
-  public void addReceiveFilter(KnowledgeType type, RecordFilter filter) {
+  public void addReceiveFilter(KnowledgeType type, RecordFilter filter)
+  {
     jni_addReceiveFilter(getCPtr(), type.value(), filter);
   }
 
@@ -167,7 +211,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param filter Madara callback function
    */
-  public void addReceiveFilter(AggregateFilter filter) {
+  public void addReceiveFilter(AggregateFilter filter)
+  {
     jni_addReceiveFilter(getCPtr(), filter);
   }
 
@@ -176,7 +221,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param ttl the time-to-live
    */
-  public void setRebroadcastTtl(int ttl) {
+  public void setRebroadcastTtl(int ttl)
+  {
     jni_setRebroadcastTtl(getCPtr(), ttl);
   }
 
@@ -185,7 +231,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @return the rebroadcast time-to-live
    */
-  public int getRebroadcastTtl() {
+  public int getRebroadcastTtl()
+  {
     return jni_getRebroadcastTtl(getCPtr());
   }
 
@@ -194,7 +241,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param ttl the time-to-live
    */
-  public void enableParticipantTtl(int ttl) {
+  public void enableParticipantTtl(int ttl)
+  {
     jni_enableParticipantTtl(getCPtr(), ttl);
   }
 
@@ -203,7 +251,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @return the rebroadcast time-to-live
    */
-  public int getParticipantTtl() {
+  public int getParticipantTtl()
+  {
     return jni_getParticipantTtl(getCPtr());
   }
 
@@ -212,7 +261,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param limit the bandwidth limit for sending packets
    */
-  public void setSendBandwidthLimit(int limit) {
+  public void setSendBandwidthLimit(int limit)
+  {
     jni_setSendBandwidthLimit(getCPtr(), limit);
   }
 
@@ -221,7 +271,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @return the bandwidth limit for sending packets
    */
-  public int getSendBandwidthLimit() {
+  public int getSendBandwidthLimit()
+  {
     return jni_getSendBandwidthLimit(getCPtr());
   }
 
@@ -230,7 +281,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param limit the bandwidth limit for all packets
    */
-  public void setTotalBandwidthLimit(int limit) {
+  public void setTotalBandwidthLimit(int limit)
+  {
     jni_setTotalBandwidthLimit(getCPtr(), limit);
   }
 
@@ -239,7 +291,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @return the bandwidth limit for all packets
    */
-  public int getTotalBandwidthLimit() {
+  public int getTotalBandwidthLimit()
+  {
     return jni_getTotalBandwidthLimit(getCPtr());
   }
 
@@ -248,7 +301,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param deadline the maximum lifetime for all packets in seconds
    */
-  public void setDeadline(int deadline) {
+  public void setDeadline(int deadline)
+  {
     jni_setDeadline(getCPtr(), deadline);
   }
 
@@ -257,7 +311,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @return the maximum lifetime for all packets in seconds
    */
-  public int getDeadline() {
+  public int getDeadline()
+  {
     return jni_getDeadline(getCPtr());
   }
 
@@ -267,7 +322,8 @@ public class QoSTransportSettings extends TransportSettings {
    * @param host the peer to add to the trusted list
    *
    */
-  void addTrustedPeer(java.lang.String host) {
+  void addTrustedPeer(java.lang.String host)
+  {
     jni_addTrustedPeer(getCPtr(), host);
   }
 
@@ -277,7 +333,8 @@ public class QoSTransportSettings extends TransportSettings {
    * @param host the peer to add to the banned list
    *
    */
-  void addBannedPeer(java.lang.String host) {
+  void addBannedPeer(java.lang.String host)
+  {
     jni_addBannedPeer(getCPtr(), host);
   }
 
@@ -289,7 +346,8 @@ public class QoSTransportSettings extends TransportSettings {
    * @param burstamount the amount of bursts of drops to enforce
    *
    */
-  void updateDropRate(double percentage, DropType type, int burstamount) {
+  void updateDropRate(double percentage, DropType type, int burstamount)
+  {
     jni_updateDropRate(getCPtr(), percentage, type.value(), burstamount);
   }
 
@@ -301,7 +359,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    **/
   @Override
-  public void save(String filename) {
+  public void save(String filename)
+  {
     jni_saveQoS(getCPtr(), filename);
   }
 
@@ -313,7 +372,8 @@ public class QoSTransportSettings extends TransportSettings {
    *
    **/
   @Override
-  public void load(String filename) {
+  public void load(String filename)
+  {
     jni_loadQoS(getCPtr(), filename);
   }
 
@@ -321,7 +381,8 @@ public class QoSTransportSettings extends TransportSettings {
    * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
    * called before an instance of WaitSettings gets garbage collected
    */
-  public void free() {
+  public void free()
+  {
     jni_freeQoSTransportSettings(getCPtr());
     setCPtr(0);
   }

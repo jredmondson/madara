@@ -7,15 +7,19 @@
 
 #include "com.madara.transport.QoSTransportSettings.h"
 #include "madara/transport/QoS_Transport_Settings.h"
+#include "madara/filters/java/Java_Buffer_Filter.h"
 
 #include <iostream>
 
 // define useful shorthands
 namespace engine = Madara::Knowledge_Engine;
 namespace transport = Madara::Transport;
+namespace filters = Madara::Filters;
 typedef Madara::Knowledge_Record  Knowledge_Record;
 typedef Knowledge_Record::Integer Integer;
 typedef transport::QoS_Transport_Settings QoS_Transport_Settings;
+typedef filters::Java_Buffer_Filter  Java_Buffer_Filter;
+typedef filters::Buffer_Filter Buffer_Filter;
 
 /*
  * Class:   com_madara_transport_QoSTransportSettings
@@ -59,6 +63,77 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1freeQoSTranspor
 
   delete settings;
 }
+
+
+/*
+* Class:     com_madara_transport_QoSTransportSettings
+* Method:    jni_addBufferFilter
+* Signature: (JJ)V
+*/
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addBufferFilter
+(JNIEnv *, jobject, jlong cptr, jlong filter)
+{
+  QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+  Buffer_Filter * buffer_filter = (Buffer_Filter *)filter;
+
+  if (settings)
+  {
+    settings->add_filter (buffer_filter);
+  }
+}
+
+/*
+* Class:     com_madara_transport_QoSTransportSettings
+* Method:    jni_addBufferFilterObj
+* Signature: (JLcom/madara/filters/BufferFilter;)V
+*/
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addBufferFilterObj
+(JNIEnv *, jobject, jlong cptr, jobject filter)
+{
+  QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+  Java_Buffer_Filter * buffer_filter = new Java_Buffer_Filter (filter);
+
+  if (settings)
+  {
+    settings->add_filter (buffer_filter);
+  }
+}
+
+/*
+* Class:     com_madara_transport_QoSTransportSettings
+* Method:    jni_clearBufferFilters
+* Signature: (J)V
+*/
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1clearBufferFilters
+(JNIEnv *, jobject, jlong cptr)
+{
+  QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+  if (settings)
+  {
+    settings->clear_buffer_filters ();
+  }
+}
+
+/*
+* Class:     com_madara_transport_QoSTransportSettings
+* Method:    jni_getNumberOfBufferFilters
+* Signature: (J)I
+*/
+jint JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1getNumberOfBufferFilters
+(JNIEnv *, jobject, jlong cptr)
+{
+  QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+  jint result (0);
+
+  if (settings)
+  {
+    result = (jint)settings->get_number_of_buffer_filters ();
+  }
+
+  return result;
+}
+
 
 void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1saveQoS
 (JNIEnv * env, jobject, jlong cptr, jstring filename)

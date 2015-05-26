@@ -82,6 +82,38 @@ MADARA_Export void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1f
 
 /*
 * Class:     com_madara_transport_QoSTransportSettings
+* Method:    jni_addBufferFilter
+* Signature: (JJ)V
+*/
+MADARA_Export void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addBufferFilter
+(JNIEnv *, jobject, jlong, jlong);
+
+/*
+* Class:     com_madara_transport_QoSTransportSettings
+* Method:    jni_addBufferFilterObj
+* Signature: (JLcom/madara/filters/BufferFilter;)V
+*/
+MADARA_Export void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addBufferFilterObj
+(JNIEnv *, jobject, jlong, jobject);
+
+/*
+* Class:     com_madara_transport_QoSTransportSettings
+* Method:    jni_clearBufferFilters
+* Signature: (J)V
+*/
+MADARA_Export void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1clearBufferFilters
+(JNIEnv *, jobject, jlong);
+
+/*
+* Class:     com_madara_transport_QoSTransportSettings
+* Method:    jni_getNumberOfBufferFilters
+* Signature: (J)I
+*/
+MADARA_Export jint JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1getNumberOfBufferFilters
+(JNIEnv *, jobject, jlong);
+
+/*
+* Class:     com_madara_transport_QoSTransportSettings
 * Method:    jni_saveQoS
 * Signature: (JLjava/lang/String;)V
 */

@@ -77,8 +77,6 @@ Madara::Transport::QoS_Transport_Settings::QoS_Transport_Settings (
 Madara::Transport::QoS_Transport_Settings::~QoS_Transport_Settings ()
 {
   // need to clean up functors
-
-
 }
 
 void
@@ -464,6 +462,13 @@ void
 Madara::Transport::QoS_Transport_Settings::clear_rebroadcast_filters (uint32_t types)
 {
   rebroadcast_filters_.clear (types);
+}
+
+
+void
+Madara::Transport::QoS_Transport_Settings::clear_buffer_filters (void)
+{
+  buffer_filters_.clear ();
 }
 
 void

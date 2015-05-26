@@ -17,12 +17,14 @@ feature (java) {
   Source_Files {
     port/java/jni
     include/madara/threads/java
+    include/madara/filters/java
   }
   
   Header_Files {
     port/java/jni
     include/madara/threads/java
     include/madara/utility/java
+    include/madara/filters/java
   }
 
 }
