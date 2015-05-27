@@ -613,6 +613,13 @@ namespace Madara
                        std::map <std::string, Knowledge_Record> & target);
       
       /**
+      * Saves the context to a file as karl assignments, rather than binary
+      * @param   filename    name of the file to save to
+      * @return  total bytes written
+      **/
+      int64_t save_as_karl (const std::string & filename) const;
+
+      /**
        * Saves the context to a file
        * @param   filename    name of the file to open
        * @return  total bytes written

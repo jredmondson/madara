@@ -11,7 +11,9 @@ void
 Madara::Knowledge_Engine::Variables::operator= (Variables & rhs)
 {
   if (this != &rhs || context_ != rhs.context_)
+  {
     context_ = rhs.context_;
+  }
 }
 
 Madara::Knowledge_Engine::Thread_Safe_Context *
@@ -102,7 +104,9 @@ Madara::Knowledge_Engine::Variables::apply_modified (
   const Knowledge_Update_Settings & settings)
 {
   if (context_)
+  {
     context_->apply_modified ();
+  }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
@@ -137,7 +141,9 @@ Madara::Knowledge_Engine::Variables::retrieve_index (
   const Knowledge_Reference_Settings & settings)
 {
   if (context_)
+  {
     return context_->retrieve_index (variable, index, settings);
+  }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
@@ -152,7 +158,9 @@ Madara::Knowledge_Engine::Variables::get_ref (const std::string & key,
              const Knowledge_Reference_Settings & settings)
 {
   if (context_)
+  {
     return context_->get_ref (key, settings);
+  }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
@@ -556,21 +564,29 @@ Madara::Knowledge_Engine::Variables::to_string (
   const std::string & key_val_delimiter) const
 {
   if (context_)
+  {
     context_->to_string (target,
       array_delimiter, record_delimiter, key_val_delimiter);
+  }
   else
+  {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
       "Variables::to_string. Context not set correctly.\n"));
+  }
 }
 
 void
 Madara::Knowledge_Engine::Variables::print (unsigned int level) const
 {
   if (context_)
+  {
     context_->print (level);
+  }
   else
+  {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
       "Variables::print. Context not set correctly.\n"));
+  }
 }
 
 
@@ -579,10 +595,14 @@ Madara::Knowledge_Engine::Variables::print (const std::string & statement,
                                    unsigned int level) const
 {
   if (context_)
+  {
     context_->print (statement, level);
+  }
   else
+  {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
       "Variables::print. Context not set correctly.\n"));
+  }
 }
 
 std::string
@@ -590,7 +610,9 @@ Madara::Knowledge_Engine::Variables::expand_statement (
                                   const std::string & statement) const
 {
   if (context_)
+  {
     return context_->expand_statement (statement);
+  }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
@@ -609,7 +631,9 @@ void Madara::Knowledge_Engine::Variables::define_function (
   Knowledge_Record (*func) (Function_Arguments &, Variables &))
 {
   if (context_)
+  {
     return context_->define_function (name, func);
+  }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
@@ -623,7 +647,9 @@ void Madara::Knowledge_Engine::Variables::define_function (
   const std::string & name, jobject func)
 {
   if (context_)
+  {
     return context_->define_function (name, func);
+  }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
@@ -639,7 +665,9 @@ void Madara::Knowledge_Engine::Variables::define_function (
   const std::string & name, boost::python::object callable)
 {
   if (context_)
+  {
     return context_->define_function (name, callable);
+  }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
@@ -659,7 +687,9 @@ Madara::Knowledge_Engine::Variables::define_function (const std::string & name,
   const std::string & expression)
 {
   if (context_)
+  {
     return context_->define_function (name, expression);
+  }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
@@ -677,7 +707,9 @@ Madara::Knowledge_Engine::Variables::define_function (const std::string & name,
   const Compiled_Expression & expression)
 {
   if (context_)
+  {
     return context_->define_function (name, expression);
+  }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
@@ -690,7 +722,9 @@ Madara::Knowledge_Engine::Compiled_Expression
 Madara::Knowledge_Engine::Variables::compile (const std::string & expression)
 {
   if (context_)
+  {
     return context_->compile (expression);
+  }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
@@ -746,17 +780,19 @@ Madara::Knowledge_Engine::Variables::to_vector (
                               unsigned int end,
                               std::vector <Knowledge_Record> & target)
 {
+  size_t result (0);
+
   if (context_)
   {
-    return context_->to_vector (subject, start, end, target);
+    result = context_->to_vector (subject, start, end, target);
   }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
       "Variables::to_vector. Context not set correctly.\n"));
-
-    return Madara::Knowledge_Record::Integer (0);
   }
+
+  return result;
 }
 
 size_t
@@ -764,17 +800,19 @@ Madara::Knowledge_Engine::Variables::to_map (
   const std::string & expression,
   std::map <std::string, Knowledge_Record> & target)
 {
+  size_t result (0);
+
   if (context_)
   {
-    return context_->to_map (expression, target);
+    result = context_->to_map (expression, target);
   }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
       "Variables::to_map. Context not set correctly.\n"));
-
-    return Madara::Knowledge_Record::Integer (0);
   }
+
+  return result;
 }
 
 
@@ -783,17 +821,38 @@ int64_t
 Madara::Knowledge_Engine::Variables::save_context (
   const std::string & filename)
 {
+  int64_t result (0);
+
   if (context_)
   {
-    return context_->save_context (filename);
+    result = context_->save_context (filename);
   }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
       "Variables::save_context. Context not set correctly.\n"));
-
-    return Madara::Knowledge_Record::Integer (0);
   }
+
+  return result;
+}
+
+int64_t
+Madara::Knowledge_Engine::Variables::save_as_karl (
+const std::string & filename) const
+{
+  int64_t result (0);
+
+  if (context_)
+  {
+    result = context_->save_as_karl (filename);
+  }
+  else
+  {
+    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
+      "Variables::save_as_karl. Context not set correctly.\n"));
+  }
+
+  return result;
 }
 
 int64_t
@@ -801,22 +860,22 @@ Madara::Knowledge_Engine::Variables::save_checkpoint (
   const std::string & filename,
   bool reset_modifieds)
 {
+  int64_t result (0);
+
   if (context_)
   {
-    int64_t result = context_->save_context (filename);
+    result = context_->save_context (filename);
 
     if (reset_modifieds)
       context_->reset_modified ();
-
-    return result;
   }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
       "Variables::save_checkpoint. Context not set correctly.\n"));
-
-    return Madara::Knowledge_Record::Integer (0);
   }
+
+  return result;
 }
       
 int64_t
@@ -824,18 +883,20 @@ Madara::Knowledge_Engine::Variables::load_context (
   const std::string & filename,
   const Knowledge_Update_Settings & settings)
 {
+  int64_t result (0);
+
   if (context_)
   {
     std::string id;
-    return context_->load_context (filename, id, settings);
+    result = context_->load_context (filename, id, settings);
   }
   else
   {
     MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
       "Variables::load_context. Context not set correctly.\n"));
-
-    return Madara::Knowledge_Record::Integer (0);
   }
+
+  return result;
 }
      
 ssize_t
