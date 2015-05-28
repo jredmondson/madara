@@ -20,6 +20,29 @@ project (Test_Multicast_Mutex) : using_madara, using_ace, no_karl, no_xml {
     tests/transports/multicast/test_multicast_mutex.cpp
   }
 }
+
+project (Test_Multicast_Close_And_Attach) : using_madara, using_ace, no_karl, no_xml {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_multicast_close_and_attach
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/multicast/test_multicast_close_and_attach.cpp
+  }
+}
+
 project (Test_Multicast_Peer_Discovery) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_peer_discovery
