@@ -259,7 +259,7 @@ long
   const char * print_prefix = "UDP_Transport::send_data";
   
   long result (0);
-
+  
   if (!settings_.no_sending)
   {
     result = prep_send (orig_updates, print_prefix);

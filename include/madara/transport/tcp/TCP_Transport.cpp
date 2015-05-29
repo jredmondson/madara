@@ -8,7 +8,7 @@ Madara::Transport::TCP_Transport::TCP_Transport (const std::string & id,
         Madara::Knowledge_Engine::Thread_Safe_Context & context, 
         Settings & config, bool launch_transport)
 : Base (id, config, context),
-  thread_ (0), valid_setup_ (false)
+  thread_ (0)
 {
   this->validate_transport ();
 }
@@ -56,22 +56,5 @@ long
 Madara::Transport::TCP_Transport::send_data (
   const Madara::Knowledge_Records & updates)
 {
-  // check to see if we are shutting down
-  long ret = this->check_transport ();
-  if (-1 == ret)
-  {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "TCP_Transport::send_data: transport has been told to shutdown")); 
-    return ret;
-  }
-  else if (-2 == ret)
-  {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "TCP_Transport::send_data: transport is not valid")); 
-    return ret;
-  }
-  
-  uint32_t quality = Madara::max_quality (updates);
-
   return 0;
 }

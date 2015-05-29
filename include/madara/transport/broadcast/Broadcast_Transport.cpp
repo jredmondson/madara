@@ -10,8 +10,7 @@
 Madara::Transport::Broadcast_Transport::Broadcast_Transport (const std::string & id,
         Madara::Knowledge_Engine::Thread_Safe_Context & context, 
         Settings & config, bool launch_transport)
-: Base (id, config, context),
-  valid_setup_ (false)
+: Base (id, config, context)
 {
   // create a reference to the knowledge base for threading
   knowledge_.use (context);
@@ -173,8 +172,8 @@ Madara::Transport::Broadcast_Transport::send_data (
   const Madara::Knowledge_Records & orig_updates)
 {
   const char * print_prefix = "Broadcast_Transport::send_data";
-
   long result (0);
+
   if (!settings_.no_sending)
   {
     result = prep_send (orig_updates, print_prefix);

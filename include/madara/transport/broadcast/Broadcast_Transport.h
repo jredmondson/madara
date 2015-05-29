@@ -95,9 +95,6 @@ namespace Madara
       /// threads for reading knowledge updates
       Threads::Threader                        read_threads_;
 
-      /// indicates whether the transport is correctly configured
-      bool                                      valid_setup_;
-      
       /// holds all multicast addresses we are sending to
       std::vector <ACE_INET_Addr>               addresses_;
 

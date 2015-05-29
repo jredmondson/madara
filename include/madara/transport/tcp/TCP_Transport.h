@@ -73,8 +73,6 @@ namespace Madara
       const std::string                               id_;
 
       TCP_Transport_Read_Thread *               thread_;
-
-      bool                                      valid_setup_;
     };
   }
 }

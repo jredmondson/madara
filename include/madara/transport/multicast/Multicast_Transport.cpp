@@ -14,7 +14,6 @@ Madara::Transport::Multicast_Transport::Multicast_Transport (const std::string &
         Madara::Knowledge_Engine::Thread_Safe_Context & context, 
         Settings & config, bool launch_transport)
 : Base (id, config, context),
-  valid_setup_ (false),
   write_socket_ (ACE_sap_any_cast (ACE_INET_Addr &), PF_INET, 0, 1)
 {
   // create a reference to the knowledge base for threading
@@ -248,10 +247,9 @@ long
 Madara::Transport::Multicast_Transport::send_data (
   const Madara::Knowledge_Records & orig_updates)
 {
+  long result (0);
   const char * print_prefix = "Multicast_Transport::send_data";
 
-  long result (0);
-  
   if (!settings_.no_sending)
   {
     result = prep_send (orig_updates, print_prefix);

@@ -22,6 +22,7 @@
 #include "ace/Condition_T.h"
 #include "ace/Guard_T.h"
 #include "madara/utility/Log_Macros.h"
+#include "madara/utility/Thread_Safe_Vector.h"
 #include "madara/MADARA_export.h"
 #include "ace/High_Res_Timer.h"
 #include "madara/transport/QoS_Transport_Settings.h"
@@ -280,7 +281,7 @@ namespace Madara
       const Knowledge_Map & records,
       Packet_Scheduler & packet_scheduler);
 
-    typedef   std::vector <Base *>    Transports;
+    typedef   Utility::Thread_Safe_Vector <Base *>   Transports;
   }
 }
 

@@ -199,7 +199,9 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::attach_transport (const std::stri
 
   // if we have a valid transport, add it to the transports vector
   if (transport != 0)
+  {
     transports_.push_back (transport);
+  }
 
   return transports_.size ();
 }
@@ -254,6 +256,7 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::close_transport (void)
         DLINFO "Knowledge_Base_Impl::close_transport:" \
         " transport has been closed.\n"));
     }
+
     transports_.clear ();
   }
 }

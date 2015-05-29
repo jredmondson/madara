@@ -330,10 +330,7 @@ inline
 size_t
 Madara::Knowledge_Engine::Knowledge_Base_Impl::remove_transport (size_t index)
 {
-  if (index < transports_.size ())
-    transports_.erase (transports_.begin () + index);
-
-  return transports_.size ();
+  return transports_.erase (index);
 }
 
 /**
@@ -476,9 +473,12 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::send_modifieds (
       // if there is not an allowed send_list list
       if (settings.send_list.size () == 0)
       {
+        transports_.lock ();
         // send across each transport
         for (unsigned int i = 0; i < transports_.size (); ++i, ++result)
           transports_[i]->send_data (modified);
+
+        transports_.unlock ();
 
         // reset the modified map
         map_.reset_modified ();
@@ -499,9 +499,13 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::send_modifieds (
         // if the subset was greater than zero, we send the subset
         if (allowed_modifieds.size () > 0)
         {
+          transports_.lock ();
+
           // send across each transport
           for (unsigned int i = 0; i < transports_.size (); ++i, ++result)
             transports_[i]->send_data (allowed_modifieds);
+
+          transports_.unlock ();
 
           // reset modified list for the allowed modifications
           for (Knowledge_Records::const_iterator i = allowed_modifieds.begin ();
