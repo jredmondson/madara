@@ -328,6 +328,13 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::attach_transport (
  
 inline
 size_t
+Madara::Knowledge_Engine::Knowledge_Base_Impl::get_num_transports (void)
+{
+  return transports_.size ();
+}
+
+inline
+size_t
 Madara::Knowledge_Engine::Knowledge_Base_Impl::remove_transport (size_t index)
 {
   return transports_.erase (index);

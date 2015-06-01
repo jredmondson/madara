@@ -355,7 +355,6 @@ public class QoSTransportSettings extends TransportSettings {
    * Saves the transport settings as a KnowledgeBase to a file
    *
    * @param filename the file to save the knowledge base to
-   * @return the number of bytes written to the file
    *
    **/
   @Override
@@ -368,7 +367,6 @@ public class QoSTransportSettings extends TransportSettings {
    * Loads the transport settings from a KnowledgeBase context file
    *
    * @param filename the file to save the knowledge base to
-   * @return the number of bytes written to the file
    *
    **/
   @Override

@@ -91,6 +91,12 @@ namespace Madara
        * Starts the transport mechanism for dissemination if it is closed
        **/
       void activate_transport (void);
+      
+      /**
+       * Gets the number of transports
+       * @return the number of transports
+       **/
+      size_t get_num_transports (void);
 
       /**
        * Closes the transport mechanism so no dissemination is possible

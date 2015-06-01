@@ -127,6 +127,12 @@ namespace Madara
        * Closes the transport mechanism so no dissemination is possible
        **/
       void close_transport (void);
+      
+      /**
+       * Gets the number of transports
+       * @return the number of transports
+       **/
+      size_t get_num_transports (void);
 
       /**
        * Locks the context to prevent updates over the network

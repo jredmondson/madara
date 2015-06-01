@@ -170,15 +170,6 @@ Madara::Knowledge_Engine::Knowledge_Base::copy (
   }
 }
 
-void
-Madara::Knowledge_Engine::Knowledge_Base::activate_transport (void)
-{
-  if (impl_.get_ptr ())
-  {
-    impl_->activate_transport ();
-  }
-}
-
 /// Applies current time and modified to all global variables and tries
 /// to send them.
 int
@@ -1423,6 +1414,15 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
 
 #endif // _MADARA_NO_KARL_
 
+void
+Madara::Knowledge_Engine::Knowledge_Base::activate_transport (void)
+{
+  if (impl_.get_ptr ())
+  {
+    impl_->activate_transport ();
+  }
+}
+
 size_t
 Madara::Knowledge_Engine::Knowledge_Base::attach_transport (
   Madara::Transport::Base * transport)
@@ -1432,6 +1432,19 @@ Madara::Knowledge_Engine::Knowledge_Base::attach_transport (
   if (impl_.get_ptr ())
   {
     result = impl_->attach_transport (transport);
+  }
+
+  return result;
+}
+
+size_t
+Madara::Knowledge_Engine::Knowledge_Base::get_num_transports (void)
+{
+  size_t result (0);
+  
+  if (impl_.get_ptr ())
+  {
+    result = impl_->get_num_transports ();
   }
 
   return result;
