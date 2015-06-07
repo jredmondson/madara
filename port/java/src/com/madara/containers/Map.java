@@ -203,7 +203,7 @@ public class Map extends MadaraJNI
    * @param  key  the location in the map
    * @param  value   new value
    */
-  public void setDouble(java.lang.String key, double value)
+  public void set(java.lang.String key, double value)
   {
     jni_setDouble(getCPtr(), key, value);
   }
