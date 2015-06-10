@@ -1,6 +1,6 @@
 
-#ifndef _MADARA_VECTOR_N_H_
-#define _MADARA_VECTOR_N_H_
+#ifndef _MADARA_CONTAINERS_VECTOR_N_H_
+#define _MADARA_CONTAINERS_VECTOR_N_H_
 
 #include <vector>
 #include <string>
@@ -13,7 +13,7 @@
  * @file Vector_N.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains a C++ object that manages interactions for a
+ * DEPRECATED: This file contains a C++ object that manages interactions for a
  * multidimensional array of variables
  **/
 
@@ -25,9 +25,10 @@ namespace Madara
     {
       /**
        * @class Vector_N
-       * @brief This class stores an n-dimensional KaRL record array. The
+       * @brief DEPRECATED: This class stores an n-dimensional array. The
        *        array represents accessing elements in a manner similar to
-       *        int my_array [0][1][2][...][N].
+       *        int my_array [0][1][2][...][N]. This is a DEPRECATED class
+       *        that will be removed before the next major release.
        */
       class MADARA_Export Vector_N
       {
@@ -697,4 +698,4 @@ namespace Madara
   }
 }
 
-#endif // _MADARA_VECTOR_N_H_
+#endif // _MADARA_CONTAINERS_VECTOR_N_H_

@@ -54,6 +54,12 @@ namespace Madara
       ~Variable_Reference ();
 
       /**
+       * Checks to see if the variable reference has been initialized
+       * @return  true if valid, false otherwise
+       **/
+      bool is_valid (void) const;
+
+      /**
        * Assignment operator
        * @param   input      variable reference to copy from
        **/

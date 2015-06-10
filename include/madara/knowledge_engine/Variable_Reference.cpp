@@ -61,3 +61,8 @@ Madara::Knowledge_Engine::Variable_Reference::set_name (
   temp[size - 1] = 0;
   name_ = temp;
 }
+
+bool Madara::Knowledge_Engine::Variable_Reference::is_valid (void) const
+{
+  return record_ != 0;
+}

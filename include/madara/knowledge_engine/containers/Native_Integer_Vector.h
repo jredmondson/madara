@@ -1,6 +1,6 @@
 
-#ifndef _MADARA_NATIVE_DOUBLE_VECTOR_H_
-#define _MADARA_NATIVE_DOUBLE_VECTOR_H_
+#ifndef _MADARA_NATIVE_INTEGER_VECTOR_H_
+#define _MADARA_NATIVE_INTEGER_VECTOR_H_
 
 #include <vector>
 #include <string>
@@ -282,4 +282,4 @@ namespace Madara
   }
 }
 
-#endif // _MADARA_NATIVE_DOUBLE_VECTOR_H_
+#endif // _MADARA_NATIVE_INTEGER_VECTOR_H_

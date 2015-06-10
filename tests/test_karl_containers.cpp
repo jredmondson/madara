@@ -6,6 +6,7 @@
 #include "madara/knowledge_engine/containers/String_Vector.h"
 #include "madara/knowledge_engine/containers/Vector_N.h"
 #include "madara/knowledge_engine/containers/Map.h"
+#include "madara/knowledge_engine/containers/Flex_Map.h"
 #include "madara/knowledge_engine/containers/Integer.h"
 #include "madara/knowledge_engine/containers/Double.h"
 #include "madara/knowledge_engine/containers/Queue.h"
@@ -14,6 +15,152 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
+typedef Madara::Knowledge_Record   Knowledge_Record;
+
+void test_flex_map (void)
+{
+  std::cout << "************* FLEX MAP: CREATING FLEX MAP*************\n";
+  engine::Knowledge_Base knowledge;
+  containers::Flex_Map map ("records", knowledge);
+
+  std::cout << "Creating record with name and age\n";
+  map["robert"]["name"] = "Robert Jenkins";
+  map["robert"]["age"] = 49;
+
+  std::cout << "Creating Flex Map from index operator\n";
+  containers::Flex_Map robert_record = map["robert"];
+
+  robert_record["salary"] = 30500.00;
+  robert_record["age"] = robert_record["age"].to_integer () + 1;
+
+  containers::Map normal_map;
+  robert_record.to_container (normal_map);
+
+  std::cout << "Checking for flex map creation test success:\n";
+  std::cout << "  Checking size of normal map creation... ";
+  if (normal_map.size () == 3)
+  {
+    std::cout << "SUCCESS\n";
+  }
+  else
+  {
+    std::cout << "FAIL\n";
+  }
+
+  std::cout << "  Checking elements of normal map...\n";
+
+  std::cout << "    Retrieving name...";
+  if (normal_map["name"] == "Robert Jenkins")
+  {
+    std::cout << "SUCCESS\n";
+  }
+  else
+  {
+    std::cout << "FAIL\n";
+  }
+
+  std::cout << "    Retrieving age...";
+  if (normal_map["age"] == Knowledge_Record::Integer (50))
+  {
+    std::cout << "SUCCESS\n";
+  }
+  else
+  {
+    std::cout << "FAIL\n";
+  }
+
+  std::cout << "    Retrieving salary...";
+  if (normal_map["salary"] == 30500.00)
+  {
+    std::cout << "SUCCESS\n";
+  }
+  else
+  {
+    std::cout << "FAIL\n";
+  }
+
+  std::cout << "Adding names to the flex map\n";
+  map["norman"]["name"] = "Norman Roberts";
+  map["greg"]["name"] = "Gregory Shaw";
+  map["rupert"]["name"] = "Rupert Glasgow";
+  map["cassie"]["name"] = "Cassandra Collins";
+
+  std::cout << "Attempting to_map function for subkeys\n";
+  std::vector<std::string> next_keys;
+  std::map<std::string, Madara::Knowledge_Record> all_record_vars;
+  knowledge.to_map ("records", ".", "", next_keys, all_record_vars);
+
+  std::cout << "  Size check on next keys and all records are a: ";
+  if (next_keys.size () == 5 && all_record_vars.size () == 7)
+  {
+    std::cout << "SUCCESS\n";
+  }
+  else
+  {
+    std::cout << "FAIL\n";
+  }
+
+  std::vector<std::string> sub_keys;
+
+  std::cout << "Attempting keys function on Flex_Map\n";
+  map.keys (sub_keys, true);
+
+  std::cout << "  Size check on flex map's sub keys: ";
+  if (sub_keys.size () == 5)
+  {
+    std::cout << "SUCCESS\n";
+  }
+  else
+  {
+    std::cout << "FAIL\n";
+  }
+
+  std::cout << "  Checking context.to_map vs flex_map.keys: ";
+  if (sub_keys == next_keys)
+  {
+    std::cout << "SUCCESS\n";
+  }
+  else
+  {
+    std::cout << "FAIL\n";
+  }
+
+  std::cout << "Adding mixes of string and index keys to a flex map\n";
+  map["robert"]["tickets"][0]["offense"] = "Slapping a seal";
+  map["robert"]["tickets"][0]["fine"] = 120.00;
+  map["robert"]["tickets"][1]["offense"] = "Calling an employee a hobbit";
+  map["robert"]["tickets"][1]["fine"] = 5.00;
+  map["cassie"]["tickets"][0]["offense"] = "Stabbing Robert for calling her a hobbit";
+  map["cassie"]["tickets"][0]["fine"] = 250.00;
+  map["cassie"]["tickets"][0]["notes"] = "Victim Robert claimed it was worth it";
+
+  std::cout << "  Checking existence of new indexed items in flex map: ";
+  if (robert_record.exists ("tickets.0.offense")
+    && robert_record.exists ("tickets.1.offense")
+    && map.exists ("cassie.tickets.0.offense")
+    && map.exists ("cassie.tickets.0.notes"))
+  {
+    std::cout << "SUCCESS\n";
+  }
+  else
+  {
+    std::cout << "FAIL\n";
+  }
+
+  std::cout << "  Checking existence of subkeys in flex map: ";
+  if (robert_record.exists ("tickets", true)
+    && robert_record.exists ("name", true)
+    && map.exists ("cassie", true)
+    && map.exists ("greg", true)
+    && map.exists ("norman", true))
+  {
+    std::cout << "SUCCESS\n";
+  }
+  else
+  {
+    std::cout << "FAIL\n";
+  }
+}
 
 void test_vector (void)
 {
@@ -854,5 +1001,7 @@ int main (int , char **)
   test_queue ();
   
   test_vector_transfer ();
+  test_flex_map ();
+
   return 0;
 }

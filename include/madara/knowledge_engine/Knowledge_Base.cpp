@@ -1266,11 +1266,7 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
 {
   Knowledge_Record result;
 
-  if (impl_.get_ptr ())
-  {
-    result = impl_->wait (expression, settings);
-  }
-  else if (context_)
+  if (context_)
   {
     /**
      * The only situation this can be useful will be if the thread safe
@@ -1388,6 +1384,10 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
 
     return last_value;
   }
+  else if (impl_.get_ptr ())
+  {
+    result = impl_->wait (expression, settings);
+  }
 
   return result;
 }
@@ -1399,14 +1399,14 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
 {
   Knowledge_Record result;
 
-  if (impl_.get_ptr ())
-  {
-    result = impl_->wait (expression, settings);
-  }
-  else if (context_)
+  if (context_)
   {
     Compiled_Expression ce = context_->compile (expression);
     result = this->wait (ce, settings);
+  }
+  else if (impl_.get_ptr ())
+  {
+    result = impl_->wait (expression, settings);
   }
 
   return result;
@@ -1483,13 +1483,13 @@ Madara::Knowledge_Engine::Knowledge_Base::get_context (void)
 {
   Thread_Safe_Context * result = 0;
   
-  if (impl_.get_ptr ())
-  {
-    result = &(impl_->get_context ());
-  }
-  else if (context_)
+  if (context_)
   {
     result = context_;
+  }
+  else if (impl_.get_ptr ())
+  {
+    result = &(impl_->get_context ());
   }
 
   return *result;
@@ -1498,13 +1498,13 @@ Madara::Knowledge_Engine::Knowledge_Base::get_context (void)
 void
 Madara::Knowledge_Engine::Knowledge_Base::clear_modifieds (void)
 {
-  if (impl_.get_ptr ())
-  {
-    impl_->clear_modifieds ();
-  }
-  else if (context_)
+  if (context_)
   {
     context_->reset_modified ();
+  }
+  else if (impl_.get_ptr ())
+  {
+    impl_->clear_modifieds ();
   }
 }
 
@@ -1563,13 +1563,13 @@ Madara::Knowledge_Engine::Knowledge_Base::to_vector (
 {
   size_t result;
 
-  if (impl_.get_ptr ())
-  {
-    result = impl_->to_vector (subject, start, end, target);
-  }
-  else if (context_)
+  if (context_)
   {
     result = context_->to_vector (subject, start, end, target);
+  }
+  else if (impl_.get_ptr ())
+  {
+    result = impl_->to_vector (subject, start, end, target);
   }
 
   return result;
@@ -1579,18 +1579,9 @@ void Madara::Knowledge_Engine::Knowledge_Base::facade_for (
   Thread_Safe_Context & context)
 {
   context_ = &context;
+  impl_ = 0;
 }
 
-/**
-  * Fills a variable map with Knowledge Records that match an expression.
-  * At the moment, this expression must be of the form "subject*"
-  * @param   expression  An expression that matches the variable names
-  *                      that are of interest. Wildcards may only be
-  *                      at the end.
-  * @param   target      The map that will be filled with variable names
-  *                      and the Knowledge Records they correspond to
-  * @return              entries in the resulting map
-  **/
 size_t
 Madara::Knowledge_Engine::Knowledge_Base::to_map (
   const std::string & expression,
@@ -1598,31 +1589,55 @@ Madara::Knowledge_Engine::Knowledge_Base::to_map (
 {
   size_t result;
 
-  if (impl_.get_ptr ())
-  {
-    result = impl_->to_map (expression, target);
-  }
-  else if (context_)
+  if (context_)
   {
     result = context_->to_map (expression, target);
+  }
+  else if (impl_.get_ptr ())
+  {
+    result = impl_->to_map (expression, target);
   }
 
   return result;
 }
 
+size_t
+Madara::Knowledge_Engine::Knowledge_Base::to_map (
+  const std::string & prefix,
+  const std::string & delimeter,
+  const std::string & suffix,
+  std::vector <std::string> & next_keys,
+  std::map <std::string, Knowledge_Record> & result,
+  bool just_keys)
+{
+  size_t result_size;
+
+  if (context_)
+  {
+    result_size = context_->to_map (
+      prefix, delimeter, suffix, next_keys, result, just_keys);
+  }
+  else if (impl_.get_ptr ())
+  {
+    result_size = impl_->to_map (
+      prefix, delimeter, suffix, next_keys, result, just_keys);
+  }
+
+  return result_size;
+}
 int64_t
 Madara::Knowledge_Engine::Knowledge_Base::save_context (
   const std::string & filename) const
 {
   int64_t result = 0;
   
-  if (impl_.get_ptr ())
-  {
-    result = impl_->save_context (filename);
-  }
-  else if (context_)
+  if (context_)
   {
     result = context_->save_context (filename);
+  }
+  else if (impl_.get_ptr ())
+  {
+    result = impl_->save_context (filename);
   }
 
   return result;
@@ -1635,13 +1650,13 @@ Madara::Knowledge_Engine::Knowledge_Base::save_as_karl (
 {
   int64_t result = 0;
 
-  if (impl_.get_ptr ())
-  {
-    result = impl_->save_as_karl (filename);
-  }
-  else if (context_)
+  if (context_)
   {
     result = context_->save_as_karl (filename);
+  }
+  else if (impl_.get_ptr ())
+  {
+    result = impl_->save_as_karl (filename);
   }
 
   return result;
@@ -1655,13 +1670,13 @@ Madara::Knowledge_Engine::Knowledge_Base::save_checkpoint (
 {
   int64_t result = 0;
   
-  if (impl_.get_ptr ())
-  {
-    result = impl_->save_checkpoint (filename, reset_modifieds);
-  }
-  else if (context_)
+  if (context_)
   {
     result = context_->save_checkpoint (filename);
+  }
+  else if (impl_.get_ptr ())
+  {
+    result = impl_->save_checkpoint (filename, reset_modifieds);
   }
 
   return result;
@@ -1674,12 +1689,12 @@ Madara::Knowledge_Engine::Knowledge_Base::load_context (
   const Knowledge_Update_Settings & settings)
 {
   int64_t result = 0;
-  
-  if (impl_.get_ptr ())
+
+  if (context_)
   {
     result = impl_->load_context (filename, use_id, settings);
   }
-  else if (context_)
+  else if (impl_.get_ptr ())
   {
     result = impl_->load_context (filename, use_id, settings);
   }
@@ -1690,13 +1705,13 @@ Madara::Knowledge_Engine::Knowledge_Base::load_context (
 void
 Madara::Knowledge_Engine::Knowledge_Base::wait_for_change (void)
 {
-  if (impl_.get_ptr ())
-  {
-    impl_->wait_for_change ();
-  }
-  else if (context_)
+  if (context_)
   {
     context_->wait_for_change ();
+  }
+  else if (impl_.get_ptr ())
+  {
+    impl_->wait_for_change ();
   }
 }
 

@@ -26,7 +26,6 @@ namespace Madara
     public:
       /**
        * Constructor
-       * @param   context  context for accessing variables and functions
        * @param   nodes    arguments to the function
        **/
       Composite_Const_Array (const Component_Nodes & nodes);

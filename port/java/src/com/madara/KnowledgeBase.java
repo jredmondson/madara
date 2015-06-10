@@ -617,6 +617,22 @@ public class KnowledgeBase extends MadaraJNI
   }
 
   /**
+   * Cleans up underlying C resources
+   * @throws Throwable necessary for override but unused
+   */
+  @Override
+  protected void finalize() throws Throwable
+  {
+    try {
+      free();
+    } catch (Throwable t) {
+      throw t;
+    } finally {
+      super.finalize();
+    }
+  }
+  
+  /**
    * Waits for an expression to be non-zero.
    * <br><br>The returned KnowledgeRecord <b>must</b> be freed  ({@link com.madara.KnowledgeRecord#free () KnowledgeRecord.free ()})
    * at some point. If it is to be ignored, consider using {@link #waitNoReturn (String)}
@@ -900,6 +916,22 @@ public class KnowledgeBase extends MadaraJNI
     {
       jni_freeCompiledExpression(getCPtr());
       setCPtr(0);
+    }
+    
+    /**
+     * Cleans up underlying C resources
+     * @throws Throwable necessary for override but unused
+     */
+    @Override
+    protected void finalize() throws Throwable
+    {
+      try {
+        free();
+      } catch (Throwable t) {
+        throw t;
+      } finally {
+        super.finalize();
+      }
     }
   }
 

@@ -108,7 +108,19 @@ namespace Madara
         get_ref (const std::string & key,
              const Knowledge_Reference_Settings & settings =
                      Knowledge_Reference_Settings ());
-      
+
+      /**
+      * Atomically returns a reference to the variable.
+      * @param   key       unique identifier of the variable
+      * @param settings    settings for referring to knowledge variables
+      * @return            reference to the variable in the context. If variable
+      *                    doesn't exist, then a null reference is returned.
+      **/
+      Variable_Reference
+        get_ref (const std::string & key,
+        const Knowledge_Reference_Settings & settings =
+        Knowledge_Reference_Settings ()) const;
+
       /**
        * Retrieves a value at a specified index within a knowledge array
        * @param key              knowledge location
@@ -1084,11 +1096,34 @@ namespace Madara
        *                      that are of interest. Wildcards may only be
        *                      at the end.
        * @param   target      The map that will be filled with variable names
-       *                      and the Knowledge Records they correspond to
+       *                      and the Knowledge Records that correspond to
        * @return              entries in the resulting map
        **/
       size_t  to_map    (const std::string & subject,
                        std::map <std::string, Knowledge_Record> & target);
+
+      /**
+      * Fills a variable map with list of keys according to a matching prefix,
+      * suffix, and delimiter hierarchy. This is useful for understanding the
+      * logical hierarchy of your variables (and also a key utility of
+      * containers like @see Containers::Flex_Map).
+      * @param   prefix      Text that must be present at the front of the key
+      * @param   delimeter   Text that signifies a logical boundary in hierarchy If
+      *                      empty, no check is performed.
+      * @param   suffix      Text that must be present at the end of the key. If
+      *                      empty, no check is performed.
+      * @param   next_keys   The immediate keys in the hierarchy after prefix
+      * @param   result      The map that will be filled with full variable names
+      *                      and the Knowledge Records that correspond to
+      * @param   just_keys   if true, do not fill result, only next_keys
+      * @return              entries in the resulting map
+      **/
+      size_t  to_map (const std::string & prefix,
+        const std::string & delimeter,
+        const std::string & suffix,
+        std::vector <std::string> & next_keys,
+        std::map <std::string, Knowledge_Record> & result,
+        bool just_keys);
 
       /**
        * Saves the context to a file

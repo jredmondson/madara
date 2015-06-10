@@ -1,6 +1,6 @@
 
-#ifndef _MADARA_VECTOR_H_
-#define _MADARA_VECTOR_H_
+#ifndef _MADARA_CONTAINERS_VECTOR_H_
+#define _MADARA_CONTAINERS_VECTOR_H_
 
 #include <vector>
 #include <string>
@@ -40,8 +40,11 @@ namespace Madara
         /**
          * Default constructor
          * @param  settings   settings for evaluating the vector
+         * @param  delimeter  the delimeter for variables in the vector
          **/
-        Vector (const Knowledge_Update_Settings & settings = Knowledge_Update_Settings ());
+        Vector (const Knowledge_Update_Settings & settings =
+            Knowledge_Update_Settings (),
+          const std::string & delimeter = ".");
 
         /**
          * Constructor
@@ -51,12 +54,15 @@ namespace Madara
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  delete_vars delete indices outside of the specified range
          * @param  settings   settings for evaluating the vector
+         * @param  delimeter  the delimeter for variables in the vector
          **/
         Vector (const std::string & name, 
-                Knowledge_Base & knowledge,
-                int size = -1,
-                bool delete_vars = true,
-                const Knowledge_Update_Settings & settings = Knowledge_Update_Settings ());
+          Knowledge_Base & knowledge,
+          int size = -1,
+          bool delete_vars = true,
+          const Knowledge_Update_Settings & settings =
+            Knowledge_Update_Settings (),
+          const std::string & delimeter = ".");
       
         /**
          * Constructor
@@ -66,12 +72,15 @@ namespace Madara
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  delete_vars delete indices outside of the specified range
          * @param  settings   settings for evaluating the vector
+         * @param  delimeter  the delimeter for variables in the vector
          **/
         Vector (const std::string & name,
-                Variables & knowledge,
-                int size = -1,
-                bool delete_vars = true,
-                const Knowledge_Update_Settings & settings = Knowledge_Update_Settings ());
+          Variables & knowledge,
+          int size = -1,
+          bool delete_vars = true,
+          const Knowledge_Update_Settings & settings =
+            Knowledge_Update_Settings (),
+          const std::string & delimeter = ".");
       
         /**
          * Copy constructor
@@ -179,6 +188,24 @@ namespace Madara
          **/
         void set_name (const std::string & var_name,
           Thread_Safe_Context & knowledge, int size = -1);
+
+        /**
+        * Sets the delimiter for adding and detecting subvariables. By default,
+        * MADARA uses a '.' delimiter for names like "com.madara.Var1". Other
+        * conventions can include '/' for ROS-like topic directory structures,
+        * e.g., com/madara/Var1.
+        * @param delimeter  the delimiter to use for variable demarcation
+        **/
+        void set_delimiter (const std::string & delimeter);
+
+        /**
+        * Gets the delimiter for adding and detecting subvariables. By default,
+        * MADARA uses a '.' delimiter for names like "com.madara.Var1". Other
+        * conventions can include '/' for ROS-like topic directory structures,
+        * e.g., com/madara/Var1.
+        * @return   the delimiter to use for variable demarcation
+        **/
+        std::string get_delimiter (void);
 
         /**
          * Retrieves a copy of the record from the map.
@@ -561,6 +588,11 @@ namespace Madara
          * Settings for modifications
          **/
         Knowledge_Update_Settings settings_;
+
+        /**
+        * Delimiter for the prefix to subvars
+        **/
+        std::string delimeter_;
       };
 
       /// provide the Array alias for the Vector class
@@ -572,4 +604,4 @@ namespace Madara
 
 
 
-#endif // _MADARA_VECTOR_H_
+#endif // _MADARA_CONTAINERS_VECTOR_H_

@@ -904,7 +904,7 @@ namespace Madara
       /**
        * Fills a variable map with Knowledge Records that match an expression.
        * At the moment, this expression must be of the form "subject*"
-       * @param   expression  An expression that matches the variable names
+       * @param   subject     An expression that matches the variable names
        *                      that are of interest. Wildcards may only be
        *                      at the end.
        * @param   target      The map that will be filled with variable names
@@ -913,7 +913,30 @@ namespace Madara
        **/
       size_t to_map    (const std::string & subject,
                        std::map <std::string, Knowledge_Record> & target);
-      
+
+      /**
+      * Fills a variable map with list of keys according to a matching prefix,
+      * suffix, and delimiter hierarchy. This is useful for understanding the
+      * logical hierarchy of your variables (and also a key utility of
+      * containers like @see Containers::Flex_Map).
+      * @param   prefix      Text that must be present at the front of the key
+      * @param   delimeter   Text that signifies a logical boundary in hierarchy If
+      *                      empty, no check is performed.
+      * @param   suffix      Text that must be present at the end of the key. If
+      *                      empty, no check is performed.
+      * @param   next_keys   The immediate keys in the hierarchy after prefix
+      * @param   result      The map that will be filled with full variable names
+      *                      and the Knowledge Records that correspond to
+      * @param   just_keys   if true, do not fill result, only next_keys.
+      * @return              entries in the resulting map
+      **/
+      size_t  to_map (const std::string & prefix,
+        const std::string & delimeter,
+        const std::string & suffix,
+        std::vector <std::string> & next_keys,
+        std::map <std::string, Knowledge_Record> & result,
+        bool just_keys);
+
       /**
        * Saves the context to a file
        * @param   filename    name of the file to open

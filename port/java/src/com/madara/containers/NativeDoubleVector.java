@@ -263,5 +263,21 @@ public class NativeDoubleVector extends MadaraJNI
       setCPtr(0);
     }
   }
+  
+  /**
+   * Cleans up underlying C resources
+   * @throws Throwable necessary for override but unused
+   */
+  @Override
+  protected void finalize() throws Throwable
+  {
+    try {
+      free();
+    } catch (Throwable t) {
+      throw t;
+    } finally {
+      super.finalize();
+    }
+  }
 }
 

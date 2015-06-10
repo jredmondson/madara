@@ -100,6 +100,22 @@ public class Threader extends MadaraJNI
   }
   
   /**
+   * Cleans up underlying C resources
+   * @throws Throwable necessary for override but unused
+   */
+  @Override
+  protected void finalize() throws Throwable
+  {
+    try {
+      free();
+    } catch (Throwable t) {
+      throw t;
+    } finally {
+      super.finalize();
+    }
+  }
+  
+  /**
    * Runs a thread. The thread's run method will only be called once.
    * @param  name  the unique name of the thread
    * @param  thread  the thread to run

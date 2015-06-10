@@ -60,7 +60,10 @@ public class AesBufferFilter extends MadaraJNI implements BufferFilter
     long maxSize);
   private native int jni_generateKey(long cptr, java.lang.String password);
   
-  private boolean manageMemory = true;
+  /**
+   * Let the transport layer manage this
+   */
+  private boolean manageMemory = false;
 
   /**
    * Default constructor
@@ -125,6 +128,22 @@ public class AesBufferFilter extends MadaraJNI implements BufferFilter
     {
       jni_freeAesBufferFilter(getCPtr());
       setCPtr(0);
+    }
+  }
+  
+  /**
+   * Cleans up underlying C resources
+   * @throws Throwable necessary for override but unused
+   */
+  @Override
+  protected void finalize() throws Throwable
+  {
+    try {
+      free();
+    } catch (Throwable t) {
+      throw t;
+    } finally {
+      super.finalize();
     }
   }
 }

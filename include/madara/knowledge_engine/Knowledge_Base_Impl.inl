@@ -395,16 +395,6 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::to_vector (
   return map_.to_vector (subject, start, end, target);
 }
 
-/**
-  * Fills a variable map with Knowledge Records that match an expression.
-  * At the moment, this expression must be of the form "subject*"
-  * @param   expression  An expression that matches the variable names
-  *                      that are of interest. Wildcards may only be
-  *                      at the end.
-  * @param   target      The map that will be filled with variable names
-  *                      and the Knowledge Records they correspond to
-  * @return              entries in the resulting map
-  **/
 inline
 size_t
 Madara::Knowledge_Engine::Knowledge_Base_Impl::to_map (
@@ -412,6 +402,20 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::to_map (
   std::map <std::string, Knowledge_Record> & target)
 {
   return map_.to_map (expression, target);
+}
+
+inline
+size_t
+Madara::Knowledge_Engine::Knowledge_Base_Impl::to_map (
+  const std::string & prefix,
+  const std::string & delimeter,
+  const std::string & suffix,
+  std::vector <std::string> & next_keys,
+  std::map <std::string, Knowledge_Record> & result,
+  bool just_keys)
+{
+  return map_.to_map (
+    prefix, delimeter, suffix, next_keys, result, just_keys);
 }
 
 

@@ -225,12 +225,10 @@ namespace Madara
       * @param    context    interpreter context
       * @param    input      expression to compile
       * @param    i          current position in expression
-      * @param    accumulated_precedence  current precedence
-      * @param    list       list of symbols in tree that are free
       * @param    lastValidInput          last valid symbol that was read
+      * @param    list       list of symbols in tree that are free
       * @param    handled    whether or not the pos should be incremented
-      * @param    build_argument_list  if true, focuses on building a
-      *                                list instead of an expression tree
+      * @param    accumulated_precedence  current precedence
       **/
       void handle_array (
         Madara::Knowledge_Engine::Thread_Safe_Context & context,

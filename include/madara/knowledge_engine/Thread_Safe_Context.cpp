@@ -99,6 +99,41 @@ Madara::Knowledge_Engine::Thread_Safe_Context::get_ref (
   return record;
 }
 
+
+Madara::Knowledge_Engine::Variable_Reference
+Madara::Knowledge_Engine::Thread_Safe_Context::get_ref (
+const std::string & key,
+const Knowledge_Reference_Settings & settings) const
+{
+  std::string key_actual;
+  const std::string * key_ptr;
+  Context_Guard guard (mutex_);
+
+  Variable_Reference record;
+
+  // expand the key if the user asked for it
+  if (settings.expand_variables)
+  {
+    key_actual = expand_statement (key);
+    key_ptr = &key_actual;
+  }
+  else
+    key_ptr = &key;
+
+  // set name to the expanded key, for debugging purposes
+  record.set_name (*key_ptr);
+
+  // if the key is possible, create a reference to the record
+  if (*key_ptr != "")
+  {
+    Knowledge_Map::const_iterator found = map_.find (*key_ptr);
+    record.record_ = (Knowledge_Record *)&found->second;
+  }
+  return record;
+}
+
+
+
 void
 Madara::Knowledge_Engine::Thread_Safe_Context::mark_and_signal (
   const char * name, Knowledge_Record * record,
@@ -1409,6 +1444,84 @@ size_t
 
 
   return target.size ();
+}
+
+
+size_t 
+Madara::Knowledge_Engine::Thread_Safe_Context::to_map (
+  const std::string & prefix,
+  const std::string & delimeter,
+  const std::string & suffix,
+  std::vector <std::string> & next_keys,
+  std::map <std::string, Knowledge_Record> & result,
+  bool just_keys)
+{
+  // clear the user provided maps
+  next_keys.clear ();
+  result.clear ();
+
+  // loop tracking for optimizations
+  bool matches_found (false);
+  std::string last_key ("");
+
+  // enter the mutex
+  Context_Guard guard (mutex_);
+
+  for (Knowledge_Map::iterator i = map_.begin ();
+    i != map_.end (); ++i)
+  {
+    // if the prefix doesn't match
+    if (prefix != "" && !Utility::begins_with (i->first, prefix))
+    {
+      // if we had previously matched a prefix, we're done
+      if (matches_found)
+      {
+        break;
+      }
+    }
+    // we have a prefix match
+    else
+    {
+      // set matches found if it hasn't been set previously
+      if (!matches_found)
+      {
+        matches_found = true;
+      }
+
+      // if the suffix is provided and doesn't match, continue
+      if (suffix != "" && !Utility::ends_with (i->first, suffix))
+      {
+        continue;
+      }
+
+      if (!just_keys)
+      {
+        // the key is safe to add to the master map
+        result[i->first].deep_copy (i->second);
+      }
+
+      // determine if there is a next key in the hierarchy
+      size_t prefix_end = prefix.length () + delimeter.length ();
+      if (i->first.length () > prefix_end)
+      {
+        // find the end of the sub key
+        size_t key_end = i->first.find (delimeter, prefix_end);
+        
+        // if we haven't seen the subkey, add it
+        std::string current_key (
+          i->first.substr (prefix_end, key_end - prefix_end));
+        if (current_key != last_key)
+        {
+          next_keys.push_back (current_key);
+          last_key = current_key;
+        }
+      }
+    }
+  }
+
+
+
+  return result.size ();
 }
 
 void

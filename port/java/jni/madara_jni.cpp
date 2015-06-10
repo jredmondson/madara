@@ -37,7 +37,7 @@ bool madara_jni_is_attached ()
 
 JNIEnv* madara_jni_get_env()
 {
-  JNIEnv* env;
+  JNIEnv* env (0);
   if (madara_JVM)
   {
     madara_JVM->GetEnv((void**)&env, JNI_VERSION_1_8);
