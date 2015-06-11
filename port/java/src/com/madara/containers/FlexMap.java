@@ -1,0 +1,298 @@
+/*********************************************************************
+ * Copyright (c) 2013-2015 Carnegie Mellon University. All Rights Reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following acknowledgments and disclaimers.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * 
+ * 3. The names "Carnegie Mellon University," "SEI" and/or
+ * "Software Engineering Institute" shall not be used to endorse or promote
+ * products derived from this software without prior written permission. For
+ * written permission, please contact permission@sei.cmu.edu.
+ * 
+ * 4. Products derived from this software may not be called "SEI" nor may "SEI"
+ * appear in their names without prior written permission of
+ * permission@sei.cmu.edu.
+ *
+ * 5. Redistributions of any form whatsoever must retain the following
+ * acknowledgment:
+ *
+ * This material is based upon work funded and supported by the Department of
+ * Defense under Contract No. FA8721-05-C-0003 with Carnegie Mellon University
+ * for the operation of the Software Engineering Institute, a federally funded
+ * research and development center. Any opinions, findings and conclusions or
+ * recommendations expressed in this material are those of the author(s) and
+ * do not necessarily reflect the views of the United States Department of
+ * Defense.
+ * 
+ * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
+ * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
+ * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
+ * AS TO ANY MATTER INCLUDING, BUT NOT LIMITED TO, WARRANTY OF FITNESS FOR
+ * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
+ * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
+ * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
+ * 
+ * This material has been approved for public release and unlimited
+ * distribution.
+ * 
+ * @author James Edmondson <jedmondson@gmail.com>
+ *********************************************************************/
+package com.madara.containers;
+
+import com.madara.MadaraJNI;
+import com.madara.KnowledgeBase;
+import com.madara.Variables;
+import com.madara.KnowledgeRecord;
+
+/**
+ * A facade for a map of variable names to values within a knowledge base
+ **/
+
+public class FlexMap extends MadaraJNI
+{	
+  private native long jni_FlexMap();
+  private native long jni_FlexMap(long cptr);
+  private static native void jni_freeFlexMap(long cptr);
+  private native void jni_clear(long cptr);
+  private native void jni_erase(long cptr,
+    java.lang.String key);
+  private native void jni_setString(long cptr, java.lang.String value);
+  private native void jni_setDouble(long cptr, double value);
+  private native void jni_set(long cptr, long type, long value);
+  private native java.lang.String jni_getName(long cptr);
+  private native void jni_setName(long cptr,
+    long type, long kb, java.lang.String name);
+  private native long jni_get(long cptr, java.lang.String key);
+  private native long jni_getIndex(long cptr, int index);
+  private native long jni_toRecord(long cptr);
+  private native void jni_modify(long cptr);
+  private native long jni_toMapContainer(long cptr);
+
+  private boolean manageMemory = true;
+
+  /**
+   * Default constructor
+   **/
+  public FlexMap()
+  {
+    setCPtr(jni_FlexMap());
+  }
+
+  /**
+   * Copy constructor
+   * @param input  instance to copy
+   **/
+  public FlexMap(FlexMap input)
+  {
+    setCPtr(jni_FlexMap(input.getCPtr()));
+  }
+
+  /**
+   * Creates a java object instance from a C/C++ pointer
+   *
+   * @param cptr C pointer to the object
+   * @return a new java instance of the underlying pointer
+   */
+  public static FlexMap fromPointer(long cptr)
+  {
+    FlexMap ret = new FlexMap();
+    ret.setCPtr(cptr);
+    ret.manageMemory = true;
+    return ret;
+  }
+
+  /**
+   * Creates a java object instance from a C/C++ pointer
+   *
+   * @param cptr C pointer to the object
+   * @param shouldManage  if true, manage the pointer
+   * @return a new java instance of the underlying pointer
+   */
+  public static FlexMap fromPointer(long cptr, boolean shouldManage)
+  {
+    FlexMap ret = new FlexMap();
+    ret.manageMemory=shouldManage;
+    ret.setCPtr(cptr);
+    return ret;
+  }
+
+  /**
+   * Creates a FlexMap at the keyed location
+   *
+   * @param  key  the next level of the FlexMap
+   * @return   FlexMap pointing to the keyed location
+   */
+  public FlexMap get(java.lang.String key)
+  {
+    return FlexMap.fromPointer(jni_get(getCPtr(), key));
+  }
+
+  /**
+   * Creates a FlexMap at the indexed location
+   *
+   * @param  index  an index into the FlexMap
+   * @return   FlexMap pointing to the indexed location
+   */
+  public FlexMap get(int index)
+  {
+    return FlexMap.fromPointer(jni_getIndex(getCPtr(), index));
+  }
+
+  /**
+   * Gets the name of the variable
+   *
+   * @return  name of the variable within the context
+   */
+  public java.lang.String getName()
+  {
+    return jni_getName(getCPtr());
+  }
+
+  /**
+   * Mark the map as modified. The maps retains the same values
+   * but will resend all values as if they had been modified.
+   **/
+  public void modify()
+  {
+    jni_modify(getCPtr());
+  }
+
+  /**
+   * Clears the variables in the map
+   **/
+  public void clear()
+  {
+    jni_clear(getCPtr());
+  }
+  
+  /**
+   * Erases a variable located at key in the map. This also deletes the variable
+   * from the knowledge base.
+   * @param key  the element key
+   **/
+  public void erase(java.lang.String key)
+  {
+    jni_erase(getCPtr(), key);
+  }
+  
+  /**
+   * Sets the location to a string
+   *
+   * @param  value   new value
+   */
+  public void set(java.lang.String value)
+  {
+    jni_setString(getCPtr(), value);
+  }
+
+  /**
+   * Sets the location to a double
+   *
+   * @param  value   new value
+   */
+  public void set(double value)
+  {
+    jni_setDouble(getCPtr(), value);
+  }
+
+  /**
+   * Sets the location to an integer value
+   *
+   * @param  value   new value
+   */
+  public void set(long value)
+  {
+    jni_set(getCPtr(), 0, value);
+  }
+
+  /**
+   * Sets the location to a KnowledgeRecord value
+   *
+   * @param  value   new value
+   */
+  public void set(java.lang.String key, KnowledgeRecord value)
+  {
+    jni_set(getCPtr(), 1, value.getCPtr ());
+  }
+
+  /**
+   * Sets the name and knowledge base being referred to
+   *
+   * @param  kb      the knowledge base that contains the name
+   * @param  name    the variable name
+   */
+  public void setName(KnowledgeBase kb, java.lang.String name)
+  {
+    jni_setName(getCPtr(), 0, kb.getCPtr (), name);
+  }
+
+  /**
+   * Sets the name and knowledge base being referred to
+   *
+   * @param  vars    the variables facade that contains the name
+   * @param  name    the variable name
+   */
+  public void setName(Variables vars, java.lang.String name)
+  {
+    jni_setName(getCPtr(), 1, vars.getCPtr (), name);
+  }
+
+  /**
+   * Returns a value at the specified key
+   *
+   * @return the value at the index as a knowledge record
+   */
+  public KnowledgeRecord toRecord()
+  {
+    return KnowledgeRecord.fromPointer(jni_toRecord(getCPtr()));
+  }
+
+  /**
+   * Creates a Map container from the current location. Maps maintain lists
+   * of keys and are more appropriate for frequent accesses of sub keys (i.e.,
+   * they are better performance, while FlexMap is more flexible).
+   *
+   * @return the value at the index as a knowledge record
+   */
+  public Map toMapContainer()
+  {
+    return Map.fromPointer(jni_toMapContainer(getCPtr()));
+  }
+
+  /**
+   * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
+   * called before an instance gets garbage collected
+   */
+  public void free()
+  {
+    if (manageMemory)
+    {
+      jni_freeFlexMap(getCPtr());
+      setCPtr(0);
+    }
+  }
+  
+  /**
+   * Cleans up underlying C resources
+   * @throws Throwable necessary for override but unused
+   */
+  @Override
+  protected void finalize() throws Throwable
+  {
+    try {
+      free();
+    } catch (Throwable t) {
+      throw t;
+    } finally {
+      super.finalize();
+    }
+  }
+}
+

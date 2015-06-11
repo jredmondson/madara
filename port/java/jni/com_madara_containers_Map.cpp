@@ -294,7 +294,7 @@ void JNICALL Java_com_madara_containers_Map_jni_1setName
  */
 jlong JNICALL Java_com_madara_containers_Map_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jstring key)
-{  
+{
   Knowledge_Record * result (0);
   containers::Map * current = (containers::Map *) cptr;
 

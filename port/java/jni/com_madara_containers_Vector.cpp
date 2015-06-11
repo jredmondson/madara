@@ -340,13 +340,13 @@ jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArray
   if (kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
-      "fromPointer", " (J)Lcom/madara/KnowledgeRecord;");
+      "fromPointer", "(J)Lcom/madara/KnowledgeRecord;");
     Madara::Knowledge_Vector records;
     Vector * current = (Vector *) cptr;
     current->copy_to (records);
     jsize size = (jsize)records.size ();
 
-    list = env->NewObjectArray ( (jsize)records.size (), kr_class, 0);
+    list = env->NewObjectArray ((jsize)records.size (), kr_class, 0);
 
     if (method)
     {

@@ -53,12 +53,92 @@ import com.madara.containers.Vector;
 import com.madara.containers.DoubleVector;
 import com.madara.containers.Integer;
 import com.madara.containers.Queue;
+import com.madara.containers.FlexMap;
+import com.madara.containers.Map;
 
 /**
  * This class is a tester for the com.madara.containers package
  */
 public class ContainerTest
 {
+  public static void testFlexMap()
+  {
+    KnowledgeBase knowledge = new KnowledgeBase();
+    FlexMap map = new FlexMap();
+    map.setName(knowledge, "");
+    
+    boolean error = false;
+    
+    System.out.println("Creating flex records for robert and cassie");
+    
+    // create some flex maps within the knowledge base
+    FlexMap records = map.get("records");
+    FlexMap robert = records.get("robert");
+    FlexMap cassie = records.get("cassie");
+    
+    // FlexMap contains some garbage collection via finalize, but it may
+    // never be called by the GC due to Java's own quirkiness. We create
+    // some flexmaps here that will not be explicitly freed, and this is
+    // technically ok, but in a real application, if you are done with one
+    // you are better suited to keep a reference to them and free the C
+    // resources.
+    
+    
+    System.out.println("Setting attributes for Robert");
+    
+    robert.get("age").set(49);
+    robert.get("name").set("Robert Jenkins");
+    robert.get("salary").set(30500.00);
+    
+    System.out.println("Setting attributes for Cassie");
+    
+    cassie.get("age").set(22);
+    cassie.get("name").set("Cassandra Collins");
+    cassie.get("salary").set(57000.00);
+    
+    System.out.println("Checking results of FlexMap operations");
+    
+    KnowledgeRecord robert_name = knowledge.get(".records.robert.name");
+    KnowledgeRecord robert_age = knowledge.get(".records.robert.age");
+    KnowledgeRecord robert_salary = knowledge.get(".records.robert.salary");
+    
+    KnowledgeRecord cassie_name = knowledge.get(".records.cassie.name");
+    KnowledgeRecord cassie_age = knowledge.get(".records.cassie.age");
+    KnowledgeRecord cassie_salary = knowledge.get(".records.cassie.salary");
+    
+    if(robert_name.toString().equals("Robert Jenkins") &&
+       robert_age.toLong() == 49 &&
+       robert_salary.toLong() == 30500 &&
+       cassie_name.toString().equals("Cassandra Collins") &&
+       cassie_age.toLong() == 22 &&
+       cassie_salary.toLong() == 57000)
+    {
+      System.out.println("  Retrieval of values: SUCCESS");
+    }
+    else
+    {
+      System.out.println("  Retrieval of values: FAIL");
+      error = true;
+    }
+    
+    if(error)
+    {
+      knowledge.print();
+      
+      System.out.println ("  Flex: Robert.name was " + robert_name.toString());
+      System.out.println ("  Flex: Robert.age was " + robert_age.toLong());
+      System.out.println ("  Flex: Robert.salary was " + robert_salary.toLong());
+      System.out.println ("  Flex: Cassie.name was " + cassie_name.toString());
+      System.out.println ("  Flex: Cassie.age was " + cassie_age.toLong());
+      System.out.println ("  Flex: Cassie.salary was " + cassie_salary.toLong());
+    }
+    
+    // order doesn't really matter here
+    cassie.free();
+    robert.free();
+    records.free();
+  }
+  
   public static void testVector()
   {
     KnowledgeBase knowledge = new KnowledgeBase();
@@ -299,5 +379,6 @@ public class ContainerTest
     testVector();
     testQueue();
     testDoubleVector();
+    testFlexMap();
   }
 }
