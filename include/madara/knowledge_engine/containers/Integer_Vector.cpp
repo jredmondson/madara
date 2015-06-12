@@ -4,8 +4,8 @@
 
 Madara::Knowledge_Engine::Containers::Integer_Vector::Integer_Vector (
   const Knowledge_Update_Settings & settings,
-  const std::string & delimeter)
-  : context_ (0), settings_ (settings), delimeter_ (delimeter)
+  const std::string & delimiter)
+  : context_ (0), settings_ (settings), delimiter_ (delimiter)
 {
 }
    
@@ -15,9 +15,9 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::Integer_Vector (
   int size,
   bool delete_vars,
   const Knowledge_Update_Settings & settings,
-  const std::string & delimeter)
+  const std::string & delimiter)
 : context_ (&(knowledge.get_context ())), name_ (name), settings_ (settings),
-  delimeter_ (delimeter)
+  delimiter_ (delimiter)
 {
   size_ = get_size_ref ();
   resize (size, delete_vars);
@@ -29,9 +29,9 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::Integer_Vector (
   int size,
   bool delete_vars,
   const Knowledge_Update_Settings & settings,
-  const std::string & delimeter)
+  const std::string & delimiter)
 : context_ (knowledge.get_context ()), name_ (name), settings_ (settings),
-  delimeter_ (delimeter)
+  delimiter_ (delimiter)
 {
   size_ = get_size_ref ();
   resize (size, delete_vars);
@@ -87,7 +87,7 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::operator= (
     this->settings_ = rhs.settings_;
     this->size_ = rhs.size_;
     this->vector_ = rhs.vector_;
-    this->delimeter_ = rhs.delimeter_;
+    this->delimiter_ = rhs.delimiter_;
   }
 }
 
@@ -115,7 +115,7 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::get_size_ref (void)
     Knowledge_Update_Settings keep_local (true);
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << "size";
 
     ref = context_->get_ref (buffer.str (), keep_local);
@@ -149,7 +149,7 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::resize (
           {
             std::stringstream buffer;
             buffer << name_;
-            buffer << delimeter_;
+            buffer << delimiter_;
             buffer << old_size;
             vector_[old_size] = context_->get_ref (buffer.str (), settings_);
           }
@@ -160,7 +160,7 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::resize (
           {
             std::stringstream buffer;
             buffer << name_;
-            buffer << delimeter_;
+            buffer << delimiter_;
             buffer << size;
 
             context_->delete_variable (buffer.str (), settings_);
@@ -186,7 +186,7 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::resize (
           {
             std::stringstream buffer;
             buffer << name_;
-            buffer << delimeter_;
+            buffer << delimiter_;
             buffer << old_size;
             vector_[old_size] = context_->get_ref (buffer.str (), settings_);
           }
@@ -197,7 +197,7 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::resize (
           {
             std::stringstream buffer;
             buffer << name_;
-            buffer << delimeter_;
+            buffer << delimiter_;
             buffer << cur_size;
 
             context_->delete_variable (buffer.str (), settings_);
@@ -284,9 +284,9 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::set_name (
 
 void
 Madara::Knowledge_Engine::Containers::Integer_Vector::set_delimiter (
-const std::string & delimeter)
+const std::string & delimiter)
 {
-  delimeter_ = delimeter;
+  delimiter_ = delimiter;
   if (context_)
   {
     Context_Guard context_guard (*context_);
@@ -301,7 +301,7 @@ const std::string & delimeter)
 std::string
 Madara::Knowledge_Engine::Containers::Integer_Vector::get_delimiter (void)
 {
-  return delimeter_;
+  return delimiter_;
 }
 
 void
@@ -344,7 +344,7 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::exchange (
         {
           std::stringstream buffer;
           buffer << this->name_;
-          buffer << delimeter_;
+          buffer << delimiter_;
           buffer << i;
           this->context_->delete_variable (buffer.str (), other.settings_);
         }
@@ -357,7 +357,7 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::exchange (
         {
           std::stringstream buffer;
           buffer << other.name_;
-          buffer << delimeter_;
+          buffer << delimiter_;
           buffer << i;
 
           // other[i] = temp;
@@ -372,7 +372,7 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::exchange (
     {
       std::stringstream buffer;
       buffer << this->name_;
-      buffer << delimeter_;
+      buffer << delimiter_;
       buffer << i;
       context_->set (buffer.str (),
         other.context_->get (other.vector_[i], other.settings_), this->settings_);

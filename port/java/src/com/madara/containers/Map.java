@@ -70,11 +70,15 @@ public class Map extends MadaraJNI
     java.lang.String key, double value);
   private native void jni_set(long cptr,
     java.lang.String key, long type, long value);
+  private native java.lang.String jni_getDelimiter(long cptr);
+  private native void jni_setDelimiter(long cptr, java.lang.String delimiter);
   private native java.lang.String jni_getName(long cptr);
   private native void jni_setName(long cptr,
     long type, long kb, java.lang.String name);
   private native long jni_get(long cptr, java.lang.String key);
   private native long jni_toRecord(long cptr, java.lang.String key);
+  private native java.lang.String[] jni_keys(long cptr);
+  private native void jni_sync(long cptr);
   private native void jni_modify(long cptr);
   private native void jni_modifyIndex(long cptr, java.lang.String index);
 
@@ -145,6 +149,46 @@ public class Map extends MadaraJNI
   public java.lang.String getName()
   {
     return jni_getName(getCPtr());
+  }
+
+  /**
+   * Gets the delimiter that separates the name of the map with its elements
+   *
+   * @return  the delimiter that separates map name with elements
+   */
+  public java.lang.String getDelimiter()
+  {
+    return jni_getDelimiter(getCPtr());
+  }
+
+  /**
+   * Sets the delimiter that separates the name of the map with its elements
+   *
+   * @param delimiter  the separator between the map and elements 
+   */
+  public void setDelimiter(java.lang.String delimiter)
+  {
+    jni_setDelimiter(getCPtr(), delimiter);
+  }
+
+  /**
+   * Gets the current keys in the map
+   *
+   * @return  name of the variable within the context
+   */
+  public java.lang.String[] keys()
+  {
+    return jni_keys(getCPtr());
+  }
+
+
+  /**
+   * Syncs the map to the underlying knowledge base. Call this method
+   * if you believe the map's keys may have changed in the knowledge base.
+   */
+  public void sync()
+  {
+    jni_sync(getCPtr());
   }
 
   /**

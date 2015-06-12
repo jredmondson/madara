@@ -33,11 +33,11 @@ namespace Madara
         /**
          * Default constructor
          * @param  settings   settings for evaluating the vector
-         * @param  delimeter  the delimeter for variables in the vector
+         * @param  delimiter  the delimiter for variables in the vector
          **/
         Buffer_Vector (const Knowledge_Update_Settings & settings =
           Knowledge_Update_Settings (),
-          const std::string & delimeter = ".");
+          const std::string & delimiter = ".");
 
         /**
          * Constructor
@@ -46,7 +46,7 @@ namespace Madara
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  delete_vars delete indices outside of the specified range
          * @param  settings   settings for evaluating the vector
-         * @param  delimeter  the delimeter for variables in the vector
+         * @param  delimiter  the delimiter for variables in the vector
          **/
         Buffer_Vector (const std::string & name, 
                 Knowledge_Base & knowledge,
@@ -54,7 +54,7 @@ namespace Madara
                 bool delete_vars = true,
                 const Knowledge_Update_Settings & settings =
                   Knowledge_Update_Settings (),
-                const std::string & delimeter = ".");
+                const std::string & delimiter = ".");
       
         /**
          * Constructor
@@ -63,7 +63,7 @@ namespace Madara
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  delete_vars delete indices outside of the specified range
          * @param  settings   settings for evaluating the vector
-         * @param  delimeter  the delimeter for variables in the vector
+         * @param  delimiter  the delimiter for variables in the vector
          **/
         Buffer_Vector (const std::string & name,
                 Variables & knowledge,
@@ -71,7 +71,7 @@ namespace Madara
                 bool delete_vars = true,
                 const Knowledge_Update_Settings & settings =
                   Knowledge_Update_Settings (),
-                const std::string & delimeter = ".");
+                const std::string & delimiter = ".");
       
         /**
          * Copy constructor
@@ -185,9 +185,9 @@ namespace Madara
         * MADARA uses a '.' delimiter for names like "com.madara.Var1". Other
         * conventions can include '/' for ROS-like topic directory structures,
         * e.g., com/madara/Var1.
-        * @param delimeter  the delimiter to use for variable demarcation
+        * @param delimiter  the delimiter to use for variable demarcation
         **/
-        void set_delimiter (const std::string & delimeter);
+        void set_delimiter (const std::string & delimiter);
 
         /**
         * Gets the delimiter for adding and detecting subvariables. By default,
@@ -358,7 +358,7 @@ namespace Madara
         /**
         * Delimiter for the prefix to subvars
         **/
-        std::string delimeter_;
+        std::string delimiter_;
       };
 
       /// provide the Array alias for the Buffer_Vector class

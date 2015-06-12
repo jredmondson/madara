@@ -160,6 +160,37 @@ void test_flex_map (void)
   {
     std::cout << "FAIL\n";
   }
+
+  std::cout << "Changing delimiter of top level map: \n";
+  map.set_delimiter (";");
+
+  std::cout << "  Checking subkeys of top level map: ";
+  map.keys (sub_keys, true);
+
+  if (sub_keys.size () == 0)
+  {
+    std::cout << "SUCCESS\n";
+  }
+  else
+  {
+    std::cout << "FAIL\n";
+  }
+
+
+  std::cout << "Resetting delimiter of top level map: \n";
+  map.set_delimiter (".");
+
+  std::cout << "  Checking subkeys of top level map: ";
+  map.keys (sub_keys, true);
+
+  if (sub_keys.size () != 0)
+  {
+    std::cout << "SUCCESS\n";
+  }
+  else
+  {
+    std::cout << "FAIL\n";
+  }
 }
 
 void test_vector (void)

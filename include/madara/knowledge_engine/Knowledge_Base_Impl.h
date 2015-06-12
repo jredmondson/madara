@@ -920,7 +920,7 @@ namespace Madara
       * logical hierarchy of your variables (and also a key utility of
       * containers like @see Containers::Flex_Map).
       * @param   prefix      Text that must be present at the front of the key
-      * @param   delimeter   Text that signifies a logical boundary in hierarchy If
+      * @param   delimiter   Text that signifies a logical boundary in hierarchy If
       *                      empty, no check is performed.
       * @param   suffix      Text that must be present at the end of the key. If
       *                      empty, no check is performed.
@@ -931,7 +931,7 @@ namespace Madara
       * @return              entries in the resulting map
       **/
       size_t  to_map (const std::string & prefix,
-        const std::string & delimeter,
+        const std::string & delimiter,
         const std::string & suffix,
         std::vector <std::string> & next_keys,
         std::map <std::string, Knowledge_Record> & result,

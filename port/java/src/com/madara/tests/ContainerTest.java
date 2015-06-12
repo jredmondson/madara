@@ -119,11 +119,6 @@ public class ContainerTest
     {
       System.out.println("  Retrieval of values: FAIL");
       error = true;
-    }
-    
-    if(error)
-    {
-      knowledge.print();
       
       System.out.println ("  Flex: Robert.name was " + robert_name.toString());
       System.out.println ("  Flex: Robert.age was " + robert_age.toLong());
@@ -131,6 +126,76 @@ public class ContainerTest
       System.out.println ("  Flex: Cassie.name was " + cassie_name.toString());
       System.out.println ("  Flex: Cassie.age was " + cassie_age.toLong());
       System.out.println ("  Flex: Cassie.salary was " + cassie_salary.toLong());
+    }
+    
+    System.out.println("Retrieving first level keys of FlexMap");
+    
+    java.lang.String[] keys = robert.keys(true);
+    
+    if(keys[0].equals("age") &&
+       keys[1].equals("name") &&
+       keys[2].equals("salary"))
+    {
+      System.out.println("  Retrieval of first level keys: SUCCESS");
+    }
+    else
+    {
+      System.out.println("  Retrieval of first level keys: FAIL");
+      error = true;
+
+      for(int i = 0; i < keys.length; i++)
+      {
+        System.out.println("    keys[" + i + "] = " + keys[i]);
+      }
+    }
+    
+    System.out.println("Changing delimiter of FlexMap");
+    
+    // change the map delimiter
+    map.setDelimiter(";");
+    
+    System.out.println("Retrieving first level keys of FlexMap");
+    
+    keys = map.keys(true);
+    
+    if(keys.length == 0)
+    {
+      System.out.println("  Retrieval of first level keys: SUCCESS");
+    }
+    else
+    {
+      System.out.println("  Retrieval of first level keys: FAIL");
+      error = true;
+
+      for(int i = 0; i < keys.length; i++)
+      {
+        System.out.println("    keys[" + i + "] = " + keys[i]);
+      }
+    }
+    
+    System.out.println("Resetting delimiter of FlexMap");
+    
+    // change the map delimiter
+    map.setDelimiter(".");
+    
+    System.out.println("Retrieving first level keys of FlexMap");
+    
+    keys = robert.keys(true);
+    
+    if(keys.length == 3)
+    {
+      System.out.println("  Retrieval of first level keys: SUCCESS");
+    }
+    else
+    {
+      System.out.println("  Retrieval of first level keys: FAIL");
+      error = true;
+    }
+    
+    
+    if(error)
+    {
+      knowledge.print();
     }
     
     // order doesn't really matter here

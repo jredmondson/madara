@@ -94,6 +94,38 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1erase
 (JNIEnv *, jobject, jlong, jstring);
 
 /*
+* Class:     com_madara_containers_Map
+* Method:    jni_getDelimiter
+* Signature: (J)Ljava/lang/String;
+*/
+MADARA_Export jstring JNICALL Java_com_madara_containers_Map_jni_1getDelimiter
+(JNIEnv *, jobject, jlong);
+
+/*
+* Class:     com_madara_containers_Map
+* Method:    jni_setDelimiter
+* Signature: (JLjava/lang/String;)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setDelimiter
+(JNIEnv *, jobject, jlong, jstring);
+
+/*
+* Class:     com_madara_containers_Map
+* Method:    jni_keys
+* Signature: (J)[Ljava/lang/String;
+*/
+MADARA_Export jobjectArray JNICALL Java_com_madara_containers_Map_jni_1keys
+(JNIEnv *, jobject, jlong);
+
+/*
+* Class:     com_madara_containers_Map
+* Method:    jni_sync
+* Signature: (J)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1sync
+(JNIEnv *, jobject, jlong);
+
+/*
  * Class:     com_madara_containers_Map
  * Method:    jni_set
  * Signature: (JLjava/lang/String;Ljava/lang/String;)V

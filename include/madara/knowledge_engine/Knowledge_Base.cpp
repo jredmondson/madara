@@ -1604,7 +1604,7 @@ Madara::Knowledge_Engine::Knowledge_Base::to_map (
 size_t
 Madara::Knowledge_Engine::Knowledge_Base::to_map (
   const std::string & prefix,
-  const std::string & delimeter,
+  const std::string & delimiter,
   const std::string & suffix,
   std::vector <std::string> & next_keys,
   std::map <std::string, Knowledge_Record> & result,
@@ -1615,12 +1615,12 @@ Madara::Knowledge_Engine::Knowledge_Base::to_map (
   if (context_)
   {
     result_size = context_->to_map (
-      prefix, delimeter, suffix, next_keys, result, just_keys);
+      prefix, delimiter, suffix, next_keys, result, just_keys);
   }
   else if (impl_.get_ptr ())
   {
     result_size = impl_->to_map (
-      prefix, delimeter, suffix, next_keys, result, just_keys);
+      prefix, delimiter, suffix, next_keys, result, just_keys);
   }
 
   return result_size;

@@ -63,12 +63,15 @@ public class FlexMap extends MadaraJNI
   private native void jni_clear(long cptr);
   private native void jni_erase(long cptr,
     java.lang.String key);
+  private native java.lang.String jni_getDelimiter(long cptr);
+  private native void jni_setDelimiter(long cptr, java.lang.String delimiter);
   private native void jni_setString(long cptr, java.lang.String value);
   private native void jni_setDouble(long cptr, double value);
   private native void jni_set(long cptr, long type, long value);
   private native java.lang.String jni_getName(long cptr);
   private native void jni_setName(long cptr,
     long type, long kb, java.lang.String name);
+  private native java.lang.String[] jni_keys(long cptr, boolean firstLevel);
   private native long jni_get(long cptr, java.lang.String key);
   private native long jni_getIndex(long cptr, int index);
   private native long jni_toRecord(long cptr);
@@ -124,6 +127,28 @@ public class FlexMap extends MadaraJNI
   }
 
   /**
+   * Gets all keys in the map
+   *
+   * @return  all keys in the map
+   */
+  public java.lang.String[] keys()
+  {
+    return jni_keys(getCPtr(),false);
+  }
+
+  /**
+   * Gets keys in the map, with option to get only first level keys
+   *
+   * @param  firstLevel  if true, only return the immediate subkeys and not
+   *                     full key names
+   * @return  the keys in the map
+   */
+  public java.lang.String[] keys(boolean firstLevel)
+  {
+    return jni_keys(getCPtr(),firstLevel);
+  }
+
+  /**
    * Creates a FlexMap at the keyed location
    *
    * @param  key  the next level of the FlexMap
@@ -153,6 +178,26 @@ public class FlexMap extends MadaraJNI
   public java.lang.String getName()
   {
     return jni_getName(getCPtr());
+  }
+
+  /**
+   * Gets the delimiter that separates the name of the map with its elements
+   *
+   * @return  the delimiter that separates map name with elements
+   */
+  public java.lang.String getDelimiter()
+  {
+    return jni_getDelimiter(getCPtr());
+  }
+
+  /**
+   * Sets the delimiter that separates the name of the map with its elements
+   *
+   * @param delimiter  the separator between the map and elements 
+   */
+  public void setDelimiter(java.lang.String delimiter)
+  {
+    jni_setDelimiter(getCPtr(), delimiter);
   }
 
   /**

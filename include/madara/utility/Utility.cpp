@@ -335,11 +335,11 @@ int
 Madara::Utility::split_hostport_identifier (const std::string & key, 
     std::string & host, std::string & port)
 {
-  // delimeter is either a : or an @
+  // delimiter is either a : or an @
   std::string::size_type delim = key.rfind (':');
   delim = delim == key.npos ? key.rfind ('@') : delim;
 
-  // no delimeter found
+  // no delimiter found
   if (delim == key.npos)
     {
       host = key;

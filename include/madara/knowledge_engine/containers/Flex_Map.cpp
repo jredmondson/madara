@@ -5,8 +5,8 @@
 
 Madara::Knowledge_Engine::Containers::Flex_Map::Flex_Map (
   const Knowledge_Update_Settings & settings,
-  const std::string & delimeter)
-: context_ (0), settings_ (settings), delimeter_ (".")
+  const std::string & delimiter)
+: context_ (0), settings_ (settings), delimiter_ (".")
 {
 }
   
@@ -15,9 +15,9 @@ Madara::Knowledge_Engine::Containers::Flex_Map::Flex_Map (
   const std::string & name,
   Knowledge_Base & knowledge,
   const Knowledge_Update_Settings & settings,
-  const std::string & delimeter)
+  const std::string & delimiter)
 : context_ (&(knowledge.get_context ())), name_ (name), settings_ (settings),
-  delimeter_ (".")
+  delimiter_ (".")
 {
 }
  
@@ -25,9 +25,9 @@ Madara::Knowledge_Engine::Containers::Flex_Map::Flex_Map (
   const std::string & name,
   Variables & knowledge,
   const Knowledge_Update_Settings & settings,
-  const std::string & delimeter)
+  const std::string & delimiter)
 : context_ (knowledge.get_context ()), name_ (name), settings_ (settings),
-  delimeter_ (".")
+  delimiter_ (".")
 {
 }
        
@@ -36,7 +36,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::Flex_Map (const Flex_Map & rhs)
 : context_ (rhs.context_), name_ (rhs.name_),
   variable_ (rhs.variable_),
   settings_ (rhs.settings_),
-  delimeter_ (rhs.delimeter_)
+  delimiter_ (rhs.delimiter_)
 {
 
 }
@@ -93,7 +93,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::modify (void)
     // get all children
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
-    Map map (name_, knowledge, settings_, delimeter_);
+    Map map (name_, knowledge, settings_, delimiter_);
 
     // modify the children
     map.modify ();
@@ -220,7 +220,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::to_container (
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
 
-    target.set_delimiter (delimeter_);
+    target.set_delimiter (delimiter_);
     target.set_name (name_, knowledge);
   }
 }
@@ -239,7 +239,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::to_container (
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
 
-    target.set_delimiter (delimeter_);
+    target.set_delimiter (delimiter_);
     target.set_name (name_, knowledge);
   }
 }
@@ -258,7 +258,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::to_container (
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
 
-    target.set_delimiter (delimeter_);
+    target.set_delimiter (delimiter_);
     target.set_name (name_, knowledge);
   }
 }
@@ -294,7 +294,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::to_container (
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
 
-    target.set_delimiter (delimeter_);
+    target.set_delimiter (delimiter_);
     target.set_name (name_, knowledge);
   }
 }
@@ -384,7 +384,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::to_container (
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
 
-    target.set_delimiter (delimeter_);
+    target.set_delimiter (delimiter_);
     target.set_name (name_, knowledge);
   }
 }
@@ -394,7 +394,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map
 Madara::Knowledge_Engine::Containers::Flex_Map::operator[] (
   const std::string & key)
 {
-  Flex_Map map (settings_, delimeter_);
+  Flex_Map map (settings_, delimiter_);
 
   if (key != "" && context_)
   {
@@ -403,7 +403,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::operator[] (
 
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
-    map.set_name (name_ + delimeter_ + key, knowledge);
+    map.set_name (name_ + delimiter_ + key, knowledge);
   }
 
   return map;
@@ -413,7 +413,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map
 Madara::Knowledge_Engine::Containers::Flex_Map::operator[] (
   size_t index)
 {
-  Flex_Map map (settings_, delimeter_);
+  Flex_Map map (settings_, delimiter_);
 
   if (context_)
   {
@@ -424,7 +424,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::operator[] (
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
 
-    buffer << name_ << delimeter_ << index;
+    buffer << name_ << delimiter_ << index;
 
     map.set_name (buffer.str (), knowledge);
   }
@@ -446,7 +446,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::size (
     // get all children
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
-    Map map (name_, knowledge, settings_, delimeter_);
+    Map map (name_, knowledge, settings_, delimiter_);
 
     result = map.size ();
   }
@@ -455,7 +455,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::size (
     // use the context's specialized mapping feature
     std::vector<std::string> next_keys;
     std::map<std::string, Madara::Knowledge_Record> all_record_vars;
-    context_->to_map (name_, delimeter_, "",
+    context_->to_map (name_, delimiter_, "",
       next_keys, all_record_vars, true);
 
     result = next_keys.size ();
@@ -477,8 +477,8 @@ Madara::Knowledge_Engine::Containers::Flex_Map::exchange (
     // use the Map container, which already has exchange implemented
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
-    Map this_map (name_, knowledge, settings_, delimeter_);
-    Map other_map (other.name_, knowledge, other.settings_, delimeter_);
+    Map this_map (name_, knowledge, settings_, delimiter_);
+    Map other_map (other.name_, knowledge, other.settings_, delimiter_);
 
     this_map.exchange (other_map, refresh_keys, delete_keys);
   }
@@ -495,7 +495,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::clear (void)
     // use the Map container, which already has clear implemented
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
-    Map map (name_, knowledge, settings_, delimeter_);
+    Map map (name_, knowledge, settings_, delimiter_);
 
     map.clear ();
 
@@ -512,14 +512,14 @@ Madara::Knowledge_Engine::Containers::Flex_Map::erase (
     Context_Guard context_guard (*context_);
     Guard guard (mutex_);
 
-    context_->delete_variable (name_ + delimeter_ + key, settings_);
+    context_->delete_variable (name_ + delimiter_ + key, settings_);
     
     if (delete_subkeys)
     {
       // use the Map container, which already has clear implemented
       Knowledge_Base knowledge;
       knowledge.facade_for (*context_);
-      Map map (name_ + delimeter_ + key, knowledge, settings_, delimeter_);
+      Map map (name_ + delimiter_ + key, knowledge, settings_, delimiter_);
 
       map.clear ();
     }
@@ -603,16 +603,16 @@ Madara::Knowledge_Engine::Containers::Flex_Map::update_variable (void) const
 
 void
 Madara::Knowledge_Engine::Containers::Flex_Map::set_delimiter (
-const std::string & delimeter)
+const std::string & delimiter)
 {
-  delimeter_ = delimeter;
+  delimiter_ = delimiter;
 }
 
 
 std::string
 Madara::Knowledge_Engine::Containers::Flex_Map::get_delimiter (void)
 {
-  return delimeter_;
+  return delimiter_;
 }
 
 bool
@@ -627,7 +627,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::exists (
     Guard guard (mutex_);
 
     // check if the key exists
-    std::string exact_key = name_ + delimeter_ + key;
+    std::string exact_key = name_ + delimiter_ + key;
     result = context_->exists (exact_key);
 
     if (!result && first_level_key)
@@ -660,7 +660,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::keys (
     // use the Map container, which already has clear implemented
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);
-    Map map (name_, knowledge, settings_, delimeter_);
+    Map map (name_, knowledge, settings_, delimiter_);
 
     map.keys (curkeys);
   }
@@ -669,7 +669,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::keys (
     // use the context's specialized mapping feature
     std::vector<std::string> next_keys;
     std::map<std::string, Madara::Knowledge_Record> all_record_vars;
-    context_->to_map (name_, delimeter_, "",
+    context_->to_map (name_, delimiter_, "",
       curkeys, all_record_vars, true);
   }
 }

@@ -5,8 +5,8 @@
 
 Madara::Knowledge_Engine::Containers::Map::Map (
   const Knowledge_Update_Settings & settings,
-  const std::string & delimeter)
-: context_ (0), settings_ (settings), delimeter_ (delimeter)
+  const std::string & delimiter)
+: context_ (0), settings_ (settings), delimiter_ (delimiter)
 {
 }
   
@@ -15,12 +15,12 @@ Madara::Knowledge_Engine::Containers::Map::Map (
   const std::string & name,
   Knowledge_Base & knowledge,
   const Knowledge_Update_Settings & settings,
-  const std::string & delimeter)
+  const std::string & delimiter)
 : context_ (&(knowledge.get_context ())), name_ (name), settings_ (settings),
-  delimeter_ (delimeter)
+  delimiter_ (delimiter)
 {
   std::map <std::string, Knowledge_Record> contents;
-  std::string common = name + delimeter_;
+  std::string common = name + delimiter_;
   context_->to_map (common, contents);
   
   Knowledge_Update_Settings keep_local (true);
@@ -39,12 +39,12 @@ Madara::Knowledge_Engine::Containers::Map::Map (
   const std::string & name,
   Variables & knowledge,
   const Knowledge_Update_Settings & settings,
-  const std::string & delimeter)
+  const std::string & delimiter)
 : context_ (knowledge.get_context ()), name_ (name), settings_ (settings),
-  delimeter_ (delimeter)
+  delimiter_ (delimiter)
 {
   std::map <std::string, Knowledge_Record> contents;
-  std::string common = name + delimeter_;
+  std::string common = name + delimiter_;
   context_->to_map (common, contents);
   
   Knowledge_Update_Settings keep_local (true);
@@ -63,7 +63,7 @@ Madara::Knowledge_Engine::Containers::Map::Map (
 Madara::Knowledge_Engine::Containers::Map::Map (const Map & rhs)
 : context_ (rhs.context_), name_ (rhs.name_),
   map_ (rhs.map_), settings_ (rhs.settings_),
-  delimeter_ (rhs.delimeter_)
+  delimiter_ (rhs.delimiter_)
 {
 
 }
@@ -125,7 +125,7 @@ Madara::Knowledge_Engine::Containers::Map::to_record (
     Guard guard (mutex_);
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
   
     Knowledge_Update_Settings keep_local (true);
@@ -172,7 +172,7 @@ Madara::Knowledge_Engine::Containers::Map::sync_keys (void)
     Guard guard (mutex_);
 
     std::map <std::string, Knowledge_Record> contents;
-    std::string common = name_ + delimeter_;
+    std::string common = name_ + delimiter_;
     context_->to_map (common, contents);
     Knowledge_Update_Settings keep_local (true);
 
@@ -237,7 +237,7 @@ Madara::Knowledge_Engine::Containers::Map::exchange (
       {
         std::stringstream buffer;
         buffer << other.name_;
-        buffer << delimeter_;
+        buffer << delimiter_;
         buffer << i->first;
 
         // other[i->first] = temp
@@ -251,7 +251,7 @@ Madara::Knowledge_Engine::Containers::Map::exchange (
         {
           std::stringstream buffer2;
           buffer2 << this->name_;
-          buffer2 << delimeter_;
+          buffer2 << delimiter_;
           buffer2 << i->first;
 
           this->context_->delete_variable (buffer2.str (), this->settings_);
@@ -274,7 +274,7 @@ Madara::Knowledge_Engine::Containers::Map::exchange (
       {
         std::stringstream buffer;
         buffer << name_;
-        buffer << delimeter_;
+        buffer << delimiter_;
         buffer << i->first;
 
         Variable_Reference ref = context_->get_ref (buffer.str (), settings_);
@@ -290,7 +290,7 @@ Madara::Knowledge_Engine::Containers::Map::exchange (
         {
           std::stringstream buffer2;
           buffer2 << other.name_;
-          buffer2 << delimeter_;
+          buffer2 << delimiter_;
           buffer2 << i->first;
 
           other.context_->delete_variable (buffer2.str (), settings_);
@@ -391,10 +391,10 @@ Madara::Knowledge_Engine::Containers::Map::set_name (
 
 void
 Madara::Knowledge_Engine::Containers::Map::set_delimiter (
-  const std::string & delimeter,
+  const std::string & delimiter,
   bool sync)
 {
-  delimeter_ = delimeter;
+  delimiter_ = delimiter;
 
   if (context_)
   {
@@ -409,7 +409,7 @@ Madara::Knowledge_Engine::Containers::Map::set_delimiter (
 std::string
 Madara::Knowledge_Engine::Containers::Map::get_delimiter (void)
 {
-  return delimeter_;
+  return delimiter_;
 }
 
 bool
@@ -463,7 +463,7 @@ Madara::Knowledge_Engine::Containers::Map::read_file (
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
   
     std::string final_key = buffer.str ();
@@ -499,7 +499,7 @@ Madara::Knowledge_Engine::Containers::Map::read_file (
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
   
     std::string final_key = buffer.str ();
@@ -531,7 +531,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
     Guard guard (mutex_);
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -566,7 +566,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -602,7 +602,7 @@ int Madara::Knowledge_Engine::Containers::Map::set_index (
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -639,7 +639,7 @@ int Madara::Knowledge_Engine::Containers::Map::set_index (
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -675,7 +675,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -711,7 +711,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -745,7 +745,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -780,7 +780,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -814,7 +814,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -849,7 +849,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -884,7 +884,7 @@ int Madara::Knowledge_Engine::Containers::Map::set_index (const std::string & ke
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -920,7 +920,7 @@ int Madara::Knowledge_Engine::Containers::Map::set_index (const std::string & ke
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -955,7 +955,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -991,7 +991,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -1023,7 +1023,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -1058,7 +1058,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -1092,7 +1092,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -1127,7 +1127,7 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -1161,7 +1161,7 @@ int Madara::Knowledge_Engine::Containers::Map::set_file (const std::string & key
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -1196,7 +1196,7 @@ int Madara::Knowledge_Engine::Containers::Map::set_file (const std::string & key
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -1228,7 +1228,7 @@ int Madara::Knowledge_Engine::Containers::Map::set_jpeg (const std::string & key
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -1263,7 +1263,7 @@ int Madara::Knowledge_Engine::Containers::Map::set_jpeg (const std::string & key
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     std::string final_key = buffer.str ();
@@ -1310,7 +1310,7 @@ void Madara::Knowledge_Engine::Containers::Map::set_quality (
 
     std::stringstream buffer;
     buffer << name_;
-    buffer << delimeter_;
+    buffer << delimiter_;
     buffer << key;
 
     context_->set_quality (buffer.str (), quality, true, settings);

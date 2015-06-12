@@ -34,37 +34,37 @@ namespace Madara
         /**
          * Default constructor
          * @param  settings  settings to apply by default
-         * @param  delimeter  the delimeter for variables in the map
+         * @param  delimiter  the delimiter for variables in the map
          **/
         Map (const Knowledge_Update_Settings & settings =
             Knowledge_Update_Settings (),
-          const std::string & delimeter = ".");
+          const std::string & delimiter = ".");
       
         /**
          * Constructor
          * @param  name      the name of the map within the variable context
          * @param  knowledge the variable context
          * @param  settings  settings to apply by default
-         * @param  delimeter  the delimeter for variables in the map
+         * @param  delimiter  the delimiter for variables in the map
          **/
         Map (const std::string & name,
           Knowledge_Base & knowledge,
           const Knowledge_Update_Settings & settings =
             Knowledge_Update_Settings (),
-          const std::string & delimeter = ".");
+          const std::string & delimiter = ".");
       
         /**
          * Constructor
          * @param  name      the name of the map within the variable context
          * @param  knowledge the variable context
          * @param  settings  settings to apply by default
-         * @param  delimeter  the delimeter for variables in the map
+         * @param  delimiter  the delimiter for variables in the map
          **/
         Map (const std::string & name,
           Variables & knowledge,
           const Knowledge_Update_Settings & settings =
           Knowledge_Update_Settings (),
-          const std::string & delimeter = ".");
+          const std::string & delimiter = ".");
       
         /**
          * Copy constructor
@@ -180,11 +180,11 @@ namespace Madara
         * MADARA uses a '.' delimiter for names like "com.madara.Var1". Other
         * conventions can include '/' for ROS-like topic directory structures,
         * e.g., com/madara/Var1.
-        * @param delimeter  the delimiter to use for variable demarcation
+        * @param delimiter  the delimiter to use for variable demarcation
         * @param sync       sync the keys to existing vars in the new
-        *                   delimeter
+        *                   delimiter
         **/
-        void set_delimiter (const std::string & delimeter,
+        void set_delimiter (const std::string & delimiter,
           bool sync = true);
 
         /**
@@ -555,7 +555,7 @@ namespace Madara
         /**
          * Delimiter for the prefix to subvars
          **/
-        std::string delimeter_;
+        std::string delimiter_;
       };
     }
   }

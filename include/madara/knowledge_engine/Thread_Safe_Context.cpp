@@ -1450,7 +1450,7 @@ size_t
 size_t 
 Madara::Knowledge_Engine::Thread_Safe_Context::to_map (
   const std::string & prefix,
-  const std::string & delimeter,
+  const std::string & delimiter,
   const std::string & suffix,
   std::vector <std::string> & next_keys,
   std::map <std::string, Knowledge_Record> & result,
@@ -1501,11 +1501,14 @@ Madara::Knowledge_Engine::Thread_Safe_Context::to_map (
       }
 
       // determine if there is a next key in the hierarchy
-      size_t prefix_end = prefix.length () + delimeter.length ();
-      if (i->first.length () > prefix_end)
+      size_t prefix_end = prefix.length () + delimiter.length ();
+
+      std::string current_delimiter = i->first.substr (prefix.length (), delimiter.length ());
+
+      if (current_delimiter == delimiter && i->first.length () > prefix_end)
       {
         // find the end of the sub key
-        size_t key_end = i->first.find (delimeter, prefix_end);
+        size_t key_end = i->first.find (delimiter, prefix_end);
         
         // if we haven't seen the subkey, add it
         std::string current_key (

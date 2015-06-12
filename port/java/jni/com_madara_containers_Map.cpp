@@ -363,3 +363,76 @@ void JNICALL Java_com_madara_containers_Map_jni_1modifyIndex
     env->ReleaseStringUTFChars (key, str_key);
   }
 }
+
+
+MADARA_Export jstring JNICALL Java_com_madara_containers_Map_jni_1getDelimiter
+(JNIEnv * env, jobject, jlong cptr)
+{
+  jstring result;
+  containers::Map * current = (containers::Map *) cptr;
+
+  if (current)
+  {
+    result = env->NewStringUTF (current->get_delimiter ().c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
+
+  return result;
+}
+
+
+MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setDelimiter
+(JNIEnv * env, jobject, jlong cptr, jstring delimiter)
+{
+  containers::Map * current = (containers::Map *) cptr;
+
+  if (current)
+  {
+    const char * str_delimiter = env->GetStringUTFChars (delimiter, 0);
+
+    current->set_delimiter (str_delimiter);
+
+    env->ReleaseStringUTFChars (delimiter, str_delimiter);
+  }
+}
+
+
+MADARA_Export jobjectArray JNICALL Java_com_madara_containers_Map_jni_1keys
+(JNIEnv * env, jobject, jlong cptr)
+{
+  jobjectArray result (0);
+  containers::Map * current = (containers::Map *)cptr;
+
+  if (current)
+  {
+    std::vector<std::string> keys;
+    current->keys (keys);
+
+    result = env->NewObjectArray (
+      (jsize)keys.size (), env->FindClass ("java/lang/String"),
+      env->NewStringUTF (""));
+
+    for (unsigned int i = 0; i < keys.size (); i++)
+    {
+      env->SetObjectArrayElement (
+        result, i, env->NewStringUTF (keys[i].c_str ()));
+    }
+  }
+  return result;
+}
+
+
+
+MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1sync
+(JNIEnv *, jobject, jlong cptr)
+{
+  containers::Map * current = (containers::Map *) cptr;
+
+  if (current)
+  {
+    current->sync_keys ();
+  }
+}
