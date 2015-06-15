@@ -56,9 +56,9 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::~Buffer_Vector ()
 void
 Madara::Knowledge_Engine::Containers::Buffer_Vector::modify (void)
 {
-  Context_Guard context_guard (*context_);
   if (context_ && name_ != "")
   {
+    Context_Guard context_guard (*context_);
     for (size_t index = 0; index < vector_.size (); ++index)
       context_->mark_modified (vector_[index]);
   }
@@ -67,9 +67,9 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::modify (void)
 void
 Madara::Knowledge_Engine::Containers::Buffer_Vector::modify (size_t index)
 {
-  Context_Guard context_guard (*context_);
   if (context_ && name_ != "" && index < vector_.size ())
   {
+    Context_Guard context_guard (*context_);
     context_->mark_modified (vector_[index]);
   }
 }
@@ -114,12 +114,17 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::get_size_ref (void)
   
   if (context_ && name_ != "")
   {
+    Knowledge_Update_Settings keep_local (true);
     std::stringstream buffer;
+
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
     buffer << name_;
     buffer << delimiter_;
     buffer << "size";
 
-    ref = context_->get_ref (buffer.str ());
+    ref = context_->get_ref (buffer.str (), keep_local);
   }
 
   return ref;

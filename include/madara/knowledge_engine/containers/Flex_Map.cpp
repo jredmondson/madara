@@ -87,9 +87,10 @@ bool Madara::Knowledge_Engine::Containers::Flex_Map::is_false (void)
 void
 Madara::Knowledge_Engine::Containers::Flex_Map::modify (void)
 {
-  Context_Guard context_guard (*context_);
   if (context_ && name_ != "")
   {
+    Context_Guard context_guard (*context_);
+
     // get all children
     Knowledge_Base knowledge;
     knowledge.facade_for (*context_);

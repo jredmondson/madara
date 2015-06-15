@@ -66,6 +66,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/utility/Refcounter.cpp
     include/madara/utility/Thread_Safe_Refcounter.cpp
     include/madara/utility/Thread_Safe_Vector.cpp
+    include/madara/knowledge_engine/containers/Typed_Vector.cpp
   }
 
   Source_Files {

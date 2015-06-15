@@ -76,9 +76,9 @@ Madara::Knowledge_Engine::Containers::Map::~Map ()
 void
 Madara::Knowledge_Engine::Containers::Map::modify (void)
 {
-  Context_Guard context_guard (*context_);
   if (context_ && name_ != "")
   {
+    Context_Guard context_guard (*context_);
     for (Internal_Map::const_iterator index = map_.end ();
          index != map_.end (); ++index)
     {
@@ -90,9 +90,9 @@ Madara::Knowledge_Engine::Containers::Map::modify (void)
 void
 Madara::Knowledge_Engine::Containers::Map::modify (const std::string & index)
 {
-  Context_Guard context_guard (*context_);
   if (context_ && name_ != "" && map_.find (index) != map_.end ())
   {
+    Context_Guard context_guard (*context_);
     context_->mark_modified (map_[index]);
   }
 }
@@ -330,13 +330,18 @@ Madara::Knowledge_Engine::Containers::Map::clear (bool clear_knowledge)
 void
 Madara::Knowledge_Engine::Containers::Map::erase (const std::string & key)
 {
-  // find the key in the internal map
-  Internal_Map::iterator found = map_.find (key);
-
-  // delete the variable if it has been found
-  if (found != map_.end ())
+  if (context_)
   {
-    context_->delete_variable (found->second.get_name ());
+    Context_Guard context_guard (*context_);
+
+    // find the key in the internal map
+    Internal_Map::iterator found = map_.find (key);
+
+    // delete the variable if it has been found
+    if (found != map_.end ())
+    {
+      context_->delete_variable (found->second.get_name ());
+    }
   }
 }
 

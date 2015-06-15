@@ -106,13 +106,6 @@ namespace Madara
         void modify (size_t index);
     
         /**
-         * Output debug information to stream. This is non functional
-         * @param  output  a stream to output debug information to
-         * @param  show_only_modifieds  if true, only show modifieds
-         **/
-        void debug (std::ostream & output, bool show_only_modifieds = false);
-    
-        /**
          * Assignment operator
          * @param  rhs    value to copy
          **/
