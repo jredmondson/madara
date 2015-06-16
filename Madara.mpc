@@ -148,8 +148,8 @@ project (Madara_Version) : using_madara, using_ace {
 project (Madara_Jar) : using_madara, using_ace {
   requires += java
 
-  prebuild += javac -sourcepath port/java/src port/java/src/com/madara/tests/*.java port/java/src/com/madara/*.java port/java/src/com/madara/util/*.java port/java/src/com/madara/transport/*.java port/java/src/com/madara/threads/*.java port/java/src/com/madara/transport/filters/*.java port/java/src/com/madara/containers/*.java
-  postbuild += jar cf lib/madara.jar -C port/java/src .
+  prebuild += $(JAVA_HOME)/bin/javac -sourcepath port/java/src port/java/src/com/madara/tests/*.java port/java/src/com/madara/*.java port/java/src/com/madara/util/*.java port/java/src/com/madara/transport/*.java port/java/src/com/madara/threads/*.java port/java/src/com/madara/transport/filters/*.java port/java/src/com/madara/containers/*.java
+  postbuild += $(JAVA_HOME)/bin/jar cf lib/madara.jar -C port/java/src .
 
   Documentation_Files {
     port/java/src/*.java
