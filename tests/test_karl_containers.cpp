@@ -4,7 +4,6 @@
 #include "madara/knowledge_engine/containers/Double_Vector.h"
 #include "madara/knowledge_engine/containers/Native_Double_Vector.h"
 #include "madara/knowledge_engine/containers/String_Vector.h"
-#include "madara/knowledge_engine/containers/Vector_N.h"
 #include "madara/knowledge_engine/containers/Map.h"
 #include "madara/knowledge_engine/containers/Flex_Map.h"
 #include "madara/knowledge_engine/containers/Integer.h"
@@ -203,19 +202,13 @@ void test_vector (void)
   vector.set (1, "value.at.1");
   vector.set (7, 7.7);
 
-  std::cout << "Vector contents (all)\n";
-  vector.debug (std::cout);
-
-  std::cout << "Vector contents (modified) before clear\n";
-  vector.debug (std::cout);
-
   knowledge.clear_modifieds ();
   
   std::cout << "Vector contents (modified) after clear\n";
-  vector.debug (std::cout);
+  
 
   vector.set (2, "value.at.2");
-  vector.debug (std::cout);
+  
 
 
   std::cout << "Vector results:\n";
@@ -283,75 +276,6 @@ void test_vector (void)
   
   std::cout << "Printing results from knowledge base.\n";
   knowledge.print ();
-}
-
-void test_vector_n (void)
-{
-  std::cout << "************* VECTOR_N: CREATING 3-D VECTOR*************\n";
-  engine::Knowledge_Base knowledge;
-  containers::Array_N test_vector ("test_vector", knowledge);
-
-  // create a 3-dimensional vector
-  containers::Vector_N::Index index (3);
-
-  // set the elements of the 3 dimensional array to be easily identifiable
-  for (Madara::Knowledge_Record::Integer i = 0; i < 10; ++i)
-  {
-    for (Madara::Knowledge_Record::Integer j = 0; j < 10; ++j)
-    {
-      for (Madara::Knowledge_Record::Integer k = 0; k < 10; ++k)
-      {
-        index[0] = i;
-        index[1] = j;
-        index[2] = k;
-        test_vector.set (index, i * 100 + j * 10 + k);
-      }
-    }
-  }
-
-  /**
-   * Contents of array should look like this:
-   * test_vector.0.0.0 = 0;
-   * ...
-   * test_vector.1.0.0 = 100;
-   * ...
-   * test_vector.3.3.3 = 333;
-   * ...
-   **/
-
-  bool failed = false;
-
-  
-  /**
-   * Test the contents of the array
-   **/
-  for (Madara::Knowledge_Record::Integer i = 0; i < 10; ++i)
-  {
-    for (Madara::Knowledge_Record::Integer j = 0; j < 10; ++j)
-    {
-      for (Madara::Knowledge_Record::Integer k = 0; k < 10; ++k)
-      {
-        index[0] = i;
-        index[1] = j;
-        index[2] = k;
-
-        if (test_vector[index] != i * 100 + j * 10 + k)
-        {
-          failed = true;
-        }
-      }
-    }
-  }
-
-  if (failed)
-    std::cout << "FAIL. Vector_N did not set array contents properly.\n";
-  else
-    std::cout << "SUCCESS. Vector_N set the array contents properly\n";
-
-  knowledge.print ("\nVector_N results snapshot:\n");
-  knowledge.print ("test_vector.1.2.3 = {test_vector.1.2.3}\n");
-  knowledge.print ("test_vector.2.3.4 = {test_vector.2.3.4}\n");
-  knowledge.print ("test_vector.8.7.2 = {test_vector.8.7.2}\n");
 }
 
 void test_map (void)
@@ -1020,7 +944,6 @@ int main (int , char **)
 {
   test_vector ();
   test_map ();
-  test_vector_n ();
   test_integer_vector ();
   test_double_vector ();
   test_string_vector ();
