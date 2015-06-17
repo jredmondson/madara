@@ -41,12 +41,23 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_Strin
 
   const char * nativeHost = env->GetStringUTFChars (host, 0);
   const char * nativeDomain = env->GetStringUTFChars (domain, 0);
+  Knowledge_Base * knowledge (0);
 
-  Knowledge_Base * knowledge = new Knowledge_Base (
-    nativeHost, transport, nativeDomain);
+  if (nativeHost && nativeDomain)
+  {
+    knowledge = new Knowledge_Base (
+      nativeHost, transport, nativeDomain);
+  }
 
-  env->ReleaseStringUTFChars (host, nativeHost);
-  env->ReleaseStringUTFChars (domain, nativeDomain);
+  if (nativeHost)
+  {
+    env->ReleaseStringUTFChars (host, nativeHost);
+  }
+
+  if (nativeDomain)
+  {
+    env->ReleaseStringUTFChars (domain, nativeDomain);
+  }
 
   return (jlong) knowledge;
 }
@@ -60,10 +71,17 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_Strin
 
   if (settings)
   {
-    knowledge = new Knowledge_Base (nativeHost, *settings);
+    if (nativeHost)
+    {
+      knowledge = new Knowledge_Base (nativeHost, *settings);
+      env->ReleaseStringUTFChars (host, nativeHost);
+    }
+    else
+    {
+      knowledge = new Knowledge_Base ("", *settings);
+    }
   }
 
-  env->ReleaseStringUTFChars (host, nativeHost);
 
   return (jlong) knowledge;
 }
