@@ -395,7 +395,7 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
   // increase port each time we don't properly bind
 
 #ifdef _MADARA_ANDROID_
-  __android_log_write (ANDROID_LOG_ERROR, "MADARA",
+  __android_log_print (ANDROID_LOG_ERROR, "MADARA",
     "Madara::Utility::bind_to_ephemeral_port: creating ACE_INET_Addr");
 #endif
 
@@ -404,7 +404,7 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
 
 
 #ifdef _MADARA_ANDROID_
-  __android_log_write (ANDROID_LOG_INFO, "MADARA",
+  __android_log_print (ANDROID_LOG_INFO, "MADARA",
     "Madara::Utility::bind_to_ephemeral_port: getting hostname from ACE_INET_Addr");
 #endif
 
@@ -413,7 +413,7 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
   host = hostname;
 
 #ifdef _MADARA_ANDROID_
-  __android_log_write (ANDROID_LOG_INFO, "MADARA",
+  __android_log_print (ANDROID_LOG_INFO, "MADARA",
     "Madara::Utility::bind_to_ephemeral_port: calling ACE_OS::socket_init");
 #endif
 
@@ -428,7 +428,7 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
     // to get a port
     // return correct if we are able to open the port
 #ifdef _MADARA_ANDROID_
-    __android_log_write (ANDROID_LOG_INFO, "MADARA",
+    __android_log_print (ANDROID_LOG_INFO, "MADARA",
       "Madara::Utility::bind_to_ephemeral_port: attempting open on socket %d", port);
 #endif
 
