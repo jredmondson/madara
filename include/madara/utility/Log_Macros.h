@@ -19,6 +19,10 @@
 #include "MADARA_Logger_export.h"
 #include "ace/Log_Msg.h"
 
+#ifdef _MADARA_ANDROID_
+#include <android/log.h>
+#endif
+
 #if !defined (DLINFO)
 # define DLINFO ACE_TEXT("(%P|%t) [%M] - %T - ")
 #endif
@@ -97,8 +101,17 @@ extern MADARA_Logger_Export int MADARA_debug_level;
 #define MADARA_ERROR_RETURN(L, X, Y) return (Y)
 #define MADARA_ERROR_BREAK(L, X) { break; }
 #else
-# if !defined (MADARA_ERROR)
-#  define MADARA_ERROR(L, X) \
+#if !defined (MADARA_ERROR)
+  #ifdef _MADARA_ANDROID_
+  #define MADARA_ERROR(L, X) \
+  do { \
+    if (MADARA_debug_level >= L) \
+    { \
+      __android_log_print (ANDROID_LOG_ERROR, "MADARA", X); \
+    } \
+  } while (0)
+  #else
+  #define MADARA_ERROR(L, X) \
   do { \
     if (MADARA_debug_level >= L) \
       { \
@@ -107,9 +120,20 @@ extern MADARA_Logger_Export int MADARA_debug_level;
         ace___->conditional_set (__FILE__, __LINE__, -1, __ace_error); \
         ace___->log X; \
       } \
-  } while (0)
-#  endif
+    } while (0)
+  #endif
+#endif
+
 # if !defined (MADARA_DEBUG)
+#ifdef _MADARA_ANDROID_
+#define MADARA_DEBUG(L, X) \
+  do { \
+    if (MADARA_debug_level >= L) \
+    { \
+      __android_log_print (ANDROID_LOG_INFO, "MADARA", X); \
+    } \
+  } while (0)
+#else
 #  define MADARA_DEBUG(L, X) \
   do { \
     if (MADARA_debug_level >= L) \
@@ -119,7 +143,8 @@ extern MADARA_Logger_Export int MADARA_debug_level;
         ace___->conditional_set (__FILE__, __LINE__, 0, __ace_error); \
         ace___->log X; \
       } \
-  } while (0)
+    } while (0)
+#endif
 # endif
 # if !defined (MADARA_LOG_TRACE)
 #  define MADARA_LOG_TRACE(L, X) \

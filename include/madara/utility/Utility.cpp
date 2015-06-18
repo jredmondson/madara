@@ -17,12 +17,6 @@
 #include "ace/OS_NS_sys_time.h"
 #include "ace/High_Res_Timer.h"
 
-#ifdef _MADARA_ANDROID_
-
-#include <android/log.h>
-
-#endif
-
 #include "madara/knowledge_engine/Knowledge_Base.h"
 
 std::string
@@ -394,51 +388,42 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
   // start with the initial port provided
   // increase port each time we don't properly bind
 
-#ifdef _MADARA_ANDROID_
-  __android_log_print (ANDROID_LOG_ERROR, "MADARA",
-    "Madara::Utility::bind_to_ephemeral_port: creating ACE_INET_Addr");
-#endif
+  MADARA_DEBUG (Utility::LOG_DETAILED_TRACE, (LM_DEBUG, 
+    "Utility::bind_to_ephemeral_port:" \
+    " creating ACE_INET_Addr\n"));
 
   ACE_INET_Addr addr (port);
   char hostname[HOST_NAME_MAX + 1] = "";
 
 
-#ifdef _MADARA_ANDROID_
-  __android_log_print (ANDROID_LOG_INFO, "MADARA",
-    "Madara::Utility::bind_to_ephemeral_port: getting hostname from ACE_INET_Addr");
-#endif
-
+  MADARA_DEBUG (Utility::LOG_DETAILED_TRACE, (LM_DEBUG,
+    "Utility::bind_to_ephemeral_port:" \
+    " getting hostname from ACE_INET_Addr\n"));
 
   addr.get_host_name (hostname, HOST_NAME_MAX);
   host = hostname;
 
-#ifdef _MADARA_ANDROID_
-  __android_log_print (ANDROID_LOG_INFO, "MADARA",
-    "Madara::Utility::bind_to_ephemeral_port: calling ACE_OS::socket_init");
-#endif
+  MADARA_DEBUG (Utility::LOG_DETAILED_TRACE, (LM_DEBUG,
+    "Utility::bind_to_ephemeral_port:" \
+    " hostname equals %s\n", hostname));
+
+  MADARA_DEBUG (Utility::LOG_DETAILED_TRACE, (LM_DEBUG,
+    "Utility::bind_to_ephemeral_port:" \
+    " calling ACE_OS::socket_init\n"));
 
   ACE_OS::socket_init (2, 2);
 
   for ( ; port < 65535; ++port, addr.set (port))
   {
-    //ACE_DEBUG ((LM_DEBUG, 
-    //  "(%P|%t) Attempting bind of %d\n",
-    //  addr.get_port_number ()));
-    // Output some debugging information so we know how far we had to go
-    // to get a port
-    // return correct if we are able to open the port
-#ifdef _MADARA_ANDROID_
-    __android_log_print (ANDROID_LOG_INFO, "MADARA",
-      "Madara::Utility::bind_to_ephemeral_port: attempting open on socket %d", port);
-#endif
+
+    MADARA_DEBUG (Utility::LOG_DETAILED_TRACE, (LM_DEBUG,
+      "Utility::bind_to_ephemeral_port:" \
+      " attempting open on socket %d\n", port));
 
     if (socket.open (addr, 2, 0, 0) != -1)
       return 0;
 
     // failed to get port
-    //ACE_DEBUG ((LM_DEBUG, 
-    //          "(%P|%t) failed to acquire port %d: addr reporting %d\n",
-    //          port, addr.get_port_number ()));
     if (!increase_until_bound)
       break;
   }
