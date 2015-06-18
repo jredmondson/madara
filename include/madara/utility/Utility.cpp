@@ -389,7 +389,7 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
   // increase port each time we don't properly bind
 
   ACE_INET_Addr addr (port);
-  char hostname[HOST_NAME_MAX] = "";
+  char hostname[HOST_NAME_MAX + 1] = "";
   addr.get_host_name (hostname, HOST_NAME_MAX);
   host = hostname;
 
