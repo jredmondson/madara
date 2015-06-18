@@ -102,15 +102,15 @@ extern MADARA_Logger_Export int MADARA_debug_level;
 #define MADARA_ERROR_BREAK(L, X) { break; }
 #else
 #if !defined (MADARA_ERROR)
-  #ifdef _MADARA_ANDROID_
-  #define MADARA_ERROR(L, X) \
-  do { \
-    if (MADARA_debug_level >= L) \
-    { \
-      __android_log_print (ANDROID_LOG_ERROR, "MADARA", X); \
-    } \
-  } while (0)
-  #else
+  //#ifdef _MADARA_ANDROID_
+  //#define MADARA_ERROR(L, X) \
+  //do { \
+  //  if (MADARA_debug_level >= L) \
+  //  { \
+  //    __android_log_print (ANDROID_LOG_ERROR, "MADARA", X); \
+  //  } \
+  //} while (0)
+  //#else
   #define MADARA_ERROR(L, X) \
   do { \
     if (MADARA_debug_level >= L) \
@@ -121,19 +121,19 @@ extern MADARA_Logger_Export int MADARA_debug_level;
         ace___->log X; \
       } \
     } while (0)
-  #endif
+  //#endif
 #endif
 
 # if !defined (MADARA_DEBUG)
-#ifdef _MADARA_ANDROID_
-#define MADARA_DEBUG(L, X) \
-  do { \
-    if (MADARA_debug_level >= L) \
-    { \
-      __android_log_print (ANDROID_LOG_INFO, "MADARA", X); \
-    } \
-  } while (0)
-#else
+//#ifdef _MADARA_ANDROID_
+//#define MADARA_DEBUG(L, X) \
+//  do { \
+//    if (MADARA_debug_level >= L) \
+//    { \
+//      __android_log_print (ANDROID_LOG_INFO, "MADARA", X); \
+//    } \
+//  } while (0)
+//#else
 #  define MADARA_DEBUG(L, X) \
   do { \
     if (MADARA_debug_level >= L) \
@@ -144,7 +144,7 @@ extern MADARA_Logger_Export int MADARA_debug_level;
         ace___->log X; \
       } \
     } while (0)
-#endif
+//#endif
 # endif
 # if !defined (MADARA_LOG_TRACE)
 #  define MADARA_LOG_TRACE(L, X) \
