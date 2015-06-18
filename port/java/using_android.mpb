@@ -2,4 +2,9 @@ feature (android) {
   requires += java
 
   macros += _MADARA_ANDROID_
+
+  libpaths += $(SYSROOT)/lib
+  includes += $(SYSROOT)/include
+
+  libs += log
 }
