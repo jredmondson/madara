@@ -48,44 +48,32 @@
 package com.madara.tests;
 
 import com.madara.KnowledgeBase;
-import com.madara.KnowledgeRecord;
-import com.madara.KnowledgeType;
-import com.madara.EvalSettings;
-import com.madara.containers.Vector;
-import com.madara.transport.filters.LogAggregate;
-import com.madara.transport.filters.LogRecord;
-import com.madara.transport.QoSTransportSettings;
-import com.madara.transport.TransportType;
+import com.madara.containers.Integer;
+import com.madara.containers.String;
 
 /**
- * This class is a tester for the LogRecord filter classes
+ * This class is a tester for basic KnowledgeBase functionality
  */
-public class LogFilterTest
-{
-  public static void main (String...args) throws InterruptedException, Exception
+public class TestKnowledgeBase {
+  public static void main (java.lang.String...args) throws InterruptedException, Exception
   {
-    QoSTransportSettings settings = new QoSTransportSettings();
-    settings.setHosts(new String[]{"239.255.0.1:4150"});
-    settings.setType(TransportType.MULTICAST_TRANSPORT);
+    KnowledgeBase knowledge = new KnowledgeBase();
     
-    System.out.println ("Adding individual record log filter to receive.");
-    settings.addReceiveFilter(KnowledgeType.ALL_TYPES, new LogRecord());
-    settings.addReceiveFilter(new LogAggregate());
-    System.out.println ("Adding individual record log filter to send.");
-    settings.addSendFilter(KnowledgeType.ALL_TYPES, new LogRecord());
-    settings.addSendFilter(new LogAggregate());
+    Integer age = new Integer();
+    age.setName(knowledge, "age");
+    age.set(24);
     
-    KnowledgeBase knowledge = new KnowledgeBase("", settings);
+    String name = new String();
+    name.setName(knowledge, "name");
+    name.set("Alfred Mooney");
     
-    System.out.println ("Beginning to loop.");
-    for (int i = 0; i < 60; ++i)
-    {
-      System.out.println ("Sending an update.");
-      knowledge.set(".base", i);
-      knowledge.evaluate(".i[0->10)(updates.{.i}=.base * 5 + .i)");
-      
-      java.lang.Thread.sleep(1000);
-    }
+    String occupation = new String();
+    occupation.setName(knowledge, "occupation");
+    occupation.set("Moonlighter");
+    
+    java.lang.String contents = knowledge.toString();
+    
+    System.out.println(contents);
     
     // print all knowledge
     knowledge.print();

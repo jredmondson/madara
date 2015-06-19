@@ -362,6 +362,38 @@ jboolean JNICALL Java_com_madara_KnowledgeBase_jni_1exists
   return result;
 }
 
+jstring JNICALL Java_com_madara_KnowledgeBase_jni_1toString
+(JNIEnv * env, jobject, jlong cptr, jstring arrayDelimiter,
+  jstring recordDelimiter, jstring keyvalDelimiter)
+{
+  jstring result;
+
+  Knowledge_Base * knowledge = (Knowledge_Base *)cptr;
+
+  const char * nativeArrayDelimiter = env->GetStringUTFChars (arrayDelimiter, 0);
+  const char * nativeRecordDelimiter = env->GetStringUTFChars (recordDelimiter, 0);
+  const char * nativeKeyvalDelimiter = env->GetStringUTFChars (keyvalDelimiter, 0);
+
+  if (knowledge &&
+    nativeArrayDelimiter && nativeRecordDelimiter && nativeKeyvalDelimiter)
+  {
+    std::string stringkb;
+    knowledge->to_string (stringkb, nativeArrayDelimiter,
+      nativeRecordDelimiter, nativeKeyvalDelimiter);
+    result = env->NewStringUTF (stringkb.c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
+
+  env->ReleaseStringUTFChars (arrayDelimiter, nativeArrayDelimiter);
+  env->ReleaseStringUTFChars (recordDelimiter, nativeRecordDelimiter);
+  env->ReleaseStringUTFChars (keyvalDelimiter, nativeKeyvalDelimiter);
+
+  return result;
+}
+
 /*
 * Class:   com_madara_KnowledgeBase
 * Method:  jni_get

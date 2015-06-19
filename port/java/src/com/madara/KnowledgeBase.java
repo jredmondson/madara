@@ -99,6 +99,7 @@ public class KnowledgeBase extends MadaraJNI
   private native long jni_saveContext(long cptr, String filename);
   private native long jni_saveAsKarl(long cptr, String filename);
   private native long jni_saveCheckpoint(long cptr, String filename, boolean resetModifieds);
+  private native java.lang.String jni_toString(long cptr, java.lang.String arrayDelimiter, java.lang.String recordDelimiter, java.lang.String keyvalDelimiter);
   private native long jni_loadContext(long cptr, String filename, boolean useId, long settings);
 
   private static HashMap<Long, KnowledgeBase> knowledgeBases = new HashMap<Long, KnowledgeBase>();
@@ -835,6 +836,32 @@ public class KnowledgeBase extends MadaraJNI
     jni_toKnowledgeMap(getCPtr(), expression, jniRet);
 
     return new KnowledgeMap(jniRet.keys, jniRet.vals);
+  }
+
+  /**
+   * Prints the knowledge base to a string for debugging purposes
+   *
+   * @return  string representation of the knowledge base
+   **/
+  public java.lang.String toString()
+  {
+    return jni_toString(getCPtr(), ", ", ";\n", "=");
+  }
+
+  /**
+   * Prints the knowledge base to a string for debugging purposes
+   *
+   * @param arrayDelimiter  delimiter to use between array elements
+   * @param recordDelimiter delimiter to use in between records
+   * @param keyvalDelimiter delimiter to use in between keys and values
+   * @return  string representation of the knowledge base
+   **/
+  public java.lang.String toString(java.lang.String arrayDelimiter,
+    java.lang.String recordDelimiter,
+    java.lang.String keyvalDelimiter)
+  {
+    return jni_toString(getCPtr(), arrayDelimiter, recordDelimiter,
+      keyvalDelimiter);
   }
 
   /**

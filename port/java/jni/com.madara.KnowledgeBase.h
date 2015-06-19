@@ -125,6 +125,14 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__
   (JNIEnv *, jobject, jlong, jlong, jlong);
 
 /*
+* Class:     com_madara_KnowledgeBase
+* Method:    jni_toString
+* Signature: (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+*/
+MADARA_Export jstring JNICALL Java_com_madara_KnowledgeBase_jni_1toString
+(JNIEnv *, jobject, jlong, jstring, jstring, jstring);
+
+/*
  * Class:     com_madara_KnowledgeBase
  * Method:    jni_compile
  * Signature: (JLjava/lang/String;)J
