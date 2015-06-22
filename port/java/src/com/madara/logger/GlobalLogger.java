@@ -46,12 +46,13 @@
  *********************************************************************/
 package com.madara.logger;
 
+import com.madara.MadaraJNI;
 
 /**
  * A facade for distributed adder within a knowledge base
  **/
 
-public class GlobalLogger
+public class GlobalLogger extends MadaraJNI
 {	
   private static native long jni_getCPtr();
   private static native void jni_setLevel(int level);
@@ -69,6 +70,7 @@ public class GlobalLogger
    **/
   public GlobalLogger()
   {
+    setCPtr(jni_getCPtr());
   }
   
   /**

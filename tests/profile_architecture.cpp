@@ -203,7 +203,7 @@ void evaluate_expressions (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 void print_results (void)
 {
   logger::global_logger->log (logger::LOG_ALWAYS,
-    "\n%-18s | %-13s | %-13s | %-13s | %-13s\n\n",
+    "\n%-18s|%-13s|%-13s|%-13s|%-13s\n\n",
     "Expression", "Compile time", "Min eval time",
     "Max eval time", "Avg eval time");
   //std::cout << "\n|" << std::setw (18) << "Expression" << "|" <<
@@ -213,8 +213,11 @@ void print_results (void)
   //                    std::setw (13) << "Avg eval time" << "|\n\n";
   for (unsigned int i = 0; i < tests.size (); ++i)
   {
+    if (tests[i].length > 17)
+      tests[i].resize (17);
+
     logger::global_logger->log (logger::LOG_ALWAYS,
-      "%-18s | %-13llu | %-13llu | %-13llu | %-13llu\n",
+      "%-18s|%-13llu|%-13llu|%-13llu|%-13llu\n",
       tests[i], compile_times[i], min_times[i],
       max_times[i], average_times[i]);
 

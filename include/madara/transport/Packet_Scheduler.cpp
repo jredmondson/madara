@@ -243,7 +243,7 @@ Madara::Transport::Packet_Scheduler::print_status (
 {
   Scheduler_Guard guard (mutex_);
 
-  Logger::global_logger->log (Logger::LOG_EMERGENCY,
+  Logger::global_logger->log (Logger::LOG_MINOR,
     "%s: %llu sent, %llu dropped, %llu consec dropped\n",
     prefix, sent_messages_, dropped_messages_, consecutive_drops_);
 }
