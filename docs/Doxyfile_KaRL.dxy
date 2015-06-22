@@ -669,6 +669,7 @@ INPUT                  = ../include/madara/knowledge_engine \
                          ../include/madara/transport \
                          ../include/madara/expression_tree \
                          ../include/madara/utility \
+                         ../include/madara/logger \
                          ../include/madara/threads \
                          ../include/madara/filters
 
