@@ -3,8 +3,8 @@ feature (android) {
 
   macros += _MADARA_ANDROID_
 
-  libpaths += $(SYSROOT)/lib
-  includes += $(SYSROOT)/include
+  libpaths += $(SYSROOT)/usr/lib
+  includes += $(SYSROOT)/usr/include
 
   libs += log
 }
