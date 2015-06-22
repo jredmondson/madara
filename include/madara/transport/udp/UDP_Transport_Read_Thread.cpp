@@ -129,7 +129,7 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
 
         context_->get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " Sent fragments totalling %llu bytes\n",
+          " Sent fragments totalling %d bytes\n",
           print_prefix, bytes_sent);
 
         delete_fragments (map);
@@ -146,7 +146,7 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
 
             context_->get_logger ().log (Logger::LOG_MAJOR,
               "%s:" \
-              " Sent %llu packet to %s\n",
+              " Sent %d packet to %s\n",
               print_prefix, packet_size, i->first.c_str ());
 
             if (actual_sent > 0)
@@ -159,7 +159,7 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
 
         context_->get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " Sent %llu total bytes via rebroadcast\n",
+          " Sent %d total bytes via rebroadcast\n",
           print_prefix, bytes_sent);
       }
 

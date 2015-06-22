@@ -171,7 +171,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
 
         Logger::global_logger->log (Logger::LOG_MAJOR,
           "%s:" \
-          " fragmenting %llu byte packet (%d bytes is max fragment size)\n",
+          " fragmenting %d byte packet (%d bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
 
         // fragment the message

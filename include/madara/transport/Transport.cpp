@@ -392,7 +392,7 @@ Madara::Transport::process_received_update (
         "%s:" \
         " Cannot compute message latency." \
         " Message header timestamp is in the future.\n",
-        " message.timestamp = %llu, cur_timestamp = %llu.\n",
+        " message.timestamp = %d, cur_timestamp = %d.\n",
         print_prefix,
         header->timestamp, current_time); 
     }

@@ -293,7 +293,7 @@ Madara::Transport::Multicast_Transport::send_data (
 
         context_.get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " Sent packet of size %llu\n",
+          " Sent packet of size %d\n",
           print_prefix, bytes_sent);
 
         send_monitor_.add ((uint32_t)bytes_sent);

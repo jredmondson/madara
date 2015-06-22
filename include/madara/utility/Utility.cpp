@@ -994,7 +994,7 @@ bool Madara::Utility::wait_false (
   {
     Logger::global_logger->log (Logger::LOG_DETAILED,
       "Utility::wait_false:" \
-      " current is %llu.%llu and max is %llu.%llu (poll freq is %f)\n",
+      " current is %d.%d and max is %d.%d (poll freq is %f)\n",
       current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
       settings.poll_frequency);
 

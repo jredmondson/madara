@@ -103,7 +103,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::rebroadcast (
 
         this->context_->get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " fragmenting %llu byte packet (%d bytes is max fragment size)\n",
+          " fragmenting %d byte packet (%d bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
 
         // fragment the message
@@ -126,7 +126,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::rebroadcast (
 
         this->context_->get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " Sent fragments totalling %llu bytes\n",
+          " Sent fragments totalling %d bytes\n",
           print_prefix,
           bytes_sent);
 
@@ -139,7 +139,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::rebroadcast (
 
         this->context_->get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " Sent packet of size %llu bytes\n",
+          " Sent packet of size %d bytes\n",
           print_prefix,
           bytes_sent);
 

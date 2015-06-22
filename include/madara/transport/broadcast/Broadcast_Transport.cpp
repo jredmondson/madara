@@ -189,7 +189,7 @@ Madara::Transport::Broadcast_Transport::send_data (
 
         this->context_.get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " fragmenting %llu byte packet (%d bytes is max fragment size)\n",
+          " fragmenting %d byte packet (%d bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
 
         // fragment the message
@@ -212,7 +212,7 @@ Madara::Transport::Broadcast_Transport::send_data (
 
         this->context_.get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " Sent fragments totalling %llu bytes\n",
+          " Sent fragments totalling %d bytes\n",
           print_prefix, bytes_sent);
 
         delete_fragments (map);
@@ -224,7 +224,7 @@ Madara::Transport::Broadcast_Transport::send_data (
 
         this->context_.get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " Sent packet of size %llu bytes\n",
+          " Sent packet of size %d bytes\n",
           print_prefix, bytes_sent);
         send_monitor_.add ((uint32_t)bytes_sent);
       }
