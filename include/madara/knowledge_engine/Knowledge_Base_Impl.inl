@@ -6,7 +6,7 @@
 #include "madara/knowledge_engine/Knowledge_Record.h"
 #include "madara/expression_tree/Interpreter.h"
 #include "madara/expression_tree/Expression_Tree.h"
-#include "madara/utility/Log_Macros.h"
+
 
 /**
  * @file Knowledge_Base_Impl.inl
@@ -53,6 +53,31 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::get_ref (
   const Knowledge_Reference_Settings & settings)
 {
   return map_.get_ref (t_key, settings);
+}
+
+inline int
+Madara::Knowledge_Engine::Knowledge_Base_Impl::get_log_level (void)
+{
+  return map_.get_log_level ();
+}
+
+inline Madara::Logger::Logger &
+Madara::Knowledge_Engine::Knowledge_Base_Impl::get_logger (void) const
+{
+  return map_.get_logger ();
+}
+
+inline void
+Madara::Knowledge_Engine::Knowledge_Base_Impl::attach_logger (
+  Logger::Logger & logger) const
+{
+  map_.attach_logger (logger);
+}
+
+inline void
+Madara::Knowledge_Engine::Knowledge_Base_Impl::set_log_level (int level)
+{
+  map_.set_log_level (level);
 }
 
 inline Madara::Knowledge_Record
@@ -187,8 +212,9 @@ inline void
 Madara::Knowledge_Engine::Knowledge_Base_Impl::print (
   unsigned int level) const
 {
-  MADARA_DEBUG ((int)level, (LM_INFO, 
-    "\nKnowledge in Knowledge Base:\n"));
+  map_.print (
+    "\nKnowledge in Knowledge Base:\n", Logger::LOG_ALWAYS);
+
   map_.print (level);
 }
 
@@ -534,9 +560,9 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::send_modifieds (
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-          DLINFO "%s:" \
-          " no modifications to send\n", prefix.c_str ()));
+      map_.get_logger ().log (Logger::LOG_DETAILED,
+        "%s: no modifications to send\n", prefix.c_str ());
+
       result = -1;
     }
   }
@@ -544,17 +570,15 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::send_modifieds (
   {
     if (transports_.size () == 0)
     {
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-          DLINFO "%s:" \
-          "  No transport configured.\n", prefix.c_str ()));
+      map_.get_logger ().log (Logger::LOG_DETAILED,
+        "%s: no transport configured\n", prefix.c_str ());
 
       result = -2;
     }
     else if (settings.delay_sending_modifieds)
     {
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-          DLINFO "%s:" \
-          "  User requested to not send modifieds.\n", prefix.c_str ()));
+      map_.get_logger ().log (Logger::LOG_DETAILED,
+        "%s: user requested to not send modifieds\n", prefix.c_str ());
 
       result = -3;
     }

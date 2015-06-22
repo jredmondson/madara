@@ -12,6 +12,7 @@
 #include "ace/Recursive_Thread_Mutex.h"
 #include "ace/Condition_Recursive_Thread_Mutex.h"
 #include "ace/Synch.h"
+#include "madara/logger/Logger.h"
 
 #ifndef ACE_LACKS_PRAGMA_ONCE
 # pragma once
@@ -873,7 +874,7 @@ namespace Madara
        * Atomically gets the Lamport clock
        * @return           current global clock
        **/
-      uint64_t get_clock (void);
+      uint64_t get_clock (void) const;
 
       /**
        * Atomically gets the Lamport clock of a variable
@@ -884,7 +885,7 @@ namespace Madara
       uint64_t get_clock (
         const std::string & key,
              const Knowledge_Reference_Settings & settings =
-                     Knowledge_Reference_Settings ());
+                     Knowledge_Reference_Settings ()) const;
 
       /**
        * Signals that this thread is done with the context. Anyone
@@ -1103,6 +1104,36 @@ namespace Madara
                        std::map <std::string, Knowledge_Record> & target);
 
       /**
+       * Adds a file to the logger
+       * @param  filename  the file to add to logger
+       **/
+      void add_logger (const std::string & filename);
+
+      /**
+      * Gets the log level
+      * @return the maximum detail level to print
+      **/
+      int get_log_level (void);
+
+      /**
+      * Sets the log level 
+      * @param  level  the maximum detail level to print
+      **/
+      void set_log_level (int level);
+
+      /**
+       * Gets the logger used for information printing
+       * @return the context's logger
+       **/
+      Logger::Logger & get_logger (void) const;
+
+      /**
+      * Attaches a logger to be used for printing
+      * @param the logger the context should lose
+      **/
+     void attach_logger (Logger::Logger & logger) const;
+
+      /**
       * Fills a variable map with list of keys according to a matching prefix,
       * suffix, and delimiter hierarchy. This is useful for understanding the
       * logical hierarchy of your variables (and also a key utility of
@@ -1193,6 +1224,9 @@ namespace Madara
       
       /// KaRL interpreter
       Madara::Expression_Tree::Interpreter  *   interpreter_;
+
+      /// Logger for printing
+      mutable Logger::Logger * logger_;
     };
   }
 }

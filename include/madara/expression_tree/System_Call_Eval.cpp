@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Eval.h"
 #include "madara/expression_tree/Visitor.h"
@@ -49,13 +49,13 @@ Madara::Expression_Tree::System_Call_Eval::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (nodes_[0]) == 0)
     {
       delete nodes_[0];
-      nodes_[0] = new Leaf_Node (result);
+      nodes_[0] = new Leaf_Node (*(this->logger_), result);
     }
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
-      "KARL COMPILE ERROR: System call eval requires an argument.\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: System call eval requires an argument\n");
   }
 
   return result;
@@ -71,8 +71,8 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   if (nodes_.size () > 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call type is returning the eval of its first argument.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "System call type is returning the eval of its first argument\n");
     
     Madara::Knowledge_Engine::Compiled_Expression expression = context_.compile (
       nodes_[0]->evaluate (settings).to_string ());
@@ -81,8 +81,8 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
-      "KARL RUNTIME ERROR: System call eval requires an argument.\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL RUNTIME ERROR: System call eval requires an argument\n");
   }
 
   return return_value;

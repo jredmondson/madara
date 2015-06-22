@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Print.h"
 #include "madara/expression_tree/Visitor.h"
@@ -48,13 +48,13 @@ Madara::Expression_Tree::System_Call_Print::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (nodes_[0]) == 0)
     {
       delete nodes_[0];
-      nodes_[0] = new Leaf_Node (result);
+      nodes_[0] = new Leaf_Node (*(this->logger_), result);
     }
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
-      "KARL COMPILE ERROR: System call size requires an argument.\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: System call size requires an argument\n");
   }
 
   return result;
@@ -70,9 +70,9 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   if (nodes_.size () == 1)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "System call print is printing the first argument and returning the"
-      " size of the first argument.\n"));
+      " size of the first argument\n");
     
     std::string statement (nodes_[0]->evaluate (settings).to_string ());
 
@@ -85,10 +85,10 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     std::string statement (nodes_[0]->evaluate (settings).to_string ());
     unsigned int log_level = 
       (unsigned int) nodes_[1]->evaluate (settings).to_integer ();
-    
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+
+    logger_->log (Logger::LOG_MINOR,
       "System call print is printing the first argument at log level %d.\n",
-      log_level));
+      log_level);
     
     context_.print (statement, log_level);
 
@@ -96,8 +96,8 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
-      "KARL RUNTIME ERROR: System call print requires an argument.\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL RUNTIME ERROR: System call print requires an argument\n");
   }
 
   return return_value;

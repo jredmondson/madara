@@ -1,6 +1,7 @@
 #include "Bandwidth_Monitor.h"
 #include "madara/utility/Utility.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/logger/Global_Logger.h"
+
 
 Madara::Transport::Bandwidth_Monitor::Bandwidth_Monitor (
   time_t window_in_secs)
@@ -118,10 +119,9 @@ Madara::Transport::Bandwidth_Monitor::print_utilization (
 
   update_utilization ();
 
-  MADARA_DEBUG (0, (LM_DEBUG,
-    "Bandwidth: %d messages "
+  Logger::global_logger->log (Logger::LOG_ALWAYS, "Bandwidth: %d messages "
     "for %d bytes over %Qs window (%d B/s)\n", messages_.size (),
-    utilization_, window_, get_bytes_per_second ()));
+    utilization_, window_, get_bytes_per_second ());
 }
 
 

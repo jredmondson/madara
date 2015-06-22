@@ -6,18 +6,19 @@
  *********************************************************************/
 
 #include "com.madara.MadaraLog.h"
-#include "madara/utility/Log_Macros.h"
 
-/*
- * Class:     com_madara_Debug
- * Method:    jni_setDebugLevel
- * Signature: (I)V
- */
-void JNICALL Java_com_madara_MadaraLog_jni_1setLogLevel (JNIEnv *env, jclass clazz, jint debugLevel)
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
+
+
+void JNICALL Java_com_madara_MadaraLog_jni_1setLogLevel (JNIEnv *env,
+  jclass clazz, jint debugLevel)
 {
-  MADARA_debug_level = debugLevel;
+  logger::global_logger->set_level (debugLevel);
 }
+
 jint JNICALL Java_com_madara_MadaraLog_jni_1getLogLevel (JNIEnv *, jclass)
 {
-  return (jint) MADARA_debug_level;
+  return (jint) logger::global_logger->get_level ();;
 }

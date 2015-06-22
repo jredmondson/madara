@@ -1,6 +1,6 @@
 #include "Knowledge_Record_Filters.h"
 #include "madara/utility/Utility.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/filters/Arguments.h"
 #include <memory>
 
@@ -238,21 +238,24 @@ void
 Madara::Knowledge_Engine::Knowledge_Record_Filters::print_num_filters (
   void) const
 {
-  MADARA_DEBUG (0, (LM_DEBUG,
-    "Printing Knowledge Record Filter Chains by Type...\n"));
-
-  for (Filter_Map::const_iterator i = filters_.begin ();
-       i != filters_.end (); ++i)
+  if (context_)
   {
-    MADARA_DEBUG (0, (LM_DEBUG,
-      "%d = %d chained filters\n", i->first, i->second.size ()));
-  }
-  
-  MADARA_DEBUG (0, (LM_DEBUG,
-    "%d chained aggregate filters\n", aggregate_filters_.size ()));
+    context_->get_logger ().log (Logger::LOG_ALWAYS,
+      "Printing Knowledge Record Filter Chains by Type...\n");
 
-  MADARA_DEBUG (0, (LM_DEBUG,
-    "%d chained buffer filters\n", buffer_filters_.size ()));
+    for (Filter_Map::const_iterator i = filters_.begin ();
+      i != filters_.end (); ++i)
+    {
+      context_->get_logger ().log (Logger::LOG_ALWAYS,
+        "%d = %d chained filters\n", i->first, i->second.size ());
+    }
+
+    context_->get_logger ().log (Logger::LOG_ALWAYS,
+      "%d chained aggregate filters\n", aggregate_filters_.size ());
+
+    context_->get_logger ().log (Logger::LOG_ALWAYS,
+      "%d chained buffer filters\n", buffer_filters_.size ());
+  }
 }
 
 
@@ -427,18 +430,20 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         {
           if (arguments[i].is_string_type ())
           {
-            MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG,
+            context_->get_logger ().log (Logger::LOG_MAJOR,
               "Knowledge_Record_Filters::filter: Adding %s "
-              "to transport context.\n", arguments[i].to_string ().c_str ()));
+              "to transport context.\n", arguments[i].to_string ().c_str ());
+
             transport_context.add_record (
               arguments[i].to_string (), arguments[i + 1]);
           }
           else
           {
-            MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
+            context_->get_logger ().log (Logger::LOG_ALWAYS,
               "Knowledge_Record_Filters::filter: ERROR. Filter attempted to"
               " add records to transport context, but args[%d] was not"
-              " a string value.\n", i));
+              " a string value.\n", i);
+
             break;
           }
         }

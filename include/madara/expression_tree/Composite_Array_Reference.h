@@ -28,8 +28,14 @@ namespace Madara
     class Composite_Array_Reference : public Composite_Unary_Node
     {
     public:
-      /// Ctor.
-      Composite_Array_Reference (const std::string &key, Component_Node * index,
+      /**
+       * Constructor
+       * @param   key      the variable name
+       * @param   index    index within the array
+       * @param   context  the context the variable is contained in
+       **/
+      Composite_Array_Reference (
+        const std::string &key, Component_Node * index,
         Madara::Knowledge_Engine::Thread_Safe_Context & context);
       
       /// Dtor.

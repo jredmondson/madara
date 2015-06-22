@@ -9,8 +9,8 @@ inline int Madara::Transport::Base::validate_transport (void)
   shutting_down_ = false;
   valid_setup_.broadcast ();
 
-  MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-    DLINFO "Transport::validate_transport: transport is ready\n"));
+  context_.get_logger ().log (Logger::LOG_MINOR,
+    "Transport::validate_transport: transport is ready\n");
 
   return 0;
 }
@@ -18,8 +18,8 @@ inline int Madara::Transport::Base::validate_transport (void)
 inline int
 Madara::Transport::Base::check_transport (void) 
 {
-  MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-    DLINFO "Transport::check_transport: checking for valid transport\n"));
+  context_.get_logger ().log (Logger::LOG_DETAILED,
+    "Transport::check_transport: checking for valid transport\n");
 
   if (!is_valid_)
     return -2;
@@ -37,8 +37,8 @@ Madara::Transport::Base::invalidate_transport (void)
   shutting_down_ = true;
   valid_setup_.broadcast ();
 
-  MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-    DLINFO "Transport::invalidate_transport: invalidating transport\n"));
+  context_.get_logger ().log (Logger::LOG_DETAILED,
+    "Transport::invalidate_transport: invalidating transporty\n");
 }
 
 inline Madara::Transport::Settings &

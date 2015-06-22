@@ -3,7 +3,7 @@
 #include "madara/knowledge_engine/File_Header.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 #include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/utility/Utility.h"
 
 #include <stdio.h>
@@ -11,9 +11,11 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/knowledge_engine/containers/String_Vector.h"
+#include "madara/logger/Global_Logger.h"
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
+namespace logger = Madara::Logger;
 
 typedef  Madara::Knowledge_Record::Integer  Integer;
 
@@ -38,11 +40,13 @@ void test_copy (void)
       dest.get ("spouse") == "Pocahontas" &&
       dest.get ("kids.0") == "Thomas Rolfe")
   {
-    std::cout << "TEST 1: Full copy is SUCCESS.\n";
+    logger::global_logger->log (logger::LOG_ALWAYS,
+      "TEST 1: Full copy is SUCCESS.\n");
   }
   else
   {
-    std::cout << "TEST 1: Full copy is FAIL.\n";
+    logger::global_logger->log (logger::LOG_ALWAYS,
+      "TEST 1: Full copy is FAIL.\n");
     dest.print ();
   }
 
@@ -57,11 +61,13 @@ void test_copy (void)
       !dest.exists ("spouse") &&
       !dest.exists ("kids.0"))
   {
-    std::cout << "TEST 2: Lone name copy is SUCCESS.\n";
+    logger::global_logger->log (logger::LOG_ALWAYS,
+      "TEST 2: Lone name copy is SUCCESS.\n");
   }
   else
   {
-    std::cout << "TEST 2: Lone name copy is FAIL.\n";
+    logger::global_logger->log (logger::LOG_ALWAYS,
+      "TEST 2: Lone name copy is FAIL.\n");
     dest.print ();
   }
 
@@ -76,19 +82,22 @@ void test_copy (void)
       !dest.exists ("spouse") &&
       !dest.exists ("kids.0"))
   {
-    std::cout << "TEST 3: Add age to copy is SUCCESS.\n";
+    logger::global_logger->log (logger::LOG_ALWAYS,
+      "TEST 3: Add age to copy is SUCCESS.\n");
   }
   else
   {
-    std::cout << "TEST 3: Add age to copy is FAIL.\n";
+    logger::global_logger->log (logger::LOG_ALWAYS,
+      "TEST 3: Add age to copy is FAIL.\n");
     dest.print ();
   }
 
-  std::cout << "\nEND OF TESTS CONTEXT CONTENTS:\n";
-  std::cout << "\nSource:\n";
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "\nEND OF TESTS CONTEXT CONTENTS:\n"
+    "\nSource:\n");
   source.print ();
 
-  std::cout << "\nDest:\n";
+  logger::global_logger->log (logger::LOG_ALWAYS, "\nDest:\n");
   dest.print ();
 }
 

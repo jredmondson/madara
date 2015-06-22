@@ -26,9 +26,11 @@ namespace Madara
     public:
       /**
        * Constructor
+       * @param   logger the logger to use for printing
        * @param   nodes    arguments to the function
        **/
-      Composite_Const_Array (const Component_Nodes & nodes);
+      Composite_Const_Array (Logger::Logger & logger,
+        const Component_Nodes & nodes);
 
       /**
        * Destructor

@@ -11,6 +11,10 @@ Madara::Transport::Base::Base (const std::string & id,
   : is_valid_ (false), shutting_down_ (false),
   valid_setup_ (mutex_), id_ (id),
   settings_ (new_settings), context_ (context)
+
+#ifndef _MADARA_NO_KARL_
+  , on_data_received_ (context.get_logger ())
+#endif // _MADARA_NO_KARL_
 {
   settings_.attach (&context_);
   packet_scheduler_.attach (&settings_);
@@ -30,10 +34,10 @@ Madara::Transport::Base::setup (void)
   // check for an on_data_received ruleset
   if (settings_.on_data_received_logic.length () != 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Transport::Base::setup" \
-      " setting rules to %s\n", 
-      settings_.on_data_received_logic.c_str ()));
+    context_.get_logger ().log (Logger::LOG_MAJOR,
+      "Transport::Base::setup" \
+      " setting rules to %s\n",
+      settings_.on_data_received_logic.c_str ());
     
 #ifndef _MADARA_NO_KARL_
     Madara::Expression_Tree::Interpreter interpreter;
@@ -43,9 +47,9 @@ Madara::Transport::Base::setup (void)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Transport::Base::setup" \
-      " no permanent rules were set\n"));
+    context_.get_logger ().log (Logger::LOG_MAJOR,
+      "Transport::Base::setup" \
+      " no permanent rules were set\n");
   }
   
   // setup the send buffer
@@ -87,29 +91,29 @@ Madara::Transport::process_received_update (
   // tell the receive bandwidth monitor about the transaction
   receive_monitor.add (bytes_read);
 
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
+  context.get_logger ().log (Logger::LOG_MAJOR,
+    "%s:" \
     " Receive bandwidth = %d B/s\n",
     print_prefix,
-    receive_monitor.get_bytes_per_second ()));
+    receive_monitor.get_bytes_per_second ());
 
   bool is_reduced = false;
   bool is_fragment = false;
   bool previously_defragged = false;
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG,
-    DLINFO "%s:" \
+  context.get_logger ().log (Logger::LOG_MAJOR,
+    "%s:" \
     " calling decode filters on %d bytes\n",
-    print_prefix, bytes_read));
+    print_prefix, bytes_read);
 
   // call decodes, if applicable
   bytes_read = (uint32_t)settings.filter_decode ((unsigned char *)buffer,
     max_buffer_size, max_buffer_size);
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG,
-    DLINFO "%s:" \
+  context.get_logger ().log (Logger::LOG_MAJOR,
+    "%s:" \
     " Decoding resulted in %d final bytes\n",
-    print_prefix, bytes_read));
+    print_prefix, bytes_read);
 
   // setup buffer remaining, used by the knowledge record read method
   int64_t buffer_remaining = (int64_t)bytes_read;
@@ -124,11 +128,11 @@ Madara::Transport::process_received_update (
   if (bytes_read > Reduced_Message_Header::static_encoded_size () &&
       Reduced_Message_Header::reduced_message_header_test (buffer))
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " processing reduced KaRL message from %s\n",
       print_prefix,
-      remote_host));
+      remote_host);
 
     header = new Reduced_Message_Header ();
     is_reduced = true;
@@ -136,33 +140,34 @@ Madara::Transport::process_received_update (
   else if (bytes_read > Message_Header::static_encoded_size () &&
     Message_Header::message_header_test (buffer))
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " processing KaRL message from %s\n",
       print_prefix,
-      remote_host));
+      remote_host);
         
     header = new Message_Header ();
   }
   else if (bytes_read > Fragment_Message_Header::static_encoded_size () &&
     Fragment_Message_Header::fragment_message_header_test (buffer))
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " processing KaRL fragment message from %s\n",
+    context.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
+      " processing KaRL message from %s\n",
       print_prefix,
-      remote_host));
+      remote_host);
         
     header = new Fragment_Message_Header ();
     is_fragment = true;
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " dropping non-KaRL message from %s:%d\n",
       print_prefix,
-      remote_host));
+      remote_host);
+
     return -1;
   }
           
@@ -170,11 +175,11 @@ Madara::Transport::process_received_update (
 
   if (header->size < bytes_read)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " Message header.size (%Q bytes) is less than actual"
       " bytes read (%d bytes). Dropping message.\n",
-      print_prefix, header->size, bytes_read));
+      print_prefix, header->size, bytes_read);
 
     return -1;
   }
@@ -183,10 +188,10 @@ Madara::Transport::process_received_update (
       exists (header->originator, header->clock,
       ((Fragment_Message_Header *)header)->update_number, settings.fragment_map))
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " Fragment already exists in fragment map. Dropping.\n",
-      print_prefix));
+      print_prefix);
 
     return -1;
   }
@@ -196,36 +201,36 @@ Madara::Transport::process_received_update (
     // reject the message if it is us as the originator (no update necessary)
     if (id == header->originator)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " dropping message from ourself\n",
-        print_prefix));
+        print_prefix);
 
       return -2;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_DETAILED,
+        "%s:" \
         " remote id (%s) is not our own\n",
         print_prefix,
-        remote_host));
+        remote_host);
     }
 
     if (settings.is_trusted (remote_host))
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s: remote id (%s) is trusted\n",
+      context.get_logger ().log (Logger::LOG_DETAILED,
+        "%s: remote id (%s) is trusted\n",
         print_prefix,
-        remote_host));
+        remote_host);
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " dropping message from untrusted peer (%s\n",
         print_prefix,
-        remote_host));
+        remote_host);
 
       // delete the header and continue to the svc loop
       return -3;
@@ -235,19 +240,19 @@ Madara::Transport::process_received_update (
         
     if (settings.is_trusted (originator))
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MINOR,
+        "%s:" \
         " originator (%s) is trusted\n",
         print_prefix,
-        originator.c_str ()));
+        originator.c_str ());
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " dropping message from untrusted originator (%s)\n",
         print_prefix,
-        originator.c_str ()));
+        originator.c_str ());
 
       return -4;
     }
@@ -255,23 +260,23 @@ Madara::Transport::process_received_update (
     // reject the message if it is from a different domain
     if (settings.domains != header->domain)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " remote id (%s) in a different domain (%s). Dropping message.\n",
         print_prefix,
         remote_host,
-        header->domain));
+        header->domain);
 
       // delete the header and continue to the svc loop
       return -5;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MINOR,
+        "%s:" \
         " remote id (%s) message is in our domain\n",
         print_prefix,
-        remote_host));
+        remote_host);
     }
   }
 
@@ -281,12 +286,12 @@ Madara::Transport::process_received_update (
     // grab the fragment header
     Fragment_Message_Header * frag_header =
       dynamic_cast <Fragment_Message_Header *> (header);
-    
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+
+    context.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " Processing fragment %d of %s:%d.\n",
       print_prefix, frag_header->update_number,
-      frag_header->originator, frag_header->clock));
+      frag_header->originator, frag_header->clock);
 
     // add the fragment and attempt to defrag the message
     char * message = Transport::add_fragment (
@@ -306,10 +311,10 @@ Madara::Transport::process_received_update (
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " Message has been pieced together from fragments. Processing...\n",
-        print_prefix));
+        print_prefix);
 
       /**
        * if we defragged the message, then we need to process the message.
@@ -325,11 +330,11 @@ Madara::Transport::process_received_update (
         // check the buffer for a reduced message header
         if (Reduced_Message_Header::reduced_message_header_test (buffer))
         {
-          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-            DLINFO "%s:" \
+          context.get_logger ().log (Logger::LOG_MINOR,
+            "%s:" \
             " processing reduced KaRL message from %s\n",
             print_prefix,
-            remote_host));
+            remote_host);
 
           header = new Reduced_Message_Header ();
           is_reduced = true;
@@ -337,11 +342,11 @@ Madara::Transport::process_received_update (
         }
         else if (Message_Header::message_header_test (buffer))
         {
-          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-            DLINFO "%s:" \
+          context.get_logger ().log (Logger::LOG_MINOR,
+            "%s:" \
             " processing KaRL message from %s\n",
             print_prefix,
-            remote_host));
+            remote_host);
         
           header = new Message_Header ();
           update = header->read (buffer, buffer_remaining);
@@ -372,47 +377,38 @@ Madara::Transport::process_received_update (
 
       if (latency > deadline)
       {
-        MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s:" \
+        context.get_logger ().log (Logger::LOG_MAJOR,
+          "%s:" \
           " deadline violation (latency is %Q, deadline is %f).\n",
           print_prefix,
-          latency, deadline));
+          latency, deadline);
 
         return -6;
       }
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MINOR,
+        "%s:" \
         " Cannot compute message latency." \
         " Message header timestamp is in the future.\n",
-        " message.timestamp = %Q, cur_timestamp = %Q.\n",
+        " message.timestamp = %llu, cur_timestamp = %llu.\n",
         print_prefix,
-        header->timestamp, current_time));   
+        header->timestamp, current_time); 
     }
   }
 
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
+  context.get_logger ().log (Logger::LOG_MINOR,
+    "%s:" \
     " iterating over the %d updates\n",
     print_prefix,
-    header->updates));
-      
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s: locking context\n",
-    print_prefix));
-      
+    header->updates);
+
   // temporary record for reading from the updates buffer
   Knowledge_Record record;
   record.quality = header->quality;
   record.clock = header->clock;
   std::string key;
-
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
-    " past the lock\n",
-    print_prefix));
 
   bool dropped = false;
 
@@ -420,32 +416,32 @@ Madara::Transport::process_received_update (
         settings.get_send_bandwidth_limit ()))
   {
     dropped = true;
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " Send monitor has detected violation of bandwidth limit." \
-      " Dropping packet from rebroadcast list\n", print_prefix));
+      " Dropping packet from rebroadcast list\n", print_prefix);
   }
   else if (receive_monitor.is_bandwidth_violated (
     settings.get_total_bandwidth_limit ()))
   {
     dropped = true;
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " Receive monitor has detected violation of bandwidth limit." \
-      " Dropping packet from rebroadcast list...\n", print_prefix));
+      " Dropping packet from rebroadcast list...\n", print_prefix);
   }
   else if (settings.get_participant_ttl () < header->ttl)
   {
     dropped = true;
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " Transport participant TTL is lower than header ttl." \
-      " Dropping packet from rebroadcast list...\n", print_prefix));
+      " Dropping packet from rebroadcast list...\n", print_prefix);
   }
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
-    " Applying %d updates\n", print_prefix, header->updates));
+  context.get_logger ().log (Logger::LOG_MAJOR,
+    "%s:" \
+    " Applying %d updates\n", print_prefix, header->updates);
 
   // iterate over the updates
   for (uint32_t i = 0; i < header->updates; ++i)
@@ -455,36 +451,36 @@ Madara::Transport::process_received_update (
 
     if (buffer_remaining < 0)
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_EMERGENCY,
+        "%s:" \
         " unable to process message. Buffer remaining is negative." \
         " Server is likely being targeted by custom KaRL tools.\n",
-        print_prefix));
+        print_prefix);
 
       // we do not delete the header as this will be cleaned up later
       break;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
-        " Applying receive filter to %s\n", print_prefix, key.c_str ()));
+      context.get_logger ().log (Logger::LOG_MINOR,
+        "%s:" \
+        " Applying receive filter to %s\n", print_prefix, key.c_str ());
 
       record = settings.filter_receive (record, key, transport_context);
 
       if (record.exists ())
       {
-        MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s:" \
-          " Filter results were %s\n", print_prefix, record.to_string ().c_str ()));
+        context.get_logger ().log (Logger::LOG_MINOR,
+          "%s:" \
+          " Filter results were %s\n", print_prefix, record.to_string ().c_str ());
 
         updates[key] = record;
       }
       else
       {
-        MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s:" \
-          " Filter resulted in dropping %s\n", print_prefix, key.c_str ()));
+        context.get_logger ().log (Logger::LOG_MINOR,
+          "%s:" \
+          " Filter resulted in dropping %s\n", print_prefix, key.c_str ());
       }
     }
   }
@@ -493,10 +489,10 @@ Madara::Transport::process_received_update (
   
   if (additionals.size () > 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " %d additional records being handled after receive.\n", print_prefix,
-      additionals.size ()));
+      additionals.size ());
 
     for (Knowledge_Map::const_iterator i = additionals.begin ();
           i != additionals.end (); ++i)
@@ -519,30 +515,31 @@ Madara::Transport::process_received_update (
   if (settings.get_number_of_receive_aggregate_filters () > 0
       && updates.size () > 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " Applying aggregate receive filters.\n", print_prefix));
+    context.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
+      " Applying aggregate receive filters.\n", print_prefix);
+
 
     settings.filter_receive (updates, transport_context);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " No aggregate receive filters were applied...\n",
-        print_prefix));
+      print_prefix);
   }
-  
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
-    " Locking the context to apply updates.\n", print_prefix));
+
+  context.get_logger ().log (Logger::LOG_MINOR,
+    "%s:" \
+    " Locking the context to apply updates.\n", print_prefix);
 
   // lock the context
   context.lock ();
-      
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
-    " Applying updates to context.\n", print_prefix));
+
+  context.get_logger ().log (Logger::LOG_MINOR,
+    "%s:" \
+    " Applying updates to context.\n", print_prefix);
 
   // apply updates from the update list
   for (Knowledge_Map::iterator i = updates.begin ();
@@ -556,19 +553,19 @@ Madara::Transport::process_received_update (
 
     if (result != 1)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " update %s=%s was rejected\n",
         print_prefix,
-        key.c_str (), record.to_string ().c_str ()));
+        key.c_str (), record.to_string ().c_str ());
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " update %s=%s was accepted\n",
         print_prefix,
-        key.c_str (), record.to_string ().c_str ()));
+        key.c_str (), record.to_string ().c_str ());
     }
   }
 
@@ -581,10 +578,10 @@ Madara::Transport::process_received_update (
   {
     transport_context.set_operation (
       Transport_Context::REBROADCASTING_OPERATION);
-  
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " Applying rebroadcast filters to receive results.\n", print_prefix));
+
+    context.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
+      " Applying rebroadcast filters to receive results.\n", print_prefix);
 
     // create a list of rebroadcast records from the updates
     for (Knowledge_Map::iterator i = updates.begin ();
@@ -597,19 +594,19 @@ Madara::Transport::process_received_update (
       {
         if (i->second.to_string () != "")
         {
-          MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-            DLINFO "%s:" \
+          context.get_logger ().log (Logger::LOG_MINOR,
+            "%s:" \
             " Filter results were %s\n", print_prefix,
-            i->second.to_string ().c_str ()));
+            i->second.to_string ().c_str ());
         }
         rebroadcast_records[i->first] = i->second;
       }
       else
       {
-        MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s:" \
+        context.get_logger ().log (Logger::LOG_MINOR,
+          "%s:" \
           " Filter resulted in dropping %s\n", print_prefix,
-          i->first.c_str ()));
+          i->first.c_str ());
       }
     }
   
@@ -621,10 +618,10 @@ Madara::Transport::process_received_update (
       rebroadcast_records[i->first] = i->second;
     }
 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " Applying aggregate rebroadcast filters to %d records.\n",
-      print_prefix, rebroadcast_records.size ()));
+      print_prefix, rebroadcast_records.size ());
     
     // apply aggregate filters to the rebroadcast records
     if (settings.get_number_of_rebroadcast_aggregate_filters () > 0
@@ -634,46 +631,46 @@ Madara::Transport::process_received_update (
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MINOR,
+        "%s:" \
         " No aggregate rebroadcast filters were applied...\n",
-          print_prefix));
+        print_prefix);
     }
-    
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+
+    context.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " Returning to caller with %d rebroadcast records.\n",
-      print_prefix, rebroadcast_records.size ()));
+      print_prefix, rebroadcast_records.size ());
     
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " Rebroadcast packet was dropped...\n",
-        print_prefix));
+      print_prefix);
   }
 
   // before we send to others, we first execute rules
   if (settings.on_data_received_logic.length () != 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " evaluating rules in %s\n",
-      print_prefix, 
-      settings.on_data_received_logic.c_str ()));
-    
 #ifndef _MADARA_NO_KARL_
+    context.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
+      " evaluating rules in %s\n",
+      print_prefix,
+      settings.on_data_received_logic.c_str ());
+
     context.evaluate (on_data_received);
 #endif // _MADARA_NO_KARL_
 
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " no permanent rules were set\n",
-      print_prefix));
+      print_prefix);
   }
 
   return actual_updates;
@@ -682,6 +679,7 @@ Madara::Transport::process_received_update (
 
 int
 Madara::Transport::prep_rebroadcast (
+  Knowledge_Engine::Thread_Safe_Context & context,
   char * buffer,
   int64_t & buffer_remaining,
   const QoS_Transport_Settings & settings,
@@ -714,44 +712,43 @@ Madara::Transport::prep_rebroadcast (
     {
       int size = (int)(settings.queue_length - buffer_remaining);
       *message_size = Madara::Utility::endian_swap ((uint64_t)size);
-    
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+
+      context.get_logger ().log (Logger::LOG_MINOR,
+        "%s:" \
         " %d bytes prepped for rebroadcast packet\n",
-        print_prefix, size));
+        print_prefix, size);
 
       result = size;
 
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG,
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " calling encode filters\n",
-        print_prefix));
+        print_prefix);
 
       settings.filter_encode ((unsigned char *)buffer,
         result, max_buffer_size);
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " Not enough buffer for rebroadcasting packet\n",
-        print_prefix));
+        print_prefix);
 
       result = -2;
     }
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " No rebroadcast necessary.\n",
-      print_prefix,
-      settings.queue_length));
+      print_prefix);
 
     result = -1;
   }
   
-  packet_scheduler.print_status (MADARA_LOG_DETAILED_TRACE, print_prefix);
+  packet_scheduler.print_status (Logger::LOG_DETAILED, print_prefix);
 
   return result;
 }
@@ -764,16 +761,18 @@ long Madara::Transport::Base::prep_send (
   long ret = this->check_transport ();
   if (-1 == ret)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s: transport has been told to shutdown",
-      print_prefix)); 
+    context_.get_logger ().log (Logger::LOG_MAJOR,
+      "%s: transport has been told to shutdown",
+      print_prefix);
+
     return ret;
   }
   else if (-2 == ret)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s: transport is not valid",
-      print_prefix)); 
+    context_.get_logger ().log (Logger::LOG_MAJOR,
+      "%s: transport is not valid",
+      print_prefix);
+
     return ret;
   }
  
@@ -782,11 +781,11 @@ long Madara::Transport::Base::prep_send (
   bool reduced = false;
 
   Knowledge_Map filtered_updates;
-  
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
+
+  context_.get_logger ().log (Logger::LOG_MINOR,
+    "%s:" \
     " Applying filters before sending...\n",
-      print_prefix));
+    print_prefix);
   
   Transport_Context transport_context (Transport_Context::SENDING_OPERATION,
       receive_monitor_.get_bytes_per_second (),
@@ -801,19 +800,19 @@ long Madara::Transport::Base::prep_send (
         settings_.get_send_bandwidth_limit ()))
   {
     dropped = true;
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " Send monitor has detected violation of bandwidth limit." \
-      " Dropping packet...\n", print_prefix));
+      " Dropping packet...\n", print_prefix);
   }
   else if (receive_monitor_.is_bandwidth_violated (
     settings_.get_total_bandwidth_limit ()))
   {
     dropped = true;
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " Receive monitor has detected violation of bandwidth limit." \
-      " Dropping packet...\n", print_prefix));
+      " Dropping packet...\n", print_prefix);
   }
 
   if (!dropped && packet_scheduler_.add ())
@@ -843,18 +842,18 @@ long Madara::Transport::Base::prep_send (
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " Packet scheduler has dropped packet...\n", print_prefix));
+    context_.get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
+      " Packet scheduler has dropped packet...\n", print_prefix);
 
     return 0;
   }
-  
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
+
+  context_.get_logger ().log (Logger::LOG_MINOR,
+    "%s:" \
     " Applying %d aggregate update send filters to %d updates...\n",
-      print_prefix, settings_.get_number_of_send_aggregate_filters (),
-      filtered_updates.size ()));
+    print_prefix, settings_.get_number_of_send_aggregate_filters (),
+    filtered_updates.size ());
 
   // apply the aggregate filters
   if (settings_.get_number_of_send_aggregate_filters () > 0 &&
@@ -864,25 +863,25 @@ long Madara::Transport::Base::prep_send (
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " No aggregate send filters were applied...\n",
-        print_prefix));
+      print_prefix);
   }
 
-  packet_scheduler_.print_status (MADARA_LOG_DETAILED_TRACE, print_prefix);
+  packet_scheduler_.print_status (Logger::LOG_DETAILED, print_prefix);
 
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
+  context_.get_logger ().log (Logger::LOG_MINOR,
+    "%s:" \
     " Finished applying filters before sending...\n",
-      print_prefix));
+    print_prefix);
 
   if (filtered_updates.size () == 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " Filters removed all data. Nothing to send.\n",
-      print_prefix));
+      print_prefix);
 
     return 0;
   }
@@ -893,11 +892,11 @@ long Madara::Transport::Base::prep_send (
   
   if (buffer == 0)
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_.get_logger ().log (Logger::LOG_EMERGENCY,
+      "%s:" \
       " Unable to allocate buffer of size %d. Exiting thread.\n",
       print_prefix,
-      settings_.queue_length));
+      settings_.queue_length);
     
     return -3;
   }
@@ -908,19 +907,21 @@ long Madara::Transport::Base::prep_send (
 
   if (settings_.send_reduced_message_header)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " Preparing message with reduced message header.\n",
-      print_prefix));
+      print_prefix);
+
     header = new Reduced_Message_Header ();
     reduced = true;
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_.get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " Preparing message with normal message header.\n",
-      print_prefix));
+      print_prefix);
+
     header = new Message_Header ();
   }
 
@@ -990,19 +991,19 @@ long Madara::Transport::Base::prep_send (
     
     if (buffer_remaining > 0)
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context_.get_logger ().log (Logger::LOG_MINOR,
+        "%s:" \
         " update[%d] => encoding %s of type %d and size %d\n",
         print_prefix,
-        j, i->first.c_str (), i->second.type (), i->second.size ()));
+        j, i->first.c_str (), i->second.type (), i->second.size ());
     }
     else
     {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " unable to encode update[%d] => %s of type %d and size %d\n",
-      print_prefix,
-      j, i->first.c_str (), i->second.type (), i->second.size ()));
+      context_.get_logger ().log (Logger::LOG_EMERGENCY,
+        "%s:" \
+        " unable to encode update[%d] => %s of type %d and size %d\n",
+        print_prefix,
+        j, i->first.c_str (), i->second.type (), i->second.size ());
     }
   }
   
@@ -1018,34 +1019,35 @@ long Madara::Transport::Base::prep_send (
     {
 #ifndef _MADARA_NO_KARL_
 
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " evaluating rules in %s\n",
-        print_prefix, 
-        settings_.on_data_received_logic.c_str ()));
+        print_prefix,
+        settings_.on_data_received_logic.c_str ());
       
       on_data_received_.evaluate ();
 
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " rules have been successfully evaluated\n",
-      print_prefix));
+        print_prefix);
+
 #endif // _MADARA_NO_KARL_
 
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context_.get_logger ().log (Logger::LOG_MINOR,
+        "%s:" \
         " no permanent rules were set\n",
-        print_prefix));
+        print_prefix);
     }
   }
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG,
-    DLINFO "%s:" \
+  context_.get_logger ().log (Logger::LOG_MAJOR,
+    "%s:" \
     " calling encode filters\n",
-    print_prefix));
+    print_prefix);
 
   // buffer is ready encoding
   size = (long)settings_.filter_encode ((unsigned char *)buffer_.get_ptr (),

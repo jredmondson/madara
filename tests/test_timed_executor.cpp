@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 namespace engine = Madara::Knowledge_Engine;
 namespace utility = Madara::Utility;
@@ -20,7 +23,9 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        int level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
@@ -29,20 +34,20 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        Madara::Knowledge_Engine::Knowledge_Base::log_to_file (argv[i + 1]);
+        logger::global_logger->add_file (argv[i + 1]);
       }
 
       ++i;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
         "  Test the timed executor, which executes periodic tasks.\n\n" \
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         " [-f|--logfile file]      log to a file\n" \
         "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }

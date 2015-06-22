@@ -24,27 +24,35 @@ namespace Madara
     public:
       /**
        * Constructor
+       * @param   logger the logger to use for printing
        * @param   item    value of the node
        **/
-      Leaf_Node (const Knowledge_Record & item);
+      Leaf_Node (Logger::Logger & logger,
+        const Knowledge_Record & item);
       
       /**
        * Integer Constructor
+       * @param   logger the logger to use for printing
        * @param   item    value of the node
        **/
-      Leaf_Node (Madara::Knowledge_Record::Integer item);
+      Leaf_Node (Logger::Logger & logger,
+        Madara::Knowledge_Record::Integer item);
       
       /**
        * Double Constructor
+       * @param   logger the logger to use for printing
        * @param   item    value of the node
        **/
-      Leaf_Node (double item);
+      Leaf_Node (Logger::Logger & logger,
+        double item);
 
       /**
        * String Constructor
+       * @param   logger the logger to use for printing
        * @param   item    value of the node
        **/
-      Leaf_Node (const std::string &item);
+      Leaf_Node (Logger::Logger & logger,
+        const std::string &item);
 
       /**
        * Destructor

@@ -1,8 +1,10 @@
 #include "madara/transport/ndds/NDDS_Transport.h"
 //#include "madara/transport/ndds/NDDS_Transport_Read_Thread.h"
-#include "madara/utility/Log_Macros.h"
 #include "madara/knowledge_engine/Update_Types.h"
 #include "madara/utility/Utility.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 #include <iostream>
 #include <sstream>
@@ -62,17 +64,16 @@ Madara::Transport::NDDS_Transport::close (void)
       rc = domain_participant_->delete_contained_entities();
       if (rc != DDS_RETCODE_OK)
       {
-        MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG,
-          DLINFO
-          "NDDS_Transport::close: unable to delete participant entities\n"));
+        context_.get_logger ().log (logger::LOG_MINOR,
+          "NDDS_Transport::close: unable to delete participant entities\n");
       }
 
       rc = DDSDomainParticipantFactory::get_instance()->delete_participant(
                       domain_participant_);
       if (rc != DDS_RETCODE_OK)
       {
-        MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG,
-          DLINFO "NDDS_Transport::close: unable to delete participant\n"));
+        context_.get_logger ().log (logger::LOG_MINOR,
+          "NDDS_Transport::close: unable to delete participant\n");
       }
   }
 
@@ -119,9 +120,10 @@ Madara::Transport::NDDS_Transport::setup (void)
                         DDS_STATUS_MASK_NONE);
   if (domain_participant_ == NULL)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nNDDS_Transport::setup:" \
-      " Unable to start the NDDS transport. Exiting...\n"));
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "NDDS_Transport::setup:" \
+      " Unable to start the NDDS transport. Exiting...\n");
+
     exit (-2);
   }
 
@@ -148,9 +150,10 @@ Madara::Transport::NDDS_Transport::setup (void)
 
   if (rc != DDS_RETCODE_OK)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nNDDS_Transport::setup:" \
-      " Unable to register the knowledge update data type. Exiting...\n"));
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "NDDS_Transport::setup:" \
+      " Unable to register the knowledge update data type. Exiting...\n");
+
     exit (-2);
   }
 
@@ -163,9 +166,10 @@ Madara::Transport::NDDS_Transport::setup (void)
                         DDS_STATUS_MASK_NONE);
   if (update_topic_ == 0)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nNDDS_Transport::setup:" \
-      " Unable to create topic. Exiting...\n"));
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "NDDS_Transport::setup:" \
+      " Unable to create topic. Exiting...\n");
+
     exit (-2);
   }
 
@@ -187,9 +191,9 @@ Madara::Transport::NDDS_Transport::setup (void)
                       DDS_STATUS_MASK_NONE);
   if (publisher_ == 0)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nNDDS_Transport::setup:" \
-      " Unable to create publisher_. Exiting...\n"));
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "NDDS_Transport::setup:" \
+      " Unable to create publisher_. Exiting...\n");
     exit (-2);
   }
 
@@ -205,9 +209,10 @@ Madara::Transport::NDDS_Transport::setup (void)
                       DDS_STATUS_MASK_NONE);
   if (data_writer_ == 0)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nNDDS_Transport::setup:" \
-      " Unable to create topic data writer. Exiting...\n"));
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "NDDS_Transport::setup:" \
+      " Unable to create topic data writer. Exiting...\n");
+
     exit (-2);
   }
 
@@ -215,9 +220,10 @@ Madara::Transport::NDDS_Transport::setup (void)
   update_writer_ = NDDS_Knowledge_UpdateDataWriter::narrow(data_writer_);
   if (update_writer_ == 0)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nNDDS_Transport::setup:" \
-      " Unable to create narrowed data writer. Exiting...\n"));
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "NDDS_Transport::setup:" \
+      " Unable to create narrowed data writer. Exiting...\n");
+
     exit (-2);
   }
 
@@ -237,9 +243,10 @@ Madara::Transport::NDDS_Transport::setup (void)
                       DDS_STATUS_MASK_NONE);
   if (subscriber_ == 0)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nNDDS_Read_Thread::svc:" \
-      " Unable to create subscriber_. Exiting...\n"));
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "NDDS_Transport::setup:" \
+      " Unable to create subscriber_. Exiting...\n");
+
     exit (-2);
   }
 
@@ -265,10 +272,12 @@ Madara::Transport::NDDS_Transport::setup (void)
                       datareader_qos,
                       listener_,
                       DDS_STATUS_MASK_ALL);
-  if (data_reader_ == 0) {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nNDDS_Read_Thread::svc:" \
-      " Unable to create reader. Leaving thread...\n"));
+  if (data_reader_ == 0)
+  {
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "NDDS_Transport::setup:" \
+      " Unable to create reader. Leaving thread...\n");
+
     return -2;
   }
 
@@ -312,11 +321,11 @@ Madara::Transport::NDDS_Transport::send_data (
   data.timestamp = time (NULL);
   data.madara_id = new char [strlen (MADARA_IDENTIFIER) + 1];
   strncpy (data.madara_id, MADARA_IDENTIFIER, strlen (MADARA_IDENTIFIER) + 1);
-  
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "NDDS_Transport::send:" \
-    " sending multiassignment: %d updates, time=%Q, quality=%u\n", 
-    data.updates, cur_clock, quality));
+
+  context_.get_logger ().log (logger::LOG_MAJOR,
+    "NDDS_Transport::send:" \
+    " sending multiassignment: %d updates, time=%llu, quality=%d\n",
+    data.updates, cur_clock, quality);
 
   DDS_InstanceHandle_t handle = update_writer_->register_instance (data);
   rc = update_writer_->write (data, handle); 

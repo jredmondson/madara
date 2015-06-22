@@ -10,6 +10,9 @@
 #include <sstream>
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 Madara::Knowledge_Engine::Wait_Settings wait_settings;
 
@@ -44,7 +47,9 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        int level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
@@ -53,14 +58,14 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        Madara::Knowledge_Engine::Knowledge_Base::log_to_file (argv[i + 1]);
+        logger::global_logger->add_file (argv[i + 1]);
       }
 
       ++i;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS, 
 "\nProgram summary for %s:\n\n" \
 "  Test periodic waits for accuracy of timers.\n\n" \
 " [-p|--poll-frequency period] period between evals (def 0.5s)\n" \
@@ -68,7 +73,7 @@ void handle_arguments (int argc, char ** argv)
 " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
 " [-f|--logfile file]      log to a file\n" \
 "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }
@@ -97,7 +102,8 @@ int ACE_TMAIN (int argc, char * argv[])
   knowledge.print ();
   
 #else
-  std::cout << "This test is disabled due to karl feature being disabled.\n";
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "This test is disabled due to karl feature being disabled.\n");
 #endif
   return 0;
 }

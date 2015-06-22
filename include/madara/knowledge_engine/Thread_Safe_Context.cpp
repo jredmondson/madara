@@ -7,12 +7,13 @@
 #include "madara/utility/Utility.h"
 
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Interpreter.h"
 #include "madara/knowledge_engine/File_Header.h"
 #include "madara/transport/Transport.h"
 #include <stdio.h>
 #include <time.h>
+#include "madara/logger/Global_Logger.h"
 
 
 // constructor
@@ -22,7 +23,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::Thread_Safe_Context ()
 ,
   interpreter_ (new Madara::Expression_Tree::Interpreter ())
 #endif // _MADARA_NO_KARL_
-
+  , logger_ (Logger::global_logger.get ())
 {
   expansion_splitters_.push_back ("{");
   expansion_splitters_.push_back ("}");
@@ -1034,8 +1035,8 @@ Madara::Knowledge_Engine::Thread_Safe_Context::print (
        i != map_.end (); 
        ++i)
   {
-    MADARA_DEBUG ((int)level, (LM_DEBUG, 
-      "%s=%s\n", i->first.c_str (), i->second.to_string (", ").c_str ()));
+    logger_->log (level, "%s=%s\n",
+      i->first.c_str (), i->second.to_string (", ").c_str ());
   }
 }
 
@@ -1147,9 +1148,10 @@ Madara::Knowledge_Engine::Thread_Safe_Context::expand_statement (
   // check to see if all brace counts are appropriate
   if (subcount != 0)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Improperly matched braces in %s\n",
-      statement.c_str ()));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR : Improperly matched braces in %s\n",
+      statement.c_str ());
+
     exit (-1);
   }
 
@@ -1331,9 +1333,9 @@ Madara::Knowledge_Engine::Compiled_Expression
 Madara::Knowledge_Engine::Thread_Safe_Context::compile (
   const std::string & expression)
 {
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "Thread_Safe_Context::compile:" \
-      " compiling %s\n", expression.c_str ()));
+  logger_->log (Logger::LOG_MINOR,
+    "Thread_Safe_Context::compile:" \
+    " compiling %s\n", expression.c_str ());
   
   Context_Guard guard (mutex_);
   Compiled_Expression ce;
@@ -1570,9 +1572,9 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_context (
   const std::string & filename,
   const std::string & id) const
 {
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Thread_Safe_Context::save_context:" \
-      " opening file %s\n", filename.c_str ()));
+  logger_->log (Logger::LOG_MAJOR,
+    "Thread_Safe_Context::save_context:" \
+    " opening file %s\n", filename.c_str ());
   
   int64_t total_written (0);
   FILE * file = fopen (filename.c_str (), "wb");
@@ -1592,20 +1594,20 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_context (
     Utility::Scoped_Array <char> buffer = new char [max_buffer];
 
     char * current = buffer.get_ptr ();
-  
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "Thread_Safe_Context::save_context:" \
-        " generating file meta\n"));
+
+    logger_->log (Logger::LOG_MINOR,
+      "Thread_Safe_Context::save_context:" \
+      " generating file meta\n");
   
     meta.size += checkpoint_header.encoded_size ();
     checkpoint_header.size = checkpoint_header.encoded_size ();
 
     current = meta.write (current, buffer_remaining);
     current = checkpoint_header.write (current, buffer_remaining);
-  
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "Thread_Safe_Context::save_context:" \
-        " writing records\n"));
+
+    logger_->log (Logger::LOG_MINOR,
+      "Thread_Safe_Context::save_context:" \
+      " writing records\n");
   
     // lock the context
     Context_Guard guard (mutex_);
@@ -1676,9 +1678,9 @@ int64_t
 Madara::Knowledge_Engine::Thread_Safe_Context::save_as_karl (
 const std::string & filename) const
 {
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG,
-    DLINFO "Thread_Safe_Context::save_as_karl:" \
-    " opening file %s\n", filename.c_str ()));
+  logger_->log (Logger::LOG_MINOR,
+    "Thread_Safe_Context::save_as_karl:" \
+    " opening file %s\n", filename.c_str ());
 
   int64_t bytes_written (0);
   std::stringstream buffer;
@@ -1773,9 +1775,9 @@ Madara::Knowledge_Engine::Thread_Safe_Context::load_context (
   const std::string & filename, std::string & id,
   const Knowledge_Update_Settings & settings)
 {
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Thread_Safe_Context::load_context:" \
-      " opening file %s\n", filename.c_str ()));
+  logger_->log (Logger::LOG_MAJOR,
+    "Thread_Safe_Context::load_context:" \
+    " opening file %s\n", filename.c_str ());
   
   // using ACE for writing to the destination file
   FILE * file = fopen (filename.c_str (), "rb");
@@ -1790,10 +1792,10 @@ Madara::Knowledge_Engine::Thread_Safe_Context::load_context (
 
     Utility::Scoped_Array <char> buffer = new char [max_buffer];
     const char * current = buffer.get_ptr ();
-    
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "Thread_Safe_Context::load_context:" \
-        " reading file meta data\n"));
+
+    logger_->log (Logger::LOG_MINOR,
+      "Thread_Safe_Context::load_context:" \
+      " reading file meta data\n");
   
     total_read = fread (buffer.get_ptr (),
       1, max_buffer, file);
@@ -1875,9 +1877,9 @@ Madara::Knowledge_Engine::Thread_Safe_Context::load_context (
     } // end if total_read > 0
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "Thread_Safe_Context::load_context:" \
-          " invalid file. No contextual change.\n"));
+      logger_->log (Logger::LOG_MINOR,
+        "Thread_Safe_Context::load_context:" \
+        " invalid file. No contextual change.\n");
     }
 
     fclose (file);
@@ -1892,9 +1894,9 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
   const std::string & filename,
   const std::string & id) const
 {
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Thread_Safe_Context::save_checkpoint:" \
-      " opening file %s\n", filename.c_str ()));
+  logger_->log (Logger::LOG_MAJOR,
+    "Thread_Safe_Context::save_checkpoint:" \
+    " opening file %s\n", filename.c_str ());
   
   int64_t total_written (0);
   FILE * file = fopen (filename.c_str (), "rb+");
@@ -1919,10 +1921,10 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
     
     if (id != "")
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "Thread_Safe_Context::save_checkpoint:" \
-          " setting file meta id to %s\n",
-          id.c_str ()));
+      logger_->log (Logger::LOG_MINOR,
+        "Thread_Safe_Context::save_checkpoint:" \
+        " setting file meta id to %s\n",
+        id.c_str ());
   
       strncpy (meta.originator, id.c_str (),
         sizeof (meta.originator) < id.size () + 1 ?
@@ -1932,9 +1934,9 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
     // save the spot where the file ends
     uint64_t checkpoint_start = meta.size;
 
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "Thread_Safe_Context::save_checkpoint:" \
-        " generating file meta\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "Thread_Safe_Context::save_checkpoint:" \
+      " generating file meta\n");
   
     meta.size += checkpoint_header.encoded_size ();
     checkpoint_header.size = 0;
@@ -1952,10 +1954,10 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
       // set the file pointer to the end of the file
       fseek (file, checkpoint_start, SEEK_SET);
       current = checkpoint_header.write (current, buffer_remaining);
-  
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "Thread_Safe_Context::save_checkpoint:" \
-          " writing records\n"));
+
+      logger_->log (Logger::LOG_MINOR,
+        "Thread_Safe_Context::save_checkpoint:" \
+        " writing records\n");
   
       for (Knowledge_Records::const_iterator i = records.begin ();
            i != records.end (); ++i)
@@ -1977,10 +1979,10 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
             (size_t) (max_buffer - buffer_remaining), 1, file);
           total_written += (int64_t) (max_buffer - buffer_remaining);
           buffer_remaining = max_buffer;
-          
-          MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-              DLINFO "Thread_Safe_Context::save_checkpoint:" \
-              " encoded_size larger than remaining buffer. Flushing.\n"));
+
+          logger_->log (Logger::LOG_MINOR,
+            "Thread_Safe_Context::save_checkpoint:" \
+            " encoded_size larger than remaining buffer. Flushing\n");
   
           if (encoded_size > max_buffer)
           {
@@ -1993,9 +1995,9 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
             buffer_remaining = max_buffer;
             current = buffer.get_ptr ();
 
-            MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-                DLINFO "Thread_Safe_Context::save_checkpoint:" \
-                " encoded_size larger than entire buffer. Reallocating.\n"));
+            logger_->log (Logger::LOG_MINOR,
+              "Thread_Safe_Context::save_checkpoint:" \
+              " encoded_size larger than entire buffer. Reallocating\n");
           } // end if larger than buffer
         } // end if larger than buffer remaining
 
@@ -2022,10 +2024,10 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
             (size_t) (max_buffer - buffer_remaining), 1, file);
           total_written += (int64_t) (max_buffer - buffer_remaining);
           buffer_remaining = max_buffer;
-          
-          MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-              DLINFO "Thread_Safe_Context::save_checkpoint:" \
-              " encoded_size larger than remaining buffer. Flushing.\n"));
+
+          logger_->log (Logger::LOG_MINOR,
+            "Thread_Safe_Context::save_checkpoint:" \
+            " encoded_size larger than remaining buffer. Flushing\n");
   
           if (encoded_size > max_buffer)
           {
@@ -2038,9 +2040,9 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
             buffer_remaining = max_buffer;
             current = buffer.get_ptr ();
 
-            MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-                DLINFO "Thread_Safe_Context::save_checkpoint:" \
-                " encoded_size larger than entire buffer. Reallocating.\n"));
+            logger_->log (Logger::LOG_MINOR,
+              "Thread_Safe_Context::save_checkpoint:" \
+              " encoded_size larger than entire buffer. Reallocating\n");
           } // end if larger than buffer
         } // end if larger than buffer remaining
 
@@ -2053,10 +2055,10 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
           (size_t) (max_buffer - buffer_remaining), 1, file);
         total_written += (size_t) (max_buffer - buffer_remaining);
       }
-      
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "Thread_Safe_Context::save_checkpoint:" \
-          " updating file meta data.\n"));
+
+      logger_->log (Logger::LOG_MINOR,
+        "Thread_Safe_Context::save_checkpoint:" \
+        " updating file meta data\n");
   
       // update the meta data at the front
       fseek (file, 0, SEEK_SET);
@@ -2069,10 +2071,9 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
 
       fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
 
-      
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "Thread_Safe_Context::save_checkpoint:" \
-          " updating checkpoint meta data.\n"));
+      logger_->log (Logger::LOG_MINOR,
+        "Thread_Safe_Context::save_checkpoint:" \
+        " updating checkpoint meta data\n");
   
       // update the checkpoint meta data
       fseek (file, checkpoint_start, SEEK_SET);

@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/utility/Utility.h"
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Rand_Int.h"
@@ -47,16 +47,16 @@ Madara::Expression_Tree::System_Call_Rand_Int::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (*i) == 0)
     {
       delete *i;
-      *i = new Leaf_Node (result);
+      *i = new Leaf_Node (*(this->logger_), result);
     }
   }
 
   if (nodes_.size () > 3)
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call rand_int"
       " can have up to three arguments, 1) floor, "
-      "2) ceiling and 3) whether to set the random seed'\n"));
+      "2) ceiling and 3) whether to set the random seed");
   }
 
   return result;
@@ -85,10 +85,10 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
       }
     }
   }
-  
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+
+  logger_->log (Logger::LOG_MINOR,
     "System call rand_int called with %q, %q, %d.\n",
-    floor, ceiling, update_srand));
+    floor, ceiling, update_srand);
 
   return Utility::rand_int (floor, ceiling, update_srand);
 }

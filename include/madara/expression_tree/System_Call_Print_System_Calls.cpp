@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Print_System_Calls.h"
 #include "madara/expression_tree/Visitor.h"
@@ -51,14 +51,14 @@ Madara::Expression_Tree::System_Call_Print_System_Calls::prune (bool & can_chang
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (nodes_[0]) == 0)
     {
       delete nodes_[0];
-      nodes_[0] = new Leaf_Node (result);
+      nodes_[0] = new Leaf_Node (*(this->logger_), result);
     }
   }
   else if (nodes_.size () != 0)
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call print_system_calls takes either 0"
-      " or 1 arguments.\n"));
+      " or 1 arguments.\n");
   }
 
   // if calls hasn't been initialized yet, fill the list of system calls
@@ -252,8 +252,8 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   if (nodes_.size () == 1)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call print_system_calls is printing help.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "System call print_system_calls is printing help\n");
 
     context_.print (
       calls_[nodes_[0]->evaluate (settings).to_string ()], 0);
@@ -262,8 +262,8 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else if (nodes_.size () == 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call print_system_calls is printing help.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "System call print_system_calls is printing help\n");
 
     for (System_Calls_Help::const_iterator i = calls_.begin ();
          i != calls_.end (); ++i)
@@ -275,9 +275,9 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call print_system_calls takes either 0"
-      " or 1 arguments.\n"));
+      " or 1 arguments\n");
   }
 
   return return_value;

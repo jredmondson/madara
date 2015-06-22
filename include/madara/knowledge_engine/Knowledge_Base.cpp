@@ -1,7 +1,8 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/knowledge_engine/Knowledge_Base_Impl.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/logger/Logger.h"
+
 
 #include <sstream>
 #include <iostream>
@@ -9,61 +10,6 @@
 #include "ace/OS_NS_Thread.h"
 #include "ace/High_Res_Timer.h"
 #include "ace/OS_NS_sys_socket.h"
-
-void Madara::Knowledge_Engine::Knowledge_Base::log_to_stderr (
-  bool clear_flags)
-{
-  ACE_LOG_MSG->set_flags (ACE_Log_Msg::STDERR);
-  if (clear_flags)
-  {
-    ACE_LOG_MSG->clr_flags (ACE_Log_Msg::OSTREAM);
-    ACE_LOG_MSG->clr_flags (ACE_Log_Msg::SYSLOG);
-  }
-}
-
-void Madara::Knowledge_Engine::Knowledge_Base::log_to_file (
-  const char * filename, bool clear_flags)
-{
-  // get the old message output stream and delete it
-  ACE_OSTREAM_TYPE * output = new std::ofstream (filename);
-  ACE_LOG_MSG->msg_ostream (output, true);
-  ACE_LOG_MSG->set_flags (ACE_Log_Msg::OSTREAM);
-
-  if (clear_flags)
-  {
-    ACE_LOG_MSG->clr_flags (ACE_Log_Msg::STDERR);
-    ACE_LOG_MSG->clr_flags (ACE_Log_Msg::SYSLOG);
-  }
-}
-
-void Madara::Knowledge_Engine::Knowledge_Base::log_to_system_log (
-  const char * prog_name, bool clear_flags)
-{
-  // open a new socket to the SYSLOG with madara set as logging agent
-  ACE_LOG_MSG->open (prog_name, ACE_Log_Msg::SYSLOG, prog_name);
-
-  if (clear_flags)
-  {
-    ACE_LOG_MSG->clr_flags (ACE_Log_Msg::STDERR);
-    ACE_LOG_MSG->clr_flags (ACE_Log_Msg::OSTREAM);
-  }
-}
-
-int
-Madara::Knowledge_Engine::Knowledge_Base::log_level (int level)
-{
-  if (level >= 0)
-    MADARA_debug_level = level;
-
-  return MADARA_debug_level;
-}
-
-int
-Madara::Knowledge_Engine::Knowledge_Base::log_level (void)
-{
-  return MADARA_debug_level;
-}
-
 
 Madara::Knowledge_Engine::Knowledge_Base::Knowledge_Base ()
 : impl_ (new Knowledge_Base_Impl ()), context_ (0)
@@ -146,6 +92,63 @@ Madara::Knowledge_Engine::Knowledge_Base::unlock (void)
   else if (context_)
   {
     context_->unlock ();
+  }
+}
+
+int
+Madara::Knowledge_Engine::Knowledge_Base::get_log_level (void)
+{
+  int result (0);
+
+  if (impl_.get_ptr ())
+  {
+    result = impl_->get_log_level ();
+  }
+  else if (context_)
+  {
+    result = context_->get_log_level ();
+  }
+
+  return result;
+}
+
+Madara::Logger::Logger &
+Madara::Knowledge_Engine::Knowledge_Base::get_logger (void) const
+{
+  if (impl_.get_ptr ())
+  {
+    return impl_->get_logger ();
+  }
+  else
+  {
+    return context_->get_logger ();
+  }
+}
+
+void
+Madara::Knowledge_Engine::Knowledge_Base::attach_logger (
+  Logger::Logger & logger) const
+{
+  if (impl_.get_ptr ())
+  {
+    impl_->attach_logger (logger);
+  }
+  else
+  {
+    context_->attach_logger (logger);
+  }
+}
+
+void
+Madara::Knowledge_Engine::Knowledge_Base::set_log_level (int level)
+{
+  if (impl_.get_ptr ())
+  {
+    impl_->set_log_level (level);
+  }
+  else if (context_)
+  {
+    context_->set_log_level (level);
   }
 }
 
@@ -1293,21 +1296,21 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
 
     // print the post statement at highest log level (cannot be masked)
     if (settings.pre_print_statement != "")
-      context_->print (settings.pre_print_statement, MADARA_LOG_EMERGENCY);
+      context_->print (settings.pre_print_statement, Logger::LOG_ALWAYS);
 
     // lock the context
     context_->lock ();
 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Base::wait:" \
-        " waiting on %s\n", expression.logic.c_str ()));
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base::wait:" \
+      " waiting on %s\n", expression.logic.c_str ());
 
     Madara::Knowledge_Record last_value = expression.expression.evaluate (settings);
 
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Knowledge_Base::wait:" \
-        " completed first eval to get %s\n",
-      last_value.to_string ().c_str ()));
+    context_->get_logger ().log (Logger::LOG_DETAILED,
+      "Knowledge_Base::wait:" \
+      " completed first eval to get %s\n",
+      last_value.to_string ().c_str ());
   
     send_modifieds ("Knowledge_Base:wait", settings);
 
@@ -1319,15 +1322,15 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
     while (!last_value.to_integer () &&
       (settings.max_wait_time < 0 || current < max_wait))
     {
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-          DLINFO "Knowledge_Base::wait:" \
-          " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
-          current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
-          settings.poll_frequency));
+      context_->get_logger ().log (Logger::LOG_DETAILED,
+        "Knowledge_Base::wait:" \
+        " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
+        current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
+        settings.poll_frequency);
 
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-          DLINFO "Knowledge_Base::wait:" \
-          " last value didn't result in success\n"));
+      context_->get_logger ().log (Logger::LOG_DETAILED,
+        "Knowledge_Base::wait:" \
+        " last value didn't result in success\n");
 
       // Unlike the other wait statements, we allow for a time based wait.
       // To do this, we allow a user to specify a 
@@ -1349,17 +1352,17 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
       // while we're evaluating the tree.
       context_->lock ();
 
-    
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "Knowledge_Base::wait:" \
-          " waiting on %s\n", expression.logic.c_str ()));
+
+      context_->get_logger ().log (Logger::LOG_MAJOR,
+        "Knowledge_Base::wait:" \
+        " waiting on %s\n", expression.logic.c_str ());
 
       last_value = expression.expression.evaluate (settings);
-    
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-          DLINFO "Knowledge_Base::wait:" \
-          " completed eval to get %s\n",
-        last_value.to_string ().c_str ()));
+
+      context_->get_logger ().log (Logger::LOG_DETAILED,
+        "Knowledge_Base::wait:" \
+        " completed eval to get %s\n",
+        last_value.to_string ().c_str ());
   
       send_modifieds ("Knowledge_Base:wait", settings);
 
@@ -1373,14 +1376,14 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
   
     if (current >= max_wait)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "Knowledge_Base::wait:" \
-          " Evaluate did not succeed. Timeout occurred.\n"));
+      context_->get_logger ().log (Logger::LOG_MAJOR,
+        "Knowledge_Base::wait:" \
+        " Evaluate did not succeed. Timeout occurred\n");
     }
 
     // print the post statement at highest log level (cannot be masked)
     if (settings.post_print_statement != "")
-      context_->print (settings.post_print_statement, MADARA_LOG_EMERGENCY);
+      context_->print (settings.post_print_statement, Logger::LOG_ALWAYS);
 
     return last_value;
   }

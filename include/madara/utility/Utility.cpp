@@ -5,9 +5,10 @@
 #include <sstream>
 #include <fstream>
 
+#include "madara/logger/Global_Logger.h"
 #include "madara/utility/Utility.h"
 #include "ace/INET_Addr.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "ace/Default_Constants.h"
 #include "ace/Mem_Map.h"
 #include "ace/OS_NS_fcntl.h"
@@ -388,37 +389,36 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
   // start with the initial port provided
   // increase port each time we don't properly bind
 
-  MADARA_DEBUG (Utility::LOG_DETAILED_TRACE, (LM_DEBUG, 
+  Logger::global_logger->log (Logger::LOG_DETAILED,
     "Utility::bind_to_ephemeral_port:" \
-    " creating ACE_INET_Addr\n"));
+    " creating ACE_INET_Addr\n");
 
   ACE_INET_Addr addr (port);
   char hostname[HOST_NAME_MAX + 1] = "";
 
-
-  MADARA_DEBUG (Utility::LOG_DETAILED_TRACE, (LM_DEBUG,
+  Logger::global_logger->log (Logger::LOG_MAJOR,
     "Utility::bind_to_ephemeral_port:" \
-    " getting hostname from ACE_INET_Addr\n"));
+    " getting hostname from ACE_INET_Addr\n");
 
   addr.get_host_name (hostname, HOST_NAME_MAX);
   host = hostname;
 
-  MADARA_DEBUG (Utility::LOG_DETAILED_TRACE, (LM_DEBUG,
+  Logger::global_logger->log (Logger::LOG_MINOR,
     "Utility::bind_to_ephemeral_port:" \
-    " hostname equals %s\n", hostname));
+    " hostname equals %s\n", hostname);
 
-  MADARA_DEBUG (Utility::LOG_DETAILED_TRACE, (LM_DEBUG,
+  Logger::global_logger->log (Logger::LOG_DETAILED,
     "Utility::bind_to_ephemeral_port:" \
-    " calling ACE_OS::socket_init\n"));
+    " calling ACE_OS::socket_init\n");
 
   ACE_OS::socket_init (2, 2);
 
   for ( ; port < 65535; ++port, addr.set (port))
   {
 
-    MADARA_DEBUG (Utility::LOG_DETAILED_TRACE, (LM_DEBUG,
+    Logger::global_logger->log (Logger::LOG_MINOR,
       "Utility::bind_to_ephemeral_port:" \
-      " attempting open on socket %d\n", port));
+      " attempting open on socket %d\n", port);
 
     if (socket.open (addr, 2, 0, 0) != -1)
       return 0;
@@ -427,6 +427,10 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
     if (!increase_until_bound)
       break;
   }
+
+  Logger::global_logger->log (Logger::LOG_MAJOR,
+    "Utility::bind_to_ephemeral_port:" \
+    " unable to bind to any ephemeral port. Check firewall\n");
 
   return -1;
 }
@@ -455,10 +459,9 @@ Madara::Utility::file_to_string (const std::string & filename)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+    Logger::global_logger->log (Logger::LOG_MAJOR,
       "Utility::file_to_string:" \
-      " failed to open file: %s\n", 
-      filename.c_str ()));
+      " failed to open file: %s\n");
   }
 
   return buffer.str ();
@@ -731,8 +734,8 @@ ssize_t
     O_RDWR | O_CREAT | O_TRUNC,
     ACE_DEFAULT_FILE_PERMS);
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_TRACE, 
-    DLINFO "Files::write_file : beginning write of %d bytes\n", size));
+  Logger::global_logger->log (Logger::LOG_MAJOR,
+    "Files::write_file : beginning write of %d bytes\n", size);
 
   if (file_handle  != ACE_INVALID_HANDLE)
   {
@@ -880,14 +883,14 @@ Madara::Utility::wait_true (
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")
-    knowledge.print (settings.pre_print_statement, MADARA_LOG_EMERGENCY);
+    knowledge.print (settings.pre_print_statement, Logger::LOG_ALWAYS);
 
   Madara::Knowledge_Record last_value = knowledge.get (ref, settings);
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-      DLINFO "Utility::wait_true:" \
-      " variable returned %s\n",
-    last_value.to_string ().c_str ()));
+  Logger::global_logger->log (Logger::LOG_MAJOR,
+    "Utility::wait_true:" \
+    " variable returned %s\n",
+    last_value.to_string ().c_str ());
   
   current = ACE_High_Res_Timer::gettimeofday ();
 
@@ -895,15 +898,15 @@ Madara::Utility::wait_true (
   while (!last_value.to_integer () &&
     (settings.max_wait_time < 0 || current < max_wait))
   {
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Utility::wait_true:" \
-        " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
-        current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
-        settings.poll_frequency));
+    Logger::global_logger->log (Logger::LOG_DETAILED,
+      "Utility::wait_true:" \
+      " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
+      current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
+      settings.poll_frequency);
 
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Utility::wait_true:" \
-        " last value didn't result in success\n"));
+    Logger::global_logger->log (Logger::LOG_DETAILED,
+      "Utility::wait_true:" \
+      " last value didn't result in success\n");
 
     // Unlike the other wait statements, we allow for a time based wait.
     // To do this, we allow a user to specify a 
@@ -919,17 +922,17 @@ Madara::Utility::wait_true (
     }
     else
       knowledge.wait_for_change ();
-    
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::wait:" \
-        " waiting on %s\n", variable.c_str ()));
+
+    Logger::global_logger->log (Logger::LOG_DETAILED,
+      "Utility::wait_true:" \
+      " waiting on %s\n", variable.c_str ());
 
     last_value = knowledge.get (ref, settings);
-    
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::wait:" \
-        " completed eval to get %s\n",
-      last_value.to_string ().c_str ()));
+
+    Logger::global_logger->log (Logger::LOG_DETAILED,
+      "Utility::wait_true:" \
+      " completed eval to get %s\n",
+      last_value.to_string ().c_str ());
   
     // get current time
     current = ACE_High_Res_Timer::gettimeofday ();
@@ -938,14 +941,15 @@ Madara::Utility::wait_true (
   
   if (current >= max_wait)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::wait:" \
-        " Evaluate did not succeed. Timeout occurred.\n"));
+    Logger::global_logger->log (Logger::LOG_DETAILED,
+      "Utility::wait_true:" \
+      " Evaluate did not succeed. Timeout occurred\n",
+      last_value.to_string ().c_str ());
   }
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.post_print_statement != "")
-    knowledge.print (settings.post_print_statement, MADARA_LOG_EMERGENCY);
+    knowledge.print (settings.post_print_statement, Logger::LOG_ALWAYS);
 
   return last_value.is_true ();
 }
@@ -973,14 +977,14 @@ bool Madara::Utility::wait_false (
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")
-    knowledge.print (settings.pre_print_statement, MADARA_LOG_EMERGENCY);
+    knowledge.print (settings.pre_print_statement, Logger::LOG_ALWAYS);
 
   Madara::Knowledge_Record last_value = !knowledge.get (ref, settings);
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-      DLINFO "Utility::wait_true:" \
-      " variable returned %s\n",
-    last_value.to_string ().c_str ()));
+  Logger::global_logger->log (Logger::LOG_DETAILED,
+    "Utility::wait_false:" \
+    " variable returned %s\n",
+    last_value.to_string ().c_str ());
   
   current = ACE_High_Res_Timer::gettimeofday ();
 
@@ -988,15 +992,15 @@ bool Madara::Utility::wait_false (
   while (!last_value.to_integer () &&
     (settings.max_wait_time < 0 || current < max_wait))
   {
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Utility::wait_true:" \
-        " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
-        current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
-        settings.poll_frequency));
+    Logger::global_logger->log (Logger::LOG_DETAILED,
+      "Utility::wait_false:" \
+      " current is %llu.%llu and max is %llu.%llu (poll freq is %f)\n",
+      current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
+      settings.poll_frequency);
 
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Utility::wait_true:" \
-        " last value didn't result in success\n"));
+    Logger::global_logger->log (Logger::LOG_DETAILED,
+      "Utility::wait_false:"
+      " last value didn't result in success\n");
 
     // Unlike the other wait statements, we allow for a time based wait.
     // To do this, we allow a user to specify a 
@@ -1012,17 +1016,17 @@ bool Madara::Utility::wait_false (
     }
     else
       knowledge.wait_for_change ();
-    
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::wait:" \
-        " waiting on %s\n", variable.c_str ()));
+
+    Logger::global_logger->log (Logger::LOG_MAJOR,
+      "Utility::wait_false:"
+      " waiting on %s\n", variable.c_str ());
 
     last_value = !knowledge.get (ref, settings);
-    
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::wait:" \
-        " completed eval to get %s\n",
-      last_value.to_string ().c_str ()));
+
+    Logger::global_logger->log (Logger::LOG_DETAILED,
+      "Utility::wait_false:"
+      " completed eval to get %s\n",
+      last_value.to_string ().c_str ());
   
     // get current time
     current = ACE_High_Res_Timer::gettimeofday ();
@@ -1031,14 +1035,15 @@ bool Madara::Utility::wait_false (
   
   if (current >= max_wait)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::wait:" \
-        " Evaluate did not succeed. Timeout occurred.\n"));
+    Logger::global_logger->log (Logger::LOG_MAJOR,
+      "Utility::wait_false:"
+      " Evaluate did not succeed. Timeout occurred\n",
+      last_value.to_string ().c_str ());
   }
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.post_print_statement != "")
-    knowledge.print (settings.post_print_statement, MADARA_LOG_EMERGENCY);
+    knowledge.print (settings.post_print_statement, Logger::LOG_EMERGENCY);
 
   return last_value.is_true ();
 }

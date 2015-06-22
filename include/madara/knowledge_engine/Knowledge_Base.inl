@@ -2,7 +2,7 @@
 #define _MADARA_KNOWLEDGE_BASE_INL_
 
 #include <fstream>
-#include "madara/utility/Log_Macros.h"
+
 #include "ace/streams.h"
 
 /**

@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include "madara/utility/Refcounter.h"
 
+#include "madara/logger/Global_Logger.h"
 #include "madara/expression_tree/Component_Node.h"
 #include "madara/knowledge_engine/Knowledge_Record.h"
 
@@ -35,21 +36,26 @@ namespace Madara
 
       /**
        * Constructor
+       * @param  logger   logger for printing information
        **/
-      Expression_Tree (void);
+      Expression_Tree (Logger::Logger & logger =
+        *Logger::global_logger.get ());
 
       /**
        * Constructor for copying a root node
+       * @param    logger          logger for printing information
        * @param    root            root of the tree to copy
        * @param    increase_count  whether or not to increase the ref count
        **/
-      Expression_Tree (Component_Node *root, bool increase_count = false);
+      Expression_Tree (Logger::Logger & logger,
+        Component_Node *root, bool increase_count = false);
 
       /**
        * Constructor for copying an expression tree
+       * @param    logger     logger for printing information
        * @param    tree       expression tree to copy
        **/
-      Expression_Tree (const Expression_Tree &tree);
+      Expression_Tree (Logger::Logger & logger, const Expression_Tree &tree);
 
       /**
        * Destructor
@@ -60,7 +66,7 @@ namespace Madara
        * Returns the root node of the expression tree
        * @return   root node of the expression tree
        **/
-      Component_Node *get_root (void);
+      Component_Node * get_root (void);
 
       /**
        * Non-deep copies an expression tree into this instance
@@ -147,6 +153,9 @@ namespace Madara
       void accept (Visitor & visitor) const;
 
     private:
+      /// handle for logging information
+      Logger::Logger * logger_;
+
       /// root of the expression tree
       Madara::Utility::Refcounter <Component_Node> root_;
     };

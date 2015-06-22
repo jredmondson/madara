@@ -17,6 +17,9 @@
 
 #include "madara/knowledge_engine/Compiled_Expression.h"
 #include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 bool logical_print = false;
 Madara::Knowledge_Record::Integer id = 2;
@@ -260,7 +263,8 @@ int parse_args (int argc, ACE_TCHAR * argv[])
            cmd_opts.opt_opt ()), -2); 
     case 'h':
     default:
-      ACE_DEBUG ((LM_DEBUG, "Program Summary for %s:\n\n\
+      logger::global_logger->log (logger::LOG_ALWAYS,
+        "Program Summary for %s:\n\n\
       This distributed application uses three-state Dijkstra synchronization\n\
       to form a self-healing ring of legitimate state machines. To execute\n\
       the logic requires 3+ processes with ids set from 0 to n-1. Control+C\n\
@@ -272,9 +276,9 @@ int parse_args (int argc, ACE_TCHAR * argv[])
                        (239.255.0.1:4150 default)\n\
       -p (--processes) number of processes that will be running (3 default)\n\
       -v (--value)     start process with a certain value (0 default) \n\
-      -h (--help)      print this menu             \n\n", argv[0]));
-      ACE_ERROR_RETURN ((LM_ERROR, 
-        ACE_TEXT ("Returning from Help Menu\n")), -1); 
+      -h (--help)      print this menu             \n\n", argv[0]);
+
+      exit (-1);
       break;
     }
   }

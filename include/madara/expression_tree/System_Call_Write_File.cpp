@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Write_File.h"
 #include "madara/expression_tree/Visitor.h"
@@ -48,15 +48,15 @@ Madara::Expression_Tree::System_Call_Write_File::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (*i) == 0)
     {
       delete *i;
-      *i = new Leaf_Node (result);
+      *i = new Leaf_Node (*(this->logger_), result);
     }
   }
 
   if (nodes_.size () != 2)
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL ERROR: System call write_file requires 2 arguments: "
-      "a knowledge record and a file name.\n"));
+      "a knowledge record and a file name\n");
   }
 
   return result;
@@ -80,32 +80,32 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     Knowledge_Record * filename = &arg1;
     Knowledge_Record * contents = &arg2;
 
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "System call write_file is attempting to open %s.\n",
-      filename->to_string ().c_str ()));
+      filename->to_string ().c_str ());
 
     ssize_t bytes_written = contents->to_file (filename->to_string ());
 
     if (bytes_written <= 0)
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        "KARL ERROR: System call write_file could not write to %s.\n",
-        filename->to_string ().c_str ()));
+      logger_->log (Logger::LOG_MINOR,
+        "KARL ERROR: System call write_file could not write to %s\n",
+        filename->to_string ().c_str ());
 
       return Madara::Knowledge_Record::Integer (bytes_written);
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        "System call write_file wrote %d bytes to %s.\n",
-        bytes_written, filename->to_string ().c_str ()));
+      logger_->log (Logger::LOG_MINOR,
+        "System call write_file wrote %d bytes to %s\n",
+        bytes_written, filename->to_string ().c_str ());
     }
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL ERROR: System call write_file requires 2 arguments: "
-      "a knowledge record and a file name.\n"));
+      "a knowledge record and a file name\n");
   }
 
   return return_value;

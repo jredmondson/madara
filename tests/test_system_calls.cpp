@@ -13,6 +13,9 @@
 #include "ace/Get_Opt.h"
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
@@ -48,7 +51,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     knowledge.get ("var2").to_string () == "200" &&
     knowledge.get ("var3").to_string () == "300" &&
     knowledge.get ("small").to_string () == "ello" &&
-    MADARA_debug_level == 5)
+    logger::global_logger->get_level () == 5)
   {
     knowledge.print ("TEST SUCCESS\n");
   }
@@ -124,19 +127,21 @@ int parse_args (int argc, ACE_TCHAR * argv[])
       if (i + 1 < argc)
       {
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        int level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
 "This test checks the functionality of invoking MADARA system calls\n\n",
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }

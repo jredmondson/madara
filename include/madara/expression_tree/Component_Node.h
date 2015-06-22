@@ -10,10 +10,15 @@
 #include "madara/knowledge_engine/Knowledge_Record.h"
 #include "madara/knowledge_engine/Knowledge_Update_Settings.h"
 #include "madara/utility/stdint.h"
-
+#include "madara/logger/Logger.h"
 
 namespace Madara
 {
+  namespace Knowledge_Engine
+  {
+    class Thread_Safe_Context;
+  }
+
   namespace Expression_Tree
   {
     // Forward declaration.
@@ -30,6 +35,12 @@ namespace Madara
     class Component_Node
     {
     public:
+      /**
+       * Constructor
+       * @param  logger   the logger to use for printing
+       **/
+      Component_Node (Logger::Logger & logger);
+
       /**
        * Destructor
        **/
@@ -73,10 +84,20 @@ namespace Madara
        * @param    visitor   visitor instance to use
        **/
       virtual void accept (Visitor &visitor) const;
+
+      /**
+       * Sets the logger for printing errors and debugging info
+       * @param  logger the logger to use
+       **/
+      void set_logger (Logger::Logger & logger);
+
+    protected:
+      /// handle the context
+      Logger::Logger * logger_;
     };
 
-    // a vector of Component Nodes
-    typedef   std::deque <Component_Node *>   Component_Nodes;  
+    /// a vector of Component Nodes
+    typedef   std::deque <Component_Node *>   Component_Nodes;
   }
 }
 

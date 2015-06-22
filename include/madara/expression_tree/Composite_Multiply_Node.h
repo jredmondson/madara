@@ -25,9 +25,11 @@ namespace Madara
     public:
       /**
        * Constructor
+       * @param   logger the logger to use for printing
        * @param   nodes  2+ nodes to be executed in sequence
        **/
-      Composite_Multiply_Node (const Component_Nodes & nodes);
+      Composite_Multiply_Node (Logger::Logger & logger,
+        const Component_Nodes & nodes);
 
       /**
        * Destructor

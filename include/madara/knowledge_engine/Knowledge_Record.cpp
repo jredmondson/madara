@@ -3,7 +3,7 @@
 
 #include "madara/knowledge_engine/Knowledge_Record.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/utility/Utility.h"
 #include <sstream>
 #include <algorithm>
@@ -22,66 +22,72 @@ Madara::Knowledge_Record::get_precision (void)
 void
 Madara::Knowledge_Record::set_precision (int new_precision)
 {
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Record::set_precision:" \
-      " setting precision to %d\n", madara_double_precision));
+  Logger::global_logger->log (Logger::LOG_MINOR,
+    "Knowledge_Record::set_precision:" \
+    " setting precision to %d\n", madara_double_precision);
 
   madara_double_precision = new_precision;
 }
 
-Madara::Knowledge_Record::Knowledge_Record ()
-      : status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-        quality (0), write_quality (0),
-        int_value_ (0), type_ (INTEGER), size_ (1)
+Madara::Knowledge_Record::Knowledge_Record (Logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0),
+  int_value_ (0), type_ (INTEGER), size_ (1)
 {
 }
 
-Madara::Knowledge_Record::Knowledge_Record (Integer value)
-      : status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-        quality (0), write_quality (0)
-{
-  set_value (value);
-}
-
-Madara::Knowledge_Record::Knowledge_Record (
-  const std::vector <Integer> & value)
-      : status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-        quality (0), write_quality (0)
-{
-  set_value (value);
-}
-
-Madara::Knowledge_Record::Knowledge_Record (double value)
-      : status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-        quality (0), write_quality (0)
+Madara::Knowledge_Record::Knowledge_Record (Integer value,
+  Logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0)
 {
   set_value (value);
 }
 
 Madara::Knowledge_Record::Knowledge_Record (
-  const std::vector <double> & value)
-      : status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-        quality (0), write_quality (0)
+  const std::vector <Integer> & value,
+  Logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0)
 {
   set_value (value);
 }
 
-Madara::Knowledge_Record::Knowledge_Record (const std::string & value)
-      : status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-        quality (0), write_quality (0)
+Madara::Knowledge_Record::Knowledge_Record (double value,
+  Logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0)
 {
   set_value (value);
 }
 
-Madara::Knowledge_Record::Knowledge_Record (const char * value)
-      : status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-        quality (0), write_quality (0)
+Madara::Knowledge_Record::Knowledge_Record (
+  const std::vector <double> & value,
+  Logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0)
+{
+  set_value (value);
+}
+
+Madara::Knowledge_Record::Knowledge_Record (const std::string & value,
+  Logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0)
+{
+  set_value (value);
+}
+
+Madara::Knowledge_Record::Knowledge_Record (const char * value,
+  Logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0)
 {
   set_value (std::string (value));
 }
 
 Madara::Knowledge_Record::Knowledge_Record (const Knowledge_Record & rhs)
-      : status_ (rhs.status_), clock (rhs.clock),
+      : logger_ (rhs.logger_), status_ (rhs.status_), clock (rhs.clock),
       scope (rhs.scope), quality (rhs.quality),
       write_quality (rhs.write_quality),
       size_ (rhs.size_), type_ (rhs.type_)
@@ -451,9 +457,8 @@ Madara::Knowledge_Record::to_string (const std::string & delimiter) const
   {
     if (!is_string_type ())
     {
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "Knowledge_Record::to_string:" \
-          " type_ is %d\n", type_));
+      logger_->log (Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
+        " type_ is %d\n", type_);
 
       std::stringstream buffer;
     
@@ -478,15 +483,13 @@ Madara::Knowledge_Record::to_string (const std::string & delimiter) const
           buffer << std::setprecision (madara_double_precision);
           buffer << std::fixed;
 
-          MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-              DLINFO "Knowledge_Record::to_string:" \
-              " precision set to %d\n", madara_double_precision));
+          logger_->log (Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
+            " precision set to %d\n", madara_double_precision);
         }
         else
         {
-          MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-              DLINFO "Knowledge_Record::to_string:" \
-              " precision set to default\n", madara_double_precision));
+          logger_->log (Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
+            " precision set to default\n", madara_double_precision);
         }
 
         buffer << double_value_;
@@ -498,15 +501,13 @@ Madara::Knowledge_Record::to_string (const std::string & delimiter) const
           buffer << std::setprecision (madara_double_precision);
           buffer << std::fixed;
 
-          MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-              DLINFO "Knowledge_Record::to_string:" \
-              " precision set to %d\n", madara_double_precision));
+          logger_->log (Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
+            " precision set to %d\n", madara_double_precision);
         }
         else
         {
-          MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-              DLINFO "Knowledge_Record::to_string:" \
-              " precision set to default\n", madara_double_precision));
+          logger_->log (Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
+            " precision set to default\n", madara_double_precision);
         }
 
         const double * ptr_temp = double_array_.get_ptr ();
@@ -1469,9 +1470,8 @@ Madara::Knowledge_Record::write (char * buffer, const std::string & key,
 
   if (buffer_remaining >= encoded_size)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Record::write:" \
-        " encoding %Q byte message\n", encoded_size));
+    logger_->log (Logger::LOG_MINOR, "Knowledge_Record::write:" \
+      " encoding %Q byte message\n", encoded_size);
 
     // Remove the key size from the buffer
     if (buffer_remaining >= sizeof (key_size))
@@ -1611,10 +1611,9 @@ Madara::Knowledge_Record::write (char * buffer, const std::string & key,
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Record::write:" \
-        " %q byte buffer cannot contain %q byte message\n",
-        buffer_remaining, encoded_size));
+    logger_->log (Logger::LOG_MINOR, "Knowledge_Record::write:" \
+      " %q byte buffer cannot contain %q byte message\n",
+      buffer_remaining, encoded_size);
   }
   return buffer;
 }
@@ -2001,9 +2000,8 @@ int
 
   if (key.length () > 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Record::apply:" \
-        " attempting to set %s=%s\n", key.c_str (), to_string ().c_str ()));
+    logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
+      " attempting to set %s=%s\n", key.c_str (), to_string ().c_str ());
 
     if (perform_lock)
       context.lock ();
@@ -2030,38 +2028,33 @@ int
     // if we actually updated the value
     if (result == 1)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Record::apply:" \
-        " received data[%s]=%s.\n", 
-        key.c_str (), to_string ().c_str ()));
+      logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
+        " received data[%s]=%s.\n",
+        key.c_str (), to_string ().c_str ());
     }
     // if the data was already current
     else if (result == 0)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "Knowledge_Record::apply:" \
-          " discarded data[%s]=%s as the value was already set.\n",
-          key.c_str (), to_string ().c_str ()));
+      logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
+        " discarded data[%s]=%s as the value was already set.\n",
+        key.c_str (), to_string ().c_str ());
     }
     else if (result == -1)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Record::apply:" \
-        " discarded data due to null key.\n"));
+      logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
+        " discarded data due to null key.\n");
     }
     else if (result == -2)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Record::apply:" \
-        " discarded data[%s]=%q due to lower quality.\n",
-        key.c_str (), to_string ().c_str ()));
+      logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
+        " discarded data[%s]=%s due to lower quality.\n",
+        key.c_str (), to_string ().c_str ());
     }
     else if (result == -3)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Record::apply:" \
+      logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
         " discarded data[%s]=%q due to older timestamp.\n",
-        key.c_str (), to_string ().c_str ()));
+        key.c_str (), to_string ().c_str ());
     }
   }
   return result;
@@ -2070,9 +2063,8 @@ int
 bool
 Madara::Knowledge_Record::is_true (void) const
 {
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Knowledge_Record::apply:" \
-    " checking if record is non-zero.\n"));
+  logger_->log (Logger::LOG_MAJOR, "Knowledge_Record::apply:" \
+    " checking if record is non-zero.\n");
 
   if (is_integer_type ())
     return to_integer () != 0;

@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Delete_Variable.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
@@ -48,14 +48,15 @@ Madara::Expression_Tree::System_Call_Delete_Variable::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (nodes_[0]) == 0)
     {
       delete nodes_[0];
-      nodes_[0] = new Leaf_Node (result);
+      nodes_[0] = new Leaf_Node (*(this->logger_), result);
     }
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
-      "KARL COMPILE ERROR: System call delete_variable requires 1 argument,"
-      "e.g., #delete_variable ('var').\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: "
+      "System call delete_variable requires 1 argument,"
+      "e.g., #delete_variable ('var').\n");
   }
 
 
@@ -72,9 +73,9 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   if (nodes_.size () == 1)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "System call delete_variable is returning the clock "
-      "of its first argument.\n"));
+      "of its first argument\n");
 
     return Madara::Knowledge_Record::Integer (
       context_.delete_variable (
@@ -82,9 +83,9 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call delete_variable requires 1 argument,"
-      "e.g., #delete_variable ('var').\n"));
+      "e.g., #delete_variable ('var')\n");
   }
 
   return return_value;

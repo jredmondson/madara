@@ -6,11 +6,9 @@
 
 #include "madara/expression_tree/Composite_Unary_Node.h"
 
-// Ctor
-
-Madara::Expression_Tree::Composite_Unary_Node::Composite_Unary_Node (Component_Node *right)
-  : Component_Node (), 
-    right_ (right)
+Madara::Expression_Tree::Composite_Unary_Node::Composite_Unary_Node (
+  Logger::Logger & logger, Component_Node *right)
+: Component_Node (logger), right_ (right)
 {    
 }
 

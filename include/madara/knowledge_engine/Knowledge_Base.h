@@ -822,49 +822,6 @@ namespace Madara
           Eval_Settings ());
 
       /**
-       * Sets the log level to dictate the detail of MADARA logging. A higher
-       * log level will print out all lower levels of logging. 10 is currently
-       * the highest log level. Anything higher than this will be the
-       * equivalent of setting the log level to 10.
-       * level      
-       * 0          Emergency printing. Generally major, critical errors
-       * 1          Impending critical errors. Usually lead to a level 0 error
-       * 2          Non-fatal errors. These indicate lowest level of errors.
-       * 3          Error details. These describe errors above this level.
-       * 4          Warnings. These indicate potential problems.
-       * 5          Major events. Normal, important events.
-       * 6          Minor events. Normal, minor events.
-       * 7          Event trace. Normal components of minor events.
-       * 8          Debug info. Configuration information.
-       * 9          Debug trace. Trace information for debugging info.
-       * 10         Debug detailed trace. Very detailed trace information.
-       * @param   level    severity of log messages to log
-       * @return    the resulting log level
-       **/
-      static int log_level (int level);
-      
-      /**
-       * Gets the log level to dictate the detail of MADARA logging. A higher
-       * log level will print out all lower levels of logging. 10 is currently
-       * the highest log level. Anything higher than this will be the
-       * equivalent of setting the log level to 10.
-       * level      
-       * 0          Emergency printing. Generally major, critical errors
-       * 1          Impending critical errors. Usually lead to a level 0 error
-       * 2          Non-fatal errors. These indicate lowest level of errors.
-       * 3          Error details. These describe errors above this level.
-       * 4          Warnings. These indicate potential problems.
-       * 5          Major events. Normal, important events.
-       * 6          Minor events. Normal, minor events.
-       * 7          Event trace. Normal components of minor events.
-       * 8          Debug info. Configuration information.
-       * 9          Debug trace. Trace information for debugging info.
-       * 10         Debug detailed trace. Very detailed trace information.
-       * @return    the log level currently used to log information
-       **/
-      static int log_level (void);
-
-      /**
        * Prints all knowledge variables and values in the context
        * @param   level    level to log the knowledge at
        **/
@@ -975,38 +932,37 @@ namespace Madara
        * @return             the context used by the knowledge base
        **/
       Thread_Safe_Context & get_context (void);
-      
+
+      /**
+      * Gets the log level
+      * @return the maximum detail level to print
+      **/
+      int get_log_level (void);
+
+      /**
+      * Attaches a logger to be used for printing
+      * @param the logger the context should lose
+      **/
+      void attach_logger (Logger::Logger & logger) const;
+
+      /**
+      * Gets the logger used for information printing
+      * @return the context's logger
+      **/
+      Logger::Logger & get_logger (void) const;
+
+      /**
+      * Sets the log level
+      * @param  level  the maximum detail level to print
+      **/
+      void set_log_level (int level);
+
       /**
        * Returns the unique host and ephemeral binding for this Knowlede Base
        * @return             host:port identifier for this knowledge base
        **/
       std::string get_id (void);
       
-      /**
-       * Sets logging to STDERR (terminal). This is the default.
-       * @param   clear_flags if true, clears all other logging options. If
-       *                      false, retains previous logging options.
-       **/
-      static void log_to_stderr (bool clear_flags = true);
-
-      /**
-       * Sets logging to a file
-       *
-       * @param   filename    path to the file that should contain log messages
-       * @param   clear_flags if true, clears all other logging options. If
-       *                      false, retains previous logging options.
-       **/
-      static void log_to_file (const char * filename, bool clear_flags = true);
-
-      /**
-       * Sets logging to the system log
-       * @param   prog_name   system logs require a program name. Use argv[0]
-       *                      if unsure what to do with this.
-       * @param   clear_flags if true, clears all other logging options. If
-       *                      false, retains previous logging options
-       **/
-      static void log_to_system_log (const char * prog_name, bool clear_flags = true);
-
       /**
        * Fills a vector with Knowledge Records that begin with a common subject
        * and have a finite range of integer values.

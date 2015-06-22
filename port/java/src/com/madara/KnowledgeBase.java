@@ -50,6 +50,7 @@ import java.util.HashMap;
 
 import com.madara.transport.TransportSettings;
 import com.madara.transport.TransportType;
+import com.madara.logger.Logger;
 
 /**
  * This class provides a distributed knowledge base to users
@@ -61,6 +62,8 @@ public class KnowledgeBase extends MadaraJNI
   private native long jni_KnowledgeBase(String host, int transport, String domain);
   private native long jni_KnowledgeBase(String host, long config);
   private native long jni_KnowledgeBase(long original);
+  private native void jni_attachLogger(long cptr, long logger);
+  private native long jni_getLogger(long cptr);
   private native long jni_evaluate(long cptr, String expression, long evalSettings);
   private native long jni_evaluate(long cptr, long expression, long evalSettings);
   private native void jni_evaluateNoReturn(long cptr, String expression, long evalSettings);
@@ -320,6 +323,26 @@ public class KnowledgeBase extends MadaraJNI
     checkContextLock();
 //    callbacks.put(name, function);
     jni_defineFunction(getCPtr(), name, function);
+  }
+
+  /**
+   * Attaches a logger that will manage all output from the KnowledgeBase
+   *
+   * @param logger  a logger to use for managing information and debugging
+   **/
+  public void attachLogger(Logger logger)
+  {
+    jni_attachLogger(getCPtr(), logger.getCPtr());
+  }
+
+  /**
+   * Returns the logger that manages all output from the KnowledgeBase
+   *
+   * @return the logger being used for managing information and debugging
+   **/
+  public Logger getLogger()
+  {
+    return Logger.fromPointer(jni_getLogger(getCPtr()), false);
   }
 
   /**

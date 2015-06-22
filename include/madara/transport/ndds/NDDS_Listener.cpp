@@ -1,7 +1,9 @@
 #include "madara/transport/ndds/NDDS_Listener.h"
-#include "madara/utility/Log_Macros.h"
 #include "madara/knowledge_engine/Update_Types.h"
 #include "madara/utility/Utility.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 #include <sstream>
 
@@ -24,20 +26,19 @@ Madara::Transport::NDDS_Listener::NDDS_Listener(
   // check for an on_data_received ruleset
   if (settings_.on_data_received_logic.length () != 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO
+    context_.get_logger ().log (logger::LOG_MAJOR,
       "NDDS_Listener::NDDS_Listener:" \
-      " setting rules to %s\n", 
-      settings_.on_data_received_logic.c_str ()));
+      " setting rules to %s\n",
+      settings_.on_data_received_logic.c_str ());
 
     Madara::Expression_Tree::Interpreter interpreter;
     on_data_received_ = context_.compile (settings_.on_data_received_logic);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "NDDS_Listener::NDDS_Listener:" \
-      " no permanent rules were set\n"));
+    context_.get_logger ().log (logger::LOG_MINOR,
+      "NDDS_Listener::NDDS_Listener:" \
+      " no permanent rules were set\n");
   }
   
 }
@@ -67,7 +68,7 @@ Madara::Transport::NDDS_Listener::rebroadcast (
 {
   int64_t buffer_remaining = (int64_t) settings_.queue_length;
   char * buffer = buffer_.get_ptr ();
-  unsigned long result = prep_rebroadcast (buffer, buffer_remaining,
+  unsigned long result = prep_rebroadcast (context_, buffer, buffer_remaining,
                                  *qos_settings_, print_prefix,
                                  header, records,
                                  packet_scheduler_);
@@ -76,19 +77,19 @@ Madara::Transport::NDDS_Listener::rebroadcast (
   {
     ssize_t bytes_sent (result + sizeof (NDDS_Knowledge_Update));
 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_.get_logger ().log (logger::LOG_MAJOR,
+      "%s:" \
       " Sent packet of size %d\n",
       print_prefix,
-      bytes_sent));
+      bytes_sent);
       
     send_monitor_.add ((uint32_t)bytes_sent);
 
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_.get_logger ().log (logger::LOG_MINOR,
+      "%s:" \
       " Send bandwidth = %d B/s\n",
       print_prefix,
-      send_monitor_.get_bytes_per_second ()));
+      send_monitor_.get_bytes_per_second ());
   }
 }
 
@@ -105,10 +106,11 @@ Madara::Transport::NDDS_Listener::on_data_available(DDSDataReader * reader)
     NDDS_Knowledge_UpdateDataReader::narrow(reader);
   if (update_reader == NULL)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\n%s:" \
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "%s:" \
       " Unable to create specialized reader. Leaving callback...\n",
-      print_prefix));
+      print_prefix);
+
     return;
   }
 
@@ -126,9 +128,9 @@ Madara::Transport::NDDS_Listener::on_data_available(DDSDataReader * reader)
   }
   else if (rc != DDS_RETCODE_OK)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " could not take current sample.\n", print_prefix));
+    context_.get_logger ().log (logger::LOG_MINOR,
+      "%s:" \
+      " could not take current sample.\n", print_prefix);
     return;
   }
 
@@ -143,9 +145,9 @@ Madara::Transport::NDDS_Listener::on_data_available(DDSDataReader * reader)
       {
         // if we don't check originator for null, we get phantom sends
         // when the program exits.
-        MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG,
-          DLINFO "%s:" \
-          " discarding null originator event.\n", print_prefix));
+        context_.get_logger ().log (logger::LOG_DETAILED,
+          "%s:" \
+          " discarding null originator event.\n", print_prefix);
 
         continue;
       }
@@ -153,9 +155,9 @@ Madara::Transport::NDDS_Listener::on_data_available(DDSDataReader * reader)
       if (update_data_list[i].type != Madara::Transport::MULTIASSIGN)
       {
         // we do not allow any other type than multiassign
-        MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG,
-          DLINFO "%s:" \
-          " discarding non-assignment event.\n", print_prefix));
+        context_.get_logger ().log (logger::LOG_DETAILED,
+          "%s:" \
+          " discarding non-assignment event.\n", print_prefix);
 
         continue;
       }
@@ -165,11 +167,11 @@ Madara::Transport::NDDS_Listener::on_data_available(DDSDataReader * reader)
 
       if (Madara::Knowledge_Engine::MULTIPLE_ASSIGNMENT == update_data_list[i].type)
       {
-        MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s:" \
-          " processing multassignment from %s with time %Q and quality %u.\n",
+        context_.get_logger ().log (logger::LOG_DETAILED,
+          "%s:" \
+          " processing multassignment from %s with time %llu and quality %d.\n",
           print_prefix, update_data_list[i].originator,
-          update_data_list[i].clock, update_data_list[i].quality));
+          update_data_list[i].clock, update_data_list[i].quality);
         
         process_received_update ((char *)update_data_list[i].buffer.get_contiguous_buffer (),
           update_data_list[i].buffer.length (), id_, context_,
@@ -183,8 +185,8 @@ Madara::Transport::NDDS_Listener::on_data_available(DDSDataReader * reader)
   rc = update_reader->return_loan(update_data_list, info_seq);
   if (rc != DDS_RETCODE_OK)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " could return DDS sample instance loan.\n", print_prefix));
+    context_.get_logger ().log (logger::LOG_DETAILED,
+      "%s:" \
+      " could return DDS sample instance loan.\n", print_prefix);
   }
 }

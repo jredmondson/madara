@@ -10,12 +10,15 @@
 #include <sstream>
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 int ACE_TMAIN (int, char **)
 {
 #ifndef _MADARA_NO_KARL_
   // debug level for logging
-  MADARA_debug_level = 7;
+  logger::global_logger->set_level (7);
 
   // don't use a transport for this test.
   Madara::Transport::Settings transport_settings;
@@ -96,7 +99,8 @@ int ACE_TMAIN (int, char **)
   knowledge.wait (expression, wait_settings);
   
 #else
-  std::cout << "This test is disabled due to karl feature being disabled.\n";
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "This test is disabled due to karl feature being disabled.\n");
 #endif
   return 0;
 }

@@ -21,7 +21,7 @@
 #include "ace/Recursive_Thread_Mutex.h"
 #include "ace/Condition_T.h"
 #include "ace/Guard_T.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/utility/Thread_Safe_Refcounter.h"
 #include "ace/High_Res_Timer.h"
 

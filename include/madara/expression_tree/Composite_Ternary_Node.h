@@ -28,13 +28,17 @@ namespace Madara
     public:
       /**
        * Constructor
+       * @param  logger   the logger to use for printing
        **/
-      Composite_Ternary_Node ();
+      Composite_Ternary_Node (Logger::Logger & logger);
 
       /**
        * Constructor
+       * @param  logger   the logger to use for printing
+       * @param  nodes    a list of nodes necessary for the node
        **/
-      Composite_Ternary_Node (const Component_Nodes & nodes);
+      Composite_Ternary_Node (Logger::Logger & logger,
+        const Component_Nodes & nodes);
       
       /**
        * Destructor

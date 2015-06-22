@@ -21,6 +21,9 @@
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/knowledge_engine/Knowledge_Update_Settings.h"
 #include "madara/knowledge_engine/containers/Integer.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 typedef  Madara::Knowledge_Record::Integer Integer;
 
@@ -212,8 +215,8 @@ void
   buffer << value.to_integer ();
   buffer << "\n";
 
-  ACE_DEBUG ((LM_INFO, 
-    buffer.str ().c_str ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    buffer.str ().c_str ());
 }
 
 #ifndef _MADARA_NO_KARL_
@@ -295,7 +298,6 @@ to_legible_hertz (uint64_t hertz)
   buffer << freq;
   buffer << "  hz";
   return buffer.str ().c_str ();
-  
 }
 
 int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
@@ -304,10 +306,6 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   if (retcode < 0)
     return retcode;
-
-  ACE_LOG_MSG->priority_mask (LM_INFO, ACE_Log_Msg::PROCESS);
-
-  ACE_TRACE (ACE_TEXT ("main"));
 
   // use ACE real time scheduling class
   int prio  = ACE_Sched_Params::next_priority
@@ -326,9 +324,10 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   if (num_runs == 0 || num_iterations == 0)
   {
-    ACE_DEBUG ((LM_INFO, 
+    logger::global_logger->log (logger::LOG_ALWAYS,
       "\nERROR: num_runs (%d) and num_iterations (%d) cannot be set to 0:\n", 
-      num_runs, num_iterations));
+      num_runs, num_iterations);
+
     exit (-1);
   }
 
@@ -452,8 +451,9 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   knowledge.define_function ("no_op", no_op);
 #endif
 
-  std::cerr << "Testing throughput for MADARA v" <<
-    Madara::Utility::get_version () << std::endl;
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing throughput for MADARA v%s\n",
+    Madara::Utility::get_version ().c_str ());
 
   for (uint32_t i = 0; i < num_runs; ++i)
   {
@@ -481,12 +481,12 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     averages[i] = (1000000000 * evaluations) / results[i];
   }
 
-  ACE_DEBUG ((LM_INFO, 
+  logger::global_logger->log (logger::LOG_ALWAYS,
     "\n\nTotal time taken for each test with %d iterations * %d tests was:\n", 
-        num_iterations, num_runs));
+        num_iterations, num_runs);
 
-  ACE_DEBUG ((LM_INFO, 
-    "=========================================================================\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "=========================================================================\n");
 
   for (int i = 0; i < num_test_types; ++i)
   {
@@ -502,19 +502,19 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     buffer << results[i];
     buffer << " ns\n";
 
-    ACE_DEBUG ((LM_INFO, 
-      buffer.str ().c_str ()));
+    logger::global_logger->log (logger::LOG_ALWAYS,
+      buffer.str ().c_str ());
   }
 
-  ACE_DEBUG ((LM_INFO, 
-    "=========================================================================\n\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "=========================================================================\n\n");
 
-  ACE_DEBUG ((LM_INFO, 
+  logger::global_logger->log (logger::LOG_ALWAYS,
     "\nAverage time taken per rule evaluation was:\n", 
-        num_iterations, num_runs));
+        num_iterations, num_runs);
 
-  ACE_DEBUG ((LM_INFO, 
-    "=========================================================================\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "=========================================================================\n");
 
   for (int i = 0; i < num_test_types; ++i)
   {
@@ -530,19 +530,20 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     buffer << (results[i] / (num_iterations * num_runs));
     buffer << " ns\n";
 
-    ACE_DEBUG ((LM_INFO, 
-      buffer.str ().c_str ()));
+    logger::global_logger->log (logger::LOG_ALWAYS,
+      buffer.str ().c_str ());
   }
 
-  ACE_DEBUG ((LM_INFO, 
-    "=========================================================================\n\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "=========================================================================\n\n");
 
-  ACE_DEBUG ((LM_INFO, 
-    "\nHertz for each test with %d iterations * %d tests was:\n", num_iterations, num_runs));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "\nHertz for each test with %d iterations * %d tests was:\n",
+    num_iterations, num_runs);
 
-  
-  ACE_DEBUG ((LM_INFO, 
-    "=========================================================================\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "=========================================================================\n");
 
 
   for (int i = 0; i < num_test_types; ++i)
@@ -555,12 +556,12 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     buffer << to_legible_hertz (averages[i]);
     buffer << "\n";
 
-    ACE_DEBUG ((LM_INFO, 
-      buffer.str ().c_str ()));
+    logger::global_logger->log (logger::LOG_ALWAYS,
+      buffer.str ().c_str ());
   }
 
-  ACE_DEBUG ((LM_INFO, 
-    "=========================================================================\n\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "=========================================================================\n\n");
 
 
   return 0;
@@ -586,8 +587,6 @@ uint64_t test_simple_reinforcement (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_simple_reinforcement"));
-
   knowledge.clear ();
 
   // keep track of time
@@ -619,8 +618,6 @@ uint64_t test_container_increment (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_container_increment"));
-
   knowledge.clear ();
 
   Madara::Knowledge_Engine::Containers::Integer var1 (".var1", knowledge,
@@ -650,8 +647,6 @@ uint64_t test_compiled_sr (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_compiled_sr"));
-  
   knowledge.clear ();
 #ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Compiled_Expression ce;
@@ -687,8 +682,6 @@ uint64_t test_compiled_sa (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_compiled_sa"));
-
   knowledge.clear ();
 #ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Compiled_Expression ce;
@@ -725,8 +718,6 @@ uint64_t test_compiled_sfi (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_compiled_sfi"));
-
   knowledge.clear ();
 #ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Compiled_Expression ce;
@@ -762,8 +753,6 @@ uint64_t test_extern_call (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_extern_call"));
-
   knowledge.clear ();
 #ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Compiled_Expression ce;
@@ -801,8 +790,6 @@ uint64_t test_looped_sr (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_looped_sr"));
-
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -847,8 +834,6 @@ uint64_t test_large_reinforcement (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_large_reinforcement"));
-
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -891,8 +876,6 @@ uint64_t test_compiled_lr (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_compiled_lr"));
-
   knowledge.clear ();
 #ifndef _MADARA_NO_KARL_
 
@@ -940,8 +923,6 @@ uint64_t test_compiled_la (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_compiled_la"));
-
   knowledge.clear ();
 #ifndef _MADARA_NO_KARL_
 
@@ -991,8 +972,6 @@ uint64_t test_compiled_lfi (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_compiled_lfi"));
-
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -1040,8 +1019,6 @@ uint64_t test_optimal_loop (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_optimal_loop"));
-
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -1085,8 +1062,6 @@ uint64_t test_simple_inference (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_simple_inference"));
-
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -1119,8 +1094,6 @@ uint64_t test_normal_set (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_compiled_si"));
-
   knowledge.clear ();
 
   // keep track of time
@@ -1147,8 +1120,6 @@ uint64_t test_get_ref (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_var_ref_set"));
-
   knowledge.clear ();
 
   // keep track of time
@@ -1176,8 +1147,6 @@ uint64_t test_get_expand_ref (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_get_expand_ref"));
-
   knowledge.clear ();
 
   // keep track of time
@@ -1206,8 +1175,6 @@ uint64_t test_var_ref_set (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_var_ref_set"));
-
   knowledge.clear ();
 
   // keep track of time
@@ -1237,8 +1204,6 @@ uint64_t test_variables_inc_var_ref (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_variables_inc_var_ref"));
-
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -1273,8 +1238,6 @@ uint64_t test_compiled_si (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_compiled_si"));
-
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -1312,8 +1275,6 @@ uint64_t test_looped_si (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_looped_si"));
-
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -1354,8 +1315,6 @@ uint64_t test_large_inference (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_large_inference"));
-
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -1397,8 +1356,6 @@ uint64_t test_compiled_li (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_compiled_li"));
-
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -1445,8 +1402,6 @@ uint64_t test_looped_li (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_looped_lr"));
-
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -1491,8 +1446,6 @@ uint64_t test_optimal_inference (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_optimal_inference"));
-
   knowledge.clear ();
 
   // keep track of time
@@ -1526,8 +1479,6 @@ uint64_t test_optimal_assignment (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_optimal_reinforcement"));
-
   knowledge.clear ();
 
   // keep track of time
@@ -1581,8 +1532,6 @@ uint64_t test_optimal_reinforcement (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_optimal_reinforcement"));
-
   knowledge.clear ();
 
   // keep track of time
@@ -1635,8 +1584,6 @@ uint64_t test_volatile_inference (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_volatile_inference"));
-
   knowledge.clear ();
 
   // keep track of time
@@ -1668,8 +1615,6 @@ uint64_t test_volatile_reinforcement (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_volatile_reinforcement"));
-
   knowledge.clear ();
   Incrementer accumulator;
 
@@ -1701,8 +1646,6 @@ uint64_t test_virtual_reinforcement (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_virtual_reinforcement"));
-
   knowledge.clear ();
   Incrementer accumulator;
 
@@ -1736,8 +1679,6 @@ uint64_t test_volatile_assignment (
      Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
      uint32_t iterations)
 {
-  ACE_TRACE (ACE_TEXT ("test_volatile_assignment"));
-
   knowledge.clear ();
   Incrementer accumulator;
 
@@ -1801,8 +1742,7 @@ int parse_args (int argc, ACE_TCHAR * argv[])
       break;
     case 'f':
       // log file
-      Madara::Knowledge_Engine::Knowledge_Base::log_to_file (
-        cmd_opts.opt_arg ());
+      logger::global_logger->add_file (cmd_opts.opt_arg ());
       break;
     case 'r':
       // thread number
@@ -1834,7 +1774,8 @@ int parse_args (int argc, ACE_TCHAR * argv[])
            cmd_opts.opt_opt ()), -2); 
     case 'h':
     default:
-      ACE_DEBUG ((LM_DEBUG, "Program Summary for %s:\n\n\
+      logger::global_logger->log (logger::LOG_ALWAYS,
+        "Program Summary for %s:\n\n\
       This stand-alone application runs a variety of tests to determine\n\
       performance on a host system. For a more comprehensive and\n\
       customizeable tests, see profile_architecture\n\n\
@@ -1846,7 +1787,7 @@ int parse_args (int argc, ACE_TCHAR * argv[])
       -- because C++ compilers are trying to opimize \n\
       -- away the loops we are trying to test \n\
       -h (--help)        print this menu           \n\n", argv[0]
-      ));
+      );
       ACE_ERROR_RETURN ((LM_ERROR, 
         ACE_TEXT ("Returning from Help Menu\n")), -1); 
       break;

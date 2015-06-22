@@ -6,12 +6,13 @@
 #include <sstream>
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/threads/Threader.h"
 #include "madara/knowledge_engine/containers/Integer.h"
 #include "madara/utility/Utility.h"
+#include "madara/logger/Global_Logger.h"
 
-// shortcuts
+namespace logger = Madara::Logger;
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
 namespace utility = Madara::Utility;
@@ -50,7 +51,9 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        int level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
@@ -59,7 +62,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        engine::Knowledge_Base::log_to_file (argv[i + 1]);
+        logger::global_logger->add_file (argv[i + 1]);
       }
 
       ++i;
@@ -96,7 +99,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS, 
 "\nProgram summary for %s:\n\n" \
 "  Attempts to start a number of counter and reader threads\n\n" \
 " [-c|--counters counters] the number of counter threads to start\n" \
@@ -106,7 +109,7 @@ void handle_arguments (int argc, char ** argv)
 " [-t|--target target]     the desired distributed count total\n"\
 " [-w|--max-wait time]     maximum time to wait in seconds (double format)\n"\
 "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }

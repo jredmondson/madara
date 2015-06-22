@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/Variable_Node.h"
 #include "madara/expression_tree/System_Call_Sleep.h"
@@ -51,15 +51,15 @@ Madara::Expression_Tree::System_Call_Sleep::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (*i) == 0)
     {
       delete *i;
-      *i = new Leaf_Node (result);
+      *i = new Leaf_Node (*(this->logger_), result);
     }
   }
 
   if (nodes_.size () > 2 || nodes_.size () == 0)
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call set_clock requires 1-2 arguments, "
-      "e.g., set_clock (5) or set_clock (var, 5).\n"));
+      "e.g., set_clock (5) or set_clock (var, 5)\n");
   }
 
 
@@ -77,16 +77,16 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   if (nodes_.size () == 1)
   {
     double sleep_time = nodes_[0]->evaluate (settings).to_double ();
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call sleep is sleeping for %f.\n", sleep_time));
+    logger_->log (Logger::LOG_MINOR,
+      "System call sleep is sleeping for %f.\n", sleep_time);
 
     return_value = Madara::Utility::sleep (sleep_time);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call set_clock requires 1-2 arguments, "
-      "e.g., set_clock (5) or set_clock (var, 5).\n"));
+      "e.g., set_clock (5) or set_clock (var, 5).\n");
   }
 
   return return_value;

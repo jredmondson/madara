@@ -23,10 +23,12 @@ namespace Madara
     public:
       /**
        * Constructor
+       * @param   logger the logger to use for printing
        * @param   left   left expression
        * @param   right  right expression
        **/
-      Composite_Subtract_Node (Component_Node *left, Component_Node *right);
+      Composite_Subtract_Node (Logger::Logger & logger,
+        Component_Node *left, Component_Node *right);
 
       /**
        * Destructor

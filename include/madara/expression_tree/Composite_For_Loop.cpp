@@ -13,7 +13,7 @@
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/Composite_Assignment_Node.h"
 
-#include "madara/utility/Log_Macros.h"
+
 
 // Ctor
 
@@ -23,7 +23,8 @@ Madara::Expression_Tree::Composite_For_Loop::Composite_For_Loop (
         Component_Node * postcondition,
         Component_Node * body,
         Madara::Knowledge_Engine::Thread_Safe_Context & context)
-  : context_(context), precondition_ (precondition), condition_ (condition), 
+: Component_Node (context.get_logger ()), context_(context),
+    precondition_ (precondition), condition_ (condition), 
     postcondition_ (postcondition), body_ (body)
 {
   
@@ -63,23 +64,21 @@ Madara::Knowledge_Record
 Madara::Expression_Tree::Composite_For_Loop::evaluate (
 const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 {
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Composite_For_Loop::evaluate:" \
-    " Executing precondition.\n"));
+  logger_->log (Logger::LOG_MAJOR,
+    "Composite_For_Loop::evaluate: Executing precondition\n");
+
   precondition_->evaluate (settings);
 
   Madara::Knowledge_Record::Integer count = 0;
   while (condition_->evaluate (settings).is_true ())
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "Composite_For_Loop::evaluate:" \
-      " Executing loop body.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "Composite_For_Loop::evaluate: Executing loop body\n");
 
     body_->evaluate (settings);
 
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "Composite_For_Loop::evaluate:" \
-      " Executing postcondition.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "Composite_For_Loop::evaluate: Executing postcondition\n");
 
     postcondition_->evaluate (settings);
     ++count;

@@ -18,6 +18,7 @@
 #include "madara/utility/Scoped_Array.h"
 #include "madara/utility/Refcounter.h"
 #include "ace/os_include/sys/os_types.h"
+#include "madara/logger/Global_Logger.h"
 
 namespace Madara
 {
@@ -97,7 +98,9 @@ namespace Madara
     uint32_t write_quality;
 
   private:
-   
+    /// the logger used for any internal debugging information
+    Logger::Logger * logger_;
+
     /**
      * status of the knowledge record
      **/
@@ -146,25 +149,32 @@ namespace Madara
   public:
 
     /* default constructor */
-    Knowledge_Record ();
+    Knowledge_Record (
+      Logger::Logger & logger = *Logger::global_logger.get ());
     
     /* Integer constructor */
-    Knowledge_Record (Integer value);
+    Knowledge_Record (Integer value,
+      Logger::Logger & logger = *Logger::global_logger.get ());
     
     /* Double constructor */
-    Knowledge_Record (double value);
+    Knowledge_Record (double value,
+      Logger::Logger & logger = *Logger::global_logger.get ());
     
     /* Integer array constructor */
-    Knowledge_Record (const std::vector <Integer> & value);
+    Knowledge_Record (const std::vector <Integer> & value,
+      Logger::Logger & logger = *Logger::global_logger.get ());
     
     /* Double array constructor */
-    Knowledge_Record (const std::vector <double> & value);
+    Knowledge_Record (const std::vector <double> & value,
+      Logger::Logger & logger = *Logger::global_logger.get ());
     
     /* String constructor */
-    Knowledge_Record (const std::string & value);
+    Knowledge_Record (const std::string & value,
+      Logger::Logger & logger = *Logger::global_logger.get ());
     
     /* Char pointer constructor for g++ */
-    Knowledge_Record (const char * value);
+    Knowledge_Record (const char * value,
+      Logger::Logger & logger = *Logger::global_logger.get ());
     
     /* copy constructor */
     Knowledge_Record (const Knowledge_Record & rhs);

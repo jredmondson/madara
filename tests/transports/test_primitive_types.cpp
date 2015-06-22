@@ -6,13 +6,16 @@
 #include <assert.h>
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+
 
 #include "ace/Signal.h"
 #include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
 #include "ace/Signal.h"
 #include "ace/Sched_Params.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
@@ -61,14 +64,16 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        int level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
         "  Test strings, integers, and doubles over a multicast transport.\n" \
         "  Priority and training.completion will increment with each update.\n" \
@@ -79,7 +84,7 @@ void handle_arguments (int argc, char ** argv)
         " [-i|--id id]             the id of this agent (should be non-negative)\n" \
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }
@@ -147,7 +152,8 @@ int ACE_TMAIN (int argc, char ** argv)
   knowledge.print ();
   
 #else
-  std::cout << "This test is disabled due to karl feature being disabled.\n";
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "This test is disabled due to karl feature being disabled.\n");
 #endif
   return 0;
 }

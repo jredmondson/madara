@@ -6,7 +6,7 @@
 #include "madara/transport/tcp/TCP_Transport.h"
 #include "madara/transport/multicast/Multicast_Transport.h"
 #include "madara/transport/broadcast/Broadcast_Transport.h"
-#include "madara/utility/Log_Macros.h"
+
 
 #include <sstream>
 
@@ -87,10 +87,9 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::setup_unique_hostport (
       unique_bind_, actual_host, port)
          == -1)
     {
-      MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, 
-        DLINFO "Knowledge_Base_Impl::setup_unique_hostport:" \
-        " unable to bind to any ephemeral port." \
-        " Check firewall. ERRORNO = %d\n", ACE_OS::last_error ()));
+      map_.get_logger ().log (Logger::LOG_ERROR,
+        "Knowledge_Base_Impl::setup_unique_hostport:" \
+        " unable to bind to any ephemeral port\n");
 
       if (!settings_.never_exit)
         exit (-1);
@@ -99,9 +98,9 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::setup_unique_hostport (
     // we were able to bind to an ephemeral port
     Madara::Utility::merge_hostport_identifier (actual_host, actual_host, port);
 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::setup_unique_hostport:" \
-      " unique bind to %s\n", actual_host.c_str ()));
+    map_.get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base_Impl::setup_unique_hostport:" \
+      " unique bind to %s\n", actual_host.c_str ());
   }
 
   return actual_host;
@@ -122,9 +121,10 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::attach_transport (const std::stri
       originator = id_ = setup_unique_hostport ();
   }
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Knowledge_Base_Impl::attach_transport:" \
-    " activating transport type %d\n", settings.type));
+  map_.get_logger ().log (Logger::LOG_MAJOR,
+    "Knowledge_Base_Impl::attach_transport:" \
+    " activating transport type %d\n", settings.type);
+
   if (settings.type == Madara::Transport::BROADCAST)
   {
     transport = new Madara::Transport::Broadcast_Transport (originator, map_,
@@ -137,64 +137,57 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::attach_transport (const std::stri
   }
   else if (settings.type == Madara::Transport::SPLICE)
   {
-  #ifdef _USE_OPEN_SPLICE_
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::activate_transport:" \
-      " creating Open Splice DDS transport.\n",
-      settings.type));
+#ifdef _USE_OPEN_SPLICE_
+    map_.get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base_Impl::activate_transport:" \
+      " creating Open Splice DDS transport.\n");
 
     transport = new Madara::Transport::Splice_DDS_Transport (originator, map_,
                         settings, true);
-  #else
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::activate_transport:" \
-      " project was not generated with opensplice=1. Transport is invalid.\n",
-      settings.type));
+#else
+    map_.get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base_Impl::activate_transport:" \
+      " project was not generated with opensplice=1. Transport is invalid.\n");
   #endif
   }
   else if (settings.type == Madara::Transport::NDDS)
   {
-  #ifdef _USE_NDDS_
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::activate_transport:" \
-      " creating NDDS transport.\n",
-      settings.type));
+#ifdef _USE_NDDS_
+    map_.get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base_Impl::activate_transport:" \
+      " creating NDDS transport.\n");
 
     transport = new Madara::Transport::NDDS_Transport (originator, map_,
                         settings, true);
-  #else
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::activate_transport:" \
-      " project was not generated with ndds=1. Transport is invalid.\n",
-      settings.type));
+#else
+    map_.get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base_Impl::activate_transport:" \
+      " project was not generated with ndds=1. Transport is invalid.\n");
   #endif
   }
   else if (settings.type == Madara::Transport::UDP)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::activate_transport:" \
-      " creating UDP transport.\n",
-      settings.type));
+    map_.get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base_Impl::activate_transport:" \
+      " creating UDP transport.\n");
 
     transport = new Madara::Transport::UDP_Transport (originator, map_,
       settings, true);
   }
   else if (settings.type == Madara::Transport::TCP)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::activate_transport:" \
-      " creating TCP transport.\n",
-      settings.type));
+    map_.get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base_Impl::activate_transport:" \
+      " creating TCP transport.\n");
 
     transport = new Madara::Transport::TCP_Transport (originator, map_,
       settings, true);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::activate_transport:" \
-      " no transport was specified. Setting transport to null.\n",
-      settings.type));
+    map_.get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base_Impl::activate_transport:" \
+      " no transport was specified. Setting transport to null.\n");
   }
 
   // if we have a valid transport, add it to the transports vector
@@ -215,10 +208,10 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::activate_transport (void)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::activate_transport:" \
+    map_.get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base_Impl::activate_transport:" \
       " transport already activated. If you need" \
-      " a new type, close transport first\n"));
+      " a new type, close transport first\n");
   }
 }
 
@@ -252,9 +245,10 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::close_transport (void)
     {
       transports_[i]->close ();
       delete transports_[i];
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::close_transport:" \
-        " transport has been closed.\n"));
+
+      map_.get_logger ().log (Logger::LOG_MAJOR,
+        "Knowledge_Base_Impl::close_transport:" \
+        " transport has been closed\n");
     }
 
     transports_.clear ();
@@ -598,9 +592,9 @@ Madara::Knowledge_Engine::Compiled_Expression
 Madara::Knowledge_Engine::Knowledge_Base_Impl::compile (
   const std::string & expression)
 {
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::compile:" \
-      " compiling %s\n", expression.c_str ()));
+  map_.get_logger ().log (Logger::LOG_MAJOR,
+    "Knowledge_Base_Impl::compile:" \
+    " compiling %s\n", expression.c_str ());
 
   return map_.compile (expression);
 }
@@ -634,21 +628,21 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::wait (
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")
-    map_.print (settings.pre_print_statement, MADARA_LOG_EMERGENCY);
+    map_.print (settings.pre_print_statement, Logger::LOG_EMERGENCY);
 
   // lock the context
   map_.lock ();
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::wait:" \
-      " waiting on %s\n", ce.logic.c_str ()));
+  map_.get_logger ().log (Logger::LOG_MAJOR,
+    "Knowledge_Base_Impl::wait:" \
+    " waiting on %s\n", ce.logic.c_str ());
 
   Madara::Knowledge_Record last_value = ce.expression.evaluate (settings);
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-      DLINFO "Knowledge_Base_Impl::wait:" \
-      " completed first eval to get %s\n",
-    last_value.to_string ().c_str ()));
+  map_.get_logger ().log (Logger::LOG_DETAILED,
+    "Knowledge_Base_Impl::wait:" \
+    " completed first eval to get %s\n",
+    last_value.to_string ().c_str ());
   
   send_modifieds ("Knowledge_Base_Impl:wait", settings);
 
@@ -660,15 +654,15 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::wait (
   while (!last_value.to_integer () &&
     (settings.max_wait_time < 0 || current < max_wait))
   {
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::wait:" \
-        " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
-        current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
-        settings.poll_frequency));
+    map_.get_logger ().log (Logger::LOG_DETAILED,
+      "Knowledge_Base_Impl::wait:" \
+      " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
+      current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
+      settings.poll_frequency);
 
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::wait:" \
-        " last value didn't result in success\n"));
+    map_.get_logger ().log (Logger::LOG_DETAILED,
+      "Knowledge_Base_Impl::wait:" \
+      " last value didn't result in success\n");
 
     // Unlike the other wait statements, we allow for a time based wait.
     // To do this, we allow a user to specify a 
@@ -690,17 +684,17 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::wait (
     // while we're evaluating the tree.
     map_.lock ();
 
-    
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::wait:" \
-        " waiting on %s\n", ce.logic.c_str ()));
+
+    map_.get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base_Impl::wait:" \
+      " waiting on %s\n", ce.logic.c_str ());
 
     last_value = ce.expression.evaluate (settings);
-    
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::wait:" \
-        " completed eval to get %s\n",
-      last_value.to_string ().c_str ()));
+
+    map_.get_logger ().log (Logger::LOG_DETAILED,
+      "Knowledge_Base_Impl::wait:" \
+      " completed eval to get %s\n",
+      last_value.to_string ().c_str ());
   
     send_modifieds ("Knowledge_Base_Impl:wait", settings);
 
@@ -714,14 +708,14 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::wait (
   
   if (current >= max_wait)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::wait:" \
-        " Evaluate did not succeed. Timeout occurred.\n"));
+    map_.get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Base_Impl::wait:" \
+      " Evaluate did not succeed. Timeout occurred\n");
   }
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.post_print_statement != "")
-    map_.print (settings.post_print_statement, MADARA_LOG_EMERGENCY);
+    map_.print (settings.post_print_statement, Logger::LOG_ALWAYS);
 
   return last_value;
 }
@@ -742,16 +736,16 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::evaluate (
 {
   Madara::Knowledge_Record last_value;
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::evaluate:" \
-        " evaluating %s.\n", ce.logic.c_str ()));
+  map_.get_logger ().log (Logger::LOG_MAJOR,
+    "Knowledge_Base_Impl::evaluate:" \
+    " evaluating %s.\n", ce.logic.c_str ());
 
   // iterators and tree for evaluation of interpreter results
   //Madara::Expression_Tree::Expression_Tree tree;
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")
-    map_.print (settings.pre_print_statement, MADARA_LOG_EMERGENCY);
+    map_.print (settings.pre_print_statement, Logger::LOG_ALWAYS);
 
   // lock the context from being updated by any ongoing threads
   map_.lock ();
@@ -764,7 +758,7 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::evaluate (
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.post_print_statement != "")
-    map_.print (settings.post_print_statement, MADARA_LOG_EMERGENCY);
+    map_.print (settings.post_print_statement, Logger::LOG_ALWAYS);
 
   map_.unlock ();
 
@@ -778,16 +772,16 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::evaluate (
 {
   Madara::Knowledge_Record last_value;
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Knowledge_Base_Impl::evaluate:" \
-        " evaluating Component_Node rooted tree.\n"));
+  map_.get_logger ().log (Logger::LOG_MAJOR,
+    "Knowledge_Base_Impl::evaluate:" \
+    " evaluating Component_Node rooted tree\n");
 
   // iterators and tree for evaluation of interpreter results
   //Madara::Expression_Tree::Expression_Tree tree;
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")
-    map_.print (settings.pre_print_statement, MADARA_LOG_EMERGENCY);
+    map_.print (settings.pre_print_statement, Logger::LOG_ALWAYS);
 
   // lock the context from being updated by any ongoing threads
   map_.lock ();
@@ -800,7 +794,7 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::evaluate (
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.post_print_statement != "")
-    map_.print (settings.post_print_statement, MADARA_LOG_EMERGENCY);
+    map_.print (settings.post_print_statement, Logger::LOG_ALWAYS);
 
   map_.unlock ();
 

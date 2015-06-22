@@ -28,11 +28,14 @@ namespace Madara
     public:
       /**
        * Constructor
+       * @param   logger the logger to use for printing
        * @param   left   variable to assign the right expression to
        * @param   right  right expression to assign to the variable
        **/
-      Composite_Assignment_Node (Component_Node *left, 
-                          Component_Node *right);
+      Composite_Assignment_Node (
+        Logger::Logger & logger,
+        Component_Node *left,
+        Component_Node *right);
 
       /**
        * Returns the printable character of the node

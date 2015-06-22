@@ -12,12 +12,9 @@
 #include "madara/expression_tree/Visitor.h"
 #include "madara/expression_tree/Leaf_Node.h"
 
-#include "madara/utility/Log_Macros.h"
-
-// Ctor
 Madara::Expression_Tree::Composite_Multiply_Node::Composite_Multiply_Node (
-  const Component_Nodes & nodes)
-: Madara::Expression_Tree::Composite_Ternary_Node (nodes)
+  Logger::Logger & logger, const Component_Nodes & nodes)
+: Madara::Expression_Tree::Composite_Ternary_Node (logger, nodes)
 {
 }
 
@@ -51,7 +48,7 @@ Madara::Expression_Tree::Composite_Multiply_Node::prune (bool & can_change)
     if (!value_changes && dynamic_cast <Leaf_Node *> (*i) == 0)
     {
       delete *i;
-      *i = new Leaf_Node (value);
+      *i = new Leaf_Node (*(this->logger_), value);
     }
 
     if (j == 0)

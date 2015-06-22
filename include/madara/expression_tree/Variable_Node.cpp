@@ -4,23 +4,24 @@
 #include "madara/expression_tree/Variable_Node.h"
 #include "madara/utility/Utility.h"
 
-#include "madara/utility/Log_Macros.h"
+
 #include <string>
 #include <sstream>
 
 Madara::Expression_Tree::Variable_Node::Variable_Node (
   const std::string &key,
   Madara::Knowledge_Engine::Thread_Safe_Context &context)
-: key_ (key), record_ (0), context_ (context), key_expansion_necessary_ (false)
+: Component_Node (context.get_logger ()), key_ (key), record_ (0),
+  context_ (context), key_expansion_necessary_ (false)
 {
   // this key requires expansion. We do the compilation and error checking here
   // as the key shouldn't change, and this allows us to only have to do this
   // once
   if (key.find ("{") != key.npos)
   {
-    MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
+    this->logger_->log (Logger::LOG_DETAILED,
       "Variable %s requires variable expansion.\n",
-      key.c_str ()));
+      key.c_str ());
 
     unsigned int count = 1;
     key_expansion_necessary_ = true;
@@ -31,9 +32,10 @@ Madara::Expression_Tree::Variable_Node::Variable_Node (
 
     if (pivot_list_.size () % 2 != 0)
     {
-      MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-        "\nKARL COMPILE ERROR: matching braces not found in %s\n",
-        key.c_str ()));
+      this->logger_->log (Logger::LOG_EMERGENCY,
+        "KARL COMPILE ERROR: matching braces not found in %s\n",
+        key.c_str ());
+
       exit (-1);
     }
 
@@ -56,18 +58,19 @@ Madara::Expression_Tree::Variable_Node::Variable_Node (
 
     if (num_opens > num_closes)
     {
-      MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-        "\nKARL COMPILE ERROR: " \
+      this->logger_->log (Logger::LOG_EMERGENCY,
+        "KARL COMPILE ERROR: " \
         "Variable name has more opening braces than closing in %s\n",
-        key.c_str ()));
+        key.c_str ());
+
       exit (-1);
     }
     else if (num_closes > num_opens)
     {
-      MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-        "\nKARL COMPILE ERROR: " \
+      this->logger_->log (Logger::LOG_EMERGENCY,
+        "KARL COMPILE ERROR: " \
         "Variable name has more closing braces than opening in %s\n",
-        key.c_str ()));
+        key.c_str ());
       exit (-1);
     }
   }
@@ -90,9 +93,9 @@ Madara::Expression_Tree::Variable_Node::expand_key (void) const
 {
   if (key_expansion_necessary_)
   {
-    MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
+    this->logger_->log (Logger::LOG_DETAILED,
       "Variable %s requires variable expansion.\n",
-      key_.c_str ()));
+      key_.c_str ());
 
     unsigned int count = 0;
 

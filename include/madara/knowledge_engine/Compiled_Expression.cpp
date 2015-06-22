@@ -1,9 +1,11 @@
 #include "madara/knowledge_engine/Compiled_Expression.h"
 #include "madara/expression_tree/Expression_Tree.h"
+#include "madara/logger/Global_Logger.h"
 
 #ifndef _MADARA_NO_KARL_
 
 Madara::Knowledge_Engine::Compiled_Expression::Compiled_Expression ()
+  : expression (*Logger::global_logger.get ())
 {
 
 }

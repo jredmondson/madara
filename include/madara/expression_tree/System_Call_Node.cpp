@@ -2,11 +2,12 @@
 #ifndef _MADARA_NO_KARL_
 
 #include "madara/expression_tree/System_Call_Node.h"
+#include "madara/knowledge_engine/Thread_Safe_Context.h"
 
 
 Madara::Expression_Tree::System_Call_Node::System_Call_Node (
     Madara::Knowledge_Engine::Thread_Safe_Context & context)
-  : Composite_Ternary_Node (),
+  : Composite_Ternary_Node (context.get_logger ()),
   context_ (context)
 {
 
@@ -16,7 +17,7 @@ Madara::Expression_Tree::System_Call_Node::System_Call_Node (
 Madara::Expression_Tree::System_Call_Node::System_Call_Node (
   Madara::Knowledge_Engine::Thread_Safe_Context & context,
   const Component_Nodes & nodes)
-  : Composite_Ternary_Node (nodes),
+: Composite_Ternary_Node (context.get_logger (), nodes),
   context_ (context)
 {
 

@@ -6,7 +6,10 @@
 #include <assert.h>
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
+
 
 std::string host ("");
 const std::string default_host1 ("127.0.0.1:43110");
@@ -54,7 +57,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        Madara::Knowledge_Engine::Knowledge_Base::log_to_file (argv[i + 1]);
+        logger::global_logger->add_file (argv[i + 1]);
       }
 
       ++i;
@@ -64,9 +67,9 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         std::stringstream buffer (argv[i + 1]);
-        int debug_level;
-        buffer >> debug_level;
-        Madara::Knowledge_Engine::Knowledge_Base::log_level (debug_level);
+        int level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
@@ -91,7 +94,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
         "  Test the UDP transport. Requires 2+ processes. The result of\n" \
         "  running these processes should be that each process reports\n" \
@@ -104,7 +107,7 @@ void handle_arguments (int argc, char ** argv)
         " [-f|--logfile file]      log to a file\n" \
         " [-r|--reduced]           use the reduced message header\n" \
         "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }
@@ -178,7 +181,8 @@ int main (int argc, char ** argv)
   knowledge.print ();
   
 #else
-  std::cout << "This test is disabled due to karl feature being disabled.\n";
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "This test is disabled due to karl feature being disabled.\n");
 #endif
   return 0;
 }

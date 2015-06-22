@@ -12,12 +12,12 @@
 #include "madara/expression_tree/Composite_Greater_Than_Node.h"
 #include "madara/expression_tree/Leaf_Node.h"
 
-#include "madara/utility/Log_Macros.h"
+
 // Ctor
 
 Madara::Expression_Tree::Composite_Greater_Than_Node::Composite_Greater_Than_Node (
-  Component_Node *left, Component_Node *right)
-: Madara::Expression_Tree::Composite_Binary_Node (left, right)
+  Logger::Logger & logger, Component_Node *left, Component_Node *right)
+: Madara::Expression_Tree::Composite_Binary_Node (logger, left, right)
 {    
 }
 
@@ -47,14 +47,14 @@ Madara::Expression_Tree::Composite_Greater_Than_Node::prune (bool & can_change)
     if (!left_child_can_change && dynamic_cast <Leaf_Node *> (left_) == 0)
     {
       delete this->left_;
-      this->left_ = new Leaf_Node (left_value);
+      this->left_ = new Leaf_Node (*(this->logger_), left_value);
     }
   }
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Greater-than" \
-      " has no left expression\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Greater-than has no left expression\n");
+
     exit (-1);
   }
 
@@ -64,14 +64,14 @@ Madara::Expression_Tree::Composite_Greater_Than_Node::prune (bool & can_change)
     if (!right_child_can_change && dynamic_cast <Leaf_Node *> (right_) == 0)
     {
       delete this->right_;
-      this->right_ = new Leaf_Node (right_value);
+      this->right_ = new Leaf_Node (*(this->logger_), right_value);
     }
   }
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Greater-than" \
-      " has no right expression\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Greater-than has no right expression\n");
+
     exit (-1);   
   }
 

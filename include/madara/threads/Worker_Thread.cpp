@@ -1,6 +1,7 @@
 #include "Worker_Thread.h"
 #include "ace/High_Res_Timer.h"
 #include "ace/OS_NS_sys_time.h"
+#include "madara/logger/Global_Logger.h"
 
 #ifdef _MADARA_JAVA_
 #include <jni.h>
@@ -108,24 +109,24 @@ Madara::Threads::Worker_Thread::run (void)
 
   if (result != -1)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Worker_Thread::Worker_Thread:" \
-      " read thread started (result = %d)\n", result));
+    Logger::global_logger->log (Logger::LOG_MAJOR,
+      "Worker_Thread::Worker_Thread:" \
+      " read thread started (result = %d)\n", result);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Worker_Thread::Worker_Thread:" \
-      " failed to create thread. ERRNO = %d\n", ACE_OS::last_error ()));
+    Logger::global_logger->log (Logger::LOG_MAJOR,
+      "Worker_Thread::Worker_Thread:" \
+      " failed to create thread\n");
   }
 }
 
 int
 Madara::Threads::Worker_Thread::svc (void)
 {
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Worker_Thread::svc:" \
-    " checking thread existence\n"));
+  Logger::global_logger->log (Logger::LOG_MAJOR,
+    "Worker_Thread::svc:" \
+    " checking thread existence\n");
 
   if (thread_)
   {
@@ -153,9 +154,9 @@ Madara::Threads::Worker_Thread::svc (void)
 
       if (hertz_ > 0.0)
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "Worker_Thread::svc:" \
-          " %s thread repeating at %f hz\n", name_.c_str (), hertz_));
+        Logger::global_logger->log (Logger::LOG_MAJOR,
+          "Worker_Thread::svc:" \
+          " %s thread repeating at %f hz\n", name_.c_str (), hertz_);
 
         one_shot = false;
         poll_frequency.set (1.0 / hertz_);
@@ -164,32 +165,32 @@ Madara::Threads::Worker_Thread::svc (void)
       else if (hertz_ == 0.0)
       {
         // infinite hertz until terminate
-        
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "Worker_Thread::svc:" \
-          " %s thread blasting at infinite hz\n", name_.c_str ()));
+
+        Logger::global_logger->log (Logger::LOG_MAJOR,
+          "Worker_Thread::svc:" \
+          " %s thread blasting at infinite hz\n", name_.c_str ());
 
         one_shot = false;
         blaster = true;
       }
       else
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "Worker_Thread::svc:" \
-          " %s thread running once\n", name_.c_str ()));
+        Logger::global_logger->log (Logger::LOG_MAJOR,
+          "Worker_Thread::svc:" \
+          " %s thread running once\n", name_.c_str ());
       }
 
       while (control_->get (terminated).is_false ())
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "Worker_Thread::svc:" \
-          " %s thread checking for pause\n", name_.c_str ()));
+        Logger::global_logger->log (Logger::LOG_MAJOR,
+          "Worker_Thread::svc:" \
+          " %s thread checking for pause\n", name_.c_str ());
 
         if (control_->get (paused).is_false ())
         {
-          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-            DLINFO "Worker_Thread::svc:" \
-            " %s thread calling run function\n", name_.c_str ()));
+          Logger::global_logger->log (Logger::LOG_MAJOR,
+            "Worker_Thread::svc:" \
+            " %s thread calling run function\n", name_.c_str ());
 
           thread_->run ();
         }
@@ -200,17 +201,17 @@ Madara::Threads::Worker_Thread::svc (void)
         if (!blaster)
         {
           current = ACE_High_Res_Timer::gettimeofday ();
-          
-          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-            DLINFO "Worker_Thread::svc:" \
-            " %s thread checking for next hertz epoch\n", name_.c_str ()));
+
+          Logger::global_logger->log (Logger::LOG_MAJOR,
+            "Worker_Thread::svc:" \
+            " %s thread checking for next hertz epoch\n", name_.c_str ());
 
           if (current < next_epoch)
             Madara::Utility::sleep (next_epoch - current);  
-          
-          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-            DLINFO "Worker_Thread::svc:" \
-            " %s thread past epoch\n", name_.c_str ()));
+
+          Logger::global_logger->log (Logger::LOG_MAJOR,
+            "Worker_Thread::svc:" \
+            " %s thread past epoch\n", name_.c_str ());
 
           next_epoch += poll_frequency;
         }
@@ -218,24 +219,24 @@ Madara::Threads::Worker_Thread::svc (void)
     }
 
     thread_->cleanup ();
-    
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Worker_Thread::svc:" \
-      " deleting thread %s)\n", name_.c_str ()));
+
+    Logger::global_logger->log (Logger::LOG_MAJOR,
+      "Worker_Thread::svc:" \
+      " deleting thread %s)\n", name_.c_str ());
 
     delete thread_;
-    
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Worker_Thread::svc:" \
-      " setting %s to 1)\n", finished_.get_name ().c_str ()));
+
+    Logger::global_logger->log (Logger::LOG_MAJOR,
+      "Worker_Thread::svc:" \
+      " setting %s to 1)\n", finished_.get_name ().c_str ());
 
     finished_ = 1;
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Worker_Thread::svc:" \
-      " thread creation failed\n"));
+    Logger::global_logger->log (Logger::LOG_MAJOR,
+      "Worker_Thread::svc:" \
+      " thread creation failed\n");
   }
 
   return 0;

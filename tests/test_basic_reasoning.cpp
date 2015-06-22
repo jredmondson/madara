@@ -13,6 +13,9 @@
 #include "ace/Get_Opt.h"
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 namespace engine = Madara::Knowledge_Engine;
 typedef Madara::Knowledge_Record  Knowledge_Record;
@@ -153,8 +156,6 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   if (retcode < 0)
     return retcode;
-
-  ACE_TRACE (ACE_TEXT ("main"));
   
 #ifndef _MADARA_NO_KARL_
   Madara::Knowledge_Engine::Knowledge_Base knowledge;
@@ -187,7 +188,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   knowledge.print ();
   
 #else
-  std::cout << "This test is disabled due to karl feature being disabled.\n";
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "This test is disabled due to karl feature being disabled.\n");
 #endif // _MADARA_NO_KARL_
   return 0;
 }
@@ -195,8 +197,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 #ifndef _MADARA_NO_KARL_
 void test_array_math (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_array_math"));
-  ACE_DEBUG ((LM_INFO, "Testing array math\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing array math\n");
   
   std::vector <Madara::Knowledge_Record> records;
 
@@ -232,8 +234,8 @@ void test_array_math (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 
 void test_to_vector (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_to_vector"));
-  ACE_DEBUG ((LM_INFO, "Testing to_vector function\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing to_vector function\n");
   
   std::vector <Madara::Knowledge_Record> records;
 
@@ -259,8 +261,8 @@ void test_to_vector (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 
 void test_to_map (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_to_map"));
-  ACE_DEBUG ((LM_INFO, "Testing to_map function\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing to_map function\n");
   
   std::map <std::string, Madara::Knowledge_Record> records;
 
@@ -286,9 +288,8 @@ void test_to_map (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 
 void test_to_string (void)
 {
-  ACE_TRACE (ACE_TEXT ("test_to_string"));
-  
-  ACE_DEBUG ((LM_INFO, "Testing to_string\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing to_string\n");
 
   Madara::Knowledge_Engine::Knowledge_Base knowledge;
   knowledge.evaluate ("var1=10; var2='hello'; var3=15.5");
@@ -300,21 +301,19 @@ void test_to_string (void)
   std::string db;
   knowledge.to_string (db);
 
-  std::cerr << "To string results:\n\n";
-  std::cerr << db;
-
-  std::cerr << "\n\n";
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "To string results:\n\n%s\n\n", db.c_str ());
 }
 
 void test_comparisons (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_comparisons"));
-  
-  ACE_DEBUG ((LM_INFO, "Testing comparisons\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing comparisons\n");
 
   knowledge.clear ();
-  
-  ACE_DEBUG ((LM_INFO, "  Testing string to string comparisons\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  Testing string to string comparisons\n");
 
   knowledge.evaluate (".var1 = 'bob' < 'cat'; .var2 = 'dear' > 'abby';" \
     ".var3 = 'bob' <= 'cat'; .var4= 'dear' >= 'abby'; .var5 = 'bob' == 'bob'");
@@ -323,8 +322,9 @@ void test_comparisons (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
     knowledge.get (".var3").to_integer () == 1 &&
     knowledge.get (".var4").to_integer () == 1 &&
     knowledge.get (".var5").to_integer () == 1);
-  
-  ACE_DEBUG ((LM_INFO, "  Testing int to int comparisons\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  Testing int to int comparisons\n");
 
   knowledge.evaluate (".var1 = 1 < 10; .var2 = 5 > 3;" \
     ".var3 = 2 <= 4; .var4= 5 >= 3; .var5 = 5 == 5");
@@ -333,8 +333,9 @@ void test_comparisons (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
     knowledge.get (".var3").to_integer () == 1 &&
     knowledge.get (".var4").to_integer () == 1 &&
     knowledge.get (".var5").to_integer () == 1);
-  
-  ACE_DEBUG ((LM_INFO, "  Testing double to double comparisons\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  Testing double to double comparisons\n");
 
   knowledge.evaluate (".var1 = 1.0 < 10.0; .var2 = 5.0 > 3.0;" \
     ".var3 = 2.0 <= 4.0; .var4= 5.0 >= 3.0; .var5 = 5.0 == 5.0");
@@ -343,8 +344,9 @@ void test_comparisons (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
     knowledge.get (".var3").to_integer () == 1 &&
     knowledge.get (".var4").to_integer () == 1 &&
     knowledge.get (".var5").to_integer () == 1);
-  
-  ACE_DEBUG ((LM_INFO, "  Testing double to double comparisons\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  Testing double to double comparisons\n");
 
   knowledge.evaluate (".var1 = 1.0 < 10.0; .var2 = 5.0 > 3.0;" \
     ".var3 = 2.0 <= 4.0; .var4= 5.0 >= 3.0; .var5 = 5.0 == 5.0");
@@ -353,8 +355,9 @@ void test_comparisons (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
     knowledge.get (".var3").to_integer () == 1 &&
     knowledge.get (".var4").to_integer () == 1 &&
     knowledge.get (".var5").to_integer () == 1);
-  
-  ACE_DEBUG ((LM_INFO, "  Testing double to int comparisons\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  Testing double to int comparisons\n");
 
   knowledge.evaluate (".var1 = 9.0 < 10; .var2 = 5.0 > 3.0;" \
     ".var3 = 2.0 <= 4; .var4= 5.0 >= 3; .var5 = 5.0 == 5; .var6 = 9 < 9.5;" \
@@ -369,8 +372,9 @@ void test_comparisons (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
     knowledge.get (".var8").to_integer () == 1 &&
     knowledge.get (".var9").to_integer () == 1 &&
     knowledge.get (".var10").to_integer () == 1);
-  
-  ACE_DEBUG ((LM_INFO, "  Testing string to int/double comparisons\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  Testing string to int/double comparisons\n");
 
   knowledge.evaluate (".var1 = '9.0' < 10; .var2 = '5.0' > 3.0;" \
     ".var3 = '2.0' <= 4; .var4= '5.0' >= 3; .var5 = '5.0' == 5; .var6 = '9' < 9.5;" \
@@ -385,8 +389,9 @@ void test_comparisons (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
     knowledge.get (".var8").to_integer () == 1 &&
     knowledge.get (".var9").to_integer () == 1 &&
     knowledge.get (".var10").to_integer () == 1);
-  
-  ACE_DEBUG ((LM_INFO, "  Testing int/double to string comparisons\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  Testing int/double to string comparisons\n");
 
   knowledge.evaluate (".var1 = 10 < '10.5'; .var2 = 5.5 > '5.4';" \
     ".var3 = 2 <= '2.2'; .var4= 5 >= '4.9'; .var5 = 5 == '5.0'; .var6 = 9 < '9.5';" \
@@ -401,8 +406,9 @@ void test_comparisons (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
     knowledge.get (".var8").to_integer () == 1 &&
     knowledge.get (".var9").to_integer () == 1 &&
     knowledge.get (".var10").to_integer () == 1);
-  
-  ACE_DEBUG ((LM_INFO, "  Testing uncreated values comparisons\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  Testing uncreated values comparisons\n");
 
   knowledge.evaluate (".var1 = false == 'bob'; .var2 = false == 0;");
   knowledge.evaluate (".var3 = false == 1; .var4 = false != 1");
@@ -415,9 +421,8 @@ void test_comparisons (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 
 void test_doubles (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_doubles"));
-  
-  ACE_DEBUG ((LM_INFO, "Testing operations on doubles\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing operations on doubles\n");
 
   knowledge.clear ();
 
@@ -443,9 +448,8 @@ void test_doubles (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 
 void test_strings (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_strings"));
-  
-  ACE_DEBUG ((LM_INFO, "Testing operations on strings\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing operations on strings\n");
 
   knowledge.clear ();
 
@@ -462,8 +466,9 @@ void test_strings (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   assert (knowledge.get (".var4") == "bob jenkins" && 
     knowledge.get (".var5") == "joey smith" &&
     knowledge.get (".var6") == "edward sullinger");
-  
-  ACE_DEBUG ((LM_INFO, "Testing string concatenation\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing string concatenation\n");
 
   knowledge.evaluate (".var7 = .var4 + ' ' + .var5 + ' ' + .var6");
   knowledge.print ("  {.var7}\n");
@@ -473,8 +478,9 @@ void test_strings (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   knowledge.set (".var1", 0.5);
   knowledge.set (".var2", (Madara::Knowledge_Record::Integer)1);
   knowledge.set (".var3", 10.5);
-  
-  ACE_DEBUG ((LM_INFO, "Testing string, double, and integer concatenation\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing string, double, and integer concatenation\n");
 
   knowledge.evaluate (".var7 = .var4 + .var1 + .var2 + .var3");
   knowledge.print ("  {.var7}\n");
@@ -491,9 +497,8 @@ void test_strings (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 /// Tests logicals operators (&&, ||)
 void test_logicals (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_assignments"));
-  
-  ACE_DEBUG ((LM_INFO, "Testing logical operations\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing logical operations\n");
 
   knowledge.clear ();
 
@@ -560,7 +565,8 @@ void test_logicals (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 /// Tests Dijkstra Synchronization algorithms 
 void test_dijkstra_sync (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_dijkstra_sync"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing dijkstra sync");
 
   knowledge.clear ();
 
@@ -569,71 +575,92 @@ void test_dijkstra_sync (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   std::string s1_logic = "(S1+1) % 3 == S0 => S1 = S0; (S1+1) % 3 == S2 => S1 = S2;";
 
   std::string s2_logic = "S1 == S0 && (S1 + 1) % 3 != S2 => S2 = (S1 + 1) % 3;";
-  
-  ACE_DEBUG ((LM_INFO, 
-    "Evaluating Dijkstra 3-state Synchronizations in order: S0->S1->S2\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Evaluating Dijkstra 3-state Synchronizations in order: S0->S1->S2\n");
 
   // set the beginning state
   knowledge.evaluate (s0_logic + s1_logic + s2_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n", 
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 0 && knowledge.get ("S1").to_integer () == 0 
                                     && knowledge.get ("S2").to_integer () == 1);
 
   knowledge.evaluate (s0_logic + s1_logic + s2_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 0 && knowledge.get ("S1").to_integer () == 1 
                                     && knowledge.get ("S2").to_integer () == 1);
 
   knowledge.evaluate (s0_logic + s1_logic + s2_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 2 && knowledge.get ("S1").to_integer () == 2 
                                     && knowledge.get ("S2").to_integer () == 0);
 
   knowledge.evaluate (s0_logic + s1_logic + s2_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 2 && knowledge.get ("S1").to_integer () == 0 
                                     && knowledge.get ("S2").to_integer () == 0);
 
   knowledge.evaluate (s0_logic + s1_logic + s2_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 1 && knowledge.get ("S1").to_integer () == 1 
                                     && knowledge.get ("S2").to_integer () == 2);
 
   knowledge.evaluate (s0_logic + s1_logic + s2_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 1 && knowledge.get ("S1").to_integer () == 2 
                                     && knowledge.get ("S2").to_integer () == 2);
 
   knowledge.evaluate (s0_logic + s1_logic + s2_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 0 && knowledge.get ("S1").to_integer () == 0 
                                     && knowledge.get ("S2").to_integer () == 1);
 
 
 
-  ACE_DEBUG ((LM_INFO, 
-    "Evaluating Dijkstra 3-state Synchronizations in order: S1->S2->S0\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Evaluating Dijkstra 3-state Synchronizations in order: S1->S2->S0\n");
 
   knowledge.clear ();
 
@@ -641,80 +668,110 @@ void test_dijkstra_sync (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 
   knowledge.evaluate (s1_logic + s2_logic + s0_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 0 && knowledge.get ("S1").to_integer () == 0 
                                     && knowledge.get ("S2").to_integer () == 1);
 
   knowledge.evaluate (s1_logic + s2_logic + s0_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 2 && knowledge.get ("S1").to_integer () == 1 
                                     && knowledge.get ("S2").to_integer () == 1);
 
   knowledge.evaluate (s1_logic + s2_logic + s0_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 2 && knowledge.get ("S1").to_integer () == 2 
                                     && knowledge.get ("S2").to_integer () == 0);
 
   knowledge.evaluate (s1_logic + s2_logic + s0_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 1 && knowledge.get ("S1").to_integer () == 0 
                                     && knowledge.get ("S2").to_integer () == 0);
 
   knowledge.evaluate (s1_logic + s2_logic + s0_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 1 && knowledge.get ("S1").to_integer () == 1 
                                     && knowledge.get ("S2").to_integer () == 2);
 
   knowledge.evaluate (s1_logic + s2_logic + s0_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 0 && knowledge.get ("S1").to_integer () == 2
                                     && knowledge.get ("S2").to_integer () == 2);
 
   knowledge.evaluate (s1_logic + s2_logic + s0_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 0 && knowledge.get ("S1").to_integer () == 0
                                     && knowledge.get ("S2").to_integer () == 1);
 
   knowledge.evaluate (s1_logic + s2_logic + s0_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 2 && knowledge.get ("S1").to_integer () == 1
                                     && knowledge.get ("S2").to_integer () == 1);
 
   knowledge.evaluate (s1_logic + s2_logic + s0_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 2 && knowledge.get ("S1").to_integer () == 2
                                     && knowledge.get ("S2").to_integer () == 0);
 
   knowledge.evaluate (s1_logic + s2_logic + s0_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 1 && knowledge.get ("S1").to_integer () == 0
                                     && knowledge.get ("S2").to_integer () == 0);
@@ -723,8 +780,8 @@ void test_dijkstra_sync (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 
   /////////////////////////////////////////////////////////////////////////////
 
-  ACE_DEBUG ((LM_INFO, 
-    "Evaluating Dijkstra 3-state Synchronizations in order: S2->S0->S1\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Evaluating Dijkstra 3-state Synchronizations in order: S2->S0->S1\n");
 
   knowledge.clear ();
 
@@ -732,80 +789,111 @@ void test_dijkstra_sync (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 
   knowledge.evaluate (s2_logic + s0_logic + s1_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
-  assert (knowledge.get ("S0").to_integer () == 0 && knowledge.get ("S1").to_integer () == 1
-                                    && knowledge.get ("S2").to_integer () == 1);
+  assert (knowledge.get ("S0").to_integer () == 0 &&
+    knowledge.get ("S1").to_integer () == 1 &&
+    knowledge.get ("S2").to_integer () == 1);
 
   knowledge.evaluate (s2_logic + s0_logic + s1_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 2 && knowledge.get ("S1").to_integer () == 2
                                     && knowledge.get ("S2").to_integer () == 1);
 
   knowledge.evaluate (s2_logic + s0_logic + s1_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 2 && knowledge.get ("S1").to_integer () == 0
                                     && knowledge.get ("S2").to_integer () == 0);
 
   knowledge.evaluate (s2_logic + s0_logic + s1_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 1 && knowledge.get ("S1").to_integer () == 1
                                     && knowledge.get ("S2").to_integer () == 0);
 
   knowledge.evaluate (s2_logic + s0_logic + s1_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 1 && knowledge.get ("S1").to_integer () == 2
                                     && knowledge.get ("S2").to_integer () == 2);
 
   knowledge.evaluate (s2_logic + s0_logic + s1_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 0 && knowledge.get ("S1").to_integer () == 0
                                     && knowledge.get ("S2").to_integer () == 2);
 
   knowledge.evaluate (s2_logic + s0_logic + s1_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 0 && knowledge.get ("S1").to_integer () == 1
                                     && knowledge.get ("S2").to_integer () == 1);
 
   knowledge.evaluate (s2_logic + s0_logic + s1_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 2 && knowledge.get ("S1").to_integer () == 2
                                     && knowledge.get ("S2").to_integer () == 1);
 
   knowledge.evaluate (s2_logic + s0_logic + s1_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 2 && knowledge.get ("S1").to_integer () == 0
                                     && knowledge.get ("S2").to_integer () == 0);
 
   knowledge.evaluate (s2_logic + s0_logic + s1_logic);
 
-  ACE_DEBUG ((LM_INFO, "  %d %d %d\n", 
-    knowledge.get ("S0").to_integer (), knowledge.get ("S1").to_integer (), knowledge.get ("S2").to_integer ()));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "  %d %d %d\n",
+    knowledge.get ("S0").to_integer (),
+    knowledge.get ("S1").to_integer (),
+    knowledge.get ("S2").to_integer ());
 
   assert (knowledge.get ("S0").to_integer () == 1 && knowledge.get ("S1").to_integer () == 1
                                     && knowledge.get ("S2").to_integer () == 0);
@@ -818,9 +906,8 @@ void test_dijkstra_sync (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 /// Tests assignment operator (=)
 void test_assignments (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_assignments"));
-
-  ACE_DEBUG ((LM_INFO, "Testing the assignment operator\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing the assignment operator\n");
 
   knowledge.clear ();
   // test assignment
@@ -839,9 +926,8 @@ void test_assignments (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 /// Tests the unaries (++, --, -, !)
 void test_unaries (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_unaries"));
-
-  ACE_DEBUG ((LM_INFO, "Testing unary operators\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing unary operators\n");
 
   Madara::Knowledge_Record result;
 
@@ -906,9 +992,8 @@ void test_unaries (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 /// Tests the conditionals (==, !=, <, <=, >, >=)
 void test_conditionals (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_conditionals"));
-
-  ACE_DEBUG ((LM_INFO, "Testing conditional operators\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing conditional operators\n");
 
   knowledge.clear ();
 
@@ -958,7 +1043,8 @@ void test_implies (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
   knowledge.clear ();
 
-  ACE_DEBUG ((LM_INFO, "Testing implies operator\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing implies operator\n");
 
   // test implication
   knowledge.evaluate (".var1 = 1; .var2 = 0; .var1 => .var2 = 1");
@@ -984,7 +1070,8 @@ void test_mathops (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   
   Madara::Knowledge_Record result;
 
-  ACE_DEBUG ((LM_INFO, "Testing integer mathematical operators\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS, 
+    "Testing integer mathematical operators\n");
 
   // 
   knowledge.evaluate (".var1 = 8; .var2 = 3");
@@ -1096,7 +1183,8 @@ void test_mathops (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 /// Tests the both operator (;)
 void test_both_operator (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_DEBUG ((LM_INFO, "Testing both operator (;)\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing both operator (;)\n");
 
   Madara::Knowledge_Record result;
 
@@ -1124,14 +1212,16 @@ void test_both_operator (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   result = knowledge.evaluate (
     "(Running{.id} = 0); 1 && !Running1 && !Running2");
   
-  ACE_DEBUG ((LM_INFO, "Testing sequence operator (,)\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS, 
+    "Testing sequence operator (,)\n");
 
   knowledge.clear ();
   knowledge.evaluate (".var1 = (1, 3, 5); .var2 = (0, 2, 4)");
   assert (knowledge.get (".var1").to_integer () == 1 &&
     knowledge.get (".var2").to_integer () == 0);
-  
-  ACE_DEBUG ((LM_INFO, "Testing return right operator (;>)\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS, 
+    "Testing return right operator (;>)\n");
 
   knowledge.evaluate (".var1 = (1 ;> 3 ;> 5); .var2 = (0 ;> 2 ;> 4)");
   assert (knowledge.get (".var1").to_integer () == 5 &&
@@ -1181,11 +1271,11 @@ void test_comments (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 /// Test the ability to compile expressions into the cache
 void test_tree_compilation (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_tree_compilation"));
   knowledge.clear ();
   Madara::Knowledge_Record result;
 
-  ACE_DEBUG ((LM_INFO, "Testing expression tree compilation and caching\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing expression tree compilation and caching\n");
 
   knowledge.set (".var1", (Madara::Knowledge_Record::Integer)5);
 
@@ -1209,13 +1299,12 @@ void test_tree_compilation (Madara::Knowledge_Engine::Knowledge_Base & knowledge
 /// Test the ability to use external functions
 void test_functions (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_functions"));
-
   knowledge.clear ();
   Madara::Knowledge_Record result;
 
   // test the external C functions
-  ACE_DEBUG ((LM_INFO, "Testing embedded external functions\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing embedded external functions\n");
 
   knowledge.set (".var1", (Madara::Knowledge_Record::Integer)5);
 
@@ -1288,12 +1377,12 @@ void test_functions (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 /// Test the ability to use for loops
 void test_for_loops (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_for_loops"));
-
   knowledge.clear ();
   Madara::Knowledge_Record result;
 
-  ACE_DEBUG ((LM_INFO, "Testing embedded for loops\n"));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing embedded for loops\n");
   
   result = knowledge.evaluate ("max = 1 ;> .i[ 0 -> 4 ) (agent{.i}.state=.i ; max = (agent{.i}.state ; max))");
   assert (result.to_integer () == 4 &&
@@ -1343,12 +1432,11 @@ void test_for_loops (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 void test_simplification_operators (
   Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_simplification_operators"));
-
   knowledge.clear ();
   Madara::Knowledge_Record result;
 
-  ACE_DEBUG ((LM_INFO, "Testing simplification operators (+=, -=, *=, /=)\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing simplification operators (+=, -=, *=, /=)\n");
 
   result = knowledge.evaluate (".i=0; .i+=5; .i+=10");
   assert (result.to_integer () == 15 && knowledge.get (".i").to_integer () == 15);
@@ -1367,40 +1455,17 @@ void test_simplification_operators (
 
 int parse_args (int argc, ACE_TCHAR * argv[])
 {
-  // options string which defines all short args
-  ACE_TCHAR options [] = ACE_TEXT ("h");
-
-  // create an instance of the command line args
-  ACE_Get_Opt cmd_opts (argc, argv, options);
-
-  // set up an alias for '-n' to be '--name'
-  cmd_opts.long_option (ACE_TEXT ("help"), 'h', ACE_Get_Opt::ARG_REQUIRED);
- 
-  // temp for current switched option
-  int option;
-//  ACE_TCHAR * arg;
-
-  // iterate through the options until done
-  while ((option = cmd_opts ()) != EOF)
+  for (int i = 1; i < argc; ++i)
   {
-    //arg = cmd_opts.opt_arg ();
-    switch (option)
-    {
-    case ':':
-      ACE_ERROR_RETURN ((LM_ERROR, 
-        ACE_TEXT ("ERROR: -%c requires an argument"), 
-           cmd_opts.opt_opt ()), -2); 
-    case 'h':
-    default:
-      ACE_DEBUG ((LM_DEBUG, "Program Summary for %s:\n\n\
-      Test all operators and basic functions of the knowledge engine.\n\
-      Tests fail if assertions are thrown. If no assertion messages are\n\
-      reported, then the test succeeded.\n\n \
-      -h (--help)      print this menu             \n\n", argv[0]));
-      ACE_ERROR_RETURN ((LM_ERROR, 
-        ACE_TEXT ("Returning from Help Menu\n")), -1); 
-      break;
-    }
+    logger::global_logger->log (logger::LOG_ALWAYS,
+      "Program Summary for %s:\n\n"
+      "Test all operators and basic functions of the knowledge engine.\n"
+      "Tests fail if assertions are thrown. If no assertion messages are\n"
+      "reported, then the test succeeded.\n\n"
+      "  -h (--help)      print this menu\n\n",
+      argv[0]);
+
+    exit (-1);
   }
 
   return 0;
@@ -1408,12 +1473,13 @@ int parse_args (int argc, ACE_TCHAR * argv[])
 
 void test_arrays (void)
 {
-  ACE_DEBUG ((LM_INFO, "Testing inline array creation ([0,1,2])\n"));
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Testing inline array creation ([0,1,2])\n");
 
   engine::Knowledge_Base knowledge;
 
-  Madara::Knowledge_Record result = knowledge.evaluate ("my_array = [0, 1, 2]");
-
+  Madara::Knowledge_Record result = knowledge.evaluate (
+    "my_array = [0, 1, 2]");
 
   assert (result.type () == Madara::Knowledge_Record::INTEGER_ARRAY &&
     result.retrieve_index (0).to_integer () == 0 &&

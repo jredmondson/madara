@@ -1,6 +1,7 @@
 #include "Packet_Scheduler.h"
 #include "madara/utility/Utility.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/logger/Global_Logger.h"
+
 
 const uint64_t max_stride (150000000);
 
@@ -179,8 +180,8 @@ Madara::Transport::Packet_Scheduler::add (void)
   } // end if settings_
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
-      DLINFO "Packet_Scheduler::add: ERROR: Invalid settings class.\n"));
+    Logger::global_logger->log (Logger::LOG_EMERGENCY,
+      "Packet_Scheduler::add: ERROR: Invalid settings class\n");
 
     return true;
   }
@@ -230,8 +231,8 @@ Madara::Transport::Packet_Scheduler::reset (void)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
-      DLINFO "Packet_Scheduler::reset: ERROR: Invalid settings class.\n"));
+    Logger::global_logger->log (Logger::LOG_EMERGENCY,
+      "Packet_Scheduler::reset: ERROR: Invalid settings class\n");
   }
 }
 
@@ -241,10 +242,10 @@ Madara::Transport::Packet_Scheduler::print_status (
   const char * prefix)
 {
   Scheduler_Guard guard (mutex_);
-  
-  MADARA_DEBUG ((int)log_level, (LM_DEBUG, 
-    "%s: %Q sent, %Q dropped, %Q consec dropped\n",
-    prefix, sent_messages_, dropped_messages_, consecutive_drops_));
+
+  Logger::global_logger->log (Logger::LOG_EMERGENCY,
+    "%s: %llu sent, %llu dropped, %llu consec dropped\n",
+    prefix, sent_messages_, dropped_messages_, consecutive_drops_);
 }
 
 uint64_t

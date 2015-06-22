@@ -14,7 +14,9 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/utility/Utility.h"
+#include "madara/logger/Global_Logger.h"
 
+namespace logger = Madara::Logger;
 namespace utility = Madara::Utility;
 typedef Madara::Knowledge_Record::Integer  Integer;
 
@@ -218,26 +220,30 @@ int parse_args (int argc, ACE_TCHAR * argv[])
     {
       if (i + 1 < argc)
       {
+        int level;
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        buffer >> level;
+
+        logger::global_logger->set_level (level);
       }
 
       ++i;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS,
         "\nProgram summary for %s:\n\n" \
-"This test checks the functionality of file reading/writing. To properly\n"
-"test file functionality, please create a file at /files/sample.jpg,\n"
-"preferably with a real image. Check the sample_copy.jpg for correctness\n\n",
+        "This test checks the functionality of file reading/writing. To properly\n"
+        "test file functionality, please create a file at /files/sample.jpg,\n"
+        "preferably with a real image. Check the sample_copy.jpg for correctness\n\n",
         " [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
         " [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
         " [-d|--domain domain]     the knowledge domain to send and listen to\n" \
         " [-i|--id id]             the id of this agent (should be non-negative)\n" \
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "\n",
-        argv[0]));
+        argv[0]);
+
       exit (0);
     }
   }

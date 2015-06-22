@@ -31,7 +31,8 @@ namespace Madara
        * @param   body          executed if loop condition is true
        * @param   context       context for variable lookups
        **/
-      Composite_For_Loop (Component_Node * precondition,
+      Composite_For_Loop (
+        Component_Node * precondition,
         Component_Node * condition, 
         Component_Node * postcondition,
         Component_Node * body,

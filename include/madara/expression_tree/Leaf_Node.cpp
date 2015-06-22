@@ -10,32 +10,35 @@
 #include "madara/expression_tree/Visitor.h"
 #include "madara/expression_tree/Leaf_Node.h"
 
-#include "madara/utility/Log_Macros.h"
+
 
 // Ctor
-Madara::Expression_Tree::Leaf_Node::Leaf_Node (const Knowledge_Record & item)
-  : Component_Node (), item_ (item)
+Madara::Expression_Tree::Leaf_Node::Leaf_Node (
+  Logger::Logger & logger, const Knowledge_Record & item)
+: Component_Node (logger), item_ (item)
 {
 }
 
 // Ctor
 Madara::Expression_Tree::Leaf_Node::Leaf_Node (
-  Madara::Knowledge_Record::Integer item)
-  : Component_Node ()
+  Logger::Logger & logger, Madara::Knowledge_Record::Integer item)
+: Component_Node (logger)
 {
   item_.set_value (item);
 }
 
 // Ctor
-Madara::Expression_Tree::Leaf_Node::Leaf_Node (const std::string &item)
-  : Component_Node ()
+Madara::Expression_Tree::Leaf_Node::Leaf_Node (
+  Logger::Logger & logger, const std::string &item)
+: Component_Node (logger)
 {
   item_.set_value (item);
 }
 
 // Ctor
-Madara::Expression_Tree::Leaf_Node::Leaf_Node (double item)
-  : Component_Node ()
+Madara::Expression_Tree::Leaf_Node::Leaf_Node (
+  Logger::Logger & logger, double item)
+: Component_Node (logger)
 {
   item_.set_value (item);
 }

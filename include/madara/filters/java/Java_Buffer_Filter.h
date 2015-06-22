@@ -16,6 +16,7 @@
 
 #include <string>
 
+#include "madara/logger/Logger.h"
 #include "madara/MADARA_export.h"
 #include "madara/utility/Scoped_Array.h"
 #include "../Buffer_Filter.h"
@@ -33,7 +34,7 @@ namespace Madara
       /**
       * Constructor
       **/
-      Java_Buffer_Filter (jobject obj);
+      Java_Buffer_Filter (Logger::Logger & logger, jobject obj);
 
       /**
        * Destructor
@@ -65,6 +66,9 @@ namespace Madara
 
       /// the class of the Java object obj_
       jclass class_;
+
+      /// a logger
+      Logger::Logger * logger_;
     };
   }
 }

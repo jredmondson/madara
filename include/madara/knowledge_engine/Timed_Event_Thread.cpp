@@ -1,9 +1,10 @@
 #include "Timed_Event_Thread.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/transport/Reduced_Message_Header.h"
 #include "madara/transport/Fragmentation.h"
 #include "ace/Time_Value.h"
 #include "madara/utility/Utility.h"
+#include "madara/logger/Global_Logger.h"
 
 #ifdef WIN32
 
@@ -43,15 +44,15 @@ Madara::Knowledge_Engine::Timed_Event_Thread::Timed_Event_Thread (
 
   if (result != -1)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Timed_Event_Thread::Timed_Event_Thread:" \
-      " thread started (result = %d)\n", result));
+    Logger::global_logger->log (Logger::LOG_MAJOR,
+      "Timed_Event_Thread::Timed_Event_Thread:" \
+      " thread started (result = %d)\n", result);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Timed_Event_Thread::Timed_Event_Thread:" \
-      " failed to create thread. ERRNO = %d\n", ACE_OS::last_error ()));
+    Logger::global_logger->log (Logger::LOG_MAJOR,
+      "Timed_Event_Thread::Timed_Event_Thread:" \
+      " failed to create thread\n");
   }
 
   std::stringstream expression;
@@ -88,19 +89,18 @@ Madara::Knowledge_Engine::Timed_Event_Thread::svc (void)
   buffer << info_.id;
   buffer << "]::svc";
   std::string print_prefix (buffer.str ());
-  
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s: " \
-    "Service thread started.\n",
-    print_prefix.c_str ()));
 
+  Logger::global_logger->log (Logger::LOG_MAJOR,
+    "%s: " \
+    "Service thread started.\n",
+    print_prefix.c_str ());
 
   while (!info_.executor->is_shutdown ())
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s: " \
+    Logger::global_logger->log (Logger::LOG_MAJOR,
+      "%s: " \
       "Attempting to remove an event.\n",
-      print_prefix.c_str ()));
+      print_prefix.c_str ());
 
     /**
      * remove returns in one of three conditions
@@ -131,28 +131,28 @@ Madara::Knowledge_Engine::Timed_Event_Thread::svc (void)
       if (valid->intended_executions >= 0 &&
           valid->intended_executions == valid->executions)
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s: " \
+        Logger::global_logger->log (Logger::LOG_MAJOR,
+          "%s: " \
           "Timed Event has expired. Deleting.\n",
-          print_prefix.c_str ()));
+          print_prefix.c_str ());
 
         delete valid;
       }
       else if (valid->cancel_on_false && result.is_false ())
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s: " \
+        Logger::global_logger->log (Logger::LOG_MAJOR,
+          "%s: " \
           "Timed Event returned false. User requested a cancel. Deleting.\n",
-          print_prefix.c_str ()));
+          print_prefix.c_str ());
 
         delete valid;
       }
       else
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s: " \
+        Logger::global_logger->log (Logger::LOG_MAJOR,
+          "%s: " \
           "Timed Event added back to queue.\n",
-          print_prefix.c_str ()));
+          print_prefix.c_str ());
 
         cur_event.first += valid->period;
         info_.executor->add (cur_event);
@@ -163,10 +163,10 @@ Madara::Knowledge_Engine::Timed_Event_Thread::svc (void)
     {
       if (sleep_time > zero_time)
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s: " \
+        Logger::global_logger->log (Logger::LOG_MAJOR,
+          "%s: " \
           "Not ready for timeout. Thread sleeping.\n",
-          print_prefix.c_str ()));
+          print_prefix.c_str ());
         
         Wait_Settings wait_settings;
         wait_settings.poll_frequency = 0.5;

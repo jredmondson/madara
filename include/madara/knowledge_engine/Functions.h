@@ -9,6 +9,7 @@
 #include "madara/knowledge_engine/Knowledge_Update_Settings.h"
 #include "madara/expression_tree/Expression_Tree.h"
 #include "madara/filters/Record_Filter.h"
+#include "madara/logger/Global_Logger.h"
 
 #ifdef _MADARA_JAVA_
 #include <jni.h>
@@ -65,7 +66,7 @@ namespace Madara
         : extern_named (0), extern_unnamed (0),
 
 #ifndef _MADARA_NO_KARL_
-          function_contents (),
+          function_contents (*Logger::global_logger.get ()),
 #endif // _MADARA_NO_KARL_
         
           functor (0), type (UNINITIALIZED)
@@ -79,7 +80,7 @@ namespace Madara
         : extern_named (0), extern_unnamed (func),
 
 #ifndef _MADARA_NO_KARL_
-          function_contents (),
+        function_contents (*Logger::global_logger.get ()),
 #endif // _MADARA_NO_KARL_
         
           functor (0), type (EXTERN_UNNAMED)
@@ -94,7 +95,7 @@ namespace Madara
         : extern_named (func), extern_unnamed (0),
 
 #ifndef _MADARA_NO_KARL_
-          function_contents (),
+        function_contents (*Logger::global_logger.get ()),
 #endif // _MADARA_NO_KARL_
         
           functor (0), type (EXTERN_NAMED)
@@ -120,7 +121,7 @@ namespace Madara
         : extern_named (0), extern_unnamed (0),
 
 #ifndef _MADARA_NO_KARL_
-          function_contents (),
+        function_contents (*Logger::global_logger.get ()),
 #endif // _MADARA_NO_KARL_
         
           functor (filter), type (FUNCTOR)
@@ -177,7 +178,8 @@ namespace Madara
        * Constructor for java
        **/
       Function (jobject& object)
-      : type (JAVA_CALLABLE)
+      : function_contents (*Logger::global_logger.get ()),
+        type (JAVA_CALLABLE)
       {
         //We have to create a globla ref to the object or we cant call it
         JNIEnv* env = madara_jni_get_env();
@@ -196,7 +198,8 @@ namespace Madara
        * Constructor for function pointer
        **/
       Function (boost::python::object & func)
-        : python_function (func), type (PYTHON_CALLABLE)
+      : function_contents (*Logger::global_logger.get ()),
+        python_function (func), type (PYTHON_CALLABLE)
       {
         bool invalid_callable = false;
    

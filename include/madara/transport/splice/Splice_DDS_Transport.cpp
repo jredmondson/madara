@@ -1,11 +1,13 @@
 #include "madara/transport/splice/Splice_DDS_Transport.h"
-#include "madara/utility/Log_Macros.h"
 #include "madara/knowledge_engine/Update_Types.h"
 #include "madara/utility/Utility.h"
 #include <time.h>
 
 #include <iostream>
 #include <sstream>
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 const char * Madara::Transport::Splice_DDS_Transport::topic_names_[] = {
   "MADARA_KaRL_Data",
@@ -122,16 +124,16 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
   // reset the valid setup flag
   //valid_setup_ = false;
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::setup:" \
+  context_.get_logger ().log (logger::LOG_DETAILED,
+      "Splice_DDS_Transport::setup:" \
       " Creating a participant for topic (%s)\n", 
-      Madara::Utility::dds_topicify (settings_.domains).c_str ()));
+      Madara::Utility::dds_topicify (settings_.domains).c_str ());
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::setup:" \
-      " Participant settings are being read from the OSPL_URI environment"
-      " variable\n", 
-      Madara::Utility::dds_topicify (settings_.domains).c_str ()));
+  context_.get_logger ().log (logger::LOG_DETAILED,
+    "Splice_DDS_Transport::setup:" \
+    " Participant settings are being read from the OSPL_URI environment"
+    " variable\n",
+    Madara::Utility::dds_topicify (settings_.domains).c_str ());
 
   // get the domain participant factory
   domain_factory_ = DDS::DomainParticipantFactory::get_instance ();
@@ -143,9 +145,10 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
   // if dp == NULL, we've got an error
   if (domain_participant_ == NULL)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
+    context_.get_logger ().log (logger::LOG_ERROR,
       "\nSplice_DDS_Transport::setup:" \
-      " splice daemon not running. Try 'ospl start'...\n"));
+      " splice daemon not running. Try 'ospl start'...\n");
+
     exit (-2);
   }
 
@@ -166,10 +169,9 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
   domain_participant_->set_default_topic_qos(topic_qos_);
 
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::setup:" \
-      " Registering type support\n"));
-
+  context_.get_logger ().log (logger::LOG_DETAILED,
+    "Splice_DDS_Transport::setup:" \
+    " Registering type support\n");
 
   //  Register Update type
   status = this->update_type_support_.register_type (
@@ -181,10 +183,10 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
   //  domain_participant_, "Knowledge::Mutex");
   //check_status(status, "Knowledge::MutexTypeSupport::register_type");
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::setup:" \
-      " Setting up knowledge domain via topic (%s)\n", 
-      Madara::Utility::dds_topicify (settings_.domains).c_str ()));
+  context_.get_logger ().log (logger::LOG_DETAILED,
+    "Splice_DDS_Transport::setup:" \
+    " Setting up knowledge domain via topic (%s)\n",
+    Madara::Utility::dds_topicify (settings_.domains).c_str ());
 
   // Create Update topic
   update_topic_ = domain_participant_->create_topic (
@@ -207,10 +209,10 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
     //topic_qos_.
   }
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::setup:" \
-      " Creating publisher for topic (%s)\n", 
-      Madara::Utility::dds_topicify (settings_.domains).c_str ()));
+  context_.get_logger ().log (logger::LOG_DETAILED,
+    "Splice_DDS_Transport::setup:" \
+    " Creating publisher for topic (%s)\n",
+    Madara::Utility::dds_topicify (settings_.domains).c_str ());
 
   // Create publisher
   pub_qos_.partition.name.length (1);
@@ -231,10 +233,10 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
     sub_qos_.presentation.ordered_access = false;
   }
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::setup:" \
-      " Creating subscriber for topic (%s)\n", 
-      Madara::Utility::dds_topicify (settings_.domains).c_str ()));
+  context_.get_logger ().log (logger::LOG_DETAILED,
+    "Splice_DDS_Transport::setup:" \
+    " Creating subscriber for topic (%s)\n",
+    Madara::Utility::dds_topicify (settings_.domains).c_str ());
 
   sub_qos_.partition.name.length (1);
   sub_qos_.partition.name[0] = DDS::string_dup (partition_);
@@ -245,9 +247,10 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
 
   if (!subscriber_ || !publisher_)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nSplice_DDS_Transport::setup:" \
-      " pub or sub could not be created. Try 'ospl stop; ospl start'...\n"));
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "Splice_DDS_Transport::setup:" \
+      " pub or sub could not be created. Try 'ospl stop; ospl start'...\n");
+
     exit (-2);
   }
 
@@ -257,10 +260,10 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
 
   if (Madara::Transport::RELIABLE == this->settings_.reliability)
   {
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Splice_DDS_Transport::setup:" \
-        " Enabling reliable transport for (%s) datawriters\n", 
-        Madara::Utility::dds_topicify (settings_.domains).c_str ()));
+    context_.get_logger ().log (logger::LOG_DETAILED,
+      "Splice_DDS_Transport::setup:" \
+      " Enabling reliable transport for (%s) datawriters\n",
+      Madara::Utility::dds_topicify (settings_.domains).c_str ());
 
     datawriter_qos_.reliability.kind = DDS::RELIABLE_RELIABILITY_QOS;
     datawriter_qos_.history.depth = this->settings_.queue_length;
@@ -272,16 +275,16 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Splice_DDS_Transport::setup:" \
-        " Enabling unreliable transport for (%s) datawriters\n", 
-        Madara::Utility::dds_topicify (settings_.domains).c_str ()));
+    context_.get_logger ().log (logger::LOG_DETAILED,
+      "Splice_DDS_Transport::setup:" \
+      " Enabling unreliable transport for (%s) datawriters\n",
+      Madara::Utility::dds_topicify (settings_.domains).c_str ());
   }
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::setup:" \
-      " Creating datawriter for topic (%s)\n", 
-      Madara::Utility::dds_topicify (settings_.domains).c_str ()));
+  context_.get_logger ().log (logger::LOG_DETAILED,
+    "Splice_DDS_Transport::setup:" \
+    " Creating datawriter for topic (%s)\n",
+    Madara::Utility::dds_topicify (settings_.domains).c_str ());
 
   // Create Update writer
   datawriter_ = publisher_->create_datawriter (update_topic_, 
@@ -308,10 +311,10 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
 
   if (Madara::Transport::RELIABLE == this->settings_.reliability)
   {
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Splice_DDS_Transport::setup:" \
-        " Enabling reliable transport for (%s) datareaders\n", 
-        Madara::Utility::dds_topicify (settings_.domains).c_str ()));
+    context_.get_logger ().log (logger::LOG_DETAILED,
+      "Splice_DDS_Transport::setup:" \
+      " Enabling reliable transport for (%s) datareaders\n",
+      Madara::Utility::dds_topicify (settings_.domains).c_str ());
 
     datareader_qos_.reliability.kind = DDS::RELIABLE_RELIABILITY_QOS;
     datareader_qos_.history.depth = this->settings_.queue_length;
@@ -324,16 +327,16 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Splice_DDS_Transport::setup:" \
-        " Enabling unreliable transport for (%s) datareaders\n", 
-        Madara::Utility::dds_topicify (settings_.domains).c_str ()));
+    context_.get_logger ().log (logger::LOG_DETAILED,
+      "Splice_DDS_Transport::setup:" \
+      " Enabling unreliable transport for (%s) datareaders\n",
+      Madara::Utility::dds_topicify (settings_.domains).c_str ());
   }
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::setup:" \
-      " Creating datareader for topic (%s)\n", 
-      Madara::Utility::dds_topicify (settings_.domains).c_str ()));
+  context_.get_logger ().log (logger::LOG_DETAILED,
+    "Splice_DDS_Transport::setup:" \
+    " Creating datareader for topic (%s)\n",
+    Madara::Utility::dds_topicify (settings_.domains).c_str ());
 
   // Create Update datareader
   datareader_ = subscriber_->create_datareader (update_topic_, 
@@ -393,10 +396,10 @@ Madara::Transport::Splice_DDS_Transport::send_data (
   data.timestamp = time (NULL);
   data.madara_id = DDS::string_dup(MADARA_IDENTIFIER);
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Splice_DDS_Transport::send:" \
-    " sending multiassignment: %d updates, time=%Q, quality=%u\n", 
-    data.updates, cur_clock, quality));
+  context_.get_logger ().log (logger::LOG_MAJOR,
+    "Splice_DDS_Transport::send:" \
+    " sending multiassignment: %d updates, time=llu, quality=%d\n",
+    data.updates, cur_clock, quality);
 
   handle = update_writer_->register_instance (data);
   dds_result = update_writer_->write (data, handle); 
@@ -414,16 +417,16 @@ Madara::Transport::Splice_DDS_Transport::start_latency (void)
   long ret = this->check_transport ();
   if (-1 == ret)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::start_latency:"
-      " transport has been told to shutdown")); 
+    context_.get_logger ().log (logger::LOG_MAJOR,
+      "Splice_DDS_Transport::start_latency:"
+      " transport has been told to shutdown");
     return ret;
   }
   else if (-2 == ret)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::start_latency:"
-      " transport is not valid")); 
+    context_.get_logger ().log (logger::LOG_MAJOR,
+      "Splice_DDS_Transport::start_latency:"
+      " transport is not valid");
     return ret;
   }
 
@@ -441,10 +444,10 @@ Madara::Transport::Splice_DDS_Transport::start_latency (void)
   data.originator = id_.c_str ();
   data.type = Madara::Transport::LATENCY;
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Splice_DDS_Transport::start_latency:" \
-    " originator=%s, time=%Q\n", 
-    id_.c_str (), cur_clock));
+  context_.get_logger ().log (logger::LOG_MAJOR,
+    "Splice_DDS_Transport::start_latency:" \
+    " originator=%s, time=%llu\n", 
+    id_.c_str (), cur_clock);
 
   settings_.reset_timers ();
   settings_.start_all_timers ();
@@ -463,16 +466,17 @@ Madara::Transport::Splice_DDS_Transport::vote (void)
   long ret = this->check_transport ();
   if (-1 == ret)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::vote:"
-      " transport has been told to shutdown")); 
+    context_.get_logger ().log (logger::LOG_MAJOR,
+      "Splice_DDS_Transport::vote:"
+      " transport has been told to shutdown");
+
     return ret;
   }
   else if (-2 == ret)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::vote:"
-      " transport is not valid")); 
+    context_.get_logger ().log (logger::LOG_MAJOR,
+      "Splice_DDS_Transport::vote:"
+      " transport is not valid");
     return ret;
   }
 
@@ -486,9 +490,10 @@ Madara::Transport::Splice_DDS_Transport::vote (void)
 
   if (results.size () == 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::vote:"
-      " Unable to vote. No algorithm results present.")); 
+    context_.get_logger ().log (logger::LOG_MAJOR,
+      "Splice_DDS_Transport::vote:"
+      " Unable to vote. No algorithm results present");
+
     return ret;
   }
 
@@ -503,10 +508,10 @@ Madara::Transport::Splice_DDS_Transport::vote (void)
   data.originator = id_.c_str ();
   data.type = Madara::Transport::VOTE;
 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Splice_DDS_Transport::vote:" \
-    " originator=%s, time=%Q, best=%Q\n", 
-    id_.c_str (), cur_clock, results[0].latency));
+  context_.get_logger ().log (logger::LOG_MAJOR,
+    "Splice_DDS_Transport::vote:" \
+    " originator=%s, time=%llu, best=%llu\n", 
+    id_.c_str (), cur_clock, results[0].latency);
 
   handle = update_writer_->register_instance (data);
   dds_result = update_writer_->write (data, handle); 
@@ -524,9 +529,10 @@ Madara::Transport::Splice_DDS_Transport::check_handle (void * handle,
 {
   if (!handle)
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nSplice_DDS_Transport::check_handle:" \
-      " error in %s: Creation failed: invalid handle\n", info));
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "Splice_DDS_Transport::check_handle:" \
+      " error in %s: Creation failed: invalid handle\n", info);
+
     exit (-2);
   }
 }
@@ -538,11 +544,12 @@ Madara::Transport::Splice_DDS_Transport::check_status (DDS::ReturnCode_t status,
   // if the status is okay, then return without issue
   if ((status == DDS::RETCODE_OK) || (status == DDS::RETCODE_NO_DATA)) 
     return;
-  
-  MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nSplice_DDS_Transport::check_status:" \
-      " error in %s: Creation failed: %s\n", 
-      info, get_error_name(status)));
+
+  context_.get_logger ().log (logger::LOG_ERROR,
+    "Splice_DDS_Transport::check_status:" \
+    " error in %s: Creation failed: %s\n",
+    info, get_error_name (status));
+
   exit (-2);
 }
 

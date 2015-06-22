@@ -14,7 +14,7 @@
 #include "madara/expression_tree/Composite_Const_Array.h"
 #include "madara/expression_tree/Leaf_Node.h"
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/knowledge_engine/Functions.h"
 #include "madara/knowledge_engine/Extern_Function_Variables.h"
 
@@ -33,8 +33,9 @@
 // Ctor
 
 Madara::Expression_Tree::Composite_Const_Array::Composite_Const_Array (
-        const Component_Nodes & nodes)
-  : Madara::Expression_Tree::Composite_Ternary_Node (nodes)
+  Logger::Logger & logger, 
+  const Component_Nodes & nodes)
+: Madara::Expression_Tree::Composite_Ternary_Node (logger, nodes)
 {
   
 }
@@ -80,7 +81,7 @@ Madara::Expression_Tree::Composite_Const_Array::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (nodes_[i]) == 0)
     {
       delete nodes_[i];
-      nodes_[i] = new Leaf_Node (result);
+      nodes_[i] = new Leaf_Node (*(this->logger_), result);
     }
     else if (arg_can_change)
     {
@@ -108,8 +109,8 @@ Madara::Expression_Tree::Composite_Const_Array::prune (bool & can_change)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR,
-      "KARL COMPILE ERROR: Array initialized with no elements\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Array initialized with no elements\n");
   }
 
   return result;

@@ -14,6 +14,9 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/utility/Utility.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
@@ -162,14 +165,16 @@ int parse_args (int argc, ACE_TCHAR * argv[])
       if (i + 1 < argc)
       {
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        int level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
 "This test checks the functionality of file reading/writing. To properly\n"
 "test file functionality, please create a file at /files/sample.jpg,\n"
@@ -180,7 +185,7 @@ int parse_args (int argc, ACE_TCHAR * argv[])
         " [-i|--id id]             the id of this agent (should be non-negative)\n" \
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }

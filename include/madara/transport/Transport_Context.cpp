@@ -1,6 +1,6 @@
 #include "Transport_Context.h"
 #include "madara/utility/Utility.h"
-#include "madara/utility/Log_Macros.h"
+
 
 Madara::Transport::Transport_Context::Transport_Context (int64_t operation,
   uint64_t receive_bandwidth, uint64_t send_bandwidth,

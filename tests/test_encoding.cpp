@@ -3,7 +3,7 @@
 #include "madara/knowledge_engine/Knowledge_Record.h"
 #include "madara/transport/Message_Header.h"
 #include "madara/transport/Transport.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/utility/Utility.h"
 #include <stdio.h>
 #include <iostream>

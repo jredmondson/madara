@@ -5,14 +5,15 @@
 #include "madara/expression_tree/Variable_Compare_Node.h"
 #include "madara/utility/Utility.h"
 
-#include "madara/utility/Log_Macros.h"
+
 #include <string>
 #include <sstream>
 
 Madara::Expression_Tree::Variable_Compare_Node::Variable_Compare_Node (
   Component_Node * lhs, Madara::Knowledge_Record value, int compare_type,
   Component_Node * rhs, Madara::Knowledge_Engine::Thread_Safe_Context &context)
-: var_ (0), array_ (0), value_ (value), rhs_ (rhs),
+: Component_Node (context.get_logger ()), var_ (0), array_ (0),
+  value_ (value), rhs_ (rhs),
   compare_type_ (compare_type), context_ (context)
 {
   var_ = dynamic_cast <Variable_Node *> (lhs);
@@ -59,8 +60,9 @@ Madara::Expression_Tree::Variable_Compare_Node::prune (bool & can_change)
     left_child_can_change = true;
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Variable assignment has no variable\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Variable assignment has no variable\\n");
+
     exit (-1);    
   }
 
@@ -70,13 +72,14 @@ Madara::Expression_Tree::Variable_Compare_Node::prune (bool & can_change)
     if (!right_child_can_change && dynamic_cast <Leaf_Node *> (rhs_) == 0)
     {
       delete this->rhs_;
-      this->rhs_ = new Leaf_Node (right_value);
+      this->rhs_ = new Leaf_Node (*(this->logger_), right_value);
     }
   }
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Assignment has no right expression\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Assignment has no right expression\n");
+
     exit (-1);
   }
 

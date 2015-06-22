@@ -12,12 +12,13 @@
 #include "madara/expression_tree/Composite_Assignment_Node.h"
 #include "madara/expression_tree/Leaf_Node.h"
 
-#include "madara/utility/Log_Macros.h"
+
 // Ctor
 
 Madara::Expression_Tree::Composite_Assignment_Node::Composite_Assignment_Node (
+  Logger::Logger & logger,
   Component_Node *left, Component_Node *right)
-  : Composite_Unary_Node (right)
+: Composite_Unary_Node (logger, right)
 {
   var_ = dynamic_cast <Variable_Node *> (left);
 
@@ -43,8 +44,8 @@ Madara::Expression_Tree::Composite_Assignment_Node::prune (bool & can_change)
     left_child_can_change = true;
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Variable assignment has no variable\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Variable assignment has no variable\n");
     exit (-1);    
   }
 
@@ -54,13 +55,14 @@ Madara::Expression_Tree::Composite_Assignment_Node::prune (bool & can_change)
     if (!right_child_can_change && dynamic_cast <Leaf_Node *> (right_) == 0)
     {
       delete this->right_;
-      this->right_ = new Leaf_Node (right_value);
+      this->right_ = new Leaf_Node (*(this->logger_), right_value);
     }
   }
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Assignment has no right expression\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Assignment has no right expression\n");
+
     exit (-1);
   }
 
@@ -81,33 +83,29 @@ Madara::Expression_Tree::Composite_Assignment_Node::evaluate (
   //Madara::Knowledge_Record value = right_->evaluate ();
   if (var_)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "Composite_Assignment_Node::evaluate: "
       "Attempting to set variable %s to %s.\n",
       var_->expand_key ().c_str (),
-      rhs.to_string ().c_str ()));
+      rhs.to_string ().c_str ());
 
     var_->set (rhs, settings);
   }
   else if (array_)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "Composite_Assignment_Node::evaluate: "
       "Attempting to set index of var %s to %s.\n",
       array_->expand_key ().c_str (),
-      rhs.to_string ().c_str ()));
+      rhs.to_string ().c_str ());
 
     array_->set (rhs, settings);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "Composite_Assignment_Node::evaluate: "
+    logger_->log (Logger::LOG_MINOR,
       "left hand side was neither a variable nor an array reference. "
-      "Check your expression for errors.\n",
-      array_->expand_key ().c_str (),
-      rhs.to_string ().c_str ()));
-
+      "Check your expression for errors.\n");
   }
 
   // return the value

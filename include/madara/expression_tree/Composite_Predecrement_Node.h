@@ -27,9 +27,11 @@ namespace Madara
     public:
       /**
        * Constructor
+       * @param   logger the logger to use for printing
        * @param   right  right expression
        **/
-      Composite_Predecrement_Node (Component_Node *right);
+      Composite_Predecrement_Node (Logger::Logger & logger,
+        Component_Node *right);
 
       /**
        * Destructor

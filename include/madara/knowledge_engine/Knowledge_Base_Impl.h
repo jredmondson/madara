@@ -200,7 +200,31 @@ namespace Madara
        * @return                   expanded statement
        **/
       std::string expand_statement (const std::string & statement) const;
-      
+
+      /**
+      * Gets the log level
+      * @return the maximum detail level to print
+      **/
+      int get_log_level (void);
+
+      /**
+      * Attaches a logger to be used for printing
+      * @param the logger the context should lose
+      **/
+      void attach_logger (Logger::Logger & logger) const;
+
+      /**
+      * Gets the logger used for information printing
+      * @return the context's logger
+      **/
+      Logger::Logger & get_logger (void) const;
+
+      /**
+      * Sets the log level
+      * @param  level  the maximum detail level to print
+      **/
+      void set_log_level (int level);
+
 #ifndef _MADARA_NO_KARL_
 
       /**

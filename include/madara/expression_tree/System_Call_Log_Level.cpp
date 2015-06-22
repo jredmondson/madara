@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Log_Level.h"
 #include "madara/expression_tree/Visitor.h"
@@ -47,15 +47,15 @@ Madara::Expression_Tree::System_Call_Log_Level::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (nodes_[0]) == 0)
     {
       delete nodes_[0];
-      nodes_[0] = new Leaf_Node (result);
+      nodes_[0] = new Leaf_Node (*(this->logger_), result);
     }
   }
   
   if (nodes_.size () > 1)
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call log_level requires 0 or 1 arguments,"
-      " e.g., log_level (10) or log_level ()--which returns the log level\n"));
+      " e.g., log_level (10) or log_level ()--which returns the log level\n");
   }
 
   return result;
@@ -71,29 +71,31 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   if (nodes_.size () == 1)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call log_level is setting log level.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "System call log_level is setting log level\n");
 
-    MADARA_debug_level = (int) nodes_[0]->evaluate (settings).to_integer ();
-    
-    MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-      "System call log_level has set log level to %d.\n",
-      MADARA_debug_level));
+    int level = (int)nodes_[0]->evaluate (settings).to_integer ();
 
-    return Madara::Knowledge_Record::Integer (MADARA_debug_level);
+    logger_->set_level (level);
+
+    logger_->log (Logger::LOG_MINOR,
+      "System call log_level has set log level to %d\n",
+      level);
+
+    return Knowledge_Record::Integer (level);
   }
   else if (nodes_.size () == 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call log_level is returning log level.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "System call log_level is returning log level.\n");
     
-    return Madara::Knowledge_Record::Integer (MADARA_debug_level);
+    return Knowledge_Record::Integer (logger_->get_level ());
   }
   else if (nodes_.size () > 1)
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call log_level requires 0 or 1 arguments,"
-      " e.g., log_level (10) or log_level ()--which returns the log level\n"));
+      " e.g., log_level (10) or log_level ()--which returns the log level\n");
   }
 
   return return_value;

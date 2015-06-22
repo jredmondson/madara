@@ -12,12 +12,9 @@
 #include "madara/expression_tree/Composite_Negate_Node.h"
 #include "madara/expression_tree/Leaf_Node.h"
 
-#include "madara/utility/Log_Macros.h"
-
-// Ctor
-
-Madara::Expression_Tree::Composite_Negate_Node::Composite_Negate_Node (Component_Node *right)
-  : Composite_Unary_Node (right)
+Madara::Expression_Tree::Composite_Negate_Node::Composite_Negate_Node (
+  Logger::Logger & logger, Component_Node *right)
+  : Composite_Unary_Node (logger, right)
 {    
 }
 
@@ -47,14 +44,15 @@ Madara::Expression_Tree::Composite_Negate_Node::prune (bool & can_change)
     if (!right_child_can_change && dynamic_cast <Leaf_Node *> (right_) == 0)
     {
       delete this->right_;
-      this->right_ = new Leaf_Node (right_value);
+      this->right_ = new Leaf_Node (*(this->logger_), right_value);
     }
   }
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Negate" \
-      " has no right expression\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: "
+      "Negate has no right expression\n");
+
     exit (-1); 
   }
 
@@ -71,8 +69,9 @@ Madara::Expression_Tree::Composite_Negate_Node::evaluate (
 {
   Madara::Knowledge_Record value = right_->evaluate (settings);
 
-  MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-    "Negating %s.\n", value.to_string ().c_str ()));
+  logger_->log (Logger::LOG_DETAILED,
+    "KARL COMPILE ERROR: "
+    "Negating %s.\n", value.to_string ().c_str ());
 
   return -value;
 }

@@ -11,11 +11,13 @@
 #include "madara/expression_tree/Visitor.h"
 #include "madara/expression_tree/Leaf_Node.h"
 
-#include "madara/utility/Log_Macros.h"
+
 // Ctor
-Madara::Expression_Tree::Composite_Divide_Node::Composite_Divide_Node (Component_Node *left, 
-                          Component_Node *right)
-  : Composite_Binary_Node (left, right)
+Madara::Expression_Tree::Composite_Divide_Node::Composite_Divide_Node (
+  Logger::Logger & logger,
+  Component_Node *left,
+  Component_Node *right)
+: Composite_Binary_Node (logger, left, right)
 {    
 }
 
@@ -50,13 +52,13 @@ Madara::Expression_Tree::Composite_Divide_Node::prune (bool & can_change)
     if (!left_child_can_change && dynamic_cast <Leaf_Node *> (left_) == 0)
     {
       delete this->left_;
-      this->left_ = new Leaf_Node (left_value);
+      this->left_ = new Leaf_Node (*(this->logger_), left_value);
     }
   }
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Division has no left expression\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Division has no left expression\n");
     exit (-1);  
   }
 
@@ -69,9 +71,9 @@ Madara::Expression_Tree::Composite_Divide_Node::prune (bool & can_change)
       // leave this check which is important
       if (right_value.is_false ())
       {
-        MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-          "\nKARL COMPILE ERROR: Division" \
-          " results in permanent divide by zero\n"));
+        logger_->log (Logger::LOG_EMERGENCY,
+          "KARL COMPILE ERROR: Division results in permanent divide by zero\n");
+
         exit (-1);
       }
       // the only time we should delete right is if we have a clean division
@@ -92,9 +94,8 @@ Madara::Expression_Tree::Composite_Divide_Node::prune (bool & can_change)
   }
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Division" \
-      " has no right expression (divide by zero)\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Division has no right expression (divide by zero)\n");
     exit (-1);
   }
 

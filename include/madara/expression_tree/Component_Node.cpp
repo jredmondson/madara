@@ -10,6 +10,13 @@
 #include "madara/expression_tree/Component_Node.h"
 #include "madara/expression_tree/Visitor.h"
 
+
+Madara::Expression_Tree::Component_Node::Component_Node (
+  Logger::Logger & logger)
+{
+  set_logger (logger);
+}
+
 // Dtor
 Madara::Expression_Tree::Component_Node::~Component_Node (void)
 {
@@ -41,7 +48,12 @@ Madara::Expression_Tree::Component_Node::accept (Madara::Expression_Tree::Visito
 {
 }
 
-#endif // _MADARA_NO_KARL_
+void
+Madara::Expression_Tree::Component_Node::set_logger (Logger::Logger & logger)
+{
+  logger_ = &logger;
+}
 
+#endif // _MADARA_NO_KARL_
 
 #endif /* _COMPONENT_NODE_CPP_ */

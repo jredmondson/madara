@@ -3,11 +3,14 @@
 #include "madara/knowledge_engine/File_Header.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 #include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/logger/Global_Logger.h"
+
 #include "madara/utility/Utility.h"
 
 #include <stdio.h>
 #include <iostream>
+
+namespace logger = Madara::Logger;
 
 #define BUFFER_SIZE    1000
 
@@ -269,20 +272,22 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
+        int level;
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS,
         "\nProgram summary for %s:\n\n" \
         "  Test the checkpointing functionality.\n\n" \
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }

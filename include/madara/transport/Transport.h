@@ -21,12 +21,12 @@
 #include "ace/Recursive_Thread_Mutex.h"
 #include "ace/Condition_T.h"
 #include "ace/Guard_T.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/utility/Thread_Safe_Vector.h"
 #include "madara/MADARA_export.h"
 #include "ace/High_Res_Timer.h"
 #include "madara/transport/QoS_Transport_Settings.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "Reduced_Message_Header.h"
 #include "madara/transport/Bandwidth_Monitor.h"
 #include "madara/transport/Packet_Scheduler.h"
@@ -112,7 +112,7 @@ namespace Madara
       {
         if (!settings_.latency_enabled)
         {
-          MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+          logger::global_logger->log (logger::LOG_ALWAYS, 
               DLINFO "Splice_DDS_Transport::start_latency:" \
               " Latency enabled is not set in your"
               " Madara::Transport::Settings instance. Update your"
@@ -131,7 +131,7 @@ namespace Madara
       {
         if (!settings_.latency_enabled)
         {
-          MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+          logger::global_logger->log (logger::LOG_ALWAYS, 
               DLINFO "Splice_DDS_Transport::vote:" \
               " Latency enabled is not set in your"
               " Madara::Transport::Settings instance. Update your"
@@ -262,6 +262,7 @@ namespace Madara
     /**
      * Preps a buffer for rebroadcasting records to other agents
      * on the network.
+     * @param  context  the key/value storage for variables
      * @param  buffer   the buffer to fill with header and records
      * @param  buffer_remaining  will contain the buffer remaining,
      *                           in case your transport must send other info
@@ -273,6 +274,7 @@ namespace Madara
      * @param  packet_scheduler scheduler for mimicking network conditions
      **/
     int MADARA_Export prep_rebroadcast (
+      Knowledge_Engine::Thread_Safe_Context & context,
       char * buffer,
       int64_t & buffer_remaining,
       const QoS_Transport_Settings & settings,

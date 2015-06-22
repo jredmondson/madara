@@ -6,7 +6,8 @@
 #include <sstream>
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/logger/Global_Logger.h"
+
 #include "madara/threads/Threader.h"
 #include "madara/utility/Utility.h"
 #include "madara/knowledge_engine/containers/Queue.h"
@@ -17,6 +18,7 @@ namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
 namespace utility = Madara::Utility;
 namespace threads = Madara::Threads;
+namespace logger = Madara::Logger;
 
 typedef Madara::Knowledge_Record::Integer Integer;
 
@@ -52,7 +54,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        engine::Knowledge_Base::log_to_file (argv[i + 1]);
+        logger::global_logger->add_file (argv[i + 1]);
       }
 
       ++i;
@@ -61,8 +63,10 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
+        int level;
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
@@ -119,7 +123,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS,
 "\nProgram summary for %s:\n\n" \
 "  Attempts to start a number of producer and consumer threads\n\n" \
 " [-c|--consumers consumers] the number of information consumerss to start\n" \
@@ -132,7 +136,7 @@ void handle_arguments (int argc, char ** argv)
 " [-w|--max-wait time]     maximum time to wait in seconds (double format)\n"\
 " [-z|--hertz hertz]       the frequency of counts per second per thread\n" \
 "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }
@@ -217,11 +221,13 @@ int main (int argc, char ** argv)
   // create a knowledge base and setup our id
   engine::Knowledge_Base knowledge;
 
-  std::cerr << "Hertz rate set to " << hertz << "\n";
-  std::cerr << "Starting " << producers << " producer threads\n";
-  std::cerr << "Starting " << consumers << " consumer threads\n";
-  std::cerr << "Job queue length is " << queue_length << "\n";
-  std::cerr << "Target is set to " << target << "\n";
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Hertz rate set to %f\n"
+    "Starting %ll producer threads\n"
+    "Starting %ll consumer threads\n"
+    "Job queue length is %d\n"
+    "Target is set to %ll\n",
+    hertz, producers, consumers, queue_length, target);
 
   containers::Integer jobs_completed (".jobs_completed", knowledge);
   containers::Queue jobs ("jobs", knowledge);
@@ -274,8 +280,9 @@ int main (int argc, char ** argv)
 
   knowledge.set (".total_time_in_seconds", total_time_in_secs);
 
-  std::cerr << "The consumers completed " <<
-    *jobs_completed << " jobs\n";
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "The consumers completed %ll jobs\n", *jobs_completed);
+
   knowledge.print ("Distributed count took {.total_time_in_seconds}s\n");
 
   threader.wait ();

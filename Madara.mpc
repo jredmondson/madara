@@ -55,6 +55,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
 
   Inline_Files {
     include/madara/knowledge_engine
+    include/madara/logger/Logger.inl
     include/madara/utility
     include/madara/transport/Transport.inl
     include/madara/transport/Bandwidth_Monitor.inl
@@ -74,6 +75,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/filters
     include/madara/knowledge_engine
     include/madara/knowledge_engine/containers
+    include/madara/logger
     include/madara/threads
     include/madara/transport/tcp
     include/madara/transport/udp
@@ -90,7 +92,6 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/transport/Transport.cpp
     include/madara/utility/Utility.cpp
     include/madara/utility/Refcounter.cpp
-    include/madara/utility/Log_Macros.cpp
     include/madara/utility/tinyxml.cpp
     include/madara/utility/tinyxmlerror.cpp
     include/madara/utility/tinyxmlparser.cpp
@@ -101,6 +102,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/filters
     include/madara/knowledge_engine
     include/madara/knowledge_engine/containers
+    include/madara/logger
     include/madara/threads
     include/madara/transport/tcp
     include/madara/transport/udp

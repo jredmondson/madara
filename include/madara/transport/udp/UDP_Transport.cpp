@@ -1,7 +1,7 @@
 #include "madara/transport/udp/UDP_Transport.h"
 #include "madara/transport/udp/UDP_Transport_Read_Thread.h"
 #include "madara/transport/Transport_Context.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/knowledge_engine/Knowledge_Record.h"
 #include "madara/transport/Reduced_Message_Header.h"
 #include "madara/utility/Utility.h"
@@ -42,18 +42,18 @@ void
 
   // close send port
   if (-1 == write_socket_.close ())
-  { 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "UDP_Transport::cleanup:" \
-      " Error closing write socket\n"));
+  {
+    context_.get_logger ().log (Logger::LOG_MAJOR,
+      "UDP_Transport::cleanup:" \
+      " Error closing write socket\n");
   }
 
   // close receive port
   if (-1 == read_socket_.close ())
-  { 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "UDP_Transport::cleanup:" \
-      " Error closing read socket\n"));
+  {
+    context_.get_logger ().log (Logger::LOG_MAJOR,
+      "UDP_Transport::cleanup:" \
+      " Error closing read socket\n");
   }
 }
 
@@ -84,7 +84,11 @@ int
 
     // open the broadcast socket to any port for sending
     if (write_socket_.open (ACE_Addr::sap_any) == -1)
-      std::cout << "UDP socket failed to open\n";
+    {
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "UDP_Transport::setup:" \
+        " socket failed to open\n");
+    }
 
     int send_buff_size = 0, tar_buff_size (settings_.queue_length);
     int rcv_buff_size = 0;
@@ -96,17 +100,17 @@ int
     write_socket_.get_option (SOL_SOCKET, SO_RCVBUF,
       (void *)&rcv_buff_size, &opt_len);
 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "UDP_Transport::UDP_Transport:" \
+    context_.get_logger ().log (Logger::LOG_MAJOR,
+      "UDP_Transport::setup:" \
       " default socket buff size is send=%d, rcv=%d\n",
-      send_buff_size, rcv_buff_size));
+      send_buff_size, rcv_buff_size);
 
     if (send_buff_size < tar_buff_size)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "UDP_Transport::UDP_Transport:" \
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "UDP_Transport::setup:" \
         " setting send buff size to settings.queue_length (%d)\n",
-        tar_buff_size));
+        tar_buff_size);
 
       write_socket_.set_option (SOL_SOCKET, SO_SNDBUF,
         (void *)&tar_buff_size, opt_len);
@@ -114,19 +118,18 @@ int
       write_socket_.get_option (SOL_SOCKET, SO_SNDBUF,
         (void *)&send_buff_size, &opt_len);
 
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "UDP_Transport::UDP_Transport:" \
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "UDP_Transport::setup:" \
         " current socket buff size is send=%d, rcv=%d\n",
-        send_buff_size, rcv_buff_size));
+        send_buff_size, rcv_buff_size);
     }
 
     if (rcv_buff_size < tar_buff_size)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO
-        "UDP_Transport::UDP_Transport:" \
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "UDP_Transport::setup:" \
         " setting rcv buff size to settings.queue_length (%d)\n",
-        tar_buff_size));
+        tar_buff_size);
 
       write_socket_.set_option (SOL_SOCKET, SO_SNDBUF,
         (void *)&tar_buff_size, opt_len);
@@ -134,11 +137,10 @@ int
       write_socket_.get_option (SOL_SOCKET, SO_SNDBUF,
         (void *)&rcv_buff_size, &opt_len);
 
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO
-        "UDP_Transport::UDP_Transport:" \
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "UDP_Transport::setup:" \
         " current socket buff size is send=%d, rcv=%d\n",
-        send_buff_size, rcv_buff_size));
+        send_buff_size, rcv_buff_size);
     }
     
     
@@ -149,17 +151,17 @@ int
   
       if (-1 == read_socket_.open (local, 2, 0, 0))
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "UDP_Transport_Read_Thread::UDP_Transport_Read_Thread:" \
+        context_.get_logger ().log (Logger::LOG_MAJOR,
+          "UDP_Transport::setup:" \
           " Error subscribing to udp address %s:%d\n",
-          local.get_host_addr (), local.get_port_number ()));
+          local.get_host_addr (), local.get_port_number ());
       } 
       else
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "UDP_Transport_Read_Thread::UDP_Transport_Read_Thread:" \
+        context_.get_logger ().log (Logger::LOG_MAJOR,
+          "UDP_Transport::setup:" \
           " Success subscribing to udp address %s:%d\n",
-          local.get_host_addr (), local.get_port_number ()));
+          local.get_host_addr (), local.get_port_number ());
       
         int send_buff_size = 0, tar_buff_size (settings_.queue_length);
         int rcv_buff_size = 0;
@@ -169,20 +171,18 @@ int
 
         bare_socket.get_option (SOL_SOCKET, SO_RCVBUF,
           (void *)&rcv_buff_size, &opt_len);
-  
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO
-          "UDP_Transport_Read_Thread::UDP_Transport_Read_Thread:" \
+
+        context_.get_logger ().log (Logger::LOG_MAJOR,
+          "UDP_Transport::setup:" \
           " default socket buff size is send=%d, rcv=%d\n",
-          send_buff_size, rcv_buff_size));
+          send_buff_size, rcv_buff_size);
   
         if (send_buff_size < tar_buff_size)
         {
-          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-            DLINFO
-            "UDP_Transport_Read_Thread::UDP_Transport_Read_Thread:" \
+          context_.get_logger ().log (Logger::LOG_MAJOR,
+            "UDP_Transport::setup:" \
             " setting send buff size to settings.queue_length (%d)\n",
-            tar_buff_size));
+            tar_buff_size);
   
           bare_socket.set_option (SOL_SOCKET, SO_SNDBUF,
             (void *)&tar_buff_size, opt_len);
@@ -190,32 +190,29 @@ int
           bare_socket.get_option (SOL_SOCKET, SO_SNDBUF,
             (void *)&send_buff_size, &opt_len);
 
-          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-            DLINFO
-            "UDP_Transport_Read_Thread::UDP_Transport_Read_Thread:" \
+          context_.get_logger ().log (Logger::LOG_MAJOR,
+            "UDP_Transport::setup:" \
             " current socket buff size is send=%d, rcv=%d\n",
-            send_buff_size, rcv_buff_size));
+            send_buff_size, rcv_buff_size);
         }
   
         if (rcv_buff_size < tar_buff_size)
         {
-          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-            DLINFO
-            "UDP_Transport_Read_Thread::UDP_Transport_Read_Thread:" \
+          context_.get_logger ().log (Logger::LOG_MAJOR,
+            "UDP_Transport::setup:" \
             " setting rcv buff size to settings.queue_length (%d)\n",
-            tar_buff_size));
+            tar_buff_size);
   
           bare_socket.set_option (SOL_SOCKET, SO_SNDBUF,
             (void *)&tar_buff_size, opt_len);
     
           bare_socket.get_option (SOL_SOCKET, SO_SNDBUF,
             (void *)&rcv_buff_size, &opt_len);
-    
-          MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-            DLINFO
-            "UDP_Transport_Read_Thread::UDP_Transport_Read_Thread:" \
+
+          context_.get_logger ().log (Logger::LOG_MINOR,
+            "UDP_Transport_Read_Thread::setup:" \
             " current socket buff size is send=%d, rcv=%d\n",
-            send_buff_size, rcv_buff_size));
+            send_buff_size, rcv_buff_size);
         }
     
       } // if successful socket
@@ -229,11 +226,11 @@ int
       {
         hertz = 0.0;
       }
-    
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Multicast_Transport::constructor:" \
-        " starting %d threads at %f hertz\n", settings_.read_threads, 
-        hertz));
+
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "UDP_Transport_Read_Thread::setup:" \
+        " starting %d threads at %f hertz\n", settings_.read_threads,
+        hertz);
 
       for (uint32_t i = 0; i < settings_.read_threads; ++i)
       {
@@ -273,10 +270,10 @@ long
       {
         Fragment_Map map;
 
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s:" \
+        context_.get_logger ().log (Logger::LOG_MAJOR,
+          "%s:" \
           " fragmenting %Q byte packet (%d bytes is max fragment size)\n",
-          print_prefix, packet_size, settings_.max_fragment_size));
+          print_prefix, packet_size, settings_.max_fragment_size);
 
         // fragment the message
         frag (buffer_.get_ptr (), settings_.max_fragment_size, map);
@@ -298,9 +295,9 @@ long
               if (settings_.slack_time > 0)
                 Madara::Utility::sleep (settings_.slack_time);
 
-              MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-                DLINFO "%s: Send result was %d of %d byte fragment to %s\n",
-                print_prefix, actual_sent, frag_size, addr->first.c_str ()));
+              context_.get_logger ().log (Logger::LOG_MAJOR,
+                "%s: Send result was %d of %d byte fragment to %s\n",
+                print_prefix, actual_sent, frag_size, addr->first.c_str ());
 
               if (actual_sent > 0)
               {
@@ -310,11 +307,11 @@ long
             }
           }
         }
-      
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s:" \
-          " Sent fragments totalling %Q bytes\n",
-          print_prefix, bytes_sent));
+
+        context_.get_logger ().log (Logger::LOG_MAJOR,
+          "%s:" \
+          " Sent fragments totalling %llu bytes\n",
+          print_prefix, bytes_sent);
 
         delete_fragments (map);
       }
@@ -327,11 +324,11 @@ long
           {
             ssize_t actual_sent = write_socket_.send (buffer_.get_ptr (),
               (ssize_t)result, i->second);
-            
-            MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-              DLINFO "%s:" \
-              " Sent %Q packet to %s\n",
-              print_prefix, packet_size, i->first.c_str ()));
+
+            context_.get_logger ().log (Logger::LOG_MAJOR,
+              "%s:" \
+              " Sent %llu packet to %s\n",
+              print_prefix, packet_size, i->first.c_str ());
 
             if (actual_sent > 0)
             {
@@ -344,10 +341,10 @@ long
 
       result = (long) bytes_sent;
 
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " Send bandwidth = %d B/s\n",
-        print_prefix, send_monitor_.get_bytes_per_second ()));
+        print_prefix, send_monitor_.get_bytes_per_second ());
     }
   }
 

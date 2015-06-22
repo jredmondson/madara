@@ -12,7 +12,7 @@
 #include "ace/Recursive_Thread_Mutex.h"
 #include "ace/Condition_Recursive_Thread_Mutex.h"
 #include "ace/Synch.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Interpreter.h"
 
 #include <sstream>
@@ -487,17 +487,32 @@ Madara::Knowledge_Engine::Thread_Safe_Context::inc_clock (
 /// get the lamport clock (updates with lamport clocks lower
 /// than our current clock get discarded)
 inline uint64_t
-Madara::Knowledge_Engine::Thread_Safe_Context::get_clock (void)
+Madara::Knowledge_Engine::Thread_Safe_Context::get_clock (void) const
 {
   Context_Guard guard (mutex_);
   return clock_;
+}
+
+inline Madara::Logger::Logger &
+Madara::Knowledge_Engine::Thread_Safe_Context::get_logger (void) const
+{
+  Context_Guard guard (mutex_);
+  return *logger_;
+}
+
+inline void
+Madara::Knowledge_Engine::Thread_Safe_Context::attach_logger (
+  Logger::Logger & logger) const
+{
+  Context_Guard guard (mutex_);
+  logger_ = &logger;
 }
 
 /// get the lamport clock for a particular variable
 inline uint64_t
 Madara::Knowledge_Engine::Thread_Safe_Context::get_clock (
   const std::string & key,
-  const Knowledge_Reference_Settings & settings)
+  const Knowledge_Reference_Settings & settings) const
 {
   // enter the mutex
   std::string key_actual;
@@ -517,7 +532,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::get_clock (
     return 0;
 
   // find the key in the knowledge base
-  Knowledge_Map::iterator found = map_.find (*key_ptr);
+  Knowledge_Map::const_iterator found = map_.find (*key_ptr);
 
   // if it's found, then compare the value
   if (found != map_.end ())
@@ -550,10 +565,7 @@ inline void
 Madara::Knowledge_Engine::Thread_Safe_Context::print (
   const std::string & statement, unsigned int level) const
 {
-  // enter the mutex
-  Context_Guard guard (mutex_);
-  MADARA_DEBUG ((int)level, (LM_DEBUG, 
-    this->expand_statement (statement).c_str ()));
+  logger_->log (level, this->expand_statement (statement).c_str ());
 }
 
 // clear all variables and their values
@@ -764,5 +776,26 @@ Madara::Knowledge_Engine::Thread_Safe_Context::signal (bool lock) const
   else
     changed_.signal ();
 }
+
+inline void
+Madara::Knowledge_Engine::Thread_Safe_Context::add_logger (
+  const std::string & filename)
+{
+  logger_->add_file (filename);
+}
+
+inline int
+Madara::Knowledge_Engine::Thread_Safe_Context::get_log_level (void)
+{
+  return logger_->get_level ();
+}
+
+inline void
+Madara::Knowledge_Engine::Thread_Safe_Context::set_log_level (int level)
+{
+  logger_->set_level (level);
+}
+
+
 
 #endif // _MADARA_THREADSAFECONTEXT_INL_

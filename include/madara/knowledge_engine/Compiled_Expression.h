@@ -70,7 +70,10 @@ namespace Madara
       Expression_Tree::Component_Node * get_root (void);
 
     private:
+      /// the logic that was compiled
       std::string logic;
+
+      /// the expression tree
       Madara::Expression_Tree::Expression_Tree expression;
     };
   }

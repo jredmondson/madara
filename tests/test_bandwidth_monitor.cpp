@@ -1,12 +1,16 @@
 
 #include "madara/transport/Bandwidth_Monitor.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "ace/High_Res_Timer.h"
 #include "ace/OS.h"
 
 #include <iostream>
 #include <string>
 #include <sstream>
+
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
@@ -95,20 +99,23 @@ int parse_args (int argc, ACE_TCHAR * argv[])
     {
       if (i + 1 < argc)
       {
+        int level;
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        buffer >> level;
+
+        logger::global_logger->set_level (level);
       }
 
       ++i;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
-        "\nProgram summary for %s:\n\n" \
+      logger::global_logger->log (logger::LOG_ALWAYS,
+"\nProgram summary for %s:\n\n" \
 "This test checks the functionality of the Bandwidth Monitoring class\n"
-        " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-        "\n",
-        argv[0]));
+" [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
+"\n",
+        argv[0]);
       exit (0);
     }
   }

@@ -25,11 +25,13 @@ namespace Madara
     public:
       /**
        * Constructor
+       * @param   logger the logger to use for printing
        * @param   left   left expression
        * @param   right  right expression
        **/
-      Composite_Greater_Than_Node (Component_Node *left, 
-                          Component_Node *right);
+      Composite_Greater_Than_Node (Logger::Logger & logger,
+        Component_Node *left,
+        Component_Node *right);
 
       /**
        * Returns the printable character of the node

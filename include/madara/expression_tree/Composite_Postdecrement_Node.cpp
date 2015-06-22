@@ -13,12 +13,9 @@
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/Variable_Node.h"
 
-#include "madara/utility/Log_Macros.h"
-
-// Ctor
-
-Madara::Expression_Tree::Composite_Postdecrement_Node::Composite_Postdecrement_Node (Component_Node *right)
-  : Composite_Unary_Node (right)
+Madara::Expression_Tree::Composite_Postdecrement_Node::Composite_Postdecrement_Node (
+  Logger::Logger & logger, Component_Node *right)
+: Composite_Unary_Node (logger, right)
 {
   var_ = dynamic_cast <Variable_Node *> (right);
 
@@ -54,14 +51,14 @@ Madara::Expression_Tree::Composite_Postdecrement_Node::prune (bool & can_change)
     if (!right_child_can_change && dynamic_cast <Leaf_Node *> (right_) == 0)
     {
       delete this->right_;
-      this->right_ = new Leaf_Node (right_value);
+      this->right_ = new Leaf_Node (*(this->logger_), right_value);
     }
   }
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Predecrement" \
-      " has no right expression\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Predecrement has no right expression\n");
+
     exit (-1);
   }
 

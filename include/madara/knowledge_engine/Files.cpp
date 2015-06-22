@@ -58,10 +58,9 @@ Madara::Knowledge_Engine::Files::read_file (
   dest_filename << "/";
   dest_filename << knowledge_key;
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE,
-    (LM_TRACE, 
-      DLINFO "Files::read_file : %s->%s\n",
-    source_filename.str ().c_str (), dest_filename.str ().c_str ()));
+  map_.get_logger ().log (Logger::LOG_DETAILED,
+    "Files::read_file : %s->%s\n",
+    source_filename.str ().c_str (), dest_filename.str ().c_str ());
 
   // load the source file into a mapped file of the OS's 
   // virtual memory system
@@ -70,9 +69,9 @@ Madara::Knowledge_Engine::Files::read_file (
   void * file_contents = mapped_file.addr ();
   size_t size = mapped_file.size ();
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_TRACE, 
-    DLINFO "Files::read_file : file size is %d, loaded at 0x%x\n",
-    size, file_contents));
+  map_.get_logger ().log (Logger::LOG_DETAILED,
+    "Files::read_file : file size is %d, loaded at 0x%x\n",
+    size, file_contents);
 
   if (size > 0)
   {
@@ -87,8 +86,8 @@ Madara::Knowledge_Engine::Files::read_file (
     {
       map_.set (knowledge_key, (Madara::Knowledge_Record::Integer) actual);
 
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_TRACE, 
-        DLINFO "Files::read_file : file imported with %d bytes\n", actual));
+      map_.get_logger ().log (Logger::LOG_DETAILED,
+        "Files::read_file : file imported with %d bytes\n", actual);
     }
     else ret = -2;
   }
@@ -100,8 +99,8 @@ Madara::Knowledge_Engine::Files::read_file (
 
   if (ret < 0)
   {
-    MADARA_DEBUG (MADARA_LOG_NONFATAL_ERROR, (LM_TRACE, 
-      DLINFO "Files::read_file : read file failed with %d\n", ret));
+    map_.get_logger ().log (Logger::LOG_EMERGENCY,
+      "Files::read_file : read file failed with %d\n", ret);
   }
 
   return ret;
@@ -127,10 +126,9 @@ Madara::Knowledge_Engine::Files::write_file (
   // build dest file name
   dest_filename << filename;
 
-
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_TRACE, 
-    DLINFO "Files::write_file : %s->%s\n", 
-    source_filename.str ().c_str (), dest_filename.str ().c_str ()));
+  map_.get_logger ().log (Logger::LOG_DETAILED,
+    "Files::write_file : %s->%s\n",
+    source_filename.str ().c_str (), dest_filename.str ().c_str ());
 
   // load the source file into a mapped file of the OS's 
   // virtual memory system
@@ -139,9 +137,9 @@ Madara::Knowledge_Engine::Files::write_file (
   void * file_contents = mapped_file.addr ();
   size_t size = mapped_file.size ();
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_TRACE, 
-    DLINFO "Files::write_file : file size is %d, loaded at 0x%x\n",
-    size, file_contents));
+  map_.get_logger ().log (Logger::LOG_DETAILED,
+    "Files::write_file : file size is %d, loaded at 0x%x\n",
+    size, file_contents);
 
   if (size > 0)
   {
@@ -156,8 +154,8 @@ Madara::Knowledge_Engine::Files::write_file (
     {
       map_.set (knowledge_key, (Madara::Knowledge_Record::Integer) actual);
 
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_TRACE, 
-        DLINFO "Files::write_file : file saved with %d bytes\n", actual));
+      map_.get_logger ().log (Logger::LOG_DETAILED,
+        "Files::write_file : file saved with %d bytes\n", actual);
     }
     else ret = -2;
   }
@@ -169,8 +167,8 @@ Madara::Knowledge_Engine::Files::write_file (
 
   if (ret < 0)
   {
-    MADARA_DEBUG (MADARA_LOG_NONFATAL_ERROR, (LM_TRACE, 
-      DLINFO "Files::write_file : write file failed with %d\n", ret));
+    map_.get_logger ().log (Logger::LOG_ERROR,
+      "Files::write_file : write file failed with %d\n", ret);
   }
 
   return ret;
@@ -189,8 +187,8 @@ Madara::Knowledge_Engine::Files::write_file (const char * filename,
     O_RDWR | O_CREAT | O_TRUNC,
     ACE_DEFAULT_FILE_PERMS);
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_TRACE, 
-    DLINFO "Files::write_file : beginning write of %d bytes\n", size));
+  map_.get_logger ().log (Logger::LOG_DETAILED,
+    "Files::write_file : beginning write of %d bytes\n", size);
 
   if (file_handle  != ACE_INVALID_HANDLE)
   {
@@ -225,9 +223,9 @@ Madara::Knowledge_Engine::Files::read_policy (
   dest_filename << "/";
   dest_filename << policy_key;
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_TRACE, 
-    DLINFO "Files::read_policy : %s->%s\n", 
-    source_filename.str ().c_str (), dest_filename.str ().c_str ()));
+  map_.get_logger ().log (Logger::LOG_DETAILED,
+    "Files::read_policy : %s->%s\n",
+    source_filename.str ().c_str (), dest_filename.str ().c_str ());
 
   // load the source file into a mapped file of the OS's 
   // virtual memory system
@@ -236,9 +234,9 @@ Madara::Knowledge_Engine::Files::read_policy (
   void * file_contents = mapped_file.addr ();
   size_t size = mapped_file.size ();
 
-  MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_TRACE, 
-    DLINFO "Files::read_policy : file size is %d, loaded at 0x%x\n",
-    size, file_contents));
+  map_.get_logger ().log (Logger::LOG_DETAILED,
+    "Files::read_policy : file size is %d, loaded at 0x%x\n",
+    size, file_contents);
 
   if (size > 0)
   {
@@ -253,8 +251,8 @@ Madara::Knowledge_Engine::Files::read_policy (
     {
       map_.set (policy_key, (Madara::Knowledge_Record::Integer) actual);
 
-      MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_TRACE, 
-        DLINFO "Files::read_policy : file imported with %d bytes\n", actual));
+      map_.get_logger ().log (Logger::LOG_DETAILED,
+        "Files::read_policy : file imported with %zu bytes\n", actual);
     }
     else ret = -2;
   }
@@ -266,8 +264,8 @@ Madara::Knowledge_Engine::Files::read_policy (
 
   if (ret < 0)
   {
-    MADARA_DEBUG (MADARA_LOG_NONFATAL_ERROR, (LM_TRACE, 
-      DLINFO "Files::read_policy : read file failed with %d\n", ret));
+    map_.get_logger ().log (Logger::LOG_ERROR,
+      "Files::read_policy : read file failed with %d\n", ret);
   }
 
   return ret;

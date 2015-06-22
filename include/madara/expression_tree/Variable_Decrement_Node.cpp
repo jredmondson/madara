@@ -5,7 +5,7 @@
 #include "madara/expression_tree/Variable_Decrement_Node.h"
 #include "madara/utility/Utility.h"
 
-#include "madara/utility/Log_Macros.h"
+
 #include <string>
 #include <sstream>
 
@@ -13,7 +13,8 @@ Madara::Expression_Tree::Variable_Decrement_Node::Variable_Decrement_Node (
   Component_Node * lhs, Madara::Knowledge_Record value,
   Component_Node * rhs,
   Madara::Knowledge_Engine::Thread_Safe_Context &context)
-: var_ (0), array_ (0), value_ (value), rhs_ (rhs), context_ (context)
+: Component_Node (context.get_logger ()), var_ (0), array_ (0),
+  value_ (value), rhs_ (rhs), context_ (context)
 {
   var_ = dynamic_cast <Variable_Node *> (lhs);
 
@@ -60,8 +61,9 @@ Madara::Expression_Tree::Variable_Decrement_Node::prune (bool & can_change)
     left_child_can_change = true;
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Variable assignment has no variable\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Variable assignment has no variable\n");
+
     exit (-1);    
   }
 
@@ -71,13 +73,14 @@ Madara::Expression_Tree::Variable_Decrement_Node::prune (bool & can_change)
     if (!right_child_can_change && dynamic_cast <Leaf_Node *> (rhs_) == 0)
     {
       delete this->rhs_;
-      this->rhs_ = new Leaf_Node (right_value);
+      this->rhs_ = new Leaf_Node (*(this->logger_), right_value);
     }
   }
   else
   {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL COMPILE ERROR: Assignment has no right expression\n"));
+    logger_->log (Logger::LOG_EMERGENCY,
+      "KARL COMPILE ERROR: Variable assignment has no right expression\n");
+
     exit (-1);
   }
 
@@ -101,11 +104,11 @@ Madara::Expression_Tree::Variable_Decrement_Node::evaluate (
 
   if (var_)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "Composite_Assignment_Node::evaluate: "
       "Attempting to set variable %s to %s.\n",
       var_->expand_key ().c_str (),
-      rhs.to_string ().c_str ()));
+      rhs.to_string ().c_str ());
     
     Knowledge_Record result (var_->evaluate (settings) - rhs);
     var_->set (result, settings);
@@ -113,11 +116,11 @@ Madara::Expression_Tree::Variable_Decrement_Node::evaluate (
   }
   else if (array_)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "Composite_Assignment_Node::evaluate: "
       "Attempting to set index of var %s to %s.\n",
       array_->expand_key ().c_str (),
-      rhs.to_string ().c_str ()));
+      rhs.to_string ().c_str ());
 
     Knowledge_Record result (array_->evaluate (settings) - rhs);
     array_->set (result, settings);
@@ -125,12 +128,12 @@ Madara::Expression_Tree::Variable_Decrement_Node::evaluate (
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "Composite_Assignment_Node::evaluate: "
       "left hand side was neither a variable nor an array reference. "
       "Check your expression for errors.\n",
       array_->expand_key ().c_str (),
-      rhs.to_string ().c_str ()));
+      rhs.to_string ().c_str ());
 
   }
 

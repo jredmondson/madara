@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Set_Precision.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
@@ -48,7 +48,7 @@ Madara::Expression_Tree::System_Call_Set_Precision::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (nodes_[0]) == 0)
     {
       delete nodes_[0];
-      nodes_[0] = new Leaf_Node (result);
+      nodes_[0] = new Leaf_Node (*(this->logger_), result);
     }
   }
 
@@ -67,9 +67,9 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   {
     Knowledge_Record::Integer new_precision = 
       nodes_[0]->evaluate (settings).to_integer ();
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "System call precision is setting the precision to %q.\n",
-      new_precision));
+      new_precision);
 
     Knowledge_Record::set_precision (new_precision);
 
@@ -77,8 +77,8 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call precision is returning the double precision.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "System call precision is returning the double precision.\n");
 
     return Knowledge_Record::Integer (Knowledge_Record::get_precision ());
   }

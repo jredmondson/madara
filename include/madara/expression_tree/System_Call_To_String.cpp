@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_To_String.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
@@ -49,7 +49,7 @@ Madara::Expression_Tree::System_Call_To_String::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (*i) == 0)
     {
       delete *i;
-      *i = new Leaf_Node (result);
+      *i = new Leaf_Node (*(this->logger_), result);
     }
   }
 
@@ -74,23 +74,23 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
       delimiter = nodes_[1]->evaluate (settings).to_string (delimiter);
 
       if (nodes_.size () > 2)
-      { 
-        MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+      {
+        logger_->log (Logger::LOG_EMERGENCY,
           "KARL RUNTIME ERROR: System call to_string"
           " may have up to 2 arguments. First is a value to change to string."
-          " An optional second is a delimiter for array stringification.\n"));
+          " An optional second is a delimiter for array stringification\n");
       }
     }
 
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call to_string is converting an argument.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "System call to_string is converting an argument\n");
 
     result = nodes_[0]->evaluate (settings).to_string (delimiter);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call to_string is converting 0.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "System call to_string is converting 0\n");
   }
 
   return result;

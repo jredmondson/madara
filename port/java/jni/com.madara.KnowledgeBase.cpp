@@ -15,9 +15,11 @@
 
 namespace engine = Madara::Knowledge_Engine;
 namespace transport = Madara::Transport;
+namespace logger = Madara::Logger;
 typedef Madara::Knowledge_Record::Integer Integer;
 typedef engine::Knowledge_Base         Knowledge_Base;
 typedef engine::Compiled_Expression    Compiled_Expression;
+typedef logger::Logger                 Logger;
 
 static jclass knowledgeBaseClass = 0;
 static jmethodID callbackMethod = 0;
@@ -100,6 +102,31 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__J
   return (jlong) result;
 }
 
+void JNICALL Java_com_madara_KnowledgeBase_jni_1attachLogger
+(JNIEnv *, jobject, jlong cptr, jlong logger_ptr)
+{
+  Knowledge_Base * knowledge = (Knowledge_Base *)cptr;
+  Logger * logger = (Logger *)logger_ptr;
+
+  if (knowledge && logger)
+  {
+    knowledge->attach_logger (*logger);
+  }
+}
+
+jlong JNICALL Java_com_madara_KnowledgeBase_jni_1getLogger
+(JNIEnv *, jobject, jlong cptr)
+{
+  Logger * result (0);
+  Knowledge_Base * knowledge = (Knowledge_Base *)cptr;
+
+  if (knowledge)
+  {
+    result = &(knowledge->get_logger ());
+  }
+
+  return (jlong) result;
+}
 
 /*
 * Class:   com_madara_KnowledgeBase

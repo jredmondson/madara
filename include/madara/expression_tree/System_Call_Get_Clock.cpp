@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Get_Clock.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
@@ -48,7 +48,7 @@ Madara::Expression_Tree::System_Call_Get_Clock::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (nodes_[0]) == 0)
     {
       delete nodes_[0];
-      nodes_[0] = new Leaf_Node (result);
+      nodes_[0] = new Leaf_Node (*(this->logger_), result);
     }
   }
 
@@ -65,16 +65,16 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   if (nodes_.size () > 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call get_clock is returning the clock of its first argument.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "System call get_clock is returning the clock of its first argument\n");
 
     return Madara::Knowledge_Record::Integer (
       nodes_[0]->evaluate (settings).clock);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      "System call get_clock is returning the system clock.\n"));
+    logger_->log (Logger::LOG_MINOR,
+      "System call get_clock is returning the system clock\n");
 
     return Madara::Knowledge_Record::Integer (
       context_.get_clock ());

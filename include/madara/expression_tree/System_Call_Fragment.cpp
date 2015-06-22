@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Fragment.h"
 #include "madara/expression_tree/Visitor.h"
@@ -48,16 +48,16 @@ Madara::Expression_Tree::System_Call_Fragment::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (*i) == 0)
     {
       delete *i;
-      *i = new Leaf_Node (result);
+      *i = new Leaf_Node (*(this->logger_), result);
     }
   }
 
   if (nodes_.size () != 3)
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_MINOR,
       "KARL COMPILE ERROR: System call fragment"
       " requires three arguments, e.g."
-      " #fragment ('hello world', 0, 4) will return 'hello'\n"));
+      " #fragment ('hello world', 0, 4) will return 'hello'\n");
   }
 
   return result;
@@ -79,19 +79,19 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     unsigned int  last =
       (unsigned int) nodes_[2]->evaluate (settings).to_integer ();
 
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "System call fragment is returning segment [%d-%d].\n",
-      first, last));
+      first, last);
     
     return nodes_[0]->evaluate (settings).fragment (first, last);
   }
 
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call fragment"
       " requires three arguments, e.g."
-      " #fragment ('hello world', 0, 4) will return 'hello'\n"));
+      " #fragment ('hello world', 0, 4) will return 'hello'\n");
   }
 
 

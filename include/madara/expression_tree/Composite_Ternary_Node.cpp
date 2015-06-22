@@ -11,16 +11,17 @@
 #include "madara/expression_tree/Visitor.h"
 
 
-Madara::Expression_Tree::Composite_Ternary_Node::Composite_Ternary_Node ()
-  : nodes_ ()
+Madara::Expression_Tree::Composite_Ternary_Node::Composite_Ternary_Node (
+  Logger::Logger & logger)
+: Component_Node (logger), nodes_ ()
 {
 
 }
 
 
 Madara::Expression_Tree::Composite_Ternary_Node::Composite_Ternary_Node (
-  const Component_Nodes & nodes)
-  : nodes_ (nodes)
+  Logger::Logger & logger, const Component_Nodes & nodes)
+: Component_Node (logger), nodes_ (nodes)
 {
 
 }

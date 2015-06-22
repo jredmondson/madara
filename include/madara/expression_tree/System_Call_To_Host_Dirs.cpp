@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/utility/Utility.h"
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_To_Host_Dirs.h"
@@ -49,15 +49,15 @@ Madara::Expression_Tree::System_Call_To_Host_Dirs::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (nodes_[0]) == 0)
     {
       delete nodes_[0];
-      nodes_[0] = new Leaf_Node (result);
+      nodes_[0] = new Leaf_Node (*(this->logger_), result);
     }
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
-      " on Windows.\n"));
+      " on Windows\n");
   }
 
 
@@ -76,18 +76,18 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   {
     std::string statement (nodes_[0]->evaluate (settings).to_string ());
 
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "System call to_host_dirs is returning the proper directory structure "
-      "of %s.\n", statement.c_str ()));
+      "of %s.\n", statement.c_str ());
 
     return Madara::Utility::clean_dir_name (statement);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
-      " on Windows.\n"));
+      " on Windows\n");
   }
 
   return return_value;

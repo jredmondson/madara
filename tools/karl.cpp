@@ -13,14 +13,16 @@
 #include "ace/Recursive_Thread_Mutex.h"
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/utility/Utility.h"
 #include "madara/filters/Generic_Filters.h"
+#include "madara/logger/Global_Logger.h"
 
 namespace engine = Madara::Knowledge_Engine;
 namespace transport = Madara::Transport;
 namespace utility = Madara::Utility;
 namespace filters = Madara::Filters;
+namespace logger = Madara::Logger;
 
 typedef  std::vector <std::string>  String_Vector;
 
@@ -73,14 +75,14 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        engine::Knowledge_Base::log_to_file (argv[i + 1]);
+        logger::global_logger->add_file (argv[i + 1]);
       }
 
       ++i;
     }
     else if (arg1 == "-h" || arg1 == "--help")
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS,
         "\nProgram summary for %s [options] [Logic]:\n\n" \
         "Evaluates KaRL logic from command line or file.\n\noptions:\n" \
         "  [-a|--no-latency]        do not test for latency (throughput only)\n" \
@@ -100,7 +102,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         "  [-w|--wait seconds]      After evaluating all logics, wait for seconds\n" \
         "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
     else if (arg1 == "-i" || arg1 == "--input")
@@ -113,10 +115,10 @@ void handle_arguments (int argc, char ** argv)
 
         if (debug)
         {
-          MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+          logger::global_logger->log (logger::LOG_ALWAYS,
             "\nReading logic from file %s:\n\n" \
             "\n",
-            filename.c_str ()));
+            filename.c_str ());
         }
 
         filenames.push_back (filename);
@@ -128,8 +130,10 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
+        int level;
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
@@ -189,9 +193,9 @@ void handle_arguments (int argc, char ** argv)
     }
     else if (arg1 == "-v" || arg1 == "--version")
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
+      logger::global_logger->log (logger::LOG_ALWAYS,
         "MADARA version: %s\n",
-        utility::get_version ().c_str ()));
+        utility::get_version ().c_str ());
     }
     else if (arg1 == "-w" || arg1 == "--wait")
     {

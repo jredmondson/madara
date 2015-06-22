@@ -5,14 +5,15 @@
 #include "madara/expression_tree/Composite_Array_Reference.h"
 #include "madara/utility/Utility.h"
 
-#include "madara/utility/Log_Macros.h"
+
 #include <string>
 #include <sstream>
 
 Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
-  const std::string &key, Component_Node * index,
+  const std::string & key, Component_Node * index,
   Madara::Knowledge_Engine::Thread_Safe_Context &context)
-: Composite_Unary_Node (index), key_ (key), record_ (0),
+: Composite_Unary_Node (context.get_logger (), index),
+  key_ (key), record_ (0),
   context_ (context), key_expansion_necessary_ (false)
 {
   // this key requires expansion. We do the compilation and error checking here
@@ -20,9 +21,9 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
   // once
   if (key.find ("{") != key.npos)
   {
-    MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
+    logger_->log (Logger::LOG_DETAILED,
       "Variable %s requires variable expansion.\n",
-      key.c_str ()));
+      key.c_str ());
 
     unsigned int count = 1;
     key_expansion_necessary_ = true;
@@ -33,9 +34,10 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
 
     if (pivot_list_.size () % 2 != 0)
     {
-      MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-        "\nKARL COMPILE ERROR: matching braces not found in %s\n",
-        key.c_str ()));
+      logger_->log (Logger::LOG_EMERGENCY,
+        "KARL COMPILE ERROR: matching braces not found in %s\n",
+         key.c_str ());
+
       exit (-1);
     }
     
@@ -58,18 +60,20 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
 
     if (num_opens > num_closes)
     {
-      MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-        "\nKARL COMPILE ERROR: " \
-        "Array name has more opening braces than closing in %s\n",
-        key.c_str ()));
+      logger_->log (Logger::LOG_EMERGENCY,
+        "KARL COMPILE ERROR: Array name has "
+        "more opening braces than closing in %s\n",
+        key.c_str ());
+
       exit (-1);
     }
     else if (num_closes > num_opens)
     {
-      MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-        "\nKARL COMPILE ERROR: " \
-        "Array name has more closing braces than opening in %s\n",
-        key.c_str ()));
+      logger_->log (Logger::LOG_EMERGENCY,
+        "KARL COMPILE ERROR: Array name has "
+        "more closing braces than opening in %s\n",
+        key.c_str ());
+
       exit (-1);
     }
   }
@@ -92,9 +96,9 @@ Madara::Expression_Tree::Composite_Array_Reference::expand_key (void) const
 {
   if (key_expansion_necessary_)
   {
-    MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-      "Variable %s requires variable expansion.\n",
-      key_.c_str ()));
+    logger_->log (Logger::LOG_DETAILED,
+      "Variable %s requires variable expansion\n",
+      key_.c_str ());
 
     unsigned int count = 0;
 

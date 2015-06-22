@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Read_File.h"
 #include "madara/expression_tree/Visitor.h"
@@ -48,19 +48,19 @@ Madara::Expression_Tree::System_Call_Read_File::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (*i) == 0)
     {
       delete *i;
-      *i = new Leaf_Node (result);
+      *i = new Leaf_Node (*(this->logger_), result);
     }
   }
 
   if (nodes_.size () == 0 || nodes_.size () > 2)
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call read_file"
       " requires at least a filename to read, e.g."
       " #read_file (filename), #read_file (filename, 'text')."
       " Second argument is to force a file type when the filename"
       " does not end with .txt, .xml, .jpg, etc. Can be 'text',"
-      " 'jpeg', 'xml'.\n"));
+      " 'jpeg', 'xml'\n");
   }
 
   return result;
@@ -80,10 +80,10 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     // instead of the resulting string filename.
     Knowledge_Record filename_eval = nodes_[0]->evaluate (settings);
     uint32_t read_as_type_uint (0);
-    
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+
+    logger_->log (Logger::LOG_MINOR,
       "System call read_file is attempting to open %s.\n",
-      filename_eval.to_string ().c_str ()));
+      filename_eval.to_string ().c_str ());
 
     if (nodes_.size () == 2)
     {
@@ -112,20 +112,20 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
     if (0 != return_value.read_file (filename_eval.to_string ()))
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger_->log (Logger::LOG_EMERGENCY,
         "KARL RUNTIME ERROR: System call read_file could not open %s.\n",
-        filename_eval.to_string ().c_str ()));
+        filename_eval.to_string ().c_str ());
     }
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call read_file"
       " requires at least a filename to read, e.g."
       " #read_file (filename), #read_file (filename, 'text')."
       " Second argument is to force a file type when the filename"
       " does not end with .txt, .xml, .jpg, etc. Can be 'text',"
-      " 'jpeg', 'xml'.\n"));
+      " 'jpeg', 'xml'");
   }
 
   return return_value;

@@ -7,9 +7,12 @@
 
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/knowledge_engine/containers/Barrier.h"
 #include "madara/filters/Generic_Filters.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 // shortcuts
 namespace engine = Madara::Knowledge_Engine;
@@ -105,8 +108,10 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
+        int level;
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
@@ -115,7 +120,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        engine::Knowledge_Base::log_to_file (argv[i + 1]);
+        logger::global_logger->add_file (argv[i + 1]);
       }
 
       ++i;
@@ -178,7 +183,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS,
 "\nProgram summary for %s:\n\n" \
 "  Attempts to send a file over the network with a certain number\n" \
 "  of rebroadcasts (-h|--hops controls the number of rebroadcasts)\n\n" \
@@ -198,7 +203,8 @@ void handle_arguments (int argc, char ** argv)
 " [-t|--target target]     the desired distributed count total\n"\
 " [-w|--max-wait time]     maximum time to wait in seconds (double format)\n"\
 "\n",
-        argv[0]));
+        argv[0]);
+
       exit (0);
     }
   }

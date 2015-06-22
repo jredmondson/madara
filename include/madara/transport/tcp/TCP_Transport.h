@@ -6,6 +6,7 @@
 #include "madara/transport/tcp/TCP_Transport_Read_Thread.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 #include "madara/transport/Transport.h"
+#include "madara/threads/Threader.h"
 
 namespace Madara
 {
@@ -70,9 +71,14 @@ namespace Madara
       int setup (void);
     protected:
     private:
-      const std::string                               id_;
+      /// knowledge base for threads to use
+      Knowledge_Engine::Knowledge_Base          knowledge_;
 
-      TCP_Transport_Read_Thread *               thread_;
+      /// threads for reading knowledge updates
+      Threads::Threader                         read_threads_;
+
+      std::map <std::string, ACE_INET_Addr>     addresses_;
+
     };
   }
 }

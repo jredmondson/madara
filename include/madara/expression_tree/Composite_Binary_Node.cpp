@@ -7,11 +7,12 @@
 #include "madara/expression_tree/Composite_Binary_Node.h"
 
 // Ctor
-Madara::Expression_Tree::Composite_Binary_Node::Composite_Binary_Node (Component_Node *left,
-                                              Component_Node *right)
-  : Composite_Unary_Node (right), 
-    left_ (left)
-{    
+Madara::Expression_Tree::Composite_Binary_Node::Composite_Binary_Node (
+  Logger::Logger & logger,
+  Component_Node * left,
+  Component_Node *right)
+: Composite_Unary_Node (logger, right), left_ (left)
+{   
 }
 
 // Dtor

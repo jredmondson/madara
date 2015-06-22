@@ -13,7 +13,7 @@
 #include "madara/expression_tree/Composite_Function_Node.h"
 #include "madara/expression_tree/Leaf_Node.h"
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/knowledge_engine/Functions.h"
 #include "madara/knowledge_engine/Extern_Function_Variables.h"
 
@@ -35,9 +35,9 @@ Madara::Expression_Tree::Composite_Function_Node::Composite_Function_Node (
         const std::string & name, 
         Madara::Knowledge_Engine::Thread_Safe_Context & context,
         const Component_Nodes & nodes)
-  : Madara::Expression_Tree::Composite_Ternary_Node (nodes),
-    context_ (context), name_ (name), 
-    function_ (context.retrieve_function (name))
+: Composite_Ternary_Node (context.get_logger (), nodes),
+  context_ (context), name_ (name), 
+  function_ (context.retrieve_function (name))
 {
   
 }
@@ -81,7 +81,7 @@ Madara::Expression_Tree::Composite_Function_Node::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (nodes_[i]) == 0)
     {
       delete nodes_[i];
-      nodes_[i] = new Leaf_Node (result);
+      nodes_[i] = new Leaf_Node (*(this->logger_), result);
     }
 
     {
@@ -119,10 +119,10 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   Madara::Knowledge_Engine::Variables variables;
   variables.context_ = &context_;
-  
-  MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
+
+  logger_->log (Logger::LOG_DETAILED,
     "Function %s is being called with %d args.\n",
-    this->name_.c_str (), args.size ()));
+    this->name_.c_str (), args.size ());
   
   // if the user has defined a named function, return that
   if (function_->is_extern_named ())

@@ -1,5 +1,5 @@
 #include "madara/transport/udp/UDP_Transport_Read_Thread.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/utility/Utility.h"
 #include "madara/transport/Reduced_Message_Header.h"
 #include "ace/Time_Value.h"
@@ -42,22 +42,22 @@ Madara::Transport::UDP_Transport_Read_Thread::init (
     // check for an on_data_received ruleset
     if (settings_.on_data_received_logic.length () != 0)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO
-        "UDP_Transport_Read_Thread::init:" \
-        " setting rules to %s\n", 
-        settings_.on_data_received_logic.c_str ()));
       
 #ifndef _MADARA_NO_KARL_
+      context_->get_logger ().log (Logger::LOG_MAJOR,
+        "UDP_Transport_Read_Thread::init:" \
+        " setting rules to %s\n",
+        settings_.on_data_received_logic.c_str ());
+
       Madara::Expression_Tree::Interpreter interpreter;
       on_data_received_ = context_->compile (settings_.on_data_received_logic);
 #endif // _MADARA_NO_KARL_
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "UDP_Transport_Read_Thread::init:" \
-        " no permanent rules were set\n"));
+      context_->get_logger ().log (Logger::LOG_MINOR,
+        "UDP_Transport_Read_Thread::init:" \
+        " no permanent rules were set");
     }
   }
 }
@@ -74,7 +74,7 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
 
   if (!settings_.no_sending)
   {
-    result = prep_rebroadcast (buffer, buffer_remaining,
+    result = prep_rebroadcast (*context_, buffer, buffer_remaining,
                                    settings_, print_prefix,
                                    header, records,
                                    packet_scheduler_);
@@ -87,11 +87,11 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
       if (packet_size > settings_.max_fragment_size)
       {
         Fragment_Map map;
-      
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s:" \
+
+        context_->get_logger ().log (Logger::LOG_MAJOR,
+          "%s:" \
           " fragmenting %Q byte packet (%d bytes is max fragment size)\n",
-          print_prefix, packet_size, settings_.max_fragment_size));
+          print_prefix, packet_size, settings_.max_fragment_size);
 
         // fragment the message
         frag (buffer_.get_ptr (), settings_.max_fragment_size, map);
@@ -113,10 +113,10 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
               if (settings_.slack_time > 0)
                 Madara::Utility::sleep (settings_.slack_time);
 
-              MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-                DLINFO "%s:" \
+              context_->get_logger ().log (Logger::LOG_MAJOR,
+                "%s:" \
                 " Send result was %d of %d byte fragment to %s\n",
-                print_prefix, actual_sent, frag_size, addr->first.c_str ()));
+                print_prefix, actual_sent, frag_size, addr->first.c_str ());
 
               if (actual_sent > 0)
               {
@@ -126,11 +126,11 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
             }
           }
         }
-      
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s:" \
-          " Sent fragments totalling %Q bytes\n",
-          print_prefix, bytes_sent));
+
+        context_->get_logger ().log (Logger::LOG_MAJOR,
+          "%s:" \
+          " Sent fragments totalling %llu bytes\n",
+          print_prefix, bytes_sent);
 
         delete_fragments (map);
       }
@@ -143,11 +143,11 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
           {
             ssize_t actual_sent = write_socket_.send (buffer_.get_ptr (),
               (ssize_t)result, i->second);
-            
-            MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-              DLINFO "%s:" \
-              " Sent %Q packet to %s\n",
-              print_prefix, packet_size, i->first.c_str ()));
+
+            context_->get_logger ().log (Logger::LOG_MAJOR,
+              "%s:" \
+              " Sent %llu packet to %s\n",
+              print_prefix, packet_size, i->first.c_str ());
 
             if (actual_sent > 0)
             {
@@ -157,17 +157,17 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
           }
         }
 
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "%s:" \
-          " Sent %Q total bytes via rebroadcast\n",
-          print_prefix, bytes_sent));
+        context_->get_logger ().log (Logger::LOG_MAJOR,
+          "%s:" \
+          " Sent %llu total bytes via rebroadcast\n",
+          print_prefix, bytes_sent);
       }
 
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context_->get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " Send bandwidth = %d B/s\n",
         print_prefix,
-        send_monitor_.get_bytes_per_second ()));
+        send_monitor_.get_bytes_per_second ());
     }
   }
 }
@@ -190,41 +190,41 @@ Madara::Transport::UDP_Transport_Read_Thread::run (void)
     char * buffer = buffer_.get_ptr ();
     const char * print_prefix = "UDP_Transport_Read_Thread::run";
     int64_t buffer_remaining = settings_.queue_length;
-  
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " entering main service loop.\n",
-      print_prefix));
+      print_prefix);
     
     Knowledge_Map rebroadcast_records;
 
     if (buffer == 0)
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context_->get_logger ().log (Logger::LOG_MINOR,
+        "%s:" \
         " Unable to allocate buffer of size %d. Exiting thread.\n",
         print_prefix,
-        settings_.queue_length));
+        settings_.queue_length);
     
       return;
     }
     
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_->get_logger ().log (Logger::LOG_MINOR,
+      "%s:" \
       " entering a recv on the socket.\n",
-      print_prefix));
+      print_prefix);
     
     // read the message
     ssize_t bytes_read = read_socket_.recv ((void *)buffer, 
       settings_.queue_length, remote, 0, &wait_time);
  
 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "%s:" \
       " received a message header of %d bytes from %s:%d\n",
       print_prefix,
       bytes_read,
-      remote.get_host_addr (), remote.get_port_number ()));
+      remote.get_host_addr (), remote.get_port_number ());
     
     if (bytes_read > 0)
     {
@@ -261,10 +261,10 @@ Madara::Transport::UDP_Transport_Read_Thread::run (void)
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "%s:" \
+      context_->get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
         " wait timeout on new messages. Proceeding to next wait\n",
-        print_prefix));
+        print_prefix);
     }
   }
 }

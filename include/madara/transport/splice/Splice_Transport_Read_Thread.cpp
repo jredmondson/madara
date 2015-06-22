@@ -1,7 +1,9 @@
 #include "madara/transport/splice/Splice_Transport_Read_Thread.h"
-#include "madara/utility/Log_Macros.h"
 #include "madara/knowledge_engine/Update_Types.h"
 #include "madara/utility/Utility.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 #include <iostream>
 #include <sstream>
@@ -36,39 +38,38 @@ Madara::Transport::Splice_Read_Thread::Splice_Read_Thread (
   // check for an on_data_received ruleset
   if (settings_.on_data_received_logic.length () != 0)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO
+    context_.get_logger ().log (logger::LOG_DETAILED,
       "Splice_Read_Thread::Splice_Read_Thread:" \
-      " setting rules to %s\n", 
-      settings_.on_data_received_logic.c_str ()));
+      " setting rules to %s\n",
+      settings_.on_data_received_logic.c_str ());
 
     Madara::Expression_Tree::Interpreter interpreter;
     on_data_received_ = context_.compile (settings_.on_data_received_logic);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Splice_Read_Thread::Splice_Read_Thread:" \
-      " no permanent rules were set\n"));
+    context_.get_logger ().log (logger::LOG_DETAILED,
+      "Splice_Read_Thread::Splice_Read_Thread:" \
+      " no permanent rules were set\n");
   }
   
   int result = this->activate (THR_NEW_LWP | THR_DETACHED, 1);
-  
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Splice_Read_Thread::Splice_Read_Thread:" \
-    " read thread started\n"));
+
+  context_.get_logger ().log (logger::LOG_MAJOR,
+    "Splice_Read_Thread::Splice_Read_Thread:" \
+    " read thread started\n");
 
   if (result != -1)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Splice_Read_Thread::Splice_Read_Thread:" \
-      " read thread started (result = %d)\n", result));
+    context_.get_logger ().log (logger::LOG_MAJOR,
+      "Splice_Read_Thread::Splice_Read_Thread:" \
+      " read thread started (result = %d)\n", result);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Splice_Read_Thread::Splice_Read_Thread:" \
-      " failed to create thread. ERRNO = %d\n", ACE_OS::last_error ()));
+    context_.get_logger ().log (logger::LOG_ERROR,
+      "Splice_Read_Thread::Splice_Read_Thread:" \
+      " failed to create thread. ERRNO = %d\n", ACE_OS::last_error ());
   }
 }
 
@@ -94,10 +95,10 @@ Madara::Transport::Splice_Read_Thread::wait_for_ready (void)
 }
 
 int Madara::Transport::Splice_Read_Thread::enter_barrier (void)
-{ 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "Splice_Read_Thread::enter_barrier:" \
-    " beginning thread barrier for shut down of read thread\n"));
+{
+  context_.get_logger ().log (logger::LOG_ERROR,
+    "Splice_Read_Thread::enter_barrier:" \
+    " beginning thread barrier for shut down of read thread\n");
 
   barrier_.wait ();
   return 0;
@@ -159,11 +160,11 @@ Madara::Transport::Splice_Read_Thread::handle_vote (
     // grab the current voted best
     vote_best = settings_.latencies.results[0].latency;
     double & acceptable = settings_.redeployment_percentage_allowed;
-  
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::handle_vote:" \
+
+    context_.get_logger ().log (logger::LOG_MINOR,
+      "Splice_DDS_Transport::handle_vote:" \
       " cur_latency is %Q, voted_best is %Q\n", 
-      cur_latency, vote_best));
+      cur_latency, vote_best);
 
     // if the voted best is worse than our current latency, then we don't
     // do anything (we're already best latency
@@ -177,12 +178,11 @@ Madara::Transport::Splice_Read_Thread::handle_vote (
         // redeployment requirement has been met
         settings_.read_solution (settings_.latencies.results[0].deployment,
           id_);
-              
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "Splice_DDS_Transport::handle_vote:" \
-          " updating solution with latency of %Q\n", 
-          vote_best));
 
+        context_.get_logger ().log (logger::LOG_MAJOR,
+          "Splice_DDS_Transport::handle_vote:" \
+          " updating solution with latency of %Q\n", 
+          vote_best);
       }
     }
 
@@ -206,11 +206,11 @@ Madara::Transport::Splice_Read_Thread::handle_latency_summation (
   
   ++settings_.num_summations;
 
-  MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-    DLINFO "Splice_DDS_Transport::handle_latency_summation:" \
-    " originator=%s, key=%s, quality=%u, step=%q\n", 
+  context_.get_logger ().log (logger::LOG_MAJOR,
+    "Splice_DDS_Transport::handle_latency_summation:" \
+    " originator=%s, key=%s, quality=%d, step=%ll\n", 
     data.originator.val (), data.key.val (),
-    data.quality, data.value));
+    data.quality, data.value);
 
   // if we were the aggregator, don't apply the updates to ourself.
   if (data.quality != settings_.id)
@@ -282,11 +282,11 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
     reply_data.originator = id_.c_str ();
     reply_data.type = Madara::Transport::LATENCY;
 
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::handle_latency:" \
-      " originator=%s, key=%s, quality=%u, step=%q\n", 
+    context_.get_logger ().log (logger::LOG_MAJOR,
+      "Splice_DDS_Transport::handle_latency:" \
+      " originator=%s, key=%s, quality=%d, step=%ll\n", 
       reply_data.originator.val (), reply_data.key.val (),
-      reply_data.quality, reply_data.value));
+      reply_data.quality, reply_data.value);
 
     settings_.reset_timers ();
     settings_.start_all_timers ();
@@ -336,11 +336,11 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
 
         update_writer_->write (reply_data, 0);
 
-        MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "Splice_DDS_Transport::handle_latency::aggregate:" \
-          " originator=%s, key=%s, quality=%u, step=%q\n", 
+        context_.get_logger ().log (logger::LOG_MINOR,
+          "Splice_DDS_Transport::handle_latency::aggregate:" \
+          " originator=%s, key=%s, quality=%d, step=%ll\n", 
           reply_data.originator.val (), reply_data.key.val (),
-          reply_data.quality, reply_data.value));
+          reply_data.quality, reply_data.value);
 
         Knowledge::Update summation;
         summation.value = settings_.processes;
@@ -353,12 +353,11 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
         //handle = update_writer_->register_instance (data);
         update_writer_->write (summation, 0);
 
-        MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-          DLINFO "Splice_DDS_Transport::handle_latency::summation:" \
-          " originator=%s, key=%s, quality=%u, step=%q\n", 
+        context_.get_logger ().log (logger::LOG_MINOR,
+          "Splice_DDS_Transport::handle_latency::summation:" \
+          " originator=%s, key=%s, quality=%d, step=%ll\n", 
           summation.originator.val (), summation.key.val (),
-          summation.quality, summation.value));
-
+          summation.quality, summation.value);
       }
     }
 
@@ -371,11 +370,11 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
     reply_data.originator = id_.c_str ();
     reply_data.type = Madara::Transport::LATENCY;
 
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "Splice_DDS_Transport::handle_latency:" \
-      " originator=%s, key=%s, quality=%u, step=%q\n", 
+    context_.get_logger ().log (logger::LOG_MINOR,
+      "Splice_DDS_Transport::handle_latency:" \
+      " originator=%s, key=%s, quality=%d, step=%ll\n", 
       reply_data.originator.val (), reply_data.key.val (),
-      reply_data.quality, reply_data.value));
+      reply_data.quality, reply_data.value);
 
     //handle = update_writer_->register_instance (data);
     update_writer_->write (reply_data, 0); 
@@ -409,11 +408,11 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
       //handle = update_writer_->register_instance (data);
       update_writer_->write (reply_data, 0);
 
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "Splice_DDS_Transport::handle_latency::aggregate:" \
-        " originator=%s, key=%s, quality=%u, step=%q\n", 
+      context_.get_logger ().log (logger::LOG_MINOR,
+        "Splice_DDS_Transport::handle_latency::aggregate:" \
+        " originator=%s, key=%s, quality=%d, step=%ll\n", 
         reply_data.originator.val (), reply_data.key.val (),
-        reply_data.quality, reply_data.value));
+        reply_data.quality, reply_data.value);
 
       Knowledge::Update summation;
       summation.value = settings_.processes;
@@ -426,11 +425,11 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
       //handle = update_writer_->register_instance (data);
       update_writer_->write (summation, 0);
 
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-        DLINFO "Splice_DDS_Transport::handle_latency::summation:" \
-        " originator=%s, key=%s, quality=%u, step=%q\n", 
+      context_.get_logger ().log (logger::LOG_MINOR,
+        "Splice_DDS_Transport::handle_latency::summation:" \
+        " originator=%s, key=%s, quality=%d, step=%ll\n", 
         summation.originator.val (), summation.key.val (),
-        summation.quality, summation.value));
+        summation.quality, summation.value);
 
     }
   }
@@ -446,7 +445,7 @@ Madara::Transport::Splice_Read_Thread::rebroadcast (
 {
   int64_t buffer_remaining = (int64_t) settings_.queue_length;
   char * buffer = buffer_.get_ptr ();
-  unsigned long result = prep_rebroadcast (buffer, buffer_remaining,
+  unsigned long result = prep_rebroadcast (context_, buffer, buffer_remaining,
                                  *qos_settings_, print_prefix,
                                  header, records,
                                  packet_scheduler_);
@@ -479,19 +478,19 @@ Madara::Transport::Splice_Read_Thread::rebroadcast (
     handle = update_writer_->register_instance (data);
     dds_result = update_writer_->write (data, handle); 
 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_.get_logger ().log (logger::LOG_MAJOR,
+      "%s:" \
       " Sent packet of size %d\n",
       print_prefix,
-      bytes_sent));
+      bytes_sent);
       
     send_monitor_.add ((uint32_t)bytes_sent);
 
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-      DLINFO "%s:" \
+    context_.get_logger ().log (logger::LOG_MINOR,
+      "%s:" \
       " Send bandwidth = %d B/s\n",
       print_prefix,
-      send_monitor_.get_bytes_per_second ()));
+      send_monitor_.get_bytes_per_second ());
   }
 }
 
@@ -518,9 +517,9 @@ Madara::Transport::Splice_Read_Thread::svc (void)
 
   // if we don't check originator for null, we get phantom sends
   // when the program exits.
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "%s:" \
-    " entering processing loop.\n", print_prefix));
+  context_.get_logger ().log (logger::LOG_MAJOR,
+    "%s:" \
+    " entering processing loop.\n", print_prefix);
 
   while (false == terminated_.value ())
   {
@@ -532,27 +531,24 @@ Madara::Transport::Splice_Read_Thread::svc (void)
 
     if (!is_ready_)
     {
-      MADARA_DEBUG (MADARA_LOG_TRACE, (LM_DEBUG, 
-        DLINFO "%s:" \
-        " waking up anyone waiting for read thread.\n", print_prefix));
+      context_.get_logger ().log (logger::LOG_DETAILED,
+        "%s:" \
+        " waking up anyone waiting for read thread.\n", print_prefix);
 
       is_ready_ = true;
       is_not_ready_.broadcast ();
     }
     //ACE_DEBUG ((LM_DEBUG, "(%P|%t) Read thread take.\n"));
 
-    MADARA_DEBUG (MADARA_LOG_TRACE, (LM_DEBUG, 
-      DLINFO "%s:" \
-      " entering a take on the DDS reader.\n", print_prefix));
+    context_.get_logger ().log (logger::LOG_DETAILED,
+      "%s:" \
+      " entering a take on the DDS reader.\n", print_prefix);
 
     dds_result = update_reader_->take (update_data_list_, infoList, 20, 
       DDS::ANY_SAMPLE_STATE, DDS::ANY_VIEW_STATE, DDS::ANY_INSTANCE_STATE);
 
     amount = update_data_list_->length ();
     
-    //ACE_DEBUG ((LM_DEBUG, "(%P|%t) Returning from take with %d items.\n",  
-    //        amount));
-
     if (amount != 0)
     {
       for (int i = 0; i < amount; ++i)
@@ -564,19 +560,19 @@ Madara::Transport::Splice_Read_Thread::svc (void)
         {
           // if we don't check originator for null, we get phantom sends
           // when the program exits.
-          MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG,
-            DLINFO "%s:" \
-            " discarding null originator event.\n", print_prefix));
+          context_.get_logger ().log (logger::LOG_DETAILED,
+            "%s:" \
+            " discarding null originator event.\n", print_prefix);
 
           continue;
         }
 
         if (update_data_list_[i].type != Madara::Transport::MULTIASSIGN)
         {
+          context_.get_logger ().log (logger::LOG_DETAILED,
+            "%s:" \
+            " discarding non-assignment event.\n", print_prefix);
           // we do not allow any other type than multiassign
-          MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG,
-            DLINFO "%s:" \
-            " discarding non-assignment event.\n", print_prefix));
 
           continue;
         }

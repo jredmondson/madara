@@ -5,13 +5,13 @@
 #include "madara/expression_tree/List_Node.h"
 #include "madara/utility/Utility.h"
 
-#include "madara/utility/Log_Macros.h"
+
 #include <string>
 #include <sstream>
 
 Madara::Expression_Tree::List_Node::List_Node (
-         Madara::Knowledge_Engine::Thread_Safe_Context &context)
-: context_ (context), list_ ()
+  Madara::Knowledge_Engine::Thread_Safe_Context & context)
+: Component_Node (context.get_logger ()), context_ (context), list_ ()
 {
 
 }

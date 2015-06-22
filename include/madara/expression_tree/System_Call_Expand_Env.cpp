@@ -1,7 +1,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/utility/Utility.h"
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Expand_Env.h"
@@ -49,14 +49,14 @@ Madara::Expression_Tree::System_Call_Expand_Env::prune (bool & can_change)
     if (!arg_can_change && dynamic_cast <Leaf_Node *> (nodes_[0]) == 0)
     {
       delete nodes_[0];
-      nodes_[0] = new Leaf_Node (result);
+      nodes_[0] = new Leaf_Node (*(this->logger_), result);
     }
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call expand_var requires 1 argument,"
-      "e.g., #expand_statement ('var{.i}').\n"));
+      "e.g., #expand_statement ('var{.i}').\n");
   }
 
 
@@ -75,17 +75,17 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   {
     std::string statement (nodes_[0]->evaluate (settings).to_string ());
 
-    MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
+    logger_->log (Logger::LOG_MINOR,
       "System call expand_var is returning the expansion "
-      "of %s.\n", statement.c_str ()));
+      "of %s.\n", statement.c_str ());
 
     return Madara::Utility::expand_envs (statement);
   }
   else
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, 
+    logger_->log (Logger::LOG_MINOR,
       "KARL COMPILE ERROR: System call expand_var requires 1 argument,"
-      "e.g., #expand_statement ('var{.i}').\n"));
+      "e.g., #expand_statement ('var{.i}')");
   }
 
   return return_value;

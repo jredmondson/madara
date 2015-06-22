@@ -6,7 +6,7 @@
 #ifndef _MADARA_NO_KARL_
 
 #include <iostream>
-#include "madara/utility/Log_Macros.h"
+
 
 #include "madara/expression_tree/Component_Node.h"
 #include "madara/expression_tree/Visitor.h"
@@ -16,8 +16,8 @@
 // Ctor
 
 Madara::Expression_Tree::Composite_Add_Node::Composite_Add_Node (
-  const Component_Nodes & nodes)
-: Madara::Expression_Tree::Composite_Ternary_Node (nodes)
+  Logger::Logger & logger, const Component_Nodes & nodes)
+: Madara::Expression_Tree::Composite_Ternary_Node (logger, nodes)
 {
 }
 
@@ -45,7 +45,7 @@ Madara::Expression_Tree::Composite_Add_Node::prune (bool & can_change)
     if (!value_changes && dynamic_cast <Leaf_Node *> (*i) == 0)
     {
       delete *i;
-      *i = new Leaf_Node (value);
+      *i = new Leaf_Node (*this->logger_, value);
     }
 
     if (j == 0)

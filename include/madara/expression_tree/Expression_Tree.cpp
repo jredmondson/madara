@@ -150,24 +150,27 @@ static Madara::Expression_Tree::Expression_Tree_Iterator_Factory tree_iterator_f
 
 // Default ctor
 
-Madara::Expression_Tree::Expression_Tree::Expression_Tree (void)
-  : root_ (0)
+Madara::Expression_Tree::Expression_Tree::Expression_Tree (
+  Logger::Logger & logger)
+  : logger_ (&logger), root_ (0)
 {    
 }
 
 // Ctor take an underlying NODE*.
 
 Madara::Expression_Tree::Expression_Tree::Expression_Tree (
+  Logger::Logger & logger,
   Madara::Expression_Tree::Component_Node *root, bool increase_count)
-  : root_ (root, increase_count)
+  : logger_ (&logger), root_ (root, increase_count)
 {    
 }
 
 // Copy ctor
 
 Madara::Expression_Tree::Expression_Tree::Expression_Tree (
+  Logger::Logger & logger,
   const Madara::Expression_Tree::Expression_Tree &t)
-  : root_ (t.root_)
+  : logger_ (&logger), root_ (t.root_)
 {
 }
 
@@ -180,7 +183,10 @@ Madara::Expression_Tree::Expression_Tree::operator= (
   // Refcounter class takes care of the internal decrements and
   // increments.
   if (this != &t)
-    root_ = t.root_;    
+  {
+    logger_ = t.logger_;
+    root_ = t.root_;
+  }
 }
 
 // Dtor
@@ -214,7 +220,7 @@ Madara::Expression_Tree::Expression_Tree::prune (void)
     if (!root_can_change && 
       dynamic_cast <Leaf_Node *> (this->root_.get_ptr ()) == 0)
     {
-      root_ = new Leaf_Node (root_value);
+      root_ = new Leaf_Node (*(this->logger_), root_value);
     }
   }
 
@@ -255,7 +261,7 @@ Madara::Expression_Tree::Expression_Tree::item (void) const
 Madara::Expression_Tree::Expression_Tree
 Madara::Expression_Tree::Expression_Tree::left (void)
 {
-  return Expression_Tree (root_->left (), true);
+  return Expression_Tree (*logger_, root_->left (), true);
 }
 
 // Return the left branch.
@@ -263,7 +269,7 @@ Madara::Expression_Tree::Expression_Tree::left (void)
 Madara::Expression_Tree::Expression_Tree
 Madara::Expression_Tree::Expression_Tree::right (void)
 {
-  return Expression_Tree (root_->right (), true);
+  return Expression_Tree (*logger_, root_->right (), true);
 }
 
 // Return a begin iterator of a specified type.

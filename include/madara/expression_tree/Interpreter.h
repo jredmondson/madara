@@ -122,12 +122,12 @@ namespace Madara
        **/
       void handle_for_loop (
         Madara::Knowledge_Engine::Thread_Safe_Context &context,
-                                         std::string &variable,
-                                            const std::string &input,
-                                           std::string::size_type &i,
-                                          int & accumulated_precedence,
-                                           ::std::list<Symbol *>& list,
-                                          Symbol *& returnableInput);
+        std::string &variable,
+        const std::string &input,
+        std::string::size_type &i,
+        int & accumulated_precedence,
+        ::std::list<Symbol *>& list,
+        Symbol *& returnableInput);
 
       /**
        * Inserts a variable into the tree
@@ -140,25 +140,28 @@ namespace Madara
        **/
       void variable_insert (
         Madara::Knowledge_Engine::Thread_Safe_Context &context,
-                            const std::string &input,
-                            std::string::size_type &i,
-                          int & accumulated_precedence,
-                          ::std::list<Symbol *>& list,
-                           Symbol *& lastValidInput);
+        const std::string &input,
+        std::string::size_type &i,
+        int & accumulated_precedence,
+        ::std::list<Symbol *>& list,
+        Symbol *& lastValidInput);
 
        /**
        * Inserts a variable into the tree
+       * @param    context    interpreter context
        * @param    input      expression to compile
        * @param    i          current position in expression
        * @param    accumulated_precedence  current precedence
        * @param    list       list of symbols in tree that are free
        * @param    lastValidInput          last valid symbol that was read
        **/
-      void string_insert (const std::string &input, 
-                          std::string::size_type &i,
-                          int & accumulated_precedence,
-                          ::std::list<Symbol *>& list,
-                           Symbol *& lastValidInput);
+      void string_insert (
+        Madara::Knowledge_Engine::Thread_Safe_Context &context,
+        const std::string &input,
+        std::string::size_type &i,
+        int & accumulated_precedence,
+        ::std::list<Symbol *>& list,
+        Symbol *& lastValidInput);
       
       /**
        * Inserts a system call into the tree
@@ -171,32 +174,38 @@ namespace Madara
        **/
       void system_call_insert (
         Madara::Knowledge_Engine::Thread_Safe_Context &context,
-                            const std::string &input,
-                            std::string::size_type &i,
-                          int & accumulated_precedence,
-                          ::std::list<Symbol *>& list,
-                           Symbol *& lastValidInput);
+        const std::string &input,
+        std::string::size_type &i,
+        int & accumulated_precedence,
+        ::std::list<Symbol *>& list,
+        Symbol *& lastValidInput);
 
       /**
        * Inserts a number into the tree
+       * @param    context    thread safe context handle
        * @param    input      expression to compile
        * @param    i          current position in expression
        * @param    accumulated_precedence  current precedence
        * @param    list       list of symbols in tree that are free
        * @param    lastValidInput          last valid symbol that was read
        **/
-      void number_insert (const std::string &input, 
-                          std::string::size_type &i,
-                          int & accumulated_precedence,
-                          ::std::list<Symbol *>& list,
-                           Symbol *& lastValidInput);
+      void number_insert (
+        Madara::Knowledge_Engine::Thread_Safe_Context &context,
+        const std::string &input,
+        std::string::size_type &i,
+        int & accumulated_precedence,
+        ::std::list<Symbol *>& list,
+        Symbol *& lastValidInput);
 
       /**
        * Inserts a mathematical operator into the tree
+       * @param    context    thread safe context handle
        * @param    op         symbol to insert
        * @param    list       list of symbols in tree that are free
        **/
-      void precedence_insert (Symbol *op, ::std::list<Symbol *>& list);
+      void precedence_insert (
+        Madara::Knowledge_Engine::Thread_Safe_Context &context,
+        Symbol *op, ::std::list<Symbol *>& list);
 
       /**
        * Inserts a variable into the tree
@@ -211,13 +220,13 @@ namespace Madara
        *                                list instead of an expression tree
        **/
       void main_loop (Madara::Knowledge_Engine::Thread_Safe_Context & context,
-                           const std::string &input,
-                           std::string::size_type &i,
-                           Symbol *& lastValidInput,
-                           bool & handled,
-                           int & accumulated_precedence,
-                           ::std::list<Symbol *>& list,
-                           bool build_argument_list = false);
+        const std::string &input,
+        std::string::size_type &i,
+        Symbol *& lastValidInput,
+        bool & handled,
+        int & accumulated_precedence,
+        ::std::list<Symbol *>& list,
+        bool build_argument_list = false);
 
 
       /**

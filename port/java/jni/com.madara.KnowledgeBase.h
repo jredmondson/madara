@@ -91,7 +91,23 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Lj
  */
 MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__J
   (JNIEnv *, jobject, jlong);
-  
+
+/*
+* Class:     com_madara_KnowledgeBase
+* Method:    jni_attachLogger
+* Signature: (JJ)V
+*/
+MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1attachLogger
+(JNIEnv *, jobject, jlong, jlong);
+
+/*
+* Class:     com_madara_KnowledgeBase
+* Method:    jni_getLogger
+* Signature: (J)J
+*/
+MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1getLogger
+(JNIEnv *, jobject, jlong);
+
 /*
  * Class:     com_madara_KnowledgeBase
  * Method:    jni_evaluate

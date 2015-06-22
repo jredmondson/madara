@@ -6,15 +6,17 @@
 #include <sstream>
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+
 #include "madara/threads/Threader.h"
 #include "madara/knowledge_engine/containers/Integer.h"
+#include "madara/logger/Global_Logger.h"
 
 // shortcuts
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
 namespace utility = Madara::Utility;
 namespace threads = Madara::Threads;
+namespace logger = Madara::Logger;
 
 typedef Madara::Knowledge_Record::Integer Integer;
 
@@ -49,7 +51,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        engine::Knowledge_Base::log_to_file (argv[i + 1]);
+        logger::global_logger->add_file (argv[i + 1]);
       }
 
       ++i;
@@ -59,7 +61,9 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        int level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
@@ -106,7 +110,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      logger::global_logger->log (logger::LOG_ALWAYS,
 "\nProgram summary for %s:\n\n" \
 "  Attempts to start a number of counter and reader threads\n\n" \
 " [-c|--counters counters] the number of counter threads to start\n" \
@@ -117,7 +121,7 @@ void handle_arguments (int argc, char ** argv)
 " [-w|--max-wait time]     maximum time to wait in seconds (double format)\n"\
 " [-z|--hertz hertz]       the frequency of counts per second per thread\n" \
 "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }
@@ -162,9 +166,11 @@ int main (int argc, char ** argv)
   // create a knowledge base and setup our id
   engine::Knowledge_Base knowledge;
 
-  std::cerr << "Hertz rate set to " << hertz << "\n";
-  std::cerr << "Counters is set to " << counters << "\n";
-  std::cerr << "Target is set to " << target << "\n";
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Hertz rate set to %f\n"
+    "Counters is set to %ll\n"
+    "Target is set to %ll\n",
+    hertz, counters, target);
 
   // create a counter
   containers::Integer counter ("counter", knowledge);
