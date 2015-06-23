@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 #include <stdio.h>
-#include <inttypes.h>
+#include "madara/utility/inttypes.h"
 
 namespace Madara
 {
