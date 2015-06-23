@@ -1,10 +1,6 @@
 #ifndef _KNOWLEDGE_RECORD_CPP_
 #define _KNOWLEDGE_RECORD_CPP_
 
-#ifndef __STDC_FORMAT_MACROS
-#define __STDC_FORMAT_MACROS
-#endif
-
 #include "madara/knowledge_engine/Knowledge_Record.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 

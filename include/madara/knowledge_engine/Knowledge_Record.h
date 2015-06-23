@@ -3,10 +3,6 @@
 #ifndef _KNOWLEDGE_RECORD_H_
 #define _KNOWLEDGE_RECORD_H_
 
-#ifndef __STDC_FORMAT_MACROS
-#define __STDC_FORMAT_MACROS
-#endif
-
 /**
  * @file Knowledge_Record.h
  * @author James Edmondson <jedmondson@gmail.com>

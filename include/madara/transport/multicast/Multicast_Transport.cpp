@@ -1,6 +1,3 @@
-#ifndef __STDC_FORMAT_MACROS
-#define __STDC_FORMAT_MACROS
-#endif
 
 #include "madara/transport/multicast/Multicast_Transport.h"
 #include "madara/transport/multicast/Multicast_Transport_Read_Thread.h"

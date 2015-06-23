@@ -1,10 +1,6 @@
 #ifndef _MADARA_LOGGER_LOGGER_H_
 #define _MADARA_LOGGER_LOGGER_H_
 
-#ifndef __STDC_FORMAT_MACROS
-  #define __STDC_FORMAT_MACROS
-#endif
-
 #include "madara/MADARA_export.h"
 #include "madara/Lock_Type.h"
 #include <ace/Guard_T.h>

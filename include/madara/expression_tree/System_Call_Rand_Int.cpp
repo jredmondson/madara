@@ -1,10 +1,6 @@
 
 #ifndef _MADARA_NO_KARL_
 
-#ifndef __STDC_FORMAT_MACROS
-#define __STDC_FORMAT_MACROS
-#endif
-
 #include "madara/utility/Utility.h"
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Rand_Int.h"
