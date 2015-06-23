@@ -894,7 +894,7 @@ long Madara::Transport::Base::prep_send (
   {
     context_.get_logger ().log (Logger::LOG_EMERGENCY,
       "%s:" \
-      " Unable to allocate buffer of size %d. Exiting thread.\n",
+      " Unable to allocate buffer of size " PRIu32 ". Exiting thread.\n",
       print_prefix,
       settings_.queue_length);
     

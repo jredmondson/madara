@@ -207,7 +207,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
 
         Logger::global_logger->log (Logger::LOG_MAJOR,
           "%s:" \
-          " Sent packet of size %d\n",
+          " Sent packet of size " PRIu64 "\n",
           print_prefix, bytes_sent);
 
         send_monitor_.add ((uint32_t)bytes_sent);
@@ -246,7 +246,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::run (void)
     {
       Logger::global_logger->log (Logger::LOG_EMERGENCY,
         "%s:" \
-        " Unable to allocate buffer of size %d. Exiting thread.\n",
+        " Unable to allocate buffer of size " PRIu32 ". Exiting thread.\n",
         print_prefix,
         settings_.queue_length);
     
@@ -264,10 +264,10 @@ Madara::Transport::Broadcast_Transport_Read_Thread::run (void)
 
     Logger::global_logger->log (Logger::LOG_MAJOR,
       "%s:" \
-      " received a message header of %" PRIu64 " bytes from %s:%d\n",
+      " received a message header of %lld bytes from %s:%d\n",
       print_prefix,
-      bytes_read,
-      remote.get_host_addr (), remote.get_port_number ());
+      (long long) bytes_read,
+      remote.get_host_addr (), (int)remote.get_port_number ());
     
     if (bytes_read > 0)
     {
