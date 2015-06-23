@@ -103,7 +103,7 @@ Madara::Transport::process_received_update (
 
   context.get_logger ().log (Logger::LOG_MAJOR,
     "%s:" \
-    " calling decode filters on %" PRIu64 " bytes\n",
+    " calling decode filters on %" PRIu32 " bytes\n",
     print_prefix, bytes_read);
 
   // call decodes, if applicable
@@ -112,7 +112,7 @@ Madara::Transport::process_received_update (
 
   context.get_logger ().log (Logger::LOG_MAJOR,
     "%s:" \
-    " Decoding resulted in %d final bytes\n",
+    " Decoding resulted in %" PRIu32 " final bytes\n",
     print_prefix, bytes_read);
 
   // setup buffer remaining, used by the knowledge record read method
@@ -164,7 +164,7 @@ Madara::Transport::process_received_update (
   {
     context.get_logger ().log (Logger::LOG_MINOR,
       "%s:" \
-      " dropping non-KaRL message from %s:%d\n",
+      " dropping non-KaRL message from %s\n",
       print_prefix,
       remote_host);
 
@@ -178,7 +178,7 @@ Madara::Transport::process_received_update (
     context.get_logger ().log (Logger::LOG_MAJOR,
       "%s:" \
       " Message header.size (%" PRIu64 " bytes) is less than actual"
-      " bytes read (%" PRIu64 " bytes). Dropping message.\n",
+      " bytes read (%" PRIu32 " bytes). Dropping message.\n",
       print_prefix, header->size, bytes_read);
 
     return -1;
@@ -289,7 +289,7 @@ Madara::Transport::process_received_update (
 
     context.get_logger ().log (Logger::LOG_MAJOR,
       "%s:" \
-      " Processing fragment %d of %s:%d.\n",
+      " Processing fragment %" PRIu32 " of %s:%" PRIu64 ".\n",
       print_prefix, frag_header->update_number,
       frag_header->originator, frag_header->clock);
 
@@ -392,7 +392,7 @@ Madara::Transport::process_received_update (
         "%s:" \
         " Cannot compute message latency." \
         " Message header timestamp is in the future.\n",
-        " message.timestamp = %d, cur_timestamp = %d.\n",
+        " message.timestamp = %" PRIu64 ", cur_timestamp = %" PRIu64 ".\n",
         print_prefix,
         header->timestamp, current_time); 
     }
@@ -400,7 +400,7 @@ Madara::Transport::process_received_update (
 
   context.get_logger ().log (Logger::LOG_MINOR,
     "%s:" \
-    " iterating over the %d updates\n",
+    " iterating over the %" PRIu32 " updates\n",
     print_prefix,
     header->updates);
 
@@ -441,7 +441,7 @@ Madara::Transport::process_received_update (
 
   context.get_logger ().log (Logger::LOG_MAJOR,
     "%s:" \
-    " Applying %d updates\n", print_prefix, header->updates);
+    " Applying %" PRIu32 " updates\n", print_prefix, header->updates);
 
   // iterate over the updates
   for (uint32_t i = 0; i < header->updates; ++i)
@@ -491,8 +491,8 @@ Madara::Transport::process_received_update (
   {
     context.get_logger ().log (Logger::LOG_MAJOR,
       "%s:" \
-      " %d additional records being handled after receive.\n", print_prefix,
-      additionals.size ());
+      " %lld additional records being handled after receive.\n", print_prefix,
+      (long long)additionals.size ());
 
     for (Knowledge_Map::const_iterator i = additionals.begin ();
           i != additionals.end (); ++i)
@@ -852,8 +852,8 @@ long Madara::Transport::Base::prep_send (
   context_.get_logger ().log (Logger::LOG_MINOR,
     "%s:" \
     " Applying %d aggregate update send filters to %d updates...\n",
-    print_prefix, settings_.get_number_of_send_aggregate_filters (),
-    filtered_updates.size ());
+    print_prefix, (int)settings_.get_number_of_send_aggregate_filters (),
+    (int)filtered_updates.size ());
 
   // apply the aggregate filters
   if (settings_.get_number_of_send_aggregate_filters () > 0 &&
@@ -993,7 +993,7 @@ long Madara::Transport::Base::prep_send (
     {
       context_.get_logger ().log (Logger::LOG_MINOR,
         "%s:" \
-        " update[%d] => encoding %s of type %d and size %d\n",
+        " update[%d] => encoding %s of type %" PRId32 " and size %" PRIu32 "\n",
         print_prefix,
         j, i->first.c_str (), i->second.type (), i->second.size ());
     }
@@ -1001,7 +1001,8 @@ long Madara::Transport::Base::prep_send (
     {
       context_.get_logger ().log (Logger::LOG_EMERGENCY,
         "%s:" \
-        " unable to encode update[%d] => %s of type %d and size %d\n",
+        " unable to encode update[%d] => %s of type %"
+        PRId32 " and size %" PRIu32 "\n",
         print_prefix,
         j, i->first.c_str (), i->second.type (), i->second.size ());
     }
