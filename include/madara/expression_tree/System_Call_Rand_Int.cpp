@@ -87,7 +87,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
 
   logger_->log (Logger::LOG_MINOR,
-    "System call rand_int called with %q, %q, %d.\n",
+    "System call rand_int called with %" PRId64 ", %" PRId64 ", %d.\n",
     floor, ceiling, update_srand);
 
   return Utility::rand_int (floor, ceiling, update_srand);

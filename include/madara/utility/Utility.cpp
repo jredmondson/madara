@@ -735,7 +735,7 @@ ssize_t
     ACE_DEFAULT_FILE_PERMS);
 
   Logger::global_logger->log (Logger::LOG_MAJOR,
-    "Files::write_file : beginning write of %d bytes\n", size);
+    "Files::write_file : beginning write of %" PRIu64 " bytes\n", size);
 
   if (file_handle  != ACE_INVALID_HANDLE)
   {
@@ -900,7 +900,7 @@ Madara::Utility::wait_true (
   {
     Logger::global_logger->log (Logger::LOG_DETAILED,
       "Utility::wait_true:" \
-      " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
+      " current is %" PRIu64 ".%" PRIu64 " and max is %" PRIu64 ".%" PRIu64 " (poll freq is %f)\n",
       current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
       settings.poll_frequency);
 

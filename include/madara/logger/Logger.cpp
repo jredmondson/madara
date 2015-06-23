@@ -59,7 +59,7 @@ Madara::Logger::Logger::log (int level, const char * message, ...)
     for (File_Vectors::iterator i = files_.begin ();
       i != files_.end (); ++i)
     {
-      fprintf (*i, message);
+      fprintf (*i, buffer);
     }
   }
 }

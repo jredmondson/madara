@@ -93,7 +93,7 @@ Madara::Transport::process_received_update (
 
   context.get_logger ().log (Logger::LOG_MAJOR,
     "%s:" \
-    " Receive bandwidth = %d B/s\n",
+    " Receive bandwidth = %" PRIu64 " B/s\n",
     print_prefix,
     receive_monitor.get_bytes_per_second ());
 
@@ -103,7 +103,7 @@ Madara::Transport::process_received_update (
 
   context.get_logger ().log (Logger::LOG_MAJOR,
     "%s:" \
-    " calling decode filters on %d bytes\n",
+    " calling decode filters on %" PRIu64 " bytes\n",
     print_prefix, bytes_read);
 
   // call decodes, if applicable
@@ -177,8 +177,8 @@ Madara::Transport::process_received_update (
   {
     context.get_logger ().log (Logger::LOG_MAJOR,
       "%s:" \
-      " Message header.size (%Q bytes) is less than actual"
-      " bytes read (%d bytes). Dropping message.\n",
+      " Message header.size (%" PRIu64 " bytes) is less than actual"
+      " bytes read (%" PRIu64 " bytes). Dropping message.\n",
       print_prefix, header->size, bytes_read);
 
     return -1;
@@ -379,7 +379,7 @@ Madara::Transport::process_received_update (
       {
         context.get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " deadline violation (latency is %Q, deadline is %f).\n",
+          " deadline violation (latency is %" PRIu64 ", deadline is %f).\n",
           print_prefix,
           latency, deadline);
 
@@ -715,7 +715,7 @@ Madara::Transport::prep_rebroadcast (
 
       context.get_logger ().log (Logger::LOG_MINOR,
         "%s:" \
-        " %d bytes prepped for rebroadcast packet\n",
+        " %" PRIu64 " bytes prepped for rebroadcast packet\n",
         print_prefix, size);
 
       result = size;

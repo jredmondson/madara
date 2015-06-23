@@ -656,7 +656,7 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::wait (
   {
     map_.get_logger ().log (Logger::LOG_DETAILED,
       "Knowledge_Base_Impl::wait:" \
-      " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
+      " current is %" PRIu64 ".%" PRIu64 " and max is %" PRIu64 ".%" PRIu64 " (poll freq is %f)\n",
       current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
       settings.poll_frequency);
 

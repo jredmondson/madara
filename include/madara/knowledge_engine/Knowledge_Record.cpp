@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <iomanip>
 #include <iostream>
+#include <inttypes.h>
 
 int madara_double_precision (-1);
 
@@ -1471,7 +1472,7 @@ Madara::Knowledge_Record::write (char * buffer, const std::string & key,
   if (buffer_remaining >= encoded_size)
   {
     logger_->log (Logger::LOG_MINOR, "Knowledge_Record::write:" \
-      " encoding %Q byte message\n", encoded_size);
+      " encoding %" PRId64 " byte message\n", encoded_size);
 
     // Remove the key size from the buffer
     if (buffer_remaining >= sizeof (key_size))
@@ -1612,7 +1613,7 @@ Madara::Knowledge_Record::write (char * buffer, const std::string & key,
   else
   {
     logger_->log (Logger::LOG_MINOR, "Knowledge_Record::write:" \
-      " %q byte buffer cannot contain %q byte message\n",
+      " %" PRId64 " byte buffer cannot contain %" PRId64 " byte message\n",
       buffer_remaining, encoded_size);
   }
   return buffer;
@@ -2053,7 +2054,7 @@ int
     else if (result == -3)
     {
       logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
-        " discarded data[%s]=%q due to older timestamp.\n",
+        " discarded data[%s]=%" PRId64 " due to older timestamp.\n",
         key.c_str (), to_string ().c_str ());
     }
   }

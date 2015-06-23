@@ -97,7 +97,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     else
     {
       logger_->log (Logger::LOG_MINOR,
-        "System call write_file wrote %d bytes to %s\n",
+        "System call write_file wrote %zd bytes to %s\n",
         bytes_written, filename->to_string ().c_str ());
     }
   }

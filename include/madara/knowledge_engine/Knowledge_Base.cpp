@@ -1324,8 +1324,11 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
     {
       context_->get_logger ().log (Logger::LOG_DETAILED,
         "Knowledge_Base::wait:" \
-        " current is %Q.%Q and max is %Q.%Q (poll freq is %f)\n",
-        current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
+        " current is %llu.%llu and max is %llu.%llu (poll freq is %f)\n",
+        (unsigned long long)current.sec (),
+        (unsigned long long)current.usec (),
+        (unsigned long long)max_wait.sec (),
+        (unsigned long long)max_wait.usec (),
         settings.poll_frequency);
 
       context_->get_logger ().log (Logger::LOG_DETAILED,

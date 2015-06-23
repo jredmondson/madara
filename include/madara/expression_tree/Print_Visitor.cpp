@@ -45,7 +45,7 @@ void
 Madara::Expression_Tree::Print_Visitor::visit (const Leaf_Node &node)
 {
   MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_INFO,
-        "%q ", node.item ()));
+        "%" PRId64 " ", node.item ()));
   //std::cout << node.item () << " ";
 }
 

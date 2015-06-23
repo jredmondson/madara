@@ -68,7 +68,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     Knowledge_Record::Integer new_precision = 
       nodes_[0]->evaluate (settings).to_integer ();
     logger_->log (Logger::LOG_MINOR,
-      "System call precision is setting the precision to %q.\n",
+      "System call precision is setting the precision to %" PRId64 ".\n",
       new_precision);
 
     Knowledge_Record::set_precision (new_precision);

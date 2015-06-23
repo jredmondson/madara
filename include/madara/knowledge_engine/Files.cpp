@@ -87,7 +87,7 @@ Madara::Knowledge_Engine::Files::read_file (
       map_.set (knowledge_key, (Madara::Knowledge_Record::Integer) actual);
 
       map_.get_logger ().log (Logger::LOG_DETAILED,
-        "Files::read_file : file imported with %d bytes\n", actual);
+        "Files::read_file : file imported with %" PRIu64 " bytes\n", actual);
     }
     else ret = -2;
   }
@@ -155,7 +155,7 @@ Madara::Knowledge_Engine::Files::write_file (
       map_.set (knowledge_key, (Madara::Knowledge_Record::Integer) actual);
 
       map_.get_logger ().log (Logger::LOG_DETAILED,
-        "Files::write_file : file saved with %d bytes\n", actual);
+        "Files::write_file : file saved with %" PRIu64 " bytes\n", actual);
     }
     else ret = -2;
   }
@@ -188,7 +188,7 @@ Madara::Knowledge_Engine::Files::write_file (const char * filename,
     ACE_DEFAULT_FILE_PERMS);
 
   map_.get_logger ().log (Logger::LOG_DETAILED,
-    "Files::write_file : beginning write of %d bytes\n", size);
+    "Files::write_file : beginning write of %" PRIu64 " bytes\n", size);
 
   if (file_handle  != ACE_INVALID_HANDLE)
   {

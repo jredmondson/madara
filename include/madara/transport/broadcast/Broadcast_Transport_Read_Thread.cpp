@@ -171,7 +171,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
 
         Logger::global_logger->log (Logger::LOG_MAJOR,
           "%s:" \
-          " fragmenting %d byte packet (%d bytes is max fragment size)\n",
+          " fragmenting %d byte packet (%" PRIu64 " bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
 
         // fragment the message
@@ -194,7 +194,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
 
         Logger::global_logger->log (Logger::LOG_MAJOR,
           "%s:" \
-          " Sent fragments totalling %d bytes\n",
+          " Sent fragments totalling %" PRIu64 " bytes\n",
           print_prefix,
           bytes_sent);
 
@@ -215,7 +215,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
 
       Logger::global_logger->log (Logger::LOG_MINOR,
         "%s:" \
-        " Send bandwidth = %d B/s\n",
+        " Send bandwidth = %" PRIu64 " B/s\n",
         print_prefix,
         send_monitor_.get_bytes_per_second ());
     }
@@ -264,7 +264,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::run (void)
 
     Logger::global_logger->log (Logger::LOG_MAJOR,
       "%s:" \
-      " received a message header of %d bytes from %s:%d\n",
+      " received a message header of %" PRIu64 " bytes from %s:%d\n",
       print_prefix,
       bytes_read,
       remote.get_host_addr (), remote.get_port_number ());

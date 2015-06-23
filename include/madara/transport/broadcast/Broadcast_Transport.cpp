@@ -189,7 +189,7 @@ Madara::Transport::Broadcast_Transport::send_data (
 
         this->context_.get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " fragmenting %d byte packet (%d bytes is max fragment size)\n",
+          " fragmenting %" PRIu64 " byte packet (%" PRIu32 " bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
 
         // fragment the message
@@ -212,7 +212,7 @@ Madara::Transport::Broadcast_Transport::send_data (
 
         this->context_.get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " Sent fragments totalling %d bytes\n",
+          " Sent fragments totalling %" PRIu64 " bytes\n",
           print_prefix, bytes_sent);
 
         delete_fragments (map);
@@ -224,14 +224,14 @@ Madara::Transport::Broadcast_Transport::send_data (
 
         this->context_.get_logger ().log (Logger::LOG_MAJOR,
           "%s:" \
-          " Sent packet of size %d bytes\n",
+          " Sent packet of size %" PRIu64 " bytes\n",
           print_prefix, bytes_sent);
         send_monitor_.add ((uint32_t)bytes_sent);
       }
 
       this->context_.get_logger ().log (Logger::LOG_MINOR,
         "%s:" \
-        " Send bandwidth = %d B/s\n",
+        " Send bandwidth = %" PRIu64 " B/s\n",
         print_prefix, send_monitor_.get_bytes_per_second ());
 
       result = (long) bytes_sent;

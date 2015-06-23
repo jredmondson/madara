@@ -20,6 +20,7 @@
 
 #include <string>
 #include <map>
+#include <inttypes.h>
 
 #include "madara/MADARA_export.h"
 #include "madara/Lock_Type.h"
