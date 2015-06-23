@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <iomanip>
 #include <iostream>
+#ifndef __STDC_FORMAT_MACROS
+#define __STDC_FORMAT_MACROS
+#endif
 #include <inttypes.h>
 
 int madara_double_precision (-1);

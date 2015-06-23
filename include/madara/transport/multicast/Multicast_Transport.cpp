@@ -9,6 +9,9 @@
 #include "madara/transport/Fragmentation.h"
 
 #include <iostream>
+#ifndef __STDC_FORMAT_MACROS
+#define __STDC_FORMAT_MACROS
+#endif
 #include <inttypes.h>
 
 Madara::Transport::Multicast_Transport::Multicast_Transport (const std::string & id,

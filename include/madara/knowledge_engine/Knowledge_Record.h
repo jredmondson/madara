@@ -19,6 +19,9 @@
 #include "madara/utility/Refcounter.h"
 #include "ace/os_include/sys/os_types.h"
 #include "madara/logger/Global_Logger.h"
+#ifndef __STDC_FORMAT_MACROS
+#define __STDC_FORMAT_MACROS
+#endif
 #include <inttypes.h>
 
 namespace Madara

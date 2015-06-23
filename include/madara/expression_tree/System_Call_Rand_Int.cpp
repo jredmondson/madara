@@ -7,6 +7,9 @@
 #include "madara/expression_tree/System_Call_Rand_Int.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 #include "madara/expression_tree/Visitor.h"
+#ifndef __STDC_FORMAT_MACROS
+#define __STDC_FORMAT_MACROS
+#endif
 #include <inttypes.h>
 
 
