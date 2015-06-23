@@ -9,6 +9,7 @@
 #include "madara/transport/Fragmentation.h"
 
 #include <iostream>
+#include <inttypes.h>
 
 Madara::Transport::Multicast_Transport::Multicast_Transport (const std::string & id,
         Madara::Knowledge_Engine::Thread_Safe_Context & context, 

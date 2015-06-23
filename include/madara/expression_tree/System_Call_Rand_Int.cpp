@@ -7,6 +7,7 @@
 #include "madara/expression_tree/System_Call_Rand_Int.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 #include "madara/expression_tree/Visitor.h"
+#include <inttypes.h>
 
 
 Madara::Expression_Tree::System_Call_Rand_Int::System_Call_Rand_Int (

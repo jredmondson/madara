@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <stdio.h>
+#include <inttypes.h>
 
 namespace Madara
 {

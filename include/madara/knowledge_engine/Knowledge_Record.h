@@ -19,6 +19,7 @@
 #include "madara/utility/Refcounter.h"
 #include "ace/os_include/sys/os_types.h"
 #include "madara/logger/Global_Logger.h"
+#include <inttypes.h>
 
 namespace Madara
 {
