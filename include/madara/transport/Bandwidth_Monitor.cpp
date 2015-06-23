@@ -1,9 +1,10 @@
-#include "Bandwidth_Monitor.h"
-#include "madara/utility/Utility.h"
-#include "madara/logger/Global_Logger.h"
 #ifndef __STDC_FORMAT_MACROS
 #define __STDC_FORMAT_MACROS
 #endif
+
+#include "Bandwidth_Monitor.h"
+#include "madara/utility/Utility.h"
+#include "madara/logger/Global_Logger.h"
 #include <inttypes.h>
 
 

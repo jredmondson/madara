@@ -1,3 +1,7 @@
+#ifndef __STDC_FORMAT_MACROS
+#define __STDC_FORMAT_MACROS
+#endif
+
 #include "madara/transport/multicast/Multicast_Transport.h"
 #include "madara/transport/multicast/Multicast_Transport_Read_Thread.h"
 #include "madara/transport/Transport_Context.h"
@@ -9,9 +13,6 @@
 #include "madara/transport/Fragmentation.h"
 
 #include <iostream>
-#ifndef __STDC_FORMAT_MACROS
-#define __STDC_FORMAT_MACROS
-#endif
 #include <inttypes.h>
 
 Madara::Transport::Multicast_Transport::Multicast_Transport (const std::string & id,

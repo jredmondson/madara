@@ -3,6 +3,10 @@
 #ifndef _KNOWLEDGE_RECORD_H_
 #define _KNOWLEDGE_RECORD_H_
 
+#ifndef __STDC_FORMAT_MACROS
+#define __STDC_FORMAT_MACROS
+#endif
+
 /**
  * @file Knowledge_Record.h
  * @author James Edmondson <jedmondson@gmail.com>
@@ -19,9 +23,6 @@
 #include "madara/utility/Refcounter.h"
 #include "ace/os_include/sys/os_types.h"
 #include "madara/logger/Global_Logger.h"
-#ifndef __STDC_FORMAT_MACROS
-#define __STDC_FORMAT_MACROS
-#endif
 #include <inttypes.h>
 
 namespace Madara
