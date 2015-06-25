@@ -53,7 +53,7 @@ Madara::Expression_Tree::Composite_Implies_Node::prune (bool & can_change)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Implies has no condition\n");
 
     exit (-1);
@@ -70,7 +70,7 @@ Madara::Expression_Tree::Composite_Implies_Node::prune (bool & can_change)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Implies has no expression to "
       "evaluate if conditional is true\n");
 

@@ -23,7 +23,7 @@ Madara::Knowledge_Record::get_precision (void)
 void
 Madara::Knowledge_Record::set_precision (int new_precision)
 {
-  Logger::global_logger->log (Logger::LOG_MINOR,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
     "Knowledge_Record::set_precision:" \
     " setting precision to %d\n", madara_double_precision);
 
@@ -458,7 +458,7 @@ Madara::Knowledge_Record::to_string (const std::string & delimiter) const
   {
     if (!is_string_type ())
     {
-      logger_->log (Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
+      madara_logger_ptr_log (logger_, Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
         " type_ is %d\n", type_);
 
       std::stringstream buffer;
@@ -484,12 +484,12 @@ Madara::Knowledge_Record::to_string (const std::string & delimiter) const
           buffer << std::setprecision (madara_double_precision);
           buffer << std::fixed;
 
-          logger_->log (Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
+          madara_logger_ptr_log (logger_, Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
             " precision set to %d\n", madara_double_precision);
         }
         else
         {
-          logger_->log (Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
+          madara_logger_ptr_log (logger_, Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
             " precision set to default\n", madara_double_precision);
         }
 
@@ -502,12 +502,12 @@ Madara::Knowledge_Record::to_string (const std::string & delimiter) const
           buffer << std::setprecision (madara_double_precision);
           buffer << std::fixed;
 
-          logger_->log (Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
+          madara_logger_ptr_log (logger_, Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
             " precision set to %d\n", madara_double_precision);
         }
         else
         {
-          logger_->log (Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
+          madara_logger_ptr_log (logger_, Logger::LOG_DETAILED, "Knowledge_Record::to_string:" \
             " precision set to default\n", madara_double_precision);
         }
 
@@ -1471,7 +1471,7 @@ Madara::Knowledge_Record::write (char * buffer, const std::string & key,
 
   if (buffer_remaining >= encoded_size)
   {
-    logger_->log (Logger::LOG_MINOR, "Knowledge_Record::write:" \
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR, "Knowledge_Record::write:" \
       " encoding %" PRId64 " byte message\n", encoded_size);
 
     // Remove the key size from the buffer
@@ -1612,7 +1612,7 @@ Madara::Knowledge_Record::write (char * buffer, const std::string & key,
   }
   else
   {
-    logger_->log (Logger::LOG_MINOR, "Knowledge_Record::write:" \
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR, "Knowledge_Record::write:" \
       " %" PRId64 " byte buffer cannot contain %" PRId64 " byte message\n",
       buffer_remaining, encoded_size);
   }
@@ -2001,7 +2001,7 @@ int
 
   if (key.length () > 0)
   {
-    logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR, "Knowledge_Record::apply:" \
       " attempting to set %s=%s\n", key.c_str (), to_string ().c_str ());
 
     if (perform_lock)
@@ -2029,31 +2029,31 @@ int
     // if we actually updated the value
     if (result == 1)
     {
-      logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR, "Knowledge_Record::apply:" \
         " received data[%s]=%s.\n",
         key.c_str (), to_string ().c_str ());
     }
     // if the data was already current
     else if (result == 0)
     {
-      logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR, "Knowledge_Record::apply:" \
         " discarded data[%s]=%s as the value was already set.\n",
         key.c_str (), to_string ().c_str ());
     }
     else if (result == -1)
     {
-      logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR, "Knowledge_Record::apply:" \
         " discarded data due to null key.\n");
     }
     else if (result == -2)
     {
-      logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR, "Knowledge_Record::apply:" \
         " discarded data[%s]=%s due to lower quality.\n",
         key.c_str (), to_string ().c_str ());
     }
     else if (result == -3)
     {
-      logger_->log (Logger::LOG_MINOR, "Knowledge_Record::apply:" \
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR, "Knowledge_Record::apply:" \
         " discarded data[%s]=%" PRId64 " due to older timestamp.\n",
         key.c_str (), to_string ().c_str ());
     }
@@ -2064,7 +2064,7 @@ int
 bool
 Madara::Knowledge_Record::is_true (void) const
 {
-  logger_->log (Logger::LOG_MAJOR, "Knowledge_Record::apply:" \
+  madara_logger_ptr_log (logger_, Logger::LOG_MAJOR, "Knowledge_Record::apply:" \
     " checking if record is non-zero.\n");
 
   if (is_integer_type ())

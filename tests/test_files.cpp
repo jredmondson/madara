@@ -174,7 +174,7 @@ int parse_args (int argc, ACE_TCHAR * argv[])
     }
     else
     {
-      logger::global_logger->log (logger::LOG_ALWAYS, 
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
 "This test checks the functionality of file reading/writing. To properly\n"
 "test file functionality, please create a file at /files/sample.jpg,\n"

@@ -54,7 +54,7 @@ Madara::Expression_Tree::System_Call_To_Host_Dirs::prune (bool & can_change)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
       " on Windows\n");
@@ -76,7 +76,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   {
     std::string statement (nodes_[0]->evaluate (settings).to_string ());
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call to_host_dirs is returning the proper directory structure "
       "of %s.\n", statement.c_str ());
 
@@ -84,7 +84,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
       " on Windows\n");

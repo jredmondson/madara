@@ -46,6 +46,7 @@
 *********************************************************************/
 #include "com_madara_transport_filters_Packet.h"
 #include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara_jni.h"
 
 typedef Madara::Knowledge_Map      Knowledge_Map;
 typedef Madara::Knowledge_Record   Knowledge_Record;
@@ -110,7 +111,8 @@ jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
   if (packet)
   {
     result = (jobjectArray) env->NewObjectArray (
-      (jsize)packet->size (), env->FindClass ("java/lang/String"),
+      (jsize)packet->size (),
+      Madara::Utility::Java::find_class (env, "java/lang/String"),
       env->NewStringUTF (""));
  
     jsize i = 0;

@@ -60,10 +60,10 @@ Madara::Expression_Tree::Variable_Divide_Node::prune (bool & can_change)
     left_child_can_change = true;
   else
   {
-    this->logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR : Variable divide node has no variable");
 
-    exit (-1);    
+    exit (-1);
   }
 
   if (this->rhs_)
@@ -77,7 +77,7 @@ Madara::Expression_Tree::Variable_Divide_Node::prune (bool & can_change)
   }
   else
   {
-    this->logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR : Variable divide node "
       " has no right expression");
 
@@ -104,7 +104,7 @@ Madara::Expression_Tree::Variable_Divide_Node::evaluate (
 
   if (var_)
   {
-    this->logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Variable_Divide_Node::evaluate: "
       "Attempting to set variable %s to %s.\n",
       var_->expand_key ().c_str (),
@@ -116,7 +116,7 @@ Madara::Expression_Tree::Variable_Divide_Node::evaluate (
   }
   else if (array_)
   {
-    this->logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Variable_Divide_Node::evaluate: "
       "Attempting to set index of var %s to %s.\n",
       array_->expand_key ().c_str (),
@@ -128,7 +128,7 @@ Madara::Expression_Tree::Variable_Divide_Node::evaluate (
   }
   else
   {
-    this->logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Variable_Divide_Node::evaluate: "
       "left hand side was neither a variable nor an array reference. "
       "Check your expression for errors.\n",

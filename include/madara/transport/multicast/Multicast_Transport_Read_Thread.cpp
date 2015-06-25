@@ -42,11 +42,12 @@ Madara::Transport::Multicast_Transport_Read_Thread::init (
     // check for an on_data_received ruleset
     if (settings_.on_data_received_logic.length () != 0)
     {
-      this->context_->get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
         "Multicast_Transport_Read_Thread::init:" \
         " setting rules to %s\n",
         settings_.on_data_received_logic.c_str ());
-      
+
+
 #ifndef _MADARA_NO_KARL_
       Madara::Expression_Tree::Interpreter interpreter;
       on_data_received_ = context_->compile (settings_.on_data_received_logic);
@@ -54,7 +55,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::init (
     }
     else
     {
-      this->context_->get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
         "Multicast_Transport_Read_Thread::init:" \
         " no permanent rules were set\n");
     }
@@ -67,7 +68,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::cleanup (void)
   // Unsubscribe
   if (-1 == read_socket_.leave (address_))
   {
-    this->context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
       "Multicast_Transport_Read_Thread::close:" \
       " Error unsubscribing to multicast address\n");
   }
@@ -101,7 +102,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::rebroadcast (
       {
         Fragment_Map map;
 
-        this->context_->get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " fragmenting %d byte packet (%" PRIu64 " bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
@@ -124,7 +125,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::rebroadcast (
       
         send_monitor_.add ((uint32_t)bytes_sent);
 
-        this->context_->get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " Sent fragments totalling %" PRIu64 " bytes\n",
           print_prefix,
@@ -137,7 +138,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::rebroadcast (
         bytes_sent = write_socket_.send(
           buffer_.get_ptr (), (ssize_t)result, address_);
 
-        this->context_->get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " Sent packet of size %" PRIu64 " bytes\n",
           print_prefix,
@@ -146,7 +147,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::rebroadcast (
         send_monitor_.add ((uint32_t)bytes_sent);
       }
 
-      this->context_->get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " Send bandwidth = %" PRIu64 " B/s\n",
         print_prefix,
@@ -168,7 +169,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::run (void)
     const char * print_prefix = "Multicast_Transport_Read_Thread::run";
     int64_t buffer_remaining = settings_.queue_length;
 
-    this->context_->get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (this->context_->get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " entering main service loop.\n", print_prefix);
     
@@ -176,7 +177,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::run (void)
 
     if (buffer == 0)
     {
-      this->context_->get_logger ().log (Logger::LOG_EMERGENCY,
+      madara_logger_log (this->context_->get_logger (), Logger::LOG_EMERGENCY,
         "%s:" \
         " Unable to allocate buffer of size " PRIu32 ". Exiting thread.\n",
         print_prefix,
@@ -185,7 +186,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::run (void)
       return;
     }
 
-    this->context_->get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (this->context_->get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " entering a recv on the socket.\n",
       print_prefix);
@@ -194,7 +195,7 @@ Madara::Transport::Multicast_Transport_Read_Thread::run (void)
     ssize_t bytes_read = read_socket_.recv ((void *)buffer, 
       settings_.queue_length, remote, 0, &wait_time);
  
-    this->context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " received a message header of %lld bytes from %s:%d\n",
       print_prefix,
@@ -236,13 +237,13 @@ Madara::Transport::Multicast_Transport_Read_Thread::run (void)
     }
     else
     {
-      this->context_->get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " wait timeout on new messages. Proceeding to next wait\n",
         print_prefix);
     }
 
-    this->context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " finished iteration.\n",
       print_prefix);

@@ -54,7 +54,7 @@ Madara::Expression_Tree::System_Call_Expand_Env::prune (bool & can_change)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call expand_var requires 1 argument,"
       "e.g., #expand_statement ('var{.i}').\n");
   }
@@ -75,7 +75,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   {
     std::string statement (nodes_[0]->evaluate (settings).to_string ());
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call expand_var is returning the expansion "
       "of %s.\n", statement.c_str ());
 
@@ -83,7 +83,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "KARL COMPILE ERROR: System call expand_var requires 1 argument,"
       "e.g., #expand_statement ('var{.i}')");
   }

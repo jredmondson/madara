@@ -263,7 +263,7 @@ int parse_args (int argc, ACE_TCHAR * argv[])
            cmd_opts.opt_opt ()), -2); 
     case 'h':
     default:
-      logger::global_logger->log (logger::LOG_ALWAYS,
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
         "Program Summary for %s:\n\n\
       This distributed application uses three-state Dijkstra synchronization\n\
       to form a self-healing ring of legitimate state machines. To execute\n\

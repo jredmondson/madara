@@ -56,7 +56,7 @@ Madara::Expression_Tree::System_Call_Print_System_Calls::prune (bool & can_chang
   }
   else if (nodes_.size () != 0)
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call print_system_calls takes either 0"
       " or 1 arguments.\n");
   }
@@ -252,7 +252,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   if (nodes_.size () == 1)
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call print_system_calls is printing help\n");
 
     context_.print (
@@ -262,7 +262,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else if (nodes_.size () == 0)
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call print_system_calls is printing help\n");
 
     for (System_Calls_Help::const_iterator i = calls_.begin ();
@@ -275,7 +275,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call print_system_calls takes either 0"
       " or 1 arguments\n");
   }

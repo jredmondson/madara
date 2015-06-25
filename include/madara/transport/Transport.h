@@ -112,7 +112,7 @@ namespace Madara
       {
         if (!settings_.latency_enabled)
         {
-          logger::global_logger->log (logger::LOG_ALWAYS, 
+          madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
               DLINFO "Splice_DDS_Transport::start_latency:" \
               " Latency enabled is not set in your"
               " Madara::Transport::Settings instance. Update your"
@@ -131,7 +131,7 @@ namespace Madara
       {
         if (!settings_.latency_enabled)
         {
-          logger::global_logger->log (logger::LOG_ALWAYS, 
+          madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
               DLINFO "Splice_DDS_Transport::vote:" \
               " Latency enabled is not set in your"
               " Madara::Transport::Settings instance. Update your"

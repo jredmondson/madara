@@ -53,7 +53,7 @@ Madara::Expression_Tree::System_Call_Print::prune (bool & can_change)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call size requires an argument\n");
   }
 
@@ -70,7 +70,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   if (nodes_.size () == 1)
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call print is printing the first argument and returning the"
       " size of the first argument\n");
     
@@ -86,7 +86,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     unsigned int log_level = 
       (unsigned int) nodes_[1]->evaluate (settings).to_integer ();
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call print is printing the first argument at log level %d.\n",
       log_level);
     
@@ -96,7 +96,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call print requires an argument\n");
   }
 

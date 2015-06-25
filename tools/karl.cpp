@@ -82,7 +82,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else if (arg1 == "-h" || arg1 == "--help")
     {
-      logger::global_logger->log (logger::LOG_ALWAYS,
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
         "\nProgram summary for %s [options] [Logic]:\n\n" \
         "Evaluates KaRL logic from command line or file.\n\noptions:\n" \
         "  [-a|--no-latency]        do not test for latency (throughput only)\n" \
@@ -115,7 +115,7 @@ void handle_arguments (int argc, char ** argv)
 
         if (debug)
         {
-          logger::global_logger->log (logger::LOG_ALWAYS,
+          madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
             "\nReading logic from file %s:\n\n" \
             "\n",
             filename.c_str ());
@@ -193,7 +193,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else if (arg1 == "-v" || arg1 == "--version")
     {
-      logger::global_logger->log (logger::LOG_ALWAYS,
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
         "MADARA version: %s\n",
         utility::get_version ().c_str ());
     }

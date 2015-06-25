@@ -25,7 +25,9 @@
 
 #ifdef _MADARA_JAVA_
 
+#include <jni.h>
 #include "madara_jni.h"
+#include "madara/utility/java/Acquire_VM.h"
 
 #endif
 
@@ -120,7 +122,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   Madara::Knowledge_Engine::Variables variables;
   variables.context_ = &context_;
 
-  logger_->log (Logger::LOG_DETAILED,
+  madara_logger_ptr_log (logger_, Logger::LOG_DETAILED,
     "Function %s is being called with %d args.\n",
     this->name_.c_str (), args.size ());
   
@@ -135,14 +137,17 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 #ifdef _MADARA_JAVA_
   else if (function_->is_java_callable())
   {
-    JNIEnv * env = jni_attach();
+    Madara::Utility::Java::Acquire_VM jvm;
+    JNIEnv * env = jvm.env;
 
     /**
       * Create the variables java object
       **/
 
-    jclass jvarClass = env->FindClass ("com/madara/Variables");
-    jclass jlistClass = env->FindClass ("com/madara/KnowledgeList");
+    jclass jvarClass = Madara::Utility::Java::find_class (
+      env, "com/madara/Variables");
+    jclass jlistClass = Madara::Utility::Java::find_class (
+      env, "com/madara/KnowledgeList");
         
     jmethodID fromPointerCall = env->GetStaticMethodID (jvarClass,
       "fromPointer", "(J)Lcom/madara/Variables;");

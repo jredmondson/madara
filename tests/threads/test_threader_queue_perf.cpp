@@ -123,7 +123,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      logger::global_logger->log (logger::LOG_ALWAYS,
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
 "\nProgram summary for %s:\n\n" \
 "  Attempts to start a number of producer and consumer threads\n\n" \
 " [-c|--consumers consumers] the number of information consumerss to start\n" \
@@ -221,7 +221,7 @@ int main (int argc, char ** argv)
   // create a knowledge base and setup our id
   engine::Knowledge_Base knowledge;
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Hertz rate set to %f\n"
     "Starting %ll producer threads\n"
     "Starting %ll consumer threads\n"
@@ -280,7 +280,7 @@ int main (int argc, char ** argv)
 
   knowledge.set (".total_time_in_seconds", total_time_in_secs);
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "The consumers completed %ll jobs\n", *jobs_completed);
 
   knowledge.print ("Distributed count took {.total_time_in_seconds}s\n");

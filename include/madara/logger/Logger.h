@@ -9,6 +9,30 @@
 #include <stdio.h>
 #include "madara/utility/inttypes.h"
 
+/**
+ * Fast version of the Madara::Logger::log method. This macro
+ * uses compiler optimizations to ensure that args are not
+ * evaluated unless the level is appropriate for the loggers level.
+* This makes logging transparent and minimally invasive, performance wise
+ * @param  logger  the logger instance to use
+ * @param  level   the logging level
+ **/
+#define madara_logger_log(logger, level, ...) \
+          if (level <= logger.get_level ()) \
+            logger.log (level, __VA_ARGS__);
+
+/**
+* Fast version of the Madara::Logger::log method for Logger pointers.
+* This macro uses compiler optimizations to ensure that args are not
+* evaluated unless the level is appropriate for the loggers level.
+* This makes logging transparent and minimally invasive, performance wise
+* @param  logger  the logger pointer to use
+* @param  level   the logging level
+**/
+#define madara_logger_ptr_log(logger, level, ...) \
+          if (logger && level <= logger->get_level ()) \
+            logger->log (level, __VA_ARGS__);
+
 namespace Madara
 {
   namespace Logger

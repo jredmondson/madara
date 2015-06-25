@@ -53,7 +53,7 @@ Madara::Expression_Tree::System_Call_Delete_Variable::prune (bool & can_change)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: "
       "System call delete_variable requires 1 argument,"
       "e.g., #delete_variable ('var').\n");
@@ -73,7 +73,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   if (nodes_.size () == 1)
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call delete_variable is returning the clock "
       "of its first argument\n");
 
@@ -83,7 +83,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call delete_variable requires 1 argument,"
       "e.g., #delete_variable ('var')\n");
   }

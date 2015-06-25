@@ -21,10 +21,10 @@ void test_probablistic (void)
 
   Madara::Transport::Packet_Scheduler scheduler (&settings);
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "********************TESTING PROBABLISTIC POLICY*********************\n");
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "****************BEGIN PROBABLISTIC 10%%, BURST=5*****************\n");
 
   settings.update_drop_rate (.1,
@@ -40,21 +40,21 @@ void test_probablistic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
 
   if (scheduler.get_dropped () > 20 && scheduler.get_dropped () < 60)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "********************BEGIN PROBABLISTIC 20%%*********************\n");
 
   settings.update_drop_rate (.2, Madara::Transport::PACKET_DROP_PROBABLISTIC);
@@ -69,21 +69,21 @@ void test_probablistic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
 
   if (scheduler.get_dropped () > 60 && scheduler.get_dropped () < 100)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "********************BEGIN PROBABLISTIC 40%%*********************\n");
 
   settings.update_drop_rate (.4, Madara::Transport::PACKET_DROP_PROBABLISTIC);
@@ -98,21 +98,21 @@ void test_probablistic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
 
   if (scheduler.get_dropped () > 140 && scheduler.get_dropped () < 180)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "****************BEGIN PROBABLISTIC 40%%, BURST=3*****************\n");
 
   settings.update_drop_rate (.4,
@@ -128,21 +128,21 @@ void test_probablistic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
   
   if (scheduler.get_dropped () > 140 && scheduler.get_dropped () < 180)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*****************BEGIN PROBABLISTIC 50%%, BURST=5******************\n");
 
   settings.update_drop_rate (.5,
@@ -158,22 +158,22 @@ void test_probablistic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
 
   if (scheduler.get_dropped () > 180 && scheduler.get_dropped () < 220)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*****************BEGIN PROBABLISTIC 80%%******************\n");
 
   settings.update_drop_rate (.8,
@@ -189,17 +189,17 @@ void test_probablistic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
 
   if (scheduler.get_dropped () > 300 && scheduler.get_dropped () < 340)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
@@ -212,10 +212,10 @@ void test_deterministic (void)
 
   Madara::Transport::Packet_Scheduler scheduler (&settings);
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*******************TESTING DETERMINISTIC POLICY********************\n");
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "****************BEGIN DETERMINISTIC 10%%, BURST=6*****************\n");
 
   settings.update_drop_rate (.1,
@@ -231,21 +231,21 @@ void test_deterministic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
 
   if (scheduler.get_dropped () > 20 && scheduler.get_dropped () < 60)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*****************BEGIN DETERMINISTIC 20%%******************\n");
   
   settings.update_drop_rate (.2, Madara::Transport::PACKET_DROP_DETERMINISTIC);
@@ -260,21 +260,21 @@ void test_deterministic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
 
   if (scheduler.get_dropped () == 80)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*****************BEGIN DETERMINISTIC 30 %%******************\n");
 
   settings.update_drop_rate (.3,
@@ -290,21 +290,21 @@ void test_deterministic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
 
   if (scheduler.get_dropped () == 120)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "********************BEGIN DETERMINISTIC 40%%*********************\n");
 
   settings.update_drop_rate (.4,
@@ -319,21 +319,21 @@ void test_deterministic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
 
   if (scheduler.get_dropped () == 160)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*****************BEGIN DETERMINISTIC 40%%, BURST=3******************\n");
 
   settings.update_drop_rate (.4,
@@ -349,21 +349,21 @@ void test_deterministic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
 
   if (scheduler.get_dropped () > 140 && scheduler.get_dropped () < 180)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*****************BEGIN DETERMINISTIC 50%%, BURST=3******************\n");
 
   settings.update_drop_rate (.5,
@@ -379,21 +379,21 @@ void test_deterministic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
   
   if (scheduler.get_dropped () > 180 && scheduler.get_dropped () < 220)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*****************BEGIN DETERMINISTIC 50%%, BURST=10******************\n");
 
   settings.update_drop_rate (.5,
@@ -409,21 +409,21 @@ void test_deterministic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
   
   if (scheduler.get_dropped () > 180 && scheduler.get_dropped () < 220)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*****************BEGIN DETERMINISTIC 80%%******************\n");
 
   settings.update_drop_rate (.8,
@@ -439,17 +439,17 @@ void test_deterministic (void)
   }
   scheduler.print_status ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Results were ");
 
   if (scheduler.get_dropped () == 320)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "SUCCESS\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL\n");
   }
 
@@ -496,7 +496,7 @@ int parse_args (int argc, ACE_TCHAR * argv[])
     }
     else
     {
-      logger::global_logger->log (logger::LOG_EMERGENCY,
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
         "\nProgram summary for %s:\n\n" \
         "This test checks the functionality of the Bandwidth Monitoring class\n"
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \

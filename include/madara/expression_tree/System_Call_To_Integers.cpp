@@ -63,7 +63,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 {
   if (nodes_.size () > 0)
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call to_integers is converting an argument\n");
 
     return nodes_[0]->evaluate (settings).to_integers ();
@@ -72,7 +72,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   {
     Knowledge_Record return_value;
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call to_integers is converting 0\n");
     
     return return_value.to_integers ();

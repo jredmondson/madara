@@ -236,7 +236,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      logger::global_logger->log (logger::LOG_ALWAYS,
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
 "\nProgram summary for %s:\n\n" \
 "  Attempts to send a file over the network with a certain number\n" \
 "  of rebroadcasts (-h|--hops controls the number of rebroadcasts)\n\n" \
@@ -469,7 +469,7 @@ int main (int argc, char ** argv)
   knowledge.print ();
   
 #else
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "This test is disabled due to karl feature being disabled.\n");
 #endif // _MADARA_NO_KARL_
   return 0;

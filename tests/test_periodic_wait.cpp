@@ -65,7 +65,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      logger::global_logger->log (logger::LOG_ALWAYS, 
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
 "\nProgram summary for %s:\n\n" \
 "  Test periodic waits for accuracy of timers.\n\n" \
 " [-p|--poll-frequency period] period between evals (def 0.5s)\n" \
@@ -102,7 +102,7 @@ int ACE_TMAIN (int argc, char * argv[])
   knowledge.print ();
   
 #else
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "This test is disabled due to karl feature being disabled.\n");
 #endif
   return 0;

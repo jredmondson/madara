@@ -215,7 +215,7 @@ void
   buffer << value.to_integer ();
   buffer << "\n";
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     buffer.str ().c_str ());
 }
 
@@ -324,7 +324,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   if (num_runs == 0 || num_iterations == 0)
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "\nERROR: num_runs (%d) and num_iterations (%d) cannot be set to 0:\n", 
       num_runs, num_iterations);
 
@@ -451,7 +451,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   knowledge.define_function ("no_op", no_op);
 #endif
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing throughput for MADARA v%s\n",
     Madara::Utility::get_version ().c_str ());
 
@@ -481,11 +481,11 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     averages[i] = (1000000000 * evaluations) / results[i];
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "\n\nTotal time taken for each test with %d iterations * %d tests was:\n", 
         num_iterations, num_runs);
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "=========================================================================\n");
 
   for (int i = 0; i < num_test_types; ++i)
@@ -502,18 +502,18 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     buffer << results[i];
     buffer << " ns\n";
 
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       buffer.str ().c_str ());
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "=========================================================================\n\n");
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "\nAverage time taken per rule evaluation was:\n", 
         num_iterations, num_runs);
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "=========================================================================\n");
 
   for (int i = 0; i < num_test_types; ++i)
@@ -530,19 +530,19 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     buffer << (results[i] / (num_iterations * num_runs));
     buffer << " ns\n";
 
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       buffer.str ().c_str ());
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "=========================================================================\n\n");
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "\nHertz for each test with %d iterations * %d tests was:\n",
     num_iterations, num_runs);
 
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "=========================================================================\n");
 
 
@@ -556,11 +556,11 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     buffer << to_legible_hertz (averages[i]);
     buffer << "\n";
 
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       buffer.str ().c_str ());
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "=========================================================================\n\n");
 
 
@@ -1774,7 +1774,7 @@ int parse_args (int argc, ACE_TCHAR * argv[])
            cmd_opts.opt_opt ()), -2); 
     case 'h':
     default:
-      logger::global_logger->log (logger::LOG_ALWAYS,
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
         "Program Summary for %s:\n\n\
       This stand-alone application runs a variety of tests to determine\n\
       performance on a host system. For a more comprehensive and\n\

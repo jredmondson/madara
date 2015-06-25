@@ -71,7 +71,7 @@ Madara::Knowledge_Engine::Timed_Executor::remove (Timed_Event & cur_event)
   // obtain next event in queue
   if (events_.size () > 0)
   {
-    Logger::global_logger->log (Logger::LOG_MINOR, "Timed_Executor::remove: " \
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR, "Timed_Executor::remove: " \
       "events queue size is greater than zero\n");
 
     cur_event = events_.top ();
@@ -79,7 +79,7 @@ Madara::Knowledge_Engine::Timed_Executor::remove (Timed_Event & cur_event)
     // if we've hit the timeout, pop
     if (cur_time >= cur_event.first)
     {
-      Logger::global_logger->log (Logger::LOG_MAJOR, "Timed_Executor::remove: "
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR, "Timed_Executor::remove: "
         "removing top element from events queue\n");
 
       events_.pop ();
@@ -87,7 +87,7 @@ Madara::Knowledge_Engine::Timed_Executor::remove (Timed_Event & cur_event)
     // otherwise, zero out the cur_event event pointer
     else
     {
-      Logger::global_logger->log (Logger::LOG_MAJOR, "Timed_Executor::remove: "
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR, "Timed_Executor::remove: "
         "earliest event is not ready yet\n");
 
       cur_event.second = 0;
@@ -105,7 +105,7 @@ Madara::Knowledge_Engine::Timed_Executor::remove (Timed_Event & cur_event)
   {
     mutex_.release ();
 
-    Logger::global_logger->log (Logger::LOG_MAJOR, "Timed_Executor::remove: "
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR, "Timed_Executor::remove: "
       "Nothing to do. Thread going to sleep\n");
     
     Wait_Settings wait_settings;
@@ -117,7 +117,7 @@ Madara::Knowledge_Engine::Timed_Executor::remove (Timed_Event & cur_event)
     control_plane_.wait ("queued > 0 || terminated", wait_settings);
 #endif // _MADARA_NO_KARL_
 
-    Logger::global_logger->log (Logger::LOG_MAJOR, "Timed_Executor::remove: "
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR, "Timed_Executor::remove: "
       "Condition has changed. Thread waking up\n");
 
     cur_event.second = 0;
@@ -241,7 +241,7 @@ Madara::Knowledge_Engine::Timed_Executor::enter_barrier (void)
   settings.poll_frequency = .5;
   settings.max_wait_time = -1;
 
-  Logger::global_logger->log (Logger::LOG_MAJOR, "Timed_Executor::enter_barrier: "
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR, "Timed_Executor::enter_barrier: "
     "Entering barrier\n");
   
 #ifndef _MADARA_NO_KARL_
@@ -253,7 +253,7 @@ Madara::Knowledge_Engine::Timed_Executor::enter_barrier (void)
   
 #endif // _MADARA_NO_KARL_
 
-  Logger::global_logger->log (Logger::LOG_MAJOR,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
     "Timed_Executor::enter_barrier: Leaving barrier\n");
 }
 

@@ -54,7 +54,7 @@ Madara::Expression_Tree::System_Call_Write_File::prune (bool & can_change)
 
   if (nodes_.size () != 2)
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL ERROR: System call write_file requires 2 arguments: "
       "a knowledge record and a file name\n");
   }
@@ -80,7 +80,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     Knowledge_Record * filename = &arg1;
     Knowledge_Record * contents = &arg2;
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call write_file is attempting to open %s.\n",
       filename->to_string ().c_str ());
 
@@ -88,7 +88,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
     if (bytes_written <= 0)
     {
-      logger_->log (Logger::LOG_MINOR,
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
         "KARL ERROR: System call write_file could not write to %s\n",
         filename->to_string ().c_str ());
 
@@ -96,14 +96,14 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     }
     else
     {
-      logger_->log (Logger::LOG_MINOR,
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
         "System call write_file wrote %zd bytes to %s\n",
         bytes_written, filename->to_string ().c_str ());
     }
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL ERROR: System call write_file requires 2 arguments: "
       "a knowledge record and a file name\n");
   }

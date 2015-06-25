@@ -65,7 +65,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   if (nodes_.size () > 0)
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call get_clock is returning the clock of its first argument\n");
 
     return Madara::Knowledge_Record::Integer (
@@ -73,7 +73,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call get_clock is returning the system clock\n");
 
     return Madara::Knowledge_Record::Integer (

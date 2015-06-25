@@ -53,7 +53,7 @@ Madara::Expression_Tree::System_Call_Log_Level::prune (bool & can_change)
   
   if (nodes_.size () > 1)
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call log_level requires 0 or 1 arguments,"
       " e.g., log_level (10) or log_level ()--which returns the log level\n");
   }
@@ -71,14 +71,14 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   if (nodes_.size () == 1)
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call log_level is setting log level\n");
 
     int level = (int)nodes_[0]->evaluate (settings).to_integer ();
 
     logger_->set_level (level);
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call log_level has set log level to %d\n",
       level);
 
@@ -86,14 +86,14 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else if (nodes_.size () == 0)
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call log_level is returning log level.\n");
     
     return Knowledge_Record::Integer (logger_->get_level ());
   }
   else if (nodes_.size () > 1)
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call log_level requires 0 or 1 arguments,"
       " e.g., log_level (10) or log_level ()--which returns the log level\n");
   }

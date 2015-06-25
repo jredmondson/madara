@@ -44,13 +44,13 @@ Madara::Knowledge_Engine::Timed_Event_Thread::Timed_Event_Thread (
 
   if (result != -1)
   {
-    Logger::global_logger->log (Logger::LOG_MAJOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
       "Timed_Event_Thread::Timed_Event_Thread:" \
       " thread started (result = %d)\n", result);
   }
   else
   {
-    Logger::global_logger->log (Logger::LOG_MAJOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
       "Timed_Event_Thread::Timed_Event_Thread:" \
       " failed to create thread\n");
   }
@@ -90,14 +90,14 @@ Madara::Knowledge_Engine::Timed_Event_Thread::svc (void)
   buffer << "]::svc";
   std::string print_prefix (buffer.str ());
 
-  Logger::global_logger->log (Logger::LOG_MAJOR,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
     "%s: " \
     "Service thread started.\n",
     print_prefix.c_str ());
 
   while (!info_.executor->is_shutdown ())
   {
-    Logger::global_logger->log (Logger::LOG_MAJOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
       "%s: " \
       "Attempting to remove an event.\n",
       print_prefix.c_str ());
@@ -131,7 +131,7 @@ Madara::Knowledge_Engine::Timed_Event_Thread::svc (void)
       if (valid->intended_executions >= 0 &&
           valid->intended_executions == valid->executions)
       {
-        Logger::global_logger->log (Logger::LOG_MAJOR,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
           "%s: " \
           "Timed Event has expired. Deleting.\n",
           print_prefix.c_str ());
@@ -140,7 +140,7 @@ Madara::Knowledge_Engine::Timed_Event_Thread::svc (void)
       }
       else if (valid->cancel_on_false && result.is_false ())
       {
-        Logger::global_logger->log (Logger::LOG_MAJOR,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
           "%s: " \
           "Timed Event returned false. User requested a cancel. Deleting.\n",
           print_prefix.c_str ());
@@ -149,7 +149,7 @@ Madara::Knowledge_Engine::Timed_Event_Thread::svc (void)
       }
       else
       {
-        Logger::global_logger->log (Logger::LOG_MAJOR,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
           "%s: " \
           "Timed Event added back to queue.\n",
           print_prefix.c_str ());
@@ -163,7 +163,7 @@ Madara::Knowledge_Engine::Timed_Event_Thread::svc (void)
     {
       if (sleep_time > zero_time)
       {
-        Logger::global_logger->log (Logger::LOG_MAJOR,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
           "%s: " \
           "Not ready for timeout. Thread sleeping.\n",
           print_prefix.c_str ());

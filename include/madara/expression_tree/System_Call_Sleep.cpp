@@ -57,7 +57,7 @@ Madara::Expression_Tree::System_Call_Sleep::prune (bool & can_change)
 
   if (nodes_.size () > 2 || nodes_.size () == 0)
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call set_clock requires 1-2 arguments, "
       "e.g., set_clock (5) or set_clock (var, 5)\n");
   }
@@ -77,14 +77,14 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   if (nodes_.size () == 1)
   {
     double sleep_time = nodes_[0]->evaluate (settings).to_double ();
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call sleep is sleeping for %f.\n", sleep_time);
 
     return_value = Madara::Utility::sleep (sleep_time);
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call set_clock requires 1-2 arguments, "
       "e.g., set_clock (5) or set_clock (var, 5).\n");
   }

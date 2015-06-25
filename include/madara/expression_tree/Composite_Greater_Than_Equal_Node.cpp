@@ -52,7 +52,7 @@ Madara::Expression_Tree::Composite_Greater_Than_Equal_Node::prune (bool & can_ch
   }
   else
   {
-    logger_->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (logger_, Logger::LOG_DETAILED,
       "KARL COMPILE ERROR: Greater-than-equal-to has no left expression\n");
 
     exit (-1);
@@ -69,7 +69,7 @@ Madara::Expression_Tree::Composite_Greater_Than_Equal_Node::prune (bool & can_ch
   }
   else
   {
-    logger_->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (logger_, Logger::LOG_DETAILED,
       "KARL COMPILE ERROR: Greater-than-equal-to has no right expression\n");
 
     exit (-1);

@@ -29,14 +29,14 @@ Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thr
 
   if (-1 == read_socket_.open (local, 2, 0, 1))
   {
-    Logger::global_logger->log (Logger::LOG_ERROR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_ERROR,
       "Broadcast_Transport_Read_Thread::constructor:" \
       " Error subscribing to broadcast address %s:%d\n",
       address_.get_host_addr (), address_.get_port_number ());
   } 
   else
   {
-    Logger::global_logger->log (Logger::LOG_MAJOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
       "Broadcast_Transport_Read_Thread::constructor:" \
       " Success subscribing to broadcast address %s:%d\n",
       address_.get_host_addr (), address_.get_port_number ());
@@ -50,14 +50,14 @@ Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thr
     bare_socket.get_option (SOL_SOCKET, SO_RCVBUF,
       (void *)&rcv_buff_size, &opt_len);
 
-    Logger::global_logger->log (Logger::LOG_MAJOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
       "Broadcast_Transport_Read_Thread::constructor:" \
       " default socket buff size is send=%d, rcv=%d\n",
       send_buff_size, rcv_buff_size);
   
     if (send_buff_size < tar_buff_size)
     {
-      Logger::global_logger->log (Logger::LOG_MAJOR,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
         "Broadcast_Transport_Read_Thread::constructor:" \
         " setting send buff size to settings.queue_length (%d)\n",
         tar_buff_size);
@@ -68,7 +68,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thr
       bare_socket.get_option (SOL_SOCKET, SO_SNDBUF,
         (void *)&send_buff_size, &opt_len);
 
-      Logger::global_logger->log (Logger::LOG_MAJOR,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
         "Broadcast_Transport_Read_Thread::constructor:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
@@ -76,7 +76,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thr
   
     if (rcv_buff_size < tar_buff_size)
     {
-      Logger::global_logger->log (Logger::LOG_MAJOR,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
         "Broadcast_Transport_Read_Thread::constructor:" \
         " setting rcv buff size to settings.queue_length (%d)\n",
         tar_buff_size);
@@ -87,7 +87,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::Broadcast_Transport_Read_Thr
       bare_socket.get_option (SOL_SOCKET, SO_SNDBUF,
         (void *)&rcv_buff_size, &opt_len);
 
-      Logger::global_logger->log (Logger::LOG_MAJOR,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
         "Broadcast_Transport_Read_Thread::constructor:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
@@ -111,7 +111,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::init (
     // check for an on_data_received ruleset
     if (settings_.on_data_received_logic.length () != 0)
     {
-      Logger::global_logger->log (Logger::LOG_MAJOR,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
         "Broadcast_Transport_Read_Thread::init:" \
         " setting rules to %s\n",
         settings_.on_data_received_logic.c_str ());
@@ -123,7 +123,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::init (
     }
     else
     {
-      Logger::global_logger->log (Logger::LOG_MAJOR,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
         "Broadcast_Transport_Read_Thread::init:" \
         " no permanent rules were set\n");
     }
@@ -137,7 +137,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::cleanup (void)
   // close broadcast port
   if (-1 == read_socket_.close ())
   {
-    Logger::global_logger->log (Logger::LOG_MAJOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
       "Broadcast_Transport_Read_Thread::cleanup:" \
       " Error closing broadcast socket\n");
   }
@@ -169,7 +169,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
       {
         Fragment_Map map;
 
-        Logger::global_logger->log (Logger::LOG_MAJOR,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
           "%s:" \
           " fragmenting %d byte packet (%" PRIu64 " bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
@@ -192,7 +192,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
       
         send_monitor_.add ((uint32_t)bytes_sent);
 
-        Logger::global_logger->log (Logger::LOG_MAJOR,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
           "%s:" \
           " Sent fragments totalling %" PRIu64 " bytes\n",
           print_prefix,
@@ -205,7 +205,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
         bytes_sent = write_socket_.send(
           buffer_.get_ptr (), (ssize_t)result, address_);
 
-        Logger::global_logger->log (Logger::LOG_MAJOR,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
           "%s:" \
           " Sent packet of size " PRIu64 "\n",
           print_prefix, bytes_sent);
@@ -213,7 +213,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
         send_monitor_.add ((uint32_t)bytes_sent);
       }
 
-      Logger::global_logger->log (Logger::LOG_MINOR,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
         "%s:" \
         " Send bandwidth = %" PRIu64 " B/s\n",
         print_prefix,
@@ -235,7 +235,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::run (void)
     const char * print_prefix = "Broadcast_Transport_Read_Thread::run";
     int64_t buffer_remaining = settings_.queue_length;
 
-    Logger::global_logger->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
       "%s:" \
       " entering main service loop.\n",
       print_prefix);
@@ -244,7 +244,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::run (void)
 
     if (buffer == 0)
     {
-      Logger::global_logger->log (Logger::LOG_EMERGENCY,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_EMERGENCY,
         "%s:" \
         " Unable to allocate buffer of size " PRIu32 ". Exiting thread.\n",
         print_prefix,
@@ -253,7 +253,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::run (void)
       return;
     }
 
-    Logger::global_logger->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
       "%s:" \
       " entering a recv on the socket.\n",
       print_prefix);
@@ -262,7 +262,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::run (void)
     ssize_t bytes_read = read_socket_.recv ((void *)buffer, 
       settings_.queue_length, remote, 0, &wait_time);
 
-    Logger::global_logger->log (Logger::LOG_MAJOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
       "%s:" \
       " received a message header of %lld bytes from %s:%d\n",
       print_prefix,
@@ -304,7 +304,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::run (void)
     }
     else
     {
-      Logger::global_logger->log (Logger::LOG_MAJOR,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
         "%s:" \
         " wait timeout on new messages. Proceeding to next wait\n",
         print_prefix);

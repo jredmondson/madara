@@ -1,5 +1,6 @@
 #include "com_madara_containers_FlexMap.h"
 #include "madara/knowledge_engine/containers/Flex_Map.h"
+#include "madara_jni.h"
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
@@ -308,7 +309,8 @@ jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
     current->keys (keys, first_level);
 
     result = env->NewObjectArray (
-      (jsize)keys.size (), env->FindClass ("java/lang/String"),
+      (jsize)keys.size (),
+      Madara::Utility::Java::find_class (env, "java/lang/String"),
       env->NewStringUTF (""));
 
     for (unsigned int i = 0; i < keys.size (); i++)

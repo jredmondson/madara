@@ -389,25 +389,25 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
   // start with the initial port provided
   // increase port each time we don't properly bind
 
-  Logger::global_logger->log (Logger::LOG_DETAILED,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
     "Utility::bind_to_ephemeral_port:" \
     " creating ACE_INET_Addr\n");
 
   ACE_INET_Addr addr (port);
   char hostname[HOST_NAME_MAX + 1] = "";
 
-  Logger::global_logger->log (Logger::LOG_MAJOR,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
     "Utility::bind_to_ephemeral_port:" \
     " getting hostname from ACE_INET_Addr\n");
 
   addr.get_host_name (hostname, HOST_NAME_MAX);
   host = hostname;
 
-  Logger::global_logger->log (Logger::LOG_MINOR,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
     "Utility::bind_to_ephemeral_port:" \
     " hostname equals %s\n", hostname);
 
-  Logger::global_logger->log (Logger::LOG_DETAILED,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
     "Utility::bind_to_ephemeral_port:" \
     " calling ACE_OS::socket_init\n");
 
@@ -416,7 +416,7 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
   for ( ; port < 65535; ++port, addr.set (port))
   {
 
-    Logger::global_logger->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
       "Utility::bind_to_ephemeral_port:" \
       " attempting open on socket %d\n", port);
 
@@ -428,7 +428,7 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
       break;
   }
 
-  Logger::global_logger->log (Logger::LOG_MAJOR,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
     "Utility::bind_to_ephemeral_port:" \
     " unable to bind to any ephemeral port. Check firewall\n");
 
@@ -459,7 +459,7 @@ Madara::Utility::file_to_string (const std::string & filename)
   }
   else
   {
-    Logger::global_logger->log (Logger::LOG_MAJOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
       "Utility::file_to_string:" \
       " failed to open file: %s\n");
   }
@@ -734,7 +734,7 @@ ssize_t
     O_RDWR | O_CREAT | O_TRUNC,
     ACE_DEFAULT_FILE_PERMS);
 
-  Logger::global_logger->log (Logger::LOG_MAJOR,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
     "Files::write_file : beginning write of %" PRIu64 " bytes\n", size);
 
   if (file_handle  != ACE_INVALID_HANDLE)
@@ -887,7 +887,7 @@ Madara::Utility::wait_true (
 
   Madara::Knowledge_Record last_value = knowledge.get (ref, settings);
 
-  Logger::global_logger->log (Logger::LOG_MAJOR,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
     "Utility::wait_true:" \
     " variable returned %s\n",
     last_value.to_string ().c_str ());
@@ -898,13 +898,13 @@ Madara::Utility::wait_true (
   while (!last_value.to_integer () &&
     (settings.max_wait_time < 0 || current < max_wait))
   {
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Utility::wait_true:" \
       " current is %" PRIu64 ".%" PRIu64 " and max is %" PRIu64 ".%" PRIu64 " (poll freq is %f)\n",
       current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
       settings.poll_frequency);
 
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Utility::wait_true:" \
       " last value didn't result in success\n");
 
@@ -923,13 +923,13 @@ Madara::Utility::wait_true (
     else
       knowledge.wait_for_change ();
 
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Utility::wait_true:" \
       " waiting on %s\n", variable.c_str ());
 
     last_value = knowledge.get (ref, settings);
 
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Utility::wait_true:" \
       " completed eval to get %s\n",
       last_value.to_string ().c_str ());
@@ -941,7 +941,7 @@ Madara::Utility::wait_true (
   
   if (current >= max_wait)
   {
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Utility::wait_true:" \
       " Evaluate did not succeed. Timeout occurred\n",
       last_value.to_string ().c_str ());
@@ -981,7 +981,7 @@ bool Madara::Utility::wait_false (
 
   Madara::Knowledge_Record last_value = !knowledge.get (ref, settings);
 
-  Logger::global_logger->log (Logger::LOG_DETAILED,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
     "Utility::wait_false:" \
     " variable returned %s\n",
     last_value.to_string ().c_str ());
@@ -992,13 +992,13 @@ bool Madara::Utility::wait_false (
   while (!last_value.to_integer () &&
     (settings.max_wait_time < 0 || current < max_wait))
   {
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Utility::wait_false:" \
       " current is %d.%d and max is %d.%d (poll freq is %f)\n",
       current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
       settings.poll_frequency);
 
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Utility::wait_false:"
       " last value didn't result in success\n");
 
@@ -1017,13 +1017,13 @@ bool Madara::Utility::wait_false (
     else
       knowledge.wait_for_change ();
 
-    Logger::global_logger->log (Logger::LOG_MAJOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
       "Utility::wait_false:"
       " waiting on %s\n", variable.c_str ());
 
     last_value = !knowledge.get (ref, settings);
 
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Utility::wait_false:"
       " completed eval to get %s\n",
       last_value.to_string ().c_str ());
@@ -1035,7 +1035,7 @@ bool Madara::Utility::wait_false (
   
   if (current >= max_wait)
   {
-    Logger::global_logger->log (Logger::LOG_MAJOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
       "Utility::wait_false:"
       " Evaluate did not succeed. Timeout occurred\n",
       last_value.to_string ().c_str ());

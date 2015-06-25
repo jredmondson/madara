@@ -347,8 +347,10 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
          * Create the variables java object
          **/
 
-        jclass jvarClass = jvm.env->FindClass ("com/madara/Variables");
-        jclass jlistClass = jvm.env->FindClass ("com/madara/KnowledgeList");
+        jclass jvarClass = Madara::Utility::Java::find_class (
+          jvm.env, "com/madara/Variables");
+        jclass jlistClass = Madara::Utility::Java::find_class (
+          jvm.env, "com/madara/KnowledgeList");
         
         jmethodID fromPointerCall = jvm.env->GetStaticMethodID (jvarClass,
           "fromPointer", "(J)Lcom/madara/Variables;");
@@ -501,10 +503,10 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         /**
          * Create the variables java object
          **/
-        jclass jvarClass = jvm.env->FindClass ("com/madara/Variables");
-        jclass jpacketClass = jvm.env->FindClass (
+        jclass jvarClass = Madara::Utility::Java::find_class (jvm.env, "com/madara/Variables");
+        jclass jpacketClass = Madara::Utility::Java::find_class (jvm.env, 
           "com/madara/transport/filters/Packet");
-        jclass jcontextClass = jvm.env->FindClass (
+        jclass jcontextClass = Madara::Utility::Java::find_class (jvm.env, 
           "com/madara/transport/TransportContext");
         
         jmethodID varfromPointerCall = jvm.env->GetStaticMethodID (

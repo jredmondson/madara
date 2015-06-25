@@ -46,6 +46,7 @@
 *********************************************************************/
 #include "com_madara_containers_Vector.h"
 #include "madara/knowledge_engine/containers/Vector.h"
+#include "madara_jni.h"
 #include <iostream>
 
 namespace engine = Madara::Knowledge_Engine;
@@ -335,7 +336,8 @@ jlong JNICALL Java_com_madara_containers_Vector_jni_1toRecord
 jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArray
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jclass kr_class = env->FindClass ("com/madara/KnowledgeRecord");
+  jclass kr_class = Madara::Utility::Java::find_class (
+    env, "com/madara/KnowledgeRecord");
   jobjectArray list;
   if (kr_class && cptr != 0)
   {

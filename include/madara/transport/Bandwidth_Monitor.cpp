@@ -120,7 +120,7 @@ Madara::Transport::Bandwidth_Monitor::print_utilization (
 
   update_utilization ();
 
-  Logger::global_logger->log (Logger::LOG_ALWAYS, "Bandwidth: %d messages "
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_ALWAYS, "Bandwidth: %d messages "
     "for %" PRIu64 " bytes over %lld window (%" PRIu64 " B/s)\n", messages_.size (),
     utilization_, (long long)window_, get_bytes_per_second ());
 }

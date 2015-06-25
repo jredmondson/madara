@@ -7,6 +7,7 @@
 
 #include "com.madara.transport.TransportSettings.h"
 #include "madara/transport/Transport.h"
+#include "madara_jni.h"
 
 #include <string>
 #include <stdio.h>
@@ -397,7 +398,8 @@ jobjectArray JNICALL Java_com_madara_transport_TransportSettings_jni_1getHosts (
   if (settings)
   {
     result = env->NewObjectArray (
-      (jsize)settings->hosts.size (), env->FindClass ("java/lang/String"),
+      (jsize)settings->hosts.size (),
+      Madara::Utility::Java::find_class (env, "java/lang/String"),
       env->NewStringUTF (""));
 
     for (unsigned int x = 0; x < settings->hosts.size (); x++)

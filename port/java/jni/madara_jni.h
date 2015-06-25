@@ -19,4 +19,20 @@ MADARA_Export jclass jni_string_cls();
 MADARA_Export JNIEnv* jni_attach();
 MADARA_Export void jni_detach();
 
+namespace Madara
+{
+  namespace Utility
+  {
+    namespace Java
+    {
+      /**
+       * Android-safe, Thread-safe find class method
+       * @param  env   Java environment
+       * @param  name  name of the class to find
+       **/
+      jclass MADARA_Export find_class (JNIEnv * env, const char * name);
+    }
+  }
+}
+
 #endif

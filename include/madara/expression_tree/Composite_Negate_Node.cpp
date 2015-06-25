@@ -49,7 +49,7 @@ Madara::Expression_Tree::Composite_Negate_Node::prune (bool & can_change)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: "
       "Negate has no right expression\n");
 
@@ -69,7 +69,7 @@ Madara::Expression_Tree::Composite_Negate_Node::evaluate (
 {
   Madara::Knowledge_Record value = right_->evaluate (settings);
 
-  logger_->log (Logger::LOG_DETAILED,
+  madara_logger_ptr_log (logger_, Logger::LOG_DETAILED,
     "KARL COMPILE ERROR: "
     "Negating %s.\n", value.to_string ().c_str ());
 

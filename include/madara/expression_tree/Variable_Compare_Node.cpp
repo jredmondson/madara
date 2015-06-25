@@ -60,7 +60,7 @@ Madara::Expression_Tree::Variable_Compare_Node::prune (bool & can_change)
     left_child_can_change = true;
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Variable assignment has no variable\\n");
 
     exit (-1);    
@@ -77,7 +77,7 @@ Madara::Expression_Tree::Variable_Compare_Node::prune (bool & can_change)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Assignment has no right expression\n");
 
     exit (-1);

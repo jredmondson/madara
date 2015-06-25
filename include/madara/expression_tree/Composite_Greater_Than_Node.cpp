@@ -52,7 +52,7 @@ Madara::Expression_Tree::Composite_Greater_Than_Node::prune (bool & can_change)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Greater-than has no left expression\n");
 
     exit (-1);
@@ -69,7 +69,7 @@ Madara::Expression_Tree::Composite_Greater_Than_Node::prune (bool & can_change)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Greater-than has no right expression\n");
 
     exit (-1);   

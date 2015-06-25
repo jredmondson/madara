@@ -1009,7 +1009,8 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
   (JNIEnv * env, jobject obj, jlong cptr, jstring expression, jobject jniRet)
 {
   jclass jniRetClass = env->GetObjectClass (jniRet);
-  jclass classStrArray = env->FindClass ("java/lang/String");
+  jclass classStrArray = Madara::Utility::Java::find_class (env,
+    "java/lang/String");
   jfieldID valsID = env->GetFieldID (jniRetClass, "vals", "[J");
   jfieldID keysID = env->GetFieldID (jniRetClass,
   "keys", "[Ljava/lang/String;");

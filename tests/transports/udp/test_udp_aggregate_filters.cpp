@@ -95,7 +95,7 @@ logger::global_logger->set_level (level);
     }
     else
     {
-      logger::global_logger->log (logger::LOG_ALWAYS, 
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
         "  Test the multicast transport. Requires 2+ processes. The result of\n" \
         "  running these processes should be that each process reports\n" \

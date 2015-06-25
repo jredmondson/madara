@@ -110,7 +110,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      logger::global_logger->log (logger::LOG_ALWAYS,
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
 "\nProgram summary for %s:\n\n" \
 "  Attempts to start a number of counter and reader threads\n\n" \
 " [-c|--counters counters] the number of counter threads to start\n" \
@@ -166,7 +166,7 @@ int main (int argc, char ** argv)
   // create a knowledge base and setup our id
   engine::Knowledge_Base knowledge;
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Hertz rate set to %f\n"
     "Counters is set to %ll\n"
     "Target is set to %ll\n",

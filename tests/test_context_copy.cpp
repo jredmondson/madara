@@ -40,12 +40,12 @@ void test_copy (void)
       dest.get ("spouse") == "Pocahontas" &&
       dest.get ("kids.0") == "Thomas Rolfe")
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "TEST 1: Full copy is SUCCESS.\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "TEST 1: Full copy is FAIL.\n");
     dest.print ();
   }
@@ -61,12 +61,12 @@ void test_copy (void)
       !dest.exists ("spouse") &&
       !dest.exists ("kids.0"))
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "TEST 2: Lone name copy is SUCCESS.\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "TEST 2: Lone name copy is FAIL.\n");
     dest.print ();
   }
@@ -82,22 +82,22 @@ void test_copy (void)
       !dest.exists ("spouse") &&
       !dest.exists ("kids.0"))
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "TEST 3: Add age to copy is SUCCESS.\n");
   }
   else
   {
-    logger::global_logger->log (logger::LOG_ALWAYS,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "TEST 3: Add age to copy is FAIL.\n");
     dest.print ();
   }
 
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "\nEND OF TESTS CONTEXT CONTENTS:\n"
     "\nSource:\n");
   source.print ();
 
-  logger::global_logger->log (logger::LOG_ALWAYS, "\nDest:\n");
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, "\nDest:\n");
   dest.print ();
 }
 

@@ -77,7 +77,7 @@ void JNICALL Java_com_madara_logger_GlobalLogger_jni_1log
 {
   const char * str_message = env->GetStringUTFChars (message, 0);
 
-  logger::global_logger->log ((int)level, str_message);
+  madara_logger_ptr_log (logger::global_logger.get(), (int)level, str_message);
 
   env->ReleaseStringUTFChars (message, str_message);
 }

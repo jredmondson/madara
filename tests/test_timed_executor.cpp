@@ -41,7 +41,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      logger::global_logger->log (logger::LOG_ALWAYS, 
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
         "  Test the timed executor, which executes periodic tasks.\n\n" \
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \

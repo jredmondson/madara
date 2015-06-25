@@ -99,7 +99,7 @@ int ACE_TMAIN (int, char **)
   knowledge.wait (expression, wait_settings);
   
 #else
-  logger::global_logger->log (logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "This test is disabled due to karl feature being disabled.\n");
 #endif
   return 0;

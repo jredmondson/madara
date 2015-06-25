@@ -21,7 +21,7 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
   // once
   if (key.find ("{") != key.npos)
   {
-    logger_->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (logger_, Logger::LOG_DETAILED,
       "Variable %s requires variable expansion.\n",
       key.c_str ());
 
@@ -34,7 +34,7 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
 
     if (pivot_list_.size () % 2 != 0)
     {
-      logger_->log (Logger::LOG_EMERGENCY,
+      madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: matching braces not found in %s\n",
          key.c_str ());
 
@@ -60,7 +60,7 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
 
     if (num_opens > num_closes)
     {
-      logger_->log (Logger::LOG_EMERGENCY,
+      madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: Array name has "
         "more opening braces than closing in %s\n",
         key.c_str ());
@@ -69,7 +69,7 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
     }
     else if (num_closes > num_opens)
     {
-      logger_->log (Logger::LOG_EMERGENCY,
+      madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: Array name has "
         "more closing braces than opening in %s\n",
         key.c_str ());
@@ -96,7 +96,7 @@ Madara::Expression_Tree::Composite_Array_Reference::expand_key (void) const
 {
   if (key_expansion_necessary_)
   {
-    logger_->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (logger_, Logger::LOG_DETAILED,
       "Variable %s requires variable expansion\n",
       key_.c_str ());
 

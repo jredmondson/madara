@@ -46,6 +46,7 @@
 *********************************************************************/
 #include "com_madara_containers_Map.h"
 #include "madara/knowledge_engine/containers/Map.h"
+#include "madara_jni.h"
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
@@ -412,7 +413,8 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_Map_jni_1keys
     current->keys (keys);
 
     result = env->NewObjectArray (
-      (jsize)keys.size (), env->FindClass ("java/lang/String"),
+      (jsize)keys.size (),
+      Madara::Utility::Java::find_class (env, "java/lang/String"),
       env->NewStringUTF (""));
 
     for (unsigned int i = 0; i < keys.size (); i++)

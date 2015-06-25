@@ -54,7 +54,7 @@ Madara::Expression_Tree::System_Call_Read_File::prune (bool & can_change)
 
   if (nodes_.size () == 0 || nodes_.size () > 2)
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call read_file"
       " requires at least a filename to read, e.g."
       " #read_file (filename), #read_file (filename, 'text')."
@@ -81,7 +81,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     Knowledge_Record filename_eval = nodes_[0]->evaluate (settings);
     uint32_t read_as_type_uint (0);
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call read_file is attempting to open %s.\n",
       filename_eval.to_string ().c_str ());
 
@@ -112,14 +112,14 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
     if (0 != return_value.read_file (filename_eval.to_string ()))
     {
-      logger_->log (Logger::LOG_EMERGENCY,
+      madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
         "KARL RUNTIME ERROR: System call read_file could not open %s.\n",
         filename_eval.to_string ().c_str ());
     }
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call read_file"
       " requires at least a filename to read, e.g."
       " #read_file (filename), #read_file (filename, 'text')."

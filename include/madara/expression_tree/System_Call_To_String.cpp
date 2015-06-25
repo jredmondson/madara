@@ -75,21 +75,21 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
       if (nodes_.size () > 2)
       {
-        logger_->log (Logger::LOG_EMERGENCY,
+        madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
           "KARL RUNTIME ERROR: System call to_string"
           " may have up to 2 arguments. First is a value to change to string."
           " An optional second is a delimiter for array stringification\n");
       }
     }
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call to_string is converting an argument\n");
 
     result = nodes_[0]->evaluate (settings).to_string (delimiter);
   }
   else
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "System call to_string is converting 0\n");
   }
 

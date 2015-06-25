@@ -61,7 +61,7 @@ Madara::Expression_Tree::Variable_Decrement_Node::prune (bool & can_change)
     left_child_can_change = true;
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Variable assignment has no variable\n");
 
     exit (-1);    
@@ -78,7 +78,7 @@ Madara::Expression_Tree::Variable_Decrement_Node::prune (bool & can_change)
   }
   else
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Variable assignment has no right expression\n");
 
     exit (-1);
@@ -104,7 +104,7 @@ Madara::Expression_Tree::Variable_Decrement_Node::evaluate (
 
   if (var_)
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Composite_Assignment_Node::evaluate: "
       "Attempting to set variable %s to %s.\n",
       var_->expand_key ().c_str (),
@@ -116,7 +116,7 @@ Madara::Expression_Tree::Variable_Decrement_Node::evaluate (
   }
   else if (array_)
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Composite_Assignment_Node::evaluate: "
       "Attempting to set index of var %s to %s.\n",
       array_->expand_key ().c_str (),
@@ -128,7 +128,7 @@ Madara::Expression_Tree::Variable_Decrement_Node::evaluate (
   }
   else
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Composite_Assignment_Node::evaluate: "
       "left hand side was neither a variable nor an array reference. "
       "Check your expression for errors.\n",

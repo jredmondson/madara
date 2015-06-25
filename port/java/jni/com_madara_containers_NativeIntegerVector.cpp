@@ -46,6 +46,7 @@
 *********************************************************************/
 #include "com_madara_containers_NativeIntegerVector.h"
 #include "madara/knowledge_engine/containers/Native_Integer_Vector.h"
+#include "madara_jni.h"
 
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
@@ -236,7 +237,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
 MADARA_Export jobjectArray JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1toArray
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jclass kr_class = env->FindClass ("com/madara/KnowledgeRecord");
+  jclass kr_class = Madara::Utility::Java::find_class (
+    env, "com/madara/KnowledgeRecord");
   jobjectArray list;
   if (kr_class && cptr != 0)
   {

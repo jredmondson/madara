@@ -180,7 +180,7 @@ Madara::Transport::Packet_Scheduler::add (void)
   } // end if settings_
   else
   {
-    Logger::global_logger->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_EMERGENCY,
       "Packet_Scheduler::add: ERROR: Invalid settings class\n");
 
     return true;
@@ -231,7 +231,7 @@ Madara::Transport::Packet_Scheduler::reset (void)
   }
   else
   {
-    Logger::global_logger->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_EMERGENCY,
       "Packet_Scheduler::reset: ERROR: Invalid settings class\n");
   }
 }
@@ -243,7 +243,7 @@ Madara::Transport::Packet_Scheduler::print_status (
 {
   Scheduler_Guard guard (mutex_);
 
-  Logger::global_logger->log (Logger::LOG_MINOR,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
     "%s: %d sent, %d dropped, %d consec dropped\n",
     prefix, sent_messages_, dropped_messages_, consecutive_drops_);
 }

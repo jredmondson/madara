@@ -268,7 +268,7 @@ char * Madara::Transport::defrag (Fragment_Map & map)
 {
   char * result = 0;
 
-  Logger::global_logger->log (Logger::LOG_ALWAYS,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_ALWAYS,
     "Transport::defrag:" \
     " defragging fragment map\n");
 
@@ -282,14 +282,14 @@ char * Madara::Transport::defrag (Fragment_Map & map)
     // do we have enough updates to defragment?
     if (header.updates <= map.size ())
     {
-      Logger::global_logger->log (Logger::LOG_DETAILED,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
         "Transport::defrag:" \
         " the map is large enough to contain updates\n");
 
       int64_t size = 0;
       if (Message_Header::message_header_test (buffer))
       {
-        Logger::global_logger->log (Logger::LOG_DETAILED,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
           "Transport::defrag:" \
           " regular message header detected\n");
 
@@ -300,7 +300,7 @@ char * Madara::Transport::defrag (Fragment_Map & map)
       }
       else if (Reduced_Message_Header::message_header_test (buffer))
       {
-        Logger::global_logger->log (Logger::LOG_DETAILED,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
           "Transport::defrag:" \
           " regular message header detected\n");
 
@@ -318,7 +318,7 @@ char * Madara::Transport::defrag (Fragment_Map & map)
 
       if (size >= 0)
       {
-        Logger::global_logger->log (Logger::LOG_DETAILED,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
           "Transport::defrag: copying buffer to lhs\n");
 
         memcpy (lhs, buffer, buffer_remaining);
@@ -330,7 +330,7 @@ char * Madara::Transport::defrag (Fragment_Map & map)
       // if so, iterate over the fragments and copy the contents
       for (++i ;i != map.end (); ++i)
       {
-        Logger::global_logger->log (Logger::LOG_DETAILED,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
           "Transport::defrag: reading header of new fragment\n");
 
         buffer_remaining  = header.encoded_size ();
@@ -340,7 +340,7 @@ char * Madara::Transport::defrag (Fragment_Map & map)
         
         if (size >= 0)
         {
-          Logger::global_logger->log (Logger::LOG_DETAILED,
+          madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
             "Transport::defrag: copying buffer to lhs\n");
 
           memcpy (lhs, buffer, buffer_remaining);
@@ -383,14 +383,14 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
   * 4) if we have all fragments
   **/
 
-  Logger::global_logger->log (Logger::LOG_MAJOR,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
     "Transport::add_fragment: adding fragment\n");
 
   char * new_fragment = 0;
   Fragment_Message_Header header;
   int64_t buffer_remaining = header.encoded_size ();
 
-  Logger::global_logger->log (Logger::LOG_DETAILED,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
     "Transport::add_fragment:" \
     " reading header from buffer\n");
 
@@ -398,7 +398,7 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
 
   if (header.size > 0)
   {
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Transport::add_fragment:" \
       " reading header from hold fragment\n");
 
@@ -408,14 +408,14 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
   else
     return 0;
 
-  Logger::global_logger->log (Logger::LOG_DETAILED,
+  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
     "Transport::add_fragment:" \
     " searching for originator %s.\n", originator);
 
   Originator_Fragment_Map::iterator orig_map = map.find (originator);
   if (orig_map == map.end ())
   {
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Transport::add_fragment:" \
       " creating entry for originator %s.\n", originator);
 
@@ -425,7 +425,7 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
 
   else
   {
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Transport::add_fragment:" \
       " originator %s exists in fragment map.\n", originator);
 
@@ -440,7 +440,7 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
       {
         if (clock_found->second.size () != 0)
         {
-          Logger::global_logger->log (Logger::LOG_MINOR,
+          madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
             "Transport::add_fragment:" \
             " %s:%d is being added.\n", originator, update_number);
 
@@ -452,7 +452,7 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
 
           if (result && clear)
           {
-            Logger::global_logger->log (Logger::LOG_MINOR,
+            madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
               "Transport::add_fragment:" \
               " %s:%d is complete. Deleting fragments.\n",
               originator, update_number);
@@ -462,7 +462,7 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
           }
           else
           {
-            Logger::global_logger->log (Logger::LOG_MINOR,
+            madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
               "Transport::add_fragment:" \
               " %s:%d is complete. Need more fragments.\n",
               originator, update_number);
@@ -471,7 +471,7 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
         else
         {
           // if we get here, the message has already been defragged
-          Logger::global_logger->log (Logger::LOG_MINOR,
+          madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
             "Transport::add_fragment:" \
             " %s:%d has been previously defragged and fragments deleted.\n",
             originator, update_number);
@@ -483,7 +483,7 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
     else if (clock_map.size () < queue_length)
     {
       // if we get here, the message has already been defragged
-      Logger::global_logger->log (Logger::LOG_MINOR,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
         "Transport::add_fragment:" \
         " %s:%d is being added to queue.\n",
         originator, update_number);
@@ -493,7 +493,7 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
     }
     else
     {
-      Logger::global_logger->log (Logger::LOG_MINOR,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
         "Transport::add_fragment:" \
         " %s:%d is being added to queue after a deletion\n",
         originator, update_number);
@@ -502,7 +502,7 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
 
       if (oldest < clock)
       {
-        Logger::global_logger->log (Logger::LOG_MINOR,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
           "Transport::add_fragment:" \
           " deleting fragments.\n",
           originator, update_number);
@@ -516,7 +516,7 @@ Madara::Transport::add_fragment (const char * originator, uint64_t clock,
           delete [] i->second;
         }
 
-        Logger::global_logger->log (Logger::LOG_DETAILED,
+        madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
           "Transport::add_fragment:" \
           " erasing old clock.\n",
           originator, update_number);
@@ -558,7 +558,7 @@ Madara::Transport::frag (char * source,
 {
   if (fragment_size > 0)
   {
-    Logger::global_logger->log (Logger::LOG_MAJOR,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
       "Transport::frag:" \
       " fragmenting character stream into %d byte packets.\n",
       fragment_size);
@@ -571,7 +571,7 @@ Madara::Transport::frag (char * source,
     Fragment_Message_Header header;
     if (Message_Header::message_header_test (source))
     {
-      Logger::global_logger->log (Logger::LOG_DETAILED,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
         "Transport::frag:" \
         " regular message header detected\n",
         fragment_size);
@@ -583,7 +583,7 @@ Madara::Transport::frag (char * source,
     }
     else if (Reduced_Message_Header::message_header_test (source))
     {
-      Logger::global_logger->log (Logger::LOG_DETAILED,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
         "Transport::frag:" \
         " regular message header detected\n");
 
@@ -599,7 +599,7 @@ Madara::Transport::frag (char * source,
     if (header.size % data_per_packet != 0)
       ++header.updates;
 
-    Logger::global_logger->log (Logger::LOG_DETAILED,
+    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
       "Transport::frag:" \
       " iterating over %d updates.\n",
       header.updates);
@@ -624,7 +624,7 @@ Madara::Transport::frag (char * source,
 
       map[i] = new_frag;
 
-      Logger::global_logger->log (Logger::LOG_DETAILED,
+      madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
         "Transport::frag:" \
         " writing %d packet of size %d.\n",
         i, cur_size);

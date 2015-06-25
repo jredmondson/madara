@@ -1035,7 +1035,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::print (
        i != map_.end (); 
        ++i)
   {
-    logger_->log (level, "%s=%s\n",
+    madara_logger_ptr_log (logger_, (int)level, "%s=%s\n",
       i->first.c_str (), i->second.to_string (", ").c_str ());
   }
 }
@@ -1148,7 +1148,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::expand_statement (
   // check to see if all brace counts are appropriate
   if (subcount != 0)
   {
-    logger_->log (Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR : Improperly matched braces in %s\n",
       statement.c_str ());
 
@@ -1333,7 +1333,7 @@ Madara::Knowledge_Engine::Compiled_Expression
 Madara::Knowledge_Engine::Thread_Safe_Context::compile (
   const std::string & expression)
 {
-  logger_->log (Logger::LOG_MINOR,
+  madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
     "Thread_Safe_Context::compile:" \
     " compiling %s\n", expression.c_str ());
   
@@ -1572,7 +1572,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_context (
   const std::string & filename,
   const std::string & id) const
 {
-  logger_->log (Logger::LOG_MAJOR,
+  madara_logger_ptr_log (logger_, Logger::LOG_MAJOR,
     "Thread_Safe_Context::save_context:" \
     " opening file %s\n", filename.c_str ());
   
@@ -1595,7 +1595,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_context (
 
     char * current = buffer.get_ptr ();
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Thread_Safe_Context::save_context:" \
       " generating file meta\n");
   
@@ -1605,7 +1605,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_context (
     current = meta.write (current, buffer_remaining);
     current = checkpoint_header.write (current, buffer_remaining);
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Thread_Safe_Context::save_context:" \
       " writing records\n");
   
@@ -1678,7 +1678,7 @@ int64_t
 Madara::Knowledge_Engine::Thread_Safe_Context::save_as_karl (
 const std::string & filename) const
 {
-  logger_->log (Logger::LOG_MINOR,
+  madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
     "Thread_Safe_Context::save_as_karl:" \
     " opening file %s\n", filename.c_str ());
 
@@ -1775,7 +1775,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::load_context (
   const std::string & filename, std::string & id,
   const Knowledge_Update_Settings & settings)
 {
-  logger_->log (Logger::LOG_MAJOR,
+  madara_logger_ptr_log (logger_, Logger::LOG_MAJOR,
     "Thread_Safe_Context::load_context:" \
     " opening file %s\n", filename.c_str ());
   
@@ -1793,7 +1793,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::load_context (
     Utility::Scoped_Array <char> buffer = new char [max_buffer];
     const char * current = buffer.get_ptr ();
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Thread_Safe_Context::load_context:" \
       " reading file meta data\n");
   
@@ -1877,7 +1877,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::load_context (
     } // end if total_read > 0
     else
     {
-      logger_->log (Logger::LOG_MINOR,
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
         "Thread_Safe_Context::load_context:" \
         " invalid file. No contextual change.\n");
     }
@@ -1894,7 +1894,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
   const std::string & filename,
   const std::string & id) const
 {
-  logger_->log (Logger::LOG_MAJOR,
+  madara_logger_ptr_log (logger_, Logger::LOG_MAJOR,
     "Thread_Safe_Context::save_checkpoint:" \
     " opening file %s\n", filename.c_str ());
   
@@ -1921,7 +1921,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
     
     if (id != "")
     {
-      logger_->log (Logger::LOG_MINOR,
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
         "Thread_Safe_Context::save_checkpoint:" \
         " setting file meta id to %s\n",
         id.c_str ());
@@ -1934,7 +1934,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
     // save the spot where the file ends
     uint64_t checkpoint_start = meta.size;
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Thread_Safe_Context::save_checkpoint:" \
       " generating file meta\n");
   
@@ -1955,7 +1955,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
       fseek (file, checkpoint_start, SEEK_SET);
       current = checkpoint_header.write (current, buffer_remaining);
 
-      logger_->log (Logger::LOG_MINOR,
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
         "Thread_Safe_Context::save_checkpoint:" \
         " writing records\n");
   
@@ -1980,7 +1980,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
           total_written += (int64_t) (max_buffer - buffer_remaining);
           buffer_remaining = max_buffer;
 
-          logger_->log (Logger::LOG_MINOR,
+          madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
             "Thread_Safe_Context::save_checkpoint:" \
             " encoded_size larger than remaining buffer. Flushing\n");
   
@@ -1995,7 +1995,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
             buffer_remaining = max_buffer;
             current = buffer.get_ptr ();
 
-            logger_->log (Logger::LOG_MINOR,
+            madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
               "Thread_Safe_Context::save_checkpoint:" \
               " encoded_size larger than entire buffer. Reallocating\n");
           } // end if larger than buffer
@@ -2025,7 +2025,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
           total_written += (int64_t) (max_buffer - buffer_remaining);
           buffer_remaining = max_buffer;
 
-          logger_->log (Logger::LOG_MINOR,
+          madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
             "Thread_Safe_Context::save_checkpoint:" \
             " encoded_size larger than remaining buffer. Flushing\n");
   
@@ -2040,7 +2040,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
             buffer_remaining = max_buffer;
             current = buffer.get_ptr ();
 
-            logger_->log (Logger::LOG_MINOR,
+            madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
               "Thread_Safe_Context::save_checkpoint:" \
               " encoded_size larger than entire buffer. Reallocating\n");
           } // end if larger than buffer
@@ -2056,7 +2056,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
         total_written += (size_t) (max_buffer - buffer_remaining);
       }
 
-      logger_->log (Logger::LOG_MINOR,
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
         "Thread_Safe_Context::save_checkpoint:" \
         " updating file meta data\n");
   
@@ -2071,7 +2071,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
 
       fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
 
-      logger_->log (Logger::LOG_MINOR,
+      madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
         "Thread_Safe_Context::save_checkpoint:" \
         " updating checkpoint meta data\n");
   

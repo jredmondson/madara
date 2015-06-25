@@ -123,7 +123,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      logger::global_logger->log (logger::LOG_ALWAYS,
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
 "\nProgram summary for %s:\n\n" \
 "  Attempts to start a number of producer and consumer threads\n\n" \
 " [-c|--consumers consumers] the number of information consumerss to start\n" \

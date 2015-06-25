@@ -64,7 +64,7 @@ Madara::Knowledge_Record
 Madara::Expression_Tree::Composite_For_Loop::evaluate (
 const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 {
-  logger_->log (Logger::LOG_MAJOR,
+  madara_logger_ptr_log (logger_, Logger::LOG_MAJOR,
     "Composite_For_Loop::evaluate: Executing precondition\n");
 
   precondition_->evaluate (settings);
@@ -72,12 +72,12 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   Madara::Knowledge_Record::Integer count = 0;
   while (condition_->evaluate (settings).is_true ())
   {
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Composite_For_Loop::evaluate: Executing loop body\n");
 
     body_->evaluate (settings);
 
-    logger_->log (Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
       "Composite_For_Loop::evaluate: Executing postcondition\n");
 
     postcondition_->evaluate (settings);
