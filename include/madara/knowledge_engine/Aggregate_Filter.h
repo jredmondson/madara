@@ -143,7 +143,7 @@ namespace Madara
   
       inline bool is_functor (void) const
       {
-        return functor != 0;
+        return type == FUNCTOR;
       }
 
       bool is_uninitialized (void) const

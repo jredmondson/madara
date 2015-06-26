@@ -2,16 +2,23 @@
 #include "madara_jni.h"
 
 #include "madara/logger/Global_Logger.h"
+#include <algorithm>
+#include <string>
+#include <assert.h>
 
 namespace logger = Madara::Logger;
 
 static JavaVM * madara_JVM = NULL;
 
 static jobject madara_class_loader;
-static jmethodID madara_find_class_method;
 
 jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
+  madara_logger_ptr_log (logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "Madara:JNI_OnLoad: "
+    "Entering OnLoad\n");
+
   JNIEnv* env;
   if (vm->GetEnv ((void**)&env, JNI_VERSION_1_6) != JNI_OK)
   {
@@ -27,38 +34,95 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
    * in a way that is not POSIX and Java intent compliant.
    **/
   
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
+  madara_logger_ptr_log (logger::global_logger.get(),
+    logger::LOG_MINOR,
     "Madara:JNI_OnLoad: "
-    "Getting transient class handles for class loader\n");
-  jclass static_class = env->FindClass ("com/madara/KnowledgeBase");
-  jclass kb_class = env->GetObjectClass (static_class);
+    "Retrieving current thread context\n");
+
+  jclass thread_class = env->FindClass ("java/lang/Thread");
   jclass cl_class = env->FindClass ("java/lang/ClassLoader");
+  jmethodID current_thread = env->GetStaticMethodID (
+    thread_class, "currentThread", "()Ljava/lang/Thread;");
+
+  jmethodID get_class_loader = env->GetMethodID (
+    thread_class, "getContextClassLoader", "()Ljava/lang/ClassLoader;");
+
+  madara_logger_ptr_log (logger::global_logger.get (),
+    logger::LOG_MINOR,
+    "Madara:JNI_OnLoad: "
+    "Retrieving class loader for current thread\n");
+
+  jobject thread = env->CallStaticObjectMethod (thread_class, current_thread);
+  jobject classLoader = env->CallObjectMethod (thread, get_class_loader);
+
+
+  if (classLoader != NULL)
+  {
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_MAJOR,
+      "Madara:JNI_OnLoad: "
+      "SUCCESS: Class loader found. Storing reference.\n");
+
+    madara_class_loader = env->NewGlobalRef (classLoader);
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_ERROR,
+      "Madara:JNI_OnLoad: "
+      "ERROR: No class loader found.\n");
+  }
+
+  madara_logger_ptr_log (logger::global_logger.get (),
+    logger::LOG_MINOR,
+    "Madara:JNI_OnLoad: "
+    "Clearing any exceptions\n");
 
   /**
-   * because class loader is abstract, we have to use the class loader method
-   * of a class that we know exists. So, we use the KnowledgeBase class
+   * We could send exceptions to stderr, but that's a waste of time
+   * on Android, and there is no way to redirect to the logger.
    **/
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
-    "Madara:JNI_OnLoad: "
-    "Getting class specific class loader method\n");
-  jmethodID kb_cl_method = env->GetMethodID (kb_class, "getClassLoader",
-    "()Ljava/lang/ClassLoader;");
+  if (env->ExceptionCheck ())
+  {
+    env->ExceptionClear ();
+  }
 
-  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_DETAILED,
+  madara_logger_ptr_log (logger::global_logger.get (),
+    logger::LOG_MINOR,
     "Madara:JNI_OnLoad: "
-    "Obtaining class specific class loader object\n");
-  madara_class_loader = env->NewGlobalRef (
-    env->CallObjectMethod (kb_class, kb_cl_method));
+    "Creating handle to findClass\n");
 
-  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_DETAILED,
-    "Madara:JNI_OnLoad: "
-    "Saving global class loader for later usage in "
-    "Madara::Utility::Java::find_class\n");
-  madara_find_class_method = 
-    env->GetMethodID (cl_class, "findClass",
+  jmethodID find_class = env->GetMethodID (cl_class, "findClass",
     "(Ljava/lang/String;)Ljava/lang/Class;");
 
-  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_DETAILED,
+  madara_logger_ptr_log (logger::global_logger.get (),
+    logger::LOG_MINOR,
+    "Madara:JNI_OnLoad: "
+    "Attempting to call class loader\n");
+
+  jclass kr_class = (jclass) env->CallObjectMethod (
+    madara_class_loader,
+    find_class,
+    env->NewStringUTF ("com.madara.KnowledgeRecord"));
+
+  if (!kr_class || env->ExceptionCheck ())
+  {
+    env->ExceptionClear ();
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_ERROR,
+      "Madara:JNI_OnLoad: "
+      "Class loader call failed for com.madara.KnowledgeRecord\n");
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_MAJOR,
+      "Madara:JNI_OnLoad: "
+      "Class loader call succeeded\n");
+  }
+
+  madara_logger_ptr_log (logger::global_logger.get (),
+    logger::LOG_MAJOR,
     "Madara:JNI_OnLoad: "
     "Leaving OnLoad\n");
 
@@ -67,7 +131,8 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
 void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
 {
-  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
+  madara_logger_ptr_log (logger::global_logger.get (),
+    logger::LOG_MAJOR,
     "Madara:JNI_OnUnload: "
     "Entering Unload\n");
 
@@ -76,14 +141,16 @@ void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
 
   if (env)
   {
-    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MINOR,
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_MINOR,
       "Madara:JNI_OnUnload: "
       "Deleting global ref to class loader\n");
 
     env->DeleteGlobalRef (madara_class_loader);
   }
 
-  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_DETAILED,
+  madara_logger_ptr_log (logger::global_logger.get (),
+    logger::LOG_MAJOR,
     "Madara:JNI_OnUnload: "
     "Leaving OnUnload\n");
 
@@ -141,43 +208,62 @@ jclass Madara::Utility::Java::find_class (JNIEnv * env, const char * name)
 
   if (env != 0)
   {
-    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
-      "Madara::Utility::Java::find_class: "
-      "Attempting default findClass. "
-      "Unlikely to work in multi-threaded Android.\n", name);
+    std::string dot_name = name;
 
-    result = (jclass)env->NewWeakGlobalRef (env->FindClass (name));
+    std::replace (dot_name.begin (), dot_name.end (), '/', '.');
+
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_MINOR,
+      "Madara::Utility::Java::find_class: "
+      "Retrieving class loader and loadClass method\n", dot_name.c_str ());
+
+    jclass java_lang_class_loader = env->FindClass ("java/lang/ClassLoader");
+    assert (java_lang_class_loader != NULL);
+    jmethodID loadClass =
+      env->GetMethodID (java_lang_class_loader,
+      "loadClass",
+      "(Ljava/lang/String;)Ljava/lang/Class;");
+
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_MAJOR,
+      "Madara::Utility::Java::find_class: "
+      "Attempting to find class %s via ClassLoader\n", dot_name.c_str ());
+
+    result = (jclass)env->NewWeakGlobalRef (env->CallObjectMethod (
+      madara_class_loader,
+      loadClass,
+      env->NewStringUTF (dot_name.c_str ())));
+
+    if (env->ExceptionCheck ())
+    {
+      env->ExceptionClear ();
+
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_WARNING,
+        "Madara::Utility::Java::find_class: "
+        "Exception in Class Loader. Attempting FindClass on %s.\n", name);
+
+      result = (jclass)env->NewWeakGlobalRef (env->FindClass (name));
+
+      if (env->ExceptionCheck ())
+      {
+        env->ExceptionClear ();
+
+        result = 0;
+      }
+    }
 
     if (result == 0)
     {
-      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_WARNING,
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_ERROR,
         "Madara::Utility::Java::find_class: "
-        "FindClass failed. Attempting to find class %s via ClassLoader\n", name);
-
-      result = (jclass)env->NewWeakGlobalRef (env->CallObjectMethod (
-        madara_class_loader,
-        madara_find_class_method,
-        env->NewStringUTF (name)));
-      
-      if (result == 0)
-      {
-        madara_logger_ptr_log (logger::global_logger.get (),
-          logger::LOG_ERROR,
-          "Madara::Utility::Java::find_class: "
-          "Class %s was not found. Returning zero. Expect segfault.\n", name);
-      }
-      else
-      {
-        madara_logger_ptr_log (logger::global_logger.get (),
-          logger::LOG_MAJOR,
-          "Madara::Utility::Java::find_class: "
-          "Class was found. Returning.\n", name);
-      }
+        "Class %s was not found. Returning zero. Expect exception.\n", name);
     }
     else
     {
       madara_logger_ptr_log (logger::global_logger.get (),
-        logger::LOG_MAJOR,
+        logger::LOG_MINOR,
         "Madara::Utility::Java::find_class: "
         "Class was found. Returning.\n", name);
     }

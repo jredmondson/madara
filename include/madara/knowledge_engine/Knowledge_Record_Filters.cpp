@@ -3,6 +3,7 @@
 
 #include "madara/filters/Arguments.h"
 #include <memory>
+#include "madara/logger/Global_Logger.h"
 
 #ifdef _MADARA_PYTHON_CALLBACKS_
 
@@ -53,6 +54,10 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (uint32_t types,
 {
   if (function != 0)
   {
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Record_Filters::add: "
+      "Adding C record filter\n");
+
     // start with 1st bit, check every bit until types is 0
     for (uint32_t cur = 1; types > 0; cur <<= 1)
     {
@@ -76,6 +81,10 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
 {
   if (function != 0)
   {
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Record_Filters::add: "
+      "Adding C aggregate filter\n");
+
     aggregate_filters_.push_back (Aggregate_Filter (function));
   }
 }
@@ -86,6 +95,10 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
 {
   if (functor != 0)
   {
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Record_Filters::add: "
+      "Adding aggregate functor filter\n");
+
     aggregate_filters_.push_back (Aggregate_Filter (functor));
   }
 }
@@ -96,6 +109,10 @@ Filters::Buffer_Filter * functor)
 {
   if (functor != 0)
   {
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Record_Filters::add: "
+      "Adding buffer functor filter\n");
+
     buffer_filters_.push_back (functor);
   }
 }
@@ -107,6 +124,10 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
 {
   if (functor != 0)
   {
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Record_Filters::add: "
+      "Adding record function filter to types\n");
+
     // start with 1st bit, check every bit until types is 0
     for (uint32_t cur = 1; types > 0; cur <<= 1)
     {
@@ -131,6 +152,10 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (uint32_t types,
 {
   if (callable != NULL)
   {
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Record_Filters::add: "
+      "Adding Java record filter\n");
+
     // start with 1st bit, check every bit until types is 0
     for (uint32_t cur = 1; types > 0; cur <<= 1)
     {
@@ -153,6 +178,10 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
 {
   if (callable != NULL)
   {
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Record_Filters::add: "
+      "Adding Java aggregate filter\n");
+
     aggregate_filters_.push_back (Aggregate_Filter (callable));
   }
 }
@@ -273,6 +302,10 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
   // if there are filters for this type
   if (type_match != filters_.end ())
   {
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Record_Filters::filter: "
+      "Entering record filter logic\n");
+
     const Filter_Chain & chain = type_match->second;
     Function_Arguments arguments;
     
@@ -285,6 +318,10 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
     for (Filter_Chain::const_iterator i = chain.begin ();
          i != chain.end (); ++i)
     {
+      context_->get_logger ().log (Logger::LOG_MAJOR,
+        "Knowledge_Record_Filters::filter: "
+        "Preparing args for filter\n");
+
       /**
        * arguments vector is modifiable by filter, so we have to
        * resize every filter call to make sure we have adequate space
@@ -327,73 +364,79 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
       // setup arguments to the function
       arguments[0] = result;
 
+      context_->get_logger ().log (Logger::LOG_MAJOR,
+        "Knowledge_Record_Filters::filter: "
+        "Checking filter type\n");
+
       // optimize selection for functors, the preferred filter impl
       if (i->is_functor ())
       {
+        context_->get_logger ().log (Logger::LOG_MAJOR,
+          "Knowledge_Record_Filters::filter: "
+          "Calling functor filter\n");
+
         result = i->functor->filter (arguments, *heap_variables.get ());
       }
-      // if the function is not zero
-      else if (i->is_extern_unnamed ())
-      {
-        result = i->extern_unnamed (arguments, *heap_variables.get ());
-      }
-      
 #ifdef _MADARA_JAVA_
-      else if (i->is_java_callable())
+      else if (i->is_java_callable ())
       {
+        context_->get_logger ().log (Logger::LOG_MAJOR,
+          "Knowledge_Record_Filters::filter: "
+          "Calling Java filter\n");
+
         Madara::Utility::Java::Acquire_VM jvm;
-        
+
         /**
-         * Create the variables java object
-         **/
+        * Create the variables java object
+        **/
 
         jclass jvarClass = Madara::Utility::Java::find_class (
           jvm.env, "com/madara/Variables");
         jclass jlistClass = Madara::Utility::Java::find_class (
           jvm.env, "com/madara/KnowledgeList");
-        
+
         jmethodID fromPointerCall = jvm.env->GetStaticMethodID (jvarClass,
           "fromPointer", "(J)Lcom/madara/Variables;");
         jobject jvariables = jvm.env->CallStaticObjectMethod (jvarClass,
           fromPointerCall, (jlong)heap_variables.get ());
-        
-        // prep to create the KnowledgeList
-        jmethodID listConstructor = jvm.env->GetMethodID(jlistClass,
-          "<init>", "([J)V");
-        
-        jlongArray ret = jvm.env->NewLongArray((jsize)arguments.size());
-        jlong * tmp = new jlong [(jsize)arguments.size()];
 
-        for (unsigned int x = 0; x < arguments.size(); x++)
+        // prep to create the KnowledgeList
+        jmethodID listConstructor = jvm.env->GetMethodID (jlistClass,
+          "<init>", "([J)V");
+
+        jlongArray ret = jvm.env->NewLongArray ((jsize)arguments.size ());
+        jlong * tmp = new jlong[(jsize)arguments.size ()];
+
+        for (unsigned int x = 0; x < arguments.size (); x++)
         {
-          tmp[x] = (jlong) arguments[x].clone ();
+          tmp[x] = (jlong)arguments[x].clone ();
         }
 
-        jvm.env->SetLongArrayRegion(ret, 0, (jsize)arguments.size(), tmp);
-        delete [] tmp;
-        
+        jvm.env->SetLongArrayRegion (ret, 0, (jsize)arguments.size (), tmp);
+        delete[] tmp;
+
         // create the KnowledgeList
         jobject jlist = jvm.env->NewObject (jlistClass, listConstructor, ret);
 
         // get the filter's class
-        jclass filterClass = jvm.env->GetObjectClass(i->java_object);
-        
+        jclass filterClass = jvm.env->GetObjectClass (i->java_object);
+
         // get the filter method
         jmethodID filterMethod = jvm.env->GetMethodID (filterClass,
           "filter",
           "(Lcom/madara/KnowledgeList;Lcom/madara/Variables;)Lcom/madara/KnowledgeRecord;");
-        
+
         // call the filter and hold the result
         jobject jresult = jvm.env->CallObjectMethod (i->java_object,
           filterMethod, jlist, jvariables);
 
         jmethodID getPtrMethod = jvm.env->GetMethodID (
-          jvm.env->GetObjectClass(jresult), "getCPtr", "()J");
+          jvm.env->GetObjectClass (jresult), "getCPtr", "()J");
         jlong cptr = jvm.env->CallLongMethod (jresult, getPtrMethod);
-        
+
         bool do_delete = true;
         //We need to see if they returned an arg we sent them, or a new value     
-        for (unsigned int x = 0; x < arguments.size(); x++)
+        for (unsigned int x = 0; x < arguments.size (); x++)
         {
           if (cptr == (jlong)&(arguments[x]))
           {
@@ -408,11 +451,15 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           delete (Knowledge_Record*)cptr;
       }
 #endif
-      
+
 #ifdef _MADARA_PYTHON_CALLBACKS_
 
       else if (i->is_python_callable ())
       {
+        context_->get_logger ().log (Logger::LOG_MAJOR,
+          "Knowledge_Record_Filters::filter: "
+          "Calling Python filter\n");
+
         // acquire the interpreter lock to use the python function
         Python::Acquire_GIL acquire_gil;
 
@@ -424,6 +471,16 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
 
 #endif
 
+      // if the function is not zero
+      else if (i->is_extern_unnamed ())
+      {
+        context_->get_logger ().log (Logger::LOG_MAJOR,
+          "Knowledge_Record_Filters::filter: "
+          "Calling unnamed C filter\n");
+
+        result = i->extern_unnamed (arguments, *heap_variables.get ());
+      }
+      
       // did the filter add records to be sent?
       if (arguments.size () > Madara::Filters::TOTAL_ARGUMENTS)
       {
@@ -464,6 +521,10 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
   // if there are aggregate filters
   if (aggregate_filters_.size () > 0)
   {
+    context_->get_logger ().log (Logger::LOG_MAJOR,
+      "Knowledge_Record_Filters::filter: "
+      "Entering aggregate filter method\n");
+
     // JVMs appear to do strange things with the stack on jni_attach
     std::auto_ptr <Variables> heap_variables (
       new Variables ());
@@ -479,15 +540,8 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         i->functor->filter (records, transport_context,
           *heap_variables.get ());
       }
-      // if the function is not zero
-      else if (i->is_extern_unnamed ())
-      {
-        i->unnamed_filter (records, transport_context,
-          *heap_variables.get ());
-      }
-
 #ifdef _MADARA_JAVA_
-      else if (i->is_java_callable())
+      else if (i->is_java_callable ())
       {
         // manage VM attachment
         Madara::Utility::Java::Acquire_VM jvm;
@@ -498,30 +552,30 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           new Transport::Transport_Context (transport_context));
 
         //result = i->call_java_filter(arguments, variables);
-        JNIEnv * env = jni_attach();
-        
+        JNIEnv * env = jni_attach ();
+
         /**
-         * Create the variables java object
-         **/
+        * Create the variables java object
+        **/
         jclass jvarClass = Madara::Utility::Java::find_class (jvm.env, "com/madara/Variables");
-        jclass jpacketClass = Madara::Utility::Java::find_class (jvm.env, 
+        jclass jpacketClass = Madara::Utility::Java::find_class (jvm.env,
           "com/madara/transport/filters/Packet");
-        jclass jcontextClass = Madara::Utility::Java::find_class (jvm.env, 
+        jclass jcontextClass = Madara::Utility::Java::find_class (jvm.env,
           "com/madara/transport/TransportContext");
-        
+
         jmethodID varfromPointerCall = jvm.env->GetStaticMethodID (
           jvarClass,
           "fromPointer", "(J)Lcom/madara/Variables;");
         jobject jvariables = jvm.env->CallStaticObjectMethod (
           jvarClass,
-          varfromPointerCall, (jlong) heap_variables.get ());
-        
+          varfromPointerCall, (jlong)heap_variables.get ());
+
         jmethodID packetfromPointerCall = jvm.env->GetStaticMethodID (
           jpacketClass,
           "fromPointer", "(J)Lcom/madara/transport/filters/Packet;");
         jobject jpacket = jvm.env->CallStaticObjectMethod (jpacketClass,
           packetfromPointerCall, (jlong)heap_records.get ());
-        
+
         jmethodID contextfromPointerCall = jvm.env->GetStaticMethodID (
           jcontextClass,
           "fromPointer", "(J)Lcom/madara/transport/TransportContext;");
@@ -529,7 +583,7 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           contextfromPointerCall, (jlong)heap_context.get ());
 
         // get the filter's class and method
-        jclass filterClass = jvm.env->GetObjectClass(i->java_object);
+        jclass filterClass = jvm.env->GetObjectClass (i->java_object);
         jmethodID filterMethod = jvm.env->GetMethodID (filterClass,
           "filter",
           "(Lcom/madara/transport/filters/Packet;Lcom/madara/transport/TransportContext;Lcom/madara/Variables;)V");
@@ -542,7 +596,7 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         // the auto_ptr should clear up the heap-allocated records
       }
 #endif
-      
+
 #ifdef _MADARA_PYTHON_CALLBACKS_
 
       else if (i->is_python_callable ())
@@ -558,6 +612,13 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
       }
 
 #endif
+
+      // if the function is not zero
+      else if (i->is_extern_unnamed ())
+      {
+        i->unnamed_filter (records, transport_context,
+          *heap_variables.get ());
+      }
 
     }
   }

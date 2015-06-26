@@ -56,6 +56,7 @@ import com.madara.transport.filters.LogAggregate;
 import com.madara.transport.filters.LogRecord;
 import com.madara.transport.QoSTransportSettings;
 import com.madara.transport.TransportType;
+import com.madara.logger.GlobalLogger;
 
 /**
  * This class is a tester for the LogRecord filter classes
@@ -64,6 +65,8 @@ public class LogFilterTest
 {
   public static void main (String...args) throws InterruptedException, Exception
   {
+    GlobalLogger.setLevel(7);
+    
     QoSTransportSettings settings = new QoSTransportSettings();
     settings.setHosts(new String[]{"239.255.0.1:4150"});
     settings.setType(TransportType.MULTICAST_TRANSPORT);

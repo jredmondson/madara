@@ -145,7 +145,7 @@ namespace Madara
       
       inline bool is_functor (void) const
       {
-        return functor != 0;
+        return type == FUNCTOR;
       }
 
       inline bool is_uninitialized (void) const
@@ -185,12 +185,12 @@ namespace Madara
         JNIEnv* env = madara_jni_get_env();
         java_object = (jobject) env->NewGlobalRef(object);
       }
-      
-      bool is_java_callable (void) const
+
+      inline bool is_java_callable (void) const
       {
         return type == JAVA_CALLABLE;
       }
-      
+
 #endif
 
 #ifdef _MADARA_PYTHON_CALLBACKS_

@@ -332,21 +332,21 @@ Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
 
 void
 Madara::Transport::QoS_Transport_Settings::add_receive_filter (
-                                                               uint32_t types, jobject & object)
+  uint32_t types, jobject & object)
 {
   receive_filters_.add (types, object);
 }
 
 void
 Madara::Transport::QoS_Transport_Settings::add_send_filter (
-                                                            uint32_t types, jobject & object)
+  uint32_t types, jobject & object)
 {
   send_filters_.add (types, object);
 }
 
 void
 Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
-                                                                   uint32_t types, jobject & object)
+  uint32_t types, jobject & object)
 {
   rebroadcast_filters_.add (types, object);
 }
@@ -354,21 +354,21 @@ Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
 
 void
 Madara::Transport::QoS_Transport_Settings::add_receive_filter (
-                                                               jobject & object)
+  jobject & object)
 {
   receive_filters_.add (object);
 }
 
 void
 Madara::Transport::QoS_Transport_Settings::add_send_filter (
-                                                            jobject & object)
+  jobject & object)
 {
   send_filters_.add (object);
 }
 
 void
 Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
-                                                                   jobject & object)
+  jobject & object)
 {
   rebroadcast_filters_.add (object);
 }
