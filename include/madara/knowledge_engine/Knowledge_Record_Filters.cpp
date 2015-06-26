@@ -54,7 +54,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (uint32_t types,
 {
   if (function != 0)
   {
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_MAJOR,
       "Knowledge_Record_Filters::add: "
       "Adding C record filter\n");
 
@@ -81,7 +83,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
 {
   if (function != 0)
   {
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_MAJOR,
       "Knowledge_Record_Filters::add: "
       "Adding C aggregate filter\n");
 
@@ -95,7 +99,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
 {
   if (functor != 0)
   {
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_MAJOR,
       "Knowledge_Record_Filters::add: "
       "Adding aggregate functor filter\n");
 
@@ -109,7 +115,9 @@ Filters::Buffer_Filter * functor)
 {
   if (functor != 0)
   {
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_MAJOR,
       "Knowledge_Record_Filters::add: "
       "Adding buffer functor filter\n");
 
@@ -124,7 +132,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
 {
   if (functor != 0)
   {
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_MAJOR,
       "Knowledge_Record_Filters::add: "
       "Adding record function filter to types\n");
 
@@ -152,7 +162,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (uint32_t types,
 {
   if (callable != NULL)
   {
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_MAJOR,
       "Knowledge_Record_Filters::add: "
       "Adding Java record filter\n");
 
@@ -178,7 +190,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::add (
 {
   if (callable != NULL)
   {
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_MAJOR,
       "Knowledge_Record_Filters::add: "
       "Adding Java aggregate filter\n");
 
@@ -269,20 +283,28 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::print_num_filters (
 {
   if (context_)
   {
-    context_->get_logger ().log (Logger::LOG_ALWAYS,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_ALWAYS,
       "Printing Knowledge Record Filter Chains by Type...\n");
 
     for (Filter_Map::const_iterator i = filters_.begin ();
       i != filters_.end (); ++i)
     {
-      context_->get_logger ().log (Logger::LOG_ALWAYS,
+      madara_logger_cond_log (context_,
+        context_->get_logger (), Logger::global_logger.get (),
+        Logger::LOG_ALWAYS,
         "%d = %d chained filters\n", i->first, i->second.size ());
     }
 
-    context_->get_logger ().log (Logger::LOG_ALWAYS,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_ALWAYS,
       "%d chained aggregate filters\n", aggregate_filters_.size ());
 
-    context_->get_logger ().log (Logger::LOG_ALWAYS,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_ALWAYS,
       "%d chained buffer filters\n", buffer_filters_.size ());
   }
 }
@@ -302,7 +324,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
   // if there are filters for this type
   if (type_match != filters_.end ())
   {
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_MAJOR,
       "Knowledge_Record_Filters::filter: "
       "Entering record filter logic\n");
 
@@ -318,7 +342,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
     for (Filter_Chain::const_iterator i = chain.begin ();
          i != chain.end (); ++i)
     {
-      context_->get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_cond_log (context_,
+        context_->get_logger (), Logger::global_logger.get (),
+        Logger::LOG_MAJOR,
         "Knowledge_Record_Filters::filter: "
         "Preparing args for filter\n");
 
@@ -364,14 +390,18 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
       // setup arguments to the function
       arguments[0] = result;
 
-      context_->get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_cond_log (context_,
+        context_->get_logger (), Logger::global_logger.get (),
+        Logger::LOG_MAJOR,
         "Knowledge_Record_Filters::filter: "
         "Checking filter type\n");
 
       // optimize selection for functors, the preferred filter impl
       if (i->is_functor ())
       {
-        context_->get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_cond_log (context_,
+          context_->get_logger (), Logger::global_logger.get (),
+          Logger::LOG_MAJOR,
           "Knowledge_Record_Filters::filter: "
           "Calling functor filter\n");
 
@@ -380,7 +410,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
 #ifdef _MADARA_JAVA_
       else if (i->is_java_callable ())
       {
-        context_->get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_cond_log (context_,
+          context_->get_logger (), Logger::global_logger.get (),
+          Logger::LOG_MAJOR,
           "Knowledge_Record_Filters::filter: "
           "Calling Java filter\n");
 
@@ -456,7 +488,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
 
       else if (i->is_python_callable ())
       {
-        context_->get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_cond_log (context_,
+          context_->get_logger (), Logger::global_logger.get (),
+          Logger::LOG_MAJOR,
           "Knowledge_Record_Filters::filter: "
           "Calling Python filter\n");
 
@@ -474,7 +508,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
       // if the function is not zero
       else if (i->is_extern_unnamed ())
       {
-        context_->get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_cond_log (context_,
+          context_->get_logger (), Logger::global_logger.get (),
+          Logger::LOG_MAJOR,
           "Knowledge_Record_Filters::filter: "
           "Calling unnamed C filter\n");
 
@@ -489,7 +525,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         {
           if (arguments[i].is_string_type ())
           {
-            context_->get_logger ().log (Logger::LOG_MAJOR,
+            madara_logger_cond_log (context_,
+              context_->get_logger (), Logger::global_logger.get (),
+              Logger::LOG_MAJOR,
               "Knowledge_Record_Filters::filter: Adding %s "
               "to transport context.\n", arguments[i].to_string ().c_str ());
 
@@ -498,7 +536,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           }
           else
           {
-            context_->get_logger ().log (Logger::LOG_ALWAYS,
+            madara_logger_cond_log (context_,
+              context_->get_logger (), Logger::global_logger.get (),
+              Logger::LOG_ALWAYS,
               "Knowledge_Record_Filters::filter: ERROR. Filter attempted to"
               " add records to transport context, but args[%d] was not"
               " a string value.\n", i);
@@ -521,7 +561,9 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
   // if there are aggregate filters
   if (aggregate_filters_.size () > 0)
   {
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_cond_log (context_,
+      context_->get_logger (), Logger::global_logger.get (),
+      Logger::LOG_MAJOR,
       "Knowledge_Record_Filters::filter: "
       "Entering aggregate filter method\n");
 
@@ -557,7 +599,8 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         /**
         * Create the variables java object
         **/
-        jclass jvarClass = Madara::Utility::Java::find_class (jvm.env, "com/madara/Variables");
+        jclass jvarClass = Madara::Utility::Java::find_class (jvm.env,
+          "com/madara/Variables");
         jclass jpacketClass = Madara::Utility::Java::find_class (jvm.env,
           "com/madara/transport/filters/Packet");
         jclass jcontextClass = Madara::Utility::Java::find_class (jvm.env,
@@ -586,7 +629,8 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         jclass filterClass = jvm.env->GetObjectClass (i->java_object);
         jmethodID filterMethod = jvm.env->GetMethodID (filterClass,
           "filter",
-          "(Lcom/madara/transport/filters/Packet;Lcom/madara/transport/TransportContext;Lcom/madara/Variables;)V");
+          "(Lcom/madara/transport/filters/Packet;"
+          "Lcom/madara/transport/TransportContext;Lcom/madara/Variables;)V");
         jvm.env->CallVoidMethod (i->java_object, filterMethod,
           jpacket, jcontext, jvariables);
 

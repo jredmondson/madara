@@ -69,17 +69,17 @@ public class QoSTransportSettings extends TransportSettings {
   
   private native int jni_getNumberOfBufferFilters(long cptr);
   
-  private native void jni_addRebroadcastFilter(long cptr, int type, RecordFilter filter);
+  private native void jni_addRebroadcastRecordFilter(long cptr, int type, RecordFilter filter);
 
-  private native void jni_addRebroadcastFilter(long cptr, AggregateFilter filter);
+  private native void jni_addRebroadcastAggregateFilter(long cptr, AggregateFilter filter);
 
-  private native void jni_addSendFilter(long cptr, int type, RecordFilter filter);
+  private native void jni_addSendRecordFilter(long cptr, int type, RecordFilter filter);
 
-  private native void jni_addSendFilter(long cptr, AggregateFilter filter);
+  private native void jni_addSendAggregateFilter(long cptr, AggregateFilter filter);
 
-  private native void jni_addReceiveFilter(long cptr, int type, RecordFilter filter);
+  private native void jni_addReceiveRecordFilter(long cptr, int type, RecordFilter filter);
 
-  private native void jni_addReceiveFilter(long cptr, AggregateFilter filter);
+  private native void jni_addReceiveAggregateFilter(long cptr, AggregateFilter filter);
 
   private native void jni_setRebroadcastTtl(long cptr, int ttl);
 
@@ -157,7 +157,7 @@ public class QoSTransportSettings extends TransportSettings {
    */
   public void addRebroadcastFilter(KnowledgeType type, RecordFilter filter)
   {
-    jni_addRebroadcastFilter(getCPtr(), type.value(), filter);
+    jni_addRebroadcastRecordFilter(getCPtr(), type.value(), filter);
   }
 
   /**
@@ -168,7 +168,7 @@ public class QoSTransportSettings extends TransportSettings {
    */
   public void addRebroadcastFilter(AggregateFilter filter)
   {
-    jni_addRebroadcastFilter(getCPtr(), filter);
+    jni_addRebroadcastAggregateFilter(getCPtr(), filter);
   }
 
   /**
@@ -179,7 +179,7 @@ public class QoSTransportSettings extends TransportSettings {
    */
   public void addSendFilter(KnowledgeType type, RecordFilter filter)
   {
-    jni_addSendFilter(getCPtr(), type.value(), filter);
+    jni_addSendRecordFilter(getCPtr(), type.value(), filter);
   }
 
   /**
@@ -190,7 +190,7 @@ public class QoSTransportSettings extends TransportSettings {
    */
   public void addSendFilter(AggregateFilter filter)
   {
-    jni_addSendFilter(getCPtr(), filter);
+    jni_addSendAggregateFilter(getCPtr(), filter);
   }
 
   /**
@@ -202,7 +202,7 @@ public class QoSTransportSettings extends TransportSettings {
    */
   public void addReceiveFilter(KnowledgeType type, RecordFilter filter)
   {
-    jni_addReceiveFilter(getCPtr(), type.value(), filter);
+    jni_addReceiveRecordFilter(getCPtr(), type.value(), filter);
   }
 
   /**
@@ -213,7 +213,7 @@ public class QoSTransportSettings extends TransportSettings {
    */
   public void addReceiveFilter(AggregateFilter filter)
   {
-    jni_addReceiveFilter(getCPtr(), filter);
+    jni_addReceiveAggregateFilter(getCPtr(), filter);
   }
 
   /**

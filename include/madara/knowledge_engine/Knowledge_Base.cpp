@@ -1301,13 +1301,13 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
     // lock the context
     context_->lock ();
 
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
       "Knowledge_Base::wait:" \
       " waiting on %s\n", expression.logic.c_str ());
 
     Madara::Knowledge_Record last_value = expression.expression.evaluate (settings);
 
-    context_->get_logger ().log (Logger::LOG_DETAILED,
+    madara_logger_log (context_->get_logger (), Logger::LOG_DETAILED,
       "Knowledge_Base::wait:" \
       " completed first eval to get %s\n",
       last_value.to_string ().c_str ());
@@ -1322,7 +1322,7 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
     while (!last_value.to_integer () &&
       (settings.max_wait_time < 0 || current < max_wait))
     {
-      context_->get_logger ().log (Logger::LOG_DETAILED,
+      madara_logger_log (context_->get_logger (), Logger::LOG_DETAILED,
         "Knowledge_Base::wait:" \
         " current is %llu.%llu and max is %llu.%llu (poll freq is %f)\n",
         (unsigned long long)current.sec (),
@@ -1331,7 +1331,7 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
         (unsigned long long)max_wait.usec (),
         settings.poll_frequency);
 
-      context_->get_logger ().log (Logger::LOG_DETAILED,
+      madara_logger_log (context_->get_logger (), Logger::LOG_DETAILED,
         "Knowledge_Base::wait:" \
         " last value didn't result in success\n");
 
@@ -1356,13 +1356,13 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
       context_->lock ();
 
 
-      context_->get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
         "Knowledge_Base::wait:" \
         " waiting on %s\n", expression.logic.c_str ());
 
       last_value = expression.expression.evaluate (settings);
 
-      context_->get_logger ().log (Logger::LOG_DETAILED,
+      madara_logger_log (context_->get_logger (), Logger::LOG_DETAILED,
         "Knowledge_Base::wait:" \
         " completed eval to get %s\n",
         last_value.to_string ().c_str ());
@@ -1379,7 +1379,7 @@ Madara::Knowledge_Engine::Knowledge_Base::wait (
   
     if (current >= max_wait)
     {
-      context_->get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
         "Knowledge_Base::wait:" \
         " Evaluate did not succeed. Timeout occurred\n");
     }

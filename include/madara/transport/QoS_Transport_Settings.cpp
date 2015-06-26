@@ -2,7 +2,9 @@
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/knowledge_engine/containers/String_Vector.h"
 #include "madara/knowledge_engine/containers/Map.h"
+#include "madara/logger/Global_Logger.h"
 
+namespace logger = Madara::Logger;
 namespace containers = Madara::Knowledge_Engine::Containers;
 typedef Madara::Knowledge_Record::Integer  Integer;
 
@@ -334,6 +336,12 @@ void
 Madara::Transport::QoS_Transport_Settings::add_receive_filter (
   uint32_t types, jobject & object)
 {
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "QoS_Transport_Settings::add: "
+    "Adding Java record filter to receive queue\n");
+
   receive_filters_.add (types, object);
 }
 

@@ -56,6 +56,8 @@
 namespace engine = Madara::Knowledge_Engine;
 namespace transport = Madara::Transport;
 namespace filters = Madara::Filters;
+namespace logger = Madara::Logger;
+
 typedef Madara::Knowledge_Record  Knowledge_Record;
 typedef Knowledge_Record::Integer Integer;
 typedef transport::QoS_Transport_Settings QoS_Transport_Settings;
@@ -151,6 +153,12 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1clearBufferFilt
 {
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
 
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::clear_buffer_filters: "
+    "Clearing buffer filters\n");
+
   if (settings)
   {
     settings->clear_buffer_filters ();
@@ -168,6 +176,12 @@ jint JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1getNumberOfBuff
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
   jint result (0);
 
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::get_number_of_buffer_filters: "
+    "Retreiving number of buffer filters\n");
+
   if (settings)
   {
     result = (jint)settings->get_number_of_buffer_filters ();
@@ -182,6 +196,12 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1saveQoS
 {
   if (cptr && filename)
   {
+    madara_logger_ptr_log (
+      logger::global_logger.get (),
+      logger::LOG_MAJOR,
+      "JNI:QoS_Transport_Settings::add: "
+      "Saving settings to a file\n");
+
     const char * nativeFilename = env->GetStringUTFChars (filename, 0);
     QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
 
@@ -196,6 +216,12 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1loadQoS
 {
   if (cptr && filename)
   {
+    madara_logger_ptr_log (
+      logger::global_logger.get (),
+      logger::LOG_MAJOR,
+      "JNI:QoS_Transport_Settings::load: "
+      "Loading settings from a file\n");
+
     const char * nativeFilename = env->GetStringUTFChars (filename, 0);
     QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
 
@@ -210,10 +236,16 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1loadQoS
  * Method:    jni_addRebroadcastFilter
  * Signature: (JILcom/madara/transport/filters/RecordFilter;)V
  */
-void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addRebroadcastFilter__JILcom_madara_transport_filters_RecordFilter_2
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addRebroadcastRecordFilter__JILcom_madara_transport_filters_RecordFilter_2
   (JNIEnv *, jobject, jlong cptr, jint type, jobject filter)
 {
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::add: "
+    "Adding Java record filter to rebroadcast queue\n");
 
   if (settings)
   {
@@ -226,10 +258,16 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addRebroadcastF
  * Method:    jni_addRebroadcastFilter
  * Signature: (JLcom/madara/transport/filters/AggregateFilter;)V
  */
-void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addRebroadcastFilter__JLcom_madara_transport_filters_AggregateFilter_2
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addRebroadcastAggregateFilter__JLcom_madara_transport_filters_AggregateFilter_2
   (JNIEnv *, jobject, jlong cptr, jobject filter)
 {
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::add: "
+    "Adding Java aggregate filter to rebroadcast queue\n");
 
   if (settings)
   {
@@ -242,10 +280,16 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addRebroadcastF
  * Method:    jni_addSendFilter
  * Signature: (JILcom/madara/transport/filters/RecordFilter;)V
  */
-void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addSendFilter__JILcom_madara_transport_filters_RecordFilter_2
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addSendRecordFilter__JILcom_madara_transport_filters_RecordFilter_2
   (JNIEnv *, jobject, jlong cptr, jint type, jobject filter)
 {
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::add: "
+    "Adding Java record filter to send queue\n");
 
   if (settings)
   {
@@ -258,10 +302,16 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addSendFilter__
  * Method:    jni_addSendFilter
  * Signature: (JLcom/madara/transport/filters/AggregateFilter;)V
  */
-void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addSendFilter__JLcom_madara_transport_filters_AggregateFilter_2
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addSendAggregateFilter__JLcom_madara_transport_filters_AggregateFilter_2
   (JNIEnv *, jobject, jlong cptr, jobject filter)
 {
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::add: "
+    "Adding Java aggregate filter to send queue\n");
 
   if (settings)
   {
@@ -274,10 +324,16 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addSendFilter__
  * Method:    jni_addReceiveFilter
  * Signature: (JILcom/madara/transport/filters/RecordFilter;)V
  */
-void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addReceiveFilter__JILcom_madara_transport_filters_RecordFilter_2
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addReceiveRecordFilter__JILcom_madara_transport_filters_RecordFilter_2
   (JNIEnv *, jobject, jlong cptr, jint type, jobject filter)
 {
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::add: "
+    "Adding Java record filter to receive queue\n");
 
   if (settings)
   {
@@ -290,10 +346,16 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addReceiveFilte
  * Method:    jni_addReceiveFilter
  * Signature: (JLcom/madara/transport/filters/AggregateFilter;)V
  */
-void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addReceiveFilter__JLcom_madara_transport_filters_AggregateFilter_2
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addReceiveAggregateFilter__JLcom_madara_transport_filters_AggregateFilter_2
   (JNIEnv *, jobject, jlong cptr, jobject filter)
 {
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::add: "
+    "Adding Java aggregate filter to receive queue\n");
 
   if (settings)
   {
@@ -311,6 +373,12 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1setRebroadcastT
 {
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
 
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::set_rebroadcast_ttl: "
+    "Setting the rebroadcast time-to-live\n");
+
   if (settings)
   {
     settings->set_rebroadcast_ttl ( (unsigned char)ttl);
@@ -327,6 +395,12 @@ jint JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1getRebroadcastT
 {
   jint result (0);
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::get_rebroadcast_ttl: "
+    "Getting the rebroadcast time-to-live\n");
 
   if (settings)
   {
@@ -346,6 +420,12 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1enableParticipa
 {
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
 
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::enable_participant_ttl: "
+    "Modifying participation in rebroadcast operations\n");
+
   if (settings)
   {
     settings->enable_participant_ttl ( (unsigned char)ttl);
@@ -361,6 +441,12 @@ jint JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1gettParticpantT
 {
   jint result (0);
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::get_participant_ttl: "
+    "Retrieving participant time-to-live in other's rebroadcasts\n");
 
   if (settings)
   {
@@ -380,6 +466,12 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1setSendBandwidt
 {
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
 
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::set_send_bandwidth: "
+    "Modifying send bandwidth limits\n");
+
   if (settings)
   {
     settings->set_send_bandwidth_limit (limit);
@@ -395,6 +487,12 @@ jint JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1getSendBandwidt
 {
   jint result (0);
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
+
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "JNI:QoS_Transport_Settings::get_send_bandwidth: "
+    "Retrieving send bandwidth limits\n");
 
   if (settings)
   {

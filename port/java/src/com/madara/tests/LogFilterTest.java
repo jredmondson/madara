@@ -65,8 +65,6 @@ public class LogFilterTest
 {
   public static void main (String...args) throws InterruptedException, Exception
   {
-    GlobalLogger.setLevel(7);
-    
     QoSTransportSettings settings = new QoSTransportSettings();
     settings.setHosts(new String[]{"239.255.0.1:4150"});
     settings.setType(TransportType.MULTICAST_TRANSPORT);

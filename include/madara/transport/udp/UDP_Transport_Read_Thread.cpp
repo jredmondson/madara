@@ -44,7 +44,7 @@ Madara::Transport::UDP_Transport_Read_Thread::init (
     {
       
 #ifndef _MADARA_NO_KARL_
-      context_->get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
         "UDP_Transport_Read_Thread::init:" \
         " setting rules to %s\n",
         settings_.on_data_received_logic.c_str ());
@@ -55,7 +55,7 @@ Madara::Transport::UDP_Transport_Read_Thread::init (
     }
     else
     {
-      context_->get_logger ().log (Logger::LOG_MINOR,
+      madara_logger_log (context_->get_logger (), Logger::LOG_MINOR,
         "UDP_Transport_Read_Thread::init:" \
         " no permanent rules were set");
     }
@@ -88,7 +88,7 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
       {
         Fragment_Map map;
 
-        context_->get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " fragmenting %" PRIu64 " byte packet (%" PRIu32 " bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
@@ -113,7 +113,7 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
               if (settings_.slack_time > 0)
                 Madara::Utility::sleep (settings_.slack_time);
 
-              context_->get_logger ().log (Logger::LOG_MAJOR,
+              madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
                 "%s:" \
                 " Send result was %d of %d byte fragment to %s\n",
                 print_prefix, actual_sent, frag_size, addr->first.c_str ());
@@ -127,7 +127,7 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
           }
         }
 
-        context_->get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " Sent fragments totalling %" PRIu64 " bytes\n",
           print_prefix, bytes_sent);
@@ -144,7 +144,7 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
             ssize_t actual_sent = write_socket_.send (buffer_.get_ptr (),
               (ssize_t)result, i->second);
 
-            context_->get_logger ().log (Logger::LOG_MAJOR,
+            madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
               "%s:" \
               " Sent %d packet to %s\n",
               print_prefix, packet_size, i->first.c_str ());
@@ -157,13 +157,13 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
           }
         }
 
-        context_->get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " Sent %d total bytes via rebroadcast\n",
           print_prefix, bytes_sent);
       }
 
-      context_->get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " Send bandwidth = %" PRIu64 " B/s\n",
         print_prefix,
@@ -191,7 +191,7 @@ Madara::Transport::UDP_Transport_Read_Thread::run (void)
     const char * print_prefix = "UDP_Transport_Read_Thread::run";
     int64_t buffer_remaining = settings_.queue_length;
 
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " entering main service loop.\n",
       print_prefix);
@@ -200,7 +200,7 @@ Madara::Transport::UDP_Transport_Read_Thread::run (void)
 
     if (buffer == 0)
     {
-      context_->get_logger ().log (Logger::LOG_MINOR,
+      madara_logger_log (context_->get_logger (), Logger::LOG_MINOR,
         "%s:" \
         " Unable to allocate buffer of size " PRIu32 ". Exiting thread.\n",
         print_prefix,
@@ -209,7 +209,7 @@ Madara::Transport::UDP_Transport_Read_Thread::run (void)
       return;
     }
     
-    context_->get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context_->get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " entering a recv on the socket.\n",
       print_prefix);
@@ -219,7 +219,7 @@ Madara::Transport::UDP_Transport_Read_Thread::run (void)
       settings_.queue_length, remote, 0, &wait_time);
  
 
-    context_->get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " received a message header of %" PRIu64 " bytes from %s:%d\n",
       print_prefix,
@@ -261,7 +261,7 @@ Madara::Transport::UDP_Transport_Read_Thread::run (void)
     }
     else
     {
-      context_->get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " wait timeout on new messages. Proceeding to next wait\n",
         print_prefix);

@@ -33,6 +33,32 @@
           if (logger && level <= logger->get_level ()) \
             logger->log (level, __VA_ARGS__);
 
+/**
+* High-performance logger that performs conditional logging based on first arg
+* @param  conditional  the primary logger pointer to use (if not null)
+* @param  logger_ptr  the logger that will be used if conditional is true
+* @param  alt_logger  the secondary logger pointer to use (should be not null)
+* @param  level       the logging level
+**/
+#define madara_logger_cond_log_ptrs(conditional, logger_ptr, alt_logger_ptr, level, ...) \
+          if (conditional && logger_ptr && level <= logger_ptr->get_level ()) \
+            logger_ptr->log (level, __VA_ARGS__); \
+          else \
+            alt_logger_ptr->log (level, __VA_ARGS__);
+
+/**
+* High-performance logger that performs conditional logging based on first arg
+* @param  conditional  the primary logger pointer to use (if not null)
+* @param  logger  the logger that will be used if conditional is true
+* @param  alt_logger  the secondary logger pointer to use (should be not null)
+* @param  level       the logging level
+**/
+#define madara_logger_cond_log(conditional, logger, alt_logger_ptr, level, ...) \
+          if (conditional && level <= logger.get_level ()) \
+            logger.log (level, __VA_ARGS__); \
+                    else \
+            alt_logger_ptr->log (level, __VA_ARGS__);
+
 namespace Madara
 {
   namespace Logger
