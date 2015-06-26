@@ -207,7 +207,7 @@ Madara::Transport::Broadcast_Transport_Read_Thread::rebroadcast (
 
         madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
           "%s:" \
-          " Sent packet of size " PRIu64 "\n",
+          " Sent packet of size %" PRIu64 "\n",
           print_prefix, bytes_sent);
 
         send_monitor_.add ((uint32_t)bytes_sent);
