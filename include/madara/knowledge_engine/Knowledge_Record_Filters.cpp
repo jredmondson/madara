@@ -458,13 +458,31 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           "filter",
           "(Lcom/madara/KnowledgeList;Lcom/madara/Variables;)Lcom/madara/KnowledgeRecord;");
 
+        madara_logger_cond_log (context_,
+          context_->get_logger (), Logger::global_logger.get (),
+          Logger::LOG_MAJOR,
+          "Knowledge_Record_Filters::filter: "
+          "Calling Java method\n");
+
         // call the filter and hold the result
         jobject jresult = jvm.env->CallObjectMethod (i->java_object,
           filterMethod, jlist, jvariables);
 
+        madara_logger_cond_log (context_,
+          context_->get_logger (), Logger::global_logger.get (),
+          Logger::LOG_MINOR,
+          "Knowledge_Record_Filters::filter: "
+          "Obtaining pointer from Knowledge Record result\n");
+
         jmethodID getPtrMethod = jvm.env->GetMethodID (
           jvm.env->GetObjectClass (jresult), "getCPtr", "()J");
         jlong cptr = jvm.env->CallLongMethod (jresult, getPtrMethod);
+
+        madara_logger_cond_log (context_,
+          context_->get_logger (), Logger::global_logger.get (),
+          Logger::LOG_MINOR,
+          "Knowledge_Record_Filters::filter: "
+          "Checking return for origination outside of filter\n");
 
         bool do_delete = true;
         //We need to see if they returned an arg we sent them, or a new value     
@@ -477,10 +495,27 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           }
         }
 
-        result.deep_copy (*(Madara::Knowledge_Record *)cptr);
+        if (cptr != 0)
+        {
+          madara_logger_cond_log (context_,
+            context_->get_logger (), Logger::global_logger.get (),
+            Logger::LOG_MINOR,
+            "Knowledge_Record_Filters::filter: "
+            "Doing a deep copy of the return value\n");
+
+          result.deep_copy (*(Madara::Knowledge_Record *)cptr);
+        }
 
         if (do_delete)
+        {
+          madara_logger_cond_log (context_,
+            context_->get_logger (), Logger::global_logger.get (),
+            Logger::LOG_MINOR,
+            "Knowledge_Record_Filters::filter: "
+            "Deleting the original pointer\n");
+
           delete (Knowledge_Record*)cptr;
+        }
       }
 #endif
 
@@ -631,8 +666,22 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           "filter",
           "(Lcom/madara/transport/filters/Packet;"
           "Lcom/madara/transport/TransportContext;Lcom/madara/Variables;)V");
+
+
+        madara_logger_cond_log (context_,
+          context_->get_logger (), Logger::global_logger.get (),
+          Logger::LOG_MAJOR,
+          "Knowledge_Record_Filters::filter: "
+          "Calling Java method\n");
+
         jvm.env->CallVoidMethod (i->java_object, filterMethod,
           jpacket, jcontext, jvariables);
+
+        madara_logger_cond_log (context_,
+          context_->get_logger (), Logger::global_logger.get (),
+          Logger::LOG_MAJOR,
+          "Knowledge_Record_Filters::filter: "
+          "Overwriting resulting records from heap records\n");
 
         // overwrite the old records
         records = *heap_records.get ();
