@@ -83,7 +83,7 @@ public class LogFilterTest
     {
       System.out.println ("Sending an update.");
       knowledge.set(".base", i);
-      knowledge.evaluate(".i[0->10)(updates.{.i}=.base * 5 + .i)");
+      knowledge.evaluateNoReturn(".i[0->10)(updates.{.i}=.base * 5 + .i)");
       
       java.lang.Thread.sleep(1000);
     }
