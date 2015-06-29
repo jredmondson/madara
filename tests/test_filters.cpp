@@ -99,13 +99,13 @@ int ACE_TMAIN (int, ACE_TCHAR **)
 
   std::cerr << "The result of the filtering was the following:\n";
   std::cerr << "  integer result = " << integer_result << " (";
-  if (integer_result == Madara::Knowledge_Record::Integer (13))
+  if (integer_result == Madara::Knowledge_Record::Integer (12))
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";
   
   std::cerr << "  double result = " << double_result << " (";
-  if (double_result == 16.0)
+  if (double_result == 15.0)
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";

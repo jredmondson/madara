@@ -684,7 +684,13 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           "Overwriting resulting records from heap records\n");
 
         // overwrite the old records
-        records = *heap_records.get ();
+        //records = *heap_records.get ();
+
+        for (Knowledge_Map::const_iterator i = heap_records->begin ();
+          i != heap_records->end (); ++i)
+        {
+          records[i->first].deep_copy (i->second);
+        }
 
         // the auto_ptr should clear up the heap-allocated records
       }

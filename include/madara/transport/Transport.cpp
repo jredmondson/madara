@@ -34,7 +34,7 @@ Madara::Transport::Base::setup (void)
   // check for an on_data_received ruleset
   if (settings_.on_data_received_logic.length () != 0)
   {
-    context_.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
       "Transport::Base::setup" \
       " setting rules to %s\n",
       settings_.on_data_received_logic.c_str ());
@@ -47,7 +47,7 @@ Madara::Transport::Base::setup (void)
   }
   else
   {
-    context_.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
       "Transport::Base::setup" \
       " no permanent rules were set\n");
   }
@@ -762,7 +762,7 @@ long Madara::Transport::Base::prep_send (
   long ret = this->check_transport ();
   if (-1 == ret)
   {
-    context_.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
       "%s: transport has been told to shutdown",
       print_prefix);
 
@@ -770,7 +770,7 @@ long Madara::Transport::Base::prep_send (
   }
   else if (-2 == ret)
   {
-    context_.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
       "%s: transport is not valid",
       print_prefix);
 
@@ -783,7 +783,7 @@ long Madara::Transport::Base::prep_send (
 
   Knowledge_Map filtered_updates;
 
-  context_.get_logger ().log (Logger::LOG_MINOR,
+  madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
     "%s:" \
     " Applying filters before sending...\n",
     print_prefix);
@@ -801,7 +801,7 @@ long Madara::Transport::Base::prep_send (
         settings_.get_send_bandwidth_limit ()))
   {
     dropped = true;
-    context_.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " Send monitor has detected violation of bandwidth limit." \
       " Dropping packet...\n", print_prefix);
@@ -810,7 +810,7 @@ long Madara::Transport::Base::prep_send (
     settings_.get_total_bandwidth_limit ()))
   {
     dropped = true;
-    context_.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " Receive monitor has detected violation of bandwidth limit." \
       " Dropping packet...\n", print_prefix);
@@ -825,7 +825,7 @@ long Madara::Transport::Base::prep_send (
     for (Knowledge_Records::const_iterator i = orig_updates.begin ();
           i != orig_updates.end (); ++i)
     {
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " Calling filter chain.\n", print_prefix);
 
@@ -833,13 +833,13 @@ long Madara::Transport::Base::prep_send (
       Knowledge_Record result = settings_.filter_send (*i->second, i->first,
         transport_context);
 
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " Filter returned.\n", print_prefix);
 
       if (result.exists ())
       {
-        context_.get_logger ().log (Logger::LOG_MINOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
           "%s:" \
           " Adding record to update list.\n", print_prefix);
 
@@ -847,7 +847,7 @@ long Madara::Transport::Base::prep_send (
       }
       else
       {
-        context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " Filter removed record from update list.\n", print_prefix);
       }
@@ -858,7 +858,7 @@ long Madara::Transport::Base::prep_send (
     for (Knowledge_Map::const_iterator i = additionals.begin ();
          i != additionals.end (); ++i)
     {
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " Filter added a record %s to the update list.\n",
         print_prefix, i->first.c_str ());
@@ -867,14 +867,14 @@ long Madara::Transport::Base::prep_send (
   }
   else
   {
-    context_.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " Packet scheduler has dropped packet...\n", print_prefix);
 
     return 0;
   }
 
-  context_.get_logger ().log (Logger::LOG_MINOR,
+  madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
     "%s:" \
     " Applying %d aggregate update send filters to %d updates...\n",
     print_prefix, (int)settings_.get_number_of_send_aggregate_filters (),
@@ -888,7 +888,7 @@ long Madara::Transport::Base::prep_send (
   }
   else
   {
-    context_.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " No aggregate send filters were applied...\n",
       print_prefix);
@@ -896,14 +896,14 @@ long Madara::Transport::Base::prep_send (
 
   packet_scheduler_.print_status (Logger::LOG_DETAILED, print_prefix);
 
-  context_.get_logger ().log (Logger::LOG_MINOR,
+  madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
     "%s:" \
     " Finished applying filters before sending...\n",
     print_prefix);
 
   if (filtered_updates.size () == 0)
   {
-    context_.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " Filters removed all data. Nothing to send.\n",
       print_prefix);
@@ -917,7 +917,7 @@ long Madara::Transport::Base::prep_send (
   
   if (buffer == 0)
   {
-    context_.get_logger ().log (Logger::LOG_EMERGENCY,
+    madara_logger_log (context_.get_logger (), Logger::LOG_EMERGENCY,
       "%s:" \
       " Unable to allocate buffer of size " PRIu32 ". Exiting thread.\n",
       print_prefix,
@@ -932,7 +932,7 @@ long Madara::Transport::Base::prep_send (
 
   if (settings_.send_reduced_message_header)
   {
-    context_.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " Preparing message with reduced message header.\n",
       print_prefix);
@@ -942,7 +942,7 @@ long Madara::Transport::Base::prep_send (
   }
   else
   {
-    context_.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " Preparing message with normal message header.\n",
       print_prefix);
@@ -1016,7 +1016,7 @@ long Madara::Transport::Base::prep_send (
     
     if (buffer_remaining > 0)
     {
-      context_.get_logger ().log (Logger::LOG_MINOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
         "%s:" \
         " update[%d] => encoding %s of type %" PRId32 " and size %" PRIu32 "\n",
         print_prefix,
@@ -1024,7 +1024,7 @@ long Madara::Transport::Base::prep_send (
     }
     else
     {
-      context_.get_logger ().log (Logger::LOG_EMERGENCY,
+      madara_logger_log (context_.get_logger (), Logger::LOG_EMERGENCY,
         "%s:" \
         " unable to encode update[%d] => %s of type %"
         PRId32 " and size %" PRIu32 "\n",
@@ -1045,7 +1045,7 @@ long Madara::Transport::Base::prep_send (
     {
 #ifndef _MADARA_NO_KARL_
 
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " evaluating rules in %s\n",
         print_prefix,
@@ -1053,7 +1053,7 @@ long Madara::Transport::Base::prep_send (
       
       on_data_received_.evaluate ();
 
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " rules have been successfully evaluated\n",
         print_prefix);
@@ -1063,14 +1063,14 @@ long Madara::Transport::Base::prep_send (
     }
     else
     {
-      context_.get_logger ().log (Logger::LOG_MINOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
         "%s:" \
         " no permanent rules were set\n",
         print_prefix);
     }
   }
 
-  context_.get_logger ().log (Logger::LOG_MAJOR,
+  madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
     "%s:" \
     " calling encode filters\n",
     print_prefix);
