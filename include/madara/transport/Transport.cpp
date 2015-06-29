@@ -825,12 +825,32 @@ long Madara::Transport::Base::prep_send (
     for (Knowledge_Records::const_iterator i = orig_updates.begin ();
           i != orig_updates.end (); ++i)
     {
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
+        " Calling filter chain.\n", print_prefix);
+
       // filter the record according to the send filter chain
       Knowledge_Record result = settings_.filter_send (*i->second, i->first,
         transport_context);
 
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
+        " Filter returned.\n", print_prefix);
+
       if (result.exists ())
+      {
+        context_.get_logger ().log (Logger::LOG_MINOR,
+          "%s:" \
+          " Adding record to update list.\n", print_prefix);
+
         filtered_updates[i->first] = result;
+      }
+      else
+      {
+        context_.get_logger ().log (Logger::LOG_MAJOR,
+          "%s:" \
+          " Filter removed record from update list.\n", print_prefix);
+      }
     }
 
     const Knowledge_Map & additionals = transport_context.get_records ();
@@ -838,6 +858,10 @@ long Madara::Transport::Base::prep_send (
     for (Knowledge_Map::const_iterator i = additionals.begin ();
          i != additionals.end (); ++i)
     {
+      context_.get_logger ().log (Logger::LOG_MAJOR,
+        "%s:" \
+        " Filter added a record %s to the update list.\n",
+        print_prefix, i->first.c_str ());
       filtered_updates[i->first] = i->second;
     }
   }
