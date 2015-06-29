@@ -193,10 +193,10 @@ Madara::Transport::Multicast_Transport::setup (void)
           " setting rcv buff size to settings.queue_length (%d)\n",
           tar_buff_size);
   
-        bare_socket.set_option (SOL_SOCKET, SO_SNDBUF,
+        bare_socket.set_option (SOL_SOCKET, SO_RCVBUF,
           (void *)&tar_buff_size, opt_len);
     
-        bare_socket.get_option (SOL_SOCKET, SO_SNDBUF,
+        bare_socket.get_option (SOL_SOCKET, SO_RCVBUF,
           (void *)&rcv_buff_size, &opt_len);
 
         context_.get_logger ().log (Logger::LOG_MAJOR,
