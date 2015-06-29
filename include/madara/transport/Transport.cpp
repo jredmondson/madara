@@ -472,7 +472,8 @@ Madara::Transport::process_received_update (
       {
         context.get_logger ().log (Logger::LOG_MINOR,
           "%s:" \
-          " Filter results were %s\n", print_prefix, record.to_string ().c_str ());
+          " Filter results for %s were %s\n", print_prefix,
+          key.c_str (), record.to_string ().c_str ());
 
         updates[key] = record;
       }
@@ -596,8 +597,8 @@ Madara::Transport::process_received_update (
         {
           context.get_logger ().log (Logger::LOG_MINOR,
             "%s:" \
-            " Filter results were %s\n", print_prefix,
-            i->second.to_string ().c_str ());
+            " Filter results for key %s were %s\n", print_prefix,
+            i->first.c_str (), i->second.to_string ().c_str ());
         }
         rebroadcast_records[i->first] = i->second;
       }
