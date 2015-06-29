@@ -206,17 +206,29 @@ Madara::Transport::Multicast_Transport_Read_Thread::run (void)
     
     // read the message
     ssize_t bytes_read = read_socket_.recv ((void *)buffer, 
-      settings_.queue_length, remote, 0, &wait_time);
+      (size_t) settings_.queue_length, remote, 0, &wait_time);
  
-    madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
-      "%s:" \
-      " received a message header of %lld bytes from %s:%d\n",
-      print_prefix,
-      (long long) bytes_read,
-      remote.get_host_addr (), (int)remote.get_port_number ());
-    
     if (bytes_read > 0)
     {
+      if (remote.get_host_addr () != 0)
+      {
+        madara_logger_ptr_log (Logger::global_logger.get (),
+          Logger::LOG_MAJOR,
+          "%s:" \
+          " received a message header of %lld bytes from %s:%d\n",
+          print_prefix,
+          (long long)bytes_read,
+          remote.get_host_addr (), (int)remote.get_port_number ());
+      }
+      else
+      {
+        madara_logger_ptr_log (Logger::global_logger.get (),
+          Logger::LOG_WARNING,
+          "%s:" \
+          " received %lld bytes from unknown host\n",
+          print_prefix,
+          (long long)bytes_read);
+      }
       Message_Header * header = 0;
 
       std::stringstream remote_host;
