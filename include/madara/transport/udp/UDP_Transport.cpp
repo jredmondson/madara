@@ -43,7 +43,7 @@ void
   // close send port
   if (-1 == write_socket_.close ())
   {
-    context_.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
       "UDP_Transport::cleanup:" \
       " Error closing write socket\n");
   }
@@ -51,7 +51,7 @@ void
   // close receive port
   if (-1 == read_socket_.close ())
   {
-    context_.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
       "UDP_Transport::cleanup:" \
       " Error closing read socket\n");
   }
@@ -85,7 +85,7 @@ int
     // open the broadcast socket to any port for sending
     if (write_socket_.open (ACE_Addr::sap_any) == -1)
     {
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "UDP_Transport::setup:" \
         " socket failed to open\n");
     }
@@ -100,14 +100,14 @@ int
     write_socket_.get_option (SOL_SOCKET, SO_RCVBUF,
       (void *)&rcv_buff_size, &opt_len);
 
-    context_.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
       "UDP_Transport::setup:" \
       " default socket buff size is send=%d, rcv=%d\n",
       send_buff_size, rcv_buff_size);
 
     if (send_buff_size < tar_buff_size)
     {
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "UDP_Transport::setup:" \
         " setting send buff size to settings.queue_length (%d)\n",
         tar_buff_size);
@@ -118,7 +118,7 @@ int
       write_socket_.get_option (SOL_SOCKET, SO_SNDBUF,
         (void *)&send_buff_size, &opt_len);
 
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "UDP_Transport::setup:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
@@ -126,7 +126,7 @@ int
 
     if (rcv_buff_size < tar_buff_size)
     {
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "UDP_Transport::setup:" \
         " setting rcv buff size to settings.queue_length (%d)\n",
         tar_buff_size);
@@ -137,7 +137,7 @@ int
       write_socket_.get_option (SOL_SOCKET, SO_RCVBUF,
         (void *)&rcv_buff_size, &opt_len);
 
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "UDP_Transport::setup:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
@@ -151,14 +151,14 @@ int
   
       if (-1 == read_socket_.open (local, 2, 0, 0))
       {
-        context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "UDP_Transport::setup:" \
           " Error subscribing to udp address %s:%d\n",
           local.get_host_addr (), local.get_port_number ());
       } 
       else
       {
-        context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "UDP_Transport::setup:" \
           " Success subscribing to udp address %s:%d\n",
           local.get_host_addr (), local.get_port_number ());
@@ -172,14 +172,14 @@ int
         bare_socket.get_option (SOL_SOCKET, SO_RCVBUF,
           (void *)&rcv_buff_size, &opt_len);
 
-        context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "UDP_Transport::setup:" \
           " default socket buff size is send=%d, rcv=%d\n",
           send_buff_size, rcv_buff_size);
   
         if (send_buff_size < tar_buff_size)
         {
-          context_.get_logger ().log (Logger::LOG_MAJOR,
+          madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
             "UDP_Transport::setup:" \
             " setting send buff size to settings.queue_length (%d)\n",
             tar_buff_size);
@@ -190,7 +190,7 @@ int
           bare_socket.get_option (SOL_SOCKET, SO_SNDBUF,
             (void *)&send_buff_size, &opt_len);
 
-          context_.get_logger ().log (Logger::LOG_MAJOR,
+          madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
             "UDP_Transport::setup:" \
             " current socket buff size is send=%d, rcv=%d\n",
             send_buff_size, rcv_buff_size);
@@ -198,7 +198,7 @@ int
   
         if (rcv_buff_size < tar_buff_size)
         {
-          context_.get_logger ().log (Logger::LOG_MAJOR,
+          madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
             "UDP_Transport::setup:" \
             " setting rcv buff size to settings.queue_length (%d)\n",
             tar_buff_size);
@@ -209,7 +209,7 @@ int
           bare_socket.get_option (SOL_SOCKET, SO_RCVBUF,
             (void *)&rcv_buff_size, &opt_len);
 
-          context_.get_logger ().log (Logger::LOG_MINOR,
+          madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
             "UDP_Transport_Read_Thread::setup:" \
             " current socket buff size is send=%d, rcv=%d\n",
             send_buff_size, rcv_buff_size);
@@ -227,7 +227,7 @@ int
         hertz = 0.0;
       }
 
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "UDP_Transport_Read_Thread::setup:" \
         " starting %d threads at %f hertz\n", settings_.read_threads,
         hertz);
@@ -270,7 +270,7 @@ long
       {
         Fragment_Map map;
 
-        context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " fragmenting %" PRIu64 " byte packet (%" PRIu32 " bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
@@ -278,7 +278,8 @@ long
         // fragment the message
         frag (buffer_.get_ptr (), settings_.max_fragment_size, map);
 
-        for (Fragment_Map::iterator i = map.begin (); i != map.end (); ++i)
+        int j (0);
+        for (Fragment_Map::iterator i = map.begin (); i != map.end (); ++i, ++j)
         {
           size_t frag_size =
             (size_t) Message_Header::get_size (i->second);
@@ -288,6 +289,11 @@ long
           {
             if (addr->first != settings_.hosts[0])
             {
+              madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+                "%s:" \
+                " Sending fragment %d\n",
+                print_prefix, j);
+
               ssize_t actual_sent = write_socket_.send (
                 i->second, frag_size, addr->second);
             
@@ -295,7 +301,7 @@ long
               if (settings_.slack_time > 0)
                 Madara::Utility::sleep (settings_.slack_time);
 
-              context_.get_logger ().log (Logger::LOG_MAJOR,
+              madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
                 "%s: Send result was %d of %d byte fragment to %s\n",
                 print_prefix, actual_sent, frag_size, addr->first.c_str ());
 
@@ -308,7 +314,7 @@ long
           }
         }
 
-        context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " Sent fragments totalling %" PRIu64 " bytes\n",
           print_prefix, bytes_sent);
@@ -322,10 +328,15 @@ long
         {
           if (i->first != settings_.hosts[0])
           {
+            madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+              "%s:" \
+              " Sending packet of size %ld\n",
+              print_prefix, result);
+
             ssize_t actual_sent = write_socket_.send (buffer_.get_ptr (),
               (ssize_t)result, i->second);
 
-            context_.get_logger ().log (Logger::LOG_MAJOR,
+            madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
               "%s:" \
               " Sent %d packet to %s\n",
               print_prefix, packet_size, i->first.c_str ());
@@ -341,7 +352,7 @@ long
 
       result = (long) bytes_sent;
 
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " Send bandwidth = %" PRIu64 " B/s\n",
         print_prefix, send_monitor_.get_bytes_per_second ());

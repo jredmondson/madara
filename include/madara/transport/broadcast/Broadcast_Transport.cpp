@@ -67,7 +67,7 @@ Madara::Transport::Broadcast_Transport::setup (void)
     {
       addresses_[i].set (settings_.hosts[i].c_str ());
 
-      this->context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "Broadcast_Transport::constructor" \
         " settings address[%d] to %s:%d\n", i,
         addresses_[i].get_host_addr (), addresses_[i].get_port_number ());
@@ -76,7 +76,7 @@ Madara::Transport::Broadcast_Transport::setup (void)
     // open the broadcast socket to any port for sending
     if (socket_.open (ACE_Addr::sap_any) == -1)
     {
-      this->context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "Broadcast_Transport::constructor" \
         "socket failed to open\n");
     }
@@ -92,14 +92,14 @@ Madara::Transport::Broadcast_Transport::setup (void)
       socket_.get_option (SOL_SOCKET, SO_RCVBUF,
         (void *)&rcv_buff_size, &opt_len);
 
-      this->context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
         "Broadcast_Transport::constructor" \
         " default socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
   
       if (send_buff_size < tar_buff_size)
       {
-        this->context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "Broadcast_Transport::constructor" \
           " setting send buff size to settings.queue_length (%d)\n",
           tar_buff_size);
@@ -110,7 +110,7 @@ Madara::Transport::Broadcast_Transport::setup (void)
         socket_.get_option (SOL_SOCKET, SO_SNDBUF,
           (void *)&send_buff_size, &opt_len);
 
-        this->context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "Broadcast_Transport::constructor" \
           " current socket buff size is send=%d, rcv=%d\n",
           send_buff_size, rcv_buff_size);
@@ -118,7 +118,7 @@ Madara::Transport::Broadcast_Transport::setup (void)
   
       if (rcv_buff_size < tar_buff_size)
       {
-        this->context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "Broadcast_Transport::constructor" \
           " setting rcv buff size to settings.queue_length (%d)\n",
           tar_buff_size);
@@ -129,7 +129,7 @@ Madara::Transport::Broadcast_Transport::setup (void)
         socket_.get_option (SOL_SOCKET, SO_RCVBUF,
           (void *)&rcv_buff_size, &opt_len);
 
-        this->context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "Broadcast_Transport::constructor" \
           " current socket buff size is send=%d, rcv=%d\n",
           send_buff_size, rcv_buff_size);
@@ -144,7 +144,7 @@ Madara::Transport::Broadcast_Transport::setup (void)
           hertz = 0.0;
         }
 
-        this->context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "Broadcast_Transport::constructor:" \
           " starting %d threads at %f hertz\n", settings_.read_threads,
           hertz);
@@ -187,7 +187,7 @@ Madara::Transport::Broadcast_Transport::send_data (
       {
         Fragment_Map map;
 
-        this->context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " fragmenting %" PRIu64 " byte packet (%" PRIu32 " bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
@@ -195,8 +195,14 @@ Madara::Transport::Broadcast_Transport::send_data (
         // fragment the message
         frag (buffer_.get_ptr (), settings_.max_fragment_size, map);
 
-        for (Fragment_Map::iterator i = map.begin (); i != map.end (); ++i)
+        int j = 0;
+        for (Fragment_Map::iterator i = map.begin (); i != map.end (); ++i, ++j)
         {
+          madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+            "%s:" \
+            " Sending fragment %d\n",
+            print_prefix, j);
+
           // send the fragment
           bytes_sent += socket_.send(
             i->second,
@@ -210,7 +216,7 @@ Madara::Transport::Broadcast_Transport::send_data (
       
         send_monitor_.add ((uint32_t)bytes_sent);
 
-        this->context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " Sent fragments totalling %" PRIu64 " bytes\n",
           print_prefix, bytes_sent);
@@ -219,17 +225,22 @@ Madara::Transport::Broadcast_Transport::send_data (
       }
       else
       {
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+          "%s:" \
+          " Sending packet of size %ld\n",
+          print_prefix, result);
+
         bytes_sent = socket_.send(
           buffer_.get_ptr (), (ssize_t)result, addresses_[0]);
 
-        this->context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " Sent packet of size %" PRIu64 " bytes\n",
           print_prefix, bytes_sent);
         send_monitor_.add ((uint32_t)bytes_sent);
       }
 
-      this->context_.get_logger ().log (Logger::LOG_MINOR,
+      madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
         "%s:" \
         " Send bandwidth = %" PRIu64 " B/s\n",
         print_prefix, send_monitor_.get_bytes_per_second ());

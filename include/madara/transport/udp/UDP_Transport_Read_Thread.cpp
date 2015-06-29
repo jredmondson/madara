@@ -96,7 +96,9 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
         // fragment the message
         frag (buffer_.get_ptr (), settings_.max_fragment_size, map);
 
-        for (Fragment_Map::iterator i = map.begin (); i != map.end (); ++i)
+        int j (0);
+        for (Fragment_Map::iterator i = map.begin (); i != map.end ();
+          ++i, ++j)
         {
           size_t frag_size =
             (size_t)Message_Header::get_size (i->second);
@@ -106,6 +108,11 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
           {
             if (addr->first != settings_.hosts[0])
             {
+              madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
+                "%s:" \
+                " Sending fragment %d\n",
+                print_prefix, j);
+
               ssize_t actual_sent = write_socket_.send (
                 i->second, frag_size, addr->second);
             
@@ -141,6 +148,12 @@ Madara::Transport::UDP_Transport_Read_Thread::rebroadcast (
         {
           if (i->first != settings_.hosts[0])
           {
+            madara_logger_log (this->context_->get_logger (),
+              Logger::LOG_MAJOR,
+              "%s:" \
+              " Sending packet of size %ld\n",
+              print_prefix, result);
+
             ssize_t actual_sent = write_socket_.send (buffer_.get_ptr (),
               (ssize_t)result, i->second);
 

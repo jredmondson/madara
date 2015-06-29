@@ -110,8 +110,15 @@ Madara::Transport::Multicast_Transport_Read_Thread::rebroadcast (
         // fragment the message
         frag (buffer_.get_ptr (), settings_.max_fragment_size, map);
 
-        for (Fragment_Map::iterator i = map.begin (); i != map.end (); ++i)
+        int j (0);
+        for (Fragment_Map::iterator i = map.begin (); i != map.end ();
+             ++i, ++j)
         {
+          madara_logger_log (this->context_->get_logger (), Logger::LOG_MAJOR,
+            "%s:" \
+            " Sending fragment %d\n",
+            print_prefix, j);
+
           // send the fragment
           bytes_sent += write_socket_.send(
             i->second,
@@ -135,6 +142,12 @@ Madara::Transport::Multicast_Transport_Read_Thread::rebroadcast (
       }
       else
       {
+        madara_logger_log (this->context_->get_logger (),
+          Logger::LOG_MAJOR,
+          "%s:" \
+          " Sending packet of size %ld\n",
+          print_prefix, result);
+
         bytes_sent = write_socket_.send(
           buffer_.get_ptr (), (ssize_t)result, address_);
 
