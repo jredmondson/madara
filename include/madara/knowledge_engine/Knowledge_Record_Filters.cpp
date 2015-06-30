@@ -614,8 +614,38 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
       // optimize selection for functors, the preferred filter impl
       if (i->is_functor ())
       {
-        i->functor->filter (records, transport_context,
-          *heap_variables.get ());
+        madara_logger_cond_log (context_,
+          context_->get_logger (), Logger::global_logger.get (),
+          Logger::LOG_MINOR,
+          "Knowledge_Record_Filters::filter: "
+          "Checking vars for null\n");
+
+        Variables * vars = heap_variables.get ();
+        if (vars)
+        {
+          madara_logger_cond_log (context_,
+            context_->get_logger (), Logger::global_logger.get (),
+            Logger::LOG_MAJOR,
+            "Knowledge_Record_Filters::filter: "
+            "Calling C++ filter\n");
+
+          i->functor->filter (records, transport_context,
+            *vars);
+
+          madara_logger_cond_log (context_,
+            context_->get_logger (), Logger::global_logger.get (),
+            Logger::LOG_MAJOR,
+            "Knowledge_Record_Filters::filter: "
+            "Finished calling C++ filter\n");
+        }
+        else
+        {
+          madara_logger_cond_log (context_,
+            context_->get_logger (), Logger::global_logger.get (),
+            Logger::LOG_ERROR,
+            "Knowledge_Record_Filters::filter: "
+            "Memory issues caused vars to be null before filtering\n");
+        }
       }
 #ifdef _MADARA_JAVA_
       else if (i->is_java_callable ())
