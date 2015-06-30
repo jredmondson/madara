@@ -24,8 +24,9 @@ std::string
 Madara::Utility::get_version (void)
 {
 #include "madara/Version.h"
-  
-  return version;
+
+  return version + std::string (" compiled on ") +
+    __DATE__ + " at " + __TIME__;
 }
 
 

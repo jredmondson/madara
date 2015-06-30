@@ -260,6 +260,7 @@ public class FlexMap extends MadaraJNI
   /**
    * Sets the location to a KnowledgeRecord value
    *
+   * @param  key     the location within the virtual map
    * @param  value   new value
    */
   public void set(java.lang.String key, KnowledgeRecord value)

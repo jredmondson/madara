@@ -16,8 +16,11 @@ close VERSION_FILE;
 
 chomp ($version);
 
+$git_sha = `git rev-parse HEAD`;
+chomp ($git_sha);
+
 open OUTPUT_FILE, ">",  $ENV{'MADARA_ROOT'} . "/include/madara/Version.h" or
     die "Unable to open Version.h for writing.";
-  print OUTPUT_FILE  "std::string version (\"" . $version . "\");\n";
+  print OUTPUT_FILE  "std::string version (\"" . $version . " (" . $git_sha . ")\");\n";
 close OUTPUT_FILE;
 

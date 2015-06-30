@@ -109,8 +109,6 @@ void test_endian_swap (void)
   std::cout << "       l_temp = " << l_temp << "\n";
   std::cout << "      ul_temp = " << ul_temp << "\n";
   std::cout << "  l_neg_result = " << l_neg_result << "\n";
-  
-
 }
 
 void
@@ -126,7 +124,12 @@ test_version (void)
   std::cout << "Version from get_uint_version is " << uint_version << ".\n";
   std::cout << "Converted uint_version is " << converted_version << ".\n";
 
-  if (human_readable_version == converted_version)
+  std::stringstream buffer;
+  std::string version;
+  buffer << human_readable_version;
+  buffer >> version;
+
+  if (version == converted_version)
     std::cout << "Current version conversion is a SUCCESS.\n";
   else
     std::cout << "Current version conversion is a FAIL.\n";
