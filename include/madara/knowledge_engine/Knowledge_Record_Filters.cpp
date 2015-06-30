@@ -416,7 +416,7 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           "Knowledge_Record_Filters::filter: "
           "Calling Java filter\n");
 
-        Madara::Utility::Java::Acquire_VM jvm;
+        Madara::Utility::Java::Acquire_VM jvm (true);
 
         /**
         * Create the variables java object
@@ -621,7 +621,7 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
       else if (i->is_java_callable ())
       {
         // manage VM attachment
-        Madara::Utility::Java::Acquire_VM jvm;
+        Madara::Utility::Java::Acquire_VM jvm (true);
 
         // JVMs appear to do strange things with the stack on jni_attach
         std::auto_ptr <Knowledge_Map> heap_records (new Knowledge_Map (records));

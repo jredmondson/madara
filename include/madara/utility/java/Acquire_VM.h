@@ -24,19 +24,43 @@ namespace Madara
       class Acquire_VM
       {
       public:
-        Acquire_VM ()
+        /**
+         * Constructor
+         * @param  no_detach  if true, do not try to detach, regardless
+         *                    of results of JNI Env returned
+         **/
+        Acquire_VM (bool no_detach = false)
         {
-          needs_detach = !madara_jni_is_attached();
+          if (!no_detach)
+          {
+            needs_detach = !madara_jni_is_attached ();
+          }
+          else
+          {
+            needs_detach = false;
+          }
+
           env = madara_jni_get_env ();
         }
 
+        /**
+        * Destructor
+        **/
         ~Acquire_VM()
         {
           if (needs_detach)
             jni_detach();
         }
 
+        /**
+         * The Java environment
+         **/
         JNIEnv * env;
+
+      protected:
+        /**
+        * Flag for determining whether to call detach in destructor
+        **/
         bool needs_detach;
       };
     }

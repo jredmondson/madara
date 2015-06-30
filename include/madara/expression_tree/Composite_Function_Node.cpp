@@ -137,7 +137,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 #ifdef _MADARA_JAVA_
   else if (function_->is_java_callable())
   {
-    Madara::Utility::Java::Acquire_VM jvm;
+    Madara::Utility::Java::Acquire_VM jvm (true);
     JNIEnv * env = jvm.env;
 
     /**

@@ -134,7 +134,7 @@ Madara::Threads::Worker_Thread::svc (void)
     
 #ifdef _MADARA_JAVA_
     // try detaching one more time, just to make sure.
-    Madara::Utility::Java::Acquire_VM jvm;
+    Madara::Utility::Java::Acquire_VM jvm (false);
 #endif
 
     thread_->init (*data_);
