@@ -3,7 +3,7 @@
 #include <stdarg.h>
 
 Madara::Logger::Logger::Logger (bool log_to_terminal)
-: mutex_ (), level_ (LOG_EMERGENCY),
+: mutex_ (), level_ (LOG_ERROR),
   term_added_ (log_to_terminal), syslog_added_ (false), tag_ ("madara")
 {
   if (log_to_terminal)
