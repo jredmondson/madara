@@ -16,7 +16,7 @@ threads::Java_Thread::Java_Thread ()
 threads::Java_Thread::~Java_Thread ()
 {
   // manage VM attachment
-  Madara::Utility::Java::Acquire_VM jvm (true);
+  Madara::Utility::Java::Acquire_VM jvm;
 
   if (jvm.env != 0)
   {
@@ -62,7 +62,7 @@ threads::Java_Thread::operator= (const Java_Thread & rhs)
 void
 threads::Java_Thread::run (void)
 {
-  Madara::Utility::Java::Acquire_VM jvm (true);
+  Madara::Utility::Java::Acquire_VM jvm;
   JNIEnv * env = jvm.env;
 
   madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
@@ -75,7 +75,7 @@ threads::Java_Thread::run (void)
 void
 threads::Java_Thread::cleanup (void)
 {
-  Madara::Utility::Java::Acquire_VM jvm (true);
+  Madara::Utility::Java::Acquire_VM jvm;
   JNIEnv * env = jvm.env;
 
   madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
@@ -88,7 +88,7 @@ threads::Java_Thread::cleanup (void)
 void
 threads::Java_Thread::init (engine::Knowledge_Base & context)
 {
-  Madara::Utility::Java::Acquire_VM jvm (true);
+  Madara::Utility::Java::Acquire_VM jvm;
   JNIEnv * env = jvm.env;
 
   madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
@@ -131,7 +131,7 @@ threads::Java_Thread::create (jobject obj)
 bool
 threads::Java_Thread::check_compliance (jobject obj)
 {
-  Madara::Utility::Java::Acquire_VM jvm (true);
+  Madara::Utility::Java::Acquire_VM jvm;
   JNIEnv * env = jvm.env;
 
   bool result (true);
@@ -229,7 +229,7 @@ threads::Java_Thread::init_control_vars (engine::Knowledge_Base & control)
   threads::Base_Thread::init_control_vars (control);
   
   // setup the Java variables
-  Madara::Utility::Java::Acquire_VM jvm (true);
+  Madara::Utility::Java::Acquire_VM jvm;
   JNIEnv * env = ::madara_jni_get_env ();
 
   madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
