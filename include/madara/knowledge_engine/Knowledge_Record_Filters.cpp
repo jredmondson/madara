@@ -658,9 +658,6 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
         std::auto_ptr <Transport::Transport_Context> heap_context (
           new Transport::Transport_Context (transport_context));
 
-        //result = i->call_java_filter(arguments, variables);
-        JNIEnv * env = jni_attach ();
-
         /**
         * Create the variables java object
         **/
