@@ -257,7 +257,7 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1setDoubleArray
  * Method:    jni_setFile
  * Signature: (JLjava/lang/String;[B)V
  */
-JNIEXPORT void JNICALL Java_com_madara_KnowledgeBase_jni_1setFile
+MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1setFile
   (JNIEnv *, jclass, jlong, jstring, jbyteArray);
 
 /*
@@ -265,7 +265,7 @@ JNIEXPORT void JNICALL Java_com_madara_KnowledgeBase_jni_1setFile
  * Method:    jni_setImage
  * Signature: (JLjava/lang/String;[B)V
  */
-JNIEXPORT void JNICALL Java_com_madara_KnowledgeBase_jni_1setImage
+MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1setImage
   (JNIEnv *, jclass, jlong, jstring, jbyteArray);
 
 
@@ -314,7 +314,7 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1setDoubleArraySett
  * Method:    jni_setFileSettings
  * Signature: (JLjava/lang/String;[BJ)V
  */
-JNIEXPORT void JNICALL Java_com_madara_KnowledgeBase_jni_1setFileSettings
+MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1setFileSettings
   (JNIEnv *, jclass, jlong, jstring, jbyteArray, jlong);
 
 /*
@@ -322,7 +322,7 @@ JNIEXPORT void JNICALL Java_com_madara_KnowledgeBase_jni_1setFileSettings
  * Method:    jni_setImageSettings
  * Signature: (JLjava/lang/String;[BJ)V
  */
-JNIEXPORT void JNICALL Java_com_madara_KnowledgeBase_jni_1setImageSettings
+MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1setImageSettings
   (JNIEnv *, jclass, jlong, jstring, jbyteArray, jlong);
 
 /*

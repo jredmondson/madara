@@ -75,7 +75,6 @@ public class EraseRecord implements RecordFilter
     return new KnowledgeRecord();
   }
   
-  
   public static void main (String [] args) throws InterruptedException, Exception
   {
     QoSTransportSettings settings = new QoSTransportSettings();

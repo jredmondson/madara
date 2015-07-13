@@ -454,6 +454,27 @@ project (Test_Arrays) : using_madara, using_ace, no_karl, no_xml {
   }
 }
 
+project (Network_Counter_Filter) : using_madara, using_ace, no_karl, no_xml {
+  exeout = $(MADARA_ROOT)/bin
+  exename = network_counter_filter
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/network_counter_filter.cpp
+  }
+}
+
 project (Network_Throughput) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = network_throughput

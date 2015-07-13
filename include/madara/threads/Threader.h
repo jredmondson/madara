@@ -75,7 +75,7 @@ namespace Madara
       
       /**
        * Starts a new thread and executes the provided user
-       * thread once. Execution ordering is init -> *execute -> cleanup.
+       * thread at a hertz. Execution ordering is init -> *execute -> cleanup.
        * init and cleanup are only called once.
        * 
        * <br>&nbsp;<br>The thread will be managed by the
