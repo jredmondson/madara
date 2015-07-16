@@ -53,6 +53,7 @@ import com.madara.threads.BaseThread;
 import com.madara.transport.QoSTransportSettings;
 import com.madara.transport.TransportType;
 import com.madara.threads.Threader;
+import com.madara.logger.GlobalLogger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +105,23 @@ public class CounterFilterTest
         }
         ++i;
       }
+      else if(args[i].equals("-f") || args[i].equals("--log-file"))
+      {
+        if (i + 1 < args.length)
+        {
+          GlobalLogger.addFile(args[i + 1]);
+        }
+        ++i;
+      }
+      else if(args[i].equals("-l") || args[i].equals("--log-level"))
+      {
+        if (i + 1 < args.length)
+        {
+          int logLevel  = Integer.parseInt(args[i + 1]);
+          GlobalLogger.setLevel(logLevel);
+        }
+        ++i;
+      }
       else if(args[i].equals("-s") || args[i].equals("--size"))
       {
         if (i + 1 < args.length)
@@ -117,6 +135,15 @@ public class CounterFilterTest
         if (i + 1 < args.length)
         {
           activeTime = Double.parseDouble(args[i + 1]);
+        }
+        ++i;
+      }
+      else if(args[i].equals("-q") || args[i].equals("--queue-length"))
+      {
+        if (i + 1 < args.length)
+        {
+          int length  = Integer.parseInt(args[i + 1]);
+          settings.setQueueLength(length);
         }
         ++i;
       }
@@ -152,8 +179,11 @@ public class CounterFilterTest
         System.out.println("ERROR: unrecognized parameter:" + args[i]);
         System.out.println("Arguments:");
         System.out.println("  -b|--broadcast:  broadcast host to subscribe to");
+        System.out.println("  -f|--log-file:   log to a file as well");
         System.out.println("  -i|--id:         the identifier. 0 is publisher.");
+        System.out.println("  -l|--log-level:  log level to use.");
         System.out.println("  -m|--multicast:  multicast host to subscribe to");
+        System.out.println("  -q|--queue-length: queue length use for send/rcv");
         System.out.println("  -s|--size: Size of packet to send");
         System.out.println("  -t|--time: Time to stay active");
         System.out.println("  -u|--udp:  udp host to subscribe to. First host");
