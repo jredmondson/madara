@@ -156,6 +156,16 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-q" || arg1 == "--queue-length")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> settings.queue_length;
+      }
+
+      ++i;
+    }
     else if (arg1 == "-r" || arg1 == "--reduced")
     {
       settings.send_reduced_message_header = true;
@@ -200,12 +210,13 @@ void handle_arguments (int argc, char ** argv)
         " [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
         " [-d|--domain domain]     the knowledge domain to send and listen to\n" \
         " [-e|--threads threads]   number of read threads\n" \
+        " [-f|--logfile file]      log to a file\n" \
         " [-i|--id id]             the id of this agent (should be non-negative)\n" \
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         " [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
         " [-t|--target target]     number of payloads to send/target\n" \
         " [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
-        " [-f|--logfile file]      log to a file\n" \
+        " [-q|--queue-length len   the queue size to use for the test\n" \
         " [-r|--reduced]           use the reduced message header\n" \
         " [-s|--size size]         size of data packet to send in bytes\n" \
         " [-t|--time time]         time to burst messages for throughput test\n" \

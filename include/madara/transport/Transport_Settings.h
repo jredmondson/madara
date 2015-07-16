@@ -95,7 +95,7 @@ namespace Madara
 
       /// Default queue length for event history (must be high for
       /// reliable transport
-      static const uint32_t DEFAULT_QUEUE_LENGTH = 5000;
+      static const uint32_t DEFAULT_QUEUE_LENGTH = 500000;
 
       /// Default deadline
       static const uint32_t DEFAULT_DEADLINE = 0;
