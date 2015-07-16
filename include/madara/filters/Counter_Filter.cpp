@@ -21,7 +21,7 @@ Madara::Filters::Counter_Filter::filter (
   const Transport::Transport_Context & transport_context,
   Knowledge_Engine::Variables & vars)
 {
-  Integer cur_time = Utility::get_time ();
+  Integer cur_time = (Integer) transport_context.get_current_time ();
 
   if (!initialized_)
   {

@@ -338,7 +338,7 @@ int main (int argc, char ** argv)
   std::cerr << "Test results:\n";
   std::cerr << "  Packet size: " << data_size << "\n";
   std::cerr << "  Packets: " << counter.get_count () << "\n";
-  std::cerr << "  Elapsed Time (ns): " << counter.get_elapsed () << "\n";
+  std::cerr << "  Elapsed Time (s): " << counter.get_elapsed () << "\n";
   std::cerr << "  Message Throughput (message/s): " <<
     counter.get_throughput () << "\n";
   std::cerr << "  Data Throughput (B/s): " <<

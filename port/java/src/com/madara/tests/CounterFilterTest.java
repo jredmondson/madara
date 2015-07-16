@@ -86,6 +86,7 @@ public class CounterFilterTest
   
   public static void main (String...args) throws InterruptedException, Exception
   {
+    String curHost = "";
     int id = 0;
     int dataSize = 1024;
     double activeTime = 10.0;
@@ -110,6 +111,14 @@ public class CounterFilterTest
         if (i + 1 < args.length)
         {
           GlobalLogger.addFile(args[i + 1]);
+        }
+        ++i;
+      }
+      else if(args[i].equals("-o") || args[i].equals("--host"))
+      {
+        if (i + 1 < args.length)
+        {
+          curHost = args[i + 1];
         }
         ++i;
       }
@@ -176,18 +185,19 @@ public class CounterFilterTest
       }
       else
       {
-        System.out.println("ERROR: unrecognized parameter:" + args[i]);
-        System.out.println("Arguments:");
-        System.out.println("  -b|--broadcast:  broadcast host to subscribe to");
-        System.out.println("  -f|--log-file:   log to a file as well");
-        System.out.println("  -i|--id:         the identifier. 0 is publisher.");
-        System.out.println("  -l|--log-level:  log level to use.");
-        System.out.println("  -m|--multicast:  multicast host to subscribe to");
-        System.out.println("  -q|--queue-length: queue length use for send/rcv");
-        System.out.println("  -s|--size: Size of packet to send");
-        System.out.println("  -t|--time: Time to stay active");
-        System.out.println("  -u|--udp:  udp host to subscribe to. First host");
-        System.out.println("             should be self.");
+        GlobalLogger.log(0,"ERROR: unrecognized parameter:" + args[i]);
+        GlobalLogger.log(0,"Arguments:");
+        GlobalLogger.log(0,"  -b|--broadcast:  broadcast host to subscribe to");
+        GlobalLogger.log(0,"  -f|--log-file:   log to a file as well");
+        GlobalLogger.log(0,"  -i|--id:         the identifier. 0 is publisher.");
+        GlobalLogger.log(0,"  -l|--log-level:  log level to use.");
+        GlobalLogger.log(0,"  -m|--multicast:  multicast host to subscribe to");
+        GlobalLogger.log(0,"  -o|--host:       this device's unique hostname");
+        GlobalLogger.log(0,"  -q|--queue-length: queue length use for send/rcv");
+        GlobalLogger.log(0,"  -s|--size: Size of packet to send");
+        GlobalLogger.log(0,"  -t|--time: Time to stay active");
+        GlobalLogger.log(0,"  -u|--udp:  udp host to subscribe to. First host");
+        GlobalLogger.log(0,"             should be self.");
         
         return;
       }
@@ -210,7 +220,7 @@ public class CounterFilterTest
       filter.addReceiveFilterTo(settings);
     }
     
-    KnowledgeBase knowledge = new KnowledgeBase("", settings);
+    KnowledgeBase knowledge = new KnowledgeBase(curHost, settings);
     
     if (id == 0)
     {
@@ -228,13 +238,13 @@ public class CounterFilterTest
       com.madara.util.Utility.sleep (activeTime);
     }
     
-    System.out.println("Test results:");
-    System.out.println("  Packet size: " + dataSize);
-    System.out.println("  Packets: " + filter.getCount());
-    System.out.println("  Elapsed Time (ns): " + filter.getElapsed());
-    System.out.println("  Message Throughput (message/s): " +
+    GlobalLogger.log(0,"Test results:");
+    GlobalLogger.log(0,"  Packet size: " + dataSize);
+    GlobalLogger.log(0,"  Packets: " + filter.getCount());
+    GlobalLogger.log(0,"  Elapsed Time (s): " + filter.getElapsed());
+    GlobalLogger.log(0,"  Message Throughput (message/s): " +
       filter.getThroughput());
-    System.out.println("  Data Throughput (B/s): " +
+    GlobalLogger.log(0,"  Data Throughput (B/s): " +
       filter.getThroughput() * dataSize);
     
     settings.free();

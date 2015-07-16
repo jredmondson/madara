@@ -30,7 +30,7 @@ double Madara::Filters::Counter_Filter::get_throughput ()
   {
     // convert elapsed time into seconds
     double elapsed = (double)(last_message_ - first_message_);
-    elapsed *= 0.000000001;
+    //elapsed *= 0.000000001;
 
     // divide packets by time elapsed in seconds
     result = packets_ / elapsed;
