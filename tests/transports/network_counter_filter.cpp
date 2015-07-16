@@ -267,6 +267,10 @@ public:
     payload_ = payload;
   }
 
+  virtual ~Sender ()
+  {
+  }
+
   // modify the payload and send the update
   virtual void run (void)
   {

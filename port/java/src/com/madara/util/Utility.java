@@ -39,7 +39,7 @@ public class Utility extends MadaraJNI {
   /**
    * Sleeps for a number of seconds in double format. Partial time (e.g.
    * 4.5s) is encouraged.
-   * @param   the current timestamp in nanoseconds
+   * @param sleepTime  the current timestamp in nanoseconds
    */
   public static void sleep(double sleepTime)
   {
