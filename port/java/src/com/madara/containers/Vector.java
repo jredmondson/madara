@@ -51,6 +51,7 @@ import com.madara.MadaraJNI;
 import com.madara.KnowledgeBase;
 import com.madara.Variables;
 import com.madara.KnowledgeRecord;
+import com.madara.UpdateSettings;
 
 /**
  * A facade for a dynamically typed vector within a knowledge base.
@@ -74,6 +75,7 @@ public class Vector extends MadaraJNI
   private native void jni_resize(long cptr, long length);
   private native void jni_modify(long cptr);
   private native void jni_modifyIndex(long cptr, int index);
+  private native void jni_setSettings(long cptr, long settings);
 
   private boolean manageMemory = true;
   
@@ -248,6 +250,16 @@ public class Vector extends MadaraJNI
   public void setName(Variables vars, java.lang.String name)
   {
     jni_setName(getCPtr(), 1, vars.getCPtr (), name);
+  }
+
+  /**
+   * Sets the settings for updating variables in the Knowledge Base
+   *
+   * @param  settings  the settings to use for updating the Knowledge Base
+   */
+  public void setSettings(UpdateSettings settings)
+  {
+    jni_setSettings(getCPtr(), settings.getCPtr());
   }
 
   /**

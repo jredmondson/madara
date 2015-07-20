@@ -338,3 +338,16 @@ void JNICALL Java_com_madara_containers_Queue_jni_1clear
     current->clear ();
   }
 }
+
+void JNICALL Java_com_madara_containers_Queue_jni_1setSettings
+(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+{
+  containers::Queue * current = (containers::Queue *)cptr;
+  engine::Knowledge_Update_Settings * settings =
+    (engine::Knowledge_Update_Settings *)settings_ptr;
+
+  if (current && settings)
+  {
+    current->set_settings (*settings);
+  }
+}

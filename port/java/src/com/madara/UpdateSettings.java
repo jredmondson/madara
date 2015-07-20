@@ -47,37 +47,30 @@
 package com.madara;
 
 /**
- * Encapsulates settings for an evaluation statement.
+ * Encapsulates settings for updating the knowledge base.
  */
-public class EvalSettings extends MadaraJNI
+public class UpdateSettings extends MadaraJNI
 {
 
   //Constructors
-  private static native long jni_evalSettings();
-  private static native long jni_evalSettings(long oldPtr);
+  private static native long jni_updateSettings();
+  private static native long jni_updateSettings(long oldPtr);
 
   //Getters/Setters
-  private static native void jni_setDelaySendingModifieds(long cptr, boolean delaySendingModifieds);
-  private static native boolean jni_getDelaySendingModifieds(long cptr);
-  private static native void jni_setPrePrintStatement(long cptr, String prePrintStatement);
-  private static native String jni_getPrePrintStatement(long cptr);
-  private static native void jni_setPostPrintStatement(long cptr, String prePrintStatement);
-  private static native String jni_getPostPrintStatement(long cptr);
   private static native void jni_setAlwaysOverwrite(long cptr, boolean alwaysOverwrite);
   private static native boolean jni_getAlwaysOverwrite(long cptr);
   private static native void jni_setTreatGlobalsAsLocals(long cptr, boolean treatGlobalsAsLocals);
   private static native boolean jni_getTreatGlobalsAsLocals(long cptr);
   private static native void jni_setClockIncrement(long cptr, long defaultClockIncrement);
   private static native long jni_getClockIncrement(long cptr);
-  private static native void jni_freeEvalSettings(long cptr);
-  public static final EvalSettings DEFAULT_EVAL_SETTINGS = new EvalSettings(jni_evalSettings());
+  private static native void jni_freeUpdateSettings(long cptr);
 
   /**
    * Default constructor
    */
-  public EvalSettings()
+  public UpdateSettings()
   {
-    setCPtr(jni_evalSettings());
+    setCPtr(jni_updateSettings());
   }
 
   /**
@@ -85,9 +78,9 @@ public class EvalSettings extends MadaraJNI
    *
    * @param input the settings to copy from
    */
-  public EvalSettings(EvalSettings input)
+  public UpdateSettings(UpdateSettings input)
   {
-    setCPtr(jni_evalSettings(input.getCPtr()));
+    setCPtr(jni_updateSettings(input.getCPtr()));
   }
 
   /**
@@ -95,73 +88,9 @@ public class EvalSettings extends MadaraJNI
    *
    * @param cptr Pointer to C++ object
    */
-  protected EvalSettings(long cptr)
+  protected UpdateSettings(long cptr)
   {
     setCPtr(cptr);
-  }
-
-  /**
-   * @param delaySendingModifieds Toggle for sending modifieds in a single update event after each evaluation.
-   */
-  public void setDelaySendingModifieds(boolean delaySendingModifieds)
-  {
-    jni_setDelaySendingModifieds(getCPtr(), delaySendingModifieds);
-  }
-
-  /**
-   * @return current value of delaySendingModifieds
-   */
-  public boolean getDelaySendingModifieds()
-  {
-    return jni_getDelaySendingModifieds(getCPtr());
-  }
-
-  /**
-   * @param prePrintStatement Statement to print before evaluations.
-   */
-  public void setPrePrintStatement(String prePrintStatement)
-  {
-    jni_setPrePrintStatement(getCPtr(), prePrintStatement);
-  }
-
-  /**
-   * @return current value of prePrintStatement
-   */
-  public String getPrePrintStatement()
-  {
-    return jni_getPrePrintStatement(getCPtr());
-  }
-
-  /**
-   * @param postPrintStatement Statement to print after evaluations.
-   */
-  public void setPostPrintStatement(String postPrintStatement)
-  {
-    jni_setPostPrintStatement(getCPtr(), postPrintStatement);
-  }
-
-  /**
-   * @return current value of getPostPrintStatement
-   */
-  public String getPostPrintStatement()
-  {
-    return jni_getPostPrintStatement(getCPtr());
-  }
-
-  /**
-   * @param alwaysOverwrite Toggle for always overwriting records, regardless of quality, clock values, etc.
-   */
-  public void setAlwaysOverwrite(boolean alwaysOverwrite)
-  {
-    jni_setAlwaysOverwrite(getCPtr(), alwaysOverwrite);
-  }
-
-  /**
-   * @return current value of alwaysOverwrite
-   */
-  public boolean getAlwaysOverwrite()
-  {
-    return jni_getAlwaysOverwrite(getCPtr());
   }
 
   /**
@@ -199,11 +128,11 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be called
-   * before an instance of EvalSettings gets garbage collected
+   * before an instance of UpdateSettings gets garbage collected
    */
   public void free()
   {
-    jni_freeEvalSettings(getCPtr());
+    jni_freeUpdateSettings(getCPtr());
     setCPtr(0);
   }
   

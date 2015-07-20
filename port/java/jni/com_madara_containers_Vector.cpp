@@ -397,3 +397,16 @@ void JNICALL Java_com_madara_containers_Vector_jni_1modifyIndex
     current->modify ( (size_t)index);
   }
 }
+
+void JNICALL Java_com_madara_containers_Vector_jni_1setSettings
+(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+{
+  containers::Vector * current = (containers::Vector *)cptr;
+  engine::Knowledge_Update_Settings * settings =
+    (engine::Knowledge_Update_Settings *)settings_ptr;
+
+  if (current && settings)
+  {
+    current->set_settings (*settings);
+  }
+}

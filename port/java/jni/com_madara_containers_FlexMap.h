@@ -153,6 +153,14 @@ MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setDelimiter
 MADARA_Export jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
 (JNIEnv *, jobject, jlong, jboolean);
 
+/*
+* Class:     com_madara_containers_FlexMap
+* Method:    jni_setSettings
+* Signature: (JJ)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setSettings
+(JNIEnv *, jobject, jlong, jlong);
+
 
 #ifdef __cplusplus
 }

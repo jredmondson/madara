@@ -321,3 +321,16 @@ jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
   }
   return result;
 }
+
+void JNICALL Java_com_madara_containers_FlexMap_jni_1setSettings
+(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+{
+  containers::Flex_Map * current = (containers::Flex_Map *)cptr;
+  engine::Knowledge_Update_Settings * settings =
+    (engine::Knowledge_Update_Settings *)settings_ptr;
+
+  if (current && settings)
+  {
+    current->set_settings (*settings);
+  }
+}

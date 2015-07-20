@@ -55,6 +55,7 @@ import com.madara.containers.Integer;
 import com.madara.containers.Queue;
 import com.madara.containers.FlexMap;
 import com.madara.containers.Map;
+import com.madara.UpdateSettings;
 
 /**
  * This class is a tester for the com.madara.containers package
@@ -64,8 +65,11 @@ public class ContainerTest
   public static void testFlexMap()
   {
     KnowledgeBase knowledge = new KnowledgeBase();
+    UpdateSettings settings = new UpdateSettings();
+    settings.setTreatGlobalsAsLocals(true);
     FlexMap map = new FlexMap();
     map.setName(knowledge, "");
+    map.setSettings(settings);
     
     boolean error = false;
     
@@ -192,7 +196,6 @@ public class ContainerTest
       error = true;
     }
     
-    
     if(error)
     {
       knowledge.print();
@@ -202,12 +205,17 @@ public class ContainerTest
     cassie.free();
     robert.free();
     records.free();
+    settings.free();
   }
   
   public static void testVector()
   {
     KnowledgeBase knowledge = new KnowledgeBase();
+    
     Vector list = new Vector();
+    UpdateSettings settings = new UpdateSettings();
+    settings.setTreatGlobalsAsLocals(true);
+    list.setSettings(settings);
     
     boolean error = false;
     
@@ -280,6 +288,9 @@ public class ContainerTest
   {
     KnowledgeBase knowledge = new KnowledgeBase();
     Integer counter = new Integer();
+    UpdateSettings settings = new UpdateSettings();
+    settings.setTreatGlobalsAsLocals(true);
+    counter.setSettings(settings);
     
     boolean error = false;
     
@@ -317,6 +328,9 @@ public class ContainerTest
   {
     KnowledgeBase knowledge = new KnowledgeBase();
     Queue queue = new Queue();
+    UpdateSettings settings = new UpdateSettings();
+    settings.setTreatGlobalsAsLocals(true);
+    queue.setSettings(settings);
     
     boolean error = false;
     
@@ -365,6 +379,9 @@ public class ContainerTest
   {
     KnowledgeBase knowledge = new KnowledgeBase();
     DoubleVector vector = new DoubleVector();
+    UpdateSettings settings = new UpdateSettings();
+    settings.setTreatGlobalsAsLocals(true);
+    vector.setSettings(settings);
     
     boolean error = false;
     

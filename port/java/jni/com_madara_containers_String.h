@@ -141,6 +141,14 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_String_jni_1toLong
 MADARA_Export void JNICALL Java_com_madara_containers_String_jni_1modify
   (JNIEnv *, jobject, jlong);
 
+/*
+* Class:     com_madara_containers_String
+* Method:    jni_setSettings
+* Signature: (JJ)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_String_jni_1setSettings
+(JNIEnv *, jobject, jlong, jlong);
+
 #ifdef __cplusplus
 }
 #endif

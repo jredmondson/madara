@@ -165,6 +165,14 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1r
 MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1modify
   (JNIEnv *, jobject, jlong);
 
+/*
+* Class:     com_madara_containers_NativeIntegerVector
+* Method:    jni_setSettings
+* Signature: (JJ)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1setSettings
+(JNIEnv *, jobject, jlong, jlong);
+
 #ifdef __cplusplus
 }
 #endif

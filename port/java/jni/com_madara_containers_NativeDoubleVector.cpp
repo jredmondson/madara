@@ -308,3 +308,17 @@ void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1modify
   if (current)
     current->modify ();
 }
+
+void JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1setSettings
+(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+{
+  containers::Native_Double_Vector * current =
+    (containers::Native_Double_Vector *)cptr;
+  engine::Knowledge_Update_Settings * settings =
+    (engine::Knowledge_Update_Settings *)settings_ptr;
+
+  if (current && settings)
+  {
+    current->set_settings (*settings);
+  }
+}

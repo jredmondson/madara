@@ -307,3 +307,16 @@ void JNICALL Java_com_madara_containers_Counter_jni_1resize
   Counter * current = (Counter *) cptr;
   current->resize (id, counters);
 }
+
+void JNICALL Java_com_madara_containers_Counter_jni_1setSettings
+(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+{
+  Counter * current = (Counter *)cptr;
+  engine::Knowledge_Update_Settings * settings =
+    (engine::Knowledge_Update_Settings *)settings_ptr;
+
+  if (current && settings)
+  {
+    current->set_settings (*settings);
+  }
+}

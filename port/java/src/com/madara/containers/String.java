@@ -48,6 +48,7 @@ package com.madara.containers;
 
 import com.madara.MadaraJNI;
 import com.madara.KnowledgeBase;
+import com.madara.UpdateSettings;
 import com.madara.Variables;
 
 /**
@@ -66,6 +67,7 @@ public class String extends MadaraJNI
   private native double jni_toDouble(long cptr);
   private native long jni_toLong(long cptr);
   private native void jni_modify(long cptr);
+  private native void jni_setSettings(long cptr, long settings);
 
   private boolean manageMemory = true;
 
@@ -174,6 +176,16 @@ public class String extends MadaraJNI
   public void setName(Variables vars, java.lang.String name)
   {
     jni_setName(getCPtr(), 1, vars.getCPtr (), name);
+  }
+
+  /**
+   * Sets the settings for updating variables in the Knowledge Base
+   *
+   * @param  settings  the settings to use for updating the Knowledge Base
+   */
+  public void setSettings(UpdateSettings settings)
+  {
+    jni_setSettings(getCPtr(), settings.getCPtr());
   }
 
   /**

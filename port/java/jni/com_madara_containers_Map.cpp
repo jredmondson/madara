@@ -438,3 +438,16 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1sync
     current->sync_keys ();
   }
 }
+
+void JNICALL Java_com_madara_containers_Map_jni_1setSettings
+(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+{
+  containers::Map * current = (containers::Map *)cptr;
+  engine::Knowledge_Update_Settings * settings =
+    (engine::Knowledge_Update_Settings *)settings_ptr;
+
+  if (current && settings)
+  {
+    current->set_settings (*settings);
+  }
+}

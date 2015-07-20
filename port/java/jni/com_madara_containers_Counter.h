@@ -173,6 +173,14 @@ MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1modify
 MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1resize
   (JNIEnv *, jobject, jlong, jint, jint);
 
+/*
+* Class:     com_madara_containers_Counter
+* Method:    jni_setSettings
+* Signature: (JJ)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1setSettings
+(JNIEnv *, jobject, jlong, jlong);
+
 #ifdef __cplusplus
 }
 #endif
