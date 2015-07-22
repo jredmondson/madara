@@ -38,7 +38,7 @@ Madara::Transport::Base::invalidate_transport (void)
   valid_setup_.broadcast ();
 
   context_.get_logger ().log (Logger::LOG_DETAILED,
-    "Transport::invalidate_transport: invalidating transporty\n");
+    "Transport::invalidate_transport: invalidating transport\n");
 }
 
 inline Madara::Transport::Settings &
