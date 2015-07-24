@@ -102,6 +102,25 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__J
   return (jlong) result;
 }
 
+jstring JNICALL Java_com_madara_KnowledgeBase_jni_1getID
+  (JNIEnv * env, jobject, jlong cptr)
+{
+  Knowledge_Base * knowledge = (Knowledge_Base *)cptr;
+  jstring result;
+
+  if (knowledge)
+  {
+    std::string id = knowledge->get_id ();
+    result = env->NewStringUTF (id.c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
+
+  return result;
+}
+
 void JNICALL Java_com_madara_KnowledgeBase_jni_1attachLogger
 (JNIEnv *, jobject, jlong cptr, jlong logger_ptr)
 {
@@ -111,6 +130,19 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1attachLogger
   if (knowledge && logger)
   {
     knowledge->attach_logger (*logger);
+  }
+}
+
+void JNICALL Java_com_madara_KnowledgeBase_jni_1attachTransport
+  (JNIEnv * env, jobject, jlong cptr, jstring id, jlong settings_ptr)
+{
+  Knowledge_Base * knowledge = (Knowledge_Base *) cptr;
+  const char * native_id = env->GetStringUTFChars (id, 0);
+  transport::Settings * settings = (transport::Settings *) settings_ptr;
+
+  if (knowledge && native_id && settings)
+  {
+    knowledge->attach_transport (native_id, *settings);
   }
 }
 

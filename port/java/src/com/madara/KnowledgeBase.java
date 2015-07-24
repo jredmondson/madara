@@ -62,7 +62,9 @@ public class KnowledgeBase extends MadaraJNI
   private native long jni_KnowledgeBase(String host, int transport, String domain);
   private native long jni_KnowledgeBase(String host, long config);
   private native long jni_KnowledgeBase(long original);
+  private native String jni_getID(long cptr);
   private native void jni_attachLogger(long cptr, long logger);
+  private native void jni_attachTransport(long cptr, String id, long settings);
   private native long jni_getLogger(long cptr);
   private native long jni_evaluate(long cptr, String expression, long evalSettings);
   private native long jni_evaluate(long cptr, long expression, long evalSettings);
@@ -187,6 +189,16 @@ public class KnowledgeBase extends MadaraJNI
     ret.manageMemory=shouldManage;
     ret.setCPtr(cptr);
     return ret;
+  }
+
+  /**
+   * Get KnowledgeBase ID
+   *
+   * @return KnowledgeBase ID
+   **/
+  public String getID ()
+  {
+    return jni_getID (getCPtr ());
   }
 
   /**
@@ -333,6 +345,17 @@ public class KnowledgeBase extends MadaraJNI
   public void attachLogger(Logger logger)
   {
     jni_attachLogger(getCPtr(), logger.getCPtr());
+  }
+
+  /**
+   * Attaches a new transport to the Knowledge Base
+   *
+   * @param id        unique identifier for this agent
+   * @param settings  settings for the new transport
+   **/
+  public void attachTransport(String id, com.madara.transport.TransportSettings settings)
+  {
+    jni_attachTransport(getCPtr(), id, settings.getCPtr());
   }
 
   /**
