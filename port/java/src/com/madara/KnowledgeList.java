@@ -62,6 +62,16 @@ public class KnowledgeList extends AbstractList<KnowledgeRecord>
     knowledgeRecords = records;
   }
 
+  public KnowledgeList(KnowledgeRecord [] records)
+  {
+    knowledgeRecords = new long[records.length];
+    
+    for (int i = 0; i < records.length; ++i)
+    {
+      knowledgeRecords[i] = records[i].getCPtr();
+    }
+  }
+  
   /**
    * @see java.util.AbstractList#get (int)
    */
