@@ -57,6 +57,11 @@ public class KnowledgeList extends AbstractList<KnowledgeRecord>
 
   private long[] knowledgeRecords;
 
+  public KnowledgeList()
+  {
+    knowledgeRecords = null;
+  }
+
   public KnowledgeList(long[] records)
   {
     knowledgeRecords = records;
