@@ -3,7 +3,7 @@
 
 Madara::Knowledge_Engine::Containers::Native_Double_Vector::Native_Double_Vector (
   const Knowledge_Update_Settings & settings)
-: context_ (0), settings_ (settings) 
+  : Base_Container ("", settings), context_ (0)
 {
 }
    
@@ -12,11 +12,13 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::Native_Double_Vector
   Knowledge_Base & knowledge,
   int size,
   const Knowledge_Update_Settings & settings)
-: context_ (&(knowledge.get_context ())), name_ (name), settings_ (true, false)
+  : Base_Container (name, settings), context_ (&(knowledge.get_context ()))
 {
   vector_ = knowledge.get_ref (name, settings_);
-  resize (size);
-  settings_ = settings;
+  if (size >= 0)
+  {
+    resize (size);
+  }
 }
   
 Madara::Knowledge_Engine::Containers::Native_Double_Vector::Native_Double_Vector (
@@ -24,19 +26,19 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::Native_Double_Vector
   Variables & knowledge,
   int size,
   const Knowledge_Update_Settings & settings)
-: context_ (knowledge.get_context ()), name_ (name), settings_ (true, false)
+: context_ (knowledge.get_context ())
 {
   vector_ = knowledge.get_ref (name, settings);
-  resize (size);
-  settings_ = settings;
+  if (size >= 0)
+  {
+    resize (size);
+  }
 }
 
 Madara::Knowledge_Engine::Containers::Native_Double_Vector::Native_Double_Vector (
   const Native_Double_Vector & rhs)
-: context_ (rhs.context_),
-    name_ (rhs.name_),
-    vector_ (rhs.vector_),
-    settings_ (rhs.settings_)
+: Base_Container (rhs), context_ (rhs.context_),
+  vector_ (rhs.vector_)
 {
 
 }
@@ -56,7 +58,47 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::modify (void)
     context_->mark_modified (vector_);
   }
 }
- 
+
+std::string
+Madara::Knowledge_Engine::Containers::Native_Double_Vector::get_debug_info (
+  void)
+{
+  std::stringstream result;
+
+  result << "Native Double Vector: ";
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    result << this->name_;
+    result << " [" << size () << "]";
+    result << " = " << context_->get (vector_).to_string ();
+  }
+
+  return result.str ();
+}
+
+void
+Madara::Knowledge_Engine::Containers::Native_Double_Vector::modify_ (void)
+{
+  modify ();
+}
+
+std::string
+Madara::Knowledge_Engine::Containers::Native_Double_Vector::get_debug_info_ (
+  void)
+{
+  return get_debug_info ();
+}
+
+Madara::Knowledge_Engine::Containers::Base_Container *
+Madara::Knowledge_Engine::Containers::Native_Double_Vector::clone (void) const
+{
+  return new Native_Double_Vector (*this);
+}
+
 void
 Madara::Knowledge_Engine::Containers::Native_Double_Vector::operator= (
   const Native_Double_Vector & rhs)
@@ -106,7 +148,10 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::resize (
     {
       value.resize (size);
     }
-    context_->set (vector_, value, settings_);
+
+    // a resize alone should not trigger an update (modifieds)
+
+    context_->set (vector_, value, Knowledge_Update_Settings (true));
   }
 }
 
@@ -117,14 +162,6 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::size (void) const
   Guard guard (mutex_);
 
   return context_->get (vector_, settings_).size ();
-}
-
-std::string
-Madara::Knowledge_Engine::Containers::Native_Double_Vector::get_name (
-  void) const
-{
-  Guard guard (mutex_);
-  return name_;
 }
 
 void
@@ -347,19 +384,6 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::set (
   
   return result;
 }     
-
-Madara::Knowledge_Engine::Knowledge_Update_Settings
-Madara::Knowledge_Engine::Containers::Native_Double_Vector::set_settings (
-  const Knowledge_Update_Settings & settings)
-{
-  Guard guard (mutex_);
-  
-  Knowledge_Update_Settings old_settings = settings_;
-
-  settings_ = settings;
-
-  return old_settings;
-}
 
 void
 Madara::Knowledge_Engine::Containers::Native_Double_Vector::set_quality (

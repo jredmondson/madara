@@ -8,7 +8,7 @@
 
 Madara::Knowledge_Engine::Containers::Barrier::Barrier (
   const Knowledge_Update_Settings & settings)
-: context_ (0), id_ (0), participants_ (1), settings_ (settings)
+: Base_Container ("", settings), context_ (0), id_ (0), participants_ (1)
 {
   init_noharm ();
 }
@@ -17,20 +17,20 @@ Madara::Knowledge_Engine::Containers::Barrier::Barrier (
   const std::string & name,
   Knowledge_Base & knowledge,
   const Knowledge_Update_Settings & settings)
-: context_ (&(knowledge.get_context ())), name_ (name),
-  id_ (0), participants_ (1), settings_ (settings) 
+: Base_Container (name, settings), context_ (&(knowledge.get_context ())),
+  id_ (0), participants_ (1)
 {
   init_noharm ();
   build_var ();
   build_aggregate_barrier ();
 }
- 
+
 Madara::Knowledge_Engine::Containers::Barrier::Barrier (
   const std::string & name,
   Variables & knowledge,
   const Knowledge_Update_Settings & settings)
-: context_ (knowledge.get_context ()), name_ (name),
-  id_ (0), participants_ (1), settings_ (settings) 
+: Base_Container (name, settings), context_ (knowledge.get_context ()),
+  id_ (0), participants_ (1)
 {
   init_noharm ();
   build_var ();
@@ -43,8 +43,8 @@ Madara::Knowledge_Engine::Containers::Barrier::Barrier (
   int id,
   int participants,
   const Knowledge_Update_Settings & settings)
-: context_ (&(knowledge.get_context ())), name_ (name),
-  id_ (id), participants_ (participants), settings_ (settings) 
+: Base_Container (name, settings), context_ (&(knowledge.get_context ())),
+  id_ (id), participants_ (participants)
 {
   init_noharm ();
   build_var ();
@@ -57,8 +57,8 @@ Madara::Knowledge_Engine::Containers::Barrier::Barrier (
   int id,
   int participants,
   const Knowledge_Update_Settings & settings)
-: context_ (knowledge.get_context ()), name_ (name),
-  id_ (id), participants_ (participants), settings_ (settings) 
+: Base_Container (name, settings), context_ (knowledge.get_context ()),
+  id_ (id), participants_ (participants)
 {
   init_noharm ();
   build_var ();
@@ -67,12 +67,10 @@ Madara::Knowledge_Engine::Containers::Barrier::Barrier (
 
 
 Madara::Knowledge_Engine::Containers::Barrier::Barrier (const Barrier & rhs)
-  : context_ (rhs.context_),
-    name_ (rhs.name_),
+: Base_Container (rhs), context_ (rhs.context_),
     id_ (rhs.id_),
     participants_ (rhs.participants_),
     variable_ (rhs.variable_),
-    settings_ (rhs.settings_),
     aggregate_barrier_ (rhs.aggregate_barrier_),
     variable_name_ (rhs.variable_name_)
 {
@@ -186,13 +184,6 @@ Madara::Knowledge_Engine::Containers::Barrier::init_noharm (void)
   no_harm.signal_changes = false;
   no_harm.track_local_changes = false;
   no_harm.treat_globals_as_locals = true;
-}
-
-std::string
-Madara::Knowledge_Engine::Containers::Barrier::get_name (void) const
-{
-  Guard guard (mutex_);
-  return name_;
 }
 
 size_t
@@ -361,7 +352,43 @@ Madara::Knowledge_Engine::Containers::Barrier::modify (void)
     context_->mark_modified (variable_);
   }
 }
- 
+
+std::string
+Madara::Knowledge_Engine::Containers::Barrier::get_debug_info (void)
+{
+  std::stringstream result;
+
+  result << "Barrier: ";
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    result << this->name_;
+    result << " = " << context_->get (variable_).to_string ();
+  }
+
+  return result.str ();
+}
+
+void
+Madara::Knowledge_Engine::Containers::Barrier::modify_ (void)
+{
+  modify ();
+}
+
+std::string
+Madara::Knowledge_Engine::Containers::Barrier::get_debug_info_ (void)
+{
+  return get_debug_info ();
+}
+
+Madara::Knowledge_Engine::Containers::Base_Container *
+Madara::Knowledge_Engine::Containers::Barrier::clone (void) const
+{
+  return new Barrier (*this);
+}
 
 double
 Madara::Knowledge_Engine::Containers::Barrier::to_double (void) const
@@ -391,19 +418,6 @@ Madara::Knowledge_Engine::Containers::Barrier::to_string (void) const
   }
 
   return result;
-}
-
-Madara::Knowledge_Engine::Knowledge_Update_Settings
-Madara::Knowledge_Engine::Containers::Barrier::set_settings (
-  const Knowledge_Update_Settings & settings)
-{
-  Guard guard (mutex_);
-  
-  Knowledge_Update_Settings old_settings = settings_;
-
-  settings_ = settings;
-
-  return old_settings;
 }
 
 void

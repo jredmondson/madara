@@ -8,7 +8,7 @@
 
 Madara::Knowledge_Engine::Containers::Counter::Counter (
   const Knowledge_Update_Settings & settings)
-: context_ (0), id_ (0), counters_ (1), settings_ (settings)
+: Base_Container ("", settings), context_ (0), id_ (0), counters_ (1)
 {
   init_noharm ();
 }
@@ -17,8 +17,8 @@ Madara::Knowledge_Engine::Containers::Counter::Counter (
   const std::string & name,
   Knowledge_Base & knowledge,
   const Knowledge_Update_Settings & settings)
-: context_ (&(knowledge.get_context ())), name_ (name),
-  id_ (0), counters_ (1), settings_ (settings) 
+: Base_Container (name, settings), context_ (&(knowledge.get_context ())),
+  id_ (0), counters_ (1)
 {
   init_noharm ();
   build_var ();
@@ -29,8 +29,8 @@ Madara::Knowledge_Engine::Containers::Counter::Counter (
   const std::string & name,
   Variables & knowledge,
   const Knowledge_Update_Settings & settings)
-: context_ (knowledge.get_context ()), name_ (name),
-  id_ (0), counters_ (1), settings_ (settings) 
+: Base_Container (name, settings), context_ (knowledge.get_context ()),
+  id_ (0), counters_ (1)
 {
   init_noharm ();
   build_var ();
@@ -44,8 +44,8 @@ Madara::Knowledge_Engine::Containers::Counter::Counter (
   int counters,
   type value,
   const Knowledge_Update_Settings & settings)
-: context_ (&(knowledge.get_context ())), name_ (name),
-  id_ (id), counters_ (counters), settings_ (settings) 
+: Base_Container (name, settings), context_ (&(knowledge.get_context ())),
+  id_ (id), counters_ (counters)
 {
   init_noharm ();
   build_var ();
@@ -60,8 +60,8 @@ Madara::Knowledge_Engine::Containers::Counter::Counter (
   int counters,
   type value,
   const Knowledge_Update_Settings & settings)
-: context_ (knowledge.get_context ()), name_ (name),
-  id_ (id), counters_ (counters), settings_ (settings) 
+: Base_Container (name, settings), context_ (knowledge.get_context ()),
+  id_ (id), counters_ (counters)
 {
   init_noharm ();
   build_var ();
@@ -71,12 +71,10 @@ Madara::Knowledge_Engine::Containers::Counter::Counter (
 
 
 Madara::Knowledge_Engine::Containers::Counter::Counter (const Counter & rhs)
-  : context_ (rhs.context_),
-    name_ (rhs.name_),
+: Base_Container (rhs), context_ (rhs.context_),
     id_ (rhs.id_),
     counters_ (rhs.counters_),
     variable_ (rhs.variable_),
-    settings_ (rhs.settings_),
     aggregate_count_ (rhs.aggregate_count_)
 {
 
@@ -188,12 +186,43 @@ Madara::Knowledge_Engine::Containers::Counter::modify (void)
     context_->mark_modified (variable_);
   }
 }
- 
+
 std::string
-Madara::Knowledge_Engine::Containers::Counter::get_name (void) const
+Madara::Knowledge_Engine::Containers::Counter::get_debug_info (void)
 {
-  Guard guard (mutex_);
-  return name_;
+  std::stringstream result;
+
+  result << "Counter: ";
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    result << this->name_;
+    result << " = " << context_->get (variable_).to_string ();
+    result << " (total: " << get_count () << ")";
+  }
+
+  return result.str ();
+}
+
+void
+Madara::Knowledge_Engine::Containers::Counter::modify_ (void)
+{
+  modify ();
+}
+
+std::string
+Madara::Knowledge_Engine::Containers::Counter::get_debug_info_ (void)
+{
+  return get_debug_info ();
+}
+
+Madara::Knowledge_Engine::Containers::Base_Container *
+Madara::Knowledge_Engine::Containers::Counter::clone (void) const
+{
+  return new Counter (*this);
 }
 
 int
@@ -496,19 +525,6 @@ Madara::Knowledge_Engine::Containers::Counter::to_string (void) const
   }
 
   return result;
-}
-
-Madara::Knowledge_Engine::Knowledge_Update_Settings
-Madara::Knowledge_Engine::Containers::Counter::set_settings (
-  const Knowledge_Update_Settings & settings)
-{
-  Guard guard (mutex_);
-  
-  Knowledge_Update_Settings old_settings = settings_;
-
-  settings_ = settings;
-
-  return old_settings;
 }
 
 void

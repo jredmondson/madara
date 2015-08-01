@@ -9,6 +9,7 @@
 #include "madara/knowledge_engine/containers/Integer.h"
 #include "madara/knowledge_engine/containers/Double.h"
 #include "madara/knowledge_engine/containers/Queue.h"
+#include "madara/knowledge_engine/containers/Collection.h"
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include <iostream>
 
@@ -803,8 +804,8 @@ void test_native_vectors (void)
 
 void test_queue (void)
 {
-
-  std::cout << "Testing queues.\n";
+  std::cout <<
+    "************* QUEUES: Testing multithreaded queues*************\n";
   engine::Knowledge_Base knowledge;
   containers::Queue messages ("queue", knowledge, 7);
   Madara::Knowledge_Record record;
@@ -940,6 +941,228 @@ void test_queue (void)
   knowledge.print ();
 }
 
+void test_collection (void)
+{
+  std::cout <<
+    "************* COLLECTION: Testing container collections*************\n";
+
+  engine::Knowledge_Base knowledge;
+  engine::Thread_Safe_Context & context (knowledge.get_context ());
+
+  unsigned char buffer1[1024];
+  unsigned char buffer2[2048];
+
+  std::cout << "  Creating containers...\n";
+
+  containers::Integer age ("age", knowledge);
+  containers::String name ("name", knowledge);
+  containers::Double salary ("salary", knowledge);
+  containers::Native_Double_Vector gps_location ("location.gps", knowledge, 3);
+  containers::Native_Integer_Vector years_employed ("employment.years", knowledge);
+  containers::Map jobs ("jobs", knowledge);
+  containers::Buffer_Vector images ("images", knowledge);
+  containers::String_Vector movies ("movies.favorite", knowledge);
+  containers::Integer_Vector years ("years.favorite", knowledge);
+  containers::Double_Vector coolfactor ("coolfactor.by.year", knowledge, 35);
+
+  std::cout << "  Testing modifieds.size == 0 after container creation... ";
+
+  if (context.get_modified ().size () != 0)
+  {
+    std::cout << "FAIL\n";
+    std::cout << "    Printing modified elements in context\n\n";
+    std::cout << context.debug_modified () << "\n";
+  }
+  else
+  {
+    std::cout << "SUCCESS\n";
+  }
+
+  std::cout << "  Assigning values to containers...\n";
+
+  age = 40;
+  name = "Jack Franklin";
+  salary = 45000.0;
+  gps_location.set (2, 1000.0);
+  gps_location.set (0, 72.0);
+  gps_location.set (1, 40.0);
+  years_employed.set (0, 1998);
+  years_employed.push_back (1999);
+  years_employed.push_back (2005);
+  years_employed.push_back (2007);
+  years_employed.push_back (2010);
+  years_employed.push_back (2011);
+  years_employed.push_back (2012);
+  years_employed.push_back (2013);
+  years_employed.push_back (2014);
+  years_employed.push_back (2015);
+  jobs.set ("Albert's", "Courtesy Clerk");
+  jobs.set ("Nursery House", "Plant Care Technician");
+  jobs.set ("Johnson's", "Landscaping Expert");
+  images.push_back (buffer1, sizeof (buffer1));
+  images.push_back (buffer2, sizeof (buffer2));
+  movies.push_back ("Edge of Tomorrow");
+  movies.push_back ("Fight Club");
+  movies.push_back ("Seven");
+  movies.push_back ("Serenity");
+  years.push_back (2000);
+  years.push_back (2012);
+  coolfactor.set (0, 10.0);
+  coolfactor.set (1, 12.0);
+  coolfactor.set (2, 10.5);
+  coolfactor.set (3, 9);
+  coolfactor.set (4, 8);
+  coolfactor.set (5, 8.5);
+  coolfactor.set (6, 8.5);
+  coolfactor.set (7, 8.5);
+  coolfactor.set (8, 8);
+  coolfactor.set (9, 9);
+  coolfactor.set (10, 10);
+  coolfactor.set (11, 10);
+  coolfactor.set (12, 11);
+  coolfactor.set (13, 11);
+  coolfactor.set (14, 6);
+  coolfactor.set (15, 7);
+  coolfactor.set (16, 20);
+  coolfactor.set (17, 30);
+  coolfactor.set (18, 35);
+  coolfactor.set (19, 25);
+  coolfactor.set (20, 20);
+  coolfactor.set (21, 35);
+  coolfactor.set (22, 30);
+  coolfactor.set (23, 22);
+  coolfactor.set (24, 18);
+  coolfactor.set (25, 14);
+  coolfactor.set (26, 11);
+  coolfactor.set (27, 10);
+  coolfactor.set (28, 9);
+  coolfactor.set (29, 9);
+  coolfactor.set (30, 5);
+  coolfactor.set (31, 5);
+  coolfactor.set (32, 4);
+  coolfactor.set (33, 3);
+  coolfactor.set (34, 3);
+
+  containers::Collection collection;
+
+  std::cout << "\n  Adding 9 containers to collection container\n";
+
+  collection.add (age);
+  collection.add (name);
+  collection.add (salary);
+  collection.add (gps_location);
+  collection.add (years_employed);
+  collection.add (jobs);
+  collection.add (images);
+  collection.add (movies);
+  collection.add (years);
+  collection.add (coolfactor);
+
+  std::cout << "  Testing collection.size == 9 after adding containers... ";
+
+  if (collection.size () != 9)
+  {
+    std::cout << "FAIL. Size returned " << collection.size () << "\n";
+  }
+  else
+  {
+    std::cout << "SUCCESS\n";
+  }
+
+  std::cout << "\n  Printing Collection contents\n\n";
+  std::cout << collection.get_debug_info () << "\n";
+
+  std::cout << "  Printing modified elements in context\n\n";
+  std::cout << context.debug_modified () << "\n";
+
+  std::cout << "  Clearing modified elements in context\n\n";
+  knowledge.clear_modifieds ();
+
+  std::cout << "  Testing modifieds.size == 0 after clearing modified... ";
+
+  if (context.get_modified ().size () != 0)
+  {
+    std::cout << "FAIL\n";
+    std::cout << "    Printing modified elements in context\n\n";
+    std::cout << context.debug_modified () << "\n";
+  }
+  else
+  {
+    std::cout << "SUCCESS\n";
+  }
+
+  std::cout << "  Calling modify on collection\n";
+  collection.modify ();
+
+  std::cout << "  Testing modifieds.size == 55 after modifying containers... ";
+
+  if (context.get_modified ().size () != 55)
+  {
+    std::cout << "FAIL\n";
+  }
+  else
+  {
+    std::cout << "SUCCESS\n";
+  }
+
+  std::cout << "  Printing modified elements in context\n\n";
+  std::cout << context.debug_modified () << "\n";
+
+  std::cout << "  Clearing modified elements in context\n\n";
+  knowledge.clear_modifieds ();
+
+  std::cout << "  Clearing collection\n\n";
+  collection.clear ();
+
+  std::cout << "  Testing collection.size == 0 after clearing containers... ";
+
+  if (collection.size () != 0)
+  {
+    std::cout << "FAIL. Size returned " << collection.size () << "\n";
+  }
+  else
+  {
+    std::cout << "SUCCESS\n";
+  }
+
+  std::cout << "\nAdding 3 containers to collection container\n";
+
+  collection.add (age);
+  collection.add (name);
+  collection.add (salary);
+
+  std::cout << "  Testing collection.size == 3 after adding containers... ";
+
+  if (collection.size () != 3)
+  {
+    std::cout << "FAIL. Size returned " << collection.size () << "\n";
+  }
+  else
+  {
+    std::cout << "SUCCESS\n";
+  }
+
+  std::cout << "\nPrinting Collection contents\n\n";
+  std::cout << collection.get_debug_info () << "\n";
+
+  std::cout << "  Calling modify on collection\n";
+  collection.modify ();
+
+  std::cout << "  Testing modifieds.size == 3... ";
+
+  if (context.get_modified ().size () != 3)
+  {
+    std::cout << "FAIL\n";
+  }
+  else
+  {
+    std::cout << "SUCCESS\n";
+  }
+
+  std::cout << "  Printing modified elements in context\n\n";
+  std::cout << context.debug_modified () << "\n";
+}
+
 int main (int , char **)
 {
   test_vector ();
@@ -956,6 +1179,8 @@ int main (int , char **)
   
   test_vector_transfer ();
   test_flex_map ();
+
+  test_collection ();
 
   return 0;
 }

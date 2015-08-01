@@ -6,17 +6,16 @@
 Madara::Knowledge_Engine::Containers::Map::Map (
   const Knowledge_Update_Settings & settings,
   const std::string & delimiter)
-: context_ (0), settings_ (settings), delimiter_ (delimiter)
+  : Base_Container ("", settings), context_ (0), delimiter_ (delimiter)
 {
 }
   
-
 Madara::Knowledge_Engine::Containers::Map::Map (
   const std::string & name,
   Knowledge_Base & knowledge,
   const Knowledge_Update_Settings & settings,
   const std::string & delimiter)
-: context_ (&(knowledge.get_context ())), name_ (name), settings_ (settings),
+  : Base_Container (name, settings), context_ (&(knowledge.get_context ())),
   delimiter_ (delimiter)
 {
   std::map <std::string, Knowledge_Record> contents;
@@ -40,7 +39,7 @@ Madara::Knowledge_Engine::Containers::Map::Map (
   Variables & knowledge,
   const Knowledge_Update_Settings & settings,
   const std::string & delimiter)
-: context_ (knowledge.get_context ()), name_ (name), settings_ (settings),
+  : Base_Container (name, settings), context_ (knowledge.get_context ()),
   delimiter_ (delimiter)
 {
   std::map <std::string, Knowledge_Record> contents;
@@ -61,8 +60,8 @@ Madara::Knowledge_Engine::Containers::Map::Map (
        
 
 Madara::Knowledge_Engine::Containers::Map::Map (const Map & rhs)
-: context_ (rhs.context_), name_ (rhs.name_),
-  map_ (rhs.map_), settings_ (rhs.settings_),
+: Base_Container (rhs), context_ (rhs.context_),
+  map_ (rhs.map_),
   delimiter_ (rhs.delimiter_)
 {
 
@@ -79,14 +78,73 @@ Madara::Knowledge_Engine::Containers::Map::modify (void)
   if (context_ && name_ != "")
   {
     Context_Guard context_guard (*context_);
-    for (Internal_Map::const_iterator index = map_.end ();
+    for (Internal_Map::const_iterator index = map_.begin ();
          index != map_.end (); ++index)
     {
       context_->mark_modified (index->second);
     }
   }
 }
-  
+
+std::string
+Madara::Knowledge_Engine::Containers::Map::get_debug_info (void)
+{
+  std::stringstream result;
+
+  result << "Map: ";
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    result << this->name_;
+    result << " [" << map_.size () << "]";
+    result << " = [";
+
+    bool first (true);
+    
+    for (Internal_Map::const_iterator index = map_.begin ();
+      index != map_.end (); ++index)
+    {
+      if (!first)
+      {
+        result << ", ";
+      }
+      else
+      {
+        first = false;
+      }
+
+      result << index->first << " => " <<
+        context_->get (index->second).to_string ();
+    }
+
+    result << "]";
+  }
+
+  return result.str ();
+}
+
+
+void
+Madara::Knowledge_Engine::Containers::Map::modify_ (void)
+{
+  modify ();
+}
+
+std::string
+Madara::Knowledge_Engine::Containers::Map::get_debug_info_ (void)
+{
+  return get_debug_info ();
+}
+
+Madara::Knowledge_Engine::Containers::Base_Container *
+Madara::Knowledge_Engine::Containers::Map::clone (void) const
+{
+  return new Map (*this);
+}
+
 void
 Madara::Knowledge_Engine::Containers::Map::modify (const std::string & index)
 {
@@ -345,13 +403,6 @@ Madara::Knowledge_Engine::Containers::Map::erase (const std::string & key)
   }
 }
 
-std::string
-Madara::Knowledge_Engine::Containers::Map::get_name (void) const
-{
-  Guard guard (mutex_);
-  return name_;
-}
-
 void
 Madara::Knowledge_Engine::Containers::Map::set_name (
   const std::string & var_name,
@@ -525,7 +576,8 @@ Madara::Knowledge_Engine::Containers::Map::read_file (
   return result;
 }
       
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   Madara::Knowledge_Record::Integer value)
 {
   int result = -1;
@@ -558,7 +610,8 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   Madara::Knowledge_Record::Integer value, 
   const Knowledge_Update_Settings & settings)
 {
@@ -593,7 +646,8 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set_index (
+int
+Madara::Knowledge_Engine::Containers::Map::set_index (
   const std::string & key,
   size_t index,
   Madara::Knowledge_Record::Integer value)
@@ -629,7 +683,8 @@ int Madara::Knowledge_Engine::Containers::Map::set_index (
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set_index (
+int
+Madara::Knowledge_Engine::Containers::Map::set_index (
   const std::string & key,
   size_t index,
   Madara::Knowledge_Record::Integer value,
@@ -667,7 +722,8 @@ int Madara::Knowledge_Engine::Containers::Map::set_index (
 }
 
 
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   const Madara::Knowledge_Record::Integer * value,
   uint32_t size)
 {
@@ -702,7 +758,8 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
  
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   const Madara::Knowledge_Record::Integer * value,
   uint32_t size,
   const Knowledge_Update_Settings & settings)
@@ -738,7 +795,9 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
        
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (
+const std::string & key,
   const std::vector <Knowledge_Record::Integer> & value)
 {
   int result = -1;
@@ -772,7 +831,9 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (
+  const std::string & key,
   const std::vector <Knowledge_Record::Integer> & value,
   const Knowledge_Update_Settings & settings)
 {
@@ -807,7 +868,9 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
           
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (
+  const std::string & key,
   double value)
 {
   int result = -1;
@@ -841,7 +904,8 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
     
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   double value, 
   const Knowledge_Update_Settings & settings)
 {
@@ -876,7 +940,9 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set_index (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set_index (
+  const std::string & key,
   size_t index,
   double value)
 {
@@ -911,7 +977,8 @@ int Madara::Knowledge_Engine::Containers::Map::set_index (const std::string & ke
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set_index (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set_index (const std::string & key,
   size_t index,
   double value,
   const Knowledge_Update_Settings & settings)
@@ -947,7 +1014,8 @@ int Madara::Knowledge_Engine::Containers::Map::set_index (const std::string & ke
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   const double * value,
   uint32_t size)
 {
@@ -982,7 +1050,8 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   const double * value,
   uint32_t size,
   const Knowledge_Update_Settings & settings)
@@ -1016,7 +1085,8 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
  
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   const std::vector <double> & value)
 {
   int result = -1;
@@ -1050,7 +1120,8 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
  
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   const std::vector <double> & value,
   const Knowledge_Update_Settings & settings)
 {
@@ -1085,7 +1156,8 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   const std::string & value)
 {
   int result = -1;
@@ -1119,7 +1191,8 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   const std::string & value, 
   const Knowledge_Update_Settings & settings)
 {
@@ -1154,7 +1227,8 @@ int Madara::Knowledge_Engine::Containers::Map::set (const std::string & key,
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set_file (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set_file (const std::string & key,
   const unsigned char * value, size_t size)
 {
   int result = -1;
@@ -1188,7 +1262,8 @@ int Madara::Knowledge_Engine::Containers::Map::set_file (const std::string & key
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set_file (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set_file (const std::string & key,
   const unsigned char * value, size_t size, 
   const Knowledge_Update_Settings & settings)
 {
@@ -1221,7 +1296,8 @@ int Madara::Knowledge_Engine::Containers::Map::set_file (const std::string & key
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set_jpeg (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set_jpeg (const std::string & key,
   const unsigned char * value, size_t size)
 {
   int result = -1;
@@ -1255,7 +1331,8 @@ int Madara::Knowledge_Engine::Containers::Map::set_jpeg (const std::string & key
   return result;
 }
 
-int Madara::Knowledge_Engine::Containers::Map::set_jpeg (const std::string & key,
+int
+Madara::Knowledge_Engine::Containers::Map::set_jpeg (const std::string & key,
   const unsigned char * value, size_t size, 
   const Knowledge_Update_Settings & settings)
 {
@@ -1288,19 +1365,6 @@ int Madara::Knowledge_Engine::Containers::Map::set_jpeg (const std::string & key
   }
 
   return result;
-}
-
-Madara::Knowledge_Engine::Knowledge_Update_Settings
-Madara::Knowledge_Engine::Containers::Map::set_settings (
-  const Knowledge_Update_Settings & settings)
-{
-  Guard guard (mutex_);
-  
-  Knowledge_Update_Settings old_settings = settings_;
-
-  settings_ = settings;
-
-  return old_settings;
 }
 
 void Madara::Knowledge_Engine::Containers::Map::set_quality (

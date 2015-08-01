@@ -8,6 +8,7 @@
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 #include "madara/knowledge_engine/Knowledge_Update_Settings.h"
+#include "Base_Container.h"
 
 /**
  * @file Native_Integer_Vector.h
@@ -27,7 +28,7 @@ namespace Madara
        * @class Native_Integer_Vector
        * @brief This class stores a vector of doubles inside of KaRL
        */
-      class MADARA_Export Native_Integer_Vector
+      class MADARA_Export Native_Integer_Vector : public Base_Container
       {
       public:
         /// trait that describes the value type
@@ -127,12 +128,6 @@ namespace Madara
         size_t size (void) const;
       
         /**
-         * Returns the name of the vector
-         * @return name of the vector
-         **/
-        std::string get_name (void) const;
-        
-        /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
@@ -214,14 +209,6 @@ namespace Madara
           const Knowledge_Update_Settings & settings);
        
         /**
-         * Sets the update settings for the variable
-         * @param  settings  the new settings to use
-         * @return the old update settings
-         **/
-        Knowledge_Update_Settings set_settings (
-          const Knowledge_Update_Settings & settings);
-
-        /**
          * Sets the quality of writing to a certain variable from this entity
          *
          * @param index           index to set
@@ -245,15 +232,47 @@ namespace Madara
          * @return the vector in native double array format
          **/
         Knowledge_Record to_record (void) const;
-      
-      private:
-        /// guard for access and changes
-        typedef ACE_Guard<MADARA_LOCK_TYPE> Guard;
-      
+
         /**
-         * Mutex for local changes
-         **/
-        mutable MADARA_LOCK_TYPE mutex_;
+        * Returns the type of the container along with name and any other
+        * useful information. The provided information should be useful
+        * for developers wishing to debug container operations, especially
+        * as it pertains to pending network operations (i.e., when used
+        * in conjunction with modify)
+        *
+        * @return info in format <container>: <name>< = value, if appropriate>
+        **/
+        std::string get_debug_info (void);
+
+        /**
+        * Clones this container
+        * @return  a deep copy of the container that must be managed
+        *          by the user (i.e., you have to delete the return value)
+        **/
+        virtual Base_Container * clone (void) const;
+
+      private:
+
+        /**
+        * Polymorphic modify method used by collection containers. This
+        * method calls the modify method for this class. We separate the
+        * faster version (modify) from this version (modify_) to allow
+        * users the opportunity to have a fastery version that does not
+        * use polymorphic functions (generally virtual functions are half
+        * as efficient as normal function calls)
+        **/
+        virtual void modify_ (void);
+
+        /**
+        * Returns the type of the container along with name and any other
+        * useful information. The provided information should be useful
+        * for developers wishing to debug container operations, especially
+        * as it pertains to pending network operations (i.e., when used
+        * in conjunction with modify)
+        *
+        * @return info in format <container>: <name>< = value, if appropriate>
+        **/
+        virtual std::string get_debug_info_ (void);
 
         /**
          * Variable context that we are modifying
@@ -261,19 +280,9 @@ namespace Madara
         Thread_Safe_Context * context_;
 
         /**
-         * Prefix of variable
-         **/
-        std::string name_;
-
-        /**
          * Reference to the size field of the vector space
          **/
         Variable_Reference vector_;
-
-        /**
-         * Settings for modifications
-         **/
-        Knowledge_Update_Settings settings_;
       };
 
       /// provide the Array alias for the Native_Integer_Vector class

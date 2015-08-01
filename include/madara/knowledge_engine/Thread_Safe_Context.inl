@@ -662,7 +662,53 @@ Madara::Knowledge_Engine::Thread_Safe_Context::mark_modified (
       variable.record_->set_modified ();
   }
 }
-      
+
+inline std::string
+Madara::Knowledge_Engine::Thread_Safe_Context::debug_modified (void) const
+{
+  Context_Guard guard (mutex_);
+  std::stringstream result;
+
+  result << changed_map_.size () << " modifications ready to send:\n";
+
+  for (Knowledge_Records::const_iterator i = changed_map_.begin ();
+    i != changed_map_.end (); ++i)
+  {
+    if (i->second->is_binary_file_type ())
+    {
+      result << "File: ";
+    }
+    else if (i->second->type () == Knowledge_Record::DOUBLE)
+    {
+      result << "Double: ";
+    }
+    else if (i->second->type () == Knowledge_Record::DOUBLE_ARRAY)
+    {
+      result << "Double array: ";
+    }
+    else if (i->second->type () == Knowledge_Record::INTEGER)
+    {
+      result << "Integer: ";
+    }
+    else if (i->second->type () == Knowledge_Record::INTEGER_ARRAY)
+    {
+      result << "Integer array: ";
+    }
+    else if (i->second->is_string_type ())
+    {
+      result << "String: ";
+    }
+    else
+    {
+      result << "Unknown: ";
+    }
+
+    result << i->first << " = " << i->second->to_string () << "\n";
+  }
+
+  return result.str ();
+}
+
 
 inline void
 Madara::Knowledge_Engine::Thread_Safe_Context::mark_modified (

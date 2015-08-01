@@ -5,7 +5,7 @@
 Madara::Knowledge_Engine::Containers::Buffer_Vector::Buffer_Vector (
   const Knowledge_Update_Settings & settings,
   const std::string & delimiter)
-  : context_ (0), settings_ (settings), delimiter_ (delimiter)
+  : Base_Container ("", settings), context_ (0), delimiter_ (delimiter)
 {
 }
    
@@ -16,7 +16,7 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::Buffer_Vector (
   bool delete_vars,
   const Knowledge_Update_Settings & settings,
   const std::string & delimiter)
-: context_ (&(knowledge.get_context ())), name_ (name), settings_ (settings),
+  : Base_Container (name, settings), context_ (&(knowledge.get_context ())),
   delimiter_ (delimiter)
 {
   size_ = get_size_ref ();
@@ -30,7 +30,7 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::Buffer_Vector (
   bool delete_vars,
   const Knowledge_Update_Settings & settings,
   const std::string & delimiter)
-: context_ (knowledge.get_context ()), name_ (name), settings_ (settings),
+  : Base_Container (name, settings), context_ (knowledge.get_context ()),
   delimiter_ (delimiter)
 {
   size_ = get_size_ref ();
@@ -38,11 +38,10 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::Buffer_Vector (
 }
 
 Madara::Knowledge_Engine::Containers::Buffer_Vector::Buffer_Vector (const Buffer_Vector & rhs)
-: context_ (rhs.context_),
-  name_ (rhs.name_),
+: Base_Container (rhs), context_ (rhs.context_),
   vector_ (rhs.vector_),
-  settings_ (rhs.settings_),
-  delimiter_ (rhs.delimiter_)
+  delimiter_ (rhs.delimiter_),
+  size_ (rhs.size_)
 {
 
 }
@@ -61,9 +60,63 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::modify (void)
     Context_Guard context_guard (*context_);
     for (size_t index = 0; index < vector_.size (); ++index)
       context_->mark_modified (vector_[index]);
+
+    context_->mark_modified (size_);
   }
 }
-  
+
+std::string
+Madara::Knowledge_Engine::Containers::Buffer_Vector::get_debug_info (void)
+{
+  std::stringstream result;
+
+  result << "Buffer Vector: ";
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    size_t elements = vector_.size ();
+
+    result << this->name_;
+    result << " [" << elements << "]";
+    result << " = [";
+
+    if (elements > 0)
+    {
+      result << context_->get (vector_[0]).to_string ();
+
+      for (size_t index = 1; index < elements; ++index)
+      {
+        result << ", " << context_->get (vector_[index]).to_string ();
+      }
+    }
+
+    result << "]";
+  }
+
+  return result.str ();
+}
+
+
+void
+Madara::Knowledge_Engine::Containers::Buffer_Vector::modify_ (void)
+{
+  modify ();
+}
+
+std::string
+Madara::Knowledge_Engine::Containers::Buffer_Vector::get_debug_info_ (void)
+{
+  return get_debug_info ();
+}
+
+Madara::Knowledge_Engine::Containers::Base_Container *
+Madara::Knowledge_Engine::Containers::Buffer_Vector::clone (void) const
+{
+  return new Buffer_Vector (*this);
+}
+
 void
 Madara::Knowledge_Engine::Containers::Buffer_Vector::modify (size_t index)
 {
@@ -99,6 +152,11 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::push_back (
   {
     Context_Guard context_guard (*context_);
     Guard guard (mutex_);
+
+    if (!size_.is_valid ())
+    {
+      size_ = get_size_ref ();
+    }
 
     size_t i = this->size ();
     resize ((int)i + 1);
@@ -138,6 +196,11 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::resize (
   {
     Context_Guard context_guard (*context_);
     Guard guard (mutex_);
+
+    if (!size_.is_valid ())
+    {
+      size_ = get_size_ref ();
+    }
 
     if (size >= 0)
     {
@@ -219,13 +282,6 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::size (void) const
 {
   Guard guard (mutex_);
   return vector_.size ();
-}
-
-std::string
-Madara::Knowledge_Engine::Containers::Buffer_Vector::get_name (void) const
-{
-  Guard guard (mutex_);
-  return name_;
 }
 
 void
@@ -604,19 +660,6 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::set_jpeg (
   }
   
   return result;
-}
-
-Madara::Knowledge_Engine::Knowledge_Update_Settings
-Madara::Knowledge_Engine::Containers::Buffer_Vector::set_settings (
-  const Knowledge_Update_Settings & settings)
-{
-  Guard guard (mutex_);
-  
-  Knowledge_Update_Settings old_settings = settings_;
-
-  settings_ = settings;
-
-  return old_settings;
 }
 
 void

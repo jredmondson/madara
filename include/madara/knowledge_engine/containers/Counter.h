@@ -10,6 +10,7 @@
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 #include "madara/knowledge_engine/Knowledge_Update_Settings.h"
+#include "Base_Container.h"
 
 /**
  * @file Counter.h
@@ -29,7 +30,7 @@ namespace Madara
        * @class Counter
        * @brief This class stores an integer within a variable context
        */
-      class MADARA_Export Counter
+      class MADARA_Export Counter : public Base_Container
       {
       public:
         /// trait that describes the value type
@@ -113,12 +114,6 @@ namespace Madara
          **/
         void operator= (const Counter & rhs);
 
-        /**
-         * Returns the name of the variable
-         * @return name of the variable
-         **/
-        std::string get_name (void) const;
-        
         /**
          * Returns the id of the counter in the counter ring
          * @return the id of the counter
@@ -276,14 +271,6 @@ namespace Madara
         std::string to_string (void) const;
         
         /**
-         * Sets the update settings for the variable
-         * @param  settings  the new settings to use
-         * @return the old update settings
-         **/
-        Knowledge_Update_Settings set_settings (
-          const Knowledge_Update_Settings & settings);
-
-        /**
          * Sets the quality of writing to the counter variables
          *
          * @param quality         quality of writing to this location
@@ -300,7 +287,47 @@ namespace Madara
          **/
         void resize (int id = 0, int counters = 1);
 
+        /**
+        * Returns the type of the container along with name and any other
+        * useful information. The provided information should be useful
+        * for developers wishing to debug container operations, especially
+        * as it pertains to pending network operations (i.e., when used
+        * in conjunction with modify)
+        *
+        * @return info in format <container>: <name>< = value, if appropriate>
+        **/
+        std::string get_debug_info (void);
+
+        /**
+        * Clones this container
+        * @return  a deep copy of the container that must be managed
+        *          by the user (i.e., you have to delete the return value)
+        **/
+        virtual Base_Container * clone (void) const;
+
       private:
+
+        /**
+        * Polymorphic modify method used by collection containers. This
+        * method calls the modify method for this class. We separate the
+        * faster version (modify) from this version (modify_) to allow
+        * users the opportunity to have a fastery version that does not
+        * use polymorphic functions (generally virtual functions are half
+        * as efficient as normal function calls)
+        **/
+        virtual void modify_ (void);
+
+        /**
+        * Returns the type of the container along with name and any other
+        * useful information. The provided information should be useful
+        * for developers wishing to debug container operations, especially
+        * as it pertains to pending network operations (i.e., when used
+        * in conjunction with modify)
+        *
+        * @return info in format <container>: <name>< = value, if appropriate>
+        **/
+        virtual std::string get_debug_info_ (void);
+
         /**
          * Builds the aggregate counter logic
          **/
@@ -352,23 +379,10 @@ namespace Madara
           return context_->evaluate (aggregate_count_, no_harm);
         }
 
-        /// guard for access and changes
-        typedef ACE_Guard<MADARA_LOCK_TYPE> Guard;
-      
-        /**
-         * Mutex for local changes
-         **/
-        mutable MADARA_LOCK_TYPE mutex_;
-
         /**
          * Variable context that we are modifying
          **/
         mutable Thread_Safe_Context * context_;
-
-        /**
-         * Prefix of variable
-         **/
-        std::string name_;
 
         /**
          * Variable reference
@@ -384,11 +398,6 @@ namespace Madara
          * the number of counters in the counter ring
          **/
         int counters_;
-
-        /**
-         * Settings for modifications
-         **/
-        Knowledge_Update_Settings settings_;
 
         /**
          * Expression for aggregating count in one atomic operation

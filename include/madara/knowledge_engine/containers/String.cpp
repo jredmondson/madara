@@ -3,7 +3,7 @@
 
 Madara::Knowledge_Engine::Containers::String::String (
   const Knowledge_Update_Settings & settings)
-: context_ (0), settings_ (settings) 
+: Base_Container ("", settings), context_ (0)
 {
 }
    
@@ -12,7 +12,7 @@ Madara::Knowledge_Engine::Containers::String::String (
   const std::string & name,
   Knowledge_Base & knowledge,
   const Knowledge_Update_Settings & settings)
-: context_ (&(knowledge.get_context ())), name_ (name), settings_ (true)
+: Base_Container (name, settings), context_ (&(knowledge.get_context ()))
 {
   variable_ = knowledge.get_ref (name, settings_);
   settings_ = settings;
@@ -22,7 +22,7 @@ Madara::Knowledge_Engine::Containers::String::String (
   const std::string & name,
   Variables & knowledge,
   const Knowledge_Update_Settings & settings)
-: context_ (knowledge.get_context ()), name_ (name), settings_ (true)
+: Base_Container (name, settings), context_ (knowledge.get_context ())
 {
   variable_ = knowledge.get_ref (name, settings_);
   settings_ = settings;
@@ -33,7 +33,7 @@ Madara::Knowledge_Engine::Containers::String::String (
   Knowledge_Base & knowledge,
   const std::string & value,
   const Knowledge_Update_Settings & settings)
-  : context_ (&(knowledge.get_context ())), name_ (name), settings_ (settings)
+: Base_Container (name, settings), context_ (&(knowledge.get_context ()))
 {
   variable_ = knowledge.get_ref (name);
   knowledge.set (variable_, value);
@@ -44,7 +44,7 @@ Madara::Knowledge_Engine::Containers::String::String (
   Variables & knowledge,
   const std::string & value,
   const Knowledge_Update_Settings & settings)
-  : context_ (knowledge.get_context ()), name_ (name), settings_ (settings)
+: Base_Container (name, settings), context_ (knowledge.get_context ())
 {
   variable_ = knowledge.get_ref (name);
   knowledge.set (variable_, value);
@@ -52,10 +52,7 @@ Madara::Knowledge_Engine::Containers::String::String (
       
 
 Madara::Knowledge_Engine::Containers::String::String (const String & rhs)
-  : context_ (rhs.context_),
-    name_ (rhs.name_),
-    variable_ (rhs.variable_),
-    settings_ (rhs.settings_)
+: Base_Container (rhs), context_ (rhs.context_), variable_ (rhs.variable_)
 {
 
 }
@@ -74,6 +71,43 @@ Madara::Knowledge_Engine::Containers::String::modify (void)
   {
     context_->mark_modified (variable_);
   }
+}
+
+std::string
+Madara::Knowledge_Engine::Containers::String::get_debug_info (void)
+{
+  std::stringstream result;
+
+  result << "String: ";
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    result << this->name_;
+    result << " = " << context_->get (variable_).to_string ();
+  }
+
+  return result.str ();
+}
+
+void
+Madara::Knowledge_Engine::Containers::String::modify_ (void)
+{
+  modify ();
+}
+
+std::string
+Madara::Knowledge_Engine::Containers::String::get_debug_info_ (void)
+{
+  return get_debug_info ();
+}
+
+Madara::Knowledge_Engine::Containers::Base_Container *
+Madara::Knowledge_Engine::Containers::String::clone (void) const
+{
+  return new String (*this);
 }
 
 void
@@ -103,13 +137,6 @@ Madara::Knowledge_Engine::Containers::String::exchange (String & other)
     other = **this;
     *this = temp;
   }
-}
-
-std::string
-Madara::Knowledge_Engine::Containers::String::get_name (void) const
-{
-  Guard guard (mutex_);
-  return name_;
 }
 
 void
@@ -371,19 +398,6 @@ Madara::Knowledge_Engine::Containers::String::to_integer (void) const
   }
   else
     return 0;
-}
-
-Madara::Knowledge_Engine::Knowledge_Update_Settings
-Madara::Knowledge_Engine::Containers::String::set_settings (
-  const Knowledge_Update_Settings & settings)
-{
-  Guard guard (mutex_);
-  
-  Knowledge_Update_Settings old_settings = settings_;
-
-  settings_ = settings;
-
-  return old_settings;
 }
 
 void

@@ -55,6 +55,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
 
   Inline_Files {
     include/madara/knowledge_engine
+    include/madara/knowledge_engine/containers
     include/madara/filters
     include/madara/logger/Logger.inl
     include/madara/utility

@@ -9,6 +9,7 @@
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 #include "madara/knowledge_engine/Knowledge_Update_Settings.h"
+#include "Base_Container.h"
 
 /**
  * @file Map.h
@@ -28,7 +29,7 @@ namespace Madara
        * @class Map
        * @brief This class stores a map of strings to KaRL variables
        */
-      class MADARA_Export Map
+      class MADARA_Export Map : public Base_Container
       {
       public:
         /**
@@ -151,12 +152,6 @@ namespace Madara
          **/
         bool exists (const std::string & key) const;
 
-        /**
-         * Returns the name of the map
-         * @return name of the map
-         **/
-        std::string get_name (void) const;
-        
         /**
          * Sets the variable name that this refers to
          * @param var_name   the name of the variable in the knowledge base
@@ -510,27 +505,50 @@ namespace Madara
         void set_quality (const std::string & key, uint32_t quality,
                const Knowledge_Reference_Settings & settings =
                        Knowledge_Reference_Settings (false));
-      
+
         /**
-         * Sets the update settings for the variable
-         * @param  settings  the new settings to use
-         * @return the old update settings
-         **/
-        Knowledge_Update_Settings set_settings (
-          const Knowledge_Update_Settings & settings);
+        * Returns the type of the container along with name and any other
+        * useful information. The provided information should be useful
+        * for developers wishing to debug container operations, especially
+        * as it pertains to pending network operations (i.e., when used
+        * in conjunction with modify)
+        *
+        * @return info in format <container>: <name>< = value, if appropriate>
+        **/
+        std::string get_debug_info (void);
+
+        /**
+        * Clones this container
+        * @return  a deep copy of the container that must be managed
+        *          by the user (i.e., you have to delete the return value)
+        **/
+        virtual Base_Container * clone (void) const;
 
       private:
 
-        /// guard for access and changes
-        typedef ACE_Guard<MADARA_LOCK_TYPE> Guard;
-      
-        /// internal map of variable references
-        typedef std::map <std::string, Variable_Reference>  Internal_Map;
+        /**
+        * Polymorphic modify method used by collection containers. This
+        * method calls the modify method for this class. We separate the
+        * faster version (modify) from this version (modify_) to allow
+        * users the opportunity to have a fastery version that does not
+        * use polymorphic functions (generally virtual functions are half
+        * as efficient as normal function calls)
+        **/
+        virtual void modify_ (void);
 
         /**
-         * Mutex for local changes
-         **/
-        mutable MADARA_LOCK_TYPE mutex_;
+        * Returns the type of the container along with name and any other
+        * useful information. The provided information should be useful
+        * for developers wishing to debug container operations, especially
+        * as it pertains to pending network operations (i.e., when used
+        * in conjunction with modify)
+        *
+        * @return info in format <container>: <name>< = value, if appropriate>
+        **/
+        virtual std::string get_debug_info_ (void);
+
+        /// internal map of variable references
+        typedef std::map <std::string, Variable_Reference>  Internal_Map;
 
         /**
          * Variable context that we are modifying
@@ -538,19 +556,9 @@ namespace Madara
         Thread_Safe_Context * context_;
 
         /**
-         * Prefix of variable
-         **/
-        std::string name_;
-
-        /**
          * Map of variables to values
          **/
         Internal_Map map_;
-
-        /**
-         * Settings for modifications
-         **/
-        Knowledge_Update_Settings settings_;
 
         /**
          * Delimiter for the prefix to subvars

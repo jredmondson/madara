@@ -8,6 +8,7 @@
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 #include "madara/knowledge_engine/Knowledge_Update_Settings.h"
+#include "Base_Container.h"
 
 /**
  * @file Buffer_Vector.h
@@ -27,7 +28,7 @@ namespace Madara
        * @class Buffer_Vector
        * @brief This class stores a vector of character buffers
        */
-      class MADARA_Export Buffer_Vector
+      class MADARA_Export Buffer_Vector : public Base_Container
       {
       public:
         /**
@@ -147,12 +148,6 @@ namespace Madara
          **/
         size_t size (void) const;
       
-        /**
-         * Returns the name of the vector
-         * @return name of the vector
-         **/
-        std::string get_name (void) const;
-        
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
@@ -297,14 +292,6 @@ namespace Madara
           const Knowledge_Update_Settings & settings);
       
         /**
-         * Sets the update settings for the variable
-         * @param  settings  the new settings to use
-         * @return the old update settings
-         **/
-        Knowledge_Update_Settings set_settings (
-          const Knowledge_Update_Settings & settings);
-
-        /**
          * Sets the quality of writing to a certain variable from this entity
          *
          * @param index           index to set
@@ -321,24 +308,51 @@ namespace Madara
          **/
         Variable_Reference get_size_ref (void);
 
-      private:
-        /// guard for access and changes
-        typedef ACE_Guard<MADARA_LOCK_TYPE> Guard;
-      
         /**
-         * Mutex for local changes
-         **/
-        mutable MADARA_LOCK_TYPE mutex_;
+        * Returns the type of the container along with name and any other
+        * useful information. The provided information should be useful
+        * for developers wishing to debug container operations, especially
+        * as it pertains to pending network operations (i.e., when used
+        * in conjunction with modify)
+        *
+        * @return info in format <container>: <name>< = value, if appropriate>
+        **/
+        std::string get_debug_info (void);
+
+        /**
+        * Clones this container
+        * @return  a deep copy of the container that must be managed
+        *          by the user (i.e., you have to delete the return value)
+        **/
+        virtual Base_Container * clone (void) const;
+
+      private:
+
+        /**
+        * Polymorphic modify method used by collection containers. This
+        * method calls the modify method for this class. We separate the
+        * faster version (modify) from this version (modify_) to allow
+        * users the opportunity to have a fastery version that does not
+        * use polymorphic functions (generally virtual functions are half
+        * as efficient as normal function calls)
+        **/
+        virtual void modify_ (void);
+
+        /**
+        * Returns the type of the container along with name and any other
+        * useful information. The provided information should be useful
+        * for developers wishing to debug container operations, especially
+        * as it pertains to pending network operations (i.e., when used
+        * in conjunction with modify)
+        *
+        * @return info in format <container>: <name>< = value, if appropriate>
+        **/
+        virtual std::string get_debug_info_ (void);
 
         /**
          * Variable context that we are modifying
          **/
         Thread_Safe_Context * context_;
-
-        /**
-         * Prefix of variable
-         **/
-        std::string name_;
 
         /**
          * Values of the array
@@ -349,11 +363,6 @@ namespace Madara
          * Reference to the size field of the vector space
          **/
         Variable_Reference size_;
-
-        /**
-         * Settings for modifications
-         **/
-        Knowledge_Update_Settings settings_;
 
         /**
         * Delimiter for the prefix to subvars

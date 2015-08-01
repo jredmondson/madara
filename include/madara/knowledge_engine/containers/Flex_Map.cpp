@@ -6,7 +6,7 @@
 Madara::Knowledge_Engine::Containers::Flex_Map::Flex_Map (
   const Knowledge_Update_Settings & settings,
   const std::string & delimiter)
-: context_ (0), settings_ (settings), delimiter_ (".")
+  : Base_Container ("", settings), context_ (0), delimiter_ (".")
 {
 }
   
@@ -16,7 +16,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::Flex_Map (
   Knowledge_Base & knowledge,
   const Knowledge_Update_Settings & settings,
   const std::string & delimiter)
-: context_ (&(knowledge.get_context ())), name_ (name), settings_ (settings),
+  : Base_Container (name, settings), context_ (&(knowledge.get_context ())),
   delimiter_ (".")
 {
 }
@@ -26,16 +26,15 @@ Madara::Knowledge_Engine::Containers::Flex_Map::Flex_Map (
   Variables & knowledge,
   const Knowledge_Update_Settings & settings,
   const std::string & delimiter)
-: context_ (knowledge.get_context ()), name_ (name), settings_ (settings),
+  : Base_Container (name, settings), context_ (knowledge.get_context ()),
   delimiter_ (".")
 {
 }
        
 
 Madara::Knowledge_Engine::Containers::Flex_Map::Flex_Map (const Flex_Map & rhs)
-: context_ (rhs.context_), name_ (rhs.name_),
+  : Base_Container (rhs), context_ (rhs.context_),
   variable_ (rhs.variable_),
-  settings_ (rhs.settings_),
   delimiter_ (rhs.delimiter_)
 {
 
@@ -105,6 +104,48 @@ Madara::Knowledge_Engine::Containers::Flex_Map::modify (void)
       knowledge.mark_modified (variable_);
     }
   }
+}
+
+std::string
+Madara::Knowledge_Engine::Containers::Flex_Map::get_debug_info (void)
+{
+  std::stringstream result;
+
+  result << "Flex Map: ";
+
+  if (context_ && name_ != "")
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    // get all children
+    Knowledge_Base knowledge;
+    knowledge.facade_for (*context_);
+    Map map (name_, knowledge, settings_, delimiter_);
+
+    result << map.get_debug_info ();
+  }
+
+  return result.str ();
+}
+
+
+void
+Madara::Knowledge_Engine::Containers::Flex_Map::modify_ (void)
+{
+  modify ();
+}
+
+std::string
+Madara::Knowledge_Engine::Containers::Flex_Map::get_debug_info_ (void)
+{
+  return get_debug_info ();
+}
+
+Madara::Knowledge_Engine::Containers::Base_Container *
+Madara::Knowledge_Engine::Containers::Flex_Map::clone (void) const
+{
+  return new Flex_Map (*this);
 }
 
 void
@@ -525,13 +566,6 @@ Madara::Knowledge_Engine::Containers::Flex_Map::erase (
       map.clear ();
     }
   }
-}
-
-std::string
-Madara::Knowledge_Engine::Containers::Flex_Map::get_name (void) const
-{
-  Guard guard (mutex_);
-  return name_;
 }
 
 void
@@ -1201,19 +1235,6 @@ int Madara::Knowledge_Engine::Containers::Flex_Map::set_jpeg (
   }
 
   return result;
-}
-
-Madara::Knowledge_Engine::Knowledge_Update_Settings
-Madara::Knowledge_Engine::Containers::Flex_Map::set_settings (
-  const Knowledge_Update_Settings & settings)
-{
-  Guard guard (mutex_);
-  
-  Knowledge_Update_Settings old_settings = settings_;
-
-  settings_ = settings;
-
-  return old_settings;
 }
 
 void

@@ -662,7 +662,14 @@ namespace Madara
        * @return  the modified knowledge records
        **/
       const Knowledge_Records & get_modified (void) const;
-      
+
+      /**
+      * Retrieves a stringified list of all modified variables that are ready
+      * to send over transport on next send_modifieds call
+      * @return  stringified list of the modified knowledge records
+      **/
+      std::string debug_modified (void) const;
+
       /**
        * Retrieves a list of modified local variables. Useful for building a
        * comprehensive checkpoint.
