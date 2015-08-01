@@ -39,6 +39,14 @@ namespace Madara
     {
     public:
       /**
+       * Destructor
+       **/
+      virtual ~Base_Thread ()
+      {
+
+      }
+
+      /**
        * Worker threads are MADARA thread entities that manage
        * user-defined threads
        **/
