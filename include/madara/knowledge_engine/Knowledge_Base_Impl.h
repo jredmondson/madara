@@ -202,6 +202,13 @@ namespace Madara
       std::string expand_statement (const std::string & statement) const;
 
       /**
+      * Retrieves a stringified list of all modified variables that are ready
+      * to send over transport on next send_modifieds call
+      * @return  stringified list of the modified knowledge records
+      **/
+      std::string debug_modifieds (void) const;
+
+      /**
       * Gets the log level
       * @return the maximum detail level to print
       **/

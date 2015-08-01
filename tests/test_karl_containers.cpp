@@ -967,11 +967,11 @@ void test_collection (void)
 
   std::cout << "  Testing modifieds.size == 0 after container creation... ";
 
-  if (context.get_modified ().size () != 0)
+  if (context.get_modifieds ().size () != 0)
   {
     std::cout << "FAIL\n";
     std::cout << "    Printing modified elements in context\n\n";
-    std::cout << context.debug_modified () << "\n";
+    std::cout << context.debug_modifieds () << "\n";
   }
   else
   {
@@ -1073,18 +1073,18 @@ void test_collection (void)
   std::cout << collection.get_debug_info () << "\n";
 
   std::cout << "  Printing modified elements in context\n\n";
-  std::cout << context.debug_modified () << "\n";
+  std::cout << context.debug_modifieds () << "\n";
 
   std::cout << "  Clearing modified elements in context\n\n";
   knowledge.clear_modifieds ();
 
   std::cout << "  Testing modifieds.size == 0 after clearing modified... ";
 
-  if (context.get_modified ().size () != 0)
+  if (context.get_modifieds ().size () != 0)
   {
     std::cout << "FAIL\n";
     std::cout << "    Printing modified elements in context\n\n";
-    std::cout << context.debug_modified () << "\n";
+    std::cout << context.debug_modifieds () << "\n";
   }
   else
   {
@@ -1096,7 +1096,7 @@ void test_collection (void)
 
   std::cout << "  Testing modifieds.size == 55 after modifying containers... ";
 
-  if (context.get_modified ().size () != 55)
+  if (context.get_modifieds ().size () != 55)
   {
     std::cout << "FAIL\n";
   }
@@ -1106,7 +1106,7 @@ void test_collection (void)
   }
 
   std::cout << "  Printing modified elements in context\n\n";
-  std::cout << context.debug_modified () << "\n";
+  std::cout << context.debug_modifieds () << "\n";
 
   std::cout << "  Clearing modified elements in context\n\n";
   knowledge.clear_modifieds ();
@@ -1150,7 +1150,7 @@ void test_collection (void)
 
   std::cout << "  Testing modifieds.size == 3... ";
 
-  if (context.get_modified ().size () != 3)
+  if (context.get_modifieds ().size () != 3)
   {
     std::cout << "FAIL\n";
   }
@@ -1160,7 +1160,7 @@ void test_collection (void)
   }
 
   std::cout << "  Printing modified elements in context\n\n";
-  std::cout << context.debug_modified () << "\n";
+  std::cout << context.debug_modifieds () << "\n";
 }
 
 int main (int , char **)

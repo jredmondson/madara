@@ -29,6 +29,15 @@
 #include "ace/Signal.h"
 #include "ace/OS_NS_Thread.h"
 #include "madara/transport/Transport_Context.h"
+#include "madara/logger/Global_Logger.h"
+
+/**
+* Define helpful shortened namespaces that we can refer to later
+**/
+namespace engine = Madara::Knowledge_Engine;
+namespace transport = Madara::Transport;
+namespace logger = Madara::Logger;
+
 
 /**
  * Default settings for our Network Transport. We put them
@@ -44,7 +53,7 @@ const std::string multicast_address ("239.255.0.1:4150");
  * we'll be using the send filters available through the QoS_Transport_Settings
  * interface.
  **/
-Madara::Transport::QoS_Transport_Settings settings;
+transport::QoS_Transport_Settings settings;
 
 // set a deadline in seconds that will be enforced in the filter
 int64_t deadline_in_secs = 10;
@@ -60,12 +69,12 @@ int64_t deadline_in_secs = 10;
  * Madara::Knowledge_Engine:Variables            or
  * Madara::Knowledge_Engine::Knowledge_Base
  **/
-Madara::Knowledge_Engine::Variable_Reference  on_time_messages;
+engine::Variable_Reference  on_time_messages;
 
 /**
  * variable reference to indicate that publisher should be slowed
  **/
-Madara::Knowledge_Engine::Variable_Reference  invalid_messages;
+engine::Variable_Reference  invalid_messages;
 
 /**
  * To terminate an agent, the user needs to press Control+C. The following
@@ -116,8 +125,8 @@ extern "C" void terminate (int)
  **/
 Madara::Knowledge_Record
 filter_deadlines (
-  Madara::Knowledge_Engine::Function_Arguments & args,
-  Madara::Knowledge_Engine::Variables & vars)
+  engine::Function_Arguments & args,
+  engine::Variables & vars)
 {
   Madara::Knowledge_Record result;
 
@@ -165,7 +174,7 @@ int main (int argc, char * argv[])
   ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
 
   // Setup a multicast transport with the settings mentioned above.
-  settings.type = Madara::Transport::MULTICAST;
+  settings.type = transport::MULTICAST;
   settings.hosts.resize (1);
   settings.hosts[0] = multicast_address;
   settings.id = 0;
@@ -188,7 +197,7 @@ int main (int argc, char * argv[])
        * Convenience function for setting the verbosity of log messages.
        * Logging level can be from 0 (sparse) to 10 (detailed)
        **/
-      Madara::Knowledge_Engine::Knowledge_Base::log_level (log_level);
+      logger::global_logger->set_level (log_level);
     }
   }
   
@@ -205,7 +214,7 @@ int main (int argc, char * argv[])
   }
 
   // Create the knowledge base with the transport settings set for multicast
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  engine::Knowledge_Base knowledge (host, settings);
   
   /**
     * Update the knowledge base to include our .id. All variables are zero
@@ -222,7 +231,7 @@ int main (int argc, char * argv[])
    * cover gossip/collaboration).
    **/
   on_time_messages = knowledge.get_ref ("on_time_messages{.id}",
-    Madara::Knowledge_Engine::Knowledge_Reference_Settings (true));
+    engine::Knowledge_Reference_Settings (true));
 
   /**
    * Variable that the publisher uses (id==0) to trigger a sleep statement
@@ -232,7 +241,7 @@ int main (int argc, char * argv[])
   /**
    * The publisher (id == 0) keeps track of number of payloads sent
    **/
-  Madara::Knowledge_Engine::Variable_Reference payloads_sent =
+  engine::Variable_Reference payloads_sent =
     knowledge.get_ref ("payloads_sent");
 
   /**
@@ -253,10 +262,10 @@ int main (int argc, char * argv[])
    * Additionally, let's compile the logic into a cached expression tree
    **/
 
-  Madara::Knowledge_Engine::Compiled_Expression compiled_sender_logic =
+  engine::Compiled_Expression compiled_sender_logic =
     knowledge.compile (sender_logic);
   
-  Madara::Knowledge_Engine::Compiled_Expression compiled_receiver_logic =
+  engine::Compiled_Expression compiled_receiver_logic =
     knowledge.compile (receiver_logic);
 
   while (!terminated)

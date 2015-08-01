@@ -1944,7 +1944,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::save_checkpoint (
     // lock the context
     Context_Guard guard (mutex_);
 
-    const Knowledge_Records & records = this->get_modified ();    
+    const Knowledge_Records & records = this->get_modifieds ();    
     const Knowledge_Records & local_records = this->get_local_modified ();
 
     if (records.size () + local_records.size () != 0)

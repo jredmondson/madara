@@ -661,14 +661,14 @@ namespace Madara
        * disseminatable knowledge update.
        * @return  the modified knowledge records
        **/
-      const Knowledge_Records & get_modified (void) const;
+      const Knowledge_Records & get_modifieds (void) const;
 
       /**
       * Retrieves a stringified list of all modified variables that are ready
       * to send over transport on next send_modifieds call
       * @return  stringified list of the modified knowledge records
       **/
-      std::string debug_modified (void) const;
+      std::string debug_modifieds (void) const;
 
       /**
        * Retrieves a list of modified local variables. Useful for building a

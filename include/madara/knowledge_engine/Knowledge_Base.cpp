@@ -1529,6 +1529,23 @@ Madara::Knowledge_Engine::Knowledge_Base::send_modifieds (
   return result;
 }
 
+std::string
+Madara::Knowledge_Engine::Knowledge_Base::debug_modifieds (void) const
+{
+  std::string result = "";
+
+  if (context_)
+  {
+    result = context_->debug_modifieds ();
+  }
+  else if (impl_.get_ptr ())
+  {
+    result = impl_->debug_modifieds ();
+  }
+
+  return result;
+}
+
 /**
   * Returns the unique host and ephemeral binding for this Knowlede Base
   * @return             host:port identifier for this knowledge base

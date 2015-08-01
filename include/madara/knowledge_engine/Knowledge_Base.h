@@ -454,6 +454,13 @@ namespace Madara
        **/
       std::string expand_statement (const std::string & statement);
 
+      /**
+      * Retrieves a stringified list of all modified variables that are ready
+      * to send over transport on next send_modifieds call
+      * @return  stringified list of the modified knowledge records
+      **/
+      std::string debug_modifieds (void) const;
+
 #ifndef _MADARA_NO_KARL_
 
       /**

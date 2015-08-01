@@ -664,7 +664,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::mark_modified (
 }
 
 inline std::string
-Madara::Knowledge_Engine::Thread_Safe_Context::debug_modified (void) const
+Madara::Knowledge_Engine::Thread_Safe_Context::debug_modifieds (void) const
 {
   Context_Guard guard (mutex_);
   std::stringstream result;
@@ -743,7 +743,7 @@ Madara::Knowledge_Engine::Thread_Safe_Context::mark_modified (
 
 /// Return list of variables that have been modified
 inline const Madara::Knowledge_Records &
-Madara::Knowledge_Engine::Thread_Safe_Context::get_modified (void) const
+Madara::Knowledge_Engine::Thread_Safe_Context::get_modifieds (void) const
 {
   Context_Guard guard (mutex_);
 

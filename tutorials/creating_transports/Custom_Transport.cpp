@@ -1,14 +1,21 @@
 #include "Custom_Transport.h"
 #include "Custom_Transport_Read_Thread.h"
-#include "madara/utility/Log_Macros.h"
 #include "madara/transport/Message_Header.h"
 #include "madara/utility/Utility.h"
+#include "madara/logger/Global_Logger.h"
 
 #include <iostream>
 
+/**
+* Define helpful shortened namespaces that we can refer to later
+**/
+namespace engine = Madara::Knowledge_Engine;
+namespace transport = Madara::Transport;
+namespace logger = Madara::Logger;
+
 Custom_Transport::Custom_Transport (const std::string & id,
-        Madara::Knowledge_Engine::Thread_Safe_Context & context, 
-        Madara::Transport::Settings & config, bool launch_transport)
+        engine::Thread_Safe_Context & context, 
+        transport::Settings & config, bool launch_transport)
 : Base (id, config, context),
   thread_ (0), valid_setup_ (false),
   socket_ (ACE_sap_any_cast (ACE_INET_Addr &), PF_INET, 0, 1)
@@ -42,13 +49,13 @@ Custom_Transport::close (void)
 int
 Custom_Transport::reliability (void) const
 {
-  return Madara::Transport::BEST_EFFORT;
+  return transport::BEST_EFFORT;
 }
 
 int
 Custom_Transport::reliability (const int &)
 {
-  return Madara::Transport::BEST_EFFORT;
+  return transport::BEST_EFFORT;
 }
 
 int
@@ -71,10 +78,12 @@ Custom_Transport::setup (void)
     {
       addresses_[i].set (settings_.hosts[i].c_str ());
 
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "Custom_Transport::Custom_Transport:" \
-        " settings address[%d] to %s:%d\n", i, 
-        addresses_[i].get_host_addr (), addresses_[i].get_port_number ()));
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+        "Custom_Transport::setup:" \
+        " settings address[%d] to %s:%d\n",
+        (int)i,
+        addresses_[i].get_host_addr (),
+        (int)addresses_[i].get_port_number ());
     }
     
     int port = addresses_[0].get_port_number ();
@@ -95,15 +104,17 @@ Custom_Transport::send_data (
   long ret = this->check_transport ();
   if (-1 == ret)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Custom_Transport::send_data: transport"
-             "has been told to shutdown"));
+    madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+      "Custom_Transport::send_data: transport"
+      "has been told to shutdown");
+
     return ret;
   }
   else if (-2 == ret)
   {
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-      DLINFO "Custom_Transport::send_data: transport is not valid"));
+    madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+      "Custom_Transport::send_data: transport is not valid");
+
     return ret;
   }
  
@@ -112,11 +123,11 @@ Custom_Transport::send_data (
 
 
   // allocate a buffer to send
-  char buffer [Madara::Transport::MAX_PACKET_SIZE];
-  int64_t buffer_remaining = Madara::Transport::MAX_PACKET_SIZE;
+  char buffer [transport::MAX_PACKET_SIZE];
+  int64_t buffer_remaining = transport::MAX_PACKET_SIZE;
 
   // set the header to the beginning of the buffer
-  Madara::Transport::Message_Header header;
+  transport::Message_Header header;
   
   // get the clock
   header.clock = Madara::Utility::endian_swap (context_.get_clock ());
@@ -140,7 +151,7 @@ Custom_Transport::send_data (
   // send data is generally an assign type. However, Message_Header is
   // flexible enough to support both, and this will simply our read thread
   // handling
-  header.type =  Madara::Transport::MULTIASSIGN;
+  header.type =  transport::MULTIASSIGN;
   
   // compute size of this header
   header.size = header.encoded_size ();
@@ -176,7 +187,7 @@ Custom_Transport::send_data (
   
   if (buffer_remaining > 0)
   {
-    int size = (int)(Madara::Transport::MAX_PACKET_SIZE - buffer_remaining);
+    int size = (int)(transport::MAX_PACKET_SIZE - buffer_remaining);
     *message_size = Madara::Utility::endian_swap ((uint64_t)size);
     
     // send the buffer contents to the multicast address

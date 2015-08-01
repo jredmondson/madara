@@ -61,6 +61,12 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::get_log_level (void)
   return map_.get_log_level ();
 }
 
+inline std::string
+Madara::Knowledge_Engine::Knowledge_Base_Impl::debug_modifieds (void) const
+{
+  return map_.debug_modifieds ();
+}
+
 inline Madara::Logger::Logger &
 Madara::Knowledge_Engine::Knowledge_Base_Impl::get_logger (void) const
 {
@@ -503,7 +509,7 @@ Madara::Knowledge_Engine::Knowledge_Base_Impl::send_modifieds (
 
   if (transports_.size () > 0 && !settings.delay_sending_modifieds)
   {
-    const Knowledge_Records & modified = map_.get_modified ();
+    const Knowledge_Records & modified = map_.get_modifieds ();
 
     if (modified.size () > 0)
     {

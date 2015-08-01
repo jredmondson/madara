@@ -1,17 +1,24 @@
 #include "Custom_Transport_Read_Thread.h"
-#include "madara/utility/Log_Macros.h"
 #include "madara/transport/Message_Header.h"
 #include "ace/Time_Value.h"
 #include "madara/utility/Utility.h"
 #include "madara/knowledge_engine/Thread_Safe_Context.h"
 #include "madara/transport/Transport.h"
+#include "madara/logger/Global_Logger.h"
 
 #include <iostream>
 #include <algorithm>
 
+/**
+* Define helpful shortened namespaces that we can refer to later
+**/
+namespace engine = Madara::Knowledge_Engine;
+namespace transport = Madara::Transport;
+namespace logger = Madara::Logger;
+
 Custom_Transport_Read_Thread::Custom_Transport_Read_Thread (
-  const Madara::Transport::Settings & settings, const std::string & id,
-  Madara::Knowledge_Engine::Thread_Safe_Context & context,
+  const transport::Settings & settings, const std::string & id,
+  engine::Thread_Safe_Context & context,
   const ACE_INET_Addr & address)
   : settings_ (settings), id_ (id), context_ (context),
     barrier_ (2), terminated_ (false), 
@@ -63,7 +70,7 @@ Custom_Transport_Read_Thread::svc (void)
   ACE_INET_Addr  remote;
   
   // specify a 131k packet size limit. This is unlikely to ever be used
-  char buffer [Madara::Transport::MAX_PACKET_SIZE];
+  char buffer [transport::MAX_PACKET_SIZE];
 
   while (false == terminated_.value ())
   {
@@ -74,7 +81,7 @@ Custom_Transport_Read_Thread::svc (void)
     if (bytes_read > 0)
     {
       int64_t buffer_remaining = (int64_t)bytes_read;
-      Madara::Transport::Message_Header header;
+      transport::Message_Header header;
       const char * update = header.read (buffer, buffer_remaining);
 
       // reject the message if it is not KaRL

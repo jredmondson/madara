@@ -9,10 +9,16 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/logger/Global_Logger.h"
 #include <iostream>
 #include <string>
 #include <iomanip>
 
+/**
+ * Define helpful shortened namespaces that we can refer to later
+ **/
+namespace engine = Madara::Knowledge_Engine;
+namespace logger = Madara::Logger;
 
 int main (int argc, char * argv[])
 {
@@ -20,7 +26,7 @@ int main (int argc, char * argv[])
    * Create a knowledge base with no transport. All changes made to the
    * knowledge base stay within the knowledge base.
    **/
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  engine::Knowledge_Base knowledge;
 
   /**
    * One aspect of control in MADARA is logging. MADARA can print out very
@@ -32,14 +38,14 @@ int main (int argc, char * argv[])
    * information.
    **/
 
-  // set logging level to 10 (max)
-  knowledge.log_level (10);
+  // set logging level to maximum level (6)
+  logger::global_logger->set_level (logger::LOG_MADARA_MAX);
 
   // set logging level to 5
   knowledge.evaluate ("#log_level (5)");
 
-  // set logging level to 0 (min - default)
-  knowledge.log_level (0);
+  // set logging level to 1 (ERRORS, EMERGENCY and ALWAYS)
+  logger::global_logger->set_level (logger::LOG_ERROR);
   
   /**
    * Create a double in the knowledge base. Doubles can be created in a number
