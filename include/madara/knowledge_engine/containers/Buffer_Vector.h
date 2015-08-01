@@ -82,7 +82,7 @@ namespace Madara
         /**
          * Destructor
          **/
-        ~Buffer_Vector ();
+        virtual ~Buffer_Vector ();
     
         /**
          * Mark the vector as modified. The vector retains the same values

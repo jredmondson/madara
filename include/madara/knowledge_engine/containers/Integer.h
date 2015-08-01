@@ -97,7 +97,7 @@ namespace Madara
         /**
          * Destructor
          **/
-        ~Integer ();
+        virtual ~Integer ();
         
         /**
          * Mark the value as modified. The Integer retains the same value

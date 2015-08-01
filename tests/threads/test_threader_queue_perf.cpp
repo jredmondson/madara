@@ -146,6 +146,14 @@ class Consumer: public threads::Base_Thread
 {
 public:
   /**
+   * Explicitly create virtual destructor for g++, since it does not
+   * appear smart enough to do this by default
+   **/
+  virtual ~Consumer ()
+  {
+  }
+
+  /**
     * Initializes thread with MADARA context
     * @param   context   context for querying current program state
     **/
@@ -182,6 +190,14 @@ private:
 class Producer: public threads::Base_Thread
 {
 public:
+  /**
+  * Explicitly create virtual destructor for g++, since it does not
+  * appear smart enough to do this by default
+  **/
+  virtual ~Producer ()
+  {
+  }
+
   /**
     * Initializes thread with MADARA context
     * @param   context   context for querying current program state

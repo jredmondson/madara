@@ -55,7 +55,7 @@ namespace Madara
         /**
          * Destructor
          **/
-        ~Collection ();
+        virtual ~Collection ();
 
         /**
         * Mark all values in the container as modified

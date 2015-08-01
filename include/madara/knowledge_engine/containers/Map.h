@@ -75,7 +75,7 @@ namespace Madara
         /**
          * Destructor
          **/
-        ~Map ();
+        virtual ~Map ();
         
         /**
          * Mark the vector as modified. The map retains the same values

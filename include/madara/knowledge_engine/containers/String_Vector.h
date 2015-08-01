@@ -85,7 +85,7 @@ namespace Madara
         /**
          * Destructor
          **/
-        ~String_Vector ();
+        virtual ~String_Vector ();
     
         /**
          * Mark the vector as modified. The vector retains the same values

@@ -98,7 +98,7 @@ namespace Madara
         /**
          * Destructor
          **/
-        ~Double ();
+        virtual ~Double ();
         
         /**
          * Mark the value as modified. The Double retains the same value

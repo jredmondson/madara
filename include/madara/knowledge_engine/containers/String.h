@@ -96,7 +96,7 @@ namespace Madara
         /**
          * Destructor
          **/
-        ~String ();
+        virtual ~String ();
         
         /**
          * Mark the value as modified. The String retains the same value

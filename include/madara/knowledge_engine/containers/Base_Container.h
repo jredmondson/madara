@@ -55,7 +55,7 @@ namespace Madara
         /**
          * Destructor
          **/
-        ~Base_Container ();
+        virtual ~Base_Container ();
 
         /**
          * Returns the name of the variable
