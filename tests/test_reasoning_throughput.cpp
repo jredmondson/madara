@@ -175,6 +175,11 @@ private:
 class Base_Operation
 {
 public:
+  virtual ~Base_Operation ()
+  {
+
+  }
+
   virtual Madara::Knowledge_Record::Integer evaluate (void)
   {
     return value_;
@@ -191,6 +196,11 @@ protected:
 
 class Increment_Operation : public Base_Operation
 {
+  virtual ~Increment_Operation ()
+  {
+
+  }
+
   virtual Madara::Knowledge_Record::Integer evaluate (void)
   {
     return ++value_;

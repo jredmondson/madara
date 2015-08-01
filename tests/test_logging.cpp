@@ -4,7 +4,7 @@
 
 namespace logger = Madara::Logger;
 
-int ACE_TMAIN (int argc, ACE_TCHAR ** argv)
+int ACE_TMAIN (int, ACE_TCHAR **)
 {
   Madara::Knowledge_Engine::Knowledge_Base knowledge;
   
