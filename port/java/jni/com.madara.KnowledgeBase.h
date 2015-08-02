@@ -118,6 +118,22 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1attachTransport
 
 /*
 * Class:     com_madara_KnowledgeBase
+* Method:    jni_debugModifieds
+* Signature: (J)Ljava/lang/String;
+*/
+MADARA_Export jstring JNICALL Java_com_madara_KnowledgeBase_jni_1debugModifieds
+(JNIEnv *, jobject, jlong);
+
+/*
+* Class:     com_madara_KnowledgeBase
+* Method:    jni_closeTransports
+* Signature: (J)V
+*/
+MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1closeTransports
+(JNIEnv *, jobject, jlong);
+
+/*
+* Class:     com_madara_KnowledgeBase
 * Method:    jni_getLogger
 * Signature: (J)J
 */

@@ -63,6 +63,8 @@ public class KnowledgeBase extends MadaraJNI
   private native long jni_KnowledgeBase(String host, long config);
   private native long jni_KnowledgeBase(long original);
   private native String jni_getID(long cptr);
+  private native String jni_debugModifieds(long cptr);
+  private native void jni_closeTransports(long cptr);
   private native void jni_attachLogger(long cptr, long logger);
   private native void jni_attachTransport(long cptr, String id, long settings);
   private native long jni_getLogger(long cptr);
@@ -368,6 +370,25 @@ public class KnowledgeBase extends MadaraJNI
     return Logger.fromPointer(jni_getLogger(getCPtr()), false);
   }
 
+  /**
+   * Retrieves a stringified list of all modified variables that are ready
+   * to send over transport on next send_modifieds call
+   * 
+   * @return  stringified list of the modified knowledge records
+   */
+  public String debugModifieds()
+  {
+    return jni_debugModifieds(getCPtr());
+  }
+  
+  /**
+   * Closes any transports attached to the Knowledge Base
+   */
+  public void closeTransports()
+  {
+    jni_closeTransports(getCPtr());
+  }
+  
   /**
    * Defines a MADARA KaRL function.
    *

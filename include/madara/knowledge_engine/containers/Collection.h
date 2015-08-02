@@ -5,7 +5,9 @@
 #include <vector>
 #include <string>
 #include "madara/Lock_Type.h"
+#include "Barrier.h"
 #include "Base_Container.h"
+#include "Counter.h"
 #include "String.h"
 #include "Integer.h"
 #include "Double.h"
@@ -76,6 +78,18 @@ namespace Madara
         *          by the user (i.e., you have to delete the return value)
         **/
         virtual Base_Container * clone (void) const;
+
+        /**
+        * Adds a Barrier container to the collection
+        * @param container  the container to add
+        **/
+        void add (const Barrier & container);
+
+        /**
+        * Adds a Counter container to the collection
+        * @param container  the container to add
+        **/
+        void add (const Counter & container);
 
         /**
          * Adds an Integer container to the collection

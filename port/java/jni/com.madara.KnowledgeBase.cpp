@@ -146,6 +146,36 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1attachTransport
   }
 }
 
+jstring JNICALL Java_com_madara_KnowledgeBase_jni_1debugModifieds
+(JNIEnv * env, jobject, jlong cptr)
+{
+  Knowledge_Base * knowledge = (Knowledge_Base *)cptr;
+  jstring result;
+
+  if (knowledge)
+  {
+    result = env->NewStringUTF (knowledge->debug_modifieds ().c_str ());
+  }
+  else
+  {
+    result = env->NewStringUTF ("");
+  }
+
+  return result;
+}
+
+
+void JNICALL Java_com_madara_KnowledgeBase_jni_1closeTransports
+(JNIEnv *, jobject, jlong cptr)
+{
+  Knowledge_Base * knowledge = (Knowledge_Base *)cptr;
+
+  if (knowledge)
+  {
+    knowledge->close_transport ();
+  }
+}
+
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1getLogger
 (JNIEnv *, jobject, jlong cptr)
 {

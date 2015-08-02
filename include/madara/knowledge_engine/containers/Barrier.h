@@ -246,6 +246,13 @@ namespace Madara
         **/
         std::string get_debug_info (void);
 
+        /**
+        * Clones this container
+        * @return  a deep copy of the container that must be managed
+        *          by the user (i.e., you have to delete the return value)
+        **/
+        virtual Base_Container * clone (void) const;
+
       private:
 
         /**
@@ -268,13 +275,6 @@ namespace Madara
         * @return info in format <container>: <name>< = value, if appropriate>
         **/
         virtual std::string get_debug_info_ (void);
-
-        /**
-        * Clones this container
-        * @return  a deep copy of the container that must be managed
-        *          by the user (i.e., you have to delete the return value)
-        **/
-        virtual Base_Container * clone (void) const;
 
         /**
          * Builds the aggregate barrier logic

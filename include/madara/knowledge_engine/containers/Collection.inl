@@ -6,6 +6,22 @@
 
 inline void
 Madara::Knowledge_Engine::Containers::Collection::add (
+const Barrier & container)
+{
+  Guard guard (mutex_);
+  vector_.push_back (container.clone ());
+}
+
+inline void
+Madara::Knowledge_Engine::Containers::Collection::add (
+const Counter & container)
+{
+  Guard guard (mutex_);
+  vector_.push_back (container.clone ());
+}
+
+inline void
+Madara::Knowledge_Engine::Containers::Collection::add (
   const Integer & container)
 {
   Guard guard (mutex_);
