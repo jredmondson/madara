@@ -63,7 +63,7 @@ import com.madara.containers.StringVector;
 import com.madara.containers.Vector;
 
 /**
- * A facade for a double value within a knowledge base
+ * A facade for a collection of knowledge base containers
  **/
 
 public class Collection extends MadaraJNI
