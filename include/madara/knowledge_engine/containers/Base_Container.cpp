@@ -1,4 +1,7 @@
 #include "Base_Container.h"
+#include "madara/logger/Global_Logger.h"
+
+namespace logger = Madara::Logger;
 
 Madara::Knowledge_Engine::Containers::Base_Container::Base_Container (
   const std::string & name, const Knowledge_Update_Settings & settings)
@@ -35,8 +38,14 @@ bool Madara::Knowledge_Engine::Containers::Base_Container::modify_if_true (
 {
   bool result (false);
 
+  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
+    "Base_Container::is_true: calling condition.is_true()\n");
+
   if (conditional.is_true_ ())
   {
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MINOR,
+      "Base_Container::is_true: condition.is_true() returned true\n");
+
     this->modify_ ();
     result = true;
   }
@@ -49,8 +58,13 @@ bool Madara::Knowledge_Engine::Containers::Base_Container::modify_if_false (
 {
   bool result (false);
 
+  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
+    "Base_Container::is_false: calling !condition.is_true()\n");
+
   if (!conditional.is_true_ ())
   {
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MINOR,
+      "Base_Container::is_false: !condition.is_true() returned true\n");
     this->modify_ ();
     result = true;
   }

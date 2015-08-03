@@ -890,6 +890,17 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1sendModifieds__JJ
   }
 }
 
+MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1clearModifieds
+(JNIEnv *, jobject, jlong cptr)
+{
+  Knowledge_Base * knowledge = (Knowledge_Base *)cptr;
+
+  if (knowledge)
+  {
+    knowledge->clear_modifieds ();
+  }
+}
+
 /*
  * Class:   com_madara_KnowledgeBase
  * Method:  jni_print

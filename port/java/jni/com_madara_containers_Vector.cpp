@@ -410,3 +410,31 @@ void JNICALL Java_com_madara_containers_Vector_jni_1setSettings
     current->set_settings (*settings);
   }
 }
+
+MADARA_Export jboolean JNICALL Java_com_madara_containers_Vector_jni_1isTrue
+(JNIEnv *, jobject, jlong cptr)
+{
+  containers::Vector * current = (containers::Vector *)cptr;
+  bool result (true);
+
+  if (current)
+  {
+    result = current->is_true ();
+  }
+
+  return result;
+}
+
+MADARA_Export jboolean JNICALL Java_com_madara_containers_Vector_jni_1isFalse
+(JNIEnv *, jobject, jlong cptr)
+{
+  containers::Vector * current = (containers::Vector *)cptr;
+  bool result (true);
+
+  if (current)
+  {
+    result = current->is_false ();
+  }
+
+  return result;
+}

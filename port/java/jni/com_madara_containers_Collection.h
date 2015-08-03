@@ -206,6 +206,22 @@ MADARA_Export void JNICALL Java_com_madara_containers_Collection_jni_1addStringV
 MADARA_Export void JNICALL Java_com_madara_containers_Collection_jni_1addVector
   (JNIEnv *, jobject, jlong, jlong);
 
+/*
+* Class:     com_madara_containers_Collection
+* Method:    jni_isTrue
+* Signature: (J)Z
+*/
+MADARA_Export jboolean JNICALL Java_com_madara_containers_Collection_jni_1isTrue
+(JNIEnv *, jobject, jlong);
+
+/*
+* Class:     com_madara_containers_Collection
+* Method:    jni_isFalse
+* Signature: (J)Z
+*/
+MADARA_Export jboolean JNICALL Java_com_madara_containers_Collection_jni_1isFalse
+(JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

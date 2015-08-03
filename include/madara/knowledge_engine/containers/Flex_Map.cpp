@@ -56,10 +56,16 @@ bool Madara::Knowledge_Engine::Containers::Flex_Map::is_true (void) const
 
   Knowledge_Update_Settings keep_local (true);
 
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Vector::is_true: checking for non-zero value\n");
+
   if (!variable_.is_valid ())
   {
     result = context_->get (variable_, keep_local).is_true ();
   }
+
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Flex_Map::is_true: final result is %d\n", (int)result);
 
   return result;
 }

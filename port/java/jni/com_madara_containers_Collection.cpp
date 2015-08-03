@@ -256,3 +256,32 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addVector
     current->add (*container);
   }
 }
+
+jboolean JNICALL Java_com_madara_containers_Collection_jni_1isTrue
+(JNIEnv *, jobject, jlong cptr)
+{
+  Collection * current = (Collection *)cptr;
+  bool result (true);
+
+  if (current)
+  {
+    result = current->is_true ();
+  }
+
+  return result;
+}
+
+
+jboolean JNICALL Java_com_madara_containers_Collection_jni_1isFalse
+(JNIEnv *, jobject, jlong cptr)
+{
+  Collection * current = (Collection *)cptr;
+  bool result (true);
+
+  if (current)
+  {
+    result = current->is_false ();
+  }
+
+  return result;
+}

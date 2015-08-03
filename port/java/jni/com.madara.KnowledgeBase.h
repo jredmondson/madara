@@ -374,6 +374,14 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1sendModifieds__JJ
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
+* Class:     com_madara_KnowledgeBase
+* Method:    jni_clearModifieds
+* Signature: (J)V
+*/
+MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1clearModifieds
+(JNIEnv *, jobject, jlong);
+
+/*
  * Class:     com_madara_KnowledgeBase
  * Method:    jni_print
  * Signature: (JLjava/lang/String;)V

@@ -411,12 +411,19 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::is_true (void) const
 {
   bool result (false);
 
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Native_Double_Vector::is_true: Checking for non-zero value\n");
+
   if (context_)
   {
     Context_Guard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (vector_, settings_).is_true ();
   }
+
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Native_Double_Vector::is_true: final result is %d\n",
+    (int)result);
 
   return result;
 }

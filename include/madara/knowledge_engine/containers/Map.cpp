@@ -1393,6 +1393,9 @@ Madara::Knowledge_Engine::Containers::Map::is_true (void) const
 {
   bool result (false);
 
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Map::is_true: checking for truth in all elements\n");
+
   if (context_ && name_ != "")
   {
     Context_Guard context_guard (*context_);
@@ -1403,8 +1406,15 @@ Madara::Knowledge_Engine::Containers::Map::is_true (void) const
     for (Internal_Map::const_iterator index = map_.begin ();
       index != map_.end (); ++index)
     {
+      madara_logger_log (context_->get_logger (), Logger::LOG_DETAILED,
+        "Map::is_true: checking index, is_false of %d. \n",
+        (int)context_->get (index->second).is_false ());
+
       if (context_->get (index->second).is_false ())
       {
+        madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+          "Map::is_true: result is false, breaking\n");
+
         result = false;
         break;
       }
@@ -1413,6 +1423,9 @@ Madara::Knowledge_Engine::Containers::Map::is_true (void) const
     if (map_.size () == 0)
       result = false;
   }
+
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Map::is_true: final result is %d\n", (int)result);
 
   return result;
 }

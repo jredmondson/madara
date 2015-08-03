@@ -438,12 +438,18 @@ Madara::Knowledge_Engine::Containers::Barrier::is_true (void) const
 {
   bool result (false);
 
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Barrier::is_true: checking barrier result for truth\n");
+
   if (context_)
   {
     Context_Guard context_guard (*context_);
     Guard guard (mutex_);
     result = barrier_result () == 1;
   }
+
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Barrier::is_true: final result is %d\n", (int)result);
 
   return result;
 }

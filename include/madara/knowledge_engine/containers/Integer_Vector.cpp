@@ -674,6 +674,9 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::is_true (void) const
 {
   bool result (false);
 
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Integer_Vector::is_true: Checking for truth\n");
+
   if (context_)
   {
     Context_Guard context_guard (*context_);
@@ -681,10 +684,22 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::is_true (void) const
 
     result = true;
 
+    madara_logger_log (context_->get_logger (), Logger::LOG_MINOR,
+      "Integer_Vector::is_true: context was not null. Result changed to %d\n",
+      (int)result);
+
     for (size_t index = 0; index < vector_.size (); ++index)
     {
+
+      madara_logger_log (context_->get_logger (), Logger::LOG_DETAILED,
+        "Integer_Vector::is_true: checking index %d, is_false of %d. \n",
+        (int)result, (int)context_->get (vector_[index]).is_false ());
+
       if (context_->get (vector_[index]).is_false ())
       {
+        madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+          "Integer_Vector::is_true: result is false, breaking\n");
+
         result = false;
         break;
       }
@@ -693,6 +708,9 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::is_true (void) const
     if (vector_.size () == 0)
       result = false;
   }
+
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Integer_Vector::is_true: final result is %d\n", (int)result);
 
   return result;
 }

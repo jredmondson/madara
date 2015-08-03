@@ -46,7 +46,6 @@
  *********************************************************************/
 package com.madara.containers;
 
-import com.madara.MadaraJNI;
 import com.madara.KnowledgeBase;
 import com.madara.Variables;
 import com.madara.KnowledgeRecord;
@@ -56,7 +55,7 @@ import com.madara.UpdateSettings;
  * A facade for a vector of strings within a knowledge base.
  **/
 
-public class StringVector extends MadaraJNI
+public class StringVector extends BaseContainer
 {	
   private native long jni_StringVector();
   private native long jni_StringVector(long cptr);
@@ -73,6 +72,8 @@ public class StringVector extends MadaraJNI
   private native void jni_modify(long cptr);
   private native void jni_modifyIndex(long cptr, int index);
   private native void jni_setSettings(long cptr, long settings);
+  private native boolean jni_isTrue(long cptr);
+  private native boolean jni_isFalse(long cptr);
 
   private boolean manageMemory = true;
   
@@ -180,6 +181,24 @@ public class StringVector extends MadaraJNI
   public void modify()
   {
     jni_modify(getCPtr());
+  }
+  
+  /**
+   * Returns true if the container evaluates to true
+   * @return true if container has all true values
+   **/
+  public boolean isTrue()
+  {
+    return jni_isTrue(getCPtr());
+  }
+  
+  /**
+   * Returns true if the container evaluates to false
+   * @return true if container has any false values or is uninitialized
+   **/
+  public boolean isFalse()
+  {
+    return jni_isFalse(getCPtr());
   }
   
   /**

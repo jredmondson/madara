@@ -418,12 +418,18 @@ Madara::Knowledge_Engine::Containers::String::is_true (void) const
 {
   bool result (false);
 
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "String::is_true: checking for non-zero value\n");
+
   if (context_)
   {
     Context_Guard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, settings_).is_true ();
   }
+
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "String::is_true: final result is %d\n", (int)result);
 
   return result;
 }

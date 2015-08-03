@@ -81,6 +81,7 @@ public class KnowledgeBase extends MadaraJNI
   private native boolean jni_exists(long cptr, String statement);
   private native void jni_sendModifieds(long cptr);
   private native void jni_sendModifieds(long cptr, long evalSettings);
+  private native void jni_clearModifieds(long cptr);
   private native long jni_get(long cptr, String name);
   private static native void jni_setInteger(long cptr, String name, long value);
   private static native void jni_setDouble(long cptr, String name, double value);
@@ -109,7 +110,6 @@ public class KnowledgeBase extends MadaraJNI
   private native java.lang.String jni_toString(long cptr, java.lang.String arrayDelimiter, java.lang.String recordDelimiter, java.lang.String keyvalDelimiter);
   private native long jni_loadContext(long cptr, String filename, boolean useId, long settings);
 
-  private static HashMap<Long, KnowledgeBase> knowledgeBases = new HashMap<Long, KnowledgeBase>();
   private HashMap<String, MadaraFunction> callbacks = new HashMap<String, MadaraFunction>();
 
   private boolean manageMemory = true;
@@ -125,7 +125,6 @@ public class KnowledgeBase extends MadaraJNI
   public KnowledgeBase()
   {
     setCPtr(jni_KnowledgeBase());
-    knowledgeBases.put(getCPtr(), this);
   }
 
   /**
@@ -138,7 +137,6 @@ public class KnowledgeBase extends MadaraJNI
   public KnowledgeBase(String host, TransportType transport, String domain)
   {
     setCPtr(jni_KnowledgeBase(host, transport.value(), domain));
-    knowledgeBases.put(getCPtr(), this);
   }
 
   /**
@@ -150,7 +148,6 @@ public class KnowledgeBase extends MadaraJNI
   public KnowledgeBase(String host, TransportSettings config)
   {
     setCPtr(jni_KnowledgeBase(host, config.getCPtr()));
-    knowledgeBases.put(getCPtr(), this);
   }
 
   /**
@@ -161,7 +158,6 @@ public class KnowledgeBase extends MadaraJNI
   public KnowledgeBase(KnowledgeBase original)
   {
     setCPtr(jni_KnowledgeBase(original.getCPtr()));
-    knowledgeBases.put(getCPtr(), this);
   }
 
   /**
@@ -640,6 +636,16 @@ public class KnowledgeBase extends MadaraJNI
   }
   
   /**
+   * Clears all modified variables that were going to be sent with next call
+   * to sendModifieds (also a part of eval, set, wait and similar functions)
+   **/
+  public void clearModifieds ()
+  {
+    checkContextLock();
+    jni_clearModifieds(getCPtr());
+  }
+  
+  /**
    * Sends all modifications to global variables since last send modifieds,
    * eval, wait, or set statement.
    * @param settings   settings to use for considering records to send
@@ -955,33 +961,6 @@ public class KnowledgeBase extends MadaraJNI
     {
       throw new KnowledgeBaseLockedException();
     }
-  }
-
-  /**
-   * callBack is called directly from JNI to allow execution of Java code inside a MADARA defined function
-   *
-   * @param name The name of the defined function
-   * @param ptr  Pointer to the KnowledgeBase this function was defined in
-   * @param args Pointers to the KnowledgeRecords passed in to the function
-   * @param vars Pointer to the Variables object to allow execution of evaluate statements
-   * @return Pointer to a KnowledgeRecord
-   **/
-  private static long callBack(String name, long ptr, long[] args, long vars)
-  {
-    KnowledgeBase knowledge = knowledgeBases.get(ptr);
-    MadaraFunction callback = knowledge.callbacks.get(name);
-
-    Variables _vars = Variables.fromPointer(vars);
-    KnowledgeList _args = new KnowledgeList(args);
-
-    KnowledgeRecord ret = null;
-
-    synchronized (knowledge.CONTEXT_LOCK)
-    {
-      ret = callback.execute(_args, _vars);
-    }
-
-    return ret == null ? 0 : ret.getCPtr();
   }
 
   /**

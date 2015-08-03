@@ -46,7 +46,6 @@
  *********************************************************************/
 package com.madara.containers;
 
-import com.madara.MadaraJNI;
 import com.madara.KnowledgeBase;
 import com.madara.UpdateSettings;
 import com.madara.Variables;
@@ -55,7 +54,7 @@ import com.madara.Variables;
  * A facade for an integer value within a knowledge base
  **/
 
-public class Integer extends MadaraJNI
+public class Integer extends BaseContainer
 {	
   private native long jni_Integer();
   private native long jni_Integer(long cptr);
@@ -72,6 +71,8 @@ public class Integer extends MadaraJNI
   private native long jni_decValue(long cptr, long value);
   private native void jni_modify(long cptr);
   private native void jni_setSettings(long cptr, long settings);
+  private native boolean jni_isTrue(long cptr);
+  private native boolean jni_isFalse(long cptr);
 
   private boolean manageMemory = true;
 
@@ -203,6 +204,24 @@ public class Integer extends MadaraJNI
   }
   
   /**
+   * Returns true if the container evaluates to true
+   * @return true if container has all true values
+   **/
+  public boolean isTrue()
+  {
+    return jni_isTrue(getCPtr());
+  }
+  
+  /**
+   * Returns true if the container evaluates to false
+   * @return true if container has any false values or is uninitialized
+   **/
+  public boolean isFalse()
+  {
+    return jni_isFalse(getCPtr());
+  }
+  
+  /**
    * Sets the name and knowledge base being referred to
    *
    * @param  kb      the knowledge base that contains the name
@@ -259,6 +278,7 @@ public class Integer extends MadaraJNI
    *
    * @return current string value
    */
+  @Override
   public java.lang.String toString()
   {
     return jni_toString(getCPtr());

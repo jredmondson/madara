@@ -72,6 +72,9 @@ Madara::Knowledge_Engine::Containers::Collection::is_true (void) const
 {
   bool result (true);
 
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Collection::is_true: checking all containers for truth\n");
+
   if (context_)
   {
     Context_Guard context_guard (*context_);
@@ -86,6 +89,9 @@ Madara::Knowledge_Engine::Containers::Collection::is_true (void) const
       }
     }
   }
+
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Collection::is_true: final result is %d\n", (int)result);
 
   return result;
 }

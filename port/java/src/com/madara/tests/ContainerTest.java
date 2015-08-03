@@ -50,12 +50,17 @@ package com.madara.tests;
 import com.madara.KnowledgeBase;
 import com.madara.KnowledgeRecord;
 import com.madara.containers.Vector;
+import com.madara.containers.Double;
 import com.madara.containers.DoubleVector;
 import com.madara.containers.Integer;
+import com.madara.containers.IntegerVector;
+import com.madara.containers.NativeDoubleVector;
+import com.madara.containers.StringVector;
 import com.madara.containers.Queue;
 import com.madara.containers.FlexMap;
 import com.madara.containers.Map;
 import com.madara.UpdateSettings;
+import com.madara.containers.Collection;
 
 /**
  * This class is a tester for the com.madara.containers package
@@ -454,6 +459,116 @@ public class ContainerTest
       knowledge.print();
   }
   
+  public static void testCollection()
+  {
+    System.out.println("Testing Collections");
+    
+    KnowledgeBase knowledge = new KnowledgeBase();
+    
+    System.out.println("  Creating containers");
+    
+    com.madara.containers.String name = new com.madara.containers.String();
+    Integer age = new Integer();
+    NativeDoubleVector gps = new NativeDoubleVector();
+    Double craziness = new Double();
+    StringVector shoppingList = new StringVector();
+    IntegerVector shoppingListCompleted = new IntegerVector();
+    Collection profile = new Collection();
+    boolean ready = false;
+    
+    System.out.println("  Linking containers to knowledge records");
+    
+    name.setName(knowledge, "name");
+    age.setName(knowledge, "age");
+    gps.setName(knowledge, "location");
+    craziness.setName(knowledge, "currentCraziness");
+    shoppingList.setName(knowledge, "shoppingList");
+    shoppingListCompleted.setName(knowledge, "shoppingListCompleted");
+    
+    System.out.println("  Populating containers");
+    
+    name.set("Bob Tompkins");
+    age.set(49);
+    gps.resize(3);
+    gps.set(0, 72);
+    gps.set(1, 42);
+    gps.set(2, 1500);
+    craziness.set(0.7);
+    shoppingList.resize(10);
+    shoppingList.set(0, "Corn");
+    shoppingList.set(1, "Lettuce");
+    shoppingList.set(2, "Tomatoes");
+    shoppingList.set(3, "Teriyaki");
+    shoppingList.set(4, "Chicken Breast");
+    shoppingList.set(5, "Milk");
+    shoppingList.set(6, "Eggs");
+    shoppingList.set(7, "Bread");
+    shoppingList.set(8, "Bacon");
+    shoppingList.set(9, "Yogurt");
+    shoppingListCompleted.resize(10);
+    shoppingListCompleted.set(0, 1);
+    shoppingListCompleted.set(1, 1);
+    shoppingListCompleted.set(2, 1);
+    shoppingListCompleted.set(4, 1);
+    shoppingListCompleted.set(5, 1);
+    shoppingListCompleted.set(6, 1);
+    shoppingListCompleted.set(7, 1);
+    shoppingListCompleted.set(8, 1);
+    
+    System.out.println("  Adding containers to collection");
+    
+    profile.add(name);
+    profile.add(age);
+    profile.add(gps);
+    profile.add(craziness);
+    profile.add(shoppingList);
+    
+    
+    System.out.println("  Printing current modifieds");
+    System.out.println(knowledge.debugModifieds());
+    
+    System.out.println("  Clearing modified variables");
+    knowledge.clearModifieds();
+    
+    System.out.println("  Printing current modifieds");
+    System.out.println(knowledge.debugModifieds());
+    
+    System.out.println("  Trying modifyIfTrue with incomplete shopping list");
+    
+    ready = profile.modifyIfTrue(shoppingListCompleted);
+    
+    if(ready == true)
+    {
+      System.out.println("    FAIL. Modification happened even though false");
+    }
+    else
+    {
+      System.out.println("    SUCCESS. Modification did not occur");
+    }
+    
+    System.out.println("  Printing current modifieds");
+    System.out.println(knowledge.debugModifieds());
+    
+    System.out.println("  Modifying shopping list to be complete");
+    shoppingListCompleted.set(3, 1);
+    shoppingListCompleted.set(9, 1);
+    
+    System.out.println("  Trying modifyIfTrue with complete shopping list");
+    
+    ready = profile.modifyIfTrue(shoppingListCompleted);
+    
+    if(ready == false)
+    {
+      System.out.println("    FAIL. Modification did not occur");
+    }
+    else
+    {
+      System.out.println("    SUCCESS. Modification occurred");
+    }
+    
+    System.out.println("  Printing current modifieds");
+    System.out.println(knowledge.debugModifieds());
+  }
   
   public static void main(String...args) throws Exception
   {
@@ -462,5 +577,6 @@ public class ContainerTest
     testQueue();
     testDoubleVector();
     testFlexMap();
+    testCollection();
   }
 }

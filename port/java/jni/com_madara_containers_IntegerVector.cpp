@@ -346,3 +346,32 @@ void JNICALL Java_com_madara_containers_IntegerVector_jni_1setSettings
     current->set_settings (*settings);
   }
 }
+
+jboolean JNICALL Java_com_madara_containers_IntegerVector_jni_1isTrue
+(JNIEnv *, jobject, jlong cptr)
+{
+  containers::Integer_Vector * current = (containers::Integer_Vector *)cptr;
+  bool result (true);
+
+  if (current)
+  {
+    result = current->is_true ();
+  }
+
+  return result;
+}
+
+
+jboolean JNICALL Java_com_madara_containers_IntegerVector_jni_1isFalse
+(JNIEnv *, jobject, jlong cptr)
+{
+  containers::Integer_Vector * current = (containers::Integer_Vector *)cptr;
+  bool result (true);
+
+  if (current)
+  {
+    result = current->is_false ();
+  }
+
+  return result;
+}

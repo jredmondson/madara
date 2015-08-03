@@ -244,12 +244,18 @@ Madara::Knowledge_Engine::Containers::Integer::is_true (void) const
 {
   bool result (false);
 
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Integer::is_true: checking for non-zero value\n");
+
   if (context_)
   {
     Context_Guard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, settings_).is_true ();
   }
+
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Integer::is_true: final result is %d\n", (int)result);
 
   return result;
 }
@@ -259,12 +265,18 @@ Madara::Knowledge_Engine::Containers::Integer::is_false (void) const
 {
   bool result (true);
 
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Integer::is_false: checking for zero value\n", (int)result);
+
   if (context_)
   {
     Context_Guard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, settings_).is_false ();
   }
+
+  madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    "Integer::is_false: final result is %d\n", (int)result);
 
   return result;
 }

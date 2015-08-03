@@ -46,27 +46,13 @@
  *********************************************************************/
 package com.madara.containers;
 
-import com.madara.MadaraJNI;
 import com.madara.UpdateSettings;
-import com.madara.containers.Barrier;
-import com.madara.containers.Counter;
-import com.madara.containers.Double;
-import com.madara.containers.DoubleVector;
-import com.madara.containers.FlexMap;
-import com.madara.containers.Integer;
-import com.madara.containers.IntegerVector;
-import com.madara.containers.Map;
-import com.madara.containers.NativeDoubleVector;
-import com.madara.containers.NativeIntegerVector;
-import com.madara.containers.String;
-import com.madara.containers.StringVector;
-import com.madara.containers.Vector;
 
 /**
  * A facade for a collection of knowledge base containers
  **/
 
-public class Collection extends MadaraJNI
+public class Collection extends BaseContainer
 {	
   private native long jni_Collection();
   private native long jni_Collection(long cptr);
@@ -87,6 +73,8 @@ public class Collection extends MadaraJNI
   private native void jni_addString(long cptr, long container);
   private native void jni_addStringVector(long cptr, long container);
   private native void jni_addVector(long cptr, long container);
+  private native boolean jni_isTrue(long cptr);
+  private native boolean jni_isFalse(long cptr);
 
   private boolean manageMemory = true;
 
@@ -155,6 +143,24 @@ public class Collection extends MadaraJNI
     jni_modify(getCPtr());
   }
 
+  /**
+   * Returns true if the container evaluates to true
+   * @return true if container has all true values
+   **/
+  public boolean isTrue()
+  {
+    return jni_isTrue(getCPtr());
+  }
+  
+  /**
+   * Returns true if the container evaluates to false
+   * @return true if container has any false values or is uninitialized
+   **/
+  public boolean isFalse()
+  {
+    return jni_isFalse(getCPtr());
+  }
+  
   /**
    * Reads all debug info for the collection into a string
    *
