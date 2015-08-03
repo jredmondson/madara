@@ -308,13 +308,13 @@ namespace Madara
         * Checks if the value in the record is not false (0)
         * @return  true if value is not false
         **/
-        bool is_true (void);
+        bool is_true (void) const;
 
         /**
         * Checks if the value in the record is false (0)
         * @return  true if value is false
         **/
-        bool is_false (void);
+        bool is_false (void) const;
 
         /**
          * Read a file into a location in the map
@@ -640,6 +640,18 @@ namespace Madara
         virtual Base_Container * clone (void) const;
 
       private:
+
+        /**
+        * Polymorphic is true method which can be used to determine if
+        * all values in the container are true
+        **/
+        virtual bool is_true_ (void) const;
+
+        /**
+        * Polymorphic is false method which can be used to determine if
+        * at least one value in the container is false
+        **/
+        virtual bool is_false_ (void) const;
 
         /**
         * Polymorphic modify method used by collection containers. This

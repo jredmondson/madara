@@ -300,7 +300,31 @@ namespace Madara
         **/
         virtual Base_Container * clone (void) const;
 
+        /**
+        * Determines if the value is true
+        * @return true if the values is not zero
+        **/
+        bool is_true (void) const;
+
+        /**
+        * Determines if the value is zero
+        * @return true if the value is zero
+        **/
+        bool is_false (void) const;
+
       private:
+
+        /**
+        * Polymorphic is true method which can be used to determine if
+        * all values in the container are true
+        **/
+        virtual bool is_true_ (void) const;
+
+        /**
+        * Polymorphic is false method which can be used to determine if
+        * at least one value in the container is false
+        **/
+        virtual bool is_false_ (void) const;
 
         /**
         * Polymorphic modify method used by collection containers. This
@@ -337,7 +361,6 @@ namespace Madara
   }
 }
 
-
-
+#include "Integer.inl"
 
 #endif // _MADARA_INTEGER_H_

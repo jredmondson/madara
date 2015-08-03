@@ -66,3 +66,45 @@ Madara::Knowledge_Engine::Containers::Collection::clone (void) const
 {
   return new Collection (*this);
 }
+
+bool
+Madara::Knowledge_Engine::Containers::Collection::is_true (void) const
+{
+  bool result (true);
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    for (size_t i = 0; i < vector_.size (); ++i)
+    {
+      if (vector_[i]->is_false_ ())
+      {
+        result = false;
+        break;
+      }
+    }
+  }
+
+  return result;
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Collection::is_false (void) const
+{
+  return !is_true ();
+}
+
+
+bool
+Madara::Knowledge_Engine::Containers::Collection::is_true_ (void) const
+{
+  return is_true ();
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Collection::is_false_ (void) const
+{
+  return is_false ();
+}

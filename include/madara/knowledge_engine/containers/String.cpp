@@ -412,3 +412,37 @@ Madara::Knowledge_Engine::Containers::String::set_quality (
     context_->set_quality (name_, quality, true, settings);
   }
 }
+
+bool
+Madara::Knowledge_Engine::Containers::String::is_true (void) const
+{
+  bool result (false);
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    result = context_->get (variable_, settings_).is_true ();
+  }
+
+  return result;
+}
+
+bool
+Madara::Knowledge_Engine::Containers::String::is_false (void) const
+{
+  return !is_true ();
+}
+
+
+bool
+Madara::Knowledge_Engine::Containers::String::is_true_ (void) const
+{
+  return is_true ();
+}
+
+bool
+Madara::Knowledge_Engine::Containers::String::is_false_ (void) const
+{
+  return is_false ();
+}

@@ -187,7 +187,31 @@ namespace Madara
         **/
         size_t size (void) const;
 
+        /**
+        * Determines if all values in the collection are true
+        * @return true if all values are true
+        **/
+        bool is_true (void) const;
+
+        /**
+        * Determines if the value of the collection is false
+        * @return true if at least one value is false
+        **/
+        bool is_false (void) const;
+
       protected:
+
+        /**
+        * Polymorphic is true method which can be used to determine if
+        * all values in the container are true
+        **/
+        virtual bool is_true_ (void) const;
+
+        /**
+        * Polymorphic is false method which can be used to determine if
+        * at least one value in the container is false
+        **/
+        virtual bool is_false_ (void) const;
 
         /**
         * Polymorphic modify method used by collection containers. This

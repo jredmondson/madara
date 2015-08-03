@@ -29,3 +29,31 @@ const Knowledge_Update_Settings & settings)
 
   settings_ = settings;
 }
+
+bool Madara::Knowledge_Engine::Containers::Base_Container::modify_if_true (
+  Base_Container & conditional)
+{
+  bool result (false);
+
+  if (conditional.is_true_ ())
+  {
+    this->modify_ ();
+    result = true;
+  }
+
+  return result;
+}
+
+bool Madara::Knowledge_Engine::Containers::Base_Container::modify_if_false (
+  Base_Container & conditional)
+{
+  bool result (false);
+
+  if (!conditional.is_true_ ())
+  {
+    this->modify_ ();
+    result = true;
+  }
+
+  return result;
+}

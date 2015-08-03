@@ -49,7 +49,7 @@ Madara::Knowledge_Engine::Containers::Flex_Map::~Flex_Map ()
 * Checks if the value in the record is not false (0)
 * @return  true if value is not false
 **/
-bool Madara::Knowledge_Engine::Containers::Flex_Map::is_true (void)
+bool Madara::Knowledge_Engine::Containers::Flex_Map::is_true (void) const
 {
   Context_Guard context_guard (*context_);
   bool result (false);
@@ -68,7 +68,7 @@ bool Madara::Knowledge_Engine::Containers::Flex_Map::is_true (void)
 * Checks if the value in the record is false (0)
 * @return  true if value is false
 **/
-bool Madara::Knowledge_Engine::Containers::Flex_Map::is_false (void)
+bool Madara::Knowledge_Engine::Containers::Flex_Map::is_false (void) const
 {
   Context_Guard context_guard (*context_);
   bool result (true);
@@ -1254,4 +1254,16 @@ Madara::Knowledge_Engine::Containers::Flex_Map::set_quality (
 
     context_->set_quality (name_, quality, true, settings);
   }
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Flex_Map::is_true_ (void) const
+{
+  return is_true ();
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Flex_Map::is_false_ (void) const
+{
+  return is_false ();
 }

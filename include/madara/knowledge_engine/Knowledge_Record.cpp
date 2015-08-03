@@ -1990,14 +1990,15 @@ Madara::Knowledge_Record::resize (size_t new_size)
 {
   if (new_size > size_)
   {
-    if (type_ == this->DOUBLE_ARRAY)
-    {
-      double zero (0.0);
-      set_index (new_size - 1, zero);
-    }
-    else if (type_ == this->INTEGER_ARRAY)
+    if (status_ == UNCREATED ||
+        type_ == INTEGER || type_ == this->INTEGER_ARRAY)
     {
       Integer zero (0);
+      set_index (new_size - 1, zero);
+    }
+    else if (type_ == this->DOUBLE_ARRAY)
+    {
+      double zero (0.0);
       set_index (new_size - 1, zero);
     }
   }

@@ -963,11 +963,12 @@ void test_collection (void)
   containers::Buffer_Vector images ("images", knowledge);
   containers::String_Vector movies ("movies.favorite", knowledge);
   containers::Integer_Vector years ("years.favorite", knowledge);
+  containers::Integer_Vector sensors_ready ("sensors_ready", knowledge, 3);
   containers::Double_Vector coolfactor ("coolfactor.by.year", knowledge, 35);
 
-  std::cout << "  Testing modifieds.size == 0 after container creation... ";
+  std::cout << "  Testing modifieds.size == 2 after container creation... ";
 
-  if (context.get_modifieds ().size () != 0)
+  if (context.get_modifieds ().size () != 2)
   {
     std::cout << "FAIL\n";
     std::cout << "    Printing modified elements in context\n\n";
@@ -1042,10 +1043,12 @@ void test_collection (void)
   coolfactor.set (32, 4);
   coolfactor.set (33, 3);
   coolfactor.set (34, 3);
+  sensors_ready.set (0, 1);
+  sensors_ready.set (2, 1);
 
   containers::Collection collection;
 
-  std::cout << "\n  Adding 9 containers to collection container\n";
+  std::cout << "\n  Adding 10 containers to collection container\n";
 
   collection.add (age);
   collection.add (name);
@@ -1058,9 +1061,9 @@ void test_collection (void)
   collection.add (years);
   collection.add (coolfactor);
 
-  std::cout << "  Testing collection.size == 9 after adding containers... ";
+  std::cout << "  Testing collection.size == 10 after adding containers... ";
 
-  if (collection.size () != 9)
+  if (collection.size () != 10)
   {
     std::cout << "FAIL. Size returned " << collection.size () << "\n";
   }
@@ -1161,6 +1164,44 @@ void test_collection (void)
 
   std::cout << "  Printing modified elements in context\n\n";
   std::cout << context.debug_modifieds () << "\n";
+
+  std::cout << "  Clearing modified elements in context\n\n";
+  knowledge.clear_modifieds ();
+
+
+  std::cout << "  Calling modify_if_true on collection\n";
+  collection.modify_if_true (sensors_ready);
+
+  std::cout << "  Testing modifieds.size == 0... ";
+
+  if (context.get_modifieds ().size () != 0)
+  {
+    std::cout << "FAIL\n";
+  }
+  else
+  {
+    std::cout << "SUCCESS\n";
+  }
+
+  std::cout << "  Updating final sensors ready to true\n";
+  sensors_ready.set (1, 1);
+
+  std::cout << "  Calling modify_if_true on collection\n";
+  collection.modify_if_true (sensors_ready);
+
+  std::cout << "  Testing modifieds.size == 4... ";
+
+  if (context.get_modifieds ().size () != 4)
+  {
+    std::cout << "FAIL\n";
+    std::cout << "    Printing modified elements in context\n\n";
+    std::cout << context.debug_modifieds () << "\n";
+  }
+  else
+  {
+    std::cout << "SUCCESS\n";
+  }
+
 }
 
 int main (int , char **)

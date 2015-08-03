@@ -677,3 +677,50 @@ Madara::Knowledge_Engine::Containers::Buffer_Vector::set_quality (
       settings);
   }
 }
+
+bool
+Madara::Knowledge_Engine::Containers::Buffer_Vector::is_true (void) const
+{
+  bool result (false);
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    result = true;
+
+    for (size_t index = 0; index < vector_.size (); ++index)
+    {
+      if (context_->get (vector_[index]).is_false ())
+      {
+        result = false;
+        break;
+      }
+    }
+
+    if (vector_.size () == 0)
+      result = false;
+  }
+
+  return result;
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Buffer_Vector::is_false (void) const
+{
+  return !is_true ();
+}
+
+
+bool
+Madara::Knowledge_Engine::Containers::Buffer_Vector::is_true_ (void) const
+{
+  return is_true ();
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Buffer_Vector::is_false_ (void) const
+{
+  return is_false ();
+}

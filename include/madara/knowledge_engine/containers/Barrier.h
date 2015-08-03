@@ -253,7 +253,31 @@ namespace Madara
         **/
         virtual Base_Container * clone (void) const;
 
+        /**
+        * Determines if the barrier is true
+        * @return true if the barrier is true
+        **/
+        bool is_true (void) const;
+
+        /**
+        * Determines if the barrier is false
+        * @return true if the barrier is false
+        **/
+        bool is_false (void) const;
+
       private:
+
+        /**
+        * Polymorphic is true method which can be used to determine if
+        * all values in the container are true
+        **/
+        virtual bool is_true_ (void) const;
+
+        /**
+        * Polymorphic is false method which can be used to determine if
+        * at least one value in the container is false
+        **/
+        virtual bool is_false_ (void) const;
 
         /**
         * Polymorphic modify method used by collection containers. This
@@ -285,7 +309,7 @@ namespace Madara
          * Checks if current barrier is successful
          * @return  0 if unsuccessful, otherwise it is successful
          **/
-        inline type barrier_result (void)
+        inline type barrier_result (void) const
         {
           return context_->evaluate (aggregate_barrier_, no_harm).to_integer ();
         }

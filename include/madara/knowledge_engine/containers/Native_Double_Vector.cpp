@@ -139,19 +139,10 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::resize (
     Guard guard (mutex_);
 
     Knowledge_Record value = context_->get (vector_, settings_);
-    if (value.type () != Knowledge_Record::DOUBLE_ARRAY)
-    {
-      std::vector <double> new_array (size, 0.0);
-      value.set_value (new_array);
-    }
-    else
-    {
-      value.resize (size);
-    }
 
-    // a resize alone should not trigger an update (modifieds)
+    value.resize (size);
 
-    context_->set (vector_, value, Knowledge_Update_Settings (true));
+    context_->set (vector_, value, settings_);
   }
 }
 
@@ -413,4 +404,38 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::to_record (
   void) const
 {
   return context_->get (this->vector_, settings_);
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Native_Double_Vector::is_true (void) const
+{
+  bool result (false);
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    result = context_->get (vector_, settings_).is_true ();
+  }
+
+  return result;
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Native_Double_Vector::is_false (void) const
+{
+  return !is_true ();
+}
+
+
+bool
+Madara::Knowledge_Engine::Containers::Native_Double_Vector::is_true_ (void) const
+{
+  return is_true ();
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Native_Double_Vector::is_false_ (void) const
+{
+  return is_false ();
 }

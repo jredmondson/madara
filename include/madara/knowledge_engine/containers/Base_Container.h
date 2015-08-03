@@ -77,7 +77,33 @@ namespace Madara
          **/
         virtual Base_Container * clone (void) const = 0;
 
+        /**
+        * Modifies the container if the argument is true
+        * @param  conditional  the container that must be true to modify
+        * @return  true if the container was modified
+        **/
+        virtual bool modify_if_true (Base_Container & conditional);
+
+        /**
+        * Modifies the container if the argument is false
+        * @param  conditional  the container that must be false to modify
+        * @return  true if the container was modified
+        **/
+        virtual bool modify_if_false (Base_Container & conditional);
+
       protected:
+
+        /**
+        * Polymorphic is true method which can be used to determine if
+        * all values in a container are true
+        **/
+        virtual bool is_true_ (void) const = 0;
+
+        /**
+        * Polymorphic is false method which can be used to determine if
+        * all values in a container are false
+        **/
+        virtual bool is_false_ (void) const = 0;
 
         /**
         * Polymorphic modify method used by collection containers. This

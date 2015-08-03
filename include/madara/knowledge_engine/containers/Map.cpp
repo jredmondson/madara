@@ -78,6 +78,8 @@ Madara::Knowledge_Engine::Containers::Map::modify (void)
   if (context_ && name_ != "")
   {
     Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
     for (Internal_Map::const_iterator index = map_.begin ();
          index != map_.end (); ++index)
     {
@@ -1384,4 +1386,52 @@ void Madara::Knowledge_Engine::Containers::Map::set_quality (
 
     context_->set_quality (buffer.str (), quality, true, settings);
   }
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Map::is_true (void) const
+{
+  bool result (false);
+
+  if (context_ && name_ != "")
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    result = true;
+
+    for (Internal_Map::const_iterator index = map_.begin ();
+      index != map_.end (); ++index)
+    {
+      if (context_->get (index->second).is_false ())
+      {
+        result = false;
+        break;
+      }
+    }
+
+    if (map_.size () == 0)
+      result = false;
+  }
+
+  return result;
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Map::is_false (void) const
+{
+  return !is_true ();
+}
+
+
+bool
+Madara::Knowledge_Engine::Containers::Map::is_true_ (void) const
+{
+  return is_true ();
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Map::is_false_ (void) const
+{
+  return is_false ();
 }

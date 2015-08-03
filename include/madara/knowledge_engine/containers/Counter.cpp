@@ -540,4 +540,40 @@ Madara::Knowledge_Engine::Containers::Counter::set_quality (
   }
 }
 
+
+bool
+Madara::Knowledge_Engine::Containers::Counter::is_true (void) const
+{
+  bool result (false);
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    result = context_->get (variable_, settings_).is_true ();
+  }
+
+  return result;
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Counter::is_false (void) const
+{
+  return !is_true ();
+}
+
+
+bool
+Madara::Knowledge_Engine::Containers::Counter::is_true_ (void) const
+{
+  return is_true ();
+}
+
+bool
+Madara::Knowledge_Engine::Containers::Counter::is_false_ (void) const
+{
+  return is_false ();
+}
+
+
 #endif // _MADARA_NO_KARL_
