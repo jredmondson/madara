@@ -65,28 +65,6 @@ project (Test_Multicast_Peer_Discovery) : using_madara, using_ace, no_karl, no_x
   }
 }
 
-project (Test_Reliable_Record) : using_madara, using_ace, no_karl, no_xml {
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_reliable_record
-  
-  
-  requires += tests
-
-  Documentation_Files {
-  }
-  
-  Build_Files {
-    Tests.mpc
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tests/transports/test_reliable_record.cpp
-  }
-}
-
 project (Test_Rebroadcast_Ring) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_rebroadcast_ring
