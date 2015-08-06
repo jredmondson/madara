@@ -19,7 +19,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::Native_Double_Vector
 {
   madara_logger_ptr_log (Logger::global_logger.get (),
     Logger::LOG_MAJOR,
-    "Native_Double_Vector::constructor (name, knowledge, size) called\n");
+    "Native_Double_Vector::constructor called for %s[%d]\n",
+    name.c_str (), size);
 
   vector_ = knowledge.get_ref (name, settings_);
   if (size >= 0)
@@ -37,7 +38,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::Native_Double_Vector
 {
   madara_logger_ptr_log (Logger::global_logger.get (),
     Logger::LOG_MAJOR,
-    "Native_Double_Vector::constructor (name, vars, size) called\n");
+    "Native_Double_Vector::constructor called for %s[%d]\n",
+    name.c_str (), size);
 
   vector_ = knowledge.get_ref (name, settings);
   if (size >= 0)
@@ -53,7 +55,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::Native_Double_Vector
 {
   madara_logger_ptr_log (Logger::global_logger.get (),
     Logger::LOG_MAJOR,
-    "Native_Double_Vector::copy constructor called\n");
+    "Native_Double_Vector::copy constructor called on %s\n",
+    rhs.name_.c_str ());
 }
 
 
@@ -61,7 +64,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::~Native_Double_Vecto
 {
   madara_logger_ptr_log (Logger::global_logger.get (),
     Logger::LOG_MAJOR,
-    "Native_Double_Vector::destructor called\n");
+    "Native_Double_Vector::destructor called on %s\n",
+    this->name_.c_str ());
 }
   
 void
@@ -76,7 +80,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::modify (void)
   {
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::modify: context is valid. Marking modified.\n");
+      "Native_Double_Vector::modify: context is valid. Marking %s.\n",
+      this->name_.c_str ());
 
     context_->mark_modified (vector_);
   }
@@ -119,6 +124,11 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::get_debug_info_ (
 Madara::Knowledge_Engine::Containers::Base_Container *
 Madara::Knowledge_Engine::Containers::Native_Double_Vector::clone (void) const
 {
+  madara_logger_ptr_log (Logger::global_logger.get (),
+    Logger::LOG_MAJOR,
+    "Native_Double_Vector::clone: cloning %s\n",
+    this->name_.c_str ());
+
   return new Native_Double_Vector (*this);
 }
 
@@ -132,7 +142,9 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::operator= (
 
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::assignment: copying container.\n");
+      "Native_Double_Vector::assignment: %s: copying from %s.\n",
+      this->name_.c_str (),
+      rhs.name_.c_str ());
 
     this->context_ = rhs.context_;
     this->name_ = rhs.name_;
@@ -149,7 +161,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::push_back (
   {
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::push_back: valid context, pushing.\n");
+      "Native_Double_Vector::push_back: %s: valid context, pushing.\n",
+      this->name_.c_str ());
 
     Context_Guard context_guard (*context_);
     Guard guard (mutex_);
@@ -171,7 +184,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::resize (
 
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::resize: resizing to %d\n",
+      "Native_Double_Vector::resize: %s: resizing to %d\n",
+      this->name_.c_str (),
       (int)size);
 
     Knowledge_Record value = context_->get (vector_, settings_);
@@ -281,7 +295,9 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::exchange (
 
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::exchange: exchanging container locations\n");
+      "Native_Double_Vector::exchange: %s exchanging with %s\n",
+      this->name_.c_str (),
+      other.name_.c_str ());
 
     Knowledge_Record temp (context_->get (other.vector_));
 
@@ -303,7 +319,9 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::transfer_to (
 
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::transfer_to: transfering containers\n");
+      "Native_Double_Vector::transfer_to: %s transfering to %s\n",
+      this->name_.c_str (),
+      other.name_.c_str ());
 
     size_t other_size = other.size ();
     size_t this_size = this->size ();
@@ -312,7 +330,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::transfer_to (
     {
       madara_logger_ptr_log (Logger::global_logger.get (),
         Logger::LOG_MINOR,
-        "Native_Double_Vector::transfer_to: self has elements\n");
+        "Native_Double_Vector::transfer_to: %s has elements\n",
+        this->name_.c_str ());
 
       size_t size = other_size + this_size;
       other.resize ((int)size);
@@ -345,7 +364,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::copy_to (
 
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::copy_to: copying elements to other container\n");
+      "Native_Double_Vector::copy_to: %s: copying elements to vector\n",
+      this->name_.c_str ());
 
     target.resize (size ());
 
@@ -369,7 +389,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::operator[] (
 
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector[]: retrieving element from container\n");
+      "Native_Double_Vector[]: %s: retrieving element from container\n",
+      this->name_.c_str ());
 
     result = context_->get (vector_, settings_);
 
@@ -394,7 +415,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::set (
 
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::set: setting element [%d] to %f\n",
+      "Native_Double_Vector::set: %s: setting element [%d] to %f\n",
+      this->name_.c_str (),
       (int)index, value);
 
     result = context_->set_index (vector_, index, value, settings_);
@@ -418,8 +440,9 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::set (
 
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::set: setting element [%d] "
+      "Native_Double_Vector::set: %s: setting element [%d] "
       "to %f with custom settings\n",
+      this->name_.c_str (),
       (int)index, value);
 
     result = context_->set_index (vector_, index, value, settings);
@@ -441,7 +464,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::set (
 
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::set: setting all elements\n");
+      "Native_Double_Vector::set: %s: setting all elements\n",
+      this->name_.c_str ());
 
     context_->set (vector_, value, settings_);
   }
@@ -463,8 +487,9 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::set (
 
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::set: setting all elements "
-      "with custom settings\n");
+      "Native_Double_Vector::set: %s: setting all elements "
+      "with custom settings\n",
+      this->name_.c_str ());
 
     context_->set (vector_, value, settings);
   }
@@ -485,7 +510,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::set_quality (
 
     madara_logger_ptr_log (Logger::global_logger.get (),
       Logger::LOG_MAJOR,
-      "Native_Double_Vector::set: setting quality of knowledge\n");
+      "Native_Double_Vector::set: %s: setting quality of knowledge\n",
+      this->name_.c_str ());
 
     context_->set_quality (name_, quality, true, settings);
   }
@@ -497,7 +523,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::to_record (
 {
   madara_logger_ptr_log (Logger::global_logger.get (),
     Logger::LOG_MAJOR,
-    "Native_Double_Vector::to_record: retrieving record\n");
+    "Native_Double_Vector::to_record: %s: retrieving record\n",
+    this->name_.c_str ());
 
   Madara::Knowledge_Record result = context_->get (this->vector_, settings_);
 
@@ -511,7 +538,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::to_record (
 {
   madara_logger_ptr_log (Logger::global_logger.get (),
     Logger::LOG_MAJOR,
-    "Native_Double_Vector::to_record: retrieving record\n");
+    "Native_Double_Vector::to_record: %s: retrieving record\n",
+    this->name_.c_str ());
 
   return context_->get (this->vector_, settings_);
 }
@@ -522,7 +550,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::is_true (void) const
   bool result (false);
 
   madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
-    "Native_Double_Vector::is_true: Checking for non-zero value\n");
+    "Native_Double_Vector::is_true: %s: Checking for non-zero value\n",
+    this->name_.c_str ());
 
   if (context_)
   {
@@ -532,7 +561,8 @@ Madara::Knowledge_Engine::Containers::Native_Double_Vector::is_true (void) const
   }
 
   madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
-    "Native_Double_Vector::is_true: final result is %d\n",
+    "Native_Double_Vector::is_true: %s: final result is %d\n",
+    this->name_.c_str (),
     (int)result);
 
   return result;
