@@ -224,7 +224,26 @@ namespace Madara
          *         uninitialized
          **/
         bool exists (size_t index) const;
-      
+
+        /**
+        * Sets a knowledge variable to a specified value
+        *
+        * @param index           index to set
+        * @param value           value to set at location
+        * @return                0 if successful, -1 if key is null, and
+        *                        -2 if quality isn't high enough
+        **/
+        int set (size_t index, type value);
+
+        /**
+        * Reads values from a STL vector of doubles
+        *
+        * @param value           array of doubles to set at the location
+        * @return                0 if successful, -1 if key is null, and
+        *                        -2 if quality isn't high enough
+        **/
+        int set (const std::vector <type> & value);
+
         /**
          * Sets a knowledge variable to a specified value
          *
@@ -236,8 +255,7 @@ namespace Madara
          **/
         int set (size_t index,
           type value, 
-          const Knowledge_Update_Settings & settings =
-            Knowledge_Update_Settings ());
+          const Knowledge_Update_Settings & settings);
 
         /**
          * Reads values from a STL vector of doubles
@@ -249,8 +267,7 @@ namespace Madara
          **/
         int set (
           const std::vector <type> & value,
-          const Knowledge_Update_Settings & settings =
-            Knowledge_Update_Settings ());
+          const Knowledge_Update_Settings & settings);
        
         /**
          * Sets the quality of writing to a certain variable from this entity

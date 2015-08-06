@@ -574,6 +574,48 @@ Madara::Knowledge_Engine::Containers::Double_Vector::exists (
 
 int
 Madara::Knowledge_Engine::Containers::Double_Vector::set (
+size_t index,
+type value)
+{
+  int result = -1;
+
+  if (index < vector_.size () && context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    result = context_->set (vector_[index], value, settings_);
+  }
+
+  return result;
+}
+
+
+int
+Madara::Knowledge_Engine::Containers::Double_Vector::set (
+const std::vector <type> & value)
+{
+  int result = -1;
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    if (vector_.size () < value.size ())
+      resize ((int)value.size (), false);
+
+    for (size_t i = 0; i < value.size (); ++i)
+    {
+      context_->set (vector_[i], value[i], settings_);
+    }
+
+    result = 0;
+  }
+
+  return result;
+}
+
+int
+Madara::Knowledge_Engine::Containers::Double_Vector::set (
   size_t index,
   type value, 
   const Knowledge_Update_Settings & settings)
