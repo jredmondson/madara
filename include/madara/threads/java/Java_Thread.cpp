@@ -111,6 +111,8 @@ threads::Java_Thread::init (engine::Knowledge_Base & context)
     " Calling user-defined init method\n");
 
   env->CallVoidMethod (obj_, init_method_, jknowledge);
+
+  env->DeleteLocalRef (jknowledge);
 }
 
 

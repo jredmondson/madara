@@ -53,17 +53,17 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     "Retrieving class loader for current thread\n");
 
   jobject thread = env->CallStaticObjectMethod (thread_class, current_thread);
-  jobject classLoader = env->CallObjectMethod (thread, get_class_loader);
+  jobject class_loader = env->CallObjectMethod (thread, get_class_loader);
 
 
-  if (classLoader != NULL)
+  if (class_loader != NULL)
   {
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
       "Madara:JNI_OnLoad: "
       "SUCCESS: Class loader found. Storing reference.\n");
 
-    madara_class_loader = env->NewGlobalRef (classLoader);
+    madara_class_loader = env->NewGlobalRef (class_loader);
   }
   else
   {
@@ -120,6 +120,12 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
       "Madara:JNI_OnLoad: "
       "Class loader call succeeded\n");
   }
+
+  env->DeleteLocalRef (kr_class);
+  env->DeleteLocalRef (class_loader);
+  env->DeleteLocalRef (thread);
+  env->DeleteLocalRef (cl_class);
+  env->DeleteLocalRef (thread_class);
 
   madara_logger_ptr_log (logger::global_logger.get (),
     logger::LOG_MAJOR,
@@ -217,10 +223,10 @@ jclass Madara::Utility::Java::find_class (JNIEnv * env, const char * name)
       "Madara::Utility::Java::find_class: "
       "Retrieving class loader and loadClass method\n", dot_name.c_str ());
 
-    jclass java_lang_class_loader = env->FindClass ("java/lang/ClassLoader");
-    assert (java_lang_class_loader != NULL);
-    jmethodID loadClass =
-      env->GetMethodID (java_lang_class_loader,
+    jclass class_loader = env->FindClass ("java/lang/ClassLoader");
+
+    jmethodID load_class =
+      env->GetMethodID (class_loader,
       "loadClass",
       "(Ljava/lang/String;)Ljava/lang/Class;");
 
@@ -229,10 +235,15 @@ jclass Madara::Utility::Java::find_class (JNIEnv * env, const char * name)
       "Madara::Utility::Java::find_class: "
       "Attempting to find class %s via ClassLoader\n", dot_name.c_str ());
 
+    jstring j_name = env->NewStringUTF (dot_name.c_str ());
+
     result = (jclass)env->NewWeakGlobalRef (env->CallObjectMethod (
       madara_class_loader,
-      loadClass,
-      env->NewStringUTF (dot_name.c_str ())));
+      load_class,
+      j_name));
+
+    env->DeleteLocalRef (j_name);
+    env->DeleteLocalRef (class_loader);
 
     if (env->ExceptionCheck ())
     {

@@ -1126,6 +1126,9 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
     env->SetObjectField (jniRet, valsID, recordsArray);
     env->SetObjectField (jniRet, keysID, keysArray);
   }
+
+  env->DeleteLocalRef (jniRetClass);
+  env->DeleteLocalRef (classStrArray);
 }
 
 

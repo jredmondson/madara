@@ -516,6 +516,13 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
 
           delete (Knowledge_Record*)cptr;
         }
+
+        jvm.env->DeleteLocalRef (jvarClass);
+        jvm.env->DeleteLocalRef (jvariables);
+        jvm.env->DeleteLocalRef (jresult);
+        jvm.env->DeleteLocalRef (jlist);
+        jvm.env->DeleteLocalRef (jlistClass);
+        jvm.env->DeleteLocalRef (ret);
       }
 #endif
 
@@ -719,6 +726,12 @@ Madara::Knowledge_Engine::Knowledge_Record_Filters::filter (
           records[i->first].deep_copy (i->second);
         }
 
+        jvm.env->DeleteLocalRef (jvarClass);
+        jvm.env->DeleteLocalRef (jpacketClass);
+        jvm.env->DeleteLocalRef (filterClass);
+        jvm.env->DeleteLocalRef (jcontext);
+        jvm.env->DeleteLocalRef (jcontextClass);
+        jvm.env->DeleteLocalRef (jpacket);
         // the auto_ptr should clear up the heap-allocated records
       }
 #endif
