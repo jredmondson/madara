@@ -237,11 +237,14 @@ jclass Madara::Utility::Java::find_class (JNIEnv * env, const char * name)
 
     jstring j_name = env->NewStringUTF (dot_name.c_str ());
 
-    result = (jclass)env->NewWeakGlobalRef (env->CallObjectMethod (
+    jclass loaded_class = (jclass)env->CallObjectMethod (
       madara_class_loader,
       load_class,
-      j_name));
+      j_name);
 
+    result = (jclass)env->NewWeakGlobalRef (loaded_class);
+
+    env->DeleteLocalRef (loaded_class);
     env->DeleteLocalRef (j_name);
     env->DeleteLocalRef (class_loader);
 
@@ -254,7 +257,11 @@ jclass Madara::Utility::Java::find_class (JNIEnv * env, const char * name)
         "Madara::Utility::Java::find_class: "
         "Exception in Class Loader. Attempting FindClass on %s.\n", name);
 
-      result = (jclass)env->NewWeakGlobalRef (env->FindClass (name));
+      jobject local_class = env->FindClass (name);
+
+      result = (jclass)env->NewWeakGlobalRef (local_class);
+
+      env->DeleteLocalRef (local_class);
 
       if (env->ExceptionCheck ())
       {
