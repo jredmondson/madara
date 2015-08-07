@@ -397,16 +397,27 @@ jobjectArray JNICALL Java_com_madara_transport_TransportSettings_jni_1getHosts (
 
   if (settings)
   {
+    jclass string_class = Madara::Utility::Java::find_class (
+      env, "java/lang/String");
+    jstring empty_string = env->NewStringUTF ("");
+
     result = env->NewObjectArray (
       (jsize)settings->hosts.size (),
-      Madara::Utility::Java::find_class (env, "java/lang/String"),
-      env->NewStringUTF (""));
+      string_class,
+      empty_string);
 
     for (unsigned int x = 0; x < settings->hosts.size (); x++)
     {
+      jstring temp_string = env->NewStringUTF (settings->hosts[x].c_str ());
+
       env->SetObjectArrayElement (
-        result, x, env->NewStringUTF (settings->hosts[x].c_str ()));
+        result, x, temp_string);
+
+      env->DeleteLocalRef (temp_string);
     }
+
+    env->DeleteWeakGlobalRef (string_class);
+    env->DeleteLocalRef (empty_string);
   }
   return result;
 }

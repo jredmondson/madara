@@ -339,12 +339,14 @@ jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArray
   jclass kr_class = Madara::Utility::Java::find_class (
     env, "com/madara/KnowledgeRecord");
   jobjectArray list;
+
   if (kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
-      "fromPointer", "(J)Lcom/madara/KnowledgeRecord;");
+      "fromPointer", " (J)Lcom/madara/KnowledgeRecord;");
     Madara::Knowledge_Vector records;
-    Vector * current = (Vector *) cptr;
+    Vector * current =
+      (Vector *)cptr;
     current->copy_to (records);
     jsize size = (jsize)records.size ();
 
@@ -358,9 +360,13 @@ jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArray
         jobject result = env->CallStaticObjectMethod (
           kr_class, method, (jlong)records[i].clone ());
         env->SetObjectArrayElement (list, i, result);
+
+        env->DeleteLocalRef (result);
       }
     }
   }
+
+  env->DeleteWeakGlobalRef (kr_class);
 
   return list;
 }

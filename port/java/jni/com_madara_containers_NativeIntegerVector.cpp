@@ -240,17 +240,18 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_NativeIntegerVecto
   jclass kr_class = Madara::Utility::Java::find_class (
     env, "com/madara/KnowledgeRecord");
   jobjectArray list;
+
   if (kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
       "fromPointer", " (J)Lcom/madara/KnowledgeRecord;");
     Madara::Knowledge_Vector records;
     Native_Integer_Vector * current =
-      (Native_Integer_Vector *) cptr;
+      (Native_Integer_Vector *)cptr;
     current->copy_to (records);
     jsize size = (jsize)records.size ();
 
-    list = env->NewObjectArray ( (jsize)records.size (), kr_class, 0);
+    list = env->NewObjectArray ((jsize)records.size (), kr_class, 0);
 
     if (method)
     {
@@ -260,9 +261,14 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_NativeIntegerVecto
         jobject result = env->CallStaticObjectMethod (
           kr_class, method, (jlong)records[i].clone ());
         env->SetObjectArrayElement (list, i, result);
+
+        env->DeleteLocalRef (result);
       }
     }
   }
+
+  env->DeleteWeakGlobalRef (kr_class);
+
   return list;
 }
 

@@ -113,6 +113,7 @@ threads::Java_Thread::init (engine::Knowledge_Base & context)
   env->CallVoidMethod (obj_, init_method_, jknowledge);
 
   env->DeleteLocalRef (jknowledge);
+  env->DeleteWeakGlobalRef (kb_class);
 }
 
 
@@ -261,4 +262,8 @@ threads::Java_Thread::init_control_vars (engine::Knowledge_Base & control)
   fieldId = env->GetFieldID(class_,
     "paused","Lcom/madara/containers/Integer;");
   env->SetObjectField (obj_, fieldId, jpaused);
+
+  jvm.env->DeleteWeakGlobalRef (i_class);
+  jvm.env->DeleteLocalRef (jterminate);
+  jvm.env->DeleteLocalRef (jpaused);
 }

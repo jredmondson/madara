@@ -308,17 +308,29 @@ jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
     std::vector<std::string> keys;
     current->keys (keys, first_level);
 
+    jclass string_class = Madara::Utility::Java::find_class (
+      env, "java/lang/String");
+    jstring empty_string = env->NewStringUTF ("");
+
     result = env->NewObjectArray (
       (jsize)keys.size (),
-      Madara::Utility::Java::find_class (env, "java/lang/String"),
-      env->NewStringUTF (""));
+      string_class,
+      empty_string);
 
     for (unsigned int i = 0; i < keys.size (); i++)
     {
+      jstring temp_string = env->NewStringUTF (keys[i].c_str ());
+
       env->SetObjectArrayElement (
-        result, i, env->NewStringUTF (keys[i].c_str ()));
+        result, i, temp_string);
+
+      env->DeleteLocalRef (temp_string);
     }
+
+    env->DeleteLocalRef (empty_string);
+    env->DeleteWeakGlobalRef (string_class);
   }
+
   return result;
 }
 

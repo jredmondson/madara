@@ -1128,7 +1128,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
   }
 
   env->DeleteLocalRef (jniRetClass);
-  env->DeleteLocalRef (classStrArray);
+  env->DeleteWeakGlobalRef (classStrArray);
 }
 
 

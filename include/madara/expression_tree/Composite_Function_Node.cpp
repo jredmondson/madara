@@ -201,6 +201,14 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
     result.deep_copy(*(Madara::Knowledge_Record *)cptr);
 
+    jvm.env->DeleteLocalRef (jresult);
+    jvm.env->DeleteLocalRef (filterClass);
+    jvm.env->DeleteLocalRef (jlist);
+    jvm.env->DeleteLocalRef (ret);
+    jvm.env->DeleteLocalRef (jvariables);
+    jvm.env->DeleteWeakGlobalRef (jlistClass);
+    jvm.env->DeleteWeakGlobalRef (jvarClass);
+
     //if (do_delete)
     //  delete (Knowledge_Record*)cptr;
   }

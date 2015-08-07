@@ -235,6 +235,7 @@ jobjectArray JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1toArray
   jclass kr_class = Madara::Utility::Java::find_class (
     env, "com/madara/KnowledgeRecord");
   jobjectArray list;
+
   if (kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
@@ -255,9 +256,14 @@ jobjectArray JNICALL Java_com_madara_containers_NativeDoubleVector_jni_1toArray
         jobject result = env->CallStaticObjectMethod (
           kr_class, method, (jlong)records[i].clone ());
         env->SetObjectArrayElement (list, i, result);
+
+        env->DeleteLocalRef (result);
       }
     }
   }
+
+  env->DeleteWeakGlobalRef (kr_class);
+
   return list;
 }
 

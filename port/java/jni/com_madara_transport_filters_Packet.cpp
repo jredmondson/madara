@@ -110,19 +110,30 @@ jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
   
   if (packet)
   {
+    jclass string_class = Madara::Utility::Java::find_class (
+      env, "java/lang/String");
+    jstring empty_string = env->NewStringUTF ("");
+
     result = (jobjectArray) env->NewObjectArray (
       (jsize)packet->size (),
-      Madara::Utility::Java::find_class (env, "java/lang/String"),
-      env->NewStringUTF (""));
+      string_class,
+      empty_string);
  
     jsize i = 0;
   
     for (Knowledge_Map::const_iterator cur = packet->begin ();
          cur != packet->end (); ++cur, ++i)
     {
+      jstring temp_string = env->NewStringUTF (cur->first.c_str ());
+
       env->SetObjectArrayElement (
-        result, i, env->NewStringUTF (cur->first.c_str ()));
+        result, i, temp_string);
+
+      env->DeleteLocalRef (temp_string);
     }
+
+    env->DeleteLocalRef (empty_string);
+    env->DeleteWeakGlobalRef (string_class);
   }
 
   return result;
