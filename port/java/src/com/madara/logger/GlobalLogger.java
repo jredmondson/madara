@@ -49,7 +49,7 @@ package com.madara.logger;
 import com.madara.MadaraJNI;
 
 /**
- * A facade for distributed adder within a knowledge base
+ * A facade for the global MADARA logging service (the default logger)
  **/
 
 public class GlobalLogger extends MadaraJNI

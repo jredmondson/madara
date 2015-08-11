@@ -3,7 +3,7 @@
 
 namespace logger = Madara::Logger;
 
-MADARA_Export jlong JNICALL Java_com_madara_logger_GlobalLogger_jni_1getCPtr
+jlong JNICALL Java_com_madara_logger_GlobalLogger_jni_1getCPtr
 (JNIEnv *, jclass)
 {
   return (jlong) logger::global_logger.get ();
