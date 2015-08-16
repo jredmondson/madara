@@ -1131,6 +1131,61 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
   env->DeleteWeakGlobalRef (classStrArray);
 }
 
+MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1toMap
+(JNIEnv * env, jobject, jlong cptr, jstring prefix, jstring suffix, jobject jniRet)
+{
+  jclass jniRetClass = env->GetObjectClass (jniRet);
+  jclass classStrArray = Madara::Utility::Java::find_class (env,
+    "java/lang/String");
+  jfieldID valsID = env->GetFieldID (jniRetClass, "vals", "[J");
+  jfieldID keysID = env->GetFieldID (jniRetClass,
+    "keys", "[Ljava/lang/String;");
+
+  const char * nativePrefix = env->GetStringUTFChars (prefix, 0);
+  const char * nativeSuffix = env->GetStringUTFChars (suffix, 0);
+
+  Knowledge_Base * knowledge = (Knowledge_Base *)cptr;
+
+  if (knowledge)
+  {
+    std::map<std::string, Madara::Knowledge_Record> recordsMap;
+    std::vector<std::string> nextKeys;
+
+    knowledge->to_map (nativePrefix, "", nativeSuffix, nextKeys, recordsMap);
+
+    env->ReleaseStringUTFChars (prefix, nativePrefix);
+    env->ReleaseStringUTFChars (suffix, nativeSuffix);
+
+    // break the resulting map into keys and values
+    jlongArray recordsArray = env->NewLongArray ((jsize)recordsMap.size ());
+    jlong * records = new jlong[(jsize)recordsMap.size ()];
+
+    // create the java keys array
+    jobjectArray keysArray = env->NewObjectArray ((jsize)recordsMap.size (),
+      classStrArray, NULL);
+
+    std::map<std::string, Madara::Knowledge_Record>::iterator iter;
+    int counter = 0;
+
+    // populate the Java objects
+    for (iter = recordsMap.begin (); iter != recordsMap.end (); ++iter)
+    {
+      env->SetObjectArrayElement (keysArray, counter,
+        env->NewStringUTF (iter->first.c_str ()));
+      records[counter++] = (jlong) new Madara::Knowledge_Record (iter->second);
+    }
+
+    env->SetLongArrayRegion (recordsArray, 0, (jsize)recordsMap.size (), records);
+
+    delete[] records;
+
+    env->SetObjectField (jniRet, valsID, recordsArray);
+    env->SetObjectField (jniRet, keysID, keysArray);
+  }
+
+  env->DeleteLocalRef (jniRetClass);
+  env->DeleteWeakGlobalRef (classStrArray);
+}
 
 //===================================================================================
 

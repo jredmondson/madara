@@ -484,7 +484,15 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeBase_jni_1loadContext
  */
 MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
   (JNIEnv *, jobject, jlong, jstring, jobject);
-  
+
+/*
+* Class:     com_madara_KnowledgeBase
+* Method:    jni_toMap
+* Signature: (JLjava/lang/String;Ljava/lang/String;Lcom/madara/KnowledgeBase/MapReturn;)V
+*/
+MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1toMap
+(JNIEnv *, jobject, jlong, jstring, jstring, jobject);
+
 //===================================================================================
   
 //===================================================================================

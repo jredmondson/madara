@@ -104,6 +104,7 @@ public class KnowledgeBase extends MadaraJNI
   private native void jni_waitNoReturn(long cptr, long expression, long waitSettings);
   private native long[] jni_toKnowledgeList(long cptr, String subject, int start, int end);
   private native void jni_toKnowledgeMap(long cptr, String expression, MapReturn ret);
+  private native void jni_toMap(long cptr, String prefix, String suffix, MapReturn ret);
   private native long jni_saveContext(long cptr, String filename);
   private native long jni_saveAsKarl(long cptr, String filename);
   private native long jni_saveCheckpoint(long cptr, String filename, boolean resetModifieds);
@@ -907,6 +908,29 @@ public class KnowledgeBase extends MadaraJNI
     checkContextLock();
     MapReturn jniRet = new MapReturn();
     jni_toKnowledgeMap(getCPtr(), expression, jniRet);
+
+    return new KnowledgeMap(jniRet.keys, jniRet.vals);
+  }
+
+  /**
+   * Fills a {@link com.madara.KnowledgeMap KnowledgeMap} with
+   * {@link com.madara.KnowledgeRecord KnowledgeRecords} that match a prefix and
+   * suffix.
+   * <br><br>The returned {@link com.madara.KnowledgeMap KnowledgeMap}
+   * <b>must</b> be freed using {@link com.madara.KnowledgeMap#free KnowledgeMap.free ()}
+   * before the object goes out of scope.
+   *
+   * @param prefix   the prefix of the variables (e.g., in "{prefix}*{suffix}")
+   * @param suffix   the suffix of the variables (e.g., in "{prefix}*{suffix}")
+   * @return {@link com.madara.KnowledgeMap KnowledgeMap} containing the
+   * requested {@link com.madara.KnowledgeRecord KnowledgeRecords}
+   * @throws KnowledgeBaseLockedException If called from a MadaraFunction
+   **/
+  public KnowledgeMap toKnowledgeMap(String prefix, String suffix)
+  {
+    checkContextLock();
+    MapReturn jniRet = new MapReturn();
+    jni_toMap(getCPtr(), prefix, suffix, jniRet);
 
     return new KnowledgeMap(jniRet.keys, jniRet.vals);
   }

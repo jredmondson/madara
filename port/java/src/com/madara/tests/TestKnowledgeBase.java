@@ -48,8 +48,11 @@
 package com.madara.tests;
 
 import com.madara.KnowledgeBase;
+import com.madara.KnowledgeMap;
+import com.madara.KnowledgeRecord;
 import com.madara.containers.Integer;
 import com.madara.containers.String;
+import java.util.Map;
 
 /**
  * This class is a tester for basic KnowledgeBase functionality
@@ -74,6 +77,30 @@ public class TestKnowledgeBase {
     java.lang.String contents = knowledge.toString();
     
     System.out.println(contents);
+    
+    knowledge.set("device.0.test.settings", "This is a test (0)");
+    knowledge.set("device.1.test.settings", "This is a test (1)");
+    knowledge.set("device.2.test.settings", "This is a test (2)");
+    knowledge.set("device.2", "is a real device");
+    knowledge.set("device.location", "USA");
+    
+    KnowledgeMap deviceSettings = knowledge.toKnowledgeMap("device.", "settings");
+    
+    System.out.print("Testing toKnowledgeMap with suffix and prefix: ");
+    
+    if (deviceSettings.containsKey("device.0.test.settings") &&
+      deviceSettings.containsKey("device.1.test.settings") &&
+      deviceSettings.containsKey("device.2.test.settings") && 
+      !deviceSettings.containsKey("device.2") && 
+      !deviceSettings.containsKey("device.location"))
+    {
+      System.out.println("SUCCESS");
+    }
+    else
+    {
+      System.out.println("FAIL");
+    }
+    
     
     // print all knowledge
     knowledge.print();
