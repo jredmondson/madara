@@ -155,6 +155,32 @@ jint JNICALL Java_com_madara_transport_TransportSettings_jni_1getQueueLength (JN
   return result;
 }
 
+void JNICALL Java_com_madara_transport_TransportSettings_jni_1setResendAttempts
+(JNIEnv *, jobject, jlong cptr, jint resends)
+{
+  Settings * settings = (Settings *)cptr;
+
+  if (settings)
+  {
+    settings->resend_attempts = resends;
+  }
+}
+
+
+jint JNICALL Java_com_madara_transport_TransportSettings_jni_1getResendAttempts
+(JNIEnv *, jobject, jlong cptr)
+{
+  jint result (0);
+  Settings * settings = (Settings *)cptr;
+
+  if (settings)
+  {
+    result = (jint)settings->resend_attempts;
+  }
+
+  return result;
+}
+
 /*
 * Class:     com_madara_transport_TransportSettings
 * Method:    jni_setDeadline

@@ -65,12 +65,13 @@ public class TransportSettings extends MadaraJNI {
   }
 
   private native void jni_setDomains(long cptr, String domains);
-
   private native String jni_getDomains(long cptr);
 
   private native void jni_setQueueLength(long cptr, int queue_length);
-
   private native int jni_getQueueLength(long cptr);
+
+  private native void jni_setResendAttempts(long cptr, int resends);
+  private native int jni_getResendAttempts(long cptr);
 
   private native void jni_setDeadline(long cptr, int deadline);
 
@@ -138,6 +139,14 @@ public class TransportSettings extends MadaraJNI {
 
   public int getQueueLength() {
     return jni_getQueueLength(getCPtr());
+  }
+
+  public void setResendAttempts(int resends) {
+    jni_setResendAttempts(getCPtr(), resends);
+  }
+
+  public int getResendAttempts() {
+    return jni_getResendAttempts(getCPtr());
   }
 
   public void setDeadline(int deadline) {
