@@ -13,6 +13,7 @@ Madara::Transport::Settings::Settings () :
   deadline (DEFAULT_DEADLINE), 
   type (DEFAULT_TRANSPORT),
   max_fragment_size (62000),
+  resend_attempts (-1),
   fragment_queue_length (5),
   reliability (DEFAULT_RELIABILITY),
   id (DEFAULT_ID),
@@ -48,6 +49,7 @@ Madara::Transport::Settings::Settings (const Settings & settings) :
         deadline (settings.deadline), 
         type (settings.type),
         max_fragment_size (settings.max_fragment_size),
+        resend_attempts (settings.resend_attempts),
         fragment_queue_length (settings.fragment_queue_length),
         reliability (settings.reliability),
         id (settings.id),
@@ -90,6 +92,7 @@ Madara::Transport::Settings::operator= (const Settings & settings)
   deadline = settings.deadline;
   type = settings.type;
   max_fragment_size = settings.max_fragment_size;
+  resend_attempts = settings.resend_attempts;
   fragment_queue_length = settings.fragment_queue_length;
   reliability = settings.reliability;
   id = settings.id;
@@ -154,6 +157,7 @@ Madara::Transport::Settings::load (const std::string filename)
   deadline = (uint32_t)knowledge.get ("transport.deadline").to_integer ();
   type = (uint32_t)knowledge.get ("transport.type").to_integer ();
   max_fragment_size = (uint32_t)knowledge.get ("transport.max_fragment_size").to_integer ();
+  resend_attempts = (uint32_t)knowledge.get ("transport.resend_attempts").to_integer ();
   fragment_queue_length = (uint32_t)knowledge.get ("transport.fragment_queue_length").to_integer ();
   reliability = (uint32_t)knowledge.get ("transport.reliability").to_integer ();
   id = (uint32_t)knowledge.get ("transport.id").to_integer ();
@@ -191,6 +195,7 @@ Madara::Transport::Settings::save (const std::string filename) const
   knowledge.set ("transport.deadline", Integer (deadline));
   knowledge.set ("transport.type", Integer (type));
   knowledge.set ("transport.max_fragment_size", Integer (max_fragment_size));
+  knowledge.set ("transport.resend_attempts", Integer (resend_attempts));
   knowledge.set ("transport.fragment_queue_length",
     Integer (fragment_queue_length));
   knowledge.set ("transport.reliability", Integer (reliability));

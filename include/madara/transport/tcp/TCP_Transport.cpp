@@ -176,7 +176,7 @@ const Madara::Knowledge_Records & orig_updates)
           {
             if (addr->first != settings_.hosts[0])
             {
-              ssize_t actual_sent = 0;
+              ssize_t actual_sent = -1;
 
               // sleep between fragments, if such a slack time is specified
               if (settings_.slack_time > 0)
@@ -209,7 +209,7 @@ const Madara::Knowledge_Records & orig_updates)
         {
           if (i->first != settings_.hosts[0])
           {
-            ssize_t actual_sent = 0;
+            ssize_t actual_sent = -1;
 
             context_.get_logger ().log (Logger::LOG_MAJOR,
               "%s:" \

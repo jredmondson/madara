@@ -203,20 +203,37 @@ Madara::Transport::Broadcast_Transport::send_data (
             " Sending fragment %d\n",
             print_prefix, j);
 
-          // send the fragment
-          ssize_t actual_sent = socket_.send (
-            i->second,
-            (ssize_t)Message_Header::get_size (i->second),
-            addresses_[0]);
+          int send_attempts = -1;
+          ssize_t actual_sent = -1;
 
-          if (actual_sent > 0)
+          while (actual_sent < 0 &&
+            (settings_.resend_attempts < 0 ||
+             send_attempts < settings_.resend_attempts))
           {
-            madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
-              "%s:" \
-              " Sent %d byte fragment\n",
-              print_prefix, (int)actual_sent);
 
-            bytes_sent += actual_sent;
+            // send the fragment
+            actual_sent = socket_.send (
+              i->second,
+              (ssize_t)Message_Header::get_size (i->second),
+              addresses_[0]);
+
+            ++send_attempts;
+
+            if (actual_sent > 0)
+            {
+              madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+                "%s:" \
+                " Sent %d byte fragment\n",
+                print_prefix, (int)actual_sent);
+
+              bytes_sent += actual_sent;
+            }
+            else
+            {
+              madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+                "%s:" \
+                " Send fragment failed, socket busy\n", print_prefix);
+            }
           }
 
           // sleep between fragments, if such a slack time is specified
@@ -243,68 +260,78 @@ Madara::Transport::Broadcast_Transport::send_data (
           " Sending packet of size %ld\n",
           print_prefix, result);
 
-        ssize_t actual_sent = socket_.send (
-          buffer_.get_ptr (), (ssize_t)result, addresses_[0]);
+        int send_attempts = -1;
+        ssize_t actual_sent = -1;
 
-        if (actual_sent > 0)
+        while (actual_sent < 0 &&
+          (settings_.resend_attempts < 0 ||
+          send_attempts < settings_.resend_attempts))
         {
-          bytes_sent = (uint64_t)actual_sent;
 
-          madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
-            "%s:" \
-            " Sent packet of size %" PRIu64 "\n",
-            print_prefix, bytes_sent);
+          // send the fragment
+          actual_sent = socket_.send (
+            buffer_.get_ptr (), (ssize_t)result, addresses_[0]);
 
-          send_monitor_.add ((uint32_t)actual_sent);
-        }
-        else if (actual_sent == ECONNRESET)
-        {
-          madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
-            "%s:" \
-            " WARNING: Remote socket disappeared during send (ECONNRESET)\n",
-            print_prefix);
-        }
-        else if (actual_sent == EINTR)
-        {
-          madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
-            "%s:" \
-            " Local socket was interrupted during send (EINTR)\n",
-            print_prefix);
-        }
-        else if (actual_sent == EWOULDBLOCK)
-        {
-          madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
-            "%s:" \
-            " Send would have blocked (EWOULDBLOCK)\n",
-            print_prefix);
-        }
-        else if (actual_sent == ENOTCONN)
-        {
-          madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
-            "%s:" \
-            " Send reports socket is not connected (ENOTCONN)\n",
-            print_prefix);
-        }
-        else if (actual_sent == EADDRINUSE)
-        {
-          madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
-            "%s:" \
-            " Send reports the interface is busy (EADDRINUSE)\n",
-            print_prefix);
-        }
-        else if (actual_sent == EBADF)
-        {
-          madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
-            "%s:" \
-            " Send socket is invalid (EBADF)\n",
-            print_prefix);
-        }
-        else
-        {
-          madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
-            "%s:" \
-            " Packet was not sent due to unknown error (%d)\n",
-            print_prefix, (int)actual_sent);
+          if (actual_sent > 0)
+          {
+            bytes_sent = (uint64_t)actual_sent;
+
+            madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+              "%s:" \
+              " Sent packet of size %" PRIu64 "\n",
+              print_prefix, bytes_sent);
+
+            send_monitor_.add ((uint32_t)actual_sent);
+          }
+          else if (actual_sent == ECONNRESET)
+          {
+            madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+              "%s:" \
+              " WARNING: Remote socket disappeared during send (ECONNRESET)\n",
+              print_prefix);
+          }
+          else if (actual_sent == EINTR)
+          {
+            madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+              "%s:" \
+              " Local socket was interrupted during send (EINTR)\n",
+              print_prefix);
+          }
+          else if (actual_sent == EWOULDBLOCK)
+          {
+            madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+              "%s:" \
+              " Send would have blocked (EWOULDBLOCK)\n",
+              print_prefix);
+          }
+          else if (actual_sent == ENOTCONN)
+          {
+            madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+              "%s:" \
+              " Send reports socket is not connected (ENOTCONN)\n",
+              print_prefix);
+          }
+          else if (actual_sent == EADDRINUSE)
+          {
+            madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+              "%s:" \
+              " Send reports the interface is busy (EADDRINUSE)\n",
+              print_prefix);
+          }
+          else if (actual_sent == EBADF)
+          {
+            madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+              "%s:" \
+              " Send socket is invalid (EBADF)\n",
+              print_prefix);
+          }
+          else
+          {
+            madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+              "%s:" \
+              " Packet was not sent due to unknown error (%d)\n",
+              print_prefix, (int)actual_sent);
+          }
         }
       }
 

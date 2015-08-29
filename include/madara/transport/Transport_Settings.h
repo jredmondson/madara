@@ -709,6 +709,9 @@ namespace Madara
       /// Maximum allowed fragment size for partitioning large messages
       uint32_t max_fragment_size;
 
+      /// Maximum number of attempts to resend if transport is busy
+      int resend_attempts;
+
       /**
        * Indicates queue length for holding clock-keyed fragments. Note
        * that this does not limit the number of fragments--only how many

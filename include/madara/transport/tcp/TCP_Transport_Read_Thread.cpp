@@ -97,7 +97,7 @@ const Knowledge_Map & records)
           {
             if (addr->first != settings_.hosts[0])
             {
-              ssize_t actual_sent = 0;
+              ssize_t actual_sent = -1;
 
               // sleep between fragments, if such a slack time is specified
               if (settings_.slack_time > 0)
@@ -131,7 +131,7 @@ const Knowledge_Map & records)
         {
           if (i->first != settings_.hosts[0])
           {
-            ssize_t actual_sent = 0;
+            ssize_t actual_sent = -1;
 
             madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
               "%s:" \
