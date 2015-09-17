@@ -327,16 +327,29 @@ Madara::Knowledge_Engine::Containers::Barrier::is_done (void)
 {
   bool result = false;
 
-  if (context_)
+  if (context_ && name_ != "")
   {
     Context_Guard context_guard (*context_);
     Guard guard (mutex_);
-    
+
+    madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+      "Barrier::is_done: checking barrier result for done\n");
+
     result = barrier_result () == 1;
 
     if (!result)
     {
-      context_->set (variable_, context_->get (variable_, no_harm).to_integer ());
+      madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+        "Barrier::is_true: barrier is not true, remarking barrier variable\n");
+
+      context_->mark_modified (variable_);
+
+      context_->print (Logger::LOG_DETAILED);
+    }
+    else
+    {
+      madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+        "Barrier::is_true: barrier is true\n");
     }
   }
 

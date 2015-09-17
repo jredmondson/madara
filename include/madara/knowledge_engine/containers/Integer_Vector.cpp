@@ -587,6 +587,22 @@ Madara::Knowledge_Engine::Containers::Integer_Vector::set (
   return result;
 }
 
+Madara::Knowledge_Engine::Containers::Integer_Vector::type
+Madara::Knowledge_Engine::Containers::Integer_Vector::inc (
+size_t index)
+{
+  type result (0);
+
+  if (index < vector_.size () && context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    result = context_->inc (vector_[index], settings_).to_integer ();
+  }
+
+  return result;
+}
+
 int
 Madara::Knowledge_Engine::Containers::Integer_Vector::set (
   size_t index,

@@ -197,6 +197,7 @@ void handle_arguments (int argc, char ** argv)
 " [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
 " [-n|--no-transport]      disable transport\n" \
 " [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
+" [-p|--processes num]     the number of participating processes\n" \
 " [-q|--queue-length length] length of transport queue in bytes\n" \
 " [-r|--reduced]           use the reduced message header\n" \
 " [-u|--udp ip:port]       a udp ip to send to (first is self to bind to)\n" \
@@ -249,6 +250,9 @@ int main (int argc, char ** argv)
       knowledge.send_modifieds ();
   }
   
+  // send another update just in case a late joiner didn't get a chance to receive all
+  barrier.modify ();
+
   knowledge.evaluate (".end_time = #get_time();"
     ".total_time = .end_time - .start_time;"
     ".total_time_in_seconds = #double(.total_time) / 1000000000");

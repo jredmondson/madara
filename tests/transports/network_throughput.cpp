@@ -13,14 +13,21 @@
 #include "ace/Recursive_Thread_Mutex.h"
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
-
+#include "madara/filters/Aggregate_Filter.h"
 
 #include "madara/knowledge_engine/containers/Integer.h"
+#include "madara/knowledge_engine/containers/Integer_Vector.h"
+#include "madara/knowledge_engine/containers/Barrier.h"
 #include "madara/utility/Utility.h"
 #include "madara/logger/Global_Logger.h"
+#include "madara/threads/Threader.h"
 
 namespace logger = Madara::Logger;
+namespace engine = Madara::Knowledge_Engine;
+namespace containers = engine::Containers;
 namespace utility = Madara::Utility;
+namespace threads = Madara::Threads;
+namespace filters = Madara::Filters;
 
 // useful namespace aliases and typedefs
 
@@ -34,16 +41,6 @@ typedef Madara::Knowledge_Record::Integer Integer;
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
 transport::QoS_Transport_Settings settings;
-
-// number of sent and received messages
-
-containers::Integer num_sent;
-containers::Integer num_received;
-containers::Integer finished;
-containers::Integer payload_size;
-
-// target sends
-Integer target (1000000);
 
 bool started = false;
 
@@ -124,6 +121,16 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-p" || arg1 == "--processes")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> settings.processes;
+      }
+
+      ++i;
+    }
     else if (arg1 == "-l" || arg1 == "--level")
     {
       if (i + 1 < argc)
@@ -183,16 +190,6 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
-    else if (arg1 == "-t" || arg1 == "--target")
-    {
-      if (i + 1 < argc)
-      {
-        std::stringstream buffer (argv[i + 1]);
-        buffer >> target;
-      }
-
-      ++i;
-    }
     else if (arg1 == "-z" || arg1 == "--pub-hertz")
     {
       if (i + 1 < argc)
@@ -213,6 +210,16 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "--read-threads")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> settings.read_threads;
+      }
+
+      ++i;
+    }
     else
     {
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
@@ -227,8 +234,8 @@ void handle_arguments (int argc, char ** argv)
         " [-i|--id id]             the id of this agent (should be non-negative)\n" \
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         " [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
-        " [-t|--target target]     number of payloads to send/target\n" \
         " [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
+        " [-p|--processes num]     the number of processes (def:2)\n" \
         " [-q|--queue-length len   the queue size to use for the test\n" \
         " [-r|--reduced]           use the reduced message header\n" \
         " [-s|--size size]         size of data packet to send in bytes\n" \
@@ -236,6 +243,7 @@ void handle_arguments (int argc, char ** argv)
         " [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         " [-z|--pub-hertz hertz]   publish hertz speed\n" \
         " [-0|--deadline seconds]  the deadline for dropping messages from a pub\n" \
+        " [--read-threads threads] number of read threads to spawn\n" \
         "\n",
         argv[0]);
       exit (0);
@@ -244,30 +252,108 @@ void handle_arguments (int argc, char ** argv)
 }
 
 
-// filter for counting received packets
-Madara::Knowledge_Record
-count_received (
-  Madara::Knowledge_Engine::Function_Arguments & args,
-  Madara::Knowledge_Engine::Variables & vars)
+
+class Publisher : public threads::Base_Thread
 {
-  if (args[0].is_binary_file_type ())
+public:
+  /**
+   * Constructor
+   **/
+  Publisher (engine::Knowledge_Base & context)
+    : knowledge (&context), publishes (".publishes", context),
+    id ("id", context, (Integer)settings.id)
   {
-    ++num_received;
+    logger::global_logger->log (logger::LOG_ALWAYS,
+      "Initializing publisher thread\n");
 
-    if (!started)
-    {
-      payload_size = args[0].size ();
-      vars.set (".start_time",
-        Madara::Knowledge_Record::Integer (Madara::Utility::get_time ()));
-      started = true;
-    }
+    // create container and references
+    packet = context.get_ref (
+      "packet", engine::Knowledge_Reference_Settings (true));
 
-      vars.set (".end_time",
-        Madara::Knowledge_Record::Integer (Madara::Utility::get_time ()));
+    // set initial packet
+    utility::Scoped_Array <unsigned char> buffer (new unsigned char[data_size]);
+    context.set_file (packet, buffer.get_ptr (), (size_t)data_size);
   }
 
-  return args[0];
-}
+  /**
+  * Initializes thread with MADARA context
+  * @param   context   context for querying current program state
+  **/
+  virtual void init (engine::Knowledge_Base & context)
+  {
+  }
+
+  /**
+  * Executes the main thread logic
+  **/
+  virtual void run (void)
+  {
+    // increment counter
+    knowledge->mark_modified (packet);
+    id.modify ();
+    ++publishes;
+    knowledge->send_modifieds ();
+  }
+
+private:
+  engine::Knowledge_Base * knowledge;
+  containers::Integer publishes;
+  containers::Integer id;
+  engine::Variable_Reference packet;
+};
+
+class Receiver : public filters::Aggregate_Filter
+{
+public:
+  Receiver (int publishers)
+    : processes (publishers), started (false)
+  {
+  }
+
+  virtual void filter (Madara::Knowledge_Map & records,
+    const transport::Transport_Context & transport_context,
+    engine::Variables & vars)
+  {
+    if (records.size () == 2)
+    {
+      if (!started)
+      {
+        logger::global_logger->log (logger::LOG_ALWAYS,
+          "Initializing receiver filter variable arrays\n");
+
+        counters.set_name (".counters", vars, processes);
+        sizes.set_name (".sizes", vars, processes);
+        started = true;
+      }
+
+      Madara::Knowledge_Map::iterator id = records.find ("id");
+
+      // if we have a valid packet
+      if (id != records.end ())
+      {
+        // increase the counter for packets from the id
+        size_t index = (size_t)id->second.to_integer ();
+        Integer result = counters.inc (index);
+
+        // if this is the first time we've counted from this id
+        if (result == 1)
+        {
+          // then update the size
+          Madara::Knowledge_Map::iterator size = records.find ("packet");
+          sizes.set (index, (Integer)size->second.size ());
+        }
+      }
+
+      records.clear ();
+    }
+  }
+
+  containers::Integer_Vector counters;
+  containers::Integer_Vector sizes;
+  int processes;
+  bool started;
+};
+
 
 int main (int argc, char ** argv)
 {
@@ -277,6 +363,7 @@ int main (int argc, char ** argv)
   // unlimited hertz
   settings.read_thread_hertz = 0.0;
   settings.read_threads = 1;
+  settings.processes = 2;
 
   // use ACE real time scheduling class
   int prio  = ACE_Sched_Params::next_priority
@@ -294,110 +381,63 @@ int main (int argc, char ** argv)
     settings.hosts.resize (1);
     settings.hosts[0] = default_multicast;
   }
-  
-  if (settings.id != 0)
-  {
-    // count the number of received packets
-    settings.add_receive_filter (
-      Madara::Knowledge_Record::ALL_FILE_TYPES,
-      count_received);
-  }
+
+  filters::Aggregate_Filter * receiver = new Receiver (settings.processes);
+
+  settings.add_receive_filter (receiver);
 
   // create a knowledge base and setup our id
   engine::Knowledge_Base knowledge (host, settings);
   
-  // setup wait settings to wait for 2 * publish_time seconds
-  engine::Wait_Settings wait_settings;
-  wait_settings.max_wait_time = publish_time * 2;
+  knowledge.set (".id", Integer (settings.id));
+  knowledge.set (".processes", Integer (settings.processes));
+  knowledge.set (".hertz", publish_hertz);
 
-  Madara::Knowledge_Engine::Variable_Reference file =
-    knowledge.get_ref (".ref_file");
-  
-  // get variable references for real-time, constant-time operations
-  num_received.set_name (".num_received", knowledge);
-  num_sent.set_name (".num_sent", knowledge);
-  finished.set_name ("finished", knowledge);
-  payload_size.set_name (".payload_size", knowledge);
-  
-  if (settings.id == 0)
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Creating barrier for %d processes\n", (int)settings.processes);
+
+  containers::Barrier barrier ("barrier", knowledge, settings.id, settings.processes);
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Barrier: process %id waiting on %d processes\n",
+    (int)settings.id, (int)settings.processes);
+
+  barrier.next ();
+  while (!barrier.is_done ())
   {
-    // publisher
-
-    // set up the payload
-    unsigned char * ref_file = new unsigned char[data_size];
-    knowledge.set_file (".ref_file", ref_file, data_size);
-    
-    knowledge.print ("Running throughput test...");
-    
-    Integer i = 0;
-    payload_size = data_size;
-
-    knowledge.set (".start_time",
-      Madara::Knowledge_Record::Integer (Madara::Utility::get_time ()));
-
-    // publish the payload repeatedly until max time has passed
-    for (i = 0; i < target; ++i)
-    {
-      knowledge.mark_modified (file);
-      knowledge.send_modifieds ();
-    }
-
-    num_sent = i;
-    
-    knowledge.set (".end_time",
-      Madara::Knowledge_Record::Integer (Madara::Utility::get_time ()));
-
-    finished = 1;
-    
-    knowledge.set (".messages", knowledge.get (".num_sent").to_integer ());
-  }
-  else
-  {
-
-#ifndef _MADARA_NO_KARL_
-    knowledge.wait ("finished", wait_settings);
-#else
-    utility::wait_true (knowledge, "finished", wait_settings);
-
-#endif // _MADARA_NO_KARL_
-
-    
-    knowledge.set (".messages", knowledge.get (".num_received").to_integer ());
+    knowledge.send_modifieds ();
   }
   
-#ifndef _MADARA_NO_KARL_
-  knowledge.evaluate (".bytes = .messages * .payload_size");
-  knowledge.evaluate (".elapsed_time = .end_time - .start_time");
-  knowledge.evaluate (
-    ".elapsed_time *= 0.000000001 ;"
-    ".elapsed_time > 0.0 => .bytes_per_sec = .bytes / .elapsed_time");
-  knowledge.evaluate (
-    ".elapsed_time > 0.0 => .throughput = .messages / .elapsed_time");
-#else
-  Integer messages = knowledge.get (".messages").to_integer ();
-  Integer bytes = messages * payload_size.to_integer (); 
-  double elapsed_time = knowledge.get ("elapsed_time").to_double ();
-  elapsed_time *= 0.000000001;
-
-  if (elapsed_time > 0)
-  {
-    knowledge.set (".bytes_per_sec", bytes / elapsed_time);
-
-    Integer num_received = messages;
-    num_received /= elapsed_time;
-    knowledge.set ("throughput", num_received);
-  }
+  // send another update just in case a late joiner didn't get a chance to receive all
+  barrier.modify ();
 
 
-#endif // _MADARA_NO_KARL_
+  threads::Threader threader (knowledge);
+  
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Publishing at %f hz for %f s\n", publish_hertz, publish_time);
 
-  knowledge.print ("\nNetwork profile for transport\n");
-  knowledge.print ("  Time taken:  {.elapsed_time}s\n");
-  knowledge.print ("  Messages sent/received:  {.messages}\n");
-  knowledge.print ("  Bytes sent/received:  {.bytes}B\n");
-  knowledge.print ("Throughput ({.elapsed_time}s blast test)\n");
-  knowledge.print ("  Messages:  {.throughput} payloads/s\n");
-  knowledge.print ("  Data rate: {.bytes_per_sec} B/s\n");
+  threader.run (publish_hertz, "publisher", new Publisher (knowledge));
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Publishing for %f s\n", publish_time);
+
+  utility::sleep (publish_time);
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Terminating publisher\n");
+
+  threader.terminate ();
+
+  logger::global_logger->log (logger::LOG_ALWAYS,
+    "Waiting for publisher to terminate\n");
+
+  threader.wait ();
+
+  // clean up the receiver aggregate filter
+  delete receiver;
+
+  knowledge.print ();
 
   return 0;
 }

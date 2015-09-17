@@ -224,7 +224,16 @@ namespace Madara
          *         uninitialized
          **/
         bool exists (size_t index) const;
-      
+
+        /**
+        * Increments an index by a specified value
+        *
+        * @param index           index to set
+        * @param value           value to set at location
+        * @return                new value
+        **/
+        type inc (size_t index);
+
         /**
          * Sets a knowledge variable to a specified value
          *
