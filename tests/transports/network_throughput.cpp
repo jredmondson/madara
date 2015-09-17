@@ -18,6 +18,7 @@
 #include "madara/knowledge_engine/containers/Integer.h"
 #include "madara/knowledge_engine/containers/Integer_Vector.h"
 #include "madara/knowledge_engine/containers/Barrier.h"
+#include "madara/knowledge_engine/containers/String.h"
 #include "madara/utility/Utility.h"
 #include "madara/logger/Global_Logger.h"
 #include "madara/threads/Threader.h"
@@ -314,7 +315,8 @@ public:
     const transport::Transport_Context & transport_context,
     engine::Variables & vars)
   {
-    if (records.size () == 2)
+    Madara::Knowledge_Map::iterator packet = records.find ("packet");
+    if (packet != records.end ())
     {
       if (!started)
       {
@@ -323,6 +325,8 @@ public:
 
         counters.set_name (".counters", vars, processes);
         sizes.set_name (".sizes", vars, processes);
+        start_times.set_name (".starts", vars, processes);
+        end_times.set_name (".ends", vars, processes);
         started = true;
       }
 
@@ -334,13 +338,16 @@ public:
         // increase the counter for packets from the id
         size_t index = (size_t)id->second.to_integer ();
         Integer result = counters.inc (index);
+        Integer cur_time = (Integer)transport_context.get_current_time ();
+
+        end_times.set (index, cur_time);
 
         // if this is the first time we've counted from this id
         if (result == 1)
         {
           // then update the size
-          Madara::Knowledge_Map::iterator size = records.find ("packet");
-          sizes.set (index, (Integer)size->second.size ());
+          sizes.set (index, (Integer)packet->second.size ());
+          start_times.set (index, cur_time);
         }
       }
 
@@ -350,6 +357,8 @@ public:
 
   containers::Integer_Vector counters;
   containers::Integer_Vector sizes;
+  containers::Integer_Vector start_times;
+  containers::Integer_Vector end_times;
   int processes;
   bool started;
 };
@@ -410,6 +419,7 @@ int main (int argc, char ** argv)
   
   // send another update just in case a late joiner didn't get a chance to receive all
   barrier.modify ();
+  knowledge.send_modifieds ();
 
 
   threads::Threader threader (knowledge);
@@ -434,10 +444,48 @@ int main (int argc, char ** argv)
 
   threader.wait ();
 
-  // clean up the receiver aggregate filter
-  delete receiver;
+  std::string agent_id = knowledge.expand_statement ("agent.{.id}");
+
+  // let any listener know which test these results are coming from
+  containers::String test_name ("test_name", knowledge);
+  test_name = "network_throughput";
+  
+
+  // prepare the results to send to whoever is listening
+  containers::Integer_Vector receives (agent_id + ".receives", knowledge);
+  containers::Integer_Vector times (agent_id + ".durations", knowledge);
+  containers::Integer_Vector rates (agent_id + ".rates", knowledge);
+
+  // refer to variables used in receive filter
+  containers::Integer_Vector counters (".counters", knowledge);
+  containers::Integer_Vector sizes (".sizes", knowledge);
+  containers::Integer_Vector start_times (".starts", knowledge);
+  containers::Integer_Vector end_times (".ends", knowledge);
+
+  // transfer the counters to the global receives variables
+  counters.transfer_to (receives);
+
+  // process the durations
+  knowledge.evaluate (
+    ".i[0->.processes)(.starts.{.i} => agent.{.id}.durations.{.i} = "
+    "  .ends.{.i} - .starts.{.i});"
+    );
+
+  // process the hertz rates
+  knowledge.evaluate (
+    ".i[0->.processes)(agent.{.id}.receives.{.i} => agent.{.id}.rates.{.i} = "
+    "  agent.{.id}.receives.{.i} / agent.{.id}.durations.{.i});"
+  );
+
+  knowledge.send_modifieds ();
+
+  // close transport before cleaning up filters
+  knowledge.close_transport ();
 
   knowledge.print ();
+
+  // clean up the receiver aggregate filter
+  delete receiver;
 
   return 0;
 }

@@ -39,6 +39,7 @@ String_Vector filenames;
 
 // print debug information
 bool debug (false);
+bool print_knowledge (false);
 
 // wait information
 bool waiting (false);
@@ -92,6 +93,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-f|--logfile file]      log to a file\n" \
         "  [-h|--help]              print help menu (i.e., this menu)\n" \
         "  [-i|--input file]        file containing MADARA logic to evaluate\n" \
+        "  [-k|--print-knowledge]   print final knowledge\n" \
         "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
         "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
@@ -125,6 +127,10 @@ void handle_arguments (int argc, char ** argv)
       }
 
       ++i;
+    }
+    else if (arg1 == "-k" || arg1 == "--print-knowledge")
+    {
+      print_knowledge = true;
     }
     else if (arg1 == "-l" || arg1 == "--level")
     {
@@ -258,7 +264,7 @@ int main (int argc, char ** argv)
   }
 
   // if the user requests debugging information, print final knowledge
-  if (debug)
+  if (debug || print_knowledge)
   {
     knowledge.print_knowledge ();
   }

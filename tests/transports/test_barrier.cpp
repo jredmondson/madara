@@ -252,6 +252,7 @@ int main (int argc, char ** argv)
   
   // send another update just in case a late joiner didn't get a chance to receive all
   barrier.modify ();
+  knowledge.send_modifieds ();
 
   knowledge.evaluate (".end_time = #get_time();"
     ".total_time = .end_time - .start_time;"
