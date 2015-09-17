@@ -225,9 +225,7 @@ void handle_arguments (int argc, char ** argv)
     {
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
-        "  Profiles a network transport. Requires 2 processes. The result of\n" \
-        "  running these processes should be that each process reports\n" \
-        "  latency and throughput statistics.\n\n" \
+        "  Tests one or more chattering agents for throughput.\n\n" \
         " [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
         " [-d|--domain domain]     the knowledge domain to send and listen to\n" \
         " [-e|--threads threads]   number of read threads\n" \
@@ -453,8 +451,13 @@ int main (int argc, char ** argv)
 
   // prepare the results to send to whoever is listening
   containers::Integer_Vector receives (agent_id + ".receives", knowledge);
-  containers::Integer_Vector times (agent_id + ".durations", knowledge);
-  containers::Integer_Vector rates (agent_id + ".rates", knowledge);
+  containers::Integer_Vector durations (agent_id + ".durations", knowledge, settings.processes);
+  containers::Integer_Vector receive_hz (agent_id + ".receive_hz", knowledge, settings.processes);
+  containers::Integer total_hz (agent_id + ".total_hz", knowledge);
+  containers::Integer publishes (agent_id + ".publishes", knowledge,
+    knowledge.get (".publishes").to_integer ());
+  containers::Integer agents ("agents", knowledge,
+    knowledge.get (".processes").to_integer ());
 
   // refer to variables used in receive filter
   containers::Integer_Vector counters (".counters", knowledge);
@@ -465,6 +468,7 @@ int main (int argc, char ** argv)
   // transfer the counters to the global receives variables
   counters.transfer_to (receives);
 
+#ifndef _MADARA_NO_KARL_
   // process the durations
   knowledge.evaluate (
     ".i[0->.processes)(.starts.{.i} => agent.{.id}.durations.{.i} = "
@@ -473,10 +477,50 @@ int main (int argc, char ** argv)
 
   // process the hertz rates
   knowledge.evaluate (
-    ".i[0->.processes)(agent.{.id}.receives.{.i} => agent.{.id}.rates.{.i} = "
+    ".i[0->.processes)(agent.{.id}.receives.{.i} => agent.{.id}.receive_hz.{.i} = "
     "  agent.{.id}.receives.{.i} / agent.{.id}.durations.{.i});"
   );
 
+  // process the hertz rates
+  knowledge.evaluate (
+    ".i[0->.processes)(agent.{.id}.total_hz += agent.{.id}.receive_hz.{.i};"
+    );
+
+  //for (size_t i = 0; i < (size_t)settings.processes; ++i)
+  //{
+  //  durations.set (i, end_times[i] - start_times[i]);
+
+  //  if (durations[i] > 0)
+  //  {
+  //    receive_hz.set (i, receives[i] / durations[i]);
+  //  }
+  //  else
+  //  {
+  //    receive_hz.set (i, 0);
+  //  }
+
+  //  total_hz += rates[i];
+  //}
+
+#else
+
+  for (size_t i = 0; i < (size_t)settings.processes; ++i)
+  {
+    durations.set (i, end_times[i] - start_times[i]);
+
+    if (durations[i] > 0)
+    {
+      receive_hz.set (i, receives[i] / durations[i]);
+    }
+    else
+    {
+      receive_hz.set (i, 0);
+    }
+
+    total_hz += rates[i];
+  }
+
+#endif
   knowledge.send_modifieds ();
 
   // close transport before cleaning up filters

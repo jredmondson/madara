@@ -34,12 +34,16 @@ transport::QoS_Transport_Settings settings;
 // initial logic is empty
 std::string logic;
 
+// filename to save knowledge base as KaRL to
+std::string save_location;
+
 // list of filenames
 String_Vector filenames;
 
 // print debug information
 bool debug (false);
 bool print_knowledge (false);
+bool after_wait (false);
 
 // wait information
 bool waiting (false);
@@ -52,7 +56,11 @@ void handle_arguments (int argc, char ** argv)
   {
     std::string arg1 (argv[i]);
 
-    if (arg1 == "-b" || arg1 == "--broadcast")
+    if (arg1 == "-a" || arg1 == "--after-wait")
+    {
+      after_wait = true;
+    }
+    else if (arg1 == "-b" || arg1 == "--broadcast")
     {
       if (i + 1 < argc)
       {
@@ -86,7 +94,7 @@ void handle_arguments (int argc, char ** argv)
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
         "\nProgram summary for %s [options] [Logic]:\n\n" \
         "Evaluates KaRL logic from command line or file.\n\noptions:\n" \
-        "  [-a|--no-latency]        do not test for latency (throughput only)\n" \
+        "  [-a|--after-wait]        Evaluate after wait, rather than before wait\n" \
         "  [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
         "  [-d|--domain domain]     the knowledge domain to send and listen to\n" \
         "  [--debug]                print all sent, received, and final knowledge\n" \
@@ -99,10 +107,10 @@ void handle_arguments (int argc, char ** argv)
         "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
         "  [-r|--reduced]           use the reduced message header\n" \
-        "  [-s|--size size]         size of data packet to send in bytes\n" \
+        "  [-s|--save file]         save the resulting knowledge base as karl\n" \
         "  [-t|--time time]         time to burst messages for throughput test\n" \
         "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
-        "  [-w|--wait seconds]      After evaluating all logics, wait for seconds\n" \
+        "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
         "\n",
         argv[0]);
       exit (0);
@@ -188,6 +196,13 @@ void handle_arguments (int argc, char ** argv)
     {
       settings.send_reduced_message_header = true;
     }
+    else if (arg1 == "-s" || arg1 == "--save")
+    {
+      if (i + 1 < argc)
+        save_location = argv[i + 1];
+
+      ++i;
+    }
     else if (arg1 == "-u" || arg1 == "--udp")
     {
       if (i + 1 < argc)
@@ -234,27 +249,30 @@ int main (int argc, char ** argv)
   // create a knowledge base and setup our id
   engine::Knowledge_Base knowledge (host, settings);
 
-  for (String_Vector::const_iterator i = filenames.begin ();
-       i != filenames.end (); ++i)
+  if (!after_wait)
   {
-    if (*i != "")
+    for (String_Vector::const_iterator i = filenames.begin ();
+      i != filenames.end (); ++i)
     {
-      std::string file_logic = utility::file_to_string (*i);
-      if (file_logic != "")
+      if (*i != "")
       {
+        std::string file_logic = utility::file_to_string (*i);
+        if (file_logic != "")
+        {
 #ifndef _MADARA_NO_KARL_
-        knowledge.evaluate (file_logic);
+          knowledge.evaluate (file_logic);
 #endif // _MADARA_NO_KARL_
+        }
       }
     }
-  }
-  
-  // evaluate any logic from the command line last
-  if (logic != "")
-  {
+
+    // evaluate any logic from the command line last
+    if (logic != "")
+    {
 #ifndef _MADARA_NO_KARL_
-    knowledge.evaluate (logic);
+      knowledge.evaluate (logic);
 #endif // _MADARA_NO_KARL_
+    }
   }
 
   // if user requests to wait, do so before the debug print
@@ -263,10 +281,41 @@ int main (int argc, char ** argv)
     utility::sleep (wait_time);
   }
 
+  if (after_wait)
+  {
+    for (String_Vector::const_iterator i = filenames.begin ();
+      i != filenames.end (); ++i)
+    {
+      if (*i != "")
+      {
+        std::string file_logic = utility::file_to_string (*i);
+        if (file_logic != "")
+        {
+#ifndef _MADARA_NO_KARL_
+          knowledge.evaluate (file_logic);
+#endif // _MADARA_NO_KARL_
+        }
+      }
+    }
+
+    // evaluate any logic from the command line last
+    if (logic != "")
+    {
+#ifndef _MADARA_NO_KARL_
+      knowledge.evaluate (logic);
+#endif // _MADARA_NO_KARL_
+    }
+  }
+
   // if the user requests debugging information, print final knowledge
   if (debug || print_knowledge)
   {
     knowledge.print_knowledge ();
+  }
+
+  if (save_location.size () > 0)
+  {
+    knowledge.save_as_karl (save_location);
   }
 
   return 0;
