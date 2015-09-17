@@ -1,8 +1,10 @@
 
 #include "madara/knowledge_engine/Knowledge_Base.h"
 #include "madara/logger/Global_Logger.h"
+#include "madara/utility/Utility.h"
 
 namespace logger = Madara::Logger;
+namespace utility = Madara::Utility;
 
 int ACE_TMAIN (int, ACE_TCHAR **)
 {
@@ -57,6 +59,20 @@ int ACE_TMAIN (int, ACE_TCHAR **)
 #else
   knowledge.print ("Testing print to stderr, syslog and file\n");
 #endif // _MADARA_NO_KARL_
+
+  logger::global_logger->clear ();
+  logger::global_logger->add_term ();
+
+  // set the timestamp format to default
+  logger::global_logger->set_timestamp_format ();
+
+  knowledge.print ("Testing timestamp format\n");
+
+  knowledge.print ("Sleeping for 5 seconds\n");
+
+  utility::sleep (5.0);
+
+  knowledge.print ("Finished sleeping. Done with test.\n");
 
   return 0;
 }

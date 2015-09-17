@@ -65,6 +65,7 @@ public class Logger extends MadaraJNI
   private native void jni_clear(long cptr);
   private native void jni_addFile(long cptr, java.lang.String filename);
   private native void jni_log(long cptr, int level, java.lang.String message);
+  private native void jni_setTimestampFormat(long cptr, java.lang.String format);
 
   private boolean manageMemory = true;
 
@@ -187,6 +188,15 @@ public class Logger extends MadaraJNI
     jni_log(getCPtr(), level, message);
   }
 
+  /**
+   * Sets the timestamp format for future messages
+   * @param  format the format to print timestamps for logging
+   */
+  public void setTimestampFormat(java.lang.String format)
+  {
+    jni_setTimestampFormat(getCPtr(), format);
+  }
+  
   /**
    * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
    * called before an instance gets garbage collected

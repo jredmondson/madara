@@ -948,7 +948,7 @@ namespace Madara
 
       /**
       * Attaches a logger to be used for printing
-      * @param the logger the context should lose
+      * @param logger  the logger the context should lose
       **/
       void attach_logger (Logger::Logger & logger) const;
 

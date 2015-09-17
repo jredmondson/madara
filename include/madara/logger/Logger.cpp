@@ -1,10 +1,12 @@
 #include "Logger.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include <time.h>
 
 Madara::Logger::Logger::Logger (bool log_to_terminal)
 : mutex_ (), level_ (LOG_ERROR),
-  term_added_ (log_to_terminal), syslog_added_ (false), tag_ ("madara")
+  term_added_ (log_to_terminal), syslog_added_ (false), tag_ ("madara"),
+  timestamp_format_ ("")
 {
   if (log_to_terminal)
   {
@@ -27,7 +29,25 @@ Madara::Logger::Logger::log (int level, const char * message, ...)
 
     // Android seems to not handle printf arguments correctly as best I can tell
     char buffer[10240];
-    vsnprintf (buffer, sizeof(buffer), message, argptr);
+    char * begin = (char *)buffer;
+    size_t remaining_buffer = sizeof (buffer);
+
+    if (this->timestamp_format_.size () > 0)
+    {
+      time_t rawtime;
+      struct tm * timeinfo;
+
+      time (&rawtime);
+      timeinfo = localtime (&rawtime);
+
+      size_t chars_written = strftime (
+        begin, remaining_buffer, timestamp_format_.c_str (), timeinfo);
+
+      remaining_buffer -= chars_written;
+      begin += chars_written;
+    }
+
+    vsnprintf (begin, remaining_buffer, message, argptr);
 
     va_end (argptr);
 

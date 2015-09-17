@@ -145,3 +145,17 @@ void JNICALL Java_com_madara_logger_Logger_jni_1log
   }
 }
 
+void JNICALL Java_com_madara_logger_Logger_jni_1setTimestampFormat
+(JNIEnv * env, jobject, jlong cptr, jstring format)
+{
+  Logger * current = (Logger *)cptr;
+
+  if (current)
+  {
+    const char * str_format = env->GetStringUTFChars (format, 0);
+
+    current->set_timestamp_format (str_format);
+
+    env->ReleaseStringUTFChars (format, str_format);
+  }
+}

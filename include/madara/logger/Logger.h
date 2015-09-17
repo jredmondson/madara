@@ -35,10 +35,10 @@
 
 /**
 * High-performance logger that performs conditional logging based on first arg
-* @param  conditional  the primary logger pointer to use (if not null)
-* @param  logger_ptr  the logger that will be used if conditional is true
-* @param  alt_logger  the secondary logger pointer to use (should be not null)
-* @param  level       the logging level
+* @param  conditional     the primary logger pointer to use (if not null)
+* @param  logger_ptr      the logger that will be used if conditional is true
+* @param  alt_logger_ptr  the secondary logger pointer to use (should be not null)
+* @param  level           the logging level
 **/
 #define madara_logger_cond_log_ptrs(conditional, logger_ptr, alt_logger_ptr, level, ...) \
           if (conditional && logger_ptr && level <= logger_ptr->get_level ()) \
@@ -48,10 +48,10 @@
 
 /**
 * High-performance logger that performs conditional logging based on first arg
-* @param  conditional  the primary logger pointer to use (if not null)
-* @param  logger  the logger that will be used if conditional is true
-* @param  alt_logger  the secondary logger pointer to use (should be not null)
-* @param  level       the logging level
+* @param  conditional     the primary logger pointer to use (if not null)
+* @param  logger          the logger that will be used if conditional is true
+* @param  alt_logger_ptr  the secondary logger pointer to use (should be not null)
+* @param  level           the logging level
 **/
 #define madara_logger_cond_log(conditional, logger, alt_logger_ptr, level, ...) \
           if (conditional && level <= logger.get_level ()) \
@@ -149,6 +149,13 @@ namespace Madara
        **/
       void clear (void);
 
+      /**
+       * Sets timestamp format
+       * @param  format  the format of the timestamp. See C++
+       *                 strftime definition for common usage.
+       **/
+      void set_timestamp_format (const std::string & format = "%x %X: ");
+
     private:
 
       /// guard for access and changes
@@ -174,6 +181,9 @@ namespace Madara
 
       /// the tag used for logging to system logs
       std::string tag_;
+
+      /// the timestamp format. Default is "" for no timestamp
+      std::string timestamp_format_;
     };
   }
 }

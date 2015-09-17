@@ -53,6 +53,9 @@ double publish_time = 10.0;
 // payload size to burst
 unsigned int data_size = 1000;
 
+// unlimited publish hertz by default
+double publish_hertz = 0.0;
+
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
 {
@@ -190,12 +193,22 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
-    else if (arg1 == "-z" || arg1 == "--read-hertz")
+    else if (arg1 == "-z" || arg1 == "--pub-hertz")
     {
       if (i + 1 < argc)
       {
         std::stringstream buffer (argv[i + 1]);
-        buffer >> settings.read_thread_hertz;
+        buffer >> publish_hertz;
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-0" || arg1 == "--deadline")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> settings.deadline;
       }
 
       ++i;
@@ -221,7 +234,8 @@ void handle_arguments (int argc, char ** argv)
         " [-s|--size size]         size of data packet to send in bytes\n" \
         " [-t|--time time]         time to burst messages for throughput test\n" \
         " [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
-        " [-z|--read-hertz hertz]  read thread hertz speed\n" \
+        " [-z|--pub-hertz hertz]   publish hertz speed\n" \
+        " [-0|--deadline seconds]  the deadline for dropping messages from a pub\n" \
         "\n",
         argv[0]);
       exit (0);

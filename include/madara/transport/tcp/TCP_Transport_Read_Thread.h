@@ -38,8 +38,6 @@ namespace Madara
       * @param    id      host:port identifier of this process, to allow for
       *                   rejection of duplicates
       * @param    addresses    the ACE socket addresses to communicate with
-      * @param    write_socket    socket for sending
-      * @param    read_socket    socket for receiving
       * @param    send_monitor    bandwidth monitor for enforcing send limits
       * @param    receive_monitor    bandwidth monitor for enforcing
       *                              receive limits

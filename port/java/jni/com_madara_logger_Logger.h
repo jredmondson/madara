@@ -96,6 +96,15 @@ MADARA_Export void JNICALL Java_com_madara_logger_Logger_jni_1addFile
 MADARA_Export void JNICALL Java_com_madara_logger_Logger_jni_1log
 (JNIEnv *, jobject, jlong, jint, jstring);
 
+/*
+* Class:     com_madara_logger_Logger
+* Method:    jni_setTimestampFormat
+* Signature: (JLjava/lang/String;)V
+*/
+MADARA_Export void JNICALL Java_com_madara_logger_Logger_jni_1setTimestampFormat
+(JNIEnv *, jobject, jlong, jstring);
+
+
 #ifdef __cplusplus
 }
 #endif

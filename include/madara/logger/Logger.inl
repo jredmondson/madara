@@ -94,4 +94,12 @@ Madara::Logger::Logger::clear (void)
   files_.clear ();
 }
 
+inline void
+Madara::Logger::Logger::set_timestamp_format (const std::string & format)
+{
+  Guard guard (mutex_);
+
+  this->timestamp_format_ = format;
+}
+
 #endif // _MADARA_LOGGER_LOGGER_INL_
