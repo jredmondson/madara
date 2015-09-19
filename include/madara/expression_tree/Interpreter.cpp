@@ -3982,7 +3982,7 @@ Symbol *& returnableInput)
         handled, accumulated_precedence, substr_list);
     }
 
-    context.get_logger ().log (Logger::LOG_DETAILED,
+    madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
       "Array reference created at %s\n",
       substr.c_str ());
 
@@ -4026,7 +4026,7 @@ Symbol *& returnableInput)
     return;
   }
 
-  context.get_logger ().log (Logger::LOG_DETAILED,
+  madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
     "Within input string, the for loop delimiter begins at %z"
     " and ends at %z (should be at least 1). Loop construct begins at "
     "%z and ends at %z",
@@ -4040,7 +4040,7 @@ Symbol *& returnableInput)
   {
     // this is an error. Essentially, it means the user did not close the
     // for loop.
-    context.get_logger ().log (Logger::LOG_EMERGENCY,
+    madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR:: No closing delimiter (']' or ')')"
       " has been specified on the for loop.\n");
   }
@@ -4069,7 +4069,7 @@ Symbol *& returnableInput)
           handled, accumulated_precedence, substr_list);
       }
 
-      context.get_logger ().log (Logger::LOG_DETAILED,
+      madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
         "Precondition is set to %s\n", substr.c_str ());
 
       // we have a precondition
@@ -4081,7 +4081,7 @@ Symbol *& returnableInput)
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_DETAILED,
+      madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
         "For loop:: No loop precondition was specified\n");
     }
 
@@ -4099,7 +4099,7 @@ Symbol *& returnableInput)
           handled, accumulated_precedence, substr_list);
       }
 
-      context.get_logger ().log (Logger::LOG_DETAILED,
+      madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
         "Postcondition is set to %s\n", substr.c_str ());
 
       // we have a postcondition
@@ -4112,7 +4112,7 @@ Symbol *& returnableInput)
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_DETAILED,
+      madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
         "For loop::No loop special increment was specified\n");
     }
 
@@ -4132,7 +4132,7 @@ Symbol *& returnableInput)
       // we have a condition
       if (!substr_list.empty ())
       {
-        context.get_logger ().log (Logger::LOG_DETAILED,
+        madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
           "Condition is set to %s\n", substr.c_str ());
 
         user_cond = substr_list.back ();
@@ -4140,13 +4140,13 @@ Symbol *& returnableInput)
       }
       else
       {
-        context.get_logger ().log (Logger::LOG_DETAILED,
+        madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
           "Condition was not set to %s\n", substr.c_str ());
       }
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_DETAILED,
+      madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
         "For loop:: No loop condition was specified\n");
     }
   }
@@ -4163,7 +4163,7 @@ Symbol *& returnableInput)
         handled, accumulated_precedence, substr_list);
     }
 
-    context.get_logger ().log (Logger::LOG_DETAILED,
+    madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
       "Condition only is set to %s\n", substr.c_str ());
 
     // we have a condition
@@ -4189,7 +4189,7 @@ Symbol *& returnableInput)
   {
     user_post = new Number (context.get_logger (),
       (Madara::Knowledge_Record::Integer)1);
-    context.get_logger ().log (Logger::LOG_DETAILED,
+    madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
       "Postcondition is set to 1 (def)\n");
   }
 
@@ -4202,7 +4202,7 @@ Symbol *& returnableInput)
     ++i;
     lastValidInput = 0;
 
-    context.get_logger ().log (Logger::LOG_DETAILED,
+    madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
       "Body is reading from %s\n",
       input.substr (i, input.size () - i).c_str ());
 
@@ -4229,13 +4229,13 @@ Symbol *& returnableInput)
 
       if (variable_node && number)
       {
-        context.get_logger ().log (Logger::LOG_DETAILED,
+        madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
           "For_Loop: Body is a simple assignment of variable %s to %s\n",
           variable_node->key_.c_str (), number->item_.to_string ().c_str ());
       }
       else
       {
-        context.get_logger ().log (Logger::LOG_DETAILED,
+        madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
           "For loop has a complex body\n");
       }
     }
@@ -4593,7 +4593,7 @@ Madara::Expression_Tree::Interpreter::system_call_insert (
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_EMERGENCY,
+      madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
         "System call %s is unsupported in this version of MADARA, "
         "defaulting to print_system_calls help menu.\n", name.c_str ());
 
@@ -4626,7 +4626,7 @@ Madara::Expression_Tree::Interpreter::system_call_insert (
   }
   else
   {
-    context.get_logger ().log (Logger::LOG_EMERGENCY,
+    madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
       "System call %s does not have appropriate parentheses\n", name.c_str ());
   }
 
@@ -4770,14 +4770,14 @@ Madara::Expression_Tree::Symbol *op,
         Both * parent_both = dynamic_cast <Both *> (parent);
         if (parent_both)
         {
-          context.get_logger ().log (Logger::LOG_WARNING,
+          madara_logger_log (context.get_logger (), Logger::LOG_WARNING,
             "KARL COMPILE WARNING: Empty statements between ';' may"
             " cause slower execution, attempting to prune away the extra "
             "statement\n");
         }
         else
         {
-          context.get_logger ().log (Logger::LOG_WARNING,
+          madara_logger_log (context.get_logger (), Logger::LOG_WARNING,
             "KARL COMPILE WARNING: Binary operation has no left child. "
             "Inserting a zero\n");
 
@@ -4791,7 +4791,7 @@ Madara::Expression_Tree::Symbol *op,
       // something like 5 ! 3, which has no meaning. This is a compile error.
       if (parent_unary && parent->left_)
       {
-        context.get_logger ().log (Logger::LOG_EMERGENCY,
+        madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
           "KARL COMPILE ERROR: Unary operation shouldn't have a left child\n");
 
         exit (-1);
@@ -4806,7 +4806,7 @@ Madara::Expression_Tree::Symbol *op,
           // This is a compile error. Unary cannot have a left
           // child, and that is the only way that being at this
           // point would make sense.
-          context.get_logger ().log (Logger::LOG_EMERGENCY,
+          madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
             "KARL COMPILE ERROR: unary operation shouldn't have a left child\n");
 
           exit (-1);
@@ -4935,7 +4935,7 @@ bool build_argument_list)
         op = new Variable_Increment (new Variable (".MADARA_I", context),
           Madara::Knowledge_Record (), 0, context);
 
-        context.get_logger ().log (Logger::LOG_WARNING,
+        madara_logger_log (context.get_logger (), Logger::LOG_WARNING,
           "KARL COMPILE WARNING (+=): "
           "Assignments must have a variable left hand side. Using .MADARA_I by "
           "default, but this is likely a major error in the expression.\n");
@@ -4978,7 +4978,7 @@ bool build_argument_list)
         op = new Variable_Decrement (new Variable (".MADARA_I", context),
           Madara::Knowledge_Record (), 0, context);
 
-        context.get_logger ().log (Logger::LOG_WARNING,
+        madara_logger_log (context.get_logger (), Logger::LOG_WARNING,
           "KARL COMPILE WARNING (-=): "
           "Assignments must have a variable left hand side. Using .MADARA_I by "
           "default, but this is likely a major error in the expression.\n");
@@ -5017,7 +5017,7 @@ bool build_argument_list)
         op = new Variable_Multiply (new Variable (".MADARA_I", context),
           Madara::Knowledge_Record (), 0, context);
 
-        context.get_logger ().log (Logger::LOG_WARNING,
+        madara_logger_log (context.get_logger (), Logger::LOG_WARNING,
           "KARL COMPILE WARNING (*=): "
           "Assignments must have a variable left hand side. Using .MADARA_I by "
           "default, but this is likely a major error in the expression.\n");
@@ -5090,7 +5090,7 @@ bool build_argument_list)
           op = new Variable_Divide (new Variable (".MADARA_I", context),
             Madara::Knowledge_Record (), 0, context);
 
-          context.get_logger ().log (Logger::LOG_WARNING,
+          madara_logger_log (context.get_logger (), Logger::LOG_WARNING,
             "KARL COMPILE WARNING (/=): "
             "Assignments must have a variable left hand side. Using .MADARA_I by "
             "default, but this is likely a major error in the expression.\n");
@@ -5189,7 +5189,7 @@ bool build_argument_list)
     else
     {
       // error. We currently don't allow logical and (A & B)
-      context.get_logger ().log (Logger::LOG_EMERGENCY,
+      madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: "
         "Logical And (&) not available. " \
         "You may want to use && instead in %s.\n", input.c_str ());
@@ -5213,7 +5213,7 @@ bool build_argument_list)
     else
     {
       // error. We don't currently support logical or
-      context.get_logger ().log (Logger::LOG_EMERGENCY,
+      madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: "
         "Logical And (|) not available. " \
         "You may want to use || instead in %s.\n", input.c_str ());
@@ -5365,7 +5365,7 @@ bool & handled, int & accumulated_precedence,
 
   if (!closed)
   {
-    context.get_logger ().log (Logger::LOG_EMERGENCY,
+    madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: "
       "Forgot to close parenthesis in %s.\n", input.c_str ());
   }
@@ -5374,7 +5374,7 @@ bool & handled, int & accumulated_precedence,
   {
     if (list.size () > 1)
     {
-      context.get_logger ().log (Logger::LOG_EMERGENCY,
+      madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: "
         "A parenthesis was closed, leaving multiple list items (there should "
         "be a max of 1) in %s.\n", input.c_str ());
@@ -5443,7 +5443,7 @@ Madara::Expression_Tree::Interpreter::handle_parenthesis (
 
   if (!build_argument_list && !closed)
   {
-    context.get_logger ().log (Logger::LOG_EMERGENCY,
+    madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: "
       "Forgot to close parenthesis in %s.\n", input.c_str ());
   }
@@ -5471,7 +5471,7 @@ Madara::Expression_Tree::Interpreter::handle_parenthesis (
   {
     if (list.size () > 1)
     {
-      context.get_logger ().log (Logger::LOG_EMERGENCY,
+      madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: "
         "A parenthesis was closed, leaving multiple list items (there should "
         "be a max of 1) in %s.\n", input.c_str ());
@@ -5519,14 +5519,14 @@ Madara::Expression_Tree::Interpreter::interpret (
     {
       if (input[i] == ')')
       {
-        context.get_logger ().log (Logger::LOG_EMERGENCY,
+        madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
           "KARL COMPILE ERROR: "
           "You have included too many closing parentheses in %s \n",
           input.c_str ());
       }
       else
       {
-        context.get_logger ().log (Logger::LOG_EMERGENCY,
+        madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
           "KARL COMPILE ERROR: "
           "Compilation is spinning at %d in %s\n", i, input.c_str ());
       }

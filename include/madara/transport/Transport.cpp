@@ -91,7 +91,7 @@ Madara::Transport::process_received_update (
   // tell the receive bandwidth monitor about the transaction
   receive_monitor.add (bytes_read);
 
-  context.get_logger ().log (Logger::LOG_MAJOR,
+  madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
     "%s:" \
     " Receive bandwidth = %" PRIu64 " B/s\n",
     print_prefix,
@@ -101,7 +101,7 @@ Madara::Transport::process_received_update (
   bool is_fragment = false;
   bool previously_defragged = false;
 
-  context.get_logger ().log (Logger::LOG_MAJOR,
+  madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
     "%s:" \
     " calling decode filters on %" PRIu32 " bytes\n",
     print_prefix, bytes_read);
@@ -110,7 +110,7 @@ Madara::Transport::process_received_update (
   bytes_read = (uint32_t)settings.filter_decode ((unsigned char *)buffer,
     max_buffer_size, max_buffer_size);
 
-  context.get_logger ().log (Logger::LOG_MAJOR,
+  madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
     "%s:" \
     " Decoding resulted in %" PRIu32 " final bytes\n",
     print_prefix, bytes_read);
@@ -128,7 +128,7 @@ Madara::Transport::process_received_update (
   if (bytes_read > Reduced_Message_Header::static_encoded_size () &&
       Reduced_Message_Header::reduced_message_header_test (buffer))
   {
-    context.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " processing reduced KaRL message from %s\n",
       print_prefix,
@@ -140,7 +140,7 @@ Madara::Transport::process_received_update (
   else if (bytes_read > Message_Header::static_encoded_size () &&
     Message_Header::message_header_test (buffer))
   {
-    context.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " processing KaRL message from %s\n",
       print_prefix,
@@ -151,7 +151,7 @@ Madara::Transport::process_received_update (
   else if (bytes_read > Fragment_Message_Header::static_encoded_size () &&
     Fragment_Message_Header::fragment_message_header_test (buffer))
   {
-    context.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " processing KaRL message from %s\n",
       print_prefix,
@@ -162,7 +162,7 @@ Madara::Transport::process_received_update (
   }
   else
   {
-    context.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " dropping non-KaRL message from %s\n",
       print_prefix,
@@ -175,7 +175,7 @@ Madara::Transport::process_received_update (
 
   if (header->size < bytes_read)
   {
-    context.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " Message header.size (%" PRIu64 " bytes) is less than actual"
       " bytes read (%" PRIu32 " bytes). Dropping message.\n",
@@ -188,7 +188,7 @@ Madara::Transport::process_received_update (
       exists (header->originator, header->clock,
       ((Fragment_Message_Header *)header)->update_number, settings.fragment_map))
   {
-    context.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " Fragment already exists in fragment map. Dropping.\n",
       print_prefix);
@@ -201,7 +201,7 @@ Madara::Transport::process_received_update (
     // reject the message if it is us as the originator (no update necessary)
     if (id == header->originator)
     {
-      context.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " dropping message from ourself\n",
         print_prefix);
@@ -210,7 +210,7 @@ Madara::Transport::process_received_update (
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_DETAILED,
+      madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
         "%s:" \
         " remote id (%s) is not our own\n",
         print_prefix,
@@ -219,14 +219,14 @@ Madara::Transport::process_received_update (
 
     if (settings.is_trusted (remote_host))
     {
-      context.get_logger ().log (Logger::LOG_DETAILED,
+      madara_logger_log (context.get_logger (), Logger::LOG_DETAILED,
         "%s: remote id (%s) is trusted\n",
         print_prefix,
         remote_host);
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " dropping message from untrusted peer (%s\n",
         print_prefix,
@@ -240,7 +240,7 @@ Madara::Transport::process_received_update (
         
     if (settings.is_trusted (originator))
     {
-      context.get_logger ().log (Logger::LOG_MINOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
         "%s:" \
         " originator (%s) is trusted\n",
         print_prefix,
@@ -248,7 +248,7 @@ Madara::Transport::process_received_update (
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " dropping message from untrusted originator (%s)\n",
         print_prefix,
@@ -260,7 +260,7 @@ Madara::Transport::process_received_update (
     // reject the message if it is from a different domain
     if (settings.domains != header->domain)
     {
-      context.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " remote id (%s) in a different domain (%s). Dropping message.\n",
         print_prefix,
@@ -272,7 +272,7 @@ Madara::Transport::process_received_update (
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_MINOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
         "%s:" \
         " remote id (%s) message is in our domain\n",
         print_prefix,
@@ -287,7 +287,7 @@ Madara::Transport::process_received_update (
     Fragment_Message_Header * frag_header =
       dynamic_cast <Fragment_Message_Header *> (header);
 
-    context.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " Processing fragment %" PRIu32 " of %s:%" PRIu64 ".\n",
       print_prefix, frag_header->update_number,
@@ -311,7 +311,7 @@ Madara::Transport::process_received_update (
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " Message has been pieced together from fragments. Processing...\n",
         print_prefix);
@@ -330,7 +330,7 @@ Madara::Transport::process_received_update (
         // check the buffer for a reduced message header
         if (Reduced_Message_Header::reduced_message_header_test (buffer))
         {
-          context.get_logger ().log (Logger::LOG_MINOR,
+          madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
             "%s:" \
             " processing reduced KaRL message from %s\n",
             print_prefix,
@@ -342,7 +342,7 @@ Madara::Transport::process_received_update (
         }
         else if (Message_Header::message_header_test (buffer))
         {
-          context.get_logger ().log (Logger::LOG_MINOR,
+          madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
             "%s:" \
             " processing KaRL message from %s\n",
             print_prefix,
@@ -377,7 +377,7 @@ Madara::Transport::process_received_update (
 
       if (latency > deadline)
       {
-        context.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
           "%s:" \
           " deadline violation (latency is %" PRIu64 ", deadline is %f).\n",
           print_prefix,
@@ -388,7 +388,7 @@ Madara::Transport::process_received_update (
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_MINOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
         "%s:" \
         " Cannot compute message latency." \
         " Message header timestamp is in the future." \
@@ -398,7 +398,7 @@ Madara::Transport::process_received_update (
     }
   }
 
-  context.get_logger ().log (Logger::LOG_MINOR,
+  madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
     "%s:" \
     " iterating over the %" PRIu32 " updates\n",
     print_prefix,
@@ -416,7 +416,7 @@ Madara::Transport::process_received_update (
         settings.get_send_bandwidth_limit ()))
   {
     dropped = true;
-    context.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " Send monitor has detected violation of bandwidth limit." \
       " Dropping packet from rebroadcast list\n", print_prefix);
@@ -425,7 +425,7 @@ Madara::Transport::process_received_update (
     settings.get_total_bandwidth_limit ()))
   {
     dropped = true;
-    context.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " Receive monitor has detected violation of bandwidth limit." \
       " Dropping packet from rebroadcast list...\n", print_prefix);
@@ -433,13 +433,13 @@ Madara::Transport::process_received_update (
   else if (settings.get_participant_ttl () < header->ttl)
   {
     dropped = true;
-    context.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " Transport participant TTL is lower than header ttl." \
       " Dropping packet from rebroadcast list...\n", print_prefix);
   }
 
-  context.get_logger ().log (Logger::LOG_MAJOR,
+  madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
     "%s:" \
     " Applying %" PRIu32 " updates\n", print_prefix, header->updates);
 
@@ -451,7 +451,7 @@ Madara::Transport::process_received_update (
 
     if (buffer_remaining < 0)
     {
-      context.get_logger ().log (Logger::LOG_EMERGENCY,
+      madara_logger_log (context.get_logger (), Logger::LOG_EMERGENCY,
         "%s:" \
         " unable to process message. Buffer remaining is negative." \
         " Server is likely being targeted by custom KaRL tools.\n",
@@ -462,7 +462,7 @@ Madara::Transport::process_received_update (
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_MINOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
         "%s:" \
         " Applying receive filter to %s\n", print_prefix, key.c_str ());
 
@@ -470,7 +470,7 @@ Madara::Transport::process_received_update (
 
       if (record.exists ())
       {
-        context.get_logger ().log (Logger::LOG_MINOR,
+        madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
           "%s:" \
           " Filter results for %s were %s\n", print_prefix,
           key.c_str (), record.to_string ().c_str ());
@@ -479,7 +479,7 @@ Madara::Transport::process_received_update (
       }
       else
       {
-        context.get_logger ().log (Logger::LOG_MINOR,
+        madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
           "%s:" \
           " Filter resulted in dropping %s\n", print_prefix, key.c_str ());
       }
@@ -490,7 +490,7 @@ Madara::Transport::process_received_update (
   
   if (additionals.size () > 0)
   {
-    context.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " %lld additional records being handled after receive.\n", print_prefix,
       (long long)additionals.size ());
@@ -516,7 +516,7 @@ Madara::Transport::process_received_update (
   if (settings.get_number_of_receive_aggregate_filters () > 0
       && updates.size () > 0)
   {
-    context.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " Applying aggregate receive filters.\n", print_prefix);
 
@@ -525,20 +525,20 @@ Madara::Transport::process_received_update (
   }
   else
   {
-    context.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " No aggregate receive filters were applied...\n",
       print_prefix);
   }
 
-  context.get_logger ().log (Logger::LOG_MINOR,
+  madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
     "%s:" \
     " Locking the context to apply updates.\n", print_prefix);
 
   // lock the context
   context.lock ();
 
-  context.get_logger ().log (Logger::LOG_MINOR,
+  madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
     "%s:" \
     " Applying updates to context.\n", print_prefix);
 
@@ -554,7 +554,7 @@ Madara::Transport::process_received_update (
 
     if (result != 1)
     {
-      context.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " update %s=%s was rejected\n",
         print_prefix,
@@ -562,7 +562,7 @@ Madara::Transport::process_received_update (
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " update %s=%s was accepted\n",
         print_prefix,
@@ -580,7 +580,7 @@ Madara::Transport::process_received_update (
     transport_context.set_operation (
       Transport_Context::REBROADCASTING_OPERATION);
 
-    context.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " Applying rebroadcast filters to receive results.\n", print_prefix);
 
@@ -595,7 +595,7 @@ Madara::Transport::process_received_update (
       {
         if (i->second.to_string () != "")
         {
-          context.get_logger ().log (Logger::LOG_MINOR,
+          madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
             "%s:" \
             " Filter results for key %s were %s\n", print_prefix,
             i->first.c_str (), i->second.to_string ().c_str ());
@@ -604,7 +604,7 @@ Madara::Transport::process_received_update (
       }
       else
       {
-        context.get_logger ().log (Logger::LOG_MINOR,
+        madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
           "%s:" \
           " Filter resulted in dropping %s\n", print_prefix,
           i->first.c_str ());
@@ -619,7 +619,7 @@ Madara::Transport::process_received_update (
       rebroadcast_records[i->first] = i->second;
     }
 
-    context.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " Applying aggregate rebroadcast filters to %d records.\n",
       print_prefix, rebroadcast_records.size ());
@@ -632,13 +632,13 @@ Madara::Transport::process_received_update (
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_MINOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
         "%s:" \
         " No aggregate rebroadcast filters were applied...\n",
         print_prefix);
     }
 
-    context.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " Returning to caller with %d rebroadcast records.\n",
       print_prefix, rebroadcast_records.size ());
@@ -646,7 +646,7 @@ Madara::Transport::process_received_update (
   }
   else
   {
-    context.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " Rebroadcast packet was dropped...\n",
       print_prefix);
@@ -656,7 +656,7 @@ Madara::Transport::process_received_update (
   if (settings.on_data_received_logic.length () != 0)
   {
 #ifndef _MADARA_NO_KARL_
-    context.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
       "%s:" \
       " evaluating rules in %s\n",
       print_prefix,
@@ -668,7 +668,7 @@ Madara::Transport::process_received_update (
   }
   else
   {
-    context.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " no permanent rules were set\n",
       print_prefix);
@@ -714,14 +714,14 @@ Madara::Transport::prep_rebroadcast (
       int size = (int)(settings.queue_length - buffer_remaining);
       *message_size = Madara::Utility::endian_swap ((uint64_t)size);
 
-      context.get_logger ().log (Logger::LOG_MINOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
         "%s:" \
         " %" PRIu64 " bytes prepped for rebroadcast packet\n",
         print_prefix, size);
 
       result = size;
 
-      context.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " calling encode filters\n",
         print_prefix);
@@ -731,7 +731,7 @@ Madara::Transport::prep_rebroadcast (
     }
     else
     {
-      context.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context.get_logger (), Logger::LOG_MAJOR,
         "%s:" \
         " Not enough buffer for rebroadcasting packet\n",
         print_prefix);
@@ -741,7 +741,7 @@ Madara::Transport::prep_rebroadcast (
   }
   else
   {
-    context.get_logger ().log (Logger::LOG_MINOR,
+    madara_logger_log (context.get_logger (), Logger::LOG_MINOR,
       "%s:" \
       " No rebroadcast necessary.\n",
       print_prefix);
