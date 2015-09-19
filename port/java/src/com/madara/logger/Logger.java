@@ -189,9 +189,12 @@ public class Logger extends MadaraJNI
   }
 
   /**
-   * Sets the timestamp format for future messages
-   * @param  format the format to print timestamps for logging
-   */
+   * Sets timestamp format. Uses 
+   * <a href="http://www.cplusplus.com/reference/ctime/strftime/">strftime</a>
+   * for formatting time.
+   * @param  format  the format of the timestamp. See C++
+   *                 strftime definition for common usage.
+   **/
   public void setTimestampFormat(java.lang.String format)
   {
     jni_setTimestampFormat(getCPtr(), format);

@@ -150,7 +150,9 @@ namespace Madara
       void clear (void);
 
       /**
-       * Sets timestamp format
+       * Sets timestamp format. Uses 
+       * <a href="http://www.cplusplus.com/reference/ctime/strftime/">strftime</a>
+       * for formatting time.
        * @param  format  the format of the timestamp. See C++
        *                 strftime definition for common usage.
        **/
