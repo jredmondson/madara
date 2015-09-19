@@ -391,7 +391,7 @@ Madara::Transport::process_received_update (
       context.get_logger ().log (Logger::LOG_MINOR,
         "%s:" \
         " Cannot compute message latency." \
-        " Message header timestamp is in the future.\n",
+        " Message header timestamp is in the future." \
         " message.timestamp = %" PRIu64 ", cur_timestamp = %" PRIu64 ".\n",
         print_prefix,
         header->timestamp, current_time); 
