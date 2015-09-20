@@ -137,7 +137,13 @@ namespace Madara
          * @param  target   record values at this instance
          **/
         void copy_to (Knowledge_Vector & target) const;
-        
+
+        /**
+        * Copies the vector elements to an STL vector
+        * @param  target   the target of the copy operation
+        **/
+        void copy_to (std::vector <type> & target) const;
+
         /**
          * Transfers elements from this vector to another
          * @param  other  the other vector to transfer to
