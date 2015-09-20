@@ -140,7 +140,8 @@ jstring JNICALL Java_com_madara_containers_Barrier_jni_1getName
  * Signature: (JJJLjava/lang/String;V
  */
 void JNICALL Java_com_madara_containers_Barrier_jni_1setName
-  (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
+(JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name,
+  jint id, jint participants)
 {
   Barrier * current = (Barrier *) cptr;
 
@@ -151,12 +152,12 @@ void JNICALL Java_com_madara_containers_Barrier_jni_1setName
     if (type == 0)
     {
       engine::Knowledge_Base * kb = (engine::Knowledge_Base *) context;
-      current->set_name (str_name, *kb);
+      current->set_name (str_name, *kb, (int)id, (int)participants);
     }
     else if (type == 1)
     {
       engine::Variables * vars = (engine::Variables *) context;
-      current->set_name (str_name, *vars);
+      current->set_name (str_name, *vars, (int)id, (int)participants);
     }
 
     env->ReleaseStringUTFChars (name, str_name);

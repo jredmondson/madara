@@ -135,25 +135,37 @@ namespace Madara
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
+         * @param id         the id of the barrier in the barrier ring
+         * @param participants  the number of participants in the barrier ring
          **/
         void set_name (const std::string & var_name,
-          Knowledge_Base & knowledge);
+          Knowledge_Base & knowledge,
+          int id,
+          int participants);
         
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
+         * @param id         the id of the barrier in the barrier ring
+         * @param participants  the number of participants in the barrier ring
          **/
         void set_name (const std::string & var_name,
-          Variables & knowledge);
+          Variables & knowledge,
+          int id,
+          int participants);
         
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
+         * @param id         the id of the barrier in the barrier ring
+         * @param participants  the number of participants in the barrier ring
          **/
         void set_name (const std::string & var_name,
-          Thread_Safe_Context & knowledge);
+          Thread_Safe_Context & knowledge,
+          int id,
+          int participants);
 
         /**
          * Sets the value of the variable

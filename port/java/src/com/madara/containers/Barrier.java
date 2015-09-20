@@ -61,7 +61,8 @@ public class Barrier extends BaseContainer
   private static native void jni_freeBarrier(long cptr);
   private native void jni_set(long cptr, long value);
   private native java.lang.String jni_getName(long cptr);
-  private native void jni_setName(long cptr, long type, long kb, java.lang.String name);
+  private native void jni_setName(long cptr, long type, long kb,
+    java.lang.String name, int id, int participants);
   private native java.lang.String jni_toString(long cptr);
   private native double jni_toDouble(long cptr);
   private native long jni_toLong(long cptr);
@@ -182,10 +183,13 @@ public class Barrier extends BaseContainer
    *
    * @param  kb      the knowledge base that contains the name
    * @param  name    the variable name
+   * @param id         the id of the barrier in the barrier ring
+   * @param participants  the number of participants in the barrier ring
    */
-  public void setName(KnowledgeBase kb, java.lang.String name)
+  public void setName(KnowledgeBase kb, java.lang.String name,
+    int id, int participants)
   {
-    jni_setName(getCPtr(), 0, kb.getCPtr (), name);
+    jni_setName(getCPtr(), 0, kb.getCPtr (), name, id, participants);
   }
 
   /**
@@ -193,10 +197,13 @@ public class Barrier extends BaseContainer
    *
    * @param  vars    the variables facade that contains the name
    * @param  name    the variable name
+   * @param id         the id of the barrier in the barrier ring
+   * @param participants  the number of participants in the barrier ring
    */
-  public void setName(Variables vars, java.lang.String name)
+  public void setName(Variables vars, java.lang.String name,
+    int id, int participants)
   {
-    jni_setName(getCPtr(), 1, vars.getCPtr (), name);
+    jni_setName(getCPtr(), 1, vars.getCPtr (), name, id, participants);
   }
 
   /**

@@ -203,7 +203,9 @@ Madara::Knowledge_Engine::Containers::Barrier::get_participants (void) const
 void
 Madara::Knowledge_Engine::Containers::Barrier::set_name (
   const std::string & var_name,
-  Knowledge_Base & knowledge)
+  Knowledge_Base & knowledge,
+  int id,
+  int participants)
 {
   Knowledge_Update_Settings keep_local (true);
   context_ = &(knowledge.get_context ());
@@ -220,7 +222,9 @@ Madara::Knowledge_Engine::Containers::Barrier::set_name (
 void
 Madara::Knowledge_Engine::Containers::Barrier::set_name (
   const std::string & var_name,
-  Variables & knowledge)
+  Variables & knowledge,
+  int id,
+  int participants)
 {
   Knowledge_Update_Settings keep_local (true);
   context_ = knowledge.get_context ();
@@ -237,7 +241,9 @@ Madara::Knowledge_Engine::Containers::Barrier::set_name (
 void
 Madara::Knowledge_Engine::Containers::Barrier::set_name (
   const std::string & var_name,
-  Thread_Safe_Context & knowledge)
+  Thread_Safe_Context & knowledge,
+  int id,
+  int participants)
 {
   Knowledge_Update_Settings keep_local (true);
   context_ = &knowledge;

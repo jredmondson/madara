@@ -95,12 +95,12 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_Barrier_jni_1getName
   (JNIEnv *, jobject, jlong);
 
 /*
- * Class:     com_madara_containers_Barrier
- * Method:    jni_setName
- * Signature: (JJJLjava/lang/String;)V
- */
+* Class:     com_madara_containers_Barrier
+* Method:    jni_setName
+* Signature: (JJJLjava/lang/String;II)V
+*/
 MADARA_Export void JNICALL Java_com_madara_containers_Barrier_jni_1setName
-  (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
+(JNIEnv *, jobject, jlong, jlong, jlong, jstring, jint, jint);
 
 /*
  * Class:     com_madara_containers_Barrier
