@@ -103,11 +103,51 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1set__JIJJ
 
 /*
 * Class:     com_madara_containers_Vector
-* Method:    jni_pushback
+* Method:    jni_pushbackLong
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushback
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLong
 (JNIEnv *, jobject, jlong, jlong);
+
+/*
+* Class:     com_madara_containers_Vector
+* Method:    jni_pushbackRecord
+* Signature: (JJ)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackRecord
+(JNIEnv *, jobject, jlong, jlong);
+
+/*
+* Class:     com_madara_containers_Vector
+* Method:    jni_pushbackDouble
+* Signature: (JD)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDouble
+(JNIEnv *, jobject, jlong, jdouble);
+
+/*
+* Class:     com_madara_containers_Vector
+* Method:    jni_pushbackDoubleArray
+* Signature: (J[D)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDoubleArray
+(JNIEnv *, jobject, jlong, jdoubleArray);
+
+/*
+* Class:     com_madara_containers_Vector
+* Method:    jni_pushbackLongArray
+* Signature: (J[J)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLongArray
+(JNIEnv *, jobject, jlong, jlongArray);
+
+/*
+* Class:     com_madara_containers_Vector
+* Method:    jni_pushbackString
+* Signature: (JLjava/lang/String;)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackString
+(JNIEnv *, jobject, jlong, jstring);
 
 /*
  * Class:     com_madara_containers_Vector

@@ -63,7 +63,12 @@ public class Vector extends BaseContainer
   private native void jni_setString(long cptr, int index, java.lang.String value);
   private native void jni_setDouble(long cptr, int index, double value);
   private native void jni_set(long cptr, int index, long type, long value);
-  private native void jni_pushback(long cptr, long value);
+  private native void jni_pushbackLong(long cptr, long value);
+  private native void jni_pushbackRecord(long cptr, long rptr);
+  private native void jni_pushbackDouble(long cptr, double value);
+  private native void jni_pushbackDoubleArray(long cptr, double [] value);
+  private native void jni_pushbackLongArray(long cptr, long [] value);
+  private native void jni_pushbackString(long cptr, java.lang.String value);
   private native java.lang.String jni_getName(long cptr);
   private native void jni_setName(long cptr, long type, long kb, java.lang.String name);
   private native long jni_get(long cptr, int index);
@@ -208,7 +213,52 @@ public class Vector extends BaseContainer
    */
   public void pushback(KnowledgeRecord value)
   {
-    jni_pushback(getCPtr(), value.getCPtr());
+    jni_pushbackRecord(getCPtr(), value.getCPtr());
+  }
+
+  /**
+   * Pushes a value to the end of the vector
+   * @param  value   new value to add to vector
+   */
+  public void pushback(java.lang.String value)
+  {
+    jni_pushbackString(getCPtr(), value);
+  }
+
+  /**
+   * Pushes a value to the end of the vector
+   * @param  value   new value to add to vector
+   */
+  public void pushback(long value)
+  {
+    jni_pushbackLong(getCPtr(), value);
+  }
+
+  /**
+   * Pushes a value to the end of the vector
+   * @param  value   new value to add to vector
+   */
+  public void pushback(long [] value)
+  {
+    jni_pushbackLongArray(getCPtr(), value);
+  }
+
+  /**
+   * Pushes a value to the end of the vector
+   * @param  value   new value to add to vector
+   */
+  public void pushback(double value)
+  {
+    jni_pushbackDouble(getCPtr(), value);
+  }
+
+  /**
+   * Pushes a value to the end of the vector
+   * @param  value   new value to add to vector
+   */
+  public void pushback(double [] value)
+  {
+    jni_pushbackDoubleArray(getCPtr(), value);
   }
 
   /**

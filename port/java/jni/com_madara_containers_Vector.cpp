@@ -52,6 +52,7 @@
 namespace engine = Madara::Knowledge_Engine;
 namespace containers = engine::Containers;
 typedef containers::Vector    Vector;
+typedef Madara::Knowledge_Record::Integer    Integer;
 
 /*
  * Class:     com_madara_containers_Vector
@@ -190,7 +191,7 @@ void JNICALL Java_com_madara_containers_Vector_jni_1set__JIJJ
   }
 }
 
-void JNICALL Java_com_madara_containers_Vector_jni_1pushback
+void JNICALL Java_com_madara_containers_Vector_jni_1pushbackRecord
 (JNIEnv *, jobject, jlong cptr, jlong value_ptr)
 {
   Vector * current = (Vector *)cptr;
@@ -202,6 +203,101 @@ void JNICALL Java_com_madara_containers_Vector_jni_1pushback
     current->push_back (*record);
   }
 }
+
+
+void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLong
+(JNIEnv *, jobject, jlong cptr, jlong value)
+{
+  Vector * current = (Vector *)cptr;
+
+  if (current)
+  {
+    current->push_back ((Integer)value);
+  }
+}
+
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDouble
+(JNIEnv *, jobject, jlong cptr, jdouble value)
+{
+  Vector * current = (Vector *)cptr;
+
+  if (current)
+  {
+    current->push_back ((double)value);
+  }
+}
+
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDoubleArray
+(JNIEnv * env, jobject, jlong cptr, jdoubleArray data)
+{
+  Vector * current = (Vector *)cptr;
+
+  if (current)
+  {
+    jsize len = env->GetArrayLength (data);
+    jboolean isCopy;
+    std::vector<double> dblVector (len);
+
+    jdouble* dblArray = env->GetDoubleArrayElements (data, &isCopy);
+
+    // copy elements to STL vector
+    for (int x = 0; x < len; x++)
+      dblVector[x] = dblArray[x];
+
+    current->push_back (dblVector);
+
+    if (isCopy)
+      env->ReleaseDoubleArrayElements (data, dblArray, JNI_ABORT);
+  }
+}
+
+/*
+* Class:     com_madara_containers_Vector
+* Method:    jni_pushbackLongArray
+* Signature: (J[J)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLongArray
+(JNIEnv * env, jobject, jlong cptr, jlongArray data)
+{
+  Vector * current = (Vector *)cptr;
+
+  if (current)
+  {
+    jsize len = env->GetArrayLength (data);
+    jboolean isCopy;
+    std::vector<double> dblVector (len);
+
+    jlong * longArray = env->GetLongArrayElements (data, &isCopy);
+
+    // copy elements to STL vector
+    for (int x = 0; x < len; x++)
+      dblVector[x] = longArray[x];
+
+    current->push_back (dblVector);
+
+    if (isCopy)
+      env->ReleaseLongArrayElements (data, longArray, JNI_ABORT);
+  }
+}
+
+/*
+* Class:     com_madara_containers_Vector
+* Method:    jni_pushbackString
+* Signature: (JLjava/lang/String;)V
+*/
+MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackString
+(JNIEnv * env, jobject, jlong cptr, jstring data)
+{
+  Vector * current = (Vector *)cptr;
+
+  if (current)
+  {
+    const char *nativeData = env->GetStringUTFChars (data, 0);
+    current->push_back (nativeData);
+    env->ReleaseStringUTFChars (data, nativeData);
+  }
+}
+
 
 /*
  * Class:     com_madara_containers_Vector
