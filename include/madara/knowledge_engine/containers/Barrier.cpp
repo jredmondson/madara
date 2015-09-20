@@ -214,6 +214,8 @@ Madara::Knowledge_Engine::Containers::Barrier::set_name (
   Guard guard (mutex_);
 
   name_ = var_name;
+  id_ = id;
+  participants_ = participants;
 
   this->build_var ();
   this->build_aggregate_barrier ();
@@ -233,6 +235,8 @@ Madara::Knowledge_Engine::Containers::Barrier::set_name (
   Guard guard (mutex_);
 
   name_ = var_name;
+  id_ = id;
+  participants_ = participants;
 
   this->build_var ();
   this->build_aggregate_barrier ();
@@ -252,6 +256,8 @@ Madara::Knowledge_Engine::Containers::Barrier::set_name (
   Guard guard (mutex_);
 
   name_ = var_name;
+  id_ = id;
+  participants_ = participants;
 
   this->build_var ();
   this->build_aggregate_barrier ();
