@@ -132,6 +132,12 @@ namespace Madara
         }
 
         /**
+        * Sets the barrier to a specific round
+        * @return the barrier round number
+        **/
+        void set (type value);
+
+        /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
