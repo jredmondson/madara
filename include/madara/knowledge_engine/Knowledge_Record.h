@@ -686,6 +686,16 @@ namespace Madara
     /**
       * Writes a Knowledge_Record instance to a buffer and updates
       * the amount of buffer room remaining.
+      *        
+      * Output Format:
+      *
+      * [key_size | key | type | value_size | value]<br />
+      * key_size = 32 bit unsigned integer, length of the key<br />
+      * key = key_size characters, the ASCII key<br />
+      * type = 32 bit unsigned integer, the type of value <br />
+      * size = 32 bit unsigned integer, number of elements of the type<br />
+      * value = the stored value
+      * 
       * @param     buffer     the readable buffer where data is stored
       * @param     key        the name of the variable
       * @param     buffer_remaining  the count of bytes remaining in the
