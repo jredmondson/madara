@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <cmath>
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
@@ -830,6 +831,12 @@ ACE_Time_Value Madara::Utility::sleep (const ACE_Time_Value & sleep_time)
   }
 
   return ACE_High_Res_Timer::gettimeofday () - current;
+}
+
+bool Madara::Utility::approx_equal (
+  double value1, double value2, double epsilon)
+{
+  return std::abs (value1 - value2) < epsilon;
 }
 
 bool

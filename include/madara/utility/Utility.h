@@ -345,6 +345,20 @@ namespace Madara
     MADARA_Export ACE_Time_Value sleep (const ACE_Time_Value & sleep_time);
 
     /**
+    * Checks two doubles for approximate equality. Doubles, unlike integers,
+    * are approximations of fractions. Consequently, two doubles cannot be
+    * checked for equality as easily and as portably as integers. To compare
+    * doubles for equality, use this function with an epsilon, which by
+    * default is accurate to the 10,000th (4 decimal places)
+    * @param  value1   the first value to compare, order does not matter
+    * @param  value2   the second value to compare, order does not matter
+    * @param  epsilon  the minimum difference between two values before
+    *                  equality does not hold.
+    **/
+    MADARA_Export bool approx_equal (
+      double value1, double value2, double epsilon = 0.0001);
+
+    /**
      * Checks if a file exists
      * @param filename   path and name of the file to open
      * @return true if file exists. false otherwise.
