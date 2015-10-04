@@ -19,15 +19,15 @@ typedef Madara::Knowledge_Record   Knowledge_Record;
 
 void test_flex_map (void)
 {
-  std::cout << "************* FLEX MAP: CREATING FLEX MAP*************\n";
+  std::cerr << "************* FLEX MAP: CREATING FLEX MAP*************\n";
   engine::Knowledge_Base knowledge;
   containers::Flex_Map map ("records", knowledge);
 
-  std::cout << "Creating record with name and age\n";
+  std::cerr << "Creating record with name and age\n";
   map["robert"]["name"] = "Robert Jenkins";
   map["robert"]["age"] = 49;
 
-  std::cout << "Creating Flex Map from index operator\n";
+  std::cerr << "Creating Flex Map from index operator\n";
   containers::Flex_Map robert_record = map["robert"];
 
   robert_record["salary"] = 30500.00;
@@ -36,96 +36,96 @@ void test_flex_map (void)
   containers::Map normal_map;
   robert_record.to_container (normal_map);
 
-  std::cout << "Checking for flex map creation test success:\n";
-  std::cout << "  Checking size of normal map creation... ";
+  std::cerr << "Checking for flex map creation test success:\n";
+  std::cerr << "  Checking size of normal map creation... ";
   if (normal_map.size () == 3)
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
 
-  std::cout << "  Checking elements of normal map...\n";
+  std::cerr << "  Checking elements of normal map...\n";
 
-  std::cout << "    Retrieving name...";
+  std::cerr << "    Retrieving name...";
   if (normal_map["name"] == "Robert Jenkins")
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
 
-  std::cout << "    Retrieving age...";
+  std::cerr << "    Retrieving age...";
   if (normal_map["age"] == Knowledge_Record::Integer (50))
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
 
-  std::cout << "    Retrieving salary...";
+  std::cerr << "    Retrieving salary...";
   if (normal_map["salary"] == 30500.00)
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
 
-  std::cout << "Adding names to the flex map\n";
+  std::cerr << "Adding names to the flex map\n";
   map["norman"]["name"] = "Norman Roberts";
   map["greg"]["name"] = "Gregory Shaw";
   map["rupert"]["name"] = "Rupert Glasgow";
   map["cassie"]["name"] = "Cassandra Collins";
 
-  std::cout << "Attempting to_map function for subkeys\n";
+  std::cerr << "Attempting to_map function for subkeys\n";
   std::vector<std::string> next_keys;
   std::map<std::string, Madara::Knowledge_Record> all_record_vars;
   knowledge.to_map ("records", ".", "", next_keys, all_record_vars);
 
-  std::cout << "  Size check on next keys and all records are a: ";
+  std::cerr << "  Size check on next keys and all records are a: ";
   if (next_keys.size () == 5 && all_record_vars.size () == 7)
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
 
   std::vector<std::string> sub_keys;
 
-  std::cout << "Attempting keys function on Flex_Map\n";
+  std::cerr << "Attempting keys function on Flex_Map\n";
   map.keys (sub_keys, true);
 
-  std::cout << "  Size check on flex map's sub keys: ";
+  std::cerr << "  Size check on flex map's sub keys: ";
   if (sub_keys.size () == 5)
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
 
-  std::cout << "  Checking context.to_map vs flex_map.keys: ";
+  std::cerr << "  Checking context.to_map vs flex_map.keys: ";
   if (sub_keys == next_keys)
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
 
-  std::cout << "Adding mixes of string and index keys to a flex map\n";
+  std::cerr << "Adding mixes of string and index keys to a flex map\n";
   map["robert"]["tickets"][0]["offense"] = "Slapping a seal";
   map["robert"]["tickets"][0]["fine"] = 120.00;
   map["robert"]["tickets"][1]["offense"] = "Calling an employee a hobbit";
@@ -134,68 +134,68 @@ void test_flex_map (void)
   map["cassie"]["tickets"][0]["fine"] = 250.00;
   map["cassie"]["tickets"][0]["notes"] = "Victim Robert claimed it was worth it";
 
-  std::cout << "  Checking existence of new indexed items in flex map: ";
+  std::cerr << "  Checking existence of new indexed items in flex map: ";
   if (robert_record.exists ("tickets.0.offense")
     && robert_record.exists ("tickets.1.offense")
     && map.exists ("cassie.tickets.0.offense")
     && map.exists ("cassie.tickets.0.notes"))
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
 
-  std::cout << "  Checking existence of subkeys in flex map: ";
+  std::cerr << "  Checking existence of subkeys in flex map: ";
   if (robert_record.exists ("tickets", true)
     && robert_record.exists ("name", true)
     && map.exists ("cassie", true)
     && map.exists ("greg", true)
     && map.exists ("norman", true))
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
 
-  std::cout << "Changing delimiter of top level map: \n";
+  std::cerr << "Changing delimiter of top level map: \n";
   map.set_delimiter (";");
 
-  std::cout << "  Checking subkeys of top level map: ";
+  std::cerr << "  Checking subkeys of top level map: ";
   map.keys (sub_keys, true);
 
   if (sub_keys.size () == 0)
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
 
 
-  std::cout << "Resetting delimiter of top level map: \n";
+  std::cerr << "Resetting delimiter of top level map: \n";
   map.set_delimiter (".");
 
-  std::cout << "  Checking subkeys of top level map: ";
+  std::cerr << "  Checking subkeys of top level map: ";
   map.keys (sub_keys, true);
 
   if (sub_keys.size () != 0)
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
 }
 
 void test_vector (void)
 {
-  std::cout << "************* VECTOR: CREATING VECTOR*************\n";
+  std::cerr << "************* VECTOR: CREATING VECTOR*************\n";
   engine::Knowledge_Base knowledge;
   containers::Vector vector ("test_vector", knowledge, 10);
   size_t size = vector.size ();
@@ -205,50 +205,50 @@ void test_vector (void)
 
   knowledge.clear_modifieds ();
   
-  std::cout << "Vector contents (modified) after clear\n";
+  std::cerr << "Vector contents (modified) after clear\n";
   
 
   vector.set (2, "value.at.2");
   
 
 
-  std::cout << "Vector results:\n";
+  std::cerr << "Vector results:\n";
 
   for (size_t i = 0; i < size; ++i)
   {
-    std::cout << "  ";
-    std::cout << vector[i];
-    std::cout << "\n";
+    std::cerr << "  ";
+    std::cerr << vector[i];
+    std::cerr << "\n";
   }
   
-  std::cout << "\n";
+  std::cerr << "\n";
 
   if (size != 10)
-    std::cout << "FAIL. Vector.size != 10\n";
+    std::cerr << "FAIL. Vector.size != 10\n";
   else
-    std::cout << "SUCCESS. Vector.size == 10\n";
+    std::cerr << "SUCCESS. Vector.size == 10\n";
 
   if (vector[1] == "value.at.1" &&
       vector[7] == 7.7)
-    std::cout << "SUCCESS. Vector[1] and [7] were set and retrieved.\n";
+    std::cerr << "SUCCESS. Vector[1] and [7] were set and retrieved.\n";
   else
-    std::cout << "FAIL. Vector[1] and [7] were not set and retrieved.\n";
+    std::cerr << "FAIL. Vector[1] and [7] were not set and retrieved.\n";
   
   if (vector.get_name () == "test_vector")
-    std::cout << "SUCCESS. vector.name () returned test_vector.\n";
+    std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
   else
-    std::cout << "FAIL. vector.name () did not return test_vector.\n";
+    std::cerr << "FAIL. vector.name () did not return test_vector.\n";
 
-  std::cout << "Resizing to 7 elements.\n";
+  std::cerr << "Resizing to 7 elements.\n";
 
   vector.resize (7);
 
   
   if (vector[1].to_string () == "value.at.1" &&
       knowledge.get ("test_vector.7") != 7.7 && vector.size () == 7)
-    std::cout << "SUCCESS. Vector [7] no longer exists.\n";
+    std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else
-    std::cout << "FAIL. Vector [7] still exists after resize.\n";
+    std::cerr << "FAIL. Vector [7] still exists after resize.\n";
   
   vector.resize (12);
   
@@ -258,30 +258,39 @@ void test_vector (void)
   if (vector[1] == "value.at.1" &&
       vector[8] == "value.at.8" &&
       vector[9] == "value.at.9" && vector.size () == 12)
-    std::cout << "SUCCESS. Resize to 12 was successful.\n";
+    std::cerr << "SUCCESS. Resize to 12 was successful.\n";
   else
-    std::cout << "FAIL. Resize to 12 was unsuccessful.\n";
+    std::cerr << "FAIL. Resize to 12 was unsuccessful.\n";
   
-  std::cout << "Copying records from vector to a knowledge vector.\n";
-  std::cout << "Printing resulting knowledge vector.\n";
+  std::cerr << "Copying records from vector to a knowledge vector.\n";
 
   vector.set (11, "value.at.11");
+
+  std::cerr << "Printing results from knowledge base.\n";
+  knowledge.print ();
 
   Madara::Knowledge_Vector records;
   vector.copy_to (records);
 
+  std::cerr << "Printing resulting knowledge vector.\n";
   for (size_t i = 0; i < records.size (); ++i)
   {
-    std::cout << "  " << i << ": " << records[i] << "\n";
+    std::cerr << "  " << i << ": " << records[i] << "\n";
   }
   
-  std::cout << "Printing results from knowledge base.\n";
+  std::cerr << "Printing results from knowledge base.\n";
+  knowledge.print ();
+
+  std::cerr << "Resizing vector to zero elements.\n";
+  vector.resize (0);
+
+  std::cerr << "Printing results from knowledge base.\n";
   knowledge.print ();
 }
 
 void test_map (void)
 {
-  std::cout << "************* MAP: SETTING KEY:VALUE PAIRS*************\n";
+  std::cerr << "************* MAP: SETTING KEY:VALUE PAIRS*************\n";
   engine::Knowledge_Base knowledge;
   std::vector <std::string> keys;
   containers::Map map ("test_map", knowledge);
@@ -294,58 +303,58 @@ void test_map (void)
   size_t size = map.size ();
   map.keys (keys);
   
-  std::cout << "\nMap results:\n";
+  std::cerr << "\nMap results:\n";
 
   for (std::vector <std::string>::iterator i = keys.begin ();
        i != keys.end (); ++i)
-    std::cout << "  " << *i << "=" << map[*i] << "\n";
+    std::cerr << "  " << *i << "=" << map[*i] << "\n";
   
-  std::cout << "\n";
+  std::cerr << "\n";
 
   if (size != 4)
-    std::cout << "FAIL. Map.size != 4\n";
+    std::cerr << "FAIL. Map.size != 4\n";
   else
-    std::cout << "SUCCESS. Map.size == 4\n";
+    std::cerr << "SUCCESS. Map.size == 4\n";
   
   if (keys.size () != 4)
-    std::cout << "FAIL. Map.keys ().size != 4\n";
+    std::cerr << "FAIL. Map.keys ().size != 4\n";
   else
-    std::cout << "SUCCESS. Map.keys ().size == 4\n";
+    std::cerr << "SUCCESS. Map.keys ().size == 4\n";
   
   if (map["name"].to_string () == "Rob Roy" &&
       map["occupation"].to_string () == "Lord of the MacGregors" &&
       map["age"].to_integer () == 63 &&
       map["wives"].to_integer () == 1)
-    std::cout << "SUCCESS. map values were set and retrieved.\n";
+    std::cerr << "SUCCESS. map values were set and retrieved.\n";
   else
-    std::cout << "FAIL. map values were not set and retrieved.\n";
+    std::cerr << "FAIL. map values were not set and retrieved.\n";
   
-  std::cout << "************* MAP: COPYING MAP FROM KB*************\n";
+  std::cerr << "************* MAP: COPYING MAP FROM KB*************\n";
   containers::Map copy ("test_map", knowledge);
   
   size = map.size ();
   map.keys (keys);
   
   if (size != 4)
-    std::cout << "FAIL. Map Copy.size != 4\n";
+    std::cerr << "FAIL. Map Copy.size != 4\n";
   else
-    std::cout << "SUCCESS. Map Copy.size == 4\n";
+    std::cerr << "SUCCESS. Map Copy.size == 4\n";
   
   if (keys.size () != 4)
-    std::cout << "FAIL. Map Copy.keys ().size != 4\n";
+    std::cerr << "FAIL. Map Copy.keys ().size != 4\n";
   else
-    std::cout << "SUCCESS. Map Copy.keys ().size == 4\n";
+    std::cerr << "SUCCESS. Map Copy.keys ().size == 4\n";
   
   if (copy["name"].to_string () == "Rob Roy" &&
       copy["occupation"].to_string () == "Lord of the MacGregors" &&
       copy["age"].to_integer () == 63 &&
       copy["wives"].to_integer () == 1)
-    std::cout << "SUCCESS. map copy values were set and retrieved.\n";
+    std::cerr << "SUCCESS. map copy values were set and retrieved.\n";
   else
-    std::cout << "FAIL. map copy values were not set and retrieved.\n";
+    std::cerr << "FAIL. map copy values were not set and retrieved.\n";
 
   
-  std::cout << "************* MAP: SYNCING KEYS*************\n";
+  std::cerr << "************* MAP: SYNCING KEYS*************\n";
 
   knowledge.set ("test_map.wife", "Mary Helen MacGregor");
 
@@ -353,71 +362,71 @@ void test_map (void)
 
   if (map.exists ("wife") && !copy.exists ("wife") &&
       new_keys.size () == 1 && new_keys[0] == "wife")
-    std::cout << "SUCCESS. map.sync_keys () worked.\n";
+    std::cerr << "SUCCESS. map.sync_keys () worked.\n";
   else
-    std::cout << "FAIL. map.sync_keys () did not work.\n";
+    std::cerr << "FAIL. map.sync_keys () did not work.\n";
 
   if (map.get_name () == "test_map" && copy.get_name () == "test_map")
-    std::cout << "SUCCESS. map.name () returned test_map.\n";
+    std::cerr << "SUCCESS. map.name () returned test_map.\n";
   else
-    std::cout << "FAIL. map.name () did not return test_map.\n";
+    std::cerr << "FAIL. map.name () did not return test_map.\n";
 
   knowledge.print ();
 }
 
 void test_integer (void)
 {
-  std::cout << "************* INTEGER: GETTING AND SETTING*************\n";
+  std::cerr << "************* INTEGER: GETTING AND SETTING*************\n";
   engine::Knowledge_Base knowledge;
   containers::Integer my_int ("my_int", knowledge);
 
-  std::cout << "Integer value: " << *my_int << "\n";
+  std::cerr << "Integer value: " << *my_int << "\n";
   
-  std::cout << "Changing value...\n";
+  std::cerr << "Changing value...\n";
 
   my_int = 15;
   
-  std::cout << "Integer value: " << *my_int << "\n";
+  std::cerr << "Integer value: " << *my_int << "\n";
   
   if (my_int.get_name () == "my_int" && *my_int == 15)
-    std::cout << "SUCCESS. my_int was the correct name and value.\n";
+    std::cerr << "SUCCESS. my_int was the correct name and value.\n";
   else
-    std::cout << "FAIL. my_int was not the correct name and value.\n";
+    std::cerr << "FAIL. my_int was not the correct name and value.\n";
 
   knowledge.print ();
 }
 
 void test_double (void)
 {
-  std::cout << "************* DOUBLE: GETTING AND SETTING*************\n";
+  std::cerr << "************* DOUBLE: GETTING AND SETTING*************\n";
   engine::Knowledge_Base knowledge;
   containers::Double my_double ("my_double", knowledge);
 
-  std::cout << "Double value: " << *my_double << "\n";
+  std::cerr << "Double value: " << *my_double << "\n";
   
-  std::cout << "Changing value...\n";
+  std::cerr << "Changing value...\n";
 
   my_double = 3.3;
   
-  std::cout << "Double value: " << *my_double << "\n";
+  std::cerr << "Double value: " << *my_double << "\n";
   
   if (my_double.get_name () == "my_double" && *my_double == 3.3)
-    std::cout << "SUCCESS. my_double was the correct name and value.\n";
+    std::cerr << "SUCCESS. my_double was the correct name and value.\n";
   else
-    std::cout << "FAIL. my_double was not the correct name and value.\n";
+    std::cerr << "FAIL. my_double was not the correct name and value.\n";
 
   knowledge.print ();
 }
 
 void test_map_exchanges (void)
 {
-  std::cout << "************* EXCHANGES: MAPS*************\n";
+  std::cerr << "************* EXCHANGES: MAPS*************\n";
   engine::Knowledge_Base knowledge;
   std::vector <std::string> keys;
   containers::Map map ("first_map", knowledge);
   containers::Map map2 ("second_map", knowledge);
   
-  std::cout << "Creating two maps...\n";
+  std::cerr << "Creating two maps...\n";
   map.set ("a", "key1 contents");
   map.set ("b", "key2 contents");
   map.set ("c", "key3 contents");
@@ -427,10 +436,10 @@ void test_map_exchanges (void)
   map2.set ("f", "key6 contents");
   map2.set ("g", "key7 contents");
   
-  std::cout << "Contents of map before exchange...\n";
+  std::cerr << "Contents of map before exchange...\n";
   knowledge.print ();
   
-  std::cout << "Exchanging...\n";
+  std::cerr << "Exchanging...\n";
   map.exchange (map2);
   
   if (!map.exists ("a") && !map.exists ("b") && !map.exists ("c")
@@ -441,11 +450,11 @@ void test_map_exchanges (void)
     && map2["a"] == "key1 contents" && map2["b"] == "key2 contents"
     && map2["c"] == "key3 contents")
   {
-    std::cout << "SUCCESS. maps were exchanged.\n";
+    std::cerr << "SUCCESS. maps were exchanged.\n";
   }
   else
   {
-    std::cout << "FAIL. maps were not exchanged properly.\n";
+    std::cerr << "FAIL. maps were not exchanged properly.\n";
   }
 
   knowledge.print ();
@@ -460,11 +469,11 @@ void test_map_exchanges (void)
     && map["a"] == "key1 contents" && map["b"] == "key2 contents"
     && map["c"] == "key3 contents")
   {
-    std::cout << "SUCCESS. maps were exchanged.\n";
+    std::cerr << "SUCCESS. maps were exchanged.\n";
   }
   else
   {
-    std::cout << "FAIL. maps were not exchanged properly.\n";
+    std::cerr << "FAIL. maps were not exchanged properly.\n";
   }
   
   knowledge.print ();
@@ -472,12 +481,12 @@ void test_map_exchanges (void)
 
 void test_vector_exchanges (void)
 {
-  std::cout << "************* EXCHANGES: VECTORS*************\n";
+  std::cerr << "************* EXCHANGES: VECTORS*************\n";
   engine::Knowledge_Base knowledge;
   containers::Vector vector ("first_vector", knowledge, 12);
   containers::Vector vector2 ("second_vector", knowledge, 7);
   
-  std::cout << "Creating two vectors...\n";
+  std::cerr << "Creating two vectors...\n";
 
   vector.set (1, "vector1.1 value");
   vector.set (5, "vector1.5 value");
@@ -486,7 +495,7 @@ void test_vector_exchanges (void)
   vector2.set (2, "vector2.2 value");
   vector2.set (3, "vector2.3 value");
   
-  std::cout << "Exchanging...\n";
+  std::cerr << "Exchanging...\n";
   vector.exchange (vector2);
   
   if (vector.size () == 7 && vector2.size () == 12
@@ -496,14 +505,14 @@ void test_vector_exchanges (void)
     && vector2[5] == "vector1.5 value"
     && vector2[10] == "vector1.10 value")
   {
-    std::cout << "SUCCESS. vectors were exchanged.\n";
+    std::cerr << "SUCCESS. vectors were exchanged.\n";
   }
   else
   {
-    std::cout << "FAIL. vectors were not exchanged properly.\n";
+    std::cerr << "FAIL. vectors were not exchanged properly.\n";
   }
   
-  std::cout << "Exchanging...\n";
+  std::cerr << "Exchanging...\n";
   vector.exchange (vector2);
   
   if (vector2.size () == 7 && vector.size () == 12
@@ -513,23 +522,23 @@ void test_vector_exchanges (void)
     && vector[5] == "vector1.5 value"
     && vector[10] == "vector1.10 value")
   {
-    std::cout << "SUCCESS. vectors were reverted.\n";
+    std::cerr << "SUCCESS. vectors were reverted.\n";
   }
   else
   {
-    std::cout << "FAIL. vectors were not reverted properly.\n";
+    std::cerr << "FAIL. vectors were not reverted properly.\n";
   }
   knowledge.print ();
 }
 
 void test_vector_transfer ()
 {
-  std::cout << "************* TRANSFERS: VECTORS*************\n";
+  std::cerr << "************* TRANSFERS: VECTORS*************\n";
   engine::Knowledge_Base knowledge;
   containers::Vector vector ("first_vector", knowledge, 12);
   containers::Vector vector2 ("second_vector", knowledge, 7);
   
-  std::cout << "Creating two vectors...\n";
+  std::cerr << "Creating two vectors...\n";
 
   vector.set (1, "vector1.1 value");
   vector.set (5, "vector1.5 value");
@@ -538,7 +547,7 @@ void test_vector_transfer ()
   vector2.set (2, "vector2.2 value");
   vector2.set (3, "vector2.3 value");
   
-  std::cout << "Transferring one vector to another...\n";
+  std::cerr << "Transferring one vector to another...\n";
 
   vector.transfer_to (vector2);
 
@@ -547,7 +556,7 @@ void test_vector_transfer ()
 
 void test_integer_vector (void)
 {
-  std::cout << "************* VECTOR: CREATING INTEGER_VECTOR*************\n";
+  std::cerr << "************* VECTOR: CREATING INTEGER_VECTOR*************\n";
   engine::Knowledge_Base knowledge;
   containers::Integer_Vector vector ("test_vector", knowledge, 10);
   size_t size = vector.size ();
@@ -556,43 +565,43 @@ void test_integer_vector (void)
   vector.set (2);
   vector.set (7);
 
-  std::cout << "Vector results:\n";
+  std::cerr << "Vector results:\n";
 
   for (size_t i = 0; i < size; ++i)
   {
-    std::cout << "  ";
-    std::cout << vector[i];
-    std::cout << "\n";
+    std::cerr << "  ";
+    std::cerr << vector[i];
+    std::cerr << "\n";
   }
   
-  std::cout << "\n";
+  std::cerr << "\n";
 
   if (size != 10)
-    std::cout << "FAIL. Vector.size != 10\n";
+    std::cerr << "FAIL. Vector.size != 10\n";
   else
-    std::cout << "SUCCESS. Vector.size == 10\n";
+    std::cerr << "SUCCESS. Vector.size == 10\n";
 
   if (vector[0] == 0 && vector[1] == 1 && vector[2] == 1 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 1)
-    std::cout << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
+    std::cerr << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
   else
-    std::cout << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
+    std::cerr << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
   
   if (vector.get_name () == "test_vector")
-    std::cout << "SUCCESS. vector.name () returned test_vector.\n";
+    std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
   else
-    std::cout << "FAIL. vector.name () did not return test_vector.\n";
+    std::cerr << "FAIL. vector.name () did not return test_vector.\n";
 
-  std::cout << "Resizing to 7 elements.\n";
+  std::cerr << "Resizing to 7 elements.\n";
 
   vector.resize (7);
 
   
   if (vector[0] == 0 && vector[1] == 1 && vector[2] == 1 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 0)
-    std::cout << "SUCCESS. Vector [7] no longer exists.\n";
+    std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else
-    std::cout << "FAIL. Vector [7] still exists after resize.\n";
+    std::cerr << "FAIL. Vector [7] still exists after resize.\n";
   
   vector.resize (12);
   
@@ -602,16 +611,16 @@ void test_integer_vector (void)
   if (vector[1] == 1 &&
       vector[8] == 1 && vector[10] == 0 &&
       vector[9] == 1 && vector.size () == 12)
-    std::cout << "SUCCESS. Resize to 12 was successful.\n";
+    std::cerr << "SUCCESS. Resize to 12 was successful.\n";
   else
-    std::cout << "FAIL. Resize to 12 was unsuccessful.\n";
+    std::cerr << "FAIL. Resize to 12 was unsuccessful.\n";
 
   knowledge.print ();
 }
 
 void test_double_vector (void)
 {
-  std::cout << "************* VECTOR: CREATING DOUBLE_VECTOR*************\n";
+  std::cerr << "************* VECTOR: CREATING DOUBLE_VECTOR*************\n";
   engine::Knowledge_Base knowledge;
   containers::Double_Vector vector ("test_vector", knowledge, 10);
   size_t size = vector.size ();
@@ -620,43 +629,43 @@ void test_double_vector (void)
   vector.set (2, 2.2);
   vector.set (7, 7.7);
 
-  std::cout << "Vector results:\n";
+  std::cerr << "Vector results:\n";
 
   for (size_t i = 0; i < size; ++i)
   {
-    std::cout << "  ";
-    std::cout << vector[i];
-    std::cout << "\n";
+    std::cerr << "  ";
+    std::cerr << vector[i];
+    std::cerr << "\n";
   }
   
-  std::cout << "\n";
+  std::cerr << "\n";
 
   if (size != 10)
-    std::cout << "FAIL. Vector.size != 10\n";
+    std::cerr << "FAIL. Vector.size != 10\n";
   else
-    std::cout << "SUCCESS. Vector.size == 10\n";
+    std::cerr << "SUCCESS. Vector.size == 10\n";
 
   if (vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 7.7)
-    std::cout << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
+    std::cerr << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
   else
-    std::cout << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
+    std::cerr << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
   
   if (vector.get_name () == "test_vector")
-    std::cout << "SUCCESS. vector.name () returned test_vector.\n";
+    std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
   else
-    std::cout << "FAIL. vector.name () did not return test_vector.\n";
+    std::cerr << "FAIL. vector.name () did not return test_vector.\n";
 
-  std::cout << "Resizing to 7 elements.\n";
+  std::cerr << "Resizing to 7 elements.\n";
 
   vector.resize (7);
 
   
   if (vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 0)
-    std::cout << "SUCCESS. Vector [7] no longer exists.\n";
+    std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else
-    std::cout << "FAIL. Vector [7] still exists after resize.\n";
+    std::cerr << "FAIL. Vector [7] still exists after resize.\n";
   
   vector.resize (12);
   
@@ -666,16 +675,16 @@ void test_double_vector (void)
   if (vector[1] == 1.1 &&
       vector[8] == 8.8 && vector[10] == 0 &&
       vector[9] == 9.9 && vector.size () == 12)
-    std::cout << "SUCCESS. Resize to 12 was successful.\n";
+    std::cerr << "SUCCESS. Resize to 12 was successful.\n";
   else
-    std::cout << "FAIL. Resize to 12 was unsuccessful.\n";
+    std::cerr << "FAIL. Resize to 12 was unsuccessful.\n";
 
   knowledge.print ();
 }
 
 void test_string_vector (void)
 {
-  std::cout << "************* VECTOR: CREATING STRING_VECTOR*************\n";
+  std::cerr << "************* VECTOR: CREATING STRING_VECTOR*************\n";
   engine::Knowledge_Base knowledge;
   containers::String_Vector vector ("test_vector", knowledge, 10);
   size_t size = vector.size ();
@@ -684,43 +693,43 @@ void test_string_vector (void)
   vector.set (2, "2.2");
   vector.set (7, "7.7");
 
-  std::cout << "Vector results:\n";
+  std::cerr << "Vector results:\n";
 
   for (size_t i = 0; i < size; ++i)
   {
-    std::cout << "  ";
-    std::cout << vector[i];
-    std::cout << "\n";
+    std::cerr << "  ";
+    std::cerr << vector[i];
+    std::cerr << "\n";
   }
   
-  std::cout << "\n";
+  std::cerr << "\n";
 
   if (size != 10)
-    std::cout << "FAIL. Vector.size != 10\n";
+    std::cerr << "FAIL. Vector.size != 10\n";
   else
-    std::cout << "SUCCESS. Vector.size == 10\n";
+    std::cerr << "SUCCESS. Vector.size == 10\n";
 
   if (vector[0] == "0" && vector[1] == "1.1" && vector[2] == "2.2" &&
       vector[3] == "0" && vector[4] == "0" && vector[7] == "7.7")
-    std::cout << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
+    std::cerr << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
   else
-    std::cout << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
+    std::cerr << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
   
   if (vector.get_name () == "test_vector")
-    std::cout << "SUCCESS. vector.name () returned test_vector.\n";
+    std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
   else
-    std::cout << "FAIL. vector.name () did not return test_vector.\n";
+    std::cerr << "FAIL. vector.name () did not return test_vector.\n";
 
-  std::cout << "Resizing to 7 elements.\n";
+  std::cerr << "Resizing to 7 elements.\n";
 
   vector.resize (7);
 
   
   if (vector[0] == "0" && vector[1] == "1.1" && vector[2] == "2.2" &&
       vector[3] == "0" && vector[4] == "0" && vector[7] == "0")
-    std::cout << "SUCCESS. Vector [7] no longer exists.\n";
+    std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else
-    std::cout << "FAIL. Vector [7] still exists after resize.\n";
+    std::cerr << "FAIL. Vector [7] still exists after resize.\n";
   
   vector.resize (12);
   
@@ -730,16 +739,16 @@ void test_string_vector (void)
   if (vector[1] == "1.1" &&
       vector[8] == "8.8" && vector[10] == "0" &&
       vector[9] == "9.9" && vector.size () == 12)
-    std::cout << "SUCCESS. Resize to 12 was successful.\n";
+    std::cerr << "SUCCESS. Resize to 12 was successful.\n";
   else
-    std::cout << "FAIL. Resize to 12 was unsuccessful.\n";
+    std::cerr << "FAIL. Resize to 12 was unsuccessful.\n";
 
   knowledge.print ();
 }
 
 void test_native_vectors (void)
 {
-  std::cout <<
+  std::cerr <<
     "************* VECTOR: CREATING NATIVE DOUBLE VECTOR*************\n";
   Madara::Knowledge_Engine::Knowledge_Base knowledge;
   containers::Native_Double_Vector vector ("test_vector", knowledge, 10);
@@ -749,43 +758,43 @@ void test_native_vectors (void)
   vector.set (2, 2.2);
   vector.set (7, 7.7);
 
-  std::cout << "Vector results:\n";
+  std::cerr << "Vector results:\n";
 
   for (size_t i = 0; i < size; ++i)
   {
-    std::cout << "  ";
-    std::cout << vector[i];
-    std::cout << "\n";
+    std::cerr << "  ";
+    std::cerr << vector[i];
+    std::cerr << "\n";
   }
   
-  std::cout << "\n";
+  std::cerr << "\n";
 
   if (size != 10)
-    std::cout << "FAIL. Vector.size != 10\n";
+    std::cerr << "FAIL. Vector.size != 10\n";
   else
-    std::cout << "SUCCESS. Vector.size == 10\n";
+    std::cerr << "SUCCESS. Vector.size == 10\n";
 
   if (vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 7.7)
-    std::cout << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
+    std::cerr << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
   else
-    std::cout << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
+    std::cerr << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
   
   if (vector.get_name () == "test_vector")
-    std::cout << "SUCCESS. vector.name () returned test_vector.\n";
+    std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
   else
-    std::cout << "FAIL. vector.name () did not return test_vector.\n";
+    std::cerr << "FAIL. vector.name () did not return test_vector.\n";
 
-  std::cout << "Resizing to 7 elements.\n";
+  std::cerr << "Resizing to 7 elements.\n";
 
   vector.resize (7);
 
   
   if (vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 0)
-    std::cout << "SUCCESS. Vector [7] no longer exists.\n";
+    std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else
-    std::cout << "FAIL. Vector [7] still exists after resize.\n";
+    std::cerr << "FAIL. Vector [7] still exists after resize.\n";
   
   vector.resize (12);
   
@@ -795,16 +804,16 @@ void test_native_vectors (void)
   if (vector[1] == 1.1 &&
       vector[8] == 8.8 && vector[10] == 0 &&
       vector[9] == 9.9 && vector.size () == 12)
-    std::cout << "SUCCESS. Resize to 12 was successful.\n";
+    std::cerr << "SUCCESS. Resize to 12 was successful.\n";
   else
-    std::cout << "FAIL. Resize to 12 was unsuccessful.\n";
+    std::cerr << "FAIL. Resize to 12 was unsuccessful.\n";
 
   knowledge.print ();
 }
 
 void test_queue (void)
 {
-  std::cout <<
+  std::cerr <<
     "************* QUEUES: Testing multithreaded queues*************\n";
   engine::Knowledge_Base knowledge;
   containers::Queue messages ("queue", knowledge, 7);
@@ -821,72 +830,72 @@ void test_queue (void)
   check = messages.enqueue ("eighth string");
 
   if (!check)
-    std::cout << "  SUCCESS: enqueue size check.\n";
+    std::cerr << "  SUCCESS: enqueue size check.\n";
   else
-    std::cout << "  FAIL: enqueue size check.\n";
+    std::cerr << "  FAIL: enqueue size check.\n";
 
   record = messages.dequeue ();
   if (record == "first string")
-    std::cout << "  SUCCESS: first dequeue.\n";
+    std::cerr << "  SUCCESS: first dequeue.\n";
   else
-    std::cout << "  FAIL: first dequeue.\n";
+    std::cerr << "  FAIL: first dequeue.\n";
   
   record = messages.dequeue ();
   if (record == "second string")
-    std::cout << "  SUCCESS: second dequeue.\n";
+    std::cerr << "  SUCCESS: second dequeue.\n";
   else
-    std::cout << "  FAIL: second dequeue.\n";
+    std::cerr << "  FAIL: second dequeue.\n";
 
   messages.enqueue ("eighth string");
   messages.enqueue ("ninth string");
   check = messages.enqueue ("tenth string");
   
   if (!check)
-    std::cout << "  SUCCESS: 2nd enqueue size check.\n";
+    std::cerr << "  SUCCESS: 2nd enqueue size check.\n";
   else
-    std::cout << "  FAIL: 2nd enqueue size check.\n";
+    std::cerr << "  FAIL: 2nd enqueue size check.\n";
 
   record = messages.dequeue ();
   if (record == "third string")
-    std::cout << "  SUCCESS: third dequeue.\n";
+    std::cerr << "  SUCCESS: third dequeue.\n";
   else
-    std::cout << "  FAIL: third dequeue.\n";
+    std::cerr << "  FAIL: third dequeue.\n";
   
   record = messages.dequeue ();
   if (record == "fourth string")
-    std::cout << "  SUCCESS: fourth dequeue.\n";
+    std::cerr << "  SUCCESS: fourth dequeue.\n";
   else
-    std::cout << "  FAIL: fourth dequeue.\n";
+    std::cerr << "  FAIL: fourth dequeue.\n";
   
   record = messages.dequeue ();
   if (record == "fifth string")
-    std::cout << "  SUCCESS: fifth dequeue.\n";
+    std::cerr << "  SUCCESS: fifth dequeue.\n";
   else
-    std::cout << "  FAIL: fifth dequeue.\n";
+    std::cerr << "  FAIL: fifth dequeue.\n";
   
   record = messages.dequeue ();
   if (record == "sixth string")
-    std::cout << "  SUCCESS: sixth dequeue.\n";
+    std::cerr << "  SUCCESS: sixth dequeue.\n";
   else
-    std::cout << "  FAIL: sixth dequeue.\n";
+    std::cerr << "  FAIL: sixth dequeue.\n";
   
   record = messages.dequeue ();
   if (record == "seventh string")
-    std::cout << "  SUCCESS: seventh dequeue.\n";
+    std::cerr << "  SUCCESS: seventh dequeue.\n";
   else
-    std::cout << "  FAIL: seventh dequeue.\n";
+    std::cerr << "  FAIL: seventh dequeue.\n";
   
   record = messages.dequeue ();
   if (record == "eighth string")
-    std::cout << "  SUCCESS: eighth dequeue.\n";
+    std::cerr << "  SUCCESS: eighth dequeue.\n";
   else
-    std::cout << "  FAIL: eighth dequeue.\n";
+    std::cerr << "  FAIL: eighth dequeue.\n";
   
   record = messages.dequeue ();
   if (record == "ninth string")
-    std::cout << "  SUCCESS: ninth dequeue.\n";
+    std::cerr << "  SUCCESS: ninth dequeue.\n";
   else
-    std::cout << "  FAIL: ninth dequeue.\n";
+    std::cerr << "  FAIL: ninth dequeue.\n";
   
   messages.enqueue ("first cleared");
   messages.enqueue ("second cleared");
@@ -894,28 +903,28 @@ void test_queue (void)
   if (messages.inspect (0) == "first cleared" &&
       messages.inspect (1) == "second cleared")
   {
-    std::cout << "  SUCCESS: inspect on multiple records.\n";
+    std::cerr << "  SUCCESS: inspect on multiple records.\n";
   }
   else
   {
-    std::cout << "  FAIL: inspect on multiple records.\n";
+    std::cerr << "  FAIL: inspect on multiple records.\n";
   }
 
   messages.clear ();
 
   if (messages.count () == 0 && messages.size () == 7)
-    std::cout << "  SUCCESS: clear.\n";
+    std::cerr << "  SUCCESS: clear.\n";
   else
-    std::cout << "  FAIL: clear.\n";
+    std::cerr << "  FAIL: clear.\n";
   
   
   if (!messages.dequeue (false).is_valid ())
   {
-    std::cout << "  SUCCESS: asynchronous dequeue empty.\n";
+    std::cerr << "  SUCCESS: asynchronous dequeue empty.\n";
   }
   else
   {
-    std::cout << "  FAIL: asynchronous dequeue empty.\n";
+    std::cerr << "  FAIL: asynchronous dequeue empty.\n";
   }
 
   messages.enqueue ("first string");
@@ -931,11 +940,11 @@ void test_queue (void)
   if (messages.count () == 5 && 
     messages.count () == messages.size ())
   {
-    std::cout << "  SUCCESS: resize.\n";
+    std::cerr << "  SUCCESS: resize.\n";
   }
   else
   {
-    std::cout << "  FAIL: resize.\n";
+    std::cerr << "  FAIL: resize.\n";
   }
 
   knowledge.print ();
@@ -943,7 +952,7 @@ void test_queue (void)
 
 void test_collection (void)
 {
-  std::cout <<
+  std::cerr <<
     "************* COLLECTION: Testing container collections*************\n";
 
   engine::Knowledge_Base knowledge;
@@ -952,7 +961,7 @@ void test_collection (void)
   unsigned char buffer1[1024];
   unsigned char buffer2[2048];
 
-  std::cout << "  Creating containers...\n";
+  std::cerr << "  Creating containers...\n";
 
   containers::Integer age ("age", knowledge);
   containers::String name ("name", knowledge);
@@ -966,20 +975,20 @@ void test_collection (void)
   containers::Integer_Vector sensors_ready ("sensors_ready", knowledge, 3);
   containers::Double_Vector coolfactor ("coolfactor.by.year", knowledge, 35);
 
-  std::cout << "  Testing modifieds.size == 2 after container creation... ";
+  std::cerr << "  Testing modifieds.size == 2 after container creation... ";
 
   if (context.get_modifieds ().size () != 2)
   {
-    std::cout << "FAIL\n";
-    std::cout << "    Printing modified elements in context\n\n";
-    std::cout << context.debug_modifieds () << "\n";
+    std::cerr << "FAIL\n";
+    std::cerr << "    Printing modified elements in context\n\n";
+    std::cerr << context.debug_modifieds () << "\n";
   }
   else
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
 
-  std::cout << "  Assigning values to containers...\n";
+  std::cerr << "  Assigning values to containers...\n";
 
   age = 40;
   name = "Jack Franklin";
@@ -1048,7 +1057,7 @@ void test_collection (void)
 
   containers::Collection collection;
 
-  std::cout << "\n  Adding 10 containers to collection container\n";
+  std::cerr << "\n  Adding 10 containers to collection container\n";
 
   collection.add (age);
   collection.add (name);
@@ -1061,145 +1070,145 @@ void test_collection (void)
   collection.add (years);
   collection.add (coolfactor);
 
-  std::cout << "  Testing collection.size == 10 after adding containers... ";
+  std::cerr << "  Testing collection.size == 10 after adding containers... ";
 
   if (collection.size () != 10)
   {
-    std::cout << "FAIL. Size returned " << collection.size () << "\n";
+    std::cerr << "FAIL. Size returned " << collection.size () << "\n";
   }
   else
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
 
-  std::cout << "\n  Printing Collection contents\n\n";
-  std::cout << collection.get_debug_info () << "\n";
+  std::cerr << "\n  Printing Collection contents\n\n";
+  std::cerr << collection.get_debug_info () << "\n";
 
-  std::cout << "  Printing modified elements in context\n\n";
-  std::cout << context.debug_modifieds () << "\n";
+  std::cerr << "  Printing modified elements in context\n\n";
+  std::cerr << context.debug_modifieds () << "\n";
 
-  std::cout << "  Clearing modified elements in context\n\n";
+  std::cerr << "  Clearing modified elements in context\n\n";
   knowledge.clear_modifieds ();
 
-  std::cout << "  Testing modifieds.size == 0 after clearing modified... ";
+  std::cerr << "  Testing modifieds.size == 0 after clearing modified... ";
 
   if (context.get_modifieds ().size () != 0)
   {
-    std::cout << "FAIL\n";
-    std::cout << "    Printing modified elements in context\n\n";
-    std::cout << context.debug_modifieds () << "\n";
+    std::cerr << "FAIL\n";
+    std::cerr << "    Printing modified elements in context\n\n";
+    std::cerr << context.debug_modifieds () << "\n";
   }
   else
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
 
-  std::cout << "  Calling modify on collection\n";
+  std::cerr << "  Calling modify on collection\n";
   collection.modify ();
 
-  std::cout << "  Testing modifieds.size == 55 after modifying containers... ";
+  std::cerr << "  Testing modifieds.size == 55 after modifying containers... ";
 
   if (context.get_modifieds ().size () != 55)
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
   else
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
 
-  std::cout << "  Printing modified elements in context\n\n";
-  std::cout << context.debug_modifieds () << "\n";
+  std::cerr << "  Printing modified elements in context\n\n";
+  std::cerr << context.debug_modifieds () << "\n";
 
-  std::cout << "  Clearing modified elements in context\n\n";
+  std::cerr << "  Clearing modified elements in context\n\n";
   knowledge.clear_modifieds ();
 
-  std::cout << "  Clearing collection\n\n";
+  std::cerr << "  Clearing collection\n\n";
   collection.clear ();
 
-  std::cout << "  Testing collection.size == 0 after clearing containers... ";
+  std::cerr << "  Testing collection.size == 0 after clearing containers... ";
 
   if (collection.size () != 0)
   {
-    std::cout << "FAIL. Size returned " << collection.size () << "\n";
+    std::cerr << "FAIL. Size returned " << collection.size () << "\n";
   }
   else
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
 
-  std::cout << "\nAdding 3 containers to collection container\n";
+  std::cerr << "\nAdding 3 containers to collection container\n";
 
   collection.add (age);
   collection.add (name);
   collection.add (salary);
 
-  std::cout << "  Testing collection.size == 3 after adding containers... ";
+  std::cerr << "  Testing collection.size == 3 after adding containers... ";
 
   if (collection.size () != 3)
   {
-    std::cout << "FAIL. Size returned " << collection.size () << "\n";
+    std::cerr << "FAIL. Size returned " << collection.size () << "\n";
   }
   else
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
 
-  std::cout << "\nPrinting Collection contents\n\n";
-  std::cout << collection.get_debug_info () << "\n";
+  std::cerr << "\nPrinting Collection contents\n\n";
+  std::cerr << collection.get_debug_info () << "\n";
 
-  std::cout << "  Calling modify on collection\n";
+  std::cerr << "  Calling modify on collection\n";
   collection.modify ();
 
-  std::cout << "  Testing modifieds.size == 3... ";
+  std::cerr << "  Testing modifieds.size == 3... ";
 
   if (context.get_modifieds ().size () != 3)
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
   else
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
 
-  std::cout << "  Printing modified elements in context\n\n";
-  std::cout << context.debug_modifieds () << "\n";
+  std::cerr << "  Printing modified elements in context\n\n";
+  std::cerr << context.debug_modifieds () << "\n";
 
-  std::cout << "  Clearing modified elements in context\n\n";
+  std::cerr << "  Clearing modified elements in context\n\n";
   knowledge.clear_modifieds ();
 
 
-  std::cout << "  Calling modify_if_true on collection\n";
+  std::cerr << "  Calling modify_if_true on collection\n";
   collection.modify_if_true (sensors_ready);
 
-  std::cout << "  Testing modifieds.size == 0... ";
+  std::cerr << "  Testing modifieds.size == 0... ";
 
   if (context.get_modifieds ().size () != 0)
   {
-    std::cout << "FAIL\n";
+    std::cerr << "FAIL\n";
   }
   else
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
 
-  std::cout << "  Updating final sensors ready to true\n";
+  std::cerr << "  Updating final sensors ready to true\n";
   sensors_ready.set (1, 1);
 
-  std::cout << "  Calling modify_if_true on collection\n";
+  std::cerr << "  Calling modify_if_true on collection\n";
   collection.modify_if_true (sensors_ready);
 
-  std::cout << "  Testing modifieds.size == 4... ";
+  std::cerr << "  Testing modifieds.size == 4... ";
 
   if (context.get_modifieds ().size () != 4)
   {
-    std::cout << "FAIL\n";
-    std::cout << "    Printing modified elements in context\n\n";
-    std::cout << context.debug_modifieds () << "\n";
+    std::cerr << "FAIL\n";
+    std::cerr << "    Printing modified elements in context\n\n";
+    std::cerr << context.debug_modifieds () << "\n";
   }
   else
   {
-    std::cout << "SUCCESS\n";
+    std::cerr << "SUCCESS\n";
   }
 
 }

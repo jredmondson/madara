@@ -285,6 +285,16 @@ public class ContainerTest
       error = true;
     }
     
+    System.out.println("  Resizing vector to 0 elements");
+    list.resize (0);
+    knowledge.print();
+    
+    System.out.println("  Pushing a 10 and string on to vector");
+    list.pushback(10);
+    list.pushback("second element");
+    
+    knowledge.print();
+    
     if(error)
       knowledge.print();
   }
