@@ -14,6 +14,7 @@ int ACE_TMAIN (int, ACE_TCHAR **)
 
   // print to a file
   knowledge.print ("Printing to file madara_log_file_only.txt\n");
+  logger::global_logger->set_level (logger::LOG_DETAILED);
   logger::global_logger->clear ();
   logger::global_logger->add_file ("test_logging_to_file.txt");
 
