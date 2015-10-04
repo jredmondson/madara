@@ -13,15 +13,29 @@
 inline void
 Madara::Logger::Logger::add_file (const std::string & filename)
 {
+  madara_logger_ptr_log (this, LOG_MAJOR,
+    "Logger::add_file: attempting to open file %s\n",
+    filename.c_str ());
+
   if (filename != "")
   {
     FILE * new_file = fopen (filename.c_str (), "a+");
 
     if (new_file)
     {
+      madara_logger_ptr_log (this, LOG_MAJOR,
+        "Logger::add_file: opened file %s for logging\n",
+        filename.c_str ());
+
       Guard guard (mutex_);
 
       files_.push_back (new_file);
+    }
+    else
+    {
+      madara_logger_ptr_log (this, LOG_MAJOR,
+        "Logger::add_file: unable to open file %s for logging\n",
+        filename.c_str ());
     }
   }
 }
