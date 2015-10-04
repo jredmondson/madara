@@ -134,9 +134,11 @@ Madara::Knowledge_Engine::Containers::Barrier::build_aggregate_barrier (void)
     }
 
     aggregate_barrier_ = context_->compile (buffer.str ());
-    std::cerr << "Barrier string: ";
-    std::cerr << buffer.str ();
-    std::cerr << "\n";
+
+
+    madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+      "Barrier::build_aggregate_barrier: building barrier string of %s\n",
+      buffer.str ().c_str ());
   }
   else if (name_ == "")
   {
@@ -163,6 +165,11 @@ Madara::Knowledge_Engine::Containers::Barrier::build_var (void)
     buffer << id_;
 
     variable_name_ = buffer.str ();
+
+    madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+      "Barrier::build_var: settings variable reference to %s\n",
+      variable_name_.c_str ());
+
     variable_ = context_->get_ref (buffer.str (), no_harm);
   }
   else if (name_ == "")
