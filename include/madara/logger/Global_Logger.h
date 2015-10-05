@@ -6,11 +6,11 @@
 #include "madara/MADARA_export.h"
 #include "Logger.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Logger
+  namespace logger
   {
-    extern MADARA_Export std::auto_ptr <Logger> global_logger;
+    extern MADARA_Export std::auto_ptr <logger::Logger> global_logger;
   }
 }
 

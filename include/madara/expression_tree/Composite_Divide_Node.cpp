@@ -13,8 +13,8 @@
 
 
 // Ctor
-Madara::Expression_Tree::Composite_Divide_Node::Composite_Divide_Node (
-  Logger::Logger & logger,
+madara::expression_tree::Composite_Divide_Node::Composite_Divide_Node (
+  logger::Logger & logger,
   Component_Node *left,
   Component_Node *right)
 : Composite_Binary_Node (logger, left, right)
@@ -22,14 +22,14 @@ Madara::Expression_Tree::Composite_Divide_Node::Composite_Divide_Node (
 }
 
 // Dtor
-Madara::Expression_Tree::Composite_Divide_Node::~Composite_Divide_Node (void)
+madara::expression_tree::Composite_Divide_Node::~Composite_Divide_Node (void)
 {
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Divide_Node::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::Composite_Divide_Node::item (void) const
 {
-  Madara::Knowledge_Record record;
+  madara::Knowledge_Record record;
   record.set_value ("/");
   return record;
 }
@@ -37,14 +37,14 @@ Madara::Expression_Tree::Composite_Divide_Node::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Divide_Node::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::Composite_Divide_Node::prune (bool & can_change)
 {
   bool left_child_can_change = false;
   bool right_child_can_change = false;
-  Madara::Knowledge_Record left_value;
-  Madara::Knowledge_Record right_value;
-  Madara::Knowledge_Record zero;
+  madara::Knowledge_Record left_value;
+  madara::Knowledge_Record right_value;
+  madara::Knowledge_Record zero;
 
   if (this->left_)
   {
@@ -57,7 +57,7 @@ Madara::Expression_Tree::Composite_Divide_Node::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Division has no left expression\n");
     exit (-1);  
   }
@@ -71,7 +71,7 @@ Madara::Expression_Tree::Composite_Divide_Node::prune (bool & can_change)
       // leave this check which is important
       if (right_value.is_false ())
       {
-        madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+        madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
           "KARL COMPILE ERROR: Division results in permanent divide by zero\n");
 
         exit (-1);
@@ -94,7 +94,7 @@ Madara::Expression_Tree::Composite_Divide_Node::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Division has no right expression (divide by zero)\n");
     exit (-1);
   }
@@ -106,13 +106,13 @@ Madara::Expression_Tree::Composite_Divide_Node::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::Composite_Divide_Node::evaluate (
-const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::Composite_Divide_Node::evaluate (
+const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   // only evaluate right if left evaluates to non-zero (0/{any_number} = 0)
-  Madara::Knowledge_Record lvalue (left_->evaluate (settings));
-  Madara::Knowledge_Record zero;
+  madara::Knowledge_Record lvalue (left_->evaluate (settings));
+  madara::Knowledge_Record zero;
   if (lvalue.is_true ())
     return lvalue / right_->evaluate (settings);
 
@@ -126,7 +126,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
 // accept a visitor
 void 
-Madara::Expression_Tree::Composite_Divide_Node::accept (Visitor &visitor) const
+madara::expression_tree::Composite_Divide_Node::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }

@@ -3,23 +3,23 @@
 
 #include "Transport.h"
 
-inline int Madara::Transport::Base::validate_transport (void) 
+inline int madara::transport::Base::validate_transport (void) 
 { 
   is_valid_ = true; 
   shutting_down_ = false;
   valid_setup_.broadcast ();
 
-  context_.get_logger ().log (Logger::LOG_MINOR,
-    "Transport::validate_transport: transport is ready\n");
+  madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
+    "transport::validate_transport: transport is ready\n");
 
   return 0;
 }
 
 inline int
-Madara::Transport::Base::check_transport (void) 
+madara::transport::Base::check_transport (void) 
 {
-  context_.get_logger ().log (Logger::LOG_DETAILED,
-    "Transport::check_transport: checking for valid transport\n");
+  madara_logger_log (context_.get_logger (), logger::LOG_DETAILED,
+    "transport::check_transport: checking for valid transport\n");
 
   if (!is_valid_)
     return -2;
@@ -31,18 +31,18 @@ Madara::Transport::Base::check_transport (void)
 }
 
 inline void
-Madara::Transport::Base::invalidate_transport (void)
+madara::transport::Base::invalidate_transport (void)
 {
   is_valid_ = false;
   shutting_down_ = true;
   valid_setup_.broadcast ();
 
-  context_.get_logger ().log (Logger::LOG_DETAILED,
-    "Transport::invalidate_transport: invalidating transport\n");
+  madara_logger_log (context_.get_logger (), logger::LOG_DETAILED,
+    "transport::invalidate_transport: invalidating transport\n");
 }
 
-inline Madara::Transport::Settings &
-Madara::Transport::Base::settings (void)
+inline madara::transport::Settings &
+madara::transport::Base::settings (void)
 {
   return settings_;
 }

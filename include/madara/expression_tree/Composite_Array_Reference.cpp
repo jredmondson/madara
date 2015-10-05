@@ -9,9 +9,9 @@
 #include <string>
 #include <sstream>
 
-Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
+madara::expression_tree::Composite_Array_Reference::Composite_Array_Reference (
   const std::string & key, Component_Node * index,
-  Madara::Knowledge_Engine::Thread_Safe_Context &context)
+  madara::knowledge::Thread_Safe_Context &context)
 : Composite_Unary_Node (context.get_logger (), index),
   key_ (key), record_ (0),
   context_ (context), key_expansion_necessary_ (false)
@@ -21,7 +21,7 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
   // once
   if (key.find ("{") != key.npos)
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_DETAILED,
+    madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
       "Variable %s requires variable expansion.\n",
       key.c_str ());
 
@@ -30,11 +30,11 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
     splitters_.push_back ("{");
     splitters_.push_back ("}");
 
-    Utility::tokenizer (key, splitters_, tokens_, pivot_list_);
+    utility::tokenizer (key, splitters_, tokens_, pivot_list_);
 
     if (pivot_list_.size () % 2 != 0)
     {
-      madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+      madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: matching braces not found in %s\n",
          key.c_str ());
 
@@ -60,7 +60,7 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
 
     if (num_opens > num_closes)
     {
-      madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+      madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: Array name has "
         "more opening braces than closing in %s\n",
         key.c_str ());
@@ -69,7 +69,7 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
     }
     else if (num_closes > num_opens)
     {
-      madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+      madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: Array name has "
         "more closing braces than opening in %s\n",
         key.c_str ());
@@ -86,17 +86,17 @@ Madara::Expression_Tree::Composite_Array_Reference::Composite_Array_Reference (
   }
 }
 
-Madara::Expression_Tree::Composite_Array_Reference::~Composite_Array_Reference ()
+madara::expression_tree::Composite_Array_Reference::~Composite_Array_Reference ()
 {
   // do not clean up record_. Let the context clean that up.
 }
 
 std::string
-Madara::Expression_Tree::Composite_Array_Reference::expand_key (void) const
+madara::expression_tree::Composite_Array_Reference::expand_key (void) const
 {
   if (key_expansion_necessary_)
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_DETAILED,
+    madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
       "Variable %s requires variable expansion\n",
       key_.c_str ());
 
@@ -135,13 +135,13 @@ Madara::Expression_Tree::Composite_Array_Reference::expand_key (void) const
 
 
 void
-Madara::Expression_Tree::Composite_Array_Reference::accept (Visitor &visitor) const
+madara::expression_tree::Composite_Array_Reference::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Array_Reference::item () const
+madara::Knowledge_Record
+madara::expression_tree::Composite_Array_Reference::item () const
 {
   size_t index = right_->item ().to_integer ();
   
@@ -156,8 +156,8 @@ Madara::Expression_Tree::Composite_Array_Reference::item () const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Array_Reference::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::Composite_Array_Reference::prune (bool & can_change)
 {
   // a variable is one of very few nodes that can change over time and
   // cannot be pruned
@@ -173,9 +173,9 @@ Madara::Expression_Tree::Composite_Array_Reference::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::Composite_Array_Reference::evaluate (
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::Composite_Array_Reference::evaluate (
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   size_t index = right_->evaluate (settings).to_integer ();
 
@@ -188,16 +188,16 @@ Madara::Expression_Tree::Composite_Array_Reference::evaluate (
 }
 
 const std::string &
-Madara::Expression_Tree::Composite_Array_Reference::key () const
+madara::expression_tree::Composite_Array_Reference::key () const
 {
   return key_;
 }
 
 
 /// Sets the value stored in the node.
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Array_Reference::dec (
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record
+madara::expression_tree::Composite_Array_Reference::dec (
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   size_t index = size_t (right_->evaluate (settings).to_integer ());
 
@@ -218,7 +218,7 @@ Madara::Expression_Tree::Composite_Array_Reference::dec (
     if (key_[0] != '.' && !settings.treat_globals_as_locals)
     {
       context_.mark_modified (key_, *record_,
-        Knowledge_Engine::Knowledge_Reference_Settings (false));
+        knowledge::Knowledge_Reference_Settings (false));
     }
 
     return result;
@@ -238,9 +238,9 @@ Madara::Expression_Tree::Composite_Array_Reference::dec (
 }
       
 /// Sets the value stored in the node.
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Array_Reference::inc (
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record
+madara::expression_tree::Composite_Array_Reference::inc (
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   size_t index = size_t (right_->evaluate (settings).to_integer ());
 
@@ -261,7 +261,7 @@ Madara::Expression_Tree::Composite_Array_Reference::inc (
     if (key_[0] != '.' && !settings.treat_globals_as_locals)
     {
       context_.mark_modified (key_, *record_,
-        Knowledge_Engine::Knowledge_Reference_Settings (false));
+        knowledge::Knowledge_Reference_Settings (false));
     }
 
     return result;
@@ -282,9 +282,9 @@ Madara::Expression_Tree::Composite_Array_Reference::inc (
 }
 
 int
-Madara::Expression_Tree::Composite_Array_Reference::set (
-  const Madara::Knowledge_Record & value,
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::expression_tree::Composite_Array_Reference::set (
+  const madara::Knowledge_Record & value,
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   int return_value = 0;
 
@@ -297,8 +297,8 @@ Madara::Expression_Tree::Composite_Array_Reference::set (
 }
 
 int
-Madara::Expression_Tree::Composite_Array_Reference::set (const Madara::Knowledge_Record::Integer & value,
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::expression_tree::Composite_Array_Reference::set (const madara::Knowledge_Record::Integer & value,
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   size_t index = size_t (right_->evaluate (settings).to_integer ());
 
@@ -319,7 +319,7 @@ Madara::Expression_Tree::Composite_Array_Reference::set (const Madara::Knowledge
     if (key_[0] != '.' && !settings.treat_globals_as_locals)
     {
       context_.mark_modified (key_, *record_,
-        Knowledge_Engine::Knowledge_Reference_Settings (false));
+        knowledge::Knowledge_Reference_Settings (false));
     }
   
     return 0;
@@ -329,8 +329,8 @@ Madara::Expression_Tree::Composite_Array_Reference::set (const Madara::Knowledge
 }
 
 int
-Madara::Expression_Tree::Composite_Array_Reference::set (double value,
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::expression_tree::Composite_Array_Reference::set (double value,
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   size_t index = size_t (right_->evaluate (settings).to_integer ());
 
@@ -351,7 +351,7 @@ Madara::Expression_Tree::Composite_Array_Reference::set (double value,
     if (key_[0] != '.' && !settings.treat_globals_as_locals)
     {
       context_.mark_modified (key_, *record_,
-        Knowledge_Engine::Knowledge_Reference_Settings (false));
+        knowledge::Knowledge_Reference_Settings (false));
     }
   
     return 0;

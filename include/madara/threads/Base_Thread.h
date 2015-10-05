@@ -15,14 +15,14 @@
 #include <vector>
 #include <map>
 #include <list>
-#include "madara/knowledge_engine/Knowledge_Record.h"
-#include "madara/knowledge_engine/Functions.h"
+#include "madara/knowledge/Knowledge_Record.h"
+#include "madara/knowledge/Functions.h"
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/knowledge_engine/containers/Integer.h"
+#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/containers/Integer.h"
 
-namespace Madara
+namespace madara
 {
   namespace Threads
   {
@@ -56,7 +56,7 @@ namespace Madara
       /**
        * Initializes thread with a MADARA context
        **/
-      virtual void init (Knowledge_Engine::Knowledge_Base &)
+      virtual void init (knowledge::Knowledge_Base &)
       {
       }
 
@@ -84,7 +84,7 @@ namespace Madara
        * @param control the control plane between Threader and threads
        **/
       virtual void init_control_vars (
-        Knowledge_Engine::Knowledge_Base & control)
+        knowledge::Knowledge_Base & control)
       {
         terminated.set_name (name + ".terminated", control);
         paused.set_name (name + ".paused", control);
@@ -99,12 +99,12 @@ namespace Madara
        * thread safe terminated flag that may be set by the Threader
        * base
        **/
-      Madara::Knowledge_Engine::Containers::Integer terminated;
+      madara::knowledge::containers::Integer terminated;
 
       /**
        * thread safe paused flag that may be set by the Threader
        **/
-      Madara::Knowledge_Engine::Containers::Integer paused;
+      madara::knowledge::containers::Integer paused;
     };
   }
 }

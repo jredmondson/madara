@@ -7,8 +7,8 @@
 #include "madara/expression_tree/Visitor.h"
 
 
-Madara::Expression_Tree::System_Call_Fragment::System_Call_Fragment (
-  Madara::Knowledge_Engine::Thread_Safe_Context & context,
+madara::expression_tree::System_Call_Fragment::System_Call_Fragment (
+  madara::knowledge::Thread_Safe_Context & context,
   const Component_Nodes & nodes)
   : System_Call_Node (context, nodes)
 {
@@ -16,28 +16,28 @@ Madara::Expression_Tree::System_Call_Fragment::System_Call_Fragment (
 }
 
 // Dtor
-Madara::Expression_Tree::System_Call_Fragment::~System_Call_Fragment (void)
+madara::expression_tree::System_Call_Fragment::~System_Call_Fragment (void)
 {
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::System_Call_Fragment::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::System_Call_Fragment::item (void) const
 {
-  return Madara::Knowledge_Record::Integer (nodes_.size ());
+  return madara::Knowledge_Record::Integer (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::System_Call_Fragment::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::System_Call_Fragment::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
   // what it does. Consequently, a function node cannot be pruned out
   // under any situation
   can_change = true;
   
-  Madara::Knowledge_Record result;
+  madara::Knowledge_Record result;
   
   for (Component_Nodes::iterator i = nodes_.begin (); i != nodes_.end ();
        ++i)
@@ -54,7 +54,7 @@ Madara::Expression_Tree::System_Call_Fragment::prune (bool & can_change)
 
   if (nodes_.size () != 3)
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "KARL COMPILE ERROR: System call fragment"
       " requires three arguments, e.g."
       " #fragment ('hello world', 0, 4) will return 'hello'\n");
@@ -65,9 +65,9 @@ Madara::Expression_Tree::System_Call_Fragment::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::System_Call_Fragment::evaluate (
-const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::System_Call_Fragment::evaluate (
+const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   Knowledge_Record return_value;
 
@@ -79,7 +79,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     unsigned int  last =
       (unsigned int) nodes_[2]->evaluate (settings).to_integer ();
 
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call fragment is returning segment [%d-%d].\n",
       first, last);
     
@@ -88,7 +88,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call fragment"
       " requires three arguments, e.g."
       " #fragment ('hello world', 0, 4) will return 'hello'\n");
@@ -100,8 +100,8 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
 // accept a visitor
 void 
-Madara::Expression_Tree::System_Call_Fragment::accept (
-  Madara::Expression_Tree::Visitor &visitor) const
+madara::expression_tree::System_Call_Fragment::accept (
+  madara::expression_tree::Visitor &visitor) const
 {
   visitor.visit (*this);
 }

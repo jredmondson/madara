@@ -14,15 +14,15 @@
 #include <vector>
 #include <map>
 #include <list>
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
-#include "madara/knowledge_engine/Function_Arguments.h"
-#include "madara/knowledge_engine/Extern_Function_Variables.h"
+#include "madara/knowledge/Function_Arguments.h"
+#include "madara/knowledge/Extern_Function_Variables.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Filters
+  namespace filters
   {
     /**
      * Abstract base class for implementing individual record filters via
@@ -63,8 +63,8 @@ namespace Madara
        *          the variable is removed from the operation.
        **/
       virtual Knowledge_Record filter (
-        Knowledge_Engine::Function_Arguments & args,
-        Knowledge_Engine::Variables & vars) = 0;
+        knowledge::Function_Arguments & args,
+        knowledge::Variables & vars) = 0;
     };
   }
 }

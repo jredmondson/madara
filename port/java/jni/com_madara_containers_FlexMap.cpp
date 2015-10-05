@@ -1,10 +1,10 @@
 #include "com_madara_containers_FlexMap.h"
-#include "madara/knowledge_engine/containers/Flex_Map.h"
+#include "madara/knowledge/containers/Flex_Map.h"
 #include "madara_jni.h"
 
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
-typedef Madara::Knowledge_Record  Knowledge_Record;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
+typedef madara::Knowledge_Record  Knowledge_Record;
 typedef Knowledge_Record::Integer Integer;
 
 jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__
@@ -175,12 +175,12 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setName
 
     if (type == 0)
     {
-      engine::Knowledge_Base * kb = (engine::Knowledge_Base *) context;
+      knowledge::Knowledge_Base * kb = (knowledge::Knowledge_Base *) context;
       current->set_name (str_name, *kb);
     }
     else if (type == 1)
     {
-      engine::Variables * vars = (engine::Variables *) context;
+      knowledge::Variables * vars = (knowledge::Variables *) context;
       current->set_name (str_name, *vars);
     }
 
@@ -308,7 +308,7 @@ jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
     std::vector<std::string> keys;
     current->keys (keys, first_level);
 
-    jclass string_class = Madara::Utility::Java::find_class (
+    jclass string_class = madara::utility::Java::find_class (
       env, "java/lang/String");
     jstring empty_string = env->NewStringUTF ("");
 
@@ -338,8 +338,8 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::Flex_Map * current = (containers::Flex_Map *)cptr;
-  engine::Knowledge_Update_Settings * settings =
-    (engine::Knowledge_Update_Settings *)settings_ptr;
+  knowledge::Knowledge_Update_Settings * settings =
+    (knowledge::Knowledge_Update_Settings *)settings_ptr;
 
   if (current && settings)
   {

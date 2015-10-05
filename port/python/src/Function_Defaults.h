@@ -9,7 +9,7 @@
  * for various MADARA functions.
  **/
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include <boost/python/module.hpp>
 #include <boost/python/def.hpp>
 #include <boost/python/args.hpp>

@@ -5,7 +5,7 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
 
 #include "ace/Signal.h"
@@ -15,11 +15,11 @@
 #include "ace/Sched_Params.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-Madara::Transport::Settings settings;
+madara::transport::Settings settings;
 volatile bool terminated = 0;
 
 void handle_arguments (int argc, char ** argv)
@@ -105,8 +105,8 @@ int ACE_TMAIN (int argc, char ** argv)
   handle_arguments (argc, argv);
   
 #ifndef _MADARA_NO_KARL_
-  settings.type = Madara::Transport::MULTICAST;
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  settings.type = madara::transport::MULTICAST;
+  madara::knowledge::Wait_Settings wait_settings;
   wait_settings.max_wait_time = 10.0;
   wait_settings.post_print_statement =
     "{update}: name == {name}, " \
@@ -118,11 +118,11 @@ int ACE_TMAIN (int argc, char ** argv)
   // signal handler for clean exit
   ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  madara::knowledge::Knowledge_Base knowledge (host, settings);
 
-  knowledge.set (".id", (Madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (madara::Knowledge_Record::Integer) settings.id);
   
-  Madara::Knowledge_Engine::Compiled_Expression compiled;
+  madara::knowledge::Compiled_Expression compiled;
 
   
   if (settings.id == 0)

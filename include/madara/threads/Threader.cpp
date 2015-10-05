@@ -7,20 +7,20 @@
 
 #endif  // MADARA_JAVA
 
-Madara::Threads::Threader::Threader ()
-  : control_(new Knowledge_Engine::Knowledge_Base ()), data_ (0)
+madara::Threads::Threader::Threader ()
+  : control_(new knowledge::Knowledge_Base ()), data_ (0)
 {
 
 }
 
-Madara::Threads::Threader::Threader (
-  Knowledge_Engine::Knowledge_Base & data_plane)
-  : control_(new Knowledge_Engine::Knowledge_Base ()), data_ (&data_plane)
+madara::Threads::Threader::Threader (
+  knowledge::Knowledge_Base & data_plane)
+  : control_(new knowledge::Knowledge_Base ()), data_ (&data_plane)
 {
 
 }
 
-Madara::Threads::Threader::~Threader ()
+madara::Threads::Threader::~Threader ()
 {
   terminate ();
   wait ();
@@ -28,14 +28,14 @@ Madara::Threads::Threader::~Threader ()
   delete control_;
 }
 
-void Madara::Threads::Threader::set_data_plane (
-  Knowledge_Engine::Knowledge_Base & data_plane)
+void madara::Threads::Threader::set_data_plane (
+  knowledge::Knowledge_Base & data_plane)
 {
   data_ = &data_plane;
 }
 
 void
-Madara::Threads::Threader::run (
+madara::Threads::Threader::run (
   const std::string name, Base_Thread * thread, bool paused)
 {
   if (name != "" && thread != 0)
@@ -55,7 +55,7 @@ Madara::Threads::Threader::run (
 #ifdef _MADARA_JAVA_
       
 void
-Madara::Threads::Threader::run (
+madara::Threads::Threader::run (
   const std::string name, jobject thread, bool paused)
 {
   if (name != "" && thread != 0)
@@ -71,7 +71,7 @@ Madara::Threads::Threader::run (
       
 
 void
-Madara::Threads::Threader::run (
+madara::Threads::Threader::run (
   double hertz, const std::string name, jobject thread, bool paused)
 {
   if (name != "" && thread != 0)
@@ -88,7 +88,7 @@ Madara::Threads::Threader::run (
 #endif // _MADARA_JAVA_
 
 void
-Madara::Threads::Threader::run (double hertz,
+madara::Threads::Threader::run (double hertz,
   const std::string name, Base_Thread * thread, bool paused)
 {
   if (name != "" && thread != 0)
@@ -106,7 +106,7 @@ Madara::Threads::Threader::run (double hertz,
 }
 
 void
-Madara::Threads::Threader::wait (const std::string name)
+madara::Threads::Threader::wait (const std::string name)
 {
   Named_Worker_Threads::iterator found = threads_.find (name);
 
@@ -114,7 +114,7 @@ Madara::Threads::Threader::wait (const std::string name)
   {
     std::string finished = found->second->finished_.get_name ();
 
-    Utility::wait_true (*control_, finished);
+    utility::wait_true (*control_, finished);
 
     delete found->second;
 
@@ -123,14 +123,14 @@ Madara::Threads::Threader::wait (const std::string name)
 }
 
 void
-Madara::Threads::Threader::wait (void)
+madara::Threads::Threader::wait (void)
 {
   for (Named_Worker_Threads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
   {
     std::string finished = i->second->finished_.get_name ();
 
-    Utility::wait_true (*control_, finished);
+    utility::wait_true (*control_, finished);
 
     delete i->second;
   }
@@ -139,7 +139,7 @@ Madara::Threads::Threader::wait (void)
 }
 
 void
-Madara::Threads::Threader::pause (const std::string name)
+madara::Threads::Threader::pause (const std::string name)
 {
   Named_Worker_Threads::iterator found = threads_.find (name);
 
@@ -150,7 +150,7 @@ Madara::Threads::Threader::pause (const std::string name)
 }
 
 void
-Madara::Threads::Threader::pause (void)
+madara::Threads::Threader::pause (void)
 {
   for (Named_Worker_Threads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
@@ -160,7 +160,7 @@ Madara::Threads::Threader::pause (void)
 }
 
 void
-Madara::Threads::Threader::resume (const std::string name)
+madara::Threads::Threader::resume (const std::string name)
 {
   Named_Worker_Threads::iterator found = threads_.find (name);
 
@@ -171,7 +171,7 @@ Madara::Threads::Threader::resume (const std::string name)
 }
 
 void
-Madara::Threads::Threader::resume (void)
+madara::Threads::Threader::resume (void)
 {
   for (Named_Worker_Threads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
@@ -181,7 +181,7 @@ Madara::Threads::Threader::resume (void)
 }
 
 void
-Madara::Threads::Threader::terminate (const std::string name)
+madara::Threads::Threader::terminate (const std::string name)
 {
   Named_Worker_Threads::iterator found = threads_.find (name);
 
@@ -192,7 +192,7 @@ Madara::Threads::Threader::terminate (const std::string name)
 }
 
 void
-Madara::Threads::Threader::terminate (void)
+madara::Threads::Threader::terminate (void)
 {
   for (Named_Worker_Threads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)

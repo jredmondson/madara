@@ -9,7 +9,7 @@
 
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
 
 void JNICALL Java_com_madara_MadaraLog_jni_1setLogLevel (JNIEnv *env,

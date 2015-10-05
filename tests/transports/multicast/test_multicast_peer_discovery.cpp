@@ -5,20 +5,20 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/filters/Generic_Filters.h"
 
 #include "madara/filters/Peer_Discovery.h"
-#include "madara/knowledge_engine/containers/Map.h"
+#include "madara/knowledge/containers/Map.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
-namespace transport = Madara::Transport;
-namespace filters = Madara::Filters;
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
-typedef  Madara::Knowledge_Record::Integer   Integer;
+namespace transport = madara::transport;
+namespace filters = madara::filters;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
+typedef  madara::Knowledge_Record::Integer   Integer;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
@@ -114,7 +114,7 @@ void handle_arguments (int argc, char ** argv)
         buffer >> drop_rate;
         
         settings.update_drop_rate (drop_rate,
-          Madara::Transport::PACKET_DROP_DETERMINISTIC);
+          madara::transport::PACKET_DROP_DETERMINISTIC);
       }
 
       ++i;
@@ -153,16 +153,16 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
   filters::Peer_Discovery peer_discovery (".peers", heart_beat);
   
-  settings.type = Madara::Transport::MULTICAST;
+  settings.type = madara::transport::MULTICAST;
   settings.add_receive_filter (&peer_discovery);
   settings.add_send_filter (&peer_discovery);
 
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  madara::knowledge::Wait_Settings wait_settings;
   wait_settings.max_wait_time = max_time;
   wait_settings.poll_frequency = 1.0;
 
 #ifndef _MADARA_NO_KARL_
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  madara::knowledge::Knowledge_Base knowledge (host, settings);
 
   knowledge.wait ("info=1 ;> #print ('Announcing presence\n') ;> 0", wait_settings);
 

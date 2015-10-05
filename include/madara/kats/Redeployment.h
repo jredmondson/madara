@@ -8,7 +8,7 @@
 
 
 
-namespace Madara
+namespace madara
 {
   namespace Kats
   {
@@ -16,11 +16,11 @@ namespace Madara
     {
     public:
       //Dataflow (TiXmlElement * parent,
-      //  Madara::Transport::Settings & settings);
+      //  madara::transport::Settings & settings);
       //void apply (void);
     private:
       std::string flow_;
-      //Madara::Transport::Settings & settings_;
+      //madara::transport::Settings & settings_;
     };
 
     struct Identifier

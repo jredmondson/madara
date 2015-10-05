@@ -11,7 +11,7 @@
 
 
 inline void
-Madara::Logger::Logger::add_file (const std::string & filename)
+madara::logger::Logger::add_file (const std::string & filename)
 {
   madara_logger_ptr_log (this, LOG_MAJOR,
     "Logger::add_file: attempting to open file %s\n",
@@ -41,7 +41,7 @@ Madara::Logger::Logger::add_file (const std::string & filename)
 }
 
 inline void
-Madara::Logger::Logger::set_level (int level)
+madara::logger::Logger::set_level (int level)
 {
   Guard guard (mutex_);
 
@@ -49,7 +49,7 @@ Madara::Logger::Logger::set_level (int level)
 }
 
 inline std::string
-Madara::Logger::Logger::get_tag (void)
+madara::logger::Logger::get_tag (void)
 {
   Guard guard (mutex_);
 
@@ -57,7 +57,7 @@ Madara::Logger::Logger::get_tag (void)
 }
 
 inline void
-Madara::Logger::Logger::set_tag (const std::string & tag)
+madara::logger::Logger::set_tag (const std::string & tag)
 {
   Guard guard (mutex_);
 
@@ -65,7 +65,7 @@ Madara::Logger::Logger::set_tag (const std::string & tag)
 }
 
 inline int
-Madara::Logger::Logger::get_level (void)
+madara::logger::Logger::get_level (void)
 {
   Guard guard (mutex_);
 
@@ -73,7 +73,7 @@ Madara::Logger::Logger::get_level (void)
 }
 
 inline void
-Madara::Logger::Logger::add_term (void)
+madara::logger::Logger::add_term (void)
 {
   Guard guard (mutex_);
 
@@ -81,7 +81,7 @@ Madara::Logger::Logger::add_term (void)
 }
 
 inline void
-Madara::Logger::Logger::add_syslog (void)
+madara::logger::Logger::add_syslog (void)
 {
   Guard guard (mutex_);
 
@@ -89,7 +89,7 @@ Madara::Logger::Logger::add_syslog (void)
 }
 
 inline void
-Madara::Logger::Logger::clear (void)
+madara::logger::Logger::clear (void)
 {
   Guard guard (mutex_);
 
@@ -109,7 +109,7 @@ Madara::Logger::Logger::clear (void)
 }
 
 inline void
-Madara::Logger::Logger::set_timestamp_format (const std::string & format)
+madara::logger::Logger::set_timestamp_format (const std::string & format)
 {
   Guard guard (mutex_);
 

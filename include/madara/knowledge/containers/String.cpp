@@ -1,0 +1,454 @@
+#include "String.h"
+#include "madara/knowledge/Context_Guard.h"
+
+madara::knowledge::containers::String::String (
+  const Knowledge_Update_Settings & settings)
+: Base_Container ("", settings), context_ (0)
+{
+}
+   
+
+madara::knowledge::containers::String::String (
+  const std::string & name,
+  Knowledge_Base & knowledge,
+  const Knowledge_Update_Settings & settings)
+: Base_Container (name, settings), context_ (&(knowledge.get_context ()))
+{
+  variable_ = knowledge.get_ref (name, settings_);
+  settings_ = settings;
+}
+
+madara::knowledge::containers::String::String (
+  const std::string & name,
+  Variables & knowledge,
+  const Knowledge_Update_Settings & settings)
+: Base_Container (name, settings), context_ (knowledge.get_context ())
+{
+  variable_ = knowledge.get_ref (name, settings_);
+  settings_ = settings;
+}
+      
+madara::knowledge::containers::String::String (
+  const std::string & name,
+  Knowledge_Base & knowledge,
+  const std::string & value,
+  const Knowledge_Update_Settings & settings)
+: Base_Container (name, settings), context_ (&(knowledge.get_context ()))
+{
+  variable_ = knowledge.get_ref (name);
+  knowledge.set (variable_, value);
+}
+
+madara::knowledge::containers::String::String (
+  const std::string & name,
+  Variables & knowledge,
+  const std::string & value,
+  const Knowledge_Update_Settings & settings)
+: Base_Container (name, settings), context_ (knowledge.get_context ())
+{
+  variable_ = knowledge.get_ref (name);
+  knowledge.set (variable_, value);
+}
+      
+
+madara::knowledge::containers::String::String (const String & rhs)
+: Base_Container (rhs), context_ (rhs.context_), variable_ (rhs.variable_)
+{
+
+}
+
+
+madara::knowledge::containers::String::~String ()
+{
+
+}
+
+void
+madara::knowledge::containers::String::modify (void)
+{
+  Context_Guard context_guard (*context_);
+  if (context_ && name_ != "")
+  {
+    context_->mark_modified (variable_);
+  }
+}
+
+std::string
+madara::knowledge::containers::String::get_debug_info (void)
+{
+  std::stringstream result;
+
+  result << "String: ";
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    result << this->name_;
+    result << " = " << context_->get (variable_).to_string ();
+  }
+
+  return result.str ();
+}
+
+void
+madara::knowledge::containers::String::modify_ (void)
+{
+  modify ();
+}
+
+std::string
+madara::knowledge::containers::String::get_debug_info_ (void)
+{
+  return get_debug_info ();
+}
+
+madara::knowledge::containers::Base_Container *
+madara::knowledge::containers::String::clone (void) const
+{
+  return new String (*this);
+}
+
+void
+madara::knowledge::containers::String::operator= (const String & rhs)
+{
+  if (this != &rhs)
+  {
+    Guard guard (mutex_), guard2 (rhs.mutex_);
+
+    this->context_ = rhs.context_;
+    this->name_ = rhs.name_;
+    this->settings_ = rhs.settings_;
+    this->variable_ = rhs.variable_;
+  }
+}
+
+void
+madara::knowledge::containers::String::exchange (String & other)
+{
+  if (context_ && other.context_)
+  {
+    Context_Guard context_guard (*context_);
+    Context_Guard other_context_guard (*other.context_);
+    Guard guard (mutex_), guard2 (other.mutex_);
+
+    type temp = *other;
+    other = **this;
+    *this = temp;
+  }
+}
+
+void
+madara::knowledge::containers::String::set_name (
+  const std::string & var_name,
+  Knowledge_Base & knowledge)
+{
+  Knowledge_Update_Settings keep_local (true);
+  context_ = &(knowledge.get_context ());
+
+  Context_Guard context_guard (*context_);
+  Guard guard (mutex_);
+
+  name_ = var_name;
+  variable_ = context_->get_ref (name_, keep_local);
+}
+
+void
+madara::knowledge::containers::String::set_name (
+  const std::string & var_name,
+  Variables & knowledge)
+{
+  Knowledge_Update_Settings keep_local (true);
+  context_ = knowledge.get_context ();
+
+  Context_Guard context_guard (*context_);
+  Guard guard (mutex_);
+
+  name_ = var_name;
+  variable_ = context_->get_ref (name_, keep_local);
+}
+
+void
+madara::knowledge::containers::String::set_name (
+  const std::string & var_name,
+  Thread_Safe_Context & knowledge)
+{
+  Knowledge_Update_Settings keep_local (true);
+  context_ = &knowledge;
+
+  Context_Guard context_guard (*context_);
+  Guard guard (mutex_);
+
+  name_ = var_name;
+  variable_ = context_->get_ref (name_, keep_local);
+}
+
+madara::knowledge::containers::String::type
+madara::knowledge::containers::String::operator= (const type & value)
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    context_->set (variable_, value, settings_);
+  }
+
+  return value;
+}
+ 
+madara::knowledge::containers::String::type
+madara::knowledge::containers::String::operator += (type value)
+{
+  madara::knowledge::containers::String::type result;
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+
+    result = context_->get (variable_, settings_).to_string ();
+    result += value;
+    context_->set (variable_, result, settings_);
+  }
+
+  return result;
+}
+   
+bool
+madara::knowledge::containers::String::operator== (type value) const
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    return context_->get (variable_, settings_) == value;
+  }
+
+  return false;
+}
+
+bool
+madara::knowledge::containers::String::operator != (type value) const
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    return context_->get (variable_, settings_) != value;
+  }
+
+  return true;
+}
+
+bool
+madara::knowledge::containers::String::operator== (
+  const String & value) const
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    return
+      context_->get (variable_, settings_) ==
+        value.context_->get (value.variable_, value.settings_);
+  }
+
+  return false;
+}
+
+bool
+madara::knowledge::containers::String::operator != (
+  const String & value) const
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    return
+      context_->get (variable_, settings_) !=
+        value.context_->get (value.variable_, value.settings_);
+  }
+
+  return true;
+}
+
+bool
+madara::knowledge::containers::String::operator< (type value) const
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    return context_->get (variable_, settings_) < value;
+  }
+
+  return false;
+}
+
+bool
+madara::knowledge::containers::String::operator<= (type value) const
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    return context_->get (variable_, settings_) <= value;
+  }
+
+  return false;
+}
+
+bool
+madara::knowledge::containers::String::operator> (type value) const
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    return context_->get (variable_, settings_) > value;
+  }
+
+  return false;
+}
+
+bool
+madara::knowledge::containers::String::operator>= (type value) const
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    return context_->get (variable_, settings_) >= value;
+  }
+
+  return false;
+}
+
+madara::knowledge::containers::String::type
+madara::knowledge::containers::String::operator* (void) const
+{
+  return to_string ();
+}
+
+bool
+madara::knowledge::containers::String::exists (void) const
+{
+  bool result (false);
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    result = context_->exists (variable_);
+  }
+
+  return result;
+}
+
+madara::Knowledge_Record
+madara::knowledge::containers::String::to_record (void) const
+{
+  madara::Knowledge_Record result;
+  
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    result = context_->get (variable_, settings_);
+  }
+  
+  return result;
+}
+ 
+std::string
+madara::knowledge::containers::String::to_string (void) const
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    return context_->get (variable_, settings_).to_string ();
+  }
+  else
+    return "";
+}
+   
+double
+madara::knowledge::containers::String::to_double (void) const
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    return context_->get (variable_, settings_).to_double ();
+  }
+  else
+    return 0.0;
+}
+   
+madara::Knowledge_Record::Integer
+madara::knowledge::containers::String::to_integer (void) const
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    return context_->get (variable_, settings_).to_integer ();
+  }
+  else
+    return 0;
+}
+
+void
+madara::knowledge::containers::String::set_quality (
+  uint32_t quality,
+  const Knowledge_Reference_Settings & settings)
+{
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    context_->set_quality (name_, quality, true, settings);
+  }
+}
+
+bool
+madara::knowledge::containers::String::is_true (void) const
+{
+  bool result (false);
+
+  madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+    "String::is_true: checking for non-zero value\n");
+
+  if (context_)
+  {
+    Context_Guard context_guard (*context_);
+    Guard guard (mutex_);
+    result = context_->get (variable_, settings_).is_true ();
+  }
+
+  madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+    "String::is_true: final result is %d\n", (int)result);
+
+  return result;
+}
+
+bool
+madara::knowledge::containers::String::is_false (void) const
+{
+  return !is_true ();
+}
+
+
+bool
+madara::knowledge::containers::String::is_true_ (void) const
+{
+  return is_true ();
+}
+
+bool
+madara::knowledge::containers::String::is_false_ (void) const
+{
+  return is_false ();
+}

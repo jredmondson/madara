@@ -13,7 +13,7 @@ const size_t LQUEUE_SIZE = 40;
 // Constructor for Expression_Tree_Iterator_Impl that takes a tree
 // to iterate over
 
-Madara::Expression_Tree::Expression_Tree_Iterator_Impl::Expression_Tree_Iterator_Impl (
+madara::expression_tree::Expression_Tree_Iterator_Impl::Expression_Tree_Iterator_Impl (
   const Expression_Tree &tree)
   : tree_ (tree)
 {
@@ -21,14 +21,14 @@ Madara::Expression_Tree::Expression_Tree_Iterator_Impl::Expression_Tree_Iterator
 
 // Destructor
 
-Madara::Expression_Tree::Expression_Tree_Iterator_Impl::~Expression_Tree_Iterator_Impl (void)
+madara::expression_tree::Expression_Tree_Iterator_Impl::~Expression_Tree_Iterator_Impl (void)
 {
 }
 
 /// Construct an In_Order_Iterator_Impl. If end_iter is set to true,
 /// the iterator points to the end of the tree
 
-Madara::Expression_Tree::In_Order_Iterator_Impl::In_Order_Iterator_Impl (
+madara::expression_tree::In_Order_Iterator_Impl::In_Order_Iterator_Impl (
   const Expression_Tree &tree, bool end_iter)
   : Expression_Tree_Iterator_Impl (tree),
     stack_ ()
@@ -47,22 +47,22 @@ Madara::Expression_Tree::In_Order_Iterator_Impl::In_Order_Iterator_Impl (
 
 /// destructor - nothing to do
 
-Madara::Expression_Tree::In_Order_Iterator_Impl::~In_Order_Iterator_Impl (void)
+madara::expression_tree::In_Order_Iterator_Impl::~In_Order_Iterator_Impl (void)
 {
 }
 
 /// Returns the Node that the iterator is pointing to (non-const version)
  
-Madara::Expression_Tree::Expression_Tree 
-Madara::Expression_Tree::In_Order_Iterator_Impl::operator* (void)
+madara::expression_tree::Expression_Tree 
+madara::expression_tree::In_Order_Iterator_Impl::operator* (void)
 {
   return stack_.top ();
 }
 
 /// Returns the Node that the iterator is pointing to (const version)
  
-const Madara::Expression_Tree::Expression_Tree 
-Madara::Expression_Tree::In_Order_Iterator_Impl::operator* (void) const
+const madara::expression_tree::Expression_Tree 
+madara::expression_tree::In_Order_Iterator_Impl::operator* (void) const
 {
   return stack_.top ();
 }
@@ -70,7 +70,7 @@ Madara::Expression_Tree::In_Order_Iterator_Impl::operator* (void) const
 /// moves the iterator to the next node (pre-increment)
  
 void
-Madara::Expression_Tree::In_Order_Iterator_Impl::operator++ (void)
+madara::expression_tree::In_Order_Iterator_Impl::operator++ (void)
 {
   // we know that at this point there is no left () of top ()
   // because we would have already visited it.
@@ -96,7 +96,7 @@ Madara::Expression_Tree::In_Order_Iterator_Impl::operator++ (void)
 /// checks two iterators for equality
  
 bool 
-Madara::Expression_Tree::In_Order_Iterator_Impl::operator== (
+madara::expression_tree::In_Order_Iterator_Impl::operator== (
   const Expression_Tree_Iterator_Impl &rhs) const
 {
   const In_Order_Iterator_Impl * in_order_rhs = dynamic_cast
@@ -146,7 +146,7 @@ Madara::Expression_Tree::In_Order_Iterator_Impl::operator== (
 /// checks two iterators for inequality
  
 bool 
-Madara::Expression_Tree::In_Order_Iterator_Impl::operator!= (
+madara::expression_tree::In_Order_Iterator_Impl::operator!= (
   const Expression_Tree_Iterator_Impl &rhs) const
 {
   return ! (*this == rhs);
@@ -155,8 +155,8 @@ Madara::Expression_Tree::In_Order_Iterator_Impl::operator!= (
 /// Method for cloning an impl. Necessary for post increments (bridge)
 /// @see Expression_Tree_Iterator
  
-Madara::Expression_Tree::Expression_Tree_Iterator_Impl * 
-Madara::Expression_Tree::In_Order_Iterator_Impl::clone (void)
+madara::expression_tree::Expression_Tree_Iterator_Impl * 
+madara::expression_tree::In_Order_Iterator_Impl::clone (void)
 {
   return new In_Order_Iterator_Impl (*this);
 }
@@ -164,7 +164,7 @@ Madara::Expression_Tree::In_Order_Iterator_Impl::clone (void)
 /// Construct an Pre_Order_Expression_Tree_Iterator. 
 /// If end_iter is set to true, the iterator points to the end of the tree
 
-Madara::Expression_Tree::Pre_Order_Iterator_Impl::Pre_Order_Iterator_Impl (
+madara::expression_tree::Pre_Order_Iterator_Impl::Pre_Order_Iterator_Impl (
   const Expression_Tree &tree, bool end_iter)
   : Expression_Tree_Iterator_Impl (tree), 
     stack_ ()
@@ -177,7 +177,7 @@ Madara::Expression_Tree::Pre_Order_Iterator_Impl::Pre_Order_Iterator_Impl (
 
 /// destructor - nothing to do
 
-Madara::Expression_Tree::Pre_Order_Iterator_Impl::~Pre_Order_Iterator_Impl (
+madara::expression_tree::Pre_Order_Iterator_Impl::~Pre_Order_Iterator_Impl (
   void)
 {
 
@@ -185,16 +185,16 @@ Madara::Expression_Tree::Pre_Order_Iterator_Impl::~Pre_Order_Iterator_Impl (
 
 /// Returns the Node that the iterator is pointing to (non-const version)
  
-Madara::Expression_Tree::Expression_Tree 
-Madara::Expression_Tree::Pre_Order_Iterator_Impl::operator* (void)
+madara::expression_tree::Expression_Tree 
+madara::expression_tree::Pre_Order_Iterator_Impl::operator* (void)
 {
   return stack_.top ();
 }
 
 /// Returns the Node that the iterator is pointing to (const version)
  
-const Madara::Expression_Tree::Expression_Tree 
-Madara::Expression_Tree::Pre_Order_Iterator_Impl::operator* (void) const
+const madara::expression_tree::Expression_Tree 
+madara::expression_tree::Pre_Order_Iterator_Impl::operator* (void) const
 {
   return stack_.top ();
 }
@@ -202,7 +202,7 @@ Madara::Expression_Tree::Pre_Order_Iterator_Impl::operator* (void) const
 /// moves the iterator to the next node (pre-increment)
  
 void
-Madara::Expression_Tree::Pre_Order_Iterator_Impl::operator++ (void)
+madara::expression_tree::Pre_Order_Iterator_Impl::operator++ (void)
 {
   // we know that at this point there is no left () of top ()
   // because we would have already visited it.
@@ -228,7 +228,7 @@ Madara::Expression_Tree::Pre_Order_Iterator_Impl::operator++ (void)
 /// checks two iterators for equality
  
 bool 
-Madara::Expression_Tree::Pre_Order_Iterator_Impl::operator== (
+madara::expression_tree::Pre_Order_Iterator_Impl::operator== (
   const Expression_Tree_Iterator_Impl &rhs) const
 {
   const Pre_Order_Iterator_Impl *pre_order_rhs = dynamic_cast
@@ -277,7 +277,7 @@ Madara::Expression_Tree::Pre_Order_Iterator_Impl::operator== (
 /// checks two iterators for inequality
  
 bool 
-Madara::Expression_Tree::Pre_Order_Iterator_Impl::operator!= (
+madara::expression_tree::Pre_Order_Iterator_Impl::operator!= (
   const Expression_Tree_Iterator_Impl &rhs) const
 {
   return ! (*this == rhs);
@@ -287,8 +287,8 @@ Madara::Expression_Tree::Pre_Order_Iterator_Impl::operator!= (
 /// Method for cloning an impl. Necessary for post increments (bridge)
 /// @see Expression_Tree_Iterator
  
-Madara::Expression_Tree::Expression_Tree_Iterator_Impl * 
-Madara::Expression_Tree::Pre_Order_Iterator_Impl::clone (void)
+madara::expression_tree::Expression_Tree_Iterator_Impl * 
+madara::expression_tree::Pre_Order_Iterator_Impl::clone (void)
 {
   return new Pre_Order_Iterator_Impl (*this);
 }
@@ -296,7 +296,7 @@ Madara::Expression_Tree::Pre_Order_Iterator_Impl::clone (void)
 /// Construct an Post_Order_Expression_Tree_Iterator. 
 /// If end_iter is set to true, the iterator points to the end of the tree
 
-Madara::Expression_Tree::Post_Order_Iterator_Impl::Post_Order_Iterator_Impl (
+madara::expression_tree::Post_Order_Iterator_Impl::Post_Order_Iterator_Impl (
   const Expression_Tree &tree, bool end_iter)
   : Expression_Tree_Iterator_Impl (tree), 
     stack_ ()
@@ -333,23 +333,23 @@ Madara::Expression_Tree::Post_Order_Iterator_Impl::Post_Order_Iterator_Impl (
 
 /// destructor - nothing to do
 
-Madara::Expression_Tree::Post_Order_Iterator_Impl::~Post_Order_Iterator_Impl (
+madara::expression_tree::Post_Order_Iterator_Impl::~Post_Order_Iterator_Impl (
   void)
 {
 }
 
 /// Returns the Node that the iterator is pointing to (non-const version)
  
-Madara::Expression_Tree::Expression_Tree 
-Madara::Expression_Tree::Post_Order_Iterator_Impl::operator* (void)
+madara::expression_tree::Expression_Tree 
+madara::expression_tree::Post_Order_Iterator_Impl::operator* (void)
 {
   return stack_.top ();
 }
 
 /// Returns the Node that the iterator is pointing to (const version)
  
-const Madara::Expression_Tree::Expression_Tree 
-Madara::Expression_Tree::Post_Order_Iterator_Impl::operator* (void) const
+const madara::expression_tree::Expression_Tree 
+madara::expression_tree::Post_Order_Iterator_Impl::operator* (void) const
 {
   return stack_.top ();
 }
@@ -357,7 +357,7 @@ Madara::Expression_Tree::Post_Order_Iterator_Impl::operator* (void) const
 /// moves the iterator to the next node (pre-increment)
  
 void
-Madara::Expression_Tree::Post_Order_Iterator_Impl::operator++ (void)
+madara::expression_tree::Post_Order_Iterator_Impl::operator++ (void)
 {
   // we know that at this point there is no left () of top ()
   // because we would have already visited it.
@@ -403,7 +403,7 @@ Madara::Expression_Tree::Post_Order_Iterator_Impl::operator++ (void)
 /// checks two iterators for equality
  
 bool 
-Madara::Expression_Tree::Post_Order_Iterator_Impl::operator== (
+madara::expression_tree::Post_Order_Iterator_Impl::operator== (
   const Expression_Tree_Iterator_Impl &rhs) const
 {
   const Post_Order_Iterator_Impl * post_order_rhs = dynamic_cast
@@ -452,7 +452,7 @@ Madara::Expression_Tree::Post_Order_Iterator_Impl::operator== (
 /// checks two iterators for inequality
  
 bool 
-Madara::Expression_Tree::Post_Order_Iterator_Impl::operator!= (
+madara::expression_tree::Post_Order_Iterator_Impl::operator!= (
   const Expression_Tree_Iterator_Impl &rhs) const
 {
   return ! (*this == rhs);
@@ -461,8 +461,8 @@ Madara::Expression_Tree::Post_Order_Iterator_Impl::operator!= (
 /// Method for cloning an impl. Necessary for post increments (bridge)
 /// @see Expression_Tree_Iterator
  
-Madara::Expression_Tree::Expression_Tree_Iterator_Impl * 
-Madara::Expression_Tree::Post_Order_Iterator_Impl::clone (void)
+madara::expression_tree::Expression_Tree_Iterator_Impl * 
+madara::expression_tree::Post_Order_Iterator_Impl::clone (void)
 {
   return new Post_Order_Iterator_Impl (*this);
 }
@@ -470,7 +470,7 @@ Madara::Expression_Tree::Post_Order_Iterator_Impl::clone (void)
 /// Construct an Level_Order_Expression_Tree_Iterator. If end_iter is set to
 /// true, the iterator points to the end of the tree
 
-Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::Level_Order_Expression_Tree_Iterator_Impl (
+madara::expression_tree::Level_Order_Expression_Tree_Iterator_Impl::Level_Order_Expression_Tree_Iterator_Impl (
   const Expression_Tree &tree, bool end_iter)
   : Expression_Tree_Iterator_Impl (tree), 
     queue_ (LQUEUE_SIZE)
@@ -483,15 +483,15 @@ Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::Level_Order_
 
 /// destructor - nothing to do
 
-Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::~Level_Order_Expression_Tree_Iterator_Impl (
+madara::expression_tree::Level_Order_Expression_Tree_Iterator_Impl::~Level_Order_Expression_Tree_Iterator_Impl (
   void)
 {
 }
 
 /// Returns the Node that the iterator is pointing to (non-const version)
  
-Madara::Expression_Tree::Expression_Tree 
-Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::operator* (
+madara::expression_tree::Expression_Tree 
+madara::expression_tree::Level_Order_Expression_Tree_Iterator_Impl::operator* (
   void)
 {
   return queue_.front ();
@@ -499,8 +499,8 @@ Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::operator* (
 
 /// Returns the Node that the iterator is pointing to (const version)
  
-const Madara::Expression_Tree::Expression_Tree 
-Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::operator* (
+const madara::expression_tree::Expression_Tree 
+madara::expression_tree::Level_Order_Expression_Tree_Iterator_Impl::operator* (
   void) const
 {
   return queue_.front ();
@@ -509,7 +509,7 @@ Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::operator* (
 /// moves the iterator to the next node (pre-increment)
  
 void
-Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::operator++ (
+madara::expression_tree::Level_Order_Expression_Tree_Iterator_Impl::operator++ (
   void) 
 {
   if (!queue_.is_empty ())
@@ -531,7 +531,7 @@ Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::operator++ (
 /// checks two iterators for equality
  
 bool 
-Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::operator== (
+madara::expression_tree::Level_Order_Expression_Tree_Iterator_Impl::operator== (
   const Expression_Tree_Iterator_Impl &rhs) const
 {
   const Level_Order_Expression_Tree_Iterator_Impl * level_order_rhs =
@@ -580,7 +580,7 @@ Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::operator== (
 /// checks two iterators for inequality
  
 bool 
-Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::operator!= (
+madara::expression_tree::Level_Order_Expression_Tree_Iterator_Impl::operator!= (
   const Expression_Tree_Iterator_Impl &rhs) const
 {
   return !(*this == rhs);
@@ -589,8 +589,8 @@ Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::operator!= (
 /// Method for cloning an impl. Necessary for post increments (bridge)
 /// @see Expression_Tree_Iterator
  
-Madara::Expression_Tree::Expression_Tree_Iterator_Impl * 
-Madara::Expression_Tree::Level_Order_Expression_Tree_Iterator_Impl::clone (
+madara::expression_tree::Expression_Tree_Iterator_Impl * 
+madara::expression_tree::Level_Order_Expression_Tree_Iterator_Impl::clone (
   void)
 {
   return new Level_Order_Expression_Tree_Iterator_Impl (*this);

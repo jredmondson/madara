@@ -7,14 +7,14 @@
 #include <iomanip>
 #include <algorithm>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/logger/Global_Logger.h"
 
 #include "madara/utility/Utility.h"
 #include "ace/High_Res_Timer.h"
 #include "ace/Sched_Params.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
 std::vector <std::string> tests;
 std::vector <uint64_t> max_times;
@@ -22,7 +22,7 @@ std::vector <uint64_t> min_times;
 std::vector <uint64_t> average_times;
 std::vector <uint64_t> compile_times;
 #ifndef _MADARA_NO_KARL_
-std::vector <Madara::Knowledge_Engine::Compiled_Expression> 
+std::vector <madara::knowledge::Compiled_Expression> 
   compiled_expressions;
 #endif // _MADARA_NO_KARL_
 
@@ -109,7 +109,7 @@ to_legible_hertz (uint64_t hertz)
 }
 
 #ifndef _MADARA_NO_KARL_
-void warmup (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
+void warmup (madara::knowledge::Knowledge_Base & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Warming up compilation and evaluation caches...\n");
@@ -126,7 +126,7 @@ void warmup (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
     knowledge.evaluate ("var2 += 1");
 }
 
-void compile_expressions (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
+void compile_expressions (madara::knowledge::Knowledge_Base & knowledge)
 {
   for (unsigned int i = 0; i < tests.size (); ++i)
   {
@@ -147,7 +147,7 @@ void compile_expressions (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   }
 }
 
-void evaluate_expressions (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
+void evaluate_expressions (madara::knowledge::Knowledge_Base & knowledge)
 {
   for (unsigned int i = 0; i < tests.size (); ++i)
   {
@@ -159,7 +159,7 @@ void evaluate_expressions (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 
     ACE_hrtime_t overall_time;
     ACE_High_Res_Timer overall_timer;
-    Madara::Knowledge_Engine::Eval_Settings defaults;
+    madara::knowledge::Eval_Settings defaults;
     uint64_t evaluate_time;
 
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -239,12 +239,12 @@ int main (int argc, char ** argv)
      ACE_SCOPE_THREAD);
   ACE_OS::thr_setprio (prio);
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  madara::knowledge::Knowledge_Base knowledge;
   
   // read the profile expressions into a string
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "\nReading expressions from:\n\n%s\n\n",
-    Madara::Utility::clean_dir_name (Madara::Utility::expand_envs (
+    madara::utility::clean_dir_name (madara::utility::expand_envs (
     profile_file)).c_str ());
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -254,18 +254,18 @@ int main (int argc, char ** argv)
     "*****************************************************************\n\n");
 
 
-  std::string expressions_text = Madara::Utility::file_to_string (
-    Madara::Utility::clean_dir_name (Madara::Utility::expand_envs (
+  std::string expressions_text = madara::utility::file_to_string (
+    madara::utility::clean_dir_name (madara::utility::expand_envs (
       profile_file)));
 
   // remove pesky control characters that may mess with tokenizer printing
-  Madara::Utility::string_remove (expressions_text, '\r');
+  madara::utility::string_remove (expressions_text, '\r');
 
   // split the expressions_text by newlines into a tests vector of strings
   std::vector <std::string> splitters (1, "\n");
   std::vector <std::string> pivot_list;
 
-  Madara::Utility::tokenizer (expressions_text, splitters, tests, pivot_list);
+  madara::utility::tokenizer (expressions_text, splitters, tests, pivot_list);
 
   if (tests.size () > 0)
   {

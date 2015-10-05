@@ -6,22 +6,22 @@
 
 #include "madara/expression_tree/Composite_Unary_Node.h"
 
-Madara::Expression_Tree::Composite_Unary_Node::Composite_Unary_Node (
-  Logger::Logger & logger, Component_Node *right)
+madara::expression_tree::Composite_Unary_Node::Composite_Unary_Node (
+  logger::Logger & logger, Component_Node *right)
 : Component_Node (logger), right_ (right)
 {    
 }
 
 // Dtor
-Madara::Expression_Tree::Composite_Unary_Node::~Composite_Unary_Node (void)
+madara::expression_tree::Composite_Unary_Node::~Composite_Unary_Node (void)
 {
   delete right_;
 }
 
 
 // Return the right child pointer
-Madara::Expression_Tree::Component_Node *
-Madara::Expression_Tree::Composite_Unary_Node::right (void) const
+madara::expression_tree::Component_Node *
+madara::expression_tree::Composite_Unary_Node::right (void) const
 {
   return right_;
 }

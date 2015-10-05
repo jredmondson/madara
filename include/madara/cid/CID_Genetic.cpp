@@ -11,7 +11,7 @@
 
 
 void
-Madara::Cid::ga_naive (Settings & settings, double duration)
+madara::cid::ga_naive (Settings & settings, double duration)
 {
   ACE_High_Res_Timer timer;
   ACE_Time_Value max_tv (0, 0);
@@ -26,7 +26,7 @@ Madara::Cid::ga_naive (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::ga_naive:" \
+    DLINFO "madara::cid::ga_naive:" \
     " creating an exact copy of the solution vector\n"));
 #endif
 
@@ -38,7 +38,7 @@ Madara::Cid::ga_naive (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::ga_naive:" \
+    DLINFO "madara::cid::ga_naive:" \
     " calculating latency for the solution so far\n"));
 #endif
 
@@ -53,7 +53,7 @@ Madara::Cid::ga_naive (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
     MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-      DLINFO "Madara::Cid::ga_naive:" \
+      DLINFO "madara::cid::ga_naive:" \
       " initial candidates: %u, %u\n",
       candidate1, candidate2));
 #endif
@@ -64,7 +64,7 @@ Madara::Cid::ga_naive (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
     MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-      DLINFO "Madara::Cid::ga_naive:" \
+      DLINFO "madara::cid::ga_naive:" \
       " final candidates: %u, %u\n",
       candidate1, candidate2));
 #endif
@@ -79,7 +79,7 @@ Madara::Cid::ga_naive (Settings & settings, double duration)
     {
   #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::ga_naive:" \
+        DLINFO "madara::cid::ga_naive:" \
         " latency improvement: %Q->%Q. Copying solution.\n",
         orig_latency, new_latency));
   #endif
@@ -99,7 +99,7 @@ Madara::Cid::ga_naive (Settings & settings, double duration)
   }
 }
 
-void Madara::Cid::ga_degree (Settings & settings, double duration)
+void madara::cid::ga_degree (Settings & settings, double duration)
 {
   if (settings.solution.size () < 2)
     return;
@@ -117,7 +117,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::ga_degree:" \
+    DLINFO "madara::cid::ga_degree:" \
     " entering main function\n"));
 #endif
 
@@ -136,7 +136,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::ga_degree:" \
+    DLINFO "madara::cid::ga_degree:" \
     " copying initial solution\n"));
 #endif
 
@@ -147,7 +147,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::ga_degree:" \
+    DLINFO "madara::cid::ga_degree:" \
     " counting the degreed nodes in the deployment\n"));
 #endif
 
@@ -162,7 +162,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::ga_degree:" \
+    DLINFO "madara::cid::ga_degree:" \
     " Attempting up to %f seconds worth of mutations to find better solution\n",
     duration));
 #endif
@@ -181,7 +181,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
     {
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::ga_degree:" \
+        DLINFO "madara::cid::ga_degree:" \
         " naively choosing candidates\n"));
 #endif
 
@@ -200,7 +200,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
     {
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::ga_degree:" \
+        DLINFO "madara::cid::ga_degree:" \
         " choosing degree-informed candidates\n"));
 #endif
 
@@ -237,7 +237,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
         MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-          DLINFO "Madara::Cid::ga_degree:" \
+          DLINFO "madara::cid::ga_degree:" \
           " choosing from top %u candidates\n",
           range));
 #endif
@@ -251,7 +251,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
         MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-          DLINFO "Madara::Cid::ga_degree:" \
+          DLINFO "madara::cid::ga_degree:" \
           " choosing from top %u candidates\n",
           range));
 #endif
@@ -265,7 +265,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
         MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-          DLINFO "Madara::Cid::ga_degree:" \
+          DLINFO "madara::cid::ga_degree:" \
           " choosing from top %u candidates\n",
           range));
 #endif
@@ -275,7 +275,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::ga_degree:" \
+        DLINFO "madara::cid::ga_degree:" \
         " initial candidates: %u, %u\n",
         candidate1, candidate2));
 #endif
@@ -287,7 +287,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
     MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-      DLINFO "Madara::Cid::ga_degree:" \
+      DLINFO "madara::cid::ga_degree:" \
       " final candidates: %u, %u\n",
       candidate1, candidate2));
 #endif
@@ -304,7 +304,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
 
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::ga_degree:" \
+        DLINFO "madara::cid::ga_degree:" \
         " latency: %Q->%Q\n",
         orig_latency, new_latency));
 #endif
@@ -313,7 +313,7 @@ void Madara::Cid::ga_degree (Settings & settings, double duration)
       {
 #ifdef ENABLE_CID_LOGGING
         MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-          DLINFO "Madara::Cid::ga_degree:" \
+          DLINFO "madara::cid::ga_degree:" \
           " updating solution to current\n",
           orig_latency, new_latency));
 #endif

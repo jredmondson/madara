@@ -14,7 +14,7 @@
 #include "madara/MADARA_export.h"
 #include "madara/utility/Scoped_Array.h"
 #include "madara/transport/broadcast/Broadcast_Transport_Read_Thread.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Bandwidth_Monitor.h"
 #include "ace/SOCK_Dgram_Bcast.h"
 #include "madara/utility/stdint.h"
@@ -22,9 +22,9 @@
 #include "madara/threads/Threader.h"
 
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class Broadcast_Transport
@@ -49,7 +49,7 @@ namespace Madara
        * @param   launch_transport  whether or not to launch this transport
        **/
       Broadcast_Transport (const std::string & id, 
-        Madara::Knowledge_Engine::Thread_Safe_Context & context, 
+        madara::knowledge::Thread_Safe_Context & context, 
         Settings & config, bool launch_transport);
 
       /**
@@ -62,7 +62,7 @@ namespace Madara
        * @param   updates listing of all updates that must be sent
        * @return  result of write operation or -1 if we are shutting down
        **/
-      long send_data (const Madara::Knowledge_Records & updates);
+      long send_data (const madara::Knowledge_Records & updates);
       
       /**
        * Closes the transport
@@ -90,7 +90,7 @@ namespace Madara
     private:
       
       /// knowledge base for threads to use
-      Knowledge_Engine::Knowledge_Base         knowledge_;
+      knowledge::Knowledge_Base         knowledge_;
       
       /// threads for reading knowledge updates
       Threads::Threader                        read_threads_;

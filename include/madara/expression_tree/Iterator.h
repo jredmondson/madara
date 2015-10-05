@@ -7,9 +7,9 @@
 #include "madara/utility/Refcounter.h"
 #include "madara/expression_tree/Iterator_Impl.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
 
     // Forward declarations.
@@ -61,7 +61,7 @@ namespace Madara
       typedef int difference_type;
 
     private:
-      Madara::Utility::Refcounter<Expression_Tree_Iterator_Impl> impl_;
+      madara::utility::Refcounter<Expression_Tree_Iterator_Impl> impl_;
     };
 
     /**
@@ -107,7 +107,7 @@ namespace Madara
     private:
       /// Pointer to actual implementation, i.e., the "bridge", which is
       /// reference counted to automate memory management. 
-      Madara::Utility::Refcounter <Expression_Tree_Iterator_Impl> impl_;
+      madara::utility::Refcounter <Expression_Tree_Iterator_Impl> impl_;
     };
 }
 }

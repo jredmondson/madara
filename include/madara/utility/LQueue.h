@@ -7,9 +7,9 @@
 
 #include <stdexcept>
 
-namespace Madara
+namespace madara
 {
-  namespace Utility
+  namespace utility
   {
     // Solve circular include problem via forward decls.
     template <typename T>

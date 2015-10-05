@@ -1,6 +1,6 @@
 
 
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 #include "madara/transport/Message_Header.h"
 #include "madara/transport/Transport.h"
 
@@ -23,15 +23,15 @@ void test_primitive_encoding (void)
 
 
   // message headers for encoding and decoding
-  Madara::Transport::Message_Header source_header;
-  Madara::Transport::Message_Header dest_header;
+  madara::transport::Message_Header source_header;
+  madara::transport::Message_Header dest_header;
 
   // knowledge update for encoding and decoding
-  Madara::Knowledge_Record string_helloworld_source ("hello world");
-  Madara::Knowledge_Record int_source (Madara::Knowledge_Record::Integer (10));
-  Madara::Knowledge_Record double_source (5.5);
+  madara::Knowledge_Record string_helloworld_source ("hello world");
+  madara::Knowledge_Record int_source (madara::Knowledge_Record::Integer (10));
+  madara::Knowledge_Record double_source (5.5);
   
-  Madara::Knowledge_Record dest;
+  madara::Knowledge_Record dest;
 
   // Test 1: create the source header
   memset (buffer, 0, BUFFER_SIZE);
@@ -41,7 +41,7 @@ void test_primitive_encoding (void)
   strncpy (source_header.madara_id, "KaRL1.0\0", 8);
   strncpy (source_header.originator, "localhost:34000\0", 16);
   source_header.size = source_header.encoded_size ();
-  source_header.type = Madara::Transport::MULTIASSIGN;
+  source_header.type = madara::transport::MULTIASSIGN;
   source_header.updates = 0;
   source_header.quality = 5;
   
@@ -161,25 +161,25 @@ void test_image_encoding (void)
   std::string key;
 
   // message headers for encoding and decoding
-  Madara::Transport::Message_Header source_header;
-  Madara::Transport::Message_Header dest_header;
+  madara::transport::Message_Header source_header;
+  madara::transport::Message_Header dest_header;
 
   // knowledge update for encoding and decoding
-  Madara::Knowledge_Record string_source ("hello world");
-  Madara::Knowledge_Record int_source (Madara::Knowledge_Record::Integer (10));
-  Madara::Knowledge_Record double_source (5.5);
-  Madara::Knowledge_Record image_source;
+  madara::Knowledge_Record string_source ("hello world");
+  madara::Knowledge_Record int_source (madara::Knowledge_Record::Integer (10));
+  madara::Knowledge_Record double_source (5.5);
+  madara::Knowledge_Record image_source;
 
   std::string filename =
-    Madara::Utility::expand_envs (
+    madara::utility::expand_envs (
       "$(MADARA_ROOT)/tests/images/manaus_hotel_225x375.jpg");
 
   image_source.read_file (filename);
 
-  Madara::Knowledge_Record string_dest;
-  Madara::Knowledge_Record int_dest;
-  Madara::Knowledge_Record double_dest;
-  Madara::Knowledge_Record image_dest;
+  madara::Knowledge_Record string_dest;
+  madara::Knowledge_Record int_dest;
+  madara::Knowledge_Record double_dest;
+  madara::Knowledge_Record image_dest;
 
   std::string string_key_read, int_key_read, double_key_read, image_key_read;
 
@@ -190,7 +190,7 @@ void test_image_encoding (void)
   strncpy (source_header.madara_id, "KaRL1.0\0", 8);
   strncpy (source_header.originator, "localhost:34000\0", 16);
   source_header.size = source_header.encoded_size ();
-  source_header.type = Madara::Transport::MULTIASSIGN;
+  source_header.type = madara::transport::MULTIASSIGN;
   source_header.updates = 0;
   source_header.quality = 5;
   

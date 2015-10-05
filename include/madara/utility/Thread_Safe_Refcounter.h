@@ -6,9 +6,9 @@
 #include "ace/Recursive_Thread_Mutex.h"
 #include "madara/Lock_Type.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Utility
+  namespace utility
   {
     /**
      * @class Thread_Safe_Refcounter

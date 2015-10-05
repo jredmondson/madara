@@ -14,7 +14,7 @@
 #include "ace/OS_NS_Thread.h"
 #include "ace/Sched_Params.h"
 
-namespace utility = Madara::Utility;
+namespace utility = madara::utility;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -52,9 +52,9 @@ void test_endian_swap (void)
   std::cout << "      ull_temp = " << ull_temp << "\n";
   std::cout << "    neg_result = " << neg_result << "\n";
 
-  ll_temp = Madara::Utility::endian_swap (ll_value1);
-  ull_temp = Madara::Utility::endian_swap (ull_value1);
-  neg_result = Madara::Utility::endian_swap (ll_value_neg);
+  ll_temp = madara::utility::endian_swap (ll_value1);
+  ull_temp = madara::utility::endian_swap (ull_value1);
+  neg_result = madara::utility::endian_swap (ll_value_neg);
   
   std::cout << "64 bit endian_swap: After swap to temps:\n";
   std::cout << "     ll_value1 = " << ll_value1 << "\n";
@@ -64,9 +64,9 @@ void test_endian_swap (void)
   std::cout << "      ull_temp = " << ull_temp << "\n";
   std::cout << "    neg_result = " << neg_result << "\n";
   
-  ll_temp = Madara::Utility::endian_swap (ll_temp);
-  ull_temp = Madara::Utility::endian_swap (ull_temp);
-  neg_result = Madara::Utility::endian_swap (neg_result);
+  ll_temp = madara::utility::endian_swap (ll_temp);
+  ull_temp = madara::utility::endian_swap (ull_temp);
+  neg_result = madara::utility::endian_swap (neg_result);
   
   std::cout << "64 bit endian_swap: After temps swapped themselves:\n";
   std::cout << "     ll_value1 = " << ll_value1 << "\n";
@@ -86,9 +86,9 @@ void test_endian_swap (void)
   std::cout << "      ul_temp = " << ul_temp << "\n";
   std::cout << "  l_neg_result = " << l_neg_result << "\n";
 
-  l_temp = Madara::Utility::endian_swap (l_value1);
-  ul_temp = Madara::Utility::endian_swap (ul_value1);
-  l_neg_result = Madara::Utility::endian_swap (l_value_neg);
+  l_temp = madara::utility::endian_swap (l_value1);
+  ul_temp = madara::utility::endian_swap (ul_value1);
+  l_neg_result = madara::utility::endian_swap (l_value_neg);
   
   std::cout << "32 bit endian_swap: After swap to temps:\n";
   std::cout << "     l_value1 = " << l_value1 << "\n";
@@ -98,9 +98,9 @@ void test_endian_swap (void)
   std::cout << "      ul_temp = " << ul_temp << "\n";
   std::cout << "  l_neg_result = " << l_neg_result << "\n";
   
-  l_temp = Madara::Utility::endian_swap (l_temp);
-  ul_temp = Madara::Utility::endian_swap (ul_temp);
-  l_neg_result = Madara::Utility::endian_swap (l_neg_result);
+  l_temp = madara::utility::endian_swap (l_temp);
+  ul_temp = madara::utility::endian_swap (ul_temp);
+  l_neg_result = madara::utility::endian_swap (l_neg_result);
   
   std::cout << "32 bit endian_swap: After temps swapped themselves:\n";
   std::cout << "     l_value1 = " << l_value1 << "\n";
@@ -114,10 +114,10 @@ void test_endian_swap (void)
 void
 test_version (void)
 {
-  std::string human_readable_version = Madara::Utility::get_version ();
-  uint32_t uint_version = Madara::Utility::get_uint_version ();
+  std::string human_readable_version = madara::utility::get_version ();
+  uint32_t uint_version = madara::utility::get_uint_version ();
   std::string converted_version =
-    Madara::Utility::to_string_version (uint_version);
+    madara::utility::to_string_version (uint_version);
   
   std::cout << "\n********* Testing version functions *************\n\n";
   std::cout << "Version in VERSION.txt is " << human_readable_version << ".\n";
@@ -146,7 +146,7 @@ void test_heaps (void)
 
   std::cerr << "Testing heapify... ";
 
-  Madara::Utility::heapify (input, 7);
+  madara::utility::heapify (input, 7);
 
   /**             END
    *               10
@@ -161,7 +161,7 @@ void test_heaps (void)
   else
     std::cerr << "FAIL\n";
   
-  Madara::Utility::heap_sort (input, 7);
+  madara::utility::heap_sort (input, 7);
 
   std::cerr << "Testing heap_sort... ";
   
@@ -184,28 +184,28 @@ void test_ints (void)
 {
   std::cerr << "Testing nearest int to 2.25... ";
 
-  if (Madara::Utility::nearest_int (2.25) == 2)
+  if (madara::utility::nearest_int (2.25) == 2)
     std::cerr << "SUCCESS\n";
   else
     std::cerr << "FAIL\n";
   
   std::cerr << "Testing nearest int to 2.8... ";
 
-  if (Madara::Utility::nearest_int (2.8) == 3)
+  if (madara::utility::nearest_int (2.8) == 3)
     std::cerr << "SUCCESS\n";
   else
     std::cerr << "FAIL\n";
   
   std::cerr << "Testing nearest int to 16.1... ";
 
-  if (Madara::Utility::nearest_int (16.1) == 16)
+  if (madara::utility::nearest_int (16.1) == 16)
     std::cerr << "SUCCESS\n";
   else
     std::cerr << "FAIL\n";
   
   std::cerr << "Testing nearest int to 9.9575... ";
 
-  if (Madara::Utility::nearest_int (9.9575) == 10)
+  if (madara::utility::nearest_int (9.9575) == 10)
     std::cerr << "SUCCESS\n";
   else
     std::cerr << "FAIL\n";
@@ -216,7 +216,7 @@ void test_ints (void)
   int num_ones = 0;
   for (int i = 0; i < 100000; ++i)
   {
-    if (Madara::Utility::rand_int (0, 1, true) == 0)
+    if (madara::utility::rand_int (0, 1, true) == 0)
       ++num_zeroes;
     else
       ++num_ones;
@@ -235,7 +235,7 @@ void test_ints (void)
   num_ones = 0;
   for (int i = 0; i < 100000; ++i)
   {
-    if (Madara::Utility::rand_int (0, 1, false) == 0)
+    if (madara::utility::rand_int (0, 1, false) == 0)
       ++num_zeroes;
     else
       ++num_ones;
@@ -252,14 +252,14 @@ void test_ints (void)
 void test_time (void)
 {
   std::cerr << "Testing get_time... ";
-  int64_t start = Madara::Utility::get_time ();
+  int64_t start = madara::utility::get_time ();
   
   for (int i = 0; i < 30000; ++i)
   {
-    Madara::Utility::rand_int (0, 1);
+    madara::utility::rand_int (0, 1);
   }
 
-  int64_t end = Madara::Utility::get_time ();
+  int64_t end = madara::utility::get_time ();
 
   std::cerr << end - start;
 
@@ -305,7 +305,7 @@ void test_sleep (void)
 
   double sleep_time = 1.5, end_time;
   std::cerr << "  Testing sleep time of 1.5s... ";
-  end_time = Madara::Utility::sleep (sleep_time);
+  end_time = madara::utility::sleep (sleep_time);
 
   std::cerr << "result=" << end_time;
 
@@ -319,7 +319,7 @@ void test_sleep (void)
   }
   
   std::cerr << "  Testing sleep time of 2.5s... ";
-  end_time = Madara::Utility::sleep (2.5);
+  end_time = madara::utility::sleep (2.5);
 
   std::cerr << "result=" << end_time;
 
@@ -333,7 +333,7 @@ void test_sleep (void)
   }
   
   std::cerr << "  Testing sleep time of 2.25s... ";
-  end_time = Madara::Utility::sleep (2.25);
+  end_time = madara::utility::sleep (2.25);
 
   std::cerr << "result=" << end_time;
 

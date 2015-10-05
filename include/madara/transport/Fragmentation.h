@@ -16,9 +16,9 @@
 #include "madara/MADARA_export.h"
 #include "madara/transport/Message_Header.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     #define FRAGMENTATION_MADARA_ID    "KFRG1.3"
     

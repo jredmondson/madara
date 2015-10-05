@@ -45,11 +45,11 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include "com_madara_containers_Queue.h"
-#include "madara/knowledge_engine/containers/Queue.h"
+#include "madara/knowledge/containers/Queue.h"
 
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
-typedef Madara::Knowledge_Record    Knowledge_Record;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
+typedef madara::Knowledge_Record    Knowledge_Record;
 typedef Knowledge_Record::Integer   Integer;
 
 /*
@@ -256,12 +256,12 @@ void JNICALL Java_com_madara_containers_Queue_jni_1setName
 
     if (type == 0)
     {
-      engine::Knowledge_Base * kb = (engine::Knowledge_Base *) context;
+      knowledge::Knowledge_Base * kb = (knowledge::Knowledge_Base *) context;
       current->set_name (str_name, *kb);
     }
     else if (type == 1)
     {
-      engine::Variables * vars = (engine::Variables *) context;
+      knowledge::Variables * vars = (knowledge::Variables *) context;
       current->set_name (str_name, *vars);
     }
 
@@ -343,8 +343,8 @@ void JNICALL Java_com_madara_containers_Queue_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::Queue * current = (containers::Queue *)cptr;
-  engine::Knowledge_Update_Settings * settings =
-    (engine::Knowledge_Update_Settings *)settings_ptr;
+  knowledge::Knowledge_Update_Settings * settings =
+    (knowledge::Knowledge_Update_Settings *)settings_ptr;
 
   if (current && settings)
   {

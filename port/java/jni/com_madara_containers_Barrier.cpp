@@ -46,10 +46,10 @@
 *********************************************************************/
 
 #include "com_madara_containers_Barrier.h"
-#include "madara/knowledge_engine/containers/Barrier.h"
+#include "madara/knowledge/containers/Barrier.h"
 
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
 typedef containers::Barrier    Barrier;
 
 /*
@@ -151,12 +151,12 @@ void JNICALL Java_com_madara_containers_Barrier_jni_1setName
 
     if (type == 0)
     {
-      engine::Knowledge_Base * kb = (engine::Knowledge_Base *) context;
+      knowledge::Knowledge_Base * kb = (knowledge::Knowledge_Base *) context;
       current->set_name (str_name, *kb, (int)id, (int)participants);
     }
     else if (type == 1)
     {
-      engine::Variables * vars = (engine::Variables *) context;
+      knowledge::Variables * vars = (knowledge::Variables *) context;
       current->set_name (str_name, *vars, (int)id, (int)participants);
     }
 
@@ -302,8 +302,8 @@ void JNICALL Java_com_madara_containers_Barrier_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   Barrier * current = (Barrier *)cptr;
-  engine::Knowledge_Update_Settings * settings =
-    (engine::Knowledge_Update_Settings *)settings_ptr;
+  knowledge::Knowledge_Update_Settings * settings =
+    (knowledge::Knowledge_Update_Settings *)settings_ptr;
 
   if (current && settings)
   {

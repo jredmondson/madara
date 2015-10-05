@@ -6,11 +6,11 @@
 *********************************************************************/
 
 #include "com.madara.WaitSettings.h"
-#include "madara/knowledge_engine/Wait_Settings.h"
+#include "madara/knowledge/Wait_Settings.h"
 
 // define useful shorthands
-namespace engine = Madara::Knowledge_Engine;
-typedef engine::Wait_Settings         Wait_Settings;
+namespace knowledge = madara::knowledge;
+typedef knowledge::Wait_Settings         Wait_Settings;
 
 /*
 * Class:     com_madara_WaitSettings

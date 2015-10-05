@@ -5,20 +5,20 @@
 #include <algorithm>
 #include <sstream>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
 #include "madara/threads/Threader.h"
-#include "madara/knowledge_engine/containers/Integer.h"
+#include "madara/knowledge/containers/Integer.h"
 #include "madara/logger/Global_Logger.h"
 
 // shortcuts
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
-namespace utility = Madara::Utility;
-namespace threads = Madara::Threads;
-namespace logger = Madara::Logger;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
+namespace utility = madara::utility;
+namespace threads = madara::Threads;
+namespace logger = madara::logger;
 
-typedef Madara::Knowledge_Record::Integer Integer;
+typedef madara::Knowledge_Record::Integer Integer;
 
 // default transport settings
 
@@ -134,7 +134,7 @@ public:
     * Initializes thread with MADARA context
     * @param   context   context for querying current program state
     **/
-  virtual void init (engine::Knowledge_Base & context)
+  virtual void init (knowledge::Knowledge_Base & context)
   {
     counter.set_name ("counter", context);
 
@@ -154,7 +154,7 @@ public:
 
 private:
   containers::Integer counter;
-  engine::Knowledge_Base data;
+  knowledge::Knowledge_Base data;
   std::string message;
 };
 
@@ -164,7 +164,7 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
   
   // create a knowledge base and setup our id
-  engine::Knowledge_Base knowledge;
+  knowledge::Knowledge_Base knowledge;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Hertz rate set to %f\n"

@@ -9,10 +9,10 @@
 #include <iostream>
 #include <sstream>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
 int ACE_TMAIN (int, char **)
 {
@@ -21,16 +21,16 @@ int ACE_TMAIN (int, char **)
   logger::global_logger->set_level (7);
 
   // don't use a transport for this test.
-  Madara::Transport::Settings transport_settings;
-  transport_settings.type = Madara::Transport::NO_TRANSPORT;
+  madara::transport::Settings transport_settings;
+  transport_settings.type = madara::transport::NO_TRANSPORT;
   
   // holder for expression trees
-  Madara::Knowledge_Engine::Compiled_Expression expression;
+  madara::knowledge::Compiled_Expression expression;
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge ("nohost",
+  madara::knowledge::Knowledge_Base knowledge ("nohost",
     transport_settings);
 
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  madara::knowledge::Wait_Settings wait_settings;
   std::string logic = "++.count && 0";
   wait_settings.pre_print_statement =
     "WAIT STARTED: Waiting for 10 seconds.\n";

@@ -13,13 +13,13 @@
 
 #include "madara/transport/Transport_Settings.h"
 #include "madara/transport/Transport_Context.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
 #include "madara/filters/Aggregate_Filter.h"
 #include "madara/filters/Record_Filter.h"
 #include "madara/filters/Buffer_Filter.h"
-#include "madara/knowledge_engine/Knowledge_Record_Filters.h"
+#include "madara/knowledge/Knowledge_Record_Filters.h"
 
 #ifdef _MADARA_JAVA_
   #include <jni.h>
@@ -30,14 +30,14 @@
 #endif
 
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * Enumeration for packet drop policy types
      **/
-    enum PacketDropType {
+    enum Packet_Drop_Type {
       PACKET_DROP_DETERMINISTIC,
       PACKET_DROP_PROBABLISTIC
     };
@@ -86,8 +86,8 @@ namespace Madara
        *                     in Function_Arguments.
        **/
       void add_send_filter (uint32_t types,
-        Knowledge_Record (*function) (Knowledge_Engine::Function_Arguments &,
-                                      Knowledge_Engine::Variables &));
+        Knowledge_Record (*function) (knowledge::Function_Arguments &,
+                                      knowledge::Variables &));
       
       /**
        * Adds a filter that will be applied to certain types before sending
@@ -96,7 +96,7 @@ namespace Madara
        *                     will be managed by the underlying infrastructure
        **/
       void add_send_filter (uint32_t types,
-        Filters::Record_Filter * filter);
+        filters::Record_Filter * filter);
       
       /**
        * Adds an aggregate update filter that will be applied before sending,
@@ -104,8 +104,8 @@ namespace Madara
        * @param   function  an aggregate update filter
        **/
       void add_send_filter (void (*function) (
-        Knowledge_Map &, const Transport::Transport_Context &,
-        Knowledge_Engine::Variables &));
+        Knowledge_Map &, const transport::Transport_Context &,
+        knowledge::Variables &));
       
       /**
        * Adds an aggregate update filter that will be applied before sending,
@@ -113,13 +113,13 @@ namespace Madara
        * @param   filter     an instance of an aggregate record filter that
        *                     will be managed by the underlying infrastructure
        **/
-      void add_send_filter (Filters::Aggregate_Filter * filter);
+      void add_send_filter (filters::Aggregate_Filter * filter);
 
       /**
       * Adds a buffer filter to the chain
       * @param   filter     an instance of a buffer filter
       **/
-      void add_filter (Filters::Buffer_Filter * filter);
+      void add_filter (filters::Buffer_Filter * filter);
 
       /**
        * Adds a filter that will be applied to certain types after receiving
@@ -129,8 +129,8 @@ namespace Madara
        *                     in Function_Arguments.
        **/
       void add_receive_filter (uint32_t types,
-        Knowledge_Record (*function) (Knowledge_Engine::Function_Arguments &,
-                                      Knowledge_Engine::Variables &));
+        Knowledge_Record (*function) (knowledge::Function_Arguments &,
+                                      knowledge::Variables &));
       
       /**
        * Adds a filter that will be applied to certain types after receiving
@@ -139,7 +139,7 @@ namespace Madara
        *                     will be managed by the underlying infrastructure
        **/
       void add_receive_filter (uint32_t types,
-        Filters::Record_Filter * filter);
+        filters::Record_Filter * filter);
       
       /**
        * Adds an aggregate update filter that will be applied after receiving,
@@ -147,8 +147,8 @@ namespace Madara
        * @param   function  an aggregate update filter
        **/
       void add_receive_filter (void (*function) (
-        Knowledge_Map &, const Transport::Transport_Context &,
-        Knowledge_Engine::Variables &));
+        Knowledge_Map &, const transport::Transport_Context &,
+        knowledge::Variables &));
  
       /**
        * Adds an aggregate update filter that will be applied after receiving,
@@ -156,7 +156,7 @@ namespace Madara
        * @param   filter     an instance of an aggregate record filter that
        *                     will be managed by the underlying infrastructure
        **/
-      void add_receive_filter (Filters::Aggregate_Filter * filter);
+      void add_receive_filter (filters::Aggregate_Filter * filter);
       
       /**
        * Adds a filter that will be applied to certain types after receiving
@@ -166,8 +166,8 @@ namespace Madara
        *                     in Function_Arguments.
        **/
       void add_rebroadcast_filter (uint32_t types,
-        Knowledge_Record (*function) (Knowledge_Engine::Function_Arguments &,
-                                      Knowledge_Engine::Variables &));
+        Knowledge_Record (*function) (knowledge::Function_Arguments &,
+                                      knowledge::Variables &));
       
       /**
        * Adds a filter that will be applied to certain types after receiving
@@ -177,7 +177,7 @@ namespace Madara
        *                     will be managed by the underlying infrastructure
        **/
       void add_rebroadcast_filter (uint32_t types,
-        Filters::Record_Filter * filter);
+        filters::Record_Filter * filter);
       
       /**
        * Adds an aggregate update filter that will be applied before
@@ -185,8 +185,8 @@ namespace Madara
        * @param   function  an aggregate update filter
        **/
       void add_rebroadcast_filter (void (*function) (
-        Knowledge_Map &, const Transport::Transport_Context &,
-        Knowledge_Engine::Variables &));
+        Knowledge_Map &, const transport::Transport_Context &,
+        knowledge::Variables &));
  
       /**
        * Adds an aggregate update filter that will be applied before
@@ -194,7 +194,7 @@ namespace Madara
        * @param   filter     an instance of an aggregate record filter that
        *                     will be managed by the underlying infrastructure
        **/
-      void add_rebroadcast_filter (Filters::Aggregate_Filter * filter);
+      void add_rebroadcast_filter (filters::Aggregate_Filter * filter);
       
 #ifdef _MADARA_JAVA_
       
@@ -316,7 +316,7 @@ namespace Madara
        * the context.
        * @param   context     context to be used for Variable lookups
        **/
-      void attach (Knowledge_Engine::Thread_Safe_Context * context);
+      void attach (knowledge::Thread_Safe_Context * context);
       
       /**
        * Clears the list of filters for the specified types
@@ -364,9 +364,9 @@ namespace Madara
        * @return  the result of filtering the input
        **/
       Knowledge_Record filter_send (
-        const Madara::Knowledge_Record & input,
+        const madara::Knowledge_Record & input,
         const std::string & name,
-        Transport::Transport_Context & context) const;
+        transport::Transport_Context & context) const;
         
       /**
        * Filters aggregate records according to the send filter chain
@@ -374,7 +374,7 @@ namespace Madara
        * @param  transport_context   the context of the transport
        **/
       void filter_send (Knowledge_Map & records,
-        const Transport::Transport_Context & transport_context) const;
+        const transport::Transport_Context & transport_context) const;
           
       /**
        * Filters an input according to the receive filter chain
@@ -384,9 +384,9 @@ namespace Madara
        * @return  the result of filtering the input
        **/
       Knowledge_Record filter_receive (
-        const Madara::Knowledge_Record & input,
+        const madara::Knowledge_Record & input,
         const std::string & name,
-        Transport::Transport_Context & context) const;
+        transport::Transport_Context & context) const;
       
       /**
        * Filters aggregate records according to the receive filter chain
@@ -394,7 +394,7 @@ namespace Madara
        * @param  transport_context   the context of the transport
        **/
       void filter_receive (Knowledge_Map & records,
-        const Transport::Transport_Context & transport_context) const;
+        const transport::Transport_Context & transport_context) const;
           
       /**
        * Filters an input according to the rebroadcast filter chain
@@ -404,9 +404,9 @@ namespace Madara
        * @return  the result of filtering the input
        **/
       Knowledge_Record filter_rebroadcast (
-        const Madara::Knowledge_Record & input,
+        const madara::Knowledge_Record & input,
         const std::string & name,
-        Transport::Transport_Context & context) const;
+        transport::Transport_Context & context) const;
 
       /**
        * Filters aggregate records according to the rebroadcast filter chain
@@ -414,7 +414,7 @@ namespace Madara
        * @param  transport_context   the context of the transport
        **/
       void filter_rebroadcast (Knowledge_Map & records,
-        const Transport::Transport_Context & transport_context) const;
+        const transport::Transport_Context & transport_context) const;
 
       /**
       * Calls encode on the the buffer filter chain
@@ -679,22 +679,22 @@ namespace Madara
       /**
        * A container for rebroadcast filters
        **/
-      Knowledge_Engine::Knowledge_Record_Filters  rebroadcast_filters_;
+      knowledge::Knowledge_Record_Filters  rebroadcast_filters_;
          
       /**
        * A container for receive filters
        **/
-      Knowledge_Engine::Knowledge_Record_Filters  receive_filters_;
+      knowledge::Knowledge_Record_Filters  receive_filters_;
 
       /**
        * A container for filters applied before sending from this host
        **/
-      Knowledge_Engine::Knowledge_Record_Filters  send_filters_;
+      knowledge::Knowledge_Record_Filters  send_filters_;
 
       /**
        * buffer filters have an encode and decode method
        **/
-      Filters::Buffer_Filters   buffer_filters_;
+      filters::Buffer_Filters   buffer_filters_;
 
       /**
        * Rate for dropping packets

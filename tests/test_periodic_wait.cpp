@@ -9,12 +9,12 @@
 #include <iostream>
 #include <sstream>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
-Madara::Knowledge_Engine::Wait_Settings wait_settings;
+madara::knowledge::Wait_Settings wait_settings;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -88,7 +88,7 @@ int ACE_TMAIN (int argc, char * argv[])
   handle_arguments (argc, argv);
   
 #ifndef _MADARA_NO_KARL_
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  madara::knowledge::Knowledge_Base knowledge;
 
   // for convenience with calcuations, set the main arguments
   knowledge.set ("max_wait", wait_settings.max_wait_time);

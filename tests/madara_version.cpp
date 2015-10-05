@@ -4,7 +4,7 @@
 int main (int,char **)
 {
   std::cout << "MADARA libraries are at version " <<
-    Madara::Utility::get_version () << ".\n";
+    madara::utility::get_version () << ".\n";
 
   return 0;
 }

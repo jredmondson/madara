@@ -6,14 +6,14 @@
 //#include "madara/transport/splice/Splice_DataReader_Listener.h"
 //#include "madara/transport/splice/Splice_Subscriber_Listener.h"
 #include "madara/transport/splice/Splice_Transport_Read_Thread.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Transport.h"
 #include "ccpp_dds_dcps.h"
 #include "madara/transport/splice/ccpp_Splice_Knowledge_Update.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class Splice_DDS_Transport
@@ -40,7 +40,7 @@ namespace Madara
        * @param   launch_transport  whether or not to launch this transport
        **/
       Splice_DDS_Transport (const std::string & id, 
-        Madara::Knowledge_Engine::Thread_Safe_Context & context, 
+        knowledge::Thread_Safe_Context & context, 
         Settings & config, bool launch_transport);
 
       /**
@@ -53,7 +53,7 @@ namespace Madara
        * @param   updates listing of all updates that must be sent
        * @return  result of write operation or -1 if we are shutting down
        **/
-      long send_data (const Madara::Knowledge_Records & updates);
+      long send_data (const madara::Knowledge_Records & updates);
 	  
 #ifdef _USE_CID_
 

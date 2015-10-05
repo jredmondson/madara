@@ -5,14 +5,14 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
 std::string host ("");
 const std::string default_broadcast ("192.168.1.255:15000");
-Madara::Transport::QoS_Transport_Settings settings;
+madara::transport::QoS_Transport_Settings settings;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -81,7 +81,7 @@ void handle_arguments (int argc, char ** argv)
         buffer >> drop_rate;
         
         settings.update_drop_rate (drop_rate,
-          Madara::Transport::PACKET_DROP_DETERMINISTIC);
+          madara::transport::PACKET_DROP_DETERMINISTIC);
       }
 
       ++i;
@@ -115,8 +115,8 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
   
 #ifndef _MADARA_NO_KARL_
-  settings.type = Madara::Transport::BROADCAST;
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  settings.type = madara::transport::BROADCAST;
+  madara::knowledge::Wait_Settings wait_settings;
   wait_settings.max_wait_time = 10;
 
   if (settings.id == 0)
@@ -125,20 +125,20 @@ int main (int argc, char ** argv)
     settings.on_data_received_logic = "heavy_processes > 0 => out_of_resources = 1; emergency => shutdown = 1";
 
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  madara::knowledge::Knowledge_Base knowledge (host, settings);
 
-  knowledge.set (".id", (Madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (madara::Knowledge_Record::Integer) settings.id);
   
   if (settings.id == 0)
   {
-    Madara::Knowledge_Engine::Compiled_Expression compiled = 
+    madara::knowledge::Compiled_Expression compiled = 
       knowledge.compile ("heavy_processes = 1 ;> shutdown");
 
     knowledge.wait (compiled, wait_settings);
   }
   else
   {
-    Madara::Knowledge_Engine::Compiled_Expression compiled = 
+    madara::knowledge::Compiled_Expression compiled = 
       knowledge.compile ("shutdown");
 
     knowledge.wait (compiled, wait_settings);

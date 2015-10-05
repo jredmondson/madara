@@ -17,12 +17,12 @@
 
 // Ctor
 
-Madara::Expression_Tree::Composite_For_Loop::Composite_For_Loop (
+madara::expression_tree::Composite_For_Loop::Composite_For_Loop (
        Component_Node * precondition,
         Component_Node * condition, 
         Component_Node * postcondition,
         Component_Node * body,
-        Madara::Knowledge_Engine::Thread_Safe_Context & context)
+        madara::knowledge::Thread_Safe_Context & context)
 : Component_Node (context.get_logger ()), context_(context),
     precondition_ (precondition), condition_ (condition), 
     postcondition_ (postcondition), body_ (body)
@@ -31,14 +31,14 @@ Madara::Expression_Tree::Composite_For_Loop::Composite_For_Loop (
 }
 
 // Dtor
-Madara::Expression_Tree::Composite_For_Loop::~Composite_For_Loop (void)
+madara::expression_tree::Composite_For_Loop::~Composite_For_Loop (void)
 {
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_For_Loop::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::Composite_For_Loop::item (void) const
 {
-  Madara::Knowledge_Record record;
+  madara::Knowledge_Record record;
   record.set_value ("for (;;)");
   return record;
 }
@@ -46,38 +46,38 @@ Madara::Expression_Tree::Composite_For_Loop::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_For_Loop::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::Composite_For_Loop::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
   // what it does. Consequently, a function node cannot be pruned out
   // under any situation
   can_change = true;
   
-  Madara::Knowledge_Record zero;
+  madara::Knowledge_Record zero;
   return zero;
 }
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::Composite_For_Loop::evaluate (
-const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::Composite_For_Loop::evaluate (
+const madara::knowledge::Knowledge_Update_Settings & settings)
 {
-  madara_logger_ptr_log (logger_, Logger::LOG_MAJOR,
+  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
     "Composite_For_Loop::evaluate: Executing precondition\n");
 
   precondition_->evaluate (settings);
 
-  Madara::Knowledge_Record::Integer count = 0;
+  madara::Knowledge_Record::Integer count = 0;
   while (condition_->evaluate (settings).is_true ())
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "Composite_For_Loop::evaluate: Executing loop body\n");
 
     body_->evaluate (settings);
 
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "Composite_For_Loop::evaluate: Executing postcondition\n");
 
     postcondition_->evaluate (settings);
@@ -86,14 +86,14 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
   // return is the number of successful body executions
   
-  Madara::Knowledge_Record evaluations;
+  madara::Knowledge_Record evaluations;
   evaluations.set_value (count);
   return evaluations;
 }
 
 // accept a visitor
 void 
-Madara::Expression_Tree::Composite_For_Loop::accept (Visitor &visitor) const
+madara::expression_tree::Composite_For_Loop::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }

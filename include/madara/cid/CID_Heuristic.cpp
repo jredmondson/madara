@@ -16,7 +16,7 @@
 #include "madara/cid/CID_Heuristic.h"
 
 void
-Madara::Cid::approximate (Settings & settings)
+madara::cid::approximate (Settings & settings)
 {
   typedef std::map <unsigned int, unsigned int>  Candidate_Map;
 
@@ -49,7 +49,7 @@ Madara::Cid::approximate (Settings & settings)
     {
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::approximate:" \
+        DLINFO "madara::cid::approximate:" \
           " calling fill_from_solution_map for i=%u\n",
           i));
 #endif
@@ -61,7 +61,7 @@ Madara::Cid::approximate (Settings & settings)
 }
 
 void
-Madara::Cid::approximate (Settings & settings, unsigned int node)
+madara::cid::approximate (Settings & settings, unsigned int node)
 {
   approximate (settings.network_summations, 
     settings.target_deployment, settings.solution,
@@ -69,7 +69,7 @@ Madara::Cid::approximate (Settings & settings, unsigned int node)
 }
 
 void
-Madara::Cid::approximate (Summations_Map & network_summations,
+madara::cid::approximate (Summations_Map & network_summations,
       Workflow & target_deployment, Deployment & solution, 
       Solution_Map & solution_lookup, unsigned int node)
 {
@@ -93,7 +93,7 @@ Madara::Cid::approximate (Summations_Map & network_summations,
 
 #ifdef ENABLE_CID_LOGGING
     MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-      DLINFO "Madara::Cid::approximate:" \
+      DLINFO "madara::cid::approximate:" \
         " degree=%u, source=%u\n",
         degree, source));
 #endif
@@ -109,7 +109,7 @@ Madara::Cid::approximate (Summations_Map & network_summations,
       {
 #ifdef ENABLE_CID_LOGGING
         MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-          DLINFO "Madara::Cid::approximate:" \
+          DLINFO "madara::cid::approximate:" \
           " degree=%u, source=%u, i=%u: found solution for %u\n",
             degree, source, i, cur_summations[i].first));
 #endif
@@ -123,14 +123,14 @@ Madara::Cid::approximate (Summations_Map & network_summations,
 }
 
 uint64_t
-Madara::Cid::calculate_latency (Settings & settings)
+madara::cid::calculate_latency (Settings & settings)
 {
   return calculate_latency (settings.network_latencies,
     settings.target_deployment, settings.solution);
 }
 
 uint64_t
-Madara::Cid::calculate_latency (LV_Vector & latencies, Workflow & workflow,
+madara::cid::calculate_latency (LV_Vector & latencies, Workflow & workflow,
                                 Deployment & solution)
 {
   uint64_t total_latency = 0;
@@ -158,7 +158,7 @@ Madara::Cid::calculate_latency (LV_Vector & latencies, Workflow & workflow,
       {
 #ifdef ENABLE_CID_LOGGING
         MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-          DLINFO "Madara::Cid::calculate_latency:" \
+          DLINFO "madara::cid::calculate_latency:" \
           " workflow[%u]: adding current[%u].second to total_latency (%Q)\n",
             i, j, total_latency));
 #endif
@@ -175,7 +175,7 @@ Madara::Cid::calculate_latency (LV_Vector & latencies, Workflow & workflow,
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::calculate_latency:" \
+    DLINFO "madara::cid::calculate_latency:" \
     " total_latency for deployment is %Q\n",
       total_latency));
 #endif
@@ -184,13 +184,13 @@ Madara::Cid::calculate_latency (LV_Vector & latencies, Workflow & workflow,
 }
 
 void
-Madara::Cid::fill_by_highest_degree (Settings & settings)
+madara::cid::fill_by_highest_degree (Settings & settings)
 {
   fill_by_highest_degree (settings, true);
 }
 
 void
-Madara::Cid::fill_by_highest_degree (Settings & settings, bool use_workflow)
+madara::cid::fill_by_highest_degree (Settings & settings, bool use_workflow)
 {
   if (settings.target_deployment.size () < 1)
     return;
@@ -212,7 +212,7 @@ Madara::Cid::fill_by_highest_degree (Settings & settings, bool use_workflow)
 
   if (degree == 0 || degree == 1)
     MADARA_DEBUG (MADARA_LOG_ERROR, (LM_DEBUG, 
-      DLINFO "Madara::Cid::fill_by_highest_degree:" \
+      DLINFO "madara::cid::fill_by_highest_degree:" \
       " ERROR: highest degree equals %u\n",
         degree));
 
@@ -280,7 +280,7 @@ Madara::Cid::fill_by_highest_degree (Settings & settings, bool use_workflow)
               {
   #ifdef ENABLE_CID_LOGGING
                 MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-                DLINFO "Madara::Cid::fill_from_solution_map:" \
+                DLINFO "madara::cid::fill_from_solution_map:" \
                 " found solution[%u]=%u\n",
                 dest, cur_summations[candidate].first));
   #endif
@@ -311,7 +311,7 @@ Madara::Cid::fill_by_highest_degree (Settings & settings, bool use_workflow)
         {
 #ifdef ENABLE_CID_LOGGING
           MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-          DLINFO "Madara::Cid::fill_by_highest_degree:" \
+          DLINFO "madara::cid::fill_by_highest_degree:" \
           " found solution[%u]=%u\n",
           i, cur_summations[candidate].first));
 #endif
@@ -327,7 +327,7 @@ Madara::Cid::fill_by_highest_degree (Settings & settings, bool use_workflow)
 }
 
 void
-Madara::Cid::fill_from_solution_map (Settings & settings)
+madara::cid::fill_from_solution_map (Settings & settings)
 {
   // setup some references for simplicity
   Workflow & deployment = settings.target_deployment;
@@ -363,7 +363,7 @@ Madara::Cid::fill_from_solution_map (Settings & settings)
             {
 #ifdef ENABLE_CID_LOGGING
               MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-              DLINFO "Madara::Cid::fill_from_solution_map:" \
+              DLINFO "madara::cid::fill_from_solution_map:" \
               " found solution[%u]=%u\n",
               dest, latencies[candidate].first));
 #endif
@@ -388,14 +388,14 @@ Madara::Cid::fill_from_solution_map (Settings & settings)
 
 
 void
-Madara::Cid::pathwise_approximate (Settings & settings,
+madara::cid::pathwise_approximate (Settings & settings,
              Deployment & solution, Solution_Map & lookup)
 {
 
 }
 
 void
-Madara::Cid::pathwise_approximate (Settings & settings)
+madara::cid::pathwise_approximate (Settings & settings)
 {
 #define    MAX_SOLUTIONS     1
 #define    MAX_PATHS         5
@@ -407,7 +407,7 @@ Madara::Cid::pathwise_approximate (Settings & settings)
 //  std::vector<Deployment> solutions;
   //std::vector<Solution_Map> lookups;
 //  Deployment new_lookup (settings.network_latencies.size (),
-//    Madara::Cid::INVALID_LOOKUP);
+//    madara::cid::INVALID_LOOKUP);
 //  Latency_Vector utilities;
 //  utilities.resize (MAX_SOLUTIONS);
 //  solutions.resize (MAX_SOLUTIONS);
@@ -532,7 +532,7 @@ Madara::Cid::pathwise_approximate (Settings & settings)
 }
 
 void
-Madara::Cid::populate_links (Settings & settings, Links & source, Links & connected,
+madara::cid::populate_links (Settings & settings, Links & source, Links & connected,
                              unsigned int depth)
 {
   Paths & paths = settings.paths;
@@ -577,7 +577,7 @@ Madara::Cid::populate_links (Settings & settings, Links & source, Links & connec
 }
 
 void
-Madara::Cid::prepare_deployment (Settings & settings)
+madara::cid::prepare_deployment (Settings & settings)
 {
   Workflow & deployment = settings.target_deployment;
   Paths & paths = settings.paths;
@@ -597,7 +597,7 @@ Madara::Cid::prepare_deployment (Settings & settings)
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-  DLINFO "Madara::Cid::prepare_deployment:" \
+  DLINFO "madara::cid::prepare_deployment:" \
   " filling paths with deployment info\n"));
 #endif
   // 1. create links from current deployment degrees
@@ -642,7 +642,7 @@ Madara::Cid::prepare_deployment (Settings & settings)
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-  DLINFO "Madara::Cid::prepare_deployment:" \
+  DLINFO "madara::cid::prepare_deployment:" \
   " searching to fill all local neighborhoods\n"));
 #endif
   // 3. iterate over these links until we have all possible links
@@ -659,7 +659,7 @@ Madara::Cid::prepare_deployment (Settings & settings)
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-  DLINFO "Madara::Cid::prepare_deployment:" \
+  DLINFO "madara::cid::prepare_deployment:" \
   " copying the map to the vector\n"));
 #endif
   // 4. copy the map to a vector
@@ -689,7 +689,7 @@ Madara::Cid::prepare_deployment (Settings & settings)
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-  DLINFO "Madara::Cid::prepare_deployment:" \
+  DLINFO "madara::cid::prepare_deployment:" \
   " sorting the deployment and paths\n"));
 #endif
   // 5. sort 

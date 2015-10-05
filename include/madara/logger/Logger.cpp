@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <time.h>
 
-Madara::Logger::Logger::Logger (bool log_to_terminal)
+madara::logger::Logger::Logger (bool log_to_terminal)
 : mutex_ (), level_ (LOG_ERROR),
   term_added_ (log_to_terminal), syslog_added_ (false), tag_ ("madara"),
   timestamp_format_ ("")
@@ -14,13 +14,13 @@ Madara::Logger::Logger::Logger (bool log_to_terminal)
   }
 }
 
-Madara::Logger::Logger::~Logger ()
+madara::logger::Logger::~Logger ()
 {
   clear ();
 }
 
 void
-Madara::Logger::Logger::log (int level, const char * message, ...)
+madara::logger::Logger::log (int level, const char * message, ...)
 {
   if (level <= level_)
   {

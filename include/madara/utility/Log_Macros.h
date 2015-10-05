@@ -176,9 +176,9 @@ extern MADARA_Logger_Export int MADARA_debug_level;
 # endif
 #endif
 
-namespace Madara
+namespace madara
 {
-  namespace Utility
+  namespace utility
   {
     /**
      * Logging levels available for MADARA library

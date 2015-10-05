@@ -18,9 +18,9 @@
 #include "madara/expression_tree/System_Call_Node.h"
 
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     // Forward declaration.
     class Visitor;
@@ -36,7 +36,7 @@ namespace Madara
        * Constructor
        **/
       System_Call_Eval (
-        Madara::Knowledge_Engine::Thread_Safe_Context & context,
+        madara::knowledge::Thread_Safe_Context & context,
         const Component_Nodes & nodes);
       
       /**
@@ -48,21 +48,21 @@ namespace Madara
        * Returns the value of the node
        * @return    value of the node
        **/
-      virtual Madara::Knowledge_Record item (void) const;
+      virtual madara::Knowledge_Record item (void) const;
 
       /** 
        * Prunes the expression tree of unnecessary nodes. 
        * @param     can_change   set to true if variable nodes are contained
        * @return    value of current contained expression tree
        **/
-      virtual Madara::Knowledge_Record prune (bool & can_change);
+      virtual madara::Knowledge_Record prune (bool & can_change);
 
       /** 
        * Evaluates the expression tree. 
        * @return    value of current contained expression tree
        **/
-      virtual Madara::Knowledge_Record evaluate (
-        const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings);
+      virtual madara::Knowledge_Record evaluate (
+        const madara::knowledge::Knowledge_Update_Settings & settings);
 
       /** 
        * Accepts a visitor subclassed from the Visitor class

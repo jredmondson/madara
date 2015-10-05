@@ -2,7 +2,7 @@
 #include "madara/transport/udp/UDP_Transport_Read_Thread.h"
 #include "madara/transport/Transport_Context.h"
 
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 #include "madara/transport/Reduced_Message_Header.h"
 #include "madara/utility/Utility.h"
 #include "ace/INET_Addr.h"
@@ -11,8 +11,8 @@
 
 #include <iostream>
 
-Madara::Transport::UDP_Transport::UDP_Transport (const std::string & id,
-  Madara::Knowledge_Engine::Thread_Safe_Context & context, 
+madara::transport::UDP_Transport::UDP_Transport (const std::string & id,
+  madara::knowledge::Thread_Safe_Context & context, 
   Settings & config, bool launch_transport)
   : Base (id, config, context)
 {
@@ -26,13 +26,13 @@ Madara::Transport::UDP_Transport::UDP_Transport (const std::string & id,
     setup ();
 }
 
-Madara::Transport::UDP_Transport::~UDP_Transport ()
+madara::transport::UDP_Transport::~UDP_Transport ()
 {
   close ();
 }
 
 void
-  Madara::Transport::UDP_Transport::close (void)
+  madara::transport::UDP_Transport::close (void)
 {
   this->invalidate_transport ();
   
@@ -43,7 +43,7 @@ void
   // close send port
   if (-1 == write_socket_.close ())
   {
-    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "UDP_Transport::cleanup:" \
       " Error closing write socket\n");
   }
@@ -51,26 +51,26 @@ void
   // close receive port
   if (-1 == read_socket_.close ())
   {
-    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "UDP_Transport::cleanup:" \
       " Error closing read socket\n");
   }
 }
 
 int
-  Madara::Transport::UDP_Transport::reliability (void) const
+  madara::transport::UDP_Transport::reliability (void) const
 {
   return RELIABLE;
 }
 
 int
-  Madara::Transport::UDP_Transport::reliability (const int &)
+  madara::transport::UDP_Transport::reliability (const int &)
 {
   return RELIABLE;
 }
 
 int
-  Madara::Transport::UDP_Transport::setup (void)
+  madara::transport::UDP_Transport::setup (void)
 {
   // call base setup method to initialize certain common variables
   Base::setup ();
@@ -85,7 +85,7 @@ int
     // open the broadcast socket to any port for sending
     if (write_socket_.open (ACE_Addr::sap_any) == -1)
     {
-      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "UDP_Transport::setup:" \
         " socket failed to open\n");
     }
@@ -100,14 +100,14 @@ int
     write_socket_.get_option (SOL_SOCKET, SO_RCVBUF,
       (void *)&rcv_buff_size, &opt_len);
 
-    madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "UDP_Transport::setup:" \
       " default socket buff size is send=%d, rcv=%d\n",
       send_buff_size, rcv_buff_size);
 
     if (send_buff_size < tar_buff_size)
     {
-      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "UDP_Transport::setup:" \
         " setting send buff size to settings.queue_length (%d)\n",
         tar_buff_size);
@@ -118,7 +118,7 @@ int
       write_socket_.get_option (SOL_SOCKET, SO_SNDBUF,
         (void *)&send_buff_size, &opt_len);
 
-      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "UDP_Transport::setup:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
@@ -126,7 +126,7 @@ int
 
     if (rcv_buff_size < tar_buff_size)
     {
-      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "UDP_Transport::setup:" \
         " setting rcv buff size to settings.queue_length (%d)\n",
         tar_buff_size);
@@ -137,7 +137,7 @@ int
       write_socket_.get_option (SOL_SOCKET, SO_RCVBUF,
         (void *)&rcv_buff_size, &opt_len);
 
-      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "UDP_Transport::setup:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
@@ -151,14 +151,14 @@ int
   
       if (-1 == read_socket_.open (local, 2, 0, 0))
       {
-        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
           "UDP_Transport::setup:" \
           " Error subscribing to udp address %s:%d\n",
           local.get_host_addr (), local.get_port_number ());
       } 
       else
       {
-        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
           "UDP_Transport::setup:" \
           " Success subscribing to udp address %s:%d\n",
           local.get_host_addr (), local.get_port_number ());
@@ -172,14 +172,14 @@ int
         bare_socket.get_option (SOL_SOCKET, SO_RCVBUF,
           (void *)&rcv_buff_size, &opt_len);
 
-        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
           "UDP_Transport::setup:" \
           " default socket buff size is send=%d, rcv=%d\n",
           send_buff_size, rcv_buff_size);
   
         if (send_buff_size < tar_buff_size)
         {
-          madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+          madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
             "UDP_Transport::setup:" \
             " setting send buff size to settings.queue_length (%d)\n",
             tar_buff_size);
@@ -190,7 +190,7 @@ int
           bare_socket.get_option (SOL_SOCKET, SO_SNDBUF,
             (void *)&send_buff_size, &opt_len);
 
-          madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+          madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
             "UDP_Transport::setup:" \
             " current socket buff size is send=%d, rcv=%d\n",
             send_buff_size, rcv_buff_size);
@@ -198,7 +198,7 @@ int
   
         if (rcv_buff_size < tar_buff_size)
         {
-          madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+          madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
             "UDP_Transport::setup:" \
             " setting rcv buff size to settings.queue_length (%d)\n",
             tar_buff_size);
@@ -209,7 +209,7 @@ int
           bare_socket.get_option (SOL_SOCKET, SO_RCVBUF,
             (void *)&rcv_buff_size, &opt_len);
 
-          madara_logger_log (context_.get_logger (), Logger::LOG_MINOR,
+          madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
             "UDP_Transport_Read_Thread::setup:" \
             " current socket buff size is send=%d, rcv=%d\n",
             send_buff_size, rcv_buff_size);
@@ -227,7 +227,7 @@ int
         hertz = 0.0;
       }
 
-      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "UDP_Transport_Read_Thread::setup:" \
         " starting %d threads at %f hertz\n", settings_.read_threads,
         hertz);
@@ -250,8 +250,8 @@ int
 }
 
 long
-  Madara::Transport::UDP_Transport::send_data (
-  const Madara::Knowledge_Records & orig_updates)
+  madara::transport::UDP_Transport::send_data (
+  const madara::Knowledge_Records & orig_updates)
 {
   const char * print_prefix = "UDP_Transport::send_data";
   
@@ -270,7 +270,7 @@ long
       {
         Fragment_Map map;
 
-        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
           "%s:" \
           " fragmenting %" PRIu64 " byte packet (%" PRIu32 " bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
@@ -289,7 +289,7 @@ long
           {
             if (addr->first != settings_.hosts[0])
             {
-              madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+              madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
                 "%s:" \
                 " Sending fragment %d\n",
                 print_prefix, j);
@@ -310,9 +310,9 @@ long
 
                 // sleep between fragments, if such a slack time is specified
                 if (settings_.slack_time > 0)
-                  Madara::Utility::sleep (settings_.slack_time);
+                  madara::utility::sleep (settings_.slack_time);
 
-                madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+                madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
                   "%s: Send result was %d of %d byte fragment to %s\n",
                   print_prefix, actual_sent, frag_size, addr->first.c_str ());
 
@@ -320,7 +320,7 @@ long
                 {
                   bytes_sent = (uint64_t)actual_sent;
 
-                  madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+                  madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
                     "%s:" \
                     " Sent packet of size %" PRIu64 "\n",
                     print_prefix, bytes_sent);
@@ -329,49 +329,49 @@ long
                 }
                 else if (actual_sent == ECONNRESET)
                 {
-                  madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                  madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                     "%s:" \
                     " WARNING: Remote socket disappeared during send (ECONNRESET)\n",
                     print_prefix);
                 }
                 else if (actual_sent == EINTR)
                 {
-                  madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                  madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                     "%s:" \
                     " Local socket was interrupted during send (EINTR)\n",
                     print_prefix);
                 }
                 else if (actual_sent == EWOULDBLOCK)
                 {
-                  madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                  madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                     "%s:" \
                     " Send would have blocked (EWOULDBLOCK)\n",
                     print_prefix);
                 }
                 else if (actual_sent == ENOTCONN)
                 {
-                  madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                  madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                     "%s:" \
                     " Send reports socket is not connected (ENOTCONN)\n",
                     print_prefix);
                 }
                 else if (actual_sent == EADDRINUSE)
                 {
-                  madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                  madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                     "%s:" \
                     " Send reports the interface is busy (EADDRINUSE)\n",
                     print_prefix);
                 }
                 else if (actual_sent == EBADF)
                 {
-                  madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                  madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                     "%s:" \
                     " Send socket is invalid (EBADF)\n",
                     print_prefix);
                 }
                 else
                 {
-                  madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                  madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                     "%s:" \
                     " Packet was not sent due to unknown error (%d)\n",
                     print_prefix, (int)actual_sent);
@@ -386,7 +386,7 @@ long
           send_monitor_.add ((uint32_t)bytes_sent);
         }
 
-        madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
           "%s:" \
           " Sent fragments totalling %" PRIu64 " bytes\n",
           print_prefix, bytes_sent);
@@ -400,7 +400,7 @@ long
         {
           if (i->first != settings_.hosts[0])
           {
-            madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+            madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
               "%s:" \
               " Sending packet of size %ld\n",
               print_prefix, result);
@@ -423,7 +423,7 @@ long
               {
                 bytes_sent += actual_sent;
 
-                madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+                madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
                   "%s:" \
                   " Sent packet of size %" PRIu64 "\n",
                   print_prefix, (int)actual_sent);
@@ -432,49 +432,49 @@ long
               }
               else if (actual_sent == ECONNRESET)
               {
-                madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                   "%s:" \
                   " WARNING: Remote socket disappeared during send (ECONNRESET)\n",
                   print_prefix);
               }
               else if (actual_sent == EINTR)
               {
-                madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                   "%s:" \
                   " Local socket was interrupted during send (EINTR)\n",
                   print_prefix);
               }
               else if (actual_sent == EWOULDBLOCK)
               {
-                madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                   "%s:" \
                   " Send would have blocked (EWOULDBLOCK)\n",
                   print_prefix);
               }
               else if (actual_sent == ENOTCONN)
               {
-                madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                   "%s:" \
                   " Send reports socket is not connected (ENOTCONN)\n",
                   print_prefix);
               }
               else if (actual_sent == EADDRINUSE)
               {
-                madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                   "%s:" \
                   " Send reports the interface is busy (EADDRINUSE)\n",
                   print_prefix);
               }
               else if (actual_sent == EBADF)
               {
-                madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                   "%s:" \
                   " Send socket is invalid (EBADF)\n",
                   print_prefix);
               }
               else
               {
-                madara_logger_log (context_.get_logger (), Logger::LOG_WARNING,
+                madara_logger_log (context_.get_logger (), logger::LOG_WARNING,
                   "%s:" \
                   " Packet was not sent due to unknown error (%d)\n",
                   print_prefix, (int)actual_sent);
@@ -486,7 +486,7 @@ long
 
       result = (long) bytes_sent;
 
-      madara_logger_log (context_.get_logger (), Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "%s:" \
         " Send bandwidth = %" PRIu64 " B/s\n",
         print_prefix, send_monitor_.get_bytes_per_second ());

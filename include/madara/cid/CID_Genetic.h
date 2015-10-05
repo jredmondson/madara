@@ -12,9 +12,9 @@
 #include "madara/cid/CID_Settings.h"
 #include "madara/MADARA_export.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Cid
+  namespace cid
   {
     /**
      * Randomly mutates chromosomes in the solution and updates solution

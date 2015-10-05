@@ -10,26 +10,25 @@
  * @author James Edmondson <jedmondson@gmail.com>
  *
  * This file contains classes and methods specific to the numerical
- * Madara::Expression_Tree::Interpreter class
+ * madara::expression_tree::Interpreter class
  **/
 
 #include <string>
 #include <list>
 #include <map>
 
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 #include "madara/expression_tree/Expression_Tree.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     // Forward declaration.
     class Symbol;
 
-    typedef std::map <std::string, 
-      Madara::Expression_Tree::Expression_Tree> ExpressionTreeMap;
+    typedef std::map <std::string, Expression_Tree> Expression_Tree_Map;
 
     /**
      * @class Interpreter
@@ -60,7 +59,7 @@ namespace Madara
        * @return   expression tree to evaluate
        **/
       Expression_Tree interpret (
-        Madara::Knowledge_Engine::Thread_Safe_Context &context, 
+        madara::knowledge::Thread_Safe_Context &context, 
                                  const std::string &input);
       
       /**
@@ -121,7 +120,7 @@ namespace Madara
        *                            an array reference is found
        **/
       void handle_for_loop (
-        Madara::Knowledge_Engine::Thread_Safe_Context &context,
+        madara::knowledge::Thread_Safe_Context &context,
         std::string &variable,
         const std::string &input,
         std::string::size_type &i,
@@ -139,7 +138,7 @@ namespace Madara
        * @param    lastValidInput          last valid symbol that was read
        **/
       void variable_insert (
-        Madara::Knowledge_Engine::Thread_Safe_Context &context,
+        madara::knowledge::Thread_Safe_Context &context,
         const std::string &input,
         std::string::size_type &i,
         int & accumulated_precedence,
@@ -156,7 +155,7 @@ namespace Madara
        * @param    lastValidInput          last valid symbol that was read
        **/
       void string_insert (
-        Madara::Knowledge_Engine::Thread_Safe_Context &context,
+        madara::knowledge::Thread_Safe_Context &context,
         const std::string &input,
         std::string::size_type &i,
         int & accumulated_precedence,
@@ -173,7 +172,7 @@ namespace Madara
        * @param    lastValidInput          last valid symbol that was read
        **/
       void system_call_insert (
-        Madara::Knowledge_Engine::Thread_Safe_Context &context,
+        madara::knowledge::Thread_Safe_Context &context,
         const std::string &input,
         std::string::size_type &i,
         int & accumulated_precedence,
@@ -190,7 +189,7 @@ namespace Madara
        * @param    lastValidInput          last valid symbol that was read
        **/
       void number_insert (
-        Madara::Knowledge_Engine::Thread_Safe_Context &context,
+        madara::knowledge::Thread_Safe_Context &context,
         const std::string &input,
         std::string::size_type &i,
         int & accumulated_precedence,
@@ -204,7 +203,7 @@ namespace Madara
        * @param    list       list of symbols in tree that are free
        **/
       void precedence_insert (
-        Madara::Knowledge_Engine::Thread_Safe_Context &context,
+        madara::knowledge::Thread_Safe_Context &context,
         Symbol *op, ::std::list<Symbol *>& list);
 
       /**
@@ -219,7 +218,7 @@ namespace Madara
        * @param    build_argument_list  if true, focuses on building a
        *                                list instead of an expression tree
        **/
-      void main_loop (Madara::Knowledge_Engine::Thread_Safe_Context & context,
+      void main_loop (madara::knowledge::Thread_Safe_Context & context,
         const std::string &input,
         std::string::size_type &i,
         Symbol *& lastValidInput,
@@ -240,7 +239,7 @@ namespace Madara
       * @param    accumulated_precedence  current precedence
       **/
       void handle_array (
-        Madara::Knowledge_Engine::Thread_Safe_Context & context,
+        madara::knowledge::Thread_Safe_Context & context,
         const std::string &input,
         std::string::size_type &i,
         Symbol *& lastValidInput,
@@ -261,7 +260,7 @@ namespace Madara
        *                                list instead of an expression tree
        **/
       void handle_parenthesis (
-        Madara::Knowledge_Engine::Thread_Safe_Context & context,
+        madara::knowledge::Thread_Safe_Context & context,
                            const std::string &input,
                            std::string::size_type &i,
                            Symbol *& lastValidInput,
@@ -272,7 +271,7 @@ namespace Madara
       /**
        * Cache of expressions that have been previously compiled
        **/
-      ExpressionTreeMap cache_;
+      Expression_Tree_Map cache_;
     };
   }
 }

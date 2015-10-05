@@ -6,24 +6,24 @@
 #include <sstream>
 
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
-#include "madara/knowledge_engine/containers/Barrier.h"
+#include "madara/knowledge/containers/Barrier.h"
 #include "madara/filters/Generic_Filters.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
 // shortcuts
-namespace engine = Madara::Knowledge_Engine;
+namespace knowledge = madara::knowledge;
 #ifndef _MADARA_NO_KARL_
-namespace containers = engine::Containers;
+namespace containers = knowledge::containers;
 #endif // _MADARA_NO_KARL_
-namespace utility = Madara::Utility;
-namespace transport = Madara::Transport;
-namespace filters = Madara::Filters;
+namespace utility = madara::utility;
+namespace transport = madara::transport;
+namespace filters = madara::filters;
 
-typedef Madara::Knowledge_Record::Integer Integer;
+typedef madara::Knowledge_Record::Integer Integer;
 
 // default transport settings
 std::string host ("");
@@ -232,7 +232,7 @@ int main (int argc, char ** argv)
   }
 
   // create a knowledge base and setup our id
-  engine::Knowledge_Base knowledge (host, settings);
+  knowledge::Knowledge_Base knowledge (host, settings);
 
   // create a counter
   containers::Barrier barrier ("my_barrier", knowledge,

@@ -1,16 +1,16 @@
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/knowledge_engine/Timed_Executor.h"
+#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/Timed_Executor.h"
 #include "madara/utility/Utility.h"
 #include <stdio.h>
 #include <iostream>
 #include <string>
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
-namespace engine = Madara::Knowledge_Engine;
-namespace utility = Madara::Utility;
+namespace knowledge = madara::knowledge;
+namespace utility = madara::utility;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -55,9 +55,9 @@ void handle_arguments (int argc, char ** argv)
 
 void test_timed_executor (void)
 {
-  engine::Knowledge_Base knowledge;
-  engine::Timed_Executor executor;
-  engine::Event new_event;
+  knowledge::Knowledge_Base knowledge;
+  knowledge::Timed_Executor executor;
+  knowledge::Event new_event;
 
   knowledge.print ("Launching 4 threads\n");
   executor.launch_threads (4);
@@ -71,7 +71,7 @@ void test_timed_executor (void)
   knowledge.print (
     "Adding a periodic print task with 5 executions, once every 1s\n");
   executor.add (
-    engine::fill_event (
+    knowledge::fill_event (
     knowledge, "++executions; #print ('  Executed event {executions}.\n')", 0.0, 0.2, 5));
 
   utility::sleep (4);
@@ -85,7 +85,7 @@ void test_timed_executor (void)
   knowledge.print ();
   knowledge.clear ();
   
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "++executions < 10; #print ('  Executed event {executions}.\n')", 0.1, 0.1);
   new_event.cancel_on_false = true;
 
@@ -105,16 +105,16 @@ void test_timed_executor (void)
   
   knowledge.print (
     "\nAdding four separate, ordered events.\n");
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_4 = ++executions; #print ('  Event 4 executed\n')", 1.0, 0.0, 1);
   executor.add (new_event);
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_1 = ++executions; #print ('  Event 1 executed\n')", 0.25, 0.0, 1);
   executor.add (new_event);
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_3 = ++executions; #print ('  Event 3 executed\n')", 0.75, 0.0, 1);
   executor.add (new_event);
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_2 = ++executions; #print ('  Event 2 executed\n')", 0.50, 0.0, 1);
   executor.add (new_event);
   
@@ -138,28 +138,28 @@ void test_timed_executor (void)
   
   knowledge.print (
     "\nAdding eight separate, ordered events.\n");
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_4 = ++executions; #print ('  Event 4 executed\n')", 0.4, 0.0, 1);
   executor.add (new_event);
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_1 = ++executions; #print ('  Event 1 executed\n')", 0.1, 0.0, 1);
   executor.add (new_event);
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_3 = ++executions; #print ('  Event 3 executed\n')", 0.3, 0.0, 1);
   executor.add (new_event);
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_2 = ++executions; #print ('  Event 2 executed\n')", 0.2, 0.0, 1);
   executor.add (new_event);
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_8 = ++executions; #print ('  Event 8 executed\n')", 0.8, 0.0, 1);
   executor.add (new_event);
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_5 = ++executions; #print ('  Event 5 executed\n')", 0.5, 0.0, 1);
   executor.add (new_event);
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_7 = ++executions; #print ('  Event 7 executed\n')", 0.7, 0.0, 1);
   executor.add (new_event);
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     knowledge, "executions_6 = ++executions; #print ('  Event 6 executed\n')", 0.6, 0.0, 1);
   executor.add (new_event);
   

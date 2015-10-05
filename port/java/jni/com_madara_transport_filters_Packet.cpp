@@ -45,11 +45,11 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include "com_madara_transport_filters_Packet.h"
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 #include "madara_jni.h"
 
-typedef Madara::Knowledge_Map      Knowledge_Map;
-typedef Madara::Knowledge_Record   Knowledge_Record;
+typedef madara::Knowledge_Map      Knowledge_Map;
+typedef madara::Knowledge_Record   Knowledge_Record;
 
 /*
  * Class:     com_madara_transport_filters_Packet
@@ -110,7 +110,7 @@ jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
   
   if (packet)
   {
-    jclass string_class = Madara::Utility::Java::find_class (
+    jclass string_class = madara::utility::Java::find_class (
       env, "java/lang/String");
     jstring empty_string = env->NewStringUTF ("");
 

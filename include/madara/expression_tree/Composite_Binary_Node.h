@@ -8,9 +8,9 @@
 
 #include "madara/expression_tree/Composite_Unary_Node.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     /**
      * @class Composite_Binary_Node
@@ -27,7 +27,7 @@ namespace Madara
        * @param   right  right expression
        **/
       Composite_Binary_Node (
-        Logger::Logger & logger,
+        logger::Logger & logger,
         Component_Node *left,
         Component_Node *right);
 

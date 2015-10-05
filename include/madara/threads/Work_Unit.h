@@ -14,13 +14,13 @@
 #include <vector>
 #include <map>
 #include <list>
-#include "madara/knowledge_engine/Knowledge_Record.h"
-#include "madara/knowledge_engine/Functions.h"
+#include "madara/knowledge/Knowledge_Record.h"
+#include "madara/knowledge/Functions.h"
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
-#include "madara/knowledge_engine/Extern_Function_Variables.h"
+#include "madara/knowledge/Extern_Function_Variables.h"
 
-namespace Madara
+namespace madara
 {
   namespace Threads
   {
@@ -43,7 +43,7 @@ namespace Madara
        * Initializes thread with MADARA context
        * @param   vars   context for querying current program state
        **/
-      virtual void init (Knowledge_Engine::Variables & vars)
+      virtual void init (knowledge::Variables & vars)
       {
 
       }

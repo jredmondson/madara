@@ -4,7 +4,7 @@
 #include "Utility.h"
 
 inline
-bool Madara::Utility::begins_with (const std::string & input,
+bool madara::utility::begins_with (const std::string & input,
       const std::string & prefix)
 {
   bool result = false;
@@ -18,7 +18,7 @@ bool Madara::Utility::begins_with (const std::string & input,
 }
 
 inline
-bool Madara::Utility::ends_with (const std::string & input,
+bool madara::utility::ends_with (const std::string & input,
   const std::string & match)
 {
   bool result = false;
@@ -34,7 +34,7 @@ bool Madara::Utility::ends_with (const std::string & input,
 
 
 template <typename T>
-T Madara::Utility::bitmask_add (T mask, T values)
+T madara::utility::bitmask_add (T mask, T values)
 {
   return mask | values;
 }
@@ -43,7 +43,7 @@ T Madara::Utility::bitmask_add (T mask, T values)
   * Returns true if mask contains values
   **/
 template <typename T>
-bool Madara::Utility::bitmask_check (T mask, T values)
+bool madara::utility::bitmask_check (T mask, T values)
 {
   return (mask & values) > 0;
 }
@@ -52,7 +52,7 @@ bool Madara::Utility::bitmask_check (T mask, T values)
   * Removes values from a bit mask
   **/
 template <typename T>
-T Madara::Utility::bitmask_remove (T mask, T values)
+T madara::utility::bitmask_remove (T mask, T values)
 {
   return mask & ~values;
 }
@@ -60,21 +60,21 @@ T Madara::Utility::bitmask_remove (T mask, T values)
 
 template <typename T>
 bool
-Madara::Utility::less_compare (const T & left, const T & right)
+madara::utility::less_compare (const T & left, const T & right)
 {
   return left < right;
 }
 
 template <typename T>
 bool
-Madara::Utility::greater_compare (const T & left, const T & right)
+madara::utility::greater_compare (const T & left, const T & right)
 {
   return right < left;
 }
 
 template <typename T>
 void
-Madara::Utility::sift_down (T * input, int start, int end,
+madara::utility::sift_down (T * input, int start, int end,
   bool (*comparator) (const T & left, const T & right))
 {
   int root = start;
@@ -103,7 +103,7 @@ Madara::Utility::sift_down (T * input, int start, int end,
     
 template <typename T>
 void
-Madara::Utility::heapify (T * input, int size,
+madara::utility::heapify (T * input, int size,
   bool (*comparator) (const T & left, const T & right))
 {
   // start at lowest parent node and work our way back
@@ -115,7 +115,7 @@ Madara::Utility::heapify (T * input, int size,
 
 template <typename T>
 void
-Madara::Utility::heap_sort (T * input, int size,
+madara::utility::heap_sort (T * input, int size,
   bool (*comparator) (const T & left, const T & right))
 {
   heapify (input, size, comparator);

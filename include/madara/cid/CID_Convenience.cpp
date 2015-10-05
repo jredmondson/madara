@@ -12,7 +12,7 @@
  * Checks a solution for duplicate entries
  **/
 bool
-Madara::Cid::check_solution (Settings & settings)
+madara::cid::check_solution (Settings & settings)
 {
   Deployment & solution = settings.solution;
 
@@ -34,7 +34,7 @@ Madara::Cid::check_solution (Settings & settings)
       if (instances[solution[i]] > 1)
       {
         MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
-          DLINFO "Madara::Cid::check_solution:" \
+          DLINFO "madara::cid::check_solution:" \
           " ERROR: %u duplicate entries found for id %u." \
           " Please save a log and file issue at madara.googlecode.com.\n",
             instances[solution[i]], solution[i]));
@@ -55,7 +55,7 @@ Madara::Cid::check_solution (Settings & settings)
  * Reset latencies
  **/
 void
-Madara::Cid::reset_latencies (Settings & settings, uint64_t worst)
+madara::cid::reset_latencies (Settings & settings, uint64_t worst)
 {
   for (unsigned int i = 0; i < settings.network_latencies.size (); ++i)
   {
@@ -74,7 +74,7 @@ Madara::Cid::reset_latencies (Settings & settings, uint64_t worst)
  * Generates a random, fully-connected network of latencies
  **/
 void
-Madara::Cid::generate_random_network (unsigned int size, Settings & settings)
+madara::cid::generate_random_network (unsigned int size, Settings & settings)
 {
   generate_random_network (size, settings.network_latencies);
 }
@@ -83,12 +83,12 @@ Madara::Cid::generate_random_network (unsigned int size, Settings & settings)
  * Generates a random, fully-connected network of latencies
  **/
 void
-Madara::Cid::generate_random_network (unsigned int size,
+madara::cid::generate_random_network (unsigned int size,
                                       LV_Vector & network_latencies)
 {
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::generate_random_network:" \
+    DLINFO "madara::cid::generate_random_network:" \
       " Generating random network of size %u\n",
       size));
 #endif
@@ -101,7 +101,7 @@ Madara::Cid::generate_random_network (unsigned int size,
   {
 #ifdef ENABLE_CID_LOGGING
     MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-      DLINFO "Madara::Cid::generate_random_network:" \
+      DLINFO "madara::cid::generate_random_network:" \
       " resizing network_latencies[%u]\n",
         i));
 #endif
@@ -113,7 +113,7 @@ Madara::Cid::generate_random_network (unsigned int size,
     {
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::generate_random_network:" \
+        DLINFO "madara::cid::generate_random_network:" \
         " setting network_latencies[%u][%u]\n",
           i, j));
 #endif
@@ -133,7 +133,7 @@ Madara::Cid::generate_random_network (unsigned int size,
 
 #ifdef ENABLE_CID_LOGGING
     MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-      DLINFO "Madara::Cid::generate_random_network:" \
+      DLINFO "madara::cid::generate_random_network:" \
       " sorting network_latencies[%u]\n",
         i));
 #endif
@@ -146,11 +146,11 @@ Madara::Cid::generate_random_network (unsigned int size,
 }
 
 void
-Madara::Cid::generate_random_solution (Settings & settings)
+madara::cid::generate_random_solution (Settings & settings)
 {
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::generate_random_solution:" \
+    DLINFO "madara::cid::generate_random_solution:" \
       " Generating random solution of size %u\n",
       settings.solution.size ()));
 #endif
@@ -163,7 +163,7 @@ Madara::Cid::generate_random_solution (Settings & settings)
 }
 
 void
-Madara::Cid::generate_worst_solution (Settings & settings)
+madara::cid::generate_worst_solution (Settings & settings)
 {
   settings.solution_lookup.clear ();
 
@@ -201,7 +201,7 @@ Madara::Cid::generate_worst_solution (Settings & settings)
     {    
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-      DLINFO "Madara::Cid::fill_by_highest_degree:" \
+      DLINFO "madara::cid::fill_by_highest_degree:" \
       " found solution[%u]=%u\n",
       start, cur_summations[i].first));
 #endif
@@ -218,11 +218,11 @@ Madara::Cid::generate_worst_solution (Settings & settings)
  * not adjust the target_deployment size.
  **/
 void
-Madara::Cid::init (unsigned int size, Settings & settings)
+madara::cid::init (unsigned int size, Settings & settings)
 {
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::init:" \
+    DLINFO "madara::cid::init:" \
       " Resizing latencies, ids, and solution to size %u\n",
       size));
 #endif
@@ -234,7 +234,7 @@ Madara::Cid::init (unsigned int size, Settings & settings)
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::init:" \
+    DLINFO "madara::cid::init:" \
       " Resizing individual network latency entries to size %u\n",
       size));
 #endif
@@ -257,7 +257,7 @@ Madara::Cid::init (unsigned int size, Settings & settings)
  * @return      minimum latency deployment in the network
  **/
 uint64_t
-Madara::Cid::overlay_latencies (Settings & settings, 
+madara::cid::overlay_latencies (Settings & settings, 
                                 unsigned int min_latency,
                                 unsigned int min_noise)
 {
@@ -307,7 +307,7 @@ Madara::Cid::overlay_latencies (Settings & settings,
 
 
 void
-Madara::Cid::prepare_latencies (Settings & settings)
+madara::cid::prepare_latencies (Settings & settings)
 {
   // setup averages for the size of the underlying environment
   prepare_latencies (settings, settings.network_latencies.size ());
@@ -328,7 +328,7 @@ Madara::Cid::prepare_latencies (Settings & settings)
 }
 
 std::string
-Madara::Cid::prepare_summations (unsigned int source, Settings & settings)
+madara::cid::prepare_summations (unsigned int source, Settings & settings)
 {
   if (source >= settings.network_latencies.size ())
     return "";
@@ -368,7 +368,7 @@ Madara::Cid::prepare_summations (unsigned int source, Settings & settings)
 }
 
 void
-Madara::Cid::prepare_latencies (Settings & settings, unsigned int degree)
+madara::cid::prepare_latencies (Settings & settings, unsigned int degree)
 {
   if (degree != 0)
     prepare_latencies (settings.network_latencies, settings.network_summations,
@@ -376,14 +376,14 @@ Madara::Cid::prepare_latencies (Settings & settings, unsigned int degree)
 }
 
 void
-Madara::Cid::prepare_latencies (LV_Vector & network_latencies,
+madara::cid::prepare_latencies (LV_Vector & network_latencies,
                                 Summations_Map & network_summations,
                                 Workflow & target_deployment,
                                 unsigned int degree)
 {
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::prepare_latencies:" \
+    DLINFO "madara::cid::prepare_latencies:" \
       " Calculating averages for %u\n", degree));
 #endif
 
@@ -400,7 +400,7 @@ Madara::Cid::prepare_latencies (LV_Vector & network_latencies,
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::prepare_latencies:" \
+    DLINFO "madara::cid::prepare_latencies:" \
       " Entering main loop\n" 
       ));
 #endif
@@ -410,7 +410,7 @@ Madara::Cid::prepare_latencies (LV_Vector & network_latencies,
   {
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::prepare_latencies:" \
+        DLINFO "madara::cid::prepare_latencies:" \
         " i=%u\n",
         i));
 #endif
@@ -423,7 +423,7 @@ Madara::Cid::prepare_latencies (LV_Vector & network_latencies,
       {
 #ifdef ENABLE_CID_LOGGING
         MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-          DLINFO "Madara::Cid::prepare_latencies:" \
+          DLINFO "madara::cid::prepare_latencies:" \
           "   j=%u\n",
           j));
 #endif
@@ -434,7 +434,7 @@ Madara::Cid::prepare_latencies (LV_Vector & network_latencies,
 
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::prepare_latencies:" \
+        DLINFO "madara::cid::prepare_latencies:" \
           " Dividing total by degree to give an average\n"));
 #endif
 
@@ -442,7 +442,7 @@ Madara::Cid::prepare_latencies (LV_Vector & network_latencies,
 
 #ifdef ENABLE_CID_LOGGING
   MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-    DLINFO "Madara::Cid::prepare_latencies:" \
+    DLINFO "madara::cid::prepare_latencies:" \
     " Sorting averages. network_summations[%u]\n",
     degree));
 #endif
@@ -457,7 +457,7 @@ Madara::Cid::prepare_latencies (LV_Vector & network_latencies,
  * @param    settings    container for network_latencies 
  **/
 void
-Madara::Cid::print_latencies (Settings & settings)
+madara::cid::print_latencies (Settings & settings)
 {
   MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
     "Printing latencies\n"));
@@ -493,7 +493,7 @@ Madara::Cid::print_latencies (Settings & settings)
  * @return      false if there was a problem with the contents
  **/
 bool
-Madara::Cid::process_deployment (Settings & settings,
+madara::cid::process_deployment (Settings & settings,
                                  const std::string & orig)
 {
   // a knowledge base for translation of integer logics
@@ -532,7 +532,7 @@ Madara::Cid::process_deployment (Settings & settings,
 
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::process_deployment:" \
+        DLINFO "madara::cid::process_deployment:" \
           " processing a new deployment.\n"));
 #endif
 
@@ -568,7 +568,7 @@ Madara::Cid::process_deployment (Settings & settings,
 
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::process_deployment:" \
+        DLINFO "madara::cid::process_deployment:" \
           " using size=%u.\n", size));
 #endif
 
@@ -578,7 +578,7 @@ Madara::Cid::process_deployment (Settings & settings,
   {
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::process_deployment:" \
+        DLINFO "madara::cid::process_deployment:" \
           " evaluating %s.\n", current.c_str ()));
 #endif
 
@@ -763,7 +763,7 @@ Madara::Cid::process_deployment (Settings & settings,
           }
 #ifdef ENABLE_CID_LOGGING
           MADARA_DEBUG (MADARA_LOG_EVENT_TRACE, (LM_DEBUG, 
-            DLINFO "Madara::Cid::process_deployment:" \
+            DLINFO "madara::cid::process_deployment:" \
             " %u,%u,%u -> %s, %s, %s:\n",
             source_begin, source_end, source_inc,
             dest_begin.c_str (), dest_end.c_str (), dest_inc.c_str ()));
@@ -807,7 +807,7 @@ Madara::Cid::process_deployment (Settings & settings,
     {
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::process_deployment:" \
+        DLINFO "madara::cid::process_deployment:" \
         " tokens==1, Evaluating %s:\n", tokens[0].c_str ()));
 #endif
 
@@ -819,7 +819,7 @@ Madara::Cid::process_deployment (Settings & settings,
 
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::process_deployment:" \
+        DLINFO "madara::cid::process_deployment:" \
         " Deployment map contains:\n"));
 #endif
 
@@ -832,11 +832,11 @@ Madara::Cid::process_deployment (Settings & settings,
     for (End::iterator j = i->second.begin (); 
       j != i->second.end (); ++j, ++index)
     {
-      Madara::Cid::Directed_Edge & edge = deployment[i->first][index];
+      madara::cid::Directed_Edge & edge = deployment[i->first][index];
 
 #ifdef ENABLE_CID_LOGGING
       MADARA_DEBUG (MADARA_LOG_DETAILED_TRACE, (LM_DEBUG, 
-        DLINFO "Madara::Cid::process_deployment:" \
+        DLINFO "madara::cid::process_deployment:" \
         " %u -> %u:\n", i->first, j->first));
 #endif
 
@@ -860,7 +860,7 @@ Madara::Cid::process_deployment (Settings & settings,
 * @return      true if the file existed and was read
 **/
 bool
-Madara::Cid::read_deployment (Settings & settings,
+madara::cid::read_deployment (Settings & settings,
       const std::string & filename)
 {
   std::string input (Madara::Utility::file_to_string (filename));
@@ -868,7 +868,7 @@ Madara::Cid::read_deployment (Settings & settings,
 }
 
 void
-Madara::Cid::reset_solution (Settings & settings)
+madara::cid::reset_solution (Settings & settings)
 {
   for (unsigned int i = 0; i < settings.solution.size (); ++i)
   {
@@ -877,7 +877,7 @@ Madara::Cid::reset_solution (Settings & settings)
 }
 
 void
-Madara::Cid::read_solution (Settings & settings, const std::string & source)
+madara::cid::read_solution (Settings & settings, const std::string & source)
 {
   unsigned int id;
   //std::string host_port;
@@ -911,7 +911,7 @@ Madara::Cid::read_solution (Settings & settings, const std::string & source)
 }
 
 std::string
-Madara::Cid::stringify_solution (Settings & settings)
+madara::cid::stringify_solution (Settings & settings)
 {
   std::stringstream buffer;
   Deployment & solution = settings.solution;

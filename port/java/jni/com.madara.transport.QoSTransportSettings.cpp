@@ -53,12 +53,12 @@
 #include <iostream>
 
 // define useful shorthands
-namespace engine = Madara::Knowledge_Engine;
-namespace transport = Madara::Transport;
-namespace filters = Madara::Filters;
-namespace logger = Madara::Logger;
+namespace knowledge = madara::knowledge;
+namespace transport = madara::transport;
+namespace filters = madara::filters;
+namespace logger = madara::logger;
 
-typedef Madara::Knowledge_Record  Knowledge_Record;
+typedef madara::Knowledge_Record  Knowledge_Record;
 typedef Knowledge_Record::Integer Integer;
 typedef transport::QoS_Transport_Settings QoS_Transport_Settings;
 typedef filters::Java_Buffer_Filter  Java_Buffer_Filter;
@@ -135,7 +135,7 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addBufferFilter
 {
   QoS_Transport_Settings * settings = (QoS_Transport_Settings *)cptr;
   Java_Buffer_Filter * buffer_filter = new Java_Buffer_Filter (
-    *Madara::Logger::global_logger.get (), filter);
+    *madara::logger::global_logger.get (), filter);
 
   if (settings)
   {

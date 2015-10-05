@@ -24,9 +24,9 @@
 
 class Stride_Task;
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class Packet_Scheduler

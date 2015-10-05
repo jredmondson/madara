@@ -13,9 +13,9 @@
 #include <stdio.h>
 
 // define useful shorthands
-namespace engine = Madara::Knowledge_Engine;
-namespace transport = Madara::Transport;
-typedef Madara::Knowledge_Record  Knowledge_Record;
+namespace knowledge = madara::knowledge;
+namespace transport = madara::transport;
+typedef madara::Knowledge_Record  Knowledge_Record;
 typedef Knowledge_Record::Integer Integer;
 typedef transport::Settings Settings;
 
@@ -423,7 +423,7 @@ jobjectArray JNICALL Java_com_madara_transport_TransportSettings_jni_1getHosts (
 
   if (settings)
   {
-    jclass string_class = Madara::Utility::Java::find_class (
+    jclass string_class = madara::utility::Java::find_class (
       env, "java/lang/String");
     jstring empty_string = env->NewStringUTF ("");
 

@@ -15,17 +15,17 @@
 #include "madara/utility/Scoped_Array.h"
 #include "madara/transport/QoS_Transport_Settings.h"
 #include "madara/transport/Transport.h"
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "ace/SOCK_Dgram.h"
 #include "ace/SOCK_Dgram_Mcast.h"
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 #include "madara/expression_tree/Expression_Tree.h"
 #include "madara/transport/Bandwidth_Monitor.h"
 #include "madara/threads/Threader.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class Multicast_Transport
@@ -50,7 +50,7 @@ namespace Madara
        * @param   launch_transport  whether or not to launch this transport
        **/
       Multicast_Transport (const std::string & id, 
-        Madara::Knowledge_Engine::Thread_Safe_Context & context, 
+        madara::knowledge::Thread_Safe_Context & context, 
         Settings & config, bool launch_transport);
 
       /**
@@ -63,7 +63,7 @@ namespace Madara
        * @param   updates listing of all updates that must be sent
        * @return  result of write operation or -1 if we are shutting down
        **/
-      long send_data (const Madara::Knowledge_Records & updates);
+      long send_data (const madara::Knowledge_Records & updates);
     
       /**
        * Closes the transport
@@ -91,7 +91,7 @@ namespace Madara
     private:
       
       /// knowledge base for threads to use
-      Knowledge_Engine::Knowledge_Base         knowledge_;
+      knowledge::Knowledge_Base         knowledge_;
       
       /// threads for reading knowledge updates
       Threads::Threader                        read_threads_;

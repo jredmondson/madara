@@ -1,28 +1,28 @@
 #include "madara/transport/splice/Splice_DataReader_Listener.h"
 #include "madara/utility/Log_Macros.h"
-#include "madara/knowledge_engine/Update_Types.h"
+#include "madara/knowledge/Update_Types.h"
 #include "madara/utility/Utility.h"
 
 #include <iostream>
 #include <sstream>
 
-Madara::Transport::Splice_DataReader_Listener::Splice_DataReader_Listener(
+madara::transport::Splice_DataReader_Listener::Splice_DataReader_Listener(
   const std::string & id,
-  Madara::Knowledge_Engine::Thread_Safe_Context & context)
+  madara::knowledge::Thread_Safe_Context & context)
 : id_ (id), context_ (context)
 {
 }
 
-Madara::Transport::Splice_DataReader_Listener::Splice_DataReader_Listener(
+madara::transport::Splice_DataReader_Listener::Splice_DataReader_Listener(
   const Splice_DataReader_Listener &ref)
 : id_ (ref.id_), context_ (ref.context_)
 {
 }
 
-Madara::Transport::Splice_DataReader_Listener::~Splice_DataReader_Listener()
+madara::transport::Splice_DataReader_Listener::~Splice_DataReader_Listener()
 {}
 
-void Madara::Transport::Splice_DataReader_Listener::handle_assignment (
+void madara::transport::Splice_DataReader_Listener::handle_assignment (
   Knowledge::Update & data)
 {
   if (data.key.val ())
@@ -93,7 +93,7 @@ void Madara::Transport::Splice_DataReader_Listener::handle_assignment (
   }
 }
 
-void Madara::Transport::Splice_DataReader_Listener::handle_multiassignment (
+void madara::transport::Splice_DataReader_Listener::handle_multiassignment (
   Knowledge::Update & data)
 {
   if (data.key.val ())
@@ -172,44 +172,44 @@ void Madara::Transport::Splice_DataReader_Listener::handle_multiassignment (
 }
 
 void
-Madara::Transport::Splice_DataReader_Listener::on_sample_lost (
+madara::transport::Splice_DataReader_Listener::on_sample_lost (
   DDS::DataReader_ptr, const DDS::SampleLostStatus &status)
 {
 }
 
 void
-Madara::Transport::Splice_DataReader_Listener::on_sample_rejected (
+madara::transport::Splice_DataReader_Listener::on_sample_rejected (
   DDS::DataReader_ptr, const DDS::SampleRejectedStatus &status)
 {
 }
 
 void
-Madara::Transport::Splice_DataReader_Listener::on_requested_incompatible_qos (
+madara::transport::Splice_DataReader_Listener::on_requested_incompatible_qos (
   DDS::DataReader_ptr, const DDS::RequestedIncompatibleQosStatus &status)
 {
 }
 
 void
-Madara::Transport::Splice_DataReader_Listener::on_requested_deadline_missed (
+madara::transport::Splice_DataReader_Listener::on_requested_deadline_missed (
   DDS::DataReader_ptr reader, const DDS::RequestedDeadlineMissedStatus & status)
 {
 }
 
 void
-Madara::Transport::Splice_DataReader_Listener::on_liveliness_changed (
+madara::transport::Splice_DataReader_Listener::on_liveliness_changed (
   DDS::DataReader_ptr reader, const DDS::LivelinessChangedStatus & status)
 {
 }
 
 void
-Madara::Transport::Splice_DataReader_Listener::on_subscription_matched (
+madara::transport::Splice_DataReader_Listener::on_subscription_matched (
   DDS::DataReader_ptr reader, const DDS::SubscriptionMatchedStatus & status)
 {
   context_.set_changed ();
 }
 
 void 
-Madara::Transport::Splice_DataReader_Listener::on_data_available(
+madara::transport::Splice_DataReader_Listener::on_data_available(
   DDS::DataReader_ptr reader)
 {
   DDS::SampleInfoSeq_var infoList = new DDS::SampleInfoSeq;
@@ -256,7 +256,7 @@ Madara::Transport::Splice_DataReader_Listener::on_data_available(
         continue;
       }
 
-      if (Madara::Knowledge_Engine::ASSIGNMENT == update_data_list_[i].type)
+      if (madara::knowledge::ASSIGNMENT == update_data_list_[i].type)
       {
         MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
           DLINFO "\nSplice_DataReader_Listener::on_data_available:" \
@@ -267,7 +267,7 @@ Madara::Transport::Splice_DataReader_Listener::on_data_available(
 
         handle_assignment (update_data_list_[i]);
       }
-      else if (Madara::Knowledge_Engine::MULTIPLE_ASSIGNMENT == update_data_list_[i].type)
+      else if (madara::knowledge::MULTIPLE_ASSIGNMENT == update_data_list_[i].type)
       {
         MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
           DLINFO "\nSplice_DataReader_Listener::on_data_available:" \

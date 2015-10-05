@@ -11,45 +11,45 @@
 #include "madara/expression_tree/Visitor.h"
 
 
-Madara::Expression_Tree::Component_Node::Component_Node (
-  Logger::Logger & logger)
+madara::expression_tree::Component_Node::Component_Node (
+  logger::Logger & logger)
 {
   set_logger (logger);
 }
 
 // Dtor
-Madara::Expression_Tree::Component_Node::~Component_Node (void)
+madara::expression_tree::Component_Node::~Component_Node (void)
 {
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::Component_Node::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::Component_Node::item (void) const
 {
   return Knowledge_Record ();
 }
 
 // default left is to return a null pointer
-Madara::Expression_Tree::Component_Node *
-Madara::Expression_Tree::Component_Node::left (void) const
+madara::expression_tree::Component_Node *
+madara::expression_tree::Component_Node::left (void) const
 {
   return 0;
 }
 
 // default right is to return a null pointer
-Madara::Expression_Tree::Component_Node *
-Madara::Expression_Tree::Component_Node::right (void) const
+madara::expression_tree::Component_Node *
+madara::expression_tree::Component_Node::right (void) const
 {
   return 0;
 }
 
 // accept a visitor
 void 
-Madara::Expression_Tree::Component_Node::accept (Madara::Expression_Tree::Visitor &visitor) const
+madara::expression_tree::Component_Node::accept (madara::expression_tree::Visitor &visitor) const
 {
 }
 
 void
-Madara::Expression_Tree::Component_Node::set_logger (Logger::Logger & logger)
+madara::expression_tree::Component_Node::set_logger (logger::Logger & logger)
 {
   logger_ = &logger;
 }

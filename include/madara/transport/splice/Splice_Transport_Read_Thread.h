@@ -11,7 +11,7 @@
 
 #include <string>
 
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Transport.h"
 
 #include "ccpp_dds_dcps.h"
@@ -25,9 +25,9 @@
 
 #include "ace/Synch.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class Splice_Read_Thread
@@ -50,7 +50,7 @@ namespace Madara
        **/
       Splice_Read_Thread (const std::string & id,
         const Settings & settings,
-        Madara::Knowledge_Engine::Thread_Safe_Context & context, 
+        knowledge::Thread_Safe_Context & context,
         Knowledge::UpdateDataReader_ptr & update_reader,
         Knowledge::UpdateDataWriter_ptr & update_writer,
         Bandwidth_Monitor & send_monitor,
@@ -149,7 +149,7 @@ namespace Madara
       /**
        * The knowledge context that we will be updating
        **/
-      ::Madara::Knowledge_Engine::Thread_Safe_Context &    context_;
+      knowledge::Thread_Safe_Context &    context_;
 
       /**
        * The DDS data reader that we will take from
@@ -179,7 +179,7 @@ namespace Madara
       /**
        * Condition for waiting on readiness
        **/
-      Madara::Transport::Condition       is_not_ready_;
+      madara::transport::Condition       is_not_ready_;
 
       /**
        * If true, the transport is ready
@@ -187,10 +187,10 @@ namespace Madara
       bool                               is_ready_;
 
       /// data received rules, defined in Transport settings
-      Madara::Knowledge_Engine::Compiled_Expression  on_data_received_;
+      knowledge::Compiled_Expression  on_data_received_;
       
       /// buffer for receiving
-      Madara::Utility::Scoped_Array <char>      buffer_;
+      madara::utility::Scoped_Array <char>      buffer_;
 
       /// pointer to qos_settings (if applicable)
       const QoS_Transport_Settings *      qos_settings_;

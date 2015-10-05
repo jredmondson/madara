@@ -49,7 +49,7 @@
 #include "madara/filters/ssl/AES_Buffer_Filter.h"
 
 #ifdef  _USE_SSL_
-namespace filters = Madara::Filters;
+namespace filters = madara::filters;
 typedef  filters::AES_Buffer_Filter   AES_Buffer_Filter;
 #endif
 

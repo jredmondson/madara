@@ -6,9 +6,9 @@
 
 #include "madara/expression_tree/Visitor.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     /**
      * @class Print_Visitor

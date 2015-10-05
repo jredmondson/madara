@@ -12,13 +12,13 @@
 #include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
 // test functions
-void test_expansion (Madara::Knowledge_Engine::Knowledge_Base & knowledge);
+void test_expansion (madara::knowledge::Knowledge_Base & knowledge);
 
 
 int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
@@ -32,7 +32,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   ACE_TRACE (ACE_TEXT ("main"));
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  madara::knowledge::Knowledge_Base knowledge;
 
   // run tests
   test_expansion (knowledge);
@@ -43,11 +43,11 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 }
 
 /// Tests logicals operators (&&, ||)
-void test_expansion (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
+void test_expansion (madara::knowledge::Knowledge_Base & knowledge)
 {
   ACE_TRACE (ACE_TEXT ("test_expansion"));
 
-  Madara::Knowledge_Record result;
+  madara::Knowledge_Record result;
   knowledge.clear ();
   
 #ifndef _MADARA_NO_KARL_
@@ -59,17 +59,17 @@ void test_expansion (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
     .var22 = 2;");
 
   result = knowledge.evaluate ("v{.var2}{.var2} = 47");
-  assert (knowledge.get ("v22") == (Madara::Knowledge_Record::Integer)47);
+  assert (knowledge.get ("v22") == (madara::Knowledge_Record::Integer)47);
 
   result = knowledge.evaluate (".var{.var2}{.var2}");
-  assert (result == (Madara::Knowledge_Record::Integer)2);
+  assert (result == (madara::Knowledge_Record::Integer)2);
 
   result = knowledge.evaluate (".var{.var2}is{.var2}");
-  assert (result == (Madara::Knowledge_Record::Integer)1);
+  assert (result == (madara::Knowledge_Record::Integer)1);
 
   // test variables in conditionals
   knowledge.evaluate ("var{.var3} = .var{.var2}");
-  assert (knowledge.get ("var3") == (Madara::Knowledge_Record::Integer)2);
+  assert (knowledge.get ("var3") == (madara::Knowledge_Record::Integer)2);
   
 #else
   std::cout << "This test is disabled due to karl feature being disabled.\n";

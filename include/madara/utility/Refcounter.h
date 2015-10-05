@@ -3,9 +3,9 @@
 #define _MADARA_UTILITY_REFCOUNTER_H_
 
 
-namespace Madara
+namespace madara
 {
-  namespace Utility
+  namespace utility
   {
     /**
      * @class Refcounter

@@ -1,7 +1,7 @@
 #include "com_madara_util_Utility.h"
 #include "madara/utility/Utility.h"
 
-namespace utility = Madara::Utility;
+namespace utility = madara::utility;
 
 jstring JNICALL Java_com_madara_util_Utility_jni_1getVersion
 (JNIEnv * env, jclass)

@@ -7,18 +7,18 @@
 #include "ace/High_Res_Timer.h"
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
-#include "madara/knowledge_engine/Wait_Settings.h"
+#include "madara/knowledge/Wait_Settings.h"
 
 
-namespace Madara
+namespace madara
 {
-  namespace Knowledge_Engine
+  namespace knowledge
   {
     class Knowledge_Base;
     struct Wait_Settings;
   }
 
-  namespace Utility
+  namespace utility
   {
     /**
      * Gets the MADARA version number
@@ -200,7 +200,7 @@ namespace Madara
       const std::string & source);
 
     /**
-     * Helper function for Madara::Utility::expand_envs which retrieves an
+     * Helper function for madara::utility::expand_envs which retrieves an
      * environment variable.
      * @param     source      the string to expand
      * @param     cur         the current focus position of expand_vars
@@ -226,7 +226,7 @@ namespace Madara
     MADARA_Export uint64_t endian_swap (uint64_t value);
     
     /**
-     * Converts a host format signed Madara::Knowledge_Record::Integer
+     * Converts a host format signed madara::Knowledge_Record::Integer
      * into big endian.  Can also be used to convert back into host form.
      * @param     value      the value to convert
      * @return    the converted value
@@ -242,7 +242,7 @@ namespace Madara
     MADARA_Export uint32_t endian_swap (uint32_t value);
     
     /**
-     * Converts a host format signed Madara::Knowledge_Record::Integer
+     * Converts a host format signed madara::Knowledge_Record::Integer
      * into big endian.  Can also be used to convert back into host form.
      * @param     value      the value to convert
      * @return    the converted value
@@ -379,10 +379,10 @@ namespace Madara
      * @param  settings   the Wait Settings. Only uses poll_frequency and
      *                    max_wait.
      **/
-    MADARA_Export bool wait_true (Knowledge_Engine::Knowledge_Base & knowledge,
+    MADARA_Export bool wait_true (knowledge::Knowledge_Base & knowledge,
       const std::string & variable,
-      const Knowledge_Engine::Wait_Settings & settings =
-        Knowledge_Engine::Wait_Settings ());
+      const knowledge::Wait_Settings & settings =
+        knowledge::Wait_Settings ());
 
     
 
@@ -393,10 +393,10 @@ namespace Madara
      * @param  settings   the Wait Settings. Only uses poll_frequency and
      *                    max_wait.
      **/
-    MADARA_Export bool wait_false (Knowledge_Engine::Knowledge_Base & knowledge,
+    MADARA_Export bool wait_false (knowledge::Knowledge_Base & knowledge,
       const std::string & variable,
-      const Knowledge_Engine::Wait_Settings & settings =
-        Knowledge_Engine::Wait_Settings ());
+      const knowledge::Wait_Settings & settings =
+        knowledge::Wait_Settings ());
     /**
      * Returns true if left < right
      **/

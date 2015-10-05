@@ -13,44 +13,44 @@
 
 
 // Ctor
-Madara::Expression_Tree::Leaf_Node::Leaf_Node (
-  Logger::Logger & logger, const Knowledge_Record & item)
+madara::expression_tree::Leaf_Node::Leaf_Node (
+  logger::Logger & logger, const Knowledge_Record & item)
 : Component_Node (logger), item_ (item)
 {
 }
 
 // Ctor
-Madara::Expression_Tree::Leaf_Node::Leaf_Node (
-  Logger::Logger & logger, Madara::Knowledge_Record::Integer item)
+madara::expression_tree::Leaf_Node::Leaf_Node (
+  logger::Logger & logger, madara::Knowledge_Record::Integer item)
 : Component_Node (logger)
 {
   item_.set_value (item);
 }
 
 // Ctor
-Madara::Expression_Tree::Leaf_Node::Leaf_Node (
-  Logger::Logger & logger, const std::string &item)
+madara::expression_tree::Leaf_Node::Leaf_Node (
+  logger::Logger & logger, const std::string &item)
 : Component_Node (logger)
 {
   item_.set_value (item);
 }
 
 // Ctor
-Madara::Expression_Tree::Leaf_Node::Leaf_Node (
-  Logger::Logger & logger, double item)
+madara::expression_tree::Leaf_Node::Leaf_Node (
+  logger::Logger & logger, double item)
 : Component_Node (logger)
 {
   item_.set_value (item);
 }
 
 // Dtor
-Madara::Expression_Tree::Leaf_Node::~Leaf_Node (void)
+madara::expression_tree::Leaf_Node::~Leaf_Node (void)
 {
 }
 
 // return the item
-Madara::Knowledge_Record
-Madara::Expression_Tree::Leaf_Node::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::Leaf_Node::item (void) const
 {
   return item_;
 }
@@ -59,8 +59,8 @@ Madara::Expression_Tree::Leaf_Node::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::Leaf_Node::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::Leaf_Node::prune (bool & can_change)
 {
   can_change = false;
 
@@ -71,9 +71,9 @@ Madara::Expression_Tree::Leaf_Node::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::Leaf_Node::evaluate (
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::Leaf_Node::evaluate (
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   // we could call item(), but since it is virtual, it incurs unnecessary
   // overhead.
@@ -82,7 +82,7 @@ Madara::Expression_Tree::Leaf_Node::evaluate (
 
 
 void 
-Madara::Expression_Tree::Leaf_Node::accept (Visitor &visitor) const
+madara::expression_tree::Leaf_Node::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }

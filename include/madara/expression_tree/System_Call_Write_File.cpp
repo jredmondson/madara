@@ -7,8 +7,8 @@
 #include "madara/expression_tree/Visitor.h"
 
 
-Madara::Expression_Tree::System_Call_Write_File::System_Call_Write_File (
-  Madara::Knowledge_Engine::Thread_Safe_Context & context,
+madara::expression_tree::System_Call_Write_File::System_Call_Write_File (
+  madara::knowledge::Thread_Safe_Context & context,
   const Component_Nodes & nodes)
   : System_Call_Node (context, nodes)
 {
@@ -16,28 +16,28 @@ Madara::Expression_Tree::System_Call_Write_File::System_Call_Write_File (
 }
 
 // Dtor
-Madara::Expression_Tree::System_Call_Write_File::~System_Call_Write_File (void)
+madara::expression_tree::System_Call_Write_File::~System_Call_Write_File (void)
 {
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::System_Call_Write_File::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::System_Call_Write_File::item (void) const
 {
-  return Madara::Knowledge_Record::Integer (nodes_.size ());
+  return madara::Knowledge_Record::Integer (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::System_Call_Write_File::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::System_Call_Write_File::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
   // what it does. Consequently, a function node cannot be pruned out
   // under any situation
   can_change = true;
   
-  Madara::Knowledge_Record result;
+  madara::Knowledge_Record result;
   
   for (Component_Nodes::iterator i = nodes_.begin (); i != nodes_.end ();
        ++i)
@@ -54,7 +54,7 @@ Madara::Expression_Tree::System_Call_Write_File::prune (bool & can_change)
 
   if (nodes_.size () != 2)
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL ERROR: System call write_file requires 2 arguments: "
       "a knowledge record and a file name\n");
   }
@@ -64,9 +64,9 @@ Madara::Expression_Tree::System_Call_Write_File::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::System_Call_Write_File::evaluate (
-const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::System_Call_Write_File::evaluate (
+const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   Knowledge_Record return_value;
 
@@ -80,7 +80,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     Knowledge_Record * filename = &arg1;
     Knowledge_Record * contents = &arg2;
 
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call write_file is attempting to open %s.\n",
       filename->to_string ().c_str ());
 
@@ -88,22 +88,22 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
     if (bytes_written <= 0)
     {
-      madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "KARL ERROR: System call write_file could not write to %s\n",
         filename->to_string ().c_str ());
 
-      return Madara::Knowledge_Record::Integer (bytes_written);
+      return madara::Knowledge_Record::Integer (bytes_written);
     }
     else
     {
-      madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "System call write_file wrote %zd bytes to %s\n",
         bytes_written, filename->to_string ().c_str ());
     }
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL ERROR: System call write_file requires 2 arguments: "
       "a knowledge record and a file name\n");
   }
@@ -113,8 +113,8 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
 // accept a visitor
 void 
-Madara::Expression_Tree::System_Call_Write_File::accept (
-  Madara::Expression_Tree::Visitor &visitor) const
+madara::expression_tree::System_Call_Write_File::accept (
+  madara::expression_tree::Visitor &visitor) const
 {
   visitor.visit (*this);
 }

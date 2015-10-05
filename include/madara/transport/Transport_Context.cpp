@@ -2,7 +2,7 @@
 #include "madara/utility/Utility.h"
 
 
-Madara::Transport::Transport_Context::Transport_Context (int64_t operation,
+madara::transport::Transport_Context::Transport_Context (int64_t operation,
   uint64_t receive_bandwidth, uint64_t send_bandwidth,
   uint64_t message_time, uint64_t current_time,
   const std::string & domain,
@@ -17,7 +17,7 @@ Madara::Transport::Transport_Context::Transport_Context (int64_t operation,
 {
 }
 
-Madara::Transport::Transport_Context::Transport_Context (
+madara::transport::Transport_Context::Transport_Context (
   const Transport_Context & rhs)
   : operation_ (rhs.operation_),
   receive_bandwidth_ (rhs.receive_bandwidth_),
@@ -30,12 +30,12 @@ Madara::Transport::Transport_Context::Transport_Context (
 {
 }
 
-Madara::Transport::Transport_Context::~Transport_Context ()
+madara::transport::Transport_Context::~Transport_Context ()
 {
 }
 
 void
-Madara::Transport::Transport_Context::operator= (
+madara::transport::Transport_Context::operator= (
   const Transport_Context & rhs)
 {
   if (this != &rhs)

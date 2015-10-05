@@ -1,12 +1,12 @@
 #include "Transport_Settings.h"
 #include "Fragmentation.h"
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/knowledge_engine/containers/String_Vector.h"
+#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/containers/String_Vector.h"
 
-namespace containers = Madara::Knowledge_Engine::Containers;
-typedef Madara::Knowledge_Record::Integer  Integer;
+namespace containers = madara::knowledge::containers;
+typedef madara::Knowledge_Record::Integer  Integer;
 
-Madara::Transport::Settings::Settings () : 
+madara::transport::Settings::Settings () : 
   domains (DEFAULT_DOMAIN), 
   read_threads (1),
   queue_length (DEFAULT_QUEUE_LENGTH), 
@@ -42,7 +42,7 @@ Madara::Transport::Settings::Settings () :
 {
 }
 
-Madara::Transport::Settings::Settings (const Settings & settings) : 
+madara::transport::Settings::Settings (const Settings & settings) : 
         domains (settings.domains), 
         read_threads (settings.read_threads),
         queue_length (settings.queue_length), 
@@ -84,7 +84,7 @@ Madara::Transport::Settings::Settings (const Settings & settings) :
 }
 
 void
-Madara::Transport::Settings::operator= (const Settings & settings)
+madara::transport::Settings::operator= (const Settings & settings)
 {
   read_threads = settings.read_threads;
   domains = settings.domains;
@@ -127,7 +127,7 @@ Madara::Transport::Settings::operator= (const Settings & settings)
   no_receiving = settings.no_receiving;
 }
 
-Madara::Transport::Settings::~Settings ()
+madara::transport::Settings::~Settings ()
 {
   for (Originator_Fragment_Map::iterator originator = fragment_map.begin ();
        originator != fragment_map.end (); ++originator)
@@ -146,9 +146,9 @@ Madara::Transport::Settings::~Settings ()
 * @param  filename    the file to load from
 **/
 void
-Madara::Transport::Settings::load (const std::string filename)
+madara::transport::Settings::load (const std::string filename)
 {
-  Knowledge_Engine::Knowledge_Base knowledge;
+  knowledge::Knowledge_Base knowledge;
   knowledge.load_context (filename);
 
   read_threads = (uint32_t) knowledge.get ("transport.read_threads").to_integer ();
@@ -182,9 +182,9 @@ Madara::Transport::Settings::load (const std::string filename)
 }
 
 void
-Madara::Transport::Settings::save (const std::string filename) const
+madara::transport::Settings::save (const std::string filename) const
 {
-  Knowledge_Engine::Knowledge_Base knowledge;
+  knowledge::Knowledge_Base knowledge;
 
   containers::String_Vector kb_hosts ("transport.hosts", knowledge,
     (int)hosts.size ());

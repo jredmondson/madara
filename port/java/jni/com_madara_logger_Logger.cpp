@@ -1,7 +1,7 @@
 #include "com_madara_logger_Logger.h"
 #include "madara/logger/Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 typedef logger::Logger  Logger;
 
 jlong JNICALL Java_com_madara_logger_Logger_jni_1Logger__

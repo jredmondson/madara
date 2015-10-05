@@ -6,14 +6,14 @@
 *********************************************************************/
 
 #include "com.madara.Variables.h"
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
 // define useful shorthands
-namespace engine = Madara::Knowledge_Engine;
-typedef engine::Variables Variables;
-typedef engine::Compiled_Expression   Compiled_Expression;
-typedef engine::Eval_Settings         Eval_Settings;
-typedef Madara::Knowledge_Record      Knowledge_Record;
+namespace knowledge = madara::knowledge;
+typedef knowledge::Variables Variables;
+typedef knowledge::Compiled_Expression   Compiled_Expression;
+typedef knowledge::Eval_Settings         Eval_Settings;
+typedef madara::Knowledge_Record      Knowledge_Record;
 
 /*
 * Class:     com_madara_Variables

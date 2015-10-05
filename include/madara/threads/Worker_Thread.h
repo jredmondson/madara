@@ -12,12 +12,12 @@
 #include <string>
 #include <map>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "Base_Thread.h"
 
 #include "ace/Task.h"
  
-namespace Madara
+namespace madara
 {
   namespace Threads
   {
@@ -50,8 +50,8 @@ namespace Madara
       Worker_Thread (
         const std::string & name,
         Base_Thread * thread,
-        Knowledge_Engine::Knowledge_Base * control,
-        Knowledge_Engine::Knowledge_Base * data,
+        knowledge::Knowledge_Base * control,
+        knowledge::Knowledge_Base * data,
         double hertz = -1.0);
       
       /**
@@ -89,22 +89,22 @@ namespace Madara
       Base_Thread * thread_;
 
       /// the control plane to the knowledge base
-      Knowledge_Engine::Knowledge_Base * control_;
+      knowledge::Knowledge_Base * control_;
 
       /// the data plane (the knowledge base)
-      Knowledge_Engine::Knowledge_Base * data_;
+      knowledge::Knowledge_Base * data_;
 
       /**
        * thread safe finished flag that will be sent to the knowledge
        * base on completion of the thread
        **/
-      Madara::Knowledge_Engine::Containers::Integer finished_;
+      madara::knowledge::containers::Integer finished_;
       
       /**
        * thread safe start flag that will be sent to the knowledge
        * base on launch of the thread
        **/
-      Madara::Knowledge_Engine::Containers::Integer started_;
+      madara::knowledge::containers::Integer started_;
 
       /**
        * hertz rate for worker thread executions

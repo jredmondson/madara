@@ -1,5 +1,5 @@
 #include "madara/transport/splice/Splice_DDS_Transport.h"
-#include "madara/knowledge_engine/Update_Types.h"
+#include "madara/knowledge/Update_Types.h"
 #include "madara/utility/Utility.h"
 #include <time.h>
 
@@ -9,13 +9,13 @@
 
 namespace logger = Madara::Logger;
 
-const char * Madara::Transport::Splice_DDS_Transport::topic_names_[] = {
+const char * madara::transport::Splice_DDS_Transport::topic_names_[] = {
   "MADARA_KaRL_Data",
   "MADARA_KaRL_Control"
 };
 
 /* Array to hold the names for all ReturnCodes. */
-const char * Madara::Transport::Splice_DDS_Transport::ret_code_names[] = { 
+const char * madara::transport::Splice_DDS_Transport::ret_code_names[] = { 
     "DDS_RETCODE_OK",
     "DDS_RETCODE_ERROR",
     "DDS_RETCODE_UNSUPPORTED",
@@ -30,13 +30,13 @@ const char * Madara::Transport::Splice_DDS_Transport::ret_code_names[] = {
     "DDS_RETCODE_NO_DATA",
     "DDS_RETCODE_ILLEGAL_OPERATION" };
 
-const char * Madara::Transport::Splice_DDS_Transport::partition_ = "Madara_knowledge";
+const char * madara::transport::Splice_DDS_Transport::partition_ = "Madara_knowledge";
 
-Madara::Transport::Splice_DDS_Transport::Splice_DDS_Transport (
+madara::transport::Splice_DDS_Transport::Splice_DDS_Transport (
   const std::string & id,
-  Madara::Knowledge_Engine::Thread_Safe_Context & context, 
+  knowledge::Thread_Safe_Context & context, 
   Settings & config, bool launch_transport)
-  : Madara::Transport::Base (id, config, context), 
+  : madara::transport::Base (id, config, context), 
   domain_ (0), domain_factory_ (0), 
   domain_participant_ (0), publisher_ (0), subscriber_ (0), 
   datawriter_ (0), datareader_ (0), 
@@ -52,13 +52,13 @@ Madara::Transport::Splice_DDS_Transport::Splice_DDS_Transport (
   if (launch_transport)
     setup ();
 }
-Madara::Transport::Splice_DDS_Transport::~Splice_DDS_Transport ()
+madara::transport::Splice_DDS_Transport::~Splice_DDS_Transport ()
 {
   close ();
 }
 
 void
-Madara::Transport::Splice_DDS_Transport::close (void)
+madara::transport::Splice_DDS_Transport::close (void)
 {
   this->invalidate_transport ();
 
@@ -102,19 +102,19 @@ Madara::Transport::Splice_DDS_Transport::close (void)
 }
 
 int
-Madara::Transport::Splice_DDS_Transport::reliability (void) const
+madara::transport::Splice_DDS_Transport::reliability (void) const
 {
   return this->settings_.reliability;
 }
 
 int
-Madara::Transport::Splice_DDS_Transport::reliability (const int & setting)
+madara::transport::Splice_DDS_Transport::reliability (const int & setting)
 {
   return this->settings_.reliability = setting;
 }
 
 int
-Madara::Transport::Splice_DDS_Transport::setup (void)
+madara::transport::Splice_DDS_Transport::setup (void)
 {
   Base::setup ();
   DDS::ReturnCode_t                         status;
@@ -154,7 +154,7 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
 
   domain_participant_->get_default_topic_qos(topic_qos_);
 
-  if (Madara::Transport::RELIABLE == this->settings_.reliability)
+  if (madara::transport::RELIABLE == this->settings_.reliability)
   {
     topic_qos_.reliability.kind = DDS::RELIABLE_RELIABILITY_QOS;
     topic_qos_.history.depth = this->settings_.queue_length;
@@ -201,7 +201,7 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
   check_status(status, "DDS::DomainParticipant::get_default_publisher_qos");
 
 
-  if (Madara::Transport::RELIABLE == this->settings_.reliability)
+  if (madara::transport::RELIABLE == this->settings_.reliability)
   {
     pub_qos_.presentation.access_scope = DDS::TOPIC_PRESENTATION_QOS;
     pub_qos_.presentation.coherent_access = true;
@@ -226,7 +226,7 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
   check_status(status, "DDS::DomainParticipant::get_default_subscriber_qos");
 
 
-  if (Madara::Transport::RELIABLE == this->settings_.reliability)
+  if (madara::transport::RELIABLE == this->settings_.reliability)
   {
     sub_qos_.presentation.access_scope = DDS::TOPIC_PRESENTATION_QOS;
     sub_qos_.presentation.coherent_access = true;
@@ -258,7 +258,7 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
   publisher_->get_default_datawriter_qos (datawriter_qos_);
   publisher_->copy_from_topic_qos(datawriter_qos_, topic_qos_);
 
-  if (Madara::Transport::RELIABLE == this->settings_.reliability)
+  if (madara::transport::RELIABLE == this->settings_.reliability)
   {
     context_.get_logger ().log (logger::LOG_DETAILED,
       "Splice_DDS_Transport::setup:" \
@@ -309,7 +309,7 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
 
   datareader_qos_.reader_data_lifecycle.enable_invalid_samples = FALSE;
 
-  if (Madara::Transport::RELIABLE == this->settings_.reliability)
+  if (madara::transport::RELIABLE == this->settings_.reliability)
   {
     context_.get_logger ().log (logger::LOG_DETAILED,
       "Splice_DDS_Transport::setup:" \
@@ -359,7 +359,7 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
   //mutex_reader_ = dynamic_cast<Knowledge::MutexDataReader_ptr>(datareader_);
   //check_handle(mutex_reader_, "Knowledge::MutexDataReader_ptr::narrow");  
 
-  thread_ = new Madara::Transport::Splice_Read_Thread (id_, this->settings_,
+  thread_ = new madara::transport::Splice_Read_Thread (id_, this->settings_,
     context_, update_reader_, latency_update_writer_, send_monitor_,
     receive_monitor_, packet_scheduler_);
   
@@ -369,7 +369,7 @@ Madara::Transport::Splice_DDS_Transport::setup (void)
 }
 
 long
-Madara::Transport::Splice_DDS_Transport::send_data (
+madara::transport::Splice_DDS_Transport::send_data (
   const Madara::Knowledge_Records & updates)
 {
   long result =
@@ -391,7 +391,7 @@ Madara::Transport::Splice_DDS_Transport::send_data (
   data.quality = quality;
   data.updates = DDS::ULong (updates.size ());
   data.originator = DDS::string_dup(id_.c_str ());
-  data.type = Madara::Transport::MULTIASSIGN;
+  data.type = madara::transport::MULTIASSIGN;
   data.ttl = settings_.get_rebroadcast_ttl ();
   data.timestamp = time (NULL);
   data.madara_id = DDS::string_dup(MADARA_IDENTIFIER);
@@ -411,7 +411,7 @@ Madara::Transport::Splice_DDS_Transport::send_data (
 #ifdef _USE_CID_
 
 long
-Madara::Transport::Splice_DDS_Transport::start_latency (void)
+madara::transport::Splice_DDS_Transport::start_latency (void)
 {
   // check to see if we are shutting down
   long ret = this->check_transport ();
@@ -442,7 +442,7 @@ Madara::Transport::Splice_DDS_Transport::start_latency (void)
   data.clock = cur_clock;
   data.quality = this->settings_.id;
   data.originator = id_.c_str ();
-  data.type = Madara::Transport::LATENCY;
+  data.type = madara::transport::LATENCY;
 
   context_.get_logger ().log (logger::LOG_MAJOR,
     "Splice_DDS_Transport::start_latency:" \
@@ -460,7 +460,7 @@ Madara::Transport::Splice_DDS_Transport::start_latency (void)
 }
 
 long
-Madara::Transport::Splice_DDS_Transport::vote (void)
+madara::transport::Splice_DDS_Transport::vote (void)
 {
   // check to see if we are shutting down
   long ret = this->check_transport ();
@@ -506,7 +506,7 @@ Madara::Transport::Splice_DDS_Transport::vote (void)
   data.clock = cur_clock;
   data.quality = this->settings_.id;
   data.originator = id_.c_str ();
-  data.type = Madara::Transport::VOTE;
+  data.type = madara::transport::VOTE;
 
   context_.get_logger ().log (logger::LOG_MAJOR,
     "Splice_DDS_Transport::vote:" \
@@ -524,7 +524,7 @@ Madara::Transport::Splice_DDS_Transport::vote (void)
 
 
 void
-Madara::Transport::Splice_DDS_Transport::check_handle (void * handle, 
+madara::transport::Splice_DDS_Transport::check_handle (void * handle, 
                                                       const char * info)
 {
   if (!handle)
@@ -538,7 +538,7 @@ Madara::Transport::Splice_DDS_Transport::check_handle (void * handle,
 }
 
 void
-Madara::Transport::Splice_DDS_Transport::check_status (DDS::ReturnCode_t status,
+madara::transport::Splice_DDS_Transport::check_status (DDS::ReturnCode_t status,
                                                        const char * info)
 {
   // if the status is okay, then return without issue
@@ -554,7 +554,7 @@ Madara::Transport::Splice_DDS_Transport::check_status (DDS::ReturnCode_t status,
 }
 
 const char *
-Madara::Transport::Splice_DDS_Transport::get_error_name(DDS::ReturnCode_t status)
+madara::transport::Splice_DDS_Transport::get_error_name(DDS::ReturnCode_t status)
 {
     return ret_code_names[status];
 }

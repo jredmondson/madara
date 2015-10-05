@@ -14,19 +14,19 @@
 #include <vector>
 #include <map>
 #include <list>
-#include "madara/knowledge_engine/Knowledge_Record.h"
-#include "madara/knowledge_engine/Functions.h"
+#include "madara/knowledge/Knowledge_Record.h"
+#include "madara/knowledge/Functions.h"
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
 #include "madara/transport/Transport_Context.h"
-#include "madara/knowledge_engine/Extern_Function_Variables.h"
-#include "madara/knowledge_engine/containers/Map.h"
+#include "madara/knowledge/Extern_Function_Variables.h"
+#include "madara/knowledge/containers/Map.h"
 
 #include "Aggregate_Filter.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Filters
+  namespace filters
   {
     /**
      * Filter for discovering neighboring peers
@@ -60,8 +60,8 @@ namespace Madara
        * @param   vars              context for querying current program state
        **/
       virtual void filter (Knowledge_Map & records,
-        const Transport::Transport_Context & transport_context,
-        Knowledge_Engine::Variables & vars);
+        const transport::Transport_Context & transport_context,
+        knowledge::Variables & vars);
 
     protected:
 
@@ -78,7 +78,7 @@ namespace Madara
       /**
        * A map of discovered peers
        **/
-      Knowledge_Engine::Containers::Map peers_;
+      knowledge::containers::Map peers_;
 
       /**
        * The time to keep record of a peer

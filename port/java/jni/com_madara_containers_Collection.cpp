@@ -1,8 +1,8 @@
 #include "com_madara_containers_Collection.h"
-#include "madara/knowledge_engine/containers/Collection.h"
+#include "madara/knowledge/containers/Collection.h"
 
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
 typedef containers::Collection    Collection;
 
 
@@ -70,8 +70,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1setSettings
   (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   Collection * current = (Collection *)cptr;
-  engine::Knowledge_Update_Settings * settings =
-    (engine::Knowledge_Update_Settings *)settings_ptr;
+  knowledge::Knowledge_Update_Settings * settings =
+    (knowledge::Knowledge_Update_Settings *)settings_ptr;
 
   if (current && settings)
   {

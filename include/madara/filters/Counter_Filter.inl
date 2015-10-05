@@ -3,16 +3,16 @@
 
 #include "Counter_Filter.h"
 
-Madara::Knowledge_Record::Integer
-Madara::Filters::Counter_Filter::get_count ()
+madara::Knowledge_Record::Integer
+madara::filters::Counter_Filter::get_count ()
 {
   return packets_;
 }
 
-Madara::Knowledge_Record::Integer
-Madara::Filters::Counter_Filter::get_elapsed ()
+madara::Knowledge_Record::Integer
+madara::filters::Counter_Filter::get_elapsed ()
 {
-  Madara::Knowledge_Record::Integer result (0);
+  madara::Knowledge_Record::Integer result (0);
 
   if (initialized_)
   {
@@ -22,7 +22,7 @@ Madara::Filters::Counter_Filter::get_elapsed ()
   return result;
 }
 
-double Madara::Filters::Counter_Filter::get_throughput ()
+double madara::filters::Counter_Filter::get_throughput ()
 {
   double result (0);
 

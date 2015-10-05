@@ -13,9 +13,9 @@
  * This file contains helper classes for Acquiring the GIL.
  **/
 
-namespace Madara
+namespace madara
 {
-  namespace Python
+  namespace python
   {
     /**
      * @class Acquire_GIL

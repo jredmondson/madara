@@ -48,11 +48,11 @@
         new CPP file, name it "HelloWorld" and copy and paste the following:
 
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
 int main (int argc, char * argv[])
 {
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  madara::knowledge::Knowledge_Base knowledge;
 
   knowledge.evaluate ("++hello");
   knowledge.evaluate ("++world");
@@ -104,11 +104,11 @@ int main (int argc, char * argv[])
         new CPP file, name it "HelloWorld" and copy and paste the following:
 
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
 int ACE_TMAIN (int argc, char * argv[])
 {
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  madara::knowledge::Knowledge_Base knowledge;
 
   knowledge.evaluate ("++hello");
   knowledge.evaluate ("++world");
@@ -156,11 +156,11 @@ int ACE_TMAIN (int argc, char * argv[])
         now includes $MADARA_ROOT/lib and $ACE_ROOT/lib.
     2.) Create a file called HelloWorld.cpp and copy and paste the following:
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
 int ACE_TMAIN (int argc, char * argv[])
 {
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  madara::knowledge::Knowledge_Base knowledge;
 
   knowledge.evaluate ("++hello");
   knowledge.evaluate ("++world");

@@ -9,9 +9,9 @@
  * This file contains enumerations and other definitions for filter arguments
  **/
 
-namespace Madara
+namespace madara
 {
-  namespace Filters
+  namespace filters
   {
     enum
     {

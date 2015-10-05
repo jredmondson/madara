@@ -5,12 +5,12 @@
  * @file Transport.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains the Transport::Base class, which provides an
+ * This file contains the transport::Base class, which provides an
  * extensible transport layer for sending knowledge updates in KaRL.
  * To support knowledge updates, only the send_multiassignment method
  * is currently required to be extended as the set, evaluate, and wait
  * methods all call send_multiassignment. For example transport, @see
- * Madara::Transport::Multicast_Transport.
+ * madara::transport::Multicast_Transport.
  **/
 
 #include <string>
@@ -41,14 +41,14 @@
 
 #endif // _USE_CID_
 
-#include "madara/knowledge_engine/Knowledge_Record.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Knowledge_Record.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/expression_tree/Expression_Tree.h"
 #include "madara/expression_tree/Interpreter.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     typedef    ACE_Condition <ACE_Thread_Mutex>    Condition;
 
@@ -57,7 +57,7 @@ namespace Madara
      * To support knowledge updates, only the send_multiassignment method
      * is currently required to be extended as the set, evaluate, and wait
      * methods all call send_multiassignment. For example transport, @see
-     * Madara::Transport::Multicast_Transport.
+     * madara::transport::Multicast_Transport.
      **/
     class MADARA_Export Base
     {
@@ -74,7 +74,7 @@ namespace Madara
        * @param   context           the knowledge record context
        **/
       Base (const std::string & id, Settings & new_settings,
-        Knowledge_Engine::Thread_Safe_Context & context);
+        knowledge::Thread_Safe_Context & context);
 
       /**
        * Destructor
@@ -115,7 +115,7 @@ namespace Madara
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
               DLINFO "Splice_DDS_Transport::start_latency:" \
               " Latency enabled is not set in your"
-              " Madara::Transport::Settings instance. Update your"
+              " madara::transport::Settings instance. Update your"
               " program's code and set settings.latency_enabled = true.\n"));
 
           return -2;
@@ -134,7 +134,7 @@ namespace Madara
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
               DLINFO "Splice_DDS_Transport::vote:" \
               " Latency enabled is not set in your"
-              " Madara::Transport::Settings instance. Update your"
+              " madara::transport::Settings instance. Update your"
               " program's code and set settings.latency_enabled = true.\n"));
 
           return -2;
@@ -155,7 +155,7 @@ namespace Madara
      *                0   No message to send
      *               > 0  size of buffered message
      **/
-      long prep_send (const Madara::Knowledge_Records & orig_updates,
+      long prep_send (const madara::Knowledge_Records & orig_updates,
         const char * print_prefix);
 
       /**
@@ -163,7 +163,7 @@ namespace Madara
        * implemented by your transport
        * @return  result of operation or -1 if we are shutting down
        **/
-      virtual long send_data (const Madara::Knowledge_Records &) = 0;
+      virtual long send_data (const madara::Knowledge_Records &) = 0;
 
       /**
        * Invalidates a transport to indicate it is shutting down
@@ -188,11 +188,11 @@ namespace Madara
       QoS_Transport_Settings settings_;
 
       // context for knowledge base
-      Madara::Knowledge_Engine::Thread_Safe_Context & context_;
+      madara::knowledge::Thread_Safe_Context & context_;
       
 #ifndef _MADARA_NO_KARL_
       /// data received rules, defined in Transport settings
-      Madara::Expression_Tree::Expression_Tree  on_data_received_;
+      madara::expression_tree::Expression_Tree  on_data_received_;
       
 #endif // _MADARA_NO_KARL_
 
@@ -206,7 +206,7 @@ namespace Madara
       Packet_Scheduler        packet_scheduler_;
 
       /// buffer for sending
-      Madara::Utility::Scoped_Array <char>      buffer_;
+      madara::utility::Scoped_Array <char>      buffer_;
     };
 
     /**
@@ -244,14 +244,14 @@ namespace Madara
         const char * buffer,
         uint32_t bytes_read,
         const std::string & id,
-        Knowledge_Engine::Thread_Safe_Context & context,
+        knowledge::Thread_Safe_Context & context,
         const QoS_Transport_Settings & settings,
         Bandwidth_Monitor & send_monitor,
         Bandwidth_Monitor & receive_monitor,
         Knowledge_Map & rebroadcast_records,
 #ifndef _MADARA_NO_KARL_
 
-        Knowledge_Engine::Compiled_Expression & on_data_received,
+        knowledge::Compiled_Expression & on_data_received,
 #endif // _MADARA_NO_KARL_
 
         const char * print_prefix,
@@ -274,7 +274,7 @@ namespace Madara
      * @param  packet_scheduler scheduler for mimicking network conditions
      **/
     int MADARA_Export prep_rebroadcast (
-      Knowledge_Engine::Thread_Safe_Context & context,
+      knowledge::Thread_Safe_Context & context,
       char * buffer,
       int64_t & buffer_remaining,
       const QoS_Transport_Settings & settings,
@@ -283,7 +283,7 @@ namespace Madara
       const Knowledge_Map & records,
       Packet_Scheduler & packet_scheduler);
 
-    typedef   Utility::Thread_Safe_Vector <Base *>   Transports;
+    typedef   utility::Thread_Safe_Vector <Base *>   Transports;
   }
 }
 

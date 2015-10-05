@@ -7,7 +7,7 @@
 
 class ACE_Event_Handler;
 
-namespace Madara
+namespace madara
 {
   
    /**

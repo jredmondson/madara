@@ -1,29 +1,29 @@
 
 
-#include "madara/knowledge_engine/File_Header.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/File_Header.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
 #include "madara/utility/Utility.h"
 
 #include <stdio.h>
 #include <iostream>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/knowledge_engine/containers/String_Vector.h"
+#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/containers/String_Vector.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
-namespace logger = Madara::Logger;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
+namespace logger = madara::logger;
 
-typedef  Madara::Knowledge_Record::Integer  Integer;
+typedef  madara::Knowledge_Record::Integer  Integer;
 
 void test_copy (void)
 {
-  engine::Knowledge_Base source, dest;
+  knowledge::Knowledge_Base source, dest;
   containers::String_Vector kids ("kids", source, 1);
-  engine::Copy_Set copy_set;
+  knowledge::Copy_Set copy_set;
 
   // create some information in the source knowledge base
   source.set ("name", "John Smith");

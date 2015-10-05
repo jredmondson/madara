@@ -15,15 +15,15 @@
 #include <vector>
 #include <map>
 #include <list>
-#include "madara/knowledge_engine/Knowledge_Record.h"
-#include "madara/knowledge_engine/Functions.h"
+#include "madara/knowledge/Knowledge_Record.h"
+#include "madara/knowledge/Functions.h"
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
 #include "madara/transport/Transport_Context.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Filters
+  namespace filters
   {
     /**
      * Filter for discarding a record. Resulting record will
@@ -33,8 +33,8 @@ namespace Madara
      * @return  record with status set to UNCREATED
      **/
     MADARA_Export Knowledge_Record
-    discard     (Knowledge_Engine::Function_Arguments & args,
-                 Knowledge_Engine::Variables & vars);
+    discard     (knowledge::Function_Arguments & args,
+                 knowledge::Variables & vars);
 
     /**
      * Filter for discarding a non-primitive record. Resulting record will
@@ -45,8 +45,8 @@ namespace Madara
      * @return  record with status set to UNCREATED if arg is non-primitive
      **/
     MADARA_Export Knowledge_Record
-    discard_nonprimitives (Knowledge_Engine::Function_Arguments & args,
-                           Knowledge_Engine::Variables & vars);
+    discard_nonprimitives (knowledge::Function_Arguments & args,
+                           knowledge::Variables & vars);
 
     /**
      * Filter for discarding a non-file record. Resulting record will
@@ -57,8 +57,8 @@ namespace Madara
      * @return  record with status set to UNCREATED if arg is non-file
      **/
     MADARA_Export Knowledge_Record
-    discard_nonfiles      (Knowledge_Engine::Function_Arguments & args,
-                           Knowledge_Engine::Variables & vars);
+    discard_nonfiles      (knowledge::Function_Arguments & args,
+                           knowledge::Variables & vars);
 
     /**
      * Filter for logging args
@@ -67,8 +67,8 @@ namespace Madara
      * @return  record with status set to UNCREATED if arg is non-file
      **/
     MADARA_Export Knowledge_Record
-    log_args              (Knowledge_Engine::Function_Arguments & args,
-                           Knowledge_Engine::Variables & vars);
+    log_args              (knowledge::Function_Arguments & args,
+                           knowledge::Variables & vars);
     
     /**
      * Filter for logging aggregate update and context
@@ -79,8 +79,8 @@ namespace Madara
     MADARA_Export void
     log_aggregate         (
       Knowledge_Map & records,
-      const Transport::Transport_Context & transport_context,
-      Knowledge_Engine::Variables & vars);
+      const transport::Transport_Context & transport_context,
+      knowledge::Variables & vars);
   }
 }
 

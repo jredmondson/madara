@@ -54,8 +54,8 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
   }
 
   Inline_Files {
-    include/madara/knowledge_engine
-    include/madara/knowledge_engine/containers
+    include/madara/knowledge
+    include/madara/knowledge/containers
     include/madara/filters
     include/madara/logger/Logger.inl
     include/madara/utility
@@ -69,14 +69,14 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/utility/Refcounter.cpp
     include/madara/utility/Thread_Safe_Refcounter.cpp
     include/madara/utility/Thread_Safe_Vector.cpp
-    include/madara/knowledge_engine/containers/Typed_Vector.cpp
+    include/madara/knowledge/containers/Typed_Vector.cpp
   }
 
   Source_Files {
     include/madara/expression_tree
     include/madara/filters
-    include/madara/knowledge_engine
-    include/madara/knowledge_engine/containers
+    include/madara/knowledge
+    include/madara/knowledge/containers
     include/madara/logger
     include/madara/threads
     include/madara/transport/tcp
@@ -102,8 +102,8 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
   Header_Files {
     include/madara/expression_tree
     include/madara/filters
-    include/madara/knowledge_engine
-    include/madara/knowledge_engine/containers
+    include/madara/knowledge
+    include/madara/knowledge/containers
     include/madara/logger
     include/madara/threads
     include/madara/transport/tcp

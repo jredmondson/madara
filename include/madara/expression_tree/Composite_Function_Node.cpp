@@ -14,8 +14,8 @@
 #include "madara/expression_tree/Leaf_Node.h"
 
 
-#include "madara/knowledge_engine/Functions.h"
-#include "madara/knowledge_engine/Extern_Function_Variables.h"
+#include "madara/knowledge/Functions.h"
+#include "madara/knowledge/Extern_Function_Variables.h"
 
 #ifdef _MADARA_PYTHON_CALLBACKS_
 
@@ -33,9 +33,9 @@
 
 // Ctor
 
-Madara::Expression_Tree::Composite_Function_Node::Composite_Function_Node (
+madara::expression_tree::Composite_Function_Node::Composite_Function_Node (
         const std::string & name, 
-        Madara::Knowledge_Engine::Thread_Safe_Context & context,
+        madara::knowledge::Thread_Safe_Context & context,
         const Component_Nodes & nodes)
 : Composite_Ternary_Node (context.get_logger (), nodes),
   context_ (context), name_ (name), 
@@ -45,14 +45,14 @@ Madara::Expression_Tree::Composite_Function_Node::Composite_Function_Node (
 }
 
 // Dtor
-Madara::Expression_Tree::Composite_Function_Node::~Composite_Function_Node (void)
+madara::expression_tree::Composite_Function_Node::~Composite_Function_Node (void)
 {
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Function_Node::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::Composite_Function_Node::item (void) const
 {
-  Madara::Knowledge_Record record;
+  madara::Knowledge_Record record;
   record.set_value (name_ + "()");
   return record;
 }
@@ -60,15 +60,15 @@ Madara::Expression_Tree::Composite_Function_Node::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Function_Node::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::Composite_Function_Node::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
   // what it does. Consequently, a function node cannot be pruned out
   // under any situation
   can_change = true;
   
-  Madara::Knowledge_Record result;
+  madara::Knowledge_Record result;
 
   // setup array of record pointers that point to .1, .2, .3, etc.
   if (nodes_.size () > 0)
@@ -100,12 +100,12 @@ Madara::Expression_Tree::Composite_Function_Node::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::Composite_Function_Node::evaluate (
-const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::Composite_Function_Node::evaluate (
+const madara::knowledge::Knowledge_Update_Settings & settings)
 {
-  Madara::Knowledge_Engine::Function_Arguments args;
-  Madara::Knowledge_Record result;
+  madara::knowledge::Function_Arguments args;
+  madara::Knowledge_Record result;
 
   args.resize (nodes_.size ());
 
@@ -119,10 +119,10 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
 
 
-  Madara::Knowledge_Engine::Variables variables;
+  madara::knowledge::Variables variables;
   variables.context_ = &context_;
 
-  madara_logger_ptr_log (logger_, Logger::LOG_DETAILED,
+  madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
     "Function %s is being called with %d args.\n",
     this->name_.c_str (), args.size ());
   
@@ -137,16 +137,16 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 #ifdef _MADARA_JAVA_
   else if (function_->is_java_callable())
   {
-    Madara::Utility::Java::Acquire_VM jvm;
+    madara::utility::Java::Acquire_VM jvm;
     JNIEnv * env = jvm.env;
 
     /**
       * Create the variables java object
       **/
 
-    jclass jvarClass = Madara::Utility::Java::find_class (
+    jclass jvarClass = madara::utility::Java::find_class (
       env, "com/madara/Variables");
-    jclass jlistClass = Madara::Utility::Java::find_class (
+    jclass jlistClass = madara::utility::Java::find_class (
       env, "com/madara/KnowledgeList");
         
     jmethodID fromPointerCall = env->GetStaticMethodID (jvarClass,
@@ -199,7 +199,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
       }
     }
 
-    result.deep_copy(*(Madara::Knowledge_Record *)cptr);
+    result.deep_copy(*(madara::Knowledge_Record *)cptr);
 
     jvm.env->DeleteLocalRef (jresult);
     jvm.env->DeleteLocalRef (filterClass);
@@ -216,7 +216,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   
 #ifdef _MADARA_PYTHON_CALLBACKS_
   else if (function_->is_python_callable ())
-    return boost::python::call <Madara::Knowledge_Record> (
+    return boost::python::call <madara::Knowledge_Record> (
           function_->python_function.ptr (),
           boost::ref (args), boost::ref (variables));
 #endif
@@ -232,7 +232,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
 // accept a visitor
 void 
-Madara::Expression_Tree::Composite_Function_Node::accept (Visitor &visitor) const
+madara::expression_tree::Composite_Function_Node::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }

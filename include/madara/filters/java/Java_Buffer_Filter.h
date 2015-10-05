@@ -21,9 +21,9 @@
 #include "madara/utility/Scoped_Array.h"
 #include "../Buffer_Filter.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Filters
+  namespace filters
   {
     /**
      * Filter for calling Java functors
@@ -34,7 +34,7 @@ namespace Madara
       /**
       * Constructor
       **/
-      Java_Buffer_Filter (Logger::Logger & logger, jobject obj);
+      Java_Buffer_Filter (logger::Logger & logger, jobject obj);
 
       /**
        * Destructor
@@ -68,7 +68,7 @@ namespace Madara
       jclass class_;
 
       /// a logger
-      Logger::Logger * logger_;
+      logger::Logger * logger_;
     };
   }
 }

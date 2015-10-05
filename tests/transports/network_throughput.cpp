@@ -12,31 +12,31 @@
 #include "ace/Guard_T.h"
 #include "ace/Recursive_Thread_Mutex.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/filters/Aggregate_Filter.h"
 
-#include "madara/knowledge_engine/containers/Integer.h"
-#include "madara/knowledge_engine/containers/Integer_Vector.h"
-#include "madara/knowledge_engine/containers/Barrier.h"
-#include "madara/knowledge_engine/containers/String.h"
+#include "madara/knowledge/containers/Integer.h"
+#include "madara/knowledge/containers/Integer_Vector.h"
+#include "madara/knowledge/containers/Barrier.h"
+#include "madara/knowledge/containers/String.h"
 #include "madara/utility/Utility.h"
 #include "madara/logger/Global_Logger.h"
 #include "madara/threads/Threader.h"
 
-namespace logger = Madara::Logger;
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
-namespace utility = Madara::Utility;
-namespace threads = Madara::Threads;
-namespace filters = Madara::Filters;
+namespace logger = madara::logger;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
+namespace utility = madara::utility;
+namespace threads = madara::Threads;
+namespace filters = madara::filters;
 
 // useful namespace aliases and typedefs
 
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
-namespace transport = Madara::Transport;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
+namespace transport = madara::transport;
 
-typedef Madara::Knowledge_Record::Integer Integer;
+typedef madara::Knowledge_Record::Integer Integer;
 
 // default transport settings
 std::string host ("");
@@ -66,7 +66,7 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         settings.hosts.push_back (argv[i + 1]);
-        settings.type = Madara::Transport::MULTICAST;
+        settings.type = madara::transport::MULTICAST;
       }
       ++i;
     }
@@ -75,7 +75,7 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         settings.hosts.push_back (argv[i + 1]);
-        settings.type = Madara::Transport::BROADCAST;
+        settings.type = madara::transport::BROADCAST;
       }
       ++i;
     }
@@ -84,7 +84,7 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         settings.hosts.push_back (argv[i + 1]);
-        settings.type = Madara::Transport::UDP;
+        settings.type = madara::transport::UDP;
       }
       ++i;
     }
@@ -153,7 +153,7 @@ void handle_arguments (int argc, char ** argv)
         buffer >> drop_rate;
         
         settings.update_drop_rate (drop_rate,
-          Madara::Transport::PACKET_DROP_DETERMINISTIC);
+          madara::transport::PACKET_DROP_DETERMINISTIC);
       }
 
       ++i;
@@ -258,7 +258,7 @@ public:
   /**
    * Constructor
    **/
-  Publisher (engine::Knowledge_Base & context)
+  Publisher (knowledge::Knowledge_Base & context)
     : knowledge (&context), publishes (".publishes", context),
     id ("id", context, (Integer)settings.id)
   {
@@ -267,7 +267,7 @@ public:
 
     // create container and references
     packet = context.get_ref (
-      "packet", engine::Knowledge_Reference_Settings (true));
+      "packet", knowledge::Knowledge_Reference_Settings (true));
 
     // set initial packet
     utility::Scoped_Array <unsigned char> buffer (new unsigned char[data_size]);
@@ -278,7 +278,7 @@ public:
   * Initializes thread with MADARA context
   * @param   context   context for querying current program state
   **/
-  virtual void init (engine::Knowledge_Base & context)
+  virtual void init (knowledge::Knowledge_Base & context)
   {
   }
 
@@ -295,10 +295,10 @@ public:
   }
 
 private:
-  engine::Knowledge_Base * knowledge;
+  knowledge::Knowledge_Base * knowledge;
   containers::Integer publishes;
   containers::Integer id;
-  engine::Variable_Reference packet;
+  knowledge::Variable_Reference packet;
 };
 
 class Receiver : public filters::Aggregate_Filter
@@ -309,11 +309,11 @@ public:
   {
   }
 
-  virtual void filter (Madara::Knowledge_Map & records,
+  virtual void filter (madara::Knowledge_Map & records,
     const transport::Transport_Context & transport_context,
-    engine::Variables & vars)
+    knowledge::Variables & vars)
   {
-    Madara::Knowledge_Map::iterator packet = records.find ("packet");
+    madara::Knowledge_Map::iterator packet = records.find ("packet");
     if (packet != records.end ())
     {
       if (!started)
@@ -328,7 +328,7 @@ public:
         started = true;
       }
 
-      Madara::Knowledge_Map::iterator id = records.find ("id");
+      madara::Knowledge_Map::iterator id = records.find ("id");
 
       // if we have a valid packet
       if (id != records.end ())
@@ -394,7 +394,7 @@ int main (int argc, char ** argv)
   settings.add_receive_filter (receiver);
 
   // create a knowledge base and setup our id
-  engine::Knowledge_Base knowledge (host, settings);
+  knowledge::Knowledge_Base knowledge (host, settings);
   
   knowledge.set (".id", Integer (settings.id));
   knowledge.set (".processes", Integer (settings.processes));

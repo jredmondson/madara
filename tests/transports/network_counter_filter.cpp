@@ -12,28 +12,28 @@
 #include "ace/Guard_T.h"
 #include "ace/Recursive_Thread_Mutex.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
 
-#include "madara/knowledge_engine/containers/Integer.h"
+#include "madara/knowledge/containers/Integer.h"
 #include "madara/utility/Utility.h"
 #include "madara/logger/Global_Logger.h"
 #include "madara/filters/Counter_Filter.h"
 #include "madara/threads/Threader.h"
-#include "madara/knowledge_engine/containers/String.h"
+#include "madara/knowledge/containers/String.h"
 
-namespace logger = Madara::Logger;
-namespace utility = Madara::Utility;
-namespace filters = Madara::Filters;
+namespace logger = madara::logger;
+namespace utility = madara::utility;
+namespace filters = madara::filters;
 
 // useful namespace aliases and typedefs
 
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
-namespace transport = Madara::Transport;
-namespace threads = Madara::Threads;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
+namespace transport = madara::transport;
+namespace threads = madara::Threads;
 
-typedef Madara::Knowledge_Record::Integer Integer;
+typedef madara::Knowledge_Record::Integer Integer;
 
 // default transport settings
 std::string host ("");
@@ -72,7 +72,7 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         settings.hosts.push_back (argv[i + 1]);
-        settings.type = Madara::Transport::MULTICAST;
+        settings.type = madara::transport::MULTICAST;
       }
       ++i;
     }
@@ -81,7 +81,7 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         settings.hosts.push_back (argv[i + 1]);
-        settings.type = Madara::Transport::BROADCAST;
+        settings.type = madara::transport::BROADCAST;
       }
       ++i;
     }
@@ -90,7 +90,7 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         settings.hosts.push_back (argv[i + 1]);
-        settings.type = Madara::Transport::UDP;
+        settings.type = madara::transport::UDP;
       }
       ++i;
     }
@@ -149,7 +149,7 @@ void handle_arguments (int argc, char ** argv)
         buffer >> drop_rate;
         
         settings.update_drop_rate (drop_rate,
-          Madara::Transport::PACKET_DROP_DETERMINISTIC);
+          madara::transport::PACKET_DROP_DETERMINISTIC);
       }
 
       ++i;
@@ -251,13 +251,13 @@ class Sender : public threads::Base_Thread
 {
 private:
   /// knowledge engine used for sending
-  engine::Knowledge_Base * knowledge_;
+  knowledge::Knowledge_Base * knowledge_;
 
   /// payload to send with each update
   containers::String payload_;
 
 public:
-  Sender (engine::Knowledge_Base & knowledge)
+  Sender (knowledge::Knowledge_Base & knowledge)
     : knowledge_ (&knowledge)
   {
     // initialize the payload to send
@@ -321,7 +321,7 @@ int main (int argc, char ** argv)
   }
 
   // create a knowledge base and setup our id
-  engine::Knowledge_Base knowledge (host, settings);
+  knowledge::Knowledge_Base knowledge (host, settings);
   
   if (settings.id == 0)
   {

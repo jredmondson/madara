@@ -12,19 +12,19 @@
 #include "madara/expression_tree/Composite_Negate_Node.h"
 #include "madara/expression_tree/Leaf_Node.h"
 
-Madara::Expression_Tree::Composite_Negate_Node::Composite_Negate_Node (
-  Logger::Logger & logger, Component_Node *right)
+madara::expression_tree::Composite_Negate_Node::Composite_Negate_Node (
+  logger::Logger & logger, Component_Node *right)
   : Composite_Unary_Node (logger, right)
 {    
 }
 
 // Dtor
-Madara::Expression_Tree::Composite_Negate_Node::~Composite_Negate_Node (void)
+madara::expression_tree::Composite_Negate_Node::~Composite_Negate_Node (void)
 {
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Negate_Node::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::Composite_Negate_Node::item (void) const
 {
   return "-";
 }
@@ -32,11 +32,11 @@ Madara::Expression_Tree::Composite_Negate_Node::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Negate_Node::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::Composite_Negate_Node::prune (bool & can_change)
 {
   bool right_child_can_change = false;
-  Madara::Knowledge_Record right_value;
+  madara::Knowledge_Record right_value;
 
   if (this->right_)
   {
@@ -49,7 +49,7 @@ Madara::Expression_Tree::Composite_Negate_Node::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: "
       "Negate has no right expression\n");
 
@@ -63,13 +63,13 @@ Madara::Expression_Tree::Composite_Negate_Node::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::Composite_Negate_Node::evaluate (
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::Composite_Negate_Node::evaluate (
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
-  Madara::Knowledge_Record value = right_->evaluate (settings);
+  madara::Knowledge_Record value = right_->evaluate (settings);
 
-  madara_logger_ptr_log (logger_, Logger::LOG_DETAILED,
+  madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
     "KARL COMPILE ERROR: "
     "Negating %s.\n", value.to_string ().c_str ());
 
@@ -78,7 +78,7 @@ Madara::Expression_Tree::Composite_Negate_Node::evaluate (
 
 // accept a visitor
 void 
-Madara::Expression_Tree::Composite_Negate_Node::accept (Visitor &visitor) const
+madara::expression_tree::Composite_Negate_Node::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }

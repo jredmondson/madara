@@ -17,9 +17,9 @@
 #include "madara/expression_tree/Expression_Tree.h"
 #include "madara/expression_tree/Leaf_Node.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     /**
      * @class Expression_Tree_Iterator_Factory
@@ -88,7 +88,7 @@ namespace Madara
   }
 }
 
-Madara::Expression_Tree::Expression_Tree_Iterator_Factory::Expression_Tree_Iterator_Factory (void)
+madara::expression_tree::Expression_Tree_Iterator_Factory::Expression_Tree_Iterator_Factory (void)
 {
   traversal_map_["in-order"] =
     &Expression_Tree_Iterator_Factory::make_in_order_tree_iterator;
@@ -100,37 +100,37 @@ Madara::Expression_Tree::Expression_Tree_Iterator_Factory::Expression_Tree_Itera
     &Expression_Tree_Iterator_Factory::make_level_order_tree_iterator;
 }
 
-Madara::Expression_Tree::Expression_Tree_Iterator_Impl *
-Madara::Expression_Tree::Expression_Tree_Iterator_Factory::make_level_order_tree_iterator (
-  Madara::Expression_Tree::Expression_Tree &tree, bool end_iter)
+madara::expression_tree::Expression_Tree_Iterator_Impl *
+madara::expression_tree::Expression_Tree_Iterator_Factory::make_level_order_tree_iterator (
+  madara::expression_tree::Expression_Tree &tree, bool end_iter)
 { 
   return new Level_Order_Expression_Tree_Iterator_Impl (tree, end_iter);
 }
 
-Madara::Expression_Tree::Expression_Tree_Iterator_Impl *
-Madara::Expression_Tree::Expression_Tree_Iterator_Factory::make_in_order_tree_iterator (
-  Madara::Expression_Tree::Expression_Tree &tree, bool end_iter)
+madara::expression_tree::Expression_Tree_Iterator_Impl *
+madara::expression_tree::Expression_Tree_Iterator_Factory::make_in_order_tree_iterator (
+  madara::expression_tree::Expression_Tree &tree, bool end_iter)
 { 
   return new In_Order_Iterator_Impl (tree, end_iter);
 }
 
-Madara::Expression_Tree::Expression_Tree_Iterator_Impl *
-Madara::Expression_Tree::Expression_Tree_Iterator_Factory::make_pre_order_tree_iterator (
-  Madara::Expression_Tree::Expression_Tree &tree, bool end_iter)
+madara::expression_tree::Expression_Tree_Iterator_Impl *
+madara::expression_tree::Expression_Tree_Iterator_Factory::make_pre_order_tree_iterator (
+  madara::expression_tree::Expression_Tree &tree, bool end_iter)
 { 
   return new Pre_Order_Iterator_Impl (tree, end_iter);
 }
 
-Madara::Expression_Tree::Expression_Tree_Iterator_Impl *
-Madara::Expression_Tree::Expression_Tree_Iterator_Factory::make_post_order_tree_iterator (
+madara::expression_tree::Expression_Tree_Iterator_Impl *
+madara::expression_tree::Expression_Tree_Iterator_Factory::make_post_order_tree_iterator (
   Expression_Tree &tree, bool end_iter)
 { 
   return new Post_Order_Iterator_Impl (tree, end_iter);
 }
 
-Madara::Expression_Tree::Expression_Tree_Iterator_Impl *
-Madara::Expression_Tree::Expression_Tree_Iterator_Factory::make_tree_iterator (
-  Madara::Expression_Tree::Expression_Tree &tree, const std::string &traversal_order,
+madara::expression_tree::Expression_Tree_Iterator_Impl *
+madara::expression_tree::Expression_Tree_Iterator_Factory::make_tree_iterator (
+  madara::expression_tree::Expression_Tree &tree, const std::string &traversal_order,
   bool end_iter)
 {  
   TRAVERSAL_MAP::iterator iter = traversal_map_.find (traversal_order);
@@ -146,30 +146,30 @@ Madara::Expression_Tree::Expression_Tree_Iterator_Factory::make_tree_iterator (
 }
 
 // Define a single instance of a factory that's local to this class.
-static Madara::Expression_Tree::Expression_Tree_Iterator_Factory tree_iterator_factory;
+static madara::expression_tree::Expression_Tree_Iterator_Factory tree_iterator_factory;
 
 // Default ctor
 
-Madara::Expression_Tree::Expression_Tree::Expression_Tree (
-  Logger::Logger & logger)
+madara::expression_tree::Expression_Tree::Expression_Tree (
+  logger::Logger & logger)
   : logger_ (&logger), root_ (0)
 {    
 }
 
 // Ctor take an underlying NODE*.
 
-Madara::Expression_Tree::Expression_Tree::Expression_Tree (
-  Logger::Logger & logger,
-  Madara::Expression_Tree::Component_Node *root, bool increase_count)
+madara::expression_tree::Expression_Tree::Expression_Tree (
+  logger::Logger & logger,
+  madara::expression_tree::Component_Node *root, bool increase_count)
   : logger_ (&logger), root_ (root, increase_count)
 {    
 }
 
 // Copy ctor
 
-Madara::Expression_Tree::Expression_Tree::Expression_Tree (
-  Logger::Logger & logger,
-  const Madara::Expression_Tree::Expression_Tree &t)
+madara::expression_tree::Expression_Tree::Expression_Tree (
+  logger::Logger & logger,
+  const madara::expression_tree::Expression_Tree &t)
   : logger_ (&logger), root_ (t.root_)
 {
 }
@@ -177,8 +177,8 @@ Madara::Expression_Tree::Expression_Tree::Expression_Tree (
 // Assignment operator
 
 void
-Madara::Expression_Tree::Expression_Tree::operator= (
-  const Madara::Expression_Tree::Expression_Tree &t)
+madara::expression_tree::Expression_Tree::operator= (
+  const madara::expression_tree::Expression_Tree &t)
 {
   // Refcounter class takes care of the internal decrements and
   // increments.
@@ -191,7 +191,7 @@ Madara::Expression_Tree::Expression_Tree::operator= (
 
 // Dtor
 
-Madara::Expression_Tree::Expression_Tree::~Expression_Tree (void)
+madara::expression_tree::Expression_Tree::~Expression_Tree (void)
 {
   // taken care of by Refcounter class
 }
@@ -199,7 +199,7 @@ Madara::Expression_Tree::Expression_Tree::~Expression_Tree (void)
 // Check if the tree is empty.
 
 bool
-Madara::Expression_Tree::Expression_Tree::is_null (void) const
+madara::expression_tree::Expression_Tree::is_null (void) const
 {
   return root_.get_ptr () == 0;
 }
@@ -208,11 +208,11 @@ Madara::Expression_Tree::Expression_Tree::is_null (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::Expression_Tree::prune (void)
+madara::Knowledge_Record
+madara::expression_tree::Expression_Tree::prune (void)
 {
   bool root_can_change = false;
-  Madara::Knowledge_Record root_value;
+  madara::Knowledge_Record root_value;
 
   if (this->root_.get_ptr ())
   {
@@ -230,54 +230,54 @@ Madara::Expression_Tree::Expression_Tree::prune (void)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::Expression_Tree::evaluate (
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::Expression_Tree::evaluate (
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   if (root_.get_ptr () != 0)
     return root_->evaluate (settings);
   else
-    return Madara::Knowledge_Record::Integer (0);
+    return madara::Knowledge_Record::Integer (0);
 }
 
 
 // return root pointer
-Madara::Expression_Tree::Component_Node *
-Madara::Expression_Tree::Expression_Tree::get_root (void) 
+madara::expression_tree::Component_Node *
+madara::expression_tree::Expression_Tree::get_root (void) 
 {
   return root_.get_ptr ();
 }
 
 // Return the stored item.
 
-Madara::Knowledge_Record 
-Madara::Expression_Tree::Expression_Tree::item (void) const
+madara::Knowledge_Record 
+madara::expression_tree::Expression_Tree::item (void) const
 {
   return root_->item ();
 }
 
 // Return the left branch.
 
-Madara::Expression_Tree::Expression_Tree
-Madara::Expression_Tree::Expression_Tree::left (void)
+madara::expression_tree::Expression_Tree
+madara::expression_tree::Expression_Tree::left (void)
 {
   return Expression_Tree (*logger_, root_->left (), true);
 }
 
 // Return the left branch.
 
-Madara::Expression_Tree::Expression_Tree
-Madara::Expression_Tree::Expression_Tree::right (void)
+madara::expression_tree::Expression_Tree
+madara::expression_tree::Expression_Tree::right (void)
 {
   return Expression_Tree (*logger_, root_->right (), true);
 }
 
 // Return a begin iterator of a specified type.
 
-Madara::Expression_Tree::Expression_Tree::iterator
-Madara::Expression_Tree::Expression_Tree::begin (const std::string &traversal_order)
+madara::expression_tree::Expression_Tree::iterator
+madara::expression_tree::Expression_Tree::begin (const std::string &traversal_order)
 {
-  return Expression_Tree::iterator 
+  return Expression_Tree::iterator
     (tree_iterator_factory.make_tree_iterator (*this, 
                                                traversal_order, 
                                                false));
@@ -285,10 +285,10 @@ Madara::Expression_Tree::Expression_Tree::begin (const std::string &traversal_or
 
 // Return an end iterator of a specified type.
 
-Madara::Expression_Tree::Expression_Tree::iterator
-Madara::Expression_Tree::Expression_Tree::end (const std::string &traversal_order)
+madara::expression_tree::Expression_Tree::iterator
+madara::expression_tree::Expression_Tree::end (const std::string &traversal_order)
 {
-  return Expression_Tree::iterator 
+  return Expression_Tree::iterator
   (tree_iterator_factory.make_tree_iterator (*this, 
                                                traversal_order, 
                                                true));
@@ -296,19 +296,19 @@ Madara::Expression_Tree::Expression_Tree::end (const std::string &traversal_orde
 
 // Return a begin iterator of a specified type.
 
-Madara::Expression_Tree::Expression_Tree_Const_Iterator
-Madara::Expression_Tree::Expression_Tree::begin (const std::string &traversal_order) const
+madara::expression_tree::Expression_Tree_Const_Iterator
+madara::expression_tree::Expression_Tree::begin (const std::string &traversal_order) const
 {
   Expression_Tree *non_const_this = const_cast <Expression_Tree *> (this);
-  return Expression_Tree::const_iterator (tree_iterator_factory.make_tree_iterator (*non_const_this, 
+  return Expression_Tree::const_iterator (tree_iterator_factory.make_tree_iterator (*non_const_this,
                                                                                     traversal_order,
                                                                                     false));
 }
 
 // Return an end iterator of a specified type.
 
-Madara::Expression_Tree::Expression_Tree_Const_Iterator
-Madara::Expression_Tree::Expression_Tree::end (const std::string &traversal_order) const
+madara::expression_tree::Expression_Tree_Const_Iterator
+madara::expression_tree::Expression_Tree::end (const std::string &traversal_order) const
 {
   Expression_Tree *non_const_this = const_cast <Expression_Tree *> (this);
   return Expression_Tree::const_iterator (tree_iterator_factory.make_tree_iterator (*non_const_this,
@@ -319,7 +319,7 @@ Madara::Expression_Tree::Expression_Tree::end (const std::string &traversal_orde
 /// Accept a visitor to perform some action on the Expression_Tree.
 
 void
-Madara::Expression_Tree::Expression_Tree::accept (Visitor &visitor) const
+madara::expression_tree::Expression_Tree::accept (Visitor &visitor) const
 {
   root_->accept (visitor);
 }

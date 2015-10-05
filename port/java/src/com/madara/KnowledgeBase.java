@@ -46,8 +46,6 @@
  *********************************************************************/
 package com.madara;
 
-import java.util.HashMap;
-
 import com.madara.transport.TransportSettings;
 import com.madara.transport.TransportType;
 import com.madara.logger.Logger;
@@ -111,14 +109,7 @@ public class KnowledgeBase extends MadaraJNI
   private native java.lang.String jni_toString(long cptr, java.lang.String arrayDelimiter, java.lang.String recordDelimiter, java.lang.String keyvalDelimiter);
   private native long jni_loadContext(long cptr, String filename, boolean useId, long settings);
 
-  private HashMap<String, MadaraFunction> callbacks = new HashMap<String, MadaraFunction>();
-
   private boolean manageMemory = true;
-
-  /**
-   * Used to determine if we are inside the context of a MadaraFunction
-   **/
-  private final Object CONTEXT_LOCK = new Object();
 
   /**
    * Creates a KnowledgeBase with default settings
@@ -237,7 +228,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public KnowledgeRecord evaluate(String expression, EvalSettings evalSettings)
   {
-    checkContextLock();
     return KnowledgeRecord.fromPointer(jni_evaluate(getCPtr(), expression, evalSettings.getCPtr()));
   }
 
@@ -250,7 +240,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void evaluateNoReturn(String expression, EvalSettings evalSettings)
   {
-    checkContextLock();
     jni_evaluateNoReturn(getCPtr(), expression, evalSettings.getCPtr());
   }
 
@@ -291,7 +280,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public KnowledgeRecord evaluate(CompiledExpression expression, EvalSettings evalSettings)
   {
-    checkContextLock();
     return KnowledgeRecord.fromPointer(jni_evaluate(getCPtr(), expression.getCPtr(), evalSettings.getCPtr()));
   }
 
@@ -304,7 +292,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void evaluateNoReturn(CompiledExpression expression, EvalSettings evalSettings)
   {
-    checkContextLock();
     jni_evaluateNoReturn(getCPtr(), expression.getCPtr(), evalSettings.getCPtr());
   }
 
@@ -317,7 +304,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public CompiledExpression compile(String expression)
   {
-    checkContextLock();
     return new CompiledExpression(jni_compile(getCPtr(), expression));
   }
 
@@ -331,8 +317,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void defineFunction(String name, MadaraFunction function)
   {
-    checkContextLock();
-//    callbacks.put(name, function);
     jni_defineFunction(getCPtr(), name, function);
   }
 
@@ -395,7 +379,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void defineFunction(String name, String expression)
   {
-    checkContextLock();
     jni_defineFunction(getCPtr(), name, expression);
   }
 
@@ -406,7 +389,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void clear()
   {
-    checkContextLock();
     jni_clear(getCPtr());
   }
 
@@ -429,7 +411,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public KnowledgeRecord get(String name)
   {
-    checkContextLock();
     return KnowledgeRecord.fromPointer(jni_get(getCPtr(), name));
   }
 
@@ -442,7 +423,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void set(String name, long value)
   {
-    checkContextLock();
     jni_setInteger(getCPtr(), name, value);
   }
 
@@ -455,7 +435,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void set(String name, double value)
   {
-    checkContextLock();
     jni_setDouble(getCPtr(), name, value);
   }
 
@@ -468,7 +447,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void set(String name, String value)
   {
-    checkContextLock();
     jni_setString(getCPtr(), name, value);
   }
 
@@ -481,7 +459,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void set(String name, double[] value)
   {
-    checkContextLock();
     jni_setDoubleArray(getCPtr(), name, value);
   }
 
@@ -494,7 +471,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void set(String name, long[] value)
   {
-    checkContextLock();
     jni_setIntegerArray(getCPtr(), name, value);
   }
 
@@ -507,7 +483,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void setFile(String name, byte[] value)
   {
-    checkContextLock();
     jni_setFile(getCPtr(), name, value);
   }
 
@@ -520,7 +495,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void setImage(String name, byte[] value)
   {
-    checkContextLock();
     jni_setImage(getCPtr(), name, value);
   }
 
@@ -536,7 +510,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void set(String name, long value, EvalSettings settings)
   {
-    checkContextLock();
     jni_setIntegerSettings(getCPtr(), name, value, settings.getCPtr());
   }
 
@@ -550,7 +523,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void set(String name, double value, EvalSettings settings)
   {
-    checkContextLock();
     jni_setDoubleSettings(getCPtr(), name, value, settings.getCPtr());
   }
 
@@ -564,7 +536,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void set(String name, String value, EvalSettings settings)
   {
-    checkContextLock();
     jni_setStringSettings(getCPtr(), name, value, settings.getCPtr());
   }
 
@@ -578,7 +549,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void set(String name, double[] value, EvalSettings settings)
   {
-    checkContextLock();
     jni_setDoubleArraySettings(getCPtr(), name, value, settings.getCPtr());
   }
 
@@ -592,7 +562,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void set(String name, long[] value, EvalSettings settings)
   {
-    checkContextLock();
     jni_setIntegerArraySettings(getCPtr(), name, value, settings.getCPtr());
   }
 
@@ -607,7 +576,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void setFile(String name, byte[] value, EvalSettings settings)
   {
-    checkContextLock();
     jni_setFileSettings(getCPtr(), name, value, settings.getCPtr());
   }
 
@@ -621,7 +589,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void setImage(String name, byte[] value, EvalSettings settings)
   {
-    checkContextLock();
     jni_setImageSettings(getCPtr(), name, value, settings.getCPtr());
   }
 
@@ -632,7 +599,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void sendModifieds ()
   {
-    checkContextLock();
     jni_sendModifieds(getCPtr());
   }
   
@@ -642,7 +608,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void clearModifieds ()
   {
-    checkContextLock();
     jni_clearModifieds(getCPtr());
   }
   
@@ -653,7 +618,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void sendModifieds (EvalSettings settings)
   {
-    checkContextLock();
     jni_sendModifieds(getCPtr(), settings.getCPtr());
   }
 
@@ -683,7 +647,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void free()
   {
-    checkContextLock();
     if (manageMemory)
     {
       jni_freeKnowledgeBase(getCPtr());
@@ -748,7 +711,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public KnowledgeRecord wait(String expression, WaitSettings settings)
   {
-    checkContextLock();
     return KnowledgeRecord.fromPointer(jni_wait(getCPtr(), expression, settings.getCPtr()));
   }
 
@@ -765,7 +727,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public KnowledgeRecord wait(CompiledExpression expression, WaitSettings settings)
   {
-    checkContextLock();
     return new KnowledgeRecord(jni_wait(getCPtr(), expression.getCPtr(), settings.getCPtr()));
   }
 
@@ -800,7 +761,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void waitNoReturn(String expression, WaitSettings settings)
   {
-    checkContextLock();
     jni_waitNoReturn(getCPtr(), expression, settings.getCPtr());
   }
 
@@ -813,7 +773,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public void waitNoReturn(CompiledExpression expression, WaitSettings settings)
   {
-    checkContextLock();
     jni_waitNoReturn(getCPtr(), expression.getCPtr(), settings.getCPtr());
   }
 
@@ -836,7 +795,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public KnowledgeList toKnowledgeList(String subject, int start, int end)
   {
-    checkContextLock();
     return new KnowledgeList(jni_toKnowledgeList(getCPtr(), subject, start, end));
   }
 
@@ -905,7 +863,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public KnowledgeMap toKnowledgeMap(String expression)
   {
-    checkContextLock();
     MapReturn jniRet = new MapReturn();
     jni_toKnowledgeMap(getCPtr(), expression, jniRet);
 
@@ -928,7 +885,6 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public KnowledgeMap toKnowledgeMap(String prefix, String suffix)
   {
-    checkContextLock();
     MapReturn jniRet = new MapReturn();
     jni_toMap(getCPtr(), prefix, suffix, jniRet);
 
@@ -940,6 +896,7 @@ public class KnowledgeBase extends MadaraJNI
    *
    * @return  string representation of the knowledge base
    **/
+  @Override
   public java.lang.String toString()
   {
     return jni_toString(getCPtr(), ", ", ";\n", "=");
@@ -969,22 +926,6 @@ public class KnowledgeBase extends MadaraJNI
   public static void setLogLevel(MadaraLog.MadaraLogLevel logLevel)
   {
     MadaraLog.setLogLevel(logLevel);
-  }
-
-  /**
-   * Checks the CONTEXT_LOCK to see if the current thread is allowed
-   * to invoke member methods. Access will be denied if the a {@link com.madara.MadaraFunction MadaraFunction}
-   * is in in stack trace.
-   *
-   * @throws KnowledgeBaseLockedException
-   * @see MadaraFunction
-   **/
-  private void checkContextLock()
-  {
-    if (Thread.holdsLock(CONTEXT_LOCK))
-    {
-      throw new KnowledgeBaseLockedException();
-    }
   }
 
   /**

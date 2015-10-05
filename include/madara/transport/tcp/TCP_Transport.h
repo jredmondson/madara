@@ -4,13 +4,13 @@
 #include <string>
 
 #include "madara/transport/tcp/TCP_Transport_Read_Thread.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Transport.h"
 #include "madara/threads/Threader.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class TCP_Transport
@@ -38,7 +38,7 @@ namespace Madara
        * @param   launch_transport  whether or not to launch this transport
        **/
       TCP_Transport (const std::string & id, 
-        Madara::Knowledge_Engine::Thread_Safe_Context & context, 
+        madara::knowledge::Thread_Safe_Context & context, 
         Settings & config, bool launch_transport);
 
       /**
@@ -51,7 +51,7 @@ namespace Madara
        * @param   updates listing of all updates that must be sent
        * @return  result of write operation or -1 if we are shutting down
        **/
-      long send_data (const Madara::Knowledge_Records & updates);
+      long send_data (const madara::Knowledge_Records & updates);
     
       /**
        * Accesses reliability setting. If this returns zero, it doesn't
@@ -72,7 +72,7 @@ namespace Madara
     protected:
     private:
       /// knowledge base for threads to use
-      Knowledge_Engine::Knowledge_Base          knowledge_;
+      knowledge::Knowledge_Base          knowledge_;
 
       /// threads for reading knowledge updates
       Threads::Threader                         read_threads_;

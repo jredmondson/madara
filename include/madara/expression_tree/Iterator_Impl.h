@@ -7,16 +7,16 @@
 
 #include "madara/utility/LStack.h"
 #include "madara/utility/LQueue.h"
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 
 // Solve circular include problem
 
 template <typename T>
 class Refcounter;
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     class Component_Node;
     class Expression_Tree_Iterator;
@@ -72,7 +72,7 @@ namespace Madara
 
       /// = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
-      typedef Madara::Knowledge_Record value_type;
+      typedef madara::Knowledge_Record value_type;
       typedef int *pointer;
       typedef int &reference;
       typedef int difference_type;
@@ -127,14 +127,14 @@ namespace Madara
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
-      typedef Madara::Knowledge_Record value_type;
+      typedef madara::Knowledge_Record value_type;
       typedef int *pointer;
       typedef int &reference;
       typedef int difference_type;
 
     private:
       /// Our current position in the iteration.
-      Madara::Utility::LStack <Expression_Tree> stack_;
+      madara::utility::LStack <Expression_Tree> stack_;
     };
 
     /**
@@ -183,14 +183,14 @@ namespace Madara
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
-      typedef Madara::Knowledge_Record value_type;
+      typedef madara::Knowledge_Record value_type;
       typedef int *pointer;
       typedef int &reference;
       typedef int difference_type;
 
     private:
       /// Our current position in the iteration.
-      Madara::Utility::LStack <Expression_Tree> stack_;
+      madara::utility::LStack <Expression_Tree> stack_;
     };
 
     /**
@@ -239,14 +239,14 @@ namespace Madara
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
-      typedef Madara::Knowledge_Record value_type;
+      typedef madara::Knowledge_Record value_type;
       typedef int *pointer;
       typedef int &reference;
       typedef int difference_type;
 
     private:
       /// Our current position in the iteration.
-      Madara::Utility::LStack <Expression_Tree> stack_;
+      madara::utility::LStack <Expression_Tree> stack_;
     };
 
     /**
@@ -294,7 +294,7 @@ namespace Madara
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
-      typedef Madara::Knowledge_Record value_type;
+      typedef madara::Knowledge_Record value_type;
       typedef int *pointer;
       typedef int &reference;
       typedef int difference_type;
@@ -302,7 +302,7 @@ namespace Madara
     private:
       /// Our current position in the iteration.
       // @@ Consider zapping this.
-      Madara::Utility::LQueue <Expression_Tree> queue_;
+      madara::utility::LQueue <Expression_Tree> queue_;
     };
   }
 }

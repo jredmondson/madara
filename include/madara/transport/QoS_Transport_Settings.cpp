@@ -1,14 +1,14 @@
 #include "madara/transport/QoS_Transport_Settings.h"
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/knowledge_engine/containers/String_Vector.h"
-#include "madara/knowledge_engine/containers/Map.h"
+#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/containers/String_Vector.h"
+#include "madara/knowledge/containers/Map.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
-namespace containers = Madara::Knowledge_Engine::Containers;
-typedef Madara::Knowledge_Record::Integer  Integer;
+namespace logger = madara::logger;
+namespace containers = madara::knowledge::containers;
+typedef madara::Knowledge_Record::Integer  Integer;
 
-Madara::Transport::QoS_Transport_Settings::QoS_Transport_Settings ()
+madara::transport::QoS_Transport_Settings::QoS_Transport_Settings ()
   : Settings (), rebroadcast_ttl_ (0),
     participant_rebroadcast_ttl_ (0),
     trusted_peers_ (), banned_peers_ (),
@@ -19,7 +19,7 @@ Madara::Transport::QoS_Transport_Settings::QoS_Transport_Settings ()
 
 }
 
-Madara::Transport::QoS_Transport_Settings::QoS_Transport_Settings (
+madara::transport::QoS_Transport_Settings::QoS_Transport_Settings (
   const QoS_Transport_Settings & settings)
   : Settings (settings),
     rebroadcast_ttl_ (settings.rebroadcast_ttl_),
@@ -39,7 +39,7 @@ Madara::Transport::QoS_Transport_Settings::QoS_Transport_Settings (
 {
 }
 
-Madara::Transport::QoS_Transport_Settings::QoS_Transport_Settings (
+madara::transport::QoS_Transport_Settings::QoS_Transport_Settings (
   const Settings & settings)
   : Settings (settings),
     rebroadcast_ttl_ (0),
@@ -76,13 +76,13 @@ Madara::Transport::QoS_Transport_Settings::QoS_Transport_Settings (
   }
 }
 
-Madara::Transport::QoS_Transport_Settings::~QoS_Transport_Settings ()
+madara::transport::QoS_Transport_Settings::~QoS_Transport_Settings ()
 {
   // need to clean up functors
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::operator= (
+madara::transport::QoS_Transport_Settings::operator= (
   const QoS_Transport_Settings & rhs)
 {
   if (this != &rhs)
@@ -110,7 +110,7 @@ Madara::Transport::QoS_Transport_Settings::operator= (
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::operator= (
+madara::transport::QoS_Transport_Settings::operator= (
   const Settings & rhs)
 {
   if (this != &rhs)
@@ -137,32 +137,32 @@ Madara::Transport::QoS_Transport_Settings::operator= (
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::set_rebroadcast_ttl (unsigned char ttl)
+madara::transport::QoS_Transport_Settings::set_rebroadcast_ttl (unsigned char ttl)
 {
   rebroadcast_ttl_ = ttl;
 }
 
 unsigned char
-Madara::Transport::QoS_Transport_Settings::get_rebroadcast_ttl (void) const
+madara::transport::QoS_Transport_Settings::get_rebroadcast_ttl (void) const
 {
   return rebroadcast_ttl_;
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::enable_participant_ttl (
+madara::transport::QoS_Transport_Settings::enable_participant_ttl (
   unsigned char ttl)
 {
   participant_rebroadcast_ttl_ = ttl;
 }
 
 unsigned char
-Madara::Transport::QoS_Transport_Settings::get_participant_ttl (void) const
+madara::transport::QoS_Transport_Settings::get_participant_ttl (void) const
 {
   return participant_rebroadcast_ttl_;
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_trusted_peer (
+madara::transport::QoS_Transport_Settings::add_trusted_peer (
   const std::string & peer)
 {
   banned_peers_.erase (peer);
@@ -170,7 +170,7 @@ Madara::Transport::QoS_Transport_Settings::add_trusted_peer (
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_banned_peer (
+madara::transport::QoS_Transport_Settings::add_banned_peer (
   const std::string & peer)
 {
   trusted_peers_.erase (peer);
@@ -178,7 +178,7 @@ Madara::Transport::QoS_Transport_Settings::add_banned_peer (
 }
 
 bool
-Madara::Transport::QoS_Transport_Settings::remove_trusted_peer (
+madara::transport::QoS_Transport_Settings::remove_trusted_peer (
   const std::string & peer)
 {
   bool condition = false;
@@ -191,7 +191,7 @@ Madara::Transport::QoS_Transport_Settings::remove_trusted_peer (
 }
 
 bool
-Madara::Transport::QoS_Transport_Settings::remove_banned_peer (
+madara::transport::QoS_Transport_Settings::remove_banned_peer (
   const std::string & peer)
 {
   bool condition = false;
@@ -204,7 +204,7 @@ Madara::Transport::QoS_Transport_Settings::remove_banned_peer (
 }
 
 bool
-Madara::Transport::QoS_Transport_Settings::is_trusted (
+madara::transport::QoS_Transport_Settings::is_trusted (
   const std::string & peer) const
 {
   bool condition = false;
@@ -231,101 +231,101 @@ Madara::Transport::QoS_Transport_Settings::is_trusted (
 
 
 void
-Madara::Transport::QoS_Transport_Settings::add_send_filter (uint32_t types,
-  Madara::Knowledge_Record (*function) (
-    Knowledge_Engine::Function_Arguments &, Knowledge_Engine::Variables &))
+madara::transport::QoS_Transport_Settings::add_send_filter (uint32_t types,
+  madara::Knowledge_Record (*function) (
+    knowledge::Function_Arguments &, knowledge::Variables &))
 {
   send_filters_.add (types, function);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_send_filter (uint32_t types,
-  Filters::Record_Filter * functor)
+madara::transport::QoS_Transport_Settings::add_send_filter (uint32_t types,
+  filters::Record_Filter * functor)
 {
   send_filters_.add (types, functor);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_send_filter (
+madara::transport::QoS_Transport_Settings::add_send_filter (
   void (*function) (
-        Knowledge_Map &, const Transport::Transport_Context &,
-        Knowledge_Engine::Variables &))
+        Knowledge_Map &, const transport::Transport_Context &,
+        knowledge::Variables &))
 {
   send_filters_.add (function);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_send_filter (
-  Filters::Aggregate_Filter * functor)
+madara::transport::QoS_Transport_Settings::add_send_filter (
+  filters::Aggregate_Filter * functor)
 {
   send_filters_.add (functor);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_receive_filter (
-Filters::Aggregate_Filter * functor)
+madara::transport::QoS_Transport_Settings::add_receive_filter (
+filters::Aggregate_Filter * functor)
 {
   receive_filters_.add (functor);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_filter (
-Filters::Buffer_Filter * functor)
+madara::transport::QoS_Transport_Settings::add_filter (
+filters::Buffer_Filter * functor)
 {
   buffer_filters_.push_back (functor);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_receive_filter (uint32_t types,
-  Madara::Knowledge_Record (*function) (
-    Knowledge_Engine::Function_Arguments &, Knowledge_Engine::Variables &))
+madara::transport::QoS_Transport_Settings::add_receive_filter (uint32_t types,
+  madara::Knowledge_Record (*function) (
+    knowledge::Function_Arguments &, knowledge::Variables &))
 {
   receive_filters_.add (types, function);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_receive_filter (uint32_t types,
-  Filters::Record_Filter * functor)
+madara::transport::QoS_Transport_Settings::add_receive_filter (uint32_t types,
+  filters::Record_Filter * functor)
 {
   receive_filters_.add (types, functor);
 }
 
 void
-  Madara::Transport::QoS_Transport_Settings::add_receive_filter (
+  madara::transport::QoS_Transport_Settings::add_receive_filter (
   void (*function) (
-    Knowledge_Map &, const Transport::Transport_Context &,
-    Knowledge_Engine::Variables &))
+    Knowledge_Map &, const transport::Transport_Context &,
+    knowledge::Variables &))
 {
   receive_filters_.add (function);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (uint32_t types,
-  Madara::Knowledge_Record (*function) (
-    Knowledge_Engine::Function_Arguments &, Knowledge_Engine::Variables &))
+madara::transport::QoS_Transport_Settings::add_rebroadcast_filter (uint32_t types,
+  madara::Knowledge_Record (*function) (
+    knowledge::Function_Arguments &, knowledge::Variables &))
 {
   rebroadcast_filters_.add (types, function);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (uint32_t types,
-  Filters::Record_Filter * functor)
+madara::transport::QoS_Transport_Settings::add_rebroadcast_filter (uint32_t types,
+  filters::Record_Filter * functor)
 {
   rebroadcast_filters_.add (types, functor);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
+madara::transport::QoS_Transport_Settings::add_rebroadcast_filter (
   void (*function) (
-    Knowledge_Map &, const Transport::Transport_Context &,
-    Knowledge_Engine::Variables &))
+    Knowledge_Map &, const transport::Transport_Context &,
+    knowledge::Variables &))
 {
   rebroadcast_filters_.add (function);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
-  Filters::Aggregate_Filter * functor)
+madara::transport::QoS_Transport_Settings::add_rebroadcast_filter (
+  filters::Aggregate_Filter * functor)
 {
   rebroadcast_filters_.add (functor);
 }
@@ -333,7 +333,7 @@ Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
 #ifdef _MADARA_JAVA_
 
 void
-Madara::Transport::QoS_Transport_Settings::add_receive_filter (
+madara::transport::QoS_Transport_Settings::add_receive_filter (
   uint32_t types, jobject & object)
 {
   madara_logger_ptr_log (
@@ -346,14 +346,14 @@ Madara::Transport::QoS_Transport_Settings::add_receive_filter (
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_send_filter (
+madara::transport::QoS_Transport_Settings::add_send_filter (
   uint32_t types, jobject & object)
 {
   send_filters_.add (types, object);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
+madara::transport::QoS_Transport_Settings::add_rebroadcast_filter (
   uint32_t types, jobject & object)
 {
   rebroadcast_filters_.add (types, object);
@@ -361,21 +361,21 @@ Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
 
 
 void
-Madara::Transport::QoS_Transport_Settings::add_receive_filter (
+madara::transport::QoS_Transport_Settings::add_receive_filter (
   jobject & object)
 {
   receive_filters_.add (object);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_send_filter (
+madara::transport::QoS_Transport_Settings::add_send_filter (
   jobject & object)
 {
   send_filters_.add (object);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
+madara::transport::QoS_Transport_Settings::add_rebroadcast_filter (
   jobject & object)
 {
   rebroadcast_filters_.add (object);
@@ -386,21 +386,21 @@ Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
 #ifdef _MADARA_PYTHON_CALLBACKS_
       
 void
-Madara::Transport::QoS_Transport_Settings::add_receive_filter (
+madara::transport::QoS_Transport_Settings::add_receive_filter (
   uint32_t types, boost::python::object & object)
 {
   receive_filters_.add (types, object);
 }
      
 void
-Madara::Transport::QoS_Transport_Settings::add_send_filter (
+madara::transport::QoS_Transport_Settings::add_send_filter (
   uint32_t types, boost::python::object & object)
 {
   send_filters_.add (types, object);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
+madara::transport::QoS_Transport_Settings::add_rebroadcast_filter (
   uint32_t types, boost::python::object & object)
 {
   rebroadcast_filters_.add (types, object);
@@ -408,21 +408,21 @@ Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
 
       
 void
-Madara::Transport::QoS_Transport_Settings::add_receive_filter (
+madara::transport::QoS_Transport_Settings::add_receive_filter (
   boost::python::object & object)
 {
   receive_filters_.add (object);
 }
      
 void
-Madara::Transport::QoS_Transport_Settings::add_send_filter (
+madara::transport::QoS_Transport_Settings::add_send_filter (
   boost::python::object & object)
 {
   send_filters_.add (object);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
+madara::transport::QoS_Transport_Settings::add_rebroadcast_filter (
   boost::python::object & object)
 {
   rebroadcast_filters_.add (object);
@@ -432,8 +432,8 @@ Madara::Transport::QoS_Transport_Settings::add_rebroadcast_filter (
 #endif
 
 void
-Madara::Transport::QoS_Transport_Settings::attach (
-  Knowledge_Engine::Thread_Safe_Context * context)
+madara::transport::QoS_Transport_Settings::attach (
+  knowledge::Thread_Safe_Context * context)
 {
   send_filters_.attach (context);
   receive_filters_.attach (context);
@@ -441,76 +441,76 @@ Madara::Transport::QoS_Transport_Settings::attach (
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::clear_send_filters (uint32_t types)
+madara::transport::QoS_Transport_Settings::clear_send_filters (uint32_t types)
 {
   send_filters_.clear (types);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::clear_send_aggregate_filters
+madara::transport::QoS_Transport_Settings::clear_send_aggregate_filters
   ()
 {
   send_filters_.clear_aggregate_filters ();
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::clear_receive_filters (uint32_t types)
+madara::transport::QoS_Transport_Settings::clear_receive_filters (uint32_t types)
 {
   receive_filters_.clear (types);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::clear_receive_aggregate_filters
+madara::transport::QoS_Transport_Settings::clear_receive_aggregate_filters
   ()
 {
   receive_filters_.clear_aggregate_filters ();
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::clear_rebroadcast_filters (uint32_t types)
+madara::transport::QoS_Transport_Settings::clear_rebroadcast_filters (uint32_t types)
 {
   rebroadcast_filters_.clear (types);
 }
 
 
 void
-Madara::Transport::QoS_Transport_Settings::clear_buffer_filters (void)
+madara::transport::QoS_Transport_Settings::clear_buffer_filters (void)
 {
   buffer_filters_.clear ();
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::clear_rebroadcast_aggregate_filters
+madara::transport::QoS_Transport_Settings::clear_rebroadcast_aggregate_filters
   ()
 {
   rebroadcast_filters_.clear_aggregate_filters ();
 }
 
       
-Madara::Knowledge_Record
-Madara::Transport::QoS_Transport_Settings::filter_send (
-  const Madara::Knowledge_Record & input,
+madara::Knowledge_Record
+madara::transport::QoS_Transport_Settings::filter_send (
+  const madara::Knowledge_Record & input,
   const std::string & name,
-  Transport::Transport_Context & context) const
+  transport::Transport_Context & context) const
 {
   return send_filters_.filter (input, name, context);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::filter_send (
+madara::transport::QoS_Transport_Settings::filter_send (
   Knowledge_Map & records,
-  const Transport::Transport_Context & transport_context) const
+  const transport::Transport_Context & transport_context) const
 {
   send_filters_.filter (records, transport_context);
 }
    
 
 int
-Madara::Transport::QoS_Transport_Settings::filter_encode (
+madara::transport::QoS_Transport_Settings::filter_encode (
   unsigned char * source, int size, int max_size) const
 {
   // encode from front to back
-  for (Filters::Buffer_Filters::const_iterator i = buffer_filters_.begin ();
+  for (filters::Buffer_Filters::const_iterator i = buffer_filters_.begin ();
     i != buffer_filters_.end (); ++i)
   {
     size = (*i)->encode (source, size, max_size);
@@ -521,11 +521,11 @@ Madara::Transport::QoS_Transport_Settings::filter_encode (
 
 
 int
-Madara::Transport::QoS_Transport_Settings::filter_decode (
+madara::transport::QoS_Transport_Settings::filter_decode (
 unsigned char * source, int size, int max_size) const
 {
   // decode from back to front
-  for (Filters::Buffer_Filters::const_reverse_iterator i = buffer_filters_.rbegin ();
+  for (filters::Buffer_Filters::const_reverse_iterator i = buffer_filters_.rbegin ();
     i != buffer_filters_.rend (); ++i)
   {
     size = (*i)->decode (source, size, max_size);
@@ -535,56 +535,56 @@ unsigned char * source, int size, int max_size) const
 }
 
 
-Madara::Knowledge_Record
-Madara::Transport::QoS_Transport_Settings::filter_receive (
-  const Madara::Knowledge_Record & input,
+madara::Knowledge_Record
+madara::transport::QoS_Transport_Settings::filter_receive (
+  const madara::Knowledge_Record & input,
   const std::string & name,
-  Transport::Transport_Context & context) const
+  transport::Transport_Context & context) const
 {
   return receive_filters_.filter (input, name, context);
 }
       
 void
-Madara::Transport::QoS_Transport_Settings::filter_receive (
+madara::transport::QoS_Transport_Settings::filter_receive (
   Knowledge_Map & records,
-  const Transport::Transport_Context & transport_context) const
+  const transport::Transport_Context & transport_context) const
 {
   receive_filters_.filter (records, transport_context);
 }
   
-Madara::Knowledge_Record
-Madara::Transport::QoS_Transport_Settings::filter_rebroadcast (
-  const Madara::Knowledge_Record & input,
+madara::Knowledge_Record
+madara::transport::QoS_Transport_Settings::filter_rebroadcast (
+  const madara::Knowledge_Record & input,
   const std::string & name,
-  Transport::Transport_Context & context) const
+  transport::Transport_Context & context) const
 {
   return rebroadcast_filters_.filter (input, name, context);
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::filter_rebroadcast (
+madara::transport::QoS_Transport_Settings::filter_rebroadcast (
   Knowledge_Map & records,
-  const Transport::Transport_Context & transport_context) const
+  const transport::Transport_Context & transport_context) const
 {
   rebroadcast_filters_.filter (records, transport_context);
 }
        
 void
-Madara::Transport::QoS_Transport_Settings::print_num_filters_send (
+madara::transport::QoS_Transport_Settings::print_num_filters_send (
   void) const
 {
   send_filters_.print_num_filters ();
 }
        
 void
-Madara::Transport::QoS_Transport_Settings::print_num_filters_receive (
+madara::transport::QoS_Transport_Settings::print_num_filters_receive (
   void) const
 {
   receive_filters_.print_num_filters ();
 }
        
 void
-Madara::Transport::QoS_Transport_Settings::print_num_filters_rebroadcast (
+madara::transport::QoS_Transport_Settings::print_num_filters_rebroadcast (
   void) const
 {
   rebroadcast_filters_.print_num_filters ();
@@ -593,28 +593,28 @@ Madara::Transport::QoS_Transport_Settings::print_num_filters_rebroadcast (
 
 
 size_t
-Madara::Transport::QoS_Transport_Settings::get_number_of_send_filtered_types (
+madara::transport::QoS_Transport_Settings::get_number_of_send_filtered_types (
   void) const
 {
   return send_filters_.get_number_of_filtered_types ();
 }
 
 size_t
-Madara::Transport::QoS_Transport_Settings::get_number_of_send_aggregate_filters (
+madara::transport::QoS_Transport_Settings::get_number_of_send_aggregate_filters (
   void) const
 {
   return send_filters_.get_number_of_aggregate_filters ();
 }
 
 size_t
-Madara::Transport::QoS_Transport_Settings::get_number_of_rebroadcast_filtered_types (
+madara::transport::QoS_Transport_Settings::get_number_of_rebroadcast_filtered_types (
   void) const
 {
   return rebroadcast_filters_.get_number_of_filtered_types ();
 }
 
 size_t
-Madara::Transport::QoS_Transport_Settings::get_number_of_rebroadcast_aggregate_filters (
+madara::transport::QoS_Transport_Settings::get_number_of_rebroadcast_aggregate_filters (
   void) const
 {
   return rebroadcast_filters_.get_number_of_aggregate_filters ();
@@ -622,28 +622,28 @@ Madara::Transport::QoS_Transport_Settings::get_number_of_rebroadcast_aggregate_f
 
 
 size_t
-Madara::Transport::QoS_Transport_Settings::get_number_of_receive_filtered_types (
+madara::transport::QoS_Transport_Settings::get_number_of_receive_filtered_types (
   void) const
 {
   return receive_filters_.get_number_of_filtered_types ();
 }
 
 size_t
-Madara::Transport::QoS_Transport_Settings::get_number_of_receive_aggregate_filters (
+madara::transport::QoS_Transport_Settings::get_number_of_receive_aggregate_filters (
   void) const
 {
   return receive_filters_.get_number_of_aggregate_filters ();
 }
 
 size_t
-Madara::Transport::QoS_Transport_Settings::get_number_of_buffer_filters (
+madara::transport::QoS_Transport_Settings::get_number_of_buffer_filters (
 void) const
 {
   return buffer_filters_.size ();
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::update_drop_rate (
+madara::transport::QoS_Transport_Settings::update_drop_rate (
   double drop_rate,
   int drop_type,
   uint64_t drop_burst)
@@ -654,69 +654,69 @@ Madara::Transport::QoS_Transport_Settings::update_drop_rate (
 }
 
 double
-Madara::Transport::QoS_Transport_Settings::get_drop_rate (void) const
+madara::transport::QoS_Transport_Settings::get_drop_rate (void) const
 {
   return packet_drop_rate_;
 }
 
 int
-Madara::Transport::QoS_Transport_Settings::get_drop_type (void) const
+madara::transport::QoS_Transport_Settings::get_drop_type (void) const
 {
   return packet_drop_type_;
 }
 
 uint64_t
-Madara::Transport::QoS_Transport_Settings::get_drop_burst (void) const
+madara::transport::QoS_Transport_Settings::get_drop_burst (void) const
 {
   return packet_drop_burst_;
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::set_send_bandwidth_limit (
+madara::transport::QoS_Transport_Settings::set_send_bandwidth_limit (
   int64_t send_bandwidth)
 {
   max_send_bandwidth_ = send_bandwidth;
 }
 
 int64_t
-Madara::Transport::QoS_Transport_Settings::get_send_bandwidth_limit (
+madara::transport::QoS_Transport_Settings::get_send_bandwidth_limit (
   void) const
 {
   return max_send_bandwidth_;
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::set_total_bandwidth_limit (
+madara::transport::QoS_Transport_Settings::set_total_bandwidth_limit (
   int64_t total_bandwidth)
 {
   max_total_bandwidth_ = total_bandwidth;
 }
 
 int64_t
-Madara::Transport::QoS_Transport_Settings::get_total_bandwidth_limit (
+madara::transport::QoS_Transport_Settings::get_total_bandwidth_limit (
   void) const
 {
   return max_total_bandwidth_;
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::set_deadline (double deadline)
+madara::transport::QoS_Transport_Settings::set_deadline (double deadline)
 {
   latency_deadline_ = deadline;
 }
 
 double
-Madara::Transport::QoS_Transport_Settings::get_deadline (void) const
+madara::transport::QoS_Transport_Settings::get_deadline (void) const
 {
   return latency_deadline_;
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::load (const std::string filename)
+madara::transport::QoS_Transport_Settings::load (const std::string filename)
 {
   Settings::load (filename);
 
-  Knowledge_Engine::Knowledge_Base knowledge;
+  knowledge::Knowledge_Base knowledge;
   knowledge.load_context (filename);
 
   containers::Map trusted_peers ("transport.trusted_peers", knowledge);
@@ -759,14 +759,14 @@ Madara::Transport::QoS_Transport_Settings::load (const std::string filename)
 }
 
 void
-Madara::Transport::QoS_Transport_Settings::save (
+madara::transport::QoS_Transport_Settings::save (
   const std::string filename) const
 {
   // Save the underlying base settings first
   Settings::save (filename);
 
   // then load the savings
-  Knowledge_Engine::Knowledge_Base knowledge;
+  knowledge::Knowledge_Base knowledge;
   knowledge.load_context (filename);
 
   containers::Map trusted_peers ("transport.trusted_peers", knowledge);

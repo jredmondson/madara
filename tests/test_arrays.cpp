@@ -12,24 +12,24 @@
 #include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/utility/Utility.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
-namespace utility = Madara::Utility;
-typedef Madara::Knowledge_Record::Integer  Integer;
+namespace logger = madara::logger;
+namespace utility = madara::utility;
+typedef madara::Knowledge_Record::Integer  Integer;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-Madara::Transport::Settings settings;
+madara::transport::Settings settings;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
 // test functions
-void create_arrays (Madara::Knowledge_Engine::Knowledge_Base & knowledge);
-void write_transported_arrays (Madara::Knowledge_Engine::Knowledge_Base & knowledge);
+void create_arrays (madara::knowledge::Knowledge_Base & knowledge);
+void write_transported_arrays (madara::knowledge::Knowledge_Base & knowledge);
 
 int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 {
@@ -38,9 +38,9 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   int retcode = parse_args (argc, argv);
 
   // set type to multicast and change queue length to 512K
-  settings.type = Madara::Transport::MULTICAST;
+  settings.type = madara::transport::MULTICAST;
   settings.queue_length = 512000;
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  madara::knowledge::Wait_Settings wait_settings;
   wait_settings.max_wait_time = 10;
   wait_settings.poll_frequency = 1.0;
 
@@ -57,9 +57,9 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   ACE_TRACE (ACE_TEXT ("main"));
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge ("", settings);
+  madara::knowledge::Knowledge_Base knowledge ("", settings);
   
-  knowledge.set (".id", (Madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (madara::Knowledge_Record::Integer) settings.id);
   
   // run tests
 //  test_tree_compilation (knowledge);
@@ -77,7 +77,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 }
 
 /// Tests logicals operators (&&, ||)
-void create_arrays (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
+void create_arrays (madara::knowledge::Knowledge_Base & knowledge)
 {
   ACE_TRACE (ACE_TEXT ("create_arrays"));
 
@@ -93,8 +93,8 @@ void create_arrays (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   
   knowledge.set ("doubles_vector", doubles_vector);
 
-  Madara::Knowledge_Record::Integer * integer_array =
-    new Madara::Knowledge_Record::Integer [3];
+  madara::Knowledge_Record::Integer * integer_array =
+    new madara::Knowledge_Record::Integer [3];
   integer_array[0] = 0;
   integer_array[1] = 1;
   integer_array[2] = 2;
@@ -115,7 +115,7 @@ void create_arrays (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
   knowledge.print ("integers_vector = [{integers_vector}]\n");
   knowledge.print ("var_array = [{var_array}]\n");
 
-  Madara::Knowledge_Record::set_precision (10);
+  madara::Knowledge_Record::set_precision (10);
   
   knowledge.print ("Setting precision to 10 and reprinting\n");
   knowledge.print ("doubles_vector = [{doubles_vector}]\n");
@@ -128,14 +128,14 @@ void create_arrays (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
 
 /// Tests logicals operators (&&, ||)
 void write_transported_arrays (
-  Madara::Knowledge_Engine::Knowledge_Base & knowledge)
+  madara::knowledge::Knowledge_Base & knowledge)
 {
   knowledge.print ("\nReceived the following arrays from id 0\n");
   knowledge.print ("doubles_vector = [{doubles_vector}]\n");
   knowledge.print ("integers_vector = [{integers_vector}]\n");
   knowledge.print ("var_array = [{var_array}]\n\n");
 
-  Madara::Knowledge_Record doubles_vector = knowledge.get ("doubles_vector");
+  madara::Knowledge_Record doubles_vector = knowledge.get ("doubles_vector");
   doubles_vector.set_index (5, 127.25);
   doubles_vector.set_index (6, 1.2575);
 
@@ -143,12 +143,12 @@ void write_transported_arrays (
   std::cerr << "doubles_vector = [" << 
     doubles_vector.to_string (", ") << "]" << std::endl;
   
-  Madara::Knowledge_Record integers_vector = knowledge.get ("integers_vector");
+  madara::Knowledge_Record integers_vector = knowledge.get ("integers_vector");
   
   std::cerr << "\nintegers_vector = [" << 
     integers_vector.to_string (", ") << "]" << std::endl;
   
-  integers_vector.set_index (7, Madara::Knowledge_Record::Integer (7));
+  integers_vector.set_index (7, madara::Knowledge_Record::Integer (7));
   
   std::cerr << "adding one integer (7) to the integers_vector\n";
   

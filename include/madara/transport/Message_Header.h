@@ -12,9 +12,9 @@
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     #define MADARA_IDENTIFIER_LENGTH    8
     #define MADARA_IDENTIFIER           "KaRL1.3"
@@ -24,7 +24,7 @@ namespace Madara
     #define CLOCK_TYPE                  uint64_t
     #define MAX_KNOWLEDGE_KEY_LENGTH    64
     #define MAX_ORIGINATOR_LENGTH       64
-    #define KNOWLEDGE_VALUE_TYPE        Madara::Knowledge_Record
+    #define KNOWLEDGE_VALUE_TYPE        madara::Knowledge_Record
 
     static const int  MAX_PACKET_SIZE = 512000;  // 512kb
 
@@ -145,7 +145,7 @@ namespace Madara
       char                  originator[MAX_ORIGINATOR_LENGTH];
       
       /**
-       * the type of message @see Madara::Transport::Messages enum
+       * the type of message @see madara::transport::Messages enum
        **/
       uint32_t              type;
 

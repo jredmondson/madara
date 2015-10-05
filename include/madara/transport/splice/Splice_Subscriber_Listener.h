@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Transport.h"
 
 #include "ccpp_dds_dcps.h"
@@ -17,9 +17,9 @@
 
 #include "ace/Synch.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class Splice_Subscriber_Listener
@@ -29,7 +29,7 @@ namespace Madara
     {
     public:
       Splice_Subscriber_Listener (const std::string & id,
-        Madara::Knowledge_Engine::Thread_Safe_Context & context);
+        knowledge::Thread_Safe_Context & context);
 
       Splice_Subscriber_Listener (const Splice_Subscriber_Listener &ref);
 
@@ -89,7 +89,7 @@ namespace Madara
 
       // NDDS variables
       const std::string id_;
-      ::Madara::Knowledge_Engine::Thread_Safe_Context & context_;
+      knowledge::Thread_Safe_Context & context_;
 
     };  // End of class NDDS_Listener
   }

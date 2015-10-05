@@ -6,14 +6,14 @@
  *********************************************************************/
 
 #include "com.madara.EvalSettings.h"
-#include "madara/knowledge_engine/Eval_Settings.h"
+#include "madara/knowledge/Eval_Settings.h"
 
 #include <stdio.h>
 #include <string>
 
 // define useful shorthands
-namespace engine = Madara::Knowledge_Engine;
-typedef engine::Eval_Settings Eval_Settings;
+namespace knowledge = madara::knowledge;
+typedef knowledge::Eval_Settings Eval_Settings;
 
 /*
  * Class:   com_madara_EvalSettings

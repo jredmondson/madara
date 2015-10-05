@@ -5,23 +5,23 @@
 #include <algorithm>
 #include <sstream>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
-#include "madara/knowledge_engine/containers/Counter.h"
+#include "madara/knowledge/containers/Counter.h"
 #include "madara/logger/Global_Logger.h"
 
 // shortcuts
-namespace engine = Madara::Knowledge_Engine;
-namespace logger = Madara::Logger;
+namespace knowledge = madara::knowledge;
+namespace logger = madara::logger;
 
 #ifndef _MADARA_NO_KARL_
-namespace containers = engine::Containers;
+namespace containers = knowledge::containers;
 #endif 
 
-namespace utility = Madara::Utility;
-namespace transport = Madara::Transport;
+namespace utility = madara::utility;
+namespace transport = madara::transport;
 
-typedef Madara::Knowledge_Record::Integer Integer;
+typedef madara::Knowledge_Record::Integer Integer;
 
 // default transport settings
 std::string host ("");
@@ -220,7 +220,7 @@ int main (int argc, char ** argv)
   }
 
   // create a knowledge base and setup our id
-  engine::Knowledge_Base knowledge (host, settings);
+  knowledge::Knowledge_Base knowledge (host, settings);
 
   // create a counter
   containers::Counter counter ("counter", knowledge,

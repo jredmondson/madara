@@ -14,9 +14,9 @@
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Cid
+  namespace cid
   {
 
     /**

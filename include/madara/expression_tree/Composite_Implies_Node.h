@@ -5,11 +5,11 @@
 
 
 #include "madara/expression_tree/Composite_Binary_Node.h"
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     // Forward declaration.
     class Component_Node;
@@ -28,7 +28,7 @@ namespace Madara
        * @param   left   left expression
        * @param   right  right expression
        **/
-      Composite_Implies_Node (Logger::Logger & logger,
+      Composite_Implies_Node (logger::Logger & logger,
         Component_Node *left,
         Component_Node *right);
 
@@ -36,14 +36,14 @@ namespace Madara
        * Returns the printable character of the node
        * @return    value of the node
        **/
-      virtual Madara::Knowledge_Record item (void) const;
+      virtual madara::Knowledge_Record item (void) const;
 
       /** 
        * Prunes the expression tree of unnecessary nodes. 
        * @param     can_change   set to true if variable nodes are contained
        * @return    the value of the condition (left expression)
        **/
-      virtual Madara::Knowledge_Record prune (bool & can_change);
+      virtual madara::Knowledge_Record prune (bool & can_change);
 
       /** 
        * Evaluates the expression tree. If the left expression is
@@ -52,8 +52,8 @@ namespace Madara
        * @param     settings     settings for evaluating the node
        * @return    the value of the condition (left expression)
        **/
-      virtual Madara::Knowledge_Record evaluate (
-        const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings);
+      virtual madara::Knowledge_Record evaluate (
+        const madara::knowledge::Knowledge_Update_Settings & settings);
 
       /** 
        * Accepts a visitor subclassed from the Visitor class

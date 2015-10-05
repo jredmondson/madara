@@ -11,11 +11,11 @@
 
 #include "madara/logger/Global_Logger.h"
 #include "madara/expression_tree/Component_Node.h"
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     // Forward declarations.
     class Expression_Tree_Iterator;
@@ -30,7 +30,7 @@ namespace Madara
     public:
 
       // Define a "trait"
-      typedef Madara::Knowledge_Record value_type;
+      typedef madara::Knowledge_Record value_type;
       typedef Expression_Tree_Iterator iterator;
       typedef Expression_Tree_Const_Iterator const_iterator;
 
@@ -38,8 +38,8 @@ namespace Madara
        * Constructor
        * @param  logger   logger for printing information
        **/
-      Expression_Tree (Logger::Logger & logger =
-        *Logger::global_logger.get ());
+      Expression_Tree (logger::Logger & logger =
+        *logger::global_logger.get ());
 
       /**
        * Constructor for copying a root node
@@ -47,7 +47,7 @@ namespace Madara
        * @param    root            root of the tree to copy
        * @param    increase_count  whether or not to increase the ref count
        **/
-      Expression_Tree (Logger::Logger & logger,
+      Expression_Tree (logger::Logger & logger,
         Component_Node *root, bool increase_count = false);
 
       /**
@@ -55,7 +55,7 @@ namespace Madara
        * @param    logger     logger for printing information
        * @param    tree       expression tree to copy
        **/
-      Expression_Tree (Logger::Logger & logger, const Expression_Tree &tree);
+      Expression_Tree (logger::Logger & logger, const Expression_Tree &tree);
 
       /**
        * Destructor
@@ -84,23 +84,23 @@ namespace Madara
        * Returns value of tree
        * @return    value of the expression tree
        **/
-      Madara::Knowledge_Record item (void) const;
+      madara::Knowledge_Record item (void) const;
 
 
       /** 
        * Prunes the expression tree of unnecessary nodes. 
        * @return    value of expression tree
        **/
-      Madara::Knowledge_Record prune (void);
+      madara::Knowledge_Record prune (void);
 
       /** 
        * Evaluates the expression tree. 
        * @param settings        Settings for evaluating and setting knowledge
        * @return    value of expression tree
        **/
-      Madara::Knowledge_Record evaluate (
-        const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings =
-        Knowledge_Engine::Knowledge_Update_Settings ());
+      madara::Knowledge_Record evaluate (
+        const madara::knowledge::Knowledge_Update_Settings & settings =
+        knowledge::Knowledge_Update_Settings ());
 
       /** 
        * Returns the left expression of this tree
@@ -154,10 +154,10 @@ namespace Madara
 
     private:
       /// handle for logging information
-      Logger::Logger * logger_;
+      logger::Logger * logger_;
 
       /// root of the expression tree
-      Madara::Utility::Refcounter <Component_Node> root_;
+      madara::utility::Refcounter <Component_Node> root_;
     };
 
   }

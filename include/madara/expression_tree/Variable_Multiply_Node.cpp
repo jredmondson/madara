@@ -9,10 +9,10 @@
 #include <string>
 #include <sstream>
 
-Madara::Expression_Tree::Variable_Multiply_Node::Variable_Multiply_Node (
-  Component_Node * lhs, Madara::Knowledge_Record value,
+madara::expression_tree::Variable_Multiply_Node::Variable_Multiply_Node (
+  Component_Node * lhs, madara::Knowledge_Record value,
   Component_Node * rhs,
-  Madara::Knowledge_Engine::Thread_Safe_Context &context)
+  madara::knowledge::Thread_Safe_Context &context)
 : Component_Node (context.get_logger ()), var_ (0),
   array_ (0), value_ (value), rhs_ (rhs), context_ (context)
 {
@@ -22,20 +22,20 @@ Madara::Expression_Tree::Variable_Multiply_Node::Variable_Multiply_Node (
     array_ = dynamic_cast <Composite_Array_Reference *> (lhs);
 }
 
-Madara::Expression_Tree::Variable_Multiply_Node::~Variable_Multiply_Node ()
+madara::expression_tree::Variable_Multiply_Node::~Variable_Multiply_Node ()
 {
   // do not clean up record_. Let the context clean that up.
 }
 
 
 void
-Madara::Expression_Tree::Variable_Multiply_Node::accept (Visitor &visitor) const
+madara::expression_tree::Variable_Multiply_Node::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::Variable_Multiply_Node::item () const
+madara::Knowledge_Record
+madara::expression_tree::Variable_Multiply_Node::item () const
 {
   Knowledge_Record value;
 
@@ -50,18 +50,18 @@ Madara::Expression_Tree::Variable_Multiply_Node::item () const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::Variable_Multiply_Node::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::Variable_Multiply_Node::prune (bool & can_change)
 {
   bool left_child_can_change = false;
   bool right_child_can_change = false;
-  Madara::Knowledge_Record right_value;
+  madara::Knowledge_Record right_value;
 
   if (this->var_ != 0 || this->array_ != 0)
     left_child_can_change = true;
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR : Variable Multiply Node has no variable");
 
     exit (-1);    
@@ -78,7 +78,7 @@ Madara::Expression_Tree::Variable_Multiply_Node::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR : Variable multiply assignment "
       "has no right expression");
 
@@ -92,11 +92,11 @@ Madara::Expression_Tree::Variable_Multiply_Node::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::Variable_Multiply_Node::evaluate (
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::Variable_Multiply_Node::evaluate (
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
-  Madara::Knowledge_Record rhs;
+  madara::Knowledge_Record rhs;
 
   if (rhs_)
     rhs = rhs_->evaluate (settings);
@@ -105,7 +105,7 @@ Madara::Expression_Tree::Variable_Multiply_Node::evaluate (
 
   if (var_)
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "Variable_Multiply_Node::evaluate: "
       "Attempting to set variable %s to %s.\n",
       var_->expand_key ().c_str (),
@@ -117,7 +117,7 @@ Madara::Expression_Tree::Variable_Multiply_Node::evaluate (
   }
   else if (array_)
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "Variable_Multiply_Node::evaluate: "
       "Attempting to set index of var %s to %s.\n",
       array_->expand_key ().c_str (),
@@ -129,7 +129,7 @@ Madara::Expression_Tree::Variable_Multiply_Node::evaluate (
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "Variable_Multiply_Node::evaluate: "
       "left hand side was neither a variable nor an array reference. "
       "Check your expression for errors.\n",

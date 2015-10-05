@@ -6,11 +6,11 @@
 
 #include "madara/expression_tree/Visitor.h"
 #include "madara/utility/LStack.h"
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     /**
      * @class Evaluation_Visitor
@@ -213,7 +213,7 @@ namespace Madara
        * Returns the result of the evaluation
        * @return    result of the evaluation
        **/
-      Madara::Knowledge_Record::Integer total (void);
+      madara::Knowledge_Record::Integer total (void);
 
       /** 
        * Resets the evaluation
@@ -222,7 +222,7 @@ namespace Madara
 
     private:
       /// Stack used for temporarily storing evaluations.
-      Madara::Utility::LStack<Madara::Knowledge_Record> stack_;
+      madara::utility::LStack<madara::Knowledge_Record> stack_;
     };  
   }
 }

@@ -6,14 +6,14 @@
 
 #include <string>
 #include <stdexcept>
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 #include "madara/utility/stdint.h"
 #include "madara/expression_tree/Component_Node.h"
 
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     // Forward declaration.
     class Visitor;
@@ -30,14 +30,14 @@ namespace Madara
        * Constructor
        * @param  logger   the logger to use for printing
        **/
-      Composite_Ternary_Node (Logger::Logger & logger);
+      Composite_Ternary_Node (logger::Logger & logger);
 
       /**
        * Constructor
        * @param  logger   the logger to use for printing
        * @param  nodes    a list of nodes necessary for the node
        **/
-      Composite_Ternary_Node (Logger::Logger & logger,
+      Composite_Ternary_Node (logger::Logger & logger,
         const Component_Nodes & nodes);
       
       /**
@@ -49,22 +49,22 @@ namespace Madara
        * Returns the value of the node
        * @return    value of the node
        **/
-      virtual Madara::Knowledge_Record item (void) const;
+      virtual madara::Knowledge_Record item (void) const;
 
       /** 
        * Prunes the expression tree of unnecessary nodes. 
        * @param     can_change   set to true if variable nodes are contained
        * @return    value of current contained expression tree
        **/
-      virtual Madara::Knowledge_Record prune (bool & can_change) = 0;
+      virtual madara::Knowledge_Record prune (bool & can_change) = 0;
 
       /** 
        * Evaluates the node.
        * @param     settings     settings for evaluating the node 
        * @return    value of current contained expression tree
        **/
-      virtual Madara::Knowledge_Record evaluate (
-        const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings) = 0;
+      virtual madara::Knowledge_Record evaluate (
+        const madara::knowledge::Knowledge_Update_Settings & settings) = 0;
 
       /** 
        * Accepts a visitor subclassed from the Visitor class

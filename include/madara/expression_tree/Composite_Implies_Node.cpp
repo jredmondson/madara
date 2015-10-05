@@ -15,17 +15,17 @@
 
 // Ctor
 
-Madara::Expression_Tree::Composite_Implies_Node::Composite_Implies_Node (
-  Logger::Logger & logger,
+madara::expression_tree::Composite_Implies_Node::Composite_Implies_Node (
+  logger::Logger & logger,
   Component_Node *left, Component_Node *right)
-: Madara::Expression_Tree::Composite_Binary_Node (logger, left, right)
+: madara::expression_tree::Composite_Binary_Node (logger, left, right)
 {    
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Implies_Node::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::Composite_Implies_Node::item (void) const
 {
-  Madara::Knowledge_Record record;
+  madara::Knowledge_Record record;
   record.set_value ("=>");
   return record;
 }
@@ -34,13 +34,13 @@ Madara::Expression_Tree::Composite_Implies_Node::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Implies_Node::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::Composite_Implies_Node::prune (bool & can_change)
 {
   bool left_child_can_change = false;
   bool right_child_can_change = false;
-  Madara::Knowledge_Record left_value;
-  Madara::Knowledge_Record right_value;
+  madara::Knowledge_Record left_value;
+  madara::Knowledge_Record right_value;
 
   if (this->left_)
   {
@@ -53,7 +53,7 @@ Madara::Expression_Tree::Composite_Implies_Node::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Implies has no condition\n");
 
     exit (-1);
@@ -70,7 +70,7 @@ Madara::Expression_Tree::Composite_Implies_Node::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Implies has no expression to "
       "evaluate if conditional is true\n");
 
@@ -85,11 +85,11 @@ Madara::Expression_Tree::Composite_Implies_Node::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::Composite_Implies_Node::evaluate (
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::Composite_Implies_Node::evaluate (
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
-  Madara::Knowledge_Record left_value = left_->evaluate (settings);
+  madara::Knowledge_Record left_value = left_->evaluate (settings);
 
   // only evaluate right if left evaluates to non-zero
   if (left_value.is_true ())
@@ -101,7 +101,7 @@ Madara::Expression_Tree::Composite_Implies_Node::evaluate (
 
 // accept a visitor
 void 
-Madara::Expression_Tree::Composite_Implies_Node::accept (Visitor &visitor) const
+madara::expression_tree::Composite_Implies_Node::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }

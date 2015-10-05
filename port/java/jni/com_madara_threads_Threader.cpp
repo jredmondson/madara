@@ -47,10 +47,10 @@
 #include "com_madara_threads_Threader.h"
 #include "madara/threads/Threader.h"
 
-namespace engine = Madara::Knowledge_Engine;
-namespace threads = Madara::Threads;
+namespace knowledge = madara::knowledge;
+namespace threads = madara::Threads;
 typedef threads::Threader       Threader;
-typedef engine::Knowledge_Base  Knowledge_Base;
+typedef knowledge::Knowledge_Base  Knowledge_Base;
 
 /*
  * Class:     com_madara_threads_Threader

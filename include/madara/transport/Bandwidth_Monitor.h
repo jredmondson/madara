@@ -20,9 +20,9 @@
 #include "ace/Recursive_Thread_Mutex.h"
 #include "madara/MADARA_export.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     typedef  std::pair <time_t, uint64_t>   Bandwidth_Record;
     typedef  std::deque <Bandwidth_Record>  Bandwidth_Messages;

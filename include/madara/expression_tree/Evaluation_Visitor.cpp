@@ -44,71 +44,71 @@
 
 /// Evaluate a Leaf_Node (holds a static value)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Leaf_Node &node)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Leaf_Node &node)
 {
   stack_.push (node.item ());
 }
 
 /// Evaluate a Variable_Node (holds a dynamic value)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Variable_Node &node)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Variable_Node &node)
 {
   stack_.push (node.item ());
 }
 
 /// Evaluate a Variable_Decrement_Node (holds a dynamic value)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Variable_Decrement_Node &node)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Variable_Decrement_Node &node)
 {
   stack_.push (node.item ());
 }
 
 /// Evaluate a Variable_Divide_Node (holds a dynamic value)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Variable_Divide_Node &node)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Variable_Divide_Node &node)
 {
   stack_.push (node.item ());
 }
 
 /// Evaluate a Variable_Increment_Node (holds a dynamic value)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Variable_Increment_Node &node)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Variable_Increment_Node &node)
 {
   stack_.push (node.item ());
 }
 
 /// Evaluate a Variable_Multiply_Node (holds a dynamic value)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Variable_Multiply_Node &node)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Variable_Multiply_Node &node)
 {
   stack_.push (node.item ());
 }
 
 /// Evaluate a Variable_Compare_Node (holds a dynamic value)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Variable_Compare_Node &node)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Variable_Compare_Node &node)
 {
   stack_.push (node.item ());
 }
 
 /// Evaluate a List_Node (holds a dynamic list)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::List_Node &node)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::List_Node &node)
 {
 }
 
 /// evaluation of a negation (Composite_Negate_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Negate_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Negate_Node &)
 {
   if (stack_.size () >= 1)
     stack_.push (-stack_.pop ());
@@ -123,17 +123,17 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of a decrement (Composite_Predecrement_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Predecrement_Node &node)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Predecrement_Node &node)
 {
   if (stack_.size () >= 1)
   {
-    Madara::Knowledge_Record old_value = stack_.pop ();
+    madara::Knowledge_Record old_value = stack_.pop ();
     try
     {
       Variable_Node * right = dynamic_cast <Variable_Node *> (node.right ());
 
-      Madara::Knowledge_Record new_value = --old_value;
+      madara::Knowledge_Record new_value = --old_value;
       if (right)
       {
         new_value = right->dec ();
@@ -156,17 +156,17 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of a increment (Composite_Preincrement_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Preincrement_Node &node)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Preincrement_Node &node)
 {
   if (stack_.size () >= 1)
   {
-    Madara::Knowledge_Record old_value = stack_.pop ();
+    madara::Knowledge_Record old_value = stack_.pop ();
     try
     {
       Variable_Node * right = dynamic_cast <Variable_Node *> (node.right ());
 
-      Madara::Knowledge_Record new_value = ++old_value;
+      madara::Knowledge_Record new_value = ++old_value;
       if (right)
       {
         new_value = right->inc ();
@@ -189,8 +189,8 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of a negation (Composite_Not_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Not_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Not_Node &)
 {
   if (stack_.size () >= 1)
     stack_.push (!stack_.pop ());
@@ -205,8 +205,8 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of an addition (Composite_Add_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Add_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Add_Node &)
 {
   if (stack_.size () >= 2)
     stack_.push (stack_.pop () + stack_.pop ());
@@ -221,8 +221,8 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of an assignment (Composite_Assignment_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Assignment_Node &node)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Assignment_Node &node)
 {
   if (stack_.size () >= 2)
   {
@@ -232,7 +232,7 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
     {
       // this is really backwards logic, but it was the only way I could think of
       // to allow for a = b = c with this type of tree and post-order flow
-      Madara::Knowledge_Record right = stack_.pop ();
+      madara::Knowledge_Record right = stack_.pop ();
       stack_.pop ();
       Variable_Node * left = dynamic_cast <Variable_Node *> (node.left ());
       left->set (right.to_integer ());
@@ -251,13 +251,13 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of a logical and comparison (Composite_And_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_And_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_And_Node &)
 {
   if (stack_.size () >= 2)
   {
-    Madara::Knowledge_Record right = stack_.pop ();
-    Madara::Knowledge_Record left = stack_.pop ();
+    madara::Knowledge_Record right = stack_.pop ();
+    madara::Knowledge_Record left = stack_.pop ();
 
     stack_.push (left && right);
   }
@@ -272,13 +272,13 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of a logical or comparison (Composite_Or_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Or_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Or_Node &)
 {
   if (stack_.size () >= 2)
   {
-    Madara::Knowledge_Record right = stack_.pop ();
-    Madara::Knowledge_Record left = stack_.pop ();
+    madara::Knowledge_Record right = stack_.pop ();
+    madara::Knowledge_Record left = stack_.pop ();
 
     stack_.push (left || right);
   }
@@ -293,13 +293,13 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of both left and right (Composite_Both_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Both_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Both_Node &)
 {
   if (stack_.size () >= 2)
   {
-    Madara::Knowledge_Record right_v = stack_.pop ();
-    Madara::Knowledge_Record left_v = stack_.pop ();
+    madara::Knowledge_Record right_v = stack_.pop ();
+    madara::Knowledge_Record left_v = stack_.pop ();
 
     // I was trying to use std::max, but it was giving me
     // some grief, so I just implemented it as is
@@ -316,13 +316,13 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of both left and right (Composite_Sequential_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Sequential_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Sequential_Node &)
 {
   if (stack_.size () >= 2)
   {
-    Madara::Knowledge_Record right_v = stack_.pop ();
-    Madara::Knowledge_Record left_v = stack_.pop ();
+    madara::Knowledge_Record right_v = stack_.pop ();
+    madara::Knowledge_Record left_v = stack_.pop ();
 
     // I was trying to use std::max, but it was giving me
     // some grief, so I just implemented it as is
@@ -339,27 +339,27 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of function (Composite_Function_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Function_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Function_Node &)
 {
 }
 
 /// evaluation of function (Composite_Function_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_For_Loop &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_For_Loop &)
 {
 }
 
 /// evaluation of an equality comparison (Composite_Equality_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Equality_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Equality_Node &)
 {
   if (stack_.size () >= 2)
   {
-    Madara::Knowledge_Record right = stack_.pop ();
-    Madara::Knowledge_Record left = stack_.pop ();
+    madara::Knowledge_Record right = stack_.pop ();
+    madara::Knowledge_Record left = stack_.pop ();
 
     stack_.push (left == right);
   }
@@ -374,13 +374,13 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of an inequality comparison (Composite_Inequality_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Inequality_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Inequality_Node &)
 {
   if (stack_.size () >= 2)
   {
-    Madara::Knowledge_Record right = stack_.pop ();
-    Madara::Knowledge_Record left = stack_.pop ();
+    madara::Knowledge_Record right = stack_.pop ();
+    madara::Knowledge_Record left = stack_.pop ();
 
     stack_.push (left != right);
   }
@@ -395,13 +395,13 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of a greater than equal to comparison (Composite_Greater_Than_Equal_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Greater_Than_Equal_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Greater_Than_Equal_Node &)
 {
   if (stack_.size () >= 2)
   {
-    Madara::Knowledge_Record right = stack_.pop ();
-    Madara::Knowledge_Record left = stack_.pop ();
+    madara::Knowledge_Record right = stack_.pop ();
+    madara::Knowledge_Record left = stack_.pop ();
 
     stack_.push (left >= right);
   }
@@ -416,13 +416,13 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of a greater than comparison (Composite_Greater_Than_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Greater_Than_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Greater_Than_Node &)
 {
   if (stack_.size () >= 2)
   {
-    Madara::Knowledge_Record right = stack_.pop ();
-    Madara::Knowledge_Record left = stack_.pop ();
+    madara::Knowledge_Record right = stack_.pop ();
+    madara::Knowledge_Record left = stack_.pop ();
 
     stack_.push (left > right);
   }
@@ -437,13 +437,13 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of a less than equal to comparison (Composite_Less_Than_Equal_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Less_Than_Equal_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Less_Than_Equal_Node &)
 {
   if (stack_.size () >= 2)
   {
-    Madara::Knowledge_Record right = stack_.pop ();
-    Madara::Knowledge_Record left = stack_.pop ();
+    madara::Knowledge_Record right = stack_.pop ();
+    madara::Knowledge_Record left = stack_.pop ();
 
     stack_.push (left <= right);
   }
@@ -458,13 +458,13 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of a less than comparison (Composite_Less_Than_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Less_Than_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Less_Than_Node &)
 {
   if (stack_.size () >= 2)
   {
-    Madara::Knowledge_Record right = stack_.pop ();
-    Madara::Knowledge_Record left = stack_.pop ();
+    madara::Knowledge_Record right = stack_.pop ();
+    madara::Knowledge_Record left = stack_.pop ();
 
     stack_.push (left < right);
   }
@@ -479,12 +479,12 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluation of an addition (Composite_Subtract_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Subtract_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Subtract_Node &)
 {
   if (stack_.size () >= 2)
   {
-    Madara::Knowledge_Record rhs = stack_.pop ();
+    madara::Knowledge_Record rhs = stack_.pop ();
     stack_.push (stack_.pop () - rhs);
   }
   else
@@ -498,12 +498,12 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluations of a division (Composite_Divide_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Divide_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Divide_Node &)
 {
   if (stack_.size () >= 2 && stack_.top ())
   {
-    Madara::Knowledge_Record rhs = stack_.pop ();
+    madara::Knowledge_Record rhs = stack_.pop ();
     stack_.push (stack_.pop () / rhs );
   }
   else
@@ -518,8 +518,8 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluations of a division (Composite_Multiply_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Multiply_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Multiply_Node &)
 {
   if (stack_.size () >= 2)
     stack_.push (stack_.pop () * stack_.pop ());
@@ -534,12 +534,12 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluations of a division (Composite_Modulus_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Modulus_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Modulus_Node &)
 {
   if (stack_.size () >= 2 && stack_.top ())
   {
-    Madara::Knowledge_Record rhs = stack_.pop ();
+    madara::Knowledge_Record rhs = stack_.pop ();
     stack_.push (stack_.pop () / rhs );
   }
   else
@@ -554,8 +554,8 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// evaluations of a division (Composite_Modulus_Node)
 void 
-Madara::Expression_Tree::Evaluation_Visitor::visit (
-  const Madara::Expression_Tree::Composite_Implies_Node &)
+madara::expression_tree::Evaluation_Visitor::visit (
+  const madara::expression_tree::Composite_Implies_Node &)
 {
   if (stack_.size () >= 2)
     stack_.push (stack_.pop () ? stack_.pop () : 0);
@@ -570,7 +570,7 @@ Madara::Expression_Tree::Evaluation_Visitor::visit (
 
 /// print a total for the evaluation
 int64_t 
-Madara::Expression_Tree::Evaluation_Visitor::total (void)
+madara::expression_tree::Evaluation_Visitor::total (void)
 {
   if (!stack_.is_empty ())
     return stack_.top ();
@@ -580,7 +580,7 @@ Madara::Expression_Tree::Evaluation_Visitor::total (void)
 
 /// reset the evaluation
 void 
-Madara::Expression_Tree::Evaluation_Visitor::reset (void)
+madara::expression_tree::Evaluation_Visitor::reset (void)
 {
   stack_.erase ();
 }

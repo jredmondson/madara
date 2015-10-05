@@ -1,26 +1,26 @@
 #include "madara/transport/ndds/NDDS_Transport.h"
 //#include "madara/transport/ndds/NDDS_Transport_Read_Thread.h"
-#include "madara/knowledge_engine/Update_Types.h"
+#include "madara/knowledge/Update_Types.h"
 #include "madara/utility/Utility.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::Logger;
 
 #include <iostream>
 #include <sstream>
 
-const char * Madara::Transport::NDDS_Transport::topic_names_[] = {
+const char * madara::transport::NDDS_Transport::topic_names_[] = {
   "MADARA_KaRL_Data",
   "MADARA_KaRL_Control"
 };
 
-const char * Madara::Transport::NDDS_Transport::partition_ = "Madara_knowledge";
+const char * madara::transport::NDDS_Transport::partition_ = "Madara_knowledge";
 
-Madara::Transport::NDDS_Transport::NDDS_Transport (
+madara::transport::NDDS_Transport::NDDS_Transport (
   const std::string & id,
-  Madara::Knowledge_Engine::Thread_Safe_Context & context, 
+  knowledge::Thread_Safe_Context & context, 
   Settings & config, bool launch_transport)
-  : Madara::Transport::Base (id, config, context),
+  : madara::transport::Base (id, config, context),
   domain_participant_ (0), update_topic_ (0), update_writer_ (0),
   listener_ (0)
 {
@@ -28,13 +28,13 @@ Madara::Transport::NDDS_Transport::NDDS_Transport (
     setup ();
 }
 
-Madara::Transport::NDDS_Transport::~NDDS_Transport ()
+madara::transport::NDDS_Transport::~NDDS_Transport ()
 {
   close ();
 }
 
 void
-Madara::Transport::NDDS_Transport::close (void)
+madara::transport::NDDS_Transport::close (void)
 {
   DDS_ReturnCode_t rc;
   this->invalidate_transport ();
@@ -87,19 +87,19 @@ Madara::Transport::NDDS_Transport::close (void)
 }
 
 int
-Madara::Transport::NDDS_Transport::reliability (void) const
+madara::transport::NDDS_Transport::reliability (void) const
 {
   return this->settings_.reliability;
 }
 
 int
-Madara::Transport::NDDS_Transport::reliability (const int & setting)
+madara::transport::NDDS_Transport::reliability (const int & setting)
 {
   return this->settings_.reliability = setting;
 }
 
 int
-Madara::Transport::NDDS_Transport::setup (void)
+madara::transport::NDDS_Transport::setup (void)
 {
   Base::setup ();
 
@@ -130,7 +130,7 @@ Madara::Transport::NDDS_Transport::setup (void)
   DDS_TopicQos topic_qos;
   domain_participant_->get_default_topic_qos(topic_qos);
 
-  if (Madara::Transport::RELIABLE == this->settings_.reliability)
+  if (madara::transport::RELIABLE == this->settings_.reliability)
   {
     topic_qos.reliability.kind = DDS_RELIABLE_RELIABILITY_QOS;
     topic_qos.history.depth = this->settings_.queue_length;
@@ -177,7 +177,7 @@ Madara::Transport::NDDS_Transport::setup (void)
 
   domain_participant_->get_default_publisher_qos (pub_qos);
 
-  if (Madara::Transport::RELIABLE == this->settings_.reliability)
+  if (madara::transport::RELIABLE == this->settings_.reliability)
   {
     pub_qos.presentation.access_scope = DDS_TOPIC_PRESENTATION_QOS;
     pub_qos.presentation.coherent_access = true;
@@ -229,7 +229,7 @@ Madara::Transport::NDDS_Transport::setup (void)
 
   DDS_SubscriberQos sub_qos;
 
-  if (Madara::Transport::RELIABLE == this->settings_.reliability)
+  if (madara::transport::RELIABLE == this->settings_.reliability)
   {
     sub_qos.presentation.access_scope = DDS_TOPIC_PRESENTATION_QOS;
     sub_qos.presentation.coherent_access = true;
@@ -254,7 +254,7 @@ Madara::Transport::NDDS_Transport::setup (void)
   subscriber_->get_default_datareader_qos (datareader_qos);
   subscriber_->copy_from_topic_qos (datareader_qos, topic_qos);
 
-  if (Madara::Transport::RELIABLE == this->settings_.reliability)
+  if (madara::transport::RELIABLE == this->settings_.reliability)
   {
     datareader_qos.reliability.kind = DDS_RELIABLE_RELIABILITY_QOS;
     datareader_qos.history.depth = this->settings_.queue_length;
@@ -287,14 +287,14 @@ Madara::Transport::NDDS_Transport::setup (void)
 }
 
 long
-Madara::Transport::NDDS_Transport::send_data (
-  const Madara::Knowledge_Records & updates)
+madara::transport::NDDS_Transport::send_data (
+  const madara::Knowledge_Records & updates)
 {
   long result =
     prep_send (updates, "NDDS_Transport::send_data:");
   
   // get the maximum quality from the updates
-  uint32_t quality = Madara::max_quality (updates);
+  uint32_t quality = madara::max_quality (updates);
 
   /// get current lamport clock. 
   unsigned long long cur_clock = context_.get_clock ();
@@ -316,7 +316,7 @@ Madara::Transport::NDDS_Transport::send_data (
   data.updates = DDS_UnsignedLong (updates.size ());
   data.originator = new char [id_.size () + 1];
   strncpy (data.originator, id_.c_str (), id_.size () + 1);
-  data.type = Madara::Transport::MULTIASSIGN;
+  data.type = madara::transport::MULTIASSIGN;
   data.ttl = settings_.get_rebroadcast_ttl ();
   data.timestamp = time (NULL);
   data.madara_id = new char [strlen (MADARA_IDENTIFIER) + 1];

@@ -14,7 +14,7 @@
 #include <vector>
 #include <map>
 #include <list>
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "Base_Thread.h"
 #include "Worker_Thread.h"
 #include "madara/MADARA_export.h"
@@ -24,7 +24,7 @@
 #include "madara_jni.h"
 #endif
 
-namespace Madara
+namespace madara
 {
   namespace Threads
   {
@@ -43,7 +43,7 @@ namespace Madara
        * Constructor
        * @param  data_plane   The data plane for threads to use
        **/
-      Threader (Knowledge_Engine::Knowledge_Base & data_plane);
+      Threader (knowledge::Knowledge_Base & data_plane);
 
       /**
        * Destructor
@@ -54,7 +54,7 @@ namespace Madara
        * Sets the data plane for new threads
        * @param  data_plane   The data plane for threads to use
        **/
-      void set_data_plane (Knowledge_Engine::Knowledge_Base & data_plane);
+      void set_data_plane (knowledge::Knowledge_Base & data_plane);
 
       /**
        * Starts a new thread and executes the provided user
@@ -185,14 +185,14 @@ namespace Madara
       /**
        * The data plane used by threads
        **/
-      Knowledge_Engine::Knowledge_Base * data_;
+      knowledge::Knowledge_Base * data_;
 
       /**
        * The control plane used by threads for termination
        * and pause information. This has to be on the heap, because
        * each thread gets its own stack!
        **/
-      Knowledge_Engine::Knowledge_Base * control_;
+      knowledge::Knowledge_Base * control_;
 
       /**
        * the threads that are still active

@@ -17,8 +17,10 @@
 #include "madara/kats/Test_Framework.h"
 #include "madara/utility/tinyxml.h"
 #include "madara/utility/Utility.h"
+#include "madara/utility/Log_Macros.h"
+#include "madara/logger/Global_Logger.h"
 
-Madara::KATS::Settings settings;
+madara::kats::Settings settings;
 
 // settings that may be true or false
 bool realtime = false;
@@ -302,8 +304,8 @@ public:
   void kats_type (const std::string & type)
   {
     std::stringstream buffer;
-    buffer << Madara::Utility::clean_dir_name (
-      Madara::Utility::expand_envs ("$(MADARA_ROOT)/bin/"));
+    buffer << madara::Utility::clean_dir_name (
+      madara::Utility::expand_envs ("$(MADARA_ROOT)/bin/"));
 
     if (type == "process")
       buffer << "kats_process";
@@ -380,16 +382,16 @@ process_transport_file (const std::string & file)
     if (current && current->GetText ())
     {
       std::string value (current->GetText ());
-      Madara::Utility::lower (value);
+      madara::Utility::lower (value);
 
       transport_set = true;
 
       if      ("ndds"      == value)
-        settings.type = Madara::Transport::NDDS;
+        settings.type = madara::transport::NDDS;
       else if ("splice"    == value)
-        settings.type = Madara::Transport::SPLICE;
+        settings.type = madara::transport::SPLICE;
       else if ("none"      == value)
-        settings.type = Madara::Transport::NO_TRANSPORT;
+        settings.type = madara::transport::NO_TRANSPORT;
       else
         transport_set = false;
 
@@ -493,8 +495,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       element = el_globals->FirstChildElement ("transport");
       if (element && element->Attribute ("file"))
       {
-        std::string value (Madara::Utility::clean_dir_name (
-          Madara::Utility::expand_envs (element->Attribute ("file"))));
+        std::string value (madara::Utility::clean_dir_name (
+          madara::Utility::expand_envs (element->Attribute ("file"))));
 
         if (value != "")
         {
@@ -503,7 +505,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
           buffer << "/";
           buffer << value;
           
-          value = Madara::Utility::clean_dir_name (buffer.str ().c_str ()); 
+          value = madara::Utility::clean_dir_name (buffer.str ().c_str ()); 
 
           ACE_DEBUG ((LM_DEBUG, 
             "KATS_BATCH:    Read transport file = %s from process group file\n",
@@ -521,8 +523,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       if (element && element->GetText ())
       {
         // expand the string for environment variables, then clean the path up
-        std::string value (Madara::Utility::clean_dir_name (
-          Madara::Utility::expand_envs (element->GetText ())));
+        std::string value (madara::Utility::clean_dir_name (
+          madara::Utility::expand_envs (element->GetText ())));
 
         if (value != "")
         {
@@ -542,8 +544,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       if (element && element->GetText ())
       {
         // expand the string for environment variables, then clean the path up
-        std::string value (Madara::Utility::clean_dir_name (
-          Madara::Utility::expand_envs (element->GetText ())));
+        std::string value (madara::Utility::clean_dir_name (
+          madara::Utility::expand_envs (element->GetText ())));
 
         if (value != "")
         {
@@ -563,8 +565,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       if (element && element->GetText ())
       {
         // expand the string for environment variables, then clean the path up
-        std::string value (Madara::Utility::clean_dir_name (
-          Madara::Utility::expand_envs (element->GetText ())));
+        std::string value (madara::Utility::clean_dir_name (
+          madara::Utility::expand_envs (element->GetText ())));
 
         if (value != "")
         {
@@ -584,11 +586,11 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         if (element->GetText ())
         {
           std::string temp = 
-            Madara::Utility::expand_envs (element->GetText ());
+            madara::Utility::expand_envs (element->GetText ());
           if (temp != "")
           {
             std::stringstream buffer;
-            buffer << Madara::Utility::expand_envs (temp);
+            buffer << madara::Utility::expand_envs (temp);
             buffer >> settings.id;
 
             ACE_DEBUG ((LM_DEBUG, 
@@ -607,7 +609,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         if (element->GetText ())
         {
           std::string temp = 
-            Madara::Utility::expand_envs (element->GetText ());
+            madara::Utility::expand_envs (element->GetText ());
           if (temp != "")
           {
             settings.domains = temp;
@@ -628,7 +630,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       {
         if (element->GetText ())
         {
-          std::string temp = Madara::Utility::expand_envs (element->GetText ());
+          std::string temp = madara::Utility::expand_envs (element->GetText ());
           if (temp != "")
           {
             settings.host = temp;
@@ -650,11 +652,11 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         if (element->GetText ())
         {
           std::string temp = 
-            Madara::Utility::expand_envs (element->GetText ());
+            madara::Utility::expand_envs (element->GetText ());
           if (temp != "")
           {
             std::stringstream buffer;
-            buffer << Madara::Utility::expand_envs (temp);
+            buffer << madara::Utility::expand_envs (temp);
             buffer >> settings.processes;
 
             ACE_DEBUG ((LM_DEBUG, 
@@ -673,18 +675,21 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         if (element->GetText ())
         {
           std::string temp = 
-            Madara::Utility::expand_envs (element->GetText ());
+            madara::Utility::expand_envs (element->GetText ());
           if (temp != "")
           {
+            int debug_level;
             std::stringstream buffer;
-            buffer << Madara::Utility::expand_envs (temp);
-            buffer >> MADARA_debug_level;
+            buffer << madara::Utility::expand_envs (temp);
+            buffer >> debug_level;
+
+            madara::logger::global_logger->set_level (debug_level);
+
+            MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG,
+              DLINFO "KATS_BATCH: logging level set to %d\n",
+              debug_level));
 
             loglevel_set = true;
-
-            ACE_DEBUG ((LM_DEBUG, 
-              "KATS_BATCH:    Read loglevel = %u from process group\n",
-              MADARA_debug_level));
           }
         }
       } // if the processes element existed
@@ -701,12 +706,12 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
           if (element->GetText ())
           {
             std::string temp = 
-              Madara::Utility::expand_envs (element->GetText ());
+              madara::Utility::expand_envs (element->GetText ());
             if (temp != "")
             {
               time_t time_in_seconds;
               std::stringstream buffer;
-              buffer << Madara::Utility::expand_envs (temp);
+              buffer << madara::Utility::expand_envs (temp);
               buffer >> time_in_seconds;
 
               kill_time.sec (time_in_seconds);
@@ -729,7 +734,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         if (element->GetText ())
         {
           std::string temp = 
-            Madara::Utility::expand_envs (element->GetText ());
+            madara::Utility::expand_envs (element->GetText ());
           if (temp != "")
           {
             pre_condition = temp;
@@ -750,7 +755,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         if (element->GetText ())
         {
           std::string temp = 
-            Madara::Utility::expand_envs (element->GetText ());
+            madara::Utility::expand_envs (element->GetText ());
           if (temp != "")
           {
             post_condition = temp;
@@ -771,7 +776,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         if (element->GetText ())
         {
           std::string temp = 
-            Madara::Utility::expand_envs (element->GetText ());
+            madara::Utility::expand_envs (element->GetText ());
           if (temp != "")
           {
             post_delay = temp;
@@ -791,9 +796,9 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       {
         std::string temp;
         if (element->Attribute ("name"))
-          temp = Madara::Utility::expand_envs (element->Attribute ("name"));
+          temp = madara::Utility::expand_envs (element->Attribute ("name"));
         else if (element->GetText ())
-          temp = Madara::Utility::expand_envs (element->GetText ());
+          temp = madara::Utility::expand_envs (element->GetText ());
 
         if (temp != "")
         {
@@ -875,7 +880,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   ACE_DEBUG ((LM_DEBUG, 
     "KATS_BATCH:    Starting framework (if hangs, check transport)...\n"));
 
-  Madara::KATS::Test_Framework testing (settings);
+  madara::kats::Test_Framework testing (settings);
 
   if(debug_printing)
     testing.dump ();
@@ -1009,8 +1014,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       }
 
       // expand the string for environment variables, then clean the path up
-      std::string value (Madara::Utility::clean_dir_name (
-        Madara::Utility::expand_envs (el_temp2->GetText ())));
+      std::string value (madara::Utility::clean_dir_name (
+        madara::Utility::expand_envs (el_temp2->GetText ())));
 
       if (value == "")
       {
@@ -1047,7 +1052,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         std::stringstream buffer;
 
         if ("." == extract_path (
-          Madara::Utility::expand_envs (element->Attribute ("file"))))
+          madara::Utility::expand_envs (element->Attribute ("file"))))
         {
           // build up a file string
           buffer << working_dir;
@@ -1060,8 +1065,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         }
 
         // expand the string for environment variables, then clean the path up
-        std::string final_file (Madara::Utility::clean_dir_name (
-                      Madara::Utility::expand_envs (buffer.str ())));
+        std::string final_file (madara::Utility::clean_dir_name (
+                      madara::Utility::expand_envs (buffer.str ())));
 
         ACE_DEBUG ((LM_DEBUG, 
           "KATS_BATCH:      expanded file is set to %s...\n",
@@ -1102,7 +1107,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       if (el_temp1->Attribute ("name"))
       {
         std::string temp = 
-          Madara::Utility::expand_envs (el_temp1->Attribute ("name"));
+          madara::Utility::expand_envs (el_temp1->Attribute ("name"));
         if (temp != "")
         {
           processes[cur].set_testname (temp);
@@ -1114,7 +1119,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       else if (el_temp1->GetText ())
       {
         std::string temp = 
-          Madara::Utility::expand_envs (el_temp1->GetText ());
+          madara::Utility::expand_envs (el_temp1->GetText ());
         if (temp != "")
         {
           processes[cur].set_testname (temp);
@@ -1132,7 +1137,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       if (el_temp1 && el_temp1->GetText ())
       {
         std::string temp = 
-          Madara::Utility::expand_envs (el_temp1->GetText ());
+          madara::Utility::expand_envs (el_temp1->GetText ());
         if (temp != "")
         {
           ACE_DEBUG ((LM_DEBUG, 
@@ -1145,7 +1150,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     else
     {
       std::stringstream buffer;
-      buffer << MADARA_debug_level;  
+      buffer << madara::logger::global_logger->get_level ();  
       processes[cur].set_loglevel (buffer.str ());
     }
 
@@ -1154,7 +1159,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
         std::string temp = 
-          Madara::Utility::expand_envs (el_temp1->GetText ());
+          madara::Utility::expand_envs (el_temp1->GetText ());
         if (temp != "")
         {
           ACE_DEBUG ((LM_DEBUG, 
@@ -1169,7 +1174,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       std::string temp = 
-        Madara::Utility::expand_envs (el_temp1->GetText ());
+        madara::Utility::expand_envs (el_temp1->GetText ());
       if (temp != "")
       {
         ACE_DEBUG ((LM_DEBUG, 
@@ -1184,7 +1189,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       std::string temp = 
-        Madara::Utility::expand_envs (el_temp1->GetText ());
+        madara::Utility::expand_envs (el_temp1->GetText ());
       if (temp != "")
       {
         ACE_DEBUG ((LM_DEBUG, 
@@ -1199,7 +1204,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       std::string temp = 
-        Madara::Utility::expand_envs (el_temp1->GetText ());
+        madara::Utility::expand_envs (el_temp1->GetText ());
       if (temp != "")
       {
         ACE_DEBUG ((LM_DEBUG, 
@@ -1214,8 +1219,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       // expand the string for environment variables, then clean the path up
-      std::string value (Madara::Utility::clean_dir_name (
-        Madara::Utility::expand_envs (el_temp1->GetText ())));
+      std::string value (madara::Utility::clean_dir_name (
+        madara::Utility::expand_envs (el_temp1->GetText ())));
 
       if (value != "")
       {
@@ -1232,8 +1237,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       // expand the string for environment variables, then clean the path up
-      std::string value (Madara::Utility::clean_dir_name (
-        Madara::Utility::expand_envs (el_temp1->GetText ())));
+      std::string value (madara::Utility::clean_dir_name (
+        madara::Utility::expand_envs (el_temp1->GetText ())));
 
       if (value != "")
       {
@@ -1249,8 +1254,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       // expand the string for environment variables, then clean the path up
-      std::string value (Madara::Utility::clean_dir_name (
-        Madara::Utility::expand_envs (el_temp1->GetText ())));
+      std::string value (madara::Utility::clean_dir_name (
+        madara::Utility::expand_envs (el_temp1->GetText ())));
 
       if (value != "")
       {
@@ -1266,7 +1271,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       std::string temp = 
-        Madara::Utility::expand_envs (el_temp1->GetText ());
+        madara::Utility::expand_envs (el_temp1->GetText ());
       if (temp != "")
       {
         ACE_DEBUG ((LM_DEBUG, 
@@ -1281,7 +1286,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       std::string temp = 
-        Madara::Utility::expand_envs (el_temp1->GetText ());
+        madara::Utility::expand_envs (el_temp1->GetText ());
       if (temp != "")
       {
         ACE_DEBUG ((LM_DEBUG, 
@@ -1296,7 +1301,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       std::string temp = 
-        Madara::Utility::expand_envs (el_temp1->GetText ());
+        madara::Utility::expand_envs (el_temp1->GetText ());
       if (temp != "")
       {
         ACE_DEBUG ((LM_DEBUG, 
@@ -1311,7 +1316,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       std::string temp = 
-        Madara::Utility::expand_envs (el_temp1->GetText ());
+        madara::Utility::expand_envs (el_temp1->GetText ());
       if (temp != "")
       {
         ACE_DEBUG ((LM_DEBUG, 
@@ -1326,7 +1331,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       // expand the string for environment variables, then clean the path up
-      std::string value (Madara::Utility::expand_envs (el_temp1->GetText ()));
+      std::string value (madara::Utility::expand_envs (el_temp1->GetText ()));
 
       if (value != "")
       {
@@ -1355,7 +1360,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         if (el_temp2->GetText ())
         {
           std::string temp = 
-            Madara::Utility::expand_envs (el_temp2->GetText ());
+            madara::Utility::expand_envs (el_temp2->GetText ());
           if (temp != "")
           {
             ACE_DEBUG ((LM_DEBUG, 
@@ -1374,7 +1379,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         if (el_temp2->GetText ())
         {
           std::string temp = 
-            Madara::Utility::expand_envs (el_temp2->GetText ());
+            madara::Utility::expand_envs (el_temp2->GetText ());
           if (temp != "")
           {
             ACE_DEBUG ((LM_DEBUG, 
@@ -1391,8 +1396,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     if (el_temp1 && el_temp1->GetText ())
     {
       // expand the string for environment variables, then clean the path up
-      std::string value (Madara::Utility::clean_dir_name (
-        Madara::Utility::expand_envs (el_temp1->GetText ())));
+      std::string value (madara::Utility::clean_dir_name (
+        madara::Utility::expand_envs (el_temp1->GetText ())));
 
       if (value != "")
       {
@@ -1408,8 +1413,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     el_temp1 = el_globals->FirstChildElement ("transport");
     if (el_temp1 && el_temp1->Attribute ("file"))
     {
-      std::string value (Madara::Utility::clean_dir_name (
-        Madara::Utility::expand_envs (el_temp1->Attribute ("file"))));
+      std::string value (madara::Utility::clean_dir_name (
+        madara::Utility::expand_envs (el_temp1->Attribute ("file"))));
 
       if (value != "")
       {
@@ -1418,7 +1423,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
         buffer << "/";
         buffer << value;
 
-        value = Madara::Utility::clean_dir_name (buffer.str ().c_str ()); 
+        value = madara::Utility::clean_dir_name (buffer.str ().c_str ()); 
 
         ACE_DEBUG ((LM_DEBUG, 
           "KATS_BATCH:    Read transport file = %s from process group file\n",
@@ -1459,7 +1464,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       if (el_temp1 && el_temp1->GetText ())
       {
         std::string temp = 
-          Madara::Utility::expand_envs (el_temp1->GetText ());
+          madara::Utility::expand_envs (el_temp1->GetText ());
         if (temp != "")
         {
           ACE_DEBUG ((LM_DEBUG, 
@@ -1485,7 +1490,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       if (el_temp1 && el_temp1->GetText ())
       {
         std::string temp = 
-          Madara::Utility::expand_envs (el_temp1->GetText ());
+          madara::Utility::expand_envs (el_temp1->GetText ());
         if (temp != "")
         {
           ACE_DEBUG ((LM_DEBUG, 
@@ -1702,39 +1707,39 @@ int parse_args (int argc, ACE_TCHAR * argv[])
     case '0':
       // redirecting stdout
 
-      freopen (Madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str (),
+      freopen (madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str (),
                "r", stdin);
 
       stdin_set = true;
 
       MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG,
         DLINFO "KATS_BATCH: stdin redirected from %s\n",
-        Madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str ()));
+        madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str ()));
 
       break;
     case '1':
       // redirecting stdout
 
-      freopen (Madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str (),
+      freopen (madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str (),
                "w", stdout);
 
       stdout_set = true;
 
       MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG,
         DLINFO "KATS_BATCH: stdout redirected to %s\n",
-        Madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str ()));
+        madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str ()));
 
       break;
     case '2':
       // redirecting stderr
-      freopen (Madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str (),
+      freopen (madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str (),
                "w", stderr);
 
       stderr_set = true;
 
       MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG,
         DLINFO "KATS_BATCH: stderr redirected to %s\n",
-        Madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str ()));
+        madara::Utility::clean_dir_name (cmd_opts.opt_arg ()).c_str ()));
 
       break;
     case '8':
@@ -1794,7 +1799,7 @@ int parse_args (int argc, ACE_TCHAR * argv[])
     case 'f':
       // the knowledge domain
 
-      tests_file = Madara::Utility::clean_dir_name (cmd_opts.opt_arg ());
+      tests_file = madara::Utility::clean_dir_name (cmd_opts.opt_arg ());
 
       MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG,
         "KATS_BATCH:  reading tests from %s.\n",
@@ -1926,16 +1931,19 @@ int parse_args (int argc, ACE_TCHAR * argv[])
     case 'v':
       // log level
       {
+        int debug_level;
         std::stringstream buffer;
         buffer << cmd_opts.opt_arg ();
-        buffer >> MADARA_debug_level;
+        buffer >> debug_level;
+
+        madara::logger::global_logger->set_level (debug_level);
+
+        MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG,
+          DLINFO "KATS_PROCESS: logging level set to %u\n",
+          debug_level));
       }
 
       loglevel_set = true;
-
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG,
-        DLINFO "KATS_BATCH: logging level set to %u\n",
-        MADARA_debug_level));
 
       break;
     case 'y':

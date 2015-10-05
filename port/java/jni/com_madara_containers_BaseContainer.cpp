@@ -1,8 +1,8 @@
 #include "com_madara_containers_BaseContainer.h"
-#include "madara/knowledge_engine/containers/Base_Container.h"
+#include "madara/knowledge/containers/Base_Container.h"
 
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
 typedef  containers::Base_Container   Base_Container;
 
 JNIEXPORT jboolean JNICALL Java_com_madara_containers_BaseContainer_jni_1modifyIfTrue

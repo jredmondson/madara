@@ -3,9 +3,9 @@
 #define _MADARA_UTILITY_SCOPED_ARRAY_H_
 
 
-namespace Madara
+namespace madara
 {
-  namespace Utility
+  namespace utility
   {
     /**
      * @class Scoped_Array

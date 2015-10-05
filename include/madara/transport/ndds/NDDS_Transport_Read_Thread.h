@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Transport.h"
 
 #include <ndds/ndds_cpp.h>
@@ -18,9 +18,9 @@
 
 #include "ace/Synch.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class NDDS_Read_Thread
@@ -32,7 +32,7 @@ namespace Madara
     public:
       NDDS_Read_Thread (
         const std::string & id,
-        Madara::Knowledge_Engine::Thread_Safe_Context & context,
+        knowledge::Thread_Safe_Context & context,
             NDDS_Knowledge_UpdateDataReader * reader);
       ~NDDS_Read_Thread ();
 
@@ -48,13 +48,13 @@ namespace Madara
       ::std::vector< ::std::string>                        assignment_symbols_;
 
       const std::string                                    id_;
-      ::Madara::Knowledge_Engine::Thread_Safe_Context &    context_;
+      knowledge::Thread_Safe_Context &    context_;
       /// typdef for a threadsafe counter
       ACE_Barrier barrier_;
       ACE_Atomic_Op<ACE_Mutex,bool>                        terminated_;
 
       ACE_Thread_Mutex                   mutex_;
-      Madara::Transport::Condition       is_not_ready_;
+      transport::Condition               is_not_ready_;
       bool                               is_ready_;
       bool                               enable_mutexing_;
 

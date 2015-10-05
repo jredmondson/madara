@@ -45,14 +45,14 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include "com_madara_containers_Vector.h"
-#include "madara/knowledge_engine/containers/Vector.h"
+#include "madara/knowledge/containers/Vector.h"
 #include "madara_jni.h"
 #include <iostream>
 
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
 typedef containers::Vector    Vector;
-typedef Madara::Knowledge_Record::Integer    Integer;
+typedef madara::Knowledge_Record::Integer    Integer;
 
 /*
  * Class:     com_madara_containers_Vector
@@ -146,28 +146,28 @@ void JNICALL Java_com_madara_containers_Vector_jni_1set__JIJJ
     // set integer
     if (type == 0)
     {
-      current->set (index, (Madara::Knowledge_Record::Integer)value);
+      current->set (index, (madara::Knowledge_Record::Integer)value);
     }
     // set knowledge record
     else
     {
-      Madara::Knowledge_Record * record = (Madara::Knowledge_Record *) value;
+      madara::Knowledge_Record * record = (madara::Knowledge_Record *) value;
       
       if (record)
       {
-        if (record->type () == Madara::Knowledge_Record::DOUBLE)
+        if (record->type () == madara::Knowledge_Record::DOUBLE)
         {
           current->set (index, record->to_double ());
         }
-        else if (record->type () == Madara::Knowledge_Record::DOUBLE_ARRAY)
+        else if (record->type () == madara::Knowledge_Record::DOUBLE_ARRAY)
         {
           current->set (index, record->to_doubles ());
         }
-        else if (record->type () == Madara::Knowledge_Record::INTEGER)
+        else if (record->type () == madara::Knowledge_Record::INTEGER)
         {
           current->set (index, record->to_integer ());
         }
-        else if (record->type () == Madara::Knowledge_Record::INTEGER_ARRAY)
+        else if (record->type () == madara::Knowledge_Record::INTEGER_ARRAY)
         {
           current->set (index, record->to_integers ());
         }
@@ -178,7 +178,7 @@ void JNICALL Java_com_madara_containers_Vector_jni_1set__JIJJ
           current->set_file (index, buffer, size);
           delete [] buffer;
         }
-        else if (record->type () == Madara::Knowledge_Record::STRING)
+        else if (record->type () == madara::Knowledge_Record::STRING)
         {
           current->set (index, record->to_string ());
         }
@@ -198,7 +198,7 @@ void JNICALL Java_com_madara_containers_Vector_jni_1pushbackRecord
 
   if (current)
   {
-    Madara::Knowledge_Record * record = (Madara::Knowledge_Record *) value_ptr;
+    madara::Knowledge_Record * record = (madara::Knowledge_Record *) value_ptr;
 
     current->push_back (*record);
   }
@@ -338,12 +338,12 @@ void JNICALL Java_com_madara_containers_Vector_jni_1setName
 
     if (type == 0)
     {
-      engine::Knowledge_Base * kb = (engine::Knowledge_Base *) context;
+      knowledge::Knowledge_Base * kb = (knowledge::Knowledge_Base *) context;
       current->set_name (str_name, *kb);
     }
     else if (type == 1)
     {
-      engine::Variables * vars = (engine::Variables *) context;
+      knowledge::Variables * vars = (knowledge::Variables *) context;
       current->set_name (str_name, *vars);
     }
 
@@ -359,12 +359,12 @@ void JNICALL Java_com_madara_containers_Vector_jni_1setName
 jlong JNICALL Java_com_madara_containers_Vector_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
-  Madara::Knowledge_Record * result (0);
+  madara::Knowledge_Record * result (0);
   Vector * current = (Vector *) cptr;
 
   if (current)
   {
-    result = new Madara::Knowledge_Record (current->to_record (index));
+    result = new madara::Knowledge_Record (current->to_record (index));
   }
 
   return (jlong) result;
@@ -413,12 +413,12 @@ jlong JNICALL Java_com_madara_containers_Vector_jni_1size
 jlong JNICALL Java_com_madara_containers_Vector_jni_1toRecord
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
-  Madara::Knowledge_Record * result (0);
+  madara::Knowledge_Record * result (0);
   Vector * current = (Vector *) cptr;
 
   if (current)
   {
-    result = new Madara::Knowledge_Record (current->to_record (index));
+    result = new madara::Knowledge_Record (current->to_record (index));
   }
 
   return (jlong) result;
@@ -432,7 +432,7 @@ jlong JNICALL Java_com_madara_containers_Vector_jni_1toRecord
 jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArray
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jclass kr_class = Madara::Utility::Java::find_class (
+  jclass kr_class = madara::utility::Java::find_class (
     env, "com/madara/KnowledgeRecord");
   jobjectArray list;
 
@@ -440,7 +440,7 @@ jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArray
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
       "fromPointer", "(J)Lcom/madara/KnowledgeRecord;");
-    Madara::Knowledge_Vector records;
+    madara::Knowledge_Vector records;
     Vector * current =
       (Vector *)cptr;
     current->copy_to (records);
@@ -504,8 +504,8 @@ void JNICALL Java_com_madara_containers_Vector_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::Vector * current = (containers::Vector *)cptr;
-  engine::Knowledge_Update_Settings * settings =
-    (engine::Knowledge_Update_Settings *)settings_ptr;
+  knowledge::Knowledge_Update_Settings * settings =
+    (knowledge::Knowledge_Update_Settings *)settings_ptr;
 
   if (current && settings)
   {

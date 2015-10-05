@@ -2,11 +2,11 @@
 #ifndef _MADARA_NO_KARL_
 
 #include "madara/expression_tree/System_Call_Node.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 
 
-Madara::Expression_Tree::System_Call_Node::System_Call_Node (
-    Madara::Knowledge_Engine::Thread_Safe_Context & context)
+madara::expression_tree::System_Call_Node::System_Call_Node (
+    madara::knowledge::Thread_Safe_Context & context)
   : Composite_Ternary_Node (context.get_logger ()),
   context_ (context)
 {
@@ -14,8 +14,8 @@ Madara::Expression_Tree::System_Call_Node::System_Call_Node (
 }
 
 
-Madara::Expression_Tree::System_Call_Node::System_Call_Node (
-  Madara::Knowledge_Engine::Thread_Safe_Context & context,
+madara::expression_tree::System_Call_Node::System_Call_Node (
+  madara::knowledge::Thread_Safe_Context & context,
   const Component_Nodes & nodes)
 : Composite_Ternary_Node (context.get_logger (), nodes),
   context_ (context)
@@ -24,19 +24,19 @@ Madara::Expression_Tree::System_Call_Node::System_Call_Node (
 }
 
 // Dtor
-Madara::Expression_Tree::System_Call_Node::~System_Call_Node (void)
+madara::expression_tree::System_Call_Node::~System_Call_Node (void)
 {
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::System_Call_Node::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::System_Call_Node::item (void) const
 {
-  return Madara::Knowledge_Record::Integer (nodes_.size ());
+  return madara::Knowledge_Record::Integer (nodes_.size ());
 }
 
 // accept a visitor
 void 
-Madara::Expression_Tree::System_Call_Node::accept (Madara::Expression_Tree::Visitor &visitor) const
+madara::expression_tree::System_Call_Node::accept (madara::expression_tree::Visitor &visitor) const
 {
 }
 

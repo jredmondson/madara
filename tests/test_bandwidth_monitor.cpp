@@ -10,7 +10,7 @@
 
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
@@ -19,7 +19,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 {
   parse_args (argc, argv);
 
-  Madara::Transport::Bandwidth_Monitor monitor;
+  madara::transport::Bandwidth_Monitor monitor;
   
   std::cerr << "Adding ten 150 byte messages to bandwidth monitor...\n";
   std::cerr << "And sleeping for 10s...\n\n";

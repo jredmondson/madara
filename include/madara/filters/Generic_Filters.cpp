@@ -1,7 +1,7 @@
 #include "Arguments.h"
 #include "Generic_Filters.h"
-#include "madara/knowledge_engine/Functions.h"
-#include "madara/knowledge_engine/Extern_Function_Variables.h"
+#include "madara/knowledge/Functions.h"
+#include "madara/knowledge/Extern_Function_Variables.h"
 #include <sstream>
 
 const char * operation_types [] = {
@@ -12,19 +12,19 @@ const char * operation_types [] = {
 };
 
 
-Madara::Knowledge_Record
-Madara::Filters::discard (Knowledge_Engine::Function_Arguments & args,
-              Knowledge_Engine::Variables & vars)
+madara::Knowledge_Record
+madara::filters::discard (knowledge::Function_Arguments & args,
+              knowledge::Variables & vars)
 {
   // this works because a default record is UNCREATED
-  return Madara::Knowledge_Record ();
+  return madara::Knowledge_Record ();
 }
 
-Madara::Knowledge_Record
-Madara::Filters::discard_nonprimitives (Knowledge_Engine::Function_Arguments & args,
-              Knowledge_Engine::Variables & vars)
+madara::Knowledge_Record
+madara::filters::discard_nonprimitives (knowledge::Function_Arguments & args,
+              knowledge::Variables & vars)
 {
-  Madara::Knowledge_Record result;
+  madara::Knowledge_Record result;
 
   if (args.size () > 0)
   {
@@ -47,11 +47,11 @@ Madara::Filters::discard_nonprimitives (Knowledge_Engine::Function_Arguments & a
 }
 
 
-Madara::Knowledge_Record
-Madara::Filters::discard_nonfiles (Knowledge_Engine::Function_Arguments & args,
-              Knowledge_Engine::Variables & vars)
+madara::Knowledge_Record
+madara::filters::discard_nonfiles (knowledge::Function_Arguments & args,
+              knowledge::Variables & vars)
 {
-  Madara::Knowledge_Record result;
+  madara::Knowledge_Record result;
 
   if (args.size () > 0)
   {
@@ -73,13 +73,13 @@ Madara::Filters::discard_nonfiles (Knowledge_Engine::Function_Arguments & args,
   return result;
 }
 
-Madara::Knowledge_Record
-Madara::Filters::log_args (Knowledge_Engine::Function_Arguments & args,
-                           Knowledge_Engine::Variables & vars)
+madara::Knowledge_Record
+madara::filters::log_args (knowledge::Function_Arguments & args,
+                           knowledge::Variables & vars)
 {
-  Madara::Knowledge_Record result;
+  madara::Knowledge_Record result;
 
-  if (args.size () == Madara::Filters::TOTAL_ARGUMENTS)
+  if (args.size () == madara::filters::TOTAL_ARGUMENTS)
   {
     // return the first arg for further processing by other filters
     result = args[0];
@@ -139,10 +139,10 @@ Madara::Filters::log_args (Knowledge_Engine::Function_Arguments & args,
 }
 
 void
-Madara::Filters::log_aggregate (
+madara::filters::log_aggregate (
   Knowledge_Map & records,
-  const Transport::Transport_Context & transport_context,
-  Knowledge_Engine::Variables & vars)
+  const transport::Transport_Context & transport_context,
+  knowledge::Variables & vars)
 {
   std::stringstream buffer;
   buffer << "Aggregate Filter Arguments:\n";

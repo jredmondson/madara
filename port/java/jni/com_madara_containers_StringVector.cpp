@@ -45,11 +45,11 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include "com_madara_containers_StringVector.h"
-#include "madara/knowledge_engine/containers/String_Vector.h"
+#include "madara/knowledge/containers/String_Vector.h"
 #include "madara_jni.h"
 
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
 typedef containers::String_Vector    String_Vector;
 
 /*
@@ -167,12 +167,12 @@ void JNICALL Java_com_madara_containers_StringVector_jni_1setName
 
     if (type == 0)
     {
-      engine::Knowledge_Base * kb = (engine::Knowledge_Base *) context;
+      knowledge::Knowledge_Base * kb = (knowledge::Knowledge_Base *) context;
       current->set_name (str_name, *kb);
     }
     else if (type == 1)
     {
-      engine::Variables * vars = (engine::Variables *) context;
+      knowledge::Variables * vars = (knowledge::Variables *) context;
       current->set_name (str_name, *vars);
     }
 
@@ -211,12 +211,12 @@ jstring JNICALL Java_com_madara_containers_StringVector_jni_1get
 jlong JNICALL Java_com_madara_containers_StringVector_jni_1toRecord__JI
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
-  Madara::Knowledge_Record * result (0);
+  madara::Knowledge_Record * result (0);
   String_Vector * current = (String_Vector *) cptr;
 
   if (current)
   {
-    result = new Madara::Knowledge_Record (current->to_record (index));
+    result = new madara::Knowledge_Record (current->to_record (index));
   }
 
   return (jlong) result;
@@ -231,7 +231,7 @@ jlong JNICALL Java_com_madara_containers_StringVector_jni_1toRecord__JI
 jobjectArray JNICALL Java_com_madara_containers_StringVector_jni_1toArray
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jclass kr_class = Madara::Utility::Java::find_class (
+  jclass kr_class = madara::utility::Java::find_class (
     env, "com/madara/KnowledgeRecord");
   jobjectArray list;
 
@@ -239,7 +239,7 @@ jobjectArray JNICALL Java_com_madara_containers_StringVector_jni_1toArray
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
       "fromPointer", " (J)Lcom/madara/KnowledgeRecord;");
-    Madara::Knowledge_Vector records;
+    madara::Knowledge_Vector records;
     String_Vector * current =
       (String_Vector *)cptr;
     current->copy_to (records);
@@ -333,8 +333,8 @@ void JNICALL Java_com_madara_containers_StringVector_jni_1setSettings
 {
   containers::String_Vector * current =
     (containers::String_Vector *)cptr;
-  engine::Knowledge_Update_Settings * settings =
-    (engine::Knowledge_Update_Settings *)settings_ptr;
+  knowledge::Knowledge_Update_Settings * settings =
+    (knowledge::Knowledge_Update_Settings *)settings_ptr;
 
   if (current && settings)
   {

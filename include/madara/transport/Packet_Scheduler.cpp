@@ -55,7 +55,7 @@ public:
   bool operation;
 };
 
-Madara::Transport::Packet_Scheduler::Packet_Scheduler (
+madara::transport::Packet_Scheduler::Packet_Scheduler (
   const QoS_Transport_Settings * settings)
   : settings_ (settings),
     sent_messages_ (0),
@@ -64,7 +64,7 @@ Madara::Transport::Packet_Scheduler::Packet_Scheduler (
 {
 }
 
-Madara::Transport::Packet_Scheduler::Packet_Scheduler (
+madara::transport::Packet_Scheduler::Packet_Scheduler (
   const Packet_Scheduler & rhs)
   : settings_ (rhs.settings_),
   sent_messages_ (rhs.sent_messages_),
@@ -73,12 +73,12 @@ Madara::Transport::Packet_Scheduler::Packet_Scheduler (
 {
 }
 
-Madara::Transport::Packet_Scheduler::~Packet_Scheduler ()
+madara::transport::Packet_Scheduler::~Packet_Scheduler ()
 {
 }
 
 void
-Madara::Transport::Packet_Scheduler::operator= (
+madara::transport::Packet_Scheduler::operator= (
   const Packet_Scheduler & rhs)
 {
   Scheduler_Guard guard (mutex_);
@@ -92,7 +92,7 @@ Madara::Transport::Packet_Scheduler::operator= (
 }
 
 bool
-Madara::Transport::Packet_Scheduler::add (void)
+madara::transport::Packet_Scheduler::add (void)
 {
   Scheduler_Guard guard (mutex_);
   
@@ -138,7 +138,7 @@ Madara::Transport::Packet_Scheduler::add (void)
             drop_rate = drop_rate / (drop_burst - 1);
 
           // easiest drop rate policy. Just drop messages with a probability.
-          if (Utility::rand_double () <= drop_rate)
+          if (utility::rand_double () <= drop_rate)
           {
             result = false;
           }
@@ -180,7 +180,7 @@ Madara::Transport::Packet_Scheduler::add (void)
   } // end if settings_
   else
   {
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Packet_Scheduler::add: ERROR: Invalid settings class\n");
 
     return true;
@@ -188,14 +188,14 @@ Madara::Transport::Packet_Scheduler::add (void)
 }
 
 void
-Madara::Transport::Packet_Scheduler::attach (
+madara::transport::Packet_Scheduler::attach (
   const QoS_Transport_Settings * settings)
 {
   settings_ = settings;
 }
 
 void
-Madara::Transport::Packet_Scheduler::clear (void)
+madara::transport::Packet_Scheduler::clear (void)
 {
   Scheduler_Guard guard (mutex_);
   
@@ -207,7 +207,7 @@ Madara::Transport::Packet_Scheduler::clear (void)
 }
 
 void
-Madara::Transport::Packet_Scheduler::reset (void)
+madara::transport::Packet_Scheduler::reset (void)
 {
   Scheduler_Guard guard (mutex_);
   
@@ -231,32 +231,32 @@ Madara::Transport::Packet_Scheduler::reset (void)
   }
   else
   {
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Packet_Scheduler::reset: ERROR: Invalid settings class\n");
   }
 }
 
 void
-Madara::Transport::Packet_Scheduler::print_status (
+madara::transport::Packet_Scheduler::print_status (
   unsigned int log_level,
   const char * prefix)
 {
   Scheduler_Guard guard (mutex_);
 
-  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
     "%s: %d sent, %d dropped, %d consec dropped\n",
     prefix, sent_messages_, dropped_messages_, consecutive_drops_);
 }
 
 uint64_t
-Madara::Transport::Packet_Scheduler::get_dropped (void)
+madara::transport::Packet_Scheduler::get_dropped (void)
 {
   Scheduler_Guard guard (mutex_);
   return dropped_messages_;
 }
       
 uint64_t
-Madara::Transport::Packet_Scheduler::get_sent (void)
+madara::transport::Packet_Scheduler::get_sent (void)
 {
   Scheduler_Guard guard (mutex_);
   return sent_messages_;

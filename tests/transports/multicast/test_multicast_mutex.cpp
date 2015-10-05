@@ -5,15 +5,15 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-Madara::Transport::QoS_Transport_Settings settings;
-Madara::Knowledge_Record::Integer processes (2);
+madara::transport::QoS_Transport_Settings settings;
+madara::Knowledge_Record::Integer processes (2);
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -83,7 +83,7 @@ void handle_arguments (int argc, char ** argv)
         buffer >> drop_rate;
         
         settings.update_drop_rate (drop_rate,
-          Madara::Transport::PACKET_DROP_DETERMINISTIC);
+          madara::transport::PACKET_DROP_DETERMINISTIC);
       }
 
       ++i;
@@ -124,20 +124,20 @@ void handle_arguments (int argc, char ** argv)
 }
 
 
-Madara::Knowledge_Record
+madara::Knowledge_Record
 maekawa_receive (
-  Madara::Knowledge_Engine::Function_Arguments & args,
-  Madara::Knowledge_Engine::Variables &)
+  madara::knowledge::Function_Arguments & args,
+  madara::knowledge::Variables &)
 {
-  if (args.size () >= Madara::Filters::TOTAL_ARGUMENTS)
+  if (args.size () >= madara::filters::TOTAL_ARGUMENTS)
   {
-    if (Madara::Utility::begins_with (
-      args[Madara::Filters::RECORD_NAME].to_string (), "MUTEX."))
+    if (madara::utility::begins_with (
+      args[madara::filters::RECORD_NAME].to_string (), "MUTEX."))
     {
       std::vector <std::string> splitters, tokens, pivot_list;
       splitters.push_back (".");
         
-      Madara::Utility::tokenizer (args[Madara::Filters::RECORD_NAME].to_string (),
+      madara::utility::tokenizer (args[madara::filters::RECORD_NAME].to_string (),
         splitters, tokens, pivot_list);
 
       if (tokens.size () == 4)
@@ -157,13 +157,13 @@ maekawa_receive (
 
         }
       }
-      return Madara::Knowledge_Record ();
+      return madara::Knowledge_Record ();
     }
     else
       return args[0];
   }
   else
-    return Madara::Knowledge_Record ();
+    return madara::Knowledge_Record ();
 }
 
 
@@ -174,20 +174,20 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
   
 #ifndef _MADARA_NO_KARL_
-  settings.type = Madara::Transport::MULTICAST;
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  settings.type = madara::transport::MULTICAST;
+  madara::knowledge::Wait_Settings wait_settings;
   wait_settings.max_wait_time = 10;
 
-  Madara::Knowledge_Engine::Eval_Settings eval_settings;
+  madara::knowledge::Eval_Settings eval_settings;
   eval_settings.treat_globals_as_locals = true;
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  madara::knowledge::Knowledge_Base knowledge (host, settings);
 
   knowledge.set ("SYSTEM.id",
-    (Madara::Knowledge_Record::Integer) settings.id, eval_settings);
+    (madara::Knowledge_Record::Integer) settings.id, eval_settings);
   
   knowledge.set ("SYSTEM.processes",
-    (Madara::Knowledge_Record::Integer) processes, eval_settings);
+    (madara::Knowledge_Record::Integer) processes, eval_settings);
 
   knowledge.print ();
   

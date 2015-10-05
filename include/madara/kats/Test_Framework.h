@@ -10,30 +10,30 @@
 
 #include "madara/kats/KATS_export.h"
 //#include "madara/transport/Transport.h"
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
-namespace Madara
+namespace madara
 {
 
-  namespace KATS
+  namespace kats
   {
-    class KATS_Export Settings : public Madara::Transport::Settings
+    class KATS_Export Settings : public madara::transport::Settings
     {
     public:
       /// Default knowledge domain
       #define DEFAULT_KATS_DOMAIN       "KATS"
-      #define DEFAULT_KATS_TRANSPORT    Madara::Transport::SPLICE
+      #define DEFAULT_KATS_TRANSPORT    madara::transport::SPLICE
       #define DEFAULT_ID                0
       #define DEFAULT_PROCESSES         1
       #define DEFAULT_HOST              "localhost"
-      #define DEFAULT_KATS_RELIABILITY  Madara::Transport::RELIABLE
+      #define DEFAULT_KATS_RELIABILITY  madara::transport::RELIABLE
 
     /**
      * @class Settings
      * @brief Provides a testing configuration to a KATS Test Framework
      */
       Settings ()
-        : Madara::Transport::Settings ()
+        : madara::transport::Settings ()
       {
         // set the underlying members
         this->domains = DEFAULT_KATS_DOMAIN;
@@ -80,7 +80,7 @@ namespace Madara
        * Barriers on all processes until everyone is at the event
        * @param    event_name    name of the event to barrier on
        */
-      Madara::Knowledge_Record::Integer barrier (const std::string & event_name);
+      madara::Knowledge_Record::Integer barrier (const std::string & event_name);
 
       /**
        * Attempts to send out all global knowledge
@@ -137,7 +137,7 @@ namespace Madara
        * @param key                knowledge location
        * @return                   value at knowledge location
        **/
-      Madara::Knowledge_Record::Integer get (const ::std::string & key);
+      madara::Knowledge_Record::Integer get (const ::std::string & key);
 
       /**
        * Sets a knowledge value to a specified value
@@ -148,7 +148,7 @@ namespace Madara
        *                     -2 if quality isn't high enough
        **/
       int set (const ::std::string & key,
-        Madara::Knowledge_Record::Integer value = 1);
+        madara::Knowledge_Record::Integer value = 1);
 
 
       /**
@@ -158,7 +158,7 @@ namespace Madara
       void dump (unsigned int level = 0);
 
     private:
-      Madara::Knowledge_Engine::Knowledge_Base knowledge_;
+      madara::knowledge::Knowledge_Base knowledge_;
     };
 
   }

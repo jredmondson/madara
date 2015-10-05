@@ -5,7 +5,7 @@
 #include "Bandwidth_Monitor.h"
 
 inline time_t
-Madara::Transport::Bandwidth_Monitor::update_utilization (void)
+madara::transport::Bandwidth_Monitor::update_utilization (void)
 {
   Bandwidth_Guard guard (mutex_);
   

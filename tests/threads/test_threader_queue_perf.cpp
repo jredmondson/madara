@@ -5,22 +5,22 @@
 #include <algorithm>
 #include <sstream>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/logger/Global_Logger.h"
 
 #include "madara/threads/Threader.h"
 #include "madara/utility/Utility.h"
-#include "madara/knowledge_engine/containers/Queue.h"
-#include "madara/knowledge_engine/containers/Integer.h"
+#include "madara/knowledge/containers/Queue.h"
+#include "madara/knowledge/containers/Integer.h"
 
 // shortcuts
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
-namespace utility = Madara::Utility;
-namespace threads = Madara::Threads;
-namespace logger = Madara::Logger;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
+namespace utility = madara::utility;
+namespace threads = madara::Threads;
+namespace logger = madara::logger;
 
-typedef Madara::Knowledge_Record::Integer Integer;
+typedef madara::Knowledge_Record::Integer Integer;
 
 // default transport settings
 
@@ -157,7 +157,7 @@ public:
     * Initializes thread with MADARA context
     * @param   context   context for querying current program state
     **/
-  virtual void init (engine::Knowledge_Base & context)
+  virtual void init (knowledge::Knowledge_Base & context)
   {
     // initialize references to variables in the knowledge base
     jobs.set_name ("jobs", context);
@@ -172,7 +172,7 @@ public:
   virtual void run (void)
   {
     // dequeue until terminate
-    Madara::Knowledge_Record job = jobs.dequeue (false);
+    madara::Knowledge_Record job = jobs.dequeue (false);
 
     if (job.is_valid ())
     {
@@ -184,7 +184,7 @@ public:
 private:
   containers::Queue jobs;
   containers::Integer jobs_completed;
-  engine::Knowledge_Base data;
+  knowledge::Knowledge_Base data;
 };
 
 class Producer: public threads::Base_Thread
@@ -202,7 +202,7 @@ public:
     * Initializes thread with MADARA context
     * @param   context   context for querying current program state
     **/
-  virtual void init (engine::Knowledge_Base & context)
+  virtual void init (knowledge::Knowledge_Base & context)
   {
     jobs.set_name ("jobs", context);
 
@@ -221,12 +221,12 @@ public:
     /**
       * generate job consisting of 4 possible events: (int: 0-3)
       **/
-    jobs.enqueue (Madara::Utility::rand_int (0, 3, false));
+    jobs.enqueue (madara::utility::rand_int (0, 3, false));
   }
 
 private:
   containers::Queue jobs;
-  engine::Knowledge_Base data;
+  knowledge::Knowledge_Base data;
 };
 
 int main (int argc, char ** argv)
@@ -235,7 +235,7 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
   
   // create a knowledge base and setup our id
-  engine::Knowledge_Base knowledge;
+  knowledge::Knowledge_Base knowledge;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Hertz rate set to %f\n"
@@ -253,7 +253,7 @@ int main (int argc, char ** argv)
   threads::Threader threader (knowledge);
 
   // explicitly set random seed to right now for randomizer engine
-  Madara::Utility::rand_int (0, 1, true);
+  madara::utility::rand_int (0, 1, true);
 
   for (Integer i = 0; i < producers; ++i)
   {

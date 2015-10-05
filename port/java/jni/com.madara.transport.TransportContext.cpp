@@ -12,9 +12,9 @@
 
 
 // define useful shorthands
-namespace engine = Madara::Knowledge_Engine;
-namespace transport = Madara::Transport;
-typedef Madara::Knowledge_Record  Knowledge_Record;
+namespace knowledge = madara::knowledge;
+namespace transport = madara::transport;
+typedef madara::Knowledge_Record  Knowledge_Record;
 typedef Knowledge_Record::Integer Integer;
 typedef transport::Transport_Context Transport_Context;
 

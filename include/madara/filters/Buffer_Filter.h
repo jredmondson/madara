@@ -12,9 +12,9 @@
 
 #include <list>
 
-namespace Madara
+namespace madara
 {
-  namespace Filters
+  namespace filters
   {
     /**
      * Abstract base class for implementing buffer filters via

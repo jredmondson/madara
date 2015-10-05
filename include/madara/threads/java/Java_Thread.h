@@ -16,7 +16,7 @@
 
 #include "madara/threads/Base_Thread.h"
 
-namespace Madara
+namespace madara
 {
   namespace Threads
   {
@@ -41,7 +41,7 @@ namespace Madara
        * Initializes Java thread with MADARA context
        * @param   context   context for querying current program state
        **/
-      virtual void init (Knowledge_Engine::Knowledge_Base & context);
+      virtual void init (knowledge::Knowledge_Base & context);
 
       /**
        * Executes the Java thread's logic.
@@ -79,7 +79,7 @@ namespace Madara
        * @param control the control plane between Threader and threads
        **/
       virtual void init_control_vars (
-        Knowledge_Engine::Knowledge_Base & control);
+        knowledge::Knowledge_Base & control);
 
       /// the Java thread implementation of com.madara.threads.BaseThread
       jobject obj_;

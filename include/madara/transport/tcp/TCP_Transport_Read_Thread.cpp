@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-Madara::Transport::TCP_Transport_Read_Thread::TCP_Transport_Read_Thread (
+madara::transport::TCP_Transport_Read_Thread::TCP_Transport_Read_Thread (
   const Settings & settings,
   const std::string & id,
   std::map <std::string, ACE_INET_Addr> & addresses,
@@ -19,8 +19,8 @@ Madara::Transport::TCP_Transport_Read_Thread::TCP_Transport_Read_Thread (
 }
 
 void
-Madara::Transport::TCP_Transport_Read_Thread::init (
-Knowledge_Engine::Knowledge_Base & knowledge)
+madara::transport::TCP_Transport_Read_Thread::init (
+knowledge::Knowledge_Base & knowledge)
 {
   context_ = &(knowledge.get_context ());
 
@@ -35,18 +35,18 @@ Knowledge_Engine::Knowledge_Base & knowledge)
     {
 
 #ifndef _MADARA_NO_KARL_
-      madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
         "TCP_Transport_Read_Thread::init:" \
         " setting rules to %s\n",
         settings_.on_data_received_logic.c_str ());
 
-      Madara::Expression_Tree::Interpreter interpreter;
+      madara::expression_tree::Interpreter interpreter;
       on_data_received_ = context_->compile (settings_.on_data_received_logic);
 #endif // _MADARA_NO_KARL_
     }
     else
     {
-      madara_logger_log (context_->get_logger (), Logger::LOG_MINOR,
+      madara_logger_log (context_->get_logger (), logger::LOG_MINOR,
         "TCP_Transport_Read_Thread::init:" \
         " no permanent rules were set");
     }
@@ -54,7 +54,7 @@ Knowledge_Engine::Knowledge_Base & knowledge)
 }
 
 void
-Madara::Transport::TCP_Transport_Read_Thread::rebroadcast (
+madara::transport::TCP_Transport_Read_Thread::rebroadcast (
 const char * print_prefix,
 Message_Header * header,
 const Knowledge_Map & records)
@@ -79,7 +79,7 @@ const Knowledge_Map & records)
       {
         Fragment_Map map;
 
-        madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+        madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
           "%s:" \
           " fragmenting %" PRIu64 " byte packet (%" PRIu32 " bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
@@ -101,9 +101,9 @@ const Knowledge_Map & records)
 
               // sleep between fragments, if such a slack time is specified
               if (settings_.slack_time > 0)
-                Madara::Utility::sleep (settings_.slack_time);
+                madara::utility::sleep (settings_.slack_time);
 
-              madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+              madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
                 "%s:" \
                 " Send result was %d of %d byte fragment to %s\n",
                 print_prefix, actual_sent, frag_size, addr->first.c_str ());
@@ -117,7 +117,7 @@ const Knowledge_Map & records)
           }
         }
 
-        madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+        madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
           "%s:" \
           " Sent fragments totalling %" PRIu64 " bytes\n",
           print_prefix, bytes_sent);
@@ -133,7 +133,7 @@ const Knowledge_Map & records)
           {
             ssize_t actual_sent = -1;
 
-            madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+            madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
               "%s:" \
               " Sent %d packet to %s\n",
               print_prefix, packet_size, i->first.c_str ());
@@ -146,13 +146,13 @@ const Knowledge_Map & records)
           }
         }
 
-        madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+        madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
           "%s:" \
           " Sent %d total bytes via rebroadcast\n",
           print_prefix, bytes_sent);
       }
 
-      madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
         "%s:" \
         " Send bandwidth = %" PRIu64 " B/s\n",
         print_prefix,
@@ -162,13 +162,13 @@ const Knowledge_Map & records)
 }
 
 void
-Madara::Transport::TCP_Transport_Read_Thread::cleanup (void)
+madara::transport::TCP_Transport_Read_Thread::cleanup (void)
 {
 }
 
 
 void
-Madara::Transport::TCP_Transport_Read_Thread::run (void)
+madara::transport::TCP_Transport_Read_Thread::run (void)
 {
   if (!settings_.no_receiving)
   {
@@ -180,7 +180,7 @@ Madara::Transport::TCP_Transport_Read_Thread::run (void)
     const char * print_prefix = "TCP_Transport_Read_Thread::run";
     int64_t buffer_remaining = settings_.queue_length;
 
-    madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
       "%s:" \
       " entering main service loop.\n",
       print_prefix);
@@ -189,7 +189,7 @@ Madara::Transport::TCP_Transport_Read_Thread::run (void)
 
     if (buffer == 0)
     {
-      madara_logger_log (context_->get_logger (), Logger::LOG_MINOR,
+      madara_logger_log (context_->get_logger (), logger::LOG_MINOR,
         "%s:" \
         " Unable to allocate buffer of size " PRIu32 ". Exiting thread.\n",
         print_prefix,
@@ -198,14 +198,14 @@ Madara::Transport::TCP_Transport_Read_Thread::run (void)
       return;
     }
 
-    madara_logger_log (context_->get_logger (), Logger::LOG_MINOR,
+    madara_logger_log (context_->get_logger (), logger::LOG_MINOR,
       "%s:" \
       " entering a recv on the socket.\n",
       print_prefix);
 
     ssize_t bytes_read = 0;
 
-    madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+    madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
       "%s:" \
       " received a message header of %" PRIu64 " bytes from %s:%d\n",
       print_prefix,
@@ -247,7 +247,7 @@ Madara::Transport::TCP_Transport_Read_Thread::run (void)
     }
     else
     {
-      madara_logger_log (context_->get_logger (), Logger::LOG_MAJOR,
+      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
         "%s:" \
         " wait timeout on new messages. Proceeding to next wait\n",
         print_prefix);

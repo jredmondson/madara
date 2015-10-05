@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Transport.h"
 
 #include <ndds/ndds_cpp.h>
@@ -35,7 +35,7 @@ namespace Madara
        **/
       NDDS_Listener(
         const Settings & settings, const std::string & id,
-        Madara::Knowledge_Engine::Thread_Safe_Context & context,
+        knowledge::Thread_Safe_Context & context,
         Bandwidth_Monitor & send_monitor,
         Bandwidth_Monitor & receive_monitor,
         Packet_Scheduler & packet_scheduler);
@@ -83,13 +83,13 @@ namespace Madara
 
       // NDDS variables
       const std::string id_;
-      ::Madara::Knowledge_Engine::Thread_Safe_Context & context_;
+      knowledge::Thread_Safe_Context & context_;
       
       /// data received rules, defined in Transport settings
-      Madara::Knowledge_Engine::Compiled_Expression  on_data_received_;
+      knowledge::Compiled_Expression  on_data_received_;
       
       /// buffer for receiving
-      Madara::Utility::Scoped_Array <char>      buffer_;
+      utility::Scoped_Array <char>      buffer_;
 
       /// pointer to qos_settings (if applicable)
       const QoS_Transport_Settings *      qos_settings_;

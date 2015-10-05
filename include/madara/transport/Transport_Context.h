@@ -5,11 +5,11 @@
 #include "madara/utility/stdint.h"
 #include <time.h>
 #include <string>
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class Transport_Context
@@ -133,7 +133,7 @@ namespace Madara
        * @param   record   record to add to the append list
        **/
       void add_record (const std::string & key,
-        const Madara::Knowledge_Record & record);
+        const madara::Knowledge_Record & record);
 
       /**
        * Returns the additional records stored in the context

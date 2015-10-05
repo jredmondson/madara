@@ -2,9 +2,9 @@
 #ifndef _VISITOR_H_
 #define _VISITOR_H_
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     class Leaf_Node;
     class Variable_Node;

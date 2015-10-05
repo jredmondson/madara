@@ -5,12 +5,12 @@
 #include "madara/utility/Utility.h"
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_To_Host_Dirs.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/expression_tree/Visitor.h"
 
 
-Madara::Expression_Tree::System_Call_To_Host_Dirs::System_Call_To_Host_Dirs (
-  Madara::Knowledge_Engine::Thread_Safe_Context & context,
+madara::expression_tree::System_Call_To_Host_Dirs::System_Call_To_Host_Dirs (
+  madara::knowledge::Thread_Safe_Context & context,
   const Component_Nodes & nodes)
   : System_Call_Node (context, nodes)
 {
@@ -18,28 +18,28 @@ Madara::Expression_Tree::System_Call_To_Host_Dirs::System_Call_To_Host_Dirs (
 }
 
 // Dtor
-Madara::Expression_Tree::System_Call_To_Host_Dirs::~System_Call_To_Host_Dirs (void)
+madara::expression_tree::System_Call_To_Host_Dirs::~System_Call_To_Host_Dirs (void)
 {
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::System_Call_To_Host_Dirs::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::System_Call_To_Host_Dirs::item (void) const
 {
-  return Madara::Knowledge_Record::Integer (nodes_.size ());
+  return madara::Knowledge_Record::Integer (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::System_Call_To_Host_Dirs::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::System_Call_To_Host_Dirs::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
   // what it does. Consequently, a function node cannot be pruned out
   // under any situation
   can_change = true;
   
-  Madara::Knowledge_Record result;
+  madara::Knowledge_Record result;
 
   if (nodes_.size () == 1)
   {
@@ -54,7 +54,7 @@ Madara::Expression_Tree::System_Call_To_Host_Dirs::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
       " on Windows\n");
@@ -66,9 +66,9 @@ Madara::Expression_Tree::System_Call_To_Host_Dirs::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::System_Call_To_Host_Dirs::evaluate (
-const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::System_Call_To_Host_Dirs::evaluate (
+const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   Knowledge_Record return_value;
 
@@ -76,15 +76,15 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   {
     std::string statement (nodes_[0]->evaluate (settings).to_string ());
 
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call to_host_dirs is returning the proper directory structure "
       "of %s.\n", statement.c_str ());
 
-    return Madara::Utility::clean_dir_name (statement);
+    return madara::utility::clean_dir_name (statement);
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
       " on Windows\n");
@@ -95,8 +95,8 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
 // accept a visitor
 void 
-Madara::Expression_Tree::System_Call_To_Host_Dirs::accept (
-  Madara::Expression_Tree::Visitor &visitor) const
+madara::expression_tree::System_Call_To_Host_Dirs::accept (
+  madara::expression_tree::Visitor &visitor) const
 {
   visitor.visit (*this);
 }

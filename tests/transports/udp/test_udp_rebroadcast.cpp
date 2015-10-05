@@ -5,17 +5,17 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/filters/Generic_Filters.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
 
 std::string host ("");
 const std::string default_host1 ("127.0.0.1:43110");
 const std::string default_host2 ("127.0.0.1:43111");
-Madara::Transport::QoS_Transport_Settings settings;
+madara::transport::QoS_Transport_Settings settings;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -84,7 +84,7 @@ void handle_arguments (int argc, char ** argv)
         buffer >> drop_rate;
         
         settings.update_drop_rate (drop_rate,
-          Madara::Transport::PACKET_DROP_DETERMINISTIC);
+          madara::transport::PACKET_DROP_DETERMINISTIC);
       }
 
       ++i;
@@ -116,10 +116,10 @@ void handle_arguments (int argc, char ** argv)
 
 std::string source_var ("var1");
 
-Madara::Knowledge_Record
+madara::Knowledge_Record
 alter_rebroadcast (
-  Madara::Knowledge_Engine::Function_Arguments & args,
-  Madara::Knowledge_Engine::Variables &)
+  madara::knowledge::Function_Arguments & args,
+  madara::knowledge::Variables &)
 {
   /**
    * for filters, first argument is the record, second argument is the var
@@ -132,13 +132,13 @@ alter_rebroadcast (
     // if the second argument is equal to our var_ref
     if (args.size () >= 2 && args[1].to_string () == source_var)
     {
-      args[0].set_value (Madara::Knowledge_Record::Integer (1));
+      args[0].set_value (madara::Knowledge_Record::Integer (1));
     }
 
     return args[0];
   }
   else
-    return Madara::Knowledge_Record ();
+    return madara::Knowledge_Record ();
 }
 
 
@@ -178,27 +178,27 @@ int main (int argc, char ** argv)
     }
   }
   
-  settings.type = Madara::Transport::UDP;
-  settings.add_receive_filter (Madara::Knowledge_Record::DOUBLE,
-                               Madara::Filters::discard);
+  settings.type = madara::transport::UDP;
+  settings.add_receive_filter (madara::Knowledge_Record::DOUBLE,
+                               madara::filters::discard);
   settings.enable_participant_ttl (2);
   settings.set_rebroadcast_ttl (2);
-  settings.add_rebroadcast_filter (Madara::Knowledge_Record::INTEGER,
+  settings.add_rebroadcast_filter (madara::Knowledge_Record::INTEGER,
     alter_rebroadcast);
 
 
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  madara::knowledge::Wait_Settings wait_settings;
   wait_settings.max_wait_time = 10.0;
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  madara::knowledge::Knowledge_Base knowledge (host, settings);
 
-  knowledge.set (".id", (Madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (madara::Knowledge_Record::Integer) settings.id);
 
   if (settings.id == 0)
   {
     // we're keying off var3, so look out for that in the filter
     source_var = "var3";
-    Madara::Knowledge_Engine::Compiled_Expression compiled = 
+    madara::knowledge::Compiled_Expression compiled = 
       knowledge.compile (
         "(var2 = 4) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3 == 1"
       );
@@ -224,7 +224,7 @@ int main (int argc, char ** argv)
   {
     // we're keying off var2, so look out for that in the filter
     source_var = "var2";
-    Madara::Knowledge_Engine::Compiled_Expression compiled = 
+    madara::knowledge::Compiled_Expression compiled = 
       knowledge.compile ("var4 = 3.14159 ;> !var1 && var2 == 1 => var3 = 4");
 
     knowledge.wait (compiled, wait_settings);

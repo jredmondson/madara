@@ -7,16 +7,16 @@
 #include <string>
 #include "madara/expression_tree/Component_Node.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     // Forward declarations.
     class Visitor;
 
     /**
      * @class Leaf_Node
-     * @brief Defines a node that contains a Madara::Knowledge_Record::Integer value
+     * @brief Defines a node that contains a madara::Knowledge_Record::Integer value
      */
 
     class Leaf_Node : public Component_Node
@@ -27,7 +27,7 @@ namespace Madara
        * @param   logger the logger to use for printing
        * @param   item    value of the node
        **/
-      Leaf_Node (Logger::Logger & logger,
+      Leaf_Node (logger::Logger & logger,
         const Knowledge_Record & item);
       
       /**
@@ -35,15 +35,15 @@ namespace Madara
        * @param   logger the logger to use for printing
        * @param   item    value of the node
        **/
-      Leaf_Node (Logger::Logger & logger,
-        Madara::Knowledge_Record::Integer item);
+      Leaf_Node (logger::Logger & logger,
+        madara::Knowledge_Record::Integer item);
       
       /**
        * Double Constructor
        * @param   logger the logger to use for printing
        * @param   item    value of the node
        **/
-      Leaf_Node (Logger::Logger & logger,
+      Leaf_Node (logger::Logger & logger,
         double item);
 
       /**
@@ -51,7 +51,7 @@ namespace Madara
        * @param   logger the logger to use for printing
        * @param   item    value of the node
        **/
-      Leaf_Node (Logger::Logger & logger,
+      Leaf_Node (logger::Logger & logger,
         const std::string &item);
 
       /**
@@ -63,21 +63,21 @@ namespace Madara
        * Returns the printable value of the node
        * @return    value of the node
        **/
-      virtual Madara::Knowledge_Record item (void) const;
+      virtual madara::Knowledge_Record item (void) const;
 
       /** 
        * Prunes the expression tree of unnecessary nodes. 
        * @param     can_change   set to true if variable nodes are contained
        * @return    value of this node
        **/
-      virtual Madara::Knowledge_Record prune (bool & can_change);
+      virtual madara::Knowledge_Record prune (bool & can_change);
 
       /** 
        * Evaluates the expression tree. 
        * @return    value of this node
        **/
-      virtual Madara::Knowledge_Record evaluate (
-        const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings);
+      virtual madara::Knowledge_Record evaluate (
+        const madara::knowledge::Knowledge_Update_Settings & settings);
 
       /** 
        * Accepts a visitor subclassed from the Visitor class
@@ -87,7 +87,7 @@ namespace Madara
 
     private:
       /// Integer value associated with the operand.
-      Madara::Knowledge_Record item_;
+      madara::Knowledge_Record item_;
     };
 
   }

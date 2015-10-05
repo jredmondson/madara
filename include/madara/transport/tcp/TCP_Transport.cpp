@@ -2,7 +2,7 @@
 #include "madara/transport/tcp/TCP_Transport_Read_Thread.h"
 #include "madara/transport/Transport_Context.h"
 
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 #include "madara/transport/Reduced_Message_Header.h"
 #include "madara/utility/Utility.h"
 #include "ace/INET_Addr.h"
@@ -11,8 +11,8 @@
 
 #include <iostream>
 
-Madara::Transport::TCP_Transport::TCP_Transport (const std::string & id,
-  Madara::Knowledge_Engine::Thread_Safe_Context & context,
+madara::transport::TCP_Transport::TCP_Transport (const std::string & id,
+  madara::knowledge::Thread_Safe_Context & context,
   Settings & config, bool launch_transport)
   : Base (id, config, context)
 {
@@ -26,13 +26,13 @@ Madara::Transport::TCP_Transport::TCP_Transport (const std::string & id,
     setup ();
 }
 
-Madara::Transport::TCP_Transport::~TCP_Transport ()
+madara::transport::TCP_Transport::~TCP_Transport ()
 {
   close ();
 }
 
 void
-Madara::Transport::TCP_Transport::close (void)
+madara::transport::TCP_Transport::close (void)
 {
   this->invalidate_transport ();
 
@@ -42,19 +42,19 @@ Madara::Transport::TCP_Transport::close (void)
 }
 
 int
-Madara::Transport::TCP_Transport::reliability (void) const
+madara::transport::TCP_Transport::reliability (void) const
 {
   return RELIABLE;
 }
 
 int
-Madara::Transport::TCP_Transport::reliability (const int &)
+madara::transport::TCP_Transport::reliability (const int &)
 {
   return RELIABLE;
 }
 
 int
-Madara::Transport::TCP_Transport::setup (void)
+madara::transport::TCP_Transport::setup (void)
 {
   // call base setup method to initialize certain common variables
   Base::setup ();
@@ -70,19 +70,19 @@ Madara::Transport::TCP_Transport::setup (void)
     int rcv_buff_size = 0;
     int opt_len = sizeof (int);
 
-    context_.get_logger ().log (Logger::LOG_MAJOR,
+    madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "TCP_Transport::setup:" \
       " default socket buff size is send=%d, rcv=%d\n",
       send_buff_size, rcv_buff_size);
 
     if (send_buff_size < tar_buff_size)
     {
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "TCP_Transport::setup:" \
         " setting send buff size to settings.queue_length (%d)\n",
         tar_buff_size);
 
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "TCP_Transport::setup:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
@@ -90,12 +90,12 @@ Madara::Transport::TCP_Transport::setup (void)
 
     if (rcv_buff_size < tar_buff_size)
     {
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "TCP_Transport::setup:" \
         " setting rcv buff size to settings.queue_length (%d)\n",
         tar_buff_size);
       
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "TCP_Transport::setup:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
@@ -115,7 +115,7 @@ Madara::Transport::TCP_Transport::setup (void)
         hertz = 0.0;
       }
 
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "TCP_Transport_Read_Thread::setup:" \
         " starting %d threads at %f hertz\n", settings_.read_threads,
         hertz);
@@ -138,8 +138,8 @@ Madara::Transport::TCP_Transport::setup (void)
 }
 
 long
-Madara::Transport::TCP_Transport::send_data (
-const Madara::Knowledge_Records & orig_updates)
+madara::transport::TCP_Transport::send_data (
+const madara::Knowledge_Records & orig_updates)
 {
   const char * print_prefix = "TCP_Transport::send_data";
 
@@ -158,7 +158,7 @@ const Madara::Knowledge_Records & orig_updates)
       {
         Fragment_Map map;
 
-        context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
           "%s:" \
           " fragmenting %" PRIu64 " byte packet (%" PRIu32 " bytes is max fragment size)\n",
           print_prefix, packet_size, settings_.max_fragment_size);
@@ -180,9 +180,9 @@ const Madara::Knowledge_Records & orig_updates)
 
               // sleep between fragments, if such a slack time is specified
               if (settings_.slack_time > 0)
-                Madara::Utility::sleep (settings_.slack_time);
+                madara::utility::sleep (settings_.slack_time);
 
-              context_.get_logger ().log (Logger::LOG_MAJOR,
+              madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
                 "%s: Send result was %d of %d byte fragment to %s\n",
                 print_prefix, actual_sent, frag_size, addr->first.c_str ());
 
@@ -195,7 +195,7 @@ const Madara::Knowledge_Records & orig_updates)
           }
         }
 
-        context_.get_logger ().log (Logger::LOG_MAJOR,
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
           "%s:" \
           " Sent fragments totalling %" PRIu64 " bytes\n",
           print_prefix, bytes_sent);
@@ -211,7 +211,7 @@ const Madara::Knowledge_Records & orig_updates)
           {
             ssize_t actual_sent = -1;
 
-            context_.get_logger ().log (Logger::LOG_MAJOR,
+            madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
               "%s:" \
               " Sent %d packet to %s\n",
               print_prefix, packet_size, i->first.c_str ());
@@ -227,7 +227,7 @@ const Madara::Knowledge_Records & orig_updates)
 
       result = (long)bytes_sent;
 
-      context_.get_logger ().log (Logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "%s:" \
         " Send bandwidth = %" PRIu64 " B/s\n",
         print_prefix, send_monitor_.get_bytes_per_second ());

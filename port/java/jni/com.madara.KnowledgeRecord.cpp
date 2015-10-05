@@ -6,20 +6,20 @@
 *********************************************************************/
 
 #include "com.madara.KnowledgeRecord.h"
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 
 #include <stdio.h>
 
 // define useful shorthands
-namespace engine = Madara::Knowledge_Engine;
-typedef Madara::Knowledge_Record  Knowledge_Record;
+namespace knowledge = madara::knowledge;
+typedef madara::Knowledge_Record  Knowledge_Record;
 typedef Knowledge_Record::Integer Integer;
 
 
 jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__
   (JNIEnv *, jobject)
 {
-  return (jlong) new Madara::Knowledge_Record ();
+  return (jlong) new madara::Knowledge_Record ();
 }
 
 /*

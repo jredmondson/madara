@@ -12,7 +12,7 @@
 #include <string>
 
 #include "madara/utility/Scoped_Array.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Bandwidth_Monitor.h"
 #include "madara/transport/QoS_Transport_Settings.h"
 #include "madara/expression_tree/Expression_Tree.h"
@@ -30,9 +30,9 @@
 
 #include "ace/Synch.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class Broadcast_Transport_Read_Thread
@@ -68,7 +68,7 @@ namespace Madara
        * Initializes MADARA context-related items
        * @param   knowledge   context for querying current program state
        **/
-      void init (Knowledge_Engine::Knowledge_Base & knowledge);
+      void init (knowledge::Knowledge_Base & knowledge);
 
       /**
        * Cleanup function called by thread manager
@@ -101,7 +101,7 @@ namespace Madara
       const std::string                                 id_;
       
       /// knowledge context
-      Knowledge_Engine::Thread_Safe_Context * context_;
+      knowledge::Thread_Safe_Context * context_;
       
       /// The broadcast address we are subscribing to
       ACE_INET_Addr                      address_;
@@ -114,11 +114,11 @@ namespace Madara
       
 #ifndef _MADARA_NO_KARL_
       /// data received rules, defined in Transport settings
-      Madara::Knowledge_Engine::Compiled_Expression  on_data_received_;
+      madara::knowledge::Compiled_Expression  on_data_received_;
 #endif // _MADARA_NO_KARL_
       
       /// buffer for sending
-      Madara::Utility::Scoped_Array <char>      buffer_;
+      madara::utility::Scoped_Array <char>      buffer_;
 
       /// pointer to qos_settings (if applicable)
       const QoS_Transport_Settings *      qos_settings_;

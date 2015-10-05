@@ -5,12 +5,12 @@
 #include "madara/utility/Thread_Safe_Vector.h"
 
 template <typename T>
-Madara::Utility::Thread_Safe_Vector<T>::Thread_Safe_Vector (void)
+madara::utility::Thread_Safe_Vector<T>::Thread_Safe_Vector (void)
 {
 }
 
 template <typename T>
-Madara::Utility::Thread_Safe_Vector<T>::Thread_Safe_Vector (
+madara::utility::Thread_Safe_Vector<T>::Thread_Safe_Vector (
   const Thread_Safe_Vector &rhs)
 {
   Guard rhs_guard (rhs.mutex_);
@@ -18,21 +18,21 @@ Madara::Utility::Thread_Safe_Vector<T>::Thread_Safe_Vector (
 }
 
 template <typename T>
-Madara::Utility::Thread_Safe_Vector<T>::Thread_Safe_Vector (
+madara::utility::Thread_Safe_Vector<T>::Thread_Safe_Vector (
   const std::vector<T> &rhs)
 {
   vector_ = rhs;
 }
 
 template <typename T>
-Madara::Utility::Thread_Safe_Vector<T>::~Thread_Safe_Vector (void)
+madara::utility::Thread_Safe_Vector<T>::~Thread_Safe_Vector (void)
 {
   clear ();
 }
 
 template <typename T>
 void
-  Madara::Utility::Thread_Safe_Vector<T>::operator= (const Thread_Safe_Vector& rhs)
+  madara::utility::Thread_Safe_Vector<T>::operator= (const Thread_Safe_Vector& rhs)
 {
   Guard guard (mutex_);
   Guard rhs_guard (rhs.mutex_);
@@ -45,7 +45,7 @@ void
 
 template <typename T>
 void
-  Madara::Utility::Thread_Safe_Vector<T>::operator= (const std::vector<T> & rhs)
+  madara::utility::Thread_Safe_Vector<T>::operator= (const std::vector<T> & rhs)
 {
   Guard guard (mutex_);
 
@@ -56,35 +56,35 @@ void
 }
 
 template <typename T>
-T & Madara::Utility::Thread_Safe_Vector<T>::operator[] (size_t index)
+T & madara::utility::Thread_Safe_Vector<T>::operator[] (size_t index)
 {
   Guard guard (mutex_);
   return vector_[index];
 }
 
 template <typename T>
-const T & Madara::Utility::Thread_Safe_Vector<T>::operator[] (size_t index) const
+const T & madara::utility::Thread_Safe_Vector<T>::operator[] (size_t index) const
 {
   Guard guard (mutex_);
   return vector_[index];
 }
 
 template <typename T>
-void Madara::Utility::Thread_Safe_Vector<T>::push_back (T & value)
+void madara::utility::Thread_Safe_Vector<T>::push_back (T & value)
 {
   Guard guard (mutex_);
   vector_.push_back (value);
 }
 
 template <typename T>
-const T & Madara::Utility::Thread_Safe_Vector<T>::back (void) const
+const T & madara::utility::Thread_Safe_Vector<T>::back (void) const
 {
   Guard guard (mutex_);
   return vector_.back ();
 }
 
 template <typename T>
-T Madara::Utility::Thread_Safe_Vector<T>::pop_back (void)
+T madara::utility::Thread_Safe_Vector<T>::pop_back (void)
 {
   Guard guard (mutex_);
   T result (vector_.back ());
@@ -94,7 +94,7 @@ T Madara::Utility::Thread_Safe_Vector<T>::pop_back (void)
 }
 
 template <typename T>
-size_t Madara::Utility::Thread_Safe_Vector<T>::erase (size_t index)
+size_t madara::utility::Thread_Safe_Vector<T>::erase (size_t index)
 {
   Guard guard (mutex_);
 
@@ -105,67 +105,67 @@ size_t Madara::Utility::Thread_Safe_Vector<T>::erase (size_t index)
 }
 
 template <typename T>
-T & Madara::Utility::Thread_Safe_Vector<T>::back (void)
+T & madara::utility::Thread_Safe_Vector<T>::back (void)
 {
   Guard guard (mutex_);
   return vector_.back ();
 }
 
 template <typename T>
-void Madara::Utility::Thread_Safe_Vector<T>::resize (size_t new_size) const
+void madara::utility::Thread_Safe_Vector<T>::resize (size_t new_size) const
 {
   Guard guard (mutex_);
   vector_.resize (new_size);
 }
 
 template <typename T>
-void Madara::Utility::Thread_Safe_Vector<T>::reserve (size_t new_size) const
+void madara::utility::Thread_Safe_Vector<T>::reserve (size_t new_size) const
 {
   Guard guard (mutex_);
   vector_.reserve (new_size);
 }
 
 template <typename T>
-size_t Madara::Utility::Thread_Safe_Vector<T>::size (void) const
+size_t madara::utility::Thread_Safe_Vector<T>::size (void) const
 {
   Guard guard (mutex_);
   return vector_.size ();
 }
 
 template <typename T>
-size_t Madara::Utility::Thread_Safe_Vector<T>::max_size (void) const
+size_t madara::utility::Thread_Safe_Vector<T>::max_size (void) const
 {
   Guard guard (mutex_);
   return vector_.max_size ();
 }
 
 template <typename T>
-void Madara::Utility::Thread_Safe_Vector<T>::clear (void)
+void madara::utility::Thread_Safe_Vector<T>::clear (void)
 {
   Guard guard (mutex_);
   vector_.clear ();
 }
 
 template <typename T>
-void Madara::Utility::Thread_Safe_Vector<T>::lock (void) const
+void madara::utility::Thread_Safe_Vector<T>::lock (void) const
 {
   mutex_.acquire ();
 }
 
 template <typename T>
-void Madara::Utility::Thread_Safe_Vector<T>::acquire (void) const
+void madara::utility::Thread_Safe_Vector<T>::acquire (void) const
 {
   mutex_.acquire ();
 }
 
 template <typename T>
-void Madara::Utility::Thread_Safe_Vector<T>::unlock (void) const
+void madara::utility::Thread_Safe_Vector<T>::unlock (void) const
 {
   mutex_.release ();
 }
 
 template <typename T>
-void Madara::Utility::Thread_Safe_Vector<T>::release (void) const
+void madara::utility::Thread_Safe_Vector<T>::release (void) const
 {
   mutex_.release ();
 }

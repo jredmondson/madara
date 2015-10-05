@@ -1,6 +1,6 @@
 
 #include "madara/transport/Packet_Scheduler.h"
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/logger/Global_Logger.h"
 
 #include "ace/High_Res_Timer.h"
@@ -10,16 +10,16 @@
 #include <string>
 #include <sstream>
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
 void test_probablistic (void)
 {
-  Madara::Transport::QoS_Transport_Settings settings;
+  madara::transport::QoS_Transport_Settings settings;
 
-  Madara::Transport::Packet_Scheduler scheduler (&settings);
+  madara::transport::Packet_Scheduler scheduler (&settings);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "********************TESTING PROBABLISTIC POLICY*********************\n");
@@ -28,7 +28,7 @@ void test_probablistic (void)
     "****************BEGIN PROBABLISTIC 10%%, BURST=5*****************\n");
 
   settings.update_drop_rate (.1,
-    Madara::Transport::PACKET_DROP_PROBABLISTIC, 5);
+    madara::transport::PACKET_DROP_PROBABLISTIC, 5);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -36,7 +36,7 @@ void test_probablistic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -57,7 +57,7 @@ void test_probablistic (void)
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "********************BEGIN PROBABLISTIC 20%%*********************\n");
 
-  settings.update_drop_rate (.2, Madara::Transport::PACKET_DROP_PROBABLISTIC);
+  settings.update_drop_rate (.2, madara::transport::PACKET_DROP_PROBABLISTIC);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -65,7 +65,7 @@ void test_probablistic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -86,7 +86,7 @@ void test_probablistic (void)
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "********************BEGIN PROBABLISTIC 40%%*********************\n");
 
-  settings.update_drop_rate (.4, Madara::Transport::PACKET_DROP_PROBABLISTIC);
+  settings.update_drop_rate (.4, madara::transport::PACKET_DROP_PROBABLISTIC);
   
   scheduler.clear ();
   scheduler.reset ();
@@ -94,7 +94,7 @@ void test_probablistic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -116,7 +116,7 @@ void test_probablistic (void)
     "****************BEGIN PROBABLISTIC 40%%, BURST=3*****************\n");
 
   settings.update_drop_rate (.4,
-    Madara::Transport::PACKET_DROP_PROBABLISTIC, 3);
+    madara::transport::PACKET_DROP_PROBABLISTIC, 3);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -124,7 +124,7 @@ void test_probablistic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -146,7 +146,7 @@ void test_probablistic (void)
     "*****************BEGIN PROBABLISTIC 50%%, BURST=5******************\n");
 
   settings.update_drop_rate (.5,
-    Madara::Transport::PACKET_DROP_PROBABLISTIC, 5);
+    madara::transport::PACKET_DROP_PROBABLISTIC, 5);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -154,7 +154,7 @@ void test_probablistic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -177,7 +177,7 @@ void test_probablistic (void)
     "*****************BEGIN PROBABLISTIC 80%%******************\n");
 
   settings.update_drop_rate (.8,
-    Madara::Transport::PACKET_DROP_PROBABLISTIC, 1);
+    madara::transport::PACKET_DROP_PROBABLISTIC, 1);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -185,7 +185,7 @@ void test_probablistic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -208,9 +208,9 @@ void test_probablistic (void)
 
 void test_deterministic (void)
 {
-  Madara::Transport::QoS_Transport_Settings settings;
+  madara::transport::QoS_Transport_Settings settings;
 
-  Madara::Transport::Packet_Scheduler scheduler (&settings);
+  madara::transport::Packet_Scheduler scheduler (&settings);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*******************TESTING DETERMINISTIC POLICY********************\n");
@@ -219,7 +219,7 @@ void test_deterministic (void)
     "****************BEGIN DETERMINISTIC 10%%, BURST=6*****************\n");
 
   settings.update_drop_rate (.1,
-    Madara::Transport::PACKET_DROP_DETERMINISTIC, 6);
+    madara::transport::PACKET_DROP_DETERMINISTIC, 6);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -227,7 +227,7 @@ void test_deterministic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -248,7 +248,7 @@ void test_deterministic (void)
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*****************BEGIN DETERMINISTIC 20%%******************\n");
   
-  settings.update_drop_rate (.2, Madara::Transport::PACKET_DROP_DETERMINISTIC);
+  settings.update_drop_rate (.2, madara::transport::PACKET_DROP_DETERMINISTIC);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -256,7 +256,7 @@ void test_deterministic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -278,7 +278,7 @@ void test_deterministic (void)
     "*****************BEGIN DETERMINISTIC 30 %%******************\n");
 
   settings.update_drop_rate (.3,
-    Madara::Transport::PACKET_DROP_DETERMINISTIC, 1);
+    madara::transport::PACKET_DROP_DETERMINISTIC, 1);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -286,7 +286,7 @@ void test_deterministic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -308,14 +308,14 @@ void test_deterministic (void)
     "********************BEGIN DETERMINISTIC 40%%*********************\n");
 
   settings.update_drop_rate (.4,
-    Madara::Transport::PACKET_DROP_DETERMINISTIC);
+    madara::transport::PACKET_DROP_DETERMINISTIC);
 
   scheduler.clear ();
   
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -337,7 +337,7 @@ void test_deterministic (void)
     "*****************BEGIN DETERMINISTIC 40%%, BURST=3******************\n");
 
   settings.update_drop_rate (.4,
-    Madara::Transport::PACKET_DROP_DETERMINISTIC, 3);
+    madara::transport::PACKET_DROP_DETERMINISTIC, 3);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -345,7 +345,7 @@ void test_deterministic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -367,7 +367,7 @@ void test_deterministic (void)
     "*****************BEGIN DETERMINISTIC 50%%, BURST=3******************\n");
 
   settings.update_drop_rate (.5,
-    Madara::Transport::PACKET_DROP_DETERMINISTIC, 3);
+    madara::transport::PACKET_DROP_DETERMINISTIC, 3);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -375,7 +375,7 @@ void test_deterministic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -397,7 +397,7 @@ void test_deterministic (void)
     "*****************BEGIN DETERMINISTIC 50%%, BURST=10******************\n");
 
   settings.update_drop_rate (.5,
-    Madara::Transport::PACKET_DROP_DETERMINISTIC, 10);
+    madara::transport::PACKET_DROP_DETERMINISTIC, 10);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -405,7 +405,7 @@ void test_deterministic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 
@@ -427,7 +427,7 @@ void test_deterministic (void)
     "*****************BEGIN DETERMINISTIC 80%%******************\n");
 
   settings.update_drop_rate (.8,
-    Madara::Transport::PACKET_DROP_DETERMINISTIC, 1);
+    madara::transport::PACKET_DROP_DETERMINISTIC, 1);
 
   scheduler.clear ();
   scheduler.reset ();
@@ -435,7 +435,7 @@ void test_deterministic (void)
   for (int i = 0; i < 400; ++i)
   {
     scheduler.add ();
-    scheduler.print_status (Madara::Logger::LOG_DETAILED);
+    scheduler.print_status (madara::logger::LOG_DETAILED);
   }
   scheduler.print_status ();
 

@@ -19,10 +19,10 @@
 #include "ace/OS_NS_sys_time.h"
 #include "ace/High_Res_Timer.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
 std::string
-Madara::Utility::get_version (void)
+madara::utility::get_version (void)
 {
 #include "madara/Version.h"
 
@@ -32,7 +32,7 @@ Madara::Utility::get_version (void)
 
 
 uint32_t
-Madara::Utility::get_uint_version (void)
+madara::utility::get_uint_version (void)
 {
   std::string str_version = get_version ();
   unsigned char version_buffer[4] = {0,0,0,0};
@@ -68,7 +68,7 @@ Madara::Utility::get_uint_version (void)
 }
 
 std::string
-Madara::Utility::to_string_version (uint32_t version)
+madara::utility::to_string_version (uint32_t version)
 {
   std::stringstream new_version;
   unsigned char * version_ptr = (unsigned char *)&version;
@@ -90,7 +90,7 @@ Madara::Utility::to_string_version (uint32_t version)
 
 /// Convert string to uppercase
 std::string &
-Madara::Utility::upper (std::string &input)
+madara::utility::upper (std::string &input)
 {
   for (std::string::iterator cur = input.begin ();
        cur != input.end (); ++cur)
@@ -101,7 +101,7 @@ Madara::Utility::upper (std::string &input)
 
 /// Convert string to lowercase 
 std::string & 
-Madara::Utility::dds_topicify (std::string & input)
+madara::utility::dds_topicify (std::string & input)
 {
   for (std::string::iterator cur = input.begin ();
        cur != input.end (); ++cur)
@@ -116,7 +116,7 @@ Madara::Utility::dds_topicify (std::string & input)
 
 /// Convert string to lowercase 
 std::string &
-Madara::Utility::lower (std::string &input)
+madara::utility::lower (std::string &input)
 {
   for (std::string::iterator cur = input.begin ();
        cur != input.end (); ++cur)
@@ -128,7 +128,7 @@ Madara::Utility::lower (std::string &input)
 /// Strip whitespace from front and end of string and also
 /// condense multiple whitespace into a single space
 std::string &
-Madara::Utility::strip_extra_white_space (std::string & input)
+madara::utility::strip_extra_white_space (std::string & input)
 {
   std::string::iterator cur = input.begin ();
   char prev = 0;
@@ -170,7 +170,7 @@ Madara::Utility::strip_extra_white_space (std::string & input)
 
 /// Strip all whitespace
 std::string &
-Madara::Utility::strip_white_space (std::string & input)
+madara::utility::strip_white_space (std::string & input)
 {
   std::string::iterator cur = input.begin ();
   char prev = 0;
@@ -199,7 +199,7 @@ Madara::Utility::strip_white_space (std::string & input)
   * modify and return the input, so make a copy if needed.
   **/
 std::string &
-Madara::Utility::string_remove (std::string & input, char unwanted)
+madara::utility::string_remove (std::string & input, char unwanted)
 {
   std::string::iterator cur = input.begin ();
   char prev = 0;
@@ -223,7 +223,7 @@ Madara::Utility::string_remove (std::string & input, char unwanted)
 }
 
 size_t
-Madara::Utility::string_replace (std::string & source,
+madara::utility::string_replace (std::string & source,
   const std::string & old_phrase,
   const std::string & new_phrase,
   bool replace_all)
@@ -247,7 +247,7 @@ Madara::Utility::string_replace (std::string & source,
 }
 
 std::string &
-Madara::Utility::strip_comments (std::string & input)
+madara::utility::strip_comments (std::string & input)
 {
   std::stringstream source, dest;
   std::string cur;
@@ -279,7 +279,7 @@ Madara::Utility::strip_comments (std::string & input)
 
 /// Split a string into tokens 
 void 
-Madara::Utility::tokenizer (const std::string & input, 
+madara::utility::tokenizer (const std::string & input, 
     const ::std::vector< std::string> & splitters,
     ::std::vector< std::string> & tokens,
     ::std::vector< std::string> & pivots)
@@ -335,7 +335,7 @@ Madara::Utility::tokenizer (const std::string & input,
 
 // split a key into a corresponding host and port
 int 
-Madara::Utility::split_hostport_identifier (const std::string & key, 
+madara::utility::split_hostport_identifier (const std::string & key, 
     std::string & host, std::string & port)
 {
   // delimiter is either a : or an @
@@ -360,7 +360,7 @@ Madara::Utility::split_hostport_identifier (const std::string & key,
 
 // merge a host and port into a key
 int 
-Madara::Utility::merge_hostport_identifier (std::string & key, 
+madara::utility::merge_hostport_identifier (std::string & key, 
   const std::string & host, const std::string & port)
 {
   if ((const std::string *)&key != &host)
@@ -374,7 +374,7 @@ Madara::Utility::merge_hostport_identifier (std::string & key,
 
 // merge a host and ushort port into a key
 int 
-Madara::Utility::merge_hostport_identifier (std::string & key, 
+madara::utility::merge_hostport_identifier (std::string & key, 
   const std::string & host, unsigned short u_port)
 {
   std::stringstream port_stream;
@@ -385,32 +385,32 @@ Madara::Utility::merge_hostport_identifier (std::string & key,
 
 /// Bind to an ephemeral port
 int 
-Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
+madara::utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
    std::string & host, unsigned short & port, bool increase_until_bound)
 {
   // start with the initial port provided
   // increase port each time we don't properly bind
 
-  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
-    "Utility::bind_to_ephemeral_port:" \
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
+    "utility::bind_to_ephemeral_port:" \
     " creating ACE_INET_Addr\n");
 
   ACE_INET_Addr addr (port);
   char hostname[HOST_NAME_MAX + 1] = "";
 
-  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
-    "Utility::bind_to_ephemeral_port:" \
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
+    "utility::bind_to_ephemeral_port:" \
     " getting hostname from ACE_INET_Addr\n");
 
   addr.get_host_name (hostname, HOST_NAME_MAX);
   host = hostname;
 
-  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
-    "Utility::bind_to_ephemeral_port:" \
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
+    "utility::bind_to_ephemeral_port:" \
     " hostname equals %s\n", hostname);
 
-  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
-    "Utility::bind_to_ephemeral_port:" \
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
+    "utility::bind_to_ephemeral_port:" \
     " calling ACE_OS::socket_init\n");
 
   ACE_OS::socket_init (2, 2);
@@ -418,8 +418,8 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
   for ( ; port < 65535; ++port, addr.set (port))
   {
 
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MINOR,
-      "Utility::bind_to_ephemeral_port:" \
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
+      "utility::bind_to_ephemeral_port:" \
       " attempting open on socket %d\n", port);
 
     if (socket.open (addr, 2, 0, 0) != -1)
@@ -430,15 +430,15 @@ Madara::Utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
       break;
   }
 
-  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
-    "Utility::bind_to_ephemeral_port:" \
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
+    "utility::bind_to_ephemeral_port:" \
     " unable to bind to any ephemeral port. Check firewall\n");
 
   return -1;
 }
 
 std::string
-Madara::Utility::file_to_string (const std::string & filename)
+madara::utility::file_to_string (const std::string & filename)
 {
   std::string line;
   std::stringstream buffer;
@@ -461,8 +461,8 @@ Madara::Utility::file_to_string (const std::string & filename)
   }
   else
   {
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
-      "Utility::file_to_string:" \
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
+      "utility::file_to_string:" \
       " failed to open file: %s\n");
   }
 
@@ -471,7 +471,7 @@ Madara::Utility::file_to_string (const std::string & filename)
 
 
 std::string
-Madara::Utility::extract_path (const std::string & name)
+madara::utility::extract_path (const std::string & name)
 {
   std::string::size_type start = 0;
   for (std::string::size_type i = 0; i < name.size (); ++i)
@@ -491,7 +491,7 @@ Madara::Utility::extract_path (const std::string & name)
 }
 
 std::string
-Madara::Utility::extract_filename (const std::string & name)
+madara::utility::extract_filename (const std::string & name)
 {
   std::string::size_type start = 0;
   for (std::string::size_type i = 0; i < name.size (); ++i)
@@ -512,7 +512,7 @@ Madara::Utility::extract_filename (const std::string & name)
 
 /// Expand any environment variables in a string
 std::string
-Madara::Utility::expand_envs (const std::string & source)
+madara::utility::expand_envs (const std::string & source)
 {
   std::stringstream buffer;
 
@@ -533,7 +533,7 @@ Madara::Utility::expand_envs (const std::string & source)
 
 /// grab an environment variable value (@see expand_envs)
 char * 
-Madara::Utility::get_var (const std::string & source, 
+madara::utility::get_var (const std::string & source, 
                           size_t cur, size_t & end)
 {
   for (end = cur; end < source.size (); ++end)
@@ -548,7 +548,7 @@ Madara::Utility::get_var (const std::string & source,
 }
 
 std::string
-Madara::Utility::clean_dir_name (const std::string & source)
+madara::utility::clean_dir_name (const std::string & source)
 {
   // define the characters we'll want to replace
 #ifdef ACE_WIN32
@@ -601,7 +601,7 @@ EndiannessChecker endianness;
   * Converts a host format uint64_t into big endian
   **/
 uint64_t
-Madara::Utility::endian_swap (uint64_t value)
+madara::utility::endian_swap (uint64_t value)
 {
   // if host is little endian, then we have work to do
   if (::endianness.is_little)
@@ -617,10 +617,10 @@ Madara::Utility::endian_swap (uint64_t value)
 }
 
 /**
-* Converts a host format signed Madara::Knowledge_Record::Integer into big endian
+* Converts a host format signed madara::Knowledge_Record::Integer into big endian
 **/
 int64_t
-Madara::Utility::endian_swap (int64_t value)
+madara::utility::endian_swap (int64_t value)
 {
   // if host is little endian, then we have work to do
   if (::endianness.is_little)
@@ -640,7 +640,7 @@ Madara::Utility::endian_swap (int64_t value)
   * Converts a host format uint64_t into big endian
   **/
 uint32_t
-Madara::Utility::endian_swap (uint32_t value)
+madara::utility::endian_swap (uint32_t value)
 {
   // if host is little endian, then we have work to do
   if (::endianness.is_little)
@@ -654,10 +654,10 @@ Madara::Utility::endian_swap (uint32_t value)
 }
 
 /**
-* Converts a host format signed Madara::Knowledge_Record::Integer into big endian
+* Converts a host format signed madara::Knowledge_Record::Integer into big endian
 **/
 int32_t
-Madara::Utility::endian_swap (int32_t value)
+madara::utility::endian_swap (int32_t value)
 {
   // if host is little endian, then we have work to do
   if (::endianness.is_little)
@@ -674,7 +674,7 @@ Madara::Utility::endian_swap (int32_t value)
   * Converts a host format double into big endian
   **/
 double
-Madara::Utility::endian_swap (double orig)
+madara::utility::endian_swap (double orig)
 {
   uint64_t * value = (uint64_t *)&orig;
   double result = orig;
@@ -693,7 +693,7 @@ Madara::Utility::endian_swap (double orig)
 }
 
 int
-  Madara::Utility::read_file (const std::string & filename,
+  madara::utility::read_file (const std::string & filename,
   void *& buffer, size_t & size, bool add_zero_char)
 {
   int ret_value = 0;
@@ -725,7 +725,7 @@ int
 }
 
 ssize_t
-  Madara::Utility::write_file (const std::string & filename,
+  madara::utility::write_file (const std::string & filename,
   void * buffer, size_t size)
 {
   // error is -1
@@ -736,7 +736,7 @@ ssize_t
     O_RDWR | O_CREAT | O_TRUNC,
     ACE_DEFAULT_FILE_PERMS);
 
-  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
     "Files::write_file : beginning write of %" PRIu64 " bytes\n", size);
 
   if (file_handle  != ACE_INVALID_HANDLE)
@@ -751,7 +751,7 @@ ssize_t
 }
 
 int64_t
-Madara::Utility::get_time (void)
+madara::utility::get_time (void)
 {
   ACE_Time_Value tv = ACE_High_Res_Timer::gettimeofday ();
   int64_t timeofday (tv.sec () * 1000000000);
@@ -761,7 +761,7 @@ Madara::Utility::get_time (void)
 }
 
 double
-Madara::Utility::rand_double (double floor, double ceiling,
+madara::utility::rand_double (double floor, double ceiling,
                               bool set_seed_to_time)
 {
   // check if the user has specified setting through srand
@@ -781,7 +781,7 @@ Madara::Utility::rand_double (double floor, double ceiling,
 }
 
 int64_t
-Madara::Utility::rand_int (int64_t floor, int64_t ceiling,
+madara::utility::rand_int (int64_t floor, int64_t ceiling,
                            bool set_seed_to_time)
 {
   double random = rand_double (floor, ceiling, set_seed_to_time);
@@ -789,7 +789,7 @@ Madara::Utility::rand_int (int64_t floor, int64_t ceiling,
 }
 
 int64_t
-Madara::Utility::nearest_int (double input)
+madara::utility::nearest_int (double input)
 {
   int change = input >= 0 ? 1 : -1;
   int64_t left = input;
@@ -802,7 +802,7 @@ Madara::Utility::nearest_int (double input)
 }
 
 
-double Madara::Utility::sleep (double sleep_time)
+double madara::utility::sleep (double sleep_time)
 {
   ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday (); 
   ACE_Time_Value actual_time;
@@ -819,7 +819,7 @@ double Madara::Utility::sleep (double sleep_time)
 }
     
 
-ACE_Time_Value Madara::Utility::sleep (const ACE_Time_Value & sleep_time)
+ACE_Time_Value madara::utility::sleep (const ACE_Time_Value & sleep_time)
 {
   ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday (); 
   ACE_Time_Value earliest = current + sleep_time;
@@ -833,14 +833,14 @@ ACE_Time_Value Madara::Utility::sleep (const ACE_Time_Value & sleep_time)
   return ACE_High_Res_Timer::gettimeofday () - current;
 }
 
-bool Madara::Utility::approx_equal (
+bool madara::utility::approx_equal (
   double value1, double value2, double epsilon)
 {
   return std::abs (value1 - value2) < epsilon;
 }
 
 bool
-Madara::Utility::file_exists (const std::string & filename)
+madara::utility::file_exists (const std::string & filename)
 {
   if (FILE * file = fopen (filename.c_str(), "r"))
   {
@@ -854,7 +854,7 @@ Madara::Utility::file_exists (const std::string & filename)
 }
 
 unsigned int
-Madara::Utility::file_size (const std::string & filename)
+madara::utility::file_size (const std::string & filename)
 {
   unsigned int size = 0;
   if (FILE * file = fopen (filename.c_str(), "r"))
@@ -868,17 +868,17 @@ Madara::Utility::file_size (const std::string & filename)
 }
 
 bool
-Madara::Utility::wait_true (
-  Knowledge_Engine::Knowledge_Base & knowledge,
+madara::utility::wait_true (
+  knowledge::Knowledge_Base & knowledge,
   const std::string & variable,
-  const Knowledge_Engine::Wait_Settings & settings)
+  const knowledge::Wait_Settings & settings)
 {  
   // get current time of day
   ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();  
   ACE_Time_Value max_wait, sleep_time, next_epoch;
   ACE_Time_Value poll_frequency, last = current;
 
-  Knowledge_Engine::Variable_Reference ref = knowledge.get_ref (variable);
+  knowledge::Variable_Reference ref = knowledge.get_ref (variable);
 
   if (settings.poll_frequency >= 0)
   {
@@ -891,12 +891,12 @@ Madara::Utility::wait_true (
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")
-    knowledge.print (settings.pre_print_statement, Logger::LOG_ALWAYS);
+    knowledge.print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
-  Madara::Knowledge_Record last_value = knowledge.get (ref, settings);
+  madara::Knowledge_Record last_value = knowledge.get (ref, settings);
 
-  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
-    "Utility::wait_true:" \
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
+    "utility::wait_true:" \
     " variable returned %s\n",
     last_value.to_string ().c_str ());
   
@@ -906,14 +906,14 @@ Madara::Utility::wait_true (
   while (!last_value.to_integer () &&
     (settings.max_wait_time < 0 || current < max_wait))
   {
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
-      "Utility::wait_true:" \
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
+      "utility::wait_true:" \
       " current is %" PRIu64 ".%" PRIu64 " and max is %" PRIu64 ".%" PRIu64 " (poll freq is %f)\n",
       current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
       settings.poll_frequency);
 
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
-      "Utility::wait_true:" \
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
+      "utility::wait_true:" \
       " last value didn't result in success\n");
 
     // Unlike the other wait statements, we allow for a time based wait.
@@ -923,7 +923,7 @@ Madara::Utility::wait_true (
       if (current < next_epoch)
       {
         sleep_time = next_epoch - current;
-        Madara::Utility::sleep (sleep_time);
+        madara::utility::sleep (sleep_time);
       }
 
       next_epoch = next_epoch + poll_frequency;
@@ -931,14 +931,14 @@ Madara::Utility::wait_true (
     else
       knowledge.wait_for_change ();
 
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
-      "Utility::wait_true:" \
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
+      "utility::wait_true:" \
       " waiting on %s\n", variable.c_str ());
 
     last_value = knowledge.get (ref, settings);
 
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
-      "Utility::wait_true:" \
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
+      "utility::wait_true:" \
       " completed eval to get %s\n",
       last_value.to_string ().c_str ());
   
@@ -949,30 +949,30 @@ Madara::Utility::wait_true (
   
   if (current >= max_wait)
   {
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
-      "Utility::wait_true:" \
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
+      "utility::wait_true:" \
       " Evaluate did not succeed. Timeout occurred\n",
       last_value.to_string ().c_str ());
   }
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.post_print_statement != "")
-    knowledge.print (settings.post_print_statement, Logger::LOG_ALWAYS);
+    knowledge.print (settings.post_print_statement, logger::LOG_ALWAYS);
 
   return last_value.is_true ();
 }
 
-bool Madara::Utility::wait_false (
-  Knowledge_Engine::Knowledge_Base & knowledge,
+bool madara::utility::wait_false (
+  knowledge::Knowledge_Base & knowledge,
   const std::string & variable,
-  const Knowledge_Engine::Wait_Settings & settings)
+  const knowledge::Wait_Settings & settings)
 {
   // get current time of day
   ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();  
   ACE_Time_Value max_wait, sleep_time, next_epoch;
   ACE_Time_Value poll_frequency, last = current;
 
-  Knowledge_Engine::Variable_Reference ref = knowledge.get_ref (variable);
+  knowledge::Variable_Reference ref = knowledge.get_ref (variable);
 
   if (settings.poll_frequency >= 0)
   {
@@ -985,12 +985,12 @@ bool Madara::Utility::wait_false (
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")
-    knowledge.print (settings.pre_print_statement, Logger::LOG_ALWAYS);
+    knowledge.print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
-  Madara::Knowledge_Record last_value = !knowledge.get (ref, settings);
+  madara::Knowledge_Record last_value = !knowledge.get (ref, settings);
 
-  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
-    "Utility::wait_false:" \
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
+    "utility::wait_false:" \
     " variable returned %s\n",
     last_value.to_string ().c_str ());
   
@@ -1000,14 +1000,14 @@ bool Madara::Utility::wait_false (
   while (!last_value.to_integer () &&
     (settings.max_wait_time < 0 || current < max_wait))
   {
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
-      "Utility::wait_false:" \
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
+      "utility::wait_false:" \
       " current is %d.%d and max is %d.%d (poll freq is %f)\n",
       current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
       settings.poll_frequency);
 
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
-      "Utility::wait_false:"
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
+      "utility::wait_false:"
       " last value didn't result in success\n");
 
     // Unlike the other wait statements, we allow for a time based wait.
@@ -1017,7 +1017,7 @@ bool Madara::Utility::wait_false (
       if (current < next_epoch)
       {
         sleep_time = next_epoch - current;
-        Madara::Utility::sleep (sleep_time);
+        madara::utility::sleep (sleep_time);
       }
 
       next_epoch = next_epoch + poll_frequency;
@@ -1025,14 +1025,14 @@ bool Madara::Utility::wait_false (
     else
       knowledge.wait_for_change ();
 
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
-      "Utility::wait_false:"
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
+      "utility::wait_false:"
       " waiting on %s\n", variable.c_str ());
 
     last_value = !knowledge.get (ref, settings);
 
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_DETAILED,
-      "Utility::wait_false:"
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
+      "utility::wait_false:"
       " completed eval to get %s\n",
       last_value.to_string ().c_str ());
   
@@ -1043,15 +1043,15 @@ bool Madara::Utility::wait_false (
   
   if (current >= max_wait)
   {
-    madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_MAJOR,
-      "Utility::wait_false:"
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
+      "utility::wait_false:"
       " Evaluate did not succeed. Timeout occurred\n",
       last_value.to_string ().c_str ());
   }
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.post_print_statement != "")
-    knowledge.print (settings.post_print_statement, Logger::LOG_EMERGENCY);
+    knowledge.print (settings.post_print_statement, logger::LOG_EMERGENCY);
 
   return last_value.is_true ();
 }

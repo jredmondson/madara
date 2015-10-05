@@ -6,9 +6,9 @@
 
 #include "madara/expression_tree/Composite_Ternary_Node.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     // Forward declaration.
     class Component_Node;
@@ -26,29 +26,29 @@ namespace Madara
        * @param  logger   the logger to use for printing
        * @param   nodes  2+ nodes to be executed in sequence
        **/
-      Composite_Add_Node (Logger::Logger & logger,
+      Composite_Add_Node (logger::Logger & logger,
         const Component_Nodes & nodes);
 
       /**
        * Returns the printable character of the node
        * @return    value of the node
        **/
-      virtual Madara::Knowledge_Record item (void) const;
+      virtual madara::Knowledge_Record item (void) const;
 
       /** 
        * Prunes the expression tree of unnecessary nodes. 
        * @param     can_change   set to true if variable nodes are contained
        * @return    value of left expression plus the value of the right one
        **/
-      virtual Madara::Knowledge_Record prune (bool & can_change);
+      virtual madara::Knowledge_Record prune (bool & can_change);
 
       /** 
        * Evaluates the expression tree. 
        * @param     settings     settings for evaluating the node
        * @return    value of left expression plus the value of the right one
        **/
-      virtual Madara::Knowledge_Record evaluate (
-        const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings);
+      virtual madara::Knowledge_Record evaluate (
+        const madara::knowledge::Knowledge_Update_Settings & settings);
 
       /** 
        * Accepts a visitor subclassed from the Visitor class

@@ -18,7 +18,7 @@
 #include "madara/kats/Test_Framework.h"
 #include "madara/utility/tinyxml.h"
 
-Madara::KATS::Settings settings;
+madara::kats::Settings settings;
 ACE_Process_Options process_options;
 std::string test_name;
 std::string process_name;
@@ -69,14 +69,14 @@ process_transport_file (const std::string & file)
     if (current && current->GetText ())
     {
       std::string value (current->GetText ());
-      Madara::Utility::lower (value);
+      madara::Utility::lower (value);
 
       if      ("ndds"      == value)
-        settings.type = Madara::Transport::NDDS;
+        settings.type = madara::transport::NDDS;
       else if ("splice"    == value)
-        settings.type = Madara::Transport::SPLICE;
+        settings.type = madara::transport::SPLICE;
       else if ("none"      == value)
-        settings.type = Madara::Transport::NO_TRANSPORT;
+        settings.type = madara::transport::NO_TRANSPORT;
     }
 
     current = root->FirstChildElement ("persistence");
@@ -153,7 +153,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     ACE_OS::thr_setprio (prio);
   }
 
-  Madara::KATS::Test_Framework testing (settings);
+  madara::kats::Test_Framework testing (settings);
 
   testing.event (
     "updatevars","",".kats.id=.madara.id;.kats.processes=.madara.processes");
@@ -635,14 +635,18 @@ int parse_args (int argc, ACE_TCHAR * argv[])
     case 'v':
       // log level
       {
+        int debug_level;
         std::stringstream buffer;
         buffer << cmd_opts.opt_arg ();
-        buffer >> MADARA_debug_level;
+        buffer >> debug_level;
+
+        madara::logger::global_logger->set_level (debug_level);
+
+        MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG,
+          DLINFO "KATS_PROCESS: logging level set to %u\n",
+          debug_level));
       }
 
-      MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG,
-        DLINFO "KATS_PROCESS: logging level set to %u\n",
-        MADARA_debug_level));
 
       break;
     case 'w':

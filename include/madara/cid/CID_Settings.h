@@ -16,9 +16,9 @@
 #include "madara/utility/stdint.h"
 
 
-namespace Madara
+namespace madara
 {
-  namespace Cid
+  namespace cid
   {
 
     enum Types {

@@ -6,14 +6,14 @@
 
 /// default Ctor
 template <typename T>
-Madara::Utility::Scoped_Array<T>::Scoped_Array (void)
+madara::utility::Scoped_Array<T>::Scoped_Array (void)
   : ptr_ (0)
 {
 }
 
 /// Ctor with refcounting functionality
 template <typename T>
-Madara::Utility::Scoped_Array<T>::Scoped_Array (T *ptr, bool increase_count)
+madara::utility::Scoped_Array<T>::Scoped_Array (T *ptr, bool increase_count)
   : ptr_ (new Shim (ptr))
 {
   if (increase_count)
@@ -22,7 +22,7 @@ Madara::Utility::Scoped_Array<T>::Scoped_Array (T *ptr, bool increase_count)
 
   /// copy Ctor
 template <typename T>
-Madara::Utility::Scoped_Array<T>::Scoped_Array (const Scoped_Array &rhs)
+madara::utility::Scoped_Array<T>::Scoped_Array (const Scoped_Array &rhs)
   : ptr_ (rhs.ptr_)
 {
   increment ();
@@ -30,7 +30,7 @@ Madara::Utility::Scoped_Array<T>::Scoped_Array (const Scoped_Array &rhs)
 
   /// Dtor will delete pointer if refcount becomes 0
 template <typename T>
-Madara::Utility::Scoped_Array<T>::~Scoped_Array (void)
+madara::utility::Scoped_Array<T>::~Scoped_Array (void)
 {
   decrement ();
 }
@@ -39,7 +39,7 @@ Madara::Utility::Scoped_Array<T>::~Scoped_Array (void)
 /// increased for incoming ptr.
 template <typename T>
 void 
-Madara::Utility::Scoped_Array<T>::operator= (T *ptr)
+madara::utility::Scoped_Array<T>::operator= (T *ptr)
 {
   decrement ();
 
@@ -52,7 +52,7 @@ Madara::Utility::Scoped_Array<T>::operator= (T *ptr)
   /// assignment operator
 template <typename T>
 void
-Madara::Utility::Scoped_Array<T>::operator= (const Scoped_Array& rhs)
+madara::utility::Scoped_Array<T>::operator= (const Scoped_Array& rhs)
 {
   if (this != &rhs)
   {
@@ -65,7 +65,7 @@ Madara::Utility::Scoped_Array<T>::operator= (const Scoped_Array& rhs)
 /// get the underlying pointer
 template <typename T>
 T * 
-Madara::Utility::Scoped_Array<T>::get_ptr (void)
+madara::utility::Scoped_Array<T>::get_ptr (void)
 {
   return ptr_->t_;
 }
@@ -73,7 +73,7 @@ Madara::Utility::Scoped_Array<T>::get_ptr (void)
 /// get the underlying pointer
 template <typename T>
 const T *
-Madara::Utility::Scoped_Array<T>::get_ptr (void) const
+madara::utility::Scoped_Array<T>::get_ptr (void) const
 {
   return ptr_->t_;
 }
@@ -82,7 +82,7 @@ Madara::Utility::Scoped_Array<T>::get_ptr (void) const
 /// implementation of the increment operation
 template <typename T>
 void 
-Madara::Utility::Scoped_Array<T>::increment (void)
+madara::utility::Scoped_Array<T>::increment (void)
 {
   if (ptr_)
     ++ptr_->refcount_;
@@ -91,7 +91,7 @@ Madara::Utility::Scoped_Array<T>::increment (void)
   /// implementation of the decrement operation
 template <typename T>
 void 
-Madara::Utility::Scoped_Array<T>::decrement (void)
+madara::utility::Scoped_Array<T>::decrement (void)
 {
   if (ptr_)
   {
@@ -105,13 +105,13 @@ Madara::Utility::Scoped_Array<T>::decrement (void)
 }
 
 template <typename T>
-Madara::Utility::Scoped_Array<T>::Shim::Shim (T *t)
+madara::utility::Scoped_Array<T>::Shim::Shim (T *t)
   : t_ (t), refcount_ (1) 
 {
 }
 
 template <typename T>
-Madara::Utility::Scoped_Array<T>::Shim::~Shim (void) 
+madara::utility::Scoped_Array<T>::Shim::~Shim (void) 
 { 
   delete [] t_; 
 }

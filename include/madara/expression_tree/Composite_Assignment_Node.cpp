@@ -15,8 +15,8 @@
 
 // Ctor
 
-Madara::Expression_Tree::Composite_Assignment_Node::Composite_Assignment_Node (
-  Logger::Logger & logger,
+madara::expression_tree::Composite_Assignment_Node::Composite_Assignment_Node (
+  logger::Logger & logger,
   Component_Node *left, Component_Node *right)
 : Composite_Unary_Node (logger, right)
 {
@@ -26,25 +26,25 @@ Madara::Expression_Tree::Composite_Assignment_Node::Composite_Assignment_Node (
     array_ = dynamic_cast <Composite_Array_Reference *> (left);
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Assignment_Node::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::Composite_Assignment_Node::item (void) const
 {
   return "=";
 }
 
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::Composite_Assignment_Node::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::Composite_Assignment_Node::prune (bool & can_change)
 {
   bool left_child_can_change = false;
   bool right_child_can_change = false;
-  Madara::Knowledge_Record right_value;
+  madara::Knowledge_Record right_value;
 
   if (this->var_ != 0 || this->array_ != 0)
     left_child_can_change = true;
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Variable assignment has no variable\n");
     exit (-1);    
   }
@@ -60,7 +60,7 @@ Madara::Expression_Tree::Composite_Assignment_Node::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Assignment has no right expression\n");
 
     exit (-1);
@@ -73,17 +73,17 @@ Madara::Expression_Tree::Composite_Assignment_Node::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::Composite_Assignment_Node::evaluate (
-  const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::Composite_Assignment_Node::evaluate (
+  const madara::knowledge::Knowledge_Update_Settings & settings)
 {
-  Madara::Knowledge_Record rhs = right_->evaluate (settings);
+  madara::Knowledge_Record rhs = right_->evaluate (settings);
 
   // get the value from the right side and set the variable's value with it
-  //Madara::Knowledge_Record value = right_->evaluate ();
+  //madara::Knowledge_Record value = right_->evaluate ();
   if (var_)
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "Composite_Assignment_Node::evaluate: "
       "Attempting to set variable %s to %s.\n",
       var_->expand_key ().c_str (),
@@ -93,7 +93,7 @@ Madara::Expression_Tree::Composite_Assignment_Node::evaluate (
   }
   else if (array_)
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "Composite_Assignment_Node::evaluate: "
       "Attempting to set index of var %s to %s.\n",
       array_->expand_key ().c_str (),
@@ -103,7 +103,7 @@ Madara::Expression_Tree::Composite_Assignment_Node::evaluate (
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "left hand side was neither a variable nor an array reference. "
       "Check your expression for errors.\n");
   }
@@ -115,7 +115,7 @@ Madara::Expression_Tree::Composite_Assignment_Node::evaluate (
 
 // accept a visitor
 void 
-Madara::Expression_Tree::Composite_Assignment_Node::accept (Visitor &visitor) const
+madara::expression_tree::Composite_Assignment_Node::accept (Visitor &visitor) const
 {
   visitor.visit (*this);
 }

@@ -5,11 +5,11 @@
 #include "madara/expression_tree/Leaf_Node.h"
 #include "madara/expression_tree/System_Call_Print.h"
 #include "madara/expression_tree/Visitor.h"
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 
 
-Madara::Expression_Tree::System_Call_Print::System_Call_Print (
-  Madara::Knowledge_Engine::Thread_Safe_Context & context,
+madara::expression_tree::System_Call_Print::System_Call_Print (
+  madara::knowledge::Thread_Safe_Context & context,
   const Component_Nodes & nodes)
   : System_Call_Node (context, nodes)
 {
@@ -17,28 +17,28 @@ Madara::Expression_Tree::System_Call_Print::System_Call_Print (
 }
 
 // Dtor
-Madara::Expression_Tree::System_Call_Print::~System_Call_Print (void)
+madara::expression_tree::System_Call_Print::~System_Call_Print (void)
 {
 }
 
-Madara::Knowledge_Record
-Madara::Expression_Tree::System_Call_Print::item (void) const
+madara::Knowledge_Record
+madara::expression_tree::System_Call_Print::item (void) const
 {
-  return Madara::Knowledge_Record::Integer (nodes_.size ());
+  return madara::Knowledge_Record::Integer (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-Madara::Knowledge_Record
-Madara::Expression_Tree::System_Call_Print::prune (bool & can_change)
+madara::Knowledge_Record
+madara::expression_tree::System_Call_Print::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
   // what it does. Consequently, a function node cannot be pruned out
   // under any situation
   can_change = true;
   
-  Madara::Knowledge_Record result;
+  madara::Knowledge_Record result;
 
   if (nodes_.size () > 0)
   {
@@ -53,7 +53,7 @@ Madara::Expression_Tree::System_Call_Print::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: System call size requires an argument\n");
   }
 
@@ -62,15 +62,15 @@ Madara::Expression_Tree::System_Call_Print::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-Madara::Knowledge_Record 
-Madara::Expression_Tree::System_Call_Print::evaluate (
-const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
+madara::Knowledge_Record 
+madara::expression_tree::System_Call_Print::evaluate (
+const madara::knowledge::Knowledge_Update_Settings & settings)
 {
   Knowledge_Record return_value;
 
   if (nodes_.size () == 1)
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call print is printing the first argument and returning the"
       " size of the first argument\n");
     
@@ -86,7 +86,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
     unsigned int log_level = 
       (unsigned int) nodes_[1]->evaluate (settings).to_integer ();
 
-    madara_logger_ptr_log (logger_, Logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call print is printing the first argument at log level %d.\n",
       log_level);
     
@@ -96,7 +96,7 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, Logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL RUNTIME ERROR: System call print requires an argument\n");
   }
 
@@ -105,8 +105,8 @@ const Madara::Knowledge_Engine::Knowledge_Update_Settings & settings)
 
 // accept a visitor
 void 
-Madara::Expression_Tree::System_Call_Print::accept (
-  Madara::Expression_Tree::Visitor &visitor) const
+madara::expression_tree::System_Call_Print::accept (
+  madara::expression_tree::Visitor &visitor) const
 {
   visitor.visit (*this);
 }

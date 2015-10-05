@@ -1,7 +1,7 @@
 #include "com_madara_logger_GlobalLogger.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
 jlong JNICALL Java_com_madara_logger_GlobalLogger_jni_1getCPtr
 (JNIEnv *, jclass)

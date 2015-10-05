@@ -4,7 +4,7 @@
 
 #include "madara/expression_tree/Visitor.h"
 
-Madara::Expression_Tree::Visitor::~Visitor (void)
+madara::expression_tree::Visitor::~Visitor (void)
 {
 }
 

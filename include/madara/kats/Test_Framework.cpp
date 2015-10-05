@@ -14,46 +14,46 @@
  */
 
 /// Constructor
-Madara::KATS::Test_Framework::Test_Framework (
-  const Madara::KATS::Settings & settings)
+madara::kats::Test_Framework::Test_Framework (
+  const madara::kats::Settings & settings)
 : knowledge_ (settings.host, settings)
 {
   knowledge_.set (".madara.id",
-    Madara::Knowledge_Record::Integer (settings.id));
+    madara::Knowledge_Record::Integer (settings.id));
   knowledge_.set (".madara.processes",
-    Madara::Knowledge_Record::Integer (settings.processes));
+    madara::Knowledge_Record::Integer (settings.processes));
 }
 
 /// Copy constructor
-Madara::KATS::Test_Framework::Test_Framework (
+madara::kats::Test_Framework::Test_Framework (
   const Test_Framework & original)
 : knowledge_ (original.knowledge_)
 {
 }
 
 /// Destructor
-Madara::KATS::Test_Framework::~Test_Framework ()
+madara::kats::Test_Framework::~Test_Framework ()
 {
 }
 
 /// Retrieves a knowledge value
-Madara::Knowledge_Record::Integer
-Madara::KATS::Test_Framework::get (const ::std::string & key)
+madara::Knowledge_Record::Integer
+madara::kats::Test_Framework::get (const ::std::string & key)
 {
   return knowledge_.get (key).to_integer ();
 }
 
 /// Sets a knowledge value to a specified value
 int
-Madara::KATS::Test_Framework::set (const ::std::string & key,
-  Madara::Knowledge_Record::Integer value)
+madara::kats::Test_Framework::set (const ::std::string & key,
+  madara::Knowledge_Record::Integer value)
 {
   return knowledge_.set (key, value);
 }
 
 /// Barriers on all processes until everyone is at the event
 long long
-Madara::KATS::Test_Framework::barrier (const std::string & event_name)
+madara::kats::Test_Framework::barrier (const std::string & event_name)
 {
   // first, make sure the transport is activated or else
   // we will be here for a long time.
@@ -63,9 +63,9 @@ Madara::KATS::Test_Framework::barrier (const std::string & event_name)
   std::stringstream postcondition;
   std::stringstream log_message;
 
-  Madara::Knowledge_Record::Integer id =
+  madara::Knowledge_Record::Integer id =
     knowledge_.get (".madara.id").to_integer ();
-  Madara::Knowledge_Record::Integer processes =
+  madara::Knowledge_Record::Integer processes =
     knowledge_.get (".madara.processes").to_integer ();
 
   if (processes <= 1)
@@ -90,7 +90,7 @@ Madara::KATS::Test_Framework::barrier (const std::string & event_name)
 
   // add logic to wait for all processes in the ring to set their
   // attribute to not-zero
-  for (Madara::Knowledge_Record::Integer i = 0; i < processes; ++i)
+  for (madara::Knowledge_Record::Integer i = 0; i < processes; ++i)
   {
     buffer << " && MADARA.BARRIER.";
     buffer << event_name;
@@ -125,7 +125,7 @@ Madara::KATS::Test_Framework::barrier (const std::string & event_name)
 
 /// Attempts to send out all global knowledge
 void
-Madara::KATS::Test_Framework::sync (void)
+madara::kats::Test_Framework::sync (void)
 {
   std::stringstream log_message;
 
@@ -152,7 +152,7 @@ Madara::KATS::Test_Framework::sync (void)
 /// Syncs on all processes until everyone is at the event and
 /// has the latest information
 void
-Madara::KATS::Test_Framework::barriered_sync (const std::string & event_name)
+madara::kats::Test_Framework::barriered_sync (const std::string & event_name)
 {
   std::stringstream buffer;
   std::stringstream log_message;
@@ -189,7 +189,7 @@ Madara::KATS::Test_Framework::barriered_sync (const std::string & event_name)
 
 /// Creates a testing event
 int 
-Madara::KATS::Test_Framework::event (const std::string & name, 
+madara::kats::Test_Framework::event (const std::string & name, 
         const std::string & pre_condition,
         const std::string & post_condition,
         const std::string & fail_condition,
@@ -201,7 +201,7 @@ Madara::KATS::Test_Framework::event (const std::string & name,
 
   // default result is 
   int result = 0;
-  Madara::Knowledge_Record::Integer eval_result = 0;
+  madara::Knowledge_Record::Integer eval_result = 0;
 
   // first, make sure the transport is activated or else
   // we will be here for a long time. Only necessary
@@ -282,13 +282,13 @@ Madara::KATS::Test_Framework::event (const std::string & name,
 
 /// Logs according to a severity level
 void 
-Madara::KATS::Test_Framework::log (const std::string & statement, unsigned int level)
+madara::kats::Test_Framework::log (const std::string & statement, unsigned int level)
 {
   knowledge_.print (statement, level);
 }
 
 /// Dumps all knowledge to std::err
-void Madara::KATS::Test_Framework::dump (unsigned int level)
+void madara::kats::Test_Framework::dump (unsigned int level)
 {
   knowledge_.print_knowledge (level);
 }

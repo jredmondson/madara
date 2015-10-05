@@ -4,25 +4,25 @@
 #include "madara/utility/inttypes.h"
 
 
-Madara::Transport::Bandwidth_Monitor::Bandwidth_Monitor (
+madara::transport::Bandwidth_Monitor::Bandwidth_Monitor (
   time_t window_in_secs)
   : utilization_ (0), window_ (window_in_secs)
 {
 }
 
-Madara::Transport::Bandwidth_Monitor::Bandwidth_Monitor (
+madara::transport::Bandwidth_Monitor::Bandwidth_Monitor (
   const Bandwidth_Monitor & rhs)
   : messages_ (rhs.messages_), utilization_ (rhs.utilization_),
     window_ (rhs.window_)
 {
 }
 
-Madara::Transport::Bandwidth_Monitor::~Bandwidth_Monitor ()
+madara::transport::Bandwidth_Monitor::~Bandwidth_Monitor ()
 {
 }
 
 void
-Madara::Transport::Bandwidth_Monitor::operator= (
+madara::transport::Bandwidth_Monitor::operator= (
   const Bandwidth_Monitor & rhs)
 {
   Bandwidth_Guard guard (mutex_);
@@ -35,7 +35,7 @@ Madara::Transport::Bandwidth_Monitor::operator= (
 }
 
 void
-Madara::Transport::Bandwidth_Monitor::set_window (
+madara::transport::Bandwidth_Monitor::set_window (
   time_t window_in_secs)
 {
   Bandwidth_Guard guard (mutex_);
@@ -44,7 +44,7 @@ Madara::Transport::Bandwidth_Monitor::set_window (
 }
 
 void
-Madara::Transport::Bandwidth_Monitor::add (uint64_t size)
+madara::transport::Bandwidth_Monitor::add (uint64_t size)
 {
   Bandwidth_Guard guard (mutex_);
   
@@ -58,7 +58,7 @@ Madara::Transport::Bandwidth_Monitor::add (uint64_t size)
 }
 
 void
-Madara::Transport::Bandwidth_Monitor::add (
+madara::transport::Bandwidth_Monitor::add (
   time_t timestamp, uint64_t size)
 {
   Bandwidth_Guard guard (mutex_);
@@ -73,7 +73,7 @@ Madara::Transport::Bandwidth_Monitor::add (
 }
 
 bool
-Madara::Transport::Bandwidth_Monitor::is_bandwidth_violated (
+madara::transport::Bandwidth_Monitor::is_bandwidth_violated (
   int64_t limit)
 {
   bool result = false;
@@ -85,7 +85,7 @@ Madara::Transport::Bandwidth_Monitor::is_bandwidth_violated (
 }
 
 uint64_t
-Madara::Transport::Bandwidth_Monitor::get_utilization (void)
+madara::transport::Bandwidth_Monitor::get_utilization (void)
 {
   Bandwidth_Guard guard (mutex_);
 
@@ -95,7 +95,7 @@ Madara::Transport::Bandwidth_Monitor::get_utilization (void)
 }
 
 uint64_t
-Madara::Transport::Bandwidth_Monitor::get_bytes_per_second (void)
+madara::transport::Bandwidth_Monitor::get_bytes_per_second (void)
 {
   Bandwidth_Guard guard (mutex_);
   
@@ -105,7 +105,7 @@ Madara::Transport::Bandwidth_Monitor::get_bytes_per_second (void)
 }
 
 void
-Madara::Transport::Bandwidth_Monitor::clear (void)
+madara::transport::Bandwidth_Monitor::clear (void)
 {
   Bandwidth_Guard guard (mutex_);
   messages_.clear ();
@@ -113,21 +113,21 @@ Madara::Transport::Bandwidth_Monitor::clear (void)
 }
 
 void
-Madara::Transport::Bandwidth_Monitor::print_utilization (
+madara::transport::Bandwidth_Monitor::print_utilization (
   void)
 {
   Bandwidth_Guard guard (mutex_);
 
   update_utilization ();
 
-  madara_logger_ptr_log (Logger::global_logger.get(), Logger::LOG_ALWAYS, "Bandwidth: %d messages "
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, "Bandwidth: %d messages "
     "for %" PRIu64 " bytes over %lld window (%" PRIu64 " B/s)\n", messages_.size (),
     utilization_, (long long)window_, get_bytes_per_second ());
 }
 
 
 size_t
-Madara::Transport::Bandwidth_Monitor::get_number_of_messages (
+madara::transport::Bandwidth_Monitor::get_number_of_messages (
   void)
 {
   Bandwidth_Guard guard (mutex_);

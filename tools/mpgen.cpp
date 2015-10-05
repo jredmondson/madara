@@ -11,7 +11,7 @@
 
 #include "madara/utility/Utility.h"
 
-namespace utility = Madara::Utility;
+namespace utility = madara::utility;
 
 std::string project_name ("program");
 std::string output_dir (".");
@@ -140,11 +140,11 @@ bool write_sample_source (void)
   sample.open (filename.c_str ());
   if (sample.is_open ())
   {
-    sample << "#include \"madara/knowledge_engine/Knowledge_Base.h\"\n\n";
-    sample << "namespace engine = Madara::Knowledge_Engine;\n\n";
+    sample << "#include \"madara/knowledge/Knowledge_Base.h\"\n\n";
+    sample << "namespace knowledge = madara::knowledge;\n\n";
     sample << "int main (int argc, char ** argv)\n";
     sample << "{\n";
-    sample << "  engine::Knowledge_Base knowledge;\n\n";
+    sample << "  knowledge::Knowledge_Base knowledge;\n\n";
     sample << "  knowledge.print (\"Hello World!\\n\");\n\n";
     sample << "  return 0;\n";
     sample << "}\n";

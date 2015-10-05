@@ -12,15 +12,15 @@
 #include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
-typedef Madara::Knowledge_Record::Integer Integer;
+typedef madara::Knowledge_Record::Integer Integer;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
 // test functions
-void test_print_statement (Madara::Knowledge_Engine::Knowledge_Base & knowledge);
+void test_print_statement (madara::knowledge::Knowledge_Base & knowledge);
 
 
 int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
@@ -34,7 +34,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   ACE_TRACE (ACE_TEXT ("main"));
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  madara::knowledge::Knowledge_Base knowledge;
 
   // run tests
   test_print_statement (knowledge);
@@ -45,7 +45,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 }
 
 /// Tests logicals operators (&&, ||)
-void test_print_statement (Madara::Knowledge_Engine::Knowledge_Base & knowledge)
+void test_print_statement (madara::knowledge::Knowledge_Base & knowledge)
 {
   ACE_TRACE (ACE_TEXT ("test_expansion"));
 

@@ -46,10 +46,10 @@
 *********************************************************************/
 
 #include "com_madara_containers_Counter.h"
-#include "madara/knowledge_engine/containers/Counter.h"
+#include "madara/knowledge/containers/Counter.h"
 
-namespace engine = Madara::Knowledge_Engine;
-namespace containers = engine::Containers;
+namespace knowledge = madara::knowledge;
+namespace containers = knowledge::containers;
 typedef containers::Counter    Counter;
 
 /*
@@ -153,12 +153,12 @@ void JNICALL Java_com_madara_containers_Counter_jni_1setName
 
     if (type == 0)
     {
-      engine::Knowledge_Base * kb = (engine::Knowledge_Base *) context;
+      knowledge::Knowledge_Base * kb = (knowledge::Knowledge_Base *) context;
       current->set_name (str_name, *kb);
     }
     else if (type == 1)
     {
-      engine::Variables * vars = (engine::Variables *) context;
+      knowledge::Variables * vars = (knowledge::Variables *) context;
       current->set_name (str_name, *vars);
     }
 
@@ -312,8 +312,8 @@ void JNICALL Java_com_madara_containers_Counter_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   Counter * current = (Counter *)cptr;
-  engine::Knowledge_Update_Settings * settings =
-    (engine::Knowledge_Update_Settings *)settings_ptr;
+  knowledge::Knowledge_Update_Settings * settings =
+    (knowledge::Knowledge_Update_Settings *)settings_ptr;
 
   if (current && settings)
   {

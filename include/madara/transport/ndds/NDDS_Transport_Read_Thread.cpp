@@ -1,6 +1,6 @@
 #include "madara/transport/ndds/NDDS_Transport_Read_Thread.h"
 #include "madara/utility/Log_Macros.h"
-#include "madara/knowledge_engine/Update_Types.h"
+#include "madara/knowledge/Update_Types.h"
 #include "madara/utility/Utility.h"
 
 #include "ace/OS_NS_Thread.h"
@@ -8,9 +8,9 @@
 #include <iostream>
 #include <sstream>
 
-Madara::Transport::NDDS_Read_Thread::NDDS_Read_Thread (
+madara::transport::NDDS_Read_Thread::NDDS_Read_Thread (
   const std::string & id,
-  Madara::Knowledge_Engine::Thread_Safe_Context & context,
+  madara::knowledge::Thread_Safe_Context & context,
        NDDS_Knowledge_UpdateDataReader * reader)
   : id_ (id), context_ (context),
     barrier_ (2), terminated_ (false), 
@@ -27,13 +27,13 @@ Madara::Transport::NDDS_Read_Thread::NDDS_Read_Thread (
     " read thread started\n"));
 }
 
-Madara::Transport::NDDS_Read_Thread::~NDDS_Read_Thread ()
+madara::transport::NDDS_Read_Thread::~NDDS_Read_Thread ()
 {
   close ();
 }
 
 int
-Madara::Transport::NDDS_Read_Thread::close (void)
+madara::transport::NDDS_Read_Thread::close (void)
 {
   terminated_ = true;
   enter_barrier ();
@@ -42,13 +42,13 @@ Madara::Transport::NDDS_Read_Thread::close (void)
 }
 
 void
-Madara::Transport::NDDS_Read_Thread::wait_for_ready (void)
+madara::transport::NDDS_Read_Thread::wait_for_ready (void)
 {
   if (!is_ready_)
     is_not_ready_.wait ();
 }
 
-int Madara::Transport::NDDS_Read_Thread::enter_barrier (void)
+int madara::transport::NDDS_Read_Thread::enter_barrier (void)
 { 
   MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
     DLINFO "NDDS_Read_Thread::enter_barrier:" \
@@ -58,7 +58,7 @@ int Madara::Transport::NDDS_Read_Thread::enter_barrier (void)
   return 0;
 }
 
-void Madara::Transport::NDDS_Read_Thread::handle_assignment (
+void madara::transport::NDDS_Read_Thread::handle_assignment (
   NDDS_Knowledge_Update & data)
 {
   if (data.key)
@@ -129,7 +129,7 @@ void Madara::Transport::NDDS_Read_Thread::handle_assignment (
   }
 }
 
-void Madara::Transport::NDDS_Read_Thread::handle_multiassignment (
+void madara::transport::NDDS_Read_Thread::handle_multiassignment (
   NDDS_Knowledge_Update & data)
 {
   if (data.key)
@@ -208,7 +208,7 @@ void Madara::Transport::NDDS_Read_Thread::handle_multiassignment (
 }
 
 int
-Madara::Transport::NDDS_Read_Thread::svc (void)
+madara::transport::NDDS_Read_Thread::svc (void)
 {
   // if we don't check originator for null, we get phantom sends
   // when the program exits.
@@ -235,7 +235,7 @@ Madara::Transport::NDDS_Read_Thread::svc (void)
     {
       for (int i = 0; i < update_data_list.length(); ++i)
       {
-        if (Madara::Knowledge_Engine::ASSIGNMENT == update_data_list[i].type)
+        if (madara::knowledge::ASSIGNMENT == update_data_list[i].type)
         {
           MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
             DLINFO "NDDS_Read_Thread::svc:" \
@@ -246,7 +246,7 @@ Madara::Transport::NDDS_Read_Thread::svc (void)
 
           handle_assignment (update_data_list[i]);
         }
-        else if (Madara::Knowledge_Engine::MULTIPLE_ASSIGNMENT == update_data_list[i].type)
+        else if (madara::knowledge::MULTIPLE_ASSIGNMENT == update_data_list[i].type)
         {
           MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
             DLINFO "NDDS_Read_Thread::svc:" \

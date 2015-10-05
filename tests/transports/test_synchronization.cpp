@@ -15,16 +15,16 @@
 #include "ace/Signal.h"
 #include "ace/Sched_Params.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::logger;
 
-Madara::Knowledge_Record::Integer id = 0;
-Madara::Knowledge_Record::Integer left = 0;
-Madara::Knowledge_Record::Integer processes = 2;
-Madara::Knowledge_Record::Integer stop = 10;
-Madara::Knowledge_Record::Integer value = 0;
+madara::Knowledge_Record::Integer id = 0;
+madara::Knowledge_Record::Integer left = 0;
+madara::Knowledge_Record::Integer processes = 2;
+madara::Knowledge_Record::Integer stop = 10;
+madara::Knowledge_Record::Integer value = 0;
 std::string host;
 std::string domain ("n_state");
 std::string multicast ("239.255.0.1:4150");
@@ -79,22 +79,22 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   ACE_OS::thr_setprio (prio);
 
   // transport settings
-  Madara::Transport::Settings ts;
+  madara::transport::Settings ts;
   ts.domains = domain;
-  ts.type = Madara::Transport::MULTICAST;
+  ts.type = madara::transport::MULTICAST;
   ts.hosts.resize (1);
   ts.hosts[0] = multicast;
 
   // start the knowledge engine
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (
+  madara::knowledge::Knowledge_Base knowledge (
     host, ts);
 
   // signal handler for clean exit
   ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
 
-  Madara::Knowledge_Engine::Compiled_Expression compiled;
-  Madara::Knowledge_Engine::Compiled_Expression self_state_broadcast;
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  madara::knowledge::Compiled_Expression compiled;
+  madara::knowledge::Compiled_Expression self_state_broadcast;
+  madara::knowledge::Wait_Settings wait_settings;
 
   // set my id
   knowledge.set (".self", id);
@@ -153,7 +153,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   knowledge.print (wait_settings.post_print_statement);
   
-  Madara::Knowledge_Engine::Eval_Settings default_eval;
+  madara::knowledge::Eval_Settings default_eval;
 
   // termination is done via signalling from the user (Control+C)
   while (!terminated)

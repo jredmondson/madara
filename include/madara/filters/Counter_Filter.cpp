@@ -1,25 +1,25 @@
 #include "Counter_Filter.h"
 #include "madara/utility/Utility.h"
 
-namespace utility = Madara::Utility;
-typedef Madara::Knowledge_Record::Integer   Integer;
+namespace utility = madara::utility;
+typedef madara::Knowledge_Record::Integer   Integer;
 
-Madara::Filters::Counter_Filter::Counter_Filter ()
+madara::filters::Counter_Filter::Counter_Filter ()
   : initialized_ (false),
   packets_ (0), first_message_ (-1), last_message_ (-1)
 {
 }
 
-Madara::Filters::Counter_Filter::~Counter_Filter ()
+madara::filters::Counter_Filter::~Counter_Filter ()
 {
 }
 
 
 void
-Madara::Filters::Counter_Filter::filter (
+madara::filters::Counter_Filter::filter (
   Knowledge_Map & records,
-  const Transport::Transport_Context & transport_context,
-  Knowledge_Engine::Variables & vars)
+  const transport::Transport_Context & transport_context,
+  knowledge::Variables & vars)
 {
   Integer cur_time = (Integer) transport_context.get_current_time ();
 

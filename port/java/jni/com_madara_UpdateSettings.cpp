@@ -1,13 +1,13 @@
 
 #include "com_madara_UpdateSettings.h"
-#include "madara/knowledge_engine/Knowledge_Update_Settings.h"
+#include "madara/knowledge/Knowledge_Update_Settings.h"
 
 #include <stdio.h>
 #include <string>
 
 // define useful shorthands
-namespace engine = Madara::Knowledge_Engine;
-typedef engine::Knowledge_Update_Settings Update_Settings;
+namespace knowledge = madara::knowledge;
+typedef knowledge::Knowledge_Update_Settings Update_Settings;
 
 /*
 * Class:   com_madara_UpdateSettings

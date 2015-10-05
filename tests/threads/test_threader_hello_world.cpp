@@ -1,11 +1,11 @@
 
 #include <iostream>
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 #include "madara/threads/Threader.h"
 
 // some shortcuts for common MADARA namespaces
-namespace engine = Madara::Knowledge_Engine;
-namespace threads = Madara::Threads;
+namespace knowledge = madara::knowledge;
+namespace threads = madara::Threads;
 
 // 1: Extend a Base_Thread
 class Hello_World : public threads::Base_Thread
@@ -20,7 +20,7 @@ class Hello_World : public threads::Base_Thread
 int main (int, char **)
 {
   // 2: Create a Knowledge Base
-  engine::Knowledge_Base knowledge;
+  knowledge::Knowledge_Base knowledge;
 
   // 3: Create a Threader 
   threads::Threader threader (knowledge);

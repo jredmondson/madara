@@ -12,9 +12,9 @@
 #include "madara/cid/CID_Settings.h"
 #include "madara/MADARA_export.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Cid
+  namespace cid
   {
     /**
      * Checks a solution for duplicate entries

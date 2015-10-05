@@ -2,10 +2,10 @@
 #include "madara/filters/Counter_Filter.h"
 #include "madara/transport/QoS_Transport_Settings.h"
 
-namespace transport = Madara::Transport;
-namespace engine = Madara::Knowledge_Engine;
-namespace filters = Madara::Filters;
-typedef Madara::Knowledge_Record::Integer    Integer;
+namespace transport = madara::transport;
+namespace knowledge = madara::knowledge;
+namespace filters = madara::filters;
+typedef madara::Knowledge_Record::Integer    Integer;
 typedef transport::QoS_Transport_Settings QoS_Transport_Settings;
 typedef filters::Counter_Filter Counter_Filter;
 

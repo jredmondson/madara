@@ -3,16 +3,16 @@
 
 #include <string>
 
-#include "madara/knowledge_engine/Thread_Safe_Context.h"
+#include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Transport.h"
 #include <ndds/ndds_cpp.h>
 #include "madara/transport/ndds/Ndds_Knowledge_Update.h"
 #include "madara/transport/ndds/Ndds_Knowledge_UpdateSupport.h"
 #include "madara/transport/ndds/NDDS_Listener.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class NDDS_Transport
@@ -31,7 +31,7 @@ namespace Madara
        * @param   launch_transport  whether or not to launch this transport
        **/
       NDDS_Transport (const std::string & id, 
-        Madara::Knowledge_Engine::Thread_Safe_Context & context, 
+        knowledge::Thread_Safe_Context & context, 
         Settings & config, bool launch_transport);
 
       /**
@@ -44,7 +44,7 @@ namespace Madara
        * @param   updates listing of all updates that must be sent
        * @return  result of write operation or -1 if we are shutting down
        **/
-      long send_data (const Madara::Knowledge_Records & updates);
+      long send_data (const madara::Knowledge_Records & updates);
 	  
       /**
        * Accesses reliability setting

@@ -1,15 +1,15 @@
 #include "madara/transport/ndds/NDDS_Listener.h"
-#include "madara/knowledge_engine/Update_Types.h"
+#include "madara/knowledge/Update_Types.h"
 #include "madara/utility/Utility.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::Logger;
 
 #include <sstream>
 
-Madara::Transport::NDDS_Listener::NDDS_Listener(
+madara::transport::NDDS_Listener::NDDS_Listener(
   const Settings & settings, const std::string & id,
-  Madara::Knowledge_Engine::Thread_Safe_Context & context,
+  knowledge::Thread_Safe_Context & context,
   Bandwidth_Monitor & send_monitor,
   Bandwidth_Monitor & receive_monitor,
   Packet_Scheduler & packet_scheduler)
@@ -31,7 +31,7 @@ Madara::Transport::NDDS_Listener::NDDS_Listener(
       " setting rules to %s\n",
       settings_.on_data_received_logic.c_str ());
 
-    Madara::Expression_Tree::Interpreter interpreter;
+    madara::Expression_Tree::Interpreter interpreter;
     on_data_received_ = context_.compile (settings_.on_data_received_logic);
   }
   else
@@ -43,25 +43,25 @@ Madara::Transport::NDDS_Listener::NDDS_Listener(
   
 }
 
-Madara::Transport::NDDS_Listener::NDDS_Listener(const NDDS_Listener &ref)
+madara::transport::NDDS_Listener::NDDS_Listener(const NDDS_Listener &ref)
 : settings_ (ref.settings_), id_ (ref.id_), context_ (ref.context_), 
   send_monitor_ (ref.send_monitor_), receive_monitor_ (ref.receive_monitor_),
   packet_scheduler_ (ref.packet_scheduler_)
 {
 }
 
-Madara::Transport::NDDS_Listener::~NDDS_Listener()
+madara::transport::NDDS_Listener::~NDDS_Listener()
 {}
 
 void
-Madara::Transport::NDDS_Listener::on_subscription_matched (
+madara::transport::NDDS_Listener::on_subscription_matched (
   DDSDataReader* reader, const DDS_SubscriptionMatchedStatus& status)
 {
   context_.set_changed ();
 }
 
 void
-Madara::Transport::NDDS_Listener::rebroadcast (
+madara::transport::NDDS_Listener::rebroadcast (
   const char * print_prefix,
   Message_Header * header,
   const Knowledge_Map & records)
@@ -94,7 +94,7 @@ Madara::Transport::NDDS_Listener::rebroadcast (
 }
 
 void 
-Madara::Transport::NDDS_Listener::on_data_available(DDSDataReader * reader)
+madara::transport::NDDS_Listener::on_data_available(DDSDataReader * reader)
 {
   NDDS_Knowledge_UpdateSeq update_data_list;
   DDS_SampleInfoSeq info_seq;
@@ -152,7 +152,7 @@ Madara::Transport::NDDS_Listener::on_data_available(DDSDataReader * reader)
         continue;
       }
 
-      if (update_data_list[i].type != Madara::Transport::MULTIASSIGN)
+      if (update_data_list[i].type != madara::transport::MULTIASSIGN)
       {
         // we do not allow any other type than multiassign
         context_.get_logger ().log (logger::LOG_DETAILED,
@@ -165,7 +165,7 @@ Madara::Transport::NDDS_Listener::on_data_available(DDSDataReader * reader)
       Knowledge_Map rebroadcast_records;
       Message_Header * header = 0;
 
-      if (Madara::Knowledge_Engine::MULTIPLE_ASSIGNMENT == update_data_list[i].type)
+      if (knowledge::MULTIPLE_ASSIGNMENT == update_data_list[i].type)
       {
         context_.get_logger ().log (logger::LOG_DETAILED,
           "%s:" \

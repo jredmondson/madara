@@ -3,15 +3,15 @@
 #include "madara/utility/Utility.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace logger = Madara::Logger;
+namespace logger = madara::Logger;
 
 #include <iostream>
 #include <sstream>
 
-Madara::Transport::Splice_Read_Thread::Splice_Read_Thread (
+madara::transport::Splice_Read_Thread::Splice_Read_Thread (
   const std::string & id,
   const Settings & settings,
-  Madara::Knowledge_Engine::Thread_Safe_Context & context, 
+  madara::knowledge::Thread_Safe_Context & context, 
   Knowledge::UpdateDataReader_ptr & update_reader,
   Knowledge::UpdateDataWriter_ptr & update_writer,
   Bandwidth_Monitor & send_monitor,
@@ -43,7 +43,7 @@ Madara::Transport::Splice_Read_Thread::Splice_Read_Thread (
       " setting rules to %s\n",
       settings_.on_data_received_logic.c_str ());
 
-    Madara::Expression_Tree::Interpreter interpreter;
+    madara::Expression_Tree::Interpreter interpreter;
     on_data_received_ = context_.compile (settings_.on_data_received_logic);
   }
   else
@@ -73,13 +73,13 @@ Madara::Transport::Splice_Read_Thread::Splice_Read_Thread (
   }
 }
 
-Madara::Transport::Splice_Read_Thread::~Splice_Read_Thread ()
+madara::transport::Splice_Read_Thread::~Splice_Read_Thread ()
 {
   close ();
 }
 
 int
-Madara::Transport::Splice_Read_Thread::close (void)
+madara::transport::Splice_Read_Thread::close (void)
 {
   terminated_ = true;
   enter_barrier ();
@@ -88,13 +88,13 @@ Madara::Transport::Splice_Read_Thread::close (void)
 }
 
 void
-Madara::Transport::Splice_Read_Thread::wait_for_ready (void)
+madara::transport::Splice_Read_Thread::wait_for_ready (void)
 {
   if (!is_ready_)
     is_not_ready_.wait ();
 }
 
-int Madara::Transport::Splice_Read_Thread::enter_barrier (void)
+int madara::transport::Splice_Read_Thread::enter_barrier (void)
 {
   context_.get_logger ().log (logger::LOG_ERROR,
     "Splice_Read_Thread::enter_barrier:" \
@@ -113,10 +113,10 @@ int Madara::Transport::Splice_Read_Thread::enter_barrier (void)
  **/
 
 void
-Madara::Transport::Splice_Read_Thread::handle_latency_aggregation (
+madara::transport::Splice_Read_Thread::handle_latency_aggregation (
   Knowledge::Update & data)
 {
-  Madara::Transport::Settings::Context_Guard guard (settings_.mutex);
+  madara::transport::Settings::Context_Guard guard (settings_.mutex);
   
   // if we were the aggregator, don't apply the updates to ourself.
   if (data.quality == settings_.id)
@@ -126,10 +126,10 @@ Madara::Transport::Splice_Read_Thread::handle_latency_aggregation (
 }
 
 void
-Madara::Transport::Splice_Read_Thread::handle_vote (
+madara::transport::Splice_Read_Thread::handle_vote (
   Knowledge::Update & data)
 {
-  Madara::Transport::Settings::Context_Guard guard (settings_.mutex);
+  madara::transport::Settings::Context_Guard guard (settings_.mutex);
   
   unsigned long long vote_best = (unsigned long long) data.value;
 
@@ -153,9 +153,9 @@ Madara::Transport::Splice_Read_Thread::handle_vote (
   if (settings_.num_votes_received == settings_.num_voters)
   {
     // check the best result compared to 
-    Madara::Cid::reset_solution (settings_.latencies);
+    madara::Cid::reset_solution (settings_.latencies);
     unsigned long long cur_latency = 
-      Madara::Cid::calculate_latency (settings_.latencies);
+      madara::Cid::calculate_latency (settings_.latencies);
 
     // grab the current voted best
     vote_best = settings_.latencies.results[0].latency;
@@ -199,10 +199,10 @@ Madara::Transport::Splice_Read_Thread::handle_vote (
  **/
 
 void
-Madara::Transport::Splice_Read_Thread::handle_latency_summation (
+madara::transport::Splice_Read_Thread::handle_latency_summation (
   Knowledge::Update & data)
 {
-  Madara::Transport::Settings::Context_Guard guard (settings_.mutex);
+  madara::transport::Settings::Context_Guard guard (settings_.mutex);
   
   ++settings_.num_summations;
 
@@ -219,13 +219,13 @@ Madara::Transport::Splice_Read_Thread::handle_latency_summation (
   // if we've collected all summations, then sort our summations for CID
   if (settings_.num_summations == settings_.processes)
   {
-    Madara::Cid::Summations_Map & summations =
+    madara::Cid::Summations_Map & summations =
       settings_.latencies.network_summations;
-    for (Madara::Cid::Summations_Map::iterator i = summations.begin ();
+    for (madara::Cid::Summations_Map::iterator i = summations.begin ();
       i != summations.end (); ++i)
     {
       std::sort (i->second.begin (), i->second.end (),
-        Madara::Cid::Increasing_Latency);
+        madara::Cid::Increasing_Latency);
     }
 
     settings_.num_summations = 0;
@@ -241,11 +241,11 @@ Madara::Transport::Splice_Read_Thread::handle_latency_summation (
  **/
 
 void
-Madara::Transport::Splice_Read_Thread::handle_latency (
+madara::transport::Splice_Read_Thread::handle_latency (
   Knowledge::Update & data)
 {
 //  DDS::InstanceHandle_t  handle;
-  Madara::Transport::Settings::Context_Guard guard (settings_.mutex);
+  madara::transport::Settings::Context_Guard guard (settings_.mutex);
   /**
    * During value == 0 (initial), the originator called start_latency.
    **/
@@ -280,7 +280,7 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
     reply_data.clock = data.clock;
     reply_data.quality = this->settings_.id;
     reply_data.originator = id_.c_str ();
-    reply_data.type = Madara::Transport::LATENCY;
+    reply_data.type = madara::transport::LATENCY;
 
     context_.get_logger ().log (logger::LOG_MAJOR,
       "Splice_DDS_Transport::handle_latency:" \
@@ -332,7 +332,7 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
         reply_data.clock = data.clock;
         reply_data.quality = this->settings_.id;
         reply_data.originator = id_.c_str ();
-        reply_data.type = Madara::Transport::LATENCY_AGGREGATE;
+        reply_data.type = madara::transport::LATENCY_AGGREGATE;
 
         update_writer_->write (reply_data, 0);
 
@@ -348,7 +348,7 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
         summation.quality = this->settings_.id;
         summation.originator = id_.c_str ();
         summation.key = settings_.pack_summations ().c_str ();
-        summation.type = Madara::Transport::LATENCY_SUMMATION;
+        summation.type = madara::transport::LATENCY_SUMMATION;
 
         //handle = update_writer_->register_instance (data);
         update_writer_->write (summation, 0);
@@ -368,7 +368,7 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
     reply_data.clock = data.clock;
     reply_data.quality = this->settings_.id;
     reply_data.originator = id_.c_str ();
-    reply_data.type = Madara::Transport::LATENCY;
+    reply_data.type = madara::transport::LATENCY;
 
     context_.get_logger ().log (logger::LOG_MINOR,
       "Splice_DDS_Transport::handle_latency:" \
@@ -403,7 +403,7 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
       reply_data.clock = data.clock;
       reply_data.quality = this->settings_.id;
       reply_data.originator = id_.c_str ();
-      reply_data.type = Madara::Transport::LATENCY_AGGREGATE;
+      reply_data.type = madara::transport::LATENCY_AGGREGATE;
 
       //handle = update_writer_->register_instance (data);
       update_writer_->write (reply_data, 0);
@@ -420,7 +420,7 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
       summation.quality = this->settings_.id;
       summation.originator = id_.c_str ();
       summation.key = settings_.pack_summations ().c_str ();
-      summation.type = Madara::Transport::LATENCY_SUMMATION;
+      summation.type = madara::transport::LATENCY_SUMMATION;
 
       //handle = update_writer_->register_instance (data);
       update_writer_->write (summation, 0);
@@ -438,7 +438,7 @@ Madara::Transport::Splice_Read_Thread::handle_latency (
 #endif   // USE_CID
 
 void
-Madara::Transport::Splice_Read_Thread::rebroadcast (
+madara::transport::Splice_Read_Thread::rebroadcast (
   const char * print_prefix,
   Message_Header * header,
   const Knowledge_Map & records)
@@ -457,7 +457,7 @@ Madara::Transport::Splice_Read_Thread::rebroadcast (
     DDS::InstanceHandle_t handle;
     
     // get the maximum quality from the updates
-    uint32_t quality = Madara::max_quality (records);
+    uint32_t quality = madara::max_quality (records);
 
     /// get current lamport clock. 
     unsigned long long cur_clock = context_.get_clock ();
@@ -470,7 +470,7 @@ Madara::Transport::Splice_Read_Thread::rebroadcast (
     data.quality = quality;
     data.updates = DDS::ULong (records.size ());
     data.originator = DDS::string_dup(id_.c_str ());
-    data.type = Madara::Transport::MULTIASSIGN;
+    data.type = madara::transport::MULTIASSIGN;
     data.ttl = qos_settings_->get_rebroadcast_ttl ();
     data.timestamp = time (NULL);
     data.madara_id = DDS::string_dup(MADARA_IDENTIFIER);
@@ -495,7 +495,7 @@ Madara::Transport::Splice_Read_Thread::rebroadcast (
 }
 
 int
-Madara::Transport::Splice_Read_Thread::svc (void)
+madara::transport::Splice_Read_Thread::svc (void)
 {
   DDS::SampleInfoSeq_var infoList = new DDS::SampleInfoSeq;
   DDS::ReturnCode_t      dds_result;
@@ -567,7 +567,7 @@ Madara::Transport::Splice_Read_Thread::svc (void)
           continue;
         }
 
-        if (update_data_list_[i].type != Madara::Transport::MULTIASSIGN)
+        if (update_data_list_[i].type != madara::transport::MULTIASSIGN)
         {
           context_.get_logger ().log (logger::LOG_DETAILED,
             "%s:" \

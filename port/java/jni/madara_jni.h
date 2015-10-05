@@ -19,9 +19,9 @@ MADARA_Export jclass jni_string_cls();
 MADARA_Export JNIEnv* jni_attach();
 MADARA_Export void jni_detach();
 
-namespace Madara
+namespace madara
 {
-  namespace Utility
+  namespace utility
   {
     namespace Java
     {

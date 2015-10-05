@@ -5,11 +5,11 @@
 #ifndef _MADARA_NO_KARL_
 
 #include "madara/expression_tree/Component_Node.h"
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/knowledge/Knowledge_Record.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Expression_Tree
+  namespace expression_tree
   {
     /**
      * @class Composite_Unary_Node
@@ -24,7 +24,7 @@ namespace Madara
        * @param   logger the logger to use for printing
        * @param   right  right expression
        **/
-      Composite_Unary_Node (Logger::Logger & logger,
+      Composite_Unary_Node (logger::Logger & logger,
         Component_Node *right);
 
       /**

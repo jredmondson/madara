@@ -1,10 +1,10 @@
 #include "Peer_Discovery.h"
 #include "madara/utility/Utility.h"
 
-namespace utility = Madara::Utility;
-typedef Madara::Knowledge_Record::Integer   Integer;
+namespace utility = madara::utility;
+typedef madara::Knowledge_Record::Integer   Integer;
 
-Madara::Filters::Peer_Discovery::Peer_Discovery (
+madara::filters::Peer_Discovery::Peer_Discovery (
   const std::string & prefix,
   Knowledge_Record::Integer heart_beat)
   : initialized_ (false), prefix_ (prefix),
@@ -12,16 +12,16 @@ Madara::Filters::Peer_Discovery::Peer_Discovery (
 {
 }
 
-Madara::Filters::Peer_Discovery::~Peer_Discovery ()
+madara::filters::Peer_Discovery::~Peer_Discovery ()
 {
 }
 
 
 void
-Madara::Filters::Peer_Discovery::filter (
+madara::filters::Peer_Discovery::filter (
   Knowledge_Map & records,
-  const Transport::Transport_Context & transport_context,
-  Knowledge_Engine::Variables & vars)
+  const transport::Transport_Context & transport_context,
+  knowledge::Variables & vars)
 {
   if (!initialized_)
   {

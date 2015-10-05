@@ -12,17 +12,17 @@
 #include "ace/Guard_T.h"
 #include "ace/Recursive_Thread_Mutex.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge/Knowledge_Base.h"
 
 #include "madara/utility/Utility.h"
 #include "madara/filters/Generic_Filters.h"
 #include "madara/logger/Global_Logger.h"
 
-namespace engine = Madara::Knowledge_Engine;
-namespace transport = Madara::Transport;
-namespace utility = Madara::Utility;
-namespace filters = Madara::Filters;
-namespace logger = Madara::Logger;
+namespace knowledge = madara::knowledge;
+namespace transport = madara::transport;
+namespace utility = madara::utility;
+namespace filters = madara::filters;
+namespace logger = madara::logger;
 
 typedef  std::vector <std::string>  String_Vector;
 
@@ -247,7 +247,7 @@ int main (int argc, char ** argv)
   }
 
   // create a knowledge base and setup our id
-  engine::Knowledge_Base knowledge (host, settings);
+  knowledge::Knowledge_Base knowledge (host, settings);
 
   if (!after_wait)
   {

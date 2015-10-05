@@ -665,7 +665,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = ../include/madara/knowledge_engine \
+INPUT                  = ../include/madara/knowledge \
                          ../include/madara/transport \
                          ../include/madara/expression_tree \
                          ../include/madara/utility \

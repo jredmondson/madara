@@ -11,9 +11,9 @@
  * This file contains helper classes for attaching and detaching to a VM.
  **/
 
-namespace Madara
+namespace madara
 {
-  namespace Utility
+  namespace utility
   {
     namespace Java
     {
