@@ -1,5 +1,5 @@
-#ifndef _NDDS_LISTENER_H_
-#define _NDDS_LISTENER_H_
+#ifndef _MADARA_NDDS_LISTENER_H_
+#define _MADARA_NDDS_LISTENER_H_
 
 
 #include <string>
@@ -12,9 +12,9 @@
 #include "madara/transport/ndds/Ndds_Knowledge_Update.h"
 #include "madara/transport/ndds/Ndds_Knowledge_UpdateSupport.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Transport
+  namespace transport
   {
     /**
      * @class NDDS_Listener
@@ -106,4 +106,4 @@ namespace Madara
   }
 }
 
-#endif // 
+#endif // _MADARA_NDDS_LISTENER_H_
