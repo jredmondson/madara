@@ -1,5 +1,5 @@
-#ifndef   _TRANSPORT_CONTEXT_H_
-#define   _TRANSPORT_CONTEXT_H_
+#ifndef   _MADARA_TRANSPORT_CONTEXT_H_
+#define   _MADARA_TRANSPORT_CONTEXT_H_
 
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
@@ -218,4 +218,4 @@ namespace madara
 
 #include "Transport_Context.inl"
 
-#endif
+#endif // _MADARA_TRANSPORT_CONTEXT_H_

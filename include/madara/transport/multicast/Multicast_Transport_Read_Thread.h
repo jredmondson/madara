@@ -1,5 +1,5 @@
-#ifndef _MULTICAST_TRANSPORT_READ_THREAD_H_
-#define _MULTICAST_TRANSPORT_READ_THREAD_H_
+#ifndef _MADARA_MULTICAST_TRANSPORT_READ_THREAD_H_
+#define _MADARA_MULTICAST_TRANSPORT_READ_THREAD_H_
 
 /**
  * @file Multicast_Transport_Read_Thread.h
@@ -15,7 +15,7 @@
 #include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Bandwidth_Monitor.h"
 #include "madara/transport/QoS_Transport_Settings.h"
-#include "madara/expression_tree/Expression_Tree.h"
+#include "madara/expression/Expression_Tree.h"
 #include "madara/transport/Transport.h"
 #include "madara/transport/Message_Header.h"
 #include "madara/threads/Base_Thread.h"
@@ -132,4 +132,4 @@ namespace madara
   }
 }
 
-#endif // _MULTICAST_TRANSPORT_READ_THREAD_H_
+#endif // _MADARA_MULTICAST_TRANSPORT_READ_THREAD_H_

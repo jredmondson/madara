@@ -1,5 +1,5 @@
-#ifndef _EVAL_SETTINGS_
-#define _EVAL_SETTINGS_
+#ifndef _MADARA_EVAL_SETTINGS_
+#define _MADARA_EVAL_SETTINGS_
 
 /**
  * @file Eval_Settings.h
@@ -109,4 +109,4 @@ namespace madara
      };
   }
 }
-#endif
+#endif //_MADARA_EVAL_SETTINGS_

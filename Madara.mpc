@@ -73,7 +73,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
   }
 
   Source_Files {
-    include/madara/expression_tree
+    include/madara/expression
     include/madara/filters
     include/madara/knowledge
     include/madara/knowledge/containers
@@ -100,7 +100,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
   }
 
   Header_Files {
-    include/madara/expression_tree
+    include/madara/expression
     include/madara/filters
     include/madara/knowledge
     include/madara/knowledge/containers

@@ -1,5 +1,5 @@
-#ifndef  _REDUCED_MESSAGE_HEADER_H_
-#define  _REDUCED_MESSAGE_HEADER_H_
+#ifndef  _MADARA_REDUCED_MESSAGE_HEADER_H_
+#define  _MADARA_REDUCED_MESSAGE_HEADER_H_
 
 /**
 * @file Message_Header.h
@@ -100,5 +100,4 @@ namespace madara
   }
 }
 
-
-#endif   // _REDUCED_MESSAGE_HEADER_H_
+#endif   // _MADARA_REDUCED_MESSAGE_HEADER_H_

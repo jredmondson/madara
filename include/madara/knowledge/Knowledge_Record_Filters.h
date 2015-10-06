@@ -1,7 +1,7 @@
 
 
-#ifndef _KNOWLEDGE_RECORD_FILTERS_H_
-#define _KNOWLEDGE_RECORD_FILTERS_H_
+#ifndef _MADARA_KNOWLEDGE_RECORD_FILTERS_H_
+#define _MADARA_KNOWLEDGE_RECORD_FILTERS_H_
 
 /**
  * @file Knowledge_Record_Filters.h
@@ -274,4 +274,4 @@ namespace madara
   }
 }
 
-#endif   // _KNOWLEDGE_RECORD_FILTERS_H_
+#endif   // _MADARA_KNOWLEDGE_RECORD_FILTERS_H_

@@ -1,5 +1,5 @@
-#ifndef TCP_TRANSPORT_H
-#define TCP_TRANSPORT_H
+#ifndef _MADARA_TCP_TRANSPORT_H_
+#define _MADARA_TCP_TRANSPORT_H_
 
 #include <string>
 
@@ -83,4 +83,4 @@ namespace madara
   }
 }
 
-#endif // TCP_TRANSPORT_H
+#endif // _MADARA_TCP_TRANSPORT_H_

@@ -1,5 +1,5 @@
-#ifndef _WAIT_SETTINGS_
-#define _WAIT_SETTINGS_
+#ifndef _MADARA_WAIT_SETTINGS_
+#define _MADARA_WAIT_SETTINGS_
 
 /**
  * @file Wait_Settings.h
@@ -93,4 +93,4 @@ namespace madara
 
   }
 }
-#endif
+#endif // _MADARA_WAIT_SETTINGS_

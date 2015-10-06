@@ -1,5 +1,5 @@
-#ifndef TCP_TRANSPORT_READ_THREAD_H
-#define TCP_TRANSPORT_READ_THREAD_H
+#ifndef _MADARA_TCP_TRANSPORT_READ_THREAD_H_
+#define _MADARA_TCP_TRANSPORT_READ_THREAD_H_
 
 #include <string>
 
@@ -7,7 +7,7 @@
 #include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Bandwidth_Monitor.h"
 #include "madara/transport/QoS_Transport_Settings.h"
-#include "madara/expression_tree/Expression_Tree.h"
+#include "madara/expression/Expression_Tree.h"
 #include "madara/transport/Transport.h"
 #include "madara/transport/Message_Header.h"
 #include "madara/threads/Base_Thread.h"
@@ -113,4 +113,4 @@ namespace madara
   }
 }
 
-#endif // TCP_TRANSPORT_READ_THREAD_H
+#endif // _MADARA_TCP_TRANSPORT_READ_THREAD_H_

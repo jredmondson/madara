@@ -1,6 +1,6 @@
 /* -*- C++ -*- */
-#ifndef _LSTACK_H_
-#define _LSTACK_H_
+#ifndef _MADARA_LSTACK_H_
+#define _MADARA_LSTACK_H_
 
 // This header defines "size_t"
 #include <stdlib.h>
@@ -240,4 +240,4 @@ namespace madara
 
 #include "LStack.cpp"
 
-#endif /* _LSTACK_H_ */
+#endif /* _MADARA_LSTACK_H_ */

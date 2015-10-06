@@ -23,7 +23,7 @@
 #include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/knowledge/Files.h"
 #include "madara/transport/Transport.h"
-#include "madara/expression_tree/Interpreter.h"
+#include "madara/expression/Interpreter.h"
 #include "ace/SOCK_Dgram.h"
 
 // declare ACE class so MADARA user will not have to directly link to ACE
@@ -281,7 +281,7 @@ namespace madara
        * @return                value of expression
        **/
       madara::Knowledge_Record evaluate (
-        expression_tree::Component_Node * root,
+        expression::Component_Node * root,
         const Eval_Settings & settings =
           Eval_Settings ());
 

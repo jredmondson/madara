@@ -38,8 +38,8 @@
 #include "madara/Lock_Type.h"
 #include "madara/knowledge/Knowledge_Record.h"
 #include "madara/knowledge/Thread_Safe_Context.h"
-#include "madara/expression_tree/Expression_Tree.h"
-#include "madara/expression_tree/Interpreter.h"
+#include "madara/expression/Expression_Tree.h"
+#include "madara/expression/Interpreter.h"
 #include "madara/MADARA_export.h"
 #include "madara/transport/Fragmentation.h"
 

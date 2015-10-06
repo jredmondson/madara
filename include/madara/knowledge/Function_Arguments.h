@@ -21,4 +21,4 @@ namespace madara
   }
 }
 
-#endif
+#endif // _MADARA_KE_FUNCTION_ARGUMENTS_H_

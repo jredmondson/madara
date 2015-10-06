@@ -1,6 +1,6 @@
 /* -*- C++ -*- */
-#ifndef _LQUEUE_H
-#define _LQUEUE_H
+#ifndef _MADARA_LQUEUE_H
+#define _MADARA_LQUEUE_H
 
 // This header defines "size_t"
 #include <stdlib.h>
@@ -247,4 +247,4 @@ namespace madara
 }
 
 #include "LQueue.cpp"
-#endif /* _LQUEUE_H */
+#endif /* _MADARA_LQUEUE_H */

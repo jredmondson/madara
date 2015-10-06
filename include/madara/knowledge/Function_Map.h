@@ -1,5 +1,5 @@
-#ifndef _FUNCTION_MAP_H_
-#define _FUNCTION_MAP_H_
+#ifndef _MADARA_FUNCTION_MAP_H_
+#define _MADARA_FUNCTION_MAP_H_
 
 #include <map>
 #include <string>
@@ -18,4 +18,4 @@ namespace madara
   }
 }
 
-#endif
+#endif // _MADARA_FUNCTION_MAP_H_

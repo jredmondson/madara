@@ -667,7 +667,7 @@ WARN_LOGFILE           =
 
 INPUT                  = ../include/madara/knowledge \
                          ../include/madara/transport \
-                         ../include/madara/expression_tree \
+                         ../include/madara/expression \
                          ../include/madara/utility \
                          ../include/madara/logger \
                          ../include/madara/threads \

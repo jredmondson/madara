@@ -1,5 +1,5 @@
-#ifndef  _FRAGMENTATION_HEADER_H_
-#define  _FRAGMENTATION_HEADER_H_
+#ifndef  _MADARA_FRAGMENTATION_HEADER_H_
+#define  _MADARA_FRAGMENTATION_HEADER_H_
 
 /**
  * @file Fragmentation.h
@@ -204,6 +204,4 @@ namespace madara
   }
 }
 
-
-#endif   // _FRAGMENTATION_MESSAGE_HEADER_H_
-
+#endif   // _MADARA_FRAGMENTATION_HEADER_H_

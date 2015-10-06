@@ -1,5 +1,5 @@
-#ifndef _QOS_TRANSPORT_SETTINGS_H_
-#define _QOS_TRANSPORT_SETTINGS_H_
+#ifndef _MADARA_QOS_TRANSPORT_SETTINGS_H_
+#define _MADARA_QOS_TRANSPORT_SETTINGS_H_
 
 /**
  * @file QoS_Transport_Settings.h
@@ -729,4 +729,4 @@ namespace madara
   } // end Transport namespace
 } // end Madara namespace
 
-#endif
+#endif // _MADARA_QOS_TRANSPORT_SETTINGS_H_

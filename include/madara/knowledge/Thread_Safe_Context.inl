@@ -13,7 +13,7 @@
 #include "ace/Condition_Recursive_Thread_Mutex.h"
 #include "ace/Synch.h"
 
-#include "madara/expression_tree/Interpreter.h"
+#include "madara/expression/Interpreter.h"
 
 #include <sstream>
 

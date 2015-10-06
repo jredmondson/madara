@@ -1,5 +1,5 @@
-#ifndef _COMPILED_EXPRESSION_H_
-#define _COMPILED_EXPRESSION_H_
+#ifndef _MADARA_COMPILED_EXPRESSION_H_
+#define _MADARA_COMPILED_EXPRESSION_H_
 
 #ifndef _MADARA_NO_KARL_
 
@@ -13,11 +13,11 @@
 
 #include <string>
 #include "madara/MADARA_export.h"
-#include "madara/expression_tree/Expression_Tree.h"
+#include "madara/expression/Expression_Tree.h"
 
 namespace madara
 {
-  namespace expression_tree
+  namespace expression
   {
     class System_Call_Eval;
   }
@@ -40,7 +40,7 @@ namespace madara
       friend class Knowledge_Base_Impl;
       friend class Variables;
       friend class Knowledge_Base;
-      friend class expression_tree::System_Call_Eval;
+      friend class expression::System_Call_Eval;
 
       /**
        * Constructor
@@ -67,18 +67,18 @@ namespace madara
       /**
        * Gets the root of the compiled expression
        **/
-      expression_tree::Component_Node * get_root (void);
+      expression::Component_Node * get_root (void);
 
     private:
       /// the logic that was compiled
       std::string logic;
 
       /// the expression tree
-      madara::expression_tree::Expression_Tree expression;
+      madara::expression::Expression_Tree expression;
     };
   }
 }
 
 #endif // _MADARA_NO_KARL_
 
-#endif // _COMPILED_EXPRESSION_H_
+#endif // _MADARA_COMPILED_EXPRESSION_H_

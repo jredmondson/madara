@@ -1,7 +1,7 @@
 
 
-#ifndef _GENERIC_FILTERS_H_
-#define _GENERIC_FILTERS_H_
+#ifndef _MADARA_GENERIC_FILTERS_H_
+#define _MADARA_GENERIC_FILTERS_H_
 
 /**
  * @file Generic_Filters.h
@@ -84,4 +84,4 @@ namespace madara
   }
 }
 
-#endif  // _GENERIC_FILTERS_H_
+#endif  // _MADARA_GENERIC_FILTERS_H_

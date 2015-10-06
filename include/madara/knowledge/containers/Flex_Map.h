@@ -699,7 +699,4 @@ namespace madara
   }
 }
 
-
-
-
 #endif // _MADARA_CONTAINERS_FLEX_MAP_H_

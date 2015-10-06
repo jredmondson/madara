@@ -5,8 +5,8 @@
 
 #include "madara/transport/Reduced_Message_Header.h"
 #include "madara/utility/Utility.h"
-#include "madara/expression_tree/Expression_Tree.h"
-#include "madara/expression_tree/Interpreter.h"
+#include "madara/expression/Expression_Tree.h"
+#include "madara/expression/Interpreter.h"
 #include "madara/transport/Fragmentation.h"
 
 #include <iostream>

@@ -7,7 +7,7 @@
 #include "madara/knowledge/Function_Arguments.h"
 #include "madara/knowledge/Knowledge_Record.h"
 #include "madara/knowledge/Knowledge_Update_Settings.h"
-#include "madara/expression_tree/Expression_Tree.h"
+#include "madara/expression/Expression_Tree.h"
 #include "madara/filters/Record_Filter.h"
 #include "madara/logger/Global_Logger.h"
 
@@ -106,7 +106,7 @@ namespace madara
       /**
        * Constructor for KaRL expression
        **/
-      Function (const madara::expression_tree::Expression_Tree & func)
+      Function (const madara::expression::Expression_Tree & func)
         : extern_named (0), extern_unnamed (0), function_contents (func),
           functor (0), type (KARL_EXPRESSION)
       {
@@ -162,7 +162,7 @@ namespace madara
        
 #ifndef _MADARA_NO_KARL_
       // expression tree
-      madara::expression_tree::Expression_Tree function_contents;
+      madara::expression::Expression_Tree function_contents;
 #endif // _MADARA_NO_KARL_
 
       filters::Record_Filter * functor;
@@ -229,4 +229,4 @@ namespace madara
   }
 }
 
-#endif
+#endif // _MADARA_EXTERNAL_FUNCTIONS_H_

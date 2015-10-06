@@ -41,7 +41,7 @@
 
 namespace madara
 {
-  namespace expression_tree
+  namespace expression
   {
     class Interpreter;
   }
@@ -1045,7 +1045,7 @@ namespace madara
        * @return              result of the evaluation
        **/
       Knowledge_Record evaluate (
-        expression_tree::Component_Node * root,
+        expression::Component_Node * root,
         const Knowledge_Update_Settings & settings = 
                     Knowledge_Update_Settings ());
 
@@ -1231,7 +1231,7 @@ namespace madara
       Function_Map functions_;
       
       /// KaRL interpreter
-      madara::expression_tree::Interpreter  *   interpreter_;
+      madara::expression::Interpreter  *   interpreter_;
 
       /// Logger for printing
       mutable logger::Logger * logger_;

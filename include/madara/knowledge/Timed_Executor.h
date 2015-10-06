@@ -10,7 +10,7 @@
 #include "madara/Lock_Type.h"
 #include "madara/knowledge/Knowledge_Base.h"
 #include "madara/knowledge/Eval_Settings.h"
-#include "madara/expression_tree/Component_Node.h"
+#include "madara/expression/Component_Node.h"
 
 #include "ace/High_Res_Timer.h"
 #include "ace/Barrier.h"
@@ -43,7 +43,7 @@ namespace madara
       
 #ifndef _MADARA_NO_KARL_
       /// expression to be executed (rooted Tree)
-      expression_tree::Component_Node * root;
+      expression::Component_Node * root;
 #endif // _MADARA_NO_KARL_
 
       /**

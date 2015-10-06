@@ -1,4 +1,4 @@
-#ifndef  _MADARA_LOCK_TYPE_
+#ifndef _MADARA_LOCK_TYPE_
 #define _MADARA_LOCK_TYPE_
 
 #include "ace/Recursive_Thread_Mutex.h"

@@ -1,5 +1,5 @@
-#ifndef  _VARIABLE_REFERENCE_H_
-#define  _VARIABLE_REFERENCE_H_
+#ifndef  _MADARA_VARIABLE_REFERENCE_H_
+#define  _MADARA_VARIABLE_REFERENCE_H_
 
 
 /**
@@ -12,7 +12,7 @@
 
 #include <string>
 #include "madara/MADARA_export.h"
-#include "madara/expression_tree/Expression_Tree.h"
+#include "madara/expression/Expression_Tree.h"
 #include "madara/utility/Scoped_Array.h"
 
 namespace madara
@@ -104,4 +104,4 @@ namespace madara
   }
 }
 
-#endif   // _VARIABLE_REFERENCE_H_
+#endif   // _MADARA_VARIABLE_REFERENCE_H_

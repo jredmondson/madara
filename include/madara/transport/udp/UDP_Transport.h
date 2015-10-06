@@ -1,5 +1,5 @@
-#ifndef UDP_TRANSPORT_H
-#define UDP_TRANSPORT_H
+#ifndef _MADARA_UDP_TRANSPORT_H_
+#define _MADARA_UDP_TRANSPORT_H_
 
 #include <string>
 
@@ -103,4 +103,4 @@ namespace madara
   }
 }
 
-#endif // UDP_TRANSPORT_H
+#endif // _MADARA_UDP_TRANSPORT_H_

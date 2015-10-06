@@ -117,7 +117,7 @@ madara::transport::Broadcast_Transport_Read_Thread::init (
         settings_.on_data_received_logic.c_str ());
       
 #ifndef _MADARA_NO_KARL_
-      madara::expression_tree::Interpreter interpreter;
+      madara::expression::Interpreter interpreter;
       on_data_received_ = context_->compile (settings_.on_data_received_logic);
 #endif // _MADARA_NO_KARL_
     }

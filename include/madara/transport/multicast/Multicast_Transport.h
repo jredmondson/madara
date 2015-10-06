@@ -1,5 +1,5 @@
-#ifndef _MULTICAST_TRANSPORT_H_
-#define _MULTICAST_TRANSPORT_H_
+#ifndef _MADARA_MULTICAST_TRANSPORT_H_
+#define _MADARA_MULTICAST_TRANSPORT_H_
 
 /**
  * @file Multicast_Transport.h
@@ -19,7 +19,7 @@
 #include "ace/SOCK_Dgram.h"
 #include "ace/SOCK_Dgram_Mcast.h"
 #include "madara/knowledge/Knowledge_Record.h"
-#include "madara/expression_tree/Expression_Tree.h"
+#include "madara/expression/Expression_Tree.h"
 #include "madara/transport/Bandwidth_Monitor.h"
 #include "madara/threads/Threader.h"
 
@@ -111,4 +111,4 @@ namespace madara
   }
 }
 
-#endif // _MULTICAST_TRANSPORT_H_
+#endif // _MADARA_MULTICAST_TRANSPORT_H_

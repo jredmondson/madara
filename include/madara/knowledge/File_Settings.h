@@ -1,5 +1,5 @@
-#ifndef  _FILE_SETTINGS_H_
-#define  _FILE_SEtTINGS_H_
+#ifndef  _MADARA_FILE_SETTINGS_H_
+#define  _MADARA_FILE_SETTINGS_H_
 
 /**
  * @file File_Settings.h
@@ -26,4 +26,4 @@ namespace madara
   }
 }
 
-#endif
+#endif // _MADARA_FILE_SETTINGS_H_

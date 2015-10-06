@@ -1,5 +1,5 @@
-#ifndef _BROADCAST_TRANSPORT_H_
-#define _BROADCAST_TRANSPORT_H_
+#ifndef _MADARA_BROADCAST_TRANSPORT_H_
+#define _MADARA_BROADCAST_TRANSPORT_H_
 
 /**
  * @file Broadcast_Transport.h
@@ -18,7 +18,7 @@
 #include "madara/transport/Bandwidth_Monitor.h"
 #include "ace/SOCK_Dgram_Bcast.h"
 #include "madara/utility/stdint.h"
-#include "madara/expression_tree/Expression_Tree.h"
+#include "madara/expression/Expression_Tree.h"
 #include "madara/threads/Threader.h"
 
 
@@ -107,4 +107,4 @@ namespace madara
   }
 }
 
-#endif // _BROADCAST_TRANSPORT_H_
+#endif // _MADARA_BROADCAST_TRANSPORT_H_

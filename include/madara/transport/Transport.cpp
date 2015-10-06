@@ -1,7 +1,7 @@
 #include "Transport.h"
 
 #include "madara/utility/Utility.h"
-#include "madara/expression_tree/Interpreter.h"
+#include "madara/expression/Interpreter.h"
 
 #include <algorithm>
 
@@ -40,7 +40,7 @@ madara::transport::Base::setup (void)
       settings_.on_data_received_logic.c_str ());
     
 #ifndef _MADARA_NO_KARL_
-    madara::expression_tree::Interpreter interpreter;
+    madara::expression::Interpreter interpreter;
     on_data_received_ = interpreter.interpret (context_,
       settings_.on_data_received_logic);
 #endif // _MADARA_NO_KARL_

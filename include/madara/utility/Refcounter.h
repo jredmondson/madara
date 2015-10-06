@@ -2,7 +2,6 @@
 #ifndef _MADARA_UTILITY_REFCOUNTER_H_
 #define _MADARA_UTILITY_REFCOUNTER_H_
 
-
 namespace madara
 {
   namespace utility

@@ -1,7 +1,7 @@
 
 
-#ifndef _KNOWLEDGE_RECORD_H_
-#define _KNOWLEDGE_RECORD_H_
+#ifndef _MADARA_KNOWLEDGE_RECORD_H_
+#define _MADARA_KNOWLEDGE_RECORD_H_
 
 /**
  * @file Knowledge_Record.h
@@ -778,4 +778,4 @@ MADARA_Export std::ostream & operator<< (std::ostream & stream,
 #include "Knowledge_Record.inl"
 
 
-#endif  // _KNOWLEDGE_RECORD_H_
+#endif  // _MADARA_KNOWLEDGE_RECORD_H_

@@ -96,5 +96,4 @@ namespace madara
   }
 }
 
-
 #endif

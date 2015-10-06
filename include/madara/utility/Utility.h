@@ -1,5 +1,5 @@
-#ifndef UTILITY_H
-#define UTILITY_H
+#ifndef _MADARA_UTILITY_H_
+#define _MADARA_UTILITY_H_
 
 #include <vector>
 #include <string>
@@ -475,4 +475,4 @@ namespace madara
 
 #include "Utility.inl"
 
-#endif
+#endif // _MADARA_UTILITY_H_

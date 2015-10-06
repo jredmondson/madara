@@ -1,7 +1,7 @@
 #include "madara/utility/Utility.h"
 #include "madara/knowledge/Knowledge_Base_Impl.h"
-#include "madara/expression_tree/Interpreter.h"
-#include "madara/expression_tree/Expression_Tree.h"
+#include "madara/expression/Interpreter.h"
+#include "madara/expression/Expression_Tree.h"
 #include "madara/transport/udp/UDP_Transport.h"
 #include "madara/transport/tcp/TCP_Transport.h"
 #include "madara/transport/multicast/Multicast_Transport.h"
@@ -741,7 +741,7 @@ const Eval_Settings & settings)
     " evaluating %s.\n", ce.logic.c_str ());
 
   // iterators and tree for evaluation of interpreter results
-  //madara::expression_tree::Expression_Tree tree;
+  //madara::expression::Expression_Tree tree;
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")
@@ -767,7 +767,7 @@ const Eval_Settings & settings)
 
 madara::Knowledge_Record
 madara::knowledge::Knowledge_Base_Impl::evaluate (
-expression_tree::Component_Node * root,
+expression::Component_Node * root,
 const Eval_Settings & settings)
 {
   madara::Knowledge_Record last_value;
@@ -777,7 +777,7 @@ const Eval_Settings & settings)
     " evaluating Component_Node rooted tree\n");
 
   // iterators and tree for evaluation of interpreter results
-  //madara::expression_tree::Expression_Tree tree;
+  //madara::expression::Expression_Tree tree;
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")

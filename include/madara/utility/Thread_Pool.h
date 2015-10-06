@@ -1,5 +1,5 @@
-#ifndef THREAD_POOL_H
-#define THREAD_POOL_H
+#ifndef _MADARA_THREAD_POOL_H_
+#define _MADARA_THREAD_POOL_H_
 
 #include "ace/Mutex.h"
 #include "ace/Task.h"
@@ -107,4 +107,4 @@ namespace madara
     };
 }
 
-#endif // THREAD_POOL_H
+#endif // _MADARA_THREAD_POOL_H_

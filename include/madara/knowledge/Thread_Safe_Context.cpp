@@ -8,7 +8,7 @@
 
 #include "madara/knowledge/Thread_Safe_Context.h"
 
-#include "madara/expression_tree/Interpreter.h"
+#include "madara/expression/Interpreter.h"
 #include "madara/knowledge/File_Header.h"
 #include "madara/transport/Transport.h"
 #include <stdio.h>
@@ -21,7 +21,7 @@ madara::knowledge::Thread_Safe_Context::Thread_Safe_Context ()
   : changed_ (mutex_), clock_ (0)
 #ifndef _MADARA_NO_KARL_
 ,
-  interpreter_ (new madara::expression_tree::Interpreter ())
+  interpreter_ (new madara::expression::Interpreter ())
 #endif // _MADARA_NO_KARL_
   , logger_ (logger::global_logger.get ())
 {
@@ -1356,7 +1356,7 @@ madara::knowledge::Thread_Safe_Context::evaluate (
 
 madara::Knowledge_Record
 madara::knowledge::Thread_Safe_Context::evaluate (
-  expression_tree::Component_Node * root,
+  expression::Component_Node * root,
   const Knowledge_Update_Settings & settings)
 {
   Context_Guard guard (mutex_);

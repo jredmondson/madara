@@ -19,7 +19,7 @@
 #include "madara/MADARA_export.h"
 #include "madara/knowledge/Thread_Safe_Context.h"
 #include "madara/transport/Transport.h"
-#include "madara/expression_tree/Interpreter.h"
+#include "madara/expression/Interpreter.h"
 #include "madara/utility/Thread_Safe_Refcounter.h"
 #include "madara/knowledge/Knowledge_Base_Impl.h"
 #include "madara/knowledge/Compiled_Expression.h"
@@ -504,7 +504,7 @@ namespace madara
        * @return                value of expression
        **/
       madara::Knowledge_Record evaluate (
-        expression_tree::Component_Node * root,
+        expression::Component_Node * root,
         const Eval_Settings & settings =
           Eval_Settings ());
 

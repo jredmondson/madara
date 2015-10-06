@@ -1,5 +1,5 @@
-#ifndef _KNOWLEDGE_REFERENCE_SETTINGS_H_
-#define _KNOWLEDGE_REFERENCE_SETTINGS_H_
+#ifndef _MADARA_KNOWLEDGE_REFERENCE_SETTINGS_H_
+#define _MADARA_KNOWLEDGE_REFERENCE_SETTINGS_H_
 
 /**
  * @file Knowledge_Base.h
@@ -67,4 +67,4 @@ namespace madara
     };
   }
 }
-#endif
+#endif // _MADARA_KNOWLEDGE_REFERENCE_SETTINGS_H_

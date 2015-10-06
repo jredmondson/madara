@@ -4,8 +4,8 @@
 #include "madara/utility/Utility.h"
 #include "madara/knowledge/Knowledge_Base_Impl.h"
 #include "madara/knowledge/Knowledge_Record.h"
-#include "madara/expression_tree/Interpreter.h"
-#include "madara/expression_tree/Expression_Tree.h"
+#include "madara/expression/Interpreter.h"
+#include "madara/expression/Expression_Tree.h"
 
 
 /**

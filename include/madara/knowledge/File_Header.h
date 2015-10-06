@@ -1,5 +1,5 @@
-#ifndef  _FILE_HEADER_H_
-#define  _FILE_HEADER_H_
+#ifndef  _MADARA_FILE_HEADER_H_
+#define  _MADARA_FILE_HEADER_H_
 
 /**
  * @file File_Header.h
@@ -129,4 +129,4 @@ namespace madara
 }
 
 
-#endif   // _FILE_HEADER_H_
+#endif   // _MADARA_FILE_HEADER_H_

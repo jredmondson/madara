@@ -1141,7 +1141,7 @@ madara::knowledge::Knowledge_Base::evaluate (
 // evaluate a knowledge expression and choose to send any modifications
 madara::Knowledge_Record
 madara::knowledge::Knowledge_Base::evaluate (
-  expression_tree::Component_Node * root,
+  expression::Component_Node * root,
   const Eval_Settings & settings)
 {
   Knowledge_Record result;

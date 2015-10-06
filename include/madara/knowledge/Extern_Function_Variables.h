@@ -6,7 +6,7 @@
 #include "madara/MADARA_export.h"
 #include "madara/knowledge/Knowledge_Record.h"
 #include "madara/knowledge/Knowledge_Update_Settings.h"
-#include "madara/expression_tree/Expression_Tree.h"
+#include "madara/expression/Expression_Tree.h"
 #include "madara/knowledge/Compiled_Expression.h"
 #include "madara/knowledge/Variable_Reference.h"
 #include "madara/knowledge/Function_Arguments.h"
@@ -31,7 +31,7 @@
 
 namespace madara
 {
-  namespace expression_tree
+  namespace expression
   {
     class Composite_Function_Node;
   }
@@ -51,7 +51,7 @@ namespace madara
     class MADARA_Export Variables
     {
     public:
-      friend class madara::expression_tree::Composite_Function_Node;
+      friend class madara::expression::Composite_Function_Node;
       friend class madara::knowledge::Knowledge_Record_Filters;
 
       /**
@@ -663,8 +663,5 @@ namespace madara
     };
   }
 }
-
-
-
 
 #endif

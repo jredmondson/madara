@@ -43,8 +43,8 @@
 
 #include "madara/knowledge/Knowledge_Record.h"
 #include "madara/knowledge/Thread_Safe_Context.h"
-#include "madara/expression_tree/Expression_Tree.h"
-#include "madara/expression_tree/Interpreter.h"
+#include "madara/expression/Expression_Tree.h"
+#include "madara/expression/Interpreter.h"
 
 namespace madara
 {
@@ -192,7 +192,7 @@ namespace madara
       
 #ifndef _MADARA_NO_KARL_
       /// data received rules, defined in Transport settings
-      madara::expression_tree::Expression_Tree  on_data_received_;
+      madara::expression::Expression_Tree  on_data_received_;
       
 #endif // _MADARA_NO_KARL_
 

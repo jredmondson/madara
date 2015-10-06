@@ -14,7 +14,7 @@
 
 #include "madara/utility/Scoped_Array.h"
 #include "madara/knowledge/Thread_Safe_Context.h"
-#include "madara/expression_tree/Expression_Tree.h"
+#include "madara/expression/Expression_Tree.h"
 #include "madara/knowledge/Timed_Executor.h"
 
 #include "ace/Task.h"
