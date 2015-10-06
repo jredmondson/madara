@@ -19,7 +19,7 @@
  
 namespace madara
 {
-  namespace Threads
+  namespace threads
   {
     class Threader;
 

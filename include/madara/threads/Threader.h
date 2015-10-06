@@ -26,7 +26,7 @@
 
 namespace madara
 {
-  namespace Threads
+  namespace threads
   {
     /**
      * Starts threads with first class support of MADARA contexts

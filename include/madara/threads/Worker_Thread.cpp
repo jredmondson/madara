@@ -15,8 +15,8 @@
 
 unsigned __stdcall worker_thread_windows_glue (void * param)
 {
-  madara::Threads::Worker_Thread * caller = 
-    static_cast < madara::Threads::Worker_Thread *> (
+  madara::threads::Worker_Thread * caller = 
+    static_cast < madara::threads::Worker_Thread *> (
       param);
   if (caller)
   {
@@ -34,13 +34,13 @@ unsigned __stdcall worker_thread_windows_glue (void * param)
 #include <iostream>
 #include <algorithm>
 
-madara::Threads::Worker_Thread::Worker_Thread ()
+madara::threads::Worker_Thread::Worker_Thread ()
   : thread_ (0), control_ (0), data_ (0), hertz_ (-1.0)
 {
 }
 
 
-madara::Threads::Worker_Thread::Worker_Thread (
+madara::threads::Worker_Thread::Worker_Thread (
   const std::string & name,
   Base_Thread * thread,
   knowledge::Knowledge_Base * control,
@@ -67,7 +67,7 @@ madara::Threads::Worker_Thread::Worker_Thread (
   }
 }
 
-madara::Threads::Worker_Thread::Worker_Thread (const Worker_Thread & input)
+madara::threads::Worker_Thread::Worker_Thread (const Worker_Thread & input)
   : name_ (input.name_), thread_ (input.thread_),
     control_ (input.control_), data_ (input.data_),
     finished_ (input.finished_), started_ (input.started_),
@@ -75,12 +75,12 @@ madara::Threads::Worker_Thread::Worker_Thread (const Worker_Thread & input)
 {
 }
 
-madara::Threads::Worker_Thread::~Worker_Thread ()
+madara::threads::Worker_Thread::~Worker_Thread ()
 {
 }
 
 void
-madara::Threads::Worker_Thread::operator= (const Worker_Thread & input)
+madara::threads::Worker_Thread::operator= (const Worker_Thread & input)
 {
   if (this != &input)
   {
@@ -95,7 +95,7 @@ madara::Threads::Worker_Thread::operator= (const Worker_Thread & input)
 }
 
 void
-madara::Threads::Worker_Thread::run (void)
+madara::threads::Worker_Thread::run (void)
 {
   int result;
 
@@ -122,7 +122,7 @@ madara::Threads::Worker_Thread::run (void)
 }
 
 int
-madara::Threads::Worker_Thread::svc (void)
+madara::threads::Worker_Thread::svc (void)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
     "Worker_Thread::svc:" \

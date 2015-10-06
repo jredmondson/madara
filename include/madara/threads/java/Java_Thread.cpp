@@ -4,7 +4,7 @@
 
 #include "madara/logger/Global_Logger.h"
 
-namespace threads = madara::Threads;
+namespace threads = madara::threads;
 namespace knowledge = madara::knowledge;
 
 threads::Java_Thread::Java_Thread ()

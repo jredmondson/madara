@@ -5,7 +5,7 @@
 
 // some shortcuts for common MADARA namespaces
 namespace knowledge = madara::knowledge;
-namespace threads = madara::Threads;
+namespace threads = madara::threads;
 
 // 1: Extend a Base_Thread
 class Hello_World : public threads::Base_Thread

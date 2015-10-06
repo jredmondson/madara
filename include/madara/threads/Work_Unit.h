@@ -22,7 +22,7 @@
 
 namespace madara
 {
-  namespace Threads
+  namespace threads
   {
     /**
      * Abstract base class for implementing base threads

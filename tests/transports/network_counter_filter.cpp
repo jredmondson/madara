@@ -31,7 +31,7 @@ namespace filters = madara::filters;
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
 namespace transport = madara::transport;
-namespace threads = madara::Threads;
+namespace threads = madara::threads;
 
 typedef madara::Knowledge_Record::Integer Integer;
 

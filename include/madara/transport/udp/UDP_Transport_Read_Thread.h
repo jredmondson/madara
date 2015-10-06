@@ -30,7 +30,7 @@ namespace madara
      * @class UDP_Transport_Read_Thread
      * @brief Thread for reading knowledge updates through a UDP socket
      **/
-    class UDP_Transport_Read_Thread : public Threads::Base_Thread
+    class UDP_Transport_Read_Thread : public threads::Base_Thread
     {
     public:
       /**

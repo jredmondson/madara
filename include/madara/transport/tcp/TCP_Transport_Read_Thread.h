@@ -29,7 +29,7 @@ namespace madara
      * @brief Thread for reading knowledge updates through a TCP socket
      *        (unused but planned)
      **/
-    class TCP_Transport_Read_Thread : public Threads::Base_Thread
+    class TCP_Transport_Read_Thread : public threads::Base_Thread
     {
     public:
       /**

@@ -39,7 +39,7 @@ namespace madara
      * @brief Thread for reading knowledge updates through a Multicast
      * datagram socket
      **/
-    class Broadcast_Transport_Read_Thread : public Threads::Base_Thread
+    class Broadcast_Transport_Read_Thread : public threads::Base_Thread
     {
     public:
       /**

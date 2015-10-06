@@ -18,7 +18,7 @@
 
 namespace madara
 {
-  namespace Threads
+  namespace threads
   {
     /**
      * A facade for a user-defined Java thread class

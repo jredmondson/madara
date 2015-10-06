@@ -90,7 +90,7 @@ namespace madara
       knowledge::Knowledge_Base          knowledge_;
       
       /// threads for reading knowledge updates
-      Threads::Threader                         read_threads_;
+      threads::Threader                         read_threads_;
       
       std::map <std::string, ACE_INET_Addr>     addresses_;
       

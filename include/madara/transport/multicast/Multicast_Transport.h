@@ -94,7 +94,7 @@ namespace madara
       knowledge::Knowledge_Base         knowledge_;
       
       /// threads for reading knowledge updates
-      Threads::Threader                        read_threads_;
+      threads::Threader                        read_threads_;
 
       /// holds all multicast addresses we are sending to
       std::vector <ACE_INET_Addr>               addresses_;

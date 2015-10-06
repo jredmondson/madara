@@ -48,7 +48,7 @@
 #include "madara/threads/Threader.h"
 
 namespace knowledge = madara::knowledge;
-namespace threads = madara::Threads;
+namespace threads = madara::threads;
 typedef threads::Threader       Threader;
 typedef knowledge::Knowledge_Base  Knowledge_Base;
 

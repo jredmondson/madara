@@ -27,7 +27,7 @@ namespace logger = madara::logger;
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
 namespace utility = madara::utility;
-namespace threads = madara::Threads;
+namespace threads = madara::threads;
 namespace filters = madara::filters;
 
 // useful namespace aliases and typedefs

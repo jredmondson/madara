@@ -16,7 +16,7 @@ namespace logger = madara::logger;
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
 namespace utility = madara::utility;
-namespace threads = madara::Threads;
+namespace threads = madara::threads;
 
 typedef madara::Knowledge_Record::Integer Integer;
 

@@ -24,7 +24,7 @@
 
 namespace madara
 {
-  namespace Threads
+  namespace threads
   {
     /**
      * Forward declare some classes
