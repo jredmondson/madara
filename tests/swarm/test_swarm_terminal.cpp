@@ -6,8 +6,8 @@
 #include <assert.h>
 
 #include "ace/Signal.h"
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/utility/LogMacros.h"
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
@@ -91,11 +91,11 @@ void handle_arguments (int argc, char ** argv)
 /**
  * Madara function to use the thermal sensor
  **/
-Madara::Knowledge_Record
-  build_view (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  build_view (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
-  return Madara::Knowledge_Record::Integer (0);
+  return Madara::KnowledgeRecord::Integer (0);
 }
 
 
@@ -109,9 +109,9 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
   
 #ifndef _MADARA_NO_KARL_
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  Madara::KnowledgeEngine::KnowledgeBase knowledge (host, settings);
   
-  Madara::Knowledge_Engine::Eval_Settings eval_settings;
+  Madara::KnowledgeEngine::EvalSettings eval_settings;
   char input_buffer [1024];
 
   // until the user presses ctrl+c in this terminal, check for input

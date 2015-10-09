@@ -12,13 +12,13 @@ namespace madara
   {
     // Solve circular include problem via forward decls.
     template <typename T>
-    class LStack_Node;
+    class LStackNode;
 
     template <typename T>
-    class LStack_Iterator;
+    class LStackIterator;
 
     template <typename T>
-    class LStack_Const_Iterator;
+    class LStackConstIterator;
 
     /**
     * @class LStack
@@ -28,8 +28,8 @@ namespace madara
     template <class T> 
     class LStack
     {
-      friend class LStack_Iterator<T>;
-      friend class LStack_Const_Iterator<T>;
+      friend class LStackIterator<T>;
+      friend class LStackConstIterator<T>;
     public:
       // Define a "trait"
       typedef T value_type;
@@ -95,8 +95,8 @@ namespace madara
       /// Delete all the nodes in the LStack.
       void erase (void);
 
-      typedef LStack_Iterator<T> iterator;
-      typedef LStack_Const_Iterator<T> const_iterator;
+      typedef LStackIterator<T> iterator;
+      typedef LStackConstIterator<T> const_iterator;
 
       /// Get an iterator that points to the beginning of the stack.
       iterator begin (void);
@@ -125,31 +125,31 @@ namespace madara
       /// We only need to keep a single pointer for the circular linked
       /// list.  This points to the tail of the stack.  Since the list is
       /// circular, the head of the stack is always @a head_->next_.
-      LStack_Node<T> *head_;
+      LStackNode<T> *head_;
 
       /// Number of items that are currently in the stack.
       size_t count_;
     };
 
     /**
-    * @class LStack_Iterator
+    * @class LStackIterator
     * @brief Implements a forward iterator for LStack type classes.
     *
-    * Note:  Having a const Expression_Tree_Iterator does not guarantee that the current
+    * Note:  Having a const ExpressionTreeIterator does not guarantee that the current
     * *position* that it points to will not change, it only guarantees that
     * you cannot change the underlying stack!
     */
     template <typename T>
-    class LStack_Iterator 
+    class LStackIterator 
     {
     public:
-      /// Construct an LStack_Iterator at position pos.  
-      LStack_Iterator (LStack<T> &stack,
+      /// Construct an LStackIterator at position pos.  
+      LStackIterator (LStack<T> &stack,
         size_t pos = 0);
 
-      /// Construct an LStack_Iterator at node pos.
-      LStack_Iterator (LStack<T> &stack,
-        LStack_Node<T> *pos = 0);
+      /// Construct an LStackIterator at node pos.
+      LStackIterator (LStack<T> &stack,
+        LStackNode<T> *pos = 0);
 
       /// Dereference operator returns a reference to the item contained
       /// at the current position
@@ -159,16 +159,16 @@ namespace madara
       const T& operator* (void) const;
 
       /// Preincrement operator
-      LStack_Iterator<T> &operator++ (void);
+      LStackIterator<T> &operator++ (void);
 
       /// Postincrement operator
-      LStack_Iterator<T> operator++ (int);
+      LStackIterator<T> operator++ (int);
 
       /// Equality operator
-      bool operator== (const LStack_Iterator<T> &rhs) const;
+      bool operator== (const LStackIterator<T> &rhs) const;
 
       /// Nonequality operator
-      bool operator!= (const LStack_Iterator<T> &lhs) const;
+      bool operator!= (const LStackIterator<T> &lhs) const;
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
@@ -182,44 +182,44 @@ namespace madara
       LStack<T> &stack_;
 
       // the position in the linked list
-      mutable LStack_Node<T> *pos_;
+      mutable LStackNode<T> *pos_;
     };
 
     /**
-    * @class LStack_Const_Iterator
+    * @class LStackConstIterator
     * @brief Implements a forward iterator for LStack type classes.
     *
-    * Note:  Having a const Expression_Tree_Iterator does not guarantee that the current
+    * Note:  Having a const ExpressionTreeIterator does not guarantee that the current
     * *position* that it points to will not change, it only guarantees that
     * you cannot change the underlying stack!
     */
     template <typename T>
-    class LStack_Const_Iterator 
+    class LStackConstIterator 
     {
     public:
-      /// Construct an LStack_Iterator at position pos.  
-      LStack_Const_Iterator (const LStack<T> &stack,
+      /// Construct an LStackIterator at position pos.  
+      LStackConstIterator (const LStack<T> &stack,
         size_t pos = 0);
 
-      /// Construct an LStack_Iterator at node pos.  
-      LStack_Const_Iterator (const LStack<T> &stack,
-        LStack_Node<T> *pos);
+      /// Construct an LStackIterator at node pos.  
+      LStackConstIterator (const LStack<T> &stack,
+        LStackNode<T> *pos);
 
       /// Dereference operator returns a const reference to the item
       /// contained at the current position.
       const T& operator* (void) const;
 
       /// Preincrement operator
-      const LStack_Const_Iterator<T> &operator++ (void) const;
+      const LStackConstIterator<T> &operator++ (void) const;
 
       /// Postincrement operator
-      LStack_Const_Iterator<T> operator++ (int) const;
+      LStackConstIterator<T> operator++ (int) const;
 
       /// Equality operator
-      bool operator== (const LStack_Const_Iterator<T> &rhs) const;
+      bool operator== (const LStackConstIterator<T> &rhs) const;
 
       /// Nonequality operator
-      bool operator!= (const LStack_Const_Iterator<T> &lhs) const;
+      bool operator!= (const LStackConstIterator<T> &lhs) const;
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
@@ -233,7 +233,7 @@ namespace madara
       const LStack<T> &stack_;
 
       // the position in the linked list
-      mutable LStack_Node<T> *pos_;
+      mutable LStackNode<T> *pos_;
     };
   }
 }

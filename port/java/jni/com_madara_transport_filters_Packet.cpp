@@ -45,11 +45,11 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include "com_madara_transport_filters_Packet.h"
-#include "madara/knowledge/Knowledge_Record.h"
+#include "madara/knowledge/KnowledgeRecord.h"
 #include "madara_jni.h"
 
-typedef madara::Knowledge_Map      Knowledge_Map;
-typedef madara::Knowledge_Record   Knowledge_Record;
+typedef madara::KnowledgeMap      KnowledgeMap;
+typedef madara::KnowledgeRecord   KnowledgeRecord;
 
 /*
  * Class:     com_madara_transport_filters_Packet
@@ -61,13 +61,13 @@ jlong JNICALL Java_com_madara_transport_filters_Packet_jni_1get
 {
   // get the C string and the underlying map
   const char *key = env->GetStringUTFChars (index, 0);
-  Knowledge_Map * packet = (Knowledge_Map *)cptr;
-  Knowledge_Record * result (0);
+  KnowledgeMap * packet = (KnowledgeMap *)cptr;
+  KnowledgeRecord * result (0);
   
   if (packet)
   {
     // get the record and return the string index
-    result = new Knowledge_Record ((*packet)[key]);
+    result = new KnowledgeRecord ((*packet)[key]);
   }
 
   env->ReleaseStringUTFChars (index, key);
@@ -85,8 +85,8 @@ void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
 {
   // get the C string and the underlying map
   const char * key = env->GetStringUTFChars (index, 0);
-  Knowledge_Map * packet = (Knowledge_Map *)cptr;
-  Knowledge_Record * result = (Knowledge_Record *)value;
+  KnowledgeMap * packet = (KnowledgeMap *)cptr;
+  KnowledgeRecord * result = (KnowledgeRecord *)value;
 
   if (packet && result)
   {
@@ -105,7 +105,7 @@ void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
 jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
   (JNIEnv * env, jobject, jlong cptr)
 {
-  Knowledge_Map * packet = (Knowledge_Map *)cptr;
+  KnowledgeMap * packet = (KnowledgeMap *)cptr;
   jobjectArray result (0);
   
   if (packet)
@@ -121,7 +121,7 @@ jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
  
     jsize i = 0;
   
-    for (Knowledge_Map::const_iterator cur = packet->begin ();
+    for (KnowledgeMap::const_iterator cur = packet->begin ();
          cur != packet->end (); ++cur, ++i)
     {
       jstring temp_string = env->NewStringUTF (cur->first.c_str ());
@@ -147,7 +147,7 @@ jboolean JNICALL Java_com_madara_transport_filters_Packet_jni_1exists
   (JNIEnv * env, jobject, jlong cptr, jstring index)
 {
   jboolean result (false);
-  Knowledge_Map * packet = (Knowledge_Map *)cptr;
+  KnowledgeMap * packet = (KnowledgeMap *)cptr;
 
   if (packet)
   {
@@ -165,7 +165,7 @@ jboolean JNICALL Java_com_madara_transport_filters_Packet_jni_1exists
 void JNICALL Java_com_madara_transport_filters_Packet_jni_1clear
   (JNIEnv *, jobject, jlong cptr)
 {
-  Knowledge_Map * packet = (Knowledge_Map *)cptr;
+  KnowledgeMap * packet = (KnowledgeMap *)cptr;
 
   if (packet)
   {
@@ -176,7 +176,7 @@ void JNICALL Java_com_madara_transport_filters_Packet_jni_1clear
 void JNICALL Java_com_madara_transport_filters_Packet_jni_1erase
   (JNIEnv * env, jobject, jlong cptr, jstring index)
 {
-  Knowledge_Map * packet = (Knowledge_Map *)cptr;
+  KnowledgeMap * packet = (KnowledgeMap *)cptr;
   const char * key = env->GetStringUTFChars (index, 0);
 
   if (packet)

@@ -13,13 +13,13 @@ namespace madara
   {
     // Solve circular include problem via forward decls.
     template <typename T>
-    class LQueue_Node;
+    class LQueueNode;
 
     template <typename T>
-    class LQueue_Iterator;
+    class LQueueIterator;
 
     template <typename T>
-    class LQueue_Const_Iterator;
+    class LQueueConstIterator;
 
     /**
     * @class LQueue
@@ -37,8 +37,8 @@ namespace madara
     template <class T> 
     class LQueue
     {
-      friend class LQueue_Iterator<T>;
-      friend class LQueue_Const_Iterator<T>;
+      friend class LQueueIterator<T>;
+      friend class LQueueConstIterator<T>;
     public:
       // Define a "trait"
       typedef T value_type;
@@ -102,8 +102,8 @@ namespace madara
       /// of @a *this==s.
       bool operator!= (const LQueue<T> &s) const;
 
-      typedef LQueue_Iterator<T> iterator;
-      typedef LQueue_Const_Iterator<T> const_iterator;
+      typedef LQueueIterator<T> iterator;
+      typedef LQueueConstIterator<T> const_iterator;
 
       /// Get an iterator that points to the beginning of the queue.
       iterator begin (void);
@@ -132,7 +132,7 @@ namespace madara
       /// We only need to keep a single pointer for the circular linked
       /// list.  This points to the tail of the queue.  Since the list is
       /// circular, the head of the queue is always @a tail_->next_.
-      LQueue_Node<T> *tail_;
+      LQueueNode<T> *tail_;
 
       /// Number of items that are currently in the queue.
       size_t count_;
@@ -140,24 +140,24 @@ namespace madara
     };
 
     /**
-    * @class LQueue_Iterator
+    * @class LQueueIterator
     * @brief Implements a forward iterator for LQueue type classes.
     *
-    * Note:  Having a const Expression_Tree_Iterator does not guarantee that the current
+    * Note:  Having a const ExpressionTreeIterator does not guarantee that the current
     * *position* that it points to will not change, it only guarantees that
     * you cannot change the underlying queue!
     */
     template <typename T>
-    class LQueue_Iterator 
+    class LQueueIterator 
     {
     public:
-      /// Construct an LQueue_Iterator at position pos.  
-      LQueue_Iterator (LQueue<T> &queue,
+      /// Construct an LQueueIterator at position pos.  
+      LQueueIterator (LQueue<T> &queue,
         size_t pos = 0);
 
-      /// Construct an LQueue_Iterator at node pos.
-      LQueue_Iterator (LQueue<T> &queue,
-        LQueue_Node<T> *pos = 0);
+      /// Construct an LQueueIterator at node pos.
+      LQueueIterator (LQueue<T> &queue,
+        LQueueNode<T> *pos = 0);
 
       /// Dereference operator returns a reference to the item contained
       /// at the current position
@@ -167,16 +167,16 @@ namespace madara
       const T& operator* (void) const;
 
       /// Preincrement operator
-      LQueue_Iterator<T> &operator++ (void);
+      LQueueIterator<T> &operator++ (void);
 
       /// Postincrement operator
-      LQueue_Iterator<T> operator++ (int);
+      LQueueIterator<T> operator++ (int);
 
       /// Equality operator
-      bool operator== (const LQueue_Iterator<T> &rhs) const;
+      bool operator== (const LQueueIterator<T> &rhs) const;
 
       /// Nonequality operator
-      bool operator!= (const LQueue_Iterator<T> &lhs) const;
+      bool operator!= (const LQueueIterator<T> &lhs) const;
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
@@ -190,44 +190,44 @@ namespace madara
       LQueue<T> &queue_;
 
       // the position in the linked list
-      mutable LQueue_Node<T> *pos_;
+      mutable LQueueNode<T> *pos_;
     };
 
     /**
-    * @class LQueue_Const_Iterator
+    * @class LQueueConstIterator
     * @brief Implements a forward iterator for LQueue type classes.
     *
-    * Note:  Having a const Expression_Tree_Iterator does not guarantee that the current
+    * Note:  Having a const ExpressionTreeIterator does not guarantee that the current
     * *position* that it points to will not change, it only guarantees that
     * you cannot change the underlying queue!
     */
     template <typename T>
-    class LQueue_Const_Iterator 
+    class LQueueConstIterator 
     {
     public:
-      /// Construct an LQueue_Iterator at position pos.  
-      LQueue_Const_Iterator (const LQueue<T> &queue,
+      /// Construct an LQueueIterator at position pos.  
+      LQueueConstIterator (const LQueue<T> &queue,
         size_t pos = 0);
 
-      /// Construct an LQueue_Iterator at node pos.  
-      LQueue_Const_Iterator (const LQueue<T> &queue,
-        LQueue_Node<T> *pos);
+      /// Construct an LQueueIterator at node pos.  
+      LQueueConstIterator (const LQueue<T> &queue,
+        LQueueNode<T> *pos);
 
       /// Dereference operator returns a const reference to the item
       /// contained at the current position.
       const T& operator* (void) const;
 
       /// Preincrement operator
-      const LQueue_Const_Iterator<T> &operator++ (void) const;
+      const LQueueConstIterator<T> &operator++ (void) const;
 
       /// Postincrement operator
-      LQueue_Const_Iterator<T> operator++ (int) const;
+      LQueueConstIterator<T> operator++ (int) const;
 
       /// Equality operator
-      bool operator== (const LQueue_Const_Iterator<T> &rhs) const;
+      bool operator== (const LQueueConstIterator<T> &rhs) const;
 
       /// Nonequality operator
-      bool operator!= (const LQueue_Const_Iterator<T> &lhs) const;
+      bool operator!= (const LQueueConstIterator<T> &lhs) const;
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
@@ -241,7 +241,7 @@ namespace madara
       const LQueue<T> &queue_;
 
       // the position in the linked list
-      mutable LQueue_Node<T> *pos_;
+      mutable LQueueNode<T> *pos_;
     };
   }
 }

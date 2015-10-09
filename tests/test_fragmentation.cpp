@@ -1,9 +1,9 @@
 
 #include "madara/transport/Fragmentation.h"
-#include "madara/transport/Message_Header.h"
-#include "madara/knowledge_engine/Knowledge_Record.h"
+#include "madara/transport/MessageHeader.h"
+#include "madara/knowledge_engine/KnowledgeRecord.h"
 #include "madara/utility/Utility.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/utility/LogMacros.h"
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -50,14 +50,14 @@ void handle_arguments (int argc, char ** argv)
 void test_frag (void)
 {
   uint32_t size = 300000 +
-    transport::Message_Header::static_encoded_size ();
+    transport::MessageHeader::static_encoded_size ();
 
   char * payload = new char [size];
   char * buffer = payload;
   int64_t buffer_remaining = size;
-  transport::Fragment_Map map;
+  transport::FragmentMap map;
 
-  transport::Message_Header header;
+  transport::MessageHeader header;
   header.size = size;
 
   buffer = header.write (buffer, buffer_remaining);
@@ -109,15 +109,15 @@ void test_frag (void)
 void test_add_frag (void)
 {
   uint32_t size = 300000 +
-    transport::Message_Header::static_encoded_size ();
+    transport::MessageHeader::static_encoded_size ();
 
   char * payload = new char [size];
   char * buffer = payload;
   int64_t buffer_remaining = size;
-  transport::Fragment_Map map;
-  transport::Originator_Fragment_Map frag_map;
+  transport::FragmentMap map;
+  transport::OriginatorFragmentMap frag_map;
 
-  transport::Message_Header header;
+  transport::MessageHeader header;
   header.size = size;
 
   buffer = header.write (buffer, buffer_remaining);
@@ -255,22 +255,22 @@ void test_add_frag (void)
 void test_records_frag (void)
 {
   uint32_t size = 254000 + sizeof (int64_t) + sizeof (double) +
-    transport::Message_Header::static_encoded_size ();
+    transport::MessageHeader::static_encoded_size ();
 
   char * payload = new char [size];
   char * buffer = payload;
   int64_t buffer_remaining = size;
-  transport::Fragment_Map map;
-  transport::Originator_Fragment_Map frag_map;
+  transport::FragmentMap map;
+  transport::OriginatorFragmentMap frag_map;
   uint64_t * message_size = (uint64_t *)buffer;
 
-  transport::Message_Header header;
+  transport::MessageHeader header;
   header.size = size;
 
-  Madara::Knowledge_Map knowledge, copied_knowledge;
-  knowledge ["str_var"] = Madara::Knowledge_Record (std::string (254000, ' '));
-  knowledge ["int_var"] = Madara::Knowledge_Record::Integer (254LL);
-  knowledge ["double_var"] = Madara::Knowledge_Record (5.235);
+  Madara::KnowledgeMap knowledge, copied_knowledge;
+  knowledge ["str_var"] = Madara::KnowledgeRecord (std::string (254000, ' '));
+  knowledge ["int_var"] = Madara::KnowledgeRecord::Integer (254LL);
+  knowledge ["double_var"] = Madara::KnowledgeRecord (5.235);
 
   header.updates = (uint32_t)knowledge.size ();
   header.clock = 10;
@@ -279,7 +279,7 @@ void test_records_frag (void)
   
   buffer = header.write (buffer, buffer_remaining);
 
-  for (Madara::Knowledge_Map::iterator i = knowledge.begin ();
+  for (Madara::KnowledgeMap::iterator i = knowledge.begin ();
        i != knowledge.end (); ++i)
   {
     buffer = i->second.write (buffer, i->first, buffer_remaining);
@@ -300,8 +300,8 @@ void test_records_frag (void)
 
   if (result)
   {
-    buffer_remaining = transport::Message_Header::get_size (result);
-    transport::Message_Header copied_header;
+    buffer_remaining = transport::MessageHeader::get_size (result);
+    transport::MessageHeader copied_header;
     result = copied_header.read (result, buffer_remaining);
 
     if (copied_header.equals (header))
@@ -315,7 +315,7 @@ void test_records_frag (void)
 
     for (uint32_t i = 0; i < copied_header.updates; ++i)
     {
-      Madara::Knowledge_Record temp;
+      Madara::KnowledgeRecord temp;
       std::string key;
       result = temp.read (result, key, buffer_remaining);
       copied_knowledge [key] = temp;

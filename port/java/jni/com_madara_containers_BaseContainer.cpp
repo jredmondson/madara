@@ -1,16 +1,16 @@
 #include "com_madara_containers_BaseContainer.h"
-#include "madara/knowledge/containers/Base_Container.h"
+#include "madara/knowledge/containers/BaseContainer.h"
 
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef  containers::Base_Container   Base_Container;
+typedef  containers::BaseContainer   BaseContainer;
 
 JNIEXPORT jboolean JNICALL Java_com_madara_containers_BaseContainer_jni_1modifyIfTrue
 (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   bool result = false;
-  Base_Container * current = (Base_Container *)cptr;
-  Base_Container * container = (Base_Container *)container_ptr;
+  BaseContainer * current = (BaseContainer *)cptr;
+  BaseContainer * container = (BaseContainer *)container_ptr;
 
   if (current && container)
   {
@@ -24,8 +24,8 @@ JNIEXPORT jboolean JNICALL Java_com_madara_containers_BaseContainer_jni_1modifyI
 (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   bool result = true;
-  Base_Container * current = (Base_Container *)cptr;
-  Base_Container * container = (Base_Container *)container_ptr;
+  BaseContainer * current = (BaseContainer *)cptr;
+  BaseContainer * container = (BaseContainer *)container_ptr;
 
   if (current && container)
   {

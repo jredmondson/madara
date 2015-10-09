@@ -19,16 +19,16 @@
 
 #include "ace/Signal.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 #include "madara/transport/Transport.h"
 #include "madara/utility/Utility.h"
 
-Madara::Knowledge_Record::Integer id = 0;
-Madara::Knowledge_Record::Integer left = 0;
-Madara::Knowledge_Record::Integer processes = 2;
-Madara::Knowledge_Record::Integer stop = 10;
-Madara::Knowledge_Record::Integer value = 0;
-Madara::Knowledge_Record::Integer iterations = 100000;
+Madara::KnowledgeRecord::Integer id = 0;
+Madara::KnowledgeRecord::Integer left = 0;
+Madara::KnowledgeRecord::Integer processes = 2;
+Madara::KnowledgeRecord::Integer stop = 10;
+Madara::KnowledgeRecord::Integer value = 0;
+Madara::KnowledgeRecord::Integer iterations = 100000;
 
 std::string host = "";
 
@@ -71,9 +71,9 @@ ull_to_string (uint64_t source)
  * @param    count         number of processes, can be a subset of group
  */
 std::string
-  build_wait_string (Madara::Knowledge_Record::Integer id,
+  build_wait_string (Madara::KnowledgeRecord::Integer id,
   const std::string & attribute,
-  Madara::Knowledge_Record::Integer count)
+  Madara::KnowledgeRecord::Integer count)
 {
   std::stringstream buffer;
 
@@ -112,8 +112,8 @@ std::string
  * @return    total latency for all iterations
  */
 uint64_t test_latency (
-                     Madara::Knowledge_Engine::Knowledge_Base & knowledge,
-                     Madara::Knowledge_Record::Integer iterations, 
+                     Madara::KnowledgeEngine::KnowledgeBase & knowledge,
+                     Madara::KnowledgeRecord::Integer iterations, 
                      ACE_hrtime_t & compile_latency,
                      ACE_hrtime_t & eval_latency
                      )
@@ -141,13 +141,13 @@ uint64_t test_latency (
     expression = "P0 != P1 => P1 = P0";
   }
 
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
-  Madara::Knowledge_Engine::Eval_Settings eval_settings;
+  Madara::KnowledgeEngine::WaitSettings wait_settings;
+  Madara::KnowledgeEngine::EvalSettings eval_settings;
   eval_settings.send_modifieds = false;
 
   // test compilation latency
   compile_timer.start ();
-  Madara::Knowledge_Engine::Compiled_Expression compiled = 
+  Madara::KnowledgeEngine::CompiledExpression compiled = 
     knowledge.compile (expression);
   compile_timer.stop ();
 
@@ -174,8 +174,8 @@ uint64_t test_latency (
   // expression to be evaluated requires this count to start at 0 for it
   // to make sense. .old on the other hand is a local variable, so there is
   // no need to be cautious.
-  knowledge.set ("P0", Madara::Knowledge_Record::Integer (0), false);
-  knowledge.set ("P1", Madara::Knowledge_Record::Integer (0), false);
+  knowledge.set ("P0", Madara::KnowledgeRecord::Integer (0), false);
+  knowledge.set ("P1", Madara::KnowledgeRecord::Integer (0), false);
 
 
   ACE_DEBUG ((LM_INFO, "(%P|%t) (%d of %d) KaRL logic will be %s\n",
@@ -234,14 +234,14 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   settings.type = Madara::Transport::MULTICAST;
   settings.hosts_.resize (1);
   settings.hosts_[0] = "239.255.0.1:4150";
-  settings.domains = "KaRL_Latency";
+  settings.domains = "KaRLLatency";
   settings.reliability = Madara::Transport::RELIABLE;
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge(host, settings);
+  Madara::KnowledgeEngine::KnowledgeBase knowledge(host, settings);
 
   // set my id
   knowledge.set (".self", id);
-  knowledge.set (".processes", Madara::Knowledge_Record::Integer (2));
+  knowledge.set (".processes", Madara::KnowledgeRecord::Integer (2));
   knowledge.set (".iterations", iterations);
 
   ACE_DEBUG ((LM_INFO, "(%P|%t) (%d of %d) waiting for other processes to join\n",

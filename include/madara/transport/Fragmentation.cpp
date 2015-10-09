@@ -1,13 +1,13 @@
 #include "Fragmentation.h"
-#include "Reduced_Message_Header.h"
+#include "ReducedMessageHeader.h"
 #include "madara/utility/Utility.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 
 #include <algorithm>
 #include <time.h>
 
-madara::transport::Fragment_Message_Header::Fragment_Message_Header ()
-: Message_Header (), update_number (0)
+madara::transport::FragmentMessageHeader::FragmentMessageHeader ()
+: MessageHeader (), update_number (0)
 {
   memcpy (madara_id, FRAGMENTATION_MADARA_ID, 7);
   madara_id[7] = 0;
@@ -17,12 +17,12 @@ madara::transport::Fragment_Message_Header::Fragment_Message_Header ()
 }
 
 
-madara::transport::Fragment_Message_Header::~Fragment_Message_Header ()
+madara::transport::FragmentMessageHeader::~FragmentMessageHeader ()
 {
 }
 
 uint32_t
-madara::transport::Fragment_Message_Header::encoded_size (void) const
+madara::transport::FragmentMessageHeader::encoded_size (void) const
 {
   return sizeof (uint64_t) * 3  // size, clock, timestamp
     + sizeof (char) * (MADARA_IDENTIFIER_LENGTH + MADARA_DOMAIN_MAX_LENGTH
@@ -31,7 +31,7 @@ madara::transport::Fragment_Message_Header::encoded_size (void) const
 }
 
 uint32_t
-madara::transport::Fragment_Message_Header::static_encoded_size (void)
+madara::transport::FragmentMessageHeader::static_encoded_size (void)
 {
   return sizeof (uint64_t) * 3  // size, clock, timestamp
     + sizeof (char) * (MADARA_IDENTIFIER_LENGTH + MADARA_DOMAIN_MAX_LENGTH
@@ -42,14 +42,14 @@ madara::transport::Fragment_Message_Header::static_encoded_size (void)
      
 
 uint32_t
-madara::transport::Fragment_Message_Header::get_updates (const char * buffer)
+madara::transport::FragmentMessageHeader::get_updates (const char * buffer)
 {
   buffer += 116;
   return (madara::utility::endian_swap (*(uint32_t *)buffer));
 }
 
 const char *
-madara::transport::Fragment_Message_Header::read (const char * buffer,
+madara::transport::FragmentMessageHeader::read (const char * buffer,
                                          int64_t & buffer_remaining)
 {
   // Remove size field from the buffer and update accordingly
@@ -151,7 +151,7 @@ madara::transport::Fragment_Message_Header::read (const char * buffer,
 }
 
 char *
-madara::transport::Fragment_Message_Header::write (char * buffer,
+madara::transport::FragmentMessageHeader::write (char * buffer,
                                          int64_t & buffer_remaining)
 {
   // Write size field from the buffer and update accordingly
@@ -245,11 +245,11 @@ madara::transport::Fragment_Message_Header::write (char * buffer,
 }
 
 bool
-madara::transport::Fragment_Message_Header::equals (
-  const Message_Header & other)
+madara::transport::FragmentMessageHeader::equals (
+  const MessageHeader & other)
 {
-  const Fragment_Message_Header * rhs = dynamic_cast <
-    const Fragment_Message_Header *> (&other);
+  const FragmentMessageHeader * rhs = dynamic_cast <
+    const FragmentMessageHeader *> (&other);
 
   return size == rhs->size &&
          type == rhs->type &&
@@ -264,7 +264,7 @@ madara::transport::Fragment_Message_Header::equals (
 }
 
 
-char * madara::transport::defrag (Fragment_Map & map)
+char * madara::transport::defrag (FragmentMap & map)
 {
   char * result = 0;
 
@@ -272,10 +272,10 @@ char * madara::transport::defrag (Fragment_Map & map)
     "transport::defrag:" \
     " defragging fragment map\n");
 
-  Fragment_Map::iterator i = map.find (0);
+  FragmentMap::iterator i = map.find (0);
   if (i != map.end ())
   {
-    Fragment_Message_Header header;
+    FragmentMessageHeader header;
     int64_t buffer_remaining (header.encoded_size ());
     const char * buffer = header.read (i->second, buffer_remaining);
 
@@ -287,24 +287,24 @@ char * madara::transport::defrag (Fragment_Map & map)
         " the map is large enough to contain updates\n");
 
       int64_t size = 0;
-      if (Message_Header::message_header_test (buffer))
+      if (MessageHeader::message_header_test (buffer))
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
           "transport::defrag:" \
           " regular message header detected\n");
 
-        Message_Header contents_header;
+        MessageHeader contents_header;
         buffer_remaining = contents_header.encoded_size ();
         contents_header.read (buffer, buffer_remaining);
         size = contents_header.size;
       }
-      else if (Reduced_Message_Header::message_header_test (buffer))
+      else if (ReducedMessageHeader::message_header_test (buffer))
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
           "transport::defrag:" \
           " regular message header detected\n");
 
-        Reduced_Message_Header contents_header;
+        ReducedMessageHeader contents_header;
         buffer_remaining = contents_header.encoded_size ();
         contents_header.read (buffer, buffer_remaining);
         size = contents_header.size;
@@ -356,9 +356,9 @@ char * madara::transport::defrag (Fragment_Map & map)
 }
 
 void
-madara::transport::delete_fragments (Fragment_Map & map)
+madara::transport::delete_fragments (FragmentMap & map)
 {
-  for (Fragment_Map::iterator i = map.begin (); i != map.end (); ++i)
+  for (FragmentMap::iterator i = map.begin (); i != map.end (); ++i)
   {
     delete [] i->second;
   }
@@ -369,7 +369,7 @@ char *
 madara::transport::add_fragment (const char * originator, uint64_t clock,
       uint32_t update_number, const char * fragment,
       uint32_t queue_length,
-      Originator_Fragment_Map & map, bool clear)
+      OriginatorFragmentMap & map, bool clear)
 {
   char * result = 0;
 
@@ -387,7 +387,7 @@ madara::transport::add_fragment (const char * originator, uint64_t clock,
     "transport::add_fragment: adding fragment\n");
 
   char * new_fragment = 0;
-  Fragment_Message_Header header;
+  FragmentMessageHeader header;
   int64_t buffer_remaining = header.encoded_size ();
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
@@ -412,7 +412,7 @@ madara::transport::add_fragment (const char * originator, uint64_t clock,
     "transport::add_fragment:" \
     " searching for originator %s.\n", originator);
 
-  Originator_Fragment_Map::iterator orig_map = map.find (originator);
+  OriginatorFragmentMap::iterator orig_map = map.find (originator);
   if (orig_map == map.end ())
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
@@ -429,8 +429,8 @@ madara::transport::add_fragment (const char * originator, uint64_t clock,
       "transport::add_fragment:" \
       " originator %s exists in fragment map.\n", originator);
 
-    Clock_Fragment_Map & clock_map (orig_map->second);
-    Clock_Fragment_Map::iterator clock_found = clock_map.find (clock);
+    ClockFragmentMap & clock_map (orig_map->second);
+    ClockFragmentMap::iterator clock_found = clock_map.find (clock);
     
     if (clock_found != clock_map.end ())
     {
@@ -507,10 +507,10 @@ madara::transport::add_fragment (const char * originator, uint64_t clock,
           " deleting fragments.\n",
           originator, update_number);
 
-        Fragment_Map & fragments = clock_map [oldest];
+        FragmentMap & fragments = clock_map [oldest];
 
         // delete all fragments in the clock entry
-        for (Fragment_Map::iterator i = fragments.begin ();
+        for (FragmentMap::iterator i = fragments.begin ();
              i != fragments.end (); ++i)
         {
           delete [] i->second;
@@ -534,8 +534,8 @@ madara::transport::add_fragment (const char * originator, uint64_t clock,
 }
 
 void
-madara::transport::Fragment_Message_Header::operator= (
-  Message_Header & header)
+madara::transport::FragmentMessageHeader::operator= (
+  MessageHeader & header)
 {
   if (this != &header)
   {
@@ -554,7 +554,7 @@ madara::transport::Fragment_Message_Header::operator= (
 
 void
 madara::transport::frag (char * source,
-  uint32_t fragment_size, Fragment_Map & map)
+  uint32_t fragment_size, FragmentMap & map)
 {
   if (fragment_size > 0)
   {
@@ -564,30 +564,30 @@ madara::transport::frag (char * source,
       fragment_size);
 
     uint32_t data_per_packet = fragment_size -
-      Fragment_Message_Header::static_encoded_size ();
+      FragmentMessageHeader::static_encoded_size ();
 
     const char * buffer = source;
     uint64_t total_size;
-    Fragment_Message_Header header;
-    if (Message_Header::message_header_test (source))
+    FragmentMessageHeader header;
+    if (MessageHeader::message_header_test (source))
     {
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
         "transport::frag:" \
         " regular message header detected\n",
         fragment_size);
 
-      Message_Header contents_header;
+      MessageHeader contents_header;
       int64_t buffer_remaining = contents_header.encoded_size ();
       contents_header.read (source, buffer_remaining);
       header = contents_header;
     }
-    else if (Reduced_Message_Header::message_header_test (source))
+    else if (ReducedMessageHeader::message_header_test (source))
     {
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
         "transport::frag:" \
         " regular message header detected\n");
 
-      Reduced_Message_Header contents_header;
+      ReducedMessageHeader contents_header;
       int64_t buffer_remaining = contents_header.encoded_size ();
       contents_header.read (source, buffer_remaining);
       header = contents_header;
@@ -613,13 +613,13 @@ madara::transport::frag (char * source,
 
       if (i == header.updates - 1)
         cur_size = (size_t) total_size +
-          Fragment_Message_Header::static_encoded_size ();
+          FragmentMessageHeader::static_encoded_size ();
       else
         cur_size = (size_t) fragment_size;
 
       buffer_remaining = cur_size;
       actual_data_size = cur_size -
-        Fragment_Message_Header::static_encoded_size ();
+        FragmentMessageHeader::static_encoded_size ();
       new_frag = new char [cur_size];
 
       map[i] = new_frag;
@@ -641,25 +641,25 @@ madara::transport::frag (char * source,
 
 bool
 madara::transport::is_complete (const char * originator, uint64_t clock,
-      Originator_Fragment_Map & map)
+      OriginatorFragmentMap & map)
 {
   bool result = false;
 
-  Originator_Fragment_Map::iterator orig_map = map.find (originator);
+  OriginatorFragmentMap::iterator orig_map = map.find (originator);
 
   if (orig_map != map.end ())
   {
-    Clock_Fragment_Map & clock_map (orig_map->second);
-    Clock_Fragment_Map::iterator clock_found = clock_map.find (clock);
+    ClockFragmentMap & clock_map (orig_map->second);
+    ClockFragmentMap::iterator clock_found = clock_map.find (clock);
 
     if (clock_found != clock_map.end ())
     {
       uint64_t size = clock_found->second.size ();
-      Fragment_Map::iterator i = clock_found->second.find (0);
+      FragmentMap::iterator i = clock_found->second.find (0);
 
       if (i != clock_found->second.end ())
       {
-        if (Fragment_Message_Header::get_updates (i->second) == size)
+        if (FragmentMessageHeader::get_updates (i->second) == size)
         {
           result = true;
         }
@@ -676,16 +676,16 @@ madara::transport::is_complete (const char * originator, uint64_t clock,
 
 bool
 madara::transport::exists (const char * originator, uint64_t clock,
-  uint32_t update_number, Originator_Fragment_Map & map)
+  uint32_t update_number, OriginatorFragmentMap & map)
 {
   bool result = false;
 
-  Originator_Fragment_Map::iterator orig_map = map.find (originator);
+  OriginatorFragmentMap::iterator orig_map = map.find (originator);
 
   if (orig_map != map.end ())
   {
-    Clock_Fragment_Map & clock_map (orig_map->second);
-    Clock_Fragment_Map::iterator clock_found = clock_map.find (clock);
+    ClockFragmentMap & clock_map (orig_map->second);
+    ClockFragmentMap::iterator clock_found = clock_map.find (clock);
 
     if (clock_found != clock_map.end ())
     {

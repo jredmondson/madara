@@ -7,13 +7,13 @@
  * and performs actions based on that input.
  **/
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 #include <iostream>
 #include <string>
 
 int main (int argc, char * argv[])
 {
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  Madara::KnowledgeEngine::KnowledgeBase knowledge;
   
   // Prompt the user for their height
   std::string my_height;

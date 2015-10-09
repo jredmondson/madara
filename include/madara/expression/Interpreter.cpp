@@ -6,69 +6,69 @@
 #include <iostream>
 #include <sstream>
 
-#include "madara/expression/Component_Node.h"
-#include "madara/expression/Leaf_Node.h"
-#include "madara/expression/Variable_Node.h"
-#include "madara/expression/Variable_Compare_Node.h"
-#include "madara/expression/Variable_Decrement_Node.h"
-#include "madara/expression/Variable_Divide_Node.h"
-#include "madara/expression/Variable_Increment_Node.h"
-#include "madara/expression/Variable_Multiply_Node.h"
-#include "madara/expression/List_Node.h"
-#include "madara/expression/Composite_Const_Array.h"
-#include "madara/expression/Composite_Negate_Node.h"
-#include "madara/expression/Composite_Postdecrement_Node.h"
-#include "madara/expression/Composite_Postincrement_Node.h"
-#include "madara/expression/Composite_Predecrement_Node.h"
-#include "madara/expression/Composite_Preincrement_Node.h"
-#include "madara/expression/Composite_Not_Node.h"
-#include "madara/expression/Composite_Add_Node.h"
-#include "madara/expression/Composite_And_Node.h"
-#include "madara/expression/Composite_Or_Node.h"
-#include "madara/expression/Composite_Array_Reference.h"
-#include "madara/expression/Composite_Assignment_Node.h"
-#include "madara/expression/Composite_Equality_Node.h"
-#include "madara/expression/Composite_Inequality_Node.h"
-#include "madara/expression/Composite_Greater_Than_Equal_Node.h"
-#include "madara/expression/Composite_Greater_Than_Node.h"
-#include "madara/expression/Composite_Less_Than_Equal_Node.h"
-#include "madara/expression/Composite_Less_Than_Node.h"
-#include "madara/expression/Composite_Subtract_Node.h"
-#include "madara/expression/Composite_Divide_Node.h"
-#include "madara/expression/Composite_Multiply_Node.h"
-#include "madara/expression/Composite_Modulus_Node.h"
-#include "madara/expression/Composite_Both_Node.h"
-#include "madara/expression/Composite_Return_Right_Node.h"
-#include "madara/expression/Composite_Function_Node.h"
-#include "madara/expression/Composite_For_Loop.h"
-#include "madara/expression/Composite_Sequential_Node.h"
-#include "madara/expression/Composite_Implies_Node.h"
-#include "madara/expression/System_Call_Delete_Variable.h"
-#include "madara/expression/System_Call_Eval.h"
-#include "madara/expression/System_Call_Expand_Env.h"
-#include "madara/expression/System_Call_Expand_Statement.h"
-#include "madara/expression/System_Call_Fragment.h"
-#include "madara/expression/System_Call_Get_Clock.h"
-#include "madara/expression/System_Call_Get_Time.h"
-#include "madara/expression/System_Call_Log_Level.h"
-#include "madara/expression/System_Call_Print.h"
-#include "madara/expression/System_Call_Print_System_Calls.h"
-#include "madara/expression/System_Call_Rand_Double.h"
-#include "madara/expression/System_Call_Rand_Int.h"
-#include "madara/expression/System_Call_Read_File.h"
-#include "madara/expression/System_Call_Set_Clock.h"
-#include "madara/expression/System_Call_Set_Precision.h"
-#include "madara/expression/System_Call_Size.h"
-#include "madara/expression/System_Call_Sleep.h"
-#include "madara/expression/System_Call_To_Buffer.h"
-#include "madara/expression/System_Call_To_Double.h"
-#include "madara/expression/System_Call_To_Doubles.h"
-#include "madara/expression/System_Call_To_Host_Dirs.h"
-#include "madara/expression/System_Call_To_Integer.h"
-#include "madara/expression/System_Call_To_Integers.h"
-#include "madara/expression/System_Call_To_String.h"
-#include "madara/expression/System_Call_Type.h"
-#include "madara/expression/System_Call_Write_File.h"
+#include "madara/expression/ComponentNode.h"
+#include "madara/expression/LeafNode.h"
+#include "madara/expression/VariableNode.h"
+#include "madara/expression/VariableCompareNode.h"
+#include "madara/expression/VariableDecrementNode.h"
+#include "madara/expression/VariableDivideNode.h"
+#include "madara/expression/VariableIncrementNode.h"
+#include "madara/expression/VariableMultiplyNode.h"
+#include "madara/expression/ListNode.h"
+#include "madara/expression/CompositeConstArray.h"
+#include "madara/expression/CompositeNegateNode.h"
+#include "madara/expression/CompositePostdecrementNode.h"
+#include "madara/expression/CompositePostincrementNode.h"
+#include "madara/expression/CompositePredecrementNode.h"
+#include "madara/expression/CompositePreincrementNode.h"
+#include "madara/expression/CompositeNotNode.h"
+#include "madara/expression/CompositeAddNode.h"
+#include "madara/expression/CompositeAndNode.h"
+#include "madara/expression/CompositeOrNode.h"
+#include "madara/expression/CompositeArrayReference.h"
+#include "madara/expression/CompositeAssignmentNode.h"
+#include "madara/expression/CompositeEqualityNode.h"
+#include "madara/expression/CompositeInequalityNode.h"
+#include "madara/expression/CompositeGreaterThanEqualNode.h"
+#include "madara/expression/CompositeGreaterThanNode.h"
+#include "madara/expression/CompositeLessThanEqualNode.h"
+#include "madara/expression/CompositeLessThanNode.h"
+#include "madara/expression/CompositeSubtractNode.h"
+#include "madara/expression/CompositeDivideNode.h"
+#include "madara/expression/CompositeMultiplyNode.h"
+#include "madara/expression/CompositeModulusNode.h"
+#include "madara/expression/CompositeBothNode.h"
+#include "madara/expression/CompositeReturnRightNode.h"
+#include "madara/expression/CompositeFunctionNode.h"
+#include "madara/expression/CompositeForLoop.h"
+#include "madara/expression/CompositeSequentialNode.h"
+#include "madara/expression/CompositeImpliesNode.h"
+#include "madara/expression/SystemCallDeleteVariable.h"
+#include "madara/expression/SystemCallEval.h"
+#include "madara/expression/SystemCallExpandEnv.h"
+#include "madara/expression/SystemCallExpandStatement.h"
+#include "madara/expression/SystemCallFragment.h"
+#include "madara/expression/SystemCallGetClock.h"
+#include "madara/expression/SystemCallGetTime.h"
+#include "madara/expression/SystemCallLogLevel.h"
+#include "madara/expression/SystemCallPrint.h"
+#include "madara/expression/SystemCallPrintSystemCalls.h"
+#include "madara/expression/SystemCallRandDouble.h"
+#include "madara/expression/SystemCallRandInt.h"
+#include "madara/expression/SystemCallReadFile.h"
+#include "madara/expression/SystemCallSetClock.h"
+#include "madara/expression/SystemCallSetPrecision.h"
+#include "madara/expression/SystemCallSize.h"
+#include "madara/expression/SystemCallSleep.h"
+#include "madara/expression/SystemCallToBuffer.h"
+#include "madara/expression/SystemCallToDouble.h"
+#include "madara/expression/SystemCallToDoubles.h"
+#include "madara/expression/SystemCallToHostDirs.h"
+#include "madara/expression/SystemCallToInteger.h"
+#include "madara/expression/SystemCallToIntegers.h"
+#include "madara/expression/SystemCallToString.h"
+#include "madara/expression/SystemCallType.h"
+#include "madara/expression/SystemCallWriteFile.h"
 #include "madara/expression/Interpreter.h"
 
 
@@ -119,9 +119,9 @@ namespace madara
 
       virtual int add_precedence (int accumulated_precedence) = 0;
 
-      /// abstract method for building an Expression Expression_Tree Node
+      /// abstract method for building an Expression ExpressionTree Node
 
-      virtual Component_Node * build (void) = 0;
+      virtual ComponentNode * build (void) = 0;
 
       /// left and right pointers
 
@@ -150,140 +150,140 @@ namespace madara
     };
 
     /**
-    * @class Ternary_Operator
+    * @class TernaryOperator
     * @brief Abstract base class for operators with 3+ potential subnodes
     * @see   Both
     */
-    class Ternary_Operator : public Operator
+    class TernaryOperator : public Operator
     {
     public:
       /// constructor
-      Ternary_Operator (logger::Logger & logger,
+      TernaryOperator (logger::Logger & logger,
         Symbol * left, Symbol * right, int precedence_ = 1);
 
       /// destructor
-      virtual ~Ternary_Operator (void);
+      virtual ~TernaryOperator (void);
 
-      Component_Nodes nodes_;
+      ComponentNodes nodes_;
     };
 
     /**
-    * @class System_Call
+    * @class SystemCall
     * @brief Abstract base class for operators with 3+ potential subnodes
     * @see   Both
     */
-    class System_Call : public Ternary_Operator
+    class SystemCall : public TernaryOperator
     {
     public:
       /// constructor
-      System_Call (madara::knowledge::Thread_Safe_Context & context_);
+      SystemCall (madara::knowledge::ThreadSafeContext & context_);
 
       /// destructor
-      virtual ~System_Call (void);
+      virtual ~SystemCall (void);
 
       /// Context for variables
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
     };
 
 
     /**
-    * @class Delete_Variable
+    * @class DeleteVariable
     * @brief Deletes a variable from the knowledge base
     */
-    class Delete_Variable : public System_Call
+    class DeleteVariable : public SystemCall
     {
     public:
       /// constructor
-      Delete_Variable (
-        madara::knowledge::Thread_Safe_Context & context_);
+      DeleteVariable (
+        madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Delete_Variable (void);
+      virtual ~DeleteVariable (void);
     };
 
     /**
     * @class Eval
     * @brief Evaluates a Knowledge Record and returns result
     */
-    class Eval : public System_Call
+    class Eval : public SystemCall
     {
     public:
       /// constructor
-      Eval (madara::knowledge::Thread_Safe_Context & context_);
+      Eval (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
       virtual ~Eval (void);
     };
 
     /**
-    * @class Expand_Envs
+    * @class ExpandEnvs
     * @brief Expands a statement, e.g. var${.i} into var0 if .i == 0
     */
-    class Expand_Env : public System_Call
+    class ExpandEnv : public SystemCall
     {
     public:
       /// constructor
-      Expand_Env (
-        madara::knowledge::Thread_Safe_Context & context_);
+      ExpandEnv (
+        madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Expand_Env (void);
+      virtual ~ExpandEnv (void);
     };
 
     /**
-    * @class Expand_Statement
+    * @class ExpandStatement
     * @brief Expands a statement, e.g. var{.i} into var0 if .i == 0
     */
-    class Expand_Statement : public System_Call
+    class ExpandStatement : public SystemCall
     {
     public:
       /// constructor
-      Expand_Statement (
-        madara::knowledge::Thread_Safe_Context & context_);
+      ExpandStatement (
+        madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Expand_Statement (void);
+      virtual ~ExpandStatement (void);
     };
 
     /**
     * @class Fragment
     * @brief Fragment the Knowledge Record
     */
-    class Fragment : public System_Call
+    class Fragment : public SystemCall
     {
     public:
       /// constructor
-      Fragment (madara::knowledge::Thread_Safe_Context & context_);
+      Fragment (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
       virtual ~Fragment (void);
@@ -293,319 +293,319 @@ namespace madara
     * @class Print
     * @brief Prints a Knowledge Record to the stderr
     */
-    class Print : public System_Call
+    class Print : public SystemCall
     {
     public:
       /// constructor
-      Print (madara::knowledge::Thread_Safe_Context & context_);
+      Print (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
       virtual ~Print (void);
     };
 
     /**
-    * @class Print_System_Calls
+    * @class PrintSystemCalls
     * @brief Prints a help menu for all system calls
     */
-    class Print_System_Calls : public System_Call
+    class PrintSystemCalls : public SystemCall
     {
     public:
       /// constructor
-      Print_System_Calls (
-        madara::knowledge::Thread_Safe_Context & context_);
+      PrintSystemCalls (
+        madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Print_System_Calls (void);
+      virtual ~PrintSystemCalls (void);
     };
 
     /**
-    * @class Rand_Double
+    * @class RandDouble
     * @brief Generates a random double
     */
-    class Rand_Double : public System_Call
+    class RandDouble : public SystemCall
     {
     public:
       /// constructor
-      Rand_Double (madara::knowledge::Thread_Safe_Context & context_);
+      RandDouble (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Rand_Double (void);
+      virtual ~RandDouble (void);
     };
 
     /**
-    * @class Rand_Int
+    * @class RandInt
     * @brief Generates a random integer
     */
-    class Rand_Int : public System_Call
+    class RandInt : public SystemCall
     {
     public:
       /// constructor
-      Rand_Int (madara::knowledge::Thread_Safe_Context & context_);
+      RandInt (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Rand_Int (void);
+      virtual ~RandInt (void);
     };
 
     /**
-    * @class Read_File
+    * @class ReadFile
     * @brief Reads a file
     */
-    class Read_File : public System_Call
+    class ReadFile : public SystemCall
     {
     public:
       /// constructor
-      Read_File (madara::knowledge::Thread_Safe_Context & context_);
+      ReadFile (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Read_File (void);
+      virtual ~ReadFile (void);
     };
 
     /**
-    * @class Write_File
+    * @class WriteFile
     * @brief Writes a file
     */
-    class Write_File : public System_Call
+    class WriteFile : public SystemCall
     {
     public:
       /// constructor
-      Write_File (madara::knowledge::Thread_Safe_Context & context_);
+      WriteFile (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Write_File (void);
+      virtual ~WriteFile (void);
     };
 
     /**
     * @class Size
     * @brief Returns the size of a record
     */
-    class Size : public System_Call
+    class Size : public SystemCall
     {
     public:
       /// constructor
-      Size (madara::knowledge::Thread_Safe_Context & context_);
+      Size (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
       virtual ~Size (void);
     };
 
     /**
-    * @class Set_Precision
+    * @class SetPrecision
     * @brief Sets the precision of doubles
     */
-    class Set_Precision : public System_Call
+    class SetPrecision : public SystemCall
     {
     public:
       /// constructor
-      Set_Precision (madara::knowledge::Thread_Safe_Context & context_);
+      SetPrecision (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Set_Precision (void);
+      virtual ~SetPrecision (void);
     };
 
     /**
-    * @class To_Buffer
+    * @class ToBuffer
     * @brief Returns a buffer
     */
-    class To_Buffer : public System_Call
+    class ToBuffer : public SystemCall
     {
     public:
       /// constructor
-      To_Buffer (madara::knowledge::Thread_Safe_Context & context_);
+      ToBuffer (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~To_Buffer (void);
+      virtual ~ToBuffer (void);
     };
 
     /**
-    * @class To_Double
+    * @class ToDouble
     * @brief Returns a double
     */
-    class To_Double : public System_Call
+    class ToDouble : public SystemCall
     {
     public:
       /// constructor
-      To_Double (madara::knowledge::Thread_Safe_Context & context_);
+      ToDouble (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~To_Double (void);
+      virtual ~ToDouble (void);
     };
 
     /**
-    * @class To_Doubles
+    * @class ToDoubles
     * @brief Returns a double array
     */
-    class To_Doubles : public System_Call
+    class ToDoubles : public SystemCall
     {
     public:
       /// constructor
-      To_Doubles (madara::knowledge::Thread_Safe_Context & context_);
+      ToDoubles (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~To_Doubles (void);
+      virtual ~ToDoubles (void);
     };
 
     /**
-    * @class To_Host_Dirs
+    * @class ToHostDirs
     * @brief Returns a version that has a directory structure appropriate to
     *        the OS.
     */
-    class To_Host_Dirs : public System_Call
+    class ToHostDirs : public SystemCall
     {
     public:
       /// constructor
-      To_Host_Dirs (madara::knowledge::Thread_Safe_Context & context_);
+      ToHostDirs (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~To_Host_Dirs (void);
+      virtual ~ToHostDirs (void);
     };
 
     /**
-    * @class To_Integer
+    * @class ToInteger
     * @brief Returns an integer
     */
-    class To_Integer : public System_Call
+    class ToInteger : public SystemCall
     {
     public:
       /// constructor
-      To_Integer (madara::knowledge::Thread_Safe_Context & context_);
+      ToInteger (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~To_Integer (void);
+      virtual ~ToInteger (void);
     };
 
     /**
-    * @class To_Integers
+    * @class ToIntegers
     * @brief Returns an integers
     */
-    class To_Integers : public System_Call
+    class ToIntegers : public SystemCall
     {
     public:
       /// constructor
-      To_Integers (madara::knowledge::Thread_Safe_Context & context_);
+      ToIntegers (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~To_Integers (void);
+      virtual ~ToIntegers (void);
     };
 
     /**
-    * @class To_String
+    * @class ToString
     * @brief Returns a string
     */
-    class To_String : public System_Call
+    class ToString : public SystemCall
     {
     public:
       /// constructor
-      To_String (madara::knowledge::Thread_Safe_Context & context_);
+      ToString (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~To_String (void);
+      virtual ~ToString (void);
     };
 
     /**
     * @class Sleep
     * @brief Sleeps for a certain amount of time
     */
-    class Sleep : public System_Call
+    class Sleep : public SystemCall
     {
     public:
       /// constructor
-      Sleep (madara::knowledge::Thread_Safe_Context & context_);
+      Sleep (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
       virtual ~Sleep (void);
@@ -615,117 +615,117 @@ namespace madara
     * @class Type
     * @brief Returns the type of a record
     */
-    class Type : public System_Call
+    class Type : public SystemCall
     {
     public:
       /// constructor
-      Type (madara::knowledge::Thread_Safe_Context & context_);
+      Type (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
       virtual ~Type (void);
     };
 
     /**
-    * @class Log_Level
+    * @class LogLevel
     * @brief Reads or sets the MADARA log level
     */
-    class Log_Level : public System_Call
+    class LogLevel : public SystemCall
     {
     public:
       /// constructor
-      Log_Level (madara::knowledge::Thread_Safe_Context & context_);
+      LogLevel (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Log_Level (void);
+      virtual ~LogLevel (void);
     };
 
     /**
-    * @class Get_Clock
+    * @class GetClock
     * @brief Returns the clock of the argument or the system clock
     */
-    class Get_Clock : public System_Call
+    class GetClock : public SystemCall
     {
     public:
       /// constructor
-      Get_Clock (madara::knowledge::Thread_Safe_Context & context_);
+      GetClock (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Get_Clock (void);
+      virtual ~GetClock (void);
     };
 
     /**
-    * @class Get_Time
+    * @class GetTime
     * @brief Returns the wall clock time
     */
-    class Get_Time : public System_Call
+    class GetTime : public SystemCall
     {
     public:
       /// constructor
-      Get_Time (madara::knowledge::Thread_Safe_Context & context_);
+      GetTime (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Get_Time (void);
+      virtual ~GetTime (void);
     };
 
     /**
-    * @class Set_Clock
+    * @class SetClock
     * @brief Sets the system or a variable clock
     */
-    class Set_Clock : public System_Call
+    class SetClock : public SystemCall
     {
     public:
       /// constructor
-      Set_Clock (madara::knowledge::Thread_Safe_Context & context_);
+      SetClock (madara::knowledge::ThreadSafeContext & context_);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       /// destructor
-      virtual ~Set_Clock (void);
+      virtual ~SetClock (void);
     };
 
 
     /**
-    * @class Unary_Operator
+    * @class UnaryOperator
     * @brief Abstract base class for all parse tree node operators
     * @see   Add, Subtract, Multiply, Divide
     */
-    class Unary_Operator : public Symbol
+    class UnaryOperator : public Symbol
     {
     public:
       /// constructor
-      Unary_Operator (logger::Logger & logger,
+      UnaryOperator (logger::Logger & logger,
         Symbol * right, int precedence_ = 1);
 
       /// destructor
-      virtual ~Unary_Operator (void);
+      virtual ~UnaryOperator (void);
     };
 
     /**
@@ -738,7 +738,7 @@ namespace madara
     public:
       /// constructors
       Number (logger::Logger & logger, std::string input);
-      Number (logger::Logger & logger, madara::Knowledge_Record::Integer input);
+      Number (logger::Logger & logger, madara::KnowledgeRecord::Integer input);
       Number (logger::Logger & logger, double input);
 
       /// destructor
@@ -748,11 +748,11 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node *build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode *build (void);
       //   private:
       /// contains the value of the leaf node
-      madara::Knowledge_Record item_;
+      madara::KnowledgeRecord item_;
     };
 
     /**
@@ -765,7 +765,7 @@ namespace madara
     public:
       /// constructors
       Variable (const std::string & key,
-        madara::knowledge::Thread_Safe_Context & context);
+        madara::knowledge::ThreadSafeContext & context);
 
       /// destructor
       virtual ~Variable (void);
@@ -774,201 +774,201 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
       //private:
       /// Key for retrieving value of this variable.
       const std::string key_;
 
       /// Context for variables
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
     };
 
-    class Array_Ref : public Symbol
+    class ArrayRef : public Symbol
     {
     public:
       /// constructors
-      Array_Ref (const std::string & key, Symbol * index,
-        madara::knowledge::Thread_Safe_Context & context);
+      ArrayRef (const std::string & key, Symbol * index,
+        madara::knowledge::ThreadSafeContext & context);
 
       /// destructor
-      virtual ~Array_Ref (void);
+      virtual ~ArrayRef (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
       //private:
       /// Key for retrieving value of this variable.
       const std::string key_;
 
       /// Context for variables
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
       Symbol * index_;
     };
 
     /**
-    * @class Variable_Decrement
+    * @class VariableDecrement
     * @brief Decrement a variable by a certain amount
     */
 
-    class Variable_Decrement : public Operator
+    class VariableDecrement : public Operator
     {
     public:
       /// constructors
-      Variable_Decrement (Symbol * lhs,
-        madara::Knowledge_Record value,
+      VariableDecrement (Symbol * lhs,
+        madara::KnowledgeRecord value,
         Symbol * rhs,
-        madara::knowledge::Thread_Safe_Context & context);
+        madara::knowledge::ThreadSafeContext & context);
 
       /// destructor
-      virtual ~Variable_Decrement (void);
+      virtual ~VariableDecrement (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node *build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode *build (void);
       //private:
       Symbol * left_;
 
       /// value can be faster than rhs_, so use it if possible
-      madara::Knowledge_Record value_;
+      madara::KnowledgeRecord value_;
 
       /// Context for variables
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
     };
 
     /**
-    * @class Variable_Divide
+    * @class VariableDivide
     * @brief Divide a variable by a certain amount
     */
 
-    class Variable_Divide : public Operator
+    class VariableDivide : public Operator
     {
     public:
       /// constructors
-      Variable_Divide (Symbol * lhs,
-        madara::Knowledge_Record value,
+      VariableDivide (Symbol * lhs,
+        madara::KnowledgeRecord value,
         Symbol * rhs,
-        madara::knowledge::Thread_Safe_Context & context);
+        madara::knowledge::ThreadSafeContext & context);
 
       /// destructor
-      virtual ~Variable_Divide (void);
+      virtual ~VariableDivide (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node *build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode *build (void);
       //private:
       Symbol * left_;
 
       /// value can be faster than rhs_, so use it if possible
-      madara::Knowledge_Record value_;
+      madara::KnowledgeRecord value_;
 
       /// Context for variables
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
     };
 
     /**
-    * @class Variable_Increment
+    * @class VariableIncrement
     * @brief Increment a variable by a certain amount
     */
 
-    class Variable_Increment : public Operator
+    class VariableIncrement : public Operator
     {
     public:
       /// constructors
-      Variable_Increment (Symbol * lhs,
-        madara::Knowledge_Record value,
+      VariableIncrement (Symbol * lhs,
+        madara::KnowledgeRecord value,
         Symbol * rhs,
-        madara::knowledge::Thread_Safe_Context & context);
+        madara::knowledge::ThreadSafeContext & context);
 
       /// destructor
-      virtual ~Variable_Increment (void);
+      virtual ~VariableIncrement (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node *build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode *build (void);
       //private:
       Symbol * left_;
 
       /// value can be faster than rhs_, so use it if possible
-      madara::Knowledge_Record value_;
+      madara::KnowledgeRecord value_;
 
       /// Context for variables
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
     };
 
     /**
-    * @class Variable_Multiply
+    * @class VariableMultiply
     * @brief Multiply a variable by a certain amount
     */
 
-    class Variable_Multiply : public Operator
+    class VariableMultiply : public Operator
     {
     public:
       /// constructors
-      Variable_Multiply (Symbol * lhs,
-        madara::Knowledge_Record value,
+      VariableMultiply (Symbol * lhs,
+        madara::KnowledgeRecord value,
         Symbol * rhs,
-        madara::knowledge::Thread_Safe_Context & context);
+        madara::knowledge::ThreadSafeContext & context);
 
       /// destructor
-      virtual ~Variable_Multiply (void);
+      virtual ~VariableMultiply (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
       //private:
       Symbol * left_;
 
       /// value can be faster than rhs_, so use it if possible
-      madara::Knowledge_Record value_;
+      madara::KnowledgeRecord value_;
 
       /// Context for variables
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
     };
 
     /**
-    * @class Variable_Compare
+    * @class VariableCompare
     * @brief Increment a variable by a certain amount
     */
 
-    class Variable_Compare : public Symbol
+    class VariableCompare : public Symbol
     {
     public:
       /// constructors
-      Variable_Compare (Symbol * lhs,
-        madara::Knowledge_Record value,
+      VariableCompare (Symbol * lhs,
+        madara::KnowledgeRecord value,
         Symbol * rhs, int compare_type,
-        madara::knowledge::Thread_Safe_Context & context);
+        madara::knowledge::ThreadSafeContext & context);
 
       /// destructor
-      virtual ~Variable_Compare (void);
+      virtual ~VariableCompare (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node *build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode *build (void);
       //private:
       Symbol * left_;
 
       /// value can be faster than rhs_, so use it if possible
-      madara::Knowledge_Record value_;
+      madara::KnowledgeRecord value_;
 
       /// rhs is used for complex rhs types (not a simple number)
       Symbol * rhs_;
@@ -977,7 +977,7 @@ namespace madara
       int compare_type_;
 
       /// Context for variables
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
     };
 
 
@@ -991,7 +991,7 @@ namespace madara
     public:
       /// constructors
       List (
-        madara::knowledge::Thread_Safe_Context & context);
+        madara::knowledge::ThreadSafeContext & context);
 
       /// destructor
       virtual ~List (void);
@@ -1000,12 +1000,12 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     private:
 
       /// Context for variables
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
     };
 
     /**
@@ -1026,8 +1026,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1035,7 +1035,7 @@ namespace madara
     * @brief Addition node of the parse tree
     */
 
-    class Add : public Ternary_Operator
+    class Add : public TernaryOperator
     {
     public:
       /// constructor
@@ -1047,8 +1047,8 @@ namespace madara
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1056,7 +1056,7 @@ namespace madara
     * @brief Logically and node of the parse tree
     */
 
-    class And : public Ternary_Operator
+    class And : public TernaryOperator
     {
     public:
       /// constructor
@@ -1069,8 +1069,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1078,7 +1078,7 @@ namespace madara
     * @brief Logically or node of the parse tree
     */
 
-    class Or : public Ternary_Operator
+    class Or : public TernaryOperator
     {
     public:
       /// constructor
@@ -1091,8 +1091,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1100,7 +1100,7 @@ namespace madara
     * @brief Evaluates both left and right children, regardless of values
     */
 
-    class Both : public Ternary_Operator
+    class Both : public TernaryOperator
     {
     public:
       /// constructor
@@ -1113,29 +1113,29 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
-    * @class Return_Right
+    * @class ReturnRight
     * @brief Evaluates both left and right children and returns right value
     */
 
-    class Return_Right : public Ternary_Operator
+    class ReturnRight : public TernaryOperator
     {
     public:
       /// constructor
-      Return_Right (logger::Logger & logger);
+      ReturnRight (logger::Logger & logger);
 
       /// destructor
-      virtual ~Return_Right (void);
+      virtual ~ReturnRight (void);
 
       /// returns the precedence level
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1143,7 +1143,7 @@ namespace madara
     * @brief Evaluates both left and right children, regardless of values
     */
 
-    class Sequence : public Ternary_Operator
+    class Sequence : public TernaryOperator
     {
     public:
       /// constructor
@@ -1156,8 +1156,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1178,8 +1178,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1200,8 +1200,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1222,8 +1222,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1244,96 +1244,96 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
-    * @class Greater_Than_Equal
+    * @class GreaterThanEqual
     * @brief Check and left and right arguments for greater than or equal to
     */
 
-    class Greater_Than_Equal : public Operator
+    class GreaterThanEqual : public Operator
     {
     public:
       /// constructor
-      Greater_Than_Equal (logger::Logger & logger);
+      GreaterThanEqual (logger::Logger & logger);
 
       /// destructor
-      virtual ~Greater_Than_Equal (void);
+      virtual ~GreaterThanEqual (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
-    * @class Greater_Than
+    * @class GreaterThan
     * @brief Check and left and right arguments for greater than
     */
 
-    class Greater_Than : public Operator
+    class GreaterThan : public Operator
     {
     public:
       /// constructor
-      Greater_Than (logger::Logger & logger);
+      GreaterThan (logger::Logger & logger);
 
       /// destructor
-      virtual ~Greater_Than (void);
+      virtual ~GreaterThan (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
-    * @class Less_Than_Equal
+    * @class LessThanEqual
     * @brief Check and left and right arguments for less than or equal to
     */
 
-    class Less_Than_Equal : public Operator
+    class LessThanEqual : public Operator
     {
     public:
       /// constructor
-      Less_Than_Equal (logger::Logger & logger);
+      LessThanEqual (logger::Logger & logger);
 
       /// destructor
-      virtual ~Less_Than_Equal (void);
+      virtual ~LessThanEqual (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
-    * @class Less_Than
+    * @class LessThan
     * @brief Check and left and right arguments for less than
     */
 
-    class Less_Than : public Operator
+    class LessThan : public Operator
     {
     public:
       /// constructor
-      Less_Than (logger::Logger & logger);
+      LessThan (logger::Logger & logger);
 
       /// destructor
-      virtual ~Less_Than (void);
+      virtual ~LessThan (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1341,12 +1341,12 @@ namespace madara
     * @brief Function node of the parse tree
     */
 
-    class Function : public Ternary_Operator
+    class Function : public TernaryOperator
     {
     public:
       /// constructor
       Function (const std::string & name,
-        madara::knowledge::Thread_Safe_Context & context);
+        madara::knowledge::ThreadSafeContext & context);
 
       /// destructor
       virtual ~Function (void);
@@ -1355,11 +1355,11 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
 
       std::string name_;
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
     };
 
     /**
@@ -1367,54 +1367,54 @@ namespace madara
     * @brief Iterative looping node of the parse tree
     */
 
-    class Const_Array : public Ternary_Operator
+    class ConstArray : public TernaryOperator
     {
     public:
       /// constructor
-      Const_Array (
-        madara::knowledge::Thread_Safe_Context & context);
+      ConstArray (
+        madara::knowledge::ThreadSafeContext & context);
 
       /// destructor
-      virtual ~Const_Array (void);
+      virtual ~ConstArray (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node *build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode *build (void);
 
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
     };
 
     /**
-    * @class For_Loop
+    * @class ForLoop
     * @brief Iterative looping node of the parse tree
     */
 
-    class For_Loop : public Unary_Operator
+    class ForLoop : public UnaryOperator
     {
     public:
       /// constructor
-      For_Loop (Symbol * precondition, Symbol * condition,
+      ForLoop (Symbol * precondition, Symbol * condition,
         Symbol * postcondition, Symbol * body,
-        madara::knowledge::Thread_Safe_Context & context);
+        madara::knowledge::ThreadSafeContext & context);
 
       /// destructor
-      virtual ~For_Loop (void);
+      virtual ~ForLoop (void);
 
       /// returns the precedence level
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node *build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode *build (void);
 
       Symbol * precondition_;
       Symbol * condition_;
       Symbol * postcondition_;
       Symbol * body_;
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
     };
 
     /**
@@ -1422,7 +1422,7 @@ namespace madara
     * @brief Negate node of the parse tree
     */
 
-    class Negate : public Unary_Operator
+    class Negate : public UnaryOperator
     {
     public:
       /// constructor
@@ -1435,8 +1435,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1444,7 +1444,7 @@ namespace madara
     * @brief Postdecrement node of the parse tree
     */
 
-    class Postdecrement : public Unary_Operator
+    class Postdecrement : public UnaryOperator
     {
     public:
       /// constructor
@@ -1457,8 +1457,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1466,7 +1466,7 @@ namespace madara
     * @brief Postincrement node of the parse tree
     */
 
-    class Postincrement : public Unary_Operator
+    class Postincrement : public UnaryOperator
     {
     public:
       /// constructor
@@ -1479,8 +1479,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1488,7 +1488,7 @@ namespace madara
     * @brief Predecrement node of the parse tree
     */
 
-    class Predecrement : public Unary_Operator
+    class Predecrement : public UnaryOperator
     {
     public:
       /// constructor
@@ -1501,8 +1501,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1510,7 +1510,7 @@ namespace madara
     * @brief Preincrement node of the parse tree
     */
 
-    class Preincrement : public Unary_Operator
+    class Preincrement : public UnaryOperator
     {
     public:
       /// constructor
@@ -1523,8 +1523,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1532,7 +1532,7 @@ namespace madara
     * @brief Logically not the right node
     */
 
-    class Not : public Unary_Operator
+    class Not : public UnaryOperator
     {
     public:
       /// constructor
@@ -1545,8 +1545,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1554,7 +1554,7 @@ namespace madara
     * @brief Multiplication node of the parse tree
     */
 
-    class Multiply : public Ternary_Operator
+    class Multiply : public TernaryOperator
     {
     public:
       /// constructor
@@ -1567,8 +1567,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1589,8 +1589,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
     /**
@@ -1611,8 +1611,8 @@ namespace madara
       //virtual int precedence (void);
       virtual int add_precedence (int accumulated_precedence);
 
-      /// builds an equivalent Expression_Tree node
-      virtual Component_Node * build (void);
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
     };
 
   }
@@ -1647,19 +1647,19 @@ madara::expression::Operator::~Operator (void)
 }
 
 // constructor
-madara::expression::Ternary_Operator::Ternary_Operator (logger::Logger & logger,
+madara::expression::TernaryOperator::TernaryOperator (logger::Logger & logger,
   Symbol * left, Symbol * right, int precedence)
   : Operator (logger, left, right, precedence)
 {
 }
 
 // destructor
-madara::expression::Ternary_Operator::~Ternary_Operator (void)
+madara::expression::TernaryOperator::~TernaryOperator (void)
 {
 }
 
 // constructor
-madara::expression::Unary_Operator::Unary_Operator (
+madara::expression::UnaryOperator::UnaryOperator (
   logger::Logger & logger,
   madara::expression::Symbol * right, int precedence)
   : madara::expression::Symbol (logger, 0, right, precedence)
@@ -1667,13 +1667,13 @@ madara::expression::Unary_Operator::Unary_Operator (
 }
 
 // destructor
-madara::expression::Unary_Operator::~Unary_Operator (void)
+madara::expression::UnaryOperator::~UnaryOperator (void)
 {
 }
 
 // constructor
 madara::expression::Number::Number (logger::Logger & logger,
-  madara::Knowledge_Record::Integer input)
+  madara::KnowledgeRecord::Integer input)
   : Symbol (logger, 0, 0, NUMBER_PRECEDENCE)
 {
   item_.set_value (input);
@@ -1707,16 +1707,16 @@ madara::expression::Number::add_precedence (int precedence)
   return this->precedence_ = NUMBER_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Number::build (void)
 {
-  return new Leaf_Node (*(this->logger_), item_);
+  return new LeafNode (*(this->logger_), item_);
 }
 
 // constructor
 madara::expression::Negate::Negate (logger::Logger & logger)
-  : Unary_Operator (logger, 0, NEGATE_PRECEDENCE)
+  : UnaryOperator (logger, 0, NEGATE_PRECEDENCE)
 {
 }
 
@@ -1732,8 +1732,8 @@ madara::expression::Negate::add_precedence (int precedence)
   return this->precedence_ = NEGATE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Negate::build ()
 {
   // check for cascading nots
@@ -1745,17 +1745,17 @@ madara::expression::Negate::build ()
     ++i, right = next->right_, next = dynamic_cast <Negate *> (next->right_));
 
     if (i % 2 == 1)
-      return new Composite_Negate_Node (*(this->logger_), right->build ());
+      return new CompositeNegateNode (*(this->logger_), right->build ());
     else
-      return new Composite_Negate_Node (*(this->logger_),
-      new Composite_Negate_Node (*(this->logger_), right->build ()));
+      return new CompositeNegateNode (*(this->logger_),
+      new CompositeNegateNode (*(this->logger_), right->build ()));
 }
 
 // constructor
 madara::expression::Function::Function (
   const std::string & name,
-  madara::knowledge::Thread_Safe_Context & context)
-  : Ternary_Operator (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE), name_ (name), context_ (context)
+  madara::knowledge::ThreadSafeContext & context)
+  : TernaryOperator (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE), name_ (name), context_ (context)
 {
 }
 
@@ -1771,40 +1771,40 @@ madara::expression::Function::add_precedence (int precedence)
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Function::build ()
 {
-  return new Composite_Function_Node (name_, context_, nodes_);
+  return new CompositeFunctionNode (name_, context_, nodes_);
 }
 
 
 
 // constructor
-madara::expression::Const_Array::Const_Array (
-  madara::knowledge::Thread_Safe_Context & context)
-: Ternary_Operator (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
+madara::expression::ConstArray::ConstArray (
+  madara::knowledge::ThreadSafeContext & context)
+: TernaryOperator (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
     context_ (context)
 {
 }
 
 // destructor
-madara::expression::Const_Array::~Const_Array (void)
+madara::expression::ConstArray::~ConstArray (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Const_Array::add_precedence (int precedence)
+madara::expression::ConstArray::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Const_Array::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ConstArray::build ()
 {
-  return new Composite_Const_Array (*(this->logger_), nodes_);
+  return new CompositeConstArray (*(this->logger_), nodes_);
 }
 
 
@@ -1812,52 +1812,52 @@ madara::expression::Const_Array::build ()
 
 
 // constructor
-madara::expression::System_Call::System_Call (
-  madara::knowledge::Thread_Safe_Context & context)
-: Ternary_Operator (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
+madara::expression::SystemCall::SystemCall (
+  madara::knowledge::ThreadSafeContext & context)
+: TernaryOperator (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
   context_ (context)
 {
 }
 
 // destructor
-madara::expression::System_Call::~System_Call (void)
+madara::expression::SystemCall::~SystemCall (void)
 {
 }
 
 
 
 // constructor
-madara::expression::Delete_Variable::Delete_Variable (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::DeleteVariable::DeleteVariable (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Delete_Variable::~Delete_Variable (void)
+madara::expression::DeleteVariable::~DeleteVariable (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Delete_Variable::add_precedence (int precedence)
+madara::expression::DeleteVariable::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Delete_Variable::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::DeleteVariable::build ()
 {
-  return new System_Call_Delete_Variable (context_, nodes_);
+  return new SystemCallDeleteVariable (context_, nodes_);
 }
 
 
 
 // constructor
 madara::expression::Eval::Eval (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
@@ -1873,67 +1873,67 @@ madara::expression::Eval::add_precedence (int precedence)
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Eval::build ()
 {
-  return new System_Call_Eval (context_, nodes_);
+  return new SystemCallEval (context_, nodes_);
 }
 
 
 
 // constructor
-madara::expression::Expand_Env::Expand_Env (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::ExpandEnv::ExpandEnv (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Expand_Env::~Expand_Env (void)
+madara::expression::ExpandEnv::~ExpandEnv (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Expand_Env::add_precedence (int precedence)
+madara::expression::ExpandEnv::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Expand_Env::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ExpandEnv::build ()
 {
-  return new System_Call_Expand_Env (context_, nodes_);
+  return new SystemCallExpandEnv (context_, nodes_);
 }
 
 
 
 // constructor
-madara::expression::Expand_Statement::Expand_Statement (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::ExpandStatement::ExpandStatement (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Expand_Statement::~Expand_Statement (void)
+madara::expression::ExpandStatement::~ExpandStatement (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Expand_Statement::add_precedence (int precedence)
+madara::expression::ExpandStatement::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Expand_Statement::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ExpandStatement::build ()
 {
-  return new System_Call_Expand_Statement (context_, nodes_);
+  return new SystemCallExpandStatement (context_, nodes_);
 }
 
 
@@ -1941,8 +1941,8 @@ madara::expression::Expand_Statement::build ()
 
 // constructor
 madara::expression::Fragment::Fragment (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
@@ -1958,157 +1958,157 @@ madara::expression::Fragment::add_precedence (int precedence)
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Fragment::build ()
 {
-  return new System_Call_Fragment (context_, nodes_);
+  return new SystemCallFragment (context_, nodes_);
 }
 
 
 
 // constructor
-madara::expression::Log_Level::Log_Level (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::LogLevel::LogLevel (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Log_Level::~Log_Level (void)
+madara::expression::LogLevel::~LogLevel (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Log_Level::add_precedence (int precedence)
+madara::expression::LogLevel::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Log_Level::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::LogLevel::build ()
 {
-  return new System_Call_Log_Level (context_, nodes_);
+  return new SystemCallLogLevel (context_, nodes_);
 }
 
 
 
 
 // constructor
-madara::expression::Get_Clock::Get_Clock (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::GetClock::GetClock (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Get_Clock::~Get_Clock (void)
+madara::expression::GetClock::~GetClock (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Get_Clock::add_precedence (int precedence)
+madara::expression::GetClock::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Get_Clock::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::GetClock::build ()
 {
-  return new System_Call_Get_Clock (context_, nodes_);
+  return new SystemCallGetClock (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::Get_Time::Get_Time (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::GetTime::GetTime (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Get_Time::~Get_Time (void)
+madara::expression::GetTime::~GetTime (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Get_Time::add_precedence (int precedence)
+madara::expression::GetTime::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Get_Time::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::GetTime::build ()
 {
-  return new System_Call_Get_Time (context_, nodes_);
+  return new SystemCallGetTime (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::Set_Clock::Set_Clock (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::SetClock::SetClock (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Set_Clock::~Set_Clock (void)
+madara::expression::SetClock::~SetClock (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Set_Clock::add_precedence (int precedence)
+madara::expression::SetClock::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Set_Clock::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::SetClock::build ()
 {
-  return new System_Call_Set_Clock (context_, nodes_);
+  return new SystemCallSetClock (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::Set_Precision::Set_Precision (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::SetPrecision::SetPrecision (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Set_Precision::~Set_Precision (void)
+madara::expression::SetPrecision::~SetPrecision (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Set_Precision::add_precedence (int precedence)
+madara::expression::SetPrecision::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Set_Precision::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::SetPrecision::build ()
 {
-  return new System_Call_Set_Precision (context_, nodes_);
+  return new SystemCallSetPrecision (context_, nodes_);
 }
 
 
 
 // constructor
 madara::expression::Print::Print (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
@@ -2124,155 +2124,155 @@ madara::expression::Print::add_precedence (int precedence)
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Print::build ()
 {
-  return new System_Call_Print (context_, nodes_);
+  return new SystemCallPrint (context_, nodes_);
 }
 
 
 
 // constructor
-madara::expression::Print_System_Calls::Print_System_Calls (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::PrintSystemCalls::PrintSystemCalls (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Print_System_Calls::~Print_System_Calls (void)
+madara::expression::PrintSystemCalls::~PrintSystemCalls (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Print_System_Calls::add_precedence (int precedence)
+madara::expression::PrintSystemCalls::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Print_System_Calls::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::PrintSystemCalls::build ()
 {
-  return new System_Call_Print_System_Calls (context_, nodes_);
+  return new SystemCallPrintSystemCalls (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::Rand_Double::Rand_Double (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::RandDouble::RandDouble (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Rand_Double::~Rand_Double (void)
+madara::expression::RandDouble::~RandDouble (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Rand_Double::add_precedence (int precedence)
+madara::expression::RandDouble::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Rand_Double::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::RandDouble::build ()
 {
-  return new System_Call_Rand_Double (context_, nodes_);
+  return new SystemCallRandDouble (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::Rand_Int::Rand_Int (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::RandInt::RandInt (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Rand_Int::~Rand_Int (void)
+madara::expression::RandInt::~RandInt (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Rand_Int::add_precedence (int precedence)
+madara::expression::RandInt::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Rand_Int::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::RandInt::build ()
 {
-  return new System_Call_Rand_Int (context_, nodes_);
+  return new SystemCallRandInt (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::Read_File::Read_File (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::ReadFile::ReadFile (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Read_File::~Read_File (void)
+madara::expression::ReadFile::~ReadFile (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Read_File::add_precedence (int precedence)
+madara::expression::ReadFile::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Read_File::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ReadFile::build ()
 {
-  return new System_Call_Read_File (context_, nodes_);
+  return new SystemCallReadFile (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::Write_File::Write_File (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::WriteFile::WriteFile (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::Write_File::~Write_File (void)
+madara::expression::WriteFile::~WriteFile (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Write_File::add_precedence (int precedence)
+madara::expression::WriteFile::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Write_File::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::WriteFile::build ()
 {
-  return new System_Call_Write_File (context_, nodes_);
+  return new SystemCallWriteFile (context_, nodes_);
 }
 
 
 
 // constructor
 madara::expression::Size::Size (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
@@ -2288,18 +2288,18 @@ madara::expression::Size::add_precedence (int precedence)
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Size::build ()
 {
-  return new System_Call_Size (context_, nodes_);
+  return new SystemCallSize (context_, nodes_);
 }
 
 
 // constructor
 madara::expression::Sleep::Sleep (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
@@ -2315,207 +2315,207 @@ madara::expression::Sleep::add_precedence (int precedence)
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Sleep::build ()
 {
-  return new System_Call_Sleep (context_, nodes_);
+  return new SystemCallSleep (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::To_Buffer::To_Buffer (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::ToBuffer::ToBuffer (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::To_Buffer::~To_Buffer (void)
+madara::expression::ToBuffer::~ToBuffer (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::To_Buffer::add_precedence (int precedence)
+madara::expression::ToBuffer::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::To_Buffer::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ToBuffer::build ()
 {
-  return new System_Call_To_Buffer (context_, nodes_);
+  return new SystemCallToBuffer (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::To_Double::To_Double (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::ToDouble::ToDouble (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::To_Double::~To_Double (void)
+madara::expression::ToDouble::~ToDouble (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::To_Double::add_precedence (int precedence)
+madara::expression::ToDouble::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::To_Double::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ToDouble::build ()
 {
-  return new System_Call_To_Double (context_, nodes_);
+  return new SystemCallToDouble (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::To_Doubles::To_Doubles (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::ToDoubles::ToDoubles (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::To_Doubles::~To_Doubles (void)
+madara::expression::ToDoubles::~ToDoubles (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::To_Doubles::add_precedence (int precedence)
+madara::expression::ToDoubles::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::To_Doubles::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ToDoubles::build ()
 {
-  return new System_Call_To_Doubles (context_, nodes_);
+  return new SystemCallToDoubles (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::To_Host_Dirs::To_Host_Dirs (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::ToHostDirs::ToHostDirs (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::To_Host_Dirs::~To_Host_Dirs (void)
+madara::expression::ToHostDirs::~ToHostDirs (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::To_Host_Dirs::add_precedence (int precedence)
+madara::expression::ToHostDirs::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::To_Host_Dirs::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ToHostDirs::build ()
 {
-  return new System_Call_To_Host_Dirs (context_, nodes_);
+  return new SystemCallToHostDirs (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::To_Integer::To_Integer (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::ToInteger::ToInteger (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::To_Integer::~To_Integer (void)
+madara::expression::ToInteger::~ToInteger (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::To_Integer::add_precedence (int precedence)
+madara::expression::ToInteger::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::To_Integer::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ToInteger::build ()
 {
-  return new System_Call_To_Integer (context_, nodes_);
+  return new SystemCallToInteger (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::To_Integers::To_Integers (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::ToIntegers::ToIntegers (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::To_Integers::~To_Integers (void)
+madara::expression::ToIntegers::~ToIntegers (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::To_Integers::add_precedence (int precedence)
+madara::expression::ToIntegers::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::To_Integers::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ToIntegers::build ()
 {
-  return new System_Call_To_Integers (context_, nodes_);
+  return new SystemCallToIntegers (context_, nodes_);
 }
 
 
 // constructor
-madara::expression::To_String::To_String (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+madara::expression::ToString::ToString (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
 // destructor
-madara::expression::To_String::~To_String (void)
+madara::expression::ToString::~ToString (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::To_String::add_precedence (int precedence)
+madara::expression::ToString::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::To_String::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ToString::build ()
 {
-  return new System_Call_To_String (context_, nodes_);
+  return new SystemCallToString (context_, nodes_);
 }
 
 
 // constructor
 madara::expression::Type::Type (
-  madara::knowledge::Thread_Safe_Context & context)
-  : System_Call (context)
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
 {
 }
 
@@ -2531,28 +2531,28 @@ madara::expression::Type::add_precedence (int precedence)
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Type::build ()
 {
-  return new System_Call_Type (context_, nodes_);
+  return new SystemCallType (context_, nodes_);
 }
 
 
 
 // constructor
-madara::expression::For_Loop::For_Loop (Symbol * precondition,
+madara::expression::ForLoop::ForLoop (Symbol * precondition,
   Symbol * condition, Symbol * postcondition,
   Symbol * body,
-  madara::knowledge::Thread_Safe_Context & context)
-: Unary_Operator (context.get_logger (), 0, VARIABLE_PRECEDENCE),
+  madara::knowledge::ThreadSafeContext & context)
+: UnaryOperator (context.get_logger (), 0, VARIABLE_PRECEDENCE),
   precondition_ (precondition), condition_ (condition),
   postcondition_ (postcondition), body_ (body), context_ (context)  
 {
 }
 
 // destructor
-madara::expression::For_Loop::~For_Loop (void)
+madara::expression::ForLoop::~ForLoop (void)
 {
   delete precondition_;
   delete postcondition_;
@@ -2562,21 +2562,21 @@ madara::expression::For_Loop::~For_Loop (void)
 
 // returns the precedence level
 int
-madara::expression::For_Loop::add_precedence (int precedence)
+madara::expression::ForLoop::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::For_Loop::build ()
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ForLoop::build ()
 {
   if (body_)
-    return new Composite_For_Loop (
+    return new CompositeForLoop (
       precondition_->build (), condition_->build (),
       postcondition_->build (), body_->build (), context_);
   else
-    return new Composite_Assignment_Node (
+    return new CompositeAssignmentNode (
       context_.get_logger (), precondition_->left_->build (),
       condition_->right_->build ());
 }
@@ -2584,7 +2584,7 @@ madara::expression::For_Loop::build ()
 // constructor
 madara::expression::Postdecrement::Postdecrement (
   logger::Logger & logger)
-: Unary_Operator (logger, 0, NEGATE_PRECEDENCE)
+: UnaryOperator (logger, 0, NEGATE_PRECEDENCE)
 {
 }
 
@@ -2600,17 +2600,17 @@ madara::expression::Postdecrement::add_precedence (int precedence)
   return this->precedence_ = NEGATE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Postdecrement::build ()
 {
-  return new Composite_Postdecrement_Node (
+  return new CompositePostdecrementNode (
     *(this->logger_), right_->build ());
 }
 
 // constructor
 madara::expression::Postincrement::Postincrement (logger::Logger & logger)
-: Unary_Operator (logger, 0, NEGATE_PRECEDENCE)
+: UnaryOperator (logger, 0, NEGATE_PRECEDENCE)
 {
 }
 
@@ -2626,17 +2626,17 @@ madara::expression::Postincrement::add_precedence (int precedence)
   return this->precedence_ = NEGATE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Postincrement::build ()
 {
-  return new Composite_Postincrement_Node (
+  return new CompositePostincrementNode (
     *(this->logger_), right_->build ());
 }
 
 // constructor
 madara::expression::Predecrement::Predecrement (logger::Logger & logger)
-: Unary_Operator (logger, 0, NEGATE_PRECEDENCE)
+: UnaryOperator (logger, 0, NEGATE_PRECEDENCE)
 {
 }
 
@@ -2652,16 +2652,16 @@ madara::expression::Predecrement::add_precedence (int precedence)
   return this->precedence_ = NEGATE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Predecrement::build ()
 {
-  return new Composite_Predecrement_Node (*(this->logger_), right_->build ());
+  return new CompositePredecrementNode (*(this->logger_), right_->build ());
 }
 
 // constructor
 madara::expression::Preincrement::Preincrement (logger::Logger & logger)
-  : Unary_Operator (logger, 0, NEGATE_PRECEDENCE)
+  : UnaryOperator (logger, 0, NEGATE_PRECEDENCE)
 {
 }
 
@@ -2677,16 +2677,16 @@ madara::expression::Preincrement::add_precedence (int precedence)
   return this->precedence_ = NEGATE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Preincrement::build ()
 {
-  return new Composite_Preincrement_Node (*(this->logger_), right_->build ());
+  return new CompositePreincrementNode (*(this->logger_), right_->build ());
 }
 
 // constructor
 madara::expression::Not::Not (logger::Logger & logger)
-  : Unary_Operator (logger, 0, NEGATE_PRECEDENCE)
+  : UnaryOperator (logger, 0, NEGATE_PRECEDENCE)
 {
 }
 
@@ -2702,8 +2702,8 @@ madara::expression::Not::add_precedence (int precedence)
   return this->precedence_ = NEGATE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Not::build ()
 {
   // check for cascading nots
@@ -2715,15 +2715,15 @@ madara::expression::Not::build ()
     ++i, right = next->right_, next = dynamic_cast <Not *> (next->right_));
 
     if (i % 2 == 1)
-      return new Composite_Not_Node (*(this->logger_), right->build ());
+      return new CompositeNotNode (*(this->logger_), right->build ());
     else
-      return new Composite_Not_Node (*(this->logger_),
-      new Composite_Not_Node (*(this->logger_), right->build ()));
+      return new CompositeNotNode (*(this->logger_),
+      new CompositeNotNode (*(this->logger_), right->build ()));
 }
 
 // constructor
 madara::expression::Variable::Variable (const std::string & key,
-  madara::knowledge::Thread_Safe_Context & context)
+  madara::knowledge::ThreadSafeContext & context)
   : Symbol (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
   key_ (key), context_ (context)
 {
@@ -2741,111 +2741,111 @@ madara::expression::Variable::add_precedence (int precedence)
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Variable::build (void)
 {
-  return new Variable_Node (key_, context_);
+  return new VariableNode (key_, context_);
 }
 
 
 // constructor
-madara::expression::Array_Ref::Array_Ref (const std::string & key,
+madara::expression::ArrayRef::ArrayRef (const std::string & key,
   Symbol * index,
-  madara::knowledge::Thread_Safe_Context & context)
+  madara::knowledge::ThreadSafeContext & context)
   : Symbol (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
   key_ (key), index_ (index), context_ (context)
 {
 }
 
 // destructor
-madara::expression::Array_Ref::~Array_Ref (void)
+madara::expression::ArrayRef::~ArrayRef (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Array_Ref::add_precedence (int precedence)
+madara::expression::ArrayRef::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Array_Ref::build (void)
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ArrayRef::build (void)
 {
-  return new Composite_Array_Reference (key_, index_->build (), context_);
+  return new CompositeArrayReference (key_, index_->build (), context_);
 }
 
 
 // constructor
-madara::expression::Variable_Decrement::Variable_Decrement (
+madara::expression::VariableDecrement::VariableDecrement (
   Symbol * lhs,
-  madara::Knowledge_Record value, Symbol * rhs,
-  madara::knowledge::Thread_Safe_Context & context)
+  madara::KnowledgeRecord value, Symbol * rhs,
+  madara::knowledge::ThreadSafeContext & context)
   : Operator (context.get_logger (), 0, rhs, ASSIGNMENT_PRECEDENCE), left_ (lhs), value_ (value),
   context_ (context)
 {
 }
 
 // destructor
-madara::expression::Variable_Decrement::~Variable_Decrement (void)
+madara::expression::VariableDecrement::~VariableDecrement (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Variable_Decrement::add_precedence (int precedence)
+madara::expression::VariableDecrement::add_precedence (int precedence)
 {
   return this->precedence_ = ASSIGNMENT_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Variable_Decrement::build (void)
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::VariableDecrement::build (void)
 {
   if (this->right_)
-    return new Variable_Decrement_Node (left_->build (), value_, this->right_->build (), context_);
+    return new VariableDecrementNode (left_->build (), value_, this->right_->build (), context_);
   else
-    return new Variable_Decrement_Node (left_->build (), value_, 0, context_);
+    return new VariableDecrementNode (left_->build (), value_, 0, context_);
 }
 
 
 // constructor
-madara::expression::Variable_Divide::Variable_Divide (Symbol * lhs,
-  Knowledge_Record value, Symbol * rhs,
-  madara::knowledge::Thread_Safe_Context & context)
+madara::expression::VariableDivide::VariableDivide (Symbol * lhs,
+  KnowledgeRecord value, Symbol * rhs,
+  madara::knowledge::ThreadSafeContext & context)
   : Operator (context.get_logger (), 0, rhs, ASSIGNMENT_PRECEDENCE), left_ (lhs), value_ (value),
   context_ (context)
 {
 }
 
 // destructor
-madara::expression::Variable_Divide::~Variable_Divide (void)
+madara::expression::VariableDivide::~VariableDivide (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Variable_Divide::add_precedence (int precedence)
+madara::expression::VariableDivide::add_precedence (int precedence)
 {
   return this->precedence_ = ASSIGNMENT_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Variable_Divide::build (void)
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::VariableDivide::build (void)
 {
   if (this->right_)
-    return new Variable_Divide_Node (left_->build (), value_, this->right_->build (), context_);
+    return new VariableDivideNode (left_->build (), value_, this->right_->build (), context_);
   else
-    return new Variable_Divide_Node (left_->build (), value_, 0, context_);
+    return new VariableDivideNode (left_->build (), value_, 0, context_);
 }
 
 // constructor
-madara::expression::Variable_Increment::Variable_Increment (Symbol * lhs,
-  madara::Knowledge_Record value, Symbol * rhs,
-  madara::knowledge::Thread_Safe_Context & context)
+madara::expression::VariableIncrement::VariableIncrement (Symbol * lhs,
+  madara::KnowledgeRecord value, Symbol * rhs,
+  madara::knowledge::ThreadSafeContext & context)
   : Operator (context.get_logger (), 0, rhs, ASSIGNMENT_PRECEDENCE),
   left_ (lhs), value_ (value),
   context_ (context)
@@ -2853,32 +2853,32 @@ madara::expression::Variable_Increment::Variable_Increment (Symbol * lhs,
 }
 
 // destructor
-madara::expression::Variable_Increment::~Variable_Increment (void)
+madara::expression::VariableIncrement::~VariableIncrement (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Variable_Increment::add_precedence (int precedence)
+madara::expression::VariableIncrement::add_precedence (int precedence)
 {
   return this->precedence_ = ASSIGNMENT_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Variable_Increment::build (void)
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::VariableIncrement::build (void)
 {
   if (this->right_)
-    return new Variable_Increment_Node (left_->build (),
+    return new VariableIncrementNode (left_->build (),
     value_, this->right_->build (), context_);
   else
-    return new Variable_Increment_Node (left_->build (), value_, 0, context_);
+    return new VariableIncrementNode (left_->build (), value_, 0, context_);
 }
 
 // constructor
-madara::expression::Variable_Multiply::Variable_Multiply (Symbol * lhs,
-  madara::Knowledge_Record value, Symbol * rhs,
-  madara::knowledge::Thread_Safe_Context & context)
+madara::expression::VariableMultiply::VariableMultiply (Symbol * lhs,
+  madara::KnowledgeRecord value, Symbol * rhs,
+  madara::knowledge::ThreadSafeContext & context)
   : Operator (context.get_logger (), 0, rhs, ASSIGNMENT_PRECEDENCE),
   left_ (lhs), value_ (value),
   context_ (context)
@@ -2886,32 +2886,32 @@ madara::expression::Variable_Multiply::Variable_Multiply (Symbol * lhs,
 }
 
 // destructor
-madara::expression::Variable_Multiply::~Variable_Multiply (void)
+madara::expression::VariableMultiply::~VariableMultiply (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Variable_Multiply::add_precedence (int precedence)
+madara::expression::VariableMultiply::add_precedence (int precedence)
 {
   return this->precedence_ = ASSIGNMENT_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Variable_Multiply::build (void)
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::VariableMultiply::build (void)
 {
   if (this->right_)
-    return new Variable_Multiply_Node (left_->build (), value_, this->right_->build (), context_);
+    return new VariableMultiplyNode (left_->build (), value_, this->right_->build (), context_);
   else
-    return new Variable_Multiply_Node (left_->build (), value_, 0, context_);
+    return new VariableMultiplyNode (left_->build (), value_, 0, context_);
 }
 
 
 // constructor
-madara::expression::Variable_Compare::Variable_Compare (Symbol * lhs,
-  madara::Knowledge_Record value, Symbol * rhs, int compare_type,
-  madara::knowledge::Thread_Safe_Context & context)
+madara::expression::VariableCompare::VariableCompare (Symbol * lhs,
+  madara::KnowledgeRecord value, Symbol * rhs, int compare_type,
+  madara::knowledge::ThreadSafeContext & context)
   : Symbol (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
   left_ (lhs), value_ (value), rhs_ (rhs),
   compare_type_ (compare_type), context_ (context)
@@ -2919,26 +2919,26 @@ madara::expression::Variable_Compare::Variable_Compare (Symbol * lhs,
 }
 
 // destructor
-madara::expression::Variable_Compare::~Variable_Compare (void)
+madara::expression::VariableCompare::~VariableCompare (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Variable_Compare::add_precedence (int precedence)
+madara::expression::VariableCompare::add_precedence (int precedence)
 {
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Variable_Compare::build (void)
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::VariableCompare::build (void)
 {
   if (rhs_)
-    return new Variable_Compare_Node (left_->build (), value_, compare_type_,
+    return new VariableCompareNode (left_->build (), value_, compare_type_,
     rhs_->build (), context_);
   else
-    return new Variable_Compare_Node (left_->build (), value_, compare_type_,
+    return new VariableCompareNode (left_->build (), value_, compare_type_,
     0, context_);
 }
 
@@ -2946,7 +2946,7 @@ madara::expression::Variable_Compare::build (void)
 
 // constructor
 madara::expression::List::List (
-  madara::knowledge::Thread_Safe_Context & context)
+  madara::knowledge::ThreadSafeContext & context)
   : Symbol (context_.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
   context_ (context)
 {
@@ -2964,16 +2964,16 @@ madara::expression::List::add_precedence (int precedence)
   return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::List::build (void)
 {
-  return new List_Node (context_);
+  return new ListNode (context_);
 }
 
 // constructor
 madara::expression::Add::Add (logger::Logger & logger)
-  : Ternary_Operator (logger, 0, 0, ADD_PRECEDENCE)
+  : TernaryOperator (logger, 0, 0, ADD_PRECEDENCE)
 {
 }
 
@@ -2989,8 +2989,8 @@ madara::expression::Add::add_precedence (int precedence)
   return this->precedence_ = ADD_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Add::build (void)
 {
   if (left_ && right_)
@@ -3029,7 +3029,7 @@ madara::expression::Add::build (void)
     }
     left_ = 0;
 
-    return new Composite_Add_Node (*(this->logger_), nodes_);
+    return new CompositeAddNode (*(this->logger_), nodes_);
   }
   else if (left_)
     // all we have is a valid left child, so there is no reason to build
@@ -3042,14 +3042,14 @@ madara::expression::Add::build (void)
   else
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
-    return new Leaf_Node (*(this->logger_),
-    (madara::Knowledge_Record::Integer)0);
+    return new LeafNode (*(this->logger_),
+    (madara::KnowledgeRecord::Integer)0);
 }
 
 
 // constructor
 madara::expression::And::And (logger::Logger & logger)
-  : Ternary_Operator (logger, 0, 0, LOGICAL_PRECEDENCE)
+  : TernaryOperator (logger, 0, 0, LOGICAL_PRECEDENCE)
 {
 }
 
@@ -3065,8 +3065,8 @@ madara::expression::And::add_precedence (int precedence)
   return this->precedence_ = LOGICAL_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::And::build (void)
 {
   if (left_ && right_)
@@ -3105,7 +3105,7 @@ madara::expression::And::build (void)
     }
     left_ = 0;
 
-    return new Composite_And_Node (*(this->logger_), nodes_);
+    return new CompositeAndNode (*(this->logger_), nodes_);
   }
   else if (left_)
     // all we have is a valid left child, so there is no reason to build
@@ -3118,12 +3118,12 @@ madara::expression::And::build (void)
   else
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
-    return new Leaf_Node (*(this->logger_), (madara::Knowledge_Record::Integer)0);
+    return new LeafNode (*(this->logger_), (madara::KnowledgeRecord::Integer)0);
 }
 
 // constructor
 madara::expression::Or::Or (logger::Logger & logger)
-  : Ternary_Operator (logger, 0, 0, LOGICAL_PRECEDENCE)
+  : TernaryOperator (logger, 0, 0, LOGICAL_PRECEDENCE)
 {
 }
 
@@ -3141,8 +3141,8 @@ madara::expression::Or::add_precedence (int precedence)
 
 
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Or::build (void)
 {
   if (left_ && right_)
@@ -3181,7 +3181,7 @@ madara::expression::Or::build (void)
     }
     left_ = 0;
 
-    return new Composite_Or_Node (*(this->logger_), nodes_);
+    return new CompositeOrNode (*(this->logger_), nodes_);
   }
   else if (left_)
     // all we have is a valid left child, so there is no reason to build
@@ -3194,14 +3194,14 @@ madara::expression::Or::build (void)
   else
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
-    return new Leaf_Node (*(this->logger_),
-    (madara::Knowledge_Record::Integer)0);
+    return new LeafNode (*(this->logger_),
+    (madara::KnowledgeRecord::Integer)0);
 }
 
 
 // constructor
 madara::expression::Both::Both (logger::Logger & logger)
-  : Ternary_Operator (logger, 0, 0, BOTH_PRECEDENCE)
+  : TernaryOperator (logger, 0, 0, BOTH_PRECEDENCE)
 {
 }
 
@@ -3217,8 +3217,8 @@ madara::expression::Both::add_precedence (int precedence)
   return this->precedence_ = BOTH_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Both::build (void)
 {
   // Since users can say something like ";;;;;;;;", it is very possible
@@ -3289,7 +3289,7 @@ madara::expression::Both::build (void)
     }
     right_ = 0;
 
-    return new Composite_Both_Node (*(this->logger_), nodes_);
+    return new CompositeBothNode (*(this->logger_), nodes_);
   }
   else if (left_)
     // all we have is a valid left child, so there is no reason to build
@@ -3302,32 +3302,32 @@ madara::expression::Both::build (void)
   else
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
-    return new Leaf_Node (*(this->logger_),
-    (madara::Knowledge_Record::Integer)0);
+    return new LeafNode (*(this->logger_),
+    (madara::KnowledgeRecord::Integer)0);
 }
 
 
 // constructor
-madara::expression::Return_Right::Return_Right (logger::Logger & logger)
-  : Ternary_Operator (logger, 0, 0, BOTH_PRECEDENCE)
+madara::expression::ReturnRight::ReturnRight (logger::Logger & logger)
+  : TernaryOperator (logger, 0, 0, BOTH_PRECEDENCE)
 {
 }
 
 // destructor
-madara::expression::Return_Right::~Return_Right (void)
+madara::expression::ReturnRight::~ReturnRight (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Return_Right::add_precedence (int precedence)
+madara::expression::ReturnRight::add_precedence (int precedence)
 {
   return this->precedence_ = BOTH_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Return_Right::build (void)
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ReturnRight::build (void)
 {
   // Since users can say something like ";;;;;;;;", it is very possible
   // that a both operation contains no valid children. So, we need
@@ -3335,7 +3335,7 @@ madara::expression::Return_Right::build (void)
   if (left_ && right_)
   {
     // check for cascading max
-    Return_Right * next = dynamic_cast <Return_Right *> (left_);
+    ReturnRight * next = dynamic_cast <ReturnRight *> (left_);
     Symbol * left = left_;
 
     // push the right onto the deque
@@ -3343,7 +3343,7 @@ madara::expression::Return_Right::build (void)
     //delete right_;
     //right_ = 0;
 
-    for (; next; next = dynamic_cast <Return_Right *> (left))
+    for (; next; next = dynamic_cast <ReturnRight *> (left))
     {
       // we have a chained max node. Move the left into our nodes list
       if (next->right_)
@@ -3369,10 +3369,10 @@ madara::expression::Return_Right::build (void)
     left_ = 0;
 
 
-    next = dynamic_cast <Return_Right *> (right_);
+    next = dynamic_cast <ReturnRight *> (right_);
     Symbol * right = right_;
 
-    for (; next; next = dynamic_cast <Return_Right *> (right))
+    for (; next; next = dynamic_cast <ReturnRight *> (right))
     {
       // we have a chained max node. Move the left into our nodes list
       if (next->left_)
@@ -3397,7 +3397,7 @@ madara::expression::Return_Right::build (void)
     }
     right_ = 0;
 
-    return new Composite_Return_Right_Node (*(this->logger_), nodes_);
+    return new CompositeReturnRightNode (*(this->logger_), nodes_);
   }
   else if (left_)
     // all we have is a valid left child, so there is no reason to build
@@ -3410,13 +3410,13 @@ madara::expression::Return_Right::build (void)
   else
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
-    return new Leaf_Node (*(this->logger_),
-    (madara::Knowledge_Record::Integer)0);
+    return new LeafNode (*(this->logger_),
+    (madara::KnowledgeRecord::Integer)0);
 }
 
 // constructor
 madara::expression::Sequence::Sequence (logger::Logger & logger)
-  : Ternary_Operator (logger, 0, 0, BOTH_PRECEDENCE)
+  : TernaryOperator (logger, 0, 0, BOTH_PRECEDENCE)
 {
 }
 
@@ -3432,8 +3432,8 @@ madara::expression::Sequence::add_precedence (int precedence)
   return this->precedence_ = BOTH_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Sequence::build (void)
 {
   // Since users can say something like ";;;;;;;;", it is very possible
@@ -3504,7 +3504,7 @@ madara::expression::Sequence::build (void)
     }
     right_ = 0;
 
-    return new Composite_Sequential_Node (*(this->logger_), nodes_);
+    return new CompositeSequentialNode (*(this->logger_), nodes_);
   }
   else if (left_)
     // all we have is a valid left child, so there is no reason to build
@@ -3517,8 +3517,8 @@ madara::expression::Sequence::build (void)
   else
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
-    return new Leaf_Node (*(this->logger_),
-    (madara::Knowledge_Record::Integer)0);
+    return new LeafNode (*(this->logger_),
+    (madara::KnowledgeRecord::Integer)0);
 }
 
 // constructor
@@ -3539,11 +3539,11 @@ madara::expression::Implies::add_precedence (int precedence)
   return this->precedence_ = IMPLIES_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Implies::build (void)
 {
-  return new Composite_Implies_Node (
+  return new CompositeImpliesNode (
     *(this->logger_), left_->build (), right_->build ());
 }
 
@@ -3566,8 +3566,8 @@ madara::expression::Assignment::add_precedence (int precedence)
   return this->precedence_ = ASSIGNMENT_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Assignment::build (void)
 {
   // because of the way post order is evaluated and the fact that we want
@@ -3575,7 +3575,7 @@ madara::expression::Assignment::build (void)
   // so the left side is built first. This looks very, very odd when printing
   // but it is the only way I know of to make this work with the order that
   // the Evaluation Visitor will visit the tree.
-  return new Composite_Assignment_Node (*(this->logger_),
+  return new CompositeAssignmentNode (*(this->logger_),
     left_->build (), right_->build ());
 }
 
@@ -3598,11 +3598,11 @@ madara::expression::Equality::add_precedence (int precedence)
   return this->precedence_ = CONDITIONAL_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Equality::build (void)
 {
-  return new Composite_Equality_Node (*(this->logger_),
+  return new CompositeEqualityNode (*(this->logger_),
     left_->build (), right_->build ());
 }
 
@@ -3624,117 +3624,117 @@ madara::expression::Inequality::add_precedence (int precedence)
   return this->precedence_ = CONDITIONAL_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Inequality::build (void)
 {
-  return new Composite_Inequality_Node (*(this->logger_),
+  return new CompositeInequalityNode (*(this->logger_),
     left_->build (), right_->build ());
 }
 
 // constructor
-madara::expression::Greater_Than_Equal::Greater_Than_Equal (
+madara::expression::GreaterThanEqual::GreaterThanEqual (
   logger::Logger & logger)
   : Operator (logger, 0, 0, CONDITIONAL_PRECEDENCE)
 {
 }
 
 // destructor
-madara::expression::Greater_Than_Equal::~Greater_Than_Equal (void)
+madara::expression::GreaterThanEqual::~GreaterThanEqual (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Greater_Than_Equal::add_precedence (int precedence)
+madara::expression::GreaterThanEqual::add_precedence (int precedence)
 {
   return this->precedence_ = CONDITIONAL_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Greater_Than_Equal::build (void)
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::GreaterThanEqual::build (void)
 {
-  return new Composite_Greater_Than_Equal_Node (
+  return new CompositeGreaterThanEqualNode (
     *(this->logger_), left_->build (), right_->build ());
 }
 
 // constructor
-madara::expression::Greater_Than::Greater_Than (logger::Logger & logger)
+madara::expression::GreaterThan::GreaterThan (logger::Logger & logger)
   : Operator (logger, 0, 0, CONDITIONAL_PRECEDENCE)
 {
 }
 
 // destructor
-madara::expression::Greater_Than::~Greater_Than (void)
+madara::expression::GreaterThan::~GreaterThan (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Greater_Than::add_precedence (int precedence)
+madara::expression::GreaterThan::add_precedence (int precedence)
 {
   return this->precedence_ = CONDITIONAL_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Greater_Than::build (void)
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::GreaterThan::build (void)
 {
-  return new Composite_Greater_Than_Node (*(this->logger_),
+  return new CompositeGreaterThanNode (*(this->logger_),
     left_->build (), right_->build ());
 }
 
 // constructor
-madara::expression::Less_Than_Equal::Less_Than_Equal (
+madara::expression::LessThanEqual::LessThanEqual (
   logger::Logger & logger)
   : Operator (logger, 0, 0, CONDITIONAL_PRECEDENCE)
 {
 }
 
 // destructor
-madara::expression::Less_Than_Equal::~Less_Than_Equal (void)
+madara::expression::LessThanEqual::~LessThanEqual (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Less_Than_Equal::add_precedence (int precedence)
+madara::expression::LessThanEqual::add_precedence (int precedence)
 {
   return this->precedence_ = CONDITIONAL_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Less_Than_Equal::build (void)
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::LessThanEqual::build (void)
 {
-  return new Composite_Less_Than_Equal_Node (*(this->logger_),
+  return new CompositeLessThanEqualNode (*(this->logger_),
     left_->build (), right_->build ());
 }
 
 // constructor
-madara::expression::Less_Than::Less_Than (logger::Logger & logger)
+madara::expression::LessThan::LessThan (logger::Logger & logger)
   : Operator (logger, 0, 0, CONDITIONAL_PRECEDENCE)
 {
 }
 
 // destructor
-madara::expression::Less_Than::~Less_Than (void)
+madara::expression::LessThan::~LessThan (void)
 {
 }
 
 // returns the precedence level
 int
-madara::expression::Less_Than::add_precedence (int precedence)
+madara::expression::LessThan::add_precedence (int precedence)
 {
   return this->precedence_ = CONDITIONAL_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
-madara::expression::Less_Than::build (void)
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::LessThan::build (void)
 {
-  return new Composite_Less_Than_Node (*(this->logger_),
+  return new CompositeLessThanNode (*(this->logger_),
     left_->build (), right_->build ());
 }
 
@@ -3757,17 +3757,17 @@ madara::expression::Subtract::add_precedence (int precedence)
   return this->precedence_ = ADD_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Subtract::build (void)
 {
-  return new Composite_Subtract_Node (*(this->logger_),
+  return new CompositeSubtractNode (*(this->logger_),
     left_->build (), right_->build ());
 }
 
 // constructor
 madara::expression::Multiply::Multiply (logger::Logger & logger)
-  : Ternary_Operator (logger, 0, 0, MULTIPLY_PRECEDENCE)
+  : TernaryOperator (logger, 0, 0, MULTIPLY_PRECEDENCE)
 {
 }
 
@@ -3783,8 +3783,8 @@ madara::expression::Multiply::add_precedence (int precedence)
   return this->precedence_ = MULTIPLY_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Multiply::build (void)
 {
   if (left_ && right_)
@@ -3802,7 +3802,7 @@ madara::expression::Multiply::build (void)
     {
       nodes_.push_back (right_->build ());
     }
-    return new Composite_Multiply_Node (*(this->logger_), nodes_);
+    return new CompositeMultiplyNode (*(this->logger_), nodes_);
   }
   else if (left_)
     // all we have is a valid left child, so there is no reason to build
@@ -3815,8 +3815,8 @@ madara::expression::Multiply::build (void)
   else
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
-    return new Leaf_Node (*(this->logger_),
-    (madara::Knowledge_Record::Integer)0);
+    return new LeafNode (*(this->logger_),
+    (madara::KnowledgeRecord::Integer)0);
 }
 
 // constructor
@@ -3837,11 +3837,11 @@ madara::expression::Modulus::add_precedence (int precedence)
   return this->precedence_ = MODULUS_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Modulus::build (void)
 {
-  return new Composite_Modulus_Node (*(this->logger_),
+  return new CompositeModulusNode (*(this->logger_),
     left_->build (), right_->build ());
 }
 
@@ -3863,11 +3863,11 @@ madara::expression::Divide::add_precedence (int precedence)
   return this->precedence_ = DIVIDE_PRECEDENCE + precedence;
 }
 
-// builds an equivalent Expression_Tree node
-madara::expression::Component_Node *
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
 madara::expression::Divide::build (void)
 {
-  return new Composite_Divide_Node (*(this->logger_),
+  return new CompositeDivideNode (*(this->logger_),
     left_->build (), right_->build ());
 }
 
@@ -3927,7 +3927,7 @@ madara::expression::Interpreter::is_whitespace (char input)
 // extracts precondition, condition, postcondition, and body from input 
 void
 madara::expression::Interpreter::handle_for_loop (
-madara::knowledge::Thread_Safe_Context &context,
+madara::knowledge::ThreadSafeContext &context,
 std::string &variable,
 const std::string &input,
 std::string::size_type &i,
@@ -3993,7 +3993,7 @@ Symbol *& returnableInput)
       substr_list.clear ();
     }
 
-    Symbol * op = new Array_Ref (variable, index, context);
+    Symbol * op = new ArrayRef (variable, index, context);
     op->add_precedence (accumulated_precedence);
 
     // check for post increments and decrements
@@ -4177,18 +4177,18 @@ Symbol *& returnableInput)
   // if precondition not set, set to default
   if (!user_pre)
     user_pre = new Number (context.get_logger (),
-    (madara::Knowledge_Record::Integer)0);
+    (madara::KnowledgeRecord::Integer)0);
 
   // set condition to default if not yet set
   if (!user_cond)
     user_cond = new Number (context.get_logger (),
-    (madara::Knowledge_Record::Integer) - 1);
+    (madara::KnowledgeRecord::Integer) - 1);
 
   // set postcondition to default if not yet set
   if (!user_post)
   {
     user_post = new Number (context.get_logger (),
-      (madara::Knowledge_Record::Integer)1);
+      (madara::KnowledgeRecord::Integer)1);
     madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
       "Postcondition is set to 1 (def)\n");
   }
@@ -4230,7 +4230,7 @@ Symbol *& returnableInput)
       if (variable_node && number)
       {
         madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-          "For_Loop: Body is a simple assignment of variable %s to %s\n",
+          "ForLoop: Body is a simple assignment of variable %s to %s\n",
           variable_node->key_.c_str (), number->item_.to_string ().c_str ());
       }
       else
@@ -4241,8 +4241,8 @@ Symbol *& returnableInput)
     }
 
     precondition->right_ = user_pre;
-    madara::Knowledge_Record post_val;
-    madara::Knowledge_Record cond_val;
+    madara::KnowledgeRecord post_val;
+    madara::KnowledgeRecord cond_val;
 
     // optimize postcondition
     Number * number = dynamic_cast <Number *> (user_post);
@@ -4269,15 +4269,15 @@ Symbol *& returnableInput)
 
     Variable * var_node = new Variable (variable, context);
 
-    Variable_Increment * postcondition = new Variable_Increment (var_node, post_val,
+    VariableIncrement * postcondition = new VariableIncrement (var_node, post_val,
       user_post, context);
     postcondition->add_precedence (accumulated_precedence + FOR_LOOP_PRECEDENCE);
 
-    Variable_Compare * condition = new Variable_Compare (var_node, cond_val,
+    VariableCompare * condition = new VariableCompare (var_node, cond_val,
       user_cond, compare_type, context);
     condition->add_precedence (accumulated_precedence + FOR_LOOP_PRECEDENCE);
 
-    Symbol * op = new For_Loop (precondition, condition, postcondition, body, context);
+    Symbol * op = new ForLoop (precondition, condition, postcondition, body, context);
     op->add_precedence (accumulated_precedence);
 
     precedence_insert (context, op, list);
@@ -4304,7 +4304,7 @@ Symbol *& returnableInput)
         // just add one to it and see if the prune () method can optimize it a bit.
         Add * add = new Add (context.get_logger ());
         add->left_ = new Number (context.get_logger (),
-          (madara::Knowledge_Record::Integer)1);
+          (madara::KnowledgeRecord::Integer)1);
         add->right_ = user_cond;
         user_cond = add;
       }
@@ -4323,7 +4323,7 @@ Symbol *& returnableInput)
 // inserts a variable (leaf node / number) into the parse tree
 void
 madara::expression::Interpreter::variable_insert (
-madara::knowledge::Thread_Safe_Context &context,
+madara::knowledge::ThreadSafeContext &context,
 const std::string &input,
 std::string::size_type &i,
 int & accumulated_precedence,
@@ -4423,7 +4423,7 @@ Symbol *& lastValidInput)
 // inserts a leaf node / number into the parse tree
 void
 madara::expression::Interpreter::string_insert (
-  knowledge::Thread_Safe_Context & context,
+  knowledge::ThreadSafeContext & context,
   const std::string &input,
   std::string::size_type &i, int & accumulated_precedence,
   ::std::list<madara::expression::Symbol *>& list,
@@ -4451,7 +4451,7 @@ madara::expression::Interpreter::string_insert (
 // inserts a variable (leaf node / number) into the parse tree
 void
 madara::expression::Interpreter::system_call_insert (
-  madara::knowledge::Thread_Safe_Context &context,
+  madara::knowledge::ThreadSafeContext &context,
   const std::string &input,
   std::string::size_type &i,
   int & accumulated_precedence,
@@ -4485,11 +4485,11 @@ madara::expression::Interpreter::system_call_insert (
   if (i < input.length () && input[i] == '(')
   {
     // save the function name and update i
-    System_Call * call = 0;
+    SystemCall * call = 0;
 
     if (name == "#delete_var" || name == "#delete_variable")
     {
-      call = new Delete_Variable (context);
+      call = new DeleteVariable (context);
     }
     else if (name == "#eval" || name == "#evaluate")
     {
@@ -4497,11 +4497,11 @@ madara::expression::Interpreter::system_call_insert (
     }
     else if (name == "#expand" || name == "#expand_statement")
     {
-      call = new Expand_Statement (context);
+      call = new ExpandStatement (context);
     }
     else if (name == "#expand_env" || name == "#expand_envs")
     {
-      call = new Expand_Env (context);
+      call = new ExpandEnv (context);
     }
     else if (name == "#fragment")
     {
@@ -4509,15 +4509,15 @@ madara::expression::Interpreter::system_call_insert (
     }
     else if (name == "#get_clock")
     {
-      call = new Get_Clock (context);
+      call = new GetClock (context);
     }
     else if (name == "#get_time")
     {
-      call = new Get_Time (context);
+      call = new GetTime (context);
     }
     else if (name == "#log_level")
     {
-      call = new Log_Level (context);
+      call = new LogLevel (context);
     }
     else if (name == "#print")
     {
@@ -4525,27 +4525,27 @@ madara::expression::Interpreter::system_call_insert (
     }
     else if (name == "#print_system_calls" || name == "#print_system_call")
     {
-      call = new Print_System_Calls (context);
+      call = new PrintSystemCalls (context);
     }
     else if (name == "#rand_double")
     {
-      call = new Rand_Double (context);
+      call = new RandDouble (context);
     }
     else if (name == "#rand_int" || name == "#rand_integer")
     {
-      call = new Rand_Int (context);
+      call = new RandInt (context);
     }
     else if (name == "#read_file")
     {
-      call = new Read_File (context);
+      call = new ReadFile (context);
     }
     else if (name == "#set_clock")
     {
-      call = new Set_Clock (context);
+      call = new SetClock (context);
     }
     else if (name == "#set_precision" || name == "#precision")
     {
-      call = new Set_Precision (context);
+      call = new SetPrecision (context);
     }
     else if (name == "#size")
     {
@@ -4557,31 +4557,31 @@ madara::expression::Interpreter::system_call_insert (
     }
     else if (name == "#to_buffer" || name == "#buffer")
     {
-      call = new To_Buffer (context);
+      call = new ToBuffer (context);
     }
     else if (name == "#to_double" || name == "#double")
     {
-      call = new To_Double (context);
+      call = new ToDouble (context);
     }
     else if (name == "#to_doubles" || name == "#doubles")
     {
-      call = new To_Doubles (context);
+      call = new ToDoubles (context);
     }
     else if (name == "#to_host_dirs")
     {
-      call = new To_Host_Dirs (context);
+      call = new ToHostDirs (context);
     }
     else if (name == "#to_integer" || name == "#integer")
     {
-      call = new To_Integer (context);
+      call = new ToInteger (context);
     }
     else if (name == "#to_integers" || name == "#integers")
     {
-      call = new To_Integers (context);
+      call = new ToIntegers (context);
     }
     else if (name == "#to_string" || name == "#string")
     {
-      call = new To_String (context);
+      call = new ToString (context);
     }
     else if (name == "#type")
     {
@@ -4589,7 +4589,7 @@ madara::expression::Interpreter::system_call_insert (
     }
     else if (name == "#write_file")
     {
-      call = new Write_File (context);
+      call = new WriteFile (context);
     }
     else
     {
@@ -4597,7 +4597,7 @@ madara::expression::Interpreter::system_call_insert (
         "System call %s is unsupported in this version of MADARA, "
         "defaulting to print_system_calls help menu.\n", name.c_str ());
 
-      call = new Print_System_Calls (context);
+      call = new PrintSystemCalls (context);
     }
 
     call->add_precedence (accumulated_precedence);
@@ -4635,7 +4635,7 @@ madara::expression::Interpreter::system_call_insert (
 // inserts a leaf node / number into the parse tree
 void
 madara::expression::Interpreter::number_insert (
-  knowledge::Thread_Safe_Context & context,
+  knowledge::ThreadSafeContext & context,
   const std::string &input,
   std::string::size_type &i,
   int & accumulated_precedence,
@@ -4672,7 +4672,7 @@ madara::expression::Interpreter::number_insert (
   {
     // we have an integer
 
-    madara::Knowledge_Record::Integer new_number;
+    madara::KnowledgeRecord::Integer new_number;
 
     std::stringstream buffer;
     buffer << input.substr (i, j);
@@ -4696,7 +4696,7 @@ madara::expression::Interpreter::number_insert (
 // inserts a multiplication or division into the parse tree
 void
 madara::expression::Interpreter::precedence_insert (
-knowledge::Thread_Safe_Context & context,
+knowledge::ThreadSafeContext & context,
 madara::expression::Symbol *op,
 ::std::list<madara::expression::Symbol *>& list)
 {
@@ -4712,7 +4712,7 @@ madara::expression::Symbol *op,
     // uniquely
     Assignment * op_assignment = dynamic_cast <Assignment *> (op);
     Implies * op_implies = dynamic_cast <Implies *> (op);
-    Unary_Operator * op_unary = dynamic_cast <Unary_Operator *> (op);
+    UnaryOperator * op_unary = dynamic_cast <UnaryOperator *> (op);
 
     // move down the right side of the tree until we find either a null or
     // a precedence that is >= this operation's precedence. This puts us
@@ -4759,7 +4759,7 @@ madara::expression::Symbol *op,
 
       // first let's do some error checking, so we can give helpful compile errors
       Operator * parent_binary = dynamic_cast <Operator *> (parent);
-      Unary_Operator * parent_unary = dynamic_cast <Unary_Operator *> (parent);
+      UnaryOperator * parent_unary = dynamic_cast <UnaryOperator *> (parent);
 
       // if the parent is a binary (like addition or &&), then it needs a left hand side
       // if it doesn't have this, let's report a warning and insert a Leaf Node with a value
@@ -4782,7 +4782,7 @@ madara::expression::Symbol *op,
             "Inserting a zero\n");
 
           parent->left_ = new Number (context.get_logger (),
-            (madara::Knowledge_Record::Integer)0);
+            (madara::KnowledgeRecord::Integer)0);
         }
       }
 
@@ -4842,7 +4842,7 @@ madara::expression::Symbol *op,
 
 void
 madara::expression::Interpreter::main_loop (
-madara::knowledge::Thread_Safe_Context & context,
+madara::knowledge::ThreadSafeContext & context,
 const std::string &input, std::string::size_type &i,
 madara::expression::Symbol *& lastValidInput,
 bool & handled, int & accumulated_precedence,
@@ -4875,7 +4875,7 @@ bool build_argument_list)
   else if (i < input.length () && input[i] == '[')
   {
     // save the function name and update i
-    Const_Array * object = new Const_Array (context);
+    ConstArray * object = new ConstArray (context);
     object->add_precedence (accumulated_precedence);
 
     bool handled = false;
@@ -4925,15 +4925,15 @@ bool build_argument_list)
     else if (i + 1 < input.size () && input[i + 1] == '=')
     {
       Variable * var = dynamic_cast <Variable *> (lastValidInput);
-      Array_Ref * array_ref = dynamic_cast <Array_Ref *> (lastValidInput);
+      ArrayRef * array_ref = dynamic_cast <ArrayRef *> (lastValidInput);
       if (var || array_ref)
-        op = new Variable_Increment (lastValidInput,
-        madara::Knowledge_Record (), 0, context);
+        op = new VariableIncrement (lastValidInput,
+        madara::KnowledgeRecord (), 0, context);
       else
       {
         // major error here. The left hand side must be a variable
-        op = new Variable_Increment (new Variable (".MADARA_I", context),
-          madara::Knowledge_Record (), 0, context);
+        op = new VariableIncrement (new Variable (".MADARA_I", context),
+          madara::KnowledgeRecord (), 0, context);
 
         madara_logger_log (context.get_logger (), logger::LOG_WARNING,
           "KARL COMPILE WARNING (+=): "
@@ -4966,17 +4966,17 @@ bool build_argument_list)
     else if (i + 1 < input.size () && input[i + 1] == '=')
     {
       Variable * var = dynamic_cast <Variable *> (lastValidInput);
-      Array_Ref * array_ref = dynamic_cast <Array_Ref *> (lastValidInput);
+      ArrayRef * array_ref = dynamic_cast <ArrayRef *> (lastValidInput);
       if (var || array_ref)
       {
-        op = new Variable_Decrement (lastValidInput, madara::Knowledge_Record (),
+        op = new VariableDecrement (lastValidInput, madara::KnowledgeRecord (),
           0, context);
       }
       else
       {
         // major error here. The left hand side must be a variable
-        op = new Variable_Decrement (new Variable (".MADARA_I", context),
-          madara::Knowledge_Record (), 0, context);
+        op = new VariableDecrement (new Variable (".MADARA_I", context),
+          madara::KnowledgeRecord (), 0, context);
 
         madara_logger_log (context.get_logger (), logger::LOG_WARNING,
           "KARL COMPILE WARNING (-=): "
@@ -5007,15 +5007,15 @@ bool build_argument_list)
     if (i + 1 < input.size () && input[i + 1] == '=')
     {
       Variable * var = dynamic_cast <Variable *> (lastValidInput);
-      Array_Ref * array_ref = dynamic_cast <Array_Ref *> (lastValidInput);
+      ArrayRef * array_ref = dynamic_cast <ArrayRef *> (lastValidInput);
       if (var || array_ref)
-        op = new Variable_Multiply (lastValidInput, madara::Knowledge_Record (),
+        op = new VariableMultiply (lastValidInput, madara::KnowledgeRecord (),
         0, context);
       else
       {
         // major error here. The left hand side must be a variable
-        op = new Variable_Multiply (new Variable (".MADARA_I", context),
-          madara::Knowledge_Record (), 0, context);
+        op = new VariableMultiply (new Variable (".MADARA_I", context),
+          madara::KnowledgeRecord (), 0, context);
 
         madara_logger_log (context.get_logger (), logger::LOG_WARNING,
           "KARL COMPILE WARNING (*=): "
@@ -5081,14 +5081,14 @@ bool build_argument_list)
       if (i + 1 < input.size () && input[i + 1] == '=')
       {
         Variable * var = dynamic_cast <Variable *> (lastValidInput);
-        Array_Ref * array_ref = dynamic_cast <Array_Ref *> (lastValidInput);
+        ArrayRef * array_ref = dynamic_cast <ArrayRef *> (lastValidInput);
         if (var || array_ref)
-          op = new Variable_Divide (lastValidInput, madara::Knowledge_Record (), 0, context);
+          op = new VariableDivide (lastValidInput, madara::KnowledgeRecord (), 0, context);
         else
         {
           // major error here. The left hand side must be a variable
-          op = new Variable_Divide (new Variable (".MADARA_I", context),
-            madara::Knowledge_Record (), 0, context);
+          op = new VariableDivide (new Variable (".MADARA_I", context),
+            madara::KnowledgeRecord (), 0, context);
 
           madara_logger_log (context.get_logger (), logger::LOG_WARNING,
             "KARL COMPILE WARNING (/=): "
@@ -5228,7 +5228,7 @@ bool build_argument_list)
     // is this a logical and?
     if (i + 1 < input.size () && input[i + 1] == '>')
     {
-      op = new Return_Right (context.get_logger ());
+      op = new ReturnRight (context.get_logger ());
       ++i;
     }
     else
@@ -5264,12 +5264,12 @@ bool build_argument_list)
     // is this a less than or equal to operator?
     if (i + 1 < input.size () && input[i + 1] == '=')
     {
-      op = new Less_Than_Equal (context.get_logger ());
+      op = new LessThanEqual (context.get_logger ());
       ++i;
     }
     // must be a less than operator
     else
-      op = new Less_Than (context.get_logger ());
+      op = new LessThan (context.get_logger ());
 
     // insert the op according to precedence relationships
     op->add_precedence (accumulated_precedence);
@@ -5285,12 +5285,12 @@ bool build_argument_list)
     // is this a less than or equal to operator?
     if (i + 1 < input.size () && input[i + 1] == '=')
     {
-      op = new Greater_Than_Equal (context.get_logger ());
+      op = new GreaterThanEqual (context.get_logger ());
       ++i;
     }
     // must be a less than operator
     else
-      op = new Greater_Than (context.get_logger ());
+      op = new GreaterThan (context.get_logger ());
 
     // insert the op according to precedence relationships
     op->add_precedence (accumulated_precedence);
@@ -5317,7 +5317,7 @@ bool build_argument_list)
 
 void
 madara::expression::Interpreter::handle_array (
-madara::knowledge::Thread_Safe_Context & context,
+madara::knowledge::ThreadSafeContext & context,
 const std::string &input, std::string::size_type &i,
 madara::expression::Symbol *& lastValidInput,
 bool & handled, int & accumulated_precedence,
@@ -5394,7 +5394,7 @@ bool & handled, int & accumulated_precedence,
 
 void
 madara::expression::Interpreter::handle_parenthesis (
-  madara::knowledge::Thread_Safe_Context & context,
+  madara::knowledge::ThreadSafeContext & context,
   const std::string &input, std::string::size_type &i,
   madara::expression::Symbol *& lastValidInput,
   bool & handled, int & accumulated_precedence,
@@ -5452,7 +5452,7 @@ madara::expression::Interpreter::handle_parenthesis (
   {
     Symbol * lastSymbol = master_list.back ();
     Operator * op = dynamic_cast <Operator *> (lastSymbol);
-    Unary_Operator * unary = dynamic_cast < Unary_Operator * >
+    UnaryOperator * unary = dynamic_cast < UnaryOperator * >
       (lastSymbol);
 
 
@@ -5489,13 +5489,13 @@ madara::expression::Interpreter::handle_parenthesis (
 
 // converts a string and context into a parse tree, and builds an
 // expression tree out of the parse tree
-madara::expression::Expression_Tree
+madara::expression::ExpressionTree
 madara::expression::Interpreter::interpret (
-  knowledge::Thread_Safe_Context &context,
+  knowledge::ThreadSafeContext &context,
   const std::string &input)
 {
   // return the cached expression tree if it exists
-  Expression_Tree_Map::const_iterator found = cache_.find (input);
+  ExpressionTreeMap::const_iterator found = cache_.find (input);
   if (found != cache_.end ())
     return found->second;
 
@@ -5544,11 +5544,11 @@ madara::expression::Interpreter::interpret (
   // if the list has an element in it, then return the back of the list.
   if (!list.empty ())
   {
-    // Invoke a recursive Expression_Tree build starting with the root
+    // Invoke a recursive ExpressionTree build starting with the root
     // symbol. This is an example of the builder pattern. See pg 97
     // in GoF book.
 
-    Expression_Tree tree (context.get_logger (),
+    ExpressionTree tree (context.get_logger (),
       list.back ()->build (), false);
 
     // optimize the tree
@@ -5562,7 +5562,7 @@ madara::expression::Interpreter::interpret (
   }
 
   // If we reach this, we didn't have any symbols.
-  return Expression_Tree (context.get_logger ());
+  return ExpressionTree (context.get_logger ());
 }
 
 #endif // _MADARA_NO_KARL_

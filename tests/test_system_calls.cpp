@@ -12,8 +12,8 @@
 #include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
@@ -21,7 +21,7 @@ namespace logger = madara::logger;
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
 // test functions
-void test_system_calls (madara::knowledge::Knowledge_Base & knowledge);
+void test_system_calls (madara::knowledge::KnowledgeBase & knowledge);
 
 int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 {
@@ -32,7 +32,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   ACE_LOG_MSG->priority_mask (LM_INFO | LM_DEBUG, ACE_Log_Msg::PROCESS);
 
-  madara::knowledge::Knowledge_Base knowledge;
+  madara::knowledge::KnowledgeBase knowledge;
   
   test_system_calls (knowledge);
 
@@ -65,7 +65,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
 /// Tests logicals operators (&&, ||)
 void test_system_calls (
-  madara::knowledge::Knowledge_Base & knowledge)
+  madara::knowledge::KnowledgeBase & knowledge)
 {
 #ifndef _MADARA_NO_KARL_
   knowledge.evaluate (

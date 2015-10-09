@@ -44,7 +44,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 #include "ace/Signal.h"
 #include "ace/OS_NS_Thread.h"
 
@@ -85,13 +85,13 @@ int main (int argc, char * argv[])
   }
 
   // Create the knowledge base with the transport settings set for multicast
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  Madara::KnowledgeEngine::KnowledgeBase knowledge (host, settings);
   
   // Check command line arguments for a non-zero id
   if (argc >= 2)
   {
     // save the first argument into an integer
-    Madara::Knowledge_Record::Integer new_id;
+    Madara::KnowledgeRecord::Integer new_id;
     std::stringstream buffer (argv[1]);
     buffer >> new_id;
 
@@ -156,10 +156,10 @@ int main (int argc, char * argv[])
    * agent count and print the results. We'll showcase a second way to
    * print information in an evaluation here. Each evaluate call can
    * be passed settings that dictate how the evaluation takes place.
-   * In this case, we set the Eval_Settings class to include a post
+   * In this case, we set the EvalSettings class to include a post
    * print statement that prints the cur and max agents
    **/
-  Madara::Knowledge_Engine::Eval_Settings eval_settings;
+  Madara::KnowledgeEngine::EvalSettings eval_settings;
   eval_settings.post_print_statement = 
     "Cur agents online: {.cur_agents}  Max agents online: {.max_agents}\n";
 

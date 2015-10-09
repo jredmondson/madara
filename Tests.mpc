@@ -21,7 +21,7 @@ project (Test_Multicast_Mutex) : using_madara, using_ace, no_karl, no_xml {
   }
 }
 
-project (Test_Multicast_Close_And_Attach) : using_madara, using_ace, no_karl, no_xml {
+project (TestMulticastCloseAndAtta.h) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_close_and_attach
   

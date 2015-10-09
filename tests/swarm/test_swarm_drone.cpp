@@ -6,8 +6,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/utility/LogMacros.h"
 #include "ace/Signal.h"
 
 std::string host ("");
@@ -92,124 +92,124 @@ void handle_arguments (int argc, char ** argv)
  * random number up to the limits of the stdlib.h implementation's limits. An
  * integer argument means to generate a random up to the specified arg limit.
  **/
-Madara::Knowledge_Record
-  rand_int (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  rand_int (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
-  if (args.size () > 0 && args[0].type () == Madara::Knowledge_Record::INTEGER &&
+  if (args.size () > 0 && args[0].type () == Madara::KnowledgeRecord::INTEGER &&
                           args[0].to_integer () != 0)
-    return Madara::Knowledge_Record::Integer (rand () % args[0].to_integer ());
+    return Madara::KnowledgeRecord::Integer (rand () % args[0].to_integer ());
   else
-    return Madara::Knowledge_Record::Integer (rand ());
+    return Madara::KnowledgeRecord::Integer (rand ());
 }
 
 /**
  * Madara function to move the drone north
  **/
-Madara::Knowledge_Record
-  move_north (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_north (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   variables.set ("drone{.id}.pos.y",
     variables.get ("drone{.id}.pos.y").to_integer () + 1);
 
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 /**
  * Madara function to move the drone south
  **/
-Madara::Knowledge_Record
-  move_south (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_south (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   variables.set ("drone{.id}.pos.y",
     variables.get ("drone{.id}.pos.y").to_integer () - 1);
 
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 /**
  * Madara function to move the drone east
  **/
-Madara::Knowledge_Record
-  move_east (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_east (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   variables.set ("drone{.id}.pos.x",
     variables.get ("drone{.id}.pos.x").to_integer () + 1);
 
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 /**
  * Madara function to move the drone west
  **/
-Madara::Knowledge_Record
-  move_west (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_west (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   variables.set ("drone{.id}.pos.x",
     variables.get ("drone{.id}.pos.x").to_integer () - 1);
 
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 /**
  * Madara function to move the drone to the origin (phone.pos.x,phone.pos.y)
  **/
-Madara::Knowledge_Record
-  move_to_origin (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_to_origin (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   variables.set ("drone{.id}.pos.y",
     variables.get ("phone.pos.y").to_integer ());
   variables.set ("drone{.id}.pos.x",
     variables.get ("phone.pos.x").to_integer ());
 
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 /**
  * Madara function to use the thermal sensor
  **/
-Madara::Knowledge_Record
-  sense_thermal (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  sense_thermal (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 /**
  * Madara function to use the thermal sensor
  **/
-Madara::Knowledge_Record
-  shutdown (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  shutdown (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   terminated = true;
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 /**
  * Madara function to use the thermal sensor
  **/
-Madara::Knowledge_Record
-  takeoff (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  takeoff (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 
 /**
  * Madara function to use the thermal sensor
  **/
-Madara::Knowledge_Record
-  land (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  land (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 
@@ -224,7 +224,7 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
   
 #ifndef _MADARA_NO_KARL_
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  Madara::KnowledgeEngine::KnowledgeBase knowledge (host, settings);
 
   // define control functions
   knowledge.define_function ("shutdown", shutdown);
@@ -242,7 +242,7 @@ int main (int argc, char ** argv)
   knowledge.define_function ("sense_thermal", sense_thermal);
 
 
-  knowledge.set (".id", (Madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (Madara::KnowledgeRecord::Integer) settings.id);
   
   srand ((unsigned int)settings.id);
 
@@ -253,7 +253,7 @@ int main (int argc, char ** argv)
     "drone{.id}.operational = 1"
     );
   
-  Madara::Knowledge_Engine::Eval_Settings eval_settings;
+  Madara::KnowledgeEngine::EvalSettings eval_settings;
   eval_settings.pre_print_statement = knowledge.expand_statement (
     "Processing movement instructions:\n"
     "  move_east:  {move_east}  drone{.id}.move_east:  {drone{.id}.move_east}\n"
@@ -298,7 +298,7 @@ int main (int argc, char ** argv)
     "takeoff || drone{.id}.takeoff => takeoff ()"
   );
 
-  Madara::Knowledge_Engine::Compiled_Expression movement_logic =
+  Madara::KnowledgeEngine::CompiledExpression movement_logic =
     knowledge.compile (movement_logic_text);
 
   // until the user presses ctrl+c in this terminal, check for input

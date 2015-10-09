@@ -417,22 +417,22 @@ public:
 	virtual void        accept( KATS_BON::KATSVisitor *pVisitor);
 	typedef enum
 	{
-		Volatile_Persistence_Type,
-		Persistent_Persistence_Type
-	} Persistence_Type;
+		VolatilePersistenceType,
+		PersistentPersistenceType
+	} PersistenceType;
 	typedef enum
 	{
-		None_Type_Type,
-		Splice_Type_Type,
-		NDDS_Type_Type
-	} Type_Type;
+		NoneTypeType,
+		SpliceTypeType,
+		NDDSTypeType
+	} TypeType;
 
 	//
 	// attribute getters and setters
-	virtual KATS_BON::TransportImpl::Persistence_Type getPersistence();
-	virtual KATS_BON::TransportImpl::Type_Type        getType();
-	virtual void        setPersistence( TransportImpl::Persistence_Type val);
-	virtual void        setType( TransportImpl::Type_Type val);
+	virtual KATS_BON::TransportImpl::PersistenceType getPersistence();
+	virtual KATS_BON::TransportImpl::TypeType        getType();
+	virtual void        setPersistence( TransportImpl::PersistenceType val);
+	virtual void        setType( TransportImpl::TypeType val);
 
 	///BUP
 	// add your own members here

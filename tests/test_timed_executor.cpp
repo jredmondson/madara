@@ -1,11 +1,11 @@
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/knowledge/Timed_Executor.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/TimedExecutor.h"
 #include "madara/utility/Utility.h"
 #include <stdio.h>
 #include <iostream>
 #include <string>
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
@@ -55,8 +55,8 @@ void handle_arguments (int argc, char ** argv)
 
 void test_timed_executor (void)
 {
-  knowledge::Knowledge_Base knowledge;
-  knowledge::Timed_Executor executor;
+  knowledge::KnowledgeBase knowledge;
+  knowledge::TimedExecutor executor;
   knowledge::Event new_event;
 
   knowledge.print ("Launching 4 threads\n");

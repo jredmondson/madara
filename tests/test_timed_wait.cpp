@@ -9,8 +9,8 @@
 #include <iostream>
 #include <sstream>
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
@@ -25,12 +25,12 @@ int ACE_TMAIN (int, char **)
   transport_settings.type = madara::transport::NO_TRANSPORT;
   
   // holder for expression trees
-  madara::knowledge::Compiled_Expression expression;
+  madara::knowledge::CompiledExpression expression;
 
-  madara::knowledge::Knowledge_Base knowledge ("nohost",
+  madara::knowledge::KnowledgeBase knowledge ("nohost",
     transport_settings);
 
-  madara::knowledge::Wait_Settings wait_settings;
+  madara::knowledge::WaitSettings wait_settings;
   std::string logic = "++.count && 0";
   wait_settings.pre_print_statement =
     "WAIT STARTED: Waiting for 10 seconds.\n";

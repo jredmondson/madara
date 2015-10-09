@@ -1,7 +1,7 @@
 
-#include "madara/transport/Packet_Scheduler.h"
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/transport/PacketScheduler.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
 
 #include "ace/High_Res_Timer.h"
 #include "ace/OS.h"
@@ -17,9 +17,9 @@ int parse_args (int argc, ACE_TCHAR * argv[]);
 
 void test_probablistic (void)
 {
-  madara::transport::QoS_Transport_Settings settings;
+  madara::transport::QoSTransportSettings settings;
 
-  madara::transport::Packet_Scheduler scheduler (&settings);
+  madara::transport::PacketScheduler scheduler (&settings);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "********************TESTING PROBABLISTIC POLICY*********************\n");
@@ -208,9 +208,9 @@ void test_probablistic (void)
 
 void test_deterministic (void)
 {
-  madara::transport::QoS_Transport_Settings settings;
+  madara::transport::QoSTransportSettings settings;
 
-  madara::transport::Packet_Scheduler scheduler (&settings);
+  madara::transport::PacketScheduler scheduler (&settings);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "*******************TESTING DETERMINISTIC POLICY********************\n");

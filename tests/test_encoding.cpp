@@ -1,7 +1,7 @@
 
 
-#include "madara/knowledge/Knowledge_Record.h"
-#include "madara/transport/Message_Header.h"
+#include "madara/knowledge/KnowledgeRecord.h"
+#include "madara/transport/MessageHeader.h"
 #include "madara/transport/Transport.h"
 
 #include "madara/utility/Utility.h"
@@ -23,15 +23,15 @@ void test_primitive_encoding (void)
 
 
   // message headers for encoding and decoding
-  madara::transport::Message_Header source_header;
-  madara::transport::Message_Header dest_header;
+  madara::transport::MessageHeader source_header;
+  madara::transport::MessageHeader dest_header;
 
   // knowledge update for encoding and decoding
-  madara::Knowledge_Record string_helloworld_source ("hello world");
-  madara::Knowledge_Record int_source (madara::Knowledge_Record::Integer (10));
-  madara::Knowledge_Record double_source (5.5);
+  madara::KnowledgeRecord string_helloworld_source ("hello world");
+  madara::KnowledgeRecord int_source (madara::KnowledgeRecord::Integer (10));
+  madara::KnowledgeRecord double_source (5.5);
   
-  madara::Knowledge_Record dest;
+  madara::KnowledgeRecord dest;
 
   // Test 1: create the source header
   memset (buffer, 0, BUFFER_SIZE);
@@ -161,14 +161,14 @@ void test_image_encoding (void)
   std::string key;
 
   // message headers for encoding and decoding
-  madara::transport::Message_Header source_header;
-  madara::transport::Message_Header dest_header;
+  madara::transport::MessageHeader source_header;
+  madara::transport::MessageHeader dest_header;
 
   // knowledge update for encoding and decoding
-  madara::Knowledge_Record string_source ("hello world");
-  madara::Knowledge_Record int_source (madara::Knowledge_Record::Integer (10));
-  madara::Knowledge_Record double_source (5.5);
-  madara::Knowledge_Record image_source;
+  madara::KnowledgeRecord string_source ("hello world");
+  madara::KnowledgeRecord int_source (madara::KnowledgeRecord::Integer (10));
+  madara::KnowledgeRecord double_source (5.5);
+  madara::KnowledgeRecord image_source;
 
   std::string filename =
     madara::utility::expand_envs (
@@ -176,10 +176,10 @@ void test_image_encoding (void)
 
   image_source.read_file (filename);
 
-  madara::Knowledge_Record string_dest;
-  madara::Knowledge_Record int_dest;
-  madara::Knowledge_Record double_dest;
-  madara::Knowledge_Record image_dest;
+  madara::KnowledgeRecord string_dest;
+  madara::KnowledgeRecord int_dest;
+  madara::KnowledgeRecord double_dest;
+  madara::KnowledgeRecord image_dest;
 
   std::string string_key_read, int_key_read, double_key_read, image_key_read;
 

@@ -1,13 +1,13 @@
 
 #include "com_madara_UpdateSettings.h"
-#include "madara/knowledge/Knowledge_Update_Settings.h"
+#include "madara/knowledge/KnowledgeUpdateSettings.h"
 
 #include <stdio.h>
 #include <string>
 
 // define useful shorthands
 namespace knowledge = madara::knowledge;
-typedef knowledge::Knowledge_Update_Settings Update_Settings;
+typedef knowledge::KnowledgeUpdateSettings UpdateSettings;
 
 /*
 * Class:   com_madara_UpdateSettings
@@ -16,7 +16,7 @@ typedef knowledge::Knowledge_Update_Settings Update_Settings;
 */
 jlong Java_com_madara_UpdateSettings_jni_1updateSettings__ (JNIEnv *env, jclass clazz)
 {
-  return (jlong)(new Update_Settings ());
+  return (jlong)(new UpdateSettings ());
 }
 
 /*
@@ -28,11 +28,11 @@ jlong Java_com_madara_UpdateSettings_jni_1updateSettings__J
 (JNIEnv *env, jclass clazz, jlong original)
 {
   jlong result (0);
-  Update_Settings * source = (Update_Settings *)original;
+  UpdateSettings * source = (UpdateSettings *)original;
 
   if (source)
   {
-    result = (jlong) new Update_Settings (*source);
+    result = (jlong) new UpdateSettings (*source);
   }
 
   return result;
@@ -47,7 +47,7 @@ jlong Java_com_madara_UpdateSettings_jni_1updateSettings__J
 void Java_com_madara_UpdateSettings_jni_1setAlwaysOverwrite
 (JNIEnv * env, jclass clazz, jlong cptr, jboolean alwaysOverwrite)
 {
-  Update_Settings * current = (Update_Settings *)cptr;
+  UpdateSettings * current = (UpdateSettings *)cptr;
 
   if (current)
   {
@@ -64,7 +64,7 @@ jboolean Java_com_madara_UpdateSettings_jni_1getAlwaysOverwrite
 (JNIEnv * env, jclass clazz, jlong cptr)
 {
   jboolean result (0);
-  Update_Settings * current = (Update_Settings *)cptr;
+  UpdateSettings * current = (UpdateSettings *)cptr;
 
   if (current)
   {
@@ -82,7 +82,7 @@ jboolean Java_com_madara_UpdateSettings_jni_1getAlwaysOverwrite
 void Java_com_madara_UpdateSettings_jni_1setTreatGlobalsAsLocals
 (JNIEnv *env, jclass clazz, jlong cptr, jboolean treatGlobalsAsLocals)
 {
-  Update_Settings * current = (Update_Settings *)cptr;
+  UpdateSettings * current = (UpdateSettings *)cptr;
 
   if (current)
   {
@@ -99,7 +99,7 @@ jboolean Java_com_madara_UpdateSettings_jni_1getTreatGlobalsAsLocals
 (JNIEnv * env, jclass clazz, jlong cptr)
 {
   jboolean result (0);
-  Update_Settings * current = (Update_Settings *)cptr;
+  UpdateSettings * current = (UpdateSettings *)cptr;
 
   if (current)
   {
@@ -117,7 +117,7 @@ jboolean Java_com_madara_UpdateSettings_jni_1getTreatGlobalsAsLocals
 void Java_com_madara_UpdateSettings_jni_1setClockIncrement
 (JNIEnv *env, jclass clazz, jlong cptr, jlong defaultClockIncrement)
 {
-  Update_Settings * current = (Update_Settings *)cptr;
+  UpdateSettings * current = (UpdateSettings *)cptr;
 
   if (current)
   {
@@ -134,7 +134,7 @@ jlong Java_com_madara_UpdateSettings_jni_1getClockIncrement
 (JNIEnv *env, jclass clazz, jlong cptr)
 {
   jlong result (0);
-  Update_Settings * current = (Update_Settings *)cptr;
+  UpdateSettings * current = (UpdateSettings *)cptr;
 
   if (current)
   {
@@ -152,7 +152,7 @@ jlong Java_com_madara_UpdateSettings_jni_1getClockIncrement
 void Java_com_madara_UpdateSettings_jni_1freeUpdateSettings
 (JNIEnv * env, jclass cls, jlong cptr)
 {
-  Update_Settings * current = (Update_Settings *)cptr;
+  UpdateSettings * current = (UpdateSettings *)cptr;
 
   delete current;
 }

@@ -3,19 +3,19 @@
 
 #ifdef _MADARA_JAVA_
       
-#include "java/Java_Thread.h"
+#include "java/JavaThread.h"
 
 #endif  // MADARA_JAVA
 
 madara::threads::Threader::Threader ()
-  : control_(new knowledge::Knowledge_Base ()), data_ (0)
+  : control_(new knowledge::KnowledgeBase ()), data_ (0)
 {
 
 }
 
 madara::threads::Threader::Threader (
-  knowledge::Knowledge_Base & data_plane)
-  : control_(new knowledge::Knowledge_Base ()), data_ (&data_plane)
+  knowledge::KnowledgeBase & data_plane)
+  : control_(new knowledge::KnowledgeBase ()), data_ (&data_plane)
 {
 
 }
@@ -29,18 +29,18 @@ madara::threads::Threader::~Threader ()
 }
 
 void madara::threads::Threader::set_data_plane (
-  knowledge::Knowledge_Base & data_plane)
+  knowledge::KnowledgeBase & data_plane)
 {
   data_ = &data_plane;
 }
 
 void
 madara::threads::Threader::run (
-  const std::string name, Base_Thread * thread, bool paused)
+  const std::string name, BaseThread * thread, bool paused)
 {
   if (name != "" && thread != 0)
   {
-    Worker_Thread * worker = new Worker_Thread (name, thread,
+    WorkerThread * worker = new WorkerThread (name, thread,
       control_, data_);
 
     if (paused)
@@ -61,7 +61,7 @@ madara::threads::Threader::run (
   if (name != "" && thread != 0)
   {
     // attempt to create a Java Thread
-    Java_Thread * new_thread = Java_Thread::create (thread);
+    JavaThread * new_thread = JavaThread::create (thread);
 
     // if successful, run the thread
     if (new_thread)
@@ -77,7 +77,7 @@ madara::threads::Threader::run (
   if (name != "" && thread != 0)
   {
     // attempt to create a Java Thread
-    Java_Thread * new_thread = Java_Thread::create (thread);
+    JavaThread * new_thread = JavaThread::create (thread);
 
     // if successful, run the thread
     if (new_thread)
@@ -89,11 +89,11 @@ madara::threads::Threader::run (
 
 void
 madara::threads::Threader::run (double hertz,
-  const std::string name, Base_Thread * thread, bool paused)
+  const std::string name, BaseThread * thread, bool paused)
 {
   if (name != "" && thread != 0)
   {
-    Worker_Thread * worker = new Worker_Thread (name, thread,
+    WorkerThread * worker = new WorkerThread (name, thread,
       control_, data_, hertz);
 
     if (paused)
@@ -108,7 +108,7 @@ madara::threads::Threader::run (double hertz,
 void
 madara::threads::Threader::wait (const std::string name)
 {
-  Named_Worker_Threads::iterator found = threads_.find (name);
+  NamedWorkerThreads::iterator found = threads_.find (name);
 
   if (found != threads_.end ())
   {
@@ -125,7 +125,7 @@ madara::threads::Threader::wait (const std::string name)
 void
 madara::threads::Threader::wait (void)
 {
-  for (Named_Worker_Threads::iterator i = threads_.begin ();
+  for (NamedWorkerThreads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
   {
     std::string finished = i->second->finished_.get_name ();
@@ -141,62 +141,62 @@ madara::threads::Threader::wait (void)
 void
 madara::threads::Threader::pause (const std::string name)
 {
-  Named_Worker_Threads::iterator found = threads_.find (name);
+  NamedWorkerThreads::iterator found = threads_.find (name);
 
   if (found != threads_.end ())
   {
-    control_->set (name + ".paused", Knowledge_Record::Integer (1));
+    control_->set (name + ".paused", KnowledgeRecord::Integer (1));
   }
 }
 
 void
 madara::threads::Threader::pause (void)
 {
-  for (Named_Worker_Threads::iterator i = threads_.begin ();
+  for (NamedWorkerThreads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
   {
-    control_->set (i->first + ".paused", Knowledge_Record::Integer (1));
+    control_->set (i->first + ".paused", KnowledgeRecord::Integer (1));
   }
 }
 
 void
 madara::threads::Threader::resume (const std::string name)
 {
-  Named_Worker_Threads::iterator found = threads_.find (name);
+  NamedWorkerThreads::iterator found = threads_.find (name);
 
   if (found != threads_.end ())
   {
-    control_->set (name + ".paused", Knowledge_Record::Integer (0));
+    control_->set (name + ".paused", KnowledgeRecord::Integer (0));
   }
 }
 
 void
 madara::threads::Threader::resume (void)
 {
-  for (Named_Worker_Threads::iterator i = threads_.begin ();
+  for (NamedWorkerThreads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
   {
-    control_->set (i->first + ".paused", Knowledge_Record::Integer (0));
+    control_->set (i->first + ".paused", KnowledgeRecord::Integer (0));
   }
 }
 
 void
 madara::threads::Threader::terminate (const std::string name)
 {
-  Named_Worker_Threads::iterator found = threads_.find (name);
+  NamedWorkerThreads::iterator found = threads_.find (name);
 
   if (found != threads_.end ())
   {
-    control_->set (name + ".terminated", Knowledge_Record::Integer (1));
+    control_->set (name + ".terminated", KnowledgeRecord::Integer (1));
   }
 }
 
 void
 madara::threads::Threader::terminate (void)
 {
-  for (Named_Worker_Threads::iterator i = threads_.begin ();
+  for (NamedWorkerThreads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
   {
-    control_->set (i->first + ".terminated", Knowledge_Record::Integer (1));
+    control_->set (i->first + ".terminated", KnowledgeRecord::Integer (1));
   }
 }

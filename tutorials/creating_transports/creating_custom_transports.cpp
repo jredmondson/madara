@@ -7,8 +7,8 @@
  * can be attached to a knowledge base
  **/
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "Custom_Transport.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "CustomTransport.h"
 #include <iostream>
 #include <string>
 #include "ace/Signal.h"
@@ -43,9 +43,9 @@ int main (int argc, char * argv[])
   settings.hosts.resize (1);
   settings.hosts[0] = multicast_address;
   
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  Madara::KnowledgeEngine::KnowledgeBase knowledge;
 
-  Custom_Transport * transport = new Custom_Transport (knowledge.get_id (),
+  CustomTransport * transport = new CustomTransport (knowledge.get_id (),
     knowledge.get_context (), settings, true);
 
   knowledge.attach_transport (transport);

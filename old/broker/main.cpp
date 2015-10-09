@@ -17,14 +17,14 @@
 #include "ace/Recursive_Thread_Mutex.h"
 
 
-#include "Agent_Messages.h"
-#include "Broker_Context.h"
-#include "Madara_Common.h"
-#include "Broker_Timeout_Handler.h"
+#include "AgentMessages.h"
+#include "BrokerContext.h"
+#include "MadaraCommon.h"
+#include "BrokerTimeoutHandler.h"
 #include "Agent.h"
 
 typedef ACE_Thread_Timer_Queue_Adapter <ACE_Timer_Heap> ActiveTimer;
-typedef ACE_Guard<ACE_Recursive_Thread_Mutex> Finished_Guard;
+typedef ACE_Guard<ACE_Recursive_Thread_Mutex> FinishedGuard;
 
 const std::string DEFAULT_KEY = "127.0.0.1";
 const u_short DEFAULT_PORT = ACE_DEFAULT_SERVER_PORT;
@@ -34,13 +34,13 @@ static ACE_Recursive_Thread_Mutex mutex_;
 
 extern "C" void handler (int)
 {
-  Finished_Guard guard (mutex_);
+  FinishedGuard guard (mutex_);
   Madara::finished_ = 1;
 }
 
 void testDeploymentSize (int size, std::ostream & output)
 {
-  Madara::Broker_Context context;
+  Madara::BrokerContext context;
   Madara::Deployment::Candidate deployment;
   ACE_hrtime_t start, end;
   unsigned int total;
@@ -104,7 +104,7 @@ int main (int argc, char *argv[])
   u_short server_port = argc > 1 ? 
     ACE_OS::atoi (port_str.c_str ()) : DEFAULT_PORT;
 
-  Madara::Broker_Context context;
+  Madara::BrokerContext context;
 
   // create a reactor with a thread pool
   ACE_TP_Reactor reactor;
@@ -112,8 +112,8 @@ int main (int argc, char *argv[])
   ACE_Reactor::instance (&new_reactor);
 
   // create the handlers
-  Client_Acceptor peer_acceptor (context);
-  Broker_Timeout_Handler timeouts (context);
+  ClientAcceptor peer_acceptor (context);
+  BrokerTimeoutHandler timeouts (context);
   ActiveTimer timer;
 
   // for the scheduled timer
@@ -153,7 +153,7 @@ int main (int argc, char *argv[])
 
 
 /*  std::ofstream output ("test_results.txt");
-  Madara::Broker_Context context;
+  Madara::BrokerContext context;
   Madara::Deployment::Candidate deployment;
   ACE_hrtime_t start, end;
   unsigned int total;

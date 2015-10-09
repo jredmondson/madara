@@ -1,34 +1,34 @@
 
 #include "madara/knowledge/containers/Vector.h"
-#include "madara/knowledge/containers/Integer_Vector.h"
-#include "madara/knowledge/containers/Double_Vector.h"
-#include "madara/knowledge/containers/Native_Double_Vector.h"
-#include "madara/knowledge/containers/String_Vector.h"
+#include "madara/knowledge/containers/IntegerVector.h"
+#include "madara/knowledge/containers/DoubleVector.h"
+#include "madara/knowledge/containers/NativeDoubleVector.h"
+#include "madara/knowledge/containers/StringVector.h"
 #include "madara/knowledge/containers/Map.h"
-#include "madara/knowledge/containers/Flex_Map.h"
+#include "madara/knowledge/containers/FlexMap.h"
 #include "madara/knowledge/containers/Integer.h"
 #include "madara/knowledge/containers/Double.h"
 #include "madara/knowledge/containers/Queue.h"
 #include "madara/knowledge/containers/Collection.h"
-#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef madara::Knowledge_Record   Knowledge_Record;
+typedef madara::KnowledgeRecord   KnowledgeRecord;
 
 void test_flex_map (void)
 {
   std::cerr << "************* FLEX MAP: CREATING FLEX MAP*************\n";
-  knowledge::Knowledge_Base knowledge;
-  containers::Flex_Map map ("records", knowledge);
+  knowledge::KnowledgeBase knowledge;
+  containers::FlexMap map ("records", knowledge);
 
   std::cerr << "Creating record with name and age\n";
   map["robert"]["name"] = "Robert Jenkins";
   map["robert"]["age"] = 49;
 
   std::cerr << "Creating Flex Map from index operator\n";
-  containers::Flex_Map robert_record = map["robert"];
+  containers::FlexMap robert_record = map["robert"];
 
   robert_record["salary"] = 30500.00;
   robert_record["age"] = robert_record["age"].to_integer () + 1;
@@ -60,7 +60,7 @@ void test_flex_map (void)
   }
 
   std::cerr << "    Retrieving age...";
-  if (normal_map["age"] == Knowledge_Record::Integer (50))
+  if (normal_map["age"] == KnowledgeRecord::Integer (50))
   {
     std::cerr << "SUCCESS\n";
   }
@@ -87,7 +87,7 @@ void test_flex_map (void)
 
   std::cerr << "Attempting to_map function for subkeys\n";
   std::vector<std::string> next_keys;
-  std::map<std::string, madara::Knowledge_Record> all_record_vars;
+  std::map<std::string, madara::KnowledgeRecord> all_record_vars;
   knowledge.to_map ("records", ".", "", next_keys, all_record_vars);
 
   std::cerr << "  Size check on next keys and all records are a: ";
@@ -102,7 +102,7 @@ void test_flex_map (void)
 
   std::vector<std::string> sub_keys;
 
-  std::cerr << "Attempting keys function on Flex_Map\n";
+  std::cerr << "Attempting keys function on FlexMap\n";
   map.keys (sub_keys, true);
 
   std::cerr << "  Size check on flex map's sub keys: ";
@@ -196,7 +196,7 @@ void test_flex_map (void)
 void test_vector (void)
 {
   std::cerr << "************* VECTOR: CREATING VECTOR*************\n";
-  knowledge::Knowledge_Base knowledge;
+  knowledge::KnowledgeBase knowledge;
   containers::Vector vector ("test_vector", knowledge, 10);
   size_t size = vector.size ();
 
@@ -269,7 +269,7 @@ void test_vector (void)
   std::cerr << "Printing results from knowledge base.\n";
   knowledge.print ();
 
-  madara::Knowledge_Vector records;
+  madara::KnowledgeVector records;
   vector.copy_to (records);
 
   std::cerr << "Printing resulting knowledge vector.\n";
@@ -291,14 +291,14 @@ void test_vector (void)
 void test_map (void)
 {
   std::cerr << "************* MAP: SETTING KEY:VALUE PAIRS*************\n";
-  knowledge::Knowledge_Base knowledge;
+  knowledge::KnowledgeBase knowledge;
   std::vector <std::string> keys;
   containers::Map map ("test_map", knowledge);
   
   map.set ("name", "Rob Roy");
   map.set ("occupation", "Lord of the MacGregors");
-  map.set ("age", madara::Knowledge_Record::Integer (63));
-  map.set ("wives", madara::Knowledge_Record::Integer (1));
+  map.set ("age", madara::KnowledgeRecord::Integer (63));
+  map.set ("wives", madara::KnowledgeRecord::Integer (1));
 
   size_t size = map.size ();
   map.keys (keys);
@@ -377,7 +377,7 @@ void test_map (void)
 void test_integer (void)
 {
   std::cerr << "************* INTEGER: GETTING AND SETTING*************\n";
-  knowledge::Knowledge_Base knowledge;
+  knowledge::KnowledgeBase knowledge;
   containers::Integer my_int ("my_int", knowledge);
 
   std::cerr << "Integer value: " << *my_int << "\n";
@@ -399,7 +399,7 @@ void test_integer (void)
 void test_double (void)
 {
   std::cerr << "************* DOUBLE: GETTING AND SETTING*************\n";
-  knowledge::Knowledge_Base knowledge;
+  knowledge::KnowledgeBase knowledge;
   containers::Double my_double ("my_double", knowledge);
 
   std::cerr << "Double value: " << *my_double << "\n";
@@ -421,7 +421,7 @@ void test_double (void)
 void test_map_exchanges (void)
 {
   std::cerr << "************* EXCHANGES: MAPS*************\n";
-  knowledge::Knowledge_Base knowledge;
+  knowledge::KnowledgeBase knowledge;
   std::vector <std::string> keys;
   containers::Map map ("first_map", knowledge);
   containers::Map map2 ("second_map", knowledge);
@@ -482,7 +482,7 @@ void test_map_exchanges (void)
 void test_vector_exchanges (void)
 {
   std::cerr << "************* EXCHANGES: VECTORS*************\n";
-  knowledge::Knowledge_Base knowledge;
+  knowledge::KnowledgeBase knowledge;
   containers::Vector vector ("first_vector", knowledge, 12);
   containers::Vector vector2 ("second_vector", knowledge, 7);
   
@@ -534,7 +534,7 @@ void test_vector_exchanges (void)
 void test_vector_transfer ()
 {
   std::cerr << "************* TRANSFERS: VECTORS*************\n";
-  knowledge::Knowledge_Base knowledge;
+  knowledge::KnowledgeBase knowledge;
   containers::Vector vector ("first_vector", knowledge, 12);
   containers::Vector vector2 ("second_vector", knowledge, 7);
   
@@ -557,8 +557,8 @@ void test_vector_transfer ()
 void test_integer_vector (void)
 {
   std::cerr << "************* VECTOR: CREATING INTEGER_VECTOR*************\n";
-  knowledge::Knowledge_Base knowledge;
-  containers::Integer_Vector vector ("test_vector", knowledge, 10);
+  knowledge::KnowledgeBase knowledge;
+  containers::IntegerVector vector ("test_vector", knowledge, 10);
   size_t size = vector.size ();
 
   vector.set (1);
@@ -621,8 +621,8 @@ void test_integer_vector (void)
 void test_double_vector (void)
 {
   std::cerr << "************* VECTOR: CREATING DOUBLE_VECTOR*************\n";
-  knowledge::Knowledge_Base knowledge;
-  containers::Double_Vector vector ("test_vector", knowledge, 10);
+  knowledge::KnowledgeBase knowledge;
+  containers::DoubleVector vector ("test_vector", knowledge, 10);
   size_t size = vector.size ();
 
   vector.set (1, 1.1);
@@ -685,8 +685,8 @@ void test_double_vector (void)
 void test_string_vector (void)
 {
   std::cerr << "************* VECTOR: CREATING STRING_VECTOR*************\n";
-  knowledge::Knowledge_Base knowledge;
-  containers::String_Vector vector ("test_vector", knowledge, 10);
+  knowledge::KnowledgeBase knowledge;
+  containers::StringVector vector ("test_vector", knowledge, 10);
   size_t size = vector.size ();
 
   vector.set (1, "1.1");
@@ -750,8 +750,8 @@ void test_native_vectors (void)
 {
   std::cerr <<
     "************* VECTOR: CREATING NATIVE DOUBLE VECTOR*************\n";
-  madara::knowledge::Knowledge_Base knowledge;
-  containers::Native_Double_Vector vector ("test_vector", knowledge, 10);
+  madara::knowledge::KnowledgeBase knowledge;
+  containers::NativeDoubleVector vector ("test_vector", knowledge, 10);
   size_t size = vector.size ();
 
   vector.set (1, 1.1);
@@ -815,9 +815,9 @@ void test_queue (void)
 {
   std::cerr <<
     "************* QUEUES: Testing multithreaded queues*************\n";
-  knowledge::Knowledge_Base knowledge;
+  knowledge::KnowledgeBase knowledge;
   containers::Queue messages ("queue", knowledge, 7);
-  madara::Knowledge_Record record;
+  madara::KnowledgeRecord record;
   bool check;
 
   messages.enqueue ("first string");
@@ -955,8 +955,8 @@ void test_collection (void)
   std::cerr <<
     "************* COLLECTION: Testing container collections*************\n";
 
-  knowledge::Knowledge_Base knowledge;
-  knowledge::Thread_Safe_Context & context (knowledge.get_context ());
+  knowledge::KnowledgeBase knowledge;
+  knowledge::ThreadSafeContext & context (knowledge.get_context ());
 
   unsigned char buffer1[1024];
   unsigned char buffer2[2048];
@@ -966,14 +966,14 @@ void test_collection (void)
   containers::Integer age ("age", knowledge);
   containers::String name ("name", knowledge);
   containers::Double salary ("salary", knowledge);
-  containers::Native_Double_Vector gps_location ("location.gps", knowledge, 3);
-  containers::Native_Integer_Vector years_employed ("employment.years", knowledge);
+  containers::NativeDoubleVector gps_location ("location.gps", knowledge, 3);
+  containers::NativeIntegerVector years_employed ("employment.years", knowledge);
   containers::Map jobs ("jobs", knowledge);
-  containers::Buffer_Vector images ("images", knowledge);
-  containers::String_Vector movies ("movies.favorite", knowledge);
-  containers::Integer_Vector years ("years.favorite", knowledge);
-  containers::Integer_Vector sensors_ready ("sensors_ready", knowledge, 3);
-  containers::Double_Vector coolfactor ("coolfactor.by.year", knowledge, 35);
+  containers::BufferVector images ("images", knowledge);
+  containers::StringVector movies ("movies.favorite", knowledge);
+  containers::IntegerVector years ("years.favorite", knowledge);
+  containers::IntegerVector sensors_ready ("sensors_ready", knowledge, 3);
+  containers::DoubleVector coolfactor ("coolfactor.by.year", knowledge, 35);
 
   std::cerr << "  Testing modifieds.size == 2 after container creation... ";
 

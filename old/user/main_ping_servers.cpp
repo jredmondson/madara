@@ -3,8 +3,8 @@
 #include "ace/OS.h"
 #include "ace/Log_Msg.h"
 #include "ace/SOCK_Connector.h"
-#include "Agent_Messages.h"
-#include "Madara_Common.h"
+#include "AgentMessages.h"
+#include "MadaraCommon.h"
 
 /*
   Unlike the previous two Tutorials, we're going to allow the user to provide
@@ -65,8 +65,8 @@ int main (int argc, char *argv[])
   {
     port = "30000";
 
-    Madara::Agent_Ping ping;
-    Madara::Agent_File deployment_file;
+    Madara::AgentPing ping;
+    Madara::AgentFile deployment_file;
 
     strcpy (deployment_file.name, "deployment_example.txt");
 

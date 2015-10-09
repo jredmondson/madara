@@ -7,13 +7,13 @@
  * system calls supported in the MADARA version.
  **/
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 #include <iostream>
 #include <string>
 
 int main (int argc, char * argv[])
 {
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  Madara::KnowledgeEngine::KnowledgeBase knowledge;
   
   knowledge.evaluate ("#print_system_calls ()");
 

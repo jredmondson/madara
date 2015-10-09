@@ -12,39 +12,39 @@ namespace madara
   namespace utility
   {
     /**
-     * @class LStack_Node
+     * @class LStackNode
      * @brief Defines a node in the @a LStack that's implemented as a linked list.
      */
     template <class T>
-    class LStack_Node
+    class LStackNode
     {
       friend class madara::utility::LStack<T>;
-      friend class madara::utility::LStack_Iterator<T>;
-      friend class madara::utility::LStack_Const_Iterator<T>;
+      friend class madara::utility::LStackIterator<T>;
+      friend class madara::utility::LStackConstIterator<T>;
     public:
       // = Initialization methods
-      LStack_Node (const T &item,
-                   LStack_Node<T> *next = 0);
+      LStackNode (const T &item,
+                   LStackNode<T> *next = 0);
 
-      LStack_Node (LStack_Node<T> *next);
+      LStackNode (LStackNode<T> *next);
 
-      LStack_Node (void);
+      LStackNode (void);
       // Default constructor that doesn't initialize <item_>.
 
       void *operator new (size_t bytes);
-      // Allocate a new <LStack_Node>, trying first from the
+      // Allocate a new <LStackNode>, trying first from the
       // <free_list_> and if that's empty try from the global <::operator
       // new>.
 
       void operator delete (void *ptr);
       // Return <ptr> to the <free_list_>.
 
-      LStack_Node *next (void);
+      LStackNode *next (void);
       // Return the next node to which this node points.
-      // This method is added to support the Scoped_List class below.
+      // This method is added to support the ScopedList class below.
 
       static void free_list_allocate (size_t n);
-      // Preallocate <n> <LStack_Nodes> and store them on the
+      // Preallocate <n> <LStackNodes> and store them on the
       // <free_list_>.
 
       static void free_list_release (void);
@@ -52,66 +52,66 @@ namespace madara
 
     private:
 
-      static LStack_Node<T> *free_list_;
+      static LStackNode<T> *free_list_;
       // Head of the "free list", which is a stack of
-      // <LStack_Nodes> used to speed up allocation.
+      // <LStackNodes> used to speed up allocation.
 
       T item_;
       // Item in this node.
 
-      LStack_Node<T> *next_;
+      LStackNode<T> *next_;
       // Pointer to the next node.
     };
   }
 }
 
 /* static */
-template <class T> madara::utility::LStack_Node<T> *
-madara::utility::LStack_Node<T>::free_list_ = 0;
+template <class T> madara::utility::LStackNode<T> *
+madara::utility::LStackNode<T>::free_list_ = 0;
 
-// Allocate a new <LStack_Node>, trying first from the
+// Allocate a new <LStackNode>, trying first from the
 // <free_list_> and if that's empty try from the global <::operator
 // new>.
 
 template <class T> void *
-madara::utility::LStack_Node<T>::operator new (size_t)
+madara::utility::LStackNode<T>::operator new (size_t)
 {
   // extract element from the free_list_ if there is one left
-  if (LStack_Node<T>::free_list_ != 0)
+  if (LStackNode<T>::free_list_ != 0)
     {
       // get the top element of the list
-      LStack_Node<T>* new_node = LStack_Node<T>::free_list_;
+      LStackNode<T>* new_node = LStackNode<T>::free_list_;
 
       // "remove" the element from the list and pass it to the caller
-      LStack_Node<T>::free_list_ = new_node->next_;
+      LStackNode<T>::free_list_ = new_node->next_;
 
       return new_node;
     }
 
-  return ::operator new (sizeof (LStack_Node<T>));
+  return ::operator new (sizeof (LStackNode<T>));
 }
 
 // Return <ptr> to the <free_list_>.
 
 template <class T> void
-madara::utility::LStack_Node<T>::operator delete (void *ptr)
+madara::utility::LStackNode<T>::operator delete (void *ptr)
 {
   // do nothing on a null pointer
   if (ptr != 0)
     {
       // cast to a node pointer
-      LStack_Node<T>* node = static_cast<LStack_Node<T>*> (ptr);
+      LStackNode<T>* node = static_cast<LStackNode<T>*> (ptr);
 
       // put the node back into the list
-      node->next_ = LStack_Node<T>::free_list_;
+      node->next_ = LStackNode<T>::free_list_;
 
-      LStack_Node<T>::free_list_ = node;
+      LStackNode<T>::free_list_ = node;
     }
 }
 
 // Returns the next node to which this node points.
-template <class T> madara::utility::LStack_Node<T> *
-madara::utility::LStack_Node<T>::next (void)
+template <class T> madara::utility::LStackNode<T> *
+madara::utility::LStackNode<T>::next (void)
 {
   return next_;
 }
@@ -119,49 +119,49 @@ madara::utility::LStack_Node<T>::next (void)
 // Returns all dynamic memory on the free list to the free store.
 
 template <class T> void 
-madara::utility::LStack_Node<T>::free_list_release (void)
+madara::utility::LStackNode<T>::free_list_release (void)
 {
   // delete free list element by element
-  while (LStack_Node<T>::free_list_ != 0)
+  while (LStackNode<T>::free_list_ != 0)
     {
-      LStack_Node<T>* node = LStack_Node<T>::free_list_;
-      LStack_Node<T>::free_list_ = node->next_;
+      LStackNode<T>* node = LStackNode<T>::free_list_;
+      LStackNode<T>::free_list_ = node->next_;
       ::operator delete (node);
     }
 }
 
-// Preallocate <n> <LStack_Nodes> and store them on the
+// Preallocate <n> <LStackNodes> and store them on the
 // <free_list_>.
 
 template <class T> void 
-madara::utility::LStack_Node<T>::free_list_allocate (size_t n)
+madara::utility::LStackNode<T>::free_list_allocate (size_t n)
 {
   // add a new element to the stack n times
   for (size_t node_number = 0; node_number < n; ++node_number)
     {
       // create a new element avoiding the overwritten new operator
-      LStack_Node<T>* new_node = 
-  reinterpret_cast<LStack_Node<T>*> (
-    ::operator new (sizeof (LStack_Node<T>)));
+      LStackNode<T>* new_node = 
+  reinterpret_cast<LStackNode<T>*> (
+    ::operator new (sizeof (LStackNode<T>)));
 
-      new_node->next_ = LStack_Node<T>::free_list_;
+      new_node->next_ = LStackNode<T>::free_list_;
     
       // make the new element the top of the list
-      LStack_Node<T>::free_list_ = new_node;
+      LStackNode<T>::free_list_ = new_node;
     }
 }
 
 template <class T>
-madara::utility::LStack_Node<T>::LStack_Node (const T &item,
-                madara::utility::LStack_Node<T> *next) 
+madara::utility::LStackNode<T>::LStackNode (const T &item,
+                madara::utility::LStackNode<T> *next) 
   : item_ (item),
     next_ (next)
 {
 }
 
 template <class T>
-madara::utility::LStack_Node<T>::LStack_Node (
-  madara::utility::LStack_Node<T> *next) 
+madara::utility::LStackNode<T>::LStackNode (
+  madara::utility::LStackNode<T> *next) 
   : next_ (next)
 {
 }
@@ -170,7 +170,7 @@ madara::utility::LStack_Node<T>::LStack_Node (
 // way.
 
 template <class T>
-madara::utility::LStack_Node<T>::LStack_Node (void)
+madara::utility::LStackNode<T>::LStackNode (void)
   : next_ (this)
 {
 }
@@ -191,7 +191,7 @@ madara::utility::LStack<T>::LStack (size_t size_hint)
     count_ (0)
 {
   // use the size_hint to preallocate  memory for nodes
-  LStack_Node<T>::free_list_allocate (size_hint);
+  LStackNode<T>::free_list_allocate (size_hint);
 }
 
 // Copy constructor.
@@ -205,7 +205,7 @@ madara::utility::LStack<T>::LStack (
 {
   // insert a dummy node first and keep it as an auto_ptr for exception
   // safety issues
-  ::std::auto_ptr <LStack_Node<T> > tail (new LStack_Node<T> ());
+  ::std::auto_ptr <LStackNode<T> > tail (new LStackNode<T> ());
   head_ = tail.get ();
 
   // copy_list has strong exception safety, so no try catch block
@@ -223,20 +223,20 @@ madara::utility::LStack<T>::copy_list (
                                        const madara::utility::LStack<T> &rhs)
 {
   LStack<T> temp;
-  LStack_Node<T>* prev = 0;
+  LStackNode<T>* prev = 0;
 
   // Iterate along the list of stack nodes in <s>, creating a new
   // corresponding node and chaining them along. Note that we
   // can't use push() to insert at the head since it will reverse
   // the stack.
 
-  ::std::auto_ptr <LStack_Node<T> > new_node;
+  ::std::auto_ptr <LStackNode<T> > new_node;
 
   for (typename LStack<T>::const_iterator it = rhs.begin (); 
        it != rhs.end (); 
        ++it)
     {
-      new_node.reset (new LStack_Node<T> (*it));
+      new_node.reset (new LStackNode<T> (*it));
 
       if (it == rhs.begin ())
   {
@@ -340,7 +340,7 @@ madara::utility::LStack<T>::push (const T &new_item)
   try
     {
       // create a temporary new node for exception safety reasons
-      ::std::auto_ptr <LStack_Node<T> > temp (new LStack_Node<T> (new_item, head_));
+      ::std::auto_ptr <LStackNode<T> > temp (new LStackNode<T> (new_item, head_));
 
       // integrate the new node into the list
       head_ = temp.release ();
@@ -384,7 +384,7 @@ template <class T> void
 madara::utility::LStack<T>::pop_i (void)
 {
   // remember the current queue head
-  LStack_Node<T>* head = head_;
+  LStackNode<T>* head = head_;
 
   // remove the head from the queue
   head_ = head->next_;
@@ -440,7 +440,7 @@ template <typename T> typename madara::utility::LStack<T>::iterator
 madara::utility::LStack<T>::end (void)
 {
   // iterator starts at the tail element
-  return typename LStack<T>::iterator (*this, (LStack_Node<T>*) 0);
+  return typename LStack<T>::iterator (*this, (LStackNode<T>*) 0);
 }
 
 // Get an iterator to the begining of the queue
@@ -456,23 +456,23 @@ template <typename T> typename madara::utility::LStack<T>::const_iterator
 madara::utility::LStack<T>::end (void) const
 {
   // iterator starts at the tail element
-  return typename LStack<T>::const_iterator (*this, (LStack_Node<T>*) 0);
+  return typename LStack<T>::const_iterator (*this, (LStackNode<T>*) 0);
 }
 
 template <typename T> T &
-madara::utility::LStack_Iterator<T>::operator* (void)
+madara::utility::LStackIterator<T>::operator* (void)
 {
   return pos_->item_;
 }
 
 template <typename T> const T &
-madara::utility::LStack_Iterator<T>::operator* (void) const
+madara::utility::LStackIterator<T>::operator* (void) const
 {
   return pos_->item_;
 }
 
-template <typename T> madara::utility::LStack_Iterator<T> &
-madara::utility::LStack_Iterator<T>::operator++ (void) 
+template <typename T> madara::utility::LStackIterator<T> &
+madara::utility::LStackIterator<T>::operator++ (void) 
 {
   // advance to the next position
   pos_ = pos_->next_;
@@ -481,11 +481,11 @@ madara::utility::LStack_Iterator<T>::operator++ (void)
 }
 
 // Post-increment.
-template <typename T> madara::utility::LStack_Iterator<T> 
-madara::utility::LStack_Iterator<T>::operator++ (int) 
+template <typename T> madara::utility::LStackIterator<T> 
+madara::utility::LStackIterator<T>::operator++ (int) 
 {
   // keep copy of the original iterator
-  LStack_Iterator<T> copy = *this;
+  LStackIterator<T> copy = *this;
 
   // advance to the next position
   pos_ = pos_->next_;
@@ -495,8 +495,8 @@ madara::utility::LStack_Iterator<T>::operator++ (int)
 }
 
 template <typename T> bool
-madara::utility::LStack_Iterator<T>::operator== (
-  const madara::utility::LStack_Iterator<T> &rhs) const
+madara::utility::LStackIterator<T>::operator== (
+  const madara::utility::LStackIterator<T> &rhs) const
 {
   // check if the iterator points to the same position in the same queue
   // (we could even omit the check for queue equality, because it is
@@ -505,15 +505,15 @@ madara::utility::LStack_Iterator<T>::operator== (
 }
 
 template <typename T> bool
-madara::utility::LStack_Iterator<T>::operator!= (
-  const madara::utility::LStack_Iterator<T> &rhs) const
+madara::utility::LStackIterator<T>::operator!= (
+  const madara::utility::LStackIterator<T> &rhs) const
 {
   // implement != in terms of ==
   return !(*this == rhs);
 }
 
 template <typename T>
-madara::utility::LStack_Iterator<T>::LStack_Iterator (
+madara::utility::LStackIterator<T>::LStackIterator (
   madara::utility::LStack<T> &stack, size_t pos)
   : stack_ (stack),
     pos_ (stack.head_)
@@ -530,21 +530,21 @@ madara::utility::LStack_Iterator<T>::LStack_Iterator (
 }
 
 template <typename T>
-madara::utility::LStack_Iterator<T>::LStack_Iterator (
-  madara::utility::LStack<T> &stack, madara::utility::LStack_Node<T> *pos)
+madara::utility::LStackIterator<T>::LStackIterator (
+  madara::utility::LStack<T> &stack, madara::utility::LStackNode<T> *pos)
   : stack_ (stack),
     pos_ (pos)
 {
 }
 
 template <typename T> const T &
-madara::utility::LStack_Const_Iterator<T>::operator* (void) const
+madara::utility::LStackConstIterator<T>::operator* (void) const
 {
   return pos_->item_;
 }
 
-template <typename T> const madara::utility::LStack_Const_Iterator<T> &
-madara::utility::LStack_Const_Iterator<T>::operator++ (void) const
+template <typename T> const madara::utility::LStackConstIterator<T> &
+madara::utility::LStackConstIterator<T>::operator++ (void) const
 {
   // advance to the next position
   pos_ = pos_->next_;
@@ -552,11 +552,11 @@ madara::utility::LStack_Const_Iterator<T>::operator++ (void) const
   return *this;
 }
 
-template <typename T> madara::utility::LStack_Const_Iterator<T>
-madara::utility::LStack_Const_Iterator<T>::operator++ (int) const
+template <typename T> madara::utility::LStackConstIterator<T>
+madara::utility::LStackConstIterator<T>::operator++ (int) const
 {
   // keep copy of the original iterator
-  LStack_Const_Iterator<T> copy = *this;
+  LStackConstIterator<T> copy = *this;
 
   // advance to the next position
   pos_ = pos_->next_;
@@ -567,22 +567,22 @@ madara::utility::LStack_Const_Iterator<T>::operator++ (int) const
 
 template <typename T> 
 bool
-madara::utility::LStack_Const_Iterator<T>::operator== (
-  const madara::utility::LStack_Const_Iterator<T> &rhs) const
+madara::utility::LStackConstIterator<T>::operator== (
+  const madara::utility::LStackConstIterator<T> &rhs) const
 {
   // check if the iterator points to the same position in the same stack
   return (pos_ == rhs.pos_);
 }
 
 template <typename T> bool
-madara::utility::LStack_Const_Iterator<T>::operator!= (
-  const madara::utility::LStack_Const_Iterator<T> & rhs) const
+madara::utility::LStackConstIterator<T>::operator!= (
+  const madara::utility::LStackConstIterator<T> & rhs) const
 {
   return !(*this == rhs);
 }
 
 template <typename T>
-madara::utility::LStack_Const_Iterator<T>::LStack_Const_Iterator (
+madara::utility::LStackConstIterator<T>::LStackConstIterator (
   const madara::utility::LStack<T> & stack, size_t pos)
   : stack_ (stack),
     pos_ (stack.head_)
@@ -599,8 +599,8 @@ madara::utility::LStack_Const_Iterator<T>::LStack_Const_Iterator (
 }
 
 template <typename T>
-madara::utility::LStack_Const_Iterator<T>::LStack_Const_Iterator (
-  const madara::utility::LStack<T> & stack, madara::utility::LStack_Node<T> * pos)
+madara::utility::LStackConstIterator<T>::LStackConstIterator (
+  const madara::utility::LStack<T> & stack, madara::utility::LStackNode<T> * pos)
   : stack_ (stack),
     pos_ (pos)
 {

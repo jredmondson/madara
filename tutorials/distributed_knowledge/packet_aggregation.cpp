@@ -31,7 +31,7 @@
 #include <string>
 #include <sstream>
 #include <time.h>
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 #include "ace/Signal.h"
 #include "ace/OS_NS_Thread.h"
 
@@ -57,9 +57,9 @@ extern "C" void terminate (int)
 /**
  * Madara function that determines the zone that an agent is in
  **/
-Madara::Knowledge_Record
-  move (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   /**
    * Zone 1 = (0,39) -> (39,39)
@@ -80,7 +80,7 @@ Madara::Knowledge_Record
     variables.set (".0", variables.expand_statement ("agent{.id}"));
 
   // 
-  Madara::Knowledge_Engine::Compiled_Expression expression = 
+  Madara::KnowledgeEngine::CompiledExpression expression = 
     variables.compile (
 
     // Update the coordinates with the delta
@@ -119,15 +119,15 @@ Madara::Knowledge_Record
 
   variables.evaluate (expression);
 
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 /**
  * Madara function that determines the zone that an agent is in
  **/
-Madara::Knowledge_Record
-  get_zone (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  get_zone (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   /**
    * Zone 1 = (0,39) -> (39,39)
@@ -148,7 +148,7 @@ Madara::Knowledge_Record
     variables.set (".0", variables.expand_statement ("agent{.id}"));
 
   // 
-  Madara::Knowledge_Engine::Compiled_Expression expression = 
+  Madara::KnowledgeEngine::CompiledExpression expression = 
     variables.compile (
     "("
         // if x <= 39, then we're either in zone 1 or zone 3
@@ -181,9 +181,9 @@ Madara::Knowledge_Record
 /**
  * Madara function that randomly changes agent direction
  **/
-Madara::Knowledge_Record
-  change_deltas (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  change_deltas (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   if (args.size () == 1)
   {
@@ -203,7 +203,7 @@ Madara::Knowledge_Record
     variables.expand_statement ("agent{.id}"));
 
   // 
-  Madara::Knowledge_Engine::Compiled_Expression expression = 
+  Madara::KnowledgeEngine::CompiledExpression expression = 
     variables.compile (
 
     // set random vector information (up to 5 x or y coordinates per second)
@@ -217,7 +217,7 @@ Madara::Knowledge_Record
 
   variables.evaluate (expression);
 
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 /**
@@ -225,19 +225,19 @@ Madara::Knowledge_Record
  * random number up to the limits of the stdlib.h implementation's limits. An
  * integer argument means to generate a random up to the specified arg limit.
  **/
-Madara::Knowledge_Record
-  rand_int (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  rand_int (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   // if the args list is greater than zero, is an integer, and is not 0
   if (args.size () > 0 && 
-    args[0].type () == Madara::Knowledge_Record::INTEGER &&
+    args[0].type () == Madara::KnowledgeRecord::INTEGER &&
     args[0].to_integer () != 0)
     // then call rand () with a modulus up to that integer argument
-    return Madara::Knowledge_Record::Integer (rand () % (int)args[0].to_integer ());
+    return Madara::KnowledgeRecord::Integer (rand () % (int)args[0].to_integer ());
   // otherwise, just return rand ()
   else
-    return Madara::Knowledge_Record::Integer (rand ());
+    return Madara::KnowledgeRecord::Integer (rand ());
 }
 
 
@@ -252,13 +252,13 @@ int main (int argc, char * argv[])
   settings.hosts[0] = multicast_address;
 
   // Create the knowledge base with the transport settings set for multicast
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  Madara::KnowledgeEngine::KnowledgeBase knowledge (host, settings);
   
   // Check command line arguments for a non-zero id
   if (argc == 2)
   {
     // save the first argument into an integer
-    Madara::Knowledge_Record::Integer new_id;
+    Madara::KnowledgeRecord::Integer new_id;
     std::stringstream buffer (argv[1]);
     buffer >> new_id;
 
@@ -385,10 +385,10 @@ int main (int argc, char * argv[])
    * agent count and print the results. We'll showcase a second way to
    * print information in an evaluation here. Each evaluate call can
    * be passed settings that dictate how the evaluation takes place.
-   * In this case, we set the Eval_Settings class to include a post
+   * In this case, we set the EvalSettings class to include a post
    * print statement that prints the cur and max agents
    **/
-  Madara::Knowledge_Engine::Eval_Settings eval_settings;
+  Madara::KnowledgeEngine::EvalSettings eval_settings;
   eval_settings.post_print_statement = 
 "Agent {.id} of {.cur_agents} online ({.max_agents} max online):\n"
 "  Position: {agent{.id}.x},{agent{.id}.y}\n"

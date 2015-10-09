@@ -1,28 +1,28 @@
 #include "com_madara_containers_FlexMap.h"
-#include "madara/knowledge/containers/Flex_Map.h"
+#include "madara/knowledge/containers/FlexMap.h"
 #include "madara_jni.h"
 
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef madara::Knowledge_Record  Knowledge_Record;
-typedef Knowledge_Record::Integer Integer;
+typedef madara::KnowledgeRecord  KnowledgeRecord;
+typedef KnowledgeRecord::Integer Integer;
 
 jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__
   (JNIEnv *, jobject)
 {
-  return (jlong) new containers::Flex_Map ();
+  return (jlong) new containers::FlexMap ();
 }
 
 
 jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__J
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Flex_Map * result (0);
-  containers::Flex_Map * source = (containers::Flex_Map *) cptr;
+  containers::FlexMap * result (0);
+  containers::FlexMap * source = (containers::FlexMap *) cptr;
 
   if (source)
   {
-    result = new containers::Flex_Map (*source);
+    result = new containers::FlexMap (*source);
   }
 
   return (jlong)result;
@@ -32,14 +32,14 @@ jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__J
 void JNICALL Java_com_madara_containers_FlexMap_jni_1freeFlexMap
   (JNIEnv *, jclass, jlong cptr)
 {
-  delete (containers::Flex_Map *) cptr;
+  delete (containers::FlexMap *) cptr;
 }
 
 
 void JNICALL Java_com_madara_containers_FlexMap_jni_1clear
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
@@ -51,7 +51,7 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1clear
 void JNICALL Java_com_madara_containers_FlexMap_jni_1erase
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
@@ -66,7 +66,7 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1erase
 void JNICALL Java_com_madara_containers_FlexMap_jni_1setString
   (JNIEnv * env, jobject, jlong cptr, jstring value)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
   if (current)
   {
     const char * str_value = env->GetStringUTFChars (value, 0);
@@ -80,7 +80,7 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setString
 void JNICALL Java_com_madara_containers_FlexMap_jni_1setDouble
   (JNIEnv *, jobject, jlong cptr, jdouble value)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
@@ -92,36 +92,36 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setDouble
 void JNICALL Java_com_madara_containers_FlexMap_jni_1set
   (JNIEnv *, jobject, jlong cptr, jlong type, jlong value)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
     // integer set
     if (type == 0)
     {
-      current->set ((Knowledge_Record::Integer)value);
+      current->set ((KnowledgeRecord::Integer)value);
     }
     // knowledge record set
     else
     {
-      Knowledge_Record * record = (Knowledge_Record *)value;
+      KnowledgeRecord * record = (KnowledgeRecord *)value;
 
       if (record)
       {
         // check the type and set accordingly
-        if (record->type () == Knowledge_Record::DOUBLE)
+        if (record->type () == KnowledgeRecord::DOUBLE)
         {
           current->set (record->to_double ());
         }
-        else if (record->type () == Knowledge_Record::DOUBLE_ARRAY)
+        else if (record->type () == KnowledgeRecord::DOUBLE_ARRAY)
         {
           current->set (record->to_doubles ());
         }
-        else if (record->type () == Knowledge_Record::INTEGER)
+        else if (record->type () == KnowledgeRecord::INTEGER)
         {
           current->set (record->to_integer ());
         }
-        else if (record->type () == Knowledge_Record::INTEGER_ARRAY)
+        else if (record->type () == KnowledgeRecord::INTEGER_ARRAY)
         {
           current->set (record->to_integers ());
         }
@@ -132,7 +132,7 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1set
           current->set_file (buffer, size);
           delete[] buffer;
         }
-        else if (record->type () == Knowledge_Record::STRING)
+        else if (record->type () == KnowledgeRecord::STRING)
         {
           current->set (record->to_string ());
         }
@@ -150,7 +150,7 @@ jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
@@ -167,7 +167,7 @@ jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getName
 void JNICALL Java_com_madara_containers_FlexMap_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
@@ -175,7 +175,7 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setName
 
     if (type == 0)
     {
-      knowledge::Knowledge_Base * kb = (knowledge::Knowledge_Base *) context;
+      knowledge::KnowledgeBase * kb = (knowledge::KnowledgeBase *) context;
       current->set_name (str_name, *kb);
     }
     else if (type == 1)
@@ -192,14 +192,14 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setName
 jlong JNICALL Java_com_madara_containers_FlexMap_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
-  containers::Flex_Map * result (0);
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * result (0);
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
     const char * str_key = env->GetStringUTFChars (key, 0);
 
-    result = new containers::Flex_Map ((*current)[str_key]);
+    result = new containers::FlexMap ((*current)[str_key]);
 
     env->ReleaseStringUTFChars (key, str_key);
   }
@@ -210,13 +210,13 @@ jlong JNICALL Java_com_madara_containers_FlexMap_jni_1get
 jlong JNICALL Java_com_madara_containers_FlexMap_jni_1getIndex
 (JNIEnv *, jobject, jlong cptr, jint index)
 {
-  containers::Flex_Map * result (0);
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * result (0);
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
 
-    result = new containers::Flex_Map ((*current)[index]);
+    result = new containers::FlexMap ((*current)[index]);
 
   }
 
@@ -226,12 +226,12 @@ jlong JNICALL Java_com_madara_containers_FlexMap_jni_1getIndex
 jlong JNICALL Java_com_madara_containers_FlexMap_jni_1toRecord
   (JNIEnv * env, jobject, jlong cptr)
 {
-  Knowledge_Record * result (0);
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  KnowledgeRecord * result (0);
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
-    result = new Knowledge_Record (current->to_record ());
+    result = new KnowledgeRecord (current->to_record ());
   }
 
   return (jlong)result;
@@ -241,7 +241,7 @@ jlong JNICALL Java_com_madara_containers_FlexMap_jni_1toRecord
 void JNICALL Java_com_madara_containers_FlexMap_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
@@ -252,7 +252,7 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1modify
 jlong JNICALL Java_com_madara_containers_FlexMap_jni_1toMapContainer
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
   containers::Map * result = new containers::Map ();
 
   if (current)
@@ -267,7 +267,7 @@ jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getDelimiter
 (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
@@ -284,7 +284,7 @@ jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getDelimiter
 void JNICALL Java_com_madara_containers_FlexMap_jni_1setDelimiter
 (JNIEnv * env, jobject, jlong cptr, jstring delimiter)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *) cptr;
+  containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
@@ -301,7 +301,7 @@ jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
 (JNIEnv * env, jobject, jlong cptr, jboolean first_level)
 {
   jobjectArray result (0);
-  containers::Flex_Map * current = (containers::Flex_Map *)cptr;
+  containers::FlexMap * current = (containers::FlexMap *)cptr;
 
   if (current)
   {
@@ -337,9 +337,9 @@ jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
 void JNICALL Java_com_madara_containers_FlexMap_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *)cptr;
-  knowledge::Knowledge_Update_Settings * settings =
-    (knowledge::Knowledge_Update_Settings *)settings_ptr;
+  containers::FlexMap * current = (containers::FlexMap *)cptr;
+  knowledge::KnowledgeUpdateSettings * settings =
+    (knowledge::KnowledgeUpdateSettings *)settings_ptr;
 
   if (current && settings)
   {
@@ -350,7 +350,7 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setSettings
 jboolean JNICALL Java_com_madara_containers_FlexMap_jni_1isTrue
 (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *)cptr;
+  containers::FlexMap * current = (containers::FlexMap *)cptr;
   bool result (true);
 
   if (current)
@@ -365,7 +365,7 @@ jboolean JNICALL Java_com_madara_containers_FlexMap_jni_1isTrue
 jboolean JNICALL Java_com_madara_containers_FlexMap_jni_1isFalse
 (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Flex_Map * current = (containers::Flex_Map *)cptr;
+  containers::FlexMap * current = (containers::FlexMap *)cptr;
   bool result (true);
 
   if (current)

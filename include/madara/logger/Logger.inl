@@ -96,7 +96,7 @@ madara::logger::Logger::clear (void)
   this->term_added_ = false;
   this->syslog_added_ = false;
 
-  for (File_Vectors::iterator i = files_.begin ();
+  for (FileVectors::iterator i = files_.begin ();
     i != files_.end (); ++i)
   {
     if (*i != stderr)

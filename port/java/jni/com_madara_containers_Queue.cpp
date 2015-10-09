@@ -49,8 +49,8 @@
 
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef madara::Knowledge_Record    Knowledge_Record;
-typedef Knowledge_Record::Integer   Integer;
+typedef madara::KnowledgeRecord    KnowledgeRecord;
+typedef KnowledgeRecord::Integer   Integer;
 
 /*
  * Class:     com_madara_containers_Queue
@@ -106,8 +106,8 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueue
 
   if (current)
   {
-    Knowledge_Record * record =
-      (Knowledge_Record *)record_ptr;
+    KnowledgeRecord * record =
+      (KnowledgeRecord *)record_ptr;
 
     if (record)
     {
@@ -131,7 +131,7 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueDouble
 
   if (current)
   {
-    result = current->enqueue (Knowledge_Record (value));
+    result = current->enqueue (KnowledgeRecord (value));
   }
 
   return result;
@@ -150,7 +150,7 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueLong
 
   if (current)
   {
-    result = current->enqueue (Knowledge_Record (Integer (value)));
+    result = current->enqueue (KnowledgeRecord (Integer (value)));
   }
 
   return result;
@@ -171,7 +171,7 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueString
   {
     const char * str_value = env->GetStringUTFChars (value, 0);
 
-    result = current->enqueue (Knowledge_Record (str_value));
+    result = current->enqueue (KnowledgeRecord (str_value));
 
     env->ReleaseStringUTFChars (value, str_value);
   }
@@ -192,7 +192,7 @@ jlong JNICALL Java_com_madara_containers_Queue_jni_1dequeue
 
   if (current)
   {
-    result = (jlong) new Knowledge_Record (current->dequeue (wait));
+    result = (jlong) new KnowledgeRecord (current->dequeue (wait));
   }
 
   return result;
@@ -211,7 +211,7 @@ jlong JNICALL Java_com_madara_containers_Queue_jni_1inspect
 
   if (current)
   {
-    result = (jlong) new Knowledge_Record (current->inspect (position));
+    result = (jlong) new KnowledgeRecord (current->inspect (position));
   }
 
   return result;
@@ -256,7 +256,7 @@ void JNICALL Java_com_madara_containers_Queue_jni_1setName
 
     if (type == 0)
     {
-      knowledge::Knowledge_Base * kb = (knowledge::Knowledge_Base *) context;
+      knowledge::KnowledgeBase * kb = (knowledge::KnowledgeBase *) context;
       current->set_name (str_name, *kb);
     }
     else if (type == 1)
@@ -343,8 +343,8 @@ void JNICALL Java_com_madara_containers_Queue_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::Queue * current = (containers::Queue *)cptr;
-  knowledge::Knowledge_Update_Settings * settings =
-    (knowledge::Knowledge_Update_Settings *)settings_ptr;
+  knowledge::KnowledgeUpdateSettings * settings =
+    (knowledge::KnowledgeUpdateSettings *)settings_ptr;
 
   if (current && settings)
   {

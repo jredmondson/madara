@@ -10,13 +10,13 @@
 #include "ace/Sched_Params.h"
 #include "ace/High_Res_Timer.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 
-Madara::Knowledge_Record::Integer id = 0;
-Madara::Knowledge_Record::Integer left = 0;
-Madara::Knowledge_Record::Integer processes = 1;
-Madara::Knowledge_Record::Integer stop = 10;
-Madara::Knowledge_Record::Integer value = 0;
+Madara::KnowledgeRecord::Integer id = 0;
+Madara::KnowledgeRecord::Integer left = 0;
+Madara::KnowledgeRecord::Integer processes = 1;
+Madara::KnowledgeRecord::Integer stop = 10;
+Madara::KnowledgeRecord::Integer value = 0;
 uint32_t transport = Madara::Transport::SPLICE;
 
 ACE_Time_Value max_tv (10, 0);
@@ -84,14 +84,14 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   ts.queue_length = 10000000;
 
   // start the knowledge engine
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (
+  Madara::KnowledgeEngine::KnowledgeBase knowledge (
     host, ts);
 
   // signal handler for clean exit
   ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
 
-  Madara::Knowledge_Engine::Compiled_Expression compiled;
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  Madara::KnowledgeEngine::CompiledExpression compiled;
+  Madara::KnowledgeEngine::WaitSettings wait_settings;
 
   // set my id
   knowledge.set (".self", id);
@@ -111,8 +111,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   knowledge.set (".init", value);
 
   // set initial value of this state to the initial value
-  knowledge.set (".inconsistent", Madara::Knowledge_Record::Integer (0));
-  knowledge.set (".states", Madara::Knowledge_Record::Integer (0));
+  knowledge.set (".inconsistent", Madara::KnowledgeRecord::Integer (0));
+  knowledge.set (".states", Madara::KnowledgeRecord::Integer (0));
 
   std::string expression;
 

@@ -14,11 +14,11 @@
 #include "ace/Sched_Params.h"
 #include "ace/Process.h"
 
-#include "madara/kats/Test_Framework.h"
+#include "madara/kats/TestFramework.h"
 #include "madara/utility/tinyxml.h"
 #include "madara/utility/Utility.h"
-#include "madara/utility/Log_Macros.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/utility/LogMacros.h"
+#include "madara/logger/GlobalLogger.h"
 
 madara::kats::Settings settings;
 
@@ -64,30 +64,30 @@ std::string path;
 std::string working_dir;
 
 /**
- * @class KATS_Process
+ * @class KATSProcess
  * @brief Builder class for setting up a call to one of the kats tools (i.e.,
  * kats_process, kats_batch, kats_observer).
  **/
-class KATS_Process
+class KATSProcess
 {
 public:
-  KATS_Process ()
+  KATSProcess ()
   {
     kats_type ("process");
   }
 
-  KATS_Process (const KATS_Process & rhs)
+  KATSProcess (const KATSProcess & rhs)
     : process (), process_options (),
       executable (rhs.executable), command_line (rhs.command_line.str ())
   {
     // we're not allowed to copy an ACE_Process
   }
   
-  ~KATS_Process ()
+  ~KATSProcess ()
   {}
 
-  KATS_Process & 
-    operator= (const KATS_Process & rhs)
+  KATSProcess & 
+    operator= (const KATSProcess & rhs)
   {
     executable = rhs.executable;
     command_line.str (rhs.command_line.str ());
@@ -433,7 +433,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   // the user has to provide -g to see LM_DEBUG
   ACE_LOG_MSG->priority_mask (LM_INFO | LM_ERROR, ACE_Log_Msg::PROCESS);
 
-  std::vector <KATS_Process> processes;
+  std::vector <KATSProcess> processes;
 
   // parse any arguments
   int retcode = parse_args (argc, argv);
@@ -880,7 +880,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   ACE_DEBUG ((LM_DEBUG, 
     "KATS_BATCH:    Starting framework (if hangs, check transport)...\n"));
 
-  madara::kats::Test_Framework testing (settings);
+  madara::kats::TestFramework testing (settings);
 
   if(debug_printing)
     testing.dump ();
@@ -1098,7 +1098,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       processes[cur].kats_type (type);
     }
 
-    //KATS_Process process;
+    //KATSProcess process;
 
     // do we have a barrier name?
     TiXmlElement * el_temp1 = element->FirstChildElement ("barrier");

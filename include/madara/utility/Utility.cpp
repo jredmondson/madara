@@ -6,7 +6,7 @@
 #include <sstream>
 #include <fstream>
 
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 #include "madara/utility/Utility.h"
 #include "ace/INET_Addr.h"
 
@@ -19,7 +19,7 @@
 #include "ace/OS_NS_sys_time.h"
 #include "ace/High_Res_Timer.h"
 
-#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/KnowledgeBase.h"
 
 std::string
 madara::utility::get_version (void)
@@ -617,7 +617,7 @@ madara::utility::endian_swap (uint64_t value)
 }
 
 /**
-* Converts a host format signed madara::Knowledge_Record::Integer into big endian
+* Converts a host format signed madara::KnowledgeRecord::Integer into big endian
 **/
 int64_t
 madara::utility::endian_swap (int64_t value)
@@ -654,7 +654,7 @@ madara::utility::endian_swap (uint32_t value)
 }
 
 /**
-* Converts a host format signed madara::Knowledge_Record::Integer into big endian
+* Converts a host format signed madara::KnowledgeRecord::Integer into big endian
 **/
 int32_t
 madara::utility::endian_swap (int32_t value)
@@ -869,16 +869,16 @@ madara::utility::file_size (const std::string & filename)
 
 bool
 madara::utility::wait_true (
-  knowledge::Knowledge_Base & knowledge,
+  knowledge::KnowledgeBase & knowledge,
   const std::string & variable,
-  const knowledge::Wait_Settings & settings)
+  const knowledge::WaitSettings & settings)
 {  
   // get current time of day
   ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();  
   ACE_Time_Value max_wait, sleep_time, next_epoch;
   ACE_Time_Value poll_frequency, last = current;
 
-  knowledge::Variable_Reference ref = knowledge.get_ref (variable);
+  knowledge::VariableReference ref = knowledge.get_ref (variable);
 
   if (settings.poll_frequency >= 0)
   {
@@ -893,7 +893,7 @@ madara::utility::wait_true (
   if (settings.pre_print_statement != "")
     knowledge.print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
-  madara::Knowledge_Record last_value = knowledge.get (ref, settings);
+  madara::KnowledgeRecord last_value = knowledge.get (ref, settings);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
     "utility::wait_true:" \
@@ -963,16 +963,16 @@ madara::utility::wait_true (
 }
 
 bool madara::utility::wait_false (
-  knowledge::Knowledge_Base & knowledge,
+  knowledge::KnowledgeBase & knowledge,
   const std::string & variable,
-  const knowledge::Wait_Settings & settings)
+  const knowledge::WaitSettings & settings)
 {
   // get current time of day
   ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();  
   ACE_Time_Value max_wait, sleep_time, next_epoch;
   ACE_Time_Value poll_frequency, last = current;
 
-  knowledge::Variable_Reference ref = knowledge.get_ref (variable);
+  knowledge::VariableReference ref = knowledge.get_ref (variable);
 
   if (settings.poll_frequency >= 0)
   {
@@ -987,7 +987,7 @@ bool madara::utility::wait_false (
   if (settings.pre_print_statement != "")
     knowledge.print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
-  madara::Knowledge_Record last_value = !knowledge.get (ref, settings);
+  madara::KnowledgeRecord last_value = !knowledge.get (ref, settings);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
     "utility::wait_false:" \

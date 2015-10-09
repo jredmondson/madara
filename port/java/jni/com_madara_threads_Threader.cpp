@@ -50,7 +50,7 @@
 namespace knowledge = madara::knowledge;
 namespace threads = madara::threads;
 typedef threads::Threader       Threader;
-typedef knowledge::Knowledge_Base  Knowledge_Base;
+typedef knowledge::KnowledgeBase  KnowledgeBase;
 
 /*
  * Class:     com_madara_threads_Threader
@@ -72,7 +72,7 @@ jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__J
   (JNIEnv *, jobject, jlong kb)
 {
   Threader * result (0);
-  Knowledge_Base * knowledge = (Knowledge_Base *) kb;
+  KnowledgeBase * knowledge = (KnowledgeBase *) kb;
 
   if (knowledge)
   {

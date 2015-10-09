@@ -2,7 +2,7 @@
 #define _MADARA_LOGGER_LOGGER_H_
 
 #include "madara/MADARA_export.h"
-#include "madara/Lock_Type.h"
+#include "madara/LockType.h"
 #include <ace/Guard_T.h>
 #include <vector>
 #include <string>
@@ -67,7 +67,7 @@ namespace madara
     /**
     * Logging levels available for MADARA library
     **/
-    enum Log_Levels
+    enum LogLevels
     {
       LOG_EMERGENCY = 0,
       LOG_ALWAYS = 0,
@@ -99,7 +99,7 @@ namespace madara
 
       /**
        * Logs a message to all available loggers
-       * @param  level   the logging level @see Log_Levels
+       * @param  level   the logging level @see LogLevels
        * @param  message the message to log
        **/
       void log (int level, const char * message, ...);
@@ -164,13 +164,13 @@ namespace madara
       typedef ACE_Guard<MADARA_LOCK_TYPE> Guard;
 
       /// vector of file handles
-      typedef std::vector <FILE *>   File_Vectors;
+      typedef std::vector <FILE *>   FileVectors;
 
       /// mutex for changes
       mutable MADARA_LOCK_TYPE mutex_;
 
       /// list of all log outputs
-      File_Vectors files_;
+      FileVectors files_;
 
       /// the maximum detail level for logging
       int level_;

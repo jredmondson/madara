@@ -4,30 +4,30 @@
  * @author James Edmondson <jedmondson@gmail.com>
  *
  * This file contains a simple application that demonstrates
- * adding events to a Timed_Executor object
+ * adding events to a TimedExecutor object
  **/
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/knowledge_engine/Timed_Executor.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/knowledge_engine/TimedExecutor.h"
 #include "madara/utility/Utility.h"
 #include <iostream>
 #include <string>
 
 /**
- * Create a short "engine" alias for referring to Madara::Knowledge_Engine
+ * Create a short "engine" alias for referring to Madara::KnowledgeEngine
  **/
-namespace engine = Madara::Knowledge_Engine;
+namespace engine = Madara::KnowledgeEngine;
 
 int main (int argc, char * argv[])
 {
   // Create a knowledge base
-  engine::Knowledge_Base knowledge;
+  engine::KnowledgeBase knowledge;
   
   // let the user know where we are at in the tutorial
   knowledge.print ("\nCreating executor and events.\n");
 
   // A timed executor is an object that can create threads and execute events
-  engine::Timed_Executor executor;
+  engine::TimedExecutor executor;
 
   /**
    * The executor takes events as input and executes the contents, which we

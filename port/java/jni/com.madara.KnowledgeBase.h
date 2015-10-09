@@ -46,8 +46,8 @@
 * @author James Root <james.root@gmail.com>
 *********************************************************************/
 
-#ifndef _Included_com_madara_KnowledgeBase_Impl
-#define _Included_com_madara_KnowledgeBase_Impl
+#ifndef _Included_com_madara_KnowledgeBaseImpl
+#define _Included_com_madara_KnowledgeBaseImpl
 
 #include <jni.h>
 #include "madara/MADARA_export.h"
@@ -499,7 +499,7 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1toMap
 //CompiledExpression
 //===================================================================================
 /*
- * Class:     com_madara_KnowledgeBase_CompiledExpression
+ * Class:     com_madara_KnowledgeBaseCompiledExpression
  * Method:    jni_freeCompiledExpression
  * Signature: (J)V
  */

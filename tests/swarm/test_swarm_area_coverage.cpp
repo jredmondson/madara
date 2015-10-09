@@ -6,8 +6,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/utility/LogMacros.h"
 #include "ace/Signal.h"
 #include "ace/High_Res_Timer.h"
 #include "ace/OS_NS_Thread.h"
@@ -18,7 +18,7 @@
 
 /**
  * Note that this is not an ordering of tasks but a list of
- * Compiled_Expressions
+ * CompiledExpressions
  **/
 #define  NUM_TASKS                     19
 #define  GET_CURRENT_POSITION          0
@@ -61,7 +61,7 @@ volatile bool terminated = 0;
 
 #ifndef _MADARA_NO_KARL_
 // Compiled expressions that we expect to be called frequently
-Madara::Knowledge_Engine::Compiled_Expression expressions [NUM_TASKS];
+Madara::KnowledgeEngine::CompiledExpression expressions [NUM_TASKS];
 #endif
 
 // Timers for heartbeats
@@ -145,23 +145,23 @@ void handle_arguments (int argc, char ** argv)
  * random number up to the limits of the stdlib.h implementation's limits. An
  * integer argument means to generate a random up to the specified arg limit.
  **/
-Madara::Knowledge_Record
-  rand_int (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  rand_int (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
-  if (args.size () > 0 && args[0].type () == Madara::Knowledge_Record::INTEGER &&
+  if (args.size () > 0 && args[0].type () == Madara::KnowledgeRecord::INTEGER &&
                           args[0].to_integer () != 0)
-    return Madara::Knowledge_Record::Integer (rand () % (int)args[0].to_integer ());
+    return Madara::KnowledgeRecord::Integer (rand () % (int)args[0].to_integer ());
   else
-    return Madara::Knowledge_Record::Integer (rand ());
+    return Madara::KnowledgeRecord::Integer (rand ());
 }
 
 /**
  * Madara function to move the drone north
  **/
-Madara::Knowledge_Record
-  move_north (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_north (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   return variables.evaluate (expressions[MOVE_NORTH]);
 }
@@ -169,9 +169,9 @@ Madara::Knowledge_Record
 /**
  * Madara function to move the drone south
  **/
-Madara::Knowledge_Record
-  move_south (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_south (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   return variables.evaluate (expressions[MOVE_SOUTH]);
 }
@@ -179,9 +179,9 @@ Madara::Knowledge_Record
 /**
  * Madara function to move the drone east
  **/
-Madara::Knowledge_Record
-  move_east (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_east (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   return variables.evaluate (expressions[MOVE_EAST]);
 }
@@ -189,9 +189,9 @@ Madara::Knowledge_Record
 /**
  * Madara function to move the drone west
  **/
-Madara::Knowledge_Record
-  move_west (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_west (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   return variables.evaluate (expressions[MOVE_WEST]);
 }
@@ -199,9 +199,9 @@ Madara::Knowledge_Record
 /**
  * Madara function to move the drone to the origin (phone.pos.x,phone.pos.y)
  **/
-Madara::Knowledge_Record
-  move_to_origin (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_to_origin (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   return variables.evaluate (expressions[MOVE_TO_ORIGIN]);
 }
@@ -209,22 +209,22 @@ Madara::Knowledge_Record
 /**
  * Madara function to use the thermal sensor
  **/
-Madara::Knowledge_Record
-  sense_thermal (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  sense_thermal (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
 #ifdef  USING_PARROT_ARDRONE_2
   // insert code to use thermal sensing from Drone-RK
 #endif
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
 
 /**
  * Madara function to shutdown the agent
  **/
-Madara::Knowledge_Record
-  shutdown (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  shutdown (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   terminated = true;
 
@@ -238,19 +238,19 @@ Madara::Knowledge_Record
 /**
  * Madara function to do absolutely nothing
  **/
-Madara::Knowledge_Record
-  no_op (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  no_op (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
-  return Madara::Knowledge_Record::Integer (0);
+  return Madara::KnowledgeRecord::Integer (0);
 }
 
 /**
  * Madara function to move to a altitude
  **/
-Madara::Knowledge_Record
-  move_to_altitude (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_to_altitude (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
 #ifdef  USING_PARROT_ARDRONE_2
   // insert code to move to an altitude
@@ -261,9 +261,9 @@ Madara::Knowledge_Record
 /**
  * Madara function to move to a position
  **/
-Madara::Knowledge_Record
-  move_to_position (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  move_to_position (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
 #ifdef  USING_PARROT_ARDRONE_2
   // insert code to move to a position
@@ -274,9 +274,9 @@ Madara::Knowledge_Record
 /**
  * Madara function to take off the ground
  **/
-Madara::Knowledge_Record
-  takeoff (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  takeoff (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
 #ifdef  USING_PARROT_ARDRONE_2
   // insert code to land a drone
@@ -288,9 +288,9 @@ Madara::Knowledge_Record
 /**
  * Madara function to land the agent
  **/
-Madara::Knowledge_Record
-  land (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  land (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
 #ifdef  USING_PARROT_ARDRONE_2
   // insert code to land a drone
@@ -303,9 +303,9 @@ Madara::Knowledge_Record
 /**
  * Madara function to get the current position of the drone
  **/
-Madara::Knowledge_Record
-  get_current_position (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  get_current_position (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
 #ifdef  USING_PARROT_ARDRONE_2
   // insert code to return a GPS location from Drone-RK
@@ -317,20 +317,20 @@ Madara::Knowledge_Record
 /**
  * Madara function to check and reset the controller heartbeat
  **/
-Madara::Knowledge_Record
-  check_controller_heartbeat (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  check_controller_heartbeat (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   return variables.evaluate (expressions[CHECK_CONTROLLER_HEARTBEAT],
-    Madara::Knowledge_Engine::Knowledge_Update_Settings (true));
+    Madara::KnowledgeEngine::KnowledgeUpdateSettings (true));
 }
 
 /**
  * Madara function to compute the bounding box for drone search operation
  **/
-Madara::Knowledge_Record
-  compute_bounding_box (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  compute_bounding_box (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   return variables.evaluate (expressions[COMPUTE_BOUNDING_BOX]);
 }
@@ -338,9 +338,9 @@ Madara::Knowledge_Record
 /**
  * Madara function to update position and mobility status
  **/
-Madara::Knowledge_Record
-  update_status (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  update_status (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   return variables.evaluate (expressions[UPDATE_STATUS]);
 }
@@ -348,9 +348,9 @@ Madara::Knowledge_Record
 /**
  * Madara function to compute the number of mobile drones still available
  **/
-Madara::Knowledge_Record
-  compute_mobile_drones (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  compute_mobile_drones (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   return variables.evaluate (expressions[COMPUTE_MOBILE_DRONES]);
 }
@@ -358,21 +358,21 @@ Madara::Knowledge_Record
 /**
  * Madara function to reset the controller heartbeat timer
  **/
-Madara::Knowledge_Record
-  controller_timer_reset (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  controller_timer_reset (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   variables.print ("Controller heartbeat has been reset.\n", 0);
   timers[CONTROLLER_HEARTBEAT].start ();
-  return Madara::Knowledge_Record::Integer (1);
+  return Madara::KnowledgeRecord::Integer (1);
 }
   
 /**
  * Madara function to check if the controller timer is expired
  **/
-Madara::Knowledge_Record
-  controller_timer_is_expired (Madara::Knowledge_Engine::Function_Arguments & args,
-             Madara::Knowledge_Engine::Variables & variables)
+Madara::KnowledgeRecord
+  controller_timer_is_expired (Madara::KnowledgeEngine::FunctionArguments & args,
+             Madara::KnowledgeEngine::Variables & variables)
 {
   variables.print (
     "Controller heartbeat timer is expired is being checked.\n", 0);
@@ -389,12 +389,12 @@ Madara::Knowledge_Record
   timers[CONTROLLER_HEARTBEAT].elapsed_time (elapsed);
 
   variables.set (".heartbeat_latency",
-    (Madara::Knowledge_Record::Integer)elapsed);
+    (Madara::KnowledgeRecord::Integer)elapsed);
 
   if (elapsed > max_time)
-    return Madara::Knowledge_Record::Integer (1);
+    return Madara::KnowledgeRecord::Integer (1);
   else
-    return Madara::Knowledge_Record::Integer (0);
+    return Madara::KnowledgeRecord::Integer (0);
 }
  
 /**
@@ -402,7 +402,7 @@ Madara::Knowledge_Record
  * need to call this once from the main function.
  **/
 void define_external_functions (
-  Madara::Knowledge_Engine::Knowledge_Base & knowledge)
+  Madara::KnowledgeEngine::KnowledgeBase & knowledge)
 {
   // define control functions
   knowledge.define_function ("rand", rand_int);
@@ -444,13 +444,13 @@ void define_external_functions (
 
 /**
  * Convenience function for compiling all expressions into
- * Compiled_Expressions in a global store. This is needed to
+ * CompiledExpressions in a global store. This is needed to
  * work with the evaluate calls inside of the external functions.
  * Compiling expressions once globally saves us microseconds of time
  * every single function call.
  **/
 void compile_expressions (
-  Madara::Knowledge_Engine::Knowledge_Base & knowledge)
+  Madara::KnowledgeEngine::KnowledgeBase & knowledge)
 {
   expressions[CHECK_CONTROLLER_HEARTBEAT] = knowledge.compile (
     // if we've received a controller heartbeat
@@ -556,7 +556,7 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
   
 #ifndef _MADARA_NO_KARL_
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  Madara::KnowledgeEngine::KnowledgeBase knowledge (host, settings);
 
   // define external functions for the knowlege base to map calls to
   define_external_functions (knowledge);
@@ -568,14 +568,14 @@ int main (int argc, char ** argv)
   // start the controller heartbeat
   timers[CONTROLLER_HEARTBEAT].start ();
 
-  knowledge.set (".id", (Madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (Madara::KnowledgeRecord::Integer) settings.id);
 
   // the controller can overwrite these values later if desired
   knowledge.set ("controller.max_heartbeat",
-    15.0, Madara::Knowledge_Engine::Eval_Settings (true, true));
+    15.0, Madara::KnowledgeEngine::EvalSettings (true, true));
   knowledge.set ("controller.max_drones",
-    Madara::Knowledge_Record::Integer (20),
-    Madara::Knowledge_Engine::Eval_Settings (true, true));
+    Madara::KnowledgeRecord::Integer (20),
+    Madara::KnowledgeEngine::EvalSettings (true, true));
   
   srand ((unsigned int)settings.id);
 
@@ -589,7 +589,7 @@ int main (int argc, char ** argv)
     );
 
 
-  Madara::Knowledge_Engine::Eval_Settings eval_settings;
+  Madara::KnowledgeEngine::EvalSettings eval_settings;
   eval_settings.pre_print_statement = 
     "Mobile drones: {.mobile_drones}, Heartbeat latency: {.heartbeat_latency}\n"
   ;

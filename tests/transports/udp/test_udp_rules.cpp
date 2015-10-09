@@ -5,15 +5,15 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
 std::string host ("");
 const std::string default_host1 ("127.0.0.1:43110");
 const std::string default_host2 ("127.0.0.1:43111");
-madara::transport::QoS_Transport_Settings settings;
+madara::transport::QoSTransportSettings settings;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -150,7 +150,7 @@ int main (int argc, char ** argv)
   }
 
   settings.type = madara::transport::UDP;
-  madara::knowledge::Wait_Settings wait_settings;
+  madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10.0;
 
   if (settings.id == 0)
@@ -158,20 +158,20 @@ int main (int argc, char ** argv)
   else  
     settings.on_data_received_logic = "heavy_processes > 0 => out_of_resources = 1; emergency => shutdown = 1";
 
-  madara::knowledge::Knowledge_Base knowledge (host, settings);
+  madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (madara::KnowledgeRecord::Integer) settings.id);
   
   if (settings.id == 0)
   {
-    madara::knowledge::Compiled_Expression compiled = 
+    madara::knowledge::CompiledExpression compiled = 
       knowledge.compile ("heavy_processes = 1 ;> shutdown");
 
     knowledge.wait (compiled, wait_settings);
   }
   else
   {
-    madara::knowledge::Compiled_Expression compiled = 
+    madara::knowledge::CompiledExpression compiled = 
       knowledge.compile ("shutdown");
 
     knowledge.wait (compiled, wait_settings);

@@ -5,14 +5,14 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-madara::transport::QoS_Transport_Settings settings;
+madara::transport::QoSTransportSettings settings;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -121,10 +121,10 @@ int main (int argc, char ** argv)
   
 #ifndef _MADARA_NO_KARL_
   settings.type = madara::transport::MULTICAST;
-  madara::knowledge::Wait_Settings wait_settings;
+  madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
 
-  madara::knowledge::Knowledge_Base knowledge (host, settings);
+  madara::knowledge::KnowledgeBase knowledge (host, settings);
 
   knowledge.close_transport ();
 

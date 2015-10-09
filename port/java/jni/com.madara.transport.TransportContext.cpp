@@ -6,7 +6,7 @@
  *********************************************************************/
 
 #include "com.madara.transport.TransportContext.h"
-#include "madara/transport/Transport_Context.h"
+#include "madara/transport/TransportContext.h"
 
 #include <string>
 
@@ -14,9 +14,9 @@
 // define useful shorthands
 namespace knowledge = madara::knowledge;
 namespace transport = madara::transport;
-typedef madara::Knowledge_Record  Knowledge_Record;
-typedef Knowledge_Record::Integer Integer;
-typedef transport::Transport_Context Transport_Context;
+typedef madara::KnowledgeRecord  KnowledgeRecord;
+typedef KnowledgeRecord::Integer Integer;
+typedef transport::TransportContext TransportContext;
 
 
 /*
@@ -27,8 +27,8 @@ typedef transport::Transport_Context Transport_Context;
 MADARA_Export void JNICALL Java_com_madara_transport_TransportContext_jni_1addRecord
   (JNIEnv * env, jclass cls, jlong cptr, jstring name, jlong record)
 {
-  Transport_Context * context = (Transport_Context *) cptr;
-  Knowledge_Record * rec = (Knowledge_Record *) record;
+  TransportContext * context = (TransportContext *) cptr;
+  KnowledgeRecord * rec = (KnowledgeRecord *) record;
   const char * nativeName = env->GetStringUTFChars (name, 0);
 
   if (context && rec)
@@ -47,7 +47,7 @@ MADARA_Export void JNICALL Java_com_madara_transport_TransportContext_jni_1addRe
 MADARA_Export void JNICALL Java_com_madara_transport_TransportContext_jni_1clearRecords
   (JNIEnv * env, jclass cls, jlong cptr)
 {
-  Transport_Context * context = (Transport_Context *) cptr;
+  TransportContext * context = (TransportContext *) cptr;
 
   if (context)
     context->clear_records ();
@@ -62,7 +62,7 @@ MADARA_Export jlong JNICALL Java_com_madara_transport_TransportContext_jni_1getC
   (JNIEnv * env, jclass cls, jlong cptr)
 {
   jlong result (0);
-  Transport_Context * context = (Transport_Context *) cptr;
+  TransportContext * context = (TransportContext *) cptr;
 
   if (context)
     result = context->get_current_time ();
@@ -79,7 +79,7 @@ MADARA_Export jstring JNICALL Java_com_madara_transport_TransportContext_jni_1ge
   (JNIEnv * env, jclass cls, jlong cptr)
 {
   jstring result;
-  Transport_Context * context = (Transport_Context *) cptr;
+  TransportContext * context = (TransportContext *) cptr;
 
   if (context)
   {
@@ -102,7 +102,7 @@ MADARA_Export jlong JNICALL Java_com_madara_transport_TransportContext_jni_1getM
   (JNIEnv * env, jclass cls, jlong cptr)
 {
   jlong result (0);
-  Transport_Context * context = (Transport_Context *) cptr;
+  TransportContext * context = (TransportContext *) cptr;
 
   if (context)
   {
@@ -121,7 +121,7 @@ MADARA_Export jlong JNICALL Java_com_madara_transport_TransportContext_jni_1getO
   (JNIEnv * env, jclass cls, jlong cptr)
 {
   jlong result (0);
-  Transport_Context * context = (Transport_Context *) cptr;
+  TransportContext * context = (TransportContext *) cptr;
 
   if (context)
   {
@@ -140,7 +140,7 @@ MADARA_Export jstring JNICALL Java_com_madara_transport_TransportContext_jni_1ge
   (JNIEnv * env, jclass cls, jlong cptr)
 {
   jstring result;
-  Transport_Context * context = (Transport_Context *) cptr;
+  TransportContext * context = (TransportContext *) cptr;
 
   if (context)
   {
@@ -163,7 +163,7 @@ MADARA_Export jlong JNICALL Java_com_madara_transport_TransportContext_jni_1getR
   (JNIEnv * env, jclass cls, jlong cptr)
 {
   jlong result (0);
-  Transport_Context * context = (Transport_Context *) cptr;
+  TransportContext * context = (TransportContext *) cptr;
 
   if (context)
   {
@@ -193,7 +193,7 @@ MADARA_Export jlong JNICALL Java_com_madara_transport_TransportContext_jni_1getS
   (JNIEnv * env, jclass cls, jlong cptr)
 {
   jlong result (0);
-  Transport_Context * context = (Transport_Context *) cptr;
+  TransportContext * context = (TransportContext *) cptr;
 
   if (context)
   {

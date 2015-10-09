@@ -7,21 +7,21 @@
  * the usage of doubles as first class support.
  **/
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 #include <iostream>
 #include <string>
 
 int main (int argc, char * argv[])
 {
   // Create a knowledge base
-  Madara::Knowledge_Engine::Knowledge_Base knowledge;
+  Madara::KnowledgeEngine::KnowledgeBase knowledge;
   
   /**
    * There are three main ways to set doubles. We showcase
    * those three ways below.
    **/
 
-  // 1, set the variable directly through the Knowledge_Base::Set method
+  // 1, set the variable directly through the KnowledgeBase::Set method
   knowledge.set (".state", 0.1);
 
   /**
@@ -58,7 +58,7 @@ int main (int argc, char * argv[])
    *
    * These relations are so useful that we should make it into functions that
    * we can use. In KaRL, functions are created via the define_function method
-   * of the Knowledge_Base. 
+   * of the KnowledgeBase. 
    **/
 
   knowledge.define_function ("is_true",
@@ -95,7 +95,7 @@ int main (int argc, char * argv[])
   /**
    * Now, we have a string representation of the value. We could convert
    * this to a double using std::stringstream and then set it through the
-   * Knowledge_Base::set method, but we'll show how to convert it within
+   * KnowledgeBase::set method, but we'll show how to convert it within
    * the engine after you've set the variable as a string. In the future,
    * we will also provide a #to_double, #to_integer, and #to_string method
    **/

@@ -1,14 +1,14 @@
 #include "Collection.h"
 
 madara::knowledge::containers::Collection::Collection ()
-: Base_Container ()
+: BaseContainer ()
 {
 }
 
 
 madara::knowledge::containers::Collection::Collection (
   const Collection & rhs)
-: Base_Container ()
+: BaseContainer ()
 {
   vector_.resize (rhs.vector_.size ());
   for (size_t i = 0; i < rhs.vector_.size (); ++i)
@@ -61,7 +61,7 @@ madara::knowledge::containers::Collection::get_debug_info_ (void)
   return get_debug_info ();
 }
 
-madara::knowledge::containers::Base_Container *
+madara::knowledge::containers::BaseContainer *
 madara::knowledge::containers::Collection::clone (void) const
 {
   return new Collection (*this);
@@ -77,7 +77,7 @@ madara::knowledge::containers::Collection::is_true (void) const
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     for (size_t i = 0; i < vector_.size (); ++i)

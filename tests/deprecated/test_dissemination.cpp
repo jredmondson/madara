@@ -19,22 +19,22 @@
 
 #include "ace/Signal.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 #include "madara/transport/Transport.h"
 #include "madara/utility/Utility.h"
 
-Madara::Knowledge_Record::Integer id = 0;
-Madara::Knowledge_Record::Integer left = 0;
-Madara::Knowledge_Record::Integer processes = 1;
-Madara::Knowledge_Record::Integer stop = 10;
-Madara::Knowledge_Record::Integer value = 0;
-Madara::Knowledge_Record::Integer iterations = 100000;
+Madara::KnowledgeRecord::Integer id = 0;
+Madara::KnowledgeRecord::Integer left = 0;
+Madara::KnowledgeRecord::Integer processes = 1;
+Madara::KnowledgeRecord::Integer stop = 10;
+Madara::KnowledgeRecord::Integer value = 0;
+Madara::KnowledgeRecord::Integer iterations = 100000;
 // 1Mhz rate
-Madara::Knowledge_Record::Integer rate = 1000000;
+Madara::KnowledgeRecord::Integer rate = 1000000;
 
 // test is 3 minutes long
-Madara::Knowledge_Record::Integer time_limit = 3 * 60 * 
-  Madara::Knowledge_Record::Integer (1000000000);
+Madara::KnowledgeRecord::Integer time_limit = 3 * 60 * 
+  Madara::KnowledgeRecord::Integer (1000000000);
 
 std::string host = "";
 
@@ -50,7 +50,7 @@ extern "C" void terminate (int)
 }
 
 std::string 
-to_legible_hertz (Madara::Knowledge_Record::Integer hertz)
+to_legible_hertz (Madara::KnowledgeRecord::Integer hertz)
 {
   std::stringstream buffer;
 
@@ -101,7 +101,7 @@ to_legible_hertz (Madara::Knowledge_Record::Integer hertz)
 }
 
 ACE_Time_Value
-rate_to_sleep_time (Madara::Knowledge_Record::Integer rate)
+rate_to_sleep_time (Madara::KnowledgeRecord::Integer rate)
 {
   ACE_Time_Value sleep_time (0, 0);
   
@@ -139,9 +139,9 @@ rate_to_sleep_time (Madara::Knowledge_Record::Integer rate)
  * @param    count         number of processes, can be a subset of group
  */
 std::string
-  build_wait_string (Madara::Knowledge_Record::Integer id,
+  build_wait_string (Madara::KnowledgeRecord::Integer id,
   const std::string & attribute,
-  Madara::Knowledge_Record::Integer count)
+  Madara::KnowledgeRecord::Integer count)
 {
   std::stringstream buffer;
 
@@ -173,8 +173,8 @@ std::string
 }
 
 void
-broadcast (Madara::Knowledge_Engine::Knowledge_Base & knowledge, 
-           Madara::Knowledge_Record::Integer iterations)
+broadcast (Madara::KnowledgeEngine::KnowledgeBase & knowledge, 
+           Madara::KnowledgeRecord::Integer iterations)
 {
   ACE_Time_Value sleep_time = rate_to_sleep_time (rate);
 
@@ -204,7 +204,7 @@ broadcast (Madara::Knowledge_Engine::Knowledge_Base & knowledge,
       "(%P|%t) Windows detected. Running in bursty mode\n"));
   #endif
 
-  for (Madara::Knowledge_Record::Integer i = 1; i <= iterations && !terminated; ++i)
+  for (Madara::KnowledgeRecord::Integer i = 1; i <= iterations && !terminated; ++i)
   {
     knowledge.set ("info", i);
 
@@ -261,11 +261,11 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   Madara::Transport::Settings settings;
   settings.type = Madara::Transport::MULTICAST;
-  settings.domains = "KaRL_Dissemination";
+  settings.domains = "KaRLDissemination";
   settings.queue_length = 12000000;
   settings.reliability = Madara::Transport::BEST_EFFORT;
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge(host, settings);
+  Madara::KnowledgeEngine::KnowledgeBase knowledge(host, settings);
 
   // set my id
   knowledge.set (".self", id);

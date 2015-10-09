@@ -7,13 +7,13 @@
  * evaluates the expression and prints out the resulting variables.
  **/
 
-#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 #include <string>
 
 int main (int argc, char * argv[])
 {
-  madara::knowledge::Knowledge_Base knowledge;
+  madara::knowledge::KnowledgeBase knowledge;
   
   if (argc != 2)
   {

@@ -10,9 +10,9 @@
 #include "ace/SOCK_Connector.h"
 #include "ace/High_Res_Timer.h"
 #include "ace/Sched_Params.h"
-#include "Agent_Messages.h"
-#include "Broker_Context.h"
-#include "Madara_Common.h"
+#include "AgentMessages.h"
+#include "BrokerContext.h"
+#include "MadaraCommon.h"
 #include "sort/pivotsort_v2.h"
 //#include "sort/MPivotSort.h"
 
@@ -43,7 +43,7 @@ static bool Decreasing (const int & u, const int & v)
 
 void testDeploymentSize (int size, std::ostream & output)
 {
-  Madara::Broker_Context context;
+  Madara::BrokerContext context;
   Madara::Deployment::Candidate deployment;
 
   // keep track of time
@@ -252,7 +252,7 @@ void testRawHeuristic (int size, std::ostream & output, int sort_type)
 int main (int argc, char *argv[])
 {
   std::ofstream output ("test_results.txt");
-  Madara::Broker_Context context;
+  Madara::BrokerContext context;
   Madara::Deployment::Candidate deployment;
   int i = 20;
   int count = 1000;

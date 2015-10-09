@@ -2,7 +2,7 @@
 #define _MADARA_CONTAINERS_COLLECTION_CONTAINER_H
 
 #include "Collection.h"
-#include "madara/knowledge/Context_Guard.h"
+#include "madara/knowledge/ContextGuard.h"
 
 inline void
 madara::knowledge::containers::Collection::add (
@@ -30,7 +30,7 @@ madara::knowledge::containers::Collection::add (
 
 inline void
 madara::knowledge::containers::Collection::add (
-  const Integer_Vector & container)
+  const IntegerVector & container)
 {
   Guard guard (mutex_);
   vector_.push_back (container.clone ());
@@ -38,7 +38,7 @@ madara::knowledge::containers::Collection::add (
 
 inline void
 madara::knowledge::containers::Collection::add (
-const Native_Integer_Vector & container)
+const NativeIntegerVector & container)
 {
   Guard guard (mutex_);
   vector_.push_back (container.clone ());
@@ -54,7 +54,7 @@ madara::knowledge::containers::Collection::add (
 
 inline void
 madara::knowledge::containers::Collection::add (
-  const Double_Vector & container)
+  const DoubleVector & container)
 {
   Guard guard (mutex_);
   vector_.push_back (container.clone ());
@@ -62,7 +62,7 @@ madara::knowledge::containers::Collection::add (
 
 inline void
 madara::knowledge::containers::Collection::add (
-const Native_Double_Vector & container)
+const NativeDoubleVector & container)
 {
   Guard guard (mutex_);
   vector_.push_back (container.clone ());
@@ -78,7 +78,7 @@ madara::knowledge::containers::Collection::add (
 
 inline void
 madara::knowledge::containers::Collection::add (
-  const String_Vector & container)
+  const StringVector & container)
 {
   Guard guard (mutex_);
   vector_.push_back (container.clone ());
@@ -86,7 +86,7 @@ madara::knowledge::containers::Collection::add (
 
 inline void
 madara::knowledge::containers::Collection::add (
-const Buffer_Vector & container)
+const BufferVector & container)
 {
   Guard guard (mutex_);
   vector_.push_back (container.clone ());
@@ -102,7 +102,7 @@ madara::knowledge::containers::Collection::add (
 
 inline void
 madara::knowledge::containers::Collection::add (
-  const Flex_Map & container)
+  const FlexMap & container)
 {
   Guard guard (mutex_);
   vector_.push_back (container.clone ());
@@ -139,7 +139,7 @@ madara::knowledge::containers::Collection::clear (void)
 
 inline void
 madara::knowledge::containers::Collection::set_settings (
-const Knowledge_Update_Settings & settings)
+const KnowledgeUpdateSettings & settings)
 {
   Guard guard (mutex_);
 

@@ -1,5 +1,5 @@
 
-#include "madara/transport/Bandwidth_Monitor.h"
+#include "madara/transport/BandwidthMonitor.h"
 
 #include "ace/High_Res_Timer.h"
 #include "ace/OS.h"
@@ -8,7 +8,7 @@
 #include <string>
 #include <sstream>
 
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
@@ -19,7 +19,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 {
   parse_args (argc, argv);
 
-  madara::transport::Bandwidth_Monitor monitor;
+  madara::transport::BandwidthMonitor monitor;
   
   std::cerr << "Adding ten 150 byte messages to bandwidth monitor...\n";
   std::cerr << "And sleeping for 10s...\n\n";

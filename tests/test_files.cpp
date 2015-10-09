@@ -12,9 +12,9 @@
 #include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
 
-#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include "madara/utility/Utility.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
@@ -26,8 +26,8 @@ madara::transport::Settings settings;
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
 // test functions
-void read_and_create_files (madara::knowledge::Knowledge_Base & knowledge);
-void write_transported_files (madara::knowledge::Knowledge_Base & knowledge);
+void read_and_create_files (madara::knowledge::KnowledgeBase & knowledge);
+void write_transported_files (madara::knowledge::KnowledgeBase & knowledge);
 
 int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 {
@@ -38,7 +38,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   // set type to multicast and change queue length to 512K
   settings.type = madara::transport::MULTICAST;
   settings.queue_length = 1024000;
-  madara::knowledge::Wait_Settings wait_settings;
+  madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
   wait_settings.poll_frequency = 1.0;
 
@@ -55,9 +55,9 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   ACE_TRACE (ACE_TEXT ("main"));
 
-  madara::knowledge::Knowledge_Base knowledge ("", settings);
+  madara::knowledge::KnowledgeBase knowledge ("", settings);
   
-  knowledge.set (".id", (madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (madara::KnowledgeRecord::Integer) settings.id);
   
   // run tests
 //  test_tree_compilation (knowledge);
@@ -76,7 +76,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 }
 
 /// Tests logicals operators (&&, ||)
-void read_and_create_files (madara::knowledge::Knowledge_Base & knowledge)
+void read_and_create_files (madara::knowledge::KnowledgeBase & knowledge)
 {
   ACE_TRACE (ACE_TEXT ("test_assignments"));
 
@@ -90,7 +90,7 @@ void read_and_create_files (madara::knowledge::Knowledge_Base & knowledge)
   knowledge.read_file ("hello_world", "/files/hello_world.txt");
   knowledge.write_file ("hello_world", "/files/hello_world_copy.txt");
   
-  knowledge.set (".an_integer", madara::Knowledge_Record::Integer (10));
+  knowledge.set (".an_integer", madara::KnowledgeRecord::Integer (10));
   knowledge.write_file (".an_integer", "/files/ten.txt");
   knowledge.read_file ("ten", "/files/ten.txt");
   knowledge.write_file ("ten", "/files/ten_copy.txt");
@@ -114,7 +114,7 @@ void read_and_create_files (madara::knowledge::Knowledge_Base & knowledge)
 
 /// Tests logicals operators (&&, ||)
 void write_transported_files (
-  madara::knowledge::Knowledge_Base & knowledge)
+  madara::knowledge::KnowledgeBase & knowledge)
 {
   knowledge.write_file ("a_tree", "/files/an_xml_file_transported.xml");
   knowledge.write_file ("double", "/files/twelve_transported.txt");

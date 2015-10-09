@@ -3,7 +3,7 @@
 #include "ace/OS.h"
 #include "ace/Log_Msg.h"
 #include "ace/SOCK_Connector.h"
-#include "../Madara/Agent_Messages.h"
+#include "../Madara/AgentMessages.h"
 
 /*
   Unlike the previous two Tutorials, we're going to allow the user to provide
@@ -113,7 +113,7 @@ int main (int argc, char *argv[])
 
     port = "30000";
 
-    Madara::Agent_Ping ping;
+    Madara::AgentPing ping;
     ping.size = sizeof (ping) - sizeof (ping.size);
     ping.type = Madara::AGENT_DUMP_CONTEXT;
     //ping.type = Madara::AGENT_PING;

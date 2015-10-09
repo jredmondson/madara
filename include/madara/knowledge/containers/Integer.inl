@@ -1,10 +1,10 @@
 #include "Integer.h"
-#include "madara/knowledge/Context_Guard.h"
+#include "madara/knowledge/ContextGuard.h"
 
 inline void
 madara::knowledge::containers::Integer::modify (void)
 {
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   if (context_ && name_ != "")
   {
     context_->mark_modified (variable_);
@@ -20,7 +20,7 @@ madara::knowledge::containers::Integer::get_debug_info (void)
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     result << this->name_;
@@ -30,7 +30,7 @@ madara::knowledge::containers::Integer::get_debug_info (void)
   return result.str ();
 }
 
-inline madara::knowledge::containers::Base_Container *
+inline madara::knowledge::containers::BaseContainer *
 madara::knowledge::containers::Integer::clone (void) const
 {
   return new Integer (*this);
@@ -53,12 +53,12 @@ madara::knowledge::containers::Integer::operator= (const Integer & rhs)
 inline void
 madara::knowledge::containers::Integer::set_name (
   const std::string & var_name,
-  Knowledge_Base & knowledge)
+  KnowledgeBase & knowledge)
 {
-  Knowledge_Update_Settings keep_local (true);
+  KnowledgeUpdateSettings keep_local (true);
   context_ = &(knowledge.get_context ());
 
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   Guard guard (mutex_);
 
   name_ = var_name;
@@ -68,12 +68,12 @@ madara::knowledge::containers::Integer::set_name (
 inline void
 madara::knowledge::containers::Integer::set_name (
   const std::string & var_name,
-  Thread_Safe_Context & knowledge)
+  ThreadSafeContext & knowledge)
 {
-  Knowledge_Update_Settings keep_local (true);
+  KnowledgeUpdateSettings keep_local (true);
   context_ = &knowledge;
 
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   Guard guard (mutex_);
 
   name_ = var_name;
@@ -85,10 +85,10 @@ madara::knowledge::containers::Integer::set_name (
   const std::string & var_name,
   Variables & knowledge)
 {
-  Knowledge_Update_Settings keep_local (true);
+  KnowledgeUpdateSettings keep_local (true);
   context_ = knowledge.get_context ();
 
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   Guard guard (mutex_);
 
   name_ = var_name;
@@ -100,7 +100,7 @@ madara::knowledge::containers::Integer::operator= (type value)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     context_->set (variable_, value, settings_);
   }
@@ -113,7 +113,7 @@ madara::knowledge::containers::Integer::operator== (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) == value;
   }
@@ -126,7 +126,7 @@ madara::knowledge::containers::Integer::operator != (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) != value;
   }
@@ -140,7 +140,7 @@ madara::knowledge::containers::Integer::operator== (
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return
       context_->get (variable_, settings_) ==
@@ -156,7 +156,7 @@ madara::knowledge::containers::Integer::operator != (
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return
       context_->get (variable_, settings_) !=
@@ -171,7 +171,7 @@ madara::knowledge::containers::Integer::operator< (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) < value;
   }
@@ -184,7 +184,7 @@ madara::knowledge::containers::Integer::operator<= (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) <= value;
   }
@@ -197,7 +197,7 @@ madara::knowledge::containers::Integer::operator> (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) > value;
   }
@@ -210,7 +210,7 @@ madara::knowledge::containers::Integer::operator>= (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) >= value;
   }
@@ -231,7 +231,7 @@ madara::knowledge::containers::Integer::exists (void) const
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->exists (variable_);
   }
@@ -249,7 +249,7 @@ madara::knowledge::containers::Integer::is_true (void) const
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, settings_).is_true ();
   }
@@ -270,7 +270,7 @@ madara::knowledge::containers::Integer::is_false (void) const
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, settings_).is_false ();
   }
@@ -281,14 +281,14 @@ madara::knowledge::containers::Integer::is_false (void) const
   return result;
 }
 
-inline madara::Knowledge_Record
+inline madara::KnowledgeRecord
 madara::knowledge::containers::Integer::to_record (void) const
 {
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
   
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, settings_);
   }
@@ -296,12 +296,12 @@ madara::knowledge::containers::Integer::to_record (void) const
   return result;
 }
  
-inline madara::Knowledge_Record::Integer
+inline madara::KnowledgeRecord::Integer
 madara::knowledge::containers::Integer::to_integer (void) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_).to_integer ();
   }
@@ -316,7 +316,7 @@ madara::knowledge::containers::Integer::operator += (type value)
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     result = context_->get (variable_, settings_).to_integer ();
@@ -334,7 +334,7 @@ madara::knowledge::containers::Integer::operator -= (type value)
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     result = context_->get (variable_, settings_).to_integer ();
@@ -350,7 +350,7 @@ madara::knowledge::containers::Integer::operator++ (void)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->inc (variable_, settings_).to_integer ();
   }
@@ -363,7 +363,7 @@ madara::knowledge::containers::Integer::operator-- (void)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->dec (variable_, settings_).to_integer ();
   }
@@ -376,7 +376,7 @@ madara::knowledge::containers::Integer::to_double (void) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_).to_double ();
   }
@@ -389,7 +389,7 @@ madara::knowledge::containers::Integer::to_string (void) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_).to_string ();
   }
@@ -400,11 +400,11 @@ madara::knowledge::containers::Integer::to_string (void) const
 inline void
 madara::knowledge::containers::Integer::set_quality (
   uint32_t quality,
-  const Knowledge_Reference_Settings & settings)
+  const KnowledgeReferenceSettings & settings)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     context_->set_quality (name_, quality, true, settings);
   }

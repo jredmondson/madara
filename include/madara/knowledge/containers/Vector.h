@@ -5,11 +5,11 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "madara/Lock_Type.h"
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/knowledge/Thread_Safe_Context.h"
-#include "madara/knowledge/Knowledge_Update_Settings.h"
-#include "Base_Container.h"
+#include "madara/LockType.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/ThreadSafeContext.h"
+#include "madara/knowledge/KnowledgeUpdateSettings.h"
+#include "BaseContainer.h"
 
 /**
  * @file Vector.h
@@ -32,7 +32,7 @@ namespace madara
        * @class Vector
        * @brief This class stores a vector of KaRL variables
        */
-      class MADARA_Export Vector : public Base_Container
+      class MADARA_Export Vector : public BaseContainer
       {
       public:
         /// Allow the Queue class to manipulate variables
@@ -43,8 +43,8 @@ namespace madara
          * @param  settings   settings for evaluating the vector
          * @param  delimiter  the delimiter for variables in the vector
          **/
-        Vector (const Knowledge_Update_Settings & settings =
-            Knowledge_Update_Settings (),
+        Vector (const KnowledgeUpdateSettings & settings =
+            KnowledgeUpdateSettings (),
           const std::string & delimiter = ".");
 
         /**
@@ -58,11 +58,11 @@ namespace madara
          * @param  delimiter  the delimiter for variables in the vector
          **/
         Vector (const std::string & name, 
-          Knowledge_Base & knowledge,
+          KnowledgeBase & knowledge,
           int size = -1,
           bool delete_vars = true,
-          const Knowledge_Update_Settings & settings =
-            Knowledge_Update_Settings (),
+          const KnowledgeUpdateSettings & settings =
+            KnowledgeUpdateSettings (),
           const std::string & delimiter = ".");
       
         /**
@@ -79,8 +79,8 @@ namespace madara
           Variables & knowledge,
           int size = -1,
           bool delete_vars = true,
-          const Knowledge_Update_Settings & settings =
-            Knowledge_Update_Settings (),
+          const KnowledgeUpdateSettings & settings =
+            KnowledgeUpdateSettings (),
           const std::string & delimiter = ".");
       
         /**
@@ -117,7 +117,7 @@ namespace madara
         * array size.
         * @param  value       the value to place at the end of the array
         **/
-        void push_back (Knowledge_Record value);
+        void push_back (KnowledgeRecord value);
 
         /**
          * Resizes the vector
@@ -157,7 +157,7 @@ namespace madara
          * @param size       size of the new vector (-1 to not change size)
          **/
         void set_name (const std::string & var_name,
-          Knowledge_Base & knowledge, int size = -1);
+          KnowledgeBase & knowledge, int size = -1);
         
         /**
          * Sets the variable name that this refers to
@@ -175,7 +175,7 @@ namespace madara
          * @param size       size of the new vector (-1 to not change size)
          **/
         void set_name (const std::string & var_name,
-          Thread_Safe_Context & knowledge, int size = -1);
+          ThreadSafeContext & knowledge, int size = -1);
 
         /**
         * Sets the delimiter for adding and detecting subvariables. By default,
@@ -201,7 +201,7 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        Knowledge_Record operator[] (size_t index) const;
+        KnowledgeRecord operator[] (size_t index) const;
         
         /**
          * Retrieves a copy of the record from the map. Same functionality
@@ -211,13 +211,13 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        Knowledge_Record to_record (size_t index) const;
+        KnowledgeRecord to_record (size_t index) const;
         
         /**
          * Copies the vector elements to an STL vector of Knowledge Records
          * @param  target   record values at this instance
          **/
-        void copy_to (Knowledge_Vector & target) const;
+        void copy_to (KnowledgeVector & target) const;
         
         /**
          * Checks to see if the index has ever been assigned a value
@@ -243,7 +243,7 @@ namespace madara
          */
         int read_file (size_t index, 
                        const std::string & filename, 
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
       
         /**
          * Atomically sets the value of an index to an arbitrary string.
@@ -265,7 +265,7 @@ namespace madara
          **/
         int set_file (size_t index,
           const unsigned char * value, size_t size, 
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
       
         /**
          * Atomically sets the value of an index to a JPEG image
@@ -287,7 +287,7 @@ namespace madara
          **/
         int set_jpeg (size_t index,
           const unsigned char * value, size_t size, 
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Sets a knowledge variable to a specified value
@@ -298,8 +298,8 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index,
-          madara::Knowledge_Record::Integer value = 
-            madara::Knowledge_Record::MODIFIED);
+          madara::KnowledgeRecord::Integer value = 
+            madara::KnowledgeRecord::MODIFIED);
 
         /**
          * Sets a knowledge variable to a specified value
@@ -311,8 +311,8 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index,
-          madara::Knowledge_Record::Integer value, 
-          const Knowledge_Update_Settings & settings);
+          madara::KnowledgeRecord::Integer value, 
+          const KnowledgeUpdateSettings & settings);
 
         /**
          * Sets an index within an array to a specified value
@@ -325,7 +325,7 @@ namespace madara
          **/
         int set_index (size_t index,
           size_t sub_index,
-          madara::Knowledge_Record::Integer value);
+          madara::KnowledgeRecord::Integer value);
         
         /**
          * Sets an index within an array to a specified value
@@ -339,8 +339,8 @@ namespace madara
          **/
         int set_index (size_t index,
           size_t sub_index,
-          madara::Knowledge_Record::Integer value,
-          const Knowledge_Update_Settings & settings);
+          madara::KnowledgeRecord::Integer value,
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Sets a knowledge variable to a specified value
@@ -352,7 +352,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index,
-          const madara::Knowledge_Record::Integer * value,
+          const madara::KnowledgeRecord::Integer * value,
           uint32_t size);
        
         /**
@@ -366,9 +366,9 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index,
-          const madara::Knowledge_Record::Integer * value,
+          const madara::KnowledgeRecord::Integer * value,
           uint32_t size,
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
        
         /**
          * Sets a knowledge variable to a specified value
@@ -379,7 +379,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index,
-          const std::vector <Knowledge_Record::Integer> & value);
+          const std::vector <KnowledgeRecord::Integer> & value);
        
         /**
          * Sets a knowledge variable to a specified value
@@ -391,8 +391,8 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index,
-          const std::vector <Knowledge_Record::Integer> & value,
-          const Knowledge_Update_Settings & settings);
+          const std::vector <KnowledgeRecord::Integer> & value,
+          const KnowledgeUpdateSettings & settings);
        
         /**
          * Sets a knowledge variable to a specified value
@@ -414,7 +414,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index, double value, 
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Sets an index within an array to a specified value
@@ -442,7 +442,7 @@ namespace madara
         int set_index (size_t index,
           size_t sub_index,
           double value,
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Sets a knowledge variable to a specified value
@@ -470,7 +470,7 @@ namespace madara
         int set (size_t index,
           const double * value,
           uint32_t size,
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
        
         /**
          * Sets a knowledge variable to a specified value
@@ -494,7 +494,7 @@ namespace madara
          **/
         int set (size_t index,
           const std::vector <double> & value,
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Sets a knowledge variable to a specified value
@@ -516,7 +516,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index, const std::string & value, 
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Sets the quality of writing to a certain variable from this entity
@@ -526,14 +526,14 @@ namespace madara
          * @param settings        settings for referring to knowledge variables
          **/
         void set_quality (size_t index, uint32_t quality,
-               const Knowledge_Reference_Settings & settings =
-                       Knowledge_Reference_Settings (false));
+               const KnowledgeReferenceSettings & settings =
+                       KnowledgeReferenceSettings (false));
       
         /**
          * Returns a reference to the size field of the current name
          * @return reference to the size field
          **/
-        Variable_Reference get_size_ref (void);
+        VariableReference get_size_ref (void);
 
         /**
         * Returns the type of the container along with name and any other
@@ -551,7 +551,7 @@ namespace madara
         * @return  a deep copy of the container that must be managed
         *          by the user (i.e., you have to delete the return value)
         **/
-        virtual Base_Container * clone (void) const;
+        virtual BaseContainer * clone (void) const;
 
         /**
         * Determines if all values in the vector are true
@@ -603,17 +603,17 @@ namespace madara
         /**
          * Variable context that we are modifying
          **/
-        Thread_Safe_Context * context_;
+        ThreadSafeContext * context_;
 
         /**
          * Values of the array
          **/
-        std::vector <Variable_Reference> vector_;
+        std::vector <VariableReference> vector_;
 
         /**
          * Reference to the size field of the vector space
          **/
-        Variable_Reference size_;
+        VariableReference size_;
 
         /**
         * Delimiter for the prefix to subvars

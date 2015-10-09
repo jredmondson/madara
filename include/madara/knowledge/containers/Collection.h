@@ -4,21 +4,21 @@
 
 #include <vector>
 #include <string>
-#include "madara/Lock_Type.h"
+#include "madara/LockType.h"
 #include "Barrier.h"
-#include "Base_Container.h"
+#include "BaseContainer.h"
 #include "Counter.h"
 #include "String.h"
 #include "Integer.h"
 #include "Double.h"
 #include "Map.h"
-#include "Flex_Map.h"
-#include "String_Vector.h"
-#include "Double_Vector.h"
-#include "Integer_Vector.h"
-#include "Buffer_Vector.h"
-#include "Native_Double_Vector.h"
-#include "Native_Integer_Vector.h"
+#include "FlexMap.h"
+#include "StringVector.h"
+#include "DoubleVector.h"
+#include "IntegerVector.h"
+#include "BufferVector.h"
+#include "NativeDoubleVector.h"
+#include "NativeIntegerVector.h"
 #include "Vector.h"
 
 /**
@@ -40,7 +40,7 @@ namespace madara
        * @brief A collection of MADARA containers that can be used for
        *        aggregate operations on all containers in the collection
        */
-      class MADARA_Export Collection : public Base_Container
+      class MADARA_Export Collection : public BaseContainer
       {
       public:
         /**
@@ -77,7 +77,7 @@ namespace madara
         * @return  a deep copy of the container that must be managed
         *          by the user (i.e., you have to delete the return value)
         **/
-        virtual Base_Container * clone (void) const;
+        virtual BaseContainer * clone (void) const;
 
         /**
         * Adds a Barrier container to the collection
@@ -98,16 +98,16 @@ namespace madara
         void add (const Integer & container);
 
         /**
-        * Adds an Integer_Vector container to the collection
+        * Adds an IntegerVector container to the collection
         * @param container  the container to add
         **/
-        void add (const Integer_Vector & container);
+        void add (const IntegerVector & container);
 
         /**
-        * Adds an Native_Integer_Vector container to the collection
+        * Adds an NativeIntegerVector container to the collection
         * @param container  the container to add
         **/
-        void add (const Native_Integer_Vector & container);
+        void add (const NativeIntegerVector & container);
 
         /**
         * Adds a Double container to the collection
@@ -116,16 +116,16 @@ namespace madara
         void add (const Double & container);
 
         /**
-        * Adds a Double_Vector container to the collection
+        * Adds a DoubleVector container to the collection
         * @param container  the container to add
         **/
-        void add (const Double_Vector & container);
+        void add (const DoubleVector & container);
 
         /**
-        * Adds an Native_Double_Vector container to the collection
+        * Adds an NativeDoubleVector container to the collection
         * @param container  the container to add
         **/
-        void add (const Native_Double_Vector & container);
+        void add (const NativeDoubleVector & container);
 
         /**
         * Adds a String container to the collection
@@ -134,16 +134,16 @@ namespace madara
         void add (const String & container);
 
         /**
-        * Adds a String_Vector container to the collection
+        * Adds a StringVector container to the collection
         * @param container  the container to add
         **/
-        void add (const String_Vector & container);
+        void add (const StringVector & container);
 
         /**
-        * Adds a Buffer_Vector container to the collection
+        * Adds a BufferVector container to the collection
         * @param container  the container to add
         **/
-        void add (const Buffer_Vector & container);
+        void add (const BufferVector & container);
 
         /**
         * Adds a Map container to the collection
@@ -152,10 +152,10 @@ namespace madara
         void add (const Map & container);
 
         /**
-        * Adds a Flex_Map container to the collection
+        * Adds a FlexMap container to the collection
         * @param container  the container to add
         **/
-        void add (const Flex_Map & container);
+        void add (const FlexMap & container);
 
         /**
         * Adds a Vector container to the collection
@@ -179,7 +179,7 @@ namespace madara
         * @param  settings  the new settings to use
         **/
         void set_settings (
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
 
         /**
         * Returns the size of the collection
@@ -237,7 +237,7 @@ namespace madara
         /**
          * The underlying collection of containers
          **/
-        std::vector <Base_Container *> vector_;
+        std::vector <BaseContainer *> vector_;
       };
     }
   }

@@ -4,14 +4,14 @@
 #include <iostream>
 
 #include "madara/utility/Utility.h"
-#include "madara/filters/ssl/AES_Buffer_Filter.h"
+#include "madara/filters/ssl/AESBufferFilter.h"
 
 namespace filters = Madara::Filters;
 namespace utility = Madara::Utility;
 
 int main (int, char **)
 {
-  filters::AES_Buffer_Filter filter, filter2;
+  filters::AESBufferFilter filter, filter2;
   filter.generate_key ("testPassword#214");
 
   std::vector <std::string> messages;

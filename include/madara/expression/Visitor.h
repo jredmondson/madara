@@ -6,73 +6,73 @@ namespace madara
 {
   namespace expression
   {
-    class Leaf_Node;
-    class Variable_Node;
-    class Variable_Decrement_Node;
-    class Variable_Divide_Node;
-    class Variable_Increment_Node;
-    class Variable_Multiply_Node;
-    class Variable_Compare_Node;
-    class List_Node;
-    class Composite_Array_Reference;
-    class Composite_Const_Array;
-    class Composite_Negate_Node;
-    class Composite_Postdecrement_Node;
-    class Composite_Postincrement_Node;
-    class Composite_Predecrement_Node;
-    class Composite_Preincrement_Node;
-    class Composite_Not_Node;
-    class Composite_Add_Node;
-    class Composite_Both_Node;
-    class Composite_Sequential_Node;
-    class Composite_Function_Node;
-    class Composite_For_Loop;
-    class Composite_Implies_Node;
-    class Composite_Assignment_Node;
-    class Composite_And_Node;
-    class Composite_Or_Node;
-    class Composite_Equality_Node;
-    class Composite_Inequality_Node;
-    class Composite_Less_Than_Equal_Node;
-    class Composite_Less_Than_Node;
-    class Composite_Greater_Than_Equal_Node;
-    class Composite_Greater_Than_Node;
-    class Composite_Subtract_Node;
-    class Composite_Divide_Node;
-    class Composite_Multiply_Node;
-    class Composite_Modulus_Node;
-    class Composite_Return_Right_Node;
-    class System_Call_Delete_Variable;
-    class System_Call_Eval;
-    class System_Call_Expand_Env;
-    class System_Call_Expand_Statement;
-    class System_Call_Fragment;
-    class System_Call_Get_Clock;
-    class System_Call_Get_Time;
-    class System_Call_Log_Level;
-    class System_Call_Print;
-    class System_Call_Print_System_Calls;
-    class System_Call_Rand_Double;
-    class System_Call_Rand_Int;
-    class System_Call_Read_File;
-    class System_Call_Set_Clock;
-    class System_Call_Set_Precision;
-    class System_Call_Size;
-    class System_Call_Sleep;
-    class System_Call_To_Buffer;
-    class System_Call_To_Double;
-    class System_Call_To_Doubles;
-    class System_Call_To_Host_Dirs;
-    class System_Call_To_Integer;
-    class System_Call_To_Integers;
-    class System_Call_To_String;
-    class System_Call_Type;
-    class System_Call_Write_File;
+    class LeafNode;
+    class VariableNode;
+    class VariableDecrementNode;
+    class VariableDivideNode;
+    class VariableIncrementNode;
+    class VariableMultiplyNode;
+    class VariableCompareNode;
+    class ListNode;
+    class CompositeArrayReference;
+    class CompositeConstArray;
+    class CompositeNegateNode;
+    class CompositePostdecrementNode;
+    class CompositePostincrementNode;
+    class CompositePredecrementNode;
+    class CompositePreincrementNode;
+    class CompositeNotNode;
+    class CompositeAddNode;
+    class CompositeBothNode;
+    class CompositeSequentialNode;
+    class CompositeFunctionNode;
+    class CompositeForLoop;
+    class CompositeImpliesNode;
+    class CompositeAssignmentNode;
+    class CompositeAndNode;
+    class CompositeOrNode;
+    class CompositeEqualityNode;
+    class CompositeInequalityNode;
+    class CompositeLessThanEqualNode;
+    class CompositeLessThanNode;
+    class CompositeGreaterThanEqualNode;
+    class CompositeGreaterThanNode;
+    class CompositeSubtractNode;
+    class CompositeDivideNode;
+    class CompositeMultiplyNode;
+    class CompositeModulusNode;
+    class CompositeReturnRightNode;
+    class SystemCallDeleteVariable;
+    class SystemCallEval;
+    class SystemCallExpandEnv;
+    class SystemCallExpandStatement;
+    class SystemCallFragment;
+    class SystemCallGetClock;
+    class SystemCallGetTime;
+    class SystemCallLogLevel;
+    class SystemCallPrint;
+    class SystemCallPrintSystemCalls;
+    class SystemCallRandDouble;
+    class SystemCallRandInt;
+    class SystemCallReadFile;
+    class SystemCallSetClock;
+    class SystemCallSetPrecision;
+    class SystemCallSize;
+    class SystemCallSleep;
+    class SystemCallToBuffer;
+    class SystemCallToDouble;
+    class SystemCallToDoubles;
+    class SystemCallToHostDirs;
+    class SystemCallToInteger;
+    class SystemCallToIntegers;
+    class SystemCallToString;
+    class SystemCallType;
+    class SystemCallWriteFile;
 
     /**
      * @class Visitor
      * @brief Abstract base class for all visitors to all classes that derive
-     *        from @a Component_Node.
+     *        from @a ComponentNode.
      *
      *        This class plays the role of the "visitor" in the Visitor
      *        pattern. 
@@ -80,191 +80,191 @@ namespace madara
     class Visitor
     {
     public:
-      /// Visit a Leaf_Node.
-      virtual void visit (const Leaf_Node &node) = 0;
+      /// Visit a LeafNode.
+      virtual void visit (const LeafNode &node) = 0;
 
       /// Visit an array reference.
-      virtual void visit (const Composite_Const_Array &node) = 0;
+      virtual void visit (const CompositeConstArray &node) = 0;
 
       /// Visit an array reference.
-      virtual void visit (const Composite_Array_Reference &node) = 0;
+      virtual void visit (const CompositeArrayReference &node) = 0;
 
-      /// Visit a Variable_Node.
-      virtual void visit (const Variable_Node &node) = 0;
+      /// Visit a VariableNode.
+      virtual void visit (const VariableNode &node) = 0;
       
-      /// Visit a Variable_Decrement_Node.
-      virtual void visit (const Variable_Decrement_Node &node) = 0;
+      /// Visit a VariableDecrementNode.
+      virtual void visit (const VariableDecrementNode &node) = 0;
       
-      /// Visit a Variable_Divide_Node.
-      virtual void visit (const Variable_Divide_Node &node) = 0;
+      /// Visit a VariableDivideNode.
+      virtual void visit (const VariableDivideNode &node) = 0;
       
-      /// Visit a Variable_Increment_Node.
-      virtual void visit (const Variable_Increment_Node &node) = 0;
+      /// Visit a VariableIncrementNode.
+      virtual void visit (const VariableIncrementNode &node) = 0;
       
-      /// Visit a Variable_Multiply_Node.
-      virtual void visit (const Variable_Multiply_Node &node) = 0;
+      /// Visit a VariableMultiplyNode.
+      virtual void visit (const VariableMultiplyNode &node) = 0;
       
-      /// Visit a Variable_Compare_Node.
-      virtual void visit (const Variable_Compare_Node &node) = 0;
+      /// Visit a VariableCompareNode.
+      virtual void visit (const VariableCompareNode &node) = 0;
       
-      /// Visit a List_Node.
-      virtual void visit (const List_Node &node) = 0;
+      /// Visit a ListNode.
+      virtual void visit (const ListNode &node) = 0;
 
-      /// Visit a Composite_Negate_Node.
-      virtual void visit (const Composite_Negate_Node &node) = 0;
+      /// Visit a CompositeNegateNode.
+      virtual void visit (const CompositeNegateNode &node) = 0;
 
-      /// Visit a Composite_Postdecrement_Node.
-      virtual void visit (const Composite_Postdecrement_Node &node) = 0;
+      /// Visit a CompositePostdecrementNode.
+      virtual void visit (const CompositePostdecrementNode &node) = 0;
 
-      /// Visit a Composite_Postincrement_Node.
-      virtual void visit (const Composite_Postincrement_Node &node) = 0;
+      /// Visit a CompositePostincrementNode.
+      virtual void visit (const CompositePostincrementNode &node) = 0;
       
-      /// Visit a Composite_Predecrement_Node.
-      virtual void visit (const Composite_Predecrement_Node &node) = 0;
+      /// Visit a CompositePredecrementNode.
+      virtual void visit (const CompositePredecrementNode &node) = 0;
 
-      /// Visit a Composite_PreIncrement_Node.
-      virtual void visit (const Composite_Preincrement_Node &node) = 0;
+      /// Visit a CompositePreIncrementNode.
+      virtual void visit (const CompositePreincrementNode &node) = 0;
 
-      /// Visit a Composite_Not_Node.
-      virtual void visit (const Composite_Not_Node &node) = 0;
+      /// Visit a CompositeNotNode.
+      virtual void visit (const CompositeNotNode &node) = 0;
 
-      /// Visit a Composite_Add_Node.
-      virtual void visit (const Composite_Add_Node &node) = 0;
+      /// Visit a CompositeAddNode.
+      virtual void visit (const CompositeAddNode &node) = 0;
 
-      /// Visit a Composite_Assignment_Node.
-      virtual void visit (const Composite_Assignment_Node &node) = 0;
+      /// Visit a CompositeAssignmentNode.
+      virtual void visit (const CompositeAssignmentNode &node) = 0;
 
-      /// Visit a Composite_And_Node.
-      virtual void visit (const Composite_And_Node &node) = 0;
+      /// Visit a CompositeAndNode.
+      virtual void visit (const CompositeAndNode &node) = 0;
 
-      /// Visit a Composite_Or_Node.
-      virtual void visit (const Composite_Or_Node &node) = 0;
+      /// Visit a CompositeOrNode.
+      virtual void visit (const CompositeOrNode &node) = 0;
 
-      /// Visit a Composite_Equality_Node.
-      virtual void visit (const Composite_Equality_Node &node) = 0;
+      /// Visit a CompositeEqualityNode.
+      virtual void visit (const CompositeEqualityNode &node) = 0;
 
-      /// Visit a Composite_Inequality_Node.
-      virtual void visit (const Composite_Inequality_Node &node) = 0;
+      /// Visit a CompositeInequalityNode.
+      virtual void visit (const CompositeInequalityNode &node) = 0;
 
-      /// Visit a Composite_Less_Than_Equal_Node.
-      virtual void visit (const Composite_Greater_Than_Equal_Node &node) = 0;
+      /// Visit a CompositeLessThanEqualNode.
+      virtual void visit (const CompositeGreaterThanEqualNode &node) = 0;
 
-      /// Visit a Composite_Less_Than_Node.
-      virtual void visit (const Composite_Greater_Than_Node &node) = 0;
+      /// Visit a CompositeLessThanNode.
+      virtual void visit (const CompositeGreaterThanNode &node) = 0;
 
-      /// Visit a Composite_Less_Than_Equal_Node.
-      virtual void visit (const Composite_Less_Than_Equal_Node &node) = 0;
+      /// Visit a CompositeLessThanEqualNode.
+      virtual void visit (const CompositeLessThanEqualNode &node) = 0;
 
-      /// Visit a Composite_Less_Than_Node.
-      virtual void visit (const Composite_Less_Than_Node &node) = 0;
+      /// Visit a CompositeLessThanNode.
+      virtual void visit (const CompositeLessThanNode &node) = 0;
 
-      /// Visit a Composite_Subtract_Node.
-      virtual void visit (const Composite_Subtract_Node &node) = 0;
+      /// Visit a CompositeSubtractNode.
+      virtual void visit (const CompositeSubtractNode &node) = 0;
 
-      /// Visit a Composite_Divide_Node.
-      virtual void visit (const Composite_Divide_Node &node) = 0;
+      /// Visit a CompositeDivideNode.
+      virtual void visit (const CompositeDivideNode &node) = 0;
 
-      /// Visit a Composite_Multiply_Node.
-      virtual void visit (const Composite_Multiply_Node &node) = 0;
+      /// Visit a CompositeMultiplyNode.
+      virtual void visit (const CompositeMultiplyNode &node) = 0;
 
-      /// Visit a Composite_Modulus_Node.
-      virtual void visit (const Composite_Modulus_Node &node) = 0;
+      /// Visit a CompositeModulusNode.
+      virtual void visit (const CompositeModulusNode &node) = 0;
 
-      /// Visit a Composite_Both_Node.
-      virtual void visit (const Composite_Both_Node &node) = 0;
+      /// Visit a CompositeBothNode.
+      virtual void visit (const CompositeBothNode &node) = 0;
 
-      /// Visit a Composite_Return_Right_Node.
-      virtual void visit (const Composite_Return_Right_Node &node) = 0;
+      /// Visit a CompositeReturnRightNode.
+      virtual void visit (const CompositeReturnRightNode &node) = 0;
       
-      /// Visit a Composite_Sequential_Node.
-      virtual void visit (const Composite_Sequential_Node &node) = 0;
+      /// Visit a CompositeSequentialNode.
+      virtual void visit (const CompositeSequentialNode &node) = 0;
       
-      /// Visit a Composite_Function_Node.
-      virtual void visit (const Composite_Function_Node &node) = 0;
+      /// Visit a CompositeFunctionNode.
+      virtual void visit (const CompositeFunctionNode &node) = 0;
       
-      /// Visit a Composite_Function_Node.
-      virtual void visit (const Composite_For_Loop &node) = 0;
+      /// Visit a CompositeFunctionNode.
+      virtual void visit (const CompositeForLoop &node) = 0;
 
-      /// Visit a Composite_Implies_Node.
-      virtual void visit (const Composite_Implies_Node &node) = 0;
+      /// Visit a CompositeImpliesNode.
+      virtual void visit (const CompositeImpliesNode &node) = 0;
       
-      /// Visit a System_Call_Delete_Variable.
-      virtual void visit (const System_Call_Delete_Variable &node) = 0;
+      /// Visit a SystemCallDeleteVariable.
+      virtual void visit (const SystemCallDeleteVariable &node) = 0;
       
-      /// Visit a System_Call_Eval.
-      virtual void visit (const System_Call_Eval &node) = 0;
+      /// Visit a SystemCallEval.
+      virtual void visit (const SystemCallEval &node) = 0;
       
-      /// Visit a System_Call_Expand_Env.
-      virtual void visit (const System_Call_Expand_Env &node) = 0;
+      /// Visit a SystemCallExpandEnv.
+      virtual void visit (const SystemCallExpandEnv &node) = 0;
       
-      /// Visit a System_Call_Expand_Statement.
-      virtual void visit (const System_Call_Expand_Statement &node) = 0;
+      /// Visit a SystemCallExpandStatement.
+      virtual void visit (const SystemCallExpandStatement &node) = 0;
       
-      /// Visit a System_Call_Expand_Statement.
-      virtual void visit (const System_Call_Fragment &node) = 0;
+      /// Visit a SystemCallExpandStatement.
+      virtual void visit (const SystemCallFragment &node) = 0;
       
-      /// Visit a System_Call_Get_Clock.
-      virtual void visit (const System_Call_Get_Clock &node) = 0;
+      /// Visit a SystemCallGetClock.
+      virtual void visit (const SystemCallGetClock &node) = 0;
       
-      /// Visit a System_Call_Get_Time.
-      virtual void visit (const System_Call_Get_Time &node) = 0;
+      /// Visit a SystemCallGetTime.
+      virtual void visit (const SystemCallGetTime &node) = 0;
       
-      /// Visit a System_Call_Log_Level.
-      virtual void visit (const System_Call_Log_Level &node) = 0;
+      /// Visit a SystemCallLogLevel.
+      virtual void visit (const SystemCallLogLevel &node) = 0;
       
-      /// Visit a System_Call_Read_File.
-      virtual void visit (const System_Call_Print &node) = 0;
+      /// Visit a SystemCallReadFile.
+      virtual void visit (const SystemCallPrint &node) = 0;
       
-      /// Visit a System_Call_Print_System_Calls.
-      virtual void visit (const System_Call_Print_System_Calls &node) = 0;
+      /// Visit a SystemCallPrintSystemCalls.
+      virtual void visit (const SystemCallPrintSystemCalls &node) = 0;
       
-      /// Visit a System_Call_Rand_Double.
-      virtual void visit (const System_Call_Rand_Double &node) = 0;
+      /// Visit a SystemCallRandDouble.
+      virtual void visit (const SystemCallRandDouble &node) = 0;
       
-      /// Visit a System_Call_Rand_Int.
-      virtual void visit (const System_Call_Rand_Int &node) = 0;
+      /// Visit a SystemCallRandInt.
+      virtual void visit (const SystemCallRandInt &node) = 0;
       
-      /// Visit a System_Call_Read_File.
-      virtual void visit (const System_Call_Read_File &node) = 0;
+      /// Visit a SystemCallReadFile.
+      virtual void visit (const SystemCallReadFile &node) = 0;
       
-      /// Visit a System_Call_Set_Clock.
-      virtual void visit (const System_Call_Set_Clock &node) = 0;
+      /// Visit a SystemCallSetClock.
+      virtual void visit (const SystemCallSetClock &node) = 0;
       
-      /// Visit a System_Call_Size.
-      virtual void visit (const System_Call_Size &node) = 0;
+      /// Visit a SystemCallSize.
+      virtual void visit (const SystemCallSize &node) = 0;
       
-      /// Visit a System_Call_Sleep.
-      virtual void visit (const System_Call_Sleep &node) = 0;
+      /// Visit a SystemCallSleep.
+      virtual void visit (const SystemCallSleep &node) = 0;
       
-      /// Visit a System_Call_To_Buffer.
-      virtual void visit (const System_Call_To_Buffer &node) = 0;
+      /// Visit a SystemCallToBuffer.
+      virtual void visit (const SystemCallToBuffer &node) = 0;
       
-      /// Visit a System_Call_To_Double.
-      virtual void visit (const System_Call_To_Double &node) = 0;
+      /// Visit a SystemCallToDouble.
+      virtual void visit (const SystemCallToDouble &node) = 0;
       
-      /// Visit a System_Call_To_Doubles.
-      virtual void visit (const System_Call_To_Doubles &node) = 0;
+      /// Visit a SystemCallToDoubles.
+      virtual void visit (const SystemCallToDoubles &node) = 0;
       
-      /// Visit a System_Call_To_Host_Dirs.
-      virtual void visit (const System_Call_To_Host_Dirs &node) = 0;
+      /// Visit a SystemCallToHostDirs.
+      virtual void visit (const SystemCallToHostDirs &node) = 0;
       
-      /// Visit a System_Call_To_Integer.
-      virtual void visit (const System_Call_To_Integer &node) = 0;
+      /// Visit a SystemCallToInteger.
+      virtual void visit (const SystemCallToInteger &node) = 0;
       
-      /// Visit a System_Call_To_Integers.
-      virtual void visit (const System_Call_To_Integers &node) = 0;
+      /// Visit a SystemCallToIntegers.
+      virtual void visit (const SystemCallToIntegers &node) = 0;
       
-      /// Visit a System_Call_To_String.
-      virtual void visit (const System_Call_To_String &node) = 0;
+      /// Visit a SystemCallToString.
+      virtual void visit (const SystemCallToString &node) = 0;
       
-      /// Visit a System_Call_Type.
-      virtual void visit (const System_Call_Type &node) = 0;
+      /// Visit a SystemCallType.
+      virtual void visit (const SystemCallType &node) = 0;
       
-      /// Visit a System_Call_Write_File.
-      virtual void visit (const System_Call_Write_File &node) = 0;
+      /// Visit a SystemCallWriteFile.
+      virtual void visit (const SystemCallWriteFile &node) = 0;
       
-      /// Visit a System_Call_To_Buffer.
-      virtual void visit (const System_Call_Set_Precision &node) = 0;
+      /// Visit a SystemCallToBuffer.
+      virtual void visit (const SystemCallSetPrecision &node) = 0;
       
       /// No-op destructor to hold things together.
       virtual ~Visitor (void) = 0;

@@ -98,9 +98,9 @@ extern RPC_IF_HANDLE __MIDL_itf_ComponentLib_0000_0000_v0_0_s_ifspec;
 /* [helpstring][version][uuid] */ 
 
 
-EXTERN_C const IID LIBID_MgaComponentLib;
+EXTERN_C const IID LIBIDMgaComponentLib;
 
-EXTERN_C const CLSID CLSID_MgaComponent;
+EXTERN_C const CLSID CLSIDMgaComponent;
 
 #ifdef __cplusplus
 

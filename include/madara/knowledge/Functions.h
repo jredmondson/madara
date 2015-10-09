@@ -4,12 +4,12 @@
 
 #include <string>
 #include "madara/MADARA_export.h"
-#include "madara/knowledge/Function_Arguments.h"
-#include "madara/knowledge/Knowledge_Record.h"
-#include "madara/knowledge/Knowledge_Update_Settings.h"
-#include "madara/expression/Expression_Tree.h"
-#include "madara/filters/Record_Filter.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/knowledge/FunctionArguments.h"
+#include "madara/knowledge/KnowledgeRecord.h"
+#include "madara/knowledge/KnowledgeUpdateSettings.h"
+#include "madara/expression/ExpressionTree.h"
+#include "madara/filters/RecordFilter.h"
+#include "madara/logger/GlobalLogger.h"
 
 #ifdef _MADARA_JAVA_
 #include <jni.h>
@@ -33,9 +33,9 @@ namespace madara
   namespace knowledge
   {
     class Variables;
-    class Thread_Safe_Context;
+    class ThreadSafeContext;
     
-    typedef madara::Knowledge_Record VALUE_TYPE;
+    typedef madara::KnowledgeRecord VALUE_TYPE;
      
     /**
      * @class Function
@@ -76,7 +76,7 @@ namespace madara
       /**
        * Constructor for function pointer
        **/
-      Function (Knowledge_Record (*func) (Function_Arguments &, Variables &))
+      Function (KnowledgeRecord (*func) (FunctionArguments &, Variables &))
         : extern_named (0), extern_unnamed (func),
 
 #ifndef _MADARA_NO_KARL_
@@ -90,8 +90,8 @@ namespace madara
       /**
        * Constructor for function pointer
        **/
-      Function (Knowledge_Record (*func) (const char *, 
-        Function_Arguments &, Variables &))
+      Function (KnowledgeRecord (*func) (const char *, 
+        FunctionArguments &, Variables &))
         : extern_named (func), extern_unnamed (0),
 
 #ifndef _MADARA_NO_KARL_
@@ -106,7 +106,7 @@ namespace madara
       /**
        * Constructor for KaRL expression
        **/
-      Function (const madara::expression::Expression_Tree & func)
+      Function (const madara::expression::ExpressionTree & func)
         : extern_named (0), extern_unnamed (0), function_contents (func),
           functor (0), type (KARL_EXPRESSION)
       {
@@ -117,7 +117,7 @@ namespace madara
       /**
        * Constructor for KaRL expression
        **/
-      Function (filters::Record_Filter * filter)
+      Function (filters::RecordFilter * filter)
         : extern_named (0), extern_unnamed (0),
 
 #ifndef _MADARA_NO_KARL_
@@ -154,18 +154,18 @@ namespace madara
       }
 
       // internal function pointer
-      Knowledge_Record (*extern_named) (
-        const char *, Function_Arguments &, Variables &);
+      KnowledgeRecord (*extern_named) (
+        const char *, FunctionArguments &, Variables &);
 
       // internal function pointer
-      Knowledge_Record (*extern_unnamed) (Function_Arguments &, Variables &);
+      KnowledgeRecord (*extern_unnamed) (FunctionArguments &, Variables &);
        
 #ifndef _MADARA_NO_KARL_
       // expression tree
-      madara::expression::Expression_Tree function_contents;
+      madara::expression::ExpressionTree function_contents;
 #endif // _MADARA_NO_KARL_
 
-      filters::Record_Filter * functor;
+      filters::RecordFilter * functor;
 
       // type of function definition
       int type;
@@ -204,11 +204,11 @@ namespace madara
         bool invalid_callable = false;
    
         // Check to make sure its a callable object
-        if (0 == PyObject_HasAttrString (func.ptr (), "__call__"))
+        if (0 == PyObjectHasAttrString (func.ptr (), "__call__"))
         {
           // If not, lets throw an exception to warn the user
-          PyErr_SetString (
-            PyExc_TypeError,
+          PyErrSetString (
+            PyExcTypeError,
             "Handler must be a callable object");
 
           boost::python::throw_error_already_set(); 

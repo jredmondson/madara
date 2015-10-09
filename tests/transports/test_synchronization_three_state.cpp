@@ -15,18 +15,18 @@
 #include "ace/Signal.h"
 #include "ace/Sched_Params.h"
 
-#include "madara/knowledge/Compiled_Expression.h"
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/knowledge/CompiledExpression.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
 bool logical_print = false;
-madara::Knowledge_Record::Integer id = 2;
-madara::Knowledge_Record::Integer left = 0;
-madara::Knowledge_Record::Integer processes = 3;
-madara::Knowledge_Record::Integer stop = 3;
-madara::Knowledge_Record::Integer value = 0;
+madara::KnowledgeRecord::Integer id = 2;
+madara::KnowledgeRecord::Integer left = 0;
+madara::KnowledgeRecord::Integer processes = 3;
+madara::KnowledgeRecord::Integer stop = 3;
+madara::KnowledgeRecord::Integer value = 0;
 volatile bool terminated = 0;
 std::string host;
 std::string domain ("three_state");
@@ -90,13 +90,13 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   ts.hosts[0] = multicast;
 
   // start the knowledge engine
-  madara::knowledge::Knowledge_Base knowledge (
+  madara::knowledge::KnowledgeBase knowledge (
     host, ts);
 
   // variables for compiled expressions and wait settings
-  madara::knowledge::Compiled_Expression compiled;
-  madara::knowledge::Compiled_Expression self_state_broadcast;
-  madara::knowledge::Wait_Settings wait_settings;
+  madara::knowledge::CompiledExpression compiled;
+  madara::knowledge::CompiledExpression self_state_broadcast;
+  madara::knowledge::WaitSettings wait_settings;
 
   // set my id
   knowledge.set (".self", id);
@@ -171,7 +171,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   knowledge.print (wait_settings.post_print_statement);
 
-  madara::knowledge::Eval_Settings default_eval;
+  madara::knowledge::EvalSettings default_eval;
 
   // termination is done via signalling from the user (Control+C)
   while (!terminated)

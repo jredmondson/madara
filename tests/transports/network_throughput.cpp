@@ -12,15 +12,15 @@
 #include "ace/Guard_T.h"
 #include "ace/Recursive_Thread_Mutex.h"
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/filters/Aggregate_Filter.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/filters/AggregateFilter.h"
 
 #include "madara/knowledge/containers/Integer.h"
-#include "madara/knowledge/containers/Integer_Vector.h"
+#include "madara/knowledge/containers/IntegerVector.h"
 #include "madara/knowledge/containers/Barrier.h"
 #include "madara/knowledge/containers/String.h"
 #include "madara/utility/Utility.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 #include "madara/threads/Threader.h"
 
 namespace logger = madara::logger;
@@ -36,12 +36,12 @@ namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
 namespace transport = madara::transport;
 
-typedef madara::Knowledge_Record::Integer Integer;
+typedef madara::KnowledgeRecord::Integer Integer;
 
 // default transport settings
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-transport::QoS_Transport_Settings settings;
+transport::QoSTransportSettings settings;
 
 bool started = false;
 
@@ -252,13 +252,13 @@ void handle_arguments (int argc, char ** argv)
 
 
 
-class Publisher : public threads::Base_Thread
+class Publisher : public threads::BaseThread
 {
 public:
   /**
    * Constructor
    **/
-  Publisher (knowledge::Knowledge_Base & context)
+  Publisher (knowledge::KnowledgeBase & context)
     : knowledge (&context), publishes (".publishes", context),
     id ("id", context, (Integer)settings.id)
   {
@@ -267,10 +267,10 @@ public:
 
     // create container and references
     packet = context.get_ref (
-      "packet", knowledge::Knowledge_Reference_Settings (true));
+      "packet", knowledge::KnowledgeReferenceSettings (true));
 
     // set initial packet
-    utility::Scoped_Array <unsigned char> buffer (new unsigned char[data_size]);
+    utility::ScopedArray <unsigned char> buffer (new unsigned char[data_size]);
     context.set_file (packet, buffer.get_ptr (), (size_t)data_size);
   }
 
@@ -278,7 +278,7 @@ public:
   * Initializes thread with MADARA context
   * @param   context   context for querying current program state
   **/
-  virtual void init (knowledge::Knowledge_Base & context)
+  virtual void init (knowledge::KnowledgeBase & context)
   {
   }
 
@@ -295,13 +295,13 @@ public:
   }
 
 private:
-  knowledge::Knowledge_Base * knowledge;
+  knowledge::KnowledgeBase * knowledge;
   containers::Integer publishes;
   containers::Integer id;
-  knowledge::Variable_Reference packet;
+  knowledge::VariableReference packet;
 };
 
-class Receiver : public filters::Aggregate_Filter
+class Receiver : public filters::AggregateFilter
 {
 public:
   Receiver (int publishers)
@@ -309,11 +309,11 @@ public:
   {
   }
 
-  virtual void filter (madara::Knowledge_Map & records,
-    const transport::Transport_Context & transport_context,
+  virtual void filter (madara::KnowledgeMap & records,
+    const transport::TransportContext & transport_context,
     knowledge::Variables & vars)
   {
-    madara::Knowledge_Map::iterator packet = records.find ("packet");
+    madara::KnowledgeMap::iterator packet = records.find ("packet");
     if (packet != records.end ())
     {
       if (!started)
@@ -328,7 +328,7 @@ public:
         started = true;
       }
 
-      madara::Knowledge_Map::iterator id = records.find ("id");
+      madara::KnowledgeMap::iterator id = records.find ("id");
 
       // if we have a valid packet
       if (id != records.end ())
@@ -353,10 +353,10 @@ public:
     }
   }
 
-  containers::Integer_Vector counters;
-  containers::Integer_Vector sizes;
-  containers::Integer_Vector start_times;
-  containers::Integer_Vector end_times;
+  containers::IntegerVector counters;
+  containers::IntegerVector sizes;
+  containers::IntegerVector start_times;
+  containers::IntegerVector end_times;
   int processes;
   bool started;
 };
@@ -389,12 +389,12 @@ int main (int argc, char ** argv)
     settings.hosts[0] = default_multicast;
   }
 
-  filters::Aggregate_Filter * receiver = new Receiver (settings.processes);
+  filters::AggregateFilter * receiver = new Receiver (settings.processes);
 
   settings.add_receive_filter (receiver);
 
   // create a knowledge base and setup our id
-  knowledge::Knowledge_Base knowledge (host, settings);
+  knowledge::KnowledgeBase knowledge (host, settings);
   
   knowledge.set (".id", Integer (settings.id));
   knowledge.set (".processes", Integer (settings.processes));
@@ -450,9 +450,9 @@ int main (int argc, char ** argv)
   
 
   // prepare the results to send to whoever is listening
-  containers::Integer_Vector receives (agent_id + ".receives", knowledge);
-  containers::Integer_Vector durations (agent_id + ".durations", knowledge, settings.processes);
-  containers::Integer_Vector receive_hz (agent_id + ".receive_hz", knowledge, settings.processes);
+  containers::IntegerVector receives (agent_id + ".receives", knowledge);
+  containers::IntegerVector durations (agent_id + ".durations", knowledge, settings.processes);
+  containers::IntegerVector receive_hz (agent_id + ".receive_hz", knowledge, settings.processes);
   containers::Integer total_hz (agent_id + ".total_hz", knowledge);
   containers::Integer publishes (agent_id + ".publishes", knowledge,
     knowledge.get (".publishes").to_integer ());
@@ -460,10 +460,10 @@ int main (int argc, char ** argv)
     knowledge.get (".processes").to_integer ());
 
   // refer to variables used in receive filter
-  containers::Integer_Vector counters (".counters", knowledge);
-  containers::Integer_Vector sizes (".sizes", knowledge);
-  containers::Integer_Vector start_times (".starts", knowledge);
-  containers::Integer_Vector end_times (".ends", knowledge);
+  containers::IntegerVector counters (".counters", knowledge);
+  containers::IntegerVector sizes (".sizes", knowledge);
+  containers::IntegerVector start_times (".starts", knowledge);
+  containers::IntegerVector end_times (".ends", knowledge);
 
   // transfer the counters to the global receives variables
   counters.transfer_to (receives);

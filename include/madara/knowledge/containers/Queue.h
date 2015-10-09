@@ -4,10 +4,10 @@
 
 #include <vector>
 #include <string>
-#include "madara/Lock_Type.h"
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/knowledge/Thread_Safe_Context.h"
-#include "madara/knowledge/Knowledge_Update_Settings.h"
+#include "madara/LockType.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/ThreadSafeContext.h"
+#include "madara/knowledge/KnowledgeUpdateSettings.h"
 #include "Vector.h"
 #include "Integer.h"
 
@@ -37,8 +37,8 @@ namespace madara
         /**
          * Default constructor
          **/
-        Queue (const Knowledge_Update_Settings & settings =
-          Knowledge_Update_Settings ());
+        Queue (const KnowledgeUpdateSettings & settings =
+          KnowledgeUpdateSettings ());
       
         /**
          * Constructor
@@ -47,9 +47,9 @@ namespace madara
          * @param  settings   settings for evaluating the vector
          **/
         Queue (const std::string & name,
-                Knowledge_Base & knowledge,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                KnowledgeBase & knowledge,
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Constructor
@@ -59,8 +59,8 @@ namespace madara
          **/
         Queue (const std::string & name,
                 Variables & knowledge,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Default constructor
@@ -70,10 +70,10 @@ namespace madara
          * @param  settings   settings for evaluating the vector
          **/
         Queue (const std::string & name,
-               Knowledge_Base & knowledge,
+               KnowledgeBase & knowledge,
                int size,
-               const Knowledge_Update_Settings & settings =
-                 Knowledge_Update_Settings ());
+               const KnowledgeUpdateSettings & settings =
+                 KnowledgeUpdateSettings ());
       
         /**
          * Default constructor
@@ -85,8 +85,8 @@ namespace madara
         Queue (const std::string & name,
                Variables & knowledge,
                int size,
-               const Knowledge_Update_Settings & settings =
-                 Knowledge_Update_Settings ());
+               const KnowledgeUpdateSettings & settings =
+                 KnowledgeUpdateSettings ());
       
         /**
          * Copy constructor
@@ -116,7 +116,7 @@ namespace madara
          * @param knowledge  the knowledge base the variable is housed in
          **/
         void set_name (const std::string & var_name,
-          Knowledge_Base & knowledge);
+          KnowledgeBase & knowledge);
         
         /**
          * Sets the variable name that this refers to
@@ -145,7 +145,7 @@ namespace madara
          * @param  record  the value to enqueue
          * @return true if the record was enqueued and false if full
          **/
-        bool enqueue (const Knowledge_Record & record);
+        bool enqueue (const KnowledgeRecord & record);
         
         /**
          * Dequeues a record from the front of the queue. This method
@@ -157,18 +157,18 @@ namespace madara
          * latter of which means there was nothing in queue.
          * @return a record from the front of the queue. Will return
          *         an uncreated record if queue was empty on asynchronous
-         *         call. Knowledge_Record::status () can be checked for
-         *         UNCREATED. Can also use Knowledge_Record::is_valid to
+         *         call. KnowledgeRecord::status () can be checked for
+         *         UNCREATED. Can also use KnowledgeRecord::is_valid to
          *         check for valid data on return.
          **/
-        Knowledge_Record dequeue (bool wait = true);
+        KnowledgeRecord dequeue (bool wait = true);
         
         /**
          * Retrieves a record at a position in the queue
          * @param  position  the position of the record in the queue
          * @return  the record at the position in the queue
          **/
-        Knowledge_Record inspect (size_t position);
+        KnowledgeRecord inspect (size_t position);
 
         /**
          * Clears the queue
@@ -192,8 +192,8 @@ namespace madara
          * @param  settings  the new settings to use
          * @return the old update settings
          **/
-        Knowledge_Update_Settings set_settings (
-          const Knowledge_Update_Settings & settings);
+        KnowledgeUpdateSettings set_settings (
+          const KnowledgeUpdateSettings & settings);
 
         /**
          * Sets the quality of writing to the counter variables
@@ -202,8 +202,8 @@ namespace madara
          * @param settings        settings for referring to knowledge variables
          **/
         void set_quality (uint32_t quality,
-               const Knowledge_Reference_Settings & settings =
-                       Knowledge_Reference_Settings (false));
+               const KnowledgeReferenceSettings & settings =
+                       KnowledgeReferenceSettings (false));
       
         /**
          * Resizes the queue
@@ -219,9 +219,9 @@ namespace madara
          * @param  value  the value to increment base by
          * @return the resulting index
          **/
-        inline Knowledge_Record::Integer increment (
-          Knowledge_Record::Integer base,
-          Knowledge_Record::Integer value)
+        inline KnowledgeRecord::Integer increment (
+          KnowledgeRecord::Integer base,
+          KnowledgeRecord::Integer value)
         {
           return (base + value) % queue_.size ();
         }
@@ -238,7 +238,7 @@ namespace madara
         /**
          * Variable context that we are modifying
          **/
-        mutable Thread_Safe_Context * context_;
+        mutable ThreadSafeContext * context_;
 
         /**
          * Prefix of variable
@@ -268,7 +268,7 @@ namespace madara
         /**
          * Settings for modifications
          **/
-        Knowledge_Update_Settings settings_;
+        KnowledgeUpdateSettings settings_;
       };
     }
   }

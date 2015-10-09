@@ -14,9 +14,9 @@
 #include <vector>
 #include <map>
 #include <list>
-#include "madara/knowledge/Knowledge_Base.h"
-#include "Base_Thread.h"
-#include "Worker_Thread.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "BaseThread.h"
+#include "WorkerThread.h"
 #include "madara/MADARA_export.h"
 
 #ifdef _MADARA_JAVA_
@@ -43,7 +43,7 @@ namespace madara
        * Constructor
        * @param  data_plane   The data plane for threads to use
        **/
-      Threader (knowledge::Knowledge_Base & data_plane);
+      Threader (knowledge::KnowledgeBase & data_plane);
 
       /**
        * Destructor
@@ -54,7 +54,7 @@ namespace madara
        * Sets the data plane for new threads
        * @param  data_plane   The data plane for threads to use
        **/
-      void set_data_plane (knowledge::Knowledge_Base & data_plane);
+      void set_data_plane (knowledge::KnowledgeBase & data_plane);
 
       /**
        * Starts a new thread and executes the provided user
@@ -70,7 +70,7 @@ namespace madara
        * @param thread  user-created thread implementation
        * @param paused  create thread in a paused state.
        **/
-      void run (const std::string name, Base_Thread * thread,
+      void run (const std::string name, BaseThread * thread,
         bool paused = false);
       
       /**
@@ -92,7 +92,7 @@ namespace madara
        * @param thread  user-created thread implementation
        * @param paused  create thread in a paused state.
        **/
-      void run (double hertz, const std::string name, Base_Thread * thread,
+      void run (double hertz, const std::string name, BaseThread * thread,
         bool paused = false);
       
 #ifdef _MADARA_JAVA_
@@ -185,19 +185,19 @@ namespace madara
       /**
        * The data plane used by threads
        **/
-      knowledge::Knowledge_Base * data_;
+      knowledge::KnowledgeBase * data_;
 
       /**
        * The control plane used by threads for termination
        * and pause information. This has to be on the heap, because
        * each thread gets its own stack!
        **/
-      knowledge::Knowledge_Base * control_;
+      knowledge::KnowledgeBase * control_;
 
       /**
        * the threads that are still active
        **/
-      Named_Worker_Threads threads_;
+      NamedWorkerThreads threads_;
     };
   }
 }

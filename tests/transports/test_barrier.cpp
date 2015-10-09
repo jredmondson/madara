@@ -6,11 +6,11 @@
 #include <sstream>
 
 
-#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/KnowledgeBase.h"
 
 #include "madara/knowledge/containers/Barrier.h"
-#include "madara/filters/Generic_Filters.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/filters/GenericFilters.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
@@ -23,12 +23,12 @@ namespace utility = madara::utility;
 namespace transport = madara::transport;
 namespace filters = madara::filters;
 
-typedef madara::Knowledge_Record::Integer Integer;
+typedef madara::KnowledgeRecord::Integer Integer;
 
 // default transport settings
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-transport::QoS_Transport_Settings settings;
+transport::QoSTransportSettings settings;
 
 double max_wait (10.0);
 
@@ -232,7 +232,7 @@ int main (int argc, char ** argv)
   }
 
   // create a knowledge base and setup our id
-  knowledge::Knowledge_Base knowledge (host, settings);
+  knowledge::KnowledgeBase knowledge (host, settings);
 
   // create a counter
   containers::Barrier barrier ("my_barrier", knowledge,

@@ -10,7 +10,7 @@
  * To support knowledge updates, only the send_multiassignment method
  * is currently required to be extended as the set, evaluate, and wait
  * methods all call send_multiassignment. For example transport, @see
- * madara::transport::Multicast_Transport.
+ * madara::transport::MulticastTransport.
  **/
 
 #include <string>
@@ -22,28 +22,28 @@
 #include "ace/Condition_T.h"
 #include "ace/Guard_T.h"
 
-#include "madara/utility/Thread_Safe_Vector.h"
+#include "madara/utility/ThreadSafeVector.h"
 #include "madara/MADARA_export.h"
 #include "ace/High_Res_Timer.h"
-#include "madara/transport/QoS_Transport_Settings.h"
+#include "madara/transport/QoSTransportSettings.h"
 
-#include "Reduced_Message_Header.h"
-#include "madara/transport/Bandwidth_Monitor.h"
-#include "madara/transport/Packet_Scheduler.h"
+#include "ReducedMessageHeader.h"
+#include "madara/transport/BandwidthMonitor.h"
+#include "madara/transport/PacketScheduler.h"
 
 #ifdef _USE_CID_
 
-#include "madara/cid/CID_Settings.h"
-#include "madara/cid/CID_Convenience.h"
-#include "madara/cid/CID_Heuristic.h"
-#include "madara/cid/CID_Genetic.h"
+#include "madara/cid/CIDSettings.h"
+#include "madara/cid/CIDConvenience.h"
+#include "madara/cid/CIDHeuristic.h"
+#include "madara/cid/CIDGenetic.h"
 #include "madara/utility/Utility.h"
 
 #endif // _USE_CID_
 
-#include "madara/knowledge/Knowledge_Record.h"
-#include "madara/knowledge/Thread_Safe_Context.h"
-#include "madara/expression/Expression_Tree.h"
+#include "madara/knowledge/KnowledgeRecord.h"
+#include "madara/knowledge/ThreadSafeContext.h"
+#include "madara/expression/ExpressionTree.h"
 #include "madara/expression/Interpreter.h"
 
 namespace madara
@@ -57,7 +57,7 @@ namespace madara
      * To support knowledge updates, only the send_multiassignment method
      * is currently required to be extended as the set, evaluate, and wait
      * methods all call send_multiassignment. For example transport, @see
-     * madara::transport::Multicast_Transport.
+     * madara::transport::MulticastTransport.
      **/
     class MADARA_Export Base
     {
@@ -65,7 +65,7 @@ namespace madara
       /**
        * Used to define a vector of hosts to contact
        **/
-      typedef    std::vector <std::string>           Hosts_Vector;
+      typedef    std::vector <std::string>           HostsVector;
 
       /**
        * Constructor
@@ -74,7 +74,7 @@ namespace madara
        * @param   context           the knowledge record context
        **/
       Base (const std::string & id, Settings & new_settings,
-        knowledge::Thread_Safe_Context & context);
+        knowledge::ThreadSafeContext & context);
 
       /**
        * Destructor
@@ -113,7 +113,7 @@ namespace madara
         if (!settings_.latency_enabled)
         {
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
-              DLINFO "Splice_DDS_Transport::start_latency:" \
+              DLINFO "SpliceDDSTransport::start_latency:" \
               " Latency enabled is not set in your"
               " madara::transport::Settings instance. Update your"
               " program's code and set settings.latency_enabled = true.\n"));
@@ -132,7 +132,7 @@ namespace madara
         if (!settings_.latency_enabled)
         {
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
-              DLINFO "Splice_DDS_Transport::vote:" \
+              DLINFO "SpliceDDSTransport::vote:" \
               " Latency enabled is not set in your"
               " madara::transport::Settings instance. Update your"
               " program's code and set settings.latency_enabled = true.\n"));
@@ -148,14 +148,14 @@ namespace madara
      * Preps a message for sending
      * @param  orig_updates     updates before send filtering is applied
      * @param  print_prefix     prefix to include before every log message,
-     *                          e.g., "My_Transport::svc"
+     *                          e.g., "MyTransport::svc"
      * @return       -1   Transport is shutting down<br />
      *               -2   Transport is invalid<br />
      *               -3   Unable to allocate send buffer<br />
      *                0   No message to send
      *               > 0  size of buffered message
      **/
-      long prep_send (const madara::Knowledge_Records & orig_updates,
+      long prep_send (const madara::KnowledgeRecords & orig_updates,
         const char * print_prefix);
 
       /**
@@ -163,7 +163,7 @@ namespace madara
        * implemented by your transport
        * @return  result of operation or -1 if we are shutting down
        **/
-      virtual long send_data (const madara::Knowledge_Records &) = 0;
+      virtual long send_data (const madara::KnowledgeRecords &) = 0;
 
       /**
        * Invalidates a transport to indicate it is shutting down
@@ -178,35 +178,35 @@ namespace madara
     protected:
       volatile bool is_valid_;
       volatile bool shutting_down_;
-      Hosts_Vector hosts;
+      HostsVector hosts;
       ACE_Thread_Mutex mutex_;
       Condition valid_setup_;
 
       /// host:port identifier of this process
       const std::string                               id_;
 
-      QoS_Transport_Settings settings_;
+      QoSTransportSettings settings_;
 
       // context for knowledge base
-      madara::knowledge::Thread_Safe_Context & context_;
+      madara::knowledge::ThreadSafeContext & context_;
       
 #ifndef _MADARA_NO_KARL_
       /// data received rules, defined in Transport settings
-      madara::expression::Expression_Tree  on_data_received_;
+      madara::expression::ExpressionTree  on_data_received_;
       
 #endif // _MADARA_NO_KARL_
 
       /// monitor for sending bandwidth usage
-      Bandwidth_Monitor       send_monitor_;
+      BandwidthMonitor       send_monitor_;
       
       /// monitor for receiving bandwidth usage
-      Bandwidth_Monitor       receive_monitor_;
+      BandwidthMonitor       receive_monitor_;
 
       /// scheduler for dropping packets to simulate network issues
-      Packet_Scheduler        packet_scheduler_;
+      PacketScheduler        packet_scheduler_;
 
       /// buffer for sending
-      madara::utility::Scoped_Array <char>      buffer_;
+      madara::utility::ScopedArray <char>      buffer_;
     };
 
     /**
@@ -229,7 +229,7 @@ namespace madara
      *                          settings.on_data_received_logic (you have to
      *                          provide the compiled tree)
      * @param  print_prefix     prefix to include before every log message,
-     *                          e.g., "My_Transport::svc"
+     *                          e.g., "MyTransport::svc"
      * @param  header           will contain the message header object from the
      *                          message received (you have to clean this up
      *                          delete--e.g., "delete header").
@@ -244,19 +244,19 @@ namespace madara
         const char * buffer,
         uint32_t bytes_read,
         const std::string & id,
-        knowledge::Thread_Safe_Context & context,
-        const QoS_Transport_Settings & settings,
-        Bandwidth_Monitor & send_monitor,
-        Bandwidth_Monitor & receive_monitor,
-        Knowledge_Map & rebroadcast_records,
+        knowledge::ThreadSafeContext & context,
+        const QoSTransportSettings & settings,
+        BandwidthMonitor & send_monitor,
+        BandwidthMonitor & receive_monitor,
+        KnowledgeMap & rebroadcast_records,
 #ifndef _MADARA_NO_KARL_
 
-        knowledge::Compiled_Expression & on_data_received,
+        knowledge::CompiledExpression & on_data_received,
 #endif // _MADARA_NO_KARL_
 
         const char * print_prefix,
         const char * remote_host,
-        Message_Header *& header
+        MessageHeader *& header
         );
 
     /**
@@ -268,22 +268,22 @@ namespace madara
      *                           in case your transport must send other info
      * @param  settings         transport settings
      * @param  print_prefix     prefix to include before every log message,
-     *                          e.g., "My_Transport::svc"
+     *                          e.g., "MyTransport::svc"
      * @param  header           message header from the received message
      * @param  records          a map of variables to records to send
      * @param  packet_scheduler scheduler for mimicking network conditions
      **/
     int MADARA_Export prep_rebroadcast (
-      knowledge::Thread_Safe_Context & context,
+      knowledge::ThreadSafeContext & context,
       char * buffer,
       int64_t & buffer_remaining,
-      const QoS_Transport_Settings & settings,
+      const QoSTransportSettings & settings,
       const char * print_prefix,
-      Message_Header * header,
-      const Knowledge_Map & records,
-      Packet_Scheduler & packet_scheduler);
+      MessageHeader * header,
+      const KnowledgeMap & records,
+      PacketScheduler & packet_scheduler);
 
-    typedef   utility::Thread_Safe_Vector <Base *>   Transports;
+    typedef   utility::ThreadSafeVector <Base *>   Transports;
   }
 }
 

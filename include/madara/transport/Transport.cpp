@@ -7,7 +7,7 @@
 
 madara::transport::Base::Base (const std::string & id,
   Settings & new_settings,
-  knowledge::Thread_Safe_Context & context) 
+  knowledge::ThreadSafeContext & context) 
   : is_valid_ (false), shutting_down_ (false),
   valid_setup_ (mutex_), id_ (id),
   settings_ (new_settings), context_ (context)
@@ -70,18 +70,18 @@ madara::transport::process_received_update (
   const char * buffer,
   uint32_t bytes_read,
   const std::string & id,
-  knowledge::Thread_Safe_Context & context,
-  const QoS_Transport_Settings & settings,
-  Bandwidth_Monitor & send_monitor,
-  Bandwidth_Monitor & receive_monitor,
-  Knowledge_Map & rebroadcast_records,
+  knowledge::ThreadSafeContext & context,
+  const QoSTransportSettings & settings,
+  BandwidthMonitor & send_monitor,
+  BandwidthMonitor & receive_monitor,
+  KnowledgeMap & rebroadcast_records,
 #ifndef _MADARA_NO_KARL_
-  knowledge::Compiled_Expression & on_data_received,
+  knowledge::CompiledExpression & on_data_received,
 #endif // _MADARA_NO_KARL_
 
   const char * print_prefix,
   const char * remote_host,
-  Message_Header *& header)
+  MessageHeader *& header)
 {
   // reset header to 0, so it is safe to delete
   header = 0;
@@ -122,11 +122,11 @@ madara::transport::process_received_update (
   rebroadcast_records.clear ();
 
   // receive records will be what we pass to the aggregate filter
-  Knowledge_Map updates;
+  KnowledgeMap updates;
 
   // check the buffer for a reduced message header
-  if (bytes_read > Reduced_Message_Header::static_encoded_size () &&
-      Reduced_Message_Header::reduced_message_header_test (buffer))
+  if (bytes_read > ReducedMessageHeader::static_encoded_size () &&
+      ReducedMessageHeader::reduced_message_header_test (buffer))
   {
     madara_logger_log (context.get_logger (), logger::LOG_MINOR,
       "%s:" \
@@ -134,11 +134,11 @@ madara::transport::process_received_update (
       print_prefix,
       remote_host);
 
-    header = new Reduced_Message_Header ();
+    header = new ReducedMessageHeader ();
     is_reduced = true;
   }
-  else if (bytes_read > Message_Header::static_encoded_size () &&
-    Message_Header::message_header_test (buffer))
+  else if (bytes_read > MessageHeader::static_encoded_size () &&
+    MessageHeader::message_header_test (buffer))
   {
     madara_logger_log (context.get_logger (), logger::LOG_MINOR,
       "%s:" \
@@ -146,10 +146,10 @@ madara::transport::process_received_update (
       print_prefix,
       remote_host);
         
-    header = new Message_Header ();
+    header = new MessageHeader ();
   }
-  else if (bytes_read > Fragment_Message_Header::static_encoded_size () &&
-    Fragment_Message_Header::fragment_message_header_test (buffer))
+  else if (bytes_read > FragmentMessageHeader::static_encoded_size () &&
+    FragmentMessageHeader::fragment_message_header_test (buffer))
   {
     madara_logger_log (context.get_logger (), logger::LOG_MINOR,
       "%s:" \
@@ -157,7 +157,7 @@ madara::transport::process_received_update (
       print_prefix,
       remote_host);
         
-    header = new Fragment_Message_Header ();
+    header = new FragmentMessageHeader ();
     is_fragment = true;
   }
   else
@@ -186,7 +186,7 @@ madara::transport::process_received_update (
 
   if (is_fragment && 
       exists (header->originator, header->clock,
-      ((Fragment_Message_Header *)header)->update_number, settings.fragment_map))
+      ((FragmentMessageHeader *)header)->update_number, settings.fragment_map))
   {
     madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
       "%s:" \
@@ -284,8 +284,8 @@ madara::transport::process_received_update (
   if (is_fragment)
   {
     // grab the fragment header
-    Fragment_Message_Header * frag_header =
-      dynamic_cast <Fragment_Message_Header *> (header);
+    FragmentMessageHeader * frag_header =
+      dynamic_cast <FragmentMessageHeader *> (header);
 
     madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
       "%s:" \
@@ -328,7 +328,7 @@ madara::transport::process_received_update (
         memcpy (buffer_override, message, frag_header->get_size (message));
 
         // check the buffer for a reduced message header
-        if (Reduced_Message_Header::reduced_message_header_test (buffer))
+        if (ReducedMessageHeader::reduced_message_header_test (buffer))
         {
           madara_logger_log (context.get_logger (), logger::LOG_MINOR,
             "%s:" \
@@ -336,11 +336,11 @@ madara::transport::process_received_update (
             print_prefix,
             remote_host);
 
-          header = new Reduced_Message_Header ();
+          header = new ReducedMessageHeader ();
           is_reduced = true;
           update = header->read (buffer, buffer_remaining);
         }
-        else if (Message_Header::message_header_test (buffer))
+        else if (MessageHeader::message_header_test (buffer))
         {
           madara_logger_log (context.get_logger (), logger::LOG_MINOR,
             "%s:" \
@@ -348,7 +348,7 @@ madara::transport::process_received_update (
             print_prefix,
             remote_host);
         
-          header = new Message_Header ();
+          header = new MessageHeader ();
           update = header->read (buffer, buffer_remaining);
         }
 
@@ -360,8 +360,8 @@ madara::transport::process_received_update (
   int actual_updates = 0;
   uint64_t current_time = time (NULL);
   double deadline = settings.get_deadline ();
-  Transport_Context transport_context (
-    Transport_Context::RECEIVING_OPERATION,
+  TransportContext transport_context (
+    TransportContext::RECEIVING_OPERATION,
     receive_monitor.get_bytes_per_second (),
     send_monitor.get_bytes_per_second (),
     header->timestamp, time (NULL),
@@ -405,7 +405,7 @@ madara::transport::process_received_update (
     header->updates);
 
   // temporary record for reading from the updates buffer
-  Knowledge_Record record;
+  KnowledgeRecord record;
   record.quality = header->quality;
   record.clock = header->clock;
   std::string key;
@@ -486,7 +486,7 @@ madara::transport::process_received_update (
     }
   }
   
-  const Knowledge_Map & additionals = transport_context.get_records ();
+  const KnowledgeMap & additionals = transport_context.get_records ();
   
   if (additionals.size () > 0)
   {
@@ -495,7 +495,7 @@ madara::transport::process_received_update (
       " %lld additional records being handled after receive.\n", print_prefix,
       (long long)additionals.size ());
 
-    for (Knowledge_Map::const_iterator i = additionals.begin ();
+    for (KnowledgeMap::const_iterator i = additionals.begin ();
           i != additionals.end (); ++i)
     {
       updates[i->first] = i->second;
@@ -543,7 +543,7 @@ madara::transport::process_received_update (
     " Applying updates to context.\n", print_prefix);
 
   // apply updates from the update list
-  for (Knowledge_Map::iterator i = updates.begin ();
+  for (KnowledgeMap::iterator i = updates.begin ();
     i != updates.end (); ++i)
   {
     int result = 0;
@@ -578,14 +578,14 @@ madara::transport::process_received_update (
   if (!dropped)
   {
     transport_context.set_operation (
-      Transport_Context::REBROADCASTING_OPERATION);
+      TransportContext::REBROADCASTING_OPERATION);
 
     madara_logger_log (context.get_logger (), logger::LOG_MINOR,
       "%s:" \
       " Applying rebroadcast filters to receive results.\n", print_prefix);
 
     // create a list of rebroadcast records from the updates
-    for (Knowledge_Map::iterator i = updates.begin ();
+    for (KnowledgeMap::iterator i = updates.begin ();
          i != updates.end (); ++i)
     {
       i->second = settings.filter_rebroadcast (
@@ -611,9 +611,9 @@ madara::transport::process_received_update (
       }
     }
   
-    const Knowledge_Map & additionals = transport_context.get_records ();
+    const KnowledgeMap & additionals = transport_context.get_records ();
 
-    for (Knowledge_Map::const_iterator i = additionals.begin ();
+    for (KnowledgeMap::const_iterator i = additionals.begin ();
           i != additionals.end (); ++i)
     {
       rebroadcast_records[i->first] = i->second;
@@ -680,14 +680,14 @@ madara::transport::process_received_update (
 
 int
 madara::transport::prep_rebroadcast (
-  knowledge::Thread_Safe_Context & context,
+  knowledge::ThreadSafeContext & context,
   char * buffer,
   int64_t & buffer_remaining,
-  const QoS_Transport_Settings & settings,
+  const QoSTransportSettings & settings,
   const char * print_prefix,
-  Message_Header * header,
-  const Knowledge_Map & records,
-  Packet_Scheduler & packet_scheduler)
+  MessageHeader * header,
+  const KnowledgeMap & records,
+  PacketScheduler & packet_scheduler)
 {
   int result = 0;
   
@@ -703,7 +703,7 @@ madara::transport::prep_rebroadcast (
     // set the update to the end of the header
     char * update = header->write (buffer, buffer_remaining);
 
-    for (Knowledge_Map::const_iterator i = records.begin ();
+    for (KnowledgeMap::const_iterator i = records.begin ();
          i != records.end (); ++i)
     {
       update = i->second.write (update, i->first, buffer_remaining);
@@ -755,7 +755,7 @@ madara::transport::prep_rebroadcast (
 }
 
 long madara::transport::Base::prep_send (
-  const madara::Knowledge_Records & orig_updates,
+  const madara::KnowledgeRecords & orig_updates,
   const char * print_prefix)
 {
   // check to see if we are shutting down
@@ -781,14 +781,14 @@ long madara::transport::Base::prep_send (
   uint32_t quality = madara::max_quality (orig_updates);
   bool reduced = false;
 
-  Knowledge_Map filtered_updates;
+  KnowledgeMap filtered_updates;
 
   madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
     "%s:" \
     " Applying filters before sending...\n",
     print_prefix);
   
-  Transport_Context transport_context (Transport_Context::SENDING_OPERATION,
+  TransportContext transport_context (TransportContext::SENDING_OPERATION,
       receive_monitor_.get_bytes_per_second (),
       send_monitor_.get_bytes_per_second (),
       (uint64_t) time (NULL), (uint64_t) time (NULL),
@@ -820,9 +820,9 @@ long madara::transport::Base::prep_send (
   {
     /**
      * filter the updates according to the filters specified by
-     * the user in QoS_Transport_Settings (if applicable)
+     * the user in QoSTransportSettings (if applicable)
      **/
-    for (Knowledge_Records::const_iterator i = orig_updates.begin ();
+    for (KnowledgeRecords::const_iterator i = orig_updates.begin ();
           i != orig_updates.end (); ++i)
     {
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -830,7 +830,7 @@ long madara::transport::Base::prep_send (
         " Calling filter chain.\n", print_prefix);
 
       // filter the record according to the send filter chain
-      Knowledge_Record result = settings_.filter_send (*i->second, i->first,
+      KnowledgeRecord result = settings_.filter_send (*i->second, i->first,
         transport_context);
 
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -853,9 +853,9 @@ long madara::transport::Base::prep_send (
       }
     }
 
-    const Knowledge_Map & additionals = transport_context.get_records ();
+    const KnowledgeMap & additionals = transport_context.get_records ();
 
-    for (Knowledge_Map::const_iterator i = additionals.begin ();
+    for (KnowledgeMap::const_iterator i = additionals.begin ();
          i != additionals.end (); ++i)
     {
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -928,7 +928,7 @@ long madara::transport::Base::prep_send (
 
 
   // set the header to the beginning of the buffer
-  Message_Header * header = 0;
+  MessageHeader * header = 0;
 
   if (settings_.send_reduced_message_header)
   {
@@ -937,7 +937,7 @@ long madara::transport::Base::prep_send (
       " Preparing message with reduced message header.\n",
       print_prefix);
 
-    header = new Reduced_Message_Header ();
+    header = new ReducedMessageHeader ();
     reduced = true;
   }
   else
@@ -947,7 +947,7 @@ long madara::transport::Base::prep_send (
       " Preparing message with normal message header.\n",
       print_prefix);
 
-    header = new Message_Header ();
+    header = new MessageHeader ();
   }
 
   // get the clock
@@ -965,7 +965,7 @@ long madara::transport::Base::prep_send (
     // copy the message originator (our id)
     strncpy (header->originator, id_.c_str (), sizeof (header->originator) - 1);
 
-    // send data is generally an assign type. However, Message_Header is
+    // send data is generally an assign type. However, MessageHeader is
     // flexible enough to support both, and this will simply our read thread
     // handling
     header->type = madara::transport::MULTIASSIGN;
@@ -1009,7 +1009,7 @@ long madara::transport::Base::prep_send (
   // [key|value]
   
   int j = 0;
-  for (Knowledge_Map::const_iterator i = filtered_updates.begin ();
+  for (KnowledgeMap::const_iterator i = filtered_updates.begin ();
     i != filtered_updates.end (); ++i, ++j)
   {
     update = i->second.write (update, i->first, buffer_remaining);

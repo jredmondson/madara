@@ -60,16 +60,16 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/logger/Logger.inl
     include/madara/utility
     include/madara/transport/Transport.inl
-    include/madara/transport/Bandwidth_Monitor.inl
+    include/madara/transport/BandwidthMonitor.inl
   }
 
   Template_Files {
     include/madara/utility/LQueue.cpp
     include/madara/utility/LStack.cpp
     include/madara/utility/Refcounter.cpp
-    include/madara/utility/Thread_Safe_Refcounter.cpp
-    include/madara/utility/Thread_Safe_Vector.cpp
-    include/madara/knowledge/containers/Typed_Vector.cpp
+    include/madara/utility/ThreadSafeRefcounter.cpp
+    include/madara/utility/ThreadSafeVector.cpp
+    include/madara/knowledge/containers/TypedVector.cpp
   }
 
   Source_Files {
@@ -83,14 +83,14 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/transport/udp
     include/madara/transport/multicast
     include/madara/transport/broadcast
-    include/madara/transport/Bandwidth_Monitor.cpp
-    include/madara/transport/Message_Header.cpp
-    include/madara/transport/Packet_Scheduler.cpp
-    include/madara/transport/Reduced_Message_Header.cpp
-    include/madara/transport/QoS_Transport_Settings.cpp
+    include/madara/transport/BandwidthMonitor.cpp
+    include/madara/transport/MessageHeader.cpp
+    include/madara/transport/PacketScheduler.cpp
+    include/madara/transport/ReducedMessageHeader.cpp
+    include/madara/transport/QoSTransportSettings.cpp
     include/madara/transport/Fragmentation.cpp
-    include/madara/transport/Transport_Settings.cpp
-    include/madara/transport/Transport_Context.cpp
+    include/madara/transport/TransportSettings.cpp
+    include/madara/transport/TransportContext.cpp
     include/madara/transport/Transport.cpp
     include/madara/utility/Utility.cpp
     include/madara/utility/Refcounter.cpp
@@ -110,18 +110,18 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/transport/udp
     include/madara/transport/multicast
     include/madara/transport/broadcast
-    include/madara/transport/Bandwidth_Monitor.h
+    include/madara/transport/BandwidthMonitor.h
     include/madara/transport/Transport.h
-    include/madara/transport/Message_Header.h
-    include/madara/transport/Packet_Scheduler.h
-    include/madara/transport/Reduced_Message_Header.h
+    include/madara/transport/MessageHeader.h
+    include/madara/transport/PacketScheduler.h
+    include/madara/transport/ReducedMessageHeader.h
     include/madara/transport/Fragmentation.h
-    include/madara/transport/QoS_Transport_Settings.h
-    include/madara/transport/Transport_Settings.h
-    include/madara/transport/Transport_Context.h
+    include/madara/transport/QoSTransportSettings.h
+    include/madara/transport/TransportSettings.h
+    include/madara/transport/TransportContext.h
     include/madara/utility
     include/madara/MADARA_export.h
-    include/madara/Lock_Type.h
+    include/madara/LockType.h
   }
 }
 

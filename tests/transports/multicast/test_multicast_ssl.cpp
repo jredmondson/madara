@@ -5,18 +5,18 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
-#include "madara/filters/ssl/AES_Buffer_Filter.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/utility/LogMacros.h"
+#include "madara/filters/ssl/AESBufferFilter.h"
 #include "madara/utility/Utility.h"
 
 namespace  utility = Madara::Utility;
 namespace  filters = Madara::Filters;
-typedef  filters::AES_Buffer_Filter  AES_Buffer_Filter;
+typedef  filters::AESBufferFilter  AESBufferFilter;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-Madara::Transport::QoS_Transport_Settings settings;
+Madara::Transport::QoSTransportSettings settings;
 std::string password ("");
 std::string ssl_key_file ("");
 
@@ -85,7 +85,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        Madara::Knowledge_Engine::Knowledge_Base::log_to_file (argv[i + 1]);
+        Madara::KnowledgeEngine::KnowledgeBase::log_to_file (argv[i + 1]);
       }
 
       ++i;
@@ -144,11 +144,11 @@ int main (int argc, char ** argv)
 #ifndef _MADARA_NO_KARL_
   settings.type = Madara::Transport::MULTICAST;
 
-  AES_Buffer_Filter * encryption (0);
+  AESBufferFilter * encryption (0);
 
   if (password != "")
   {
-    encryption = new AES_Buffer_Filter ();
+    encryption = new AESBufferFilter ();
     encryption->generate_key (password);
   }
   else if (ssl_key_file != "")
@@ -158,29 +158,29 @@ int main (int argc, char ** argv)
 
     int result = utility::read_file (ssl_key_file, buffer, buffer_size);
 
-    encryption = new AES_Buffer_Filter (
+    encryption = new AESBufferFilter (
       (unsigned char *)buffer, (int)buffer_size);
 
     delete[] buffer;
   }
   else
   {
-    encryption = new AES_Buffer_Filter ();
+    encryption = new AESBufferFilter ();
     encryption->generate_key ("testingPassword*417");
   }
 
   settings.add_filter (encryption);
 
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  Madara::KnowledgeEngine::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  Madara::KnowledgeEngine::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (Madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (Madara::KnowledgeRecord::Integer) settings.id);
 
   if (settings.id == 0)
   {
-    Madara::Knowledge_Engine::Compiled_Expression compiled = 
+    Madara::KnowledgeEngine::CompiledExpression compiled = 
       knowledge.compile (
         "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3"
       );
@@ -189,7 +189,7 @@ int main (int argc, char ** argv)
   }
   else
   {
-    Madara::Knowledge_Engine::Compiled_Expression compiled = 
+    Madara::KnowledgeEngine::CompiledExpression compiled = 
       knowledge.compile ("!var1 && var2 => var3 = 1");
 
     knowledge.wait (compiled, wait_settings);

@@ -223,7 +223,7 @@ void JNICALL Java_com_madara_containers_Integer_jni_1setName
 
     if (type == 0)
     {
-      knowledge::Knowledge_Base * kb = (knowledge::Knowledge_Base *) context;
+      knowledge::KnowledgeBase * kb = (knowledge::KnowledgeBase *) context;
       current->set_name (str_name, *kb);
     }
     else if (type == 1)
@@ -315,8 +315,8 @@ void JNICALL Java_com_madara_containers_Integer_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::Integer * current = (containers::Integer *)cptr;
-  knowledge::Knowledge_Update_Settings * settings =
-    (knowledge::Knowledge_Update_Settings *)settings_ptr;
+  knowledge::KnowledgeUpdateSettings * settings =
+    (knowledge::KnowledgeUpdateSettings *)settings_ptr;
 
   if (current && settings)
   {

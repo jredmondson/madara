@@ -17,7 +17,7 @@
 #include "ace/OS_NS_Thread.h"
 #include "ace/Sched_Params.h"
 
-#include "madara/kats/Test_Framework.h"
+#include "madara/kats/TestFramework.h"
 
 Madara::KATS::Settings settings;
 
@@ -45,7 +45,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   //Madara::KATS::Settings local_settings = settings;
 
-  Madara::KATS::Test_Framework testing (settings);
+  Madara::KATS::TestFramework testing (settings);
 
   // let the barriers begin
   testing.event ("1",

@@ -140,11 +140,11 @@ bool write_sample_source (void)
   sample.open (filename.c_str ());
   if (sample.is_open ())
   {
-    sample << "#include \"madara/knowledge/Knowledge_Base.h\"\n\n";
+    sample << "#include \"madara/knowledge/KnowledgeBase.h\"\n\n";
     sample << "namespace knowledge = madara::knowledge;\n\n";
     sample << "int main (int argc, char ** argv)\n";
     sample << "{\n";
-    sample << "  knowledge::Knowledge_Base knowledge;\n\n";
+    sample << "  knowledge::KnowledgeBase knowledge;\n\n";
     sample << "  knowledge.print (\"Hello World!\\n\");\n\n";
     sample << "  return 0;\n";
     sample << "}\n";
@@ -179,15 +179,15 @@ bool write_project_file (void)
     project << "  // }\n\n";
   
     project << "  // Documentation files can be added here\n";
-    project << "  Documentation_Files {\n";
+    project << "  DocumentationFiles {\n";
     project << "  }\n\n";
   
-    project << "  Build_Files {\n";
+    project << "  BuildFiles {\n";
     project << "    " << project_name << ".mwc\n";
     project << "    " << project_name << ".mpc\n";
     project << "  }\n\n";
 
-    project << "  Header_Files {\n";
+    project << "  HeaderFiles {\n";
 
     for (size_t i = 0; i < headers.size (); ++i)
     {
@@ -196,7 +196,7 @@ bool write_project_file (void)
 
     project << "  }\n\n";
 
-    project << "  Source_Files {\n";
+    project << "  SourceFiles {\n";
 
     for (size_t i = 0; i < sources.size (); ++i)
     {

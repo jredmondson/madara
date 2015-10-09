@@ -12,15 +12,15 @@
 #include "ace/Guard_T.h"
 #include "ace/Recursive_Thread_Mutex.h"
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
 // default transport settings
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-madara::transport::QoS_Transport_Settings settings;
+madara::transport::QoSTransportSettings settings;
 
 std::string filename =
   madara::utility::expand_envs (
@@ -28,7 +28,7 @@ std::string filename =
 
 std::string target_location;
 
-madara::Knowledge_Record::Integer target_id (1);
+madara::KnowledgeRecord::Integer target_id (1);
 
 // payload size to burst
 unsigned int data_size = 0;
@@ -38,9 +38,9 @@ double max_wait = 20.0;
 bool is_terminator = false;
 
 
-madara::knowledge::Variable_Reference ack;
+madara::knowledge::VariableReference ack;
 #ifndef _MADARA_NO_KARL_
-madara::knowledge::Compiled_Expression id0_wait;
+madara::knowledge::CompiledExpression id0_wait;
 #endif // _MADARA_NO_KARL_
 
 // keep track of time
@@ -269,11 +269,11 @@ void handle_arguments (int argc, char ** argv)
 }
 
 void
-write_file (madara::Knowledge_Map & records,
-  const madara::transport::Transport_Context &,
+write_file (madara::KnowledgeMap & records,
+  const madara::transport::TransportContext &,
   madara::knowledge::Variables & vars)
 {
-  madara::Knowledge_Map::iterator file = records.find ("file");
+  madara::KnowledgeMap::iterator file = records.find ("file");
   if (file != records.end ())
   {
     std::stringstream filename;
@@ -304,7 +304,7 @@ write_file (madara::Knowledge_Map & records,
       vars.print ("File already exists in folder. Not saving.\n");
     }
 
-    vars.set (ack, madara::Knowledge_Record::Integer (file->second.size ()));
+    vars.set (ack, madara::KnowledgeRecord::Integer (file->second.size ()));
     vars.print (
       "Received file. Sending file ack {file.{.id}.ack} for id {.id}.\n");
   }
@@ -333,20 +333,20 @@ int main (int argc, char ** argv)
   }
 
   // settings for delaying the sending of modifications
-  madara::knowledge::Eval_Settings delay_sending;
+  madara::knowledge::EvalSettings delay_sending;
   delay_sending.delay_sending_modifieds = true;
 
-  madara::knowledge::Eval_Settings suppress_globals;
+  madara::knowledge::EvalSettings suppress_globals;
   suppress_globals.treat_globals_as_locals = true;
   
 
-  madara::knowledge::Wait_Settings wait_settings;
+  madara::knowledge::WaitSettings wait_settings;
   wait_settings.poll_frequency = 4.0;
   wait_settings.max_wait_time = max_wait;
 
   // create a knowledge base and setup our id
-  madara::knowledge::Knowledge_Base knowledge (host, settings);
-  knowledge.set (".id", madara::Knowledge_Record::Integer (settings.id));
+  madara::knowledge::KnowledgeBase knowledge (host, settings);
+  knowledge.set (".id", madara::KnowledgeRecord::Integer (settings.id));
   knowledge.set (".target", target_id);
 
   ack = knowledge.get_ref (knowledge.expand_statement (
@@ -435,7 +435,7 @@ int main (int argc, char ** argv)
         text[3] = 't';
       }
 
-      knowledge.set (".size", madara::Knowledge_Record::Integer (data_size));
+      knowledge.set (".size", madara::KnowledgeRecord::Integer (data_size));
       knowledge.set ("file", text, delay_sending);
       knowledge.set ("file_name", new_name.str (), delay_sending);
       

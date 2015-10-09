@@ -4,11 +4,11 @@
 
 #include <vector>
 #include <string>
-#include "madara/Lock_Type.h"
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/knowledge/Thread_Safe_Context.h"
-#include "madara/knowledge/Knowledge_Update_Settings.h"
-#include "Base_Container.h"
+#include "madara/LockType.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/ThreadSafeContext.h"
+#include "madara/knowledge/KnowledgeUpdateSettings.h"
+#include "BaseContainer.h"
 
 /**
  * @file Integer.h
@@ -28,18 +28,18 @@ namespace madara
        * @class Integer
        * @brief This class stores an integer within a variable context
        */
-      class MADARA_Export Integer : public Base_Container
+      class MADARA_Export Integer : public BaseContainer
       {
       public:
         /// trait that describes the value type
-        typedef Knowledge_Record::Integer  type;
+        typedef KnowledgeRecord::Integer  type;
         
         /**
          * Default constructor
          * @param  settings   settings for updating knowledge
          **/
-        Integer (const Knowledge_Update_Settings & settings =
-          Knowledge_Update_Settings ());
+        Integer (const KnowledgeUpdateSettings & settings =
+          KnowledgeUpdateSettings ());
       
         /**
          * Constructor
@@ -48,9 +48,9 @@ namespace madara
          * @param  settings   settings for updating knowledge
          **/
         Integer (const std::string & name,
-                Knowledge_Base & knowledge,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                KnowledgeBase & knowledge,
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Constructor
@@ -60,8 +60,8 @@ namespace madara
          **/
         Integer (const std::string & name,
                 Variables & knowledge,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Default constructor
@@ -71,10 +71,10 @@ namespace madara
          * @param  settings   settings for updating knowledge
          **/
         Integer (const std::string & name,
-                Knowledge_Base & knowledge,
+                KnowledgeBase & knowledge,
                 type value, 
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Default constructor
@@ -86,8 +86,8 @@ namespace madara
         Integer (const std::string & name,
                 Variables & knowledge,
                 type value, 
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Copy constructor
@@ -117,7 +117,7 @@ namespace madara
          * @param knowledge  the knowledge base the variable is housed in
          **/
         void set_name (const std::string & var_name,
-          Knowledge_Base & knowledge);
+          KnowledgeBase & knowledge);
         
         /**
          * Sets the variable name that this refers to
@@ -133,7 +133,7 @@ namespace madara
          * @param knowledge  the knowledge base the variable is housed in
          **/
         void set_name (const std::string & var_name,
-          Thread_Safe_Context & knowledge);
+          ThreadSafeContext & knowledge);
 
         /**
          * Exchanges the integer at this location with the integer at another
@@ -247,11 +247,11 @@ namespace madara
         type operator-- (void);
         
         /**
-         * Returns the value as a Knowledge_Record. This
+         * Returns the value as a KnowledgeRecord. This
          * is useful for referencing clock and other record info.
-         * @return the value as a Knowledge_Record
+         * @return the value as a KnowledgeRecord
          **/
-        Knowledge_Record to_record (void) const;
+        KnowledgeRecord to_record (void) const;
 
         /**
          * Returns the value as a double
@@ -263,7 +263,7 @@ namespace madara
          * Returns the value as an integer (same as *)
          * @return the value as an integer
          **/
-        Knowledge_Record::Integer to_integer (void) const;
+        KnowledgeRecord::Integer to_integer (void) const;
         
         /**
          * Returns the value as a string
@@ -278,8 +278,8 @@ namespace madara
          * @param settings        settings for referring to knowledge variables
          **/
         void set_quality (uint32_t quality,
-               const Knowledge_Reference_Settings & settings =
-                       Knowledge_Reference_Settings (false));
+               const KnowledgeReferenceSettings & settings =
+                       KnowledgeReferenceSettings (false));
       
 
         /**
@@ -298,7 +298,7 @@ namespace madara
         * @return  a deep copy of the container that must be managed
         *          by the user (i.e., you have to delete the return value)
         **/
-        virtual Base_Container * clone (void) const;
+        virtual BaseContainer * clone (void) const;
 
         /**
         * Determines if the value is true
@@ -350,12 +350,12 @@ namespace madara
         /**
          * Variable context that we are modifying
          **/
-        Thread_Safe_Context * context_;
+        ThreadSafeContext * context_;
 
         /**
          * Variable reference
          **/
-        Variable_Reference variable_;
+        VariableReference variable_;
       };
     }
   }

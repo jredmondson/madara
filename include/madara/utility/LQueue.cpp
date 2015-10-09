@@ -12,27 +12,27 @@ namespace madara
   namespace utility
   {
     /**
-     * @class LQueue_Node
+     * @class LQueueNode
      * @brief Defines a node in the @a LQueue that's implemented as a circular linked list.
      */
     template <class T>
-    class LQueue_Node
+    class LQueueNode
     {
       friend class LQueue<T>;
-      friend class LQueue_Iterator<T>;
-      friend class LQueue_Const_Iterator<T>;
+      friend class LQueueIterator<T>;
+      friend class LQueueConstIterator<T>;
     public:
       /// Constructor.
-      LQueue_Node (const T &item,
-                   LQueue_Node<T> *next = 0);
+      LQueueNode (const T &item,
+                   LQueueNode<T> *next = 0);
 
       /// Constructor.
-      LQueue_Node (LQueue_Node<T> *next);
+      LQueueNode (LQueueNode<T> *next);
 
       /// Default constructor that doesn't initialize item_.
-      LQueue_Node (void);
+      LQueueNode (void);
 
-      /// Allocate a new LQueue_Node, trying first from the @a free_list_
+      /// Allocate a new LQueueNode, trying first from the @a free_list_
       /// and if that's empty try from the global operator new.
       void *operator new (size_t bytes);
 
@@ -40,9 +40,9 @@ namespace madara
       void operator delete (void *ptr);
 
       /// Return the next node to which this node points.
-      LQueue_Node *next (void);
+      LQueueNode *next (void);
 
-      /// Preallocate n @a LQueue_Nodes and store them on the @a
+      /// Preallocate n @a LQueueNodes and store them on the @a
       /// free_list_.
       static void free_list_allocate (size_t n);
 
@@ -51,15 +51,15 @@ namespace madara
 
     private:
 
-      /// Head of the free list, which is a stack of @a LQueue_Nodes
+      /// Head of the free list, which is a stack of @a LQueueNodes
       /// used to speed up allocation.
-      static LQueue_Node<T> *free_list_;
+      static LQueueNode<T> *free_list_;
 
       /// Item in this node.
       T item_;
 
       /// Pointer to the next node.
-      LQueue_Node<T> *next_;
+      LQueueNode<T> *next_;
 
     };
   }
@@ -67,54 +67,54 @@ namespace madara
 
 /* static */
 template <class T> 
-madara::utility::LQueue_Node<T> *
-madara::utility::LQueue_Node<T>::free_list_ = 0;
+madara::utility::LQueueNode<T> *
+madara::utility::LQueueNode<T>::free_list_ = 0;
 
-// Allocate a new <LQueue_Node>, trying first from the
+// Allocate a new <LQueueNode>, trying first from the
 // <free_list_> and if that's empty try from the global <::operator
 // new>.
 
 template <class T> 
 void *
-madara::utility::LQueue_Node<T>::operator new (size_t)
+madara::utility::LQueueNode<T>::operator new (size_t)
 {
   // extract element from the free_list_ if there is one left
-  if (LQueue_Node<T>::free_list_ != 0)
+  if (LQueueNode<T>::free_list_ != 0)
     {
       // get the top element of the list
-      LQueue_Node<T>* new_node = LQueue_Node<T>::free_list_;
+      LQueueNode<T>* new_node = LQueueNode<T>::free_list_;
 
       // "remove" the element from the list and pass it to the caller
-      LQueue_Node<T>::free_list_ = new_node->next_;
+      LQueueNode<T>::free_list_ = new_node->next_;
 
       return new_node;
     }
 
-  return ::operator new(sizeof (LQueue_Node<T>));
+  return ::operator new(sizeof (LQueueNode<T>));
 }
 
 // Return <ptr> to the <free_list_>.
 
 template <class T> void
-madara::utility::LQueue_Node<T>::operator delete (void * ptr)
+madara::utility::LQueueNode<T>::operator delete (void * ptr)
 {
   // do nothing on a null pointer
   if (ptr != 0)
     {
       // cast to a node pointer
-      LQueue_Node<T>* node = static_cast<LQueue_Node<T>*> (ptr);
+      LQueueNode<T>* node = static_cast<LQueueNode<T>*> (ptr);
 
       // put the node back into the list
-      node->next_ = LQueue_Node<T>::free_list_;
+      node->next_ = LQueueNode<T>::free_list_;
 
-      LQueue_Node<T>::free_list_ = node;
+      LQueueNode<T>::free_list_ = node;
     }
 }
 
 // Returns the next node to which this node points.
 template <class T> 
-madara::utility::LQueue_Node<T> *
-madara::utility::LQueue_Node<T>::next (void)
+madara::utility::LQueueNode<T> *
+madara::utility::LQueueNode<T>::next (void)
 {
   return next_;
 }
@@ -123,49 +123,49 @@ madara::utility::LQueue_Node<T>::next (void)
 
 template <class T>
 void 
-madara::utility::LQueue_Node<T>::free_list_release (void)
+madara::utility::LQueueNode<T>::free_list_release (void)
 {
   // delete free list element by element
-  while (LQueue_Node<T>::free_list_ != 0)
+  while (LQueueNode<T>::free_list_ != 0)
     {
-      LQueue_Node<T>* node = LQueue_Node<T>::free_list_;
-      LQueue_Node<T>::free_list_ = node->next_;
+      LQueueNode<T>* node = LQueueNode<T>::free_list_;
+      LQueueNode<T>::free_list_ = node->next_;
       ::operator delete (node);
     }
 }
 
-// Preallocate <n> <LQueue_Nodes> and store them on the
+// Preallocate <n> <LQueueNodes> and store them on the
 // <free_list_>.
 
 template <class T> void 
-madara::utility::LQueue_Node<T>::free_list_allocate (size_t n)
+madara::utility::LQueueNode<T>::free_list_allocate (size_t n)
 {
   // add a new element to the stack n times
   for (size_t node_number = 0; node_number < n; ++node_number)
     {
       // create a new element avoiding the overwritten new operator
-      LQueue_Node<T>* new_node = 
-  reinterpret_cast<LQueue_Node<T>*> (
-    ::operator new (sizeof (LQueue_Node<T>)));
+      LQueueNode<T>* new_node = 
+  reinterpret_cast<LQueueNode<T>*> (
+    ::operator new (sizeof (LQueueNode<T>)));
 
-      new_node->next_ = LQueue_Node<T>::free_list_;
+      new_node->next_ = LQueueNode<T>::free_list_;
     
       // make the new element the top of the list
-      LQueue_Node<T>::free_list_ = new_node;
+      LQueueNode<T>::free_list_ = new_node;
     }
 }
 
 template <class T>
-madara::utility::LQueue_Node<T>::LQueue_Node (const T &item,
-                             madara::utility::LQueue_Node<T> *next) 
+madara::utility::LQueueNode<T>::LQueueNode (const T &item,
+                             madara::utility::LQueueNode<T> *next) 
   : item_ (item),
     next_ (next)
 {
 }
 
 template <class T>
-madara::utility::LQueue_Node<T>::LQueue_Node (
-  madara::utility::LQueue_Node<T> *next) 
+madara::utility::LQueueNode<T>::LQueueNode (
+  madara::utility::LQueueNode<T> *next) 
   : next_ (next)
 {
 }
@@ -173,7 +173,7 @@ madara::utility::LQueue_Node<T>::LQueue_Node (
 // This method is helpful to implement the dummy node in a concise
 // way.
 template <class T>
-madara::utility::LQueue_Node<T>::LQueue_Node (void)
+madara::utility::LQueueNode<T>::LQueueNode (void)
   : next_ (this)
 {
 }
@@ -194,10 +194,10 @@ madara::utility::LQueue<T>::LQueue (size_t size_hint)
     count_ (0)
 {
   // use the size_hint to preallocate  memory for nodes
-  LQueue_Node<T>::free_list_allocate (size_hint);
+  LQueueNode<T>::free_list_allocate (size_hint);
 
   // create the dummy node
-  tail_ = new LQueue_Node<T> ();
+  tail_ = new LQueueNode<T> ();
 }
 
 // Copy constructor.
@@ -211,7 +211,7 @@ madara::utility::LQueue<T>::LQueue (
 {
   // insert a dummy node first and keep it as an auto_ptr for exception
   // safety issues
-  ::std::auto_ptr <LQueue_Node<T> > tail (new LQueue_Node<T> ());
+  ::std::auto_ptr <LQueueNode<T> > tail (new LQueueNode<T> ());
   tail_ = tail.get ();
 
   // copy_list has strong exception safety, so no try catch block
@@ -325,7 +325,7 @@ madara::utility::LQueue<T>::enqueue (const T &new_item)
       tail_->item_ = new_item;
 
       // integrate the new node into the list
-      tail_->next_ = new LQueue_Node<T> (tail_->next_);
+      tail_->next_ = new LQueueNode<T> (tail_->next_);
       tail_ = tail_->next_;
 
       // increment the element count
@@ -368,7 +368,7 @@ void
 madara::utility::LQueue<T>::dequeue_i (void)
 {
   // remember the current queue head
-  LQueue_Node<T>* head = tail_->next_;
+  LQueueNode<T>* head = tail_->next_;
 
   // remove the head from the queue
   tail_->next_ = head->next_;
@@ -450,20 +450,20 @@ madara::utility::LQueue<T>::end (void) const
 }
 
 template <typename T> T &
-madara::utility::LQueue_Iterator<T>::operator* (void)
+madara::utility::LQueueIterator<T>::operator* (void)
 {
   return pos_->item_;
 }
 
 template <typename T> const T &
-madara::utility::LQueue_Iterator<T>::operator* (void) const
+madara::utility::LQueueIterator<T>::operator* (void) const
 {
   return pos_->item_;
 }
 
 template <typename T> 
-madara::utility::LQueue_Iterator<T> &
-madara::utility::LQueue_Iterator<T>::operator++ (void) 
+madara::utility::LQueueIterator<T> &
+madara::utility::LQueueIterator<T>::operator++ (void) 
 {
   // advance to the next position
   pos_ = pos_->next_;
@@ -473,11 +473,11 @@ madara::utility::LQueue_Iterator<T>::operator++ (void)
 
 // Post-increment.
 template <typename T> 
-madara::utility::LQueue_Iterator<T> 
-madara::utility::LQueue_Iterator<T>::operator++ (int) 
+madara::utility::LQueueIterator<T> 
+madara::utility::LQueueIterator<T>::operator++ (int) 
 {
   // keep copy of the original iterator
-  LQueue_Iterator<T> copy = *this;
+  LQueueIterator<T> copy = *this;
 
   // advance to the next position
   pos_ = pos_->next_;
@@ -487,8 +487,8 @@ madara::utility::LQueue_Iterator<T>::operator++ (int)
 }
 
 template <typename T> bool
-madara::utility::LQueue_Iterator<T>::operator== (
-  const madara::utility::LQueue_Iterator<T> &rhs) const
+madara::utility::LQueueIterator<T>::operator== (
+  const madara::utility::LQueueIterator<T> &rhs) const
 {
   // check if the iterator points to the same position in the same queue
   // (we could even omit the check for queue equality, because it is
@@ -497,15 +497,15 @@ madara::utility::LQueue_Iterator<T>::operator== (
 }
 
 template <typename T> bool
-madara::utility::LQueue_Iterator<T>::operator!= (
-    const madara::utility::LQueue_Iterator<T> &rhs) const
+madara::utility::LQueueIterator<T>::operator!= (
+    const madara::utility::LQueueIterator<T> &rhs) const
 {
   // implement != in terms of ==
   return !(*this == rhs);
 }
 
 template <typename T>
-madara::utility::LQueue_Iterator<T>::LQueue_Iterator (
+madara::utility::LQueueIterator<T>::LQueueIterator (
   madara::utility::LQueue<T> &queue, size_t pos)
   : queue_ (queue),
     pos_ (queue.tail_->next_)
@@ -522,21 +522,21 @@ madara::utility::LQueue_Iterator<T>::LQueue_Iterator (
 }
 
 template <typename T>
-madara::utility::LQueue_Iterator<T>::LQueue_Iterator (
-  madara::utility::LQueue<T> &queue, madara::utility::LQueue_Node<T> *pos)
+madara::utility::LQueueIterator<T>::LQueueIterator (
+  madara::utility::LQueue<T> &queue, madara::utility::LQueueNode<T> *pos)
   : queue_ (queue),
     pos_ (pos)
 {
 }
 
 template <typename T> const T &
-madara::utility::LQueue_Const_Iterator<T>::operator* (void) const
+madara::utility::LQueueConstIterator<T>::operator* (void) const
 {
   return pos_->item_;
 }
 
-template <typename T> const madara::utility::LQueue_Const_Iterator<T> &
-madara::utility::LQueue_Const_Iterator<T>::operator++ (void) const
+template <typename T> const madara::utility::LQueueConstIterator<T> &
+madara::utility::LQueueConstIterator<T>::operator++ (void) const
 {
   // advance to the next position
   pos_ = pos_->next_;
@@ -544,11 +544,11 @@ madara::utility::LQueue_Const_Iterator<T>::operator++ (void) const
   return *this;
 }
 
-template <typename T> madara::utility::LQueue_Const_Iterator<T>
-madara::utility::LQueue_Const_Iterator<T>::operator++ (int) const
+template <typename T> madara::utility::LQueueConstIterator<T>
+madara::utility::LQueueConstIterator<T>::operator++ (int) const
 {
   // keep copy of the original iterator
-  LQueue_Const_Iterator<T> copy = *this;
+  LQueueConstIterator<T> copy = *this;
 
   // advance to the next position
   pos_ = pos_->next_;
@@ -558,22 +558,22 @@ madara::utility::LQueue_Const_Iterator<T>::operator++ (int) const
 }
 
 template <typename T> bool
-madara::utility::LQueue_Const_Iterator<T>::operator== (
-  const madara::utility::LQueue_Const_Iterator<T> &rhs) const
+madara::utility::LQueueConstIterator<T>::operator== (
+  const madara::utility::LQueueConstIterator<T> &rhs) const
 {
   // check if the iterator points to the same position in the same queue
   return (pos_ == rhs.pos_);
 }
 
 template <typename T> bool
-madara::utility::LQueue_Const_Iterator<T>::operator!= (
-  const madara::utility::LQueue_Const_Iterator<T> &rhs) const
+madara::utility::LQueueConstIterator<T>::operator!= (
+  const madara::utility::LQueueConstIterator<T> &rhs) const
 {
   return !(*this == rhs);
 }
 
 template <typename T>
-madara::utility::LQueue_Const_Iterator<T>::LQueue_Const_Iterator (
+madara::utility::LQueueConstIterator<T>::LQueueConstIterator (
   const madara::utility::LQueue<T> &queue, size_t pos)
   : queue_ (queue),
     pos_ (queue.tail_->next_)
@@ -590,8 +590,8 @@ madara::utility::LQueue_Const_Iterator<T>::LQueue_Const_Iterator (
 }
 
 template <typename T>
-madara::utility::LQueue_Const_Iterator<T>::LQueue_Const_Iterator (
-  const LQueue<T> &queue, LQueue_Node<T> *pos)
+madara::utility::LQueueConstIterator<T>::LQueueConstIterator (
+  const LQueue<T> &queue, LQueueNode<T> *pos)
   : queue_ (queue),
     pos_ (pos)
 {

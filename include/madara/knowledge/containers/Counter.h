@@ -6,11 +6,11 @@
 
 #include <vector>
 #include <string>
-#include "madara/Lock_Type.h"
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/knowledge/Thread_Safe_Context.h"
-#include "madara/knowledge/Knowledge_Update_Settings.h"
-#include "Base_Container.h"
+#include "madara/LockType.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/ThreadSafeContext.h"
+#include "madara/knowledge/KnowledgeUpdateSettings.h"
+#include "BaseContainer.h"
 
 /**
  * @file Counter.h
@@ -30,17 +30,17 @@ namespace madara
        * @class Counter
        * @brief This class stores an integer within a variable context
        */
-      class MADARA_Export Counter : public Base_Container
+      class MADARA_Export Counter : public BaseContainer
       {
       public:
         /// trait that describes the value type
-        typedef Knowledge_Record::Integer  type;
+        typedef KnowledgeRecord::Integer  type;
         
         /**
          * Default constructor
          **/
-        Counter (const Knowledge_Update_Settings & settings =
-          Knowledge_Update_Settings ());
+        Counter (const KnowledgeUpdateSettings & settings =
+          KnowledgeUpdateSettings ());
       
         /**
          * Constructor
@@ -49,9 +49,9 @@ namespace madara
          * @param  settings   settings for evaluating the vector
          **/
         Counter (const std::string & name,
-                Knowledge_Base & knowledge,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                KnowledgeBase & knowledge,
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Constructor
@@ -61,8 +61,8 @@ namespace madara
          **/
         Counter (const std::string & name,
                 Variables & knowledge,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Default constructor
@@ -74,12 +74,12 @@ namespace madara
          * @param  settings   settings for evaluating the vector
          **/
         Counter (const std::string & name,
-                Knowledge_Base & knowledge,
+                KnowledgeBase & knowledge,
                 int id,
                 int counters,
                 type value = 0,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Default constructor
@@ -95,8 +95,8 @@ namespace madara
                 int id,
                 int counters,
                 type value = 0,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Copy constructor
@@ -132,7 +132,7 @@ namespace madara
          * @param knowledge  the knowledge base the variable is housed in
          **/
         void set_name (const std::string & var_name,
-          Knowledge_Base & knowledge);
+          KnowledgeBase & knowledge);
         
         /**
          * Sets the variable name that this refers to
@@ -246,11 +246,11 @@ namespace madara
         void operator-- (void);
         
         /**
-         * Returns the value as a Knowledge_Record. This
+         * Returns the value as a KnowledgeRecord. This
          * is useful for referencing clock and other record info.
-         * @return the value as a Knowledge_Record
+         * @return the value as a KnowledgeRecord
          **/
-        Knowledge_Record to_record (void) const;
+        KnowledgeRecord to_record (void) const;
 
         /**
          * Returns the value as a double
@@ -262,7 +262,7 @@ namespace madara
          * Returns the value as an integer (same as *)
          * @return the value as an integer
          **/
-        Knowledge_Record::Integer to_integer (void) const;
+        KnowledgeRecord::Integer to_integer (void) const;
         
         /**
          * Returns the value as a string
@@ -277,8 +277,8 @@ namespace madara
          * @param settings        settings for referring to knowledge variables
          **/
         void set_quality (uint32_t quality,
-               const Knowledge_Reference_Settings & settings =
-                       Knowledge_Reference_Settings (false));
+               const KnowledgeReferenceSettings & settings =
+                       KnowledgeReferenceSettings (false));
       
         /**
          * Resizes the counter, usually when number of counters change
@@ -303,7 +303,7 @@ namespace madara
         * @return  a deep copy of the container that must be managed
         *          by the user (i.e., you have to delete the return value)
         **/
-        virtual Base_Container * clone (void) const;
+        virtual BaseContainer * clone (void) const;
 
         /**
         * Determines if the local count is not zero
@@ -398,7 +398,7 @@ namespace madara
          * Counts all counter variables
          * @return  total count
          **/
-        inline Knowledge_Record get_count_record (void) const
+        inline KnowledgeRecord get_count_record (void) const
         {
           return context_->evaluate (aggregate_count_, no_harm);
         }
@@ -406,12 +406,12 @@ namespace madara
         /**
          * Variable context that we are modifying
          **/
-        mutable Thread_Safe_Context * context_;
+        mutable ThreadSafeContext * context_;
 
         /**
          * Variable reference
          **/
-        Variable_Reference variable_;
+        VariableReference variable_;
 
         /**
          * id of this counter in the counter ring
@@ -426,12 +426,12 @@ namespace madara
         /**
          * Expression for aggregating count in one atomic operation
          **/
-        Compiled_Expression aggregate_count_;
+        CompiledExpression aggregate_count_;
 
         /**
          * Settings we'll use for all evaluations
          **/
-        Eval_Settings no_harm;
+        EvalSettings no_harm;
       };
     }
   }

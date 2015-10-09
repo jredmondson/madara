@@ -1,6 +1,6 @@
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
 #include "madara/utility/Utility.h"
 
 namespace logger = madara::logger;
@@ -8,7 +8,7 @@ namespace utility = madara::utility;
 
 int ACE_TMAIN (int, ACE_TCHAR **)
 {
-  madara::knowledge::Knowledge_Base knowledge;
+  madara::knowledge::KnowledgeBase knowledge;
   
  // MADARA_debug_level = 10;
 

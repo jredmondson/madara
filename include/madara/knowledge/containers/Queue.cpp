@@ -1,18 +1,18 @@
 #include <sstream>
 
 #include "Queue.h"
-#include "madara/knowledge/Context_Guard.h"
+#include "madara/knowledge/ContextGuard.h"
 
 madara::knowledge::containers::Queue::Queue (
-  const Knowledge_Update_Settings & settings)
+  const KnowledgeUpdateSettings & settings)
 : context_ (0), settings_ (settings)
 {
 }
   
 madara::knowledge::containers::Queue::Queue (
   const std::string & name,
-  Knowledge_Base & knowledge,
-  const Knowledge_Update_Settings & settings)
+  KnowledgeBase & knowledge,
+  const KnowledgeUpdateSettings & settings)
 : context_ (&(knowledge.get_context ())), name_ (name),
   count_ (name + ".count", knowledge, 0),
   head_ (name + ".head", knowledge, 0),
@@ -26,7 +26,7 @@ madara::knowledge::containers::Queue::Queue (
 madara::knowledge::containers::Queue::Queue (
   const std::string & name,
   Variables & knowledge,
-  const Knowledge_Update_Settings & settings)
+  const KnowledgeUpdateSettings & settings)
 : context_ (knowledge.get_context ()), name_ (name),
   count_ (name + ".count", knowledge),
   head_ (name + ".head", knowledge),
@@ -39,9 +39,9 @@ madara::knowledge::containers::Queue::Queue (
  
 madara::knowledge::containers::Queue::Queue (
   const std::string & name,
-  Knowledge_Base & knowledge,
+  KnowledgeBase & knowledge,
   int size,
-  const Knowledge_Update_Settings & settings)
+  const KnowledgeUpdateSettings & settings)
 : context_ (&(knowledge.get_context ())), name_ (name),
   count_ (name + ".count", knowledge, 0),
   head_ (name + ".head", knowledge, 0),
@@ -55,7 +55,7 @@ madara::knowledge::containers::Queue::Queue (
   const std::string & name,
   Variables & knowledge,
   int size,
-  const Knowledge_Update_Settings & settings)
+  const KnowledgeUpdateSettings & settings)
 : context_ (knowledge.get_context ()), name_ (name),
   count_ (name + ".count", knowledge, 0),
   head_ (name + ".head", knowledge, 0),
@@ -118,29 +118,29 @@ madara::knowledge::containers::Queue::operator!= (
 
 bool
 madara::knowledge::containers::Queue::enqueue (
-  const Knowledge_Record & record)
+  const KnowledgeRecord & record)
 {
   bool result (false);
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     if (count_ < 0)
       count_ = 0;
     
     // avoid double retrieval of count_ during check
-    Knowledge_Record::Integer count = *count_;
+    KnowledgeRecord::Integer count = *count_;
 
     if (context_ && name_ != "" && queue_.size () > 0 && 
-        count < (Knowledge_Record::Integer)queue_.size ())
+        count < (KnowledgeRecord::Integer)queue_.size ())
     {
       // there's no point in signaling inside of a locked context
       if (!settings_.signal_changes)
         settings_.signal_changes = false;
       
-      Knowledge_Record::Integer tail = *tail_;
+      KnowledgeRecord::Integer tail = *tail_;
 
       context_->set (queue_.vector_[tail], record, settings_);
       tail_ = increment (tail, 1);
@@ -155,14 +155,14 @@ madara::knowledge::containers::Queue::enqueue (
   return result;
 }
 
-madara::Knowledge_Record
+madara::KnowledgeRecord
 madara::knowledge::containers::Queue::dequeue (bool wait)
 {
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
   
   if (context_ && name_ != "")
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     
     if (wait)
@@ -173,7 +173,7 @@ madara::knowledge::containers::Queue::dequeue (bool wait)
 
     if (count_ > 0)
     {
-      Knowledge_Record::Integer head = *head_;
+      KnowledgeRecord::Integer head = *head_;
 
       result = context_->get (queue_.vector_[head], settings_);
     
@@ -194,7 +194,7 @@ madara::knowledge::containers::Queue::clear (void)
 {
   if (context_ && name_ != "" && count_ > 0)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     count_ = 0;
@@ -202,18 +202,18 @@ madara::knowledge::containers::Queue::clear (void)
   }
 }
 
-madara::Knowledge_Record
+madara::KnowledgeRecord
 madara::knowledge::containers::Queue::inspect (size_t position)
 {
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
   if (context_ && name_ != "" &&
-      (Knowledge_Record::Integer)position < *count_)
+      (KnowledgeRecord::Integer)position < *count_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     size_t index = (size_t)increment (
-      *head_, (Knowledge_Record::Integer)position);
+      *head_, (KnowledgeRecord::Integer)position);
     
     result = context_->get (queue_.vector_[index], settings_);
   }
@@ -230,12 +230,12 @@ madara::knowledge::containers::Queue::get_name (void) const
 void
 madara::knowledge::containers::Queue::set_name (
   const std::string & var_name,
-  Knowledge_Base & knowledge)
+  KnowledgeBase & knowledge)
 {
-  Knowledge_Update_Settings keep_local (true);
+  KnowledgeUpdateSettings keep_local (true);
   context_ = &(knowledge.get_context ());
 
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   Guard guard (mutex_);
 
   name_ = var_name;
@@ -251,10 +251,10 @@ madara::knowledge::containers::Queue::set_name (
   const std::string & var_name,
   Variables & knowledge)
 {
-  Knowledge_Update_Settings keep_local (true);
+  KnowledgeUpdateSettings keep_local (true);
   context_ = knowledge.get_context ();
 
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   Guard guard (mutex_);
 
   name_ = var_name;
@@ -282,25 +282,25 @@ madara::knowledge::containers::Queue::resize (int size)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     queue_.resize (size, false);
 
-    if (count_ > (Knowledge_Record::Integer)queue_.size ())
+    if (count_ > (KnowledgeRecord::Integer)queue_.size ())
     {
-      count_ = (Knowledge_Record::Integer)size;
+      count_ = (KnowledgeRecord::Integer)size;
     }
   }
 }
 
-madara::knowledge::Knowledge_Update_Settings
+madara::knowledge::KnowledgeUpdateSettings
 madara::knowledge::containers::Queue::set_settings (
-  const Knowledge_Update_Settings & settings)
+  const KnowledgeUpdateSettings & settings)
 {
   Guard guard (mutex_);
   
-  Knowledge_Update_Settings old_settings = settings_;
+  KnowledgeUpdateSettings old_settings = settings_;
 
   settings_ = settings;
 
@@ -310,11 +310,11 @@ madara::knowledge::containers::Queue::set_settings (
 void
 madara::knowledge::containers::Queue::set_quality (
   uint32_t quality,
-  const Knowledge_Reference_Settings & settings)
+  const KnowledgeReferenceSettings & settings)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     context_->set_quality (name_, quality, true, settings);
   }

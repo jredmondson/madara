@@ -35,13 +35,13 @@ typedef unsigned __int64    uint64_t;
 #include "ace/Get_Opt.h"
 #include "ace/Signal.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 
-Madara::Knowledge_Record::Integer id = 0;
-Madara::Knowledge_Record::Integer left = 0;
-Madara::Knowledge_Record::Integer processes = 1;
+Madara::KnowledgeRecord::Integer id = 0;
+Madara::KnowledgeRecord::Integer left = 0;
+Madara::KnowledgeRecord::Integer processes = 1;
 uint32_t quality = 0;
-Madara::Knowledge_Record::Integer value = 0;
+Madara::KnowledgeRecord::Integer value = 0;
 std::string host = "";
 
 volatile bool terminated = 0;
@@ -69,7 +69,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   // signal handler for clean exit
   ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge(host, Madara::Transport::SPLICE);
+  Madara::KnowledgeEngine::KnowledgeBase knowledge(host, Madara::Transport::SPLICE);
 
   ACE_DEBUG ((LM_INFO, "(%P|%t) (%d of %d) with quality %d\n",
                         id, processes, quality));
@@ -93,7 +93,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   {
     // try to set the value to the initial value
     int result = knowledge.set ("important_value",
-      Madara::Knowledge_Record::Integer (quality));
+      Madara::KnowledgeRecord::Integer (quality));
 
     // everyone prints out current value
     knowledge.print("  Cur value: {important_value}\n");

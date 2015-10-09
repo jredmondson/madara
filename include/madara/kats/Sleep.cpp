@@ -18,9 +18,9 @@
 #include "ace/Sched_Params.h"
 #include "ace/Process.h"
 
-#include "madara/utility/Log_Macros.h"
+#include "madara/utility/LogMacros.h"
 #include "madara/utility/tinyxml.h"
-#include "madara/kats/Test_Framework.h"
+#include "madara/kats/TestFramework.h"
 
 madara::kats::Settings settings;
 ACE_Process_Options process_options;
@@ -146,7 +146,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     ACE_OS::thr_setprio (prio);
   }
 
-  madara::kats::Test_Framework testing (settings);
+  madara::kats::TestFramework testing (settings);
 
   testing.event (
     "updatevars","",".kats.id=.madara.id;.kats.processes=.madara.processes");

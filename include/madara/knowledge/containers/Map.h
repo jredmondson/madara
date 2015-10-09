@@ -5,11 +5,11 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "madara/Lock_Type.h"
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/knowledge/Thread_Safe_Context.h"
-#include "madara/knowledge/Knowledge_Update_Settings.h"
-#include "Base_Container.h"
+#include "madara/LockType.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/ThreadSafeContext.h"
+#include "madara/knowledge/KnowledgeUpdateSettings.h"
+#include "BaseContainer.h"
 
 /**
  * @file Map.h
@@ -29,7 +29,7 @@ namespace madara
        * @class Map
        * @brief This class stores a map of strings to KaRL variables
        */
-      class MADARA_Export Map : public Base_Container
+      class MADARA_Export Map : public BaseContainer
       {
       public:
         /**
@@ -37,8 +37,8 @@ namespace madara
          * @param  settings  settings to apply by default
          * @param  delimiter  the delimiter for variables in the map
          **/
-        Map (const Knowledge_Update_Settings & settings =
-            Knowledge_Update_Settings (),
+        Map (const KnowledgeUpdateSettings & settings =
+            KnowledgeUpdateSettings (),
           const std::string & delimiter = ".");
       
         /**
@@ -49,9 +49,9 @@ namespace madara
          * @param  delimiter  the delimiter for variables in the map
          **/
         Map (const std::string & name,
-          Knowledge_Base & knowledge,
-          const Knowledge_Update_Settings & settings =
-            Knowledge_Update_Settings (),
+          KnowledgeBase & knowledge,
+          const KnowledgeUpdateSettings & settings =
+            KnowledgeUpdateSettings (),
           const std::string & delimiter = ".");
       
         /**
@@ -63,8 +63,8 @@ namespace madara
          **/
         Map (const std::string & name,
           Variables & knowledge,
-          const Knowledge_Update_Settings & settings =
-          Knowledge_Update_Settings (),
+          const KnowledgeUpdateSettings & settings =
+          KnowledgeUpdateSettings (),
           const std::string & delimiter = ".");
       
         /**
@@ -114,7 +114,7 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        Knowledge_Record operator[] (const std::string & key);
+        KnowledgeRecord operator[] (const std::string & key);
       
         /**
          * Retrieves a copy of the record from the map. Same functionality
@@ -124,7 +124,7 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        Knowledge_Record to_record (const std::string & key);
+        KnowledgeRecord to_record (const std::string & key);
       
         /**
          * Returns the size of the map
@@ -159,7 +159,7 @@ namespace madara
          * @param sync       sync the keys to existing vars in the new name
          **/
         void set_name (const std::string & var_name,
-          Knowledge_Base & knowledge, bool sync = true);
+          KnowledgeBase & knowledge, bool sync = true);
         
         /**
          * Sets the variable name that this refers to
@@ -220,7 +220,7 @@ namespace madara
          */
         int read_file (const std::string & key, 
                        const std::string & filename, 
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
       
         /**
          * Sets a location within the map to the specified value
@@ -231,8 +231,8 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key,
-          madara::Knowledge_Record::Integer value = 
-            madara::Knowledge_Record::MODIFIED);
+          madara::KnowledgeRecord::Integer value = 
+            madara::KnowledgeRecord::MODIFIED);
 
         /**
          * Sets a location within the map to the specified value
@@ -244,8 +244,8 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key,
-          madara::Knowledge_Record::Integer value, 
-          const Knowledge_Update_Settings & settings);
+          madara::KnowledgeRecord::Integer value, 
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Sets an index within an array to a specified value
@@ -258,7 +258,7 @@ namespace madara
          **/
         int set_index (const std::string & key,
           size_t index,
-          madara::Knowledge_Record::Integer value);
+          madara::KnowledgeRecord::Integer value);
 
         /**
          * Sets an index within an array to a specified value
@@ -272,8 +272,8 @@ namespace madara
          **/
         int set_index (const std::string & key,
           size_t index,
-          madara::Knowledge_Record::Integer value,
-          const Knowledge_Update_Settings & settings);
+          madara::KnowledgeRecord::Integer value,
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Sets a location within the map to the specified value
@@ -285,7 +285,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key,
-          const madara::Knowledge_Record::Integer * value,
+          const madara::KnowledgeRecord::Integer * value,
           uint32_t size);
        
         /**
@@ -299,9 +299,9 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key,
-          const madara::Knowledge_Record::Integer * value,
+          const madara::KnowledgeRecord::Integer * value,
           uint32_t size,
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
        
         /**
          * Sets a location within the map to the specified value
@@ -312,7 +312,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key,
-          const std::vector <Knowledge_Record::Integer> & value);
+          const std::vector <KnowledgeRecord::Integer> & value);
        
         /**
          * Sets a location within the map to the specified value
@@ -324,8 +324,8 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key,
-          const std::vector <Knowledge_Record::Integer> & value,
-          const Knowledge_Update_Settings & settings);
+          const std::vector <KnowledgeRecord::Integer> & value,
+          const KnowledgeUpdateSettings & settings);
        
         /**
          * Sets a location within the map to the specified value
@@ -347,7 +347,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key, double value, 
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Sets an index within a map to a specified value
@@ -375,7 +375,7 @@ namespace madara
         int set_index (const std::string & key,
           size_t index,
           double value,
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Sets a location within the map to the specified value
@@ -403,7 +403,7 @@ namespace madara
         int set (const std::string & key,
           const double * value,
           uint32_t size,
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
        
         /**
          * Sets a location within the map to the specified value
@@ -427,7 +427,7 @@ namespace madara
          **/
         int set (const std::string & key,
           const std::vector <double> & value,
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Sets a location within the map to the specified value
@@ -449,7 +449,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key, const std::string & value, 
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
         
         /**
          * Atomically sets the value of an index to an arbitrary string.
@@ -471,7 +471,7 @@ namespace madara
          **/
         int set_file (const std::string & key,
           const unsigned char * value, size_t size, 
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
       
         /**
          * Atomically sets the value of an index to a JPEG image
@@ -493,7 +493,7 @@ namespace madara
          **/
         int set_jpeg (const std::string & key,
           const unsigned char * value, size_t size, 
-          const Knowledge_Update_Settings & settings);
+          const KnowledgeUpdateSettings & settings);
       
         /**
          * Sets the quality of writing to a certain variable from this entity
@@ -503,8 +503,8 @@ namespace madara
          * @param settings        settings for referring to knowledge variables
          **/
         void set_quality (const std::string & key, uint32_t quality,
-               const Knowledge_Reference_Settings & settings =
-                       Knowledge_Reference_Settings (false));
+               const KnowledgeReferenceSettings & settings =
+                       KnowledgeReferenceSettings (false));
 
         /**
         * Returns the type of the container along with name and any other
@@ -522,7 +522,7 @@ namespace madara
         * @return  a deep copy of the container that must be managed
         *          by the user (i.e., you have to delete the return value)
         **/
-        virtual Base_Container * clone (void) const;
+        virtual BaseContainer * clone (void) const;
 
         /**
         * Determines if all values in the map are true
@@ -572,17 +572,17 @@ namespace madara
         virtual std::string get_debug_info_ (void);
 
         /// internal map of variable references
-        typedef std::map <std::string, Variable_Reference>  Internal_Map;
+        typedef std::map <std::string, VariableReference>  InternalMap;
 
         /**
          * Variable context that we are modifying
          **/
-        Thread_Safe_Context * context_;
+        ThreadSafeContext * context_;
 
         /**
          * Map of variables to values
          **/
-        Internal_Map map_;
+        InternalMap map_;
 
         /**
          * Delimiter for the prefix to subvars

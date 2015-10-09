@@ -8,7 +8,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "Madara_Common.h"
+#include "MadaraCommon.h"
 
 namespace Madara
 {

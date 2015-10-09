@@ -15,11 +15,11 @@
 #include "ace/Thread.h"
 #include "ace/Atomic_Op_T.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 
 ACE_Atomic_Op<ACE_Mutex,int> thread_count (0);
 static int max_threads = 2;
-static Madara::Knowledge_Engine::Knowledge_Base knowledge (
+static Madara::KnowledgeEngine::KnowledgeBase knowledge (
   "localhost", Madara::Transport::SPLICE);
 
 // command line arguments
@@ -49,7 +49,7 @@ static void * worker(void * &)
   buffer << id;
 
   ACE_DEBUG ((LM_DEBUG, "(%P|%t) Setting %s\n", buffer.str ().c_str ()));
-  knowledge.set (buffer.str (), Madara::Knowledge_Record::Integer (1));
+  knowledge.set (buffer.str (), Madara::KnowledgeRecord::Integer (1));
 
   if (id == max_threads)
   {

@@ -6,11 +6,11 @@
 
 #include <vector>
 #include <string>
-#include "madara/Lock_Type.h"
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/knowledge/Thread_Safe_Context.h"
-#include "madara/knowledge/Knowledge_Update_Settings.h"
-#include "Base_Container.h"
+#include "madara/LockType.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/ThreadSafeContext.h"
+#include "madara/knowledge/KnowledgeUpdateSettings.h"
+#include "BaseContainer.h"
 
 /**
  * @file Barrier.h
@@ -30,17 +30,17 @@ namespace madara
        * @class Barrier
        * @brief This class stores an integer within a variable context
        */
-      class MADARA_Export Barrier : public Base_Container
+      class MADARA_Export Barrier : public BaseContainer
       {
       public:
         /// trait that describes the value type
-        typedef Knowledge_Record::Integer  type;
+        typedef KnowledgeRecord::Integer  type;
         
         /**
          * Default constructor
          **/
-        Barrier (const Knowledge_Update_Settings & settings =
-          Knowledge_Update_Settings ());
+        Barrier (const KnowledgeUpdateSettings & settings =
+          KnowledgeUpdateSettings ());
       
         /**
          * Constructor
@@ -49,9 +49,9 @@ namespace madara
          * @param  settings   settings for evaluating the vector
          **/
         Barrier (const std::string & name,
-                Knowledge_Base & knowledge,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                KnowledgeBase & knowledge,
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Constructor
@@ -61,8 +61,8 @@ namespace madara
          **/
         Barrier (const std::string & name,
                 Variables & knowledge,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Default constructor
@@ -73,11 +73,11 @@ namespace madara
          * @param  settings   settings for evaluating the vector
          **/
         Barrier (const std::string & name,
-                Knowledge_Base & knowledge,
+                KnowledgeBase & knowledge,
                 int id,
                 int participants,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Default constructor
@@ -91,8 +91,8 @@ namespace madara
                 Variables & knowledge,
                 int id,
                 int participants,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Copy constructor
@@ -145,7 +145,7 @@ namespace madara
          * @param participants  the number of participants in the barrier ring
          **/
         void set_name (const std::string & var_name,
-          Knowledge_Base & knowledge,
+          KnowledgeBase & knowledge,
           int id,
           int participants);
         
@@ -169,7 +169,7 @@ namespace madara
          * @param participants  the number of participants in the barrier ring
          **/
         void set_name (const std::string & var_name,
-          Thread_Safe_Context & knowledge,
+          ThreadSafeContext & knowledge,
           int id,
           int participants);
 
@@ -198,11 +198,11 @@ namespace madara
         void modify (void);
 
         /**
-         * Returns the barrier round number as a Knowledge_Record. This
+         * Returns the barrier round number as a KnowledgeRecord. This
          * is useful for referencing clock and other record info.
-         * @return the value as a Knowledge_Record
+         * @return the value as a KnowledgeRecord
          **/
-        Knowledge_Record to_record (void) const;
+        KnowledgeRecord to_record (void) const;
 
         /**
          * Returns the barrier round number as a double
@@ -214,7 +214,7 @@ namespace madara
          * Returns the barrier round number as an integer (same as *)
          * @return the value as an integer
          **/
-        Knowledge_Record::Integer to_integer (void) const;
+        KnowledgeRecord::Integer to_integer (void) const;
         
         /**
          * Returns the barrier round number as a string
@@ -243,8 +243,8 @@ namespace madara
          * @param settings        settings for referring to knowledge variables
          **/
         void set_quality (uint32_t quality,
-               const Knowledge_Reference_Settings & settings =
-                       Knowledge_Reference_Settings (false));
+               const KnowledgeReferenceSettings & settings =
+                       KnowledgeReferenceSettings (false));
       
         /**
          * Resizes the barrier, usually when number of participants change
@@ -269,7 +269,7 @@ namespace madara
         * @return  a deep copy of the container that must be managed
         *          by the user (i.e., you have to delete the return value)
         **/
-        virtual Base_Container * clone (void) const;
+        virtual BaseContainer * clone (void) const;
 
         /**
         * Determines if the barrier is true
@@ -345,12 +345,12 @@ namespace madara
         /**
          * Variable context that we are modifying
          **/
-        mutable Thread_Safe_Context * context_;
+        mutable ThreadSafeContext * context_;
 
         /**
          * Variable reference
          **/
-        Variable_Reference variable_;
+        VariableReference variable_;
 
         /**
          * id of this barrier in the barrier ring
@@ -365,12 +365,12 @@ namespace madara
         /**
          * Expression for aggregating barrier in one atomic operation
          **/
-        Compiled_Expression aggregate_barrier_;
+        CompiledExpression aggregate_barrier_;
         
         /**
          * Settings we'll use for all evaluations
          **/
-        Eval_Settings no_harm;
+        EvalSettings no_harm;
 
         /**
          * Holder for variable name to quickly refresh modified status

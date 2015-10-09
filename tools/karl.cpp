@@ -12,11 +12,11 @@
 #include "ace/Guard_T.h"
 #include "ace/Recursive_Thread_Mutex.h"
 
-#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/KnowledgeBase.h"
 
 #include "madara/utility/Utility.h"
-#include "madara/filters/Generic_Filters.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/filters/GenericFilters.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace knowledge = madara::knowledge;
 namespace transport = madara::transport;
@@ -24,12 +24,12 @@ namespace utility = madara::utility;
 namespace filters = madara::filters;
 namespace logger = madara::logger;
 
-typedef  std::vector <std::string>  String_Vector;
+typedef  std::vector <std::string>  StringVector;
 
 // default transport settings
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-transport::QoS_Transport_Settings settings;
+transport::QoSTransportSettings settings;
 
 // initial logic is empty
 std::string logic;
@@ -38,7 +38,7 @@ std::string logic;
 std::string save_location;
 
 // list of filenames
-String_Vector filenames;
+StringVector filenames;
 
 // print debug information
 bool debug (false);
@@ -247,11 +247,11 @@ int main (int argc, char ** argv)
   }
 
   // create a knowledge base and setup our id
-  knowledge::Knowledge_Base knowledge (host, settings);
+  knowledge::KnowledgeBase knowledge (host, settings);
 
   if (!after_wait)
   {
-    for (String_Vector::const_iterator i = filenames.begin ();
+    for (StringVector::const_iterator i = filenames.begin ();
       i != filenames.end (); ++i)
     {
       if (*i != "")
@@ -283,7 +283,7 @@ int main (int argc, char ** argv)
 
   if (after_wait)
   {
-    for (String_Vector::const_iterator i = filenames.begin ();
+    for (StringVector::const_iterator i = filenames.begin ();
       i != filenames.end (); ++i)
     {
       if (*i != "")

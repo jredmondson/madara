@@ -17,14 +17,14 @@
 #include "ace/Get_Opt.h"
 #include "ace/Signal.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 #include "madara/utility/Utility.h"
 
-Madara::Knowledge_Record::Integer id = 0;
-Madara::Knowledge_Record::Integer left = 0;
-Madara::Knowledge_Record::Integer cars = 1;
-Madara::Knowledge_Record::Integer stop = 10;
-Madara::Knowledge_Record::Integer value = 0;
+Madara::KnowledgeRecord::Integer id = 0;
+Madara::KnowledgeRecord::Integer left = 0;
+Madara::KnowledgeRecord::Integer cars = 1;
+Madara::KnowledgeRecord::Integer stop = 10;
+Madara::KnowledgeRecord::Integer value = 0;
 std::string mapfile = "/configs/maps/default.map";
 std::string looppost_logicfile = "/configs/logics/simulator_looppost.klf";
 std::string loopmain_logicfile = "/configs/logics/simulator_loopmain.klf";
@@ -36,10 +36,10 @@ std::string host = "localhost";
 typedef std::set < std::string >                 Vertices;
 
 
-typedef std::map < std::string, Madara::Knowledge_Record::Integer > Distance_Map;
-typedef std::map < std::string, Distance_Map >      Connectivity_Map; 
+typedef std::map < std::string, Madara::KnowledgeRecord::Integer > DistanceMap;
+typedef std::map < std::string, DistanceMap >      ConnectivityMap; 
 
-typedef std::vector <std::vector <char> >           Logical_Map;
+typedef std::vector <std::vector <char> >           LogicalMap;
 
 volatile bool terminated = 0;
 
@@ -52,7 +52,7 @@ public:
   long distance;
 };
 
-class Route_Comparator
+class RouteComparator
 {
   public:
     bool operator () (const Route &s1, const Route &s2) const
@@ -61,9 +61,9 @@ class Route_Comparator
     }
 };
 
-typedef std::vector <Route>                        Route_Vector;
-typedef std::map <std::string, Route>              Route_Target_Map;
-typedef std::map <std::string, Route_Target_Map>   Route_Map;
+typedef std::vector <Route>                        RouteVector;
+typedef std::map <std::string, Route>              RouteTargetMap;
+typedef std::map <std::string, RouteTargetMap>   RouteMap;
 
 
 // command line arguments
@@ -75,13 +75,13 @@ extern "C" void terminate (int)
   terminated = true;
 }
 
-void build_route_map (Route_Map & route_map,
-                Connectivity_Map & connectivity_map,
+void build_route_map (RouteMap & route_map,
+                ConnectivityMap & connectivity_map,
                 Vertices & vertices_orig,
                 const std::string & source)
 {
   // get the available connected vertices from source
-  Route_Target_Map & targets = route_map[source];
+  RouteTargetMap & targets = route_map[source];
 
   // we need our own copy of the vertices because we
   // will be deleting a vertex at each iteration,
@@ -130,23 +130,23 @@ void build_route_map (Route_Map & route_map,
 
   while (vertices.size () > 0)
   {
-    Route_Vector targets_list;
+    RouteVector targets_list;
 
     // build a list of targets from source since we can't sort a map
-    for (Route_Target_Map::iterator i = targets.begin ();
+    for (RouteTargetMap::iterator i = targets.begin ();
          i != targets.end (); ++i)
     {
       targets_list.push_back (i->second);
     }
 
     // sort the current targets list from source
-    std::sort (targets_list.begin (), targets_list.end (), Route_Comparator ());
+    std::sort (targets_list.begin (), targets_list.end (), RouteComparator ());
 
     current = "";
 
     // find the vertex with the shortest length that hasn't been visited
     // if the vertex is in vertices, then it hasn't been visited
-    for (Route_Vector::iterator i = targets_list.begin (); 
+    for (RouteVector::iterator i = targets_list.begin (); 
          i != targets_list.end (); ++i)
     {
       if (vertices.find (i->path.back ()) != vertices.end ())
@@ -166,13 +166,13 @@ void build_route_map (Route_Map & route_map,
     // at this point, we should have a valid current;
     // Let's see what it is connected to
 
-    Route_Target_Map & cur_targets = route_map[current];
+    RouteTargetMap & cur_targets = route_map[current];
 
-    Route_Vector cur_targets_list;
+    RouteVector cur_targets_list;
 
     // build a list of targets so we can actually sort them
     // we can't sort a map
-    for (Route_Target_Map::iterator i = cur_targets.begin ();
+    for (RouteTargetMap::iterator i = cur_targets.begin ();
          i != cur_targets.end (); ++i)
     {
       cur_targets_list.push_back (i->second);
@@ -180,9 +180,9 @@ void build_route_map (Route_Map & route_map,
 
     // sort the intermediate targets list from current
     std::sort (cur_targets_list.begin (), cur_targets_list.end (), 
-      Route_Comparator ());
+      RouteComparator ());
 
-    for (Route_Vector::iterator i = cur_targets_list.begin (); 
+    for (RouteVector::iterator i = cur_targets_list.begin (); 
          i != cur_targets_list.end (); ++i)
     {
       // the route target map might have been filled for this target,
@@ -221,12 +221,12 @@ void build_route_map (Route_Map & route_map,
 }
 
 
-void build_route_map (Route_Map & route_map, 
-                Connectivity_Map & connectivity_map)
+void build_route_map (RouteMap & route_map, 
+                ConnectivityMap & connectivity_map)
 {
   // build a vertex vector
   Vertices vertices;
-  for (Route_Map::iterator vertex = route_map.begin ();
+  for (RouteMap::iterator vertex = route_map.begin ();
        vertex != route_map.end (); ++vertex)
   {
     vertices.insert (vertex->first);
@@ -241,7 +241,7 @@ void build_route_map (Route_Map & route_map,
   }
 }
 
-void print_logical_map (Logical_Map & logical_map)
+void print_logical_map (LogicalMap & logical_map)
 {
   ACE_DEBUG ((LM_INFO, "Printing logical map...\n"));
 
@@ -264,16 +264,16 @@ void print_logical_map (Logical_Map & logical_map)
   }
 }
 
-void print_connectivity_map (Connectivity_Map & connectivity_map)
+void print_connectivity_map (ConnectivityMap & connectivity_map)
 {
   ACE_DEBUG ((LM_INFO, "Printing connectivity map...\n"));
 
-  for (Connectivity_Map::const_iterator i = connectivity_map.begin ();
+  for (ConnectivityMap::const_iterator i = connectivity_map.begin ();
        i != connectivity_map.end (); ++i)
   {
     ACE_DEBUG ((LM_INFO, "  %s\n", i->first.c_str ()));
 
-    for (Distance_Map::const_iterator j = (*i).second.begin ();
+    for (DistanceMap::const_iterator j = (*i).second.begin ();
        j != (*i).second.end (); ++j)
     {
       ACE_DEBUG ((LM_INFO, "   -> %s with distance %d\n", 
@@ -294,16 +294,16 @@ void print_path (const Path & path)
   ACE_DEBUG ((LM_INFO, "%s\n", buffer.str ().c_str ()));
 }
 
-void print_route_map (Route_Map & route_map)
+void print_route_map (RouteMap & route_map)
 {
   ACE_DEBUG ((LM_INFO, "Printing route map...\n"));
 
-  for (Route_Map::const_iterator i = route_map.begin ();
+  for (RouteMap::const_iterator i = route_map.begin ();
        i != route_map.end (); ++i)
   {
     ACE_DEBUG ((LM_INFO, "  %s\n", i->first.c_str ()));
 
-    for (Route_Target_Map::const_iterator j = (*i).second.begin ();
+    for (RouteTargetMap::const_iterator j = (*i).second.begin ();
        j != (*i).second.end (); ++j)
     {
       ACE_DEBUG ((LM_INFO, "   -> %s (%d) : ", 
@@ -313,8 +313,8 @@ void print_route_map (Route_Map & route_map)
   }
 }
 
-void update_connectivity (Connectivity_Map & connectivity_map,
-                          Route_Map & route_map,
+void update_connectivity (ConnectivityMap & connectivity_map,
+                          RouteMap & route_map,
                           std::string source, long dest_x, long dest_y)
 {
   std::stringstream dest_buffer;
@@ -351,12 +351,12 @@ void update_connectivity (Connectivity_Map & connectivity_map,
 }
 
 
-void build_connectivity (Logical_Map & logical_map, Connectivity_Map & connectivity_map,
-                         Route_Map & route_map,
-                         Madara::Knowledge_Record::Integer cur_x,
-                         Madara::Knowledge_Record::Integer cur_y,
-                         Madara::Knowledge_Record::Integer max_x,
-                         Madara::Knowledge_Record::Integer max_y)
+void build_connectivity (LogicalMap & logical_map, ConnectivityMap & connectivity_map,
+                         RouteMap & route_map,
+                         Madara::KnowledgeRecord::Integer cur_x,
+                         Madara::KnowledgeRecord::Integer cur_y,
+                         Madara::KnowledgeRecord::Integer max_x,
+                         Madara::KnowledgeRecord::Integer max_y)
 {
   // look around the current location for connectivity (roads/light)
   // 1 2 3         C 1    1 2     1 2      1 2
@@ -364,8 +364,8 @@ void build_connectivity (Logical_Map & logical_map, Connectivity_Map & connectiv
   // 6 7 8                        4 5      4 5
              
   // compute starting x and y, see ascii outline above
-  Madara::Knowledge_Record::Integer x;
-  Madara::Knowledge_Record::Integer y;
+  Madara::KnowledgeRecord::Integer x;
+  Madara::KnowledgeRecord::Integer y;
 
   char printable = (char)logical_map[cur_x][cur_y];
 
@@ -433,15 +433,15 @@ void build_connectivity (Logical_Map & logical_map, Connectivity_Map & connectiv
   }
 }
 
-void parse_map (const std::string & map, Madara::Knowledge_Engine::Knowledge_Base & knowledge,
-                std::vector <std::pair <Madara::Knowledge_Record::Integer, Madara::Knowledge_Record::Integer> > & spawn_points,
-                std::vector <std::pair <Madara::Knowledge_Record::Integer, Madara::Knowledge_Record::Integer> > & hospitals,
-                std::vector <std::pair <Madara::Knowledge_Record::Integer, Madara::Knowledge_Record::Integer> > & traffic_lights,
-                Logical_Map & logical_map, Connectivity_Map & connectivity_map,
-                Route_Map & route_map)
+void parse_map (const std::string & map, Madara::KnowledgeEngine::KnowledgeBase & knowledge,
+                std::vector <std::pair <Madara::KnowledgeRecord::Integer, Madara::KnowledgeRecord::Integer> > & spawn_points,
+                std::vector <std::pair <Madara::KnowledgeRecord::Integer, Madara::KnowledgeRecord::Integer> > & hospitals,
+                std::vector <std::pair <Madara::KnowledgeRecord::Integer, Madara::KnowledgeRecord::Integer> > & traffic_lights,
+                LogicalMap & logical_map, ConnectivityMap & connectivity_map,
+                RouteMap & route_map)
 {
-  Madara::Knowledge_Record::Integer x = 0, y = 0;
-  Madara::Knowledge_Record::Integer max_x = 0, max_y = 0;
+  Madara::KnowledgeRecord::Integer x = 0, y = 0;
+  Madara::KnowledgeRecord::Integer max_x = 0, max_y = 0;
 
   logical_map.clear ();
 
@@ -571,7 +571,7 @@ void parse_map (const std::string & map, Madara::Knowledge_Engine::Knowledge_Bas
       // us to use KaRL to look up light info (even reinforcement values)
       if (logical_map[x][y] == 'r' || logical_map[x][y] == 't')
       {
-        Madara::Knowledge_Record::Integer i = y-1;
+        Madara::KnowledgeRecord::Integer i = y-1;
         // try to find next light to the north
         for (knowledge.set (".i", i); 
           knowledge.get (".i").to_integer () >= 0; 
@@ -641,7 +641,7 @@ void parse_map (const std::string & map, Madara::Knowledge_Engine::Knowledge_Bas
 }
 
 inline void process_car (
-  Madara::Knowledge_Engine::Knowledge_Base & knowledge, Route_Map & route_map,
+  Madara::KnowledgeEngine::KnowledgeBase & knowledge, RouteMap & route_map,
   const std::string & logic)
 {
   // we're going to cheat a bit since KaRL does not support
@@ -663,11 +663,11 @@ inline void process_car (
 .dest_y = .car{.i}.dest.y;\
 .velocity = .car{.i}.velocity;");
 
-  Madara::Knowledge_Record cur_x = knowledge.get (".cur_x");
-  Madara::Knowledge_Record cur_y = knowledge.get (".cur_y");
+  Madara::KnowledgeRecord cur_x = knowledge.get (".cur_x");
+  Madara::KnowledgeRecord cur_y = knowledge.get (".cur_y");
 
-  Madara::Knowledge_Record dest_x = knowledge.get (".dest_x");
-  Madara::Knowledge_Record dest_y = knowledge.get (".dest_y");
+  Madara::KnowledgeRecord dest_x = knowledge.get (".dest_x");
+  Madara::KnowledgeRecord dest_y = knowledge.get (".dest_y");
 
 
   std::stringstream source_stream;
@@ -687,15 +687,15 @@ inline void process_car (
   Route route = route_map [source][dest];
   Path path = route.path;
 
-  Madara::Knowledge_Record max_speed = knowledge.get ("max_speed");
-  Madara::Knowledge_Record::Integer j;
+  Madara::KnowledgeRecord max_speed = knowledge.get ("max_speed");
+  Madara::KnowledgeRecord::Integer j;
 
   for (j = 0; j < path.size () && j <= max_speed.to_integer (); ++j)
   {
     // j is the path point on the way to destination
     knowledge.set (".j", j);
-    Madara::Knowledge_Record::Integer x;
-    Madara::Knowledge_Record::Integer y;
+    Madara::KnowledgeRecord::Integer x;
+    Madara::KnowledgeRecord::Integer y;
     char separator;
 
     // buffer splits from a coord in the form of x.y
@@ -736,12 +736,12 @@ inline void process_car (
 }
 
 void process_cars (
-  Madara::Knowledge_Engine::Knowledge_Base & knowledge, Route_Map & route_map,
+  Madara::KnowledgeEngine::KnowledgeBase & knowledge, RouteMap & route_map,
   const std::string & logic)
 {
-  knowledge.set (".i", Madara::Knowledge_Record::Integer (0));
+  knowledge.set (".i", Madara::KnowledgeRecord::Integer (0));
   // run the main logic on the cars that currently exist
-  for (knowledge.set (".i", Madara::Knowledge_Record::Integer (0)); 
+  for (knowledge.set (".i", Madara::KnowledgeRecord::Integer (0)); 
        (knowledge.get (".i") < knowledge.get (".num_cars")).is_true (); 
        knowledge.evaluate ("++.i"))
   {
@@ -763,7 +763,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   // signal handler for clean exit
   ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge(
+  Madara::KnowledgeEngine::KnowledgeBase knowledge(
     host, Madara::Transport::SPLICE);
 
   ACE_DEBUG ((LM_INFO, "(%P|%t) Starting traffic simulation...\n" \
@@ -772,15 +772,15 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   // set my id
   knowledge.set (".id", id);
-  knowledge.set (".hospital_type", Madara::Knowledge_Record::Integer (20));
-  knowledge.set (".light_type", Madara::Knowledge_Record::Integer (10));
+  knowledge.set (".hospital_type", Madara::KnowledgeRecord::Integer (20));
+  knowledge.set (".light_type", Madara::KnowledgeRecord::Integer (10));
   knowledge.set (".northsouth_road_type");
-  knowledge.set (".eastwest_road_type", Madara::Knowledge_Record::Integer (2));
+  knowledge.set (".eastwest_road_type", Madara::KnowledgeRecord::Integer (2));
 
   // time related knowledge values
   // simulation_time = current time step in the simulation
 
-  knowledge.set ("simulation_time", Madara::Knowledge_Record::Integer (0));   // 3 minutes (180 seconds)
+  knowledge.set ("simulation_time", Madara::KnowledgeRecord::Integer (0));   // 3 minutes (180 seconds)
 
   std::stringstream main_logic;
 
@@ -842,25 +842,25 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   knowledge.print_knowledge ();
 
   // this doesn't change from settings
-  Madara::Knowledge_Record spawn_rate = knowledge.get ("spawn_rate");
-  Madara::Knowledge_Record max_speed = knowledge.get ("max_speed");
+  Madara::KnowledgeRecord spawn_rate = knowledge.get ("spawn_rate");
+  Madara::KnowledgeRecord max_speed = knowledge.get ("max_speed");
 
   // can't have a max_speed that is zero or we'll have
   // floating point exceptions
   if (max_speed.to_integer () == 0)
-    max_speed.set_value (Madara::Knowledge_Record::Integer (1));
+    max_speed.set_value (Madara::KnowledgeRecord::Integer (1));
 
   long num_cars = 0;
 
-  Logical_Map logical_map;
-  Connectivity_Map connectivity_map;
-  Route_Map route_map;
+  LogicalMap logical_map;
+  ConnectivityMap connectivity_map;
+  RouteMap route_map;
 
-  std::vector <std::pair <Madara::Knowledge_Record::Integer, Madara::Knowledge_Record::Integer> > spawn_points;
-  std::vector <std::pair <Madara::Knowledge_Record::Integer, Madara::Knowledge_Record::Integer> > hospitals;
-  std::vector <std::pair <Madara::Knowledge_Record::Integer, Madara::Knowledge_Record::Integer> > traffic_lights;
+  std::vector <std::pair <Madara::KnowledgeRecord::Integer, Madara::KnowledgeRecord::Integer> > spawn_points;
+  std::vector <std::pair <Madara::KnowledgeRecord::Integer, Madara::KnowledgeRecord::Integer> > hospitals;
+  std::vector <std::pair <Madara::KnowledgeRecord::Integer, Madara::KnowledgeRecord::Integer> > traffic_lights;
   
-  std::vector <std::vector <Madara::Knowledge_Record::Integer> >     map_lookup;
+  std::vector <std::vector <Madara::KnowledgeRecord::Integer> >     map_lookup;
 
   parse_map (map, knowledge, spawn_points, hospitals, 
     traffic_lights, logical_map, connectivity_map, route_map);
@@ -893,12 +893,12 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     process_cars (knowledge, route_map, loopmain_logic);
 
     // spawn new cars
-    for (Madara::Knowledge_Record::Integer i = 0;
+    for (Madara::KnowledgeRecord::Integer i = 0;
          i < spawn_rate.to_integer (); ++i, ++num_cars)
     {
-      Madara::Knowledge_Record::Integer destination = rand () % spawn_points.size ();
-      Madara::Knowledge_Record::Integer start = rand () % spawn_points.size ();
-      Madara::Knowledge_Record::Integer estimated_time = 0;
+      Madara::KnowledgeRecord::Integer destination = rand () % spawn_points.size ();
+      Madara::KnowledgeRecord::Integer start = rand () % spawn_points.size ();
+      Madara::KnowledgeRecord::Integer estimated_time = 0;
 
       // try to handle case where map has just one spawn point gracefully
       // generate a start location until we find a start location that

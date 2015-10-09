@@ -1,7 +1,7 @@
 
 #include "madara_jni.h"
 
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 #include <algorithm>
 #include <string>
 #include <assert.h>
@@ -12,11 +12,11 @@ static JavaVM * madara_JVM = NULL;
 
 static jobject madara_class_loader;
 
-jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
+jint JNICALL JNIOnLoad(JavaVM* vm, void* reserved)
 {
   madara_logger_ptr_log (logger::global_logger.get (),
     logger::LOG_MAJOR,
-    "Madara:JNI_OnLoad: "
+    "Madara:JNIOnLoad: "
     "Entering OnLoad\n");
 
   JNIEnv* env;
@@ -36,7 +36,7 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
   
   madara_logger_ptr_log (logger::global_logger.get(),
     logger::LOG_MINOR,
-    "Madara:JNI_OnLoad: "
+    "Madara:JNIOnLoad: "
     "Retrieving current thread context\n");
 
   jclass thread_class = env->FindClass ("java/lang/Thread");
@@ -49,7 +49,7 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
   madara_logger_ptr_log (logger::global_logger.get (),
     logger::LOG_MINOR,
-    "Madara:JNI_OnLoad: "
+    "Madara:JNIOnLoad: "
     "Retrieving class loader for current thread\n");
 
   jobject thread = env->CallStaticObjectMethod (thread_class, current_thread);
@@ -60,7 +60,7 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
   {
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
-      "Madara:JNI_OnLoad: "
+      "Madara:JNIOnLoad: "
       "SUCCESS: Class loader found. Storing reference.\n");
 
     madara_class_loader = env->NewGlobalRef (class_loader);
@@ -69,13 +69,13 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
   {
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_ERROR,
-      "Madara:JNI_OnLoad: "
+      "Madara:JNIOnLoad: "
       "ERROR: No class loader found.\n");
   }
 
   madara_logger_ptr_log (logger::global_logger.get (),
     logger::LOG_MINOR,
-    "Madara:JNI_OnLoad: "
+    "Madara:JNIOnLoad: "
     "Clearing any exceptions\n");
 
   /**
@@ -89,7 +89,7 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
   madara_logger_ptr_log (logger::global_logger.get (),
     logger::LOG_MINOR,
-    "Madara:JNI_OnLoad: "
+    "Madara:JNIOnLoad: "
     "Creating handle to findClass\n");
 
   jmethodID find_class = env->GetMethodID (cl_class, "findClass",
@@ -97,7 +97,7 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
   madara_logger_ptr_log (logger::global_logger.get (),
     logger::LOG_MINOR,
-    "Madara:JNI_OnLoad: "
+    "Madara:JNIOnLoad: "
     "Attempting to call class loader\n");
 
   jclass kr_class = (jclass) env->CallObjectMethod (
@@ -110,14 +110,14 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     env->ExceptionClear ();
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_ERROR,
-      "Madara:JNI_OnLoad: "
+      "Madara:JNIOnLoad: "
       "Class loader call failed for com.madara.KnowledgeRecord\n");
   }
   else
   {
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
-      "Madara:JNI_OnLoad: "
+      "Madara:JNIOnLoad: "
       "Class loader call succeeded\n");
   }
 
@@ -129,17 +129,17 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
   madara_logger_ptr_log (logger::global_logger.get (),
     logger::LOG_MAJOR,
-    "Madara:JNI_OnLoad: "
+    "Madara:JNIOnLoad: "
     "Leaving OnLoad\n");
 
   return env->GetVersion();
 }
 
-void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
+void JNICALL JNIOnUnload(JavaVM* vm, void* reserved)
 {
   madara_logger_ptr_log (logger::global_logger.get (),
     logger::LOG_MAJOR,
-    "Madara:JNI_OnUnload: "
+    "Madara:JNIOnUnload: "
     "Entering Unload\n");
 
   JNIEnv* env;
@@ -149,7 +149,7 @@ void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
   {
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MINOR,
-      "Madara:JNI_OnUnload: "
+      "Madara:JNIOnUnload: "
       "Deleting global ref to class loader\n");
 
     env->DeleteGlobalRef (madara_class_loader);
@@ -157,7 +157,7 @@ void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
 
   madara_logger_ptr_log (logger::global_logger.get (),
     logger::LOG_MAJOR,
-    "Madara:JNI_OnUnload: "
+    "Madara:JNIOnUnload: "
     "Leaving OnUnload\n");
 
   madara_JVM = NULL;

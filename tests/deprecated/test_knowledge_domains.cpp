@@ -13,12 +13,12 @@
 #include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 
 bool finisher_mode = false;
 std::string host = "";
-Madara::Knowledge_Record::Integer id = 0;
-Madara::Knowledge_Record::Integer processes = 1;
+Madara::KnowledgeRecord::Integer id = 0;
+Madara::KnowledgeRecord::Integer processes = 1;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
@@ -34,10 +34,10 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   ACE_TRACE (ACE_TEXT ("main"));
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, 
+  Madara::KnowledgeEngine::KnowledgeBase knowledge (host, 
     Madara::Transport::SPLICE);
 
-  Madara::Knowledge_Engine::Knowledge_Base specialized_knowledge (
+  Madara::KnowledgeEngine::KnowledgeBase specialized_knowledge (
     host, Madara::Transport::SPLICE, "specialized");
 
   knowledge.set (".id", id);

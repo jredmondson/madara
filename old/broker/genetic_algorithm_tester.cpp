@@ -8,9 +8,9 @@
 #include "ace/OS.h"
 #include "ace/Log_Msg.h"
 #include "ace/SOCK_Connector.h"
-#include "Agent_Messages.h"
-#include "Madara_Common.h"
-#include "Broker_Context.h"
+#include "AgentMessages.h"
+#include "MadaraCommon.h"
+#include "BrokerContext.h"
 #include "Deployment.h"
 
 const int LATENCY_LEVELS = 3;
@@ -21,7 +21,7 @@ const int possible_latencies [] = {
 
 void testDeploymentSize (int size, std::ostream & output)
 {
-  Madara::Broker_Context context;
+  Madara::BrokerContext context;
   Madara::Deployment::Candidate deployment;
   ACE_hrtime_t start, end;
   int total_latency = 0;
@@ -100,7 +100,7 @@ void testDeploymentSize (int size, std::ostream & output)
 int main (int argc, char *argv[])
 {
   std::ofstream output ("test_results.txt");
-  Madara::Broker_Context context;
+  Madara::BrokerContext context;
   Madara::Deployment::Candidate deployment;
   ACE_hrtime_t start, end;
   unsigned int total;

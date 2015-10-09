@@ -2,7 +2,7 @@
 // -*- C++ -*-
 // $Id$
 // Definition for Win32 Export directives.
-// This file is generated automatically by generate_export_file.pl Splice_Mutex
+// This file is generated automatically by generate_export_file.pl SpliceMutex
 // ------------------------------
 #ifndef SPLICE_MUTEX_EXPORT_H
 #define SPLICE_MUTEX_EXPORT_H
@@ -19,16 +19,16 @@
 
 #if defined (SPLICE_MUTEX_HAS_DLL) && (SPLICE_MUTEX_HAS_DLL == 1)
 #  if defined (SPLICE_MUTEX_BUILD_DLL)
-#    define Splice_Mutex_Export ACE_Proper_Export_Flag
+#    define SpliceMutexExport ACE_Proper_Export_Flag
 #    define SPLICE_MUTEX_SINGLETON_DECLARATION(T) ACE_EXPORT_SINGLETON_DECLARATION (T)
 #    define SPLICE_MUTEX_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK) ACE_EXPORT_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK)
 #  else /* SPLICE_MUTEX_BUILD_DLL */
-#    define Splice_Mutex_Export ACE_Proper_Import_Flag
+#    define SpliceMutexExport ACE_Proper_Import_Flag
 #    define SPLICE_MUTEX_SINGLETON_DECLARATION(T) ACE_IMPORT_SINGLETON_DECLARATION (T)
 #    define SPLICE_MUTEX_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK) ACE_IMPORT_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK)
 #  endif /* SPLICE_MUTEX_BUILD_DLL */
 #else /* SPLICE_MUTEX_HAS_DLL == 1 */
-#  define Splice_Mutex_Export
+#  define SpliceMutexExport
 #  define SPLICE_MUTEX_SINGLETON_DECLARATION(T)
 #  define SPLICE_MUTEX_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK)
 #endif /* SPLICE_MUTEX_HAS_DLL == 1 */

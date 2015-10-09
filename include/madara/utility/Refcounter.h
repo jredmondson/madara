@@ -9,9 +9,9 @@ namespace madara
     /**
      * @class Refcounter
      * @brief This template class provides transparent reference counting
-     *        of its template parameter @a T. This differs from Scoped_Array
+     *        of its template parameter @a T. This differs from ScopedArray
      *        in the type of memory it is meant to manage. Refcounter manages
-     *        single object instances. Scoped_Array manages an array of
+     *        single object instances. ScopedArray manages an array of
      *        instances,
      *
      *        This class can be used to automate the implementation of the

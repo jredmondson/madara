@@ -10,10 +10,10 @@
 #include "ace/Sched_Params.h"
 #include "ace/Signal.h"
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 #include "madara/transport/Transport.h"
 #include "madara/utility/Utility.h"
-#include "madara/cid/CID_Settings.h"
+#include "madara/cid/CIDSettings.h"
 
 int left = 0;
 int stop = 10;
@@ -71,7 +71,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   filename << getenv ("MADARA_ROOT");
   filename << "/configs/cid/deployments/one_to_all.template";
 
-  Madara::Cid::Algorithm_Configs configs;
+  Madara::Cid::AlgorithmConfigs configs;
   configs.resize (2);
   configs[0].algorithm = Madara::Cid::CID;
   configs[1].algorithm = Madara::Cid::BCID;
@@ -79,14 +79,14 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   settings.type = Madara::Transport::SPLICE;
   // broadcaster is the voter
   settings.num_voters = 1;
-  settings.domains = "KaRL_Latency_Rounds";
+  settings.domains = "KaRLLatencyRounds";
   settings.reliability = Madara::Transport::RELIABLE;
   settings.latency_enabled = true;
   settings.setup ();
   settings.setup (configs);
   settings.read_dataflow (filename.str ());
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  Madara::KnowledgeEngine::KnowledgeBase knowledge (host, settings);
 
   std::string input;
 

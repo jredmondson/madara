@@ -14,7 +14,7 @@
 #include <string>
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
-#include "madara/transport/Message_Header.h"
+#include "madara/transport/MessageHeader.h"
 
 namespace madara
 {
@@ -23,7 +23,7 @@ namespace madara
     #define FRAGMENTATION_MADARA_ID    "KFRG1.3"
     
     /**
-    * @class Fragment_Message_Header
+    * @class FragmentMessageHeader
     * @brief Defines a fragmentation header which allows for multi-part
     *        messages that are only applied once all fragments are received.
     *        
@@ -44,30 +44,30 @@ namespace madara
     *        [145] [knowledge updates start here in the buffer]
     */
     
-    class MADARA_Export Fragment_Message_Header : public Message_Header
+    class MADARA_Export FragmentMessageHeader : public MessageHeader
     {
     public:
 
       /**
        * Constructor
        **/
-      Fragment_Message_Header ();
+      FragmentMessageHeader ();
 
       /**
        * Destructor
        **/
-      virtual ~Fragment_Message_Header ();
+      virtual ~FragmentMessageHeader ();
 
       /**
-      * Returns the size of the encoded Message_Header class, which may be
-      * different from sizeof (Message_Header) because of compiler
+      * Returns the size of the encoded MessageHeader class, which may be
+      * different from sizeof (MessageHeader) because of compiler
       * optimizations for word boundaries
       **/
       virtual uint32_t encoded_size (void) const;
       
       /**
-      * Returns the size of the encoded Message_Header class, which may be
-      * different from sizeof (Message_Header) because of compiler
+      * Returns the size of the encoded MessageHeader class, which may be
+      * different from sizeof (MessageHeader) because of compiler
       * optimizations for word boundaries
       **/
       static uint32_t static_encoded_size (void);
@@ -79,7 +79,7 @@ namespace madara
       static uint32_t get_updates (const char * buffer);
 
       /**
-      * Reads a Message_Header instance from a buffer and updates
+      * Reads a MessageHeader instance from a buffer and updates
       * the amount of buffer room remaining.
       * @param     buffer     the readable buffer where data is stored
       * @param     buffer_remaining  the count of bytes remaining in the
@@ -92,10 +92,10 @@ namespace madara
       /**
        * Assignment operator for regular message header
        **/
-      void operator= (Message_Header & header);
+      void operator= (MessageHeader & header);
 
       /**
-      * Writes a Message_Header instance to a buffer and updates
+      * Writes a MessageHeader instance to a buffer and updates
       * the amount of buffer room remaining.
       * @param     buffer     the readable buffer where data is stored
       * @param     buffer_remaining  the count of bytes remaining in the
@@ -109,7 +109,7 @@ namespace madara
       * @param     other      the other instance to compare against
       * @return    true if equal, false otherwise
       **/
-      virtual bool equals (const Message_Header & other);
+      virtual bool equals (const MessageHeader & other);
 
       /**
        * Tests the buffer for a reduced message identifier
@@ -126,18 +126,18 @@ namespace madara
     /**
      * Map of fragment identifiers to fragments
      **/
-    typedef  std::map <uint32_t, const char *> Fragment_Map;
+    typedef  std::map <uint32_t, const char *> FragmentMap;
 
     /**
      * Map of clocks to fragments
      **/
-    typedef  std::map <uint64_t, Fragment_Map> Clock_Fragment_Map;
+    typedef  std::map <uint64_t, FragmentMap> ClockFragmentMap;
 
     /**
      * Map of originator to a map of clocks to fragments
      **/
     typedef  std::map <
-      std::string, Clock_Fragment_Map> Originator_Fragment_Map;
+      std::string, ClockFragmentMap> OriginatorFragmentMap;
 
     /**
      * Adds a fragment to an originator fragment map and returns
@@ -156,7 +156,7 @@ namespace madara
     MADARA_Export char * add_fragment (const char * originator, uint64_t clock,
       uint32_t update_number, const char * fragment,
       uint32_t queue_length,
-      Originator_Fragment_Map & map, bool clear = true);
+      OriginatorFragmentMap & map, bool clear = true);
 
     /**
      * Pieces together a fragment map into a single buffer
@@ -164,13 +164,13 @@ namespace madara
      * @return   unmanaged buffer that contains completed message.
      *           If not zero, you must clean this up with delete []
      **/
-    MADARA_Export char * defrag (Fragment_Map & map);
+    MADARA_Export char * defrag (FragmentMap & map);
     
     /**
      * Deletes fragments within a fragment map and clears the map
      * @param  map     map containing fragments
      **/
-    MADARA_Export void delete_fragments (Fragment_Map & map);
+    MADARA_Export void delete_fragments (FragmentMap & map);
 
     /**
      * Breaks a large packet into smaller packets
@@ -179,7 +179,7 @@ namespace madara
      * @param  map      map containing resulting fragments
      **/
     MADARA_Export void frag (
-      char * source, uint32_t fragment_size, Fragment_Map & map);
+      char * source, uint32_t fragment_size, FragmentMap & map);
     
     /**
      * Breaks a large packet into smaller packets
@@ -189,7 +189,7 @@ namespace madara
      * @return  true if the clock entry has all fragments received
      **/
     MADARA_Export bool is_complete (const char * originator, uint64_t clock,
-      Originator_Fragment_Map & map);
+      OriginatorFragmentMap & map);
 
     /**
      * Checks if a fragment already exists within a fragment map
@@ -200,7 +200,7 @@ namespace madara
      * @return   true if 
      **/
     MADARA_Export bool exists (const char * originator, uint64_t clock,
-      uint32_t update_number, Originator_Fragment_Map & map);
+      uint32_t update_number, OriginatorFragmentMap & map);
   }
 }
 

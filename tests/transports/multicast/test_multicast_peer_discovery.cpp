@@ -5,12 +5,12 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/filters/Generic_Filters.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/filters/GenericFilters.h"
 
-#include "madara/filters/Peer_Discovery.h"
+#include "madara/filters/PeerDiscovery.h"
 #include "madara/knowledge/containers/Map.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
@@ -18,11 +18,11 @@ namespace transport = madara::transport;
 namespace filters = madara::filters;
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef  madara::Knowledge_Record::Integer   Integer;
+typedef  madara::KnowledgeRecord::Integer   Integer;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-transport::QoS_Transport_Settings settings;
+transport::QoSTransportSettings settings;
 
 Integer heart_beat = -1;
 double  max_time = 10.0;
@@ -151,18 +151,18 @@ int main (int argc, char ** argv)
   settings.hosts.resize (1);
   settings.hosts[0] = default_multicast;
   handle_arguments (argc, argv);
-  filters::Peer_Discovery peer_discovery (".peers", heart_beat);
+  filters::PeerDiscovery peer_discovery (".peers", heart_beat);
   
   settings.type = madara::transport::MULTICAST;
   settings.add_receive_filter (&peer_discovery);
   settings.add_send_filter (&peer_discovery);
 
-  madara::knowledge::Wait_Settings wait_settings;
+  madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = max_time;
   wait_settings.poll_frequency = 1.0;
 
 #ifndef _MADARA_NO_KARL_
-  madara::knowledge::Knowledge_Base knowledge (host, settings);
+  madara::knowledge::KnowledgeBase knowledge (host, settings);
 
   knowledge.wait ("info=1 ;> #print ('Announcing presence\n') ;> 0", wait_settings);
 

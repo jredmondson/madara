@@ -1,5 +1,5 @@
 #include "com_madara_logger_GlobalLogger.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 

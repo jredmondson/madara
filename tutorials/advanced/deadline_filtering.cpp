@@ -25,16 +25,16 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 #include "ace/Signal.h"
 #include "ace/OS_NS_Thread.h"
-#include "madara/transport/Transport_Context.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/transport/TransportContext.h"
+#include "madara/logger/GlobalLogger.h"
 
 /**
 * Define helpful shortened namespaces that we can refer to later
 **/
-namespace engine = Madara::Knowledge_Engine;
+namespace engine = Madara::KnowledgeEngine;
 namespace transport = Madara::Transport;
 namespace logger = Madara::Logger;
 
@@ -48,12 +48,12 @@ std::string host ("");
 const std::string multicast_address ("239.255.0.1:4150");
 
 /**
- * Qos_Transport_Settings is a subclass of Settings and has a variety of
+ * QosTransportSettings is a subclass of Settings and has a variety of
  * useful tools for ensuring QoS in the distributed context. Specifically,
- * we'll be using the send filters available through the QoS_Transport_Settings
+ * we'll be using the send filters available through the QoSTransportSettings
  * interface.
  **/
-transport::QoS_Transport_Settings settings;
+transport::QoSTransportSettings settings;
 
 // set a deadline in seconds that will be enforced in the filter
 int64_t deadline_in_secs = 10;
@@ -64,17 +64,17 @@ int64_t deadline_in_secs = 10;
  * or getting variables through the knowledge base or variables interface
  * is an O(log n) lookup without a compiled accessor like variable reference.
  *
- * To initialize a Variable_Reference, see the get_ref function available
+ * To initialize a VariableReference, see the get_ref function available
  * through
- * Madara::Knowledge_Engine:Variables            or
- * Madara::Knowledge_Engine::Knowledge_Base
+ * Madara::KnowledgeEngine:Variables            or
+ * Madara::KnowledgeEngine::KnowledgeBase
  **/
-engine::Variable_Reference  on_time_messages;
+engine::VariableReference  on_time_messages;
 
 /**
  * variable reference to indicate that publisher should be slowed
  **/
-engine::Variable_Reference  invalid_messages;
+engine::VariableReference  invalid_messages;
 
 /**
  * To terminate an agent, the user needs to press Control+C. The following
@@ -118,17 +118,17 @@ extern "C" void terminate (int)
  * instruction (e.g., discard the entire packet, turn off rebroadcasting, etc.)
  * This is currently unimplemented but planned.
  *
- * Madara::Knowledge_Engine::Variables is a hook into the knowledge base that
+ * Madara::KnowledgeEngine::Variables is a hook into the knowledge base that
  * allows for querying or setting knowledge not available in the args list.
  * Variables can be used for communicating with other filters or the main logic
  * of the agent.
  **/
-Madara::Knowledge_Record
+Madara::KnowledgeRecord
 filter_deadlines (
-  engine::Function_Arguments & args,
+  engine::FunctionArguments & args,
   engine::Variables & vars)
 {
-  Madara::Knowledge_Record result;
+  Madara::KnowledgeRecord result;
 
   if (args.size () >= Madara::Filters::TOTAL_ARGUMENTS)
   {
@@ -209,18 +209,18 @@ int main (int argc, char * argv[])
      * rebroadcast side. We're not rebroadcasting in this tutorial,
      * so we'll just add a receive filter.
      **/
-    settings.add_receive_filter (Madara::Knowledge_Record::ALL_TYPES,
+    settings.add_receive_filter (Madara::KnowledgeRecord::ALL_TYPES,
                               filter_deadlines);
   }
 
   // Create the knowledge base with the transport settings set for multicast
-  engine::Knowledge_Base knowledge (host, settings);
+  engine::KnowledgeBase knowledge (host, settings);
   
   /**
     * Update the knowledge base to include our .id. All variables are zero
     * by default in the knowledge base.
     **/
-  knowledge.set (".id", Madara::Knowledge_Record::Integer (settings.id));
+  knowledge.set (".id", Madara::KnowledgeRecord::Integer (settings.id));
 
   /**
    * In order for our receive filter to work, we have to first initialize
@@ -231,7 +231,7 @@ int main (int argc, char * argv[])
    * cover gossip/collaboration).
    **/
   on_time_messages = knowledge.get_ref ("on_time_messages{.id}",
-    engine::Knowledge_Reference_Settings (true));
+    engine::KnowledgeReferenceSettings (true));
 
   /**
    * Variable that the publisher uses (id==0) to trigger a sleep statement
@@ -241,7 +241,7 @@ int main (int argc, char * argv[])
   /**
    * The publisher (id == 0) keeps track of number of payloads sent
    **/
-  engine::Variable_Reference payloads_sent =
+  engine::VariableReference payloads_sent =
     knowledge.get_ref ("payloads_sent");
 
   /**
@@ -262,10 +262,10 @@ int main (int argc, char * argv[])
    * Additionally, let's compile the logic into a cached expression tree
    **/
 
-  engine::Compiled_Expression compiled_sender_logic =
+  engine::CompiledExpression compiled_sender_logic =
     knowledge.compile (sender_logic);
   
-  engine::Compiled_Expression compiled_receiver_logic =
+  engine::CompiledExpression compiled_receiver_logic =
     knowledge.compile (receiver_logic);
 
   while (!terminated)

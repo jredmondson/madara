@@ -5,8 +5,8 @@
 #include <algorithm>
 #include <sstream>
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
 
 #include "madara/threads/Threader.h"
 #include "madara/utility/Utility.h"
@@ -20,7 +20,7 @@ namespace utility = madara::utility;
 namespace threads = madara::threads;
 namespace logger = madara::logger;
 
-typedef madara::Knowledge_Record::Integer Integer;
+typedef madara::KnowledgeRecord::Integer Integer;
 
 // default transport settings
 
@@ -142,7 +142,7 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
-class Consumer: public threads::Base_Thread
+class Consumer: public threads::BaseThread
 {
 public:
   /**
@@ -157,7 +157,7 @@ public:
     * Initializes thread with MADARA context
     * @param   context   context for querying current program state
     **/
-  virtual void init (knowledge::Knowledge_Base & context)
+  virtual void init (knowledge::KnowledgeBase & context)
   {
     // initialize references to variables in the knowledge base
     jobs.set_name ("jobs", context);
@@ -172,7 +172,7 @@ public:
   virtual void run (void)
   {
     // dequeue until terminate
-    madara::Knowledge_Record job = jobs.dequeue (false);
+    madara::KnowledgeRecord job = jobs.dequeue (false);
 
     if (job.is_valid ())
     {
@@ -184,10 +184,10 @@ public:
 private:
   containers::Queue jobs;
   containers::Integer jobs_completed;
-  knowledge::Knowledge_Base data;
+  knowledge::KnowledgeBase data;
 };
 
-class Producer: public threads::Base_Thread
+class Producer: public threads::BaseThread
 {
 public:
   /**
@@ -202,7 +202,7 @@ public:
     * Initializes thread with MADARA context
     * @param   context   context for querying current program state
     **/
-  virtual void init (knowledge::Knowledge_Base & context)
+  virtual void init (knowledge::KnowledgeBase & context)
   {
     jobs.set_name ("jobs", context);
 
@@ -226,7 +226,7 @@ public:
 
 private:
   containers::Queue jobs;
-  knowledge::Knowledge_Base data;
+  knowledge::KnowledgeBase data;
 };
 
 int main (int argc, char ** argv)
@@ -235,7 +235,7 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
   
   // create a knowledge base and setup our id
-  knowledge::Knowledge_Base knowledge;
+  knowledge::KnowledgeBase knowledge;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Hertz rate set to %f\n"

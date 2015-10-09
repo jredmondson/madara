@@ -12,60 +12,60 @@
 #include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
 namespace knowledge = madara::knowledge;
-typedef madara::Knowledge_Record  Knowledge_Record;
+typedef madara::KnowledgeRecord  KnowledgeRecord;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
 #ifndef _MADARA_NO_KARL_
-madara::Knowledge_Record
-  return_1 (madara::knowledge::Function_Arguments &,
+madara::KnowledgeRecord
+  return_1 (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables &)
 {
-  return madara::Knowledge_Record::Integer (1);
+  return madara::KnowledgeRecord::Integer (1);
 }
 
-madara::Knowledge_Record
+madara::KnowledgeRecord
   return_named_1 (const char * name, 
-            madara::knowledge::Function_Arguments &,
+            madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables & variables)
 {
   variables.set ("function_name", std::string (name));
 
   variables.print ("External named function call of {function_name} a SUCCESS\n", 0);
 
-  return madara::Knowledge_Record::Integer (1);
+  return madara::KnowledgeRecord::Integer (1);
 }
 
-madara::Knowledge_Record
-  return_2 (madara::knowledge::Function_Arguments &,
+madara::KnowledgeRecord
+  return_2 (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables &)
 {
-  return madara::Knowledge_Record::Integer (2);
+  return madara::KnowledgeRecord::Integer (2);
 }
 
-madara::Knowledge_Record
-  return_3 (madara::knowledge::Function_Arguments &,
+madara::KnowledgeRecord
+  return_3 (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables &)
 {
-  return madara::Knowledge_Record::Integer (3);
+  return madara::KnowledgeRecord::Integer (3);
 }
 
-madara::Knowledge_Record
-  return_var1 (madara::knowledge::Function_Arguments &,
+madara::KnowledgeRecord
+  return_var1 (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables & variables)
 {
   return variables.get (".var1");
 }
 
-madara::Knowledge_Record
-  set_var1_to_arg1 (madara::knowledge::Function_Arguments & args,
+madara::KnowledgeRecord
+  set_var1_to_arg1 (madara::knowledge::FunctionArguments & args,
             madara::knowledge::Variables & variables)
 {
   variables.set (".var1", args[0]);
@@ -73,8 +73,8 @@ madara::Knowledge_Record
 }
 
 
-madara::Knowledge_Record
-  set_var1_to_arg2 (madara::knowledge::Function_Arguments & args,
+madara::KnowledgeRecord
+  set_var1_to_arg2 (madara::knowledge::FunctionArguments & args,
             madara::knowledge::Variables & variables)
 {
   if (args.size () > 1)
@@ -84,11 +84,11 @@ madara::Knowledge_Record
   return variables.get (".var1");
 }
 
-madara::Knowledge_Record
-  check_vector (madara::knowledge::Function_Arguments &,
+madara::KnowledgeRecord
+  check_vector (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables & variables)
 {
-  std::vector <madara::Knowledge_Record> records;
+  std::vector <madara::KnowledgeRecord> records;
 
   assert (variables.to_vector ("vector", 1, 8, records) == 8 &&
     records[0].to_string () == "10" &&
@@ -100,14 +100,14 @@ madara::Knowledge_Record
     records[6].to_string () == "4" &&
     records[7].to_string () == "3");
 
-  return madara::Knowledge_Record::Integer (records.size ());
+  return madara::KnowledgeRecord::Integer (records.size ());
 }
 
-madara::Knowledge_Record
-  check_map (madara::knowledge::Function_Arguments &,
+madara::KnowledgeRecord
+  check_map (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables & variables)
 {
-  std::map <std::string, madara::Knowledge_Record> records;
+  std::map <std::string, madara::KnowledgeRecord> records;
 
   assert (variables.to_map ("map*", records) == 8 &&
     records["map1"].to_string () == "10" &&
@@ -119,33 +119,33 @@ madara::Knowledge_Record
     records["map7"].to_string () == "4" &&
     records["map8"].to_string () == "3");
 
-  return madara::Knowledge_Record::Integer (records.size ());
+  return madara::KnowledgeRecord::Integer (records.size ());
 }
 
 
 // test functions
 void test_arrays (void);
-void test_array_math (madara::knowledge::Knowledge_Base &  knowledge);
-void test_to_vector (madara::knowledge::Knowledge_Base &  knowledge);
-void test_to_map (madara::knowledge::Knowledge_Base &  knowledge);
-void test_strings (madara::knowledge::Knowledge_Base &  knowledge);
-void test_doubles (madara::knowledge::Knowledge_Base &  knowledge);
-void test_logicals (madara::knowledge::Knowledge_Base & knowledge);
-void test_implies (madara::knowledge::Knowledge_Base & knowledge);
-void test_comparisons (madara::knowledge::Knowledge_Base & knowledge);
-void test_conditionals (madara::knowledge::Knowledge_Base & knowledge);
-void test_assignments (madara::knowledge::Knowledge_Base & knowledge);
-void test_unaries (madara::knowledge::Knowledge_Base & knowledge);
-void test_mathops (madara::knowledge::Knowledge_Base & knowledge);
+void test_array_math (madara::knowledge::KnowledgeBase &  knowledge);
+void test_to_vector (madara::knowledge::KnowledgeBase &  knowledge);
+void test_to_map (madara::knowledge::KnowledgeBase &  knowledge);
+void test_strings (madara::knowledge::KnowledgeBase &  knowledge);
+void test_doubles (madara::knowledge::KnowledgeBase &  knowledge);
+void test_logicals (madara::knowledge::KnowledgeBase & knowledge);
+void test_implies (madara::knowledge::KnowledgeBase & knowledge);
+void test_comparisons (madara::knowledge::KnowledgeBase & knowledge);
+void test_conditionals (madara::knowledge::KnowledgeBase & knowledge);
+void test_assignments (madara::knowledge::KnowledgeBase & knowledge);
+void test_unaries (madara::knowledge::KnowledgeBase & knowledge);
+void test_mathops (madara::knowledge::KnowledgeBase & knowledge);
 void test_tree_compilation (
-  madara::knowledge::Knowledge_Base & knowledge);
-void test_dijkstra_sync (madara::knowledge::Knowledge_Base & knowledge);
-void test_both_operator (madara::knowledge::Knowledge_Base & knowledge);
-void test_comments (madara::knowledge::Knowledge_Base & knowledge);
-void test_functions (madara::knowledge::Knowledge_Base & knowledge);
-void test_for_loops (madara::knowledge::Knowledge_Base & knowledge);
+  madara::knowledge::KnowledgeBase & knowledge);
+void test_dijkstra_sync (madara::knowledge::KnowledgeBase & knowledge);
+void test_both_operator (madara::knowledge::KnowledgeBase & knowledge);
+void test_comments (madara::knowledge::KnowledgeBase & knowledge);
+void test_functions (madara::knowledge::KnowledgeBase & knowledge);
+void test_for_loops (madara::knowledge::KnowledgeBase & knowledge);
 void test_simplification_operators (
-  madara::knowledge::Knowledge_Base & knowledge);
+  madara::knowledge::KnowledgeBase & knowledge);
 void test_to_string (void);
 
 #endif // _MADARA_NO_KARL_
@@ -158,7 +158,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     return retcode;
   
 #ifndef _MADARA_NO_KARL_
-  madara::knowledge::Knowledge_Base knowledge;
+  madara::knowledge::KnowledgeBase knowledge;
 
   //knowledge.evaluate ("");
 
@@ -195,12 +195,12 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 }
 
 #ifndef _MADARA_NO_KARL_
-void test_array_math (madara::knowledge::Knowledge_Base & knowledge)
+void test_array_math (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing array math\n");
   
-  std::vector <madara::Knowledge_Record> records;
+  std::vector <madara::KnowledgeRecord> records;
 
   knowledge.clear ();
   
@@ -232,12 +232,12 @@ void test_array_math (madara::knowledge::Knowledge_Base & knowledge)
 
 }
 
-void test_to_vector (madara::knowledge::Knowledge_Base & knowledge)
+void test_to_vector (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing to_vector function\n");
   
-  std::vector <madara::Knowledge_Record> records;
+  std::vector <madara::KnowledgeRecord> records;
 
   knowledge.clear ();
   
@@ -259,12 +259,12 @@ void test_to_vector (madara::knowledge::Knowledge_Base & knowledge)
   knowledge.evaluate ("check_vector ()");
 }
 
-void test_to_map (madara::knowledge::Knowledge_Base & knowledge)
+void test_to_map (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing to_map function\n");
   
-  std::map <std::string, madara::Knowledge_Record> records;
+  std::map <std::string, madara::KnowledgeRecord> records;
 
   knowledge.clear ();
   
@@ -291,7 +291,7 @@ void test_to_string (void)
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing to_string\n");
 
-  madara::knowledge::Knowledge_Base knowledge;
+  madara::knowledge::KnowledgeBase knowledge;
   knowledge.evaluate ("var1=10; var2='hello'; var3=15.5");
   knowledge.evaluate ("array1[2]=5.3; array1[1]=3.4; array1[0]=0.5");
   knowledge.evaluate ("array2[2]=1.8; array2[1]=7.2; array2[0]=3.6");
@@ -305,7 +305,7 @@ void test_to_string (void)
     "To string results:\n\n%s\n\n", db.c_str ());
 }
 
-void test_comparisons (madara::knowledge::Knowledge_Base & knowledge)
+void test_comparisons (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing comparisons\n");
@@ -419,7 +419,7 @@ void test_comparisons (madara::knowledge::Knowledge_Base & knowledge)
     knowledge.get (".var4").to_integer () == 1);
 }
 
-void test_doubles (madara::knowledge::Knowledge_Base & knowledge)
+void test_doubles (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing operations on doubles\n");
@@ -446,7 +446,7 @@ void test_doubles (madara::knowledge::Knowledge_Base & knowledge)
     knowledge.get (".var6") == 10.0 / 1.5);
 }
 
-void test_strings (madara::knowledge::Knowledge_Base & knowledge)
+void test_strings (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing operations on strings\n");
@@ -476,7 +476,7 @@ void test_strings (madara::knowledge::Knowledge_Base & knowledge)
   assert (knowledge.get (".var7") == "bob jenkins joey smith edward sullinger");
   
   knowledge.set (".var1", 0.5);
-  knowledge.set (".var2", (madara::Knowledge_Record::Integer)1);
+  knowledge.set (".var2", (madara::KnowledgeRecord::Integer)1);
   knowledge.set (".var3", 10.5);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -495,7 +495,7 @@ void test_strings (madara::knowledge::Knowledge_Base & knowledge)
 }
 
 /// Tests logicals operators (&&, ||)
-void test_logicals (madara::knowledge::Knowledge_Base & knowledge)
+void test_logicals (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing logical operations\n");
@@ -563,7 +563,7 @@ void test_logicals (madara::knowledge::Knowledge_Base & knowledge)
 }
 
 /// Tests Dijkstra Synchronization algorithms 
-void test_dijkstra_sync (madara::knowledge::Knowledge_Base & knowledge)
+void test_dijkstra_sync (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing dijkstra sync");
@@ -904,7 +904,7 @@ void test_dijkstra_sync (madara::knowledge::Knowledge_Base & knowledge)
 }
 
 /// Tests assignment operator (=)
-void test_assignments (madara::knowledge::Knowledge_Base & knowledge)
+void test_assignments (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing the assignment operator\n");
@@ -924,12 +924,12 @@ void test_assignments (madara::knowledge::Knowledge_Base & knowledge)
 }
 
 /// Tests the unaries (++, --, -, !)
-void test_unaries (madara::knowledge::Knowledge_Base & knowledge)
+void test_unaries (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing unary operators\n");
 
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
 
   knowledge.clear ();
 
@@ -990,7 +990,7 @@ void test_unaries (madara::knowledge::Knowledge_Base & knowledge)
 }
 
 /// Tests the conditionals (==, !=, <, <=, >, >=)
-void test_conditionals (madara::knowledge::Knowledge_Base & knowledge)
+void test_conditionals (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing conditional operators\n");
@@ -1039,7 +1039,7 @@ void test_conditionals (madara::knowledge::Knowledge_Base & knowledge)
 
 
 /// Tests the implication ops (+, -, *, /)
-void test_implies (madara::knowledge::Knowledge_Base & knowledge)
+void test_implies (madara::knowledge::KnowledgeBase & knowledge)
 {
   knowledge.clear ();
 
@@ -1064,11 +1064,11 @@ void test_implies (madara::knowledge::Knowledge_Base & knowledge)
 }
 
 /// Tests the math ops (+, -, *, /)
-void test_mathops (madara::knowledge::Knowledge_Base & knowledge)
+void test_mathops (madara::knowledge::KnowledgeBase & knowledge)
 {
   knowledge.clear ();
   
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
     "Testing integer mathematical operators\n");
@@ -1181,12 +1181,12 @@ void test_mathops (madara::knowledge::Knowledge_Base & knowledge)
 }
 
 /// Tests the both operator (;)
-void test_both_operator (madara::knowledge::Knowledge_Base & knowledge)
+void test_both_operator (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing both operator (;)\n");
 
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
 
   knowledge.clear ();
   knowledge.evaluate (";;;;;.var2 = 3;;;.var3 = 4;;;");
@@ -1229,7 +1229,7 @@ void test_both_operator (madara::knowledge::Knowledge_Base & knowledge)
 }
 
 /// Tests the both operator (;)
-void test_comments (madara::knowledge::Knowledge_Base & knowledge)
+void test_comments (madara::knowledge::KnowledgeBase & knowledge)
 {
   knowledge.clear ();
   std::string expression;
@@ -1269,15 +1269,15 @@ void test_comments (madara::knowledge::Knowledge_Base & knowledge)
 }
 
 /// Test the ability to compile expressions into the cache
-void test_tree_compilation (madara::knowledge::Knowledge_Base & knowledge)
+void test_tree_compilation (madara::knowledge::KnowledgeBase & knowledge)
 {
   knowledge.clear ();
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing expression tree compilation and caching\n");
 
-  knowledge.set (".var1", (madara::Knowledge_Record::Integer)5);
+  knowledge.set (".var1", (madara::KnowledgeRecord::Integer)5);
 
   result = knowledge.evaluate ("1 * 1 + 2 * 2 + 3 * 3 + 4 * 4 + 5 * 5 - 18");
   assert (result.to_integer () == 37);
@@ -1297,16 +1297,16 @@ void test_tree_compilation (madara::knowledge::Knowledge_Base & knowledge)
 
 
 /// Test the ability to use external functions
-void test_functions (madara::knowledge::Knowledge_Base & knowledge)
+void test_functions (madara::knowledge::KnowledgeBase & knowledge)
 {
   knowledge.clear ();
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
 
   // test the external C functions
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing embedded external functions\n");
 
-  knowledge.set (".var1", (madara::Knowledge_Record::Integer)5);
+  knowledge.set (".var1", (madara::KnowledgeRecord::Integer)5);
 
   knowledge.define_function ("function1", return_1);
   knowledge.define_function ("function2", return_2);
@@ -1375,10 +1375,10 @@ void test_functions (madara::knowledge::Knowledge_Base & knowledge)
 }
 
 /// Test the ability to use for loops
-void test_for_loops (madara::knowledge::Knowledge_Base & knowledge)
+void test_for_loops (madara::knowledge::KnowledgeBase & knowledge)
 {
   knowledge.clear ();
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
 
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -1430,10 +1430,10 @@ void test_for_loops (madara::knowledge::Knowledge_Base & knowledge)
 
 /// Test the ability to use +=, -=, *=, /=
 void test_simplification_operators (
-  madara::knowledge::Knowledge_Base & knowledge)
+  madara::knowledge::KnowledgeBase & knowledge)
 {
   knowledge.clear ();
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing simplification operators (+=, -=, *=, /=)\n");
@@ -1476,12 +1476,12 @@ void test_arrays (void)
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing inline array creation ([0,1,2])\n");
 
-  knowledge::Knowledge_Base knowledge;
+  knowledge::KnowledgeBase knowledge;
 
-  madara::Knowledge_Record result = knowledge.evaluate (
+  madara::KnowledgeRecord result = knowledge.evaluate (
     "my_array = [0, 1, 2]");
 
-  assert (result.type () == madara::Knowledge_Record::INTEGER_ARRAY &&
+  assert (result.type () == madara::KnowledgeRecord::INTEGER_ARRAY &&
     result.retrieve_index (0).to_integer () == 0 &&
     result.retrieve_index (1).to_integer () == 1 &&
     result.retrieve_index (2).to_integer () == 2);
@@ -1490,7 +1490,7 @@ void test_arrays (void)
   result = knowledge.evaluate (
     "some_var = 1;> my_array = [some_var, some_var + 5, 2]");
 
-  assert (result.type () == madara::Knowledge_Record::INTEGER_ARRAY &&
+  assert (result.type () == madara::KnowledgeRecord::INTEGER_ARRAY &&
     result.retrieve_index (0).to_integer () == 1 &&
     result.retrieve_index (1).to_integer () == 6 &&
     result.retrieve_index (2).to_integer () == 2);

@@ -46,11 +46,11 @@
 *********************************************************************/
 #include "com_madara_filters_ssl_AesBufferFilter.h"
 
-#include "madara/filters/ssl/AES_Buffer_Filter.h"
+#include "madara/filters/ssl/AESBufferFilter.h"
 
 #ifdef  _USE_SSL_
 namespace filters = madara::filters;
-typedef  filters::AES_Buffer_Filter   AES_Buffer_Filter;
+typedef  filters::AESBufferFilter   AESBufferFilter;
 #endif
 
   /*
@@ -64,7 +64,7 @@ jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__
   jlong result (0);
 
 #ifdef _USE_SSL_
-  result = (jlong) new AES_Buffer_Filter ();
+  result = (jlong) new AESBufferFilter ();
 #endif
 
   return result;
@@ -81,10 +81,10 @@ jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__
   jlong result (0);
 
 #ifdef _USE_SSL_
-  AES_Buffer_Filter * input = (AES_Buffer_Filter *)cptr;
+  AESBufferFilter * input = (AESBufferFilter *)cptr;
   if (input != 0)
   {
-    result = (jlong) new AES_Buffer_Filter (*input);
+    result = (jlong) new AESBufferFilter (*input);
   }
 #endif
 
@@ -100,7 +100,7 @@ void JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1freeAesBufferFilte
 (JNIEnv *, jclass, jlong cptr)
 {
 #ifdef _USE_SSL_
-  AES_Buffer_Filter * current = (AES_Buffer_Filter *)cptr;
+  AESBufferFilter * current = (AESBufferFilter *)cptr;
   delete current;
 #endif
 }
@@ -116,7 +116,7 @@ jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1encode
   jlong result (size);
 
 #ifdef _USE_SSL_
-  AES_Buffer_Filter * current = (AES_Buffer_Filter *)cptr;
+  AESBufferFilter * current = (AESBufferFilter *)cptr;
 
   if (current)
   {
@@ -144,7 +144,7 @@ jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1decode
   jlong result (size);
 
 #ifdef _USE_SSL_
-  AES_Buffer_Filter * current = (AES_Buffer_Filter *)cptr;
+  AESBufferFilter * current = (AESBufferFilter *)cptr;
 
   if (current)
   {
@@ -172,7 +172,7 @@ jint JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1generateKey
   jint result (-1);
 
 #ifdef _USE_SSL_
-  AES_Buffer_Filter * current = (AES_Buffer_Filter *)cptr;
+  AESBufferFilter * current = (AESBufferFilter *)cptr;
 
   if (current && password)
   {

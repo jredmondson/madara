@@ -76,7 +76,7 @@ madara::logger::Logger::log (int level, const char * message, ...)
     }
 #endif
 
-    for (File_Vectors::iterator i = files_.begin ();
+    for (FileVectors::iterator i = files_.begin ();
       i != files_.end (); ++i)
     {
       fprintf (*i, buffer);

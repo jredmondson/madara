@@ -70,8 +70,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1setSettings
   (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   Collection * current = (Collection *)cptr;
-  knowledge::Knowledge_Update_Settings * settings =
-    (knowledge::Knowledge_Update_Settings *)settings_ptr;
+  knowledge::KnowledgeUpdateSettings * settings =
+    (knowledge::KnowledgeUpdateSettings *)settings_ptr;
 
   if (current && settings)
   {
@@ -123,8 +123,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addDoubleVector
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
-  containers::Double_Vector * container =
-    (containers::Double_Vector *)container_ptr;
+  containers::DoubleVector * container =
+    (containers::DoubleVector *)container_ptr;
 
   if (current && container)
   {
@@ -137,8 +137,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addFlexMap
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
-  containers::Flex_Map * container =
-    (containers::Flex_Map *)container_ptr;
+  containers::FlexMap * container =
+    (containers::FlexMap *)container_ptr;
 
   if (current && container)
   {
@@ -164,8 +164,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addIntegerVector
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
-  containers::Integer_Vector * container =
-    (containers::Integer_Vector *)container_ptr;
+  containers::IntegerVector * container =
+    (containers::IntegerVector *)container_ptr;
 
   if (current && container)
   {
@@ -192,8 +192,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addNativeDoubleVector
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
-  containers::Native_Double_Vector * container =
-    (containers::Native_Double_Vector *)container_ptr;
+  containers::NativeDoubleVector * container =
+    (containers::NativeDoubleVector *)container_ptr;
 
   if (current && container)
   {
@@ -206,8 +206,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addNativeIntegerVector
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
-  containers::Native_Integer_Vector * container =
-    (containers::Native_Integer_Vector *)container_ptr;
+  containers::NativeIntegerVector * container =
+    (containers::NativeIntegerVector *)container_ptr;
 
   if (current && container)
   {
@@ -234,8 +234,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addStringVector
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
-  containers::String_Vector * container =
-    (containers::String_Vector *)container_ptr;
+  containers::StringVector * container =
+    (containers::StringVector *)container_ptr;
 
   if (current && container)
   {

@@ -45,13 +45,13 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include "com_madara_containers_IntegerVector.h"
-#include "madara/knowledge/containers/Integer_Vector.h"
+#include "madara/knowledge/containers/IntegerVector.h"
 #include "madara_jni.h"
 
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
 
-typedef  madara::Knowledge_Record::Integer   Integer;
+typedef  madara::KnowledgeRecord::Integer   Integer;
 
 /*
  * Class:     com_madara_containers_IntegerVector
@@ -61,7 +61,7 @@ typedef  madara::Knowledge_Record::Integer   Integer;
 jlong JNICALL Java_com_madara_containers_IntegerVector_jni_1IntegerVector__
   (JNIEnv * env, jobject)
 {
-  return (jlong) new containers::Integer_Vector ();
+  return (jlong) new containers::IntegerVector ();
 }
 
 /*
@@ -72,12 +72,12 @@ jlong JNICALL Java_com_madara_containers_IntegerVector_jni_1IntegerVector__
 jlong JNICALL Java_com_madara_containers_IntegerVector_jni_1IntegerVector__J
   (JNIEnv * env, jobject, jlong cptr)
 {
-  containers::Integer_Vector * result (0);
-  containers::Integer_Vector * source = (containers::Integer_Vector *) cptr;
+  containers::IntegerVector * result (0);
+  containers::IntegerVector * source = (containers::IntegerVector *) cptr;
 
   if (source)
   {
-    result = new containers::Integer_Vector (*source);
+    result = new containers::IntegerVector (*source);
   }
 
   return (jlong) result;
@@ -91,7 +91,7 @@ jlong JNICALL Java_com_madara_containers_IntegerVector_jni_1IntegerVector__J
 void JNICALL Java_com_madara_containers_IntegerVector_jni_1freeIntegerVector
   (JNIEnv * env, jclass, jlong cptr)
 {
-  delete (containers::Integer_Vector *) cptr;
+  delete (containers::IntegerVector *) cptr;
 }
 
 /*
@@ -102,7 +102,7 @@ void JNICALL Java_com_madara_containers_IntegerVector_jni_1freeIntegerVector
 void JNICALL Java_com_madara_containers_IntegerVector_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jint index, jlong value)
 {
-  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+  containers::IntegerVector * current = (containers::IntegerVector *) cptr;
 
   if (current)
   {
@@ -113,7 +113,7 @@ void JNICALL Java_com_madara_containers_IntegerVector_jni_1set
 void JNICALL Java_com_madara_containers_IntegerVector_jni_1pushback
 (JNIEnv *, jobject, jlong cptr, jlong value)
 {
-  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+  containers::IntegerVector * current = (containers::IntegerVector *) cptr;
 
   if (current)
   {
@@ -130,7 +130,7 @@ jstring JNICALL Java_com_madara_containers_IntegerVector_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
-  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+  containers::IntegerVector * current = (containers::IntegerVector *) cptr;
 
   if (current)
   {
@@ -152,7 +152,7 @@ jstring JNICALL Java_com_madara_containers_IntegerVector_jni_1getName
 void JNICALL Java_com_madara_containers_IntegerVector_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
-  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+  containers::IntegerVector * current = (containers::IntegerVector *) cptr;
 
   if (current)
   {
@@ -160,7 +160,7 @@ void JNICALL Java_com_madara_containers_IntegerVector_jni_1setName
 
     if (type == 0)
     {
-      knowledge::Knowledge_Base * kb = (knowledge::Knowledge_Base *) context;
+      knowledge::KnowledgeBase * kb = (knowledge::KnowledgeBase *) context;
       current->set_name (str_name, *kb);
     }
     else if (type == 1)
@@ -182,7 +182,7 @@ jlong JNICALL Java_com_madara_containers_IntegerVector_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   jlong result (0);
-  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+  containers::IntegerVector * current = (containers::IntegerVector *) cptr;
 
   if (current)
   {
@@ -200,12 +200,12 @@ jlong JNICALL Java_com_madara_containers_IntegerVector_jni_1get
 jlong JNICALL Java_com_madara_containers_IntegerVector_jni_1toRecord__JI
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
-  madara::Knowledge_Record * result (0);
-  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+  madara::KnowledgeRecord * result (0);
+  containers::IntegerVector * current = (containers::IntegerVector *) cptr;
 
   if (current)
   {
-    result = new madara::Knowledge_Record (current->to_record (index));
+    result = new madara::KnowledgeRecord (current->to_record (index));
   }
 
   return (jlong) result;
@@ -219,12 +219,12 @@ jlong JNICALL Java_com_madara_containers_IntegerVector_jni_1toRecord__JI
 jlong JNICALL Java_com_madara_containers_IntegerVector_jni_1toRecord__J
   (JNIEnv * env, jobject, jlong cptr)
 {
-  madara::Knowledge_Record * result (0);
-  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+  madara::KnowledgeRecord * result (0);
+  containers::IntegerVector * current = (containers::IntegerVector *) cptr;
 
   if (current)
   {
-    result = new madara::Knowledge_Record (current->to_record ());
+    result = new madara::KnowledgeRecord (current->to_record ());
   }
 
   return (jlong) result;
@@ -245,8 +245,8 @@ jobjectArray JNICALL Java_com_madara_containers_IntegerVector_jni_1toArray
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
       "fromPointer", " (J)Lcom/madara/KnowledgeRecord;");
-    madara::Knowledge_Vector records;
-    containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+    madara::KnowledgeVector records;
+    containers::IntegerVector * current = (containers::IntegerVector *) cptr;
     current->copy_to (records);
     jsize size = (jsize)records.size ();
 
@@ -275,7 +275,7 @@ jlong JNICALL Java_com_madara_containers_IntegerVector_jni_1size
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
-  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+  containers::IntegerVector * current = (containers::IntegerVector *) cptr;
 
   if (current)
   {
@@ -293,7 +293,7 @@ jlong JNICALL Java_com_madara_containers_IntegerVector_jni_1size
 void JNICALL Java_com_madara_containers_IntegerVector_jni_1resize
   (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
-  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+  containers::IntegerVector * current = (containers::IntegerVector *) cptr;
 
   if (current)
   {
@@ -309,7 +309,7 @@ void JNICALL Java_com_madara_containers_IntegerVector_jni_1resize
 void JNICALL Java_com_madara_containers_IntegerVector_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+  containers::IntegerVector * current = (containers::IntegerVector *) cptr;
 
   if (current)
   {
@@ -325,7 +325,7 @@ void JNICALL Java_com_madara_containers_IntegerVector_jni_1modify
 void JNICALL Java_com_madara_containers_IntegerVector_jni_1modifyIndex
   (JNIEnv *, jobject, jlong cptr, jint index)
 {
-  containers::Integer_Vector * current = (containers::Integer_Vector *) cptr;
+  containers::IntegerVector * current = (containers::IntegerVector *) cptr;
 
   if (current)
   {
@@ -336,10 +336,10 @@ void JNICALL Java_com_madara_containers_IntegerVector_jni_1modifyIndex
 void JNICALL Java_com_madara_containers_IntegerVector_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
-  containers::Integer_Vector * current =
-    (containers::Integer_Vector *)cptr;
-  knowledge::Knowledge_Update_Settings * settings =
-    (knowledge::Knowledge_Update_Settings *)settings_ptr;
+  containers::IntegerVector * current =
+    (containers::IntegerVector *)cptr;
+  knowledge::KnowledgeUpdateSettings * settings =
+    (knowledge::KnowledgeUpdateSettings *)settings_ptr;
 
   if (current && settings)
   {
@@ -350,7 +350,7 @@ void JNICALL Java_com_madara_containers_IntegerVector_jni_1setSettings
 jboolean JNICALL Java_com_madara_containers_IntegerVector_jni_1isTrue
 (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Integer_Vector * current = (containers::Integer_Vector *)cptr;
+  containers::IntegerVector * current = (containers::IntegerVector *)cptr;
   bool result (true);
 
   if (current)
@@ -365,7 +365,7 @@ jboolean JNICALL Java_com_madara_containers_IntegerVector_jni_1isTrue
 jboolean JNICALL Java_com_madara_containers_IntegerVector_jni_1isFalse
 (JNIEnv *, jobject, jlong cptr)
 {
-  containers::Integer_Vector * current = (containers::Integer_Vector *)cptr;
+  containers::IntegerVector * current = (containers::IntegerVector *)cptr;
   bool result (true);
 
   if (current)

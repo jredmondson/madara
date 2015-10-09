@@ -1,18 +1,18 @@
 #include "Double.h"
-#include "madara/knowledge/Context_Guard.h"
+#include "madara/knowledge/ContextGuard.h"
 
 
 madara::knowledge::containers::Double::Double (
-  const Knowledge_Update_Settings & settings)
-: Base_Container ("", settings), context_ (0)
+  const KnowledgeUpdateSettings & settings)
+: BaseContainer ("", settings), context_ (0)
 {
 }
   
 madara::knowledge::containers::Double::Double (
   const std::string & name,
-  Knowledge_Base & knowledge,
-  const Knowledge_Update_Settings & settings)
-: Base_Container (name, settings), context_ (&(knowledge.get_context ()))
+  KnowledgeBase & knowledge,
+  const KnowledgeUpdateSettings & settings)
+: BaseContainer (name, settings), context_ (&(knowledge.get_context ()))
 {
   variable_ = knowledge.get_ref (name, settings_);
 }
@@ -20,18 +20,18 @@ madara::knowledge::containers::Double::Double (
 madara::knowledge::containers::Double::Double (
   const std::string & name,
   Variables & knowledge,
-  const Knowledge_Update_Settings & settings)
-: Base_Container (name, settings), context_ (knowledge.get_context ())
+  const KnowledgeUpdateSettings & settings)
+: BaseContainer (name, settings), context_ (knowledge.get_context ())
 {
   variable_ = knowledge.get_ref (name, settings_);
 }
  
 madara::knowledge::containers::Double::Double (
   const std::string & name,
-  Knowledge_Base & knowledge,
+  KnowledgeBase & knowledge,
   type value,
-  const Knowledge_Update_Settings & settings)
-: Base_Container (name, settings), context_ (&(knowledge.get_context ()))
+  const KnowledgeUpdateSettings & settings)
+: BaseContainer (name, settings), context_ (&(knowledge.get_context ()))
 {
   variable_ = knowledge.get_ref (name);
   context_->set (variable_, value, settings);
@@ -41,8 +41,8 @@ madara::knowledge::containers::Double::Double (
   const std::string & name,
   Variables & knowledge,
   type value,
-  const Knowledge_Update_Settings & settings)
-: Base_Container (name, settings), context_ (knowledge.get_context ())
+  const KnowledgeUpdateSettings & settings)
+: BaseContainer (name, settings), context_ (knowledge.get_context ())
 {
   variable_ = knowledge.get_ref (name);
   context_->set (variable_, value, settings);
@@ -50,7 +50,7 @@ madara::knowledge::containers::Double::Double (
 
 
 madara::knowledge::containers::Double::Double (const Double & rhs)
-  : Base_Container (rhs), context_ (rhs.context_),
+  : BaseContainer (rhs), context_ (rhs.context_),
     variable_ (rhs.variable_)
 {
 
@@ -65,7 +65,7 @@ madara::knowledge::containers::Double::~Double ()
 void
 madara::knowledge::containers::Double::modify (void)
 {
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   if (context_ && name_ != "")
   {
     context_->mark_modified (variable_);
@@ -81,7 +81,7 @@ madara::knowledge::containers::Double::get_debug_info (void)
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     result << this->name_;
@@ -103,7 +103,7 @@ madara::knowledge::containers::Double::get_debug_info_ (void)
   return get_debug_info ();
 }
 
-madara::knowledge::containers::Base_Container *
+madara::knowledge::containers::BaseContainer *
 madara::knowledge::containers::Double::clone (void) const
 {
   return new Double (*this);
@@ -129,8 +129,8 @@ madara::knowledge::containers::Double::exchange (
 {
   if (context_ && other.context_)
   {
-    Context_Guard context_guard (*context_);
-    Context_Guard other_context_guard (*other.context_);
+    ContextGuard context_guard (*context_);
+    ContextGuard other_context_guard (*other.context_);
     Guard guard (mutex_), guard2 (other.mutex_);
 
     type temp = *other;
@@ -142,12 +142,12 @@ madara::knowledge::containers::Double::exchange (
 void
 madara::knowledge::containers::Double::set_name (
   const std::string & var_name,
-  Knowledge_Base & knowledge)
+  KnowledgeBase & knowledge)
 {
-  Knowledge_Update_Settings keep_local (true);
+  KnowledgeUpdateSettings keep_local (true);
   context_ = &(knowledge.get_context ());
 
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   Guard guard (mutex_);
 
   name_ = var_name;
@@ -159,10 +159,10 @@ madara::knowledge::containers::Double::set_name (
   const std::string & var_name,
   Variables & knowledge)
 {
-  Knowledge_Update_Settings keep_local (true);
+  KnowledgeUpdateSettings keep_local (true);
   context_ = knowledge.get_context ();
 
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   Guard guard (mutex_);
 
   name_ = var_name;
@@ -172,12 +172,12 @@ madara::knowledge::containers::Double::set_name (
 void
 madara::knowledge::containers::Double::set_name (
   const std::string & var_name,
-  Thread_Safe_Context & knowledge)
+  ThreadSafeContext & knowledge)
 {
-  Knowledge_Update_Settings keep_local (true);
+  KnowledgeUpdateSettings keep_local (true);
   context_ = &knowledge;
 
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   Guard guard (mutex_);
 
   name_ = var_name;
@@ -189,7 +189,7 @@ madara::knowledge::containers::Double::operator= (type value)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     context_->set (variable_, value, settings_);
   }
@@ -204,7 +204,7 @@ madara::knowledge::containers::Double::operator += (type value)
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     result = context_->get (variable_, settings_).to_double ();
@@ -222,7 +222,7 @@ madara::knowledge::containers::Double::operator -= (type value)
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     result = context_->get (variable_, settings_).to_double ();
@@ -237,7 +237,7 @@ madara::knowledge::containers::Double::operator++ (void)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->inc (variable_, settings_).to_double ();
   }
@@ -250,7 +250,7 @@ madara::knowledge::containers::Double::operator-- (void)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->dec (variable_, settings_).to_double ();
   }
@@ -263,7 +263,7 @@ madara::knowledge::containers::Double::operator== (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) == value;
   }
@@ -276,7 +276,7 @@ madara::knowledge::containers::Double::operator != (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) != value;
   }
@@ -290,7 +290,7 @@ madara::knowledge::containers::Double::operator== (
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return
       context_->get (variable_, settings_) ==
@@ -306,7 +306,7 @@ madara::knowledge::containers::Double::operator != (
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return
       context_->get (variable_, settings_) !=
@@ -321,7 +321,7 @@ madara::knowledge::containers::Double::operator< (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) < value;
   }
@@ -334,7 +334,7 @@ madara::knowledge::containers::Double::operator<= (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) <= value;
   }
@@ -347,7 +347,7 @@ madara::knowledge::containers::Double::operator> (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) > value;
   }
@@ -360,7 +360,7 @@ madara::knowledge::containers::Double::operator>= (type value) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_) >= value;
   }
@@ -381,7 +381,7 @@ madara::knowledge::containers::Double::exists (void) const
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->exists (variable_);
   }
@@ -389,14 +389,14 @@ madara::knowledge::containers::Double::exists (void) const
   return result;
 }
 
-madara::Knowledge_Record
+madara::KnowledgeRecord
 madara::knowledge::containers::Double::to_record (void) const
 {
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
   
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, settings_);
   }
@@ -409,7 +409,7 @@ madara::knowledge::containers::Double::to_double (void) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_).to_double ();
   }
@@ -417,12 +417,12 @@ madara::knowledge::containers::Double::to_double (void) const
     return 0.0;
 }
  
-madara::Knowledge_Record::Integer
+madara::KnowledgeRecord::Integer
 madara::knowledge::containers::Double::to_integer (void) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_).to_integer ();
   }
@@ -435,7 +435,7 @@ madara::knowledge::containers::Double::to_string (void) const
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     return context_->get (variable_, settings_).to_string ();
   }
@@ -446,11 +446,11 @@ madara::knowledge::containers::Double::to_string (void) const
 void
 madara::knowledge::containers::Double::set_quality (
   uint32_t quality,
-  const Knowledge_Reference_Settings & settings)
+  const KnowledgeReferenceSettings & settings)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     context_->set_quality (name_, quality, true, settings);
   }
@@ -466,7 +466,7 @@ madara::knowledge::containers::Double::is_true (void) const
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, settings_).is_true ();
   }

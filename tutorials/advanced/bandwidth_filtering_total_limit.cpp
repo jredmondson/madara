@@ -23,16 +23,16 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include "madara/knowledge_engine/Knowledge_Base.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
 #include "ace/Signal.h"
 #include "ace/OS_NS_Thread.h"
-#include "madara/transport/Transport_Context.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/transport/TransportContext.h"
+#include "madara/logger/GlobalLogger.h"
 
 /**
 * Define helpful shortened namespaces that we can refer to later
 **/
-namespace engine = Madara::Knowledge_Engine;
+namespace engine = Madara::KnowledgeEngine;
 namespace transport = Madara::Transport;
 namespace logger = Madara::Logger;
 
@@ -45,12 +45,12 @@ std::string host ("");
 const std::string multicast_address ("239.255.0.1:4150");
 
 /**
- * Qos_Transport_Settings is a subclass of Settings and has a variety of
+ * QosTransportSettings is a subclass of Settings and has a variety of
  * useful tools for ensuring QoS in the distributed context. Specifically,
- * we'll be using the send filters available through the QoS_Transport_Settings
+ * we'll be using the send filters available through the QoSTransportSettings
  * interface.
  **/
-transport::QoS_Transport_Settings settings;
+transport::QoSTransportSettings settings;
 
 // set a target sending bandwidth usage of 100000
 uint32_t target_sending_bandwidth = 100000;
@@ -61,17 +61,17 @@ uint32_t target_sending_bandwidth = 100000;
  * or getting variables through the knowledge base or variables interface
  * is an O(log n) lookup without a compiled accessor like variable reference.
  *
- * To initialize a Variable_Reference, see the get_ref function available
+ * To initialize a VariableReference, see the get_ref function available
  * through
- * Madara::Knowledge_Engine:Variables            or
- * Madara::Knowledge_Engine::Knowledge_Base
+ * Madara::KnowledgeEngine:Variables            or
+ * Madara::KnowledgeEngine::KnowledgeBase
  **/
-engine::Variable_Reference  payloads_received;
+engine::VariableReference  payloads_received;
 
 /**
  * variable reference to indicate that publisher should be slowed
  **/
-engine::Variable_Reference  slow_publisher;
+engine::VariableReference  slow_publisher;
 
 /**
  * To terminate an agent, the user needs to press Control+C. The following
@@ -83,9 +83,9 @@ extern "C" void terminate (int)
   terminated = true;
 }
 
-Madara::Knowledge_Record
+Madara::KnowledgeRecord
 update_payloads_received (
-  engine::Function_Arguments & args,
+  engine::FunctionArguments & args,
   engine::Variables & vars)
 {
   if (args.size () > 0)
@@ -97,7 +97,7 @@ update_payloads_received (
        * unfiltered payload. Inc increments a variable.
        * 
        * inc is a highly optimized operation, especially when paired with
-       * Variable_Reference.
+       * VariableReference.
        **/
       vars.inc (payloads_received);
     }
@@ -116,7 +116,7 @@ update_payloads_received (
    * with no arguments.
    **/
   else
-    return Madara::Knowledge_Record ();
+    return Madara::KnowledgeRecord ();
 }
 
 int main (int argc, char * argv[])
@@ -138,17 +138,17 @@ int main (int argc, char * argv[])
   // set the send bandwidth limit to 100,000 bytes per second.
   settings.set_total_bandwidth_limit (100000);
 
-  settings.add_receive_filter (Madara::Knowledge_Record::ALL_FILE_TYPES,
+  settings.add_receive_filter (Madara::KnowledgeRecord::ALL_FILE_TYPES,
                             update_payloads_received);
 
   // Create the knowledge base with the transport settings set for multicast
-  engine::Knowledge_Base knowledge (host, settings);
+  engine::KnowledgeBase knowledge (host, settings);
   
   // Check command line arguments for a non-zero id
   if (argc >= 2)
   {
     // save the first argument into an integer
-    Madara::Knowledge_Record::Integer new_id;
+    Madara::KnowledgeRecord::Integer new_id;
     std::stringstream buffer (argv[1]);
     buffer >> new_id;
 
@@ -182,7 +182,7 @@ int main (int argc, char * argv[])
    * cover gossip/collaboration).
    **/
   payloads_received = knowledge.get_ref ("payloads_received{.id}",
-    engine::Knowledge_Reference_Settings (true));
+    engine::KnowledgeReferenceSettings (true));
 
   /**
    * Variable that the publisher uses (id==0) to trigger a sleep statement
@@ -204,7 +204,7 @@ int main (int argc, char * argv[])
    * meta data with the payload which should not be filtered out,
    * regardless of bandwidth utilization.
    **/
-  engine::Variable_Reference payloads_sent =
+  engine::VariableReference payloads_sent =
     knowledge.get_ref ("payloads_sent");
 
   /**
@@ -222,7 +222,7 @@ int main (int argc, char * argv[])
    * Additionally, let's compile the logic into a cached expression tree
    **/
 
-  engine::Compiled_Expression ce =
+  engine::CompiledExpression ce =
     knowledge.compile (logic);
 
   while (!terminated)
@@ -242,7 +242,7 @@ int main (int argc, char * argv[])
          * (payloads_sent) later in the loop.
          **/
         knowledge.read_file ("payload", filename,
-          engine::Eval_Settings (true));
+          engine::EvalSettings (true));
 
         /**
          * Increment payloads sent and send this as meta data to anyone curious
@@ -259,7 +259,7 @@ int main (int argc, char * argv[])
       {
         knowledge.print ("Bandwidth limit hit. Stopping publisher for 10s.\n");
         ACE_OS::sleep (10);
-        knowledge.set (slow_publisher, Madara::Knowledge_Record::Integer (0));
+        knowledge.set (slow_publisher, Madara::KnowledgeRecord::Integer (0));
       }
       knowledge.print (
         "payloads sent = {payloads_sent}, "

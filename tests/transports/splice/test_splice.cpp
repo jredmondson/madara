@@ -5,11 +5,11 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge_engine/Knowledge_Base.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/utility/LogMacros.h"
 
 std::string host ("");
-Madara::Transport::QoS_Transport_Settings settings;
+Madara::Transport::QoSTransportSettings settings;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -69,7 +69,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        Madara::Knowledge_Engine::Knowledge_Base::log_to_file (argv[i + 1]);
+        Madara::KnowledgeEngine::KnowledgeBase::log_to_file (argv[i + 1]);
       }
 
       ++i;
@@ -106,16 +106,16 @@ int main (int argc, char ** argv)
 
   settings.type = Madara::Transport::SPLICE;
   settings.reliability = Madara::Transport::RELIABLE;
-  Madara::Knowledge_Engine::Wait_Settings wait_settings;
+  Madara::KnowledgeEngine::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
 
-  Madara::Knowledge_Engine::Knowledge_Base knowledge (host, settings);
+  Madara::KnowledgeEngine::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (Madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (Madara::KnowledgeRecord::Integer) settings.id);
 
   if (settings.id == 0)
   {
-    Madara::Knowledge_Engine::Compiled_Expression compiled = 
+    Madara::KnowledgeEngine::CompiledExpression compiled = 
       knowledge.compile (
         "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3"
       );
@@ -124,7 +124,7 @@ int main (int argc, char ** argv)
   }
   else
   {
-    Madara::Knowledge_Engine::Compiled_Expression compiled = 
+    Madara::KnowledgeEngine::CompiledExpression compiled = 
       knowledge.compile ("!var1 && var2 => var3 = 1");
 
     knowledge.wait (compiled, wait_settings);

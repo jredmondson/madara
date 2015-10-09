@@ -17,115 +17,115 @@
 #include "ace/OS_NS_Thread.h"
 #include "ace/Sched_Params.h"
 
-#include "madara/knowledge/Compiled_Expression.h"
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/knowledge/Knowledge_Update_Settings.h"
+#include "madara/knowledge/CompiledExpression.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/KnowledgeUpdateSettings.h"
 #include "madara/knowledge/containers/Integer.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
-typedef  madara::Knowledge_Record::Integer Integer;
+typedef  madara::KnowledgeRecord::Integer Integer;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
 // test functions
 uint64_t test_virtual_reinforcement (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_volatile_reinforcement (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_volatile_assignment (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_volatile_inference (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_optimal_assignment (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_optimal_reinforcement (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_optimal_inference (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_simple_reinforcement (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_simple_inference (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_large_reinforcement (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_large_inference (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_container_increment (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 
 uint64_t test_compiled_sr (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_compiled_si (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_compiled_lr (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_compiled_li (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 
 
 uint64_t test_compiled_sa (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_compiled_la (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 
 uint64_t test_compiled_sfi (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_compiled_lfi (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 
 uint64_t test_extern_call (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 
 uint64_t test_looped_sr (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_looped_si (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_optimal_loop (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_looped_li (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_normal_set (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_var_ref_set (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_get_ref (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_get_expand_ref (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 uint64_t test_variables_inc_var_ref (
-     madara::knowledge::Knowledge_Base & knowledge,
+     madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
 
 
@@ -172,43 +172,43 @@ private:
   volatile long value_;
 };
 
-class Base_Operation
+class BaseOperation
 {
 public:
-  virtual ~Base_Operation ()
+  virtual ~BaseOperation ()
   {
 
   }
 
-  virtual madara::Knowledge_Record::Integer evaluate (void)
+  virtual madara::KnowledgeRecord::Integer evaluate (void)
   {
     return value_;
   }
 
-  madara::Knowledge_Record::Integer get_value (void)
+  madara::KnowledgeRecord::Integer get_value (void)
   {
     return value_;
   }
 
 protected:
-  madara::Knowledge_Record::Integer value_;
+  madara::KnowledgeRecord::Integer value_;
 };
 
-class Increment_Operation : public Base_Operation
+class IncrementOperation : public BaseOperation
 {
-  virtual ~Increment_Operation ()
+  virtual ~IncrementOperation ()
   {
 
   }
 
-  virtual madara::Knowledge_Record::Integer evaluate (void)
+  virtual madara::KnowledgeRecord::Integer evaluate (void)
   {
     return ++value_;
   }
 };
 
 void
-  print (uint64_t time, madara::Knowledge_Record value,
+  print (uint64_t time, madara::KnowledgeRecord value,
        uint32_t iterations, const std::string & type)
 {
   std::stringstream buffer;
@@ -230,34 +230,34 @@ void
 }
 
 #ifndef _MADARA_NO_KARL_
-madara::knowledge::Compiled_Expression   increment_ce;
+madara::knowledge::CompiledExpression   increment_ce;
 #endif // _MADARA_NO_KARL_
-madara::knowledge::Variable_Reference    increment_var;
+madara::knowledge::VariableReference    increment_var;
 
-madara::Knowledge_Record
-  increment_var1 (madara::knowledge::Function_Arguments &,
+madara::KnowledgeRecord
+  increment_var1 (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables & variables)
 {
 #ifndef _MADARA_NO_KARL_
   return variables.evaluate (increment_ce,
-    madara::knowledge::Knowledge_Update_Settings (false, false));
+    madara::knowledge::KnowledgeUpdateSettings (false, false));
 #else
   return Integer (0);
 #endif // _MADARA_NO_KARL_
 }
 
-madara::Knowledge_Record
-  increment_var1_through_variables (madara::knowledge::Function_Arguments &,
+madara::KnowledgeRecord
+  increment_var1_through_variables (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables & variables)
 {
   return variables.inc (increment_var);
 }
 
-madara::Knowledge_Record
-  no_op (madara::knowledge::Function_Arguments &,
+madara::KnowledgeRecord
+  no_op (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables &)
 {
-  return madara::Knowledge_Record::Integer (0);
+  return madara::KnowledgeRecord::Integer (0);
 }
 
 std::string 
@@ -324,7 +324,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
      ACE_SCOPE_THREAD);
   ACE_OS::thr_setprio (prio);
 
-  madara::knowledge::Knowledge_Base knowledge;
+  madara::knowledge::KnowledgeBase knowledge;
   
 #ifndef _MADARA_NO_KARL_
   increment_ce = knowledge.compile ("++.var1");
@@ -346,7 +346,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   // make everything all pretty and for-loopy
   uint64_t results[num_test_types];
   uint64_t averages[num_test_types];
-  uint64_t (* test_functions [num_test_types]) (madara::knowledge::Knowledge_Base & knowledge,
+  uint64_t (* test_functions [num_test_types]) (madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
   const char * printouts [num_test_types] = {
     "KaRL: Simple Reinforcements   ",
@@ -594,7 +594,7 @@ long assignment (long & var, long value)
 
 /// Tests logicals operators (&&, ||)
 uint64_t test_simple_reinforcement (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -610,7 +610,7 @@ uint64_t test_simple_reinforcement (
 #ifndef _MADARA_NO_KARL_
     // test literals in conditionals
     knowledge.evaluate ("++.var1",
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
 #endif
   }
 
@@ -625,13 +625,13 @@ uint64_t test_simple_reinforcement (
 
 /// Tests Integer container increment
 uint64_t test_container_increment (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
 
   madara::knowledge::containers::Integer var1 (".var1", knowledge,
-    madara::knowledge::Eval_Settings (false, false, false));
+    madara::knowledge::EvalSettings (false, false, false));
 
   // keep track of time
   ACE_hrtime_t measured;
@@ -654,12 +654,12 @@ uint64_t test_container_increment (
 }
 
 uint64_t test_compiled_sr (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
 #ifndef _MADARA_NO_KARL_
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile ("++.var1");
 
@@ -673,7 +673,7 @@ uint64_t test_compiled_sr (
   {
     // test literals in conditionals
     knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
   }
 
   timer.stop ();
@@ -689,12 +689,12 @@ uint64_t test_compiled_sr (
 
 
 uint64_t test_compiled_sa (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
 #ifndef _MADARA_NO_KARL_
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile (".var1=1");
 
@@ -708,7 +708,7 @@ uint64_t test_compiled_sa (
   {
     // test literals in conditionals
     knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
   }
 
   timer.stop ();
@@ -725,12 +725,12 @@ uint64_t test_compiled_sa (
 
 
 uint64_t test_compiled_sfi (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
 #ifndef _MADARA_NO_KARL_
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile ("inc ()");
 
@@ -744,7 +744,7 @@ uint64_t test_compiled_sfi (
   {
     // test literals in conditionals
     knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
   }
 
   timer.stop ();
@@ -760,12 +760,12 @@ uint64_t test_compiled_sfi (
 }
 
 uint64_t test_extern_call (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
 #ifndef _MADARA_NO_KARL_
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile ("no_op ()");
 
@@ -779,7 +779,7 @@ uint64_t test_extern_call (
   {
     // test literals in conditionals
     knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
   }
 
   timer.stop ();
@@ -797,7 +797,7 @@ uint64_t test_extern_call (
 
 /// Tests looped long inferences (++.var1)
 uint64_t test_looped_sr (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -812,12 +812,12 @@ uint64_t test_looped_sr (
 
   unsigned actual_iterations = iterations > 10000 ? iterations / 10000 : 1;
 
-  knowledge.set (".iterations", (madara::Knowledge_Record::Integer) iterations);
-  knowledge.set (".actual_iterations", (madara::Knowledge_Record::Integer) actual_iterations);
+  knowledge.set (".iterations", (madara::KnowledgeRecord::Integer) iterations);
+  knowledge.set (".actual_iterations", (madara::KnowledgeRecord::Integer) actual_iterations);
 
   buffer = ".var2[0->.iterations) (++.var1)";
 
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile (buffer);
 
@@ -825,7 +825,7 @@ uint64_t test_looped_sr (
 
   // execute that chain of reinforcements
   knowledge.evaluate (ce, 
-    madara::knowledge::Eval_Settings (false, false, false));
+    madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
   timer.elapsed_time (measured);
@@ -841,7 +841,7 @@ uint64_t test_looped_sr (
 
 /// Tests logicals operators (&&, ||)
 uint64_t test_large_reinforcement (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -867,7 +867,7 @@ uint64_t test_large_reinforcement (
   // execute that chain of reinforcements
   for (uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate (buffer.str (), 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
   
   timer.stop ();
   timer.elapsed_time (measured);
@@ -883,7 +883,7 @@ uint64_t test_large_reinforcement (
 
 /// Tests logicals operators (&&, ||)
 uint64_t test_compiled_lr (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -904,7 +904,7 @@ uint64_t test_compiled_lr (
     buffer << "++.var1;";
   }
 
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile (buffer.str ());
 
@@ -913,7 +913,7 @@ uint64_t test_compiled_lr (
   // execute that chain of reinforcements
   for (uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
   timer.elapsed_time (measured);
@@ -930,7 +930,7 @@ uint64_t test_compiled_lr (
 
 /// Tests assignment speed
 uint64_t test_compiled_la (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -953,7 +953,7 @@ uint64_t test_compiled_la (
     buffer << ";";
   }
 
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile (buffer.str ());
 
@@ -962,7 +962,7 @@ uint64_t test_compiled_la (
   // execute that chain of reinforcements
   for (uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
   timer.elapsed_time (measured);
@@ -979,7 +979,7 @@ uint64_t test_compiled_la (
 
 /// Tests assignment speed
 uint64_t test_compiled_lfi (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1000,7 +1000,7 @@ uint64_t test_compiled_lfi (
     buffer << "inc ();";
   }
 
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile (buffer.str ());
 
@@ -1009,7 +1009,7 @@ uint64_t test_compiled_lfi (
   // execute that chain of reinforcements
   for (uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
   timer.elapsed_time (measured);
@@ -1026,7 +1026,7 @@ uint64_t test_compiled_lfi (
 
 /// Tests looped long inferences (1 => ++.var1)
 uint64_t test_optimal_loop (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1041,12 +1041,12 @@ uint64_t test_optimal_loop (
 
   unsigned actual_iterations = iterations > 10000 ? iterations / 10000 : 1;
 
-  knowledge.set (".iterations", (madara::Knowledge_Record::Integer) iterations);
-  knowledge.set (".actual_iterations", (madara::Knowledge_Record::Integer) actual_iterations);
+  knowledge.set (".iterations", (madara::KnowledgeRecord::Integer) iterations);
+  knowledge.set (".actual_iterations", (madara::KnowledgeRecord::Integer) actual_iterations);
 
   buffer = ".var2[.iterations)";
 
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile (buffer);
 
@@ -1054,7 +1054,7 @@ uint64_t test_optimal_loop (
 
   // execute that chain of reinforcements
   knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
   timer.elapsed_time (measured);
@@ -1069,7 +1069,7 @@ uint64_t test_optimal_loop (
 }
 
 uint64_t test_simple_inference (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1085,7 +1085,7 @@ uint64_t test_simple_inference (
   {
     // test literals in conditionals
     knowledge.evaluate ("1 => ++.var1", 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
   }
 
   timer.stop ();
@@ -1101,7 +1101,7 @@ uint64_t test_simple_inference (
 }
 
 uint64_t test_normal_set (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1114,7 +1114,7 @@ uint64_t test_normal_set (
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    knowledge.set ("var1", madara::Knowledge_Record::Integer (i));
+    knowledge.set ("var1", madara::KnowledgeRecord::Integer (i));
   }
 
   timer.stop ();
@@ -1127,7 +1127,7 @@ uint64_t test_normal_set (
 }
 
 uint64_t test_get_ref (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1140,7 +1140,7 @@ uint64_t test_get_ref (
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    madara::knowledge::Variable_Reference variable =
+    madara::knowledge::VariableReference variable =
       knowledge.get_ref ("var1");
   }
 
@@ -1154,7 +1154,7 @@ uint64_t test_get_ref (
 }
 
 uint64_t test_get_expand_ref (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1167,9 +1167,9 @@ uint64_t test_get_expand_ref (
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    madara::knowledge::Variable_Reference variable =
+    madara::knowledge::VariableReference variable =
       knowledge.get_ref ("var1",
-      madara::knowledge::Knowledge_Reference_Settings (true));
+      madara::knowledge::KnowledgeReferenceSettings (true));
   }
 
   timer.stop ();
@@ -1182,7 +1182,7 @@ uint64_t test_get_expand_ref (
 }
 
 uint64_t test_var_ref_set (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1193,12 +1193,12 @@ uint64_t test_var_ref_set (
 
   timer.start ();
 
-  madara::knowledge::Variable_Reference variable =
+  madara::knowledge::VariableReference variable =
     knowledge.get_ref ("var1");
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    knowledge.set (variable, madara::Knowledge_Record::Integer (i));
+    knowledge.set (variable, madara::KnowledgeRecord::Integer (i));
   }
 
   timer.stop ();
@@ -1211,7 +1211,7 @@ uint64_t test_var_ref_set (
 }
 
 uint64_t test_variables_inc_var_ref (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1221,7 +1221,7 @@ uint64_t test_variables_inc_var_ref (
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
 
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile ("inc_var_ref ()");
 
@@ -1245,7 +1245,7 @@ uint64_t test_variables_inc_var_ref (
 }
 
 uint64_t test_compiled_si (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1255,7 +1255,7 @@ uint64_t test_compiled_si (
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
 
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile ("1 => ++.var1");
 
@@ -1265,7 +1265,7 @@ uint64_t test_compiled_si (
   {
     // test literals in conditionals
     knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
   }
 
   timer.stop ();
@@ -1282,7 +1282,7 @@ uint64_t test_compiled_si (
 
 /// Tests looped simple inferences (1 => ++.var1)
 uint64_t test_looped_si (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1295,11 +1295,11 @@ uint64_t test_looped_si (
   // build a large chain of simple reinforcements
    std::string buffer;
 
-  knowledge.set (".iterations", (madara::Knowledge_Record::Integer) iterations);
+  knowledge.set (".iterations", (madara::KnowledgeRecord::Integer) iterations);
   
   buffer = ".var2[0->.iterations) (1 => ++.var1)";
 
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile (buffer);
 
@@ -1307,7 +1307,7 @@ uint64_t test_looped_si (
 
   // execute that chain of reinforcements
   knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
   timer.elapsed_time (measured);
@@ -1322,7 +1322,7 @@ uint64_t test_looped_si (
 }
 
 uint64_t test_large_inference (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1348,7 +1348,7 @@ uint64_t test_large_inference (
   // execute that chain of reinforcements
   for (uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate (buffer.str (), 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
   timer.elapsed_time (measured);
@@ -1363,7 +1363,7 @@ uint64_t test_large_inference (
 }
 
 uint64_t test_compiled_li (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1384,7 +1384,7 @@ uint64_t test_compiled_li (
     buffer << "1 => ++.var1;";
   }
 
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile (buffer.str ());
 
@@ -1393,7 +1393,7 @@ uint64_t test_compiled_li (
   // execute that chain of reinforcements
   for (uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
   timer.elapsed_time (measured);
@@ -1409,7 +1409,7 @@ uint64_t test_compiled_li (
 
 /// Tests looped long inferences (1 => ++.var1)
 uint64_t test_looped_li (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1424,12 +1424,12 @@ uint64_t test_looped_li (
 
   unsigned actual_iterations = iterations > 10000 ? iterations / 10000 : 1;
 
-  knowledge.set (".iterations", (madara::Knowledge_Record::Integer) iterations);
-  knowledge.set (".actual_iterations", (madara::Knowledge_Record::Integer) actual_iterations);
+  knowledge.set (".iterations", (madara::KnowledgeRecord::Integer) iterations);
+  knowledge.set (".actual_iterations", (madara::KnowledgeRecord::Integer) actual_iterations);
 
   buffer = ".var2[0->.iterations) (1 => ++.var1)";
 
-  madara::knowledge::Compiled_Expression ce;
+  madara::knowledge::CompiledExpression ce;
 
   ce = knowledge.compile (buffer);
 
@@ -1437,7 +1437,7 @@ uint64_t test_looped_li (
 
   // execute that chain of reinforcements
   knowledge.evaluate (ce, 
-      madara::knowledge::Eval_Settings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
   timer.elapsed_time (measured);
@@ -1453,7 +1453,7 @@ uint64_t test_looped_li (
 
 /// Tests logicals operators (&&, ||)
 uint64_t test_optimal_inference (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1462,7 +1462,7 @@ uint64_t test_optimal_inference (
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
 
-  madara::Knowledge_Record::Integer var1 = 0;
+  madara::KnowledgeRecord::Integer var1 = 0;
 
   timer.start ();
 
@@ -1478,7 +1478,7 @@ uint64_t test_optimal_inference (
   timer.stop ();
   timer.elapsed_time (measured);
 
-  print (measured, madara::Knowledge_Record (var1), iterations,
+  print (measured, madara::KnowledgeRecord (var1), iterations,
     "Optimal Inference: ");
 
   return measured;
@@ -1486,7 +1486,7 @@ uint64_t test_optimal_inference (
 
 /// Tests logicals operators (&&, ||)
 uint64_t test_optimal_assignment (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1530,8 +1530,8 @@ uint64_t test_optimal_assignment (
   timer.stop ();
   timer.elapsed_time (measured);
 
-  print (measured, madara::Knowledge_Record (
-    madara::Knowledge_Record::Integer (var1)), iterations,
+  print (measured, madara::KnowledgeRecord (
+    madara::KnowledgeRecord::Integer (var1)), iterations,
     "Optimal Reinforcement: ");
 
   return measured;
@@ -1539,7 +1539,7 @@ uint64_t test_optimal_assignment (
 
 /// Tests logicals operators (&&, ||)
 uint64_t test_optimal_reinforcement (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1548,7 +1548,7 @@ uint64_t test_optimal_reinforcement (
   ACE_hrtime_t measured = 0;
   ACE_High_Res_Timer timer;
 
-  madara::Knowledge_Record::Integer var1 = 0;
+  madara::KnowledgeRecord::Integer var1 = 0;
 
   timer.start ();
 
@@ -1583,7 +1583,7 @@ uint64_t test_optimal_reinforcement (
   timer.stop ();
   timer.elapsed_time (measured);
 
-  print (measured, madara::Knowledge_Record (var1), iterations,
+  print (measured, madara::KnowledgeRecord (var1), iterations,
     "Optimal Reinforcement: ");
 
   return measured;
@@ -1591,7 +1591,7 @@ uint64_t test_optimal_reinforcement (
 
 /// Tests C++ function inference
 uint64_t test_volatile_inference (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1600,7 +1600,7 @@ uint64_t test_volatile_inference (
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
 
-  volatile madara::Knowledge_Record::Integer var1 = 0;
+  volatile madara::KnowledgeRecord::Integer var1 = 0;
 
   timer.start ();
 
@@ -1614,7 +1614,7 @@ uint64_t test_volatile_inference (
   timer.stop ();
   timer.elapsed_time (measured);
 
-  print (measured, madara::Knowledge_Record (var1), iterations,
+  print (measured, madara::KnowledgeRecord (var1), iterations,
     "Volatile Inference: ");
 
   return measured;
@@ -1622,7 +1622,7 @@ uint64_t test_volatile_inference (
 
 /// Tests C++ function inference
 uint64_t test_volatile_reinforcement (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1632,7 +1632,7 @@ uint64_t test_volatile_reinforcement (
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
 
-  volatile madara::Knowledge_Record::Integer var1 = 0;
+  volatile madara::KnowledgeRecord::Integer var1 = 0;
 
   timer.start ();
 
@@ -1645,7 +1645,7 @@ uint64_t test_volatile_reinforcement (
   timer.stop ();
   timer.elapsed_time (measured);
 
-  print (measured, madara::Knowledge_Record (var1), iterations,
+  print (measured, madara::KnowledgeRecord (var1), iterations,
     "Volatile Reinforcement: ");
 
   return measured;
@@ -1653,7 +1653,7 @@ uint64_t test_volatile_reinforcement (
 
 /// Tests C++ function inference
 uint64_t test_virtual_reinforcement (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1663,7 +1663,7 @@ uint64_t test_virtual_reinforcement (
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
 
-  Base_Operation * var1 = new Increment_Operation ();
+  BaseOperation * var1 = new IncrementOperation ();
 
   timer.start ();
 
@@ -1686,7 +1686,7 @@ uint64_t test_virtual_reinforcement (
 
 /// Tests C++ function inference
 uint64_t test_volatile_assignment (
-     madara::knowledge::Knowledge_Base & knowledge, 
+     madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
 {
   knowledge.clear ();
@@ -1696,20 +1696,20 @@ uint64_t test_volatile_assignment (
   ACE_hrtime_t measured;
   ACE_High_Res_Timer timer;
 
-  volatile madara::Knowledge_Record::Integer var1 = 0;
+  volatile madara::KnowledgeRecord::Integer var1 = 0;
 
   timer.start ();
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
     // increment the volatile variable
-    var1 = madara::Knowledge_Record::Integer (i);
+    var1 = madara::KnowledgeRecord::Integer (i);
   }
 
   timer.stop ();
   timer.elapsed_time (measured);
 
-  print (measured, madara::Knowledge_Record (var1), iterations,
+  print (measured, madara::KnowledgeRecord (var1), iterations,
     "Volatile Assignment: ");
 
   return measured;

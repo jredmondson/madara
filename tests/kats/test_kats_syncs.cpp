@@ -17,7 +17,7 @@
 #include "ace/OS_NS_Thread.h"
 #include "ace/Sched_Params.h"
 
-#include "madara/kats/Test_Framework.h"
+#include "madara/kats/TestFramework.h"
 
 Madara::KATS::Settings settings;
 
@@ -47,7 +47,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   // a urser to run both of the tests at the same time.
   settings.domains = "kats_syncs";
 
-  Madara::KATS::Test_Framework testing (settings);
+  Madara::KATS::TestFramework testing (settings);
 
   if (settings.id == 0)
   {

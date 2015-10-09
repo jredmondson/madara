@@ -7,21 +7,21 @@
 #include "ace/Recursive_Thread_Mutex.h"
 
 #include "client_acceptor.h"
-#include "Timeout_Handler.h"
-#include "Madara_Common.h"
+#include "TimeoutHandler.h"
+#include "MadaraCommon.h"
 
-#include "Agent_Context.h"
+#include "AgentContext.h"
 #include "Agent.h"
 
 typedef ACE_Thread_Timer_Queue_Adapter <ACE_Timer_Heap> ActiveTimer;
-typedef ACE_Guard<ACE_Recursive_Thread_Mutex> Finished_Guard;
+typedef ACE_Guard<ACE_Recursive_Thread_Mutex> FinishedGuard;
 
 //static sig_atomic_t finished = 0;
 static ACE_Recursive_Thread_Mutex mutex_;
 
 extern "C" void handler (int)
 {
-  Finished_Guard guard (mutex_);
+  FinishedGuard guard (mutex_);
   Madara::finished_ = 1;
 }
 
@@ -45,7 +45,7 @@ int main (int argc, char *argv[])
     ACE_OS::atoi (port_str.c_str ()) : DEFAULT_PORT;
 
   // create an agent context, and fill it with latencies from a hosts_file
-  Madara::Agent_Context context (server_host, port_str); 
+  Madara::AgentContext context (server_host, port_str); 
   context.read (hosts_file);
 
   // create a reactor with a thread pool
@@ -54,8 +54,8 @@ int main (int argc, char *argv[])
   ACE_Reactor::instance (&new_reactor);
 
   // create the handlers
-  Client_Acceptor peer_acceptor (context);
-  Timeout_Handler timeouts (context);
+  ClientAcceptor peer_acceptor (context);
+  TimeoutHandler timeouts (context);
   ActiveTimer timer;
 
   // for the scheduled timer

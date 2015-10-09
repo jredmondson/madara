@@ -7,10 +7,10 @@
 #include "ace/High_Res_Timer.h"
 #include "ace/Sched_Params.h"
 
-#include "madara/cid/CID_Convenience.h"
-#include "madara/cid/CID_Genetic.h"
-#include "madara/cid/CID_Heuristic.h"
-#include "madara/utility/Log_Macros.h"
+#include "madara/cid/CIDConvenience.h"
+#include "madara/cid/CIDGenetic.h"
+#include "madara/cid/CIDHeuristic.h"
+#include "madara/utility/LogMacros.h"
 
 double ga_time = 1.0;
 
@@ -65,8 +65,8 @@ void cidapl_ga_naive (Madara::Cid::Settings & settings)
 void hand_coded (Madara::Cid::Settings & settings)
 {
   Madara::Cid::Workflow & deployment = settings.target_deployment;
-  Madara::Cid::Summations_Map & averages = settings.network_summations;
-  Madara::Cid::Solution_Map & lookup = settings.solution_lookup;
+  Madara::Cid::SummationsMap & averages = settings.network_summations;
+  Madara::Cid::SolutionMap & lookup = settings.solution_lookup;
 
   unsigned int fill_starting = deployment.size ();
   unsigned int first_degree = deployment[0].size ();
@@ -165,11 +165,11 @@ void print_averages (std::ostream & output,
   output << "\nPrinting averages by degree for tests.\n";
   output << divider << std::endl;
 
-  Madara::Cid::Summations_Map & averages = settings.network_summations;
+  Madara::Cid::SummationsMap & averages = settings.network_summations;
 
   unsigned int j = 0;
 
-  for (Madara::Cid::Summations_Map::iterator i = averages.begin ();
+  for (Madara::Cid::SummationsMap::iterator i = averages.begin ();
                                            i != averages.end (); ++i)
   {
     if (i->first)
@@ -302,7 +302,7 @@ void print_solutions (std::ostream & output, Madara::Cid::Settings & settings,
 void generate_fanout_latencies (unsigned int fan_outs,
                                 Madara::Cid::Settings & settings)
 {
-  Madara::Cid::LV_Vector & latencies = settings.network_latencies;
+  Madara::Cid::LVVector & latencies = settings.network_latencies;
 
   // for all nodes, set the initial latencies between all links to 1 second
   for (unsigned int i = 0; i < latencies.size (); ++i)
@@ -335,7 +335,7 @@ void generate_fanout_latencies (unsigned int fan_outs,
 
   for (unsigned int i = 0; i < latencies.size (); ++i)
     std::sort (latencies[i].begin (), latencies[i].end (),
-      Madara::Cid::Increasing_Latency);
+      Madara::Cid::IncreasingLatency);
 
   //std::cerr << "\n\nPrinting latencies for size " << latencies.size () <<
   //             " and fanouts " << fan_outs << "\n\n";
@@ -345,7 +345,7 @@ void generate_fanout_latencies (unsigned int fan_outs,
 void generate_fanout_latencies_noisy (unsigned int fan_outs,
                                 Madara::Cid::Settings & settings)
 {
-  Madara::Cid::LV_Vector & latencies = settings.network_latencies;
+  Madara::Cid::LVVector & latencies = settings.network_latencies;
 
   // for all nodes, set the initial latencies between all links to 1 second
   for (unsigned int i = 0; i < latencies.size (); ++i)
@@ -379,7 +379,7 @@ void generate_fanout_latencies_noisy (unsigned int fan_outs,
 
   for (unsigned int i = 0; i < latencies.size (); ++i)
     std::sort (latencies[i].begin (), latencies[i].end (),
-      Madara::Cid::Increasing_Latency);
+      Madara::Cid::IncreasingLatency);
 
 }
 
@@ -564,10 +564,10 @@ void verify_algorithms (std::ostream & output)
   Madara::Cid::init (10, settings);
 
   Madara::Cid::Workflow & deployment = settings.target_deployment;
-  Madara::Cid::LV_Vector & network_latencies = settings.network_latencies;
-  Madara::Cid::Latency_Vector & averages = settings.network_summations[10];
+  Madara::Cid::LVVector & network_latencies = settings.network_latencies;
+  Madara::Cid::LatencyVector & averages = settings.network_summations[10];
   Madara::Cid::Deployment & solution = settings.solution;
-  Madara::Cid::Solution_Map & lookup = settings.solution_lookup;
+  Madara::Cid::SolutionMap & lookup = settings.solution_lookup;
 
   deployment.resize (10);
   deployment[0].resize (10);
@@ -581,14 +581,14 @@ void verify_algorithms (std::ostream & output)
 
   for (unsigned int i = 0; i < 10; ++i)
   {
-    Madara::Cid::Latency_Vector & source_latencies = network_latencies[i];
+    Madara::Cid::LatencyVector & source_latencies = network_latencies[i];
     averages[i].first = i;
 
     for (unsigned int j = 0; j < 10; ++j)
     {
       if (network_latencies[i][j].second == 0)
       {
-        Madara::Cid::Latency_Vector & dest_latencies = network_latencies[j];
+        Madara::Cid::LatencyVector & dest_latencies = network_latencies[j];
 
         // make the latencies bidirectionally equivalent for realism
         source_latencies[j].first = j;
@@ -623,7 +623,7 @@ void verify_algorithms (std::ostream & output)
 
   for (unsigned int i = 0; i < 10; ++i)
   {
-    Madara::Cid::Latency_Vector & cur_latencies = network_latencies[i];
+    Madara::Cid::LatencyVector & cur_latencies = network_latencies[i];
 
     for (unsigned int j = 0; j < 10; ++j)
     {
@@ -652,7 +652,7 @@ void verify_algorithms (std::ostream & output)
 
   alg_latencies[WORST_LATENCY] = Madara::Cid::calculate_latency (settings);
 
-  Madara::Cid::Latency_Vector & cur_latencies = network_latencies[0];
+  Madara::Cid::LatencyVector & cur_latencies = network_latencies[0];
 
   for (unsigned int i = 0; i < 10; ++i)
   {

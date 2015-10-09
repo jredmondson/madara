@@ -5,15 +5,15 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
-#include "madara/filters/Generic_Filters.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
+#include "madara/filters/GenericFilters.h"
 
 namespace logger = madara::logger;
 
 std::string host ("");
 const std::string default_broadcast ("192.168.1.255:15000");
-madara::transport::QoS_Transport_Settings settings;
+madara::transport::QoSTransportSettings settings;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -122,24 +122,24 @@ int main (int argc, char ** argv)
   
 #ifndef _MADARA_NO_KARL_
   settings.type = madara::transport::BROADCAST;
-  settings.add_send_filter (madara::Knowledge_Record::ALL_TYPES,
+  settings.add_send_filter (madara::KnowledgeRecord::ALL_TYPES,
                             madara::filters::log_args);
-  settings.add_send_filter (madara::Knowledge_Record::DOUBLE,
+  settings.add_send_filter (madara::KnowledgeRecord::DOUBLE,
                             madara::filters::discard);
-  settings.add_receive_filter (madara::Knowledge_Record::ALL_TYPES,
+  settings.add_receive_filter (madara::KnowledgeRecord::ALL_TYPES,
                                madara::filters::log_args);
 
 
-  madara::knowledge::Wait_Settings wait_settings;
+  madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10.0;
 
-  madara::knowledge::Knowledge_Base knowledge (host, settings);
+  madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (madara::KnowledgeRecord::Integer) settings.id);
 
   if (settings.id == 0)
   {
-    madara::knowledge::Compiled_Expression compiled = 
+    madara::knowledge::CompiledExpression compiled = 
       knowledge.compile (
         "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3"
       );
@@ -148,13 +148,13 @@ int main (int argc, char ** argv)
   }
   else
   {
-    madara::knowledge::Compiled_Expression compiled = 
+    madara::knowledge::CompiledExpression compiled = 
       knowledge.compile ("!var1 && var2 => var3 = 1");
 
     knowledge.wait (compiled, wait_settings);
 
     if (knowledge.get ("var2").to_integer () == 1 &&
-      knowledge.get ("var4").status () == madara::Knowledge_Record::UNCREATED)
+      knowledge.get ("var4").status () == madara::KnowledgeRecord::UNCREATED)
     {
       knowledge.print ("Double value was not received. Send filter SUCCESS.\n");
     }

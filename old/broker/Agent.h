@@ -1,17 +1,17 @@
 #ifndef AGENT_H
 #define AGENT_H
 
-#include "Broker_Context.h"
-#include "Client_Acceptor.h"
+#include "BrokerContext.h"
+#include "ClientAcceptor.h"
 
 namespace Madara
 {
-  int bindToFirstAvailableWorkerPort (Client_Acceptor & peer_acceptor,
-                           Broker_Context & context);
-  int bindToFirstAvailableBrokerPort (Client_Acceptor & peer_acceptor,
-                           Broker_Context & context);
+  int bindToFirstAvailableWorkerPort (ClientAcceptor & peer_acceptor,
+                           BrokerContext & context);
+  int bindToFirstAvailableBrokerPort (ClientAcceptor & peer_acceptor,
+                           BrokerContext & context);
   int discoverWorkerPortOnHost(const std::string & host,
-                           Broker_Context & context);
+                           BrokerContext & context);
 }
 
 #endif

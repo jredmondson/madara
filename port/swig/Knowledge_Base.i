@@ -1,10 +1,8 @@
 
 %module Madara
 
-%rename Knowledge_Base KnowledgeBase;
-
 %{
-#include "madara/Knowledge_Engine/Knowledge_Base.h"
+#include "madara/knowledge/KnowledgeBase.h"
 %}
 
 //Include std::string support
@@ -12,4 +10,4 @@
 
 //Ignore MADARA_Export
 #define MADARA_Export
-%include "madara/Knowledge_Engine/Knowledge_Base.h"
+%include "madara/knowledge/KnowledgeBase.h"

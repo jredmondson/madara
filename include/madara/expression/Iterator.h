@@ -5,7 +5,7 @@
 #include <string>
 
 #include "madara/utility/Refcounter.h"
-#include "madara/expression/Iterator_Impl.h"
+#include "madara/expression/IteratorImpl.h"
 
 namespace madara
 {
@@ -13,45 +13,45 @@ namespace madara
   {
 
     // Forward declarations.
-    class Expression_Tree_Command_Factory;
-    class Component_Node;
+    class ExpressionTreeCommandFactory;
+    class ComponentNode;
 
     /**
-     * @class Expression_Tree_Iterator
+     * @class ExpressionTreeIterator
      * @brief Non-const iterator for traversing an expression tree
      *
-     * @see   Expression_Tree_Level_Order_Iterator_Impl, Expression_Tree_In_Order_Iterator_Impl, 
-     *        Expression_Tree_Pre_Order_Iterator_Impl, and Expression_Tree_Post_Order_Iterator_Impl.
+     * @see   ExpressionTreeLevelOrderIteratorImpl, ExpressionTreeInOrderIteratorImpl, 
+     *        ExpressionTreePreOrderIteratorImpl, and ExpressionTreePostOrderIteratorImpl.
      */
-    class Expression_Tree_Iterator
+    class ExpressionTreeIterator
     {
     public:
       /// Copy ctor - needed for reference counting.
-      Expression_Tree_Iterator (const Expression_Tree_Iterator &ts);
+      ExpressionTreeIterator (const ExpressionTreeIterator &ts);
       
       /// Copy ctor for impl *.
-      Expression_Tree_Iterator (Expression_Tree_Iterator_Impl *impl);
+      ExpressionTreeIterator (ExpressionTreeIteratorImpl *impl);
 
       /// Dereference operator returns a reference to the item contained
       /// at the current position
-      // @@ Expression_Tree operator* (void);
-      Expression_Tree operator* (void);
+      // @@ ExpressionTree operator* (void);
+      ExpressionTree operator* (void);
 
       /// Returns a const reference to the item contained at the current position
-      // @@ Expression_Tree operator* (void);
-      const Expression_Tree operator* (void) const;
+      // @@ ExpressionTree operator* (void);
+      const ExpressionTree operator* (void) const;
 
       /// Preincrement operator
-      Expression_Tree_Iterator &operator++ (void);
+      ExpressionTreeIterator &operator++ (void);
 
       /// Postincrement operator. 
-      Expression_Tree_Iterator operator++ (int);
+      ExpressionTreeIterator operator++ (int);
 
       /// Equality operator
-      bool operator== (const Expression_Tree_Iterator &rhs);
+      bool operator== (const ExpressionTreeIterator &rhs);
 
       /// In-equality operator
-      bool operator!= (const Expression_Tree_Iterator &rhs);
+      bool operator!= (const ExpressionTreeIterator &rhs);
 
       // = Necessary traits
       typedef std::forward_iterator_tag iterator_category;
@@ -61,41 +61,41 @@ namespace madara
       typedef int difference_type;
 
     private:
-      madara::utility::Refcounter<Expression_Tree_Iterator_Impl> impl_;
+      madara::utility::Refcounter<ExpressionTreeIteratorImpl> impl_;
     };
 
     /**
-     * @class Expression_Tree_Const_Iterator
+     * @class ExpressionTreeConstIterator
      * @brief Constant iterator over an expression tree
      *
-     * @see   Expression_Tree_Level_Order_Iterator_Impl,
-     *        Expression_Tree_In_Order_Iterator_Impl,
-     *        Expression_Tree_Pre_Order_Iterator_Impl,
-     *        and Expression_Tree_Post_Order_Iterator_Impl
+     * @see   ExpressionTreeLevelOrderIteratorImpl,
+     *        ExpressionTreeInOrderIteratorImpl,
+     *        ExpressionTreePreOrderIteratorImpl,
+     *        and ExpressionTreePostOrderIteratorImpl
      */
-    class Expression_Tree_Const_Iterator
+    class ExpressionTreeConstIterator
     {
     public:
       /// Copy ctor - needed for reference counting.
-      Expression_Tree_Const_Iterator (const Expression_Tree_Const_Iterator &ts);
+      ExpressionTreeConstIterator (const ExpressionTreeConstIterator &ts);
       
       /// Copy ctor for impl *.
-      Expression_Tree_Const_Iterator (Expression_Tree_Iterator_Impl *impl);
+      ExpressionTreeConstIterator (ExpressionTreeIteratorImpl *impl);
       
       /// Returns a const reference to the item contained at the current position
-      const Expression_Tree operator* (void) const;
+      const ExpressionTree operator* (void) const;
 
       /// Preincrement operator
-      Expression_Tree_Const_Iterator &operator++ (void);
+      ExpressionTreeConstIterator &operator++ (void);
 
       /// Postincrement operator. 
-      Expression_Tree_Const_Iterator operator++ (int);
+      ExpressionTreeConstIterator operator++ (int);
 
       /// Equality operator
-      bool operator== (const Expression_Tree_Const_Iterator &rhs);
+      bool operator== (const ExpressionTreeConstIterator &rhs);
 
       /// Nonequality operator
-      bool operator!= (const Expression_Tree_Const_Iterator &rhs);
+      bool operator!= (const ExpressionTreeConstIterator &rhs);
 
       // = Necessary traits
       typedef std::forward_iterator_tag iterator_category;
@@ -107,7 +107,7 @@ namespace madara
     private:
       /// Pointer to actual implementation, i.e., the "bridge", which is
       /// reference counted to automate memory management. 
-      madara::utility::Refcounter <Expression_Tree_Iterator_Impl> impl_;
+      madara::utility::Refcounter <ExpressionTreeIteratorImpl> impl_;
     };
 }
 }

@@ -45,12 +45,12 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include "com_madara_containers_StringVector.h"
-#include "madara/knowledge/containers/String_Vector.h"
+#include "madara/knowledge/containers/StringVector.h"
 #include "madara_jni.h"
 
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef containers::String_Vector    String_Vector;
+typedef containers::StringVector    StringVector;
 
 /*
  * Class:     com_madara_containers_StringVector
@@ -60,7 +60,7 @@ typedef containers::String_Vector    String_Vector;
 jlong JNICALL Java_com_madara_containers_StringVector_jni_1StringVector__
   (JNIEnv * env, jobject)
 {
-  return (jlong) new String_Vector ();
+  return (jlong) new StringVector ();
 }
 
 /*
@@ -71,12 +71,12 @@ jlong JNICALL Java_com_madara_containers_StringVector_jni_1StringVector__
 jlong JNICALL Java_com_madara_containers_StringVector_jni_1StringVector__J
   (JNIEnv * env, jobject, jlong cptr)
 {
-  String_Vector * result (0);
-  String_Vector * source = (String_Vector *) cptr;
+  StringVector * result (0);
+  StringVector * source = (StringVector *) cptr;
 
   if (source)
   {
-    result = new String_Vector (*source);
+    result = new StringVector (*source);
   }
 
   return (jlong) result;
@@ -90,7 +90,7 @@ jlong JNICALL Java_com_madara_containers_StringVector_jni_1StringVector__J
 void JNICALL Java_com_madara_containers_StringVector_jni_1freeStringVector
   (JNIEnv * env, jclass, jlong cptr)
 {
-  delete (String_Vector *) cptr;
+  delete (StringVector *) cptr;
 }
 
 /*
@@ -101,7 +101,7 @@ void JNICALL Java_com_madara_containers_StringVector_jni_1freeStringVector
 void JNICALL Java_com_madara_containers_StringVector_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jint index, jstring value)
 {
-  String_Vector * current = (String_Vector *) cptr;
+  StringVector * current = (StringVector *) cptr;
 
   if (current)
   {
@@ -116,7 +116,7 @@ void JNICALL Java_com_madara_containers_StringVector_jni_1set
 void JNICALL Java_com_madara_containers_StringVector_jni_1pushback
 (JNIEnv * env, jobject, jlong cptr, jstring value)
 {
-  String_Vector * current = (String_Vector *)cptr;
+  StringVector * current = (StringVector *)cptr;
 
   if (current)
   {
@@ -137,7 +137,7 @@ jstring JNICALL Java_com_madara_containers_StringVector_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
-  String_Vector * current = (String_Vector *) cptr;
+  StringVector * current = (StringVector *) cptr;
 
   if (current)
   {
@@ -159,7 +159,7 @@ jstring JNICALL Java_com_madara_containers_StringVector_jni_1getName
 void JNICALL Java_com_madara_containers_StringVector_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
-  String_Vector * current = (String_Vector *) cptr;
+  StringVector * current = (StringVector *) cptr;
 
   if (current)
   {
@@ -167,7 +167,7 @@ void JNICALL Java_com_madara_containers_StringVector_jni_1setName
 
     if (type == 0)
     {
-      knowledge::Knowledge_Base * kb = (knowledge::Knowledge_Base *) context;
+      knowledge::KnowledgeBase * kb = (knowledge::KnowledgeBase *) context;
       current->set_name (str_name, *kb);
     }
     else if (type == 1)
@@ -189,7 +189,7 @@ jstring JNICALL Java_com_madara_containers_StringVector_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   jstring result;
-  String_Vector * current = (String_Vector *) cptr;
+  StringVector * current = (StringVector *) cptr;
 
   if (current)
   {
@@ -211,12 +211,12 @@ jstring JNICALL Java_com_madara_containers_StringVector_jni_1get
 jlong JNICALL Java_com_madara_containers_StringVector_jni_1toRecord__JI
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
-  madara::Knowledge_Record * result (0);
-  String_Vector * current = (String_Vector *) cptr;
+  madara::KnowledgeRecord * result (0);
+  StringVector * current = (StringVector *) cptr;
 
   if (current)
   {
-    result = new madara::Knowledge_Record (current->to_record (index));
+    result = new madara::KnowledgeRecord (current->to_record (index));
   }
 
   return (jlong) result;
@@ -239,9 +239,9 @@ jobjectArray JNICALL Java_com_madara_containers_StringVector_jni_1toArray
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
       "fromPointer", " (J)Lcom/madara/KnowledgeRecord;");
-    madara::Knowledge_Vector records;
-    String_Vector * current =
-      (String_Vector *)cptr;
+    madara::KnowledgeVector records;
+    StringVector * current =
+      (StringVector *)cptr;
     current->copy_to (records);
     jsize size = (jsize)records.size ();
 
@@ -275,7 +275,7 @@ jlong JNICALL Java_com_madara_containers_StringVector_jni_1size
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
-  String_Vector * current = (String_Vector *) cptr;
+  StringVector * current = (StringVector *) cptr;
 
   if (current)
   {
@@ -293,7 +293,7 @@ jlong JNICALL Java_com_madara_containers_StringVector_jni_1size
 void JNICALL Java_com_madara_containers_StringVector_jni_1resize
   (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
-  String_Vector * current = (String_Vector *) cptr;
+  StringVector * current = (StringVector *) cptr;
 
   if (current)
   {
@@ -304,7 +304,7 @@ void JNICALL Java_com_madara_containers_StringVector_jni_1resize
 void JNICALL Java_com_madara_containers_StringVector_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
-  String_Vector * current = (String_Vector *) cptr;
+  StringVector * current = (StringVector *) cptr;
 
   if (current)
   {
@@ -320,7 +320,7 @@ void JNICALL Java_com_madara_containers_StringVector_jni_1modify
 void JNICALL Java_com_madara_containers_StringVector_jni_1modifyIndex
   (JNIEnv *, jobject, jlong cptr, jint index)
 {
-  String_Vector * current = (String_Vector *) cptr;
+  StringVector * current = (StringVector *) cptr;
 
   if (current)
   {
@@ -331,10 +331,10 @@ void JNICALL Java_com_madara_containers_StringVector_jni_1modifyIndex
 void JNICALL Java_com_madara_containers_StringVector_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
-  containers::String_Vector * current =
-    (containers::String_Vector *)cptr;
-  knowledge::Knowledge_Update_Settings * settings =
-    (knowledge::Knowledge_Update_Settings *)settings_ptr;
+  containers::StringVector * current =
+    (containers::StringVector *)cptr;
+  knowledge::KnowledgeUpdateSettings * settings =
+    (knowledge::KnowledgeUpdateSettings *)settings_ptr;
 
   if (current && settings)
   {
@@ -345,7 +345,7 @@ void JNICALL Java_com_madara_containers_StringVector_jni_1setSettings
 jboolean JNICALL Java_com_madara_containers_StringVector_jni_1isTrue
 (JNIEnv *, jobject, jlong cptr)
 {
-  containers::String_Vector * current = (containers::String_Vector *)cptr;
+  containers::StringVector * current = (containers::StringVector *)cptr;
   bool result (true);
 
   if (current)
@@ -360,7 +360,7 @@ jboolean JNICALL Java_com_madara_containers_StringVector_jni_1isTrue
 jboolean JNICALL Java_com_madara_containers_StringVector_jni_1isFalse
 (JNIEnv *, jobject, jlong cptr)
 {
-  containers::String_Vector * current = (containers::String_Vector *)cptr;
+  containers::StringVector * current = (containers::StringVector *)cptr;
   bool result (true);
 
   if (current)

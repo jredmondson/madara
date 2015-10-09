@@ -7,8 +7,8 @@
 #include <iomanip>
 #include <algorithm>
 
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
 
 #include "madara/utility/Utility.h"
 #include "ace/High_Res_Timer.h"
@@ -22,7 +22,7 @@ std::vector <uint64_t> min_times;
 std::vector <uint64_t> average_times;
 std::vector <uint64_t> compile_times;
 #ifndef _MADARA_NO_KARL_
-std::vector <madara::knowledge::Compiled_Expression> 
+std::vector <madara::knowledge::CompiledExpression> 
   compiled_expressions;
 #endif // _MADARA_NO_KARL_
 
@@ -109,7 +109,7 @@ to_legible_hertz (uint64_t hertz)
 }
 
 #ifndef _MADARA_NO_KARL_
-void warmup (madara::knowledge::Knowledge_Base & knowledge)
+void warmup (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Warming up compilation and evaluation caches...\n");
@@ -126,7 +126,7 @@ void warmup (madara::knowledge::Knowledge_Base & knowledge)
     knowledge.evaluate ("var2 += 1");
 }
 
-void compile_expressions (madara::knowledge::Knowledge_Base & knowledge)
+void compile_expressions (madara::knowledge::KnowledgeBase & knowledge)
 {
   for (unsigned int i = 0; i < tests.size (); ++i)
   {
@@ -147,7 +147,7 @@ void compile_expressions (madara::knowledge::Knowledge_Base & knowledge)
   }
 }
 
-void evaluate_expressions (madara::knowledge::Knowledge_Base & knowledge)
+void evaluate_expressions (madara::knowledge::KnowledgeBase & knowledge)
 {
   for (unsigned int i = 0; i < tests.size (); ++i)
   {
@@ -159,7 +159,7 @@ void evaluate_expressions (madara::knowledge::Knowledge_Base & knowledge)
 
     ACE_hrtime_t overall_time;
     ACE_High_Res_Timer overall_timer;
-    madara::knowledge::Eval_Settings defaults;
+    madara::knowledge::EvalSettings defaults;
     uint64_t evaluate_time;
 
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -239,7 +239,7 @@ int main (int argc, char ** argv)
      ACE_SCOPE_THREAD);
   ACE_OS::thr_setprio (prio);
 
-  madara::knowledge::Knowledge_Base knowledge;
+  madara::knowledge::KnowledgeBase knowledge;
   
   // read the profile expressions into a string
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,

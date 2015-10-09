@@ -5,12 +5,12 @@
  * @file Files.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains the Knowledge_Base Files class
+ * This file contains the KnowledgeBase Files class
  **/
 
 #include <string>
 #include "ace/Mem_Map.h"
-#include "madara/knowledge/Thread_Safe_Context.h"
+#include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/MADARA_export.h"
 
 namespace madara
@@ -28,7 +28,7 @@ namespace madara
        * Constructor
        * @param map                knowledge context
        **/
-      Files (Thread_Safe_Context & map);
+      Files (ThreadSafeContext & map);
 
       /**
        * Read a file into the knowledge base
@@ -91,7 +91,7 @@ namespace madara
       const static std::string policies_folder_;
 
       // handle to the knowledge base
-      Thread_Safe_Context & map_;
+      ThreadSafeContext & map_;
     };
   }
 }

@@ -4,11 +4,11 @@
 
 #include <vector>
 #include <string>
-#include "madara/Lock_Type.h"
-#include "madara/knowledge/Knowledge_Base.h"
-#include "madara/knowledge/Thread_Safe_Context.h"
-#include "madara/knowledge/Knowledge_Update_Settings.h"
-#include "Base_Container.h"
+#include "madara/LockType.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/ThreadSafeContext.h"
+#include "madara/knowledge/KnowledgeUpdateSettings.h"
+#include "BaseContainer.h"
 
 /**
  * @file String.h
@@ -28,7 +28,7 @@ namespace madara
        * @class String
        * @brief This class stores a string within a variable context
        */
-      class MADARA_Export String : public Base_Container
+      class MADARA_Export String : public BaseContainer
       {
       public:
         /// trait that describes the value type
@@ -37,8 +37,8 @@ namespace madara
         /**
          * Default constructor
          **/
-        String (const Knowledge_Update_Settings & settings =
-          Knowledge_Update_Settings ());
+        String (const KnowledgeUpdateSettings & settings =
+          KnowledgeUpdateSettings ());
       
         /**
          * Default constructor
@@ -47,33 +47,9 @@ namespace madara
          * @param  settings   settings for updating knowledge
          **/
         String (const std::string & name,
-                Knowledge_Base & knowledge,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
-      
-        /**
-         * Default constructor
-         * @param  name       name of the variable in the knowledge base
-         * @param  knowledge  the knowledge base that will contain the vector
-         * @param  value      new value of the variable
-         * @param  settings   settings for updating knowledge
-         **/
-        String (const std::string & name,
-                Knowledge_Base & knowledge,
-                const std::string & value,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
-      
-        /**
-         * Default constructor
-         * @param  name       name of the variable in the knowledge base
-         * @param  knowledge  the knowledge base that will contain the vector
-         * @param  settings   settings for updating knowledge
-         **/
-        String (const std::string & name,
-                Variables & knowledge,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                KnowledgeBase & knowledge,
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Default constructor
@@ -83,10 +59,34 @@ namespace madara
          * @param  settings   settings for updating knowledge
          **/
         String (const std::string & name,
+                KnowledgeBase & knowledge,
+                const std::string & value,
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
+      
+        /**
+         * Default constructor
+         * @param  name       name of the variable in the knowledge base
+         * @param  knowledge  the knowledge base that will contain the vector
+         * @param  settings   settings for updating knowledge
+         **/
+        String (const std::string & name,
+                Variables & knowledge,
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
+      
+        /**
+         * Default constructor
+         * @param  name       name of the variable in the knowledge base
+         * @param  knowledge  the knowledge base that will contain the vector
+         * @param  value      new value of the variable
+         * @param  settings   settings for updating knowledge
+         **/
+        String (const std::string & name,
                 Variables & knowledge,
                 const std::string & value,
-                const Knowledge_Update_Settings & settings =
-                  Knowledge_Update_Settings ());
+                const KnowledgeUpdateSettings & settings =
+                  KnowledgeUpdateSettings ());
       
         /**
          * Copy constructor
@@ -123,7 +123,7 @@ namespace madara
          * @param knowledge  the knowledge base the variable is housed in
          **/
         void set_name (const std::string & var_name,
-          Knowledge_Base & knowledge);
+          KnowledgeBase & knowledge);
         
         /**
          * Sets the variable name that this refers to
@@ -139,7 +139,7 @@ namespace madara
          * @param knowledge  the knowledge base the variable is housed in
          **/
         void set_name (const std::string & var_name,
-          Thread_Safe_Context & knowledge);
+          ThreadSafeContext & knowledge);
 
         /**
          * Sets the value of the variable
@@ -225,17 +225,17 @@ namespace madara
         bool exists (void) const;
       
         /**
-         * Returns the value as a Knowledge_Record. This
+         * Returns the value as a KnowledgeRecord. This
          * is useful for referencing clock and other record info.
-         * @return the value as a Knowledge_Record
+         * @return the value as a KnowledgeRecord
          **/
-        Knowledge_Record to_record (void) const;
+        KnowledgeRecord to_record (void) const;
 
         /**
          * Returns the value as an integer
          * @return the value as an integer
          **/
-        madara::Knowledge_Record::Integer to_integer (void) const;
+        madara::KnowledgeRecord::Integer to_integer (void) const;
         
         /**
          * Returns the value as a double
@@ -256,8 +256,8 @@ namespace madara
          * @param settings        settings for referring to knowledge variables
          **/
         void set_quality (uint32_t quality,
-               const Knowledge_Reference_Settings & settings =
-                       Knowledge_Reference_Settings (false));
+               const KnowledgeReferenceSettings & settings =
+                       KnowledgeReferenceSettings (false));
 
         /**
         * Returns the type of the container along with name and any other
@@ -275,7 +275,7 @@ namespace madara
         * @return  a deep copy of the container that must be managed
         *          by the user (i.e., you have to delete the return value)
         **/
-        virtual Base_Container * clone (void) const;
+        virtual BaseContainer * clone (void) const;
 
         /**
         * Determines if the value is true
@@ -327,12 +327,12 @@ namespace madara
         /**
          * Variable context that we are modifying
          **/
-        Thread_Safe_Context * context_;
+        ThreadSafeContext * context_;
 
         /**
          * Variable reference
          **/
-        Variable_Reference variable_;
+        VariableReference variable_;
       };
     }
   }

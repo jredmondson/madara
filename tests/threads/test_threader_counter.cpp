@@ -5,12 +5,12 @@
 #include <algorithm>
 #include <sstream>
 
-#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/KnowledgeBase.h"
 
 #include "madara/threads/Threader.h"
 #include "madara/knowledge/containers/Integer.h"
 #include "madara/utility/Utility.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 namespace knowledge = madara::knowledge;
@@ -18,7 +18,7 @@ namespace containers = knowledge::containers;
 namespace utility = madara::utility;
 namespace threads = madara::threads;
 
-typedef madara::Knowledge_Record::Integer Integer;
+typedef madara::KnowledgeRecord::Integer Integer;
 
 // default transport settings
 
@@ -115,14 +115,14 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
-class Counter_Thread : public threads::Base_Thread
+class CounterThread : public threads::BaseThread
 {
 public:
   /**
     * Initializes thread with MADARA context
     * @param   context   context for querying current program state
     **/
-  virtual void init (knowledge::Knowledge_Base & context)
+  virtual void init (knowledge::KnowledgeBase & context)
   {
     counter.set_name ("counter", context);
 
@@ -153,7 +153,7 @@ public:
 
 private:
   containers::Integer counter;
-  knowledge::Knowledge_Base data;
+  knowledge::KnowledgeBase data;
 };
 
 int main (int argc, char ** argv)
@@ -167,7 +167,7 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
   
   // create a knowledge base and setup our id
-  knowledge::Knowledge_Base knowledge;
+  knowledge::KnowledgeBase knowledge;
 
   // create a counter
   containers::Integer counter ("counter", knowledge);
@@ -181,7 +181,7 @@ int main (int argc, char ** argv)
     buffer << "thread";
     buffer << i;
 
-    threader.run (buffer.str (), new Counter_Thread (), true);
+    threader.run (buffer.str (), new CounterThread (), true);
   }
 
   Integer start_time = utility::get_time ();

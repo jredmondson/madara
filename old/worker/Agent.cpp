@@ -8,13 +8,13 @@
 #include "ace/SOCK_Connector.h"
 
 #include "Agent.h"
-#include "Agent_Context.h"
-#include "Client_Acceptor.h"
-#include "Madara_Common.h"
+#include "AgentContext.h"
+#include "ClientAcceptor.h"
+#include "MadaraCommon.h"
 
 int
 Madara::discoverWorkerPortOnHost(const std::string & host,
-                           Agent_Context & context)
+                           AgentContext & context)
 {
   // more than enough room for a stringenized port
   //char port_buf[16];
@@ -52,8 +52,8 @@ Madara::discoverWorkerPortOnHost(const std::string & host,
 }
 
 int 
-Madara::bindToFirstAvailableWorkerPort (Client_Acceptor & peer_acceptor,
-                           Agent_Context & context)
+Madara::bindToFirstAvailableWorkerPort (ClientAcceptor & peer_acceptor,
+                           AgentContext & context)
 {
   // more than enough room for a stringenized port
   char port_buf[16];
@@ -74,8 +74,8 @@ Madara::bindToFirstAvailableWorkerPort (Client_Acceptor & peer_acceptor,
 }
 
 int 
-Madara::bindToFirstAvailableBrokerPort (Client_Acceptor & peer_acceptor,
-                           Agent_Context & context)
+Madara::bindToFirstAvailableBrokerPort (ClientAcceptor & peer_acceptor,
+                           AgentContext & context)
 {
   // more than enough room for a stringenized port
   char port_buf[16];

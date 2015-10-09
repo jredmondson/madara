@@ -4,20 +4,20 @@
 #include <sstream>
 
 #include "Barrier.h"
-#include "madara/knowledge/Context_Guard.h"
+#include "madara/knowledge/ContextGuard.h"
 
 madara::knowledge::containers::Barrier::Barrier (
-  const Knowledge_Update_Settings & settings)
-: Base_Container ("", settings), context_ (0), id_ (0), participants_ (1)
+  const KnowledgeUpdateSettings & settings)
+: BaseContainer ("", settings), context_ (0), id_ (0), participants_ (1)
 {
   init_noharm ();
 }
   
 madara::knowledge::containers::Barrier::Barrier (
   const std::string & name,
-  Knowledge_Base & knowledge,
-  const Knowledge_Update_Settings & settings)
-: Base_Container (name, settings), context_ (&(knowledge.get_context ())),
+  KnowledgeBase & knowledge,
+  const KnowledgeUpdateSettings & settings)
+: BaseContainer (name, settings), context_ (&(knowledge.get_context ())),
   id_ (0), participants_ (1)
 {
   init_noharm ();
@@ -28,8 +28,8 @@ madara::knowledge::containers::Barrier::Barrier (
 madara::knowledge::containers::Barrier::Barrier (
   const std::string & name,
   Variables & knowledge,
-  const Knowledge_Update_Settings & settings)
-: Base_Container (name, settings), context_ (knowledge.get_context ()),
+  const KnowledgeUpdateSettings & settings)
+: BaseContainer (name, settings), context_ (knowledge.get_context ()),
   id_ (0), participants_ (1)
 {
   init_noharm ();
@@ -39,11 +39,11 @@ madara::knowledge::containers::Barrier::Barrier (
  
 madara::knowledge::containers::Barrier::Barrier (
   const std::string & name,
-  Knowledge_Base & knowledge,
+  KnowledgeBase & knowledge,
   int id,
   int participants,
-  const Knowledge_Update_Settings & settings)
-: Base_Container (name, settings), context_ (&(knowledge.get_context ())),
+  const KnowledgeUpdateSettings & settings)
+: BaseContainer (name, settings), context_ (&(knowledge.get_context ())),
   id_ (id), participants_ (participants)
 {
   init_noharm ();
@@ -56,8 +56,8 @@ madara::knowledge::containers::Barrier::Barrier (
   Variables & knowledge,
   int id,
   int participants,
-  const Knowledge_Update_Settings & settings)
-: Base_Container (name, settings), context_ (knowledge.get_context ()),
+  const KnowledgeUpdateSettings & settings)
+: BaseContainer (name, settings), context_ (knowledge.get_context ()),
   id_ (id), participants_ (participants)
 {
   init_noharm ();
@@ -67,7 +67,7 @@ madara::knowledge::containers::Barrier::Barrier (
 
 
 madara::knowledge::containers::Barrier::Barrier (const Barrier & rhs)
-: Base_Container (rhs), context_ (rhs.context_),
+: BaseContainer (rhs), context_ (rhs.context_),
     id_ (rhs.id_),
     participants_ (rhs.participants_),
     variable_ (rhs.variable_),
@@ -106,7 +106,7 @@ madara::knowledge::containers::Barrier::build_aggregate_barrier (void)
 {
   if (context_ && name_ != "")
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     std::stringstream buffer;
@@ -155,7 +155,7 @@ madara::knowledge::containers::Barrier::build_var (void)
 {
   if (context_ && name_ != "")
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     std::stringstream buffer;
@@ -210,14 +210,14 @@ madara::knowledge::containers::Barrier::get_participants (void) const
 void
 madara::knowledge::containers::Barrier::set_name (
   const std::string & var_name,
-  Knowledge_Base & knowledge,
+  KnowledgeBase & knowledge,
   int id,
   int participants)
 {
-  Knowledge_Update_Settings keep_local (true);
+  KnowledgeUpdateSettings keep_local (true);
   context_ = &(knowledge.get_context ());
 
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   Guard guard (mutex_);
 
   name_ = var_name;
@@ -235,10 +235,10 @@ madara::knowledge::containers::Barrier::set_name (
   int id,
   int participants)
 {
-  Knowledge_Update_Settings keep_local (true);
+  KnowledgeUpdateSettings keep_local (true);
   context_ = knowledge.get_context ();
 
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   Guard guard (mutex_);
 
   name_ = var_name;
@@ -252,14 +252,14 @@ madara::knowledge::containers::Barrier::set_name (
 void
 madara::knowledge::containers::Barrier::set_name (
   const std::string & var_name,
-  Thread_Safe_Context & knowledge,
+  ThreadSafeContext & knowledge,
   int id,
   int participants)
 {
-  Knowledge_Update_Settings keep_local (true);
+  KnowledgeUpdateSettings keep_local (true);
   context_ = &knowledge;
 
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   Guard guard (mutex_);
 
   name_ = var_name;
@@ -275,7 +275,7 @@ madara::knowledge::containers::Barrier::resize (size_t id, size_t participants)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     id_ = id;
@@ -291,7 +291,7 @@ madara::knowledge::containers::Barrier::operator= (type value)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     context_->set (variable_, value, settings_);
   }
@@ -299,14 +299,14 @@ madara::knowledge::containers::Barrier::operator= (type value)
   return value;
 }
 
-madara::Knowledge_Record
+madara::KnowledgeRecord
 madara::knowledge::containers::Barrier::to_record (void) const
 {
-  madara::Knowledge_Record result;
+  madara::KnowledgeRecord result;
   
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, no_harm);
   }
@@ -314,14 +314,14 @@ madara::knowledge::containers::Barrier::to_record (void) const
   return result;
 }
  
-madara::Knowledge_Record::Integer
+madara::KnowledgeRecord::Integer
 madara::knowledge::containers::Barrier::to_integer (void) const
 {
-  madara::Knowledge_Record::Integer result (0);
+  madara::KnowledgeRecord::Integer result (0);
   
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, no_harm).to_integer ();
   }
@@ -335,7 +335,7 @@ madara::knowledge::containers::Barrier::next (void)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     context_->inc (variable_, settings_);
   }
@@ -348,7 +348,7 @@ madara::knowledge::containers::Barrier::is_done (void)
 
   if (context_ && name_ != "")
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
@@ -378,7 +378,7 @@ madara::knowledge::containers::Barrier::is_done (void)
 void
 madara::knowledge::containers::Barrier::set (type value)
 {
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   if (context_ && name_ != "")
   {
     context_->set (variable_, value, settings_);
@@ -388,7 +388,7 @@ madara::knowledge::containers::Barrier::set (type value)
 void
 madara::knowledge::containers::Barrier::modify (void)
 {
-  Context_Guard context_guard (*context_);
+  ContextGuard context_guard (*context_);
   if (context_ && name_ != "")
   {
     context_->mark_modified (variable_);
@@ -404,7 +404,7 @@ madara::knowledge::containers::Barrier::get_debug_info (void)
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
     result << this->name_;
@@ -426,7 +426,7 @@ madara::knowledge::containers::Barrier::get_debug_info_ (void)
   return get_debug_info ();
 }
 
-madara::knowledge::containers::Base_Container *
+madara::knowledge::containers::BaseContainer *
 madara::knowledge::containers::Barrier::clone (void) const
 {
   return new Barrier (*this);
@@ -439,7 +439,7 @@ madara::knowledge::containers::Barrier::to_double (void) const
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, no_harm).to_double ();
   }
@@ -454,7 +454,7 @@ madara::knowledge::containers::Barrier::to_string (void) const
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = context_->get (variable_, no_harm).to_string ();
   }
@@ -465,11 +465,11 @@ madara::knowledge::containers::Barrier::to_string (void) const
 void
 madara::knowledge::containers::Barrier::set_quality (
   uint32_t quality,
-  const Knowledge_Reference_Settings & settings)
+  const KnowledgeReferenceSettings & settings)
 {
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     context_->set_quality (name_, quality, true, settings);
   }
@@ -485,7 +485,7 @@ madara::knowledge::containers::Barrier::is_true (void) const
 
   if (context_)
   {
-    Context_Guard context_guard (*context_);
+    ContextGuard context_guard (*context_);
     Guard guard (mutex_);
     result = barrier_result () == 1;
   }

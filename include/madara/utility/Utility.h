@@ -7,15 +7,15 @@
 #include "ace/High_Res_Timer.h"
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
-#include "madara/knowledge/Wait_Settings.h"
+#include "madara/knowledge/WaitSettings.h"
 
 
 namespace madara
 {
   namespace knowledge
   {
-    class Knowledge_Base;
-    struct Wait_Settings;
+    class KnowledgeBase;
+    struct WaitSettings;
   }
 
   namespace utility
@@ -226,7 +226,7 @@ namespace madara
     MADARA_Export uint64_t endian_swap (uint64_t value);
     
     /**
-     * Converts a host format signed madara::Knowledge_Record::Integer
+     * Converts a host format signed madara::KnowledgeRecord::Integer
      * into big endian.  Can also be used to convert back into host form.
      * @param     value      the value to convert
      * @return    the converted value
@@ -242,7 +242,7 @@ namespace madara
     MADARA_Export uint32_t endian_swap (uint32_t value);
     
     /**
-     * Converts a host format signed madara::Knowledge_Record::Integer
+     * Converts a host format signed madara::KnowledgeRecord::Integer
      * into big endian.  Can also be used to convert back into host form.
      * @param     value      the value to convert
      * @return    the converted value
@@ -379,10 +379,10 @@ namespace madara
      * @param  settings   the Wait Settings. Only uses poll_frequency and
      *                    max_wait.
      **/
-    MADARA_Export bool wait_true (knowledge::Knowledge_Base & knowledge,
+    MADARA_Export bool wait_true (knowledge::KnowledgeBase & knowledge,
       const std::string & variable,
-      const knowledge::Wait_Settings & settings =
-        knowledge::Wait_Settings ());
+      const knowledge::WaitSettings & settings =
+        knowledge::WaitSettings ());
 
     
 
@@ -393,10 +393,10 @@ namespace madara
      * @param  settings   the Wait Settings. Only uses poll_frequency and
      *                    max_wait.
      **/
-    MADARA_Export bool wait_false (knowledge::Knowledge_Base & knowledge,
+    MADARA_Export bool wait_false (knowledge::KnowledgeBase & knowledge,
       const std::string & variable,
-      const knowledge::Wait_Settings & settings =
-        knowledge::Wait_Settings ());
+      const knowledge::WaitSettings & settings =
+        knowledge::WaitSettings ());
     /**
      * Returns true if left < right
      **/

@@ -5,7 +5,7 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge/Knowledge_Base.h"
+#include "madara/knowledge/KnowledgeBase.h"
 
 
 #include "ace/Signal.h"
@@ -13,7 +13,7 @@
 #include "ace/Get_Opt.h"
 #include "ace/Signal.h"
 #include "ace/Sched_Params.h"
-#include "madara/logger/Global_Logger.h"
+#include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
 
@@ -106,7 +106,7 @@ int ACE_TMAIN (int argc, char ** argv)
   
 #ifndef _MADARA_NO_KARL_
   settings.type = madara::transport::MULTICAST;
-  madara::knowledge::Wait_Settings wait_settings;
+  madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10.0;
   wait_settings.post_print_statement =
     "{update}: name == {name}, " \
@@ -118,11 +118,11 @@ int ACE_TMAIN (int argc, char ** argv)
   // signal handler for clean exit
   ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
 
-  madara::knowledge::Knowledge_Base knowledge (host, settings);
+  madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::Knowledge_Record::Integer) settings.id);
+  knowledge.set (".id", (madara::KnowledgeRecord::Integer) settings.id);
   
-  madara::knowledge::Compiled_Expression compiled;
+  madara::knowledge::CompiledExpression compiled;
 
   
   if (settings.id == 0)
