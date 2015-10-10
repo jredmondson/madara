@@ -4,10 +4,10 @@
 #define _MADARA_KNOWLEDGE_RECORD_H_
 
 /**
- * @file knowledge::KnowledgeRecord.h
+ * @file KnowledgeRecord.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains the knowledge::KnowledgeRecord class, helper typdefs and functions
+ * This file contains the KnowledgeRecord class, helper typdefs and functions
  **/
 
 #include <string>
@@ -29,7 +29,7 @@ namespace madara
     class ThreadSafeContext;
 
     /**
-     * @class knowledge::KnowledgeRecord
+     * @class KnowledgeRecord
      * @brief This class encapsulates an entry in a KnowledgeBase
      **/
 
@@ -37,7 +37,7 @@ namespace madara
     {
     public:
       // allow ThreadSafeContext to modify private members
-      friend class knowledge::ThreadSafeContext;
+      friend class ThreadSafeContext;
 
       enum
       {
@@ -149,35 +149,35 @@ namespace madara
     public:
 
       /* default constructor */
-      knowledge::KnowledgeRecord (
+      KnowledgeRecord (
         logger::Logger & logger = *logger::global_logger.get ());
     
       /* Integer constructor */
-      knowledge::KnowledgeRecord (Integer value,
+      KnowledgeRecord (Integer value,
         logger::Logger & logger = *logger::global_logger.get ());
     
       /* Double constructor */
-      knowledge::KnowledgeRecord (double value,
+      KnowledgeRecord (double value,
         logger::Logger & logger = *logger::global_logger.get ());
     
       /* Integer array constructor */
-      knowledge::KnowledgeRecord (const std::vector <Integer> & value,
+      KnowledgeRecord (const std::vector <Integer> & value,
         logger::Logger & logger = *logger::global_logger.get ());
     
       /* Double array constructor */
-      knowledge::KnowledgeRecord (const std::vector <double> & value,
+      KnowledgeRecord (const std::vector <double> & value,
         logger::Logger & logger = *logger::global_logger.get ());
     
       /* String constructor */
-      knowledge::KnowledgeRecord (const std::string & value,
+      KnowledgeRecord (const std::string & value,
         logger::Logger & logger = *logger::global_logger.get ());
     
       /* Char pointer constructor for g++ */
-      knowledge::KnowledgeRecord (const char * value,
+      KnowledgeRecord (const char * value,
         logger::Logger & logger = *logger::global_logger.get ());
     
       /* copy constructor */
-      knowledge::KnowledgeRecord (const knowledge::KnowledgeRecord & rhs);
+      KnowledgeRecord (const KnowledgeRecord & rhs);
     
       /* destructor */
       ~KnowledgeRecord ();
@@ -194,7 +194,7 @@ namespace madara
        * @param    index    index of the array item
        * @return   value at the index
        **/
-      knowledge::KnowledgeRecord retrieve_index (size_t index) const;
+      KnowledgeRecord retrieve_index (size_t index) const;
     
       /**
        * decrements the value at the index to the specified value. If the
@@ -202,7 +202,7 @@ namespace madara
        * large enough, a new array is created.
        * @param    index   index of the value to set
        **/
-      knowledge::KnowledgeRecord dec_index (size_t index);
+      KnowledgeRecord dec_index (size_t index);
      
       /**
        * increments the value at the index to the specified value. If the
@@ -210,7 +210,7 @@ namespace madara
        * large enough, a new array is created.
        * @param    index   index of the value to set
        **/
-      knowledge::KnowledgeRecord inc_index (size_t index);
+      KnowledgeRecord inc_index (size_t index);
      
       /**
        * sets the value at the index to the specified value. If the
@@ -247,7 +247,7 @@ namespace madara
       /**
        * clones the record
        **/
-      knowledge::KnowledgeRecord * clone (void) const;
+      KnowledgeRecord * clone (void) const;
 
       /**
        * converts the value to an integer
@@ -381,7 +381,7 @@ namespace madara
        * their own ref counts, which can be accomplished via this method.
        * @param    source   the Knowledge Record we wish to copy
        **/
-      void deep_copy (const knowledge::KnowledgeRecord & source);
+      void deep_copy (const KnowledgeRecord & source);
 
       /**
        * returns the status of the record.
@@ -494,7 +494,7 @@ namespace madara
        * @param    first          first index (inclusive, >= 0)
        * @param    last           last index (inclusive, < size)
        **/
-      knowledge::KnowledgeRecord fragment (unsigned int first, unsigned int last);
+      KnowledgeRecord fragment (unsigned int first, unsigned int last);
 
       /**
        * returns true if the knowledge record has an image type
@@ -538,17 +538,17 @@ namespace madara
       /**
        * Less than
        **/
-      Integer operator< (const knowledge::KnowledgeRecord & rhs) const;
+      Integer operator< (const KnowledgeRecord & rhs) const;
     
       /**
        * Less than or equal to
        **/
-      Integer operator<= (const knowledge::KnowledgeRecord & rhs) const;
+      Integer operator<= (const KnowledgeRecord & rhs) const;
     
       /**
        * Equal to
        **/
-      Integer operator== (const knowledge::KnowledgeRecord & rhs) const;
+      Integer operator== (const KnowledgeRecord & rhs) const;
     
       /**
        * Equal to
@@ -573,17 +573,17 @@ namespace madara
       /**
        * Unequal to
        **/
-      Integer operator!= (const knowledge::KnowledgeRecord & rhs) const;
+      Integer operator!= (const KnowledgeRecord & rhs) const;
     
       /**
        * Greater than
        **/
-      Integer operator> (const knowledge::KnowledgeRecord & rhs) const;
+      Integer operator> (const KnowledgeRecord & rhs) const;
     
       /**
        * Greater than or equal to
        **/
-      Integer operator>= (const knowledge::KnowledgeRecord & rhs) const;
+      Integer operator>= (const KnowledgeRecord & rhs) const;
     
       /**
        * Logical not.
@@ -593,85 +593,85 @@ namespace madara
       /**
        * Negate.
        **/
-      knowledge::KnowledgeRecord operator- (void) const;
+      KnowledgeRecord operator- (void) const;
 
       /**
        * Assignment
        **/
-      knowledge::KnowledgeRecord operator= (const knowledge::KnowledgeRecord & rhs);
+      KnowledgeRecord operator= (const KnowledgeRecord & rhs);
     
       /**
        * Atomic addition operator
        **/
-      knowledge::KnowledgeRecord operator+= (const knowledge::KnowledgeRecord & rhs);
+      KnowledgeRecord operator+= (const KnowledgeRecord & rhs);
     
       /**
        * Atomic subtraction operator
        **/
-      knowledge::KnowledgeRecord operator-= (const knowledge::KnowledgeRecord & rhs);
+      KnowledgeRecord operator-= (const KnowledgeRecord & rhs);
     
       /**
        * Atomic multiplication operator
        **/
-      knowledge::KnowledgeRecord operator*= (const knowledge::KnowledgeRecord & rhs);
+      KnowledgeRecord operator*= (const KnowledgeRecord & rhs);
     
       /**
        * Atomic division operator
        **/
-      knowledge::KnowledgeRecord operator/= (const knowledge::KnowledgeRecord & rhs);
+      KnowledgeRecord operator/= (const KnowledgeRecord & rhs);
     
       /**
        * Atomic modulus operator
        **/
-      knowledge::KnowledgeRecord operator%= (const knowledge::KnowledgeRecord & rhs);
+      KnowledgeRecord operator%= (const KnowledgeRecord & rhs);
     
       /**
        * Times operator
        **/
-      knowledge::KnowledgeRecord operator* (const knowledge::KnowledgeRecord & rhs) const;
+      KnowledgeRecord operator* (const KnowledgeRecord & rhs) const;
     
       /**
        * Divides operator
        **/
-      knowledge::KnowledgeRecord operator/ (const knowledge::KnowledgeRecord & rhs) const;
+      KnowledgeRecord operator/ (const KnowledgeRecord & rhs) const;
     
       /**
        * Modulus operator
        **/
-      knowledge::KnowledgeRecord operator% (const knowledge::KnowledgeRecord & rhs) const;
+      KnowledgeRecord operator% (const KnowledgeRecord & rhs) const;
     
       /**
        * Plus operator
        **/
-      knowledge::KnowledgeRecord operator+ (const knowledge::KnowledgeRecord & rhs) const;
+      KnowledgeRecord operator+ (const KnowledgeRecord & rhs) const;
     
       /**
        * Minus operator
        **/
-      knowledge::KnowledgeRecord operator- (const knowledge::KnowledgeRecord & rhs) const;
+      KnowledgeRecord operator- (const KnowledgeRecord & rhs) const;
     
       /**
        * And operator
        **/
-      Integer operator&& (const knowledge::KnowledgeRecord & rhs) const;
+      Integer operator&& (const KnowledgeRecord & rhs) const;
     
       /**
        * Or operator
        **/
-      Integer operator|| (const knowledge::KnowledgeRecord & rhs) const;
+      Integer operator|| (const KnowledgeRecord & rhs) const;
     
       /**
        * Preincrement operator
        **/
-      knowledge::KnowledgeRecord operator++ (void);
+      KnowledgeRecord operator++ (void);
     
       /**
        * Predecrement operator
        **/
-      knowledge::KnowledgeRecord operator-- (void);
+      KnowledgeRecord operator-- (void);
     
       /**
-        * Reads a knowledge::KnowledgeRecord instance from a buffer and updates
+        * Reads a KnowledgeRecord instance from a buffer and updates
         * the amount of buffer room remaining.
         * @param     buffer     the readable buffer where data is stored
         * @param     key        the name of the variable
@@ -683,7 +683,7 @@ namespace madara
                    int64_t & buffer_remaining);
       
       /**
-        * Writes a knowledge::KnowledgeRecord instance to a buffer and updates
+        * Writes a KnowledgeRecord instance to a buffer and updates
         * the amount of buffer room remaining.
         *        
         * Output Format:
@@ -744,20 +744,20 @@ namespace madara
     };
   
     typedef ::std::map < std::string, KnowledgeRecord>   KnowledgeMap;
-    typedef ::std::vector < knowledge::KnowledgeRecord>             KnowledgeVector;
+    typedef ::std::vector < KnowledgeRecord>             KnowledgeVector;
     typedef ::std::vector < std::string>                  KnowledgeRules;
     typedef ::std::vector < std::string>                  StringVector;
     typedef ::std::map < std::string, KnowledgeRecord *> KnowledgeRecords;
 
     typedef std::string     KnowledgeKey;
-    typedef knowledge::KnowledgeRecord              KnowledgeValue;
+    typedef KnowledgeRecord              KnowledgeValue;
   
     /**
      * Returns the maximum quality within the records
      * @param    records     the list of records to gauge quality of
      * @return   the maximum quality within the list of records
      **/
-    uint32_t max_quality (const knowledge::KnowledgeRecords & records);
+    uint32_t max_quality (const KnowledgeRecords & records);
   
     /**
      * Returns the maximum quality within the records

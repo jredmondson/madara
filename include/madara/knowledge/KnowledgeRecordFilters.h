@@ -4,10 +4,10 @@
 #define _MADARA_KNOWLEDGE_RECORD_FILTERS_H_
 
 /**
- * @file knowledge::KnowledgeRecordFilters.h
+ * @file KnowledgeRecordFilters.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains the knowledge::KnowledgeRecordFilters class, helper typdefs and functions
+ * This file contains the KnowledgeRecordFilters class, helper typdefs and functions
  **/
 
 #include <string>
@@ -44,21 +44,21 @@ namespace madara
     typedef  std::map <uint32_t, FilterChain>  FilterMap;
 
     /**
-     * @class knowledge::KnowledgeRecordFilters
+     * @class KnowledgeRecordFilters
      * @brief Provides map of data types to a filter chain to apply to the data
      */
-    class MADARA_Export knowledge::KnowledgeRecordFilters
+    class MADARA_Export KnowledgeRecordFilters
     {
     public:
       /**
        * Default constructor
        **/
-      knowledge::KnowledgeRecordFilters ();
+      KnowledgeRecordFilters ();
       
       /**
        * Copy constructor
        **/
-      knowledge::KnowledgeRecordFilters (const knowledge::KnowledgeRecordFilters & filters);
+      KnowledgeRecordFilters (const KnowledgeRecordFilters & filters);
 
       /**
        * Destructor
@@ -69,7 +69,7 @@ namespace madara
        * Assignment operator
        * @param  rhs   the value to be copied into this class
        **/
-      void operator= (const knowledge::KnowledgeRecordFilters & rhs);
+      void operator= (const KnowledgeRecordFilters & rhs);
 
       /**
        * Adds a filter to the list of types
