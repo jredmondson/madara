@@ -7,8 +7,8 @@
  * adding events to a TimedExecutor object
  **/
 
-#include "madara/knowledge_engine/KnowledgeBase.h"
-#include "madara/knowledge_engine/TimedExecutor.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/TimedExecutor.h"
 #include "madara/utility/Utility.h"
 #include <iostream>
 #include <string>
@@ -16,24 +16,24 @@
 /**
  * Create a short "engine" alias for referring to Madara::KnowledgeEngine
  **/
-namespace engine = Madara::KnowledgeEngine;
+namespace knowledge = madara::knowledge;
 
 int main (int argc, char * argv[])
 {
   // Create a knowledge base
-  engine::KnowledgeBase knowledge;
+  knowledge::KnowledgeBase knowledge;
   
   // let the user know where we are at in the tutorial
   knowledge.print ("\nCreating executor and events.\n");
 
   // A timed executor is an object that can create threads and execute events
-  engine::TimedExecutor executor;
+  knowledge::TimedExecutor executor;
 
   /**
    * The executor takes events as input and executes the contents, which we
    * can fill using the fill_event helper function
    **/
-  engine::Event new_event;
+  knowledge::Event new_event;
   
   // let the user know where we are at in the tutorial
   knowledge.print ("Filling the first event.\n");
@@ -41,7 +41,7 @@ int main (int argc, char * argv[])
   /**
    * Fill the event structure with execution details
    **/
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     // attached the knowledge base
     knowledge,
 
@@ -90,7 +90,7 @@ int main (int argc, char * argv[])
   /**
    * Let's add another event that executes every 2s and adds 3 to the counter
    **/
-  new_event = engine::fill_event (
+  new_event = knowledge::fill_event (
     // attached the knowledge base
     knowledge,
 

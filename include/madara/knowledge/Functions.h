@@ -35,7 +35,7 @@ namespace madara
     class Variables;
     class ThreadSafeContext;
     
-    typedef madara::KnowledgeRecord VALUE_TYPE;
+    typedef madara::knowledge::KnowledgeRecord VALUE_TYPE;
      
     /**
      * @class Function
@@ -154,11 +154,11 @@ namespace madara
       }
 
       // internal function pointer
-      KnowledgeRecord (*extern_named) (
+      knowledge::KnowledgeRecord (*extern_named) (
         const char *, FunctionArguments &, Variables &);
 
       // internal function pointer
-      KnowledgeRecord (*extern_unnamed) (FunctionArguments &, Variables &);
+      knowledge::KnowledgeRecord (*extern_unnamed) (FunctionArguments &, Variables &);
        
 #ifndef _MADARA_NO_KARL_
       // expression tree
@@ -211,7 +211,7 @@ namespace madara
             PyExcTypeError,
             "Handler must be a callable object");
 
-          boost::python::throw_error_already_set(); 
+          boost::python::throwjame_error_already_set(); 
         } 
       }
       

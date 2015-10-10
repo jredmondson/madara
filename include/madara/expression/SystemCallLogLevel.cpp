@@ -20,16 +20,16 @@ madara::expression::SystemCallLogLevel::~SystemCallLogLevel (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallLogLevel::item (void) const
 {
-  return madara::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallLogLevel::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
@@ -37,7 +37,7 @@ madara::expression::SystemCallLogLevel::prune (bool & can_change)
   // under any situation
   can_change = true;
   
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (nodes_.size () > 0)
   {
@@ -63,11 +63,11 @@ madara::expression::SystemCallLogLevel::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::SystemCallLogLevel::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  KnowledgeRecord return_value;
+  knowledge::KnowledgeRecord return_value;
 
   if (nodes_.size () == 1)
   {
@@ -82,14 +82,14 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call log_level has set log level to %d\n",
       level);
 
-    return KnowledgeRecord::Integer (level);
+    return knowledge::KnowledgeRecord::Integer (level);
   }
   else if (nodes_.size () == 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call log_level is returning log level.\n");
     
-    return KnowledgeRecord::Integer (logger_->get_level ());
+    return knowledge::KnowledgeRecord::Integer (logger_->get_level ());
   }
   else if (nodes_.size () > 1)
   {

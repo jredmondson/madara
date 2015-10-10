@@ -21,16 +21,16 @@ madara::expression::SystemCallGetClock::~SystemCallGetClock (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallGetClock::item (void) const
 {
-  return madara::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallGetClock::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
@@ -38,7 +38,7 @@ madara::expression::SystemCallGetClock::prune (bool & can_change)
   // under any situation
   can_change = true;
   
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (nodes_.size () > 0)
   {
@@ -57,18 +57,18 @@ madara::expression::SystemCallGetClock::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::SystemCallGetClock::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  KnowledgeRecord return_value;
+  knowledge::KnowledgeRecord return_value;
 
   if (nodes_.size () > 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call get_clock is returning the clock of its first argument\n");
 
-    return madara::KnowledgeRecord::Integer (
+    return madara::knowledge::KnowledgeRecord::Integer (
       nodes_[0]->evaluate (settings).clock);
   }
   else
@@ -76,7 +76,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call get_clock is returning the system clock\n");
 
-    return madara::KnowledgeRecord::Integer (
+    return madara::knowledge::KnowledgeRecord::Integer (
       context_.get_clock ());
   }
 

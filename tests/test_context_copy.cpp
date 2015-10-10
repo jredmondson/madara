@@ -17,7 +17,7 @@ namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
 namespace logger = madara::logger;
 
-typedef  madara::KnowledgeRecord::Integer  Integer;
+typedef  madara::knowledge::KnowledgeRecord::Integer  Integer;
 
 void test_copy (void)
 {

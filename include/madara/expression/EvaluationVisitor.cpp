@@ -128,12 +128,12 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 1)
   {
-    madara::KnowledgeRecord old_value = stack_.pop ();
+    madara::knowledge::KnowledgeRecord old_value = stack_.pop ();
     try
     {
       VariableNode * right = dynamic_cast <VariableNode *> (node.right ());
 
-      madara::KnowledgeRecord new_value = --old_value;
+      madara::knowledge::KnowledgeRecord new_value = --old_value;
       if (right)
       {
         new_value = right->dec ();
@@ -161,12 +161,12 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 1)
   {
-    madara::KnowledgeRecord old_value = stack_.pop ();
+    madara::knowledge::KnowledgeRecord old_value = stack_.pop ();
     try
     {
       VariableNode * right = dynamic_cast <VariableNode *> (node.right ());
 
-      madara::KnowledgeRecord new_value = ++old_value;
+      madara::knowledge::KnowledgeRecord new_value = ++old_value;
       if (right)
       {
         new_value = right->inc ();
@@ -232,7 +232,7 @@ madara::expression::EvaluationVisitor::visit (
     {
       // this is really backwards logic, but it was the only way I could think of
       // to allow for a = b = c with this type of tree and post-order flow
-      madara::KnowledgeRecord right = stack_.pop ();
+      madara::knowledge::KnowledgeRecord right = stack_.pop ();
       stack_.pop ();
       VariableNode * left = dynamic_cast <VariableNode *> (node.left ());
       left->set (right.to_integer ());
@@ -256,8 +256,8 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2)
   {
-    madara::KnowledgeRecord right = stack_.pop ();
-    madara::KnowledgeRecord left = stack_.pop ();
+    madara::knowledge::KnowledgeRecord right = stack_.pop ();
+    madara::knowledge::KnowledgeRecord left = stack_.pop ();
 
     stack_.push (left && right);
   }
@@ -277,8 +277,8 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2)
   {
-    madara::KnowledgeRecord right = stack_.pop ();
-    madara::KnowledgeRecord left = stack_.pop ();
+    madara::knowledge::KnowledgeRecord right = stack_.pop ();
+    madara::knowledge::KnowledgeRecord left = stack_.pop ();
 
     stack_.push (left || right);
   }
@@ -298,8 +298,8 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2)
   {
-    madara::KnowledgeRecord right_v = stack_.pop ();
-    madara::KnowledgeRecord left_v = stack_.pop ();
+    madara::knowledge::KnowledgeRecord right_v = stack_.pop ();
+    madara::knowledge::KnowledgeRecord left_v = stack_.pop ();
 
     // I was trying to use std::max, but it was giving me
     // some grief, so I just implemented it as is
@@ -321,8 +321,8 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2)
   {
-    madara::KnowledgeRecord right_v = stack_.pop ();
-    madara::KnowledgeRecord left_v = stack_.pop ();
+    madara::knowledge::KnowledgeRecord right_v = stack_.pop ();
+    madara::knowledge::KnowledgeRecord left_v = stack_.pop ();
 
     // I was trying to use std::max, but it was giving me
     // some grief, so I just implemented it as is
@@ -358,8 +358,8 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2)
   {
-    madara::KnowledgeRecord right = stack_.pop ();
-    madara::KnowledgeRecord left = stack_.pop ();
+    madara::knowledge::KnowledgeRecord right = stack_.pop ();
+    madara::knowledge::KnowledgeRecord left = stack_.pop ();
 
     stack_.push (left == right);
   }
@@ -379,8 +379,8 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2)
   {
-    madara::KnowledgeRecord right = stack_.pop ();
-    madara::KnowledgeRecord left = stack_.pop ();
+    madara::knowledge::KnowledgeRecord right = stack_.pop ();
+    madara::knowledge::KnowledgeRecord left = stack_.pop ();
 
     stack_.push (left != right);
   }
@@ -400,8 +400,8 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2)
   {
-    madara::KnowledgeRecord right = stack_.pop ();
-    madara::KnowledgeRecord left = stack_.pop ();
+    madara::knowledge::KnowledgeRecord right = stack_.pop ();
+    madara::knowledge::KnowledgeRecord left = stack_.pop ();
 
     stack_.push (left >= right);
   }
@@ -421,8 +421,8 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2)
   {
-    madara::KnowledgeRecord right = stack_.pop ();
-    madara::KnowledgeRecord left = stack_.pop ();
+    madara::knowledge::KnowledgeRecord right = stack_.pop ();
+    madara::knowledge::KnowledgeRecord left = stack_.pop ();
 
     stack_.push (left > right);
   }
@@ -442,8 +442,8 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2)
   {
-    madara::KnowledgeRecord right = stack_.pop ();
-    madara::KnowledgeRecord left = stack_.pop ();
+    madara::knowledge::KnowledgeRecord right = stack_.pop ();
+    madara::knowledge::KnowledgeRecord left = stack_.pop ();
 
     stack_.push (left <= right);
   }
@@ -463,8 +463,8 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2)
   {
-    madara::KnowledgeRecord right = stack_.pop ();
-    madara::KnowledgeRecord left = stack_.pop ();
+    madara::knowledge::KnowledgeRecord right = stack_.pop ();
+    madara::knowledge::KnowledgeRecord left = stack_.pop ();
 
     stack_.push (left < right);
   }
@@ -484,7 +484,7 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2)
   {
-    madara::KnowledgeRecord rhs = stack_.pop ();
+    madara::knowledge::KnowledgeRecord rhs = stack_.pop ();
     stack_.push (stack_.pop () - rhs);
   }
   else
@@ -503,7 +503,7 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2 && stack_.top ())
   {
-    madara::KnowledgeRecord rhs = stack_.pop ();
+    madara::knowledge::KnowledgeRecord rhs = stack_.pop ();
     stack_.push (stack_.pop () / rhs );
   }
   else
@@ -539,7 +539,7 @@ madara::expression::EvaluationVisitor::visit (
 {
   if (stack_.size () >= 2 && stack_.top ())
   {
-    madara::KnowledgeRecord rhs = stack_.pop ();
+    madara::knowledge::KnowledgeRecord rhs = stack_.pop ();
     stack_.push (stack_.pop () / rhs );
   }
   else

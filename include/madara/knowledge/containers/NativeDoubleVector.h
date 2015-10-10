@@ -225,13 +225,13 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        KnowledgeRecord to_record (size_t index) const;
+        knowledge::KnowledgeRecord to_record (size_t index) const;
       
         /**
          * Retrieves the entire vector as a native double array in a record 
          * @return the vector in native double array format
          **/
-        KnowledgeRecord to_record (void) const;
+        knowledge::KnowledgeRecord to_record (void) const;
 
         /**
         * Returns the type of the container along with name and any other

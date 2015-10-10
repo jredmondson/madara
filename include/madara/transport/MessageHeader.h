@@ -24,7 +24,7 @@ namespace madara
     #define CLOCK_TYPE                  uint64_t
     #define MAX_KNOWLEDGE_KEY_LENGTH    64
     #define MAX_ORIGINATOR_LENGTH       64
-    #define KNOWLEDGE_VALUE_TYPE        madara::KnowledgeRecord
+    #define KNOWLEDGE_VALUE_TYPE        madara::knowledge::KnowledgeRecord
 
     static const int  MAX_PACKET_SIZE = 512000;  // 512kb
 

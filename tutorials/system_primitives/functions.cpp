@@ -8,7 +8,7 @@
  * the inclusion of both external C++ functions and MADARA logics.
  **/
 
-#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 #include <string>
 #include <stdlib.h>
@@ -19,43 +19,43 @@
  * a random number up to the limits of the stdlib.h implementation's limits. An
  * integer argument means to generate a random up to the specified arg limit.
  **/
-Madara::KnowledgeRecord
-  rand_int (Madara::KnowledgeEngine::FunctionArguments & args,
-             Madara::KnowledgeEngine::Variables & variables)
+madara::knowledge::KnowledgeRecord
+  rand_int (madara::knowledge::FunctionArguments & args,
+             madara::knowledge::Variables & variables)
 {
   // if the args list is greater than zero, is an integer, and is not 0
   if (args.size () > 0 && 
-    args[0].type () == Madara::KnowledgeRecord::INTEGER &&
+    args[0].type () == madara::knowledge::KnowledgeRecord::INTEGER &&
     args[0].to_integer () != 0)
   {
     // then call rand () with a modulus up to that integer argument
-    return Madara::KnowledgeRecord::Integer (
+    return madara::knowledge::KnowledgeRecord::Integer (
       rand () % (int)args[0].to_integer ());
   }
 
   // otherwise, just return rand ()
   else
-    return Madara::KnowledgeRecord::Integer (rand ());
+    return madara::knowledge::KnowledgeRecord::Integer (rand ());
 }
   
 /**
  * Madara function that returns a random fraction between 0 and 1
  **/
-Madara::KnowledgeRecord
-  rand_double (Madara::KnowledgeEngine::FunctionArguments & args,
-             Madara::KnowledgeEngine::Variables & variables)
+madara::knowledge::KnowledgeRecord
+  rand_double (madara::knowledge::FunctionArguments & args,
+             madara::knowledge::Variables & variables)
 {
   // empty arguments list to pass to rand_int (the function above)
-  Madara::KnowledgeEngine::FunctionArguments rand_args;
+  madara::knowledge::FunctionArguments rand_args;
 
   // the denominator is set to RAND_MAX
-  Madara::KnowledgeRecord::Integer denominator (RAND_MAX);
+  madara::knowledge::KnowledgeRecord::Integer denominator (RAND_MAX);
 
   // the numerator is set to the results of rand ()
-  Madara::KnowledgeRecord numerator (
+  madara::knowledge::KnowledgeRecord numerator (
     rand_int (rand_args, variables));
 
-  Madara::KnowledgeRecord result = numerator.to_double () /
+  madara::knowledge::KnowledgeRecord result = numerator.to_double () /
     denominator;
 
   return result;
@@ -65,33 +65,33 @@ Madara::KnowledgeRecord
 /**
  * Madara function that determines if an argument is true
  **/
-Madara::KnowledgeRecord
-  is_true (Madara::KnowledgeEngine::FunctionArguments & args,
-             Madara::KnowledgeEngine::Variables & variables)
+madara::knowledge::KnowledgeRecord
+  is_true (madara::knowledge::FunctionArguments & args,
+             madara::knowledge::Variables & variables)
 {
   // if we've been provided with an argument, check if it is true
   if (args.size () == 1)
-    return Madara::KnowledgeRecord::Integer (
+    return madara::knowledge::KnowledgeRecord::Integer (
       args[0].to_double () >= 0.5 && args[0].to_double () <= 1);
   // if the user didn't provide an argument, return false
   else
-    return Madara::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord::Integer (0);
 }
 
 /**
  * Madara function that determines if an argument is false
  **/
-Madara::KnowledgeRecord
-  is_false (Madara::KnowledgeEngine::FunctionArguments & args,
-             Madara::KnowledgeEngine::Variables & variables)
+madara::knowledge::KnowledgeRecord
+  is_false (madara::knowledge::FunctionArguments & args,
+             madara::knowledge::Variables & variables)
 {
   // if we've been provided with an argument, check if it is true
   if (args.size () == 1)
-    return Madara::KnowledgeRecord::Integer (
+    return madara::knowledge::KnowledgeRecord::Integer (
       args[0].to_double () < 0.5 && args[0].to_double () >= 0);
   // if the user didn't provide an argument, return false
   else
-    return Madara::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord::Integer (0);
 }
 
 
@@ -99,7 +99,7 @@ Madara::KnowledgeRecord
 int main (int argc, char * argv[])
 {
   // Create a knowledge base
-  Madara::KnowledgeEngine::KnowledgeBase knowledge;
+  madara::knowledge::KnowledgeBase knowledge;
   
   /**
    * In the tutorial at system_primitives/fractions, we created the following

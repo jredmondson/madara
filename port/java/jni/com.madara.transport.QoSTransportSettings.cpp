@@ -58,8 +58,8 @@ namespace transport = madara::transport;
 namespace filters = madara::filters;
 namespace logger = madara::logger;
 
-typedef madara::KnowledgeRecord  KnowledgeRecord;
-typedef KnowledgeRecord::Integer Integer;
+typedef madara::knowledge::KnowledgeRecord  knowledge::KnowledgeRecord;
+typedef knowledge::KnowledgeRecord::Integer Integer;
 typedef transport::QoSTransportSettings QoSTransportSettings;
 typedef filters::JavaBufferFilter  JavaBufferFilter;
 typedef filters::BufferFilter BufferFilter;

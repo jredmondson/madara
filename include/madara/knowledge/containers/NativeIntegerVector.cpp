@@ -138,7 +138,7 @@ madara::knowledge::containers::NativeIntegerVector::resize (
     ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
-    KnowledgeRecord value = context_->get (vector_, settings_);
+    knowledge::KnowledgeRecord value = context_->get (vector_, settings_);
 
     value.resize (size);
 
@@ -228,7 +228,7 @@ madara::knowledge::containers::NativeIntegerVector::exchange (
     ContextGuard other_context_guard (*other.context_);
     Guard guard (mutex_), guard2 (other.mutex_);
 
-    KnowledgeRecord temp (context_->get (other.vector_));
+    knowledge::KnowledgeRecord temp (context_->get (other.vector_));
 
     context_->set (other.vector_, context_->get (vector_), other.settings_);
     context_->set (vector_, temp, settings_);
@@ -254,8 +254,8 @@ madara::knowledge::containers::NativeIntegerVector::transfer_to (
       size_t size = other_size + this_size;
       other.resize ((int)size);
 
-      KnowledgeRecord rhs (other.context_->get (other.vector_));
-      KnowledgeRecord lhs (context_->get (vector_));
+      knowledge::KnowledgeRecord rhs (other.context_->get (other.vector_));
+      knowledge::KnowledgeRecord lhs (context_->get (vector_));
 
       rhs.set_index (size - 1, lhs.retrieve_index (this_size - 1).to_double ());
 
@@ -293,7 +293,7 @@ madara::knowledge::containers::NativeIntegerVector::type
 madara::knowledge::containers::NativeIntegerVector::operator[] (
   size_t index) const
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
 
   if (context_)
   {
@@ -390,16 +390,16 @@ madara::knowledge::containers::NativeIntegerVector::set_quality (
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::NativeIntegerVector::to_record (
   size_t index) const
 {
-  madara::KnowledgeRecord result = context_->get (this->vector_, settings_);
+  madara::knowledge::KnowledgeRecord result = context_->get (this->vector_, settings_);
   result = result.retrieve_index (index);
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::NativeIntegerVector::to_record (
   void) const
 {

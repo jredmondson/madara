@@ -120,7 +120,7 @@ int ACE_TMAIN (int argc, char ** argv)
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
   
   madara::knowledge::CompiledExpression compiled;
 

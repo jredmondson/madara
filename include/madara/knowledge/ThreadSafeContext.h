@@ -80,9 +80,9 @@ namespace madara
        * Atomically returns the value of a variable.
        * @param   key       unique identifier of the variable
        * @param   settings  the settings for referring to variables
-       * @return         the madara::KnowledgeRecord::Integer value for the variable
+       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
        **/
-      madara::KnowledgeRecord
+      madara::knowledge::KnowledgeRecord
         get (const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const;
@@ -91,9 +91,9 @@ namespace madara
        * Atomically returns the value of a variable.
        * @param   variable  reference to a variable (@see get_ref)
        * @param   settings  the settings for referring to variables
-       * @return         the madara::KnowledgeRecord::Integer value for the variable
+       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
        **/
-      madara::KnowledgeRecord
+      madara::knowledge::KnowledgeRecord
         get (const VariableReference & variable,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const;
@@ -130,7 +130,7 @@ namespace madara
        * @param settings         settings for referring to knowledge variables
        * @return                 value at knowledge location
        **/
-      madara::KnowledgeRecord retrieve_index (const std::string & key,
+      madara::knowledge::KnowledgeRecord retrieve_index (const std::string & key,
              size_t index,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
@@ -142,7 +142,7 @@ namespace madara
        * @param   settings   settings for referring to knowledge variables
        * @return             value at knowledge location
        **/
-      madara::KnowledgeRecord retrieve_index (
+      madara::knowledge::KnowledgeRecord retrieve_index (
              const VariableReference & variable,
              size_t index,
              const KnowledgeReferenceSettings & settings =
@@ -150,14 +150,14 @@ namespace madara
 
       /**
        * Retrieves a knowledge record from the key. This function is useful
-       * for performance reasons and also for using a KnowledgeRecord that
+       * for performance reasons and also for using a knowledge::KnowledgeRecord that
        * can be one of multiple types
        * @param   key    unique identifier of the variable. Allows variable 
        *                 expansion.
        * @param  settings  the settings for referring to variables
        * @return         the knowledge record for the variable
        **/
-      madara::KnowledgeRecord * get_record (const std::string & key,
+      madara::knowledge::KnowledgeRecord * get_record (const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
       
@@ -274,7 +274,7 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set (const std::string & key,
-        const madara::KnowledgeRecord & value, 
+        const madara::knowledge::KnowledgeRecord & value, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
       
@@ -287,7 +287,7 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set (const VariableReference & variable,
-        const madara::KnowledgeRecord & value, 
+        const madara::knowledge::KnowledgeRecord & value, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
       
@@ -299,7 +299,7 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set (const std::string & key,
-        madara::KnowledgeRecord::Integer value, 
+        madara::knowledge::KnowledgeRecord::Integer value, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
       
@@ -311,7 +311,7 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set (const VariableReference & variable,
-        madara::KnowledgeRecord::Integer value, 
+        madara::knowledge::KnowledgeRecord::Integer value, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
       
@@ -324,7 +324,7 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_index (const std::string & key,
-        size_t index, KnowledgeRecord::Integer value, 
+        size_t index, knowledge::KnowledgeRecord::Integer value, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
       
@@ -337,7 +337,7 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_index (const VariableReference & variable,
-        size_t index, KnowledgeRecord::Integer value, 
+        size_t index, knowledge::KnowledgeRecord::Integer value, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
       
@@ -350,7 +350,7 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set (const std::string & key,
-        const madara::KnowledgeRecord::Integer * value,
+        const madara::knowledge::KnowledgeRecord::Integer * value,
         uint32_t size,
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
@@ -364,7 +364,7 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set (const VariableReference & variable,
-        const madara::KnowledgeRecord::Integer * value,
+        const madara::knowledge::KnowledgeRecord::Integer * value,
         uint32_t size,
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
@@ -558,7 +558,7 @@ namespace madara
        *          -1 if null key
        **/
       int set_if_unequal (const std::string & key,
-        madara::KnowledgeRecord::Integer value, 
+        madara::knowledge::KnowledgeRecord::Integer value, 
         uint32_t quality, uint64_t clock, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
@@ -606,7 +606,7 @@ namespace madara
        *          -1 if null key
        **/
       int update_record_from_external (
-        const std::string & key, const KnowledgeRecord & rhs,
+        const std::string & key, const knowledge::KnowledgeRecord & rhs,
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
       
@@ -661,7 +661,7 @@ namespace madara
        * disseminatable knowledge update.
        * @return  the modified knowledge records
        **/
-      const KnowledgeRecords & get_modifieds (void) const;
+      const knowledge::KnowledgeRecords & get_modifieds (void) const;
 
       /**
       * Retrieves a stringified list of all modified variables that are ready
@@ -675,7 +675,7 @@ namespace madara
        * comprehensive checkpoint.
        * @return  the modified knowledge records
        **/
-      const KnowledgeRecords & get_local_modified (void) const;
+      const knowledge::KnowledgeRecords & get_local_modified (void) const;
 
       /**
        * Reset all variables to be unmodified. This will clear all global
@@ -701,7 +701,7 @@ namespace madara
        * @param  settings  the settings for referring to variables
        **/
       void mark_modified (const std::string & key,
-        madara::KnowledgeRecord & record,
+        madara::knowledge::KnowledgeRecord & record,
         const KnowledgeReferenceSettings & settings =
           KnowledgeReferenceSettings (false));
       
@@ -712,7 +712,7 @@ namespace madara
        * @param  settings  the settings for referring to variables
        **/
       void mark_local_modified (const std::string & key,
-        madara::KnowledgeRecord & record,
+        madara::knowledge::KnowledgeRecord & record,
         const KnowledgeReferenceSettings & settings =
           KnowledgeReferenceSettings (false));
 
@@ -728,7 +728,7 @@ namespace madara
        * @param   settings  settings for applying the update
        * @return                 new value of variable
        **/
-      madara::KnowledgeRecord inc (const std::string & key, 
+      madara::knowledge::KnowledgeRecord inc (const std::string & key, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
       
@@ -738,7 +738,7 @@ namespace madara
        * @param   settings  settings for applying the update
        * @return                 new value of variable
        **/
-      madara::KnowledgeRecord inc (const VariableReference & variable, 
+      madara::knowledge::KnowledgeRecord inc (const VariableReference & variable, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
 
@@ -754,7 +754,7 @@ namespace madara
        * @param   settings  settings for applying the update
        * @return                 new value of variable
        **/
-      madara::KnowledgeRecord dec (const std::string & key, 
+      madara::knowledge::KnowledgeRecord dec (const std::string & key, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
       
@@ -764,7 +764,7 @@ namespace madara
        * @param   settings  settings for applying the update
        * @return                 new value of variable
        **/
-      madara::KnowledgeRecord dec (const VariableReference & variable, 
+      madara::knowledge::KnowledgeRecord dec (const VariableReference & variable, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
       
@@ -952,7 +952,7 @@ namespace madara
        * @param  settings   settings for referring to variables
        **/
       void define_function (const std::string & name,
-        KnowledgeRecord (*func) (FunctionArguments &, Variables &),
+        knowledge::KnowledgeRecord (*func) (FunctionArguments &, Variables &),
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
       
@@ -964,7 +964,7 @@ namespace madara
        * @param  settings   settings for referring to variables
        **/
       void define_function (const std::string & name,
-        KnowledgeRecord (*func) (const char *, FunctionArguments &, Variables &),
+        knowledge::KnowledgeRecord (*func) (const char *, FunctionArguments &, Variables &),
         const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
 
@@ -1032,7 +1032,7 @@ namespace madara
        * @param   settings    settings for applying the update
        * @return              result of the evaluation
        **/
-      KnowledgeRecord evaluate (CompiledExpression expression,
+      knowledge::KnowledgeRecord evaluate (CompiledExpression expression,
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
       
@@ -1044,7 +1044,7 @@ namespace madara
        * @param   settings    settings for applying the update
        * @return              result of the evaluation
        **/
-      KnowledgeRecord evaluate (
+      knowledge::KnowledgeRecord evaluate (
         expression::ComponentNode * root,
         const KnowledgeUpdateSettings & settings = 
                     KnowledgeUpdateSettings ());
@@ -1053,11 +1053,11 @@ namespace madara
 
       /**
        * Saves all keys and values into a string, using the underlying
-       * KnowledgeRecord::to_string function. This is an optimized
+       * knowledge::KnowledgeRecord::to_string function. This is an optimized
        * version that allows the specification of a target string to
        * avoid string copying (which can be expensive with longer
        * strings across multiple function boundaries). This function differs
-       * from KnowledgeRecord to_string in that it is intended to save the
+       * from knowledge::KnowledgeRecord to_string in that it is intended to save the
        * database in a format that can be easily parseable. Consequently,
        * strings are delineated in this function by being included in single
        * quotes. Arrays are delineated with array indices [].
@@ -1109,7 +1109,7 @@ namespace madara
        * @return              entries in the resulting map
        **/
       size_t  to_map    (const std::string & subject,
-                       std::map <std::string, KnowledgeRecord> & target);
+                       std::map <std::string, knowledge::KnowledgeRecord> & target);
 
       /**
        * Adds a file to the logger
@@ -1161,7 +1161,7 @@ namespace madara
         const std::string & delimiter,
         const std::string & suffix,
         std::vector <std::string> & next_keys,
-        std::map <std::string, KnowledgeRecord> & result,
+        std::map <std::string, knowledge::KnowledgeRecord> & result,
         bool just_keys);
 
       /**
@@ -1213,19 +1213,19 @@ namespace madara
        * @param   record   record to place in the changed_map
        * @param   settings settings for applying modification and signalling
        **/
-      void mark_and_signal (const char * name, KnowledgeRecord * record,
+      void mark_and_signal (const char * name, knowledge::KnowledgeRecord * record,
                             const KnowledgeUpdateSettings & settings);
 
       typedef ACE_Guard<MADARA_LOCK_TYPE> ContextGuard;
 
       /// Hash table containing variable names and values.
-      madara::KnowledgeMap map_;
+      madara::knowledge::KnowledgeMap map_;
       mutable MADARA_LOCK_TYPE mutex_;
       mutable Condition changed_;
       std::vector< std::string> expansion_splitters_;
       mutable uint64_t clock_;
-      KnowledgeRecords changed_map_;
-      KnowledgeRecords local_changed_map_;
+      knowledge::KnowledgeRecords changed_map_;
+      knowledge::KnowledgeRecords local_changed_map_;
 
       /// map of function names to functions
       FunctionMap functions_;

@@ -129,7 +129,7 @@ int main (int argc, char ** argv)
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
 
   if (settings.id == 0)
   {
@@ -148,7 +148,7 @@ int main (int argc, char ** argv)
     knowledge.wait (compiled, wait_settings);
 
     if (knowledge.get ("var2").to_integer () == 1 &&
-      knowledge.get ("var4").status () == madara::KnowledgeRecord::UNCREATED)
+      knowledge.get ("var4").status () == madara::knowledge::KnowledgeRecord::UNCREATED)
     {
       knowledge.print ("Var4 was not received. Send list SUCCESS.\n");
     }

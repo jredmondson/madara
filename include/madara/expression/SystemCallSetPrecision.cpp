@@ -21,16 +21,16 @@ madara::expression::SystemCallSetPrecision::~SystemCallSetPrecision (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallSetPrecision::item (void) const
 {
-  return madara::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallSetPrecision::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
@@ -38,7 +38,7 @@ madara::expression::SystemCallSetPrecision::prune (bool & can_change)
   // under any situation
   can_change = true;
   
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (nodes_.size () > 0)
   {
@@ -57,21 +57,21 @@ madara::expression::SystemCallSetPrecision::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::SystemCallSetPrecision::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  KnowledgeRecord return_value;
+  knowledge::KnowledgeRecord return_value;
 
   if (nodes_.size () > 0)
   {
-    KnowledgeRecord::Integer new_precision = 
+    knowledge::KnowledgeRecord::Integer new_precision = 
       nodes_[0]->evaluate (settings).to_integer ();
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call precision is setting the precision to %" PRId64 ".\n",
       new_precision);
 
-    KnowledgeRecord::set_precision (new_precision);
+    knowledge::KnowledgeRecord::set_precision (new_precision);
 
     return new_precision;
   }
@@ -80,7 +80,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call precision is returning the double precision.\n");
 
-    return KnowledgeRecord::Integer (KnowledgeRecord::get_precision ());
+    return knowledge::KnowledgeRecord::Integer (
+      knowledge::KnowledgeRecord::get_precision ());
   }
 
   return return_value;

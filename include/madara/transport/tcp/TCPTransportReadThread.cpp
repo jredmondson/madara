@@ -57,7 +57,7 @@ void
 madara::transport::TCPTransportReadThread::rebroadcast (
 const char * print_prefix,
 MessageHeader * header,
-const KnowledgeMap & records)
+const knowledge::KnowledgeMap & records)
 {
   int64_t buffer_remaining = (int64_t)settings_.queue_length;
   char * buffer = buffer_.get_ptr ();
@@ -185,7 +185,7 @@ madara::transport::TCPTransportReadThread::run (void)
       " entering main service loop.\n",
       print_prefix);
 
-    KnowledgeMap rebroadcast_records;
+    knowledge::KnowledgeMap rebroadcast_records;
 
     if (buffer == 0)
     {

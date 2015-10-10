@@ -22,16 +22,16 @@ madara::expression::SystemCallGetTime::~SystemCallGetTime (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallGetTime::item (void) const
 {
-  return madara::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallGetTime::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
@@ -39,7 +39,7 @@ madara::expression::SystemCallGetTime::prune (bool & can_change)
   // under any situation
   can_change = true;
   
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (nodes_.size () > 0)
   {
@@ -58,14 +58,14 @@ madara::expression::SystemCallGetTime::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::SystemCallGetTime::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
     "System call get_time is returning the system clock\n");
 
-  return madara::KnowledgeRecord::Integer (
+  return madara::knowledge::KnowledgeRecord::Integer (
     madara::utility::get_time ());
 }
 

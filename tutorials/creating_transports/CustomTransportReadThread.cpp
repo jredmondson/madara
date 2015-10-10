@@ -2,7 +2,7 @@
 #include "madara/transport/MessageHeader.h"
 #include "ace/Time_Value.h"
 #include "madara/utility/Utility.h"
-#include "madara/knowledge_engine/ThreadSafeContext.h"
+#include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/transport/Transport.h"
 #include "madara/logger/GlobalLogger.h"
 
@@ -12,13 +12,13 @@
 /**
 * Define helpful shortened namespaces that we can refer to later
 **/
-namespace engine = Madara::KnowledgeEngine;
-namespace transport = Madara::Transport;
-namespace logger = Madara::Logger;
+namespace knowledge = madara::knowledge;
+namespace transport = madara::transport;
+namespace logger = madara::logger;
 
 CustomTransportReadThread::CustomTransportReadThread (
   const transport::Settings & settings, const std::string & id,
-  engine::ThreadSafeContext & context,
+  knowledge::ThreadSafeContext & context,
   const ACE_INET_Addr & address)
   : settings_ (settings), id_ (id), context_ (context),
     barrier_ (2), terminated_ (false), 
@@ -105,7 +105,7 @@ CustomTransportReadThread::svc (void)
       }
       
       // temporary record for reading from the updates buffer
-      Madara::KnowledgeRecord record;
+      madara::knowledge::KnowledgeRecord record;
       record.quality = header.quality;
       record.clock = header.clock;
       std::string key;

@@ -86,7 +86,7 @@ namespace madara
        *                     in FunctionArguments.
        **/
       void add_send_filter (uint32_t types,
-        KnowledgeRecord (*function) (knowledge::FunctionArguments &,
+        knowledge::KnowledgeRecord (*function) (knowledge::FunctionArguments &,
                                       knowledge::Variables &));
       
       /**
@@ -104,7 +104,7 @@ namespace madara
        * @param   function  an aggregate update filter
        **/
       void add_send_filter (void (*function) (
-        KnowledgeMap &, const transport::TransportContext &,
+        knowledge::KnowledgeMap &, const TransportContext &,
         knowledge::Variables &));
       
       /**
@@ -129,7 +129,7 @@ namespace madara
        *                     in FunctionArguments.
        **/
       void add_receive_filter (uint32_t types,
-        KnowledgeRecord (*function) (knowledge::FunctionArguments &,
+        knowledge::KnowledgeRecord (*function) (knowledge::FunctionArguments &,
                                       knowledge::Variables &));
       
       /**
@@ -147,7 +147,7 @@ namespace madara
        * @param   function  an aggregate update filter
        **/
       void add_receive_filter (void (*function) (
-        KnowledgeMap &, const transport::TransportContext &,
+        knowledge::KnowledgeMap &, const TransportContext &,
         knowledge::Variables &));
  
       /**
@@ -166,7 +166,7 @@ namespace madara
        *                     in FunctionArguments.
        **/
       void add_rebroadcast_filter (uint32_t types,
-        KnowledgeRecord (*function) (knowledge::FunctionArguments &,
+        knowledge::KnowledgeRecord (*function) (knowledge::FunctionArguments &,
                                       knowledge::Variables &));
       
       /**
@@ -185,7 +185,7 @@ namespace madara
        * @param   function  an aggregate update filter
        **/
       void add_rebroadcast_filter (void (*function) (
-        KnowledgeMap &, const transport::TransportContext &,
+        knowledge::KnowledgeMap &, const TransportContext &,
         knowledge::Variables &));
  
       /**
@@ -363,8 +363,8 @@ namespace madara
        * @param   context the context of the transport
        * @return  the result of filtering the input
        **/
-      KnowledgeRecord filter_send (
-        const madara::KnowledgeRecord & input,
+      knowledge::KnowledgeRecord filter_send (
+        const madara::knowledge::KnowledgeRecord & input,
         const std::string & name,
         transport::TransportContext & context) const;
         
@@ -373,7 +373,7 @@ namespace madara
        * @param  records             the aggregate record map
        * @param  transport_context   the context of the transport
        **/
-      void filter_send (KnowledgeMap & records,
+      void filter_send (knowledge::KnowledgeMap & records,
         const transport::TransportContext & transport_context) const;
           
       /**
@@ -383,8 +383,8 @@ namespace madara
        * @param   context the context of the transport
        * @return  the result of filtering the input
        **/
-      KnowledgeRecord filter_receive (
-        const madara::KnowledgeRecord & input,
+      knowledge::KnowledgeRecord filter_receive (
+        const madara::knowledge::KnowledgeRecord & input,
         const std::string & name,
         transport::TransportContext & context) const;
       
@@ -393,7 +393,7 @@ namespace madara
        * @param  records             the aggregate record map
        * @param  transport_context   the context of the transport
        **/
-      void filter_receive (KnowledgeMap & records,
+      void filter_receive (knowledge::KnowledgeMap & records,
         const transport::TransportContext & transport_context) const;
           
       /**
@@ -403,8 +403,8 @@ namespace madara
        * @param   context the context of the transport
        * @return  the result of filtering the input
        **/
-      KnowledgeRecord filter_rebroadcast (
-        const madara::KnowledgeRecord & input,
+      knowledge::KnowledgeRecord filter_rebroadcast (
+        const madara::knowledge::KnowledgeRecord & input,
         const std::string & name,
         transport::TransportContext & context) const;
 
@@ -413,7 +413,7 @@ namespace madara
        * @param  records             the aggregate record map
        * @param  transport_context   the context of the transport
        **/
-      void filter_rebroadcast (KnowledgeMap & records,
+      void filter_rebroadcast (knowledge::KnowledgeMap & records,
         const transport::TransportContext & transport_context) const;
 
       /**

@@ -6,14 +6,14 @@
 #include <algorithm>
 
 /**
-* @file KnowledgeRecord.h
+* @file knowledge::KnowledgeRecord.h
 * @author James Edmondson <jedmondson@gmail.com>
 *
-* This file contains the methods of the KnowledgeRecord class
+* This file contains the methods of the knowledge::KnowledgeRecord class
 **/
 
 inline int
-madara::KnowledgeRecord::status (void) const
+madara::knowledge::KnowledgeRecord::status (void) const
 {
   return status_;
 }
@@ -22,111 +22,111 @@ madara::KnowledgeRecord::status (void) const
 * sets the status to modified
 **/
 inline void
-madara::KnowledgeRecord::set_modified (void)
+madara::knowledge::KnowledgeRecord::set_modified (void)
 {
   status_ = MODIFIED;
 }
 
 inline uint32_t
-madara::KnowledgeRecord::size (void) const
+madara::knowledge::KnowledgeRecord::size (void) const
 {
   return size_;
 }
 
 inline int32_t
-madara::KnowledgeRecord::type (void) const
+madara::knowledge::KnowledgeRecord::type (void) const
 {
   return type_;
 }
 
 inline bool
-madara::KnowledgeRecord::is_ref_counted (void) const
+madara::knowledge::KnowledgeRecord::is_ref_counted (void) const
 {
   return is_ref_counted (type_);
 }
 
 inline bool
-madara::KnowledgeRecord::is_ref_counted (uint32_t type) const
+madara::knowledge::KnowledgeRecord::is_ref_counted (uint32_t type) const
 {
   return type != INTEGER && type != DOUBLE;
 }
 
 inline bool
-madara::KnowledgeRecord::is_string_type (void) const
+madara::knowledge::KnowledgeRecord::is_string_type (void) const
 {
   return is_string_type (type_);
 }
 
 inline bool
-madara::KnowledgeRecord::is_string_type (uint32_t type) const
+madara::knowledge::KnowledgeRecord::is_string_type (uint32_t type) const
 {
   return type == STRING || type == XML || type == TEXT_FILE;
 }
 
 inline bool
-madara::KnowledgeRecord::is_double_type (void) const
+madara::knowledge::KnowledgeRecord::is_double_type (void) const
 {
   return is_double_type (type_);
 }
 
 inline bool
-madara::KnowledgeRecord::is_double_type (uint32_t type) const
+madara::knowledge::KnowledgeRecord::is_double_type (uint32_t type) const
 {
   return type == DOUBLE || type == DOUBLE_ARRAY;
 }
 
 inline bool
-madara::KnowledgeRecord::is_integer_type (void) const
+madara::knowledge::KnowledgeRecord::is_integer_type (void) const
 {
   return is_integer_type (type_);
 }
 
 
 inline bool
-madara::KnowledgeRecord::is_integer_type (uint32_t type) const
+madara::knowledge::KnowledgeRecord::is_integer_type (uint32_t type) const
 {
   return type == INTEGER || type == INTEGER_ARRAY;
 }
 
 inline bool
-madara::KnowledgeRecord::is_image_type (void) const
+madara::knowledge::KnowledgeRecord::is_image_type (void) const
 {
   return is_image_type (type_);
 }
 
 inline bool
-madara::KnowledgeRecord::is_image_type (uint32_t type) const
+madara::knowledge::KnowledgeRecord::is_image_type (uint32_t type) const
 {
   return type == IMAGE_JPEG;
 }
 
 inline bool
-madara::KnowledgeRecord::is_file_type (void) const
+madara::knowledge::KnowledgeRecord::is_file_type (void) const
 {
   return is_file_type (type_);
 }
 
 inline bool
-madara::KnowledgeRecord::is_file_type (uint32_t type) const
+madara::knowledge::KnowledgeRecord::is_file_type (uint32_t type) const
 {
   return type == TEXT_FILE || type == XML ||
          type == IMAGE_JPEG || type == UNKNOWN_FILE_TYPE;
 }
 
 inline bool
-madara::KnowledgeRecord::is_binary_file_type (void) const
+madara::knowledge::KnowledgeRecord::is_binary_file_type (void) const
 {
   return is_binary_file_type (type_);
 }
 
 inline bool
-madara::KnowledgeRecord::is_binary_file_type (uint32_t type) const
+madara::knowledge::KnowledgeRecord::is_binary_file_type (uint32_t type) const
 {
   return type == IMAGE_JPEG || type == UNKNOWN_FILE_TYPE;
 }
 
 inline uint32_t
-madara::max_quality (const KnowledgeRecords & records)
+madara::knowledge::max_quality (const knowledge::KnowledgeRecords & records)
 {
   uint32_t max = 0;
 
@@ -140,7 +140,7 @@ madara::max_quality (const KnowledgeRecords & records)
 }
 
 inline uint32_t
-madara::max_quality (const KnowledgeMap & records)
+madara::knowledge::max_quality (const knowledge::KnowledgeMap & records)
 {
   uint32_t max = 0;
 
@@ -155,7 +155,7 @@ madara::max_quality (const KnowledgeMap & records)
 
 
 inline void
-madara::KnowledgeRecord::clear_value (void)
+madara::knowledge::KnowledgeRecord::clear_value (void)
 {
   if (status_ != UNCREATED)
   {
@@ -178,7 +178,7 @@ madara::KnowledgeRecord::clear_value (void)
 
 // reset the value_ to an integer
 inline void  
-madara::KnowledgeRecord::reset_value (void)
+madara::knowledge::KnowledgeRecord::reset_value (void)
 {
   clear_value ();
 
@@ -189,7 +189,7 @@ madara::KnowledgeRecord::reset_value (void)
 
 // set the value_ to a string
 inline void
-madara::KnowledgeRecord::set_value (const std::string & new_value)
+madara::knowledge::KnowledgeRecord::set_value (const std::string & new_value)
 {
   clear_value ();
   type_ = STRING;
@@ -205,7 +205,7 @@ madara::KnowledgeRecord::set_value (const std::string & new_value)
 
 // set the value_ to a string
 inline void
-madara::KnowledgeRecord::set_xml (const char * new_value, size_t size)
+madara::knowledge::KnowledgeRecord::set_xml (const char * new_value, size_t size)
 {
   clear_value ();
   type_ = XML;
@@ -221,7 +221,7 @@ madara::KnowledgeRecord::set_xml (const char * new_value, size_t size)
 
 // set the value_ to a string
 inline void
-madara::KnowledgeRecord::set_text (const char * new_value, size_t size)
+madara::knowledge::KnowledgeRecord::set_text (const char * new_value, size_t size)
 {
   clear_value ();
   type_ = TEXT_FILE;
@@ -237,7 +237,7 @@ madara::KnowledgeRecord::set_text (const char * new_value, size_t size)
 
 // set the value_ to a string
 inline void
-madara::KnowledgeRecord::set_jpeg (const unsigned char * new_value,
+madara::knowledge::KnowledgeRecord::set_jpeg (const unsigned char * new_value,
                                     size_t size)
 {
   clear_value ();
@@ -253,7 +253,7 @@ madara::KnowledgeRecord::set_jpeg (const unsigned char * new_value,
 
 // set the value_ to a string
 inline void
-madara::KnowledgeRecord::set_file (const unsigned char * new_value,
+madara::knowledge::KnowledgeRecord::set_file (const unsigned char * new_value,
                                     size_t size)
 {
   clear_value ();
@@ -269,7 +269,7 @@ madara::KnowledgeRecord::set_file (const unsigned char * new_value,
 
 // set the value_ to an integer
 inline void
-madara::KnowledgeRecord::set_value (const Integer & new_value)
+madara::knowledge::KnowledgeRecord::set_value (const Integer & new_value)
 {
   clear_value ();
   type_ = INTEGER;
@@ -281,7 +281,7 @@ madara::KnowledgeRecord::set_value (const Integer & new_value)
 
 // set the value_ to an array of doubles
 inline void
-madara::KnowledgeRecord::set_value (const Integer * new_value, uint32_t size)
+madara::knowledge::KnowledgeRecord::set_value (const Integer * new_value, uint32_t size)
 {
   clear_value ();
   type_ = INTEGER_ARRAY;
@@ -298,7 +298,7 @@ madara::KnowledgeRecord::set_value (const Integer * new_value, uint32_t size)
 
 // set the value_ to an array of integers
 inline void
-madara::KnowledgeRecord::set_value (const std::vector <Integer> & new_value)
+madara::knowledge::KnowledgeRecord::set_value (const std::vector <Integer> & new_value)
 {
   clear_value ();
   type_ = INTEGER_ARRAY;
@@ -315,7 +315,7 @@ madara::KnowledgeRecord::set_value (const std::vector <Integer> & new_value)
 
 // set the value_ to a double
 inline void
-madara::KnowledgeRecord::set_value (const double & new_value)
+madara::knowledge::KnowledgeRecord::set_value (const double & new_value)
 {
   clear_value ();
   type_ = DOUBLE;
@@ -327,7 +327,7 @@ madara::KnowledgeRecord::set_value (const double & new_value)
 
 // set the value_ to an array of doubles
 inline void
-madara::KnowledgeRecord::set_value (const double * new_value, uint32_t size)
+madara::knowledge::KnowledgeRecord::set_value (const double * new_value, uint32_t size)
 {
   clear_value ();
   type_ = DOUBLE_ARRAY;
@@ -344,7 +344,7 @@ madara::KnowledgeRecord::set_value (const double * new_value, uint32_t size)
 
 // set the value_ to an array of doubles
 inline void
-madara::KnowledgeRecord::set_value (const std::vector <double> & new_value)
+madara::knowledge::KnowledgeRecord::set_value (const std::vector <double> & new_value)
 {
   clear_value ();
   type_ = DOUBLE_ARRAY;

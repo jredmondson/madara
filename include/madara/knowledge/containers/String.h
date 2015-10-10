@@ -225,17 +225,17 @@ namespace madara
         bool exists (void) const;
       
         /**
-         * Returns the value as a KnowledgeRecord. This
+         * Returns the value as a knowledge::KnowledgeRecord. This
          * is useful for referencing clock and other record info.
-         * @return the value as a KnowledgeRecord
+         * @return the value as a knowledge::KnowledgeRecord
          **/
-        KnowledgeRecord to_record (void) const;
+        knowledge::KnowledgeRecord to_record (void) const;
 
         /**
          * Returns the value as an integer
          * @return the value as an integer
          **/
-        madara::KnowledgeRecord::Integer to_integer (void) const;
+        madara::knowledge::KnowledgeRecord::Integer to_integer (void) const;
         
         /**
          * Returns the value as a double

@@ -13,7 +13,7 @@ namespace knowledge = madara::knowledge;
 typedef knowledge::Variables Variables;
 typedef knowledge::CompiledExpression   CompiledExpression;
 typedef knowledge::EvalSettings         EvalSettings;
-typedef madara::KnowledgeRecord      KnowledgeRecord;
+typedef knowledge::KnowledgeRecord      KnowledgeRecord;
 
 /*
 * Class:     com_madara_Variables

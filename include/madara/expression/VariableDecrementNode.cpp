@@ -10,7 +10,7 @@
 #include <sstream>
 
 madara::expression::VariableDecrementNode::VariableDecrementNode (
-  ComponentNode * lhs, madara::KnowledgeRecord value,
+  ComponentNode * lhs, madara::knowledge::KnowledgeRecord value,
   ComponentNode * rhs,
   madara::knowledge::ThreadSafeContext &context)
 : ComponentNode (context.get_logger ()), var_ (0), array_ (0),
@@ -34,10 +34,10 @@ madara::expression::VariableDecrementNode::accept (Visitor &visitor) const
   visitor.visit (*this);
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::VariableDecrementNode::item () const
 {
-  KnowledgeRecord value;
+  knowledge::KnowledgeRecord value;
 
   if (var_)
     value = var_->item ();
@@ -50,12 +50,12 @@ madara::expression::VariableDecrementNode::item () const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::VariableDecrementNode::prune (bool & can_change)
 {
   bool left_child_can_change = false;
   bool right_child_can_change = false;
-  madara::KnowledgeRecord right_value;
+  madara::knowledge::KnowledgeRecord right_value;
 
   if (this->var_ != 0 || this->array_ != 0)
     left_child_can_change = true;
@@ -91,11 +91,11 @@ madara::expression::VariableDecrementNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::VariableDecrementNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  madara::KnowledgeRecord rhs;
+  madara::knowledge::KnowledgeRecord rhs;
 
   if (rhs_)
     rhs = rhs_->evaluate (settings);
@@ -110,7 +110,7 @@ madara::expression::VariableDecrementNode::evaluate (
       var_->expand_key ().c_str (),
       rhs.to_string ().c_str ());
     
-    KnowledgeRecord result (var_->evaluate (settings) - rhs);
+    knowledge::KnowledgeRecord result (var_->evaluate (settings) - rhs);
     var_->set (result, settings);
     return result;
   }
@@ -122,7 +122,7 @@ madara::expression::VariableDecrementNode::evaluate (
       array_->expand_key ().c_str (),
       rhs.to_string ().c_str ());
 
-    KnowledgeRecord result (array_->evaluate (settings) - rhs);
+    knowledge::KnowledgeRecord result (array_->evaluate (settings) - rhs);
     array_->set (result, settings);
     return result;
   }

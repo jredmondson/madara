@@ -15,13 +15,13 @@
 int madara_double_precision (-1);
 
 int
-madara::KnowledgeRecord::get_precision (void)
+madara::knowledge::KnowledgeRecord::get_precision (void)
 {
   return madara_double_precision;
 }
 
 void
-madara::KnowledgeRecord::set_precision (int new_precision)
+madara::knowledge::KnowledgeRecord::set_precision (int new_precision)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
     "KnowledgeRecord::set_precision:" \
@@ -30,7 +30,7 @@ madara::KnowledgeRecord::set_precision (int new_precision)
   madara_double_precision = new_precision;
 }
 
-madara::KnowledgeRecord::KnowledgeRecord (logger::Logger & logger)
+madara::knowledge::KnowledgeRecord::KnowledgeRecord (logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
   quality (0), write_quality (0),
   int_value_ (0), type_ (INTEGER), size_ (1),
@@ -39,7 +39,7 @@ madara::KnowledgeRecord::KnowledgeRecord (logger::Logger & logger)
 {
 }
 
-madara::KnowledgeRecord::KnowledgeRecord (Integer value,
+madara::knowledge::KnowledgeRecord::KnowledgeRecord (Integer value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
   quality (0), write_quality (0),
@@ -49,7 +49,7 @@ madara::KnowledgeRecord::KnowledgeRecord (Integer value,
   set_value (value);
 }
 
-madara::KnowledgeRecord::KnowledgeRecord (
+madara::knowledge::KnowledgeRecord::KnowledgeRecord (
   const std::vector <Integer> & value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
@@ -60,7 +60,7 @@ madara::KnowledgeRecord::KnowledgeRecord (
   set_value (value);
 }
 
-madara::KnowledgeRecord::KnowledgeRecord (double value,
+madara::knowledge::KnowledgeRecord::KnowledgeRecord (double value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
   quality (0), write_quality (0),
@@ -70,7 +70,7 @@ madara::KnowledgeRecord::KnowledgeRecord (double value,
   set_value (value);
 }
 
-madara::KnowledgeRecord::KnowledgeRecord (
+madara::knowledge::KnowledgeRecord::KnowledgeRecord (
   const std::vector <double> & value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
@@ -81,7 +81,7 @@ madara::KnowledgeRecord::KnowledgeRecord (
   set_value (value);
 }
 
-madara::KnowledgeRecord::KnowledgeRecord (const std::string & value,
+madara::knowledge::KnowledgeRecord::KnowledgeRecord (const std::string & value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
   quality (0), write_quality (0),
@@ -91,7 +91,7 @@ madara::KnowledgeRecord::KnowledgeRecord (const std::string & value,
   set_value (value);
 }
 
-madara::KnowledgeRecord::KnowledgeRecord (const char * value,
+madara::knowledge::KnowledgeRecord::KnowledgeRecord (const char * value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
   quality (0), write_quality (0),
@@ -101,7 +101,7 @@ madara::KnowledgeRecord::KnowledgeRecord (const char * value,
   set_value (std::string (value));
 }
 
-madara::KnowledgeRecord::KnowledgeRecord (const KnowledgeRecord & rhs)
+madara::knowledge::KnowledgeRecord::KnowledgeRecord (const knowledge::KnowledgeRecord & rhs)
 : logger_ (rhs.logger_), status_ (rhs.status_), clock (rhs.clock),
   scope (rhs.scope), quality (rhs.quality),
   write_quality (rhs.write_quality),
@@ -126,21 +126,21 @@ madara::KnowledgeRecord::KnowledgeRecord (const KnowledgeRecord & rhs)
   }
 }
 
-madara::KnowledgeRecord::~KnowledgeRecord ()
+madara::knowledge::KnowledgeRecord::~KnowledgeRecord ()
 {
 }
 
 
 bool
-madara::KnowledgeRecord::exists (void) const
+madara::knowledge::KnowledgeRecord::exists (void) const
 {
   return status_ != UNCREATED;
 }
 
-madara::KnowledgeRecord *
-madara::KnowledgeRecord::clone (void) const
+madara::knowledge::KnowledgeRecord *
+madara::knowledge::KnowledgeRecord::clone (void) const
 {
-  KnowledgeRecord * result = new KnowledgeRecord ();
+  knowledge::KnowledgeRecord * result = new knowledge::KnowledgeRecord ();
   
   if (is_ref_counted ())
   {
@@ -183,7 +183,7 @@ madara::KnowledgeRecord::clone (void) const
 }
 
 void
-madara::KnowledgeRecord::deep_copy (const KnowledgeRecord & source)
+madara::knowledge::KnowledgeRecord::deep_copy (const knowledge::KnowledgeRecord & source)
 {
   if (source.is_ref_counted ())
   {
@@ -225,7 +225,7 @@ madara::KnowledgeRecord::deep_copy (const KnowledgeRecord & source)
 }
 
 int
-madara::KnowledgeRecord::read_file (
+madara::knowledge::KnowledgeRecord::read_file (
   const std::string & filename, uint32_t read_as_type)
 {
   void * buffer;
@@ -288,7 +288,7 @@ madara::KnowledgeRecord::read_file (
   * writes the value to a file
   **/
 ssize_t
-madara::KnowledgeRecord::to_file (const std::string & filename) const
+madara::knowledge::KnowledgeRecord::to_file (const std::string & filename) const
 {
   if (is_string_type ())
   {
@@ -311,7 +311,7 @@ madara::KnowledgeRecord::to_file (const std::string & filename) const
 
 
 double
-madara::KnowledgeRecord::to_double (void) const
+madara::knowledge::KnowledgeRecord::to_double (void) const
 {
   double value = 0;
 
@@ -340,8 +340,8 @@ madara::KnowledgeRecord::to_double (void) const
   return value;
 }
 
-madara::KnowledgeRecord::Integer
-madara::KnowledgeRecord::to_integer (void) const
+madara::knowledge::KnowledgeRecord::Integer
+madara::knowledge::KnowledgeRecord::to_integer (void) const
 {
   Integer value (0);
 
@@ -370,8 +370,8 @@ madara::KnowledgeRecord::to_integer (void) const
   return value;
 }
 
-std::vector <madara::KnowledgeRecord::Integer>
-madara::KnowledgeRecord::to_integers (void) const
+std::vector <madara::knowledge::KnowledgeRecord::Integer>
+madara::knowledge::KnowledgeRecord::to_integers (void) const
 {
   std::vector <Integer> integers;
 
@@ -420,7 +420,7 @@ madara::KnowledgeRecord::to_integers (void) const
 }
 
 std::vector <double>
-madara::KnowledgeRecord::to_doubles (void) const
+madara::knowledge::KnowledgeRecord::to_doubles (void) const
 {
   std::vector <double> doubles;
 
@@ -468,7 +468,7 @@ madara::KnowledgeRecord::to_doubles (void) const
 
 // read the value_ in a string format
 std::string
-madara::KnowledgeRecord::to_string (const std::string & delimiter) const
+madara::knowledge::KnowledgeRecord::to_string (const std::string & delimiter) const
 {
   if (status_ != UNCREATED)
   {
@@ -553,7 +553,7 @@ madara::KnowledgeRecord::to_string (const std::string & delimiter) const
 
 // read the value_ in a string format
 unsigned char *
-madara::KnowledgeRecord::to_unmanaged_buffer (size_t & size) const
+madara::knowledge::KnowledgeRecord::to_unmanaged_buffer (size_t & size) const
 {
   if (status_ != UNCREATED)
   {
@@ -591,10 +591,10 @@ madara::KnowledgeRecord::to_unmanaged_buffer (size_t & size) const
 }
 
 
-madara::KnowledgeRecord
-madara::KnowledgeRecord::fragment (unsigned int first, unsigned int last)
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::fragment (unsigned int first, unsigned int last)
 {
-  KnowledgeRecord ret;
+  knowledge::KnowledgeRecord ret;
 
   if (first <= last && status_ != UNCREATED)
   {
@@ -660,8 +660,8 @@ madara::KnowledgeRecord::fragment (unsigned int first, unsigned int last)
   return ret;
 }
 
-madara::KnowledgeRecord::Integer
-madara::KnowledgeRecord::operator< (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord::Integer
+madara::knowledge::KnowledgeRecord::operator< (const knowledge::KnowledgeRecord & rhs) const
 {
   Integer result (0);
 
@@ -745,8 +745,8 @@ madara::KnowledgeRecord::operator< (const KnowledgeRecord & rhs) const
   return result;
 }
 
-madara::KnowledgeRecord::Integer
-madara::KnowledgeRecord::operator<= (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord::Integer
+madara::knowledge::KnowledgeRecord::operator<= (const knowledge::KnowledgeRecord & rhs) const
 {
   Integer result (0);
 
@@ -830,8 +830,8 @@ madara::KnowledgeRecord::operator<= (const KnowledgeRecord & rhs) const
   return result;
 }
 
-madara::KnowledgeRecord::Integer
-madara::KnowledgeRecord::operator== (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord::Integer
+madara::knowledge::KnowledgeRecord::operator== (const knowledge::KnowledgeRecord & rhs) const
 {
   Integer result (0);
 
@@ -932,7 +932,7 @@ madara::KnowledgeRecord::operator== (const KnowledgeRecord & rhs) const
 }
 
 bool
-madara::KnowledgeRecord::operator== (Integer value) const
+madara::knowledge::KnowledgeRecord::operator== (Integer value) const
 {
   // for this type of comparison, we can only be equal if we are the same
   // base type
@@ -949,7 +949,7 @@ madara::KnowledgeRecord::operator== (Integer value) const
 }
 
 bool
-madara::KnowledgeRecord::operator== (double value) const
+madara::knowledge::KnowledgeRecord::operator== (double value) const
 {
   // for this type of comparison, we can only be equal if we are the same
   // base type
@@ -966,19 +966,19 @@ madara::KnowledgeRecord::operator== (double value) const
 }
 
 bool
-madara::KnowledgeRecord::operator== (const std::string & value) const
+madara::knowledge::KnowledgeRecord::operator== (const std::string & value) const
 {
   return to_string () == value;
 }
 
 bool
-madara::KnowledgeRecord::operator== (const char * value) const
+madara::knowledge::KnowledgeRecord::operator== (const char * value) const
 {
   return to_string () == std::string (value);
 }
 
-madara::KnowledgeRecord::Integer 
-madara::KnowledgeRecord::operator!= (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord::Integer 
+madara::knowledge::KnowledgeRecord::operator!= (const knowledge::KnowledgeRecord & rhs) const
 {
   return !(*this == rhs);
 }
@@ -986,8 +986,8 @@ madara::KnowledgeRecord::operator!= (const KnowledgeRecord & rhs) const
 /**
   * Logical and.
   **/
-madara::KnowledgeRecord::Integer
-  madara::KnowledgeRecord::operator&& (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord::Integer
+  madara::knowledge::KnowledgeRecord::operator&& (const knowledge::KnowledgeRecord & rhs) const
 {
   return this->is_true () && rhs.is_true ();
 }
@@ -995,8 +995,8 @@ madara::KnowledgeRecord::Integer
 /**
   * Logical or.
   **/
-madara::KnowledgeRecord::Integer
-  madara::KnowledgeRecord::operator|| (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord::Integer
+  madara::knowledge::KnowledgeRecord::operator|| (const knowledge::KnowledgeRecord & rhs) const
 {
   return this->is_true () || rhs.is_true ();
 }
@@ -1004,8 +1004,8 @@ madara::KnowledgeRecord::Integer
 /**
   * Logical not.
   **/
-madara::KnowledgeRecord::Integer
-madara::KnowledgeRecord::operator! (void) const
+madara::knowledge::KnowledgeRecord::Integer
+madara::knowledge::KnowledgeRecord::operator! (void) const
 {
   return !is_true ();
 }
@@ -1013,10 +1013,10 @@ madara::KnowledgeRecord::operator! (void) const
 /**
   * Negate.
   **/
-madara::KnowledgeRecord
-  madara::KnowledgeRecord::operator- (void) const
+madara::knowledge::KnowledgeRecord
+  madara::knowledge::KnowledgeRecord::operator- (void) const
 {
-  madara::KnowledgeRecord record (*this);
+  madara::knowledge::KnowledgeRecord record (*this);
 
   if (is_integer_type ())
     record.set_value (-to_integer ());
@@ -1026,8 +1026,8 @@ madara::KnowledgeRecord
   return record;
 }
 
-madara::KnowledgeRecord::Integer
-madara::KnowledgeRecord::operator> (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord::Integer
+madara::knowledge::KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
 {
   Integer result (0);
 
@@ -1113,8 +1113,8 @@ madara::KnowledgeRecord::operator> (const KnowledgeRecord & rhs) const
   return result;
 }
 
-madara::KnowledgeRecord::Integer 
-madara::KnowledgeRecord::operator>= (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord::Integer 
+madara::knowledge::KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
 {
   Integer result (0);
 
@@ -1200,8 +1200,8 @@ madara::KnowledgeRecord::operator>= (const KnowledgeRecord & rhs) const
   return result;
 }
 
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator= (const KnowledgeRecord & rhs)
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs)
 {
   if (this == &rhs)
     return *this;
@@ -1239,8 +1239,8 @@ madara::KnowledgeRecord::operator= (const KnowledgeRecord & rhs)
 /**
   * Atomic addition operator
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator+= (const KnowledgeRecord & rhs)
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator+= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type ())
   {
@@ -1261,8 +1261,8 @@ madara::KnowledgeRecord::operator+= (const KnowledgeRecord & rhs)
 /**
   * Atomic predecrement
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator-- (void)
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator-- (void)
 {
   if (is_integer_type ())
     set_value (to_integer () - 1);
@@ -1276,8 +1276,8 @@ madara::KnowledgeRecord::operator-- (void)
 /**
   * Atomic preincrement
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator++ (void)
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator++ (void)
 {
   if (is_integer_type ())
     set_value (to_integer () + 1);
@@ -1292,8 +1292,8 @@ madara::KnowledgeRecord::operator++ (void)
 /**
   * Atomic subtraction operator
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator-= (const KnowledgeRecord & rhs)
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator-= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type ())
   {
@@ -1311,8 +1311,8 @@ madara::KnowledgeRecord::operator-= (const KnowledgeRecord & rhs)
 /**
   * Atomic multiplication operator
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator*= (const KnowledgeRecord & rhs)
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator*= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type ())
   {
@@ -1330,8 +1330,8 @@ madara::KnowledgeRecord::operator*= (const KnowledgeRecord & rhs)
 /**
   * Atomic division operator
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator/= (const KnowledgeRecord & rhs)
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type ())
   {
@@ -1369,8 +1369,8 @@ madara::KnowledgeRecord::operator/= (const KnowledgeRecord & rhs)
 /**
   * Atomic division operator
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator%= (const KnowledgeRecord & rhs)
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator%= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type ())
   {
@@ -1390,11 +1390,11 @@ madara::KnowledgeRecord::operator%= (const KnowledgeRecord & rhs)
 /**
   * Times operator
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator* (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator* (const knowledge::KnowledgeRecord & rhs) const
 {
   // copy this value to a local copy
-  KnowledgeRecord ret_value (*this);
+  knowledge::KnowledgeRecord ret_value (*this);
 
   return ret_value *= rhs;
 }
@@ -1402,11 +1402,11 @@ madara::KnowledgeRecord::operator* (const KnowledgeRecord & rhs) const
 /**
   * Divides operator
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator/ (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator/ (const knowledge::KnowledgeRecord & rhs) const
 {
   // copy this value to a local copy
-  KnowledgeRecord ret_value (*this);
+  knowledge::KnowledgeRecord ret_value (*this);
 
   return ret_value /= rhs;
 }
@@ -1414,11 +1414,11 @@ madara::KnowledgeRecord::operator/ (const KnowledgeRecord & rhs) const
 /**
   * Modulus operator
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator% (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator% (const knowledge::KnowledgeRecord & rhs) const
 {
   // copy this value to a local copy
-  KnowledgeRecord ret_value (*this);
+  knowledge::KnowledgeRecord ret_value (*this);
 
   return ret_value %= rhs;
 }
@@ -1426,11 +1426,11 @@ madara::KnowledgeRecord::operator% (const KnowledgeRecord & rhs) const
 /**
   * Plus operator
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator+ (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator+ (const knowledge::KnowledgeRecord & rhs) const
 {
   // copy this value to a local copy
-  KnowledgeRecord ret_value (*this);
+  knowledge::KnowledgeRecord ret_value (*this);
 
   return ret_value += rhs;
 }
@@ -1438,18 +1438,18 @@ madara::KnowledgeRecord::operator+ (const KnowledgeRecord & rhs) const
 /**
   * Minus operator
   **/
-madara::KnowledgeRecord
-madara::KnowledgeRecord::operator- (const KnowledgeRecord & rhs) const
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::operator- (const knowledge::KnowledgeRecord & rhs) const
 {
   // copy this value to a local copy
-  KnowledgeRecord ret_value (*this);
+  knowledge::KnowledgeRecord ret_value (*this);
 
   return ret_value -= rhs;
 }
     
 
 int64_t
-madara::KnowledgeRecord::get_encoded_size (const std::string & key) const
+madara::knowledge::KnowledgeRecord::get_encoded_size (const std::string & key) const
 {
   int64_t buffer_size (sizeof (uint32_t) * 3 );
   buffer_size += (key.size () + 1);
@@ -1470,7 +1470,7 @@ madara::KnowledgeRecord::get_encoded_size (const std::string & key) const
 }
 
 char *
-madara::KnowledgeRecord::write (char * buffer, const std::string & key,
+madara::knowledge::KnowledgeRecord::write (char * buffer, const std::string & key,
    int64_t & buffer_remaining) const
      
 {
@@ -1636,10 +1636,10 @@ madara::KnowledgeRecord::write (char * buffer, const std::string & key,
 }
 
 
-madara::KnowledgeRecord
-madara::KnowledgeRecord::retrieve_index (size_t index) const
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::retrieve_index (size_t index) const
 {
-  KnowledgeRecord ret_value;
+  knowledge::KnowledgeRecord ret_value;
 
   if (type_ == INTEGER_ARRAY)
   {
@@ -1655,8 +1655,8 @@ madara::KnowledgeRecord::retrieve_index (size_t index) const
   return ret_value;
 }
 
-madara::KnowledgeRecord 
-madara::KnowledgeRecord::dec_index (size_t index)
+madara::knowledge::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord::dec_index (size_t index)
 {
   if (type_ == DOUBLE_ARRAY)
   {
@@ -1701,11 +1701,11 @@ madara::KnowledgeRecord::dec_index (size_t index)
   if (status_ != MODIFIED)
     status_ = MODIFIED;
 
-  return KnowledgeRecord (--int_array_.get_ptr ()[index]);
+  return knowledge::KnowledgeRecord (--int_array_.get_ptr ()[index]);
 }
  
-madara::KnowledgeRecord 
-madara::KnowledgeRecord::inc_index (size_t index)
+madara::knowledge::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord::inc_index (size_t index)
 {
   if (type_ == DOUBLE_ARRAY)
   {
@@ -1750,7 +1750,7 @@ madara::KnowledgeRecord::inc_index (size_t index)
   if (status_ != MODIFIED)
     status_ = MODIFIED;
 
-  return KnowledgeRecord (++int_array_.get_ptr ()[index]);
+  return knowledge::KnowledgeRecord (++int_array_.get_ptr ()[index]);
 }
  
 /**
@@ -1759,7 +1759,7 @@ madara::KnowledgeRecord::inc_index (size_t index)
   * large enough, a new array is created.
   **/
 void
-madara::KnowledgeRecord::set_index (size_t index, Integer value)
+madara::knowledge::KnowledgeRecord::set_index (size_t index, Integer value)
 {
   if (type_ == DOUBLE_ARRAY)
   {
@@ -1805,7 +1805,7 @@ madara::KnowledgeRecord::set_index (size_t index, Integer value)
   * large enough, a new array is created.
   **/
 void
-madara::KnowledgeRecord::set_index (size_t index, double value)
+madara::knowledge::KnowledgeRecord::set_index (size_t index, double value)
 {
   if (type_ == INTEGER_ARRAY)
   {
@@ -1869,7 +1869,7 @@ madara::KnowledgeRecord::set_index (size_t index, double value)
 }
 
 const char *
-madara::KnowledgeRecord::read (const char * buffer, std::string & key,
+madara::knowledge::KnowledgeRecord::read (const char * buffer, std::string & key,
                                 int64_t & buffer_remaining)
 {
   // format is [key_size | key | type | value_size | value]
@@ -1986,7 +1986,7 @@ madara::KnowledgeRecord::read (const char * buffer, std::string & key,
 }
 
 void
-madara::KnowledgeRecord::resize (size_t new_size)
+madara::knowledge::KnowledgeRecord::resize (size_t new_size)
 {
   if (new_size > size_)
   {
@@ -2009,7 +2009,7 @@ madara::KnowledgeRecord::resize (size_t new_size)
 }
 
 int
-  madara::KnowledgeRecord::apply (
+  madara::knowledge::KnowledgeRecord::apply (
   madara::knowledge::ThreadSafeContext & context,
   const std::string & key, unsigned int quality, uint64_t clock,
   bool perform_lock)
@@ -2079,7 +2079,7 @@ int
 }
 
 bool
-madara::KnowledgeRecord::is_true (void) const
+madara::knowledge::KnowledgeRecord::is_true (void) const
 {
   madara_logger_ptr_log (logger_, logger::LOG_MAJOR, "KnowledgeRecord::apply:" \
     " checking if record is non-zero.\n");
@@ -2102,7 +2102,7 @@ madara::KnowledgeRecord::is_true (void) const
 }
 
 bool
-madara::KnowledgeRecord::is_false (void) const
+madara::knowledge::KnowledgeRecord::is_false (void) const
 {
   return !is_true ();
 }
@@ -2111,11 +2111,11 @@ madara::KnowledgeRecord::is_false (void) const
   * output stream buffering
   **/
 std::ostream & operator<< (std::ostream & stream,
-  const madara::KnowledgeRecord & rhs)
+  const madara::knowledge::KnowledgeRecord & rhs)
 {
   if (rhs.type () &
-        (madara::KnowledgeRecord::INTEGER_ARRAY | 
-         madara::KnowledgeRecord::DOUBLE_ARRAY))
+        (madara::knowledge::KnowledgeRecord::INTEGER_ARRAY | 
+         madara::knowledge::KnowledgeRecord::DOUBLE_ARRAY))
   {
     stream << rhs.to_string (", ");
   }

@@ -40,10 +40,10 @@ madara::knowledge::ThreadSafeContext::~ThreadSafeContext (void)
 
 /**
  * Retrieves a knowledge record from the key. This function is useful
- * for performance reasons and also for using a KnowledgeRecord that
+ * for performance reasons and also for using a knowledge::KnowledgeRecord that
  * can be one of multiple types
  **/
-madara::KnowledgeRecord *
+madara::knowledge::KnowledgeRecord *
 madara::knowledge::ThreadSafeContext::get_record (
   const std::string & key,
   const KnowledgeReferenceSettings & settings)
@@ -137,7 +137,7 @@ const KnowledgeReferenceSettings & settings) const
 
 void
 madara::knowledge::ThreadSafeContext::mark_and_signal (
-  const char * name, KnowledgeRecord * record,
+  const char * name, knowledge::KnowledgeRecord * record,
   const KnowledgeUpdateSettings & settings)
 {
   // otherwise set the value
@@ -168,7 +168,7 @@ madara::knowledge::ThreadSafeContext::mark_and_signal (
 int
 madara::knowledge::ThreadSafeContext::set (
   const VariableReference & variable,
-  madara::KnowledgeRecord::Integer value,
+  madara::knowledge::KnowledgeRecord::Integer value,
   const KnowledgeUpdateSettings & settings)
 {
   ContextGuard guard (mutex_);
@@ -194,7 +194,7 @@ madara::knowledge::ThreadSafeContext::set (
 int
 madara::knowledge::ThreadSafeContext::set (
   const VariableReference & variable,
-  const madara::KnowledgeRecord & value,
+  const madara::knowledge::KnowledgeRecord & value,
   const KnowledgeUpdateSettings & settings)
 {
   ContextGuard guard (mutex_);
@@ -209,13 +209,13 @@ madara::knowledge::ThreadSafeContext::set (
     variable.record_->size_ = value.size_;
     variable.record_->type_ = value.type_;
 
-    if (value.status_ != KnowledgeRecord::UNCREATED)
+    if (value.status_ != knowledge::KnowledgeRecord::UNCREATED)
     {
       variable.record_->deep_copy (value);
     }
     else
     {
-      variable.record_->status_ = KnowledgeRecord::UNCREATED;
+      variable.record_->status_ = knowledge::KnowledgeRecord::UNCREATED;
       variable.record_->int_value_ = 0;
     }
     
@@ -234,7 +234,7 @@ madara::knowledge::ThreadSafeContext::set (
 int
 madara::knowledge::ThreadSafeContext::set_index (
   const VariableReference & variable, size_t index,
-  madara::KnowledgeRecord::Integer value,
+  madara::knowledge::KnowledgeRecord::Integer value,
   const KnowledgeUpdateSettings & settings)
 {
   ContextGuard guard (mutex_);
@@ -260,7 +260,7 @@ madara::knowledge::ThreadSafeContext::set_index (
 int
 madara::knowledge::ThreadSafeContext::set (
   const VariableReference & variable,
-  const KnowledgeRecord::Integer * value,
+  const knowledge::KnowledgeRecord::Integer * value,
   uint32_t size,
   const KnowledgeUpdateSettings & settings)
 {
@@ -706,7 +706,7 @@ madara::knowledge::ThreadSafeContext::set_write_quality (
 ///           -1 if null key, -2 if quality not high enough
 int
 madara::knowledge::ThreadSafeContext::set_if_unequal (
-  const std::string & key, madara::KnowledgeRecord::Integer value,
+  const std::string & key, madara::knowledge::KnowledgeRecord::Integer value,
   uint32_t quality, uint64_t clock,
   const KnowledgeUpdateSettings & settings)
 {
@@ -736,7 +736,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   if (!settings.always_overwrite && found != map_.end ())
   {
     // setup a rhs
-    madara::KnowledgeRecord rhs;
+    madara::knowledge::KnowledgeRecord rhs;
     rhs.set_value (value);
 
     // if we do not have enough quality to update the variable
@@ -755,7 +755,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
       result = 0;
   }
 
-  madara::KnowledgeRecord & record = map_[*key_ptr];
+  madara::knowledge::KnowledgeRecord & record = map_[*key_ptr];
 
   // if we need to update quality, then update it
   if (result != -2 && record.quality != quality)
@@ -817,7 +817,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   if (!settings.always_overwrite && found != map_.end ())
   {
     // setup a rhs
-    madara::KnowledgeRecord rhs;
+    madara::knowledge::KnowledgeRecord rhs;
     rhs.set_value (value);
 
     // if we do not have enough quality to update the variable
@@ -836,7 +836,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
       result = 0;
   }
 
-  madara::KnowledgeRecord & record = map_[*key_ptr];
+  madara::knowledge::KnowledgeRecord & record = map_[*key_ptr];
 
   // if we need to update quality, then update it
   if (result != -2 && record.quality != quality)
@@ -898,7 +898,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   if (!settings.always_overwrite && found != map_.end ())
   {
     // setup a rhs
-    madara::KnowledgeRecord rhs;
+    madara::knowledge::KnowledgeRecord rhs;
     rhs.set_value (value);
 
     // if we do not have enough quality to update the variable
@@ -917,7 +917,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
       result = 0;
   }
 
-  madara::KnowledgeRecord & record = map_[*key_ptr];
+  madara::knowledge::KnowledgeRecord & record = map_[*key_ptr];
 
   // if we need to update quality, then update it
   if (result != -2 && record.quality != quality)
@@ -950,7 +950,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
 ///           -1 if null key, -2 if quality not high enough
 int
 madara::knowledge::ThreadSafeContext::update_record_from_external (
-  const std::string & key, const KnowledgeRecord & rhs,
+  const std::string & key, const knowledge::KnowledgeRecord & rhs,
   const KnowledgeUpdateSettings & settings)
 {
   int result = 1;
@@ -992,14 +992,14 @@ madara::knowledge::ThreadSafeContext::update_record_from_external (
     // if we reach this point, then the record is safe to copy
     found->second.deep_copy (rhs);
 
-    KnowledgeRecord & current_value = found->second;
+    knowledge::KnowledgeRecord & current_value = found->second;
 
     mark_and_signal (key_ptr->c_str (), &current_value, settings);
   }
   else
   {
     // if we reach this point, then we have to create the record
-    KnowledgeRecord & current_value = map_[*key_ptr];
+    knowledge::KnowledgeRecord & current_value = map_[*key_ptr];
     current_value.deep_copy (rhs);
     
     mark_and_signal (key_ptr->c_str (), &current_value, settings);
@@ -1031,7 +1031,7 @@ madara::knowledge::ThreadSafeContext::print (
   unsigned int level) const
 {
   ContextGuard guard (mutex_);
-  for (madara::KnowledgeMap::const_iterator i = map_.begin ();
+  for (madara::knowledge::KnowledgeMap::const_iterator i = map_.begin ();
        i != map_.end (); 
        ++i)
   {
@@ -1053,7 +1053,7 @@ madara::knowledge::ThreadSafeContext::to_string (
 
   bool first = true;
 
-  for (madara::KnowledgeMap::const_iterator i = map_.begin ();
+  for (madara::knowledge::KnowledgeMap::const_iterator i = map_.begin ();
        i != map_.end (); 
        ++i)
   {
@@ -1164,7 +1164,7 @@ madara::knowledge::ThreadSafeContext::expand_statement (
 void
 madara::knowledge::ThreadSafeContext::define_function (
   const std::string & name,
-    KnowledgeRecord (*func) (FunctionArguments &, Variables &),
+    knowledge::KnowledgeRecord (*func) (FunctionArguments &, Variables &),
         const KnowledgeReferenceSettings & settings)
 {
   // enter the mutex
@@ -1190,7 +1190,7 @@ madara::knowledge::ThreadSafeContext::define_function (
 void
 madara::knowledge::ThreadSafeContext::define_function (
   const std::string & name,
-    KnowledgeRecord (*func) (const char * name, FunctionArguments &, Variables &),
+    knowledge::KnowledgeRecord (*func) (const char * name, FunctionArguments &, Variables &),
         const KnowledgeReferenceSettings & settings)
 {
   // enter the mutex
@@ -1345,7 +1345,7 @@ madara::knowledge::ThreadSafeContext::compile (
   return ce;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::ThreadSafeContext::evaluate (
   CompiledExpression expression,
   const KnowledgeUpdateSettings & settings)
@@ -1354,7 +1354,7 @@ madara::knowledge::ThreadSafeContext::evaluate (
   return expression.expression.evaluate (settings);
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::ThreadSafeContext::evaluate (
   expression::ComponentNode * root,
   const KnowledgeUpdateSettings & settings)
@@ -1363,7 +1363,7 @@ madara::knowledge::ThreadSafeContext::evaluate (
   if (root)
     return root->evaluate (settings);
   else
-    return KnowledgeRecord (KnowledgeRecord::Integer (0));
+    return knowledge::KnowledgeRecord (KnowledgeRecord::Integer (0));
 }
 
 #endif // _MADARA_NO_KARL_
@@ -1400,7 +1400,7 @@ size_t
 size_t
   madara::knowledge::ThreadSafeContext::to_map (
   const std::string & expression,
-  std::map <std::string, KnowledgeRecord> & target)
+  std::map <std::string, knowledge::KnowledgeRecord> & target)
 {
   target.clear ();
   
@@ -1455,7 +1455,7 @@ madara::knowledge::ThreadSafeContext::to_map (
   const std::string & delimiter,
   const std::string & suffix,
   std::vector <std::string> & next_keys,
-  std::map <std::string, KnowledgeRecord> & result,
+  std::map <std::string, knowledge::KnowledgeRecord> & result,
   bool just_keys)
 {
   // clear the user provided maps
@@ -1706,8 +1706,8 @@ const std::string & filename) const
           // strings require quotation marks
           buffer << "\"";
         }
-        else if (i->second.type () == KnowledgeRecord::INTEGER_ARRAY ||
-          i->second.type () == KnowledgeRecord::DOUBLE_ARRAY)
+        else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
+          i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
         {
           // arrays require brackets
           buffer << "[";
@@ -1719,8 +1719,8 @@ const std::string & filename) const
           // strings require quotation marks
           buffer << "\"";
         }
-        else if (i->second.type () == KnowledgeRecord::INTEGER_ARRAY ||
-          i->second.type () == KnowledgeRecord::DOUBLE_ARRAY)
+        else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
+          i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
         {
           // arrays require brackets
           buffer << "]";
@@ -1738,7 +1738,7 @@ const std::string & filename) const
         path += "/";
         path += i->first;
 
-        if (i->second.type () == KnowledgeRecord::IMAGE_JPEG)
+        if (i->second.type () == knowledge::KnowledgeRecord::IMAGE_JPEG)
         {
           path += ".jpg";
         }
@@ -1859,7 +1859,7 @@ madara::knowledge::ThreadSafeContext::load_context (
                  update < checkpoint_header.updates; ++update)
             {
               std::string key;
-              KnowledgeRecord record;
+              knowledge::KnowledgeRecord record;
               current = record.read (current, key, buffer_remaining);
               update_record_from_external (key, record, settings);
             }
@@ -1944,8 +1944,8 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
     // lock the context
     ContextGuard guard (mutex_);
 
-    const KnowledgeRecords & records = this->get_modifieds ();    
-    const KnowledgeRecords & local_records = this->get_local_modified ();
+    const knowledge::KnowledgeRecords & records = this->get_modifieds ();    
+    const knowledge::KnowledgeRecords & local_records = this->get_local_modified ();
 
     if (records.size () + local_records.size () != 0)
     {

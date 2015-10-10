@@ -35,10 +35,10 @@ madara::expression::CompositeForLoop::~CompositeForLoop (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeForLoop::item (void) const
 {
-  madara::KnowledgeRecord record;
+  madara::knowledge::KnowledgeRecord record;
   record.set_value ("for (;;)");
   return record;
 }
@@ -46,7 +46,7 @@ madara::expression::CompositeForLoop::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeForLoop::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
@@ -54,13 +54,13 @@ madara::expression::CompositeForLoop::prune (bool & can_change)
   // under any situation
   can_change = true;
   
-  madara::KnowledgeRecord zero;
+  madara::knowledge::KnowledgeRecord zero;
   return zero;
 }
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::CompositeForLoop::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
@@ -69,7 +69,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 
   precondition_->evaluate (settings);
 
-  madara::KnowledgeRecord::Integer count = 0;
+  madara::knowledge::KnowledgeRecord::Integer count = 0;
   while (condition_->evaluate (settings).is_true ())
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
@@ -86,7 +86,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 
   // return is the number of successful body executions
   
-  madara::KnowledgeRecord evaluations;
+  madara::knowledge::KnowledgeRecord evaluations;
   evaluations.set_value (count);
   return evaluations;
 }

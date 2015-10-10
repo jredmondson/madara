@@ -20,16 +20,16 @@ madara::expression::SystemCallReadFile::~SystemCallReadFile (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallReadFile::item (void) const
 {
-  return madara::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallReadFile::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
@@ -37,7 +37,7 @@ madara::expression::SystemCallReadFile::prune (bool & can_change)
   // under any situation
   can_change = true;
   
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   for (ComponentNodes::iterator i = nodes_.begin (); i != nodes_.end ();
        ++i)
@@ -68,17 +68,17 @@ madara::expression::SystemCallReadFile::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::SystemCallReadFile::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  KnowledgeRecord return_value;
+  knowledge::KnowledgeRecord return_value;
 
   if (nodes_.size () > 0)
   {
-    // copying strings wastes execution time, so we hold the KnowledgeRecord
+    // copying strings wastes execution time, so we hold the knowledge::KnowledgeRecord
     // instead of the resulting string filename.
-    KnowledgeRecord filename_eval = nodes_[0]->evaluate (settings);
+    knowledge::KnowledgeRecord filename_eval = nodes_[0]->evaluate (settings);
     uint32_t read_as_type_uint (0);
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
@@ -87,8 +87,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 
     if (nodes_.size () == 2)
     {
-      KnowledgeRecord read_as_type = nodes_[1]->evaluate (settings);
-      if (read_as_type.type () == KnowledgeRecord::INTEGER)
+      knowledge::KnowledgeRecord read_as_type = nodes_[1]->evaluate (settings);
+      if (read_as_type.type () == knowledge::KnowledgeRecord::INTEGER)
       {
         read_as_type_uint = (uint32_t) read_as_type.to_integer ();
       }
@@ -97,15 +97,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
         std::string type = read_as_type.to_string ();
         if (type == "text")
         {
-          read_as_type_uint = KnowledgeRecord::TEXT_FILE;
+          read_as_type_uint = knowledge::KnowledgeRecord::TEXT_FILE;
         }
         else if (type == "jpeg")
         {
-          read_as_type_uint = KnowledgeRecord::IMAGE_JPEG;
+          read_as_type_uint = knowledge::KnowledgeRecord::IMAGE_JPEG;
         }
         else if (type == "xml")
         {
-          read_as_type_uint = KnowledgeRecord::XML;
+          read_as_type_uint = knowledge::KnowledgeRecord::XML;
         }
       }
     }

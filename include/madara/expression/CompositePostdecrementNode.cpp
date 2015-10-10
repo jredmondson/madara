@@ -28,10 +28,10 @@ madara::expression::CompositePostdecrementNode::~CompositePostdecrementNode (voi
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositePostdecrementNode::item (void) const
 {
-  madara::KnowledgeRecord record;
+  madara::knowledge::KnowledgeRecord record;
   record.set_value ("--");
   return record;
 }
@@ -39,11 +39,11 @@ madara::expression::CompositePostdecrementNode::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositePostdecrementNode::prune (bool & can_change)
 {
   bool right_child_can_change = false;
-  madara::KnowledgeRecord right_value;
+  madara::knowledge::KnowledgeRecord right_value;
 
   if (this->right_)
   {
@@ -69,11 +69,11 @@ madara::expression::CompositePostdecrementNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::CompositePostdecrementNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  madara::KnowledgeRecord return_value;
+  madara::knowledge::KnowledgeRecord return_value;
 
   if (var_)
   {

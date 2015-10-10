@@ -5,7 +5,7 @@
 namespace transport = madara::transport;
 namespace knowledge = madara::knowledge;
 namespace filters = madara::filters;
-typedef madara::KnowledgeRecord::Integer    Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer    Integer;
 typedef transport::QoSTransportSettings QoSTransportSettings;
 typedef filters::CounterFilter CounterFilter;
 

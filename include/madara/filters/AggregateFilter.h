@@ -49,7 +49,7 @@ namespace madara
        * @param   transport_context context for querying transport state
        * @param   vars              context for querying current program state
        **/
-      virtual void filter (KnowledgeMap & records,
+      virtual void filter (knowledge::KnowledgeMap & records,
         const transport::TransportContext & transport_context,
         knowledge::Variables & vars) = 0;
     };

@@ -42,20 +42,20 @@ namespace madara
       virtual ~CompositeArrayReference (void);
       
       /// Sets the value stored in the node.
-      KnowledgeRecord dec (
+      knowledge::KnowledgeRecord dec (
         const madara::knowledge::KnowledgeUpdateSettings & settings =
           knowledge::KnowledgeUpdateSettings ());
       
       /// Sets the value stored in the node.
-      KnowledgeRecord inc (
+      knowledge::KnowledgeRecord inc (
         const madara::knowledge::KnowledgeUpdateSettings & settings =
           knowledge::KnowledgeUpdateSettings ());
       
       /// Return the item stored in the node.
-      virtual madara::KnowledgeRecord item (void) const;
+      virtual madara::knowledge::KnowledgeRecord item (void) const;
 
       /// Sets the value stored in the node.
-      int set (const madara::KnowledgeRecord::Integer & value,
+      int set (const madara::knowledge::KnowledgeRecord::Integer & value,
         const madara::knowledge::KnowledgeUpdateSettings & settings =
         knowledge::KnowledgeUpdateSettings ());
       
@@ -65,18 +65,18 @@ namespace madara
         knowledge::KnowledgeUpdateSettings ());
       
       /// Sets the value stored in the node.
-      int set (const madara::KnowledgeRecord & value,
+      int set (const madara::knowledge::KnowledgeRecord & value,
         const madara::knowledge::KnowledgeUpdateSettings & settings =
         knowledge::KnowledgeUpdateSettings ());
 
       /// Prune the tree of unnecessary nodes. 
       /// Returns evaluation of the node and sets can_change appropriately.
       /// if this node can be changed, that means it shouldn't be pruned.
-      virtual madara::KnowledgeRecord prune (bool & can_change);
+      virtual madara::knowledge::KnowledgeRecord prune (bool & can_change);
 
       /// Evaluates the node and its children. This does not prune any of
       /// the expression tree, and is much faster than the prune function
-      virtual madara::KnowledgeRecord evaluate (
+      virtual madara::knowledge::KnowledgeRecord evaluate (
         const madara::knowledge::KnowledgeUpdateSettings & settings);
 
       /// Expands the key (if necessary). This allow for keys to be defined
@@ -91,12 +91,12 @@ namespace madara
       virtual void accept (Visitor &visitor) const; 
 
       /**
-       * Retrieves the underlying KnowledgeRecord in the context (useful for
+       * Retrieves the underlying knowledge::KnowledgeRecord in the context (useful for
        * system calls).
-       * @return      the KnowledgeRecord inside of the context
+       * @return      the knowledge::KnowledgeRecord inside of the context
        **/
       inline
-      madara::KnowledgeRecord * get_record (void)
+      madara::knowledge::KnowledgeRecord * get_record (void)
       {
         if (record_)
           return record_;
@@ -107,7 +107,7 @@ namespace madara
     private:
       /// Key for retrieving value of this variable.
       const std::string key_;
-      madara::KnowledgeRecord * record_;
+      madara::knowledge::KnowledgeRecord * record_;
 
       madara::knowledge::ThreadSafeContext & context_;
 

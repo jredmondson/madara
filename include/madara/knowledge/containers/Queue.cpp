@@ -118,7 +118,7 @@ madara::knowledge::containers::Queue::operator!= (
 
 bool
 madara::knowledge::containers::Queue::enqueue (
-  const KnowledgeRecord & record)
+  const knowledge::KnowledgeRecord & record)
 {
   bool result (false);
 
@@ -131,7 +131,7 @@ madara::knowledge::containers::Queue::enqueue (
       count_ = 0;
     
     // avoid double retrieval of count_ during check
-    KnowledgeRecord::Integer count = *count_;
+    knowledge::KnowledgeRecord::Integer count = *count_;
 
     if (context_ && name_ != "" && queue_.size () > 0 && 
         count < (KnowledgeRecord::Integer)queue_.size ())
@@ -140,7 +140,7 @@ madara::knowledge::containers::Queue::enqueue (
       if (!settings_.signal_changes)
         settings_.signal_changes = false;
       
-      KnowledgeRecord::Integer tail = *tail_;
+      knowledge::KnowledgeRecord::Integer tail = *tail_;
 
       context_->set (queue_.vector_[tail], record, settings_);
       tail_ = increment (tail, 1);
@@ -155,10 +155,10 @@ madara::knowledge::containers::Queue::enqueue (
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::Queue::dequeue (bool wait)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
   
   if (context_ && name_ != "")
   {
@@ -173,7 +173,7 @@ madara::knowledge::containers::Queue::dequeue (bool wait)
 
     if (count_ > 0)
     {
-      KnowledgeRecord::Integer head = *head_;
+      knowledge::KnowledgeRecord::Integer head = *head_;
 
       result = context_->get (queue_.vector_[head], settings_);
     
@@ -202,10 +202,10 @@ madara::knowledge::containers::Queue::clear (void)
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::Queue::inspect (size_t position)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
   if (context_ && name_ != "" &&
       (KnowledgeRecord::Integer)position < *count_)
   {

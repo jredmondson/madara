@@ -4,8 +4,8 @@
 
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef madara::KnowledgeRecord  KnowledgeRecord;
-typedef KnowledgeRecord::Integer Integer;
+typedef knowledge::KnowledgeRecord          KnowledgeRecord;
+typedef KnowledgeRecord::Integer            Integer;
 
 jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__
   (JNIEnv *, jobject)
@@ -308,7 +308,7 @@ jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
     std::vector<std::string> keys;
     current->keys (keys, first_level);
 
-    jclass string_class = madara::utility::Java::find_class (
+    jclass string_class = madara::utility::java::find_class (
       env, "java/lang/String");
     jstring empty_string = env->NewStringUTF ("");
 

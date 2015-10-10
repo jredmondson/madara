@@ -7,13 +7,15 @@
  * and performs actions based on that input.
  **/
 
-#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 #include <string>
 
+namespace knowledge = madara::knowledge;
+
 int main (int argc, char * argv[])
 {
-  Madara::KnowledgeEngine::KnowledgeBase knowledge;
+  knowledge::KnowledgeBase knowledge;
   
   // Prompt the user for their height
   std::string my_height;

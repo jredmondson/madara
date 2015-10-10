@@ -145,7 +145,7 @@ madara::threads::Threader::pause (const std::string name)
 
   if (found != threads_.end ())
   {
-    control_->set (name + ".paused", KnowledgeRecord::Integer (1));
+    control_->set (name + ".paused", knowledge::KnowledgeRecord::Integer (1));
   }
 }
 
@@ -155,7 +155,7 @@ madara::threads::Threader::pause (void)
   for (NamedWorkerThreads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
   {
-    control_->set (i->first + ".paused", KnowledgeRecord::Integer (1));
+    control_->set (i->first + ".paused", knowledge::KnowledgeRecord::Integer (1));
   }
 }
 
@@ -166,7 +166,7 @@ madara::threads::Threader::resume (const std::string name)
 
   if (found != threads_.end ())
   {
-    control_->set (name + ".paused", KnowledgeRecord::Integer (0));
+    control_->set (name + ".paused", knowledge::KnowledgeRecord::Integer (0));
   }
 }
 
@@ -176,7 +176,7 @@ madara::threads::Threader::resume (void)
   for (NamedWorkerThreads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
   {
-    control_->set (i->first + ".paused", KnowledgeRecord::Integer (0));
+    control_->set (i->first + ".paused", knowledge::KnowledgeRecord::Integer (0));
   }
 }
 
@@ -187,7 +187,7 @@ madara::threads::Threader::terminate (const std::string name)
 
   if (found != threads_.end ())
   {
-    control_->set (name + ".terminated", KnowledgeRecord::Integer (1));
+    control_->set (name + ".terminated", knowledge::KnowledgeRecord::Integer (1));
   }
 }
 
@@ -197,6 +197,6 @@ madara::threads::Threader::terminate (void)
   for (NamedWorkerThreads::iterator i = threads_.begin ();
        i != threads_.end (); ++i)
   {
-    control_->set (i->first + ".terminated", KnowledgeRecord::Integer (1));
+    control_->set (i->first + ".terminated", knowledge::KnowledgeRecord::Integer (1));
   }
 }

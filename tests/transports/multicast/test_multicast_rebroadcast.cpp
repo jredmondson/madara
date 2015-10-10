@@ -114,7 +114,7 @@ void handle_arguments (int argc, char ** argv)
 
 std::string source_var ("var1");
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 alter_rebroadcast (
   madara::knowledge::FunctionArguments & args,
   madara::knowledge::Variables &)
@@ -130,13 +130,13 @@ alter_rebroadcast (
     // if the second argument is equal to our var_ref
     if (args.size () >= 2 && args[1].to_string () == source_var)
     {
-      args[0].set_value (madara::KnowledgeRecord::Integer (1));
+      args[0].set_value (madara::knowledge::KnowledgeRecord::Integer (1));
     }
 
     return args[0];
   }
   else
-    return madara::KnowledgeRecord ();
+    return madara::knowledge::KnowledgeRecord ();
 }
 
 
@@ -148,11 +148,11 @@ int main (int argc, char ** argv)
   
 #ifndef _MADARA_NO_KARL_
   settings.type = madara::transport::MULTICAST;
-  settings.add_receive_filter (madara::KnowledgeRecord::DOUBLE,
+  settings.add_receive_filter (madara::knowledge::KnowledgeRecord::DOUBLE,
                                madara::filters::discard);
   settings.enable_participant_ttl (2);
   settings.set_rebroadcast_ttl (2);
-  settings.add_rebroadcast_filter (madara::KnowledgeRecord::INTEGER,
+  settings.add_rebroadcast_filter (madara::knowledge::KnowledgeRecord::INTEGER,
     alter_rebroadcast);
 
 
@@ -161,7 +161,7 @@ int main (int argc, char ** argv)
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
 
   if (settings.id == 0)
   {

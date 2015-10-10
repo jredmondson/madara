@@ -74,7 +74,7 @@ madara::transport::process_received_update (
   const QoSTransportSettings & settings,
   BandwidthMonitor & send_monitor,
   BandwidthMonitor & receive_monitor,
-  KnowledgeMap & rebroadcast_records,
+  knowledge::KnowledgeMap & rebroadcast_records,
 #ifndef _MADARA_NO_KARL_
   knowledge::CompiledExpression & on_data_received,
 #endif // _MADARA_NO_KARL_
@@ -122,7 +122,7 @@ madara::transport::process_received_update (
   rebroadcast_records.clear ();
 
   // receive records will be what we pass to the aggregate filter
-  KnowledgeMap updates;
+  knowledge::KnowledgeMap updates;
 
   // check the buffer for a reduced message header
   if (bytes_read > ReducedMessageHeader::static_encoded_size () &&
@@ -405,7 +405,7 @@ madara::transport::process_received_update (
     header->updates);
 
   // temporary record for reading from the updates buffer
-  KnowledgeRecord record;
+  knowledge::KnowledgeRecord record;
   record.quality = header->quality;
   record.clock = header->clock;
   std::string key;
@@ -486,7 +486,7 @@ madara::transport::process_received_update (
     }
   }
   
-  const KnowledgeMap & additionals = transport_context.get_records ();
+  const knowledge::KnowledgeMap & additionals = transport_context.get_records ();
   
   if (additionals.size () > 0)
   {
@@ -495,7 +495,7 @@ madara::transport::process_received_update (
       " %lld additional records being handled after receive.\n", print_prefix,
       (long long)additionals.size ());
 
-    for (KnowledgeMap::const_iterator i = additionals.begin ();
+    for (knowledge::KnowledgeMap::const_iterator i = additionals.begin ();
           i != additionals.end (); ++i)
     {
       updates[i->first] = i->second;
@@ -543,7 +543,7 @@ madara::transport::process_received_update (
     " Applying updates to context.\n", print_prefix);
 
   // apply updates from the update list
-  for (KnowledgeMap::iterator i = updates.begin ();
+  for (knowledge::KnowledgeMap::iterator i = updates.begin ();
     i != updates.end (); ++i)
   {
     int result = 0;
@@ -585,7 +585,7 @@ madara::transport::process_received_update (
       " Applying rebroadcast filters to receive results.\n", print_prefix);
 
     // create a list of rebroadcast records from the updates
-    for (KnowledgeMap::iterator i = updates.begin ();
+    for (knowledge::KnowledgeMap::iterator i = updates.begin ();
          i != updates.end (); ++i)
     {
       i->second = settings.filter_rebroadcast (
@@ -611,9 +611,9 @@ madara::transport::process_received_update (
       }
     }
   
-    const KnowledgeMap & additionals = transport_context.get_records ();
+    const knowledge::KnowledgeMap & additionals = transport_context.get_records ();
 
-    for (KnowledgeMap::const_iterator i = additionals.begin ();
+    for (knowledge::KnowledgeMap::const_iterator i = additionals.begin ();
           i != additionals.end (); ++i)
     {
       rebroadcast_records[i->first] = i->second;
@@ -686,7 +686,7 @@ madara::transport::prep_rebroadcast (
   const QoSTransportSettings & settings,
   const char * print_prefix,
   MessageHeader * header,
-  const KnowledgeMap & records,
+  const knowledge::KnowledgeMap & records,
   PacketScheduler & packet_scheduler)
 {
   int result = 0;
@@ -703,7 +703,7 @@ madara::transport::prep_rebroadcast (
     // set the update to the end of the header
     char * update = header->write (buffer, buffer_remaining);
 
-    for (KnowledgeMap::const_iterator i = records.begin ();
+    for (knowledge::KnowledgeMap::const_iterator i = records.begin ();
          i != records.end (); ++i)
     {
       update = i->second.write (update, i->first, buffer_remaining);
@@ -755,7 +755,7 @@ madara::transport::prep_rebroadcast (
 }
 
 long madara::transport::Base::prep_send (
-  const madara::KnowledgeRecords & orig_updates,
+  const madara::knowledge::KnowledgeRecords & orig_updates,
   const char * print_prefix)
 {
   // check to see if we are shutting down
@@ -778,10 +778,10 @@ long madara::transport::Base::prep_send (
   }
  
   // get the maximum quality from the updates
-  uint32_t quality = madara::max_quality (orig_updates);
+  uint32_t quality = knowledge::max_quality (orig_updates);
   bool reduced = false;
 
-  KnowledgeMap filtered_updates;
+  knowledge::KnowledgeMap filtered_updates;
 
   madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
     "%s:" \
@@ -822,7 +822,7 @@ long madara::transport::Base::prep_send (
      * filter the updates according to the filters specified by
      * the user in QoSTransportSettings (if applicable)
      **/
-    for (KnowledgeRecords::const_iterator i = orig_updates.begin ();
+    for (knowledge::KnowledgeRecords::const_iterator i = orig_updates.begin ();
           i != orig_updates.end (); ++i)
     {
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -830,7 +830,7 @@ long madara::transport::Base::prep_send (
         " Calling filter chain.\n", print_prefix);
 
       // filter the record according to the send filter chain
-      KnowledgeRecord result = settings_.filter_send (*i->second, i->first,
+      knowledge::KnowledgeRecord result = settings_.filter_send (*i->second, i->first,
         transport_context);
 
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -853,9 +853,9 @@ long madara::transport::Base::prep_send (
       }
     }
 
-    const KnowledgeMap & additionals = transport_context.get_records ();
+    const knowledge::KnowledgeMap & additionals = transport_context.get_records ();
 
-    for (KnowledgeMap::const_iterator i = additionals.begin ();
+    for (knowledge::KnowledgeMap::const_iterator i = additionals.begin ();
          i != additionals.end (); ++i)
     {
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -1009,7 +1009,7 @@ long madara::transport::Base::prep_send (
   // [key|value]
   
   int j = 0;
-  for (KnowledgeMap::const_iterator i = filtered_updates.begin ();
+  for (knowledge::KnowledgeMap::const_iterator i = filtered_updates.begin ();
     i != filtered_updates.end (); ++i, ++j)
   {
     update = i->second.write (update, i->first, buffer_remaining);

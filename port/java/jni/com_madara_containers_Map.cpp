@@ -50,7 +50,7 @@
 
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef madara::KnowledgeRecord  KnowledgeRecord;
+typedef madara::knowledge::KnowledgeRecord  KnowledgeRecord;
 typedef KnowledgeRecord::Integer Integer;
 
 /*
@@ -198,19 +198,19 @@ void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2JJ
       if (record)
       {
         // check the type and set accordingly
-        if (record->type () == KnowledgeRecord::DOUBLE)
+        if (record->type () == knowledge::KnowledgeRecord::DOUBLE)
         {
           current->set (str_key, record->to_double ());
         }
-        else if (record->type () == KnowledgeRecord::DOUBLE_ARRAY)
+        else if (record->type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
         {
           current->set (str_key, record->to_doubles ());
         }
-        else if (record->type () == KnowledgeRecord::INTEGER)
+        else if (record->type () == knowledge::KnowledgeRecord::INTEGER)
         {
           current->set (str_key, record->to_integer ());
         }
-        else if (record->type () == KnowledgeRecord::INTEGER_ARRAY)
+        else if (record->type () == knowledge::KnowledgeRecord::INTEGER_ARRAY)
         {
           current->set (str_key, record->to_integers ());
         }
@@ -221,7 +221,7 @@ void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2JJ
           current->set_file (str_key, buffer, size);
           delete [] buffer;
         }
-        else if (record->type () == KnowledgeRecord::STRING)
+        else if (record->type () == knowledge::KnowledgeRecord::STRING)
         {
           current->set (str_key, record->to_string ());
         }
@@ -296,14 +296,14 @@ void JNICALL Java_com_madara_containers_Map_jni_1setName
 jlong JNICALL Java_com_madara_containers_Map_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
-  KnowledgeRecord * result (0);
+  knowledge::KnowledgeRecord * result (0);
   containers::Map * current = (containers::Map *) cptr;
 
   if (current)
   {
     const char * str_key = env->GetStringUTFChars (key, 0);
 
-    result = new KnowledgeRecord ( (*current) [str_key]);
+    result = new knowledge::KnowledgeRecord ( (*current) [str_key]);
 
     env->ReleaseStringUTFChars (key, str_key);
   }
@@ -319,14 +319,14 @@ jlong JNICALL Java_com_madara_containers_Map_jni_1get
 jlong JNICALL Java_com_madara_containers_Map_jni_1toRecord
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
-  KnowledgeRecord * result (0);
+  knowledge::KnowledgeRecord * result (0);
   containers::Map * current = (containers::Map *) cptr;
 
   if (current)
   {
     const char * str_key = env->GetStringUTFChars (key, 0);
 
-    result = new KnowledgeRecord ( (*current) [str_key]);
+    result = new knowledge::KnowledgeRecord ( (*current) [str_key]);
 
     env->ReleaseStringUTFChars (key, str_key);
   }
@@ -412,7 +412,7 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_Map_jni_1keys
     std::vector<std::string> keys;
     current->keys (keys);
 
-    jclass string_class = madara::utility::Java::find_class (
+    jclass string_class = madara::utility::java::find_class (
       env, "java/lang/String");
     jstring empty_string = env->NewStringUTF ("");
 

@@ -72,7 +72,7 @@ namespace madara
 
       /// = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
-      typedef madara::KnowledgeRecord value_type;
+      typedef madara::knowledge::KnowledgeRecord value_type;
       typedef int *pointer;
       typedef int &reference;
       typedef int difference_type;
@@ -127,7 +127,7 @@ namespace madara
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
-      typedef madara::KnowledgeRecord value_type;
+      typedef madara::knowledge::KnowledgeRecord value_type;
       typedef int *pointer;
       typedef int &reference;
       typedef int difference_type;
@@ -183,7 +183,7 @@ namespace madara
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
-      typedef madara::KnowledgeRecord value_type;
+      typedef madara::knowledge::KnowledgeRecord value_type;
       typedef int *pointer;
       typedef int &reference;
       typedef int difference_type;
@@ -239,7 +239,7 @@ namespace madara
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
-      typedef madara::KnowledgeRecord value_type;
+      typedef madara::knowledge::KnowledgeRecord value_type;
       typedef int *pointer;
       typedef int &reference;
       typedef int difference_type;
@@ -294,7 +294,7 @@ namespace madara
 
       // = Necessary traits
       typedef ::std::forward_iterator_tag iterator_category;
-      typedef madara::KnowledgeRecord value_type;
+      typedef madara::knowledge::KnowledgeRecord value_type;
       typedef int *pointer;
       typedef int &reference;
       typedef int difference_type;

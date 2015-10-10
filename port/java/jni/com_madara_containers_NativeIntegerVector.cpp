@@ -199,12 +199,12 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
 MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1toRecord__JI
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
-  madara::KnowledgeRecord * result (0);
+  madara::knowledge::KnowledgeRecord * result (0);
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
 
   if (current)
   {
-    result = new madara::KnowledgeRecord (current->to_record (index));
+    result = new madara::knowledge::KnowledgeRecord (current->to_record (index));
   }
 
   return (jlong) result;
@@ -218,12 +218,12 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
 MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1toRecord__J
   (JNIEnv * env, jobject, jlong cptr)
 {
-  madara::KnowledgeRecord * result (0);
+  madara::knowledge::KnowledgeRecord * result (0);
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
 
   if (current)
   {
-    result = new madara::KnowledgeRecord (current->to_record ());
+    result = new madara::knowledge::KnowledgeRecord (current->to_record ());
   }
 
   return (jlong) result;
@@ -237,7 +237,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
 MADARA_Export jobjectArray JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1toArray
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jclass kr_class = madara::utility::Java::find_class (
+  jclass kr_class = madara::utility::java::find_class (
     env, "com/madara/KnowledgeRecord");
   jobjectArray list;
 
@@ -245,7 +245,7 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_NativeIntegerVecto
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
       "fromPointer", " (J)Lcom/madara/KnowledgeRecord;");
-    madara::KnowledgeVector records;
+    madara::knowledge::KnowledgeVector records;
     NativeIntegerVector * current =
       (NativeIntegerVector *)cptr;
     current->copy_to (records);

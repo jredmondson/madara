@@ -28,35 +28,35 @@ madara::expression::ListNode::accept (Visitor &visitor) const
   visitor.visit (*this);
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::ListNode::item () const
 {
-  return madara::KnowledgeRecord (
-    madara::KnowledgeRecord::Integer (list_.size ()));
+  return madara::knowledge::KnowledgeRecord (
+    madara::knowledge::KnowledgeRecord::Integer (list_.size ()));
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::ListNode::prune (bool & can_change)
 {
   // a variable is one of very few nodes that can change over time and
   // cannot be pruned
   can_change = true;
   
-  return madara::KnowledgeRecord (
-    madara::KnowledgeRecord::Integer (list_.size ()));
+  return madara::knowledge::KnowledgeRecord (
+    madara::knowledge::KnowledgeRecord::Integer (list_.size ()));
 }
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::ListNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  return madara::KnowledgeRecord (
-    madara::KnowledgeRecord::Integer (list_.size ()));
+  return madara::knowledge::KnowledgeRecord (
+    madara::knowledge::KnowledgeRecord::Integer (list_.size ()));
 }
 
 

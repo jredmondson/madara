@@ -120,11 +120,11 @@ int main (int argc, char ** argv)
   
 #ifndef _MADARA_NO_KARL_
   settings.type = madara::transport::MULTICAST;
-  settings.add_send_filter (madara::KnowledgeRecord::ALL_TYPES,
+  settings.add_send_filter (madara::knowledge::KnowledgeRecord::ALL_TYPES,
                             madara::filters::log_args);
-  settings.add_send_filter (madara::KnowledgeRecord::DOUBLE,
+  settings.add_send_filter (madara::knowledge::KnowledgeRecord::DOUBLE,
                             madara::filters::discard);
-  settings.add_receive_filter (madara::KnowledgeRecord::ALL_TYPES,
+  settings.add_receive_filter (madara::knowledge::KnowledgeRecord::ALL_TYPES,
                                madara::filters::log_args);
 
 
@@ -133,7 +133,7 @@ int main (int argc, char ** argv)
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
 
   if (settings.id == 0)
   {
@@ -152,7 +152,7 @@ int main (int argc, char ** argv)
     knowledge.wait (compiled, wait_settings);
 
     if (knowledge.get ("var2").to_integer () == 1 &&
-      knowledge.get ("var4").status () == madara::KnowledgeRecord::UNCREATED)
+      knowledge.get ("var4").status () == madara::knowledge::KnowledgeRecord::UNCREATED)
     {
       knowledge.print ("Double value was not received. Send filter SUCCESS.\n");
     }

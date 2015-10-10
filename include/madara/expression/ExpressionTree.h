@@ -30,7 +30,7 @@ namespace madara
     public:
 
       // Define a "trait"
-      typedef madara::KnowledgeRecord value_type;
+      typedef madara::knowledge::KnowledgeRecord value_type;
       typedef ExpressionTreeIterator iterator;
       typedef ExpressionTreeConstIterator const_iterator;
 
@@ -84,21 +84,21 @@ namespace madara
        * Returns value of tree
        * @return    value of the expression tree
        **/
-      madara::KnowledgeRecord item (void) const;
+      madara::knowledge::KnowledgeRecord item (void) const;
 
 
       /** 
        * Prunes the expression tree of unnecessary nodes. 
        * @return    value of expression tree
        **/
-      madara::KnowledgeRecord prune (void);
+      madara::knowledge::KnowledgeRecord prune (void);
 
       /** 
        * Evaluates the expression tree. 
        * @param settings        Settings for evaluating and setting knowledge
        * @return    value of expression tree
        **/
-      madara::KnowledgeRecord evaluate (
+      madara::knowledge::KnowledgeRecord evaluate (
         const madara::knowledge::KnowledgeUpdateSettings & settings =
         knowledge::KnowledgeUpdateSettings ());
 

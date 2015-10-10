@@ -21,11 +21,11 @@ madara::knowledge::Variables::get_context (void)
   return context_;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::Variables::get (const std::string & key,
              const KnowledgeReferenceSettings & settings)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (context_)
   {
@@ -41,11 +41,11 @@ madara::knowledge::Variables::get (const std::string & key,
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::Variables::get (const VariableReference & variable,
              const KnowledgeReferenceSettings & settings)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (context_)
   {
@@ -113,7 +113,7 @@ madara::knowledge::Variables::apply_modified (
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::Variables::retrieve_index (
   const std::string & key,
   size_t index,
@@ -129,11 +129,11 @@ madara::knowledge::Variables::retrieve_index (
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Variables::retrieve_index. Context not set correctly\n");
 
-    return madara::KnowledgeRecord ();
+    return madara::knowledge::KnowledgeRecord ();
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::Variables::retrieve_index (
   const VariableReference & variable,
   size_t index,
@@ -148,7 +148,7 @@ madara::knowledge::Variables::retrieve_index (
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Variables::retrieve_index. Context not set correctly\n");
 
-    return madara::KnowledgeRecord ();
+    return madara::knowledge::KnowledgeRecord ();
   }
 }
 
@@ -171,7 +171,7 @@ madara::knowledge::Variables::get_ref (const std::string & key,
 
 int
 madara::knowledge::Variables::set (const std::string & key,
-                          madara::KnowledgeRecord::Integer value,
+                          madara::knowledge::KnowledgeRecord::Integer value,
         const KnowledgeUpdateSettings & settings)
 {
   if (context_)
@@ -190,7 +190,7 @@ madara::knowledge::Variables::set (const std::string & key,
 
 int
 madara::knowledge::Variables::set (const VariableReference & variable,
-                          madara::KnowledgeRecord::Integer value,
+                          madara::knowledge::KnowledgeRecord::Integer value,
         const KnowledgeUpdateSettings & settings)
 {
   if (context_)
@@ -209,7 +209,7 @@ madara::knowledge::Variables::set (const VariableReference & variable,
 
 int
 madara::knowledge::Variables::set (const std::string & key,
-                          const KnowledgeRecord::Integer * value,
+                          const knowledge::KnowledgeRecord::Integer * value,
                           uint32_t size,
         const KnowledgeUpdateSettings & settings)
 {
@@ -230,7 +230,7 @@ madara::knowledge::Variables::set (const std::string & key,
 int
 madara::knowledge::Variables::set (
   const VariableReference & variable,
-  const KnowledgeRecord::Integer * value,
+  const knowledge::KnowledgeRecord::Integer * value,
   uint32_t size,
   const KnowledgeUpdateSettings & settings)
 {
@@ -289,7 +289,7 @@ madara::knowledge::Variables::set (
 int
 madara::knowledge::Variables::set (
   const std::string & key,
-  const madara::KnowledgeRecord & value,
+  const madara::knowledge::KnowledgeRecord & value,
   const KnowledgeUpdateSettings & settings)
 {
   if (context_)
@@ -309,7 +309,7 @@ madara::knowledge::Variables::set (
 int
 madara::knowledge::Variables::set (
   const VariableReference & variable,
-  const madara::KnowledgeRecord & value,
+  const madara::knowledge::KnowledgeRecord & value,
   const KnowledgeUpdateSettings & settings)
 {
   if (context_)
@@ -482,7 +482,7 @@ madara::knowledge::Variables::set (
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::Variables::inc (const std::string & key,
         const KnowledgeUpdateSettings & settings)
 {
@@ -496,11 +496,11 @@ madara::knowledge::Variables::inc (const std::string & key,
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Variables::inc. Context not set correctly\n");
 
-    return madara::KnowledgeRecord ();
+    return madara::knowledge::KnowledgeRecord ();
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::Variables::inc (
   const VariableReference & variable,
   const KnowledgeUpdateSettings & settings)
@@ -514,11 +514,11 @@ madara::knowledge::Variables::inc (
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Variables::inc. Context not set correctly\n");
 
-    return madara::KnowledgeRecord ();
+    return madara::knowledge::KnowledgeRecord ();
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::Variables::dec (
   const std::string & key,
   const KnowledgeUpdateSettings & settings)
@@ -533,11 +533,11 @@ madara::knowledge::Variables::dec (
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Variables::dec. Context not set correctly\n");
 
-    return madara::KnowledgeRecord ();
+    return madara::knowledge::KnowledgeRecord ();
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::Variables::dec (
   const VariableReference & variable,
   const KnowledgeUpdateSettings & settings)
@@ -551,7 +551,7 @@ madara::knowledge::Variables::dec (
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Variables::dec. Context not set correctly\n");
 
-    return madara::KnowledgeRecord ();
+    return madara::knowledge::KnowledgeRecord ();
   }
 }
 
@@ -627,7 +627,7 @@ madara::knowledge::Variables::expand_statement (
 // Defines a function
 void madara::knowledge::Variables::define_function (
   const std::string & name,
-  KnowledgeRecord (*func) (FunctionArguments &, Variables &))
+  knowledge::KnowledgeRecord (*func) (FunctionArguments &, Variables &))
 {
   if (context_)
   {
@@ -733,7 +733,7 @@ madara::knowledge::Variables::compile (const std::string & expression)
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::Variables::evaluate (
   const std::string & expression,
   const KnowledgeUpdateSettings & settings)
@@ -748,11 +748,11 @@ madara::knowledge::Variables::evaluate (
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Variables::evaluate. Context not set correctly\n");
 
-    return madara::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord::Integer (0);
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::Variables::evaluate (
   CompiledExpression & expression,
   const KnowledgeUpdateSettings & settings)
@@ -766,7 +766,7 @@ madara::knowledge::Variables::evaluate (
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Variables::evaluate. Context not set correctly\n");
 
-    return madara::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord::Integer (0);
   }
 }
 
@@ -797,7 +797,7 @@ madara::knowledge::Variables::to_vector (
 size_t
 madara::knowledge::Variables::to_map (
   const std::string & expression,
-  std::map <std::string, KnowledgeRecord> & target)
+  std::map <std::string, knowledge::KnowledgeRecord> & target)
 {
   size_t result (0);
 

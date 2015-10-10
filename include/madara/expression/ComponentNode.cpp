@@ -9,6 +9,7 @@
 
 #include "madara/expression/ComponentNode.h"
 #include "madara/expression/Visitor.h"
+#include "madara/knowledge/KnowledgeRecord.h"
 
 
 madara::expression::ComponentNode::ComponentNode (
@@ -22,10 +23,10 @@ madara::expression::ComponentNode::~ComponentNode (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::ComponentNode::item (void) const
 {
-  return KnowledgeRecord ();
+  return knowledge::KnowledgeRecord ();
 }
 
 // default left is to return a null pointer

@@ -98,7 +98,7 @@ namespace madara
       
       //KnowledgeRecord call_java(KnowledgeMap & recordsMap, const transport::TransportContext & context, Variables & vars) const
       //{
-      //  return KnowledgeRecord ();
+      //  return knowledge::KnowledgeRecord ();
       //}
 #endif
       

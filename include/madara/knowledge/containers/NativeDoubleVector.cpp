@@ -188,7 +188,7 @@ madara::knowledge::containers::NativeDoubleVector::resize (
       this->name_.c_str (),
       (int)size);
 
-    KnowledgeRecord value = context_->get (vector_, settings_);
+    knowledge::KnowledgeRecord value = context_->get (vector_, settings_);
 
     value.resize (size);
 
@@ -299,7 +299,7 @@ madara::knowledge::containers::NativeDoubleVector::exchange (
       this->name_.c_str (),
       other.name_.c_str ());
 
-    KnowledgeRecord temp (context_->get (other.vector_));
+    knowledge::KnowledgeRecord temp (context_->get (other.vector_));
 
     context_->set (other.vector_, context_->get (vector_), other.settings_);
     context_->set (vector_, temp, settings_);
@@ -336,8 +336,8 @@ madara::knowledge::containers::NativeDoubleVector::transfer_to (
       size_t size = other_size + this_size;
       other.resize ((int)size);
 
-      KnowledgeRecord rhs (other.context_->get (other.vector_));
-      KnowledgeRecord lhs (context_->get (vector_));
+      knowledge::KnowledgeRecord rhs (other.context_->get (other.vector_));
+      knowledge::KnowledgeRecord lhs (context_->get (vector_));
 
       rhs.set_index (size - 1, lhs.retrieve_index (this_size - 1).to_double ());
 
@@ -380,7 +380,7 @@ madara::knowledge::containers::NativeDoubleVector::type
 madara::knowledge::containers::NativeDoubleVector::operator[] (
   size_t index) const
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
 
   if (context_)
   {
@@ -517,7 +517,7 @@ madara::knowledge::containers::NativeDoubleVector::set_quality (
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::NativeDoubleVector::to_record (
   size_t index) const
 {
@@ -526,13 +526,13 @@ madara::knowledge::containers::NativeDoubleVector::to_record (
     "NativeDoubleVector::to_record: %s: retrieving record\n",
     this->name_.c_str ());
 
-  madara::KnowledgeRecord result = context_->get (this->vector_, settings_);
+  madara::knowledge::KnowledgeRecord result = context_->get (this->vector_, settings_);
 
   result = result.retrieve_index (index);
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::NativeDoubleVector::to_record (
   void) const
 {

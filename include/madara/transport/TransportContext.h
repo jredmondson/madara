@@ -133,13 +133,13 @@ namespace madara
        * @param   record   record to add to the append list
        **/
       void add_record (const std::string & key,
-        const madara::KnowledgeRecord & record);
+        const madara::knowledge::KnowledgeRecord & record);
 
       /**
        * Returns the additional records stored in the context
        * @return records to add to context
        **/
-      const KnowledgeMap & get_records (void) const;
+      const knowledge::KnowledgeMap & get_records (void) const;
 
       /**
        * Returns the network domain
@@ -169,7 +169,7 @@ namespace madara
        * Sets the current message originator
        * @param  source  the source record map to set
        **/
-      void set_records (const KnowledgeMap & source);
+      void set_records (const knowledge::KnowledgeMap& source);
 
     private:
 
@@ -211,7 +211,7 @@ namespace madara
       /**
        * Context specific records
        **/
-      KnowledgeMap records_;
+     knowledge::KnowledgeMap records_;
     };
   }
 }

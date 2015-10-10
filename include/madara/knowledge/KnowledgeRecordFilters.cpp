@@ -26,7 +26,7 @@ madara::knowledge::KnowledgeRecordFilters::KnowledgeRecordFilters ()
 }
 
 madara::knowledge::KnowledgeRecordFilters::KnowledgeRecordFilters (
-  const KnowledgeRecordFilters & filters)
+  const knowledge::KnowledgeRecordFilters & filters)
   : filters_ (filters.filters_), context_ (filters.context_),
     aggregate_filters_ (filters.aggregate_filters_)
 {
@@ -38,7 +38,7 @@ madara::knowledge::KnowledgeRecordFilters::~KnowledgeRecordFilters ()
 
 void
 madara::knowledge::KnowledgeRecordFilters::operator= (
-  const KnowledgeRecordFilters & rhs)
+  const knowledge::KnowledgeRecordFilters & rhs)
 {
   if (this != &rhs)
   {
@@ -50,7 +50,7 @@ madara::knowledge::KnowledgeRecordFilters::operator= (
 
 void
 madara::knowledge::KnowledgeRecordFilters::add (uint32_t types,
-        KnowledgeRecord (*function) (FunctionArguments &, Variables &))
+        knowledge::KnowledgeRecord (*function) (FunctionArguments &, Variables &))
 {
   if (function != 0)
   {
@@ -310,16 +310,16 @@ madara::knowledge::KnowledgeRecordFilters::print_num_filters (
 }
 
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeRecordFilters::filter (
-  const KnowledgeRecord & input,
+  const knowledge::KnowledgeRecord & input,
   const std::string & name,
   transport::TransportContext & transport_context) const
 {
   // grab the filter chain entry for the type
   uint32_t type = input.type ();
   FilterMap::const_iterator type_match = filters_.find (type);
-  KnowledgeRecord result (input);
+  knowledge::KnowledgeRecord result (input);
 
   // if there are filters for this type
   if (type_match != filters_.end ())
@@ -416,15 +416,15 @@ madara::knowledge::KnowledgeRecordFilters::filter (
           "KnowledgeRecordFilters::filter: "
           "Calling Java filter\n");
 
-        madara::utility::Java::Acquire_VM jvm;
+        madara::utility::java::Acquire_VM jvm;
 
         /**
         * Create the variables java object
         **/
 
-        jclass jvarClass = madara::utility::Java::find_class (
+        jclass jvarClass = madara::utility::java::find_class (
           jvm.env, "com/madara/Variables");
-        jclass jlistClass = madara::utility::Java::find_class (
+        jclass jlistClass = madara::utility::java::find_class (
           jvm.env, "com/madara/KnowledgeList");
 
         jmethodID fromPointerCall = jvm.env->GetStaticMethodID (jvarClass,
@@ -503,7 +503,7 @@ madara::knowledge::KnowledgeRecordFilters::filter (
             "KnowledgeRecordFilters::filter: "
             "Doing a deep copy of the return value\n");
 
-          result.deep_copy (*(madara::KnowledgeRecord *)cptr);
+          result.deep_copy (*(madara::knowledge::KnowledgeRecord *)cptr);
         }
 
         if (do_delete)
@@ -540,7 +540,7 @@ madara::knowledge::KnowledgeRecordFilters::filter (
         madara::python::Acquire_GIL acquire_gil;
 
         // some guides have stated that we should let python handle exceptions
-        result = boost::python::call <madara::KnowledgeRecord> (
+        result = boost::python::call <madara::knowledge::KnowledgeRecord> (
           i->python_function.ptr (), boost::ref (arguments),
           boost::ref (*heap_variables.get ()));
       }
@@ -658,7 +658,7 @@ madara::knowledge::KnowledgeRecordFilters::filter (
       else if (i->is_java_callable ())
       {
         // manage VM attachment
-        madara::utility::Java::Acquire_VM jvm;
+        madara::utility::java::Acquire_VM jvm;
 
         // JVMs appear to do strange things with the stack on jni_attach
         std::auto_ptr <KnowledgeMap> heap_records (new KnowledgeMap (records));
@@ -668,11 +668,11 @@ madara::knowledge::KnowledgeRecordFilters::filter (
         /**
         * Create the variables java object
         **/
-        jclass jvarClass = madara::utility::Java::find_class (jvm.env,
+        jclass jvarClass = madara::utility::java::find_class (jvm.env,
           "com/madara/Variables");
-        jclass jpacketClass = madara::utility::Java::find_class (jvm.env,
+        jclass jpacketClass = madara::utility::java::find_class (jvm.env,
           "com/madara/transport/filters/Packet");
-        jclass jcontextClass = madara::utility::Java::find_class (jvm.env,
+        jclass jcontextClass = madara::utility::java::find_class (jvm.env,
           "com/madara/transport/TransportContext");
 
         jmethodID varfromPointerCall = jvm.env->GetStaticMethodID (
@@ -744,7 +744,7 @@ madara::knowledge::KnowledgeRecordFilters::filter (
         madara::python::Acquire_GIL acquire_gil;
 
         // some guides have stated that we should let python handle exceptions
-        boost::python::call <madara::KnowledgeRecord> (
+        boost::python::call <madara::knowledge::KnowledgeRecord> (
           i->python_function.ptr (),
           boost::ref (records), boost::ref (transport_context),
           boost::ref (*heap_variables.get ()));

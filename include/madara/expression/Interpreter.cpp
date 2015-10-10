@@ -738,7 +738,7 @@ namespace madara
     public:
       /// constructors
       Number (logger::Logger & logger, std::string input);
-      Number (logger::Logger & logger, madara::KnowledgeRecord::Integer input);
+      Number (logger::Logger & logger, madara::knowledge::KnowledgeRecord::Integer input);
       Number (logger::Logger & logger, double input);
 
       /// destructor
@@ -752,7 +752,7 @@ namespace madara
       virtual ComponentNode *build (void);
       //   private:
       /// contains the value of the leaf node
-      madara::KnowledgeRecord item_;
+      madara::knowledge::KnowledgeRecord item_;
     };
 
     /**
@@ -819,7 +819,7 @@ namespace madara
     public:
       /// constructors
       VariableDecrement (Symbol * lhs,
-        madara::KnowledgeRecord value,
+        madara::knowledge::KnowledgeRecord value,
         Symbol * rhs,
         madara::knowledge::ThreadSafeContext & context);
 
@@ -836,7 +836,7 @@ namespace madara
       Symbol * left_;
 
       /// value can be faster than rhs_, so use it if possible
-      madara::KnowledgeRecord value_;
+      madara::knowledge::KnowledgeRecord value_;
 
       /// Context for variables
       madara::knowledge::ThreadSafeContext & context_;
@@ -852,7 +852,7 @@ namespace madara
     public:
       /// constructors
       VariableDivide (Symbol * lhs,
-        madara::KnowledgeRecord value,
+        madara::knowledge::KnowledgeRecord value,
         Symbol * rhs,
         madara::knowledge::ThreadSafeContext & context);
 
@@ -869,7 +869,7 @@ namespace madara
       Symbol * left_;
 
       /// value can be faster than rhs_, so use it if possible
-      madara::KnowledgeRecord value_;
+      madara::knowledge::KnowledgeRecord value_;
 
       /// Context for variables
       madara::knowledge::ThreadSafeContext & context_;
@@ -885,7 +885,7 @@ namespace madara
     public:
       /// constructors
       VariableIncrement (Symbol * lhs,
-        madara::KnowledgeRecord value,
+        madara::knowledge::KnowledgeRecord value,
         Symbol * rhs,
         madara::knowledge::ThreadSafeContext & context);
 
@@ -902,7 +902,7 @@ namespace madara
       Symbol * left_;
 
       /// value can be faster than rhs_, so use it if possible
-      madara::KnowledgeRecord value_;
+      madara::knowledge::KnowledgeRecord value_;
 
       /// Context for variables
       madara::knowledge::ThreadSafeContext & context_;
@@ -918,7 +918,7 @@ namespace madara
     public:
       /// constructors
       VariableMultiply (Symbol * lhs,
-        madara::KnowledgeRecord value,
+        madara::knowledge::KnowledgeRecord value,
         Symbol * rhs,
         madara::knowledge::ThreadSafeContext & context);
 
@@ -935,7 +935,7 @@ namespace madara
       Symbol * left_;
 
       /// value can be faster than rhs_, so use it if possible
-      madara::KnowledgeRecord value_;
+      madara::knowledge::KnowledgeRecord value_;
 
       /// Context for variables
       madara::knowledge::ThreadSafeContext & context_;
@@ -951,7 +951,7 @@ namespace madara
     public:
       /// constructors
       VariableCompare (Symbol * lhs,
-        madara::KnowledgeRecord value,
+        madara::knowledge::KnowledgeRecord value,
         Symbol * rhs, int compare_type,
         madara::knowledge::ThreadSafeContext & context);
 
@@ -968,7 +968,7 @@ namespace madara
       Symbol * left_;
 
       /// value can be faster than rhs_, so use it if possible
-      madara::KnowledgeRecord value_;
+      madara::knowledge::KnowledgeRecord value_;
 
       /// rhs is used for complex rhs types (not a simple number)
       Symbol * rhs_;
@@ -1673,7 +1673,7 @@ madara::expression::UnaryOperator::~UnaryOperator (void)
 
 // constructor
 madara::expression::Number::Number (logger::Logger & logger,
-  madara::KnowledgeRecord::Integer input)
+  madara::knowledge::KnowledgeRecord::Integer input)
   : Symbol (logger, 0, 0, NUMBER_PRECEDENCE)
 {
   item_.set_value (input);
@@ -2781,7 +2781,7 @@ madara::expression::ArrayRef::build (void)
 // constructor
 madara::expression::VariableDecrement::VariableDecrement (
   Symbol * lhs,
-  madara::KnowledgeRecord value, Symbol * rhs,
+  madara::knowledge::KnowledgeRecord value, Symbol * rhs,
   madara::knowledge::ThreadSafeContext & context)
   : Operator (context.get_logger (), 0, rhs, ASSIGNMENT_PRECEDENCE), left_ (lhs), value_ (value),
   context_ (context)
@@ -2813,7 +2813,7 @@ madara::expression::VariableDecrement::build (void)
 
 // constructor
 madara::expression::VariableDivide::VariableDivide (Symbol * lhs,
-  KnowledgeRecord value, Symbol * rhs,
+  knowledge::KnowledgeRecord value, Symbol * rhs,
   madara::knowledge::ThreadSafeContext & context)
   : Operator (context.get_logger (), 0, rhs, ASSIGNMENT_PRECEDENCE), left_ (lhs), value_ (value),
   context_ (context)
@@ -2844,7 +2844,7 @@ madara::expression::VariableDivide::build (void)
 
 // constructor
 madara::expression::VariableIncrement::VariableIncrement (Symbol * lhs,
-  madara::KnowledgeRecord value, Symbol * rhs,
+  madara::knowledge::KnowledgeRecord value, Symbol * rhs,
   madara::knowledge::ThreadSafeContext & context)
   : Operator (context.get_logger (), 0, rhs, ASSIGNMENT_PRECEDENCE),
   left_ (lhs), value_ (value),
@@ -2877,7 +2877,7 @@ madara::expression::VariableIncrement::build (void)
 
 // constructor
 madara::expression::VariableMultiply::VariableMultiply (Symbol * lhs,
-  madara::KnowledgeRecord value, Symbol * rhs,
+  madara::knowledge::KnowledgeRecord value, Symbol * rhs,
   madara::knowledge::ThreadSafeContext & context)
   : Operator (context.get_logger (), 0, rhs, ASSIGNMENT_PRECEDENCE),
   left_ (lhs), value_ (value),
@@ -2910,7 +2910,7 @@ madara::expression::VariableMultiply::build (void)
 
 // constructor
 madara::expression::VariableCompare::VariableCompare (Symbol * lhs,
-  madara::KnowledgeRecord value, Symbol * rhs, int compare_type,
+  madara::knowledge::KnowledgeRecord value, Symbol * rhs, int compare_type,
   madara::knowledge::ThreadSafeContext & context)
   : Symbol (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
   left_ (lhs), value_ (value), rhs_ (rhs),
@@ -3043,7 +3043,7 @@ madara::expression::Add::build (void)
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
     return new LeafNode (*(this->logger_),
-    (madara::KnowledgeRecord::Integer)0);
+    (madara::knowledge::KnowledgeRecord::Integer)0);
 }
 
 
@@ -3118,7 +3118,7 @@ madara::expression::And::build (void)
   else
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
-    return new LeafNode (*(this->logger_), (madara::KnowledgeRecord::Integer)0);
+    return new LeafNode (*(this->logger_), (madara::knowledge::KnowledgeRecord::Integer)0);
 }
 
 // constructor
@@ -3195,7 +3195,7 @@ madara::expression::Or::build (void)
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
     return new LeafNode (*(this->logger_),
-    (madara::KnowledgeRecord::Integer)0);
+    (madara::knowledge::KnowledgeRecord::Integer)0);
 }
 
 
@@ -3303,7 +3303,7 @@ madara::expression::Both::build (void)
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
     return new LeafNode (*(this->logger_),
-    (madara::KnowledgeRecord::Integer)0);
+    (madara::knowledge::KnowledgeRecord::Integer)0);
 }
 
 
@@ -3411,7 +3411,7 @@ madara::expression::ReturnRight::build (void)
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
     return new LeafNode (*(this->logger_),
-    (madara::KnowledgeRecord::Integer)0);
+    (madara::knowledge::KnowledgeRecord::Integer)0);
 }
 
 // constructor
@@ -3518,7 +3518,7 @@ madara::expression::Sequence::build (void)
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
     return new LeafNode (*(this->logger_),
-    (madara::KnowledgeRecord::Integer)0);
+    (madara::knowledge::KnowledgeRecord::Integer)0);
 }
 
 // constructor
@@ -3816,7 +3816,7 @@ madara::expression::Multiply::build (void)
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
     return new LeafNode (*(this->logger_),
-    (madara::KnowledgeRecord::Integer)0);
+    (madara::knowledge::KnowledgeRecord::Integer)0);
 }
 
 // constructor
@@ -4177,18 +4177,18 @@ Symbol *& returnableInput)
   // if precondition not set, set to default
   if (!user_pre)
     user_pre = new Number (context.get_logger (),
-    (madara::KnowledgeRecord::Integer)0);
+    (madara::knowledge::KnowledgeRecord::Integer)0);
 
   // set condition to default if not yet set
   if (!user_cond)
     user_cond = new Number (context.get_logger (),
-    (madara::KnowledgeRecord::Integer) - 1);
+    (madara::knowledge::KnowledgeRecord::Integer) - 1);
 
   // set postcondition to default if not yet set
   if (!user_post)
   {
     user_post = new Number (context.get_logger (),
-      (madara::KnowledgeRecord::Integer)1);
+      (madara::knowledge::KnowledgeRecord::Integer)1);
     madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
       "Postcondition is set to 1 (def)\n");
   }
@@ -4241,8 +4241,8 @@ Symbol *& returnableInput)
     }
 
     precondition->right_ = user_pre;
-    madara::KnowledgeRecord post_val;
-    madara::KnowledgeRecord cond_val;
+    madara::knowledge::KnowledgeRecord post_val;
+    madara::knowledge::KnowledgeRecord cond_val;
 
     // optimize postcondition
     Number * number = dynamic_cast <Number *> (user_post);
@@ -4304,7 +4304,7 @@ Symbol *& returnableInput)
         // just add one to it and see if the prune () method can optimize it a bit.
         Add * add = new Add (context.get_logger ());
         add->left_ = new Number (context.get_logger (),
-          (madara::KnowledgeRecord::Integer)1);
+          (madara::knowledge::KnowledgeRecord::Integer)1);
         add->right_ = user_cond;
         user_cond = add;
       }
@@ -4672,7 +4672,7 @@ madara::expression::Interpreter::number_insert (
   {
     // we have an integer
 
-    madara::KnowledgeRecord::Integer new_number;
+    madara::knowledge::KnowledgeRecord::Integer new_number;
 
     std::stringstream buffer;
     buffer << input.substr (i, j);
@@ -4782,7 +4782,7 @@ madara::expression::Symbol *op,
             "Inserting a zero\n");
 
           parent->left_ = new Number (context.get_logger (),
-            (madara::KnowledgeRecord::Integer)0);
+            (madara::knowledge::KnowledgeRecord::Integer)0);
         }
       }
 
@@ -4928,12 +4928,12 @@ bool build_argument_list)
       ArrayRef * array_ref = dynamic_cast <ArrayRef *> (lastValidInput);
       if (var || array_ref)
         op = new VariableIncrement (lastValidInput,
-        madara::KnowledgeRecord (), 0, context);
+        madara::knowledge::KnowledgeRecord (), 0, context);
       else
       {
         // major error here. The left hand side must be a variable
         op = new VariableIncrement (new Variable (".MADARA_I", context),
-          madara::KnowledgeRecord (), 0, context);
+          madara::knowledge::KnowledgeRecord (), 0, context);
 
         madara_logger_log (context.get_logger (), logger::LOG_WARNING,
           "KARL COMPILE WARNING (+=): "
@@ -4969,14 +4969,14 @@ bool build_argument_list)
       ArrayRef * array_ref = dynamic_cast <ArrayRef *> (lastValidInput);
       if (var || array_ref)
       {
-        op = new VariableDecrement (lastValidInput, madara::KnowledgeRecord (),
+        op = new VariableDecrement (lastValidInput, madara::knowledge::KnowledgeRecord (),
           0, context);
       }
       else
       {
         // major error here. The left hand side must be a variable
         op = new VariableDecrement (new Variable (".MADARA_I", context),
-          madara::KnowledgeRecord (), 0, context);
+          madara::knowledge::KnowledgeRecord (), 0, context);
 
         madara_logger_log (context.get_logger (), logger::LOG_WARNING,
           "KARL COMPILE WARNING (-=): "
@@ -5009,13 +5009,13 @@ bool build_argument_list)
       Variable * var = dynamic_cast <Variable *> (lastValidInput);
       ArrayRef * array_ref = dynamic_cast <ArrayRef *> (lastValidInput);
       if (var || array_ref)
-        op = new VariableMultiply (lastValidInput, madara::KnowledgeRecord (),
+        op = new VariableMultiply (lastValidInput, madara::knowledge::KnowledgeRecord (),
         0, context);
       else
       {
         // major error here. The left hand side must be a variable
         op = new VariableMultiply (new Variable (".MADARA_I", context),
-          madara::KnowledgeRecord (), 0, context);
+          madara::knowledge::KnowledgeRecord (), 0, context);
 
         madara_logger_log (context.get_logger (), logger::LOG_WARNING,
           "KARL COMPILE WARNING (*=): "
@@ -5083,12 +5083,12 @@ bool build_argument_list)
         Variable * var = dynamic_cast <Variable *> (lastValidInput);
         ArrayRef * array_ref = dynamic_cast <ArrayRef *> (lastValidInput);
         if (var || array_ref)
-          op = new VariableDivide (lastValidInput, madara::KnowledgeRecord (), 0, context);
+          op = new VariableDivide (lastValidInput, madara::knowledge::KnowledgeRecord (), 0, context);
         else
         {
           // major error here. The left hand side must be a variable
           op = new VariableDivide (new Variable (".MADARA_I", context),
-            madara::KnowledgeRecord (), 0, context);
+            madara::knowledge::KnowledgeRecord (), 0, context);
 
           madara_logger_log (context.get_logger (), logger::LOG_WARNING,
             "KARL COMPILE WARNING (/=): "

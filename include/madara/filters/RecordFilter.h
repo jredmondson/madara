@@ -62,7 +62,7 @@ namespace madara
        *          in a default state (i.e., with a default constructor), then
        *          the variable is removed from the operation.
        **/
-      virtual KnowledgeRecord filter (
+      virtual knowledge::KnowledgeRecord filter (
         knowledge::FunctionArguments & args,
         knowledge::Variables & vars) = 0;
     };

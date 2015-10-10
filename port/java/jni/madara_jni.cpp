@@ -208,7 +208,7 @@ void jni_detach()
   }
 }
 
-jclass madara::utility::Java::find_class (JNIEnv * env, const char * name)
+jclass madara::utility::java::find_class (JNIEnv * env, const char * name)
 {
   jclass result (0);
 
@@ -220,7 +220,7 @@ jclass madara::utility::Java::find_class (JNIEnv * env, const char * name)
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MINOR,
-      "madara::utility::Java::find_class: "
+      "madara::utility::java::find_class: "
       "Retrieving class loader and loadClass method\n", dot_name.c_str ());
 
     jclass class_loader = env->FindClass ("java/lang/ClassLoader");
@@ -232,7 +232,7 @@ jclass madara::utility::Java::find_class (JNIEnv * env, const char * name)
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
-      "madara::utility::Java::find_class: "
+      "madara::utility::java::find_class: "
       "Attempting to find class %s via ClassLoader\n", dot_name.c_str ());
 
     jstring j_name = env->NewStringUTF (dot_name.c_str ());
@@ -254,7 +254,7 @@ jclass madara::utility::Java::find_class (JNIEnv * env, const char * name)
 
       madara_logger_ptr_log (logger::global_logger.get (),
         logger::LOG_WARNING,
-        "madara::utility::Java::find_class: "
+        "madara::utility::java::find_class: "
         "Exception in Class Loader. Attempting FindClass on %s.\n", name);
 
       jobject local_class = env->FindClass (name);
@@ -275,14 +275,14 @@ jclass madara::utility::Java::find_class (JNIEnv * env, const char * name)
     {
       madara_logger_ptr_log (logger::global_logger.get (),
         logger::LOG_ERROR,
-        "madara::utility::Java::find_class: "
+        "madara::utility::java::find_class: "
         "Class %s was not found. Returning zero. Expect exception.\n", name);
     }
     else
     {
       madara_logger_ptr_log (logger::global_logger.get (),
         logger::LOG_MINOR,
-        "madara::utility::Java::find_class: "
+        "madara::utility::java::find_class: "
         "Class was found. Returning.\n", name);
     }
   }

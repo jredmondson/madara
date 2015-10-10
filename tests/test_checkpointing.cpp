@@ -25,11 +25,11 @@ void test_checkpointing (void)
   context.read_file ("file_var", madara::utility::expand_envs (
       "$(MADARA_ROOT)/tests/images/manaus_hotel_225x375.jpg"));
 
-  context.set ("int_var", madara::KnowledgeRecord::Integer (15));
+  context.set ("int_var", madara::knowledge::KnowledgeRecord::Integer (15));
   context.set ("str_var", std::string ("some string"));
   context.set ("double_var", 3.14159);
 
-  std::vector <madara::KnowledgeRecord::Integer> integers;
+  std::vector <madara::knowledge::KnowledgeRecord::Integer> integers;
   std::vector <double> doubles;
   std::string id = "orig_context";
 
@@ -62,7 +62,7 @@ void test_checkpointing (void)
   context.print (0);
   
   std::cerr << "Test 2: Results were ";
-  if (context_copy.get ("int_var") == madara::KnowledgeRecord::Integer (15)
+  if (context_copy.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
       && context_copy.get ("double_var") == 3.14159
       && context_copy.get ("str_var") == "some string"
       && context_copy.get ("int_array").to_string (", ") == "10, 20, 30"
@@ -93,7 +93,7 @@ void test_checkpointing (void)
   context_copy.load_context ("test3_bigger.kkb", id);
   
   std::cerr << "Test 3: Results were ";
-  if (context_copy.get ("int_var") == madara::KnowledgeRecord::Integer (15)
+  if (context_copy.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
       && context_copy.get ("double_var") == 3.14159
       && context_copy.get ("str_var") == "some string"
       && context_copy.get ("int_array").to_string (", ") == "10, 20, 30"
@@ -119,7 +119,7 @@ void test_checkpointing (void)
   knowledge.load_context ("test4_resave.kkb", false);
   
   std::cerr << "Test 4: Results were ";
-  if (knowledge.get ("int_var") == madara::KnowledgeRecord::Integer (15)
+  if (knowledge.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
       && knowledge.get ("double_var") == 3.14159
       && knowledge.get ("str_var") == "some string"
       && knowledge.get ("int_array").to_string (", ") == "10, 20, 30"
@@ -150,7 +150,7 @@ void test_checkpointing (void)
   knowledge.load_context ("test4_bigger.kkb", true);
 
   std::cerr << "Test 5: Results were ";
-  if (knowledge.get ("int_var") == madara::KnowledgeRecord::Integer (15)
+  if (knowledge.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
       && knowledge.get ("double_var") == 3.14159
       && knowledge.get ("str_var") == "some string"
       && knowledge.get ("int_array").to_string (", ") == "10, 20, 30"
@@ -177,7 +177,7 @@ void test_checkpointing (void)
   knowledge.load_context ("test4_bigger.kkb", true);
 
   std::cerr << "Test 6: Results were ";
-  if (knowledge.get ("int_var") == madara::KnowledgeRecord::Integer (15)
+  if (knowledge.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
       && knowledge.get ("double_var") == 3.14159
       && knowledge.get ("str_var") == "some string"
       && knowledge.get ("int_array").to_string (", ") == "10, 20, 30"
@@ -210,7 +210,7 @@ void test_checkpointing (void)
   knowledge.print (".invisible = {.invisible}\n");
   
   std::cerr << "Test 7: Results were ";
-  if (knowledge.get ("int_var") == madara::KnowledgeRecord::Integer (15)
+  if (knowledge.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
       && knowledge.get ("double_var") == 3.14159
       && knowledge.get ("str_var") == "some string"
       && knowledge.get ("int_array").to_string (", ") == "10, 20, 30"
@@ -220,7 +220,7 @@ void test_checkpointing (void)
       && knowledge.get ("extra_var") == 5.0
       && knowledge.get ("additional_var") == 6.0
       && knowledge.get (".invisible").status ()
-           == madara::KnowledgeRecord::UNCREATED)
+           == madara::knowledge::KnowledgeRecord::UNCREATED)
   {
     std::cerr << "SUCCESS\n\n";
   }
@@ -245,7 +245,7 @@ void test_checkpointing (void)
   std::cerr << "Test 8: Printing .invisible value (should be 'tee hee')\n";
   knowledge.print (".invisible = {.invisible}\n");
   std::cerr << "Test 8: Results were ";
-  if (knowledge.get ("int_var") == madara::KnowledgeRecord::Integer (15)
+  if (knowledge.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
       && knowledge.get ("double_var") == 3.14159
       && knowledge.get ("str_var") == "some string"
       && knowledge.get ("int_array").to_string (", ") == "10, 20, 30"

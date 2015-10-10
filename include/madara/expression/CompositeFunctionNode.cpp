@@ -49,10 +49,10 @@ madara::expression::CompositeFunctionNode::~CompositeFunctionNode (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeFunctionNode::item (void) const
 {
-  madara::KnowledgeRecord record;
+  madara::knowledge::KnowledgeRecord record;
   record.set_value (name_ + "()");
   return record;
 }
@@ -60,7 +60,7 @@ madara::expression::CompositeFunctionNode::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeFunctionNode::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
@@ -68,7 +68,7 @@ madara::expression::CompositeFunctionNode::prune (bool & can_change)
   // under any situation
   can_change = true;
   
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   // setup array of record pointers that point to .1, .2, .3, etc.
   if (nodes_.size () > 0)
@@ -100,12 +100,12 @@ madara::expression::CompositeFunctionNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::CompositeFunctionNode::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
   madara::knowledge::FunctionArguments args;
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   args.resize (nodes_.size ());
 
@@ -137,16 +137,16 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 #ifdef _MADARA_JAVA_
   else if (function_->is_java_callable())
   {
-    madara::utility::Java::Acquire_VM jvm;
+    madara::utility::java::Acquire_VM jvm;
     JNIEnv * env = jvm.env;
 
     /**
       * Create the variables java object
       **/
 
-    jclass jvarClass = madara::utility::Java::find_class (
+    jclass jvarClass = madara::utility::java::find_class (
       env, "com/madara/Variables");
-    jclass jlistClass = madara::utility::Java::find_class (
+    jclass jlistClass = madara::utility::java::find_class (
       env, "com/madara/KnowledgeList");
         
     jmethodID fromPointerCall = env->GetStaticMethodID (jvarClass,
@@ -199,7 +199,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       }
     }
 
-    result.deep_copy(*(madara::KnowledgeRecord *)cptr);
+    result.deep_copy(*(madara::knowledge::KnowledgeRecord *)cptr);
 
     jvm.env->DeleteLocalRef (jresult);
     jvm.env->DeleteLocalRef (filterClass);
@@ -216,7 +216,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   
 #ifdef _MADARA_PYTHON_CALLBACKS_
   else if (function_->is_python_callable ())
-    return boost::python::call <madara::KnowledgeRecord> (
+    return boost::python::call <madara::knowledge::KnowledgeRecord> (
           function_->python_function.ptr (),
           boost::ref (args), boost::ref (variables));
 #endif

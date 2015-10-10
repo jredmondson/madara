@@ -19,7 +19,7 @@ madara::expression::CompositeReturnRightNode::CompositeReturnRightNode (
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeReturnRightNode::item (void) const
 {
   return ";>";
@@ -28,17 +28,17 @@ madara::expression::CompositeReturnRightNode::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeReturnRightNode::prune (bool & can_change)
 {
-  madara::KnowledgeRecord return_value;
+  madara::knowledge::KnowledgeRecord return_value;
 
   unsigned int j = 0;
   for (ComponentNodes::iterator i = nodes_.begin ();
        i != nodes_.end (); ++i, ++j)
   {
     bool value_changes = false;
-    madara::KnowledgeRecord value;
+    madara::knowledge::KnowledgeRecord value;
     if (j + 1 == nodes_.size ())
       return_value = (*i)->prune (value_changes);
     else
@@ -59,11 +59,11 @@ madara::expression::CompositeReturnRightNode::prune (bool & can_change)
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
 /// @ returns    maximum value of the left and right evaluations
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::CompositeReturnRightNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  madara::KnowledgeRecord return_value;
+  madara::knowledge::KnowledgeRecord return_value;
 
   int j = 0;
   for (ComponentNodes::iterator i = nodes_.begin ();

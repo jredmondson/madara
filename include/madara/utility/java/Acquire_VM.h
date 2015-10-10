@@ -15,7 +15,7 @@ namespace madara
 {
   namespace utility
   {
-    namespace Java
+    namespace java
     {
       /**
        * @class Acquire_VM

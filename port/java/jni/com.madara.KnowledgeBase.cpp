@@ -16,7 +16,7 @@
 namespace knowledge = madara::knowledge;
 namespace transport = madara::transport;
 namespace logger = madara::logger;
-typedef madara::KnowledgeRecord::Integer Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 typedef knowledge::KnowledgeBase         KnowledgeBase;
 typedef knowledge::CompiledExpression    CompiledExpression;
 typedef logger::Logger                 Logger;
@@ -198,7 +198,7 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1getLogger
 jlong JNICALL Java_com_madara_KnowledgeBase_jni_1evaluate__JLjava_lang_String_2J
   (JNIEnv *env, jobject obj, jlong cptr, jstring expression, jlong evalSettings)
 {
-  madara::KnowledgeRecord * result (0);
+  madara::knowledge::KnowledgeRecord * result (0);
   const char * nativeExpression = env->GetStringUTFChars (expression, 0);
   knowledge::EvalSettings * settings = (knowledge::EvalSettings *)evalSettings;
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
@@ -302,7 +302,7 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1compile
   return (jlong) result;
 }
 
-madara::KnowledgeRecord default_madara_return_function
+madara::knowledge::KnowledgeRecord default_madara_return_function
   (const char * name, knowledge::FunctionArguments & args,
    knowledge::Variables & variables)
 {
@@ -332,12 +332,12 @@ madara::KnowledgeRecord default_madara_return_function
 
   if (ret == 0)
   {
-    return madara::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord::Integer (0);
   }
   else
   {
-    madara::KnowledgeRecord returnValue (* (madara::KnowledgeRecord*)ret);
-    delete (madara::KnowledgeRecord*)ret;
+    madara::knowledge::KnowledgeRecord returnValue (* (madara::knowledge::KnowledgeRecord*)ret);
+    delete (madara::knowledge::KnowledgeRecord*)ret;
     return returnValue;
   }
 }
@@ -495,7 +495,7 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1get
   
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
 
-  madara::KnowledgeRecord * result (0);
+  madara::knowledge::KnowledgeRecord * result (0);
   if (knowledge)
   {
     result = knowledge->get (nativeVar).clone ();
@@ -579,7 +579,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setIntegerArray
   jboolean isCopy;
 
   jlong * intArray = env->GetLongArrayElements (value, &isCopy);
-  std::vector<madara::KnowledgeRecord::Integer> intVector (len);
+  std::vector<madara::knowledge::KnowledgeRecord::Integer> intVector (len);
 
   // copy elements to the STL vector
   for (int x = 0; x < len; x++)
@@ -754,7 +754,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1setIntegerArraySettings
   jboolean isCopy;
 
   jlong* intArray = env->GetLongArrayElements (value, &isCopy);
-  std::vector<madara::KnowledgeRecord::Integer> intVector (len);
+  std::vector<madara::knowledge::KnowledgeRecord::Integer> intVector (len);
 
   //copy elements to STL vector
   for (int x = 0; x < len; x++)
@@ -949,7 +949,7 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1wait__JLjava_lang_String_2J
   const char * nativeExpression = env->GetStringUTFChars (expression, 0);
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
   knowledge::WaitSettings * settings = (knowledge::WaitSettings *) waitSettings;
-  madara::KnowledgeRecord * result (0);
+  madara::knowledge::KnowledgeRecord * result (0);
 
   if (knowledge && settings)
   {
@@ -972,7 +972,7 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1wait__JJJ
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
   CompiledExpression * compiled = (CompiledExpression *) cexpression;
   knowledge::WaitSettings * settings = (knowledge::WaitSettings *) waitSettings;
-  madara::KnowledgeRecord * result (0);
+  madara::knowledge::KnowledgeRecord * result (0);
   
   if (knowledge && compiled && settings)
   {
@@ -1051,7 +1051,7 @@ jlongArray JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeList
 
   if (knowledge)
   {
-    std::vector<madara::KnowledgeRecord> returnVector;
+    std::vector<madara::knowledge::KnowledgeRecord> returnVector;
 
     knowledge->to_vector (nativeSubject, start, end, returnVector);
 
@@ -1060,7 +1060,7 @@ jlongArray JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeList
 
     for (unsigned int x = 0; x < returnVector.size (); x++)
     {
-      tmp[x] = (jlong) new madara::KnowledgeRecord (returnVector[x]);
+      tmp[x] = (jlong) new madara::knowledge::KnowledgeRecord (returnVector[x]);
     }
 
     env->SetLongArrayRegion (ret, 0, (jsize)returnVector.size (), tmp);
@@ -1082,7 +1082,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
   (JNIEnv * env, jobject obj, jlong cptr, jstring expression, jobject jniRet)
 {
   jclass jniRetClass = env->GetObjectClass (jniRet);
-  jclass classStrArray = madara::utility::Java::find_class (env,
+  jclass classStrArray = madara::utility::java::find_class (env,
     "java/lang/String");
   jfieldID valsID = env->GetFieldID (jniRetClass, "vals", "[J");
   jfieldID keysID = env->GetFieldID (jniRetClass,
@@ -1094,7 +1094,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
 
   if (knowledge)
   {
-    std::map<std::string, madara::KnowledgeRecord> recordsMap;
+    std::map<std::string, madara::knowledge::KnowledgeRecord> recordsMap;
 
     knowledge->to_map (std::string (nativeExpression), recordsMap);
 
@@ -1108,7 +1108,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
     jobjectArray keysArray = env->NewObjectArray ( (jsize)recordsMap.size (),
       classStrArray, NULL);
 
-    std::map<std::string, madara::KnowledgeRecord>::iterator iter;
+    std::map<std::string, madara::knowledge::KnowledgeRecord>::iterator iter;
     int counter = 0;
 
     // populate the Java objects
@@ -1116,7 +1116,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
     {
       env->SetObjectArrayElement (keysArray, counter,
         env->NewStringUTF (iter->first.c_str ()));
-      records[counter++] = (jlong) new madara::KnowledgeRecord (iter->second);
+      records[counter++] = (jlong) new madara::knowledge::KnowledgeRecord (iter->second);
     }
 
     env->SetLongArrayRegion (recordsArray, 0, (jsize)recordsMap.size (), records);
@@ -1135,7 +1135,7 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1toMap
 (JNIEnv * env, jobject, jlong cptr, jstring prefix, jstring suffix, jobject jniRet)
 {
   jclass jniRetClass = env->GetObjectClass (jniRet);
-  jclass classStrArray = madara::utility::Java::find_class (env,
+  jclass classStrArray = madara::utility::java::find_class (env,
     "java/lang/String");
   jfieldID valsID = env->GetFieldID (jniRetClass, "vals", "[J");
   jfieldID keysID = env->GetFieldID (jniRetClass,
@@ -1148,7 +1148,7 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1toMap
 
   if (knowledge)
   {
-    std::map<std::string, madara::KnowledgeRecord> recordsMap;
+    std::map<std::string, madara::knowledge::KnowledgeRecord> recordsMap;
     std::vector<std::string> nextKeys;
 
     knowledge->to_map (nativePrefix, "", nativeSuffix, nextKeys, recordsMap);
@@ -1164,7 +1164,7 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1toMap
     jobjectArray keysArray = env->NewObjectArray ((jsize)recordsMap.size (),
       classStrArray, NULL);
 
-    std::map<std::string, madara::KnowledgeRecord>::iterator iter;
+    std::map<std::string, madara::knowledge::KnowledgeRecord>::iterator iter;
     int counter = 0;
 
     // populate the Java objects
@@ -1172,7 +1172,7 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeBase_jni_1toMap
     {
       env->SetObjectArrayElement (keysArray, counter,
         env->NewStringUTF (iter->first.c_str ()));
-      records[counter++] = (jlong) new madara::KnowledgeRecord (iter->second);
+      records[counter++] = (jlong) new madara::knowledge::KnowledgeRecord (iter->second);
     }
 
     env->SetLongArrayRegion (recordsArray, 0, (jsize)recordsMap.size (), records);

@@ -281,10 +281,10 @@ madara::knowledge::containers::Integer::is_false (void) const
   return result;
 }
 
-inline madara::KnowledgeRecord
+inline madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::Integer::to_record (void) const
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
   
   if (context_)
   {
@@ -296,7 +296,7 @@ madara::knowledge::containers::Integer::to_record (void) const
   return result;
 }
  
-inline madara::KnowledgeRecord::Integer
+inline madara::knowledge::KnowledgeRecord::Integer
 madara::knowledge::containers::Integer::to_integer (void) const
 {
   if (context_)

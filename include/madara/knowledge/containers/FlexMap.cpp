@@ -172,7 +172,7 @@ madara::knowledge::containers::FlexMap::operator= (
 
 void
 madara::knowledge::containers::FlexMap::operator= (
-  KnowledgeRecord::Integer value)
+  knowledge::KnowledgeRecord::Integer value)
 {
   set (value, settings_);
 }
@@ -213,10 +213,10 @@ const std::vector <double> & value)
 }
 
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::FlexMap::to_record (void) const
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
 
   if (context_)
   {
@@ -236,7 +236,7 @@ madara::knowledge::containers::FlexMap::to_record (void) const
   return result;
 }
 
-madara::KnowledgeRecord::Integer
+madara::knowledge::KnowledgeRecord::Integer
 madara::knowledge::containers::FlexMap::to_integer (void) const
 {
   return to_record ().to_integer ();
@@ -502,7 +502,7 @@ madara::knowledge::containers::FlexMap::size (
   {
     // use the context's specialized mapping feature
     std::vector<std::string> next_keys;
-    std::map<std::string, madara::KnowledgeRecord> all_record_vars;
+    std::map<std::string, madara::knowledge::KnowledgeRecord> all_record_vars;
     context_->to_map (name_, delimiter_, "",
       next_keys, all_record_vars, true);
 
@@ -709,7 +709,7 @@ madara::knowledge::containers::FlexMap::keys (
   {
     // use the context's specialized mapping feature
     std::vector<std::string> next_keys;
-    std::map<std::string, madara::KnowledgeRecord> all_record_vars;
+    std::map<std::string, madara::knowledge::KnowledgeRecord> all_record_vars;
     context_->to_map (name_, delimiter_, "",
       curkeys, all_record_vars, true);
   }
@@ -760,7 +760,7 @@ madara::knowledge::containers::FlexMap::read_file (
 }
       
 int madara::knowledge::containers::FlexMap::set (
-  madara::KnowledgeRecord::Integer value)
+  madara::knowledge::KnowledgeRecord::Integer value)
 {
   int result = -1;
 
@@ -781,7 +781,7 @@ int madara::knowledge::containers::FlexMap::set (
 }
 
 int madara::knowledge::containers::FlexMap::set (
-  madara::KnowledgeRecord::Integer value, 
+  madara::knowledge::KnowledgeRecord::Integer value, 
   const KnowledgeUpdateSettings & settings)
 {
   int result = -1;
@@ -805,7 +805,7 @@ int madara::knowledge::containers::FlexMap::set (
 int madara::knowledge::containers::FlexMap::set_index (
   
   size_t index,
-  madara::KnowledgeRecord::Integer value)
+  madara::knowledge::KnowledgeRecord::Integer value)
 {
   int result = -1;
 
@@ -828,7 +828,7 @@ int madara::knowledge::containers::FlexMap::set_index (
 int madara::knowledge::containers::FlexMap::set_index (
   
   size_t index,
-  madara::KnowledgeRecord::Integer value,
+  madara::knowledge::KnowledgeRecord::Integer value,
   const KnowledgeUpdateSettings & settings)
 {
   int result = -1;
@@ -851,7 +851,7 @@ int madara::knowledge::containers::FlexMap::set_index (
 
 
 int madara::knowledge::containers::FlexMap::set (
-  const madara::KnowledgeRecord::Integer * value,
+  const madara::knowledge::KnowledgeRecord::Integer * value,
   uint32_t size)
 {
   int result = -1;
@@ -873,7 +873,7 @@ int madara::knowledge::containers::FlexMap::set (
 }
  
 int madara::knowledge::containers::FlexMap::set (
-  const madara::KnowledgeRecord::Integer * value,
+  const madara::knowledge::KnowledgeRecord::Integer * value,
   uint32_t size,
   const KnowledgeUpdateSettings & settings)
 {

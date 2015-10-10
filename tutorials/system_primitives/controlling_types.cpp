@@ -7,8 +7,8 @@
  * controlling conversions of types in MADARA.
  **/
 
-#include "madara/knowledge_engine/KnowledgeBase.h"
-#include "madara/knowledge_engine/KnowledgeRecord.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/logger/GlobalLogger.h"
 #include <iostream>
 #include <string>
@@ -17,8 +17,8 @@
 /**
  * Define helpful shortened namespaces that we can refer to later
  **/
-namespace engine = Madara::KnowledgeEngine;
-namespace logger = Madara::Logger;
+namespace knowledge = madara::knowledge;
+namespace logger = madara::logger;
 
 int main (int argc, char * argv[])
 {
@@ -26,7 +26,7 @@ int main (int argc, char * argv[])
    * Create a knowledge base with no transport. All changes made to the
    * knowledge base stay within the knowledge base.
    **/
-  engine::KnowledgeBase knowledge;
+  knowledge::KnowledgeBase knowledge;
 
   /**
    * One aspect of control in MADARA is logging. MADARA can print out very
@@ -70,7 +70,7 @@ int main (int argc, char * argv[])
   /**
    * Precision in MADARA is the similar to precision in C++. However, in
    * MADARA, precision is always fixed. You can set precision with the 
-   * set_precision method in Madara::KnowledgeRecord or inside of an evaluate
+   * set_precision method in madara::knowledge::KnowledgeRecord or inside of an evaluate
    * statement with #set_precision or #precision (alias). Here are examples
    * of how to use precision.
    **/
@@ -79,7 +79,7 @@ int main (int argc, char * argv[])
   knowledge.evaluate (".double_value = 2.0/3");
   knowledge.print ("[DEFAULT PRECISION] .double_value = {.double_value}\n");
   
-  Madara::KnowledgeRecord::set_precision (2);
+  madara::knowledge::KnowledgeRecord::set_precision (2);
   knowledge.print ("[PRECISION = 2] .double_value = {.double_value}\n");
   
   knowledge.evaluate ("#set_precision (5)");
@@ -88,7 +88,7 @@ int main (int argc, char * argv[])
   knowledge.evaluate ("#precision (10) // alias for #set_precision");
   knowledge.print ("[PRECISION = 10] .double_value = {.double_value}\n");
   
-  Madara::KnowledgeRecord::set_precision (-1);
+  madara::knowledge::KnowledgeRecord::set_precision (-1);
   knowledge.print (
     "[DEFAULT PRECISION (-1)] .double_value = {.double_value}\n");
 
@@ -127,7 +127,7 @@ int main (int argc, char * argv[])
   knowledge.print (
     "[#to_integers (.double_array)] .integer_array = {.integer_array}\n");
   
-  Madara::KnowledgeRecord::set_precision (2);
+  madara::knowledge::KnowledgeRecord::set_precision (2);
   knowledge.evaluate (".double_array = #to_doubles (.integer_array)");
   knowledge.print (
     "[#to_doubles (.integer_array)] .double_array = {.double_array}\n");

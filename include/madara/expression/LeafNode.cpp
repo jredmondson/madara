@@ -14,14 +14,14 @@
 
 // Ctor
 madara::expression::LeafNode::LeafNode (
-  logger::Logger & logger, const KnowledgeRecord & item)
+  logger::Logger & logger, const knowledge::KnowledgeRecord & item)
 : ComponentNode (logger), item_ (item)
 {
 }
 
 // Ctor
 madara::expression::LeafNode::LeafNode (
-  logger::Logger & logger, madara::KnowledgeRecord::Integer item)
+  logger::Logger & logger, madara::knowledge::KnowledgeRecord::Integer item)
 : ComponentNode (logger)
 {
   item_.set_value (item);
@@ -49,7 +49,7 @@ madara::expression::LeafNode::~LeafNode (void)
 }
 
 // return the item
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::LeafNode::item (void) const
 {
   return item_;
@@ -59,7 +59,7 @@ madara::expression::LeafNode::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::LeafNode::prune (bool & can_change)
 {
   can_change = false;
@@ -71,7 +71,7 @@ madara::expression::LeafNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::LeafNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {

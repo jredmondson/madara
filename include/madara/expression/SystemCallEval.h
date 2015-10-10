@@ -27,7 +27,7 @@ namespace madara
 
     /**
      * @class SystemCallEval
-     * @brief Evaluates a KnowledgeRecord and returns the evaluation result
+     * @brief Evaluates a knowledge::KnowledgeRecord and returns the evaluation result
      */
     class SystemCallEval : public SystemCallNode
     {
@@ -48,20 +48,20 @@ namespace madara
        * Returns the value of the node
        * @return    value of the node
        **/
-      virtual madara::KnowledgeRecord item (void) const;
+      virtual madara::knowledge::KnowledgeRecord item (void) const;
 
       /** 
        * Prunes the expression tree of unnecessary nodes. 
        * @param     can_change   set to true if variable nodes are contained
        * @return    value of current contained expression tree
        **/
-      virtual madara::KnowledgeRecord prune (bool & can_change);
+      virtual madara::knowledge::KnowledgeRecord prune (bool & can_change);
 
       /** 
        * Evaluates the expression tree. 
        * @return    value of current contained expression tree
        **/
-      virtual madara::KnowledgeRecord evaluate (
+      virtual madara::knowledge::KnowledgeRecord evaluate (
         const madara::knowledge::KnowledgeUpdateSettings & settings);
 
       /** 

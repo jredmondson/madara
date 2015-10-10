@@ -147,7 +147,7 @@ namespace madara
        * Returns the number of threads
        * @return the number of threads currently running
        **/
-      KnowledgeRecord::Integer num_threads (void);
+      knowledge::KnowledgeRecord::Integer num_threads (void);
 
     private:
       
@@ -192,7 +192,7 @@ namespace madara
       /**
        * Number of thread
        **/
-      KnowledgeRecord::Integer num_threads_;
+      knowledge::KnowledgeRecord::Integer num_threads_;
 
       /**
        * For barrier and other information

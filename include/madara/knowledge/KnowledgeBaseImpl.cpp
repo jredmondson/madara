@@ -282,7 +282,7 @@ const EvalSettings & settings)
 int
 madara::knowledge::KnowledgeBaseImpl::set (
 const std::string & key,
-madara::KnowledgeRecord::Integer value,
+madara::knowledge::KnowledgeRecord::Integer value,
 const EvalSettings & settings)
 {
   int result = map_.set (key, value, settings);
@@ -302,7 +302,7 @@ const VariableReference & variable)
 int
 madara::knowledge::KnowledgeBaseImpl::set (
 const VariableReference & variable,
-madara::KnowledgeRecord::Integer value,
+madara::knowledge::KnowledgeRecord::Integer value,
 const EvalSettings & settings)
 {
   int result = map_.set (variable, value, settings);
@@ -316,7 +316,7 @@ int
 madara::knowledge::KnowledgeBaseImpl::set_index (
 const std::string & key,
 size_t index,
-madara::KnowledgeRecord::Integer value,
+madara::knowledge::KnowledgeRecord::Integer value,
 const EvalSettings & settings)
 {
   int result = map_.set_index (key, index, value, settings);
@@ -330,7 +330,7 @@ int
 madara::knowledge::KnowledgeBaseImpl::set_index (
 const VariableReference & variable,
 size_t index,
-madara::KnowledgeRecord::Integer value,
+madara::knowledge::KnowledgeRecord::Integer value,
 const EvalSettings & settings)
 {
   int result = map_.set_index (variable, index, value, settings);
@@ -343,7 +343,7 @@ const EvalSettings & settings)
 int
 madara::knowledge::KnowledgeBaseImpl::set (
 const std::string & key,
-const KnowledgeRecord::Integer * value,
+const knowledge::KnowledgeRecord::Integer * value,
 uint32_t size,
 const EvalSettings & settings)
 {
@@ -357,7 +357,7 @@ const EvalSettings & settings)
 int
 madara::knowledge::KnowledgeBaseImpl::set (
 const VariableReference & variable,
-const KnowledgeRecord::Integer * value,
+const knowledge::KnowledgeRecord::Integer * value,
 uint32_t size,
 const EvalSettings & settings)
 {
@@ -599,7 +599,7 @@ const std::string & expression)
   return map_.compile (expression);
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBaseImpl::wait (const std::string & expression,
 const WaitSettings & settings)
 {
@@ -607,7 +607,7 @@ const WaitSettings & settings)
   return wait (compiled, settings);
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBaseImpl::wait (
 CompiledExpression & ce,
 const WaitSettings & settings)
@@ -637,7 +637,7 @@ const WaitSettings & settings)
     "KnowledgeBaseImpl::wait:" \
     " waiting on %s\n", ce.logic.c_str ());
 
-  madara::KnowledgeRecord last_value = ce.expression.evaluate (settings);
+  madara::knowledge::KnowledgeRecord last_value = ce.expression.evaluate (settings);
 
   madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
     "KnowledgeBaseImpl::wait:" \
@@ -720,7 +720,7 @@ const WaitSettings & settings)
   return last_value;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBaseImpl::evaluate (
 const std::string & expression,
 const EvalSettings & settings)
@@ -729,12 +729,12 @@ const EvalSettings & settings)
   return evaluate (compiled, settings);
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBaseImpl::evaluate (
 CompiledExpression & ce,
 const EvalSettings & settings)
 {
-  madara::KnowledgeRecord last_value;
+  madara::knowledge::KnowledgeRecord last_value;
 
   madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
     "KnowledgeBaseImpl::evaluate:" \
@@ -765,12 +765,12 @@ const EvalSettings & settings)
   return last_value;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBaseImpl::evaluate (
 expression::ComponentNode * root,
 const EvalSettings & settings)
 {
-  madara::KnowledgeRecord last_value;
+  madara::knowledge::KnowledgeRecord last_value;
 
   madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
     "KnowledgeBaseImpl::evaluate:" \

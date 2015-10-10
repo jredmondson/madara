@@ -16,7 +16,7 @@ threads::JavaThread::JavaThread ()
 threads::JavaThread::~JavaThread ()
 {
   // manage VM attachment
-  madara::utility::Java::Acquire_VM jvm;
+  madara::utility::java::Acquire_VM jvm;
 
   if (jvm.env != 0)
   {
@@ -62,7 +62,7 @@ threads::JavaThread::operator= (const JavaThread & rhs)
 void
 threads::JavaThread::run (void)
 {
-  madara::utility::Java::Acquire_VM jvm;
+  madara::utility::java::Acquire_VM jvm;
   JNIEnv * env = jvm.env;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
@@ -75,7 +75,7 @@ threads::JavaThread::run (void)
 void
 threads::JavaThread::cleanup (void)
 {
-  madara::utility::Java::Acquire_VM jvm;
+  madara::utility::java::Acquire_VM jvm;
   JNIEnv * env = jvm.env;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
@@ -88,14 +88,14 @@ threads::JavaThread::cleanup (void)
 void
 threads::JavaThread::init (knowledge::KnowledgeBase & context)
 {
-  madara::utility::Java::Acquire_VM jvm;
+  madara::utility::java::Acquire_VM jvm;
   JNIEnv * env = jvm.env;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
     "threads::JavaThread::init:" \
     " Creating Java KnowledgeBase from data plane\n");
 
-  jclass kb_class = madara::utility::Java::find_class (env,
+  jclass kb_class = madara::utility::java::find_class (env,
     "com/madara/KnowledgeBase");
     
   jmethodID fromPointerCall = env->GetStaticMethodID (kb_class,
@@ -134,7 +134,7 @@ threads::JavaThread::create (jobject obj)
 bool
 threads::JavaThread::check_compliance (jobject obj)
 {
-  madara::utility::Java::Acquire_VM jvm;
+  madara::utility::java::Acquire_VM jvm;
   JNIEnv * env = jvm.env;
 
   bool result (true);
@@ -232,7 +232,7 @@ threads::JavaThread::init_control_vars (knowledge::KnowledgeBase & control)
   threads::BaseThread::init_control_vars (control);
   
   // setup the Java variables
-  madara::utility::Java::Acquire_VM jvm;
+  madara::utility::java::Acquire_VM jvm;
   JNIEnv * env = ::madara_jni_get_env ();
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
@@ -240,7 +240,7 @@ threads::JavaThread::init_control_vars (knowledge::KnowledgeBase & control)
     " Populating user control plane variables\n");
 
   // obtain fromPointer method for com.madara.containers.Integer
-  jclass i_class = madara::utility::Java::find_class (env,
+  jclass i_class = madara::utility::java::find_class (env,
     "com/madara/containers/Integer");
   jmethodID fromPointerCall = env->GetStaticMethodID (i_class,
     "fromPointer", "(JZ)Lcom/madara/containers/Integer;");

@@ -14,7 +14,7 @@
 
 #include "madara/knowledge/KnowledgeBase.h"
 
-typedef madara::KnowledgeRecord::Integer Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);

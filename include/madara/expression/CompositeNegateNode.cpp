@@ -23,7 +23,7 @@ madara::expression::CompositeNegateNode::~CompositeNegateNode (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeNegateNode::item (void) const
 {
   return "-";
@@ -32,11 +32,11 @@ madara::expression::CompositeNegateNode::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeNegateNode::prune (bool & can_change)
 {
   bool right_child_can_change = false;
-  madara::KnowledgeRecord right_value;
+  madara::knowledge::KnowledgeRecord right_value;
 
   if (this->right_)
   {
@@ -63,11 +63,11 @@ madara::expression::CompositeNegateNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::CompositeNegateNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  madara::KnowledgeRecord value = right_->evaluate (settings);
+  madara::knowledge::KnowledgeRecord value = right_->evaluate (settings);
 
   madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
     "KARL COMPILE ERROR: "

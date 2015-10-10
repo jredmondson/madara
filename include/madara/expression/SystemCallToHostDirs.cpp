@@ -22,16 +22,16 @@ madara::expression::SystemCallToHostDirs::~SystemCallToHostDirs (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallToHostDirs::item (void) const
 {
-  return madara::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallToHostDirs::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
@@ -39,7 +39,7 @@ madara::expression::SystemCallToHostDirs::prune (bool & can_change)
   // under any situation
   can_change = true;
   
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (nodes_.size () == 1)
   {
@@ -66,11 +66,11 @@ madara::expression::SystemCallToHostDirs::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::SystemCallToHostDirs::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  KnowledgeRecord return_value;
+  knowledge::KnowledgeRecord return_value;
 
   if (nodes_.size () == 1)
   {

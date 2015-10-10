@@ -140,7 +140,7 @@ madara::expression::CompositeArrayReference::accept (Visitor &visitor) const
   visitor.visit (*this);
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeArrayReference::item () const
 {
   size_t index = right_->item ().to_integer ();
@@ -156,7 +156,7 @@ madara::expression::CompositeArrayReference::item () const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeArrayReference::prune (bool & can_change)
 {
   // a variable is one of very few nodes that can change over time and
@@ -173,7 +173,7 @@ madara::expression::CompositeArrayReference::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::CompositeArrayReference::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
@@ -195,7 +195,7 @@ madara::expression::CompositeArrayReference::key () const
 
 
 /// Sets the value stored in the node.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeArrayReference::dec (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
@@ -213,7 +213,7 @@ madara::expression::CompositeArrayReference::dec (
     if (record_->write_quality != record_->quality)
       record_->quality = record_->write_quality;
 
-    KnowledgeRecord result (record_->dec_index (index));
+    knowledge::KnowledgeRecord result (record_->dec_index (index));
 
     if (key_[0] != '.' && !settings.treat_globals_as_locals)
     {
@@ -225,12 +225,12 @@ madara::expression::CompositeArrayReference::dec (
   }
   else
   {
-    KnowledgeRecord result = 
-      context_.retrieve_index (expand_key (), index, settings) - KnowledgeRecord::Integer (1);
+    knowledge::KnowledgeRecord result = 
+      context_.retrieve_index (expand_key (), index, settings) - knowledge::KnowledgeRecord::Integer (1);
 
-    if (result.type () == KnowledgeRecord::INTEGER)
+    if (result.type () == knowledge::KnowledgeRecord::INTEGER)
       context_.set_index (expand_key (), index, result.to_integer (), settings);
-    else if (result.type () == KnowledgeRecord::DOUBLE)
+    else if (result.type () == knowledge::KnowledgeRecord::DOUBLE)
       context_.set_index (expand_key (), index, result.to_double (), settings);
 
     return result;
@@ -238,7 +238,7 @@ madara::expression::CompositeArrayReference::dec (
 }
       
 /// Sets the value stored in the node.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeArrayReference::inc (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
@@ -256,7 +256,7 @@ madara::expression::CompositeArrayReference::inc (
     if (record_->write_quality != record_->quality)
       record_->quality = record_->write_quality;
 
-    KnowledgeRecord result (record_->inc_index (index));
+    knowledge::KnowledgeRecord result (record_->inc_index (index));
 
     if (key_[0] != '.' && !settings.treat_globals_as_locals)
     {
@@ -268,13 +268,13 @@ madara::expression::CompositeArrayReference::inc (
   }
   else
   {
-    KnowledgeRecord result = 
+    knowledge::KnowledgeRecord result = 
       context_.retrieve_index (expand_key (), index, settings)
-        + KnowledgeRecord::Integer (1);
+        + knowledge::KnowledgeRecord::Integer (1);
 
-    if (result.type () == KnowledgeRecord::INTEGER)
+    if (result.type () == knowledge::KnowledgeRecord::INTEGER)
       context_.set_index (expand_key (), index, result.to_integer (), settings);
-    else if (result.type () == KnowledgeRecord::DOUBLE)
+    else if (result.type () == knowledge::KnowledgeRecord::DOUBLE)
       context_.set_index (expand_key (), index, result.to_double (), settings);
 
     return result;
@@ -283,21 +283,21 @@ madara::expression::CompositeArrayReference::inc (
 
 int
 madara::expression::CompositeArrayReference::set (
-  const madara::KnowledgeRecord & value,
+  const madara::knowledge::KnowledgeRecord & value,
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
   int return_value = 0;
 
-  if (value.type () == KnowledgeRecord::INTEGER)
+  if (value.type () == knowledge::KnowledgeRecord::INTEGER)
     return_value = set (value.to_integer (), settings);
-  else if (value.type () == KnowledgeRecord::DOUBLE)
+  else if (value.type () == knowledge::KnowledgeRecord::DOUBLE)
     return_value = set (value.to_double (), settings);
 
   return return_value;
 }
 
 int
-madara::expression::CompositeArrayReference::set (const madara::KnowledgeRecord::Integer & value,
+madara::expression::CompositeArrayReference::set (const madara::knowledge::KnowledgeRecord::Integer & value,
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
   size_t index = size_t (right_->evaluate (settings).to_integer ());

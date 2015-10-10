@@ -120,11 +120,11 @@ madara::knowledge::TimedEventThread::svc (void)
     if (valid > 0)
     {
       ++valid->executions;
-      KnowledgeRecord result (
+      knowledge::KnowledgeRecord result (
 #ifndef _MADARA_NO_KARL_
         valid->knowledge->evaluate (valid->root)
 #else
-        KnowledgeRecord::Integer (0)
+        knowledge::KnowledgeRecord::Integer (0)
 #endif
         );
 

@@ -21,7 +21,7 @@ madara::expression::CompositeSubtractNode::~CompositeSubtractNode (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeSubtractNode::item (void) const
 {
   return "-";
@@ -30,13 +30,13 @@ madara::expression::CompositeSubtractNode::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeSubtractNode::prune (bool & can_change)
 {
   bool left_child_can_change = false;
   bool right_child_can_change = false;
-  madara::KnowledgeRecord left_value;
-  madara::KnowledgeRecord right_value;
+  madara::knowledge::KnowledgeRecord left_value;
+  madara::knowledge::KnowledgeRecord right_value;
 
   if (this->left_)
   {
@@ -79,7 +79,7 @@ madara::expression::CompositeSubtractNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::CompositeSubtractNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {

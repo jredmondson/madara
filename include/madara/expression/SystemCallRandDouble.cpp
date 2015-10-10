@@ -22,21 +22,21 @@ madara::expression::SystemCallRandDouble::~SystemCallRandDouble (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallRandDouble::item (void) const
 {
-  return madara::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallRandDouble::prune (bool & can_change)
 {
   can_change = true;
   
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
   
   for (ComponentNodes::iterator i = nodes_.begin (); i != nodes_.end ();
        ++i)
@@ -64,7 +64,7 @@ madara::expression::SystemCallRandDouble::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::SystemCallRandDouble::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {

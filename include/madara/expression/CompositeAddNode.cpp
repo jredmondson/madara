@@ -21,7 +21,7 @@ madara::expression::CompositeAddNode::CompositeAddNode (
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeAddNode::item (void) const
 {
   return "+";
@@ -30,17 +30,17 @@ madara::expression::CompositeAddNode::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeAddNode::prune (bool & can_change)
 {
-  madara::KnowledgeRecord return_value;
+  madara::knowledge::KnowledgeRecord return_value;
 
   int j = 0;
   for (ComponentNodes::iterator i = nodes_.begin ();
        i != nodes_.end (); ++i, ++j)
   {
     bool value_changes = false;
-    madara::KnowledgeRecord value;
+    madara::knowledge::KnowledgeRecord value;
     value = (*i)->prune (value_changes);
     if (!value_changes && dynamic_cast <LeafNode *> (*i) == 0)
     {
@@ -62,17 +62,17 @@ madara::expression::CompositeAddNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::CompositeAddNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  madara::KnowledgeRecord return_value;
+  madara::knowledge::KnowledgeRecord return_value;
 
   int j = 0;
   for (ComponentNodes::iterator i = nodes_.begin ();
        i != nodes_.end (); ++i, ++j)
   {
-    madara::KnowledgeRecord value = (*i)->evaluate (settings);
+    madara::knowledge::KnowledgeRecord value = (*i)->evaluate (settings);
     
     if (j == 0)
       return_value = value;

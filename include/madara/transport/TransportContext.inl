@@ -77,12 +77,12 @@ inline void
 inline void
 madara::transport::TransportContext::add_record (
   const std::string & key,
-  const madara::KnowledgeRecord & record)
+  const madara::knowledge::KnowledgeRecord & record)
 {
   records_[key] = record;
 }
 
-inline const madara::KnowledgeMap & 
+inline const madara::knowledge::KnowledgeMap & 
 madara::transport::TransportContext::get_records (void) const
 {
   return records_;
@@ -116,7 +116,7 @@ madara::transport::TransportContext::get_originator (void) const
 
 inline void
 madara::transport::TransportContext::set_records (
-  const KnowledgeMap & source)
+  const knowledge::KnowledgeMap & source)
 {
   records_ = source;
 }

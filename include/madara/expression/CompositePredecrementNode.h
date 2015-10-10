@@ -42,7 +42,7 @@ namespace madara
        * Returns the printable character of the node
        * @return    value of the node
        **/
-      virtual madara::KnowledgeRecord item (void) const;
+      virtual madara::knowledge::KnowledgeRecord item (void) const;
 
       /** 
        * Prunes the expression tree of unnecessary nodes. 
@@ -50,7 +50,7 @@ namespace madara
        * @return    one subtracted from the value returned by 
        *            the right expression
        **/
-      virtual madara::KnowledgeRecord prune (bool & can_change);
+      virtual madara::knowledge::KnowledgeRecord prune (bool & can_change);
 
       /** 
        * Evaluates the node. 
@@ -58,7 +58,7 @@ namespace madara
        * @return    one subtracted from the value returned by 
        *            the right expression
        **/
-      virtual madara::KnowledgeRecord evaluate (
+      virtual madara::knowledge::KnowledgeRecord evaluate (
         const madara::knowledge::KnowledgeUpdateSettings & settings);
 
       /** 

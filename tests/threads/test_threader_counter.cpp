@@ -18,7 +18,7 @@ namespace containers = knowledge::containers;
 namespace utility = madara::utility;
 namespace threads = madara::threads;
 
-typedef madara::KnowledgeRecord::Integer Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 
 // default transport settings
 

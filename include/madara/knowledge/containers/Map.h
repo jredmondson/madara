@@ -114,7 +114,7 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        KnowledgeRecord operator[] (const std::string & key);
+        knowledge::KnowledgeRecord operator[] (const std::string & key);
       
         /**
          * Retrieves a copy of the record from the map. Same functionality
@@ -124,7 +124,7 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        KnowledgeRecord to_record (const std::string & key);
+        knowledge::KnowledgeRecord to_record (const std::string & key);
       
         /**
          * Returns the size of the map
@@ -231,8 +231,8 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key,
-          madara::KnowledgeRecord::Integer value = 
-            madara::KnowledgeRecord::MODIFIED);
+          madara::knowledge::KnowledgeRecord::Integer value = 
+            madara::knowledge::KnowledgeRecord::MODIFIED);
 
         /**
          * Sets a location within the map to the specified value
@@ -244,7 +244,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key,
-          madara::KnowledgeRecord::Integer value, 
+          madara::knowledge::KnowledgeRecord::Integer value, 
           const KnowledgeUpdateSettings & settings);
         
         /**
@@ -258,7 +258,7 @@ namespace madara
          **/
         int set_index (const std::string & key,
           size_t index,
-          madara::KnowledgeRecord::Integer value);
+          madara::knowledge::KnowledgeRecord::Integer value);
 
         /**
          * Sets an index within an array to a specified value
@@ -272,7 +272,7 @@ namespace madara
          **/
         int set_index (const std::string & key,
           size_t index,
-          madara::KnowledgeRecord::Integer value,
+          madara::knowledge::KnowledgeRecord::Integer value,
           const KnowledgeUpdateSettings & settings);
         
         /**
@@ -285,7 +285,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key,
-          const madara::KnowledgeRecord::Integer * value,
+          const madara::knowledge::KnowledgeRecord::Integer * value,
           uint32_t size);
        
         /**
@@ -299,7 +299,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const std::string & key,
-          const madara::KnowledgeRecord::Integer * value,
+          const madara::knowledge::KnowledgeRecord::Integer * value,
           uint32_t size,
           const KnowledgeUpdateSettings & settings);
        

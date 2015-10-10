@@ -171,7 +171,7 @@ madara::knowledge::containers::Vector::get_size_ref (void)
 }
 
 void madara::knowledge::containers::Vector::push_back (
-  KnowledgeRecord value)
+  knowledge::KnowledgeRecord value)
 {
   if (context_ && name_ != "")
   {
@@ -187,19 +187,19 @@ void madara::knowledge::containers::Vector::push_back (
 
     resize ((int)i + 1);
 
-    if (value.type () == KnowledgeRecord::DOUBLE)
+    if (value.type () == knowledge::KnowledgeRecord::DOUBLE)
     {
       set (i, value.to_double ());
     }
-    else if (value.type () == KnowledgeRecord::STRING)
+    else if (value.type () == knowledge::KnowledgeRecord::STRING)
     {
       set (i, value.to_string ());
     }
-    else if (value.type () == KnowledgeRecord::INTEGER_ARRAY)
+    else if (value.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY)
     {
       set (i, value.to_integers ());
     }
-    else if (value.type () == KnowledgeRecord::DOUBLE_ARRAY)
+    else if (value.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
     {
       set (i, value.to_doubles ());
     }
@@ -239,7 +239,7 @@ madara::knowledge::containers::Vector::resize (
       {
         vector_.resize (size);
         
-        context_->set (size_, KnowledgeRecord::Integer (size), settings_);
+        context_->set (size_, knowledge::KnowledgeRecord::Integer (size), settings_);
 
         if ((size_t)size > old_size)
         {
@@ -417,7 +417,7 @@ madara::knowledge::containers::Vector::exchange (
     for (size_t i = 0; i < this_size; ++i)
     {
       // temp = this[i];
-      KnowledgeRecord temp = context_->get (this->vector_[i], settings_);
+      knowledge::KnowledgeRecord temp = context_->get (this->vector_[i], settings_);
     
       if (i < other_size)
       {
@@ -441,7 +441,7 @@ madara::knowledge::containers::Vector::exchange (
         }
         else
         {
-          KnowledgeRecord zero;
+          knowledge::KnowledgeRecord zero;
           this->context_->set (this->vector_[i], zero, this->settings_);
         }
 
@@ -471,9 +471,9 @@ madara::knowledge::containers::Vector::exchange (
 
     // set the size appropriately
     this->context_->set (this->size_,
-      KnowledgeRecord::Integer (other_size), this->settings_);
+      knowledge::KnowledgeRecord::Integer (other_size), this->settings_);
     other.context_->set (other.size_,
-      KnowledgeRecord::Integer (this_size), other.settings_);
+      knowledge::KnowledgeRecord::Integer (this_size), other.settings_);
 
     if (refresh_keys)
     {
@@ -526,11 +526,11 @@ madara::knowledge::containers::Vector::copy_to (
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::Vector::operator[] (
   size_t index) const
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
   KnowledgeUpdateSettings keep_local (true);
 
   if (index < vector_.size () && context_)
@@ -543,11 +543,11 @@ madara::knowledge::containers::Vector::operator[] (
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::Vector::to_record (
   size_t index) const
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
 
   if (index < vector_.size () && context_)
   {
@@ -682,7 +682,7 @@ madara::knowledge::containers::Vector::set_jpeg (
 int
 madara::knowledge::containers::Vector::set (
   size_t index,
-  KnowledgeRecord::Integer value)
+  knowledge::KnowledgeRecord::Integer value)
 {
   int result = -1;
   
@@ -699,7 +699,7 @@ madara::knowledge::containers::Vector::set (
 int
 madara::knowledge::containers::Vector::set (
   size_t index,
-  KnowledgeRecord::Integer value, 
+  knowledge::KnowledgeRecord::Integer value, 
   const KnowledgeUpdateSettings & settings)
 {
   int result = -1;
@@ -718,7 +718,7 @@ int
 madara::knowledge::containers::Vector::set_index (
   size_t index,
   size_t sub_index,
-  KnowledgeRecord::Integer value)
+  knowledge::KnowledgeRecord::Integer value)
 {
   int result = -1;
   
@@ -736,7 +736,7 @@ int
 madara::knowledge::containers::Vector::set_index (
   size_t index,
   size_t sub_index,
-  KnowledgeRecord::Integer value,
+  knowledge::KnowledgeRecord::Integer value,
   const KnowledgeUpdateSettings & settings)
 {
   int result = -1;
@@ -754,7 +754,7 @@ madara::knowledge::containers::Vector::set_index (
 int
 madara::knowledge::containers::Vector::set (
   size_t index,
-  const madara::KnowledgeRecord::Integer * value,
+  const madara::knowledge::KnowledgeRecord::Integer * value,
   uint32_t size)
 {
   int result = -1;
@@ -772,7 +772,7 @@ madara::knowledge::containers::Vector::set (
 int
 madara::knowledge::containers::Vector::set (
   size_t index,
-  const madara::KnowledgeRecord::Integer * value,
+  const madara::knowledge::KnowledgeRecord::Integer * value,
   uint32_t size,
   const KnowledgeUpdateSettings & settings)
 {

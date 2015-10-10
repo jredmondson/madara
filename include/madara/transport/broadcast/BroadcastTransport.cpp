@@ -169,7 +169,7 @@ madara::transport::BroadcastTransport::setup (void)
 
 long
 madara::transport::BroadcastTransport::send_data (
-  const madara::KnowledgeRecords & orig_updates)
+  const madara::knowledge::KnowledgeRecords & orig_updates)
 {
   const char * print_prefix = "BroadcastTransport::send_data";
   long result (0);

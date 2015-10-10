@@ -23,10 +23,10 @@ madara::expression::CompositeModulusNode::~CompositeModulusNode (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeModulusNode::item (void) const
 {
-  madara::KnowledgeRecord record;
+  madara::knowledge::KnowledgeRecord record;
   record.set_value ("%");
   return record;
 }
@@ -35,13 +35,13 @@ madara::expression::CompositeModulusNode::item (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeModulusNode::prune (bool & can_change)
 {
   bool left_child_can_change = false;
   bool right_child_can_change = false;
-  madara::KnowledgeRecord left_value;
-  madara::KnowledgeRecord right_value;
+  madara::knowledge::KnowledgeRecord left_value;
+  madara::knowledge::KnowledgeRecord right_value;
 
   if (this->left_)
   {
@@ -68,7 +68,7 @@ madara::expression::CompositeModulusNode::prune (bool & can_change)
       delete this->right_;
       this->right_ = new LeafNode (*(this->logger_), right_value);
 
-      if (right_value == madara::KnowledgeRecord::Integer (0))
+      if (right_value == madara::knowledge::KnowledgeRecord::Integer (0))
       {
         madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
           "KARL COMPILE ERROR: Modulus results in permanent divide by zero\n");
@@ -93,7 +93,7 @@ madara::expression::CompositeModulusNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::CompositeModulusNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {

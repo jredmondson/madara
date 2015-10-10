@@ -30,7 +30,7 @@ namespace madara
     public:
       /// Ctor.
       VariableDecrementNode (ComponentNode * lhs,
-        madara::KnowledgeRecord value,
+        madara::knowledge::KnowledgeRecord value,
         ComponentNode * rhs,
         madara::knowledge::ThreadSafeContext &context);
 
@@ -38,16 +38,16 @@ namespace madara
       virtual ~VariableDecrementNode (void);
 
       /// Return the item stored in the node.
-      virtual madara::KnowledgeRecord item (void) const;
+      virtual madara::knowledge::KnowledgeRecord item (void) const;
 
       /// Prune the tree of unnecessary nodes. 
       /// Returns evaluation of the node and sets can_change appropriately.
       /// if this node can be changed, that means it shouldn't be pruned.
-      virtual madara::KnowledgeRecord prune (bool & can_change);
+      virtual madara::knowledge::KnowledgeRecord prune (bool & can_change);
 
       /// Evaluates the node and its children. This does not prune any of
       /// the expression tree, and is much faster than the prune function
-      virtual madara::KnowledgeRecord evaluate (
+      virtual madara::knowledge::KnowledgeRecord evaluate (
         const madara::knowledge::KnowledgeUpdateSettings & settings);
 
       /// Define the @a accept() operation used for the Visitor pattern.
@@ -61,7 +61,7 @@ namespace madara
       CompositeArrayReference * array_;
 
       /// amount to increment by. Note that this can also do decrement.
-      madara::KnowledgeRecord value_;
+      madara::knowledge::KnowledgeRecord value_;
       
       /// holds a right hand side argument if it is not value_
       ComponentNode * rhs_;

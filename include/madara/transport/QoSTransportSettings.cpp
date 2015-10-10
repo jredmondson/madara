@@ -6,7 +6,7 @@
 
 namespace logger = madara::logger;
 namespace containers = madara::knowledge::containers;
-typedef madara::KnowledgeRecord::Integer  Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer  Integer;
 
 madara::transport::QoSTransportSettings::QoSTransportSettings ()
   : Settings (), rebroadcast_ttl_ (0),
@@ -119,9 +119,9 @@ madara::transport::QoSTransportSettings::operator= (
     participant_rebroadcast_ttl_ = 0;
     trusted_peers_.clear ();
     banned_peers_.clear ();
-    send_filters_.clear (KnowledgeRecord::ALL_TYPES);
-    receive_filters_.clear (KnowledgeRecord::ALL_TYPES);
-    rebroadcast_filters_.clear (KnowledgeRecord::ALL_TYPES);
+    send_filters_.clear (knowledge::KnowledgeRecord::ALL_TYPES);
+    receive_filters_.clear (knowledge::KnowledgeRecord::ALL_TYPES);
+    rebroadcast_filters_.clear (knowledge::KnowledgeRecord::ALL_TYPES);
     packet_drop_rate_ = 0.0;
     packet_drop_type_ = PACKET_DROP_PROBABLISTIC;
     packet_drop_burst_ = 1;
@@ -232,7 +232,7 @@ madara::transport::QoSTransportSettings::is_trusted (
 
 void
 madara::transport::QoSTransportSettings::add_send_filter (uint32_t types,
-  madara::KnowledgeRecord (*function) (
+  madara::knowledge::KnowledgeRecord (*function) (
     knowledge::FunctionArguments &, knowledge::Variables &))
 {
   send_filters_.add (types, function);
@@ -248,8 +248,8 @@ madara::transport::QoSTransportSettings::add_send_filter (uint32_t types,
 void
 madara::transport::QoSTransportSettings::add_send_filter (
   void (*function) (
-        KnowledgeMap &, const transport::TransportContext &,
-        knowledge::Variables &))
+    knowledge::KnowledgeMap &, const TransportContext &,
+    knowledge::Variables &))
 {
   send_filters_.add (function);
 }
@@ -277,7 +277,7 @@ filters::BufferFilter * functor)
 
 void
 madara::transport::QoSTransportSettings::add_receive_filter (uint32_t types,
-  madara::KnowledgeRecord (*function) (
+  madara::knowledge::KnowledgeRecord (*function) (
     knowledge::FunctionArguments &, knowledge::Variables &))
 {
   receive_filters_.add (types, function);
@@ -293,7 +293,7 @@ madara::transport::QoSTransportSettings::add_receive_filter (uint32_t types,
 void
   madara::transport::QoSTransportSettings::add_receive_filter (
   void (*function) (
-    KnowledgeMap &, const transport::TransportContext &,
+    knowledge::KnowledgeMap &, const TransportContext &,
     knowledge::Variables &))
 {
   receive_filters_.add (function);
@@ -301,7 +301,7 @@ void
 
 void
 madara::transport::QoSTransportSettings::add_rebroadcast_filter (uint32_t types,
-  madara::KnowledgeRecord (*function) (
+  madara::knowledge::KnowledgeRecord (*function) (
     knowledge::FunctionArguments &, knowledge::Variables &))
 {
   rebroadcast_filters_.add (types, function);
@@ -317,7 +317,7 @@ madara::transport::QoSTransportSettings::add_rebroadcast_filter (uint32_t types,
 void
 madara::transport::QoSTransportSettings::add_rebroadcast_filter (
   void (*function) (
-    KnowledgeMap &, const transport::TransportContext &,
+    knowledge::KnowledgeMap &, const TransportContext &,
     knowledge::Variables &))
 {
   rebroadcast_filters_.add (function);
@@ -487,9 +487,9 @@ madara::transport::QoSTransportSettings::clear_rebroadcast_aggregate_filters
 }
 
       
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::transport::QoSTransportSettings::filter_send (
-  const madara::KnowledgeRecord & input,
+  const madara::knowledge::KnowledgeRecord & input,
   const std::string & name,
   transport::TransportContext & context) const
 {
@@ -498,8 +498,8 @@ madara::transport::QoSTransportSettings::filter_send (
 
 void
 madara::transport::QoSTransportSettings::filter_send (
-  KnowledgeMap & records,
-  const transport::TransportContext & transport_context) const
+  knowledge::KnowledgeMap & records,
+  const TransportContext & transport_context) const
 {
   send_filters_.filter (records, transport_context);
 }
@@ -522,7 +522,7 @@ madara::transport::QoSTransportSettings::filter_encode (
 
 int
 madara::transport::QoSTransportSettings::filter_decode (
-unsigned char * source, int size, int max_size) const
+  unsigned char * source, int size, int max_size) const
 {
   // decode from back to front
   for (filters::BufferFilters::const_reverse_iterator i = buffer_filters_.rbegin ();
@@ -535,9 +535,9 @@ unsigned char * source, int size, int max_size) const
 }
 
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::transport::QoSTransportSettings::filter_receive (
-  const madara::KnowledgeRecord & input,
+  const madara::knowledge::KnowledgeRecord & input,
   const std::string & name,
   transport::TransportContext & context) const
 {
@@ -546,15 +546,15 @@ madara::transport::QoSTransportSettings::filter_receive (
       
 void
 madara::transport::QoSTransportSettings::filter_receive (
-  KnowledgeMap & records,
+  knowledge::KnowledgeMap & records,
   const transport::TransportContext & transport_context) const
 {
   receive_filters_.filter (records, transport_context);
 }
   
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::transport::QoSTransportSettings::filter_rebroadcast (
-  const madara::KnowledgeRecord & input,
+  const madara::knowledge::KnowledgeRecord & input,
   const std::string & name,
   transport::TransportContext & context) const
 {
@@ -563,7 +563,7 @@ madara::transport::QoSTransportSettings::filter_rebroadcast (
 
 void
 madara::transport::QoSTransportSettings::filter_rebroadcast (
-  KnowledgeMap & records,
+  knowledge::KnowledgeMap & records,
   const transport::TransportContext & transport_context) const
 {
   rebroadcast_filters_.filter (records, transport_context);

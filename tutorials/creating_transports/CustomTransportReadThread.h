@@ -11,9 +11,9 @@
 
 #include <string>
 
-#include "madara/knowledge_engine/ThreadSafeContext.h"
+#include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/transport/Transport.h"
-#include "madara/expression_tree/ExpressionTree.h"
+#include "madara/expression/ExpressionTree.h"
 
 #include "ace/Task.h"
 #include "ace/Mutex.h"
@@ -41,9 +41,9 @@ public:
     * @param    address    the multicast address we will read from
     **/
   CustomTransportReadThread (
-    const Madara::Transport::Settings & settings,
+    const madara::transport::Settings & settings,
     const std::string & id,
-    Madara::KnowledgeEngine::ThreadSafeContext & context,
+    madara::knowledge::ThreadSafeContext & context,
     const ACE_INET_Addr & address);
       
   /**
@@ -72,13 +72,13 @@ public:
   void wait_for_ready (void);
 private:
   /// Transport settings
-  const Madara::Transport::Settings & settings_;
+  const madara::transport::Settings & settings_;
 
   /// host:port identifier of this process
   const std::string                                 id_;
 
   /// knowledge context
-  ::Madara::KnowledgeEngine::ThreadSafeContext & context_;
+  madara::knowledge::ThreadSafeContext & context_;
       
   /// barrier for closing and waiting on the read thread
   ACE_Barrier barrier_;
@@ -90,7 +90,7 @@ private:
   ACE_Thread_Mutex                   mutex_;
       
   /// Condition that is waited on my calling transport on startup
-  Madara::Transport::Condition       is_not_ready_;
+  madara::transport::Condition       is_not_ready_;
 
   /// Indicates whether the read thread is ready to accept messages
   bool                               is_ready_;

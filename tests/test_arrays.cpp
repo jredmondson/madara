@@ -18,7 +18,7 @@
 
 namespace logger = madara::logger;
 namespace utility = madara::utility;
-typedef madara::KnowledgeRecord::Integer  Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer  Integer;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
@@ -59,7 +59,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   madara::knowledge::KnowledgeBase knowledge ("", settings);
   
-  knowledge.set (".id", (madara::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
   
   // run tests
 //  test_tree_compilation (knowledge);
@@ -93,8 +93,8 @@ void create_arrays (madara::knowledge::KnowledgeBase & knowledge)
   
   knowledge.set ("doubles_vector", doubles_vector);
 
-  madara::KnowledgeRecord::Integer * integer_array =
-    new madara::KnowledgeRecord::Integer [3];
+  madara::knowledge::KnowledgeRecord::Integer * integer_array =
+    new madara::knowledge::KnowledgeRecord::Integer [3];
   integer_array[0] = 0;
   integer_array[1] = 1;
   integer_array[2] = 2;
@@ -115,7 +115,7 @@ void create_arrays (madara::knowledge::KnowledgeBase & knowledge)
   knowledge.print ("integers_vector = [{integers_vector}]\n");
   knowledge.print ("var_array = [{var_array}]\n");
 
-  madara::KnowledgeRecord::set_precision (10);
+  madara::knowledge::KnowledgeRecord::set_precision (10);
   
   knowledge.print ("Setting precision to 10 and reprinting\n");
   knowledge.print ("doubles_vector = [{doubles_vector}]\n");
@@ -135,7 +135,7 @@ void write_transported_arrays (
   knowledge.print ("integers_vector = [{integers_vector}]\n");
   knowledge.print ("var_array = [{var_array}]\n\n");
 
-  madara::KnowledgeRecord doubles_vector = knowledge.get ("doubles_vector");
+  madara::knowledge::KnowledgeRecord doubles_vector = knowledge.get ("doubles_vector");
   doubles_vector.set_index (5, 127.25);
   doubles_vector.set_index (6, 1.2575);
 
@@ -143,12 +143,12 @@ void write_transported_arrays (
   std::cerr << "doubles_vector = [" << 
     doubles_vector.to_string (", ") << "]" << std::endl;
   
-  madara::KnowledgeRecord integers_vector = knowledge.get ("integers_vector");
+  madara::knowledge::KnowledgeRecord integers_vector = knowledge.get ("integers_vector");
   
   std::cerr << "\nintegers_vector = [" << 
     integers_vector.to_string (", ") << "]" << std::endl;
   
-  integers_vector.set_index (7, madara::KnowledgeRecord::Integer (7));
+  integers_vector.set_index (7, madara::knowledge::KnowledgeRecord::Integer (7));
   
   std::cerr << "adding one integer (7) to the integers_vector\n";
   

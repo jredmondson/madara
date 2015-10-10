@@ -18,14 +18,14 @@ madara::knowledge::containers::Map::Map (
   : BaseContainer (name, settings), context_ (&(knowledge.get_context ())),
   delimiter_ (delimiter)
 {
-  std::map <std::string, KnowledgeRecord> contents;
+  std::map <std::string, knowledge::KnowledgeRecord> contents;
   std::string common = name + delimiter_;
   context_->to_map (common, contents);
   
   KnowledgeUpdateSettings keep_local (true);
   if (contents.size () > 0)
   {
-    for (std::map <std::string, KnowledgeRecord>::iterator i =
+    for (std::map <std::string, knowledge::KnowledgeRecord>::iterator i =
       contents.begin (); i != contents.end (); ++i)
     {
       map_[i->first.substr (common.size ())] =
@@ -42,14 +42,14 @@ madara::knowledge::containers::Map::Map (
   : BaseContainer (name, settings), context_ (knowledge.get_context ()),
   delimiter_ (delimiter)
 {
-  std::map <std::string, KnowledgeRecord> contents;
+  std::map <std::string, knowledge::KnowledgeRecord> contents;
   std::string common = name + delimiter_;
   context_->to_map (common, contents);
   
   KnowledgeUpdateSettings keep_local (true);
   if (contents.size () > 0)
   {
-    for (std::map <std::string, KnowledgeRecord>::iterator i =
+    for (std::map <std::string, knowledge::KnowledgeRecord>::iterator i =
       contents.begin (); i != contents.end (); ++i)
     {
       map_[i->first.substr (common.size ())] =
@@ -173,11 +173,11 @@ madara::knowledge::containers::Map::operator= (
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::Map::to_record (
   const std::string & key)
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
 
   if (context_)
   {
@@ -206,7 +206,7 @@ madara::knowledge::containers::Map::to_record (
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::Map::operator[] (
   const std::string & key)
 {
@@ -231,12 +231,12 @@ madara::knowledge::containers::Map::sync_keys (void)
     ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
-    std::map <std::string, KnowledgeRecord> contents;
+    std::map <std::string, knowledge::KnowledgeRecord> contents;
     std::string common = name_ + delimiter_;
     context_->to_map (common, contents);
     KnowledgeUpdateSettings keep_local (true);
 
-    for (std::map <std::string, KnowledgeRecord>::iterator i =
+    for (std::map <std::string, knowledge::KnowledgeRecord>::iterator i =
       contents.begin (); i != contents.end (); ++i)
     {
       std::string key = i->first.substr (common.size ());
@@ -274,7 +274,7 @@ madara::knowledge::containers::Map::exchange (
     while (i != map_.end ())
     {
       // temp = this[i->first]
-      KnowledgeRecord temp = this->context_->get (i->second, this->settings_);
+      knowledge::KnowledgeRecord temp = this->context_->get (i->second, this->settings_);
 
       // check if the other map has the key
       InternalMap::iterator other_found = other.map_.find (i->first);
@@ -319,7 +319,7 @@ madara::knowledge::containers::Map::exchange (
         }
         else
         {
-          KnowledgeRecord zero;
+          knowledge::KnowledgeRecord zero;
           this->context_->set (i->second, zero, this->settings_);
           ++i;
         }
@@ -358,7 +358,7 @@ madara::knowledge::containers::Map::exchange (
         }
         else
         {
-          KnowledgeRecord zero;
+          knowledge::KnowledgeRecord zero;
           other.context_->set (i->second, zero, other.settings_);
         }
       }
@@ -580,7 +580,7 @@ madara::knowledge::containers::Map::read_file (
       
 int
 madara::knowledge::containers::Map::set (const std::string & key,
-  madara::KnowledgeRecord::Integer value)
+  madara::knowledge::KnowledgeRecord::Integer value)
 {
   int result = -1;
 
@@ -614,7 +614,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
 
 int
 madara::knowledge::containers::Map::set (const std::string & key,
-  madara::KnowledgeRecord::Integer value, 
+  madara::knowledge::KnowledgeRecord::Integer value, 
   const KnowledgeUpdateSettings & settings)
 {
   int result = -1;
@@ -652,7 +652,7 @@ int
 madara::knowledge::containers::Map::set_index (
   const std::string & key,
   size_t index,
-  madara::KnowledgeRecord::Integer value)
+  madara::knowledge::KnowledgeRecord::Integer value)
 {
   int result = -1;
 
@@ -689,7 +689,7 @@ int
 madara::knowledge::containers::Map::set_index (
   const std::string & key,
   size_t index,
-  madara::KnowledgeRecord::Integer value,
+  madara::knowledge::KnowledgeRecord::Integer value,
   const KnowledgeUpdateSettings & settings)
 {
   int result = -1;
@@ -726,7 +726,7 @@ madara::knowledge::containers::Map::set_index (
 
 int
 madara::knowledge::containers::Map::set (const std::string & key,
-  const madara::KnowledgeRecord::Integer * value,
+  const madara::knowledge::KnowledgeRecord::Integer * value,
   uint32_t size)
 {
   int result = -1;
@@ -762,7 +762,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
  
 int
 madara::knowledge::containers::Map::set (const std::string & key,
-  const madara::KnowledgeRecord::Integer * value,
+  const madara::knowledge::KnowledgeRecord::Integer * value,
   uint32_t size,
   const KnowledgeUpdateSettings & settings)
 {

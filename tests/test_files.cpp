@@ -57,7 +57,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   madara::knowledge::KnowledgeBase knowledge ("", settings);
   
-  knowledge.set (".id", (madara::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
   
   // run tests
 //  test_tree_compilation (knowledge);
@@ -90,7 +90,7 @@ void read_and_create_files (madara::knowledge::KnowledgeBase & knowledge)
   knowledge.read_file ("hello_world", "/files/hello_world.txt");
   knowledge.write_file ("hello_world", "/files/hello_world_copy.txt");
   
-  knowledge.set (".an_integer", madara::KnowledgeRecord::Integer (10));
+  knowledge.set (".an_integer", madara::knowledge::KnowledgeRecord::Integer (10));
   knowledge.write_file (".an_integer", "/files/ten.txt");
   knowledge.read_file ("ten", "/files/ten.txt");
   knowledge.write_file ("ten", "/files/ten_copy.txt");

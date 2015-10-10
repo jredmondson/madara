@@ -137,7 +137,7 @@ madara::expression::VariableNode::accept (Visitor &visitor) const
   visitor.visit (*this);
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::VariableNode::item () const
 {
   if (record_)
@@ -149,7 +149,7 @@ madara::expression::VariableNode::item () const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::VariableNode::prune (bool & can_change)
 {
   // a variable is one of very few nodes that can change over time and
@@ -166,7 +166,7 @@ madara::expression::VariableNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::VariableNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
@@ -186,7 +186,7 @@ madara::expression::VariableNode::key () const
 
 int
 madara::expression::VariableNode::set (
-  const madara::KnowledgeRecord & value,
+  const madara::knowledge::KnowledgeRecord & value,
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
   if (record_)
@@ -218,11 +218,11 @@ madara::expression::VariableNode::set (
   }
   else
   {
-    if       (value.type () == madara::KnowledgeRecord::INTEGER)
+    if       (value.type () == madara::knowledge::KnowledgeRecord::INTEGER)
       return context_.set (expand_key (), value.to_integer ());
-    else if  (value.type () == madara::KnowledgeRecord::DOUBLE)
+    else if  (value.type () == madara::knowledge::KnowledgeRecord::DOUBLE)
       return context_.set (expand_key (), value.to_double ());
-    else if  (value.type () == madara::KnowledgeRecord::STRING)
+    else if  (value.type () == madara::knowledge::KnowledgeRecord::STRING)
       return context_.set (expand_key (), value.to_string ());
     else
       return -5;
@@ -230,7 +230,7 @@ madara::expression::VariableNode::set (
 }
 
 int
-madara::expression::VariableNode::set (const madara::KnowledgeRecord::Integer & value,
+madara::expression::VariableNode::set (const madara::knowledge::KnowledgeRecord::Integer & value,
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
   if (record_)
@@ -334,7 +334,7 @@ madara::expression::VariableNode::set (const std::string & value,
     return context_.set (expand_key (), value, settings);
 }
 
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::VariableNode::dec (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
@@ -369,7 +369,7 @@ madara::expression::VariableNode::dec (
     return context_.dec (expand_key (), settings);
 }
 
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::VariableNode::inc (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {

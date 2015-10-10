@@ -2,7 +2,7 @@
 #include "madara/utility/Utility.h"
 
 namespace utility = madara::utility;
-typedef madara::KnowledgeRecord::Integer   Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer   Integer;
 
 madara::filters::CounterFilter::CounterFilter ()
   : initialized_ (false),
@@ -17,7 +17,7 @@ madara::filters::CounterFilter::~CounterFilter ()
 
 void
 madara::filters::CounterFilter::filter (
-  KnowledgeMap & records,
+  knowledge::KnowledgeMap & records,
   const transport::TransportContext & transport_context,
   knowledge::Variables & vars)
 {

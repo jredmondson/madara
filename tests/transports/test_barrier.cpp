@@ -23,7 +23,7 @@ namespace utility = madara::utility;
 namespace transport = madara::transport;
 namespace filters = madara::filters;
 
-typedef madara::KnowledgeRecord::Integer Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 
 // default transport settings
 std::string host ("");

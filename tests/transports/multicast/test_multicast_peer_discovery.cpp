@@ -18,7 +18,7 @@ namespace transport = madara::transport;
 namespace filters = madara::filters;
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef  madara::KnowledgeRecord::Integer   Integer;
+typedef  madara::knowledge::KnowledgeRecord::Integer   Integer;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");

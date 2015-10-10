@@ -140,7 +140,7 @@ namespace madara
         * @return the value of the entry. Modifications to this will
         *         not be reflected in the context. This is a local copy.
         **/
-        KnowledgeRecord to_record (void) const;
+        knowledge::KnowledgeRecord to_record (void) const;
 
         /**
         * Fills a BufferVector container with all subkeys
@@ -206,7 +206,7 @@ namespace madara
         * Returns the value at the location as an integer
         * @return  the value at the location
         **/
-        KnowledgeRecord::Integer to_integer (void) const;
+        knowledge::KnowledgeRecord::Integer to_integer (void) const;
 
         /**
         * Returns the value at the location as a double
@@ -339,7 +339,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (
-          KnowledgeRecord::Integer value = KnowledgeRecord::MODIFIED);
+          knowledge::KnowledgeRecord::Integer value = knowledge::KnowledgeRecord::MODIFIED);
 
         /**
         * Sets the location to the specified Integer
@@ -347,7 +347,7 @@ namespace madara
         * @param value           value to set at location
         **/
         void operator= (
-          KnowledgeRecord::Integer value);
+          knowledge::KnowledgeRecord::Integer value);
 
         /**
         * Sets the location to the specified int
@@ -410,7 +410,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set_index (size_t index,
-          KnowledgeRecord::Integer value);
+          knowledge::KnowledgeRecord::Integer value);
 
         /**
          * Sets an index within an array to a specified value
@@ -422,7 +422,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set_index (size_t index,
-          KnowledgeRecord::Integer value,
+          knowledge::KnowledgeRecord::Integer value,
           const KnowledgeUpdateSettings & settings);
         
         /**
@@ -433,7 +433,7 @@ namespace madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (const KnowledgeRecord::Integer * value,
+        int set (const knowledge::KnowledgeRecord::Integer * value,
           uint32_t size);
        
         /**
@@ -445,7 +445,7 @@ namespace madara
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (const KnowledgeRecord::Integer * value,
+        int set (const knowledge::KnowledgeRecord::Integer * value,
           uint32_t size,
           const KnowledgeUpdateSettings & settings);
        

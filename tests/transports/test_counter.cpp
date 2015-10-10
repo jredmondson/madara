@@ -21,7 +21,7 @@ namespace containers = knowledge::containers;
 namespace utility = madara::utility;
 namespace transport = madara::transport;
 
-typedef madara::KnowledgeRecord::Integer Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 
 // default transport settings
 std::string host ("");

@@ -7,7 +7,7 @@
  * can be attached to a knowledge base
  **/
 
-#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include "CustomTransport.h"
 #include <iostream>
 #include <string>
@@ -21,7 +21,7 @@
  **/
 std::string host ("");
 const std::string multicast_address ("239.255.0.1:4150");
-Madara::Transport::Settings settings;
+madara::transport::Settings settings;
 
 /**
  * To terminate an agent, the user needs to press Control+C. The following
@@ -39,11 +39,11 @@ int main (int argc, char * argv[])
   ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
   
   // Setup a multicast transport with the settings mentioned above.
-  settings.type = Madara::Transport::MULTICAST;
+  settings.type = madara::transport::MULTICAST;
   settings.hosts.resize (1);
   settings.hosts[0] = multicast_address;
   
-  Madara::KnowledgeEngine::KnowledgeBase knowledge;
+  madara::knowledge::KnowledgeBase knowledge;
 
   CustomTransport * transport = new CustomTransport (knowledge.get_id (),
     knowledge.get_context (), settings, true);

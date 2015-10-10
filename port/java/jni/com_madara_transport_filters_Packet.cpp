@@ -48,8 +48,9 @@
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara_jni.h"
 
-typedef madara::KnowledgeMap      KnowledgeMap;
-typedef madara::KnowledgeRecord   KnowledgeRecord;
+namespace knowledge = madara::knowledge;
+typedef madara::knowledge::KnowledgeMap      KnowledgeMap;
+typedef knowledge::KnowledgeRecord           KnowledgeRecord;
 
 /*
  * Class:     com_madara_transport_filters_Packet
@@ -110,7 +111,7 @@ jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
   
   if (packet)
   {
-    jclass string_class = madara::utility::Java::find_class (
+    jclass string_class = madara::utility::java::find_class (
       env, "java/lang/String");
     jstring empty_string = env->NewStringUTF ("");
 

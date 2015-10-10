@@ -26,19 +26,19 @@ madara::expression::CompositeAssignmentNode::CompositeAssignmentNode (
     array_ = dynamic_cast <CompositeArrayReference *> (left);
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeAssignmentNode::item (void) const
 {
   return "=";
 }
 
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeAssignmentNode::prune (bool & can_change)
 {
   bool left_child_can_change = false;
   bool right_child_can_change = false;
-  madara::KnowledgeRecord right_value;
+  madara::knowledge::KnowledgeRecord right_value;
 
   if (this->var_ != 0 || this->array_ != 0)
     left_child_can_change = true;
@@ -73,14 +73,14 @@ madara::expression::CompositeAssignmentNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::CompositeAssignmentNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  madara::KnowledgeRecord rhs = right_->evaluate (settings);
+  madara::knowledge::KnowledgeRecord rhs = right_->evaluate (settings);
 
   // get the value from the right side and set the variable's value with it
-  //madara::KnowledgeRecord value = right_->evaluate ();
+  //madara::knowledge::KnowledgeRecord value = right_->evaluate ();
   if (var_)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,

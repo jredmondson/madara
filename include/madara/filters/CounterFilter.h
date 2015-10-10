@@ -53,7 +53,7 @@ namespace madara
        * @param   transport_context context for querying transport state
        * @param   vars              context for querying current program state
        **/
-      virtual void filter (KnowledgeMap & records,
+      virtual void filter (knowledge::KnowledgeMap & records,
         const transport::TransportContext & transport_context,
         knowledge::Variables & vars);
 
@@ -61,14 +61,14 @@ namespace madara
        * Gets the number of packets filtered
        * @return the number of packets
        **/
-      inline KnowledgeRecord::Integer get_count ();
+      inline knowledge::KnowledgeRecord::Integer get_count ();
 
       /**
       * Returns the duration of filtering from first to
       * last message in seconds
       * @return test duration in seconds
       **/
-      inline KnowledgeRecord::Integer get_elapsed ();
+      inline knowledge::KnowledgeRecord::Integer get_elapsed ();
 
       /**
       * Returns the throughput in terms of packets/second
@@ -86,17 +86,17 @@ namespace madara
       /**
        * A map of discovered peers
        **/
-      KnowledgeRecord::Integer packets_;
+      knowledge::KnowledgeRecord::Integer packets_;
 
       /**
        * The time to keep record of a peer
        **/
-      KnowledgeRecord::Integer first_message_;
+      knowledge::KnowledgeRecord::Integer first_message_;
 
       /**
       * The time of the last clear of the peer_list
       **/
-      KnowledgeRecord::Integer last_message_;
+      knowledge::KnowledgeRecord::Integer last_message_;
     };
   }
 }

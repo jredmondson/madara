@@ -15,8 +15,8 @@
 // define useful shorthands
 namespace knowledge = madara::knowledge;
 namespace transport = madara::transport;
-typedef madara::KnowledgeRecord  KnowledgeRecord;
-typedef KnowledgeRecord::Integer Integer;
+typedef madara::knowledge::KnowledgeRecord  knowledge::KnowledgeRecord;
+typedef knowledge::KnowledgeRecord::Integer Integer;
 typedef transport::Settings Settings;
 
 /*
@@ -423,7 +423,7 @@ jobjectArray JNICALL Java_com_madara_transport_TransportSettings_jni_1getHosts (
 
   if (settings)
   {
-    jclass string_class = madara::utility::Java::find_class (
+    jclass string_class = madara::utility::java::find_class (
       env, "java/lang/String");
     jstring empty_string = env->NewStringUTF ("");
 

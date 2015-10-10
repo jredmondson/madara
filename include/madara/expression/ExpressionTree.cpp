@@ -208,11 +208,11 @@ madara::expression::ExpressionTree::is_null (void) const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::ExpressionTree::prune (void)
 {
   bool root_can_change = false;
-  madara::KnowledgeRecord root_value;
+  madara::knowledge::KnowledgeRecord root_value;
 
   if (this->root_.get_ptr ())
   {
@@ -230,14 +230,14 @@ madara::expression::ExpressionTree::prune (void)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::ExpressionTree::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
   if (root_.get_ptr () != 0)
     return root_->evaluate (settings);
   else
-    return madara::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord::Integer (0);
 }
 
 
@@ -250,7 +250,7 @@ madara::expression::ExpressionTree::get_root (void)
 
 // Return the stored item.
 
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::ExpressionTree::item (void) const
 {
   return root_->item ();

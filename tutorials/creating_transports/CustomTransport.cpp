@@ -9,12 +9,12 @@
 /**
 * Define helpful shortened namespaces that we can refer to later
 **/
-namespace engine = Madara::KnowledgeEngine;
-namespace transport = Madara::Transport;
-namespace logger = Madara::Logger;
+namespace knowledge = madara::knowledge;
+namespace transport = madara::transport;
+namespace logger = madara::logger;
 
 CustomTransport::CustomTransport (const std::string & id,
-        engine::ThreadSafeContext & context, 
+        knowledge::ThreadSafeContext & context, 
         transport::Settings & config, bool launch_transport)
 : Base (id, config, context),
   thread_ (0), valid_setup_ (false),
@@ -98,7 +98,7 @@ CustomTransport::setup (void)
 
 long
 CustomTransport::send_data (
-  const Madara::KnowledgeRecords & updates)
+  const madara::knowledge::KnowledgeRecords & updates)
 {
   // check to see if we are shutting down
   long ret = this->check_transport ();
@@ -119,7 +119,7 @@ CustomTransport::send_data (
   }
  
   // get the maximum quality from the updates
-  uint32_t quality = Madara::max_quality (updates);
+  uint32_t quality = madara::knowledge::max_quality (updates);
 
 
   // allocate a buffer to send
@@ -130,7 +130,7 @@ CustomTransport::send_data (
   transport::MessageHeader header;
   
   // get the clock
-  header.clock = Madara::Utility::endian_swap (context_.get_clock ());
+  header.clock = madara::utility::endian_swap (context_.get_clock ());
 
   // copy the Madara transport version identification
   strncpy (header.madara_id, MADARA_IDENTIFIER, 7);
@@ -140,7 +140,7 @@ CustomTransport::send_data (
     sizeof (header.domain) - 1);
 
   // get the quality of the key
-  header.quality = Madara::Utility::endian_swap (quality);
+  header.quality = madara::utility::endian_swap (quality);
 
   // copy the message originator (our id)
   strncpy (header.originator, id_.c_str (), sizeof (header.originator) - 1);
@@ -179,7 +179,7 @@ CustomTransport::send_data (
   // [key|value]
   
   int j = 0;
-  for (Madara::KnowledgeRecords::const_iterator i = updates.begin ();
+  for (madara::knowledge::KnowledgeRecords::const_iterator i = updates.begin ();
     i != updates.end (); ++i, ++j)
   {
     update = i->second->write (update, i->first, buffer_remaining);
@@ -188,7 +188,7 @@ CustomTransport::send_data (
   if (buffer_remaining > 0)
   {
     int size = (int)(transport::MAX_PACKET_SIZE - buffer_remaining);
-    *message_size = Madara::Utility::endian_swap ((uint64_t)size);
+    *message_size = madara::utility::endian_swap ((uint64_t)size);
     
     // send the buffer contents to the multicast address
   

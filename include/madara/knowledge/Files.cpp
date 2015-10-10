@@ -84,7 +84,7 @@ madara::knowledge::Files::read_file (
     // knowledge key
     if (actual > 0)
     {
-      map_.set (knowledge_key, (madara::KnowledgeRecord::Integer) actual);
+      map_.set (knowledge_key, (madara::knowledge::KnowledgeRecord::Integer) actual);
 
       madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
         "Files::read_file : file imported with %" PRIu64 " bytes\n", actual);
@@ -152,7 +152,7 @@ madara::knowledge::Files::write_file (
     // knowledge key
     if (actual > 0)
     {
-      map_.set (knowledge_key, (madara::KnowledgeRecord::Integer) actual);
+      map_.set (knowledge_key, (madara::knowledge::KnowledgeRecord::Integer) actual);
 
       madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
         "Files::write_file : file saved with %" PRIu64 " bytes\n", actual);
@@ -249,7 +249,7 @@ madara::knowledge::Files::read_policy (
     // knowledge key
     if (actual > 0)
     {
-      map_.set (policy_key, (madara::KnowledgeRecord::Integer) actual);
+      map_.set (policy_key, (madara::knowledge::KnowledgeRecord::Integer) actual);
 
       madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
         "Files::read_policy : file imported with %zu bytes\n", actual);

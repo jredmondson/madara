@@ -23,7 +23,7 @@ namespace madara
 {
   namespace utility
   {
-    namespace Java
+    namespace java
     {
       /**
        * Android-safe, Thread-safe find class method

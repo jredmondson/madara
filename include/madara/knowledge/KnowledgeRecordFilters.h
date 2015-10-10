@@ -4,10 +4,10 @@
 #define _MADARA_KNOWLEDGE_RECORD_FILTERS_H_
 
 /**
- * @file KnowledgeRecordFilters.h
+ * @file knowledge::KnowledgeRecordFilters.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains the KnowledgeRecordFilters class, helper typdefs and functions
+ * This file contains the knowledge::KnowledgeRecordFilters class, helper typdefs and functions
  **/
 
 #include <string>
@@ -44,21 +44,21 @@ namespace madara
     typedef  std::map <uint32_t, FilterChain>  FilterMap;
 
     /**
-     * @class KnowledgeRecordFilters
+     * @class knowledge::KnowledgeRecordFilters
      * @brief Provides map of data types to a filter chain to apply to the data
      */
-    class MADARA_Export KnowledgeRecordFilters
+    class MADARA_Export knowledge::KnowledgeRecordFilters
     {
     public:
       /**
        * Default constructor
        **/
-      KnowledgeRecordFilters ();
+      knowledge::KnowledgeRecordFilters ();
       
       /**
        * Copy constructor
        **/
-      KnowledgeRecordFilters (const KnowledgeRecordFilters & filters);
+      knowledge::KnowledgeRecordFilters (const knowledge::KnowledgeRecordFilters & filters);
 
       /**
        * Destructor
@@ -69,7 +69,7 @@ namespace madara
        * Assignment operator
        * @param  rhs   the value to be copied into this class
        **/
-      void operator= (const KnowledgeRecordFilters & rhs);
+      void operator= (const knowledge::KnowledgeRecordFilters & rhs);
 
       /**
        * Adds a filter to the list of types
@@ -78,7 +78,7 @@ namespace madara
        *                     in FunctionArguments.
        **/
       void add (uint32_t types,
-        KnowledgeRecord (*function) (FunctionArguments &, Variables &));
+        knowledge::KnowledgeRecord (*function) (FunctionArguments &, Variables &));
 
 
       /**
@@ -197,7 +197,7 @@ namespace madara
        * @param   context the context of the transport
        * @return  the result of filtering the input
        **/
-      KnowledgeRecord filter (const KnowledgeRecord & input,
+      knowledge::KnowledgeRecord filter (const knowledge::KnowledgeRecord & input,
         const std::string & name,
         transport::TransportContext & context) const;
 

@@ -213,7 +213,7 @@ namespace madara
        * Returns the result of the evaluation
        * @return    result of the evaluation
        **/
-      madara::KnowledgeRecord::Integer total (void);
+      madara::knowledge::KnowledgeRecord::Integer total (void);
 
       /** 
        * Resets the evaluation
@@ -222,7 +222,7 @@ namespace madara
 
     private:
       /// Stack used for temporarily storing evaluations.
-      madara::utility::LStack<madara::KnowledgeRecord> stack_;
+      madara::utility::LStack<madara::knowledge::KnowledgeRecord> stack_;
     };  
   }
 }

@@ -346,10 +346,10 @@ madara::knowledge::containers::String::exists (void) const
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::String::to_record (void) const
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
   
   if (context_)
   {
@@ -387,7 +387,7 @@ madara::knowledge::containers::String::to_double (void) const
     return 0.0;
 }
    
-madara::KnowledgeRecord::Integer
+madara::knowledge::KnowledgeRecord::Integer
 madara::knowledge::containers::String::to_integer (void) const
 {
   if (context_)

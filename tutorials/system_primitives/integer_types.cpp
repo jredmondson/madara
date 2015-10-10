@@ -8,14 +8,14 @@
  * first class entities within the knowledge engine.
  **/
 
-#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 #include <string>
 
 int main (int argc, char * argv[])
 {
   // Create a knowledge base
-  Madara::KnowledgeEngine::KnowledgeBase knowledge;
+  madara::knowledge::KnowledgeBase knowledge;
   
   /**
    * The default type in MADARA is an integer. All variables

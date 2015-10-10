@@ -15,12 +15,12 @@
  * This file contains the inline functions for KnowledgeBaseImpl class
  */
 
-inline madara::KnowledgeRecord
+inline madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBaseImpl::get (
   const std::string & t_key,
   const KnowledgeReferenceSettings & settings)
 {
-  madara::KnowledgeRecord result (map_.get (t_key, settings));
+  madara::knowledge::KnowledgeRecord result (map_.get (t_key, settings));
   
   // if the result is ref counted, then do a deep copy to prevent cache issues
   if (result.is_ref_counted ())
@@ -31,12 +31,12 @@ madara::knowledge::KnowledgeBaseImpl::get (
   return result;
 }
 
-inline madara::KnowledgeRecord
+inline madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBaseImpl::get (
   const VariableReference & variable,
   const KnowledgeReferenceSettings & settings)
 {
-  madara::KnowledgeRecord result (map_.get (variable, settings));
+  madara::knowledge::KnowledgeRecord result (map_.get (variable, settings));
   
   // if the result is ref counted, then do a deep copy to prevent cache issues
   if (result.is_ref_counted ())
@@ -86,7 +86,7 @@ madara::knowledge::KnowledgeBaseImpl::set_log_level (int level)
   map_.set_log_level (level);
 }
 
-inline madara::KnowledgeRecord
+inline madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBaseImpl::retrieve_index (
   const std::string & t_key,
   size_t index,
@@ -95,7 +95,7 @@ madara::knowledge::KnowledgeBaseImpl::retrieve_index (
   return map_.retrieve_index (t_key, index, settings);
 }
 
-inline madara::KnowledgeRecord
+inline madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBaseImpl::retrieve_index (
   const VariableReference & variable,
   size_t index,
@@ -272,7 +272,7 @@ inline void madara::knowledge::KnowledgeBaseImpl::release (void)
 // Defines a function
 inline
 void madara::knowledge::KnowledgeBaseImpl::define_function (
-  const std::string & name, KnowledgeRecord (*func) (FunctionArguments &, Variables &))
+  const std::string & name, knowledge::KnowledgeRecord (*func) (FunctionArguments &, Variables &))
 {
   map_.define_function (name, func);
 }
@@ -281,7 +281,7 @@ void madara::knowledge::KnowledgeBaseImpl::define_function (
 inline
 void madara::knowledge::KnowledgeBaseImpl::define_function (
   const std::string & name,
-    KnowledgeRecord (*func) (const char *, FunctionArguments &, Variables &))
+    knowledge::KnowledgeRecord (*func) (const char *, FunctionArguments &, Variables &))
 {
   map_.define_function (name, func);
 }
@@ -329,7 +329,7 @@ madara::knowledge::KnowledgeBaseImpl::define_function (
   map_.define_function (name, expression);
 }
      
-inline madara::KnowledgeRecord
+inline madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBaseImpl::wait (
   const std::string & expression)
 {
@@ -338,7 +338,7 @@ madara::knowledge::KnowledgeBaseImpl::wait (
   return wait (compiled, settings);
 }
 
-inline madara::KnowledgeRecord
+inline madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBaseImpl::evaluate (
   const std::string & expression)
 {
@@ -431,7 +431,7 @@ inline
 size_t
 madara::knowledge::KnowledgeBaseImpl::to_map (
   const std::string & expression,
-  std::map <std::string, KnowledgeRecord> & target)
+  std::map <std::string, knowledge::KnowledgeRecord> & target)
 {
   return map_.to_map (expression, target);
 }
@@ -443,7 +443,7 @@ madara::knowledge::KnowledgeBaseImpl::to_map (
   const std::string & delimiter,
   const std::string & suffix,
   std::vector <std::string> & next_keys,
-  std::map <std::string, KnowledgeRecord> & result,
+  std::map <std::string, knowledge::KnowledgeRecord> & result,
   bool just_keys)
 {
   return map_.to_map (
@@ -509,7 +509,7 @@ madara::knowledge::KnowledgeBaseImpl::send_modifieds (
 
   if (transports_.size () > 0 && !settings.delay_sending_modifieds)
   {
-    const KnowledgeRecords & modified = map_.get_modifieds ();
+    const knowledge::KnowledgeRecords & modified = map_.get_modifieds ();
 
     if (modified.size () > 0)
     {
@@ -528,7 +528,7 @@ madara::knowledge::KnowledgeBaseImpl::send_modifieds (
       }
       else
       {
-        KnowledgeRecords allowed_modifieds;
+        knowledge::KnowledgeRecords allowed_modifieds;
         // otherwise, we are only allowed to send a subset of modifieds
         for (KnowledgeRecords::const_iterator i = modified.begin ();
              i != modified.end (); ++i)

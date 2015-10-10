@@ -17,7 +17,7 @@
 
 namespace madara
 {
-  class KnowledgeRecord;
+  class knowledge::KnowledgeRecord;
 
   namespace knowledge
   {
@@ -99,7 +99,7 @@ namespace madara
       /**
        * Reference to knowledge record
        **/
-      KnowledgeRecord * record_;
+      knowledge::KnowledgeRecord * record_;
     };
   }
 }

@@ -29,8 +29,8 @@ std::string filename =
 
 std::string target_location;
 
-madara::KnowledgeRecord::Integer target_id (1);
-madara::KnowledgeRecord trusted ("0");
+madara::knowledge::KnowledgeRecord::Integer target_id (1);
+madara::knowledge::KnowledgeRecord trusted ("0");
 std::string self ("0");
 
 // payload size to burst
@@ -273,11 +273,11 @@ void handle_arguments (int argc, char ** argv)
 }
 
 void
-write_file (madara::KnowledgeMap & records,
+write_file (madara::knowledge::KnowledgeMap & records,
   const madara::transport::TransportContext &,
   madara::knowledge::Variables & vars)
 {
-  madara::KnowledgeMap::iterator last = records.find ("last");
+  madara::knowledge::KnowledgeMap::iterator last = records.find ("last");
 
   if (last != records.end () && last->second == trusted.to_string ())
   {
@@ -285,7 +285,7 @@ write_file (madara::KnowledgeMap & records,
     last_message << "Accepting updates from " << last->second << "\n";
     vars.print (last_message.str ());
 
-    madara::KnowledgeMap::iterator file = records.find ("file");
+    madara::knowledge::KnowledgeMap::iterator file = records.find ("file");
     if (file != records.end ())
     {
       std::stringstream filename;
@@ -317,7 +317,7 @@ write_file (madara::KnowledgeMap & records,
       }
 
       records["last"] = self;
-      vars.set (ack, madara::KnowledgeRecord::Integer (file->second.size ()));
+      vars.set (ack, madara::knowledge::KnowledgeRecord::Integer (file->second.size ()));
       vars.print (
         "Received file. Sending file ack {file.{.id}.ack} for id {.id}.\n");
     }
@@ -349,7 +349,7 @@ int main (int argc, char ** argv)
 #ifndef _MADARA_NO_KARL_
   if (settings.id != 0)
   {
-    trusted = madara::KnowledgeRecord::Integer (settings.id - 1);
+    trusted = madara::knowledge::KnowledgeRecord::Integer (settings.id - 1);
   }
 
   if (settings.hosts.size () == 0)
@@ -371,7 +371,7 @@ int main (int argc, char ** argv)
 
   // create a knowledge base and setup our id
   madara::knowledge::KnowledgeBase knowledge (host, settings);
-  knowledge.set (".id", madara::KnowledgeRecord::Integer (settings.id));
+  knowledge.set (".id", madara::knowledge::KnowledgeRecord::Integer (settings.id));
   knowledge.set (".target", target_id);
 
   ack = knowledge.get_ref (knowledge.expand_statement (
@@ -462,7 +462,7 @@ int main (int argc, char ** argv)
         text[3] = 't';
       }
 
-      knowledge.set (".size", madara::KnowledgeRecord::Integer (data_size));
+      knowledge.set (".size", madara::knowledge::KnowledgeRecord::Integer (data_size));
       knowledge.set ("file", text, delay_sending);
       knowledge.set ("file_name", new_name.str (), delay_sending);
       

@@ -33,10 +33,10 @@ madara::expression::CompositeTernaryNode::~CompositeTernaryNode (void)
     delete *i;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeTernaryNode::item (void) const
 {
-  return madara::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
 }
 
 // accept a visitor

@@ -12,14 +12,14 @@
 
 // define useful shorthands
 namespace knowledge = madara::knowledge;
-typedef madara::KnowledgeRecord  KnowledgeRecord;
+typedef madara::knowledge::KnowledgeRecord  KnowledgeRecord;
 typedef KnowledgeRecord::Integer Integer;
 
 
 jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__
   (JNIEnv *, jobject)
 {
-  return (jlong) new madara::KnowledgeRecord ();
+  return (jlong) new KnowledgeRecord ();
 }
 
 /*

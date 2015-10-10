@@ -155,7 +155,7 @@ namespace madara
      *                0   No message to send
      *               > 0  size of buffered message
      **/
-      long prep_send (const madara::KnowledgeRecords & orig_updates,
+      long prep_send (const madara::knowledge::KnowledgeRecords & orig_updates,
         const char * print_prefix);
 
       /**
@@ -163,7 +163,7 @@ namespace madara
        * implemented by your transport
        * @return  result of operation or -1 if we are shutting down
        **/
-      virtual long send_data (const madara::KnowledgeRecords &) = 0;
+      virtual long send_data (const madara::knowledge::KnowledgeRecords &) = 0;
 
       /**
        * Invalidates a transport to indicate it is shutting down
@@ -248,7 +248,7 @@ namespace madara
         const QoSTransportSettings & settings,
         BandwidthMonitor & send_monitor,
         BandwidthMonitor & receive_monitor,
-        KnowledgeMap & rebroadcast_records,
+       knowledge::KnowledgeMap& rebroadcast_records,
 #ifndef _MADARA_NO_KARL_
 
         knowledge::CompiledExpression & on_data_received,
@@ -280,7 +280,7 @@ namespace madara
       const QoSTransportSettings & settings,
       const char * print_prefix,
       MessageHeader * header,
-      const KnowledgeMap & records,
+      const knowledge::KnowledgeMap& records,
       PacketScheduler & packet_scheduler);
 
     typedef   utility::ThreadSafeVector <Base *>   Transports;

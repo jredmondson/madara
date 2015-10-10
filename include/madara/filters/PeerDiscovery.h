@@ -44,7 +44,7 @@ namespace madara
       **/
       PeerDiscovery (
         const std::string & prefix = ".peers",
-        KnowledgeRecord::Integer heart_beat = -1);
+        knowledge::KnowledgeRecord::Integer heart_beat = -1);
 
       /**
        * Destructor
@@ -59,7 +59,7 @@ namespace madara
        * @param   transport_context context for querying transport state
        * @param   vars              context for querying current program state
        **/
-      virtual void filter (KnowledgeMap & records,
+      virtual void filter (knowledge::KnowledgeMap & records,
         const transport::TransportContext & transport_context,
         knowledge::Variables & vars);
 
@@ -83,12 +83,12 @@ namespace madara
       /**
        * The time to keep record of a peer
        **/
-      KnowledgeRecord::Integer heart_beat_;
+      knowledge::KnowledgeRecord::Integer heart_beat_;
 
       /**
       * The time of the last clear of the peer_list
       **/
-      KnowledgeRecord::Integer last_clear_;
+      knowledge::KnowledgeRecord::Integer last_clear_;
     };
   }
 }

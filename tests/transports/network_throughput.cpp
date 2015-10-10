@@ -36,7 +36,7 @@ namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
 namespace transport = madara::transport;
 
-typedef madara::KnowledgeRecord::Integer Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 
 // default transport settings
 std::string host ("");
@@ -309,11 +309,11 @@ public:
   {
   }
 
-  virtual void filter (madara::KnowledgeMap & records,
+  virtual void filter (madara::knowledge::KnowledgeMap & records,
     const transport::TransportContext & transport_context,
     knowledge::Variables & vars)
   {
-    madara::KnowledgeMap::iterator packet = records.find ("packet");
+    madara::knowledge::KnowledgeMap::iterator packet = records.find ("packet");
     if (packet != records.end ())
     {
       if (!started)
@@ -328,7 +328,7 @@ public:
         started = true;
       }
 
-      madara::KnowledgeMap::iterator id = records.find ("id");
+      madara::knowledge::KnowledgeMap::iterator id = records.find ("id");
 
       // if we have a valid packet
       if (id != records.end ())

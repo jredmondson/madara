@@ -22,11 +22,11 @@
 namespace logger = madara::logger;
 
 bool logical_print = false;
-madara::KnowledgeRecord::Integer id = 2;
-madara::KnowledgeRecord::Integer left = 0;
-madara::KnowledgeRecord::Integer processes = 3;
-madara::KnowledgeRecord::Integer stop = 3;
-madara::KnowledgeRecord::Integer value = 0;
+madara::knowledge::KnowledgeRecord::Integer id = 2;
+madara::knowledge::KnowledgeRecord::Integer left = 0;
+madara::knowledge::KnowledgeRecord::Integer processes = 3;
+madara::knowledge::KnowledgeRecord::Integer stop = 3;
+madara::knowledge::KnowledgeRecord::Integer value = 0;
 volatile bool terminated = 0;
 std::string host;
 std::string domain ("three_state");

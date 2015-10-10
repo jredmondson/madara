@@ -20,11 +20,11 @@
 
 namespace logger = madara::logger;
 
-madara::KnowledgeRecord::Integer id = 0;
-madara::KnowledgeRecord::Integer left = 0;
-madara::KnowledgeRecord::Integer processes = 2;
-madara::KnowledgeRecord::Integer stop = 10;
-madara::KnowledgeRecord::Integer value = 0;
+madara::knowledge::KnowledgeRecord::Integer id = 0;
+madara::knowledge::KnowledgeRecord::Integer left = 0;
+madara::knowledge::KnowledgeRecord::Integer processes = 2;
+madara::knowledge::KnowledgeRecord::Integer stop = 10;
+madara::knowledge::KnowledgeRecord::Integer value = 0;
 std::string host;
 std::string domain ("n_state");
 std::string multicast ("239.255.0.1:4150");

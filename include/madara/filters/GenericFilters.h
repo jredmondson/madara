@@ -8,7 +8,7 @@
  * @author James Edmondson <jedmondson@gmail.com>
  *
  * This file contains generic filters that developers can use to filter
- * KnowledgeRecord classes in common ways.
+ * knowledge::KnowledgeRecord classes in common ways.
  **/
 
 #include <string>
@@ -32,7 +32,7 @@ namespace madara
      * @param   vars        variable context (unused)
      * @return  record with status set to UNCREATED
      **/
-    MADARA_Export KnowledgeRecord
+    MADARA_Export knowledge::KnowledgeRecord
     discard     (knowledge::FunctionArguments & args,
                  knowledge::Variables & vars);
 
@@ -44,7 +44,7 @@ namespace madara
      * @param   vars        variable context (unused)
      * @return  record with status set to UNCREATED if arg is non-primitive
      **/
-    MADARA_Export KnowledgeRecord
+    MADARA_Export knowledge::KnowledgeRecord
     discard_nonprimitives (knowledge::FunctionArguments & args,
                            knowledge::Variables & vars);
 
@@ -56,7 +56,7 @@ namespace madara
      * @param   vars        variable context
      * @return  record with status set to UNCREATED if arg is non-file
      **/
-    MADARA_Export KnowledgeRecord
+    MADARA_Export knowledge::KnowledgeRecord
     discard_nonfiles      (knowledge::FunctionArguments & args,
                            knowledge::Variables & vars);
 
@@ -66,7 +66,7 @@ namespace madara
      * @param   vars        variable context
      * @return  record with status set to UNCREATED if arg is non-file
      **/
-    MADARA_Export KnowledgeRecord
+    MADARA_Export knowledge::KnowledgeRecord
     log_args              (knowledge::FunctionArguments & args,
                            knowledge::Variables & vars);
     
@@ -78,7 +78,7 @@ namespace madara
      **/
     MADARA_Export void
     log_aggregate         (
-      KnowledgeMap & records,
+     knowledge::KnowledgeMap& records,
       const transport::TransportContext & transport_context,
       knowledge::Variables & vars);
   }

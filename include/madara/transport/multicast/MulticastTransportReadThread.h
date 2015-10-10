@@ -91,7 +91,7 @@ namespace madara
       void rebroadcast (
         const char * print_prefix,
         MessageHeader * header,
-        const KnowledgeMap & records);
+        const knowledge::KnowledgeMap& records);
 
     private:
       /// quality-of-service transport settings

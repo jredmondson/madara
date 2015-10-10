@@ -12,19 +12,19 @@ const char * operation_types [] = {
 };
 
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::filters::discard (knowledge::FunctionArguments & args,
               knowledge::Variables & vars)
 {
   // this works because a default record is UNCREATED
-  return madara::KnowledgeRecord ();
+  return madara::knowledge::KnowledgeRecord ();
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::filters::discard_nonprimitives (knowledge::FunctionArguments & args,
               knowledge::Variables & vars)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (args.size () > 0)
   {
@@ -47,11 +47,11 @@ madara::filters::discard_nonprimitives (knowledge::FunctionArguments & args,
 }
 
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::filters::discard_nonfiles (knowledge::FunctionArguments & args,
               knowledge::Variables & vars)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (args.size () > 0)
   {
@@ -73,11 +73,11 @@ madara::filters::discard_nonfiles (knowledge::FunctionArguments & args,
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::filters::log_args (knowledge::FunctionArguments & args,
                            knowledge::Variables & vars)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (args.size () == madara::filters::TOTAL_ARGUMENTS)
   {
@@ -140,7 +140,7 @@ madara::filters::log_args (knowledge::FunctionArguments & args,
 
 void
 madara::filters::log_aggregate (
-  KnowledgeMap & records,
+  knowledge::KnowledgeMap & records,
   const transport::TransportContext & transport_context,
   knowledge::Variables & vars)
 {
@@ -185,7 +185,7 @@ madara::filters::log_aggregate (
   buffer << "  Updates:\n" ;
   if (records.size () > 0)
   {
-    for (KnowledgeMap::const_iterator i = records.begin ();
+    for (knowledge::KnowledgeMap::const_iterator i = records.begin ();
          i != records.end (); ++i)
     {
       buffer << "    " << i->first << " = ";

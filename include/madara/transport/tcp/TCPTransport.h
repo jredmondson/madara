@@ -51,7 +51,7 @@ namespace madara
        * @param   updates listing of all updates that must be sent
        * @return  result of write operation or -1 if we are shutting down
        **/
-      long send_data (const madara::KnowledgeRecords & updates);
+      long send_data (const madara::knowledge::KnowledgeRecords & updates);
     
       /**
        * Accesses reliability setting. If this returns zero, it doesn't

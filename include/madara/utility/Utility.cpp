@@ -617,7 +617,7 @@ madara::utility::endian_swap (uint64_t value)
 }
 
 /**
-* Converts a host format signed madara::KnowledgeRecord::Integer into big endian
+* Converts a host format signed madara::knowledge::KnowledgeRecord::Integer into big endian
 **/
 int64_t
 madara::utility::endian_swap (int64_t value)
@@ -654,7 +654,7 @@ madara::utility::endian_swap (uint32_t value)
 }
 
 /**
-* Converts a host format signed madara::KnowledgeRecord::Integer into big endian
+* Converts a host format signed madara::knowledge::KnowledgeRecord::Integer into big endian
 **/
 int32_t
 madara::utility::endian_swap (int32_t value)
@@ -893,7 +893,7 @@ madara::utility::wait_true (
   if (settings.pre_print_statement != "")
     knowledge.print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
-  madara::KnowledgeRecord last_value = knowledge.get (ref, settings);
+  madara::knowledge::KnowledgeRecord last_value = knowledge.get (ref, settings);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
     "utility::wait_true:" \
@@ -987,7 +987,7 @@ bool madara::utility::wait_false (
   if (settings.pre_print_statement != "")
     knowledge.print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
-  madara::KnowledgeRecord last_value = !knowledge.get (ref, settings);
+  madara::knowledge::KnowledgeRecord last_value = !knowledge.get (ref, settings);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
     "utility::wait_false:" \

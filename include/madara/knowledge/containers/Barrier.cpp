@@ -299,10 +299,10 @@ madara::knowledge::containers::Barrier::operator= (type value)
   return value;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::Barrier::to_record (void) const
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
   
   if (context_)
   {
@@ -314,10 +314,10 @@ madara::knowledge::containers::Barrier::to_record (void) const
   return result;
 }
  
-madara::KnowledgeRecord::Integer
+madara::knowledge::KnowledgeRecord::Integer
 madara::knowledge::containers::Barrier::to_integer (void) const
 {
-  madara::KnowledgeRecord::Integer result (0);
+  madara::knowledge::KnowledgeRecord::Integer result (0);
   
   if (context_)
   {

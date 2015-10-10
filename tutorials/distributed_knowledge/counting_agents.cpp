@@ -44,7 +44,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include "ace/Signal.h"
 #include "ace/OS_NS_Thread.h"
 
@@ -55,7 +55,7 @@
  **/
 std::string host ("");
 const std::string multicast_address ("239.255.0.1:4150");
-Madara::Transport::Settings settings;
+madara::transport::Settings settings;
 
 /**
  * To terminate an agent, the user needs to press Control+C. The following
@@ -73,7 +73,7 @@ int main (int argc, char * argv[])
   ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
 
   // Setup a multicast transport with the settings mentioned above.
-  settings.type = Madara::Transport::MULTICAST;
+  settings.type = madara::transport::MULTICAST;
   settings.hosts.resize (1);
   settings.hosts[0] = multicast_address;
   
@@ -85,13 +85,13 @@ int main (int argc, char * argv[])
   }
 
   // Create the knowledge base with the transport settings set for multicast
-  Madara::KnowledgeEngine::KnowledgeBase knowledge (host, settings);
+  madara::knowledge::KnowledgeBase knowledge (host, settings);
   
   // Check command line arguments for a non-zero id
   if (argc >= 2)
   {
     // save the first argument into an integer
-    Madara::KnowledgeRecord::Integer new_id;
+    madara::knowledge::KnowledgeRecord::Integer new_id;
     std::stringstream buffer (argv[1]);
     buffer >> new_id;
 
@@ -159,7 +159,7 @@ int main (int argc, char * argv[])
    * In this case, we set the EvalSettings class to include a post
    * print statement that prints the cur and max agents
    **/
-  Madara::KnowledgeEngine::EvalSettings eval_settings;
+  madara::knowledge::EvalSettings eval_settings;
   eval_settings.post_print_statement = 
     "Cur agents online: {.cur_agents}  Max agents online: {.max_agents}\n";
 

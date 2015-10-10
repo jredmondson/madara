@@ -136,12 +136,12 @@ void test_peer_list (void)
  * can be useful for a rebroadcast filter that does not want
  * to waste bandwidth with large formats.
  **/
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 drop_non_primitives (
   madara::knowledge::FunctionArguments & args,
   madara::knowledge::Variables &)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (args.size () > 0)
   {
@@ -166,12 +166,12 @@ drop_non_primitives (
 /**
  * Filter for increasing the clock of the record
  **/
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 increase_clock (
   madara::knowledge::FunctionArguments & args,
   madara::knowledge::Variables &)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   if (args.size () > 0)
   {
@@ -186,18 +186,18 @@ increase_clock (
  * Filter for dropping a record completely (we don't do
  * anything with the argument)
  **/
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 drop_record (
   madara::knowledge::FunctionArguments &,
   madara::knowledge::Variables &)
 {
-  return madara::KnowledgeRecord ();
+  return madara::knowledge::KnowledgeRecord ();
 }
 
 /**
  * No-op filter
  **/
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 no_op (
   madara::knowledge::FunctionArguments & args,
   madara::knowledge::Variables &)
@@ -205,7 +205,7 @@ no_op (
   if (args.size () > 0)
     return args[0];
   else
-    return madara::KnowledgeRecord ();
+    return madara::knowledge::KnowledgeRecord ();
 }
 
 
@@ -221,7 +221,7 @@ void test_filters (void)
   std::cerr <<
     "Adding drop_non_primitives filter to rebroadcast filters.\n";
   settings.add_rebroadcast_filter (
-    madara::KnowledgeRecord::ALL_TYPES, drop_non_primitives);
+    madara::knowledge::KnowledgeRecord::ALL_TYPES, drop_non_primitives);
   std::cerr << "Printing rebroadcast filters.\n";
   settings.print_num_filters_rebroadcast ();
 
@@ -229,23 +229,23 @@ void test_filters (void)
     "Adding increase_clock filter x 2 to rebroadcast filters for integers.\n";
   std::cerr << 
     "Adding increase_clock filter x 1 to rebroadcast filters for doubles.\n";
-  settings.add_rebroadcast_filter (madara::KnowledgeRecord::INTEGER
-    | madara::KnowledgeRecord::DOUBLE, drop_non_primitives);
+  settings.add_rebroadcast_filter (madara::knowledge::KnowledgeRecord::INTEGER
+    | madara::knowledge::KnowledgeRecord::DOUBLE, drop_non_primitives);
   settings.add_rebroadcast_filter (
-    madara::KnowledgeRecord::INTEGER, drop_non_primitives);
+    madara::knowledge::KnowledgeRecord::INTEGER, drop_non_primitives);
   std::cerr << "Printing rebroadcast filters.\n";
   settings.print_num_filters_rebroadcast ();
 
   std::cerr << "Clearing filters for all types in rebroadcast filters\n";
-  settings.clear_rebroadcast_filters (madara::KnowledgeRecord::ALL_TYPES);
+  settings.clear_rebroadcast_filters (madara::knowledge::KnowledgeRecord::ALL_TYPES);
   std::cerr << "Printing rebroadcast filters.\n";
   settings.print_num_filters_rebroadcast ();
   
   std::cerr << "Adding no_op filter x 2 to send filters for integers.\n";
   std::cerr << "Adding no_op filter x 1 to send filters for doubles.\n";
-  settings.add_send_filter (madara::KnowledgeRecord::INTEGER
-    | madara::KnowledgeRecord::DOUBLE, no_op);
-  settings.add_send_filter (madara::KnowledgeRecord::INTEGER, no_op);
+  settings.add_send_filter (madara::knowledge::KnowledgeRecord::INTEGER
+    | madara::knowledge::KnowledgeRecord::DOUBLE, no_op);
+  settings.add_send_filter (madara::knowledge::KnowledgeRecord::INTEGER, no_op);
   std::cerr << "Printing send filters.\n";
   settings.print_num_filters_send ();
   
@@ -257,25 +257,25 @@ void test_filters (void)
     "Adding increase_clock filter x 1 to receive filters for doubles.\n";
   std::cerr <<
     "Adding drop_record filter x 1 to receive filters for file types.\n";
-  settings.add_receive_filter (madara::KnowledgeRecord::INTEGER
-    | madara::KnowledgeRecord::DOUBLE | madara::KnowledgeRecord::STRING,
+  settings.add_receive_filter (madara::knowledge::KnowledgeRecord::INTEGER
+    | madara::knowledge::KnowledgeRecord::DOUBLE | madara::knowledge::KnowledgeRecord::STRING,
     increase_clock);
   settings.add_receive_filter (
-    madara::KnowledgeRecord::INTEGER | madara::KnowledgeRecord::STRING,
+    madara::knowledge::KnowledgeRecord::INTEGER | madara::knowledge::KnowledgeRecord::STRING,
     increase_clock);
   settings.add_receive_filter (
-    madara::KnowledgeRecord::STRING, increase_clock);
+    madara::knowledge::KnowledgeRecord::STRING, increase_clock);
   settings.add_receive_filter (
-    madara::KnowledgeRecord::ALL_FILE_TYPES, drop_record);
+    madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES, drop_record);
   std::cerr << "Printing receive filters.\n";
   settings.print_num_filters_receive ();
 
   
-  madara::KnowledgeRecord integer_record (
-    madara::KnowledgeRecord::Integer (1));
-  madara::KnowledgeRecord double_record (2.5);
-  madara::KnowledgeRecord string_record ("Extra data");
-  madara::KnowledgeRecord file_record;
+  madara::knowledge::KnowledgeRecord integer_record (
+    madara::knowledge::KnowledgeRecord::Integer (1));
+  madara::knowledge::KnowledgeRecord double_record (2.5);
+  madara::knowledge::KnowledgeRecord string_record ("Extra data");
+  madara::knowledge::KnowledgeRecord file_record;
 
   file_record.read_file (madara::utility::expand_envs (
     "$(MADARA_ROOT)/tests/images/manaus_hotel_100x100.jpg"));
@@ -283,19 +283,19 @@ void test_filters (void)
   madara::transport::TransportContext transport_context;
 
   // Filter the records;
-  madara::KnowledgeRecord integer_result =
+  madara::knowledge::KnowledgeRecord integer_result =
     settings.filter_rebroadcast (integer_record, "", transport_context);
-  madara::KnowledgeRecord double_result =
+  madara::knowledge::KnowledgeRecord double_result =
     settings.filter_rebroadcast (double_record, "", transport_context);
-  madara::KnowledgeRecord string_result =
+  madara::knowledge::KnowledgeRecord string_result =
     settings.filter_rebroadcast (string_record, "", transport_context);
-  madara::KnowledgeRecord file_result =
+  madara::knowledge::KnowledgeRecord file_result =
     settings.filter_rebroadcast (file_record, "", transport_context);
   
   std::cerr << "The result of the rebroadcast filtering was the following:\n";
   std::cerr << "  integer result = " << integer_result << 
                " and clock = " << integer_result.clock << " (";
-  if (integer_result == madara::KnowledgeRecord::Integer (1) &&
+  if (integer_result == madara::knowledge::KnowledgeRecord::Integer (1) &&
       integer_result.clock == 0)
     std::cerr << "SUCCESS)\n";
   else
@@ -338,7 +338,7 @@ void test_filters (void)
   std::cerr << "The result of the send filtering was the following:\n";
   std::cerr << "  integer result = " << integer_result << 
                " and clock = " << integer_result.clock << " (";
-  if (integer_result == madara::KnowledgeRecord::Integer (1) &&
+  if (integer_result == madara::knowledge::KnowledgeRecord::Integer (1) &&
       integer_result.clock == 0)
     std::cerr << "SUCCESS)\n";
   else
@@ -381,7 +381,7 @@ void test_filters (void)
   std::cerr << "The result of the receive filtering was the following:\n";
   std::cerr << "  integer result = " << integer_result << 
                " and clock = " << integer_result.clock << " (";
-  if (integer_result == madara::KnowledgeRecord::Integer (1) &&
+  if (integer_result == madara::knowledge::KnowledgeRecord::Integer (1) &&
       integer_result.clock == 2)
     std::cerr << "SUCCESS)\n";
   else
@@ -406,7 +406,7 @@ void test_filters (void)
   std::cerr << "  file size = " << file_result.size () << 
                " and status = " << file_result.status () << " (";
   if (file_result.size () == 0 &&
-      file_result.status () == madara::KnowledgeRecord::UNINITIALIZED)
+      file_result.status () == madara::knowledge::KnowledgeRecord::UNINITIALIZED)
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";

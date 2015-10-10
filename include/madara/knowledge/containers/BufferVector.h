@@ -199,7 +199,7 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        KnowledgeRecord operator[] (size_t index) const;
+        knowledge::KnowledgeRecord operator[] (size_t index) const;
       
         /**
          * Retrieves a copy of the record from the map. Same functionality
@@ -209,7 +209,7 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        KnowledgeRecord to_record (size_t index) const;
+        knowledge::KnowledgeRecord to_record (size_t index) const;
       
         /**
          * Checks to see if the index has ever been assigned a value
@@ -243,7 +243,7 @@ namespace madara
          * @param   value     new value of the variable
          * @return   0 if the value was set. -1 if null key
          **/
-        int set (size_t index, const KnowledgeRecord & value);
+        int set (size_t index, const knowledge::KnowledgeRecord & value);
       
         /**
          * Atomically sets the value of an index to an arbitrary string

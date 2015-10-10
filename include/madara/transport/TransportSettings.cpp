@@ -4,7 +4,7 @@
 #include "madara/knowledge/containers/StringVector.h"
 
 namespace containers = madara::knowledge::containers;
-typedef madara::KnowledgeRecord::Integer  Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer  Integer;
 
 madara::transport::Settings::Settings () : 
   domains (DEFAULT_DOMAIN), 

@@ -35,7 +35,7 @@ madara::knowledge::TimedExecutor::add (const TimedEvent & new_event)
   
   // inform sleeping threads of new queued events
   control_plane_.set (
-    queue_size_, KnowledgeRecord::Integer (events_.size ()));
+    queue_size_, knowledge::KnowledgeRecord::Integer (events_.size ()));
 }
 
 void
@@ -57,7 +57,7 @@ madara::knowledge::TimedExecutor::add (const Event & new_event)
   
   // inform sleeping threads of new queued events
   control_plane_.set (
-    queue_size_, KnowledgeRecord::Integer (events_.size ()));
+    queue_size_, knowledge::KnowledgeRecord::Integer (events_.size ()));
 }
 
 ACE_Time_Value
@@ -96,7 +96,7 @@ madara::knowledge::TimedExecutor::remove (TimedEvent & cur_event)
     
     // inform sleeping threads of new queued events
     control_plane_.set (
-      queue_size_, KnowledgeRecord::Integer (events_.size ()));
+      queue_size_, knowledge::KnowledgeRecord::Integer (events_.size ()));
 
     mutex_.release ();
   }
@@ -132,7 +132,7 @@ madara::knowledge::TimedExecutor::shutdown (void)
 {
   if (thread_info_)
   {
-    control_plane_.set (terminated_, KnowledgeRecord::Integer (1));
+    control_plane_.set (terminated_, knowledge::KnowledgeRecord::Integer (1));
 
     // wait for all threads to complete
     enter_barrier ();
@@ -166,7 +166,7 @@ void
 madara::knowledge::TimedExecutor::launch_threads (
   unsigned int num_threads)
 {
-  control_plane_.set (terminated_, KnowledgeRecord::Integer (0));
+  control_plane_.set (terminated_, knowledge::KnowledgeRecord::Integer (0));
 
   // shutdown any existing threads
   if (thread_info_)
@@ -270,7 +270,7 @@ madara::knowledge::TimedExecutor::clear_queue (void)
   }
 }
 
-madara::KnowledgeRecord::Integer
+madara::knowledge::KnowledgeRecord::Integer
 madara::knowledge::TimedExecutor::num_threads (void)
 {
   Guard guard (mutex_);

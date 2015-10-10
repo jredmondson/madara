@@ -8,13 +8,13 @@
  * greeting to that person.
  **/
 
-#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 #include <string>
 
 int main (int argc, char * argv[])
 {
-  Madara::KnowledgeEngine::KnowledgeBase knowledge;
+  madara::knowledge::KnowledgeBase knowledge;
   
   // Prompt the user for their name
   std::string my_name;

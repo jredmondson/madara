@@ -10,7 +10,7 @@
 #include <sstream>
 
 madara::expression::VariableCompareNode::VariableCompareNode (
-  ComponentNode * lhs, madara::KnowledgeRecord value, int compare_type,
+  ComponentNode * lhs, madara::knowledge::KnowledgeRecord value, int compare_type,
   ComponentNode * rhs, madara::knowledge::ThreadSafeContext &context)
 : ComponentNode (context.get_logger ()), var_ (0), array_ (0),
   value_ (value), rhs_ (rhs),
@@ -33,10 +33,10 @@ madara::expression::VariableCompareNode::accept (Visitor &visitor) const
   visitor.visit (*this);
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::VariableCompareNode::item () const
 {
-  KnowledgeRecord value;
+  knowledge::KnowledgeRecord value;
 
   if (var_)
     value = var_->item ();
@@ -49,12 +49,12 @@ madara::expression::VariableCompareNode::item () const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::VariableCompareNode::prune (bool & can_change)
 {
   bool left_child_can_change = false;
   bool right_child_can_change = false;
-  madara::KnowledgeRecord right_value;
+  madara::knowledge::KnowledgeRecord right_value;
 
   if (this->var_ != 0 || this->array_ != 0)
     left_child_can_change = true;
@@ -90,11 +90,11 @@ madara::expression::VariableCompareNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::VariableCompareNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  madara::KnowledgeRecord lhs;
+  madara::knowledge::KnowledgeRecord lhs;
 
   if (var_)
     lhs = var_->evaluate (settings);

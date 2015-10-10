@@ -145,7 +145,7 @@ namespace madara
          * @param  record  the value to enqueue
          * @return true if the record was enqueued and false if full
          **/
-        bool enqueue (const KnowledgeRecord & record);
+        bool enqueue (const knowledge::KnowledgeRecord & record);
         
         /**
          * Dequeues a record from the front of the queue. This method
@@ -157,18 +157,18 @@ namespace madara
          * latter of which means there was nothing in queue.
          * @return a record from the front of the queue. Will return
          *         an uncreated record if queue was empty on asynchronous
-         *         call. KnowledgeRecord::status () can be checked for
-         *         UNCREATED. Can also use KnowledgeRecord::is_valid to
+         *         call. knowledge::KnowledgeRecord::status () can be checked for
+         *         UNCREATED. Can also use knowledge::KnowledgeRecord::is_valid to
          *         check for valid data on return.
          **/
-        KnowledgeRecord dequeue (bool wait = true);
+        knowledge::KnowledgeRecord dequeue (bool wait = true);
         
         /**
          * Retrieves a record at a position in the queue
          * @param  position  the position of the record in the queue
          * @return  the record at the position in the queue
          **/
-        KnowledgeRecord inspect (size_t position);
+        knowledge::KnowledgeRecord inspect (size_t position);
 
         /**
          * Clears the queue
@@ -219,9 +219,9 @@ namespace madara
          * @param  value  the value to increment base by
          * @return the resulting index
          **/
-        inline KnowledgeRecord::Integer increment (
-          KnowledgeRecord::Integer base,
-          KnowledgeRecord::Integer value)
+        inline knowledge::KnowledgeRecord::Integer increment (
+          knowledge::KnowledgeRecord::Integer base,
+          knowledge::KnowledgeRecord::Integer value)
         {
           return (base + value) % queue_.size ();
         }

@@ -19,7 +19,7 @@
 
 namespace utility = madara::utility;
 namespace logger = madara::logger;
-typedef  madara::KnowledgeRecord::Integer Integer;
+typedef  madara::knowledge::KnowledgeRecord::Integer Integer;
 
 // default transport settings
 std::string host ("");
@@ -90,18 +90,18 @@ public:
    * @param  index     timer identifier
    * @return the time that has elapsed
    **/
-  madara::KnowledgeRecord::Integer elapsed (unsigned int index)
+  madara::knowledge::KnowledgeRecord::Integer elapsed (unsigned int index)
   {
     // lock the mutex
     TimerGuard guard (mutex_);
 
     ACE_hrtime_t elapsed_time (0);
-    madara::KnowledgeRecord::Integer result (0);
+    madara::knowledge::KnowledgeRecord::Integer result (0);
     
     if (index < timers_.size () && timers_stopped_[index] == 1)
     {
       timers_[index].elapsed_time (elapsed_time);
-      result = madara::KnowledgeRecord::Integer (elapsed_time);
+      result = madara::knowledge::KnowledgeRecord::Integer (elapsed_time);
     }
 
     return result;
@@ -116,7 +116,7 @@ public:
     TimerGuard guard (mutex_);
 
     ACE_hrtime_t elapsed_time (0);
-    madara::KnowledgeRecord::Integer cur_latency (0), received (0);
+    madara::knowledge::KnowledgeRecord::Integer cur_latency (0), received (0);
     min_latency_ = 2000000000;
     max_latency_ = 0;
     avg_latency_ = 0;
@@ -127,7 +127,7 @@ public:
       {
         received++;
         timers_[i].elapsed_time (elapsed_time);
-        cur_latency = madara::KnowledgeRecord::Integer (elapsed_time);
+        cur_latency = madara::knowledge::KnowledgeRecord::Integer (elapsed_time);
 
         avg_latency_ += cur_latency;
         min_latency_ = (std::min) (min_latency_, cur_latency);
@@ -143,7 +143,7 @@ public:
    * Returns the average latency in the list
    * @return average latency
    **/
-  madara::KnowledgeRecord::Integer average (void)
+  madara::knowledge::KnowledgeRecord::Integer average (void)
   {
     // lock the mutex
     TimerGuard guard (mutex_);
@@ -154,7 +154,7 @@ public:
    * Returns the minimum latency in the list
    * @return the minimum latency
    **/
-  madara::KnowledgeRecord::Integer minimum (void)
+  madara::knowledge::KnowledgeRecord::Integer minimum (void)
   {
     // lock the mutex
     TimerGuard guard (mutex_);
@@ -165,7 +165,7 @@ public:
    * Returns the maximum latency in the list
    * @return the maximum latency
    **/
-  madara::KnowledgeRecord::Integer maximum (void)
+  madara::knowledge::KnowledgeRecord::Integer maximum (void)
   {
     // lock the mutex
     TimerGuard guard (mutex_);
@@ -202,13 +202,13 @@ private:
   std::vector<int> timers_started_;
 
   // maximum latency in the timer list
-  madara::KnowledgeRecord::Integer max_latency_;
+  madara::knowledge::KnowledgeRecord::Integer max_latency_;
 
   // minimum latency in the timer list
-  madara::KnowledgeRecord::Integer min_latency_;
+  madara::knowledge::KnowledgeRecord::Integer min_latency_;
 
   // average latency in the timer list
-  madara::KnowledgeRecord::Integer avg_latency_;
+  madara::knowledge::KnowledgeRecord::Integer avg_latency_;
 
 };
 
@@ -412,12 +412,12 @@ void handle_arguments (int argc, char ** argv)
 
 
 // filter for counting received packets and removing payload
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 latency_receiver (
   madara::knowledge::FunctionArguments & args,
   madara::knowledge::Variables & vars)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
   
   if (args.size () > 0)
   {
@@ -435,12 +435,12 @@ latency_receiver (
 
 
 // filter for counting received packets and removing payload
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 count_received (
   madara::knowledge::FunctionArguments & args,
   madara::knowledge::Variables & vars)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
   
   if (args.size () > 0)
   {
@@ -462,18 +462,18 @@ count_received (
 
 
 // filter for counting received acks, stopping timer and removing payload
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 handle_acks (
   madara::knowledge::FunctionArguments & args,
   madara::knowledge::Variables & vars)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
   
   if (args.size () > 0)
   {
     if (args[0].is_integer_type ())
     {
-      madara::KnowledgeRecord::Integer handled =
+      madara::knowledge::KnowledgeRecord::Integer handled =
         args[0].to_integer ();
       
       if (handled >= 0 && handled < latencies.size ())
@@ -490,18 +490,18 @@ handle_acks (
 }
 
 // filter for counting received acks, stopping timer and removing payload
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 init_ack (
   madara::knowledge::FunctionArguments & args,
   madara::knowledge::Variables & vars)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
   
   if (args.size () > 0)
   {
     if (args[0].is_binary_file_type ())
     {
-      madara::KnowledgeRecord::Integer current_send =
+      madara::knowledge::KnowledgeRecord::Integer current_send =
         vars.get (num_sent).to_integer ();
 
       if (current_send >= 0 && current_send < latencies.size ())
@@ -516,12 +516,12 @@ init_ack (
 }
 
 // filter for counting received acks, stopping timer and removing payload
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 count_sent (
   madara::knowledge::FunctionArguments & args,
   madara::knowledge::Variables & vars)
 {
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
   
   if (args.size () > 0)
   {
@@ -565,7 +565,7 @@ int main (int argc, char ** argv)
   {
     // latency test requires client to generate acks
     settings.add_receive_filter (
-      madara::KnowledgeRecord::ALL_FILE_TYPES,
+      madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES,
       latency_receiver);
     settings.enable_participant_ttl ();
   }
@@ -573,16 +573,16 @@ int main (int argc, char ** argv)
   {
     // latency test requires publisher to init and handle acks
     settings.add_receive_filter (
-      madara::KnowledgeRecord::INTEGER,
+      madara::knowledge::KnowledgeRecord::INTEGER,
       handle_acks);
     settings.add_send_filter (
-      madara::KnowledgeRecord::ALL_FILE_TYPES,
+      madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES,
       init_ack);
   }
 
   // create a knowledge base and setup our id
   madara::knowledge::KnowledgeBase knowledge (host, settings);
-  knowledge.set (".id", (madara::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
   
   // setup wait settings to wait for 2 * publish_time seconds
   madara::knowledge::WaitSettings wait_settings;
@@ -623,12 +623,12 @@ int main (int argc, char ** argv)
     // close the transport so we can use different filters
     knowledge.close_transport ();
 
-    settings.clear_receive_filters (madara::KnowledgeRecord::ALL_TYPES);
-    settings.clear_send_filters (madara::KnowledgeRecord::ALL_TYPES);
+    settings.clear_receive_filters (madara::knowledge::KnowledgeRecord::ALL_TYPES);
+    settings.clear_send_filters (madara::knowledge::KnowledgeRecord::ALL_TYPES);
     
     // add a simple filter for counting the sent packets
     settings.add_send_filter (
-      madara::KnowledgeRecord::ALL_FILE_TYPES,
+      madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES,
       count_sent);
 
     // attach the new transport
@@ -721,7 +721,7 @@ int main (int argc, char ** argv)
     // client should always be started first
     knowledge.print ("\nReady for latency test.\n");
 
-    knowledge.set (ack, madara::KnowledgeRecord::Integer (-1),
+    knowledge.set (ack, madara::knowledge::KnowledgeRecord::Integer (-1),
       madara::knowledge::EvalSettings (false, true, false));
     
 #ifndef _MADARA_NO_KARL_
@@ -738,10 +738,10 @@ int main (int argc, char ** argv)
     
     // close transport so we add filters appropriate for throughput
     knowledge.close_transport ();
-    settings.clear_receive_filters (madara::KnowledgeRecord::ALL_FILE_TYPES);
+    settings.clear_receive_filters (madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES);
 
     settings.add_receive_filter (
-      madara::KnowledgeRecord::ALL_FILE_TYPES,
+      madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES,
       count_received);
     knowledge.attach_transport (knowledge.get_id (), settings);
     
@@ -750,7 +750,7 @@ int main (int argc, char ** argv)
     knowledge.set ("ready_for_throughput");
 
     // reset num_received and re-signal ready for throughput
-    knowledge.set (num_received, madara::KnowledgeRecord::Integer (0));
+    knowledge.set (num_received, madara::knowledge::KnowledgeRecord::Integer (0));
     knowledge.set ("ready_for_throughput");
     
 #ifndef _MADARA_NO_KARL_
@@ -769,7 +769,7 @@ int main (int argc, char ** argv)
 
     // set the elapsed nanoseconds
     knowledge.set ("elapsed_time",
-      madara::KnowledgeRecord::Integer (elapsed_time));
+      madara::knowledge::KnowledgeRecord::Integer (elapsed_time));
     
     // convert elapsed time from ns -> s and compute throughput
     knowledge.print ("Calculating throughput...");

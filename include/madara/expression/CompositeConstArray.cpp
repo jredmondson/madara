@@ -45,22 +45,22 @@ madara::expression::CompositeConstArray::~CompositeConstArray (void)
 {
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeConstArray::item (void) const
 {
-  madara::KnowledgeRecord record;
+  madara::knowledge::KnowledgeRecord record;
   return record;
 }
 
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeConstArray::prune (bool & can_change)
 {
   can_change = false;
   
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
   madara::knowledge::FunctionArguments args;
   args.resize (nodes_.size ());
 
@@ -73,7 +73,7 @@ madara::expression::CompositeConstArray::prune (bool & can_change)
     args[i] = nodes_[i]->prune (arg_can_change);
 
     // we cannot initialize the array until we know if there are any doubles
-    if (args[i].type () == KnowledgeRecord::DOUBLE)
+    if (args[i].type () == knowledge::KnowledgeRecord::DOUBLE)
     {
       is_double = true;
     }
@@ -118,12 +118,12 @@ madara::expression::CompositeConstArray::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord 
 madara::expression::CompositeConstArray::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
   madara::knowledge::FunctionArguments args;
-  madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
   args.resize (nodes_.size ());
 
@@ -137,11 +137,11 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     args[j] = (*i)->evaluate (settings);
 
     // we cannot initialize the array until we know if there are any doubles
-    if (args[j].type () == KnowledgeRecord::DOUBLE)
+    if (args[j].type () == knowledge::KnowledgeRecord::DOUBLE)
     {
       is_double = true;
     }
-    else if (args[j].type () != KnowledgeRecord::INTEGER)
+    else if (args[j].type () != knowledge::KnowledgeRecord::INTEGER)
     {
       args[j] = (*i)->evaluate (settings).to_integer ();
     }

@@ -201,7 +201,7 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        KnowledgeRecord operator[] (size_t index) const;
+        knowledge::KnowledgeRecord operator[] (size_t index) const;
         
         /**
          * Retrieves a copy of the record from the map. Same functionality
@@ -211,7 +211,7 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        KnowledgeRecord to_record (size_t index) const;
+        knowledge::KnowledgeRecord to_record (size_t index) const;
         
         /**
          * Copies the vector elements to an STL vector of Knowledge Records
@@ -298,8 +298,8 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index,
-          madara::KnowledgeRecord::Integer value = 
-            madara::KnowledgeRecord::MODIFIED);
+          madara::knowledge::KnowledgeRecord::Integer value = 
+            madara::knowledge::KnowledgeRecord::MODIFIED);
 
         /**
          * Sets a knowledge variable to a specified value
@@ -311,7 +311,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index,
-          madara::KnowledgeRecord::Integer value, 
+          madara::knowledge::KnowledgeRecord::Integer value, 
           const KnowledgeUpdateSettings & settings);
 
         /**
@@ -325,7 +325,7 @@ namespace madara
          **/
         int set_index (size_t index,
           size_t sub_index,
-          madara::KnowledgeRecord::Integer value);
+          madara::knowledge::KnowledgeRecord::Integer value);
         
         /**
          * Sets an index within an array to a specified value
@@ -339,7 +339,7 @@ namespace madara
          **/
         int set_index (size_t index,
           size_t sub_index,
-          madara::KnowledgeRecord::Integer value,
+          madara::knowledge::KnowledgeRecord::Integer value,
           const KnowledgeUpdateSettings & settings);
         
         /**
@@ -352,7 +352,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index,
-          const madara::KnowledgeRecord::Integer * value,
+          const madara::knowledge::KnowledgeRecord::Integer * value,
           uint32_t size);
        
         /**
@@ -366,7 +366,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (size_t index,
-          const madara::KnowledgeRecord::Integer * value,
+          const madara::knowledge::KnowledgeRecord::Integer * value,
           uint32_t size,
           const KnowledgeUpdateSettings & settings);
        

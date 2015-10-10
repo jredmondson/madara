@@ -15,7 +15,8 @@
 
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef madara::KnowledgeRecord   KnowledgeRecord;
+typedef knowledge::KnowledgeRecord   KnowledgeRecord;
+typedef knowledge::KnowledgeVector   KnowledgeVector;
 
 void test_flex_map (void)
 {
@@ -60,7 +61,7 @@ void test_flex_map (void)
   }
 
   std::cerr << "    Retrieving age...";
-  if (normal_map["age"] == KnowledgeRecord::Integer (50))
+  if (normal_map["age"] == knowledge::KnowledgeRecord::Integer (50))
   {
     std::cerr << "SUCCESS\n";
   }
@@ -87,7 +88,7 @@ void test_flex_map (void)
 
   std::cerr << "Attempting to_map function for subkeys\n";
   std::vector<std::string> next_keys;
-  std::map<std::string, madara::KnowledgeRecord> all_record_vars;
+  std::map<std::string, KnowledgeRecord> all_record_vars;
   knowledge.to_map ("records", ".", "", next_keys, all_record_vars);
 
   std::cerr << "  Size check on next keys and all records are a: ";
@@ -269,7 +270,7 @@ void test_vector (void)
   std::cerr << "Printing results from knowledge base.\n";
   knowledge.print ();
 
-  madara::KnowledgeVector records;
+  KnowledgeVector records;
   vector.copy_to (records);
 
   std::cerr << "Printing resulting knowledge vector.\n";
@@ -297,8 +298,8 @@ void test_map (void)
   
   map.set ("name", "Rob Roy");
   map.set ("occupation", "Lord of the MacGregors");
-  map.set ("age", madara::KnowledgeRecord::Integer (63));
-  map.set ("wives", madara::KnowledgeRecord::Integer (1));
+  map.set ("age", madara::knowledge::KnowledgeRecord::Integer (63));
+  map.set ("wives", madara::knowledge::KnowledgeRecord::Integer (1));
 
   size_t size = map.size ();
   map.keys (keys);
@@ -817,7 +818,7 @@ void test_queue (void)
     "************* QUEUES: Testing multithreaded queues*************\n";
   knowledge::KnowledgeBase knowledge;
   containers::Queue messages ("queue", knowledge, 7);
-  madara::KnowledgeRecord record;
+  madara::knowledge::KnowledgeRecord record;
   bool check;
 
   messages.enqueue ("first string");

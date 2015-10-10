@@ -202,11 +202,11 @@ madara::knowledge::KnowledgeBase::close_transport (void)
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBase::get (const std::string & key,
              const KnowledgeReferenceSettings & settings)
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
 
   if (impl_.get_ptr ())
   {
@@ -238,12 +238,12 @@ madara::knowledge::KnowledgeBase::get_ref (const std::string & key,
   return var;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBase::get (
   const VariableReference & variable,
   const KnowledgeReferenceSettings & settings)
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
   
   if (impl_.get_ptr ())
   {
@@ -257,12 +257,12 @@ madara::knowledge::KnowledgeBase::get (
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBase::retrieve_index (
   const std::string & key, size_t index,
   const KnowledgeReferenceSettings & settings)
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
   
   if (impl_.get_ptr ())
   {
@@ -276,12 +276,12 @@ madara::knowledge::KnowledgeBase::retrieve_index (
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBase::retrieve_index (
   const VariableReference & variable, size_t index,
   const KnowledgeReferenceSettings & settings)
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
   
   if (impl_.get_ptr ())
   {
@@ -477,7 +477,7 @@ madara::knowledge::KnowledgeBase::expand_statement (
 int
 madara::knowledge::KnowledgeBase::set (
   const std::string & key,
-  madara::KnowledgeRecord::Integer value,
+  madara::knowledge::KnowledgeRecord::Integer value,
   const EvalSettings & settings)
 {
   int result = 0;
@@ -511,7 +511,7 @@ madara::knowledge::KnowledgeBase::mark_modified (
 int
 madara::knowledge::KnowledgeBase::set (
   const VariableReference & variable,
-  madara::KnowledgeRecord::Integer value,
+  madara::knowledge::KnowledgeRecord::Integer value,
   const EvalSettings & settings)
 {
   int result = 0;
@@ -532,7 +532,7 @@ int
 madara::knowledge::KnowledgeBase::set_index (
   const std::string & key,
   size_t index,
-  madara::KnowledgeRecord::Integer value,
+  madara::knowledge::KnowledgeRecord::Integer value,
   const EvalSettings & settings)
 {
   int result = 0;
@@ -553,7 +553,7 @@ int
 madara::knowledge::KnowledgeBase::set_index (
   const VariableReference & variable,
   size_t index,
-  madara::KnowledgeRecord::Integer value,
+  madara::knowledge::KnowledgeRecord::Integer value,
   const EvalSettings & settings)
 {
   int result = 0;
@@ -573,7 +573,7 @@ madara::knowledge::KnowledgeBase::set_index (
 int
 madara::knowledge::KnowledgeBase::set (
   const std::string & key,
-  const KnowledgeRecord::Integer * value,
+  const knowledge::KnowledgeRecord::Integer * value,
   uint32_t size,
   const EvalSettings & settings)
 {
@@ -594,7 +594,7 @@ madara::knowledge::KnowledgeBase::set (
 int
 madara::knowledge::KnowledgeBase::set (
   const VariableReference & variable,
-  const KnowledgeRecord::Integer * value,
+  const knowledge::KnowledgeRecord::Integer * value,
   uint32_t size,
   const EvalSettings & settings)
 {
@@ -1098,12 +1098,12 @@ madara::knowledge::KnowledgeBase::compile (
 }
 
 // evaluate a knowledge expression and choose to send any modifications
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBase::evaluate (
   const std::string & expression,
   const EvalSettings & settings)
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
   
   if (impl_.get_ptr ())
   {
@@ -1119,12 +1119,12 @@ madara::knowledge::KnowledgeBase::evaluate (
 }
 
 // evaluate a knowledge expression and choose to send any modifications
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBase::evaluate (
   CompiledExpression & expression,
   const EvalSettings & settings)
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
   
   if (impl_.get_ptr ())
   {
@@ -1139,12 +1139,12 @@ madara::knowledge::KnowledgeBase::evaluate (
 }
 
 // evaluate a knowledge expression and choose to send any modifications
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBase::evaluate (
   expression::ComponentNode * root,
   const EvalSettings & settings)
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
   
   if (impl_.get_ptr ())
   {
@@ -1163,7 +1163,7 @@ madara::knowledge::KnowledgeBase::evaluate (
 void
 madara::knowledge::KnowledgeBase::define_function (
   const std::string & name,
-    KnowledgeRecord (*func) (const char *, FunctionArguments &, Variables &))
+    knowledge::KnowledgeRecord (*func) (const char *, FunctionArguments &, Variables &))
 {
   if (impl_.get_ptr ())
   {
@@ -1178,7 +1178,7 @@ madara::knowledge::KnowledgeBase::define_function (
 // Defines a function
 void madara::knowledge::KnowledgeBase::define_function (
   const std::string & name,
-    KnowledgeRecord (*func) (FunctionArguments &, Variables &))
+    knowledge::KnowledgeRecord (*func) (FunctionArguments &, Variables &))
 {
   if (impl_.get_ptr ())
   {
@@ -1262,12 +1262,12 @@ madara::knowledge::KnowledgeBase::define_function (const std::string & name,
   }
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBase::wait (
   CompiledExpression & expression, 
   const WaitSettings & settings)
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
 
   if (context_)
   {
@@ -1305,7 +1305,7 @@ madara::knowledge::KnowledgeBase::wait (
       "KnowledgeBase::wait:" \
       " waiting on %s\n", expression.logic.c_str ());
 
-    madara::KnowledgeRecord last_value = expression.expression.evaluate (settings);
+    madara::knowledge::KnowledgeRecord last_value = expression.expression.evaluate (settings);
 
     madara_logger_log (context_->get_logger (), logger::LOG_DETAILED,
       "KnowledgeBase::wait:" \
@@ -1398,12 +1398,12 @@ madara::knowledge::KnowledgeBase::wait (
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::KnowledgeBase::wait (
   const std::string & expression, 
   const WaitSettings & settings)
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
 
   if (context_)
   {
@@ -1608,7 +1608,7 @@ void madara::knowledge::KnowledgeBase::facade_for (
 size_t
 madara::knowledge::KnowledgeBase::to_map (
   const std::string & expression,
-  std::map <std::string, KnowledgeRecord> & target)
+  std::map <std::string, knowledge::KnowledgeRecord> & target)
 {
   size_t result;
 
@@ -1630,7 +1630,7 @@ madara::knowledge::KnowledgeBase::to_map (
   const std::string & delimiter,
   const std::string & suffix,
   std::vector <std::string> & next_keys,
-  std::map <std::string, KnowledgeRecord> & result,
+  std::map <std::string, knowledge::KnowledgeRecord> & result,
   bool just_keys)
 {
   size_t result_size;

@@ -13,7 +13,7 @@ madara::filters::JavaBufferFilter::JavaBufferFilter (
   logger::Logger & logger, jobject obj)
   : logger_ (&logger)
 {
-  madara::utility::Java::Acquire_VM jvm;
+  madara::utility::java::Acquire_VM jvm;
 
   if (jvm.env)
   {
@@ -61,7 +61,7 @@ madara::filters::JavaBufferFilter::JavaBufferFilter (
 
 madara::filters::JavaBufferFilter::~JavaBufferFilter ()
 {
-  madara::utility::Java::Acquire_VM jvm;
+  madara::utility::java::Acquire_VM jvm;
   if (jvm.env)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
@@ -77,7 +77,7 @@ int
 madara::filters::JavaBufferFilter::encode (
   unsigned char * source, int size, int max_size) const
 {
-  madara::utility::Java::Acquire_VM jvm;
+  madara::utility::java::Acquire_VM jvm;
   jint result (0);
 
   madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
@@ -134,7 +134,7 @@ int
 madara::filters::JavaBufferFilter::decode (
   unsigned char * source, int size, int max_size) const
 {
-  madara::utility::Java::Acquire_VM jvm;
+  madara::utility::java::Acquire_VM jvm;
   jint result (0);
 
   madara_logger_ptr_log (logger_, logger::LOG_MAJOR,

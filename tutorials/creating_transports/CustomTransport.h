@@ -13,16 +13,16 @@
 
 #include "madara/transport/Transport.h"
 #include "CustomTransportReadThread.h"
-#include "madara/knowledge_engine/ThreadSafeContext.h"
+#include "madara/knowledge/ThreadSafeContext.h"
 #include "ace/SOCK_Dgram.h"
-#include "madara/knowledge_engine/KnowledgeRecord.h"
-#include "madara/expression_tree/ExpressionTree.h"
+#include "madara/knowledge/KnowledgeRecord.h"
+#include "madara/expression/ExpressionTree.h"
 
 /**
   * @class CustomTransport
   * @brief Multicast-based transport for knowledge
   **/
-class CustomTransport : public Madara::Transport::Base
+class CustomTransport : public madara::transport::Base
 {
 public:
   /**
@@ -33,8 +33,8 @@ public:
     * @param   launch_transport  whether or not to launch this transport
     **/
   CustomTransport (const std::string & id, 
-    Madara::KnowledgeEngine::ThreadSafeContext & context, 
-    Madara::Transport::Settings & config, bool launch_transport);
+    madara::knowledge::ThreadSafeContext & context, 
+    madara::transport::Settings & config, bool launch_transport);
 
   /**
     * Destructor
@@ -46,7 +46,7 @@ public:
     * @param   updates listing of all updates that must be sent
     * @return  result of write operation or -1 if we are shutting down
     **/
-  long send_data (const Madara::KnowledgeRecords & updates);
+  long send_data (const madara::knowledge::KnowledgeRecords & updates);
 	  
   /**
     * Closes the transport

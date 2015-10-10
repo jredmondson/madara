@@ -23,7 +23,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include "ace/Signal.h"
 #include "ace/OS_NS_Thread.h"
 #include "madara/transport/TransportContext.h"
@@ -32,9 +32,9 @@
 /**
 * Define helpful shortened namespaces that we can refer to later
 **/
-namespace engine = Madara::KnowledgeEngine;
-namespace transport = Madara::Transport;
-namespace logger = Madara::Logger;
+namespace knowledge = madara::knowledge;
+namespace transport = madara::transport;
+namespace logger = madara::logger;
 
 /**
  * Default settings for our Network Transport. We put them
@@ -64,14 +64,14 @@ uint32_t target_sending_bandwidth = 100000;
  * To initialize a VariableReference, see the get_ref function available
  * through
  * Madara::KnowledgeEngine:Variables            or
- * Madara::KnowledgeEngine::KnowledgeBase
+ * madara::knowledge::KnowledgeBase
  **/
-engine::VariableReference  payloads_received;
+knowledge::VariableReference  payloads_received;
 
 /**
  * variable reference to indicate that publisher should be slowed
  **/
-engine::VariableReference  slow_publisher;
+knowledge::VariableReference  slow_publisher;
 
 /**
  * To terminate an agent, the user needs to press Control+C. The following
@@ -83,10 +83,10 @@ extern "C" void terminate (int)
   terminated = true;
 }
 
-Madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 update_payloads_received (
-  engine::FunctionArguments & args,
-  engine::Variables & vars)
+  knowledge::FunctionArguments & args,
+  knowledge::Variables & vars)
 {
   if (args.size () > 0)
   {
@@ -116,7 +116,7 @@ update_payloads_received (
    * with no arguments.
    **/
   else
-    return Madara::KnowledgeRecord ();
+    return madara::knowledge::KnowledgeRecord ();
 }
 
 int main (int argc, char * argv[])
@@ -138,17 +138,17 @@ int main (int argc, char * argv[])
   // set the send bandwidth limit to 100,000 bytes per second.
   settings.set_total_bandwidth_limit (100000);
 
-  settings.add_receive_filter (Madara::KnowledgeRecord::ALL_FILE_TYPES,
+  settings.add_receive_filter (madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES,
                             update_payloads_received);
 
   // Create the knowledge base with the transport settings set for multicast
-  engine::KnowledgeBase knowledge (host, settings);
+  knowledge::KnowledgeBase knowledge (host, settings);
   
   // Check command line arguments for a non-zero id
   if (argc >= 2)
   {
     // save the first argument into an integer
-    Madara::KnowledgeRecord::Integer new_id;
+    madara::knowledge::KnowledgeRecord::Integer new_id;
     std::stringstream buffer (argv[1]);
     buffer >> new_id;
 
@@ -182,7 +182,7 @@ int main (int argc, char * argv[])
    * cover gossip/collaboration).
    **/
   payloads_received = knowledge.get_ref ("payloads_received{.id}",
-    engine::KnowledgeReferenceSettings (true));
+    knowledge::KnowledgeReferenceSettings (true));
 
   /**
    * Variable that the publisher uses (id==0) to trigger a sleep statement
@@ -196,7 +196,7 @@ int main (int argc, char * argv[])
    * look for one of the 50k images we have included in the repo for testing.
    **/
   std::string filename =
-    Madara::Utility::expand_envs (
+    madara::utility::expand_envs (
       "$(MADARA_ROOT)/tests/images/manaus_hotel_225x375.jpg");
 
   /**
@@ -204,7 +204,7 @@ int main (int argc, char * argv[])
    * meta data with the payload which should not be filtered out,
    * regardless of bandwidth utilization.
    **/
-  engine::VariableReference payloads_sent =
+  knowledge::VariableReference payloads_sent =
     knowledge.get_ref ("payloads_sent");
 
   /**
@@ -222,7 +222,7 @@ int main (int argc, char * argv[])
    * Additionally, let's compile the logic into a cached expression tree
    **/
 
-  engine::CompiledExpression ce =
+  knowledge::CompiledExpression ce =
     knowledge.compile (logic);
 
   while (!terminated)
@@ -242,7 +242,7 @@ int main (int argc, char * argv[])
          * (payloads_sent) later in the loop.
          **/
         knowledge.read_file ("payload", filename,
-          engine::EvalSettings (true));
+          knowledge::EvalSettings (true));
 
         /**
          * Increment payloads sent and send this as meta data to anyone curious
@@ -259,7 +259,7 @@ int main (int argc, char * argv[])
       {
         knowledge.print ("Bandwidth limit hit. Stopping publisher for 10s.\n");
         ACE_OS::sleep (10);
-        knowledge.set (slow_publisher, Madara::KnowledgeRecord::Integer (0));
+        knowledge.set (slow_publisher, madara::knowledge::KnowledgeRecord::Integer (0));
       }
       knowledge.print (
         "payloads sent = {payloads_sent}, "

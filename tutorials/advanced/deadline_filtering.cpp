@@ -25,7 +25,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include "ace/Signal.h"
 #include "ace/OS_NS_Thread.h"
 #include "madara/transport/TransportContext.h"
@@ -34,9 +34,9 @@
 /**
 * Define helpful shortened namespaces that we can refer to later
 **/
-namespace engine = Madara::KnowledgeEngine;
-namespace transport = Madara::Transport;
-namespace logger = Madara::Logger;
+namespace knowledge = madara::knowledge;
+namespace transport = madara::transport;
+namespace logger = madara::logger;
 
 
 /**
@@ -67,14 +67,14 @@ int64_t deadline_in_secs = 10;
  * To initialize a VariableReference, see the get_ref function available
  * through
  * Madara::KnowledgeEngine:Variables            or
- * Madara::KnowledgeEngine::KnowledgeBase
+ * madara::knowledge::KnowledgeBase
  **/
-engine::VariableReference  on_time_messages;
+knowledge::VariableReference  on_time_messages;
 
 /**
  * variable reference to indicate that publisher should be slowed
  **/
-engine::VariableReference  invalid_messages;
+knowledge::VariableReference  invalid_messages;
 
 /**
  * To terminate an agent, the user needs to press Control+C. The following
@@ -118,19 +118,19 @@ extern "C" void terminate (int)
  * instruction (e.g., discard the entire packet, turn off rebroadcasting, etc.)
  * This is currently unimplemented but planned.
  *
- * Madara::KnowledgeEngine::Variables is a hook into the knowledge base that
+ * madara::knowledge::Variables is a hook into the knowledge base that
  * allows for querying or setting knowledge not available in the args list.
  * Variables can be used for communicating with other filters or the main logic
  * of the agent.
  **/
-Madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 filter_deadlines (
-  engine::FunctionArguments & args,
-  engine::Variables & vars)
+  knowledge::FunctionArguments & args,
+  knowledge::Variables & vars)
 {
-  Madara::KnowledgeRecord result;
+  madara::knowledge::KnowledgeRecord result;
 
-  if (args.size () >= Madara::Filters::TOTAL_ARGUMENTS)
+  if (args.size () >= madara::filters::TOTAL_ARGUMENTS)
   {
     /**
      * if the message has arrived within deadline, print success and
@@ -209,18 +209,18 @@ int main (int argc, char * argv[])
      * rebroadcast side. We're not rebroadcasting in this tutorial,
      * so we'll just add a receive filter.
      **/
-    settings.add_receive_filter (Madara::KnowledgeRecord::ALL_TYPES,
+    settings.add_receive_filter (madara::knowledge::KnowledgeRecord::ALL_TYPES,
                               filter_deadlines);
   }
 
   // Create the knowledge base with the transport settings set for multicast
-  engine::KnowledgeBase knowledge (host, settings);
+  knowledge::KnowledgeBase knowledge (host, settings);
   
   /**
     * Update the knowledge base to include our .id. All variables are zero
     * by default in the knowledge base.
     **/
-  knowledge.set (".id", Madara::KnowledgeRecord::Integer (settings.id));
+  knowledge.set (".id", madara::knowledge::KnowledgeRecord::Integer (settings.id));
 
   /**
    * In order for our receive filter to work, we have to first initialize
@@ -231,7 +231,7 @@ int main (int argc, char * argv[])
    * cover gossip/collaboration).
    **/
   on_time_messages = knowledge.get_ref ("on_time_messages{.id}",
-    engine::KnowledgeReferenceSettings (true));
+    knowledge::KnowledgeReferenceSettings (true));
 
   /**
    * Variable that the publisher uses (id==0) to trigger a sleep statement
@@ -241,7 +241,7 @@ int main (int argc, char * argv[])
   /**
    * The publisher (id == 0) keeps track of number of payloads sent
    **/
-  engine::VariableReference payloads_sent =
+  knowledge::VariableReference payloads_sent =
     knowledge.get_ref ("payloads_sent");
 
   /**
@@ -262,10 +262,10 @@ int main (int argc, char * argv[])
    * Additionally, let's compile the logic into a cached expression tree
    **/
 
-  engine::CompiledExpression compiled_sender_logic =
+  knowledge::CompiledExpression compiled_sender_logic =
     knowledge.compile (sender_logic);
   
-  engine::CompiledExpression compiled_receiver_logic =
+  knowledge::CompiledExpression compiled_receiver_logic =
     knowledge.compile (receiver_logic);
 
   while (!terminated)

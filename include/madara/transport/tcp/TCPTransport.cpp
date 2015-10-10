@@ -139,7 +139,7 @@ madara::transport::TCPTransport::setup (void)
 
 long
 madara::transport::TCPTransport::send_data (
-const madara::KnowledgeRecords & orig_updates)
+const madara::knowledge::KnowledgeRecords & orig_updates)
 {
   const char * print_prefix = "TCPTransport::send_data";
 

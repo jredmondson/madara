@@ -43,21 +43,21 @@ namespace madara
        * Returns the printable character of the node
        * @return    value of the node
        **/
-      virtual madara::KnowledgeRecord item (void) const;
+      virtual madara::knowledge::KnowledgeRecord item (void) const;
 
       /** 
        * Prunes the expression tree of unnecessary nodes. 
        * @param     can_change   set to true if variable nodes are contained
        * @return    negation of the right expression
        **/
-      virtual madara::KnowledgeRecord prune (bool & can_change);
+      virtual madara::knowledge::KnowledgeRecord prune (bool & can_change);
 
       /** 
        * Evaluates the expression tree. 
        * @param     settings     settings for evaluating the node
        * @return    negation of the right expression
        **/
-      virtual madara::KnowledgeRecord evaluate (
+      virtual madara::knowledge::KnowledgeRecord evaluate (
         const madara::knowledge::KnowledgeUpdateSettings & settings);
 
       /** 
@@ -72,13 +72,13 @@ namespace madara
       const std::string name_;
 
       // variables context
-      madara::knowledge::ThreadSafeContext & context_;
+      knowledge::ThreadSafeContext & context_;
 
       // function pointer
-      madara::knowledge::Function * function_;
+      knowledge::Function * function_;
       
       // pointers to .1, .2, .3, etc.
-      std::vector <KnowledgeRecord *> compiled_args_;
+      std::vector <knowledge::KnowledgeRecord *> compiled_args_;
     };
   }
 }

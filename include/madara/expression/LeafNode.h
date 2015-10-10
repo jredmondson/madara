@@ -6,6 +6,7 @@
 
 #include <string>
 #include "madara/expression/ComponentNode.h"
+#include "madara/knowledge/KnowledgeRecord.h"
 
 namespace madara
 {
@@ -16,7 +17,7 @@ namespace madara
 
     /**
      * @class LeafNode
-     * @brief Defines a node that contains a madara::KnowledgeRecord::Integer value
+     * @brief Defines a node that contains a madara::knowledge::KnowledgeRecord::Integer value
      */
 
     class LeafNode : public ComponentNode
@@ -28,7 +29,7 @@ namespace madara
        * @param   item    value of the node
        **/
       LeafNode (logger::Logger & logger,
-        const KnowledgeRecord & item);
+        const knowledge::KnowledgeRecord & item);
       
       /**
        * Integer Constructor
@@ -36,7 +37,7 @@ namespace madara
        * @param   item    value of the node
        **/
       LeafNode (logger::Logger & logger,
-        madara::KnowledgeRecord::Integer item);
+        madara::knowledge::KnowledgeRecord::Integer item);
       
       /**
        * Double Constructor
@@ -63,20 +64,20 @@ namespace madara
        * Returns the printable value of the node
        * @return    value of the node
        **/
-      virtual madara::KnowledgeRecord item (void) const;
+      virtual madara::knowledge::KnowledgeRecord item (void) const;
 
       /** 
        * Prunes the expression tree of unnecessary nodes. 
        * @param     can_change   set to true if variable nodes are contained
        * @return    value of this node
        **/
-      virtual madara::KnowledgeRecord prune (bool & can_change);
+      virtual madara::knowledge::KnowledgeRecord prune (bool & can_change);
 
       /** 
        * Evaluates the expression tree. 
        * @return    value of this node
        **/
-      virtual madara::KnowledgeRecord evaluate (
+      virtual madara::knowledge::KnowledgeRecord evaluate (
         const madara::knowledge::KnowledgeUpdateSettings & settings);
 
       /** 
@@ -87,7 +88,7 @@ namespace madara
 
     private:
       /// Integer value associated with the operand.
-      madara::KnowledgeRecord item_;
+      madara::knowledge::KnowledgeRecord item_;
     };
 
   }

@@ -7,14 +7,16 @@
  * the usage of doubles as first class support.
  **/
 
-#include "madara/knowledge_engine/KnowledgeBase.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 #include <string>
+
+namespace knowledge = madara::knowledge;
 
 int main (int argc, char * argv[])
 {
   // Create a knowledge base
-  Madara::KnowledgeEngine::KnowledgeBase knowledge;
+  knowledge::KnowledgeBase knowledge;
   
   /**
    * There are three main ways to set doubles. We showcase

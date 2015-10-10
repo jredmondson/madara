@@ -207,7 +207,7 @@ madara::knowledge::containers::DoubleVector::resize (
       {
         vector_.resize (size);
         
-        context_->set (size_, KnowledgeRecord::Integer (size), settings_);
+        context_->set (size_, knowledge::KnowledgeRecord::Integer (size), settings_);
 
         if ((size_t)size > old_size)
         {
@@ -385,7 +385,7 @@ madara::knowledge::containers::DoubleVector::exchange (
     for (size_t i = 0; i < this_size; ++i)
     {
       // temp = this[i];
-      KnowledgeRecord temp = context_->get (this->vector_[i], settings_);
+      knowledge::KnowledgeRecord temp = context_->get (this->vector_[i], settings_);
     
       if (i < other_size)
       {
@@ -409,7 +409,7 @@ madara::knowledge::containers::DoubleVector::exchange (
         }
         else
         {
-          KnowledgeRecord zero;
+          knowledge::KnowledgeRecord zero;
           this->context_->set (this->vector_[i], zero, this->settings_);
         }
 
@@ -440,9 +440,9 @@ madara::knowledge::containers::DoubleVector::exchange (
 
     // set the size appropriately
     this->context_->set (this->size_,
-      KnowledgeRecord::Integer (other_size), this->settings_);
+      knowledge::KnowledgeRecord::Integer (other_size), this->settings_);
     other.context_->set (other.size_,
-      KnowledgeRecord::Integer (this_size), other.settings_);
+      knowledge::KnowledgeRecord::Integer (this_size), other.settings_);
 
     if (refresh_keys)
     {
@@ -518,7 +518,7 @@ madara::knowledge::containers::DoubleVector::type
 madara::knowledge::containers::DoubleVector::operator[] (
   size_t index) const
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
   KnowledgeUpdateSettings keep_local (true);
 
   if (index < vector_.size () && context_)
@@ -531,11 +531,11 @@ madara::knowledge::containers::DoubleVector::operator[] (
   return result.to_double ();
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::DoubleVector::to_record (
   size_t index) const
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
   KnowledgeUpdateSettings keep_local (true);
 
   if (index < vector_.size () && context_)
@@ -548,10 +548,10 @@ madara::knowledge::containers::DoubleVector::to_record (
   return result;
 }
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::DoubleVector::to_record (void) const
 {
-  KnowledgeRecord result;
+  knowledge::KnowledgeRecord result;
   KnowledgeUpdateSettings keep_local (true);
 
   // if we have something to actually set

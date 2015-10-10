@@ -49,8 +49,8 @@
 
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef madara::KnowledgeRecord    KnowledgeRecord;
-typedef KnowledgeRecord::Integer   Integer;
+typedef knowledge::KnowledgeRecord    KnowledgeRecord;
+typedef KnowledgeRecord::Integer      Integer;
 
 /*
  * Class:     com_madara_containers_Queue

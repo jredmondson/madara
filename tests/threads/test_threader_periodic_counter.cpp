@@ -18,7 +18,7 @@ namespace utility = madara::utility;
 namespace threads = madara::threads;
 namespace logger = madara::logger;
 
-typedef madara::KnowledgeRecord::Integer Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 
 // default transport settings
 

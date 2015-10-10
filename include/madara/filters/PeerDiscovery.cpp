@@ -2,11 +2,11 @@
 #include "madara/utility/Utility.h"
 
 namespace utility = madara::utility;
-typedef madara::KnowledgeRecord::Integer   Integer;
+typedef madara::knowledge::KnowledgeRecord::Integer   Integer;
 
 madara::filters::PeerDiscovery::PeerDiscovery (
   const std::string & prefix,
-  KnowledgeRecord::Integer heart_beat)
+  knowledge::KnowledgeRecord::Integer heart_beat)
   : initialized_ (false), prefix_ (prefix),
     heart_beat_ (heart_beat), last_clear_ (0)
 {
@@ -19,7 +19,7 @@ madara::filters::PeerDiscovery::~PeerDiscovery ()
 
 void
 madara::filters::PeerDiscovery::filter (
-  KnowledgeMap & records,
+  knowledge::KnowledgeMap & records,
   const transport::TransportContext & transport_context,
   knowledge::Variables & vars)
 {

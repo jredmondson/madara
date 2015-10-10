@@ -13,7 +13,7 @@ namespace logger = madara::logger;
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
 madara::transport::QoSTransportSettings settings;
-madara::KnowledgeRecord::Integer processes (2);
+madara::knowledge::KnowledgeRecord::Integer processes (2);
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -124,7 +124,7 @@ void handle_arguments (int argc, char ** argv)
 }
 
 
-madara::KnowledgeRecord
+madara::knowledge::KnowledgeRecord
 maekawa_receive (
   madara::knowledge::FunctionArguments & args,
   madara::knowledge::Variables &)
@@ -157,13 +157,13 @@ maekawa_receive (
 
         }
       }
-      return madara::KnowledgeRecord ();
+      return madara::knowledge::KnowledgeRecord ();
     }
     else
       return args[0];
   }
   else
-    return madara::KnowledgeRecord ();
+    return madara::knowledge::KnowledgeRecord ();
 }
 
 
@@ -184,10 +184,10 @@ int main (int argc, char ** argv)
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
   knowledge.set ("SYSTEM.id",
-    (madara::KnowledgeRecord::Integer) settings.id, eval_settings);
+    (madara::knowledge::KnowledgeRecord::Integer) settings.id, eval_settings);
   
   knowledge.set ("SYSTEM.processes",
-    (madara::KnowledgeRecord::Integer) processes, eval_settings);
+    (madara::knowledge::KnowledgeRecord::Integer) processes, eval_settings);
 
   knowledge.print ();
   
