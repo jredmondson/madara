@@ -17,8 +17,6 @@
 
 namespace madara
 {
-  class knowledge::KnowledgeRecord;
-
   namespace knowledge
   {
     class ThreadSafeContext;
@@ -32,7 +30,6 @@ namespace madara
     class MADARA_Export VariableReference
     {
     public:
-      //class KnowledgeBaseImpl;
       friend class ThreadSafeContext;
       friend class KnowledgeBaseImpl;
       friend class Variables;
