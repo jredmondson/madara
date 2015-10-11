@@ -15,7 +15,7 @@
 // define useful shorthands
 namespace knowledge = madara::knowledge;
 namespace transport = madara::transport;
-typedef madara::knowledge::KnowledgeRecord  knowledge::KnowledgeRecord;
+typedef madara::knowledge::KnowledgeRecord  KnowledgeRecord;
 typedef knowledge::KnowledgeRecord::Integer Integer;
 typedef transport::Settings Settings;
 
