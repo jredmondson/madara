@@ -48,8 +48,8 @@
 package com.madara.tests;
 
 import com.madara.KnowledgeBase;
-import com.madara.MadaraLog;
-import com.madara.MadaraLog.MadaraLogLevel;
+import com.madara.logger.GlobalLogger;
+import com.madara.logger.LogLevels;
 import com.madara.threads.BaseThread;
 import com.madara.threads.Threader;
 import com.madara.containers.Integer;
@@ -63,7 +63,7 @@ public class ThreadedCounter extends BaseThread
    * A thread-safe counter 
    **/
   public Integer counter;
-  static long target = 100000000;
+  static long target = 10000000;
   
   /**
    * Initialize the counter variable
@@ -97,7 +97,7 @@ public class ThreadedCounter extends BaseThread
   public static void main(String...args) throws InterruptedException, Exception
   {
     KnowledgeBase knowledge = new KnowledgeBase();
-    //MadaraLog.setLogLevel(MadaraLogLevel.MADARA_LOG_MAJOR_EVENT);
+    //GlobalLogger.setLevel(LogLevels.LOG_MINOR.value());
     Integer counter = new Integer();
     counter.setName(knowledge, ".counter");
     
@@ -155,6 +155,11 @@ public class ThreadedCounter extends BaseThread
     // create a threader for running threads
     Threader threader = new Threader(knowledge);
 
+    System.err.println("Test parameters:");
+    System.err.println("  target:" + target);
+    System.err.println("  threads:" + numThreads);
+    System.err.println("  hertz:" + hertz);
+            
     for (int i = 0; i < numThreads; ++i)
     {
       threader.startPaused(hertz, "thread" + i, new ThreadedCounter()); 
