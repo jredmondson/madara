@@ -68,7 +68,7 @@ jlong JNICALL Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_Strin
   (JNIEnv *env, jobject obj, jstring host, jlong csettings)
 {
   const char * nativeHost = env->GetStringUTFChars (host, 0);
-  transport::Settings * settings = (madara::transport::Settings *) csettings;
+  transport::TransportSettings * settings = (madara::transport::TransportSettings *) csettings;
   KnowledgeBase * knowledge (0);
 
   if (settings)
@@ -138,7 +138,7 @@ void JNICALL Java_com_madara_KnowledgeBase_jni_1attachTransport
 {
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
   const char * native_id = env->GetStringUTFChars (id, 0);
-  transport::Settings * settings = (transport::Settings *) settings_ptr;
+  transport::TransportSettings * settings = (transport::TransportSettings *) settings_ptr;
 
   if (knowledge && native_id && settings)
   {

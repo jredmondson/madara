@@ -10,7 +10,7 @@
 #include <algorithm>
 
 madara::transport::MulticastTransportReadThread::MulticastTransportReadThread (
-  const Settings & settings,
+  const TransportSettings & settings,
   const std::string & id,
   const ACE_INET_Addr & address,
   ACE_SOCK_Dgram & write_socket,

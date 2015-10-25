@@ -208,7 +208,7 @@ madara::knowledge::KnowledgeBaseImpl::vote (void)
 
 #endif // _USE_CID_
 
-inline madara::transport::Settings &
+inline madara::transport::TransportSettings &
 madara::knowledge::KnowledgeBaseImpl::transport_settings (void)
 {
   return settings_;

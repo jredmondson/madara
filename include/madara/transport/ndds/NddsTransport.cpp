@@ -19,7 +19,7 @@ const char * madara::transport::NDDSTransport::partition_ = "Madara_knowledge";
 madara::transport::NDDSTransport::NDDSTransport (
   const std::string & id,
   knowledge::ThreadSafeContext & context, 
-  Settings & config, bool launch_transport)
+  TransportSettings & config, bool launch_transport)
   : madara::transport::Base (id, config, context),
   domain_participant_ (0), update_topic_ (0), update_writer_ (0),
   listener_ (0)

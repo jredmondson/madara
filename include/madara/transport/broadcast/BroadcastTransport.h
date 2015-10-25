@@ -50,7 +50,7 @@ namespace madara
        **/
       BroadcastTransport (const std::string & id, 
         madara::knowledge::ThreadSafeContext & context, 
-        Settings & config, bool launch_transport);
+        TransportSettings & config, bool launch_transport);
 
       /**
        * Destructor

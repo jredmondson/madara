@@ -22,7 +22,7 @@ typedef madara::knowledge::KnowledgeRecord::Integer  Integer;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-madara::transport::Settings settings;
+madara::transport::TransportSettings settings;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);

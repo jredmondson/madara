@@ -1681,6 +1681,27 @@ project (Test_UDP) : using_madara, using_ace, no_karl, no_xml {
   }
 }
 
+project (Test_Registry) : using_madara, using_ace, no_karl, no_xml {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_registry
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/registry/test_registry.cpp
+  }
+}
+
 project (Test_Multicast) : using_madara, using_ace, no_karl, no_xml {
   requires += tests
   

@@ -32,7 +32,7 @@ namespace madara
        **/
       NDDSTransport (const std::string & id, 
         knowledge::ThreadSafeContext & context, 
-        Settings & config, bool launch_transport);
+        TransportSettings & config, bool launch_transport);
 
       /**
        * Destructor

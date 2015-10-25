@@ -2,7 +2,7 @@
 #define _MADARA_TRANSPORT_SETTINGS_H_
 
 /**
- * @file Transport.h
+ * @file TransportTransportSettings.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
  * This file contains the transport::Base class, which provides an
@@ -27,7 +27,7 @@
 
 #ifdef _USE_CID_
 
-#include "madara/cid/CIDSettings.h"
+#include "madara/cid/CIDTransportSettings.h"
 #include "madara/cid/CIDConvenience.h"
 #include "madara/cid/CIDHeuristic.h"
 #include "madara/cid/CIDGenetic.h"
@@ -51,7 +51,7 @@ namespace madara
     typedef   std::vector<Timer>                   Timers;
 
 #ifdef _USE_CID_
-    typedef   madara::Cid::Settings                LatencySettings;
+    typedef   madara::Cid::TransportSettings                LatencyTransportSettings;
 #endif
 
     enum Types {
@@ -62,6 +62,8 @@ namespace madara
       UDP          = 4,
       MULTICAST    = 5,
       BROADCAST    = 6,
+      REGISTRY_SERVER = 7,
+      REGISTRY_CLIENT = 8
     };
 
     enum Reliabilities {
@@ -73,6 +75,7 @@ namespace madara
       ASSIGN = 0,
       OPERATION = 1,
       MULTIASSIGN = 2,
+      REGISTER = 3,
       LATENCY = 10,
       LATENCY_AGGREGATE = 11,
       LATENCY_SUMMATION = 12,
@@ -80,9 +83,9 @@ namespace madara
     };
 
     /**
-     * Holds Transport Settings
+     * Holds basic transport settings
      */
-    class MADARA_Export Settings
+    class MADARA_Export TransportSettings
     {
     public:
       // for ease-of-use, typedef the templated guard
@@ -116,6 +119,11 @@ namespace madara
        **/
       #define DEFAULT_PROCESSES         1
 
+      /**
+      * Default number of processes in group
+      **/
+      #define MAXIMUM_RESEND_ATTEMPTS   10
+
 #ifdef _USE_CID_
 
       /**
@@ -141,15 +149,15 @@ namespace madara
 #endif // _USE_CID_
 
       /// Constructor for this class
-      Settings ();
+      TransportSettings ();
 
       /// Copy constructor
-      Settings (const Settings & settings);
+      TransportSettings (const TransportSettings & settings);
 
-      virtual ~Settings ();
+      virtual ~TransportSettings ();
 
       /// Assignment operator
-      void operator= (const Settings & settings);
+      void operator= (const TransportSettings & settings);
       
 #ifdef _USE_CID_
       /**
@@ -680,14 +688,18 @@ namespace madara
       /**
        * Loads the settings from a file
        * @param  filename    the file to load from
+       * @param  prefix      prefix for all transports settings
        **/
-      virtual void load (const std::string filename);
+      virtual void load (const std::string & filename,
+        const std::string & prefix = "transport");
 
       /**
       * Saves the settings from a file
       * @param  filename    the file to load from
+      * @param  prefix      prefix for all transports settings
       **/
-      virtual void save (const std::string filename) const;
+      virtual void save (const std::string & filename,
+        const std::string & prefix = "transport") const;
 
       /// All class members are accessible to users for easy setup
 
@@ -773,7 +785,7 @@ namespace madara
       MADARA_LOCK_TYPE mutex;
 
       /// latency information
-      LatencySettings latencies;
+      LatencyTransportSettings latencies;
 
       /// timers used to establish latency
       Timers timers;

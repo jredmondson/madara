@@ -19,7 +19,7 @@ namespace logger = madara::logger;
 
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
-madara::transport::Settings settings;
+madara::transport::TransportSettings settings;
 volatile bool terminated = 0;
 
 void handle_arguments (int argc, char ** argv)

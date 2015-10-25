@@ -34,7 +34,7 @@ public:
     **/
   CustomTransport (const std::string & id, 
     madara::knowledge::ThreadSafeContext & context, 
-    madara::transport::Settings & config, bool launch_transport);
+    madara::transport::TransportSettings & config, bool launch_transport);
 
   /**
     * Destructor

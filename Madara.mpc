@@ -200,6 +200,29 @@ project (KaRL) : using_ace, using_madara, no_karl {
   }
 }
 
+project (Madara_Registry) : using_ace, using_madara, no_karl {
+  exeout = $(MADARA_ROOT)/bin
+  exename = madara_registry
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -w
+  }
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Madara.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tools/madara_registry.cpp
+  }
+}
+
 
 project (MPGen) : using_ace, using_madara {
   exeout = $(MADARA_ROOT)/bin

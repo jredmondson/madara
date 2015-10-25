@@ -34,7 +34,8 @@ namespace madara
         uint64_t receive_bandwidth = 0, uint64_t send_bandwidth = 0,
         uint64_t message_time = 0, uint64_t current_time = time (NULL),
         const std::string & domain = "",
-        const std::string & originator = "");
+        const std::string & originator = "",
+        const std::string & endpoint = "");
 
       /**
        * Copy constructor
@@ -164,7 +165,25 @@ namespace madara
        * @param  originator  the originator of the current message
        **/
       void set_originator (const std::string & originator);
-      
+
+      /**
+      * Returns the current message endpoint. Endpoint is the public
+      * host:port information about how to actually contact the
+      * sender, whereas originator is the declared identifier of
+      * the sender.
+      * @return  endpoint  the public host:port information for the sender
+      **/
+      const std::string & get_endpoint (void) const;
+
+      /**
+      * Sets the current message endpoint. Endpoint is the public
+      * host:port information about how to actually contact the
+      * sender, whereas originator is the declared identifier of
+      * the sender.
+      * @param  endpoint  the public host:port information for the sender
+      **/
+      void set_endpoint (const std::string & endpoint);
+
       /**
        * Sets the current message originator
        * @param  source  the source record map to set
@@ -207,6 +226,16 @@ namespace madara
        * Originator of the current message
        **/
       std::string originator_;
+
+      /**
+      * Public endpoint of the current message. This may
+      * be different from originator as originator is the
+      * declared id of the agent sending. Endpoint is the
+      * public ip:port information that the underlying
+      * socket is claiming the message comes from. This is
+      * an important distinction in NAT-based networking.
+      **/
+      std::string endpoint_;
 
       /**
        * Context specific records

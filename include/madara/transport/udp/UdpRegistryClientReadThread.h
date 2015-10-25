@@ -1,13 +1,5 @@
-#ifndef _MADARA_MULTICAST_TRANSPORT_READ_THREAD_H_
-#define _MADARA_MULTICAST_TRANSPORT_READ_THREAD_H_
-
-/**
- * @file MulticastTransportReadThread.h
- * @author James Edmondson <jedmondson@gmail.com>
- *
- * This file contains the MulticastTransportReadThread class, which provides a
- * multicast transport for reading knowledge updates in KaRL
- **/
+#ifndef _MADARA_UDP_REGISTRY_CLIENT_READ_THREAD_H_
+#define _MADARA_UDP_REGISTRY_CLIENT_READ_THREAD_H_
 
 #include <string>
 
@@ -25,20 +17,21 @@
 #include "ace/Barrier.h"
 #include "ace/Atomic_Op_T.h"
 #include "ace/Thread_Mutex.h"
-#include "ace/SOCK_Dgram_Mcast.h"
 
 #include "ace/Synch.h"
- 
+#include "ace/INET_Addr.h"
+#include "ace/SOCK_Dgram.h"
+
 namespace madara
 {
   namespace transport
   {
     /**
-     * @class MulticastTransportReadThread
-     * @brief Thread for reading knowledge updates through a Multicast
-     *        datagram socket
+     * @class UdpRegistryClientReadThread
+     * @brief Thread for reading knowledge and registry updates through a
+     *        UDP socket
      **/
-    class MulticastTransportReadThread : public threads::BaseThread
+    class UdpRegistryClientReadThread : public threads::BaseThread
     {
     public:
       /**
@@ -46,24 +39,22 @@ namespace madara
        * @param    settings   Transport settings
        * @param    id      host:port identifier of this process, to allow for 
        *                   rejection of duplicates
-       * @param    address    the multicast address we will read from
-       * @param    write_socket    socket for sending
-       * @param    read_socket    socket for receiving
+       * @param    addresses    the ACE socket addresses to communicate with 
+       * @param    socket       socket for sending and receiving
        * @param    send_monitor    bandwidth monitor for enforcing send limits
        * @param    receive_monitor    bandwidth monitor for enforcing
        *                              receive limits
        * @param    packet_scheduler scheduler for mimicking network conditions
        **/
-      MulticastTransportReadThread (
+      UdpRegistryClientReadThread (
         const TransportSettings & settings,
         const std::string & id,
-        const ACE_INET_Addr & address,
-        ACE_SOCK_Dgram & write_socket,
-        ACE_SOCK_Dgram_Mcast & read_socket,
+        std::map <std::string, ACE_INET_Addr> & addresses,
+        ACE_SOCK_Dgram & socket,
         BandwidthMonitor & send_monitor,
         BandwidthMonitor & receive_monitor,
         PacketScheduler & packet_scheduler);
-     
+      
       /**
        * Initializes MADARA context-related items
        * @param   knowledge   context for querying current program state
@@ -81,7 +72,7 @@ namespace madara
       void run (void);
 
       /**
-       * Sends a rebroadcast packet.
+       * Sends a rebroadcast packet to all peers.
        * @param  print_prefix     prefix to include before every log message,
        *                          e.g., "MyTransport::svc"
        * @param   header   header for the rebroadcasted packet
@@ -91,35 +82,32 @@ namespace madara
       void rebroadcast (
         const char * print_prefix,
         MessageHeader * header,
-        const knowledge::KnowledgeMap& records);
+        const knowledge::KnowledgeMap & records);
 
     private:
-      /// quality-of-service transport settings
-      const QoSTransportSettings  settings_;
+      /// Transport settings
+      const QoSTransportSettings settings_;
 
       /// host:port identifier of this process
-      const std::string          id_;
-
+      const std::string                                 id_;
+      
       /// knowledge context
       knowledge::ThreadSafeContext * context_;
       
-      /// The multicast address we are subscribing to
-      ACE_INET_Addr                      address_;
-
-      /// The multicast socket we are reading from
-      ACE_SOCK_Dgram_Mcast  &            read_socket_;
+      /// internet addresses of our peers
+      std::map <std::string, ACE_INET_Addr> addresses_;
       
-      /// underlying socket for sending
-      ACE_SOCK_Dgram      &              write_socket_;
+      /// The socket we are writing to and reading from
+      ACE_SOCK_Dgram       &             socket_;
       
 #ifndef _MADARA_NO_KARL_
       /// data received rules, defined in Transport settings
       madara::knowledge::CompiledExpression  on_data_received_;
 #endif // _MADARA_NO_KARL_
-
-      /// buffer for receiving
-      madara::utility::ScopedArray <char>      buffer_;
       
+      /// buffer for sending
+      madara::utility::ScopedArray <char>      buffer_;
+
       /// monitor for sending bandwidth usage
       BandwidthMonitor   &   send_monitor_;
       
@@ -132,4 +120,4 @@ namespace madara
   }
 }
 
-#endif // _MADARA_MULTICAST_TRANSPORT_READ_THREAD_H_
+#endif // _MADARA_UDP_REGISTRY_CLIENT_READ_THREAD_H_

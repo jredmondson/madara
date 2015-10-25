@@ -1,22 +1,38 @@
-#ifndef _MADARA_TCP_TRANSPORT_H_
-#define _MADARA_TCP_TRANSPORT_H_
+#ifndef _MADARA_UDP_REGISTRY_CLIENT_TRANSPORT_H_
+#define _MADARA_UDP_REGISTRY_CLIENT_TRANSPORT_H_
 
 #include <string>
 
-#include "madara/transport/tcp/TCPTransportReadThread.h"
-#include "madara/knowledge/ThreadSafeContext.h"
+#include "madara/MADARA_export.h"
+#include "madara/transport/udp/UdpRegistryClientReadThread.h"
 #include "madara/transport/Transport.h"
 #include "madara/threads/Threader.h"
+#include "madara/knowledge/containers/Map.h"
+
+#include <string>
+#include <map>
+
+#include "ace/INET_Addr.h"
+#include "ace/SOCK_Dgram.h"
+
 
 namespace madara
 {
   namespace transport
   {
     /**
-     * @class TCPTransport
-     * @brief TCP-based transport (skeleton code)
+     * @class UdpRegistryClient
+     * @brief UDP-based transport for knowledge. This transport currently
+     * supports the following transport settings:<br />
+     *        1) multiple host:port pairing with self first in vector<br />
+     *        2) the reduced message header<br />
+     *        3) the normal message header<br />
+     *        4) domain differentiation<br />
+     *        5) on data received logic<br />
+     *        6) multi-assignment of records<br />
+     *        7) rebroadcasting<br />
      **/
-    class TCPTransport : public Base
+    class MADARA_Export UdpRegistryClient : public Base
     {
     public:
   
@@ -25,7 +41,7 @@ namespace madara
       };
 
       enum {
-        ERROR_TCP_NOT_STARTED = -1,
+        ERROR_UDP_NOT_STARTED = -1,
       };
 
       static const int PROFILES = 1;
@@ -37,15 +53,21 @@ namespace madara
        * @param   config   transport configuration settings
        * @param   launch_transport  whether or not to launch this transport
        **/
-      TCPTransport (const std::string & id, 
+      UdpRegistryClient (const std::string & id, 
         madara::knowledge::ThreadSafeContext & context, 
-        Settings & config, bool launch_transport);
+        TransportSettings & config, bool launch_transport);
 
       /**
        * Destructor
        **/
-      virtual ~TCPTransport ();
-      
+      virtual ~UdpRegistryClient ();
+
+
+      /**
+      * Sends register messages to all servers
+      **/
+      void send_register (void);
+
       /**
        * Sends a list of knowledge updates to listeners
        * @param   updates listing of all updates that must be sent
@@ -73,14 +95,22 @@ namespace madara
     private:
       /// knowledge base for threads to use
       knowledge::KnowledgeBase          knowledge_;
-
+      
       /// threads for reading knowledge updates
       threads::Threader                         read_threads_;
+      
+      /// registry servers
+      std::map <std::string, ACE_INET_Addr>     servers_;
 
-      std::map <std::string, ACE_INET_Addr>     addresses_;
+      /// registry clients
+      std::map <std::string, ACE_INET_Addr>     clients_;
 
+      knowledge::containers::Map   endpoints_;
+
+      /// underlying socket for sending and receiving
+      ACE_SOCK_Dgram                            socket_;
     };
   }
 }
 
-#endif // _MADARA_TCP_TRANSPORT_H_
+#endif // _MADARA_UDP_REGISTRY_CLIENT_TRANSPORT_H_

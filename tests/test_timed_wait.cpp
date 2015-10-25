@@ -21,7 +21,7 @@ int ACE_TMAIN (int, char **)
   logger::global_logger->set_level (7);
 
   // don't use a transport for this test.
-  madara::transport::Settings transport_settings;
+  madara::transport::TransportSettings transport_settings;
   transport_settings.type = madara::transport::NO_TRANSPORT;
   
   // holder for expression trees

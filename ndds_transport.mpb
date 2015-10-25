@@ -5,19 +5,19 @@ feature (ndds) {
   after += NDDS_Transport_IDL
 
   Source_Files {
-    include/madara/transport/ndds/NDDS_Transport.cpp
-    include/madara/transport/ndds/NDDS_Listener.cpp
+    include/madara/transport/ndds/NddsTransport.cpp
+    include/madara/transport/ndds/NddsListener.cpp
     include/madara/transport/ndds/Ndds_Knowledge_Update.cxx
     include/madara/transport/ndds/Ndds_Knowledge_UpdatePlugin.cxx
     include/madara/transport/ndds/Ndds_Knowledge_UpdateSupport.cxx
   }
 
   Header_Files {
-    include/madara/transport/ndds/NDDS_Transport.h
-    include/madara/transport/ndds/NDDS_Listener.h
+    include/madara/transport/ndds/NddsTransport.h
+    include/madara/transport/ndds/NddsListener.h
     include/madara/transport/ndds/Ndds_Knowledge_Update.h 
     include/madara/transport/ndds/Ndds_Knowledge_UpdatePlugin.h
     include/madara/transport/ndds/Ndds_Knowledge_UpdateSupport.h
-    include/madara/transport/ndds/NDDS_Transport_Export.h
+    include/madara/transport/ndds/NddsTransportExport.h
   }
 }

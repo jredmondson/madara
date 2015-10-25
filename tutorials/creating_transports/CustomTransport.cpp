@@ -14,8 +14,8 @@ namespace transport = madara::transport;
 namespace logger = madara::logger;
 
 CustomTransport::CustomTransport (const std::string & id,
-        knowledge::ThreadSafeContext & context, 
-        transport::Settings & config, bool launch_transport)
+  knowledge::ThreadSafeContext & context, 
+  transport::TransportSettings & config, bool launch_transport)
 : Base (id, config, context),
   thread_ (0), valid_setup_ (false),
   socket_ (ACE_sap_any_cast (ACE_INET_Addr &), PF_INET, 0, 1)

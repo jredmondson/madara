@@ -46,7 +46,7 @@ namespace madara
      * @class QoSTransportSettings
      * @brief Container for quality-of-service settings
      **/
-    class MADARA_Export QoSTransportSettings : public Settings
+    class MADARA_Export QoSTransportSettings : public TransportSettings
     {
     public:
       /**
@@ -62,7 +62,7 @@ namespace madara
       /**
        * Copy constructor
        **/
-      QoSTransportSettings (const Settings & settings);
+      QoSTransportSettings (const TransportSettings & settings);
 
       /**
        * Destructor
@@ -77,7 +77,7 @@ namespace madara
       /**
        * Assignment operator
        **/
-      void operator= (const Settings & settings);
+      void operator= (const TransportSettings & settings);
 
       /**
        * Adds a filter that will be applied to certain types before sending
@@ -634,14 +634,18 @@ namespace madara
        /**
        * Loads the settings from a file
        * @param  filename    the file to load from
+       * @param  prefix      prefix for all transports settings
        **/
-       virtual void load (const std::string filename);
+       virtual void load (const std::string & filename,
+         const std::string & prefix = "transport");
 
        /**
        * Saves the settings from a file
        * @param  filename    the file to load from
+       * @param  prefix      prefix for all transports settings
        **/
-       virtual void save (const std::string filename) const;
+       virtual void save (const std::string & filename,
+         const std::string & prefix = "transport") const;
 
     private:
        

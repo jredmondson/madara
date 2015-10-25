@@ -34,7 +34,7 @@ namespace madara
        * @param    packet_scheduler scheduler for mimicking network conditions
        **/
       NDDSListener(
-        const Settings & settings, const std::string & id,
+        const TransportSettings & settings, const std::string & id,
         knowledge::ThreadSafeContext & context,
         BandwidthMonitor & send_monitor,
         BandwidthMonitor & receive_monitor,
@@ -79,7 +79,7 @@ namespace madara
     private:
       
       /// Transport settings
-      const Settings & settings_;
+      const TransportSettings & settings_;
 
       // NDDS variables
       const std::string id_;

@@ -73,7 +73,7 @@ namespace madara
        * @param   new_settings      settings to apply to the transport
        * @param   context           the knowledge record context
        **/
-      Base (const std::string & id, Settings & new_settings,
+      Base (const std::string & id, TransportSettings & new_settings,
         knowledge::ThreadSafeContext & context);
 
       /**
@@ -100,7 +100,7 @@ namespace madara
        * Getter for the transport settings
        * @return   the current transport settings
        **/
-      Settings & settings (void);
+      TransportSettings & settings (void);
 
 #ifdef _USE_CID_
 
@@ -115,7 +115,7 @@ namespace madara
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
               DLINFO "SpliceDDSTransport::start_latency:" \
               " Latency enabled is not set in your"
-              " madara::transport::Settings instance. Update your"
+              " madara::transport::TransportSettings instance. Update your"
               " program's code and set settings.latency_enabled = true.\n"));
 
           return -2;
@@ -134,7 +134,7 @@ namespace madara
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
               DLINFO "SpliceDDSTransport::vote:" \
               " Latency enabled is not set in your"
-              " madara::transport::Settings instance. Update your"
+              " madara::transport::TransportSettings instance. Update your"
               " program's code and set settings.latency_enabled = true.\n"));
 
           return -2;

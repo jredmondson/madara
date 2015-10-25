@@ -505,54 +505,54 @@ void define_transport (void)
     * Transport Settings definitions
     ********************************************************/
 
-  class_<madara::transport::Settings> ("Settings",
+  class_<madara::transport::TransportSettings> ("Settings",
     "The main transport settings class", init <> ())
       
-    .def (init<const madara::transport::Settings &> ())
+    .def (init<const madara::transport::TransportSettings &> ())
 
     // define readwrite variables within the class
     .def_readwrite ("domains",
-      &madara::transport::Settings::domains,
+      &madara::transport::TransportSettings::domains,
       "Informs the transport of the requested knowledge domain")
 
     .def_readwrite ("queue_length",
-      &madara::transport::Settings::queue_length,
+      &madara::transport::TransportSettings::queue_length,
       "Informs the transport of the requested queue_length in bytes")
 
     .def_readwrite ("type",
-      &madara::transport::Settings::type,
+      &madara::transport::TransportSettings::type,
       "Indicates the type of transport (see TransportTypes)")
 
     .def_readwrite ("reliability",
-      &madara::transport::Settings::reliability,
+      &madara::transport::TransportSettings::reliability,
       "Informs the transport of the requested reliability (0==BEST_EFFORT)")
 
     .def_readwrite ("id",
-      &madara::transport::Settings::id,
+      &madara::transport::TransportSettings::id,
       "Informs the transport of the process id")
 
     .def_readwrite ("processes",
-      &madara::transport::Settings::processes,
+      &madara::transport::TransportSettings::processes,
       "Informs the transport of the number of expected processes")
 
     .def_readwrite ("on_data_received_logic",
-      &madara::transport::Settings::on_data_received_logic,
+      &madara::transport::TransportSettings::on_data_received_logic,
       "Provides a KaRL expression to evaluate when data is received")
 
     .def_readwrite ("delay_launch",
-      &madara::transport::Settings::delay_launch,
+      &madara::transport::TransportSettings::delay_launch,
       "Indicates that the transport should delay launch until activated")
 
     .def_readwrite ("never_exit",
-      &madara::transport::Settings::never_exit,
+      &madara::transport::TransportSettings::never_exit,
       "Indicates that the transport should never exit, even in bad states")
 
     .def_readwrite ("send_reduced_message_header",
-      &madara::transport::Settings::send_reduced_message_header,
+      &madara::transport::TransportSettings::send_reduced_message_header,
       "Indicates that a reduced message header should be used for messages")
 
     .def_readwrite ("hosts",
-      &madara::transport::Settings::hosts,
+      &madara::transport::TransportSettings::hosts,
       "List of hosts for the transport layer")
   ;
     
@@ -561,13 +561,13 @@ void define_transport (void)
     ********************************************************/
 
   class_<madara::transport::QoSTransportSettings,
-          bases<madara::transport::Settings> > (
+          bases<madara::transport::TransportSettings> > (
             "QoSTransportSettings",
             "Transport settings with quality-of-service focus", init<> ())
       
     .def (init <const madara::transport::QoSTransportSettings &> ())
       
-    .def (init <const madara::transport::Settings &> ())
+    .def (init <const madara::transport::TransportSettings &> ())
       
     // adds a python callback to the typed send filter chains
     .def( "add_rebroadcast_filter",
@@ -1000,7 +1000,7 @@ void define_knowledge_engine (void)
       
     // define constructors
     .def (init <const std::string &,
-          const madara::transport::Settings &> ())
+          const madara::transport::TransportSettings &> ())
     
     // define constructors
     .def (init <const madara::knowledge::KnowledgeBase &> ())

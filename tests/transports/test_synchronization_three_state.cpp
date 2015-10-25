@@ -83,7 +83,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
 
   // transport settings
-  madara::transport::Settings ts;
+  madara::transport::TransportSettings ts;
   ts.domains = domain;
   ts.type = madara::transport::MULTICAST;
   ts.hosts.resize (1);

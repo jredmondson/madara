@@ -70,7 +70,7 @@ namespace madara
        * @param   config    transport settings to use for dissemination
        **/
       KnowledgeBase (const std::string & host, 
-        const madara::transport::Settings & config);
+        const madara::transport::TransportSettings & config);
 
       /**
        * Copy constructor
@@ -785,7 +785,7 @@ namespace madara
        * Votes with the lowest algorithm results current in the Transport settings.
        * This is only useful if latency collection is enabled and run_all has been
        * populated with useful redeployment algorithms before being ran. See the
-       * madara::transport::Settings class for all voting parameters.
+       * madara::transport::TransportSettings class for all voting parameters.
        **/
       long vote (void);
 
@@ -795,7 +795,7 @@ namespace madara
        * Returns a non-const reference to the Transport Settings
        * @return  settings reference
        **/
-      madara::transport::Settings & transport_settings (void);
+      madara::transport::TransportSettings & transport_settings (void);
 
       /**
        * Checks if a knowledge location exists in the context
@@ -922,7 +922,7 @@ namespace madara
        * @return             the number of transports now attached
        **/
       size_t attach_transport (const std::string & id,
-        transport::Settings & settings);
+        transport::TransportSettings & settings);
       
       /**
        * Removes a transport

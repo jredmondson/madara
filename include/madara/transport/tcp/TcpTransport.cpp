@@ -1,5 +1,5 @@
-#include "madara/transport/tcp/TCPTransport.h"
-#include "madara/transport/tcp/TCPTransportReadThread.h"
+#include "madara/transport/tcp/TcpTransport.h"
+#include "madara/transport/tcp/TcpTransportReadThread.h"
 #include "madara/transport/TransportContext.h"
 
 #include "madara/knowledge/KnowledgeRecord.h"
@@ -11,9 +11,9 @@
 
 #include <iostream>
 
-madara::transport::TCPTransport::TCPTransport (const std::string & id,
+madara::transport::TcpTransport::TcpTransport (const std::string & id,
   madara::knowledge::ThreadSafeContext & context,
-  Settings & config, bool launch_transport)
+  TransportSettings & config, bool launch_transport)
   : Base (id, config, context)
 {
   // create a reference to the knowledge base for threading
@@ -26,13 +26,13 @@ madara::transport::TCPTransport::TCPTransport (const std::string & id,
     setup ();
 }
 
-madara::transport::TCPTransport::~TCPTransport ()
+madara::transport::TcpTransport::~TcpTransport ()
 {
   close ();
 }
 
 void
-madara::transport::TCPTransport::close (void)
+madara::transport::TcpTransport::close (void)
 {
   this->invalidate_transport ();
 
@@ -42,19 +42,19 @@ madara::transport::TCPTransport::close (void)
 }
 
 int
-madara::transport::TCPTransport::reliability (void) const
+madara::transport::TcpTransport::reliability (void) const
 {
   return RELIABLE;
 }
 
 int
-madara::transport::TCPTransport::reliability (const int &)
+madara::transport::TcpTransport::reliability (const int &)
 {
   return RELIABLE;
 }
 
 int
-madara::transport::TCPTransport::setup (void)
+madara::transport::TcpTransport::setup (void)
 {
   // call base setup method to initialize certain common variables
   Base::setup ();
@@ -71,19 +71,19 @@ madara::transport::TCPTransport::setup (void)
     int opt_len = sizeof (int);
 
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
-      "TCPTransport::setup:" \
+      "TcpTransport::setup:" \
       " default socket buff size is send=%d, rcv=%d\n",
       send_buff_size, rcv_buff_size);
 
     if (send_buff_size < tar_buff_size)
     {
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
-        "TCPTransport::setup:" \
+        "TcpTransport::setup:" \
         " setting send buff size to settings.queue_length (%d)\n",
         tar_buff_size);
 
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
-        "TCPTransport::setup:" \
+        "TcpTransport::setup:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
     }
@@ -91,12 +91,12 @@ madara::transport::TCPTransport::setup (void)
     if (rcv_buff_size < tar_buff_size)
     {
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
-        "TCPTransport::setup:" \
+        "TcpTransport::setup:" \
         " setting rcv buff size to settings.queue_length (%d)\n",
         tar_buff_size);
       
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
-        "TCPTransport::setup:" \
+        "TcpTransport::setup:" \
         " current socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
     }
@@ -116,7 +116,7 @@ madara::transport::TCPTransport::setup (void)
       }
 
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
-        "TCPTransportReadThread::setup:" \
+        "TcpTransportReadThread::setup:" \
         " starting %d threads at %f hertz\n", settings_.read_threads,
         hertz);
 
@@ -127,7 +127,7 @@ madara::transport::TCPTransport::setup (void)
         thread_name << i;
 
         read_threads_.run (hertz, thread_name.str (),
-          new TCPTransportReadThread (
+          new TcpTransportReadThread (
           settings_, id_, addresses_,
           send_monitor_, receive_monitor_, packet_scheduler_));
       }
@@ -138,10 +138,10 @@ madara::transport::TCPTransport::setup (void)
 }
 
 long
-madara::transport::TCPTransport::send_data (
+madara::transport::TcpTransport::send_data (
 const madara::knowledge::KnowledgeRecords & orig_updates)
 {
-  const char * print_prefix = "TCPTransport::send_data";
+  const char * print_prefix = "TcpTransport::send_data";
 
   long result (0);
 

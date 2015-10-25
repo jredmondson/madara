@@ -6,7 +6,7 @@
 #include <algorithm>
 
 madara::transport::Base::Base (const std::string & id,
-  Settings & new_settings,
+  TransportSettings & new_settings,
   knowledge::ThreadSafeContext & context) 
   : is_valid_ (false), shutting_down_ (false),
   valid_setup_ (mutex_), id_ (id),
@@ -125,7 +125,7 @@ madara::transport::process_received_update (
   knowledge::KnowledgeMap updates;
 
   // check the buffer for a reduced message header
-  if (bytes_read > ReducedMessageHeader::static_encoded_size () &&
+  if (bytes_read >= ReducedMessageHeader::static_encoded_size () &&
       ReducedMessageHeader::reduced_message_header_test (buffer))
   {
     madara_logger_log (context.get_logger (), logger::LOG_MINOR,
@@ -137,7 +137,7 @@ madara::transport::process_received_update (
     header = new ReducedMessageHeader ();
     is_reduced = true;
   }
-  else if (bytes_read > MessageHeader::static_encoded_size () &&
+  else if (bytes_read >= MessageHeader::static_encoded_size () &&
     MessageHeader::message_header_test (buffer))
   {
     madara_logger_log (context.get_logger (), logger::LOG_MINOR,
@@ -148,12 +148,12 @@ madara::transport::process_received_update (
         
     header = new MessageHeader ();
   }
-  else if (bytes_read > FragmentMessageHeader::static_encoded_size () &&
+  else if (bytes_read >= FragmentMessageHeader::static_encoded_size () &&
     FragmentMessageHeader::fragment_message_header_test (buffer))
   {
     madara_logger_log (context.get_logger (), logger::LOG_MINOR,
       "%s:" \
-      " processing KaRL message from %s\n",
+      " processing KaRL fragment message from %s\n",
       print_prefix,
       remote_host);
         
@@ -162,10 +162,16 @@ madara::transport::process_received_update (
   }
   else
   {
+    // get the text that appears as identifier.
+    char identifier[MADARA_IDENTIFIER_LENGTH];
+    strncpy (identifier, buffer + 8, MADARA_IDENTIFIER_LENGTH);
+    identifier[7] = 0;
+
     madara_logger_log (context.get_logger (), logger::LOG_MINOR,
       "%s:" \
-      " dropping non-KaRL message from %s\n",
+      " dropping non-KaRL message with id %s from %s\n",
       print_prefix,
+      identifier,
       remote_host);
 
     return -1;
@@ -365,7 +371,8 @@ madara::transport::process_received_update (
     receive_monitor.get_bytes_per_second (),
     send_monitor.get_bytes_per_second (),
     header->timestamp, time (NULL),
-    header->domain, header->originator);
+    header->domain, header->originator,
+    remote_host);
 
   uint64_t latency (0);
   
@@ -514,7 +521,7 @@ madara::transport::process_received_update (
 
   // apply aggregate receive filters
   if (settings.get_number_of_receive_aggregate_filters () > 0
-      && updates.size () > 0)
+      && (updates.size () > 0 || header->type == transport::REGISTER))
   {
     madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
       "%s:" \

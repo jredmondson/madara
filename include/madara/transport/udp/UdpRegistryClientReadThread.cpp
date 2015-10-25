@@ -1,4 +1,4 @@
-#include "madara/transport/udp/UDPTransportReadThread.h"
+#include "madara/transport/udp/UdpRegistryClientReadThread.h"
 
 #include "madara/utility/Utility.h"
 #include "madara/transport/ReducedMessageHeader.h"
@@ -6,19 +6,17 @@
 
 #include <iostream>
 
-madara::transport::UDPTransportReadThread::UDPTransportReadThread (
-  const Settings & settings,
+madara::transport::UdpRegistryClientReadThread::UdpRegistryClientReadThread (
+  const TransportSettings & settings,
   const std::string & id,
   std::map <std::string, ACE_INET_Addr> & addresses,
-  ACE_SOCK_Dgram & write_socket,
-  ACE_SOCK_Dgram & read_socket,
+  ACE_SOCK_Dgram & socket,
   BandwidthMonitor & send_monitor,
   BandwidthMonitor & receive_monitor,
   PacketScheduler & packet_scheduler)
   : settings_ (settings), id_ (id), context_ (0),
     addresses_ (addresses),
-    write_socket_ (write_socket),
-    read_socket_ (read_socket),
+    socket_ (socket),
     send_monitor_ (send_monitor),
     receive_monitor_ (receive_monitor),
     packet_scheduler_ (packet_scheduler)
@@ -28,7 +26,7 @@ madara::transport::UDPTransportReadThread::UDPTransportReadThread (
 }
 
 void
-madara::transport::UDPTransportReadThread::init (
+madara::transport::UdpRegistryClientReadThread::init (
   knowledge::KnowledgeBase & knowledge)
 {
   context_ = &(knowledge.get_context ());
@@ -45,7 +43,7 @@ madara::transport::UDPTransportReadThread::init (
       
 #ifndef _MADARA_NO_KARL_
       madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
-        "UDPTransportReadThread::init:" \
+        "UdpRegistryClientReadThread::init:" \
         " setting rules to %s\n",
         settings_.on_data_received_logic.c_str ());
 
@@ -56,14 +54,14 @@ madara::transport::UDPTransportReadThread::init (
     else
     {
       madara_logger_log (context_->get_logger (), logger::LOG_MINOR,
-        "UDPTransportReadThread::init:" \
-        " no permanent rules were set");
+        "UdpRegistryClientReadThread::init:" \
+        " no permanent rules were set\n");
     }
   }
 }
 
 void
-madara::transport::UDPTransportReadThread::rebroadcast (
+madara::transport::UdpRegistryClientReadThread::rebroadcast (
   const char * print_prefix,
   MessageHeader * header,
   const knowledge::KnowledgeMap & records)
@@ -122,7 +120,7 @@ madara::transport::UDPTransportReadThread::rebroadcast (
               {
 
                 // send the fragment
-                actual_sent = write_socket_.send (
+                actual_sent = socket_.send (
                   i->second, frag_size, addr->second);
 
                 ++send_attempts;
@@ -226,7 +224,7 @@ madara::transport::UDPTransportReadThread::rebroadcast (
             {
 
               // send the fragment
-              actual_sent = write_socket_.send (buffer_.get_ptr (),
+              actual_sent = socket_.send (buffer_.get_ptr (),
                 (ssize_t)result, i->second);
 
               ++send_attempts;
@@ -319,13 +317,13 @@ madara::transport::UDPTransportReadThread::rebroadcast (
 }
   
 void
-madara::transport::UDPTransportReadThread::cleanup (void)
+madara::transport::UdpRegistryClientReadThread::cleanup (void)
 {
 }
 
 
 void
-madara::transport::UDPTransportReadThread::run (void)
+madara::transport::UdpRegistryClientReadThread::run (void)
 {
   if (!settings_.no_receiving)
   {
@@ -334,7 +332,7 @@ madara::transport::UDPTransportReadThread::run (void)
   
     // allocate a buffer to send
     char * buffer = buffer_.get_ptr ();
-    const char * print_prefix = "UDPTransportReadThread::run";
+    const char * print_prefix = "UdpRegistryClientReadThread::run";
     int64_t buffer_remaining = settings_.queue_length;
 
     madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
@@ -361,7 +359,7 @@ madara::transport::UDPTransportReadThread::run (void)
       print_prefix);
     
     // read the message
-    ssize_t bytes_read = read_socket_.recv ((void *)buffer, 
+    ssize_t bytes_read = socket_.recv ((void *)buffer, 
       (size_t)settings_.queue_length, remote, 0, &wait_time);
  
     if (bytes_read > 0)

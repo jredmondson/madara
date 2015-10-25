@@ -25,11 +25,11 @@ namespace madara
   namespace transport
   {
     /**
-     * @class TCPTransportReadThread
+     * @class TcpTransportReadThread
      * @brief Thread for reading knowledge updates through a TCP socket
      *        (unused but planned)
      **/
-    class TCPTransportReadThread : public threads::BaseThread
+    class TcpTransportReadThread : public threads::BaseThread
     {
     public:
       /**
@@ -43,8 +43,8 @@ namespace madara
       *                              receive limits
       * @param    packet_scheduler scheduler for mimicking network conditions
       **/
-      TCPTransportReadThread (
-        const Settings & settings,
+      TcpTransportReadThread (
+        const TransportSettings & settings,
         const std::string & id,
         std::map <std::string, ACE_INET_Addr> & addresses,
         BandwidthMonitor & send_monitor,

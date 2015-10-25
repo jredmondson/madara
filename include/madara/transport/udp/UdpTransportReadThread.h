@@ -27,10 +27,10 @@ namespace madara
   namespace transport
   {
     /**
-     * @class UDPTransportReadThread
+     * @class UdpTransportReadThread
      * @brief Thread for reading knowledge updates through a UDP socket
      **/
-    class UDPTransportReadThread : public threads::BaseThread
+    class UdpTransportReadThread : public threads::BaseThread
     {
     public:
       /**
@@ -46,8 +46,8 @@ namespace madara
        *                              receive limits
        * @param    packet_scheduler scheduler for mimicking network conditions
        **/
-      UDPTransportReadThread (
-        const Settings & settings,
+      UdpTransportReadThread (
+        const TransportSettings & settings,
         const std::string & id,
         std::map <std::string, ACE_INET_Addr> & addresses,
         ACE_SOCK_Dgram & write_socket,

@@ -115,6 +115,19 @@ madara::transport::TransportContext::get_originator (void) const
 }
 
 inline void
+madara::transport::TransportContext::set_endpoint (
+const std::string & endpoint)
+{
+  endpoint_ = endpoint;
+}
+
+inline const std::string &
+madara::transport::TransportContext::get_endpoint (void) const
+{
+  return endpoint_;
+}
+
+inline void
 madara::transport::TransportContext::set_records (
   const knowledge::KnowledgeMap & source)
 {

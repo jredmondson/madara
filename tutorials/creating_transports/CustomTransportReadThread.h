@@ -41,7 +41,7 @@ public:
     * @param    address    the multicast address we will read from
     **/
   CustomTransportReadThread (
-    const madara::transport::Settings & settings,
+    const madara::transport::TransportSettings & settings,
     const std::string & id,
     madara::knowledge::ThreadSafeContext & context,
     const ACE_INET_Addr & address);
@@ -72,7 +72,7 @@ public:
   void wait_for_ready (void);
 private:
   /// Transport settings
-  const madara::transport::Settings & settings_;
+  const madara::transport::TransportSettings & settings_;
 
   /// host:port identifier of this process
   const std::string                                 id_;

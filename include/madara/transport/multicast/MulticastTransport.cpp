@@ -14,7 +14,7 @@
 
 madara::transport::MulticastTransport::MulticastTransport (const std::string & id,
         madara::knowledge::ThreadSafeContext & context, 
-        Settings & config, bool launch_transport)
+        TransportSettings & config, bool launch_transport)
 : Base (id, config, context),
   write_socket_ (ACE_sap_any_cast (ACE_INET_Addr &), PF_INET, 0, 1)
 {

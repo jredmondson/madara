@@ -2,11 +2,12 @@
 #include "madara/knowledge/KnowledgeBaseImpl.h"
 #include "madara/expression/Interpreter.h"
 #include "madara/expression/ExpressionTree.h"
-#include "madara/transport/udp/UDPTransport.h"
-#include "madara/transport/tcp/TCPTransport.h"
+#include "madara/transport/udp/UdpTransport.h"
+#include "madara/transport/udp/UdpRegistryServer.h"
+#include "madara/transport/udp/UdpRegistryClient.h"
+#include "madara/transport/tcp/TcpTransport.h"
 #include "madara/transport/multicast/MulticastTransport.h"
 #include "madara/transport/broadcast/BroadcastTransport.h"
-
 
 #include <sstream>
 
@@ -19,7 +20,7 @@
 #endif // _USE_OPEN_SPLICE_
 
 #ifdef _USE_NDDS_
-#include "madara/transport/ndds/NDDSTransport.h"
+#include "madara/transport/ndds/NddsTransport.h"
 #endif // _USE_NDDS_
 
 #include <iostream>
@@ -56,7 +57,7 @@ madara::knowledge::KnowledgeBaseImpl::KnowledgeBaseImpl (
 }
 
 madara::knowledge::KnowledgeBaseImpl::KnowledgeBaseImpl (
-  const std::string & host, const madara::transport::Settings & config)
+  const std::string & host, const madara::transport::TransportSettings & config)
   : settings_ (config), files_ (map_)
 {
   id_ = setup_unique_hostport (host);
@@ -108,7 +109,7 @@ const std::string & host)
 
 size_t
 madara::knowledge::KnowledgeBaseImpl::attach_transport (const std::string & id,
-transport::Settings & settings)
+transport::TransportSettings & settings)
 {
   madara::transport::Base * transport (0);
   std::string originator (id);
@@ -157,7 +158,7 @@ transport::Settings & settings)
       "KnowledgeBaseImpl::activate_transport:" \
       " creating NDDS transport.\n");
 
-    transport = new madara::transport::NDDSTransport (originator, map_,
+    transport = new madara::transport::NddsTransport (originator, map_,
       settings, true);
 #else
     madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
@@ -171,7 +172,25 @@ transport::Settings & settings)
       "KnowledgeBaseImpl::activate_transport:" \
       " creating UDP transport.\n");
 
-    transport = new madara::transport::UDPTransport (originator, map_,
+    transport = new madara::transport::UdpTransport (originator, map_,
+      settings, true);
+  }
+  else if (settings.type == madara::transport::REGISTRY_SERVER)
+  {
+    madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
+      "KnowledgeBaseImpl::activate_transport:" \
+      " creating UDP Registry Server transport.\n");
+
+    transport = new madara::transport::UdpRegistryServer (originator, map_,
+      settings, true);
+  }
+  else if (settings.type == madara::transport::REGISTRY_CLIENT)
+  {
+    madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
+      "KnowledgeBaseImpl::activate_transport:" \
+      " creating UDP Registry Client transport.\n");
+
+    transport = new madara::transport::UdpRegistryClient (originator, map_,
       settings, true);
   }
   else if (settings.type == madara::transport::TCP)
@@ -180,7 +199,7 @@ transport::Settings & settings)
       "KnowledgeBaseImpl::activate_transport:" \
       " creating TCP transport.\n");
 
-    transport = new madara::transport::TCPTransport (originator, map_,
+    transport = new madara::transport::TcpTransport (originator, map_,
       settings, true);
   }
   else

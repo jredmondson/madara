@@ -41,7 +41,7 @@ madara::transport::Base::invalidate_transport (void)
     "transport::invalidate_transport: invalidating transport\n");
 }
 
-inline madara::transport::Settings &
+inline madara::transport::TransportSettings &
 madara::transport::Base::settings (void)
 {
   return settings_;

@@ -4,7 +4,7 @@
 #include <string>
 
 #include "madara/MADARA_export.h"
-#include "madara/transport/udp/UDPTransportReadThread.h"
+#include "madara/transport/udp/UdpTransportReadThread.h"
 #include "madara/transport/Transport.h"
 #include "madara/threads/Threader.h"
 
@@ -20,7 +20,7 @@ namespace madara
   namespace transport
   {
     /**
-     * @class UDPTransport
+     * @class UdpTransport
      * @brief UDP-based transport for knowledge. This transport currently
      * supports the following transport settings:<br />
      *        1) multiple host:port pairing with self first in vector<br />
@@ -31,7 +31,7 @@ namespace madara
      *        6) multi-assignment of records<br />
      *        7) rebroadcasting<br />
      **/
-    class MADARA_Export UDPTransport : public Base
+    class MADARA_Export UdpTransport : public Base
     {
     public:
   
@@ -52,14 +52,14 @@ namespace madara
        * @param   config   transport configuration settings
        * @param   launch_transport  whether or not to launch this transport
        **/
-      UDPTransport (const std::string & id, 
+      UdpTransport (const std::string & id, 
         madara::knowledge::ThreadSafeContext & context, 
-        Settings & config, bool launch_transport);
+        TransportSettings & config, bool launch_transport);
 
       /**
        * Destructor
        **/
-      virtual ~UDPTransport ();
+      virtual ~UdpTransport ();
 
       /**
        * Sends a list of knowledge updates to listeners

@@ -8,7 +8,7 @@
 #include <iostream>
 
 madara::transport::BroadcastTransportReadThread::BroadcastTransportReadThread (
-  const Settings & settings,
+  const TransportSettings & settings,
   const std::string & id,
   const ACE_INET_Addr & address,
   ACE_SOCK_Dgram_Bcast & socket,

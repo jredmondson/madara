@@ -9,21 +9,21 @@ feature (opensplice) {
   }
   
   Source_Files {
-      include/madara/transport/splice/Splice_DDS_Transport.cpp
-      include/madara/transport/splice/Splice_Transport_Read_Thread.cpp
-      include/madara/transport/splice/Splice_Knowledge_Update.cpp
-      include/madara/transport/splice/Splice_Knowledge_UpdateDcps.cpp
-      include/madara/transport/splice/Splice_Knowledge_UpdateDcps_impl.cpp
-      include/madara/transport/splice/Splice_Knowledge_UpdateSplDcps.cpp
+      include/madara/transport/splice/SpliceDDSTransport.cpp
+      include/madara/transport/splice/SpliceTransportReadThread.cpp
+      include/madara/transport/splice/SpliceKnowledgeUpdate.cpp
+      include/madara/transport/splice/SpliceKnowledgeUpdateDcps.cpp
+      include/madara/transport/splice/SpliceKnowledgeUpdateDcps_impl.cpp
+      include/madara/transport/splice/SpliceKnowledgeUpdateSplDcps.cpp
   }
 
   Header_Files {
-      include/madara/transport/splice/Splice_DDS_Transport.h
-      include/madara/transport/splice/Splice_Transport_Read_Thread.h
-      include/madara/transport/splice/ccpp_Splice_Knowledge_Update.h 
-      include/madara/transport/splice/Splice_Knowledge_Update.h
-      include/madara/transport/splice/Splice_Knowledge_UpdateDcps_impl.h
-      include/madara/transport/splice/Splice_Knowledge_UpdateSplDcps.h
-      include/madara/transport/splice/Splice_Knowledge_UpdateDcps.h
+      include/madara/transport/splice/SpliceDDSTransport.h
+      include/madara/transport/splice/SpliceTransportReadThread.h
+      include/madara/transport/splice/ccpp_SpliceKnowledgeUpdate.h 
+      include/madara/transport/splice/SpliceKnowledgeUpdate.h
+      include/madara/transport/splice/SpliceKnowledgeUpdateDcps_impl.h
+      include/madara/transport/splice/SpliceKnowledgeUpdateSplDcps.h
+      include/madara/transport/splice/SpliceKnowledgeUpdateDcps.h
   }
 }

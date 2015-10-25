@@ -56,7 +56,7 @@ namespace madara
        *
        **/
       BroadcastTransportReadThread (
-        const Settings & settings,
+        const TransportSettings & settings,
         const std::string & id,
         const ACE_INET_Addr & address,
         ACE_SOCK_Dgram_Bcast & socket,
@@ -95,7 +95,7 @@ namespace madara
 
     private:
       /// Transport settings
-      const Settings & settings_;
+      const TransportSettings & settings_;
 
       /// host:port identifier of this process
       const std::string                                 id_;

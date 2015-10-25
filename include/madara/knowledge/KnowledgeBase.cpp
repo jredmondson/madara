@@ -31,7 +31,7 @@ madara::knowledge::KnowledgeBase::KnowledgeBase (
 }
 
 madara::knowledge::KnowledgeBase::KnowledgeBase (
-  const std::string & host, const madara::transport::Settings & settings)
+  const std::string & host, const madara::transport::TransportSettings & settings)
 : impl_ (new KnowledgeBaseImpl (host, settings)), context_ (0)
 {
 }
@@ -961,7 +961,7 @@ madara::knowledge::KnowledgeBase::vote (void)
 
 #endif // _USE_CID_
 
-madara::transport::Settings &
+madara::transport::TransportSettings &
 madara::knowledge::KnowledgeBase::transport_settings (void)
 {
   return impl_->transport_settings ();
@@ -1458,7 +1458,7 @@ madara::knowledge::KnowledgeBase::get_num_transports (void)
 
 size_t
 madara::knowledge::KnowledgeBase::attach_transport (const std::string & id,
-        transport::Settings & settings)
+        transport::TransportSettings & settings)
 {
   size_t result = 0;
   

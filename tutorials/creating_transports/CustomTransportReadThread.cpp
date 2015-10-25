@@ -17,7 +17,7 @@ namespace transport = madara::transport;
 namespace logger = madara::logger;
 
 CustomTransportReadThread::CustomTransportReadThread (
-  const transport::Settings & settings, const std::string & id,
+  const transport::TransportSettings & settings, const std::string & id,
   knowledge::ThreadSafeContext & context,
   const ACE_INET_Addr & address)
   : settings_ (settings), id_ (id), context_ (context),

@@ -8,7 +8,7 @@ namespace logger = madara::Logger;
 #include <sstream>
 
 madara::transport::NDDSListener::NDDSListener(
-  const Settings & settings, const std::string & id,
+  const TransportSettings & settings, const std::string & id,
   knowledge::ThreadSafeContext & context,
   BandwidthMonitor & send_monitor,
   BandwidthMonitor & receive_monitor,

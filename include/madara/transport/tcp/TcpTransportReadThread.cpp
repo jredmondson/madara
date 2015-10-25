@@ -1,10 +1,10 @@
-#include "madara/transport/tcp/TCPTransportReadThread.h"
+#include "madara/transport/tcp/TcpTransportReadThread.h"
 
 
 #include <iostream>
 
-madara::transport::TCPTransportReadThread::TCPTransportReadThread (
-  const Settings & settings,
+madara::transport::TcpTransportReadThread::TcpTransportReadThread (
+  const TransportSettings & settings,
   const std::string & id,
   std::map <std::string, ACE_INET_Addr> & addresses,
   BandwidthMonitor & send_monitor,
@@ -19,7 +19,7 @@ madara::transport::TCPTransportReadThread::TCPTransportReadThread (
 }
 
 void
-madara::transport::TCPTransportReadThread::init (
+madara::transport::TcpTransportReadThread::init (
 knowledge::KnowledgeBase & knowledge)
 {
   context_ = &(knowledge.get_context ());
@@ -36,7 +36,7 @@ knowledge::KnowledgeBase & knowledge)
 
 #ifndef _MADARA_NO_KARL_
       madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
-        "TCPTransportReadThread::init:" \
+        "TcpTransportReadThread::init:" \
         " setting rules to %s\n",
         settings_.on_data_received_logic.c_str ());
 
@@ -47,14 +47,14 @@ knowledge::KnowledgeBase & knowledge)
     else
     {
       madara_logger_log (context_->get_logger (), logger::LOG_MINOR,
-        "TCPTransportReadThread::init:" \
+        "TcpTransportReadThread::init:" \
         " no permanent rules were set");
     }
   }
 }
 
 void
-madara::transport::TCPTransportReadThread::rebroadcast (
+madara::transport::TcpTransportReadThread::rebroadcast (
 const char * print_prefix,
 MessageHeader * header,
 const knowledge::KnowledgeMap & records)
@@ -162,13 +162,13 @@ const knowledge::KnowledgeMap & records)
 }
 
 void
-madara::transport::TCPTransportReadThread::cleanup (void)
+madara::transport::TcpTransportReadThread::cleanup (void)
 {
 }
 
 
 void
-madara::transport::TCPTransportReadThread::run (void)
+madara::transport::TcpTransportReadThread::run (void)
 {
   if (!settings_.no_receiving)
   {
@@ -177,7 +177,7 @@ madara::transport::TCPTransportReadThread::run (void)
 
     // allocate a buffer to send
     char * buffer = buffer_.get_ptr ();
-    const char * print_prefix = "TCPTransportReadThread::run";
+    const char * print_prefix = "TcpTransportReadThread::run";
     int64_t buffer_remaining = settings_.queue_length;
 
     madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,

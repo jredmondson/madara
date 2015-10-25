@@ -55,7 +55,7 @@
  **/
 std::string host ("");
 const std::string multicast_address ("239.255.0.1:4150");
-madara::transport::Settings settings;
+madara::transport::TransportSettings settings;
 
 /**
  * To terminate an agent, the user needs to press Control+C. The following
