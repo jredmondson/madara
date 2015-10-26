@@ -31,7 +31,7 @@ madara::filters::EndpointDiscovery::filter (
   }
 
   madara_logger_log (vars.get_context ()->get_logger (),
-    logger::LOG_MINOR,
+    logger::LOG_MAJOR,
     "EndpointDiscovery::filter:" \
     " Processing a new update with %d records\n",
     (int)records.size ());
@@ -53,8 +53,16 @@ madara::filters::EndpointDiscovery::filter (
       // if the current endpoint is old, erase it
       if (cur_time - endpoints_[keys[i]].to_integer () > heart_beat_)
       {
+        madara_logger_log (vars.get_context ()->get_logger (),
+          logger::LOG_MINOR,
+          "EndpointDiscovery::filter:" \
+          " Erasing endpoint %s\n",
+          keys[i].c_str ());
+
         endpoints_.erase (keys[i]);
       }
     }
+
+    last_clear_ = cur_time;
   }
 }

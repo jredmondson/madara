@@ -9,8 +9,7 @@
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/threads/Threader.h"
-#include "madara/filters/EndpointDiscovery.h"
-#include "madara/filters/ClearRecords.h"
+#include "madara/filters/EndpointClear.h"
 #include "madara/knowledge/containers/Map.h"
 #include "madara/knowledge/containers/Integer.h"
 
@@ -228,9 +227,6 @@ public:
   **/
   virtual void run (void)
   {
-    endpoints.sync_keys ();
-    endpoints.modify ();
-
     ++value;
 
     if (debug || print_knowledge)
@@ -260,6 +256,11 @@ int main (int argc, char ** argv)
   {
     settings.hosts.push_back (default_port);
   }
+
+  filters::EndpointClear endpointclear (
+    "domain." + settings.domains + ".endpoints");
+
+  settings.add_receive_filter (&endpointclear);
 
   knowledge::KnowledgeBase knowledge (host, settings);
   threads::Threader threader (knowledge);
