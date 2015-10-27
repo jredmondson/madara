@@ -1529,6 +1529,25 @@ madara::knowledge::ThreadSafeContext::to_map (
   return result.size ();
 }
 
+madara::knowledge::KnowledgeMap
+madara::knowledge::ThreadSafeContext::to_map (
+  std::string prefix) const
+{
+  // enter the mutex
+  ContextGuard guard (mutex_);
+
+  knowledge::KnowledgeMap::const_iterator b = map_.begin(),
+                                          e = map_.end();
+  if(prefix.size() > 0)
+  {
+    b = map_.lower_bound(prefix),
+    ++prefix[prefix.size() - 1];
+    e = map_.lower_bound(prefix);
+  }
+
+  return KnowledgeMap(b, e);
+}
+
 void
 madara::knowledge::ThreadSafeContext::copy (
   const ThreadSafeContext & source,

@@ -1648,6 +1648,23 @@ madara::knowledge::KnowledgeBase::to_map (
 
   return result_size;
 }
+
+madara::knowledge::KnowledgeMap
+madara::knowledge::KnowledgeBase::to_map (
+  const std::string & prefix) const
+{
+  if (context_)
+  {
+    return context_->to_map (prefix);
+  }
+  else if (impl_.get_ptr ())
+  {
+    return impl_->to_map (prefix);
+  }
+
+  return KnowledgeMap();
+}
+
 int64_t
 madara::knowledge::KnowledgeBase::save_context (
   const std::string & filename) const

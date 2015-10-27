@@ -1026,6 +1026,16 @@ namespace madara
         bool just_keys = false);
 
       /**
+       * Creates a variable map with Knowledge Records that begin with the given
+       * prefix. Runs in O(log n + m) time, where n is the size of the
+       * KnowledgeBase, and m is the number of matching records
+       *
+       * @param   prefix      Prefix string to match with
+       * @return              A new map with just entries starting with prefix
+       **/
+      knowledge::KnowledgeMap to_map (const std::string & prefix) const;
+
+      /**
        * Saves the context to a file
        * @param   filename    name of the file to save to
        * @return  total bytes written

@@ -450,6 +450,14 @@ madara::knowledge::KnowledgeBaseImpl::to_map (
     prefix, delimiter, suffix, next_keys, result, just_keys);
 }
 
+inline
+madara::knowledge::KnowledgeMap
+madara::knowledge::KnowledgeBaseImpl::to_map (
+  const std::string & prefix) const
+{
+  return map_.to_map (prefix);
+}
+
 
 inline int64_t
 madara::knowledge::KnowledgeBaseImpl::save_context (

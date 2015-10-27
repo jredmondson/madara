@@ -260,6 +260,28 @@ project (Test_Context_Copy) : using_madara, using_ace, no_karl, no_xml {
   }
 }
 
+project (Test_Prefix_To_Map) : using_madara, using_ace, no_karl, no_xml {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_prefix_to_map
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_prefix_to_map.cpp
+  }
+}
+
 project (Test_Timed_Executor) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_timed_executor
