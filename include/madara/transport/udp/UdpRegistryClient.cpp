@@ -324,7 +324,7 @@ madara::transport::UdpRegistryClient::send_data (
 
     for (size_t i = 0; i < hosts.size (); ++i)
     {
-      clients_[hosts[i]].set (settings_.hosts[i].c_str ());
+      clients_[hosts[i]].set (hosts[i].c_str ());
     }
 
     send_register ();

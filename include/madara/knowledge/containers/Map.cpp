@@ -231,6 +231,8 @@ madara::knowledge::containers::Map::sync_keys (void)
     ContextGuard context_guard (*context_);
     Guard guard (mutex_);
 
+    clear (false);
+
     std::map <std::string, knowledge::KnowledgeRecord> contents;
     std::string common = name_ + delimiter_;
     context_->to_map (common, contents);

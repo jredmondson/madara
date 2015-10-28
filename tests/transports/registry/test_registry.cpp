@@ -228,6 +228,7 @@ public:
   virtual void run (void)
   {
     ++value;
+    value.modify ();
 
     if (debug || print_knowledge)
     {
@@ -248,6 +249,7 @@ int main (int argc, char ** argv)
 {
   // set the type of transport to be a registry server
   settings.type = transport::REGISTRY_CLIENT;
+  settings.queue_length = 500000;
 
   // handle all user arguments
   handle_arguments (argc, argv);
