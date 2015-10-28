@@ -1538,13 +1538,21 @@ madara::knowledge::ThreadSafeContext::to_map (
 
   knowledge::KnowledgeMap::const_iterator b = map_.begin(),
                                           e = map_.end();
+
+  // If prefix is empty string, copy entire map
   if(prefix.size() > 0)
   {
-    b = map_.lower_bound(prefix),
-    ++prefix[prefix.size() - 1];
-    e = map_.lower_bound(prefix);
+    ssize_t psz = prefix.size();
+
+    // Find first element >= prefix; i.e., first match or first with that prefix
+    e = b = map_.lower_bound(prefix);
+
+    // Advance e until it is just past last element with prefix (or at end)
+    while(e != map_.end() && e->first.compare(0, psz, prefix) == 0)
+      ++e;
   }
 
+  // RVO should avoid copying this
   return KnowledgeMap(b, e);
 }
 
