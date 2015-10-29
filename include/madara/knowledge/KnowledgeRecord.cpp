@@ -224,6 +224,14 @@ madara::knowledge::KnowledgeRecord::deep_copy (const knowledge::KnowledgeRecord 
   }
 }
 
+madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord::deep_copy () const
+{
+  KnowledgeRecord ret;
+  ret.deep_copy(*this);
+  return ret;
+}
+
 int
 madara::knowledge::KnowledgeRecord::read_file (
   const std::string & filename, uint32_t read_as_type)

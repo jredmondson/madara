@@ -384,6 +384,15 @@ namespace madara
       void deep_copy (const KnowledgeRecord & source);
 
       /**
+       * Creates a deep copy of this knowledge record. Because each
+       * Knowledge Record may contain non-thread-safe ref counted values,
+       * user threads that reference knowledge records will want to use
+       * their own ref counts, which can be accomplished via this method.
+       * @return   a deep copy of this knowledge record
+       **/
+      KnowledgeRecord deep_copy() const;
+
+      /**
        * returns the status of the record.
        * @return   1 if modified, 0 if uncreated
        **/
