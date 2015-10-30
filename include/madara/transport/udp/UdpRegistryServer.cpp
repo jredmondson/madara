@@ -337,7 +337,8 @@ long
 
                 madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
                   "%s: Send result was %d of %d byte fragment to %s\n",
-                  print_prefix, actual_sent, frag_size, addr->first.c_str ());
+                  print_prefix, (int)actual_sent,
+                  (int)frag_size, addr->first.c_str ());
 
                 if (actual_sent > 0)
                 {
@@ -448,7 +449,7 @@ long
 
                 madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
                   "%s:" \
-                  " Sent packet of size %" PRIu64 " to %s\n",
+                  " Sent packet of size %d to %s\n",
                   print_prefix, (int)actual_sent, i->first.c_str ());
 
                 send_monitor_.add ((uint32_t)actual_sent);
