@@ -1531,7 +1531,7 @@ madara::knowledge::ThreadSafeContext::to_map (
 
 // TODO: document this mechanism, and move into own file
 template<class Iterator>
-class DeepIterator
+class DeepIterator : public std::iterator<std::input_iterator_tag, Iterator>
 {
 public:
   DeepIterator(const Iterator &i) : i_(i) {}
