@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <iterator>
 
 #include <string.h>
 
@@ -1529,20 +1530,57 @@ madara::knowledge::ThreadSafeContext::to_map (
   return result.size ();
 }
 
+template<class T>
+struct Void {
+  typedef void type;
+};
+
+template<class T, class U = void, class V = void>
+struct IteratorTraits;/* If error here: invalid type passed to deep_iterate() */
+
+template<class T, class V>
+struct IteratorTraits<T,
+    typename Void<typename T::value_type>::type, V > {
+  enum { is_pair = 0 };
+
+  typedef typename T::value_type value_type;
+
+  static value_type get_deep_copy(const T& i) {
+    return value_type(i->deep_copy());
+  }
+};
+
+template<class T>
+struct IteratorTraits<T,
+    typename Void<typename T::value_type>::type,
+    typename Void<typename T::value_type::second_type>::type
+  > {
+  enum { is_pair = 1 };
+
+  typedef std::pair<const typename T::value_type::first_type &,
+                  typename T::value_type::second_type>
+        value_type;
+
+  static value_type get_deep_copy(const T& i) {
+    return value_type(i->first, i->second.deep_copy());
+  }
+};
+
 // TODO: document this mechanism, and move into own file
 template<class Iterator>
-class DeepIterator : public std::iterator<std::input_iterator_tag, Iterator>
+class DeepIterator :
+  public std::iterator<std::input_iterator_tag,
+                       typename IteratorTraits<Iterator>::value_type>
 {
 public:
   DeepIterator(const Iterator &i) : i_(i) {}
 
-  typedef std::pair<const typename Iterator::value_type::first_type &,
-                    typename Iterator::value_type::second_type>
-          value_type;
+  typedef IteratorTraits<Iterator> traits;
+  typedef typename traits::value_type value_type;
 
   value_type operator*() const
   {
-    return value_type(i_->first, i_->second.deep_copy());
+    return traits::get_deep_copy(i_);
   }
 
   value_type *operator->() const
