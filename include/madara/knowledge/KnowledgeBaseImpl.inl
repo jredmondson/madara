@@ -515,6 +515,8 @@ madara::knowledge::KnowledgeBaseImpl::send_modifieds (
 {
   int result = 0;
 
+  ThreadSafeContext::ContextGuard guard (map_.mutex_);
+
   if (transports_.size () > 0 && !settings.delay_sending_modifieds)
   {
     const knowledge::KnowledgeRecords & modified = map_.get_modifieds ();

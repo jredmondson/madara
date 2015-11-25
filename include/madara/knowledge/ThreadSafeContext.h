@@ -56,6 +56,9 @@ namespace madara
       **/
     typedef std::map <std::string, bool> CopySet;
 
+    /// forward declare for friendship
+    class KnowledgeBaseImpl;
+
     /**
      * @class ThreadSafeContext
      * @brief This class stores variables and their values for use by any entity
@@ -65,6 +68,7 @@ namespace madara
     {
     public:
       typedef ACE_Condition <MADARA_LOCK_TYPE> Condition;
+      friend class KnowledgeBaseImpl;
 
       /**
        * Constructor.

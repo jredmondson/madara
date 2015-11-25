@@ -17,8 +17,8 @@ namespace madara
   namespace knowledge
   {
     /**
-     * @class TimedExecutor
-     * @brief This class executes expression events at specified times
+     * @class ContextGuard
+     * @brief A thread-safe guard for a context or knowledge base
      */
     class MADARA_Export ContextGuard
     {
