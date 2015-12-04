@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <time.h>
 #include "madara/logger/GlobalLogger.h"
+#include "madara/utility/DeepIterator.h"
 
 
 // constructor
@@ -1528,103 +1529,6 @@ madara::knowledge::ThreadSafeContext::to_map (
 
 
   return result.size ();
-}
-
-template<class T>
-struct Void {
-  typedef void type;
-};
-
-template<class T, class U = void, class V = void>
-struct IteratorTraits;/* If error here: invalid type passed to deep_iterate() */
-
-template<class T, class V>
-struct IteratorTraits<T,
-    typename Void<typename T::value_type>::type, V > {
-  enum { is_pair = 0 };
-
-  typedef typename T::value_type value_type;
-
-  static value_type get_deep_copy(const T& i) {
-    return value_type(i->deep_copy());
-  }
-};
-
-template<class T>
-struct IteratorTraits<T,
-    typename Void<typename T::value_type>::type,
-    typename Void<typename T::value_type::second_type>::type
-  > {
-  enum { is_pair = 1 };
-
-  typedef std::pair<const typename T::value_type::first_type &,
-                  typename T::value_type::second_type>
-        value_type;
-
-  static value_type get_deep_copy(const T& i) {
-    return value_type(i->first, i->second.deep_copy());
-  }
-};
-
-// TODO: document this mechanism, and move into own file
-template<class Iterator>
-class DeepIterator :
-  public std::iterator<std::input_iterator_tag,
-                       typename IteratorTraits<Iterator>::value_type>
-{
-public:
-  DeepIterator(const Iterator &i) : i_(i) {}
-
-  typedef IteratorTraits<Iterator> traits;
-  typedef typename traits::value_type value_type;
-
-  value_type operator*() const
-  {
-    return traits::get_deep_copy(i_);
-  }
-
-  value_type *operator->() const
-  {
-    return i_.operator->();
-  }
-
-  DeepIterator &operator++()
-  {
-    ++i_;
-    return *this;
-  }
-
-  DeepIterator operator++(int)
-  {
-    DeepIterator<Iterator> ret(*this);
-    ++i_;
-    return *this;
-  }
-
-  bool operator==(const DeepIterator &o) const
-  {
-    return i_ == o.i_;
-  }
-
-  bool operator!=(const DeepIterator &o) const
-  {
-    return i_ != o.i_;
-  }
-private:
-  Iterator i_;
-};
-
-/**
- * Returns an input iterator from an iterator over pairs (e.g., map::iterator),
- * where the returned iterator, when dereferenced, calls deep_copy() on the
- * second part of the pair, and returns the resulting pair
- *
- * @return the input iterator
- **/
-template<class Iterator>
-DeepIterator<Iterator> deep_iterate(const Iterator &i)
-{
-  return DeepIterator<Iterator>(i);
 }
 
 madara::knowledge::KnowledgeMap

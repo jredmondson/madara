@@ -14,7 +14,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
   libpaths += $(MADARA_ROOT)/lib 
 
   verbatim (gnuace, local) {
-    CPPFLAGS += -w
+    CPPFLAGS += -w -g -Og
   }
   
   Documentation_Files {
