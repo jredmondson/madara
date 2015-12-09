@@ -148,7 +148,7 @@ Section "ace" SEC10
   
   SetOutPath "$INSTDIR\include"
 
-  File /r /x *.obj /x *.vcxproj /x *.filters /x *.user /x *.log /x *.tlog /x *.pdb /x Static_Debug /x Static_Release /x Debug /x Release $%ACE_ROOT%\ace
+  File /r /x *.sln /x *.obj /x *.sdf /x *.vcxproj /x *.filters /x *.user /x *.log /x *.tlog /x *.pdb /x Static_Debug /x Static_Release /x Debug /x Release $%ACE_ROOT%\ace
 
 SectionEnd
 
@@ -156,7 +156,7 @@ Section "-include" SEC07
   SetOutPath "$INSTDIR\include"
   
   ; copy the madara directories
-  File /r "..\..\include\madara"
+  File /r /x *.sln /x *.obj /x *.sdf /x *.vcxproj /x *.filters /x *.user /x *.log /x *.tlog /x *.pdb /x Static_Debug /x Static_Release /x Debug /x Release "..\..\include\madara"
   
 SectionEnd
 
