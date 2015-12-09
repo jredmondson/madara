@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <iterator>
 
 #include <string.h>
 
@@ -14,6 +15,7 @@
 #include <stdio.h>
 #include <time.h>
 #include "madara/logger/GlobalLogger.h"
+#include "madara/utility/DeepIterator.h"
 
 
 // constructor
@@ -1527,66 +1529,6 @@ madara::knowledge::ThreadSafeContext::to_map (
 
 
   return result.size ();
-}
-
-// TODO: document this mechanism, and move into own file
-template<class Iterator>
-class DeepIterator : public std::iterator<std::input_iterator_tag, Iterator>
-{
-public:
-  DeepIterator(const Iterator &i) : i_(i) {}
-
-  typedef std::pair<const typename Iterator::value_type::first_type &,
-                    typename Iterator::value_type::second_type>
-          value_type;
-
-  value_type operator*() const
-  {
-    return value_type(i_->first, i_->second.deep_copy());
-  }
-
-  value_type *operator->() const
-  {
-    return i_.operator->();
-  }
-
-  DeepIterator &operator++()
-  {
-    ++i_;
-    return *this;
-  }
-
-  DeepIterator operator++(int)
-  {
-    DeepIterator<Iterator> ret(*this);
-    ++i_;
-    return *this;
-  }
-
-  bool operator==(const DeepIterator &o) const
-  {
-    return i_ == o.i_;
-  }
-
-  bool operator!=(const DeepIterator &o) const
-  {
-    return i_ != o.i_;
-  }
-private:
-  Iterator i_;
-};
-
-/**
- * Returns an input iterator from an iterator over pairs (e.g., map::iterator),
- * where the returned iterator, when dereferenced, calls deep_copy() on the
- * second part of the pair, and returns the resulting pair
- *
- * @return the input iterator
- **/
-template<class Iterator>
-DeepIterator<Iterator> deep_iterate(const Iterator &i)
-{
-  return DeepIterator<Iterator>(i);
 }
 
 madara::knowledge::KnowledgeMap
