@@ -693,13 +693,15 @@ namespace madara
       void apply_modified (void);
       
       /**
-       * Marks the variable reference as updated
+       * Marks the variable reference as updated for the purposes
+       * of sending or checkpointing knowledge
        * @param   variable  reference to a variable (@see get_ref)
        **/
       void mark_modified (const VariableReference & variable);
       
       /**
-       * Changes global variables to modified at current clock.
+       * Changes global variables to modified at current clock for
+       * the purposes of sending or checkpointing knowledge
        * @param  key     the key of the record you are changing
        * @param  record  record of the key in the context (should exist)
        * @param  settings  the settings for referring to variables
@@ -710,7 +712,8 @@ namespace madara
           KnowledgeReferenceSettings (false));
       
       /**
-       * Changes local variables to modified at current clock.
+       * Changes local variables to modified at current clock for the
+       * purposes of checkpointing.
        * @param  key     the key of the record you are changing
        * @param  record  record of the key in the context (should exist)
        * @param  settings  the settings for referring to variables

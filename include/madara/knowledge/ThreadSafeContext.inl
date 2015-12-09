@@ -652,10 +652,18 @@ madara::knowledge::ThreadSafeContext::mark_modified (
   ContextGuard guard (mutex_);
   
   // if the record is valid
-  if (variable.record_ != 0)
+  if (variable.record_ != 0 && variable.name_.get_ptr ())
   {
-    // mark the changed map with the variable information
-    changed_map_[variable.name_.get_ptr ()] = variable.record_;
+    const char * name = variable.name_.get_ptr ();
+    if (name[0] != '.')
+    {
+      // mark the changed map with the variable information
+      changed_map_[name] = variable.record_;
+    }
+    else
+    {
+      local_changed_map_[name] = variable.record_;
+    }
 
     // and set its status to modified
     if (variable.record_->status () != madara::knowledge::KnowledgeRecord::MODIFIED)
