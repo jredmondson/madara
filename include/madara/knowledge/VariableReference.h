@@ -78,7 +78,7 @@ namespace madara
        * Returns the name of the variable
        * @return    the name of the referenced variable
        **/
-      const char * get_name (void);
+      const char * get_name (void) const;
 
     private:
       

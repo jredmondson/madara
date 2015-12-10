@@ -14,7 +14,6 @@ madara::knowledge::VariableReference::VariableReference (
 {
 }
 
-
 madara::knowledge::VariableReference::~VariableReference ()
 {
 }
@@ -45,7 +44,7 @@ madara::knowledge::VariableReference::operator!= (
 }
 
 const char *
-madara::knowledge::VariableReference::get_name (void)
+madara::knowledge::VariableReference::get_name (void) const
 {
   return name_.get_ptr ();
 }
