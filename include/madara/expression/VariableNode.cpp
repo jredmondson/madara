@@ -203,16 +203,7 @@ madara::expression::VariableNode::set (
 
     *record_ = value;
     
-    if (key_[0] != '.' && !settings.treat_globals_as_locals)
-    {
-      context_.mark_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
-    else if (settings.track_local_changes)
-    {
-      context_.mark_local_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
+    context_.mark_and_signal (key_.c_str(), record_);
   
     return 0;
   }
@@ -247,16 +238,7 @@ madara::expression::VariableNode::set (const madara::knowledge::KnowledgeRecord:
 
     record_->set_value (value);
 
-    if (key_[0] != '.' && !settings.treat_globals_as_locals)
-    {
-      context_.mark_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
-    else if (settings.track_local_changes)
-    {
-      context_.mark_local_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
+    context_.mark_and_signal (key_.c_str(), record_);
   
     return 0;
   }
@@ -282,16 +264,7 @@ madara::expression::VariableNode::set (double value,
 
     record_->set_value (value);
 
-    if (key_[0] != '.' && !settings.treat_globals_as_locals)
-    {
-      context_.mark_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
-    else if (settings.track_local_changes)
-    {
-      context_.mark_local_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
+    context_.mark_and_signal (key_.c_str(), record_);
   
     return 0;
   }
@@ -317,16 +290,7 @@ madara::expression::VariableNode::set (const std::string & value,
 
     record_->set_value (value);
 
-    if (key_[0] != '.' && !settings.treat_globals_as_locals)
-    {
-      context_.mark_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
-    else if (settings.track_local_changes)
-    {
-      context_.mark_local_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
+    context_.mark_and_signal (key_.c_str(), record_);
   
     return 0;
   }
@@ -352,16 +316,7 @@ madara::expression::VariableNode::dec (
 
     --(*record_);
 
-    if (key_[0] != '.' && !settings.treat_globals_as_locals)
-    {
-      context_.mark_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
-    else if (settings.track_local_changes)
-    {
-      context_.mark_local_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
+    context_.mark_and_signal (key_.c_str(), record_);
   
     return *record_;
   }
@@ -387,16 +342,7 @@ madara::expression::VariableNode::inc (
 
     ++(*record_);
 
-    if (key_[0] != '.' && !settings.treat_globals_as_locals)
-    {
-      context_.mark_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
-    else if (settings.track_local_changes)
-    {
-      context_.mark_local_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
+    context_.mark_and_signal (key_.c_str(), record_);
   
     return *record_;
   }

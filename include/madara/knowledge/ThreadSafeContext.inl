@@ -618,57 +618,117 @@ madara::knowledge::ThreadSafeContext::wait_for_change (
 }
 
 inline void
-madara::knowledge::ThreadSafeContext::mark_local_modified (
-  const std::string & key, madara::knowledge::KnowledgeRecord & record,
-  const KnowledgeReferenceSettings & settings
+madara::knowledge::ThreadSafeContext::mark_to_send (
+  const std::string & key,
+  const KnowledgeUpdateSettings & settings
   )
 {
-  // enter the mutex
-  std::string key_actual;
-  const std::string * key_ptr;
+  VariableReference ref = get_ref(key, settings);
+  if(ref.is_valid())
+    mark_to_send(ref, settings);
+}
+
+inline void
+madara::knowledge::ThreadSafeContext::mark_to_send (
+  const VariableReference & ref,
+  const KnowledgeUpdateSettings & settings
+  )
+{
   ContextGuard guard (mutex_);
-  
-  if (settings.expand_variables)
-  {
-    key_actual = expand_statement (key);
-    key_ptr = &key_actual;
-  }
-  else
-    key_ptr = &key;
+  mark_to_send_unsafe(std::string(ref.get_name()), *ref.record_, settings);
+}
 
-  if (*key_ptr != "")
-  {
-    local_changed_map_[*key_ptr] = &record;
+inline void
+madara::knowledge::ThreadSafeContext::mark_to_send_unsafe (
+  const std::string & key, madara::knowledge::KnowledgeRecord & record,
+  const KnowledgeUpdateSettings & settings
+  )
+{
+  changed_map_[key] = &record;
 
-    if (record.status () != madara::knowledge::KnowledgeRecord::MODIFIED)
-      record.set_modified ();
+  if (record.status () != madara::knowledge::KnowledgeRecord::MODIFIED)
+    record.set_modified ();
+}
+
+inline void
+madara::knowledge::ThreadSafeContext::mark_to_checkpoint (
+  const std::string & key,
+  const KnowledgeUpdateSettings & settings
+  )
+{
+  VariableReference ref = get_ref(key, settings);
+  if(ref.is_valid())
+    mark_to_checkpoint(ref, settings);
+}
+
+inline void
+madara::knowledge::ThreadSafeContext::mark_to_checkpoint (
+  const VariableReference & ref,
+  const KnowledgeUpdateSettings & settings
+  )
+{
+  ContextGuard guard (mutex_);
+  mark_to_checkpoint_unsafe(std::string(ref.get_name()),
+                            *ref.record_, settings);
+}
+
+inline void
+madara::knowledge::ThreadSafeContext::mark_to_checkpoint_unsafe (
+  const std::string & key, madara::knowledge::KnowledgeRecord & record,
+  const KnowledgeUpdateSettings & settings
+  )
+{
+  local_changed_map_[key] = &record;
+
+  if (record.status () != madara::knowledge::KnowledgeRecord::MODIFIED)
+    record.set_modified ();
+}
+
+inline void
+madara::knowledge::ThreadSafeContext::mark_and_signal (
+  const char * name, knowledge::KnowledgeRecord * record,
+  const KnowledgeUpdateSettings & settings)
+{
+  // otherwise set the value
+  if (name[0] != '.')
+  {
+    if (!settings.treat_globals_as_locals)
+    {
+      mark_to_send_unsafe (name, *record);
+    }
+    else if (settings.track_local_changes)
+    {
+      mark_to_checkpoint_unsafe (name, *record);
+    }
   }
+  else if (settings.track_local_changes)
+  {
+      mark_to_checkpoint_unsafe (name, *record);
+  }
+
+  if (settings.signal_changes)
+    changed_.broadcast ();
 }
 
 inline void
 madara::knowledge::ThreadSafeContext::mark_modified (
-  const VariableReference & variable)
+  const std::string & key,
+  const KnowledgeUpdateSettings & settings
+  )
+{
+  VariableReference ref = get_ref(key, settings);
+  if(ref.is_valid())
+    mark_modified(ref, settings);
+}
+
+inline void
+madara::knowledge::ThreadSafeContext::mark_modified (
+  const VariableReference & ref,
+  const KnowledgeUpdateSettings & settings
+  )
 {
   ContextGuard guard (mutex_);
-  
-  // if the record is valid
-  if (variable.record_ != 0 && variable.name_.get_ptr ())
-  {
-    const char * name = variable.name_.get_ptr ();
-    if (name[0] != '.')
-    {
-      // mark the changed map with the variable information
-      changed_map_[name] = variable.record_;
-    }
-    else
-    {
-      local_changed_map_[name] = variable.record_;
-    }
-
-    // and set its status to modified
-    if (variable.record_->status () != madara::knowledge::KnowledgeRecord::MODIFIED)
-      variable.record_->set_modified ();
-  }
+  mark_and_signal(ref.get_name(), ref.record_, settings);
 }
 
 inline std::string
@@ -717,37 +777,6 @@ madara::knowledge::ThreadSafeContext::debug_modifieds (void) const
   return result.str ();
 }
 
-
-inline void
-madara::knowledge::ThreadSafeContext::mark_modified (
-  const std::string & key, madara::knowledge::KnowledgeRecord & record,
-  const KnowledgeReferenceSettings & settings)
-{
-  // enter the mutex
-  std::string key_actual;
-  const std::string * key_ptr;
-  ContextGuard guard (mutex_);
-  
-  // if the user needs variable expansion, do so
-  if (settings.expand_variables)
-  {
-    key_actual = expand_statement (key);
-    key_ptr = &key_actual;
-  }
-  else
-    key_ptr = &key;
-
-  // if the variable name is valid
-  if (*key_ptr != "")
-  {
-    // mark the changed map with the variable information
-    changed_map_[*key_ptr] = &record;
-    
-    // and set its status to modified
-    if (record.status () != madara::knowledge::KnowledgeRecord::MODIFIED)
-      record.set_modified ();
-  }
-}
 
 /// Return list of variables that have been modified
 inline const madara::knowledge::KnowledgeRecords &
@@ -799,7 +828,8 @@ madara::knowledge::ThreadSafeContext::apply_modified (void)
       //i->second.status = madara::knowledge::KnowledgeRecord::MODIFIED;
 
       if (i->second.status () != knowledge::KnowledgeRecord::UNCREATED)
-        mark_modified (i->first, i->second, KnowledgeUpdateSettings ());
+        mark_and_signal (i->first.c_str(), &i->second,
+                         KnowledgeUpdateSettings ());
       else
         i->second.set_value (KnowledgeRecord::Integer (0));
 

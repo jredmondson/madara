@@ -496,7 +496,8 @@ madara::knowledge::KnowledgeBase::set (
 
 void
 madara::knowledge::KnowledgeBase::mark_modified (
-  const VariableReference & variable)
+  const VariableReference & variable,
+  const KnowledgeUpdateSettings & settings)
 {
   if (impl_.get_ptr ())
   {
@@ -505,6 +506,21 @@ madara::knowledge::KnowledgeBase::mark_modified (
   else if (context_)
   {
     context_->mark_modified (variable);
+  }
+}
+
+void
+madara::knowledge::KnowledgeBase::mark_modified (
+  const std::string & name,
+  const KnowledgeUpdateSettings & settings)
+{
+  if (impl_.get_ptr ())
+  {
+    impl_->mark_modified (name, settings);
+  }
+  else if (context_)
+  {
+    context_->mark_modified (name, settings);
   }
 }
 

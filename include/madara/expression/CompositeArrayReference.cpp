@@ -215,11 +215,7 @@ madara::expression::CompositeArrayReference::dec (
 
     knowledge::KnowledgeRecord result (record_->dec_index (index));
 
-    if (key_[0] != '.' && !settings.treat_globals_as_locals)
-    {
-      context_.mark_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
+    context_.mark_and_signal (key_.c_str(), record_);
 
     return result;
   }
@@ -258,11 +254,7 @@ madara::expression::CompositeArrayReference::inc (
 
     knowledge::KnowledgeRecord result (record_->inc_index (index));
 
-    if (key_[0] != '.' && !settings.treat_globals_as_locals)
-    {
-      context_.mark_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
+    context_.mark_and_signal (key_.c_str(), record_);
 
     return result;
   }
@@ -316,11 +308,7 @@ madara::expression::CompositeArrayReference::set (const madara::knowledge::Knowl
 
     record_->set_index (index, value);
 
-    if (key_[0] != '.' && !settings.treat_globals_as_locals)
-    {
-      context_.mark_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
+    context_.mark_and_signal (key_.c_str(), record_);
   
     return 0;
   }
@@ -348,11 +336,7 @@ madara::expression::CompositeArrayReference::set (double value,
     
     record_->set_index (index, value);
 
-    if (key_[0] != '.' && !settings.treat_globals_as_locals)
-    {
-      context_.mark_modified (key_, *record_,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
+    context_.mark_and_signal (key_.c_str(), record_);
   
     return 0;
   }

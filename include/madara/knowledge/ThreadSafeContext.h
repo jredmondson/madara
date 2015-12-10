@@ -44,6 +44,8 @@ namespace madara
   namespace expression
   {
     class Interpreter;
+    class CompositeArrayReference;
+    class VariableNode;
   }
 
   namespace knowledge
@@ -69,6 +71,8 @@ namespace madara
     public:
       typedef ACE_Condition <MADARA_LOCK_TYPE> Condition;
       friend class KnowledgeBaseImpl;
+      friend class expression::CompositeArrayReference;
+      friend class expression::VariableNode;
 
       /**
        * Constructor.
@@ -691,37 +695,61 @@ namespace madara
        * Changes all global variables to modified at current clock.
        **/
       void apply_modified (void);
-      
+
       /**
-       * Marks the variable reference as updated for the purposes
-       * of sending or checkpointing knowledge
+       * Marks the variable reference as updated for the purposes of sending or
+       * checkpointing knowledge (for globals and locals respectively)
        * @param   variable  reference to a variable (@see get_ref)
+       * @param  settings  the settings for referring to variables
        **/
-      void mark_modified (const VariableReference & variable);
-      
+      void mark_modified (const VariableReference & variable,
+        const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
+
       /**
-       * Changes global variables to modified at current clock for
-       * the purposes of sending or checkpointing knowledge
+       * Changes global variables to modified at current clock for the purposes
+       * of sending or checkpointing knowledge (globals and locals respectively)
        * @param  key     the key of the record you are changing
        * @param  record  record of the key in the context (should exist)
        * @param  settings  the settings for referring to variables
        **/
       void mark_modified (const std::string & key,
-        madara::knowledge::KnowledgeRecord & record,
-        const KnowledgeReferenceSettings & settings =
-          KnowledgeReferenceSettings (false));
-      
+        const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings ());
+
       /**
-       * Changes local variables to modified at current clock for the
-       * purposes of checkpointing.
-       * @param  key     the key of the record you are changing
-       * @param  record  record of the key in the context (should exist)
+       * Changes variable reference to modified at current clock, and queues it
+       * to send, even if it is a local that would not ordinarily be sent
+       * @param   variable  reference to a variable (@see get_ref)
        * @param  settings  the settings for referring to variables
        **/
-      void mark_local_modified (const std::string & key,
-        madara::knowledge::KnowledgeRecord & record,
-        const KnowledgeReferenceSettings & settings =
-          KnowledgeReferenceSettings (false));
+      void mark_to_send (const VariableReference & variable,
+        const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
+
+      /**
+       * Changes variable to modified at current clock, and queues it to send,
+       * even if it is a local that would not ordinarily be sent
+       * @param  key     the key of the record you are marking
+       * @param  settings  the settings for referring to variables
+       **/
+      void mark_to_send (const std::string & key,
+        const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings ());
+
+      /**
+       * Changes variable reference to modified at current clock for the
+       * purposes of checkpointing (even if it is a global).
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param  settings  the settings for referring to variables
+       **/
+      void mark_to_checkpoint (const VariableReference & variable,
+        const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
+
+      /**
+       * Changes variable to modified at current clock for the purposes of
+       * checkpointing (even if it is a global).
+       * @param  key     the key of the record you are marking
+       * @param  settings  the settings for referring to variables
+       **/
+      void mark_to_checkpoint (const std::string & key,
+        const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings ());
 
       /**
        * Resets a variable to unmodified
@@ -738,7 +766,7 @@ namespace madara
       madara::knowledge::KnowledgeRecord inc (const std::string & key, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically increments the value of the variable
        * @param   variable  reference to a variable (@see get_ref)
@@ -1224,15 +1252,40 @@ namespace madara
       int64_t save_checkpoint (const std::string & filename,
         const std::string & id = "") const;
       
+    protected:
     private:
+      /**
+       * Changes variable to modified at current clock, and queues it to send,
+       * even if it is a local that would not ordinarily be sent. Skips all
+       * safety checks and variable expansions.
+       * @param  key     the key of the record you are marking
+       * @param  record  record of the key in the context (should exist)
+       * @param  settings  the settings for referring to variables
+       **/
+      void mark_to_send_unsafe (const std::string & key,
+        madara::knowledge::KnowledgeRecord & record,
+        const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings ());
+
+      /**
+       * Changes variable to modified at current clock for the purposes of
+       * checkpointing. Skips all safety checks and variable expansions.
+       * @param  key     the key of the record you are marking
+       * @param  record  record of the key in the context (should exist)
+       * @param  settings  the settings for referring to variables
+       **/
+      void mark_to_checkpoint_unsafe (const std::string & key,
+        madara::knowledge::KnowledgeRecord & record,
+        const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings ());
+
       /**
        * method for marking a record modified and signaling changes
        * @param   name     variable name
        * @param   record   record to place in the changed_map
        * @param   settings settings for applying modification and signalling
        **/
-      void mark_and_signal (const char * name, knowledge::KnowledgeRecord * record,
-                            const KnowledgeUpdateSettings & settings);
+      void mark_and_signal (const char * name,
+        knowledge::KnowledgeRecord * record,
+        const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
 
       typedef ACE_Guard<MADARA_LOCK_TYPE> ContextGuard;
 

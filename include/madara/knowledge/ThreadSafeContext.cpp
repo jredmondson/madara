@@ -137,35 +137,6 @@ const KnowledgeReferenceSettings & settings) const
 
 
 
-void
-madara::knowledge::ThreadSafeContext::mark_and_signal (
-  const char * name, knowledge::KnowledgeRecord * record,
-  const KnowledgeUpdateSettings & settings)
-{
-  // otherwise set the value
-  if (name[0] != '.')
-  {
-    if (!settings.treat_globals_as_locals)
-    {
-      mark_modified (name, *record,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
-    else if (settings.track_local_changes)
-    {
-      mark_local_modified (name, *record,
-        knowledge::KnowledgeReferenceSettings (false));
-    }
-  }
-  else if (settings.track_local_changes)
-  {
-      mark_local_modified (name, *record,
-        knowledge::KnowledgeReferenceSettings (false));
-  }
-
-  if (settings.signal_changes)
-    changed_.broadcast ();
-}
-
 // set the value of a variable
 int
 madara::knowledge::ThreadSafeContext::set (

@@ -163,8 +163,18 @@ namespace madara
       /**
        * Marks the variable reference as updated
        * @param   variable  reference to a variable (@see get_ref)
+       * @param   settings  settings for applying the update
        **/
-      void mark_modified (const VariableReference & variable);
+      void mark_modified (const VariableReference & variable,
+          const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
+
+      /**
+       * Marks the variable as updated
+       * @param   name      name of the variable
+       * @param   settings  settings for applying the update
+       **/
+      void mark_modified (const std::string & name,
+          const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
       
       /**
        * Retrieves a value at a specified index within a knowledge array

@@ -313,9 +313,18 @@ const EvalSettings & settings)
 
 void
 madara::knowledge::KnowledgeBaseImpl::mark_modified (
-const VariableReference & variable)
+  const VariableReference & variable,
+  const KnowledgeUpdateSettings & settings)
 {
-  map_.mark_modified (variable);
+  map_.mark_modified (variable, settings);
+}
+
+void
+madara::knowledge::KnowledgeBaseImpl::mark_modified (
+  const std::string & name,
+  const KnowledgeUpdateSettings & settings)
+{
+  map_.mark_modified (name, settings);
 }
 
 int
