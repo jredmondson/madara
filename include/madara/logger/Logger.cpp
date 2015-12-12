@@ -72,14 +72,14 @@ madara::logger::Logger::log (int level, const char * message, ...)
 #else // end if _USING_ANDROID_
     if (this->term_added_ || this->syslog_added_)
     {
-      fprintf (stderr, buffer);
+      fprintf (stderr, "%s", buffer);
     }
 #endif
 
     for (FileVectors::iterator i = files_.begin ();
       i != files_.end (); ++i)
     {
-      fprintf (*i, buffer);
+      fprintf (*i, "%s", buffer);
     }
   }
 }
