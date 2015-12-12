@@ -641,7 +641,7 @@ madara::knowledge::ThreadSafeContext::mark_to_send (
 inline void
 madara::knowledge::ThreadSafeContext::mark_to_send_unsafe (
   const std::string & key, madara::knowledge::KnowledgeRecord & record,
-  const KnowledgeUpdateSettings & settings
+  const KnowledgeUpdateSettings & 
   )
 {
   changed_map_[key] = &record;
@@ -675,7 +675,7 @@ madara::knowledge::ThreadSafeContext::mark_to_checkpoint (
 inline void
 madara::knowledge::ThreadSafeContext::mark_to_checkpoint_unsafe (
   const std::string & key, madara::knowledge::KnowledgeRecord & record,
-  const KnowledgeUpdateSettings & settings
+  const KnowledgeUpdateSettings & 
   )
 {
   local_changed_map_[key] = &record;
