@@ -154,6 +154,9 @@ void JNICALL Java_com_madara_logger_Logger_jni_1setTimestampFormat
   {
     const char * str_format = env->GetStringUTFChars (format, 0);
 
+    current->log (0, "madara::logger::(java) Setting timestamp to \"%s\"\n",
+      str_format);
+
     current->set_timestamp_format (str_format);
 
     env->ReleaseStringUTFChars (format, str_format);

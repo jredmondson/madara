@@ -61,6 +61,8 @@ public class LoggerTest
     KnowledgeBase knowledge = new KnowledgeBase();
     Logger logger = new Logger();
     
+    //logger.setTimestampFormat("%F %X: ");
+    
     knowledge.attachLogger(logger);
     
     System.out.println("***TESTING LOGGER***");
@@ -98,11 +100,14 @@ public class LoggerTest
     Logger logger = GlobalLogger.toLogger();
     knowledge.attachLogger(logger);
     
+    logger.setTimestampFormat("%F %X: ");
+    
     System.out.println("  Adding file LoggerTest_GlobalLogger.txt");
     GlobalLogger.addFile("LoggerTest_GlobalLogger.txt");
     knowledge.print("    This should be printed to terminal and file\n");
     
     logger.log(0, "    This should be printed to terminal and file\n");
+    
   }
   
   public static void main(String...args) throws Exception
