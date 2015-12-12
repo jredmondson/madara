@@ -139,6 +139,9 @@ void JNICALL Java_com_madara_logger_Logger_jni_1log
   {
     const char * str_message = env->GetStringUTFChars (message, 0);
 
+    madara_logger_ptr_log (current, logger::LOG_MINOR,
+      "madara::logger::(java)::logging message\"\n");
+
     current->log ((jint)level, str_message);
 
     env->ReleaseStringUTFChars (message, str_message);
@@ -150,11 +153,12 @@ void JNICALL Java_com_madara_logger_Logger_jni_1setTimestampFormat
 {
   Logger * current = (Logger *)cptr;
 
-  if (current)
+  if (current && format)
   {
     const char * str_format = env->GetStringUTFChars (format, 0);
 
-    current->log (0, "madara::logger::(java) Setting timestamp to \"%s\"\n",
+    madara_logger_ptr_log (current, logger::LOG_MAJOR,
+      "madara::logger::(java)::setTimestampFormat Setting timestamp to \"%s\"\n",
       str_format);
 
     current->set_timestamp_format (str_format);

@@ -66,8 +66,8 @@ threads::JavaThread::run (void)
   JNIEnv * env = jvm.env;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-    "threads::JavaThread::run:" \
-    " Calling user-defined run method\n");
+    "threads::JavaThread(%s)::run:" \
+    " Calling user-defined run method\n", name.c_str ());
 
   env->CallVoidMethod (obj_, run_method_);
 }
@@ -79,8 +79,8 @@ threads::JavaThread::cleanup (void)
   JNIEnv * env = jvm.env;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-    "threads::JavaThread::cleanup:" \
-    " Calling user-defined cleanup method\n");
+    "threads::JavaThread(%s)::cleanup:" \
+    " Calling user-defined cleanup method\n", name.c_str ());
 
   env->CallVoidMethod (obj_, cleanup_method_);
 }
@@ -92,8 +92,8 @@ threads::JavaThread::init (knowledge::KnowledgeBase & context)
   JNIEnv * env = jvm.env;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-    "threads::JavaThread::init:" \
-    " Creating Java KnowledgeBase from data plane\n");
+    "threads::JavaThread(%s)::init:" \
+    " Creating Java KnowledgeBase from data plane\n", name.c_str ());
 
   jclass kb_class = madara::utility::java::find_class (env,
     "com/madara/KnowledgeBase");
@@ -107,8 +107,8 @@ threads::JavaThread::init (knowledge::KnowledgeBase & context)
     fromPointerCall, (jlong) &context, manage);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-    "threads::JavaThread::init:" \
-    " Calling user-defined init method\n");
+    "threads::JavaThread(%s)::init:" \
+    " Calling user-defined init method\n", name.c_str ());
 
   env->CallVoidMethod (obj_, init_method_, jknowledge);
 
@@ -142,23 +142,23 @@ threads::JavaThread::check_compliance (jobject obj)
   if (env)
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-      "threads::JavaThread::check_compliance:" \
-      " allocating global reference for object\n");
+      "threads::JavaThread(%s)::check_compliance:" \
+      " allocating global reference for object\n", name.c_str ());
   
     obj_ = (jobject) env->NewGlobalRef (obj);
 
     if (obj_)
     {
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-        "threads::JavaThread::check_compliance:" \
-        " allocating global reference for object's class\n");
+        "threads::JavaThread(%s)::check_compliance:" \
+        " allocating global reference for object's class\n", name.c_str ());
 
       class_ = (jclass) env->NewGlobalRef (env->GetObjectClass (obj_));
       if (class_)
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-          "threads::JavaThread::check_compliance:" \
-          " class and object obtained successfully\n");
+          "threads::JavaThread(%s)::check_compliance:" \
+          " class and object obtained successfully\n", name.c_str ());
 
         // stash the method calls to minimize call time
         run_method_ = env->GetMethodID(class_,
@@ -171,8 +171,8 @@ threads::JavaThread::check_compliance (jobject obj)
         if (!run_method_)
         {
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
-            "threads::JavaThread::check_compliance:" \
-            " ERROR: run method must be defined\n");
+            "threads::JavaThread(%s)::check_compliance:" \
+            " ERROR: run method must be defined\n", name.c_str ());
         
           result = false;
         }
@@ -180,8 +180,8 @@ threads::JavaThread::check_compliance (jobject obj)
         if (!init_method_)
         {
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
-            "threads::JavaThread::check_compliance:" \
-            " ERROR: init method must be defined\n");
+            "threads::JavaThread(%s)::check_compliance:" \
+            " ERROR: init method must be defined\n", name.c_str ());
         
           result = false;
         }
@@ -189,8 +189,8 @@ threads::JavaThread::check_compliance (jobject obj)
         if (!cleanup_method_)
         {
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
-            "threads::JavaThread::check_compliance:" \
-            " ERROR: cleanup method must be defined\n");
+            "threads::JavaThread(%s)::check_compliance:" \
+            " ERROR: cleanup method must be defined\n", name.c_str ());
         
           result = false;
         }
@@ -198,8 +198,8 @@ threads::JavaThread::check_compliance (jobject obj)
       else
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
-          "threads::JavaThread::check_compliance:" \
-          " ERROR: class object inaccessible\n");
+          "threads::JavaThread(%s)::check_compliance:" \
+          " ERROR: class object inaccessible\n", name.c_str ());
         
         result = false;
       }
@@ -207,8 +207,8 @@ threads::JavaThread::check_compliance (jobject obj)
     else
     {
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
-        "threads::JavaThread::check_compliance:" \
-        " ERROR: object is invalid\n");
+        "threads::JavaThread(%s)::check_compliance:" \
+        " ERROR: object is invalid\n", name.c_str ());
 
       result = false;
     }
@@ -216,8 +216,8 @@ threads::JavaThread::check_compliance (jobject obj)
   else
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
-      "threads::JavaThread::check_compliance:" \
-      " ERROR: unable to acquire JAVA environment\n");
+      "threads::JavaThread(%s)::check_compliance:" \
+      " ERROR: unable to acquire JAVA environment\n", name.c_str ());
 
     result = false;
   }
@@ -236,8 +236,8 @@ threads::JavaThread::init_control_vars (knowledge::KnowledgeBase & control)
   JNIEnv * env = ::madara_jni_get_env ();
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-    "threads::JavaThread::init_control_vars:" \
-    " Populating user control plane variables\n");
+    "threads::JavaThread(%s)::init_control_vars:" \
+    " Populating user control plane variables\n", name.c_str ());
 
   // obtain fromPointer method for com.madara.containers.Integer
   jclass i_class = madara::utility::java::find_class (env,

@@ -61,12 +61,17 @@ public class LoggerTest
     KnowledgeBase knowledge = new KnowledgeBase();
     Logger logger = new Logger();
     
-    //logger.setTimestampFormat("%F %X: ");
+    logger.setLevel(5);
+    
+    logger.setTimestampFormat("%F %X: ");
     
     knowledge.attachLogger(logger);
     
     System.out.println("***TESTING LOGGER***");
     System.out.println("  Testing defaults");
+    
+    logger.log(0, "  This is being printed directly to logger.");
+    
     knowledge.print("    This should be printed to terminal\n");
     
     logger.clear();

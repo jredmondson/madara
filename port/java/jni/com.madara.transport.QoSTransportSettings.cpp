@@ -119,7 +119,7 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addBufferFilter
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
   BufferFilter * buffer_filter = (BufferFilter *)filter;
 
-  if (settings)
+  if (settings && buffer_filter)
   {
     settings->add_filter (buffer_filter);
   }
@@ -137,7 +137,7 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addBufferFilter
   JavaBufferFilter * buffer_filter = new JavaBufferFilter (
     *madara::logger::global_logger.get (), filter);
 
-  if (settings)
+  if (settings && buffer_filter)
   {
     settings->add_filter (buffer_filter);
   }
@@ -247,7 +247,7 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addRebroadcastR
     "JNI:QoSTransportSettings::add: "
     "Adding Java record filter to rebroadcast queue\n");
 
-  if (settings)
+  if (settings && filter)
   {
     settings->add_rebroadcast_filter ( (uint32_t)type, filter);
   }
@@ -269,7 +269,7 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addRebroadcastA
     "JNI:QoSTransportSettings::add: "
     "Adding Java aggregate filter to rebroadcast queue\n");
 
-  if (settings)
+  if (settings && filter)
   {
     settings->add_rebroadcast_filter (filter);
   }
@@ -291,7 +291,7 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addSendRecordFi
     "JNI:QoSTransportSettings::add: "
     "Adding Java record filter to send queue\n");
 
-  if (settings)
+  if (settings && filter)
   {
     settings->add_send_filter ( (uint32_t)type, filter);
   }
@@ -313,7 +313,7 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addSendAggregat
     "JNI:QoSTransportSettings::add: "
     "Adding Java aggregate filter to send queue\n");
 
-  if (settings)
+  if (settings && filter)
   {
     settings->add_send_filter (filter);
   }
@@ -335,7 +335,7 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addReceiveRecor
     "JNI:QoSTransportSettings::add: "
     "Adding Java record filter to receive queue\n");
 
-  if (settings)
+  if (settings && filter)
   {
     settings->add_receive_filter ( (uint32_t)type, filter);
   }
@@ -357,7 +357,7 @@ void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1addReceiveAggre
     "JNI:QoSTransportSettings::add: "
     "Adding Java aggregate filter to receive queue\n");
 
-  if (settings)
+  if (settings && filter)
   {
     settings->add_receive_filter (filter);
   }
@@ -462,7 +462,8 @@ jint JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1gettParticpantT
 * Method:  jni_setSendBandwidthLimit
 * Signature: (JI)V
 */
-void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1setSendBandwidthLimit (JNIEnv * env, jobject obj, jlong cptr, jint limit)
+void JNICALL Java_com_madara_transport_QoSTransportSettings_jni_1setSendBandwidthLimit (
+  JNIEnv * env, jobject obj, jlong cptr, jint limit)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 

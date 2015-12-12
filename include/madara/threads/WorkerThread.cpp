@@ -110,14 +110,14 @@ madara::threads::WorkerThread::run (void)
   if (result != -1)
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-      "WorkerThread::WorkerThread:" \
-      " read thread started (result = %d)\n", result);
+      "WorkerThread::WorkerThread(%s):" \
+      " thread started (result = %d)\n", name_.c_str (), result);
   }
   else
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-      "WorkerThread::WorkerThread:" \
-      " failed to create thread\n");
+      "WorkerThread::WorkerThread(%s):" \
+      " failed to create thread\n", name_.c_str ());
   }
 }
 
@@ -125,8 +125,8 @@ int
 madara::threads::WorkerThread::svc (void)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-    "WorkerThread::svc:" \
-    " checking thread existence\n");
+    "WorkerThread(%s)::svc:" \
+    " checking thread existence\n", name_.c_str ());
 
   if (thread_)
   {
@@ -155,8 +155,8 @@ madara::threads::WorkerThread::svc (void)
       if (hertz_ > 0.0)
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-          "WorkerThread::svc:" \
-          " %s thread repeating at %f hz\n", name_.c_str (), hertz_);
+          "WorkerThread(%s)::svc:" \
+          " thread repeating at %f hz\n", name_.c_str (), hertz_);
 
         one_shot = false;
         poll_frequency.set (1.0 / hertz_);
@@ -167,8 +167,8 @@ madara::threads::WorkerThread::svc (void)
         // infinite hertz until terminate
 
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-          "WorkerThread::svc:" \
-          " %s thread blasting at infinite hz\n", name_.c_str ());
+          "WorkerThread(%s)::svc:" \
+          " thread blasting at infinite hz\n", name_.c_str ());
 
         one_shot = false;
         blaster = true;
@@ -176,21 +176,21 @@ madara::threads::WorkerThread::svc (void)
       else
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-          "WorkerThread::svc:" \
-          " %s thread running once\n", name_.c_str ());
+          "WorkerThread(%s)::svc:" \
+          " thread running once\n", name_.c_str ());
       }
 
       while (control_->get (terminated).is_false ())
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-          "WorkerThread::svc:" \
-          " %s thread checking for pause\n", name_.c_str ());
+          "WorkerThread(%s)::svc:" \
+          " thread checking for pause\n", name_.c_str ());
 
         if (control_->get (paused).is_false ())
         {
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-            "WorkerThread::svc:" \
-            " %s thread calling run function\n", name_.c_str ());
+            "WorkerThread(%s)::svc:" \
+            " thread calling run function\n", name_.c_str ());
 
           thread_->run ();
         }
@@ -203,15 +203,15 @@ madara::threads::WorkerThread::svc (void)
           current = ACE_High_Res_Timer::gettimeofday ();
 
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-            "WorkerThread::svc:" \
-            " %s thread checking for next hertz epoch\n", name_.c_str ());
+            "WorkerThread(%s)::svc:" \
+            " thread checking for next hertz epoch\n", name_.c_str ());
 
           if (current < next_epoch)
             madara::utility::sleep (next_epoch - current);  
 
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-            "WorkerThread::svc:" \
-            " %s thread past epoch\n", name_.c_str ());
+            "WorkerThread(%s)::svc:" \
+            " thread past epoch\n", name_.c_str ());
 
           next_epoch += poll_frequency;
         }
@@ -221,22 +221,22 @@ madara::threads::WorkerThread::svc (void)
     thread_->cleanup ();
 
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-      "WorkerThread::svc:" \
-      " deleting thread %s)\n", name_.c_str ());
+      "WorkerThread(%s)::svc:" \
+      " deleting thread\n", name_.c_str ());
 
     delete thread_;
 
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-      "WorkerThread::svc:" \
-      " setting %s to 1)\n", finished_.get_name ().c_str ());
+      "WorkerThread(%s)::svc:" \
+      " setting finished to 1\n", finished_.get_name ().c_str ());
 
     finished_ = 1;
   }
   else
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-      "WorkerThread::svc:" \
-      " thread creation failed\n");
+      "WorkerThread(%s)::svc:" \
+      " thread creation failed\n", name_.c_str ());
   }
 
   return 0;
