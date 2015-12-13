@@ -63,14 +63,14 @@ public class LoggerTest
     
     logger.setLevel(5);
     
-    logger.setTimestampFormat("%F %X: ");
+    logger.setTimestampFormat("%Y-%m-%d %H:%M:%S: ");
     
     knowledge.attachLogger(logger);
     
     System.out.println("***TESTING LOGGER***");
     System.out.println("  Testing defaults");
     
-    logger.log(0, "  This is being printed directly to logger.");
+    logger.log(0, "  This is being printed directly to logger.\n");
     
     knowledge.print("    This should be printed to terminal\n");
     
@@ -105,7 +105,7 @@ public class LoggerTest
     Logger logger = GlobalLogger.toLogger();
     knowledge.attachLogger(logger);
     
-    logger.setTimestampFormat("%F %X: ");
+    logger.setTimestampFormat("%Y-%m-%d %H:%M:%S: ");
     
     System.out.println("  Adding file LoggerTest_GlobalLogger.txt");
     GlobalLogger.addFile("LoggerTest_GlobalLogger.txt");

@@ -139,9 +139,6 @@ void JNICALL Java_com_madara_logger_Logger_jni_1log
   {
     const char * str_message = env->GetStringUTFChars (message, 0);
 
-    madara_logger_ptr_log (current, logger::LOG_MINOR,
-      "madara::logger::(java)::logging message\"\n");
-
     current->log ((jint)level, str_message);
 
     env->ReleaseStringUTFChars (message, str_message);
