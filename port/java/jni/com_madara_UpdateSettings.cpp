@@ -149,7 +149,7 @@ jlong Java_com_madara_UpdateSettings_jni_1getClockIncrement
 * Method:  jni_freeUpdateSettings
 * Signature: (J)V
 */
-void Java_com_madara_UpdateSettings_jni_1freeUpdateSettings
+void JNICALL Java_com_madara_UpdateSettings_jni_1freeUpdateSettings
 (JNIEnv * env, jclass cls, jlong cptr)
 {
   UpdateSettings * current = (UpdateSettings *)cptr;
