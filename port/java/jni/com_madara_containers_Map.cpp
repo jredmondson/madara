@@ -366,7 +366,7 @@ void JNICALL Java_com_madara_containers_Map_jni_1modifyIndex
 }
 
 
-MADARA_Export jstring JNICALL Java_com_madara_containers_Map_jni_1getDelimiter
+jstring JNICALL Java_com_madara_containers_Map_jni_1getDelimiter
 (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -385,7 +385,7 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_Map_jni_1getDelimiter
 }
 
 
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setDelimiter
+void JNICALL Java_com_madara_containers_Map_jni_1setDelimiter
 (JNIEnv * env, jobject, jlong cptr, jstring delimiter)
 {
   containers::Map * current = (containers::Map *) cptr;
@@ -401,7 +401,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setDelimiter
 }
 
 
-MADARA_Export jobjectArray JNICALL Java_com_madara_containers_Map_jni_1keys
+jobjectArray JNICALL Java_com_madara_containers_Map_jni_1keys
 (JNIEnv * env, jobject, jlong cptr)
 {
   jobjectArray result (0);
@@ -440,7 +440,7 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_Map_jni_1keys
 
 
 
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1sync
+void JNICALL Java_com_madara_containers_Map_jni_1sync
 (JNIEnv *, jobject, jlong cptr)
 {
   containers::Map * current = (containers::Map *) cptr;

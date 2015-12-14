@@ -216,7 +216,7 @@ void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLong
   }
 }
 
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDouble
+void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDouble
 (JNIEnv *, jobject, jlong cptr, jdouble value)
 {
   Vector * current = (Vector *)cptr;
@@ -227,7 +227,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDouble
   }
 }
 
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDoubleArray
+void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDoubleArray
 (JNIEnv * env, jobject, jlong cptr, jdoubleArray data)
 {
   Vector * current = (Vector *)cptr;
@@ -256,7 +256,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDouble
 * Method:    jni_pushbackLongArray
 * Signature: (J[J)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLongArray
+void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLongArray
 (JNIEnv * env, jobject, jlong cptr, jlongArray data)
 {
   Vector * current = (Vector *)cptr;
@@ -285,7 +285,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLongAr
 * Method:    jni_pushbackString
 * Signature: (JLjava/lang/String;)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackString
+void JNICALL Java_com_madara_containers_Vector_jni_1pushbackString
 (JNIEnv * env, jobject, jlong cptr, jstring data)
 {
   Vector * current = (Vector *)cptr;
@@ -513,7 +513,7 @@ void JNICALL Java_com_madara_containers_Vector_jni_1setSettings
   }
 }
 
-MADARA_Export jboolean JNICALL Java_com_madara_containers_Vector_jni_1isTrue
+jboolean JNICALL Java_com_madara_containers_Vector_jni_1isTrue
 (JNIEnv *, jobject, jlong cptr)
 {
   containers::Vector * current = (containers::Vector *)cptr;
@@ -527,7 +527,7 @@ MADARA_Export jboolean JNICALL Java_com_madara_containers_Vector_jni_1isTrue
   return result;
 }
 
-MADARA_Export jboolean JNICALL Java_com_madara_containers_Vector_jni_1isFalse
+jboolean JNICALL Java_com_madara_containers_Vector_jni_1isFalse
 (JNIEnv *, jobject, jlong cptr)
 {
   containers::Vector * current = (containers::Vector *)cptr;

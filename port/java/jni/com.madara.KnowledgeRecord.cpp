@@ -27,7 +27,7 @@ jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__
  * Method:    jni_KnowledgeRecordDeep
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecordDeep (JNIEnv * env, jobject obj, jlong cptr)
+jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecordDeep (JNIEnv * env, jobject obj, jlong cptr)
 {
   KnowledgeRecord * result (0);
   KnowledgeRecord * source = (KnowledgeRecord *) cptr;
@@ -81,7 +81,7 @@ jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__J (JNIEnv * 
 * Method:    jni_KnowledgeRecord
 * Signature: ([D)J
 */
-MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3D (JNIEnv * env, jclass cls, jdoubleArray data)
+jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3D (JNIEnv * env, jclass cls, jdoubleArray data)
 {
   jsize len = env->GetArrayLength (data);
   jboolean isCopy;
@@ -105,7 +105,7 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord
 * Method:    jni_KnowledgeRecord
 * Signature: ([J)J
 */
-MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3J (JNIEnv * env, jclass cls, jlongArray data)
+jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3J (JNIEnv * env, jclass cls, jlongArray data)
 {
   jsize len = env->GetArrayLength (data);
   jboolean isCopy;
@@ -230,7 +230,7 @@ void JNICALL Java_com_madara_KnowledgeRecord_jni_1freeKnowledgeRecord (JNIEnv * 
 * Method:    jni_toDoubleArray
 * Signature: (J)[D
 */
-MADARA_Export jdoubleArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toDoubleArray (JNIEnv * env, jclass cls, jlong cptr)
+jdoubleArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toDoubleArray (JNIEnv * env, jclass cls, jlong cptr)
 {
   jdoubleArray result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
@@ -260,7 +260,7 @@ MADARA_Export jdoubleArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toDouble
 * Method:    jni_toLongArray
 * Signature: (J)[J
 */
-MADARA_Export jlongArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toLongArray (JNIEnv * env, jclass cls, jlong cptr)
+jlongArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toLongArray (JNIEnv * env, jclass cls, jlong cptr)
 {
   jlongArray result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;

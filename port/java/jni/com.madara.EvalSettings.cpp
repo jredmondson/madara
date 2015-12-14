@@ -20,7 +20,7 @@ typedef knowledge::EvalSettings EvalSettings;
  * Method:  jni_getDefaultEvalSettings
  * Signature: (I)J
  */
-jlong Java_com_madara_EvalSettings_jni_1getDefaultEvalSettings (JNIEnv *env, jclass clazz, jint which)
+jlong JNICALL Java_com_madara_EvalSettings_jni_1getDefaultEvalSettings (JNIEnv *env, jclass clazz, jint which)
 {
   return (jlong) (new EvalSettings ());
 }
@@ -30,7 +30,7 @@ jlong Java_com_madara_EvalSettings_jni_1getDefaultEvalSettings (JNIEnv *env, jcl
  * Method:  jni_current
  * Signature: ()J
  */
-jlong Java_com_madara_EvalSettings_jni_1evalSettings__ (JNIEnv *env, jclass clazz)
+jlong JNICALL Java_com_madara_EvalSettings_jni_1evalSettings__ (JNIEnv *env, jclass clazz)
 {
   return (jlong) (new EvalSettings ());
 }
@@ -40,7 +40,7 @@ jlong Java_com_madara_EvalSettings_jni_1evalSettings__ (JNIEnv *env, jclass claz
  * Method:  jni_current
  * Signature: (J)J
  */
-jlong Java_com_madara_EvalSettings_jni_1evalSettings__J
+jlong JNICALL Java_com_madara_EvalSettings_jni_1evalSettings__J
   (JNIEnv *env, jclass clazz, jlong original)
 {
   jlong result (0);
@@ -59,7 +59,7 @@ jlong Java_com_madara_EvalSettings_jni_1evalSettings__J
  * Method:  jni_setDelaySendingModifieds
  * Signature: (JZ)V
  */
-void Java_com_madara_EvalSettings_jni_1setDelaySendingModifieds
+void JNICALL Java_com_madara_EvalSettings_jni_1setDelaySendingModifieds
   (JNIEnv * env, jclass clazz, jlong cptr, jboolean delaySendingModifieds)
 {
   EvalSettings * current = (EvalSettings *) cptr;
@@ -75,7 +75,7 @@ void Java_com_madara_EvalSettings_jni_1setDelaySendingModifieds
  * Method:  jni_getDelaySendingModifieds
  * Signature: (J)Z
  */
-jboolean Java_com_madara_EvalSettings_jni_1getDelaySendingModifieds
+jboolean JNICALL Java_com_madara_EvalSettings_jni_1getDelaySendingModifieds
   (JNIEnv * env, jclass clazz, jlong cptr)
 {
   jboolean result (0);
@@ -94,7 +94,7 @@ jboolean Java_com_madara_EvalSettings_jni_1getDelaySendingModifieds
  * Method:  jni_setPrePrintStatement
  * Signature: (JLjava/lang/String;)V
  */
-void Java_com_madara_EvalSettings_jni_1setPrePrintStatement
+void JNICALL Java_com_madara_EvalSettings_jni_1setPrePrintStatement
   (JNIEnv * env, jclass clazz, jlong cptr, jstring prePrintStatement)
 {
   const char *nativePrePrint = env->GetStringUTFChars (prePrintStatement, 0);
@@ -114,7 +114,7 @@ void Java_com_madara_EvalSettings_jni_1setPrePrintStatement
  * Method:  jni_getPrePrintStatement
  * Signature: (J)Ljava/lang/String;
  */
-jstring Java_com_madara_EvalSettings_jni_1getPrePrintStatement
+jstring JNICALL Java_com_madara_EvalSettings_jni_1getPrePrintStatement
   (JNIEnv * env, jclass clazz, jlong cptr)
 {
   jstring result;
@@ -137,7 +137,7 @@ jstring Java_com_madara_EvalSettings_jni_1getPrePrintStatement
  * Method:  jni_setPostPrintStatement
  * Signature: (JLjava/lang/String;)V
  */
-void Java_com_madara_EvalSettings_jni_1setPostPrintStatement
+void JNICALL Java_com_madara_EvalSettings_jni_1setPostPrintStatement
   (JNIEnv *env, jclass clazz, jlong cptr, jstring postPrintStatement)
 {
   const char *nativePostPrint = env->GetStringUTFChars (postPrintStatement, 0);
@@ -157,7 +157,7 @@ void Java_com_madara_EvalSettings_jni_1setPostPrintStatement
  * Method:  jni_getPostPrintStatement
  * Signature: (J)Ljava/lang/String;
  */
-jstring Java_com_madara_EvalSettings_jni_1getPostPrintStatement
+jstring JNICALL Java_com_madara_EvalSettings_jni_1getPostPrintStatement
   (JNIEnv * env, jclass clazz, jlong cptr)
 {
   jstring result;
@@ -180,7 +180,7 @@ jstring Java_com_madara_EvalSettings_jni_1getPostPrintStatement
  * Method:  jni_setAlwaysOverwrite
  * Signature: (JZ)V
  */
-void Java_com_madara_EvalSettings_jni_1setAlwaysOverwrite
+void JNICALL Java_com_madara_EvalSettings_jni_1setAlwaysOverwrite
   (JNIEnv * env, jclass clazz, jlong cptr, jboolean alwaysOverwrite)
 {
   EvalSettings * current = (EvalSettings *) cptr;
@@ -196,7 +196,7 @@ void Java_com_madara_EvalSettings_jni_1setAlwaysOverwrite
  * Method:  jni_getAlwaysOverwrite
  * Signature: (J)Z
  */
-jboolean Java_com_madara_EvalSettings_jni_1getAlwaysOverwrite
+jboolean JNICALL Java_com_madara_EvalSettings_jni_1getAlwaysOverwrite
   (JNIEnv * env, jclass clazz, jlong cptr)
 {
   jboolean result (0);
@@ -215,7 +215,7 @@ jboolean Java_com_madara_EvalSettings_jni_1getAlwaysOverwrite
  * Method:  jni_setTreatGlobalsAsLocals
  * Signature: (JZ)V
  */
-void Java_com_madara_EvalSettings_jni_1setTreatGlobalsAsLocals
+void JNICALL Java_com_madara_EvalSettings_jni_1setTreatGlobalsAsLocals
   (JNIEnv *env, jclass clazz, jlong cptr, jboolean treatGlobalsAsLocals)
 {
   EvalSettings * current = (EvalSettings *) cptr;
@@ -231,7 +231,7 @@ void Java_com_madara_EvalSettings_jni_1setTreatGlobalsAsLocals
  * Method:  jni_getTreatGlobalsAsLocals
  * Signature: (J)Z
  */
-jboolean Java_com_madara_EvalSettings_jni_1getTreatGlobalsAsLocals
+jboolean JNICALL Java_com_madara_EvalSettings_jni_1getTreatGlobalsAsLocals
   (JNIEnv * env, jclass clazz, jlong cptr)
 {
   jboolean result (0);
@@ -250,7 +250,7 @@ jboolean Java_com_madara_EvalSettings_jni_1getTreatGlobalsAsLocals
  * Method:  jni_setDefaultClockIncrement
  * Signature: (JJ)V
  */
-void Java_com_madara_EvalSettings_jni_1setClockIncrement
+void JNICALL Java_com_madara_EvalSettings_jni_1setClockIncrement
   (JNIEnv *env, jclass clazz, jlong cptr, jlong defaultClockIncrement)
 {
   EvalSettings * current = (EvalSettings *) cptr;
@@ -266,7 +266,7 @@ void Java_com_madara_EvalSettings_jni_1setClockIncrement
  * Method:  jni_getDefaultClockIncrement
  * Signature: (J)J
  */
-jlong Java_com_madara_EvalSettings_jni_1getClockIncrement
+jlong JNICALL Java_com_madara_EvalSettings_jni_1getClockIncrement
   (JNIEnv *env, jclass clazz, jlong cptr)
 {
   jlong result (0);
@@ -285,7 +285,7 @@ jlong Java_com_madara_EvalSettings_jni_1getClockIncrement
  * Method:  jni_freeEvalSettings
  * Signature: (J)V
  */
-void Java_com_madara_EvalSettings_jni_1freeEvalSettings
+void JNICALL Java_com_madara_EvalSettings_jni_1freeEvalSettings
   (JNIEnv * env, jclass cls, jlong cptr)
 {
   EvalSettings * current = (EvalSettings *) cptr;

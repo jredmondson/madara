@@ -20,7 +20,7 @@ typedef knowledge::KnowledgeRecord      KnowledgeRecord;
 * Method:    jni_evaluate
 * Signature: (JJJ)J
 */
-MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1evaluate__JJJ (JNIEnv * env, jobject obj, jlong cptr, jlong expression, jlong evalSettings)
+jlong JNICALL Java_com_madara_Variables_jni_1evaluate__JJJ (JNIEnv * env, jobject obj, jlong cptr, jlong expression, jlong evalSettings)
 {
   KnowledgeRecord * result (0);
   Variables * vars = (Variables *) cptr;
@@ -40,7 +40,7 @@ MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1evaluate__JJJ (JNIEnv
 * Method:    jni_compile
 * Signature: (JLjava/lang/String;)J
 */
-MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1compile (JNIEnv *env, jobject obj, jlong cptr, jstring expression)
+jlong JNICALL Java_com_madara_Variables_jni_1compile (JNIEnv *env, jobject obj, jlong cptr, jstring expression)
 {
   const char *nativeExpression = env->GetStringUTFChars (expression, 0);
 
@@ -62,7 +62,7 @@ MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1compile (JNIEnv *env,
 * Method:    jni_get
 * Signature: (JLjava/lang/String;)J
 */
-MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1get (JNIEnv * env, jobject obj, jlong cptr, jstring var)
+jlong JNICALL Java_com_madara_Variables_jni_1get (JNIEnv * env, jobject obj, jlong cptr, jstring var)
 {
   const char * nativeVar = env->GetStringUTFChars (var, 0);
 
@@ -83,7 +83,7 @@ MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1get (JNIEnv * env, jo
 * Method:    jni_set
 * Signature: (JLjava/lang/String;J)V
 */
-MADARA_Export void JNICALL Java_com_madara_Variables_jni_1set (JNIEnv *env, jobject obj, jlong cptr, jstring var, jlong recordPtr)
+void JNICALL Java_com_madara_Variables_jni_1set (JNIEnv *env, jobject obj, jlong cptr, jstring var, jlong recordPtr)
 {
   const char *nativeVar = env->GetStringUTFChars (var, 0);
 
@@ -97,6 +97,3 @@ MADARA_Export void JNICALL Java_com_madara_Variables_jni_1set (JNIEnv *env, jobj
 
   env->ReleaseStringUTFChars (var, nativeVar);
 }
-
-
-

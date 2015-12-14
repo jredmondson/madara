@@ -112,7 +112,7 @@ void JNICALL Java_com_madara_containers_Integer_jni_1set
  * Method:    jni_inc
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Integer_jni_1inc
+jlong JNICALL Java_com_madara_containers_Integer_jni_1inc
   (JNIEnv *, jobject, jlong cptr)
 {
   jlong result (0);
@@ -131,7 +131,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Integer_jni_1inc
  * Method:    jni_dec
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Integer_jni_1dec
+jlong JNICALL Java_com_madara_containers_Integer_jni_1dec
   (JNIEnv *, jobject, jlong cptr)
 {
   jlong result (0);
@@ -150,7 +150,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Integer_jni_1dec
  * Method:    jni_incValue
  * Signature: (JJ)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Integer_jni_1incValue
+jlong JNICALL Java_com_madara_containers_Integer_jni_1incValue
   (JNIEnv *, jobject, jlong cptr, jlong value)
 {
   jlong result (0);
@@ -169,7 +169,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Integer_jni_1incValue
  * Method:    jni_decValue
  * Signature: (JJ)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Integer_jni_1decValue
+jlong JNICALL Java_com_madara_containers_Integer_jni_1decValue
   (JNIEnv *, jobject, jlong cptr, jlong value)
 {
   jlong result (0);

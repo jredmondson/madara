@@ -57,7 +57,7 @@ typedef containers::NativeIntegerVector    NativeIntegerVector;
  * Method:    jni_NativeIntegerVector
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1NativeIntegerVector__
+jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1NativeIntegerVector__
   (JNIEnv * env, jobject)
 {
   return (jlong) new NativeIntegerVector ();
@@ -68,7 +68,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
  * Method:    jni_NativeIntegerVector
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1NativeIntegerVector__J
+jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1NativeIntegerVector__J
   (JNIEnv * env, jobject, jlong cptr)
 {
   NativeIntegerVector * result (0);
@@ -87,7 +87,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
  * Method:    jni_freeNativeIntegerVector
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1freeNativeIntegerVector
+void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1freeNativeIntegerVector
   (JNIEnv * env, jclass, jlong cptr)
 {
   delete (NativeIntegerVector *) cptr;
@@ -98,7 +98,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1f
  * Method:    jni_set
  * Signature: (JIJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1set
+void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jint index, jlong value)
 {
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
@@ -125,7 +125,7 @@ void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1pushback
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1getName
+jstring JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -148,7 +148,7 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_NativeIntegerVector_jni
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1setName
+void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
@@ -177,7 +177,7 @@ MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1s
  * Method:    jni_get
  * Signature: (JI)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1get
+jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   jlong result (0);
@@ -196,7 +196,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
  * Method:    jni_toRecord
  * Signature: (JI)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1toRecord__JI
+jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1toRecord__JI
   (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   madara::knowledge::KnowledgeRecord * result (0);
@@ -215,7 +215,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
  * Method:    jni_toRecord
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1toRecord__J
+jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1toRecord__J
   (JNIEnv * env, jobject, jlong cptr)
 {
   madara::knowledge::KnowledgeRecord * result (0);
@@ -234,7 +234,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
  * Method:    jni_toArray
  * Signature: (J)[Ljava/lang/Object;
  */
-MADARA_Export jobjectArray JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1toArray
+jobjectArray JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1toArray
   (JNIEnv * env, jobject, jlong cptr)
 {
   jclass kr_class = madara::utility::java::find_class (
@@ -277,7 +277,7 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_NativeIntegerVecto
  * Method:    jni_size
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1size
+jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1size
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
@@ -296,7 +296,7 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1
  * Method:    jni_resize
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1resize
+void JNICALL Java_com_madara_containers_NativeIntegerVector_jni_1resize
   (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
