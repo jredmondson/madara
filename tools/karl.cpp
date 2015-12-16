@@ -13,6 +13,7 @@
 #include "ace/Recursive_Thread_Mutex.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
+#include "madara/threads/Threader.h"
 
 #include "madara/utility/Utility.h"
 #include "madara/filters/GenericFilters.h"
@@ -23,6 +24,7 @@ namespace transport = madara::transport;
 namespace utility = madara::utility;
 namespace filters = madara::filters;
 namespace logger = madara::logger;
+namespace threads = madara::threads;
 
 typedef  std::vector <std::string>  StringVector;
 
@@ -43,11 +45,13 @@ StringVector filenames;
 // print debug information
 bool debug (false);
 bool print_knowledge (false);
+bool print_knowledge_frequency (false);
 bool after_wait (false);
 
 // wait information
 bool waiting (false);
 double wait_time (0.0);
+double frequency (-1.0);
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
@@ -102,15 +106,19 @@ void handle_arguments (int argc, char ** argv)
         "  [-h|--help]              print help menu (i.e., this menu)\n" \
         "  [-i|--input file]        file containing MADARA logic to evaluate\n" \
         "  [-k|--print-knowledge]   print final knowledge\n" \
+        "  [-ky]                    print knowledge after frequent evaluations\n" \
         "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
         "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
         "  [-r|--reduced]           use the reduced message header\n" \
         "  [-s|--save file]         save the resulting knowledge base as karl\n" \
-        "  [-t|--time time]         time to burst messages for throughput test\n" \
+        "  [-t|--time time]         time to wait for results\n" \
         "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
+        "  [-y|--frequency hz]      frequency to perform evaluation. If negative,\n" \
+        "                           only runs once. If zero, hertz is infinite.\n" \
+        "                           If positive, hertz is that hertz rate.\n" \
         "\n",
         argv[0]);
       exit (0);
@@ -139,6 +147,10 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-k" || arg1 == "--print-knowledge")
     {
       print_knowledge = true;
+    }
+    else if (arg1 == "-ky")
+    {
+      print_knowledge_frequency = true;
     }
     else if (arg1 == "-l" || arg1 == "--level")
     {
@@ -228,12 +240,56 @@ void handle_arguments (int argc, char ** argv)
       }
       ++i;
     }
+    else if (arg1 == "-y" || arg1 == "--frequency")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> frequency;
+      }
+
+      ++i;
+    }
     else if (logic == "")
     {
       logic = arg1;
     }
   }
 }
+
+class Evaluator : public threads::BaseThread
+{
+public:
+  Evaluator (std::vector <knowledge::CompiledExpression> & expressions)
+  : knowledge_ (0), expressions_ (expressions)
+  {
+
+  }
+
+  virtual void init (knowledge::KnowledgeBase & knowledge)
+  {
+    knowledge_ = &knowledge;
+  }
+
+  virtual void run (void)
+  {
+    for (size_t i = 0; i < expressions_.size (); ++i)
+    {
+#ifndef _MADARA_NO_KARL_
+      knowledge_->evaluate (expressions_[i]);
+#endif // _MADARA_NO_KARL_
+    }
+
+    if (print_knowledge_frequency)
+    {
+      knowledge_->print ();
+    }
+  }
+
+private:
+  knowledge::KnowledgeBase * knowledge_;
+  std::vector <knowledge::CompiledExpression> & expressions_;
+};
 
 int main (int argc, char ** argv)
 {
@@ -249,62 +305,68 @@ int main (int argc, char ** argv)
   // create a knowledge base and setup our id
   knowledge::KnowledgeBase knowledge (host, settings);
 
-  if (!after_wait)
-  {
-    for (StringVector::const_iterator i = filenames.begin ();
-      i != filenames.end (); ++i)
-    {
-      if (*i != "")
-      {
-        std::string file_logic = utility::file_to_string (*i);
-        if (file_logic != "")
-        {
-#ifndef _MADARA_NO_KARL_
-          knowledge.evaluate (file_logic);
-#endif // _MADARA_NO_KARL_
-        }
-      }
-    }
+  // build the expressions to evaluate
+  std::vector <knowledge::CompiledExpression> expressions;
 
-    // evaluate any logic from the command line last
-    if (logic != "")
+  // each file logic is evaluated first
+  for (StringVector::const_iterator i = filenames.begin ();
+    i != filenames.end (); ++i)
+  {
+    if (utility::file_exists (*i))
     {
-#ifndef _MADARA_NO_KARL_
-      knowledge.evaluate (logic);
-#endif // _MADARA_NO_KARL_
+      expressions.push_back (knowledge.compile (utility::file_to_string (*i)));
     }
   }
 
-  // if user requests to wait, do so before the debug print
-  if (waiting)
+  // command line logics are evaluated last
+  if (logic != "")
   {
-    utility::sleep (wait_time);
+    expressions.push_back (knowledge.compile (logic));
   }
 
-  if (after_wait)
+  // check frequency to see if we should only execute once
+  if (frequency < 0)
   {
-    for (StringVector::const_iterator i = filenames.begin ();
-      i != filenames.end (); ++i)
+    if (!after_wait)
     {
-      if (*i != "")
+      for (size_t i = 0; i < expressions.size (); ++i)
       {
-        std::string file_logic = utility::file_to_string (*i);
-        if (file_logic != "")
-        {
 #ifndef _MADARA_NO_KARL_
-          knowledge.evaluate (file_logic);
+        knowledge.evaluate (expressions[i]);
 #endif // _MADARA_NO_KARL_
-        }
       }
     }
 
-    // evaluate any logic from the command line last
-    if (logic != "")
+    // if user requests to wait, do so before the debug print
+    if (waiting)
     {
-#ifndef _MADARA_NO_KARL_
-      knowledge.evaluate (logic);
-#endif // _MADARA_NO_KARL_
+      utility::sleep (wait_time);
     }
+
+    if (after_wait)
+    {
+      for (size_t i = 0; i < expressions.size (); ++i)
+      {
+#ifndef _MADARA_NO_KARL_
+        knowledge.evaluate (expressions[i]);
+#endif // _MADARA_NO_KARL_
+      }
+    } // if (after_wait)
+  } // if (frequency < 0)
+  else // frequency >= 0
+  {
+    threads::Threader threader (knowledge);
+
+    threader.run (frequency, "evaluator", new Evaluator (expressions), false);
+
+    // if user requests to wait, do so before the debug print
+    if (waiting)
+    {
+      utility::sleep (wait_time);
+    }
+
+    threader.terminate ();
+    threader.wait ();
   }
 
   // if the user requests debugging information, print final knowledge
