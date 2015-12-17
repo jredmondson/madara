@@ -260,15 +260,11 @@ void handle_arguments (int argc, char ** argv)
 class Evaluator : public threads::BaseThread
 {
 public:
-  Evaluator (std::vector <knowledge::CompiledExpression> & expressions)
-  : knowledge_ (0), expressions_ (expressions)
+  Evaluator (knowledge::KnowledgeBase & knowledge,
+    std::vector <knowledge::CompiledExpression> & expressions)
+  : knowledge_ (&knowledge), expressions_ (expressions)
   {
 
-  }
-
-  virtual void init (knowledge::KnowledgeBase & knowledge)
-  {
-    knowledge_ = &knowledge;
   }
 
   virtual void run (void)
@@ -357,7 +353,8 @@ int main (int argc, char ** argv)
   {
     threads::Threader threader (knowledge);
 
-    threader.run (frequency, "evaluator", new Evaluator (expressions), false);
+    threader.run (frequency, "evaluator",
+      new Evaluator (knowledge, expressions), false);
 
     // if user requests to wait, do so before the debug print
     if (waiting)
