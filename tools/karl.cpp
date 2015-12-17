@@ -41,12 +41,15 @@ std::string save_location;
 
 // list of filenames
 StringVector filenames;
+StringVector initfiles;
+StringVector initlogics;
 
 // print debug information
 bool debug (false);
 bool print_knowledge (false);
 bool print_knowledge_frequency (false);
 bool after_wait (false);
+bool check_result (false);
 
 // wait information
 bool waiting (false);
@@ -72,6 +75,10 @@ void handle_arguments (int argc, char ** argv)
         settings.type = transport::BROADCAST;
       }
       ++i;
+    }
+    if (arg1 == "-c" || arg1 == "--check-result")
+    {
+      check_result = true;
     }
     else if (arg1 == "-d" || arg1 == "--domain")
     {
@@ -100,6 +107,7 @@ void handle_arguments (int argc, char ** argv)
         "Evaluates KaRL logic from command line or file.\n\noptions:\n" \
         "  [-a|--after-wait]        Evaluate after wait, rather than before wait\n" \
         "  [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
+        "  [-c|--check-result]      check result of eval. If not zero, then terminate" \
         "  [-d|--domain domain]     the knowledge domain to send and listen to\n" \
         "  [--debug]                print all sent, received, and final knowledge\n" \
         "  [-f|--logfile file]      log to a file\n" \
@@ -119,6 +127,8 @@ void handle_arguments (int argc, char ** argv)
         "  [-y|--frequency hz]      frequency to perform evaluation. If negative,\n" \
         "                           only runs once. If zero, hertz is infinite.\n" \
         "                           If positive, hertz is that hertz rate.\n" \
+        "  [-0|--init-logic logic]  logic containing initial variables (only ran once)\n" \
+        "  [-0f|--init-file file]   file containing initial variables (only ran once)\n" \
         "\n",
         argv[0]);
       exit (0);
@@ -250,6 +260,36 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-0" || arg1 == "--init-logic")
+    {
+      if (i + 1 < argc)
+      {
+        initlogics.push_back (argv[i + 1]);
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-0f" || arg1 == "--init-file")
+    {
+      if (i + 1 < argc)
+      {
+        std::string filename;
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> filename;
+
+        if (debug)
+        {
+          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
+            "\nReading logic from file %s:\n\n" \
+            "\n",
+            filename.c_str ());
+        }
+
+        initfiles.push_back (filename);
+      }
+
+      ++i;
+    }
     else if (logic == "")
     {
       logic = arg1;
@@ -272,7 +312,13 @@ public:
     for (size_t i = 0; i < expressions_.size (); ++i)
     {
 #ifndef _MADARA_NO_KARL_
-      knowledge_->evaluate (expressions_[i]);
+      knowledge::KnowledgeRecord result = knowledge_->evaluate (expressions_[i]);
+
+      if (check_result && result.is_true ())
+      {
+        this->terminated = 1;
+      }
+
 #endif // _MADARA_NO_KARL_
     }
 
@@ -314,6 +360,34 @@ int main (int argc, char ** argv)
     }
   }
 
+  // use no harm settings for initialization (faster, doesn't send data)
+  knowledge::EvalSettings noharm;
+  noharm.treat_globals_as_locals = true;
+  noharm.signal_changes = false;
+
+  // set initialization variables from files into the knowledge base
+  if (initfiles.size () > 0)
+  {
+    for (StringVector::const_iterator i = initfiles.begin ();
+      i != initfiles.end (); ++i)
+    {
+      if (utility::file_exists (*i))
+      {
+        knowledge.evaluate (utility::file_to_string (*i), noharm);
+      }
+    }
+  }
+
+  // set initialization variables from command-line logics
+  if (initlogics.size () > 0)
+  {
+    for (StringVector::const_iterator i = initlogics.begin ();
+      i != initlogics.end (); ++i)
+    {
+      knowledge.evaluate (*i, noharm);
+    }
+  }
+
   // command line logics are evaluated last
   if (logic != "")
   {
@@ -328,7 +402,13 @@ int main (int argc, char ** argv)
       for (size_t i = 0; i < expressions.size (); ++i)
       {
 #ifndef _MADARA_NO_KARL_
-        knowledge.evaluate (expressions[i]);
+        knowledge::KnowledgeRecord result =
+          knowledge.evaluate (expressions[i]);
+
+        if (check_result && result.is_true ())
+        {
+          break;
+        }
 #endif // _MADARA_NO_KARL_
       }
     }
