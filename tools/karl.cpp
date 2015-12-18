@@ -436,14 +436,22 @@ int main (int argc, char ** argv)
     threader.run (frequency, "evaluator",
       new Evaluator (knowledge, expressions), false);
 
+    bool terminated = false;
+
     // if user requests to wait, do so before the debug print
     if (waiting)
     {
-      utility::sleep (wait_time);
+      knowledge::WaitSettings ws;
+      ws.max_wait_time = wait_time;
+
+      terminated = threader.wait (ws);
     }
 
-    threader.terminate ();
-    threader.wait ();
+    if (!terminated)
+    {
+      threader.terminate ();
+      threader.wait ();
+    }
   }
 
   // if the user requests debugging information, print final knowledge

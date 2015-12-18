@@ -138,14 +138,20 @@ namespace madara
 #endif
       /**
        * Wait for a specific thread to complete
-       * @param name    unique thread name for the thread.
+       * @param name    unique thread name for the thread
+       * @param ws      wait settings for specifying period and timeout
+       * @return  true if thread was terminated, false if timeout
        **/
-      void wait (const std::string name);
+      bool wait (const std::string name,
+        const knowledge::WaitSettings & ws = knowledge::WaitSettings ());
 
       /**
        * Wait for all threads to complete
+       * @param ws      wait settings for specifying period and timeout
+       * @return        true if thread was terminated, false if timeout
        **/
-      void wait (void);
+      bool wait (
+        const knowledge::WaitSettings & ws = knowledge::WaitSettings ());
       
       /**
        * Requests a specific thread to pause

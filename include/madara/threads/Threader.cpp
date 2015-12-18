@@ -105,37 +105,74 @@ madara::threads::Threader::run (double hertz,
   }
 }
 
-void
-madara::threads::Threader::wait (const std::string name)
+bool
+madara::threads::Threader::wait (const std::string name,
+  const knowledge::WaitSettings & ws)
 {
+  bool result (false);
+
+#ifndef _MADARA_NO_KARL_
   NamedWorkerThreads::iterator found = threads_.find (name);
 
   if (found != threads_.end ())
   {
-    std::string finished = found->second->finished_.get_name ();
+    std::string condition = found->second->finished_.get_name ();
 
-    utility::wait_true (*control_, finished);
+    result = this->control_->wait (condition, ws).is_true ();
 
-    delete found->second;
+    if (result)
+    {
+      delete found->second;
 
-    threads_.erase (found);
+      threads_.erase (found);
+    }
   }
+#endif // _MADARA_NO_KARL_
+
+  return result;
 }
 
-void
-madara::threads::Threader::wait (void)
+bool
+madara::threads::Threader::wait (const knowledge::WaitSettings & ws)
 {
-  for (NamedWorkerThreads::iterator i = threads_.begin ();
-       i != threads_.end (); ++i)
+  bool result (false);
+
+#ifndef _MADARA_NO_KARL_
+  std::stringstream condition;
+
+  NamedWorkerThreads::iterator i = threads_.begin ();
+
+  // create a condition with the first thread's finished state
+  if (i != threads_.end ())
   {
-    std::string finished = i->second->finished_.get_name ();
-
-    utility::wait_true (*control_, finished);
-
-    delete i->second;
+    condition << i->second->finished_.get_name ();
+    ++i;
   }
 
-  threads_.clear ();
+  // add each other thread to the condition
+  for (; i != threads_.end (); ++i)
+  {
+    condition << "&&";
+    condition << i->second->finished_.get_name ();
+  }
+
+  if (threads_.size () > 0)
+  {
+    result = this->control_->wait (condition.str (), ws).is_true ();
+  }
+
+  if (result)
+  {
+    for (i = threads_.begin (); i != threads_.end (); ++i)
+    {
+      delete i->second;
+    }
+
+    threads_.clear ();
+  }
+#endif // _MADARA_NO_KARL_
+
+  return result;
 }
 
 void
