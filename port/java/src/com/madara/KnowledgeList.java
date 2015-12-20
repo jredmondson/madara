@@ -83,7 +83,7 @@ public class KnowledgeList extends AbstractList<KnowledgeRecord>
   @Override
   public KnowledgeRecord get(int index)
   {
-    return KnowledgeRecord.fromPointer(knowledgeRecords[index]);
+    return KnowledgeRecord.fromPointer(knowledgeRecords[index], false);
   }
 
   /**
