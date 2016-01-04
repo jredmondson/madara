@@ -1502,15 +1502,13 @@ madara::knowledge::ThreadSafeContext::to_map (
   return result.size ();
 }
 
-madara::knowledge::KnowledgeMap
-madara::knowledge::ThreadSafeContext::to_map (
-  std::string prefix) const
+std::pair<madara::knowledge::KnowledgeMap::iterator,
+          madara::knowledge::KnowledgeMap::iterator>
+madara::knowledge::ThreadSafeContext::get_prefix_range(
+  const std::string &prefix) 
 {
-  // enter the mutex
-  ContextGuard guard (mutex_);
-
-  knowledge::KnowledgeMap::const_iterator b = map_.begin(),
-                                          e = map_.end();
+  std::pair<KnowledgeMap::iterator, KnowledgeMap::iterator>
+    ret(map_.begin(), map_.end());
 
   // If prefix is empty string, copy entire map
   if(prefix.size() > 0)
@@ -1518,15 +1516,83 @@ madara::knowledge::ThreadSafeContext::to_map (
     ssize_t psz = prefix.size();
 
     // Find first element >= prefix; i.e., first match or first with that prefix
-    e = b = map_.lower_bound(prefix);
+    ret.second = ret.first = map_.lower_bound(prefix);
 
     // Advance e until it is just past last element with prefix (or at end)
-    while(e != map_.end() && e->first.compare(0, psz, prefix) == 0)
-      ++e;
+    while(ret.second != map_.end() &&
+        ret.second->first.compare(0, psz, prefix) == 0)
+      ++ret.second;
   }
+  return ret;
+}
+
+std::pair<madara::knowledge::KnowledgeMap::const_iterator,
+          madara::knowledge::KnowledgeMap::const_iterator>
+madara::knowledge::ThreadSafeContext::get_prefix_range(
+  const std::string &prefix) const
+{
+  std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
+    ret(map_.begin(), map_.end());
+
+  // If prefix is empty string, copy entire map
+  if(prefix.size() > 0)
+  {
+    ssize_t psz = prefix.size();
+
+    // Find first element >= prefix; i.e., first match or first with that prefix
+    ret.second = ret.first = map_.lower_bound(prefix);
+
+    // Advance e until it is just past last element with prefix (or at end)
+    while(ret.second != map_.end() &&
+        ret.second->first.compare(0, psz, prefix) == 0)
+      ++ret.second;
+  }
+  return ret;
+}
+
+madara::knowledge::KnowledgeMap
+madara::knowledge::ThreadSafeContext::to_map (
+  const std::string &prefix) const
+{
+  // enter the mutex
+  ContextGuard guard (mutex_);
+
+  std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
+    iters(get_prefix_range(prefix));
 
   // RVO should avoid copying this map
-  return KnowledgeMap(deep_iterate(b), deep_iterate(e));
+  return KnowledgeMap(deep_iterate(iters.first), deep_iterate(iters.second));
+}
+
+madara::knowledge::KnowledgeMap
+madara::knowledge::ThreadSafeContext::to_map_stripped (
+  const std::string &prefix) const
+{
+  // enter the mutex
+  ContextGuard guard (mutex_);
+
+  std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
+    iters(get_prefix_range(prefix));
+
+  // NRVO should avoid copying this map
+  KnowledgeMap ret;
+#ifndef USE_CPP11
+  KnowledgeMap::iterator hint = ret.begin();
+#endif
+  for(;iters.first != iters.second; ++iters.first)
+  {
+#ifdef USE_CPP11
+    ret.emplace_hint(ret.end(), iters.first->first.substr(prefix.size()),
+                     iters.first->second.deep_copy());
+#else
+    // Before C++11, hint works if it is the value _before_ the one to be
+    // inserted, so we have to keep track of it.
+    hint = ret.insert(hint, KnowledgeMap::value_type(
+                               iters.first->first.substr(prefix.size()),
+                               iters.first->second.deep_copy()));
+#endif
+  }
+  return ret;
 }
 
 void

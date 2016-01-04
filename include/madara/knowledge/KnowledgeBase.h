@@ -1046,6 +1046,19 @@ namespace madara
       knowledge::KnowledgeMap to_map (const std::string & prefix) const;
 
       /**
+       * Creates a map with Knowledge Records that begin with the given
+       * prefix. Runs in O(log n + m) time, where n is the size of the
+       * KnowledgeBase, and m is the number of matching records
+       *
+       * All key names have the "prefix" portion stripped off their front in
+       * the returned map.
+       *
+       * @param   prefix      Prefix string to match with
+       * @return              A new map with just entries starting with prefix
+       **/
+      knowledge::KnowledgeMap to_map_stripped (const std::string &prefix) const;
+
+      /**
        * Saves the context to a file
        * @param   filename    name of the file to save to
        * @return  total bytes written

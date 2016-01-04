@@ -329,6 +329,21 @@ madara::knowledge::ThreadSafeContext::delete_variable (
   return map_.erase (*key_ptr) == 1;
 }
 
+inline void
+madara::knowledge::ThreadSafeContext::delete_prefix (
+  const std::string & prefix,
+  const KnowledgeReferenceSettings & settings)
+{
+  
+  // enter the mutex
+  ContextGuard guard (mutex_);
+
+  std::pair<KnowledgeMap::iterator, KnowledgeMap::iterator>
+    iters(get_prefix_range(prefix));
+
+  map_.erase (iters.first, iters.second);
+}
+
 // return whether or not the key exists
 inline bool
 madara::knowledge::ThreadSafeContext::exists (

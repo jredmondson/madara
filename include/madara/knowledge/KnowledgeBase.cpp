@@ -1681,6 +1681,22 @@ madara::knowledge::KnowledgeBase::to_map (
   return KnowledgeMap();
 }
 
+madara::knowledge::KnowledgeMap
+madara::knowledge::KnowledgeBase::to_map_stripped (
+  const std::string & prefix) const
+{
+  if (context_)
+  {
+    return context_->to_map_stripped (prefix);
+  }
+  else if (impl_.get_ptr ())
+  {
+    return impl_->to_map_stripped (prefix);
+  }
+
+  return KnowledgeMap();
+}
+
 int64_t
 madara::knowledge::KnowledgeBase::save_context (
   const std::string & filename) const

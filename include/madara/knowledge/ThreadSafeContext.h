@@ -814,6 +814,15 @@ namespace madara
                      KnowledgeReferenceSettings ());
       
       /**
+       * Deletes keys starting with the given prefix
+       * @param   prefix         string which starts all variables to delete
+       * @param   settings       settings for referring to variables
+       **/
+      void delete_prefix (const std::string & prefix,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ());
+      
+      /**
        * Deletes the expression from the interpreter cache
        * @param   expression     the KaRL logic in the interpreter context
        * @return                 true if variable exists
@@ -1200,14 +1209,27 @@ namespace madara
         bool just_keys);
 
       /**
-       * Creates a variable map with Knowledge Records that begin with the given
+       * Creates a map with Knowledge Records that begin with the given
        * prefix. Runs in O(log n + m) time, where n is the size of the
        * KnowledgeBase, and m is the number of matching records
        *
        * @param   prefix      Prefix string to match with
        * @return              A new map with just entries starting with prefix
        **/
-      knowledge::KnowledgeMap to_map (std::string prefix) const;
+      knowledge::KnowledgeMap to_map (const std::string &prefix) const;
+
+      /**
+       * Creates a map with Knowledge Records that begin with the given
+       * prefix. Runs in O(log n + m) time, where n is the size of the
+       * KnowledgeBase, and m is the number of matching records
+       *
+       * All key names have the "prefix" portion stripped off their front in
+       * the returned map.
+       *
+       * @param   prefix      Prefix string to match with
+       * @return              A new map with just entries starting with prefix
+       **/
+      knowledge::KnowledgeMap to_map_stripped (const std::string &prefix) const;
 
 
       /**
@@ -1286,6 +1308,12 @@ namespace madara
       void mark_and_signal (const char * name,
         knowledge::KnowledgeRecord * record,
         const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
+
+      std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
+      get_prefix_range(const std::string &prefix) const;
+
+      std::pair<KnowledgeMap::iterator, KnowledgeMap::iterator>
+      get_prefix_range(const std::string &prefix);
 
       typedef ACE_Guard<MADARA_LOCK_TYPE> ContextGuard;
 

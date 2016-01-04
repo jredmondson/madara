@@ -458,6 +458,14 @@ madara::knowledge::KnowledgeBaseImpl::to_map (
   return map_.to_map (prefix);
 }
 
+inline
+madara::knowledge::KnowledgeMap
+madara::knowledge::KnowledgeBaseImpl::to_map_stripped (
+  const std::string & prefix) const
+{
+  return map_.to_map_stripped (prefix);
+}
+
 
 inline int64_t
 madara::knowledge::KnowledgeBaseImpl::save_context (
