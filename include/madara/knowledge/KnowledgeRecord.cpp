@@ -1933,13 +1933,13 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer, std::string & key
   {
     if      (is_string_type ())
     {
-      str_value_ = new char [size_];
-      strncpy (str_value_.get_ptr (), buffer, size_);
+      str_value_ = new char [buff_value_size];
+      strncpy (str_value_.get_ptr (), buffer, buff_value_size);
     }
   
     else if (type_ == INTEGER)
     {
-      memcpy (&int_value_, buffer, buff_value_size); 
+      memcpy (&int_value_, buffer, sizeof(int_value_)); 
       int_value_ = madara::utility::endian_swap (int_value_);
     }
 
@@ -1960,12 +1960,13 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer, std::string & key
     
     else if (type_ == DOUBLE)
     {
-      memcpy (&double_value_, buffer, buff_value_size); 
+      memcpy (&double_value_, buffer, sizeof(double_value_)); 
       double_value_ = madara::utility::endian_swap (double_value_);
     }
 
     else if (type_ == DOUBLE_ARRAY)
     {
+      buff_value_size = size_ * sizeof (double);
       double * ptr_temp = new double [size_];
 
       memcpy (ptr_temp, buffer, buff_value_size);
