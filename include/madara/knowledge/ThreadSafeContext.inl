@@ -332,9 +332,8 @@ madara::knowledge::ThreadSafeContext::delete_variable (
 inline void
 madara::knowledge::ThreadSafeContext::delete_prefix (
   const std::string & prefix,
-  const KnowledgeReferenceSettings & settings)
+  const KnowledgeReferenceSettings &)
 {
-  
   // enter the mutex
   ContextGuard guard (mutex_);
 
