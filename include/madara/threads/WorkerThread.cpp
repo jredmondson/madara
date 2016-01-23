@@ -61,9 +61,12 @@ madara::threads::WorkerThread::WorkerThread (
       base_string.str () + ".finished", *control);
     started_.set_name (
       base_string.str () + ".started", *control);
+    new_hertz_.set_name (
+      base_string.str () + ".hertz", *control);
 
     finished_ = 0;
     started_ = 0;
+    new_hertz_ = hertz_;
   }
 }
 
@@ -71,6 +74,7 @@ madara::threads::WorkerThread::WorkerThread (const WorkerThread & input)
   : name_ (input.name_), thread_ (input.thread_),
     control_ (input.control_), data_ (input.data_),
     finished_ (input.finished_), started_ (input.started_),
+    new_hertz_ (input.new_hertz_),
     hertz_ (input.hertz_)
 {
 }
@@ -88,8 +92,9 @@ madara::threads::WorkerThread::operator= (const WorkerThread & input)
     this->thread_ = input.thread_;
     this->control_ = input.control_;
     this->data_ = input.data_;
-    this->finished_ = input.started_;
+    this->finished_ = input.finished_;
     this->started_ = input.started_;
+    this->new_hertz_ = input.new_hertz_;
     this->hertz_ = input.hertz_;
   }
 }
@@ -141,7 +146,7 @@ madara::threads::WorkerThread::svc (void)
 
     {
       ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();
-      ACE_Time_Value next_epoch, poll_frequency;
+      ACE_Time_Value next_epoch, frequency;
       
       bool one_shot = true;
       bool blaster = false;
@@ -152,33 +157,9 @@ madara::threads::WorkerThread::svc (void)
       terminated = control_->get_ref (name_ + ".terminated");
       paused = control_->get_ref (name_ + ".paused");
 
-      if (hertz_ > 0.0)
-      {
-        madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-          "WorkerThread(%s)::svc:" \
-          " thread repeating at %f hz\n", name_.c_str (), hertz_);
-
-        one_shot = false;
-        poll_frequency.set (1.0 / hertz_);
-        next_epoch = current + poll_frequency;
-      }
-      else if (hertz_ == 0.0)
-      {
-        // infinite hertz until terminate
-
-        madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-          "WorkerThread(%s)::svc:" \
-          " thread blasting at infinite hz\n", name_.c_str ());
-
-        one_shot = false;
-        blaster = true;
-      }
-      else
-      {
-        madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-          "WorkerThread(%s)::svc:" \
-          " thread running once\n", name_.c_str ());
-      }
+      // change thread frequency
+      change_frequency (hertz_, current, frequency, next_epoch,
+        one_shot, blaster);
 
       while (control_->get (terminated).is_false ())
       {
@@ -198,6 +179,13 @@ madara::threads::WorkerThread::svc (void)
         if (one_shot)
           break;
 
+        // check for a change in frequency/hertz
+        if (new_hertz_ != hertz_)
+        {
+          change_frequency (*new_hertz_,
+            current, frequency, next_epoch, one_shot, blaster);
+        }
+
         if (!blaster)
         {
           current = ACE_High_Res_Timer::gettimeofday ();
@@ -213,7 +201,7 @@ madara::threads::WorkerThread::svc (void)
             "WorkerThread(%s)::svc:" \
             " thread past epoch\n", name_.c_str ());
 
-          next_epoch += poll_frequency;
+          next_epoch += frequency;
         }
       }
     }

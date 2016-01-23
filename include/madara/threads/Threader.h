@@ -7,7 +7,8 @@
  * @file Threader.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains a thre
+ * This file contains a threader class that launches and manages
+ * threads for users
  **/
 
 #include <string>
@@ -186,6 +187,18 @@ namespace madara
        **/
       void terminate (void);
 
+      /**
+       * Modify hertz rate of a thread. This is only useful
+       * for periodic threads that are operating at infinite
+       * or set hertz rates. If the thread had been started
+       * as a run once thread, it cannot be changed to a
+       * hertz rate as the thread will be dead. In the latter
+       * case, restart the thread at the new hertz rate.
+       * @param name   unique thread name for the thread
+       * @param hertz  new hertz rate for the periodic thread
+       **/
+      void change_hertz (const std::string name, double hertz);
+
     private:
       
       /**
@@ -207,5 +220,7 @@ namespace madara
     };
   }
 }
+
+#include "Threader.inl"
 
 #endif  // _MADARA_THREADS_THREADER_H_

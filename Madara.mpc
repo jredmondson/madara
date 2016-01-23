@@ -59,6 +59,8 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/filters
     include/madara/logger/Logger.inl
     include/madara/utility
+    include/madara/threads/Threader.inl
+    include/madara/threads/WorkerThread.inl
     include/madara/transport/Transport.inl
     include/madara/transport/BandwidthMonitor.inl
   }

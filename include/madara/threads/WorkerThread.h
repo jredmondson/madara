@@ -14,6 +14,7 @@
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "BaseThread.h"
+#include "madara/knowledge/containers/Double.h"
 
 #include "ace/Task.h"
  
@@ -82,6 +83,22 @@ namespace madara
       void run (void);
       
     protected:
+
+      /**
+       * Changes the frequency given a hertz rate
+       * @param  hertz      the new hertz rate
+       * @param  current    current time
+       * @param  frequency  an updated frequency value
+       * @param  next_epoch next time to trigger execution
+       * @param  one_shot   if hertz rate is less than 0, true.
+       *                    Otherwise, false
+       * @param  blaster    if hertz rate is 0, true. Otherwise, false.
+       **/
+      void change_frequency (double hertz,
+        ACE_Time_Value & current, ACE_Time_Value & frequency,
+        ACE_Time_Value & next_epoch,
+        bool & one_shot, bool & blaster);
+
       /// the name of the contained thread
       std::string name_;
 
@@ -98,14 +115,19 @@ namespace madara
        * thread safe finished flag that will be sent to the knowledge
        * base on completion of the thread
        **/
-      madara::knowledge::containers::Integer finished_;
+      knowledge::containers::Integer finished_;
       
       /**
        * thread safe start flag that will be sent to the knowledge
        * base on launch of the thread
        **/
-      madara::knowledge::containers::Integer started_;
+      knowledge::containers::Integer started_;
 
+      /**
+       * thread safe hertz reference
+       **/
+      knowledge::containers::Double new_hertz_;
+      
       /**
        * hertz rate for worker thread executions
        **/
@@ -118,5 +140,7 @@ namespace madara
     typedef std::map <std::string, WorkerThread *>  NamedWorkerThreads;
   }
 }
+
+#include "WorkerThread.inl"
 
 #endif // _MADARA_THREADS_WORKER_THREAD_H_

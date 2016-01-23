@@ -1,3 +1,7 @@
+#ifndef _MADARA_KNOWLEDGE_CONTAINERS_INTEGER_INL_
+#define _MADARA_KNOWLEDGE_CONTAINERS_INTEGER_INL_
+
+
 #include "Integer.h"
 #include "madara/knowledge/ContextGuard.h"
 
@@ -409,3 +413,5 @@ madara::knowledge::containers::Integer::set_quality (
     context_->set_quality (name_, quality, true, settings);
   }
 }
+
+#endif // _MADARA_KNOWLEDGE_CONTAINERS_INTEGER_INL_
