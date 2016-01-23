@@ -81,7 +81,7 @@ int main (int argc, char * argv[])
   if (argc == 3)
   {
     // change the domain from its default to the one provided by the user
-    settings.domains = argv[2];
+    settings.write_domain = argv[2];
   }
 
   // Create the knowledge base with the transport settings set for multicast

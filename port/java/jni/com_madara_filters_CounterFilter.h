@@ -13,7 +13,8 @@ extern "C" {
  * Method:    jni_CounterFilter
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_filters_CounterFilter_jni_1CounterFilter__
+MADARA_Export jlong JNICALL
+Java_com_madara_filters_CounterFilter_jni_1CounterFilter__
   (JNIEnv *, jobject);
 
 /*
@@ -21,7 +22,8 @@ MADARA_Export jlong JNICALL Java_com_madara_filters_CounterFilter_jni_1CounterFi
  * Method:    jni_getThroughput
  * Signature: (J)D
  */
-MADARA_Export jdouble JNICALL Java_com_madara_filters_CounterFilter_jni_1getThroughput
+MADARA_Export jdouble JNICALL
+Java_com_madara_filters_CounterFilter_jni_1getThroughput
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -29,7 +31,8 @@ MADARA_Export jdouble JNICALL Java_com_madara_filters_CounterFilter_jni_1getThro
  * Method:    jni_addReceiveFilterTo
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_filters_CounterFilter_jni_1addReceiveFilterTo
+MADARA_Export void JNICALL
+Java_com_madara_filters_CounterFilter_jni_1addReceiveFilterTo
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -37,7 +40,8 @@ MADARA_Export void JNICALL Java_com_madara_filters_CounterFilter_jni_1addReceive
  * Method:    jni_addSendFilterTo
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_filters_CounterFilter_jni_1addSendFilterTo
+MADARA_Export void JNICALL
+Java_com_madara_filters_CounterFilter_jni_1addSendFilterTo
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -45,7 +49,8 @@ MADARA_Export void JNICALL Java_com_madara_filters_CounterFilter_jni_1addSendFil
  * Method:    jni_addRebroadcastFilterTo
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_filters_CounterFilter_jni_1addRebroadcastFilterTo
+MADARA_Export void JNICALL
+Java_com_madara_filters_CounterFilter_jni_1addRebroadcastFilterTo
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -53,7 +58,8 @@ MADARA_Export void JNICALL Java_com_madara_filters_CounterFilter_jni_1addRebroad
  * Method:    jni_getCount
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_filters_CounterFilter_jni_1getCount
+MADARA_Export jlong JNICALL
+Java_com_madara_filters_CounterFilter_jni_1getCount
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -61,7 +67,8 @@ MADARA_Export jlong JNICALL Java_com_madara_filters_CounterFilter_jni_1getCount
  * Method:    jni_getElapsed
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_filters_CounterFilter_jni_1getElapsed
+MADARA_Export jlong JNICALL
+Java_com_madara_filters_CounterFilter_jni_1getElapsed
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -69,7 +76,8 @@ MADARA_Export jlong JNICALL Java_com_madara_filters_CounterFilter_jni_1getElapse
  * Method:    jni_freeCounterFilter
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_filters_CounterFilter_jni_1freeCounterFilter
+MADARA_Export void JNICALL
+Java_com_madara_filters_CounterFilter_jni_1freeCounterFilter
   (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus

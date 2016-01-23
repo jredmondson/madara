@@ -6,14 +6,16 @@ namespace containers = knowledge::containers;
 typedef containers::Collection    Collection;
 
 
-jlong JNICALL Java_com_madara_containers_Collection_jni_1Collection__
+jlong JNICALL
+Java_com_madara_containers_Collection_jni_1Collection__
 (JNIEnv *, jobject)
 {
   return (jlong) new Collection ();
 }
 
 
-jlong JNICALL Java_com_madara_containers_Collection_jni_1Collection__J
+jlong JNICALL
+Java_com_madara_containers_Collection_jni_1Collection__J
   (JNIEnv *, jobject, jlong cptr)
 {
   Collection * result (0);
@@ -28,14 +30,16 @@ jlong JNICALL Java_com_madara_containers_Collection_jni_1Collection__J
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1freeCollection
+void JNICALL
+Java_com_madara_containers_Collection_jni_1freeCollection
   (JNIEnv *, jclass, jlong cptr)
 {
   delete (Collection *)cptr;
 }
 
 
-jstring JNICALL Java_com_madara_containers_Collection_jni_1getDebugInfo
+jstring JNICALL
+Java_com_madara_containers_Collection_jni_1getDebugInfo
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -54,7 +58,8 @@ jstring JNICALL Java_com_madara_containers_Collection_jni_1getDebugInfo
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1modify
+void JNICALL
+Java_com_madara_containers_Collection_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
   Collection * current = (Collection *)cptr;
@@ -66,7 +71,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1modify
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1setSettings
+void JNICALL
+Java_com_madara_containers_Collection_jni_1setSettings
   (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -80,7 +86,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1setSettings
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addBarrier
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addBarrier
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -93,7 +100,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addBarrier
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addCounter
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addCounter
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -106,7 +114,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addCounter
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addDouble
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addDouble
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -119,7 +128,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addDouble
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addDoubleVector
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addDoubleVector
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -133,7 +143,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addDoubleVector
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addFlexMap
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addFlexMap
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -147,7 +158,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addFlexMap
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addInteger
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addInteger
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -160,7 +172,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addInteger
   }
 }
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addIntegerVector
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addIntegerVector
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -174,7 +187,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addIntegerVector
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addMap
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addMap
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -188,7 +202,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addMap
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addNativeDoubleVector
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addNativeDoubleVector
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -202,7 +217,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addNativeDoubleVector
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addNativeIntegerVector
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addNativeIntegerVector
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -216,7 +232,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addNativeIntegerVector
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addString
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addString
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -230,7 +247,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addString
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addStringVector
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addStringVector
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -244,7 +262,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addStringVector
 }
 
 
-void JNICALL Java_com_madara_containers_Collection_jni_1addVector
+void JNICALL
+Java_com_madara_containers_Collection_jni_1addVector
   (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
@@ -257,7 +276,8 @@ void JNICALL Java_com_madara_containers_Collection_jni_1addVector
   }
 }
 
-jboolean JNICALL Java_com_madara_containers_Collection_jni_1isTrue
+jboolean JNICALL
+Java_com_madara_containers_Collection_jni_1isTrue
 (JNIEnv *, jobject, jlong cptr)
 {
   Collection * current = (Collection *)cptr;
@@ -272,7 +292,8 @@ jboolean JNICALL Java_com_madara_containers_Collection_jni_1isTrue
 }
 
 
-jboolean JNICALL Java_com_madara_containers_Collection_jni_1isFalse
+jboolean JNICALL
+Java_com_madara_containers_Collection_jni_1isFalse
 (JNIEnv *, jobject, jlong cptr)
 {
   Collection * current = (Collection *)cptr;

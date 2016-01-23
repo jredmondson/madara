@@ -56,7 +56,8 @@ typedef containers::String    String;
  * Method:    jni_String
  * Signature: ()J
  */
-jlong JNICALL Java_com_madara_containers_String_jni_1String__
+jlong JNICALL
+Java_com_madara_containers_String_jni_1String__
   (JNIEnv * env, jobject)
 {
   return (jlong) new String ();
@@ -67,7 +68,8 @@ jlong JNICALL Java_com_madara_containers_String_jni_1String__
  * Method:    jni_String
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_containers_String_jni_1String__J
+jlong JNICALL
+Java_com_madara_containers_String_jni_1String__J
   (JNIEnv * env, jobject, jlong cptr)
 {
   String * result (0);
@@ -86,7 +88,8 @@ jlong JNICALL Java_com_madara_containers_String_jni_1String__J
  * Method:    jni_freeString
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_containers_String_jni_1freeString
+void JNICALL
+Java_com_madara_containers_String_jni_1freeString
   (JNIEnv * env, jclass, jlong cptr)
 {
   delete (String *) cptr;
@@ -97,7 +100,8 @@ void JNICALL Java_com_madara_containers_String_jni_1freeString
  * Method:    jni_set
  * Signature: (JLjava/lang/String;)V
  */
-void JNICALL Java_com_madara_containers_String_jni_1set
+void JNICALL
+Java_com_madara_containers_String_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jstring value)
 {
   String * current = (String *) cptr;
@@ -116,7 +120,8 @@ void JNICALL Java_com_madara_containers_String_jni_1set
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-jstring JNICALL Java_com_madara_containers_String_jni_1getName
+jstring JNICALL
+Java_com_madara_containers_String_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -139,7 +144,8 @@ jstring JNICALL Java_com_madara_containers_String_jni_1getName
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-void JNICALL Java_com_madara_containers_String_jni_1setName
+void JNICALL
+Java_com_madara_containers_String_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
   String * current = (String *) cptr;
@@ -168,7 +174,8 @@ void JNICALL Java_com_madara_containers_String_jni_1setName
  * Method:    jni_toString
  * Signature: (J)Ljava/lang/String;
  */
-jstring JNICALL Java_com_madara_containers_String_jni_1toString
+jstring JNICALL
+Java_com_madara_containers_String_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -191,7 +198,8 @@ jstring JNICALL Java_com_madara_containers_String_jni_1toString
  * Method:    jni_toDouble
  * Signature: (J)D
  */
-jdouble JNICALL Java_com_madara_containers_String_jni_1toDouble
+jdouble JNICALL
+Java_com_madara_containers_String_jni_1toDouble
   (JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0.0);
@@ -210,7 +218,8 @@ jdouble JNICALL Java_com_madara_containers_String_jni_1toDouble
  * Method:    jni_toLong
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_containers_String_jni_1toLong
+jlong JNICALL
+Java_com_madara_containers_String_jni_1toLong
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
@@ -224,7 +233,8 @@ jlong JNICALL Java_com_madara_containers_String_jni_1toLong
   return result;
 }
 
-void JNICALL Java_com_madara_containers_String_jni_1modify
+void JNICALL
+Java_com_madara_containers_String_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
   String * current = (String *) cptr;
@@ -235,7 +245,8 @@ void JNICALL Java_com_madara_containers_String_jni_1modify
   }
 }
 
-void JNICALL Java_com_madara_containers_String_jni_1setSettings
+void JNICALL
+Java_com_madara_containers_String_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::String * current = (containers::String *)cptr;
@@ -248,7 +259,8 @@ void JNICALL Java_com_madara_containers_String_jni_1setSettings
   }
 }
 
-jboolean JNICALL Java_com_madara_containers_String_jni_1isTrue
+jboolean JNICALL
+Java_com_madara_containers_String_jni_1isTrue
 (JNIEnv *, jobject, jlong cptr)
 {
   containers::String * current = (containers::String *)cptr;
@@ -263,7 +275,8 @@ jboolean JNICALL Java_com_madara_containers_String_jni_1isTrue
 }
 
 
-jboolean JNICALL Java_com_madara_containers_String_jni_1isFalse
+jboolean JNICALL
+Java_com_madara_containers_String_jni_1isFalse
 (JNIEnv *, jobject, jlong cptr)
 {
   containers::String * current = (containers::String *)cptr;

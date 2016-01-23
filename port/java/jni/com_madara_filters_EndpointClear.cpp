@@ -9,13 +9,15 @@ typedef transport::QoSTransportSettings QoSTransportSettings;
 typedef filters::EndpointClear EndpointClear;
 
 
-jlong JNICALL Java_com_madara_filters_EndpointClear_jni_1EndpointClear
+jlong JNICALL
+Java_com_madara_filters_EndpointClear_jni_1EndpointClear
 (JNIEnv *, jobject)
 {
   return (jlong) new EndpointClear ();
 }
 
-void JNICALL Java_com_madara_filters_EndpointClear_jni_1addReceiveFilterTo
+void JNICALL
+Java_com_madara_filters_EndpointClear_jni_1addReceiveFilterTo
 (JNIEnv *, jobject, jlong cptr, jlong qosCptr)
 {
   EndpointClear * current = (EndpointClear *)cptr;
@@ -27,7 +29,8 @@ void JNICALL Java_com_madara_filters_EndpointClear_jni_1addReceiveFilterTo
   }
 }
 
-void JNICALL Java_com_madara_filters_EndpointClear_jni_1addSendFilterTo
+void JNICALL
+Java_com_madara_filters_EndpointClear_jni_1addSendFilterTo
 (JNIEnv *, jobject, jlong cptr, jlong qosCptr)
 {
   EndpointClear * current = (EndpointClear *)cptr;
@@ -39,7 +42,8 @@ void JNICALL Java_com_madara_filters_EndpointClear_jni_1addSendFilterTo
   }
 }
 
-void JNICALL Java_com_madara_filters_EndpointClear_jni_1addRebroadcastFilterTo
+void JNICALL
+Java_com_madara_filters_EndpointClear_jni_1addRebroadcastFilterTo
 (JNIEnv *, jobject, jlong cptr, jlong qosCptr)
 {
   EndpointClear * current = (EndpointClear *)cptr;
@@ -56,7 +60,8 @@ void JNICALL Java_com_madara_filters_EndpointClear_jni_1addRebroadcastFilterTo
  * Method:    jni_setPrefix
  * Signature: (JLjava/lang/String;)V
  */
-void JNICALL Java_com_madara_filters_EndpointClear_jni_1setPrefix
+void JNICALL
+Java_com_madara_filters_EndpointClear_jni_1setPrefix
 (JNIEnv * env, jobject, jlong cptr, jstring prefix)
 {
   EndpointClear * current = (EndpointClear *)cptr;
@@ -76,7 +81,8 @@ void JNICALL Java_com_madara_filters_EndpointClear_jni_1setPrefix
  * Method:    jni_freeEndpointClear
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_filters_EndpointClear_jni_1freeEndpointClear
+void JNICALL
+Java_com_madara_filters_EndpointClear_jni_1freeEndpointClear
 (JNIEnv *, jclass, jlong cptr)
 {
   delete (EndpointClear *)cptr;

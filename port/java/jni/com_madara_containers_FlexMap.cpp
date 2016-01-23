@@ -7,14 +7,16 @@ namespace containers = knowledge::containers;
 typedef knowledge::KnowledgeRecord          KnowledgeRecord;
 typedef KnowledgeRecord::Integer            Integer;
 
-jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__
+jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1FlexMap__
   (JNIEnv *, jobject)
 {
   return (jlong) new containers::FlexMap ();
 }
 
 
-jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__J
+jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1FlexMap__J
   (JNIEnv *, jobject, jlong cptr)
 {
   containers::FlexMap * result (0);
@@ -29,14 +31,16 @@ jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__J
 }
 
 
-void JNICALL Java_com_madara_containers_FlexMap_jni_1freeFlexMap
+void JNICALL
+Java_com_madara_containers_FlexMap_jni_1freeFlexMap
   (JNIEnv *, jclass, jlong cptr)
 {
   delete (containers::FlexMap *) cptr;
 }
 
 
-void JNICALL Java_com_madara_containers_FlexMap_jni_1clear
+void JNICALL
+Java_com_madara_containers_FlexMap_jni_1clear
   (JNIEnv *, jobject, jlong cptr)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
@@ -48,7 +52,8 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1clear
 }
 
 
-void JNICALL Java_com_madara_containers_FlexMap_jni_1erase
+void JNICALL
+Java_com_madara_containers_FlexMap_jni_1erase
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
@@ -63,7 +68,8 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1erase
   }
 }
 
-void JNICALL Java_com_madara_containers_FlexMap_jni_1setString
+void JNICALL
+Java_com_madara_containers_FlexMap_jni_1setString
   (JNIEnv * env, jobject, jlong cptr, jstring value)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
@@ -77,7 +83,8 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setString
   }
 }
 
-void JNICALL Java_com_madara_containers_FlexMap_jni_1setDouble
+void JNICALL
+Java_com_madara_containers_FlexMap_jni_1setDouble
   (JNIEnv *, jobject, jlong cptr, jdouble value)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
@@ -89,7 +96,8 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setDouble
 }
 
 
-void JNICALL Java_com_madara_containers_FlexMap_jni_1set
+void JNICALL
+Java_com_madara_containers_FlexMap_jni_1set
   (JNIEnv *, jobject, jlong cptr, jlong type, jlong value)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
@@ -146,7 +154,8 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1set
 }
 
 
-jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getName
+jstring JNICALL
+Java_com_madara_containers_FlexMap_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -164,7 +173,8 @@ jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getName
   return result;
 }
 
-void JNICALL Java_com_madara_containers_FlexMap_jni_1setName
+void JNICALL
+Java_com_madara_containers_FlexMap_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
@@ -189,7 +199,8 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setName
 }
 
 
-jlong JNICALL Java_com_madara_containers_FlexMap_jni_1get
+jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
   containers::FlexMap * result (0);
@@ -207,7 +218,8 @@ jlong JNICALL Java_com_madara_containers_FlexMap_jni_1get
   return (jlong)result;
 }
 
-jlong JNICALL Java_com_madara_containers_FlexMap_jni_1getIndex
+jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1getIndex
 (JNIEnv *, jobject, jlong cptr, jint index)
 {
   containers::FlexMap * result (0);
@@ -223,7 +235,8 @@ jlong JNICALL Java_com_madara_containers_FlexMap_jni_1getIndex
   return (jlong)result;
 }
 
-jlong JNICALL Java_com_madara_containers_FlexMap_jni_1toRecord
+jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1toRecord
   (JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeRecord * result (0);
@@ -238,7 +251,8 @@ jlong JNICALL Java_com_madara_containers_FlexMap_jni_1toRecord
 }
 
 
-void JNICALL Java_com_madara_containers_FlexMap_jni_1modify
+void JNICALL
+Java_com_madara_containers_FlexMap_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
@@ -249,7 +263,8 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1modify
   }
 }
 
-jlong JNICALL Java_com_madara_containers_FlexMap_jni_1toMapContainer
+jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1toMapContainer
   (JNIEnv *, jobject, jlong cptr)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
@@ -263,7 +278,8 @@ jlong JNICALL Java_com_madara_containers_FlexMap_jni_1toMapContainer
   return (jlong) result;
 }
 
-jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getDelimiter
+jstring JNICALL
+Java_com_madara_containers_FlexMap_jni_1getDelimiter
 (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -281,7 +297,8 @@ jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getDelimiter
   return result;
 }
 
-void JNICALL Java_com_madara_containers_FlexMap_jni_1setDelimiter
+void JNICALL
+Java_com_madara_containers_FlexMap_jni_1setDelimiter
 (JNIEnv * env, jobject, jlong cptr, jstring delimiter)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
@@ -297,7 +314,8 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setDelimiter
 }
 
 
-jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
+jobjectArray JNICALL
+Java_com_madara_containers_FlexMap_jni_1keys
 (JNIEnv * env, jobject, jlong cptr, jboolean first_level)
 {
   jobjectArray result (0);
@@ -334,7 +352,8 @@ jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
   return result;
 }
 
-void JNICALL Java_com_madara_containers_FlexMap_jni_1setSettings
+void JNICALL
+Java_com_madara_containers_FlexMap_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::FlexMap * current = (containers::FlexMap *)cptr;
@@ -347,7 +366,8 @@ void JNICALL Java_com_madara_containers_FlexMap_jni_1setSettings
   }
 }
 
-jboolean JNICALL Java_com_madara_containers_FlexMap_jni_1isTrue
+jboolean JNICALL
+Java_com_madara_containers_FlexMap_jni_1isTrue
 (JNIEnv *, jobject, jlong cptr)
 {
   containers::FlexMap * current = (containers::FlexMap *)cptr;
@@ -362,7 +382,8 @@ jboolean JNICALL Java_com_madara_containers_FlexMap_jni_1isTrue
 }
 
 
-jboolean JNICALL Java_com_madara_containers_FlexMap_jni_1isFalse
+jboolean JNICALL
+Java_com_madara_containers_FlexMap_jni_1isFalse
 (JNIEnv *, jobject, jlong cptr)
 {
   containers::FlexMap * current = (containers::FlexMap *)cptr;

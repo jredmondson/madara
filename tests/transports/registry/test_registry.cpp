@@ -73,7 +73,7 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-d" || arg1 == "--domain")
     {
       if (i + 1 < argc)
-        settings.domains = argv[i + 1];
+        settings.write_domain = argv[i + 1];
 
       ++i;
     }
@@ -207,7 +207,7 @@ public:
   **/
   Publisher (knowledge::KnowledgeBase & context)
     : knowledge (&context),
-    endpoints ("domain." + settings.domains + ".endpoints", context),
+    endpoints ("domain." + settings.write_domain + ".endpoints", context),
     value ("value", context)
   {
     logger::global_logger->log (logger::LOG_ALWAYS,
@@ -260,7 +260,7 @@ int main (int argc, char ** argv)
   }
 
   filters::EndpointClear endpointclear (
-    "domain." + settings.domains + ".endpoints");
+    "domain." + settings.write_domain + ".endpoints");
 
   settings.add_receive_filter (&endpointclear);
 

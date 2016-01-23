@@ -58,7 +58,8 @@ extern "C" {
  * Method:    jni_Map
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Map_jni_1Map__
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Map_jni_1Map__
   (JNIEnv *, jobject);
 
 /*
@@ -66,7 +67,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Map_jni_1Map__
  * Method:    jni_Map
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Map_jni_1Map__J
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Map_jni_1Map__J
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -74,7 +76,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Map_jni_1Map__J
  * Method:    jni_freeMap
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1freeMap
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1freeMap
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -82,7 +85,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1freeMap
 * Method:    jni_clear
 * Signature: (JZ)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1clear
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1clear
 (JNIEnv *, jobject, jlong, jboolean);
 
 /*
@@ -90,7 +94,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1clear
 * Method:    jni_erase
 * Signature: (JLjava/lang/String;)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1erase
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1erase
 (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -98,7 +103,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1erase
 * Method:    jni_getDelimiter
 * Signature: (J)Ljava/lang/String;
 */
-MADARA_Export jstring JNICALL Java_com_madara_containers_Map_jni_1getDelimiter
+MADARA_Export jstring JNICALL
+Java_com_madara_containers_Map_jni_1getDelimiter
 (JNIEnv *, jobject, jlong);
 
 /*
@@ -106,7 +112,8 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_Map_jni_1getDelimiter
 * Method:    jni_setDelimiter
 * Signature: (JLjava/lang/String;)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setDelimiter
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1setDelimiter
 (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -114,7 +121,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setDelimiter
 * Method:    jni_keys
 * Signature: (J)[Ljava/lang/String;
 */
-MADARA_Export jobjectArray JNICALL Java_com_madara_containers_Map_jni_1keys
+MADARA_Export jobjectArray JNICALL
+Java_com_madara_containers_Map_jni_1keys
 (JNIEnv *, jobject, jlong);
 
 /*
@@ -122,7 +130,8 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_Map_jni_1keys
 * Method:    jni_sync
 * Signature: (J)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1sync
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1sync
 (JNIEnv *, jobject, jlong);
 
 /*
@@ -130,7 +139,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1sync
  * Method:    jni_set
  * Signature: (JLjava/lang/String;Ljava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setString__JLjava_lang_String_2Ljava_lang_String_2
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1setString__JLjava_lang_String_2Ljava_lang_String_2
   (JNIEnv *, jobject, jlong, jstring, jstring);
 
 /*
@@ -138,7 +148,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setString__JLjava
  * Method:    jni_set
  * Signature: (JLjava/lang/String;D)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setDouble__JLjava_lang_String_2D
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1setDouble__JLjava_lang_String_2D
   (JNIEnv *, jobject, jlong, jstring, jdouble);
 
 /*
@@ -146,7 +157,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setDouble__JLjava
  * Method:    jni_set
  * Signature: (JLjava/lang/String;JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2JJ
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2JJ
   (JNIEnv *, jobject, jlong, jstring, jlong, jlong);
 
 /*
@@ -154,7 +166,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_containers_Map_jni_1getName
+MADARA_Export jstring JNICALL
+Java_com_madara_containers_Map_jni_1getName
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -162,7 +175,8 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_Map_jni_1getName
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setName
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1setName
   (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
 
 /*
@@ -170,7 +184,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setName
  * Method:    jni_get
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Map_jni_1get
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Map_jni_1get
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -178,7 +193,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Map_jni_1get
  * Method:    jni_toRecord
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Map_jni_1toRecord
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Map_jni_1toRecord
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -186,7 +202,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Map_jni_1toRecord
  * Method:    modify
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1modify
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1modify
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -194,7 +211,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1modify
  * Method:    modifyIndex
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1modifyIndex
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1modifyIndex
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -202,7 +220,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1modifyIndex
 * Method:    jni_setSettings
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setSettings
+MADARA_Export void JNICALL
+Java_com_madara_containers_Map_jni_1setSettings
 (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -210,7 +229,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Map_jni_1setSettings
 * Method:    jni_isTrue
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_Map_jni_1isTrue
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_Map_jni_1isTrue
 (JNIEnv *, jobject, jlong);
 
 /*
@@ -218,7 +238,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_containers_Map_jni_1isTrue
 * Method:    jni_isFalse
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_Map_jni_1isFalse
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_Map_jni_1isFalse
 (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus

@@ -2,12 +2,13 @@
 #include "Fragmentation.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/containers/StringVector.h"
+#include "madara/knowledge/containers/Map.h"
 
 namespace containers = madara::knowledge::containers;
 typedef madara::knowledge::KnowledgeRecord::Integer  Integer;
 
 madara::transport::TransportSettings::TransportSettings () : 
-  domains (DEFAULT_DOMAIN), 
+  write_domain (DEFAULT_DOMAIN), 
   read_threads (1),
   queue_length (DEFAULT_QUEUE_LENGTH), 
   deadline (DEFAULT_DEADLINE), 
@@ -44,7 +45,8 @@ madara::transport::TransportSettings::TransportSettings () :
 
 madara::transport::TransportSettings::TransportSettings (
   const TransportSettings & settings) : 
-  domains (settings.domains),
+  write_domain (settings.write_domain),
+  read_domains_ (settings.read_domains_),
   read_threads (settings.read_threads),
   queue_length (settings.queue_length),
   deadline (settings.deadline),
@@ -85,10 +87,12 @@ madara::transport::TransportSettings::TransportSettings (
 }
 
 void
-madara::transport::TransportSettings::operator= (const TransportSettings & settings)
+madara::transport::TransportSettings::operator= (
+  const TransportSettings & settings)
 {
   read_threads = settings.read_threads;
-  domains = settings.domains;
+  write_domain = settings.write_domain;
+  read_domains_ = settings.read_domains_;
   queue_length = settings.queue_length;
   deadline = settings.deadline;
   type = settings.type;
@@ -149,7 +153,7 @@ madara::transport::TransportSettings::load (const std::string & filename,
   knowledge.load_context (filename);
 
   read_threads = (uint32_t) knowledge.get (prefix + ".read_threads").to_integer ();
-  domains = knowledge.get (prefix + ".domains").to_string ();
+  write_domain = knowledge.get (prefix + ".write_domain").to_string ();
   queue_length = (uint32_t)knowledge.get (prefix + ".queue_length").to_integer ();
   deadline = (uint32_t)knowledge.get (prefix + ".deadline").to_integer ();
   type = (uint32_t)knowledge.get (prefix + ".type").to_integer ();
@@ -174,6 +178,17 @@ madara::transport::TransportSettings::load (const std::string & filename,
   for (unsigned int i = 0; i < hosts.size (); ++i)
     hosts[i] = kb_hosts[i];
 
+
+  containers::Map kb_read_domains (prefix + ".read_domains", knowledge);
+
+  std::vector <std::string> keys;
+  kb_read_domains.keys (keys);
+
+  for (unsigned int i = 0; i < keys.size (); ++i)
+  {
+    read_domains_[keys[i]] = 1;
+  }
+
   no_sending = knowledge.get (prefix + ".no_sending").is_true ();
   no_receiving = knowledge.get (prefix + ".no_receiving").is_true ();
 }
@@ -188,7 +203,7 @@ madara::transport::TransportSettings::save (const std::string & filename,
     (int)hosts.size ());
 
   knowledge.set (prefix + ".read_threads", Integer (read_threads));
-  knowledge.set (prefix + ".domains", domains);
+  knowledge.set (prefix + ".write_domain", write_domain);
   knowledge.set (prefix + ".queue_length", Integer (queue_length));
   knowledge.set (prefix + ".deadline", Integer (deadline));
   knowledge.set (prefix + ".type", Integer (type));
@@ -214,6 +229,14 @@ madara::transport::TransportSettings::save (const std::string & filename,
 
   knowledge.set (prefix + ".no_sending", Integer (no_sending));
   knowledge.set (prefix + ".no_receiving", Integer (no_receiving));
+
+  knowledge::containers::Map kb_read_domains (prefix + ".read_domains", knowledge);
+  for (std::map <std::string, int>::const_iterator i = read_domains_.begin ();
+    i != read_domains_.end (); ++i)
+  {
+    kb_read_domains.set (i->first,
+      (knowledge::KnowledgeRecord::Integer)i->second);
+  }
 
   knowledge.save_context (filename);
 }

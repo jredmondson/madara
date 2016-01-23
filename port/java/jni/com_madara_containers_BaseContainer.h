@@ -59,7 +59,8 @@ extern "C" {
  * Method:    jni_modifyIfTrue
  * Signature: (JJ)Z
  */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_BaseContainer_jni_1modifyIfTrue
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_BaseContainer_jni_1modifyIfTrue
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -67,7 +68,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_containers_BaseContainer_jni_1mod
  * Method:    jni_modifyIfFalse
  * Signature: (JJ)Z
  */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_BaseContainer_jni_1modifyIfFalse
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_BaseContainer_jni_1modifyIfFalse
   (JNIEnv *, jobject, jlong, jlong);
 
 #ifdef __cplusplus

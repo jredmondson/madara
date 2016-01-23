@@ -4,20 +4,23 @@
 namespace logger = madara::logger;
 typedef logger::Logger  Logger;
 
-jlong JNICALL Java_com_madara_logger_Logger_jni_1Logger__
+jlong JNICALL
+Java_com_madara_logger_Logger_jni_1Logger__
   (JNIEnv *, jobject)
 {
   return (jlong) new Logger ();
 }
 
-void JNICALL Java_com_madara_logger_Logger_jni_1freeLogger
+void JNICALL
+Java_com_madara_logger_Logger_jni_1freeLogger
   (JNIEnv *, jclass, jlong cptr)
 {
   delete (Logger *)cptr;
 }
 
 
-void JNICALL Java_com_madara_logger_Logger_jni_1setLevel
+void JNICALL
+Java_com_madara_logger_Logger_jni_1setLevel
   (JNIEnv *, jobject, jlong cptr, jint level)
 {
   Logger * current = (Logger *)cptr;
@@ -29,7 +32,8 @@ void JNICALL Java_com_madara_logger_Logger_jni_1setLevel
 }
 
 
-jint JNICALL Java_com_madara_logger_Logger_jni_1getLevel
+jint JNICALL
+Java_com_madara_logger_Logger_jni_1getLevel
   (JNIEnv *, jobject, jlong cptr)
 {
   jint result (0);
@@ -44,7 +48,8 @@ jint JNICALL Java_com_madara_logger_Logger_jni_1getLevel
 }
 
 
-jstring JNICALL Java_com_madara_logger_Logger_jni_1getTag
+jstring JNICALL
+Java_com_madara_logger_Logger_jni_1getTag
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -63,7 +68,8 @@ jstring JNICALL Java_com_madara_logger_Logger_jni_1getTag
 }
 
 
-void JNICALL Java_com_madara_logger_Logger_jni_1setTag
+void JNICALL
+Java_com_madara_logger_Logger_jni_1setTag
   (JNIEnv * env, jobject, jlong cptr, jstring tag)
 {
   Logger * current = (Logger *)cptr;
@@ -79,7 +85,8 @@ void JNICALL Java_com_madara_logger_Logger_jni_1setTag
 }
 
 
-void JNICALL Java_com_madara_logger_Logger_jni_1addTerm
+void JNICALL
+Java_com_madara_logger_Logger_jni_1addTerm
   (JNIEnv *, jobject, jlong cptr)
 {
   Logger * current = (Logger *)cptr;
@@ -91,7 +98,8 @@ void JNICALL Java_com_madara_logger_Logger_jni_1addTerm
 }
 
 
-void JNICALL Java_com_madara_logger_Logger_jni_1addSyslog
+void JNICALL
+Java_com_madara_logger_Logger_jni_1addSyslog
   (JNIEnv *, jobject, jlong cptr)
 {
   Logger * current = (Logger *)cptr;
@@ -103,7 +111,8 @@ void JNICALL Java_com_madara_logger_Logger_jni_1addSyslog
 }
 
 
-void JNICALL Java_com_madara_logger_Logger_jni_1clear
+void JNICALL
+Java_com_madara_logger_Logger_jni_1clear
   (JNIEnv *, jobject, jlong cptr)
 {
   Logger * current = (Logger *)cptr;
@@ -115,7 +124,8 @@ void JNICALL Java_com_madara_logger_Logger_jni_1clear
 }
 
 
-void JNICALL Java_com_madara_logger_Logger_jni_1addFile
+void JNICALL
+Java_com_madara_logger_Logger_jni_1addFile
   (JNIEnv * env, jobject, jlong cptr, jstring filename)
 {
   Logger * current = (Logger *)cptr;
@@ -130,7 +140,8 @@ void JNICALL Java_com_madara_logger_Logger_jni_1addFile
   }
 }
 
-void JNICALL Java_com_madara_logger_Logger_jni_1log
+void JNICALL
+Java_com_madara_logger_Logger_jni_1log
 (JNIEnv * env, jobject, jlong cptr, jint level, jstring message)
 {
   Logger * current = (Logger *)cptr;
@@ -145,7 +156,8 @@ void JNICALL Java_com_madara_logger_Logger_jni_1log
   }
 }
 
-void JNICALL Java_com_madara_logger_Logger_jni_1setTimestampFormat
+void JNICALL
+Java_com_madara_logger_Logger_jni_1setTimestampFormat
 (JNIEnv * env, jobject, jlong cptr, jstring format)
 {
   Logger * current = (Logger *)cptr;

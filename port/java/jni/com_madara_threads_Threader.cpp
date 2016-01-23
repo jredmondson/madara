@@ -57,7 +57,8 @@ typedef knowledge::KnowledgeBase  KnowledgeBase;
  * Method:    jni_Threader
  * Signature: ()J
  */
-jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__
+jlong JNICALL
+Java_com_madara_threads_Threader_jni_1Threader__
   (JNIEnv *, jobject)
 {
   return (jlong) new Threader ();
@@ -68,7 +69,8 @@ jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__
  * Method:    jni_Threader
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__J
+jlong JNICALL
+Java_com_madara_threads_Threader_jni_1Threader__J
   (JNIEnv *, jobject, jlong kb)
 {
   Threader * result (0);
@@ -87,7 +89,8 @@ jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__J
  * Method:    jni_freeThreader
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_threads_Threader_jni_1freeThreader
+void JNICALL
+Java_com_madara_threads_Threader_jni_1freeThreader
   (JNIEnv *, jobject, jlong cptr)
 {
   delete (Threader *)cptr;
@@ -98,7 +101,8 @@ void JNICALL Java_com_madara_threads_Threader_jni_1freeThreader
  * Method:    jni_run
  * Signature: (JLjava/lang/String;Ljava/lang/Object;Z)V
  */
-void JNICALL Java_com_madara_threads_Threader_jni_1run
+void JNICALL
+Java_com_madara_threads_Threader_jni_1run
   (JNIEnv * env, jobject, jlong cptr,
    jstring name, jobject obj, jboolean paused)
 {
@@ -119,7 +123,8 @@ void JNICALL Java_com_madara_threads_Threader_jni_1run
  * Method:    jni_runhz
  * Signature: (JDLjava/lang/String;Ljava/lang/Object;Z)V
  */
-void JNICALL Java_com_madara_threads_Threader_jni_1runhz
+void JNICALL
+Java_com_madara_threads_Threader_jni_1runhz
   (JNIEnv * env, jobject, jlong cptr,
    jdouble hertz, jstring name, jobject obj, jboolean paused)
 {
@@ -140,7 +145,8 @@ void JNICALL Java_com_madara_threads_Threader_jni_1runhz
  * Method:    jni_pauseThread
  * Signature: (JLjava/lang/String;)V
  */
-void JNICALL Java_com_madara_threads_Threader_jni_1pauseThread
+void JNICALL
+Java_com_madara_threads_Threader_jni_1pauseThread
   (JNIEnv * env, jobject, jlong cptr, jstring name)
 {
   Threader * current = (Threader *)cptr;
@@ -160,7 +166,8 @@ void JNICALL Java_com_madara_threads_Threader_jni_1pauseThread
  * Method:    jni_pause
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_threads_Threader_jni_1pause
+void JNICALL
+Java_com_madara_threads_Threader_jni_1pause
   (JNIEnv *, jobject, jlong cptr)
 {
   Threader * current = (Threader *)cptr;
@@ -176,7 +183,8 @@ void JNICALL Java_com_madara_threads_Threader_jni_1pause
  * Method:    jni_waitThread
  * Signature: (JLjava/lang/String;)V
  */
-void JNICALL Java_com_madara_threads_Threader_jni_1waitThread
+void JNICALL
+Java_com_madara_threads_Threader_jni_1waitThread
   (JNIEnv * env, jobject, jlong cptr, jstring name)
 {
   Threader * current = (Threader *)cptr;
@@ -196,7 +204,8 @@ void JNICALL Java_com_madara_threads_Threader_jni_1waitThread
  * Method:    jni_wait
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_threads_Threader_jni_1wait
+void JNICALL
+Java_com_madara_threads_Threader_jni_1wait
   (JNIEnv *, jobject, jlong cptr)
 {
   Threader * current = (Threader *)cptr;
@@ -212,7 +221,8 @@ void JNICALL Java_com_madara_threads_Threader_jni_1wait
  * Method:    jni_terminateThread
  * Signature: (JLjava/lang/String;)V
  */
-void JNICALL Java_com_madara_threads_Threader_jni_1terminateThread
+void JNICALL
+Java_com_madara_threads_Threader_jni_1terminateThread
   (JNIEnv * env, jobject, jlong cptr, jstring name)
 {
   Threader * current = (Threader *)cptr;
@@ -232,7 +242,8 @@ void JNICALL Java_com_madara_threads_Threader_jni_1terminateThread
  * Method:    jni_terminate
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_threads_Threader_jni_1terminate
+void JNICALL
+Java_com_madara_threads_Threader_jni_1terminate
   (JNIEnv *, jobject, jlong cptr)
 {
   Threader * current = (Threader *)cptr;
@@ -248,7 +259,8 @@ void JNICALL Java_com_madara_threads_Threader_jni_1terminate
  * Method:    jni_resumeThread
  * Signature: (JLjava/lang/String;)V
  */
-void JNICALL Java_com_madara_threads_Threader_jni_1resumeThread
+void JNICALL
+Java_com_madara_threads_Threader_jni_1resumeThread
   (JNIEnv * env, jobject, jlong cptr, jstring name)
 {
   Threader * current = (Threader *)cptr;
@@ -268,7 +280,8 @@ void JNICALL Java_com_madara_threads_Threader_jni_1resumeThread
  * Method:    jni_resume
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_threads_Threader_jni_1resume
+void JNICALL
+Java_com_madara_threads_Threader_jni_1resume
   (JNIEnv *, jobject, jlong cptr)
 {
   Threader * current = (Threader *)cptr;

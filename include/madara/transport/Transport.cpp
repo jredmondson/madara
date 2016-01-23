@@ -56,6 +56,12 @@ madara::transport::Base::setup (void)
   if (settings_.queue_length > 0)
     buffer_ = new char [settings_.queue_length];
 
+  // if read domains has not been set, then set to write domain
+  if (settings_.num_read_domains () == 0)
+  {
+    settings_.add_read_domain (settings_.write_domain);
+  }
+
   return validate_transport ();
 }
 
@@ -264,11 +270,11 @@ madara::transport::process_received_update (
     }
 
     // reject the message if it is from a different domain
-    if (settings.domains != header->domain)
+    if (settings.is_reading_domain (header->domain))
     {
       madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
         "%s:" \
-        " remote id (%s) in a different domain (%s). Dropping message.\n",
+        " remote id (%s) has an untrusted domain (%s). Dropping message.\n",
         print_prefix,
         remote_host,
         header->domain);
@@ -799,7 +805,7 @@ long madara::transport::Base::prep_send (
       receive_monitor_.get_bytes_per_second (),
       send_monitor_.get_bytes_per_second (),
       (uint64_t) time (NULL), (uint64_t) time (NULL),
-      settings_.domains,
+      settings_.write_domain,
       id_);
 
   bool dropped = false;
@@ -963,7 +969,7 @@ long madara::transport::Base::prep_send (
   if (!reduced)
   {
     // copy the domain from settings
-    strncpy (header->domain, this->settings_.domains.c_str (),
+    strncpy (header->domain, this->settings_.write_domain.c_str (),
       sizeof (header->domain) - 1);
 
     // get the quality of the key

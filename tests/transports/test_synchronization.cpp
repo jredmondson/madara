@@ -80,7 +80,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   // transport settings
   madara::transport::TransportSettings ts;
-  ts.domains = domain;
+  ts.write_domain = domain;
   ts.type = madara::transport::MULTICAST;
   ts.hosts.resize (1);
   ts.hosts[0] = multicast;

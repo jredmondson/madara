@@ -58,7 +58,8 @@ extern "C" {
  * Method:    jni_get
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export  jlong JNICALL Java_com_madara_transport_filters_Packet_jni_1get
+MADARA_Export  jlong JNICALL
+Java_com_madara_transport_filters_Packet_jni_1get
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -66,7 +67,8 @@ MADARA_Export  jlong JNICALL Java_com_madara_transport_filters_Packet_jni_1get
  * Method:    jni_set
  * Signature: (JLjava/lang/String;J)V
  */
-MADARA_Export  void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
+MADARA_Export  void JNICALL
+Java_com_madara_transport_filters_Packet_jni_1set
   (JNIEnv *, jobject, jlong, jstring, jlong);
 
 /*
@@ -74,7 +76,8 @@ MADARA_Export  void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
  * Method:    jni_get_keys
  * Signature: (J)[Ljava/lang/String;
  */
-MADARA_Export  jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
+MADARA_Export  jobjectArray JNICALL
+Java_com_madara_transport_filters_Packet_jni_1get_1keys
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -82,7 +85,8 @@ MADARA_Export  jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni
  * Method:    jni_exists
  * Signature: (JLjava/lang/String;)Z
  */
-MADARA_Export  jboolean JNICALL Java_com_madara_transport_filters_Packet_jni_1exists
+MADARA_Export  jboolean JNICALL
+Java_com_madara_transport_filters_Packet_jni_1exists
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -90,7 +94,8 @@ MADARA_Export  jboolean JNICALL Java_com_madara_transport_filters_Packet_jni_1ex
  * Method:    jni_clear
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_transport_filters_Packet_jni_1clear
+MADARA_Export void JNICALL
+Java_com_madara_transport_filters_Packet_jni_1clear
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -98,7 +103,8 @@ MADARA_Export void JNICALL Java_com_madara_transport_filters_Packet_jni_1clear
  * Method:    jni_erase
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_transport_filters_Packet_jni_1erase
+MADARA_Export void JNICALL
+Java_com_madara_transport_filters_Packet_jni_1erase
   (JNIEnv *, jobject, jlong, jstring);
 
 #ifdef __cplusplus

@@ -13,7 +13,8 @@ extern "C" {
  * Method:    jni_updateSettings
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_UpdateSettings_jni_1updateSettings__
+MADARA_Export jlong JNICALL
+Java_com_madara_UpdateSettings_jni_1updateSettings__
   (JNIEnv *, jclass);
 
 /*
@@ -21,7 +22,8 @@ MADARA_Export jlong JNICALL Java_com_madara_UpdateSettings_jni_1updateSettings__
  * Method:    jni_updateSettings
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_UpdateSettings_jni_1updateSettings__J
+MADARA_Export jlong JNICALL
+Java_com_madara_UpdateSettings_jni_1updateSettings__J
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -29,7 +31,8 @@ MADARA_Export jlong JNICALL Java_com_madara_UpdateSettings_jni_1updateSettings__
  * Method:    jni_setAlwaysOverwrite
  * Signature: (JZ)V
  */
-MADARA_Export void JNICALL Java_com_madara_UpdateSettings_jni_1setAlwaysOverwrite
+MADARA_Export void JNICALL
+Java_com_madara_UpdateSettings_jni_1setAlwaysOverwrite
   (JNIEnv *, jclass, jlong, jboolean);
 
 /*
@@ -37,7 +40,8 @@ MADARA_Export void JNICALL Java_com_madara_UpdateSettings_jni_1setAlwaysOverwrit
  * Method:    jni_getAlwaysOverwrite
  * Signature: (J)Z
  */
-MADARA_Export jboolean JNICALL Java_com_madara_UpdateSettings_jni_1getAlwaysOverwrite
+MADARA_Export jboolean JNICALL
+Java_com_madara_UpdateSettings_jni_1getAlwaysOverwrite
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -45,7 +49,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_UpdateSettings_jni_1getAlwaysOver
  * Method:    jni_setTreatGlobalsAsLocals
  * Signature: (JZ)V
  */
-MADARA_Export void JNICALL Java_com_madara_UpdateSettings_jni_1setTreatGlobalsAsLocals
+MADARA_Export void JNICALL
+Java_com_madara_UpdateSettings_jni_1setTreatGlobalsAsLocals
   (JNIEnv *, jclass, jlong, jboolean);
 
 /*
@@ -53,7 +58,8 @@ MADARA_Export void JNICALL Java_com_madara_UpdateSettings_jni_1setTreatGlobalsAs
  * Method:    jni_getTreatGlobalsAsLocals
  * Signature: (J)Z
  */
-MADARA_Export jboolean JNICALL Java_com_madara_UpdateSettings_jni_1getTreatGlobalsAsLocals
+MADARA_Export jboolean JNICALL
+Java_com_madara_UpdateSettings_jni_1getTreatGlobalsAsLocals
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -61,7 +67,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_UpdateSettings_jni_1getTreatGloba
  * Method:    jni_setClockIncrement
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_UpdateSettings_jni_1setClockIncrement
+MADARA_Export void JNICALL
+Java_com_madara_UpdateSettings_jni_1setClockIncrement
   (JNIEnv *, jclass, jlong, jlong);
 
 /*
@@ -69,7 +76,8 @@ MADARA_Export void JNICALL Java_com_madara_UpdateSettings_jni_1setClockIncrement
  * Method:    jni_getClockIncrement
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_UpdateSettings_jni_1getClockIncrement
+MADARA_Export jlong JNICALL
+Java_com_madara_UpdateSettings_jni_1getClockIncrement
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -77,7 +85,8 @@ MADARA_Export jlong JNICALL Java_com_madara_UpdateSettings_jni_1getClockIncremen
  * Method:    jni_freeUpdateSettings
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_UpdateSettings_jni_1freeUpdateSettings
+MADARA_Export void JNICALL
+Java_com_madara_UpdateSettings_jni_1freeUpdateSettings
   (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus

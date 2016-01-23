@@ -58,7 +58,8 @@ extern "C" {
  * Method:    jni_Vector
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Vector_jni_1Vector__
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Vector_jni_1Vector__
   (JNIEnv *, jobject);
 
 /*
@@ -66,7 +67,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Vector_jni_1Vector__
  * Method:    jni_Vector
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Vector_jni_1Vector__J
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Vector_jni_1Vector__J
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -74,7 +76,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Vector_jni_1Vector__J
  * Method:    jni_freeVector
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1freeVector
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1freeVector
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -82,7 +85,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1freeVector
  * Method:    jni_set
  * Signature: (JILjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1setString__JILjava_lang_String_2
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1setString__JILjava_lang_String_2
   (JNIEnv *, jobject, jlong, jint, jstring);
 
 /*
@@ -90,7 +94,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1setString__JIL
  * Method:    jni_set
  * Signature: (JID)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1setDouble__JID
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1setDouble__JID
   (JNIEnv *, jobject, jlong, jint, jdouble);
 
 /*
@@ -98,7 +103,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1setDouble__JID
  * Method:    jni_set
  * Signature: (JIJJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1set__JIJJ
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1set__JIJJ
   (JNIEnv *, jobject, jlong, jint, jlong, jlong);
 
 /*
@@ -106,7 +112,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1set__JIJJ
 * Method:    jni_pushbackLong
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLong
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1pushbackLong
 (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -114,7 +121,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLong
 * Method:    jni_pushbackRecord
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackRecord
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1pushbackRecord
 (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -122,7 +130,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackRecord
 * Method:    jni_pushbackDouble
 * Signature: (JD)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDouble
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1pushbackDouble
 (JNIEnv *, jobject, jlong, jdouble);
 
 /*
@@ -130,7 +139,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDouble
 * Method:    jni_pushbackDoubleArray
 * Signature: (J[D)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDoubleArray
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1pushbackDoubleArray
 (JNIEnv *, jobject, jlong, jdoubleArray);
 
 /*
@@ -138,7 +148,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackDouble
 * Method:    jni_pushbackLongArray
 * Signature: (J[J)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLongArray
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1pushbackLongArray
 (JNIEnv *, jobject, jlong, jlongArray);
 
 /*
@@ -146,7 +157,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackLongAr
 * Method:    jni_pushbackString
 * Signature: (JLjava/lang/String;)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackString
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1pushbackString
 (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -154,7 +166,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1pushbackString
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_containers_Vector_jni_1getName
+MADARA_Export jstring JNICALL
+Java_com_madara_containers_Vector_jni_1getName
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -162,7 +175,8 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_Vector_jni_1getName
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1setName
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1setName
   (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
 
 /*
@@ -170,7 +184,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1setName
  * Method:    jni_get
  * Signature: (JI)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Vector_jni_1get
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Vector_jni_1get
   (JNIEnv *, jobject, jlong, jint);
 
 /*
@@ -178,7 +193,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Vector_jni_1get
  * Method:    jni_toRecord
  * Signature: (JI)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Vector_jni_1toRecord
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Vector_jni_1toRecord
   (JNIEnv *, jobject, jlong, jint);
 
 /*
@@ -186,7 +202,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Vector_jni_1toRecord
  * Method:    jni_toArray
  * Signature: (J)[Ljava/lang/Object;
  */
-MADARA_Export jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArray
+MADARA_Export jobjectArray JNICALL
+Java_com_madara_containers_Vector_jni_1toArray
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -194,7 +211,8 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_Vector_jni_1toArra
  * Method:    jni_size
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Vector_jni_1size
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Vector_jni_1size
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -202,7 +220,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Vector_jni_1size
  * Method:    jni_resize
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1resize
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1resize
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -210,7 +229,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1resize
  * Method:    modify
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1modify
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1modify
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -218,7 +238,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1modify
  * Method:    modifyIndex
  * Signature: (JI)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1modifyIndex
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1modifyIndex
   (JNIEnv *, jobject, jlong, jint);
 
 /*
@@ -226,7 +247,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1modifyIndex
 * Method:    jni_setSettings
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1setSettings
+MADARA_Export void JNICALL
+Java_com_madara_containers_Vector_jni_1setSettings
 (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -234,7 +256,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Vector_jni_1setSettings
 * Method:    jni_isTrue
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_Vector_jni_1isTrue
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_Vector_jni_1isTrue
 (JNIEnv *, jobject, jlong);
 
 /*
@@ -242,7 +265,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_containers_Vector_jni_1isTrue
 * Method:    jni_isFalse
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_Vector_jni_1isFalse
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_Vector_jni_1isFalse
 (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus

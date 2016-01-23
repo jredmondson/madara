@@ -65,7 +65,8 @@ extern "C" {
  * Method:    jni_getDefaultEvalSettings
  * Signature: (I)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_EvalSettings_jni_1getDefaultEvalSettings
+MADARA_Export jlong JNICALL
+Java_com_madara_EvalSettings_jni_1getDefaultEvalSettings
   (JNIEnv *, jclass, jint);
 
 /*
@@ -73,7 +74,8 @@ MADARA_Export jlong JNICALL Java_com_madara_EvalSettings_jni_1getDefaultEvalSett
  * Method:    jni_evalSettings
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_EvalSettings_jni_1evalSettings__
+MADARA_Export jlong JNICALL
+Java_com_madara_EvalSettings_jni_1evalSettings__
   (JNIEnv *, jclass);
 
 /*
@@ -81,7 +83,8 @@ MADARA_Export jlong JNICALL Java_com_madara_EvalSettings_jni_1evalSettings__
  * Method:    jni_evalSettings
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_EvalSettings_jni_1evalSettings__J
+MADARA_Export jlong JNICALL
+Java_com_madara_EvalSettings_jni_1evalSettings__J
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -89,7 +92,8 @@ MADARA_Export jlong JNICALL Java_com_madara_EvalSettings_jni_1evalSettings__J
  * Method:    jni_setDelaySendingModifieds
  * Signature: (JZ)V
  */
-MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setDelaySendingModifieds
+MADARA_Export void JNICALL
+Java_com_madara_EvalSettings_jni_1setDelaySendingModifieds
   (JNIEnv *, jclass, jlong, jboolean);
 
 /*
@@ -97,7 +101,8 @@ MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setDelaySendingModi
  * Method:    jni_getDelaySendingModifieds
  * Signature: (J)Z
  */
-MADARA_Export jboolean JNICALL Java_com_madara_EvalSettings_jni_1getDelaySendingModifieds
+MADARA_Export jboolean JNICALL
+Java_com_madara_EvalSettings_jni_1getDelaySendingModifieds
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -105,7 +110,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_EvalSettings_jni_1getDelaySending
  * Method:    jni_setPrePrintStatement
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setPrePrintStatement
+MADARA_Export void JNICALL
+Java_com_madara_EvalSettings_jni_1setPrePrintStatement
   (JNIEnv *, jclass, jlong, jstring);
 
 /*
@@ -113,7 +119,8 @@ MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setPrePrintStatemen
  * Method:    jni_getPrePrintStatement
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_EvalSettings_jni_1getPrePrintStatement
+MADARA_Export jstring JNICALL
+Java_com_madara_EvalSettings_jni_1getPrePrintStatement
   (JNIEnv *, jclass, jlong);
   
 /*
@@ -121,7 +128,8 @@ MADARA_Export jstring JNICALL Java_com_madara_EvalSettings_jni_1getPrePrintState
  * Method:    jni_setPostPrintStatement
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setPostPrintStatement
+MADARA_Export void JNICALL
+Java_com_madara_EvalSettings_jni_1setPostPrintStatement
   (JNIEnv *, jclass, jlong, jstring);
 
 /*
@@ -129,7 +137,8 @@ MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setPostPrintStateme
  * Method:    jni_getPostPrintStatement
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_EvalSettings_jni_1getPostPrintStatement
+MADARA_Export jstring JNICALL
+Java_com_madara_EvalSettings_jni_1getPostPrintStatement
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -137,7 +146,8 @@ MADARA_Export jstring JNICALL Java_com_madara_EvalSettings_jni_1getPostPrintStat
  * Method:    jni_setAlwaysOverwrite
  * Signature: (JZ)V
  */
-MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setAlwaysOverwrite
+MADARA_Export void JNICALL
+Java_com_madara_EvalSettings_jni_1setAlwaysOverwrite
   (JNIEnv *, jclass, jlong, jboolean);
 
 /*
@@ -145,7 +155,8 @@ MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setAlwaysOverwrite
  * Method:    jni_getAlwaysOverwrite
  * Signature: (J)Z
  */
-MADARA_Export jboolean JNICALL Java_com_madara_EvalSettings_jni_1getAlwaysOverwrite
+MADARA_Export jboolean JNICALL
+Java_com_madara_EvalSettings_jni_1getAlwaysOverwrite
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -153,7 +164,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_EvalSettings_jni_1getAlwaysOverwr
  * Method:    jni_setTreatGlobalsAsLocals
  * Signature: (JZ)V
  */
-MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setTreatGlobalsAsLocals
+MADARA_Export void JNICALL
+Java_com_madara_EvalSettings_jni_1setTreatGlobalsAsLocals
   (JNIEnv *, jclass, jlong, jboolean);
 
 /*
@@ -161,7 +173,8 @@ MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setTreatGlobalsAsLo
  * Method:    jni_getTreatGlobalsAsLocals
  * Signature: (J)Z
  */
-MADARA_Export jboolean JNICALL Java_com_madara_EvalSettings_jni_1getTreatGlobalsAsLocals
+MADARA_Export jboolean JNICALL
+Java_com_madara_EvalSettings_jni_1getTreatGlobalsAsLocals
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -169,7 +182,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_EvalSettings_jni_1getTreatGlobals
  * Method:    jni_setDefaultClockIncrement
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setClockIncrement
+MADARA_Export void JNICALL
+Java_com_madara_EvalSettings_jni_1setClockIncrement
   (JNIEnv *, jclass, jlong, jlong);
 
 /*
@@ -177,7 +191,8 @@ MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1setClockIncrement
  * Method:    jni_getDefaultClockIncrement
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_EvalSettings_jni_1getClockIncrement
+MADARA_Export jlong JNICALL
+Java_com_madara_EvalSettings_jni_1getClockIncrement
   (JNIEnv *, jclass, jlong);
     
 /*
@@ -185,7 +200,8 @@ MADARA_Export jlong JNICALL Java_com_madara_EvalSettings_jni_1getClockIncrement
  * Method:    jni_freeEvalSettings
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_EvalSettings_jni_1freeEvalSettings
+MADARA_Export void JNICALL
+Java_com_madara_EvalSettings_jni_1freeEvalSettings
   (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus

@@ -16,6 +16,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <map>
 #include <ostream>
 #include "ace/Thread_Mutex.h"
 #include "ace/Recursive_Thread_Mutex.h"
@@ -159,6 +160,30 @@ namespace madara
       /// Assignment operator
       void operator= (const TransportSettings & settings);
       
+      /**
+       * Adds a read domain to the list of domains to read from
+       * @param  domain   domain to add to the read list
+       **/
+      void add_read_domain (const std::string domain);
+
+      /**
+      * Clears the list of read domains
+      **/
+      void clear_read_domains (void);
+
+      /**
+      * Checks if a domain is in the domain read list
+      * @param  domain   domain to check
+      * @return true if the domain exists in the read list
+      **/
+      bool is_reading_domain (const std::string domain) const;
+
+      /**
+      * Returns the number of read domains
+      * @return the number of domains in the read list
+      **/
+      size_t num_read_domains (void) const;
+
 #ifdef _USE_CID_
       /**
        * Resets timers and latencies
@@ -703,8 +728,10 @@ namespace madara
 
       /// All class members are accessible to users for easy setup
 
-      /// Domains should be separated by commas
-      std::string domains;
+      /**
+       * We only write to one domain
+       **/
+      std::string write_domain;
 
       /// the number of read threads to start
       uint32_t read_threads;
@@ -826,8 +853,17 @@ namespace madara
        * if true, never receive over transport
        **/
       bool no_receiving;
+
+    private:
+
+      /**
+      * Any acceptable read domain is added here
+      **/
+      std::map <std::string, int> read_domains_;
     };
   }
 }
+
+#include "TransportSettings.inl"
 
 #endif // _MADARA_TRANSPORT_SETTINGS_H_

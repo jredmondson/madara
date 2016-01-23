@@ -61,7 +61,8 @@ extern "C" {
  * Method:    jni_evaluate
  * Signature: (JJJ)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1evaluate__JJJ
+MADARA_Export jlong JNICALL
+Java_com_madara_Variables_jni_1evaluate__JJJ
   (JNIEnv *, jobject, jlong, jlong, jlong);
 
 /*
@@ -69,7 +70,8 @@ MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1evaluate__JJJ
  * Method:    jni_compile
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1compile
+MADARA_Export jlong JNICALL
+Java_com_madara_Variables_jni_1compile
   (JNIEnv *, jobject, jlong, jstring);
   
 /*
@@ -77,7 +79,8 @@ MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1compile
  * Method:    jni_get
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1get
+MADARA_Export jlong JNICALL
+Java_com_madara_Variables_jni_1get
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -85,7 +88,8 @@ MADARA_Export jlong JNICALL Java_com_madara_Variables_jni_1get
  * Method:    jni_set
  * Signature: (JLjava/lang/String;J)V
  */
-MADARA_Export void JNICALL Java_com_madara_Variables_jni_1set
+MADARA_Export void JNICALL
+Java_com_madara_Variables_jni_1set
   (JNIEnv *, jobject, jlong, jstring, jlong);
 
 #ifdef __cplusplus

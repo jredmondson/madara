@@ -20,7 +20,8 @@ typedef knowledge::KnowledgeRecord      KnowledgeRecord;
 * Method:    jni_evaluate
 * Signature: (JJJ)J
 */
-jlong JNICALL Java_com_madara_Variables_jni_1evaluate__JJJ (JNIEnv * env, jobject obj, jlong cptr, jlong expression, jlong evalSettings)
+jlong JNICALL
+Java_com_madara_Variables_jni_1evaluate__JJJ (JNIEnv * env, jobject obj, jlong cptr, jlong expression, jlong evalSettings)
 {
   KnowledgeRecord * result (0);
   Variables * vars = (Variables *) cptr;
@@ -40,7 +41,8 @@ jlong JNICALL Java_com_madara_Variables_jni_1evaluate__JJJ (JNIEnv * env, jobjec
 * Method:    jni_compile
 * Signature: (JLjava/lang/String;)J
 */
-jlong JNICALL Java_com_madara_Variables_jni_1compile (JNIEnv *env, jobject obj, jlong cptr, jstring expression)
+jlong JNICALL
+Java_com_madara_Variables_jni_1compile (JNIEnv *env, jobject obj, jlong cptr, jstring expression)
 {
   const char *nativeExpression = env->GetStringUTFChars (expression, 0);
 
@@ -62,7 +64,8 @@ jlong JNICALL Java_com_madara_Variables_jni_1compile (JNIEnv *env, jobject obj, 
 * Method:    jni_get
 * Signature: (JLjava/lang/String;)J
 */
-jlong JNICALL Java_com_madara_Variables_jni_1get (JNIEnv * env, jobject obj, jlong cptr, jstring var)
+jlong JNICALL
+Java_com_madara_Variables_jni_1get (JNIEnv * env, jobject obj, jlong cptr, jstring var)
 {
   const char * nativeVar = env->GetStringUTFChars (var, 0);
 
@@ -83,7 +86,8 @@ jlong JNICALL Java_com_madara_Variables_jni_1get (JNIEnv * env, jobject obj, jlo
 * Method:    jni_set
 * Signature: (JLjava/lang/String;J)V
 */
-void JNICALL Java_com_madara_Variables_jni_1set (JNIEnv *env, jobject obj, jlong cptr, jstring var, jlong recordPtr)
+void JNICALL
+Java_com_madara_Variables_jni_1set (JNIEnv *env, jobject obj, jlong cptr, jstring var, jlong recordPtr)
 {
   const char *nativeVar = env->GetStringUTFChars (var, 0);
 

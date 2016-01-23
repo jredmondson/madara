@@ -146,7 +146,7 @@ int parse_args (int argc, ACE_TCHAR * argv[])
     else if (arg1 == "-d" || arg1 == "--domain")
     {
       if (i + 1 < argc)
-        settings.domains = argv[i + 1];
+        settings.write_domain = argv[i + 1];
 
       ++i;
     }

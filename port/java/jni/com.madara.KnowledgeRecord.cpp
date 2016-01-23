@@ -16,7 +16,8 @@ typedef madara::knowledge::KnowledgeRecord  KnowledgeRecord;
 typedef KnowledgeRecord::Integer Integer;
 
 
-jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__
+jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__
   (JNIEnv *, jobject)
 {
   return (jlong) new KnowledgeRecord ();
@@ -27,7 +28,8 @@ jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__
  * Method:    jni_KnowledgeRecordDeep
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecordDeep (JNIEnv * env, jobject obj, jlong cptr)
+jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecordDeep (JNIEnv * env, jobject obj, jlong cptr)
 {
   KnowledgeRecord * result (0);
   KnowledgeRecord * source = (KnowledgeRecord *) cptr;
@@ -45,7 +47,8 @@ jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecordDeep (JNIEnv *
 * Method:    jni_KnowledgeRecord
 * Signature: (Ljava/lang/String;)J
 */
-jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__Ljava_lang_String_2 (JNIEnv * env, jobject obj, jstring data)
+jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__Ljava_lang_String_2 (JNIEnv * env, jobject obj, jstring data)
 {
   const char *nativeData = env->GetStringUTFChars (data, 0);
 
@@ -61,7 +64,8 @@ jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__Ljava_lang_S
 * Method:    jni_KnowledgeRecord
 * Signature: (D)J
 */
-jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__D (JNIEnv * env, jobject obj, jdouble data)
+jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__D (JNIEnv * env, jobject obj, jdouble data)
 {
   return (jlong) (new KnowledgeRecord (data));
 }
@@ -71,7 +75,8 @@ jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__D (JNIEnv * 
 * Method:    jni_KnowledgeRecord
 * Signature: (J)J
 */
-jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__J (JNIEnv * env, jobject obj, jlong data)
+jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__J (JNIEnv * env, jobject obj, jlong data)
 {
   return (jlong) (new KnowledgeRecord (Integer (data)));
 }
@@ -81,7 +86,8 @@ jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__J (JNIEnv * 
 * Method:    jni_KnowledgeRecord
 * Signature: ([D)J
 */
-jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3D (JNIEnv * env, jclass cls, jdoubleArray data)
+jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3D (JNIEnv * env, jclass cls, jdoubleArray data)
 {
   jsize len = env->GetArrayLength (data);
   jboolean isCopy;
@@ -105,7 +111,8 @@ jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3D (JNIEnv 
 * Method:    jni_KnowledgeRecord
 * Signature: ([J)J
 */
-jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3J (JNIEnv * env, jclass cls, jlongArray data)
+jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3J (JNIEnv * env, jclass cls, jlongArray data)
 {
   jsize len = env->GetArrayLength (data);
   jboolean isCopy;
@@ -128,7 +135,8 @@ jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3J (JNIEnv 
  * Method:    jni_isValid
  * Signature: (J)Z
  */
-jboolean JNICALL Java_com_madara_KnowledgeRecord_jni_1isValid
+jboolean JNICALL
+Java_com_madara_KnowledgeRecord_jni_1isValid
   (JNIEnv *, jobject, jlong cptr)
 {
   jboolean result (false);
@@ -147,7 +155,8 @@ jboolean JNICALL Java_com_madara_KnowledgeRecord_jni_1isValid
 * Method:    jni_toLongValue
 * Signature: (J)J
 */
-jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1toLongValue (JNIEnv * env, jobject obj, jlong cptr)
+jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1toLongValue (JNIEnv * env, jobject obj, jlong cptr)
 {
   jlong result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
@@ -163,7 +172,8 @@ jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1toLongValue (JNIEnv * env, jo
 * Method:    jni_toStringValue
 * Signature: (J)Ljava/lang/String;
 */
-jstring JNICALL Java_com_madara_KnowledgeRecord_jni_1toStringValue (JNIEnv * env, jobject obj, jlong cptr)
+jstring JNICALL
+Java_com_madara_KnowledgeRecord_jni_1toStringValue (JNIEnv * env, jobject obj, jlong cptr)
 {
   jstring result;
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
@@ -185,7 +195,8 @@ jstring JNICALL Java_com_madara_KnowledgeRecord_jni_1toStringValue (JNIEnv * env
 * Method:    jni_toDoubleValue
 * Signature: (J)D
 */
-jdouble JNICALL Java_com_madara_KnowledgeRecord_jni_1toDoubleValue (JNIEnv * env, jobject obj, jlong cptr)
+jdouble JNICALL
+Java_com_madara_KnowledgeRecord_jni_1toDoubleValue (JNIEnv * env, jobject obj, jlong cptr)
 {
   jdouble result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
@@ -201,7 +212,8 @@ jdouble JNICALL Java_com_madara_KnowledgeRecord_jni_1toDoubleValue (JNIEnv * env
 * Method:    jni_getType
 * Signature: (J)I
 */
-jint JNICALL Java_com_madara_KnowledgeRecord_jni_1getType (JNIEnv *env, jobject obj, jlong cptr)
+jint JNICALL
+Java_com_madara_KnowledgeRecord_jni_1getType (JNIEnv *env, jobject obj, jlong cptr)
 {
   jint result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
@@ -217,7 +229,8 @@ jint JNICALL Java_com_madara_KnowledgeRecord_jni_1getType (JNIEnv *env, jobject 
 * Method:    jni_freeKnowledgeRecord
 * Signature: (J)V
 */
-void JNICALL Java_com_madara_KnowledgeRecord_jni_1freeKnowledgeRecord (JNIEnv * env, jobject obj, jlong cptr)
+void JNICALL
+Java_com_madara_KnowledgeRecord_jni_1freeKnowledgeRecord (JNIEnv * env, jobject obj, jlong cptr)
 {
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
 
@@ -230,7 +243,8 @@ void JNICALL Java_com_madara_KnowledgeRecord_jni_1freeKnowledgeRecord (JNIEnv * 
 * Method:    jni_toDoubleArray
 * Signature: (J)[D
 */
-jdoubleArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toDoubleArray (JNIEnv * env, jclass cls, jlong cptr)
+jdoubleArray JNICALL
+Java_com_madara_KnowledgeRecord_jni_1toDoubleArray (JNIEnv * env, jclass cls, jlong cptr)
 {
   jdoubleArray result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
@@ -260,7 +274,8 @@ jdoubleArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toDoubleArray (JNIEnv 
 * Method:    jni_toLongArray
 * Signature: (J)[J
 */
-jlongArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toLongArray (JNIEnv * env, jclass cls, jlong cptr)
+jlongArray JNICALL
+Java_com_madara_KnowledgeRecord_jni_1toLongArray (JNIEnv * env, jclass cls, jlong cptr)
 {
   jlongArray result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
@@ -290,7 +305,8 @@ jlongArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toLongArray (JNIEnv * en
 * Method:    jni_freeKnowledgeList
 * Signature: ([JI)V
 */
-void JNICALL Java_com_madara_KnowledgeList_jni_1freeKnowledgeList (JNIEnv *env, jobject obj, jlongArray records, jint length)
+void JNICALL
+Java_com_madara_KnowledgeList_jni_1freeKnowledgeList (JNIEnv *env, jobject obj, jlongArray records, jint length)
 {
   jboolean jniNoCopy = JNI_FALSE;
   jlong * nativeRecords = env->GetLongArrayElements (records, &jniNoCopy);
@@ -307,7 +323,8 @@ void JNICALL Java_com_madara_KnowledgeList_jni_1freeKnowledgeList (JNIEnv *env, 
 * Method:    jni_freeKnowledgeMap
 * Signature: ([JI)V
 */
-void JNICALL Java_com_madara_KnowledgeMap_jni_1freeKnowledgeMap (JNIEnv * env, jobject obj, jlongArray records, jint length)
+void JNICALL
+Java_com_madara_KnowledgeMap_jni_1freeKnowledgeMap (JNIEnv * env, jobject obj, jlongArray records, jint length)
 {
   //KnowledgeMap#free is exactly the same as KnowledgeList#free, no reason to re-implement
   Java_com_madara_KnowledgeList_jni_1freeKnowledgeList (env, obj, records, length);

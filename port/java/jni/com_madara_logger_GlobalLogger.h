@@ -13,7 +13,8 @@ extern "C" {
 * Method:    jni_getCPtr
 * Signature: ()J
 */
-MADARA_Export jlong JNICALL Java_com_madara_logger_GlobalLogger_jni_1getCPtr
+MADARA_Export jlong JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1getCPtr
   (JNIEnv *, jclass);
 
 /*
@@ -21,7 +22,8 @@ MADARA_Export jlong JNICALL Java_com_madara_logger_GlobalLogger_jni_1getCPtr
  * Method:    jni_setLevel
  * Signature: (I)V
  */
-MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1setLevel
+MADARA_Export void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1setLevel
   (JNIEnv *, jclass, jint);
 
 /*
@@ -29,7 +31,8 @@ MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1setLevel
  * Method:    jni_getLevel
  * Signature: ()I
  */
-MADARA_Export jint JNICALL Java_com_madara_logger_GlobalLogger_jni_1getLevel
+MADARA_Export jint JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1getLevel
   (JNIEnv *, jclass);
 
 /*
@@ -37,7 +40,8 @@ MADARA_Export jint JNICALL Java_com_madara_logger_GlobalLogger_jni_1getLevel
  * Method:    jni_getTag
  * Signature: ()Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_logger_GlobalLogger_jni_1getTag
+MADARA_Export jstring JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1getTag
   (JNIEnv *, jclass);
 
 /*
@@ -45,7 +49,8 @@ MADARA_Export jstring JNICALL Java_com_madara_logger_GlobalLogger_jni_1getTag
  * Method:    jni_setTag
  * Signature: (Ljava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1setTag
+MADARA_Export void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1setTag
   (JNIEnv *, jclass, jstring);
 
 /*
@@ -53,7 +58,8 @@ MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1setTag
  * Method:    jni_addTerm
  * Signature: ()V
  */
-MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1addTerm
+MADARA_Export void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1addTerm
   (JNIEnv *, jclass);
 
 /*
@@ -61,7 +67,8 @@ MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1addTerm
  * Method:    jni_addSyslog
  * Signature: ()V
  */
-MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1addSyslog
+MADARA_Export void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1addSyslog
   (JNIEnv *, jclass);
 
 /*
@@ -69,7 +76,8 @@ MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1addSyslog
  * Method:    jni_clear
  * Signature: ()V
  */
-MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1clear
+MADARA_Export void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1clear
   (JNIEnv *, jclass);
 
 /*
@@ -77,7 +85,8 @@ MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1clear
  * Method:    jni_addFile
  * Signature: (Ljava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1addFile
+MADARA_Export void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1addFile
   (JNIEnv *, jclass, jstring);
 
 /*
@@ -85,7 +94,8 @@ MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1addFile
  * Method:    jni_log
  * Signature: (Ljava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1log
+MADARA_Export void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1log
 (JNIEnv *, jclass, jint, jstring);
 
 /*
@@ -93,7 +103,8 @@ MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1log
 * Method:    jni_setTimestampFormat
 * Signature: (Ljava/lang/String;)V
 */
-MADARA_Export void JNICALL Java_com_madara_logger_GlobalLogger_jni_1setTimestampFormat
+MADARA_Export void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1setTimestampFormat
 (JNIEnv *, jclass, jstring);
 
 #ifdef __cplusplus

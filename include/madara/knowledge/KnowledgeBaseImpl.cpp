@@ -50,7 +50,7 @@ madara::knowledge::KnowledgeBaseImpl::KnowledgeBaseImpl (
 {
   // override default settings for the arguments
   settings_.type = transport;
-  settings_.domains = knowledge_domain;
+  settings_.write_domain = knowledge_domain;
 
   id_ = setup_unique_hostport (host);
   activate_transport ();

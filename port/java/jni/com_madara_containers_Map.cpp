@@ -58,7 +58,8 @@ typedef KnowledgeRecord::Integer Integer;
  * Method:    jni_Map
  * Signature: ()J
  */
-jlong JNICALL Java_com_madara_containers_Map_jni_1Map__
+jlong JNICALL
+Java_com_madara_containers_Map_jni_1Map__
   (JNIEnv * env, jobject)
 {
   return (jlong) new containers::Map ();
@@ -69,7 +70,8 @@ jlong JNICALL Java_com_madara_containers_Map_jni_1Map__
  * Method:    jni_Map
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_containers_Map_jni_1Map__J
+jlong JNICALL
+Java_com_madara_containers_Map_jni_1Map__J
   (JNIEnv * env, jobject, jlong cptr)
 {
   containers::Map * result (0);
@@ -88,7 +90,8 @@ jlong JNICALL Java_com_madara_containers_Map_jni_1Map__J
  * Method:    jni_freeMap
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_containers_Map_jni_1freeMap
+void JNICALL
+Java_com_madara_containers_Map_jni_1freeMap
   (JNIEnv * env, jclass, jlong cptr)
 {
   delete (containers::Map *) cptr;
@@ -99,7 +102,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1freeMap
 * Method:    jni_clear
 * Signature: (JZ)V
 */
-void JNICALL Java_com_madara_containers_Map_jni_1clear
+void JNICALL
+Java_com_madara_containers_Map_jni_1clear
 (JNIEnv *, jobject, jlong cptr, jboolean clear_variables)
 {
   containers::Map * current = (containers::Map *) cptr;
@@ -115,7 +119,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1clear
 * Method:    jni_erase
 * Signature: (JLjava/lang/String;)V
 */
-void JNICALL Java_com_madara_containers_Map_jni_1erase
+void JNICALL
+Java_com_madara_containers_Map_jni_1erase
 (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
   containers::Map * current = (containers::Map *) cptr;
@@ -135,7 +140,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1erase
  * Method:    jni_set
  * Signature: (JLjava/lang/String;Ljava/lang/String;)V
  */
-void JNICALL Java_com_madara_containers_Map_jni_1setString__JLjava_lang_String_2Ljava_lang_String_2
+void JNICALL
+Java_com_madara_containers_Map_jni_1setString__JLjava_lang_String_2Ljava_lang_String_2
   (JNIEnv * env, jobject, jlong cptr, jstring key, jstring value)
 {
   containers::Map * current = (containers::Map *) cptr;
@@ -156,7 +162,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1setString__JLjava_lang_String_2
  * Method:    jni_set
  * Signature: (JLjava/lang/String;D)V
  */
-void JNICALL Java_com_madara_containers_Map_jni_1setDouble__JLjava_lang_String_2D
+void JNICALL
+Java_com_madara_containers_Map_jni_1setDouble__JLjava_lang_String_2D
   (JNIEnv * env, jobject, jlong cptr, jstring key, jdouble value)
 {
   containers::Map * current = (containers::Map *) cptr;
@@ -176,7 +183,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1setDouble__JLjava_lang_String_2
  * Method:    jni_set
  * Signature: (JLjava/lang/String;JJ)V
  */
-void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2JJ
+void JNICALL
+Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2JJ
   (JNIEnv * env, jobject, jlong cptr, jstring key, jlong type, jlong value)
 {
   containers::Map * current = (containers::Map *) cptr;
@@ -241,7 +249,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1set__JLjava_lang_String_2JJ
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-jstring JNICALL Java_com_madara_containers_Map_jni_1getName
+jstring JNICALL
+Java_com_madara_containers_Map_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -264,7 +273,8 @@ jstring JNICALL Java_com_madara_containers_Map_jni_1getName
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-void JNICALL Java_com_madara_containers_Map_jni_1setName
+void JNICALL
+Java_com_madara_containers_Map_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
   containers::Map * current = (containers::Map *) cptr;
@@ -293,7 +303,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1setName
  * Method:    jni_get
  * Signature: (JI)J
  */
-jlong JNICALL Java_com_madara_containers_Map_jni_1get
+jlong JNICALL
+Java_com_madara_containers_Map_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
   knowledge::KnowledgeRecord * result (0);
@@ -316,7 +327,8 @@ jlong JNICALL Java_com_madara_containers_Map_jni_1get
  * Method:    jni_toRecord
  * Signature: (JI)J
  */
-jlong JNICALL Java_com_madara_containers_Map_jni_1toRecord
+jlong JNICALL
+Java_com_madara_containers_Map_jni_1toRecord
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
   knowledge::KnowledgeRecord * result (0);
@@ -334,7 +346,8 @@ jlong JNICALL Java_com_madara_containers_Map_jni_1toRecord
   return (jlong) result;
 }
 
-void JNICALL Java_com_madara_containers_Map_jni_1modify
+void JNICALL
+Java_com_madara_containers_Map_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
   containers::Map * current = (containers::Map *) cptr;
@@ -350,7 +363,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1modify
  * Method:    modifyIndex
  * Signature: (JI)V
  */
-void JNICALL Java_com_madara_containers_Map_jni_1modifyIndex
+void JNICALL
+Java_com_madara_containers_Map_jni_1modifyIndex
   (JNIEnv * env, jobject, jlong cptr, jstring key)
 {
   containers::Map * current = (containers::Map *) cptr;
@@ -366,7 +380,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1modifyIndex
 }
 
 
-jstring JNICALL Java_com_madara_containers_Map_jni_1getDelimiter
+jstring JNICALL
+Java_com_madara_containers_Map_jni_1getDelimiter
 (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -385,7 +400,8 @@ jstring JNICALL Java_com_madara_containers_Map_jni_1getDelimiter
 }
 
 
-void JNICALL Java_com_madara_containers_Map_jni_1setDelimiter
+void JNICALL
+Java_com_madara_containers_Map_jni_1setDelimiter
 (JNIEnv * env, jobject, jlong cptr, jstring delimiter)
 {
   containers::Map * current = (containers::Map *) cptr;
@@ -401,7 +417,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1setDelimiter
 }
 
 
-jobjectArray JNICALL Java_com_madara_containers_Map_jni_1keys
+jobjectArray JNICALL
+Java_com_madara_containers_Map_jni_1keys
 (JNIEnv * env, jobject, jlong cptr)
 {
   jobjectArray result (0);
@@ -440,7 +457,8 @@ jobjectArray JNICALL Java_com_madara_containers_Map_jni_1keys
 
 
 
-void JNICALL Java_com_madara_containers_Map_jni_1sync
+void JNICALL
+Java_com_madara_containers_Map_jni_1sync
 (JNIEnv *, jobject, jlong cptr)
 {
   containers::Map * current = (containers::Map *) cptr;
@@ -451,7 +469,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1sync
   }
 }
 
-void JNICALL Java_com_madara_containers_Map_jni_1setSettings
+void JNICALL
+Java_com_madara_containers_Map_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::Map * current = (containers::Map *)cptr;
@@ -464,7 +483,8 @@ void JNICALL Java_com_madara_containers_Map_jni_1setSettings
   }
 }
 
-jboolean JNICALL Java_com_madara_containers_Map_jni_1isTrue
+jboolean JNICALL
+Java_com_madara_containers_Map_jni_1isTrue
 (JNIEnv *, jobject, jlong cptr)
 {
   containers::Map * current = (containers::Map *)cptr;
@@ -479,7 +499,8 @@ jboolean JNICALL Java_com_madara_containers_Map_jni_1isTrue
 }
 
 
-jboolean JNICALL Java_com_madara_containers_Map_jni_1isFalse
+jboolean JNICALL
+Java_com_madara_containers_Map_jni_1isFalse
 (JNIEnv *, jobject, jlong cptr)
 {
   containers::Map * current = (containers::Map *)cptr;

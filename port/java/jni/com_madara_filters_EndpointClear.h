@@ -13,7 +13,8 @@ extern "C" {
  * Method:    jni_EndpointClear
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_filters_EndpointClear_jni_1EndpointClear
+MADARA_Export jlong JNICALL
+Java_com_madara_filters_EndpointClear_jni_1EndpointClear
   (JNIEnv *, jobject);
 
 /*
@@ -21,7 +22,8 @@ MADARA_Export jlong JNICALL Java_com_madara_filters_EndpointClear_jni_1EndpointC
  * Method:    jni_addReceiveFilterTo
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_filters_EndpointClear_jni_1addReceiveFilterTo
+MADARA_Export void JNICALL
+Java_com_madara_filters_EndpointClear_jni_1addReceiveFilterTo
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -29,7 +31,8 @@ MADARA_Export void JNICALL Java_com_madara_filters_EndpointClear_jni_1addReceive
  * Method:    jni_addSendFilterTo
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_filters_EndpointClear_jni_1addSendFilterTo
+MADARA_Export void JNICALL
+Java_com_madara_filters_EndpointClear_jni_1addSendFilterTo
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -37,7 +40,8 @@ MADARA_Export void JNICALL Java_com_madara_filters_EndpointClear_jni_1addSendFil
  * Method:    jni_addRebroadcastFilterTo
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_filters_EndpointClear_jni_1addRebroadcastFilterTo
+MADARA_Export void JNICALL
+Java_com_madara_filters_EndpointClear_jni_1addRebroadcastFilterTo
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -45,7 +49,8 @@ MADARA_Export void JNICALL Java_com_madara_filters_EndpointClear_jni_1addRebroad
  * Method:    jni_setPrefix
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_filters_EndpointClear_jni_1setPrefix
+MADARA_Export void JNICALL
+Java_com_madara_filters_EndpointClear_jni_1setPrefix
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -53,7 +58,8 @@ MADARA_Export void JNICALL Java_com_madara_filters_EndpointClear_jni_1setPrefix
  * Method:    jni_freeEndpointClear
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_filters_EndpointClear_jni_1freeEndpointClear
+MADARA_Export void JNICALL
+Java_com_madara_filters_EndpointClear_jni_1freeEndpointClear
   (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus

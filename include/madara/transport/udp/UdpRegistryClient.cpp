@@ -22,7 +22,7 @@ madara::transport::UdpRegistryClient::UdpRegistryClient (const std::string & id,
   // set the data plane for the read threads
   read_threads_.set_data_plane (knowledge_);
 
-  endpoints_.set_name ("domain." + config.domains + ".endpoints", knowledge_);
+  endpoints_.set_name ("domain." + config.write_domain + ".endpoints", knowledge_);
 
   if (launch_transport)
     setup ();
@@ -200,7 +200,7 @@ madara::transport::UdpRegistryClient::send_register (void)
     MessageHeader header;
     header.type = transport::REGISTER;
     strncpy (header.originator, this->id_.c_str (), sizeof (header.originator) - 1);
-    strncpy (header.domain, this->settings_.domains.c_str (),
+    strncpy (header.domain, this->settings_.write_domain.c_str (),
       sizeof (header.domain) - 1);
     header.updates = 0;
     header.clock = context_.get_clock ();

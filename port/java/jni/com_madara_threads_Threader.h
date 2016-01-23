@@ -58,7 +58,8 @@ extern "C" {
  * Method:    jni_Threader
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__
+MADARA_Export jlong JNICALL
+Java_com_madara_threads_Threader_jni_1Threader__
   (JNIEnv *, jobject);
 
 /*
@@ -66,7 +67,8 @@ MADARA_Export jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__
  * Method:    jni_Threader
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__J
+MADARA_Export jlong JNICALL
+Java_com_madara_threads_Threader_jni_1Threader__J
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -74,7 +76,8 @@ MADARA_Export jlong JNICALL Java_com_madara_threads_Threader_jni_1Threader__J
  * Method:    jni_freeThreader
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1freeThreader
+MADARA_Export void JNICALL
+Java_com_madara_threads_Threader_jni_1freeThreader
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -82,7 +85,8 @@ MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1freeThreader
  * Method:    jni_run
  * Signature: (JLjava/lang/String;Ljava/lang/Object;Z)V
  */
-MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1run
+MADARA_Export void JNICALL
+Java_com_madara_threads_Threader_jni_1run
   (JNIEnv *, jobject, jlong, jstring, jobject, jboolean);
 
 /*
@@ -90,7 +94,8 @@ MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1run
  * Method:    jni_runhz
  * Signature: (JDLjava/lang/String;Ljava/lang/Object;Z)V
  */
-MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1runhz
+MADARA_Export void JNICALL
+Java_com_madara_threads_Threader_jni_1runhz
   (JNIEnv *, jobject, jlong, jdouble, jstring, jobject, jboolean);
 
 /*
@@ -98,7 +103,8 @@ MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1runhz
  * Method:    jni_pauseThread
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1pauseThread
+MADARA_Export void JNICALL
+Java_com_madara_threads_Threader_jni_1pauseThread
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -106,7 +112,8 @@ MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1pauseThread
  * Method:    jni_pause
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1pause
+MADARA_Export void JNICALL
+Java_com_madara_threads_Threader_jni_1pause
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -114,7 +121,8 @@ MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1pause
  * Method:    jni_waitThread
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1waitThread
+MADARA_Export void JNICALL
+Java_com_madara_threads_Threader_jni_1waitThread
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -122,7 +130,8 @@ MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1waitThread
  * Method:    jni_wait
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1wait
+MADARA_Export void JNICALL
+Java_com_madara_threads_Threader_jni_1wait
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -130,7 +139,8 @@ MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1wait
  * Method:    jni_terminateThread
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1terminateThread
+MADARA_Export void JNICALL
+Java_com_madara_threads_Threader_jni_1terminateThread
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -138,7 +148,8 @@ MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1terminateThread
  * Method:    jni_terminate
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1terminate
+MADARA_Export void JNICALL
+Java_com_madara_threads_Threader_jni_1terminate
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -146,7 +157,8 @@ MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1terminate
  * Method:    jni_resumeThread
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1resumeThread
+MADARA_Export void JNICALL
+Java_com_madara_threads_Threader_jni_1resumeThread
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -154,7 +166,8 @@ MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1resumeThread
  * Method:    jni_resume
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_threads_Threader_jni_1resume
+MADARA_Export void JNICALL
+Java_com_madara_threads_Threader_jni_1resume
   (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus

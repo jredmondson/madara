@@ -721,7 +721,7 @@ madara::transport::QoSTransportSettings::load (const std::string & filename,
   knowledge.load_context (filename);
 
   containers::Map trusted_peers (prefix + ".trusted_peers", knowledge);
-  containers::Map banned_peers (prefix + ".banned_peers_", knowledge);
+  containers::Map banned_peers (prefix + ".banned_peers", knowledge);
 
   rebroadcast_ttl_ = (unsigned char)knowledge.get (
     prefix + ".rebroadcast_ttl").to_integer ();
@@ -772,7 +772,7 @@ madara::transport::QoSTransportSettings::save (
   knowledge.load_context (filename);
 
   containers::Map trusted_peers (prefix + ".trusted_peers", knowledge);
-  containers::Map banned_peers (prefix + ".banned_peers_", knowledge);
+  containers::Map banned_peers (prefix + ".banned_peers", knowledge);
 
   knowledge.set (prefix + ".rebroadcast_ttl", Integer (rebroadcast_ttl_));
   knowledge.set (prefix + ".participant_rebroadcast_ttl",

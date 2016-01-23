@@ -13,7 +13,8 @@ extern "C" {
  * Method:    jni_FlexMap
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1FlexMap__
   (JNIEnv *, jobject);
 
 /*
@@ -21,7 +22,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__
  * Method:    jni_FlexMap
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__J
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1FlexMap__J
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -29,7 +31,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1FlexMap__J
  * Method:    jni_freeFlexMap
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1freeFlexMap
+MADARA_Export void JNICALL
+Java_com_madara_containers_FlexMap_jni_1freeFlexMap
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -37,7 +40,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1freeFlexMap
  * Method:    jni_clear
  * Signature: (JZ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1clear
+MADARA_Export void JNICALL
+Java_com_madara_containers_FlexMap_jni_1clear
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -45,7 +49,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1clear
  * Method:    jni_erase
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1erase
+MADARA_Export void JNICALL
+Java_com_madara_containers_FlexMap_jni_1erase
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -53,7 +58,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1erase
  * Method:    jni_setString
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setString
+MADARA_Export void JNICALL
+Java_com_madara_containers_FlexMap_jni_1setString
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -61,7 +67,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setString
  * Method:    jni_setDouble
  * Signature: (JD)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setDouble
+MADARA_Export void JNICALL
+Java_com_madara_containers_FlexMap_jni_1setDouble
   (JNIEnv *, jobject, jlong, jdouble);
 
 /*
@@ -69,7 +76,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setDouble
  * Method:    jni_set
  * Signature: (JJJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1set
+MADARA_Export void JNICALL
+Java_com_madara_containers_FlexMap_jni_1set
   (JNIEnv *, jobject, jlong, jlong, jlong);
 
 /*
@@ -77,7 +85,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1set
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getName
+MADARA_Export jstring JNICALL
+Java_com_madara_containers_FlexMap_jni_1getName
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -85,7 +94,8 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getName
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setName
+MADARA_Export void JNICALL
+Java_com_madara_containers_FlexMap_jni_1setName
   (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
 
 /*
@@ -93,7 +103,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setName
  * Method:    jni_get
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1get
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1get
   (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -101,7 +112,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1get
 * Method:    jni_getIndex
 * Signature: (JI)J
 */
-MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1getIndex
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1getIndex
 (JNIEnv *, jobject, jlong, jint);
 
 /*
@@ -109,7 +121,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1getIndex
  * Method:    jni_toRecord
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1toRecord
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1toRecord
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -117,7 +130,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1toRecord
  * Method:    jni_modify
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1modify
+MADARA_Export void JNICALL
+Java_com_madara_containers_FlexMap_jni_1modify
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -125,7 +139,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1modify
  * Method:    jni_toMapContainer
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1toMapContainer
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_FlexMap_jni_1toMapContainer
   (JNIEnv *, jobject, jlong);
 
 
@@ -134,7 +149,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_FlexMap_jni_1toMapContain
 * Method:    jni_getDelimiter
 * Signature: (J)Ljava/lang/String;
 */
-MADARA_Export jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getDelimiter
+MADARA_Export jstring JNICALL
+Java_com_madara_containers_FlexMap_jni_1getDelimiter
 (JNIEnv *, jobject, jlong);
 
 /*
@@ -142,7 +158,8 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_FlexMap_jni_1getDelimit
 * Method:    jni_setDelimiter
 * Signature: (JLjava/lang/String;)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setDelimiter
+MADARA_Export void JNICALL
+Java_com_madara_containers_FlexMap_jni_1setDelimiter
 (JNIEnv *, jobject, jlong, jstring);
 
 /*
@@ -150,7 +167,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setDelimiter
 * Method:    jni_keys
 * Signature: (JZ)[Ljava/lang/String;
 */
-MADARA_Export jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
+MADARA_Export jobjectArray JNICALL
+Java_com_madara_containers_FlexMap_jni_1keys
 (JNIEnv *, jobject, jlong, jboolean);
 
 /*
@@ -158,7 +176,8 @@ MADARA_Export jobjectArray JNICALL Java_com_madara_containers_FlexMap_jni_1keys
 * Method:    jni_setSettings
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setSettings
+MADARA_Export void JNICALL
+Java_com_madara_containers_FlexMap_jni_1setSettings
 (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -166,7 +185,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_FlexMap_jni_1setSettings
 * Method:    jni_isTrue
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_FlexMap_jni_1isTrue
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_FlexMap_jni_1isTrue
 (JNIEnv *, jobject, jlong);
 
 /*
@@ -174,7 +194,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_containers_FlexMap_jni_1isTrue
 * Method:    jni_isFalse
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_FlexMap_jni_1isFalse
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_FlexMap_jni_1isFalse
 (JNIEnv *, jobject, jlong);
 
 

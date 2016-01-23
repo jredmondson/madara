@@ -22,7 +22,7 @@ madara::transport::UdpRegistryServer::UdpRegistryServer (const std::string & id,
   // set the data plane for the read threads
   read_threads_.set_data_plane (knowledge_);
 
-  endpoints_.set_name ("domain." + config.domains + ".endpoints", knowledge_);
+  endpoints_.set_name ("domain." + config.write_domain + ".endpoints", knowledge_);
 
   if (launch_transport)
     setup ();

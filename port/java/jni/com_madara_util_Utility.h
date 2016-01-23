@@ -58,7 +58,8 @@ extern "C" {
  * Method:    jni_getVersion
  * Signature: ()Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_util_Utility_jni_1getVersion
+MADARA_Export jstring JNICALL
+Java_com_madara_util_Utility_jni_1getVersion
   (JNIEnv *, jclass);
 
 /*
@@ -66,7 +67,8 @@ MADARA_Export jstring JNICALL Java_com_madara_util_Utility_jni_1getVersion
 * Method:    jni_getTime
 * Signature: ()J
 */
-MADARA_Export jlong JNICALL Java_com_madara_util_Utility_jni_1getTime
+MADARA_Export jlong JNICALL
+Java_com_madara_util_Utility_jni_1getTime
   (JNIEnv *, jclass);
 
 /*
@@ -74,7 +76,8 @@ MADARA_Export jlong JNICALL Java_com_madara_util_Utility_jni_1getTime
 * Method:    jni_sleep
 * Signature: (D)V
 */
-MADARA_Export void JNICALL Java_com_madara_util_Utility_jni_1sleep
+MADARA_Export void JNICALL
+Java_com_madara_util_Utility_jni_1sleep
 (JNIEnv *, jclass, jdouble);
 
 #ifdef __cplusplus

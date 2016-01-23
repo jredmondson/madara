@@ -3,34 +3,39 @@
 
 namespace logger = madara::logger;
 
-jlong JNICALL Java_com_madara_logger_GlobalLogger_jni_1getCPtr
+jlong JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1getCPtr
 (JNIEnv *, jclass)
 {
   return (jlong) logger::global_logger.get ();
 }
 
-void JNICALL Java_com_madara_logger_GlobalLogger_jni_1setLevel
+void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1setLevel
   (JNIEnv *, jclass, jint level)
 {
   logger::global_logger->set_level ((int)level);
 }
 
 
-jint JNICALL Java_com_madara_logger_GlobalLogger_jni_1getLevel
+jint JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1getLevel
   (JNIEnv *, jclass)
 {
   return (jint) logger::global_logger->get_level ();
 }
 
 
-jstring JNICALL Java_com_madara_logger_GlobalLogger_jni_1getTag
+jstring JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1getTag
   (JNIEnv * env, jclass)
 {
   return env->NewStringUTF (logger::global_logger->get_tag ().c_str ());
 }
 
 
-void JNICALL Java_com_madara_logger_GlobalLogger_jni_1setTag
+void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1setTag
   (JNIEnv * env, jclass, jstring tag)
 {
   const char * str_tag = env->GetStringUTFChars (tag, 0);
@@ -41,28 +46,32 @@ void JNICALL Java_com_madara_logger_GlobalLogger_jni_1setTag
 }
 
 
-void JNICALL Java_com_madara_logger_GlobalLogger_jni_1addTerm
+void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1addTerm
   (JNIEnv *, jclass)
 {
   logger::global_logger->add_term ();
 }
 
 
-void JNICALL Java_com_madara_logger_GlobalLogger_jni_1addSyslog
+void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1addSyslog
   (JNIEnv *, jclass)
 {
   logger::global_logger->add_syslog ();
 }
 
 
-void JNICALL Java_com_madara_logger_GlobalLogger_jni_1clear
+void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1clear
   (JNIEnv *, jclass)
 {
   logger::global_logger->clear ();
 }
 
 
-void JNICALL Java_com_madara_logger_GlobalLogger_jni_1addFile
+void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1addFile
   (JNIEnv * env, jclass, jstring filename)
 {
   const char * str_filename = env->GetStringUTFChars (filename, 0);
@@ -72,7 +81,8 @@ void JNICALL Java_com_madara_logger_GlobalLogger_jni_1addFile
   env->ReleaseStringUTFChars (filename, str_filename);
 }
 
-void JNICALL Java_com_madara_logger_GlobalLogger_jni_1log
+void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1log
   (JNIEnv * env, jclass, jint level, jstring message)
 {
   const char * str_message = env->GetStringUTFChars (message, 0);
@@ -82,7 +92,8 @@ void JNICALL Java_com_madara_logger_GlobalLogger_jni_1log
   env->ReleaseStringUTFChars (message, str_message);
 }
 
-void JNICALL Java_com_madara_logger_GlobalLogger_jni_1setTimestampFormat
+void JNICALL
+Java_com_madara_logger_GlobalLogger_jni_1setTimestampFormat
 (JNIEnv * env, jclass, jstring format)
 {
   const char * str_format = env->GetStringUTFChars (format, 0);

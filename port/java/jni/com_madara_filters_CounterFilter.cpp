@@ -9,14 +9,16 @@ typedef madara::knowledge::KnowledgeRecord::Integer    Integer;
 typedef transport::QoSTransportSettings QoSTransportSettings;
 typedef filters::CounterFilter CounterFilter;
 
-jlong JNICALL Java_com_madara_filters_CounterFilter_jni_1CounterFilter__
+jlong JNICALL
+Java_com_madara_filters_CounterFilter_jni_1CounterFilter__
   (JNIEnv *, jobject)
 {
   return (jlong) new CounterFilter ();
 }
 
 
-jdouble JNICALL Java_com_madara_filters_CounterFilter_jni_1getThroughput
+jdouble JNICALL
+Java_com_madara_filters_CounterFilter_jni_1getThroughput
   (JNIEnv *, jobject, jlong cptr)
 {
   CounterFilter * current = (CounterFilter *) cptr;
@@ -31,7 +33,8 @@ jdouble JNICALL Java_com_madara_filters_CounterFilter_jni_1getThroughput
 }
 
 
-void JNICALL Java_com_madara_filters_CounterFilter_jni_1addReceiveFilterTo
+void JNICALL
+Java_com_madara_filters_CounterFilter_jni_1addReceiveFilterTo
   (JNIEnv *, jobject, jlong cptr, jlong qosCptr)
 {
   CounterFilter * current = (CounterFilter *) cptr;
@@ -43,7 +46,8 @@ void JNICALL Java_com_madara_filters_CounterFilter_jni_1addReceiveFilterTo
   }
 }
 
-void JNICALL Java_com_madara_filters_CounterFilter_jni_1addSendFilterTo
+void JNICALL
+Java_com_madara_filters_CounterFilter_jni_1addSendFilterTo
   (JNIEnv *, jobject, jlong cptr, jlong qosCptr)
 {
   CounterFilter * current = (CounterFilter *)cptr;
@@ -56,7 +60,8 @@ void JNICALL Java_com_madara_filters_CounterFilter_jni_1addSendFilterTo
 }
 
 
-void JNICALL Java_com_madara_filters_CounterFilter_jni_1addRebroadcastFilterTo
+void JNICALL
+Java_com_madara_filters_CounterFilter_jni_1addRebroadcastFilterTo
 (JNIEnv *, jobject, jlong cptr, jlong qosCptr)
 {
   CounterFilter * current = (CounterFilter *)cptr;
@@ -69,7 +74,8 @@ void JNICALL Java_com_madara_filters_CounterFilter_jni_1addRebroadcastFilterTo
 }
 
 
-jlong JNICALL Java_com_madara_filters_CounterFilter_jni_1getCount
+jlong JNICALL
+Java_com_madara_filters_CounterFilter_jni_1getCount
   (JNIEnv *, jobject, jlong cptr)
 {
   CounterFilter * current = (CounterFilter *)cptr;
@@ -84,7 +90,8 @@ jlong JNICALL Java_com_madara_filters_CounterFilter_jni_1getCount
 }
 
 
-jlong JNICALL Java_com_madara_filters_CounterFilter_jni_1getElapsed
+jlong JNICALL
+Java_com_madara_filters_CounterFilter_jni_1getElapsed
   (JNIEnv *, jobject, jlong cptr)
 {
   CounterFilter * current = (CounterFilter *)cptr;
@@ -99,7 +106,8 @@ jlong JNICALL Java_com_madara_filters_CounterFilter_jni_1getElapsed
 }
 
 
-void JNICALL Java_com_madara_filters_CounterFilter_jni_1freeCounterFilter
+void JNICALL
+Java_com_madara_filters_CounterFilter_jni_1freeCounterFilter
   (JNIEnv *, jclass, jlong cptr)
 {
   delete (CounterFilter *) cptr;

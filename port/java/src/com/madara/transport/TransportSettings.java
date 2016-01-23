@@ -64,8 +64,8 @@ public class TransportSettings extends MadaraJNI {
     setCPtr(jni_Settings(transportSettings.getCPtr()));
   }
 
-  private native void jni_setDomains(long cptr, String domains);
-  private native String jni_getDomains(long cptr);
+  private native void jni_setWriteDomain(long cptr, String domains);
+  private native String jni_getWriteDomain(long cptr);
 
   private native void jni_setQueueLength(long cptr, int queue_length);
   private native int jni_getQueueLength(long cptr);
@@ -125,12 +125,12 @@ public class TransportSettings extends MadaraJNI {
     jni_load(getCPtr(), filename);
   }
 
-  public void setDomains(String domains) {
-    jni_setDomains(getCPtr(), domains);
+  public void setWriteDomain(String domains) {
+    jni_setWriteDomain(getCPtr(), domains);
   }
 
-  public String getDomains() {
-    return jni_getDomains(getCPtr());
+  public String getWriteDomain() {
+    return jni_getWriteDomain(getCPtr());
   }
 
   public void setQueueLength(int queueLength) {

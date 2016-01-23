@@ -57,7 +57,8 @@ typedef knowledge::KnowledgeRecord           KnowledgeRecord;
  * Method:    jni_get
  * Signature: (JLjava/lang/String;)J
  */
-jlong JNICALL Java_com_madara_transport_filters_Packet_jni_1get
+jlong JNICALL
+Java_com_madara_transport_filters_Packet_jni_1get
   (JNIEnv * env, jobject, jlong cptr, jstring index)
 {
   // get the C string and the underlying map
@@ -81,7 +82,8 @@ jlong JNICALL Java_com_madara_transport_filters_Packet_jni_1get
  * Method:    jni_set
  * Signature: (JLjava/lang/String;J)V
  */
-void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
+void JNICALL
+Java_com_madara_transport_filters_Packet_jni_1set
   (JNIEnv * env, jobject, jlong cptr, jstring index, jlong value)
 {
   // get the C string and the underlying map
@@ -103,7 +105,8 @@ void JNICALL Java_com_madara_transport_filters_Packet_jni_1set
  * Method:    jni_get_keys
  * Signature: (J)[Ljava/lang/String;
  */
-jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
+jobjectArray JNICALL
+Java_com_madara_transport_filters_Packet_jni_1get_1keys
   (JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeMap * packet = (KnowledgeMap *)cptr;
@@ -144,7 +147,8 @@ jobjectArray JNICALL Java_com_madara_transport_filters_Packet_jni_1get_1keys
  * Method:    jni_exists
  * Signature: (JLjava/lang/String;)Z
  */
-jboolean JNICALL Java_com_madara_transport_filters_Packet_jni_1exists
+jboolean JNICALL
+Java_com_madara_transport_filters_Packet_jni_1exists
   (JNIEnv * env, jobject, jlong cptr, jstring index)
 {
   jboolean result (false);
@@ -163,7 +167,8 @@ jboolean JNICALL Java_com_madara_transport_filters_Packet_jni_1exists
   return result;
 }
 
-void JNICALL Java_com_madara_transport_filters_Packet_jni_1clear
+void JNICALL
+Java_com_madara_transport_filters_Packet_jni_1clear
   (JNIEnv *, jobject, jlong cptr)
 {
   KnowledgeMap * packet = (KnowledgeMap *)cptr;
@@ -174,7 +179,8 @@ void JNICALL Java_com_madara_transport_filters_Packet_jni_1clear
   }
 }
 
-void JNICALL Java_com_madara_transport_filters_Packet_jni_1erase
+void JNICALL
+Java_com_madara_transport_filters_Packet_jni_1erase
   (JNIEnv * env, jobject, jlong cptr, jstring index)
 {
   KnowledgeMap * packet = (KnowledgeMap *)cptr;

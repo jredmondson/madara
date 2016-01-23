@@ -58,7 +58,8 @@ extern "C" {
  * Method:    jni_Double
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Double_jni_1Double__
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Double_jni_1Double__
   (JNIEnv *, jobject);
 
 /*
@@ -66,7 +67,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Double_jni_1Double__
  * Method:    jni_Double
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Double_jni_1Double__J
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Double_jni_1Double__J
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -74,7 +76,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Double_jni_1Double__J
  * Method:    jni_freeDouble
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Double_jni_1freeDouble
+MADARA_Export void JNICALL
+Java_com_madara_containers_Double_jni_1freeDouble
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -82,7 +85,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Double_jni_1freeDouble
  * Method:    jni_set
  * Signature: (JD)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Double_jni_1set
+MADARA_Export void JNICALL
+Java_com_madara_containers_Double_jni_1set
   (JNIEnv *, jobject, jlong, jdouble);
 
 /*
@@ -90,7 +94,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Double_jni_1set
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_containers_Double_jni_1getName
+MADARA_Export jstring JNICALL
+Java_com_madara_containers_Double_jni_1getName
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -98,7 +103,8 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_Double_jni_1getName
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Double_jni_1setName
+MADARA_Export void JNICALL
+Java_com_madara_containers_Double_jni_1setName
   (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
 
 /*
@@ -106,7 +112,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Double_jni_1setName
  * Method:    jni_toString
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_containers_Double_jni_1toString
+MADARA_Export jstring JNICALL
+Java_com_madara_containers_Double_jni_1toString
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -114,7 +121,8 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_Double_jni_1toString
  * Method:    jni_toDouble
  * Signature: (J)D
  */
-MADARA_Export jdouble JNICALL Java_com_madara_containers_Double_jni_1toDouble
+MADARA_Export jdouble JNICALL
+Java_com_madara_containers_Double_jni_1toDouble
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -122,7 +130,8 @@ MADARA_Export jdouble JNICALL Java_com_madara_containers_Double_jni_1toDouble
  * Method:    jni_toLong
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Double_jni_1toLong
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Double_jni_1toLong
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -130,7 +139,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Double_jni_1toLong
  * Method:    jni_modify
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Double_jni_1modify
+MADARA_Export void JNICALL
+Java_com_madara_containers_Double_jni_1modify
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -138,7 +148,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Double_jni_1modify
 * Method:    jni_setSettings
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Double_jni_1setSettings
+MADARA_Export void JNICALL
+Java_com_madara_containers_Double_jni_1setSettings
 (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -146,7 +157,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Double_jni_1setSettings
 * Method:    jni_isTrue
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_Double_jni_1isTrue
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_Double_jni_1isTrue
 (JNIEnv *, jobject, jlong);
 
 /*
@@ -154,7 +166,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_containers_Double_jni_1isTrue
 * Method:    jni_isFalse
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_Double_jni_1isFalse
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_Double_jni_1isFalse
 (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus

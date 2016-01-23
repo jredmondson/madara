@@ -58,7 +58,8 @@ extern "C" {
  * Method:    jni_Counter
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Counter_jni_1Counter__
   (JNIEnv *, jobject);
 
 /*
@@ -66,7 +67,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__
  * Method:    jni_Counter
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__J
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Counter_jni_1Counter__J
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -74,7 +76,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__J
  * Method:    jni_freeCounter
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1freeCounter
+MADARA_Export void JNICALL
+Java_com_madara_containers_Counter_jni_1freeCounter
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -82,7 +85,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1freeCounter
  * Method:    jni_set
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1set
+MADARA_Export void JNICALL
+Java_com_madara_containers_Counter_jni_1set
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -90,7 +94,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1set
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_containers_Counter_jni_1getName
+MADARA_Export jstring JNICALL
+Java_com_madara_containers_Counter_jni_1getName
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -98,7 +103,8 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_Counter_jni_1getName
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1setName
+MADARA_Export void JNICALL
+Java_com_madara_containers_Counter_jni_1setName
   (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
 
 /*
@@ -106,7 +112,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1setName
  * Method:    jni_toString
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_containers_Counter_jni_1toString
+MADARA_Export jstring JNICALL
+Java_com_madara_containers_Counter_jni_1toString
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -114,7 +121,8 @@ MADARA_Export jstring JNICALL Java_com_madara_containers_Counter_jni_1toString
  * Method:    jni_toDouble
  * Signature: (J)D
  */
-MADARA_Export jdouble JNICALL Java_com_madara_containers_Counter_jni_1toDouble
+MADARA_Export jdouble JNICALL
+Java_com_madara_containers_Counter_jni_1toDouble
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -122,7 +130,8 @@ MADARA_Export jdouble JNICALL Java_com_madara_containers_Counter_jni_1toDouble
  * Method:    jni_toLong
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_containers_Counter_jni_1toLong
+MADARA_Export jlong JNICALL
+Java_com_madara_containers_Counter_jni_1toLong
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -130,7 +139,8 @@ MADARA_Export jlong JNICALL Java_com_madara_containers_Counter_jni_1toLong
  * Method:    jni_inc
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1inc
+MADARA_Export void JNICALL
+Java_com_madara_containers_Counter_jni_1inc
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -138,7 +148,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1inc
  * Method:    jni_dec
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1dec
+MADARA_Export void JNICALL
+Java_com_madara_containers_Counter_jni_1dec
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -146,7 +157,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1dec
  * Method:    jni_incValue
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1incValue
+MADARA_Export void JNICALL
+Java_com_madara_containers_Counter_jni_1incValue
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -154,7 +166,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1incValue
  * Method:    jni_decValue
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1decValue
+MADARA_Export void JNICALL
+Java_com_madara_containers_Counter_jni_1decValue
   (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -162,7 +175,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1decValue
  * Method:    jni_modify
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1modify
+MADARA_Export void JNICALL
+Java_com_madara_containers_Counter_jni_1modify
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -170,7 +184,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1modify
  * Method:    jni_resize
  * Signature: (JII)V
  */
-MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1resize
+MADARA_Export void JNICALL
+Java_com_madara_containers_Counter_jni_1resize
   (JNIEnv *, jobject, jlong, jint, jint);
 
 /*
@@ -178,7 +193,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1resize
 * Method:    jni_setSettings
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1setSettings
+MADARA_Export void JNICALL
+Java_com_madara_containers_Counter_jni_1setSettings
 (JNIEnv *, jobject, jlong, jlong);
 
 /*
@@ -186,7 +202,8 @@ MADARA_Export void JNICALL Java_com_madara_containers_Counter_jni_1setSettings
 * Method:    jni_isTrue
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_Counter_jni_1isTrue
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_Counter_jni_1isTrue
 (JNIEnv *, jobject, jlong);
 
 /*
@@ -194,7 +211,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_containers_Counter_jni_1isTrue
 * Method:    jni_isFalse
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL Java_com_madara_containers_Counter_jni_1isFalse
+MADARA_Export jboolean JNICALL
+Java_com_madara_containers_Counter_jni_1isFalse
 (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus

@@ -5,7 +5,8 @@ namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
 typedef  containers::BaseContainer   BaseContainer;
 
-jboolean JNICALL Java_com_madara_containers_BaseContainer_jni_1modifyIfTrue
+jboolean JNICALL
+Java_com_madara_containers_BaseContainer_jni_1modifyIfTrue
 (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   bool result = false;
@@ -20,7 +21,8 @@ jboolean JNICALL Java_com_madara_containers_BaseContainer_jni_1modifyIfTrue
   return result;
 }
 
-jboolean JNICALL Java_com_madara_containers_BaseContainer_jni_1modifyIfFalse
+jboolean JNICALL
+Java_com_madara_containers_BaseContainer_jni_1modifyIfFalse
 (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
 {
   bool result = true;

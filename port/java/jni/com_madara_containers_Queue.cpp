@@ -57,7 +57,8 @@ typedef KnowledgeRecord::Integer      Integer;
  * Method:    jni_Queue
  * Signature: ()J
  */
-jlong JNICALL Java_com_madara_containers_Queue_jni_1Queue__
+jlong JNICALL
+Java_com_madara_containers_Queue_jni_1Queue__
   (JNIEnv *, jobject)
 {
   return (jlong) new containers::Queue ();
@@ -68,7 +69,8 @@ jlong JNICALL Java_com_madara_containers_Queue_jni_1Queue__
  * Method:    jni_Queue
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_containers_Queue_jni_1Queue__J
+jlong JNICALL
+Java_com_madara_containers_Queue_jni_1Queue__J
   (JNIEnv *, jobject, jlong cptr)
 {
   containers::Queue * result (0);
@@ -87,7 +89,8 @@ jlong JNICALL Java_com_madara_containers_Queue_jni_1Queue__J
  * Method:    jni_freeQueue
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_containers_Queue_jni_1freeQueue
+void JNICALL
+Java_com_madara_containers_Queue_jni_1freeQueue
   (JNIEnv *, jclass, jlong cptr)
 {
   delete (containers::Queue *) cptr;
@@ -98,7 +101,8 @@ void JNICALL Java_com_madara_containers_Queue_jni_1freeQueue
  * Method:    jni_enqueue
  * Signature: (JJ)Z
  */
-jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueue
+jboolean JNICALL
+Java_com_madara_containers_Queue_jni_1enqueue
   (JNIEnv *, jobject, jlong cptr, jlong record_ptr)
 {
   jboolean result (false);
@@ -123,7 +127,8 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueue
  * Method:    jni_enqueueDouble
  * Signature: (JD)Z
  */
-jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueDouble
+jboolean JNICALL
+Java_com_madara_containers_Queue_jni_1enqueueDouble
   (JNIEnv *, jobject, jlong cptr, jdouble value)
 {
   jboolean result (false);
@@ -142,7 +147,8 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueDouble
  * Method:    jni_enqueueLong
  * Signature: (JJ)Z
  */
-jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueLong
+jboolean JNICALL
+Java_com_madara_containers_Queue_jni_1enqueueLong
   (JNIEnv *, jobject, jlong cptr, jlong value)
 {
   jboolean result (false);
@@ -161,7 +167,8 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueLong
  * Method:    jni_enqueueString
  * Signature: (JLcom/madara/containers/String;)Z
  */
-jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueString
+jboolean JNICALL
+Java_com_madara_containers_Queue_jni_1enqueueString
   (JNIEnv * env, jobject, jlong cptr, jstring value)
 {
   jboolean result (false);
@@ -184,7 +191,8 @@ jboolean JNICALL Java_com_madara_containers_Queue_jni_1enqueueString
  * Method:    jni_dequeue
  * Signature: (JZ)J
  */
-jlong JNICALL Java_com_madara_containers_Queue_jni_1dequeue
+jlong JNICALL
+Java_com_madara_containers_Queue_jni_1dequeue
   (JNIEnv *, jobject, jlong cptr, jboolean wait)
 {
   jlong result (0);
@@ -203,7 +211,8 @@ jlong JNICALL Java_com_madara_containers_Queue_jni_1dequeue
  * Method:    jni_inspect
  * Signature: (JI)J
  */
-jlong JNICALL Java_com_madara_containers_Queue_jni_1inspect
+jlong JNICALL
+Java_com_madara_containers_Queue_jni_1inspect
   (JNIEnv *, jobject, jlong cptr, jint position)
 {
   jlong result (0);
@@ -224,7 +233,8 @@ jlong JNICALL Java_com_madara_containers_Queue_jni_1inspect
 {
 }
  */
-jstring JNICALL Java_com_madara_containers_Queue_jni_1getName
+jstring JNICALL
+Java_com_madara_containers_Queue_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -245,7 +255,8 @@ jstring JNICALL Java_com_madara_containers_Queue_jni_1getName
 {
 })V
  */
-void JNICALL Java_com_madara_containers_Queue_jni_1setName
+void JNICALL
+Java_com_madara_containers_Queue_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
   containers::Queue * current = (containers::Queue *) cptr;
@@ -274,7 +285,8 @@ void JNICALL Java_com_madara_containers_Queue_jni_1setName
  * Method:    jni_size
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_containers_Queue_jni_1size
+jlong JNICALL
+Java_com_madara_containers_Queue_jni_1size
   (JNIEnv *, jobject, jlong cptr)
 {
   jlong result (0);
@@ -293,7 +305,8 @@ jlong JNICALL Java_com_madara_containers_Queue_jni_1size
  * Method:    jni_count
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_containers_Queue_jni_1count
+jlong JNICALL
+Java_com_madara_containers_Queue_jni_1count
   (JNIEnv *, jobject, jlong cptr)
 {
   jlong result (0);
@@ -312,7 +325,8 @@ jlong JNICALL Java_com_madara_containers_Queue_jni_1count
  * Method:    jni_resize
  * Signature: (JJ)V
  */
-void JNICALL Java_com_madara_containers_Queue_jni_1resize
+void JNICALL
+Java_com_madara_containers_Queue_jni_1resize
   (JNIEnv *, jobject, jlong cptr, jlong new_size)
 {
   containers::Queue * current = (containers::Queue *)cptr;
@@ -328,7 +342,8 @@ void JNICALL Java_com_madara_containers_Queue_jni_1resize
  * Method:    jni_clear
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_containers_Queue_jni_1clear
+void JNICALL
+Java_com_madara_containers_Queue_jni_1clear
   (JNIEnv *, jobject, jlong cptr)
 {
   containers::Queue * current = (containers::Queue *)cptr;
@@ -339,7 +354,8 @@ void JNICALL Java_com_madara_containers_Queue_jni_1clear
   }
 }
 
-void JNICALL Java_com_madara_containers_Queue_jni_1setSettings
+void JNICALL
+Java_com_madara_containers_Queue_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::Queue * current = (containers::Queue *)cptr;

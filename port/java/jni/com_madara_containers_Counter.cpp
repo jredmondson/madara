@@ -57,7 +57,8 @@ typedef containers::Counter    Counter;
  * Method:    jni_Counter
  * Signature: ()J
  */
-jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__
+jlong JNICALL
+Java_com_madara_containers_Counter_jni_1Counter__
   (JNIEnv *, jobject)
 {
   return (jlong) new Counter ();
@@ -69,7 +70,8 @@ jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__
  * Method:    jni_Counter
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__J
+jlong JNICALL
+Java_com_madara_containers_Counter_jni_1Counter__J
   (JNIEnv *, jobject, jlong cptr)
 {
   Counter * result (0);
@@ -89,7 +91,8 @@ jlong JNICALL Java_com_madara_containers_Counter_jni_1Counter__J
  * Method:    jni_freeCounter
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_containers_Counter_jni_1freeCounter
+void JNICALL
+Java_com_madara_containers_Counter_jni_1freeCounter
   (JNIEnv *, jclass, jlong cptr)
 {
   delete (Counter *) cptr;
@@ -101,7 +104,8 @@ void JNICALL Java_com_madara_containers_Counter_jni_1freeCounter
  * Method:    jni_set
  * Signature: (JJ)V
  */
-void JNICALL Java_com_madara_containers_Counter_jni_1set
+void JNICALL
+Java_com_madara_containers_Counter_jni_1set
   (JNIEnv *, jobject, jlong cptr, jlong value)
 {
   Counter * current = (Counter *) cptr;
@@ -118,7 +122,8 @@ void JNICALL Java_com_madara_containers_Counter_jni_1set
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-jstring JNICALL Java_com_madara_containers_Counter_jni_1getName
+jstring JNICALL
+Java_com_madara_containers_Counter_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -142,7 +147,8 @@ jstring JNICALL Java_com_madara_containers_Counter_jni_1getName
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-void JNICALL Java_com_madara_containers_Counter_jni_1setName
+void JNICALL
+Java_com_madara_containers_Counter_jni_1setName
   (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
   Counter * current = (Counter *) cptr;
@@ -172,7 +178,8 @@ void JNICALL Java_com_madara_containers_Counter_jni_1setName
  * Method:    jni_toString
  * Signature: (J)Ljava/lang/String;
  */
-jstring JNICALL Java_com_madara_containers_Counter_jni_1toString
+jstring JNICALL
+Java_com_madara_containers_Counter_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
   jstring result;
@@ -196,7 +203,8 @@ jstring JNICALL Java_com_madara_containers_Counter_jni_1toString
  * Method:    jni_toDouble
  * Signature: (J)D
  */
-jdouble JNICALL Java_com_madara_containers_Counter_jni_1toDouble
+jdouble JNICALL
+Java_com_madara_containers_Counter_jni_1toDouble
   (JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0.0);
@@ -216,7 +224,8 @@ jdouble JNICALL Java_com_madara_containers_Counter_jni_1toDouble
  * Method:    jni_toLong
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_containers_Counter_jni_1toLong
+jlong JNICALL
+Java_com_madara_containers_Counter_jni_1toLong
   (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
@@ -236,7 +245,8 @@ jlong JNICALL Java_com_madara_containers_Counter_jni_1toLong
  * Method:    jni_inc
  * Signature: (J)J
  */
-void JNICALL Java_com_madara_containers_Counter_jni_1inc
+void JNICALL
+Java_com_madara_containers_Counter_jni_1inc
   (JNIEnv *, jobject, jlong cptr)
 {
   Counter * current = (Counter *) cptr;
@@ -249,7 +259,8 @@ void JNICALL Java_com_madara_containers_Counter_jni_1inc
  * Method:    jni_dec
  * Signature: (J)J
  */
-void JNICALL Java_com_madara_containers_Counter_jni_1dec
+void JNICALL
+Java_com_madara_containers_Counter_jni_1dec
   (JNIEnv *, jobject, jlong cptr)
 {
   Counter * current = (Counter *) cptr;
@@ -262,7 +273,8 @@ void JNICALL Java_com_madara_containers_Counter_jni_1dec
  * Method:    jni_incValue
  * Signature: (JJ)J
  */
-void JNICALL Java_com_madara_containers_Counter_jni_1incValue
+void JNICALL
+Java_com_madara_containers_Counter_jni_1incValue
   (JNIEnv *, jobject, jlong cptr, jlong value)
 {
   Counter * current = (Counter *) cptr;
@@ -275,7 +287,8 @@ void JNICALL Java_com_madara_containers_Counter_jni_1incValue
  * Method:    jni_decValue
  * Signature: (JJ)J
  */
-void JNICALL Java_com_madara_containers_Counter_jni_1decValue
+void JNICALL
+Java_com_madara_containers_Counter_jni_1decValue
   (JNIEnv *, jobject, jlong cptr, jlong value)
 {
   Counter * current = (Counter *) cptr;
@@ -288,7 +301,8 @@ void JNICALL Java_com_madara_containers_Counter_jni_1decValue
  * Method:    jni_modify
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_containers_Counter_jni_1modify
+void JNICALL
+Java_com_madara_containers_Counter_jni_1modify
   (JNIEnv *, jobject, jlong cptr)
 {
   Counter * current = (Counter *) cptr;
@@ -301,14 +315,16 @@ void JNICALL Java_com_madara_containers_Counter_jni_1modify
  * Method:    jni_resize
  * Signature: (JII)V
  */
-void JNICALL Java_com_madara_containers_Counter_jni_1resize
+void JNICALL
+Java_com_madara_containers_Counter_jni_1resize
   (JNIEnv *, jobject, jlong cptr, jint id, jint counters)
 {
   Counter * current = (Counter *) cptr;
   current->resize (id, counters);
 }
 
-void JNICALL Java_com_madara_containers_Counter_jni_1setSettings
+void JNICALL
+Java_com_madara_containers_Counter_jni_1setSettings
 (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
 {
   Counter * current = (Counter *)cptr;
@@ -321,7 +337,8 @@ void JNICALL Java_com_madara_containers_Counter_jni_1setSettings
   }
 }
 
-jboolean JNICALL Java_com_madara_containers_Counter_jni_1isTrue
+jboolean JNICALL
+Java_com_madara_containers_Counter_jni_1isTrue
 (JNIEnv *, jobject, jlong cptr)
 {
   Counter * current = (Counter *)cptr;
@@ -336,7 +353,8 @@ jboolean JNICALL Java_com_madara_containers_Counter_jni_1isTrue
 }
 
 
-jboolean JNICALL Java_com_madara_containers_Counter_jni_1isFalse
+jboolean JNICALL
+Java_com_madara_containers_Counter_jni_1isFalse
 (JNIEnv *, jobject, jlong cptr)
 {
   Counter * current = (Counter *)cptr;

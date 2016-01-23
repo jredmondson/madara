@@ -60,7 +60,8 @@ extern "C" {
  * Method:    jni_KnowledgeRecord
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__
+MADARA_Export jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__
   (JNIEnv *, jobject);
 
 /*
@@ -68,7 +69,8 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord
  * Method:    jni_KnowledgeRecordDeep
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecordDeep
+MADARA_Export jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecordDeep
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -76,7 +78,8 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord
  * Method:    jni_KnowledgeRecord
  * Signature: (Ljava/lang/String;)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__Ljava_lang_String_2
+MADARA_Export jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__Ljava_lang_String_2
   (JNIEnv *, jobject, jstring);
 
 /*
@@ -84,7 +87,8 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord
  * Method:    jni_KnowledgeRecord
  * Signature: (D)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__D
+MADARA_Export jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__D
   (JNIEnv *, jobject, jdouble);
 
 /*
@@ -92,7 +96,8 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord
  * Method:    jni_KnowledgeRecord
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__J
+MADARA_Export jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord__J
   (JNIEnv *, jobject, jlong);
     
 /*
@@ -100,7 +105,8 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord
  * Method:    jni_KnowledgeRecord
  * Signature: ([D)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3D
+MADARA_Export jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3D
   (JNIEnv *, jclass, jdoubleArray);
     
 /*
@@ -108,7 +114,8 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord
  * Method:    jni_KnowledgeRecord
  * Signature: ([J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3J
+MADARA_Export jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord___3J
   (JNIEnv *, jclass, jlongArray);
 
 /*
@@ -116,7 +123,8 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1KnowledgeRecord
  * Method:    jni_toLongValue
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1toLongValue
+MADARA_Export jlong JNICALL
+Java_com_madara_KnowledgeRecord_jni_1toLongValue
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -124,7 +132,8 @@ MADARA_Export jlong JNICALL Java_com_madara_KnowledgeRecord_jni_1toLongValue
  * Method:    jni_toStringValue
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL Java_com_madara_KnowledgeRecord_jni_1toStringValue
+MADARA_Export jstring JNICALL
+Java_com_madara_KnowledgeRecord_jni_1toStringValue
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -132,7 +141,8 @@ MADARA_Export jstring JNICALL Java_com_madara_KnowledgeRecord_jni_1toStringValue
  * Method:    jni_toDoubleValue
  * Signature: (J)D
  */
-MADARA_Export jdouble JNICALL Java_com_madara_KnowledgeRecord_jni_1toDoubleValue
+MADARA_Export jdouble JNICALL
+Java_com_madara_KnowledgeRecord_jni_1toDoubleValue
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -140,7 +150,8 @@ MADARA_Export jdouble JNICALL Java_com_madara_KnowledgeRecord_jni_1toDoubleValue
  * Method:    jni_getType
  * Signature: (J)I
  */
-MADARA_Export jint JNICALL Java_com_madara_KnowledgeRecord_jni_1getType
+MADARA_Export jint JNICALL
+Java_com_madara_KnowledgeRecord_jni_1getType
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -148,7 +159,8 @@ MADARA_Export jint JNICALL Java_com_madara_KnowledgeRecord_jni_1getType
  * Method:    jni_freeKnowledgeRecord
  * Signature: (J)V
  */
-MADARA_Export void JNICALL Java_com_madara_KnowledgeRecord_jni_1freeKnowledgeRecord
+MADARA_Export void JNICALL
+Java_com_madara_KnowledgeRecord_jni_1freeKnowledgeRecord
   (JNIEnv *, jobject, jlong);
     
 /*
@@ -156,7 +168,8 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeRecord_jni_1freeKnowledgeRec
  * Method:    jni_toDoubleArray
  * Signature: (J)[D
  */
-MADARA_Export jdoubleArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toDoubleArray
+MADARA_Export jdoubleArray JNICALL
+Java_com_madara_KnowledgeRecord_jni_1toDoubleArray
   (JNIEnv *, jclass, jlong);
     
 /*
@@ -164,7 +177,8 @@ MADARA_Export jdoubleArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toDouble
  * Method:    jni_toLongArray
  * Signature: (J)[J
  */
-MADARA_Export jlongArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toLongArray
+MADARA_Export jlongArray JNICALL
+Java_com_madara_KnowledgeRecord_jni_1toLongArray
   (JNIEnv *, jclass, jlong);
   
 /*
@@ -172,7 +186,8 @@ MADARA_Export jlongArray JNICALL Java_com_madara_KnowledgeRecord_jni_1toLongArra
  * Method:    jni_freeKnowledgeList
  * Signature: ([JI)V
  */
-MADARA_Export void JNICALL Java_com_madara_KnowledgeList_jni_1freeKnowledgeList
+MADARA_Export void JNICALL
+Java_com_madara_KnowledgeList_jni_1freeKnowledgeList
   (JNIEnv *, jobject, jlongArray, jint);
   
 /*
@@ -180,7 +195,8 @@ MADARA_Export void JNICALL Java_com_madara_KnowledgeList_jni_1freeKnowledgeList
  * Method:    jni_isValid
  * Signature: (J)Z
  */
-MADARA_Export jboolean JNICALL Java_com_madara_KnowledgeRecord_jni_1isValid
+MADARA_Export jboolean JNICALL
+Java_com_madara_KnowledgeRecord_jni_1isValid
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -188,7 +204,8 @@ MADARA_Export jboolean JNICALL Java_com_madara_KnowledgeRecord_jni_1isValid
  * Method:    jni_freeKnowledgeMap
  * Signature: ([JI)V
  */
-MADARA_Export void JNICALL Java_com_madara_KnowledgeMap_jni_1freeKnowledgeMap
+MADARA_Export void JNICALL
+Java_com_madara_KnowledgeMap_jni_1freeKnowledgeMap
   (JNIEnv *, jobject, jlongArray, jint);
 
 #ifdef __cplusplus

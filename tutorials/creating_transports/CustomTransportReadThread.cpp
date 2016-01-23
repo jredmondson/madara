@@ -98,8 +98,8 @@ CustomTransportReadThread::svc (void)
       }
       
       // reject the message if it is from a different domain
-      if (strncmp (header.domain, settings_.domains.c_str (),
-           std::min (sizeof (header.domain), settings_.domains.size ())) != 0)
+      if (strncmp (header.domain, settings_.write_domain.c_str (),
+        std::min (sizeof (header.domain), settings_.write_domain.size ())) != 0)
       {
         continue;
       }

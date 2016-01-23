@@ -58,7 +58,8 @@ typedef  filters::AESBufferFilter   AESBufferFilter;
  * Method:    jni_AesBufferFilter
  * Signature: ()J
  */
-jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__
+jlong JNICALL
+Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__
 (JNIEnv *, jobject)
 {
   jlong result (0);
@@ -75,7 +76,8 @@ jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__
  * Method:    jni_AesBufferFilter
  * Signature: (J)J
  */
-jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__J
+jlong JNICALL
+Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__J
 (JNIEnv *, jobject, jlong cptr)
 {
   jlong result (0);
@@ -96,7 +98,8 @@ jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__
  * Method:    jni_freeAesBufferFilter
  * Signature: (J)V
  */
-void JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1freeAesBufferFilter
+void JNICALL
+Java_com_madara_filters_ssl_AesBufferFilter_jni_1freeAesBufferFilter
 (JNIEnv *, jclass, jlong cptr)
 {
 #ifdef _USE_SSL_
@@ -110,7 +113,8 @@ void JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1freeAesBufferFilte
  * Method:    jni_encode
  * Signature: (J[BJJ)J
  */
-jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1encode
+jlong JNICALL
+Java_com_madara_filters_ssl_AesBufferFilter_jni_1encode
 (JNIEnv * env, jobject, jlong cptr, jbyteArray buffer, jlong size, jlong max_size)
 {
   jlong result (size);
@@ -138,7 +142,8 @@ jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1encode
  * Method:    jni_decode
  * Signature: (J[BJJ)J
  */
-jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1decode
+jlong JNICALL
+Java_com_madara_filters_ssl_AesBufferFilter_jni_1decode
 (JNIEnv * env, jobject, jlong cptr, jbyteArray buffer, jlong size, jlong max_size)
 {
   jlong result (size);
@@ -166,7 +171,8 @@ jlong JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1decode
  * Method:    jni_generateKey
  * Signature: (JLjava/lang/String;)I
  */
-jint JNICALL Java_com_madara_filters_ssl_AesBufferFilter_jni_1generateKey
+jint JNICALL
+Java_com_madara_filters_ssl_AesBufferFilter_jni_1generateKey
 (JNIEnv * env, jobject, jlong cptr, jstring password)
 {
   jint result (-1);

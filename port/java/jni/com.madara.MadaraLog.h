@@ -60,7 +60,8 @@ extern "C" {
  * Method:    jni_setLogLevel
  * Signature: (I)V
  */
-MADARA_Export void JNICALL Java_com_madara_MadaraLog_jni_1setLogLevel
+MADARA_Export void JNICALL
+Java_com_madara_MadaraLog_jni_1setLogLevel
   (JNIEnv *, jclass, jint);
 
 /*
@@ -68,7 +69,8 @@ MADARA_Export void JNICALL Java_com_madara_MadaraLog_jni_1setLogLevel
  * Method:    jni_getLogLevel
  * Signature: ()I
  */
-MADARA_Export jint JNICALL Java_com_madara_MadaraLog_jni_1getLogLevel
+MADARA_Export jint JNICALL
+Java_com_madara_MadaraLog_jni_1getLogLevel
   (JNIEnv *, jclass);
 
 #ifdef __cplusplus

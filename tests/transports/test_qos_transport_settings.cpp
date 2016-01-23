@@ -427,7 +427,7 @@ void test_save_and_load ()
 
   source_settings.deadline = 10;
   source_settings.delay_launch = true;
-  source_settings.domains = "my_domain";
+  source_settings.write_domain = "my_domain";
   source_settings.fragment_queue_length = 32000;
   source_settings.hosts.push_back ("localhost:15000");
   source_settings.hosts.push_back ("localhost:15001");
@@ -503,7 +503,7 @@ void test_save_and_load ()
   }
 
   std::cerr << "  Checking domain... ";
-  if (loaded_settings.domains == "my_domain")
+  if (loaded_settings.write_domain == "my_domain")
   {
     std::cerr << "SUCCESS.\n";
   }

@@ -136,7 +136,7 @@ CustomTransport::send_data (
   strncpy (header.madara_id, MADARA_IDENTIFIER, 7);
 
   // copy the domain from settings
-  strncpy (header.domain, this->settings_.domains.c_str (),
+  strncpy (header.domain, this->settings_.write_domain.c_str (),
     sizeof (header.domain) - 1);
 
   // get the quality of the key
