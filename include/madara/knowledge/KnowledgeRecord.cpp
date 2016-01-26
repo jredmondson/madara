@@ -1208,7 +1208,7 @@ madara::knowledge::KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord
   return result;
 }
 
-madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs)
 {
   if (this == &rhs)
@@ -1247,7 +1247,7 @@ madara::knowledge::KnowledgeRecord::operator= (const knowledge::KnowledgeRecord 
 /**
   * Atomic addition operator
   **/
-madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator+= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type ())
@@ -1269,7 +1269,7 @@ madara::knowledge::KnowledgeRecord::operator+= (const knowledge::KnowledgeRecord
 /**
   * Atomic predecrement
   **/
-madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator-- (void)
 {
   if (is_integer_type ())
@@ -1284,7 +1284,7 @@ madara::knowledge::KnowledgeRecord::operator-- (void)
 /**
   * Atomic preincrement
   **/
-madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator++ (void)
 {
   if (is_integer_type ())
@@ -1300,7 +1300,7 @@ madara::knowledge::KnowledgeRecord::operator++ (void)
 /**
   * Atomic subtraction operator
   **/
-madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator-= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type ())
@@ -1319,7 +1319,7 @@ madara::knowledge::KnowledgeRecord::operator-= (const knowledge::KnowledgeRecord
 /**
   * Atomic multiplication operator
   **/
-madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator*= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type ())
@@ -1338,7 +1338,7 @@ madara::knowledge::KnowledgeRecord::operator*= (const knowledge::KnowledgeRecord
 /**
   * Atomic division operator
   **/
-madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type ())
@@ -1377,7 +1377,7 @@ madara::knowledge::KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord
 /**
   * Atomic division operator
   **/
-madara::knowledge::KnowledgeRecord
+madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator%= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type ())

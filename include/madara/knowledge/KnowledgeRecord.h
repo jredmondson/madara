@@ -607,32 +607,32 @@ namespace madara
       /**
        * Assignment
        **/
-      KnowledgeRecord operator= (const KnowledgeRecord & rhs);
+      KnowledgeRecord & operator= (const KnowledgeRecord & rhs);
     
       /**
        * Atomic addition operator
        **/
-      KnowledgeRecord operator+= (const KnowledgeRecord & rhs);
+      KnowledgeRecord & operator+= (const KnowledgeRecord & rhs);
     
       /**
        * Atomic subtraction operator
        **/
-      KnowledgeRecord operator-= (const KnowledgeRecord & rhs);
+      KnowledgeRecord & operator-= (const KnowledgeRecord & rhs);
     
       /**
        * Atomic multiplication operator
        **/
-      KnowledgeRecord operator*= (const KnowledgeRecord & rhs);
+      KnowledgeRecord & operator*= (const KnowledgeRecord & rhs);
     
       /**
        * Atomic division operator
        **/
-      KnowledgeRecord operator/= (const KnowledgeRecord & rhs);
+      KnowledgeRecord & operator/= (const KnowledgeRecord & rhs);
     
       /**
        * Atomic modulus operator
        **/
-      KnowledgeRecord operator%= (const KnowledgeRecord & rhs);
+      KnowledgeRecord & operator%= (const KnowledgeRecord & rhs);
     
       /**
        * Times operator
@@ -672,12 +672,12 @@ namespace madara
       /**
        * Preincrement operator
        **/
-      KnowledgeRecord operator++ (void);
+      KnowledgeRecord & operator++ (void);
     
       /**
        * Predecrement operator
        **/
-      KnowledgeRecord operator-- (void);
+      KnowledgeRecord & operator-- (void);
     
       /**
         * Reads a KnowledgeRecord instance from a buffer and updates
