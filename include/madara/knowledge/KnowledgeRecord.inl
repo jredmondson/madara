@@ -359,6 +359,14 @@ madara::knowledge::KnowledgeRecord::set_value (const std::vector <double> & new_
   double_array_ = temp_array;
 }
 
+inline
+madara::knowledge::KnowledgeRecord::operator bool_type (void) const
+{
+  return is_true() ?
+    &KnowledgeRecord::KnowledgeRecord_does_not_implicitly_cast_to_bool :
+    0;
+}
+
 
 
 #endif  // _KNOWLEDGE_RECORD_INL_

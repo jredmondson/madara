@@ -992,24 +992,6 @@ madara::knowledge::KnowledgeRecord::operator!= (const knowledge::KnowledgeRecord
 }
 
 /**
-  * Logical and.
-  **/
-madara::knowledge::KnowledgeRecord::Integer
-  madara::knowledge::KnowledgeRecord::operator&& (const knowledge::KnowledgeRecord & rhs) const
-{
-  return this->is_true () && rhs.is_true ();
-}
-
-/**
-  * Logical or.
-  **/
-madara::knowledge::KnowledgeRecord::Integer
-  madara::knowledge::KnowledgeRecord::operator|| (const knowledge::KnowledgeRecord & rhs) const
-{
-  return this->is_true () || rhs.is_true ();
-}
-
-/**
   * Logical not.
   **/
 madara::knowledge::KnowledgeRecord::Integer

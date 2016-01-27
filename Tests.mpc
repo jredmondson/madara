@@ -1938,6 +1938,27 @@ project (Test_Primitive_Types) : using_ace, using_madara, no_karl, no_xml {
   }
 }
 
+project (Test_Safe_Bool) : using_ace, using_madara, no_karl, no_xml {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_safe_bool
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_safe_bool.cpp
+  }
+}
+
 project (Test_Logging) : using_ace, using_madara, no_karl, no_xml {
   requires += tests
   

@@ -659,15 +659,21 @@ namespace madara
        **/
       KnowledgeRecord operator- (const KnowledgeRecord & rhs) const;
     
+      // for supporting Safe Bool idiom; see the following for details:
+      //   https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Safe_bool
+      typedef void (KnowledgeRecord::*bool_type)() const;
+      // descriptive name to show up in error messages from misuse:
+      void KnowledgeRecord_does_not_implicitly_cast_to_bool() const {}
+
       /**
-       * And operator
+       * Safe-Bool operator; allows a KnowledgeRecord to be used in
+       * conditionals, and with && and ||, but not other places where an
+       * integral value is expected
+       *
+       * @return the value of is_true(), in some type which can be safely
+       *         converted to bool, but not to an integer or void*
        **/
-      Integer operator&& (const KnowledgeRecord & rhs) const;
-    
-      /**
-       * Or operator
-       **/
-      Integer operator|| (const KnowledgeRecord & rhs) const;
+      operator bool_type (void) const;
     
       /**
        * Preincrement operator
