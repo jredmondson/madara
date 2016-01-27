@@ -34,7 +34,10 @@ int main (int argc, char ** argv)
 {
   handle_arguments (argc, argv);
 
-  mk::KnowledgeRecord truthy(42L), falsey(0L), struthy("true"), sfalsey("");
+  mk::KnowledgeRecord truthy (mk::KnowledgeRecord::Integer (42));
+  mk::KnowledgeRecord falsey (mk::KnowledgeRecord::Integer (0));
+  mk::KnowledgeRecord struthy ("true");
+  mk::KnowledgeRecord sfalsey ("");
 
   if(truthy)
   {

@@ -48,7 +48,8 @@ madara::expression::CompositeOrNode::prune (bool & can_change)
     if (j == 0)
       return_value = value;
     else
-      return_value = value || return_value;
+      return_value = knowledge::KnowledgeRecord::Integer (
+        value || return_value);
 
     can_change = can_change || value_changes;
   }
