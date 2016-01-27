@@ -1245,7 +1245,7 @@ madara::knowledge::KnowledgeRecord::operator= (const knowledge::KnowledgeRecord 
 }
 
 /**
-  * Atomic addition operator
+  * In-place addition operator
   **/
 madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator+= (const knowledge::KnowledgeRecord & rhs)
@@ -1267,7 +1267,7 @@ madara::knowledge::KnowledgeRecord::operator+= (const knowledge::KnowledgeRecord
 }
      
 /**
-  * Atomic predecrement
+  * In-place predecrement
   **/
 madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator-- (void)
@@ -1282,7 +1282,7 @@ madara::knowledge::KnowledgeRecord::operator-- (void)
 }
    
 /**
-  * Atomic preincrement
+  * In-place preincrement
   **/
 madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator++ (void)
@@ -1298,7 +1298,7 @@ madara::knowledge::KnowledgeRecord::operator++ (void)
 }
        
 /**
-  * Atomic subtraction operator
+  * In-place subtraction operator
   **/
 madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator-= (const knowledge::KnowledgeRecord & rhs)
@@ -1317,7 +1317,7 @@ madara::knowledge::KnowledgeRecord::operator-= (const knowledge::KnowledgeRecord
 }
     
 /**
-  * Atomic multiplication operator
+  * In-place multiplication operator
   **/
 madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator*= (const knowledge::KnowledgeRecord & rhs)
@@ -1336,7 +1336,7 @@ madara::knowledge::KnowledgeRecord::operator*= (const knowledge::KnowledgeRecord
 }
     
 /**
-  * Atomic division operator
+  * In-place division operator
   **/
 madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
@@ -1375,7 +1375,7 @@ madara::knowledge::KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord
 }
    
 /**
-  * Atomic division operator
+  * In-place modulus operator
   **/
 madara::knowledge::KnowledgeRecord &
 madara::knowledge::KnowledgeRecord::operator%= (const knowledge::KnowledgeRecord & rhs)

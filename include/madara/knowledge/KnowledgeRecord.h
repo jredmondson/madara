@@ -610,27 +610,27 @@ namespace madara
       KnowledgeRecord & operator= (const KnowledgeRecord & rhs);
     
       /**
-       * Atomic addition operator
+       * In-place addition operator
        **/
       KnowledgeRecord & operator+= (const KnowledgeRecord & rhs);
     
       /**
-       * Atomic subtraction operator
+       * In-place subtraction operator
        **/
       KnowledgeRecord & operator-= (const KnowledgeRecord & rhs);
     
       /**
-       * Atomic multiplication operator
+       * In-place multiplication operator
        **/
       KnowledgeRecord & operator*= (const KnowledgeRecord & rhs);
     
       /**
-       * Atomic division operator
+       * In-place division operator
        **/
       KnowledgeRecord & operator/= (const KnowledgeRecord & rhs);
     
       /**
-       * Atomic modulus operator
+       * In-place modulus operator
        **/
       KnowledgeRecord & operator%= (const KnowledgeRecord & rhs);
     
