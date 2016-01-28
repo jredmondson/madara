@@ -48,6 +48,9 @@ namespace madara
 {
   namespace transport
   {
+    // forward declare for friending
+    class Base;
+
     typedef   ACE_High_Res_Timer                   Timer;
     typedef   std::vector<Timer>                   Timers;
 
@@ -89,6 +92,9 @@ namespace madara
     class MADARA_Export TransportSettings
     {
     public:
+      // allow transport::Base to alter private/protected members
+      friend class Base;
+
       // for ease-of-use, typedef the templated guard
       typedef ACE_Guard <MADARA_LOCK_TYPE> ContextGuard;
 
@@ -170,6 +176,12 @@ namespace madara
       * Clears the list of read domains
       **/
       void clear_read_domains (void);
+
+      /**
+      * Retrieves the list of read domains
+      * @param  domains   the list to fill with all read domains
+      **/
+      void get_read_domains (std::vector<std::string> & domains);
 
       /**
       * Checks if a domain is in the domain read list

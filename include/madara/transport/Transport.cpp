@@ -59,7 +59,43 @@ madara::transport::Base::setup (void)
   // if read domains has not been set, then set to write domain
   if (settings_.num_read_domains () == 0)
   {
+    madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+      "transport::Base::setup" \
+      " no read domains set. Adding write domain (%s)\n",
+      settings_.write_domain.c_str ());
+
     settings_.add_read_domain (settings_.write_domain);
+  }
+  else
+  {
+    madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+      "transport::Base::setup" \
+      " settings configured with %d read domains\n",
+      settings_.num_read_domains ());
+  }
+
+  if (settings_.num_read_domains () > 0 &&
+    context_.get_logger ().get_level () >= logger::LOG_MAJOR)
+  {
+    std::vector <std::string> domains;
+    settings_.get_read_domains (domains);
+
+    std::stringstream buffer;
+
+    for (unsigned int i = 0; i < domains.size (); ++i)
+    {
+      buffer << domains[i];
+
+      if (i != domains.size () - 1)
+      {
+        buffer << ", ";
+      }
+    }
+
+    madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+      "transport::Base::setup" \
+      " Write domain: %s. Read domains: %s\n",
+      settings_.write_domain.c_str (), buffer.str ().c_str ());
   }
 
   return validate_transport ();
@@ -270,7 +306,7 @@ madara::transport::process_received_update (
     }
 
     // reject the message if it is from a different domain
-    if (settings.is_reading_domain (header->domain))
+    if (!settings.is_reading_domain (header->domain))
     {
       madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
         "%s:" \
