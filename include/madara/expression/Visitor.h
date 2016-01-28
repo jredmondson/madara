@@ -25,6 +25,7 @@ namespace madara
     class CompositeAddNode;
     class CompositeBothNode;
     class CompositeSequentialNode;
+    class CompositeSquareRootNode;
     class CompositeFunctionNode;
     class CompositeForLoop;
     class CompositeImpliesNode;
@@ -42,6 +43,7 @@ namespace madara
     class CompositeMultiplyNode;
     class CompositeModulusNode;
     class CompositeReturnRightNode;
+    class SystemCallCos;
     class SystemCallDeleteVariable;
     class SystemCallEval;
     class SystemCallExpandEnv;
@@ -50,6 +52,7 @@ namespace madara
     class SystemCallGetClock;
     class SystemCallGetTime;
     class SystemCallLogLevel;
+    class SystemCallPow;
     class SystemCallPrint;
     class SystemCallPrintSystemCalls;
     class SystemCallRandDouble;
@@ -57,8 +60,11 @@ namespace madara
     class SystemCallReadFile;
     class SystemCallSetClock;
     class SystemCallSetPrecision;
+    class SystemCallSin;
     class SystemCallSize;
     class SystemCallSleep;
+    class SystemCallSqrt;
+    class SystemCallTan;
     class SystemCallToBuffer;
     class SystemCallToDouble;
     class SystemCallToDoubles;
@@ -125,6 +131,9 @@ namespace madara
       /// Visit a CompositePreIncrementNode.
       virtual void visit (const CompositePreincrementNode &node) = 0;
 
+      /// Visit a CompositeSquareRootNode.
+      virtual void visit (const CompositeSquareRootNode &node) = 0;
+
       /// Visit a CompositeNotNode.
       virtual void visit (const CompositeNotNode &node) = 0;
 
@@ -187,7 +196,10 @@ namespace madara
 
       /// Visit a CompositeImpliesNode.
       virtual void visit (const CompositeImpliesNode &node) = 0;
-      
+
+      /// Visit a SystemCallCos.
+      virtual void visit (const SystemCallCos &node) = 0;
+
       /// Visit a SystemCallDeleteVariable.
       virtual void visit (const SystemCallDeleteVariable &node) = 0;
       
@@ -211,7 +223,10 @@ namespace madara
       
       /// Visit a SystemCallLogLevel.
       virtual void visit (const SystemCallLogLevel &node) = 0;
-      
+
+      /// Visit a SystemCallPow.
+      virtual void visit (const SystemCallPow &node) = 0;
+
       /// Visit a SystemCallReadFile.
       virtual void visit (const SystemCallPrint &node) = 0;
       
@@ -229,13 +244,22 @@ namespace madara
       
       /// Visit a SystemCallSetClock.
       virtual void visit (const SystemCallSetClock &node) = 0;
-      
+
+      /// Visit a SystemCallSin.
+      virtual void visit (const SystemCallSin &node) = 0;
+
       /// Visit a SystemCallSize.
       virtual void visit (const SystemCallSize &node) = 0;
       
       /// Visit a SystemCallSleep.
       virtual void visit (const SystemCallSleep &node) = 0;
-      
+
+      /// Visit a SystemCallSqrt.
+      virtual void visit (const SystemCallSqrt &node) = 0;
+
+      /// Visit a SystemCallTan.
+      virtual void visit (const SystemCallTan &node) = 0;
+
       /// Visit a SystemCallToBuffer.
       virtual void visit (const SystemCallToBuffer &node) = 0;
       

@@ -64,6 +64,10 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
   // if calls hasn't been initialized yet, fill the list of system calls
   if (calls_.size () == 0)
   {
+    calls_["#cos"] =
+      "\n#cos (var):\n"
+      "  Returns the cosine of a term (radians)\n";
+
     calls_["#delete_var"] =
       "\n#delete_var (var) or #delete_variable (var):\n"
       "  Deletes a variable named var from the knowledge base\n";
@@ -135,6 +139,10 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
       "  9. Log trace\n"
       " 10. Detailed trace\n";
 
+    calls_["#pow"] =
+      "\n#pow (base, power):\n"
+      "  Returns the base taken to a power (exponent)\n";
+
     calls_["#print"] =
       "\n#print (statement):\n"
       "  Prints a statement that can contain MADARA KaRL variables.\n"
@@ -176,7 +184,11 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
       "  Sets the precision that is used to convert doubles to strings.\n"
       "  This is a fixed precision (e.g., 5 for pi would be 3.14159).\n"
       "  Negative value resets to default precision.\n";
-      
+
+    calls_["#sin"] =
+      "\n#sin (var):\n"
+      "  Returns the sine of a term (radians)\n";
+
     calls_["#size"] =
       "\n#size (value):\n"
       "  Returns the size of the variable or value.\n";
@@ -185,7 +197,15 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
       "\n#sleep (double time_to_sleep in s):\n"
       "  Sleeps for at least the specified time and returns "
       " time spent sleeping in seconds.\n";
-      
+
+    calls_["#sqrt"] =
+      "\n#sqrt (value):\n"
+      "  Returns the square root of a value\n";
+
+    calls_["#tan"] =
+      "\n#tan (value):\n"
+      "  Returns the tangent of a term (radians)\n";
+
     calls_["#to_buffer"] =
       "\n#to_buffer (value) or #buffer (value):\n"
       "  Converts the value to an unsigned char array.\n";

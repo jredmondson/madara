@@ -42,7 +42,9 @@
 #include "madara/expression/CompositeFunctionNode.h"
 #include "madara/expression/CompositeForLoop.h"
 #include "madara/expression/CompositeSequentialNode.h"
+#include "madara/expression/CompositeSquareRootNode.h"
 #include "madara/expression/CompositeImpliesNode.h"
+#include "madara/expression/SystemCallCos.h"
 #include "madara/expression/SystemCallDeleteVariable.h"
 #include "madara/expression/SystemCallEval.h"
 #include "madara/expression/SystemCallExpandEnv.h"
@@ -51,6 +53,7 @@
 #include "madara/expression/SystemCallGetClock.h"
 #include "madara/expression/SystemCallGetTime.h"
 #include "madara/expression/SystemCallLogLevel.h"
+#include "madara/expression/SystemCallPow.h"
 #include "madara/expression/SystemCallPrint.h"
 #include "madara/expression/SystemCallPrintSystemCalls.h"
 #include "madara/expression/SystemCallRandDouble.h"
@@ -58,8 +61,11 @@
 #include "madara/expression/SystemCallReadFile.h"
 #include "madara/expression/SystemCallSetClock.h"
 #include "madara/expression/SystemCallSetPrecision.h"
+#include "madara/expression/SystemCallSin.h"
 #include "madara/expression/SystemCallSize.h"
 #include "madara/expression/SystemCallSleep.h"
+#include "madara/expression/SystemCallSqrt.h"
+#include "madara/expression/SystemCallTan.h"
 #include "madara/expression/SystemCallToBuffer.h"
 #include "madara/expression/SystemCallToDouble.h"
 #include "madara/expression/SystemCallToDoubles.h"
@@ -307,6 +313,111 @@ namespace madara
 
       /// destructor
       virtual ~Print (void);
+    };
+
+    /**
+    * @class Cos
+    * @brief Returns the cosine of a term (radians)
+    */
+    class Cos : public SystemCall
+    {
+    public:
+      /// constructor
+      Cos (
+        madara::knowledge::ThreadSafeContext & context_);
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+
+      /// destructor
+      virtual ~Cos (void);
+    };
+
+    /**
+    * @class Sin
+    * @brief Returns the sin of a term (radians)
+    */
+    class Sin : public SystemCall
+    {
+    public:
+      /// constructor
+      Sin (
+        madara::knowledge::ThreadSafeContext & context_);
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+
+      /// destructor
+      virtual ~Sin (void);
+    };
+
+    /**
+    * @class Tan
+    * @brief Returns the tangent of a term (radians)
+    */
+    class Tan : public SystemCall
+    {
+    public:
+      /// constructor
+      Tan (
+        madara::knowledge::ThreadSafeContext & context_);
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+
+      /// destructor
+      virtual ~Tan (void);
+    };
+
+    /**
+    * @class Power
+    * @brief Returns a base term taken to a power (exponent)
+    */
+    class Power : public SystemCall
+    {
+    public:
+      /// constructor
+      Power (
+        madara::knowledge::ThreadSafeContext & context_);
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+
+      /// destructor
+      virtual ~Power (void);
+    };
+
+    /**
+    * @class SquareRoot
+    * @brief Returns the square root of a term
+    */
+    class SquareRoot : public SystemCall
+    {
+    public:
+      /// constructor
+      SquareRoot (
+        madara::knowledge::ThreadSafeContext & context_);
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+
+      /// destructor
+      virtual ~SquareRoot (void);
     };
 
     /**
@@ -1422,6 +1533,28 @@ namespace madara
     * @brief Negate node of the parse tree
     */
 
+    class SquareRootUnary : public UnaryOperator
+    {
+    public:
+      /// constructor
+      SquareRootUnary (logger::Logger & logger);
+
+      /// destructor
+      virtual ~SquareRootUnary (void);
+
+      /// returns the precedence level
+      //virtual int precedence (void);
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+    };
+
+    /**
+    * @class Negate
+    * @brief Negate node of the parse tree
+    */
+
     class Negate : public UnaryOperator
     {
     public:
@@ -2131,6 +2264,137 @@ madara::expression::Print::build ()
   return new SystemCallPrint (context_, nodes_);
 }
 
+// constructor
+madara::expression::Cos::Cos (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
+{
+}
+
+// destructor
+madara::expression::Cos::~Cos (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::Cos::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::Cos::build ()
+{
+  return new SystemCallCos (context_, nodes_);
+}
+
+
+// constructor
+madara::expression::Sin::Sin (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
+{
+}
+
+// destructor
+madara::expression::Sin::~Sin (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::Sin::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::Sin::build ()
+{
+  return new SystemCallSin (context_, nodes_);
+}
+
+// constructor
+madara::expression::Tan::Tan (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
+{
+}
+
+// destructor
+madara::expression::Tan::~Tan (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::Tan::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::Tan::build ()
+{
+  return new SystemCallTan (context_, nodes_);
+}
+
+// constructor
+madara::expression::Power::Power (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
+{
+}
+
+// destructor
+madara::expression::Power::~Power (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::Power::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::Power::build ()
+{
+  return new SystemCallPow (context_, nodes_);
+}
+
+// constructor
+madara::expression::SquareRoot::SquareRoot (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
+{
+}
+
+// destructor
+madara::expression::SquareRoot::~SquareRoot (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::SquareRoot::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::SquareRoot::build ()
+{
+  return new SystemCallSqrt (context_, nodes_);
+}
+
 
 
 // constructor
@@ -2719,6 +2983,31 @@ madara::expression::Not::build ()
     else
       return new CompositeNotNode (*(this->logger_),
       new CompositeNotNode (*(this->logger_), right->build ()));
+}
+
+// constructor
+madara::expression::SquareRootUnary::SquareRootUnary (logger::Logger & logger)
+  : UnaryOperator (logger, 0, NEGATE_PRECEDENCE)
+{
+}
+
+// destructor
+madara::expression::SquareRootUnary::~SquareRootUnary (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::SquareRootUnary::add_precedence (int precedence)
+{
+  return this->precedence_ = NEGATE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::SquareRootUnary::build ()
+{
+  return new CompositeSquareRootNode (*(this->logger_), right_->build ());
 }
 
 // constructor
@@ -4487,7 +4776,11 @@ madara::expression::Interpreter::system_call_insert (
     // save the function name and update i
     SystemCall * call = 0;
 
-    if (name == "#delete_var" || name == "#delete_variable")
+    if (name == "#cos")
+    {
+      call = new Cos (context);
+    }
+    else if (name == "#delete_var" || name == "#delete_variable")
     {
       call = new DeleteVariable (context);
     }
@@ -4519,6 +4812,10 @@ madara::expression::Interpreter::system_call_insert (
     {
       call = new LogLevel (context);
     }
+    else if (name == "#pow")
+    {
+      call = new Power (context);
+    }
     else if (name == "#print")
     {
       call = new Print (context);
@@ -4547,6 +4844,10 @@ madara::expression::Interpreter::system_call_insert (
     {
       call = new SetPrecision (context);
     }
+    else if (name == "#sin")
+    {
+      call = new Sin (context);
+    }
     else if (name == "#size")
     {
       call = new Size (context);
@@ -4554,6 +4855,14 @@ madara::expression::Interpreter::system_call_insert (
     else if (name == "#sleep")
     {
       call = new Sleep (context);
+    }
+    else if (name == "#sqrt")
+    {
+      call = new SquareRoot (context);
+    }
+    else if (name == "#tan")
+    {
+      call = new Tan (context);
     }
     else if (name == "#to_buffer" || name == "#buffer")
     {
@@ -4629,7 +4938,6 @@ madara::expression::Interpreter::system_call_insert (
     madara_logger_log (context.get_logger (), logger::LOG_EMERGENCY,
       "System call %s does not have appropriate parentheses\n", name.c_str ());
   }
-
 }
 
 // inserts a leaf node / number into the parse tree
@@ -5172,6 +5480,20 @@ bool build_argument_list)
     precedence_insert (context, op, list);
     ++i;
   }
+  // square root is ASCII 251 (UTF 8 format)
+  else if (input[i] == 251)
+  {
+    handled = true;
+    Symbol * op = 0;
+
+    op = new SquareRootUnary (context.get_logger ());
+
+    // insert the op according to precedence relationships
+    op->add_precedence (accumulated_precedence);
+    lastValidInput = 0;
+    precedence_insert (context, op, list);
+    ++i;
+  }
   else if (input[i] == '&')
   {
     // is this a logical and?
@@ -5528,7 +5850,8 @@ madara::expression::Interpreter::interpret (
       {
         madara_logger_log (context.get_logger (), logger::LOG_EMERGENCY,
           "KARL COMPILE ERROR: "
-          "Compilation is spinning at %d in %s\n", i, input.c_str ());
+          "Compilation is spinning at %d in %s. Char is %c\n",
+          i, input.c_str (), input[i]);
       }
       break;
     }

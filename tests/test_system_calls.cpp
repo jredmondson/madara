@@ -16,6 +16,8 @@
 #include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
+namespace knowledge = madara::knowledge;
+typedef  knowledge::KnowledgeRecord  KnowledgeRecord;
 
 // command line arguments
 int parse_args (int argc, ACE_TCHAR * argv[]);
@@ -68,6 +70,8 @@ void test_system_calls (
   madara::knowledge::KnowledgeBase & knowledge)
 {
 #ifndef _MADARA_NO_KARL_
+  bool vsstudio_check = true;
+
   knowledge.evaluate (
     "sample = #read_file ('/files/sample.jpg');"
     "sample.size = #size (sample);"
@@ -110,7 +114,49 @@ void test_system_calls (
     "#print ('Array is {array_string}.\n');"
     "array_string = #to_string (array, ' ');"
     "#print ('Array with space delimiter is {array_string}.\n');"
+    "two_to_4th = #pow(2,4);"
+    "square_of_16 = #sqrt(16);"
+    "square_two_to_4th = #sqrt(two_to_4th);"
+    "cos_1_1 = #cos(1.1);"
+    "sin_1_1 = #sin(1.1);"
+    "tan_1_1 = #tan(1.1);"
     );
+
+  knowledge.evaluate (
+    "two_to_4th = #pow(2, 4);"
+    );
+
+  knowledge.evaluate (
+    "tan_1_1 = #tan(1.1);"
+    );
+
+  KnowledgeRecord::Integer two_to_4th =
+    knowledge.get ("two_to_4th").to_integer ();
+
+  KnowledgeRecord::Integer square_of_16 =
+    knowledge.get ("square_of_16").to_integer ();
+
+  KnowledgeRecord::Integer square_two_to_4th =
+    knowledge.get ("square_two_to_4th").to_integer ();
+
+  if (two_to_4th != 16)
+  {
+    std::cerr << "ERROR: pow(2,4) returned " << two_to_4th <<
+      " instead of 16.\n";
+  }
+
+  if (square_of_16 != 4)
+  {
+    std::cerr << "ERROR: sqrt(16) returned " << square_of_16 << 
+      " instead of 4.\n";
+  }
+
+  if (square_two_to_4th != 4)
+  {
+    std::cout << "ERROR: sqrt(pow(2,4)) returned " << square_two_to_4th <<
+      " instead of 4. [1]\n";
+  }
+
 #else
   std::cout << "This test is disabled due to karl feature being disabled.\n";
 #endif
