@@ -5,6 +5,7 @@
 #include "madara/expression/VariableCompareNode.h"
 #include "madara/utility/Utility.h"
 
+typedef madara::knowledge::KnowledgeRecord  KnowledgeRecord;
 
 #include <string>
 #include <sstream>
@@ -33,7 +34,7 @@ madara::expression::VariableCompareNode::accept (Visitor &visitor) const
   visitor.visit (*this);
 }
 
-madara::knowledge::KnowledgeRecord
+KnowledgeRecord
 madara::expression::VariableCompareNode::item () const
 {
   knowledge::KnowledgeRecord value;
@@ -49,7 +50,7 @@ madara::expression::VariableCompareNode::item () const
 /// Prune the tree of unnecessary nodes. 
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::knowledge::KnowledgeRecord
+KnowledgeRecord
 madara::expression::VariableCompareNode::prune (bool & can_change)
 {
   bool left_child_can_change = false;
@@ -90,11 +91,12 @@ madara::expression::VariableCompareNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::knowledge::KnowledgeRecord 
+KnowledgeRecord 
 madara::expression::VariableCompareNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  madara::knowledge::KnowledgeRecord lhs;
+  KnowledgeRecord lhs;
+  KnowledgeRecord::Integer result (0);
 
   if (var_)
     lhs = var_->evaluate (settings);
@@ -103,30 +105,52 @@ madara::expression::VariableCompareNode::evaluate (
 
   if (rhs_)
   {
-    if      (compare_type_ == LESS_THAN)
-      return lhs < rhs_->evaluate (settings);
+    if (compare_type_ == LESS_THAN)
+    {
+      result = lhs < rhs_->evaluate (settings);
+    }
     else if (compare_type_ == LESS_THAN_EQUAL)
-      return lhs <= rhs_->evaluate (settings);
+    {
+      result = lhs <= rhs_->evaluate (settings);
+    }
     else if (compare_type_ == EQUAL)
-      return lhs == rhs_->evaluate (settings);
+    {
+      result = lhs == rhs_->evaluate (settings);
+    }
     else if (compare_type_ == GREATER_THAN_EQUAL)
-      return lhs >= rhs_->evaluate (settings);
+    {
+      result = lhs >= rhs_->evaluate (settings);
+    }
     else
-      return lhs > rhs_->evaluate (settings);
+    {
+      result = lhs > rhs_->evaluate (settings);
+    }
   }
   else
   {
-    if      (compare_type_ == LESS_THAN)
-      return lhs < value_;
+    if (compare_type_ == LESS_THAN)
+    {
+      result = lhs < value_;
+    }
     else if (compare_type_ == LESS_THAN_EQUAL)
-      return lhs <= value_;
+    {
+      result = lhs <= value_;
+    }
     else if (compare_type_ == EQUAL)
-      return lhs == value_;
+    {
+      result = lhs == value_;
+    }
     else if (compare_type_ == GREATER_THAN_EQUAL)
-      return lhs >= value_;
+    {
+      result = lhs >= value_;
+    }
     else
-      return lhs > value_;
+    {
+      result = lhs > value_;
+    }
   }
+
+  return result;
 }
 
 #endif // _MADARA_NO_KARL_

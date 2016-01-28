@@ -77,7 +77,7 @@ madara::expression::CompositeGreaterThanEqualNode::prune (bool & can_change)
 
   can_change = left_child_can_change || right_child_can_change;
 
-  return left_value >= right_value;
+  return knowledge::KnowledgeRecord::Integer (left_value >= right_value);
 }
 
 
@@ -87,7 +87,8 @@ madara::knowledge::KnowledgeRecord
 madara::expression::CompositeGreaterThanEqualNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  return left_->evaluate (settings) >= right_->evaluate (settings);
+  return knowledge::KnowledgeRecord::Integer (
+    left_->evaluate (settings) >= right_->evaluate (settings));
 }
 
 

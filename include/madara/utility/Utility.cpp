@@ -987,7 +987,8 @@ bool madara::utility::wait_false (
   if (settings.pre_print_statement != "")
     knowledge.print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
-  madara::knowledge::KnowledgeRecord last_value = !knowledge.get (ref, settings);
+  knowledge::KnowledgeRecord last_value = knowledge::KnowledgeRecord::Integer (
+    !knowledge.get (ref, settings));
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
     "utility::wait_false:" \
@@ -1029,7 +1030,8 @@ bool madara::utility::wait_false (
       "utility::wait_false:"
       " waiting on %s\n", variable.c_str ());
 
-    last_value = !knowledge.get (ref, settings);
+    last_value = knowledge::KnowledgeRecord::Integer (
+      !knowledge.get (ref, settings));
 
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
       "utility::wait_false:"

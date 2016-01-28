@@ -668,8 +668,9 @@ madara::knowledge::KnowledgeRecord::fragment (unsigned int first, unsigned int l
   return ret;
 }
 
-madara::knowledge::KnowledgeRecord::Integer
-madara::knowledge::KnowledgeRecord::operator< (const knowledge::KnowledgeRecord & rhs) const
+bool
+madara::knowledge::KnowledgeRecord::operator< (
+  const knowledge::KnowledgeRecord & rhs) const
 {
   Integer result (0);
 
@@ -753,8 +754,9 @@ madara::knowledge::KnowledgeRecord::operator< (const knowledge::KnowledgeRecord 
   return result;
 }
 
-madara::knowledge::KnowledgeRecord::Integer
-madara::knowledge::KnowledgeRecord::operator<= (const knowledge::KnowledgeRecord & rhs) const
+bool
+madara::knowledge::KnowledgeRecord::operator<= (
+  const knowledge::KnowledgeRecord & rhs) const
 {
   Integer result (0);
 
@@ -838,8 +840,9 @@ madara::knowledge::KnowledgeRecord::operator<= (const knowledge::KnowledgeRecord
   return result;
 }
 
-madara::knowledge::KnowledgeRecord::Integer
-madara::knowledge::KnowledgeRecord::operator== (const knowledge::KnowledgeRecord & rhs) const
+bool
+madara::knowledge::KnowledgeRecord::operator== (
+  const knowledge::KnowledgeRecord & rhs) const
 {
   Integer result (0);
 
@@ -974,7 +977,8 @@ madara::knowledge::KnowledgeRecord::operator== (double value) const
 }
 
 bool
-madara::knowledge::KnowledgeRecord::operator== (const std::string & value) const
+madara::knowledge::KnowledgeRecord::operator== (
+  const std::string & value) const
 {
   return to_string () == value;
 }
@@ -985,7 +989,7 @@ madara::knowledge::KnowledgeRecord::operator== (const char * value) const
   return to_string () == std::string (value);
 }
 
-madara::knowledge::KnowledgeRecord::Integer 
+bool
 madara::knowledge::KnowledgeRecord::operator!= (const knowledge::KnowledgeRecord & rhs) const
 {
   return !(*this == rhs);
@@ -994,7 +998,7 @@ madara::knowledge::KnowledgeRecord::operator!= (const knowledge::KnowledgeRecord
 /**
   * Logical not.
   **/
-madara::knowledge::KnowledgeRecord::Integer
+bool
 madara::knowledge::KnowledgeRecord::operator! (void) const
 {
   return !is_true ();
@@ -1016,7 +1020,7 @@ madara::knowledge::KnowledgeRecord
   return record;
 }
 
-madara::knowledge::KnowledgeRecord::Integer
+bool
 madara::knowledge::KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
 {
   Integer result (0);
@@ -1103,7 +1107,7 @@ madara::knowledge::KnowledgeRecord::operator> (const knowledge::KnowledgeRecord 
   return result;
 }
 
-madara::knowledge::KnowledgeRecord::Integer 
+bool
 madara::knowledge::KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
 {
   Integer result (0);
