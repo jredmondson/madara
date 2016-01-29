@@ -74,7 +74,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   {
     std::string statement (nodes_[0]->evaluate (settings).to_string ());
 
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
       "System call expand_statement is returning the expansion "
       "of %s.\n", statement.c_str ());
 

@@ -203,7 +203,12 @@ void test_array_math (madara::knowledge::KnowledgeBase & knowledge)
   std::vector <madara::knowledge::KnowledgeRecord> records;
 
   knowledge.clear ();
+  knowledge.evaluate ("array[0] = 10");
   
+  assert (knowledge.evaluate ("array[0]").to_integer () == 10);
+
+  knowledge.evaluate ("array[0] = 0");
+
   knowledge.evaluate ("array[10] += 10");
   knowledge.evaluate ("array[1] += 5");
   knowledge.evaluate ("array[1] += 5");
@@ -227,9 +232,6 @@ void test_array_math (madara::knowledge::KnowledgeBase & knowledge)
   
   knowledge.evaluate ("--array[0]; --array[0]");
   assert (knowledge.evaluate ("array[0]").to_integer () == -2);
-  
-
-
 }
 
 void test_to_vector (madara::knowledge::KnowledgeBase & knowledge)
