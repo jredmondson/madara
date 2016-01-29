@@ -189,41 +189,58 @@ madara::expression::VariableNode::set (
   const madara::knowledge::KnowledgeRecord & value,
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
+  int result = 0;
+
+  knowledge::KnowledgeRecord * record = record_;
+
+  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "VariableNode::set: "
+    "Attempting to set variable %s to a KnowledgeRecord parameter (%s).\n",
+    key_.c_str (), value.to_string ().c_str ());
+
+  if (!record)
+  {
+    record = context_.get_record (this->expand_key ());
+  }
+
   if (record_)
   {
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
     if (!settings.always_overwrite && record_->write_quality < record_->quality)
-      return -2;
-
-    // cheaper to read than write, so check to see if
-    // we actually need to update quality and status
-    if (record_->write_quality != record_->quality)
-      record_->quality = record_->write_quality;
-
-    *record_ = value;
-    
-    context_.mark_and_signal (key_.c_str(), record_);
-  
-    return 0;
-  }
-  else
-  {
-    if       (value.type () == madara::knowledge::KnowledgeRecord::INTEGER)
-      return context_.set (expand_key (), value.to_integer ());
-    else if  (value.type () == madara::knowledge::KnowledgeRecord::DOUBLE)
-      return context_.set (expand_key (), value.to_double ());
-    else if  (value.type () == madara::knowledge::KnowledgeRecord::STRING)
-      return context_.set (expand_key (), value.to_string ());
+    {
+      result = -2;
+    }
     else
-      return -5;
+    {
+      // cheaper to read than write, so check to see if
+      // we actually need to update quality and status
+      if (record_->write_quality != record_->quality)
+        record_->quality = record_->write_quality;
+
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "VariableNode::set: "
+        "Setting variable %s with KnowledgeRecord assignment operator.\n",
+        key_.c_str ());
+
+      *record_ = value;
+
+      context_.mark_and_signal (key_.c_str (), record_);
+    }
   }
+
+  return result;
 }
 
 int
 madara::expression::VariableNode::set (const madara::knowledge::KnowledgeRecord::Integer & value,
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
+  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "VariableNode::set: "
+    "Attempting to set variable %s to an Integer parameter (%d).\n",
+    key_.c_str (), (int)value);
+
   if (record_)
   {
     // notice that we assume the context is locked
@@ -250,6 +267,11 @@ int
 madara::expression::VariableNode::set (double value,
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
+  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "VariableNode::set: "
+    "Attempting to set variable %s to a double parameter (%f).\n",
+    key_.c_str (), value);
+
   if (record_)
   {
     // notice that we assume the context is locked
@@ -276,6 +298,11 @@ int
 madara::expression::VariableNode::set (const std::string & value,
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
+  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "VariableNode::set: "
+    "Attempting to set variable %s to a string parameter (%s).\n",
+    key_.c_str (), value.c_str ());
+
   if (record_)
   {
     // notice that we assume the context is locked
