@@ -203,11 +203,11 @@ madara::expression::VariableNode::set (
     record = context_.get_record (this->expand_key ());
   }
 
-  if (record_)
+  if (record)
   {
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record_->write_quality < record_->quality)
+    if (!settings.always_overwrite && record->write_quality < record->quality)
     {
       result = -2;
     }
@@ -215,17 +215,17 @@ madara::expression::VariableNode::set (
     {
       // cheaper to read than write, so check to see if
       // we actually need to update quality and status
-      if (record_->write_quality != record_->quality)
-        record_->quality = record_->write_quality;
+      if (record->write_quality != record->quality)
+        record->quality = record->write_quality;
 
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "VariableNode::set: "
         "Setting variable %s with KnowledgeRecord assignment operator.\n",
         key_.c_str ());
 
-      *record_ = value;
+      *record = value;
 
-      context_.mark_and_signal (key_.c_str (), record_);
+      context_.mark_and_signal (key_.c_str (), record);
     }
   }
 

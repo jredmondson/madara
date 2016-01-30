@@ -4240,19 +4240,48 @@ Symbol *& returnableInput)
   bool delimiter_found = false, handled = false, equal_to = false;
   std::string::size_type delimiter_begin = 0;
   std::string::size_type delimiter_end = 0;
+  int paren_depth = 0;
 
   // search for end of for_loop conditions. Be on lookout for delimiter.
-  for (; i < input.length () && input[i] != ']' && input[i] != ')'; ++i)
+  for (; i < input.length (); ++i)
   {
-    if (input[i] == '-' && !delimiter_found)
+    if (paren_depth == 0 && input[i] == '-' && !delimiter_found)
     {
       delimiter_found = true;
       delimiter_begin = i;
     }
-    if (delimiter_found && input[i] == '>')
+    else if (paren_depth == 0 && delimiter_found && input[i] == '>')
     {
       delimiter_end = i;
     }
+    else if (paren_depth == 0 && input[i] == ']')
+    {
+      break;
+    }
+    if (input[i] == '(')
+    {
+      ++paren_depth;
+    }
+    else if (input[i] == ')')
+    {
+      if (paren_depth == 0)
+      {
+        break;
+      }
+      else
+      {
+        --paren_depth;
+      }
+    }
+  }
+
+  /**
+   * if we manage to find a delimiter but not its end, we're seeing an
+   * array reference with subtraction in it
+   **/
+  if (delimiter_found && delimiter_end == 0)
+  {
+    delimiter_found = false;
   }
 
   // this is actually an array index
@@ -4316,10 +4345,10 @@ Symbol *& returnableInput)
   }
 
   madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-    "Within input string, the for loop delimiter begins at %z"
-    " and ends at %z (should be at least 1). Loop construct begins at "
-    "%z and ends at %z",
-    delimiter_begin, delimiter_end, begin, i);
+    "Within input string, the for loop delimiter begins at %d"
+    " and ends at %d (should be at least 1). Loop construct begins at "
+    "%d and ends at %d\n",
+    (int)delimiter_begin, (int)delimiter_end, (int)begin, (int)i);
 
 
   // What did we end with? Less than? Greater than?

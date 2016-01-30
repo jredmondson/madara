@@ -175,9 +175,9 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   test_strings (knowledge);
   test_doubles (knowledge);
   test_simplification_operators (knowledge);
+  test_assignments (knowledge);
   test_for_loops (knowledge);
   test_comments (knowledge);
-  test_assignments (knowledge);
   test_unaries (knowledge);
   test_conditionals (knowledge);
   test_implies (knowledge);
@@ -923,6 +923,30 @@ void test_assignments (madara::knowledge::KnowledgeBase & knowledge)
   knowledge.evaluate (".var2 = 8; .var5 = .var3 = .var2 = .var1 = -1; .var2 = 0");
   assert (knowledge.get (".var1").to_integer () == -1 && knowledge.get (".var2").to_integer () == 0 &&
           knowledge.get (".var3").to_integer () == -1 && knowledge.get (".var5").to_integer () == -1);
+
+  knowledge.evaluate (".var1 = [3, 2, 1]; .var2 = .var1; .var3 = .var1");
+  assert (
+    knowledge.retrieve_index (".var1", 0).to_integer () == 3 &&
+    knowledge.retrieve_index (".var1", 1).to_integer () == 2 &&
+    knowledge.retrieve_index (".var1", 2).to_integer () == 1 &&
+    knowledge.retrieve_index (".var2", 0).to_integer () == 3 &&
+    knowledge.retrieve_index (".var2", 1).to_integer () == 2 &&
+    knowledge.retrieve_index (".var2", 2).to_integer () == 1 &&
+    knowledge.retrieve_index (".var3", 0).to_integer () == 3 &&
+    knowledge.retrieve_index (".var3", 1).to_integer () == 2 &&
+    knowledge.retrieve_index (".var3", 2).to_integer () == 1);
+
+  knowledge.evaluate (".var1 = [3.0, 2.5, 1.3]; .var2 = .var1; .var3 = .var1");
+  assert (
+    knowledge.retrieve_index (".var1", 0).to_double () == 3.0 &&
+    knowledge.retrieve_index (".var1", 1).to_double () == 2.5 &&
+    knowledge.retrieve_index (".var1", 2).to_double () == 1.3 &&
+    knowledge.retrieve_index (".var2", 0).to_double () == 3.0 &&
+    knowledge.retrieve_index (".var2", 1).to_double () == 2.5 &&
+    knowledge.retrieve_index (".var2", 2).to_double () == 1.3 &&
+    knowledge.retrieve_index (".var3", 0).to_double () == 3.0 &&
+    knowledge.retrieve_index (".var3", 1).to_double () == 2.5 &&
+    knowledge.retrieve_index (".var3", 2).to_double () == 1.3);
 }
 
 /// Tests the unaries (++, --, -, !)
@@ -1386,6 +1410,8 @@ void test_for_loops (madara::knowledge::KnowledgeBase & knowledge)
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing embedded for loops\n");
   
+  knowledge.evaluate ("#log_level(7)");
+
   result = knowledge.evaluate ("max = 1 ;> .i[ 0 -> 4 ) (agent{.i}.state=.i ; max = (agent{.i}.state ; max))");
   assert (result.to_integer () == 4 &&
     knowledge.get ("agent3.state").to_integer () == 3 &&
