@@ -4241,26 +4241,40 @@ Symbol *& returnableInput)
   std::string::size_type delimiter_begin = 0;
   std::string::size_type delimiter_end = 0;
   int paren_depth = 0;
+  int index_depth = 0;
 
   // search for end of for_loop conditions. Be on lookout for delimiter.
   for (; i < input.length (); ++i)
   {
-    if (paren_depth == 0 && input[i] == '-' && !delimiter_found)
+    if (index_depth == 0 && paren_depth == 0 &&
+      input[i] == '-' && !delimiter_found)
     {
       delimiter_found = true;
       delimiter_begin = i;
     }
-    else if (paren_depth == 0 && delimiter_found && input[i] == '>')
+    else if (index_depth == 0 && paren_depth == 0 &&
+      delimiter_found && input[i] == '>')
     {
       delimiter_end = i;
     }
-    else if (paren_depth == 0 && input[i] == ']')
+    else if (input[i] == ']')
     {
-      break;
+      if (index_depth == 0 && paren_depth == 0)
+      {
+        break;
+      }
+      else
+      {
+        --index_depth;
+      }
     }
-    if (input[i] == '(')
+    else if (input[i] == '(')
     {
       ++paren_depth;
+    }
+    else if (input[i] == '[')
+    {
+      ++index_depth;
     }
     else if (input[i] == ')')
     {
@@ -4301,7 +4315,7 @@ Symbol *& returnableInput)
     }
 
     madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-      "Array reference created at %s\n",
+      "KaRL: For loop: Array reference created at %s\n",
       substr.c_str ());
 
     // we have a precondition
@@ -4345,7 +4359,7 @@ Symbol *& returnableInput)
   }
 
   madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-    "Within input string, the for loop delimiter begins at %d"
+    "KaRL: For loop: Within input string, the for loop delimiter begins at %d"
     " and ends at %d (should be at least 1). Loop construct begins at "
     "%d and ends at %d\n",
     (int)delimiter_begin, (int)delimiter_end, (int)begin, (int)i);
@@ -4388,7 +4402,7 @@ Symbol *& returnableInput)
       }
 
       madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-        "Precondition is set to %s\n", substr.c_str ());
+        "KaRL: For loop: Precondition is set to %s\n", substr.c_str ());
 
       // we have a precondition
       if (!substr_list.empty ())
@@ -4400,7 +4414,7 @@ Symbol *& returnableInput)
     else
     {
       madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-        "For loop:: No loop precondition was specified\n");
+        "KaRL: For loop: No loop precondition was specified\n");
     }
 
     // check for special increment
@@ -4418,7 +4432,7 @@ Symbol *& returnableInput)
       }
 
       madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-        "Postcondition is set to %s\n", substr.c_str ());
+        "KaRL: For loop: Postcondition is set to %s\n", substr.c_str ());
 
       // we have a postcondition
       if (!substr_list.empty ())
@@ -4431,7 +4445,7 @@ Symbol *& returnableInput)
     else
     {
       madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-        "For loop::No loop special increment was specified\n");
+        "KaRL: For loop: No loop special increment was specified\n");
     }
 
     // set condition
@@ -4451,7 +4465,7 @@ Symbol *& returnableInput)
       if (!substr_list.empty ())
       {
         madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-          "Condition is set to %s\n", substr.c_str ());
+          "KaRL: For loop: Condition is set to %s\n", substr.c_str ());
 
         user_cond = substr_list.back ();
         substr_list.clear ();
@@ -4459,13 +4473,13 @@ Symbol *& returnableInput)
       else
       {
         madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-          "Condition was not set to %s\n", substr.c_str ());
+          "KaRL: For loop: Condition was not set to %s\n", substr.c_str ());
       }
     }
     else
     {
       madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-        "For loop:: No loop condition was specified\n");
+        "KaRL: For loop: No loop condition was specified\n");
     }
   }
   // if no delimiter found, this is the shorthand
@@ -4482,7 +4496,7 @@ Symbol *& returnableInput)
     }
 
     madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-      "Condition only is set to %s\n", substr.c_str ());
+      "KaRL: For loop: Condition only is set to %s\n", substr.c_str ());
 
     // we have a condition
     if (!substr_list.empty ())
@@ -4494,13 +4508,17 @@ Symbol *& returnableInput)
 
   // if precondition not set, set to default
   if (!user_pre)
+  {
     user_pre = new Number (context.get_logger (),
-    (madara::knowledge::KnowledgeRecord::Integer)0);
+      (madara::knowledge::KnowledgeRecord::Integer)0);
+  }
 
   // set condition to default if not yet set
   if (!user_cond)
+  {
     user_cond = new Number (context.get_logger (),
     (madara::knowledge::KnowledgeRecord::Integer) - 1);
+  }
 
   // set postcondition to default if not yet set
   if (!user_post)
@@ -4508,7 +4526,7 @@ Symbol *& returnableInput)
     user_post = new Number (context.get_logger (),
       (madara::knowledge::KnowledgeRecord::Integer)1);
     madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-      "Postcondition is set to 1 (def)\n");
+      "KaRL: For loop: Postcondition is set to 1 (def)\n");
   }
 
   // eat up whitespace so we can check for a parenthesis (function)
@@ -4521,7 +4539,7 @@ Symbol *& returnableInput)
     lastValidInput = 0;
 
     madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-      "Body is reading from %s\n",
+      "KaRL: For loop: Body is reading from %s\n",
       input.substr (i, input.size () - i).c_str ());
 
 
@@ -4548,13 +4566,13 @@ Symbol *& returnableInput)
       if (variable_node && number)
       {
         madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-          "ForLoop: Body is a simple assignment of variable %s to %s\n",
+          "KaRL: For loop: Body is a simple assignment of variable %s to %s\n",
           variable_node->key_.c_str (), number->item_.to_string ().c_str ());
       }
       else
       {
         madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
-          "For loop has a complex body\n");
+          "KaRL: For loop: For loop has a complex body\n");
       }
     }
 
