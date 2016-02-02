@@ -52,8 +52,9 @@ bool after_wait (false);
 bool check_result (false);
 
 // wait information
-bool waiting (false);
+bool waiting (false), waiting_for_periodic (false);
 double wait_time (0.0);
+double wait_for_periodic (0.0);
 double frequency (-1.0);
 
 // handle command line arguments
@@ -107,7 +108,7 @@ void handle_arguments (int argc, char ** argv)
         "Evaluates KaRL logic from command line or file.\n\noptions:\n" \
         "  [-a|--after-wait]        Evaluate after wait, rather than before wait\n" \
         "  [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
-        "  [-c|--check-result]      check result of eval. If not zero, then terminate" \
+        "  [-c|--check-result]      check result of eval. If not zero, then terminate\n" \
         "  [-d|--domain domain]     the knowledge domain to send and listen to\n" \
         "  [--debug]                print all sent, received, and final knowledge\n" \
         "  [-f|--logfile file]      log to a file\n" \
@@ -124,6 +125,8 @@ void handle_arguments (int argc, char ** argv)
         "  [-t|--time time]         time to wait for results\n" \
         "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
+        "  [-wy|-wp|--wait-for-periodic seconds]  Wait for number of seconds\n" \
+        "                           before performing periodic evaluation\n" \
         "  [-y|--frequency hz]      frequency to perform evaluation. If negative,\n" \
         "                           only runs once. If zero, hertz is infinite.\n" \
         "                           If positive, hertz is that hertz rate.\n" \
@@ -247,6 +250,17 @@ void handle_arguments (int argc, char ** argv)
         waiting = true;
         std::stringstream buffer (argv[i + 1]);
         buffer >> wait_time;
+      }
+      ++i;
+    }
+    else if (arg1 == "-wy" || arg1 == "-wp" ||
+             arg1 == "--wait-for-periodic")
+    {
+      if (i + 1 < argc)
+      {
+        waiting_for_periodic = true;
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> wait_for_periodic;
       }
       ++i;
     }
@@ -414,9 +428,9 @@ int main (int argc, char ** argv)
     }
 
     // if user requests to wait, do so before the debug print
-    if (waiting)
+    if (waiting_for_periodic || waiting)
     {
-      utility::sleep (wait_time);
+      utility::sleep (wait_time + wait_for_periodic);
     }
 
     if (after_wait)
@@ -432,6 +446,12 @@ int main (int argc, char ** argv)
   else // frequency >= 0
   {
     threads::Threader threader (knowledge);
+
+    // if the user specified a wait before evaluation, sleep for the time
+    if (waiting_for_periodic)
+    {
+      utility::sleep (wait_for_periodic);
+    }
 
     threader.run (frequency, "evaluator",
       new Evaluator (knowledge, expressions), false);
