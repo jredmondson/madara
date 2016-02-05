@@ -1,6 +1,6 @@
 /* -*- C++ -*- */
-#ifndef _MADARA_SYSTEM_CALL_GET_TIME_H_
-#define _MADARA_SYSTEM_CALL_GET_TIME_H_
+#ifndef _MADARA_SYSTEM_CALL_GET_TIME_SECONDS_H_
+#define _MADARA_SYSTEM_CALL_GET_TIME_SECONDS_H_
 
 #ifndef _MADARA_NO_KARL_
 
@@ -18,23 +18,23 @@ namespace madara
     class Visitor;
 
     /**
-     * @class SystemCallGetTime
-     * @brief Returns the time in nanoseconds since epoch
+     * @class SystemCallGetTimeSeconds
+     * @brief Returns the current time in seconds since epoch
      */
-    class SystemCallGetTime : public SystemCallNode
+    class SystemCallGetTimeSeconds : public SystemCallNode
     {
     public:
       /**
        * Constructor
        **/
-      SystemCallGetTime (
+      SystemCallGetTimeSeconds (
         madara::knowledge::ThreadSafeContext & context,
         const ComponentNodes & nodes);
       
       /**
        * Destructor
        **/
-      virtual ~SystemCallGetTime (void);
+      virtual ~SystemCallGetTimeSeconds (void);
 
       /**
        * Returns the value of the node
@@ -67,4 +67,4 @@ namespace madara
 
 #endif // _MADARA_NO_KARL_
 
-#endif /* _MADARA_SYSTEM_CALL_GET_TIME_H_ */
+#endif /* _MADARA_SYSTEM_CALL_GET_TIME_SECONDS_H_ */

@@ -130,6 +130,16 @@ void test_system_calls (
     "tan_1_1 = #tan(1.1);"
     );
 
+  knowledge.evaluate (
+    "begin_s = #get_time_seconds();"
+    "begin_ns = #get_time();"
+    "#sleep(3);"
+    "end_s = #get_time_seconds();"
+    "end_ns = #get_time();"
+    "diff_s = end_s - begin_s;"
+    "diff_ns = end_ns - begin_ns;"
+    );
+
   KnowledgeRecord::Integer two_to_4th =
     knowledge.get ("two_to_4th").to_integer ();
 
@@ -138,6 +148,12 @@ void test_system_calls (
 
   KnowledgeRecord::Integer square_two_to_4th =
     knowledge.get ("square_two_to_4th").to_integer ();
+
+  KnowledgeRecord::Integer diff_s =
+    knowledge.get ("diff_s").to_integer ();
+
+  KnowledgeRecord::Integer diff_ns =
+    knowledge.get ("diff_ns").to_integer ();
 
   if (two_to_4th != 16)
   {
@@ -155,6 +171,18 @@ void test_system_calls (
   {
     std::cout << "ERROR: sqrt(pow(2,4)) returned " << square_two_to_4th <<
       " instead of 4. [1]\n";
+  }
+
+  if (diff_s != 3 && diff_s != 4)
+  {
+    std::cout << "ERROR: #get_time_seconds returned diff of " << diff_s <<
+      " instead of 3 (.\n";
+  }
+
+  if (diff_ns < 3000000000 || diff_ns > 4000000000)
+  {
+    std::cout << "ERROR: #get_time_ns returned diff of " << diff_ns <<
+      " instead of ~3000000000 (.\n";
   }
 
 #else

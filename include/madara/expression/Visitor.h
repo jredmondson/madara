@@ -51,6 +51,7 @@ namespace madara
     class SystemCallFragment;
     class SystemCallGetClock;
     class SystemCallGetTime;
+    class SystemCallGetTimeSeconds;
     class SystemCallLogLevel;
     class SystemCallPow;
     class SystemCallPrint;
@@ -220,7 +221,10 @@ namespace madara
       
       /// Visit a SystemCallGetTime.
       virtual void visit (const SystemCallGetTime &node) = 0;
-      
+
+      /// Visit a SystemCallGetTimeSeconds.
+      virtual void visit (const SystemCallGetTimeSeconds &node) = 0;
+
       /// Visit a SystemCallLogLevel.
       virtual void visit (const SystemCallLogLevel &node) = 0;
 

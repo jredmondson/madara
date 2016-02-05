@@ -117,27 +117,25 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
       "  this is a Lamport clock value and not a wall time value.\n";
     
     calls_["#get_time"] =
-      "\n#get_time ():\n"
+      "\n#get_time () or #get_time_ns() or #get_time_nano():\n"
       "  Returns wall clock time on the local machine in nanoseconds.\n";
+
+    calls_["#get_time_seconds"] =
+      "\n#get_time_seconds () or #get_time_s ():\n"
+      "  Returns wall clock time on the local machine in seconds.\n";
 
     calls_["#log_level"] =
       "\n#log_level () or #log_level (value):\n"
       "  Returns the logging level or sets the logging level. The logging\n"
       "  level determines the granularity of MADARA log messages. The value\n"
-      "  should be an integer from 0-10.\n"
-      "  0: Error messages and emergency information. Default setting.\n"
-      "  1. Terminal errors\n"
-      "  2. Non-terminal errors\n"
-      "  3. Questionable state (MADARA can keep going)\n"
-      "  4. Warnings\n"
-      "  3. Errors that may cause slight instability\n"
-      "  4. Event trace\n"
-      "  5. Major events\n"
-      "  6. Minor events\n"
-      "  7. Event traces\n"
-      "  8. Major debug info\n"
-      "  9. Log trace\n"
-      " 10. Detailed trace\n";
+      "  should be an integer from 0-6.\n"
+      "  0: Emergency or always messages. Default setting.\n"
+      "  1. Errors\n"
+      "  2. Warnings\n"
+      "  3. Major events\n"
+      "  4. Minor events\n"
+      "  5. Trace events\n"
+      "  6. Detailed logging\n";
 
     calls_["#pow"] =
       "\n#pow (base, power):\n"
@@ -195,8 +193,8 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
        
     calls_["#sleep"] =
       "\n#sleep (double time_to_sleep in s):\n"
-      "  Sleeps for at least the specified time and returns "
-      " time spent sleeping in seconds.\n";
+      "  Sleeps for at least the specified time and returns time\n"
+      "  spent sleeping in seconds.\n";
 
     calls_["#sqrt"] =
       "\n#sqrt (value):\n"

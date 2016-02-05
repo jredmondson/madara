@@ -52,6 +52,7 @@
 #include "madara/expression/SystemCallFragment.h"
 #include "madara/expression/SystemCallGetClock.h"
 #include "madara/expression/SystemCallGetTime.h"
+#include "madara/expression/SystemCallGetTimeSeconds.h"
 #include "madara/expression/SystemCallLogLevel.h"
 #include "madara/expression/SystemCallPow.h"
 #include "madara/expression/SystemCallPrint.h"
@@ -800,6 +801,26 @@ namespace madara
 
       /// destructor
       virtual ~GetTime (void);
+    };
+
+    /**
+    * @class GetTimeSeconds
+    * @brief Returns the wall clock time in seconds
+    */
+    class GetTimeSeconds : public SystemCall
+    {
+    public:
+      /// constructor
+      GetTimeSeconds (madara::knowledge::ThreadSafeContext & context_);
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+
+      /// destructor
+      virtual ~GetTimeSeconds (void);
     };
 
     /**
@@ -2180,6 +2201,33 @@ madara::expression::ComponentNode *
 madara::expression::GetTime::build ()
 {
   return new SystemCallGetTime (context_, nodes_);
+}
+
+
+// constructor
+madara::expression::GetTimeSeconds::GetTimeSeconds (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
+{
+}
+
+// destructor
+madara::expression::GetTimeSeconds::~GetTimeSeconds (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::GetTimeSeconds::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::GetTimeSeconds::build ()
+{
+  return new SystemCallGetTimeSeconds (context_, nodes_);
 }
 
 
@@ -4822,133 +4870,198 @@ madara::expression::Interpreter::system_call_insert (
   {
     // save the function name and update i
     SystemCall * call = 0;
+    char first_char = 0;
 
-    if (name == "#cos")
+    if (name.size () > 1)
     {
-      call = new Cos (context);
+      first_char = name[1];
     }
-    else if (name == "#delete_var" || name == "#delete_variable")
+
+    switch (first_char)
     {
-      call = new DeleteVariable (context);
-    }
-    else if (name == "#eval" || name == "#evaluate")
-    {
-      call = new Eval (context);
-    }
-    else if (name == "#expand" || name == "#expand_statement")
-    {
-      call = new ExpandStatement (context);
-    }
-    else if (name == "#expand_env" || name == "#expand_envs")
-    {
-      call = new ExpandEnv (context);
-    }
-    else if (name == "#fragment")
-    {
-      call = new Fragment (context);
-    }
-    else if (name == "#get_clock")
-    {
-      call = new GetClock (context);
-    }
-    else if (name == "#get_time")
-    {
-      call = new GetTime (context);
-    }
-    else if (name == "#log_level")
-    {
-      call = new LogLevel (context);
-    }
-    else if (name == "#pow")
-    {
-      call = new Power (context);
-    }
-    else if (name == "#print")
-    {
-      call = new Print (context);
-    }
-    else if (name == "#print_system_calls" || name == "#print_system_call")
-    {
-      call = new PrintSystemCalls (context);
-    }
-    else if (name == "#rand_double")
-    {
-      call = new RandDouble (context);
-    }
-    else if (name == "#rand_int" || name == "#rand_integer")
-    {
-      call = new RandInt (context);
-    }
-    else if (name == "#read_file")
-    {
-      call = new ReadFile (context);
-    }
-    else if (name == "#set_clock")
-    {
-      call = new SetClock (context);
-    }
-    else if (name == "#set_precision" || name == "#precision")
-    {
-      call = new SetPrecision (context);
-    }
-    else if (name == "#sin")
-    {
-      call = new Sin (context);
-    }
-    else if (name == "#size")
-    {
-      call = new Size (context);
-    }
-    else if (name == "#sleep")
-    {
-      call = new Sleep (context);
-    }
-    else if (name == "#sqrt")
-    {
-      call = new SquareRoot (context);
-    }
-    else if (name == "#tan")
-    {
-      call = new Tan (context);
-    }
-    else if (name == "#to_buffer" || name == "#buffer")
-    {
-      call = new ToBuffer (context);
-    }
-    else if (name == "#to_double" || name == "#double")
-    {
-      call = new ToDouble (context);
-    }
-    else if (name == "#to_doubles" || name == "#doubles")
-    {
-      call = new ToDoubles (context);
-    }
-    else if (name == "#to_host_dirs")
-    {
-      call = new ToHostDirs (context);
-    }
-    else if (name == "#to_integer" || name == "#integer")
-    {
-      call = new ToInteger (context);
-    }
-    else if (name == "#to_integers" || name == "#integers")
-    {
-      call = new ToIntegers (context);
-    }
-    else if (name == "#to_string" || name == "#string")
-    {
-      call = new ToString (context);
-    }
-    else if (name == "#type")
-    {
-      call = new Type (context);
-    }
-    else if (name == "#write_file")
-    {
-      call = new WriteFile (context);
-    }
-    else
-    {
+    case 'b':
+      if (name == "#buffer")
+      {
+        call = new ToBuffer (context);
+      }
+      break;
+    case 'c':
+      if (name == "#cos")
+      {
+        call = new Cos (context);
+      }
+      break;
+    case 'd':
+      if (name == "#delete_var" || name == "#delete_variable")
+      {
+        call = new DeleteVariable (context);
+      }
+      else if (name == "#double")
+      {
+        call = new ToDouble (context);
+      }
+      else if (name == "#doubles")
+      {
+        call = new ToDoubles (context);
+      }
+      break;
+    case 'e':
+      if (name == "#eval" || name == "#evaluate")
+      {
+        call = new Eval (context);
+      }
+      else if (name == "#expand" || name == "#expand_statement")
+      {
+        call = new ExpandStatement (context);
+      }
+      else if (name == "#expand_env" || name == "#expand_envs")
+      {
+        call = new ExpandEnv (context);
+      }
+      break;
+    case 'f':
+      if (name == "#fragment")
+      {
+        call = new Fragment (context);
+      }
+      break;
+    case 'g':
+      if (name == "#get_clock")
+      {
+        call = new GetClock (context);
+      }
+      else if (name == "#get_time" || name == "#get_time_ns" || name == "#get_time_nano")
+      {
+        call = new GetTime (context);
+      }
+      else if (name == "#get_time_seconds" || name == "#get_time_s")
+      {
+        call = new GetTimeSeconds (context);
+      }
+      break;
+    case 'i':
+      if (name == "#integer")
+      {
+        call = new ToInteger (context);
+      }
+      else if (name == "#integers")
+      {
+        call = new ToIntegers (context);
+      }
+      break;
+    case 'l':
+      if (name == "#log_level")
+      {
+        call = new LogLevel (context);
+      }
+      break;
+    case 'p':
+      if (name == "#pow")
+      {
+        call = new Power (context);
+      }
+      else if (name == "#print")
+      {
+        call = new Print (context);
+      }
+      else if (name == "#print_system_calls" || name == "#print_system_call")
+      {
+        call = new PrintSystemCalls (context);
+      }
+      else if (name == "#precision")
+      {
+        call = new SetPrecision (context);
+      }
+      break;
+    case 'r':
+      if (name == "#rand_double")
+      {
+        call = new RandDouble (context);
+      }
+      else if (name == "#rand_int" || name == "#rand_integer")
+      {
+        call = new RandInt (context);
+      }
+      else if (name == "#read_file")
+      {
+        call = new ReadFile (context);
+      }
+      break;
+    case 's':
+      if (name == "#set_clock")
+      {
+        call = new SetClock (context);
+      }
+      else if (name == "#set_precision")
+      {
+        call = new SetPrecision (context);
+      }
+      else if (name == "#sin")
+      {
+        call = new Sin (context);
+      }
+      else if (name == "#size")
+      {
+        call = new Size (context);
+      }
+      else if (name == "#sleep")
+      {
+        call = new Sleep (context);
+      }
+      else if (name == "#sqrt")
+      {
+        call = new SquareRoot (context);
+      }
+      else if (name == "#string")
+      {
+        call = new ToString (context);
+      }
+      break;
+    case 't':
+      if (name == "#tan")
+      {
+        call = new Tan (context);
+      }
+      else if (name == "#to_buffer")
+      {
+        call = new ToBuffer (context);
+      }
+      else if (name == "#to_double")
+      {
+        call = new ToDouble (context);
+      }
+      else if (name == "#to_doubles")
+      {
+        call = new ToDoubles (context);
+      }
+      else if (name == "#to_host_dirs")
+      {
+        call = new ToHostDirs (context);
+      }
+      else if (name == "#to_integer")
+      {
+        call = new ToInteger (context);
+      }
+      else if (name == "#to_integers")
+      {
+        call = new ToIntegers (context);
+      }
+      else if (name == "#to_string")
+      {
+        call = new ToString (context);
+      }
+      else if (name == "#type")
+      {
+        call = new Type (context);
+      }
+      break;
+    case 'w':
+      if (name == "#write_file")
+      {
+        call = new WriteFile (context);
+      }
+      break;
+    default:
       madara_logger_log (context.get_logger (), logger::LOG_EMERGENCY,
         "System call %s is unsupported in this version of MADARA, "
         "defaulting to print_system_calls help menu.\n", name.c_str ());
