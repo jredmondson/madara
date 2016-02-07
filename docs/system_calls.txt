@@ -1,0 +1,139 @@
+
+#cos (var):
+  Returns the cosine of a term (radians)
+
+#delete_var (var) or #delete_variable (var):
+  Deletes a variable named var from the knowledge base
+
+#eval (expression) or #evaluate (expression):
+  Evaluates the KaRL expression and returns a result. Works similarly
+  to the KnowledgeBase::evaluate function except this function
+  inherits the KnowledgeUpdateSettings from the eval call.
+
+#expand_env (statement) or #expand_envs (statement):
+  Expands a statement such as 'env_var=$(VAR)' into
+  env_var=VAR CONTENTS, assuming VAR has been set in the OS.
+
+#expand (statement) or #expand_statement (statement):
+  Expands a statement such as 'var0' into 'var0', assuming .i=0
+
+#fragment (arg, first, last):
+  Returns a fragment of the arg, startin at first byte and extending
+  to last byte.
+
+#get_clock () or #get_clock (variable):
+  Returns either the system clock or the variable clock. Note that
+  this is a Lamport clock value and not a wall time value.
+
+#get_time () or #get_time_ns() or #get_time_nano():
+  Returns wall clock time on the local machine in nanoseconds.
+
+#get_time_seconds () or #get_time_s ():
+  Returns wall clock time on the local machine in seconds.
+
+#log_level () or #log_level (value):
+  Returns the logging level or sets the logging level. The logging
+  level determines the granularity of MADARA log messages. The value
+  should be an integer from 0-6.
+  0: Emergency or always messages. Default setting.
+  1. Errors
+  2. Warnings
+  3. Major events
+  4. Minor events
+  5. Trace events
+  6. Detailed logging
+
+#pow (base, power):
+  Returns the base taken to a power (exponent)
+
+#print (statement):
+  Prints a statement that can contain MADARA KaRL variables.
+  Variables are expanding to include their values where applicable.
+  For instance, 'var0' would result in printing 'var0' if .id
+  was set to 0. The same statement would print 'variable' if .id
+  was set to 'iable'.
+
+#print_system_calls () or #print_system_call (system_call):
+  Prints help for all system calls or a specific system call.
+
+#rand_double (floor = 0.0, ceiling = 1.0, update_srand = true):
+  Generates a random double from a uniform distribution.
+
+#rand_int (floor = 0, ceiling = RAND_MAX, update_srand = true):
+  Generates a random integer from a uniform distribution.
+
+#read_file (filename) or #read_file (filename, type):
+  Reads a file and returns its contents. Default is to determine
+  file type by filname extension. Explicit type can be a string
+  or an integer of the following values:
+    'xml' = 16
+    'text' = 32
+    'jpeg' = 256
+
+#set_clock (value) or #set_clock (variable, value):
+  Sets the system clock or a variable clock. The value should be
+  a non-zero integer (Lamport clock) and is used to determine which
+  variable values are rejected at the transport layer. Returns the
+  new clock value.
+
+#set_precision (value) or #precision (value):
+  Sets the precision that is used to convert doubles to strings.
+  This is a fixed precision (e.g., 5 for pi would be 3.14159).
+  Negative value resets to default precision.
+
+#sin (var):
+  Returns the sine of a term (radians)
+
+#size (value):
+  Returns the size of the variable or value.
+
+#sleep (double time_to_sleep in s):
+  Sleeps for at least the specified time and returns time
+  spent sleeping in seconds.
+
+#sqrt (value):
+  Returns the square root of a value
+
+#tan (value):
+  Returns the tangent of a term (radians)
+
+#to_buffer (value) or #buffer (value):
+  Converts the value to an unsigned char array.
+
+#to_double (value) or #double (value):
+  Converts the value to a double.
+
+#to_doubles (value) or #doubles (value):
+  Converts the value to an array of doubles.
+
+#to_host_dirs (directory):
+  Returns the host appropriate directory structure, e.g.,.
+  files/file.txt to filesile.txt on Windows.
+
+#to_integer (value) or #integer (value):
+  Converts the value to an integer.
+
+#to_integers (value) or #integers (value):
+  Converts the value to an array of integers.
+
+#to_string (value, delimiter) or #string (value, delimiter):
+  Converts the value to an ASCII string. Delimiter is an optional
+  string sequence that separates elements of an integer or double array.
+
+#type (value):
+  Returns the integer type of the variable or value.
+  Supported types are:
+    UNINITIALIZED = 0
+    INTEGER = 1
+    STRING = 2
+    DOUBLE = 4
+    UNKNOWN_FILE_TYPE = 8
+    XML = 16
+    TEXT_FILE = 32
+    INTEGER_ARRAY = 64
+    DOUBLE_ARRAY = 128
+    IMAGE_JPEG = 256
+
+#write_file (filename, value):
+  Writes the value to a file. Supports all MADARA types.
+  @see #type.
