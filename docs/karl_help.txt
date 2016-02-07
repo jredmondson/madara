@@ -1,0 +1,33 @@
+
+Program summary for karl [options] [Logic]:
+
+Evaluates KaRL logic from command line or file.
+
+options:
+  [-a|--after-wait]        Evaluate after wait, rather than before wait
+  [-b|--broadcast ip:port] the broadcast ip to send and listen to
+  [-c|--check-result]      check result of eval. If not zero, then terminate
+  [-d|--domain domain]     the knowledge domain to send and listen to
+  [--debug]                print all sent, received, and final knowledge
+  [-f|--logfile file]      log to a file
+  [-h|--help]              print help menu (i.e., this menu)
+  [-i|--input file]        file containing MADARA logic to evaluate
+  [-k|--print-knowledge]   print final knowledge
+  [-ky]                    print knowledge after frequent evaluations
+  [-l|--level level]       the logger level (0+, higher is higher detail)
+  [-m|--multicast ip:port] the multicast ip to send and listen to
+  [-o|--host hostname]     the hostname of this process (def:localhost)
+  [-q|--queue-length size] size of network buffers in bytes
+  [-r|--reduced]           use the reduced message header
+  [-s|--save file]         save the resulting knowledge base as karl
+  [-t|--time time]         time to wait for results
+  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)
+  [-w|--wait seconds]      Wait for number of seconds before exiting
+  [-wy|-wp|--wait-for-periodic seconds]  Wait for number of seconds
+                           before performing periodic evaluation
+  [-y|--frequency hz]      frequency to perform evaluation. If negative,
+                           only runs once. If zero, hertz is infinite.
+                           If positive, hertz is that hertz rate.
+  [-0|--init-logic logic]  logic containing initial variables (only ran once)
+  [-0f|--init-file file]   file containing initial variables (only ran once)
+
