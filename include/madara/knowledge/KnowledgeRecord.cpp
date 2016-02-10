@@ -14,6 +14,8 @@
 
 int madara_double_precision (-1);
 
+bool madara_use_scientific (false);
+
 int
 madara::knowledge::KnowledgeRecord::get_precision (void)
 {
@@ -28,6 +30,26 @@ madara::knowledge::KnowledgeRecord::set_precision (int new_precision)
     " setting precision to %d\n", madara_double_precision);
 
   madara_double_precision = new_precision;
+}
+
+void
+madara::knowledge::KnowledgeRecord::set_fixed (void)
+{
+  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MINOR,
+    "KnowledgeRecord::set_fixed:" \
+    " setting output format to std::fixed\n");
+
+  madara_use_scientific = false;
+}
+
+void
+madara::knowledge::KnowledgeRecord::set_scientific (void)
+{
+  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MINOR,
+    "KnowledgeRecord::set_scientific:" \
+    " setting output format to std::scientific\n");
+
+  madara_use_scientific = true;
 }
 
 madara::knowledge::KnowledgeRecord::KnowledgeRecord (logger::Logger & logger)
@@ -503,10 +525,26 @@ madara::knowledge::KnowledgeRecord::to_string (const std::string & delimiter) co
       }
       else if (type_ == DOUBLE)
       {
+        // set fixed or scientific
+        if (!madara_use_scientific)
+        {
+          madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string: using fixed format\n");
+
+          buffer << std::fixed;
+        }
+        else
+        {
+          madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string: using scientific format\n");
+
+          buffer << std::scientific;
+        }
+
         if (madara_double_precision >= 0)
         {
+          // set the precision of double output
           buffer << std::setprecision (madara_double_precision);
-          buffer << std::fixed;
 
           madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
             " precision set to %d\n", madara_double_precision);
@@ -521,10 +559,25 @@ madara::knowledge::KnowledgeRecord::to_string (const std::string & delimiter) co
       }
       else if (type_ == DOUBLE_ARRAY)
       {
+        // set fixed or scientific
+        if (!madara_use_scientific)
+        {
+          madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string: using fixed format\n");
+
+          buffer << std::fixed;
+        }
+        else
+        {
+          madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string: using scientific format\n");
+
+          buffer << std::scientific;
+        }
+
         if (madara_double_precision >= 0)
         {
           buffer << std::setprecision (madara_double_precision);
-          buffer << std::fixed;
 
           madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
             " precision set to %d\n", madara_double_precision);

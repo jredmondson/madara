@@ -60,7 +60,9 @@ namespace madara
     class SystemCallRandInt;
     class SystemCallReadFile;
     class SystemCallSetClock;
+    class SystemCallSetFixed;
     class SystemCallSetPrecision;
+    class SystemCallSetScientific;
     class SystemCallSin;
     class SystemCallSize;
     class SystemCallSleep;
@@ -290,10 +292,16 @@ namespace madara
       
       /// Visit a SystemCallWriteFile.
       virtual void visit (const SystemCallWriteFile &node) = 0;
-      
-      /// Visit a SystemCallToBuffer.
+
+      /// Visit a SystemCallSetFixed.
+      virtual void visit (const SystemCallSetFixed &node) = 0;
+
+      /// Visit a SystemCallSetPrecision.
       virtual void visit (const SystemCallSetPrecision &node) = 0;
-      
+
+      /// Visit a SystemCallSetScientific.
+      virtual void visit (const SystemCallSetScientific &node) = 0;
+
       /// No-op destructor to hold things together.
       virtual ~Visitor (void) = 0;
     };

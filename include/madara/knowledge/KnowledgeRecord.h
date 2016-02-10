@@ -353,7 +353,17 @@ namespace madara
        * @param   new_precision  new double precision to use
        **/
       static void set_precision (int new_precision);
-    
+
+      /**
+      * Sets the output format for doubles to std::scientific
+      **/
+      static void set_scientific (void);
+
+      /**
+      * Sets the output format for doubles to std::fixed
+      **/
+      static void set_fixed (void);
+
       /**
        * Gets the current double precision for double to string conversion
        * @return  the double precision for double to string conversion

@@ -61,7 +61,9 @@
 #include "madara/expression/SystemCallRandInt.h"
 #include "madara/expression/SystemCallReadFile.h"
 #include "madara/expression/SystemCallSetClock.h"
+#include "madara/expression/SystemCallSetFixed.h"
 #include "madara/expression/SystemCallSetPrecision.h"
+#include "madara/expression/SystemCallSetScientific.h"
 #include "madara/expression/SystemCallSin.h"
 #include "madara/expression/SystemCallSize.h"
 #include "madara/expression/SystemCallSleep.h"
@@ -543,6 +545,26 @@ namespace madara
     };
 
     /**
+    * @class SetFixed
+    * @brief Sets the output format to std::fixed
+    */
+    class SetFixed : public SystemCall
+    {
+    public:
+      /// constructor
+      SetFixed (madara::knowledge::ThreadSafeContext & context_);
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+
+      /// destructor
+      virtual ~SetFixed (void);
+    };
+
+    /**
     * @class SetPrecision
     * @brief Sets the precision of doubles
     */
@@ -560,6 +582,26 @@ namespace madara
 
       /// destructor
       virtual ~SetPrecision (void);
+    };
+
+    /**
+    * @class SetScientific
+    * @brief Sets the output to std::scientific
+    */
+    class SetScientific : public SystemCall
+    {
+    public:
+      /// constructor
+      SetScientific (madara::knowledge::ThreadSafeContext & context_);
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+
+      /// destructor
+      virtual ~SetScientific (void);
     };
 
     /**
@@ -2257,6 +2299,32 @@ madara::expression::SetClock::build ()
   return new SystemCallSetClock (context_, nodes_);
 }
 
+// constructor
+madara::expression::SetFixed::SetFixed (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
+{
+}
+
+// destructor
+madara::expression::SetFixed::~SetFixed (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::SetFixed::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::SetFixed::build ()
+{
+  return new SystemCallSetFixed (context_, nodes_);
+}
+
 
 // constructor
 madara::expression::SetPrecision::SetPrecision (
@@ -2282,6 +2350,33 @@ madara::expression::ComponentNode *
 madara::expression::SetPrecision::build ()
 {
   return new SystemCallSetPrecision (context_, nodes_);
+}
+
+
+// constructor
+madara::expression::SetScientific::SetScientific (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
+{
+}
+
+// destructor
+madara::expression::SetScientific::~SetScientific (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::SetScientific::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::SetScientific::build ()
+{
+  return new SystemCallSetScientific (context_, nodes_);
 }
 
 
@@ -4881,6 +4976,10 @@ madara::expression::Interpreter::system_call_insert (
       {
         call = new Fragment (context);
       }
+      else if (name == "#fixed")
+      {
+        call = new SetFixed (context);
+      }
       break;
     case 'g':
       if (name == "#get_clock")
@@ -4945,13 +5044,25 @@ madara::expression::Interpreter::system_call_insert (
       }
       break;
     case 's':
-      if (name == "#set_clock")
+      if (name == "#scientific")
+      {
+        call = new SetScientific (context);
+      }
+      else if (name == "#set_clock")
       {
         call = new SetClock (context);
+      }
+      else if (name == "#set_fixed")
+      {
+        call = new SetFixed (context);
       }
       else if (name == "#set_precision")
       {
         call = new SetPrecision (context);
+      }
+      else if (name == "#set_scientific")
+      {
+        call = new SetScientific (context);
       }
       else if (name == "#sin")
       {

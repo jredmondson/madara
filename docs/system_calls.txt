@@ -76,10 +76,17 @@
   variable values are rejected at the transport layer. Returns the
   new clock value.
 
+#set_fixed () or #fixed ():
+  Sets the output format for doubles to fixed format (std::fixed).
+
 #set_precision (value) or #precision (value):
   Sets the precision that is used to convert doubles to strings.
   This is a fixed precision (e.g., 5 for pi would be 3.14159).
   Negative value resets to default precision.
+
+#set_scientific () or #scientific ():
+  Sets the output format for doubles to scientific format
+  (std::scientific).
 
 #sin (var):
   Returns the sine of a term (radians)

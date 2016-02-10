@@ -176,12 +176,21 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
       "  a non-zero integer (Lamport clock) and is used to determine which\n"
       "  variable values are rejected at the transport layer. Returns the\n"
       "  new clock value.\n";
-      
+
+    calls_["#set_fixed"] =
+      "\n#set_fixed () or #fixed ():\n"
+      "  Sets the output format for doubles to fixed format (std::fixed).\n";
+
     calls_["#set_precision"] =
       "\n#set_precision (value) or #precision (value):\n"
       "  Sets the precision that is used to convert doubles to strings.\n"
       "  This is a fixed precision (e.g., 5 for pi would be 3.14159).\n"
       "  Negative value resets to default precision.\n";
+
+    calls_["#set_scientific"] =
+      "\n#set_scientific () or #scientific ():\n"
+      "  Sets the output format for doubles to scientific format\n"
+      "  (std::scientific).\n";
 
     calls_["#sin"] =
       "\n#sin (var):\n"

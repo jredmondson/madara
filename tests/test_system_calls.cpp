@@ -185,6 +185,20 @@ void test_system_calls (
       " instead of ~3000000000 (.\n";
   }
 
+  std::cerr << "Testing #set_scientific...\n";
+
+  knowledge.evaluate (
+    "#set_scientific()"
+    );
+
+  knowledge.print ();
+
+  std::cerr << "Output being reverted with #set_fixed...\n";
+
+  knowledge.evaluate (
+    "#set_fixed()"
+    );
+
 #else
   std::cout << "This test is disabled due to karl feature being disabled.\n";
 #endif
