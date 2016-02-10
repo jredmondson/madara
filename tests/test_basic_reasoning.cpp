@@ -446,6 +446,15 @@ void test_doubles (madara::knowledge::KnowledgeBase & knowledge)
   assert (knowledge.get (".var4") == 2.0 && 
     knowledge.get (".var5") == 20.0 &&
     knowledge.get (".var6") == 10.0 / 1.5);
+
+  knowledge.evaluate (".var7 = 2.00600e+003");
+  assert (knowledge.get (".var7") == 2006.0);
+
+  knowledge.evaluate (".var7 = 2.00700e003");
+  assert (knowledge.get (".var7") == 2007.0);
+
+  knowledge.evaluate (".var7 = 2.00800e-003");
+  assert (knowledge.get (".var7") == 0.002008);
 }
 
 void test_strings (madara::knowledge::KnowledgeBase & knowledge)

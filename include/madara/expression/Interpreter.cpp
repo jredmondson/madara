@@ -4218,49 +4218,6 @@ madara::expression::Interpreter::~Interpreter ()
 {
 }
 
-// method for checking if a character is a valid operator
-bool
-madara::expression::Interpreter::is_operator (char input)
-{
-  return input == '+'
-    || input == '-'
-    || input == '*'
-    || input == '/' || input == '%';
-}
-
-// method for checking if a character is a number
-bool
-madara::expression::Interpreter::is_number (char input)
-{
-  return input >= '0' && input <= '9';
-}
-
-// method for checking if a character is a number
-bool
-madara::expression::Interpreter::is_string_literal (char input)
-{
-  return input == '"' || input == '\'';
-}
-
-// method for checking if a character is a candidate
-// for a part of a variable name
-bool
-madara::expression::Interpreter::is_alphanumeric (char input)
-{
-  return (input >= 'a' && input <= 'z')
-    || (input >= 'A' && input <= 'Z')
-    || (input == '_')
-    || (input >= '0' && input <= '9') || input == '.'
-    || input == '{' || input == '}';
-}
-
-// method for checking if input is whitespace
-bool
-madara::expression::Interpreter::is_whitespace (char input)
-{
-  return input == ' ' || input == '\t' || input == '\r' || input == '\n';
-}
-
 // extracts precondition, condition, postcondition, and body from input 
 void
 madara::expression::Interpreter::handle_for_loop (
@@ -5127,6 +5084,21 @@ madara::expression::Interpreter::number_insert (
     ++j;
     for (; i + j <= input.length () && is_number (input[i + j]); ++j)
       continue;
+
+    // scientific notation
+    if (i + j <= input.length () &&
+      (input[i + j] == 'e' || input[i + j] == 'E'))
+    {
+      ++j;
+      if (i + j <= input.length () &&
+        (input[i + j] == '+' || input[i + j] == '-'))
+      {
+        ++j;
+      }
+
+      for (; i + j <= input.length () && is_number (input[i + j]); ++j)
+        continue;
+    }
 
     double new_number;
 

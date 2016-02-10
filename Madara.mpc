@@ -64,6 +64,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/transport/Transport.inl
     include/madara/transport/TransportSettings.inl
     include/madara/transport/BandwidthMonitor.inl
+    include/madara/expression
   }
 
   Template_Files {

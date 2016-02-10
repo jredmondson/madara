@@ -67,45 +67,49 @@ namespace madara
        * @param    input      char to check
        * @return   true if the input is an operator
        **/
-      static bool is_string_literal (char input);
+      static inline bool is_string_literal (char input);
 
       /**
        * Checks a character to see if it is a mathematical operator
        * @param    input      char to check
        * @return   true if the input is an operator
        **/
-      static bool is_operator (char input);
+      static inline bool is_operator (char input);
 
       /**
        * Checks a character to see if it is a number
        * @param    input      char to check
        * @return   true if the input is a number
        **/
-      static bool is_number (char input);
+      static inline bool is_number (char input);
       
       /**
        * Checks a character to see if it is alphanumeric
        * @param    input      char to check
        * @return   true if the input is alphanumeric
        **/
-      static bool is_alphanumeric (char input);
+      static inline bool is_alphanumeric (char input);
       
       /**
        * Checks a character to see if it is whitespace
        * @param    input      char to check
        * @return   true if the input is whitespace
        **/
-      static bool is_whitespace (char input);
-      
+      static inline bool is_whitespace (char input);
+
+      /**
+      * Checks a character to see if it is in scientific format
+      * @param    input      char to check
+      * @return   true if the input is in scientific exponential format
+      **/
+      static inline bool is_exponential (char input);
+
       /**
        * Attempts to delete an expression from cache
        * @param    expression      expression to erase from cache
        * @return   true if the expression was deleted
        **/
-      inline bool delete_expression (const std::string & expression)
-      {
-        return cache_.erase (expression) == 1;
-      }
+      inline bool delete_expression (const std::string & expression);
 
     private:
       /**
@@ -275,6 +279,8 @@ namespace madara
     };
   }
 }
+
+#include "Interpreter.inl"
 
 #endif // _MADARA_NO_KARL_
 
