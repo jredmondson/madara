@@ -1530,6 +1530,32 @@ madara::knowledge::KnowledgeBase::clear_modifieds (void)
   }
 }
 
+void
+madara::knowledge::KnowledgeBase::load_modifieds (void) const
+{
+  if (context_)
+  {
+    context_->load_modifieds ();
+  }
+  else if (impl_.get_ptr ())
+  {
+    impl_->load_modifieds ();
+  }
+}
+
+void
+madara::knowledge::KnowledgeBase::save_modifieds (void) const
+{
+  if (context_)
+  {
+    context_->save_modifieds ();
+  }
+  else if (impl_.get_ptr ())
+  {
+    impl_->save_modifieds ();
+  }
+}
+
 int
 madara::knowledge::KnowledgeBase::send_modifieds (
   const std::string & prefix,

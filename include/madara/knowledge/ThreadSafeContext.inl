@@ -62,7 +62,7 @@ madara::knowledge::ThreadSafeContext::get (
   const VariableReference & variable,
   const KnowledgeReferenceSettings &) const
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   if (variable.record_)
     return *variable.record_;
@@ -76,7 +76,7 @@ madara::knowledge::ThreadSafeContext::exists (
   const VariableReference & variable,
   const KnowledgeReferenceSettings &) const
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   if (variable.record_)
     return variable.record_->exists ();
@@ -91,7 +91,7 @@ madara::knowledge::ThreadSafeContext::retrieve_index (
   size_t index,
   const KnowledgeReferenceSettings &)
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   if (variable.record_)
     return variable.record_->retrieve_index (index);
@@ -274,7 +274,7 @@ madara::knowledge::ThreadSafeContext::inc (
   const VariableReference & variable,
   const KnowledgeUpdateSettings & settings)
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -300,7 +300,7 @@ inline bool
 madara::knowledge::ThreadSafeContext::delete_expression (
   const std::string & expression)
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   return interpreter_->delete_expression (expression);
 }
@@ -316,7 +316,7 @@ madara::knowledge::ThreadSafeContext::delete_variable (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -335,7 +335,7 @@ madara::knowledge::ThreadSafeContext::delete_prefix (
   const KnowledgeReferenceSettings &)
 {
   // enter the mutex
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   std::pair<KnowledgeMap::iterator, KnowledgeMap::iterator>
     iters(get_prefix_range(prefix));
@@ -352,7 +352,7 @@ madara::knowledge::ThreadSafeContext::exists (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -385,7 +385,7 @@ madara::knowledge::ThreadSafeContext::dec (
   const VariableReference & variable,
   const KnowledgeUpdateSettings & settings)
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -410,7 +410,7 @@ inline uint64_t
 madara::knowledge::ThreadSafeContext::set_clock (
   uint64_t clock)
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   // clock_ is always increasing. We never reset it to a lower clock value
   // user can check return value to see if the clock was set.
@@ -430,7 +430,7 @@ madara::knowledge::ThreadSafeContext::set_clock (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -469,7 +469,7 @@ madara::knowledge::ThreadSafeContext::inc_clock (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -494,7 +494,7 @@ inline uint64_t
 madara::knowledge::ThreadSafeContext::inc_clock (
   const KnowledgeUpdateSettings & settings)
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   return clock_ += settings.clock_increment;
 }
 
@@ -503,14 +503,14 @@ madara::knowledge::ThreadSafeContext::inc_clock (
 inline uint64_t
 madara::knowledge::ThreadSafeContext::get_clock (void) const
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   return clock_;
 }
 
 inline madara::logger::Logger &
 madara::knowledge::ThreadSafeContext::get_logger (void) const
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   return *logger_;
 }
 
@@ -518,7 +518,7 @@ inline void
 madara::knowledge::ThreadSafeContext::attach_logger (
   logger::Logger & logger) const
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   logger_ = &logger;
 }
 
@@ -531,7 +531,7 @@ madara::knowledge::ThreadSafeContext::get_clock (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -588,7 +588,7 @@ inline void
 madara::knowledge::ThreadSafeContext::clear (bool erase)
 {
   // enter the mutex
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   if (erase)
   {
@@ -616,7 +616,7 @@ madara::knowledge::ThreadSafeContext::wait_for_change (
   bool extra_release)
 {
   // enter the mutex
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   // if the caller is relying on a recursive call (e.g. KnowlegeBase::wait),
   // we'll need to call an extra release for this to work. Otherwise, the 
@@ -648,7 +648,7 @@ madara::knowledge::ThreadSafeContext::mark_to_send (
   const KnowledgeUpdateSettings & settings
   )
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   mark_to_send_unsafe(std::string(ref.get_name()), *ref.record_, settings);
 }
 
@@ -681,7 +681,7 @@ madara::knowledge::ThreadSafeContext::mark_to_checkpoint (
   const KnowledgeUpdateSettings & settings
   )
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   mark_to_checkpoint_unsafe(std::string(ref.get_name()),
                             *ref.record_, settings);
 }
@@ -741,14 +741,14 @@ madara::knowledge::ThreadSafeContext::mark_modified (
   const KnowledgeUpdateSettings & settings
   )
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   mark_and_signal(ref.get_name(), ref.record_, settings);
 }
 
 inline std::string
 madara::knowledge::ThreadSafeContext::debug_modifieds (void) const
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
   std::stringstream result;
 
   result << changed_map_.size () << " modifications ready to send:\n";
@@ -796,16 +796,29 @@ madara::knowledge::ThreadSafeContext::debug_modifieds (void) const
 inline const madara::knowledge::KnowledgeRecords &
 madara::knowledge::ThreadSafeContext::get_modifieds (void) const
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   return changed_map_;
+}
+
+inline void
+madara::knowledge::ThreadSafeContext::save_modifieds (void) const
+{
+  saved_changed_map_.clear ();
+  saved_changed_map_ = changed_map_;
+}
+
+inline void
+madara::knowledge::ThreadSafeContext::load_modifieds (void) const
+{
+  changed_map_ = saved_changed_map_;
 }
 
 /// Return list of variables that have been modified
 inline const madara::knowledge::KnowledgeRecords &
 madara::knowledge::ThreadSafeContext::get_local_modified (void) const
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   return local_changed_map_;
 }
@@ -814,7 +827,7 @@ madara::knowledge::ThreadSafeContext::get_local_modified (void) const
 inline void 
 madara::knowledge::ThreadSafeContext::reset_modified (void)
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   changed_map_.clear ();
   local_changed_map_.clear ();
@@ -824,7 +837,7 @@ madara::knowledge::ThreadSafeContext::reset_modified (void)
 inline void 
 madara::knowledge::ThreadSafeContext::apply_modified (void)
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   // each synchronization counts as an event, since this is a
   // pretty important networking event
@@ -857,7 +870,7 @@ inline void
 madara::knowledge::ThreadSafeContext::reset_modified (
   const std::string & variable)
 {
-  ContextGuard guard (mutex_);
+  Guard guard (mutex_);
 
   changed_map_.erase (variable);
 }
@@ -869,7 +882,7 @@ madara::knowledge::ThreadSafeContext::signal (bool lock) const
 {
   if (lock)
   {
-    ContextGuard guard (mutex_);
+    Guard guard (mutex_);
     changed_.signal ();
   }
   else

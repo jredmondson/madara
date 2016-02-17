@@ -672,6 +672,20 @@ namespace madara
       const knowledge::KnowledgeRecords & get_modifieds (void) const;
 
       /**
+      * Loads the last modifieds list saved with @see save_modifieds.
+      **/
+      void load_modifieds (void) const;
+
+      /**
+      * Saves the list of modified records to use later for resending. This
+      * does not clear the modified list. This feature is useful if you
+      * want to remember what has been modified and then resend later, e.g.,
+      * if you believe packets may be dropped and want to resend information.
+      * Use this function in conjunction with @see load_modifieds to remodify
+      **/
+      void save_modifieds (void) const;
+
+      /**
       * Retrieves a stringified list of all modified variables that are ready
       * to send over transport on next send_modifieds call
       * @return  stringified list of the modified knowledge records
@@ -1315,7 +1329,7 @@ namespace madara
       std::pair<KnowledgeMap::iterator, KnowledgeMap::iterator>
       get_prefix_range(const std::string &prefix);
 
-      typedef ACE_Guard<MADARA_LOCK_TYPE> ContextGuard;
+      typedef ACE_Guard<MADARA_LOCK_TYPE> Guard;
 
       /// Hash table containing variable names and values.
       madara::knowledge::KnowledgeMap map_;
@@ -1323,8 +1337,9 @@ namespace madara
       mutable Condition changed_;
       std::vector< std::string> expansion_splitters_;
       mutable uint64_t clock_;
-      knowledge::KnowledgeRecords changed_map_;
-      knowledge::KnowledgeRecords local_changed_map_;
+      mutable knowledge::KnowledgeRecords changed_map_;
+      mutable knowledge::KnowledgeRecords saved_changed_map_;
+      mutable knowledge::KnowledgeRecords local_changed_map_;
 
       /// map of function names to functions
       FunctionMap functions_;

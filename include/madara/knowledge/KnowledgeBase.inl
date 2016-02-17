@@ -9,7 +9,7 @@
  * @file KnowledgeBase.inl
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains the inline functions for the KnowledgeBaseImpl class
+ * This file contains the inline functions for the KnowledgeBase class
  */
 
 

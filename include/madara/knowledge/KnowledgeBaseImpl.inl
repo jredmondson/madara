@@ -516,6 +516,18 @@ inline int64_t
   }
 }
 
+inline void
+madara::knowledge::KnowledgeBaseImpl::load_modifieds (void) const
+{
+  map_.load_modifieds ();
+}
+
+inline void
+madara::knowledge::KnowledgeBaseImpl::save_modifieds (void) const
+{
+  map_.load_modifieds ();
+}
+
 inline int
 madara::knowledge::KnowledgeBaseImpl::send_modifieds (
   const std::string & prefix,
@@ -523,7 +535,7 @@ madara::knowledge::KnowledgeBaseImpl::send_modifieds (
 {
   int result = 0;
 
-  ThreadSafeContext::ContextGuard guard (map_.mutex_);
+  ThreadSafeContext::Guard guard (map_.mutex_);
 
   if (transports_.size () > 0 && !settings.delay_sending_modifieds)
   {
