@@ -305,7 +305,13 @@ int main (int argc, char ** argv)
 
   data = 1;
 
+  std::cerr << std::setprecision (2) << std::fixed;
+  std::cerr << "Saving modifieds after setting data...\n";
+
   knowledge.save_modifieds ();
+
+  std::cerr << "Reloading saved modifed list at " << send_hertz <<
+    "hz for " << active_time << " seconds...\n\n";
 
   threads::Threader threader (knowledge);
   threader.run (send_hertz, "sender", new Sender (knowledge));
@@ -313,7 +319,6 @@ int main (int argc, char ** argv)
   threader.terminate ();
   threader.wait ();
 
-  std::cerr << std::setprecision (2) << std::fixed;
   std::cerr << "Test results:\n";
   std::cerr << "  Packets: " << counter.get_count () << "\n";
   std::cerr << "  Elapsed Time (s): " << counter.get_elapsed () << "\n";
