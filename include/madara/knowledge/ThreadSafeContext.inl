@@ -811,7 +811,8 @@ madara::knowledge::ThreadSafeContext::save_modifieds (void) const
 inline void
 madara::knowledge::ThreadSafeContext::load_modifieds (void) const
 {
-  changed_map_ = saved_changed_map_;
+  changed_map_.insert (
+    saved_changed_map_.begin (), saved_changed_map_.end ());
 }
 
 /// Return list of variables that have been modified
