@@ -540,6 +540,27 @@ project (Network_Profiler) : using_madara, using_ace, no_karl, no_xml {
   }
 }
 
+project (Test_Modifieds) : using_madara, using_ace, no_karl, no_xml {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_modifieds
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_modifieds.cpp
+  }
+}
+
 project (Test_Checkpointing) : using_madara, using_ace, no_karl, no_xml {
   exeout = $(MADARA_ROOT)/bin
   exename = test_checkpointing

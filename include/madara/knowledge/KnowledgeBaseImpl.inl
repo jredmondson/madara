@@ -525,7 +525,7 @@ madara::knowledge::KnowledgeBaseImpl::load_modifieds (void) const
 inline void
 madara::knowledge::KnowledgeBaseImpl::save_modifieds (void) const
 {
-  map_.load_modifieds ();
+  map_.save_modifieds ();
 }
 
 inline int
@@ -556,6 +556,7 @@ madara::knowledge::KnowledgeBaseImpl::send_modifieds (
         // reset the modified map
         map_.reset_modified ();
       }
+      // if there is a send_list
       else
       {
         knowledge::KnowledgeRecords allowed_modifieds;
