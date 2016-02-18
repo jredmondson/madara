@@ -320,7 +320,7 @@ int main (int argc, char ** argv)
   std::cerr << "  Message Throughput (message/s): " <<
     counter.get_throughput () << "\n";
   std::cerr << "  Data Throughput (B/s): " <<
-    counter.get_throughput () * data_size << "\n";
+    counter.get_throughput () * 8 << "\n";
 
 
   knowledge.print ();
