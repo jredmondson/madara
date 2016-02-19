@@ -889,6 +889,19 @@ namespace madara
         const std::string & array_delimiter = ",",
         const std::string & record_delimiter = ";\n",
         const std::string & key_val_delimiter = "=") const;
+      
+      /**
+      * Clears a variable. This is safer than erasing the variable.
+      * It clears the memory used in the variable and marks it as UNCREATED,
+      * meaning that it is effectively deleted, will not show up in
+      * @see print statements or @see save_checkpoint.
+      * @param   key            unique identifier of the variable
+      * @param   settings       settings for referring to variables
+      * @return                 true if variable exists
+      **/
+      bool clear (const std::string & key,
+        const KnowledgeReferenceSettings & settings =
+        KnowledgeReferenceSettings ());
 
       /**
        * Clears the knowledge base

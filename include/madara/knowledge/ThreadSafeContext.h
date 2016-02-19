@@ -818,9 +818,30 @@ namespace madara
       madara::knowledge::KnowledgeRecord dec (const VariableReference & variable, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
-      
+
       /**
-       * Deletes the key
+      * Clears a variable. This is much safer than @see delete_variable.
+      * It clears the memory used in the variable and marks it as UNCREATED,
+      * meaning that it is effectively deleted, will not show up in
+      * @see print statements or @see save_checkpoint.
+      * @param   key            unique identifier of the variable
+      * @param   settings       settings for referring to variables
+      * @return                 true if variable exists
+      **/
+      bool clear (const std::string & key,
+        const KnowledgeReferenceSettings & settings =
+        KnowledgeReferenceSettings ());
+
+      /**
+       * Deletes the key. Note that this is extremely unsafe. You
+       * can cause illegal operations in the knowledge base by using
+       * this method and trying to access this variable again with
+       * 1) a VariableReference, 2) a @see saved_modifieds listing,
+       * 3) a compiled expression in KaRL that uses the variable.
+       * There are very, very few reasons to ever use this function.
+       * Actually, there is one: you will never, ever, ever use this
+       * variable again. That's it. Otherwise, use @see clear with
+       * the default argument
        * @param   key            unique identifier of the variable
        * @param   settings       settings for referring to variables
        * @return                 true if variable exists

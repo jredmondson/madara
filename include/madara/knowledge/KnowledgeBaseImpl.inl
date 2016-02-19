@@ -242,6 +242,13 @@ madara::knowledge::KnowledgeBaseImpl::print (
   map_.print (statement, level);
 }
 
+inline bool
+madara::knowledge::KnowledgeBaseImpl::clear (const std::string & key,
+  const KnowledgeReferenceSettings & settings)
+{
+  return map_.clear (key, settings);
+}
+
 inline void
 madara::knowledge::KnowledgeBaseImpl::clear (bool erase)
 {

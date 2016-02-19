@@ -44,6 +44,7 @@
 #include "madara/expression/CompositeSequentialNode.h"
 #include "madara/expression/CompositeSquareRootNode.h"
 #include "madara/expression/CompositeImpliesNode.h"
+#include "madara/expression/SystemCallClearVariable.h"
 #include "madara/expression/SystemCallCos.h"
 #include "madara/expression/SystemCallDeleteVariable.h"
 #include "madara/expression/SystemCallEval.h"
@@ -192,6 +193,27 @@ namespace madara
 
       /// Context for variables
       madara::knowledge::ThreadSafeContext & context_;
+    };
+
+    /**
+    * @class ClearVariable
+    * @brief Clears a variable in the knowledge base
+    */
+    class ClearVariable : public SystemCall
+    {
+    public:
+      /// constructor
+      ClearVariable (
+        madara::knowledge::ThreadSafeContext & context_);
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+
+      /// destructor
+      virtual ~ClearVariable (void);
     };
 
 
@@ -2020,6 +2042,32 @@ madara::expression::SystemCall::~SystemCall (void)
 {
 }
 
+
+// constructor
+madara::expression::ClearVariable::ClearVariable (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
+{
+}
+
+// destructor
+madara::expression::ClearVariable::~ClearVariable (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::ClearVariable::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::ClearVariable::build ()
+{
+  return new SystemCallClearVariable (context_, nodes_);
+}
 
 
 // constructor
@@ -4938,7 +4986,11 @@ madara::expression::Interpreter::system_call_insert (
       }
       break;
     case 'c':
-      if (name == "#cos")
+      if (name == "#clear_var" || name == "#clear_variable")
+      {
+        call = new ClearVariable (context);
+      }
+      else if (name == "#cos")
       {
         call = new Cos (context);
       }

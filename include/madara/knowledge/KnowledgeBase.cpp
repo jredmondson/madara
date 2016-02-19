@@ -1045,6 +1045,24 @@ madara::knowledge::KnowledgeBase::print (
   }
 }
 
+bool
+madara::knowledge::KnowledgeBase::clear (const std::string & key,
+  const KnowledgeReferenceSettings & settings)
+{
+  bool result (false);
+
+  if (impl_.get_ptr ())
+  {
+    result = impl_->clear (key, settings);
+  }
+  else if (context_)
+  {
+    result = context_->clear (key, settings);
+  }
+
+  return result;
+}
+
 void
 madara::knowledge::KnowledgeBase::clear (bool erase)
 {

@@ -1,9 +1,20 @@
 
+#clear_variable (var):
+  Clears the variable var in the knowledge base. This is
+  the preferred way to delete variables. It masks the variable
+  from printouts and save_modifieds but leaves a phantom record
+  in the knowledge base to safely reference in VariableReference,
+  CompiledExpression, etc.
+
 #cos (var):
   Returns the cosine of a term (radians)
 
 #delete_var (var) or #delete_variable (var):
-  Deletes a variable named var from the knowledge base
+  Deletes a variable named var from the knowledge base. 
+  This is an extremely unsafe operation that must only
+  be used if the variable is never used in compiled
+  expressions or variable references (including container
+  classes such as Integer, Double, Vector, etc.)
 
 #eval (expression) or #evaluate (expression):
   Evaluates the KaRL expression and returns a result. Works similarly

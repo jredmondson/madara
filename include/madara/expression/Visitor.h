@@ -43,6 +43,7 @@ namespace madara
     class CompositeMultiplyNode;
     class CompositeModulusNode;
     class CompositeReturnRightNode;
+    class SystemCallClearVariable;
     class SystemCallCos;
     class SystemCallDeleteVariable;
     class SystemCallEval;
@@ -199,6 +200,9 @@ namespace madara
 
       /// Visit a CompositeImpliesNode.
       virtual void visit (const CompositeImpliesNode &node) = 0;
+
+      /// Visit a SystemCallClearVariable.
+      virtual void visit (const SystemCallClearVariable &node) = 0;
 
       /// Visit a SystemCallCos.
       virtual void visit (const SystemCallCos &node) = 0;

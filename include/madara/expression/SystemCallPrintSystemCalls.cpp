@@ -64,17 +64,25 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
   // if calls hasn't been initialized yet, fill the list of system calls
   if (calls_.size () == 0)
   {
+    calls_["#clear_variable"] =
+      "\n#clear_var (var) or #clear_variable (var):\n"
+      "  Clears the variable var in the knowledge base. This is\n"
+      "  the preferred way to delete variables. It masks the variable\n"
+      "  from printouts and save_modifieds but leaves a phantom record\n"
+      "  in the knowledge base to safely reference in VariableReference,\n"
+      "  CompiledExpression, etc.\n";
+
     calls_["#cos"] =
       "\n#cos (var):\n"
       "  Returns the cosine of a term (radians)\n";
-
-    calls_["#delete_var"] =
-      "\n#delete_var (var) or #delete_variable (var):\n"
-      "  Deletes a variable named var from the knowledge base\n";
     
     calls_["#delete_variable"] =
       "\n#delete_var (var) or #delete_variable (var):\n"
-      "  Deletes a variable named var from the knowledge base\n";
+      "  Deletes a variable named var from the knowledge base. \n"
+      "  This is an extremely unsafe operation that must only\n"
+      "  be used if the variable is never used in compiled\n"
+      "  expressions or variable references (including container\n"
+      "  classes such as Integer, Double, Vector, etc.)\n";
 
     calls_["#eval"] =
       "\n#eval (expression) or #evaluate (expression):\n"

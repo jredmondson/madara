@@ -1008,8 +1008,11 @@ madara::knowledge::ThreadSafeContext::print (
        i != map_.end (); 
        ++i)
   {
-    madara_logger_ptr_log (logger_, (int)level, "%s=%s\n",
-      i->first.c_str (), i->second.to_string (", ").c_str ());
+    if (i->second.exists ())
+    {
+      madara_logger_ptr_log (logger_, (int)level, "%s=%s\n",
+        i->first.c_str (), i->second.to_string (", ").c_str ());
+    }
   }
 }
 
@@ -1681,38 +1684,41 @@ madara::knowledge::ThreadSafeContext::save_context (
     for (KnowledgeMap::const_iterator i = map_.begin ();
          i != map_.end (); ++i)
     {
-      // get the encoded size of the record for checking buffer boundaries
-      int64_t encoded_size = i->second.get_encoded_size (i->first);
-      ++checkpoint_header.updates;
-      meta.size += encoded_size;
-      checkpoint_header.size += encoded_size;
-
-      if (encoded_size > buffer_remaining)
+      if (i->second.exists ())
       {
-        /**
-         * if the record is larger than the buffer we have remaining, then
-         * write the buffer to the file
-         **/
-        current = buffer.get_ptr ();
-        fwrite (current,
-          (size_t) (max_buffer - buffer_remaining), 1, file);
-        total_written += (int64_t) (max_buffer - buffer_remaining);
-        buffer_remaining = max_buffer;
+        // get the encoded size of the record for checking buffer boundaries
+        int64_t encoded_size = i->second.get_encoded_size (i->first);
+        ++checkpoint_header.updates;
+        meta.size += encoded_size;
+        checkpoint_header.size += encoded_size;
 
-        if (encoded_size > max_buffer)
+        if (encoded_size > buffer_remaining)
         {
           /**
-           * If the record is larger than the buffer, then we must allocate a
-           * buffer large enough to write to it.
+           * if the record is larger than the buffer we have remaining, then
+           * write the buffer to the file
            **/
-          buffer = new char [encoded_size];
-          max_buffer = encoded_size;
-          buffer_remaining = max_buffer;
           current = buffer.get_ptr ();
-        } // end if larger than buffer
-      } // end if larger than buffer remaining
+          fwrite (current,
+            (size_t)(max_buffer - buffer_remaining), 1, file);
+          total_written += (int64_t)(max_buffer - buffer_remaining);
+          buffer_remaining = max_buffer;
 
-      current = i->second.write (current, i->first, buffer_remaining);
+          if (encoded_size > max_buffer)
+          {
+            /**
+             * If the record is larger than the buffer, then we must allocate a
+             * buffer large enough to write to it.
+             **/
+            buffer = new char[encoded_size];
+            max_buffer = encoded_size;
+            buffer_remaining = max_buffer;
+            current = buffer.get_ptr ();
+          } // end if larger than buffer
+        } // end if larger than buffer remaining
+
+        current = i->second.write (current, i->first, buffer_remaining);
+      }
     }
   
     if (buffer_remaining != max_buffer)
@@ -1761,67 +1767,70 @@ const std::string & filename) const
     for (KnowledgeMap::const_iterator i = map_.begin ();
       i != map_.end (); ++i)
     {
-      buffer << i->first;
-      buffer << "=";
-
-      if (!i->second.is_binary_file_type ())
+      if (i->second.exists ())
       {
-        // record is a non binary file type
-        if (i->second.is_string_type ())
-        {
-          // strings require quotation marks
-          buffer << "\"";
-        }
-        else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
-          i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
-        {
-          // arrays require brackets
-          buffer << "[";
-        }
+        buffer << i->first;
+        buffer << "=";
 
-        buffer << i->second;
-        if (i->second.is_string_type ())
+        if (!i->second.is_binary_file_type ())
         {
-          // strings require quotation marks
-          buffer << "\"";
-        }
-        else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
-          i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
-        {
-          // arrays require brackets
-          buffer << "]";
-        }
-      }
-      else
-      {
-        buffer << "#read_file ('";
+          // record is a non binary file type
+          if (i->second.is_string_type ())
+          {
+            // strings require quotation marks
+            buffer << "\"";
+          }
+          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
+            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
+          {
+            // arrays require brackets
+            buffer << "[";
+          }
 
-        std::string path = utility::extract_path (filename);
-
-        if (path == "")
-          path = ".";
-
-        path += "/";
-        path += i->first;
-
-        if (i->second.type () == knowledge::KnowledgeRecord::IMAGE_JPEG)
-        {
-          path += ".jpg";
+          buffer << i->second;
+          if (i->second.is_string_type ())
+          {
+            // strings require quotation marks
+            buffer << "\"";
+          }
+          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
+            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
+          {
+            // arrays require brackets
+            buffer << "]";
+          }
         }
         else
         {
-          path += ".dat";
+          buffer << "#read_file ('";
+
+          std::string path = utility::extract_path (filename);
+
+          if (path == "")
+            path = ".";
+
+          path += "/";
+          path += i->first;
+
+          if (i->second.type () == knowledge::KnowledgeRecord::IMAGE_JPEG)
+          {
+            path += ".jpg";
+          }
+          else
+          {
+            path += ".dat";
+          }
+
+          utility::write_file (path,
+            (void *)i->second.file_value_.get_ptr (), i->second.size ());
+          buffer << path;
+
+
+          buffer << "')";
         }
 
-        utility::write_file (path,
-          (void *)i->second.file_value_.get_ptr (), i->second.size ());
-        buffer << path;
-
-
-        buffer << "')";
+        buffer << ";\n";
       }
-
-      buffer << ";\n";
     }
 
     std::string result = buffer.str ();
@@ -2028,91 +2037,97 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
       for (KnowledgeRecords::const_iterator i = records.begin ();
            i != records.end (); ++i)
       {
-        // get the encoded size of the record for checking buffer boundaries
-        int64_t encoded_size = i->second->get_encoded_size (i->first);
-        ++checkpoint_header.updates;
-        meta.size += encoded_size;
-        checkpoint_header.size += encoded_size;
-
-        if (encoded_size > buffer_remaining)
+        if (i->second->exists ())
         {
-          /**
-           * if the record is larger than the buffer we have remaining, then
-           * write the buffer to the file
-           **/
-          current = buffer.get_ptr ();
-          fwrite (current,
-            (size_t) (max_buffer - buffer_remaining), 1, file);
-          total_written += (int64_t) (max_buffer - buffer_remaining);
-          buffer_remaining = max_buffer;
+          // get the encoded size of the record for checking buffer boundaries
+          int64_t encoded_size = i->second->get_encoded_size (i->first);
+          ++checkpoint_header.updates;
+          meta.size += encoded_size;
+          checkpoint_header.size += encoded_size;
 
-          madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-            "ThreadSafeContext::save_checkpoint:" \
-            " encoded_size larger than remaining buffer. Flushing\n");
-  
-          if (encoded_size > max_buffer)
+          if (encoded_size > buffer_remaining)
           {
             /**
-             * If the record is larger than the buffer, then we must allocate a
-             * buffer large enough to write to it.
+             * if the record is larger than the buffer we have remaining, then
+             * write the buffer to the file
              **/
-            buffer = new char [encoded_size];
-            max_buffer = encoded_size;
-            buffer_remaining = max_buffer;
             current = buffer.get_ptr ();
+            fwrite (current,
+              (size_t)(max_buffer - buffer_remaining), 1, file);
+            total_written += (int64_t)(max_buffer - buffer_remaining);
+            buffer_remaining = max_buffer;
 
             madara_logger_ptr_log (logger_, logger::LOG_MINOR,
               "ThreadSafeContext::save_checkpoint:" \
-              " encoded_size larger than entire buffer. Reallocating\n");
-          } // end if larger than buffer
-        } // end if larger than buffer remaining
+              " encoded_size larger than remaining buffer. Flushing\n");
 
-        current = i->second->write (current, i->first, buffer_remaining);
+            if (encoded_size > max_buffer)
+            {
+              /**
+               * If the record is larger than the buffer, then we must allocate a
+               * buffer large enough to write to it.
+               **/
+              buffer = new char[encoded_size];
+              max_buffer = encoded_size;
+              buffer_remaining = max_buffer;
+              current = buffer.get_ptr ();
+
+              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                "ThreadSafeContext::save_checkpoint:" \
+                " encoded_size larger than entire buffer. Reallocating\n");
+            } // end if larger than buffer
+          } // end if larger than buffer remaining
+
+          current = i->second->write (current, i->first, buffer_remaining);
+        }
       } // end records loop
 
       for (KnowledgeRecords::const_iterator i = local_records.begin ();
            i != local_records.end (); ++i)
       {
-        // get the encoded size of the record for checking buffer boundaries
-        int64_t encoded_size = i->second->get_encoded_size (i->first);
-        ++checkpoint_header.updates;
-        meta.size += encoded_size;
-        checkpoint_header.size += encoded_size;
-
-        if (encoded_size > buffer_remaining)
+        if (i->second->exists ())
         {
-          /**
-           * if the record is larger than the buffer we have remaining, then
-           * write the buffer to the file
-           **/
-          current = buffer.get_ptr ();
-          fwrite (current,
-            (size_t) (max_buffer - buffer_remaining), 1, file);
-          total_written += (int64_t) (max_buffer - buffer_remaining);
-          buffer_remaining = max_buffer;
+          // get the encoded size of the record for checking buffer boundaries
+          int64_t encoded_size = i->second->get_encoded_size (i->first);
+          ++checkpoint_header.updates;
+          meta.size += encoded_size;
+          checkpoint_header.size += encoded_size;
 
-          madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-            "ThreadSafeContext::save_checkpoint:" \
-            " encoded_size larger than remaining buffer. Flushing\n");
-  
-          if (encoded_size > max_buffer)
+          if (encoded_size > buffer_remaining)
           {
             /**
-             * If the record is larger than the buffer, then we must allocate a
-             * buffer large enough to write to it.
+             * if the record is larger than the buffer we have remaining, then
+             * write the buffer to the file
              **/
-            buffer = new char [encoded_size];
-            max_buffer = encoded_size;
-            buffer_remaining = max_buffer;
             current = buffer.get_ptr ();
+            fwrite (current,
+              (size_t)(max_buffer - buffer_remaining), 1, file);
+            total_written += (int64_t)(max_buffer - buffer_remaining);
+            buffer_remaining = max_buffer;
 
             madara_logger_ptr_log (logger_, logger::LOG_MINOR,
               "ThreadSafeContext::save_checkpoint:" \
-              " encoded_size larger than entire buffer. Reallocating\n");
-          } // end if larger than buffer
-        } // end if larger than buffer remaining
+              " encoded_size larger than remaining buffer. Flushing\n");
 
-        current = i->second->write (current, i->first, buffer_remaining);
+            if (encoded_size > max_buffer)
+            {
+              /**
+               * If the record is larger than the buffer, then we must allocate a
+               * buffer large enough to write to it.
+               **/
+              buffer = new char[encoded_size];
+              max_buffer = encoded_size;
+              buffer_remaining = max_buffer;
+              current = buffer.get_ptr ();
+
+              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                "ThreadSafeContext::save_checkpoint:" \
+                " encoded_size larger than entire buffer. Reallocating\n");
+            } // end if larger than buffer
+          } // end if larger than buffer remaining
+
+          current = i->second->write (current, i->first, buffer_remaining);
+        }
       }
 
       if (buffer_remaining != max_buffer)

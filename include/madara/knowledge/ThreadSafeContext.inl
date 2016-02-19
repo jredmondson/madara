@@ -307,6 +307,37 @@ madara::knowledge::ThreadSafeContext::delete_expression (
 
 #endif // _MADARA_NO_KARL_
 
+inline bool
+madara::knowledge::ThreadSafeContext::clear (
+const std::string & key,
+const KnowledgeReferenceSettings & settings)
+{
+  // enter the mutex
+  bool found (false);
+  std::string key_actual;
+  const std::string * key_ptr;
+  Guard guard (mutex_);
+
+  if (settings.expand_variables)
+  {
+    key_actual = expand_statement (key);
+    key_ptr = &key_actual;
+  }
+  else
+    key_ptr = &key;
+
+  // find the key and update found with result of find
+  KnowledgeMap::iterator record = map_.find (*key_ptr);
+  found = record != map_.end ();
+
+  if (found)
+  {
+    record->second.clear_value ();
+  }
+
+  return found;
+}
+
 // return whether or not the key exists
 inline bool
 madara::knowledge::ThreadSafeContext::delete_variable (

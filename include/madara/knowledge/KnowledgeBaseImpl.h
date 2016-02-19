@@ -852,7 +852,28 @@ namespace madara
         const std::string & key_val_delimiter = "=") const;
 
       /**
-      * Clears the knowledge base
+      * Clears a variable. This is safer than erasing the variable.
+      * It clears the memory used in the variable and marks it as UNCREATED,
+      * meaning that it is effectively deleted, will not show up in
+      * @see print statements or @see save_checkpoint.
+      * @param   key            unique identifier of the variable
+      * @param   settings       settings for referring to variables
+      * @return                 true if variable exists
+      **/
+      bool clear (const std::string & key,
+        const KnowledgeReferenceSettings & settings =
+        KnowledgeReferenceSettings ());
+
+      /**
+      * Clears the knowledge base. This is a very unsafe operation if
+      * erase is set to true. Setting erase to true could cause operations
+      * that were using the variable in CompiledExpression or VariableReference
+      * to fail catastrophically (e.g., illegal operation and segfaults) due
+      * to accessing memory that is no longer initialized. The absolute
+      * only reason you should ever set erase to true would be if you have
+      * absolutely no intention of using a CompiledExpression or
+      * VariableReference that had been previously accessing the memory, and
+      * that includes all of the knowledge::containers classes also!
       * @param  erase   If true, completely erase keys.
       *                 If false, reset knowledge
       **/
