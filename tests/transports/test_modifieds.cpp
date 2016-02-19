@@ -214,9 +214,7 @@ void handle_arguments (int argc, char ** argv)
     {
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
-        "  Profiles a network transport. Requires 2 processes. The result of\n" \
-        "  running these processes should be that each process reports\n" \
-        "  latency and throughput statistics.\n\n" \
+        "  Tests the save_modifieds and add_modifieds functions.\n\n" \
         " [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
         " [-d|--domain domain]     the knowledge domain to send and listen to\n" \
         " [-e|--threads threads]   number of read threads\n" \
@@ -246,12 +244,13 @@ private:
   /// knowledge engine used for sending
   knowledge::KnowledgeBase * knowledge_;
 
-  /// payload to send with each update
-  containers::String payload_;
+  /// modified list to re-apply
+  knowledge::VariableReferences * modifieds_;
 
 public:
-  Sender (knowledge::KnowledgeBase & knowledge)
-    : knowledge_ (&knowledge)
+  Sender (knowledge::KnowledgeBase & knowledge,
+    knowledge::VariableReferences * modifieds)
+    : knowledge_ (&knowledge), modifieds_ (modifieds)
   {
   }
 
@@ -262,7 +261,7 @@ public:
   // modify the payload and send the update
   virtual void run (void)
   {
-    knowledge_->load_modifieds ();
+    knowledge_->add_modifieds (*modifieds_);
     knowledge_->send_modifieds ();
   }
 };
@@ -301,20 +300,20 @@ int main (int argc, char ** argv)
   // create a knowledge base and setup our id
   knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge::containers::Integer data ("data", knowledge);
-
-  data = 1;
+  knowledge::containers::Integer data1 ("data1", knowledge, 1);
+  knowledge::containers::Integer data2 ("data2", knowledge, 2);
+  knowledge::containers::Integer data3 ("data3", knowledge, 3);
 
   std::cerr << std::setprecision (2) << std::fixed;
   std::cerr << "Saving modifieds after setting data...\n";
 
-  knowledge.save_modifieds ();
+  knowledge::VariableReferences modifieds = knowledge.save_modifieds ();
 
   std::cerr << "Reloading saved modifed list at " << send_hertz <<
     "hz for " << active_time << " seconds...\n\n";
 
   threads::Threader threader (knowledge);
-  threader.run (send_hertz, "sender", new Sender (knowledge));
+  threader.run (send_hertz, "sender", new Sender (knowledge, &modifieds));
   utility::sleep (active_time);
   threader.terminate ();
   threader.wait ();
@@ -325,7 +324,7 @@ int main (int argc, char ** argv)
   std::cerr << "  Message Throughput (message/s): " <<
     counter.get_throughput () << "\n";
   std::cerr << "  Data Throughput (B/s): " <<
-    counter.get_throughput () * 8 << "\n";
+    counter.get_throughput () * 24 << "\n";
 
 
   knowledge.print ();

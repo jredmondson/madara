@@ -517,15 +517,16 @@ inline int64_t
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::load_modifieds (void) const
+madara::knowledge::KnowledgeBaseImpl::add_modifieds (
+  const VariableReferences & modifieds) const
 {
-  map_.load_modifieds ();
+  map_.add_modifieds (modifieds);
 }
 
-inline void
+inline madara::knowledge::VariableReferences
 madara::knowledge::KnowledgeBaseImpl::save_modifieds (void) const
 {
-  map_.save_modifieds ();
+  return map_.save_modifieds ();
 }
 
 inline int

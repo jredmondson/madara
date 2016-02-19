@@ -98,7 +98,12 @@ namespace madara
        **/
       knowledge::KnowledgeRecord * record_;
     };
+
+    /// a vector of variable references
+    typedef std::vector <VariableReference>  VariableReferences;
   }
 }
+
+#include "VariableReference.inl"
 
 #endif   // _MADARA_VARIABLE_REFERENCE_H_

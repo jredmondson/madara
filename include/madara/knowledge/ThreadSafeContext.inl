@@ -801,18 +801,37 @@ madara::knowledge::ThreadSafeContext::get_modifieds (void) const
   return changed_map_;
 }
 
-inline void
+inline madara::knowledge::VariableReferences
 madara::knowledge::ThreadSafeContext::save_modifieds (void) const
 {
-  saved_changed_map_.clear ();
-  saved_changed_map_ = changed_map_;
+  Guard guard (mutex_);
+
+  VariableReferences snapshot;
+  snapshot.resize (changed_map_.size ());
+  int cur = 0;
+  
+  for (KnowledgeRecords::const_iterator i = changed_map_.begin ();
+    i != changed_map_.end (); ++i, ++cur)
+  {
+    snapshot[cur].set_name (i->first);
+    snapshot[cur].record_ = i->second;
+  }
+
+  return snapshot;
 }
 
 inline void
-madara::knowledge::ThreadSafeContext::load_modifieds (void) const
+madara::knowledge::ThreadSafeContext::add_modifieds (
+const VariableReferences & modifieds) const
 {
-  changed_map_.insert (
-    saved_changed_map_.begin (), saved_changed_map_.end ());
+  Guard guard (mutex_);
+
+  for (VariableReferences::const_iterator i = modifieds.begin ();
+    i != modifieds.end (); ++i)
+  {
+    changed_map_.insert (
+      KnowledgeRecords::value_type (i->name_.get_ptr (), i->record_));
+  }
 }
 
 /// Return list of variables that have been modified

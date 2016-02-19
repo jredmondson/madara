@@ -1531,29 +1531,33 @@ madara::knowledge::KnowledgeBase::clear_modifieds (void)
 }
 
 void
-madara::knowledge::KnowledgeBase::load_modifieds (void) const
+madara::knowledge::KnowledgeBase::add_modifieds (const VariableReferences & modifieds) const
 {
   if (context_)
   {
-    context_->load_modifieds ();
+    context_->add_modifieds (modifieds);
   }
   else if (impl_.get_ptr ())
   {
-    impl_->load_modifieds ();
+    impl_->add_modifieds (modifieds);
   }
 }
 
-void
+madara::knowledge::VariableReferences
 madara::knowledge::KnowledgeBase::save_modifieds (void) const
 {
+  madara::knowledge::VariableReferences default_result;
+
   if (context_)
   {
-    context_->save_modifieds ();
+    return context_->save_modifieds ();
   }
   else if (impl_.get_ptr ())
   {
-    impl_->save_modifieds ();
+    return impl_->save_modifieds ();
   }
+
+  return default_result;
 }
 
 int

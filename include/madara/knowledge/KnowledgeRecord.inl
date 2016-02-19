@@ -159,14 +159,18 @@ madara::knowledge::KnowledgeRecord::clear_value (void)
 {
   if (status_ != UNCREATED)
   {
-    if (type_ == INTEGER_ARRAY)
-      int_array_ = 0;
-    else if (type_ == DOUBLE_ARRAY)
-      double_array_ = 0;
-    else if (is_string_type ())
-      str_value_ = 0;
-    else if (is_file_type ())
-      file_value_ = 0;
+    if (type_ & ALL_CLEARABLES)
+    {
+      if (type_ == INTEGER_ARRAY)
+        int_array_ = 0;
+      else if (type_ == DOUBLE_ARRAY)
+        double_array_ = 0;
+      else if (is_string_type ())
+        str_value_ = 0;
+      else if (is_file_type ())
+        file_value_ = 0;
+    }
+
     int_value_ = 0;
 
     type_ = INTEGER;
@@ -191,7 +195,9 @@ madara::knowledge::KnowledgeRecord::reset_value (void)
 inline void
 madara::knowledge::KnowledgeRecord::set_value (const std::string & new_value)
 {
-  clear_value ();
+  if (type_ & ALL_CLEARABLES)
+    clear_value ();
+
   type_ = STRING;
   status_ = MODIFIED;
 
@@ -207,7 +213,9 @@ madara::knowledge::KnowledgeRecord::set_value (const std::string & new_value)
 inline void
 madara::knowledge::KnowledgeRecord::set_xml (const char * new_value, size_t size)
 {
-  clear_value ();
+  if (type_ & ALL_CLEARABLES)
+    clear_value ();
+
   type_ = XML;
   status_ = MODIFIED;
 
@@ -223,7 +231,9 @@ madara::knowledge::KnowledgeRecord::set_xml (const char * new_value, size_t size
 inline void
 madara::knowledge::KnowledgeRecord::set_text (const char * new_value, size_t size)
 {
-  clear_value ();
+  if (type_ & ALL_CLEARABLES)
+    clear_value ();
+
   type_ = TEXT_FILE;
   status_ = MODIFIED;
 
@@ -240,7 +250,9 @@ inline void
 madara::knowledge::KnowledgeRecord::set_jpeg (const unsigned char * new_value,
                                     size_t size)
 {
-  clear_value ();
+  if (type_ & ALL_CLEARABLES)
+    clear_value ();
+
   type_ = IMAGE_JPEG;
   status_ = MODIFIED;
 
@@ -256,7 +268,9 @@ inline void
 madara::knowledge::KnowledgeRecord::set_file (const unsigned char * new_value,
                                     size_t size)
 {
-  clear_value ();
+  if (type_ & ALL_CLEARABLES)
+    clear_value ();
+
   type_ = UNKNOWN_FILE_TYPE;
   status_ = MODIFIED;
 
@@ -271,7 +285,9 @@ madara::knowledge::KnowledgeRecord::set_file (const unsigned char * new_value,
 inline void
 madara::knowledge::KnowledgeRecord::set_value (const Integer & new_value)
 {
-  clear_value ();
+  if (type_ & ALL_CLEARABLES)
+    clear_value ();
+
   type_ = INTEGER;
   status_ = MODIFIED;
 
@@ -283,7 +299,9 @@ madara::knowledge::KnowledgeRecord::set_value (const Integer & new_value)
 inline void
 madara::knowledge::KnowledgeRecord::set_value (const Integer * new_value, uint32_t size)
 {
-  clear_value ();
+  if (type_ & ALL_CLEARABLES)
+    clear_value ();
+
   type_ = INTEGER_ARRAY;
   status_ = MODIFIED;
 
@@ -300,7 +318,9 @@ madara::knowledge::KnowledgeRecord::set_value (const Integer * new_value, uint32
 inline void
 madara::knowledge::KnowledgeRecord::set_value (const std::vector <Integer> & new_value)
 {
-  clear_value ();
+  if (type_ & ALL_CLEARABLES)
+    clear_value ();
+
   type_ = INTEGER_ARRAY;
   status_ = MODIFIED;
 
@@ -317,7 +337,9 @@ madara::knowledge::KnowledgeRecord::set_value (const std::vector <Integer> & new
 inline void
 madara::knowledge::KnowledgeRecord::set_value (const double & new_value)
 {
-  clear_value ();
+  if (type_ & ALL_CLEARABLES)
+    clear_value ();
+
   type_ = DOUBLE;
   status_ = MODIFIED;
 
@@ -329,7 +351,9 @@ madara::knowledge::KnowledgeRecord::set_value (const double & new_value)
 inline void
 madara::knowledge::KnowledgeRecord::set_value (const double * new_value, uint32_t size)
 {
-  clear_value ();
+  if (type_ & ALL_CLEARABLES)
+    clear_value ();
+
   type_ = DOUBLE_ARRAY;
   status_ = MODIFIED;
 
@@ -346,7 +370,9 @@ madara::knowledge::KnowledgeRecord::set_value (const double * new_value, uint32_
 inline void
 madara::knowledge::KnowledgeRecord::set_value (const std::vector <double> & new_value)
 {
-  clear_value ();
+  if (type_ & ALL_CLEARABLES)
+    clear_value ();
+
   type_ = DOUBLE_ARRAY;
   status_ = MODIFIED;
 
