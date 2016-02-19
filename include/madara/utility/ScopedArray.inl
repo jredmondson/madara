@@ -14,7 +14,7 @@ madara::utility::ScopedArray<T>::ScopedArray (void)
 /// Ctor with refcounting functionality
 template <typename T>
 madara::utility::ScopedArray<T>::ScopedArray (T *ptr, bool increase_count)
-  : ptr_ (new Shim (ptr))
+  : ptr_ (ptr ? new Shim (ptr) : 0)
 {
   if (increase_count)
     increment ();

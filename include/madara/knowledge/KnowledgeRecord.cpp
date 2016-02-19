@@ -55,18 +55,14 @@ madara::knowledge::KnowledgeRecord::set_scientific (void)
 madara::knowledge::KnowledgeRecord::KnowledgeRecord (logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
   quality (0), write_quality (0),
-  int_value_ (0), type_ (INTEGER), size_ (1),
-  int_array_ (0), double_array_ (0),
-  str_value_ (0), file_value_ (0)
+  int_value_ (0), type_ (INTEGER), size_ (1)
 {
 }
 
 madara::knowledge::KnowledgeRecord::KnowledgeRecord (Integer value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0),
-  int_array_ (0), double_array_ (0),
-  str_value_ (0), file_value_ (0)
+  quality (0), write_quality (0)
 {
   set_value (value);
 }
@@ -75,9 +71,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (
   const std::vector <Integer> & value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0),
-  int_array_ (0), double_array_ (0),
-  str_value_ (0), file_value_ (0)
+  quality (0), write_quality (0)
 {
   set_value (value);
 }
@@ -85,9 +79,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (
 madara::knowledge::KnowledgeRecord::KnowledgeRecord (double value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0),
-  int_array_ (0), double_array_ (0),
-  str_value_ (0), file_value_ (0)
+  quality (0), write_quality (0)
 {
   set_value (value);
 }
@@ -96,9 +88,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (
   const std::vector <double> & value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0),
-  int_array_ (0), double_array_ (0),
-  str_value_ (0), file_value_ (0)
+  quality (0), write_quality (0)
 {
   set_value (value);
 }
@@ -106,9 +96,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (
 madara::knowledge::KnowledgeRecord::KnowledgeRecord (const std::string & value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0),
-  int_array_ (0), double_array_ (0),
-  str_value_ (0), file_value_ (0)
+  quality (0), write_quality (0)
 {
   set_value (value);
 }
@@ -116,9 +104,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (const std::string & value,
 madara::knowledge::KnowledgeRecord::KnowledgeRecord (const char * value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0),
-  int_array_ (0), double_array_ (0),
-  str_value_ (0), file_value_ (0)
+  quality (0), write_quality (0)
 {
   set_value (std::string (value));
 }
@@ -127,9 +113,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (const knowledge::KnowledgeR
 : logger_ (rhs.logger_), status_ (rhs.status_), clock (rhs.clock),
   scope (rhs.scope), quality (rhs.quality),
   write_quality (rhs.write_quality),
-  size_ (rhs.size_), type_ (rhs.type_),
-  int_array_ (0), double_array_ (0),
-  str_value_ (0), file_value_ (0)
+  size_ (rhs.size_), type_ (rhs.type_)
 {
   if      (rhs.status_ != UNCREATED)
   {
