@@ -1,8 +1,8 @@
 feature (stl_lock) {
   macros += _MADARA_STL_LOCK_
 
+  // For some reason, this doesn't work. Have to set in Madara.mpc for now.
   verbatim (gnuace, local) {
     CPPFLAGS += -std=c++11
-  } 
-
+  }
 }
