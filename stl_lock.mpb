@@ -1,3 +1,8 @@
 feature (stl_lock) {
   macros += _MADARA_STL_LOCK_
+
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  } 
+
 }

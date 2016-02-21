@@ -35,6 +35,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     ndds_transport.mpb
     python_callbacks.mpb
     null_lock.mpb
+    stl_lock.mpb
     using_ace.mpb
     using_boost.mpb
     using_ssl.mpb

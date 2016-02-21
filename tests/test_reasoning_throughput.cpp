@@ -1328,7 +1328,7 @@ uint64_t test_stl_inc_recursive (
 
   madara::knowledge::CompiledExpression ce;
 
-  long counter;
+  long counter = 0;
   std::recursive_mutex critical_section;
 
   timer.start ();
@@ -1362,7 +1362,7 @@ uint64_t test_stl_inc_mutex (
 
   madara::knowledge::CompiledExpression ce;
 
-  long counter;
+  long counter = 0;
   std::mutex critical_section;
 
   timer.start ();
@@ -1396,7 +1396,7 @@ uint64_t test_ace_inc_recursive (
 
   madara::knowledge::CompiledExpression ce;
 
-  long counter;
+  long counter = 0;
   ACE_Recursive_Thread_Mutex critical_section;
 
   timer.start ();
@@ -1430,7 +1430,7 @@ uint64_t test_ace_inc_mutex (
 
   madara::knowledge::CompiledExpression ce;
 
-  long counter;
+  long counter = 0;
   ACE_Thread_Mutex critical_section;
 
   timer.start ();

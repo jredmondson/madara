@@ -1089,7 +1089,10 @@ project (Test_Dissemination) : using_madara, using_ace, using_splice, no_karl, n
 project (Test_Reasoning_Throughput) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock {
   exeout = $(MADARA_ROOT)/bin
   exename = test_reasoning_throughput
-  
+ 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  } 
   
   requires += tests
   
