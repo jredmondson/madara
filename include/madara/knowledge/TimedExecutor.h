@@ -153,7 +153,7 @@ namespace madara
       
 
       /// guard for access and changes
-      typedef ACE_Guard<MADARA_LOCK_TYPE> Guard;
+      
       
       /// priority queue typedef
       typedef std::priority_queue <TimedEvent, std::vector <TimedEvent> >

@@ -8,7 +8,7 @@
 #include "madara/knowledge/KnowledgeBase.h"
 
 
-#include "ace/Signal.h"
+#include <signal.h>
 #include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
 #include "ace/Signal.h"
@@ -91,7 +91,7 @@ void handle_arguments (int argc, char ** argv)
 }
 
 // signal handler for someone hitting control+c
-extern "C" void terminate (int)
+void shutdown (int)
 {
   terminated = true;
 }
@@ -114,9 +114,9 @@ int ACE_TMAIN (int argc, char ** argv)
     "priority = {priority}, " \
     "department = {department}, " \
     "training.completion = {training.completion}\n";
-  
+
   // signal handler for clean exit
-  ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
+  signal (SIGINT, shutdown);
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 

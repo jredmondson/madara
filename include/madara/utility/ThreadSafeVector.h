@@ -149,7 +149,7 @@ namespace madara
 
     private:
 
-      typedef ACE_Guard<MADARA_LOCK_TYPE> Guard;
+      
       
       /// mutex for updating refcount_
       mutable MADARA_LOCK_TYPE mutex_;

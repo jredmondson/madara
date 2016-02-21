@@ -122,11 +122,6 @@ namespace madara
       time_t update_utilization (void);
 
       /**
-       * Convenience typedef for the ACE_Guard
-       **/
-      typedef ACE_Guard<MADARA_LOCK_TYPE> BandwidthGuard;
-
-      /**
        * Mutex for supporting multithreaded monitor calls
        **/
       mutable MADARA_LOCK_TYPE mutex_;

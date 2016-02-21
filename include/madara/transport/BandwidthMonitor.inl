@@ -7,7 +7,7 @@
 inline time_t
 madara::transport::BandwidthMonitor::update_utilization (void)
 {
-  BandwidthGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   time_t cur_time = time (NULL);
   time_t earliest_time = cur_time - window_;

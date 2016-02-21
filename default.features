@@ -78,6 +78,11 @@ openjdk                 = 0
 /// accessor methods like get, set, and any MADARA container methods.
 null_lock                 = 0
 
+/// @feature stl_lock
+/// Enable this feature if you want to only use STL locks from the C11 spec
+/// for any type of mutex, condition, guard, etc.
+stl_lock                 = 0
+
 
 /// @feature ssl
 /// Enable this feature if you want SSL support

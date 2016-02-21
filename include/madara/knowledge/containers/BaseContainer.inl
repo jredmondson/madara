@@ -4,6 +4,6 @@
 inline std::string
 madara::knowledge::containers::BaseContainer::get_name (void) const
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   return name_;
 }

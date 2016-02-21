@@ -29,7 +29,7 @@ madara::knowledge::TimedExecutor::~TimedExecutor ()
 void
 madara::knowledge::TimedExecutor::add (const TimedEvent & new_event)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   events_.push (new_event);
   
@@ -41,7 +41,7 @@ madara::knowledge::TimedExecutor::add (const TimedEvent & new_event)
 void
 madara::knowledge::TimedExecutor::add (const Event & new_event)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   TimedEvent timed_event;
 
@@ -66,7 +66,7 @@ madara::knowledge::TimedExecutor::remove (TimedEvent & cur_event)
   // obtain current time
   ACE_Time_Value cur_time = ACE_High_Res_Timer::gettimeofday ();
   
-  mutex_.acquire ();
+  mutex_.MADARA_LOCK_LOCK ();
 
   // obtain next event in queue
   if (events_.size () > 0)
@@ -98,12 +98,12 @@ madara::knowledge::TimedExecutor::remove (TimedEvent & cur_event)
     control_plane_.set (
       queue_size_, knowledge::KnowledgeRecord::Integer (events_.size ()));
 
-    mutex_.release ();
+    mutex_.MADARA_LOCK_UNLOCK ();
   }
   // there are no events in queue
   else
   {
-    mutex_.release ();
+    mutex_.MADARA_LOCK_UNLOCK ();
 
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR, "TimedExecutor::remove: "
       "Nothing to do. Thread going to sleep\n");
@@ -204,13 +204,13 @@ madara::knowledge::TimedExecutor::time_until_next (void)
 void 
 madara::knowledge::TimedExecutor::lock (void)
 {
-  mutex_.acquire ();
+  mutex_.MADARA_LOCK_LOCK ();
 }
 
 void 
 madara::knowledge::TimedExecutor::unlock (void)
 {
-  mutex_.release ();
+  mutex_.MADARA_LOCK_UNLOCK ();
 }
 
 madara::knowledge::Event
@@ -260,7 +260,7 @@ madara::knowledge::TimedExecutor::enter_barrier (void)
 void 
 madara::knowledge::TimedExecutor::clear_queue (void)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   while (events_.size () > 0)
   {
@@ -273,7 +273,7 @@ madara::knowledge::TimedExecutor::clear_queue (void)
 madara::knowledge::KnowledgeRecord::Integer
 madara::knowledge::TimedExecutor::num_threads (void)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   return num_threads_;
 }

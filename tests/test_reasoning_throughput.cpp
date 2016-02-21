@@ -17,11 +17,20 @@
 #include "ace/OS_NS_Thread.h"
 #include "ace/Sched_Params.h"
 
+
+#include "ace/Guard_T.h"
+#include "ace/Recursive_Thread_Mutex.h"
+#include "ace/Condition_Recursive_Thread_Mutex.h"
+#include "ace/Synch.h"
+
 #include "madara/knowledge/CompiledExpression.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
 #include "madara/knowledge/containers/Integer.h"
 #include "madara/logger/GlobalLogger.h"
+
+#include <mutex>
+#include <atomic>
 
 namespace logger = madara::logger;
 
@@ -127,6 +136,22 @@ uint64_t test_get_expand_ref (
 uint64_t test_variables_inc_var_ref (
      madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
+
+uint64_t test_stl_inc_atomic (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations);
+uint64_t test_stl_inc_recursive (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations);
+uint64_t test_stl_inc_mutex (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations);
+uint64_t test_ace_inc_recursive (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations);
+uint64_t test_ace_inc_mutex (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations);
 
 
 // C++ function for increment with boolean check, rather than allowing C++ 
@@ -341,7 +366,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     exit (-1);
   }
 
-  const int num_test_types = 30;
+  const int num_test_types = 35;
 
   // make everything all pretty and for-loopy
   uint64_t results[num_test_types];
@@ -378,7 +403,12 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     "C++: Virtual Reinforcements   ",
     "C++: Volatile Assignments     ",
     "C++: Volatile Reinforcements  ",
-    "C++: Volatile Inferences      "
+    "C++: Volatile Inferences      ",
+    "C++: STL Atomic Increment     ",
+    "C++: STL Recursive Increment  ",
+    "C++: STL Mutex Increment      ",
+    "ACE: Recursive Increment      ",
+    "ACE: Mutex Increment          ",
   };
 
   // enums for referencing 
@@ -412,7 +442,12 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     VirtualReinforcement,
     VolatileAssignment,
     VolatileReinforcement,
-    VolatileInference
+    VolatileInference,
+    StlAtomicIncrement,
+    StlRecursiveIncrement,
+    StlMutexIncrement,
+    AceRecursiveIncrement,
+    AceMutexIncrement
   };
 
   // start from zero
@@ -455,7 +490,13 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   test_functions[VolatileReinforcement] = test_volatile_reinforcement;
   test_functions[VolatileInference] = test_volatile_inference;
 
-  
+  test_functions[StlAtomicIncrement] = test_stl_inc_atomic;
+  test_functions[StlRecursiveIncrement] = test_stl_inc_recursive;
+  test_functions[StlMutexIncrement] = test_stl_inc_mutex;
+
+  test_functions[AceRecursiveIncrement] = test_ace_inc_recursive;
+  test_functions[AceMutexIncrement] = test_ace_inc_mutex;
+
 #ifndef _MADARA_NO_KARL_
   knowledge.define_function ("inc", increment_var1);
   knowledge.define_function ("no_op", no_op);
@@ -1242,6 +1283,173 @@ uint64_t test_variables_inc_var_ref (
 #else
   return 0;
 #endif 
+}
+
+uint64_t test_stl_inc_atomic (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations)
+{
+  knowledge.clear ();
+
+  // keep track of time
+  ACE_hrtime_t measured;
+  ACE_High_Res_Timer timer;
+
+  madara::knowledge::CompiledExpression ce;
+
+  std::atomic <long> counter;
+
+  timer.start ();
+
+  for (uint32_t i = 0; i < iterations; ++i)
+  {
+    ++counter;
+  }
+
+  timer.stop ();
+  timer.elapsed_time (measured);
+
+  print (measured,
+    madara::knowledge::KnowledgeRecord::Integer (counter), iterations,
+    "STL Atomic Increment: ");
+
+  return measured;
+}
+
+uint64_t test_stl_inc_recursive (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations)
+{
+  knowledge.clear ();
+
+  // keep track of time
+  ACE_hrtime_t measured;
+  ACE_High_Res_Timer timer;
+
+  madara::knowledge::CompiledExpression ce;
+
+  long counter;
+  std::recursive_mutex mutex;
+
+  timer.start ();
+
+  for (uint32_t i = 0; i < iterations; ++i)
+  {
+    mutex.lock ();
+    ++counter;
+    mutex.unlock ();
+  }
+
+  timer.stop ();
+  timer.elapsed_time (measured);
+
+  print (measured,
+    madara::knowledge::KnowledgeRecord::Integer (counter), iterations,
+    "STL Recursive Increment: ");
+
+  return measured;
+}
+
+uint64_t test_stl_inc_mutex (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations)
+{
+  knowledge.clear ();
+
+  // keep track of time
+  ACE_hrtime_t measured;
+  ACE_High_Res_Timer timer;
+
+  madara::knowledge::CompiledExpression ce;
+
+  long counter;
+  std::mutex mutex;
+
+  timer.start ();
+
+  for (uint32_t i = 0; i < iterations; ++i)
+  {
+    mutex.lock ();
+    ++counter;
+    mutex.unlock ();
+  }
+
+  timer.stop ();
+  timer.elapsed_time (measured);
+
+  print (measured,
+    madara::knowledge::KnowledgeRecord::Integer (counter), iterations,
+    "STL Mutex Increment: ");
+
+  return measured;
+}
+
+uint64_t test_ace_inc_recursive (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations)
+{
+  knowledge.clear ();
+
+  // keep track of time
+  ACE_hrtime_t measured;
+  ACE_High_Res_Timer timer;
+
+  madara::knowledge::CompiledExpression ce;
+
+  long counter;
+  ACE_Recursive_Thread_Mutex mutex;
+
+  timer.start ();
+
+  for (uint32_t i = 0; i < iterations; ++i)
+  {
+    mutex.acquire ();
+    ++counter;
+    mutex.release ();
+  }
+
+  timer.stop ();
+  timer.elapsed_time (measured);
+
+  print (measured,
+    madara::knowledge::KnowledgeRecord::Integer (counter), iterations,
+    "ACE Recursive Increment: ");
+
+  return measured;
+}
+
+uint64_t test_ace_inc_mutex (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations)
+{
+  knowledge.clear ();
+
+  // keep track of time
+  ACE_hrtime_t measured;
+  ACE_High_Res_Timer timer;
+
+  madara::knowledge::CompiledExpression ce;
+
+  long counter;
+  ACE_Thread_Mutex mutex;
+
+  timer.start ();
+
+  for (uint32_t i = 0; i < iterations; ++i)
+  {
+    mutex.acquire ();
+    ++counter;
+    mutex.release ();
+  }
+
+  timer.stop ();
+  timer.elapsed_time (measured);
+
+  print (measured,
+    madara::knowledge::KnowledgeRecord::Integer (counter), iterations,
+    "ACE Mutex Increment: ");
+
+  return measured;
 }
 
 uint64_t test_compiled_si (

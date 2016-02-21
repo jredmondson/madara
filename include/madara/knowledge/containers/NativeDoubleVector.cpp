@@ -98,7 +98,7 @@ madara::knowledge::containers::NativeDoubleVector::get_debug_info (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     result << this->name_;
     result << " [" << size () << "]";
@@ -138,7 +138,7 @@ madara::knowledge::containers::NativeDoubleVector::operator= (
 {
   if (this != &rhs)
   {
-    Guard guard (mutex_), guard2 (rhs.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_), guard2 (rhs.mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -165,7 +165,7 @@ madara::knowledge::containers::NativeDoubleVector::push_back (
       this->name_.c_str ());
 
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     size_t i = size ();
     resize ((int)i + 1);
@@ -180,7 +180,7 @@ madara::knowledge::containers::NativeDoubleVector::resize (
   if (context_ && name_ != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -200,7 +200,7 @@ size_t
 madara::knowledge::containers::NativeDoubleVector::size (void) const
 {
   ContextGuard context_guard (*context_);
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   return context_->get (vector_, settings_).size ();
 }
@@ -215,7 +215,7 @@ madara::knowledge::containers::NativeDoubleVector::set_name (
     context_ = &(knowledge.get_context ());
 
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -241,7 +241,7 @@ madara::knowledge::containers::NativeDoubleVector::set_name (
     context_ = knowledge.get_context ();
 
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -267,7 +267,7 @@ madara::knowledge::containers::NativeDoubleVector::set_name (
     context_ = &knowledge;
 
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -291,7 +291,7 @@ madara::knowledge::containers::NativeDoubleVector::exchange (
   {
     ContextGuard context_guard (*context_);
     ContextGuard other_context_guard (*other.context_);
-    Guard guard (mutex_), guard2 (other.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_), guard2 (other.mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -314,8 +314,8 @@ madara::knowledge::containers::NativeDoubleVector::transfer_to (
   {
     ContextGuard context_guard (*context_);
     ContextGuard other_context_guard (*other.context_);
-    Guard guard (mutex_);
-    Guard guard2 (other.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
+    MADARA_GUARD_TYPE guard2 (other.mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -360,7 +360,7 @@ madara::knowledge::containers::NativeDoubleVector::copy_to (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -385,7 +385,7 @@ madara::knowledge::containers::NativeDoubleVector::operator[] (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -411,7 +411,7 @@ madara::knowledge::containers::NativeDoubleVector::set (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -436,7 +436,7 @@ madara::knowledge::containers::NativeDoubleVector::set (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -460,7 +460,7 @@ madara::knowledge::containers::NativeDoubleVector::set (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -483,7 +483,7 @@ madara::knowledge::containers::NativeDoubleVector::set (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -506,7 +506,7 @@ madara::knowledge::containers::NativeDoubleVector::set_quality (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_MAJOR,
@@ -556,7 +556,7 @@ madara::knowledge::containers::NativeDoubleVector::is_true (void) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     result = context_->get (vector_, settings_).is_true ();
   }
 

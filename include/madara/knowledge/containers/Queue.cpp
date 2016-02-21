@@ -89,7 +89,7 @@ madara::knowledge::containers::Queue::operator= (const Queue & rhs)
 {
   if (this != &rhs)
   {
-    Guard guard (mutex_), guard2 (rhs.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_), guard2 (rhs.mutex_);
 
     this->context_ = rhs.context_;
     this->name_ = rhs.name_;
@@ -125,7 +125,7 @@ madara::knowledge::containers::Queue::enqueue (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     if (count_ < 0)
       count_ = 0;
@@ -163,7 +163,7 @@ madara::knowledge::containers::Queue::dequeue (bool wait)
   if (context_ && name_ != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     
     if (wait)
     {
@@ -195,7 +195,7 @@ madara::knowledge::containers::Queue::clear (void)
   if (context_ && name_ != "" && count_ > 0)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     count_ = 0;
     head_ = *tail_;
@@ -210,7 +210,7 @@ madara::knowledge::containers::Queue::inspect (size_t position)
       (KnowledgeRecord::Integer)position < *count_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     size_t index = (size_t)increment (
       *head_, (KnowledgeRecord::Integer)position);
@@ -223,7 +223,7 @@ madara::knowledge::containers::Queue::inspect (size_t position)
 std::string
 madara::knowledge::containers::Queue::get_name (void) const
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   return name_;
 }
 
@@ -236,7 +236,7 @@ madara::knowledge::containers::Queue::set_name (
   context_ = &(knowledge.get_context ());
 
   ContextGuard context_guard (*context_);
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   name_ = var_name;
   
@@ -255,7 +255,7 @@ madara::knowledge::containers::Queue::set_name (
   context_ = knowledge.get_context ();
 
   ContextGuard context_guard (*context_);
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   name_ = var_name;
   
@@ -283,7 +283,7 @@ madara::knowledge::containers::Queue::resize (int size)
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     queue_.resize (size, false);
 
@@ -298,7 +298,7 @@ madara::knowledge::KnowledgeUpdateSettings
 madara::knowledge::containers::Queue::set_settings (
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   KnowledgeUpdateSettings old_settings = settings_;
 
@@ -315,7 +315,7 @@ madara::knowledge::containers::Queue::set_quality (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     context_->set_quality (name_, quality, true, settings);
   }
 }

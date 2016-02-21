@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <sstream>
 
-#include "ace/Signal.h"
+#include <signal.h>
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/threads/Threader.h"
@@ -45,7 +45,7 @@ double publish_hertz (1.0);
 threads::Threader * manager (0);
 
 // signal handler for someone hitting control+c
-extern "C" void terminate (int)
+void shutdown (int)
 {
   if (manager)
   {
@@ -271,7 +271,7 @@ int main (int argc, char ** argv)
   manager = &threader;
 
   // signal handler for clean exit
-  ACE_Sig_Action sa ((ACE_SignalHandler)terminate, SIGINT);
+  signal (SIGINT, shutdown);
 
   threader.run (publish_hertz, "publisher", new Publisher (knowledge));
 

@@ -80,7 +80,7 @@ madara::knowledge::containers::Integer::exchange (
   {
     ContextGuard context_guard (*context_);
     ContextGuard other_context_guard (*other.context_);
-    Guard guard (mutex_), guard2 (other.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_), guard2 (other.mutex_);
 
     type temp = *other;
     other = **this;

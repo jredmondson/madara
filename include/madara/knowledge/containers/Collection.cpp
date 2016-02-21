@@ -26,7 +26,7 @@ madara::knowledge::containers::Collection::~Collection ()
 void
 madara::knowledge::containers::Collection::modify (void)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   for (size_t i = 0; i < vector_.size (); ++i)
   {
@@ -37,7 +37,7 @@ madara::knowledge::containers::Collection::modify (void)
 std::string
 madara::knowledge::containers::Collection::get_debug_info (void)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   std::stringstream result;
 
@@ -78,7 +78,7 @@ madara::knowledge::containers::Collection::is_true (void) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     for (size_t i = 0; i < vector_.size (); ++i)
     {

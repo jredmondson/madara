@@ -70,7 +70,7 @@ namespace madara
       /// implementation of the decrement operation
       inline void decrement (void);
 
-      typedef ACE_Guard<MADARA_LOCK_TYPE> Guard;
+      
 
       /// A shim class that keeps track of the reference count and a
       /// pointer to the type @a T that's reference counted.

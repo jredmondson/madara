@@ -12,7 +12,7 @@
 
 #include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
-#include "ace/Signal.h"
+#include <signal.h>
 #include "ace/Sched_Params.h"
 
 #include "madara/knowledge/CompiledExpression.h"
@@ -33,7 +33,7 @@ std::string domain ("three_state");
 std::string multicast ("239.255.0.1:4150");
 
 // signal handler for someone hitting control+c
-extern "C" void terminate (int)
+void shutdown (int)
 {
   terminated = true;
 }
@@ -80,7 +80,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   ACE_OS::thr_setprio (prio);
 
   // signal handler for clean exit
-  ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
+  signal (SIGINT, shutdown);
 
   // transport settings
   madara::transport::TransportSettings ts;

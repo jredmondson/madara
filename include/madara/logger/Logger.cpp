@@ -51,7 +51,7 @@ madara::logger::Logger::log (int level, const char * message, ...)
 
     va_end (argptr);
 
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
 #ifdef _MADARA_ANDROID_
     if (this->term_added_ || this->syslog_added_)

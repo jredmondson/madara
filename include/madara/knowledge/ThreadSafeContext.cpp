@@ -20,7 +20,11 @@
 
 // constructor
 madara::knowledge::ThreadSafeContext::ThreadSafeContext ()
-  : changed_ (mutex_), clock_ (0)
+  :
+#ifdef MADARA_CONDITION_MUTEX_CONSTRUCTOR
+  changed_ (mutex_),
+#endif
+  clock_ (0)
 #ifndef _MADARA_NO_KARL_
 ,
   interpreter_ (new madara::expression::Interpreter ())
@@ -52,7 +56,7 @@ madara::knowledge::ThreadSafeContext::get_record (
 {
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   if (settings.expand_variables)
   {
@@ -78,7 +82,7 @@ madara::knowledge::ThreadSafeContext::get_ref (
 {
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   VariableReference record;
 
@@ -110,7 +114,7 @@ const KnowledgeReferenceSettings & settings) const
 {
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   VariableReference record;
 
@@ -144,7 +148,7 @@ madara::knowledge::ThreadSafeContext::set (
   madara::knowledge::KnowledgeRecord::Integer value,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -170,7 +174,7 @@ madara::knowledge::ThreadSafeContext::set (
   const madara::knowledge::KnowledgeRecord & value,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -210,7 +214,7 @@ madara::knowledge::ThreadSafeContext::set_index (
   madara::knowledge::KnowledgeRecord::Integer value,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -237,7 +241,7 @@ madara::knowledge::ThreadSafeContext::set (
   uint32_t size,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -263,7 +267,7 @@ madara::knowledge::ThreadSafeContext::set (
   const std::vector <KnowledgeRecord::Integer> & value,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -289,7 +293,7 @@ madara::knowledge::ThreadSafeContext::set (
   double value,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -315,7 +319,7 @@ madara::knowledge::ThreadSafeContext::set_index (
   double value,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -342,7 +346,7 @@ madara::knowledge::ThreadSafeContext::set (
   uint32_t size,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -368,7 +372,7 @@ madara::knowledge::ThreadSafeContext::set (
   const std::vector <double> & value,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -394,7 +398,7 @@ madara::knowledge::ThreadSafeContext::set (
   const std::string & value,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -421,7 +425,7 @@ madara::knowledge::ThreadSafeContext::set_xml (
   const KnowledgeUpdateSettings & settings)
 {
   
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -447,7 +451,7 @@ madara::knowledge::ThreadSafeContext::set_text (
   const char * value, size_t size,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -473,7 +477,7 @@ madara::knowledge::ThreadSafeContext::set_jpeg (
   const unsigned char * value, size_t size,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -499,7 +503,7 @@ madara::knowledge::ThreadSafeContext::set_file (
   const unsigned char * value, size_t size,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -526,7 +530,7 @@ madara::knowledge::ThreadSafeContext::read_file (
   const KnowledgeUpdateSettings & settings)
 {
   int return_value = 0;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
     // check if we have the appropriate write quality
@@ -555,7 +559,7 @@ madara::knowledge::ThreadSafeContext::get_quality (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -588,7 +592,7 @@ madara::knowledge::ThreadSafeContext::get_write_quality (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -622,7 +626,7 @@ madara::knowledge::ThreadSafeContext::set_quality (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -658,7 +662,7 @@ madara::knowledge::ThreadSafeContext::set_write_quality (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -688,7 +692,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -769,7 +773,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -850,7 +854,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -931,7 +935,7 @@ madara::knowledge::ThreadSafeContext::update_record_from_external (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -983,7 +987,7 @@ madara::knowledge::ThreadSafeContext::update_record_from_external (
     this->clock_ = rhs.clock + 1;
   
   //if (settings.signal_changes)
-  //  changed_.signal ();
+  //  changed_.MADARA_CONDITION_NOTIFY_ONE ();
 
   // value was changed
   return result;
@@ -995,7 +999,7 @@ madara::knowledge::ThreadSafeContext::update_record_from_external (
 void 
 madara::knowledge::ThreadSafeContext::set_changed (void)
 {
-  changed_.signal ();
+  changed_.MADARA_CONDITION_NOTIFY_ONE ();
 }
 
 // print all variables and their values
@@ -1003,7 +1007,7 @@ void
 madara::knowledge::ThreadSafeContext::print (
   unsigned int level) const
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   for (madara::knowledge::KnowledgeMap::const_iterator i = map_.begin ();
        i != map_.end (); 
        ++i)
@@ -1024,7 +1028,7 @@ madara::knowledge::ThreadSafeContext::to_string (
   const std::string & record_delimiter,
   const std::string & key_val_delimiter) const
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   std::stringstream buffer;
 
   bool first = true;
@@ -1082,7 +1086,7 @@ madara::knowledge::ThreadSafeContext::expand_statement (
   const std::string & statement) const
 {
   // enter the mutex
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   // vectors for holding parsed tokens and pivot_list
   size_t subcount = 0;
@@ -1146,7 +1150,7 @@ madara::knowledge::ThreadSafeContext::define_function (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -1172,7 +1176,7 @@ madara::knowledge::ThreadSafeContext::define_function (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -1198,7 +1202,7 @@ madara::knowledge::ThreadSafeContext::define_function (const std::string & name,
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -1225,7 +1229,7 @@ madara::knowledge::ThreadSafeContext::define_function (const std::string & name,
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -1261,7 +1265,7 @@ madara::knowledge::ThreadSafeContext::define_function (const std::string & name,
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -1287,7 +1291,7 @@ madara::knowledge::ThreadSafeContext::retrieve_function (
   // enter the mutex
   std::string key_actual;
   const std::string * key_ptr;
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings.expand_variables)
   {
@@ -1313,7 +1317,7 @@ madara::knowledge::ThreadSafeContext::compile (
     "ThreadSafeContext::compile:" \
     " compiling %s\n", expression.c_str ());
   
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   CompiledExpression ce;
   ce.logic = expression;
   ce.expression = interpreter_->interpret (*this, expression);
@@ -1326,7 +1330,7 @@ madara::knowledge::ThreadSafeContext::evaluate (
   CompiledExpression expression,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   return expression.expression.evaluate (settings);
 }
 
@@ -1335,7 +1339,7 @@ madara::knowledge::ThreadSafeContext::evaluate (
   expression::ComponentNode * root,
   const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (root)
     return root->evaluate (settings);
   else
@@ -1354,7 +1358,7 @@ size_t
   target.clear ();
   
   // enter the mutex
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   if (end >= start)
   {
@@ -1392,7 +1396,7 @@ size_t
   const char * subject_ptr = subject.c_str ();
 
   // enter the mutex
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   // if expression is blank, assume the user wants all variables
   if (expression.size () == 0)
@@ -1443,7 +1447,7 @@ madara::knowledge::ThreadSafeContext::to_map (
   std::string last_key ("");
 
   // enter the mutex
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   for (KnowledgeMap::iterator i = map_.begin ();
     i != map_.end (); ++i)
@@ -1558,7 +1562,7 @@ madara::knowledge::ThreadSafeContext::to_map (
   const std::string &prefix) const
 {
   // enter the mutex
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
     iters(get_prefix_range(prefix));
@@ -1572,7 +1576,7 @@ madara::knowledge::ThreadSafeContext::to_map_stripped (
   const std::string &prefix) const
 {
   // enter the mutex
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
     iters(get_prefix_range(prefix));
@@ -1679,7 +1683,7 @@ madara::knowledge::ThreadSafeContext::save_context (
       " writing records\n");
   
     // lock the context
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     for (KnowledgeMap::const_iterator i = map_.begin ();
          i != map_.end (); ++i)
@@ -1762,7 +1766,7 @@ const std::string & filename) const
   if (file.is_open ())
   {
     // lock the context
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     for (KnowledgeMap::const_iterator i = map_.begin ();
       i != map_.end (); ++i)
@@ -2017,7 +2021,7 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
     checkpoint_header.size = 0;
 
     // lock the context
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     const knowledge::KnowledgeRecords & records = this->get_modifieds ();    
     const knowledge::KnowledgeRecords & local_records = this->get_local_modified ();

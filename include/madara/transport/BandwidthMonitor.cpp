@@ -25,7 +25,7 @@ void
 madara::transport::BandwidthMonitor::operator= (
   const BandwidthMonitor & rhs)
 {
-  BandwidthGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (this != &rhs)
   {
     messages_ = rhs.messages_;
@@ -38,7 +38,7 @@ void
 madara::transport::BandwidthMonitor::set_window (
   time_t window_in_secs)
 {
-  BandwidthGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   window_ = window_in_secs;
 }
@@ -46,7 +46,7 @@ madara::transport::BandwidthMonitor::set_window (
 void
 madara::transport::BandwidthMonitor::add (uint64_t size)
 {
-  BandwidthGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   utilization_ += size;
 
@@ -61,7 +61,7 @@ void
 madara::transport::BandwidthMonitor::add (
   time_t timestamp, uint64_t size)
 {
-  BandwidthGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   utilization_ += size;
 
@@ -87,7 +87,7 @@ madara::transport::BandwidthMonitor::is_bandwidth_violated (
 uint64_t
 madara::transport::BandwidthMonitor::get_utilization (void)
 {
-  BandwidthGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   update_utilization ();
 
@@ -97,7 +97,7 @@ madara::transport::BandwidthMonitor::get_utilization (void)
 uint64_t
 madara::transport::BandwidthMonitor::get_bytes_per_second (void)
 {
-  BandwidthGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   update_utilization ();
 
@@ -107,7 +107,7 @@ madara::transport::BandwidthMonitor::get_bytes_per_second (void)
 void
 madara::transport::BandwidthMonitor::clear (void)
 {
-  BandwidthGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   messages_.clear ();
   utilization_ = 0;
 }
@@ -116,7 +116,7 @@ void
 madara::transport::BandwidthMonitor::print_utilization (
   void)
 {
-  BandwidthGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   update_utilization ();
 
@@ -130,7 +130,7 @@ size_t
 madara::transport::BandwidthMonitor::get_number_of_messages (
   void)
 {
-  BandwidthGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   update_utilization ();
 

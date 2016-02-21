@@ -1,0 +1,3 @@
+feature (stl_lock) {
+  macros += _MADARA_STL_LOCK_
+}

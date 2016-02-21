@@ -83,7 +83,7 @@ madara::knowledge::containers::String::get_debug_info (void)
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     result << this->name_;
     result << " = " << context_->get (variable_).to_string ();
@@ -115,7 +115,7 @@ madara::knowledge::containers::String::operator= (const String & rhs)
 {
   if (this != &rhs)
   {
-    Guard guard (mutex_), guard2 (rhs.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_), guard2 (rhs.mutex_);
 
     this->context_ = rhs.context_;
     this->name_ = rhs.name_;
@@ -131,7 +131,7 @@ madara::knowledge::containers::String::exchange (String & other)
   {
     ContextGuard context_guard (*context_);
     ContextGuard other_context_guard (*other.context_);
-    Guard guard (mutex_), guard2 (other.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_), guard2 (other.mutex_);
 
     type temp = *other;
     other = **this;
@@ -148,7 +148,7 @@ madara::knowledge::containers::String::set_name (
   context_ = &(knowledge.get_context ());
 
   ContextGuard context_guard (*context_);
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   name_ = var_name;
   variable_ = context_->get_ref (name_, keep_local);
@@ -163,7 +163,7 @@ madara::knowledge::containers::String::set_name (
   context_ = knowledge.get_context ();
 
   ContextGuard context_guard (*context_);
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   name_ = var_name;
   variable_ = context_->get_ref (name_, keep_local);
@@ -178,7 +178,7 @@ madara::knowledge::containers::String::set_name (
   context_ = &knowledge;
 
   ContextGuard context_guard (*context_);
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   name_ = var_name;
   variable_ = context_->get_ref (name_, keep_local);
@@ -190,7 +190,7 @@ madara::knowledge::containers::String::operator= (const type & value)
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     context_->set (variable_, value, settings_);
   }
 
@@ -205,7 +205,7 @@ madara::knowledge::containers::String::operator += (type value)
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     result = context_->get (variable_, settings_).to_string ();
     result += value;
@@ -221,7 +221,7 @@ madara::knowledge::containers::String::operator== (type value) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return context_->get (variable_, settings_) == value;
   }
 
@@ -234,7 +234,7 @@ madara::knowledge::containers::String::operator != (type value) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return context_->get (variable_, settings_) != value;
   }
 
@@ -248,7 +248,7 @@ madara::knowledge::containers::String::operator== (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return
       context_->get (variable_, settings_) ==
         value.context_->get (value.variable_, value.settings_);
@@ -264,7 +264,7 @@ madara::knowledge::containers::String::operator != (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return
       context_->get (variable_, settings_) !=
         value.context_->get (value.variable_, value.settings_);
@@ -279,7 +279,7 @@ madara::knowledge::containers::String::operator< (type value) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return context_->get (variable_, settings_) < value;
   }
 
@@ -292,7 +292,7 @@ madara::knowledge::containers::String::operator<= (type value) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return context_->get (variable_, settings_) <= value;
   }
 
@@ -305,7 +305,7 @@ madara::knowledge::containers::String::operator> (type value) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return context_->get (variable_, settings_) > value;
   }
 
@@ -318,7 +318,7 @@ madara::knowledge::containers::String::operator>= (type value) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return context_->get (variable_, settings_) >= value;
   }
 
@@ -339,7 +339,7 @@ madara::knowledge::containers::String::exists (void) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     result = context_->exists (variable_);
   }
 
@@ -354,7 +354,7 @@ madara::knowledge::containers::String::to_record (void) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     result = context_->get (variable_, settings_);
   }
   
@@ -367,7 +367,7 @@ madara::knowledge::containers::String::to_string (void) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return context_->get (variable_, settings_).to_string ();
   }
   else
@@ -380,7 +380,7 @@ madara::knowledge::containers::String::to_double (void) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return context_->get (variable_, settings_).to_double ();
   }
   else
@@ -393,7 +393,7 @@ madara::knowledge::containers::String::to_integer (void) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return context_->get (variable_, settings_).to_integer ();
   }
   else
@@ -408,7 +408,7 @@ madara::knowledge::containers::String::set_quality (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     context_->set_quality (name_, quality, true, settings);
   }
 }
@@ -424,7 +424,7 @@ madara::knowledge::containers::String::is_true (void) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     result = context_->get (variable_, settings_).is_true ();
   }
 

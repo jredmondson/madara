@@ -75,7 +75,7 @@ madara::knowledge::containers::DoubleVector::get_debug_info (void)
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     size_t elements = vector_.size ();
 
     result << this->name_;
@@ -132,7 +132,7 @@ madara::knowledge::containers::DoubleVector::operator= (
 {
   if (this != &rhs)
   {
-    Guard guard (mutex_), guard2 (rhs.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_), guard2 (rhs.mutex_);
 
     this->context_ = rhs.context_;
     this->name_ = rhs.name_;
@@ -149,7 +149,7 @@ madara::knowledge::containers::DoubleVector::push_back (type value)
   if (context_ && name_ != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     if (!size_.is_valid ())
     {
@@ -173,7 +173,7 @@ madara::knowledge::containers::DoubleVector::get_size_ref (void)
     std::stringstream buffer;
 
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     buffer << name_;
     buffer << delimiter_;
@@ -192,7 +192,7 @@ madara::knowledge::containers::DoubleVector::resize (
   if (context_ && name_ != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     if (!size_.is_valid ())
     {
@@ -277,7 +277,7 @@ madara::knowledge::containers::DoubleVector::resize (
 size_t
 madara::knowledge::containers::DoubleVector::size (void) const
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   return vector_.size ();
 }
 
@@ -291,7 +291,7 @@ madara::knowledge::containers::DoubleVector::set_name (
     context_ = &(knowledge.get_context ());
 
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     name_ = var_name;
 
@@ -313,7 +313,7 @@ madara::knowledge::containers::DoubleVector::set_name (
     context_ = knowledge.get_context ();
 
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     name_ = var_name;
 
@@ -332,7 +332,7 @@ madara::knowledge::containers::DoubleVector::set_name (
     context_ = &knowledge;
 
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     name_ = var_name;
 
@@ -349,7 +349,7 @@ const std::string & delimiter)
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     vector_.clear ();
     resize (-1);
@@ -371,7 +371,7 @@ madara::knowledge::containers::DoubleVector::exchange (
   {
     ContextGuard context_guard (*context_);
     ContextGuard other_context_guard (*other.context_);
-    Guard guard (mutex_), guard2 (other.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_), guard2 (other.mutex_);
 
     if (refresh_keys)
     {
@@ -460,8 +460,8 @@ madara::knowledge::containers::DoubleVector::transfer_to (
   {
     ContextGuard context_guard (*context_);
     ContextGuard other_context_guard (*other.context_);
-    Guard guard (mutex_);
-    Guard guard2 (other.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
+    MADARA_GUARD_TYPE guard2 (other.mutex_);
 
     size_t other_size = other.vector_.size ();
     size_t this_size = this->vector_.size ();
@@ -485,7 +485,7 @@ madara::knowledge::containers::DoubleVector::copy_to (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     target.resize (vector_.size ());
     
@@ -503,7 +503,7 @@ std::vector <double> & target) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     target.resize (vector_.size ());
 
@@ -524,7 +524,7 @@ madara::knowledge::containers::DoubleVector::operator[] (
   if (index < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     result = context_->get (vector_[index], keep_local);
   }
 
@@ -541,7 +541,7 @@ madara::knowledge::containers::DoubleVector::to_record (
   if (index < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     result = context_->get (vector_[index], keep_local);
   }
 
@@ -558,7 +558,7 @@ madara::knowledge::containers::DoubleVector::to_record (void) const
   if (vector_.size () > 0 && context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     // set last element first so we're not constantly resizing
     result.set_index (vector_.size () - 1,
@@ -583,7 +583,7 @@ madara::knowledge::containers::DoubleVector::exists (
   if (index < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     result = context_->exists (vector_[index]);
   }
 
@@ -600,7 +600,7 @@ type value)
   if (index < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     result = context_->set (vector_[index], value, settings_);
   }
 
@@ -617,7 +617,7 @@ const std::vector <type> & value)
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     if (vector_.size () < value.size ())
       resize ((int)value.size (), false);
 
@@ -643,7 +643,7 @@ madara::knowledge::containers::DoubleVector::set (
   if (index < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     result = context_->set (vector_[index], value, settings);
   }
 
@@ -661,7 +661,7 @@ madara::knowledge::containers::DoubleVector::set (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     if (vector_.size () < value.size ())
       resize ((int)value.size (), false);
 
@@ -685,7 +685,7 @@ madara::knowledge::containers::DoubleVector::set_quality (
   if (index < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     context_->set_quality (vector_[index].get_name (), quality,
       true, settings);
   }
@@ -702,7 +702,7 @@ madara::knowledge::containers::DoubleVector::is_true (void) const
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     result = true;
 

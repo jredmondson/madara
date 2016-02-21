@@ -28,7 +28,7 @@ void
 madara::knowledge::containers::BaseContainer::set_settings (
 const KnowledgeUpdateSettings & settings)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   settings_ = settings;
 }

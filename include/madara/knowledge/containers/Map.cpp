@@ -71,14 +71,14 @@ madara::knowledge::containers::Map::~Map ()
 {
 
 }
-  
+
 void
 madara::knowledge::containers::Map::modify (void)
 {
   if (context_ && name_ != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     for (InternalMap::const_iterator index = map_.begin ();
          index != map_.end (); ++index)
@@ -98,7 +98,7 @@ madara::knowledge::containers::Map::get_debug_info (void)
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     result << this->name_;
     result << " [" << map_.size () << "]";
@@ -164,7 +164,7 @@ madara::knowledge::containers::Map::operator= (
 {
   if (this != &rhs)
   {
-    Guard guard (mutex_), guard2 (rhs.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_), guard2 (rhs.mutex_);
 
     this->context_ = rhs.context_;
     this->name_ = rhs.name_;
@@ -182,7 +182,7 @@ madara::knowledge::containers::Map::to_record (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     std::stringstream buffer;
     buffer << name_;
     buffer << delimiter_;
@@ -216,7 +216,7 @@ madara::knowledge::containers::Map::operator[] (
 size_t
 madara::knowledge::containers::Map::size (void) const
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   return map_.size ();
 }
 
@@ -229,7 +229,7 @@ madara::knowledge::containers::Map::sync_keys (void)
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     clear (false);
 
@@ -263,7 +263,7 @@ madara::knowledge::containers::Map::exchange (
   {
     ContextGuard context_guard (*context_);
     ContextGuard other_context_guard (*other.context_);
-    Guard guard (mutex_), guard2 (other.mutex_);
+    MADARA_GUARD_TYPE guard (mutex_), guard2 (other.mutex_);
 
     if (refresh_keys)
     {
@@ -374,7 +374,7 @@ madara::knowledge::containers::Map::clear (bool clear_knowledge)
   if (clear_knowledge)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::vector <std::string> keys;
     this->keys (keys);
@@ -384,7 +384,7 @@ madara::knowledge::containers::Map::clear (bool clear_knowledge)
   }
   else
   {
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     map_.clear ();
   }
 }
@@ -417,7 +417,7 @@ madara::knowledge::containers::Map::set_name (
     context_ = &(knowledge.get_context ());
 
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     name_ = var_name;
 
@@ -438,7 +438,7 @@ madara::knowledge::containers::Map::set_name (
     context_ = knowledge.get_context ();
 
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     name_ = var_name;
 
@@ -483,7 +483,7 @@ madara::knowledge::containers::Map::exists (
   if (context_ && found != map_.end ())
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     result = context_->exists (found->second);
   }
@@ -495,7 +495,7 @@ void
 madara::knowledge::containers::Map::keys (
   std::vector <std::string> & curkeys) const
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   curkeys.resize (map_.size ());
   unsigned int j = 0;
 
@@ -519,7 +519,7 @@ madara::knowledge::containers::Map::read_file (
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -555,7 +555,7 @@ madara::knowledge::containers::Map::read_file (
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -589,7 +589,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     std::stringstream buffer;
     buffer << name_;
     buffer << delimiter_;
@@ -624,7 +624,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -661,7 +661,7 @@ madara::knowledge::containers::Map::set_index (
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -699,7 +699,7 @@ madara::knowledge::containers::Map::set_index (
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -736,7 +736,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -773,7 +773,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -809,7 +809,7 @@ const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -846,7 +846,7 @@ madara::knowledge::containers::Map::set (
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -882,7 +882,7 @@ madara::knowledge::containers::Map::set (
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -918,7 +918,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -955,7 +955,7 @@ madara::knowledge::containers::Map::set_index (
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -992,7 +992,7 @@ madara::knowledge::containers::Map::set_index (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1028,7 +1028,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1065,7 +1065,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1098,7 +1098,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1134,7 +1134,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1169,7 +1169,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1205,7 +1205,7 @@ madara::knowledge::containers::Map::set (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1240,7 +1240,7 @@ madara::knowledge::containers::Map::set_file (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1276,7 +1276,7 @@ madara::knowledge::containers::Map::set_file (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1309,7 +1309,7 @@ madara::knowledge::containers::Map::set_jpeg (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1345,7 +1345,7 @@ madara::knowledge::containers::Map::set_jpeg (const std::string & key,
   if (context_ && key != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1379,7 +1379,7 @@ void madara::knowledge::containers::Map::set_quality (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     std::stringstream buffer;
     buffer << name_;
@@ -1401,7 +1401,7 @@ madara::knowledge::containers::Map::is_true (void) const
   if (context_ && name_ != "")
   {
     ContextGuard context_guard (*context_);
-    Guard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     result = true;
 

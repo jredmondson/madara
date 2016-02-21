@@ -9,8 +9,6 @@
 #include "ace/High_Res_Timer.h"
 #include "ace/OS_NS_Thread.h"
 #include "ace/Sched_Params.h"
-#include "ace/Guard_T.h"
-#include "ace/Recursive_Thread_Mutex.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
@@ -52,7 +50,7 @@ public:
   void start (unsigned int index)
   {
     // lock the mutex
-    TimerGuard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     if (index < timers_.size ())
     {
@@ -68,7 +66,7 @@ public:
   void stop (unsigned int index)
   {
     // lock the mutex
-    TimerGuard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     
     if (index < timers_.size ())
     {
@@ -93,7 +91,7 @@ public:
   madara::knowledge::KnowledgeRecord::Integer elapsed (unsigned int index)
   {
     // lock the mutex
-    TimerGuard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     ACE_hrtime_t elapsed_time (0);
     madara::knowledge::KnowledgeRecord::Integer result (0);
@@ -113,7 +111,7 @@ public:
   void calculate (void)
   {
     // lock the mutex
-    TimerGuard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     ACE_hrtime_t elapsed_time (0);
     madara::knowledge::KnowledgeRecord::Integer cur_latency (0), received (0);
@@ -146,7 +144,7 @@ public:
   madara::knowledge::KnowledgeRecord::Integer average (void)
   {
     // lock the mutex
-    TimerGuard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return avg_latency_;
   }
 
@@ -157,7 +155,7 @@ public:
   madara::knowledge::KnowledgeRecord::Integer minimum (void)
   {
     // lock the mutex
-    TimerGuard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return min_latency_;
   }
   
@@ -168,7 +166,7 @@ public:
   madara::knowledge::KnowledgeRecord::Integer maximum (void)
   {
     // lock the mutex
-    TimerGuard guard (mutex_);
+    MADARA_GUARD_TYPE guard (mutex_);
     return max_latency_;
   }
 
@@ -185,12 +183,9 @@ public:
   }
 
 private:
-  
-  // typedef for guard to be used with mutex
-  typedef ACE_Guard<ACE_Recursive_Thread_Mutex> TimerGuard;
 
   // mutex for protecting accesses
-  mutable ACE_Recursive_Thread_Mutex mutex_;
+  mutable MADARA_LOCK_TYPE mutex_;
 
   // vector of timers
   std::vector<ACE_High_Res_Timer> timers_;

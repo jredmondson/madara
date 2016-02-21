@@ -12,7 +12,7 @@
 
 #include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
-#include "ace/Signal.h"
+#include <signal.h>
 #include "ace/Sched_Params.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
@@ -35,7 +35,7 @@ volatile bool terminated = 0;
 int parse_args (int argc, ACE_TCHAR * argv[]);
 
 // signal handler for someone hitting control+c
-extern "C" void terminate (int)
+void shutdown (int)
 {
   terminated = true;
 }
@@ -90,7 +90,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     host, ts);
 
   // signal handler for clean exit
-  ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
+  signal (SIGINT, shutdown);
 
   madara::knowledge::CompiledExpression compiled;
   madara::knowledge::CompiledExpression self_state_broadcast;

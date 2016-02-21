@@ -69,7 +69,6 @@ namespace madara
     class MADARA_Export ThreadSafeContext
     {
     public:
-      typedef ACE_Condition <MADARA_LOCK_TYPE> Condition;
       friend class KnowledgeBaseImpl;
       friend class expression::CompositeArrayReference;
       friend class expression::VariableNode;
@@ -1352,12 +1351,10 @@ namespace madara
       std::pair<KnowledgeMap::iterator, KnowledgeMap::iterator>
       get_prefix_range(const std::string &prefix);
 
-      typedef ACE_Guard<MADARA_LOCK_TYPE> Guard;
-
       /// Hash table containing variable names and values.
       madara::knowledge::KnowledgeMap map_;
       mutable MADARA_LOCK_TYPE mutex_;
-      mutable Condition changed_;
+      mutable MADARA_CONDITION_TYPE changed_;
       std::vector< std::string> expansion_splitters_;
       mutable uint64_t clock_;
       mutable knowledge::KnowledgeRecords changed_map_;

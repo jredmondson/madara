@@ -543,7 +543,7 @@ madara::knowledge::KnowledgeBaseImpl::send_modifieds (
 {
   int result = 0;
 
-  ThreadSafeContext::Guard guard (map_.mutex_);
+  MADARA_GUARD_TYPE guard (map_.mutex_);
 
   if (transports_.size () > 0 && !settings.delay_sending_modifieds)
   {

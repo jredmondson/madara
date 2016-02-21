@@ -127,7 +127,7 @@ namespace madara
         virtual std::string get_debug_info_ (void) = 0;
 
         /// guard for access and changes
-        typedef ACE_Guard<MADARA_LOCK_TYPE> Guard;
+        
       
         /**
          * Mutex for local changes

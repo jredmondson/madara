@@ -27,7 +27,7 @@ madara::logger::Logger::add_file (const std::string & filename)
         "Logger::add_file: opened file %s for logging\n",
         filename.c_str ());
 
-      Guard guard (mutex_);
+      MADARA_GUARD_TYPE guard (mutex_);
 
       files_.push_back (new_file);
     }
@@ -43,7 +43,7 @@ madara::logger::Logger::add_file (const std::string & filename)
 inline void
 madara::logger::Logger::set_level (int level)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   level_ = level;
 }
@@ -51,7 +51,7 @@ madara::logger::Logger::set_level (int level)
 inline std::string
 madara::logger::Logger::get_tag (void)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   return tag_;
 }
@@ -59,7 +59,7 @@ madara::logger::Logger::get_tag (void)
 inline void
 madara::logger::Logger::set_tag (const std::string & tag)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   tag_ = tag;
 }
@@ -67,7 +67,7 @@ madara::logger::Logger::set_tag (const std::string & tag)
 inline int
 madara::logger::Logger::get_level (void)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   return level_;
 }
@@ -75,7 +75,7 @@ madara::logger::Logger::get_level (void)
 inline void
 madara::logger::Logger::add_term (void)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   this->term_added_ = true;
 }
@@ -83,7 +83,7 @@ madara::logger::Logger::add_term (void)
 inline void
 madara::logger::Logger::add_syslog (void)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   this->syslog_added_ = true;
 }
@@ -91,7 +91,7 @@ madara::logger::Logger::add_syslog (void)
 inline void
 madara::logger::Logger::clear (void)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   this->term_added_ = false;
   this->syslog_added_ = false;
@@ -111,7 +111,7 @@ madara::logger::Logger::clear (void)
 inline void
 madara::logger::Logger::set_timestamp_format (const std::string & format)
 {
-  Guard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   this->timestamp_format_ = format;
 }

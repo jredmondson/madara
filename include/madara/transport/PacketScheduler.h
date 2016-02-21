@@ -105,10 +105,6 @@ namespace madara
         const char * prefix = "PacketScheduler");
 
     protected:
-      /**
-       * Convenience typedef for the ACE_Guard
-       **/
-      typedef ACE_Guard<MADARA_LOCK_TYPE> SchedulerGuard;
 
       /**
        * Mutex for supporting multithreaded monitor calls

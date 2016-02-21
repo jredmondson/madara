@@ -81,7 +81,7 @@ void
 madara::transport::PacketScheduler::operator= (
   const PacketScheduler & rhs)
 {
-  SchedulerGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   if (this != &rhs)
   {
     settings_ = rhs.settings_;
@@ -94,7 +94,7 @@ madara::transport::PacketScheduler::operator= (
 bool
 madara::transport::PacketScheduler::add (void)
 {
-  SchedulerGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings_)
   {
@@ -197,7 +197,7 @@ madara::transport::PacketScheduler::attach (
 void
 madara::transport::PacketScheduler::clear (void)
 {
-  SchedulerGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   sent_messages_ = 0;
   dropped_messages_ = 0;
@@ -209,7 +209,7 @@ madara::transport::PacketScheduler::clear (void)
 void
 madara::transport::PacketScheduler::reset (void)
 {
-  SchedulerGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   
   if (settings_)
   {
@@ -241,7 +241,7 @@ madara::transport::PacketScheduler::print_status (
   unsigned int log_level,
   const char * prefix)
 {
-  SchedulerGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
     "%s: %d sent, %d dropped, %d consec dropped\n",
@@ -251,13 +251,13 @@ madara::transport::PacketScheduler::print_status (
 uint64_t
 madara::transport::PacketScheduler::get_dropped (void)
 {
-  SchedulerGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   return dropped_messages_;
 }
       
 uint64_t
 madara::transport::PacketScheduler::get_sent (void)
 {
-  SchedulerGuard guard (mutex_);
+  MADARA_GUARD_TYPE guard (mutex_);
   return sent_messages_;
 }
