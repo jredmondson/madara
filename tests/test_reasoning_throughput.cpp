@@ -1329,15 +1329,15 @@ uint64_t test_stl_inc_recursive (
   madara::knowledge::CompiledExpression ce;
 
   long counter;
-  std::recursive_mutex mutex;
+  std::recursive_mutex critical_section;
 
   timer.start ();
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    mutex.lock ();
+    critical_section.lock ();
     ++counter;
-    mutex.unlock ();
+    critical_section.unlock ();
   }
 
   timer.stop ();
@@ -1363,15 +1363,15 @@ uint64_t test_stl_inc_mutex (
   madara::knowledge::CompiledExpression ce;
 
   long counter;
-  std::mutex mutex;
+  std::mutex critical_section;
 
   timer.start ();
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    mutex.lock ();
+    critical_section.lock ();
     ++counter;
-    mutex.unlock ();
+    critical_section.unlock ();
   }
 
   timer.stop ();
@@ -1397,15 +1397,15 @@ uint64_t test_ace_inc_recursive (
   madara::knowledge::CompiledExpression ce;
 
   long counter;
-  ACE_Recursive_Thread_Mutex mutex;
+  ACE_Recursive_Thread_Mutex critical_section;
 
   timer.start ();
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    mutex.acquire ();
+    critical_section.acquire ();
     ++counter;
-    mutex.release ();
+    critical_section.release ();
   }
 
   timer.stop ();
@@ -1431,15 +1431,15 @@ uint64_t test_ace_inc_mutex (
   madara::knowledge::CompiledExpression ce;
 
   long counter;
-  ACE_Thread_Mutex mutex;
+  ACE_Thread_Mutex critical_section;
 
   timer.start ();
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    mutex.acquire ();
+    critical_section.acquire ();
     ++counter;
-    mutex.release ();
+    critical_section.release ();
   }
 
   timer.stop ();
