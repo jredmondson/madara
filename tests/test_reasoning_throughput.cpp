@@ -374,41 +374,41 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   uint64_t (* test_functions [num_test_types]) (madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
   const char * printouts [num_test_types] = {
-    "KaRL: Simple Reinforcements   ",
-    "KaRL: Large Reinforcements    ",
-    "KaRL: Simple Inference        ",
-    "KaRL: Large Inference         ",
-    "KaRL: Compiled SR             ",
-    "KaRL: Compiled LR             ",
-    "KaRL: Compiled SI             ",
-    "KaRL: Compiled LI             ",
-    "KaRL: Compiled SA             ",
-    "KaRL: Compiled LA             ",
-    "KaRL: Extern Function Call    ",
-    "KaRL: Compiled SFI            ",
-    "KaRL: Compiled LFI            ",
-    "KaRL: Looped SR               ",
-    "KaRL: Optimal Loop            ",
-    "KaRL: Looped SI               ",
-    "KaRL: Looped LI               ",
-    "KaRL: Get Variable Reference  ",
-    "KaRL: Get Expanded Reference  ",
-    "KaRL: Normal Set Operation    ",
-    "KaRL: Variable Reference Set  ",
-    "KaRL: Variables Inc Var Ref   ",
-    "KaRL container: Increment     ",
-    "C++: Optimized Assignments    ",
-    "C++: Optimized Reinforcements ",
-    "C++: Optimized Inferences     ",
-    "C++: Virtual Reinforcements   ",
-    "C++: Volatile Assignments     ",
-    "C++: Volatile Reinforcements  ",
-    "C++: Volatile Inferences      ",
-    "C++: STL Atomic Increment     ",
-    "C++: STL Recursive Increment  ",
-    "C++: STL Mutex Increment      ",
-    "ACE: Recursive Increment      ",
-    "ACE: Mutex Increment          ",
+    "KaRL: Simple Increments           ",
+    "KaRL: Multiple Increments         ",
+    "KaRL: Simple Ternary Increments   ",
+    "KaRL: Multiple Ternary Increments ",
+    "KaRL: Compiled Simple Increments  ",
+    "KaRL: Compiled Multiple Inc       ",
+    "KaRL: Compiled Simple Tern Inc    ",
+    "KaRL: Compiled Multiple Tern Inc  ",
+    "KaRL: Compiled Single Assign      ",
+    "KaRL: Compiled Multiple Assign    ",
+    "KaRL: Extern Function Call        ",
+    "KaRL: Compiled Extern Inc Func    ",
+    "KaRL: Compiled Extern Multi Calls ",
+    "KaRL: Looped Simple Increments    ",
+    "KaRL: Optimized Loop              ",
+    "KaRL: Looped Simple Ternary Inc   ",
+    "KaRL: Looped Multiple Ternary Inc ",
+    "KaRL: Get Variable Reference      ",
+    "KaRL: Get Expanded Reference      ",
+    "KaRL: Normal Set Operation        ",
+    "KaRL: Variable Reference Set      ",
+    "KaRL: Variables Inc Var Ref       ",
+    "KaRL container: Increments        ",
+    "C++: Optimized Assignments        ",
+    "C++: Optimized Increments         ",
+    "C++: Optimized Ternary Increments ",
+    "C++: Virtual Increments           ",
+    "C++: Volatile Assignments         ",
+    "C++: Volatile Increments          ",
+    "C++: Volatile Ternary Increments  ",
+    "C++: STL Atomic Increments        ",
+    "C++: STL Recursive Increments     ",
+    "C++: STL Mutex Increments         ",
+    "ACE: Recursive Increments         ",
+    "ACE: Mutex Increments             "
   };
 
   // enums for referencing 
@@ -549,7 +549,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     buffer << " ";
     buffer << printouts[i];
     buffer << "\t\t";
-    buffer << std::setw (30);
+    buffer << std::setw (22);
     buffer << results[i];
     buffer << " ns\n";
 
@@ -577,7 +577,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     buffer << " ";
     buffer << printouts[i];
     buffer << "\t\t";
-    buffer << std::setw (30);
+    buffer << std::setw (22);
     buffer << (results[i] / (num_iterations * num_runs));
     buffer << " ns\n";
 
@@ -603,7 +603,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     buffer << " ";
     buffer << printouts[i];
     buffer << "\t\t";
-    buffer << std::setw (33);
+    buffer << std::setw (25);
     buffer << to_legible_hertz (averages[i]);
     buffer << "\n";
 
@@ -720,7 +720,7 @@ uint64_t test_compiled_sr (
   timer.stop ();
   timer.elapsed_time (measured);
   print (measured, knowledge.get (".var1"), iterations,
-    "Compiled SR: ");
+    "Compiled Simple Increment: ");
 
   return measured;
 #else
@@ -749,14 +749,14 @@ uint64_t test_compiled_sa (
   {
     // test literals in conditionals
     knowledge.evaluate (ce, 
-      madara::knowledge::EvalSettings (false, false, false));
+      madara::knowledge::EvalSettings (false, false, false, true, false));
   }
 
   timer.stop ();
   timer.elapsed_time (measured);
 
   print (measured, knowledge.get (".var1"), iterations,
-    "Compiled SA: ");
+    "Compiled Single Assignments: ");
 
   return measured;
 #else
@@ -792,7 +792,7 @@ uint64_t test_compiled_sfi (
   timer.elapsed_time (measured);
 
   print (measured, knowledge.get (".var1"), iterations,
-    "Compiled SFI: ");
+    "Compiled Extern Increment Function: ");
 
   return measured;
 #else
@@ -960,7 +960,7 @@ uint64_t test_compiled_lr (
   timer.elapsed_time (measured);
 
   print (measured, knowledge.get (".var1"), iterations,
-    "Compiled LR: ");
+    "Compiled Multiple Increments: ");
 
   return measured;
 #else
@@ -1009,7 +1009,7 @@ uint64_t test_compiled_la (
   timer.elapsed_time (measured);
 
   print (measured, knowledge.get (".var1"), iterations,
-    "Compiled LA: ");
+    "Compiled Multiple Assignments: ");
 
   return measured;
 #else
@@ -1056,7 +1056,7 @@ uint64_t test_compiled_lfi (
   timer.elapsed_time (measured);
 
   print (measured, knowledge.get (".var1"), iterations,
-    "Compiled LFI: ");
+    "Compiled Extern Multi Calls: ");
 
   return measured;
 #else
@@ -1480,7 +1480,7 @@ uint64_t test_compiled_si (
   timer.elapsed_time (measured);
 
   print (measured, knowledge.get (".var1"), iterations,
-    "Compiled SI: ");
+    "Compiled Simple Ternary Increment: ");
 
   return measured;
 #else
@@ -1607,7 +1607,7 @@ uint64_t test_compiled_li (
   timer.elapsed_time (measured);
 
   print (measured, knowledge.get (".var1"), iterations,
-    "Compiled LI: ");
+    "Compiled Multiple Ternary Increments: ");
 
   return measured;
 #else
