@@ -76,6 +76,21 @@ madara::utility::ThreadSafeRefcounter<T>::get_ptr (void) const
   return ptr_->t_;
 }
 
+/// get the underlying pointer
+template <typename T>
+T *
+madara::utility::ThreadSafeRefcounter<T>::get (void)
+{
+  return ptr_->t_;
+}
+
+/// get the underlying pointer
+template <typename T>
+const T *
+madara::utility::ThreadSafeRefcounter<T>::get (void) const
+{
+  return ptr_->t_;
+}
 
 /// dereference operator
 template <typename T>

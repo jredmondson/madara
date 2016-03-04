@@ -63,6 +63,12 @@ namespace madara
       /// get the underlying pointer
       const T * get_ptr (void) const;
 
+      /// get the underlying pointer
+      T * get (void);
+
+      /// get the underlying pointer
+      const T * get (void) const;
+
     private:
       /// implementation of the increment operation
       inline void increment (void);

@@ -35,7 +35,7 @@ madara::knowledge::KnowledgeRecord::set_precision (int new_precision)
 void
 madara::knowledge::KnowledgeRecord::set_fixed (void)
 {
-  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MINOR,
+  madara_logger_ptr_log (logger::global_logger.get_ptr (), logger::LOG_MINOR,
     "KnowledgeRecord::set_fixed:" \
     " setting output format to std::fixed\n");
 
@@ -45,7 +45,7 @@ madara::knowledge::KnowledgeRecord::set_fixed (void)
 void
 madara::knowledge::KnowledgeRecord::set_scientific (void)
 {
-  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MINOR,
+  madara_logger_ptr_log (logger::global_logger.get_ptr (), logger::LOG_MINOR,
     "KnowledgeRecord::set_scientific:" \
     " setting output format to std::scientific\n");
 
