@@ -365,7 +365,12 @@ void test_map (void)
       new_keys.size () == 1 && new_keys[0] == "wife")
     std::cerr << "SUCCESS. map.sync_keys () worked.\n";
   else
+  {
     std::cerr << "FAIL. map.sync_keys () did not work.\n";
+    std::cerr << "  new_keys[0] = " << new_keys[0] << ", should be 'wife'\n";
+    std::cerr << "  new_keys.size() = " << new_keys.size () <<
+      ", should be 1\n";
+  }
 
   if (map.get_name () == "test_map" && copy.get_name () == "test_map")
     std::cerr << "SUCCESS. map.name () returned test_map.\n";
@@ -373,6 +378,30 @@ void test_map (void)
     std::cerr << "FAIL. map.name () did not return test_map.\n";
 
   knowledge.print ();
+
+  // test deleting map entries
+
+
+  std::cerr << "************* MAP: CLEARING KEYS*************\n";
+
+  knowledge::VariableReferences before_delete = knowledge.save_modifieds ();
+
+  map.clear (true);
+
+  knowledge::VariableReferences after_delete = knowledge.save_modifieds ();
+
+  int size_diff = int (before_delete.size () - after_delete.size ());
+
+  if (before_delete.size () > after_delete.size ())
+  {
+    std::cerr << "SUCCESS. map.clear () removed " << size_diff <<
+      " elements from modifieds list.\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. map.clear () has a non-positive size difference of "
+      << size_diff << ".\n";
+  }
 }
 
 void test_integer (void)

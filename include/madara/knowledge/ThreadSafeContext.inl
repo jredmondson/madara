@@ -277,9 +277,9 @@ madara::knowledge::ThreadSafeContext::inc (
         variable.record_->write_quality >= variable.record_->quality)
     {
       ++(*variable.record_);
-      variable.record_->quality = variable.record_->write_quality;
-  
-      mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
+variable.record_->quality = variable.record_->write_quality;
+
+mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
     }
 
     return *variable.record_;
@@ -293,7 +293,7 @@ madara::knowledge::ThreadSafeContext::inc (
 // return whether or not the key exists
 inline bool
 madara::knowledge::ThreadSafeContext::delete_expression (
-  const std::string & expression)
+const std::string & expression)
 {
   MADARA_GUARD_TYPE guard (mutex_);
 
@@ -336,14 +336,16 @@ const KnowledgeReferenceSettings & settings)
 // return whether or not the key exists
 inline bool
 madara::knowledge::ThreadSafeContext::delete_variable (
-  const std::string & key,
-  const KnowledgeReferenceSettings & settings)
+const std::string & key,
+const KnowledgeReferenceSettings & settings)
 {
   // enter the mutex
   std::string key_actual;
+  bool result (false);
+
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (key);
@@ -352,21 +354,14 @@ madara::knowledge::ThreadSafeContext::delete_variable (
   else
     key_ptr = &key;
 
-  return map_.erase (*key_ptr) == 1;
-}
+  // erase the map
+  result = map_.erase (*key_ptr) == 1;
 
-inline void
-madara::knowledge::ThreadSafeContext::delete_prefix (
-  const std::string & prefix,
-  const KnowledgeReferenceSettings &)
-{
-  // enter the mutex
-  MADARA_GUARD_TYPE guard (mutex_);
+  // erase any changed or local changed map entries
+  changed_map_.erase (*key_ptr);
+  local_changed_map_.erase (*key_ptr);
 
-  std::pair<KnowledgeMap::iterator, KnowledgeMap::iterator>
-    iters(get_prefix_range(prefix));
-
-  map_.erase (iters.first, iters.second);
+  return result;
 }
 
 // return whether or not the key exists

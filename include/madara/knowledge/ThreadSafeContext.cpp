@@ -1509,6 +1509,62 @@ madara::knowledge::ThreadSafeContext::to_map (
   return result.size ();
 }
 
+void
+madara::knowledge::ThreadSafeContext::delete_prefix (
+const std::string & prefix,
+const KnowledgeReferenceSettings &)
+{
+  // enter the mutex
+  MADARA_GUARD_TYPE guard (mutex_);
+
+  std::pair<KnowledgeMap::iterator, KnowledgeMap::iterator>
+    iters (get_prefix_range (prefix));
+
+  map_.erase (iters.first, iters.second);
+
+  {
+    // check the changed map
+    std::pair<KnowledgeRecords::iterator, KnowledgeRecords::iterator>
+      changed (changed_map_.lower_bound (prefix), changed_map_.end ());
+
+    // does our lower bound actually contain the prefix?
+    if (madara::utility::begins_with (changed.first->first, prefix))
+    {
+      changed.second = changed.first;
+
+      // until we find an entry that does not begin with prefix, loop
+      for (++changed.second;
+        madara::utility::begins_with (changed.second->first, prefix) &&
+        changed.second != changed_map_.end ();
+      ++changed.second);
+
+      changed_map_.erase (changed.first, changed.second);
+    }
+  }
+
+  {
+    // check the local changed map
+    std::pair<KnowledgeRecords::iterator, KnowledgeRecords::iterator>
+      local_changed (local_changed_map_.lower_bound (prefix),
+      local_changed_map_.end ());
+
+
+    // does our lower bound actually contain the prefix?
+    if (madara::utility::begins_with (local_changed.first->first, prefix))
+    {
+      local_changed.second = local_changed.first;
+
+      // until we find an entry that does not begin with prefix, loop
+      for (++local_changed.second;
+        madara::utility::begins_with (local_changed.second->first, prefix) &&
+        local_changed.second != local_changed_map_.end ();
+      ++local_changed.second);
+
+      local_changed_map_.erase (local_changed.first, local_changed.second);
+    }
+  }
+}
+
 std::pair<madara::knowledge::KnowledgeMap::iterator,
           madara::knowledge::KnowledgeMap::iterator>
 madara::knowledge::ThreadSafeContext::get_prefix_range(
