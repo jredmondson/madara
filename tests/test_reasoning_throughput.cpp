@@ -1,9 +1,4 @@
 
-//#define MADARA_NTRACE    0
-//#define ACE_NTRACE    0
-////#define ACE_NLOGGING  0
-//#define ACE_NDEBUG    0
-
 #include <string>
 #include <vector>
 #include <iostream>
@@ -27,6 +22,7 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
 #include "madara/knowledge/containers/Integer.h"
+#include "madara/knowledge/containers/IntegerStaged.h"
 #include "madara/logger/GlobalLogger.h"
 
 #include <mutex>
@@ -73,9 +69,18 @@ uint64_t test_large_reinforcement (
 uint64_t test_large_inference (
      madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
+uint64_t test_container_assignment (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations);
 uint64_t test_container_increment (
      madara::knowledge::KnowledgeBase & knowledge,
      uint32_t iterations);
+uint64_t test_staged_container_assignment (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations);
+uint64_t test_staged_container_increment (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations);
 
 uint64_t test_compiled_sr (
      madara::knowledge::KnowledgeBase & knowledge,
@@ -366,7 +371,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     exit (-1);
   }
 
-  const int num_test_types = 35;
+  const int num_test_types = 38;
 
   // make everything all pretty and for-loopy
   uint64_t results[num_test_types];
@@ -396,7 +401,10 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     "KaRL: Normal Set Operation        ",
     "KaRL: Variable Reference Set      ",
     "KaRL: Variables Inc Var Ref       ",
+    "KaRL container: Assignment        ",
     "KaRL container: Increments        ",
+    "KaRL staged container: Assignment ",
+    "KaRL staged container: Increments ",
     "C++: Optimized Assignments        ",
     "C++: Optimized Increments         ",
     "C++: Optimized Ternary Increments ",
@@ -435,7 +443,10 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     NormalSet,
     VariableReferenceSet,
     VariablesIncVarRef,
+    ContainerAssignment,
     ContainerIncrement,
+    StagedContainerAssignment,
+    StagedContainerIncrement,
     OptimizedAssignment,
     OptimizedReinforcement,
     OptimizedInference,
@@ -480,7 +491,11 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   test_functions[NormalSet] = test_normal_set;
   test_functions[VariableReferenceSet] = test_var_ref_set;
   test_functions[VariablesIncVarRef] = test_variables_inc_var_ref;
+
+  test_functions[ContainerAssignment] = test_container_assignment;
   test_functions[ContainerIncrement] = test_container_increment;
+  test_functions[StagedContainerAssignment] = test_staged_container_assignment;
+  test_functions[StagedContainerIncrement] = test_staged_container_increment;
   
   test_functions[OptimizedAssignment] = test_optimal_assignment;
   test_functions[OptimizedReinforcement] = test_optimal_reinforcement;
@@ -665,9 +680,39 @@ uint64_t test_simple_reinforcement (
 }
 
 /// Tests Integer container increment
-uint64_t test_container_increment (
+uint64_t test_container_assignment (
      madara::knowledge::KnowledgeBase & knowledge, 
      uint32_t iterations)
+{
+  knowledge.clear ();
+
+  madara::knowledge::containers::Integer var1 (".var1", knowledge,
+    madara::knowledge::EvalSettings (false, false, false));
+
+  // keep track of time
+  ACE_hrtime_t measured;
+  ACE_High_Res_Timer timer;
+
+  timer.start ();
+
+  for (uint32_t i = 0; i < iterations; ++i)
+  {
+    var1 = (madara::knowledge::KnowledgeRecord::Integer)i;
+  }
+
+  timer.stop ();
+  timer.elapsed_time (measured);
+
+  print (measured, knowledge.get (".var1"), iterations,
+    "Container assignment: ");
+
+  return measured;
+}
+
+/// Tests Integer container increment
+uint64_t test_container_increment (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations)
 {
   knowledge.clear ();
 
@@ -690,6 +735,74 @@ uint64_t test_container_increment (
 
   print (measured, knowledge.get (".var1"), iterations,
     "Container increment: ");
+
+  return measured;
+}
+
+/// Tests Integer container increment
+uint64_t test_staged_container_assignment (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations)
+{
+  knowledge.clear ();
+
+  madara::knowledge::containers::IntegerStaged var1 (".var1", knowledge,
+    madara::knowledge::EvalSettings (false, false, false));
+
+  // keep track of time
+  ACE_hrtime_t measured;
+  ACE_High_Res_Timer timer;
+
+  timer.start ();
+
+  var1.read ();
+
+  for (uint32_t i = 0; i < iterations; ++i)
+  {
+    var1 = (madara::knowledge::KnowledgeRecord::Integer)i;
+  }
+
+  var1.write ();
+
+  timer.stop ();
+  timer.elapsed_time (measured);
+
+  print (measured, knowledge.get (".var1"), iterations,
+    "Staged Container assignment: ");
+
+  return measured;
+}
+
+/// Tests Integer container increment
+uint64_t test_staged_container_increment (
+  madara::knowledge::KnowledgeBase & knowledge,
+  uint32_t iterations)
+{
+  knowledge.clear ();
+
+  madara::knowledge::containers::IntegerStaged var1 (".var1", knowledge,
+    madara::knowledge::EvalSettings (false, false, false));
+
+  // keep track of time
+  ACE_hrtime_t measured;
+  ACE_High_Res_Timer timer;
+
+  timer.start ();
+
+  var1.read ();
+
+  for (uint32_t i = 0; i < iterations; ++i)
+  {
+    ++var1;
+  }
+
+  var1.write ();
+
+  timer.stop ();
+  timer.elapsed_time (measured);
+
+  print (measured, knowledge.get (".var1"), iterations,
+    "Staged Container increment: ");
 
   return measured;
 }
