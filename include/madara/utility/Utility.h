@@ -113,7 +113,19 @@ namespace madara
      **/
     MADARA_Export std::string & strip_extra_white_space (
       std::string & input);
-    
+
+    /**
+    * Strips a prefix from an input string and returns
+    * the result. The prefix should be at the front of
+    * the input. This does not perform checks for
+    * speed reasons.
+    * @param     input         the string to change
+    * @param     prefix        the start of the string
+    * @return    a reference to the modified input
+    **/
+    MADARA_Export std::string strip_prefix (
+      const std::string & input, const std::string & prefix);
+
     /**
      * Splits a key of host:port into a corresponding host and port.
      * @param     key         a string containing a host:port

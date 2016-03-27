@@ -87,6 +87,14 @@ madara::utility::to_string_version (uint32_t version)
   return new_version.str ();
 }
 
+/// Convert string to uppercase
+std::string
+madara::utility::strip_prefix (
+const std::string & input, const std::string & prefix)
+{
+  return input.substr (prefix.size ());
+}
+
 
 /// Convert string to uppercase
 std::string &

@@ -270,7 +270,7 @@ madara::knowledge::containers::Integer::is_false (void) const
   bool result (true);
 
   madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
-    "Integer::is_false: checking for zero value\n", (int)result);
+    "Integer::is_false: checking for zero value\n");
 
   if (context_)
   {
