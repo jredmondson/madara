@@ -734,8 +734,6 @@ int64_t & buffer_remaining) const
   // format is [key_size | key | type | value_size | value]
 
   uint32_t key_size = uint32_t (key.size () + 1);
-  char * size_location = 0;
-  uint32_t size_intermediate = 0;
   uint32_t uint32_temp;
 
   int64_t encoded_size = get_encoded_size (key);
@@ -784,7 +782,6 @@ madara::knowledge::KnowledgeRecord::write (char * buffer, uint32_t key_id,
   // format is [key_id | type | value_size | value]
 
   char * size_location = 0;
-  uint32_t size_intermediate = 0;
   uint32_t uint32_temp;
 
   int64_t encoded_size = get_encoded_size () + sizeof (key_id);
