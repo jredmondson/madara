@@ -599,7 +599,7 @@ madara::knowledge::KnowledgeRecord::write (char * buffer,
       " encoding %" PRId64 " byte message\n", encoded_size);
 
     // Remove the type of value from the buffer
-    if (buffer_remaining >= sizeof (type_))
+    if (buffer_remaining >= (int64_t) sizeof (type_))
     {
       uint32_temp = madara::utility::endian_swap (type_);
       memcpy (buffer, &uint32_temp, sizeof (uint32_temp));
@@ -608,7 +608,7 @@ madara::knowledge::KnowledgeRecord::write (char * buffer,
     buffer_remaining -= sizeof (type_);
 
     // Remove the size of value from the buffer
-    if (buffer_remaining >= sizeof (size_))
+    if (buffer_remaining >= (int64_t) sizeof (size_))
     {
       // set a pointer to size, in case we need to modify it during
       // value copy (e.g. during double conversion)
