@@ -283,9 +283,110 @@ void test_image_encoding (void)
   
 }
 
+void test_key_id_encoding (void)
+{
+  std::cerr << "\n*************TEST KEYED ID ENCODING*****************\n\n";
+
+  // buffer for holding encoding results
+  char buffer[BUFFER_SIZE];
+  int64_t buffer_remaining = BUFFER_SIZE;
+  char * current = buffer;
+  const char * reader = buffer;
+  std::string key;
+
+  enum KeyIds
+  {
+    HELLO_WORLD,
+    CUSTOM_SIZE,
+    CUSTOM_DISTANCE
+  };
+
+
+  // message headers for encoding and decoding
+  madara::transport::MessageHeader source_header;
+  madara::transport::MessageHeader dest_header;
+
+  // knowledge update for encoding and decoding
+  madara::knowledge::KnowledgeRecord hello_world ("hello world");
+  madara::knowledge::KnowledgeRecord custom_size (madara::knowledge::KnowledgeRecord::Integer (10));
+  madara::knowledge::KnowledgeRecord custom_distance (5.5);
+
+  madara::knowledge::KnowledgeRecord dest;
+  uint32_t temp_id (0);
+
+  std::cerr << "Writing string, int, and double records to buffer\n";
+
+  // write the records to the buffer
+  current = hello_world.write (current, HELLO_WORLD, buffer_remaining);
+  current = custom_size.write (current, CUSTOM_SIZE, buffer_remaining);
+  current = custom_distance.write (current, CUSTOM_DISTANCE, buffer_remaining);
+
+  buffer_remaining = BUFFER_SIZE - buffer_remaining;
+
+  std::cerr << "Wrote " << buffer_remaining << " bytes to buffer\n";
+
+  std::cerr << "Reading string, int, and double records from buffer\n";
+
+  std::cerr << "  String: ";
+
+  // read the records from the buffer
+  reader = dest.read (reader, temp_id, buffer_remaining);
+
+  if (temp_id == HELLO_WORLD &&
+    dest.is_string_type () && dest.to_string () == "hello world")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "    id: " << temp_id << "\n";
+    std::cerr << "    type: " << dest.type () << "\n";
+    std::cerr << "    value: " << dest.to_string () << "\n";
+  }
+
+  std::cerr << "  Integer: ";
+
+  // read the records from the buffer
+  reader = dest.read (reader, temp_id, buffer_remaining);
+
+  if (temp_id == CUSTOM_SIZE &&
+    dest.is_integer_type () && dest.to_integer () == 10)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "    id: " << temp_id << "\n";
+    std::cerr << "    type: " << dest.type () << "\n";
+    std::cerr << "    value: " << dest.to_string () << "\n";
+  }
+
+  std::cerr << "  Double: ";
+
+  // read the records from the buffer
+  reader = dest.read (reader, temp_id, buffer_remaining);
+
+  if (temp_id == CUSTOM_DISTANCE &&
+    dest.is_double_type () && dest.to_double () == 5.5)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL.\n";
+    std::cerr << "    id: " << temp_id << "\n";
+    std::cerr << "    type: " << dest.type () << "\n";
+    std::cerr << "    value: " << dest.to_string () << "\n";
+  }
+
+}
+
 int main (int, char **)
 {
   test_image_encoding ();
-  //test_primitive_encoding ();
+  test_primitive_encoding ();
+  test_key_id_encoding ();
   return 0;
 }

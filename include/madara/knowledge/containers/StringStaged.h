@@ -132,25 +132,31 @@ namespace madara
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
+         * @param sync     synchronize the value from the underlying knowledge
          **/
         void set_name (const std::string & var_name,
-          KnowledgeBase & knowledge);
+          KnowledgeBase & knowledge,
+          bool sync = true);
 
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
+         * @param sync     synchronize the value from the underlying knowledge
          **/
         void set_name (const std::string & var_name,
-          Variables & knowledge);
+          Variables & knowledge,
+          bool sync = true);
 
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
+         * @param sync     synchronize the value from the underlying knowledge
          **/
         void set_name (const std::string & var_name,
-          ThreadSafeContext & knowledge);
+          ThreadSafeContext & knowledge,
+          bool sync = true);
 
         /**
          * Exchanges the integer at this location with the integer at another

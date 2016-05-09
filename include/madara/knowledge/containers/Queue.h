@@ -96,7 +96,7 @@ namespace madara
         /**
          * Destructor
          **/
-        ~Queue ();
+        virtual ~Queue ();
         
         /**
          * Assignment operator

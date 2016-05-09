@@ -695,7 +695,17 @@ namespace madara
        * Predecrement operator
        **/
       KnowledgeRecord & operator-- (void);
-    
+
+      /**
+      * Reads a KnowledgeRecord instance from a buffer and updates
+      * the amount of buffer room remaining.
+      * @param     buffer     the readable buffer where data is stored
+      * @param     buffer_remaining  the count of bytes remaining in the
+      *                              buffer to read
+      * @return    current buffer position for next read
+      **/
+      const char * read (const char * buffer, int64_t & buffer_remaining);
+
       /**
         * Reads a KnowledgeRecord instance from a buffer and updates
         * the amount of buffer room remaining.
@@ -707,7 +717,37 @@ namespace madara
         **/
       const char * read (const char * buffer, std::string & key,
                    int64_t & buffer_remaining);
-      
+
+      /**
+      * Reads a KnowledgeRecord instance from a buffer and updates
+      * the amount of buffer room remaining.
+      * @param     buffer      the readable buffer where data is stored
+      * @param     key_id      the keyed index for the name of a variable
+      * @param     buffer_remaining  the count of bytes remaining in the
+      *                              buffer to read
+      * @return    current buffer position for next read
+      **/
+      const char * read (const char * buffer, uint32_t & key_id,
+        int64_t & buffer_remaining);
+
+      /**
+      * Writes a KnowledgeRecord instance to a buffer and updates
+      * the amount of buffer room remaining.
+      *
+      * Output Format:
+      *
+      * [type | value_size | value]<br />
+      * type = 32 bit unsigned integer, the type of value <br />
+      * size = 32 bit unsigned integer, number of elements of the type<br />
+      * value = the stored value
+      *
+      * @param     buffer     the readable buffer where data is stored
+      * @param     buffer_remaining  the count of bytes remaining in the
+      *                              buffer to read
+      * @return    current buffer position for next write
+      **/
+      char * write (char * buffer, int64_t & buffer_remaining) const;
+
       /**
         * Writes a KnowledgeRecord instance to a buffer and updates
         * the amount of buffer room remaining.
@@ -729,7 +769,31 @@ namespace madara
         **/
       char * write (char * buffer, const std::string & key,
                     int64_t & buffer_remaining) const;
-     
+
+      /**
+      * Writes a KnowledgeRecord instance to a buffer and updates
+      * the amount of buffer room remaining. This is a write method
+      * intended for keyed indexes for variables, generally for
+      * perfect hashes
+      *
+      * Output Format:
+      *
+      * [key_size | key | type | value_size | value]<br />
+      * key_size = 32 bit unsigned integer, length of the key<br />
+      * key = key_size characters, the ASCII key<br />
+      * type = 32 bit unsigned integer, the type of value <br />
+      * size = 32 bit unsigned integer, number of elements of the type<br />
+      * value = the stored value
+      *
+      * @param     buffer     the readable buffer where data is stored
+      * @param     key_id     the id of the variable
+      * @param     buffer_remaining  the count of bytes remaining in the
+      *                              buffer to read
+      * @return    current buffer position for next write
+      **/
+      char * write (char * buffer, uint32_t key_id,
+        int64_t & buffer_remaining) const;
+
       /**
        * Apply the knowledge record to a context, given some quality and clock
        **/
@@ -767,6 +831,13 @@ namespace madara
        * information in the read () and write () methods.
        **/
       int64_t get_encoded_size (const std::string & key) const;
+
+      /**
+      * Returns the encoded size of the record. This size is what is required
+      * to write the type, value size, and all associated
+      * information in the read () and write () methods.
+      **/
+      int64_t get_encoded_size (void) const;
     };
   
     typedef ::std::map < std::string, KnowledgeRecord>   KnowledgeMap;

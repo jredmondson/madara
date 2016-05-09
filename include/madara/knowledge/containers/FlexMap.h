@@ -96,7 +96,7 @@ namespace madara
         /**
          * Destructor
          **/
-        ~FlexMap ();
+        virtual ~FlexMap ();
         
         /**
          * Mark the flex map as modified. The map retains the same values

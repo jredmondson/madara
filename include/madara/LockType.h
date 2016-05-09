@@ -7,7 +7,7 @@
   #ifndef MADARA_LOCK_TYPE
 
     #ifdef _MADARA_STL_LOCK_
-      // include headers for ACE_Null_Mutex
+      // include headers for STL recursive mutexes
       #include <mutex>
       #include <condition_variable>
 
@@ -35,7 +35,7 @@
       #define  MADARA_CONDITION_NOTIFY_ALL   broadcast
       #define  MADARA_CONDITION_MUTEX_CONSTRUCTOR
     #else
-      // include headers for ACE_Null_Mutex
+      // include headers for ACE Recursive Thread Mutexes
       #include "ace/Guard_T.h"
       #include "ace/Recursive_Thread_Mutex.h"
       #include "ace/Condition_Recursive_Thread_Mutex.h"

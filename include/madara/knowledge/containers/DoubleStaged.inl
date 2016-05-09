@@ -60,7 +60,8 @@ madara::knowledge::containers::DoubleStaged::operator= (const DoubleStaged & rhs
 inline void
 madara::knowledge::containers::DoubleStaged::set_name (
   const std::string & var_name,
-  KnowledgeBase & knowledge)
+  KnowledgeBase & knowledge,
+  bool sync)
 {
   KnowledgeUpdateSettings keep_local (true);
   context_ = &(knowledge.get_context ());
@@ -70,14 +71,19 @@ madara::knowledge::containers::DoubleStaged::set_name (
 
   name_ = var_name;
   variable_ = context_->get_ref (name_, keep_local);
-  value_ = context_->get (variable_).to_double ();
-  has_changed_ = false;
+
+  if (sync)
+  {
+    value_ = context_->get (variable_).to_double ();
+    has_changed_ = false;
+  }
 }
 
 inline void
 madara::knowledge::containers::DoubleStaged::set_name (
   const std::string & var_name,
-  ThreadSafeContext & knowledge)
+  ThreadSafeContext & knowledge,
+  bool sync)
 {
   KnowledgeUpdateSettings keep_local (true);
   context_ = &knowledge;
@@ -87,14 +93,19 @@ madara::knowledge::containers::DoubleStaged::set_name (
 
   name_ = var_name;
   variable_ = context_->get_ref (name_, keep_local);
-  value_ = context_->get (variable_).to_double ();
-  has_changed_ = false;
+
+  if (sync)
+  {
+    value_ = context_->get (variable_).to_double ();
+    has_changed_ = false;
+  }
 }
 
 inline void
 madara::knowledge::containers::DoubleStaged::set_name (
   const std::string & var_name,
-  Variables & knowledge)
+  Variables & knowledge,
+  bool sync)
 {
   KnowledgeUpdateSettings keep_local (true);
   context_ = knowledge.get_context ();
@@ -104,8 +115,12 @@ madara::knowledge::containers::DoubleStaged::set_name (
 
   name_ = var_name;
   variable_ = context_->get_ref (name_, keep_local);
-  value_ = context_->get (variable_).to_double ();
-  has_changed_ = false;
+
+  if (sync)
+  {
+    value_ = context_->get (variable_).to_double ();
+    has_changed_ = false;
+  }
 }
 
 inline madara::knowledge::containers::DoubleStaged::type

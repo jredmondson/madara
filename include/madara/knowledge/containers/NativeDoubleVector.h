@@ -75,7 +75,7 @@ namespace madara
         /**
          * Destructor
          **/
-        ~NativeDoubleVector ();
+        virtual ~NativeDoubleVector ();
         
         /**
          * Mark the value as modified. The vector retains the same value

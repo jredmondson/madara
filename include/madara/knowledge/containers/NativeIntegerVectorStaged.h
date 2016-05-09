@@ -1,6 +1,6 @@
 
-#ifndef _MADARA_NATIVE_INTEGER_VECTOR_H_
-#define _MADARA_NATIVE_INTEGER_VECTOR_H_
+#ifndef _MADARA_NATIVE_INTEGER_VECTOR_STAGED_H_
+#define _MADARA_NATIVE_INTEGER_VECTOR_STAGED_H_
 
 #include <vector>
 #include <string>
@@ -11,7 +11,7 @@
 #include "BaseContainer.h"
 
 /**
- * @file NativeIntegerVector.h
+ * @file NativeIntegerVectorStaged.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
  * This file contains a C++ object that manages interactions for an
@@ -25,10 +25,10 @@ namespace madara
     namespace containers
     {
       /**
-       * @class NativeIntegerVector
+       * @class NativeIntegerVectorStaged
        * @brief This class stores a vector of doubles inside of KaRL
        */
-      class MADARA_Export NativeIntegerVector : public BaseContainer
+      class MADARA_Export NativeIntegerVectorStaged : public BaseContainer
       {
       public:
         /// trait that describes the value type
@@ -38,7 +38,7 @@ namespace madara
          * Default constructor
          * @param  settings   settings for evaluating the vector
          **/
-        NativeIntegerVector (const KnowledgeUpdateSettings & settings =
+        NativeIntegerVectorStaged (const KnowledgeUpdateSettings & settings =
           KnowledgeUpdateSettings ());
 
         /**
@@ -48,7 +48,7 @@ namespace madara
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  settings   settings for evaluating the vector
          **/
-        NativeIntegerVector (const std::string & name, 
+        NativeIntegerVectorStaged (const std::string & name, 
           KnowledgeBase & knowledge,
           int size = -1,
           const KnowledgeUpdateSettings & settings =
@@ -61,7 +61,7 @@ namespace madara
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  settings   settings for evaluating the vector
          **/
-        NativeIntegerVector (const std::string & name,
+        NativeIntegerVectorStaged (const std::string & name,
           Variables & knowledge,
           int size = -1,
           const KnowledgeUpdateSettings & settings =
@@ -70,12 +70,12 @@ namespace madara
         /**
          * Copy constructor
          **/
-        NativeIntegerVector (const NativeIntegerVector & rhs);
+        NativeIntegerVectorStaged (const NativeIntegerVectorStaged & rhs);
 
         /**
          * Destructor
          **/
-        virtual ~NativeIntegerVector ();
+        virtual ~NativeIntegerVectorStaged ();
         
         /**
          * Mark the value as modified. The vector retains the same value
@@ -87,7 +87,13 @@ namespace madara
          * Assignment operator
          * @param  rhs    value to copy
          **/
-        void operator= (const NativeIntegerVector & rhs);
+        void operator= (const NativeIntegerVectorStaged & rhs);
+
+        /**
+        * Assignment operator
+        * @param  rhs    value to copy
+        **/
+        void operator= (const std::vector <type> & rhs);
 
         /**
         * Pushes the value to the end of the array after incrementing the
@@ -107,13 +113,13 @@ namespace madara
          * location.
          * @param  other   the other vector to exchange with
          **/
-        void exchange (NativeIntegerVector & other);
+        void exchange (NativeIntegerVectorStaged & other);
 
         /**
          * Transfers elements from this vector to another
          * @param  other  the other vector to transfer to
          **/
-        void transfer_to (NativeIntegerVector & other);
+        void transfer_to (NativeIntegerVectorStaged & other);
         
         /**
          * Copies the vector elements to an STL vector of Knowledge Records
@@ -132,27 +138,33 @@ namespace madara
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
          * @param size       size of the new vector (-1 to not change size)
+         * @param sync     synchronize the value from the underlying knowledge
          **/
         void set_name (const std::string & var_name,
-          KnowledgeBase & knowledge, int size = -1);
+          KnowledgeBase & knowledge, int size = -1,
+          bool sync = true);
         
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
          * @param size       size of the new vector (-1 to not change size)
+         * @param sync     synchronize the value from the underlying knowledge
          **/
         void set_name (const std::string & var_name,
-          Variables & knowledge, int size = -1);
+          Variables & knowledge, int size = -1,
+          bool sync = true);
         
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
          * @param size       size of the new vector (-1 to not change size)
+         * @param sync     synchronize the value from the underlying knowledge
          **/
         void set_name (const std::string & var_name,
-          ThreadSafeContext & knowledge, int size = -1);
+          ThreadSafeContext & knowledge, int size = -1,
+          bool sync = true);
 
         /**
          * Retrieves a copy of the record from the map.
@@ -167,46 +179,17 @@ namespace madara
          *
          * @param index           index to set
          * @param value           value to set at location
-         * @return                0 if successful, -1 if key is null, and
-         *                        -2 if quality isn't high enough
          **/
-        int set (size_t index,
+        void set (size_t index,
           type value);
 
         /**
-         * Sets a knowledge variable to a specified value
-         *
-         * @param index           index to set
-         * @param value           value to set at location
-         * @param settings        settings for applying the update
-         * @return                0 if successful, -1 if key is null, and
-         *                        -2 if quality isn't high enough
-         **/
-        int set (size_t index,
-          type value, 
-          const KnowledgeUpdateSettings & settings);
-        
-        /**
          * Reads values from a STL vector of doubles
          *
          * @param value           array of doubles to set at the location
-         * @return                0 if successful, -1 if key is null, and
-         *                        -2 if quality isn't high enough
          **/
-        int set (
+        void set (
           const std::vector <type> & value);
-       
-        /**
-         * Reads values from a STL vector of doubles
-         *
-         * @param value           array of doubles to set at the location
-         * @param settings        settings for applying the update
-         * @return                0 if successful, -1 if key is null, and
-         *                        -2 if quality isn't high enough
-         **/
-        int set (
-          const std::vector <type> & value,
-          const KnowledgeUpdateSettings & settings);
        
         /**
          * Sets the quality of writing to a certain variable from this entity
@@ -263,6 +246,16 @@ namespace madara
         **/
         bool is_false (void) const;
 
+        /**
+        * Reads the value from the knowledge base
+        **/
+        void read (void);
+
+        /**
+        * Writes the value to the knowledge base
+        **/
+        void write (void);
+
       private:
 
         /**
@@ -307,12 +300,24 @@ namespace madara
          * Reference to the size field of the vector space
          **/
         VariableReference vector_;
+
+        /**
+        * The staged value of the vector
+        **/
+        KnowledgeRecord value_;
+
+        /**
+        * Tracks if value_ has changed since last read
+        **/
+        bool has_changed_;
       };
 
-      /// provide the Array alias for the NativeIntegerVector class
-      typedef  NativeIntegerVector   NativeIntegerArray;
+      /// provide the Array alias for the NativeIntegerVectorStaged class
+      typedef  NativeIntegerVectorStaged   NativeIntegerArrayStaged;
     }
   }
 }
 
-#endif // _MADARA_NATIVE_INTEGER_VECTOR_H_
+#include "NativeIntegerVectorStaged.inl"
+
+#endif // _MADARA_NATIVE_INTEGER_VECTOR_STAGED_H_
