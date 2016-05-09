@@ -223,7 +223,7 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
   uint32_t buff_value_size (0);
 
   // Remove the type of value from the buffer
-  if (buffer_remaining >= sizeof (type_))
+  if (buffer_remaining >= (int64_t) sizeof (type_))
   {
     memcpy (&type_, buffer, sizeof (type_));
     type_ = madara::utility::endian_swap (type_);
@@ -232,7 +232,7 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
   buffer_remaining -= sizeof (type_);
 
   // Remove the size of value from the buffer
-  if (buffer_remaining >= sizeof (size_))
+  if (buffer_remaining >= (int64_t) sizeof (size_))
   {
     memcpy (&size_, buffer, sizeof (size_));
     size_ = madara::utility::endian_swap (size_);
@@ -319,10 +319,9 @@ int64_t & buffer_remaining)
   // format is [key_size | key | type | value_size | value]
 
   uint32_t key_size (0);
-  uint32_t buff_value_size (0);
 
   // Remove the key size from the buffer
-  if (buffer_remaining >= sizeof (key_size))
+  if (buffer_remaining >= (int64_t) sizeof (key_size))
   {
     memcpy (&key_size, buffer, sizeof (key_size));
     key_size = madara::utility::endian_swap (key_size);
@@ -352,10 +351,8 @@ int64_t & buffer_remaining)
 {
   // format is [key_id | type | value_size | value]
 
-  uint32_t buff_value_size (0);
-
   // Remove the key size from the buffer
-  if (buffer_remaining >= sizeof (key_id))
+  if (buffer_remaining >= (int64_t) sizeof (key_id))
   {
     memcpy (&key_id, buffer, sizeof (key_id));
     key_id = madara::utility::endian_swap (key_id);
@@ -744,7 +741,7 @@ int64_t & buffer_remaining) const
       " encoding %" PRId64 " byte message\n", encoded_size);
 
     // Remove the key size from the buffer
-    if (buffer_remaining >= sizeof (key_size))
+    if (buffer_remaining >= (int64_t) sizeof (key_size))
     {
       uint32_temp = madara::utility::endian_swap (key_size);
       memcpy (buffer, &uint32_temp, sizeof (uint32_temp));
@@ -781,7 +778,6 @@ madara::knowledge::KnowledgeRecord::write (char * buffer, uint32_t key_id,
 {
   // format is [key_id | type | value_size | value]
 
-  char * size_location = 0;
   uint32_t uint32_temp;
 
   int64_t encoded_size = get_encoded_size () + sizeof (key_id);
@@ -792,7 +788,7 @@ madara::knowledge::KnowledgeRecord::write (char * buffer, uint32_t key_id,
       " encoding %" PRId64 " byte message\n", encoded_size);
 
     // write the key id to the buffer
-    if (buffer_remaining >= sizeof (key_id))
+    if (buffer_remaining >= (int64_t)sizeof (key_id))
     {
       uint32_temp = madara::utility::endian_swap (key_id);
       memcpy (buffer, &uint32_temp, sizeof (uint32_temp));
