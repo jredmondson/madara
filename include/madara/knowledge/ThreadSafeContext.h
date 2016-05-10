@@ -615,7 +615,7 @@ namespace madara
       int update_record_from_external (
         const std::string & key, const knowledge::KnowledgeRecord & rhs,
         const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
+        KnowledgeUpdateSettings (true));
 
       /**
       * Atomically sets if the variable value meets update conditions.
@@ -631,7 +631,7 @@ namespace madara
         const VariableReference & target,
         const knowledge::KnowledgeRecord & new_value,
         const KnowledgeUpdateSettings & settings =
-        KnowledgeUpdateSettings ());
+        KnowledgeUpdateSettings (true));
 
       /**
        * Atomically gets quality of a variable
