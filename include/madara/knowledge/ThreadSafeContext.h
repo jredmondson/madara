@@ -616,7 +616,23 @@ namespace madara
         const std::string & key, const knowledge::KnowledgeRecord & rhs,
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
-      
+
+      /**
+      * Atomically sets if the variable value meets update conditions.
+      * Appropriate conditions include clock being >= old clock, quality
+      * >= old quality, etc.
+      * @param   target    the target reference in the knowledge base
+      * @param   rhs       new value of the variable
+      * @param   settings  settings for applying the update
+      * @return   1 if the value was changed. 0 if not changed.
+      *          -1 if null key
+      **/
+      int update_record_from_external (
+        const VariableReference & target,
+        const knowledge::KnowledgeRecord & new_value,
+        const KnowledgeUpdateSettings & settings =
+        KnowledgeUpdateSettings ());
+
       /**
        * Atomically gets quality of a variable
        * @param   key       unique identifier of the 

@@ -993,6 +993,50 @@ madara::knowledge::ThreadSafeContext::update_record_from_external (
   return result;
 }
 
+/// Set if the variable value will be different. Always updates clock to
+/// highest value
+/// @return   1 if the value was changed. 0 if not changed. 
+///           -1 if null key, -2 if quality not high enough
+int
+madara::knowledge::ThreadSafeContext::update_record_from_external (
+  const VariableReference & target, 
+  const knowledge::KnowledgeRecord & rhs,
+  const KnowledgeUpdateSettings & settings)
+{
+  int result = 1;
+
+  MADARA_GUARD_TYPE guard (mutex_);
+
+  // if it's found, then compare the value
+  if (!settings.always_overwrite && target.is_valid ())
+  {
+    // if we do not have enough quality to update the variable
+    // return -2
+    if (rhs.quality < target.record_->quality)
+      result = -2;
+
+    // if we have the same quality, but our clock value
+    // is less than what we've already seen, then return -3
+    else if (rhs.quality == target.record_->quality &&
+      rhs.clock < target.record_->clock)
+      result = -3;
+
+    // if we reach this point, then the record is safe to copy
+    target.record_->deep_copy (rhs);
+
+    knowledge::KnowledgeRecord & current_value = *target.record_;
+
+    mark_and_signal (target.name_.get_ptr (), &current_value, settings);
+  }
+
+  // if we need to update the global clock, then update it
+  if (rhs.clock >= this->clock_)
+    this->clock_ = rhs.clock + 1;
+
+  // value was changed
+  return result;
+}
+
 /// Indicate that a status change has occurred. This could be a message
 /// from the transport to let the knowledge engine know that new agents
 /// are available to send knowledge to.
