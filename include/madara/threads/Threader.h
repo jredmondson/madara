@@ -50,12 +50,52 @@ namespace madara
        * Destructor
        **/
       ~Threader ();
-      
+
       /**
-       * Sets the data plane for new threads
-       * @param  data_plane   The data plane for threads to use
+      * Modify hertz rate of a thread. This is only useful
+      * for periodic threads that are operating at infinite
+      * or set hertz rates. If the thread had been started
+      * as a run once thread, it cannot be changed to a
+      * hertz rate as the thread will be dead. In the latter
+      * case, restart the thread at the new hertz rate.
+      * @param name   unique thread name for the thread
+      * @param hertz  new hertz rate for the periodic thread
+      **/
+      void change_hertz (const std::string name, double hertz);
+
+      /**
+      * Gets the control plane used by threads
+      * @return  the knowledge base used by threader for control of threads
+      **/
+      knowledge::KnowledgeBase get_control_plane (void);
+
+      /**
+       * Gets the data plane used by threads
+       * @return  the knowledge base used by threads for data
        **/
-      void set_data_plane (knowledge::KnowledgeBase & data_plane);
+      knowledge::KnowledgeBase get_data_plane (void);
+
+      /**
+      * Requests a specific thread to pause
+      * @param name    unique thread name for the thread.
+      **/
+      void pause (const std::string name);
+
+      /**
+      * Requests all threads to pause
+      **/
+      void pause (void);
+
+      /**
+      * Requests a specific thread to resume (unpause)
+      * @param name    unique thread name for the thread.
+      **/
+      void resume (const std::string name);
+
+      /**
+      * Requests all threads to resume (unpause)
+      **/
+      void resume (void);
 
       /**
        * Starts a new thread and executes the provided user
@@ -137,6 +177,24 @@ namespace madara
         bool paused = false);
       
 #endif
+
+      /**
+      * Sets the data plane for new threads
+      * @param  data_plane   The data plane for threads to use
+      **/
+      void set_data_plane (knowledge::KnowledgeBase & data_plane);
+
+      /**
+      * Requests a specific thread to terminate
+      * @param name    unique thread name for the thread.
+      **/
+      void terminate (const std::string name);
+
+      /**
+      * Requests all threads to terminate
+      **/
+      void terminate (void);
+
       /**
        * Wait for a specific thread to complete
        * @param name    unique thread name for the thread
@@ -154,51 +212,6 @@ namespace madara
       bool wait (
         const knowledge::WaitSettings & ws = knowledge::WaitSettings ());
       
-      /**
-       * Requests a specific thread to pause
-       * @param name    unique thread name for the thread.
-       **/
-      void pause (const std::string name);
-
-      /**
-       * Requests all threads to pause
-       **/
-      void pause (void);
-      
-      /**
-       * Requests a specific thread to resume (unpause)
-       * @param name    unique thread name for the thread.
-       **/
-      void resume (const std::string name);
-
-      /**
-       * Requests all threads to resume (unpause)
-       **/
-      void resume (void);
-      
-      /**
-       * Requests a specific thread to terminate
-       * @param name    unique thread name for the thread.
-       **/
-      void terminate (const std::string name);
-
-      /**
-       * Requests all threads to terminate
-       **/
-      void terminate (void);
-
-      /**
-       * Modify hertz rate of a thread. This is only useful
-       * for periodic threads that are operating at infinite
-       * or set hertz rates. If the thread had been started
-       * as a run once thread, it cannot be changed to a
-       * hertz rate as the thread will be dead. In the latter
-       * case, restart the thread at the new hertz rate.
-       * @param name   unique thread name for the thread
-       * @param hertz  new hertz rate for the periodic thread
-       **/
-      void change_hertz (const std::string name, double hertz);
-
     private:
       
       /**

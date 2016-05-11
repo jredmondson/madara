@@ -28,10 +28,46 @@ madara::threads::Threader::~Threader ()
   delete control_;
 }
 
-void madara::threads::Threader::set_data_plane (
-  knowledge::KnowledgeBase & data_plane)
+void
+madara::threads::Threader::pause (const std::string name)
 {
-  data_ = &data_plane;
+  NamedWorkerThreads::iterator found = threads_.find (name);
+
+  if (found != threads_.end ())
+  {
+    control_->set (name + ".paused", knowledge::KnowledgeRecord::Integer (1));
+  }
+}
+
+void
+madara::threads::Threader::pause (void)
+{
+  for (NamedWorkerThreads::iterator i = threads_.begin ();
+    i != threads_.end (); ++i)
+  {
+    control_->set (i->first + ".paused", knowledge::KnowledgeRecord::Integer (1));
+  }
+}
+
+void
+madara::threads::Threader::resume (const std::string name)
+{
+  NamedWorkerThreads::iterator found = threads_.find (name);
+
+  if (found != threads_.end ())
+  {
+    control_->set (name + ".paused", knowledge::KnowledgeRecord::Integer (0));
+  }
+}
+
+void
+madara::threads::Threader::resume (void)
+{
+  for (NamedWorkerThreads::iterator i = threads_.begin ();
+    i != threads_.end (); ++i)
+  {
+    control_->set (i->first + ".paused", knowledge::KnowledgeRecord::Integer (0));
+  }
 }
 
 void
@@ -105,6 +141,33 @@ madara::threads::Threader::run (double hertz,
   }
 }
 
+void madara::threads::Threader::set_data_plane (
+  knowledge::KnowledgeBase & data_plane)
+{
+  data_ = &data_plane;
+}
+
+void
+madara::threads::Threader::terminate (const std::string name)
+{
+  NamedWorkerThreads::iterator found = threads_.find (name);
+
+  if (found != threads_.end ())
+  {
+    control_->set (name + ".terminated", knowledge::KnowledgeRecord::Integer (1));
+  }
+}
+
+void
+madara::threads::Threader::terminate (void)
+{
+  for (NamedWorkerThreads::iterator i = threads_.begin ();
+    i != threads_.end (); ++i)
+  {
+    control_->set (i->first + ".terminated", knowledge::KnowledgeRecord::Integer (1));
+  }
+}
+
 bool
 madara::threads::Threader::wait (const std::string name,
   const knowledge::WaitSettings & ws)
@@ -173,67 +236,4 @@ madara::threads::Threader::wait (const knowledge::WaitSettings & ws)
 #endif // _MADARA_NO_KARL_
 
   return result;
-}
-
-void
-madara::threads::Threader::pause (const std::string name)
-{
-  NamedWorkerThreads::iterator found = threads_.find (name);
-
-  if (found != threads_.end ())
-  {
-    control_->set (name + ".paused", knowledge::KnowledgeRecord::Integer (1));
-  }
-}
-
-void
-madara::threads::Threader::pause (void)
-{
-  for (NamedWorkerThreads::iterator i = threads_.begin ();
-       i != threads_.end (); ++i)
-  {
-    control_->set (i->first + ".paused", knowledge::KnowledgeRecord::Integer (1));
-  }
-}
-
-void
-madara::threads::Threader::resume (const std::string name)
-{
-  NamedWorkerThreads::iterator found = threads_.find (name);
-
-  if (found != threads_.end ())
-  {
-    control_->set (name + ".paused", knowledge::KnowledgeRecord::Integer (0));
-  }
-}
-
-void
-madara::threads::Threader::resume (void)
-{
-  for (NamedWorkerThreads::iterator i = threads_.begin ();
-       i != threads_.end (); ++i)
-  {
-    control_->set (i->first + ".paused", knowledge::KnowledgeRecord::Integer (0));
-  }
-}
-
-void
-madara::threads::Threader::terminate (const std::string name)
-{
-  NamedWorkerThreads::iterator found = threads_.find (name);
-
-  if (found != threads_.end ())
-  {
-    control_->set (name + ".terminated", knowledge::KnowledgeRecord::Integer (1));
-  }
-}
-
-void
-madara::threads::Threader::terminate (void)
-{
-  for (NamedWorkerThreads::iterator i = threads_.begin ();
-       i != threads_.end (); ++i)
-  {
-    control_->set (i->first + ".terminated", knowledge::KnowledgeRecord::Integer (1));
-  }
 }
