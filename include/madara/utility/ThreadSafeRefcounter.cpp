@@ -182,6 +182,7 @@ madara::utility::ThreadSafeRefcounter<T>::increment (void)
 {
   if (ptr_ && ptr_->manage_)
   {
+    MADARA_GUARD_TYPE guard (ptr_->mutex_);
     ++ptr_->refcount_;
   }
 }
@@ -193,6 +194,7 @@ madara::utility::ThreadSafeRefcounter<T>::decrement (void)
 {
   if (ptr_&& ptr_->manage_)
   {
+    MADARA_GUARD_TYPE guard (ptr_->mutex_);
     --ptr_->refcount_;
     if (ptr_->refcount_ <= 0)
     {
