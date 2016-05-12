@@ -69,6 +69,9 @@ namespace madara
       /// get the underlying pointer
       const T * get (void) const;
 
+      /// checks to see if the underlying pointer is valid
+      bool is_valid (void) const;
+
     private:
       /// implementation of the increment operation
       inline void increment (void);

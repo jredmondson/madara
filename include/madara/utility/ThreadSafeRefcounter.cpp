@@ -65,7 +65,14 @@ template <typename T>
 T * 
 madara::utility::ThreadSafeRefcounter<T>::get_ptr (void)
 {
-  return ptr_->t_;
+  T * result (0);
+  
+  if (ptr_)
+  {
+    result = ptr_->t_;
+  }
+
+  return result;
 }
 
 /// get the underlying pointer
@@ -73,7 +80,22 @@ template <typename T>
 const T *
 madara::utility::ThreadSafeRefcounter<T>::get_ptr (void) const
 {
-  return ptr_->t_;
+  const T * result (0);
+
+  if (ptr_)
+  {
+    result = ptr_->t_;
+  }
+
+  return result;
+}
+
+/// get the underlying pointer
+template <typename T>
+bool
+madara::utility::ThreadSafeRefcounter<T>::is_valid (void) const
+{
+  return ptr_ && ptr_->refcount_ > 0;
 }
 
 /// get the underlying pointer
@@ -81,7 +103,14 @@ template <typename T>
 T *
 madara::utility::ThreadSafeRefcounter<T>::get (void)
 {
-  return ptr_->t_;
+  T * result (0);
+
+  if (ptr_)
+  {
+    result = ptr_->t_;
+  }
+
+  return result;
 }
 
 /// get the underlying pointer
@@ -89,7 +118,14 @@ template <typename T>
 const T *
 madara::utility::ThreadSafeRefcounter<T>::get (void) const
 {
-  return ptr_->t_;
+  const T * result (0);
+
+  if (ptr_)
+  {
+    result = ptr_->t_;
+  }
+
+  return result;
 }
 
 /// dereference operator
@@ -114,7 +150,14 @@ template <typename T>
 T *
 madara::utility::ThreadSafeRefcounter<T>::operator-> (void)
 {
-  return ptr_->t_;
+  T * result (0);
+
+  if (ptr_)
+  {
+    result = ptr_->t_;
+  }
+
+  return result;
 }
 
 /// mimic pointer dereferencing
@@ -122,7 +165,14 @@ template <typename T>
 const T *
 madara::utility::ThreadSafeRefcounter<T>::operator-> (void) const
 {
-  return ptr_->t_;
+  const T * result (0);
+
+  if (ptr_)
+  {
+    result = ptr_->t_;
+  }
+
+  return result;
 }
 
 /// implementation of the increment operation

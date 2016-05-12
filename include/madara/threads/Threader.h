@@ -67,13 +67,13 @@ namespace madara
       * Gets the control plane used by threads
       * @return  the knowledge base used by threader for control of threads
       **/
-      knowledge::KnowledgeBase get_control_plane (void);
+      knowledge::KnowledgeBase * get_control_plane (void);
 
       /**
        * Gets the data plane used by threads
        * @return  the knowledge base used by threads for data
        **/
-      knowledge::KnowledgeBase get_data_plane (void);
+      knowledge::KnowledgeBase * get_data_plane (void);
 
       /**
       * Requests a specific thread to pause

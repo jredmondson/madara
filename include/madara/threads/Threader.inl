@@ -19,20 +19,20 @@ madara::threads::Threader::change_hertz (const std::string name, double hertz)
   control_->set (name + ".hertz", hertz);
 }
 
-inline madara::knowledge::KnowledgeBase
+inline madara::knowledge::KnowledgeBase *
 madara::threads::Threader::get_data_plane (void)
 {
-  return *data_;
+  return data_;
 }
 
 /**
 * Gets the control plane used by threads
 * @return  the knowledge base used by threader for control of threads
 **/
-inline madara::knowledge::KnowledgeBase
+inline madara::knowledge::KnowledgeBase *
 madara::threads::Threader::get_control_plane (void)
 {
-  return *control_;
+  return control_;
 }
 
 
