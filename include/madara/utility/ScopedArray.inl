@@ -78,6 +78,22 @@ madara::utility::ScopedArray<T>::get_ptr (void) const
   return ptr_->t_;
 }
 
+/// get the underlying pointer
+template <typename T>
+T *
+madara::utility::ScopedArray<T>::get (void)
+{
+  return ptr_->t_;
+}
+
+/// get the underlying pointer
+template <typename T>
+const T *
+madara::utility::ScopedArray<T>::get (void) const
+{
+  return ptr_->t_;
+}
+
 
 /// implementation of the increment operation
 template <typename T>
