@@ -76,9 +76,17 @@ madara::logger::Logger::log (int level, const char * message, ...)
     }
 #endif
 
+    int file_num = 0;
     for (FileVectors::iterator i = files_.begin ();
       i != files_.end (); ++i)
     {
+      if (level >= LOG_DETAILED)
+      {
+        fprintf (stderr, "Logger::log: writing to file num %d", file_num);
+
+        // file_num is only important if logging is detailed
+        ++file_num;
+      }
       fprintf (*i, "%s", buffer);
     }
   }
