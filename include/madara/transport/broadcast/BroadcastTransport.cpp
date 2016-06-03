@@ -272,6 +272,8 @@ madara::transport::BroadcastTransport::send_data (
           actual_sent = socket_.send (
             buffer_.get_ptr (), (ssize_t)result, addresses_[0]);
 
+          ++send_attempts;
+
           if (actual_sent > 0)
           {
             bytes_sent = (uint64_t)actual_sent;
