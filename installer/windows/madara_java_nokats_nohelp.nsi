@@ -45,6 +45,8 @@
 
 
 
+RequestExecutionLevel admin
+
 
 ; Get the MADARA version
 !system "get_version.exe"
@@ -237,6 +239,10 @@ Section "-requiredtools"
 SectionEnd
 
 Section "-basic" SEC08
+  SetShellVarContext all
+  
+  CreateDirectory "$SMPROGRAMS\GAMS"
+  
   SetOutPath "$INSTDIR"
   File "..\..\VERSION.txt"
   CreateShortCut "$SMPROGRAMS\MADARA\VERSION.lnk" "$INSTDIR\VERSION.txt"
@@ -247,6 +253,7 @@ Section "-basic" SEC08
 SectionEnd
 
 Section -AdditionalIcons
+  SetShellVarContext all
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   CreateShortCut "$SMPROGRAMS\MADARA\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
   CreateShortCut "$SMPROGRAMS\MADARA\Uninstall.lnk" "$INSTDIR\uninst.exe"
@@ -317,6 +324,7 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
+  SetShellVarContext all
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\LICENSE.txt"
