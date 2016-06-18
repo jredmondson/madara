@@ -861,7 +861,7 @@ namespace madara
      * @param    records     the list of records to gauge quality of
      * @return   the maximum quality within the list of records
      **/
-    uint32_t max_quality (const knowledge::KnowledgeMap & records);
+    uint32_t max_quality (const KnowledgeMap & records);
   }
 }
 

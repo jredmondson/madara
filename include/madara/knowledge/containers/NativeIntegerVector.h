@@ -240,7 +240,7 @@ namespace madara
         * as it pertains to pending network operations (i.e., when used
         * in conjunction with modify)
         *
-        * @return info in format <container>: <name>< = value, if appropriate>
+        * @return info in format {container}: {name}{ = value, if appropriate}
         **/
         std::string get_debug_info (void);
 
@@ -294,7 +294,7 @@ namespace madara
         * as it pertains to pending network operations (i.e., when used
         * in conjunction with modify)
         *
-        * @return info in format <container>: <name>< = value, if appropriate>
+        * @return info in format {container}: {name}{ = value, if appropriate}
         **/
         virtual std::string get_debug_info_ (void);
 

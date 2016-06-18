@@ -8,7 +8,7 @@
 #include "madara/utility/Utility.h"
 
 /**
-* @file knowledge::KnowledgeRecord.h
+* @file KnowledgeRecord.inl
 * @author James Edmondson <jedmondson@gmail.com>
 *
 * This file contains the methods of the knowledge::KnowledgeRecord class
@@ -175,7 +175,7 @@ madara::knowledge::max_quality (const knowledge::KnowledgeRecords & records)
 }
 
 inline uint32_t
-madara::knowledge::max_quality (const knowledge::KnowledgeMap & records)
+madara::knowledge::max_quality (const KnowledgeMap & records)
 {
   uint32_t max = 0;
 

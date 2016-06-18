@@ -123,11 +123,35 @@ madara::knowledge::KnowledgeRecord
 }
 
 
+
+madara::knowledge::KnowledgeRecord
+check_matches (madara::knowledge::FunctionArguments &,
+madara::knowledge::Variables & variables)
+{
+  madara::knowledge::VariableReferences matches;
+  variables.get_matches ("map", "", matches);
+
+  assert (matches.size () == 8 &&
+    variables.get (matches[0]).to_string () == "10" &&
+    variables.get (matches[1]).to_string () == "9" &&
+    variables.get (matches[2]).to_string () == "8" &&
+    variables.get (matches[3]).to_string () == "7" &&
+    variables.get (matches[4]).to_string () == "6" &&
+    variables.get (matches[5]).to_string () == "5" &&
+    variables.get (matches[6]).to_string () == "4" &&
+    variables.get (matches[7]).to_string () == "3");
+
+  return madara::knowledge::KnowledgeRecord::Integer (matches.size ());
+}
+
+
+
 // test functions
 void test_arrays (void);
 void test_array_math (madara::knowledge::KnowledgeBase &  knowledge);
 void test_to_vector (madara::knowledge::KnowledgeBase &  knowledge);
 void test_to_map (madara::knowledge::KnowledgeBase &  knowledge);
+void test_get_matches (madara::knowledge::KnowledgeBase &  knowledge);
 void test_strings (madara::knowledge::KnowledgeBase &  knowledge);
 void test_doubles (madara::knowledge::KnowledgeBase &  knowledge);
 void test_logicals (madara::knowledge::KnowledgeBase & knowledge);
@@ -184,6 +208,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   test_both_operator (knowledge);
   test_dijkstra_sync (knowledge);
   test_to_string ();
+  test_get_matches (knowledge);
 
   knowledge.print ();
   
@@ -286,6 +311,33 @@ void test_to_map (madara::knowledge::KnowledgeBase & knowledge)
   knowledge.define_function ("check_map", check_map);
 
   knowledge.evaluate ("check_map ()");
+}
+
+void test_get_matches (madara::knowledge::KnowledgeBase & knowledge)
+{
+  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
+    "Testing get_matches function\n");
+
+  std::map <std::string, madara::knowledge::KnowledgeRecord> records;
+
+  knowledge.clear ();
+
+  knowledge.evaluate ("map1=10; map2=9; map3=8; map4=7");
+  knowledge.evaluate ("map5=6; map6=5; map7=4; map8=3");
+
+  assert (knowledge.to_map ("map*", records) == 8 &&
+    records["map1"].to_string () == "10" &&
+    records["map2"].to_string () == "9" &&
+    records["map3"].to_string () == "8" &&
+    records["map4"].to_string () == "7" &&
+    records["map5"].to_string () == "6" &&
+    records["map6"].to_string () == "5" &&
+    records["map7"].to_string () == "4" &&
+    records["map8"].to_string () == "3");
+
+  knowledge.define_function ("check_matches", check_matches);
+
+  knowledge.evaluate ("check_matches ()");
 }
 
 void test_to_string (void)

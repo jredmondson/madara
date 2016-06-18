@@ -1473,6 +1473,69 @@ size_t
 }
 
 
+void
+madara::knowledge::ThreadSafeContext::get_matches (
+  const std::string & prefix,
+  const std::string & suffix,
+  VariableReferences & matches)
+{
+  // get the first thing that either matches the prefix or is just after it
+  KnowledgeMap::iterator i = map_.lower_bound (prefix);
+
+  // if we have a valid prefix, then there is more to do
+  if (i != map_.end ())
+  {
+    // keep track of the beginning as we're going to iterate twice
+    KnowledgeMap::iterator first_match = i;
+    KnowledgeMap::iterator after_matches = map_.end ();
+    VariableReferences::iterator match;
+
+    size_t num_matches = 0;
+
+    size_t prefix_length = prefix.length ();
+
+    // Iterate over all of the prefix matches
+    while (i != map_.end () &&
+      i->first.compare (0, prefix_length, prefix) == 0)
+    {
+      ++i;
+      if (suffix == "" || utility::ends_with (i->first, suffix))
+      {
+        ++num_matches;
+      }
+    }
+
+    // save the end point so we can do fewer checks
+    after_matches = i;
+
+    // resize the matches to the appropriate size
+    matches.resize (num_matches);
+
+    // now, instead of many resizes, we are just going to resize once and set
+    i = first_match;
+    num_matches = 0;
+
+    match = matches.begin ();
+
+    // Reiterate
+    while (i != after_matches)
+    {
+      ++i;
+      if (suffix == "" || utility::ends_with (i->first, suffix))
+      {
+        match->set_name (i->first);
+        match->record_ = &i->second;
+        ++match;
+      }
+    }
+  }
+  else
+  {
+    matches.clear ();
+  }
+}
+
+
 size_t 
 madara::knowledge::ThreadSafeContext::to_map (
   const std::string & prefix,
@@ -1493,8 +1556,14 @@ madara::knowledge::ThreadSafeContext::to_map (
   // enter the mutex
   MADARA_GUARD_TYPE guard (mutex_);
 
-  for (KnowledgeMap::iterator i = map_.begin ();
-    i != map_.end (); ++i)
+  KnowledgeMap::iterator i = map_.begin ();
+
+  if (prefix != "")
+  {
+    i = map_.lower_bound (prefix);
+  }
+
+  for (; i != map_.end (); ++i)
   {
     // if the prefix doesn't match
     if (prefix != "" && !utility::begins_with (i->first, prefix))
@@ -1644,7 +1713,7 @@ madara::knowledge::ThreadSafeContext::get_prefix_range(
   // If prefix is empty string, copy entire map
   if(prefix.size() > 0)
   {
-    ssize_t psz = prefix.size();
+    ssize_t psz = prefix.size ();
 
     // Find first element >= prefix; i.e., first match or first with that prefix
     ret.second = ret.first = map_.lower_bound(prefix);

@@ -794,6 +794,23 @@ madara::knowledge::Variables::to_vector (
   return result;
 }
 
+void
+madara::knowledge::Variables::get_matches (
+  const std::string & prefix,
+  const std::string & suffix,
+  VariableReferences & matches)
+{
+  if (context_)
+  {
+    context_->get_matches (prefix, suffix, matches);
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_EMERGENCY,
+      "Variables::get_matches: Context not set correctly\n");
+  }
+}
+
 size_t
 madara::knowledge::Variables::to_map (
   const std::string & expression,

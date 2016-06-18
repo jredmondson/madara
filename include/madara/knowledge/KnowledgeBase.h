@@ -993,7 +993,19 @@ namespace madara
        * @return             host:port identifier for this knowledge base
        **/
       std::string get_id (void);
-      
+
+      /**
+      * Creates an iteration of VariableReferences to all keys matching
+      * the prefix and suffix
+      * @param  prefix   string that the key must start with
+      * @param  suffix   string that the key must end with
+      * @param  matches  all VariableReferences matching the prefix and suffix
+      **/
+      void get_matches (
+        const std::string & prefix,
+        const std::string & suffix,
+        VariableReferences & matches);
+
       /**
        * Fills a vector with Knowledge Records that begin with a common subject
        * and have a finite range of integer values.

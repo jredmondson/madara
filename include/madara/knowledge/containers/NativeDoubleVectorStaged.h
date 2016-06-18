@@ -11,7 +11,7 @@
 #include "BaseContainer.h"
 
 /**
- * @file NativeDoubleVectorStagedStaged.h
+ * @file NativeDoubleVectorStaged.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
  * This file contains a C++ object that manages interactions for an
@@ -145,6 +145,7 @@ namespace madara
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
          * @param size       size of the new vector (-1 to not change size)
+         * @param sync       synchronize the container to the knowledge base
          **/
         void set_name (const std::string & var_name,
           KnowledgeBase & knowledge, int size = -1,
@@ -155,6 +156,7 @@ namespace madara
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
          * @param size       size of the new vector (-1 to not change size)
+         * @param sync       synchronize the container to the knowledge base
          **/
         void set_name (const std::string & var_name,
           Variables & knowledge, int size = -1,
@@ -165,6 +167,7 @@ namespace madara
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
          * @param size       size of the new vector (-1 to not change size)
+         * @param sync       synchronize the container to the knowledge base
          **/
         void set_name (const std::string & var_name,
           ThreadSafeContext & knowledge, int size = -1,
@@ -227,7 +230,7 @@ namespace madara
         * as it pertains to pending network operations (i.e., when used
         * in conjunction with modify)
         *
-        * @return info in format <container>: <name>< = value, if appropriate>
+        * @return info in format {container}: {name}{ = value, if appropriate}
         **/
         std::string get_debug_info (void);
 
@@ -291,7 +294,7 @@ namespace madara
         * as it pertains to pending network operations (i.e., when used
         * in conjunction with modify)
         *
-        * @return info in format <container>: <name>< = value, if appropriate>
+        * @return info in format {container}: {name}{ = value, if appropriate}
         **/
         virtual std::string get_debug_info_ (void);
 

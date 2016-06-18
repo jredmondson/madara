@@ -2,7 +2,7 @@
 #define _MADARA_TRANSPORT_SETTINGS_H_
 
 /**
- * @file TransportTransportSettings.h
+ * @file TransportSettings.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
  * This file contains the transport::Base class, which provides an

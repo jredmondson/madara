@@ -740,7 +740,6 @@ namespace madara
        * Changes global variables to modified at current clock for the purposes
        * of sending or checkpointing knowledge (globals and locals respectively)
        * @param  key     the key of the record you are changing
-       * @param  record  record of the key in the context (should exist)
        * @param  settings  the settings for referring to variables
        **/
       void mark_modified (const std::string & key,
@@ -1193,7 +1192,19 @@ namespace madara
                               unsigned int start,
                               unsigned int end,
                               std::vector <KnowledgeRecord> & target);
-      
+
+      /**
+      * Creates an iteration of VariableReferences to all keys matching
+      * the prefix and suffix
+      * @param  prefix   string that the key must start with
+      * @param  suffix   string that the key must end with
+      * @param  matches  all VariableReferences matching the prefix and suffix
+      **/
+      void get_matches (
+        const std::string & prefix,
+        const std::string & suffix,
+        VariableReferences & matches);
+
       /**
        * Fills a variable map with Knowledge Records that match an expression.
        * At the moment, this expression must be of the form "subject*"

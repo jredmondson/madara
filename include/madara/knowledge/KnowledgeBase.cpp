@@ -1662,6 +1662,22 @@ madara::knowledge::KnowledgeBase::to_vector (
   return result;
 }
 
+void
+madara::knowledge::KnowledgeBase::get_matches (
+const std::string & prefix,
+const std::string & suffix,
+VariableReferences & matches)
+{
+  if (context_)
+  {
+    context_->get_matches (prefix, suffix, matches);
+  }
+  else if (impl_.get_ptr ())
+  {
+    impl_->get_matches (prefix, suffix, matches);
+  }
+}
+
 void madara::knowledge::KnowledgeBase::facade_for (
   ThreadSafeContext & context)
 {

@@ -435,6 +435,16 @@ madara::knowledge::KnowledgeBaseImpl::to_vector (
 }
 
 inline
+void
+madara::knowledge::KnowledgeBaseImpl::get_matches (
+const std::string & prefix,
+const std::string & suffix,
+VariableReferences & matches)
+{
+  map_.get_matches (prefix, suffix, matches);
+}
+
+inline
 size_t
 madara::knowledge::KnowledgeBaseImpl::to_map (
   const std::string & expression,
