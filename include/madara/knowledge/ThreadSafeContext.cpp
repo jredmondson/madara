@@ -1520,13 +1520,13 @@ madara::knowledge::ThreadSafeContext::get_matches (
     // Reiterate
     while (i != after_matches)
     {
-      ++i;
       if (suffix == "" || utility::ends_with (i->first, suffix))
       {
         match->set_name (i->first);
         match->record_ = &i->second;
         ++match;
       }
+      ++i;
     }
   }
   else
