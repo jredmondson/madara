@@ -491,6 +491,23 @@ madara::knowledge::containers::Map::exists (
   return result;
 }
 
+bool
+madara::knowledge::containers::Map::has_prefix (
+const std::string & prefix) const
+{
+  bool result (false);
+
+  InternalMap::const_iterator found = map_.lower_bound (prefix);
+
+  if (found != map_.end ())
+  {
+    if (madara::utility::begins_with (found->first, prefix))
+      result = true;
+  }
+
+  return result;
+}
+
 void
 madara::knowledge::containers::Map::keys (
   std::vector <std::string> & curkeys) const

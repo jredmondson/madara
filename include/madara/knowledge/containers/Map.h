@@ -153,6 +153,13 @@ namespace madara
         bool exists (const std::string & key) const;
 
         /**
+        * Checks for the existence of a prefix in the keys
+        * @param  prefix   the first letters in a key
+        * @return true if prefix exists in map. False otherwise.
+        **/
+        bool has_prefix (const std::string & prefix) const;
+
+        /**
          * Sets the variable name that this refers to
          * @param var_name   the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
