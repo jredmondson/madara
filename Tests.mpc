@@ -107,6 +107,28 @@ project (Test_Barrier) : using_madara, using_ace, no_karl, no_xml, null_lock, st
   }
 }
 
+project (Test_Kb_Destructions) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_kb_destructions
+  
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_kb_destructions.cpp
+  }
+}
+
 project (Test_Counter) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock {
   exeout = $(MADARA_ROOT)/bin
   exename = test_counter
