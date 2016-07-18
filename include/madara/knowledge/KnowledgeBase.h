@@ -22,7 +22,6 @@
 #include "madara/transport/Transport.h"
 #include "madara/expression/Interpreter.h"
 #include "madara/utility/Refcounter.h"
-#include "madara/utility/ThreadSafeRefcounter.h"
 #include "madara/knowledge/KnowledgeBaseImpl.h"
 #include "madara/knowledge/CompiledExpression.h"
 #include "madara/knowledge/VariableReference.h"

@@ -23,7 +23,6 @@
 #include "ace/Condition_T.h"
 #include "ace/Guard_T.h"
 
-#include "madara/utility/ThreadSafeRefcounter.h"
 #include "ace/High_Res_Timer.h"
 
 #ifdef _USE_CID_
