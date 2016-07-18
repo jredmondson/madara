@@ -40,7 +40,7 @@ void kb_ref_level_1 (void)
   kb_copy_level_2 (knowledge);
 }
 
-int main (int argc, char ** argv)
+int main (int , char ** )
 {
   kb_scoped_level_1 ();
   kb_scoped_level_1 ();
