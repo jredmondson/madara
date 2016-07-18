@@ -72,7 +72,7 @@ madara::knowledge::KnowledgeBase::use (
 void
 madara::knowledge::KnowledgeBase::lock (void)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->lock ();
   }
@@ -85,7 +85,7 @@ madara::knowledge::KnowledgeBase::lock (void)
 void
 madara::knowledge::KnowledgeBase::unlock (void)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->unlock ();
   }
@@ -100,7 +100,7 @@ madara::knowledge::KnowledgeBase::get_log_level (void)
 {
   int result (0);
 
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->get_log_level ();
   }
@@ -115,7 +115,7 @@ madara::knowledge::KnowledgeBase::get_log_level (void)
 madara::logger::Logger &
 madara::knowledge::KnowledgeBase::get_logger (void) const
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     return impl_->get_logger ();
   }
@@ -129,7 +129,7 @@ void
 madara::knowledge::KnowledgeBase::attach_logger (
   logger::Logger & logger) const
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->attach_logger (logger);
   }
@@ -142,7 +142,7 @@ madara::knowledge::KnowledgeBase::attach_logger (
 void
 madara::knowledge::KnowledgeBase::set_log_level (int level)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->set_log_level (level);
   }
@@ -159,14 +159,14 @@ madara::knowledge::KnowledgeBase::copy (
   const CopySet & copy_set,
   bool clean_copy)
 {
-  if (impl_.get_ptr () && source.impl_.get_ptr () != 0)
+  if (impl_.get () && source.impl_.get () != 0)
   {
-    impl_->copy (*source.impl_.get_ptr (), copy_set, clean_copy);
+    impl_->copy (*source.impl_.get (), copy_set, clean_copy);
   }
-  else if (context_ && source.impl_.get_ptr () != 0)
+  else if (context_ && source.impl_.get () != 0)
   {
     KnowledgeBaseImpl * source_impl =
-      (KnowledgeBaseImpl *)source.impl_.get_ptr ();
+      (KnowledgeBaseImpl *)source.impl_.get ();
     ThreadSafeContext * source_context = &(source_impl->get_context ());
 
     context_->copy (*source_context, copy_set, clean_copy);
@@ -181,7 +181,7 @@ madara::knowledge::KnowledgeBase::apply_modified (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->apply_modified (settings);
   }
@@ -196,7 +196,7 @@ madara::knowledge::KnowledgeBase::apply_modified (
 void
 madara::knowledge::KnowledgeBase::close_transport (void)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->close_transport ();
   }
@@ -208,7 +208,7 @@ madara::knowledge::KnowledgeBase::get (const std::string & key,
 {
   knowledge::KnowledgeRecord result;
 
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->get (key, settings);
   }
@@ -226,7 +226,7 @@ madara::knowledge::KnowledgeBase::get_ref (const std::string & key,
 {
   VariableReference var;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     var = impl_->get_ref (key, settings);
   }
@@ -245,7 +245,7 @@ madara::knowledge::KnowledgeBase::get (
 {
   knowledge::KnowledgeRecord result;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->get (variable, settings);
   }
@@ -264,7 +264,7 @@ madara::knowledge::KnowledgeBase::retrieve_index (
 {
   knowledge::KnowledgeRecord result;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->retrieve_index (key, index, settings);
   }
@@ -283,7 +283,7 @@ madara::knowledge::KnowledgeBase::retrieve_index (
 {
   knowledge::KnowledgeRecord result;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->retrieve_index (variable, index, settings);
   }
@@ -304,7 +304,7 @@ madara::knowledge::KnowledgeBase::read_file (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->read_file (knowledge_key, filename, settings);
   }
@@ -324,7 +324,7 @@ madara::knowledge::KnowledgeBase::read_file (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->read_file (variable, filename, settings);
   }
@@ -346,7 +346,7 @@ madara::knowledge::KnowledgeBase::set_file (
 
   if (key != "")
   {
-    if (impl_.get_ptr ())
+    if (impl_.get ())
     {
       result = impl_->set_file (
         impl_->get_ref (key, settings), value, size, settings);
@@ -369,7 +369,7 @@ madara::knowledge::KnowledgeBase::set_file (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set_file (variable, value, size, settings);
   }
@@ -391,7 +391,7 @@ madara::knowledge::KnowledgeBase::set_jpeg (
 
   if (key != "")
   {
-    if (impl_.get_ptr ())
+    if (impl_.get ())
     {
       result = impl_->set_jpeg (
         impl_->get_ref (key, settings), value, size, settings);
@@ -414,7 +414,7 @@ madara::knowledge::KnowledgeBase::set_jpeg (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set_jpeg (variable, value, size, settings);
   }
@@ -433,7 +433,7 @@ madara::knowledge::KnowledgeBase::read_policy (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->read_policy (knowledge_key, filename);
   }
@@ -447,7 +447,7 @@ madara::knowledge::KnowledgeBase::write_file (const std::string & knowledge_key,
 {
   ssize_t result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->write_file (knowledge_key, filename);
   }
@@ -462,7 +462,7 @@ madara::knowledge::KnowledgeBase::expand_statement (
 {
   std::string result;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->expand_statement (statement);
   }
@@ -482,7 +482,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (key, value, settings);
   }
@@ -499,7 +499,7 @@ madara::knowledge::KnowledgeBase::mark_modified (
   const VariableReference & variable,
   const KnowledgeUpdateSettings & settings)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->mark_modified (variable);
   }
@@ -514,7 +514,7 @@ madara::knowledge::KnowledgeBase::mark_modified (
   const std::string & name,
   const KnowledgeUpdateSettings & settings)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->mark_modified (name, settings);
   }
@@ -532,7 +532,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (variable, value, settings);
   }
@@ -553,7 +553,7 @@ madara::knowledge::KnowledgeBase::set_index (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set_index (key, index, value, settings);
   }
@@ -574,7 +574,7 @@ madara::knowledge::KnowledgeBase::set_index (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set_index (variable, index, value, settings);
   }
@@ -595,7 +595,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (key, value, size, settings);
   }
@@ -616,7 +616,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (variable, value, size, settings);
   }
@@ -636,7 +636,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (key, value, settings);
   }
@@ -656,7 +656,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (variable, value, settings);
   }
@@ -676,7 +676,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (key, value, settings);
   }
@@ -696,7 +696,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (variable, value, settings);
   }
@@ -717,7 +717,7 @@ madara::knowledge::KnowledgeBase::set_index (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set_index (key, index, value, settings);
   }
@@ -738,7 +738,7 @@ madara::knowledge::KnowledgeBase::set_index (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set_index (variable, index, value, settings);
   }
@@ -759,7 +759,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (key, value, size, settings);
   }
@@ -780,7 +780,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (variable, value, size, settings);
   }
@@ -800,7 +800,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (key, value, settings);
   }
@@ -820,7 +820,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (variable, value, settings);
   }
@@ -839,7 +839,7 @@ madara::knowledge::KnowledgeBase::set (const std::string & key,
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (key, value, settings);
   }
@@ -859,7 +859,7 @@ madara::knowledge::KnowledgeBase::set (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->set (variable, value, settings);
   }
@@ -878,7 +878,7 @@ madara::knowledge::KnowledgeBase::set_quality (
   const std::string & key, uint32_t quality,
   const KnowledgeReferenceSettings & settings)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->set_quality (key, quality, settings);
   }
@@ -896,7 +896,7 @@ madara::knowledge::KnowledgeBase::exists (
 {
   bool result = false;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->exists (key, settings);
   }
@@ -915,7 +915,7 @@ madara::knowledge::KnowledgeBase::exists (
 {
   bool result = false;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->exists (variable, settings);
   }
@@ -987,7 +987,7 @@ void
 madara::knowledge::KnowledgeBase::print (
   unsigned int level) const
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->print (level);
   }
@@ -1001,7 +1001,7 @@ void
 madara::knowledge::KnowledgeBase::print_knowledge (
   unsigned int level) const
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->print (level);
   }
@@ -1018,7 +1018,7 @@ madara::knowledge::KnowledgeBase::to_string (
   const std::string & record_delimiter,
   const std::string & key_val_delimiter) const
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->to_string (target,
       array_delimiter, record_delimiter, key_val_delimiter);
@@ -1035,7 +1035,7 @@ void
 madara::knowledge::KnowledgeBase::print (
   const std::string & statement, unsigned int level) const
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->print (statement, level);
   }
@@ -1051,7 +1051,7 @@ madara::knowledge::KnowledgeBase::clear (const std::string & key,
 {
   bool result (false);
 
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->clear (key, settings);
   }
@@ -1066,7 +1066,7 @@ madara::knowledge::KnowledgeBase::clear (const std::string & key,
 void
 madara::knowledge::KnowledgeBase::clear (bool erase)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->clear (erase);
   }
@@ -1079,7 +1079,7 @@ madara::knowledge::KnowledgeBase::clear (bool erase)
 void
 madara::knowledge::KnowledgeBase::clear_map (void)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->clear_map ();
   }
@@ -1092,7 +1092,7 @@ madara::knowledge::KnowledgeBase::clear_map (void)
 void
 madara::knowledge::KnowledgeBase::acquire (void)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->acquire ();
   }
@@ -1105,7 +1105,7 @@ madara::knowledge::KnowledgeBase::acquire (void)
 void
 madara::knowledge::KnowledgeBase::release (void)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->release ();
   }
@@ -1123,7 +1123,7 @@ madara::knowledge::KnowledgeBase::compile (
 {
   CompiledExpression result;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->compile (expression);
   }
@@ -1139,7 +1139,7 @@ madara::knowledge::KnowledgeBase::evaluate (
 {
   knowledge::KnowledgeRecord result;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->evaluate (expression, settings);
   }
@@ -1160,7 +1160,7 @@ madara::knowledge::KnowledgeBase::evaluate (
 {
   knowledge::KnowledgeRecord result;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->evaluate (expression, settings);
   }
@@ -1180,7 +1180,7 @@ madara::knowledge::KnowledgeBase::evaluate (
 {
   knowledge::KnowledgeRecord result;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->evaluate (root, settings);
   }
@@ -1199,7 +1199,7 @@ madara::knowledge::KnowledgeBase::define_function (
   const std::string & name,
     knowledge::KnowledgeRecord (*func) (const char *, FunctionArguments &, Variables &))
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->define_function (name, func);
   }
@@ -1214,7 +1214,7 @@ void madara::knowledge::KnowledgeBase::define_function (
   const std::string & name,
     knowledge::KnowledgeRecord (*func) (FunctionArguments &, Variables &))
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->define_function (name, func);
   }
@@ -1229,7 +1229,7 @@ void madara::knowledge::KnowledgeBase::define_function (
 void madara::knowledge::KnowledgeBase::define_function (
   const std::string & name, jobject func)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->define_function (name, func);
   }
@@ -1246,7 +1246,7 @@ void madara::knowledge::KnowledgeBase::define_function (
 void madara::knowledge::KnowledgeBase::define_function (
   const std::string & name, boost::python::object callable)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->define_function (name, callable);
   }
@@ -1267,7 +1267,7 @@ void
 madara::knowledge::KnowledgeBase::define_function (const std::string & name,
   const std::string & expression)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->define_function (name, expression);
   }
@@ -1286,7 +1286,7 @@ void
 madara::knowledge::KnowledgeBase::define_function (const std::string & name,
   const CompiledExpression & expression)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->define_function (name, expression);
   }
@@ -1424,7 +1424,7 @@ madara::knowledge::KnowledgeBase::wait (
 
     return last_value;
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     result = impl_->wait (expression, settings);
   }
@@ -1444,7 +1444,7 @@ madara::knowledge::KnowledgeBase::wait (
     CompiledExpression ce = context_->compile (expression);
     result = this->wait (ce, settings);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     result = impl_->wait (expression, settings);
   }
@@ -1457,7 +1457,7 @@ madara::knowledge::KnowledgeBase::wait (
 void
 madara::knowledge::KnowledgeBase::activate_transport (void)
 {
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     impl_->activate_transport ();
   }
@@ -1469,7 +1469,7 @@ madara::knowledge::KnowledgeBase::attach_transport (
 {
   size_t result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->attach_transport (transport);
   }
@@ -1482,7 +1482,7 @@ madara::knowledge::KnowledgeBase::get_num_transports (void)
 {
   size_t result (0);
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->get_num_transports ();
   }
@@ -1496,7 +1496,7 @@ madara::knowledge::KnowledgeBase::attach_transport (const std::string & id,
 {
   size_t result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->attach_transport (id, settings);
   }
@@ -1510,7 +1510,7 @@ size_t
 {
   size_t result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->remove_transport (index);
   }
@@ -1527,7 +1527,7 @@ madara::knowledge::KnowledgeBase::get_context (void)
   {
     result = context_;
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     result = &(impl_->get_context ());
   }
@@ -1542,7 +1542,7 @@ madara::knowledge::KnowledgeBase::clear_modifieds (void)
   {
     context_->reset_modified ();
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     impl_->clear_modifieds ();
   }
@@ -1555,7 +1555,7 @@ madara::knowledge::KnowledgeBase::add_modifieds (const VariableReferences & modi
   {
     context_->add_modifieds (modifieds);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     impl_->add_modifieds (modifieds);
   }
@@ -1570,7 +1570,7 @@ madara::knowledge::KnowledgeBase::save_modifieds (void) const
   {
     return context_->save_modifieds ();
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     return impl_->save_modifieds ();
   }
@@ -1585,7 +1585,7 @@ madara::knowledge::KnowledgeBase::send_modifieds (
 {
   int result = 0;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->send_modifieds (prefix, settings);
   }
@@ -1602,7 +1602,7 @@ madara::knowledge::KnowledgeBase::debug_modifieds (void) const
   {
     result = context_->debug_modifieds ();
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     result = impl_->debug_modifieds ();
   }
@@ -1619,7 +1619,7 @@ madara::knowledge::KnowledgeBase::get_id (void)
 {
   std::string result;
 
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->get_id ();
   }
@@ -1654,7 +1654,7 @@ madara::knowledge::KnowledgeBase::to_vector (
   {
     result = context_->to_vector (subject, start, end, target);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     result = impl_->to_vector (subject, start, end, target);
   }
@@ -1672,7 +1672,7 @@ VariableReferences & matches)
   {
     context_->get_matches (prefix, suffix, matches);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     impl_->get_matches (prefix, suffix, matches);
   }
@@ -1696,7 +1696,7 @@ madara::knowledge::KnowledgeBase::to_map (
   {
     result = context_->to_map (expression, target);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     result = impl_->to_map (expression, target);
   }
@@ -1720,7 +1720,7 @@ madara::knowledge::KnowledgeBase::to_map (
     result_size = context_->to_map (
       prefix, delimiter, suffix, next_keys, result, just_keys);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     result_size = impl_->to_map (
       prefix, delimiter, suffix, next_keys, result, just_keys);
@@ -1737,7 +1737,7 @@ madara::knowledge::KnowledgeBase::to_map (
   {
     return context_->to_map (prefix);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     return impl_->to_map (prefix);
   }
@@ -1753,7 +1753,7 @@ madara::knowledge::KnowledgeBase::to_map_stripped (
   {
     return context_->to_map_stripped (prefix);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     return impl_->to_map_stripped (prefix);
   }
@@ -1771,7 +1771,7 @@ madara::knowledge::KnowledgeBase::save_context (
   {
     result = context_->save_context (filename);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     result = impl_->save_context (filename);
   }
@@ -1790,7 +1790,7 @@ madara::knowledge::KnowledgeBase::save_as_karl (
   {
     result = context_->save_as_karl (filename);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     result = impl_->save_as_karl (filename);
   }
@@ -1810,7 +1810,7 @@ madara::knowledge::KnowledgeBase::save_checkpoint (
   {
     result = context_->save_checkpoint (filename);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     result = impl_->save_checkpoint (filename, reset_modifieds);
   }
@@ -1830,7 +1830,7 @@ madara::knowledge::KnowledgeBase::load_context (
   {
     result = impl_->load_context (filename, use_id, settings);
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     result = impl_->load_context (filename, use_id, settings);
   }
@@ -1845,7 +1845,7 @@ madara::knowledge::KnowledgeBase::wait_for_change (void)
   {
     context_->wait_for_change ();
   }
-  else if (impl_.get_ptr ())
+  else if (impl_.get ())
   {
     impl_->wait_for_change ();
   }
@@ -1857,7 +1857,7 @@ madara::knowledge::KnowledgeBase::setup_unique_hostport (
 {
   std::string result;
   
-  if (impl_.get_ptr ())
+  if (impl_.get ())
   {
     result = impl_->setup_unique_hostport (host);
   }

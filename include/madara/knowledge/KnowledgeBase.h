@@ -11,6 +11,7 @@
 #include <ostream>
 #include <string>
 #include <map>
+#include <memory>
 
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
@@ -1178,7 +1179,7 @@ namespace madara
 
       /// Pointer to actual implementation, i.e., the "bridge", which is
       /// reference counted to automate memory management. 
-      madara::utility::ThreadSafeRefcounter <KnowledgeBaseImpl> impl_;
+      std::shared_ptr <KnowledgeBaseImpl> impl_;
       //madara::utility::Refcounter <KnowledgeBaseImpl> impl_;
 
       /// A knowledge base can also be a facade for another knowledge base
