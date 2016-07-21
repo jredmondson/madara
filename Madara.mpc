@@ -187,7 +187,7 @@ project (KaRL) : using_ace, using_madara, no_karl {
   exename = karl
   
   verbatim (gnuace, local) {
-    CPPFLAGS += -w
+    CPPFLAGS += -w -std=c++11
   }
   
   Documentation_Files {
@@ -210,7 +210,7 @@ project (Madara_Registry) : using_ace, using_madara, no_karl {
   exename = madara_registry
   
   verbatim (gnuace, local) {
-    CPPFLAGS += -w
+    CPPFLAGS += -w -std=c++11
   }
   
   Documentation_Files {
@@ -234,7 +234,7 @@ project (MPGen) : using_ace, using_madara {
   exename = mpgen
   
   verbatim (gnuace, local) {
-    CPPFLAGS += -w
+    CPPFLAGS += -w -std=c++11
   }
   
   Documentation_Files {

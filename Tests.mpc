@@ -6,6 +6,10 @@ project (Test_Multicast_Mutex) : using_madara, using_ace, no_karl, no_xml, null_
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -28,6 +32,10 @@ project (TestMulticastCloseAndAtta.h) : using_madara, using_ace, no_karl, no_xml
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -50,6 +58,10 @@ project (Test_Multicast_Peer_Discovery) : using_madara, using_ace, no_karl, no_x
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -71,6 +83,10 @@ project (Test_Rebroadcast_Ring) : using_madara, using_ace, no_karl, no_xml, null
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -92,6 +108,10 @@ project (Test_Barrier) : using_madara, using_ace, no_karl, no_xml, null_lock, st
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -114,6 +134,10 @@ project (Test_Kb_Destructions) : using_madara, using_ace, no_karl, no_xml, null_
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -136,6 +160,10 @@ project (Test_Counter) : using_madara, using_ace, no_karl, no_xml, null_lock, st
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -158,6 +186,10 @@ project (Test_Threader_Queue_Perf) : using_madara, using_ace, no_karl, no_xml, n
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -180,6 +212,10 @@ project (Test_Threader_Counter) : using_madara, using_ace, no_karl, no_xml, null
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -202,6 +238,10 @@ project (Test_Threader_Producer_Consumer) : using_madara, using_ace, no_karl, no
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -224,6 +264,10 @@ project (Test_Threader_Hello_World) : using_madara, using_ace, no_karl, no_xml, 
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -245,6 +289,10 @@ project (Test_Threader_Periodic_Counter) : using_madara, using_ace, no_karl, no_
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -267,6 +315,10 @@ project (Test_Threader_Change_Hertz) : using_madara, using_ace, no_karl, no_xml,
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -289,6 +341,10 @@ project (Test_Context_Copy) : using_madara, using_ace, no_karl, no_xml, null_loc
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -311,6 +367,10 @@ project (Test_Prefix_To_Map) : using_madara, using_ace, no_karl, no_xml, null_lo
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -333,6 +393,10 @@ project (Test_Timed_Executor) : using_madara, using_ace, no_karl, no_xml, null_l
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -355,6 +419,10 @@ project (Test_KaRL_Containers) : using_madara, using_ace, no_karl, no_xml, null_
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -377,6 +445,10 @@ project (Test_File_Rebroadcasts) : using_madara, using_ace, no_karl, no_xml, nul
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -398,6 +470,10 @@ project (Test_Multicast_Aggregate_Filters) : using_madara, using_ace, no_karl, n
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -419,6 +495,10 @@ project (Test_Multicast_Send_List) : using_madara, using_ace, no_karl, no_xml, n
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -440,6 +520,10 @@ project (Test_Broadcast_Aggregate_Filters) : using_madara, using_ace, no_karl, n
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -461,6 +545,10 @@ project (Test_UDP_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml,
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -483,6 +571,10 @@ project (Test_Arrays) : using_madara, using_ace, no_karl, no_xml, null_lock, stl
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -504,6 +596,10 @@ project (Network_Counter_Filter) : using_madara, using_ace, no_karl, no_xml, nul
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -525,6 +621,10 @@ project (Network_Throughput) : using_madara, using_ace, no_karl, no_xml, null_lo
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -547,6 +647,10 @@ project (Network_Profiler) : using_madara, using_ace, no_karl, no_xml, null_lock
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -568,6 +672,10 @@ project (Test_Modifieds) : using_madara, using_ace, no_karl, no_xml, null_lock, 
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -590,6 +698,10 @@ project (Test_Checkpointing) : using_madara, using_ace, no_karl, no_xml, null_lo
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -612,6 +724,10 @@ project (Test_Bandwidth_Monitor) : using_madara, using_ace, no_karl, no_xml, nul
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -634,6 +750,10 @@ project (Test_Packet_Scheduler) : using_madara, using_ace, no_karl, no_xml, null
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -656,6 +776,10 @@ project (Test_Encoding) : using_madara, using_ace, no_karl, no_xml, null_lock, s
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -678,6 +802,10 @@ project (Test_QoS_Transport_Settings) : using_madara, using_ace, using_splice, n
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -700,6 +828,10 @@ project (Test_Evaluate) : using_madara, using_ace, no_karl, no_xml, null_lock, s
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -722,6 +854,10 @@ project (Test_Multicast_Rules) : using_madara, using_ace, no_karl, no_xml, null_
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -744,6 +880,10 @@ project (Test_Multicast_Rebroadcast) : using_madara, using_ace, no_karl, no_xml,
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -766,6 +906,10 @@ project (Test_Multicast_Filters) : using_madara, using_ace, no_karl, no_xml, nul
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -788,6 +932,10 @@ project (Test_UDP_Rules) : using_madara, using_ace, using_splice, no_karl, no_xm
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -810,6 +958,10 @@ project (Test_UDP_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -832,6 +984,10 @@ project (Test_UDP_Rebroadcast) : using_madara, using_ace, no_karl, no_xml, null_
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -854,6 +1010,10 @@ project (Test_Swarm_Drone) : using_madara, using_ace, using_splice, no_karl, no_
   
   requires += tests deprecated
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -876,6 +1036,10 @@ project (Test_Swarm_Area_Coverage) : using_madara, using_ace, using_splice, no_k
   
   requires += tests deprecated
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -898,6 +1062,10 @@ project (Test_Swarm_Terminal) : using_madara, using_ace, using_splice, no_karl, 
   
   requires += tests deprecated
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -920,6 +1088,10 @@ project (Test_System_Calls) : using_madara, using_ace, using_splice, no_karl, no
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -942,6 +1114,10 @@ project (Test_Broadcast_Rules) : using_madara, using_ace, using_splice, no_karl,
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -964,6 +1140,10 @@ project (Test_Broadcast_Filters) : using_madara, using_ace, using_splice, no_kar
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -986,6 +1166,10 @@ project (Test_Broadcast_Rebroadcast) : using_madara, using_ace, using_splice, no
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1009,6 +1193,10 @@ project (Test_Basic_Reasoning) : using_madara, using_ace, using_splice, no_karl,
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1030,6 +1218,10 @@ project (Test_Latency) : using_madara, using_ace, using_splice, no_karl, no_xml,
 
   requires += tests deprecated
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1051,6 +1243,10 @@ project (Test_Latency_Rounds) : using_madara, using_ace, using_splice, using_cid
 
   requires += tests cid
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1072,6 +1268,10 @@ project (Test_Consistency) : using_madara, using_ace, using_splice, no_karl, no_
 
   requires += tests deprecated
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1093,6 +1293,10 @@ project (Test_Dissemination) : using_madara, using_ace, using_splice, no_karl, n
 
   requires += tests deprecated
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1119,6 +1323,10 @@ project (Test_Reasoning_Throughput) : using_madara, using_ace, using_splice, no_
   requires += tests
   
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1143,6 +1351,10 @@ project (Test_Files) : using_madara, using_ace, using_splice, no_karl, no_xml, n
   requires += tests
   
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1165,6 +1377,10 @@ project (Test_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, st
   
   requires += tests
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1188,6 +1404,10 @@ project (Test_Key_Expansion) : using_madara, using_ace, using_splice, no_karl, n
   requires += tests
   
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1212,6 +1432,10 @@ project (Test_Print_Statement) : using_madara, using_ace, using_splice, no_karl,
   requires += tests
   
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1236,6 +1460,10 @@ project (Test_Timed_Wait) : using_madara, using_ace, using_splice, no_karl, no_x
   requires += tests
   
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1260,6 +1488,10 @@ project (Test_AES_256) : using_madara, using_ace, using_ssl, no_karl, no_xml, nu
   requires += tests ssl
   
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1284,6 +1516,10 @@ project (Test_Wait_With_ACE) : using_madara, using_ace, using_splice, no_karl, n
   requires += tests deprecated
   
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1309,6 +1545,10 @@ project (Test_Distributed_Finisher) : using_madara, using_ace, using_splice, no_
   requires += tests deprecated
   
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1333,6 +1573,10 @@ project (Test_Knowledge_Domains) : using_madara, using_ace, using_splice, no_kar
   requires += tests deprecated
   
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1357,6 +1601,10 @@ project (Test_Synchronization) : using_madara, using_ace, using_splice, no_karl,
   requires += tests
   
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1380,6 +1628,10 @@ project (Test_Synchronization_Three_State) : using_madara, using_ace, using_spli
   
   requires += tests
   
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
   
   Documentation_Files {
   }
@@ -1405,6 +1657,10 @@ project (Test_Quality) : using_madara, using_ace, using_splice, no_karl, no_xml,
   requires += tests deprecated
   
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1428,6 +1684,10 @@ project (Test_Distributed_Finisher_With_Set) : using_madara, using_ace, using_sp
 
   requires += tests deprecated
     
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1451,6 +1711,10 @@ project (Test_Splice) : using_madara, using_ace, using_splice, no_karl, no_xml, 
   
   requires += tests opensplice
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1473,6 +1737,10 @@ project (Test_Splice_Rules) : using_madara, using_ace, using_splice, no_karl, no
   
   requires += tests opensplice
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1495,6 +1763,10 @@ project (Test_Splice_Rebroadcast) : using_madara, using_ace, using_splice, no_ka
   
   requires += tests opensplice
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1517,6 +1789,10 @@ project (Test_Splice_Filters) : using_madara, using_ace, using_splice, no_karl, 
   
   requires += tests opensplice
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1540,6 +1816,10 @@ project (Test_NDDS) : using_madara, using_ace, using_ndds, no_karl, no_xml, null
   
   requires += tests ndds
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1562,6 +1842,10 @@ project (Test_NDDS_Rules) : using_madara, using_ace, using_ndds, no_karl, no_xml
   
   requires += tests ndds
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1584,6 +1868,10 @@ project (Test_NDDS_Rebroadcast) : using_madara, using_ace, using_ndds, no_karl, 
   
   requires += tests ndds
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1606,6 +1894,10 @@ project (Test_NDDS_Filters) : using_madara, using_ace, using_ndds, no_karl, no_x
   
   requires += tests ndds
 
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
   
@@ -1629,6 +1921,10 @@ project (Test_KATS_barriers) : using_madara, using_kats, using_ace, no_karl, no_
   exeout = $(MADARA_ROOT)/bin
   exename = test_kats_barriers
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1649,6 +1945,10 @@ project (Test_KATS_syncs) : using_madara, using_kats, using_ace, no_karl, no_xml
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_kats_syncs
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
   
   Documentation_Files {
   }
@@ -1671,6 +1971,10 @@ project (Test_CID) : using_madara, using_ace, using_cid, no_karl, no_xml, null_l
   exeout = $(MADARA_ROOT)/bin
   exename = test_cid
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1691,6 +1995,10 @@ project (Test_CID_Read_Deployment) : using_madara, using_ace, using_cid, no_karl
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_cid_read_deployment
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
   
   Documentation_Files {
   }
@@ -1713,6 +2021,10 @@ project (Test_CID_Disjoint) : using_madara, using_ace, using_cid, no_karl, no_xm
   exeout = $(MADARA_ROOT)/bin
   exename = test_cid_disjoint
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1733,6 +2045,10 @@ project (Test_CID_Linked) : using_madara, using_ace, using_cid, no_karl, no_xml,
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_cid_linked
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
   
   Documentation_Files {
   }
@@ -1756,6 +2072,10 @@ project (Test_UDP) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lo
   exeout = $(MADARA_ROOT)/bin
   exename = test_udp
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1776,6 +2096,10 @@ project (Test_Registry) : using_madara, using_ace, no_karl, no_xml, null_lock, s
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_registry
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
   
   Documentation_Files {
   }
@@ -1798,6 +2122,10 @@ project (Test_Multicast) : using_madara, using_ace, no_karl, no_xml, null_lock, 
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1819,6 +2147,10 @@ project (Test_Multicast_SSL) : using_madara, using_ssl, using_ace, no_karl, no_x
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_ssl
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1839,6 +2171,10 @@ project (Test_Broadcast) : using_madara, using_ace, no_karl, no_xml, null_lock, 
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_broadcast
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
   
   Documentation_Files {
   }
@@ -1862,6 +2198,10 @@ project (Test_ACE_Broadcast) : using_ace, no_karl, no_xml, null_lock, stl_lock {
   exeout = $(MADARA_ROOT)/bin
   exename = test_ace_broadcast
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1884,6 +2224,10 @@ project (Test_ACE_Multicast) : using_ace, no_karl, no_xml, null_lock, stl_lock {
   exeout = $(MADARA_ROOT)/bin
   exename = test_ace_multicast
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1904,6 +2248,10 @@ project (Profile_Architecture) : using_ace, using_madara, no_karl, no_xml, null_
   
   exeout = $(MADARA_ROOT)/bin
   exename = profile_architecture
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
   
   Documentation_Files {
     tests/settings
@@ -1927,6 +2275,10 @@ project (Test_Utility) : using_ace, using_madara, no_karl, no_xml, null_lock, st
   exeout = $(MADARA_ROOT)/bin
   exename = test_utility
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1947,6 +2299,10 @@ project (Test_Peroidic_Wait) : using_ace, using_madara, no_karl, no_xml, null_lo
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_periodic_wait
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
   
   Documentation_Files {
   }
@@ -1969,6 +2325,10 @@ project (Test_Primitive_Types) : using_ace, using_madara, no_karl, no_xml, null_
   exeout = $(MADARA_ROOT)/bin
   exename = test_primitive_types
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -1990,6 +2350,10 @@ project (Test_Safe_Bool) : using_ace, using_madara, no_karl, no_xml, null_lock, 
   exeout = $(MADARA_ROOT)/bin
   exename = test_safe_bool
   
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
   Documentation_Files {
   }
 
@@ -2010,6 +2374,10 @@ project (Test_Logging) : using_ace, using_madara, no_karl, no_xml, null_lock, st
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_logging
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
   
   Documentation_Files {
   }
