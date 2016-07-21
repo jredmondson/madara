@@ -239,16 +239,19 @@ madara::utility::string_replace (std::string & source,
   // return value
   size_t replacements = 0;
 
-  for (std::string::size_type i = source.find (old_phrase, 0);
-    i != source.npos; i = source.find (old_phrase, i))
+  if (old_phrase != "")
   {
-    source.replace (i, old_phrase.size (), new_phrase);
-    i += new_phrase.size ();
+    for (std::string::size_type i = source.find (old_phrase, 0);
+      i != source.npos; i = source.find (old_phrase, i))
+    {
+      source.replace (i, old_phrase.size (), new_phrase);
+      i += new_phrase.size ();
 
-    ++replacements;
+      ++replacements;
 
-    if (!replace_all)
-      break;
+      if (!replace_all)
+        break;
+    }
   }
 
   return replacements;
