@@ -225,7 +225,8 @@ madara::expression::VariableNode::set (
 
       *record = value;
 
-      context_.mark_and_signal (key_.c_str (), record);
+      std::string expanded_key(expand_key());
+      context_.mark_and_signal (expanded_key.c_str (), record);
     }
   }
 
@@ -255,7 +256,8 @@ madara::expression::VariableNode::set (const madara::knowledge::KnowledgeRecord:
 
     record_->set_value (value);
 
-    context_.mark_and_signal (key_.c_str(), record_);
+    std::string expanded_key(expand_key());
+    context_.mark_and_signal (expanded_key.c_str(), record_);
   
     return 0;
   }
@@ -286,7 +288,8 @@ madara::expression::VariableNode::set (double value,
 
     record_->set_value (value);
 
-    context_.mark_and_signal (key_.c_str(), record_);
+    std::string expanded_key(expand_key());
+    context_.mark_and_signal (expanded_key.c_str(), record_);
   
     return 0;
   }
@@ -317,7 +320,8 @@ madara::expression::VariableNode::set (const std::string & value,
 
     record_->set_value (value);
 
-    context_.mark_and_signal (key_.c_str(), record_);
+    std::string expanded_key(expand_key());
+    context_.mark_and_signal (expanded_key.c_str(), record_);
   
     return 0;
   }
@@ -343,7 +347,8 @@ madara::expression::VariableNode::dec (
 
     --(*record_);
 
-    context_.mark_and_signal (key_.c_str(), record_);
+    std::string expanded_key(expand_key());
+    context_.mark_and_signal (expanded_key.c_str(), record_);
   
     return *record_;
   }
@@ -369,7 +374,8 @@ madara::expression::VariableNode::inc (
 
     ++(*record_);
 
-    context_.mark_and_signal (key_.c_str(), record_);
+    std::string expanded_key(expand_key());
+    context_.mark_and_signal (expanded_key.c_str(), record_);
   
     return *record_;
   }
