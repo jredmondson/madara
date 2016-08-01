@@ -21,7 +21,21 @@ namespace madara
      * @brief Encapsulates settings for a wait statement
      **/
     struct WaitSettings : public EvalSettings
-     {
+    {
+      /* Convenient pre-defined settings objects for common use cases */
+
+      /** Settings to immediately send modifieds, but do expand variables */
+      static const WaitSettings DEFAULT;
+
+      /** Settings to immediately send modifieds, and not expand variables */
+      static const WaitSettings NO_EXPAND;
+
+      /** Settings to delay sending modifieds, but do expand variables */
+      static const WaitSettings DELAY;
+
+      /** Settings to delay sending modifieds, and not expand variables */
+      static const WaitSettings DELAY_NO_EXPAND;
+
        /**
         * Constructor
         **/

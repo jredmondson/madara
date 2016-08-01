@@ -22,6 +22,10 @@ namespace madara
     class MADARA_Export KnowledgeReferenceSettings
     {
     public:
+      /* Convenient pre-defined settings objects */
+      static const KnowledgeReferenceSettings DEFAULT;
+      static const KnowledgeReferenceSettings NO_EXPAND;
+
       /**
        * Constructor
        **/

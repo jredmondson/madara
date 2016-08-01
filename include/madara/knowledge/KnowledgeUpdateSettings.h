@@ -24,6 +24,12 @@ namespace madara
           : public KnowledgeReferenceSettings
     {
     public:
+      /* Convenient pre-defined settings objects */
+      static const KnowledgeUpdateSettings DEFAULT;
+      static const KnowledgeUpdateSettings NO_EXPAND;
+      static const KnowledgeUpdateSettings GLOBAL_AS_LOCAL;
+      static const KnowledgeUpdateSettings GLOBAL_AS_LOCAL_NO_EXPAND;
+
       /**
        * Constructor
        **/

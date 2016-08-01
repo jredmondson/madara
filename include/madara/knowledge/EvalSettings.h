@@ -24,7 +24,21 @@ namespace madara
      * @brief Encapsulates settings for an evaluation statement
      **/
     struct EvalSettings : public KnowledgeUpdateSettings
-     {
+    {
+      /* Convenient pre-defined settings objects */
+
+      /** Settings to immediately send modifieds, but do expand variables */
+      static const EvalSettings DEFAULT;
+
+      /** Settings to immediately send modifieds, and not expand variables */
+      static const EvalSettings NO_EXPAND;
+
+      /** Settings to delay sending modifieds, but do expand variables */
+      static const EvalSettings DELAY;
+
+      /** Settings to delay sending modifieds, and not expand variables */
+      static const EvalSettings DELAY_NO_EXPAND;
+
        /**
         * Constructor
         **/
