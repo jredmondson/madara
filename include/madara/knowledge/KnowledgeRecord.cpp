@@ -1760,9 +1760,8 @@ int
     // other things, this means our solution will work even
     // without FIFO channel transports
     result = context.update_record_from_external (key, *this, 
-      knowledge::KnowledgeUpdateSettings (true));
-          
-          
+      knowledge::KnowledgeUpdateSettings::GLOBAL_AS_LOCAL_NO_EXPAND);
+
     if (perform_lock)
     {
       context.unlock ();
