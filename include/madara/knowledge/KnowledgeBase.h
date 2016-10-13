@@ -840,6 +840,14 @@ namespace madara
           EvalSettings ());
 
       /**
+      * Alias for apply_modified. @see apply_modified
+      * @param settings        Settings for evaluating and printing
+      * @return 0 if there was not a problem.
+      **/
+      int modify (const EvalSettings & settings =
+        EvalSettings ());
+
+      /**
        * Prints all knowledge variables and values in the context
        * @param   level    level to log the knowledge at
        **/
