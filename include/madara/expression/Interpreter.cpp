@@ -4907,6 +4907,7 @@ Symbol *& lastValidInput)
 // inserts a leaf node / number into the parse tree
 void
 madara::expression::Interpreter::string_insert (
+  char opener,
   knowledge::ThreadSafeContext & context,
   const std::string &input,
   std::string::size_type &i, int & accumulated_precedence,
@@ -4916,8 +4917,11 @@ madara::expression::Interpreter::string_insert (
   std::string::size_type j = 0;
   Number * number = 0;
 
-  for (; i + j <= input.length () && !is_string_literal (input[i + j]); ++j)
-    continue;
+  for (; i + j < input.length (); ++j)
+  {
+    if (input[i + j] == opener && input[i + j - 1] != '\\')
+      break;
+  }
 
   number = new Number (context.get_logger (), input.substr (i, j));
 
@@ -5469,10 +5473,11 @@ bool build_argument_list)
   }
   else if (is_string_literal (input[i]))
   {
+    char opener = input[i];
     ++i;
     handled = true;
     // string
-    string_insert (context, input, i, accumulated_precedence,
+    string_insert (opener, context, input, i, accumulated_precedence,
       list, lastValidInput);
   }
   else if (i < input.length () && input[i] == '[')

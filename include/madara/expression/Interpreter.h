@@ -151,6 +151,7 @@ namespace madara
 
        /**
        * Inserts a variable into the tree
+       * @param    opener     the opening string
        * @param    context    interpreter context
        * @param    input      expression to compile
        * @param    i          current position in expression
@@ -159,6 +160,7 @@ namespace madara
        * @param    lastValidInput          last valid symbol that was read
        **/
       void string_insert (
+        char opener,
         madara::knowledge::ThreadSafeContext &context,
         const std::string &input,
         std::string::size_type &i,
