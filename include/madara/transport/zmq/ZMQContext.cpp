@@ -7,10 +7,6 @@ madara::transport::ZMQContext madara::transport::zmq_context;
 madara::transport::ZMQContext::ZMQContext ()
   : context_ (0), references_ (0)
 {
-  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
-    "ZMQContext::constr:" \
-    " calling constructor: context=%p, references=%d\n",
-    context_, int(references_));
 }
 
 void
