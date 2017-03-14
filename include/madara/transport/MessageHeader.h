@@ -11,6 +11,7 @@
 
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
+#include <string>
 
 namespace madara
 {
@@ -102,6 +103,12 @@ namespace madara
        **/
       virtual char * write (char * buffer, int64_t & buffer_remaining);
  
+      /** 
+       * Converts the relevant fields to a printable string
+       * @return  the printable string of fields in the header
+       **/
+      virtual std::string to_string (void);
+
       /**
        * Compares the fields of this instance to another instance
        * @param     other      the other instance to compare against

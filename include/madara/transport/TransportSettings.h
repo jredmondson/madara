@@ -66,7 +66,8 @@ namespace madara
       MULTICAST    = 5,
       BROADCAST    = 6,
       REGISTRY_SERVER = 7,
-      REGISTRY_CLIENT = 8
+      REGISTRY_CLIENT = 8,
+      ZMQ = 9
     };
 
     enum Reliabilities {

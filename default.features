@@ -88,3 +88,7 @@ stl_lock                 = 0
 /// Enable this feature if you want SSL support
 ssl                       = 0
 
+/// @feature zmq
+/// Enable this feature if you want ZeroMQ support
+zmq                       = 0
+

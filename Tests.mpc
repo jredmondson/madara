@@ -2141,6 +2141,59 @@ project (Test_Multicast) : using_madara, using_ace, no_karl, no_xml, null_lock, 
   }
 }
 
+
+project (Test_TestZMQ) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_zmq {
+  requires += tests zmq
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_zmq
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/zmq/test_zmq.cpp
+  }
+}
+
+
+project (Test_Basic_ZMQ) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_zmq {
+  requires += tests zmq
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_basic_zmq
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/zmq/test_basic_zmq.cpp
+  }
+}
+
+
 project (Test_Multicast_SSL) : using_madara, using_ssl, using_ace, no_karl, no_xml, null_lock, stl_lock {
   requires += tests ssl
   

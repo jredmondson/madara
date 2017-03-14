@@ -203,8 +203,17 @@ madara::threads::WorkerThread::svc (void)
 
           next_epoch += frequency;
         }
-      }
+      } // end while !terminated
+
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
+        "WorkerThread(%s)::svc:" \
+        " thread has been terminated\n", name_.c_str ());
+
     }
+
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
+      "WorkerThread(%s)::svc:" \
+      " calling thread cleanup method\n", name_.c_str ());
 
     thread_->cleanup ();
 

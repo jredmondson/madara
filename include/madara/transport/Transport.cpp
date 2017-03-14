@@ -221,6 +221,11 @@ madara::transport::process_received_update (
           
   const char * update = header->read (buffer, buffer_remaining);
 
+  madara_logger_log (context.get_logger (), logger::LOG_MINOR,
+    "%s:" \
+    " header info: %s\n",
+    print_prefix, header->to_string ().c_str ());
+
   if (header->size < bytes_read)
   {
     madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
@@ -1019,9 +1024,10 @@ long madara::transport::Base::prep_send (
     // handling
     header->type = madara::transport::MULTIASSIGN;
 
-    // set the time-to-live
-    header->ttl = settings_.get_rebroadcast_ttl ();
   }
+
+  // set the time-to-live
+  header->ttl = settings_.get_rebroadcast_ttl ();
 
   header->updates = uint32_t (filtered_updates.size ());
 
@@ -1127,6 +1133,11 @@ long madara::transport::Base::prep_send (
   // buffer is ready encoding
   size = (long)settings_.filter_encode ((unsigned char *)buffer_.get_ptr (),
     (int)size, max_buffer_size);
+
+  madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
+    "%s:" \
+    " header info before encode: %s\n",
+    print_prefix, header->to_string ().c_str ());
 
   delete header;
 

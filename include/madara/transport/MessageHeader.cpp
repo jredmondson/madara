@@ -2,6 +2,7 @@
 #include "madara/utility/Utility.h"
 #include <algorithm>
 #include <time.h>
+#include <sstream>
 
 madara::transport::MessageHeader::MessageHeader ()
 : size (encoded_size ()),
@@ -215,6 +216,26 @@ madara::transport::MessageHeader::write (char * buffer,
   buffer_remaining -= 1;
 
   return buffer;
+}
+
+std::string
+madara::transport::MessageHeader::to_string (void)
+{
+  std::stringstream buffer;
+  char * ending = "), ";
+
+  buffer << "140: size (8:" << size << ending;
+  buffer << "encoding (8:" << madara_id << ending;
+  buffer << "domain (32:" << domain << ending;
+  buffer << "orig (64:" << originator << ending;
+  buffer << "type (4:" << type << ending;
+  buffer << "numupdates (4:" << updates << ending;
+  buffer << "quality (4:" << quality << ending;
+  buffer << "clock (8:" << clock << ending;
+  buffer << "wallclock (8:" << timestamp << ending;
+  buffer << "ttl (1:" << (int)ttl << ending;
+
+  return buffer.str ();
 }
 
 uint64_t

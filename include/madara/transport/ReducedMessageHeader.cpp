@@ -2,6 +2,7 @@
 #include "madara/utility/Utility.h"
 #include <algorithm>
 #include <string.h>
+#include <sstream>
 
 madara::transport::ReducedMessageHeader::ReducedMessageHeader ()
 : MessageHeader ()
@@ -135,6 +136,20 @@ char *
 
   return buffer;
 }
+
+std::string
+madara::transport::ReducedMessageHeader::to_string (void)
+{
+  std::stringstream buffer;
+  buffer << "29: size (8:" << size << "), ";
+  buffer << "encoding (8:" << madara_id << "), ";
+  buffer << "numupdates (4:" << updates << "), ";
+  buffer << "clock (8:" << clock << "), ";
+  buffer << "ttl (1:" << ttl << "), ";
+
+  return buffer.str ();
+}
+
 
 bool
 madara::transport::ReducedMessageHeader::equals (

@@ -22,10 +22,8 @@ namespace madara
 
     /**
     * @class ReducedMessageHeader
-    * @brief Defines a robust message header which is the default for
-    *        KaRL messages. @see ReducedMessageHeader for a smaller
-    *        header that supports less QoS and features but a more
-    *        compact size.
+    * @brief Defines a simple, smaller message header of 29 bytes that
+    *        supports less QoS.
     *        
     *        Format:
     *
@@ -80,6 +78,12 @@ namespace madara
       * @return    current buffer position for next write
       **/
       virtual char * write (char * buffer, int64_t & buffer_remaining);
+
+      /**
+      * Converts the relevant fields to a printable string
+      * @return  the printable string of fields in the header
+      **/
+      virtual std::string to_string (void);
 
       /**
       * Compares the fields of this instance to another instance

@@ -9,11 +9,16 @@
 #include "madara/transport/multicast/MulticastTransport.h"
 #include "madara/transport/broadcast/BroadcastTransport.h"
 
+
 #include <sstream>
 
 #include "ace/OS_NS_Thread.h"
 #include "ace/High_Res_Timer.h"
 #include "ace/OS_NS_sys_socket.h"
+
+#ifdef _MADARA_USING_ZMQ_
+#include "madara/transport/zmq/ZMQTransport.h"
+#endif
 
 #ifdef _USE_OPEN_SPLICE_
 #include "madara/transport/splice/SpliceDDSTransport.h"
@@ -174,6 +179,21 @@ transport::TransportSettings & settings)
 
     transport = new madara::transport::UdpTransport (originator, map_,
       settings, true);
+  }
+  else if (settings.type == madara::transport::ZMQ)
+  {
+#ifdef _MADARA_USING_ZMQ_
+    madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
+      "KnowledgeBaseImpl::activate_transport:" \
+      " creating ZMQ transport.\n");
+
+    transport = new madara::transport::ZMQTransport (originator, map_,
+      settings, true);
+#else
+    madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
+      "KnowledgeBaseImpl::activate_transport:" \
+      " project was not generated with zmq=1. Transport is invalid.\n");
+#endif
   }
   else if (settings.type == madara::transport::REGISTRY_SERVER)
   {
