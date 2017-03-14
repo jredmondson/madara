@@ -4,6 +4,8 @@
 #include <iostream>
 #include <errno.h>
 #include <thread>
+#include <stdlib.h>
+#include <string.h>
 
 int id (0);
 std::string address ("tcp://localhost:30000");
