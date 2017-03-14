@@ -10,7 +10,7 @@ madara::transport::ZMQContext::ZMQContext ()
   madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
     "ZMQContext::constr:" \
     " calling constructor: context=%p, references=%d\n",
-    context_, references_);
+    context_, int(references_));
 }
 
 void
@@ -38,7 +38,7 @@ madara::transport::ZMQContext::set_context (void * context)
     madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
       "ZMQContext::set_context:" \
       " result: context=%p, references=%d\n",
-      context_, references_);
+      context_, int(references_));
   }
 }
 
@@ -50,7 +50,7 @@ madara::transport::ZMQContext::add_ref (void)
     madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
       "ZMQContext::add_ref:" \
       " context didn't exist. Creating new context.\n",
-      context_, references_);
+      context_, int(references_));
 
     references_ = 1;
     context_ = zmq_ctx_new ();
@@ -63,7 +63,7 @@ madara::transport::ZMQContext::add_ref (void)
   madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
     "ZMQContext::add_ref:" \
     " result: context=%p, references=%d\n",
-    context_, references_);
+    context_, int(references_));
 }
 
 void
@@ -74,7 +74,7 @@ madara::transport::ZMQContext::rem_ref (void)
     madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
       "ZMQContext::rem_ref:" \
       " removing reference from context.\n",
-      context_, references_);
+      context_, int(references_));
 
     --references_;
 
@@ -87,7 +87,7 @@ madara::transport::ZMQContext::rem_ref (void)
   madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
     "ZMQContext::rem_ref:" \
     " result: context=%p, references=%d\n",
-    context_, references_);
+    context_, int(references_));
 }
 
 void
@@ -98,7 +98,7 @@ madara::transport::ZMQContext::destroy_context (void)
     madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
       "ZMQContext::destroy_context:" \
       " destroying context.\n",
-      context_, references_);
+      context_, int(references_));
 
     zmq_ctx_destroy (context_);
     context_ = 0;
