@@ -1,0 +1,7 @@
+feature (zmq) {
+  includes += $(ZMQ_ROOT)/include
+  libs += libzmq
+  libpaths += $(ZMQ_ROOT)/lib
+  
+  macros += _MADARA_USING_ZMQ_
+}
