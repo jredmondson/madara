@@ -7,6 +7,7 @@
 #include "madara/expression/ExpressionTree.h"
 #include "madara/expression/IteratorImpl.h"
 #include "madara/expression/ComponentNode.h"
+#include "madara/utility/Refcounter.h"
 
 const size_t LQUEUE_SIZE = 40;
 

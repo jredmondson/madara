@@ -18,7 +18,7 @@ namespace madara
     class Visitor;
 
     /**
-     * @class SystemCallNode
+     * @class SystemCallWriteFile
      * @brief Writes a knowledge record to an user-specified file name
      */
     class SystemCallWriteFile : public SystemCallNode

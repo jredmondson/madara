@@ -9,13 +9,14 @@
 #include "madara/utility/LQueue.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 
-// Solve circular include problem
-
-template <typename T>
-class Refcounter;
-
 namespace madara
 {
+  namespace utility
+  {
+    template <typename T>
+    class Refcounter;
+  }
+
   namespace expression
   {
     class ComponentNode;
@@ -92,7 +93,7 @@ namespace madara
     class InOrderIteratorImpl : public ExpressionTreeIteratorImpl
     {
       friend class ExpressionTreeIterator;
-      friend class Refcounter<ExpressionTreeIteratorImpl>;
+      friend class utility::Refcounter<ExpressionTreeIteratorImpl>;
     public:
       /// Construct an InOrderIteratorImpl. If end_iter
       /// is set to true, the iterator points to the end of the
@@ -147,7 +148,7 @@ namespace madara
     class PreOrderIteratorImpl : public ExpressionTreeIteratorImpl
     {
       friend class ExpressionTreeIterator;
-      friend class Refcounter<ExpressionTreeIteratorImpl>;
+      friend class utility::Refcounter<ExpressionTreeIteratorImpl>;
 
     public:
       /// Construct an LevelOrderExpressionTreeIterator. If end_iter
@@ -203,7 +204,7 @@ namespace madara
     class PostOrderIteratorImpl : public ExpressionTreeIteratorImpl
     {
       friend class ExpressionTreeIterator;
-      friend class Refcounter<ExpressionTreeIteratorImpl>;
+      friend class utility::Refcounter<ExpressionTreeIteratorImpl>;
     public:
 
       /// Construct an PostOrderIteratorImpl. If end_iter is set
@@ -260,7 +261,7 @@ namespace madara
       public ExpressionTreeIteratorImpl
     {
       friend class ExpressionTreeIterator;
-      friend class Refcounter<ExpressionTreeIteratorImpl>;
+      friend class utility::Refcounter<ExpressionTreeIteratorImpl>;
     public:
 
       /// Construct an LevelOrderExpressionTreeIterator. If end_iter 

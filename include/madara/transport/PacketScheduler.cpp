@@ -6,37 +6,54 @@
 const uint64_t max_stride (150000000);
 
 /**
- * 
+ * <b>INTERNAL USE</b>: Task that can be added to a Stride scheduler
  **/
 class StrideTask
 {
 public:
+  /**
+  * Constructor
+  **/
   StrideTask (double rate, bool op)
     : operation (op)
   {
     set_rate (rate);
   }
-  
+  /**
+  * Checks for lower pass value
+  **/
   bool operator< (const StrideTask & rhs) const
   {
     return pass > rhs.pass;
   }
 
+  /**
+  * Checks for pass equality
+  **/
   bool operator== (const StrideTask & rhs) const
   {
     return pass == rhs.pass;
   }
 
+  /**
+  * Checks for greater pass value
+  **/
   bool operator> (const StrideTask & rhs) const
   {
     return pass < rhs.pass;
   }
 
+  /**
+  * Increases pass by stride
+  **/
   void operator++ (void)
   {
     pass += stride;
   }
 
+  /**
+  * Sets the ticket rate, which influences stride
+  **/
   void set_rate (double rate)
   {
     tickets = 1000000 * rate;
@@ -49,9 +66,24 @@ public:
     pass = stride;
   }
 
+  /**
+  * the stride to take
+  **/
   uint64_t stride;
+
+  /**
+  * the current pass which determines next schedule
+  **/
   uint64_t pass;
+
+  /**
+  * the number of tickets, which influences stride
+  **/
   uint64_t tickets;
+
+  /**
+  * the type of operation
+  **/
   bool operation;
 };
 

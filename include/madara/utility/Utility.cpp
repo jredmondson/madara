@@ -582,10 +582,15 @@ madara::utility::clean_dir_name (const std::string & source)
 }
 
 
-// helper class for htonll
+/**
+ * <b>INTERNAL USE</b>: Checks for and converting to network long (htonl)
+ **/
 class EndiannessChecker
 {
 public:
+  /**
+  * Constructor
+  **/
   EndiannessChecker ()
   {
     x.us = 1;
@@ -596,16 +601,23 @@ public:
       is_little = true;
   }
 
+  /**
+  * indicates whether this is little endian (modified by constructor)
+  **/
   bool is_little;
 
 private:
-  // by using a union, we can reference the bytes of the short
+  /// by using a union, we can reference the bytes of the short
   union {
+        /// unsigned short value
         unsigned short us;
+
+        /// unsigned char array value
         unsigned char c[sizeof (unsigned short)];
     } x;
 };
 
+/// checks for endianness of architecture on library load
 EndiannessChecker endianness;
 
 /**

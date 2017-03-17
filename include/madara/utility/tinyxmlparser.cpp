@@ -169,7 +169,9 @@ void TiXmlBase::ConvertUTF32ToUTF8( unsigned long input, char* output, int* leng
 //  }
 }
 
-
+/**
+ * <b>INTERNAL USE</b>: holds parsing data for tabs, cursors, etc.
+ **/
 class TiXmlParsingData
 {
   friend class TiXmlDocument;

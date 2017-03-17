@@ -129,6 +129,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/utility
     include/madara/MADARA_export.h
     include/madara/LockType.h
+    include/madara/Namespaces.h
   }
 }
 

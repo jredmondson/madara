@@ -106,16 +106,23 @@ const int TIXML_MAJOR_VERSION = 2;
 const int TIXML_MINOR_VERSION = 6;
 const int TIXML_PATCH_VERSION = 1;
 
-/*  Internal structure for tracking location of items 
-  in the XML file.
-*/
+/**
+ * Internal structure for tracking location of items in the XML file.
+ **/
 struct TiXmlCursor
 {
+  /**
+   * Constructor
+   **/
   TiXmlCursor()    { Clear(); }
+
+  /**
+   * Sets row and column to -1
+   **/
   void Clear()    { row = col = -1; }
 
-  int row;  // 0 based.
-  int col;  // 0 based.
+  int row;  ///< 0 based.
+  int col;  ///< 0 based.
 };
 
 
@@ -137,7 +144,7 @@ struct TiXmlCursor
   You should never change the document from a callback.
 
   @sa TiXmlNode::Accept()
-*/
+**/
 class MADARA_Export TiXmlVisitor
 {
 public:
@@ -163,7 +170,7 @@ public:
   virtual bool Visit( const TiXmlUnknown& /*unknown*/ )      { return true; }
 };
 
-// Only used by Attribute::Query functions
+/// Only used by Attribute::Query functions
 enum 
 { 
   TIXML_SUCCESS,
@@ -172,7 +179,7 @@ enum
 };
 
 
-// Used by the parsing routines.
+/// Used by the parsing routines.
 enum TiXmlEncoding
 {
   TIXML_ENCODING_UNKNOWN,
@@ -203,7 +210,7 @@ const TiXmlEncoding TIXML_DEFAULT_ENCODING = TIXML_ENCODING_UNKNOWN;
 
   A Decleration contains: Attributes (not on tree)
   @endverbatim
-*/
+**/
 class MADARA_Export TiXmlBase
 {
   friend class TiXmlNode;
@@ -222,7 +229,7 @@ public:
     tabs and newlines.
     
     (For an unformatted stream, use the << operator.)
-  */
+  **/
   virtual void Print( FILE* cfile, int depth ) const = 0;
 
   /**  The world does not agree on whether white space should be kept or
@@ -230,7 +237,7 @@ public:
     are provided to set whether or not TinyXml will condense all white space
     into a single space or not. The default is to condense. Note changing this
     value is not thread safe.
-  */
+  **/
   static void SetCondenseWhiteSpace( bool condense )    { condenseWhiteSpace = condense; }
 
   /// Return the current white space setting.
@@ -253,7 +260,7 @@ public:
     can be disabled if TiXmlDocument::SetTabSize() is called with 0 as the value.
 
     @sa TiXmlDocument::SetTabSize()
-  */
+  **/
   int Row() const      { return location.row + 1; }
   int Column() const    { return location.col + 1; }  ///< See Row()
 
@@ -271,7 +278,7 @@ public:
 
   /** Expands entities in a string. Note this should not contian the tag's '<', '>', etc, 
     or they will be transformed into entities!
-  */
+  **/
   static void EncodeString( const TIXML_STRING& str, TIXML_STRING* out );
 
   enum
@@ -410,6 +417,9 @@ private:
   TiXmlBase( const TiXmlBase& );        // not implemented.
   void operator=( const TiXmlBase& base );  // not allowed.
 
+  /**
+   * Internal entity struct for holding string elements
+   **/
   struct Entity
   {
     const char*     str;
@@ -901,18 +911,19 @@ private:
 };
 
 
-/*  A class used to manage a group of attributes.
-  It is only used internally, both by the ELEMENT and the DECLARATION.
-  
-  The set can be changed transparent to the Element and Declaration
-  classes that use it, but NOT transparent to the Attribute
-  which has to implement a next() and previous() method. Which makes
-  it a bit problematic and prevents the use of STL.
-
-  This version is implemented with circular lists because:
-    - I like circular lists
-    - it demonstrates some independence from the (typical) doubly linked list.
-*/
+/**
+ * A class used to manage a group of attributes.
+ * It is only used internally, both by the ELEMENT and the DECLARATION.
+ * 
+ * The set can be changed transparent to the Element and Declaration
+ * classes that use it, but NOT transparent to the Attribute
+ * which has to implement a next() and previous() method. Which makes
+ * it a bit problematic and prevents the use of STL.
+ *
+ * This version is implemented with circular lists because:
+ * - I like circular lists
+ * - it demonstrates some independence from the (typical) doubly linked list.
+**/
 class MADARA_Export TiXmlAttributeSet
 {
 public:
@@ -1163,8 +1174,9 @@ private:
 };
 
 
-/**  An XML comment.
-*/
+/** 
+ * An XML comment.
+ **/
 class MADARA_Export TiXmlComment : public TiXmlNode
 {
 public:

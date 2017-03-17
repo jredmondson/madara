@@ -81,7 +81,9 @@ namespace madara
     };
 
     /**
-     * A multi-threaded logger for logging to one or more destinations
+     * A multi-threaded logger for logging to one or more destinations.
+     * A default logger is provided via madara::logger::global_logger in
+     * GlobalLogger.h
      **/
     class MADARA_Export Logger
     {

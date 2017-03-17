@@ -259,7 +259,7 @@ namespace madara
     };
 
     /**
-    * @class ExpandEnvs
+    * @class ExpandEnv
     * @brief Expands a statement, e.g. var${.i} into var0 if .i == 0
     */
     class ExpandEnv : public SystemCall
@@ -955,7 +955,6 @@ namespace madara
     * @class Variable
     * @brief Leaf node of parse tree
     */
-
     class Variable : public Symbol
     {
     public:
@@ -980,6 +979,10 @@ namespace madara
       madara::knowledge::ThreadSafeContext & context_;
     };
 
+    /**
+    * @class ArrayRef
+    * @brief Leaf node for an array reference
+    */
     class ArrayRef : public Symbol
     {
     public:
@@ -1559,8 +1562,8 @@ namespace madara
     };
 
     /**
-    * @class Array
-    * @brief Iterative looping node of the parse tree
+    * @class ConstArray
+    * @brief A constant array that should not be changed
     */
 
     class ConstArray : public TernaryOperator
