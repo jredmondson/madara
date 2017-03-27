@@ -70,8 +70,11 @@ int main (int argc, char ** argv)
     {
       std::cerr << "->Successfully bound to " << address << "\n";
       strcpy (update, "this is an update.");
+
       int length = zmq_send (socket, (void *)update, 20, 0);
       std::cerr << "->Sent update of " << length << " bytes\n";
+      std::this_thread::sleep_for (std::chrono::seconds (1));
+
     }
     else
     {
@@ -110,7 +113,7 @@ int main (int argc, char ** argv)
   {
     std::cerr << "initializing puller.\n";
 
-    socket = zmq_socket (context, ZMQ_SUB);
+    socket = zmq_socket (context, ZMQ_PULL);
 
     // set the underlying send buffer to 100KB
     int option = 100000;
@@ -118,7 +121,7 @@ int main (int argc, char ** argv)
     zmq_setsockopt (socket, ZMQ_RCVBUF, (void *)&option, sizeof (int));
 
 
-    zmq_setsockopt (socket, ZMQ_SUBSCRIBE, 0, 0);
+    //zmq_setsockopt (socket, ZMQ_SUBSCRIBE, 0, 0);
     std::cerr << "socket is " << socket << std::endl;
 
     int rc = zmq_connect (socket, address.c_str ());

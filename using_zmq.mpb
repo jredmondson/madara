@@ -1,6 +1,12 @@
 feature (zmq) {
   includes += $(ZMQ_ROOT)/include
-  libs += zmq
+
+  specific(prop:windows) {
+    lit_libs += libzmq
+  } else {
+    libs += zmq
+  }
+
   libpaths += $(ZMQ_ROOT)/lib
   
   macros += _MADARA_USING_ZMQ_
