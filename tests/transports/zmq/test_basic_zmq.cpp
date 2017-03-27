@@ -60,12 +60,10 @@ int main (int argc, char ** argv)
     void * socket = zmq_socket (context, ZMQ_PUSH);
     std::cerr << "socket is " << socket << std::endl;
 
-    // if you don't do this, ZMQ waits forever for no reason. Super smart.
-    zmq_setsockopt (socket, ZMQ_LINGER, (void *)&option, sizeof (int));
-
     // set the underlying send buffer to 100KB
     option = 100000;
     zmq_setsockopt (socket, ZMQ_SNDBUF, (void *)&option, sizeof (int));
+    zmq_setsockopt (socket, ZMQ_RCVBUF, (void *)&option, sizeof (int));
 
     int rc = zmq_bind (socket, address.c_str ());
     if (rc == 0)
@@ -94,7 +92,7 @@ int main (int argc, char ** argv)
       std::cerr << zmq_strerror (zmq_errno ()) << std::endl;
     }
 
-    option = 0;
+    option = 2000;
 
     // if you don't do this, ZMQ waits forever for no reason. Super smart.
     zmq_setsockopt (socket, ZMQ_LINGER, (void *)&option, sizeof (int));
@@ -114,6 +112,12 @@ int main (int argc, char ** argv)
 
     socket = zmq_socket (context, ZMQ_SUB);
 
+    // set the underlying send buffer to 100KB
+    int option = 100000;
+    zmq_setsockopt (socket, ZMQ_SNDBUF, (void *)&option, sizeof (int));
+    zmq_setsockopt (socket, ZMQ_RCVBUF, (void *)&option, sizeof (int));
+
+
     zmq_setsockopt (socket, ZMQ_SUBSCRIBE, 0, 0);
     std::cerr << "socket is " << socket << std::endl;
 
@@ -132,6 +136,10 @@ int main (int argc, char ** argv)
       strcpy (update, "No update is possible.");
     }
     std::cerr << "closing socket\n";
+
+    option = 2000;
+    // if you don't do this, ZMQ waits forever for no reason. Super smart.
+    zmq_setsockopt (socket, ZMQ_LINGER, (void *)&option, sizeof (int));
 
     zmq_close (socket);
 
