@@ -8,7 +8,7 @@
 #include <string.h>
 
 int id (0);
-std::string address ("tcp://localhost:30000");
+std::string address ("tcp://127.0.0.1:30000");
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -112,7 +112,9 @@ int main (int argc, char ** argv)
   {
     std::cerr << "initializing puller.\n";
 
-    socket = zmq_socket (context, ZMQ_PULL);
+    socket = zmq_socket (context, ZMQ_SUB);
+
+    zmq_setsockopt (socket, ZMQ_SUBSCRIBE, 0, 0);
     std::cerr << "socket is " << socket << std::endl;
 
     int rc = zmq_connect (socket, address.c_str ());
