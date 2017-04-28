@@ -873,6 +873,48 @@ namespace madara
       **/
       std::map <std::string, int> read_domains_;
     };
+
+    inline std::string
+    type_name (const TransportSettings & settings)
+    {
+      std::string name = "none";
+
+      switch (settings.type)
+      {
+      case 0:
+        name = "None";
+        break;
+      case 1:
+        name = "PrismTech DDS";
+        break;
+      case 2:
+        name = "RTI DDS";
+        break;
+      case 3:
+        name = "TCP (unsupported)";
+        break;
+      case 4:
+        name = "UDP Unicast";
+        break;
+      case 5:
+        name = "UDP Multicast";
+        break;
+      case 6:
+        name = "UDP Broadcast";
+        break;
+      case 7:
+        name = "UDP P2P Registry Server";
+        break;
+      case 8:
+        name = "UDP P2P Registry Client";
+        break;
+      case 9:
+        name = "ZeroMQ Pub/Sub";
+        break;
+      }
+
+      return name;
+    }
   }
 }
 

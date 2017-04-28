@@ -222,18 +222,17 @@ std::string
 madara::transport::MessageHeader::to_string (void)
 {
   std::stringstream buffer;
-  char * ending = "), ";
 
-  buffer << "140: size (8:" << size << ending;
-  buffer << "encoding (8:" << madara_id << ending;
-  buffer << "domain (32:" << domain << ending;
-  buffer << "orig (64:" << originator << ending;
-  buffer << "type (4:" << type << ending;
-  buffer << "numupdates (4:" << updates << ending;
-  buffer << "quality (4:" << quality << ending;
-  buffer << "clock (8:" << clock << ending;
-  buffer << "wallclock (8:" << timestamp << ending;
-  buffer << "ttl (1:" << (int)ttl << ending;
+  buffer << "140: size (8:" << size << "), ";
+  buffer << "encoding (8:" << madara_id << "), ";
+  buffer << "domain (32:" << domain << "), ";
+  buffer << "orig (64:" << originator << "), ";
+  buffer << "type (4:" << type << "), ";
+  buffer << "numupdates (4:" << updates << "), ";
+  buffer << "quality (4:" << quality << "), ";
+  buffer << "clock (8:" << clock << "), ";
+  buffer << "wallclock (8:" << timestamp << "), ";
+  buffer << "ttl (1:" << (int)ttl << "), ";
 
   return buffer.str ();
 }
