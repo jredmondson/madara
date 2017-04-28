@@ -417,13 +417,13 @@ madara::transport::process_received_update (
     TransportContext::RECEIVING_OPERATION,
     receive_monitor.get_bytes_per_second (),
     send_monitor.get_bytes_per_second (),
-    header->timestamp, time (NULL),
+    header->timestamp, current_time,
     header->domain, header->originator,
     remote_host);
 
   uint64_t latency (0);
   
-  if (deadline > 0)
+  if (deadline >= 1.0)
   {
     if (header->timestamp < current_time)
     {
