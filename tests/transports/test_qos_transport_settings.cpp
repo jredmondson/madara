@@ -425,7 +425,7 @@ void test_save_and_load ()
   source_settings.add_trusted_peer ("trusted_user");
   source_settings.add_trusted_peer ("trusted_computer");
 
-  source_settings.deadline = 10;
+  source_settings.set_deadline (10);
   source_settings.delay_launch = true;
   source_settings.write_domain = "my_domain";
   source_settings.fragment_queue_length = 32000;
@@ -483,7 +483,7 @@ void test_save_and_load ()
   }
 
   std::cerr << "  Checking deadline... ";
-  if (loaded_settings.deadline == 10)
+  if (loaded_settings.get_deadline () == 10)
   {
     std::cerr << "SUCCESS.\n";
   }

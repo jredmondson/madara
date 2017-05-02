@@ -14,7 +14,7 @@ madara::transport::QoSTransportSettings::QoSTransportSettings ()
     trusted_peers_ (), banned_peers_ (),
     packet_drop_rate_ (0.0), packet_drop_burst_ (1),
     max_send_bandwidth_ (-1), max_total_bandwidth_ (-1),
-    latency_deadline_ (-1)
+    deadline_ (-1)
 {
 
 }
@@ -35,7 +35,7 @@ madara::transport::QoSTransportSettings::QoSTransportSettings (
     packet_drop_burst_ (settings.packet_drop_burst_),
     max_send_bandwidth_ (settings.max_send_bandwidth_),
     max_total_bandwidth_ (settings.max_total_bandwidth_),
-    latency_deadline_ (settings.latency_deadline_)
+    deadline_ (settings.deadline_)
 {
 }
 
@@ -48,7 +48,7 @@ madara::transport::QoSTransportSettings::QoSTransportSettings (
     banned_peers_ (),
     packet_drop_rate_ (0.0), 
     max_send_bandwidth_ (-1), max_total_bandwidth_ (-1),
-    latency_deadline_ (-1)
+    deadline_ (-1)
 {
   const QoSTransportSettings * rhs = dynamic_cast <const QoSTransportSettings *> (
     &settings);
@@ -67,7 +67,7 @@ madara::transport::QoSTransportSettings::QoSTransportSettings (
     packet_drop_burst_ = rhs->packet_drop_burst_;
     max_send_bandwidth_ = rhs->max_send_bandwidth_;
     max_total_bandwidth_ = rhs->max_total_bandwidth_;
-    latency_deadline_ = rhs->latency_deadline_;
+    deadline_ = rhs->deadline_;
   }
   else
   {
@@ -105,7 +105,7 @@ madara::transport::QoSTransportSettings::operator= (
     packet_drop_burst_ = rhs.packet_drop_burst_;
     max_send_bandwidth_ = rhs.max_send_bandwidth_;
     max_total_bandwidth_ = rhs.max_total_bandwidth_;
-    latency_deadline_ = rhs.latency_deadline_;
+    deadline_ = rhs.deadline_;
   }
 }
 
@@ -127,7 +127,7 @@ madara::transport::QoSTransportSettings::operator= (
     packet_drop_burst_ = 1;
     max_send_bandwidth_ = -1;
     max_total_bandwidth_ = -1;
-    latency_deadline_ = -1;
+    deadline_ = -1;
 
     TransportSettings * lhs_base = (TransportSettings *)this;
     TransportSettings * rhs_base = (TransportSettings *)&rhs;
@@ -702,13 +702,13 @@ madara::transport::QoSTransportSettings::get_total_bandwidth_limit (
 void
 madara::transport::QoSTransportSettings::set_deadline (double deadline)
 {
-  latency_deadline_ = deadline;
+  deadline_ = deadline;
 }
 
 double
 madara::transport::QoSTransportSettings::get_deadline (void) const
 {
-  return latency_deadline_;
+  return deadline_;
 }
 
 void
@@ -755,8 +755,8 @@ madara::transport::QoSTransportSettings::load (const std::string & filename,
   max_total_bandwidth_ = (int64_t)knowledge.get (
     prefix + ".max_total_bandwidth").to_integer ();
 
-  latency_deadline_ = knowledge.get (
-    prefix + ".latency_deadline").to_double ();
+  deadline_ = knowledge.get (
+    prefix + ".deadline").to_double ();
 }
 
 void
@@ -798,7 +798,7 @@ madara::transport::QoSTransportSettings::save (
     Integer (max_send_bandwidth_));
   knowledge.set (prefix + ".max_total_bandwidth",
     Integer (max_total_bandwidth_));
-  knowledge.set (prefix + ".latency_deadline", latency_deadline_);
+  knowledge.set (prefix + ".deadline", deadline_);
 
   knowledge.save_context (filename);
 }

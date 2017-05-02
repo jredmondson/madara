@@ -751,9 +751,6 @@ namespace madara
       /// Length of the buffer used to store history of events
       uint32_t queue_length;
 
-      /// Deadline for sessions with any other reasoning entity
-      uint32_t deadline;
-
       /// Type of transport. See madara::transport::Types for options
       uint32_t type;
 

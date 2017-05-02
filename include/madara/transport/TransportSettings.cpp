@@ -11,7 +11,6 @@ madara::transport::TransportSettings::TransportSettings () :
   write_domain (DEFAULT_DOMAIN), 
   read_threads (1),
   queue_length (DEFAULT_QUEUE_LENGTH), 
-  deadline (DEFAULT_DEADLINE), 
   type (DEFAULT_TRANSPORT),
   max_fragment_size (62000),
   resend_attempts (MAXIMUM_RESEND_ATTEMPTS),
@@ -49,7 +48,6 @@ madara::transport::TransportSettings::TransportSettings (
   read_domains_ (settings.read_domains_),
   read_threads (settings.read_threads),
   queue_length (settings.queue_length),
-  deadline (settings.deadline),
   type (settings.type),
   max_fragment_size (settings.max_fragment_size),
   resend_attempts (settings.resend_attempts),
@@ -94,7 +92,6 @@ madara::transport::TransportSettings::operator= (
   write_domain = settings.write_domain;
   read_domains_ = settings.read_domains_;
   queue_length = settings.queue_length;
-  deadline = settings.deadline;
   type = settings.type;
   max_fragment_size = settings.max_fragment_size;
   resend_attempts = settings.resend_attempts;
@@ -155,7 +152,6 @@ madara::transport::TransportSettings::load (const std::string & filename,
   read_threads = (uint32_t) knowledge.get (prefix + ".read_threads").to_integer ();
   write_domain = knowledge.get (prefix + ".write_domain").to_string ();
   queue_length = (uint32_t)knowledge.get (prefix + ".queue_length").to_integer ();
-  deadline = (uint32_t)knowledge.get (prefix + ".deadline").to_integer ();
   type = (uint32_t)knowledge.get (prefix + ".type").to_integer ();
   max_fragment_size = (uint32_t)knowledge.get (prefix + ".max_fragment_size").to_integer ();
   resend_attempts = (uint32_t)knowledge.get (prefix + ".resend_attempts").to_integer ();
@@ -205,7 +201,6 @@ madara::transport::TransportSettings::save (const std::string & filename,
   knowledge.set (prefix + ".read_threads", Integer (read_threads));
   knowledge.set (prefix + ".write_domain", write_domain);
   knowledge.set (prefix + ".queue_length", Integer (queue_length));
-  knowledge.set (prefix + ".deadline", Integer (deadline));
   knowledge.set (prefix + ".type", Integer (type));
   knowledge.set (prefix + ".max_fragment_size", Integer (max_fragment_size));
   knowledge.set (prefix + ".resend_attempts", Integer (resend_attempts));

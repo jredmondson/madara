@@ -205,8 +205,11 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
+        double deadline;
         std::stringstream buffer (argv[i + 1]);
-        buffer >> settings.deadline;
+        buffer >> deadline;
+        
+        settings.set_deadline (deadline);
       }
 
       ++i;

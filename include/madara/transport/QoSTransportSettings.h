@@ -728,7 +728,7 @@ namespace madara
       /**
        * Deadline for packets at which packets drop
        **/
-      double latency_deadline_;
+      double deadline_;
     };
   } // end Transport namespace
 } // end Madara namespace
