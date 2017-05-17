@@ -79,10 +79,10 @@ namespace madara
     private:
 
       /// the user's cypher key
-      Utility::ScopedArray <unsigned char> key_;
+      utility::ScopedArray <unsigned char> key_;
 
       /// initialization vector
-      Utility::ScopedArray <unsigned char> iv_;
+      utility::ScopedArray <unsigned char> iv_;
     };
   }
 }
