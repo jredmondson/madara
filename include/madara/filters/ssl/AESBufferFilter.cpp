@@ -9,14 +9,14 @@
 #include "madara/utility/Utility.h"
 #include "madara/utility/LogMacros.h"
 
-Madara::Filters::AESBufferFilter::AESBufferFilter ()
+madara::filters::AESBufferFilter::AESBufferFilter ()
   : key_ (new unsigned char[32]), iv_ (new unsigned char[16])
 {
   memset ((void *)key_.get_ptr (), 0, 32);
   memset ((void *)iv_.get_ptr (), 0, 16);
 }
 
-Madara::Filters::AESBufferFilter::AESBufferFilter (
+madara::filters::AESBufferFilter::AESBufferFilter (
   const AESBufferFilter & input)
   : key_ (new unsigned char[32]), iv_ (new unsigned char[16])
 {
@@ -24,7 +24,7 @@ Madara::Filters::AESBufferFilter::AESBufferFilter (
   memset ((void *)iv_.get_ptr (), 0, 16);
 }
 
-Madara::Filters::AESBufferFilter::AESBufferFilter (
+madara::filters::AESBufferFilter::AESBufferFilter (
   unsigned char * key, int key_length)
 : key_ (new unsigned char[32]), iv_ (new unsigned char[16])
 {
@@ -32,11 +32,11 @@ Madara::Filters::AESBufferFilter::AESBufferFilter (
   memset ((void *)iv_.get_ptr (), 0, 16);
 }
 
-Madara::Filters::AESBufferFilter::~AESBufferFilter ()
+madara::filters::AESBufferFilter::~AESBufferFilter ()
 {
 }
 
-int Madara::Filters::AESBufferFilter::generate_key (
+int madara::filters::AESBufferFilter::generate_key (
   const std::string & password)
 {
   int i, rounds = 5;
@@ -63,7 +63,7 @@ int Madara::Filters::AESBufferFilter::generate_key (
 
 
 int
-Madara::Filters::AESBufferFilter::encode (
+madara::filters::AESBufferFilter::encode (
   unsigned char * source, int size, int max_size) const
 {
   int result_length (0);
@@ -91,7 +91,7 @@ Madara::Filters::AESBufferFilter::encode (
 }
 
 int
-Madara::Filters::AESBufferFilter::decode (
+madara::filters::AESBufferFilter::decode (
   unsigned char * source, int size, int max_size) const
 {
   int result_length (0);

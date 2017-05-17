@@ -25,6 +25,32 @@ project (Test_Multicast_Mutex) : using_madara, using_ace, no_karl, no_xml, null_
   }
 }
 
+project (Test_Pugi) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_pugi
+  
+  
+  requires += tests
+
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_pugi.cpp
+  }
+}
+
 project (TestMulticastCloseAndAtta.h) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_close_and_attach

@@ -18,9 +18,9 @@
 #include "madara/utility/ScopedArray.h"
 #include "../BufferFilter.h"
 
-namespace Madara
+namespace madara
 {
-  namespace Filters
+  namespace filters
   {
     /**
      * Filter for encrypting with the AES 256 bit cypher

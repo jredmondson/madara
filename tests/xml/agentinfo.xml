@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<karl>
+  <bob>5</bob>
+  <agent id="0" location="42,70,100" orientation="1,1,1" />
+  <agent id="1" prefix="agent.charlie" location="43,70.500,100" orientation="1,0,2" />
+  <agent id="2" prefix="agent.foxtrot" location="42.30,70.005,100" orientation="0,0,4" />
+</karl>

@@ -101,9 +101,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/transport/Transport.cpp
     include/madara/utility/Utility.cpp
     include/madara/utility/Refcounter.cpp
-    include/madara/utility/tinyxml.cpp
-    include/madara/utility/tinyxmlerror.cpp
-    include/madara/utility/tinyxmlparser.cpp
+    include/pugi
   }
 
   Header_Files {
@@ -130,6 +128,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/MADARA_export.h
     include/madara/LockType.h
     include/madara/Namespaces.h
+    include/pugi
   }
 }
 
