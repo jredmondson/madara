@@ -9,6 +9,8 @@
 #include "madara/utility/Utility.h"
 #include "madara/utility/LogMacros.h"
 
+#include "madara/logger/GlobalLogger.h"
+
 madara::filters::AESBufferFilter::AESBufferFilter ()
   : key_ (new unsigned char[32]), iv_ (new unsigned char[16])
 {
@@ -51,10 +53,10 @@ int madara::filters::AESBufferFilter::generate_key (
     (unsigned char *)iv_.get_ptr ());
   if (i != 32)
   {
-    MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG,
-      DLINFO "%s:" \
+    madara_logger_ptr_log (logger::global_logger.get_ptr (), logger::LOG_ERROR,
       " Unable to initialized 256 bit AES. Only received %d bytes.\n",
-      i));
+      i);
+
     return -1;
   }
 
