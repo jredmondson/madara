@@ -44,7 +44,7 @@ int madara::filters::AESBufferFilter::generate_key (
   // use a random salt and a zero'd initialization vector
   int64_t salt = 0;
 
-  i = EVPBytesToKey (EVP_aes_256_cbc (), EVP_sha1 (),
+  i = EVP_BytesToKey (EVP_aes_256_cbc (), EVP_sha1 (),
     (unsigned char *)&salt, (unsigned char *)password.c_str (),
     (int)password.length (), rounds,
     (unsigned char *)key_.get_ptr (),
@@ -80,7 +80,7 @@ madara::filters::AESBufferFilter::encode (
     key_.get_ptr (), iv_.get_ptr ());
   //EVP_EncryptInit_ex (&encrypt_context, NULL, NULL, NULL, NULL);
 
-  EVPEncryptUpdate (&encrypt_context,
+  EVP_EncryptUpdate (&encrypt_context,
     source, &end_write,
     source, size);
   EVP_EncryptFinal_ex (&encrypt_context, source + end_write, &pad_bytes);
@@ -107,7 +107,7 @@ madara::filters::AESBufferFilter::decode (
   EVP_DecryptInit_ex (&decrypt_context, EVP_aes_256_cbc (), NULL,
     key_.get_ptr (), iv_.get_ptr ());
   //EVP_DecryptInit_ex (&decrypt_context, NULL, NULL, NULL, NULL);
-  EVPDecryptUpdate (&decrypt_context, source, &end_write,
+  EVP_DecryptUpdate (&decrypt_context, source, &end_write,
     source, size);
   EVP_DecryptFinal_ex (&decrypt_context, source + end_write, &pad_bytes);
 
