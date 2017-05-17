@@ -6,8 +6,8 @@
 #include "madara/utility/Utility.h"
 #include "madara/filters/ssl/AESBufferFilter.h"
 
-namespace filters = Madara::Filters;
-namespace utility = Madara::Utility;
+namespace filters = madara::filters;
+namespace utility = madara::utility;
 
 int main (int, char **)
 {
