@@ -130,6 +130,17 @@ void handle_arguments (int argc, char ** argv)
         "  [-y|--frequency hz]      frequency to perform evaluation. If negative,\n" \
         "                           only runs once. If zero, hertz is infinite.\n" \
         "                           If positive, hertz is that hertz rate.\n" \
+        "  [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n" \
+        "                           examples include tcp://127.0.0.1:30000\n" \
+        "                           or any of the other endpoint types like\n" \
+        "                           pgm://. For tcp, remember that the first\n" \
+        "                           endpoint defined must be your own, the\n" \
+        "                           one you are binding to, and all other\n" \
+        "                           agent endpoints must also be defined or\n" \
+        "                           no messages will ever be sent to them.\n" \
+        "                           Similarly, all agents will have to have\n" \
+        "                           this endpoint added to their list or\n" \
+        "                           this karl agent will not see them.s\n" \
         "  [-0|--init-logic logic]  logic containing initial variables (only ran once)\n" \
         "  [-0f|--init-file file]   file containing initial variables (only ran once)\n" \
         "\n",
@@ -272,6 +283,15 @@ void handle_arguments (int argc, char ** argv)
         buffer >> frequency;
       }
 
+      ++i;
+    }
+    else if (arg1 == "--zmq" || arg1 == "--0mq")
+    {
+      if (i + 1 < argc)
+      {
+        settings.hosts.push_back (argv[i + 1]);
+        settings.type = transport::ZMQ;
+      }
       ++i;
     }
     else if (arg1 == "-0" || arg1 == "--init-logic")
