@@ -36,6 +36,7 @@ madara::transport::ZMQTransportReadThread::init (
   {
     int send_buff_size = 0;
     int rcv_buff_size = 0;
+    int timeout = 1000;
     int buff_size = settings_.queue_length;
     size_t opt_len = sizeof (int);
 
@@ -77,6 +78,29 @@ madara::transport::ZMQTransportReadThread::init (
         " ERROR: errno = %s\n",
         zmq_strerror (zmq_errno ()));
     }
+
+
+    result = zmq_setsockopt (
+      read_socket_, ZMQ_RCVTIMEO, (void *)&timeout, opt_len);
+
+    if (result == 0)
+    {
+      int result = zmq_getsockopt (
+        read_socket_, ZMQ_RCVTIMEO, (void *)&timeout, &opt_len);
+
+      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+        "ZMQTransportReadThread::init:" \
+        " successfully set rcv timeout to %d\n",
+        timeout);
+    }
+    else
+    {
+      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+        "ZMQTransportReadThread::init:" \
+        " ERROR: When setting timeout on rcv, errno = %s\n",
+        zmq_strerror (zmq_errno ()));
+    }
+
 
     if (settings_.hosts.size () >= 1)
     {
@@ -251,8 +275,9 @@ madara::transport::ZMQTransportReadThread::run (void)
       " entering a recv on the socket.\n",
       print_prefix);
 
+    // blocking receive up to rcv timeout (1 second)
     buffer_remaining = (int64_t)zmq_recv (
-      read_socket_, (void *)buffer, zmq_buffer_size, ZMQ_DONTWAIT);
+      read_socket_, (void *)buffer, zmq_buffer_size, 0);
 
     madara_logger_log (context_->get_logger (), logger::LOG_MINOR,
       "%s:" \

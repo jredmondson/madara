@@ -132,6 +132,7 @@ madara::transport::ZMQTransport::setup (void)
     int send_buff_size = 0;
     int rcv_buff_size = 0;
     int buff_size = settings_.queue_length;
+    int timeout = 300;
     size_t opt_len = sizeof (int);
 
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -157,6 +158,28 @@ madara::transport::ZMQTransport::setup (void)
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "ZMQTransport::setup:" \
         " ERROR: errno = %s\n",
+        zmq_strerror (zmq_errno ()));
+    }
+
+
+    result = zmq_setsockopt (
+      write_socket_, ZMQ_SNDTIMEO, (void *)&timeout, opt_len);
+
+    if (result == 0)
+    {
+      int result = zmq_getsockopt (
+        write_socket_, ZMQ_SNDTIMEO, (void *)&timeout, &opt_len);
+
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+        "ZMQTransport::setup:" \
+        " successfully set send timeout to %d\n",
+        timeout);
+    }
+    else
+    {
+      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+        "ZMQTransport::setup:" \
+        " ERROR: When setting timeout on send, errno = %s\n",
         zmq_strerror (zmq_errno ()));
     }
 
@@ -207,9 +230,9 @@ madara::transport::ZMQTransport::send_data (
         "ZMQTransport::send:" \
         " sending %d bytes on socket\n", (int)result);
 
-      //send the prepped buffer over ZeroMQ
+      //send the prepped buffer over ZeroMQ with timeout of 300ms
       result = (long) zmq_send (
-        write_socket_, (void *)buffer_.get_ptr (), (size_t)result, ZMQ_DONTWAIT);
+        write_socket_, (void *)buffer_.get_ptr (), (size_t)result, 0);
 
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "ZMQTransport::send:" \
