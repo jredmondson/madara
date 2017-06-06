@@ -28,6 +28,17 @@ options:
   [-y|--frequency hz]      frequency to perform evaluation. If negative,
                            only runs once. If zero, hertz is infinite.
                            If positive, hertz is that hertz rate.
+  [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.
+                           examples include tcp://127.0.0.1:30000
+                           or any of the other endpoint types like
+                           pgm://. For tcp, remember that the first
+                           endpoint defined must be your own, the
+                           one you are binding to, and all other
+                           agent endpoints must also be defined or
+                           no messages will ever be sent to them.
+                           Similarly, all agents will have to have
+                           this endpoint added to their list or
+                           this karl agent will not see them.s
   [-0|--init-logic logic]  logic containing initial variables (only ran once)
   [-0f|--init-file file]   file containing initial variables (only ran once)
 

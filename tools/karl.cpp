@@ -43,6 +43,7 @@ std::string save_location;
 StringVector filenames;
 StringVector initfiles;
 StringVector initlogics;
+std::string  initbinaries;
 
 // print debug information
 bool debug (false);
@@ -143,6 +144,8 @@ void handle_arguments (int argc, char ** argv)
         "                           this karl agent will not see them.s\n" \
         "  [-0|--init-logic logic]  logic containing initial variables (only ran once)\n" \
         "  [-0f|--init-file file]   file containing initial variables (only ran once)\n" \
+        "  [-0b|--init-bin file]    file containing binary knowledge base, the result" \
+        "                           of save_context (only ran once)\n" \
         "\n",
         argv[0]);
       exit (0);
@@ -324,6 +327,23 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-0b" || arg1 == "--init-bin")
+    {
+      if (i + 1 < argc)
+      {
+        initbinaries = argv[i + 1];
+
+        if (debug)
+        {
+          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
+            "\nReading binary checkpoint from file %s:\n\n" \
+            "\n",
+            initbinaries.c_str ());
+        }
+      }
+
+      ++i;
+    }
     else if (logic == "")
     {
       logic = arg1;
@@ -380,6 +400,11 @@ int main (int argc, char ** argv)
 
   // create a knowledge base and setup our id
   knowledge::KnowledgeBase knowledge (host, settings);
+
+  if (initbinaries != "")
+  {
+    knowledge.load_context (initbinaries);
+  }
 
   // build the expressions to evaluate
   std::vector <knowledge::CompiledExpression> expressions;
