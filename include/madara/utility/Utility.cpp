@@ -473,8 +473,8 @@ madara::utility::file_to_string (const std::string & filename)
   else
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-      "utility::file_to_string:" \
-      " failed to open file: %s\n");
+                           "utility::file_to_string:"           \
+                           " failed to open file: %s\n", filename.c_str());
   }
 
   return buffer.str ();
