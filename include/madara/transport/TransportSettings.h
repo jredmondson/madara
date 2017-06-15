@@ -181,7 +181,7 @@ namespace madara
       * Retrieves the list of read domains
       * @param  domains   the list to fill with all read domains
       **/
-      void get_read_domains (std::vector<std::string> & domains);
+      void get_read_domains (std::vector<std::string> & domains) const;
 
       /**
       * Checks if a domain is in the domain read list

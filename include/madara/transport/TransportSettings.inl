@@ -25,7 +25,8 @@ madara::transport::TransportSettings::clear_read_domains (void)
 }
 
 inline void
-madara::transport::TransportSettings::get_read_domains (std::vector<std::string> & domains)
+madara::transport::TransportSettings::get_read_domains (
+  std::vector<std::string> & domains) const
 {
   domains.clear ();
   for (std::map <std::string, int>::const_iterator i = read_domains_.begin ();
