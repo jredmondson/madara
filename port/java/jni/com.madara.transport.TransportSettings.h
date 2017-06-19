@@ -152,24 +152,6 @@ Java_com_madara_transport_TransportSettings_jni_1getResendAttempts
 
 /*
  * Class:     com_madara_transport_TransportSettings
- * Method:    jni_setDeadline
- * Signature: (JI)V
- */
-MADARA_Export void JNICALL
-Java_com_madara_transport_TransportSettings_jni_1setDeadline
-  (JNIEnv *, jobject, jlong, jint);
-
-/*
- * Class:     com_madara_transport_TransportSettings
- * Method:    jni_getDeadline
- * Signature: (J)I
- */
-MADARA_Export jint JNICALL
-Java_com_madara_transport_TransportSettings_jni_1getDeadline
-  (JNIEnv *, jobject, jlong);
-
-/*
- * Class:     com_madara_transport_TransportSettings
  * Method:    jni_setType
  * Signature: (JI)V
  */

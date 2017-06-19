@@ -195,41 +195,6 @@ Java_com_madara_transport_TransportSettings_jni_1getResendAttempts
 
 /*
 * Class:     com_madara_transport_TransportSettings
-* Method:    jni_setDeadline
-* Signature: (JI)V
-*/
-void JNICALL
-Java_com_madara_transport_TransportSettings_jni_1setDeadline (JNIEnv * env, jobject obj, jlong cptr, jint deadline)
-{
-  TransportSettings * settings = (TransportSettings *) cptr;
-
-  if (settings)
-  {
-    settings->deadline = deadline;
-  }
-}
-
-/*
-* Class:     com_madara_transport_TransportSettings
-* Method:    jni_getDeadline
-* Signature: (J)I
-*/
-jint JNICALL
-Java_com_madara_transport_TransportSettings_jni_1getDeadline (JNIEnv * env, jobject obj, jlong cptr)
-{
-  jint result (0);
-  TransportSettings * settings = (TransportSettings *) cptr;
-
-  if (settings)
-  {
-    result = (jint) settings->deadline;
-  }
-
-  return result;
-}
-
-/*
-* Class:     com_madara_transport_TransportSettings
 * Method:    jni_setType
 * Signature: (JI)V
 */
