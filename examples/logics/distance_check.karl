@@ -1,0 +1,26 @@
+/**
+ * PREREQUISITES:
+ * .pos1: Set .pos1 to be a vector with at least 2 fields .pos1[0] and .pos1[1]
+ * .pos2: Set .pos2 to be a vector with at least 2 fields .pos2[0] and .pos2[1]
+ * .minimum_distance: minimum distance in meters
+ * .mission_type: <=0 if .pos1 should be within .minimum_distance of .pos2,
+ *                1 if .pos1 should be farther than .minimum_distance to .pos2s
+ * RESULTS:
+ * .distance: the distance between .pos1 and .pos2 in meters
+ * .mission_success: result of application of .minimum_distance with .mission_type
+ **/
+
+.distance = #sqrt(#pow(.pos1[0]-.pos2[0],2) + #pow(.pos1[1]-.pos2[1],2)) ;>
+
+// check if .pos1 should be closer than .minimum_distance
+.mission_type <= 0 => (
+  .distance <= .minimum_distance => .mission_success = 1
+) ;>
+
+// check if pos1 should be farther than .minimum_distance
+.mission_type > 0 => (
+  .distance > .minimum_distance => .mission_success = 1
+) ;>
+
+// return mission failure
+!.mission_success
