@@ -1,9 +1,0 @@
-!light{.id}.braking_time => light{.id}.braking_time = default_braking_time;
-!light{.id}.cut_off_time => light{.id}.cut_off_time = default_phase_cut_off_time;
-!light{.id}.time_min => light{.id}.time_min = default_phase_time_min;
-!light{.id}.phase => light{.id}.phase = default_phase;
-
-!light{.id}.braking_time => light{.id}.braking_time = 5;
-!light{.id}.cut_off_time => light{.id}.cut_off_time = 20;
-!light{.id}.time_min => light{.id}.time_min = 5;
-!light{.id}.phase => light{.id}.phase = 1;
