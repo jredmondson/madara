@@ -23,9 +23,9 @@ files are provided for seeing how to configure and use distance_check.karl.
   ###LINUX#####
 
   // check for a buffer distance (.pos1 needs to be farther out than .minimum_distance)
-  $MADARA_ROOT\bin\karl -0f $MADARA_ROOT\examples\logics\check_for_buffer_distance.karl -i $MADARA_ROOT\examples\logics\distance_check.karl -k
+  $MADARA_ROOT/bin/karl -0f $MADARA_ROOT/examples/logics/check_for_buffer_distance.karl -i $MADARA_ROOT/examples/logics/distance_check.karl -k
 
   // check for a closer distance (.pos1 needs to be closer than .minimum_distance)
-  $MADARA_ROOT\bin\karl -0f $MADARA_ROOT\examples\logics\check_for_minimum_distance.karl -i $MADARA_ROOT\examples\logics\distance_check.karl -k
+  $MADARA_ROOT/bin/karl -0f $MADARA_ROOT/examples/logics/check_for_minimum_distance.karl -i $MADARA_ROOT/examples/logics/distance_check.karl -k
   
   
