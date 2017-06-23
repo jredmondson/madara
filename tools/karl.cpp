@@ -156,7 +156,7 @@ void handle_arguments (int argc, char ** argv)
         "                           this karl agent will not see them.s\n" \
         "  [-0|--init-logic logic]  logic containing initial variables (only ran once)\n" \
         "  [-0f|--init-file file]   file containing initial variables (only ran once)\n" \
-        "  [-0b|--init-bin file]    file containing binary knowledge base, the result" \
+        "  [-0b|--init-bin file]    file containing binary knowledge base, the result\n" \
         "                           of save_context (only ran once)\n" \
         "  [--meta-prefix prefix]   store checkpoint meta data at knowledge prefix\n" \
         "  [--use-id]               use the id of the checkpointed binary load\n" \

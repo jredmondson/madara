@@ -20,6 +20,8 @@ options:
   [-q|--queue-length size] size of network buffers in bytes
   [-r|--reduced]           use the reduced message header
   [-s|--save file]         save the resulting knowledge base as karl
+  [-sb|--save-binary file] save the resulting knowledge base as a
+                           binary checkpoint
   [-t|--time time]         time to wait for results
   [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)
   [-w|--wait seconds]      Wait for number of seconds before exiting
@@ -41,4 +43,8 @@ options:
                            this karl agent will not see them.s
   [-0|--init-logic logic]  logic containing initial variables (only ran once)
   [-0f|--init-file file]   file containing initial variables (only ran once)
+  [-0b|--init-bin file]    file containing binary knowledge base, the result
+                           of save_context (only ran once)
+  [--meta-prefix prefix]   store checkpoint meta data at knowledge prefix
+  [--use-id]               use the id of the checkpointed binary load
 
