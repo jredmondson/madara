@@ -19,6 +19,7 @@
 #include "madara/filters/GenericFilters.h"
 #include "madara/logger/GlobalLogger.h"
 
+// convenience namespaces and typedefs
 namespace knowledge = madara::knowledge;
 namespace transport = madara::transport;
 namespace utility = madara::utility;
@@ -26,6 +27,7 @@ namespace filters = madara::filters;
 namespace logger = madara::logger;
 namespace threads = madara::threads;
 
+typedef knowledge::KnowledgeRecord::Integer  Integer;
 typedef  std::vector <std::string>  StringVector;
 
 // default transport settings
@@ -39,6 +41,13 @@ std::string logic;
 // filename to save knowledge base as KaRL to
 std::string save_location;
 
+// filename to save knowledge base as binary to
+std::string save_binary;
+
+// knowledge base var name to save checkpoint timestamp to
+std::string  meta_prefix;
+
+
 // list of filenames
 StringVector filenames;
 StringVector initfiles;
@@ -51,6 +60,7 @@ bool print_knowledge (false);
 bool print_knowledge_frequency (false);
 bool after_wait (false);
 bool check_result (false);
+bool use_id (false);
 
 // wait information
 bool waiting (false), waiting_for_periodic (false);
@@ -123,6 +133,8 @@ void handle_arguments (int argc, char ** argv)
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
         "  [-r|--reduced]           use the reduced message header\n" \
         "  [-s|--save file]         save the resulting knowledge base as karl\n" \
+        "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
+        "                           binary checkpoint\n" \
         "  [-t|--time time]         time to wait for results\n" \
         "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
@@ -146,6 +158,8 @@ void handle_arguments (int argc, char ** argv)
         "  [-0f|--init-file file]   file containing initial variables (only ran once)\n" \
         "  [-0b|--init-bin file]    file containing binary knowledge base, the result" \
         "                           of save_context (only ran once)\n" \
+        "  [--meta-prefix prefix]   store checkpoint meta data at knowledge prefix\n" \
+        "  [--use-id]               use the id of the checkpointed binary load\n" \
         "\n",
         argv[0]);
       exit (0);
@@ -161,8 +175,7 @@ void handle_arguments (int argc, char ** argv)
         if (debug)
         {
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-            "\nReading logic from file %s:\n\n" \
-            "\n",
+            "\nReading logic from file %s:\n",
             filename.c_str ());
         }
 
@@ -242,6 +255,13 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-sb" || arg1 == "--save-binary")
+    {
+      if (i + 1 < argc)
+        save_binary = argv[i + 1];
+
+      ++i;
+    }
     else if (arg1 == "-u" || arg1 == "--udp")
     {
       if (i + 1 < argc)
@@ -317,8 +337,7 @@ void handle_arguments (int argc, char ** argv)
         if (debug)
         {
           madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-            "\nReading logic from file %s:\n\n" \
-            "\n",
+            "\nReading logic from file %s:\n",
             filename.c_str ());
         }
 
@@ -336,13 +355,32 @@ void handle_arguments (int argc, char ** argv)
         if (debug)
         {
           madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-            "\nReading binary checkpoint from file %s:\n\n" \
-            "\n",
+            "Will be reading binary checkpoint from file %s:\n",
             initbinaries.c_str ());
         }
       }
 
       ++i;
+    }
+    else if (arg1 == "--meta-prefix")
+    {
+      if (i + 1 < argc)
+      {
+        meta_prefix = argv[i + 1];
+
+        if (debug)
+        {
+          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
+            "Will be saving checkpoint meta data to to prefix %s:\n",
+            meta_prefix.c_str ());
+        }
+      }
+
+      ++i;
+    }
+    else if (arg1 == "--use-id")
+    {
+      use_id = true;
     }
     else if (logic == "")
     {
@@ -403,7 +441,27 @@ int main (int argc, char ** argv)
 
   if (initbinaries != "")
   {
-    knowledge.load_context (initbinaries);
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
+      "\nReading binary checkpoint from file %s:\n",
+      initbinaries.c_str ());
+
+    madara::knowledge::EvalSettings silent (true, true, true, true, true);
+    madara::knowledge::FileHeader meta;
+    knowledge.load_context (initbinaries, meta, use_id);
+
+    if (meta_prefix != "")
+    {
+      knowledge.set (meta_prefix + ".originator",
+        std::string (meta.originator), silent);
+      knowledge.set (meta_prefix + ".version",
+        utility::to_string_version (meta.karl_version), silent);
+      knowledge.set (meta_prefix + ".last_timestamp",
+        (Integer)meta.last_timestamp, silent);
+      knowledge.set (meta_prefix + ".initial_timestamp",
+        (Integer)meta.initial_timestamp, silent);
+      knowledge.set (meta_prefix + ".current_timestamp",
+        (Integer)time (NULL), silent);
+    }
   }
 
   // build the expressions to evaluate
@@ -525,9 +583,16 @@ int main (int argc, char ** argv)
     knowledge.print_knowledge ();
   }
 
+  // save as karl if requested
   if (save_location.size () > 0)
   {
     knowledge.save_as_karl (save_location);
+  }
+
+  // save as binary if requested
+  if (save_binary.size () > 0)
+  {
+    knowledge.save_context (save_binary);
   }
 
   return 0;

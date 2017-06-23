@@ -1131,6 +1131,25 @@ namespace madara
               KnowledgeUpdateSettings (true, true, true, false));
 
       /**
+      * Loads the context from a file
+      * @param   filename    name of the file to open
+      * @param   meta        a file header that will contain metadata such
+      *                      as originator, timestamp, lamport clock, etc.
+      * @param   use_id      if true, sets the unique identifier to the
+      *                      one found in the saved context. If false,
+      *                      keeps the default identifier.
+      * @param   settings    settings for applying the update
+      * @return              -1 if file open failed<br />
+      *                      -2 if file read failed<br />
+      *                      >0 if successful (number of bytes written)
+      **/
+      int64_t load_context (const std::string & filename,
+        FileHeader & meta,
+        bool use_id = true,
+        const KnowledgeUpdateSettings & settings =
+        KnowledgeUpdateSettings (true, true, true, false));
+
+      /**
       * Adds a list of VariableReferences to the current modified list.
       * @param  modifieds  a list of variables to add to modified list
       **/

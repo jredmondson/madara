@@ -106,7 +106,7 @@ namespace madara
       uint64_t          initial_timestamp;
       
       /**
-       * the timestamp for the initial checkpointing
+       * the timestamp for the last checkpoint
        **/
       uint64_t          last_timestamp;
       

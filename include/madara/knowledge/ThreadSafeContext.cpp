@@ -10,7 +10,6 @@
 #include "madara/knowledge/ThreadSafeContext.h"
 
 #include "madara/expression/Interpreter.h"
-#include "madara/knowledge/FileHeader.h"
 #include "madara/transport/Transport.h"
 #include <stdio.h>
 #include <time.h>
@@ -2136,6 +2135,122 @@ madara::knowledge::ThreadSafeContext::load_context (
   return total_read;
 }
 
+int64_t
+madara::knowledge::ThreadSafeContext::load_context (
+  const std::string & filename,
+  FileHeader & meta,
+  const KnowledgeUpdateSettings & settings)
+{
+  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
+    "ThreadSafeContext::load_context:" \
+    " opening file %s\n", filename.c_str ());
+
+  // using ACE for writing to the destination file
+  FILE * file = fopen (filename.c_str (), "rb");
+
+  int64_t total_read (0);
+
+  if (file)
+  {
+    int64_t max_buffer (102800);
+    int64_t buffer_remaining (max_buffer);
+
+    utility::ScopedArray <char> buffer = new char[max_buffer];
+    const char * current = buffer.get_ptr ();
+
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::load_context:" \
+      " reading file meta data\n");
+
+    total_read = fread (buffer.get_ptr (),
+      1, max_buffer, file);
+    buffer_remaining = (int64_t)total_read;
+
+    if (total_read > FileHeader::encoded_size () &&
+      FileHeader::file_header_test (current))
+    {
+      // if there was something in the file, and it was the right header
+
+      current = meta.read (current, buffer_remaining);
+
+      /**
+      * check that there is more than one state and that the rest of
+      * the file is sufficient to at least be a message header (what
+      * we use as a checkpoint header
+      **/
+      if (meta.states > 0)
+      {
+        for (uint64_t state = 0; state < meta.states; ++state)
+        {
+          if (buffer_remaining > (int64_t)
+            transport::MessageHeader::static_encoded_size ())
+          {
+            transport::MessageHeader checkpoint_header;
+
+            current = checkpoint_header.read (current, buffer_remaining);
+
+            /**
+            * What we read into the checkpoint_header will dictate our
+            * max_buffer. We want to make this checkpoint_header size into
+            * something reasonable.
+            **/
+            if (checkpoint_header.size > (uint64_t)buffer_remaining)
+            {
+              /**
+              * create a new array and copy the remaining elements
+              * from buffer_remaining
+              **/
+              utility::ScopedArray <char> new_buffer =
+                new char[checkpoint_header.size];
+              memcpy (new_buffer.get_ptr (), current,
+                (size_t)buffer_remaining);
+
+              // read the rest of checkpoint into new buffer
+              total_read += fread (new_buffer.get_ptr () + buffer_remaining, 1,
+                checkpoint_header.size
+                - (uint64_t)buffer_remaining
+                - checkpoint_header.encoded_size (), file);
+
+              // update other variables
+              max_buffer = checkpoint_header.size;
+              buffer_remaining = checkpoint_header.size
+                - checkpoint_header.encoded_size ();
+              current = new_buffer.get_ptr ();
+              buffer = new_buffer;
+            } // end if allocation is needed
+
+            for (uint32_t update = 0;
+              update < checkpoint_header.updates; ++update)
+            {
+              std::string key;
+              knowledge::KnowledgeRecord record;
+              current = record.read (current, key, buffer_remaining);
+              update_record_from_external (key, record, settings);
+            }
+
+          } // end if enough buffer for reading a message header
+
+          if (buffer_remaining == 0 && (uint64_t)total_read < meta.size)
+          {
+            buffer_remaining = max_buffer;
+            current = buffer.get_ptr ();
+            total_read += fread (buffer.get_ptr (), 1, buffer_remaining, file);
+          }
+        } // end for loop of states
+      }
+    } // end if total_read > 0
+    else
+    {
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "ThreadSafeContext::load_context:" \
+        " invalid file. No contextual change.\n");
+    }
+
+    fclose (file);
+  }
+
+  return total_read;
+}
 
 int64_t
 madara::knowledge::ThreadSafeContext::save_checkpoint (

@@ -524,13 +524,39 @@ inline int64_t
   bool  use_id,
   const KnowledgeUpdateSettings & settings)
 {
+  int64_t result = 0;
+
   if (use_id)
-    return map_.load_context (filename, id_, settings);
+    result = map_.load_context (filename, id_, settings);
   else
   {
     std::string id;
-    return map_.load_context (filename, id, settings);
+    result = map_.load_context (filename, id, settings);
   }
+
+  return result;
+}
+
+inline int64_t
+madara::knowledge::KnowledgeBaseImpl::load_context (
+const std::string & filename,
+FileHeader & meta,
+bool  use_id,
+const KnowledgeUpdateSettings & settings)
+{
+  int64_t result = 0;
+
+  if (use_id)
+  {
+    result = map_.load_context (filename, meta, settings);
+    id_ = meta.originator;
+  }
+  else
+  {
+    result = map_.load_context (filename, meta, settings);
+  }
+
+  return result;
 }
 
 inline void

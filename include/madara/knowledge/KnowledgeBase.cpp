@@ -1828,11 +1828,33 @@ madara::knowledge::KnowledgeBase::load_context (
 
   if (context_)
   {
-    result = impl_->load_context (filename, use_id, settings);
+    std::string id;
+    result = context_->load_context (filename, id, settings);
   }
   else if (impl_.get ())
   {
     result = impl_->load_context (filename, use_id, settings);
+  }
+
+  return result;
+}
+
+int64_t
+madara::knowledge::KnowledgeBase::load_context (
+const std::string & filename,
+FileHeader & meta,
+bool use_id,
+const KnowledgeUpdateSettings & settings)
+{
+  int64_t result = 0;
+
+  if (context_)
+  {
+    result = context_->load_context (filename, meta, settings);
+  }
+  else if (impl_.get ())
+  {
+    result = impl_->load_context (filename, meta, use_id, settings);
   }
 
   return result;

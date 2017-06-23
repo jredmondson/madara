@@ -12,6 +12,7 @@
 #include "ace/Recursive_Thread_Mutex.h"
 #include "ace/Condition_Recursive_Thread_Mutex.h"
 #include "ace/Synch.h"
+#include "madara/knowledge/FileHeader.h"
 #include "madara/logger/Logger.h"
 
 #ifndef ACE_LACKS_PRAGMA_ONCE
@@ -1327,6 +1328,21 @@ namespace madara
         std::string & id,
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings (true, true, true, false));
+
+      /**
+      * Loads the context from a file
+      * @param   filename    name of the file to open
+      * @param   meta        a file header that will contain metadata such
+      *                      as originator, timestamp, lamport clock, etc.
+      * @param   settings    settings for applying the update
+      * @return              -1 if file open failed<br />
+      *                      -2 if file read failed<br />
+      *                      >0 if successful (number of bytes written)
+      **/
+      int64_t load_context (const std::string & filename,
+        FileHeader & meta,
+        const KnowledgeUpdateSettings & settings =
+        KnowledgeUpdateSettings (true, true, true, false));
 
       /**
        * Saves a checkpoint of a list of changes to a file
