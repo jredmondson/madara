@@ -1,22 +1,22 @@
-#include "madara/transport/ndds/NDDSTransport.h"
-//#include "madara/transport/ndds/NDDSTransportReadThread.h"
+#include "madara/transport/ndds/NddsTransport.h"
+//#include "madara/transport/ndds/NddsTransportReadThread.h"
 #include "madara/knowledge/UpdateTypes.h"
 #include "madara/utility/Utility.h"
 #include "madara/logger/GlobalLogger.h"
 
-namespace logger = madara::Logger;
+namespace logger = madara::logger;
 
 #include <iostream>
 #include <sstream>
 
-const char * madara::transport::NDDSTransport::topic_names_[] = {
+const char * madara::transport::NddsTransport::topic_names_[] = {
   "MADARA_KaRL_Data",
   "MADARA_KaRL_Control"
 };
 
-const char * madara::transport::NDDSTransport::partition_ = "Madara_knowledge";
+const char * madara::transport::NddsTransport::partition_ = "Madara_knowledge";
 
-madara::transport::NDDSTransport::NDDSTransport (
+madara::transport::NddsTransport::NddsTransport (
   const std::string & id,
   knowledge::ThreadSafeContext & context, 
   TransportSettings & config, bool launch_transport)
@@ -28,13 +28,13 @@ madara::transport::NDDSTransport::NDDSTransport (
     setup ();
 }
 
-madara::transport::NDDSTransport::~NDDSTransport ()
+madara::transport::NddsTransport::~NddsTransport ()
 {
   close ();
 }
 
 void
-madara::transport::NDDSTransport::close (void)
+madara::transport::NddsTransport::close (void)
 {
   DDS_ReturnCode_t rc;
   this->invalidate_transport ();
@@ -65,7 +65,7 @@ madara::transport::NDDSTransport::close (void)
       if (rc != DDS_RETCODE_OK)
       {
         context_.get_logger ().log (logger::LOG_MINOR,
-          "NDDSTransport::close: unable to delete participant entities\n");
+          "NddsTransport::close: unable to delete participant entities\n");
       }
 
       rc = DDSDomainParticipantFactory::get_instance()->delete_participant(
@@ -73,7 +73,7 @@ madara::transport::NDDSTransport::close (void)
       if (rc != DDS_RETCODE_OK)
       {
         context_.get_logger ().log (logger::LOG_MINOR,
-          "NDDSTransport::close: unable to delete participant\n");
+          "NddsTransport::close: unable to delete participant\n");
       }
   }
 
@@ -87,19 +87,19 @@ madara::transport::NDDSTransport::close (void)
 }
 
 int
-madara::transport::NDDSTransport::reliability (void) const
+madara::transport::NddsTransport::reliability (void) const
 {
   return this->settings_.reliability;
 }
 
 int
-madara::transport::NDDSTransport::reliability (const int & setting)
+madara::transport::NddsTransport::reliability (const int & setting)
 {
   return this->settings_.reliability = setting;
 }
 
 int
-madara::transport::NDDSTransport::setup (void)
+madara::transport::NddsTransport::setup (void)
 {
   Base::setup ();
 
@@ -108,26 +108,29 @@ madara::transport::NDDSTransport::setup (void)
   this->is_valid_ = false;
 
   std::stringstream domainreader;
-  domainreader << this->settings_.domains;
+  domainreader << this->settings_.write_domain;
   domainreader >> domain;
 
   // create the domain participant
-  domain_participant_ = DDSDomainParticipantFactory::get_instance()->
+  
+  domain_participant_ = DDSDomainParticipantFactory::get_instance ()->
                         create_participant(
                         domain,
                         DDS_PARTICIPANT_QOS_DEFAULT,
                         NULL,   /* Listener */
                         DDS_STATUS_MASK_NONE);
+
+
   if (domain_participant_ == NULL)
   {
     context_.get_logger ().log (logger::LOG_ERROR,
-      "NDDSTransport::setup:" \
+      "NddsTransport::setup:" \
       " Unable to start the NDDS transport. Exiting...\n");
 
     exit (-2);
   }
 
-  DDSTopicQos topic_qos;
+  DDS_TopicQos topic_qos;
   domain_participant_->get_default_topic_qos(topic_qos);
 
   if (madara::transport::RELIABLE == this->settings_.reliability)
@@ -144,14 +147,14 @@ madara::transport::NDDSTransport::setup (void)
   domain_participant_->set_default_topic_qos(topic_qos);
 
   // register the Knowledge Update Type
-  rc = NDDSKnowledgeUpdateTypeSupport::register_type (
+  rc = Ndds_Knowledge_UpdateTypeSupport::register_type (
            domain_participant_,
-           NDDSKnowledgeUpdateTypeSupport::get_type_name());
+           Ndds_Knowledge_UpdateTypeSupport::get_type_name());
 
   if (rc != DDS_RETCODE_OK)
   {
     context_.get_logger ().log (logger::LOG_ERROR,
-      "NDDSTransport::setup:" \
+      "NddsTransport::setup:" \
       " Unable to register the knowledge update data type. Exiting...\n");
 
     exit (-2);
@@ -160,20 +163,20 @@ madara::transport::NDDSTransport::setup (void)
   // create the knowledge topic
   update_topic_ = domain_participant_->create_topic (
                         topic_names_[0],
-                        NDDSKnowledgeUpdateTypeSupport::get_type_name(),
+                        Ndds_Knowledge_UpdateTypeSupport::get_type_name(),
                         topic_qos,
                         NULL,           /* listener */
                         DDS_STATUS_MASK_NONE);
   if (update_topic_ == 0)
   {
     context_.get_logger ().log (logger::LOG_ERROR,
-      "NDDSTransport::setup:" \
+      "NddsTransport::setup:" \
       " Unable to create topic. Exiting...\n");
 
     exit (-2);
   }
 
-  DDSPublisherQos pub_qos;
+  DDS_PublisherQos pub_qos;
 
   domain_participant_->get_default_publisher_qos (pub_qos);
 
@@ -192,12 +195,12 @@ madara::transport::NDDSTransport::setup (void)
   if (publisher_ == 0)
   {
     context_.get_logger ().log (logger::LOG_ERROR,
-      "NDDSTransport::setup:" \
+      "NddsTransport::setup:" \
       " Unable to create publisher_. Exiting...\n");
     exit (-2);
   }
 
-  DDSDataWriterQos datawriter_qos;
+  DDS_DataWriterQos datawriter_qos;
   publisher_->get_default_datawriter_qos (datawriter_qos);
   publisher_->copy_from_topic_qos (datawriter_qos, topic_qos);
 
@@ -210,24 +213,24 @@ madara::transport::NDDSTransport::setup (void)
   if (data_writer_ == 0)
   {
     context_.get_logger ().log (logger::LOG_ERROR,
-      "NDDSTransport::setup:" \
+      "NddsTransport::setup:" \
       " Unable to create topic data writer. Exiting...\n");
 
     exit (-2);
   }
 
   // create the specialized data writer for our data type
-  update_writer_ = NDDSKnowledgeUpdateDataWriter::narrow(data_writer_);
+  update_writer_ = Ndds_Knowledge_UpdateDataWriter::narrow(data_writer_);
   if (update_writer_ == 0)
   {
     context_.get_logger ().log (logger::LOG_ERROR,
-      "NDDSTransport::setup:" \
+      "NddsTransport::setup:" \
       " Unable to create narrowed data writer. Exiting...\n");
 
     exit (-2);
   }
 
-  DDSSubscriberQos sub_qos;
+  DDS_SubscriberQos sub_qos;
 
   if (madara::transport::RELIABLE == this->settings_.reliability)
   {
@@ -244,13 +247,14 @@ madara::transport::NDDSTransport::setup (void)
   if (subscriber_ == 0)
   {
     context_.get_logger ().log (logger::LOG_ERROR,
-      "NDDSTransport::setup:" \
+      "NddsTransport::setup:" \
       " Unable to create subscriber_. Exiting...\n");
 
     exit (-2);
   }
 
-  DDSDataReaderQos datareader_qos;
+  
+  DDS_DataReaderQos datareader_qos;
   subscriber_->get_default_datareader_qos (datareader_qos);
   subscriber_->copy_from_topic_qos (datareader_qos, topic_qos);
 
@@ -275,7 +279,7 @@ madara::transport::NDDSTransport::setup (void)
   if (data_reader_ == 0)
   {
     context_.get_logger ().log (logger::LOG_ERROR,
-      "NDDSTransport::setup:" \
+      "NddsTransport::setup:" \
       " Unable to create reader. Leaving thread...\n");
 
     return -2;
@@ -287,14 +291,14 @@ madara::transport::NDDSTransport::setup (void)
 }
 
 long
-madara::transport::NDDSTransport::send_data (
-  const madara::KnowledgeRecords & updates)
+madara::transport::NddsTransport::send_data (
+  const knowledge::KnowledgeRecords & updates)
 {
   long result =
-    prep_send (updates, "NDDSTransport::send_data:");
+    prep_send (updates, "NddsTransport::send_data:");
   
   // get the maximum quality from the updates
-  uint32_t quality = madara::max_quality (updates);
+  uint32_t quality = knowledge::max_quality (updates);
 
   /// get current lamport clock. 
   unsigned long long cur_clock = context_.get_clock ();
@@ -302,18 +306,18 @@ madara::transport::NDDSTransport::send_data (
   DDS_ReturnCode_t rc;
   
   std::stringstream buffer;
-  NDDSKnowledgeUpdate data;
+  Ndds_Knowledge_Update data;
 
-  NDDS_Knowledge_Update_initialize (&data);
+  Ndds_Knowledge_Update_initialize (&data);
   
   data.clock = cur_clock;
   data.quality = quality;
 
   data.buffer.ensure_length (result, result);
-  data.buffer.from_array ((DDSOctet *)buffer_.get_ptr (), result);
+  data.buffer.from_array ((DDS_Octet *)buffer_.get_ptr (), result);
   data.clock = cur_clock;
   data.quality = quality;
-  data.updates = DDSUnsignedLong (updates.size ());
+  data.updates = DDS_UnsignedLong (updates.size ());
   data.originator = new char [id_.size () + 1];
   strncpy (data.originator, id_.c_str (), id_.size () + 1);
   data.type = madara::transport::MULTIASSIGN;
@@ -323,14 +327,14 @@ madara::transport::NDDSTransport::send_data (
   strncpy (data.madara_id, MADARA_IDENTIFIER, strlen (MADARA_IDENTIFIER) + 1);
 
   context_.get_logger ().log (logger::LOG_MAJOR,
-    "NDDSTransport::send:" \
+    "NddsTransport::send:" \
     " sending multiassignment: %d updates, time=%llu, quality=%d\n",
     data.updates, cur_clock, quality);
 
   DDS_InstanceHandle_t handle = update_writer_->register_instance (data);
   rc = update_writer_->write (data, handle); 
 
-  NDDS_Knowledge_Update_finalize (&data);
+  Ndds_Knowledge_Update_finalize (&data);
 
   return rc;
 }

@@ -6,20 +6,20 @@
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/transport/Transport.h"
 #include <ndds/ndds_cpp.h>
-#include "madara/transport/ndds/NddsKnowledgeUpdate.h"
-#include "madara/transport/ndds/NddsKnowledgeUpdateSupport.h"
-#include "madara/transport/ndds/NDDSListener.h"
+#include "madara/transport/ndds/Ndds_Knowledge_Update.h"
+#include "madara/transport/ndds/Ndds_Knowledge_UpdateSupport.h"
+#include "madara/transport/ndds/NddsListener.h"
 
 namespace madara
 {
   namespace transport
   {
     /**
-     * @class NDDSTransport
+     * @class NddsTransport
      * @brief This class provides an interface into the NDDS
      *        dissemination transport
      */
-    class NDDSTransport : public Base
+    class NddsTransport : public Base
     {
     public:
 
@@ -30,21 +30,21 @@ namespace madara
        * @param   config   transport configuration settings
        * @param   launch_transport  whether or not to launch this transport
        **/
-      NDDSTransport (const std::string & id, 
+      NddsTransport (const std::string & id, 
         knowledge::ThreadSafeContext & context, 
         TransportSettings & config, bool launch_transport);
 
       /**
        * Destructor
        **/
-      ~NDDSTransport ();
+      ~NddsTransport ();
       
       /**
        * Sends a list of knowledge updates to listeners
        * @param   updates listing of all updates that must be sent
        * @return  result of write operation or -1 if we are shutting down
        **/
-      long send_data (const madara::KnowledgeRecords & updates);
+      long send_data (const knowledge::KnowledgeRecords & updates);
 	  
       /**
        * Accesses reliability setting
@@ -82,8 +82,9 @@ namespace madara
       DDSTopic *        update_topic_;
       DDSDataReader *   data_reader_;
       DDSDataWriter *   data_writer_;
-      NDDSKnowledgeUpdateDataWriter * update_writer_;
+      Ndds_Knowledge_UpdateDataWriter * update_writer_;
       NDDSListener * listener_;
+
     };
   }
 }

@@ -1,5 +1,5 @@
 
-module NDDS
+module Ndds
 {
   module Knowledge
   {

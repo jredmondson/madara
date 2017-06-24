@@ -9,8 +9,8 @@
 
 #include <ndds/ndds_cpp.h>
 
-#include "madara/transport/ndds/NddsKnowledgeUpdate.h"
-#include "madara/transport/ndds/NddsKnowledgeUpdateSupport.h"
+#include "madara/transport/ndds/Ndds_Knowledge_Update.h"
+#include "madara/transport/ndds/Ndds_Knowledge_UpdateSupport.h"
 
 namespace madara
 {
@@ -55,8 +55,8 @@ namespace madara
        * @param reader the DDS data reader to read from
        * @param status the status of the matched subscription
        **/
-      void on_subscription_matched (DDSDataReader* reader,
-                        const DDSSubscriptionMatchedStatus& status);
+      void on_subscription_matched (DDSDataReader * reader,
+                        const DDS_SubscriptionMatchedStatus & status);
       
       /**
        * Sends a rebroadcast packet.
@@ -69,7 +69,7 @@ namespace madara
       void rebroadcast (
         const char * print_prefix,
         MessageHeader * header,
-        const KnowledgeMap & records);
+        const knowledge::KnowledgeMap & records);
 
       /**
        * Handles the case that data has become available
@@ -79,11 +79,13 @@ namespace madara
     private:
       
       /// Transport settings
-      const TransportSettings & settings_;
+      const QoSTransportSettings settings_;
 
       // NDDS variables
       const std::string id_;
-      knowledge::ThreadSafeContext & context_;
+
+      // context for updating variables from network
+      knowledge::ThreadSafeContext * context_;
       
       /// data received rules, defined in Transport settings
       knowledge::CompiledExpression  on_data_received_;
@@ -91,9 +93,6 @@ namespace madara
       /// buffer for receiving
       utility::ScopedArray <char>      buffer_;
 
-      /// pointer to qos_settings (if applicable)
-      const QoSTransportSettings *      qos_settings_;
-      
       /// monitor for sending bandwidth usage
       BandwidthMonitor   &   send_monitor_;
       
