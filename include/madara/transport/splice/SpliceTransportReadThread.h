@@ -13,6 +13,11 @@
 
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/transport/Transport.h"
+#include "madara/transport/QoSTransportSettings.h"
+#include "madara/expression/ExpressionTree.h"
+#include "madara/transport/Transport.h"
+#include "madara/transport/MessageHeader.h"
+#include "madara/threads/BaseThread.h"
 
 #include "ccpp_dds_dcps.h"
 #include "madara/transport/splice/ccpp_SpliceKnowledgeUpdate.h"
@@ -33,7 +38,7 @@ namespace madara
      * @class SpliceReadThread
      * @brief Thread for reading knowledge updates via waitsets
      **/
-    class SpliceReadThread : public ACE_Task<ACE_MT_SYNCH>
+    class SpliceReadThread : public threads::BaseThread
     {
     public:
       /**
@@ -49,7 +54,7 @@ namespace madara
        * @param    packet_scheduler scheduler for mimicking network conditions
        **/
       SpliceReadThread (const std::string & id,
-        const Settings & settings,
+        const TransportSettings & settings,
         knowledge::ThreadSafeContext & context,
         Knowledge::UpdateDataReader_ptr & update_reader,
         Knowledge::UpdateDataWriter_ptr & update_writer,
@@ -58,20 +63,21 @@ namespace madara
         PacketScheduler & packet_scheduler);
 
       /**
-       * Destructor
-       **/
-      ~SpliceReadThread ();
+      * Initializes MADARA context-related items
+      * @param   knowledge   context for querying current program state
+      **/
+      void init (knowledge::KnowledgeBase & knowledge);
 
       /**
-       * Enters a barrier with the calling thread and any spawned threads
-       **/
-      int enter_barrier (void);
+      * Cleanup function called by thread manager
+      **/
+      void cleanup (void);
 
       /**
-       * Closes this thread
-       **/
-      int close (void);
-      
+      * The main loop internals for the read thread
+      **/
+      void run (void);
+
       /**
        * Sends a rebroadcast packet.
        * @param  print_prefix     prefix to include before every log message,
@@ -83,51 +89,7 @@ namespace madara
       void rebroadcast (
         const char * print_prefix,
         MessageHeader * header,
-        const KnowledgeMap & records);
-
-      /**
-       * Main loop of the thread
-       **/
-      int svc (void);
-
-      /**
-       * Waits for the transport to be validated
-       **/
-      void wait_for_ready (void);
-    private:
-
-#ifdef _USE_CID_
-      /**
-       * Handles a latency operation
-       * @param  data  the update that was made
-       **/
-      void handle_latency (Knowledge::Update & data);
-
-      /**
-       * Handles a latency aggregation
-       * @param  data  the aggregation that was made
-       **/
-      void handle_latency_aggregation (Knowledge::Update & data);
-
-      /**
-       * Handles a latency summation
-       * @param  data  the summation that was made
-       **/
-      void handle_latency_summation (Knowledge::Update & data);
-
-      /**
-       * Handles a vote operation
-       * @param  data  the vote that was made
-       **/
-      void handle_vote (Knowledge::Update & data);
-      
-#endif // #ifdef _USE_CID_
-
-      /**
-       * Handles a multi-assignment update
-       * @param  data  the update that was made
-       **/
-      void handle_multiassignment (Knowledge::Update & data);
+        const knowledge::KnowledgeMap & records);
 
       /**
        * We currently allow multiassignments completely through the key. This
@@ -144,12 +106,12 @@ namespace madara
       /**
        * Transport settings
        **/
-      const Settings                                       &     settings_;
+      const QoSTransportSettings    settings_;
 
       /**
        * The knowledge context that we will be updating
        **/
-      knowledge::ThreadSafeContext &    context_;
+      knowledge::ThreadSafeContext * context_;
 
       /**
        * The DDS data reader that we will take from
@@ -161,40 +123,12 @@ namespace madara
        **/
       ::Knowledge::UpdateDataWriter_var                    update_writer_;
 
-      /**
-       * Barrier used for proper shutdown operations
-       **/
-      ACE_Barrier barrier_;
-
-      /**
-       * Can be used to signal termination
-       **/
-      ACE_Atomic_Op<ACE_Mutex,bool>                        terminated_;
-
-      /**
-       * Mutex in case of multiple read threads
-       **/
-      ACE_Thread_Mutex                   mutex_;
-
-      /**
-       * Condition for waiting on readiness
-       **/
-      madara::transport::Condition       is_not_ready_;
-
-      /**
-       * If true, the transport is ready
-       **/
-      bool                               is_ready_;
-
       /// data received rules, defined in Transport settings
       knowledge::CompiledExpression  on_data_received_;
       
       /// buffer for receiving
       madara::utility::ScopedArray <char>      buffer_;
 
-      /// pointer to qos_settings (if applicable)
-      const QoSTransportSettings *      qos_settings_;
-      
       /// monitor for sending bandwidth usage
       BandwidthMonitor   &   send_monitor_;
       

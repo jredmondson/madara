@@ -5,11 +5,17 @@
 #include <sstream>
 #include <assert.h>
 
-#include "madara/knowledge_engine/KnowledgeBase.h"
-#include "madara/utility/LogMacros.h"
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/logger/GlobalLogger.h"
+
+namespace knowledge = madara::knowledge;
+namespace logger = madara::logger;
+namespace transport = madara::transport;
+
+typedef knowledge::KnowledgeRecord::Integer Integer;
 
 std::string host ("");
-Madara::Transport::QoSTransportSettings settings;
+madara::transport::QoSTransportSettings settings;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -27,7 +33,7 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-d" || arg1 == "--domain")
     {
       if (i + 1 < argc)
-        settings.domains = argv[i + 1];
+        settings.write_domain = argv[i + 1];
 
       ++i;
     }
@@ -46,7 +52,9 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        int level;
+        buffer >> level;
+        logger::global_logger->set_level (level);
       }
 
       ++i;
@@ -60,7 +68,7 @@ void handle_arguments (int argc, char ** argv)
         buffer >> drop_rate;
         
         settings.update_drop_rate (drop_rate,
-          Madara::Transport::PACKET_DROP_DETERMINISTIC);
+          madara::transport::PACKET_DROP_DETERMINISTIC);
       }
 
       ++i;
@@ -69,7 +77,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        Madara::KnowledgeEngine::KnowledgeBase::log_to_file (argv[i + 1]);
+        logger::global_logger->add_file (argv[i + 1]);
       }
 
       ++i;
@@ -80,7 +88,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
         "\nProgram summary for %s:\n\n" \
         "  Test the Splice DDS transport. Requires 2+ processes. The result of\n" \
         "  running these processes should be that each process reports\n" \
@@ -92,7 +100,7 @@ void handle_arguments (int argc, char ** argv)
         " [-f|--logfile file]      log to a file\n" \
         " [-r|--reduced]           use the reduced message header\n" \
         "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }
@@ -104,18 +112,18 @@ int main (int argc, char ** argv)
 {
   handle_arguments (argc, argv);
 
-  settings.type = Madara::Transport::SPLICE;
-  settings.reliability = Madara::Transport::RELIABLE;
-  Madara::KnowledgeEngine::WaitSettings wait_settings;
+  settings.type = madara::transport::SPLICE;
+  settings.reliability = madara::transport::RELIABLE;
+  madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
 
-  Madara::KnowledgeEngine::KnowledgeBase knowledge (host, settings);
+  madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (Madara::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id", (Integer) settings.id);
 
   if (settings.id == 0)
   {
-    Madara::KnowledgeEngine::CompiledExpression compiled = 
+    madara::knowledge::CompiledExpression compiled = 
       knowledge.compile (
         "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3"
       );
@@ -124,7 +132,7 @@ int main (int argc, char ** argv)
   }
   else
   {
-    Madara::KnowledgeEngine::CompiledExpression compiled = 
+    madara::knowledge::CompiledExpression compiled = 
       knowledge.compile ("!var1 && var2 => var3 = 1");
 
     knowledge.wait (compiled, wait_settings);

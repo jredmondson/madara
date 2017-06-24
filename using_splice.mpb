@@ -10,7 +10,7 @@ feature (opensplice) {
     override no_hidden_visibility=1
   }
  
-  lit_libs    += dcpsgapi ddsdatabase ddsos dcpssacpp
+  lit_libs    += dcpsgapi ddskernel ddsdatabase ddsos dcpssacpp
   libpaths    += $(OSPL_HOME)/lib
   includes    += $(OSPL_HOME)/include \
                  $(OSPL_HOME)/include/sys \

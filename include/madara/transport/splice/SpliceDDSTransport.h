@@ -1,15 +1,14 @@
-#ifndef SPLICE_DDS_TRANSPORT_H
-#define SPLICE_DDS_TRANSPORT_H
+#ifndef _MADARA_SPLICE_DDS_TRANSPORT_H__
+#define _MADARA_SPLICE_DDS_TRANSPORT_H_
 
 #include <string>
 
-//#include "madara/transport/splice/SpliceDataReaderListener.h"
-//#include "madara/transport/splice/SpliceSubscriberListener.h"
 #include "madara/transport/splice/SpliceTransportReadThread.h"
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/transport/Transport.h"
 #include "ccpp_dds_dcps.h"
 #include "madara/transport/splice/ccpp_SpliceKnowledgeUpdate.h"
+#include "madara/threads/Threader.h"
 
 namespace madara
 {
@@ -41,7 +40,7 @@ namespace madara
        **/
       SpliceDDSTransport (const std::string & id, 
         knowledge::ThreadSafeContext & context, 
-        Settings & config, bool launch_transport);
+        TransportSettings & config, bool launch_transport);
 
       /**
        * Destructor
@@ -53,7 +52,7 @@ namespace madara
        * @param   updates listing of all updates that must be sent
        * @return  result of write operation or -1 if we are shutting down
        **/
-      long send_data (const madara::KnowledgeRecords & updates);
+      long send_data (const knowledge::KnowledgeRecords & updates);
 	  
 #ifdef _USE_CID_
 
@@ -96,11 +95,15 @@ namespace madara
     protected:
     private:
 
-      const static char *                             topic_names_[];
-      const static char *                             partition_;
-      const static char *                             ret_code_names[];
+      /// knowledge base for threads to use
+      knowledge::KnowledgeBase          knowledge_;
 
-      //DDS::pong_handler                        *active_handler;
+      /// threads for reading knowledge updates
+      threads::Threader                 read_threads_;
+
+      const static char *               topic_names_[];
+      const static char *               partition_;
+      const static char *               ret_code_names[];
 
       DDS::DomainParticipantQos          part_qos_;
       DDS::TopicQos                      topic_qos_;
@@ -124,8 +127,6 @@ namespace madara
       Knowledge::UpdateTypeSupport       update_type_support_;
 
       DDS::Topic_var                     update_topic_;
-
-      SpliceReadThread *               thread_;
 
       /**
        * Splice handle checker
