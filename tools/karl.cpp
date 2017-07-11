@@ -52,6 +52,7 @@ std::string  meta_prefix;
 StringVector filenames;
 StringVector initfiles;
 StringVector initlogics;
+StringVector print_prefixes;
 std::string  initbinaries;
 
 // print debug information
@@ -126,6 +127,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-h|--help]              print help menu (i.e., this menu)\n" \
         "  [-i|--input file]        file containing MADARA logic to evaluate\n" \
         "  [-k|--print-knowledge]   print final knowledge\n" \
+        "  [-kp]--print-prefix      filter prints by prefix. Can be multiple.\n" \
         "  [-ky]                    print knowledge after frequent evaluations\n" \
         "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
@@ -135,7 +137,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-s|--save file]         save the resulting knowledge base as karl\n" \
         "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
         "                           binary checkpoint\n" \
-        "  [-t|--time time]         time to wait for results\n" \
+        "  [-t|--time time]         time to wait for results. Same as -w.\n" \
         "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
         "  [-wy|-wp|--wait-for-periodic seconds]  Wait for number of seconds\n" \
@@ -187,6 +189,15 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-k" || arg1 == "--print-knowledge")
     {
       print_knowledge = true;
+    }
+    else if (arg1 == "-kp" || arg1 == "--print-prefixes")
+    {
+      if (i + 1 < argc)
+      {
+        for (int j = i + 1;
+             j < argc && strlen (argv[j]) > 0 && argv[j][0] != '-'; ++i, ++j)
+          print_prefixes.push_back (argv[j]);
+      }
     }
     else if (arg1 == "-ky")
     {
@@ -277,7 +288,8 @@ void handle_arguments (int argc, char ** argv)
         "MADARA version: %s\n",
         utility::get_version ().c_str ());
     }
-    else if (arg1 == "-w" || arg1 == "--wait")
+    else if (arg1 == "-w" || arg1 == "--wait"
+          || arg1 == "-t" || arg1 == "--time")
     {
       if (i + 1 < argc)
       {
@@ -389,6 +401,26 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
+void print_all_prefixes (knowledge::KnowledgeBase & context)
+{
+  madara_logger_ptr_log (logger::global_logger.get (),
+    logger::LOG_ALWAYS,
+      "\nKnowledge in Knowledge Base (filtered by prefixes):\n");
+  for (size_t i = 0; i < print_prefixes.size (); ++i)
+  {
+    knowledge::KnowledgeMap matches =
+      context.to_map (print_prefixes[i]);
+
+    for (knowledge::KnowledgeMap::const_iterator j = matches.begin ();
+      j != matches.end (); ++j)
+    {
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_ALWAYS, "%s=%s\n",
+        j->first.c_str (), j->second.to_string (", ").c_str ());
+    }
+  }
+}
+
 class Evaluator : public threads::BaseThread
 {
 public:
@@ -416,7 +448,14 @@ public:
 
     if (print_knowledge_frequency)
     {
-      knowledge_->print ();
+      if (print_prefixes.size () == 0)
+      {
+        knowledge_->print ();
+      }
+      else
+      {
+        print_all_prefixes (*knowledge_);
+      }
     }
   }
 
@@ -580,7 +619,14 @@ int main (int argc, char ** argv)
   // if the user requests debugging information, print final knowledge
   if (debug || print_knowledge)
   {
-    knowledge.print_knowledge ();
+    if (print_prefixes.size () == 0)
+    {
+      knowledge.print ();
+    }
+    else
+    {
+      print_all_prefixes (knowledge);
+    }
   }
 
   // save as karl if requested
