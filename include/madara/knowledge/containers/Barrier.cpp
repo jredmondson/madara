@@ -406,7 +406,24 @@ madara::knowledge::containers::Barrier::get_debug_info (void)
     MADARA_GUARD_TYPE guard (mutex_);
 
     result << this->name_;
-    result << " = " << context_->get (variable_).to_string ();
+    result << " = " << context_->get (variable_).to_string () << "\n";
+
+    std::string prefix = name_ + ".";
+
+    // add all other barrierer variables
+    for (size_t i = 0; i < participants_; ++i)
+    {
+      std::stringstream temp_buffer;
+      temp_buffer << prefix;
+      temp_buffer << i;
+
+      std::string this_var = temp_buffer.str ();
+
+      result << "  " << this_var;
+      result << "={";
+      result << this_var;
+      result << "}\n";
+    }
   }
 
   return result.str ();
