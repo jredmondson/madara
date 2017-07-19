@@ -378,7 +378,6 @@ madara::knowledge::containers::Barrier::is_done (void)
 void
 madara::knowledge::containers::Barrier::set (type value)
 {
-  ContextGuard context_guard (*context_);
   if (context_ && name_ != "")
   {
     context_->set (variable_, value, settings_);
@@ -388,7 +387,6 @@ madara::knowledge::containers::Barrier::set (type value)
 void
 madara::knowledge::containers::Barrier::modify (void)
 {
-  ContextGuard context_guard (*context_);
   if (context_ && name_ != "")
   {
     context_->mark_modified (variable_);
