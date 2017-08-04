@@ -22,320 +22,6 @@ class Transport_NS {};
 
 void define_knowledge_record (void)
 {
-  scope kr_class (
-    class_<madara::knowledge::KnowledgeRecord> ("KnowledgeRecord", init <> ())
-  
-  // integer constructor
-  .def (init <int64_t> ())
-
-  .def (init <double> ())
-
-  .def (init <std::vector <int64_t> > ())
-    
-  .def (init <std::vector <double> > ())
-
-  .def (init <std::string> ())
-    
-  .def (init <const madara::knowledge::KnowledgeRecord &> ())
-
-  // clears the value to a 0 integer
-  .def ("clear_value", &madara::knowledge::KnowledgeRecord::clear_value,
-      "Sets the value to 0 and type to integer")
-    
-  // sets the contents of the record to a jpeg
-  .def ("read_file", &madara::knowledge::KnowledgeRecord::read_file,
-      "Reads the contents of a file into the record")
-    
-  // gets the double precision
-  .def ("get_precision", &madara::knowledge::KnowledgeRecord::get_precision,
-      "Gets the double precision used in to_string")
-    
-  // decrements an index of an array
-  .def ("dec_index", &madara::knowledge::KnowledgeRecord::inc_index,
-      "Decrements an array element at a particular index")
-    
-  // increments an index of an array
-  .def ("inc_index", &madara::knowledge::KnowledgeRecord::inc_index,
-      "Increments an array element at a particular index")
-    
-  // retrieves an index of an array
-  .def ("retrieve_index", &madara::knowledge::KnowledgeRecord::retrieve_index,
-      "Retrieves an array element at a particular index")
-    
-  // sets the double precision
-  .def ("set_precision", &madara::knowledge::KnowledgeRecord::set_precision,
-      "Sets the double precision, generally for to_string")
-    
-  // reset the record to UNCREATED
-  .def ("reset_value", &madara::knowledge::KnowledgeRecord::reset_value,
-      "Resets the record to an UNCREATED status (faster than clear_value)")
-    
-  // sets the contents of the record to a jpeg
-  .def ("set_jpeg", &madara::knowledge::KnowledgeRecord::set_jpeg,
-      "Sets the value to a jpeg")
-    
-  // sets the contents of the record to a file
-  .def ("set_file", &madara::knowledge::KnowledgeRecord::set_file,
-      "Sets the value to a file's contents")
-    
-  // sets a knowledge record to a double
-  .def( "set",
-    static_cast<
-      void (madara::knowledge::KnowledgeRecord::*)(
-        const double &
-      )
-    > (&madara::knowledge::KnowledgeRecord::set_value),
-      "Sets the value to a double") 
-        
-  // sets a knowledge record to an array of doubles
-  .def( "set",
-    static_cast<
-      void (madara::knowledge::KnowledgeRecord::*)(
-        const std::vector <double> &
-      )
-    > (&madara::knowledge::KnowledgeRecord::set_value),
-      "Sets the value to an array of doubles") 
-        
-  // sets a knowledge record to an integer
-  .def( "set",
-    static_cast<
-      void (madara::knowledge::KnowledgeRecord::*)(
-        const madara::knowledge::KnowledgeRecord::Integer &
-      )
-    > (&madara::knowledge::KnowledgeRecord::set_value),
-      "Sets the value to an integer") 
-        
-  // sets a knowledge record to an array of integer
-  .def( "set",
-    static_cast<
-      void (madara::knowledge::KnowledgeRecord::*)(
-        const std::vector <madara::knowledge::KnowledgeRecord::Integer> &
-      )
-    > (&madara::knowledge::KnowledgeRecord::set_value),
-      "Sets the value to an array of integers") 
-        
-  // sets a knowledge record to a string
-  .def( "set",
-    static_cast<
-      void (madara::knowledge::KnowledgeRecord::*)(
-        const std::string &
-      )
-    > (&madara::knowledge::KnowledgeRecord::set_value),
-      "Sets the value to a string") 
-      
-  // sets an array index to an integer
-  .def( "set_index",
-    static_cast<
-      void (madara::knowledge::KnowledgeRecord::*)(
-        size_t,
-        madara::knowledge::KnowledgeRecord::Integer)
-    > (&madara::knowledge::KnowledgeRecord::set_index),
-      "Sets an array index to an integer") 
-        
-  // sets an array index to a double
-  .def( "set_index",
-    static_cast<
-      void (madara::knowledge::KnowledgeRecord::*)(
-        size_t,
-        double)
-    > (&madara::knowledge::KnowledgeRecord::set_index),
-      "Sets an array index to a double (and converts the array to double)") 
-        
-  // sets the contents of the record to a jpeg
-  .def ("size", &madara::knowledge::KnowledgeRecord::size,
-      "Returns the size of the value")
-    
-  // convert to a string
-  .def ("status", &madara::knowledge::KnowledgeRecord::status,
-      "Returns the status of the record")
-
-  // convert to a string
-  .def ("to_string", &madara::knowledge::KnowledgeRecord::to_string,
-      m_to_string_0_of_1 (
-        args("delimiter"),
-        "Converts the record to a string"))
-
-  // convert to an integer
-  .def ("to_integer", &madara::knowledge::KnowledgeRecord::to_integer,
-      "Converts the record to an integer")
-    
-  // convert to a std::vector of integers
-  .def ("to_integers", &madara::knowledge::KnowledgeRecord::to_integers,
-      "Converts the record to an array of integers")
-
-  // convert to a double
-  .def ("to_double", &madara::knowledge::KnowledgeRecord::to_double,
-      "Converts the record to a double")
-    
-  // convert to a std::vector of doubles
-  .def ("to_doubles", &madara::knowledge::KnowledgeRecord::to_doubles,
-      "Converts the record to an array of doubles")
-
-  // save value to a file
-  .def ("to_file", &madara::knowledge::KnowledgeRecord::to_file,
-      "Saves the value of the record to a file")
-    
-  // gets the type of the record
-  .def ("type", &madara::knowledge::KnowledgeRecord::type,
-      "Returns the value type")
-    
-  // fragments the record
-  .def ("fragment", &madara::knowledge::KnowledgeRecord::fragment,
-      "Fragments the record into components")
-    
-  // checks if the record is false
-  .def ("is_false", &madara::knowledge::KnowledgeRecord::is_false,
-      "Checks if the record is false")
-    
-  // checks if the record is true
-  .def ("is_true", &madara::knowledge::KnowledgeRecord::is_true,
-      "Checks if the record is true")
-    
-  // checks if record is a binary file type
-  .def( "is_binary_file_type",
-    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-      &madara::knowledge::KnowledgeRecord::is_binary_file_type),
-      "Checks if the record is a binary file type") 
-        
-  // checks if record is a double type
-  .def( "is_double_type",
-    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-      &madara::knowledge::KnowledgeRecord::is_double_type),
-      "Checks if the record is a double type") 
-        
-  // checks if record is a file type
-  .def ("is_file_type",
-    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-      &madara::knowledge::KnowledgeRecord::is_file_type),
-      "Checks if the record is a file type") 
-        
-  // checks if the record is an image type
-  .def ("is_image_type",
-    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-      &madara::knowledge::KnowledgeRecord::is_image_type),
-      "Checks if the record is an image type")
-      
-  // checks if the record is an integer type
-  .def ("is_integer_type",
-    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-      &madara::knowledge::KnowledgeRecord::is_integer_type),
-      "Checks if the record is an integer type") 
-
-  // checks if the record is a string type
-  .def ("is_string_type",
-    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-      &madara::knowledge::KnowledgeRecord::is_string_type),
-      "Checks if the record is a string type")
-      
-  // overloaded operators
-  .def (self < self)
-  .def (self <= self)
-  .def (self == double ())
-  .def (self == std::string ())
-  .def (self == self)
-  .def (self != self)
-  .def (self > self)
-  .def (self >= self)
-  .def (!self)
-  .def (-self)
-  .def (self += self)
-  .def (self -= self)
-  .def (self *= self)
-  .def (self /= self)
-  .def (self %= self)
-  .def (self * self)
-  .def (self / self)
-  .def (self % self)
-  .def (self + self)
-  .def (self - self)
-
-  .def ("operator=", &madara::knowledge::KnowledgeRecord::operator=,
-      "Assigns the value of one record to another")
-        
-  .def( "operator==",
-    static_cast<madara::knowledge::KnowledgeRecord::Integer (
-      madara::knowledge::KnowledgeRecord::*)(
-        const madara::knowledge::KnowledgeRecord &) const> (
-          &madara::knowledge::KnowledgeRecord::operator==),
-        "Compares two records for equality") 
-
-  .def( "operator==",
-    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(
-      madara::knowledge::KnowledgeRecord::Integer) const> (
-        &madara::knowledge::KnowledgeRecord::operator==),
-      "Compares two records for equality") 
-
-  .def( "operator&&",
-    static_cast<madara::knowledge::KnowledgeRecord::Integer (
-      madara::knowledge::KnowledgeRecord::*)(
-        const madara::knowledge::KnowledgeRecord &) const> (
-          &madara::knowledge::KnowledgeRecord::operator&&),
-      "Logically and two records together") 
-
-  .def( "operator||",
-    static_cast<madara::knowledge::KnowledgeRecord::Integer (
-      madara::knowledge::KnowledgeRecord::*)(
-        const madara::knowledge::KnowledgeRecord &) const> (
-          &madara::knowledge::KnowledgeRecord::operator||),
-      "Logically ors two records together") 
-
-  .def( "operator++",
-    static_cast<madara::knowledge::KnowledgeRecord (madara::knowledge::KnowledgeRecord::*)(
-      void)> (
-        &madara::knowledge::KnowledgeRecord::operator++),
-      "Adds one to the record") 
-
-  .def( "operator--",
-    static_cast<madara::knowledge::KnowledgeRecord (madara::knowledge::KnowledgeRecord::*)(
-      void)> (
-        &madara::knowledge::KnowledgeRecord::operator--),
-      "Subtracts one from the record") 
-  );
-
-  // Boost.python does not appear to support this type of function
-  //.def ("to_unmanaged_buffer", &madara::knowledge::KnowledgeRecord::to_unmanaged_buffer)
-  
-  // the types of packet drop policies for QoSTransportSettings class
-  enum_<madara::knowledge::KnowledgeRecord::ValueTypes>("ValueTypes")
-    .value("UNINITIALIZED",
-      madara::knowledge::KnowledgeRecord::UNINITIALIZED)
-    .value("INTEGER",
-      madara::knowledge::KnowledgeRecord::INTEGER)
-    .value("STRING",
-      madara::knowledge::KnowledgeRecord::STRING)
-    .value("DOUBLE",
-      madara::knowledge::KnowledgeRecord::DOUBLE)
-    .value("FLOAT",
-      madara::knowledge::KnowledgeRecord::FLOAT)
-    .value("UNKNOWN_FILE_TYPE",
-      madara::knowledge::KnowledgeRecord::UNKNOWN_FILE_TYPE)
-    .value("XML",
-      madara::knowledge::KnowledgeRecord::XML)
-    .value("TEXT_FILE",
-      madara::knowledge::KnowledgeRecord::TEXT_FILE)
-    .value("DOUBLE_ARRAY",
-      madara::knowledge::KnowledgeRecord::DOUBLE_ARRAY)
-    .value("INTEGER_ARRAY",
-      madara::knowledge::KnowledgeRecord::INTEGER_ARRAY)
-    .value("IMAGE_JPEG",
-      madara::knowledge::KnowledgeRecord::IMAGE_JPEG)
-    .value("ALL_ARRAYS",
-      madara::knowledge::KnowledgeRecord::ALL_ARRAYS)
-    .value("ALL_INTEGERS",
-      madara::knowledge::KnowledgeRecord::ALL_INTEGERS)
-    .value("ALL_DOUBLES",
-      madara::knowledge::KnowledgeRecord::ALL_DOUBLES)
-    .value("ALL_PRIMITIVE_TYPES",
-      madara::knowledge::KnowledgeRecord::ALL_PRIMITIVE_TYPES)
-    .value("ALL_FILE_TYPES",
-      madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES)
-    .value("ALL_IMAGES",
-      madara::knowledge::KnowledgeRecord::ALL_IMAGES)
-    .value("ALL_TEXT_FORMATS",
-      madara::knowledge::KnowledgeRecord::ALL_TEXT_FORMATS)
-    .value("ALL_TYPES",
-      madara::knowledge::KnowledgeRecord::ALL_TYPES)
-  ;
 }
 
 /********************************************************
@@ -383,7 +69,7 @@ void define_filters (void)
 void define_transport (void)
 {
   object transport = object (handle<> (
-    PyModuleNew ("madara.transport")));
+    PyModule_New ("madara.transport")));
 
    transport.attr("__file__")="<synthetic>";
    scope().attr ("transport") = transport;
@@ -505,16 +191,16 @@ void define_transport (void)
     * Transport Settings definitions
     ********************************************************/
 
-  class_<madara::transport::TransportSettings> ("Settings",
+  class_<madara::transport::TransportSettings> ("TransportSettings",
     "The main transport settings class", init <> ())
       
     .def (init<const madara::transport::TransportSettings &> ())
 
-    // define readwrite variables within the class
-    .def_readwrite ("domains",
-      &madara::transport::TransportSettings::domains,
-      "Informs the transport of the requested knowledge domain")
+    .def ("add_read_domain",
+    &madara::transport::TransportSettings::add_read_domain,
+    "Adds a read domain to subscribe to")
 
+    // define readwrite variables within the class
     .def_readwrite ("queue_length",
       &madara::transport::TransportSettings::queue_length,
       "Informs the transport of the requested queue_length in bytes")
@@ -554,6 +240,11 @@ void define_transport (void)
     .def_readwrite ("hosts",
       &madara::transport::TransportSettings::hosts,
       "List of hosts for the transport layer")
+
+    .def_readwrite ("write_domain",
+      &madara::transport::TransportSettings::write_domain,
+      "Indicates the domain to write to")
+
   ;
     
   /********************************************************
@@ -751,7 +442,7 @@ void define_transport (void)
 void define_knowledge_engine (void)
 {
   object ke = object (handle<> (
-    PyModuleNew ("madara.knowledge_engine")));
+    PyModule_New ("madara.knowledge")));
 
    ke.attr("__file__")="<synthetic>";
    scope().attr ("knowledge_engine") = ke;
@@ -759,7 +450,7 @@ void define_knowledge_engine (void)
 
    // this was the missing piece: sys.modules['modA.modB']=modB
    extract <dict> (getattr (
-     import ("sys"), "modules"))()["madara.knowledge_engine"] = ke;
+     import ("sys"), "modules"))()["madara.knowledge"] = ke;
 
    scope knowledge = ke;
 
@@ -768,6 +459,315 @@ void define_knowledge_engine (void)
     = class_ <knowledge_NS, boost::noncopyable> (
       "knowledge_engine", no_init);
    */
+
+
+
+   class_<madara::knowledge::KnowledgeRecord> (
+     "KnowledgeRecord",
+     "Basic unit of knowledge", init <> ())
+
+     // integer constructor
+     .def (init <int64_t> ())
+
+     .def (init <double> ())
+
+     .def (init <std::vector <int64_t> > ())
+
+     .def (init <std::vector <double> > ())
+
+     .def (init <std::string> ())
+
+     .def (init <const madara::knowledge::KnowledgeRecord &> ())
+
+     // clears the value to a 0 integer
+     .def ("clear_value", &madara::knowledge::KnowledgeRecord::clear_value,
+     "Sets the value to 0 and type to integer")
+
+     // sets the contents of the record to a jpeg
+     .def ("read_file", &madara::knowledge::KnowledgeRecord::read_file,
+     "Reads the contents of a file into the record")
+
+     // gets the double precision
+     .def ("get_precision", &madara::knowledge::KnowledgeRecord::get_precision,
+     "Gets the double precision used in to_string")
+
+     // decrements an index of an array
+     .def ("dec_index", &madara::knowledge::KnowledgeRecord::inc_index,
+     "Decrements an array element at a particular index")
+
+     // increments an index of an array
+     .def ("inc_index", &madara::knowledge::KnowledgeRecord::inc_index,
+     "Increments an array element at a particular index")
+
+     // retrieves an index of an array
+     .def ("retrieve_index", &madara::knowledge::KnowledgeRecord::retrieve_index,
+     "Retrieves an array element at a particular index")
+
+     // sets the double precision
+     .def ("set_precision", &madara::knowledge::KnowledgeRecord::set_precision,
+     "Sets the double precision, generally for to_string")
+
+     // reset the record to UNCREATED
+     .def ("reset_value", &madara::knowledge::KnowledgeRecord::reset_value,
+     "Resets the record to an UNCREATED status (faster than clear_value)")
+
+     // sets the contents of the record to a jpeg
+     .def ("set_jpeg", &madara::knowledge::KnowledgeRecord::set_jpeg,
+     "Sets the value to a jpeg")
+
+     // sets the contents of the record to a file
+     .def ("set_file", &madara::knowledge::KnowledgeRecord::set_file,
+     "Sets the value to a file's contents")
+
+     // sets a knowledge record to a double
+     .def ("set",
+     static_cast<
+     void (madara::knowledge::KnowledgeRecord::*)(
+     const double &
+     )
+     > (&madara::knowledge::KnowledgeRecord::set_value),
+     "Sets the value to a double")
+
+     // sets a knowledge record to an array of doubles
+     .def ("set",
+     static_cast<
+     void (madara::knowledge::KnowledgeRecord::*)(
+     const std::vector <double> &
+     )
+     > (&madara::knowledge::KnowledgeRecord::set_value),
+     "Sets the value to an array of doubles")
+
+     // sets a knowledge record to an integer
+     .def ("set",
+     static_cast<
+     void (madara::knowledge::KnowledgeRecord::*)(
+     const madara::knowledge::KnowledgeRecord::Integer &
+     )
+     > (&madara::knowledge::KnowledgeRecord::set_value),
+     "Sets the value to an integer")
+
+     // sets a knowledge record to an array of integer
+     .def ("set",
+     static_cast<
+     void (madara::knowledge::KnowledgeRecord::*)(
+     const std::vector <madara::knowledge::KnowledgeRecord::Integer> &
+     )
+     > (&madara::knowledge::KnowledgeRecord::set_value),
+     "Sets the value to an array of integers")
+
+     // sets a knowledge record to a string
+     .def ("set",
+     static_cast<
+     void (madara::knowledge::KnowledgeRecord::*)(
+     const std::string &
+     )
+     > (&madara::knowledge::KnowledgeRecord::set_value),
+     "Sets the value to a string")
+
+     // sets an array index to an integer
+     .def ("set_index",
+     static_cast<
+     void (madara::knowledge::KnowledgeRecord::*)(
+     size_t,
+     madara::knowledge::KnowledgeRecord::Integer)
+     > (&madara::knowledge::KnowledgeRecord::set_index),
+     "Sets an array index to an integer")
+
+     // sets an array index to a double
+     .def ("set_index",
+     static_cast<
+     void (madara::knowledge::KnowledgeRecord::*)(
+     size_t,
+     double)
+     > (&madara::knowledge::KnowledgeRecord::set_index),
+     "Sets an array index to a double (and converts the array to double)")
+
+     // sets the contents of the record to a jpeg
+     .def ("size", &madara::knowledge::KnowledgeRecord::size,
+     "Returns the size of the value")
+
+     // convert to a string
+     .def ("status", &madara::knowledge::KnowledgeRecord::status,
+     "Returns the status of the record")
+
+     // convert to a string
+     .def ("to_string", &madara::knowledge::KnowledgeRecord::to_string,
+     m_to_string_0_of_1 (
+     args ("delimiter"),
+     "Converts the record to a string"))
+
+     // convert to an integer
+     .def ("to_integer", &madara::knowledge::KnowledgeRecord::to_integer,
+     "Converts the record to an integer")
+
+     // convert to a std::vector of integers
+     .def ("to_integers", &madara::knowledge::KnowledgeRecord::to_integers,
+     "Converts the record to an array of integers")
+
+     // convert to a double
+     .def ("to_double", &madara::knowledge::KnowledgeRecord::to_double,
+     "Converts the record to a double")
+
+     // convert to a std::vector of doubles
+     .def ("to_doubles", &madara::knowledge::KnowledgeRecord::to_doubles,
+     "Converts the record to an array of doubles")
+
+     // save value to a file
+  .def ("to_file", &madara::knowledge::KnowledgeRecord::to_file,
+  "Saves the value of the record to a file")
+
+  // gets the type of the record
+  .def ("type", &madara::knowledge::KnowledgeRecord::type,
+  "Returns the value type")
+
+  // fragments the record
+  .def ("fragment", &madara::knowledge::KnowledgeRecord::fragment,
+  "Fragments the record into components")
+
+  // checks if the record is false
+  .def ("is_false", &madara::knowledge::KnowledgeRecord::is_false,
+  "Checks if the record is false")
+
+  // checks if the record is true
+  .def ("is_true", &madara::knowledge::KnowledgeRecord::is_true,
+  "Checks if the record is true")
+
+  // checks if record is a binary file type
+  .def ("is_binary_file_type",
+  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+  &madara::knowledge::KnowledgeRecord::is_binary_file_type),
+  "Checks if the record is a binary file type")
+
+  // checks if record is a double type
+  .def ("is_double_type",
+  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+  &madara::knowledge::KnowledgeRecord::is_double_type),
+  "Checks if the record is a double type")
+
+  // checks if record is a file type
+  .def ("is_file_type",
+  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+  &madara::knowledge::KnowledgeRecord::is_file_type),
+  "Checks if the record is a file type")
+
+  // checks if the record is an image type
+  .def ("is_image_type",
+  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+  &madara::knowledge::KnowledgeRecord::is_image_type),
+  "Checks if the record is an image type")
+
+  // checks if the record is an integer type
+  .def ("is_integer_type",
+  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+  &madara::knowledge::KnowledgeRecord::is_integer_type),
+  "Checks if the record is an integer type")
+
+  // checks if the record is a string type
+  .def ("is_string_type",
+  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+  &madara::knowledge::KnowledgeRecord::is_string_type),
+  "Checks if the record is a string type")
+
+  // overloaded operators
+  .def (self < self)
+  .def (self <= self)
+  .def (self == double ())
+  .def (self == std::string ())
+  .def (self == self)
+  .def (self != self)
+  .def (self > self)
+  .def (self >= self)
+  .def (!self)
+  .def (-self)
+  .def (self += self)
+  .def (self -= self)
+  .def (self *= self)
+  .def (self /= self)
+  .def (self %= self)
+  .def (self * self)
+  .def (self / self)
+  .def (self % self)
+  .def (self + self)
+  .def (self - self)
+
+  .def ("operator=", &madara::knowledge::KnowledgeRecord::operator=,
+  "Assigns the value of one record to another",
+  return_value_policy<reference_existing_object> ())
+
+  .def ("operator==",
+  static_cast<bool (
+  madara::knowledge::KnowledgeRecord::*)(
+  const madara::knowledge::KnowledgeRecord &) const> (
+  &madara::knowledge::KnowledgeRecord::operator==),
+  "Compares two records for equality")
+
+  .def ("operator==",
+  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(
+  madara::knowledge::KnowledgeRecord::Integer) const> (
+  &madara::knowledge::KnowledgeRecord::operator==),
+  "Compares two records for equality")
+
+  .def ("operator++",
+  &madara::knowledge::KnowledgeRecord::operator++,
+  "Adds one to the record",
+  return_value_policy<reference_existing_object> ())
+
+  .def ("operator--",
+  &madara::knowledge::KnowledgeRecord::operator--,
+  "Subtracts one from the record",
+  return_value_policy<reference_existing_object> ())
+  ; // end of KnowledgeRecord
+
+
+     // the types of values supported in KnowledgeRecord
+     enum_<madara::knowledge::KnowledgeRecord::ValueTypes> ("ValueTypes")
+     .value ("UNINITIALIZED",
+     madara::knowledge::KnowledgeRecord::UNINITIALIZED)
+     .value ("INTEGER",
+     madara::knowledge::KnowledgeRecord::INTEGER)
+     .value ("STRING",
+     madara::knowledge::KnowledgeRecord::STRING)
+     .value ("DOUBLE",
+     madara::knowledge::KnowledgeRecord::DOUBLE)
+     .value ("FLOAT",
+     madara::knowledge::KnowledgeRecord::FLOAT)
+     .value ("UNKNOWN_FILE_TYPE",
+     madara::knowledge::KnowledgeRecord::UNKNOWN_FILE_TYPE)
+     .value ("XML",
+     madara::knowledge::KnowledgeRecord::XML)
+     .value ("TEXT_FILE",
+     madara::knowledge::KnowledgeRecord::TEXT_FILE)
+     .value ("DOUBLE_ARRAY",
+     madara::knowledge::KnowledgeRecord::DOUBLE_ARRAY)
+     .value ("INTEGER_ARRAY",
+     madara::knowledge::KnowledgeRecord::INTEGER_ARRAY)
+     .value ("IMAGE_JPEG",
+     madara::knowledge::KnowledgeRecord::IMAGE_JPEG)
+     .value ("ALL_ARRAYS",
+     madara::knowledge::KnowledgeRecord::ALL_ARRAYS)
+     .value ("ALL_INTEGERS",
+     madara::knowledge::KnowledgeRecord::ALL_INTEGERS)
+     .value ("ALL_DOUBLES",
+     madara::knowledge::KnowledgeRecord::ALL_DOUBLES)
+     .value ("ALL_PRIMITIVE_TYPES",
+     madara::knowledge::KnowledgeRecord::ALL_PRIMITIVE_TYPES)
+     .value ("ALL_FILE_TYPES",
+     madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES)
+     .value ("ALL_IMAGES",
+     madara::knowledge::KnowledgeRecord::ALL_IMAGES)
+     .value ("ALL_TEXT_FORMATS",
+     madara::knowledge::KnowledgeRecord::ALL_TEXT_FORMATS)
+     .value ("ALL_TYPES",
+     madara::knowledge::KnowledgeRecord::ALL_TYPES)
+   ; // end of ValueTypes
+
+   // Boost.python does not appear to support this type of function
+   //.def ("to_unmanaged_buffer", &madara::knowledge::KnowledgeRecord::to_unmanaged_buffer)
+
+
+
+
+
   /********************************************************
     * KnowledgeReferenceSettings definitions
     ********************************************************/
@@ -1042,7 +1042,11 @@ void define_knowledge_engine (void)
         
     // expands and prints a statement
     .def ("load_context",
-      &madara::knowledge::KnowledgeBase::load_context,
+      static_cast<int64_t (madara::knowledge::KnowledgeBase::*)(
+        const std::string &,
+        bool,
+        const madara::knowledge::KnowledgeUpdateSettings &)
+      > (&madara::knowledge::KnowledgeBase::load_context),
       m_load_context_1_of_3 (
         args("filename", "use_id", "settings"),
         "Loads a variable context from a file"))
@@ -1213,7 +1217,7 @@ void define_knowledge_engine (void)
 BOOST_PYTHON_MODULE (madara)
 {
   // Launch the appropriate thread management initialization
-  PyEvalInitThreads();
+  PyEval_InitThreads();
 
   // Declare classes inside Madara namespace (top namespace of Python module)
   

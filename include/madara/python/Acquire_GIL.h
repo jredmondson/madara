@@ -26,12 +26,12 @@ namespace madara
     public:
       Acquire_GIL ()
       {
-        state_ = PyGILStateEnsure();
+        state_ = PyGILState_Ensure();
       }
 
       ~Acquire_GIL()
       {
-        PyGILStateRelease(state_);
+        PyGILState_Release(state_);
       }
 
     private:

@@ -204,14 +204,14 @@ namespace madara
         bool invalid_callable = false;
    
         // Check to make sure its a callable object
-        if (0 == PyObjectHasAttrString (func.ptr (), "__call__"))
+        if (0 == PyObject_HasAttrString (func.ptr (), "__call__"))
         {
           // If not, lets throw an exception to warn the user
-          PyErrSetString (
-            PyExcTypeError,
+          PyErr_SetString (
+            PyExc_TypeError,
             "Handler must be a callable object");
 
-          boost::python::throwjame_error_already_set(); 
+          boost::python::throw_error_already_set(); 
         } 
       }
       
