@@ -8,6 +8,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
   prebuild = perl $(MADARA_ROOT)/bin/generate_version_include.pl
   
   specific(prop:microsoft) {
+    DisableSpecificWarnings += 4005
   }
  
   includes += $(MADARA_ROOT)/include

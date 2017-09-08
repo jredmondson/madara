@@ -2,6 +2,7 @@
 
 #include "madara/utility/Utility.h"
 #include "madara/expression/Interpreter.h"
+#include "madara/knowledge/ContextGuard.h"
 
 #include <algorithm>
 
@@ -589,44 +590,42 @@ madara::transport::process_received_update (
     "%s:" \
     " Locking the context to apply updates.\n", print_prefix);
 
-  // lock the context
-  context.lock ();
-
-  madara_logger_log (context.get_logger (), logger::LOG_MINOR,
-    "%s:" \
-    " Applying updates to context.\n", print_prefix);
-
-  // apply updates from the update list
-  for (knowledge::KnowledgeMap::iterator i = updates.begin ();
-    i != updates.end (); ++i)
   {
-    int result = 0;
+    knowledge::ContextGuard guard (context);
 
-    result = i->second.apply (context, i->first, header->quality,
-      header->clock, false);
-    ++actual_updates;
+    madara_logger_log (context.get_logger (), logger::LOG_MINOR,
+      "%s:" \
+      " Applying updates to context.\n", print_prefix);
 
-    if (result != 1)
+    // apply updates from the update list
+    for (knowledge::KnowledgeMap::iterator i = updates.begin ();
+      i != updates.end (); ++i)
     {
-      madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
-        "%s:" \
-        " update %s=%s was rejected\n",
-        print_prefix,
-        key.c_str (), record.to_string ().c_str ());
-    }
-    else
-    {
-      madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
-        "%s:" \
-        " update %s=%s was accepted\n",
-        print_prefix,
-        key.c_str (), record.to_string ().c_str ());
+      int result = 0;
+
+      result = i->second.apply (context, i->first, header->quality,
+        header->clock, false);
+      ++actual_updates;
+
+      if (result != 1)
+      {
+        madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
+          "%s:" \
+          " update %s=%s was rejected\n",
+          print_prefix,
+          key.c_str (), record.to_string ().c_str ());
+      }
+      else
+      {
+        madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
+          "%s:" \
+          " update %s=%s was accepted\n",
+          print_prefix,
+          key.c_str (), record.to_string ().c_str ());
+      }
     }
   }
 
-  // unlock the context
-  context.unlock ();
-  
   context.set_changed ();
   
   if (!dropped)
