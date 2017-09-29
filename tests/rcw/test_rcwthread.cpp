@@ -65,6 +65,8 @@ private:
   rcw::TrackedInt y;
   rcw::TrackedInt z;
   std::vector<int64_t> vec;
+  rcw::Tracked<std::vector<int64_t>> tvec;
+  std::vector<rcw::TrackedI64> uvec;
   std::string s;
   rcw::TrackedString t;
   my_type m;
@@ -76,6 +78,9 @@ public:
     tx.add("y", y);
     tx.add("z", z);
     tx.add("vec", vec);
+
+    tx.add_init("tvec", tvec);
+    tx.add_init("uvec", uvec);
     tx.add_init("s", s);
 
     t.set("asdf");
@@ -100,16 +105,33 @@ public:
     std::cout << "y: " << y.get() << std::endl;
     std::cout << "z: " << *z << std::endl;
     std::cout << "vec.size(): " << vec.size() << std::endl;
-    std::cout << "s: " << s << std::endl;
-    std::cout << "t: " << *t << std::endl;
+
+    std::cout << "tvec.size(): " << tvec.size() << std::endl;
+    std::cout << "   ";
+    for (auto &cur : tvec) {
+      std::cout << cur << " ";
+    }
+
+    std::cout << "uvec.size(): " << tvec.size() << std::endl;
+    std::cout << "   ";
+    for (auto &cur : uvec) {
+      std::cout << *cur << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "s: " << s << "  [" << s.size() << "]" << std::endl;
+    std::cout << "t: " << *t << "  [" << t.size() << "]" << std::endl;
     std::cout << "m: {" << m.a << ", " << m.b << ", " << m.c << "}" << std::endl;
     std::cout << "d: {" << d.a << ", " << d.b << ", " << d.c << "}" << std::endl;
 
     ++x;
-    y = *y - 1;
+    y--;
+    --y;
     vec.push_back(x);
+    tvec.push_back(y);
+    uvec.push_back(rcw::TrackedI64(y * 2));
+    std::cout << std::endl;
     s += "x";
-    t = (*t + "T");
+    t += "T";
     ++m.a;
     --m.b;
     ++d.a;
