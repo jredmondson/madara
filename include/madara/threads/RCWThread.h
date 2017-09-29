@@ -69,6 +69,7 @@ namespace madara
       Tracked &operator=(T val)
       {
         set(val);
+		return *this;
       }
 
       void modify()
@@ -134,7 +135,7 @@ namespace madara
     }
 
     template<typename T>
-    void set_value(Tracked<T> &t, T &v)
+    void set_value(Tracked<T> &t, const T &v)
     {
       return t.set(v);
     }
@@ -236,7 +237,7 @@ namespace madara
     struct supports_is_dirty_impl
     {
         template<typename U>
-        static auto test(U *p) -> decltype(is_dirty(*p), clear_dirty(*p), set_value(*p, get_value(*p)), std::true_type());
+		static auto test(U *p) -> decltype(is_dirty(*p), clear_dirty(*p), set_value(*p, get_value(*p)), std::true_type());
         template<typename U>
         static auto test(...) -> std::false_type;
 
@@ -281,7 +282,7 @@ namespace madara
       T *tracked_;
       knowledge::VariableReference ref_;
 
-      typedef typename std::decay<decltype(get_value(*tracked_))>::type V;
+      typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
 
       Tracker(T *tracked, knowledge::VariableReference ref)
         : tracked_(tracked), ref_(ref) {}
