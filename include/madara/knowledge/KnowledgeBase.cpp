@@ -545,6 +545,26 @@ madara::knowledge::KnowledgeBase::set (
 }
 
 int
+madara::knowledge::KnowledgeBase::set (
+  const VariableReference & variable,
+  const madara::knowledge::KnowledgeRecord &value,
+  const EvalSettings & settings)
+{
+  int result = 0;
+  
+  if (impl_.get ())
+  {
+    result = impl_->set (variable, value, settings);
+  }
+  else if (context_)
+  {
+    result = context_->set (variable, value, settings);
+  }
+
+  return result;
+}
+
+int
 madara::knowledge::KnowledgeBase::set_index (
   const std::string & key,
   size_t index,

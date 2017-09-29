@@ -69,7 +69,7 @@ namespace madara
       Tracked &operator=(T val)
       {
         set(val);
-		return *this;
+        return *this;
       }
 
       void modify()
@@ -137,7 +137,19 @@ namespace madara
     template<typename T>
     void set_value(Tracked<T> &t, const T &v)
     {
-      return t.set(v);
+      t.set(v);
+    }
+
+    template<typename T>
+    const T &get_value(const T &t)
+    {
+      return t;
+    }
+
+    template<typename T>
+    void set_value(T &t, const T &v)
+    {
+      t = v;
     }
 
     /*
@@ -229,6 +241,7 @@ namespace madara
     private:
       virtual void pull() = 0;
       virtual void push() = 0;
+      virtual void force_push() = 0;
 
       friend class Transaction;
     };
@@ -237,7 +250,7 @@ namespace madara
     struct supports_is_dirty_impl
     {
         template<typename U>
-		static auto test(U *p) -> decltype(is_dirty(*p), clear_dirty(*p), set_value(*p, get_value(*p)), std::true_type());
+        static auto test(U *p) -> decltype(is_dirty(*p), clear_dirty(*p), std::true_type());
         template<typename U>
         static auto test(...) -> std::false_type;
 
@@ -247,36 +260,103 @@ namespace madara
     template <typename T>
     struct supports_is_dirty : supports_is_dirty_impl<T>::type {};
 
+    template <typename T>
+    struct supports_get_value_impl
+    {
+        template<typename U>
+        static auto test(U *p) -> decltype(set_value(*p, get_value(*p)), std::true_type());
+        template<typename U>
+        static auto test(...) -> std::false_type;
+
+        using type = decltype(test<T>(0));
+    };
+
+    template <typename T>
+    struct supports_get_value : supports_get_value_impl<T>::type {};
+
+    template <typename T>
+    struct supports_knowledge_cast_impl
+    {
+        template<typename U>
+        static auto test(U *p) -> decltype(knowledge::knowledge_cast(get_value(*p)),
+          knowledge::knowledge_cast<decltype(get_value(*p))>(std::declval<knowledge::KnowledgeRecord>()), std::true_type());
+        template<typename U>
+        static auto test(...) -> std::false_type;
+
+        using type = decltype(test<T>(0));
+    };
+
+    template <typename T>
+    struct supports_knowledge_cast : supports_knowledge_cast_impl<T>::type {};
+
+    template <typename T>
+    struct supports_self_eq_impl
+    {
+        template<typename U>
+        static auto test(U *p) -> decltype(
+                  get_value(*p) == get_value(*p),
+                  get_value(*p) != get_value(*p), std::true_type());
+        template<typename U>
+        static auto test(...) -> std::false_type;
+
+        using type = decltype(test<T>(0));
+    };
+
+    template <typename T>
+    struct supports_self_eq : supports_self_eq_impl<T>::type {};
+
     template<class T, class dummy = void>
-    class Tracker : public BaseTracker
+    class Tracker
+    {
+      static_assert(sizeof(T) < 0, "Type unsupported for adding to Transaction");
+    };
+
+    template<class T>
+    class Tracker<T, typename std::enable_if<
+                       supports_get_value<T>::value &&
+                       supports_knowledge_cast<T>::value &&
+                       supports_self_eq<T>::value &&
+                       !supports_is_dirty<T>::value>::type>
+      : public BaseTracker
     {
     private:
+      typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
+
       T *tracked_;
       knowledge::VariableReference ref_;
-      T orig_;
+      V orig_;
 
       Tracker(T *tracked, knowledge::VariableReference ref)
         : tracked_(tracked), ref_(ref), orig_() {}
 
       virtual void pull()
       {
-        orig_ = knowledge::knowledge_cast<T>(*ref_.record_);
-        *tracked_ = orig_;
+        orig_ = knowledge::knowledge_cast<V>(*ref_.record_);
+        set_value(*tracked_, orig_);
       }
 
       virtual void push()
       {
-        if (*tracked_ != orig_) {
-          fprintf(stderr, "pushing %s\n", ref_.get_name());
-          *ref_.record_ = knowledge::knowledge_cast(*tracked_);
+        if (get_value(*tracked_) != get_value(orig_)) {
+          Tracker::force_push();
         }
+      }
+
+      virtual void force_push()
+      {
+        fprintf(stderr, "pushing %s\n", ref_.get_name());
+        *ref_.record_ = knowledge::knowledge_cast(get_value(*tracked_));
       }
 
       friend class Transaction;
     };
 
     template<class T>
-    class Tracker<T, typename std::enable_if<supports_is_dirty<T>::value>::type> : public BaseTracker
+    class Tracker<T, typename std::enable_if<
+                       supports_get_value<T>::value &&
+                       supports_knowledge_cast<T>::value &&
+                       supports_is_dirty<T>::value>::type>
+      : public BaseTracker
     {
     private:
       T *tracked_;
@@ -297,8 +377,13 @@ namespace madara
       virtual void push()
       {
         if (is_dirty(*tracked_)) {
-          *ref_.record_ = knowledge::knowledge_cast(get_value(*tracked_));
+          Tracker::force_push();
         }
+      }
+
+      virtual void force_push()
+      {
+        *ref_.record_ = knowledge::knowledge_cast(get_value(*tracked_));
       }
 
       friend class Transaction;
@@ -351,8 +436,9 @@ namespace madara
       void add_init(const std::string &key, T &val)
       {
         knowledge::VariableReference ref = kb_.get_ref(key);
-        kb_.set(ref, ValGetter<T>::get(val));
-        trackers_.push_back(uptr_t(new Tracker<T>(&val, ref)));
+        std::unique_ptr<Tracker<T>> p(new Tracker<T>(&val, ref));
+        p->Tracker<T>::force_push();
+        trackers_.push_back(uptr_t(p.release()));
       }
     };
   }

@@ -246,6 +246,18 @@ namespace madara
           EvalSettings (false, false, true, false, false));
       
       /**
+       * Atomically sets the value of a variable to a KnowledgeRecord
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   value     new value of the variable
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      int set (const VariableReference & variable,
+        const KnowledgeRecord & value,
+        const EvalSettings & settings =
+          EvalSettings (false, false, true, false, false));
+      
+      /**
        * Atomically sets the value of a variable to a double array.
        * @param   variable  reference to a variable (@see get_ref)
        * @param   value     a STL vector of doubles

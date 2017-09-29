@@ -80,94 +80,10 @@ namespace madara
         virtual BaseContainer * clone (void) const;
 
         /**
-        * Adds a Barrier container to the collection
+        * Adds a class implementing BaseContainer to the collection
         * @param container  the container to add
         **/
-        void add (const Barrier & container);
-
-        /**
-        * Adds a Counter container to the collection
-        * @param container  the container to add
-        **/
-        void add (const Counter & container);
-
-        /**
-         * Adds an Integer container to the collection
-         * @param container  the container to add
-         **/
-        void add (const Integer & container);
-
-        /**
-        * Adds an IntegerVector container to the collection
-        * @param container  the container to add
-        **/
-        void add (const IntegerVector & container);
-
-        /**
-        * Adds an NativeIntegerVector container to the collection
-        * @param container  the container to add
-        **/
-        void add (const NativeIntegerVector & container);
-
-        /**
-        * Adds a Double container to the collection
-        * @param container  the container to add
-        **/
-        void add (const Double & container);
-
-        /**
-        * Adds a DoubleVector container to the collection
-        * @param container  the container to add
-        **/
-        void add (const DoubleVector & container);
-
-        /**
-        * Adds an NativeDoubleVector container to the collection
-        * @param container  the container to add
-        **/
-        void add (const NativeDoubleVector & container);
-
-        /**
-        * Adds a String container to the collection
-        * @param container  the container to add
-        **/
-        void add (const String & container);
-
-        /**
-        * Adds a StringVector container to the collection
-        * @param container  the container to add
-        **/
-        void add (const StringVector & container);
-
-        /**
-        * Adds a BufferVector container to the collection
-        * @param container  the container to add
-        **/
-        void add (const BufferVector & container);
-
-        /**
-        * Adds a Map container to the collection
-        * @param container  the container to add
-        **/
-        void add (const Map & container);
-
-        /**
-        * Adds a FlexMap container to the collection
-        * @param container  the container to add
-        **/
-        void add (const FlexMap & container);
-
-        /**
-        * Adds a Vector container to the collection
-        * @param container  the container to add
-        **/
-        void add (const Vector & container);
-
-        /**
-        * Adds a Collection container to the collection
-        * @param container  the container to add
-        **/
-        void add (const Collection & container);
+        void add (const BaseContainer & container);
 
         /**
          * Clears the collection of all containers

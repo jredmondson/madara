@@ -405,6 +405,19 @@ const EvalSettings & settings)
 int
 madara::knowledge::KnowledgeBaseImpl::set (
 const VariableReference & variable,
+const knowledge::KnowledgeRecord &value,
+const EvalSettings & settings)
+{
+  int result = map_.set (variable, value, settings);
+
+  send_modifieds ("KnowledgeBaseImpl:set", settings);
+
+  return result;
+}
+
+int
+madara::knowledge::KnowledgeBaseImpl::set (
+const VariableReference & variable,
 const knowledge::KnowledgeRecord::Integer * value,
 uint32_t size,
 const EvalSettings & settings)

@@ -275,6 +275,18 @@ namespace madara
       return KnowledgeRecord(in);
     }
 
+    template<size_t N>
+    KnowledgeRecord knowledge_cast(const uint64_t (&in)[N])
+    {
+      return KnowledgeRecord(&in, in + N);
+    }
+
+    template<size_t N>
+    KnowledgeRecord knowledge_cast(const double (&in)[N])
+    {
+      return KnowledgeRecord(&in, in + N);
+    }
+
     KnowledgeRecord &knowledge_cast(KnowledgeRecord &in)
     {
       return in;
