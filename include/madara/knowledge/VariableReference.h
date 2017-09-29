@@ -38,7 +38,7 @@ namespace madara
       friend class ThreadSafeContext;
       friend class KnowledgeBaseImpl;
       friend class Variables;
-      template<typename T> friend class rcw::Tracker;
+      template<typename T, typename dummy> friend class rcw::Tracker;
 
       /**
        * Default constructor
