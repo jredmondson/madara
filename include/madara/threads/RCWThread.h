@@ -326,7 +326,6 @@ namespace madara
       {
         return at_mut(0);
       }
-
       value_type& back()
       {
         return at_mut(size() - 1);
@@ -480,7 +479,7 @@ namespace madara
       set_value(t[i], v);
     }
 
-    const char &get_value(const Tracked<std::string> &t, size_t i)
+    const char get_value(const Tracked<std::string> &t, size_t i)
     {
       return t.get(i);
     }
@@ -555,6 +554,7 @@ namespace madara
       Tracked &operator=(const std::vector<T> &val)
       {
         set(val);
+		return *this;
       }
 
       void modify()
@@ -592,19 +592,19 @@ namespace madara
 
       void modify(size_t i)
       {
-        std::pair<size_t, char> x = to_dirty_bit(i);
+        std::pair<size_t, uint64_t> x = to_dirty_bit(i);
         dirty_.at(x.first) |= x.second;
       }
 
       void clear_dirty(size_t i)
       {
-        std::pair<size_t, char> x = to_dirty_bit(i);
+        std::pair<size_t, uint64_t> x = to_dirty_bit(i);
         dirty_.at(x.first) &= ~x.second;
       }
 
       bool is_dirty(size_t i) const
       {
-        std::pair<size_t, char> x = to_dirty_bit(i);
+        std::pair<size_t, uint64_t> x = to_dirty_bit(i);
         return dirty_.at(x.first) & x.second;
       }
 
@@ -1250,7 +1250,7 @@ namespace madara
           update_elems();
           for (size_t i = 0; i < n; ++i) {
             if (is_dirty(*tracked_, i)) {
-              set(kb, elems_[i], knowledge::knowledge_cast(tracked_->at(i)));
+              set(kb, elems_[i], knowledge::knowledge_cast(get_value(*tracked_, i)));
               post_set(kb, elems_[i]);
             }
           }
@@ -1337,10 +1337,14 @@ namespace madara
 
       template<class Builder, class T>
       class BuilderBase<Builder, T, 
-          typename std::enable_if<supports_indexed_get_value<T>::value>::type>
+          typename std::enable_if<
+                       supports_get_value<T>::value &&
+                       supports_indexed_get_value<T>::value &&
+                       supports_size<T>::value>::type>
       {
+        typedef typename std::decay<decltype(get_value(std::declval<T>()[0]))>::type V;
       public:
-        Builder &init(std::initializer_list<typename std::decay<decltype(get_value(T(), 0))>::type> list)
+        Builder &init(std::initializer_list<V> list)
         {
           Builder &self = static_cast<Builder &>(*this);
           *self.tracked_ = list;
@@ -1354,25 +1358,19 @@ namespace madara
       {
       private:
         Transaction *trans_;
-        std::string key_;
+        const char *key_;
         T *tracked_;
         bool init_ = false;
         static const bool rd_ = RD;
         static const bool wr_ = WR;
         static const bool prefix_ = Prefix;
 
-        template<class S>
-        Builder(Transaction &trans, S &&key, T &val)
-          : trans_(&trans), key_(std::forward<S>(key)), tracked_(&val) {}
+        Builder(Transaction &trans, const char *key, T &val)
+          : trans_(&trans), key_(key), tracked_(&val) {}
 
         template<bool R, bool W, bool P>
         Builder(Builder<T, R, W, P> &o)
           : trans_(o.trans_), key_(o.key_), tracked_(o.tracked_),
-            init_(o.init_) {}
-
-        template<bool R, bool W, bool P>
-        Builder(Builder<T, R, W, P> &&o)
-          : trans_(o.trans_), key_(std::move(o.key_)), tracked_(o.tracked_),
             init_(o.init_) {}
 
       public:
@@ -1388,14 +1386,9 @@ namespace madara
         using BuilderBase<Builder, T>::init;
         friend class BuilderBase<Builder, T>;
 
-        Builder<T, RD, WR, true> prefix() & { return *this; }
-        Builder<T, RD, WR, true> prefix() && { return std::move(*this); }
-
-        Builder<T, false, WR, Prefix> ro() & { return *this; }
-        Builder<T, false, WR, Prefix> ro() && { return std::move(*this); }
-
-        Builder<T, RD, false, Prefix> wo() & { return *this; }
-        Builder<T, RD, false, Prefix> wo() && { return std::move(*this); }
+        Builder<T, RD, WR, true> prefix() { return *this; }
+        Builder<T, false, WR, Prefix> ro() { return *this; }
+        Builder<T, RD, false, Prefix> wo() { return *this; }
 
         void add()
         {
@@ -1447,61 +1440,61 @@ namespace madara
       }
 
       template<class T>
-      void add(const std::string &key, T &val)
+      void add(const char *key, T &val)
       {
         build(key, val).add();
       }
 
       template<class T>
-      void add_init(const std::string &key, T &val)
+      void add_init(const char *key, T &val)
       {
         build(key, val).init().add();
       }
 
       template<class T>
-      void add_ro(const std::string &key, T &val)
+      void add_ro(const char *key, T &val)
       {
         build_ro(key, val).add();
       }
  
       template<class T>
-      void add_wo(const std::string &key, T &val)
+      void add_wo(const char *key, T &val)
       {
         build_wo(key, val).add();
       }
  
       template<class T>
-      void add_wo_init(const std::string &key, T &val)
+      void add_wo_init(const char *key, T &val)
       {
         build_wo(key, val).init().add();
       }
 
       template<class T>
-      void add_prefix(const std::string &prefix, T &val)
+      void add_prefix(const char *prefix, T &val)
       {
         build(prefix, val).prefix().add();
       }
 
       template<class T>
-      void add_prefix_init(const std::string &prefix, T &val)
+      void add_prefix_init(const char *prefix, T &val)
       {
         build(prefix, val).prefix().init().add();
       }
 
       template<class T>
-      void add_prefix_ro(const std::string &prefix, T &val)
+      void add_prefix_ro(const char *prefix, T &val)
       {
         build_ro(prefix, val).prefix().add();
       }
 
       template<class T>
-      void add_prefix_wo(const std::string &prefix, T &val)
+      void add_prefix_wo(const char *prefix, T &val)
       {
         build_wo(prefix, val).prefix().add();
       }
 
       template<class T>
-      void add_prefix_init_wo(const std::string &prefix, T &val)
+      void add_prefix_init_wo(const char *prefix, T &val)
       {
         build_wo(prefix, val).prefix().init().add();
       }

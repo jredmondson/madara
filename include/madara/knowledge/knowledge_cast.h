@@ -146,8 +146,6 @@ namespace madara
       return static_cast<unsigned long int>(in.to_integer());
     }
 
-    #if __STDC_VERSION__ >= 199901L
-
     template<>
     long long int knowledge_cast<long long int>(const KnowledgeRecord &in)
     {
@@ -159,8 +157,6 @@ namespace madara
     {
       return static_cast<unsigned long long int>(in.to_integer());
     }
-
-    #endif
 
     template<>
     std::string knowledge_cast<std::string>(const KnowledgeRecord &in)
@@ -206,8 +202,6 @@ namespace madara
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
 
-    #if __STDC_VERSION__ >= 199901L
-
     KnowledgeRecord knowledge_cast(const long long int &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
@@ -217,8 +211,6 @@ namespace madara
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
-
-    #endif
 
     KnowledgeRecord knowledge_cast(const short &in)
     {
