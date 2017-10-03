@@ -15,6 +15,7 @@
 #include <map>
 #include <list>
 #include <type_traits>
+#include <initializer_list>
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/Functions.h"
 #include "madara/utility/stdint.h"
@@ -22,6 +23,7 @@
 #include "madara/knowledge/VariableReference.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/knowledge_cast.h"
+#include "madara/knowledge/ContextGuard.h"
 #include "madara/knowledge/containers/Collection.h"
 #include "madara/threads/BaseThread.h"
 
@@ -61,14 +63,14 @@ namespace madara
       Tracked() : val_(), dirty_(true) {}
       explicit Tracked(T val) : val_(val), dirty_(true) {}
 
-      operator T() const
+      const T& get() const
       {
         return val_;
       }
 
-      const T& get() const
+      explicit operator const T& () const
       {
-        return val_;
+        return get();
       }
 
       T& get_mut()
@@ -121,79 +123,17 @@ namespace madara
       using Base::is_dirty;
       using Base::clear_dirty;
 
-#define MADARA_MAKE_BINARY_COMPARE_OP(op) \
-      friend bool operator op(const Tracked &lhs, const Tracked &rhs) { return lhs.val_ op rhs.val_; } \
-      template<class U> friend bool operator op(const Tracked &lhs, const U &rhs) { return lhs.val_ op rhs; } \
-      template<class U> friend bool operator op(const U &lhs, const Tracked &rhs) { return lhs op rhs.val_; }
-
-      MADARA_MAKE_BINARY_COMPARE_OP(==)
-      MADARA_MAKE_BINARY_COMPARE_OP(!=)
-      MADARA_MAKE_BINARY_COMPARE_OP(<=)
-      MADARA_MAKE_BINARY_COMPARE_OP(>=)
-      MADARA_MAKE_BINARY_COMPARE_OP(<)
-      MADARA_MAKE_BINARY_COMPARE_OP(>)
-
-#define MADARA_MAKE_BINARY_ARITH_OP(op) \
-      friend T operator op(const Tracked &lhs, const Tracked &rhs) { return lhs.val_ op rhs.val_; } \
-      template<class U> friend T operator op(const Tracked &lhs, const U &rhs) { return lhs.val_ op rhs; } \
-      template<class U> friend T operator op(const U &lhs, const Tracked &rhs) { return lhs op rhs.val_; }
-
-      MADARA_MAKE_BINARY_ARITH_OP(+)
-      MADARA_MAKE_BINARY_ARITH_OP(-)
-      MADARA_MAKE_BINARY_ARITH_OP(*)
-      MADARA_MAKE_BINARY_ARITH_OP(/)
-      MADARA_MAKE_BINARY_ARITH_OP(%)
-      MADARA_MAKE_BINARY_ARITH_OP(&)
-      MADARA_MAKE_BINARY_ARITH_OP(|)
-      MADARA_MAKE_BINARY_ARITH_OP(^)
-      MADARA_MAKE_BINARY_ARITH_OP(<<)
-      MADARA_MAKE_BINARY_ARITH_OP(>>)
-
-#define MADARA_MAKE_COMPOUND_OP(op) \
-      friend T operator op##=(Tracked &lhs, const Tracked &rhs) { \
-        lhs.val_ op##= rhs.val_; \
-        lhs.modify(); \
-        return lhs; \
-      } \
-      template<class U> friend Tracked &operator op##=(Tracked &lhs, const U &rhs) { \
-        lhs.val_ op##= rhs; \
-        lhs.modify(); \
-        return lhs; \
-      } \
-      template<class U> friend U &operator op##=(U &lhs, const Tracked &rhs) { \
-        lhs op##= rhs.val_; \
-        return lhs; \
-      }
-
-      MADARA_MAKE_COMPOUND_OP(+)
-      MADARA_MAKE_COMPOUND_OP(-)
-      MADARA_MAKE_COMPOUND_OP(*)
-      MADARA_MAKE_COMPOUND_OP(/)
-      MADARA_MAKE_COMPOUND_OP(%)
-      MADARA_MAKE_COMPOUND_OP(&)
-      MADARA_MAKE_COMPOUND_OP(|)
-      MADARA_MAKE_COMPOUND_OP(^)
-      MADARA_MAKE_COMPOUND_OP(<<)
-      MADARA_MAKE_COMPOUND_OP(>>)
-
-#define MADARA_MAKE_UNARY_ARITH_OP(op) \
-      friend T operator op(const Tracked &lhs) { return op lhs.val_; } \
-
-      MADARA_MAKE_UNARY_ARITH_OP(+);
-      MADARA_MAKE_UNARY_ARITH_OP(-);
-      MADARA_MAKE_UNARY_ARITH_OP(!);
-      MADARA_MAKE_UNARY_ARITH_OP(~);
-
-#define MADARA_MAKE_INCDEC_OP(op) \
-      friend Tracked &operator op(Tracked &lhs) { op lhs.val_; lhs.modify(); return lhs; } \
-      friend T operator op(Tracked &lhs, int) { T ret(op lhs.val_); lhs.modify(); return ret; } \
-
-      MADARA_MAKE_INCDEC_OP(++);
-      MADARA_MAKE_INCDEC_OP(--);
-
       explicit operator bool()
       {
         return val_ ? true : false;
+      }
+
+      template<class U, typename std::enable_if<std::is_convertible<T, U>::value, void*>::type = nullptr>
+      operator Tracked<U>() const
+      {
+        Tracked<U> ret(get());
+        if (!is_dirty()) ret.clear_dirty();
+        return ret;
       }
 
       friend void swap(Tracked &lhs, Tracked &rhs)
@@ -217,6 +157,86 @@ namespace madara
         rhs.dirty_ = true;
       }
     };
+
+    template<class T>
+    Tracked<typename std::decay<T>::type> track(T &&val)
+    {
+      return Tracked<typename std::decay<T>::type>(std::forward<T>(val));
+    }
+
+#define MADARA_AUTOTYPE_BODY(body) \
+    -> decltype(body) { return (body); }
+
+#define MADARA_MAKE_BINARY_COMPARE_OP(op) \
+    template<class T, class U> \
+    auto operator op(const Tracked<T> &lhs, const Tracked<U> &rhs) \
+      MADARA_AUTOTYPE_BODY(lhs.get() op rhs.get()) \
+    template<class T, class U> \
+    auto operator op(const Tracked<T> &lhs, U &&rhs) \
+      MADARA_AUTOTYPE_BODY(lhs.get() op std::forward<U>(rhs)) \
+    template<class T, class U> \
+    auto operator op(T &&lhs, const Tracked<U> &rhs) \
+      MADARA_AUTOTYPE_BODY(std::forward<T>(lhs) op rhs.get())
+
+    MADARA_MAKE_BINARY_COMPARE_OP(==)
+    MADARA_MAKE_BINARY_COMPARE_OP(!=)
+    MADARA_MAKE_BINARY_COMPARE_OP(<=)
+    MADARA_MAKE_BINARY_COMPARE_OP(>=)
+    MADARA_MAKE_BINARY_COMPARE_OP(<)
+    MADARA_MAKE_BINARY_COMPARE_OP(>)
+
+#define MADARA_MAKE_COMPOUND_OP(op) \
+    template<class T, class U> \
+    auto operator op##=(Tracked<T> &lhs, const Tracked<U> &rhs) \
+      MADARA_AUTOTYPE_BODY(lhs.get_mut() op##= rhs.get()) \
+    template<class T, class U> \
+    auto operator op##=(Tracked<T> &lhs, U &&rhs) \
+      MADARA_AUTOTYPE_BODY(lhs.get_mut() op##= std::forward<U>(rhs)) \
+    template<class T, class U> \
+    auto operator op##=(T &lhs, const Tracked<U> &rhs) \
+      MADARA_AUTOTYPE_BODY(lhs op##= rhs.get())
+
+#define MADARA_MAKE_BINARY_ARITH_OP(op) \
+    template<class T, class U> \
+    auto operator op(const Tracked<T> &lhs, const Tracked<U> &rhs) \
+      MADARA_AUTOTYPE_BODY(lhs.get() op rhs.get()) \
+    template<class T, class U> \
+    auto operator op(const Tracked<T> &lhs, U &&rhs) \
+      MADARA_AUTOTYPE_BODY(lhs.get() op std::forward<U>(rhs)) \
+    template<class T, class U> \
+    auto operator op(T &&lhs, const Tracked<U> &rhs) \
+      MADARA_AUTOTYPE_BODY(std::forward<T>(lhs) op rhs.get()) \
+    MADARA_MAKE_COMPOUND_OP(op)
+
+    MADARA_MAKE_BINARY_ARITH_OP(+)
+    MADARA_MAKE_BINARY_ARITH_OP(-)
+    MADARA_MAKE_BINARY_ARITH_OP(*)
+    MADARA_MAKE_BINARY_ARITH_OP(/)
+    MADARA_MAKE_BINARY_ARITH_OP(%)
+    MADARA_MAKE_BINARY_ARITH_OP(&)
+    MADARA_MAKE_BINARY_ARITH_OP(|)
+    MADARA_MAKE_BINARY_ARITH_OP(^)
+    MADARA_MAKE_BINARY_ARITH_OP(<<)
+    MADARA_MAKE_BINARY_ARITH_OP(>>)
+
+#define MADARA_MAKE_UNARY_ARITH_OP(op) \
+    template<class T> \
+    auto operator op(const Tracked<T> &lhs) \
+      MADARA_AUTOTYPE_BODY(op lhs.get())
+
+    MADARA_MAKE_UNARY_ARITH_OP(+);
+    MADARA_MAKE_UNARY_ARITH_OP(-);
+    MADARA_MAKE_UNARY_ARITH_OP(!);
+    MADARA_MAKE_UNARY_ARITH_OP(~);
+
+#define MADARA_MAKE_INCDEC_OP(op) \
+    template<class T> auto operator op(Tracked<T> &lhs) \
+      MADARA_AUTOTYPE_BODY(op lhs.get_mut()) \
+    template<class T> auto operator op(Tracked<T> &lhs, int) \
+      MADARA_AUTOTYPE_BODY(lhs.get_mut() op)
+
+    MADARA_MAKE_INCDEC_OP(++);
+    MADARA_MAKE_INCDEC_OP(--);
 
     typedef Tracked<bool> TrackedBool;
     typedef Tracked<char> TrackedChar;
@@ -255,7 +275,7 @@ namespace madara
       typedef typename T::value_type value_type;
       typedef typename T::const_iterator const_iterator;
 
-      void set(value_type val, size_t i)
+      void set(size_t i, value_type val)
       {
         impl().val_.at(i) = val;
         impl().modify(i);
@@ -264,6 +284,11 @@ namespace madara
       const value_type &at(size_t i) const
       {
         return impl().val_.at(i);
+      }
+
+      const value_type &operator[](size_t i) const
+      {
+        return impl().val_[i];
       }
 
       const value_type &get(size_t i) const
@@ -470,22 +495,22 @@ namespace madara
     {
     private:
       typedef std::vector<T> Vec;
-      typedef TrackedCollection<std::vector<T>, Tracked<std::vector<T>>> Base;
+      typedef TrackedCollection<Vec, Tracked<std::vector<T>>> Base;
       Vec val_;
-      std::vector<char> dirty_;
+      std::vector<uint64_t> dirty_;
       bool all_dirty_;
       bool size_dirty_;
 
-      static std::pair<size_t, char> to_dirty_bit(size_t i)
+      static std::pair<size_t, uint64_t> to_dirty_bit(size_t i)
       {
-        size_t idx = i >> 3;
-        size_t shift = i - (idx << 3);
+        size_t idx = i >> 6;
+        size_t shift = i - (idx << 6);
         return {idx, 1 << shift};
       }
 
       static size_t to_dirty_size(size_t i)
       {
-        return (i + 7) >> 3;
+        return (i + 63) >> 6;
       }
 
       friend class TrackedCollection<std::vector<T>, Tracked<std::vector<T>>>;
@@ -508,11 +533,6 @@ namespace madara
       {
         modify();
         return val_;
-      }
-
-      const T &operator[](size_t i) const
-      {
-        return val_[i];
       }
 
       const std::vector<T>& operator*() const
@@ -540,8 +560,6 @@ namespace madara
       void modify()
       {
         all_dirty_ = true;
-        for (char &cur : dirty_)
-          cur = 0xFF;
       }
 
       bool is_all_dirty() const
@@ -551,14 +569,14 @@ namespace madara
 
       bool is_size_dirty() const
       {
-        return all_dirty_;
+        return size_dirty_;
       }
 
       bool is_dirty() const
       {
         if (all_dirty_)
           return true;
-        for (const char &cur : dirty_)
+        for (const uint64_t &cur : dirty_)
           if (cur)
             return true;
         return false;
@@ -568,8 +586,8 @@ namespace madara
       {
         all_dirty_ = false;
         size_dirty_ = false;
-        for (char &cur : dirty_)
-          cur = 0x00;
+        for (uint64_t &cur : dirty_)
+          cur = 0;
       }
 
       void modify(size_t i)
@@ -614,6 +632,7 @@ namespace madara
       {
         val_.push_back(value);
         dirty_.resize(to_dirty_size(val_.size()));
+        std::cout << "push_back " << value << std::endl;
         size_dirty_ = true;
         modify(val_.size() - 1);
       }
@@ -649,6 +668,7 @@ namespace madara
         swap(lhs.val_, rhs.val_);
         swap(lhs.dirty_, rhs.dirty_);
         swap(lhs.all_dirty_, rhs.all_dirty_);
+        swap(lhs.size_dirty_, rhs.size_dirty_);
       }
     };
 
@@ -685,11 +705,23 @@ namespace madara
     template<typename T>
     void set_value(Tracked<std::vector<T>> &t, size_t i, const T &v)
     {
-      t.set(t, v);
+      t.set(i, v);
     }
 
     typedef Tracked<std::vector<int64_t>> TrackedIntVector;
     typedef Tracked<std::vector<double>> TrackedDoubleVector;
+
+    template<class T, bool RD = true, bool WR = true, class dummy = void>
+    class Tracker
+    {
+      static_assert(sizeof(T) < 0, "Type unsupported for adding to Transaction");
+    };
+
+    template<class T, bool RD = true, bool WR = true, class dummy = void>
+    class PrefixTracker
+    {
+      static_assert(sizeof(T) < 0, "Type unsupported for adding to Transaction with prefix");
+    };
 
     class BaseTracker
     {
@@ -697,11 +729,75 @@ namespace madara
       virtual ~BaseTracker() {}
 
     private:
+      knowledge::VariableReference ref_;
+
+      BaseTracker(knowledge::VariableReference ref) : ref_(ref) {}
+
       virtual void pull() = 0;
-      virtual void push() = 0;
-      virtual void force_push() = 0;
+      virtual void push(knowledge::KnowledgeBase &kb) = 0;
+      virtual void force_push(knowledge::KnowledgeBase &kb) = 0;
+
+      const knowledge::KnowledgeRecord &get() const
+      {
+        return get(ref_);
+      }
+
+      knowledge::KnowledgeRecord &get_mut()
+      {
+        return get_mut(ref_);
+      }
+
+      static const knowledge::KnowledgeRecord &get(const knowledge::VariableReference &ref)
+      {
+        return *ref.record_;
+      }
+
+      static knowledge::KnowledgeRecord &get_mut(const knowledge::VariableReference &ref)
+      {
+        return *ref.record_;
+      }
+
+      void set(knowledge::KnowledgeBase &kb, knowledge::KnowledgeRecord rec)
+      {
+        return set(kb, ref_, rec);
+      }
+
+      static void set(knowledge::KnowledgeBase &kb, const knowledge::VariableReference &ref, knowledge::KnowledgeRecord rec)
+      {
+        kb.get_context().set_unsafe_impl(ref, rec, knowledge::EvalSettings());
+      }
+
+      template<typename I>
+      auto set_index(knowledge::KnowledgeBase &kb, size_t idx, I val) ->
+        typename std::enable_if<std::is_integral<I>::value>::type
+      {
+        kb.get_context().set_index_unsafe_impl(ref_, idx, val, knowledge::EvalSettings());
+      }
+
+      template<typename I>
+      auto set_index(knowledge::KnowledgeBase &kb, size_t idx, I val) ->
+        typename std::enable_if<std::is_floating_point<I>::value>::type
+      {
+        kb.get_context().set_index_unsafe_impl(ref_, idx, val, knowledge::EvalSettings());
+      }
+
+      void post_set(knowledge::KnowledgeBase &kb)
+      {
+        post_set(kb, ref_);
+      }
+
+      void post_set(knowledge::KnowledgeBase &kb, const knowledge::VariableReference &ref)
+      {
+        kb.get_context().mark_and_signal(ref.name_.get_ptr (), ref.record_, knowledge::EvalSettings());
+      }
 
       friend class Transaction;
+
+      template<class, bool, bool, class>
+      friend class Tracker;
+
+      template<class, bool, bool, class>
+      friend class PrefixTracker;
     };
 
     #define MADARA_MAKE_SUPPORT_TEST(name, var, expr) template <typename T> \
@@ -731,14 +827,16 @@ namespace madara
           get_value(*p) == get_value(*p),
           get_value(*p) != get_value(*p)));
 
-    template<class T, class dummy = void>
-    class Tracker
+    template<class T>
+    class Tracker<T, false, false, void>
+      : public BaseTracker
     {
-      static_assert(sizeof(T) < 0, "Type unsupported for adding to Transaction");
+    private:
+      static_assert(sizeof(T) < 0, "Cannot create tracker that can neither read nor write");
     };
 
     template<class T>
-    class Tracker<T, typename std::enable_if<
+    class Tracker<T, true, true, typename std::enable_if<
                        supports_get_value<T>::value &&
                        supports_knowledge_cast<T>::value &&
                        supports_self_eq<T>::value &&
@@ -749,35 +847,107 @@ namespace madara
       typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
 
       T *tracked_;
-      knowledge::VariableReference ref_;
       V orig_;
 
+      static const bool can_read = true;
+      static const bool can_write = true;
+
       Tracker(T *tracked, knowledge::VariableReference ref)
-        : tracked_(tracked), ref_(ref), orig_() {}
+        : BaseTracker(ref), tracked_(tracked), orig_() {}
 
       virtual void pull()
       {
-        orig_ = knowledge::knowledge_cast<V>(*ref_.record_);
+        orig_ = knowledge::knowledge_cast<V>(get());
         set_value(*tracked_, orig_);
       }
 
-      virtual void push()
+      virtual void push(knowledge::KnowledgeBase &kb)
       {
         if (get_value(*tracked_) != get_value(orig_)) {
-          Tracker::force_push();
+          Tracker::force_push(kb);
         }
       }
 
-      virtual void force_push()
+      virtual void force_push(knowledge::KnowledgeBase &kb)
       {
-        *ref_.record_ = knowledge::knowledge_cast(get_value(*tracked_));
+        set(kb, knowledge::knowledge_cast(get_value(*tracked_)));
+        post_set(kb);
       }
 
       friend class Transaction;
     };
 
     template<class T>
-    class Tracker<T, typename std::enable_if<
+    class Tracker<T, true, false, typename std::enable_if<
+                       supports_get_value<T>::value &&
+                       supports_knowledge_cast<T>::value>::type>
+      : public BaseTracker
+    {
+    private:
+      typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
+
+      T *tracked_;
+
+      static const bool can_read = true;
+      static const bool can_write = false;
+
+      Tracker(T *tracked, knowledge::VariableReference ref)
+        : BaseTracker(ref), tracked_(tracked) {}
+
+      virtual void pull()
+      {
+        set_value(*tracked_, knowledge::knowledge_cast<V>(get()));
+      }
+
+      virtual void push(knowledge::KnowledgeBase &kb) {}
+
+      virtual void force_push(knowledge::KnowledgeBase &kb) {}
+
+      friend class Transaction;
+    };
+
+    template<class T>
+    class Tracker<T, false, true, typename std::enable_if<
+                       supports_get_value<T>::value &&
+                       supports_knowledge_cast<T>::value &&
+                       supports_self_eq<T>::value &&
+                       !supports_is_dirty<T>::value>::type>
+      : public BaseTracker
+    {
+    private:
+      typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
+
+      T *tracked_;
+
+      static const bool can_read = false;
+      static const bool can_write = true;
+
+      Tracker(T *tracked, knowledge::VariableReference ref)
+        : BaseTracker(ref), tracked_(tracked) {}
+
+      virtual void pull()
+      {
+        set_value(*tracked_, V());
+      }
+
+      virtual void push(knowledge::KnowledgeBase &kb)
+      {
+        if (get_value(*tracked_) != V()) {
+          Tracker::force_push(kb);
+        }
+      }
+
+      virtual void force_push(knowledge::KnowledgeBase &kb)
+      {
+        set(kb, knowledge::knowledge_cast(get_value(*tracked_)));
+        post_set(kb);
+      }
+
+      friend class Transaction;
+    };
+
+    template<class T>
+    class Tracker<T, true, true, typename std::enable_if<
                        supports_get_value<T>::value &&
                        supports_knowledge_cast<T>::value &&
                        supports_is_dirty<T>::value &&
@@ -786,37 +956,81 @@ namespace madara
     {
     private:
       T *tracked_;
-      knowledge::VariableReference ref_;
+
+      static const bool can_read = true;
+      static const bool can_write = true;
 
       typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
 
       Tracker(T *tracked, knowledge::VariableReference ref)
-        : tracked_(tracked), ref_(ref) {}
+        : BaseTracker(ref), tracked_(tracked) {}
 
       virtual void pull()
       {
-        V val = knowledge::knowledge_cast<V>(*ref_.record_);
+        V val = knowledge::knowledge_cast<V>(get());
         set_value(*tracked_, val);
         clear_dirty(*tracked_);
       }
 
-      virtual void push()
+      virtual void push(knowledge::KnowledgeBase &kb)
       {
         if (is_dirty(*tracked_)) {
-          Tracker::force_push();
+          Tracker::force_push(kb);
         }
       }
 
-      virtual void force_push()
+      virtual void force_push(knowledge::KnowledgeBase &kb)
       {
-        *ref_.record_ = knowledge::knowledge_cast(get_value(*tracked_));
+        set(kb, knowledge::knowledge_cast(get_value(*tracked_)));
+        post_set(kb);
       }
 
       friend class Transaction;
     };
 
     template<class T>
-    class Tracker<T, typename std::enable_if<
+    class Tracker<T, false, true, typename std::enable_if<
+                       supports_get_value<T>::value &&
+                       supports_knowledge_cast<T>::value &&
+                       supports_is_dirty<T>::value &&
+                       !supports_indexed_is_dirty<T>::value>::type >
+      : public BaseTracker
+    {
+    private:
+      T *tracked_;
+
+      typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
+
+      static const bool can_read = false;
+      static const bool can_write = true;
+
+      Tracker(T *tracked, knowledge::VariableReference ref)
+        : BaseTracker(ref), tracked_(tracked) {}
+
+      virtual void pull()
+      {
+        set_value(*tracked_, V());
+        clear_dirty(*tracked_);
+      }
+
+      virtual void push(knowledge::KnowledgeBase &kb)
+      {
+        if (is_dirty(*tracked_)) {
+          Tracker::force_push(kb);
+        }
+      }
+
+      virtual void force_push(knowledge::KnowledgeBase &kb)
+      {
+        set(kb, knowledge::knowledge_cast(get_value(*tracked_)));
+        post_set(kb);
+      }
+
+      friend class Transaction;
+    };
+
+    template<class T, bool RD, bool WR>
+    class Tracker<T, RD, WR, typename std::enable_if<
                        supports_indexed_get_value<T>::value &&
                        supports_size<T>::value &&
                        !supports_is_all_dirty<T>::value &&
@@ -825,57 +1039,66 @@ namespace madara
       : public BaseTracker
     {
     private:
+      static_assert(RD == true, "Write-only not supported for containers of tracked items");
+
       T *tracked_;
-      knowledge::VariableReference ref_;
       size_t orig_size_;
 
       typedef typename std::decay<decltype(get_value(std::declval<T>(), 0))>::type V;
 
+      static const bool can_read = RD;
+      static const bool can_write = WR;
+
       Tracker(T *tracked, knowledge::VariableReference ref)
-        : tracked_(tracked), ref_(ref), orig_size_() {}
+        : BaseTracker(ref), tracked_(tracked), orig_size_() {}
 
       virtual void pull()
       {
-        std::vector<double> val = ref_.record_->to_doubles();
+        std::vector<double> val = get().to_doubles();
         orig_size_ = val.size();
         size_t n = orig_size_;
+        tracked_->resize(n);
         for (size_t i = 0; i < n; ++i) {
           set_value(*tracked_, i, (V) val[i]);
           clear_dirty(*tracked_, i);
         }
       }
 
-      virtual void push()
+      virtual void push(knowledge::KnowledgeBase &kb)
       {
-        size_t n = tracked_->size();
-        if (tracked_->size() != orig_size_) {
-          ref_.record_->resize(n);
-        }
-        for (size_t i = 0; i < n; ++i) {
-          if (is_dirty(*tracked_, i)) {
-            ref_.record_->set_index(i, get_value(*tracked_, i));
-            std::cout << "  Update tracked index " << i << std::endl;
+        if (can_write) {
+          size_t n = tracked_->size();
+          if (tracked_->size() != orig_size_) {
+            get_mut().resize(n);
           }
+          for (size_t i = 0; i < n; ++i) {
+            if (is_dirty(*tracked_, i)) {
+              set_index(kb, i, get_value(*tracked_, i));
+            }
+          }
+          post_set(kb);
         }
       }
 
-      virtual void force_push()
+      virtual void force_push(knowledge::KnowledgeBase &kb)
       {
-        size_t n = tracked_->size();
-        if (tracked_->size() != orig_size_) {
-          ref_.record_->resize(n);
-        }
-        for (size_t i = 0; i < n; ++i) {
-          ref_.record_->set_index(i, get_value(*tracked_, i));
-          std::cout << "  Forced update tracked index " << i << std::endl;
+        if (can_write) {
+          size_t n = tracked_->size();
+          if (tracked_->size() != orig_size_) {
+            get_mut().resize(n);
+          }
+          for (size_t i = 0; i < n; ++i) {
+            set_index(kb, i, get_value(*tracked_, i));
+          }
+          post_set(kb);
         }
       }
 
       friend class Transaction;
     };
 
-    template<class T>
-    class Tracker<T, typename std::enable_if<
+    template<class T, bool RD, bool WR>
+    class Tracker<T, RD, WR, typename std::enable_if<
                        supports_get_value<T>::value &&
                        supports_indexed_get_value<T>::value &&
                        supports_size<T>::value &&
@@ -888,44 +1111,194 @@ namespace madara
     {
     private:
       T *tracked_;
-      knowledge::VariableReference ref_;
 
       typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
 
+      static const bool can_read = RD;
+      static const bool can_write = WR;
+
       Tracker(T *tracked, knowledge::VariableReference ref)
-        : tracked_(tracked), ref_(ref) {}
+        : BaseTracker(ref), tracked_(tracked) {}
 
       virtual void pull()
       {
-        V val = knowledge::knowledge_cast<V>(*ref_.record_);
-        set_value(*tracked_, val);
+        if (can_read) {
+          V val = knowledge::knowledge_cast<V>(get());
+          set_value(*tracked_, val);
+        } else {
+          set_value(*tracked_, V());
+        }
         clear_dirty(*tracked_);
       }
 
-      virtual void push()
+      virtual void push(knowledge::KnowledgeBase &kb)
       {
-        if (is_all_dirty(*tracked_)) {
-          return Tracker::force_push();
+        if (can_write) {
+          if (is_all_dirty(*tracked_)) {
+            return Tracker::force_push(kb);
+          }
+          size_t n = tracked_->size();
+          if (is_size_dirty(*tracked_) && n < get().size()) {
+            get_mut().resize(n);
+          }
+          for (size_t i = 0; i < n; ++i) {
+            if (is_dirty(*tracked_, i)) {
+              set_index(kb, i, get_value(*tracked_, i));
+            }
+          }
+          post_set(kb);
         }
-        size_t n = tracked_->size();
-        if (is_size_dirty(*tracked_) && n < ref_.record_->size()) {
-          ref_.record_->resize(n);
+      }
+
+      virtual void force_push(knowledge::KnowledgeBase &kb)
+      {
+        if (can_write) {
+          set(kb, knowledge::knowledge_cast(get_value(*tracked_)));
+          post_set(kb);
         }
+      }
+
+      friend class Transaction;
+    };
+
+    template<class T>
+    class PrefixTracker<T, false, false, void>
+      : public BaseTracker
+    {
+    private:
+      static_assert(sizeof(T) < 0, "Cannot create prefix tracker that can neither read nor write");
+    };
+
+    template<class T, bool RD, bool WR>
+    class PrefixTracker<T, RD, WR, typename std::enable_if<
+                       supports_get_value<T>::value &&
+                       supports_indexed_get_value<T>::value &&
+                       supports_size<T>::value &&
+                       //supports_knowledge_cast<T>::value &&
+                       supports_is_dirty<T>::value &&
+                       supports_is_all_dirty<T>::value &&
+                       supports_is_size_dirty<T>::value &&
+                       supports_indexed_is_dirty<T>::value>::type >
+      : public BaseTracker
+    {
+    private:
+      T *tracked_;
+      std::string prefix_;
+      knowledge::KnowledgeBase kb_;
+      std::vector<knowledge::VariableReference> elems_;
+
+      typedef typename std::decay<decltype(get_value(std::declval<T>()[0]))>::type V;
+
+      static const bool can_read = RD;
+      static const bool can_write = WR;
+
+      PrefixTracker(T *tracked, const std::string &prefix, knowledge::KnowledgeBase &kb)
+        : BaseTracker(kb.get_ref(prefix + ".size")),
+          tracked_(tracked), prefix_(prefix), kb_(kb), elems_()
+      {
+        update_elems();
+      }
+
+      void update_elems()
+      {
+        const size_t n = tracked_->size();
+        if (elems_.size() == n)
+          return;
+        if (elems_.size() > n) {
+          elems_.resize(n);
+          return;
+        }
+        std::ostringstream name;
+        elems_.reserve(n);
+        name << prefix_ << ".";
+        const auto pos = name.tellp();
+        for (size_t i = elems_.size(); i < n; ++i) {
+          name << i;
+          elems_.push_back(kb_.get_ref(name.str()));
+          name.seekp(pos);
+        }
+      }
+
+      virtual void pull()
+      {
+        const size_t n = get().to_integer();
+        tracked_->resize(n);
+        update_elems();
         for (size_t i = 0; i < n; ++i) {
-          if (is_dirty(*tracked_, i)) {
-            ref_.record_->set_index(i, get_value(*tracked_, i));
-            std::cout << "  Update index " << i << std::endl;
+          if (can_read) {
+            V val = knowledge::knowledge_cast<V>(get(elems_[i]));
+            set_value(*tracked_, i, val);
+          } else {
+            set_value(*tracked_, i, V());
+          }
+        }
+        clear_dirty(*tracked_);
+      }
+
+      virtual void push(knowledge::KnowledgeBase &kb)
+      {
+        if (can_write) {
+          const size_t n = tracked_->size();
+          if (is_all_dirty(*tracked_)) {
+            return force_push(kb);
+          }
+          if (is_size_dirty(*tracked_)) {
+            set(kb, (int64_t)n);
+            post_set(kb);
+          }
+
+          update_elems();
+          for (size_t i = 0; i < n; ++i) {
+            if (is_dirty(*tracked_, i)) {
+              set(kb, elems_[i], knowledge::knowledge_cast(tracked_->at(i)));
+              post_set(kb, elems_[i]);
+            }
           }
         }
       }
 
-      virtual void force_push()
+      virtual void force_push(knowledge::KnowledgeBase &kb)
       {
-        *ref_.record_ = knowledge::knowledge_cast(get_value(*tracked_));
-        std::cout << "  Force push tracked array" << std::endl;
+        if (can_write) {
+          const size_t n = tracked_->size();
+          set(kb, (int64_t)n);
+          post_set(kb);
+
+          update_elems();
+          for (size_t i = 0; i < n; ++i) {
+            set(kb, elems_[i], knowledge::knowledge_cast(tracked_->at(i)));
+            post_set(kb, elems_[i]);
+          }
+        }
       }
 
       friend class Transaction;
+    };
+
+    template<typename T>
+    struct type {};
+
+    template<class Base, size_t N>
+    class PolyStore
+    {
+    private:
+      char store_[N];
+    public:
+      template<typename Derived, typename... Args>
+      PolyStore(type<Derived>, Args&&... args) {
+        static_assert(sizeof(Derived) <= N, "Type too big for this PolyStore");
+        static_assert(std::is_base_of<Base, Derived>::value, "Type is not derived from Base type of this PolyStore");
+        new(&store_) Derived(std::forward<Args>(args)...);
+      }
+
+      const Base& operator*() const { return *(const Base*)(const void*)(&store_); }
+      Base& operator*() { return *(Base*)(void*)(&store_); }
+      const Base* operator->() const { return &operator*(); }
+      Base* operator->() { return &operator*(); }
+
+      ~PolyStore() {
+        (*this)->~Base();
+      }
     };
 
     class Transaction
@@ -940,32 +1313,197 @@ namespace madara
 
       void push(void)
       {
+        knowledge::ContextGuard guard(kb_);
         for (auto &t : trackers_) {
-          t->push();
+          t->push(kb_);
         }
       }
 
       void pull(void)
       {
+        knowledge::ContextGuard guard(kb_);
         for (auto &t : trackers_) {
           t->pull();
         }
       }
 
+    private:
+      template<class Builder, class T, class dummy = void>
+      class BuilderBase
+      {
+      public:
+        Builder &init();
+      };
+
+      template<class Builder, class T>
+      class BuilderBase<Builder, T, 
+          typename std::enable_if<supports_indexed_get_value<T>::value>::type>
+      {
+      public:
+        Builder &init(std::initializer_list<typename std::decay<decltype(get_value(T(), 0))>::type> list)
+        {
+          Builder &self = static_cast<Builder &>(*this);
+          *self.tracked_ = list;
+          return self.init();
+        }
+      };
+
+    public:
+      template<class T, bool RD = true, bool WR = true, bool Prefix = false>
+      class Builder : private BuilderBase<Builder<T, RD, WR, Prefix>, T>
+      {
+      private:
+        Transaction *trans_;
+        std::string key_;
+        T *tracked_;
+        bool init_ = false;
+        static const bool rd_ = RD;
+        static const bool wr_ = WR;
+        static const bool prefix_ = Prefix;
+
+        template<class S>
+        Builder(Transaction &trans, S &&key, T &val)
+          : trans_(&trans), key_(std::forward<S>(key)), tracked_(&val) {}
+
+        template<bool R, bool W, bool P>
+        Builder(Builder<T, R, W, P> &o)
+          : trans_(o.trans_), key_(o.key_), tracked_(o.tracked_),
+            init_(o.init_) {}
+
+        template<bool R, bool W, bool P>
+        Builder(Builder<T, R, W, P> &&o)
+          : trans_(o.trans_), key_(std::move(o.key_)), tracked_(o.tracked_),
+            init_(o.init_) {}
+
+      public:
+        Builder &init() { init_ = true; return *this; }
+
+        template<class V>
+        Builder &init(V &&val)
+        {
+          *tracked_ = std::forward<V>(val);
+          return init();
+        }
+
+        using BuilderBase<Builder, T>::init;
+        friend class BuilderBase<Builder, T>;
+
+        Builder<T, RD, WR, true> prefix() & { return *this; }
+        Builder<T, RD, WR, true> prefix() && { return std::move(*this); }
+
+        Builder<T, false, WR, Prefix> ro() & { return *this; }
+        Builder<T, false, WR, Prefix> ro() && { return std::move(*this); }
+
+        Builder<T, RD, false, Prefix> wo() & { return *this; }
+        Builder<T, RD, false, Prefix> wo() && { return std::move(*this); }
+
+        void add()
+        {
+          trans_->add(*this);
+        }
+
+        friend class Transaction;
+      };
+
+      template<class T, bool RD, bool WR, bool Prefix> friend class Builder;
+
+      template<class T, class S>
+      Builder<T> build(S &&key, T &val)
+      {
+        return Builder<T>(*this, std::forward<S>(key), val);
+      }
+
+      template<class T, class S>
+      Builder<T, true, false>  build_ro(S &&key, T &val)
+      {
+        return build(std::forward<S>(key), val).ro();
+      }
+
+      template<class T, class S>
+      Builder<T, false, true> build_wo(S &&key, T &val)
+      {
+        return build(std::forward<S>(key), val).wo();
+      }
+
+      template<class T, bool RD, bool WR>
+      void add(const Builder<T, RD, WR, true> &b)
+      {
+        std::unique_ptr<PrefixTracker<T, RD, WR>> p(new PrefixTracker<T, RD, WR>(b.tracked_, b.key_, kb_));
+        if (b.init_) {
+          p->PrefixTracker<T, RD, WR>::force_push(kb_);
+        }
+        trackers_.push_back(uptr_t(p.release()));
+      }
+
+      template<class T, bool RD, bool WR>
+      void add(const Builder<T, RD, WR, false> &b)
+      {
+        knowledge::VariableReference ref = kb_.get_ref(b.key_);
+        std::unique_ptr<Tracker<T, RD, WR>> p(new Tracker<T, RD, WR>(b.tracked_, ref));
+        if (b.init_) {
+          p->Tracker<T, RD, WR>::force_push(kb_);
+        }
+        trackers_.push_back(uptr_t(p.release()));
+      }
+
       template<class T>
       void add(const std::string &key, T &val)
       {
-        knowledge::VariableReference ref = kb_.get_ref(key);
-        trackers_.push_back(uptr_t(new Tracker<T>(&val, ref)));
+        build(key, val).add();
       }
 
       template<class T>
       void add_init(const std::string &key, T &val)
       {
-        knowledge::VariableReference ref = kb_.get_ref(key);
-        std::unique_ptr<Tracker<T>> p(new Tracker<T>(&val, ref));
-        p->Tracker<T>::force_push();
-        trackers_.push_back(uptr_t(p.release()));
+        build(key, val).init().add();
+      }
+
+      template<class T>
+      void add_ro(const std::string &key, T &val)
+      {
+        build_ro(key, val).add();
+      }
+ 
+      template<class T>
+      void add_wo(const std::string &key, T &val)
+      {
+        build_wo(key, val).add();
+      }
+ 
+      template<class T>
+      void add_wo_init(const std::string &key, T &val)
+      {
+        build_wo(key, val).init().add();
+      }
+
+      template<class T>
+      void add_prefix(const std::string &prefix, T &val)
+      {
+        build(prefix, val).prefix().add();
+      }
+
+      template<class T>
+      void add_prefix_init(const std::string &prefix, T &val)
+      {
+        build(prefix, val).prefix().init().add();
+      }
+
+      template<class T>
+      void add_prefix_ro(const std::string &prefix, T &val)
+      {
+        build_ro(prefix, val).prefix().add();
+      }
+
+      template<class T>
+      void add_prefix_wo(const std::string &prefix, T &val)
+      {
+        build_wo(prefix, val).prefix().add();
+      }
+
+      template<class T>
+      void add_prefix_init_wo(const std::string &prefix, T &val)
+      {
+        build_wo(prefix, val).prefix().init().add();
       }
     };
   }

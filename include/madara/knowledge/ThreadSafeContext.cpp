@@ -175,34 +175,55 @@ madara::knowledge::ThreadSafeContext::set (
 {
   MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
-  {
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite &&
-        variable.record_->write_quality < variable.record_->quality)
-      return -2;
-
-    // copy size and type from the record value
-    variable.record_->size_ = value.size_;
-    variable.record_->type_ = value.type_;
-
-    if (value.status_ != knowledge::KnowledgeRecord::UNCREATED)
-    {
-      variable.record_->deep_copy (value);
-    }
-    else
-    {
-      variable.record_->status_ = knowledge::KnowledgeRecord::UNCREATED;
-      variable.record_->int_value_ = 0;
-    }
-    
-    variable.record_->quality = variable.record_->write_quality;
-  
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-  }
+    return set_unsafe(variable, value, settings);
   else
     return -1;
+}
+
+// set the value of a variable
+int
+madara::knowledge::ThreadSafeContext::set_unsafe_impl (
+  const VariableReference & variable,
+  const madara::knowledge::KnowledgeRecord & value,
+  const KnowledgeUpdateSettings & settings)
+{
+  // check if we have the appropriate write quality
+  if (!settings.always_overwrite &&
+      variable.record_->write_quality < variable.record_->quality)
+    return -2;
+
+  // copy size and type from the record value
+  variable.record_->size_ = value.size_;
+  variable.record_->type_ = value.type_;
+
+  if (value.status_ != knowledge::KnowledgeRecord::UNCREATED)
+  {
+    variable.record_->deep_copy (value);
+  }
+  else
+  {
+    variable.record_->status_ = knowledge::KnowledgeRecord::UNCREATED;
+    variable.record_->int_value_ = 0;
+  }
+  
+  variable.record_->quality = variable.record_->write_quality;
 
   return 0;
+}
+
+// set the value of a variable
+int
+madara::knowledge::ThreadSafeContext::set_unsafe (
+  const VariableReference & variable,
+  const madara::knowledge::KnowledgeRecord & value,
+  const KnowledgeUpdateSettings & settings)
+{
+  int ret = set_unsafe_impl(variable, value, settings);
+
+  if (ret == 0)
+    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
+
+  return ret;
 }
 
 
@@ -215,21 +236,39 @@ madara::knowledge::ThreadSafeContext::set_index (
 {
   MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
-  {
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite &&
-        variable.record_->write_quality < variable.record_->quality)
-      return -2;
-
-    variable.record_->set_index (index, value);
-    variable.record_->quality = variable.record_->write_quality;
-  
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-  }
+    return set_unsafe(variable, value, settings);
   else
     return -1;
+}
+
+int
+madara::knowledge::ThreadSafeContext::set_index_unsafe_impl (
+  const VariableReference & variable, size_t index,
+  madara::knowledge::KnowledgeRecord::Integer value,
+  const KnowledgeUpdateSettings & settings)
+{
+  // check if we have the appropriate write quality
+  if (!settings.always_overwrite &&
+      variable.record_->write_quality < variable.record_->quality)
+    return -2;
+
+  variable.record_->set_index (index, value);
+  variable.record_->quality = variable.record_->write_quality;
 
   return 0;
+}
+
+int
+madara::knowledge::ThreadSafeContext::set_index_unsafe (
+  const VariableReference & variable, size_t index,
+  madara::knowledge::KnowledgeRecord::Integer value,
+  const KnowledgeUpdateSettings & settings)
+{
+  int ret = set_index_unsafe_impl(variable, index, value, settings);
+  if (ret == 0)
+    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
+
+  return ret;
 }
 
 // set the value of a variable
@@ -320,21 +359,40 @@ madara::knowledge::ThreadSafeContext::set_index (
 {
   MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
-  {
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite &&
-        variable.record_->write_quality < variable.record_->quality)
-      return -2;
-
-    variable.record_->set_index (index, value);
-    variable.record_->quality = variable.record_->write_quality;
-  
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-  }
+    return set_index_unsafe(variable, index, value, settings);
   else
     return -1;
+}
+
+int
+madara::knowledge::ThreadSafeContext::set_index_unsafe_impl (
+  const VariableReference & variable, size_t index,
+  double value,
+  const KnowledgeUpdateSettings & settings)
+{
+  // check if we have the appropriate write quality
+  if (!settings.always_overwrite &&
+      variable.record_->write_quality < variable.record_->quality)
+    return -2;
+
+  variable.record_->set_index (index, value);
+  variable.record_->quality = variable.record_->write_quality;
 
   return 0;
+}
+
+// set the value of a variable
+int
+madara::knowledge::ThreadSafeContext::set_index_unsafe (
+  const VariableReference & variable, size_t index,
+  double value,
+  const KnowledgeUpdateSettings & settings)
+{
+  int ret = set_index_unsafe_impl(variable, index, value, settings);
+  if (ret == 0)
+    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
+
+  return ret;
 }
 
 // set the value of a variable

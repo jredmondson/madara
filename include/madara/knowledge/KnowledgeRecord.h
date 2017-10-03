@@ -504,6 +504,19 @@ namespace madara
        **/
       bool is_integer_type (uint32_t type) const;
      
+     
+      /**
+       * returns if the record is an array type (DOUBLE_ARRAY, INTEGER_ARRAY)
+       * @return   true if the record is an integer
+       **/
+      bool is_array_type (void) const;
+    
+      /**
+       * returns if the record is a array type (DOUBLE_ARRAY, INTEGER_ARRAY)
+       * @param   type the type to check
+       * @return   true if the record is an integer
+       **/
+      bool is_array_type (uint32_t type) const;
     
       /**
        * returns a record containing a fragment of the character buffer.

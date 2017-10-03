@@ -64,11 +64,15 @@ private:
   int x;
   rcw::TrackedInt y;
   rcw::TrackedInt z;
+  int x_ro;
+  int y_ro;
   std::vector<int64_t> vec;
-  rcw::Tracked<std::vector<int64_t>> tvec;
+  rcw::TrackedIntVector tvec;
+  rcw::TrackedIntVector pvec;
   std::vector<rcw::TrackedI64> uvec;
   std::string s;
   rcw::TrackedString t;
+  rcw::Tracked<std::vector<std::string>> strvec;
   my_type m;
   my_tracked_type d;
 public:
@@ -77,9 +81,13 @@ public:
     tx.add("x", x);
     tx.add("y", y);
     tx.add("z", z);
+    tx.add_ro("x", x_ro);
+    tx.add_ro("y", y_ro);
     tx.add("vec", vec);
 
     tx.add_init("tvec", tvec);
+    tx.add_prefix("pvec", pvec);
+    tx.build("strvec", strvec).init({"a", "b", "c"}).prefix().add();
     tx.add_init("uvec", uvec);
     tx.add_init("s", s);
 
@@ -102,8 +110,10 @@ public:
   virtual void compute (rcw::Transaction &)
   {
     std::cout << "x: " << x << std::endl;
-    std::cout << "y: " << y.get() << std::endl;
+    std::cout << "y: " << y << std::endl;
     std::cout << "z: " << *z << std::endl;
+    std::cout << "x_ro: " << x_ro << std::endl;
+    std::cout << "y_ro: " << y_ro << std::endl;
     std::cout << "vec.size(): " << vec.size() << std::endl;
 
     std::cout << "tvec.size(): " << tvec.size() << std::endl;
@@ -111,13 +121,29 @@ public:
     for (auto &cur : tvec) {
       std::cout << cur << " ";
     }
+    std::cout << std::endl;
 
-    std::cout << "uvec.size(): " << tvec.size() << std::endl;
+    std::cout << "uvec.size(): " << uvec.size() << std::endl;
     std::cout << "   ";
     for (auto &cur : uvec) {
       std::cout << *cur << " ";
     }
     std::cout << std::endl;
+
+    std::cout << "pvec.size(): " << pvec.size() << std::endl;
+    std::cout << "   ";
+    for (auto &cur : pvec) {
+      std::cout << cur << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "strvec.size(): " << strvec.size() << std::endl;
+    std::cout << "   ";
+    for (auto &cur : strvec) {
+      std::cout << cur << " ";
+    }
+    std::cout << std::endl;
+
     std::cout << "s: " << s << "  [" << s.size() << "]" << std::endl;
     std::cout << "t: " << *t << "  [" << t.size() << "]" << std::endl;
     std::cout << "m: {" << m.a << ", " << m.b << ", " << m.c << "}" << std::endl;
@@ -126,9 +152,15 @@ public:
     ++x;
     y--;
     --y;
+    x_ro *= 42;
+    y_ro *= 42;
     vec.push_back(x);
-    tvec.push_back(y);
-    uvec.push_back(rcw::TrackedI64(y * 2));
+    tvec.push_back((int)y);
+    pvec.push_back((int)y * 10);
+    strvec.push_back("FOOBAR");
+    int foo = 2;
+    rcw::Tracked<char> bar(y);
+    uvec.push_back(rcw::track(y * foo));
     std::cout << std::endl;
     s += "x";
     t += "T";
@@ -141,6 +173,8 @@ public:
     std::cout << "y.dirty: " << y.is_dirty() << std::endl;
     std::cout << "z.dirty: " << z.is_dirty() << std::endl;
     std::cout << "d.dirty: " << is_dirty(d) << std::endl;
+    std::cout << "pvec.all_dirty: " << is_all_dirty(pvec) << std::endl;
+    std::cout << "pvec.size_dirty: " << is_size_dirty(pvec) << std::endl;
   }
 };
 

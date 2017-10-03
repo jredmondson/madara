@@ -49,6 +49,11 @@ namespace madara
     class VariableNode;
   }
 
+  namespace rcw
+  {
+    class BaseTracker;
+  }
+
   namespace knowledge
   { 
     /**
@@ -73,6 +78,7 @@ namespace madara
       friend class KnowledgeBaseImpl;
       friend class expression::CompositeArrayReference;
       friend class expression::VariableNode;
+      friend class rcw::BaseTracker;
 
       /**
        * Constructor.
@@ -298,6 +304,20 @@ namespace madara
         const madara::knowledge::KnowledgeRecord & value, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
+
+      /**
+       * NON-Atomically sets the value of a variable to the specific record.
+       * THIS IS NOT A THREAD-SAFE FUNCTION.
+       * Note, this does not copy meta information (e.g. quality, clock).
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   value     new value of the variable
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      int set_unsafe (const VariableReference & variable,
+        const madara::knowledge::KnowledgeRecord & value, 
+        const KnowledgeUpdateSettings & settings = 
+              KnowledgeUpdateSettings ());
       
       /**
        * Atomically sets the value of a variable to an integer.
@@ -345,6 +365,20 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_index (const VariableReference & variable,
+        size_t index, knowledge::KnowledgeRecord::Integer value, 
+        const KnowledgeUpdateSettings & settings = 
+              KnowledgeUpdateSettings ());
+      
+      /**
+       * NON-Atomically sets the value of an array index to a double.
+       * THIS IS NOT A THREAD-SAFE FUNCTION.
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   index     index within array
+       * @param   value     new value of the array index
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      int set_index_unsafe (const VariableReference & variable,
         size_t index, knowledge::KnowledgeRecord::Integer value, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
@@ -447,6 +481,20 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_index (const VariableReference & variable,
+        size_t index, double value, 
+        const KnowledgeUpdateSettings & settings = 
+              KnowledgeUpdateSettings ());
+      
+      /**
+       * NON-Atomically sets the value of an array index to a double.
+       * THIS IS NOT A THREAD-SAFE FUNCTION.
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   index     index within array
+       * @param   value     new value of the array index
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      int set_index_unsafe (const VariableReference & variable,
         size_t index, double value, 
         const KnowledgeUpdateSettings & settings = 
               KnowledgeUpdateSettings ());
@@ -1387,6 +1435,21 @@ namespace madara
       void mark_and_signal (const char * name,
         knowledge::KnowledgeRecord * record,
         const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
+
+      int set_unsafe_impl (const VariableReference & variable,
+        const madara::knowledge::KnowledgeRecord & value, 
+        const KnowledgeUpdateSettings & settings = 
+              KnowledgeUpdateSettings ());
+
+      int set_index_unsafe_impl (const VariableReference & variable,
+        size_t index, knowledge::KnowledgeRecord::Integer value, 
+        const KnowledgeUpdateSettings & settings = 
+              KnowledgeUpdateSettings ());
+
+      int set_index_unsafe_impl (const VariableReference & variable,
+        size_t index, double value, 
+        const KnowledgeUpdateSettings & settings = 
+              KnowledgeUpdateSettings ());
 
       std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
       get_prefix_range(const std::string &prefix) const;

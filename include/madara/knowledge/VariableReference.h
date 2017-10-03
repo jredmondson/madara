@@ -19,7 +19,8 @@ namespace madara
 {
   namespace rcw
   {
-    template<typename T, typename dummy> class Tracker;
+    class BaseTracker;
+    //template<typename T, typename dummy> class Tracker;
   }
 
   namespace knowledge
@@ -38,7 +39,8 @@ namespace madara
       friend class ThreadSafeContext;
       friend class KnowledgeBaseImpl;
       friend class Variables;
-      template<typename T, typename dummy> friend class rcw::Tracker;
+      friend class rcw::BaseTracker;
+      //template<typename T, typename dummy> friend class rcw::Tracker;
 
       /**
        * Default constructor

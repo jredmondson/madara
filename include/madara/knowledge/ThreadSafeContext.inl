@@ -738,7 +738,7 @@ madara::knowledge::ThreadSafeContext::mark_and_signal (
   }
   else if (settings.track_local_changes)
   {
-      mark_to_checkpoint_unsafe (name, *record);
+    mark_to_checkpoint_unsafe (name, *record);
   }
 
   if (settings.signal_changes)

@@ -124,6 +124,18 @@ madara::knowledge::KnowledgeRecord::is_integer_type (uint32_t type) const
 }
 
 inline bool
+madara::knowledge::KnowledgeRecord::is_array_type (void) const
+{
+  return is_array_type (type_);
+}
+
+inline bool
+madara::knowledge::KnowledgeRecord::is_array_type (uint32_t type) const
+{
+  return type & ALL_ARRAYS;
+}
+
+inline bool
 madara::knowledge::KnowledgeRecord::is_image_type (void) const
 {
   return is_image_type (type_);
