@@ -53,6 +53,8 @@ namespace madara { namespace knowledge { namespace rcw
     set_value(t[i], v);
   }
 
+  /// Base type for Trackers. Used internally by Transaction. Not visible
+  /// for typical users.
   class BaseTracker
   {
   public:

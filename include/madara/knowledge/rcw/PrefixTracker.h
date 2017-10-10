@@ -28,6 +28,8 @@
 
 namespace madara { namespace knowledge { namespace rcw
 {
+  /// Tracker that puts values into a multiple prefixed KnowledgeRecords.
+  /// Used internally by Transaction. Not visible to normal users.
   template<class T, bool RD = true, bool WR = true, class dummy = void>
   class PrefixTracker
   {

@@ -28,6 +28,8 @@
 
 namespace madara { namespace knowledge { namespace rcw
 {
+  /// Tracker which puts variable values into a single KnowledgeRecord. Used
+  /// internally by Transaction. Not visible to normal users.
   template<class T, bool RD = true, bool WR = true, class dummy = void>
   class Tracker
   {

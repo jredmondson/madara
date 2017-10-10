@@ -83,8 +83,8 @@ public:
     tx.add("x", x);
     tx.add("y", y);
     tx.add("z", z);
-    tx.add_ro("x", x_ro);
-    tx.add_ro("y", y_ro);
+    tx.build("x", x_ro).ro().add();
+    tx.build("y", y_ro).ro().add();
     tx.add("vec", vec);
 
     tx.add_init("tvec", tvec);

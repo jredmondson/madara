@@ -28,6 +28,7 @@
 
 namespace madara { namespace knowledge { namespace rcw
 {
+  /// Used internally by Tracked
   template<class T, class Impl>
   class TrackedExtra
   {
@@ -41,9 +42,17 @@ namespace madara { namespace knowledge { namespace rcw
     void clear_dirty();
   };
 
+  /// Used internally by Tracked
   template<class T, class Impl>
   class TrackedCollection;
 
+  /**
+   * Tracks the modification status of a wrapped object of the given type.
+   *
+   * See https://sourceforge.net/p/madara/wiki/ReadComputeWrite/ for details.
+   *
+   * @tparam T type of the underlying object
+   **/
   template<class T>
   class Tracked : public TrackedExtra<T, Tracked<T>>
   {
@@ -57,46 +66,62 @@ namespace madara { namespace knowledge { namespace rcw
     friend class TrackedCollection<T, Tracked<T>>;
     friend class TrackedCollection<T, TrackedExtra<T, Tracked<T>>>;
   public:
+    /// Default constructor; default constructs wrapped object
     Tracked() : val_(), dirty_(true) {}
+
+    /// Create a Tracked version of the given object, which is copied
+    /// @param val the object to copy and track
     explicit Tracked(T val) : val_(val), dirty_(true) {}
 
+    /// Get a const ref to the underlying object
     const T& get() const
     {
       return val_;
     }
 
+    /// Cast to const ref as appropriate
     explicit operator const T& () const
     {
       return get();
     }
 
+    /// Get a non-const ref to underlying object. Immediately treat it as
+    /// modified, since we don't know what the caller will do with it.
     T& get_mut()
     {
       modify();
       return val_;
     }
 
+    /// Set the underlying object, and mark as modified.
     void set(T val)
     {
       modify();
       val_ = val;
     }
 
+    /// Dereference to underlying object. Only supports const version.
+    /// To get a non-const reference, use get_mut().
     const T& operator*() const
     {
       return this->get();
     }
 
+    /// Pass through to underlying object. Only supports const version.
+    /// To get a non-const reference, use get_mut().
     const T* operator->() const
     {
       return &this->get();
     }
 
+    /// Assignment writes to the underlying object.
     Tracked &operator=(T val)
     {
       this->set(val);
       return *this;
     }
+
+    Tracked &operator=(const Tracked &) = delete;
 
     void modify()
     {
