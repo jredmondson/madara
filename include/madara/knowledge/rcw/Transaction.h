@@ -292,7 +292,7 @@ namespace madara { namespace knowledge { namespace rcw
     }
 
   private:
-    typedef typename trackers_vec::iterator iter_type;
+    typedef trackers_vec::iterator iter_type;
     void swap_remove(iter_type i) const
     {
       using namespace std;
