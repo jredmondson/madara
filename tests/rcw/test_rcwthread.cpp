@@ -1,6 +1,8 @@
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/threads/RCWThread.h"
+#include "madara/knowledge/rcw/Tracked.h"
+#include "madara/knowledge/rcw/Transaction.h"
 #include "madara/utility/Utility.h"
 #include <stdio.h>
 #include <iostream>
@@ -12,7 +14,7 @@ namespace logger = madara::logger;
 namespace knowledge = madara::knowledge;
 namespace utility = madara::utility;
 namespace threads = madara::threads;
-namespace rcw = madara::rcw;
+namespace rcw = madara::knowledge::rcw;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -60,7 +62,7 @@ void clear_dirty(my_tracked_type &v) { v.dirty = false; }
 
 class MyRCW : public threads::RCWThread
 {
-private:
+public:
   int x;
   rcw::TrackedInt y;
   rcw::TrackedInt z;
@@ -75,7 +77,7 @@ private:
   rcw::Tracked<std::vector<std::string>> strvec;
   my_type m;
   my_tracked_type d;
-public:
+
   virtual void setup (rcw::Transaction &tx)
   {
     tx.add("x", x);
@@ -87,12 +89,12 @@ public:
 
     tx.add_init("tvec", tvec);
     tx.add_prefix("pvec", pvec);
+    std::cout << "strvec " << &strvec << " " << (void*)&strvec << std::endl;
     tx.build("strvec", strvec).init({"a", "b", "c"}).prefix().add();
     tx.add_init("uvec", uvec);
     tx.add_init("s", s);
 
-    t.set("asdf");
-    tx.add_init("t", t);
+    tx.build("t", t).init("asdf").add();
 
     m.a = 4;
     m.b = 5;
@@ -107,7 +109,7 @@ public:
     std::cout << "d: {" << d.a << ", " << d.b << ", " << d.c << "}" << std::endl;
   }
 
-  virtual void compute (rcw::Transaction &)
+  virtual void compute (const rcw::Transaction &tx)
   {
     std::cout << "x: " << x << std::endl;
     std::cout << "y: " << y << std::endl;
@@ -170,6 +172,10 @@ public:
     --d.b;
     d.dirty = true;
 
+    std::cout << "strvec " << &strvec << " " << (void*)&strvec << std::endl;
+    std::cout << "Remove strvec by ref: " << tx.remove(&strvec) << std::endl;
+    std::cout << "Remove tvec by name: " << tx.remove("tvec") << std::endl;
+
     std::cout << "y.dirty: " << y.is_dirty() << std::endl;
     std::cout << "z.dirty: " << z.is_dirty() << std::endl;
     std::cout << "d.dirty: " << is_dirty(d) << std::endl;
@@ -187,6 +193,11 @@ void test_rcwthread (void)
   thread->init(knowledge);
   for (int x = 0; x < 10; ++x) {
     thread->run();
+
+    my_thread.pvec.clear();
+    my_thread.uvec.clear();
+    my_thread.tvec.clear();
+    my_thread.strvec.clear();
   }
   thread->cleanup();
 }

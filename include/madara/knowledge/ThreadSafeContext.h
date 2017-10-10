@@ -49,13 +49,13 @@ namespace madara
     class VariableNode;
   }
 
-  namespace rcw
-  {
-    class BaseTracker;
-  }
-
   namespace knowledge
   { 
+    namespace rcw
+    {
+      class BaseTracker;
+    }
+
     /**
       * Typedef for set of copyable keys. @see copy. We use map instead
       * of set so we are not wasting significant memory/time with copying

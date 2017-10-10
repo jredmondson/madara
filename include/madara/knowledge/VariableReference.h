@@ -17,17 +17,16 @@
 
 namespace madara
 {
-  namespace rcw
-  {
-    class BaseTracker;
-    //template<typename T, typename dummy> class Tracker;
-  }
-
   namespace knowledge
   {
     class ThreadSafeContext;
     class KnolwedgeBaseImpl;
     class Variables;
+
+    namespace rcw
+    {
+      class BaseTracker;
+    }
 
     /**
      * @class VariableReference
@@ -40,7 +39,6 @@ namespace madara
       friend class KnowledgeBaseImpl;
       friend class Variables;
       friend class rcw::BaseTracker;
-      //template<typename T, typename dummy> friend class rcw::Tracker;
 
       /**
        * Default constructor

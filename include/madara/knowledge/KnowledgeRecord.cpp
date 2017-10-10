@@ -62,7 +62,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (logger::Logger & logger)
 madara::knowledge::KnowledgeRecord::KnowledgeRecord (Integer value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0)
+  quality (0), write_quality (0), type_(INTEGER)
 {
   set_value (value);
 }
@@ -71,7 +71,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (
   const std::vector <Integer> & value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0)
+  quality (0), write_quality (0), type_(INTEGER)
 {
   set_value (value);
 }
@@ -79,7 +79,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (
 madara::knowledge::KnowledgeRecord::KnowledgeRecord (double value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0)
+  quality (0), write_quality (0), type_(INTEGER)
 {
   set_value (value);
 }
@@ -88,7 +88,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (
   const std::vector <double> & value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0)
+  quality (0), write_quality (0), type_(INTEGER)
 {
   set_value (value);
 }
@@ -96,7 +96,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (
 madara::knowledge::KnowledgeRecord::KnowledgeRecord (const std::string & value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0)
+  quality (0), write_quality (0), type_(INTEGER)
 {
   set_value (value);
 }
@@ -104,7 +104,7 @@ madara::knowledge::KnowledgeRecord::KnowledgeRecord (const std::string & value,
 madara::knowledge::KnowledgeRecord::KnowledgeRecord (const char * value,
   logger::Logger & logger)
 : logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0)
+  quality (0), write_quality (0), type_(INTEGER)
 {
   set_value (std::string (value));
 }

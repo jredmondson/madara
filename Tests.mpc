@@ -2374,7 +2374,7 @@ project (Test_RCWThread) : using_ace, using_madara, no_karl, no_xml, null_lock, 
   exename = test_rcwthread
   
   verbatim (gnuace, local) {
-    CPPFLAGS += -std=c++11
+    CPPFLAGS += -std=c++11 -O0 -Wall
   }
   
   Documentation_Files {
