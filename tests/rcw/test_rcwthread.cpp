@@ -78,7 +78,7 @@ public:
   my_type m;
   my_tracked_type d;
 
-  virtual void setup (rcw::Transaction &tx)
+  void setup (rcw::Transaction &tx) override
   {
     tx.add("x", x);
     tx.add("y", y);
@@ -109,7 +109,7 @@ public:
     std::cout << "d: {" << d.a << ", " << d.b << ", " << d.c << "}" << std::endl;
   }
 
-  virtual void compute (const rcw::Transaction &tx)
+  void compute (const rcw::Transaction &tx) override
   {
     std::cout << "x: " << x << std::endl;
     std::cout << "y: " << y << std::endl;
