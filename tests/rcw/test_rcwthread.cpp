@@ -1,4 +1,3 @@
-
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/threads/RCWThread.h"
 #include "madara/knowledge/rcw/Tracked.h"

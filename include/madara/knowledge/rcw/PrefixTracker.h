@@ -30,12 +30,14 @@ namespace madara { namespace knowledge { namespace rcw
 {
   /// Tracker that puts values into a multiple prefixed KnowledgeRecords.
   /// Used internally by Transaction. Not visible to normal users.
+  /// Default implementation gives error if type isn't std::vector<Tracked<...>
   template<class T, bool RD = true, bool WR = true, class dummy = void>
   class PrefixTracker
   {
     static_assert(sizeof(T) < 0, "Type unsupported for adding to Transaction with prefix");
   };
 
+  /// If trying to create a tracker that is read-only, and write-only, give error
   template<class T>
   class PrefixTracker<T, false, false, void>
     : public BaseTracker
@@ -44,12 +46,14 @@ namespace madara { namespace knowledge { namespace rcw
     static_assert(sizeof(T) < 0, "Cannot create prefix tracker that can neither read nor write");
   };
 
+  /// Tracker that puts values into a multiple prefixed KnowledgeRecords.
+  /// Used internally by Transaction. Not visible to normal users.
+  /// Specialization of PrefixTracker for std::vector<Tracked<...>>
   template<class T, bool RD, bool WR>
   class PrefixTracker<T, RD, WR, typename std::enable_if<
                      supports_get_value<T>::value &&
                      supports_indexed_get_value<T>::value &&
                      supports_size<T>::value &&
-                     //supports_knowledge_cast<T>::value &&
                      supports_is_dirty<T>::value &&
                      supports_is_all_dirty<T>::value &&
                      supports_is_size_dirty<T>::value &&
@@ -57,9 +61,11 @@ namespace madara { namespace knowledge { namespace rcw
     : public BaseTracker
   {
   private:
-    T *tracked_;
-    std::string prefix_;
-    KnowledgeBase kb_;
+    T *tracked_; /// Tracked std::vector
+    std::string prefix_; /// prefix string to use
+    KnowledgeBase kb_; /// The knowledge base to reference
+
+    /// vector of references to elements of vector in knowledge base
     std::vector<VariableReference> elems_;
 
     typedef typename std::decay<decltype(get_value(std::declval<T>()[0]))>::type V;
@@ -74,12 +80,16 @@ namespace madara { namespace knowledge { namespace rcw
       update_elems();
     }
 
+    /// Update knowledge base array so it matches dimensions of the tracked object
     void update_elems()
     {
       const size_t n = tracked_->size();
       if (elems_.size() == n)
         return;
       if (elems_.size() > n) {
+        for (size_t i = n; i < elems_.size(); ++i) {
+          get_mut(elems_[i]).clear_value();
+        }
         elems_.resize(n);
         return;
       }

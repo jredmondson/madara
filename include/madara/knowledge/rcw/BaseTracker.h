@@ -61,46 +61,59 @@ namespace madara { namespace knowledge { namespace rcw
     virtual ~BaseTracker() {}
 
   private:
-    VariableReference ref_;
+    VariableReference ref_; /// Reference to tracked variable
 
+    /// Constructor from a VariableReference
     BaseTracker(VariableReference ref) : ref_(ref) {}
 
+    /// Override to implement pulling logic (from ref_)
     virtual void pull() = 0;
+    /// Override to implement pushing logic (into ref_)
     virtual void push(KnowledgeBase &kb) = 0;
+    /// As push, but ignore any modification status tracking
     virtual void force_push(KnowledgeBase &kb) = 0;
+    /// Get name of MADARA variable
     virtual const char *get_name() const = 0;
+    /// Get pointer to tracked object
     virtual const void *get_tracked() const = 0;
 
+    /// Get record @ref_ points to. No locking, so be careful!
     const KnowledgeRecord &get() const
     {
       return get(ref_);
     }
 
+    /// Get record @ref_ points to. No locking, so be careful!
     KnowledgeRecord &get_mut()
     {
       return get_mut(ref_);
     }
 
+    /// Get record @ref points to. No locking, so be careful!
     static const KnowledgeRecord &get(const VariableReference &ref)
     {
       return *ref.record_;
     }
 
+    /// Get record @ref points to. No locking, so be careful!
     static KnowledgeRecord &get_mut(const VariableReference &ref)
     {
       return *ref.record_;
     }
 
+    /// Set record @ref_ points to. No locking, so be careful!
     void set(KnowledgeBase &kb, KnowledgeRecord rec)
     {
       return set(kb, ref_, rec);
     }
 
+    /// Set record @ref points to. No locking, so be careful!
     static void set(KnowledgeBase &kb, const VariableReference &ref, KnowledgeRecord rec)
     {
       kb.get_context().set_unsafe_impl(ref, rec, EvalSettings());
     }
 
+    /// Set index in record @ref_ points to. No locking, so be careful!
     template<typename I>
     auto set_index(KnowledgeBase &kb, size_t idx, I val) ->
       typename std::enable_if<std::is_integral<I>::value>::type
@@ -108,6 +121,7 @@ namespace madara { namespace knowledge { namespace rcw
       kb.get_context().set_index_unsafe_impl(ref_, idx, val, EvalSettings());
     }
 
+    /// Set index in record @ref points to. No locking, so be careful!
     template<typename I>
     auto set_index(KnowledgeBase &kb, size_t idx, I val) ->
       typename std::enable_if<std::is_floating_point<I>::value>::type
@@ -115,11 +129,13 @@ namespace madara { namespace knowledge { namespace rcw
       kb.get_context().set_index_unsafe_impl(ref_, idx, val, EvalSettings());
     }
 
+    /// Call after setting to perform any necessary after-setting logic
     void post_set(KnowledgeBase &kb)
     {
       post_set(kb, ref_);
     }
 
+    /// Call after setting to perform any necessary after-setting logic
     void post_set(KnowledgeBase &kb, const VariableReference &ref)
     {
       kb.get_context().mark_and_signal(ref.name_.get_ptr (), ref.record_, EvalSettings());

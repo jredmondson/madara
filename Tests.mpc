@@ -2391,3 +2391,81 @@ project (Test_RCWThread) : using_ace, using_madara, no_karl, no_xml, null_lock, 
     tests/rcw/test_rcwthread.cpp
   }
 }
+
+project (Test_RCW_Transaction) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_rcw_transaction
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11 -O0 -Wall
+  }
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+    tests/rcw/test.h
+  }
+
+  Source_Files {
+    tests/rcw/test_rcw_transaction.cpp
+  }
+}
+
+project (Test_RCW_Tracked) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_rcw_tracked
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11 -O0 -Wall
+  }
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+    tests/rcw/test.h
+  }
+
+  Source_Files {
+    tests/rcw/test_rcw_tracked.cpp
+  }
+}
+
+project (Test_RCW_Custom) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_rcw_custom
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11 -O0 -Wall
+  }
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+    tests/rcw/test.h
+  }
+
+  Source_Files {
+    tests/rcw/test_rcw_custom.cpp
+  }
+}

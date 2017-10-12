@@ -57,8 +57,8 @@ namespace madara { namespace knowledge { namespace rcw
   class Tracked : public TrackedExtra<T, Tracked<T>>
   {
   private:
-    T val_;
-    char dirty_;
+    T val_; /// Wrapped value
+    char dirty_; /// Flag for modification status
 
     typedef TrackedExtra<T, Tracked<T>> Base;
 
@@ -121,18 +121,23 @@ namespace madara { namespace knowledge { namespace rcw
       return *this;
     }
 
+    /// Delete default assignment so we don't accidentally use it.
     Tracked &operator=(const Tracked &) = delete;
 
+    /// Treat object as modified, even if it isn't.
     void modify()
     {
       dirty_ = true;
     }
 
+    /// Get modification status
+    /// @returns true if object has been modified; false if not
     bool is_dirty() const
     {
       return dirty_;
     }
 
+    /// Resets modification status
     void clear_dirty()
     {
       dirty_ = false;
@@ -145,12 +150,16 @@ namespace madara { namespace knowledge { namespace rcw
     using Base::is_dirty;
     using Base::clear_dirty;
 
+    /// Cast to bool as appropriate
     explicit operator bool()
     {
       return val_ ? true : false;
     }
 
-    template<class U, typename std::enable_if<std::is_convertible<T, U>::value, void*>::type = nullptr>
+    /// Support conversion to Tracked<U> if U can convert from T
+    /// @tparam U other type to potentially convert to
+    template<class U, typename std::enable_if<std::is_convertible<T, U>::value,
+      void*>::type = nullptr>
     operator Tracked<U>() const
     {
       Tracked<U> ret(get());
@@ -158,6 +167,7 @@ namespace madara { namespace knowledge { namespace rcw
       return ret;
     }
 
+    /// Implement swap between two tracked objects of same type
     friend void swap(Tracked &lhs, Tracked &rhs)
     {
       using std::swap;
@@ -165,6 +175,7 @@ namespace madara { namespace knowledge { namespace rcw
       swap(lhs.dirty_, rhs.dirty_);
     }
 
+    /// Implement swap between tracked object, and object of underlying type
     friend void swap(Tracked &lhs, T &rhs)
     {
       using std::swap;
@@ -172,6 +183,7 @@ namespace madara { namespace knowledge { namespace rcw
       lhs.dirty_ = true;
     }
 
+    /// Implement swap between tracked object, and object of underlying type
     friend void swap(T &lhs, Tracked &rhs)
     {
       using std::swap;
@@ -180,6 +192,8 @@ namespace madara { namespace knowledge { namespace rcw
     }
   };
 
+  /// Create a tracked version of a given object
+  /// @param val the value to track
   template<class T>
   Tracked<typename std::decay<T>::type> track(T &&val)
   {
@@ -286,6 +300,7 @@ namespace madara { namespace knowledge { namespace rcw
   typedef Tracked<double> TrackedDouble;
   typedef Tracked<long double> TrackedLongDouble;
 
+  /// Implements methods appropriate for std library collections
   template<typename T, typename Impl>
   class TrackedCollection
   {
@@ -297,83 +312,116 @@ namespace madara { namespace knowledge { namespace rcw
     typedef typename T::value_type value_type;
     typedef typename T::const_iterator const_iterator;
 
+    /// Set value at index @i
+    /// @param i index to set
+    /// @param val value to set to
     void set(size_t i, value_type val)
     {
       impl().val_.at(i) = val;
       impl().modify(i);
     }
 
+    /// Pass through at method to underlying collection
     const value_type &at(size_t i) const
     {
       return impl().val_.at(i);
     }
 
+    /// Pass through operator[] to underlying collection
     const value_type &operator[](size_t i) const
     {
       return impl().val_[i];
     }
 
+    /// Synonym for @see at
     const value_type &get(size_t i) const
     {
       return at(i);
     }
 
+    /// Pass through to non-const version of at method of underlying collection
+    /// Immediately mark that index as modified when called
     value_type &at_mut(size_t i)
     {
       impl().modify(i);
       return impl().val_.at(i);
     }
 
-    value_type &get_mut(size_t i)
+    /// Synonym for @see at_mut
+    value_type &at_mutable(size_t i)
     {
-      impl().modify(i);
       return at_mut(i);
     }
 
+    /// Synonym for @see at_mut
+    value_type &get_mut(size_t i)
+    {
+      return at_mut(i);
+    }
+
+    /// Synonym for @see at_mut
+    value_type &get_mutable(size_t i)
+    {
+      return at_mut(i);
+    }
+
+    /// Pass through to size method of underlying collection
     size_t size() { return impl().val_.size(); }
+    /// Pass through to empty method of underlying collection
     bool empty() { return impl().val_.empty(); }
+    /// Pass through to max_size method of underlying collection
     size_t max_size() { return impl().val_.max_size(); }
 
+    /// Equivalent to front method of underlying collection
+    size_t max_size() { return impl().val_.max_size(); }
     const value_type& front() const
     {
       return at(0);
     }
 
+    /// Equivalent to back method of underlying collection
     const value_type& back() const
     {
       return at(size() - 1);
     }
 
+    /// Equivalent to non-const front method of underlying collection
     value_type& front_mut()
     {
       return at_mut(0);
     }
+    /// Equivalent to non-const back method of underlying collection
     value_type& back()
     {
       return at_mut(size() - 1);
     }
 
+    /// Pass through to const begin method  of underlying collection
     const_iterator begin() const
     {
       return impl().val_.begin();
     }
 
+    /// Pass through to cbegin method  of underlying collection
     const_iterator cbegin() const
     {
       return begin();
     }
 
+    /// Pass through to const end method  of underlying collection
     const_iterator end() const
     {
       return impl().val_.end();
     }
 
+    /// Pass through to cend method  of underlying collection
     const_iterator cend() const
     {
       return end();
     }
   };
 
+  /// Adds functionality specific to std::basic_string
   template<typename Char, typename Impl>
   class TrackedExtra<std::basic_string<Char>, Impl> : public TrackedCollection<std::basic_string<Char>, Impl>
   {
@@ -385,56 +433,70 @@ namespace madara { namespace knowledge { namespace rcw
     typedef typename std::basic_string<Char>::value_type value_type;
     typedef typename std::basic_string<Char>::const_iterator const_iterator;
 
+    /// Flag this as modified; we don't track individual characters as dirty,
+    /// so flags entire string.
     void modify(size_t i)
     {
       impl().modify();
     }
 
+    /// Check dirty status for given index, which is same as overall dirty
+    /// status, since we don't track per character
     bool is_dirty(size_t i) const
     {
       impl().is_dirty();
     }
 
+    /// Clear dirty status for given index, which is same as overall dirty
+    /// status, since we don't track per character
     bool clear_dirty(size_t i) const
     {
       impl().clear_dirty();
     }
 
+    /// Pass through resize to underlying string
     void resize(size_t count)
     {
       impl().val_.resize(count);
       impl().modify();
     }
 
+    /// Pass through capacity to underlying string
     size_t capacity() const
     {
       return impl().val_.capacity();
     }
 
+    /// Pass through reserve to underlying string
     void reserve(size_t count)
     {
       impl().val_.reserve(count);
     }
 
+    /// Pass through push_back to underlying string
     void push_back(const value_type &value)
     {
       impl().val_.push_back(value);
       impl().modify();
     }
 
+    /// Pass through pop_back to underlying string
     void pop_back()
     {
       impl().val_.pop_back();
       impl().modify();
     }
 
+    /// Pass through clear to underlying string
     void clear()
     {
       impl().val_.clear();
       impl().modify();
     }
 
+    /// Pass through c_str data method underlying string
     const value_type *c_str() const { return impl().val_.c_str(); }
+    /// Pass through data method to underlying string
     const value_type *data() const { return impl().val_.data(); }
   };
 
@@ -465,38 +527,40 @@ namespace madara { namespace knowledge { namespace rcw
   }
 
   template<typename T>
-  const T &get_value(const Tracked<T> &t)
+  auto get_value(const Tracked<T> &t) -> decltype(get_value(t.get()))
   {
-    return t.get();
+    return get_value(t.get());
   }
 
   template<typename T>
-  void set_value(Tracked<T> &t, const T &v)
+  void set_value(Tracked<T> &t, decltype(get_value(t.get())) v)
   {
-    t.set(v);
+    set_value(t.get_mut(), v);
   }
 
   const char get_value(const Tracked<std::string> &t, size_t i)
   {
-    return t.get(i);
+    return get_value(t.get(i));
   }
 
   void set_value(Tracked<std::string> &t, size_t i, char v)
   {
-    t.set(i, v);
+    set_value(t.get_mut(i), v);
   }
 
+  /// Implement functionality specific to std::vectors
   template<typename T>
   class Tracked<std::vector<T>> : public TrackedCollection<std::vector<T>, Tracked<std::vector<T>>>
   {
   private:
     typedef std::vector<T> Vec;
     typedef TrackedCollection<Vec, Tracked<std::vector<T>>> Base;
-    Vec val_;
-    std::vector<uint64_t> dirty_;
-    bool all_dirty_;
-    bool size_dirty_;
+    Vec val_; /// the vector we're wrapping
+    std::vector<uint64_t> dirty_; /// dirty status for each entry
+    bool all_dirty_; /// dirty status to treat entire vector as modified
+    bool size_dirty_; /// dirty status for size of vector
 
+    /// Get dirty flag bit offset into dirty_ vector, plus mask
     static std::pair<size_t, uint64_t> to_dirty_bit(size_t i)
     {
       size_t idx = i >> 6;
@@ -504,6 +568,7 @@ namespace madara { namespace knowledge { namespace rcw
       return {idx, 1 << shift};
     }
 
+    /// Get size of dirty_ vector needed to fit i-th dirty bit
     static size_t to_dirty_size(size_t i)
     {
       return (i + 63) >> 6;
@@ -515,32 +580,40 @@ namespace madara { namespace knowledge { namespace rcw
     typedef typename std::vector<T>::value_type value_type;
     typedef typename std::vector<T>::const_iterator const_iterator;
 
-    Tracked() : val_(), dirty_() {}
+    /// Default constructor, with empty vector
+    Tracked() : val_(), dirty_(), size_dirty_(true), all_dirty_(true) {}
+    /// Construct from an existing vector
     explicit Tracked(std::vector<T> val)
       : val_(val), dirty_(to_dirty_size(val.size())),
-        size_dirty_(false), all_dirty_(false) {}
+        size_dirty_(true), all_dirty_(true) {}
 
+    /// Get const reference to underlying vector
     const std::vector<T>& get() const
     {
       return val_;
     }
 
+    /// Get non-const reference to underlying vector; mark all elements as
+    /// dirty immediately. Usually, you should use the get_mut(index) version
     std::vector<T>& get_mut()
     {
       modify();
       return val_;
     }
 
+    /// Dereference to const reference
     const std::vector<T>& operator*() const
     {
       return get();
     }
 
+    /// Use to call const methods on underlying vector
     const std::vector<T>* operator->() const
     {
       return &get();
     }
 
+    /// Set entire vector to new vector
     void set(const std::vector<T> &val)
     {
       val_ = val;
@@ -548,27 +621,35 @@ namespace madara { namespace knowledge { namespace rcw
       modify();
     }
 
+    /// Set entire vector to new vector
     Tracked &operator=(const std::vector<T> &val)
     {
       set(val);
       return *this;
     }
 
+    /// Flag entire vector as modified
     void modify()
     {
       all_dirty_ = true;
     }
 
+    /// Has entire vector been marked as modified? Note that this will still
+    /// return false if every entry has been marked modified individually.
+    /// This only returns true if modified(), get_mut(), or set(std::vector)
+    /// has been called.
     bool is_all_dirty() const
     {
       return all_dirty_;
     }
 
+    /// Has the size of this vector changed?
     bool is_size_dirty() const
     {
       return size_dirty_;
     }
 
+    /// Has anything about this vector changed?
     bool is_dirty() const
     {
       if (all_dirty_)
@@ -579,6 +660,7 @@ namespace madara { namespace knowledge { namespace rcw
       return false;
     }
 
+    /// Clear all modification tracking
     void clear_dirty()
     {
       all_dirty_ = false;
@@ -587,24 +669,28 @@ namespace madara { namespace knowledge { namespace rcw
         cur = 0;
     }
 
+    /// Mark i-th element as modified
     void modify(size_t i)
     {
       std::pair<size_t, uint64_t> x = to_dirty_bit(i);
       dirty_.at(x.first) |= x.second;
     }
 
+    /// Clear i-th element modification status
     void clear_dirty(size_t i)
     {
       std::pair<size_t, uint64_t> x = to_dirty_bit(i);
       dirty_.at(x.first) &= ~x.second;
     }
 
+    /// Check i-th element modification status
     bool is_dirty(size_t i) const
     {
       std::pair<size_t, uint64_t> x = to_dirty_bit(i);
       return dirty_.at(x.first) & x.second;
     }
 
+    /// Pass through resize method to underlying vector
     void resize(size_t count)
     {
       val_.resize(count);
@@ -612,6 +698,7 @@ namespace madara { namespace knowledge { namespace rcw
       all_dirty_ = true;
     }
 
+    /// Pass through capacity method to underlying vector
     size_t capacity() const
     {
         size_t vc = val_.capacity();
@@ -619,12 +706,14 @@ namespace madara { namespace knowledge { namespace rcw
         return vc > dc ? dc : vc;
     }
 
+    /// Pass through reserve method to underlying vector
     void reserve(size_t count)
     {
       val_.reserve(count);
       dirty_.reserve(to_dirty_size(count));
     }
 
+    /// Pass through push_back method to underlying vector
     void push_back(const value_type &value)
     {
       val_.push_back(value);
@@ -633,6 +722,7 @@ namespace madara { namespace knowledge { namespace rcw
       modify(val_.size() - 1);
     }
 
+    /// Pass through pop_back method to underlying vector
     void pop_back()
     {
       val_.pop_back();
@@ -640,6 +730,7 @@ namespace madara { namespace knowledge { namespace rcw
       size_dirty_ = true;
     }
 
+    /// Pass through clear method to underlying vector
     void clear()
     {
       val_.clear();
@@ -658,6 +749,7 @@ namespace madara { namespace knowledge { namespace rcw
     friend bool operator<(const Tracked &lhs, const Tracked &rhs) { return lhs.val_ < rhs.val_; }
     friend bool operator>(const Tracked &lhs, const Tracked &rhs) { return lhs.val_ > rhs.val_; }
 
+    /// Implement swap for tracked vectors
     friend void swap(Tracked &lhs, Tracked &rhs)
     {
       using std::swap;

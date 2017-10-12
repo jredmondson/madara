@@ -236,7 +236,7 @@ madara::knowledge::ThreadSafeContext::set_index (
 {
   MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
-    return set_unsafe(variable, value, settings);
+    return set_index_unsafe(variable, index, value, settings);
   else
     return -1;
 }

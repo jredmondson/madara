@@ -36,6 +36,7 @@ namespace madara { namespace knowledge { namespace rcw
     static_assert(sizeof(T) < 0, "Type unsupported for adding to Transaction");
   };
 
+  /// If trying to create a tracker that is read-only, and write-only, give error
   template<class T>
   class Tracker<T, false, false, void>
     : public BaseTracker
@@ -44,6 +45,8 @@ namespace madara { namespace knowledge { namespace rcw
     static_assert(sizeof(T) < 0, "Cannot create tracker that can neither read nor write");
   };
 
+  /// Tracker specialization for types that don't tracker modification status,
+  /// and that can both read and write
   template<class T>
   class Tracker<T, true, true, typename std::enable_if<
                      supports_get_value<T>::value &&
@@ -55,8 +58,8 @@ namespace madara { namespace knowledge { namespace rcw
   private:
     typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
 
-    T *tracked_;
-    V orig_;
+    T *tracked_; /// Pointer to tracked object
+    V orig_; /// Original pulled value to compare to on push
 
     static const bool can_read = true;
     static const bool can_write = true;
@@ -96,6 +99,7 @@ namespace madara { namespace knowledge { namespace rcw
     friend class Transaction;
   };
 
+  /// Tracker specialization for types that can only read
   template<class T>
   class Tracker<T, true, false, typename std::enable_if<
                      supports_get_value<T>::value &&
@@ -105,7 +109,7 @@ namespace madara { namespace knowledge { namespace rcw
   private:
     typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
 
-    T *tracked_;
+    T *tracked_; /// Pointer to tracked object
 
     static const bool can_read = true;
     static const bool can_write = false;
@@ -135,6 +139,8 @@ namespace madara { namespace knowledge { namespace rcw
     friend class Transaction;
   };
 
+  /// Tracker specialization for types that don't tracker modification status,
+  /// and that can only write
   template<class T>
   class Tracker<T, false, true, typename std::enable_if<
                      supports_get_value<T>::value &&
@@ -146,7 +152,9 @@ namespace madara { namespace knowledge { namespace rcw
   private:
     typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
 
-    T *tracked_;
+    T *tracked_; /// Pointer to tracked object
+    // Note that we don't store original value, since we set to default value
+    // on a pull, and can compare to that on push to see if it has changed.
 
     static const bool can_read = false;
     static const bool can_write = true;
@@ -185,6 +193,8 @@ namespace madara { namespace knowledge { namespace rcw
     friend class Transaction;
   };
 
+  /// Tracker specialization for types that track their own modification status
+  /// and that can both read and write
   template<class T>
   class Tracker<T, true, true, typename std::enable_if<
                      supports_get_value<T>::value &&
@@ -194,7 +204,7 @@ namespace madara { namespace knowledge { namespace rcw
     : public BaseTracker
   {
   private:
-    T *tracked_;
+    T *tracked_; /// Pointer to tracked object
 
     static const bool can_read = true;
     static const bool can_write = true;
@@ -237,6 +247,8 @@ namespace madara { namespace knowledge { namespace rcw
     friend class Transaction;
   };
 
+  /// Tracker specialization for types that track their own modification status
+  /// and that can only write
   template<class T>
   class Tracker<T, false, true, typename std::enable_if<
                      supports_get_value<T>::value &&
@@ -246,7 +258,7 @@ namespace madara { namespace knowledge { namespace rcw
     : public BaseTracker
   {
   private:
-    T *tracked_;
+    T *tracked_; /// Pointer to tracked object
 
     typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
 
@@ -288,6 +300,8 @@ namespace madara { namespace knowledge { namespace rcw
     friend class Transaction;
   };
 
+  /// Tracker specialization for types with individual elements that each track
+  /// their own modification status
   template<class T, bool RD, bool WR>
   class Tracker<T, RD, WR, typename std::enable_if<
                      supports_indexed_get_value<T>::value &&
@@ -300,8 +314,8 @@ namespace madara { namespace knowledge { namespace rcw
   private:
     static_assert(RD == true, "Write-only not supported for containers of tracked items");
 
-    T *tracked_;
-    size_t orig_size_;
+    T *tracked_; /// Pointer to tracked
+    size_t orig_size_; /// Size as pulled to compare to on push
 
     typedef typename std::decay<decltype(get_value(std::declval<T>(), 0))>::type V;
 
@@ -366,6 +380,8 @@ namespace madara { namespace knowledge { namespace rcw
     friend class Transaction;
   };
 
+  /// Tracker specialization for types that have individual indexed elements,
+  /// and track their modification status individually.
   template<class T, bool RD, bool WR>
   class Tracker<T, RD, WR, typename std::enable_if<
                      supports_get_value<T>::value &&
@@ -379,7 +395,7 @@ namespace madara { namespace knowledge { namespace rcw
     : public BaseTracker
   {
   private:
-    T *tracked_;
+    T *tracked_; /// Pointer to tracked object
 
     typedef typename std::decay<decltype(get_value(std::declval<T>()))>::type V;
 
