@@ -35,6 +35,7 @@ namespace madara { namespace knowledge { namespace rcw
   public:
     const T& get() const;
     T& get_mut();
+    T& get_mutable();
     void set(T val);
 
     void modify();
@@ -88,6 +89,15 @@ namespace madara { namespace knowledge { namespace rcw
     /// Get a non-const ref to underlying object. Immediately treat it as
     /// modified, since we don't know what the caller will do with it.
     T& get_mut()
+    {
+      modify();
+      return val_;
+    }
+
+    /// Get a non-const ref to underlying object. Immediately treat it as
+    /// modified, since we don't know what the caller will do with it.
+    /// Synonmym for @get_mut
+    T& get_mutable()
     {
       modify();
       return val_;
@@ -373,7 +383,6 @@ namespace madara { namespace knowledge { namespace rcw
     size_t max_size() { return impl().val_.max_size(); }
 
     /// Equivalent to front method of underlying collection
-    size_t max_size() { return impl().val_.max_size(); }
     const value_type& front() const
     {
       return at(0);
@@ -601,6 +610,15 @@ namespace madara { namespace knowledge { namespace rcw
       return val_;
     }
 
+    /// Get non-const reference to underlying vector; mark all elements as
+    /// dirty immediately. Usually, you should use the get_mut(index) version
+    /// Synonym for get_mut
+    std::vector<T>& get_mutable()
+    {
+      modify();
+      return val_;
+    }
+
     /// Dereference to const reference
     const std::vector<T>& operator*() const
     {
@@ -672,6 +690,7 @@ namespace madara { namespace knowledge { namespace rcw
     /// Mark i-th element as modified
     void modify(size_t i)
     {
+      dirty_.resize(to_dirty_size(val_.size()));
       std::pair<size_t, uint64_t> x = to_dirty_bit(i);
       dirty_.at(x.first) |= x.second;
     }
@@ -679,6 +698,7 @@ namespace madara { namespace knowledge { namespace rcw
     /// Clear i-th element modification status
     void clear_dirty(size_t i)
     {
+      dirty_.resize(to_dirty_size(val_.size()));
       std::pair<size_t, uint64_t> x = to_dirty_bit(i);
       dirty_.at(x.first) &= ~x.second;
     }
@@ -687,6 +707,8 @@ namespace madara { namespace knowledge { namespace rcw
     bool is_dirty(size_t i) const
     {
       std::pair<size_t, uint64_t> x = to_dirty_bit(i);
+      if (x.first >= dirty_.size())
+        return false;
       return dirty_.at(x.first) & x.second;
     }
 
@@ -740,6 +762,7 @@ namespace madara { namespace knowledge { namespace rcw
 
     using Base::get;
     using Base::get_mut;
+    using Base::get_mutable;
     using Base::set;
 
     friend bool operator==(const Tracked &lhs, const Tracked &rhs) { return lhs.val_ == rhs.val_; }

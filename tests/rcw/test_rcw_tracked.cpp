@@ -92,7 +92,7 @@ int main()
   test_eq(*w, std::vector<int64_t>({7, 8, 9}));
 
   x = 42; y++; --z;
-  a += "X"; b += b; c.set(1, 'q');
+  a += "X"; b.get_mutable() += b; c.set(1, 'q');
   u.push_back(*x);
   v.clear();
   w.set(1, 13);

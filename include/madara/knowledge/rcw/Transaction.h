@@ -142,9 +142,18 @@ namespace madara { namespace knowledge { namespace rcw
       /// The mapping will only read from the knowledge base, not write back
       ro_type ro() const { return *this; }
 
+      /// The mapping will only read from the knowledge base, not write back
+      /// Synonym for @see ro
+      ro_type readonly() const { return *this; }
+
       /// The mapping will only write to the knowledge base. On pull(), the
       /// variable will be reset to its default value.
       wo_type wo() const { return *this; }
+
+      /// The mapping will only write to the knowledge base. On pull(), the
+      /// variable will be reset to its default value.
+      /// Synonym for @see wo
+      wo_type writeonly() const { return *this; }
 
       /// As init(), but first set the variable to @val
       /// @param val the value to set
