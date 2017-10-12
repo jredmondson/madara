@@ -12,7 +12,7 @@
 using namespace madara::knowledge;
 using namespace madara::knowledge::rcw;
 
-int main()
+int main(int argc, char ** argv)
 {
   KnowledgeBase kb;
   Transaction tx(kb);
@@ -113,10 +113,10 @@ int main()
   test_eq(kb.get("v").to_integers(), std::vector<int64_t>({4, 5, 6}));
   test_eq(kb.get("w").to_integers(), std::vector<int64_t>({7, 8, 9}));
 
-  kb.set_index("w", 0, 17L);
+  kb.set_index("w", 0, (int64_t)17);
   test_eq(kb.get("w").to_integers(), std::vector<int64_t>({17, 8, 9}));
 
-  kb.set("pw.0", 27L);
+  kb.set("pw.0", (int64_t)27);
 
   test_eq(kb.get("pw.size").to_integer(), 3);
   test_eq(kb.get("pw.0").to_integer(), 27);
@@ -133,7 +133,7 @@ int main()
   test_eq(kb.get("b").to_string(), "barbar");
   test_eq(kb.get("c").to_string(), "bqz");
 
-  test_eq(kb.get("u").to_integers(), std::vector<int64_t>({42}));
+  test_eq(kb.get("u").to_integers(), std::vector<int64_t>{42});
   test_eq(kb.get("v").to_integers(), std::vector<int64_t>({}));
   test_eq(kb.get("w").to_integers(), std::vector<int64_t>({17, 13, 9}));
 
@@ -144,9 +144,9 @@ int main()
   test(!kb.exists("pv.1"));
   test(!kb.exists("pv.2"));
   test_eq(kb.get("pw.size").to_integer(), 3);
-  test_eq(kb.get("pw.0").to_integer(), 27L);
-  test_eq(kb.get("pw.1").to_integer(), 13L);
-  test_eq(kb.get("pw.2").to_integer(), 19L);
+  test_eq(kb.get("pw.0").to_integer(), (int64_t)27);
+  test_eq(kb.get("pw.1").to_integer(), (int64_t)13);
+  test_eq(kb.get("pw.2").to_integer(), (int64_t)19);
 
   tests_finalize();
 }

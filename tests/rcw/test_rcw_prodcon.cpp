@@ -4,7 +4,6 @@
 #include "madara/utility/Utility.h"
 #include "madara/threads/Threader.h"
 #include "madara/threads/RCWThread.h"
-#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -56,7 +55,7 @@ public:
   }
 };
 
-int main()
+int main(int argc, char ** arg)
 {
   KnowledgeBase kb;
   Transaction tx(kb);
@@ -69,7 +68,7 @@ int main()
   threader.run(10, "producer", prod);
   threader.run(10, "consumer", cons);
 
-  sleep(20);
+  ACE_OS::sleep(20);
 
   tests_finalize();
 }

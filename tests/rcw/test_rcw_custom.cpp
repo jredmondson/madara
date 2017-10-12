@@ -37,7 +37,7 @@ bool is_dirty(const my_tracked_type &v) { return v.dirty; }
 void clear_dirty(my_tracked_type &v) { v.dirty = false; }
 
 /// Test and demonstrate custom types
-int main()
+int main(int argc, char ** argv)
 {
   KnowledgeBase kb;
   Transaction tx(kb);

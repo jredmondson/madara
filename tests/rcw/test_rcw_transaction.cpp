@@ -11,7 +11,7 @@
 using namespace madara::knowledge;
 using namespace madara::knowledge::rcw;
 
-int main()
+int main(int argc, char ** argv)
 {
   KnowledgeBase kb;
   Transaction tx(kb);
@@ -89,7 +89,7 @@ int main()
   test_eq(kb.get("v").to_integers(), std::vector<int64_t>({4, 5, 6}));
   test_eq(kb.get("w").to_integers(), std::vector<int64_t>({7, 8, 9}));
 
-  kb.set_index("w", 0, 17L);
+  kb.set_index("w", 0, (int64_t)17);
   test_eq(kb.get("w").to_integers(), std::vector<int64_t>({17, 8, 9}));
 
   tx.push();
@@ -102,7 +102,7 @@ int main()
   test_eq(kb.get("b").to_string(), "barbar");
   test_eq(kb.get("c").to_string(), "bqz");
 
-  test_eq(kb.get("u").to_integers(), std::vector<int64_t>({42}));
+  test_eq(kb.get("u").to_integers(), std::vector < int64_t > {42});
   test_eq(kb.get("v").to_integers(), std::vector<int64_t>({}));
   test_eq(kb.get("w").to_integers(), std::vector<int64_t>({7, 13, 9}));
 
