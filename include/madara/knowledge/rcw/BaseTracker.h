@@ -28,18 +28,21 @@
 
 namespace madara { namespace knowledge { namespace rcw
 {
+  /// Fallback definition of get_value; simply passes through the value
   template<typename T>
   const T &get_value(const T &t)
   {
     return t;
   }
 
+  /// Fallback definition of set_value; simply passes through the value
   template<typename T>
   void set_value(T &t, const T &v)
   {
     t = v;
   }
 
+  /// General definition of get_value with index
   template<typename T>
   auto get_value(const std::vector<T> &t, size_t i) ->
     decltype(get_value(t[i]))
@@ -47,6 +50,7 @@ namespace madara { namespace knowledge { namespace rcw
     return get_value(t[i]);
   }
 
+  /// General definition of set_value with index
   template<typename T, typename V>
   void set_value(std::vector<T> &t, size_t i, V v)
   {
@@ -61,7 +65,8 @@ namespace madara { namespace knowledge { namespace rcw
     virtual ~BaseTracker() {}
 
   private:
-    VariableReference ref_; /// Reference to tracked variable
+    /// Reference to tracked variable
+    VariableReference ref_;
 
     /// Constructor from a VariableReference
     BaseTracker(VariableReference ref) : ref_(ref) {}
@@ -143,13 +148,19 @@ namespace madara { namespace knowledge { namespace rcw
 
     friend class Transaction;
 
-    template<class, bool, bool, class>
+    template<class, class, bool, bool, class>
     friend class Tracker;
 
-    template<class, bool, bool, class>
+    template<class, class, bool, bool, class>
     friend class PrefixTracker;
   };
 
+  /**
+   * Macro which generates feature testing traits, to allow enabling features
+   * based on what a given type supports. The tests provide ::value member
+   * which is true if the given expr can compile correctly with the given
+   * type; false otherwise
+   */
   #define MADARA_MAKE_SUPPORT_TEST(name, var, expr) template <typename T> \
   struct supports_##name##_impl { \
       template<typename U> static auto test(U *var) -> decltype((expr), std::true_type()); \
@@ -158,21 +169,37 @@ namespace madara { namespace knowledge { namespace rcw
   }; \
   template <typename T> struct supports_##name : supports_##name##_impl<T>::type {}
 
+  /// Trait to test for an is_dirty overload for a given type
   MADARA_MAKE_SUPPORT_TEST(is_dirty, p, (is_dirty(*p), clear_dirty(*p)));
+
+  /// Trait to test for an is_all_dirty overload for a given type
   MADARA_MAKE_SUPPORT_TEST(is_all_dirty, p, (is_all_dirty(*p), clear_dirty(*p)));
+
+  /// Trait to test for an is_size_dirty overload for a given type
   MADARA_MAKE_SUPPORT_TEST(is_size_dirty, p, (is_size_dirty(*p), clear_dirty(*p)));
+
+  /// Trait to test for an indexed_is_dirty overload for given type
   MADARA_MAKE_SUPPORT_TEST(indexed_is_dirty, p, (is_dirty(*p, 0), clear_dirty(*p, 0)));
 
+  /// Trait to test for get_/set_value overloads for given type
   MADARA_MAKE_SUPPORT_TEST(get_value, p, (set_value(*p, get_value(*p))));
+
+  /// Trait to test for indexed get_/set_value overloads for given type
   MADARA_MAKE_SUPPORT_TEST(indexed_get_value, p, (set_value(*p, 0, get_value(*p, 0))));
+
+  /// Trait to test if type supports const iterator methods
   MADARA_MAKE_SUPPORT_TEST(const_iter, p, (p->cbegin(), p->cend()));
+
+  /// Trait to test if type supports a size method
   MADARA_MAKE_SUPPORT_TEST(size, p, (p->size()));
 
+  /// Trait to test if type supports knowledge_cast (both to and from)
   MADARA_MAKE_SUPPORT_TEST(knowledge_cast, p, (
         knowledge_cast(get_value(*p)),
         knowledge_cast<decltype(get_value(*p))>(
           std::declval<KnowledgeRecord>())));
 
+  /// Trait to test if type supports equality testing (values of same type)
   MADARA_MAKE_SUPPORT_TEST(self_eq, p, (
         get_value(*p) == get_value(*p),
         get_value(*p) != get_value(*p)));

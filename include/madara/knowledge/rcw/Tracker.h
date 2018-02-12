@@ -30,25 +30,25 @@ namespace madara { namespace knowledge { namespace rcw
 {
   /// Tracker which puts variable values into a single KnowledgeRecord. Used
   /// internally by Transaction. Not visible to normal users.
-  template<class T, bool RD = true, bool WR = true, class dummy = void>
+  template<class T, class R, bool RD = true, bool WR = true, class dummy = void>
   class Tracker
   {
     static_assert(sizeof(T) < 0, "Type unsupported for adding to Transaction");
   };
 
   /// If trying to create a tracker that is read-only, and write-only, give error
-  template<class T>
-  class Tracker<T, false, false, void>
+  template<class T, class R>
+  class Tracker<T, R, false, false, void>
     : public BaseTracker
   {
   private:
     static_assert(sizeof(T) < 0, "Cannot create tracker that can neither read nor write");
   };
 
-  /// Tracker specialization for types that don't tracker modification status,
+  /// Tracker specialization for types that don't track modification status,
   /// and that can both read and write
   template<class T>
-  class Tracker<T, true, true, typename std::enable_if<
+  class Tracker<T, VariableReference, true, true, typename std::enable_if<
                      supports_get_value<T>::value &&
                      supports_knowledge_cast<T>::value &&
                      supports_self_eq<T>::value &&
@@ -101,7 +101,7 @@ namespace madara { namespace knowledge { namespace rcw
 
   /// Tracker specialization for types that can only read
   template<class T>
-  class Tracker<T, true, false, typename std::enable_if<
+  class Tracker<T, VariableReference, true, false, typename std::enable_if<
                      supports_get_value<T>::value &&
                      supports_knowledge_cast<T>::value>::type>
     : public BaseTracker
@@ -139,10 +139,10 @@ namespace madara { namespace knowledge { namespace rcw
     friend class Transaction;
   };
 
-  /// Tracker specialization for types that don't tracker modification status,
+  /// Tracker specialization for types that don't track modification status,
   /// and that can only write
   template<class T>
-  class Tracker<T, false, true, typename std::enable_if<
+  class Tracker<T, VariableReference, false, true, typename std::enable_if<
                      supports_get_value<T>::value &&
                      supports_knowledge_cast<T>::value &&
                      supports_self_eq<T>::value &&
@@ -196,7 +196,7 @@ namespace madara { namespace knowledge { namespace rcw
   /// Tracker specialization for types that track their own modification status
   /// and that can both read and write
   template<class T>
-  class Tracker<T, true, true, typename std::enable_if<
+  class Tracker<T, VariableReference, true, true, typename std::enable_if<
                      supports_get_value<T>::value &&
                      supports_knowledge_cast<T>::value &&
                      supports_is_dirty<T>::value &&
@@ -250,7 +250,7 @@ namespace madara { namespace knowledge { namespace rcw
   /// Tracker specialization for types that track their own modification status
   /// and that can only write
   template<class T>
-  class Tracker<T, false, true, typename std::enable_if<
+  class Tracker<T, VariableReference, false, true, typename std::enable_if<
                      supports_get_value<T>::value &&
                      supports_knowledge_cast<T>::value &&
                      supports_is_dirty<T>::value &&
@@ -303,7 +303,7 @@ namespace madara { namespace knowledge { namespace rcw
   /// Tracker specialization for types with individual elements that each track
   /// their own modification status
   template<class T, bool RD, bool WR>
-  class Tracker<T, RD, WR, typename std::enable_if<
+  class Tracker<T, VariableReference, RD, WR, typename std::enable_if<
                      supports_indexed_get_value<T>::value &&
                      supports_size<T>::value &&
                      !supports_is_all_dirty<T>::value &&
@@ -383,7 +383,7 @@ namespace madara { namespace knowledge { namespace rcw
   /// Tracker specialization for types that have individual indexed elements,
   /// and track their modification status individually.
   template<class T, bool RD, bool WR>
-  class Tracker<T, RD, WR, typename std::enable_if<
+  class Tracker<T, VariableReference, RD, WR, typename std::enable_if<
                      supports_get_value<T>::value &&
                      supports_indexed_get_value<T>::value &&
                      supports_size<T>::value &&

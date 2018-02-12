@@ -31,15 +31,15 @@ namespace madara { namespace knowledge { namespace rcw
   /// Tracker that puts values into a multiple prefixed KnowledgeRecords.
   /// Used internally by Transaction. Not visible to normal users.
   /// Default implementation gives error if type isn't std::vector<Tracked<...>
-  template<class T, bool RD = true, bool WR = true, class dummy = void>
+  template<class T, class R, bool RD = true, bool WR = true, class dummy = void>
   class PrefixTracker
   {
     static_assert(sizeof(T) < 0, "Type unsupported for adding to Transaction with prefix");
   };
 
   /// If trying to create a tracker that is read-only, and write-only, give error
-  template<class T>
-  class PrefixTracker<T, false, false, void>
+  template<class T, class R>
+  class PrefixTracker<T, R, false, false, void>
     : public BaseTracker
   {
   private:
@@ -50,7 +50,7 @@ namespace madara { namespace knowledge { namespace rcw
   /// Used internally by Transaction. Not visible to normal users.
   /// Specialization of PrefixTracker for std::vector<Tracked<...>>
   template<class T, bool RD, bool WR>
-  class PrefixTracker<T, RD, WR, typename std::enable_if<
+  class PrefixTracker<T, VariableReference, RD, WR, typename std::enable_if<
                      supports_get_value<T>::value &&
                      supports_indexed_get_value<T>::value &&
                      supports_size<T>::value &&

@@ -28,18 +28,35 @@
 
 namespace madara { namespace knowledge { namespace rcw
 {
-  /// Used internally by Tracked
+  /// Provides default versions of methods below. Specialize to add
+  /// additional overloads for certain Ts
   template<class T, class Impl>
   class TrackedExtra
   {
   public:
+    /// Get a const ref to the underlying object
     const T& get() const;
+
+    /// Get a non-const ref to underlying object. Immediately treat it as
+    /// modified, since we don't know what the caller will do with it.
     T& get_mut();
+
+    /// Get a non-const ref to underlying object. Immediately treat it as
+    /// modified, since we don't know what the caller will do with it.
+    /// Synonmym for @get_mut
     T& get_mutable();
+
+    /// Set the underlying object, and mark as modified.
     void set(T val);
 
+    /// Treat object as modified, even if it isn't.
     void modify();
+
+    /// Get modification status
+    /// @returns true if object has been modified; false if not
     bool is_dirty() const;
+
+    /// Resets modification status
     void clear_dirty();
   };
 
@@ -511,47 +528,56 @@ namespace madara { namespace knowledge { namespace rcw
 
   typedef Tracked<std::string> TrackedString;
 
+  /// Returns dirty flag of Tracked types
   template<typename T>
   bool is_dirty(const Tracked<T> &t)
   {
     return t.is_dirty();
   }
 
+  /// Clears dirty flag of Tracked types
   template<typename T>
   void clear_dirty(Tracked<T> &t)
   {
     t.clear_dirty();
   }
 
+  /// Returns dirty flag of given index of vector of Tracked types
   template<typename T>
   bool is_dirty(const std::vector<Tracked<T>> &t, size_t i)
   {
     return is_dirty(t[i]);
   }
 
+  /// Clears dirty flag of given index of vector of Tracked types
   template<typename T>
   void clear_dirty(std::vector<Tracked<T>> &t, size_t i)
   {
     clear_dirty(t[i]);
   }
 
+  /// Get value of Tracked type
   template<typename T>
   auto get_value(const Tracked<T> &t) -> decltype(get_value(t.get()))
   {
     return get_value(t.get());
   }
 
+  /// Set value of Tracked type
   template<typename T>
   void set_value(Tracked<T> &t, decltype(get_value(t.get())) v)
   {
     set_value(t.get_mut(), v);
   }
 
+  /// Get value of given index of Tracked string type
   const char get_value(const Tracked<std::string> &t, size_t i)
   {
     return get_value(t.get(i));
   }
 
+
+  /// Set value of given index of Tracked string type
   void set_value(Tracked<std::string> &t, size_t i, char v)
   {
     set_value(t.get_mut(i), v);
@@ -564,10 +590,18 @@ namespace madara { namespace knowledge { namespace rcw
   private:
     typedef std::vector<T> Vec;
     typedef TrackedCollection<Vec, Tracked<std::vector<T>>> Base;
-    Vec val_; /// the vector we're wrapping
-    std::vector<uint64_t> dirty_; /// dirty status for each entry
-    bool all_dirty_; /// dirty status to treat entire vector as modified
-    bool size_dirty_; /// dirty status for size of vector
+
+    /// the vector we're wrapping
+    Vec val_;
+
+    /// dirty status for each entry
+    std::vector<uint64_t> dirty_;
+
+    /// dirty status to treat entire vector as modified
+    bool all_dirty_;
+
+    /// dirty status for size of vector
+    bool size_dirty_;
 
     /// Get dirty flag bit offset into dirty_ vector, plus mask
     static std::pair<size_t, uint64_t> to_dirty_bit(size_t i)
@@ -783,36 +817,42 @@ namespace madara { namespace knowledge { namespace rcw
     }
   };
 
+  /// Return dirty flag at index of Tracked vector
   template<typename T>
   bool is_dirty(const Tracked<std::vector<T>> &t, size_t i)
   {
     return t.is_dirty(i);
   }
 
+  /// Return global dirty flag of Tracked vector
   template<typename T>
   bool is_all_dirty(const Tracked<std::vector<T>> &t)
   {
     return t.is_all_dirty();
   }
 
+  /// Return size changed dirty flag of Tracked vector
   template<typename T>
   bool is_size_dirty(const Tracked<std::vector<T>> &t)
   {
     return t.is_size_dirty();
   }
 
+  /// Clear dirty flag at index of Tracked vector
   template<typename T>
   void clear_dirty(Tracked<std::vector<T>> &t, size_t i)
   {
     t.clear_dirty(i);
   }
 
+  /// Get value at index of Tracked vector
   template<typename T>
   const T &get_value(const Tracked<std::vector<T>> &t, size_t i)
   {
     return t.get(i);
   }
 
+  /// Set value at index of Tracked vector
   template<typename T>
   void set_value(Tracked<std::vector<T>> &t, size_t i, const T &v)
   {
