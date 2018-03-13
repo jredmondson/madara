@@ -2076,6 +2076,115 @@ const std::string & filename) const
 
 
 int64_t
+madara::knowledge::ThreadSafeContext::save_as_json (
+const std::string & filename) const
+{
+  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "ThreadSafeContext::save_as_json:" \
+    " opening file %s\n", filename.c_str ());
+
+  int64_t bytes_written (0);
+
+  std::stringstream buffer;
+  std::ofstream file;
+  file.open (filename.c_str ());
+
+  if (file.is_open ())
+  {
+    // lock the context
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    buffer << "{\n";
+
+    for (KnowledgeMap::const_iterator i = map_.begin ();
+      i != map_.end (); ++i)
+    {
+      if (i->second.exists ())
+      {
+        buffer << "  \"";
+        buffer << i->first;
+        buffer << "\" : ";
+
+        if (!i->second.is_binary_file_type ())
+        {
+          // record is a non binary file type
+          if (i->second.is_string_type ())
+          {
+            // strings require quotation marks
+            buffer << "\"";
+          }
+          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
+            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
+          {
+            // arrays require brackets
+            buffer << "[";
+          }
+
+          buffer << i->second;
+          if (i->second.is_string_type ())
+          {
+            // strings require quotation marks
+            buffer << "\"";
+          }
+          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
+            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
+          {
+            // arrays require brackets
+            buffer << "]";
+          }
+        }
+        else
+        {
+          buffer << "#read_file ('";
+
+          std::string path = utility::extract_path (filename);
+
+          if (path == "")
+            path = ".";
+
+          path += "/";
+          path += i->first;
+
+          if (i->second.type () == knowledge::KnowledgeRecord::IMAGE_JPEG)
+          {
+            path += ".jpg";
+          }
+          else
+          {
+            path += ".dat";
+          }
+
+          utility::write_file (path,
+            (void *)i->second.file_value_.get_ptr (), i->second.size ());
+          buffer << path;
+
+
+          buffer << "')";
+        }
+
+        KnowledgeMap::const_iterator j (i);
+
+        if (++j != map_.end ())
+          buffer << ",\n";
+      }
+    }
+
+    buffer << "\n}\n";
+
+    std::string result = buffer.str ();
+    file << result;
+
+    bytes_written = (int64_t) result.size ();
+
+    file.close ();
+  }
+
+  return bytes_written;
+}
+
+
+
+int64_t
 madara::knowledge::ThreadSafeContext::load_context (
   const std::string & filename, std::string & id,
   const KnowledgeUpdateSettings & settings)

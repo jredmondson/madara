@@ -1356,6 +1356,13 @@ namespace madara
         const std::string & id = "") const;
 
       /**
+      * Saves the context to a file as JSON
+      * @param   filename    name of the file to save to
+      * @return  total bytes written
+      **/
+      int64_t save_as_json (const std::string & filename) const;
+
+      /**
       * Saves the context to a file as karl assignments, rather than binary
       * @param   filename    name of the file to save to
       * @return  total bytes written

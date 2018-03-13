@@ -492,6 +492,13 @@ madara::knowledge::KnowledgeBaseImpl::save_context (
 }
 
 inline int64_t
+madara::knowledge::KnowledgeBaseImpl::save_as_json (
+const std::string & filename) const
+{
+  return map_.save_as_json (filename);
+}
+
+inline int64_t
 madara::knowledge::KnowledgeBaseImpl::save_as_karl (
 const std::string & filename) const
 {

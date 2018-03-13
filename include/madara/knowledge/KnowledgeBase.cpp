@@ -1801,6 +1801,24 @@ madara::knowledge::KnowledgeBase::save_context (
 
 
 int64_t
+madara::knowledge::KnowledgeBase::save_as_json (
+  const std::string & filename) const
+{
+  int64_t result = 0;
+
+  if (context_)
+  {
+    result = context_->save_as_json (filename);
+  }
+  else if (impl_.get ())
+  {
+    result = impl_->save_as_json (filename);
+  }
+
+  return result;
+}
+
+int64_t
 madara::knowledge::KnowledgeBase::save_as_karl (
   const std::string & filename) const
 {

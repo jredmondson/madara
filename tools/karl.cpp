@@ -41,6 +41,9 @@ std::string logic;
 // filename to save knowledge base as KaRL to
 std::string save_location;
 
+// filename to save knowledge base as JSON to
+std::string save_json;
+
 // filename to save knowledge base as binary to
 std::string save_binary;
 
@@ -137,6 +140,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-s|--save file]         save the resulting knowledge base as karl\n" \
         "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
         "                           binary checkpoint\n" \
+        "  [-sj|--save-json file]   save the resulting knowledge base as JSON\n" \
         "  [-t|--time time]         time to wait for results. Same as -w.\n" \
         "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
@@ -263,6 +267,13 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
         save_location = argv[i + 1];
+
+      ++i;
+    }
+    else if (arg1 == "-sj" || arg1 == "--save-json")
+    {
+      if (i + 1 < argc)
+        save_json = argv[i + 1];
 
       ++i;
     }
@@ -633,6 +644,12 @@ int main (int argc, char ** argv)
   if (save_location.size () > 0)
   {
     knowledge.save_as_karl (save_location);
+  }
+
+  // save as karl if requested
+  if (save_json.size () > 0)
+  {
+    knowledge.save_as_json (save_json);
   }
 
   // save as binary if requested
