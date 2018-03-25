@@ -13,8 +13,12 @@ options:
   [-h|--help]              print help menu (i.e., this menu)
   [-i|--input file]        file containing MADARA logic to evaluate
   [-k|--print-knowledge]   print final knowledge
+  [-kp]--print-prefix      filter prints by prefix. Can be multiple.
   [-ky]                    print knowledge after frequent evaluations
   [-l|--level level]       the logger level (0+, higher is higher detail)
+  [-lt|--load-transport file] a file to load transport settings from
+  [-ltp|--load-transport-prefix prfx] prefix of saved settings
+  [-ltt|--load-transport-text file] a text file to load transport settings from
   [-m|--multicast ip:port] the multicast ip to send and listen to
   [-o|--host hostname]     the hostname of this process (def:localhost)
   [-q|--queue-length size] size of network buffers in bytes
@@ -22,7 +26,11 @@ options:
   [-s|--save file]         save the resulting knowledge base as karl
   [-sb|--save-binary file] save the resulting knowledge base as a
                            binary checkpoint
-  [-t|--time time]         time to wait for results
+  [-sj|--save-json file]   save the resulting knowledge base as JSON
+  [-st|--save-transport file] a file to save transport settings to
+  [-stp|--save-transport-prefix prfx] prefix to save settings at
+  [-stt|--save-transport-text file] a text file to save transport settings to
+  [-t|--time time]         time to wait for results. Same as -w.
   [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)
   [-w|--wait seconds]      Wait for number of seconds before exiting
   [-wy|-wp|--wait-for-periodic seconds]  Wait for number of seconds
