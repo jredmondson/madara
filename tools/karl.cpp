@@ -50,6 +50,11 @@ std::string save_binary;
 // knowledge base var name to save checkpoint timestamp to
 std::string  meta_prefix;
 
+// filename to save transport settings to
+std::string save_transport;
+std::string save_transport_prefix;
+std::string save_transport_text;
+std::string load_transport_prefix;
 
 // list of filenames
 StringVector filenames;
@@ -133,6 +138,9 @@ void handle_arguments (int argc, char ** argv)
         "  [-kp]--print-prefix      filter prints by prefix. Can be multiple.\n" \
         "  [-ky]                    print knowledge after frequent evaluations\n" \
         "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
+        "  [-lt|--load-transport file] a file to load transport settings from\n" \
+        "  [-ltp|--load-transport-prefix prfx] prefix of saved settings\n" \
+        "  [-ltt|--load-transport-text file] a text file to load transport settings from\n" \
         "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
         "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
@@ -141,6 +149,9 @@ void handle_arguments (int argc, char ** argv)
         "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
         "                           binary checkpoint\n" \
         "  [-sj|--save-json file]   save the resulting knowledge base as JSON\n" \
+        "  [-st|--save-transport file] a file to save transport settings to\n" \
+        "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
+        "  [-stt|--save-transport-text file] a text file to save transport settings to\n" \
         "  [-t|--time time]         time to wait for results. Same as -w.\n" \
         "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
@@ -219,6 +230,39 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-lt" || arg1 == "--load-transport")
+    {
+      if (i + 1 < argc)
+      {
+        if (load_transport_prefix == "")
+          settings.load (argv[i + 1]);
+        else
+          settings.load (argv[i + 1], load_transport_prefix);
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-ltp" || arg1 == "--load-transport-prefix")
+    {
+      if (i + 1 < argc)
+      {
+        load_transport_prefix = argv[i + 1];
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-ltt" || arg1 == "--load-transport-text")
+    {
+      if (i + 1 < argc)
+      {
+        if (load_transport_prefix == "")
+          settings.load_text (argv[i + 1]);
+        else
+          settings.load_text (argv[i + 1], load_transport_prefix);
+      }
+
+      ++i;
+    }
     else if (arg1 == "-m" || arg1 == "--multicast")
     {
       if (i + 1 < argc)
@@ -281,6 +325,33 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
         save_binary = argv[i + 1];
+
+      ++i;
+    }
+    else if (arg1 == "-st" || arg1 == "--save-transport")
+    {
+      if (i + 1 < argc)
+      {
+        save_transport = argv[i + 1];
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-stp" || arg1 == "--save-transport-prefix")
+    {
+      if (i + 1 < argc)
+      {
+        save_transport_prefix = argv[i + 1];
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-stt" || arg1 == "--save-transport-text")
+    {
+      if (i + 1 < argc)
+      {
+        save_transport_text = argv[i + 1];
+      }
 
       ++i;
     }
@@ -484,6 +555,24 @@ int main (int argc, char ** argv)
   {
     settings.add_send_filter (filters::log_aggregate);
     settings.add_receive_filter (filters::log_aggregate);
+  }
+
+  // save transport always happens after all possible transport chagnes
+  if (save_transport != "")
+  {
+    if (save_transport_prefix == "")
+      settings.save (save_transport);
+    else
+      settings.save (save_transport, save_transport_prefix);
+  }
+
+  // save transport always happens after all possible transport chagnes
+  if (save_transport_text != "")
+  {
+    if (save_transport_prefix == "")
+      settings.save_text (save_transport_text);
+    else
+      settings.save_text (save_transport_text, save_transport_prefix);
   }
 
   // create a knowledge base and setup our id

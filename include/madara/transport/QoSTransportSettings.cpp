@@ -715,10 +715,58 @@ void
 madara::transport::QoSTransportSettings::load (const std::string & filename,
   const std::string & prefix)
 {
-  TransportSettings::load (filename);
+  TransportSettings::load (filename, prefix);
 
   knowledge::KnowledgeBase knowledge;
   knowledge.load_context (filename);
+
+  containers::Map trusted_peers (prefix + ".trusted_peers", knowledge);
+  containers::Map banned_peers (prefix + ".banned_peers", knowledge);
+
+  rebroadcast_ttl_ = (unsigned char)knowledge.get (
+    prefix + ".rebroadcast_ttl").to_integer ();
+  participant_rebroadcast_ttl_ = (unsigned char)knowledge.get (
+    prefix + ".participant_rebroadcast_ttl").to_integer ();
+
+  std::vector <std::string> trusted_keys, banned_keys;
+
+  trusted_peers.keys (trusted_keys);
+  banned_peers.keys (banned_keys);
+
+  for (size_t i = 0; i < trusted_keys.size (); ++i)
+  {
+    trusted_peers_[trusted_keys[i]] = 1;
+  }
+
+  for (size_t i = 0; i < banned_keys.size (); ++i)
+  {
+    banned_peers_[banned_keys[i]] = 1;
+  }
+
+  packet_drop_rate_ = knowledge.get (
+    prefix + ".packet_drop_rate").to_double ();
+  packet_drop_type_ = (int)knowledge.get (
+    prefix + ".packet_drop_type").to_integer ();
+  packet_drop_burst_ = (uint64_t)knowledge.get (
+    prefix + ".packet_drop_burst").to_integer ();
+
+  max_send_bandwidth_ = (int64_t)knowledge.get (
+    prefix + ".max_send_bandwidth").to_integer ();
+  max_total_bandwidth_ = (int64_t)knowledge.get (
+    prefix + ".max_total_bandwidth").to_integer ();
+
+  deadline_ = knowledge.get (
+    prefix + ".deadline").to_double ();
+}
+
+void
+madara::transport::QoSTransportSettings::load_text (const std::string & filename,
+  const std::string & prefix)
+{
+  TransportSettings::load_text (filename, prefix);
+
+  knowledge::KnowledgeBase knowledge;
+  knowledge.evaluate (madara::utility::file_to_string (filename));
 
   containers::Map trusted_peers (prefix + ".trusted_peers", knowledge);
   containers::Map banned_peers (prefix + ".banned_peers", knowledge);
@@ -765,7 +813,7 @@ madara::transport::QoSTransportSettings::save (
   const std::string & prefix) const
 {
   // Save the underlying base settings first
-  TransportSettings::save (filename);
+  TransportSettings::save (filename, prefix);
 
   // then load the savings
   knowledge::KnowledgeBase knowledge;
@@ -802,3 +850,49 @@ madara::transport::QoSTransportSettings::save (
 
   knowledge.save_context (filename);
 }
+
+
+void
+madara::transport::QoSTransportSettings::save_text (
+  const std::string & filename,
+  const std::string & prefix) const
+{
+  // Save the underlying base settings first
+  TransportSettings::save_text (filename, prefix);
+
+  // then load the savings
+  knowledge::KnowledgeBase knowledge;
+  knowledge.evaluate (madara::utility::file_to_string (filename));
+
+  containers::Map trusted_peers (prefix + ".trusted_peers", knowledge);
+  containers::Map banned_peers (prefix + ".banned_peers", knowledge);
+
+  knowledge.set (prefix + ".rebroadcast_ttl", Integer (rebroadcast_ttl_));
+  knowledge.set (prefix + ".participant_rebroadcast_ttl",
+    Integer (participant_rebroadcast_ttl_));
+
+  for (std::map <std::string, int>::const_iterator i = trusted_peers_.begin ();
+    i != trusted_peers_.end (); ++i)
+  {
+    trusted_peers.set (i->first, Integer (1));
+  }
+
+  for (std::map <std::string, int>::const_iterator i = banned_peers_.begin ();
+    i != banned_peers_.end (); ++i)
+  {
+    banned_peers.set (i->first, Integer (1));
+  }
+
+  knowledge.set (prefix + ".packet_drop_rate", packet_drop_rate_);
+  knowledge.set (prefix + ".packet_drop_type", Integer (packet_drop_type_));
+  knowledge.set (prefix + ".packet_drop_burst", Integer (packet_drop_burst_));
+
+  knowledge.set (prefix + ".max_send_bandwidth",
+    Integer (max_send_bandwidth_));
+  knowledge.set (prefix + ".max_total_bandwidth",
+    Integer (max_total_bandwidth_));
+  knowledge.set (prefix + ".deadline", deadline_);
+
+  knowledge.save_as_karl (filename);
+}
+

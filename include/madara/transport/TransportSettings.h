@@ -722,21 +722,37 @@ namespace madara
 
 #endif //  _USE_CID_
 
-      /**
-       * Loads the settings from a file
+       /**
+       * Loads the settings from a binary file
        * @param  filename    the file to load from
        * @param  prefix      prefix for all transports settings
        **/
-      virtual void load (const std::string & filename,
-        const std::string & prefix = "transport");
+       virtual void load (const std::string & filename,
+         const std::string & prefix = "transport");
 
-      /**
-      * Saves the settings from a file
-      * @param  filename    the file to load from
-      * @param  prefix      prefix for all transports settings
-      **/
-      virtual void save (const std::string & filename,
-        const std::string & prefix = "transport") const;
+       /**
+       * Loads the settings from a text file
+       * @param  filename    the file to load from
+       * @param  prefix      prefix for all transports settings
+       **/
+       virtual void load_text (const std::string & filename,
+         const std::string & prefix = "transport");
+
+       /**
+       * Saves the settings from a binary file
+       * @param  filename    the file to load from
+       * @param  prefix      prefix for all transports settings
+       **/
+       virtual void save (const std::string & filename,
+         const std::string & prefix = "transport") const;
+
+       /**
+       * Saves the settings from a text file
+       * @param  filename    the file to load from
+       * @param  prefix      prefix for all transports settings
+       **/
+       virtual void save_text (const std::string & filename,
+         const std::string & prefix = "transport") const;
 
       /// All class members are accessible to users for easy setup
 
