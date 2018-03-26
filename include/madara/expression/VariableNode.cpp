@@ -23,40 +23,37 @@ madara::expression::VariableNode::VariableNode (
       "Variable %s requires variable expansion.\n",
       key.c_str ());
 
-    unsigned int count = 1;
     key_expansion_necessary_ = true;
-    splitters_.push_back ("{");
-    splitters_.push_back ("}");
+    int num_opens = 0;
 
-    utility::tokenizer (key, splitters_, tokens_, pivot_list_);
-
-    if (pivot_list_.size () % 2 != 0)
+    for (size_t i = 0; i < key.size (); ++i)
     {
-      madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-        "KARL COMPILE ERROR: matching braces not found in %s\n",
-        key.c_str ());
-
-      exit (-1);
-    }
-
-    // check for braces that are not properly closed
-    std::vector<std::string>::const_iterator pivot = pivot_list_.begin ();
-    unsigned int num_opens = 0;
-    unsigned int num_closes = 0;
-
-    for (; pivot != pivot_list_.end (); ++pivot)
-    {
-      if (*pivot == "{")
+      if (key[i] == '{')
       {
+        markers_.push_back (i);
         ++num_opens;
       }
-      else if (*pivot == "}")
+      else if (key[i] == '}')
       {
-        ++num_closes;
+        if (num_opens != 0)
+        {
+          markers_.push_back (i);
+          --num_opens;
+        }
+        else
+        {
+          madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+            "KARL COMPILE ERROR: " \
+            "Expanded variable name has a leading closing brace "
+            "instead of opening closing brace at %d\n",
+            (int)i);
+
+          exit (-1);
+        }
       }
     }
 
-    if (num_opens > num_closes)
+    if (num_opens > 0)
     {
       madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: " \
@@ -65,7 +62,7 @@ madara::expression::VariableNode::VariableNode (
 
       exit (-1);
     }
-    else if (num_closes > num_opens)
+    else if (num_opens < 0)
     {
       madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
         "KARL COMPILE ERROR: " \
@@ -88,41 +85,121 @@ madara::expression::VariableNode::~VariableNode ()
   // do not clean up record_. Let the context clean that up.
 }
 
+std::string madara::expression::VariableNode::expand_opener (
+  size_t opener, size_t & closer) const
+{
+  size_t i = opener + 1;
+  size_t start = markers_[opener] + 1;
+
+  std::stringstream builder;
+
+  madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+    "VariableNode:expand_opener: key=%s, opener_index=%d, start=%d.\n",
+    key_.c_str (), (int)opener);
+
+  for (; i < markers_.size (); ++i)
+  {
+    if (key_[markers_[i]] == '{')
+    {
+      // copy before opener (4)
+      if (start < markers_[i])
+      {
+        builder << key_.substr (start, markers_[i] - start);
+        madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+          "VariableNode:expand_opener: %d-%d{: added %d chars.\n",
+           (int)start, (int)markers_[i], (int)(markers_[i] - start));
+      }
+
+      size_t sub_opener = i;
+      builder << expand_opener (i, i);
+      madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+          "VariableNode:expand_opener: get_record(expand_opener()) "
+          "expand_opener(%d, %d).\n",
+           (int)sub_opener, (int)i);
+
+      // set next start to after [4]{[5]}*[3]
+      start = markers_[i] + 1;
+    }
+    else if (key_[markers_[i]] == '}')
+    {
+      // main action of this function {[2]}
+      closer = i;
+
+      size_t end = markers_[closer];
+
+      builder << *context_.get_record (key_.substr (start, end - start));
+      madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+        "VariableNode:expand_opener(%d,%d): {%d-%d}: added %d chars.\n",
+         (int)opener, (int)closer, (int)start, (int)end, (int)(end-start));
+      break;
+    }
+  }
+
+  std::string result = builder.str ();
+
+  madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+    "VariableNode:expand_opener(%d,%d): return %s\n",
+    (int)opener, (int)closer, result.c_str ());
+
+  return result;
+}
+
 std::string
 madara::expression::VariableNode::expand_key (void) const
 {
   if (key_expansion_necessary_)
   {
     madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-      "Variable %s requires variable expansion.\n",
-      key_.c_str ());
+      "VariableNode:expand_key: Variable %s requires variable expansion"
+      " (%d markers).\n",
+      key_.c_str (), (int)markers_.size ());
 
-    unsigned int count = 0;
+    size_t i = 0;
+    size_t start = 0;
 
     // add the first token into a string builder
     std::stringstream builder;
-    std::vector< std::string>::const_iterator token = tokens_.begin ();
-    builder << *token;
 
-    // move the token to the next in the list.
-    for (++token, ++count; token != tokens_.end (); ++token, ++count)
+    for (; i < markers_.size (); ++i)
     {
-      if (*token != "")
+      if (key_[markers_[i]] == '{')
       {
-        // is the current token a variable to lookup?
-        if (count < pivot_list_.size () 
-          && pivot_list_[count] == "}")
+        // copy characters between expansions [1]{
+        if (start < markers_[i])
         {
-          builder << context_.get_record (*token)->to_string ();
+          builder << key_.substr (start, markers_[i] - start);
+          madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+            "VariableNode:expand_key: %d-%d{: added %d chars.\n",
+             (int)start, (int)markers_[i], (int)(markers_[i] - start));
         }
-        else
-        {
-          builder << *token;
-        }
+
+        size_t opener = i;
+        builder << expand_opener (i, i);
+        madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+          "VariableNode:expand_key: adding results of "
+          "expand_opener(%d, %d).\n",
+           (int)opener, (int)i);
+
+        start = markers_[i] + 1;
       }
     }
 
-    return builder.str ();
+    // handle characters trailing }[3]
+    if (start < key_.size () && key_.size () - start > 0)
+    {
+      madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+        "VariableNode:expand_key: substr add from index %d, %d chars.\n",
+         (int)start, (int)key_.size () - start);
+      builder << key_.substr (start, key_.size () - start);
+    }
+
+    std::string result = builder.str ();
+
+    madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+      "VariableNode:expand_key: return %s\n",
+      result.c_str ());
+
+    return result;
   }
   // if there was no need to expand the key, just return
   // the key

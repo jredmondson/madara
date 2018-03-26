@@ -104,6 +104,9 @@ namespace madara
       }
 
     private:
+
+      std::string expand_opener (size_t opener, size_t & closer) const;
+
       /// Key for retrieving value of this variable.
       const std::string key_;
       madara::knowledge::KnowledgeRecord * record_;
@@ -113,9 +116,7 @@ namespace madara
       /// Expansion necessary
       bool key_expansion_necessary_;
 
-      std::vector< std::string> splitters_;
-      std::vector< std::string> tokens_;
-      std::vector< std::string> pivot_list_;
+      std::vector<size_t> markers_;
 
       /// Reference to context for variable retrieval
     };
