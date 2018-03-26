@@ -545,6 +545,9 @@ void test_strings (madara::knowledge::KnowledgeBase & knowledge)
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing string, double, and integer concatenation\n");
 
+  // set the precision to 1 to get the right to_string() values for double
+  KnowledgeRecord::set_precision (1);
+
   knowledge.evaluate (".var7 = .var4 + .var1 + .var2 + .var3");
   knowledge.print ("  {.var7}\n");
 
