@@ -624,7 +624,7 @@ namespace madara { namespace knowledge { namespace rcw
     typedef typename std::vector<T>::const_iterator const_iterator;
 
     /// Default constructor, with empty vector
-    Tracked() : val_(), dirty_() all_dirty_(true), size_dirty_(true), {}
+    Tracked() : val_(), dirty_(), all_dirty_(true), size_dirty_(true) {}
     /// Construct from an existing vector
     explicit Tracked(std::vector<T> val)
       : val_(val), dirty_(to_dirty_size(val.size())),
