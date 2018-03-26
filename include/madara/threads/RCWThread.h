@@ -55,14 +55,16 @@ namespace madara
       friend class Threader;
 
       /**
+       * Setup the thread for later read-compute-write loops
        **/
-      virtual void setup (knowledge::rcw::Transaction &tx)
+      virtual void setup (knowledge::rcw::Transaction &)
       {
       }
 
       /**
+       * Executes the compute porition of a read-compute-write loop
        **/
-      virtual void compute (const knowledge::rcw::Transaction &tx) = 0;
+      virtual void compute (const knowledge::rcw::Transaction &) = 0;
 
       /**
        * Cleans up any thread residue (usually instances created in setup).
@@ -71,13 +73,14 @@ namespace madara
        * new/malloc, etc. Anything MADARA related is generally cleaned up
        * for you.
        **/
-      virtual void finalize (knowledge::rcw::Transaction &tx)
+      virtual void finalize (knowledge::rcw::Transaction &)
       {
       }
 
     private:
       /**
        * Initializes thread with a MADARA context
+       * @param kb the knowledge base to interact with
        **/
       virtual void init (knowledge::KnowledgeBase &kb) override final;
 

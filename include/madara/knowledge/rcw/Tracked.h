@@ -461,7 +461,7 @@ namespace madara { namespace knowledge { namespace rcw
 
     /// Flag this as modified; we don't track individual characters as dirty,
     /// so flags entire string.
-    void modify(size_t i)
+    void modify(size_t)
     {
       impl().modify();
     }
@@ -470,14 +470,14 @@ namespace madara { namespace knowledge { namespace rcw
     /// status, since we don't track per character
     bool is_dirty(size_t i) const
     {
-      impl().is_dirty();
+      return impl().is_dirty();
     }
 
     /// Clear dirty status for given index, which is same as overall dirty
     /// status, since we don't track per character
     bool clear_dirty(size_t i) const
     {
-      impl().clear_dirty();
+      return impl().clear_dirty();
     }
 
     /// Pass through resize to underlying string
@@ -571,7 +571,7 @@ namespace madara { namespace knowledge { namespace rcw
   }
 
   /// Get value of given index of Tracked string type
-  const char get_value(const Tracked<std::string> &t, size_t i)
+  char get_value(const Tracked<std::string> &t, size_t i)
   {
     return get_value(t.get(i));
   }
@@ -624,11 +624,11 @@ namespace madara { namespace knowledge { namespace rcw
     typedef typename std::vector<T>::const_iterator const_iterator;
 
     /// Default constructor, with empty vector
-    Tracked() : val_(), dirty_(), size_dirty_(true), all_dirty_(true) {}
+    Tracked() : val_(), dirty_() all_dirty_(true), size_dirty_(true), {}
     /// Construct from an existing vector
     explicit Tracked(std::vector<T> val)
       : val_(val), dirty_(to_dirty_size(val.size())),
-        size_dirty_(true), all_dirty_(true) {}
+        all_dirty_(true), size_dirty_(true) {}
 
     /// Get const reference to underlying vector
     const std::vector<T>& get() const

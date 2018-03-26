@@ -122,9 +122,9 @@ namespace madara { namespace knowledge { namespace rcw
       set_value(*tracked_, knowledge_cast<V>(get()));
     }
 
-    virtual void push(KnowledgeBase &kb) {}
+    virtual void push(KnowledgeBase &) {}
 
-    virtual void force_push(KnowledgeBase &kb) {}
+    virtual void force_push(KnowledgeBase &) {}
 
     virtual const char *get_name() const
     {

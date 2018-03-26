@@ -49,8 +49,6 @@ struct simple_walker : pugi::xml_tree_walker
 
 void karlify (std::ostream & output, const std::string & prefix, const pugi::xml_node & node)
 {
-  int depth = 0;
-
   std::string nodename;
 
   pugi::xml_attribute prefix_override = node.attribute ("prefix");

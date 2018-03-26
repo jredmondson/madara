@@ -55,7 +55,7 @@ public:
   }
 };
 
-int main(int argc, char ** arg)
+int main(int, char **)
 {
   KnowledgeBase kb;
   Transaction tx(kb);
