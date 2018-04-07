@@ -10,6 +10,8 @@
 #include "madara/knowledge/containers/Double.h"
 #include "madara/knowledge/containers/Queue.h"
 #include "madara/knowledge/containers/Collection.h"
+#include "madara/knowledge/containers/DoubleVectorVector.h"
+#include "madara/knowledge/containers/IntegerVectorVector.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 
@@ -192,6 +194,100 @@ void test_flex_map (void)
   {
     std::cerr << "FAIL\n";
   }
+}
+
+void test_vector_vectors (void)
+{
+  std::cerr << "************* DOUBLEVECTORVECTOR: CREATING*************\n";
+  knowledge::KnowledgeBase knowledge;
+  containers::DoubleVectorVector double_vector (
+    "test_vector_vector", knowledge, 10);
+  size_t size = double_vector.size ();
+
+  // set the vector entries
+  double_vector.set (1, {10.22, 7.31, 6.179});
+  double_vector.set (7, {8.12, 3.34, 214.555});
+
+  // retrieve the indexes
+
+  double array1_0 = double_vector[{1,0}];
+  double array1_1 = double_vector[{1,1}];
+  double array1_2 = double_vector[{1,2}];
+  double array7_0 = double_vector[{7,0}];
+  double array7_1 = double_vector[{7,1}];
+  double array7_2 = double_vector[{7,2}];
+
+  // check the array size
+
+  std::cerr << "  Checking array size: " << size << ": " <<
+    (size == 10 ? "SUCCESS\n" : "FAIL\n");
+
+  // check the array values
+  
+  std::cerr << "  Checking all array indices for values: ";
+  if (array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
+      array7_0 == 8.12 && array7_1 == 3.34 && array7_2 == 214.555)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "array1_1 = " << array1_0 << "\n";
+    std::cerr << "array1_2 = " << array1_1 << "\n";
+    std::cerr << "array1_3 = " << array1_2 << "\n";
+    std::cerr << "array7_1 = " << array7_0 << "\n";
+    std::cerr << "array7_2 = " << array7_1 << "\n";
+    std::cerr << "array7_3 = " << array7_2 << "\n";
+  }
+
+  knowledge.clear_modifieds ();
+
+
+  std::cerr << "************* INTEGERVECTORVECTOR: CREATING*************\n";
+  containers::IntegerVectorVector integer_vector (
+    "test_vector_vector", knowledge, 10);
+  size = integer_vector.size ();
+
+  // set the vector entries
+  integer_vector.set (1, {10, 7, 6});
+  integer_vector.set (7, {8, 3, 214});
+
+  // retrieve the indexes
+
+  int64_t int_array1_0 = integer_vector[{1,0}];
+  int64_t int_array1_1 = integer_vector[{1,1}];
+  int64_t int_array1_2 = integer_vector[{1,2}];
+  int64_t int_array7_0 = integer_vector[{7,0}];
+  int64_t int_array7_1 = integer_vector[{7,1}];
+  int64_t int_array7_2 = integer_vector[{7,2}];
+
+  // check the array size
+
+  std::cerr << "  Checking array size: " << size << ": " <<
+    (size == 10 ? "SUCCESS\n" : "FAIL\n");
+
+  // check the array values
+  
+  std::cerr << "  Checking all array indices for values: ";
+  if (int_array1_0 == 10 && int_array1_1 == 7 && int_array1_2 == 6 &&
+      int_array7_0 == 8 && int_array7_1 == 3 && int_array7_2 == 214)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "array1_1 = " << int_array1_0 << "\n";
+    std::cerr << "array1_2 = " << int_array1_1 << "\n";
+    std::cerr << "array1_3 = " << int_array1_2 << "\n";
+    std::cerr << "array7_1 = " << int_array7_0 << "\n";
+    std::cerr << "array7_2 = " << int_array7_1 << "\n";
+    std::cerr << "array7_3 = " << int_array7_2 << "\n";
+  }
+
+  knowledge.clear_modifieds ();
+  
 }
 
 void test_vector (void)
@@ -1261,6 +1357,7 @@ int main (int , char **)
   test_flex_map ();
 
   test_collection ();
+  test_vector_vectors ();
 
   return 0;
 }
