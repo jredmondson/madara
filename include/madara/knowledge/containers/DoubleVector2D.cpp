@@ -271,7 +271,7 @@ madara::knowledge::containers::DoubleVector2D::resize (
     }
 
     // delete if we need to delete
-    if (new_size.x < old_size.x || new_size.y < old_size.x && delete_vars)
+    if (new_size.x < old_size.x || new_size.y < old_size.y && delete_vars)
     {
       madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
         "DoubleVector2D::resize: deleting refs: rows: 0->%d.\n",
@@ -424,7 +424,6 @@ madara::knowledge::containers::DoubleVector2D::copy_to (
   if (context_)
   {
     ContextGuard context_guard (*context_);
-    MADARA_GUARD_TYPE guard (mutex_);
 
     Indices dimensions = size ();
 
