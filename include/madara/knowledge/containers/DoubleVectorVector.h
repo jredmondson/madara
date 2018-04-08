@@ -38,7 +38,7 @@ namespace madara
         /// two dimensional indexing
         struct Indices
         {
-          std::size_t i, j;
+          std::size_t x, y;
         };
 
         /**

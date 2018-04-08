@@ -539,11 +539,12 @@ madara::knowledge::containers::IntegerVectorVector::operator[] (
 
   KnowledgeUpdateSettings keep_local (true);
 
-  if (index.i < vector_.size () && context_)
+  if (index.x < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
     MADARA_GUARD_TYPE guard (mutex_);
-    result = context_->get (vector_[index.i], keep_local).retrieve_index (index.j);
+    result = context_->get (
+      vector_[index.x], keep_local).retrieve_index (index.y);
   }
 
   return result.to_integer ();
