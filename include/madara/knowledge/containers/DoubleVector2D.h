@@ -1,6 +1,6 @@
 
-#ifndef _MADARA_CONTAINERS_DOUBLE_VECTOR_VECTOR_H_
-#define _MADARA_CONTAINERS_DOUBLE_VECTOR_VECTOR_H_
+#ifndef _MADARA_CONTAINERS_DOUBLE_VECTOR2D_H_
+#define _MADARA_CONTAINERS_DOUBLE_VECTOR2D_H_
 
 #include <vector>
 #include <string>
@@ -11,11 +11,11 @@
 #include "BaseContainer.h"
 
 /**
- * @file DoubleVectorVector.h
+ * @file DoubleVector2D.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains a C++ object that manages interactions for an
- * array of doubles
+ * This file contains a C++ object that manages interactions for a
+ * mxn array of doubles that can have lazy updates on each cell.
  **/
 
 namespace madara
@@ -25,43 +25,42 @@ namespace madara
     namespace containers
     {
       /**
-       * @class DoubleVectorVector
-       * @brief This class stores a vector of NativeDoubleVectors. Essentially,
-       *        this is a Vector of double[].
+       * @class DoubleVector2D
+       * @brief This class stores MxN array of doubles
        */
-      class MADARA_Export DoubleVectorVector : public BaseContainer
+      class MADARA_Export DoubleVector2D : public BaseContainer
       {
       public:
-        /// trait that describes the value type
-        typedef std::vector<double>  type;
-        
         /// two dimensional indexing
         struct Indices
         {
-          std::size_t i, j;
+          std::size_t x, y;
         };
+
+        /// convenience typedef for size
+        typedef Indices  Dimensions;
 
         /**
          * Default constructor
          * @param  settings   settings for evaluating the vector
          * @param  delimiter  the delimiter for variables in the vector
          **/
-        DoubleVectorVector (const KnowledgeUpdateSettings & settings =
+        DoubleVector2D (const KnowledgeUpdateSettings & settings =
           KnowledgeUpdateSettings (),
           const std::string & delimiter = ".");
 
         /**
          * Constructor
          * @param  name       name of the vector in the knowledge base
-         * @param  size       size of the vector. -1 to check for size.
+         * @param  dimensions size of the vector. {0,0} to check for size.
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  delete_vars delete indices outside of the specified range
          * @param  settings   settings for evaluating the vector
          * @param  delimiter  the delimiter for variables in the vector
          **/
-        DoubleVectorVector (const std::string & name, 
+        DoubleVector2D (const std::string & name, 
           KnowledgeBase & knowledge,
-          int size = -1,
+          const Dimensions & dimensions = {0,0},
           bool delete_vars = true,
           const KnowledgeUpdateSettings & settings =
             KnowledgeUpdateSettings (),
@@ -70,15 +69,15 @@ namespace madara
         /**
          * Constructor
          * @param  name       name of the vector in the knowledge base
-         * @param  size       size of the vector. -1 to check for size.
+         * @param  dimensions size of the vector. {0,0} to check for size.
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  delete_vars delete indices outside of the specified range
          * @param  settings   settings for evaluating the vector
          * @param  delimiter  the delimiter for variables in the vector
          **/
-        DoubleVectorVector (const std::string & name,
+        DoubleVector2D (const std::string & name,
           Variables & knowledge,
-          int size = -1,
+          const Dimensions & dimensions = {0,0},
           bool delete_vars = true,
           const KnowledgeUpdateSettings & settings =
             KnowledgeUpdateSettings (),
@@ -87,13 +86,19 @@ namespace madara
         /**
          * Copy constructor
          **/
-        DoubleVectorVector (const DoubleVectorVector & rhs);
+        DoubleVector2D (const DoubleVector2D & rhs);
 
         /**
          * Destructor
          **/
-        virtual ~DoubleVectorVector ();
+        virtual ~DoubleVector2D ();
         
+        /**
+        * Copies the vector elements to an STL vector
+        * @param  target   the target of the copy operation
+        **/
+        void copy_to (std::vector<std::vector<double> > & target) const;
+
         /**
          * Mark the vector as modified. The vector retains the same values
          * but will resend values as if they had been modified.
@@ -105,90 +110,54 @@ namespace madara
          * but will resend its value as if it had been modified.
          * @param  index  the index to modify
          **/
-        void modify (size_t index);
+        void modify (const Indices & index);
     
         /**
          * Assignment operator
          * @param  rhs    value to copy
          **/
-        void operator= (const DoubleVectorVector & rhs);
-
-        /**
-        * Pushes the value to the end of the array after incrementing the
-        * array size.
-        * @param  value       the value to place at the end of the array
-        **/
-        void push_back (const type & value);
+        void operator= (const DoubleVector2D & rhs);
 
         /**
          * Resizes the vector
-         * @param   size   maximum size of the vector. Can be -1 to check
-         *                 the knowledge base for size information)
+         * @param   dimensions maximum size of the vector. Can be -1 to check
+         *                     the knowledge base for size information)
          * @param  delete_vars delete indices outside of the specified range
          **/
-        void resize (int size = -1, bool delete_vars = true);
+        void resize (const Dimensions & dimensions, bool delete_vars = true);
       
-        /**
-         * Exchanges the vector at this location with the vector at another
-         * location.
-         * @param  other   the other vector to exchange with
-         * @param  refresh_keys  force a refresh of the keys in both maps to
-         *                       ensure all keys are swapped
-         * @param  delete_keys   delete any unused keys
-         **/
-        void exchange (DoubleVectorVector & other, bool refresh_keys = true,
-          bool delete_keys = true);
-        
-        /**
-         * Copies the vector elements to an STL vector of Knowledge Records
-         * @param  target   record values at this instance
-         **/
-        void copy_to (KnowledgeVector & target) const;
-
-        /**
-        * Copies the vector elements to an STL vector
-        * @param  target   the target of the copy operation
-        **/
-        void copy_to (std::vector <type > & target) const;
-
-        /**
-         * Transfers elements from this vector to another
-         * @param  other  the other vector to transfer to
-         **/
-        void transfer_to (DoubleVectorVector & other);
-
         /**
          * Returns the size of the vector
-         * @return size of the vector
+         * @return MxN size of the vector
          **/
-        size_t size (void) const;
+        Dimensions size (void) const;
       
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
-         * @param size       size of the new vector (-1 to not change size)
+         * @param dimensions size of the new vector ({0,0} to not change size)
          **/
         void set_name (const std::string & var_name,
-          KnowledgeBase & knowledge, int size = -1);
+          KnowledgeBase & knowledge, const Dimensions & dimensions = {0,0});
         
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
-         * @param size       size of the new vector (-1 to not change size)
+         * @param dimensions  size of the new vector ({0,0} to not change size)
          **/
         void set_name (const std::string & var_name,
-          Variables & knowledge, int size = -1);
+          Variables & knowledge, const Dimensions & dimensions = {0,0});
         
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
-         * @param size       size of the new vector (-1 to not change size)
+         * @param dimensions size of the new vector ({0,0} to not change size)
          **/
         void set_name (const std::string & var_name,
-          ThreadSafeContext & knowledge, int size = -1);
+          ThreadSafeContext & knowledge, const Dimensions & dimensions = {0,0});
 
         /**
         * Sets the delimiter for adding and detecting subvariables. By default,
@@ -209,28 +178,12 @@ namespace madara
         std::string get_delimiter (void);
 
         /**
-         * Retrieves a copy of the record from the vector.
-         * @param  index  the index of the variable entry
-         * @return the value of the entry. Modifications to this will
-         *         not be reflected in the context. This is a local copy.
-         **/
-        type operator[] (size_t index) const;
-      
-        /**
          * Retrieves an index from the multi-dimensional array
          * @param  index  the index of the variable entry
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        double operator[] (Indices index) const;
-      
-        /**
-         * Retrieves a copy of the record from the vector.
-         * @param  index  the index of the variable entry
-         * @return the value of the entry. Modifications to this will
-         *         not be reflected in the context. This is a local copy.
-         **/
-        knowledge::KnowledgeRecord to_record (size_t index) const;
+        double operator[] (const Indices & index) const;
       
         /**
          * Checks to see if the index has ever been assigned a value
@@ -238,38 +191,37 @@ namespace madara
          * @return true if the record has been set to a value. False is
          *         uninitialized
          **/
-        bool exists (size_t index) const;
+        bool exists (const Indices & index) const;
 
         /**
         * Sets a knowledge variable to a specified value
         *
-        * @param index           index to set
+        * @param index           location index to set
         * @param value           value to set at location
         * @return                0 if successful, -1 if key is null, and
         *                        -2 if quality isn't high enough
         **/
-        int set (size_t index, type value);
+        int set (const Indices & index, double value);
 
         /**
         * Reads values from a STL vector of doubles
         *
         * @param value           array of doubles to set at the location
-        * @return                0 if successful, -1 if key is null, and
-        *                        -2 if quality isn't high enough
+        * @return                always returns 0
         **/
-        int set (const std::vector <type> & value);
+        int set (const std::vector<std::vector<double> > & value);
 
         /**
          * Sets a knowledge variable to a specified value
          *
-         * @param index           index to set
+         * @param index           location index to set
          * @param value           value to set at location
          * @param settings        settings for applying the update
          * @return                0 if successful, -1 if key is null, and
          *                        -2 if quality isn't high enough
          **/
-        int set (size_t index,
-          type value, 
+        int set (const Indices & index,
+          double value, 
           const KnowledgeUpdateSettings & settings);
 
         /**
@@ -277,11 +229,10 @@ namespace madara
          *
          * @param value           array of doubles to set at the location
          * @param settings        settings for applying the update
-         * @return                0 if successful, -1 if key is null, and
-         *                        -2 if quality isn't high enough
+         * @return                always returns 0
          **/
         int set (
-          const std::vector <type> & value,
+          const std::vector<std::vector<double> > & value,
           const KnowledgeUpdateSettings & settings);
        
         /**
@@ -291,12 +242,12 @@ namespace madara
          * @param quality         quality of writing to this location
          * @param settings        settings for referring to knowledge variables
          **/
-        void set_quality (size_t index, uint32_t quality,
+        void set_quality (const Indices & index, uint32_t quality,
                const KnowledgeReferenceSettings & settings =
                        KnowledgeReferenceSettings (false));
       
         /**
-         * Returns a reference to the size field of the current name
+         * Returns a reference to the size of vector
          * @return reference to the size field
          **/
         VariableReference get_size_ref (void);
@@ -374,10 +325,10 @@ namespace madara
         /**
          * Values of the array
          **/
-        std::vector <VariableReference> vector_;
+        std::vector <std::vector <VariableReference> > vector_;
 
         /**
-         * Reference to the size field of the vector space
+         * Reference to the size of 2D array
          **/
         VariableReference size_;
 
@@ -390,5 +341,5 @@ namespace madara
   }
 }
 
-#endif // _MADARA_CONTAINERS_DOUBLE_VECTOR_VECTOR_H_
+#endif // _MADARA_CONTAINERS_DOUBLE_VECTOR2D_H_
 

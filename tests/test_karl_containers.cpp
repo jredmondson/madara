@@ -12,6 +12,7 @@
 #include "madara/knowledge/containers/Collection.h"
 #include "madara/knowledge/containers/DoubleVectorVector.h"
 #include "madara/knowledge/containers/IntegerVectorVector.h"
+#include "madara/knowledge/containers/DoubleVector2D.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 
@@ -194,6 +195,138 @@ void test_flex_map (void)
   {
     std::cerr << "FAIL\n";
   }
+}
+
+
+void test_vector2D (void)
+{
+  std::cerr << "************* DOUBLEVECTOR2D: CREATING*************\n";
+  knowledge::KnowledgeBase knowledge;
+  containers::DoubleVector2D double_vector (
+    "test_doublevector2D", knowledge, {10,10});
+  std::cerr << "  Checking size()\n";
+  containers::DoubleVector2D::Dimensions size = double_vector.size ();
+
+  std::cerr << "  Setting indices\n";
+  // set the vector entries
+  double_vector.set ({1,0}, 10.22);
+  double_vector.set ({1,1}, 7.31);
+  double_vector.set ({1,2}, 6.179);
+  double_vector.set ({7,0}, 8.12);
+  double_vector.set ({7,1}, 3.34);
+  double_vector.set ({7,2}, 214.555);
+
+  // retrieve the indexes
+
+  std::cerr << "  Retrieving indices\n";
+  double array1_0 = double_vector[{1,0}];
+  double array1_1 = double_vector[{1,1}];
+  double array1_2 = double_vector[{1,2}];
+  double array7_0 = double_vector[{7,0}];
+  double array7_1 = double_vector[{7,1}];
+  double array7_2 = double_vector[{7,2}];
+
+  // check the array size
+
+  std::cerr << "  Checking array size: [" << size.x << "," << size.y <<"]: "<<
+    (size.x == 10 && size.y == 10 ? "SUCCESS\n" : "FAIL\n");
+
+  // check the array values
+  
+  std::cerr << "  Checking all array indices for values: ";
+  if (array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
+      array7_0 == 8.12 && array7_1 == 3.34 && array7_2 == 214.555)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "array1_1 = " << array1_0 << "\n";
+    std::cerr << "array1_2 = " << array1_1 << "\n";
+    std::cerr << "array1_3 = " << array1_2 << "\n";
+    std::cerr << "array7_1 = " << array7_0 << "\n";
+    std::cerr << "array7_2 = " << array7_1 << "\n";
+    std::cerr << "array7_3 = " << array7_2 << "\n";
+  }
+
+  std::cerr << "  Checking resize()\n";
+  double_vector.resize ({5,2});
+  size = double_vector.size ();
+
+  array1_0 = double_vector[{1,0}];
+  array1_1 = double_vector[{1,1}];
+  array1_2 = double_vector[{1,2}];
+  array7_0 = double_vector[{7,0}];
+  array7_1 = double_vector[{7,1}];
+  array7_2 = double_vector[{7,2}];
+  
+  std::cerr << "  Checking array size: [" << size.x << "," << size.y <<"]: "<<
+    (size.x == 5 && size.y == 2 ? "SUCCESS\n" : "FAIL\n");
+
+  std::cerr << "  Checking all array indices for values: ";
+  if (array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 0 &&
+      array7_0 == 0 && array7_1 == 0 && array7_2 == 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "array1_1 = " << array1_0 << "\n";
+    std::cerr << "array1_2 = " << array1_1 << "\n";
+    std::cerr << "array1_3 = " << array1_2 << "\n";
+    std::cerr << "array7_1 = " << array7_0 << "\n";
+    std::cerr << "array7_2 = " << array7_1 << "\n";
+    std::cerr << "array7_3 = " << array7_2 << "\n";
+  }
+
+  std::cerr << "  Checking resize()\n";
+  double_vector.resize ({8,3});
+  size = double_vector.size ();
+
+  std::cerr << "  Setting indices\n";
+  // set the vector entries
+  double_vector.set ({1,0}, 10.22);
+  double_vector.set ({1,1}, 7.31);
+  double_vector.set ({1,2}, 6.179);
+  double_vector.set ({7,0}, 8.12);
+  double_vector.set ({7,1}, 3.34);
+  double_vector.set ({7,2}, 214.555);
+
+  array1_0 = double_vector[{1,0}];
+  array1_1 = double_vector[{1,1}];
+  array1_2 = double_vector[{1,2}];
+  array7_0 = double_vector[{7,0}];
+  array7_1 = double_vector[{7,1}];
+  array7_2 = double_vector[{7,2}];
+  
+  // check the array size
+
+  std::cerr << "  Checking array size: [" << size.x << "," << size.y <<"]: "<<
+    (size.x == 8 && size.y == 3 ? "SUCCESS\n" : "FAIL\n");
+
+  // check the array values
+  
+  std::cerr << "  Checking all array indices for values: ";
+  if (array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
+      array7_0 == 8.12 && array7_1 == 3.34 && array7_2 == 214.555)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "array1_1 = " << array1_0 << "\n";
+    std::cerr << "array1_2 = " << array1_1 << "\n";
+    std::cerr << "array1_3 = " << array1_2 << "\n";
+    std::cerr << "array7_1 = " << array7_0 << "\n";
+    std::cerr << "array7_2 = " << array7_1 << "\n";
+    std::cerr << "array7_3 = " << array7_2 << "\n";
+  }
+
+  knowledge.print ();
+  knowledge.clear_modifieds ();
 }
 
 void test_vector_vectors (void)
@@ -1358,6 +1491,8 @@ int main (int , char **)
 
   test_collection ();
   test_vector_vectors ();
+
+  test_vector2D ();
 
   return 0;
 }

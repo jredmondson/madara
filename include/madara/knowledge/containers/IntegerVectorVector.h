@@ -26,7 +26,8 @@ namespace madara
     {
       /**
        * @class IntegerVectorVector
-       * @brief This class stores a vector of doubles inside of KaRL
+       * @brief This class stores a vector of NativeIntegerVectors. This
+       * is a Vector of int64_t[].
        */
       class MADARA_Export IntegerVectorVector : public BaseContainer
       {
@@ -385,9 +386,6 @@ namespace madara
         **/
         std::string delimiter_;
       };
-
-      /// provide the Array alias for the IntegerVectorVector class
-      typedef  IntegerVectorVector   IntegerVector2D;
     }
   }
 }
