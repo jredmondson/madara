@@ -26,7 +26,8 @@ namespace madara
     {
       /**
        * @class IntegerVector3D
-       * @brief Manages a 3D array of integers
+       * @brief Manages a 3D array of doubles as a virtual overlay in the
+       *        KnowledgeBase
        */
       class MADARA_Export IntegerVector3D : public BaseContainer
       {

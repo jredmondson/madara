@@ -15,7 +15,7 @@
  * @author James Edmondson <jedmondson@gmail.com>
  *
  * This file contains a C++ object that manages interactions for a
- * mxn array of doubles that can have lazy updates on each cell.
+ * 2D array of doubles that can have lazy updates on each cell.
  **/
 
 namespace madara
@@ -26,7 +26,8 @@ namespace madara
     {
       /**
        * @class DoubleVector2D
-       * @brief This class stores MxN array of doubles
+       * @brief Manages a 2D array of doubles as a virtual overlay in the
+       *        KnowledgeBase
        */
       class MADARA_Export DoubleVector2D : public BaseContainer
       {
@@ -39,6 +40,9 @@ namespace madara
 
         /// convenience typedef for size
         typedef Indices  Dimensions;
+
+        /// convenience typedef for element type
+        typedef double type;
 
         /**
          * Default constructor
@@ -97,7 +101,7 @@ namespace madara
         * Copies the vector elements to an STL vector
         * @param  target   the target of the copy operation
         **/
-        void copy_to (std::vector<std::vector<double> > & target) const;
+        void copy_to (std::vector<std::vector<type> > & target) const;
 
         /**
          * Mark the vector as modified. The vector retains the same values
@@ -183,7 +187,7 @@ namespace madara
          * @return the value of the entry. Modifications to this will
          *         not be reflected in the context. This is a local copy.
          **/
-        double operator[] (const Indices & index) const;
+        type operator[] (const Indices & index) const;
       
         /**
          * Checks to see if the index has ever been assigned a value
@@ -209,7 +213,7 @@ namespace madara
         * @param value           array of doubles to set at the location
         * @return                always returns 0
         **/
-        int set (const std::vector<std::vector<double> > & value);
+        int set (const std::vector<std::vector<type> > & value);
 
         /**
          * Sets a knowledge variable to a specified value
@@ -221,7 +225,7 @@ namespace madara
          *                        -2 if quality isn't high enough
          **/
         int set (const Indices & index,
-          double value, 
+          type value, 
           const KnowledgeUpdateSettings & settings);
 
         /**
@@ -232,7 +236,7 @@ namespace madara
          * @return                always returns 0
          **/
         int set (
-          const std::vector<std::vector<double> > & value,
+          const std::vector<std::vector<type> > & value,
           const KnowledgeUpdateSettings & settings);
        
         /**

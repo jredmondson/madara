@@ -70,8 +70,6 @@ void test_system_calls (
   madara::knowledge::KnowledgeBase & knowledge)
 {
 #ifndef _MADARA_NO_KARL_
-  bool vsstudio_check = true;
-
   knowledge.evaluate (
     "sample = #read_file ('/files/sample.jpg');"
     "sample.size = #size (sample);"

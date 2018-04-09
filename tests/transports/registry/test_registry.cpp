@@ -216,9 +216,8 @@ public:
 
   /**
   * Initializes thread with MADARA context
-  * @param   context   context for querying current program state
   **/
-  virtual void init (knowledge::KnowledgeBase & context)
+  virtual void init (knowledge::KnowledgeBase &)
   {
   }
 

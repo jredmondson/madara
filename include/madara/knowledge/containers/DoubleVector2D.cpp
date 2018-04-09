@@ -417,7 +417,7 @@ madara::knowledge::containers::DoubleVector2D::get_delimiter (void)
 
 void
 madara::knowledge::containers::DoubleVector2D::copy_to (
-  std::vector <std::vector <double> > & target) const
+  std::vector <std::vector <type> > & target) const
 {
   KnowledgeUpdateSettings keep_local (true);
 
@@ -440,11 +440,11 @@ madara::knowledge::containers::DoubleVector2D::copy_to (
   }
 }
 
-double
+madara::knowledge::containers::DoubleVector2D::type
 madara::knowledge::containers::DoubleVector2D::operator[] (
   const Indices & index) const
 {
-  double result (0);
+  type result (0);
 
   KnowledgeUpdateSettings keep_local (true);
 
@@ -484,7 +484,7 @@ madara::knowledge::containers::DoubleVector2D::exists (
 int
 madara::knowledge::containers::DoubleVector2D::set (
 const Indices & index,
-double value)
+type value)
 {
   int result = -1;
 
@@ -504,7 +504,7 @@ double value)
 
 int
 madara::knowledge::containers::DoubleVector2D::set (
-const std::vector<std::vector<double> > & value)
+const std::vector<std::vector<type> > & value)
 {
   int result = 0;
 
@@ -527,7 +527,7 @@ const std::vector<std::vector<double> > & value)
 int
 madara::knowledge::containers::DoubleVector2D::set (
   const Indices & index,
-  double value, 
+  type value, 
   const KnowledgeUpdateSettings & settings)
 {
   int result = -1;
@@ -548,7 +548,7 @@ madara::knowledge::containers::DoubleVector2D::set (
 
 int
 madara::knowledge::containers::DoubleVector2D::set (
-  const std::vector<std::vector<double> > & value,
+  const std::vector<std::vector<type> > & value,
   const KnowledgeUpdateSettings & settings)
 {
   int result = 0;

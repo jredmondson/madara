@@ -14,6 +14,8 @@
 #include "madara/knowledge/containers/IntegerVectorVector.h"
 #include "madara/knowledge/containers/DoubleVector2D.h"
 #include "madara/knowledge/containers/DoubleVector3D.h"
+#include "madara/knowledge/containers/IntegerVector2D.h"
+#include "madara/knowledge/containers/IntegerVector3D.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 
@@ -327,6 +329,136 @@ void test_vector2D (void)
   }
 
   knowledge.clear_modifieds ();
+
+
+
+
+  std::cerr << "************* INTEGERVECTOR2D: CREATING*************\n";
+  containers::IntegerVector2D int_vector (
+    "test_integervector2D", knowledge, {10,10});
+  std::cerr << "  Checking size()\n";
+  containers::IntegerVector2D::Dimensions isize = int_vector.size ();
+
+  std::cerr << "  Setting indices\n";
+  // set the vector entries
+  int_vector.set ({1,0}, 10);
+  int_vector.set ({1,1}, 7);
+  int_vector.set ({1,2}, 6);
+  int_vector.set ({7,0}, 8);
+  int_vector.set ({7,1}, 3);
+  int_vector.set ({7,2}, 214);
+
+  // retrieve the indexes
+
+  std::cerr << "  Retrieving indices\n";
+  double iarray1_0 = int_vector[{1,0}];
+  double iarray1_1 = int_vector[{1,1}];
+  double iarray1_2 = int_vector[{1,2}];
+  double iarray7_0 = int_vector[{7,0}];
+  double iarray7_1 = int_vector[{7,1}];
+  double iarray7_2 = int_vector[{7,2}];
+
+  // check the iarray size
+
+  std::cerr << "  Checking iarray size: [" << isize.x << "," << isize.y <<"]: "<<
+    (isize.x == 10 && isize.y == 10 ? "SUCCESS\n" : "FAIL\n");
+
+  // check the iarray values
+  
+  std::cerr << "  Checking all iarray indices for values: ";
+  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 &&
+      iarray7_0 == 8 && iarray7_1 == 3 && iarray7_2 == 214)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
+    std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
+    std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
+    std::cerr << "iarray7_1 = " << iarray7_0 << "\n";
+    std::cerr << "iarray7_2 = " << iarray7_1 << "\n";
+    std::cerr << "iarray7_3 = " << iarray7_2 << "\n";
+  }
+
+  std::cerr << "  Checking resize()\n";
+  int_vector.resize ({5,2});
+  isize = int_vector.size ();
+
+  iarray1_0 = int_vector[{1,0}];
+  iarray1_1 = int_vector[{1,1}];
+  iarray1_2 = int_vector[{1,2}];
+  iarray7_0 = int_vector[{7,0}];
+  iarray7_1 = int_vector[{7,1}];
+  iarray7_2 = int_vector[{7,2}];
+  
+  std::cerr << "  Checking iarray size: [" << 
+     isize.x << "," << isize.y <<"]: "<<
+    (isize.x == 5 && isize.y == 2 ? "SUCCESS\n" : "FAIL\n");
+
+  std::cerr << "  Checking all iarray indices for values: ";
+  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 0 &&
+      iarray7_0 == 0 && iarray7_1 == 0 && iarray7_2 == 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
+    std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
+    std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
+    std::cerr << "iarray7_1 = " << iarray7_0 << "\n";
+    std::cerr << "iarray7_2 = " << iarray7_1 << "\n";
+    std::cerr << "iarray7_3 = " << iarray7_2 << "\n";
+  }
+
+  std::cerr << "  Checking resize()\n";
+  int_vector.resize ({8,3});
+  isize = int_vector.size ();
+
+  std::cerr << "  Setting indices\n";
+  // set the vector entries
+  int_vector.set ({1,0}, 10);
+  int_vector.set ({1,1}, 7);
+  int_vector.set ({1,2}, 6);
+  int_vector.set ({7,0}, 8);
+  int_vector.set ({7,1}, 3);
+  int_vector.set ({7,2}, 214);
+
+  iarray1_0 = int_vector[{1,0}];
+  iarray1_1 = int_vector[{1,1}];
+  iarray1_2 = int_vector[{1,2}];
+  iarray7_0 = int_vector[{7,0}];
+  iarray7_1 = int_vector[{7,1}];
+  iarray7_2 = int_vector[{7,2}];
+  
+  // check the iarray size
+
+  std::cerr << "  Checking iarray size: [" << isize.x << "," << isize.y <<"]: "<<
+    (isize.x == 8 && isize.y == 3 ? "SUCCESS\n" : "FAIL\n");
+
+  // check the iarray values
+  
+  std::cerr << "  Checking all iarray indices for values: ";
+  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 &&
+      iarray7_0 == 8 && iarray7_1 == 3 && iarray7_2 == 214)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
+    std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
+    std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
+    std::cerr << "iarray7_1 = " << iarray7_0 << "\n";
+    std::cerr << "iarray7_2 = " << iarray7_1 << "\n";
+    std::cerr << "iarray7_3 = " << iarray7_2 << "\n";
+  }
+
+  knowledge.clear_modifieds ();
 }
 
 void test_vector3D (void)
@@ -361,7 +493,7 @@ void test_vector3D (void)
 
   std::cerr << "  Checking array size: [" <<
      size.x << "," << size.y << "," << size.z <<"]: "<<
-    (size.x == 10 && size.y == 10 ? "SUCCESS\n" : "FAIL\n");
+    (size.x == 10 && size.y == 10 && size.z == 10 ? "SUCCESS\n" : "FAIL\n");
 
   // check the array values
   
@@ -459,6 +591,139 @@ void test_vector3D (void)
     std::cerr << "array7_1 = " << array7_0 << "\n";
     std::cerr << "array7_2 = " << array7_1 << "\n";
     std::cerr << "array7_3 = " << array7_2 << "\n";
+  }
+
+  knowledge.clear_modifieds ();
+
+
+
+  std::cerr << "************* INTEGERVECTOR3D: CREATING*************\n";
+  containers::IntegerVector3D int_vector (
+    "test_integervector2D", knowledge, {10,10,10});
+  std::cerr << "  Checking size()\n";
+  containers::IntegerVector3D::Dimensions isize = int_vector.size ();
+
+  std::cerr << "  Setting indices\n";
+  // set the vector entries
+  int_vector.set ({1,0,0}, 10);
+  int_vector.set ({1,1,1}, 7);
+  int_vector.set ({1,2,2}, 6);
+  int_vector.set ({7,0,0}, 8);
+  int_vector.set ({7,1,1}, 3);
+  int_vector.set ({7,2,2}, 214);
+
+  // retrieve the indexes
+
+  std::cerr << "  Retrieving indices\n";
+  double iarray1_0 = int_vector[{1,0,0}];
+  double iarray1_1 = int_vector[{1,1,1}];
+  double iarray1_2 = int_vector[{1,2,2}];
+  double iarray7_0 = int_vector[{7,0,0}];
+  double iarray7_1 = int_vector[{7,1,1}];
+  double iarray7_2 = int_vector[{7,2,2}];
+
+  // check the iarray size
+
+  std::cerr << "  Checking iarray size: [" <<
+     isize.x << "," << isize.y << "," << isize.z <<"]: "<<
+    (isize.x == 10 && isize.y == 10 && isize.z == 10 ? "SUCCESS\n" : "FAIL\n");
+
+  // check the iarray values
+  
+  std::cerr << "  Checking all iarray indices for values: ";
+  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 &&
+      iarray7_0 == 8 && iarray7_1 == 3 && iarray7_2 == 214)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
+    std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
+    std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
+    std::cerr << "iarray7_1 = " << iarray7_0 << "\n";
+    std::cerr << "iarray7_2 = " << iarray7_1 << "\n";
+    std::cerr << "iarray7_3 = " << iarray7_2 << "\n";
+  }
+
+  std::cerr << "  Checking resize()\n";
+  int_vector.resize ({5,2,2});
+  isize = int_vector.size ();
+
+  iarray1_0 = int_vector[{1,0,0}];
+  iarray1_1 = int_vector[{1,1,1}];
+  iarray1_2 = int_vector[{1,2,2}];
+  iarray7_0 = int_vector[{7,0,0}];
+  iarray7_1 = int_vector[{7,1,1}];
+  iarray7_2 = int_vector[{7,2,2}];
+  
+  std::cerr << "  Checking iarray size: [" <<
+     isize.x << "," << isize.y << "," << isize.z <<"]: "<<
+    (isize.x == 5 && isize.y == 2 && isize.z == 2 ? "SUCCESS\n" : "FAIL\n");
+
+  std::cerr << "  Checking all iarray indices for values: ";
+  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 0 &&
+      iarray7_0 == 0 && iarray7_1 == 0 && iarray7_2 == 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
+    std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
+    std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
+    std::cerr << "iarray7_1 = " << iarray7_0 << "\n";
+    std::cerr << "iarray7_2 = " << iarray7_1 << "\n";
+    std::cerr << "iarray7_3 = " << iarray7_2 << "\n";
+  }
+
+  std::cerr << "  Checking resize()\n";
+  int_vector.resize ({8,3,4});
+  isize = int_vector.size ();
+
+  std::cerr << "  Setting indices\n";
+  // set the vector entries
+  int_vector.set ({1,0,0}, 10);
+  int_vector.set ({1,1,1}, 7);
+  int_vector.set ({1,2,2}, 6);
+  int_vector.set ({7,0,0}, 8);
+  int_vector.set ({7,1,1}, 3);
+  int_vector.set ({7,2,2}, 214);
+
+  //madara::logger::global_logger->set_level (madara::logger::LOG_MINOR);
+
+  iarray1_0 = int_vector[{1,0,0}];
+  iarray1_1 = int_vector[{1,1,1}];
+  iarray1_2 = int_vector[{1,2,2}];
+  iarray7_0 = int_vector[{7,0,0}];
+  iarray7_1 = int_vector[{7,1,1}];
+  iarray7_2 = int_vector[{7,2,2}];
+  
+  // check the iarray size
+
+  std::cerr << "  Checking iarray size: [" <<
+     isize.x << "," << isize.y << "," << isize.z <<"]: "<<
+    (isize.x == 8 && isize.y == 3 && isize.z == 4 ? "SUCCESS\n" : "FAIL\n");
+
+  // check the iarray values
+  
+  std::cerr << "  Checking all iarray indices for values: ";
+  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 &&
+      iarray7_0 == 8 && iarray7_1 == 3 && iarray7_2 == 214)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
+    std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
+    std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
+    std::cerr << "iarray7_1 = " << iarray7_0 << "\n";
+    std::cerr << "iarray7_2 = " << iarray7_1 << "\n";
+    std::cerr << "iarray7_3 = " << iarray7_2 << "\n";
   }
 
   knowledge.clear_modifieds ();

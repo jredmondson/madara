@@ -11,7 +11,7 @@
 using namespace madara::knowledge;
 using namespace madara::knowledge::rcw;
 
-int main(int argc, char ** argv)
+int main(int, char **)
 {
   KnowledgeBase kb;
   Transaction tx(kb);
