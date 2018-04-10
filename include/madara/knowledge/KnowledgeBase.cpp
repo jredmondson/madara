@@ -1799,6 +1799,24 @@ madara::knowledge::KnowledgeBase::save_context (
   return result;
 }
 
+int64_t
+madara::knowledge::KnowledgeBase::save_context (
+  CheckpointSettings & settings) const
+{
+  int64_t result = 0;
+  
+  if (context_)
+  {
+    result = context_->save_context (settings);
+  }
+  else if (impl_.get ())
+  {
+    result = impl_->save_context (settings);
+  }
+
+  return result;
+}
+
 
 int64_t
 madara::knowledge::KnowledgeBase::save_as_json (
@@ -1813,6 +1831,24 @@ madara::knowledge::KnowledgeBase::save_as_json (
   else if (impl_.get ())
   {
     result = impl_->save_as_json (filename);
+  }
+
+  return result;
+}
+
+int64_t
+madara::knowledge::KnowledgeBase::save_as_json (
+  const CheckpointSettings & settings) const
+{
+  int64_t result = 0;
+
+  if (context_)
+  {
+    result = context_->save_as_json (settings);
+  }
+  else if (impl_.get ())
+  {
+    result = impl_->save_as_json (settings);
   }
 
   return result;
@@ -1836,6 +1872,24 @@ madara::knowledge::KnowledgeBase::save_as_karl (
   return result;
 }
 
+int64_t
+madara::knowledge::KnowledgeBase::save_as_karl (
+  const CheckpointSettings & settings) const
+{
+  int64_t result = 0;
+
+  if (context_)
+  {
+    result = context_->save_as_karl (settings);
+  }
+  else if (impl_.get ())
+  {
+    result = impl_->save_as_karl (settings);
+  }
+
+  return result;
+}
+
 
 int64_t
 madara::knowledge::KnowledgeBase::save_checkpoint (
@@ -1851,6 +1905,24 @@ madara::knowledge::KnowledgeBase::save_checkpoint (
   else if (impl_.get ())
   {
     result = impl_->save_checkpoint (filename, reset_modifieds);
+  }
+
+  return result;
+}
+
+int64_t
+madara::knowledge::KnowledgeBase::save_checkpoint (
+  const CheckpointSettings & settings) const
+{
+  int64_t result = 0;
+  
+  if (context_)
+  {
+    result = context_->save_checkpoint (settings);
+  }
+  else if (impl_.get ())
+  {
+    result = impl_->save_checkpoint (settings);
   }
 
   return result;
@@ -1893,6 +1965,25 @@ const KnowledgeUpdateSettings & settings)
   else if (impl_.get ())
   {
     result = impl_->load_context (filename, meta, use_id, settings);
+  }
+
+  return result;
+}
+
+int64_t
+madara::knowledge::KnowledgeBase::load_context (
+CheckpointSettings & checkpoint_settings,
+const KnowledgeUpdateSettings & update_settings)
+{
+  int64_t result = 0;
+
+  if (context_)
+  {
+    result = context_->load_context (checkpoint_settings, update_settings);
+  }
+  else if (impl_.get ())
+  {
+    result = impl_->load_context (checkpoint_settings, update_settings);
   }
 
   return result;

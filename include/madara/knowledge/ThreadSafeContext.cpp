@@ -1975,6 +1975,154 @@ madara::knowledge::ThreadSafeContext::save_context (
   return meta.size;
 }
 
+int64_t
+madara::knowledge::ThreadSafeContext::save_context (
+  const CheckpointSettings & settings) const
+{
+  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
+    "ThreadSafeContext::save_context:" \
+    " opening file %s\n", settings.filename.c_str ());
+  
+  int64_t total_written (0);
+  FILE * file = fopen (settings.filename.c_str (), "wb");
+  
+  FileHeader meta;
+  meta.states = 1;
+  strncpy (meta.originator, settings.originator.c_str (),
+    sizeof (meta.originator) < settings.originator.size () + 1 ?
+    sizeof (meta.originator) : settings.originator.size () + 1);
+
+  transport::MessageHeader checkpoint_header;
+
+  if (file)
+  {
+    int64_t max_buffer (settings.buffer_size);
+    int64_t buffer_remaining (max_buffer);
+    utility::ScopedArray <char> buffer = new char [max_buffer];
+
+    char * current = buffer.get_ptr ();
+
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::save_context:" \
+      " generating file meta\n");
+  
+    meta.size += checkpoint_header.encoded_size ();
+    checkpoint_header.size = checkpoint_header.encoded_size ();
+
+    current = meta.write (current, buffer_remaining);
+    current = checkpoint_header.write (current, buffer_remaining);
+
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::save_context:" \
+      " writing records\n");
+  
+    // lock the context
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    for (KnowledgeMap::const_iterator i = map_.begin ();
+         i != map_.end (); ++i)
+    {
+      if (i->second.exists ())
+      {
+        // check if the prefix is allowed
+        if (settings.prefixes.size () > 0)
+        {
+          madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+            "ThreadSafeContext::save_context:" \
+            " we have %d prefixes to check against.\n",
+            (int)settings.prefixes.size ());
+
+          bool prefix_found = false;
+          for (size_t j = 0;
+               j < settings.prefixes.size () && !prefix_found; ++j)
+          {
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::save_context:" \
+              " checking record %s against prefix %s.\n",
+              i->first.c_str (),
+              settings.prefixes[j].c_str ());
+
+            if (madara::utility::begins_with (
+                  i->first, settings.prefixes[j]))
+            {
+              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                "ThreadSafeContext::save_context:" \
+                " record has the correct prefix.\n");
+
+              prefix_found = true;
+            }
+          }
+
+          if (!prefix_found)
+          {
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::save_context:" \
+              " record has the wrong prefix. Rejected.\n");
+
+            continue;
+          }
+        }
+
+        // get the encoded size of the record for checking buffer boundaries
+        int64_t encoded_size = i->second.get_encoded_size (i->first);
+        ++checkpoint_header.updates;
+        meta.size += encoded_size;
+        checkpoint_header.size += encoded_size;
+
+        if (encoded_size > buffer_remaining)
+        {
+          /**
+           * if the record is larger than the buffer we have remaining, then
+           * write the buffer to the file
+           **/
+          current = buffer.get_ptr ();
+          fwrite (current,
+            (size_t)(max_buffer - buffer_remaining), 1, file);
+          total_written += (int64_t)(max_buffer - buffer_remaining);
+          buffer_remaining = max_buffer;
+
+          if (encoded_size > max_buffer)
+          {
+            /**
+             * If the record is larger than the buffer, then we must allocate a
+             * buffer large enough to write to it.
+             **/
+            buffer = new char[encoded_size];
+            max_buffer = encoded_size;
+            buffer_remaining = max_buffer;
+            current = buffer.get_ptr ();
+          } // end if larger than buffer
+        } // end if larger than buffer remaining
+
+        current = i->second.write (current, i->first, buffer_remaining);
+      }
+    }
+  
+    if (buffer_remaining != max_buffer)
+    {
+      fwrite (buffer.get_ptr (),
+        (size_t) (max_buffer - buffer_remaining), 1, file);
+      total_written += (int64_t) (max_buffer - buffer_remaining);
+    }
+
+    // update the meta data at the front
+    fseek (file, 0, SEEK_SET);
+
+    current = buffer.get_ptr ();
+    buffer_remaining = max_buffer;
+
+    current = meta.write (current, buffer_remaining);
+    current = checkpoint_header.write (current, buffer_remaining);
+
+    fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
+
+    fclose (file);
+  }
+
+  return meta.size;
+}
+
+
 
 int64_t
 madara::knowledge::ThreadSafeContext::save_as_karl (
@@ -2035,6 +2183,144 @@ const std::string & filename) const
           buffer << "#read_file ('";
 
           std::string path = utility::extract_path (filename);
+
+          if (path == "")
+            path = ".";
+
+          path += "/";
+          path += i->first;
+
+          if (i->second.type () == knowledge::KnowledgeRecord::IMAGE_JPEG)
+          {
+            path += ".jpg";
+          }
+          else
+          {
+            path += ".dat";
+          }
+
+          utility::write_file (path,
+            (void *)i->second.file_value_.get_ptr (), i->second.size ());
+          buffer << path;
+
+
+          buffer << "')";
+        }
+
+        buffer << ";\n";
+      }
+    }
+
+    std::string result = buffer.str ();
+    file << result;
+
+    bytes_written = (int64_t) result.size ();
+
+    file.close ();
+  }
+
+  return bytes_written;
+}
+
+
+int64_t
+madara::knowledge::ThreadSafeContext::save_as_karl (
+const CheckpointSettings & settings) const
+{
+  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "ThreadSafeContext::save_as_karl:" \
+    " opening file %s\n", settings.filename.c_str ());
+
+  int64_t bytes_written (0);
+  std::stringstream buffer;
+  std::ofstream file;
+  file.open (settings.filename.c_str ());
+
+  if (file.is_open ())
+  {
+    // lock the context
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    for (KnowledgeMap::const_iterator i = map_.begin ();
+      i != map_.end (); ++i)
+    {
+      if (i->second.exists ())
+      {
+        // check if the prefix is allowed
+        if (settings.prefixes.size () > 0)
+        {
+          madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+            "ThreadSafeContext::save_as_karl:" \
+            " we have %d prefixes to check against.\n",
+            (int)settings.prefixes.size ());
+
+          bool prefix_found = false;
+          for (size_t j = 0;
+               j < settings.prefixes.size () && !prefix_found; ++j)
+          {
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::save_as_karl:" \
+              " checking record %s against prefix %s.\n",
+              i->first.c_str (),
+              settings.prefixes[j].c_str ());
+
+            if (madara::utility::begins_with (
+              i->first, settings.prefixes[j]))
+            {
+              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                "ThreadSafeContext::save_as_karl:" \
+                " the record has the correct prefix.\n");
+
+              prefix_found = true;
+            }
+          }
+
+          if (!prefix_found)
+          {
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::save_as_karl:" \
+              " the record does not have a correct prefix.\n");
+
+            continue;
+          }
+        }
+
+        buffer << i->first;
+        buffer << "=";
+
+        if (!i->second.is_binary_file_type ())
+        {
+          // record is a non binary file type
+          if (i->second.is_string_type ())
+          {
+            // strings require quotation marks
+            buffer << "\"";
+          }
+          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
+            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
+          {
+            // arrays require brackets
+            buffer << "[";
+          }
+
+          buffer << i->second;
+          if (i->second.is_string_type ())
+          {
+            // strings require quotation marks
+            buffer << "\"";
+          }
+          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
+            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
+          {
+            // arrays require brackets
+            buffer << "]";
+          }
+        }
+        else
+        {
+          buffer << "#read_file ('";
+
+          std::string path = utility::extract_path (settings.filename);
 
           if (path == "")
             path = ".";
@@ -2138,6 +2424,153 @@ const std::string & filename) const
           buffer << "#read_file ('";
 
           std::string path = utility::extract_path (filename);
+
+          if (path == "")
+            path = ".";
+
+          path += "/";
+          path += i->first;
+
+          if (i->second.type () == knowledge::KnowledgeRecord::IMAGE_JPEG)
+          {
+            path += ".jpg";
+          }
+          else
+          {
+            path += ".dat";
+          }
+
+          utility::write_file (path,
+            (void *)i->second.file_value_.get_ptr (), i->second.size ());
+          buffer << path;
+
+
+          buffer << "')";
+        }
+
+        KnowledgeMap::const_iterator j (i);
+
+        if (++j != map_.end ())
+          buffer << ",\n";
+      }
+    }
+
+    buffer << "\n}\n";
+
+    std::string result = buffer.str ();
+    file << result;
+
+    bytes_written = (int64_t) result.size ();
+
+    file.close ();
+  }
+
+  return bytes_written;
+}
+
+
+int64_t
+madara::knowledge::ThreadSafeContext::save_as_json (
+const CheckpointSettings & settings) const
+{
+  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "ThreadSafeContext::save_as_json:" \
+    " opening file %s\n", settings.filename.c_str ());
+
+  int64_t bytes_written (0);
+
+  std::stringstream buffer;
+  std::ofstream file;
+  file.open (settings.filename.c_str ());
+
+  if (file.is_open ())
+  {
+    // lock the context
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    buffer << "{\n";
+
+    for (KnowledgeMap::const_iterator i = map_.begin ();
+      i != map_.end (); ++i)
+    {
+      if (i->second.exists ())
+      {
+        // check if the prefix is allowed
+        if (settings.prefixes.size () > 0)
+        {
+          madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+            "ThreadSafeContext::save_as_json:" \
+            " we have %d prefixes to check against.\n",
+            (int)settings.prefixes.size ());
+
+          bool prefix_found = false;
+          for (size_t j = 0;
+               j < settings.prefixes.size () && !prefix_found; ++j)
+          {
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::save_as_json:" \
+              " checking record %s against prefix %s.\n",
+              i->first.c_str (),
+              settings.prefixes[j].c_str ());
+
+            if (madara::utility::begins_with (
+              i->first, settings.prefixes[j]))
+            {
+              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                "ThreadSafeContext::save_as_json:" \
+                " the record has the correct prefix.\n");
+
+              prefix_found = true;
+            }
+          }
+
+          if (!prefix_found)
+          {
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::save_as_json:" \
+              " the record does not have a correct prefix.\n");
+
+            continue;
+          }
+        }
+
+        buffer << "  \"";
+        buffer << i->first;
+        buffer << "\" : ";
+
+        if (!i->second.is_binary_file_type ())
+        {
+          // record is a non binary file type
+          if (i->second.is_string_type ())
+          {
+            // strings require quotation marks
+            buffer << "\"";
+          }
+          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
+            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
+          {
+            // arrays require brackets
+            buffer << "[";
+          }
+
+          buffer << i->second;
+          if (i->second.is_string_type ())
+          {
+            // strings require quotation marks
+            buffer << "\"";
+          }
+          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
+            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
+          {
+            // arrays require brackets
+            buffer << "]";
+          }
+        }
+        else
+        {
+          buffer << "#read_file ('";
+
+          std::string path = utility::extract_path (settings.filename);
 
           if (path == "")
             path = ".";
@@ -2418,6 +2851,430 @@ madara::knowledge::ThreadSafeContext::load_context (
 
   return total_read;
 }
+
+
+int64_t
+madara::knowledge::ThreadSafeContext::load_context (
+  CheckpointSettings & checkpoint_settings,
+  const KnowledgeUpdateSettings & update_settings)
+{
+  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
+    "ThreadSafeContext::load_context:" \
+    " opening file %s\n", checkpoint_settings.filename.c_str ());
+
+  // using ACE for writing to the destination file
+  FILE * file = fopen (checkpoint_settings.filename.c_str (), "rb");
+
+  int64_t total_read (0);
+
+  if (checkpoint_settings.clear_knowledge)
+  {
+    this->clear ();
+  }
+
+  if (file)
+  {
+    FileHeader meta;
+    int64_t max_buffer (checkpoint_settings.buffer_size);
+    int64_t buffer_remaining (max_buffer);
+
+    utility::ScopedArray <char> buffer = new char[max_buffer];
+    const char * current = buffer.get_ptr ();
+
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::load_context:" \
+      " reading file meta data\n");
+
+    total_read = fread (buffer.get_ptr (),
+      1, max_buffer, file);
+    buffer_remaining = (int64_t)total_read;
+
+    if (total_read > FileHeader::encoded_size () &&
+      FileHeader::file_header_test (current))
+    {
+      // if there was something in the file, and it was the right header
+
+      current = meta.read (current, buffer_remaining);
+
+      checkpoint_settings.initial_timestamp = meta.initial_timestamp;
+      checkpoint_settings.last_timestamp = meta.last_timestamp;
+      checkpoint_settings.originator = meta.originator;
+      checkpoint_settings.states = meta.states;
+      checkpoint_settings.version = utility::to_string_version (
+        meta.karl_version);
+
+      /**
+      * check that there is more than one state and that the rest of
+      * the file is sufficient to at least be a message header (what
+      * we use as a checkpoint header
+      **/
+      if (meta.states > 0)
+      {
+        for (uint64_t state = 0; state < meta.states; ++state)
+        {
+          if (buffer_remaining > (int64_t)
+            transport::MessageHeader::static_encoded_size ())
+          {
+            transport::MessageHeader checkpoint_header;
+
+            current = checkpoint_header.read (current, buffer_remaining);
+
+            if (state == 0)
+            {
+              checkpoint_settings.initial_lamport_clock = checkpoint_header.clock;
+            }
+
+            if (state == meta.states - 1)
+            {
+              checkpoint_settings.last_lamport_clock = checkpoint_header.clock;
+            }
+
+            /**
+            * What we read into the checkpoint_header will dictate our
+            * max_buffer. We want to make this checkpoint_header size into
+            * something reasonable.
+            **/
+            if (checkpoint_header.size > (uint64_t)buffer_remaining)
+            {
+              /**
+              * create a new array and copy the remaining elements
+              * from buffer_remaining
+              **/
+              utility::ScopedArray <char> new_buffer =
+                new char[checkpoint_header.size];
+              memcpy (new_buffer.get_ptr (), current,
+                (size_t)buffer_remaining);
+
+              // read the rest of checkpoint into new buffer
+              total_read += fread (new_buffer.get_ptr () + buffer_remaining, 1,
+                checkpoint_header.size
+                - (uint64_t)buffer_remaining
+                - checkpoint_header.encoded_size (), file);
+
+              // update other variables
+              max_buffer = checkpoint_header.size;
+              buffer_remaining = checkpoint_header.size
+                - checkpoint_header.encoded_size ();
+              current = new_buffer.get_ptr ();
+              buffer = new_buffer;
+            } // end if allocation is needed
+
+            for (uint32_t update = 0;
+              update < checkpoint_header.updates; ++update)
+            {
+              std::string key;
+              knowledge::KnowledgeRecord record;
+              current = record.read (current, key, buffer_remaining);
+
+              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                "ThreadSafeContext::load_context:" \
+                " read record %s\n", key.c_str ());
+
+              // check if the prefix is allowed
+              if (checkpoint_settings.prefixes.size () > 0)
+              {
+                bool prefix_found = false;
+                for (size_t j = 0; j < checkpoint_settings.prefixes.size ()
+                                   && !prefix_found; ++j)
+                {
+                  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                    "ThreadSafeContext::load_context:" \
+                    " checking record %s against prefix %s\n",
+                    key.c_str (), checkpoint_settings.prefixes[j].c_str ());
+
+                  if (madara::utility::begins_with (
+                        key, checkpoint_settings.prefixes[j]))
+                  {
+                    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                      "ThreadSafeContext::load_context:" \
+                      " record has the correct prefix.\n");
+
+                    prefix_found = true;
+                  }
+                }
+
+                if (!prefix_found)
+                {
+                  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                    "ThreadSafeContext::load_context:" \
+                    " record does not have the correct prefix. Rejected.\n");
+
+                  continue;
+                }
+              }
+
+              update_record_from_external (key, record, update_settings);
+            }
+
+          } // end if enough buffer for reading a message header
+
+          if (buffer_remaining == 0 && (uint64_t)total_read < meta.size)
+          {
+            buffer_remaining = max_buffer;
+            current = buffer.get_ptr ();
+            total_read += fread (buffer.get_ptr (), 1, buffer_remaining, file);
+          }
+        } // end for loop of states
+      }
+    } // end if total_read > 0
+    else
+    {
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "ThreadSafeContext::load_context:" \
+        " invalid file. No contextual change.\n");
+    }
+
+    fclose (file);
+  }
+
+  return total_read;
+}
+
+
+int64_t
+madara::knowledge::ThreadSafeContext::save_checkpoint (
+  const CheckpointSettings & settings) const
+{
+  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
+    "ThreadSafeContext::save_checkpoint:" \
+    " opening file %s\n", settings.filename.c_str ());
+  
+  int64_t total_written (0);
+  FILE * file = fopen (settings.filename.c_str (), "rb+");
+  
+  FileHeader meta;
+  transport::MessageHeader checkpoint_header;
+
+  if (file)
+  {
+    int64_t max_buffer (settings.buffer_size);
+    int64_t buffer_remaining (max_buffer);
+    utility::ScopedArray <char> buffer = new char [max_buffer];
+
+    char * current = buffer.get_ptr ();
+    const char * meta_reader = current;
+  
+    // read the meta data at the front
+    fseek (file, 0, SEEK_SET);
+    fread (current, meta.encoded_size (), 1, file);
+
+    meta_reader = meta.read (meta_reader, buffer_remaining);
+    
+    if (settings.originator != "")
+    {
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "ThreadSafeContext::save_checkpoint:" \
+        " setting file meta id to %s\n",
+        settings.originator.c_str ());
+  
+      strncpy (meta.originator, settings.originator.c_str (),
+        sizeof (meta.originator) < settings.originator.size () + 1 ?
+        sizeof (meta.originator) : settings.originator.size () + 1);
+    }
+
+    // save the spot where the file ends
+    uint64_t checkpoint_start = meta.size;
+
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::save_checkpoint:" \
+      " generating file meta\n");
+  
+    meta.size += checkpoint_header.encoded_size ();
+    checkpoint_header.size = 0;
+
+    // lock the context
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    const knowledge::KnowledgeRecords & records = this->get_modifieds ();    
+    const knowledge::KnowledgeRecords & local_records = this->get_local_modified ();
+
+    if (records.size () + local_records.size () != 0)
+    {
+      checkpoint_header.size = checkpoint_header.encoded_size ();
+
+      // set the file pointer to the end of the file
+      fseek (file, checkpoint_start, SEEK_SET);
+      current = checkpoint_header.write (current, buffer_remaining);
+
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "ThreadSafeContext::save_checkpoint:" \
+        " writing records\n");
+  
+      for (KnowledgeRecords::const_iterator i = records.begin ();
+           i != records.end (); ++i)
+      {
+        if (i->second->exists ())
+        {
+          // check if the prefix is allowed
+          if (settings.prefixes.size () > 0)
+          {
+            bool prefix_found = false;
+            for (size_t j = 0;
+                 j < settings.prefixes.size () && !prefix_found; ++j)
+            {
+              if (madara::utility::begins_with (
+                i->second->to_string (), settings.prefixes[j]))
+              {
+                prefix_found = true;
+              }
+            }
+
+            if (!prefix_found)
+              continue;
+          }
+
+          // get the encoded size of the record for checking buffer boundaries
+          int64_t encoded_size = i->second->get_encoded_size (i->first);
+          ++checkpoint_header.updates;
+          meta.size += encoded_size;
+          checkpoint_header.size += encoded_size;
+
+          if (encoded_size > buffer_remaining)
+          {
+            /**
+             * if the record is larger than the buffer we have remaining, then
+             * write the buffer to the file
+             **/
+            current = buffer.get_ptr ();
+            fwrite (current,
+              (size_t)(max_buffer - buffer_remaining), 1, file);
+            total_written += (int64_t)(max_buffer - buffer_remaining);
+            buffer_remaining = max_buffer;
+
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::save_checkpoint:" \
+              " encoded_size larger than remaining buffer. Flushing\n");
+
+            if (encoded_size > max_buffer)
+            {
+              /**
+               * If the record is larger than the buffer, then we must allocate a
+               * buffer large enough to write to it.
+               **/
+              buffer = new char[encoded_size];
+              max_buffer = encoded_size;
+              buffer_remaining = max_buffer;
+              current = buffer.get_ptr ();
+
+              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                "ThreadSafeContext::save_checkpoint:" \
+                " encoded_size larger than entire buffer. Reallocating\n");
+            } // end if larger than buffer
+          } // end if larger than buffer remaining
+
+          current = i->second->write (current, i->first, buffer_remaining);
+        }
+      } // end records loop
+
+      for (KnowledgeRecords::const_iterator i = local_records.begin ();
+           i != local_records.end (); ++i)
+      {
+        if (i->second->exists ())
+        {
+          // check if the prefix is allowed
+          if (settings.prefixes.size () > 0)
+          {
+            bool prefix_found = false;
+            for (size_t j = 0;
+                 j < settings.prefixes.size () && !prefix_found; ++j)
+            {
+              if (madara::utility::begins_with (
+                i->second->to_string (), settings.prefixes[j]))
+              {
+                prefix_found = true;
+              }
+            }
+
+            if (!prefix_found)
+              continue;
+          }
+
+          // get the encoded size of the record for checking buffer boundaries
+          int64_t encoded_size = i->second->get_encoded_size (i->first);
+          ++checkpoint_header.updates;
+          meta.size += encoded_size;
+          checkpoint_header.size += encoded_size;
+
+          if (encoded_size > buffer_remaining)
+          {
+            /**
+             * if the record is larger than the buffer we have remaining, then
+             * write the buffer to the file
+             **/
+            current = buffer.get_ptr ();
+            fwrite (current,
+              (size_t)(max_buffer - buffer_remaining), 1, file);
+            total_written += (int64_t)(max_buffer - buffer_remaining);
+            buffer_remaining = max_buffer;
+
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::save_checkpoint:" \
+              " encoded_size larger than remaining buffer. Flushing\n");
+
+            if (encoded_size > max_buffer)
+            {
+              /**
+               * If the record is larger than the buffer, then we must allocate a
+               * buffer large enough to write to it.
+               **/
+              buffer = new char[encoded_size];
+              max_buffer = encoded_size;
+              buffer_remaining = max_buffer;
+              current = buffer.get_ptr ();
+
+              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                "ThreadSafeContext::save_checkpoint:" \
+                " encoded_size larger than entire buffer. Reallocating\n");
+            } // end if larger than buffer
+          } // end if larger than buffer remaining
+
+          current = i->second->write (current, i->first, buffer_remaining);
+        }
+      }
+
+      if (buffer_remaining != max_buffer)
+      {
+        fwrite (buffer.get_ptr (),
+          (size_t) (max_buffer - buffer_remaining), 1, file);
+        total_written += (size_t) (max_buffer - buffer_remaining);
+      }
+
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "ThreadSafeContext::save_checkpoint:" \
+        " updating file meta data\n");
+  
+      // update the meta data at the front
+      fseek (file, 0, SEEK_SET);
+
+      current = buffer.get_ptr ();
+      buffer_remaining = max_buffer;
+      ++meta.states;
+
+      current = meta.write (current, buffer_remaining);
+
+      fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
+
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "ThreadSafeContext::save_checkpoint:" \
+        " updating checkpoint meta data\n");
+  
+      // update the checkpoint meta data
+      fseek (file, checkpoint_start, SEEK_SET);
+      
+      current = buffer.get_ptr ();
+      buffer_remaining = max_buffer;
+
+      current = checkpoint_header.write (current, buffer_remaining);
+
+      fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
+    }
+
+    fclose (file);
+  }
+
+  return checkpoint_header.size;
+}
+
 
 int64_t
 madara::knowledge::ThreadSafeContext::save_checkpoint (

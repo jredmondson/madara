@@ -28,12 +28,16 @@ namespace logger = madara::logger;
 namespace threads = madara::threads;
 
 typedef knowledge::KnowledgeRecord::Integer  Integer;
-typedef  std::vector <std::string>  StringVector;
+typedef std::vector <std::string>            StringVector;
 
 // default transport settings
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
 transport::QoSTransportSettings settings;
+
+// checkpoint settings
+knowledge::CheckpointSettings load_checkpoint_settings;
+knowledge::CheckpointSettings save_checkpoint_settings;
 
 // initial logic is empty
 std::string logic;
@@ -138,6 +142,8 @@ void handle_arguments (int argc, char ** argv)
         "  [-kp]--print-prefix      filter prints by prefix. Can be multiple.\n" \
         "  [-ky]                    print knowledge after frequent evaluations\n" \
         "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
+        "  [-lcp|--load-checkpoint-prefix prfx]\n" \
+        "                           prefix of knowledge to load from checkpoint\n" \
         "  [-lt|--load-transport file] a file to load transport settings from\n" \
         "  [-ltp|--load-transport-prefix prfx] prefix of saved settings\n" \
         "  [-ltt|--load-transport-text file] a text file to load transport settings from\n" \
@@ -148,6 +154,8 @@ void handle_arguments (int argc, char ** argv)
         "  [-s|--save file]         save the resulting knowledge base as karl\n" \
         "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
         "                           binary checkpoint\n" \
+        "  [-scp|--save-checkpoint-prefix prfx]\n" \
+        "                           prefix of knowledge to save in checkpoint\n" \
         "  [-sj|--save-json file]   save the resulting knowledge base as JSON\n" \
         "  [-st|--save-transport file] a file to save transport settings to\n" \
         "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
@@ -226,6 +234,15 @@ void handle_arguments (int argc, char ** argv)
         std::stringstream buffer (argv[i + 1]);
         buffer >> level;
         logger::global_logger->set_level (level);
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-lcp" || arg1 == "--load-checkpoint-prefix")
+    {
+      if (i + 1 < argc)
+      {
+        load_checkpoint_settings.prefixes.push_back (argv[i + 1]);
       }
 
       ++i;
@@ -325,6 +342,15 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
         save_binary = argv[i + 1];
+
+      ++i;
+    }
+    else if (arg1 == "-scp" || arg1 == "--save-checkpoint-prefix")
+    {
+      if (i + 1 < argc)
+      {
+        save_checkpoint_settings.prefixes.push_back (argv[i + 1]);
+      }
 
       ++i;
     }
@@ -585,19 +611,24 @@ int main (int argc, char ** argv)
       initbinaries.c_str ());
 
     madara::knowledge::EvalSettings silent (true, true, true, true, true);
-    madara::knowledge::FileHeader meta;
-    knowledge.load_context (initbinaries, meta, use_id);
+    //madara::knowledge::FileHeader meta;
+    load_checkpoint_settings.filename = initbinaries;
+    knowledge.load_context (load_checkpoint_settings);
 
     if (meta_prefix != "")
     {
       knowledge.set (meta_prefix + ".originator",
-        std::string (meta.originator), silent);
+        load_checkpoint_settings.originator, silent);
       knowledge.set (meta_prefix + ".version",
-        utility::to_string_version (meta.karl_version), silent);
+        load_checkpoint_settings.version, silent);
       knowledge.set (meta_prefix + ".last_timestamp",
-        (Integer)meta.last_timestamp, silent);
+        (Integer)load_checkpoint_settings.last_timestamp, silent);
       knowledge.set (meta_prefix + ".initial_timestamp",
-        (Integer)meta.initial_timestamp, silent);
+        (Integer)load_checkpoint_settings.initial_timestamp, silent);
+      knowledge.set (meta_prefix + ".last_lamport_clock",
+        (Integer)load_checkpoint_settings.last_lamport_clock, silent);
+      knowledge.set (meta_prefix + ".initial_lamport_clock",
+        (Integer)load_checkpoint_settings.initial_lamport_clock, silent);
       knowledge.set (meta_prefix + ".current_timestamp",
         (Integer)time (NULL), silent);
     }
@@ -732,20 +763,24 @@ int main (int argc, char ** argv)
   // save as karl if requested
   if (save_location.size () > 0)
   {
-    knowledge.save_as_karl (save_location);
+    save_checkpoint_settings.filename = save_location;
+    knowledge.save_as_karl (save_checkpoint_settings);
   }
 
   // save as karl if requested
   if (save_json.size () > 0)
   {
-    knowledge.save_as_json (save_json);
+    save_checkpoint_settings.filename = save_json;
+    knowledge.save_as_json (save_checkpoint_settings);
   }
 
   // save as binary if requested
   if (save_binary.size () > 0)
   {
-    knowledge.save_context (save_binary);
+    save_checkpoint_settings.filename = save_binary;
+    knowledge.save_context (save_checkpoint_settings);
   }
 
   return 0;
 }
+

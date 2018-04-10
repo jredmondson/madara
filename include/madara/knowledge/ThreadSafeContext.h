@@ -31,6 +31,7 @@
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
 #include "madara/knowledge/KnowledgeReferenceSettings.h"
 #include "madara/knowledge/CompiledExpression.h"
+#include "madara/knowledge/CheckpointSettings.h"
 
 #ifdef _MADARA_JAVA_
 #include "madara_jni.h"
@@ -1356,18 +1357,41 @@ namespace madara
         const std::string & id = "") const;
 
       /**
-      * Saves the context to a file as JSON
-      * @param   filename    name of the file to save to
-      * @return  total bytes written
-      **/
+       * Saves the context to a file
+       * @param   settings    the settings to save
+       * @return              -1 if file open failed<br />
+       *                      -2 if file write failed<br />
+       *                      >0 if successful (number of bytes written)
+       **/
+      int64_t save_context (const CheckpointSettings & settings) const;
+
+      /**
+       * Saves the context to a file as JSON
+       * @param   filename    name of the file to save to
+       * @return  total bytes written
+       **/
       int64_t save_as_json (const std::string & filename) const;
 
       /**
-      * Saves the context to a file as karl assignments, rather than binary
-      * @param   filename    name of the file to save to
-      * @return  total bytes written
-      **/
+       * Saves the context to a file as JSON
+       * @param   settings    the settings to save
+       * @return  total bytes written
+       **/
+      int64_t save_as_json (const CheckpointSettings & settings) const;
+
+      /**
+       * Saves the context to a file as karl assignments, rather than binary
+       * @param   filename    name of the file to save to
+       * @return  total bytes written
+       **/
       int64_t save_as_karl (const std::string & filename) const;
+
+      /**
+       * Saves the context to a file as karl assignments, rather than binary
+       * @param   settings    the settings to save
+       * @return  total bytes written
+       **/
+      int64_t save_as_karl (const CheckpointSettings & settings) const;
 
       /**
        * Loads the context from a file
@@ -1400,13 +1424,40 @@ namespace madara
         KnowledgeUpdateSettings (true, true, true, false));
 
       /**
+      * Loads the context from a file
+      * @param   checkpoint_settings  checkpoint settings to load
+      * @param   update_settings      settings for applying the updates
+      * @return              -1 if file open failed<br />
+      *                      -2 if file read failed<br />
+      *                      >0 if successful (number of bytes written)
+      **/
+      int64_t load_context (CheckpointSettings & checkpoint_settings,
+        const KnowledgeUpdateSettings & update_settings =
+        KnowledgeUpdateSettings (true, true, true, false));
+
+      /**
        * Saves a checkpoint of a list of changes to a file
        * @param   filename    name of the file to open
        * @param   id          unique identifier of the context holder
+       * @return              -1 if file open failed<br />
+       *                      -2 if file write failed<br />
+       *                      >0 if successful (number of bytes written)
        **/
 
       int64_t save_checkpoint (const std::string & filename,
         const std::string & id = "") const;
+      
+      /**
+       * Saves a checkpoint of a list of changes to a file
+       * @param   settings    checkpoint settings to load
+       * @param   id          unique identifier of the context holder
+       * @return              -1 if file open failed<br />
+       *                      -2 if file write failed<br />
+       *                      >0 if successful (number of bytes written)
+       **/
+
+      int64_t save_checkpoint (
+        const CheckpointSettings & settings) const;
       
     protected:
     private:

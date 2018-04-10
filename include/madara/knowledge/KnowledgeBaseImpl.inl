@@ -492,6 +492,14 @@ madara::knowledge::KnowledgeBaseImpl::save_context (
 }
 
 inline int64_t
+madara::knowledge::KnowledgeBaseImpl::save_context (
+  CheckpointSettings & settings) const
+{
+  settings.originator = id_;
+  return map_.save_context (settings);
+}
+
+inline int64_t
 madara::knowledge::KnowledgeBaseImpl::save_as_json (
 const std::string & filename) const
 {
@@ -499,10 +507,24 @@ const std::string & filename) const
 }
 
 inline int64_t
+madara::knowledge::KnowledgeBaseImpl::save_as_json (
+const CheckpointSettings & settings) const
+{
+  return map_.save_as_json (settings);
+}
+
+inline int64_t
 madara::knowledge::KnowledgeBaseImpl::save_as_karl (
 const std::string & filename) const
 {
   return map_.save_as_karl (filename);
+}
+
+inline int64_t
+madara::knowledge::KnowledgeBaseImpl::save_as_karl (
+const CheckpointSettings & settings) const
+{
+  return map_.save_as_karl (settings);
 }
 
 inline void
@@ -523,6 +545,13 @@ madara::knowledge::KnowledgeBaseImpl::save_checkpoint (
     map_.reset_modified ();
 
   return total_written;
+}
+
+inline int64_t
+madara::knowledge::KnowledgeBaseImpl::save_checkpoint (
+  const CheckpointSettings & settings) const
+{
+  return map_.save_checkpoint (settings);
 }
 
 inline int64_t
@@ -561,6 +590,28 @@ const KnowledgeUpdateSettings & settings)
   else
   {
     result = map_.load_context (filename, meta, settings);
+  }
+
+  return result;
+}
+
+inline int64_t
+madara::knowledge::KnowledgeBaseImpl::load_context (
+CheckpointSettings & checkpoint_settings,
+const KnowledgeUpdateSettings & update_settings)
+{
+  int64_t result = 0;
+
+  if (checkpoint_settings.originator == "")
+  {
+    result = map_.load_context (checkpoint_settings, update_settings);
+
+    if (checkpoint_settings.originator != "")
+      id_ = checkpoint_settings.originator;
+  }
+  else
+  {
+    result = map_.load_context (checkpoint_settings, update_settings);
   }
 
   return result;
