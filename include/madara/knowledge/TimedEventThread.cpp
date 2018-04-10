@@ -117,7 +117,7 @@ madara::knowledge::TimedEventThread::svc (void)
     Event * valid = cur_event.second;
 
     // if we had a timeout, we'll have a non-zero Event *
-    if (valid > 0)
+    if (valid != 0)
     {
       ++valid->executions;
       knowledge::KnowledgeRecord result (
