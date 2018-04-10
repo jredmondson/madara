@@ -145,7 +145,9 @@ void test_flex_map (void)
   if (robert_record.exists ("tickets.0.offense")
     && robert_record.exists ("tickets.1.offense")
     && map.exists ("cassie.tickets.0.offense")
-    && map.exists ("cassie.tickets.0.notes"))
+    && map.exists ("cassie.tickets.0.notes")
+    && map["cassie"]["tickets"][0]["notes"].exists ()
+    && !map["cassie"]["tickets"][0].exists ())
   {
     std::cerr << "SUCCESS\n";
   }

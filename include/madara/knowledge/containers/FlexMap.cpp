@@ -656,6 +656,26 @@ madara::knowledge::containers::FlexMap::get_delimiter (void)
   return delimiter_;
 }
 
+/**
+* Checks if the value in the record is false (0)
+* @return  true if value is false
+**/
+bool
+madara::knowledge::containers::FlexMap::exists (void) const
+{
+  ContextGuard context_guard (*context_);
+  bool result (true);
+
+  KnowledgeUpdateSettings keep_local (true);
+
+  if (!variable_.is_valid ())
+  {
+    result = context_->exists (variable_, keep_local);
+  }
+
+  return result;
+}
+
 bool
 madara::knowledge::containers::FlexMap::exists (
   const std::string & key, bool first_level_key) const
