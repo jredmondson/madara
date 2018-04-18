@@ -233,33 +233,37 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
   // format is [key_size | key | type | value_size | value]
 
   uint32_t buff_value_size (0);
+  uint32_t type = INTEGER;
+  uint32_t size = 0;
 
   // Remove the type of value from the buffer
-  if (buffer_remaining >= (int64_t) sizeof (type_))
+  if (buffer_remaining >= (int64_t) sizeof (type))
   {
-    memcpy (&type_, buffer, sizeof (type_));
-    type_ = madara::utility::endian_swap (type_);
-    buffer += sizeof (type_);
+    memcpy (&type, buffer, sizeof (type));
+    type = madara::utility::endian_swap (type);
+    buffer += sizeof (type);
   }
-  buffer_remaining -= sizeof (type_);
+  buffer_remaining -= sizeof (type);
 
   // Remove the size of value from the buffer
-  if (buffer_remaining >= (int64_t) sizeof (size_))
+  if (buffer_remaining >= (int64_t) sizeof (size))
   {
-    memcpy (&size_, buffer, sizeof (size_));
-    size_ = madara::utility::endian_swap (size_);
-    buff_value_size = size_;
-    buffer += sizeof (size_);
+    memcpy (&size, buffer, sizeof (size));
+    size = madara::utility::endian_swap (size);
 
     if (is_integer_type ())
-      buff_value_size *= sizeof (Integer);
+      buff_value_size = size * sizeof (Integer);
     else if (is_double_type ())
-      buff_value_size *= sizeof (double);
+      buff_value_size = size * sizeof (double);
+    else
+      buff_value_size = size;
+
+    buffer += sizeof (buff_value_size);
   }
-  buffer_remaining -= sizeof (size_);
+  buffer_remaining -= sizeof (buff_value_size);
 
   // Remove the value from the buffer
-  if (size_ > 0 && buffer_remaining >= int64_t (buff_value_size))
+  if (buffer_remaining >= int64_t (buff_value_size))
   {
     if (is_string_type ())
     {
@@ -267,20 +271,19 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
       strncpy (str_value_.get_ptr (), buffer, buff_value_size);
     }
 
-    else if (type_ == INTEGER)
+    else if (type == INTEGER)
     {
       memcpy (&int_value_, buffer, sizeof (int_value_));
       int_value_ = madara::utility::endian_swap (int_value_);
     }
 
-    else if (type_ == INTEGER_ARRAY)
+    else if (type == INTEGER_ARRAY)
     {
-      buff_value_size = size_ * sizeof (Integer);
-      Integer * ptr_temp = new Integer[size_];
+      Integer * ptr_temp = new Integer[size];
 
       memcpy (ptr_temp, buffer, buff_value_size);
 
-      for (uint32_t i = 0; i < size_; ++i)
+      for (uint32_t i = 0; i < size; ++i)
       {
         ptr_temp[i] = madara::utility::endian_swap (ptr_temp[i]);
       }
@@ -288,15 +291,14 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
       int_array_ = ptr_temp;
     }
 
-    else if (type_ == DOUBLE)
+    else if (type == DOUBLE)
     {
       memcpy (&double_value_, buffer, sizeof (double_value_));
       double_value_ = madara::utility::endian_swap (double_value_);
     }
 
-    else if (type_ == DOUBLE_ARRAY)
+    else if (type == DOUBLE_ARRAY)
     {
-      buff_value_size = size_ * sizeof (double);
       double * ptr_temp = new double[size_];
 
       memcpy (ptr_temp, buffer, buff_value_size);
@@ -309,7 +311,7 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
       double_array_ = ptr_temp;
     }
 
-    else if (is_file_type ())
+    else if (is_file_type (type))
     {
       file_value_ = new unsigned char[size_];
       memcpy (file_value_.get_ptr (), buffer, size_);
@@ -318,6 +320,8 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
     buffer += buff_value_size;
     buffer_remaining -= sizeof (char) * buff_value_size;
 
+    type_ = type;
+    size_ = size;
     status_ = MODIFIED;
   }
 
@@ -344,8 +348,12 @@ int64_t & buffer_remaining)
   // Remove the key from the buffer
   if (buffer_remaining >= int64_t (sizeof (char) * int64_t (key_size)))
   {
-    // don't worry about null terminator
-    key.assign (buffer, key_size - 1);
+    if (key_size > 0) {
+      // don't worry about null terminator
+      key.assign (buffer, key_size - 1);
+    } else {
+      key.clear ();
+    }
 
     buffer += sizeof (char) * key_size;
   }
@@ -369,11 +377,11 @@ int64_t & buffer_remaining)
     memcpy (&key_id, buffer, sizeof (key_id));
     key_id = madara::utility::endian_swap (key_id);
     buffer += sizeof (key_id);
-  }
-  buffer_remaining -= sizeof (key_id);
+    buffer_remaining -= sizeof (key_id);
 
-  // read the type and data
-  buffer = read (buffer, buffer_remaining);
+    // read the type and data
+    buffer = read (buffer, buffer_remaining);
+  }
 
   return buffer;
 }
