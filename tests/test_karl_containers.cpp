@@ -1636,7 +1636,7 @@ void test_collection (void)
   containers::IntegerVector sensors_ready ("sensors_ready", knowledge, 3);
   containers::DoubleVector coolfactor ("coolfactor.by.year", knowledge, 35);
 
-  std::cerr << "  Testing modifieds.size == 2 after container creation... ";
+  std::cerr << "  Testing modifieds.size == 3 after container creation... ";
 
   if (context.get_modifieds ().size () != 2)
   {

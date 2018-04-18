@@ -11,6 +11,7 @@
 #include <iostream>
 
 namespace logger = madara::logger;
+namespace knowledge = madara::knowledge;
 
 #define BUFFER_SIZE    1000
 
@@ -46,6 +47,8 @@ void test_checkpointing (void)
   context.set ("double_array", doubles);
 
   context.print (0);
+
+  knowledge::KnowledgeRecord::set_precision (1);
   
   std::cerr << "Test 1: saving 50k knowledge record to test1_orig.kkb.\n";
 
@@ -61,6 +64,8 @@ void test_checkpointing (void)
 
   context.print (0);
   
+  
+
   std::cerr << "Test 2: Results were ";
   if (context_copy.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
       && context_copy.get ("double_var") == 3.14159

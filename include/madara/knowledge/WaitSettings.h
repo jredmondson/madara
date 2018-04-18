@@ -67,6 +67,11 @@ namespace madara
         *                                   (in seconds)
         * @param  t_max_wait_time           the maximum time to wait for truth
         *                                   (in seconds)
+        * @param  t_clock_increment         amount of clock ticks to increment
+        *                                   updated records by
+        * @param  t_treat_locals_as_globals true if local variable changes should
+        *                                   be sent over the network (dangerous).
+        *                                   @see treat_locals_as_globals
         **/
        WaitSettings (bool t_delay_sending_modifieds,
          bool t_treat_globals_as_locals,
@@ -76,11 +81,14 @@ namespace madara
          bool t_track_local_changes,
          std::string t_pre_print_statement,
          std::string t_post_print_statement,
-         double t_poll_frequency, double t_max_wait_time)
+         double t_poll_frequency, double t_max_wait_time,
+         uint64_t t_clock_increment = 1,
+         bool t_treat_locals_as_globals = false)
          : EvalSettings (t_delay_sending_modifieds,
-              t_treat_globals_as_locals, t_signal_updates,
-              t_always_overwrite, t_always_expand, t_track_local_changes,
-              t_pre_print_statement, t_post_print_statement),
+             t_treat_globals_as_locals, t_signal_updates,
+             t_always_overwrite, t_always_expand, t_track_local_changes,
+             t_pre_print_statement, t_post_print_statement,
+             t_clock_increment, t_treat_locals_as_globals),
            poll_frequency (t_poll_frequency), max_wait_time (t_max_wait_time)
        {
        }

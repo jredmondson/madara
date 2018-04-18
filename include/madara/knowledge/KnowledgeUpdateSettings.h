@@ -39,7 +39,8 @@ namespace madara
           signal_changes (true),
           always_overwrite (false),
           track_local_changes (false),
-          clock_increment (1)
+          clock_increment (1),
+          treat_locals_as_globals (false)
       {
       }
   
@@ -59,19 +60,24 @@ namespace madara
         *                                   saving purposes.
         * @param  t_clock_increment         amount of clock ticks to increment
         *                                   updated records by
+        * @param  t_treat_locals_as_globals true if local variable changes should
+        *                                   be sent over the network (dangerous).
+        *                                   @see treat_locals_as_globals
        **/
       KnowledgeUpdateSettings (bool t_treat_globals_as_locals,
         bool t_signal_changes = true,
         bool t_always_overwrite = false,
         bool t_always_expand = true,
         bool t_track_local_changes = false,
-        uint64_t t_clock_increment = 1)
+        uint64_t t_clock_increment = 1,
+        bool t_treat_locals_as_globals = false)
         : KnowledgeReferenceSettings (t_always_expand),
           treat_globals_as_locals (t_treat_globals_as_locals),
           signal_changes (t_signal_changes),
           always_overwrite (t_always_overwrite),
           track_local_changes (t_track_local_changes),
-          clock_increment (t_clock_increment)
+          clock_increment (t_clock_increment),
+          treat_locals_as_globals (t_treat_locals_as_globals)
       {
       }
   
@@ -84,7 +90,8 @@ namespace madara
           signal_changes (rhs.signal_changes),
           always_overwrite (rhs.always_overwrite),
           track_local_changes (rhs.track_local_changes),
-          clock_increment (rhs.clock_increment)
+          clock_increment (rhs.clock_increment),
+          treat_locals_as_globals (rhs.treat_locals_as_globals)
       {
       }
 
@@ -125,6 +132,19 @@ namespace madara
        * Default clock increment
        **/
       uint64_t  clock_increment;
+
+      /**
+      * Toggle whether updates to local variables are treated as
+      * global variables that should be sent over the transport. It
+      * should be stressed that this is dangerous and should only
+      * be used for debugging. If you toggle this to true, all local
+      * variables will be sent over the network where they will
+      * overwrite local variables in remote systems, unless the
+      * remote system filters out the local variable changes with
+      * an on-receive filter
+      **/
+      bool treat_locals_as_globals;
+
     };
   }
 }

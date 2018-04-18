@@ -33,6 +33,14 @@ const KnowledgeUpdateSettings & settings)
   settings_ = settings;
 }
 
+madara::knowledge::KnowledgeUpdateSettings
+madara::knowledge::containers::BaseContainer::get_settings (void)
+{
+  MADARA_GUARD_TYPE guard (mutex_);
+
+  return settings_;
+}
+
 bool madara::knowledge::containers::BaseContainer::modify_if_true (
   BaseContainer & conditional)
 {

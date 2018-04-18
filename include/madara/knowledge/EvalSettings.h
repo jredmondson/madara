@@ -68,6 +68,11 @@ namespace madara
         *                                   evaluations
         * @param  t_post_print_statement    statement to print out after
         *                                   evaluations
+        * @param  t_clock_increment         amount of clock ticks to increment
+        *                                   updated records by
+        * @param  t_treat_locals_as_globals true if local variable changes should
+        *                                   be sent over the network (dangerous).
+        *                                   @see treat_locals_as_globals
         **/
        EvalSettings (bool t_delay_sending_modifieds,
          bool t_treat_globals_as_locals = false,
@@ -76,10 +81,13 @@ namespace madara
          bool t_always_expand = true,
          bool t_track_local_changes = false,
          std::string t_pre_print_statement = "",
-         std::string t_post_print_statement = "")
+         std::string t_post_print_statement = "",
+         uint64_t t_clock_increment = 1,
+         bool t_treat_locals_as_globals = false)
          : KnowledgeUpdateSettings (t_treat_globals_as_locals,
-                                      t_signal_updates, t_always_overwrite,
-                                      t_always_expand, t_track_local_changes),
+             t_signal_updates, t_always_overwrite,
+             t_always_expand, t_track_local_changes,
+             t_clock_increment, t_treat_locals_as_globals),
            delay_sending_modifieds (t_delay_sending_modifieds),
            pre_print_statement (t_pre_print_statement),
            post_print_statement (t_post_print_statement)

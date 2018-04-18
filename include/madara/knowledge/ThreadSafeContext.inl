@@ -276,7 +276,7 @@ madara::knowledge::ThreadSafeContext::inc (
     if (settings.always_overwrite ||
         variable.record_->write_quality >= variable.record_->quality)
     {
-      ++(*variable.record_);
+      ++ (*variable.record_);
 variable.record_->quality = variable.record_->write_quality;
 
 mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
@@ -413,7 +413,7 @@ madara::knowledge::ThreadSafeContext::dec (
     if (settings.always_overwrite ||
         variable.record_->write_quality >= variable.record_->quality)
     {
-      --(*variable.record_);
+      -- (*variable.record_);
       variable.record_->quality = variable.record_->write_quality;
   
       mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
@@ -658,9 +658,9 @@ madara::knowledge::ThreadSafeContext::mark_to_send (
   const KnowledgeUpdateSettings & settings
   )
 {
-  VariableReference ref = get_ref(key, settings);
-  if(ref.is_valid())
-    mark_to_send(ref, settings);
+  VariableReference ref = get_ref (key, settings);
+  if (ref.is_valid ())
+    mark_to_send (ref, settings);
 }
 
 inline void
@@ -670,7 +670,7 @@ madara::knowledge::ThreadSafeContext::mark_to_send (
   )
 {
   MADARA_GUARD_TYPE guard (mutex_);
-  mark_to_send_unsafe(std::string(ref.get_name()), *ref.record_, settings);
+  mark_to_send_unsafe (std::string (ref.get_name ()), *ref.record_, settings);
 }
 
 inline void
@@ -691,9 +691,9 @@ madara::knowledge::ThreadSafeContext::mark_to_checkpoint (
   const KnowledgeUpdateSettings & settings
   )
 {
-  VariableReference ref = get_ref(key, settings);
-  if(ref.is_valid())
-    mark_to_checkpoint(ref, settings);
+  VariableReference ref = get_ref (key, settings);
+  if (ref.is_valid ())
+    mark_to_checkpoint (ref, settings);
 }
 
 inline void
@@ -703,7 +703,7 @@ madara::knowledge::ThreadSafeContext::mark_to_checkpoint (
   )
 {
   MADARA_GUARD_TYPE guard (mutex_);
-  mark_to_checkpoint_unsafe(std::string(ref.get_name()),
+  mark_to_checkpoint_unsafe (std::string (ref.get_name ()),
                             *ref.record_, settings);
 }
 
@@ -725,7 +725,7 @@ madara::knowledge::ThreadSafeContext::mark_and_signal (
   const KnowledgeUpdateSettings & settings)
 {
   // otherwise set the value
-  if (name[0] != '.')
+  if (name[0] != '.' || settings.treat_locals_as_globals)
   {
     if (!settings.treat_globals_as_locals)
     {
@@ -751,9 +751,9 @@ madara::knowledge::ThreadSafeContext::mark_modified (
   const KnowledgeUpdateSettings & settings
   )
 {
-  VariableReference ref = get_ref(key, settings);
-  if(ref.is_valid())
-    mark_modified(ref, settings);
+  VariableReference ref = get_ref (key, settings);
+  if (ref.is_valid ())
+    mark_modified (ref, settings);
 }
 
 inline void
@@ -763,7 +763,7 @@ madara::knowledge::ThreadSafeContext::mark_modified (
   )
 {
   MADARA_GUARD_TYPE guard (mutex_);
-  mark_and_signal(ref.get_name(), ref.record_, settings);
+  mark_and_signal (ref.get_name (), ref.record_, settings);
 }
 
 inline std::string
@@ -831,9 +831,19 @@ madara::knowledge::ThreadSafeContext::save_modifieds (void) const
   snapshot.resize (changed_map_.size ());
   int cur = 0;
   
+  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
+    "ThreadSafeContext::save_modifieds:" \
+    " changed_map.size=%d, snapshot.size=%d\n",
+    (int)changed_map_.size (), (int)snapshot.size ());
+  
   for (KnowledgeRecords::const_iterator i = changed_map_.begin ();
     i != changed_map_.end (); ++i, ++cur)
   {
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::save_modifieds:" \
+      " snapshot[%d].name=%s\n",
+      cur, i->first.c_str ());
+  
     snapshot[cur].set_name (i->first);
     snapshot[cur].record_ = i->second;
   }
@@ -896,7 +906,7 @@ madara::knowledge::ThreadSafeContext::apply_modified (void)
       //i->second.status = madara::knowledge::KnowledgeRecord::MODIFIED;
 
       if (i->second.status () != knowledge::KnowledgeRecord::UNCREATED)
-        mark_and_signal (i->first.c_str(), &i->second,
+        mark_and_signal (i->first.c_str (), &i->second,
                          KnowledgeUpdateSettings ());
       else
         i->second.set_value (KnowledgeRecord::Integer (0));

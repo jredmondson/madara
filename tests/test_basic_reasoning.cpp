@@ -1474,8 +1474,6 @@ void test_for_loops (madara::knowledge::KnowledgeBase & knowledge)
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing embedded for loops\n");
   
-  knowledge.evaluate ("#log_level(7)");
-
   result = knowledge.evaluate ("max = 1 ;> .i[ 0 -> 4 ) (agent{.i}.state=.i ; max = (agent{.i}.state ; max))");
   assert (result.to_integer () == 4 &&
     knowledge.get ("agent3.state").to_integer () == 3 &&

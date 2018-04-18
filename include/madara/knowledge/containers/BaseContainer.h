@@ -58,13 +58,19 @@ namespace madara
         virtual ~BaseContainer ();
 
         /**
-         * Returns the name of the variable
-         * @return name of the variable
+         * Returns the name of the container
+         * @return name of the container
          **/
         std::string get_name (void) const;
         
         /**
-         * Sets the update settings for the variable
+         * Gets the update settings for the container
+         * @return  the current settings
+         **/
+        KnowledgeUpdateSettings get_settings (void);
+
+        /**
+         * Sets the update settings for the container
          * @param  settings  the new settings to use
          **/
         void set_settings (
