@@ -4,6 +4,7 @@
 #define _KNOWLEDGE_RECORD_INL_
 
 #include <algorithm>
+#include <iostream>
 
 #include "madara/utility/Utility.h"
 
@@ -234,7 +235,7 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
 
   uint32_t buff_value_size (0);
   uint32_t type = INTEGER;
-  uint32_t size = 0;
+  uint32_t size = 1;
 
   // Remove the type of value from the buffer
   if (buffer_remaining >= (int64_t) sizeof (type))
@@ -251,14 +252,17 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
     memcpy (&size, buffer, sizeof (size));
     size = madara::utility::endian_swap (size);
 
-    if (is_integer_type ())
+    if (is_integer_type (type))
       buff_value_size = size * sizeof (Integer);
-    else if (is_double_type ())
+    else if (is_double_type (type))
       buff_value_size = size * sizeof (double);
     else
       buff_value_size = size;
 
     buffer += sizeof (buff_value_size);
+  } else {
+    buffer_remaining = -1;
+    return buffer;
   }
   buffer_remaining -= sizeof (buff_value_size);
 
@@ -300,11 +304,11 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
 
     else if (type == DOUBLE_ARRAY)
     {
-      double * ptr_temp = new double[size_];
+      double * ptr_temp = new double[size];
 
       memcpy (ptr_temp, buffer, buff_value_size);
 
-      for (uint32_t i = 0; i < size_; ++i)
+      for (uint32_t i = 0; i < size; ++i)
       {
         ptr_temp[i] = madara::utility::endian_swap (ptr_temp[i]);
       }
@@ -314,8 +318,13 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
 
     else if (is_file_type (type))
     {
-      file_value_ = new unsigned char[size_];
-      memcpy (file_value_.get_ptr (), buffer, size_);
+      file_value_ = new unsigned char[size];
+      memcpy (file_value_.get_ptr (), buffer, size);
+    }
+
+    else {
+      buffer_remaining = -1;
+      return buffer;
     }
 
     buffer += buff_value_size;
