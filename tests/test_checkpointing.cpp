@@ -265,7 +265,132 @@ void test_checkpointing (void)
   }
   else
     std::cerr << "FAIL\n\n";
+}
+
+void test_checkpoint_settings (void)
+{
+
+  std::cerr << "\n*********** TEST CHECKPOINT SETTINGS *************.\n";
+
+  knowledge::KnowledgeRecord::set_precision (1);
   
+  knowledge::CheckpointSettings settings;
+  knowledge::KnowledgeBase saver, loader;
+
+
+  saver.set ("int_var", knowledge::KnowledgeRecord::Integer (15));
+  saver.set ("str_var", std::string ("some string"));
+  saver.set ("double_var", 3.14159);
+
+  std::vector <knowledge::KnowledgeRecord::Integer> integers;
+  std::vector <double> doubles;
+  std::string id = "orig_context";
+
+  integers.push_back (10);
+  integers.push_back (20);
+  integers.push_back (30);
+
+  doubles.push_back (10.1);
+  doubles.push_back (20.2);
+  doubles.push_back (30.3);
+  doubles.push_back (40.4);
+
+  saver.set ("int_array", integers);
+  saver.set ("double_array", doubles);
+
+  // set the system lamport clock to something arbitrary
+  saver.evaluate ("#set_clock (2001)");
+
+  settings.filename = "test_context_save_1.kb";
+  settings.clear_knowledge = true;
+
+  saver.save_context (settings);
+  
+  loader.load_context (settings);
+
+  std::cerr << "Test 1: Loading a context and checking values: ";
+  if (loader.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
+      && loader.get ("double_var") == 3.14159
+      && loader.get ("str_var") == "some string"
+      && loader.get ("int_array").to_string (", ") == "10, 20, 30"
+      && loader.get ("double_array").to_string (", ") ==
+          "10.1, 20.2, 30.3, 40.4")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 2: Checking expected settings with last load: ";
+  if (settings.initial_lamport_clock == 2001 &&
+      settings.last_lamport_clock == 2001)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "  Expected clocks (2001:2001) but got (" <<
+      settings.initial_lamport_clock << ":" << settings.last_lamport_clock <<
+      ")\n";
+  }
+
+  
+
+  settings.prefixes.push_back ("int");
+  settings.initial_timestamp = 1234;
+  settings.last_timestamp = 4321;
+  settings.override_timestamp = true;
+  settings.override_lamport = true;
+  settings.initial_lamport_clock = 7;
+  settings.last_lamport_clock = 7;
+  settings.filename = "test_context_save_2.kb";
+
+  saver.save_context (settings);
+
+  loader.load_context (settings);
+
+  std::cerr << "Test 3: Loading and checking for settings restrictions: ";
+  if (loader.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
+      && loader.get ("double_var").is_false ()
+      && loader.get ("str_var").is_false ()
+      && loader.get ("int_array").to_string (", ") == "10, 20, 30"
+      && loader.get ("double_array").is_false ()
+      && loader.get ("file_var").is_false ()
+      && loader.get ("extra_var").is_false ()
+      && loader.get ("additional_var").is_false ()
+      && loader.get (".invisible").is_false ())
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 4: Checking expected settings with last load: ";
+  if (settings.initial_lamport_clock == 7 &&
+      settings.last_lamport_clock == 7 &&
+      settings.initial_timestamp == 1234 &&
+      settings.last_timestamp == 4321)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << "  Expected clocks (7:7) but got (" <<
+      settings.initial_lamport_clock << ":" << settings.last_lamport_clock <<
+      ")\n";
+    std::cerr << "  Expected timestamps (1234:4321) but got (" <<
+      settings.initial_timestamp << ":" << settings.last_timestamp <<
+      ")\n";
+  }
+
 }
 
 void handle_arguments (int argc, char ** argv)
@@ -356,7 +481,7 @@ int main (int argc, char * argv[])
   
   test_checkpointing ();
 
-
+  test_checkpoint_settings ();
 
   return 0;
 }

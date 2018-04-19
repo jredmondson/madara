@@ -33,7 +33,9 @@ namespace madara
         : buffer_size (1024000),
           clear_knowledge (false), initial_timestamp (0), last_timestamp (0),
           initial_lamport_clock (0), last_lamport_clock (0), states (0),
-          version (utility::get_version ())
+          version (utility::get_version ()),
+          override_timestamp (false), override_lamport (false)
+
       {
       }
 
@@ -61,7 +63,9 @@ namespace madara
         std::string t_originator = "",
         const std::vector <std::string> & t_prefixes = {},
         uint64_t t_states = 0,
-        std::string t_version = "")
+        std::string t_version = "",
+        bool t_override_timestamp = false,
+        bool t_override_lamport = false)
         : buffer_size (t_buffer_size),
           clear_knowledge (t_clear_knowledge),
           filename (t_filename),
@@ -72,7 +76,9 @@ namespace madara
           originator (t_originator),
           prefixes (t_prefixes),
           states (t_states),
-          version (t_version)
+          version (t_version),
+          override_timestamp (t_override_timestamp),
+          override_lamport (t_override_lamport)
       {
       }
        
@@ -91,7 +97,9 @@ namespace madara
           originator (rhs.originator),
           prefixes (rhs.prefixes),
           states (rhs.states),
-          version (rhs.version)
+          version (rhs.version),
+          override_timestamp (rhs.override_timestamp),
+          override_lamport (rhs.override_lamport)
       {
       }
 
@@ -149,6 +157,19 @@ namespace madara
        * the MADARA version
        **/
       std::string version;
+
+      /**
+       * use the timestamps in this class instead of current wallclock time
+       * when writing context or checkpoints
+       **/
+      bool override_timestamp;
+
+
+      /**
+       * use the lamport clocks in this class instead of KB clock when writing
+       * context or checkpoints
+       **/
+      bool override_lamport;
     };
   }
 }

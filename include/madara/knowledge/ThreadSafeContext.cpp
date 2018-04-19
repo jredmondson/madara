@@ -1902,6 +1902,9 @@ madara::knowledge::ThreadSafeContext::save_context (
     checkpoint_header.size = checkpoint_header.encoded_size ();
 
     current = meta.write (current, buffer_remaining);
+
+    checkpoint_header.clock = clock_;
+
     current = checkpoint_header.write (current, buffer_remaining);
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
@@ -2009,7 +2012,23 @@ madara::knowledge::ThreadSafeContext::save_context (
     meta.size += checkpoint_header.encoded_size ();
     checkpoint_header.size = checkpoint_header.encoded_size ();
 
+    if (settings.override_timestamp)
+    {
+      meta.initial_timestamp = settings.initial_timestamp;
+      meta.last_timestamp = settings.last_timestamp;
+    }
+
     current = meta.write (current, buffer_remaining);
+
+    if (settings.override_lamport)
+    {
+      checkpoint_header.clock = settings.initial_lamport_clock;
+    }
+    else
+    {
+      checkpoint_header.clock = clock_;
+    }
+    
     current = checkpoint_header.write (current, buffer_remaining);
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
@@ -3082,6 +3101,21 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
     meta.size += checkpoint_header.encoded_size ();
     checkpoint_header.size = 0;
 
+    if (settings.override_timestamp)
+    {
+      meta.initial_timestamp = settings.initial_timestamp;
+      meta.last_timestamp = settings.last_timestamp;
+    }
+
+    if (settings.override_lamport)
+    {
+      checkpoint_header.clock = settings.initial_lamport_clock;
+    }
+    else
+    {
+      checkpoint_header.clock = clock_;
+    }
+    
     // lock the context
     MADARA_GUARD_TYPE guard (mutex_);
 
