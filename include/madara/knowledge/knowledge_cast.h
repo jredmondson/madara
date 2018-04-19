@@ -69,228 +69,226 @@ namespace madara
     /// By default, call constructor of target class;
     /// for other semantics, define specializations
     template<class O>
-    O knowledge_cast(const KnowledgeRecord &in)
+    inline O knowledge_cast(const KnowledgeRecord &in)
     {
       return O(in);
     }
 
     template<>
-    float knowledge_cast<float>(const KnowledgeRecord &in)
+    inline float knowledge_cast<float>(const KnowledgeRecord &in)
     {
       return static_cast<float>(in.to_double());
     }
 
     template<>
-    double knowledge_cast<double>(const KnowledgeRecord &in)
+    inline double knowledge_cast<double>(const KnowledgeRecord &in)
     {
       return static_cast<double>(in.to_double());
     }
 
     template<>
-    long double knowledge_cast<long double>(const KnowledgeRecord &in)
+    inline long double knowledge_cast<long double>(const KnowledgeRecord &in)
     {
       return static_cast<long double>(in.to_double());
     }
 
     template<>
-    bool knowledge_cast<bool>(const KnowledgeRecord &in)
+    inline bool knowledge_cast<bool>(const KnowledgeRecord &in)
     {
       return in.to_integer() ? true : false;
     }
 
     template<>
-    char knowledge_cast<char>(const KnowledgeRecord &in)
+    inline char knowledge_cast<char>(const KnowledgeRecord &in)
     {
       return static_cast<char>(in.to_integer());
     }
 
     template<>
-    unsigned char knowledge_cast<unsigned char>(const KnowledgeRecord &in)
+    inline unsigned char knowledge_cast<unsigned char>(const KnowledgeRecord &in)
     {
       return static_cast<unsigned char>(in.to_integer());
     }
 
     template<>
-    short knowledge_cast<short>(const KnowledgeRecord &in)
+    inline short knowledge_cast<short>(const KnowledgeRecord &in)
     {
       return static_cast<short>(in.to_integer());
     }
 
     template<>
-    unsigned short knowledge_cast<unsigned short>(const KnowledgeRecord &in)
+    inline unsigned short knowledge_cast<unsigned short>(const KnowledgeRecord &in)
     {
       return static_cast<unsigned short>(in.to_integer());
     }
 
     template<>
-    int knowledge_cast<int>(const KnowledgeRecord &in)
+    inline int knowledge_cast<int>(const KnowledgeRecord &in)
     {
       return static_cast<int>(in.to_integer());
     }
 
     template<>
-    unsigned int knowledge_cast<unsigned int>(const KnowledgeRecord &in)
+    inline unsigned int knowledge_cast<unsigned int>(const KnowledgeRecord &in)
     {
       return static_cast<unsigned int>(in.to_integer());
     }
 
     template<>
-    long int knowledge_cast<long int>(const KnowledgeRecord &in)
+    inline long int knowledge_cast<long int>(const KnowledgeRecord &in)
     {
       return static_cast<long int>(in.to_integer());
     }
 
     template<>
-    unsigned long int knowledge_cast<unsigned long int>(const KnowledgeRecord &in)
+    inline unsigned long int knowledge_cast<unsigned long int>(const KnowledgeRecord &in)
     {
       return static_cast<unsigned long int>(in.to_integer());
     }
 
     template<>
-    long long int knowledge_cast<long long int>(const KnowledgeRecord &in)
+    inline long long int knowledge_cast<long long int>(const KnowledgeRecord &in)
     {
       return static_cast<long long int>(in.to_integer());
     }
 
     template<>
-    unsigned long long int knowledge_cast<unsigned long long int>(const KnowledgeRecord &in)
+    inline unsigned long long int knowledge_cast<unsigned long long int>(const KnowledgeRecord &in)
     {
       return static_cast<unsigned long long int>(in.to_integer());
     }
 
     template<>
-    std::string knowledge_cast<std::string>(const KnowledgeRecord &in)
+    inline std::string knowledge_cast<std::string>(const KnowledgeRecord &in)
     {
       return in.to_string();
     }
 
     template<>
-    std::vector<int64_t> knowledge_cast<std::vector<int64_t>>(const KnowledgeRecord &in)
+    inline std::vector<int64_t> knowledge_cast<std::vector<int64_t>>(const KnowledgeRecord &in)
     {
       return in.to_integers();
     }
 
     template<>
-    std::vector<double> knowledge_cast<std::vector<double>>(const KnowledgeRecord &in)
+    inline std::vector<double> knowledge_cast<std::vector<double>>(const KnowledgeRecord &in)
     {
       return in.to_doubles();
     }
 
     template<>
-    KnowledgeRecord knowledge_cast<KnowledgeRecord>(const KnowledgeRecord &in)
+    inline KnowledgeRecord knowledge_cast<KnowledgeRecord>(const KnowledgeRecord &in)
     {
       return in;
     }
 
-    KnowledgeRecord knowledge_cast(const int &in)
+    inline KnowledgeRecord knowledge_cast(const int &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
 
-    KnowledgeRecord knowledge_cast(const unsigned int &in)
+    inline KnowledgeRecord knowledge_cast(const unsigned int &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
 
-    KnowledgeRecord knowledge_cast(const long int &in)
+    inline KnowledgeRecord knowledge_cast(const long int &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
 
-    KnowledgeRecord knowledge_cast(const unsigned long int &in)
+    inline KnowledgeRecord knowledge_cast(const unsigned long int &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
 
-    KnowledgeRecord knowledge_cast(const long long int &in)
+    inline KnowledgeRecord knowledge_cast(const long long int &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
 
-    KnowledgeRecord knowledge_cast(const unsigned long long int &in)
+    inline KnowledgeRecord knowledge_cast(const unsigned long long int &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
 
-    KnowledgeRecord knowledge_cast(const short &in)
+    inline KnowledgeRecord knowledge_cast(const short &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
 
-    KnowledgeRecord knowledge_cast(const unsigned short &in)
+    inline KnowledgeRecord knowledge_cast(const unsigned short &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
 
-    KnowledgeRecord knowledge_cast(const char &in)
+    inline KnowledgeRecord knowledge_cast(const char &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
 
-    KnowledgeRecord knowledge_cast(const unsigned char &in)
+    inline KnowledgeRecord knowledge_cast(const unsigned char &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in));
     }
 
-    KnowledgeRecord knowledge_cast(const bool &in)
+    inline KnowledgeRecord knowledge_cast(const bool &in)
     {
       return KnowledgeRecord(KnowledgeRecord::Integer(in ? 1 : 0));
     }
 
-    KnowledgeRecord knowledge_cast(const float &in)
+    inline KnowledgeRecord knowledge_cast(const float &in)
     {
       return KnowledgeRecord(static_cast<double>(in));
     }
 
-    KnowledgeRecord knowledge_cast(const double &in)
+    inline KnowledgeRecord knowledge_cast(const double &in)
     {
       return KnowledgeRecord(in);
     }
 
-    KnowledgeRecord knowledge_cast(const long double &in)
+    inline KnowledgeRecord knowledge_cast(const long double &in)
     {
       return KnowledgeRecord(static_cast<double>(in));
     }
 
-    KnowledgeRecord knowledge_cast(const std::string &in)
+    inline KnowledgeRecord knowledge_cast(const std::string &in)
     {
       return KnowledgeRecord(in);
     }
 
-    KnowledgeRecord knowledge_cast(const std::vector<int64_t> &in)
+    inline KnowledgeRecord knowledge_cast(const std::vector<int64_t> &in)
     {
       return KnowledgeRecord(in);
     }
 
-    KnowledgeRecord knowledge_cast(const std::vector<double> &in)
+    inline KnowledgeRecord knowledge_cast(const std::vector<double> &in)
     {
       return KnowledgeRecord(in);
     }
 
     template<size_t N>
-    KnowledgeRecord knowledge_cast(const uint64_t (&in)[N])
+    inline KnowledgeRecord knowledge_cast(const uint64_t (&in)[N])
     {
       return KnowledgeRecord(&in, in + N);
     }
 
     template<size_t N>
-    KnowledgeRecord knowledge_cast(const double (&in)[N])
+    inline KnowledgeRecord knowledge_cast(const double (&in)[N])
     {
       return KnowledgeRecord(&in, in + N);
     }
 
-    KnowledgeRecord &knowledge_cast(KnowledgeRecord &in)
+    inline KnowledgeRecord &knowledge_cast(KnowledgeRecord &in)
     {
       return in;
     }
 
-    const KnowledgeRecord &knowledge_cast(const KnowledgeRecord &in)
+    inline const KnowledgeRecord &knowledge_cast(const KnowledgeRecord &in)
     {
       return in;
     }
-
   }
-
 }
 
 #endif
