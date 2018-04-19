@@ -203,7 +203,7 @@ madara::transport::process_received_update (
     header = new FragmentMessageHeader ();
     is_fragment = true;
   }
-  else
+  else if (bytes_read >= 8 + MADARA_IDENTIFIER_LENGTH)
   {
     // get the text that appears as identifier.
     char identifier[MADARA_IDENTIFIER_LENGTH];
@@ -219,8 +219,20 @@ madara::transport::process_received_update (
 
     return -1;
   }
+  else
+  {
+    madara_logger_log (context.get_logger (), logger::LOG_MINOR,
+      "%s:" \
+      " dropping too short message from %s (length %i)\n",
+      print_prefix,
+      remote_host,
+      bytes_read);
+
+    return -1;
+  }
           
   const char * update = header->read (buffer, buffer_remaining);
+  const char * orig_update = update;
 
   madara_logger_log (context.get_logger (), logger::LOG_MINOR,
     "%s:" \
