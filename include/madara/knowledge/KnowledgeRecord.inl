@@ -265,10 +265,11 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
   // Remove the value from the buffer
   if (buffer_remaining >= int64_t (buff_value_size))
   {
-    if (is_string_type ())
+    if (is_string_type (type))
     {
-      str_value_ = new char[buff_value_size];
-      strncpy (str_value_.get_ptr (), buffer, buff_value_size);
+      char *val = new char[buff_value_size];
+      strncpy (val, buffer, buff_value_size);
+      str_value_ = val;
     }
 
     else if (type == INTEGER)
