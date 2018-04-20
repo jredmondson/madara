@@ -2235,6 +2235,15 @@ madara::knowledge::ThreadSafeContext::save_context (
     current = meta.write (current, buffer_remaining);
     current = checkpoint_header.write (current, buffer_remaining);
 
+    // call decode with any buffer filters
+    settings.encode ((unsigned char *)buffer.get_ptr (),
+      (int)meta.size, (int)max_buffer);
+
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::save_context:" \
+      " encoding with buffer filters: %d bytes written.\n",
+      (int)meta.size);
+
     fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
 
     fclose (file);
@@ -3002,13 +3011,18 @@ madara::knowledge::ThreadSafeContext::load_context (
     utility::ScopedArray <char> buffer = new char[max_buffer];
     const char * current = buffer.get_ptr ();
 
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "ThreadSafeContext::load_context:" \
-      " reading file meta data\n");
-
     total_read = fread (buffer.get_ptr (),
       1, max_buffer, file);
     buffer_remaining = (int64_t)total_read;
+
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::load_context:" \
+      " reading file meta data: %d bytes read.\n",
+      (int)total_read);
+
+    // call decode with any buffer filters
+    checkpoint_settings.decode ((unsigned char *)buffer.get_ptr (),
+      (int)(total_read), (int)max_buffer);
 
     if (total_read > FileHeader::encoded_size () &&
       FileHeader::file_header_test (current))

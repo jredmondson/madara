@@ -26,8 +26,9 @@ namespace madara
   namespace filters
   {
     /**
-     * Filter for calling Java functors
-     **/
+     * @class JavaBufferFilter
+     * @brief Filters a buffer in Java
+     */
     class MADARA_Export JavaBufferFilter : public BufferFilter
     {
     public:

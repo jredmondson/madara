@@ -13,6 +13,7 @@
 #include <map>
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/utility/Utility.h"
+#include "madara/filters/BufferFilter.h"
 
 namespace madara
 {
@@ -99,9 +100,52 @@ namespace madara
           states (rhs.states),
           version (rhs.version),
           override_timestamp (rhs.override_timestamp),
-          override_lamport (rhs.override_lamport)
+          override_lamport (rhs.override_lamport),
+          buffer_filters (rhs.buffer_filters)
       {
       }
+
+      /**
+      * Calls encode on the the buffer filter chain
+      * @param   source           the source and destination buffer
+      * @param   size             the amount of data in the buffer in bytes
+      * @param   max_size         the amount of bytes the buffer can hold
+      * @return  the new size after encoding
+      **/
+      int encode (
+        unsigned char * source, int size, int max_size) const
+      {
+        // encode from front to back
+        for (filters::BufferFilters::const_iterator i = buffer_filters.begin ();
+          i != buffer_filters.end (); ++i)
+        {
+          size = (*i)->encode (source, size, max_size);
+        }
+
+        return size;
+      }
+
+
+      /**
+      * Calls decode on the the buffer filter chain
+      * @param   source           the source and destination buffer
+      * @param   size             the amount of data in the buffer in bytes
+      * @param   max_size         the amount of bytes the buffer can hold
+      * @return  the new size after encoding
+      **/
+      int decode (
+        unsigned char * source, int size, int max_size) const
+      {
+        // decode from back to front
+        for (filters::BufferFilters::const_reverse_iterator i = buffer_filters.rbegin ();
+          i != buffer_filters.rend (); ++i)
+        {
+          size = (*i)->decode (source, size, max_size);
+        }
+
+        return size;
+      }
+
 
       /**
        * the size of the buffer needed for the checkpoint
@@ -170,6 +214,11 @@ namespace madara
        * context or checkpoints
        **/
       bool override_lamport;
+
+      /**
+       * buffer filters. Note that the user must clean up memory of all filters
+       **/
+      filters::BufferFilters   buffer_filters;
     };
   }
 }

@@ -23,8 +23,9 @@ namespace madara
   namespace filters
   {
     /**
-     * Filter for encrypting with the AES 256 bit cypher
-     **/
+     * @class AESBufferFilter
+     * @brief Encrypts a buffer with 256 bit AES via OpenSSL
+     */
     class MADARA_Export AESBufferFilter : public BufferFilter
     {
     public:

@@ -54,7 +54,7 @@ int madara::filters::AESBufferFilter::generate_key (
   if (i != 32)
   {
     madara_logger_ptr_log (logger::global_logger.get_ptr (), logger::LOG_ERROR,
-      " Unable to initialized 256 bit AES. Only received %d bytes.\n",
+      " Unable to initialize 256 bit AES. Only received %d bytes.\n",
       i);
 
     return -1;

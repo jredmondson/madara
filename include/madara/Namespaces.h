@@ -29,6 +29,23 @@ namespace madara
   **/
   namespace filters
   {
+
+    /**
+    * @namespace madara::filters::java
+    * Provides java filters
+    **/
+    namespace java
+    {
+    }
+
+    /**
+    * @namespace madara::filters::ssl
+    * Provides ssl filters
+    **/
+    namespace ssl
+    {
+    }
+
   }
 
   /**

@@ -670,6 +670,7 @@ INPUT                  = ../include/madara/knowledge \
                          ../include/madara/expression \
                          ../include/madara/utility \
                          ../include/madara/logger \
+                         ../include/madara/python \
                          ../include/madara/threads \
                          ../include/madara/filters \
                          ../include/madara/Namespaces.h \

@@ -17,7 +17,8 @@ namespace madara
   namespace filters
   {
     /**
-     * Abstract base class for implementing buffer filters via
+     * @class BufferFilter
+     * @brief Abstract base class for implementing buffer filters via
      * a functor interface. When subclassing this class, create a new
      * instance with the new operator, and the pointer will be managed
      * by the underlying MADARA infrastructure.
