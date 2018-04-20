@@ -257,6 +257,14 @@ madara::knowledge::KnowledgeBaseImpl::activate_transport (void)
 void
 madara::knowledge::KnowledgeBaseImpl::copy (
 const KnowledgeBaseImpl & source,
+const KnowledgeRequirements & reqs)
+{
+  map_.copy (source.map_, reqs);
+}
+
+void
+madara::knowledge::KnowledgeBaseImpl::copy (
+const KnowledgeBaseImpl & source,
 const CopySet & copy_set,
 bool clean_copy)
 {

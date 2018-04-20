@@ -1831,6 +1831,108 @@ madara::knowledge::ThreadSafeContext::to_map_stripped (
 void
 madara::knowledge::ThreadSafeContext::copy (
   const ThreadSafeContext & source,
+  const KnowledgeRequirements & settings)
+{
+  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "ThreadSafeContext::copy:" \
+    " copying a context\n");
+  
+  if (settings.clear_knowledge)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::copy:" \
+      " clearing knowledge in target context\n");
+  
+    map_.clear ();
+  }
+
+  if (settings.predicates.size () != 0)
+  {
+    for (auto predicate : settings.predicates)
+    {
+      std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
+        iters(source.get_prefix_range(predicate.prefix));
+
+      if (predicate.suffix == "")
+      {
+        madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+          "ThreadSafeContext::copy:" \
+          " matching predicate.prefix=%s\n", predicate.prefix.c_str ());
+  
+  #ifndef USE_CPP11
+        KnowledgeMap::iterator hint = map_.begin();
+  #endif
+        for(;iters.first != iters.second; ++iters.first)
+        {
+          madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+            "ThreadSafeContext::copy:" \
+            " inserting %s\n", iters.first->first.c_str ());
+  
+  #ifdef USE_CPP11
+          map_.emplace_hint(map_.end(),
+            iters.first->first),
+            iters.first->second.deep_copy());
+  #else
+          // Before C++11, hint works if it is the value _before_ the one to be
+          // inserted, so we have to keep track of it.
+          hint = map_.insert(hint, KnowledgeMap::value_type(
+            iters.first->first,
+            iters.first->second.deep_copy()));
+        }
+  #endif
+      }
+      else // we need to match a suffix
+      {
+        madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+          "ThreadSafeContext::copy:" \
+          " matching predicate.suffix=%s\n", predicate.suffix.c_str ());
+  
+  #ifndef USE_CPP11
+        KnowledgeMap::iterator hint = map_.begin();
+  #endif
+        for(;iters.first != iters.second; ++iters.first)
+        {
+          if (madara::utility::ends_with (iters.first->first,
+              predicate.suffix))
+          {
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::copy:" \
+              " inserting %s\n", iters.first->first.c_str ());
+  
+    #ifdef USE_CPP11
+            map_.emplace_hint(map_.end(),
+              iters.first->first,
+              iters.first->second.deep_copy());
+    #else
+            // Before C++11, hint works if it is the value _before_ the one to be
+            // inserted, so we have to keep track of it.
+            hint = map_.insert(hint, KnowledgeMap::value_type(
+              iters.first->first,
+              iters.first->second.deep_copy()));
+          } // end suffix match
+        }
+  #endif
+      }
+    }
+  }
+  // we need to insert everything from source into this
+  else
+  {
+
+    std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
+      iters (source.map_.begin (), source.map_.end ());
+
+    for(;iters.first != iters.second; ++iters.first)
+    {
+      map_.insert (map_.begin (), KnowledgeMap::value_type(
+        iters.first->first, iters.first->second.deep_copy()));
+    }
+  }
+}
+
+void
+madara::knowledge::ThreadSafeContext::copy (
+  const ThreadSafeContext & source,
   const CopySet & copy_set,
   bool clean_copy)
 {

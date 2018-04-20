@@ -91,6 +91,18 @@ namespace madara
       ~KnowledgeBase ();
       
       /**
+       * Copies variables and values from source to this context.
+       * PERFORMANCE NOTES: predicates with prefixes can limit
+       * copying to O(log n). predices with suffixes and no prefix
+       * force O(n) copy cost since all records could fit requirements
+       *
+       * @param  source    the source context to copy from
+       * @param  settings  requirements that must be met
+       **/
+      void copy (const KnowledgeBase & source,
+        const KnowledgeRequirements & settings);
+
+      /**
        * Copies variables and values from source to this context. PERFORMANCE
        * NOTES: worst case depends on size of copy_set. If empty, performance
        * is always O (n), where n is number of variables in the source context.

@@ -156,6 +156,25 @@ madara::knowledge::KnowledgeBase::set_log_level (int level)
 void
 madara::knowledge::KnowledgeBase::copy (
   const KnowledgeBase & source,
+  const KnowledgeRequirements & reqs)
+{
+  if (impl_.get () && source.impl_.get () != 0)
+  {
+    impl_->copy (*source.impl_.get (), reqs);
+  }
+  else if (context_ && source.impl_.get () != 0)
+  {
+    KnowledgeBaseImpl * source_impl =
+      (KnowledgeBaseImpl *)source.impl_.get ();
+    ThreadSafeContext * source_context = &(source_impl->get_context ());
+
+    context_->copy (*source_context, reqs);
+  }
+}
+
+void
+madara::knowledge::KnowledgeBase::copy (
+  const KnowledgeBase & source,
   const CopySet & copy_set,
   bool clean_copy)
 {

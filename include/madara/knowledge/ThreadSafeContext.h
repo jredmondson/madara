@@ -26,6 +26,7 @@
 #include "madara/MADARA_export.h"
 #include "madara/LockType.h"
 #include "madara/knowledge/KnowledgeRecord.h"
+#include "madara/knowledge/KnowledgeRequirements.h"
 #include "madara/knowledge/VariableReference.h"
 #include "madara/knowledge/FunctionMap.h"
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
@@ -64,6 +65,11 @@ namespace madara
       * and value).
       **/
     typedef std::map <std::string, bool> CopySet;
+
+    /**
+     * Typedef for vector of prefixes to use for a generic task. @see copy. 
+     **/
+    typedef std::vector <std::string>    PrefixVector;
 
     /// forward declare for friendship
     class KnowledgeBaseImpl;
@@ -1055,6 +1061,19 @@ namespace madara
        **/
       std::string expand_statement (const std::string & statement) const;
       
+      /**
+       * Copies variables and values from source to this context.
+       * PERFORMANCE NOTES: predicates with prefixes can limit
+       * copying to O(log n). predices with suffixes and no prefix
+       * force O(n) copy cost since all records could fit requirements
+       *
+       * @param  source    the source context to copy from
+       * @param  settings  requirements that must be met
+       **/
+      void copy (const ThreadSafeContext & source,
+        const KnowledgeRequirements & settings);
+
+
       /**
        * Copies variables and values from source to this context. PERFORMANCE
        * NOTES: worst case depends on size of copy_set. If empty, performance

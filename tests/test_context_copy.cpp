@@ -101,9 +101,140 @@ void test_copy (void)
   dest.print ();
 }
 
+void test_copy_knowledgereqs (void)
+{
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "****** TESTING COPY KNOWEDGE REQS ********.\n");
+
+  knowledge::KnowledgeBase source, dest;
+
+  knowledge::KnowledgeRequirements::MatchPredicate predicate;
+  knowledge::KnowledgeRequirements reqs;
+  reqs.clear_knowledge = true;
+
+  source.set ("agent.0.name", "John Smith");
+  source.set ("agent.0.age", Integer (20));
+  source.set ("agent.0.occupation", "Explorer");
+  source.set ("agent.0.spouse", "Pocahontas");
+
+  source.set ("agent.name", "James Bond");
+  source.set ("agent.age", Integer (45));
+  source.set ("agent.drink", "Martini");
+
+  source.set ("agent.all.drink", "Water");
+
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Testing copy all: ");
+
+  dest.copy (source, reqs);
+
+  if (dest.get ("agent.0.name") == "John Smith" &&
+      dest.get ("agent.0.age") == Integer (20) &&
+      dest.get ("agent.0.occupation") == "Explorer" &&
+      dest.get ("agent.0.spouse") == "Pocahontas" &&
+      dest.get ("agent.name") == "James Bond" &&
+      dest.get ("agent.age") == Integer (45) &&
+      dest.get ("agent.drink") == "Martini" &&
+      dest.get ("agent.all.drink") == "Water")
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "SUCCESS.\n");
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "FAIL.\n");
+    dest.print ();
+  }
+
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Testing copy prefix=agent: ");
+
+  predicate.prefix = "agent";
+  reqs.predicates.push_back (predicate);
+
+  dest.copy (source, reqs);
+
+  if (dest.get ("agent.0.name") == "John Smith" &&
+      dest.get ("agent.0.age") == Integer (20) &&
+      dest.get ("agent.0.occupation") == "Explorer" &&
+      dest.get ("agent.0.spouse") == "Pocahontas" &&
+      dest.get ("agent.name") == "James Bond" &&
+      dest.get ("agent.age") == Integer (45) &&
+      dest.get ("agent.drink") == "Martini" &&
+      dest.get ("agent.all.drink") == "Water")
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "SUCCESS.\n");
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "FAIL.\n");
+    dest.print ();
+  }
+
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Testing copy prefix=agent.0: ");
+
+  reqs.predicates[0].prefix = "agent.0";
+
+  dest.copy (source, reqs);
+
+  if (dest.get ("agent.0.name") == "John Smith" &&
+      dest.get ("agent.0.age") == Integer (20) &&
+      dest.get ("agent.0.occupation") == "Explorer" &&
+      dest.get ("agent.0.spouse") == "Pocahontas" &&
+      dest.get ("agent.name").is_false () &&
+      dest.get ("agent.age").is_false () &&
+      dest.get ("agent.drink").is_false () &&
+      dest.get ("agent.all.drink").is_false ())
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "SUCCESS.\n");
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "FAIL.\n");
+    dest.print ();
+  }
+
+  
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Testing copy predicate=agent*drink: ");
+
+  reqs.predicates[0].prefix = "agent";
+  reqs.predicates[0].suffix = "drink";
+
+  dest.copy (source, reqs);
+
+  if (dest.get ("agent.0.name").is_false () &&
+      dest.get ("agent.0.age").is_false () &&
+      dest.get ("agent.0.occupation").is_false () &&
+      dest.get ("agent.0.spouse").is_false () &&
+      dest.get ("agent.name").is_false () &&
+      dest.get ("agent.age").is_false () &&
+      dest.get ("agent.drink") == "Martini" &&
+      dest.get ("agent.all.drink") == "Water")
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "SUCCESS.\n");
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "FAIL.\n");
+    dest.print ();
+  }
+
+  
+}
+
 int main (int, char **)
 {
   test_copy ();
+  test_copy_knowledgereqs ();
 
   return 0;
 }
