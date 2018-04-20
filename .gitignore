@@ -16,9 +16,16 @@ lib*
 
 
 test_*
+network_*
+mpgen
+madara_registry
+madara_version
+profile_architecture
+karl
+include/madara/Version.h
 
 bin/*
 docs/madara/*
 docs/maal/*
 docs/maml/*
-
+docs/VERSION.txt
