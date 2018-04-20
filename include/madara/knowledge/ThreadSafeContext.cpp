@@ -2190,61 +2190,27 @@ madara::knowledge::ThreadSafeContext::save_context (
         meta.size += encoded_size;
         checkpoint_header.size += encoded_size;
 
-        if (encoded_size > buffer_remaining)
-        {
-          /**
-           * if the record is larger than the buffer we have remaining, then
-           * write the buffer to the file
-           **/
-          current = buffer.get_ptr ();
-          fwrite (current,
-            (size_t)(max_buffer - buffer_remaining), 1, file);
-          total_written += (int64_t)(max_buffer - buffer_remaining);
-          buffer_remaining = max_buffer;
-
-          if (encoded_size > max_buffer)
-          {
-            /**
-             * If the record is larger than the buffer, then we must allocate a
-             * buffer large enough to write to it.
-             **/
-            buffer = new char[encoded_size];
-            max_buffer = encoded_size;
-            buffer_remaining = max_buffer;
-            current = buffer.get_ptr ();
-          } // end if larger than buffer
-        } // end if larger than buffer remaining
-
         current = i->second.write (current, i->first, buffer_remaining);
       }
     }
   
-    if (buffer_remaining != max_buffer)
-    {
-      fwrite (buffer.get_ptr (),
-        (size_t) (max_buffer - buffer_remaining), 1, file);
-      total_written += (int64_t) (max_buffer - buffer_remaining);
-    }
+    // write the final sizes
+    current = meta.write (buffer.get_ptr (), max_buffer);
+    current = checkpoint_header.write (current, max_buffer);
+
+    // call decode with any buffer filters
+    int total = settings.encode ((unsigned char *)buffer.get_ptr (),
+      (int)meta.size, (int)max_buffer);
 
     // update the meta data at the front
     fseek (file, 0, SEEK_SET);
 
-    current = buffer.get_ptr ();
-    buffer_remaining = max_buffer;
-
-    current = meta.write (current, buffer_remaining);
-    current = checkpoint_header.write (current, buffer_remaining);
-
-    // call decode with any buffer filters
-    settings.encode ((unsigned char *)buffer.get_ptr (),
-      (int)meta.size, (int)max_buffer);
-
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_context:" \
-      " encoding with buffer filters: %d bytes written.\n",
-      (int)meta.size);
+      " encoding with buffer filters: %d:%d bytes written.\n",
+      (int)meta.size, (int)checkpoint_header.size);
 
-    fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
+    fwrite (buffer.get_ptr (), (size_t)total, 1, file);
 
     fclose (file);
   }
@@ -3017,7 +2983,7 @@ madara::knowledge::ThreadSafeContext::load_context (
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::load_context:" \
-      " reading file meta data: %d bytes read.\n",
+      " reading file: %d bytes read.\n",
       (int)total_read);
 
     // call decode with any buffer filters
@@ -3037,6 +3003,10 @@ madara::knowledge::ThreadSafeContext::load_context (
       checkpoint_settings.states = meta.states;
       checkpoint_settings.version = utility::to_string_version (
         meta.karl_version);
+
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                "ThreadSafeContext::load_context:" \
+                " read File meta. Meta.size=%d\n", (int)meta.size);
 
       /**
       * check that there is more than one state and that the rest of
@@ -3063,6 +3033,11 @@ madara::knowledge::ThreadSafeContext::load_context (
             {
               checkpoint_settings.last_lamport_clock = checkpoint_header.clock;
             }
+
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+                "ThreadSafeContext::load_context:" \
+                " read Checkpoint header. header.size=%d\n",
+                (int)checkpoint_header.size);
 
             /**
             * What we read into the checkpoint_header will dictate our

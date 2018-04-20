@@ -16,6 +16,7 @@
 namespace logger = madara::logger;
 namespace knowledge = madara::knowledge;
 namespace filters = madara::filters;
+namespace utility = madara::utility;
 
 #define BUFFER_SIZE    1000
 
@@ -353,7 +354,7 @@ void test_checkpoint_settings (void)
   settings.last_lamport_clock = 7;
   settings.filename = "test_context_save_2.kb";
 
-  logger::global_logger->set_level (logger::LOG_MINOR);
+  //logger::global_logger->set_level (logger::LOG_MINOR);
 
   saver.save_context (settings);
 
@@ -403,7 +404,7 @@ void test_checkpoint_settings (void)
   filter.generate_key ("testPassword#tofile359");
 
   std::string test_message = "my test message";
-  unsigned char buffer[64];
+  unsigned char buffer[200000];
   buffer[63] = 0;
 
   // copy current message into the buffer
@@ -441,8 +442,28 @@ void test_checkpoint_settings (void)
     std::cerr << "FAIL. Should be same but is garbled. " << buffer << "\n";
   }
 
+  std::cerr << "Test 5.3: encoding README.txt: ";
 
+  test_message = utility::file_to_string (
+    utility::expand_envs ("$(MADARA_ROOT)/README.txt"));
+  strncpy ((char *)buffer, test_message.c_str (), test_message.size ());
+  
+  encode_length = filter.encode (buffer, (int)test_message.size (), sizeof(buffer));
+
+  utility::write_file ("README_encrypted.bin", (void *)buffer, encode_length);
+
+  test_message = utility::file_to_string ("README_encrypted.bin");
+  memcpy ((char *)buffer, test_message.c_str (), test_message.size ());
+  
+  decode_length = filter.decode (buffer, test_message.size (), sizeof(buffer));
+
+  utility::write_file ("README_decrypted.txt", (void *)buffer, decode_length);
+
+  std::cerr << "SUCCESS\n";
+
+  settings.filename = "test_encryption_6.kb";
   settings.buffer_filters.push_back (&filter);
+  settings.prefixes.clear ();
 
   saver.save_context (settings);
 
@@ -450,14 +471,11 @@ void test_checkpoint_settings (void)
 
   std::cerr << "Test 6: Saving and loading with 256 bit AES: ";
   if (loader.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
-      && loader.get ("double_var").is_false ()
-      && loader.get ("str_var").is_false ()
+      && loader.get ("double_var") == 3.14159
+      && loader.get ("str_var") == "some string"
       && loader.get ("int_array").to_string (", ") == "10, 20, 30"
-      && loader.get ("double_array").is_false ()
-      && loader.get ("file_var").is_false ()
-      && loader.get ("extra_var").is_false ()
-      && loader.get ("additional_var").is_false ()
-      && loader.get (".invisible").is_false ())
+      && loader.get ("double_array").to_string (", ") ==
+          "10.1, 20.2, 30.3, 40.4")
   {
     std::cerr << "SUCCESS\n";
   }
@@ -468,6 +486,7 @@ void test_checkpoint_settings (void)
   }
 
   std::cerr << "Test 7: Loading without 256 bit AES filter: ";
+  settings.filename = "test_encryption_7.kb";
   
   saver.save_context (settings);
 
@@ -490,6 +509,36 @@ void test_checkpoint_settings (void)
   else
   {
     std::cerr << "FAIL Knowledge was:\n";
+    loader.print ();
+  }
+
+  
+  std::cerr << "Test 8: Saving with prefixes 256 bit AES filter: ";
+
+  settings.filename = "test_encryption_8.kb";
+  settings.prefixes.push_back ("int");
+  settings.buffer_filters.push_back (&filter);
+  
+  saver.save_context (settings);
+
+  loader.load_context (settings);
+
+
+  if (loader.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
+      && loader.get ("double_var").is_false ()
+      && loader.get ("str_var").is_false ()
+      && loader.get ("int_array").to_string (", ") == "10, 20, 30"
+      && loader.get ("double_array").is_false ()
+      && loader.get ("file_var").is_false ()
+      && loader.get ("extra_var").is_false ()
+      && loader.get ("additional_var").is_false ()
+      && loader.get (".invisible").is_false ())
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
 
