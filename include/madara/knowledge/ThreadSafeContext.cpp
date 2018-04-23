@@ -1858,28 +1858,33 @@ madara::knowledge::ThreadSafeContext::copy (
         madara_logger_ptr_log (logger_, logger::LOG_MINOR,
           "ThreadSafeContext::copy:" \
           " matching predicate.prefix=%s\n", predicate.prefix.c_str ());
-  
-  #ifndef USE_CPP11
-        KnowledgeMap::iterator hint = map_.begin();
-  #endif
+
         for(;iters.first != iters.second; ++iters.first)
         {
           madara_logger_ptr_log (logger_, logger::LOG_MINOR,
             "ThreadSafeContext::copy:" \
+            " looking for %s\n", iters.first->first.c_str ());
+
+          auto where = map_.lower_bound(iters.first->first);
+
+          if (where == map_.end() || where->first != iters.first->first) 
+          {
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+            "ThreadSafeContext::copy:" \
             " inserting %s\n", iters.first->first.c_str ());
-  
-  #ifdef USE_CPP11
-          map_.emplace_hint(map_.end(),
-            iters.first->first),
-            iters.first->second.deep_copy());
-  #else
-          // Before C++11, hint works if it is the value _before_ the one to be
-          // inserted, so we have to keep track of it.
-          hint = map_.insert(hint, KnowledgeMap::value_type(
-            iters.first->first,
-            iters.first->second.deep_copy()));
+
+            where = map_.emplace_hint(where,
+              iters.first->first, iters.first->second.deep_copy());
+          }
+          else
+          {
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+            "ThreadSafeContext::copy:" \
+            " overwriting %s\n", iters.first->first.c_str ());
+
+            where->second = iters.first->second.deep_copy();
+          }
         }
-  #endif
       }
       else // we need to match a suffix
       {
@@ -1887,9 +1892,6 @@ madara::knowledge::ThreadSafeContext::copy (
           "ThreadSafeContext::copy:" \
           " matching predicate.suffix=%s\n", predicate.suffix.c_str ());
   
-  #ifndef USE_CPP11
-        KnowledgeMap::iterator hint = map_.begin();
-  #endif
         for(;iters.first != iters.second; ++iters.first)
         {
           if (madara::utility::ends_with (iters.first->first,
@@ -1897,21 +1899,29 @@ madara::knowledge::ThreadSafeContext::copy (
           {
             madara_logger_ptr_log (logger_, logger::LOG_MINOR,
               "ThreadSafeContext::copy:" \
+              " looking for %s\n", iters.first->first.c_str ());
+
+            auto where = map_.lower_bound(iters.first->first);
+
+            if (where == map_.end() || where->first != iters.first->first) 
+            {
+              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::copy:" \
               " inserting %s\n", iters.first->first.c_str ());
-  
-    #ifdef USE_CPP11
-            map_.emplace_hint(map_.end(),
-              iters.first->first,
-              iters.first->second.deep_copy());
-    #else
-            // Before C++11, hint works if it is the value _before_ the one to be
-            // inserted, so we have to keep track of it.
-            hint = map_.insert(hint, KnowledgeMap::value_type(
-              iters.first->first,
-              iters.first->second.deep_copy()));
+
+              where = map_.emplace_hint(where,
+                iters.first->first, iters.first->second.deep_copy());
+            }
+            else
+            {
+              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::copy:" \
+              " overwriting %s\n", iters.first->first.c_str ());
+
+              where->second = iters.first->second.deep_copy();
+            }
           } // end suffix match
         }
-  #endif
       }
     }
   }

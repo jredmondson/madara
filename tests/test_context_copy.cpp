@@ -112,6 +112,8 @@ void test_copy_knowledgereqs (void)
   knowledge::KnowledgeRequirements reqs;
   reqs.clear_knowledge = true;
 
+  source.set ("a", "test value");
+  source.set ("ab", "test value 2");
   source.set ("agent.0.name", "John Smith");
   source.set ("agent.0.age", Integer (20));
   source.set ("agent.0.occupation", "Explorer");
@@ -122,6 +124,8 @@ void test_copy_knowledgereqs (void)
   source.set ("agent.drink", "Martini");
 
   source.set ("agent.all.drink", "Water");
+  source.set ("ahhah", "extra values");
+  source.set ("azender", "values after insert");
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing copy all: ");
@@ -228,7 +232,83 @@ void test_copy_knowledgereqs (void)
     dest.print ();
   }
 
+  reqs.predicates[0].suffix = "drink";
+  reqs.predicates[0].prefix = "agent";
+  reqs.clear_knowledge = false;
+
+  dest.set ("a", "test value");
+  dest.set ("ab", "test value 2");
+  dest.set ("ahhah", "extra values");
+  dest.set ("azender", "values after insert");
+
+  dest.copy (source, reqs);
+
   
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Testing copy with existing elements, clear=false, predicate=agent*drink: ");
+
+  if (dest.get ("agent.0.name").is_false () &&
+      dest.get ("agent.0.age").is_false () &&
+      dest.get ("agent.0.occupation").is_false () &&
+      dest.get ("agent.0.spouse").is_false () &&
+      dest.get ("agent.name").is_false () &&
+      dest.get ("agent.age").is_false () &&
+      dest.get ("agent.drink") == "Martini" &&
+      dest.get ("agent.all.drink") == "Water" &&
+      dest.get ("a") == "test value" &&
+      dest.get ("ab") == "test value 2" &&
+      dest.get ("ahhah") == "extra values" &&
+      dest.get ("azender") == "values after insert")
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "SUCCESS.\n");
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "FAIL.\n");
+    dest.print ();
+  }
+
+  dest.clear ();
+  reqs.predicates[0].suffix = "";
+  reqs.predicates[0].prefix = "agent";
+  reqs.clear_knowledge = false;
+
+  dest.set ("a", "test value");
+  dest.set ("ab", "test value 2");
+  dest.set ("ahhah", "extra values");
+  dest.set ("azender", "values after insert");
+
+  dest.copy (source, reqs);
+
+  
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Testing copy with existing elements, clear=false, predicate=agent: ");
+
+  if (dest.get ("agent.0.name") == "John Smith" &&
+      dest.get ("agent.0.age") == Integer (20) &&
+      dest.get ("agent.0.occupation") == "Explorer" &&
+      dest.get ("agent.0.spouse") == "Pocahontas" &&
+      dest.get ("agent.name") == "James Bond" &&
+      dest.get ("agent.age") == Integer (45) &&
+      dest.get ("agent.drink") == "Martini" &&
+      dest.get ("agent.all.drink") == "Water" &&
+      dest.get ("a") == "test value" &&
+      dest.get ("ab") == "test value 2" &&
+      dest.get ("ahhah") == "extra values" &&
+      dest.get ("azender") == "values after insert")
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "SUCCESS.\n");
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "FAIL.\n");
+    dest.print ();
+  }
+
 }
 
 int main (int, char **)
