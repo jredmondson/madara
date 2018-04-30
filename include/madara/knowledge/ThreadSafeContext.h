@@ -1465,7 +1465,7 @@ namespace madara
 
       int64_t save_checkpoint (const std::string & filename,
         const std::string & id = "") const;
-      
+
       /**
        * Saves a checkpoint of a list of changes to a file
        * @param   settings    checkpoint settings to load
@@ -1478,9 +1478,33 @@ namespace madara
       int64_t save_checkpoint (
         const CheckpointSettings & settings) const;
 
+      /**
+       * NOT THREAD SAFE!
+       *
+       * Retrieves a reference to the underlying KnowledgeMap. This is not
+       * thread-safe. Only call this if you already hold this Context's lock.
+       * Reading the map is then generally safe, but writting to it will bypass
+       * important mechanisms such as modification tracking. Make sure you know
+       * what you're doing, and consider whether other methods fit your needs.
+       *
+       * @return a reference to this context's KnowledgeMap
+       **/
       KnowledgeMap &get_map_unsafe (void) { return map_; }
+
+      /**
+       * NOT THREAD SAFE!
+       *
+       * Retrieves a reference to the underlying KnowledgeMap. This is not
+       * thread-safe. Only call this if you already hold this Context's lock.
+       * Reading the map is then generally safe.
+       *
+       * Ensure you know what you're doing, and consider whether other
+       * methods fit your needs.
+       *
+       * @return a reference to this context's KnowledgeMap
+       **/
       const KnowledgeMap &get_map_unsafe (void) const { return map_; }
-      
+
     protected:
     private:
       /**

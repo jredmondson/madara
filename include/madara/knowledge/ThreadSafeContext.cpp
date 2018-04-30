@@ -2306,7 +2306,7 @@ const std::string & filename) const
           }
 
           utility::write_file (path,
-            (void *)i->second.file_value_.get_ptr (), i->second.size ());
+            (void *)i->second.file_value_.get (), i->second.size ());
           buffer << path;
 
 
@@ -2444,7 +2444,7 @@ const CheckpointSettings & settings) const
           }
 
           utility::write_file (path,
-            (void *)i->second.file_value_.get_ptr (), i->second.size ());
+            (void *)i->second.file_value_.get (), i->second.size ());
           buffer << path;
 
 
@@ -2547,7 +2547,7 @@ const std::string & filename) const
           }
 
           utility::write_file (path,
-            (void *)i->second.file_value_.get_ptr (), i->second.size ());
+            (void *)i->second.file_value_.get (), i->second.size ());
           buffer << path;
 
 
@@ -2694,7 +2694,7 @@ const CheckpointSettings & settings) const
           }
 
           utility::write_file (path,
-            (void *)i->second.file_value_.get_ptr (), i->second.size ());
+            (void *)i->second.file_value_.get (), i->second.size ());
           buffer << path;
 
 

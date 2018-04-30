@@ -13,9 +13,9 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <memory>
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
-#include "madara/utility/ScopedArray.h"
 #include "madara/utility/Refcounter.h"
 #include "ace/os_include/sys/os_types.h"
 #include "madara/logger/GlobalLogger.h"
@@ -130,22 +130,22 @@ namespace madara
       /**
        * potential string value of the node (size int)
        **/
-      madara::utility::ScopedArray <Integer> int_array_;
+      std::shared_ptr<Integer> int_array_;
 
       /**
        * potential string value of the node (size int)
        **/
-      madara::utility::ScopedArray <double> double_array_;
+      std::shared_ptr<double> double_array_;
 
       /**
        * potential string value of the node (size int)
        **/
-      madara::utility::ScopedArray <char> str_value_;
+      std::shared_ptr<char> str_value_;
 
       /**
        * potential file value of the node
        **/
-      madara::utility::ScopedArray <unsigned char> file_value_;
+      std::shared_ptr<unsigned char> file_value_;
     
     public:
 

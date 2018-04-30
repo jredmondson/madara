@@ -177,7 +177,7 @@ madara::knowledge::KnowledgeRecord::clone (void) const
       size_t temp;
       result->size_ = this->size_;
       result->type_ = this->type_;
-      result->file_value_ = this->to_unmanaged_buffer (temp);
+      result->file_value_ = MADARA_WITH_DELETER(this->to_unmanaged_buffer (temp));
     }
   }
   else
@@ -221,7 +221,7 @@ madara::knowledge::KnowledgeRecord::deep_copy (const knowledge::KnowledgeRecord 
       size_ = source.size_;
       type_ = source.type_;
       status_ = source.status_;
-      file_value_ = source.to_unmanaged_buffer (temp);
+      file_value_ = MADARA_WITH_DELETER(source.to_unmanaged_buffer (temp));
     }
   }
   else
@@ -269,7 +269,7 @@ madara::knowledge::KnowledgeRecord::read_file (
            || extension == ".txt" || extension == ".xml")
     {
       // change the string value and size to appropriate values
-      str_value_ = (char *)buffer;
+      str_value_ = MADARA_WITH_DELETER((char *)buffer);
       size_ = (uint32_t)size;
       
       if (is_string_type (read_as_type))
@@ -282,7 +282,7 @@ madara::knowledge::KnowledgeRecord::read_file (
     }
     else
     {
-      file_value_ = (unsigned char *)buffer;
+      file_value_ = MADARA_WITH_DELETER((unsigned char *)buffer);
       size_ = (uint32_t)size;
 
       if (extension == ".jpg" || read_as_type == IMAGE_JPEG)
@@ -307,12 +307,12 @@ madara::knowledge::KnowledgeRecord::to_file (const std::string & filename) const
   if (is_string_type ())
   {
     return madara::utility::write_file (filename,
-      (void *)str_value_.get_ptr (), size_);
+      (void *)str_value_.get (), size_);
   }
   else if (is_file_type ())
   {
     return madara::utility::write_file (filename,
-      (void *)file_value_.get_ptr (), size_);
+      (void *)file_value_.get (), size_);
   }
   else
   {
@@ -334,7 +334,7 @@ madara::knowledge::KnowledgeRecord::to_double (void) const
     if (type_ == DOUBLE)
       value = double_value_;
     else if (type_ == DOUBLE_ARRAY)
-      value = *(double_array_.get_ptr ());
+      value = *(double_array_.get ());
     else
     {
       std::stringstream buffer;
@@ -343,9 +343,9 @@ madara::knowledge::KnowledgeRecord::to_double (void) const
       if (type_ == INTEGER)
         buffer << int_value_;
       else if (type_ == INTEGER_ARRAY)
-        buffer << *(int_array_.get_ptr ());
+        buffer << *(int_array_.get ());
       else if (is_string_type ())
-        buffer << str_value_.get_ptr ();
+        buffer << str_value_.get ();
 
       buffer >> value;
     }
@@ -364,7 +364,7 @@ madara::knowledge::KnowledgeRecord::to_integer (void) const
     if (type_ == INTEGER)
       value = int_value_;
     else if (type_ == INTEGER_ARRAY)
-      value = *(int_array_.get_ptr ());
+      value = *(int_array_.get ());
     else
     {
       std::stringstream buffer;
@@ -373,9 +373,9 @@ madara::knowledge::KnowledgeRecord::to_integer (void) const
       if (type_ == DOUBLE)
         buffer << double_value_;
       else if (type_ == DOUBLE_ARRAY)
-        buffer << *(double_array_.get_ptr ());
+        buffer << *(double_array_.get ());
       else if (is_string_type ())
-        buffer << str_value_.get_ptr ();
+        buffer << str_value_.get ();
 
       buffer >> value;
     }
@@ -400,7 +400,7 @@ madara::knowledge::KnowledgeRecord::to_integers (void) const
     }
     else if (type_ == INTEGER_ARRAY)
     {
-      const Integer * ptr_temp = int_array_.get_ptr ();
+      const Integer * ptr_temp = int_array_.get ();
 
       for (unsigned int i = 0; i < size; ++i)
         integers[i] = ptr_temp[i];
@@ -409,21 +409,21 @@ madara::knowledge::KnowledgeRecord::to_integers (void) const
       integers[0] = Integer (double_value_);
     else if (type_ == DOUBLE_ARRAY)
     {
-      const double * ptr_temp = double_array_.get_ptr ();
+      const double * ptr_temp = double_array_.get ();
 
       for (unsigned int i = 0; i < size; ++i)
         integers[i] = Integer (ptr_temp[i]);
     }
     else if (is_string_type ())
     {
-      const char * ptr_temp = str_value_.get_ptr ();
+      const char * ptr_temp = str_value_.get ();
 
       for (unsigned int i = 0; i < size; ++i)
         integers[i] = Integer (ptr_temp[i]);
     }
     else if (is_file_type ())
     {
-      const unsigned char * ptr_temp = file_value_.get_ptr ();
+      const unsigned char * ptr_temp = file_value_.get ();
 
       for (unsigned int i = 0; i < size; ++i)
         integers[i] = Integer (ptr_temp[i]);
@@ -447,7 +447,7 @@ madara::knowledge::KnowledgeRecord::to_doubles (void) const
       doubles[0] = double (int_value_);
     else if (type_ == INTEGER_ARRAY)
     {
-      const Integer * ptr_temp = int_array_.get_ptr ();
+      const Integer * ptr_temp = int_array_.get ();
 
       for (unsigned int i = 0; i < size; ++i)
         doubles[i] = double (ptr_temp[i]);
@@ -456,21 +456,21 @@ madara::knowledge::KnowledgeRecord::to_doubles (void) const
       doubles[0] = double_value_;
     else if (type_ == DOUBLE_ARRAY)
     {
-      const double * ptr_temp = double_array_.get_ptr ();
+      const double * ptr_temp = double_array_.get ();
 
       for (unsigned int i = 0; i < size; ++i)
         doubles[i] = ptr_temp[i];
     }
     else if (is_string_type ())
     {
-      const char * ptr_temp = str_value_.get_ptr ();
+      const char * ptr_temp = str_value_.get ();
 
       for (unsigned int i = 0; i < size; ++i)
         doubles[i] = double (ptr_temp[i]);
     }
     else if (is_file_type ())
     {
-      const unsigned char * ptr_temp = file_value_.get_ptr ();
+      const unsigned char * ptr_temp = file_value_.get ();
 
       for (unsigned int i = 0; i < size; ++i)
         doubles[i] = double (ptr_temp[i]);
@@ -497,7 +497,7 @@ madara::knowledge::KnowledgeRecord::to_string (const std::string & delimiter) co
         buffer << int_value_;
       else if (type_ == INTEGER_ARRAY)
       {
-        const Integer * ptr_temp = int_array_.get_ptr ();
+        const Integer * ptr_temp = int_array_.get ();
 
         if (size_ >= 1)
           buffer << *ptr_temp;
@@ -572,7 +572,7 @@ madara::knowledge::KnowledgeRecord::to_string (const std::string & delimiter) co
             " precision set to default\n", madara_double_precision);
         }
 
-        const double * ptr_temp = double_array_.get_ptr ();
+        const double * ptr_temp = double_array_.get ();
 
         if (size_ >= 1)
           buffer << *ptr_temp;
@@ -590,7 +590,7 @@ madara::knowledge::KnowledgeRecord::to_string (const std::string & delimiter) co
       return buffer.str ();
     }
     else
-      return std::string (str_value_.get_ptr ());
+      return std::string (str_value_.get ());
   }
   else
     return "0";
@@ -606,11 +606,11 @@ madara::knowledge::KnowledgeRecord::to_unmanaged_buffer (size_t & size) const
 
     if (is_string_type ())
     {
-      memcpy (buffer, str_value_.get_ptr (), size_);
+      memcpy (buffer, str_value_.get (), size_);
     }
     else if (is_file_type ())
     {
-      memcpy (buffer, file_value_.get_ptr (), size_);
+      memcpy (buffer, file_value_.get (), size_);
     }
     else if (type_ == INTEGER)
     {
@@ -622,11 +622,11 @@ madara::knowledge::KnowledgeRecord::to_unmanaged_buffer (size_t & size) const
     }
     else if (type_ == INTEGER_ARRAY)
     {
-      memcpy (buffer, int_array_.get_ptr (), sizeof(Integer) * size_);
+      memcpy (buffer, int_array_.get (), sizeof(Integer) * size_);
     }
     else if (type_ == DOUBLE_ARRAY)
     {
-      memcpy (buffer, double_array_.get_ptr (), sizeof(double) * size_);
+      memcpy (buffer, double_array_.get (), sizeof(double) * size_);
     }
 
     return buffer;
@@ -651,7 +651,7 @@ madara::knowledge::KnowledgeRecord::fragment (unsigned int first, unsigned int l
        // Create a new buffer, copy over the elements, and add a null delimiter
       char * new_buffer = new char [last - first + 2];
 
-      memcpy (new_buffer, str_value_.get_ptr () + first, last - first + 1);
+      memcpy (new_buffer, str_value_.get () + first, last - first + 1);
       new_buffer[last-first + 1] = 0;
 
       ret.set_value (new_buffer);
@@ -665,7 +665,7 @@ madara::knowledge::KnowledgeRecord::fragment (unsigned int first, unsigned int l
       uint32_t size = last - first + 1;
       unsigned char * new_buffer = new unsigned char [size];
 
-      memcpy (new_buffer, file_value_.get_ptr () + first, last - first + 1);
+      memcpy (new_buffer, file_value_.get () + first, last - first + 1);
 
       // create a new record with the unsigned char buffer as contents
       ret.set_file (new_buffer, size);
@@ -678,7 +678,7 @@ madara::knowledge::KnowledgeRecord::fragment (unsigned int first, unsigned int l
 
       std::vector <Integer> integers;
       integers.resize (size);
-      Integer * ptr_temp = int_array_.get_ptr ();
+      Integer * ptr_temp = int_array_.get ();
 
       for (unsigned int i = first; i <= last; ++i, ++ptr_temp)
         integers[i] = *ptr_temp;
@@ -693,7 +693,7 @@ madara::knowledge::KnowledgeRecord::fragment (unsigned int first, unsigned int l
 
       std::vector <double> doubles;
       doubles.resize (size);
-      double * ptr_temp = double_array_.get_ptr ();
+      double * ptr_temp = double_array_.get ();
 
       for (unsigned int i = first; i <= last; ++i, ++ptr_temp)
         doubles[i] = *ptr_temp;
@@ -737,7 +737,7 @@ madara::knowledge::KnowledgeRecord::operator< (
     if      (rhs.is_string_type ())
     {
       result =
-        strncmp (str_value_.get_ptr (), rhs.str_value_.get_ptr (), 
+        strncmp (str_value_.get (), rhs.str_value_.get (), 
         size () >= rhs.size () ? size () : rhs.size ()) < 0;
     }
     
@@ -823,7 +823,7 @@ madara::knowledge::KnowledgeRecord::operator<= (
     if      (rhs.is_string_type ())
     {
       result = 
-        strncmp (str_value_.get_ptr (), rhs.str_value_.get_ptr (), 
+        strncmp (str_value_.get (), rhs.str_value_.get (), 
         size () >= rhs.size () ? size () : rhs.size ()) <= 0;
     }
     
@@ -918,7 +918,7 @@ madara::knowledge::KnowledgeRecord::operator== (
     if      (rhs.is_string_type ())
     {
       result = 
-        strncmp (str_value_.get_ptr (), rhs.str_value_.get_ptr (), 
+        strncmp (str_value_.get (), rhs.str_value_.get (), 
         size () >= rhs.size () ? size () : rhs.size ()) == 0;
     }
     
@@ -1089,7 +1089,7 @@ madara::knowledge::KnowledgeRecord::operator> (const knowledge::KnowledgeRecord 
     if      (rhs.is_string_type ())
     {
       result = 
-        strncmp (str_value_.get_ptr (), rhs.str_value_.get_ptr (), 
+        strncmp (str_value_.get (), rhs.str_value_.get (), 
         size () >= rhs.size () ? size () : rhs.size ()) > 0;
     }
     
@@ -1176,7 +1176,7 @@ madara::knowledge::KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord
     if      (rhs.is_string_type ())
     {
       result =
-        strncmp (str_value_.get_ptr (), rhs.str_value_.get_ptr (), 
+        strncmp (str_value_.get (), rhs.str_value_.get (), 
         size () >= rhs.size () ? size () : rhs.size ()) >= 0;
     }
     
@@ -1487,12 +1487,12 @@ madara::knowledge::KnowledgeRecord::retrieve_index (size_t index) const
   if (type_ == INTEGER_ARRAY)
   {
     if (index < size_t (size_))
-      ret_value.set_value (int_array_.get_ptr ()[index]);
+      ret_value.set_value (int_array_.get ()[index]);
   }
   else if (type_ == DOUBLE_ARRAY)
   {
     if (index < size_t (size_))
-      ret_value.set_value (double_array_.get_ptr ()[index]);
+      ret_value.set_value (double_array_.get ()[index]);
   }
 
   return ret_value;
@@ -1506,13 +1506,13 @@ madara::knowledge::KnowledgeRecord::dec_index (size_t index)
     if (index >= size_)
     {
       double * ptr_temp = new double [index+1];
-      memcpy (ptr_temp, double_array_.get_ptr (), size_ * sizeof (double));
+      memcpy (ptr_temp, double_array_.get (), size_ * sizeof (double));
       
       for (size_t i = size_; i < index+1; ++i)
         ptr_temp[i] = 0;
       
       size_ = uint32_t (index+1);
-      double_array_ = ptr_temp;
+      double_array_ = MADARA_WITH_DELETER(ptr_temp);
     }
   }
   else if (type_ == INTEGER_ARRAY)
@@ -1520,13 +1520,13 @@ madara::knowledge::KnowledgeRecord::dec_index (size_t index)
     if (index >= size_)
     {
       Integer * ptr_temp = new Integer [index+1];
-      memcpy (ptr_temp, int_array_.get_ptr (), size_ * sizeof (Integer));
+      memcpy (ptr_temp, int_array_.get (), size_ * sizeof (Integer));
 
       for (size_t i = size_; i < index+1; ++i)
         ptr_temp[i] = 0;
 
       size_ = uint32_t (index+1);
-      int_array_ = ptr_temp;
+      int_array_ = MADARA_WITH_DELETER(ptr_temp);
     }
   }
   else
@@ -1537,14 +1537,14 @@ madara::knowledge::KnowledgeRecord::dec_index (size_t index)
     for (size_t i = 0; i < index + 1; ++i)
       ptr_temp[i] = 0;
 
-    int_array_ = ptr_temp;
+    int_array_ = MADARA_WITH_DELETER(ptr_temp);
     type_ = INTEGER_ARRAY;
   }
   
   if (status_ != MODIFIED)
     status_ = MODIFIED;
 
-  return knowledge::KnowledgeRecord (--int_array_.get_ptr ()[index]);
+  return knowledge::KnowledgeRecord (--int_array_.get ()[index]);
 }
  
 madara::knowledge::KnowledgeRecord 
@@ -1555,13 +1555,13 @@ madara::knowledge::KnowledgeRecord::inc_index (size_t index)
     if (index >= size_)
     {
       double * ptr_temp = new double [index+1];
-      memcpy (ptr_temp, double_array_.get_ptr (), size_ * sizeof (double));
+      memcpy (ptr_temp, double_array_.get (), size_ * sizeof (double));
       
       for (size_t i = size_; i < index+1; ++i)
         ptr_temp[i] = 0;
       
       size_ = uint32_t (index+1);
-      double_array_ = ptr_temp;
+      double_array_ = MADARA_WITH_DELETER(ptr_temp);
     }
   }
   else if (type_ == INTEGER_ARRAY)
@@ -1569,13 +1569,13 @@ madara::knowledge::KnowledgeRecord::inc_index (size_t index)
     if (index >= size_)
     {
       Integer * ptr_temp = new Integer [index+1];
-      memcpy (ptr_temp, int_array_.get_ptr (), size_ * sizeof (Integer));
+      memcpy (ptr_temp, int_array_.get (), size_ * sizeof (Integer));
 
       for (size_t i = size_; i < index+1; ++i)
         ptr_temp[i] = 0;
 
       size_ = uint32_t (index+1);
-      int_array_ = ptr_temp;
+      int_array_ = MADARA_WITH_DELETER(ptr_temp);
     }
   }
   else
@@ -1586,14 +1586,14 @@ madara::knowledge::KnowledgeRecord::inc_index (size_t index)
     for (size_t i = 0; i < index + 1; ++i)
       ptr_temp[i] = 0;
 
-    int_array_ = ptr_temp;
+    int_array_ = MADARA_WITH_DELETER(ptr_temp);
     type_ = INTEGER_ARRAY;
   }
   
   if (status_ != MODIFIED)
     status_ = MODIFIED;
 
-  return knowledge::KnowledgeRecord (++int_array_.get_ptr ()[index]);
+  return knowledge::KnowledgeRecord (++int_array_.get ()[index]);
 }
  
 /**
@@ -1615,13 +1615,13 @@ madara::knowledge::KnowledgeRecord::set_index (size_t index, Integer value)
     if (index >= size_)
     {
       Integer * ptr_temp = new Integer [index+1];
-      memcpy (ptr_temp, int_array_.get_ptr (), size_ * sizeof (Integer));
+      memcpy (ptr_temp, int_array_.get (), size_ * sizeof (Integer));
 
       for (size_t i = size_; i < index; ++i)
         ptr_temp[i] = 0;
 
       size_ = uint32_t (index+1);
-      int_array_ = ptr_temp;
+      int_array_ = MADARA_WITH_DELETER(ptr_temp);
     }
   }
   else
@@ -1632,11 +1632,11 @@ madara::knowledge::KnowledgeRecord::set_index (size_t index, Integer value)
     for (size_t i = 0; i < index; ++i)
       ptr_temp[i] = 0;
 
-    int_array_ = ptr_temp;
+    int_array_ = MADARA_WITH_DELETER(ptr_temp);
     type_ = INTEGER_ARRAY;
   }
   
-  int_array_.get_ptr ()[index] = value;
+  int_array_.get ()[index] = value;
 
   if (status_ != MODIFIED)
     status_ = MODIFIED;
@@ -1658,7 +1658,7 @@ madara::knowledge::KnowledgeRecord::set_index (size_t index, double value)
      **/
     size_t size = size_ > index + 1 ? size_ : index + 1;
     double * ptr_temp = new double [size];
-    Integer * source_array = int_array_.get_ptr ();
+    Integer * source_array = int_array_.get ();
 
     // go through each element of the old array and copy over
     for (size_t i = 0; i < size_; ++i)
@@ -1667,7 +1667,7 @@ madara::knowledge::KnowledgeRecord::set_index (size_t index, double value)
     for (size_t i = size_; i < size; ++i)
       ptr_temp[i] = 0;
 
-    double_array_ = ptr_temp;
+    double_array_ = MADARA_WITH_DELETER(ptr_temp);
     size_ = uint32_t (size);
     type_ = DOUBLE_ARRAY;
   }
@@ -1682,7 +1682,7 @@ madara::knowledge::KnowledgeRecord::set_index (size_t index, double value)
         ptr_temp[i] = 0;
     }
 
-    double_array_ = ptr_temp;
+    double_array_ = MADARA_WITH_DELETER(ptr_temp);
     type_ = DOUBLE_ARRAY;
   }
   else
@@ -1691,7 +1691,7 @@ madara::knowledge::KnowledgeRecord::set_index (size_t index, double value)
     {
       size_t size = index + 1;
       double * ptr_temp = new double [size];
-      double * source_array = double_array_.get_ptr ();
+      double * source_array = double_array_.get ();
 
       // go through each element of the old array and copy over
       for (size_t i = 0; i < size_; ++i)
@@ -1700,12 +1700,12 @@ madara::knowledge::KnowledgeRecord::set_index (size_t index, double value)
       for (size_t i = size_; i < size; ++i)
         ptr_temp[i] = 0;
 
-      double_array_ = ptr_temp;
+      double_array_ = MADARA_WITH_DELETER(ptr_temp);
       size_ = uint32_t (size);
     }
   }
   
-  double_array_.get_ptr ()[index] = value;
+  double_array_.get ()[index] = value;
 
   if (status_ != MODIFIED)
     status_ = MODIFIED;
