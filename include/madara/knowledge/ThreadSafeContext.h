@@ -1477,6 +1477,9 @@ namespace madara
 
       int64_t save_checkpoint (
         const CheckpointSettings & settings) const;
+
+      KnowledgeMap &get_map_unsafe (void) { return map_; }
+      const KnowledgeMap &get_map_unsafe (void) const { return map_; }
       
     protected:
     private:
