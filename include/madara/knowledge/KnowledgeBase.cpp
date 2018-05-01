@@ -1588,6 +1588,19 @@ madara::knowledge::KnowledgeBase::clear_modifieds (void)
 }
 
 void
+madara::knowledge::KnowledgeBase::reset_checkpoint (void) const
+{
+  if (context_)
+  {
+    context_->reset_checkpoint ();
+  }
+  else if (impl_.get ())
+  {
+    impl_->reset_checkpoint ();
+  }
+}
+
+void
 madara::knowledge::KnowledgeBase::add_modifieds (const VariableReferences & modifieds) const
 {
   if (context_)
@@ -1931,7 +1944,7 @@ madara::knowledge::KnowledgeBase::save_checkpoint (
 
 int64_t
 madara::knowledge::KnowledgeBase::save_checkpoint (
-  const CheckpointSettings & settings) const
+  CheckpointSettings & settings) const
 {
   int64_t result = 0;
   

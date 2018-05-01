@@ -534,6 +534,13 @@ madara::knowledge::KnowledgeBaseImpl::clear_modifieds (
   map_.reset_modified ();
 }
 
+inline void
+madara::knowledge::KnowledgeBaseImpl::reset_checkpoint (
+  void) const
+{
+  map_.reset_checkpoint ();
+}
+
 inline int64_t
 madara::knowledge::KnowledgeBaseImpl::save_checkpoint (
   const std::string & filename,
@@ -542,15 +549,16 @@ madara::knowledge::KnowledgeBaseImpl::save_checkpoint (
   int64_t total_written = map_.save_checkpoint (filename, id_);
 
   if (reset_modifieds)
-    map_.reset_modified ();
+    map_.reset_checkpoint ();
 
   return total_written;
 }
 
 inline int64_t
 madara::knowledge::KnowledgeBaseImpl::save_checkpoint (
-  const CheckpointSettings & settings) const
+  CheckpointSettings & settings) const
 {
+  settings.originator = id_;
   return map_.save_checkpoint (settings);
 }
 

@@ -943,6 +943,11 @@ namespace madara
       void clear (bool erase = false);
 
       /**
+       * Resets the local changed map, which tracks checkpointing modifieds
+       **/
+      void reset_checkpoint (void) const;
+
+      /**
        * Clears the knowledge base
        **/
       void clear_map (void);
@@ -1180,7 +1185,7 @@ namespace madara
        **/
 
       int64_t save_checkpoint (
-        const CheckpointSettings & settings) const;
+        CheckpointSettings & settings) const;
       
       /**
        * Loads the context from a file

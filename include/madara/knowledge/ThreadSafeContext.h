@@ -779,6 +779,12 @@ namespace madara
       void reset_modified (void);
 
       /**
+       * Reset all checkpoint variables in the modified lists. This essentially
+       * purges the diff and starts fresh
+       **/
+      void reset_checkpoint (void) const;
+
+      /**
        * Changes all global variables to modified at current clock.
        **/
       void apply_modified (void);

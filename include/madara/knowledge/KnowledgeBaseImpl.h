@@ -1123,7 +1123,7 @@ namespace madara
        **/
 
       int64_t save_checkpoint (
-        const CheckpointSettings & settings) const;
+        CheckpointSettings & settings) const;
       
       /**
        * Loads the context from a file
@@ -1178,6 +1178,11 @@ namespace madara
        * form (i.e., this does not roll back state or anything like that)
        */
       void clear_modifieds (void);
+
+      /**
+       * Resets the local changed map, which tracks checkpointing modifieds
+       **/
+      void reset_checkpoint (void) const;
 
       /**
       * Adds a list of VariableReferences to the current modified list.
