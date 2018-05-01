@@ -45,7 +45,7 @@ madara::expression::ComponentNode::right (void) const
 
 // accept a visitor
 void 
-madara::expression::ComponentNode::accept (madara::expression::Visitor &visitor) const
+madara::expression::ComponentNode::accept (madara::expression::Visitor &) const
 {
 }
 

@@ -18,8 +18,422 @@
 * This file contains the methods of the knowledge::KnowledgeRecord class
 **/
 
+namespace madara { namespace knowledge {
+
+inline
+KnowledgeRecord::KnowledgeRecord (logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0),
+  size_ (1), type_ (INTEGER), int_value_ (0)
+{
+}
+
+inline KnowledgeRecord::KnowledgeRecord (Integer value,
+  logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0), type_(INTEGER)
+{
+  set_value (value);
+}
+
+inline KnowledgeRecord::KnowledgeRecord (
+  const std::vector <Integer> & value,
+  logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0), type_(INTEGER)
+{
+  set_value (value);
+}
+
+inline KnowledgeRecord::KnowledgeRecord (double value,
+  logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0), type_(INTEGER)
+{
+  set_value (value);
+}
+
+inline KnowledgeRecord::KnowledgeRecord (
+  const std::vector <double> & value,
+  logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0), type_(INTEGER)
+{
+  set_value (value);
+}
+
+inline KnowledgeRecord::KnowledgeRecord (const std::string & value,
+  logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0), type_(INTEGER)
+{
+  set_value (value);
+}
+
+inline KnowledgeRecord::KnowledgeRecord (const char * value,
+  logger::Logger & logger)
+: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
+  quality (0), write_quality (0), type_(INTEGER)
+{
+  set_value (std::string (value));
+}
+
+inline KnowledgeRecord::KnowledgeRecord (const knowledge::KnowledgeRecord & rhs)
+: logger_ (rhs.logger_), status_ (rhs.status_), clock (rhs.clock),
+  scope (rhs.scope), quality (rhs.quality),
+  write_quality (rhs.write_quality),
+  size_ (rhs.size_), type_ (rhs.type_)
+{
+  if      (rhs.status_ != UNCREATED)
+  {
+    if      (rhs.type_ == INTEGER)
+      int_value_ = rhs.int_value_;
+    else if (rhs.type_ == INTEGER_ARRAY)
+      new (&int_array_) std::shared_ptr<Integer>(rhs.int_array_);
+    else if (rhs.type_ == DOUBLE)
+      double_value_ = rhs.double_value_;
+    else if (rhs.type_ == DOUBLE_ARRAY)
+      new (&double_array_) std::shared_ptr<double>(rhs.double_array_);
+    else if (rhs.is_string_type ())
+      new (&str_value_) std::shared_ptr<char>(rhs.str_value_);
+    else if (rhs.is_file_type ())
+      new (&file_value_) std::shared_ptr<unsigned char>(rhs.file_value_);
+  }
+}
+
+inline KnowledgeRecord::~KnowledgeRecord ()
+{
+}
+
+inline bool
+KnowledgeRecord::operator== (double value) const
+{
+  // for this type of comparison, we can only be equal if we are the same
+  // base type
+  if (is_integer_type ())
+  {
+    return to_integer () == value;
+  }
+  else if (is_double_type () || is_string_type ())
+  {
+    return to_double () == value;
+  }
+  
+  return false;
+}
+
+inline bool
+KnowledgeRecord::operator== (
+  const std::string & value) const
+{
+  return to_string () == value;
+}
+
+inline bool
+KnowledgeRecord::operator== (const char * value) const
+{
+  return to_string () == std::string (value);
+}
+
+inline bool
+KnowledgeRecord::operator!= (const knowledge::KnowledgeRecord & rhs) const
+{
+  return !(*this == rhs);
+}
+
+/**
+  * Logical not.
+  **/
+inline bool
+KnowledgeRecord::operator! (void) const
+{
+  return !is_true ();
+}
+
+/**
+  * Negate.
+  **/
+inline KnowledgeRecord
+  KnowledgeRecord::operator- (void) const
+{
+  KnowledgeRecord record (*this);
+
+  if (is_integer_type ())
+    record.set_value (-to_integer ());
+  else if (is_double_type ())
+    record.set_value (-to_double ());
+
+  return record;
+}
+
+inline bool
+KnowledgeRecord::operator== (Integer value) const
+{
+  // for this type of comparison, we can only be equal if we are the same
+  // base type
+  if (is_integer_type ())
+  {
+    return to_integer () == value;
+  }
+  else if (is_double_type () || is_string_type ())
+  {
+    return to_double () == value;
+  }
+  
+  return false;
+}
+
+/**
+  * In-place addition operator
+  **/
+inline KnowledgeRecord &
+KnowledgeRecord::operator+= (const knowledge::KnowledgeRecord & rhs)
+{
+  if (is_integer_type ())
+  {
+    if (rhs.is_integer_type ())
+      set_value (to_integer () + rhs.to_integer ());
+    else
+      set_value (to_integer () + rhs.to_double ());
+  }
+  else if (is_double_type ())
+    set_value (to_double () + rhs.to_double ());
+
+  else if (is_string_type ())
+    set_value (to_string () + rhs.to_string ());
+
+  return *this;
+}
+
+/**
+  * In-place predecrement
+  **/
+inline KnowledgeRecord &
+KnowledgeRecord::operator-- (void)
+{
+  if (is_integer_type ())
+    set_value (to_integer () - 1);
+
+  else if (is_double_type ())
+    set_value (to_double () - 1);
+
+  return *this;
+}
+
+/**
+  * In-place preincrement
+  **/
+inline KnowledgeRecord &
+KnowledgeRecord::operator++ (void)
+{
+  if (is_integer_type ())
+    set_value (to_integer () + 1);
+
+  else if (is_double_type ())
+    set_value (to_double () + 1);
+
+
+  return *this;
+}
+
+/**
+  * In-place subtraction operator
+  **/
+inline KnowledgeRecord &
+KnowledgeRecord::operator-= (const knowledge::KnowledgeRecord & rhs)
+{
+  if (is_integer_type ())
+  {
+    if (rhs.is_integer_type ())
+      set_value (to_integer () - rhs.to_integer ());
+    else
+      set_value (to_integer () - rhs.to_double ());
+  }
+  else if (is_double_type () || is_string_type ())
+    set_value (to_double () - rhs.to_double ());
+
+  return *this;
+}
+
+/**
+  * In-place multiplication operator
+  **/
+inline KnowledgeRecord &
+KnowledgeRecord::operator*= (const knowledge::KnowledgeRecord & rhs)
+{
+  if (is_integer_type ())
+  {
+    if (rhs.is_integer_type ())
+      set_value (to_integer () * rhs.to_integer ());
+    else
+      set_value (to_integer () * rhs.to_double ());
+  }
+  else if (is_double_type () || is_string_type ())
+    set_value (to_double () * rhs.to_double ());
+
+  return *this;
+}
+
+/**
+  * In-place division operator
+  **/
+inline KnowledgeRecord &
+KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
+{
+  if (is_integer_type ())
+  {
+    if (rhs.is_integer_type ())
+    {
+      Integer denom = rhs.to_integer ();
+      if (denom == 0)
+        set_value ("Division by Zero");
+      else
+        set_value (to_integer () / denom);
+    }
+    else
+    {
+      double denom = rhs.to_double ();
+
+      if (denom == 0)
+        set_value ("Division by Zero");
+      else
+        set_value (to_integer () / denom);
+    }
+  }
+  else if (is_double_type () || is_string_type ())
+  {
+    double denom = rhs.to_double ();
+
+    if (denom == 0)
+      set_value ("Division by Zero");
+    else
+      set_value (to_double () / denom);
+  }
+
+  return *this;
+}
+   
+/**
+  * In-place modulus operator
+  **/
+inline KnowledgeRecord &
+KnowledgeRecord::operator%= (const knowledge::KnowledgeRecord & rhs)
+{
+  if (is_integer_type ())
+  {
+    if (rhs.is_integer_type ())
+    {
+      Integer denom = rhs.to_integer ();
+      if (denom == 0)
+        set_value ("Division by Zero");
+      else
+        set_value (to_integer () % denom);
+    }
+  }
+
+  return *this;
+}
+ 
+/**
+  * Times operator
+  **/
+inline KnowledgeRecord
+KnowledgeRecord::operator* (const knowledge::KnowledgeRecord & rhs) const
+{
+  // copy this value to a local copy
+  knowledge::KnowledgeRecord ret_value (*this);
+
+  return ret_value *= rhs;
+}
+
+/**
+  * Divides operator
+  **/
+inline KnowledgeRecord
+KnowledgeRecord::operator/ (const knowledge::KnowledgeRecord & rhs) const
+{
+  // copy this value to a local copy
+  knowledge::KnowledgeRecord ret_value (*this);
+
+  return ret_value /= rhs;
+}
+
+/**
+  * Modulus operator
+  **/
+inline KnowledgeRecord
+KnowledgeRecord::operator% (const knowledge::KnowledgeRecord & rhs) const
+{
+  // copy this value to a local copy
+  knowledge::KnowledgeRecord ret_value (*this);
+
+  return ret_value %= rhs;
+}
+
+/**
+  * Plus operator
+  **/
+inline KnowledgeRecord
+KnowledgeRecord::operator+ (const knowledge::KnowledgeRecord & rhs) const
+{
+  // copy this value to a local copy
+  knowledge::KnowledgeRecord ret_value (*this);
+
+  return ret_value += rhs;
+}
+
+inline bool
+KnowledgeRecord::is_false (void) const
+{
+  return !is_true ();
+}
+
+/**
+  * output stream buffering
+  **/
+inline std::ostream & operator<< (std::ostream & stream,
+  const KnowledgeRecord & rhs)
+{
+  if (rhs.type () &
+        (KnowledgeRecord::INTEGER_ARRAY | 
+         KnowledgeRecord::DOUBLE_ARRAY))
+  {
+    stream << rhs.to_string (", ");
+  }
+  else
+    stream << rhs.to_string ();
+
+  return stream;
+}
+
+/**
+  * Minus operator
+  **/
+inline KnowledgeRecord
+KnowledgeRecord::operator- (const knowledge::KnowledgeRecord & rhs) const
+{
+  // copy this value to a local copy
+  knowledge::KnowledgeRecord ret_value (*this);
+
+  return ret_value -= rhs;
+}
+
+inline KnowledgeRecord
+KnowledgeRecord::deep_copy () const
+{
+  KnowledgeRecord ret;
+  ret.deep_copy(*this);
+  return ret;
+}
+
+inline bool
+KnowledgeRecord::exists (void) const
+{
+  return status_ != UNCREATED;
+}
+
 inline int
-madara::knowledge::KnowledgeRecord::status (void) const
+KnowledgeRecord::status (void) const
 {
   return status_;
 }
@@ -28,25 +442,25 @@ madara::knowledge::KnowledgeRecord::status (void) const
 * sets the status to modified
 **/
 inline void
-madara::knowledge::KnowledgeRecord::set_modified (void)
+KnowledgeRecord::set_modified (void)
 {
   status_ = MODIFIED;
 }
 
 inline uint32_t
-madara::knowledge::KnowledgeRecord::size (void) const
+KnowledgeRecord::size (void) const
 {
   return size_;
 }
 
 inline int32_t
-madara::knowledge::KnowledgeRecord::type (void) const
+KnowledgeRecord::type (void) const
 {
   return type_;
 }
 
 inline int64_t
-madara::knowledge::KnowledgeRecord::get_encoded_size (void) const
+KnowledgeRecord::get_encoded_size (void) const
 {
   int64_t buffer_size (sizeof (uint32_t) * 2);
   if (type_ & (INTEGER | INTEGER_ARRAY))
@@ -66,7 +480,7 @@ madara::knowledge::KnowledgeRecord::get_encoded_size (void) const
 }
 
 inline int64_t
-madara::knowledge::KnowledgeRecord::get_encoded_size (const std::string & key) const
+KnowledgeRecord::get_encoded_size (const std::string & key) const
 {
   // for keyed size, add another uint32_t and the size of the key with a null char
   int64_t buffer_size (sizeof (uint32_t) * 1);
@@ -79,105 +493,105 @@ madara::knowledge::KnowledgeRecord::get_encoded_size (const std::string & key) c
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_ref_counted (void) const
+KnowledgeRecord::is_ref_counted (void) const
 {
   return is_ref_counted (type_);
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_ref_counted (uint32_t type) const
+KnowledgeRecord::is_ref_counted (uint32_t type) const
 {
   return type != INTEGER && type != DOUBLE;
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_string_type (void) const
+KnowledgeRecord::is_string_type (void) const
 {
   return is_string_type (type_);
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_string_type (uint32_t type) const
+KnowledgeRecord::is_string_type (uint32_t type) const
 {
   return type == STRING || type == XML || type == TEXT_FILE;
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_double_type (void) const
+KnowledgeRecord::is_double_type (void) const
 {
   return is_double_type (type_);
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_double_type (uint32_t type) const
+KnowledgeRecord::is_double_type (uint32_t type) const
 {
   return type == DOUBLE || type == DOUBLE_ARRAY;
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_integer_type (void) const
+KnowledgeRecord::is_integer_type (void) const
 {
   return is_integer_type (type_);
 }
 
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_integer_type (uint32_t type) const
+KnowledgeRecord::is_integer_type (uint32_t type) const
 {
   return type == INTEGER || type == INTEGER_ARRAY;
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_array_type (void) const
+KnowledgeRecord::is_array_type (void) const
 {
   return is_array_type (type_);
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_array_type (uint32_t type) const
+KnowledgeRecord::is_array_type (uint32_t type) const
 {
   return type & ALL_ARRAYS;
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_image_type (void) const
+KnowledgeRecord::is_image_type (void) const
 {
   return is_image_type (type_);
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_image_type (uint32_t type) const
+KnowledgeRecord::is_image_type (uint32_t type) const
 {
   return type == IMAGE_JPEG;
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_file_type (void) const
+KnowledgeRecord::is_file_type (void) const
 {
   return is_file_type (type_);
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_file_type (uint32_t type) const
+KnowledgeRecord::is_file_type (uint32_t type) const
 {
   return type == TEXT_FILE || type == XML ||
          type == IMAGE_JPEG || type == UNKNOWN_FILE_TYPE;
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_binary_file_type (void) const
+KnowledgeRecord::is_binary_file_type (void) const
 {
   return is_binary_file_type (type_);
 }
 
 inline bool
-madara::knowledge::KnowledgeRecord::is_binary_file_type (uint32_t type) const
+KnowledgeRecord::is_binary_file_type (uint32_t type) const
 {
   return type == IMAGE_JPEG || type == UNKNOWN_FILE_TYPE;
 }
 
 inline uint32_t
-madara::knowledge::max_quality (const knowledge::KnowledgeRecords & records)
+max_quality (const knowledge::KnowledgeRecords & records)
 {
   uint32_t max = 0;
 
@@ -191,7 +605,7 @@ madara::knowledge::max_quality (const knowledge::KnowledgeRecords & records)
 }
 
 inline uint32_t
-madara::knowledge::max_quality (const KnowledgeMap & records)
+max_quality (const KnowledgeMap & records)
 {
   uint32_t max = 0;
 
@@ -204,24 +618,36 @@ madara::knowledge::max_quality (const KnowledgeMap & records)
   return max;
 }
 
+template<typename T>
+inline void destruct(T &x) {
+  x.~T();
+}
 
 inline void
-madara::knowledge::KnowledgeRecord::clear_value (void)
+KnowledgeRecord::clear_union (void)
 {
   if (status_ != UNCREATED)
   {
     if (type_ & ALL_CLEARABLES)
     {
       if (type_ == INTEGER_ARRAY)
-        int_array_ = nullptr;
+        destruct(int_array_);
       else if (type_ == DOUBLE_ARRAY)
-        double_array_ = nullptr;
+        destruct(double_array_);
       else if (is_string_type ())
-        str_value_ = nullptr;
+        destruct(str_value_);
       else if (is_file_type ())
-        file_value_ = nullptr;
+        destruct(file_value_);
     }
+  }
+}
 
+inline void
+KnowledgeRecord::clear_value (void)
+{
+  clear_union ();
+  if (status_ != UNCREATED)
+  {
     int_value_ = 0;
 
     type_ = INTEGER;
@@ -231,7 +657,7 @@ madara::knowledge::KnowledgeRecord::clear_value (void)
 }
 
 inline const char *
-madara::knowledge::KnowledgeRecord::read (const char * buffer,
+KnowledgeRecord::read (const char * buffer,
   int64_t & buffer_remaining)
 {
   // format is [key_size | key | type | value_size | value]
@@ -276,13 +702,14 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
     {
       char *val = new char[buff_value_size];
       strncpy (val, buffer, buff_value_size);
-      str_value_ = MADARA_WITH_DELETER(val);
+      str_value() = MADARA_WITH_DELETER(val);
     }
 
     else if (type == INTEGER)
     {
-      memcpy (&int_value_, buffer, sizeof (int_value_));
-      int_value_ = madara::utility::endian_swap (int_value_);
+      Integer tmp;
+      memcpy (&tmp, buffer, sizeof (tmp));
+      int_value() = madara::utility::endian_swap (tmp);
     }
 
     else if (type == INTEGER_ARRAY)
@@ -296,13 +723,14 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
         ptr_temp[i] = madara::utility::endian_swap (ptr_temp[i]);
       }
 
-      int_array_ = MADARA_WITH_DELETER(ptr_temp);
+      int_array() = MADARA_WITH_DELETER(ptr_temp);
     }
 
     else if (type == DOUBLE)
     {
-      memcpy (&double_value_, buffer, sizeof (double_value_));
-      double_value_ = madara::utility::endian_swap (double_value_);
+      double tmp;
+      memcpy (&tmp, buffer, sizeof (tmp));
+      double_value() = madara::utility::endian_swap (tmp);
     }
 
     else if (type == DOUBLE_ARRAY)
@@ -316,12 +744,12 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
         ptr_temp[i] = madara::utility::endian_swap (ptr_temp[i]);
       }
 
-      double_array_ = MADARA_WITH_DELETER(ptr_temp);
+      double_array() = MADARA_WITH_DELETER(ptr_temp);
     }
 
     else if (is_file_type (type))
     {
-      file_value_ = MADARA_WITH_DELETER(new unsigned char[size]);
+      file_value() = MADARA_WITH_DELETER(new unsigned char[size]);
       memcpy (file_value_.get (), buffer, size);
     }
 
@@ -342,7 +770,7 @@ madara::knowledge::KnowledgeRecord::read (const char * buffer,
 }
 
 inline const char *
-madara::knowledge::KnowledgeRecord::read (const char * buffer, std::string & key,
+KnowledgeRecord::read (const char * buffer, std::string & key,
 int64_t & buffer_remaining)
 {
   // format is [key_size | key | type | value_size | value]
@@ -379,7 +807,7 @@ int64_t & buffer_remaining)
 }
 
 inline const char *
-madara::knowledge::KnowledgeRecord::read (const char * buffer, uint32_t & key_id,
+KnowledgeRecord::read (const char * buffer, uint32_t & key_id,
 int64_t & buffer_remaining)
 {
   // format is [key_id | type | value_size | value]
@@ -401,7 +829,7 @@ int64_t & buffer_remaining)
 
 // reset the value_ to an integer
 inline void  
-madara::knowledge::KnowledgeRecord::reset_value (void)
+KnowledgeRecord::reset_value (void)
 {
   clear_value ();
 
@@ -412,7 +840,7 @@ madara::knowledge::KnowledgeRecord::reset_value (void)
 
 // set the value_ to a string
 inline void
-madara::knowledge::KnowledgeRecord::set_value (const std::string & new_value)
+KnowledgeRecord::set_value (const std::string & new_value)
 {
   if (type_ & ALL_CLEARABLES)
     clear_value ();
@@ -425,12 +853,12 @@ madara::knowledge::KnowledgeRecord::set_value (const std::string & new_value)
   char * temp = new char [size_];
   strncpy (temp, new_value.c_str (), size_ - 1);
   temp[size_ - 1] = 0;
-  str_value_ = MADARA_WITH_DELETER(temp);
+  str_value() = MADARA_WITH_DELETER(temp);
 }
 
 // set the value_ to a string
 inline void
-madara::knowledge::KnowledgeRecord::set_xml (const char * new_value, size_t size)
+KnowledgeRecord::set_xml (const char * new_value, size_t size)
 {
   if (type_ & ALL_CLEARABLES)
     clear_value ();
@@ -443,12 +871,12 @@ madara::knowledge::KnowledgeRecord::set_xml (const char * new_value, size_t size
   char * temp = new char [size_];
   strncpy (temp, new_value, size_ - 1);
   temp[size_ - 1] = 0;
-  str_value_ = MADARA_WITH_DELETER(temp);
+  str_value() = MADARA_WITH_DELETER(temp);
 }
 
 // set the value_ to a string
 inline void
-madara::knowledge::KnowledgeRecord::set_text (const char * new_value, size_t size)
+KnowledgeRecord::set_text (const char * new_value, size_t size)
 {
   if (type_ & ALL_CLEARABLES)
     clear_value ();
@@ -461,12 +889,12 @@ madara::knowledge::KnowledgeRecord::set_text (const char * new_value, size_t siz
   char * temp = new char [size_];
   strncpy (temp, new_value, size_ - 1);
   temp[size_ - 1] = 0;
-  str_value_ = MADARA_WITH_DELETER(temp);
+  str_value() = MADARA_WITH_DELETER(temp);
 }
 
 // set the value_ to a string
 inline void
-madara::knowledge::KnowledgeRecord::set_jpeg (const unsigned char * new_value,
+KnowledgeRecord::set_jpeg (const unsigned char * new_value,
                                     size_t size)
 {
   if (type_ & ALL_CLEARABLES)
@@ -479,12 +907,12 @@ madara::knowledge::KnowledgeRecord::set_jpeg (const unsigned char * new_value,
   size_ = uint32_t (size);
   unsigned char * temp = new unsigned char [size_];
   memcpy (temp, new_value, size_);
-  file_value_ = MADARA_WITH_DELETER(temp);
+  file_value() = MADARA_WITH_DELETER(temp);
 }
 
 // set the value_ to a string
 inline void
-madara::knowledge::KnowledgeRecord::set_file (const unsigned char * new_value,
+KnowledgeRecord::set_file (const unsigned char * new_value,
                                     size_t size)
 {
   if (type_ & ALL_CLEARABLES)
@@ -497,12 +925,12 @@ madara::knowledge::KnowledgeRecord::set_file (const unsigned char * new_value,
   size_ = uint32_t (size);
   unsigned char * temp = new unsigned char [size_];
   memcpy (temp, new_value, size_);
-  file_value_ = MADARA_WITH_DELETER(temp);
+  file_value() = MADARA_WITH_DELETER(temp);
 }
 
 // set the value_ to an integer
 inline void
-madara::knowledge::KnowledgeRecord::set_value (const Integer & new_value)
+KnowledgeRecord::set_value (const Integer & new_value)
 {
   if (type_ & ALL_CLEARABLES)
     clear_value ();
@@ -511,12 +939,12 @@ madara::knowledge::KnowledgeRecord::set_value (const Integer & new_value)
   status_ = MODIFIED;
 
   size_ = 1;
-  int_value_ = new_value;
+  int_value() = new_value;
 }
 
 // set the value_ to an array of doubles
 inline void
-madara::knowledge::KnowledgeRecord::set_value (const Integer * new_value, uint32_t size)
+KnowledgeRecord::set_value (const Integer * new_value, uint32_t size)
 {
   if (type_ & ALL_CLEARABLES)
     clear_value ();
@@ -530,12 +958,12 @@ madara::knowledge::KnowledgeRecord::set_value (const Integer * new_value, uint32
   for (uint32_t i = 0; i < size; ++i)
     temp_array[i] = new_value[i];
 
-  int_array_ = MADARA_WITH_DELETER(temp_array);
+  int_array() = MADARA_WITH_DELETER(temp_array);
 }
 
 // set the value_ to an array of integers
 inline void
-madara::knowledge::KnowledgeRecord::set_value (const std::vector <Integer> & new_value)
+KnowledgeRecord::set_value (const std::vector <Integer> & new_value)
 {
   if (type_ & ALL_CLEARABLES)
     clear_value ();
@@ -549,12 +977,12 @@ madara::knowledge::KnowledgeRecord::set_value (const std::vector <Integer> & new
   for (unsigned int i = 0; i < new_value.size (); ++i)
     temp_array[i] = new_value[i];
 
-  int_array_ = MADARA_WITH_DELETER(temp_array);
+  int_array() = MADARA_WITH_DELETER(temp_array);
 }
 
 // set the value_ to a double
 inline void
-madara::knowledge::KnowledgeRecord::set_value (const double & new_value)
+KnowledgeRecord::set_value (const double & new_value)
 {
   if (type_ & ALL_CLEARABLES)
     clear_value ();
@@ -563,12 +991,12 @@ madara::knowledge::KnowledgeRecord::set_value (const double & new_value)
   status_ = MODIFIED;
 
   size_ = 1;
-  double_value_ = new_value;
+  double_value() = new_value;
 }
 
 // set the value_ to an array of doubles
 inline void
-madara::knowledge::KnowledgeRecord::set_value (const double * new_value, uint32_t size)
+KnowledgeRecord::set_value (const double * new_value, uint32_t size)
 {
   if (type_ & ALL_CLEARABLES)
     clear_value ();
@@ -582,12 +1010,12 @@ madara::knowledge::KnowledgeRecord::set_value (const double * new_value, uint32_
   for (uint32_t i = 0; i < size; ++i)
     temp_array[i] = new_value[i];
 
-  double_array_ = MADARA_WITH_DELETER(temp_array);
+  double_array() = MADARA_WITH_DELETER(temp_array);
 }
 
 // set the value_ to an array of doubles
 inline void
-madara::knowledge::KnowledgeRecord::set_value (const std::vector <double> & new_value)
+KnowledgeRecord::set_value (const std::vector <double> & new_value)
 {
   if (type_ & ALL_CLEARABLES)
     clear_value ();
@@ -601,11 +1029,11 @@ madara::knowledge::KnowledgeRecord::set_value (const std::vector <double> & new_
   for (unsigned int i = 0; i < new_value.size (); ++i)
     temp_array[i] = new_value[i];
 
-  double_array_ = MADARA_WITH_DELETER(temp_array);
+  double_array() = MADARA_WITH_DELETER(temp_array);
 }
 
 inline
-madara::knowledge::KnowledgeRecord::operator bool_type (void) const
+KnowledgeRecord::operator bool_type (void) const
 {
   return is_true() ?
     &KnowledgeRecord::KnowledgeRecord_does_not_implicitly_cast_to_bool :
@@ -613,7 +1041,7 @@ madara::knowledge::KnowledgeRecord::operator bool_type (void) const
 }
 
 inline char *
-madara::knowledge::KnowledgeRecord::write (char * buffer,
+KnowledgeRecord::write (char * buffer,
   int64_t & buffer_remaining) const
 {
   // format is [type | value_size | value]
@@ -757,7 +1185,7 @@ madara::knowledge::KnowledgeRecord::write (char * buffer,
 }
 
 inline char *
-madara::knowledge::KnowledgeRecord::write (char * buffer, const std::string & key,
+KnowledgeRecord::write (char * buffer, const std::string & key,
 int64_t & buffer_remaining) const
 
 {
@@ -806,7 +1234,7 @@ int64_t & buffer_remaining) const
 }
 
 inline char *
-madara::knowledge::KnowledgeRecord::write (char * buffer, uint32_t key_id,
+KnowledgeRecord::write (char * buffer, uint32_t key_id,
   int64_t & buffer_remaining) const
 {
   // format is [key_id | type | value_size | value]
@@ -841,7 +1269,6 @@ madara::knowledge::KnowledgeRecord::write (char * buffer, uint32_t key_id,
   return buffer;
 }
 
-
-
+} }
 
 #endif  // _KNOWLEDGE_RECORD_INL_

@@ -25,7 +25,6 @@ madara::expression::CompositeArrayReference::CompositeArrayReference (
       "Variable %s requires variable expansion.\n",
       key.c_str ());
 
-    unsigned int count = 1;
     key_expansion_necessary_ = true;
     splitters_.push_back ("{");
     splitters_.push_back ("}");

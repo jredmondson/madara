@@ -38,7 +38,7 @@ madara::expression::CompositeFunctionNode::CompositeFunctionNode (
         madara::knowledge::ThreadSafeContext & context,
         const ComponentNodes & nodes)
 : CompositeTernaryNode (context.get_logger (), nodes),
-  context_ (context), name_ (name), 
+  name_ (name), context_ (context),
   function_ (context.retrieve_function (name))
 {
   

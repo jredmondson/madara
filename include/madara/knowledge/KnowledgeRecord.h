@@ -78,26 +78,6 @@ namespace madara
     
       typedef  int64_t     Integer;
 
-      /**
-       * last modification time
-       **/
-      uint64_t clock;
-
-      /**
-       * scope (global or local)
-       **/
-      int32_t scope;
-
-      /**
-       * priority of the update
-       **/
-      uint32_t quality;
-
-      /**
-       * write priority for any local updates
-       **/
-      uint32_t write_quality;
-
     private:
       /// the logger used for any internal debugging information
       logger::Logger * logger_;
@@ -105,18 +85,42 @@ namespace madara
       /**
        * status of the knowledge record
        **/
-      int status_;
-    
+      uint8_t status_;
+
+    public:
+      /**
+       * scope (global or local)
+       **/
+      uint8_t scope;
+
+    private:
+      /**
+       * type of variable (INTEGER, DOUBLE, STRING, FILE, IMAGE)
+       **/
+      uint16_t type_;
+
+    public:
+      /**
+       * priority of the update
+       **/
+      uint32_t quality;
+
+      /**
+       * last modification time
+       **/
+      uint64_t clock;
+
+      /**
+       * write priority for any local updates
+       **/
+      uint32_t write_quality;
+
+    private:
       /**
        * size of the value
        **/
       uint32_t size_;
-    
-      /**
-       * type of variable (INTEGER, DOUBLE, STRING, FILE, IMAGE)
-       **/
-      uint32_t type_;
-    
+
       /**
        * Non-array versions of double/integer. About 10x faster
        * than using the ref-counted arrays
@@ -125,28 +129,88 @@ namespace madara
       {
         Integer int_value_;
         double double_value_;
+
+        /**
+         * potential string value of the node (size int)
+         **/
+        std::shared_ptr<Integer> int_array_;
+
+        /**
+         * potential string value of the node (size int)
+         **/
+        std::shared_ptr<double> double_array_;
+
+        /**
+         * potential string value of the node (size int)
+         **/
+        std::shared_ptr<char> str_value_;
+
+        /**
+         * potential file value of the node
+         **/
+        std::shared_ptr<unsigned char> file_value_;
       };
 
-      /**
-       * potential string value of the node (size int)
-       **/
-      std::shared_ptr<Integer> int_array_;
+      Integer &int_value() {
+        if (type_ != INTEGER) {
+          clear_union();
+          type_ = INTEGER;
+          int_value_ = 0;
+          size_ = 1;
+        }
+        return int_value_;
+      }
 
-      /**
-       * potential string value of the node (size int)
-       **/
-      std::shared_ptr<double> double_array_;
+      double &double_value() {
+        if (type_ != DOUBLE) {
+          clear_union();
+          type_ = DOUBLE;
+          double_value_ = 0.0;
+          size_ = 1;
+        }
+        return double_value_;
+      }
 
-      /**
-       * potential string value of the node (size int)
-       **/
-      std::shared_ptr<char> str_value_;
+      std::shared_ptr<Integer> &int_array() {
+        if (type_ != INTEGER_ARRAY) {
+          clear_union();
+          type_ = INTEGER_ARRAY;
+          size_ = 0;
+          new(&int_array_) std::shared_ptr<Integer>();
+        }
+        return int_array_;
+      }
 
-      /**
-       * potential file value of the node
-       **/
-      std::shared_ptr<unsigned char> file_value_;
-    
+      std::shared_ptr<double> &double_array() {
+        if (type_ != DOUBLE_ARRAY) {
+          clear_union();
+          type_ = DOUBLE_ARRAY;
+          size_ = 0;
+          new(&double_array_) std::shared_ptr<double>();
+        }
+        return double_array_;
+      }
+
+      std::shared_ptr<char> &str_value() {
+        if (!is_string_type(type_)) {
+          clear_union();
+          type_ = STRING;
+          size_ = 0;
+          new(&str_value_) std::shared_ptr<char>();
+        }
+        return str_value_;
+      }
+
+      std::shared_ptr<unsigned char> &file_value() {
+        if (!is_file_type(type_)) {
+          clear_union();
+          type_ = UNKNOWN_FILE_TYPE;
+          size_ = 0;
+          new(&file_value_) std::shared_ptr<unsigned char>();
+        }
+        return file_value_;
+      }
+
     public:
 
       /* default constructor */
@@ -435,6 +499,10 @@ namespace madara
        **/
       void reset_value (void);
 
+    private:
+      void clear_union (void);
+
+    public:
       /**
        * clears any dynamic values. This method does not attempt to set
        * the value of the Knowledge Record, as clear does, and is consequently
@@ -882,8 +950,8 @@ namespace madara
 /**
   * output stream buffering
   **/
-MADARA_Export std::ostream & operator<< (std::ostream & stream,
-  const madara::knowledge::KnowledgeRecord & rhs);
+//inline std::ostream & operator<< (std::ostream & stream,
+  //const madara::knowledge::KnowledgeRecord & rhs);
 
 #include "KnowledgeRecord.inl"
 

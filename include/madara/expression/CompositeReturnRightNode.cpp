@@ -69,7 +69,7 @@ madara::expression::CompositeReturnRightNode::evaluate (
   for (ComponentNodes::iterator i = nodes_.begin ();
        i != nodes_.end (); ++i, ++j)
   {
-    if (j + 1 == nodes_.size ())
+    if (j + 1 == (int)nodes_.size ())
       return_value = (*i)->evaluate (settings);
     else
       (*i)->evaluate (settings);
