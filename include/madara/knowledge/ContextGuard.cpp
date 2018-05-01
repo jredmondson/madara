@@ -13,9 +13,8 @@ madara::knowledge::ContextGuard::ContextGuard (
 {
   context_.lock ();
 }
-      
+
 madara::knowledge::ContextGuard::~ContextGuard ()
 {
-  
   context_.unlock ();
 }
