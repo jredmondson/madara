@@ -1067,42 +1067,6 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
 
   return result;
 }
-
-KnowledgeRecord &
-KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs)
-{
-  if (this == &rhs)
-    return *this;
-
-  // clear any dynamic memory being used on the left hand side
-  clear_value ();
-
-  if (rhs.status_ != UNCREATED)
-  {
-    // set the instance properties accordingly
-    clock = rhs.clock;
-    quality = rhs.quality;
-    scope = rhs.scope;
-    status_ = rhs.status_;
-    size_ = rhs.size_;
-    type_ = rhs.type_;
-
-    if (is_string_type ())
-      new (&str_value_) std::shared_ptr<char>(rhs.str_value_);
-    else if (type_ == INTEGER)
-      int_value_ = rhs.int_value_;
-    else if (type_ == INTEGER_ARRAY)
-      new (&int_array_) std::shared_ptr<Integer>(rhs.int_array_);
-    else if (type_ == DOUBLE)
-      double_value_ = rhs.double_value_;
-    else if (type_ == DOUBLE_ARRAY)
-      new (&double_array_) std::shared_ptr<double>(rhs.double_array_);
-    else if (is_file_type ())
-      new (&file_value_) std::shared_ptr<unsigned char>(rhs.file_value_);
-  }
-
-  return *this;
-}
     
 
 KnowledgeRecord

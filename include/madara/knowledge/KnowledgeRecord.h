@@ -85,41 +85,41 @@ namespace madara
       /**
        * status of the knowledge record
        **/
-      uint8_t status_;
+      uint8_t status_ = UNCREATED;
 
     public:
       /**
        * scope (global or local)
        **/
-      uint8_t scope;
+      uint8_t scope = LOCAL_SCOPE;
 
     private:
       /**
        * type of variable (INTEGER, DOUBLE, STRING, FILE, IMAGE)
        **/
-      uint16_t type_;
+      uint16_t type_ = UNINITIALIZED;
 
     public:
       /**
        * priority of the update
        **/
-      uint32_t quality;
+      uint32_t quality = 0;
 
       /**
        * last modification time
        **/
-      uint64_t clock;
+      uint64_t clock = 0;
 
       /**
        * write priority for any local updates
        **/
-      uint32_t write_quality;
+      uint32_t write_quality = 0;
 
     private:
       /**
        * size of the value
        **/
-      uint32_t size_;
+      uint32_t size_ = 0;
 
       /**
        * Non-array versions of double/integer. About 10x faster
@@ -127,7 +127,7 @@ namespace madara
        **/
       union
       {
-        Integer int_value_;
+        Integer int_value_ = 0;
         double double_value_;
 
         /**
@@ -242,10 +242,13 @@ namespace madara
         logger::Logger & logger = *logger::global_logger.get ());
     
       /* copy constructor */
-      KnowledgeRecord (const KnowledgeRecord & rhs);
+      KnowledgeRecord (const KnowledgeRecord & rhs) noexcept;
+    
+      /* move constructor */
+      KnowledgeRecord (KnowledgeRecord && rhs) noexcept;
     
       /* destructor */
-      ~KnowledgeRecord ();
+      ~KnowledgeRecord () noexcept;
     
       /**
        * Checks if record exists (i.e., is not uncreated)
@@ -497,10 +500,10 @@ namespace madara
       /**
        * resets the variable to an integer
        **/
-      void reset_value (void);
+      void reset_value (void) noexcept;
 
     private:
-      void clear_union (void);
+      void clear_union (void) noexcept;
 
     public:
       /**
@@ -508,7 +511,7 @@ namespace madara
        * the value of the Knowledge Record, as clear does, and is consequently
        * more efficient.
        **/
-      void clear_value (void);
+      void clear_value (void) noexcept;
     
       /**
        * returns the size of the value
@@ -699,7 +702,12 @@ namespace madara
       /**
        * Assignment
        **/
-      KnowledgeRecord & operator= (const KnowledgeRecord & rhs);
+      KnowledgeRecord & operator= (const KnowledgeRecord & rhs) noexcept;
+
+      /**
+       * Move Assignment
+       **/
+      KnowledgeRecord & operator= (KnowledgeRecord && rhs) noexcept;
     
       /**
        * In-place addition operator

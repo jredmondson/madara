@@ -22,67 +22,64 @@ namespace madara { namespace knowledge {
 
 inline
 KnowledgeRecord::KnowledgeRecord (logger::Logger & logger)
-: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0),
-  size_ (1), type_ (INTEGER), int_value_ (0)
+: logger_ (&logger), type_ (INTEGER), size_ (1), int_value_ (0)
 {
 }
 
 inline KnowledgeRecord::KnowledgeRecord (Integer value,
   logger::Logger & logger)
-: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0), type_(INTEGER)
+: logger_ (&logger), status_ (MODIFIED), type_ (INTEGER),
+  size_ (1), int_value_ (value)
 {
-  set_value (value);
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
   const std::vector <Integer> & value,
   logger::Logger & logger)
-: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0), type_(INTEGER)
+: logger_ (&logger)
 {
   set_value (value);
 }
 
 inline KnowledgeRecord::KnowledgeRecord (double value,
   logger::Logger & logger)
-: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0), type_(INTEGER)
+: logger_ (&logger), status_ (MODIFIED), type_ (INTEGER),
+  size_(1), double_value_ (value)
 {
-  set_value (value);
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
   const std::vector <double> & value,
   logger::Logger & logger)
-: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0), type_(INTEGER)
+: logger_ (&logger)
 {
   set_value (value);
 }
 
 inline KnowledgeRecord::KnowledgeRecord (const std::string & value,
   logger::Logger & logger)
-: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0), type_(INTEGER)
+: logger_ (&logger)
 {
   set_value (value);
 }
 
 inline KnowledgeRecord::KnowledgeRecord (const char * value,
   logger::Logger & logger)
-: logger_ (&logger), status_ (UNCREATED), clock (0), scope (LOCAL_SCOPE),
-  quality (0), write_quality (0), type_(INTEGER)
+: logger_ (&logger)
 {
   set_value (std::string (value));
 }
 
-inline KnowledgeRecord::KnowledgeRecord (const knowledge::KnowledgeRecord & rhs)
-: logger_ (rhs.logger_), status_ (rhs.status_), clock (rhs.clock),
-  scope (rhs.scope), quality (rhs.quality),
+inline KnowledgeRecord::KnowledgeRecord (
+    const knowledge::KnowledgeRecord & rhs) noexcept
+: logger_ (rhs.logger_),
+  status_ (rhs.status_),
+  scope (rhs.scope),
+  type_ (rhs.type_),
+  quality (rhs.quality),
+  clock (rhs.clock),
   write_quality (rhs.write_quality),
-  size_ (rhs.size_), type_ (rhs.type_)
+  size_ (rhs.size_)
 {
   if      (rhs.status_ != UNCREATED)
   {
@@ -101,8 +98,109 @@ inline KnowledgeRecord::KnowledgeRecord (const knowledge::KnowledgeRecord & rhs)
   }
 }
 
-inline KnowledgeRecord::~KnowledgeRecord ()
+inline KnowledgeRecord::KnowledgeRecord (
+    knowledge::KnowledgeRecord &&rhs) noexcept
+: logger_ (std::move(rhs.logger_)),
+  status_ (rhs.status_),
+  scope (rhs.scope),
+  type_ (rhs.type_),
+  quality (rhs.quality),
+  clock (rhs.clock),
+  write_quality (rhs.write_quality),
+  size_ (rhs.size_)
 {
+  if      (rhs.status_ != UNCREATED)
+  {
+    if      (rhs.type_ == INTEGER)
+      int_value_ = rhs.int_value_;
+    else if (rhs.type_ == INTEGER_ARRAY)
+      new (&int_array_) std::shared_ptr<Integer>(std::move(rhs.int_array_));
+    else if (rhs.type_ == DOUBLE)
+      double_value_ = rhs.double_value_;
+    else if (rhs.type_ == DOUBLE_ARRAY)
+      new (&double_array_) std::shared_ptr<double>(std::move(rhs.double_array_));
+    else if (rhs.is_string_type ())
+      new (&str_value_) std::shared_ptr<char>(std::move(rhs.str_value_));
+    else if (rhs.is_file_type ())
+      new (&file_value_) std::shared_ptr<unsigned char>(std::move(rhs.file_value_));
+  }
+}
+
+inline KnowledgeRecord::~KnowledgeRecord () noexcept
+{
+  clear_union();
+}
+
+inline KnowledgeRecord &
+KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs) noexcept
+{
+  if (this == &rhs)
+    return *this;
+
+  // clear any dynamic memory being used on the left hand side
+  clear_value ();
+
+  if (rhs.status_ != UNCREATED)
+  {
+    // set the instance properties accordingly
+    clock = rhs.clock;
+    quality = rhs.quality;
+    scope = rhs.scope;
+    status_ = rhs.status_;
+    size_ = rhs.size_;
+    type_ = rhs.type_;
+
+    if (is_string_type ())
+      new (&str_value_) std::shared_ptr<char>(rhs.str_value_);
+    else if (type_ == INTEGER)
+      int_value_ = rhs.int_value_;
+    else if (type_ == INTEGER_ARRAY)
+      new (&int_array_) std::shared_ptr<Integer>(rhs.int_array_);
+    else if (type_ == DOUBLE)
+      double_value_ = rhs.double_value_;
+    else if (type_ == DOUBLE_ARRAY)
+      new (&double_array_) std::shared_ptr<double>(rhs.double_array_);
+    else if (is_file_type ())
+      new (&file_value_) std::shared_ptr<unsigned char>(rhs.file_value_);
+  }
+
+  return *this;
+}
+
+inline KnowledgeRecord &
+KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
+{
+  if (this == &rhs)
+    return *this;
+
+  // clear any dynamic memory being used on the left hand side
+  clear_union();
+
+  if      (rhs.status_ != UNCREATED)
+  {
+    // set the instance properties accordingly
+    clock = rhs.clock;
+    quality = rhs.quality;
+    scope = rhs.scope;
+    status_ = rhs.status_;
+    size_ = rhs.size_;
+    type_ = rhs.type_;
+
+    if      (rhs.type_ == INTEGER)
+      int_value_ = rhs.int_value_;
+    else if (rhs.type_ == INTEGER_ARRAY)
+      new (&int_array_) std::shared_ptr<Integer>(std::move(rhs.int_array_));
+    else if (rhs.type_ == DOUBLE)
+      double_value_ = rhs.double_value_;
+    else if (rhs.type_ == DOUBLE_ARRAY)
+      new (&double_array_) std::shared_ptr<double>(std::move(rhs.double_array_));
+    else if (rhs.is_string_type ())
+      new (&str_value_) std::shared_ptr<char>(std::move(rhs.str_value_));
+    else if (rhs.is_file_type ())
+      new (&file_value_) std::shared_ptr<unsigned char>(std::move(rhs.file_value_));
+  }
+
+  return *this;
 }
 
 inline bool
@@ -624,7 +722,7 @@ inline void destruct(T &x) {
 }
 
 inline void
-KnowledgeRecord::clear_union (void)
+KnowledgeRecord::clear_union (void) noexcept
 {
   if (status_ != UNCREATED)
   {
@@ -643,7 +741,7 @@ KnowledgeRecord::clear_union (void)
 }
 
 inline void
-KnowledgeRecord::clear_value (void)
+KnowledgeRecord::clear_value (void) noexcept
 {
   clear_union ();
   if (status_ != UNCREATED)
@@ -829,7 +927,7 @@ int64_t & buffer_remaining)
 
 // reset the value_ to an integer
 inline void  
-KnowledgeRecord::reset_value (void)
+KnowledgeRecord::reset_value (void) noexcept
 {
   clear_value ();
 
