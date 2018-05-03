@@ -2496,7 +2496,7 @@ project (Test_RCW_ProdCon) : using_ace, using_madara, no_karl, no_xml, null_lock
   }
 }
 
-project (Test_RCW_ProdCon) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock {
+project (Test_Save_Modifieds) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2521,3 +2521,27 @@ project (Test_RCW_ProdCon) : using_ace, using_madara, no_karl, no_xml, null_lock
   }
 }
 
+project (Test_Shared_Record) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_shared_record
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11 -O0 -Wall
+  }
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_shared_record.cpp
+  }
+}

@@ -85,8 +85,8 @@ int main (int argc, char ** argv)
   }
 
   // These lines compile OK, and work as expected:
-  bool bool_false = falsey;
-  bool bool_true = truthy;
+  bool bool_false = (bool)falsey;
+  bool bool_true = (bool)truthy;
 
   if(bool_true)
   {

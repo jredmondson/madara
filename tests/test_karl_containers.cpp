@@ -1579,7 +1579,7 @@ void test_queue (void)
     std::cerr << "  FAIL: clear.\n";
   
   
-  if (!messages.dequeue (false).is_valid ())
+  if (!messages.dequeue (false).exists ())
   {
     std::cerr << "  SUCCESS: asynchronous dequeue empty.\n";
   }

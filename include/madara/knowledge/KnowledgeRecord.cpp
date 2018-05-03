@@ -56,90 +56,6 @@ KnowledgeRecord::set_scientific (void)
   madara_use_scientific = true;
 }
 
-KnowledgeRecord *
-KnowledgeRecord::clone (void) const
-{
-  knowledge::KnowledgeRecord * result = new knowledge::KnowledgeRecord ();
-  
-  if (is_ref_counted ())
-  {
-    if (this->type_ == STRING)
-    {
-      result->set_value (this->to_string ());
-    }
-    else if (this->type_ == TEXT_FILE)
-    {
-      std::string text = this->to_string ();
-      result->set_text (text.c_str (), text.size ());
-    }
-    else if (this->type_ == XML)
-    {
-      std::string text = this->to_string ();
-      result->set_xml (text.c_str (), text.size ());
-    }
-    else if (this->type_ == DOUBLE_ARRAY)
-    {
-      result->set_value (this->to_doubles ());
-    }
-    else if (this->type_ == INTEGER_ARRAY)
-    {
-      result->set_value (this->to_integers ());
-    }
-    else if (this->type_ == UNKNOWN_FILE_TYPE || this->type_ == IMAGE_JPEG)
-    {
-      size_t temp;
-      result->type_ = this->type_;
-      result->make_file_value (*this->file_value_);
-    }
-  }
-  else
-  {
-    *result = *this;
-  }
-
-  return result;
-}
-
-void
-KnowledgeRecord::deep_copy (const knowledge::KnowledgeRecord & source)
-{
-  if (source.is_ref_counted ())
-  {
-    if (source.type_ == STRING)
-    {
-      set_value (source.to_string ());
-    }
-    else if (source.type_ == TEXT_FILE)
-    {
-      std::string text = source.to_string ();
-      set_text (text.c_str (), text.size ());
-    }
-    else if (source.type_ == XML)
-    {
-      std::string text = source.to_string ();
-      set_xml (text.c_str (), text.size ());
-    }
-    else if (source.type_ == DOUBLE_ARRAY)
-    {
-      set_value (source.to_doubles ());
-    }
-    else if (source.type_ == INTEGER_ARRAY)
-    {
-      set_value (source.to_integers ());
-    }
-    else if (source.type_ == UNKNOWN_FILE_TYPE || source.type_ == IMAGE_JPEG)
-    {
-      make_file_value (*source.file_value_);
-      type_ = source.type_;
-      status_ = source.status_;
-    }
-  }
-  else
-  {
-    *this = source;
-  }
-}
-
 int
 KnowledgeRecord::read_file (
   const std::string & filename, uint32_t read_as_type)
@@ -179,18 +95,16 @@ KnowledgeRecord::read_file (
         type_ = XML;
       else
         type_ = TEXT_FILE;
-      status_ = MODIFIED;
     }
     else
     {
       unsigned char *ucbuf = (unsigned char *)buffer;
-      make_file_value (ucbuf, ucbuf + size);
+      emplace_file (ucbuf, ucbuf + size);
 
       if (extension == ".jpg" || read_as_type == IMAGE_JPEG)
         type_ = IMAGE_JPEG;
       else
         type_ = UNKNOWN_FILE_TYPE;
-      status_ = MODIFIED;
     }
 
     return 0;
@@ -213,7 +127,7 @@ KnowledgeRecord::to_file (const std::string & filename) const
   else if (is_binary_file_type ())
   {
     return madara::utility::write_file (filename,
-      (void *)file_value_->at(0), file_value_->size ());
+      (void *)&file_value_->at(0), file_value_->size ());
   }
   else
   {
@@ -230,26 +144,23 @@ KnowledgeRecord::to_double (void) const
 {
   double value = 0;
 
-  if (status_ != UNCREATED)
+  if (type_ == DOUBLE)
+    value = double_value_;
+  else if (type_ == DOUBLE_ARRAY)
+    value = double_array_->at(0);
+  else if (type_ != EMPTY)
   {
-    if (type_ == DOUBLE)
-      value = double_value_;
-    else if (type_ == DOUBLE_ARRAY)
-      value = double_array_->at(0);
-    else
-    {
-      std::stringstream buffer;
+    std::stringstream buffer;
 
-      // read the value_ into a stringstream and then convert it to double
-      if (type_ == INTEGER)
-        buffer << int_value_;
-      else if (type_ == INTEGER_ARRAY)
-        buffer << int_array_->at(0);
-      else if (is_string_type ())
-        buffer << str_value_->c_str ();
+    // read the value_ into a stringstream and then convert it to double
+    if (type_ == INTEGER)
+      buffer << int_value_;
+    else if (type_ == INTEGER_ARRAY)
+      buffer << int_array_->at(0);
+    else if (is_string_type ())
+      buffer << str_value_->c_str ();
 
-      buffer >> value;
-    }
+    buffer >> value;
   }
 
   return value;
@@ -260,28 +171,25 @@ KnowledgeRecord::to_integer (void) const
 {
   Integer value (0);
 
-  if (status_ != UNCREATED)
+  if (type_ == INTEGER)
+    value = int_value_;
+  else if (type_ == INTEGER_ARRAY)
+    value = int_array_->at(0);
+  else if (type_ != EMPTY)
   {
-    if (type_ == INTEGER)
-      value = int_value_;
-    else if (type_ == INTEGER_ARRAY)
-      value = int_array_->at(0);
-    else
-    {
-      std::stringstream buffer;
+    std::stringstream buffer;
 
-      // read the value_ into a stringstream and then convert it to double
-      if (type_ == DOUBLE)
-        buffer << double_value_;
-      else if (type_ == DOUBLE_ARRAY)
-        buffer << double_array_->at(0);
-      else if (is_string_type ())
-        buffer << str_value_->c_str();
+    // read the value_ into a stringstream and then convert it to double
+    if (type_ == DOUBLE)
+      buffer << double_value_;
+    else if (type_ == DOUBLE_ARRAY)
+      buffer << double_array_->at(0);
+    else if (is_string_type ())
+      buffer << str_value_->c_str();
 
-      buffer >> value;
-    }
+    buffer >> value;
   }
-  
+
   return value;
 }
 
@@ -290,45 +198,47 @@ KnowledgeRecord::to_integers (void) const
 {
   std::vector <Integer> integers;
 
-  if (status_ != UNCREATED)
+  if (type_ == EMPTY) {
+    integers.push_back(0);
+    return integers;
+  }
+
+  unsigned int size = (unsigned int)this->size ();
+  integers.resize (size);
+
+  if (type_ == INTEGER)
   {
-    unsigned int size = (unsigned int)this->size ();
-    integers.resize (size);
+    integers[0] = int_value_;
+  }
+  else if (type_ == INTEGER_ARRAY)
+  {
+    const Integer * ptr_temp = &(*int_array_)[0];
 
-    if (type_ == INTEGER)
-    {
-      integers[0] = int_value_;
-    }
-    else if (type_ == INTEGER_ARRAY)
-    {
-      const Integer * ptr_temp = &(*int_array_)[0];
+    for (unsigned int i = 0; i < size; ++i)
+      integers[i] = ptr_temp[i];
+  }
+  else if (type_ == DOUBLE)
+    integers[0] = Integer (double_value_);
+  else if (type_ == DOUBLE_ARRAY)
+  {
+    const double * ptr_temp = &(*double_array_)[0];
 
-      for (unsigned int i = 0; i < size; ++i)
-        integers[i] = ptr_temp[i];
-    }
-    else if (type_ == DOUBLE)
-      integers[0] = Integer (double_value_);
-    else if (type_ == DOUBLE_ARRAY)
-    {
-      const double * ptr_temp = &(*double_array_)[0];
+    for (unsigned int i = 0; i < size; ++i)
+      integers[i] = Integer (ptr_temp[i]);
+  }
+  else if (is_string_type ())
+  {
+    const char * ptr_temp = str_value_->c_str ();
 
-      for (unsigned int i = 0; i < size; ++i)
-        integers[i] = Integer (ptr_temp[i]);
-    }
-    else if (is_string_type ())
-    {
-      const char * ptr_temp = str_value_->c_str ();
+    for (unsigned int i = 0; i < size; ++i)
+      integers[i] = Integer (ptr_temp[i]);
+  }
+  else if (is_binary_file_type ())
+  {
+    const unsigned char * ptr_temp = &(*file_value_)[0];
 
-      for (unsigned int i = 0; i < size; ++i)
-        integers[i] = Integer (ptr_temp[i]);
-    }
-    else if (is_binary_file_type ())
-    {
-      const unsigned char * ptr_temp = &(*file_value_)[0];
-
-      for (unsigned int i = 0; i < size; ++i)
-        integers[i] = Integer (ptr_temp[i]);
-    }
+    for (unsigned int i = 0; i < size; ++i)
+      integers[i] = Integer (ptr_temp[i]);
   }
 
   return integers;
@@ -339,43 +249,45 @@ KnowledgeRecord::to_doubles (void) const
 {
   std::vector <double> doubles;
 
-  if (status_ != UNCREATED)
+  if (type_ == EMPTY) {
+    doubles.push_back(0);
+    return doubles;
+  }
+
+  unsigned int size = (unsigned int)this->size ();
+  doubles.resize (size);
+
+  if      (type_ == INTEGER)
+    doubles[0] = double (int_value_);
+  else if (type_ == INTEGER_ARRAY)
   {
-    unsigned int size = (unsigned int)this->size ();
-    doubles.resize (size);
+    const Integer * ptr_temp = &(*int_array_)[0];
 
-    if      (type_ == INTEGER)
-      doubles[0] = double (int_value_);
-    else if (type_ == INTEGER_ARRAY)
-    {
-      const Integer * ptr_temp = &(*int_array_)[0];
+    for (unsigned int i = 0; i < size; ++i)
+      doubles[i] = double (ptr_temp[i]);
+  }
+  else if (type_ == DOUBLE)
+    doubles[0] = double_value_;
+  else if (type_ == DOUBLE_ARRAY)
+  {
+    const double * ptr_temp = &(*double_array_)[0];
 
-      for (unsigned int i = 0; i < size; ++i)
-        doubles[i] = double (ptr_temp[i]);
-    }
-    else if (type_ == DOUBLE)
-      doubles[0] = double_value_;
-    else if (type_ == DOUBLE_ARRAY)
-    {
-      const double * ptr_temp = &(*double_array_)[0];
+    for (unsigned int i = 0; i < size; ++i)
+      doubles[i] = ptr_temp[i];
+  }
+  else if (is_string_type ())
+  {
+    const char * ptr_temp = str_value_->c_str ();
 
-      for (unsigned int i = 0; i < size; ++i)
-        doubles[i] = ptr_temp[i];
-    }
-    else if (is_string_type ())
-    {
-      const char * ptr_temp = str_value_->c_str ();
+    for (unsigned int i = 0; i < size; ++i)
+      doubles[i] = double (ptr_temp[i]);
+  }
+  else if (is_binary_file_type ())
+  {
+    const unsigned char * ptr_temp = &(*file_value_)[0];
 
-      for (unsigned int i = 0; i < size; ++i)
-        doubles[i] = double (ptr_temp[i]);
-    }
-    else if (is_binary_file_type ())
-    {
-      const unsigned char * ptr_temp = &(*file_value_)[0];
-
-      for (unsigned int i = 0; i < size; ++i)
-        doubles[i] = double (ptr_temp[i]);
-    }
+    for (unsigned int i = 0; i < size; ++i)
+      doubles[i] = double (ptr_temp[i]);
   }
 
   return doubles;
@@ -385,172 +297,166 @@ KnowledgeRecord::to_doubles (void) const
 std::string
 KnowledgeRecord::to_string (const std::string & delimiter) const
 {
-  if (status_ != UNCREATED)
+  if (type_ == EMPTY) {
+    return "0";
+  }
+
+  if (!is_string_type ())
   {
-    if (!is_string_type ())
+    madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
+      " type_ is %d\n", type_);
+
+    std::stringstream buffer;
+
+    if      (type_ == INTEGER)
+      buffer << int_value_;
+    else if (type_ == INTEGER_ARRAY)
     {
-      madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
-        " type_ is %d\n", type_);
+      const Integer * ptr_temp = &(*int_array_)[0];
+      uint32_t size = this->size ();
 
-      std::stringstream buffer;
-    
-      if      (type_ == INTEGER)
-        buffer << int_value_;
-      else if (type_ == INTEGER_ARRAY)
-      {
-        const Integer * ptr_temp = &(*int_array_)[0];
-        uint32_t size = this->size ();
+      if (size >= 1)
+        buffer << *ptr_temp;
 
-        if (size >= 1)
-          buffer << *ptr_temp;
+      ++ptr_temp;
 
-        ++ptr_temp;
-
-        for (uint32_t i = 1; i < size; ++i, ++ptr_temp)
-          buffer << delimiter << *ptr_temp;
-      }
-      else if (type_ == DOUBLE)
-      {
-        // set fixed or scientific
-        if (!madara_use_scientific)
-        {
-          madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-            "KnowledgeRecord::to_string: using fixed format\n");
-
-          buffer << std::fixed;
-        }
-        else
-        {
-          madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-            "KnowledgeRecord::to_string: using scientific format\n");
-
-          buffer << std::scientific;
-        }
-
-        if (madara_double_precision >= 0)
-        {
-          // set the precision of double output
-          buffer << std::setprecision (madara_double_precision);
-
-          madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
-            " precision set to %d\n", madara_double_precision);
-        }
-        else
-        {
-          madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
-            " precision set to default\n", madara_double_precision);
-        }
-
-        buffer << double_value_;
-      }
-      else if (type_ == DOUBLE_ARRAY)
-      {
-        // set fixed or scientific
-        if (!madara_use_scientific)
-        {
-          madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-            "KnowledgeRecord::to_string: using fixed format\n");
-
-          buffer << std::fixed;
-        }
-        else
-        {
-          madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-            "KnowledgeRecord::to_string: using scientific format\n");
-
-          buffer << std::scientific;
-        }
-
-        if (madara_double_precision >= 0)
-        {
-          buffer << std::setprecision (madara_double_precision);
-
-          madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
-            " precision set to %d\n", madara_double_precision);
-        }
-        else
-        {
-          madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
-            " precision set to default\n", madara_double_precision);
-        }
-
-        const double * ptr_temp = &(*double_array_)[0];
-        uint32_t size = this->size ();
-
-        if (size >= 1)
-          buffer << *ptr_temp;
-
-        ++ptr_temp;
-
-        for (uint32_t i = 1; i < size; ++i, ++ptr_temp)
-          buffer << delimiter << *ptr_temp; 
-      }
-      else if (is_binary_file_type ())
-      {
-        buffer << "binary:size=";
-        buffer << size (); 
-      }
-      return buffer.str ();
+      for (uint32_t i = 1; i < size; ++i, ++ptr_temp)
+        buffer << delimiter << *ptr_temp;
     }
-    else
-      return std::string (*str_value_);
+    else if (type_ == DOUBLE)
+    {
+      // set fixed or scientific
+      if (!madara_use_scientific)
+      {
+        madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+          "KnowledgeRecord::to_string: using fixed format\n");
+
+        buffer << std::fixed;
+      }
+      else
+      {
+        madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+          "KnowledgeRecord::to_string: using scientific format\n");
+
+        buffer << std::scientific;
+      }
+
+      if (madara_double_precision >= 0)
+      {
+        // set the precision of double output
+        buffer << std::setprecision (madara_double_precision);
+
+        madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
+          " precision set to %d\n", madara_double_precision);
+      }
+      else
+      {
+        madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
+          " precision set to default\n", madara_double_precision);
+      }
+
+      buffer << double_value_;
+    }
+    else if (type_ == DOUBLE_ARRAY)
+    {
+      // set fixed or scientific
+      if (!madara_use_scientific)
+      {
+        madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+          "KnowledgeRecord::to_string: using fixed format\n");
+
+        buffer << std::fixed;
+      }
+      else
+      {
+        madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+          "KnowledgeRecord::to_string: using scientific format\n");
+
+        buffer << std::scientific;
+      }
+
+      if (madara_double_precision >= 0)
+      {
+        buffer << std::setprecision (madara_double_precision);
+
+        madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
+          " precision set to %d\n", madara_double_precision);
+      }
+      else
+      {
+        madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
+          " precision set to default\n", madara_double_precision);
+      }
+
+      const double * ptr_temp = &(*double_array_)[0];
+      uint32_t size = this->size ();
+
+      if (size >= 1)
+        buffer << *ptr_temp;
+
+      ++ptr_temp;
+
+      for (uint32_t i = 1; i < size; ++i, ++ptr_temp)
+        buffer << delimiter << *ptr_temp; 
+    }
+    else if (is_binary_file_type ())
+    {
+      buffer << "binary:size=";
+      buffer << size (); 
+    }
+    return buffer.str ();
   }
   else
-    return "0";
+    return std::string (*str_value_);
 }
 
 // read the value_ in a string format
 unsigned char *
 KnowledgeRecord::to_unmanaged_buffer (size_t & size) const
 {
-  if (status_ != UNCREATED)
+  char * buffer;
+
+  if (is_string_type ())
   {
-    char * buffer;
-
-    if (is_string_type ())
-    {
-      size = str_value_->size ();
-      buffer = new char [size];
-      memcpy (buffer, str_value_->c_str (), size);
-    }
-    else if (is_binary_file_type ())
-    {
-      size = file_value_-> size();
-      buffer = new char [size];
-      memcpy (buffer, &(*file_value_)[0], size);
-    }
-    else if (type_ == INTEGER)
-    {
-      size = sizeof(Integer);
-      buffer = new char [size];
-      memcpy (buffer, &int_value_, size);
-    }
-    else if (type_ == DOUBLE)
-    {
-      size = sizeof(double);
-      buffer = new char [size];
-      memcpy (buffer, &double_value_, size);
-    }
-    else if (type_ == INTEGER_ARRAY)
-    {
-      size = sizeof(Integer) * int_array_->size ();
-      buffer = new char [size];
-      memcpy (buffer, &(*int_array_)[0], size);
-    }
-    else if (type_ == DOUBLE_ARRAY)
-    {
-      size = sizeof(double) * double_array_->size () ;
-      buffer = new char [size];
-      memcpy (buffer, &(*double_array_)[0], size);
-    } else {
-      buffer = nullptr;
-      size = 0;
-    }
-
-    return (unsigned char *)buffer;
+    size = str_value_->size ();
+    buffer = new char [size];
+    memcpy (buffer, str_value_->c_str (), size);
   }
-  else
-    return nullptr;
+  else if (is_binary_file_type ())
+  {
+    size = file_value_-> size();
+    buffer = new char [size];
+    memcpy (buffer, &(*file_value_)[0], size);
+  }
+  else if (type_ == INTEGER)
+  {
+    size = sizeof(Integer);
+    buffer = new char [size];
+    memcpy (buffer, &int_value_, size);
+  }
+  else if (type_ == DOUBLE)
+  {
+    size = sizeof(double);
+    buffer = new char [size];
+    memcpy (buffer, &double_value_, size);
+  }
+  else if (type_ == INTEGER_ARRAY)
+  {
+    size = sizeof(Integer) * int_array_->size ();
+    buffer = new char [size];
+    memcpy (buffer, &(*int_array_)[0], size);
+  }
+  else if (type_ == DOUBLE_ARRAY)
+  {
+    size = sizeof(double) * double_array_->size () ;
+    buffer = new char [size];
+    memcpy (buffer, &(*double_array_)[0], size);
+  } else {
+    buffer = nullptr;
+    size = 0;
+  }
+
+  return (unsigned char *)buffer;
 }
 
 
@@ -559,73 +465,70 @@ KnowledgeRecord::fragment (unsigned int first, unsigned int last)
 {
   knowledge::KnowledgeRecord ret;
 
-  if (first <= last && status_ != UNCREATED)
+  if (is_string_type ())
   {
-    if (is_string_type ())
-    {
-      size_t size = str_value_->size ();
+    size_t size = str_value_->size ();
 
-      // make sure last is accessible in the data type
-      last = std::min <unsigned int> (last, size - 1);
+    // make sure last is accessible in the data type
+    last = std::min <unsigned int> (last, size - 1);
 
-       // Create a new buffer, copy over the elements, and add a null delimiter
-      char * new_buffer = new char [last - first + 2];
+     // Create a new buffer, copy over the elements, and add a null delimiter
+    char * new_buffer = new char [last - first + 2];
 
-      memcpy (new_buffer, str_value_->c_str () + first, last - first + 1);
-      new_buffer[last-first + 1] = 0;
+    memcpy (new_buffer, str_value_->c_str () + first, last - first + 1);
+    new_buffer[last-first + 1] = 0;
 
-      ret.set_value (new_buffer);
-    }
-    else if (is_binary_file_type ())
-    {
-      size_t size = file_value_->size ();
+    ret.set_value (new_buffer);
+  }
+  else if (is_binary_file_type ())
+  {
+    size_t size = file_value_->size ();
 
-      // make sure last is accessible in the data type
-      last = std::min <unsigned int> (last, size - 1);
+    // make sure last is accessible in the data type
+    last = std::min <unsigned int> (last, size - 1);
 
-      // Unlike string types, file buffers are not ended with a null delimiter
-      uint32_t bufsize = last - first + 1;
-      unsigned char * new_buffer = new unsigned char [bufsize];
+    // Unlike string types, file buffers are not ended with a null delimiter
+    uint32_t bufsize = last - first + 1;
+    unsigned char * new_buffer = new unsigned char [bufsize];
 
-      memcpy (new_buffer, &(*file_value_)[0] + first, last - first + 1);
+    memcpy (new_buffer, &(*file_value_)[0] + first, last - first + 1);
 
-      // create a new record with the unsigned char buffer as contents
-      ret.set_file (new_buffer, bufsize);
-    }
-    else if (type_ == INTEGER_ARRAY)
-    {
-      size_t size = int_array_->size ();
+    // create a new record with the unsigned char buffer as contents
+    ret.set_file (new_buffer, bufsize);
+  }
+  else if (type_ == INTEGER_ARRAY)
+  {
+    size_t size = int_array_->size ();
 
-      // make sure last is accessible in the data type
-      last = std::min <unsigned int> (last, size - 1);
-      uint32_t bufsize = last - first + 1;
+    // make sure last is accessible in the data type
+    last = std::min <unsigned int> (last, size - 1);
+    uint32_t bufsize = last - first + 1;
 
-      std::vector <Integer> integers;
-      integers.resize (bufsize);
-      Integer * ptr_temp = &(*int_array_)[0];
+    std::vector <Integer> integers;
+    integers.resize (bufsize);
+    Integer * ptr_temp = &(*int_array_)[0];
 
-      for (unsigned int i = first; i <= last; ++i, ++ptr_temp)
-        integers[i] = *ptr_temp;
+    for (unsigned int i = first; i <= last; ++i, ++ptr_temp)
+      integers[i] = *ptr_temp;
 
-      ret.set_value (integers);
-    }
-    else if (type_ == DOUBLE_ARRAY)
-    {
-      size_t size = double_array_->size ();
+    ret.set_value (integers);
+  }
+  else if (type_ == DOUBLE_ARRAY)
+  {
+    size_t size = double_array_->size ();
 
-      // make sure last is accessible in the data type
-      last = std::min <unsigned int> (last, size - 1);
-      uint32_t bufsize = last - first + 1;
+    // make sure last is accessible in the data type
+    last = std::min <unsigned int> (last, size - 1);
+    uint32_t bufsize = last - first + 1;
 
-      std::vector <double> doubles;
-      doubles.resize (bufsize);
-      double * ptr_temp = &(*double_array_)[0];
+    std::vector <double> doubles;
+    doubles.resize (bufsize);
+    double * ptr_temp = &(*double_array_)[0];
 
-      for (unsigned int i = first; i <= last; ++i, ++ptr_temp)
-        doubles[i] = *ptr_temp;
+    for (unsigned int i = first; i <= last; ++i, ++ptr_temp)
+      doubles[i] = *ptr_temp;
 
-      ret.set_value (doubles);
-    }
+    ret.set_value (doubles);
   }
 
   return ret;
@@ -1104,23 +1007,24 @@ KnowledgeRecord::dec_index (size_t index)
 {
   if (type_ == DOUBLE_ARRAY)
   {
+    unshare();
+
     if (double_array_->size () <= index) {
       double_array_->resize (index + 1);
     }
-    status_ = MODIFIED;
     return knowledge::KnowledgeRecord(--double_array_->at (index));
   }
   else if (type_ == INTEGER_ARRAY)
   {
+    unshare();
+
     if (int_array_->size () <= index) {
       int_array_->resize (index + 1);
     }
-    status_ = MODIFIED;
     return knowledge::KnowledgeRecord(--int_array_->at (index));
   }
   std::vector<Integer> tmp(index + 1);
-  make_int_array (std::move(tmp));
-  status_ = MODIFIED;
+  emplace_integers (std::move(tmp));
   return knowledge::KnowledgeRecord(--int_array_->at (index));
 }
 
@@ -1129,23 +1033,24 @@ KnowledgeRecord::inc_index (size_t index)
 {
   if (type_ == DOUBLE_ARRAY)
   {
+    unshare();
+
     if (double_array_->size () <= index) {
       double_array_->resize (index + 1);
     }
-    status_ = MODIFIED;
     return knowledge::KnowledgeRecord(--double_array_->at (index));
   }
   else if (type_ == INTEGER_ARRAY)
   {
+    unshare();
+
     if (int_array_->size () <= index) {
       int_array_->resize (index + 1);
     }
-    status_ = MODIFIED;
     return knowledge::KnowledgeRecord(--int_array_->at (index));
   }
   std::vector<Integer> tmp(index + 1);
-  make_int_array (std::move(tmp));
-  status_ = MODIFIED;
+  emplace_integers (std::move(tmp));
   return knowledge::KnowledgeRecord(--int_array_->at (index));
 }
 
@@ -1165,6 +1070,8 @@ KnowledgeRecord::set_index (size_t index, Integer value)
   }
   else if (type_ == INTEGER_ARRAY)
   {
+    unshare();
+
     if (index >= int_array_->size ())
     {
       int_array_->resize(index + 1);
@@ -1172,12 +1079,10 @@ KnowledgeRecord::set_index (size_t index, Integer value)
   }
   else
   {
-    make_int_array (index + 1);
+    emplace_integers (index + 1);
   }
 
   int_array_->at (index) = value;
-
-  status_ = MODIFIED;
 }
  
 /**
@@ -1190,14 +1095,16 @@ KnowledgeRecord::set_index (size_t index, double value)
 {
   if (type_ == INTEGER_ARRAY)
   {
-    make_double_array (int_array_->begin (), int_array_->end ());
+    emplace_doubles (int_array_->begin (), int_array_->end ());
   }
   else if (type_ != DOUBLE_ARRAY)
   {
-    make_double_array (index + 1);
+    emplace_doubles (index + 1);
   }
   else
   {
+    unshare();
+
     if (index >= double_array_->size ())
     {
       double_array_->resize (index + 1);
@@ -1205,16 +1112,22 @@ KnowledgeRecord::set_index (size_t index, double value)
   }
 
   double_array_->at (index) = value;
-
-  status_ = MODIFIED;
 }
 
 void
 KnowledgeRecord::resize (size_t new_size)
 {
-  if (new_size > size ())
+  size_t cur_size = size ();
+
+  if (cur_size == new_size) {
+    return;
+  }
+
+  unshare();
+
+  if (new_size > cur_size)
   {
-    if (status_ == UNCREATED ||
+    if (type_ == EMPTY ||
         type_ == INTEGER)
     {
       Integer zero (0);

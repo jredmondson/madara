@@ -195,14 +195,13 @@ madara::knowledge::ThreadSafeContext::set_unsafe_impl (
   // copy size and type from the record value
   variable.record_->type_ = value.type_;
 
-  if (value.status_ != knowledge::KnowledgeRecord::UNCREATED)
+  if (value.exists())
   {
     variable.record_->deep_copy (value);
   }
   else
   {
-    variable.record_->status_ = knowledge::KnowledgeRecord::UNCREATED;
-    variable.record_->int_value_ = 0;
+    variable.record_->clear_value ();
   }
   
   variable.record_->quality = variable.record_->write_quality;

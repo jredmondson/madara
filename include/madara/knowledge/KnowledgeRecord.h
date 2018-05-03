@@ -14,6 +14,8 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <atomic>
+#include <type_traits>
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
 #include "madara/utility/Refcounter.h"
@@ -47,13 +49,13 @@ namespace madara
 
       enum
       {
-        GLOBAL_SCOPE = 0,
-        LOCAL_SCOPE = 1
+        OWNED = 0,
+        SHARED = 1
       };
 
       enum ValueTypes
       {
-        UNINITIALIZED = 0,
+        EMPTY = 0,
         INTEGER = 1,
         STRING = 2,
         DOUBLE = 4,
@@ -82,33 +84,16 @@ namespace madara
       /// the logger used for any internal debugging information
       logger::Logger * logger_;
 
-      /**
-       * status of the knowledge record
-       **/
-      uint8_t status_ = UNCREATED;
-
     public:
-      /**
-       * scope (global or local)
-       **/
-      uint8_t scope = LOCAL_SCOPE;
-
-    private:
-      /**
-       * type of variable (INTEGER, DOUBLE, STRING, FILE, IMAGE)
-       **/
-      uint16_t type_ = UNINITIALIZED;
-
-    public:
-      /**
-       * priority of the update
-       **/
-      uint32_t quality = 0;
-
       /**
        * last modification time
        **/
       uint64_t clock = 0;
+
+      /**
+       * priority of the update
+       **/
+      uint32_t quality = 0;
 
       /**
        * write priority for any local updates
@@ -116,7 +101,6 @@ namespace madara
       uint32_t write_quality = 0;
 
     private:
-
       /**
        * Non-array versions of double/integer. About 10x faster
        * than using the ref-counted arrays
@@ -126,144 +110,211 @@ namespace madara
         Integer int_value_ = 0;
         double double_value_;
 
-        /**
-         * potential string value of the node (size int)
-         **/
         std::shared_ptr<std::vector<Integer>> int_array_;
-
-        /**
-         * potential string value of the node (size int)
-         **/
         std::shared_ptr<std::vector<double>> double_array_;
-
-        /**
-         * potential string value of the node (size int)
-         **/
         std::shared_ptr<std::string> str_value_;
-
-        /**
-         * potential file value of the node
-         **/
         std::shared_ptr<std::vector<unsigned char>> file_value_;
       };
 
-      Integer &int_value() {
-        if (type_ != INTEGER) {
-          clear_union();
-          type_ = INTEGER;
-          int_value_ = 0;
-        }
-        return int_value_;
-      }
+      /**
+       * type of variable (INTEGER, DOUBLE, STRING, FILE, IMAGE)
+       **/
+      uint32_t type_ = EMPTY;
 
-      double &double_value() {
-        if (type_ != DOUBLE) {
-          clear_union();
-          type_ = DOUBLE;
-          double_value_ = 0.0;
-        }
-        return double_value_;
-      }
-
+      /**
+       * is this knowledge record's shared_ptr, if any, exposed to
+       * outside holders?
+       **/
+      mutable std::atomic<bool> shared_{OWNED};
 
       template<typename T>
-      using MemberType = std::shared_ptr<std::vector<T>> KnowledgeRecord::*;
+      using MemberType = std::shared_ptr<T> KnowledgeRecord::*;
 
       template<typename T, uint32_t Type, MemberType<T> Member, typename... Args>
-      std::shared_ptr<std::vector<T>> &make_array(Args&&... args) {
+      std::shared_ptr<T> &emplace_shared_val(Args&&... args) {
         clear_union();
         type_ = Type;
-        new(&int_array_) std::shared_ptr<std::vector<T>>(
-            std::make_shared<std::vector<T>> (
-              std::forward<Args>(args)...));
-        return this->*Member;
+        return *new(&(this->*Member)) std::shared_ptr<T>(
+              std::forward<Args>(args)...);
       }
 
+      template<typename T, uint32_t Type, MemberType<T> Member, typename... Args>
+      std::shared_ptr<T> &emplace_val(Args&&... args) {
+        return emplace_shared_val<T, Type, Member> (std::move(
+            std::make_shared<T> (
+              std::forward<Args>(args)...)));
+      }
+
+      template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
+               typename... Args>
+      std::shared_ptr<std::vector<T>> &emplace_shared_vec(Args&&... args) {
+        return emplace_shared_val<std::vector<T>, Type, Member> (
+              std::forward<Args>(args)...);
+      }
+
+      template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
+               typename... Args>
+      std::shared_ptr<std::vector<T>> &emplace_vec(Args&&... args) {
+        return emplace_val<std::vector<T>, Type, Member> (
+              std::forward<Args>(args)...);
+      }
+
+    public:
+      /**
+       * Construct a shared_ptr to vector of integers within this
+       * KnowledgeRecord.
+       *
+       * If the KnowledgeRecord would modify the resulting shared_ptr,
+       * a private copy will be made, and modified.
+       *
+       * @param args All arguments are forwarded to the shared_ptr constructor
+       **/
       template<typename... Args>
-      std::shared_ptr<std::vector<Integer>> &make_int_array(Args&&... args) {
-        return make_array<Integer, INTEGER_ARRAY,
+      void emplace_shared_integers(Args&&... args) {
+        emplace_shared_vec<Integer, INTEGER_ARRAY,
+               &KnowledgeRecord::int_array_> (
+                  std::forward<Args>(args)...);
+        shared_.store(SHARED);
+      }
+
+      /**
+       * Construct a vector of integers within this KnowledgeRecord.
+       *
+       * @param args All arguments are forwarded to the vector constructor
+       **/
+      template<typename... Args>
+      void emplace_integers(Args&&... args) {
+        emplace_vec<Integer, INTEGER_ARRAY,
                &KnowledgeRecord::int_array_> (
                   std::forward<Args>(args)...);
       }
 
+      /**
+       * Construct a shared_ptr to vector of doubles within this
+       * KnowledgeRecord.
+       *
+       * If the KnowledgeRecord would modify the resulting shared_ptr,
+       * a private copy will be made, and modified.
+       *
+       * @param args All arguments are forwarded to the shared_ptr constructor
+       **/
       template<typename... Args>
-      std::shared_ptr<std::vector<double>> &make_double_array(Args&&... args) {
-        return make_array<double, DOUBLE_ARRAY,
+      void emplace_shared_doubles(Args&&... args) {
+        emplace_shared_vec<double, DOUBLE_ARRAY,
+               &KnowledgeRecord::double_array_> (
+                  std::forward<Args>(args)...);
+        shared_.store(SHARED);
+      }
+
+      /**
+       * Construct a vector of doubles within this KnowledgeRecord.
+       *
+       * @param args All arguments are forwarded to the vector constructor
+       **/
+      template<typename... Args>
+      void emplace_doubles(Args&&... args) {
+        emplace_vec<double, DOUBLE_ARRAY,
                &KnowledgeRecord::double_array_> (
                   std::forward<Args>(args)...);
       }
 
+      /**
+       * Construct a shared_ptr to a string within this KnowledgeRecord.
+       *
+       * If the KnowledgeRecord would modify the resulting shared_ptr,
+       * a private copy will be made, and modified.
+       *
+       * @param args All arguments are forwarded to the shared_ptr constructor
+       **/
       template<typename... Args>
-      std::shared_ptr<std::string> &make_str_value(Args&&... args) {
-        if (!is_string_type(type_)) {
-          clear_union();
-          type_ = STRING;
-          new(&str_value_) std::shared_ptr<std::string>(
-              std::make_shared<std::string> (
-                std::forward<Args>(args)...));
-        }
-        return str_value_;
+      void emplace_shared_string(Args&&... args) {
+        emplace_shared_val<std::string, STRING,
+               &KnowledgeRecord::str_value_> (
+                  std::forward<Args>(args)...);
+        shared_.store(SHARED);
       }
 
+      /**
+       * Construct a string within this KnowledgeRecord.
+       *
+       * @param args All arguments are forwarded to the string constructor
+       **/
       template<typename... Args>
-      std::shared_ptr<std::vector<unsigned char>> &make_file_value(Args&&... args) {
-        return make_array<unsigned char, UNKNOWN_FILE_TYPE,
+      void emplace_string(Args&&... args) {
+        emplace_val<std::string, STRING,
+               &KnowledgeRecord::str_value_> (
+                  std::forward<Args>(args)...);
+      }
+
+      /**
+       * Construct a shared_ptr to a file (vector of unsigned char) within
+       * this KnowledgeRecord.
+       *
+       * If the KnowledgeRecord would modify the resulting shared_ptr,
+       * a private copy will be made, and modified.
+       *
+       * @param args All arguments are forwarded to the shared_ptr constructor
+       **/
+      template<typename... Args>
+      void emplace_shared_file(Args&&... args) {
+        emplace_shared_vec<unsigned char, UNKNOWN_FILE_TYPE,
+               &KnowledgeRecord::file_value_> (
+                std::forward<Args>(args)...);
+        shared_.store(SHARED);
+      }
+
+      /**
+       * Construct a file (vector of unsigned char) within this KnowledgeRecord.
+       *
+       * @param args All arguments are forwarded to the vector constructor
+       **/
+      template<typename... Args>
+      void emplace_file(Args&&... args) {
+        emplace_vec<unsigned char, UNKNOWN_FILE_TYPE,
                &KnowledgeRecord::file_value_> (
                 std::forward<Args>(args)...);
       }
-
-      std::shared_ptr<std::vector<Integer>> &int_array() {
-        if (type_ != INTEGER_ARRAY) {
-          make_int_array();
-        }
-        return int_array_;
-      }
-
-      std::shared_ptr<std::vector<double>> &double_array() {
-        if (type_ != DOUBLE_ARRAY) {
-          make_double_array();
-        }
-        return double_array_;
-      }
-
-      std::shared_ptr<std::string> &str_value() {
-        if (!is_string_type(type_)) {
-          make_str_value();
-        }
-        return str_value_;
-      }
-
-      std::shared_ptr<std::vector<unsigned char>> &file_value() {
-        if (!is_binary_file_type(type_)) {
-          make_file_value();
-        }
-        return file_value_;
-      }
-
-    public:
 
       /* default constructor */
       KnowledgeRecord (
         logger::Logger & logger = *logger::global_logger.get ());
     
       /* Integer constructor */
-      KnowledgeRecord (Integer value,
+      template<typename T,
+        typename std::enable_if<std::is_integral<T>::value,
+        void*>::type = nullptr>
+      KnowledgeRecord (T value,
         logger::Logger & logger = *logger::global_logger.get ());
     
-      /* Double constructor */
-      KnowledgeRecord (double value,
+      /* Floating point constructor */
+      template<typename T,
+        typename std::enable_if<std::is_floating_point<T>::value,
+        void*>::type = nullptr>
+      KnowledgeRecord (T value,
         logger::Logger & logger = *logger::global_logger.get ());
     
       /* Integer array constructor */
       KnowledgeRecord (const std::vector <Integer> & value,
         logger::Logger & logger = *logger::global_logger.get ());
     
+      /* Integer array move constructor */
+      KnowledgeRecord (std::vector <Integer> && value,
+        logger::Logger & logger = *logger::global_logger.get ());
+    
       /* Double array constructor */
       KnowledgeRecord (const std::vector <double> & value,
         logger::Logger & logger = *logger::global_logger.get ());
     
+      /* Double array move constructor */
+      KnowledgeRecord (std::vector <double> && value,
+        logger::Logger & logger = *logger::global_logger.get ());
+    
       /* String constructor */
       KnowledgeRecord (const std::string & value,
+        logger::Logger & logger = *logger::global_logger.get ());
+    
+      /* String move constructor */
+      KnowledgeRecord (std::string && value,
         logger::Logger & logger = *logger::global_logger.get ());
     
       /* Char pointer constructor for g++ */
@@ -334,7 +385,19 @@ namespace madara
        * @return  the value as a string
        **/
       std::string to_string (const std::string & delimiter = ", ") const;
-    
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::string> share_string() const;
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::string> take_string();
+
       /**
        * writes the value to a file
        * @param   filename     file location to write to
@@ -342,7 +405,13 @@ namespace madara
       ssize_t to_file (const std::string & filename) const;
 
       /**
-       * clones the record
+       * If this record holds a shared_ptr, make a copy of the underlying
+       * value so it has an exclusive copy.
+       **/
+      void unshare (void);
+
+      /**
+       * clones the record. Caller must ensure returned pointer is deleted.
        **/
       KnowledgeRecord * clone (void) const;
 
@@ -363,11 +432,47 @@ namespace madara
       std::vector <Integer> to_integers (void) const;
 
       /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not an int array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<Integer>> share_integers() const;
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not an int array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<Integer>> take_integers();
+
+      /**
        * converts the value to a vector of doubles
        * @return  a vector of doubles
        **/
       std::vector <double> to_doubles (void) const;
-    
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a doubles array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<double>> share_doubles() const;
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not doubles array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<double>> take_doubles();
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a binary file value, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<unsigned char>> share_binary() const;
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not a binary file value, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<unsigned char>> take_binary();
+
       /**
        * returns an unmanaged buffer that the user will have
        * to take care of (this is a copy of the internal value).
@@ -388,7 +493,10 @@ namespace madara
        * sets the value to a double
        * @param    new_value   new value of the Knowledge Record
        **/
-      void set_value (Integer new_value);
+      template<typename T,
+        typename std::enable_if<std::is_integral<T>::value,
+        void*>::type = nullptr>
+      void set_value (T new_value);
     
       /**
        * sets the value to an array of integers
@@ -401,7 +509,32 @@ namespace madara
        * sets the value to an array of integers
        * @param    new_value   new value of the Knowledge Record
        **/
+      void set_value (std::vector <Integer> && new_value);
+    
+      /**
+       * sets the value to an array of integers
+       * @param    new_value   new value of the Knowledge Record
+       **/
       void set_value (const std::vector <Integer> & new_value);
+    
+      /**
+       * sets the value to an array of integers, without copying
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_value (std::shared_ptr<std::vector <Integer>> new_value);
+    
+      /**
+       * sets the value to a string, from a buffer
+       * @param    new_value   new value of the Knowledge Record
+       * @param    size        num elements in the buffer
+       **/
+      void set_value (const char * new_value, uint32_t size);
+    
+      /**
+       * sets the value to a string
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_value (std::string && new_value);
     
       /**
        * sets the value to a string
@@ -410,10 +543,19 @@ namespace madara
       void set_value (const std::string & new_value);
     
       /**
-       * sets the value to a double
+       * sets the value to a string. Does not copy the string.
        * @param    new_value   new value of the Knowledge Record
        **/
-      void set_value (double new_value);
+      void set_value (std::shared_ptr<std::string> new_value);
+    
+      /**
+       * sets the value to a floating point number
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      template<typename T,
+        typename std::enable_if<std::is_floating_point<T>::value,
+        void*>::type = nullptr>
+      void set_value (T new_value);
     
       /**
        * sets the value to an array of doubles
@@ -426,7 +568,19 @@ namespace madara
        * sets the value to an array of doubles
        * @param    new_value   new value of the Knowledge Record
        **/
+      void set_value (std::vector <double> && new_value);
+    
+      /**
+       * sets the value to an array of doubles
+       * @param    new_value   new value of the Knowledge Record
+       **/
       void set_value (const std::vector <double> & new_value);
+    
+      /**
+       * sets the value to an array of doubles, without copying
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_value (std::shared_ptr<std::vector <double>> new_value);
     
       /**
        * sets the value to an xml string
@@ -438,9 +592,45 @@ namespace madara
       /**
        * sets the value to an xml string
        * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_xml (std::string && new_value);
+    
+      /**
+       * sets the value to an xml string
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_xml (const std::string & new_value);
+    
+      /**
+       * sets the value to an xml string. Does not copy the string.
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_xml (std::shared_ptr<std::string> new_value);
+    
+      /**
+       * sets the value to a plaintext string
+       * @param    new_value   new value of the Knowledge Record
        * @param    size        size of the new_value buffer
        **/
       void set_text (const char * new_value, size_t size);
+    
+      /**
+       * sets the value to a plaintext string
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_text (std::string && new_value);
+    
+      /**
+       * sets the value to a plaintext string
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_text (const std::string & new_value);
+    
+      /**
+       * sets the value to a plaintext string. Does not copy the string.
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_text (std::shared_ptr<std::string> new_value);
     
       /**
        * Sets the double precision of a double record when using
@@ -468,18 +658,54 @@ namespace madara
       static int get_precision (void);
 
       /**
-       * sets the value to an xml string
+       * sets the value to a jpeg
        * @param    new_value   new value of the Knowledge Record
        * @param    size        size of the new_value buffer
        **/
       void set_jpeg (const unsigned char * new_value, size_t size);
     
       /**
+       * sets the value to a jpeg
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_jpeg (std::vector <unsigned char> && new_value);
+    
+      /**
+       * sets the value to a jpeg
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_jpeg (const std::vector <unsigned char> & new_value);
+    
+      /**
+       * sets the value to a jpeg, without copying
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_jpeg (std::shared_ptr<std::vector <unsigned char>> new_value);
+
+      /**
        * sets the value to an unknown file type
        * @param    new_value   new value of the Knowledge Record
        * @param    size        size of the new_value buffer
        **/
       void set_file (const unsigned char * new_value, size_t size);
+    
+      /**
+       * sets the value to an unknown file type
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_file (std::vector <unsigned char> && new_value);
+    
+      /**
+       * sets the value to an unknown file type
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_file (const std::vector <unsigned char> & new_value);
+    
+      /**
+       * sets the value to an unknown file type, without copying
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_file (std::shared_ptr<std::vector <unsigned char>> new_value);
 
       /**
        * Creates a deep copy of the knowledge record. Because each
@@ -788,21 +1014,12 @@ namespace madara
        **/
       KnowledgeRecord operator- (const KnowledgeRecord & rhs) const;
     
-      // for supporting Safe Bool idiom; see the following for details:
-      //   https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Safe_bool
-      typedef void (KnowledgeRecord::*bool_type)() const;
-      // descriptive name to show up in error messages from misuse:
-      void KnowledgeRecord_does_not_implicitly_cast_to_bool() const {}
-
       /**
-       * Safe-Bool operator; allows a KnowledgeRecord to be used in
-       * conditionals, and with && and ||, but not other places where an
-       * integral value is expected
+       * Explicit bool cast
        *
-       * @return the value of is_true(), in some type which can be safely
-       *         converted to bool, but not to an integer or void*
+       * @return the value of is_true()
        **/
-      operator bool_type (void) const;
+      explicit operator bool (void) const;
     
       /**
        * Preincrement operator
@@ -940,7 +1157,7 @@ namespace madara
        **/
       inline bool is_valid (void) const
       {
-        return status_ != UNCREATED;
+        return status() != UNCREATED;
       }
 
       /**

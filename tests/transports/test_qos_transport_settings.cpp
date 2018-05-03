@@ -406,7 +406,7 @@ void test_filters (void)
   std::cerr << "  file size = " << file_result.size () << 
                " and status = " << file_result.status () << " (";
   if (file_result.size () == 0 &&
-      file_result.status () == madara::knowledge::KnowledgeRecord::UNINITIALIZED)
+      file_result.status () == madara::knowledge::KnowledgeRecord::UNCREATED)
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";

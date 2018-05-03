@@ -22,29 +22,37 @@ namespace madara { namespace knowledge {
 
 inline
 KnowledgeRecord::KnowledgeRecord (logger::Logger & logger)
-: logger_ (&logger), type_ (INTEGER), int_value_ (0)
+: logger_ (&logger)
 {
 }
 
-inline KnowledgeRecord::KnowledgeRecord (Integer value,
+template<typename T,
+  typename std::enable_if<std::is_integral<T>::value, void*>::type>
+inline KnowledgeRecord::KnowledgeRecord (T value,
   logger::Logger & logger)
-: logger_ (&logger), status_ (MODIFIED), type_ (INTEGER),
-  int_value_ (value)
+: logger_ (&logger), int_value_ ((Integer)value), type_ (INTEGER)
 {
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
-  const std::vector <Integer> & value,
-  logger::Logger & logger)
+  const std::vector <Integer> & value, logger::Logger & logger)
 : logger_ (&logger)
 {
   set_value (value);
 }
 
-inline KnowledgeRecord::KnowledgeRecord (double value,
+inline KnowledgeRecord::KnowledgeRecord (
+  std::vector <Integer> && value, logger::Logger & logger)
+: logger_ (&logger)
+{
+  set_value (std::move(value));
+}
+
+template<typename T,
+  typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
+inline KnowledgeRecord::KnowledgeRecord (T value,
   logger::Logger & logger)
-: logger_ (&logger), status_ (MODIFIED), type_ (DOUBLE),
-  double_value_ (value)
+: logger_ (&logger), double_value_ ((double)value), type_ (DOUBLE)
 {
 }
 
@@ -56,11 +64,26 @@ inline KnowledgeRecord::KnowledgeRecord (
   set_value (value);
 }
 
+inline KnowledgeRecord::KnowledgeRecord (
+  std::vector <double> && value,
+  logger::Logger & logger)
+: logger_ (&logger)
+{
+  set_value (std::move(value));
+}
+
 inline KnowledgeRecord::KnowledgeRecord (const std::string & value,
   logger::Logger & logger)
 : logger_ (&logger)
 {
   set_value (value);
+}
+
+inline KnowledgeRecord::KnowledgeRecord (std::string && value,
+  logger::Logger & logger)
+: logger_ (&logger)
+{
+  set_value (std::move(value));
 }
 
 inline KnowledgeRecord::KnowledgeRecord (const char * value,
@@ -73,55 +96,53 @@ inline KnowledgeRecord::KnowledgeRecord (const char * value,
 inline KnowledgeRecord::KnowledgeRecord (
     const knowledge::KnowledgeRecord & rhs) noexcept
 : logger_ (rhs.logger_),
-  status_ (rhs.status_),
-  scope (rhs.scope),
-  type_ (rhs.type_),
-  quality (rhs.quality),
   clock (rhs.clock),
-  write_quality (rhs.write_quality)
+  quality (rhs.quality),
+  write_quality (rhs.write_quality),
+  type_ (rhs.type_),
+  shared_ (rhs.is_ref_counted() ? SHARED : OWNED)
 {
-  if      (rhs.status_ != UNCREATED)
-  {
-    if      (rhs.type_ == INTEGER)
-      int_value_ = rhs.int_value_;
-    else if (rhs.type_ == INTEGER_ARRAY)
-      new (&int_array_) std::shared_ptr<std::vector<Integer>>(rhs.int_array_);
-    else if (rhs.type_ == DOUBLE)
-      double_value_ = rhs.double_value_;
-    else if (rhs.type_ == DOUBLE_ARRAY)
-      new (&double_array_) std::shared_ptr<std::vector<double>>(rhs.double_array_);
-    else if (rhs.is_string_type ())
-      new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
-    else if (rhs.is_binary_file_type ())
-      new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
-  }
+  if      (rhs.type_ == EMPTY)
+    return;
+
+  if      (rhs.type_ == INTEGER)
+    int_value_ = rhs.int_value_;
+  else if (rhs.type_ == INTEGER_ARRAY)
+    new (&int_array_) std::shared_ptr<std::vector<Integer>>(rhs.int_array_);
+  else if (rhs.type_ == DOUBLE)
+    double_value_ = rhs.double_value_;
+  else if (rhs.type_ == DOUBLE_ARRAY)
+    new (&double_array_) std::shared_ptr<std::vector<double>>(rhs.double_array_);
+  else if (rhs.is_string_type ())
+    new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
+  else if (rhs.is_binary_file_type ())
+    new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
     knowledge::KnowledgeRecord &&rhs) noexcept
 : logger_ (std::move(rhs.logger_)),
-  status_ (rhs.status_),
-  scope (rhs.scope),
-  type_ (rhs.type_),
-  quality (rhs.quality),
   clock (rhs.clock),
-  write_quality (rhs.write_quality)
+  quality (rhs.quality),
+  write_quality (rhs.write_quality),
+  type_ (rhs.type_),
+  shared_ (rhs.shared_.load())
 {
-  if      (rhs.status_ != UNCREATED)
-  {
-    if      (rhs.type_ == INTEGER)
-      int_value_ = rhs.int_value_;
-    else if (rhs.type_ == INTEGER_ARRAY)
-      new (&int_array_) std::shared_ptr<std::vector<Integer>>(std::move(rhs.int_array_));
-    else if (rhs.type_ == DOUBLE)
-      double_value_ = rhs.double_value_;
-    else if (rhs.type_ == DOUBLE_ARRAY)
-      new (&double_array_) std::shared_ptr<std::vector<double>>(std::move(rhs.double_array_));
-    else if (rhs.is_string_type ())
-      new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
-    else if (rhs.is_binary_file_type ())
-      new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
-  }
+  if      (rhs.type_ == EMPTY)
+    return;
+
+  if      (rhs.type_ == INTEGER)
+    int_value_ = rhs.int_value_;
+  else if (rhs.type_ == INTEGER_ARRAY)
+    new (&int_array_) std::shared_ptr<std::vector<Integer>>(std::move(rhs.int_array_));
+  else if (rhs.type_ == DOUBLE)
+    double_value_ = rhs.double_value_;
+  else if (rhs.type_ == DOUBLE_ARRAY)
+    new (&double_array_) std::shared_ptr<std::vector<double>>(std::move(rhs.double_array_));
+  else if (rhs.is_string_type ())
+    new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
+  else if (rhs.is_binary_file_type ())
+    new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
 }
 
 inline KnowledgeRecord::~KnowledgeRecord () noexcept
@@ -138,28 +159,27 @@ KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs) noexcept
   // clear any dynamic memory being used on the left hand side
   clear_value ();
 
-  if (rhs.status_ != UNCREATED)
-  {
-    // set the instance properties accordingly
-    clock = rhs.clock;
-    quality = rhs.quality;
-    scope = rhs.scope;
-    status_ = rhs.status_;
-    type_ = rhs.type_;
+  if (rhs.type_ == EMPTY)
+    return *this;
 
-    if      (rhs.type_ == INTEGER)
-      int_value_ = rhs.int_value_;
-    else if (rhs.type_ == INTEGER_ARRAY)
-      new (&int_array_) std::shared_ptr<std::vector<Integer>>(rhs.int_array_);
-    else if (rhs.type_ == DOUBLE)
-      double_value_ = rhs.double_value_;
-    else if (rhs.type_ == DOUBLE_ARRAY)
-      new (&double_array_) std::shared_ptr<std::vector<double>>(rhs.double_array_);
-    else if (rhs.is_string_type ())
-      new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
-    else if (rhs.is_binary_file_type ())
-      new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
-  }
+  // set the instance properties accordingly
+  clock = rhs.clock;
+  quality = rhs.quality;
+  type_ = rhs.type_;
+  shared_ = is_ref_counted() ? SHARED : OWNED;
+
+  if      (rhs.type_ == INTEGER)
+    int_value_ = rhs.int_value_;
+  else if (rhs.type_ == INTEGER_ARRAY)
+    new (&int_array_) std::shared_ptr<std::vector<Integer>>(rhs.int_array_);
+  else if (rhs.type_ == DOUBLE)
+    double_value_ = rhs.double_value_;
+  else if (rhs.type_ == DOUBLE_ARRAY)
+    new (&double_array_) std::shared_ptr<std::vector<double>>(rhs.double_array_);
+  else if (rhs.is_string_type ())
+    new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
+  else if (rhs.is_binary_file_type ())
+    new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
 
   return *this;
 }
@@ -173,28 +193,27 @@ KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
   // clear any dynamic memory being used on the left hand side
   clear_union();
 
-  if      (rhs.status_ != UNCREATED)
-  {
-    // set the instance properties accordingly
-    clock = rhs.clock;
-    quality = rhs.quality;
-    scope = rhs.scope;
-    status_ = rhs.status_;
-    type_ = rhs.type_;
+  if (rhs.type_ == EMPTY)
+    return *this;
 
-    if      (rhs.type_ == INTEGER)
-      int_value_ = rhs.int_value_;
-    else if (rhs.type_ == INTEGER_ARRAY)
-      new (&int_array_) std::shared_ptr<std::vector<Integer>>(std::move(rhs.int_array_));
-    else if (rhs.type_ == DOUBLE)
-      double_value_ = rhs.double_value_;
-    else if (rhs.type_ == DOUBLE_ARRAY)
-      new (&double_array_) std::shared_ptr<std::vector<double>>(std::move(rhs.double_array_));
-    else if (rhs.is_string_type ())
-      new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
-    else if (rhs.is_binary_file_type ())
-      new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
-  }
+  // set the instance properties accordingly
+  clock = rhs.clock;
+  quality = rhs.quality;
+  type_ = rhs.type_;
+  shared_.store(rhs.shared_.load());
+
+  if      (rhs.type_ == INTEGER)
+    int_value_ = rhs.int_value_;
+  else if (rhs.type_ == INTEGER_ARRAY)
+    new (&int_array_) std::shared_ptr<std::vector<Integer>>(std::move(rhs.int_array_));
+  else if (rhs.type_ == DOUBLE)
+    double_value_ = rhs.double_value_;
+  else if (rhs.type_ == DOUBLE_ARRAY)
+    new (&double_array_) std::shared_ptr<std::vector<double>>(std::move(rhs.double_array_));
+  else if (rhs.is_string_type ())
+    new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
+  else if (rhs.is_binary_file_type ())
+    new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
 
   return *this;
 }
@@ -512,24 +531,63 @@ KnowledgeRecord::operator- (const knowledge::KnowledgeRecord & rhs) const
   return ret_value -= rhs;
 }
 
+inline void
+KnowledgeRecord::unshare (void)
+{
+  if (shared_.load() != SHARED) {
+    return;
+  }
+
+  if (is_ref_counted ())
+  {
+    if (is_string_type()) {
+      emplace_string (*str_value_);
+    } else if (is_binary_file_type()) {
+      emplace_file (*file_value_);
+    } else if (type_ == INTEGER_ARRAY) {
+      emplace_integers (*int_array_);
+    } else if (type_ == DOUBLE_ARRAY) {
+      emplace_doubles (*double_array_);
+    }
+  }
+  shared_.store(OWNED);
+}
+
+inline KnowledgeRecord *
+KnowledgeRecord::clone (void) const
+{
+  knowledge::KnowledgeRecord *result = new knowledge::KnowledgeRecord (*this);
+
+  result->unshare();
+
+  return result;
+}
+
+inline void
+KnowledgeRecord::deep_copy (const knowledge::KnowledgeRecord & source)
+{
+  *this = source;
+  unshare();
+}
+
 inline KnowledgeRecord
 KnowledgeRecord::deep_copy () const
 {
-  KnowledgeRecord ret;
-  ret.deep_copy(*this);
+  KnowledgeRecord ret (*this);
+  ret.unshare();
   return ret;
 }
 
 inline bool
 KnowledgeRecord::exists (void) const
 {
-  return status_ != UNCREATED;
+  return type_ != EMPTY;
 }
 
 inline int
 KnowledgeRecord::status (void) const
 {
-  return status_;
+  return type_ != EMPTY ? UNCREATED : MODIFIED;
 }
 
 /**
@@ -538,7 +596,9 @@ KnowledgeRecord::status (void) const
 inline void
 KnowledgeRecord::set_modified (void)
 {
-  status_ = MODIFIED;
+  if (!exists()) {
+    set_value ((Integer)0);
+  }
 }
 
 inline uint32_t
@@ -743,19 +803,17 @@ inline void destruct(T &x) {
 inline void
 KnowledgeRecord::clear_union (void) noexcept
 {
-  if (status_ != UNCREATED)
+  if (type_ & ALL_CLEARABLES)
   {
-    if (type_ & ALL_CLEARABLES)
-    {
-      if (type_ == INTEGER_ARRAY)
-        destruct(int_array_);
-      else if (type_ == DOUBLE_ARRAY)
-        destruct(double_array_);
-      else if (is_string_type ())
-        destruct(str_value_);
-      else if (is_binary_file_type ())
-        destruct(file_value_);
-    }
+    if (type_ == INTEGER_ARRAY)
+      destruct(int_array_);
+    else if (type_ == DOUBLE_ARRAY)
+      destruct(double_array_);
+    else if (is_string_type ())
+      destruct(str_value_);
+    else if (is_binary_file_type ())
+      destruct(file_value_);
+    shared_.store(OWNED);
   }
 }
 
@@ -763,13 +821,8 @@ inline void
 KnowledgeRecord::clear_value (void) noexcept
 {
   clear_union ();
-  if (status_ != UNCREATED)
-  {
-    int_value_ = 0;
 
-    type_ = INTEGER;
-    status_ = UNCREATED;
-  }
+  type_ = EMPTY;
 }
 
 inline const char *
@@ -779,7 +832,7 @@ KnowledgeRecord::read (const char * buffer,
   // format is [key_size | key | type | value_size | value]
 
   uint32_t buff_value_size (0);
-  uint16_t type = INTEGER;
+  decltype(type_) type = INTEGER;
   uint32_t size = 1;
 
   // Remove the type of value from the buffer
@@ -816,14 +869,14 @@ KnowledgeRecord::read (const char * buffer,
   {
     if (is_string_type (type))
     {
-      make_str_value (buffer, buff_value_size);
+      emplace_string (buffer, buff_value_size);
     }
 
     else if (type == INTEGER)
     {
       Integer tmp;
       memcpy (&tmp, buffer, sizeof (tmp));
-      int_value() = madara::utility::endian_swap (tmp);
+      set_value (madara::utility::endian_swap (tmp));
     }
 
     else if (type == INTEGER_ARRAY)
@@ -838,14 +891,14 @@ KnowledgeRecord::read (const char * buffer,
         tmp.emplace_back(madara::utility::endian_swap (cur));
       }
 
-      make_int_array (std::move(tmp));
+      emplace_integers (std::move(tmp));
     }
 
     else if (type == DOUBLE)
     {
       double tmp;
       memcpy (&tmp, buffer, sizeof (tmp));
-      double_value() = madara::utility::endian_swap (tmp);
+      set_value (madara::utility::endian_swap (tmp));
     }
 
     else if (type == DOUBLE_ARRAY)
@@ -860,13 +913,13 @@ KnowledgeRecord::read (const char * buffer,
         tmp.emplace_back(madara::utility::endian_swap (cur));
       }
 
-      make_double_array (std::move(tmp));
+      emplace_doubles (std::move(tmp));
     }
 
     else if (is_binary_file_type (type))
     {
       const unsigned char *b = (const unsigned char *)buffer;
-      make_file_value (b, b + size);
+      emplace_file (b, b + size);
     }
 
     else {
@@ -878,7 +931,6 @@ KnowledgeRecord::read (const char * buffer,
     buffer_remaining -= sizeof (char) * buff_value_size;
 
     type_ = type;
-    status_ = MODIFIED;
   }
 
   return buffer;
@@ -955,29 +1007,98 @@ KnowledgeRecord::reset_value (void) noexcept
 
 // set the value_ to a string
 inline void
+KnowledgeRecord::set_value (std::string && new_value)
+{
+  emplace_string (std::move(new_value));
+  type_ = STRING;
+}
+
+// set the value_ to a string
+inline void
 KnowledgeRecord::set_value (const std::string & new_value)
 {
-  make_str_value (new_value);
+  emplace_string (new_value);
   type_ = STRING;
-  status_ = MODIFIED;
+}
+
+// set the value_ to a string
+inline void
+KnowledgeRecord::set_value (std::shared_ptr<std::string> new_value)
+{
+  emplace_shared_string (std::move(new_value));
+  type_ = STRING;
+}
+
+// set the value_ to a string
+inline void
+KnowledgeRecord::set_value (const char * new_value, uint32_t size)
+{
+  emplace_string (new_value, size);
+  type_ = STRING;
 }
 
 // set the value_ to a string
 inline void
 KnowledgeRecord::set_xml (const char * new_value, size_t size)
 {
-  make_str_value (new_value, size);
+  emplace_string (new_value, size);
   type_ = XML;
-  status_ = MODIFIED;
+}
+
+// set the value_ to a string
+inline void
+KnowledgeRecord::set_xml (std::string && new_value)
+{
+  emplace_string (std::move(new_value));
+  type_ = XML;
+}
+
+// set the value_ to a string
+inline void
+KnowledgeRecord::set_xml (const std::string & new_value)
+{
+  emplace_string (new_value);
+  type_ = XML;
+}
+
+// set the value_ to a string
+inline void
+KnowledgeRecord::set_xml (std::shared_ptr<std::string> new_value)
+{
+  emplace_shared_string (std::move(new_value));
+  type_ = XML;
 }
 
 // set the value_ to a string
 inline void
 KnowledgeRecord::set_text (const char * new_value, size_t size)
 {
-  make_str_value (new_value, size);
+  emplace_string (new_value, size);
   type_ = TEXT_FILE;
-  status_ = MODIFIED;
+}
+
+// set the value_ to a string
+inline void
+KnowledgeRecord::set_text (std::string && new_value)
+{
+  emplace_string (std::move(new_value));
+  type_ = TEXT_FILE;
+}
+
+// set the value_ to a string
+inline void
+KnowledgeRecord::set_text (const std::string & new_value)
+{
+  emplace_string (new_value);
+  type_ = TEXT_FILE;
+}
+
+// set the value_ to a string
+inline void
+KnowledgeRecord::set_text (std::shared_ptr<std::string> new_value)
+{
+  emplace_shared_string (std::move(new_value));
+  type_ = TEXT_FILE;
 }
 
 // set the value_ to a string
@@ -985,9 +1106,30 @@ inline void
 KnowledgeRecord::set_jpeg (const unsigned char * new_value,
                                     size_t size)
 {
-  make_file_value (new_value, new_value + size);
+  emplace_file (new_value, new_value + size);
   type_ = IMAGE_JPEG;
-  status_ = MODIFIED;
+}
+
+inline void
+KnowledgeRecord::set_jpeg (std::vector <unsigned char> && new_value)
+{
+  emplace_file (std::move(new_value));
+  type_ = IMAGE_JPEG;
+}
+
+inline void
+KnowledgeRecord::set_jpeg (const std::vector <unsigned char> & new_value)
+{
+  emplace_file (new_value);
+  type_ = IMAGE_JPEG;
+}
+
+inline void
+KnowledgeRecord::set_jpeg (
+    std::shared_ptr<std::vector <unsigned char>> new_value)
+{
+  emplace_shared_file (std::move(new_value));
+  type_ = IMAGE_JPEG;
 }
 
 // set the value_ to a string
@@ -995,65 +1137,222 @@ inline void
 KnowledgeRecord::set_file (const unsigned char * new_value,
                                     size_t size)
 {
-  make_file_value (new_value, new_value + size);
+  emplace_file (new_value, new_value + size);
   type_ = UNKNOWN_FILE_TYPE;
-  status_ = MODIFIED;
+}
+
+inline void
+KnowledgeRecord::set_file (std::vector <unsigned char> && new_value)
+{
+  emplace_file (std::move(new_value));
+  type_ = UNKNOWN_FILE_TYPE;
+}
+
+inline void
+KnowledgeRecord::set_file (const std::vector <unsigned char> & new_value)
+{
+  emplace_file (new_value);
+  type_ = UNKNOWN_FILE_TYPE;
+}
+
+inline void
+KnowledgeRecord::set_file (
+    std::shared_ptr<std::vector <unsigned char>> new_value)
+{
+  emplace_shared_file (std::move(new_value));
+  type_ = UNKNOWN_FILE_TYPE;
 }
 
 // set the value_ to an integer
+template<typename T,
+  typename std::enable_if<std::is_integral<T>::value, void*>::type>
 inline void
-KnowledgeRecord::set_value (Integer new_value)
+KnowledgeRecord::set_value (T new_value)
 {
-  int_value() = new_value;
-  status_ = MODIFIED;
+  if (type_ != INTEGER) {
+    clear_union();
+    type_ = INTEGER;
+  }
+  int_value_ = new_value;
 }
 
 // set the value_ to an array of doubles
 inline void
 KnowledgeRecord::set_value (const Integer * new_value, uint32_t size)
 {
-  make_int_array (new_value, new_value + size);
-  status_ = MODIFIED;
+  emplace_integers (new_value, new_value + size);
+}
+
+// set the value_ to an array of integers
+inline void
+KnowledgeRecord::set_value (std::vector <Integer> && new_value)
+{
+  emplace_integers (std::move(new_value));
 }
 
 // set the value_ to an array of integers
 inline void
 KnowledgeRecord::set_value (const std::vector <Integer> & new_value)
 {
-  make_int_array (new_value);
-  status_ = MODIFIED;
+  emplace_integers (new_value);
+}
+
+// set the value_ to an array of integers
+inline void
+KnowledgeRecord::set_value (std::shared_ptr<std::vector <Integer>> new_value)
+{
+  emplace_shared_integers (std::move(new_value));
 }
 
 // set the value_ to a double
+template<typename T,
+  typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
 inline void
-KnowledgeRecord::set_value (double new_value)
+KnowledgeRecord::set_value (T new_value)
 {
-  double_value() = new_value;
-  status_ = MODIFIED;
+  if (type_ != DOUBLE) {
+    clear_union();
+    type_ = DOUBLE;
+  }
+  double_value_ = new_value;
 }
 
 // set the value_ to an array of doubles
 inline void
 KnowledgeRecord::set_value (const double * new_value, uint32_t size)
 {
-  make_double_array (new_value, new_value + size);
-  status_ = MODIFIED;
+  emplace_doubles (new_value, new_value + size);
+}
+
+// set the value_ to an array of doubles
+inline void
+KnowledgeRecord::set_value (std::vector <double> && new_value)
+{
+  emplace_doubles (std::move(new_value));
 }
 
 // set the value_ to an array of doubles
 inline void
 KnowledgeRecord::set_value (const std::vector <double> & new_value)
 {
-  make_double_array (new_value);
-  status_ = MODIFIED;
+  emplace_doubles (new_value);
+}
+
+// set the value_ to an array of doubles
+inline void
+KnowledgeRecord::set_value (std::shared_ptr<std::vector <double>> new_value)
+{
+  emplace_shared_doubles (std::move(new_value));
+}
+
+inline std::shared_ptr<std::string>
+KnowledgeRecord::share_string() const
+{
+  if (is_string_type()) {
+    shared_.store(SHARED);
+    return str_value_;
+  }
+  return nullptr;
+}
+
+inline std::shared_ptr<std::string>
+KnowledgeRecord::take_string()
+{
+  if (is_string_type()) {
+    std::shared_ptr<std::string> ret;
+
+    using std::swap;
+    swap(ret, str_value_);
+
+    reset_value();
+
+    return ret;
+  }
+  return nullptr;
+}
+
+inline std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+KnowledgeRecord::share_integers() const
+{
+  if (type_ == INTEGER_ARRAY) {
+    shared_.store(SHARED);
+    return int_array_;
+  }
+  return nullptr;
+}
+
+inline std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+KnowledgeRecord::take_integers()
+{
+  if (type_ == INTEGER_ARRAY) {
+    std::shared_ptr<std::vector<Integer>> ret;
+
+    using std::swap;
+    swap(ret, int_array_);
+
+    reset_value();
+
+    return ret;
+  }
+  return nullptr;
+}
+
+inline std::shared_ptr<std::vector<double>>
+KnowledgeRecord::share_doubles() const
+{
+  if (type_ == DOUBLE_ARRAY) {
+    shared_.store(SHARED);
+    return double_array_;
+  }
+  return nullptr;
+}
+
+inline std::shared_ptr<std::vector<double>>
+KnowledgeRecord::take_doubles()
+{
+  if (type_ == DOUBLE_ARRAY) {
+    std::shared_ptr<std::vector<double>> ret;
+
+    using std::swap;
+    swap(ret, double_array_);
+
+    reset_value();
+
+    return ret;
+  }
+  return nullptr;
+}
+
+inline std::shared_ptr<std::vector<unsigned char>>
+KnowledgeRecord::share_binary() const
+{
+  if (is_binary_file_type()) {
+    shared_.store(SHARED);
+    return file_value_;
+  }
+  return nullptr;
+}
+
+inline std::shared_ptr<std::vector<unsigned char>>
+KnowledgeRecord::take_binary()
+{
+  if (is_binary_file_type()) {
+    std::shared_ptr<std::vector<unsigned char>> ret;
+
+    using std::swap;
+    swap(ret, file_value_);
+
+    reset_value();
+
+    return ret;
+  }
+  return nullptr;
 }
 
 inline
-KnowledgeRecord::operator bool_type (void) const
+KnowledgeRecord::operator bool (void) const
 {
-  return is_true() ?
-    &KnowledgeRecord::KnowledgeRecord_does_not_implicitly_cast_to_bool :
-    0;
+  return is_true();
 }
 
 inline char *
@@ -1079,7 +1378,7 @@ KnowledgeRecord::write (char * buffer,
     // Remove the type of value from the buffer
     if (buffer_remaining >= (int64_t) sizeof (type_))
     {
-      uint16_t tmp = madara::utility::endian_swap (type_);
+      decltype(type_) tmp = madara::utility::endian_swap (type_);
       memcpy (buffer, &tmp, sizeof (tmp));
       buffer += sizeof (tmp);
     }
