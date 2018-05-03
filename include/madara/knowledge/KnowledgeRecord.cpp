@@ -88,9 +88,8 @@ KnowledgeRecord::clone (void) const
     else if (this->type_ == UNKNOWN_FILE_TYPE || this->type_ == IMAGE_JPEG)
     {
       size_t temp;
-      result->size_ = this->size_;
       result->type_ = this->type_;
-      result->file_value() = MADARA_WITH_DELETER(this->to_unmanaged_buffer (temp));
+      result->make_file_value (*this->file_value_);
     }
   }
   else
@@ -130,11 +129,9 @@ KnowledgeRecord::deep_copy (const knowledge::KnowledgeRecord & source)
     }
     else if (source.type_ == UNKNOWN_FILE_TYPE || source.type_ == IMAGE_JPEG)
     {
-      size_t temp;
-      size_ = source.size_;
+      make_file_value (*source.file_value_);
       type_ = source.type_;
       status_ = source.status_;
-      file_value() = MADARA_WITH_DELETER(source.to_unmanaged_buffer (temp));
     }
   }
   else
@@ -174,8 +171,7 @@ KnowledgeRecord::read_file (
            || extension == ".txt" || extension == ".xml")
     {
       // change the string value and size to appropriate values
-      str_value_ = MADARA_WITH_DELETER((char *)buffer);
-      size_ = (uint32_t)size;
+      str_value_ = std::make_shared<std::string> ((char *)buffer, size);
       
       if (is_string_type (read_as_type))
         type_ = read_as_type;
@@ -187,8 +183,8 @@ KnowledgeRecord::read_file (
     }
     else
     {
-      file_value() = MADARA_WITH_DELETER((unsigned char *)buffer);
-      size_ = (uint32_t)size;
+      unsigned char *ucbuf = (unsigned char *)buffer;
+      make_file_value (ucbuf, ucbuf + size);
 
       if (extension == ".jpg" || read_as_type == IMAGE_JPEG)
         type_ = IMAGE_JPEG;
@@ -212,17 +208,17 @@ KnowledgeRecord::to_file (const std::string & filename) const
   if (is_string_type ())
   {
     return madara::utility::write_file (filename,
-      (void *)str_value_.get (), size_);
+      (void *)str_value_->c_str (), str_value_->size ());
   }
-  else if (is_file_type ())
+  else if (is_binary_file_type ())
   {
     return madara::utility::write_file (filename,
-      (void *)file_value_.get (), size_);
+      (void *)file_value_->at(0), file_value_->size ());
   }
   else
   {
     std::string buffer (to_string ());
-    
+
     return madara::utility::write_file (filename,
       (void *)buffer.c_str (), buffer.size ());
   }
@@ -239,7 +235,7 @@ KnowledgeRecord::to_double (void) const
     if (type_ == DOUBLE)
       value = double_value_;
     else if (type_ == DOUBLE_ARRAY)
-      value = *(double_array_.get ());
+      value = double_array_->at(0);
     else
     {
       std::stringstream buffer;
@@ -248,9 +244,9 @@ KnowledgeRecord::to_double (void) const
       if (type_ == INTEGER)
         buffer << int_value_;
       else if (type_ == INTEGER_ARRAY)
-        buffer << *(int_array_.get ());
+        buffer << int_array_->at(0);
       else if (is_string_type ())
-        buffer << str_value_.get ();
+        buffer << str_value_->c_str ();
 
       buffer >> value;
     }
@@ -269,7 +265,7 @@ KnowledgeRecord::to_integer (void) const
     if (type_ == INTEGER)
       value = int_value_;
     else if (type_ == INTEGER_ARRAY)
-      value = *(int_array_.get ());
+      value = int_array_->at(0);
     else
     {
       std::stringstream buffer;
@@ -278,9 +274,9 @@ KnowledgeRecord::to_integer (void) const
       if (type_ == DOUBLE)
         buffer << double_value_;
       else if (type_ == DOUBLE_ARRAY)
-        buffer << *(double_array_.get ());
+        buffer << double_array_->at(0);
       else if (is_string_type ())
-        buffer << str_value_.get ();
+        buffer << str_value_->c_str();
 
       buffer >> value;
     }
@@ -296,7 +292,7 @@ KnowledgeRecord::to_integers (void) const
 
   if (status_ != UNCREATED)
   {
-    unsigned int size = (unsigned int)size_;;
+    unsigned int size = (unsigned int)this->size ();
     integers.resize (size);
 
     if (type_ == INTEGER)
@@ -305,7 +301,7 @@ KnowledgeRecord::to_integers (void) const
     }
     else if (type_ == INTEGER_ARRAY)
     {
-      const Integer * ptr_temp = int_array_.get ();
+      const Integer * ptr_temp = &(*int_array_)[0];
 
       for (unsigned int i = 0; i < size; ++i)
         integers[i] = ptr_temp[i];
@@ -314,21 +310,21 @@ KnowledgeRecord::to_integers (void) const
       integers[0] = Integer (double_value_);
     else if (type_ == DOUBLE_ARRAY)
     {
-      const double * ptr_temp = double_array_.get ();
+      const double * ptr_temp = &(*double_array_)[0];
 
       for (unsigned int i = 0; i < size; ++i)
         integers[i] = Integer (ptr_temp[i]);
     }
     else if (is_string_type ())
     {
-      const char * ptr_temp = str_value_.get ();
+      const char * ptr_temp = str_value_->c_str ();
 
       for (unsigned int i = 0; i < size; ++i)
         integers[i] = Integer (ptr_temp[i]);
     }
-    else if (is_file_type ())
+    else if (is_binary_file_type ())
     {
-      const unsigned char * ptr_temp = file_value_.get ();
+      const unsigned char * ptr_temp = &(*file_value_)[0];
 
       for (unsigned int i = 0; i < size; ++i)
         integers[i] = Integer (ptr_temp[i]);
@@ -345,14 +341,14 @@ KnowledgeRecord::to_doubles (void) const
 
   if (status_ != UNCREATED)
   {
-    unsigned int size = (unsigned int)size_;;
+    unsigned int size = (unsigned int)this->size ();
     doubles.resize (size);
 
     if      (type_ == INTEGER)
       doubles[0] = double (int_value_);
     else if (type_ == INTEGER_ARRAY)
     {
-      const Integer * ptr_temp = int_array_.get ();
+      const Integer * ptr_temp = &(*int_array_)[0];
 
       for (unsigned int i = 0; i < size; ++i)
         doubles[i] = double (ptr_temp[i]);
@@ -361,21 +357,21 @@ KnowledgeRecord::to_doubles (void) const
       doubles[0] = double_value_;
     else if (type_ == DOUBLE_ARRAY)
     {
-      const double * ptr_temp = double_array_.get ();
+      const double * ptr_temp = &(*double_array_)[0];
 
       for (unsigned int i = 0; i < size; ++i)
         doubles[i] = ptr_temp[i];
     }
     else if (is_string_type ())
     {
-      const char * ptr_temp = str_value_.get ();
+      const char * ptr_temp = str_value_->c_str ();
 
       for (unsigned int i = 0; i < size; ++i)
         doubles[i] = double (ptr_temp[i]);
     }
-    else if (is_file_type ())
+    else if (is_binary_file_type ())
     {
-      const unsigned char * ptr_temp = file_value_.get ();
+      const unsigned char * ptr_temp = &(*file_value_)[0];
 
       for (unsigned int i = 0; i < size; ++i)
         doubles[i] = double (ptr_temp[i]);
@@ -402,15 +398,16 @@ KnowledgeRecord::to_string (const std::string & delimiter) const
         buffer << int_value_;
       else if (type_ == INTEGER_ARRAY)
       {
-        const Integer * ptr_temp = int_array_.get ();
+        const Integer * ptr_temp = &(*int_array_)[0];
+        uint32_t size = this->size ();
 
-        if (size_ >= 1)
+        if (size >= 1)
           buffer << *ptr_temp;
 
         ++ptr_temp;
 
-        for (uint32_t i = 1; i < size_; ++i, ++ptr_temp)
-          buffer << delimiter << *ptr_temp; 
+        for (uint32_t i = 1; i < size; ++i, ++ptr_temp)
+          buffer << delimiter << *ptr_temp;
       }
       else if (type_ == DOUBLE)
       {
@@ -477,25 +474,26 @@ KnowledgeRecord::to_string (const std::string & delimiter) const
             " precision set to default\n", madara_double_precision);
         }
 
-        const double * ptr_temp = double_array_.get ();
+        const double * ptr_temp = &(*double_array_)[0];
+        uint32_t size = this->size ();
 
-        if (size_ >= 1)
+        if (size >= 1)
           buffer << *ptr_temp;
 
         ++ptr_temp;
 
-        for (uint32_t i = 1; i < size_; ++i, ++ptr_temp)
+        for (uint32_t i = 1; i < size; ++i, ++ptr_temp)
           buffer << delimiter << *ptr_temp; 
       }
       else if (is_binary_file_type ())
       {
         buffer << "binary:size=";
-        buffer << size_; 
+        buffer << size (); 
       }
       return buffer.str ();
     }
     else
-      return std::string (str_value_.get ());
+      return std::string (*str_value_);
   }
   else
     return "0";
@@ -507,47 +505,52 @@ KnowledgeRecord::to_unmanaged_buffer (size_t & size) const
 {
   if (status_ != UNCREATED)
   {
-    unsigned char * buffer = new unsigned char [size_];
+    char * buffer;
 
     if (is_string_type ())
     {
-      memcpy (buffer, str_value_.get (), size_);
-      size = size_;
+      size = str_value_->size ();
+      buffer = new char [size];
+      memcpy (buffer, str_value_->c_str (), size);
     }
-    else if (is_file_type ())
+    else if (is_binary_file_type ())
     {
-      memcpy (buffer, file_value_.get (), size_);
-      size = size_;
+      size = file_value_-> size();
+      buffer = new char [size];
+      memcpy (buffer, &(*file_value_)[0], size);
     }
     else if (type_ == INTEGER)
     {
-      memcpy (buffer, &int_value_, sizeof(Integer) * size_);
-      size = sizeof(Integer) * size_;
+      size = sizeof(Integer);
+      buffer = new char [size];
+      memcpy (buffer, &int_value_, size);
     }
     else if (type_ == DOUBLE)
     {
-      memcpy (buffer, &double_value_, sizeof(double) * size_);
-      size = sizeof(double) * size_;
+      size = sizeof(double);
+      buffer = new char [size];
+      memcpy (buffer, &double_value_, size);
     }
     else if (type_ == INTEGER_ARRAY)
     {
-      memcpy (buffer, int_array_.get (), sizeof(Integer) * size_);
-      size = sizeof(Integer) * size_;
+      size = sizeof(Integer) * int_array_->size ();
+      buffer = new char [size];
+      memcpy (buffer, &(*int_array_)[0], size);
     }
     else if (type_ == DOUBLE_ARRAY)
     {
-      memcpy (buffer, double_array_.get (), sizeof(double) * size_);
-      size = sizeof(double) * size_;
+      size = sizeof(double) * double_array_->size () ;
+      buffer = new char [size];
+      memcpy (buffer, &(*double_array_)[0], size);
     } else {
-      delete [] buffer;
       buffer = nullptr;
       size = 0;
     }
 
-    return buffer;
+    return (unsigned char *)buffer;
   }
   else
-    return 0;
+    return nullptr;
 }
 
 
@@ -560,40 +563,46 @@ KnowledgeRecord::fragment (unsigned int first, unsigned int last)
   {
     if (is_string_type ())
     {
+      size_t size = str_value_->size ();
+
       // make sure last is accessible in the data type
-      last = std::min <unsigned int> (last, size_ - 1);
+      last = std::min <unsigned int> (last, size - 1);
 
        // Create a new buffer, copy over the elements, and add a null delimiter
       char * new_buffer = new char [last - first + 2];
 
-      memcpy (new_buffer, str_value_.get () + first, last - first + 1);
+      memcpy (new_buffer, str_value_->c_str () + first, last - first + 1);
       new_buffer[last-first + 1] = 0;
 
       ret.set_value (new_buffer);
     }
-    else if (is_file_type ())
+    else if (is_binary_file_type ())
     {
+      size_t size = file_value_->size ();
+
       // make sure last is accessible in the data type
-      last = std::min <unsigned int> (last, size_ - 1);
+      last = std::min <unsigned int> (last, size - 1);
 
       // Unlike string types, file buffers are not ended with a null delimiter
-      uint32_t size = last - first + 1;
-      unsigned char * new_buffer = new unsigned char [size];
+      uint32_t bufsize = last - first + 1;
+      unsigned char * new_buffer = new unsigned char [bufsize];
 
-      memcpy (new_buffer, file_value_.get () + first, last - first + 1);
+      memcpy (new_buffer, &(*file_value_)[0] + first, last - first + 1);
 
       // create a new record with the unsigned char buffer as contents
-      ret.set_file (new_buffer, size);
+      ret.set_file (new_buffer, bufsize);
     }
     else if (type_ == INTEGER_ARRAY)
     {
+      size_t size = int_array_->size ();
+
       // make sure last is accessible in the data type
-      last = std::min <unsigned int> (last, size_ - 1);
-      uint32_t size = last - first + 1;
+      last = std::min <unsigned int> (last, size - 1);
+      uint32_t bufsize = last - first + 1;
 
       std::vector <Integer> integers;
-      integers.resize (size);
-      Integer * ptr_temp = int_array_.get ();
+      integers.resize (bufsize);
+      Integer * ptr_temp = &(*int_array_)[0];
 
       for (unsigned int i = first; i <= last; ++i, ++ptr_temp)
         integers[i] = *ptr_temp;
@@ -602,13 +611,15 @@ KnowledgeRecord::fragment (unsigned int first, unsigned int last)
     }
     else if (type_ == DOUBLE_ARRAY)
     {
+      size_t size = double_array_->size ();
+
       // make sure last is accessible in the data type
-      last = std::min <unsigned int> (last, size_ - 1);
-      uint32_t size = last - first + 1;
+      last = std::min <unsigned int> (last, size - 1);
+      uint32_t bufsize = last - first + 1;
 
       std::vector <double> doubles;
-      doubles.resize (size);
-      double * ptr_temp = double_array_.get ();
+      doubles.resize (bufsize);
+      double * ptr_temp = &(*double_array_)[0];
 
       for (unsigned int i = first; i <= last; ++i, ++ptr_temp)
         doubles[i] = *ptr_temp;
@@ -652,7 +663,7 @@ KnowledgeRecord::operator< (
     if      (rhs.is_string_type ())
     {
       result =
-        strncmp (str_value_.get (), rhs.str_value_.get (), 
+        strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
         size () >= rhs.size () ? size () : rhs.size ()) < 0;
     }
     
@@ -738,7 +749,7 @@ KnowledgeRecord::operator<= (
     if      (rhs.is_string_type ())
     {
       result = 
-        strncmp (str_value_.get (), rhs.str_value_.get (), 
+        strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
         size () >= rhs.size () ? size () : rhs.size ()) <= 0;
     }
     
@@ -833,7 +844,7 @@ KnowledgeRecord::operator== (
     if      (rhs.is_string_type ())
     {
       result = 
-        strncmp (str_value_.get (), rhs.str_value_.get (), 
+        strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
         size () >= rhs.size () ? size () : rhs.size ()) == 0;
     }
     
@@ -926,7 +937,7 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
     if      (rhs.is_string_type ())
     {
       result = 
-        strncmp (str_value_.get (), rhs.str_value_.get (), 
+        strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
         size () >= rhs.size () ? size () : rhs.size ()) > 0;
     }
     
@@ -1013,7 +1024,7 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
     if      (rhs.is_string_type ())
     {
       result =
-        strncmp (str_value_.get (), rhs.str_value_.get (), 
+        strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
         size () >= rhs.size () ? size () : rhs.size ()) >= 0;
     }
     
@@ -1076,13 +1087,13 @@ KnowledgeRecord::retrieve_index (size_t index) const
 
   if (type_ == INTEGER_ARRAY)
   {
-    if (index < size_t (size_))
-      ret_value.set_value (int_array_.get ()[index]);
+    if (index < size_t (int_array_->size ()))
+      ret_value.set_value (int_array_->at (index));
   }
   else if (type_ == DOUBLE_ARRAY)
   {
-    if (index < size_t (size_))
-      ret_value.set_value (double_array_.get ()[index]);
+    if (index < size_t (double_array_-> size ()))
+      ret_value.set_value (double_array_->at (index));
   }
 
   return ret_value;
@@ -1093,97 +1104,51 @@ KnowledgeRecord::dec_index (size_t index)
 {
   if (type_ == DOUBLE_ARRAY)
   {
-    if (index >= size_)
-    {
-      double * ptr_temp = new double [index+1];
-      memcpy (ptr_temp, double_array_.get (), size_ * sizeof (double));
-      
-      for (size_t i = size_; i < index+1; ++i)
-        ptr_temp[i] = 0;
-      
-      size_ = uint32_t (index+1);
-      double_array_ = MADARA_WITH_DELETER(ptr_temp);
+    if (double_array_->size () <= index) {
+      double_array_->resize (index + 1);
     }
+    status_ = MODIFIED;
+    return knowledge::KnowledgeRecord(--double_array_->at (index));
   }
   else if (type_ == INTEGER_ARRAY)
   {
-    if (index >= size_)
-    {
-      Integer * ptr_temp = new Integer [index+1];
-      memcpy (ptr_temp, int_array_.get (), size_ * sizeof (Integer));
-
-      for (size_t i = size_; i < index+1; ++i)
-        ptr_temp[i] = 0;
-
-      size_ = uint32_t (index+1);
-      int_array_ = MADARA_WITH_DELETER(ptr_temp);
+    if (int_array_->size () <= index) {
+      int_array_->resize (index + 1);
     }
-  }
-  else
-  {
-    Integer * ptr_temp = new Integer [index+1];
-    size_ = uint32_t (index+1);
-
-    for (size_t i = 0; i < index + 1; ++i)
-      ptr_temp[i] = 0;
-
-    int_array() = MADARA_WITH_DELETER(ptr_temp);
-  }
-  
-  if (status_ != MODIFIED)
     status_ = MODIFIED;
-
-  return knowledge::KnowledgeRecord (--int_array_.get ()[index]);
+    return knowledge::KnowledgeRecord(--int_array_->at (index));
+  }
+  std::vector<Integer> tmp(index + 1);
+  make_int_array (std::move(tmp));
+  status_ = MODIFIED;
+  return knowledge::KnowledgeRecord(--int_array_->at (index));
 }
- 
+
 KnowledgeRecord 
 KnowledgeRecord::inc_index (size_t index)
 {
   if (type_ == DOUBLE_ARRAY)
   {
-    if (index >= size_)
-    {
-      double * ptr_temp = new double [index+1];
-      memcpy (ptr_temp, double_array_.get (), size_ * sizeof (double));
-      
-      for (size_t i = size_; i < index+1; ++i)
-        ptr_temp[i] = 0;
-      
-      size_ = uint32_t (index+1);
-      double_array_ = MADARA_WITH_DELETER(ptr_temp);
+    if (double_array_->size () <= index) {
+      double_array_->resize (index + 1);
     }
+    status_ = MODIFIED;
+    return knowledge::KnowledgeRecord(--double_array_->at (index));
   }
   else if (type_ == INTEGER_ARRAY)
   {
-    if (index >= size_)
-    {
-      Integer * ptr_temp = new Integer [index+1];
-      memcpy (ptr_temp, int_array_.get (), size_ * sizeof (Integer));
-
-      for (size_t i = size_; i < index+1; ++i)
-        ptr_temp[i] = 0;
-
-      size_ = uint32_t (index+1);
-      int_array_ = MADARA_WITH_DELETER(ptr_temp);
+    if (int_array_->size () <= index) {
+      int_array_->resize (index + 1);
     }
-  }
-  else
-  {
-    Integer * ptr_temp = new Integer [index+1];
-    size_ = uint32_t (index+1);
-
-    for (size_t i = 0; i < index + 1; ++i)
-      ptr_temp[i] = 0;
-
-    int_array() = MADARA_WITH_DELETER(ptr_temp);
-  }
-  
-  if (status_ != MODIFIED)
     status_ = MODIFIED;
-
-  return knowledge::KnowledgeRecord (++int_array_.get ()[index]);
+    return knowledge::KnowledgeRecord(--int_array_->at (index));
+  }
+  std::vector<Integer> tmp(index + 1);
+  make_int_array (std::move(tmp));
+  status_ = MODIFIED;
+  return knowledge::KnowledgeRecord(--int_array_->at (index));
 }
- 
+
 /**
   * sets the value at the index to the specified value. If the
   * record was previously not an array or if the array is not
@@ -1200,34 +1165,19 @@ KnowledgeRecord::set_index (size_t index, Integer value)
   }
   else if (type_ == INTEGER_ARRAY)
   {
-    if (index >= size_)
+    if (index >= int_array_->size ())
     {
-      Integer * ptr_temp = new Integer [index+1];
-      memcpy (ptr_temp, int_array_.get (), size_ * sizeof (Integer));
-
-      for (size_t i = size_; i < index; ++i)
-        ptr_temp[i] = 0;
-
-      size_ = uint32_t (index+1);
-      int_array_ = MADARA_WITH_DELETER(ptr_temp);
+      int_array_->resize(index + 1);
     }
   }
   else
   {
-    Integer * ptr_temp = new Integer [index+1];
-    size_ = uint32_t (index+1);
-
-    for (size_t i = 0; i < index; ++i)
-      ptr_temp[i] = 0;
-
-    int_array_ = MADARA_WITH_DELETER(ptr_temp);
-    type_ = INTEGER_ARRAY;
+    make_int_array (index + 1);
   }
-  
-  int_array_.get ()[index] = value;
 
-  if (status_ != MODIFIED)
-    status_ = MODIFIED;
+  int_array_->at (index) = value;
+
+  status_ = MODIFIED;
 }
  
 /**
@@ -1240,84 +1190,52 @@ KnowledgeRecord::set_index (size_t index, double value)
 {
   if (type_ == INTEGER_ARRAY)
   {
-    /**
-     * if this was previously an integer array, then copy
-     * all of the elements and update the index appropriately
-     **/
-    size_t size = size_ > index + 1 ? size_ : index + 1;
-    double * ptr_temp = new double [size];
-    Integer * source_array = int_array_.get ();
-
-    // go through each element of the old array and copy over
-    for (size_t i = 0; i < size_; ++i)
-      ptr_temp[i] = source_array[i];
-    
-    for (size_t i = size_; i < size; ++i)
-      ptr_temp[i] = 0;
-
-    double_array() = MADARA_WITH_DELETER(ptr_temp);
-    size_ = uint32_t (size);
+    make_double_array (int_array_->begin (), int_array_->end ());
   }
   else if (type_ != DOUBLE_ARRAY)
   {
-    double * ptr_temp = new double [index+1];
-    size_ = uint32_t (index+1);
-
-    if (size_ > 1)
-    {
-      for (size_t i = 0; i < size_ - 1; ++i)
-        ptr_temp[i] = 0;
-    }
-
-    double_array() = MADARA_WITH_DELETER(ptr_temp);
-    type_ = DOUBLE_ARRAY;
+    make_double_array (index + 1);
   }
   else
   {
-    if (index + 1 >= size_)
+    if (index >= double_array_->size ())
     {
-      size_t size = index + 1;
-      double * ptr_temp = new double [size];
-      double * source_array = double_array_.get ();
-
-      // go through each element of the old array and copy over
-      for (size_t i = 0; i < size_; ++i)
-        ptr_temp[i] = source_array[i];
-
-      for (size_t i = size_; i < size; ++i)
-        ptr_temp[i] = 0;
-
-      double_array_ = MADARA_WITH_DELETER(ptr_temp);
-      size_ = uint32_t (size);
+      double_array_->resize (index + 1);
     }
   }
-  
-  double_array_.get ()[index] = value;
 
-  if (status_ != MODIFIED)
-    status_ = MODIFIED;
+  double_array_->at (index) = value;
+
+  status_ = MODIFIED;
 }
 
 void
 KnowledgeRecord::resize (size_t new_size)
 {
-  if (new_size > size_)
+  if (new_size > size ())
   {
     if (status_ == UNCREATED ||
-        type_ == INTEGER || type_ == this->INTEGER_ARRAY)
+        type_ == INTEGER)
     {
       Integer zero (0);
       set_index (new_size - 1, zero);
+      return;
     }
-    else if (type_ == this->DOUBLE_ARRAY)
+    else if (type_ == DOUBLE)
     {
       double zero (0.0);
       set_index (new_size - 1, zero);
+      return;
     }
   }
-  else if (is_ref_counted () && new_size < size_)
-  {
-    size_ = (uint32_t)new_size;
+  if (type_ == INTEGER_ARRAY) {
+    int_array_->resize (new_size);
+  } else if (type_ == DOUBLE_ARRAY) {
+    double_array_->resize (new_size);
+  } else if (is_string_type (type_)) {
+    str_value_->resize (new_size);
+  } else if (is_binary_file_type (type_)) {
+    file_value_->resize (new_size);
   }
 }
 
@@ -1405,11 +1323,15 @@ KnowledgeRecord::is_true (void) const
   }
   else if (is_string_type ())
   {
-    return size_ > 1;
+    return str_value_->size () > 1;
+  }
+  else if (is_binary_file_type ())
+  {
+    return file_value_->size () >= 1;
   }
   else
   {
-    return size_ >= 1;
+    return false;
   }
 }
 

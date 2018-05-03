@@ -193,7 +193,6 @@ madara::knowledge::ThreadSafeContext::set_unsafe_impl (
     return -2;
 
   // copy size and type from the record value
-  variable.record_->size_ = value.size_;
   variable.record_->type_ = value.type_;
 
   if (value.status_ != knowledge::KnowledgeRecord::UNCREATED)
@@ -2306,7 +2305,7 @@ const std::string & filename) const
           }
 
           utility::write_file (path,
-            (void *)i->second.file_value_.get (), i->second.size ());
+            (void *)&(*i->second.file_value_)[0], i->second.size ());
           buffer << path;
 
 
@@ -2444,7 +2443,7 @@ const CheckpointSettings & settings) const
           }
 
           utility::write_file (path,
-            (void *)i->second.file_value_.get (), i->second.size ());
+            (void *)&(*i->second.file_value_)[0], i->second.size ());
           buffer << path;
 
 
@@ -2547,7 +2546,7 @@ const std::string & filename) const
           }
 
           utility::write_file (path,
-            (void *)i->second.file_value_.get (), i->second.size ());
+            (void *)&(*i->second.file_value_)[0], i->second.size ());
           buffer << path;
 
 
@@ -2694,7 +2693,7 @@ const CheckpointSettings & settings) const
           }
 
           utility::write_file (path,
-            (void *)i->second.file_value_.get (), i->second.size ());
+            (void *)&(*i->second.file_value_)[0], i->second.size ());
           buffer << path;
 
 

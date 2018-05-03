@@ -116,10 +116,6 @@ namespace madara
       uint32_t write_quality = 0;
 
     private:
-      /**
-       * size of the value
-       **/
-      uint32_t size_ = 0;
 
       /**
        * Non-array versions of double/integer. About 10x faster
@@ -133,22 +129,22 @@ namespace madara
         /**
          * potential string value of the node (size int)
          **/
-        std::shared_ptr<Integer> int_array_;
+        std::shared_ptr<std::vector<Integer>> int_array_;
 
         /**
          * potential string value of the node (size int)
          **/
-        std::shared_ptr<double> double_array_;
+        std::shared_ptr<std::vector<double>> double_array_;
 
         /**
          * potential string value of the node (size int)
          **/
-        std::shared_ptr<char> str_value_;
+        std::shared_ptr<std::string> str_value_;
 
         /**
          * potential file value of the node
          **/
-        std::shared_ptr<unsigned char> file_value_;
+        std::shared_ptr<std::vector<unsigned char>> file_value_;
       };
 
       Integer &int_value() {
@@ -156,7 +152,6 @@ namespace madara
           clear_union();
           type_ = INTEGER;
           int_value_ = 0;
-          size_ = 1;
         }
         return int_value_;
       }
@@ -166,47 +161,81 @@ namespace madara
           clear_union();
           type_ = DOUBLE;
           double_value_ = 0.0;
-          size_ = 1;
         }
         return double_value_;
       }
 
-      std::shared_ptr<Integer> &int_array() {
-        if (type_ != INTEGER_ARRAY) {
-          clear_union();
-          type_ = INTEGER_ARRAY;
-          size_ = 0;
-          new(&int_array_) std::shared_ptr<Integer>();
-        }
-        return int_array_;
+
+      template<typename T>
+      using MemberType = std::shared_ptr<std::vector<T>> KnowledgeRecord::*;
+
+      template<typename T, uint32_t Type, MemberType<T> Member, typename... Args>
+      std::shared_ptr<std::vector<T>> &make_array(Args&&... args) {
+        clear_union();
+        type_ = Type;
+        new(&int_array_) std::shared_ptr<std::vector<T>>(
+            std::make_shared<std::vector<T>> (
+              std::forward<Args>(args)...));
+        return this->*Member;
       }
 
-      std::shared_ptr<double> &double_array() {
-        if (type_ != DOUBLE_ARRAY) {
-          clear_union();
-          type_ = DOUBLE_ARRAY;
-          size_ = 0;
-          new(&double_array_) std::shared_ptr<double>();
-        }
-        return double_array_;
+      template<typename... Args>
+      std::shared_ptr<std::vector<Integer>> &make_int_array(Args&&... args) {
+        return make_array<Integer, INTEGER_ARRAY,
+               &KnowledgeRecord::int_array_> (
+                  std::forward<Args>(args)...);
       }
 
-      std::shared_ptr<char> &str_value() {
+      template<typename... Args>
+      std::shared_ptr<std::vector<double>> &make_double_array(Args&&... args) {
+        return make_array<double, DOUBLE_ARRAY,
+               &KnowledgeRecord::double_array_> (
+                  std::forward<Args>(args)...);
+      }
+
+      template<typename... Args>
+      std::shared_ptr<std::string> &make_str_value(Args&&... args) {
         if (!is_string_type(type_)) {
           clear_union();
           type_ = STRING;
-          size_ = 0;
-          new(&str_value_) std::shared_ptr<char>();
+          new(&str_value_) std::shared_ptr<std::string>(
+              std::make_shared<std::string> (
+                std::forward<Args>(args)...));
         }
         return str_value_;
       }
 
-      std::shared_ptr<unsigned char> &file_value() {
-        if (!is_file_type(type_)) {
-          clear_union();
-          type_ = UNKNOWN_FILE_TYPE;
-          size_ = 0;
-          new(&file_value_) std::shared_ptr<unsigned char>();
+      template<typename... Args>
+      std::shared_ptr<std::vector<unsigned char>> &make_file_value(Args&&... args) {
+        return make_array<unsigned char, UNKNOWN_FILE_TYPE,
+               &KnowledgeRecord::file_value_> (
+                std::forward<Args>(args)...);
+      }
+
+      std::shared_ptr<std::vector<Integer>> &int_array() {
+        if (type_ != INTEGER_ARRAY) {
+          make_int_array();
+        }
+        return int_array_;
+      }
+
+      std::shared_ptr<std::vector<double>> &double_array() {
+        if (type_ != DOUBLE_ARRAY) {
+          make_double_array();
+        }
+        return double_array_;
+      }
+
+      std::shared_ptr<std::string> &str_value() {
+        if (!is_string_type(type_)) {
+          make_str_value();
+        }
+        return str_value_;
+      }
+
+      std::shared_ptr<std::vector<unsigned char>> &file_value() {
+        if (!is_binary_file_type(type_)) {
+          make_file_value();
         }
         return file_value_;
       }
@@ -345,7 +374,7 @@ namespace madara
        * If you use this function, you must explicitly delete the
        * value returned. For instance:
        *
-       * unsigned char * my_value = record.to_unmanaged_buffer ();
+       * char * my_value = record.to_unmanaged_buffer ();
        * ... do some work on the buffer
        * delete [] my_value;
        *
@@ -359,7 +388,7 @@ namespace madara
        * sets the value to a double
        * @param    new_value   new value of the Knowledge Record
        **/
-      void set_value (const Integer & new_value);
+      void set_value (Integer new_value);
     
       /**
        * sets the value to an array of integers
@@ -384,7 +413,7 @@ namespace madara
        * sets the value to a double
        * @param    new_value   new value of the Knowledge Record
        **/
-      void set_value (const double & new_value);
+      void set_value (double new_value);
     
       /**
        * sets the value to an array of doubles
@@ -534,7 +563,7 @@ namespace madara
        * @param   type the type to check
        * @return   true if the record is reference-counted
        **/
-      bool is_ref_counted (uint32_t type) const;
+      static bool is_ref_counted (uint32_t type);
     
       /**
        * returns true if the record is a string type (STRING, XML, TEXT_FILE)
@@ -547,7 +576,7 @@ namespace madara
        * @param   type the type to check
        * @return   true if the record is a string
        **/
-      bool is_string_type (uint32_t type) const;
+      static bool is_string_type (uint32_t type);
     
       /**
        * returns if the record is a double type (DOUBLE, DOUBLE_ARRAY)
@@ -560,7 +589,7 @@ namespace madara
        * @param   type the type to check
        * @return   true if the record is a double
        **/
-      bool is_double_type (uint32_t type) const;
+      static bool is_double_type (uint32_t type);
      
       /**
        * returns if the record is a integer type (INTEGER, INTEGER_ARRAY)
@@ -573,7 +602,7 @@ namespace madara
        * @param   type the type to check
        * @return   true if the record is an integer
        **/
-      bool is_integer_type (uint32_t type) const;
+      static bool is_integer_type (uint32_t type);
      
      
       /**
@@ -587,7 +616,7 @@ namespace madara
        * @param   type the type to check
        * @return   true if the record is an integer
        **/
-      bool is_array_type (uint32_t type) const;
+      static bool is_array_type (uint32_t type);
     
       /**
        * returns a record containing a fragment of the character buffer.
@@ -611,7 +640,7 @@ namespace madara
        * @param     type   the type of the record
        * @return    true if type is an image type
        **/
-      bool is_image_type (uint32_t type) const;
+      static bool is_image_type (uint32_t type);
     
       /**
        * returns true if the knowledge record has a file type
@@ -624,7 +653,7 @@ namespace madara
        * @param     type   the type of the record
        * @return    true if type is a file type
        **/
-      bool is_file_type (uint32_t type) const;
+      static bool is_file_type (uint32_t type);
      
       /**
        * returns true if the knowledge record has a binary file type
@@ -637,7 +666,7 @@ namespace madara
        * @param     type   the type of the record
        * @return    true if type is a file type
        **/
-      bool is_binary_file_type (uint32_t type) const;
+      static bool is_binary_file_type (uint32_t type);
     
       /**
        * Less than
