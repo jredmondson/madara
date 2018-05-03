@@ -262,6 +262,22 @@ namespace madara
     MADARA_Export int32_t endian_swap (int32_t value);
     
     /**
+     * Converts a host format signed madara::knowledge::KnowledgeRecord::Integer
+     * into big endian.  Can also be used to convert back into host form.
+     * @param     value      the value to convert
+     * @return    the converted value
+     **/
+    MADARA_Export uint16_t endian_swap (uint16_t value);
+    
+    /**
+     * Converts a host format signed madara::knowledge::KnowledgeRecord::Integer
+     * into big endian.  Can also be used to convert back into host form.
+     * @param     value      the value to convert
+     * @return    the converted value
+     **/
+    MADARA_Export int16_t endian_swap (int16_t value);
+    
+    /**
      * Converts a host format double precision into big endian. Can
      * also be used to convert back into host form.
      * @param     value      the value to convert

@@ -544,9 +544,6 @@ KnowledgeRecord::set_modified (void)
 inline uint32_t
 KnowledgeRecord::size (void) const
 {
-  if (status_ == UNINITIALIZED) {
-    return 0;
-  }
   if (type_ == INTEGER || type_ == DOUBLE) {
     return 1;
   } else if (is_string_type()) {
@@ -558,7 +555,7 @@ KnowledgeRecord::size (void) const
   } else if (type_ == DOUBLE_ARRAY) {
     return double_array_->size ();
   }
-  return 0;
+  return 1;
 }
 
 inline int32_t
@@ -571,17 +568,29 @@ inline int64_t
 KnowledgeRecord::get_encoded_size (void) const
 {
   int64_t buffer_size (sizeof (uint32_t) * 2);
-  if (type_ & (INTEGER | INTEGER_ARRAY))
+  if (type_ == INTEGER)
   {
-    buffer_size += sizeof (int_value_) * size ();
+    buffer_size += sizeof (Integer);
   }
-  else if (type_ & (DOUBLE | DOUBLE_ARRAY))
+  else if (type_ == DOUBLE)
   {
-    buffer_size += sizeof (double) * size ();
+    buffer_size += sizeof (double);
   }
-  else
+  else if (type_ == INTEGER_ARRAY)
   {
-    buffer_size += size ();
+    buffer_size += sizeof (Integer) * double_array_->size();
+  }
+  else if (type_ == DOUBLE_ARRAY)
+  {
+    buffer_size += sizeof (double) * double_array_->size();
+  }
+  else if (is_string_type ())
+  {
+    buffer_size += str_value_->size () + 1;
+  }
+  else if (is_binary_file_type ())
+  {
+    buffer_size += file_value_->size ();
   }
 
   return buffer_size;
@@ -770,7 +779,7 @@ KnowledgeRecord::read (const char * buffer,
   // format is [key_size | key | type | value_size | value]
 
   uint32_t buff_value_size (0);
-  uint32_t type = INTEGER;
+  uint16_t type = INTEGER;
   uint32_t size = 1;
 
   // Remove the type of value from the buffer
@@ -807,7 +816,7 @@ KnowledgeRecord::read (const char * buffer,
   {
     if (is_string_type (type))
     {
-      str_value() = std::make_shared<std::string> (buffer, buff_value_size);
+      make_str_value (buffer, buff_value_size);
     }
 
     else if (type == INTEGER)
@@ -857,7 +866,7 @@ KnowledgeRecord::read (const char * buffer,
     else if (is_binary_file_type (type))
     {
       const unsigned char *b = (const unsigned char *)buffer;
-      file_value() = std::make_shared<std::vector<unsigned char>> (b, b + size);
+      make_file_value (b, b + size);
     }
 
     else {
@@ -948,7 +957,7 @@ KnowledgeRecord::reset_value (void) noexcept
 inline void
 KnowledgeRecord::set_value (const std::string & new_value)
 {
-  str_value() = std::make_shared<std::string> (new_value);
+  make_str_value (new_value);
   type_ = STRING;
   status_ = MODIFIED;
 }
@@ -957,7 +966,7 @@ KnowledgeRecord::set_value (const std::string & new_value)
 inline void
 KnowledgeRecord::set_xml (const char * new_value, size_t size)
 {
-  str_value() = std::make_shared<std::string> (new_value, size);
+  make_str_value (new_value, size);
   type_ = XML;
   status_ = MODIFIED;
 }
@@ -966,7 +975,7 @@ KnowledgeRecord::set_xml (const char * new_value, size_t size)
 inline void
 KnowledgeRecord::set_text (const char * new_value, size_t size)
 {
-  str_value() = std::make_shared<std::string> (new_value, size);
+  make_str_value (new_value, size);
   type_ = TEXT_FILE;
   status_ = MODIFIED;
 }
@@ -976,7 +985,7 @@ inline void
 KnowledgeRecord::set_jpeg (const unsigned char * new_value,
                                     size_t size)
 {
-  file_value() = std::make_shared<std::vector<unsigned char>> (new_value, new_value + size);
+  make_file_value (new_value, new_value + size);
   type_ = IMAGE_JPEG;
   status_ = MODIFIED;
 }
@@ -986,7 +995,7 @@ inline void
 KnowledgeRecord::set_file (const unsigned char * new_value,
                                     size_t size)
 {
-  file_value() = std::make_shared<std::vector<unsigned char>> (new_value, new_value + size);
+  make_file_value (new_value, new_value + size);
   type_ = UNKNOWN_FILE_TYPE;
   status_ = MODIFIED;
 }
@@ -1070,9 +1079,9 @@ KnowledgeRecord::write (char * buffer,
     // Remove the type of value from the buffer
     if (buffer_remaining >= (int64_t) sizeof (type_))
     {
-      uint32_temp = madara::utility::endian_swap (type_);
-      memcpy (buffer, &uint32_temp, sizeof (uint32_temp));
-      buffer += sizeof (type_);
+      uint16_t tmp = madara::utility::endian_swap (type_);
+      memcpy (buffer, &tmp, sizeof (tmp));
+      buffer += sizeof (tmp);
     }
     buffer_remaining -= sizeof (type_);
 
@@ -1105,12 +1114,12 @@ KnowledgeRecord::write (char * buffer,
     }
     else if (type_ == INTEGER)
     {
-      if (buffer_remaining >= int64_t (size * sizeof (Integer)))
+      if (buffer_remaining >= int64_t (sizeof (Integer)))
       {
         integer_temp = madara::utility::endian_swap (int_value_);
         memcpy (buffer, &integer_temp, sizeof (integer_temp));
 
-        size_intermediate = size * sizeof (Integer);
+        size_intermediate = sizeof (Integer);
       }
     }
     else if (type_ == INTEGER_ARRAY)
@@ -1132,12 +1141,12 @@ KnowledgeRecord::write (char * buffer,
     }
     else if (type_ == DOUBLE)
     {
-      if (buffer_remaining >= int64_t (size * sizeof (double)))
+      if (buffer_remaining >= int64_t (sizeof (double)))
       {
         double_temp = madara::utility::endian_swap (double_value_);
         memcpy (buffer, &double_temp, sizeof (double));
 
-        size_intermediate = size * sizeof (double);
+        size_intermediate = sizeof (double);
       }
     }
     else if (type_ == DOUBLE_ARRAY)

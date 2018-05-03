@@ -694,25 +694,55 @@ madara::utility::endian_swap (int32_t value)
 }
 
 /**
+* Converts a host format signed madara::knowledge::KnowledgeRecord::Integer into big endian
+**/
+uint16_t
+madara::utility::endian_swap (uint16_t value)
+{
+  // if host is little endian, then we have work to do
+  if (::endianness.is_little)
+  {
+    return ((value << 8) & 0xFFFF) | (value >> 8);
+  }
+
+  return value;
+}
+
+/**
+* Converts a host format signed madara::knowledge::KnowledgeRecord::Integer into big endian
+**/
+int16_t
+madara::utility::endian_swap (int16_t value)
+{
+  // if host is little endian, then we have work to do
+  if (::endianness.is_little)
+  {
+    return ((value << 8) & 0xFFFF) | (value >> 8);
+  }
+
+  return value;
+}
+
+/**
   * Converts a host format double into big endian
   **/
 double
 madara::utility::endian_swap (double orig)
 {
-  uint64_t * value = (uint64_t *)&orig;
-  double result = orig;
   // if host is little endian, then we have work to do
   if (::endianness.is_little)
   {
-    *value = ((*value << 8) & 0xFF00FF00FF00FF00ULL )
-          | ((*value >> 8) & 0x00FF00FF00FF00FFULL );
-    *value = ((*value << 16) & 0xFFFF0000FFFF0000ULL )
-          | ((*value >> 16) & 0x0000FFFF0000FFFFULL );
-    *value = (*value << 32) | (*value >> 32);
-    memcpy (&result, value, 8);
+    uint64_t value;
+    memcpy(&value, &orig, sizeof(value));
+
+    value = endian_swap(value);
+
+    double result;
+    memcpy (&result, &value, sizeof(result));
+    return result;
   }
 
-  return result;
+  return orig;
 }
 
 int
