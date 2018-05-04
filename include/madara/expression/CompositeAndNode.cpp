@@ -24,7 +24,7 @@ madara::expression::CompositeAndNode::CompositeAndNode (
 madara::knowledge::KnowledgeRecord
 madara::expression::CompositeAndNode::item (void) const
 {
-  return "&&";
+  return knowledge::KnowledgeRecord("&&");
 }
 
 
@@ -52,7 +52,7 @@ madara::expression::CompositeAndNode::prune (bool & can_change)
     if (j == 0)
       return_value = value;
     else
-      return_value = knowledge::KnowledgeRecord::Integer (
+      return_value = knowledge::KnowledgeRecord (
         value && return_value);
 
     can_change = can_change || value_changes;
@@ -73,11 +73,11 @@ madara::expression::CompositeAndNode::evaluate (
   {
     // if we have a zero eval, return 0 immediately
     if ((*i)->evaluate (settings).is_false ())
-      return madara::knowledge::KnowledgeRecord::Integer ();
+      return madara::knowledge::KnowledgeRecord (0);
   }
 
   // if everything was true, return true
-  return madara::knowledge::KnowledgeRecord::Integer (1);
+  return madara::knowledge::KnowledgeRecord (1);
 }
 
 

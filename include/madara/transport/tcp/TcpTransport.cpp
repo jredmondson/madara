@@ -68,7 +68,6 @@ madara::transport::TcpTransport::setup (void)
 
     int send_buff_size = 0, tar_buff_size (settings_.queue_length);
     int rcv_buff_size = 0;
-    int opt_len = sizeof (int);
 
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "TcpTransport::setup:" \

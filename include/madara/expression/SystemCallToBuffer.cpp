@@ -24,7 +24,7 @@ madara::expression::SystemCallToBuffer::~SystemCallToBuffer (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallToBuffer::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 

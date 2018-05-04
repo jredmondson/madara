@@ -25,7 +25,7 @@ madara::expression::SystemCallToHostDirs::~SystemCallToHostDirs (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallToHostDirs::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -80,7 +80,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call to_host_dirs is returning the proper directory structure "
       "of %s.\n", statement.c_str ());
 
-    return madara::utility::clean_dir_name (statement);
+    return knowledge::KnowledgeRecord (
+        madara::utility::clean_dir_name (statement));
   }
   else
   {

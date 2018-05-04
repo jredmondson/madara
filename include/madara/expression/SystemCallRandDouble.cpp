@@ -25,7 +25,7 @@ madara::expression::SystemCallRandDouble::~SystemCallRandDouble (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallRandDouble::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -90,7 +90,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     "System call rand_double called with %f, %f, %d\n",
     floor, ceiling, update_srand);
 
-  return utility::rand_double (floor, ceiling, update_srand);
+  return knowledge::KnowledgeRecord (
+      utility::rand_double (floor, ceiling, update_srand));
 }
 
 // accept a visitor

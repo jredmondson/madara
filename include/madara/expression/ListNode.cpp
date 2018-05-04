@@ -53,7 +53,7 @@ madara::expression::ListNode::prune (bool & can_change)
 /// the expression tree, and is much faster than the prune function
 madara::knowledge::KnowledgeRecord 
 madara::expression::ListNode::evaluate (
-  const madara::knowledge::KnowledgeUpdateSettings & settings)
+  const madara::knowledge::KnowledgeUpdateSettings & /*settings*/)
 {
   return madara::knowledge::KnowledgeRecord (
     madara::knowledge::KnowledgeRecord::Integer (list_.size ()));

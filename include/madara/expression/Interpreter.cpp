@@ -3237,7 +3237,7 @@ madara::expression::ArrayRef::ArrayRef (const std::string & key,
   Symbol * index,
   madara::knowledge::ThreadSafeContext & context)
   : Symbol (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
-  key_ (key), index_ (index), context_ (context)
+  key_ (key), context_ (context), index_ (index)
 {
 }
 
@@ -4456,7 +4456,7 @@ Symbol *& returnableInput)
     // begin to end--the index
     substr = input.substr (begin, i - begin);
 
-    Symbol * index;
+    Symbol * index = nullptr;
 
     for (count = 0;
       count < substr.length ();)
@@ -5242,7 +5242,6 @@ madara::expression::Interpreter::number_insert (
   // loop.
 
   std::string::size_type j = 1;
-  bool is_float = false;
   Number * number = 0;
 
   for (; i + j <= input.length () && is_number (input[i + j]); ++j)
@@ -5784,7 +5783,7 @@ bool build_argument_list)
     ++i;
   }
   // square root is ASCII 251 (UTF 8 format)
-  else if (input[i] == 251)
+  else if ((uint8_t)input[i] == 251)
   {
     handled = true;
     Symbol * op = 0;

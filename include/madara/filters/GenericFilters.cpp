@@ -13,8 +13,8 @@ const char * operation_types [] = {
 
 
 madara::knowledge::KnowledgeRecord
-madara::filters::discard (knowledge::FunctionArguments & args,
-              knowledge::Variables & vars)
+madara::filters::discard (knowledge::FunctionArguments & /*args*/,
+              knowledge::Variables & /*vars*/)
 {
   // this works because a default record is UNCREATED
   return madara::knowledge::KnowledgeRecord ();
@@ -22,7 +22,7 @@ madara::filters::discard (knowledge::FunctionArguments & args,
 
 madara::knowledge::KnowledgeRecord
 madara::filters::discard_nonprimitives (knowledge::FunctionArguments & args,
-              knowledge::Variables & vars)
+              knowledge::Variables & /*vars*/)
 {
   madara::knowledge::KnowledgeRecord result;
 
@@ -49,7 +49,7 @@ madara::filters::discard_nonprimitives (knowledge::FunctionArguments & args,
 
 madara::knowledge::KnowledgeRecord
 madara::filters::discard_nonfiles (knowledge::FunctionArguments & args,
-              knowledge::Variables & vars)
+              knowledge::Variables & /*vars*/)
 {
   madara::knowledge::KnowledgeRecord result;
 

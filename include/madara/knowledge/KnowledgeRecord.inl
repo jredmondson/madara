@@ -165,6 +165,7 @@ KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs) noexcept
   // set the instance properties accordingly
   clock = rhs.clock;
   quality = rhs.quality;
+  write_quality = rhs.write_quality;
   type_ = rhs.type_;
   shared_ = is_ref_counted() ? SHARED : OWNED;
 
@@ -199,6 +200,7 @@ KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
   // set the instance properties accordingly
   clock = rhs.clock;
   quality = rhs.quality;
+  write_quality = rhs.write_quality;
   type_ = rhs.type_;
   shared_.store(rhs.shared_.load());
 
@@ -231,7 +233,7 @@ KnowledgeRecord::operator== (double value) const
   {
     return to_double () == value;
   }
-  
+
   return false;
 }
 
@@ -292,7 +294,7 @@ KnowledgeRecord::operator== (Integer value) const
   {
     return to_double () == value;
   }
-  
+
   return false;
 }
 
@@ -425,7 +427,7 @@ KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
 
   return *this;
 }
-   
+
 /**
   * In-place modulus operator
   **/
@@ -446,7 +448,7 @@ KnowledgeRecord::operator%= (const knowledge::KnowledgeRecord & rhs)
 
   return *this;
 }
- 
+
 /**
   * Times operator
   **/
@@ -1003,6 +1005,36 @@ KnowledgeRecord::reset_value (void) noexcept
   quality = 0;
   write_quality = 0;
   clock = 0;
+}
+
+inline void
+KnowledgeRecord::set_value (const KnowledgeRecord &new_value)
+{
+  if (quality > new_value.write_quality) {
+    return;
+  }
+  uint64_t clock = this->clock;
+  uint64_t quality = new_value.write_quality;
+  uint64_t write_quality = this->write_quality;
+  *this = new_value;
+  this->clock = clock;
+  this->quality = quality;
+  this->write_quality = write_quality;
+}
+
+inline void
+KnowledgeRecord::set_value (KnowledgeRecord &&new_value)
+{
+  if (quality > new_value.write_quality) {
+    return;
+  }
+  uint64_t clock = this->clock;
+  uint64_t quality = new_value.write_quality;
+  uint64_t write_quality = this->write_quality;
+  *this = std::move(new_value);
+  this->clock = clock;
+  this->quality = quality;
+  this->write_quality = write_quality;
 }
 
 // set the value_ to a string

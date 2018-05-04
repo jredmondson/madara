@@ -181,7 +181,6 @@ std::string &
 madara::utility::strip_white_space (std::string & input)
 {
   std::string::iterator cur = input.begin ();
-  char prev = 0;
 
   for (std::string::iterator eval = cur; 
     eval != input.end (); ++eval)
@@ -189,7 +188,7 @@ madara::utility::strip_white_space (std::string & input)
     // if it isn't whitespace, then copy it over immediately
     if (*eval != ' ' && *eval != '\t' && *eval != '\n' && *eval != '\r')
     {
-      prev = *cur = *eval;
+      *cur = *eval;
       ++cur;
     }
   }
@@ -210,7 +209,6 @@ std::string &
 madara::utility::string_remove (std::string & input, char unwanted)
 {
   std::string::iterator cur = input.begin ();
-  char prev = 0;
 
   for (std::string::iterator eval = cur; 
     eval != input.end (); ++eval)
@@ -218,7 +216,7 @@ madara::utility::string_remove (std::string & input, char unwanted)
     // if it isn't whitespace, then copy it over immediately
     if (*eval != unwanted)
     {
-      prev = *cur = *eval;
+      *cur = *eval;
       ++cur;
     }
   }
@@ -1040,8 +1038,7 @@ bool madara::utility::wait_false (
   if (settings.pre_print_statement != "")
     knowledge.print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
-  knowledge::KnowledgeRecord last_value = knowledge::KnowledgeRecord::Integer (
-    !knowledge.get (ref, settings));
+  knowledge::KnowledgeRecord last_value (!knowledge.get (ref, settings));
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
     "utility::wait_false:" \
@@ -1083,8 +1080,7 @@ bool madara::utility::wait_false (
       "utility::wait_false:"
       " waiting on %s\n", variable.c_str ());
 
-    last_value = knowledge::KnowledgeRecord::Integer (
-      !knowledge.get (ref, settings));
+    last_value = knowledge::KnowledgeRecord (!knowledge.get (ref, settings));
 
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
       "utility::wait_false:"

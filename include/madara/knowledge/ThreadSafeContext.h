@@ -52,7 +52,7 @@ namespace madara
   }
 
   namespace knowledge
-  { 
+  {
     namespace rcw
     {
       class BaseTracker;
@@ -67,7 +67,7 @@ namespace madara
     typedef std::map <std::string, bool> CopySet;
 
     /**
-     * Typedef for vector of prefixes to use for a generic task. @see copy. 
+     * Typedef for vector of prefixes to use for a generic task. @see copy.
      **/
     typedef std::vector <std::string>    PrefixVector;
 
@@ -107,7 +107,7 @@ namespace madara
         get (const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const;
-      
+
       /**
        * Atomically returns the value of a variable.
        * @param   variable  reference to a variable (@see get_ref)
@@ -118,7 +118,280 @@ namespace madara
         get (const VariableReference & variable,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const;
-      
+
+    private:
+      /**
+       * Atomically returns a reference to the variable
+       * @param   key       unique identifier of the variable
+       * @param   settings  the settings for referring to variables
+       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
+       **/
+      madara::knowledge::KnowledgeRecord *
+        with (const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ());
+
+      /**
+       * Atomically returns the value of a variable.
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   settings  the settings for referring to variables
+       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
+       **/
+      madara::knowledge::KnowledgeRecord *
+        with (const VariableReference & variable,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ());
+      /**
+       * Atomically returns a reference to the variable
+       * @param   key       unique identifier of the variable
+       * @param   settings  the settings for referring to variables
+       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
+       **/
+      const madara::knowledge::KnowledgeRecord *
+        with (const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const;
+
+      /**
+       * Atomically returns the value of a variable.
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   settings  the settings for referring to variables
+       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
+       **/
+      const madara::knowledge::KnowledgeRecord *
+        with (const VariableReference & variable,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const;
+
+      template<typename T>
+      using MethodType = std::shared_ptr<T> (KnowledgeRecord::*) (void);
+
+      template<typename T, MethodType<T> Get, typename K>
+      std::shared_ptr<T> get_shared(K&& key,
+           const KnowledgeReferenceSettings & settings)
+      {
+        auto rec = with (std::forward<K>(key), settings);
+        if (rec) {
+          return (rec->*Get) ();
+        }
+        return nullptr;
+      }
+
+      template<typename T>
+      using ConstMethodType = std::shared_ptr<T> (KnowledgeRecord::*) (void) const;
+
+      template<typename T, ConstMethodType<T> Get, typename K>
+      std::shared_ptr<T> get_shared(K&& key,
+           const KnowledgeReferenceSettings & settings) const
+      {
+        auto rec = with (std::forward<K>(key), settings);
+        if (rec) {
+          return (rec->*Get) ();
+        }
+        return nullptr;
+      }
+
+    public:
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::string> share_string(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return get_shared<std::string, &KnowledgeRecord::share_string>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::string> share_string(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return get_shared<std::string, &KnowledgeRecord::share_string>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::string> take_string(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return get_shared<std::string, &KnowledgeRecord::take_string>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::string> take_string(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return get_shared<std::string, &KnowledgeRecord::take_string>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+        share_integers(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return get_shared<std::vector<KnowledgeRecord::Integer>,
+                 &KnowledgeRecord::share_integers>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+        share_integers(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return get_shared<std::vector<KnowledgeRecord::Integer>,
+                 &KnowledgeRecord::share_integers>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+        take_integers(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return get_shared<std::vector<KnowledgeRecord::Integer>,
+                 &KnowledgeRecord::take_integers>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+        take_integers(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return get_shared<std::vector<KnowledgeRecord::Integer>,
+                 &KnowledgeRecord::take_integers>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<double>>
+        share_doubles(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return get_shared<std::vector<double>,
+                 &KnowledgeRecord::share_doubles>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<double>>
+        share_doubles(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return get_shared<std::vector<double>,
+                 &KnowledgeRecord::share_doubles>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<double>>
+        take_doubles(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return get_shared<std::vector<double>,
+                 &KnowledgeRecord::take_doubles>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<double>>
+        take_doubles(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return get_shared<std::vector<double>,
+                 &KnowledgeRecord::take_doubles>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<unsigned char>>
+        share_binary(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return get_shared<std::vector<unsigned char>,
+                 &KnowledgeRecord::share_binary>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<unsigned char>>
+        share_binary(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return get_shared<std::vector<unsigned char>,
+                 &KnowledgeRecord::share_binary>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<unsigned char>>
+        take_binary(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return get_shared<std::vector<unsigned char>,
+                 &KnowledgeRecord::take_binary>(key, settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<unsigned char>>
+        take_binary(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return get_shared<std::vector<unsigned char>,
+                 &KnowledgeRecord::take_binary>(key, settings);
+      }
+
       /**
        * Atomically returns a reference to the variable. Variable references are
        * efficient mechanisms for reference variables individually--similar to
@@ -155,7 +428,7 @@ namespace madara
              size_t index,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Retrieves a value at a specified index within a knowledge array
        * @param   variable   reference to a variable (@see get_ref)
@@ -173,7 +446,7 @@ namespace madara
        * Retrieves a knowledge record from the key. This function is useful
        * for performance reasons and also for using a knowledge::KnowledgeRecord that
        * can be one of multiple types
-       * @param   key    unique identifier of the variable. Allows variable 
+       * @param   key    unique identifier of the variable. Allows variable
        *                 expansion.
        * @param  settings  the settings for referring to variables
        * @return         the knowledge record for the variable
@@ -181,7 +454,7 @@ namespace madara
       madara::knowledge::KnowledgeRecord * get_record (const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Atomically sets the value of a variable to an XML string.
        * @param   key       unique identifier of the variable
@@ -191,10 +464,10 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_xml (const std::string & key,
-        const char * value, size_t size, 
-        const KnowledgeUpdateSettings & settings = 
+        const char * value, size_t size,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically sets the value of a variable to an XML string.
        * @param   variable  reference to a variable (@see get_ref)
@@ -204,10 +477,10 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_xml (const VariableReference & variable,
-        const char * value, size_t size, 
-        const KnowledgeUpdateSettings & settings = 
+        const char * value, size_t size,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically sets the value of a variable to a JPEG image
        * @param   key       unique identifier of the variable
@@ -218,9 +491,9 @@ namespace madara
        **/
       int set_jpeg (const std::string & key,
         const unsigned char * value, size_t size,
-        const KnowledgeUpdateSettings & settings = 
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically sets the value of a variable to a JPEG image
        * @param   variable  reference to a variable (@see get_ref)
@@ -231,9 +504,9 @@ namespace madara
        **/
       int set_jpeg (const VariableReference & variable,
         const unsigned char * value, size_t size,
-        const KnowledgeUpdateSettings & settings = 
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically sets the value of a variable to an arbitrary string.
        * @param   key       unique identifier of the variable
@@ -243,10 +516,10 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_file (const std::string & key,
-        const unsigned char * value, size_t size, 
-        const KnowledgeUpdateSettings & settings = 
+        const unsigned char * value, size_t size,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically sets the value of a variable to an arbitrary string.
        * @param   variable  reference to a variable (@see get_ref)
@@ -256,10 +529,10 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_file (const VariableReference & variable,
-        const unsigned char * value, size_t size, 
-        const KnowledgeUpdateSettings & settings = 
+        const unsigned char * value, size_t size,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically sets the value of a variable to an XML string.
        * @param   key       unique identifier of the variable
@@ -269,10 +542,10 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_text (const std::string & key,
-        const char * value, size_t size, 
-        const KnowledgeUpdateSettings & settings = 
+        const char * value, size_t size,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically sets the value of a variable to a text file's contents.
        * @param   variable  reference to a variable (@see get_ref)
@@ -282,38 +555,112 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_text (const VariableReference & variable,
-        const char * value, size_t size, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to the specific record.
-       * Note, this does not copy meta information (e.g. quality, clock).
-       * @param   key       unique identifier of the variable
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const std::string & key,
-        const madara::knowledge::KnowledgeRecord & value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to the specific record.
-       * Note, this does not copy meta information (e.g. quality, clock).
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const madara::knowledge::KnowledgeRecord & value, 
-        const KnowledgeUpdateSettings & settings = 
+        const char * value, size_t size,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
 
       /**
-       * NON-Atomically sets the value of a variable to the specific record.
+       * Atomically sets the value of an array index to a value.
+       * @param   key       unique identifier of the variable
+       * @param   index     index within array
+       * @param   value     new value of the array index
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename T>
+      int set_index (const std::string & key,
+        size_t index, T&& value,
+        const KnowledgeUpdateSettings & settings =
+              KnowledgeUpdateSettings ());
+
+      /**
+       * Atomically sets the value of an array index to a value.
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   index     index within array
+       * @param   value     new value of the array index
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename T>
+      int set_index (const VariableReference & variable,
+        size_t index, T&& value,
+        const KnowledgeUpdateSettings & settings =
+              KnowledgeUpdateSettings ());
+
+      /**
+       * NON-Atomically sets the value of an array index to a value.
+       * THIS IS NOT A THREAD-SAFE FUNCTION.
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   index     index within array
+       * @param   value     new value of the array index
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename T>
+      int set_index_unsafe (const VariableReference & variable,
+        size_t index, T&& value,
+        const KnowledgeUpdateSettings & settings =
+              KnowledgeUpdateSettings ());
+
+      /**
+       * Atomically sets the value of a variable to the specific record.
+       * Note, this does not copy meta information (e.g. quality, clock).
+       * @param   key       unique identifier of the variable
+       * @param   value     new value of the variable
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename T>
+      int set (const std::string & key,
+        T && value,
+        const KnowledgeUpdateSettings & settings =
+              KnowledgeUpdateSettings ());
+
+      /**
+       * Atomically sets the value of a variable to an array.
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   value     new value of the variable
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename T>
+      int set (const VariableReference & variable,
+        T && value,
+        const KnowledgeUpdateSettings & settings =
+              KnowledgeUpdateSettings ());
+
+      /**
+       * Atomically sets the value of a variable to an array.
+       * @param   key       unique identifier of the variable
+       * @param   value     an array
+       * @param   size      number of elements in the array
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename T>
+      int set (const std::string & key,
+        const T * value,
+        uint32_t size,
+        const KnowledgeUpdateSettings & settings =
+              KnowledgeUpdateSettings ());
+
+      /**
+       * Atomically sets the value of a variable to an array.
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   value     an array of type T
+       * @param   size      number of elements in the array
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename T>
+      int set (const VariableReference & variable,
+        const T * value,
+        uint32_t size,
+        const KnowledgeUpdateSettings & settings =
+              KnowledgeUpdateSettings ());
+
+      /**
+       * NON-Atomically sets the value of a variable to the specific value.
        * THIS IS NOT A THREAD-SAFE FUNCTION.
        * Note, this does not copy meta information (e.g. quality, clock).
        * @param   variable  reference to a variable (@see get_ref)
@@ -321,267 +668,29 @@ namespace madara
        * @param   settings  settings for applying the update
        * @return   0 if the value was set. -1 if null key
        **/
+      template<typename T>
       int set_unsafe (const VariableReference & variable,
-        const madara::knowledge::KnowledgeRecord & value, 
-        const KnowledgeUpdateSettings & settings = 
+        T && value,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
-       * Atomically sets the value of a variable to an integer.
-       * @param   key       unique identifier of the variable
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const std::string & key,
-        madara::knowledge::KnowledgeRecord::Integer value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to an integer.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        madara::knowledge::KnowledgeRecord::Integer value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of an array index to a double.
-       * @param   key       unique identifier of the variable
-       * @param   index     index within array
-       * @param   value     new value of the array index
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set_index (const std::string & key,
-        size_t index, knowledge::KnowledgeRecord::Integer value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of an array index to a double.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   index     index within array
-       * @param   value     new value of the array index
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set_index (const VariableReference & variable,
-        size_t index, knowledge::KnowledgeRecord::Integer value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * NON-Atomically sets the value of an array index to a double.
+       * NON-Atomically sets the value of a variable to the specific array.
        * THIS IS NOT A THREAD-SAFE FUNCTION.
+       * Note, this does not copy meta information (e.g. quality, clock).
        * @param   variable  reference to a variable (@see get_ref)
-       * @param   index     index within array
-       * @param   value     new value of the array index
+       * @param   array     new array value of the variable
+       * @param   size      size of array pointed to by array
        * @param   settings  settings for applying the update
        * @return   0 if the value was set. -1 if null key
        **/
-      int set_index_unsafe (const VariableReference & variable,
-        size_t index, knowledge::KnowledgeRecord::Integer value, 
-        const KnowledgeUpdateSettings & settings = 
+      template<typename T>
+      int set_unsafe (const VariableReference & variable,
+        const T * array,
+        size_t size,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to an integer array.
-       * @param   key       unique identifier of the variable
-       * @param   value     an array of Integers
-       * @param   size      number of elements in the array
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const std::string & key,
-        const madara::knowledge::KnowledgeRecord::Integer * value,
-        uint32_t size,
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to an integer array.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     an array of Integers
-       * @param   size      number of elements in the array
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const madara::knowledge::KnowledgeRecord::Integer * value,
-        uint32_t size,
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to an integer array.
-       * @param   key       unique identifier of the variable
-       * @param   value     a STL vector of Integers
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const std::string & key,
-        const std::vector <KnowledgeRecord::Integer> & value,
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to an integer array.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     a STL vector of Integers
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const std::vector <KnowledgeRecord::Integer> & value,
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a double.
-       * @param   key       unique identifier of the variable
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const std::string & key,
-        double value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a double.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        double value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of an array index to a double.
-       * @param   key       unique identifier of the variable
-       * @param   index     index within array
-       * @param   value     new value of the array index
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set_index (const std::string & key,
-        size_t index, double value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of an array index to a double.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   index     index within array
-       * @param   value     new value of the array index
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set_index (const VariableReference & variable,
-        size_t index, double value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * NON-Atomically sets the value of an array index to a double.
-       * THIS IS NOT A THREAD-SAFE FUNCTION.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   index     index within array
-       * @param   value     new value of the array index
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set_index_unsafe (const VariableReference & variable,
-        size_t index, double value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a double array.
-       * @param   key       unique identifier of the variable
-       * @param   value     an array of doubles
-       * @param   size      number of elements in the array
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const std::string & key,
-        const double * value,
-        uint32_t size,
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a double array.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     an array of doubles
-       * @param   size      number of elements in the array
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const double * value,
-        uint32_t size,
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a double array.
-       * @param   key       unique identifier of the variable
-       * @param   value     a STL vector of doubles
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const std::string & key,
-        const std::vector <double> & value,
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a double array.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     a STL vector of doubles
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const std::vector <double> & value,
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a string
-       * @param   key       unique identifier of the variable
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const std::string & key,
-        const std::string & value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a string
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const std::string & value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically reads a file into a variable
        * @param   key       unique identifier of the variable
@@ -593,9 +702,9 @@ namespace madara
       read_file (
         const std::string & key,
         const std::string & filename,
-        const KnowledgeUpdateSettings & settings = 
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically reads a file into a variable
        * @param   variable  reference to a variable (@see get_ref)
@@ -607,7 +716,7 @@ namespace madara
       read_file (
         const VariableReference & variable,
         const std::string & filename,
-        const KnowledgeUpdateSettings & settings = 
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
 
       /**
@@ -621,11 +730,11 @@ namespace madara
        *          -1 if null key
        **/
       int set_if_unequal (const std::string & key,
-        madara::knowledge::KnowledgeRecord::Integer value, 
-        uint32_t quality, uint64_t clock, 
-        const KnowledgeUpdateSettings & settings = 
+        madara::knowledge::KnowledgeRecord::Integer value,
+        uint32_t quality, uint64_t clock,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically sets if the variable value will be different
        * @param   key       unique identifier of the variable
@@ -637,11 +746,11 @@ namespace madara
        *          -1 if null key
        **/
       int set_if_unequal (const std::string & key,
-        double value, 
-        uint32_t quality, uint64_t clock, 
-        const KnowledgeUpdateSettings & settings = 
+        double value,
+        uint32_t quality, uint64_t clock,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically sets if the variable value will be different
        * @param   key       unique identifier of the variable
@@ -653,11 +762,11 @@ namespace madara
        *          -1 if null key
        **/
       int set_if_unequal (const std::string & key,
-        const std::string & value, 
-        uint32_t quality, uint64_t clock, 
-        const KnowledgeUpdateSettings & settings = 
+        const std::string & value,
+        uint32_t quality, uint64_t clock,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically sets if the variable value meets update conditions.
        * Appropriate conditions include clock being >= old clock, quality
@@ -670,7 +779,7 @@ namespace madara
        **/
       int update_record_from_external (
         const std::string & key, const knowledge::KnowledgeRecord & rhs,
-        const KnowledgeUpdateSettings & settings = 
+        const KnowledgeUpdateSettings & settings =
         KnowledgeUpdateSettings (true));
 
       /**
@@ -691,14 +800,14 @@ namespace madara
 
       /**
        * Atomically gets quality of a variable
-       * @param   key       unique identifier of the 
+       * @param   key       unique identifier of the
        * @param   settings       settings for referring to a knowledge variable
        * @return   quality associated with the variable
        **/
       uint32_t get_quality (const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Atomically gets write quality of this process for a variable
        * @param   key       unique identifier of the variable
@@ -708,7 +817,7 @@ namespace madara
       uint32_t get_write_quality (const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Atomically sets quality of this process for a variable
        * @param   key            unique identifier of the variable
@@ -717,7 +826,7 @@ namespace madara
        * @param   settings       settings for referring to a knowledge variable
        * @return   write quality associated with the variable
        **/
-      uint32_t set_quality (const std::string & key, 
+      uint32_t set_quality (const std::string & key,
         uint32_t quality, bool force_update,
         const KnowledgeReferenceSettings & settings);
 
@@ -849,8 +958,8 @@ namespace madara
        * @param   settings  settings for applying the update
        * @return                 new value of variable
        **/
-      madara::knowledge::KnowledgeRecord inc (const std::string & key, 
-        const KnowledgeUpdateSettings & settings = 
+      madara::knowledge::KnowledgeRecord inc (const std::string & key,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
 
       /**
@@ -859,8 +968,8 @@ namespace madara
        * @param   settings  settings for applying the update
        * @return                 new value of variable
        **/
-      madara::knowledge::KnowledgeRecord inc (const VariableReference & variable, 
-        const KnowledgeUpdateSettings & settings = 
+      madara::knowledge::KnowledgeRecord inc (const VariableReference & variable,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
 
       /**
@@ -875,18 +984,18 @@ namespace madara
        * @param   settings  settings for applying the update
        * @return                 new value of variable
        **/
-      madara::knowledge::KnowledgeRecord dec (const std::string & key, 
-        const KnowledgeUpdateSettings & settings = 
+      madara::knowledge::KnowledgeRecord dec (const std::string & key,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Atomically decrements the value of the variable
        * @param   variable  reference to a variable (@see get_ref)
        * @param   settings  settings for applying the update
        * @return                 new value of variable
        **/
-      madara::knowledge::KnowledgeRecord dec (const VariableReference & variable, 
-        const KnowledgeUpdateSettings & settings = 
+      madara::knowledge::KnowledgeRecord dec (const VariableReference & variable,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
 
       /**
@@ -919,7 +1028,7 @@ namespace madara
       bool delete_variable (const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Deletes keys starting with the given prefix
        * @param   prefix         string which starts all variables to delete
@@ -928,7 +1037,7 @@ namespace madara
       void delete_prefix (const std::string & prefix,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Deletes the expression from the interpreter cache
        * @param   expression     the KaRL logic in the interpreter context
@@ -945,7 +1054,7 @@ namespace madara
       bool exists (const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const;
-      
+
       /**
        * Checks if a knowledge variable exists in the context
        *
@@ -988,14 +1097,14 @@ namespace madara
        * Unlocks the mutex on this context.
        **/
       void unlock (void) const;
-      
+
       /**
        * Atomically increments the Lamport clock and returns the new
        * clock time (intended for sending knowledge updates).
        * @param   settings  settings for applying the update
        * @return        new clock time
        **/
-      uint64_t inc_clock (const KnowledgeUpdateSettings & settings = 
+      uint64_t inc_clock (const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
 
       /**
@@ -1006,7 +1115,7 @@ namespace madara
        * @return        new clock time for variable
        **/
       uint64_t inc_clock (const std::string & key,
-        const KnowledgeUpdateSettings & settings = 
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
 
       /**
@@ -1024,7 +1133,7 @@ namespace madara
        * @param   settings  settings for applying the update
        * @return           new clock time for variable
        **/
-      uint64_t set_clock (const std::string & key, 
+      uint64_t set_clock (const std::string & key,
         uint64_t clock,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
@@ -1060,7 +1169,7 @@ namespace madara
        * @return            variable expanded statement
        **/
       std::string expand_statement (const std::string & statement) const;
-      
+
       /**
        * Copies variables and values from source to this context.
        * PERFORMANCE NOTES: predicates with prefixes can limit
@@ -1108,7 +1217,7 @@ namespace madara
        **/
       CompiledExpression
         compile (const std::string & expression);
-      
+
       /**
        * Defines an external function
        * @param  name       name of the function
@@ -1119,7 +1228,7 @@ namespace madara
         knowledge::KnowledgeRecord (*func) (FunctionArguments &, Variables &),
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Defines a named function that can distinguish the name it was called
        * with in MADARA
@@ -1143,7 +1252,7 @@ namespace madara
                             const KnowledgeReferenceSettings & settings =
                             KnowledgeReferenceSettings ());
 #endif
-      
+
 #ifdef _MADARA_PYTHON_CALLBACKS_
       /**
        * Defines a named python function
@@ -1159,19 +1268,19 @@ namespace madara
       /**
        * Defines a MADARA KaRL function
        * @param  name       name of the function
-       * @param  expression KaRL function body      
-       * @param  settings   settings for referring to variables 
+       * @param  expression KaRL function body
+       * @param  settings   settings for referring to variables
        **/
       void define_function (const std::string & name,
         const std::string & expression,
         const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Defines a MADARA KaRL function
        * @param  name       name of the function
-       * @param  expression KaRL function body     
-       * @param  settings   settings for referring to variables  
+       * @param  expression KaRL function body
+       * @param  settings   settings for referring to variables
        **/
       void define_function (const std::string & name,
         const CompiledExpression & expression,
@@ -1187,7 +1296,7 @@ namespace madara
       Function * retrieve_function (const std::string & name,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Evaluate a compiled expression. Please note that if you update
        * any variables here, they will not be sent through any transports
@@ -1197,9 +1306,9 @@ namespace madara
        * @return              result of the evaluation
        **/
       knowledge::KnowledgeRecord evaluate (CompiledExpression expression,
-        const KnowledgeUpdateSettings & settings = 
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
-      
+
       /**
        * Evaluate a component node-rooted tree. Please note that if you update
        * any variables here, they will not be sent through any transports
@@ -1210,7 +1319,7 @@ namespace madara
        **/
       knowledge::KnowledgeRecord evaluate (
         expression::ComponentNode * root,
-        const KnowledgeUpdateSettings & settings = 
+        const KnowledgeUpdateSettings & settings =
                     KnowledgeUpdateSettings ());
 
 #endif // _MADARA_NO_KARL_
@@ -1225,7 +1334,7 @@ namespace madara
        * database in a format that can be easily parseable. Consequently,
        * strings are delineated in this function by being included in single
        * quotes. Arrays are delineated with array indices [].
-       * 
+       *
        * This is not appropriate
        * for saving the context if it has binary data inside of it, as
        * only the size of the data entry would be saved.
@@ -1300,7 +1409,7 @@ namespace madara
       int get_log_level (void);
 
       /**
-      * Sets the log level 
+      * Sets the log level
       * @param  level  the maximum detail level to print
       **/
       void set_log_level (int level);
@@ -1424,7 +1533,7 @@ namespace madara
        **/
       int64_t load_context (const std::string & filename,
         std::string & id,
-        const KnowledgeUpdateSettings & settings = 
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings (true, true, true, false));
 
       /**
@@ -1540,19 +1649,15 @@ namespace madara
         knowledge::KnowledgeRecord * record,
         const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
 
+      template<typename... Args>
       int set_unsafe_impl (const VariableReference & variable,
-        const madara::knowledge::KnowledgeRecord & value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
+        const KnowledgeUpdateSettings & settings,
+        Args&&... args);
 
+      template<typename T>
       int set_index_unsafe_impl (const VariableReference & variable,
-        size_t index, knowledge::KnowledgeRecord::Integer value, 
-        const KnowledgeUpdateSettings & settings = 
-              KnowledgeUpdateSettings ());
-
-      int set_index_unsafe_impl (const VariableReference & variable,
-        size_t index, double value, 
-        const KnowledgeUpdateSettings & settings = 
+        size_t index, T&& value,
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings ());
 
       std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
@@ -1572,7 +1677,7 @@ namespace madara
 
       /// map of function names to functions
       FunctionMap functions_;
-      
+
       /// KaRL interpreter
       madara::expression::Interpreter  *   interpreter_;
 

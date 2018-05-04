@@ -25,7 +25,7 @@ madara::expression::SystemCallCos::~SystemCallCos (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallCos::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -39,7 +39,8 @@ madara::expression::SystemCallCos::prune (bool & can_change)
   if (nodes_.size () == 1)
   {
     bool arg_can_change = false;
-    result = cos (nodes_[0]->prune (arg_can_change).to_double ());
+    result = knowledge::KnowledgeRecord (
+        cos (nodes_[0]->prune (arg_can_change).to_double ()));
 
     if (!arg_can_change && dynamic_cast <LeafNode *> (nodes_[0]) == 0)
     {
@@ -73,7 +74,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call cos is returning the cosine "
       "of its first argument\n");
 
-    return_value = cos (nodes_[0]->evaluate (settings).to_double ());
+    return_value = knowledge::KnowledgeRecord (
+        cos (nodes_[0]->evaluate (settings).to_double ()));
   }
   else
   {

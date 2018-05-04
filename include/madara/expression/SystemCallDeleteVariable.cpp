@@ -24,7 +24,7 @@ madara::expression::SystemCallDeleteVariable::~SystemCallDeleteVariable (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallDeleteVariable::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -77,7 +77,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call delete_variable is returning the clock "
       "of its first argument\n");
 
-    return madara::knowledge::KnowledgeRecord::Integer (
+    return madara::knowledge::KnowledgeRecord (
       context_.delete_variable (
         nodes_[0]->evaluate (settings).to_string ()));
   }

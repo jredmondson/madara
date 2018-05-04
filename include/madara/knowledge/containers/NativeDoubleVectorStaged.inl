@@ -84,7 +84,7 @@ madara::knowledge::containers::NativeDoubleVectorStaged::operator= (
   if (!has_changed_)
     has_changed_ = true;
 
-  value_ = rhs;
+  value_ = knowledge::KnowledgeRecord (rhs);
 }
 
 inline void
@@ -307,12 +307,12 @@ madara::knowledge::containers::NativeDoubleVectorStaged::set (
   if (!has_changed_)
     has_changed_ = true;
 
-  value_ = value;
+  value_ = knowledge::KnowledgeRecord (value);
 }
  
 inline void
 madara::knowledge::containers::NativeDoubleVectorStaged::set_quality (
-  size_t index,
+  size_t /*index*/,
   uint32_t quality,
   const KnowledgeReferenceSettings & settings)
 {

@@ -143,7 +143,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     }
     else if (args[j].type () != knowledge::KnowledgeRecord::INTEGER)
     {
-      args[j] = (*i)->evaluate (settings).to_integer ();
+      args[j] = knowledge::KnowledgeRecord ((*i)->evaluate (settings).to_integer ());
     }
   }
 

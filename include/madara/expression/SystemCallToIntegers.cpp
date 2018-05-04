@@ -24,7 +24,7 @@ madara::expression::SystemCallToIntegers::~SystemCallToIntegers (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallToIntegers::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -66,7 +66,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call to_integers is converting an argument\n");
 
-    return nodes_[0]->evaluate (settings).to_integers ();
+    return knowledge::KnowledgeRecord (
+        nodes_[0]->evaluate (settings).to_integers ());
   }
   else
   {
@@ -75,7 +76,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call to_integers is converting 0\n");
     
-    return return_value.to_integers ();
+    return knowledge::KnowledgeRecord (return_value.to_integers ());
   }
 }
 

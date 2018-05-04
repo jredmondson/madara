@@ -100,7 +100,7 @@ madara::knowledge::Variables::exists (const VariableReference & variable,
 
 void
 madara::knowledge::Variables::apply_modified (
-  const KnowledgeUpdateSettings & settings)
+  const KnowledgeUpdateSettings & /*settings*/)
 {
   if (context_)
   {
@@ -748,7 +748,7 @@ madara::knowledge::Variables::evaluate (
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Variables::evaluate. Context not set correctly\n");
 
-    return madara::knowledge::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord (0);
   }
 }
 
@@ -766,7 +766,7 @@ madara::knowledge::Variables::evaluate (
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
       "Variables::evaluate. Context not set correctly\n");
 
-    return madara::knowledge::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord (0);
   }
 }
 

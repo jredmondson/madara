@@ -27,7 +27,7 @@ madara::expression::SystemCallPrintSystemCalls::~SystemCallPrintSystemCalls (voi
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallPrintSystemCalls::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (1);
+  return madara::knowledge::KnowledgeRecord (1);
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -293,7 +293,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     context_.print (
       calls_[nodes_[0]->evaluate (settings).to_string ()], 0);
 
-    return madara::knowledge::KnowledgeRecord::Integer (1);
+    return madara::knowledge::KnowledgeRecord (1);
   }
   else if (nodes_.size () == 0)
   {

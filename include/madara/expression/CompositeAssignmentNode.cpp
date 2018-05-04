@@ -29,7 +29,7 @@ madara::expression::CompositeAssignmentNode::CompositeAssignmentNode (
 madara::knowledge::KnowledgeRecord
 madara::expression::CompositeAssignmentNode::item (void) const
 {
-  return "=";
+  return knowledge::KnowledgeRecord ("=");
 }
 
 

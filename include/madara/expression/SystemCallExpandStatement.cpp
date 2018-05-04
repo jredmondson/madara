@@ -24,7 +24,7 @@ madara::expression::SystemCallExpandStatement::~SystemCallExpandStatement (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallExpandStatement::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -78,7 +78,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call expand_statement is returning the expansion "
       "of %s.\n", statement.c_str ());
 
-    return context_.expand_statement (statement);
+    return knowledge::KnowledgeRecord (context_.expand_statement (statement));
   }
   else
   {

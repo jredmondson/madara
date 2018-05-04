@@ -72,9 +72,9 @@ madara::knowledge::containers::Counter::Counter (
 
 madara::knowledge::containers::Counter::Counter (const Counter & rhs)
 : BaseContainer (rhs), context_ (rhs.context_),
+    variable_ (rhs.variable_),
     id_ (rhs.id_),
     counters_ (rhs.counters_),
-    variable_ (rhs.variable_),
     aggregate_count_ (rhs.aggregate_count_)
 {
 

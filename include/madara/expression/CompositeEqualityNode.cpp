@@ -78,7 +78,7 @@ madara::expression::CompositeEqualityNode::prune (bool & can_change)
 
   can_change = left_child_can_change || right_child_can_change;
 
-  return knowledge::KnowledgeRecord::Integer (left_value == right_value);
+  return knowledge::KnowledgeRecord (left_value == right_value);
 }
 
 /// Evaluates the node and its children. This does not prune any of
@@ -87,7 +87,7 @@ madara::knowledge::KnowledgeRecord
 madara::expression::CompositeEqualityNode::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  return knowledge::KnowledgeRecord::Integer (
+  return knowledge::KnowledgeRecord (
     left_->evaluate (settings) == right_->evaluate (settings));
 }
 

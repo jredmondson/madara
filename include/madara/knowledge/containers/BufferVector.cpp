@@ -40,8 +40,8 @@ madara::knowledge::containers::BufferVector::BufferVector (
 madara::knowledge::containers::BufferVector::BufferVector (const BufferVector & rhs)
 : BaseContainer (rhs), context_ (rhs.context_),
   vector_ (rhs.vector_),
-  delimiter_ (rhs.delimiter_),
-  size_ (rhs.size_)
+  size_ (rhs.size_),
+  delimiter_ (rhs.delimiter_)
 {
 
 }
@@ -206,7 +206,7 @@ madara::knowledge::containers::BufferVector::resize (
     {
       size_t old_size = vector_.size ();
 
-      if (old_size != size)
+      if (old_size != (size_t)size)
       {
         vector_.resize (size);
         

@@ -25,7 +25,7 @@ madara::expression::SystemCallRandInt::~SystemCallRandInt (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallRandInt::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -68,7 +68,7 @@ madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallRandInt::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  knowledge::KnowledgeRecord::Integer floor (0), ceiling (1);
+  int64_t floor (0), ceiling (1);
   bool update_srand = true;
   
   if (nodes_.size () > 0)
@@ -90,7 +90,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     "System call rand_int called with %" PRId64 ", %" PRId64 ", %d.\n",
     floor, ceiling, update_srand);
 
-  return utility::rand_int (floor, ceiling, update_srand);
+  return knowledge::KnowledgeRecord (
+      utility::rand_int (floor, ceiling, update_srand));
 }
 
 // accept a visitor

@@ -24,7 +24,7 @@ madara::expression::SystemCallPrint::~SystemCallPrint (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallPrint::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -78,7 +78,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 
     context_.print (statement, 0);
 
-    return_value = knowledge::KnowledgeRecord::Integer (0);
+    return_value = knowledge::KnowledgeRecord (0);
   }
   else if (nodes_.size () == 2)
   {
@@ -92,7 +92,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     
     context_.print (statement, log_level);
 
-    return_value = knowledge::KnowledgeRecord::Integer (0);
+    return_value = knowledge::KnowledgeRecord (0);
   }
   else
   {

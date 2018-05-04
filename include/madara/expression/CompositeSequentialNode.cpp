@@ -22,7 +22,7 @@ madara::expression::CompositeSequentialNode::CompositeSequentialNode (
 madara::knowledge::KnowledgeRecord
 madara::expression::CompositeSequentialNode::item (void) const
 {
-  return ",";
+  return knowledge::KnowledgeRecord (",");
 }
 
 /// Prune the tree of unnecessary nodes. 

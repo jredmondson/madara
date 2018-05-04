@@ -324,7 +324,6 @@ madara::transport::MulticastTransportReadThread::run (void)
     // allocate a buffer to send
     char * buffer = buffer_.get_ptr ();
     const char * print_prefix = "MulticastTransportReadThread::run";
-    int64_t buffer_remaining = settings_.queue_length;
 
     madara_logger_log (this->context_->get_logger (), logger::LOG_MINOR,
       "%s:" \

@@ -31,13 +31,14 @@ madara::expression::SystemCallNode::~SystemCallNode (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallNode::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 // accept a visitor
 void 
 madara::expression::SystemCallNode::accept (madara::expression::Visitor &visitor) const
 {
+  (void)visitor;
 }
 
 #endif // _MADARA_NO_KARL_

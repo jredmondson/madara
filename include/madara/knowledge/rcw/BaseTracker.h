@@ -115,7 +115,7 @@ namespace madara { namespace knowledge { namespace rcw
     /// Set record @ref points to. No locking, so be careful!
     static void set(KnowledgeBase &kb, const VariableReference &ref, KnowledgeRecord rec)
     {
-      kb.get_context().set_unsafe_impl(ref, rec, EvalSettings());
+      kb.get_context().set_unsafe(ref, rec, EvalSettings());
     }
 
     /// Set index in record @ref_ points to. No locking, so be careful!

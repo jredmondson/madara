@@ -69,30 +69,30 @@ namespace madara
        * @param   host      hostname/ip of this machine
        * @param   config    transport settings to use for dissemination
        **/
-      KnowledgeBaseImpl (const std::string & host, 
+      KnowledgeBaseImpl (const std::string & host,
         const madara::transport::TransportSettings & config);
 
       /**
        * Destructor
        **/
       ~KnowledgeBaseImpl ();
-      
+
       /**
        * Locks the context to prevent updates over the network
        **/
       void lock (void);
-      
+
       /**
        * Unlocks the context to allow updates over the network (is only
        * necessary if the context has been explicitly locked)
        **/
       void unlock (void);
-      
+
       /**
        * Starts the transport mechanism for dissemination if it is closed
        **/
       void activate_transport (void);
-      
+
       /**
        * Gets the number of transports
        * @return the number of transports
@@ -103,7 +103,7 @@ namespace madara
        * Closes the transport mechanism so no dissemination is possible
        **/
       void close_transport (void);
-      
+
       /**
        * Copies variables and values from source to this context.
        * PERFORMANCE NOTES: predicates with prefixes can limit
@@ -148,7 +148,7 @@ namespace madara
       madara::knowledge::KnowledgeRecord get (const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Atomically returns the value of a variable.
        * @param   variable  reference to a variable (@see get_ref)
@@ -159,7 +159,7 @@ namespace madara
         get (const VariableReference & variable,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Atomically returns a reference to the variable. Variable references are
        * efficient mechanisms for reference variables individually--similar to
@@ -172,7 +172,7 @@ namespace madara
         get_ref (const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Marks the variable reference as updated
        * @param   variable  reference to a variable (@see get_ref)
@@ -188,7 +188,7 @@ namespace madara
        **/
       void mark_modified (const std::string & name,
           const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
-      
+
       /**
        * Retrieves a value at a specified index within a knowledge array
        * @param key              knowledge location
@@ -200,7 +200,7 @@ namespace madara
              size_t index,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
-      
+
       /**
        * Retrieves a value at a specified index within a knowledge array
        * @param   variable   reference to a variable (@see get_ref)
@@ -265,7 +265,7 @@ namespace madara
        **/
       CompiledExpression
         compile (const std::string & expression);
-       
+
       /**
        * Evaluates an expression. Always disseminates modifications.
        *
@@ -273,7 +273,7 @@ namespace madara
        * @return                value of expression
        **/
       madara::knowledge::KnowledgeRecord evaluate (const std::string & expression);
-      
+
       /**
        * Evaluates an expression
        *
@@ -295,7 +295,7 @@ namespace madara
       madara::knowledge::KnowledgeRecord evaluate (
         CompiledExpression & expression,
         const EvalSettings & settings);
-      
+
       /**
        * Evaluates a root-based tree (result of compile)
        *
@@ -316,7 +316,7 @@ namespace madara
        * @return                value of expression
        **/
       madara::knowledge::KnowledgeRecord wait (const std::string & expression);
-      
+
       /**
        * Waits for an expression to be non-zero. Provides additional settings
        * for fine-tuning the time to wait and atomic print statements.
@@ -340,7 +340,7 @@ namespace madara
        **/
       madara::knowledge::KnowledgeRecord wait (CompiledExpression & expression,
         const WaitSettings & settings);
-      
+
       /**
        * Defines a function
        * @param  name       name of the function
@@ -348,7 +348,7 @@ namespace madara
        **/
       void define_function (const std::string & name,
         knowledge::KnowledgeRecord (*func) (FunctionArguments &, Variables &));
-      
+
       /**
        * Defines a named function that can distinguish the name it was called
        * with in MADARA
@@ -357,7 +357,7 @@ namespace madara
        **/
       void define_function (const std::string & name,
         knowledge::KnowledgeRecord (*func) (const char *, FunctionArguments &, Variables &));
-      
+
 #ifdef _MADARA_JAVA_
       /**
        * Defines a named python function
@@ -366,7 +366,7 @@ namespace madara
        **/
       void define_function (const std::string & name, jobject callable);
 #endif
-      
+
 #ifdef _MADARA_PYTHON_CALLBACKS_
       /**
        * Defines a named python function
@@ -379,15 +379,15 @@ namespace madara
       /**
        * Defines a MADARA KaRL function
        * @param  name       name of the function
-       * @param  expression KaRL function body       
+       * @param  expression KaRL function body
        **/
       void define_function (const std::string & name,
         const std::string & expression);
-      
+
       /**
        * Defines a MADARA KaRL function
        * @param  name       name of the function
-       * @param  expression KaRL function body       
+       * @param  expression KaRL function body
        **/
       void define_function (const std::string & name,
         const CompiledExpression & expression);
@@ -401,8 +401,8 @@ namespace madara
        * @param settings           settings for updating/evaluating
        * @return   -1 if unsuccessful, 0 otherwise
        */
-      int read_file (const std::string & knowledge_key, 
-                     const std::string & filename, 
+      int read_file (const std::string & knowledge_key,
+                     const std::string & filename,
         const EvalSettings & settings =
           EvalSettings ());
 
@@ -412,7 +412,7 @@ namespace madara
        * @param knowledge_key       key to read the file from
        * @return   -1 if unsuccessful, 0 otherwise
        */
-      ssize_t write_file (const std::string & knowledge_key, 
+      ssize_t write_file (const std::string & knowledge_key,
                       const std::string & filename);
 
       /**
@@ -420,7 +420,7 @@ namespace madara
        * @param policy_key          key to read the policy into
        * @param policy_file         file to read the policy from
        */
-      int read_policy (const std::string & policy_key, 
+      int read_policy (const std::string & policy_key,
                        const std::string & policy_file);
 #ifdef _USE_CID_
 
@@ -434,7 +434,7 @@ namespace madara
        * within the latencies.algorithm_configs variable.
        **/
       void run_all (void);
-      
+
       /**
        * Starts a latency round
        * @return  result of operation or -1 if we are shutting down
@@ -458,7 +458,7 @@ namespace madara
        * @param   output    stream to print summations to
        **/
       void print_all_summations (std::ostream & output);
-      
+
       /**
        * Votes with the lowest algorithm results current in the Transport settings.
        * This is only useful if latency collection is enabled and run_all has been
@@ -469,90 +469,38 @@ namespace madara
 
 #endif // _USE_CID_
 
-      /**
-       * Sets a knowledge value to a specified value
-       *
-       * @param key             knowledge variable location
-       * @param value           value to set at location
-       * @param settings        settings for applying the update
-       * @return                0 if successful, -1 if key is null, and
-       *                        -2 if quality isn't high enough
-       **/
-      int set (const std::string & key, madara::knowledge::KnowledgeRecord::Integer value, 
-        const EvalSettings & settings);
-      
-      /**
-       * Sets an index within an array to a specified value
-       *
-       * @param key             knowledge variable location
-       * @param index           index of the location in the array
-       * @param value           value to set at location
-       * @param settings        settings for applying the update
-       * @return                0 if successful, -1 if key is null, and
-       *                        -2 if quality isn't high enough
-       **/
-      int set_index (const std::string & key,
-        size_t index,
-        knowledge::KnowledgeRecord::Integer value,
-        const EvalSettings & settings =
-          EvalSettings ());
+      template <typename K, typename V>
+      int set (K&& key, V&& val, const EvalSettings & settings) {
+        int result = map_.set (std::forward<K>(key),
+                               std::forward<V>(val), settings);
 
-      /**
-       * Sets a knowledge value to a specified value
-       *
-       * @param key             knowledge variable location
-       * @param value           array of integers to set to this location
-       * @param size            number of elements in the array
-       * @param settings        settings for applying the update
-       * @return                0 if successful, -1 if key is null, and
-       *                        -2 if quality isn't high enough
-       **/
-      int set (const std::string & key,
-        const knowledge::KnowledgeRecord::Integer * value,
-        uint32_t size,
-        const EvalSettings & settings = EvalSettings ());
-      
-      /**
-       * Sets a knowledge value to a specified value
-       *
-       * @param key             knowledge variable location
-       * @param value           array of integers to set to this location
-       * @param settings        settings for applying the update
-       * @return                0 if successful, -1 if key is null, and
-       *                        -2 if quality isn't high enough
-       **/
-      int set (const std::string & key,
-        const std::vector <KnowledgeRecord::Integer> & value,
-        const EvalSettings & settings = EvalSettings ());
-      
-      /**
-       * Sets a knowledge value to a specified value
-       *
-       * @param key             knowledge variable location
-       * @param value           value to set at location
-       * @param settings        settings for applying the update
-       * @return                0 if successful, -1 if key is null, and
-       *                        -2 if quality isn't high enough
-       **/
-      int set (const std::string & key, double value, 
-        const EvalSettings & settings);
-      
-      /**
-       * Sets an index within an array to a specified value
-       *
-       * @param key             knowledge variable location
-       * @param index           index of the location in the array
-       * @param value           value to set at location
-       * @param settings        settings for applying the update
-       * @return                0 if successful, -1 if key is null, and
-       *                        -2 if quality isn't high enough
-       **/
-      int set_index (const std::string & key,
-        size_t index,
-        double value,
-        const EvalSettings & settings =
-          EvalSettings ());
-      
+        send_modifieds ("KnowledgeBaseImpl:set", settings);
+
+        return result;
+      }
+
+      template <typename K, typename V>
+      int set_index (K&& key, size_t i, V&& val,
+                     const EvalSettings & settings) {
+        int result = map_.set_index (
+            std::forward<K>(key), i,
+            std::forward<V>(val), settings);
+
+        send_modifieds ("KnowledgeBaseImpl:set_index", settings);
+
+        return result;
+      }
+
+      template <typename K, typename V>
+      int set (K&& key, const V * arr, size_t size,
+               const EvalSettings & settings) {
+        int result = map_.set (std::forward<K>(key), arr, size, settings);
+
+        send_modifieds ("KnowledgeBaseImpl:set", settings);
+
+        return result;
+      }
+
       /**
        * Atomically reads a file into a variable
        * @param   variable  reference to a variable (@see get_ref)
@@ -566,133 +514,7 @@ namespace madara
         const std::string & filename,
         const EvalSettings & settings =
           EvalSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a string
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const std::string & value,
-        const EvalSettings & settings =
-          EvalSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a KnowledgeRecord
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const KnowledgeRecord & value,
-        const EvalSettings & settings =
-          EvalSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a double array.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     a STL vector of doubles
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const std::vector <double> & value,
-        const EvalSettings & settings =
-          EvalSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a double array.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     an array of doubles
-       * @param   size      number of elements in the array
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const double * value,
-        uint32_t size,
-        const EvalSettings & settings =
-          EvalSettings ());
-      
-      /**
-       * Atomically sets the value of an array index to a double.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   index     index within array
-       * @param   value     new value of the array index
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set_index (const VariableReference & variable,
-        size_t index, double value,
-        const EvalSettings & settings =
-          EvalSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to a double.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        double value,
-        const EvalSettings & settings =
-          EvalSettings ());
- 
-      /**
-       * Atomically sets the value of a variable to an integer array.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     a STL vector of Integers
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const std::vector <KnowledgeRecord::Integer> & value,
-        const EvalSettings & settings =
-          EvalSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to an integer array.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     an array of Integers
-       * @param   size      number of elements in the array
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        const madara::knowledge::KnowledgeRecord::Integer * value,
-        uint32_t size,
-        const EvalSettings & settings =
-          EvalSettings ());
 
-      /**
-       * Atomically sets the value of an array index to a double.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   index     index within array
-       * @param   value     new value of the array index
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set_index (const VariableReference & variable,
-        size_t index, knowledge::KnowledgeRecord::Integer value,
-        const EvalSettings & settings =
-          EvalSettings ());
-      
-      /**
-       * Atomically sets the value of a variable to an integer.
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     new value of the variable
-       * @param   settings  settings for applying the update
-       * @return   0 if the value was set. -1 if null key
-       **/
-      int set (const VariableReference & variable,
-        madara::knowledge::KnowledgeRecord::Integer value, 
-        const EvalSettings & settings =
-          EvalSettings ());
-      
       /**
        * Atomically sets the value of a variable to a text file's contents.
        * @param   variable  reference to a variable (@see get_ref)
@@ -702,10 +524,10 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_text (const VariableReference & variable,
-        const char * value, size_t size, 
+        const char * value, size_t size,
         const EvalSettings & settings =
           EvalSettings ());
-      
+
       /**
        * Atomically sets the value of a variable to the contents of a file.
        * @param   variable  reference to a variable (@see get_ref)
@@ -715,10 +537,10 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_file (const VariableReference & variable,
-        const unsigned char * value, size_t size, 
+        const unsigned char * value, size_t size,
         const EvalSettings & settings =
           EvalSettings ());
-      
+
       /**
        * Atomically sets the value of a variable to a JPEG image
        * @param   variable  reference to a variable (@see get_ref)
@@ -728,10 +550,10 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_jpeg (const VariableReference & variable,
-        const unsigned char * value, size_t size, 
+        const unsigned char * value, size_t size,
         const EvalSettings & settings =
           EvalSettings ());
-      
+
       /**
        * Atomically sets the value of a variable to an XML string.
        * @param   variable  reference to a variable (@see get_ref)
@@ -741,49 +563,9 @@ namespace madara
        * @return   0 if the value was set. -1 if null key
        **/
       int set_xml (const VariableReference & variable,
-        const char * value, size_t size, 
+        const char * value, size_t size,
         const EvalSettings & settings =
           EvalSettings ());
-      
-      /**
-       * Sets a knowledge value to a specified value
-       *
-       * @param key             knowledge variable location
-       * @param value           array of doubles to set to this location
-       * @param size            number of elements in the array
-       * @param settings        settings for applying the update
-       * @return                0 if successful, -1 if key is null, and
-       *                        -2 if quality isn't high enough
-       **/
-      int set (const std::string & key,
-        const double * value,
-        uint32_t size,
-        const EvalSettings & settings = EvalSettings ());
-      
-      /**
-       * Sets a knowledge value to a specified value
-       *
-       * @param key             knowledge variable location
-       * @param value           array of doubles to set to this location
-       * @param settings        settings for applying the update
-       * @return                0 if successful, -1 if key is null, and
-       *                        -2 if quality isn't high enough
-       **/
-      int set (const std::string & key,
-        const std::vector <double> & value,
-        const EvalSettings & settings = EvalSettings ());
-      
-      /**
-       * Sets a knowledge value to a specified value
-       *
-       * @param key             knowledge variable location
-       * @param value           value to set at location
-       * @param settings        settings for applying the update
-       * @return                0 if successful, -1 if key is null, and
-       *                        -2 if quality isn't high enough
-       **/
-      int set (const std::string & key, const std::string & value, 
-        const EvalSettings & settings);
 
       /**
        * Returns a non-const reference to the Transport Settings
@@ -810,7 +592,7 @@ namespace madara
       bool exists (const std::string & key,
         const KnowledgeReferenceSettings & settings =
           KnowledgeReferenceSettings ()) const;
-      
+
       /**
        * Checks if a knowledge variable exists in the context
        *
@@ -843,12 +625,12 @@ namespace madara
        * Expands and prints a user provided statement at a logging level.
        * For example, if the statement were MyKnowledge.{.id}, and .id==1,
        * then the statement would be expanded to MyKnowledge.1
-       * 
+       *
        * @param   statement  statement to expand with variable values
        * @param   level      level to log the knowledge at
        **/
       void print (const std::string & statement, unsigned int level) const;
-      
+
       /**
        * Saves all keys and values into a string, using the underlying
        * knowledge::KnowledgeRecord::to_string function. This is an optimized
@@ -859,7 +641,7 @@ namespace madara
        * database in a format that can be easily parseable. Consequently,
        * strings are delineated in this function by being included in single
        * quotes. Arrays are delineated with array indices [].
-       * 
+       *
        * This is not appropriate
        * for saving the context if it has binary data inside of it, as
        * only the size of the data entry would be saved.
@@ -927,7 +709,7 @@ namespace madara
        * previously called @ acquire.
        **/
       void release (void);
-      
+
       /**
        * Attaches a transport to the Knowledge Engine. Note that the
        * transport should use the same ThreadSafeContext as the
@@ -936,7 +718,7 @@ namespace madara
        * @return             the number of transports now attached
        **/
       size_t attach_transport (madara::transport::Base * transport);
-      
+
       /**
        * Adds a built-in transport with the specified settings
        * @param  id          unique identifier for this agent (empty string
@@ -946,7 +728,7 @@ namespace madara
        **/
       size_t attach_transport (const std::string & id,
         transport::TransportSettings & settings);
-      
+
       /**
        * Removes a transport
        * @param   index      index of the transport to remove. If invalid,
@@ -968,7 +750,7 @@ namespace madara
        * @return             host:port identifier for this knowledge base
        **/
       std::string get_id (void);
-      
+
       /**
        * Fills a vector with Knowledge Records that begin with a common subject
        * and have a finite range of integer values.
@@ -1112,7 +894,7 @@ namespace madara
 
       int64_t save_checkpoint (const std::string & filename,
         bool reset_modifieds = true);
-      
+
       /**
        * Saves a checkpoint of a list of changes to a file
        * @param   settings    checkpoint settings to load
@@ -1124,7 +906,7 @@ namespace madara
 
       int64_t save_checkpoint (
         const CheckpointSettings & settings) const;
-      
+
       /**
        * Loads the context from a file
        * @param   filename    name of the file to open
@@ -1136,7 +918,7 @@ namespace madara
        **/
       int64_t load_context (const std::string & filename,
         bool use_id,
-        const KnowledgeUpdateSettings & settings = 
+        const KnowledgeUpdateSettings & settings =
               KnowledgeUpdateSettings (true, true, true, false));
 
       /**
@@ -1197,7 +979,7 @@ namespace madara
 
       /**
        * Sends all modified variables through the attached transports.
-       * @param   prefix      for logging purposes, the descriptor prefix for 
+       * @param   prefix      for logging purposes, the descriptor prefix for
        *                      calling method
        * @param   settings    settings for sending modifications
        * @return  number of transports the modifications were sent to
@@ -1206,12 +988,12 @@ namespace madara
         const std::string & prefix,
         const EvalSettings & settings =
           EvalSettings ());
-      
+
       /**
        * Wait for a change to happen to the context (e.g., from transports)
        **/
       void wait_for_change (void);
-      
+
       /**
        * Binds to an ephemeral port for unique tie breakers in global ordering.
        * Call this function if you want to generate a unique id for a
@@ -1234,7 +1016,7 @@ namespace madara
     };
   }
 }
-    
+
 // include the inline functions
 #include "KnowledgeBaseImpl.inl"
 

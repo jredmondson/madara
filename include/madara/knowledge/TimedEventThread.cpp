@@ -129,7 +129,7 @@ madara::knowledge::TimedEventThread::svc (void)
         );
 
       if (valid->intended_executions >= 0 &&
-          valid->intended_executions == valid->executions)
+          (size_t)valid->intended_executions == valid->executions)
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
           "%s: " \

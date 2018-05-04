@@ -77,7 +77,7 @@ namespace madara
         ALL_TYPES = ALL_PRIMITIVE_TYPES | ALL_FILE_TYPES,
         ALL_CLEARABLES = ALL_ARRAYS | ALL_TEXT_FORMATS | ALL_FILE_TYPES
       };
-    
+
       typedef  int64_t     Integer;
 
     private:
@@ -276,60 +276,60 @@ namespace madara
       }
 
       /* default constructor */
-      KnowledgeRecord (
+      explicit KnowledgeRecord (
         logger::Logger & logger = *logger::global_logger.get ());
-    
+
       /* Integer constructor */
       template<typename T,
         typename std::enable_if<std::is_integral<T>::value,
         void*>::type = nullptr>
-      KnowledgeRecord (T value,
+      explicit KnowledgeRecord (T value,
         logger::Logger & logger = *logger::global_logger.get ());
-    
+
       /* Floating point constructor */
       template<typename T,
         typename std::enable_if<std::is_floating_point<T>::value,
         void*>::type = nullptr>
-      KnowledgeRecord (T value,
+      explicit KnowledgeRecord (T value,
         logger::Logger & logger = *logger::global_logger.get ());
-    
+
       /* Integer array constructor */
-      KnowledgeRecord (const std::vector <Integer> & value,
+      explicit KnowledgeRecord (const std::vector <Integer> & value,
         logger::Logger & logger = *logger::global_logger.get ());
-    
+
       /* Integer array move constructor */
-      KnowledgeRecord (std::vector <Integer> && value,
+      explicit KnowledgeRecord (std::vector <Integer> && value,
         logger::Logger & logger = *logger::global_logger.get ());
-    
+
       /* Double array constructor */
-      KnowledgeRecord (const std::vector <double> & value,
+      explicit KnowledgeRecord (const std::vector <double> & value,
         logger::Logger & logger = *logger::global_logger.get ());
-    
+
       /* Double array move constructor */
-      KnowledgeRecord (std::vector <double> && value,
+      explicit KnowledgeRecord (std::vector <double> && value,
         logger::Logger & logger = *logger::global_logger.get ());
-    
+
       /* String constructor */
-      KnowledgeRecord (const std::string & value,
+      explicit KnowledgeRecord (const std::string & value,
         logger::Logger & logger = *logger::global_logger.get ());
-    
+
       /* String move constructor */
-      KnowledgeRecord (std::string && value,
+      explicit KnowledgeRecord (std::string && value,
         logger::Logger & logger = *logger::global_logger.get ());
-    
+
       /* Char pointer constructor for g++ */
-      KnowledgeRecord (const char * value,
+      explicit KnowledgeRecord (const char * value,
         logger::Logger & logger = *logger::global_logger.get ());
-    
+
       /* copy constructor */
       KnowledgeRecord (const KnowledgeRecord & rhs) noexcept;
-    
+
       /* move constructor */
       KnowledgeRecord (KnowledgeRecord && rhs) noexcept;
-    
+
       /* destructor */
       ~KnowledgeRecord () noexcept;
-    
+
       /**
        * Checks if record exists (i.e., is not uncreated)
        * @return true if record exists, false otherwise
@@ -343,7 +343,7 @@ namespace madara
        * @return   value at the index
        **/
       KnowledgeRecord retrieve_index (size_t index) const;
-    
+
       /**
        * decrements the value at the index to the specified value. If the
        * record was previously not an array or if the array is not
@@ -351,7 +351,7 @@ namespace madara
        * @param    index   index of the value to set
        **/
       KnowledgeRecord dec_index (size_t index);
-     
+
       /**
        * increments the value at the index to the specified value. If the
        * record was previously not an array or if the array is not
@@ -359,7 +359,7 @@ namespace madara
        * @param    index   index of the value to set
        **/
       KnowledgeRecord inc_index (size_t index);
-     
+
       /**
        * sets the value at the index to the specified value. If the
        * record was previously not an array or if the array is not
@@ -368,7 +368,7 @@ namespace madara
        * @param    value   the value to set at the specified index
        **/
       void set_index (size_t index, Integer value);
-     
+
       /**
        * sets the value at the index to the specified value. If the
        * record was previously not an array or if the array is not
@@ -424,7 +424,7 @@ namespace madara
        * converts the value to a float/double
        **/
       double to_double (void) const;
-    
+
       /**
        * converts the value to a vector of integers
        * @return  a vector of integers
@@ -488,7 +488,31 @@ namespace madara
        * @return  the unmanaged buffer of size bytes
        **/
       unsigned char * to_unmanaged_buffer (size_t & size) const;
-    
+
+      /**
+       * Sets the value from another KnowledgeRecord,
+       * does not copy clock and write_quality.
+       * Will check that write_quality of new value is >= quality
+       * of this record, and ignore update if not. Otherwise,
+       * this records quality will be set to new_value.write_quality.
+       *
+       * @param    new_value   new value of the Knowledge Record
+       * @param    size        num elements in the array
+       **/
+      void set_value (const KnowledgeRecord &new_value);
+
+      /**
+       * Sets the value from another KnowledgeRecord,
+       * does not copy clock and write_quality.
+       * Will check that write_quality of new value is >= quality
+       * of this record, and ignore update if not. Otherwise,
+       * this records quality will be set to new_value.write_quality.
+       *
+       * @param    new_value   new value of the Knowledge Record
+       * @param    size        num elements in the array
+       **/
+      void set_value (KnowledgeRecord &&new_value);
+
       /**
        * sets the value to a double
        * @param    new_value   new value of the Knowledge Record
@@ -497,57 +521,57 @@ namespace madara
         typename std::enable_if<std::is_integral<T>::value,
         void*>::type = nullptr>
       void set_value (T new_value);
-    
+
       /**
        * sets the value to an array of integers
        * @param    new_value   new value of the Knowledge Record
        * @param    size        num elements in the array
        **/
       void set_value (const Integer * new_value, uint32_t size);
-    
+
       /**
        * sets the value to an array of integers
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_value (std::vector <Integer> && new_value);
-    
+
       /**
        * sets the value to an array of integers
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_value (const std::vector <Integer> & new_value);
-    
+
       /**
        * sets the value to an array of integers, without copying
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_value (std::shared_ptr<std::vector <Integer>> new_value);
-    
+
       /**
        * sets the value to a string, from a buffer
        * @param    new_value   new value of the Knowledge Record
        * @param    size        num elements in the buffer
        **/
       void set_value (const char * new_value, uint32_t size);
-    
+
       /**
        * sets the value to a string
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_value (std::string && new_value);
-    
+
       /**
        * sets the value to a string
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_value (const std::string & new_value);
-    
+
       /**
        * sets the value to a string. Does not copy the string.
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_value (std::shared_ptr<std::string> new_value);
-    
+
       /**
        * sets the value to a floating point number
        * @param    new_value   new value of the Knowledge Record
@@ -556,82 +580,82 @@ namespace madara
         typename std::enable_if<std::is_floating_point<T>::value,
         void*>::type = nullptr>
       void set_value (T new_value);
-    
+
       /**
        * sets the value to an array of doubles
        * @param    new_value   new value of the Knowledge Record
        * @param    size        num elements in the array
        **/
       void set_value (const double * new_value, uint32_t size);
-    
+
       /**
        * sets the value to an array of doubles
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_value (std::vector <double> && new_value);
-    
+
       /**
        * sets the value to an array of doubles
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_value (const std::vector <double> & new_value);
-    
+
       /**
        * sets the value to an array of doubles, without copying
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_value (std::shared_ptr<std::vector <double>> new_value);
-    
+
       /**
        * sets the value to an xml string
        * @param    new_value   new value of the Knowledge Record
        * @param    size        size of the new_value buffer
        **/
       void set_xml (const char * new_value, size_t size);
-    
+
       /**
        * sets the value to an xml string
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_xml (std::string && new_value);
-    
+
       /**
        * sets the value to an xml string
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_xml (const std::string & new_value);
-    
+
       /**
        * sets the value to an xml string. Does not copy the string.
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_xml (std::shared_ptr<std::string> new_value);
-    
+
       /**
        * sets the value to a plaintext string
        * @param    new_value   new value of the Knowledge Record
        * @param    size        size of the new_value buffer
        **/
       void set_text (const char * new_value, size_t size);
-    
+
       /**
        * sets the value to a plaintext string
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_text (std::string && new_value);
-    
+
       /**
        * sets the value to a plaintext string
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_text (const std::string & new_value);
-    
+
       /**
        * sets the value to a plaintext string. Does not copy the string.
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_text (std::shared_ptr<std::string> new_value);
-    
+
       /**
        * Sets the double precision of a double record when using
        * to_string (). All doubles will have this fixed precision.
@@ -663,19 +687,19 @@ namespace madara
        * @param    size        size of the new_value buffer
        **/
       void set_jpeg (const unsigned char * new_value, size_t size);
-    
+
       /**
        * sets the value to a jpeg
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_jpeg (std::vector <unsigned char> && new_value);
-    
+
       /**
        * sets the value to a jpeg
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_jpeg (const std::vector <unsigned char> & new_value);
-    
+
       /**
        * sets the value to a jpeg, without copying
        * @param    new_value   new value of the Knowledge Record
@@ -688,19 +712,19 @@ namespace madara
        * @param    size        size of the new_value buffer
        **/
       void set_file (const unsigned char * new_value, size_t size);
-    
+
       /**
        * sets the value to an unknown file type
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_file (std::vector <unsigned char> && new_value);
-    
+
       /**
        * sets the value to an unknown file type
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_file (const std::vector <unsigned char> & new_value);
-    
+
       /**
        * sets the value to an unknown file type, without copying
        * @param    new_value   new value of the Knowledge Record
@@ -751,7 +775,7 @@ namespace madara
        * @return  size of file
        **/
       int read_file (const std::string & filename, uint32_t read_as_type = 0);
-    
+
       /**
        * resets the variable to an integer
        **/
@@ -767,83 +791,83 @@ namespace madara
        * more efficient.
        **/
       void clear_value (void) noexcept;
-    
+
       /**
        * returns the size of the value
        **/
       uint32_t size (void) const;
-    
+
       /**
        * returns the size of the value
        **/
       int32_t type (void) const;
-    
+
       /**
        * returns if the record has a reference-counted type
        * @return   true if the record is reference-counted
        **/
       bool is_ref_counted (void) const;
-    
+
       /**
        * returns if the record has a reference-counted type
        * @param   type the type to check
        * @return   true if the record is reference-counted
        **/
       static bool is_ref_counted (uint32_t type);
-    
+
       /**
        * returns true if the record is a string type (STRING, XML, TEXT_FILE)
        * @return   true if the record is a string
        **/
       bool is_string_type (void) const;
-    
+
       /**
        * returns if the record is a string type (STRING, XML, TEXT_FILE)
        * @param   type the type to check
        * @return   true if the record is a string
        **/
       static bool is_string_type (uint32_t type);
-    
+
       /**
        * returns if the record is a double type (DOUBLE, DOUBLE_ARRAY)
        * @return   true if the record is a double
        **/
       bool is_double_type (void) const;
-     
+
       /**
        * returns if the record is a double type (DOUBLE, DOUBLE_ARRAY)
        * @param   type the type to check
        * @return   true if the record is a double
        **/
       static bool is_double_type (uint32_t type);
-     
+
       /**
        * returns if the record is a integer type (INTEGER, INTEGER_ARRAY)
        * @return   true if the record is an integer
        **/
       bool is_integer_type (void) const;
-    
+
       /**
        * returns if the record is a integer type (INTEGER, INTEGER_ARRAY)
        * @param   type the type to check
        * @return   true if the record is an integer
        **/
       static bool is_integer_type (uint32_t type);
-     
-     
+
+
       /**
        * returns if the record is an array type (DOUBLE_ARRAY, INTEGER_ARRAY)
        * @return   true if the record is an integer
        **/
       bool is_array_type (void) const;
-    
+
       /**
        * returns if the record is a array type (DOUBLE_ARRAY, INTEGER_ARRAY)
        * @param   type the type to check
        * @return   true if the record is an integer
        **/
       static bool is_array_type (uint32_t type);
-    
+
       /**
        * returns a record containing a fragment of the character buffer.
        * For strings, this is equivalent to substring. For files, this is
@@ -860,90 +884,90 @@ namespace madara
        * @return    true if type is an image type
        **/
       bool is_image_type (void) const;
-    
+
       /**
        * returns true if the knowledge record has an image type
        * @param     type   the type of the record
        * @return    true if type is an image type
        **/
       static bool is_image_type (uint32_t type);
-    
+
       /**
        * returns true if the knowledge record has a file type
        * @return    true if type is a file type
        **/
       bool is_file_type (void) const;
-    
+
       /**
        * returns true if the knowledge record has a file type
        * @param     type   the type of the record
        * @return    true if type is a file type
        **/
       static bool is_file_type (uint32_t type);
-     
+
       /**
        * returns true if the knowledge record has a binary file type
        * @return    true if type is a file type
        **/
       bool is_binary_file_type (void) const;
-    
+
       /**
        * returns true if the knowledge record has a binary file type
        * @param     type   the type of the record
        * @return    true if type is a file type
        **/
       static bool is_binary_file_type (uint32_t type);
-    
+
       /**
        * Less than
        **/
       bool operator< (const KnowledgeRecord & rhs) const;
-    
+
       /**
        * Less than or equal to
        **/
       bool operator<= (const KnowledgeRecord & rhs) const;
-    
+
       /**
        * Equal to
        **/
       bool operator== (const KnowledgeRecord & rhs) const;
-    
+
       /**
        * Equal to
        **/
       bool operator== (Integer value) const;
-    
+
       /**
        * Equal to
        **/
       bool operator== (double value) const;
-    
+
       /**
        * Equal to
        **/
       bool operator== (const std::string & value) const;
-     
+
       /**
        * Equal to
        **/
       bool operator== (const char * value) const;
-    
+
       /**
        * Unequal to
        **/
       bool operator!= (const KnowledgeRecord & rhs) const;
-    
+
       /**
        * Greater than
        **/
       bool operator> (const KnowledgeRecord & rhs) const;
-    
+
       /**
        * Greater than or equal to
        **/
       bool operator>= (const KnowledgeRecord & rhs) const;
-    
+
       /**
        * Logical not.
        **/
@@ -963,69 +987,69 @@ namespace madara
        * Move Assignment
        **/
       KnowledgeRecord & operator= (KnowledgeRecord && rhs) noexcept;
-    
+
       /**
        * In-place addition operator
        **/
       KnowledgeRecord & operator+= (const KnowledgeRecord & rhs);
-    
+
       /**
        * In-place subtraction operator
        **/
       KnowledgeRecord & operator-= (const KnowledgeRecord & rhs);
-    
+
       /**
        * In-place multiplication operator
        **/
       KnowledgeRecord & operator*= (const KnowledgeRecord & rhs);
-    
+
       /**
        * In-place division operator
        **/
       KnowledgeRecord & operator/= (const KnowledgeRecord & rhs);
-    
+
       /**
        * In-place modulus operator
        **/
       KnowledgeRecord & operator%= (const KnowledgeRecord & rhs);
-    
+
       /**
        * Times operator
        **/
       KnowledgeRecord operator* (const KnowledgeRecord & rhs) const;
-    
+
       /**
        * Divides operator
        **/
       KnowledgeRecord operator/ (const KnowledgeRecord & rhs) const;
-    
+
       /**
        * Modulus operator
        **/
       KnowledgeRecord operator% (const KnowledgeRecord & rhs) const;
-    
+
       /**
        * Plus operator
        **/
       KnowledgeRecord operator+ (const KnowledgeRecord & rhs) const;
-    
+
       /**
        * Minus operator
        **/
       KnowledgeRecord operator- (const KnowledgeRecord & rhs) const;
-    
+
       /**
        * Explicit bool cast
        *
        * @return the value of is_true()
        **/
       explicit operator bool (void) const;
-    
+
       /**
        * Preincrement operator
        **/
       KnowledgeRecord & operator++ (void);
-    
+
       /**
        * Predecrement operator
        **/
@@ -1149,7 +1173,7 @@ namespace madara
        * @return  true if the record is zero or "". False otherwise.
        **/
       bool is_false (void) const;
-    
+
       /**
        * Checks to see if the record is valid. Valid records have a status
        * that is not UNCREATED.
@@ -1174,7 +1198,7 @@ namespace madara
       **/
       int64_t get_encoded_size (void) const;
     };
-  
+
     typedef ::std::map < std::string, KnowledgeRecord>   KnowledgeMap;
     typedef ::std::vector < KnowledgeRecord>             KnowledgeVector;
     typedef ::std::vector < std::string>                  KnowledgeRules;
@@ -1183,14 +1207,14 @@ namespace madara
 
     typedef std::string     KnowledgeKey;
     typedef KnowledgeRecord              KnowledgeValue;
-  
+
     /**
      * Returns the maximum quality within the records
      * @param    records     the list of records to gauge quality of
      * @return   the maximum quality within the list of records
      **/
     uint32_t max_quality (const KnowledgeRecords & records);
-  
+
     /**
      * Returns the maximum quality within the records
      * @param    records     the list of records to gauge quality of

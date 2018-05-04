@@ -26,7 +26,7 @@ madara::expression::SystemCallSleep::~SystemCallSleep (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallSleep::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -80,7 +80,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call sleep is sleeping for %f.\n", sleep_time);
 
-    return_value = madara::utility::sleep (sleep_time);
+    return_value = knowledge::KnowledgeRecord (
+        madara::utility::sleep (sleep_time));
   }
   else
   {

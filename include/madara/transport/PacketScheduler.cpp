@@ -142,14 +142,6 @@ madara::transport::PacketScheduler::add (void)
     // if the user has specified a positive drop rate
     if (drop_rate > 0)
     {
-      // compute the actual drop rate
-      double actual_drop_rate = 0;
-      if (dropped_messages_ + sent_messages_ > 0)
-      {
-        actual_drop_rate = (double)dropped_messages_ /
-          (dropped_messages_ + sent_messages_);
-      }
-
       /**
        * if the drop rate is greater than 100% or
        * drop burst is greater than 1 and we do not have that many
@@ -275,7 +267,7 @@ madara::transport::PacketScheduler::print_status (
 {
   MADARA_GUARD_TYPE guard (mutex_);
 
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
+  madara_logger_ptr_log (logger::global_logger.get(), (int)log_level,
     "%s: %d sent, %d dropped, %d consec dropped\n",
     prefix, sent_messages_, dropped_messages_, consecutive_drops_);
 }

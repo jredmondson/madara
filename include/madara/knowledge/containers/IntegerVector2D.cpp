@@ -41,8 +41,8 @@ madara::knowledge::containers::IntegerVector2D::IntegerVector2D (
   const IntegerVector2D & rhs)
 : BaseContainer (rhs), context_ (rhs.context_),
   vector_ (rhs.vector_),
-  delimiter_ (rhs.delimiter_),
-  size_ (rhs.size_)
+  size_ (rhs.size_),
+  delimiter_ (rhs.delimiter_)
 {
 }
 
@@ -271,7 +271,7 @@ madara::knowledge::containers::IntegerVector2D::resize (
     }
 
     // delete if we need to delete
-    if (new_size.x < old_size.x || new_size.y < old_size.y && delete_vars)
+    if ((new_size.x < old_size.x || new_size.y < old_size.y) && delete_vars)
     {
       madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
         "IntegerVector2D::resize: deleting refs: rows: 0->%d.\n",

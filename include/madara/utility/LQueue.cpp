@@ -4,8 +4,10 @@
 #include <memory>
 #include "madara/utility/LQueue.h"
 
+#ifdef _MSC_VER
 // It's fine to use "this" in base-member initializations.
 #pragma warning(disable:4355)
+#endif
 
 namespace madara
 {
@@ -211,7 +213,7 @@ madara::utility::LQueue<T>::LQueue (
 {
   // insert a dummy node first and keep it as an auto_ptr for exception
   // safety issues
-  ::std::auto_ptr <LQueueNode<T> > tail (new LQueueNode<T> ());
+  ::std::unique_ptr <LQueueNode<T> > tail (new LQueueNode<T> ());
   tail_ = tail.get ();
 
   // copy_list has strong exception safety, so no try catch block

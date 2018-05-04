@@ -23,7 +23,7 @@ madara::expression::SystemCallLogLevel::~SystemCallLogLevel (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallLogLevel::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -82,14 +82,14 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call log_level has set log level to %d\n",
       level);
 
-    return knowledge::KnowledgeRecord::Integer (level);
+    return knowledge::KnowledgeRecord (level);
   }
   else if (nodes_.size () == 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call log_level is returning log level.\n");
     
-    return knowledge::KnowledgeRecord::Integer (logger_->get_level ());
+    return knowledge::KnowledgeRecord (logger_->get_level ());
   }
   else if (nodes_.size () > 1)
   {

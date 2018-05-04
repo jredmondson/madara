@@ -15,13 +15,60 @@
  * This file contains the inline functions for KnowledgeBaseImpl class
  */
 
-inline madara::knowledge::KnowledgeRecord
-madara::knowledge::KnowledgeBaseImpl::get (
+namespace madara { namespace knowledge {
+
+KnowledgeBaseImpl::KnowledgeBaseImpl ()
+  : settings_ (), files_ (map_)
+{
+  //activate_transport ();
+  // no hope of transporting, so don't setup uniquehostport
+}
+
+KnowledgeBaseImpl::KnowledgeBaseImpl (
+  const std::string & host, int transport)
+  : settings_ (), files_ (map_)
+{
+  // override default settings for the arguments
+  settings_.type = transport;
+
+  id_ = setup_unique_hostport (host);
+  activate_transport ();
+}
+
+KnowledgeBaseImpl::KnowledgeBaseImpl (
+  const std::string & host, int transport,
+  const std::string & knowledge_domain)
+  : settings_ (), files_ (map_)
+{
+  // override default settings for the arguments
+  settings_.type = transport;
+  settings_.write_domain = knowledge_domain;
+
+  id_ = setup_unique_hostport (host);
+  activate_transport ();
+}
+
+KnowledgeBaseImpl::KnowledgeBaseImpl (
+  const std::string & host, const madara::transport::TransportSettings & config)
+  : settings_ (config), files_ (map_)
+{
+  id_ = setup_unique_hostport (host);
+  if (!settings_.delay_launch)
+    activate_transport ();
+}
+
+KnowledgeBaseImpl::~KnowledgeBaseImpl ()
+{
+  close_transport ();
+  unique_bind_.close ();
+}
+inline KnowledgeRecord
+KnowledgeBaseImpl::get (
   const std::string & t_key,
   const KnowledgeReferenceSettings & settings)
 {
-  madara::knowledge::KnowledgeRecord result (map_.get (t_key, settings));
-  
+  KnowledgeRecord result (map_.get (t_key, settings));
+
   // if the result is ref counted, then do a deep copy to prevent cache issues
   if (result.is_ref_counted ())
   {
@@ -31,13 +78,13 @@ madara::knowledge::KnowledgeBaseImpl::get (
   return result;
 }
 
-inline madara::knowledge::KnowledgeRecord
-madara::knowledge::KnowledgeBaseImpl::get (
+inline KnowledgeRecord
+KnowledgeBaseImpl::get (
   const VariableReference & variable,
   const KnowledgeReferenceSettings & settings)
 {
-  madara::knowledge::KnowledgeRecord result (map_.get (variable, settings));
-  
+  KnowledgeRecord result (map_.get (variable, settings));
+
   // if the result is ref counted, then do a deep copy to prevent cache issues
   if (result.is_ref_counted ())
   {
@@ -47,8 +94,8 @@ madara::knowledge::KnowledgeBaseImpl::get (
   return result;
 }
 
-inline madara::knowledge::VariableReference
-madara::knowledge::KnowledgeBaseImpl::get_ref (
+inline VariableReference
+KnowledgeBaseImpl::get_ref (
   const std::string & t_key,
   const KnowledgeReferenceSettings & settings)
 {
@@ -56,38 +103,38 @@ madara::knowledge::KnowledgeBaseImpl::get_ref (
 }
 
 inline int
-madara::knowledge::KnowledgeBaseImpl::get_log_level (void)
+KnowledgeBaseImpl::get_log_level (void)
 {
   return map_.get_log_level ();
 }
 
 inline std::string
-madara::knowledge::KnowledgeBaseImpl::debug_modifieds (void) const
+KnowledgeBaseImpl::debug_modifieds (void) const
 {
   return map_.debug_modifieds ();
 }
 
 inline madara::logger::Logger &
-madara::knowledge::KnowledgeBaseImpl::get_logger (void) const
+KnowledgeBaseImpl::get_logger (void) const
 {
   return map_.get_logger ();
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::attach_logger (
+KnowledgeBaseImpl::attach_logger (
   logger::Logger & logger) const
 {
   map_.attach_logger (logger);
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::set_log_level (int level)
+KnowledgeBaseImpl::set_log_level (int level)
 {
   map_.set_log_level (level);
 }
 
-inline madara::knowledge::KnowledgeRecord
-madara::knowledge::KnowledgeBaseImpl::retrieve_index (
+inline KnowledgeRecord
+KnowledgeBaseImpl::retrieve_index (
   const std::string & t_key,
   size_t index,
   const KnowledgeReferenceSettings & settings)
@@ -95,8 +142,8 @@ madara::knowledge::KnowledgeBaseImpl::retrieve_index (
   return map_.retrieve_index (t_key, index, settings);
 }
 
-inline madara::knowledge::KnowledgeRecord
-madara::knowledge::KnowledgeBaseImpl::retrieve_index (
+inline KnowledgeRecord
+KnowledgeBaseImpl::retrieve_index (
   const VariableReference & variable,
   size_t index,
   const KnowledgeReferenceSettings & settings)
@@ -105,7 +152,7 @@ madara::knowledge::KnowledgeBaseImpl::retrieve_index (
 }
 
 inline bool
-madara::knowledge::KnowledgeBaseImpl::exists (
+KnowledgeBaseImpl::exists (
   const std::string & key,
   const KnowledgeReferenceSettings & settings) const
 {
@@ -113,15 +160,159 @@ madara::knowledge::KnowledgeBaseImpl::exists (
 }
 
 inline bool
-madara::knowledge::KnowledgeBaseImpl::exists (
+KnowledgeBaseImpl::exists (
   const VariableReference & variable,
   const KnowledgeReferenceSettings & settings) const
 {
   return map_.exists (variable, settings);
 }
 
+/**
+ * Updates all global variables to current clock and then
+ * sends them if a transport is available. This is useful
+ * when trying to synchronize to late joiners (this process
+ * will resend all global variables.
+ **/
+inline int
+KnowledgeBaseImpl::apply_modified (
+const EvalSettings & settings)
+{
+  // lock the context and apply modified flags and current clock to
+  // all global variables
+  map_.lock ();
+  map_.apply_modified ();
+
+  int ret = 0;
+
+  send_modifieds ("KnowledgeBaseImpl:apply_modified", settings);
+
+  map_.unlock ();
+
+  return ret;
+}
+
+inline void
+KnowledgeBaseImpl::mark_modified (
+  const VariableReference & variable,
+  const KnowledgeUpdateSettings & settings)
+{
+  map_.mark_modified (variable, settings);
+}
+
+inline void
+KnowledgeBaseImpl::mark_modified (
+  const std::string & name,
+  const KnowledgeUpdateSettings & settings)
+{
+  map_.mark_modified (name, settings);
+}
+
+/// Read a file into the knowledge base
+int
+KnowledgeBaseImpl::read_file (
+const std::string & key, const std::string & filename,
+const EvalSettings & settings)
+{
+  if (key == "")
+    return -1;
+
+  int result = map_.read_file (key, filename, settings);
+
+  send_modifieds ("KnowledgeBaseImpl:read_file", settings);
+
+  return result;
+}
+
+/// Read a file into the knowledge base
+inline int
+KnowledgeBaseImpl::set_file (
+const VariableReference & variable,
+const unsigned char * value, size_t size,
+const EvalSettings & settings)
+{
+  int result = map_.set_file (variable, value, size, settings);
+
+  send_modifieds ("KnowledgeBaseImpl:set_file", settings);
+
+  return result;
+}
+
+/// Read a file into the knowledge base
+inline int
+KnowledgeBaseImpl::set_jpeg (
+const VariableReference & variable,
+const unsigned char * value, size_t size,
+const EvalSettings & settings)
+{
+  int result = map_.set_jpeg (variable, value, size, settings);
+
+  send_modifieds ("KnowledgeBaseImpl:set_jpeg", settings);
+
+  return result;
+}
+
+/// Read a file into the knowledge base
+inline int
+KnowledgeBaseImpl::read_file (
+const VariableReference & variable,
+const std::string & filename,
+const EvalSettings & settings)
+{
+  int result = map_.read_file (variable, filename, settings);
+
+  send_modifieds ("KnowledgeBaseImpl:read_file", settings);
+
+  return result;
+}
+
+inline void
+KnowledgeBaseImpl::activate_transport (void)
+{
+  if (transports_.size () == 0)
+  {
+    attach_transport (id_, settings_);
+  }
+  else
+  {
+    madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
+      "KnowledgeBaseImpl::activate_transport:" \
+      " transport already activated. If you need" \
+      " a new type, close transport first\n");
+  }
+}
+
+inline void
+KnowledgeBaseImpl::copy (
+const KnowledgeBaseImpl & source,
+const KnowledgeRequirements & reqs)
+{
+  map_.copy (source.map_, reqs);
+}
+
+inline void
+KnowledgeBaseImpl::copy (
+const KnowledgeBaseImpl & source,
+const CopySet & copy_set,
+bool clean_copy)
+{
+  map_.copy (source.map_, copy_set, clean_copy);
+}
+
+inline void
+KnowledgeBaseImpl::lock (void)
+{
+  map_.lock ();
+}
+
+inline void
+KnowledgeBaseImpl::unlock (void)
+{
+  map_.unlock ();
+}
+
+
 inline std::string
-madara::knowledge::KnowledgeBaseImpl::expand_statement (
+KnowledgeBaseImpl::expand_statement (
   const std::string & statement) const
 {
   return map_.expand_statement (statement);
@@ -129,7 +320,7 @@ madara::knowledge::KnowledgeBaseImpl::expand_statement (
 
 /// Read a policy into the knowledge base
 inline int
-madara::knowledge::KnowledgeBaseImpl::read_policy (
+KnowledgeBaseImpl::read_policy (
   const std::string & knowledge_key, const std::string & filename)
 {
   return files_.read_policy (knowledge_key, filename);
@@ -137,15 +328,15 @@ madara::knowledge::KnowledgeBaseImpl::read_policy (
 
 /// Write file from the knowledge base to a specified file
 inline ssize_t
-madara::knowledge::KnowledgeBaseImpl::write_file (
+KnowledgeBaseImpl::write_file (
   const std::string & knowledge_key, const std::string & filename)
 {
   return map_.get_record (knowledge_key)->to_file (filename);
 }
 
 /// Set quality of writing to a variable
-inline void 
-madara::knowledge::KnowledgeBaseImpl::set_quality (
+inline void
+KnowledgeBaseImpl::set_quality (
   const std::string & t_key, uint32_t quality,
   const KnowledgeReferenceSettings & settings)
 {
@@ -155,41 +346,41 @@ madara::knowledge::KnowledgeBaseImpl::set_quality (
 #ifdef _USE_CID_
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::print_all_redeployment_results (
+KnowledgeBaseImpl::print_all_redeployment_results (
   std::ostream & output)
 {
   settings_.print_all_results (output);
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::run_all (void)
+KnowledgeBaseImpl::run_all (void)
 {
   settings_.run_all ();
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::print_my_latencies (
+KnowledgeBaseImpl::print_my_latencies (
   std::ostream & output)
 {
   settings_.print_my_latencies (output);
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::print_all_latencies (
+KnowledgeBaseImpl::print_all_latencies (
   std::ostream & output)
 {
   settings_.print_all_latencies (output);
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::print_all_summations (
+KnowledgeBaseImpl::print_all_summations (
   std::ostream & output)
 {
   settings_.print_all_summations (output);
 }
 
 inline long
-madara::knowledge::KnowledgeBaseImpl::start_latency (void)
+KnowledgeBaseImpl::start_latency (void)
 {
   if (transport_)
     return transport_->start_latency ();
@@ -198,7 +389,7 @@ madara::knowledge::KnowledgeBaseImpl::start_latency (void)
 }
 
 inline long
-madara::knowledge::KnowledgeBaseImpl::vote (void)
+KnowledgeBaseImpl::vote (void)
 {
   if (transport_)
     return transport_->vote ();
@@ -209,13 +400,13 @@ madara::knowledge::KnowledgeBaseImpl::vote (void)
 #endif // _USE_CID_
 
 inline madara::transport::TransportSettings &
-madara::knowledge::KnowledgeBaseImpl::transport_settings (void)
+KnowledgeBaseImpl::transport_settings (void)
 {
   return settings_;
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::print (
+KnowledgeBaseImpl::print (
   unsigned int level) const
 {
   map_.print (
@@ -225,7 +416,7 @@ madara::knowledge::KnowledgeBaseImpl::print (
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::to_string (
+KnowledgeBaseImpl::to_string (
   std::string & target,
   const std::string & array_delimiter,
   const std::string & record_delimiter,
@@ -236,40 +427,40 @@ madara::knowledge::KnowledgeBaseImpl::to_string (
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::print (
+KnowledgeBaseImpl::print (
   const std::string & statement, unsigned int level) const
 {
   map_.print (statement, level);
 }
 
 inline bool
-madara::knowledge::KnowledgeBaseImpl::clear (const std::string & key,
+KnowledgeBaseImpl::clear (const std::string & key,
   const KnowledgeReferenceSettings & settings)
 {
   return map_.clear (key, settings);
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::clear (bool erase)
+KnowledgeBaseImpl::clear (bool erase)
 {
   map_.clear (erase);
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::clear_map (void)
+KnowledgeBaseImpl::clear_map (void)
 {
   map_.clear ();
 }
 
 /// lock the underlying knowledge base against any updates
 /// until we release
-inline void madara::knowledge::KnowledgeBaseImpl::acquire (void)
+inline void KnowledgeBaseImpl::acquire (void)
 {
   map_.lock ();
 }
 
 /// release the lock on the underlying knowledge base
-inline void madara::knowledge::KnowledgeBaseImpl::release (void)
+inline void KnowledgeBaseImpl::release (void)
 {
   map_.unlock ();
 }
@@ -278,17 +469,17 @@ inline void madara::knowledge::KnowledgeBaseImpl::release (void)
 
 // Defines a function
 inline
-void madara::knowledge::KnowledgeBaseImpl::define_function (
-  const std::string & name, knowledge::KnowledgeRecord (*func) (FunctionArguments &, Variables &))
+void KnowledgeBaseImpl::define_function (
+  const std::string & name, KnowledgeRecord (*func) (FunctionArguments &, Variables &))
 {
   map_.define_function (name, func);
 }
 
 // Defines a function
 inline
-void madara::knowledge::KnowledgeBaseImpl::define_function (
+void KnowledgeBaseImpl::define_function (
   const std::string & name,
-    knowledge::KnowledgeRecord (*func) (const char *, FunctionArguments &, Variables &))
+    KnowledgeRecord (*func) (const char *, FunctionArguments &, Variables &))
 {
   map_.define_function (name, func);
 }
@@ -296,7 +487,7 @@ void madara::knowledge::KnowledgeBaseImpl::define_function (
 #ifdef _MADARA_JAVA_
 inline
 void
-madara::knowledge::KnowledgeBaseImpl::define_function (
+KnowledgeBaseImpl::define_function (
   const std::string & name, jobject callable)
 {
   map_.define_function (name, callable);
@@ -307,37 +498,37 @@ madara::knowledge::KnowledgeBaseImpl::define_function (
 
 inline
 void
-madara::knowledge::KnowledgeBaseImpl::define_function (
+KnowledgeBaseImpl::define_function (
   const std::string & name, boost::python::object callable)
 {
   map_.define_function (name, callable);
 }
 
-#endif  
+#endif
 
 /**
-  * Defines a MADARA KaRL function      
+  * Defines a MADARA KaRL function
   **/
 inline
 void
-madara::knowledge::KnowledgeBaseImpl::define_function (const std::string & name,
+KnowledgeBaseImpl::define_function (const std::string & name,
   const std::string & expression)
 {
   map_.define_function (name, expression);
 }
-     
+
 
 inline
 void
-madara::knowledge::KnowledgeBaseImpl::define_function (
+KnowledgeBaseImpl::define_function (
   const std::string & name,
   const CompiledExpression & expression)
 {
   map_.define_function (name, expression);
 }
-     
-inline madara::knowledge::KnowledgeRecord
-madara::knowledge::KnowledgeBaseImpl::wait (
+
+inline KnowledgeRecord
+KnowledgeBaseImpl::wait (
   const std::string & expression)
 {
   CompiledExpression compiled = compile (expression);
@@ -345,8 +536,8 @@ madara::knowledge::KnowledgeBaseImpl::wait (
   return wait (compiled, settings);
 }
 
-inline madara::knowledge::KnowledgeRecord
-madara::knowledge::KnowledgeBaseImpl::evaluate (
+inline KnowledgeRecord
+KnowledgeBaseImpl::evaluate (
   const std::string & expression)
 {
   CompiledExpression compiled = compile (expression);
@@ -358,23 +549,23 @@ madara::knowledge::KnowledgeBaseImpl::evaluate (
 
 inline
 size_t
-madara::knowledge::KnowledgeBaseImpl::attach_transport (
+KnowledgeBaseImpl::attach_transport (
   madara::transport::Base * transport)
 {
   transports_.push_back (transport);
   return transports_.size ();
 }
- 
+
 inline
 size_t
-madara::knowledge::KnowledgeBaseImpl::get_num_transports (void)
+KnowledgeBaseImpl::get_num_transports (void)
 {
   return transports_.size ();
 }
 
 inline
 size_t
-madara::knowledge::KnowledgeBaseImpl::remove_transport (size_t index)
+KnowledgeBaseImpl::remove_transport (size_t index)
 {
   return transports_.erase (index);
 }
@@ -385,9 +576,9 @@ madara::knowledge::KnowledgeBaseImpl::remove_transport (size_t index)
   *
   * @return             the context used by the knowledge base
   **/
-inline 
-madara::knowledge::ThreadSafeContext & 
-madara::knowledge::KnowledgeBaseImpl::get_context (void)
+inline
+ThreadSafeContext &
+KnowledgeBaseImpl::get_context (void)
 {
   return map_;
 }
@@ -398,8 +589,8 @@ madara::knowledge::KnowledgeBaseImpl::get_context (void)
   * @return             host:port identifier for this knowledge base
   **/
 inline
-std::string 
-madara::knowledge::KnowledgeBaseImpl::get_id (void)
+std::string
+KnowledgeBaseImpl::get_id (void)
 {
   if (id_ == "")
   {
@@ -425,7 +616,7 @@ madara::knowledge::KnowledgeBaseImpl::get_id (void)
   **/
 inline
 size_t
-madara::knowledge::KnowledgeBaseImpl::to_vector (
+KnowledgeBaseImpl::to_vector (
                               const std::string & subject,
                               unsigned int start,
                               unsigned int end,
@@ -436,7 +627,7 @@ madara::knowledge::KnowledgeBaseImpl::to_vector (
 
 inline
 void
-madara::knowledge::KnowledgeBaseImpl::get_matches (
+KnowledgeBaseImpl::get_matches (
 const std::string & prefix,
 const std::string & suffix,
 VariableReferences & matches)
@@ -446,21 +637,21 @@ VariableReferences & matches)
 
 inline
 size_t
-madara::knowledge::KnowledgeBaseImpl::to_map (
+KnowledgeBaseImpl::to_map (
   const std::string & expression,
-  std::map <std::string, knowledge::KnowledgeRecord> & target)
+  std::map <std::string, KnowledgeRecord> & target)
 {
   return map_.to_map (expression, target);
 }
 
 inline
 size_t
-madara::knowledge::KnowledgeBaseImpl::to_map (
+KnowledgeBaseImpl::to_map (
   const std::string & prefix,
   const std::string & delimiter,
   const std::string & suffix,
   std::vector <std::string> & next_keys,
-  std::map <std::string, knowledge::KnowledgeRecord> & result,
+  std::map <std::string, KnowledgeRecord> & result,
   bool just_keys)
 {
   return map_.to_map (
@@ -468,16 +659,16 @@ madara::knowledge::KnowledgeBaseImpl::to_map (
 }
 
 inline
-madara::knowledge::KnowledgeMap
-madara::knowledge::KnowledgeBaseImpl::to_map (
+KnowledgeMap
+KnowledgeBaseImpl::to_map (
   const std::string & prefix) const
 {
   return map_.to_map (prefix);
 }
 
 inline
-madara::knowledge::KnowledgeMap
-madara::knowledge::KnowledgeBaseImpl::to_map_stripped (
+KnowledgeMap
+KnowledgeBaseImpl::to_map_stripped (
   const std::string & prefix) const
 {
   return map_.to_map_stripped (prefix);
@@ -485,14 +676,14 @@ madara::knowledge::KnowledgeBaseImpl::to_map_stripped (
 
 
 inline int64_t
-madara::knowledge::KnowledgeBaseImpl::save_context (
+KnowledgeBaseImpl::save_context (
   const std::string & filename) const
 {
   return map_.save_context (filename, id_);
 }
 
 inline int64_t
-madara::knowledge::KnowledgeBaseImpl::save_context (
+KnowledgeBaseImpl::save_context (
   CheckpointSettings & settings) const
 {
   settings.originator = id_;
@@ -500,42 +691,42 @@ madara::knowledge::KnowledgeBaseImpl::save_context (
 }
 
 inline int64_t
-madara::knowledge::KnowledgeBaseImpl::save_as_json (
+KnowledgeBaseImpl::save_as_json (
 const std::string & filename) const
 {
   return map_.save_as_json (filename);
 }
 
 inline int64_t
-madara::knowledge::KnowledgeBaseImpl::save_as_json (
+KnowledgeBaseImpl::save_as_json (
 const CheckpointSettings & settings) const
 {
   return map_.save_as_json (settings);
 }
 
 inline int64_t
-madara::knowledge::KnowledgeBaseImpl::save_as_karl (
+KnowledgeBaseImpl::save_as_karl (
 const std::string & filename) const
 {
   return map_.save_as_karl (filename);
 }
 
 inline int64_t
-madara::knowledge::KnowledgeBaseImpl::save_as_karl (
+KnowledgeBaseImpl::save_as_karl (
 const CheckpointSettings & settings) const
 {
   return map_.save_as_karl (settings);
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::clear_modifieds (
+KnowledgeBaseImpl::clear_modifieds (
   void)
 {
   map_.reset_modified ();
 }
 
 inline int64_t
-madara::knowledge::KnowledgeBaseImpl::save_checkpoint (
+KnowledgeBaseImpl::save_checkpoint (
   const std::string & filename,
   bool reset_modifieds)
 {
@@ -548,14 +739,14 @@ madara::knowledge::KnowledgeBaseImpl::save_checkpoint (
 }
 
 inline int64_t
-madara::knowledge::KnowledgeBaseImpl::save_checkpoint (
+KnowledgeBaseImpl::save_checkpoint (
   const CheckpointSettings & settings) const
 {
   return map_.save_checkpoint (settings);
 }
 
 inline int64_t
-  madara::knowledge::KnowledgeBaseImpl::load_context (
+  KnowledgeBaseImpl::load_context (
   const std::string & filename,
   bool  use_id,
   const KnowledgeUpdateSettings & settings)
@@ -574,7 +765,7 @@ inline int64_t
 }
 
 inline int64_t
-madara::knowledge::KnowledgeBaseImpl::load_context (
+KnowledgeBaseImpl::load_context (
 const std::string & filename,
 FileHeader & meta,
 bool  use_id,
@@ -596,7 +787,7 @@ const KnowledgeUpdateSettings & settings)
 }
 
 inline int64_t
-madara::knowledge::KnowledgeBaseImpl::load_context (
+KnowledgeBaseImpl::load_context (
 CheckpointSettings & checkpoint_settings,
 const KnowledgeUpdateSettings & update_settings)
 {
@@ -618,120 +809,38 @@ const KnowledgeUpdateSettings & update_settings)
 }
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::add_modifieds (
+KnowledgeBaseImpl::add_modifieds (
   const VariableReferences & modifieds) const
 {
   map_.add_modifieds (modifieds);
 }
 
-inline madara::knowledge::VariableReferences
-madara::knowledge::KnowledgeBaseImpl::save_modifieds (void) const
+inline VariableReferences
+KnowledgeBaseImpl::save_modifieds (void) const
 {
   return map_.save_modifieds ();
 }
 
-inline int
-madara::knowledge::KnowledgeBaseImpl::send_modifieds (
-  const std::string & prefix,
-  const EvalSettings & settings)
-{
-  int result = 0;
-
-  MADARA_GUARD_TYPE guard (map_.mutex_);
-
-  if (transports_.size () > 0 && !settings.delay_sending_modifieds)
-  {
-    const knowledge::KnowledgeRecords & modified = map_.get_modifieds ();
-
-    if (modified.size () > 0)
-    {
-      // if there is not an allowed send_list list
-      if (settings.send_list.size () == 0)
-      {
-        transports_.lock ();
-        // send across each transport
-        for (unsigned int i = 0; i < transports_.size (); ++i, ++result)
-          transports_[i]->send_data (modified);
-
-        transports_.unlock ();
-
-        // reset the modified map
-        map_.reset_modified ();
-      }
-      // if there is a send_list
-      else
-      {
-        knowledge::KnowledgeRecords allowed_modifieds;
-        // otherwise, we are only allowed to send a subset of modifieds
-        for (KnowledgeRecords::const_iterator i = modified.begin ();
-             i != modified.end (); ++i)
-        {
-          if (settings.send_list.find (i->first) != settings.send_list.end ())
-          {
-            allowed_modifieds[i->first] = i->second;
-          }
-        }
-
-        // if the subset was greater than zero, we send the subset
-        if (allowed_modifieds.size () > 0)
-        {
-          transports_.lock ();
-
-          // send across each transport
-          for (unsigned int i = 0; i < transports_.size (); ++i, ++result)
-            transports_[i]->send_data (allowed_modifieds);
-
-          transports_.unlock ();
-
-          // reset modified list for the allowed modifications
-          for (KnowledgeRecords::const_iterator i = allowed_modifieds.begin ();
-               i != allowed_modifieds.end (); ++i)
-          {
-            map_.reset_modified (i->first);
-          }
-        }
-      }
-     
-      map_.inc_clock (settings);
- 
-      if (settings.signal_changes)
-        map_.signal (false);
-    }
-    else
-    {
-      madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
-        "%s: no modifications to send\n", prefix.c_str ());
-
-      result = -1;
-    }
-  }
-  else
-  {
-    if (transports_.size () == 0)
-    {
-      madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
-        "%s: no transport configured\n", prefix.c_str ());
-
-      result = -2;
-    }
-    else if (settings.delay_sending_modifieds)
-    {
-      madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
-        "%s: user requested to not send modifieds\n", prefix.c_str ());
-
-      result = -3;
-    }
-  }
-
-  return result;
-}
-
+#ifndef _MADARA_NO_KARL_
 
 inline void
-madara::knowledge::KnowledgeBaseImpl::wait_for_change (void)
+KnowledgeBaseImpl::wait_for_change (void)
 {
   map_.wait_for_change ();
 }
+
+inline KnowledgeRecord
+KnowledgeBaseImpl::evaluate (
+const std::string & expression,
+const EvalSettings & settings)
+{
+  CompiledExpression compiled = compile (expression);
+  return evaluate (compiled, settings);
+}
+
+#endif // _MADARA_NO_KARL_
+
+} }
 
 
 #endif  // _MADARA_KNOWLEDGE_BASE_IMPL_INL_

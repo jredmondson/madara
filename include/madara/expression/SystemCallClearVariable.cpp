@@ -24,7 +24,7 @@ madara::expression::SystemCallClearVariable::~SystemCallClearVariable (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallClearVariable::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -79,7 +79,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call clear is clearing variable "
       "%s\n", name.c_str ());
 
-    return knowledge::KnowledgeRecord::Integer (context_.clear (name));
+    return knowledge::KnowledgeRecord (context_.clear (name));
   }
   else
   {

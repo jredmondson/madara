@@ -61,7 +61,7 @@ madara::expression::CompositeNotNode::prune (bool & can_change)
 
   can_change = right_child_can_change;
 
-  return knowledge::KnowledgeRecord::Integer (!right_value);
+  return knowledge::KnowledgeRecord (!right_value);
 }
 
 
@@ -71,7 +71,7 @@ madara::knowledge::KnowledgeRecord
 madara::expression::CompositeNotNode::evaluate (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  return knowledge::KnowledgeRecord::Integer (!right_->evaluate (settings));
+  return knowledge::KnowledgeRecord (!right_->evaluate (settings));
 }
 
 // accept a visitor

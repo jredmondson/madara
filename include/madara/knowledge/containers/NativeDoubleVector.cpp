@@ -371,7 +371,7 @@ madara::knowledge::containers::NativeDoubleVector::copy_to (
 
     for (size_t i = 0; i < target.size (); ++i)
     {
-      target[i].deep_copy ((*this)[i]);
+      target[i] = knowledge::KnowledgeRecord ((*this)[i]);
     }
   }
 }
@@ -499,7 +499,7 @@ madara::knowledge::containers::NativeDoubleVector::set (
 
 void
 madara::knowledge::containers::NativeDoubleVector::set_quality (
-  size_t index,
+  size_t /*index*/,
   uint32_t quality,
   const KnowledgeReferenceSettings & settings)
 {

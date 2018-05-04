@@ -25,7 +25,7 @@ madara::expression::SystemCallSin::~SystemCallSin (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallSin::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -39,7 +39,8 @@ madara::expression::SystemCallSin::prune (bool & can_change)
   if (nodes_.size () == 1)
   {
     bool arg_can_change = false;
-    result = sin (nodes_[0]->prune (arg_can_change).to_double ());
+    result = knowledge::KnowledgeRecord (
+        sin (nodes_[0]->prune (arg_can_change).to_double ()));
     
     if (!arg_can_change && dynamic_cast <LeafNode *> (nodes_[0]) == 0)
     {
@@ -73,7 +74,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call sin is returning the sin "
       "of its first argument\n");
 
-    return sin (nodes_[0]->evaluate (settings).to_double ());
+    return knowledge::KnowledgeRecord (
+        sin (nodes_[0]->evaluate (settings).to_double ()));
   }
   else
   {

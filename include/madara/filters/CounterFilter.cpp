@@ -17,9 +17,9 @@ madara::filters::CounterFilter::~CounterFilter ()
 
 void
 madara::filters::CounterFilter::filter (
-  knowledge::KnowledgeMap & records,
+  knowledge::KnowledgeMap & /*records*/,
   const transport::TransportContext & transport_context,
-  knowledge::Variables & vars)
+  knowledge::Variables & /*vars*/)
 {
   Integer cur_time = (Integer) transport_context.get_current_time ();
 

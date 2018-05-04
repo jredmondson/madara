@@ -25,7 +25,7 @@ madara::expression::SystemCallExpandEnv::~SystemCallExpandEnv (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallExpandEnv::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -79,7 +79,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call expand_var is returning the expansion "
       "of %s.\n", statement.c_str ());
 
-    return madara::utility::expand_envs (statement);
+    return knowledge::KnowledgeRecord (madara::utility::expand_envs (statement));
   }
   else
   {

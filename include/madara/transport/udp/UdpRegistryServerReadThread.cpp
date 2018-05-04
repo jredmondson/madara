@@ -335,7 +335,6 @@ madara::transport::UdpRegistryServerReadThread::run (void)
     // allocate a buffer to send
     char * buffer = buffer_.get_ptr ();
     const char * print_prefix = "UdpRegistryServerReadThread::run";
-    int64_t buffer_remaining = settings_.queue_length;
 
     madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
       "%s:" \

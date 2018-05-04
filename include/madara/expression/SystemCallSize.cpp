@@ -23,7 +23,7 @@ madara::expression::SystemCallSize::~SystemCallSize (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallSize::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -72,7 +72,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call size is returning the size of its first argument\n");
     
-    return madara::knowledge::KnowledgeRecord::Integer (
+    return madara::knowledge::KnowledgeRecord (
       nodes_[0]->evaluate (settings).size ());
   }
   else

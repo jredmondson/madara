@@ -220,8 +220,8 @@ madara::expression::CompositeArrayReference::dec (
   }
   else
   {
-    knowledge::KnowledgeRecord result = 
-      context_.retrieve_index (expand_key (), index, settings) - knowledge::KnowledgeRecord::Integer (1);
+    knowledge::KnowledgeRecord result (
+      context_.retrieve_index (expand_key (), index, settings) - knowledge::KnowledgeRecord (1));
 
     if (result.type () == knowledge::KnowledgeRecord::INTEGER)
       context_.set_index (expand_key (), index, result.to_integer (), settings);
@@ -261,7 +261,7 @@ madara::expression::CompositeArrayReference::inc (
   {
     knowledge::KnowledgeRecord result = 
       context_.retrieve_index (expand_key (), index, settings)
-        + knowledge::KnowledgeRecord::Integer (1);
+        + knowledge::KnowledgeRecord (1);
 
     if (result.type () == knowledge::KnowledgeRecord::INTEGER)
       context_.set_index (expand_key (), index, result.to_integer (), settings);

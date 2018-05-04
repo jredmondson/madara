@@ -23,7 +23,7 @@ madara::expression::SystemCallFragment::~SystemCallFragment (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallFragment::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 

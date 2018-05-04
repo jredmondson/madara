@@ -26,7 +26,7 @@ madara::expression::CompositeNegateNode::~CompositeNegateNode (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::CompositeNegateNode::item (void) const
 {
-  return "-";
+  return knowledge::KnowledgeRecord ("-");
 }
 
 /// Prune the tree of unnecessary nodes. 

@@ -24,7 +24,7 @@ madara::expression::SystemCallSetScientific::~SystemCallSetScientific (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallSetScientific::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -59,7 +59,7 @@ madara::expression::SystemCallSetScientific::prune (bool & can_change)
 /// the expression tree, and is much faster than the prune function
 madara::knowledge::KnowledgeRecord 
 madara::expression::SystemCallSetScientific::evaluate (
-const madara::knowledge::KnowledgeUpdateSettings & settings)
+const madara::knowledge::KnowledgeUpdateSettings & /*settings*/)
 {
   knowledge::KnowledgeRecord return_value;
 

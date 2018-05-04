@@ -74,7 +74,7 @@ namespace madara
         *                                   be sent over the network (dangerous).
         *                                   @see treat_locals_as_globals
         **/
-       EvalSettings (bool t_delay_sending_modifieds,
+       explicit EvalSettings (bool t_delay_sending_modifieds,
          bool t_treat_globals_as_locals = false,
          bool t_signal_updates = true,
          bool t_always_overwrite = false,

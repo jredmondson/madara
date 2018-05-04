@@ -8,16 +8,15 @@
 #endif  // MADARA_JAVA
 
 madara::threads::Threader::Threader ()
-  : control_(new knowledge::KnowledgeBase ()), data_ (0)
+  : data_ (0), control_(new knowledge::KnowledgeBase ())
 {
 
 }
 
 madara::threads::Threader::Threader (
   knowledge::KnowledgeBase & data_plane)
-  : control_(new knowledge::KnowledgeBase ()), data_ (&data_plane)
+  : data_ (&data_plane), control_(new knowledge::KnowledgeBase ())
 {
-
 }
 
 madara::threads::Threader::~Threader ()

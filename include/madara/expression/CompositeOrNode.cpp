@@ -21,7 +21,7 @@ madara::expression::CompositeOrNode::CompositeOrNode (
 madara::knowledge::KnowledgeRecord
 madara::expression::CompositeOrNode::item (void) const
 {
-  return "||";
+  return knowledge::KnowledgeRecord ("||");
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -48,7 +48,7 @@ madara::expression::CompositeOrNode::prune (bool & can_change)
     if (j == 0)
       return_value = value;
     else
-      return_value = knowledge::KnowledgeRecord::Integer (
+      return_value = knowledge::KnowledgeRecord (
         value || return_value);
 
     can_change = can_change || value_changes;
@@ -69,11 +69,11 @@ madara::expression::CompositeOrNode::evaluate (
   {
     // if we have a non-zero eval, return 1 immediately
     if ((*i)->evaluate (settings).is_true ())
-      return madara::knowledge::KnowledgeRecord::Integer (1);
+      return madara::knowledge::KnowledgeRecord (1);
   }
 
   // if nothing was true, return false
-  return madara::knowledge::KnowledgeRecord::Integer ();
+  return madara::knowledge::KnowledgeRecord ();
 }
 
 // accept a visitor

@@ -27,7 +27,7 @@ madara::expression::CompositeSquareRootNode::~CompositeSquareRootNode (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::CompositeSquareRootNode::item (void) const
 {
-  return "#sqrt";
+  return knowledge::KnowledgeRecord ("#sqrt");
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -59,7 +59,7 @@ madara::expression::CompositeSquareRootNode::prune (bool & can_change)
 
   can_change = right_child_can_change;
 
-  return sqrt (right_value.to_double ());
+  return knowledge::KnowledgeRecord (sqrt (right_value.to_double ()));
 }
 
 /// Evaluates the node and its children. This does not prune any of
@@ -74,7 +74,7 @@ madara::expression::CompositeSquareRootNode::evaluate (
     "KARL COMPILE ERROR: "
     "Negating %s.\n", value.to_string ().c_str ());
 
-  return sqrt (value.to_double ());
+  return knowledge::KnowledgeRecord (sqrt (value.to_double ()));
 }
 
 // accept a visitor

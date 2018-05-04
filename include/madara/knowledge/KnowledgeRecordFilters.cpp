@@ -27,8 +27,9 @@ madara::knowledge::KnowledgeRecordFilters::KnowledgeRecordFilters ()
 
 madara::knowledge::KnowledgeRecordFilters::KnowledgeRecordFilters (
   const knowledge::KnowledgeRecordFilters & filters)
-  : filters_ (filters.filters_), context_ (filters.context_),
-    aggregate_filters_ (filters.aggregate_filters_)
+  : filters_ (filters.filters_),
+    aggregate_filters_ (filters.aggregate_filters_),
+    context_ (filters.context_)
 {
 }
 
@@ -334,7 +335,7 @@ madara::knowledge::KnowledgeRecordFilters::filter (
     FunctionArguments arguments;
     
     // JVMs appear to do strange things with the stack on jni_attach
-    std::auto_ptr <Variables> heap_variables (
+    std::unique_ptr <Variables> heap_variables (
       new Variables ());
 
     heap_variables->context_ = context_;
@@ -610,7 +611,7 @@ madara::knowledge::KnowledgeRecordFilters::filter (
       "Entering aggregate filter method\n");
 
     // JVMs appear to do strange things with the stack on jni_attach
-    std::auto_ptr <Variables> heap_variables (
+    std::unique_ptr <Variables> heap_variables (
       new Variables ());
 
     heap_variables->context_ = context_;

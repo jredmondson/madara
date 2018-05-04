@@ -142,7 +142,6 @@ madara::transport::process_received_update (
 
   bool is_reduced = false;
   bool is_fragment = false;
-  bool previously_defragged = false;
 
   madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
     "%s:" \
@@ -230,9 +229,8 @@ madara::transport::process_received_update (
 
     return -1;
   }
-          
+
   const char * update = header->read (buffer, buffer_remaining);
-  const char * orig_update = update;
 
   madara_logger_log (context.get_logger (), logger::LOG_MINOR,
     "%s:" \
@@ -368,11 +366,6 @@ madara::transport::process_received_update (
     // if we have no return message, we may have previously defragged it
     if (!message)
     {
-      //if (transport::is_complete (frag_header->originator,
-      //  frag_header->clock, settings.fragment_map))
-      //{
-      //  previously_defragged = true;
-      //}
       return 0;
     }
     else

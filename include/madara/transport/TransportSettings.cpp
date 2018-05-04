@@ -45,7 +45,6 @@ madara::transport::TransportSettings::TransportSettings () :
 madara::transport::TransportSettings::TransportSettings (
   const TransportSettings & settings) : 
   write_domain (settings.write_domain),
-  read_domains_ (settings.read_domains_),
   read_threads (settings.read_threads),
   queue_length (settings.queue_length),
   type (settings.type),
@@ -77,7 +76,8 @@ madara::transport::TransportSettings::TransportSettings (
 #endif // _USE_CID_
   hosts (),
   no_sending (settings.no_sending),
-  no_receiving (settings.no_receiving)
+  no_receiving (settings.no_receiving),
+  read_domains_ (settings.read_domains_)
 {
   hosts.resize (settings.hosts.size ());
   for (unsigned int i = 0; i < settings.hosts.size (); ++i)

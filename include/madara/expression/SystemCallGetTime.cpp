@@ -25,7 +25,7 @@ madara::expression::SystemCallGetTime::~SystemCallGetTime (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallGetTime::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -60,12 +60,12 @@ madara::expression::SystemCallGetTime::prune (bool & can_change)
 /// the expression tree, and is much faster than the prune function
 madara::knowledge::KnowledgeRecord 
 madara::expression::SystemCallGetTime::evaluate (
-const madara::knowledge::KnowledgeUpdateSettings & settings)
+const madara::knowledge::KnowledgeUpdateSettings & /*settings*/)
 {
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
     "System call get_time is returning the system clock\n");
 
-  return madara::knowledge::KnowledgeRecord::Integer (
+  return madara::knowledge::KnowledgeRecord (
     madara::utility::get_time ());
 }
 

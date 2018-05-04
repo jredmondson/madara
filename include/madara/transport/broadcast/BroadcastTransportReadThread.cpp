@@ -390,7 +390,6 @@ madara::transport::BroadcastTransportReadThread::run (void)
     // allocate a buffer to send
     char * buffer = buffer_.get_ptr ();
     const char * print_prefix = "BroadcastTransportReadThread::run";
-    int64_t buffer_remaining = settings_.queue_length;
 
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
       "%s:" \

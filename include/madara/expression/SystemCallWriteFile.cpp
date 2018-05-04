@@ -23,7 +23,7 @@ madara::expression::SystemCallWriteFile::~SystemCallWriteFile (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallWriteFile::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -92,7 +92,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
         "KARL ERROR: System call write_file could not write to %s\n",
         filename->to_string ().c_str ());
 
-      return madara::knowledge::KnowledgeRecord::Integer (bytes_written);
+      return madara::knowledge::KnowledgeRecord (bytes_written);
     }
     else
     {

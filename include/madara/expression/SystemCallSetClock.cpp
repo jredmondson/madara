@@ -25,7 +25,7 @@ madara::expression::SystemCallSetClock::~SystemCallSetClock (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallSetClock::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -80,8 +80,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 
     context_.set_clock (nodes_[0]->evaluate (settings).to_integer ());
     
-    return madara::knowledge::KnowledgeRecord::Integer (
-      context_.get_clock ());
+    return madara::knowledge::KnowledgeRecord (context_.get_clock ());
   }
   else if (nodes_.size () == 2)
   {
@@ -94,7 +93,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       variable->get_record ()->clock = 
         (uint64_t) nodes_[1]->evaluate (settings).to_integer ();
       
-      return madara::knowledge::KnowledgeRecord::Integer (
+      return madara::knowledge::KnowledgeRecord (
         variable->get_record ()->clock);
     }
     else

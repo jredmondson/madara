@@ -24,7 +24,7 @@ madara::expression::CompositeBothNode::CompositeBothNode (
 madara::knowledge::KnowledgeRecord
 madara::expression::CompositeBothNode::item (void) const
 {
-  return ";";
+  return knowledge::KnowledgeRecord (";");
 }
 
 /// Prune the tree of unnecessary nodes. 

@@ -420,8 +420,8 @@ latency_receiver (
     {
       // this is a safe way to add variables to a rebroadcast
       // without modifying the local context
-      args.push_back ("ack");
-      args.push_back (vars.inc (ack));
+      args.emplace_back ("ack");
+      args.emplace_back (vars.inc (ack));
     }
   }
 

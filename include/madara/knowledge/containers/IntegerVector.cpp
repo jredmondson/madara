@@ -204,7 +204,7 @@ madara::knowledge::containers::IntegerVector::resize (
     {
       size_t old_size = vector_.size ();
 
-      if (old_size != size)
+      if (old_size != (size_t)size)
       {
         vector_.resize (size);
         
@@ -490,7 +490,7 @@ madara::knowledge::containers::IntegerVector::copy_to (
 
     for (size_t i = 0; i < vector_.size (); ++i)
     {
-      target[i].deep_copy ((*this)[i]);
+      target[i] = knowledge::KnowledgeRecord ((*this)[i]);
     }
   }
 }

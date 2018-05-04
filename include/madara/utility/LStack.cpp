@@ -4,8 +4,10 @@
 #include <memory>
 #include "madara/utility/LStack.h"
 
+#ifdef _MSC_VER
 // It's fine to use "this" in base-member initializations.
 #pragma warning(disable:4355)
+#endif
 
 namespace madara
 {
@@ -205,7 +207,7 @@ madara::utility::LStack<T>::LStack (
 {
   // insert a dummy node first and keep it as an auto_ptr for exception
   // safety issues
-  ::std::auto_ptr <LStackNode<T> > tail (new LStackNode<T> ());
+  ::std::unique_ptr <LStackNode<T> > tail (new LStackNode<T> ());
   head_ = tail.get ();
 
   // copy_list has strong exception safety, so no try catch block
@@ -230,7 +232,7 @@ madara::utility::LStack<T>::copy_list (
   // can't use push() to insert at the head since it will reverse
   // the stack.
 
-  ::std::auto_ptr <LStackNode<T> > new_node;
+  ::std::unique_ptr <LStackNode<T> > new_node;
 
   for (typename LStack<T>::const_iterator it = rhs.begin (); 
        it != rhs.end (); 
@@ -340,7 +342,7 @@ madara::utility::LStack<T>::push (const T &new_item)
   try
     {
       // create a temporary new node for exception safety reasons
-      ::std::auto_ptr <LStackNode<T> > temp (new LStackNode<T> (new_item, head_));
+      ::std::unique_ptr <LStackNode<T> > temp (new LStackNode<T> (new_item, head_));
 
       // integrate the new node into the list
       head_ = temp.release ();

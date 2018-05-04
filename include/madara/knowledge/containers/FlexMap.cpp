@@ -6,7 +6,7 @@
 madara::knowledge::containers::FlexMap::FlexMap (
   const KnowledgeUpdateSettings & settings,
   const std::string & delimiter)
-  : BaseContainer ("", settings), context_ (0), delimiter_ (".")
+  : BaseContainer ("", settings), context_ (0), delimiter_ (delimiter)
 {
 }
   
@@ -17,7 +17,7 @@ madara::knowledge::containers::FlexMap::FlexMap (
   const KnowledgeUpdateSettings & settings,
   const std::string & delimiter)
   : BaseContainer (name, settings), context_ (&(knowledge.get_context ())),
-  delimiter_ (".")
+  delimiter_ (delimiter)
 {
 }
  
@@ -27,7 +27,7 @@ madara::knowledge::containers::FlexMap::FlexMap (
   const KnowledgeUpdateSettings & settings,
   const std::string & delimiter)
   : BaseContainer (name, settings), context_ (knowledge.get_context ()),
-  delimiter_ (".")
+  delimiter_ (delimiter)
 {
 }
        

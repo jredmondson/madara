@@ -3,14 +3,14 @@
 #include "madara/utility/stdint.h"
 
 madara::knowledge::VariableReference::VariableReference ()
-  : record_ (0), name_ (0)
+  : name_ (0), record_ (0)
 {
 }
 
 
 madara::knowledge::VariableReference::VariableReference (
   const VariableReference & rhs)
-  : record_ (rhs.record_), name_ (rhs.name_)
+  : name_ (rhs.name_), record_ (rhs.record_)
 {
 }
 

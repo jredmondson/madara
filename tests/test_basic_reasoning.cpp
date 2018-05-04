@@ -28,7 +28,7 @@ madara::knowledge::KnowledgeRecord
   return_1 (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables &)
 {
-  return madara::knowledge::KnowledgeRecord::Integer (1);
+  return madara::knowledge::KnowledgeRecord (1);
 }
 
 madara::knowledge::KnowledgeRecord
@@ -40,21 +40,21 @@ madara::knowledge::KnowledgeRecord
 
   variables.print ("External named function call of {function_name} a SUCCESS\n", 0);
 
-  return madara::knowledge::KnowledgeRecord::Integer (1);
+  return madara::knowledge::KnowledgeRecord (1);
 }
 
 madara::knowledge::KnowledgeRecord
   return_2 (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables &)
 {
-  return madara::knowledge::KnowledgeRecord::Integer (2);
+  return madara::knowledge::KnowledgeRecord (2);
 }
 
 madara::knowledge::KnowledgeRecord
   return_3 (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables &)
 {
-  return madara::knowledge::KnowledgeRecord::Integer (3);
+  return madara::knowledge::KnowledgeRecord (3);
 }
 
 madara::knowledge::KnowledgeRecord
@@ -100,7 +100,7 @@ madara::knowledge::KnowledgeRecord
     records[6].to_string () == "4" &&
     records[7].to_string () == "3");
 
-  return madara::knowledge::KnowledgeRecord::Integer (records.size ());
+  return madara::knowledge::KnowledgeRecord (records.size ());
 }
 
 madara::knowledge::KnowledgeRecord
@@ -119,7 +119,7 @@ madara::knowledge::KnowledgeRecord
     records["map7"].to_string () == "4" &&
     records["map8"].to_string () == "3");
 
-  return madara::knowledge::KnowledgeRecord::Integer (records.size ());
+  return madara::knowledge::KnowledgeRecord (records.size ());
 }
 
 
@@ -141,7 +141,7 @@ madara::knowledge::Variables & variables)
     variables.get (matches[6]).to_string () == "4" &&
     variables.get (matches[7]).to_string () == "3");
 
-  return madara::knowledge::KnowledgeRecord::Integer (matches.size ());
+  return madara::knowledge::KnowledgeRecord (matches.size ());
 }
 
 
@@ -539,7 +539,7 @@ void test_strings (madara::knowledge::KnowledgeBase & knowledge)
   assert (knowledge.get (".var7") == "bob jenkins joey smith edward sullinger");
   
   knowledge.set (".var1", 0.5);
-  knowledge.set (".var2", (madara::knowledge::KnowledgeRecord::Integer)1);
+  knowledge.set (".var2", 1);
   knowledge.set (".var3", 10.5);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -1367,7 +1367,7 @@ void test_tree_compilation (madara::knowledge::KnowledgeBase & knowledge)
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing expression tree compilation and caching\n");
 
-  knowledge.set (".var1", (madara::knowledge::KnowledgeRecord::Integer)5);
+  knowledge.set (".var1", 5);
 
   result = knowledge.evaluate ("1 * 1 + 2 * 2 + 3 * 3 + 4 * 4 + 5 * 5 - 18");
   assert (result.to_integer () == 37);
@@ -1396,7 +1396,7 @@ void test_functions (madara::knowledge::KnowledgeBase & knowledge)
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Testing embedded external functions\n");
 
-  knowledge.set (".var1", (madara::knowledge::KnowledgeRecord::Integer)5);
+  knowledge.set (".var1", 5);
 
   knowledge.define_function ("function1", return_1);
   knowledge.define_function ("function2", return_2);

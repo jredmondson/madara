@@ -93,7 +93,7 @@ madara::knowledge::ThreadSafeContext::get_ref (
   }
   else
     key_ptr = &key;
-  
+
   // set name to the expanded key, for debugging purposes
   record.set_name (*key_ptr);
 
@@ -138,340 +138,6 @@ const KnowledgeReferenceSettings & settings) const
   return record;
 }
 
-
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set (
-  const VariableReference & variable,
-  madara::knowledge::KnowledgeRecord::Integer value,
-  const KnowledgeUpdateSettings & settings)
-{
-  MADARA_GUARD_TYPE guard (mutex_);
-  if (variable.record_)
-  {
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite &&
-        variable.record_->write_quality < variable.record_->quality)
-      return -2;
-
-    variable.record_->set_value (value);
-    variable.record_->quality = variable.record_->write_quality;
-  
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-  }
-  else
-    return -1;
-
-  return 0;
-}
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set (
-  const VariableReference & variable,
-  const madara::knowledge::KnowledgeRecord & value,
-  const KnowledgeUpdateSettings & settings)
-{
-  MADARA_GUARD_TYPE guard (mutex_);
-  if (variable.record_)
-    return set_unsafe(variable, value, settings);
-  else
-    return -1;
-}
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set_unsafe_impl (
-  const VariableReference & variable,
-  const madara::knowledge::KnowledgeRecord & value,
-  const KnowledgeUpdateSettings & settings)
-{
-  // check if we have the appropriate write quality
-  if (!settings.always_overwrite &&
-      variable.record_->write_quality < variable.record_->quality)
-    return -2;
-
-  // copy size and type from the record value
-  variable.record_->type_ = value.type_;
-
-  if (value.exists())
-  {
-    variable.record_->deep_copy (value);
-  }
-  else
-  {
-    variable.record_->clear_value ();
-  }
-  
-  variable.record_->quality = variable.record_->write_quality;
-
-  return 0;
-}
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set_unsafe (
-  const VariableReference & variable,
-  const madara::knowledge::KnowledgeRecord & value,
-  const KnowledgeUpdateSettings & settings)
-{
-  int ret = set_unsafe_impl(variable, value, settings);
-
-  if (ret == 0)
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-
-  return ret;
-}
-
-
-// set the value of an array index
-int
-madara::knowledge::ThreadSafeContext::set_index (
-  const VariableReference & variable, size_t index,
-  madara::knowledge::KnowledgeRecord::Integer value,
-  const KnowledgeUpdateSettings & settings)
-{
-  MADARA_GUARD_TYPE guard (mutex_);
-  if (variable.record_)
-    return set_index_unsafe(variable, index, value, settings);
-  else
-    return -1;
-}
-
-int
-madara::knowledge::ThreadSafeContext::set_index_unsafe_impl (
-  const VariableReference & variable, size_t index,
-  madara::knowledge::KnowledgeRecord::Integer value,
-  const KnowledgeUpdateSettings & settings)
-{
-  // check if we have the appropriate write quality
-  if (!settings.always_overwrite &&
-      variable.record_->write_quality < variable.record_->quality)
-    return -2;
-
-  variable.record_->set_index (index, value);
-  variable.record_->quality = variable.record_->write_quality;
-
-  return 0;
-}
-
-int
-madara::knowledge::ThreadSafeContext::set_index_unsafe (
-  const VariableReference & variable, size_t index,
-  madara::knowledge::KnowledgeRecord::Integer value,
-  const KnowledgeUpdateSettings & settings)
-{
-  int ret = set_index_unsafe_impl(variable, index, value, settings);
-  if (ret == 0)
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-
-  return ret;
-}
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set (
-  const VariableReference & variable,
-  const knowledge::KnowledgeRecord::Integer * value,
-  uint32_t size,
-  const KnowledgeUpdateSettings & settings)
-{
-  MADARA_GUARD_TYPE guard (mutex_);
-  if (variable.record_)
-  {
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite &&
-        variable.record_->write_quality < variable.record_->quality)
-      return -2;
-
-    variable.record_->set_value (value, size);
-    variable.record_->quality = variable.record_->write_quality;
-  
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-  }
-  else
-    return -1;
-
-  return 0;
-}
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set (
-  const VariableReference & variable,
-  const std::vector <KnowledgeRecord::Integer> & value,
-  const KnowledgeUpdateSettings & settings)
-{
-  MADARA_GUARD_TYPE guard (mutex_);
-  if (variable.record_)
-  {
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite &&
-        variable.record_->write_quality < variable.record_->quality)
-      return -2;
-
-    variable.record_->set_value (value);
-    variable.record_->quality = variable.record_->write_quality;
-  
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-  }
-  else
-    return -1;
-
-  return 0;
-}
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set (
-  const VariableReference & variable,
-  double value,
-  const KnowledgeUpdateSettings & settings)
-{
-  MADARA_GUARD_TYPE guard (mutex_);
-  if (variable.record_)
-  {
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite &&
-        variable.record_->write_quality < variable.record_->quality)
-      return -2;
-
-    variable.record_->set_value (value);
-    variable.record_->quality = variable.record_->write_quality;
-  
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-  }
-  else
-    return -1;
-
-  return 0;
-}
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set_index (
-  const VariableReference & variable, size_t index,
-  double value,
-  const KnowledgeUpdateSettings & settings)
-{
-  MADARA_GUARD_TYPE guard (mutex_);
-  if (variable.record_)
-    return set_index_unsafe(variable, index, value, settings);
-  else
-    return -1;
-}
-
-int
-madara::knowledge::ThreadSafeContext::set_index_unsafe_impl (
-  const VariableReference & variable, size_t index,
-  double value,
-  const KnowledgeUpdateSettings & settings)
-{
-  // check if we have the appropriate write quality
-  if (!settings.always_overwrite &&
-      variable.record_->write_quality < variable.record_->quality)
-    return -2;
-
-  variable.record_->set_index (index, value);
-  variable.record_->quality = variable.record_->write_quality;
-
-  return 0;
-}
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set_index_unsafe (
-  const VariableReference & variable, size_t index,
-  double value,
-  const KnowledgeUpdateSettings & settings)
-{
-  int ret = set_index_unsafe_impl(variable, index, value, settings);
-  if (ret == 0)
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-
-  return ret;
-}
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set (
-  const VariableReference & variable,
-  const double * value,
-  uint32_t size,
-  const KnowledgeUpdateSettings & settings)
-{
-  MADARA_GUARD_TYPE guard (mutex_);
-  if (variable.record_)
-  {
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite &&
-        variable.record_->write_quality < variable.record_->quality)
-      return -2;
-
-    variable.record_->set_value (value, size);
-    variable.record_->quality = variable.record_->write_quality;
-  
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-  }
-  else
-    return -1;
-
-  return 0;
-}
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set (
-  const VariableReference & variable,
-  const std::vector <double> & value,
-  const KnowledgeUpdateSettings & settings)
-{
-  MADARA_GUARD_TYPE guard (mutex_);
-  if (variable.record_)
-  {
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite &&
-        variable.record_->write_quality < variable.record_->quality)
-      return -2;
-
-    variable.record_->set_value (value);
-    variable.record_->quality = variable.record_->write_quality;
-  
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-  }
-  else
-    return -1;
-
-  return 0;
-}
-
-// set the value of a variable
-int
-madara::knowledge::ThreadSafeContext::set (
-  const VariableReference & variable,
-  const std::string & value,
-  const KnowledgeUpdateSettings & settings)
-{
-  MADARA_GUARD_TYPE guard (mutex_);
-  if (variable.record_)
-  {
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite &&
-        variable.record_->write_quality < variable.record_->quality)
-      return -2;
-
-    variable.record_->set_value (value);
-    variable.record_->quality = variable.record_->write_quality;
-  
-    mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
-  }
-  else
-    return -1;
-
-  return 0;
-}
-
 // set the value of a variable
 int
 madara::knowledge::ThreadSafeContext::set_xml (
@@ -479,7 +145,7 @@ madara::knowledge::ThreadSafeContext::set_xml (
   const char * value, size_t size,
   const KnowledgeUpdateSettings & settings)
 {
-  
+
   MADARA_GUARD_TYPE guard (mutex_);
   if (variable.record_)
   {
@@ -490,7 +156,7 @@ madara::knowledge::ThreadSafeContext::set_xml (
 
     variable.record_->set_xml (value, size);
     variable.record_->quality = variable.record_->write_quality;
-  
+
     mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
   }
   else
@@ -516,7 +182,7 @@ madara::knowledge::ThreadSafeContext::set_text (
 
     variable.record_->set_text (value, size);
     variable.record_->quality = variable.record_->write_quality;
-  
+
     mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
   }
   else
@@ -542,7 +208,7 @@ madara::knowledge::ThreadSafeContext::set_jpeg (
 
     variable.record_->set_jpeg (value, size);
     variable.record_->quality = variable.record_->write_quality;
-  
+
     mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
   }
   else
@@ -568,7 +234,7 @@ madara::knowledge::ThreadSafeContext::set_file (
 
     variable.record_->set_file (value, size);
     variable.record_->quality = variable.record_->write_quality;
-  
+
     mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
   }
   else
@@ -595,7 +261,7 @@ madara::knowledge::ThreadSafeContext::read_file (
 
     return_value = variable.record_->read_file (filename);
     variable.record_->quality = variable.record_->write_quality;
-  
+
     mark_and_signal (variable.name_.get_ptr (), variable.record_, settings);
   }
   else
@@ -605,8 +271,8 @@ madara::knowledge::ThreadSafeContext::read_file (
 }
 
 /// get quality of last update to a variable.
-/// @return    quality of the variable 
-uint32_t 
+/// @return    quality of the variable
+uint32_t
 madara::knowledge::ThreadSafeContext::get_quality (
   const std::string & key,
   const KnowledgeReferenceSettings & settings)
@@ -615,7 +281,7 @@ madara::knowledge::ThreadSafeContext::get_quality (
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (key);
@@ -623,7 +289,7 @@ madara::knowledge::ThreadSafeContext::get_quality (
   }
   else
     key_ptr = &key;
-  
+
   // find the key in the knowledge base
   KnowledgeMap::iterator found = map_.find (*key_ptr);
 
@@ -638,8 +304,8 @@ madara::knowledge::ThreadSafeContext::get_quality (
 }
 
 /// get quality of last update to a variable.
-/// @return    quality of the variable 
-uint32_t 
+/// @return    quality of the variable
+uint32_t
 madara::knowledge::ThreadSafeContext::get_write_quality (
   const std::string & key,
   const KnowledgeReferenceSettings & settings)
@@ -648,7 +314,7 @@ madara::knowledge::ThreadSafeContext::get_write_quality (
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (key);
@@ -672,7 +338,7 @@ madara::knowledge::ThreadSafeContext::get_write_quality (
 
 /// Set quality of last update to a variable.
 /// @return    quality of the variable after this call
-uint32_t 
+uint32_t
 madara::knowledge::ThreadSafeContext::set_quality (
   const std::string & key, uint32_t quality,
                            bool force_update,
@@ -682,7 +348,7 @@ madara::knowledge::ThreadSafeContext::set_quality (
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (key);
@@ -690,11 +356,11 @@ madara::knowledge::ThreadSafeContext::set_quality (
   }
   else
     key_ptr = &key;
-  
+
   // check for null key
   if (*key_ptr == "")
     return 0;
-  
+
   // find the key in the knowledge base
   KnowledgeMap::iterator found = map_.find (*key_ptr);
 
@@ -707,9 +373,9 @@ madara::knowledge::ThreadSafeContext::set_quality (
   // return current quality
   return map_[*key_ptr].quality;
 }
-      
+
 /// Set quality of this process writing to a variable
-void 
+void
 madara::knowledge::ThreadSafeContext::set_write_quality (
   const std::string & key, uint32_t quality,
   const KnowledgeReferenceSettings & settings)
@@ -718,7 +384,7 @@ madara::knowledge::ThreadSafeContext::set_write_quality (
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (key);
@@ -734,7 +400,7 @@ madara::knowledge::ThreadSafeContext::set_write_quality (
 
 /// Set if the variable value will be different. Always updates clock to
 /// highest value
-/// @return   1 if the value was changed. 0 if not changed. 
+/// @return   1 if the value was changed. 0 if not changed.
 ///           -1 if null key, -2 if quality not high enough
 int
 madara::knowledge::ThreadSafeContext::set_if_unequal (
@@ -748,7 +414,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (key);
@@ -756,11 +422,11 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   }
   else
     key_ptr = &key;
-  
+
   // check for null key
   if (*key_ptr == "")
     return -1;
-  
+
   // find the key in the knowledge base
   KnowledgeMap::iterator found = map_.find (*key_ptr);
 
@@ -778,7 +444,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
 
     // if we have the same quality, but our clock value
     // is less than what we've already seen, then return -3
-    else if (quality == found->second.quality && 
+    else if (quality == found->second.quality &&
              clock < found->second.clock)
       result = -3;
 
@@ -805,7 +471,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   {
     // we have a situation where the value needs to be changed
     record.set_value (value);
-  
+
     mark_and_signal (key_ptr->c_str (), &record, settings);
   }
 
@@ -815,7 +481,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
 
 /// Set if the variable value will be different. Always updates clock to
 /// highest value
-/// @return   1 if the value was changed. 0 if not changed. 
+/// @return   1 if the value was changed. 0 if not changed.
 ///           -1 if null key, -2 if quality not high enough
 int
 madara::knowledge::ThreadSafeContext::set_if_unequal (
@@ -829,7 +495,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (key);
@@ -837,11 +503,11 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   }
   else
     key_ptr = &key;
-  
+
   // check for null key
   if (*key_ptr == "")
     return -1;
-  
+
   // find the key in the knowledge base
   KnowledgeMap::iterator found = map_.find (*key_ptr);
 
@@ -859,7 +525,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
 
     // if we have the same quality, but our clock value
     // is less than what we've already seen, then return -3
-    else if (quality == found->second.quality && 
+    else if (quality == found->second.quality &&
              clock < found->second.clock)
       result = -3;
 
@@ -886,7 +552,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   {
     // we have a situation where the value needs to be changed
     record.set_value (value);
-  
+
     mark_and_signal (key_ptr->c_str (), &record, settings);
   }
 
@@ -896,7 +562,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
 
 /// Set if the variable value will be different. Always updates clock to
 /// highest value
-/// @return   1 if the value was changed. 0 if not changed. 
+/// @return   1 if the value was changed. 0 if not changed.
 ///           -1 if null key, -2 if quality not high enough
 int
 madara::knowledge::ThreadSafeContext::set_if_unequal (
@@ -910,7 +576,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (key);
@@ -918,11 +584,11 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   }
   else
     key_ptr = &key;
-  
+
   // check for null key
   if (*key_ptr == "")
     return -1;
-  
+
   // find the key in the knowledge base
   KnowledgeMap::iterator found = map_.find (*key_ptr);
 
@@ -940,7 +606,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
 
     // if we have the same quality, but our clock value
     // is less than what we've already seen, then return -3
-    else if (quality == found->second.quality && 
+    else if (quality == found->second.quality &&
              clock < found->second.clock)
       result = -3;
 
@@ -967,7 +633,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
   {
     // we have a situation where the value needs to be changed
     record.set_value (value);
-  
+
     // otherwise set the value
     mark_and_signal (key_ptr->c_str (), &record, settings);
   }
@@ -978,7 +644,7 @@ madara::knowledge::ThreadSafeContext::set_if_unequal (
 
 /// Set if the variable value will be different. Always updates clock to
 /// highest value
-/// @return   1 if the value was changed. 0 if not changed. 
+/// @return   1 if the value was changed. 0 if not changed.
 ///           -1 if null key, -2 if quality not high enough
 int
 madara::knowledge::ThreadSafeContext::update_record_from_external (
@@ -991,7 +657,7 @@ madara::knowledge::ThreadSafeContext::update_record_from_external (
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (key);
@@ -999,11 +665,11 @@ madara::knowledge::ThreadSafeContext::update_record_from_external (
   }
   else
     key_ptr = &key;
-  
+
   // check for null key
   if (*key_ptr == "")
     return -1;
-  
+
   // find the key in the knowledge base
   KnowledgeMap::iterator found = map_.find (*key_ptr);
 
@@ -1017,7 +683,7 @@ madara::knowledge::ThreadSafeContext::update_record_from_external (
 
     // if we have the same quality, but our clock value
     // is less than what we've already seen, then return -3
-    else if (rhs.quality == found->second.quality && 
+    else if (rhs.quality == found->second.quality &&
              rhs.clock < found->second.clock)
       result = -3;
 
@@ -1033,14 +699,14 @@ madara::knowledge::ThreadSafeContext::update_record_from_external (
     // if we reach this point, then we have to create the record
     knowledge::KnowledgeRecord & current_value = map_[*key_ptr];
     current_value.deep_copy (rhs);
-    
+
     mark_and_signal (key_ptr->c_str (), &current_value, settings);
   }
-  
+
   // if we need to update the global clock, then update it
   if (rhs.clock >= this->clock_)
     this->clock_ = rhs.clock + 1;
-  
+
   //if (settings.signal_changes)
   //  changed_.MADARA_CONDITION_NOTIFY_ONE ();
 
@@ -1050,11 +716,11 @@ madara::knowledge::ThreadSafeContext::update_record_from_external (
 
 /// Set if the variable value will be different. Always updates clock to
 /// highest value
-/// @return   1 if the value was changed. 0 if not changed. 
+/// @return   1 if the value was changed. 0 if not changed.
 ///           -1 if null key, -2 if quality not high enough
 int
 madara::knowledge::ThreadSafeContext::update_record_from_external (
-  const VariableReference & target, 
+  const VariableReference & target,
   const knowledge::KnowledgeRecord & rhs,
   const KnowledgeUpdateSettings & settings)
 {
@@ -1095,7 +761,7 @@ madara::knowledge::ThreadSafeContext::update_record_from_external (
 /// Indicate that a status change has occurred. This could be a message
 /// from the transport to let the knowledge engine know that new agents
 /// are available to send knowledge to.
-void 
+void
 madara::knowledge::ThreadSafeContext::set_changed (void)
 {
   changed_.MADARA_CONDITION_NOTIFY_ONE ();
@@ -1108,7 +774,7 @@ madara::knowledge::ThreadSafeContext::print (
 {
   MADARA_GUARD_TYPE guard (mutex_);
   for (madara::knowledge::KnowledgeMap::const_iterator i = map_.begin ();
-       i != map_.end (); 
+       i != map_.end ();
        ++i)
   {
     if (i->second.exists ())
@@ -1133,7 +799,7 @@ madara::knowledge::ThreadSafeContext::to_string (
   bool first = true;
 
   for (madara::knowledge::KnowledgeMap::const_iterator i = map_.begin ();
-       i != map_.end (); 
+       i != map_.end ();
        ++i)
   {
     // separate each record with the record_delimiter
@@ -1159,7 +825,7 @@ madara::knowledge::ThreadSafeContext::to_string (
 
     // use the array_delimiter for the underlying to_string functions
     buffer << i->second.to_string (array_delimiter);
-    
+
     if (i->second.is_string_type ())
     {
       buffer << "'";
@@ -1180,7 +846,7 @@ madara::knowledge::ThreadSafeContext::to_string (
 /// Expand a string with variable expansions. This is a generic form of
 /// the function found in VariableNode, which is optimized to never change
 /// keys.
-std::string 
+std::string
 madara::knowledge::ThreadSafeContext::expand_statement (
   const std::string & statement) const
 {
@@ -1208,7 +874,7 @@ madara::knowledge::ThreadSafeContext::expand_statement (
     {
       if (subcount == 1)
       {
-        std::string expandable = 
+        std::string expandable =
           statement.substr (begin_exp + 1, i - begin_exp - 1);
         std::string results = this->expand_statement (expandable);
         builder << this->get (results);
@@ -1250,7 +916,7 @@ madara::knowledge::ThreadSafeContext::define_function (
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (name);
@@ -1258,11 +924,11 @@ madara::knowledge::ThreadSafeContext::define_function (
   }
   else
     key_ptr = &name;
-  
+
   // check for null key
   if (*key_ptr == "")
     return;
-  
+
   functions_[*key_ptr] = Function (func);
 }
 
@@ -1276,7 +942,7 @@ madara::knowledge::ThreadSafeContext::define_function (
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (name);
@@ -1284,11 +950,11 @@ madara::knowledge::ThreadSafeContext::define_function (
   }
   else
     key_ptr = &name;
-  
+
   // check for null key
   if (*key_ptr == "")
     return;
-  
+
   functions_[*key_ptr] = Function (func);
 }
 
@@ -1302,7 +968,7 @@ madara::knowledge::ThreadSafeContext::define_function (const std::string & name,
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (name);
@@ -1310,11 +976,11 @@ madara::knowledge::ThreadSafeContext::define_function (const std::string & name,
   }
   else
     key_ptr = &name;
-  
+
   // check for null key
   if (*key_ptr == "")
     return;
-  
+
   functions_[*key_ptr] = Function (callable);
 }
 #endif
@@ -1329,7 +995,7 @@ madara::knowledge::ThreadSafeContext::define_function (const std::string & name,
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (name);
@@ -1337,14 +1003,14 @@ madara::knowledge::ThreadSafeContext::define_function (const std::string & name,
   }
   else
     key_ptr = &name;
-  
+
   // check for null key
   if (*key_ptr == "")
     return;
-  
+
   functions_[*key_ptr] = Function (callable);
 }
- 
+
 #endif
 
 void
@@ -1355,7 +1021,7 @@ madara::knowledge::ThreadSafeContext::define_function (const std::string & name,
   CompiledExpression compiled = compile (expression);
   define_function (name, compiled, settings);
 }
-     
+
 void
 madara::knowledge::ThreadSafeContext::define_function (const std::string & name,
   const CompiledExpression & expression,
@@ -1365,7 +1031,7 @@ madara::knowledge::ThreadSafeContext::define_function (const std::string & name,
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (name);
@@ -1373,11 +1039,11 @@ madara::knowledge::ThreadSafeContext::define_function (const std::string & name,
   }
   else
     key_ptr = &name;
-  
+
   // check for null key
   if (*key_ptr == "")
     return;
-  
+
   functions_[*key_ptr] = Function (expression.expression);
 }
 
@@ -1391,7 +1057,7 @@ madara::knowledge::ThreadSafeContext::retrieve_function (
   std::string key_actual;
   const std::string * key_ptr;
   MADARA_GUARD_TYPE guard (mutex_);
-  
+
   if (settings.expand_variables)
   {
     key_actual = expand_statement (name);
@@ -1399,11 +1065,11 @@ madara::knowledge::ThreadSafeContext::retrieve_function (
   }
   else
     key_ptr = &name;
-  
+
   // check for null key
   if (*key_ptr == "")
     return 0;
-  
+
   return &functions_[*key_ptr];
 }
 
@@ -1415,7 +1081,7 @@ madara::knowledge::ThreadSafeContext::compile (
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
     "ThreadSafeContext::compile:" \
     " compiling %s\n", expression.c_str ());
-  
+
   MADARA_GUARD_TYPE guard (mutex_);
   CompiledExpression ce;
   ce.logic = expression;
@@ -1455,7 +1121,7 @@ size_t
   std::vector <KnowledgeRecord> & target)
 {
   target.clear ();
-  
+
   // enter the mutex
   MADARA_GUARD_TYPE guard (mutex_);
 
@@ -1482,7 +1148,7 @@ size_t
   std::map <std::string, knowledge::KnowledgeRecord> & target)
 {
   target.clear ();
-  
+
   std::string subject (expression);
   bool matches_found (false);
 
@@ -1591,7 +1257,7 @@ madara::knowledge::ThreadSafeContext::get_matches (
 }
 
 
-size_t 
+size_t
 madara::knowledge::ThreadSafeContext::to_map (
   const std::string & prefix,
   const std::string & delimiter,
@@ -1659,7 +1325,7 @@ madara::knowledge::ThreadSafeContext::to_map (
       {
         // find the end of the sub key
         size_t key_end = i->first.find (delimiter, prefix_end);
-        
+
         // if we haven't seen the subkey, add it
         std::string current_key (
           i->first.substr (prefix_end, key_end - prefix_end));
@@ -1736,7 +1402,7 @@ const KnowledgeReferenceSettings &)
 std::pair<madara::knowledge::KnowledgeMap::iterator,
           madara::knowledge::KnowledgeMap::iterator>
 madara::knowledge::ThreadSafeContext::get_prefix_range(
-  const std::string &prefix) 
+  const std::string &prefix)
 {
   std::pair<KnowledgeMap::iterator, KnowledgeMap::iterator>
     ret(map_.begin(), map_.end());
@@ -1834,13 +1500,13 @@ madara::knowledge::ThreadSafeContext::copy (
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
     "ThreadSafeContext::copy:" \
     " copying a context\n");
-  
+
   if (settings.clear_knowledge)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::copy:" \
       " clearing knowledge in target context\n");
-  
+
     map_.clear ();
   }
 
@@ -1865,7 +1531,7 @@ madara::knowledge::ThreadSafeContext::copy (
 
           auto where = map_.lower_bound(iters.first->first);
 
-          if (where == map_.end() || where->first != iters.first->first) 
+          if (where == map_.end() || where->first != iters.first->first)
           {
             madara_logger_ptr_log (logger_, logger::LOG_MINOR,
             "ThreadSafeContext::copy:" \
@@ -1889,7 +1555,7 @@ madara::knowledge::ThreadSafeContext::copy (
         madara_logger_ptr_log (logger_, logger::LOG_MINOR,
           "ThreadSafeContext::copy:" \
           " matching predicate.suffix=%s\n", predicate.suffix.c_str ());
-  
+
         for(;iters.first != iters.second; ++iters.first)
         {
           if (madara::utility::ends_with (iters.first->first,
@@ -1901,7 +1567,7 @@ madara::knowledge::ThreadSafeContext::copy (
 
             auto where = map_.lower_bound(iters.first->first);
 
-            if (where == map_.end() || where->first != iters.first->first) 
+            if (where == map_.end() || where->first != iters.first->first)
             {
               madara_logger_ptr_log (logger_, logger::LOG_MINOR,
               "ThreadSafeContext::copy:" \
@@ -1947,7 +1613,7 @@ madara::knowledge::ThreadSafeContext::copy (
   // if we need to clean first, clear the map
   if (clean_copy)
     map_.clear ();
-  
+
   // if the copy set is empty, copy everything
   if (copy_set.size () == 0)
   {
@@ -1984,10 +1650,10 @@ madara::knowledge::ThreadSafeContext::save_context (
   madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
     "ThreadSafeContext::save_context:" \
     " opening file %s\n", filename.c_str ());
-  
+
   int64_t total_written (0);
   FILE * file = fopen (filename.c_str (), "wb");
-  
+
   FileHeader meta;
   meta.states = 1;
   strncpy (meta.originator, id.c_str (),
@@ -2007,7 +1673,7 @@ madara::knowledge::ThreadSafeContext::save_context (
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_context:" \
       " generating file meta\n");
-  
+
     meta.size += checkpoint_header.encoded_size ();
     checkpoint_header.size = checkpoint_header.encoded_size ();
 
@@ -2020,7 +1686,7 @@ madara::knowledge::ThreadSafeContext::save_context (
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_context:" \
       " writing records\n");
-  
+
     // lock the context
     MADARA_GUARD_TYPE guard (mutex_);
 
@@ -2063,7 +1729,7 @@ madara::knowledge::ThreadSafeContext::save_context (
         current = i->second.write (current, i->first, buffer_remaining);
       }
     }
-  
+
     if (buffer_remaining != max_buffer)
     {
       fwrite (buffer.get_ptr (),
@@ -2095,10 +1761,10 @@ madara::knowledge::ThreadSafeContext::save_context (
   madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
     "ThreadSafeContext::save_context:" \
     " opening file %s\n", settings.filename.c_str ());
-  
-  int64_t total_written (0);
+
+  //int64_t total_written (0);
   FILE * file = fopen (settings.filename.c_str (), "wb");
-  
+
   FileHeader meta;
   meta.states = 1;
   strncpy (meta.originator, settings.originator.c_str (),
@@ -2118,7 +1784,7 @@ madara::knowledge::ThreadSafeContext::save_context (
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_context:" \
       " generating file meta\n");
-  
+
     meta.size += checkpoint_header.encoded_size ();
     checkpoint_header.size = checkpoint_header.encoded_size ();
 
@@ -2138,13 +1804,13 @@ madara::knowledge::ThreadSafeContext::save_context (
     {
       checkpoint_header.clock = clock_;
     }
-    
+
     current = checkpoint_header.write (current, buffer_remaining);
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_context:" \
       " writing records\n");
-  
+
     // lock the context
     MADARA_GUARD_TYPE guard (mutex_);
 
@@ -2201,7 +1867,7 @@ madara::knowledge::ThreadSafeContext::save_context (
         current = i->second.write (current, i->first, buffer_remaining);
       }
     }
-  
+
     // write the final sizes
     current = meta.write (buffer.get_ptr (), max_buffer);
     current = checkpoint_header.write (current, max_buffer);
@@ -2729,7 +2395,7 @@ madara::knowledge::ThreadSafeContext::load_context (
   madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
     "ThreadSafeContext::load_context:" \
     " opening file %s\n", filename.c_str ());
-  
+
   // using ACE for writing to the destination file
   FILE * file = fopen (filename.c_str (), "rb");
 
@@ -2747,11 +2413,11 @@ madara::knowledge::ThreadSafeContext::load_context (
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::load_context:" \
       " reading file meta data\n");
-  
+
     total_read = fread (buffer.get_ptr (),
       1, max_buffer, file);
     buffer_remaining = (int64_t)total_read;
-    
+
     if (total_read > FileHeader::encoded_size () &&
         FileHeader::file_header_test (current))
     {
@@ -3156,10 +2822,10 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
   madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
     "ThreadSafeContext::save_checkpoint:" \
     " opening file %s\n", settings.filename.c_str ());
-  
+
   int64_t total_written (0);
   FILE * file = fopen (settings.filename.c_str (), "rb+");
-  
+
   FileHeader meta;
   transport::MessageHeader checkpoint_header;
 
@@ -3171,20 +2837,20 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
 
     char * current = buffer.get_ptr ();
     const char * meta_reader = current;
-  
+
     // read the meta data at the front
     fseek (file, 0, SEEK_SET);
-    fread (current, meta.encoded_size (), 1, file);
+    (void)fread (current, meta.encoded_size (), 1, file);
 
     meta_reader = meta.read (meta_reader, buffer_remaining);
-    
+
     if (settings.originator != "")
     {
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
         " setting file meta id to %s\n",
         settings.originator.c_str ());
-  
+
       strncpy (meta.originator, settings.originator.c_str (),
         sizeof (meta.originator) < settings.originator.size () + 1 ?
         sizeof (meta.originator) : settings.originator.size () + 1);
@@ -3196,7 +2862,7 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_checkpoint:" \
       " generating file meta\n");
-  
+
     meta.size += checkpoint_header.encoded_size ();
     checkpoint_header.size = 0;
 
@@ -3214,11 +2880,11 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
     {
       checkpoint_header.clock = clock_;
     }
-    
+
     // lock the context
     MADARA_GUARD_TYPE guard (mutex_);
 
-    const knowledge::KnowledgeRecords & records = this->get_modifieds ();    
+    const knowledge::KnowledgeRecords & records = this->get_modifieds ();
     const knowledge::KnowledgeRecords & local_records = this->get_local_modified ();
 
     if (records.size () + local_records.size () != 0)
@@ -3232,7 +2898,7 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
         " writing records\n");
-  
+
       for (KnowledgeRecords::const_iterator i = records.begin ();
            i != records.end (); ++i)
       {
@@ -3375,7 +3041,7 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
         " updating file meta data\n");
-  
+
       // update the meta data at the front
       fseek (file, 0, SEEK_SET);
 
@@ -3390,10 +3056,10 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
         " updating checkpoint meta data\n");
-  
+
       // update the checkpoint meta data
       fseek (file, checkpoint_start, SEEK_SET);
-      
+
       current = buffer.get_ptr ();
       buffer_remaining = max_buffer;
 
@@ -3417,10 +3083,10 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
   madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
     "ThreadSafeContext::save_checkpoint:" \
     " opening file %s\n", filename.c_str ());
-  
+
   int64_t total_written (0);
   FILE * file = fopen (filename.c_str (), "rb+");
-  
+
   FileHeader meta;
   transport::MessageHeader checkpoint_header;
 
@@ -3432,20 +3098,20 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
 
     char * current = buffer.get_ptr ();
     const char * meta_reader = current;
-  
+
     // read the meta data at the front
     fseek (file, 0, SEEK_SET);
-    fread (current, meta.encoded_size (), 1, file);
+    (void)fread (current, meta.encoded_size (), 1, file);
 
     meta_reader = meta.read (meta_reader, buffer_remaining);
-    
+
     if (id != "")
     {
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
         " setting file meta id to %s\n",
         id.c_str ());
-  
+
       strncpy (meta.originator, id.c_str (),
         sizeof (meta.originator) < id.size () + 1 ?
         sizeof (meta.originator) : id.size () + 1);
@@ -3457,14 +3123,14 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_checkpoint:" \
       " generating file meta\n");
-  
+
     meta.size += checkpoint_header.encoded_size ();
     checkpoint_header.size = 0;
 
     // lock the context
     MADARA_GUARD_TYPE guard (mutex_);
 
-    const knowledge::KnowledgeRecords & records = this->get_modifieds ();    
+    const knowledge::KnowledgeRecords & records = this->get_modifieds ();
     const knowledge::KnowledgeRecords & local_records = this->get_local_modified ();
 
     if (records.size () + local_records.size () != 0)
@@ -3478,7 +3144,7 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
         " writing records\n");
-  
+
       for (KnowledgeRecords::const_iterator i = records.begin ();
            i != records.end (); ++i)
       {
@@ -3585,7 +3251,7 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
         " updating file meta data\n");
-  
+
       // update the meta data at the front
       fseek (file, 0, SEEK_SET);
 
@@ -3600,10 +3266,10 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
         " updating checkpoint meta data\n");
-  
+
       // update the checkpoint meta data
       fseek (file, checkpoint_start, SEEK_SET);
-      
+
       current = buffer.get_ptr ();
       buffer_remaining = max_buffer;
 

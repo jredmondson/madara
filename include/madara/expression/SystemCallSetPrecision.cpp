@@ -24,7 +24,7 @@ madara::expression::SystemCallSetPrecision::~SystemCallSetPrecision (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallSetPrecision::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -65,22 +65,21 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 
   if (nodes_.size () > 0)
   {
-    knowledge::KnowledgeRecord::Integer new_precision = 
-      nodes_[0]->evaluate (settings).to_integer ();
+    int64_t new_precision = nodes_[0]->evaluate (settings).to_integer ();
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call precision is setting the precision to %" PRId64 ".\n",
       new_precision);
 
     knowledge::KnowledgeRecord::set_precision (new_precision);
 
-    return new_precision;
+    return knowledge::KnowledgeRecord (new_precision);
   }
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call precision is returning the double precision.\n");
 
-    return knowledge::KnowledgeRecord::Integer (
+    return knowledge::KnowledgeRecord (
       knowledge::KnowledgeRecord::get_precision ());
   }
 

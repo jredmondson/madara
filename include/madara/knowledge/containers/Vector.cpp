@@ -40,8 +40,8 @@ madara::knowledge::containers::Vector::Vector (
 madara::knowledge::containers::Vector::Vector (const Vector & rhs)
   : BaseContainer (rhs), context_ (rhs.context_),
   vector_ (rhs.vector_),
-  delimiter_ (rhs.delimiter_),
-  size_ (rhs.size_)
+  size_ (rhs.size_),
+  delimiter_ (rhs.delimiter_)
 {
 
 }
@@ -235,7 +235,7 @@ madara::knowledge::containers::Vector::resize (
     {
       size_t old_size = vector_.size ();
 
-      if (old_size != size)
+      if (old_size != (size_t)size)
       {
         vector_.resize (size);
         

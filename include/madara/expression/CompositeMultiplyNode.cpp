@@ -26,7 +26,7 @@ madara::expression::CompositeMultiplyNode::~CompositeMultiplyNode (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::CompositeMultiplyNode::item (void) const
 {
-  return "*";
+  return knowledge::KnowledgeRecord ("*");
 }
 
 

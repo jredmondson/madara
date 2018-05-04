@@ -25,7 +25,7 @@ madara::expression::SystemCallTan::~SystemCallTan (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallTan::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 /// Prune the tree of unnecessary nodes. 
@@ -39,7 +39,8 @@ madara::expression::SystemCallTan::prune (bool & can_change)
   if (nodes_.size () == 1)
   {
     bool arg_can_change = false;
-    result = tan (nodes_[0]->prune (arg_can_change).to_double ());
+    result = knowledge::KnowledgeRecord (
+         tan (nodes_[0]->prune (arg_can_change).to_double ()));
 
     if (!arg_can_change && dynamic_cast <LeafNode *> (nodes_[0]) == 0)
     {
@@ -94,7 +95,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call tan is returning the tangent "
       "of its first argument\n");
 
-    return_value = tan (nodes_[0]->evaluate (settings).to_double ());
+    return_value = knowledge::KnowledgeRecord (
+           tan (nodes_[0]->evaluate (settings).to_double ()));
   }
   else
   {

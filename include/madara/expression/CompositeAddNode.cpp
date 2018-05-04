@@ -24,7 +24,7 @@ madara::expression::CompositeAddNode::CompositeAddNode (
 madara::knowledge::KnowledgeRecord
 madara::expression::CompositeAddNode::item (void) const
 {
-  return "+";
+  return madara::knowledge::KnowledgeRecord("+");
 }
 
 /// Prune the tree of unnecessary nodes. 

@@ -63,15 +63,15 @@ KnowledgeRecord::read_file (
   void * buffer;
   size_t size;
   bool add_zero_char = false;
-  
+
   // clear the old value
   clear_value ();
-  
+
   std::string::size_type position = filename.rfind ('.');
   std::string extension = filename.substr (position,
     filename.size () - position);
   madara::utility::lower (extension);
-  
+
   // do we have a text-based file
   if (is_string_type (read_as_type) || 
     extension == ".txt" || extension == ".xml")
@@ -88,7 +88,7 @@ KnowledgeRecord::read_file (
     {
       // change the string value and size to appropriate values
       str_value_ = std::make_shared<std::string> ((char *)buffer, size);
-      
+
       if (is_string_type (read_as_type))
         type_ = read_as_type;
       else if (extension == ".xml")
@@ -548,13 +548,13 @@ KnowledgeRecord::operator< (
     if (rhs.is_double_type () || rhs.is_string_type ())
     {
       double other = rhs.to_double ();
-      
+
       result = lhs < other;
     }
     else if (rhs.is_integer_type ())
     {
       Integer other = rhs.to_integer ();
-    
+
       result = lhs < other;
     }
   }
@@ -569,7 +569,7 @@ KnowledgeRecord::operator< (
         strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
         size () >= rhs.size () ? size () : rhs.size ()) < 0;
     }
-    
+
     // string to double comparison
     else if (rhs.is_double_type ())
     {
@@ -577,10 +577,10 @@ KnowledgeRecord::operator< (
       // value into a double for maximum precision
       double temp = to_double ();
       double other = rhs.to_double ();
-      
+
       result = temp < other;
     }
-    
+
     // default is string to integer comparison
     else if (rhs.is_integer_type ())
     {
@@ -588,7 +588,7 @@ KnowledgeRecord::operator< (
       // value into a double for maximum precision
       Integer temp = to_integer ();
       Integer other = rhs.to_integer ();
-      
+
       result = temp < other;
     }
   }
@@ -605,7 +605,7 @@ KnowledgeRecord::operator< (
       // value into a double for maximum precision
 
       double other = rhs.to_double ();
-      
+
       result = lhs < other;
     }
 
@@ -634,13 +634,13 @@ KnowledgeRecord::operator<= (
     if (rhs.is_double_type () || rhs.is_string_type ())
     {
       double other = rhs.to_double ();
-      
+
       result = lhs <= other;
     }
     else if (rhs.is_integer_type ())
     {
       Integer other = rhs.to_integer ();
-    
+
       result = lhs <= other;
     }
   }
@@ -655,7 +655,7 @@ KnowledgeRecord::operator<= (
         strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
         size () >= rhs.size () ? size () : rhs.size ()) <= 0;
     }
-    
+
     // string to double comparison
     else if (rhs.is_double_type ())
     {
@@ -663,10 +663,10 @@ KnowledgeRecord::operator<= (
       // value into a double for maximum precision
       double temp = to_double ();
       double other = rhs.to_double ();
-      
+
       result = temp <= other;
     }
-    
+
     // default is string to integer comparison
     else if (rhs.is_integer_type ())
     {
@@ -674,7 +674,7 @@ KnowledgeRecord::operator<= (
       // value into a double for maximum precision
       Integer temp = to_integer ();
       Integer other = rhs.to_integer ();
-      
+
       result = temp <= other;
     }
   }
@@ -691,7 +691,7 @@ KnowledgeRecord::operator<= (
       // value into a double for maximum precision
 
       double other = rhs.to_double ();
-      
+
       result = lhs <= other;
     }
 
@@ -729,13 +729,13 @@ KnowledgeRecord::operator== (
     if (rhs.is_double_type () || rhs.is_string_type ())
     {
       double other = rhs.to_double ();
-      
+
       result = lhs == other;
     }
     else if (rhs.is_integer_type ())
     {
       Integer other = rhs.to_integer ();
-    
+
       result = lhs == other;
     }
   }
@@ -750,7 +750,7 @@ KnowledgeRecord::operator== (
         strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
         size () >= rhs.size () ? size () : rhs.size ()) == 0;
     }
-    
+
     // string to double comparison
     else if (rhs.is_double_type ())
     {
@@ -758,10 +758,10 @@ KnowledgeRecord::operator== (
       // value into a double for maximum precision
       double temp = to_double ();
       double other = rhs.to_double ();
-      
+
       result = temp == other;
     }
-    
+
     // check if right hand side is uncreated
     else if (!rhs.exists ())
     {
@@ -775,7 +775,7 @@ KnowledgeRecord::operator== (
       // value into a double for maximum precision
       Integer temp = to_integer ();
       Integer other = rhs.to_integer ();
-      
+
       result = temp == other;
     }
   }
@@ -792,7 +792,7 @@ KnowledgeRecord::operator== (
       // value into a double for maximum precision
 
       double other = rhs.to_double ();
-      
+
       result = lhs == other;
     }
 
@@ -821,13 +821,13 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
     if (rhs.is_double_type () || rhs.is_string_type ())
     {
       double other = rhs.to_double ();
-      
+
       result = lhs > other;
     }
     else if (rhs.is_integer_type ())
     {
       Integer other = rhs.to_integer ();
-    
+
       result = lhs > other;
     }
   }
@@ -843,7 +843,7 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
         strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
         size () >= rhs.size () ? size () : rhs.size ()) > 0;
     }
-    
+
     // string to double comparison
     else if (rhs.is_double_type ())
     {
@@ -851,10 +851,10 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
       // value into a double for maximum precision
       double lhs = to_double ();
       double other = rhs.to_double ();
-      
+
       result = lhs > other;
     }
-    
+
     // default is string to integer comparison
     else if (rhs.is_integer_type ())
     {
@@ -862,7 +862,7 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
       // value into a double for maximum precision
       Integer lhs = to_integer ();
       Integer other = rhs.to_integer ();
-      
+
       result = lhs > other;
     }
   }
@@ -879,7 +879,7 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
       // value into a double for maximum precision
 
       double other = rhs.to_double ();
-      
+
       result = lhs > other;
     }
 
@@ -908,13 +908,13 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
     if (rhs.is_double_type () || rhs.is_string_type ())
     {
       double other = rhs.to_double ();
-      
+
       result = lhs >= other;
     }
     else if (rhs.is_integer_type ())
     {
       Integer other = rhs.to_integer ();
-    
+
       result = lhs >= other;
     }
   }
@@ -930,7 +930,7 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
         strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
         size () >= rhs.size () ? size () : rhs.size ()) >= 0;
     }
-    
+
     // string to double comparison
     else if (rhs.is_double_type ())
     {
@@ -938,10 +938,10 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
       // value into a double for maximum precision
       double lhs = to_double ();
       double other = rhs.to_double ();
-      
+
       result = lhs >= other;
     }
-    
+
     // default is string to integer comparison
     else if (rhs.is_integer_type ())
     {
@@ -949,7 +949,7 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
       // value into a double for maximum precision
       Integer lhs = to_integer ();
       Integer other = rhs.to_integer ();
-      
+
       result = lhs >= other;
     }
   }
@@ -966,7 +966,7 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
       // value into a double for maximum precision
 
       double other = rhs.to_double ();
-      
+
       result = lhs >= other;
     }
 
@@ -981,7 +981,7 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
 
   return result;
 }
-    
+
 
 KnowledgeRecord
 KnowledgeRecord::retrieve_index (size_t index) const
@@ -1084,7 +1084,7 @@ KnowledgeRecord::set_index (size_t index, Integer value)
 
   int_array_->at (index) = value;
 }
- 
+
 /**
   * sets the value at the index to the specified value. If the
   * record was previously not an array or if the array is not

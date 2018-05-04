@@ -30,54 +30,10 @@
 
 #include <iostream>
 
-madara::knowledge::KnowledgeBaseImpl::KnowledgeBaseImpl ()
-  : settings_ (), files_ (map_)
-{
-  //activate_transport ();
-  // no hope of transporting, so don't setup uniquehostport
-}
-
-madara::knowledge::KnowledgeBaseImpl::KnowledgeBaseImpl (
-  const std::string & host, int transport)
-  : settings_ (), files_ (map_)
-{
-  // override default settings for the arguments
-  settings_.type = transport;
-
-  id_ = setup_unique_hostport (host);
-  activate_transport ();
-}
-
-madara::knowledge::KnowledgeBaseImpl::KnowledgeBaseImpl (
-  const std::string & host, int transport,
-  const std::string & knowledge_domain)
-  : settings_ (), files_ (map_)
-{
-  // override default settings for the arguments
-  settings_.type = transport;
-  settings_.write_domain = knowledge_domain;
-
-  id_ = setup_unique_hostport (host);
-  activate_transport ();
-}
-
-madara::knowledge::KnowledgeBaseImpl::KnowledgeBaseImpl (
-  const std::string & host, const madara::transport::TransportSettings & config)
-  : settings_ (config), files_ (map_)
-{
-  id_ = setup_unique_hostport (host);
-  if (!settings_.delay_launch)
-    activate_transport ();
-}
-
-madara::knowledge::KnowledgeBaseImpl::~KnowledgeBaseImpl ()
-{
-  close_transport ();
-  unique_bind_.close ();
-}
+namespace madara { namespace knowledge {
 
 std::string
-madara::knowledge::KnowledgeBaseImpl::setup_unique_hostport (
+KnowledgeBaseImpl::setup_unique_hostport (
 const std::string & host)
 {
   // placeholder for our ip address
@@ -113,7 +69,7 @@ const std::string & host)
 }
 
 size_t
-madara::knowledge::KnowledgeBaseImpl::attach_transport (const std::string & id,
+KnowledgeBaseImpl::attach_transport (const std::string & id,
 transport::TransportSettings & settings)
 {
   madara::transport::Base * transport (0);
@@ -239,52 +195,7 @@ transport::TransportSettings & settings)
 }
 
 void
-madara::knowledge::KnowledgeBaseImpl::activate_transport (void)
-{
-  if (transports_.size () == 0)
-  {
-    attach_transport (id_, settings_);
-  }
-  else
-  {
-    madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
-      "KnowledgeBaseImpl::activate_transport:" \
-      " transport already activated. If you need" \
-      " a new type, close transport first\n");
-  }
-}
-
-void
-madara::knowledge::KnowledgeBaseImpl::copy (
-const KnowledgeBaseImpl & source,
-const KnowledgeRequirements & reqs)
-{
-  map_.copy (source.map_, reqs);
-}
-
-void
-madara::knowledge::KnowledgeBaseImpl::copy (
-const KnowledgeBaseImpl & source,
-const CopySet & copy_set,
-bool clean_copy)
-{
-  map_.copy (source.map_, copy_set, clean_copy);
-}
-
-void
-madara::knowledge::KnowledgeBaseImpl::lock (void)
-{
-  map_.lock ();
-}
-
-void
-madara::knowledge::KnowledgeBaseImpl::unlock (void)
-{
-  map_.unlock ();
-}
-
-void
-madara::knowledge::KnowledgeBaseImpl::close_transport (void)
+KnowledgeBaseImpl::close_transport (void)
 {
   if (transports_.size () > 0)
   {
@@ -302,363 +213,11 @@ madara::knowledge::KnowledgeBaseImpl::close_transport (void)
   }
 }
 
-/**
- * Updates all global variables to current clock and then
- * sends them if a transport is available. This is useful
- * when trying to synchronize to late joiners (this process
- * will resend all global variables.
- **/
-int
-madara::knowledge::KnowledgeBaseImpl::apply_modified (
-const EvalSettings & settings)
-{
-  // lock the context and apply modified flags and current clock to
-  // all global variables
-  map_.lock ();
-  map_.apply_modified ();
-
-  int ret = 0;
-
-  send_modifieds ("KnowledgeBaseImpl:apply_modified", settings);
-
-  map_.unlock ();
-
-  return ret;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const std::string & key,
-madara::knowledge::KnowledgeRecord::Integer value,
-const EvalSettings & settings)
-{
-  int result = map_.set (key, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-void
-madara::knowledge::KnowledgeBaseImpl::mark_modified (
-  const VariableReference & variable,
-  const KnowledgeUpdateSettings & settings)
-{
-  map_.mark_modified (variable, settings);
-}
-
-void
-madara::knowledge::KnowledgeBaseImpl::mark_modified (
-  const std::string & name,
-  const KnowledgeUpdateSettings & settings)
-{
-  map_.mark_modified (name, settings);
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const VariableReference & variable,
-madara::knowledge::KnowledgeRecord::Integer value,
-const EvalSettings & settings)
-{
-  int result = map_.set (variable, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set_index (
-const std::string & key,
-size_t index,
-madara::knowledge::KnowledgeRecord::Integer value,
-const EvalSettings & settings)
-{
-  int result = map_.set_index (key, index, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set_index", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set_index (
-const VariableReference & variable,
-size_t index,
-madara::knowledge::KnowledgeRecord::Integer value,
-const EvalSettings & settings)
-{
-  int result = map_.set_index (variable, index, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set_index", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const std::string & key,
-const knowledge::KnowledgeRecord::Integer * value,
-uint32_t size,
-const EvalSettings & settings)
-{
-  int result = map_.set (key, value, size, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const VariableReference & variable,
-const knowledge::KnowledgeRecord &value,
-const EvalSettings & settings)
-{
-  int result = map_.set (variable, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const VariableReference & variable,
-const knowledge::KnowledgeRecord::Integer * value,
-uint32_t size,
-const EvalSettings & settings)
-{
-  int result = map_.set (variable, value, size, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const std::string & key,
-const std::vector <KnowledgeRecord::Integer> & value,
-const EvalSettings & settings)
-{
-  int result = map_.set (key, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const VariableReference & variable,
-const std::vector <KnowledgeRecord::Integer> & value,
-const EvalSettings & settings)
-{
-  int result = map_.set (variable, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const std::string & key,
-double value,
-const EvalSettings & settings)
-{
-  int result = map_.set (key, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const VariableReference & variable,
-double value,
-const EvalSettings & settings)
-{
-  int result = map_.set (variable, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set_index (
-const std::string & key,
-size_t index,
-double value,
-const EvalSettings & settings)
-{
-  int result = map_.set_index (key, index, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set_index", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set_index (
-const VariableReference & variable,
-size_t index,
-double value,
-const EvalSettings & settings)
-{
-  int result = map_.set_index (variable, index, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set_index", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const std::string & key,
-const double * value,
-uint32_t size,
-const EvalSettings & settings)
-{
-  int result = map_.set (key, value, size, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const VariableReference & variable,
-const double * value,
-uint32_t size,
-const EvalSettings & settings)
-{
-  int result = map_.set (variable, value, size, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const std::string & key,
-const std::vector <double> & value,
-const EvalSettings & settings)
-{
-  int result = map_.set (key, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const VariableReference & variable,
-const std::vector <double> & value,
-const EvalSettings & settings)
-{
-  int result = map_.set (variable, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const std::string & key,
-const std::string & value,
-const EvalSettings & settings)
-{
-  int result = map_.set (key, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-int
-madara::knowledge::KnowledgeBaseImpl::set (
-const VariableReference & variable,
-const std::string & value,
-const EvalSettings & settings)
-{
-  int result = map_.set (variable, value, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set", settings);
-
-  return result;
-}
-
-/// Read a file into the knowledge base
-int
-madara::knowledge::KnowledgeBaseImpl::read_file (
-const std::string & key, const std::string & filename,
-const EvalSettings & settings)
-{
-  if (key == "")
-    return -1;
-
-  int result = map_.read_file (key, filename, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:read_file", settings);
-
-  return result;
-}
-
-/// Read a file into the knowledge base
-int
-madara::knowledge::KnowledgeBaseImpl::set_file (
-const VariableReference & variable,
-const unsigned char * value, size_t size,
-const EvalSettings & settings)
-{
-  int result = map_.set_file (variable, value, size, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set_file", settings);
-
-  return result;
-}
-
-/// Read a file into the knowledge base
-int
-madara::knowledge::KnowledgeBaseImpl::set_jpeg (
-const VariableReference & variable,
-const unsigned char * value, size_t size,
-const EvalSettings & settings)
-{
-  int result = map_.set_jpeg (variable, value, size, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:set_jpeg", settings);
-
-  return result;
-}
-
-/// Read a file into the knowledge base
-int
-madara::knowledge::KnowledgeBaseImpl::read_file (
-const VariableReference & variable,
-const std::string & filename,
-const EvalSettings & settings)
-{
-  int result = map_.read_file (variable, filename, settings);
-
-  send_modifieds ("KnowledgeBaseImpl:read_file", settings);
-
-  return result;
-}
 
 #ifndef _MADARA_NO_KARL_
 
-madara::knowledge::CompiledExpression
-madara::knowledge::KnowledgeBaseImpl::compile (
+CompiledExpression
+KnowledgeBaseImpl::compile (
 const std::string & expression)
 {
   madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
@@ -668,16 +227,16 @@ const std::string & expression)
   return map_.compile (expression);
 }
 
-madara::knowledge::KnowledgeRecord
-madara::knowledge::KnowledgeBaseImpl::wait (const std::string & expression,
+KnowledgeRecord
+KnowledgeBaseImpl::wait (const std::string & expression,
 const WaitSettings & settings)
 {
   CompiledExpression compiled = compile (expression);
   return wait (compiled, settings);
 }
 
-madara::knowledge::KnowledgeRecord
-madara::knowledge::KnowledgeBaseImpl::wait (
+KnowledgeRecord
+KnowledgeBaseImpl::wait (
 CompiledExpression & ce,
 const WaitSettings & settings)
 {
@@ -706,7 +265,7 @@ const WaitSettings & settings)
     "KnowledgeBaseImpl::wait:" \
     " waiting on %s\n", ce.logic.c_str ());
 
-  madara::knowledge::KnowledgeRecord last_value = ce.expression.evaluate (settings);
+  KnowledgeRecord last_value = ce.expression.evaluate (settings);
 
   madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
     "KnowledgeBaseImpl::wait:" \
@@ -734,7 +293,7 @@ const WaitSettings & settings)
       " last value didn't result in success\n");
 
     // Unlike the other wait statements, we allow for a time based wait.
-    // To do this, we allow a user to specify a 
+    // To do this, we allow a user to specify a
     if (settings.poll_frequency > 0)
     {
       if (current < next_epoch)
@@ -749,7 +308,7 @@ const WaitSettings & settings)
       map_.wait_for_change (true);
 
     // relock - basically we need to evaluate the tree again, and
-    // we can't have a bunch of people changing the variables as 
+    // we can't have a bunch of people changing the variables as
     // while we're evaluating the tree.
     map_.lock ();
 
@@ -789,21 +348,12 @@ const WaitSettings & settings)
   return last_value;
 }
 
-madara::knowledge::KnowledgeRecord
-madara::knowledge::KnowledgeBaseImpl::evaluate (
-const std::string & expression,
-const EvalSettings & settings)
-{
-  CompiledExpression compiled = compile (expression);
-  return evaluate (compiled, settings);
-}
-
-madara::knowledge::KnowledgeRecord
-madara::knowledge::KnowledgeBaseImpl::evaluate (
+KnowledgeRecord
+KnowledgeBaseImpl::evaluate (
 CompiledExpression & ce,
 const EvalSettings & settings)
 {
-  madara::knowledge::KnowledgeRecord last_value;
+  KnowledgeRecord last_value;
 
   madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
     "KnowledgeBaseImpl::evaluate:" \
@@ -834,12 +384,12 @@ const EvalSettings & settings)
   return last_value;
 }
 
-madara::knowledge::KnowledgeRecord
-madara::knowledge::KnowledgeBaseImpl::evaluate (
+KnowledgeRecord
+KnowledgeBaseImpl::evaluate (
 expression::ComponentNode * root,
 const EvalSettings & settings)
 {
-  madara::knowledge::KnowledgeRecord last_value;
+  KnowledgeRecord last_value;
 
   madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
     "KnowledgeBaseImpl::evaluate:" \
@@ -870,4 +420,102 @@ const EvalSettings & settings)
   return last_value;
 }
 
+int
+KnowledgeBaseImpl::send_modifieds (
+  const std::string & prefix,
+  const EvalSettings & settings)
+{
+  int result = 0;
+
+  MADARA_GUARD_TYPE guard (map_.mutex_);
+
+  if (transports_.size () > 0 && !settings.delay_sending_modifieds)
+  {
+    const KnowledgeRecords & modified = map_.get_modifieds ();
+
+    if (modified.size () > 0)
+    {
+      // if there is not an allowed send_list list
+      if (settings.send_list.size () == 0)
+      {
+        transports_.lock ();
+        // send across each transport
+        for (unsigned int i = 0; i < transports_.size (); ++i, ++result)
+          transports_[i]->send_data (modified);
+
+        transports_.unlock ();
+
+        // reset the modified map
+        map_.reset_modified ();
+      }
+      // if there is a send_list
+      else
+      {
+        KnowledgeRecords allowed_modifieds;
+        // otherwise, we are only allowed to send a subset of modifieds
+        for (KnowledgeRecords::const_iterator i = modified.begin ();
+             i != modified.end (); ++i)
+        {
+          if (settings.send_list.find (i->first) != settings.send_list.end ())
+          {
+            allowed_modifieds[i->first] = i->second;
+          }
+        }
+
+        // if the subset was greater than zero, we send the subset
+        if (allowed_modifieds.size () > 0)
+        {
+          transports_.lock ();
+
+          // send across each transport
+          for (unsigned int i = 0; i < transports_.size (); ++i, ++result)
+            transports_[i]->send_data (allowed_modifieds);
+
+          transports_.unlock ();
+
+          // reset modified list for the allowed modifications
+          for (KnowledgeRecords::const_iterator i = allowed_modifieds.begin ();
+               i != allowed_modifieds.end (); ++i)
+          {
+            map_.reset_modified (i->first);
+          }
+        }
+      }
+
+      map_.inc_clock (settings);
+
+      if (settings.signal_changes)
+        map_.signal (false);
+    }
+    else
+    {
+      madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
+        "%s: no modifications to send\n", prefix.c_str ());
+
+      result = -1;
+    }
+  }
+  else
+  {
+    if (transports_.size () == 0)
+    {
+      madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
+        "%s: no transport configured\n", prefix.c_str ());
+
+      result = -2;
+    }
+    else if (settings.delay_sending_modifieds)
+    {
+      madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
+        "%s: user requested to not send modifieds\n", prefix.c_str ());
+
+      result = -3;
+    }
+  }
+
+  return result;
+}
+
 #endif // _MADARA_NO_KARL_
+
+} }

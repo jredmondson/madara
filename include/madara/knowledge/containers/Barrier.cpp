@@ -68,9 +68,9 @@ madara::knowledge::containers::Barrier::Barrier (
 
 madara::knowledge::containers::Barrier::Barrier (const Barrier & rhs)
 : BaseContainer (rhs), context_ (rhs.context_),
+    variable_ (rhs.variable_),
     id_ (rhs.id_),
     participants_ (rhs.participants_),
-    variable_ (rhs.variable_),
     aggregate_barrier_ (rhs.aggregate_barrier_),
     variable_name_ (rhs.variable_name_)
 {

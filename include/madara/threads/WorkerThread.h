@@ -56,10 +56,9 @@ namespace madara
         double hertz = -1.0);
       
       /**
-       * Copy constructor
-       * @param input  thread information to copy
+       * Copy constructor deleted, because ACE_Task doesn't support it
        **/
-      WorkerThread (const WorkerThread & input);
+      WorkerThread (const WorkerThread & input) = delete;
 
       /**
       * Destructor

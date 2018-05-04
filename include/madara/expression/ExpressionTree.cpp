@@ -237,7 +237,7 @@ madara::expression::ExpressionTree::evaluate (
   if (root_.get_ptr () != 0)
     return root_->evaluate (settings);
   else
-    return madara::knowledge::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord (0);
 }
 
 

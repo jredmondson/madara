@@ -70,15 +70,6 @@ madara::threads::WorkerThread::WorkerThread (
   }
 }
 
-madara::threads::WorkerThread::WorkerThread (const WorkerThread & input)
-  : name_ (input.name_), thread_ (input.thread_),
-    control_ (input.control_), data_ (input.data_),
-    finished_ (input.finished_), started_ (input.started_),
-    new_hertz_ (input.new_hertz_),
-    hertz_ (input.hertz_)
-{
-}
-
 madara::threads::WorkerThread::~WorkerThread ()
 {
 }

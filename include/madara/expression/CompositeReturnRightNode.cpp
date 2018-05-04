@@ -22,7 +22,7 @@ madara::expression::CompositeReturnRightNode::CompositeReturnRightNode (
 madara::knowledge::KnowledgeRecord
 madara::expression::CompositeReturnRightNode::item (void) const
 {
-  return ";>";
+  return knowledge::KnowledgeRecord (";>");
 }
 
 /// Prune the tree of unnecessary nodes. 

@@ -19,7 +19,7 @@ madara::filters::PeerDiscovery::~PeerDiscovery ()
 
 void
 madara::filters::PeerDiscovery::filter (
-  knowledge::KnowledgeMap & records,
+  knowledge::KnowledgeMap & /*records*/,
   const transport::TransportContext & transport_context,
   knowledge::Variables & vars)
 {

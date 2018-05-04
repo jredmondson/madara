@@ -41,8 +41,8 @@ madara::knowledge::containers::IntegerVector3D::IntegerVector3D (
   const IntegerVector3D & rhs)
 : BaseContainer (rhs), context_ (rhs.context_),
   vector_ (rhs.vector_),
-  delimiter_ (rhs.delimiter_),
-  size_ (rhs.size_)
+  size_ (rhs.size_),
+  delimiter_ (rhs.delimiter_)
 {
 }
 
@@ -279,7 +279,7 @@ madara::knowledge::containers::IntegerVector3D::resize (
 
         // if you've gained cols and this is a new col, reset start to 0
         if (is_reset || ((old_size.y < new_size.y && j >= old_size.y) ||
-                          old_size.x < new_size.x && i >= old_size.x))
+                         (old_size.x < new_size.x && i >= old_size.x)))
         {
           start_z = 0;
         }

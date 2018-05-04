@@ -15,7 +15,8 @@ madara::expression::VariableCompareNode::VariableCompareNode (
   ComponentNode * rhs, madara::knowledge::ThreadSafeContext &context)
 : ComponentNode (context.get_logger ()), var_ (0), array_ (0),
   value_ (value), rhs_ (rhs),
-  compare_type_ (compare_type), context_ (context)
+  context_ (context),
+  compare_type_ (compare_type)
 {
   var_ = dynamic_cast <VariableNode *> (lhs);
 
@@ -150,7 +151,7 @@ madara::expression::VariableCompareNode::evaluate (
     }
   }
 
-  return result;
+  return knowledge::KnowledgeRecord (result);
 }
 
 #endif // _MADARA_NO_KARL_

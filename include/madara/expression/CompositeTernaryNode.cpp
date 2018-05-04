@@ -36,13 +36,14 @@ madara::expression::CompositeTernaryNode::~CompositeTernaryNode (void)
 madara::knowledge::KnowledgeRecord
 madara::expression::CompositeTernaryNode::item (void) const
 {
-  return madara::knowledge::KnowledgeRecord::Integer (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
 
 // accept a visitor
 void 
 madara::expression::CompositeTernaryNode::accept (madara::expression::Visitor &visitor) const
 {
+  (void) visitor;
 }
 
 #endif // _MADARA_NO_KARL_
