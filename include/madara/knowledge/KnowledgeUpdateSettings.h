@@ -38,7 +38,7 @@ namespace madara
           treat_globals_as_locals (false),
           signal_changes (true),
           always_overwrite (false),
-          track_local_changes (false),
+          track_local_changes (true),
           clock_increment (1),
           treat_locals_as_globals (false)
       {
@@ -68,7 +68,7 @@ namespace madara
         bool t_signal_changes = true,
         bool t_always_overwrite = false,
         bool t_always_expand = true,
-        bool t_track_local_changes = false,
+        bool t_track_local_changes = true,
         uint64_t t_clock_increment = 1,
         bool t_treat_locals_as_globals = false)
         : KnowledgeReferenceSettings (t_always_expand),
@@ -124,7 +124,9 @@ namespace madara
       bool always_overwrite;
       
       /**
-       * Toggle for keeping track of modifications to local variables.
+       * Toggle for checkpointing support. If this is true, all changes
+       * will be added to the local changes map in the knowledge base,
+       * which is used by save_checkpoint to create diffs of knowledge
        **/
       bool track_local_changes;
 
