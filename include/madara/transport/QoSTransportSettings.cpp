@@ -14,7 +14,7 @@ madara::transport::QoSTransportSettings::QoSTransportSettings ()
     trusted_peers_ (), banned_peers_ (),
     packet_drop_rate_ (0.0), packet_drop_burst_ (1),
     max_send_bandwidth_ (-1), max_total_bandwidth_ (-1),
-    deadline_ (-1), remote_changes_add_to_checkpoint_ (true)
+    deadline_ (-1)
 {
 
 }
@@ -35,8 +35,7 @@ madara::transport::QoSTransportSettings::QoSTransportSettings (
     packet_drop_burst_ (settings.packet_drop_burst_),
     max_send_bandwidth_ (settings.max_send_bandwidth_),
     max_total_bandwidth_ (settings.max_total_bandwidth_),
-    deadline_ (settings.deadline_),
-    remote_changes_add_to_checkpoint_ (settings.remote_changes_add_to_checkpoint_)
+    deadline_ (settings.deadline_)
 {
 }
 
@@ -49,7 +48,7 @@ madara::transport::QoSTransportSettings::QoSTransportSettings (
     banned_peers_ (),
     packet_drop_rate_ (0.0), 
     max_send_bandwidth_ (-1), max_total_bandwidth_ (-1),
-    deadline_ (-1), remote_changes_add_to_checkpoint_ (true)
+    deadline_ (-1)
 {
   const QoSTransportSettings * rhs = dynamic_cast <const QoSTransportSettings *> (
     &settings);
@@ -69,7 +68,6 @@ madara::transport::QoSTransportSettings::QoSTransportSettings (
     max_send_bandwidth_ = rhs->max_send_bandwidth_;
     max_total_bandwidth_ = rhs->max_total_bandwidth_;
     deadline_ = rhs->deadline_;
-    remote_changes_add_to_checkpoint_ = rhs->remote_changes_add_to_checkpoint_;
   }
   else
   {
@@ -108,7 +106,6 @@ madara::transport::QoSTransportSettings::operator= (
     max_send_bandwidth_ = rhs.max_send_bandwidth_;
     max_total_bandwidth_ = rhs.max_total_bandwidth_;
     deadline_ = rhs.deadline_;
-    remote_changes_add_to_checkpoint_ = rhs->remote_changes_add_to_checkpoint_;
   }
 }
 
@@ -131,7 +128,6 @@ madara::transport::QoSTransportSettings::operator= (
     max_send_bandwidth_ = -1;
     max_total_bandwidth_ = -1;
     deadline_ = -1;
-    remote_changes_add_to_checkpoint_ = true;
 
     TransportSettings * lhs_base = (TransportSettings *)this;
     TransportSettings * rhs_base = (TransportSettings *)&rhs;

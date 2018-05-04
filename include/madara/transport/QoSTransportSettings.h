@@ -745,12 +745,6 @@ namespace madara
        * Deadline for packets at which packets drop
        **/
       double deadline_;
-
-      /**
-       * Indicates whether remote variable changes are tracked to local
-       * checkpoints
-       **/
-      bool remote_changes_add_to_checkpoint;
     };
   } // end Transport namespace
 } // end Madara namespace
