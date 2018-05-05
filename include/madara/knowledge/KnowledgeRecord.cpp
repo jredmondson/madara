@@ -1038,7 +1038,7 @@ KnowledgeRecord::inc_index (size_t index)
     if (double_array_->size () <= index) {
       double_array_->resize (index + 1);
     }
-    return knowledge::KnowledgeRecord(--double_array_->at (index));
+    return knowledge::KnowledgeRecord(++double_array_->at (index));
   }
   else if (type_ == INTEGER_ARRAY)
   {
@@ -1047,11 +1047,11 @@ KnowledgeRecord::inc_index (size_t index)
     if (int_array_->size () <= index) {
       int_array_->resize (index + 1);
     }
-    return knowledge::KnowledgeRecord(--int_array_->at (index));
+    return knowledge::KnowledgeRecord(++int_array_->at (index));
   }
   std::vector<Integer> tmp(index + 1);
   emplace_integers (std::move(tmp));
-  return knowledge::KnowledgeRecord(--int_array_->at (index));
+  return knowledge::KnowledgeRecord(++int_array_->at (index));
 }
 
 /**

@@ -1015,11 +1015,8 @@ KnowledgeRecord::reset_value (void) noexcept
 inline void
 KnowledgeRecord::set_value (const KnowledgeRecord &new_value)
 {
-  if (quality > new_value.write_quality) {
-    return;
-  }
   uint64_t clock = this->clock;
-  uint64_t quality = new_value.write_quality;
+  uint64_t quality = this->write_quality;
   uint64_t write_quality = this->write_quality;
   *this = new_value;
   this->clock = clock;
@@ -1030,11 +1027,8 @@ KnowledgeRecord::set_value (const KnowledgeRecord &new_value)
 inline void
 KnowledgeRecord::set_value (KnowledgeRecord &&new_value)
 {
-  if (quality > new_value.write_quality) {
-    return;
-  }
   uint64_t clock = this->clock;
-  uint64_t quality = new_value.write_quality;
+  uint64_t quality = this->write_quality;
   uint64_t write_quality = this->write_quality;
   *this = std::move(new_value);
   this->clock = clock;
