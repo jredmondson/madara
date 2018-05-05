@@ -69,12 +69,10 @@ void test_checkpointing (void)
 
   std::cerr << "Test 2: loaded context " << id << "\n";
 
-  context.print (0);
-  
-  
+  context_copy.print (0);
 
   std::cerr << "Test 2: Results were ";
-  if (context_copy.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
+  if (context_copy.get ("int_var") == 15
       && context_copy.get ("double_var") == 3.14159
       && context_copy.get ("str_var") == "some string"
       && context_copy.get ("int_array").to_string (", ") == "10, 20, 30"

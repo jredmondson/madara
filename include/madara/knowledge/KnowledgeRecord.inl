@@ -265,7 +265,7 @@ KnowledgeRecord::operator== (
 inline bool
 KnowledgeRecord::operator== (const char * value) const
 {
-  return to_string () == std::string (value);
+  return to_string ().compare (value) == 0;
 }
 
 inline bool
@@ -872,7 +872,11 @@ KnowledgeRecord::read (const char * buffer,
   {
     if (is_string_type (type))
     {
-      emplace_string (buffer, buff_value_size);
+      if (buff_value_size >= 1) {
+        emplace_string (buffer, buff_value_size - 1);
+      } else {
+        emplace_string ();
+      }
     }
 
     else if (type == INTEGER)
