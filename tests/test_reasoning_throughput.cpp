@@ -287,7 +287,7 @@ madara::knowledge::KnowledgeRecord
   no_op (madara::knowledge::FunctionArguments &,
             madara::knowledge::Variables &)
 {
-  return madara::knowledge::KnowledgeRecord::Integer (0);
+  return madara::knowledge::KnowledgeRecord (0);
 }
 
 std::string 
@@ -697,7 +697,7 @@ uint64_t test_container_assignment (
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    var1 = (madara::knowledge::KnowledgeRecord::Integer)i;
+    var1 = i;
   }
 
   timer.stop ();
@@ -759,7 +759,7 @@ uint64_t test_staged_container_assignment (
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    var1 = (madara::knowledge::KnowledgeRecord::Integer)i;
+    var1 = i;
   }
 
   var1.write ();
@@ -966,8 +966,8 @@ uint64_t test_looped_sr (
 
   unsigned actual_iterations = iterations > 10000 ? iterations / 10000 : 1;
 
-  knowledge.set (".iterations", (madara::knowledge::KnowledgeRecord::Integer) iterations);
-  knowledge.set (".actual_iterations", (madara::knowledge::KnowledgeRecord::Integer) actual_iterations);
+  knowledge.set (".iterations", iterations);
+  knowledge.set (".actual_iterations", actual_iterations);
 
   buffer = ".var2[0->.iterations) (++.var1)";
 
@@ -1195,8 +1195,8 @@ uint64_t test_optimal_loop (
 
   unsigned actual_iterations = iterations > 10000 ? iterations / 10000 : 1;
 
-  knowledge.set (".iterations", (madara::knowledge::KnowledgeRecord::Integer) iterations);
-  knowledge.set (".actual_iterations", (madara::knowledge::KnowledgeRecord::Integer) actual_iterations);
+  knowledge.set (".iterations", iterations);
+  knowledge.set (".actual_iterations", actual_iterations);
 
   buffer = ".var2[.iterations)";
 
@@ -1268,7 +1268,7 @@ uint64_t test_normal_set (
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    knowledge.set ("var1", madara::knowledge::KnowledgeRecord::Integer (i));
+    knowledge.set ("var1", i);
   }
 
   timer.stop ();
@@ -1352,7 +1352,7 @@ uint64_t test_var_ref_set (
 
   for (uint32_t i = 0; i < iterations; ++i)
   {
-    knowledge.set (variable, madara::knowledge::KnowledgeRecord::Integer (i));
+    knowledge.set (variable, i);
   }
 
   timer.stop ();
@@ -1423,7 +1423,7 @@ uint64_t test_stl_inc_atomic (
   timer.elapsed_time (measured);
 
   print (measured,
-    madara::knowledge::KnowledgeRecord::Integer (counter), iterations,
+    madara::knowledge::KnowledgeRecord (counter.load()), iterations,
     "STL Atomic Increment: ");
 
   return measured;
@@ -1457,7 +1457,7 @@ uint64_t test_stl_inc_recursive (
   timer.elapsed_time (measured);
 
   print (measured,
-    madara::knowledge::KnowledgeRecord::Integer (counter), iterations,
+    madara::knowledge::KnowledgeRecord (counter), iterations,
     "STL Recursive Increment: ");
 
   return measured;
@@ -1491,7 +1491,7 @@ uint64_t test_stl_inc_mutex (
   timer.elapsed_time (measured);
 
   print (measured,
-    madara::knowledge::KnowledgeRecord::Integer (counter), iterations,
+    madara::knowledge::KnowledgeRecord (counter), iterations,
     "STL Mutex Increment: ");
 
   return measured;
@@ -1525,7 +1525,7 @@ uint64_t test_ace_inc_recursive (
   timer.elapsed_time (measured);
 
   print (measured,
-    madara::knowledge::KnowledgeRecord::Integer (counter), iterations,
+    madara::knowledge::KnowledgeRecord (counter), iterations,
     "ACE Recursive Increment: ");
 
   return measured;
@@ -1559,7 +1559,7 @@ uint64_t test_ace_inc_mutex (
   timer.elapsed_time (measured);
 
   print (measured,
-    madara::knowledge::KnowledgeRecord::Integer (counter), iterations,
+    madara::knowledge::KnowledgeRecord (counter), iterations,
     "ACE Mutex Increment: ");
 
   return measured;
@@ -1616,7 +1616,7 @@ uint64_t test_looped_si (
   // build a large chain of simple reinforcements
    std::string buffer;
 
-  knowledge.set (".iterations", (madara::knowledge::KnowledgeRecord::Integer) iterations);
+  knowledge.set (".iterations", iterations);
   
   buffer = ".var2[0->.iterations) (1 => ++.var1)";
 
@@ -1745,8 +1745,8 @@ uint64_t test_looped_li (
 
   unsigned actual_iterations = iterations > 10000 ? iterations / 10000 : 1;
 
-  knowledge.set (".iterations", (madara::knowledge::KnowledgeRecord::Integer) iterations);
-  knowledge.set (".actual_iterations", (madara::knowledge::KnowledgeRecord::Integer) actual_iterations);
+  knowledge.set (".iterations", iterations);
+  knowledge.set (".actual_iterations", actual_iterations);
 
   buffer = ".var2[0->.iterations) (1 => ++.var1)";
 
@@ -1851,8 +1851,7 @@ uint64_t test_optimal_assignment (
   timer.stop ();
   timer.elapsed_time (measured);
 
-  print (measured, madara::knowledge::KnowledgeRecord (
-    madara::knowledge::KnowledgeRecord::Integer (var1)), iterations,
+  print (measured, madara::knowledge::KnowledgeRecord (var1), iterations,
     "Optimal Reinforcement: ");
 
   return measured;
@@ -1997,7 +1996,7 @@ uint64_t test_virtual_reinforcement (
   timer.stop ();
   timer.elapsed_time (measured);
   
-  print (measured, var1->get_value (), iterations,
+  print (measured, madara::knowledge::KnowledgeRecord (var1->get_value ()), iterations,
     "Virtual Reinforcement: ");
 
   delete var1;

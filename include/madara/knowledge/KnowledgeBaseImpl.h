@@ -174,6 +174,102 @@ namespace madara
                      KnowledgeReferenceSettings ());
 
       /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      template<typename K>
+      std::shared_ptr<std::string> share_string(K && key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return map_.share_string(std::forward<K>(key), settings);
+      }
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      template<typename K>
+      std::shared_ptr<std::string> take_string(K && key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return map_.share_string(std::forward<K>(key), settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not an integer array, returns NULL shared_ptr
+       **/
+      template<typename K>
+      std::shared_ptr<std::vector<KnowledgeRecord::Integer>> share_integers(K && key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return map_.share_integers(std::forward<K>(key), settings);
+      }
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not an integer array, returns NULL shared_ptr
+       **/
+      template<typename K>
+      std::shared_ptr<std::vector<KnowledgeRecord::Integer>> take_integers(K && key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return map_.share_integers(std::forward<K>(key), settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a doubles array, returns NULL shared_ptr
+       **/
+      template<typename K>
+      std::shared_ptr<std::vector<double>> share_doubles(K && key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return map_.share_doubles(std::forward<K>(key), settings);
+      }
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not an integer array, returns NULL shared_ptr
+       **/
+      template<typename K>
+      std::shared_ptr<std::vector<double>> take_doubles(K && key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return map_.share_doubles(std::forward<K>(key), settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a binary files, returns NULL shared_ptr
+       **/
+      template<typename K>
+      std::shared_ptr<std::vector<unsigned char>> share_binary(K && key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return map_.share_binary(std::forward<K>(key), settings);
+      }
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not a binary file, returns NULL shared_ptr
+       **/
+      template<typename K>
+      std::shared_ptr<std::vector<unsigned char>> take_binary(K && key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return map_.share_binary(std::forward<K>(key), settings);
+      }
+
+      /**
        * Marks the variable reference as updated
        * @param   variable  reference to a variable (@see get_ref)
        * @param   settings  settings for applying the update
@@ -905,7 +1001,7 @@ namespace madara
        **/
 
       int64_t save_checkpoint (
-        const CheckpointSettings & settings) const;
+        CheckpointSettings & settings) const;
 
       /**
        * Loads the context from a file
@@ -960,6 +1056,11 @@ namespace madara
        * form (i.e., this does not roll back state or anything like that)
        */
       void clear_modifieds (void);
+
+      /**
+       * Resets the local changed map, which tracks checkpointing modifieds
+       **/
+      void reset_checkpoint (void) const;
 
       /**
       * Adds a list of VariableReferences to the current modified list.

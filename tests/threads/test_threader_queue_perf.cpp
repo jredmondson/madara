@@ -221,7 +221,7 @@ public:
     /**
       * generate job consisting of 4 possible events: (int: 0-3)
       **/
-    jobs.enqueue (madara::utility::rand_int (0, 3, false));
+    jobs.emplace (madara::utility::rand_int (0, 3, false));
   }
 
 private:
@@ -239,10 +239,10 @@ int main (int argc, char ** argv)
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Hertz rate set to %f\n"
-    "Starting %ll producer threads\n"
-    "Starting %ll consumer threads\n"
+    "Starting %lli producer threads\n"
+    "Starting %lli consumer threads\n"
     "Job queue length is %d\n"
-    "Target is set to %ll\n",
+    "Target is set to %lli\n",
     hertz, producers, consumers, queue_length, target);
 
   containers::Integer jobs_completed (".jobs_completed", knowledge);
@@ -297,7 +297,7 @@ int main (int argc, char ** argv)
   knowledge.set (".total_time_in_seconds", total_time_in_secs);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-    "The consumers completed %ll jobs\n", *jobs_completed);
+    "The consumers completed %lli jobs\n", *jobs_completed);
 
   knowledge.print ("Distributed count took {.total_time_in_seconds}s\n");
 

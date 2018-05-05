@@ -504,7 +504,7 @@ madara::knowledge::KnowledgeRecordFilters::filter (
             "KnowledgeRecordFilters::filter: "
             "Doing a deep copy of the return value\n");
 
-          result.deep_copy (*(madara::knowledge::KnowledgeRecord *)cptr);
+          result = *(madara::knowledge::KnowledgeRecord *)cptr;
         }
 
         if (do_delete)
@@ -724,7 +724,7 @@ madara::knowledge::KnowledgeRecordFilters::filter (
         for (KnowledgeMap::const_iterator i = heap_records->begin ();
           i != heap_records->end (); ++i)
         {
-          records[i->first].deep_copy (i->second);
+          records[i->first] = i->second;
         }
 
         jvm.env->DeleteLocalRef (filterClass);

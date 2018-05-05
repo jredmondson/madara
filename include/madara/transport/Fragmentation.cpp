@@ -53,7 +53,7 @@ madara::transport::FragmentMessageHeader::read (const char * buffer,
                                          int64_t & buffer_remaining)
 {
   // Remove size field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (size))
+  if ((size_t)buffer_remaining >= sizeof (size))
   {
     memcpy (&size, buffer, sizeof (size));
     size = madara::utility::endian_swap (size);
@@ -62,7 +62,7 @@ madara::transport::FragmentMessageHeader::read (const char * buffer,
   buffer_remaining -= sizeof (size);
 
   // Remove madara_id field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (char) * MADARA_IDENTIFIER_LENGTH)
+  if ((size_t)buffer_remaining >= sizeof (char) * MADARA_IDENTIFIER_LENGTH)
   {
     strncpy (madara_id, buffer, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof (char) * MADARA_IDENTIFIER_LENGTH;
@@ -70,7 +70,7 @@ madara::transport::FragmentMessageHeader::read (const char * buffer,
   buffer_remaining -= sizeof (char) * MADARA_IDENTIFIER_LENGTH;
   
   // Remove domain field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (char) * MADARA_DOMAIN_MAX_LENGTH)
+  if ((size_t)buffer_remaining >= sizeof (char) * MADARA_DOMAIN_MAX_LENGTH)
   {
     strncpy (domain, buffer, MADARA_DOMAIN_MAX_LENGTH);
     buffer += sizeof (char) * MADARA_DOMAIN_MAX_LENGTH;
@@ -78,7 +78,7 @@ madara::transport::FragmentMessageHeader::read (const char * buffer,
   buffer_remaining -= sizeof (char) * MADARA_DOMAIN_MAX_LENGTH;
   
   // Remove originator from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (char) * MAX_ORIGINATOR_LENGTH)
+  if ((size_t)buffer_remaining >= sizeof (char) * MAX_ORIGINATOR_LENGTH)
   {
     strncpy (originator, buffer, MAX_ORIGINATOR_LENGTH);
     buffer += sizeof (char) * MAX_ORIGINATOR_LENGTH;
@@ -86,7 +86,7 @@ madara::transport::FragmentMessageHeader::read (const char * buffer,
   buffer_remaining -= sizeof (char) * MAX_ORIGINATOR_LENGTH;
 
   // Remove type field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (type))
+  if ((size_t)buffer_remaining >= sizeof (type))
   {
     memcpy (&type, buffer, sizeof (type));
     type = madara::utility::endian_swap (type);
@@ -95,7 +95,7 @@ madara::transport::FragmentMessageHeader::read (const char * buffer,
   buffer_remaining -= sizeof (type);
   
   // Remove updates field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (updates))
+  if ((size_t)buffer_remaining >= sizeof (updates))
   {
     memcpy (&updates, buffer, sizeof (updates));
     updates = madara::utility::endian_swap (updates);
@@ -104,7 +104,7 @@ madara::transport::FragmentMessageHeader::read (const char * buffer,
   buffer_remaining -= sizeof (updates);
   
   // Remove quality field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (quality))
+  if ((size_t)buffer_remaining >= sizeof (quality))
   {
     memcpy (&quality, buffer, sizeof (quality));
     quality = madara::utility::endian_swap (quality);
@@ -113,7 +113,7 @@ madara::transport::FragmentMessageHeader::read (const char * buffer,
   buffer_remaining -= sizeof (quality);
   
   // Remove clock field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (clock))
+  if ((size_t)buffer_remaining >= sizeof (clock))
   {
     memcpy (&clock, buffer, sizeof (clock));
     clock = madara::utility::endian_swap (clock);
@@ -122,7 +122,7 @@ madara::transport::FragmentMessageHeader::read (const char * buffer,
   buffer_remaining -= sizeof (clock);
   
   // Remove timestamp field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (timestamp))
+  if ((size_t)buffer_remaining >= sizeof (timestamp))
   {
     memcpy (&timestamp, buffer, sizeof (timestamp));
     timestamp = madara::utility::endian_swap (timestamp);
@@ -139,7 +139,7 @@ madara::transport::FragmentMessageHeader::read (const char * buffer,
   buffer_remaining -= 1;
   
   // Remove updates field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (update_number))
+  if ((size_t)buffer_remaining >= sizeof (update_number))
   {
     memcpy (&update_number, buffer, sizeof (update_number));
     update_number = madara::utility::endian_swap (update_number);
@@ -155,7 +155,7 @@ madara::transport::FragmentMessageHeader::write (char * buffer,
                                          int64_t & buffer_remaining)
 {
   // Write size field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (size))
+  if ((size_t)buffer_remaining >= sizeof (size))
   {
     *(uint64_t *) buffer = madara::utility::endian_swap (size);
     buffer += sizeof (size);
@@ -163,7 +163,7 @@ madara::transport::FragmentMessageHeader::write (char * buffer,
   buffer_remaining -= sizeof (size);
 
   // Write madara_id field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (char) * MADARA_IDENTIFIER_LENGTH)
+  if ((size_t)buffer_remaining >= sizeof (char) * MADARA_IDENTIFIER_LENGTH)
   {
     strncpy (buffer, madara_id, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof (char) * MADARA_IDENTIFIER_LENGTH;
@@ -171,7 +171,7 @@ madara::transport::FragmentMessageHeader::write (char * buffer,
   buffer_remaining -= sizeof (char) * MADARA_IDENTIFIER_LENGTH;
   
   // Write domain field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (char) * MADARA_DOMAIN_MAX_LENGTH)
+  if ((size_t)buffer_remaining >= sizeof (char) * MADARA_DOMAIN_MAX_LENGTH)
   {
     strncpy (buffer, domain, MADARA_DOMAIN_MAX_LENGTH);
     buffer += sizeof (char) * MADARA_DOMAIN_MAX_LENGTH;
@@ -179,7 +179,7 @@ madara::transport::FragmentMessageHeader::write (char * buffer,
   buffer_remaining -= sizeof (char) * MADARA_DOMAIN_MAX_LENGTH;
   
   // Write originator from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (char) * MAX_ORIGINATOR_LENGTH)
+  if ((size_t)buffer_remaining >= sizeof (char) * MAX_ORIGINATOR_LENGTH)
   {
     strncpy (buffer, originator, MAX_ORIGINATOR_LENGTH);
     buffer += sizeof (char) * MAX_ORIGINATOR_LENGTH;
@@ -187,7 +187,7 @@ madara::transport::FragmentMessageHeader::write (char * buffer,
   buffer_remaining -= sizeof (char) * MAX_ORIGINATOR_LENGTH;
 
   // Write type field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (type))
+  if ((size_t)buffer_remaining >= sizeof (type))
   {
     *(uint32_t *) buffer = madara::utility::endian_swap (type);
     buffer += sizeof (type);
@@ -195,7 +195,7 @@ madara::transport::FragmentMessageHeader::write (char * buffer,
   buffer_remaining -= sizeof (type);
   
   // Write updates field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (updates))
+  if ((size_t)buffer_remaining >= sizeof (updates))
   {
     *(uint32_t *) buffer = madara::utility::endian_swap (updates);
     buffer += sizeof (updates);
@@ -203,7 +203,7 @@ madara::transport::FragmentMessageHeader::write (char * buffer,
   buffer_remaining -= sizeof (updates);
   
   // Write quality field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (quality))
+  if ((size_t)buffer_remaining >= sizeof (quality))
   {
     *(uint32_t *) buffer = madara::utility::endian_swap (quality);
     buffer += sizeof (quality);
@@ -211,7 +211,7 @@ madara::transport::FragmentMessageHeader::write (char * buffer,
   buffer_remaining -= sizeof (quality);
   
   // Write clock field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (clock))
+  if ((size_t)buffer_remaining >= sizeof (clock))
   {
     *(uint64_t *) buffer = madara::utility::endian_swap (clock);
     buffer += sizeof (clock);
@@ -219,7 +219,7 @@ madara::transport::FragmentMessageHeader::write (char * buffer,
   buffer_remaining -= sizeof (clock);
   
   // Write timestamp field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (timestamp))
+  if ((size_t)buffer_remaining >= sizeof (timestamp))
   {
     *(uint64_t *) buffer = madara::utility::endian_swap (timestamp);
     buffer += sizeof (timestamp);
@@ -234,7 +234,7 @@ madara::transport::FragmentMessageHeader::write (char * buffer,
   buffer_remaining -= 1;
   
   // Write updates field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (update_number))
+  if ((size_t)buffer_remaining >= sizeof (update_number))
   {
     *(uint32_t *) buffer = madara::utility::endian_swap (update_number);
     buffer += sizeof (update_number);
@@ -689,8 +689,6 @@ madara::transport::exists (const char * originator, uint64_t clock,
 
     if (clock_found != clock_map.end ())
     {
-      uint64_t size = clock_found->second.size ();
-
       if (clock_found->second.find (update_number)
           != clock_found->second.end ())
       {

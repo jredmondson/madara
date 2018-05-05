@@ -11,9 +11,12 @@
 
 #include <string>
 #include <map>
+#include <memory>
+
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/utility/Utility.h"
 #include "madara/filters/BufferFilter.h"
+#include <stdio.h>
 
 namespace madara
 {
@@ -21,12 +24,23 @@ namespace madara
   namespace knowledge
   {
 
+    class ThreadSafeContext;
+
     /**
      * @class CheckpointSettings
-     * @brief Holds settings for checkpoints to load or save
+     * @brief Holds settings for checkpoints to load or save. Most of the
+     *   data members are "smart" data members. For loads, many of the fields
+     *   are essentially pass-by-reference and fill with the related data.
      **/
-    struct CheckpointSettings
+    class CheckpointSettings
     {
+      public:
+
+      /**
+       * Allow for ThreadSafeContext to update private data members
+       **/ 
+      friend ThreadSafeContext;
+
       /**
        * Constructor
        **/
@@ -35,7 +49,11 @@ namespace madara
           clear_knowledge (false), initial_timestamp (0), last_timestamp (0),
           initial_lamport_clock (0), last_lamport_clock (0), states (0),
           version (utility::get_version ()),
-          override_timestamp (false), override_lamport (false)
+          override_timestamp (false), override_lamport (false),
+          keep_open (false),
+          initial_state (0),
+          last_state (-1),
+          reset_checkpoint (true)
 
       {
       }
@@ -66,7 +84,11 @@ namespace madara
         uint64_t t_states = 0,
         std::string t_version = "",
         bool t_override_timestamp = false,
-        bool t_override_lamport = false)
+        bool t_override_lamport = false,
+        bool t_keep_open = false,
+        uint64_t t_initial_state = 0,
+        uint64_t t_last_state = (uint64_t)-1,
+        bool t_reset_checkpoint = true)
         : buffer_size (t_buffer_size),
           clear_knowledge (t_clear_knowledge),
           filename (t_filename),
@@ -79,7 +101,11 @@ namespace madara
           states (t_states),
           version (t_version),
           override_timestamp (t_override_timestamp),
-          override_lamport (t_override_lamport)
+          override_lamport (t_override_lamport),
+          keep_open (t_keep_open),
+          initial_state (t_initial_state),
+          last_state (t_last_state),
+          reset_checkpoint (t_reset_checkpoint)
       {
       }
        
@@ -101,7 +127,20 @@ namespace madara
           version (rhs.version),
           override_timestamp (rhs.override_timestamp),
           override_lamport (rhs.override_lamport),
-          buffer_filters (rhs.buffer_filters)
+          buffer_filters (rhs.buffer_filters),
+          keep_open (rhs.keep_open),
+          initial_state (rhs.initial_state),
+          last_state (rhs.last_state),
+          reset_checkpoint (rhs.reset_checkpoint),
+          checkpoint_file (rhs.checkpoint_file)
+      {
+      }
+
+       
+      /**
+       * Destructor
+       **/
+      ~CheckpointSettings ()
       {
       }
 
@@ -145,7 +184,6 @@ namespace madara
 
         return size;
       }
-
 
       /**
        * the size of the buffer needed for the checkpoint
@@ -219,6 +257,40 @@ namespace madara
        * buffer filters. Note that the user must clean up memory of all filters
        **/
       filters::BufferFilters   buffer_filters;
+
+      /**
+       * if true, keep the file open to avoid open/close overhead when
+       * programmatically iterating through checkpoints. This is sort of
+       * useful with save_checkpoint
+       **/
+      bool keep_open;
+
+      /**
+       * the initial state number of interest (useful for loading ranges of
+       * checkpoint states). This is an inclusive identifier, so 0 means to
+       * load from initial context/checkpoint save
+       **/
+      uint64_t   initial_state;
+
+      /**
+       * the last state number of interest (useful for loading ranges of
+       * checkpoint states. This is an inclusive identifier. If last_state
+       * >= states, it will essentially indicate the last valid state.
+       **/
+      uint64_t   last_state;
+
+      /**
+       * If true, resets the checkpoint to start a new diff from this point
+       * forward.
+       **/
+      bool       reset_checkpoint;
+
+    private:
+      /**
+       * a thread-safe ref-counted file handle for quick access to an open
+       * checkpoint binary file
+       **/
+      std::shared_ptr<FILE>     checkpoint_file;
     };
   }
 }

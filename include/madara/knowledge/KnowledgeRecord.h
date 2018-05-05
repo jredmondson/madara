@@ -14,7 +14,6 @@
 #include <vector>
 #include <map>
 #include <memory>
-#include <atomic>
 #include <type_traits>
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
@@ -125,7 +124,7 @@ namespace madara
        * is this knowledge record's shared_ptr, if any, exposed to
        * outside holders?
        **/
-      mutable std::atomic<bool> shared_{OWNED};
+      mutable bool shared_ = OWNED;
 
       template<typename T>
       using MemberType = std::shared_ptr<T> KnowledgeRecord::*;
@@ -174,7 +173,7 @@ namespace madara
         emplace_shared_vec<Integer, INTEGER_ARRAY,
                &KnowledgeRecord::int_array_> (
                   std::forward<Args>(args)...);
-        shared_.store(SHARED);
+        shared_ = SHARED;
       }
 
       /**
@@ -203,7 +202,7 @@ namespace madara
         emplace_shared_vec<double, DOUBLE_ARRAY,
                &KnowledgeRecord::double_array_> (
                   std::forward<Args>(args)...);
-        shared_.store(SHARED);
+        shared_ = SHARED;
       }
 
       /**
@@ -231,7 +230,7 @@ namespace madara
         emplace_shared_val<std::string, STRING,
                &KnowledgeRecord::str_value_> (
                   std::forward<Args>(args)...);
-        shared_.store(SHARED);
+        shared_ = SHARED;
       }
 
       /**
@@ -260,7 +259,7 @@ namespace madara
         emplace_shared_vec<unsigned char, UNKNOWN_FILE_TYPE,
                &KnowledgeRecord::file_value_> (
                 std::forward<Args>(args)...);
-        shared_.store(SHARED);
+        shared_ = SHARED;
       }
 
       /**
@@ -936,12 +935,18 @@ namespace madara
       /**
        * Equal to
        **/
-      bool operator== (Integer value) const;
+      template<typename T,
+        typename std::enable_if<std::is_integral<T>::value,
+        void*>::type = nullptr>
+      bool operator== (T value) const;
 
       /**
        * Equal to
        **/
-      bool operator== (double value) const;
+      template<typename T,
+        typename std::enable_if<std::is_floating_point<T>::value,
+        void*>::type = nullptr>
+      bool operator== (T value) const;
 
       /**
        * Equal to
@@ -975,7 +980,7 @@ namespace madara
 
       /**
        * Negate.
-       **/
+       */
       KnowledgeRecord operator- (void) const;
 
       /**

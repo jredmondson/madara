@@ -30,7 +30,7 @@ madara::knowledge::Variables::get (const std::string & key,
   if (context_)
   {
     VariableReference variable = context_->get_ref (key, settings);
-    result.deep_copy (context_->get (variable, settings));
+    result = context_->get (variable, settings);
   }
   else
   {
@@ -49,7 +49,7 @@ madara::knowledge::Variables::get (const VariableReference & variable,
 
   if (context_)
   {
-    result.deep_copy (context_->get (variable, settings));
+    result = context_->get (variable, settings);
   }
   else
   {

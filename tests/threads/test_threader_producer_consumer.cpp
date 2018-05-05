@@ -230,7 +230,7 @@ public:
     /**
       * generate job consisting of 4 possible events: (int: 0-3)
       **/
-    jobs.enqueue (madara::utility::rand_int (0, 3, false));
+    jobs.emplace (madara::utility::rand_int (0, 3, false));
   }
 
 private:

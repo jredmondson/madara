@@ -8,9 +8,6 @@
 
 #include "madara/utility/Utility.h"
 
-#define MADARA_WITH_DELETER(val) \
-  {(val), std::default_delete<typename std::decay<decltype(*val)>::type []>()}
-
 /**
 * @file KnowledgeRecord.inl
 * @author James Edmondson <jedmondson@gmail.com>
@@ -126,7 +123,7 @@ inline KnowledgeRecord::KnowledgeRecord (
   quality (rhs.quality),
   write_quality (rhs.write_quality),
   type_ (rhs.type_),
-  shared_ (rhs.shared_.load())
+  shared_ (rhs.shared_)
 {
   if      (rhs.type_ == EMPTY)
     return;
@@ -202,7 +199,7 @@ KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
   quality = rhs.quality;
   write_quality = rhs.write_quality;
   type_ = rhs.type_;
-  shared_.store(rhs.shared_.load());
+  shared_ = rhs.shared_;
 
   if      (rhs.type_ == INTEGER)
     int_value_ = rhs.int_value_;
@@ -220,8 +217,29 @@ KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
   return *this;
 }
 
+template<typename T,
+  typename std::enable_if<std::is_integral<T>::value, void*>::type>
 inline bool
-KnowledgeRecord::operator== (double value) const
+KnowledgeRecord::operator== (T value) const
+{
+  // for this type of comparison, we can only be equal if we are the same
+  // base type
+  if (is_integer_type ())
+  {
+    return to_integer () == value;
+  }
+  else if (is_double_type () || is_string_type ())
+  {
+    return to_double () == value;
+  }
+
+  return false;
+}
+
+template<typename T,
+  typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
+inline bool
+KnowledgeRecord::operator== (T value) const
 {
   // for this type of comparison, we can only be equal if we are the same
   // base type
@@ -279,23 +297,6 @@ inline KnowledgeRecord
     record.set_value (-to_double ());
 
   return record;
-}
-
-inline bool
-KnowledgeRecord::operator== (Integer value) const
-{
-  // for this type of comparison, we can only be equal if we are the same
-  // base type
-  if (is_integer_type ())
-  {
-    return to_integer () == value;
-  }
-  else if (is_double_type () || is_string_type ())
-  {
-    return to_double () == value;
-  }
-
-  return false;
 }
 
 /**
@@ -536,7 +537,7 @@ KnowledgeRecord::operator- (const knowledge::KnowledgeRecord & rhs) const
 inline void
 KnowledgeRecord::unshare (void)
 {
-  if (shared_.load() != SHARED) {
+  if (shared_ != SHARED) {
     return;
   }
 
@@ -552,7 +553,7 @@ KnowledgeRecord::unshare (void)
       emplace_doubles (*double_array_);
     }
   }
-  shared_.store(OWNED);
+  shared_ = OWNED;
 }
 
 inline KnowledgeRecord *
@@ -589,7 +590,7 @@ KnowledgeRecord::exists (void) const
 inline int
 KnowledgeRecord::status (void) const
 {
-  return type_ != EMPTY ? UNCREATED : MODIFIED;
+  return type_ == EMPTY ? UNCREATED : MODIFIED;
 }
 
 /**
@@ -717,7 +718,7 @@ KnowledgeRecord::is_integer_type (void) const
 inline bool
 KnowledgeRecord::is_integer_type (uint32_t type)
 {
-  return type == INTEGER || type == INTEGER_ARRAY;
+  return type == EMPTY || type == INTEGER || type == INTEGER_ARRAY;
 }
 
 inline bool
@@ -815,7 +816,7 @@ KnowledgeRecord::clear_union (void) noexcept
       destruct(str_value_);
     else if (is_binary_file_type ())
       destruct(file_value_);
-    shared_.store(OWNED);
+    shared_ = OWNED;
   }
 }
 
@@ -1281,7 +1282,7 @@ inline std::shared_ptr<std::string>
 KnowledgeRecord::share_string() const
 {
   if (is_string_type()) {
-    shared_.store(SHARED);
+    shared_ = SHARED;
     return str_value_;
   }
   return nullptr;
@@ -1307,7 +1308,7 @@ inline std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
 KnowledgeRecord::share_integers() const
 {
   if (type_ == INTEGER_ARRAY) {
-    shared_.store(SHARED);
+    shared_ = SHARED;
     return int_array_;
   }
   return nullptr;
@@ -1333,7 +1334,7 @@ inline std::shared_ptr<std::vector<double>>
 KnowledgeRecord::share_doubles() const
 {
   if (type_ == DOUBLE_ARRAY) {
-    shared_.store(SHARED);
+    shared_ = SHARED;
     return double_array_;
   }
   return nullptr;
@@ -1359,7 +1360,7 @@ inline std::shared_ptr<std::vector<unsigned char>>
 KnowledgeRecord::share_binary() const
 {
   if (is_binary_file_type()) {
-    shared_.store(SHARED);
+    shared_ = SHARED;
     return file_value_;
   }
   return nullptr;

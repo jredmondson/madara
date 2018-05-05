@@ -316,7 +316,7 @@ write_file (madara::knowledge::KnowledgeMap & records,
         vars.print ("File already exists in folder. Not saving.\n");
       }
 
-      records["last"] = self;
+      records["last"] = madara::knowledge::KnowledgeRecord(self);
       vars.set (ack, madara::knowledge::KnowledgeRecord::Integer (file->second.size ()));
       vars.print (
         "Received file. Sending file ack {file.{.id}.ack} for id {.id}.\n");
@@ -349,7 +349,7 @@ int main (int argc, char ** argv)
 #ifndef _MADARA_NO_KARL_
   if (settings.id != 0)
   {
-    trusted = madara::knowledge::KnowledgeRecord::Integer (settings.id - 1);
+    trusted = madara::knowledge::KnowledgeRecord (settings.id - 1);
   }
 
   if (settings.hosts.size () == 0)
@@ -371,7 +371,7 @@ int main (int argc, char ** argv)
 
   // create a knowledge base and setup our id
   madara::knowledge::KnowledgeBase knowledge (host, settings);
-  knowledge.set (".id", madara::knowledge::KnowledgeRecord::Integer (settings.id));
+  knowledge.set (".id", madara::knowledge::KnowledgeRecord (settings.id));
   knowledge.set (".target", target_id);
 
   ack = knowledge.get_ref (knowledge.expand_statement (
@@ -462,7 +462,7 @@ int main (int argc, char ** argv)
         text[3] = 't';
       }
 
-      knowledge.set (".size", madara::knowledge::KnowledgeRecord::Integer (data_size));
+      knowledge.set (".size", madara::knowledge::KnowledgeRecord (data_size));
       knowledge.set ("file", text, delay_sending);
       knowledge.set ("file_name", new_name.str (), delay_sending);
       

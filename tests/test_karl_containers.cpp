@@ -877,7 +877,7 @@ void test_vector (void)
 
   
   if (vector[1].to_string () == "value.at.1" &&
-      knowledge.get ("test_vector.7") != 7.7 && vector.size () == 7)
+      knowledge.get ("test_vector.7").to_double () != 7.7 && vector.size () == 7)
     std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else
     std::cerr << "FAIL. Vector [7] still exists after resize.\n";
@@ -1481,14 +1481,14 @@ void test_queue (void)
   madara::knowledge::KnowledgeRecord record;
   bool check;
 
-  messages.enqueue ("first string");
-  messages.enqueue ("second string");
-  messages.enqueue ("third string");
-  messages.enqueue ("fourth string");
-  messages.enqueue ("fifth string");
-  messages.enqueue ("sixth string");
-  messages.enqueue ("seventh string");
-  check = messages.enqueue ("eighth string");
+  messages.emplace ("first string");
+  messages.emplace ("second string");
+  messages.emplace ("third string");
+  messages.emplace ("fourth string");
+  messages.emplace ("fifth string");
+  messages.emplace ("sixth string");
+  messages.emplace ("seventh string");
+  check = messages.emplace ("eighth string");
 
   if (!check)
     std::cerr << "  SUCCESS: enqueue size check.\n";
@@ -1507,9 +1507,9 @@ void test_queue (void)
   else
     std::cerr << "  FAIL: second dequeue.\n";
 
-  messages.enqueue ("eighth string");
-  messages.enqueue ("ninth string");
-  check = messages.enqueue ("tenth string");
+  messages.emplace ("eighth string");
+  messages.emplace ("ninth string");
+  check = messages.emplace ("tenth string");
   
   if (!check)
     std::cerr << "  SUCCESS: 2nd enqueue size check.\n";
@@ -1558,8 +1558,8 @@ void test_queue (void)
   else
     std::cerr << "  FAIL: ninth dequeue.\n";
   
-  messages.enqueue ("first cleared");
-  messages.enqueue ("second cleared");
+  messages.emplace ("first cleared");
+  messages.emplace ("second cleared");
 
   if (messages.inspect (0) == "first cleared" &&
       messages.inspect (1) == "second cleared")
@@ -1588,13 +1588,13 @@ void test_queue (void)
     std::cerr << "  FAIL: asynchronous dequeue empty.\n";
   }
 
-  messages.enqueue ("first string");
-  messages.enqueue ("second string");
-  messages.enqueue ("third string");
-  messages.enqueue ("fourth string");
-  messages.enqueue ("fifth string");
-  messages.enqueue ("sixth string");
-  messages.enqueue ("seventh string");
+  messages.emplace ("first string");
+  messages.emplace ("second string");
+  messages.emplace ("third string");
+  messages.emplace ("fourth string");
+  messages.emplace ("fifth string");
+  messages.emplace ("sixth string");
+  messages.emplace ("seventh string");
 
   messages.resize (5);
 

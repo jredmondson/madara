@@ -800,6 +800,46 @@ KnowledgeBase::set (
 inline int
 KnowledgeBase::set (
   const std::string & key,
+  std::vector <KnowledgeRecord::Integer> && value,
+  const EvalSettings & settings)
+{
+  int result = 0;
+
+  if (impl_.get ())
+  {
+    result = impl_->set (key, std::move(value), settings);
+  }
+  else if (context_)
+  {
+    result = context_->set (key, std::move(value), settings);
+  }
+
+  return result;
+}
+
+inline int
+KnowledgeBase::set (
+  const VariableReference & variable,
+  std::vector <KnowledgeRecord::Integer> && value,
+  const EvalSettings & settings)
+{
+  int result = 0;
+
+  if (impl_.get ())
+  {
+    result = impl_->set (variable, std::move(value), settings);
+  }
+  else if (context_)
+  {
+    result = context_->set (variable, std::move(value), settings);
+  }
+
+  return result;
+}
+
+inline int
+KnowledgeBase::set (
+  const std::string & key,
   const double * value,
   uint32_t size,
   const EvalSettings & settings)
@@ -1881,7 +1921,7 @@ KnowledgeBase::save_checkpoint (
 
 inline int64_t
 KnowledgeBase::save_checkpoint (
-  const CheckpointSettings & settings) const
+  CheckpointSettings & settings) const
 {
   int64_t result = 0;
 

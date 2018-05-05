@@ -193,6 +193,337 @@ namespace madara
                      KnowledgeReferenceSettings (false));
 
       /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::string> share_string(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        if (impl_)
+        {
+          return impl_->share_string (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->share_string (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::string> share_string(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        if (impl_)
+        {
+          return impl_->share_string (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->share_string (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::string> take_string(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        if (impl_)
+        {
+          return impl_->take_string (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->take_string (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::string> take_string(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        if (impl_)
+        {
+          return impl_->take_string (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->take_string (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not an integer array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+        share_integers(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        if (impl_)
+        {
+          return impl_->share_integers (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->share_integers (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not an integer array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+        share_integers(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        if (impl_)
+        {
+          return impl_->share_integers (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->share_integers (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not an integer array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+        take_integers(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        if (impl_)
+        {
+          return impl_->take_integers (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->take_integers (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not an integer array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+        take_integers(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        if (impl_)
+        {
+          return impl_->take_integers (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->take_integers (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a doubles array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<double>>
+        share_doubles(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        if (impl_)
+        {
+          return impl_->share_doubles (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->share_doubles (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a doubles array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<double>>
+        share_doubles(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        if (impl_)
+        {
+          return impl_->share_doubles (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->share_doubles (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a doubles array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<double>>
+        take_doubles(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        if (impl_)
+        {
+          return impl_->take_doubles (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->take_doubles (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a doubles array, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<double>>
+        take_doubles(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        if (impl_)
+        {
+          return impl_->take_doubles (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->take_doubles (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a binary file, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<unsigned char>>
+        share_binary(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        if (impl_)
+        {
+          return impl_->share_binary (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->share_binary (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a binary file, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<unsigned char>>
+        share_binary(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        if (impl_)
+        {
+          return impl_->share_binary (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->share_binary (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a binary file, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<unsigned char>>
+        take_binary(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        if (impl_)
+        {
+          return impl_->take_binary (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->take_binary (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a binary file, returns NULL shared_ptr
+       **/
+      std::shared_ptr<std::vector<unsigned char>>
+        take_binary(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        if (impl_)
+        {
+          return impl_->take_binary (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->take_binary (key, settings);
+        }
+
+        return nullptr;
+      }
+      /**
        * Marks the variable reference as updated
        * @param   variable  reference to a variable (@see get_ref)
        * @param   settings  settings for applying the update
@@ -376,7 +707,7 @@ namespace madara
        * @param   settings  settings for applying the update
        * @return   0 if the value was set. -1 if null key
        **/
-      template<typename t>
+      template<typename T>
       int set_index (const VariableReference & variable,
         size_t index, T&& value,
         const EvalSettings & settings =
@@ -1064,6 +1395,11 @@ namespace madara
       void clear (bool erase = false);
 
       /**
+       * Resets the local changed map, which tracks checkpointing modifieds
+       **/
+      void reset_checkpoint (void) const;
+
+      /**
        * Clears the knowledge base
        **/
       void clear_map (void);
@@ -1301,7 +1637,7 @@ namespace madara
        **/
 
       int64_t save_checkpoint (
-        const CheckpointSettings & settings) const;
+        CheckpointSettings & settings) const;
 
       /**
        * Loads the context from a file

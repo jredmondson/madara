@@ -107,15 +107,17 @@ namespace madara { namespace knowledge { namespace rcw
     }
 
     /// Set record @ref_ points to. No locking, so be careful!
-    void set(KnowledgeBase &kb, KnowledgeRecord rec)
+    template<typename T>
+    void set(KnowledgeBase &kb, T&& val)
     {
-      return set(kb, ref_, rec);
+      return set(kb, ref_, std::forward<T>(val));
     }
 
     /// Set record @ref points to. No locking, so be careful!
-    static void set(KnowledgeBase &kb, const VariableReference &ref, KnowledgeRecord rec)
+    template<typename T>
+    static void set(KnowledgeBase &kb, const VariableReference &ref, T&& val)
     {
-      kb.get_context().set_unsafe(ref, rec, EvalSettings());
+      kb.get_context().set_unsafe(ref, std::forward<T>(val), EvalSettings());
     }
 
     /// Set index in record @ref_ points to. No locking, so be careful!

@@ -17,14 +17,14 @@
 
 namespace madara { namespace knowledge {
 
-KnowledgeBaseImpl::KnowledgeBaseImpl ()
+inline KnowledgeBaseImpl::KnowledgeBaseImpl ()
   : settings_ (), files_ (map_)
 {
   //activate_transport ();
   // no hope of transporting, so don't setup uniquehostport
 }
 
-KnowledgeBaseImpl::KnowledgeBaseImpl (
+inline KnowledgeBaseImpl::KnowledgeBaseImpl (
   const std::string & host, int transport)
   : settings_ (), files_ (map_)
 {
@@ -35,7 +35,7 @@ KnowledgeBaseImpl::KnowledgeBaseImpl (
   activate_transport ();
 }
 
-KnowledgeBaseImpl::KnowledgeBaseImpl (
+inline KnowledgeBaseImpl::KnowledgeBaseImpl (
   const std::string & host, int transport,
   const std::string & knowledge_domain)
   : settings_ (), files_ (map_)
@@ -48,7 +48,7 @@ KnowledgeBaseImpl::KnowledgeBaseImpl (
   activate_transport ();
 }
 
-KnowledgeBaseImpl::KnowledgeBaseImpl (
+inline KnowledgeBaseImpl::KnowledgeBaseImpl (
   const std::string & host, const madara::transport::TransportSettings & config)
   : settings_ (config), files_ (map_)
 {
@@ -57,7 +57,7 @@ KnowledgeBaseImpl::KnowledgeBaseImpl (
     activate_transport ();
 }
 
-KnowledgeBaseImpl::~KnowledgeBaseImpl ()
+inline KnowledgeBaseImpl::~KnowledgeBaseImpl ()
 {
   close_transport ();
   unique_bind_.close ();
@@ -67,15 +67,7 @@ KnowledgeBaseImpl::get (
   const std::string & t_key,
   const KnowledgeReferenceSettings & settings)
 {
-  KnowledgeRecord result (map_.get (t_key, settings));
-
-  // if the result is ref counted, then do a deep copy to prevent cache issues
-  if (result.is_ref_counted ())
-  {
-    result.deep_copy (result);
-  }
-
-  return result;
+  return map_.get (t_key, settings);
 }
 
 inline KnowledgeRecord
@@ -83,15 +75,7 @@ KnowledgeBaseImpl::get (
   const VariableReference & variable,
   const KnowledgeReferenceSettings & settings)
 {
-  KnowledgeRecord result (map_.get (variable, settings));
-
-  // if the result is ref counted, then do a deep copy to prevent cache issues
-  if (result.is_ref_counted ())
-  {
-    result.deep_copy (result);
-  }
-
-  return result;
+  return map_.get (variable, settings);
 }
 
 inline VariableReference
@@ -208,7 +192,7 @@ KnowledgeBaseImpl::mark_modified (
 }
 
 /// Read a file into the knowledge base
-int
+inline int
 KnowledgeBaseImpl::read_file (
 const std::string & key, const std::string & filename,
 const EvalSettings & settings)
@@ -468,16 +452,16 @@ inline void KnowledgeBaseImpl::release (void)
 #ifndef _MADARA_NO_KARL_
 
 // Defines a function
-inline
-void KnowledgeBaseImpl::define_function (
+inline void
+KnowledgeBaseImpl::define_function (
   const std::string & name, KnowledgeRecord (*func) (FunctionArguments &, Variables &))
 {
   map_.define_function (name, func);
 }
 
 // Defines a function
-inline
-void KnowledgeBaseImpl::define_function (
+inline void
+KnowledgeBaseImpl::define_function (
   const std::string & name,
     KnowledgeRecord (*func) (const char *, FunctionArguments &, Variables &))
 {
@@ -485,8 +469,7 @@ void KnowledgeBaseImpl::define_function (
 }
 
 #ifdef _MADARA_JAVA_
-inline
-void
+inline void
 KnowledgeBaseImpl::define_function (
   const std::string & name, jobject callable)
 {
@@ -496,8 +479,7 @@ KnowledgeBaseImpl::define_function (
 
 #ifdef _MADARA_PYTHON_CALLBACKS_
 
-inline
-void
+inline void
 KnowledgeBaseImpl::define_function (
   const std::string & name, boost::python::object callable)
 {
@@ -509,8 +491,7 @@ KnowledgeBaseImpl::define_function (
 /**
   * Defines a MADARA KaRL function
   **/
-inline
-void
+inline void
 KnowledgeBaseImpl::define_function (const std::string & name,
   const std::string & expression)
 {
@@ -518,8 +499,7 @@ KnowledgeBaseImpl::define_function (const std::string & name,
 }
 
 
-inline
-void
+inline void
 KnowledgeBaseImpl::define_function (
   const std::string & name,
   const CompiledExpression & expression)
@@ -547,8 +527,7 @@ KnowledgeBaseImpl::evaluate (
 
 #endif // _MADARA_NO_KARL_
 
-inline
-size_t
+inline size_t
 KnowledgeBaseImpl::attach_transport (
   madara::transport::Base * transport)
 {
@@ -556,15 +535,13 @@ KnowledgeBaseImpl::attach_transport (
   return transports_.size ();
 }
 
-inline
-size_t
+inline size_t
 KnowledgeBaseImpl::get_num_transports (void)
 {
   return transports_.size ();
 }
 
-inline
-size_t
+inline size_t
 KnowledgeBaseImpl::remove_transport (size_t index)
 {
   return transports_.erase (index);
@@ -576,8 +553,7 @@ KnowledgeBaseImpl::remove_transport (size_t index)
   *
   * @return             the context used by the knowledge base
   **/
-inline
-ThreadSafeContext &
+inline ThreadSafeContext &
 KnowledgeBaseImpl::get_context (void)
 {
   return map_;
@@ -588,8 +564,7 @@ KnowledgeBaseImpl::get_context (void)
   * Returns the unique host and ephemeral binding for this Knowlede Base
   * @return             host:port identifier for this knowledge base
   **/
-inline
-std::string
+inline std::string
 KnowledgeBaseImpl::get_id (void)
 {
   if (id_ == "")
@@ -614,8 +589,7 @@ KnowledgeBaseImpl::get_id (void)
   *                      range.
   * @return              entries in the resulting vector
   **/
-inline
-size_t
+inline size_t
 KnowledgeBaseImpl::to_vector (
                               const std::string & subject,
                               unsigned int start,
@@ -625,18 +599,16 @@ KnowledgeBaseImpl::to_vector (
   return map_.to_vector (subject, start, end, target);
 }
 
-inline
-void
+inline void
 KnowledgeBaseImpl::get_matches (
-const std::string & prefix,
-const std::string & suffix,
-VariableReferences & matches)
+      const std::string & prefix,
+      const std::string & suffix,
+      VariableReferences & matches)
 {
   map_.get_matches (prefix, suffix, matches);
 }
 
-inline
-size_t
+inline size_t
 KnowledgeBaseImpl::to_map (
   const std::string & expression,
   std::map <std::string, KnowledgeRecord> & target)
@@ -644,8 +616,7 @@ KnowledgeBaseImpl::to_map (
   return map_.to_map (expression, target);
 }
 
-inline
-size_t
+inline size_t
 KnowledgeBaseImpl::to_map (
   const std::string & prefix,
   const std::string & delimiter,
@@ -658,16 +629,14 @@ KnowledgeBaseImpl::to_map (
     prefix, delimiter, suffix, next_keys, result, just_keys);
 }
 
-inline
-KnowledgeMap
+inline KnowledgeMap
 KnowledgeBaseImpl::to_map (
   const std::string & prefix) const
 {
   return map_.to_map (prefix);
 }
 
-inline
-KnowledgeMap
+inline KnowledgeMap
 KnowledgeBaseImpl::to_map_stripped (
   const std::string & prefix) const
 {
@@ -725,6 +694,13 @@ KnowledgeBaseImpl::clear_modifieds (
   map_.reset_modified ();
 }
 
+inline void
+madara::knowledge::KnowledgeBaseImpl::reset_checkpoint (
+  void) const
+{
+  map_.reset_checkpoint ();
+}
+
 inline int64_t
 KnowledgeBaseImpl::save_checkpoint (
   const std::string & filename,
@@ -733,15 +709,16 @@ KnowledgeBaseImpl::save_checkpoint (
   int64_t total_written = map_.save_checkpoint (filename, id_);
 
   if (reset_modifieds)
-    map_.reset_modified ();
+    map_.reset_checkpoint ();
 
   return total_written;
 }
 
 inline int64_t
 KnowledgeBaseImpl::save_checkpoint (
-  const CheckpointSettings & settings) const
+  CheckpointSettings & settings) const
 {
+  settings.originator = id_;
   return map_.save_checkpoint (settings);
 }
 

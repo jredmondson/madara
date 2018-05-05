@@ -80,6 +80,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     // instead of the resulting string filename.
     knowledge::KnowledgeRecord filename_eval = nodes_[0]->evaluate (settings);
     uint32_t read_as_type_uint (0);
+    (void)read_as_type_uint;
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "System call read_file is attempting to open %s.\n",

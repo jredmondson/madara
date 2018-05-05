@@ -238,7 +238,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not an integer array, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
         share_integers(const std::string & key,
@@ -251,7 +251,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not an integer array, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
         share_integers(const VariableReference & key,
@@ -264,7 +264,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not an integer array, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
         take_integers(const std::string & key,
@@ -277,7 +277,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not an integer array, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
         take_integers(const VariableReference & key,
@@ -290,7 +290,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not a doubles array, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<double>>
         share_doubles(const std::string & key,
@@ -303,7 +303,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not a doubles array, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<double>>
         share_doubles(const VariableReference & key,
@@ -316,7 +316,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not a doubles array, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<double>>
         take_doubles(const std::string & key,
@@ -329,7 +329,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not a doubles array, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<double>>
         take_doubles(const VariableReference & key,
@@ -342,7 +342,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not a binary file, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<unsigned char>>
         share_binary(const std::string & key,
@@ -355,7 +355,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not a binary file, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<unsigned char>>
         share_binary(const VariableReference & key,
@@ -368,7 +368,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not a binary file, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<unsigned char>>
         take_binary(const std::string & key,
@@ -381,7 +381,7 @@ namespace madara
 
       /**
        * Returns a shared_ptr, sharing with the internal one.
-       * If this record is not a string, returns NULL shared_ptr
+       * If this record is not a binary file, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<unsigned char>>
         take_binary(const VariableReference & key,
@@ -886,6 +886,12 @@ namespace madara
        * knowledge updates. Use with caution.
        **/
       void reset_modified (void);
+
+      /**
+       * Reset all checkpoint variables in the modified lists. This essentially
+       * purges the diff and starts fresh
+       **/
+      void reset_checkpoint (void) const;
 
       /**
        * Changes all global variables to modified at current clock.

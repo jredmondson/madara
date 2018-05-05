@@ -73,7 +73,7 @@ madara::expression::LeafNode::prune (bool & can_change)
 /// the expression tree, and is much faster than the prune function
 madara::knowledge::KnowledgeRecord 
 madara::expression::LeafNode::evaluate (
-  const madara::knowledge::KnowledgeUpdateSettings & settings)
+  const madara::knowledge::KnowledgeUpdateSettings & /*settings*/)
 {
   // we could call item(), but since it is virtual, it incurs unnecessary
   // overhead.

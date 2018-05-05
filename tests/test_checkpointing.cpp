@@ -8,6 +8,7 @@
 #include "madara/utility/Utility.h"
 
 #include "madara/filters/ssl/AESBufferFilter.h"
+#include "madara/knowledge/containers/Integer.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -17,6 +18,7 @@ namespace logger = madara::logger;
 namespace knowledge = madara::knowledge;
 namespace filters = madara::filters;
 namespace utility = madara::utility;
+namespace containers = knowledge::containers;
 
 #define BUFFER_SIZE    1000
 
@@ -55,15 +57,15 @@ void test_checkpointing (void)
 
   knowledge::KnowledgeRecord::set_precision (1);
   
-  std::cerr << "Test 1: saving 50k knowledge record to test1_orig.kkb.\n";
+  std::cerr << "Test 1: saving 50k knowledge record to test1_orig.kb.\n";
 
   context.save_as_karl ("test1_orig.karl");
-  context.save_context ("test1_orig.kkb", "test_context");
+  context.save_context ("test1_orig.kb", "test_context");
 
-  std::cerr << "Test 2: loading test1_orig.kkb.\n";
+  std::cerr << "Test 2: loading test1_orig.kb.\n";
 
   context_copy.clear ();
-  context_copy.load_context ("test1_orig.kkb", id);
+  context_copy.load_context ("test1_orig.kb", id);
 
   std::cerr << "Test 2: loaded context " << id << "\n";
 
@@ -95,12 +97,12 @@ void test_checkpointing (void)
   std::cerr << "Test 3: saving context\n";
 
   context_copy.save_as_karl ("test3_bigger.karl");
-  context_copy.save_context ("test3_bigger.kkb", id);
+  context_copy.save_context ("test3_bigger.kb", id);
   
   std::cerr << "Test 3: loading context\n";
   
   context_copy.clear ();
-  context_copy.load_context ("test3_bigger.kkb", id);
+  context_copy.load_context ("test3_bigger.kb", id);
   
   std::cerr << "Test 3: Results were ";
   if (context_copy.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
@@ -121,12 +123,12 @@ void test_checkpointing (void)
   std::cerr << "Test 3: saving context\n";
 
   context_copy.save_as_karl ("test4_resave.karl");
-  context_copy.save_context ("test4_resave.kkb", id);
+  context_copy.save_context ("test4_resave.kb", id);
   
   std::cerr << "Test 4: loading context into a knowledge base\n";
   
   madara::knowledge::KnowledgeBase knowledge;
-  knowledge.load_context ("test4_resave.kkb", false);
+  knowledge.load_context ("test4_resave.kb", false);
   
   std::cerr << "Test 4: Results were ";
   if (knowledge.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
@@ -147,17 +149,17 @@ void test_checkpointing (void)
   std::cerr << "Test 5: Adding extra_var to context and saving\n";
 
   context_copy.save_as_karl ("test4_bigger.karl");
-  context_copy.save_context ("test4_bigger.kkb", "Extra Var Context");
+  context_copy.save_context ("test4_bigger.kb", "Extra Var Context");
 
   context_copy.set ("extra_var", 5.0,
     madara::knowledge::KnowledgeUpdateSettings (false, false, false, false));
 
-  context_copy.save_checkpoint ("test4_bigger.kkb", "Extra Var Context");
+  context_copy.save_checkpoint ("test4_bigger.kb", "Extra Var Context");
   
   std::cerr << "Test 5: Loading new context\n";
   
   knowledge.clear ();
-  knowledge.load_context ("test4_bigger.kkb", true);
+  knowledge.load_context ("test4_bigger.kb", true);
 
   std::cerr << "Test 5: Results were ";
   if (knowledge.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
@@ -179,12 +181,12 @@ void test_checkpointing (void)
   knowledge.set ("additional_var", 6.0,
     madara::knowledge::EvalSettings (true, false, false, false, false));
   
-  knowledge.save_checkpoint ("test4_bigger.kkb", "Additional Var Context");
+  knowledge.save_checkpoint ("test4_bigger.kb", "Additional Var Context");
   
   std::cerr << "Test 6: Loading new context\n";
   
   knowledge.clear ();
-  knowledge.load_context ("test4_bigger.kkb", true);
+  knowledge.load_context ("test4_bigger.kb", true);
 
   std::cerr << "Test 6: Results were ";
   if (knowledge.get ("int_var") == madara::knowledge::KnowledgeRecord::Integer (15)
@@ -210,11 +212,11 @@ void test_checkpointing (void)
   
   std::cerr << "Test 7: Printing .invisible value\n";
   knowledge.print (".invisible = {.invisible}\n");
-  knowledge.save_checkpoint ("test4_bigger.kkb", "Invisible Var Context");
+  knowledge.save_checkpoint ("test4_bigger.kb", "Invisible Var Context");
   
   std::cerr << "Test 7: Loading checkpoint\n";
   knowledge.clear ();
-  knowledge.load_context ("test4_bigger.kkb", true);
+  knowledge.load_context ("test4_bigger.kb", true);
   
   std::cerr << "Test 7: Printing .invisible value (should be 0)\n";
   knowledge.print (".invisible = {.invisible}\n");
@@ -246,11 +248,11 @@ void test_checkpointing (void)
   std::cerr << "Test 8: Printing .invisible value\n";
   knowledge.print (".invisible = {.invisible}\n");
   knowledge.save_as_karl ("test4_bigger.karl");
-  knowledge.save_checkpoint ("test4_bigger.kkb", "Invisible Var Context");
+  knowledge.save_checkpoint ("test4_bigger.kb", "Invisible Var Context");
   
   std::cerr << "Test 8: Loading checkpoint\n";
   knowledge.clear ();
-  knowledge.load_context ("test4_bigger.kkb", true);
+  knowledge.load_context ("test4_bigger.kb", true);
   
   std::cerr << "Test 8: Printing .invisible value (should be 'tee hee')\n";
   knowledge.print (".invisible = {.invisible}\n");
@@ -547,6 +549,236 @@ void test_checkpoint_settings (void)
 
 }
 
+void test_checkpoints_diff (void)
+{
+  std::cerr << "\n*********** TEST CHECKPOINT DIFFS *************.\n";
+
+  knowledge::KnowledgeRecord::set_precision (1);
+  
+  knowledge::VariableReferences current_modifieds;
+  knowledge::CheckpointSettings checkpoint_settings;
+  knowledge::KnowledgeBase saver, loader;
+  knowledge::KnowledgeUpdateSettings track_changes;
+  track_changes.track_local_changes = true;
+
+  // make sure all checkpoint containers use checkpoint tracking
+  containers::Integer
+    var1 (".1", saver, track_changes),
+    var2 (".2", saver, track_changes),
+    var3 (".3", saver, track_changes),
+    varglob1 ("var1", saver, track_changes),
+    varglob2 ("var2", saver, track_changes),
+    varglob3 ("var3", saver, track_changes),
+    untracked ("var4", saver);
+
+  // reset the checkpoint on save and on load, clear knowledge
+  checkpoint_settings.clear_knowledge = true;
+  checkpoint_settings.reset_checkpoint = true;
+  checkpoint_settings.filename = "test_checkpoints1.kb";
+
+  std::cerr << "Test 1: Saving .1 and var1: ";
+
+  // modify the two vars with the track_changes update settings
+  var1 = 1;
+  varglob1 = 1;
+  untracked = 4;
+
+  //logger::global_logger->set_level (logger::LOG_MINOR);
+
+  saver.save_checkpoint (checkpoint_settings);
+
+  loader.load_context (checkpoint_settings);
+
+  if (loader.get ("var1").to_integer () == 1 &&
+      loader.get (".1").to_integer () == 1 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 2: Modify var1 and reload: ";
+
+  varglob1 = 2;
+  untracked = 4;
+
+  saver.save_checkpoint (checkpoint_settings);
+
+  loader.load_context (checkpoint_settings);
+
+  if (loader.get ("var1").to_integer () == 2 &&
+      loader.get (".1").to_integer () == 1 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 3: Change all values and save to new file: ";
+
+  checkpoint_settings.filename = "test_checkpoints2.kb";
+  var1 = 1;
+  varglob1 = 1;
+  var2 = 2;
+  varglob2 = 2;
+  var3 = 3;
+  varglob3 = 3;
+  untracked = 4;
+
+  saver.save_checkpoint (checkpoint_settings);
+
+  loader.load_context (checkpoint_settings);
+
+  current_modifieds = saver.save_modifieds ();
+
+  if (loader.get ("var1").to_integer () == 1 &&
+      loader.get (".1").to_integer () == 1 &&
+      loader.get ("var2").to_integer () == 2 &&
+      loader.get (".2").to_integer () == 2 &&
+      loader.get ("var3").to_integer () == 3 &&
+      loader.get (".3").to_integer () == 3 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 4: Increment a variable to each checkpoint: ";
+
+  checkpoint_settings.filename = "test_checkpoints_stack.kb";
+
+  var1 = 1;
+
+  saver.save_checkpoint (checkpoint_settings);
+
+  var1 = 2;
+
+  saver.save_checkpoint (checkpoint_settings);
+
+  var1 = 3;
+  varglob1 = 3;
+
+  saver.save_checkpoint (checkpoint_settings);
+
+  var1 = 4;
+  varglob1 = 4;
+
+  saver.save_checkpoint (checkpoint_settings);
+
+  var1 = 5;
+  varglob1 = 5;
+
+  saver.save_checkpoint (checkpoint_settings);
+
+  var1 = 6;
+  varglob1 = 0;
+
+  saver.save_checkpoint (checkpoint_settings);
+
+  loader.load_context (checkpoint_settings);
+
+  if (loader.get (".1").to_integer () == 6 &&
+      loader.get ("var1").to_integer () == 0 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 5: Loading range 0-0 from stack: ";
+
+  checkpoint_settings.initial_state = 0;
+  checkpoint_settings.last_state = 0;
+
+  loader.load_context (checkpoint_settings);
+
+  if (loader.get (".1").to_integer () == 1 &&
+      !loader.exists ("var1") &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 6: Loading range 2-2 from stack: ";
+
+  checkpoint_settings.initial_state = 2;
+  checkpoint_settings.last_state = 2;
+
+  loader.load_context (checkpoint_settings);
+
+  if (loader.get (".1").to_integer () == 3 &&
+      loader.get ("var1").to_integer () == 3 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 7: Loading range 2-4 from stack: ";
+
+  checkpoint_settings.initial_state = 2;
+  checkpoint_settings.last_state = 4;
+
+  loader.load_context (checkpoint_settings);
+
+  if (loader.get (".1").to_integer () == 5 &&
+      loader.get ("var1").to_integer () == 5 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 8: Loading range 2-5 from stack: ";
+
+  checkpoint_settings.initial_state = 2;
+  checkpoint_settings.last_state = 5;
+
+  loader.load_context (checkpoint_settings);
+
+  if (loader.get (".1").to_integer () == 6 &&
+      loader.get ("var1").to_integer () == 0 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+}
+
 void handle_arguments (int argc, char ** argv)
 {
   for (int i = 1; i < argc; ++i)
@@ -636,6 +868,8 @@ int main (int argc, char * argv[])
   test_checkpointing ();
 
   test_checkpoint_settings ();
+
+  test_checkpoints_diff ();
 
   return 0;
 }

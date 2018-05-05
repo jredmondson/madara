@@ -128,7 +128,7 @@ namespace madara { namespace knowledge { namespace rcw
           return force_push(kb);
         }
         if (is_size_dirty(*tracked_)) {
-          set(kb, (int64_t)n);
+          set(kb, n);
           post_set(kb);
         }
 
@@ -146,7 +146,7 @@ namespace madara { namespace knowledge { namespace rcw
     {
       if (can_write) {
         const size_t n = tracked_->size();
-        set(kb, (int64_t)n);
+        set(kb, n);
         post_set(kb);
 
         update_elems();

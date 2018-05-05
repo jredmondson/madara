@@ -863,12 +863,10 @@ madara::knowledge::ThreadSafeContext::mark_and_signal (
     {
       mark_to_send_unsafe (name, *record);
     }
-    else if (settings.track_local_changes)
-    {
-      mark_to_checkpoint_unsafe (name, *record);
-    }
   }
-  else if (settings.track_local_changes)
+
+  // track local changes now checkpoints all state, not just local
+  if (settings.track_local_changes)
   {
     mark_to_checkpoint_unsafe (name, *record);
   }
@@ -1013,8 +1011,8 @@ madara::knowledge::ThreadSafeContext::reset_modified (void)
   MADARA_GUARD_TYPE guard (mutex_);
 
   changed_map_.clear ();
-  local_changed_map_.clear ();
 }
+
 
 /// Changes all global variables to modified at current time
 inline void
@@ -1056,6 +1054,14 @@ madara::knowledge::ThreadSafeContext::reset_modified (
   MADARA_GUARD_TYPE guard (mutex_);
 
   changed_map_.erase (variable);
+}
+
+inline void
+madara::knowledge::ThreadSafeContext::reset_checkpoint (void) const
+{
+  MADARA_GUARD_TYPE guard (mutex_);
+
+  local_changed_map_.clear ();
 }
 
 

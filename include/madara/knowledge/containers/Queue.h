@@ -96,7 +96,7 @@ namespace madara
         /**
          * Destructor
          **/
-        virtual ~Queue ();
+        virtual ~Queue () = default;
         
         /**
          * Assignment operator
@@ -146,6 +146,14 @@ namespace madara
          * @return true if the record was enqueued and false if full
          **/
         bool enqueue (const knowledge::KnowledgeRecord & record);
+
+        /**
+         * Enqueues a new record to the end of the queue
+         * @param  args  arguments to pass to KnowledgeRecord
+         * @return true if the record was enqueued and false if full
+         **/
+        template<typename... Args>
+        bool emplace (Args&&... args);
         
         /**
          * Dequeues a record from the front of the queue. This method
@@ -275,6 +283,6 @@ namespace madara
 }
 
 
-
+#include "Queue.inl"
 
 #endif // _MADARA_CONTAINERS_QUEUE_H_

@@ -28,7 +28,7 @@ const char *
   int64_t & buffer_remaining)
 {
   // Remove size field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (size))
+  if ((size_t)buffer_remaining >= sizeof (size))
   {
     memcpy (&size, buffer, sizeof (size));
     size = madara::utility::endian_swap (size);
@@ -37,7 +37,7 @@ const char *
   buffer_remaining -= sizeof (size);
 
   // Remove madara_id field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (char) * MADARA_IDENTIFIER_LENGTH)
+  if ((size_t)buffer_remaining >= sizeof (char) * MADARA_IDENTIFIER_LENGTH)
   {
     strncpy (madara_id, buffer, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof (char) * MADARA_IDENTIFIER_LENGTH;
@@ -45,7 +45,7 @@ const char *
   buffer_remaining -= sizeof (char) * MADARA_IDENTIFIER_LENGTH;
 
   // Remove updates field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (updates))
+  if ((size_t)buffer_remaining >= sizeof (updates))
   {
     memcpy (&updates, buffer, sizeof (updates));
     updates = madara::utility::endian_swap (updates);
@@ -54,7 +54,7 @@ const char *
   buffer_remaining -= sizeof (updates);
 
   // Remove clock field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (clock))
+  if ((size_t)buffer_remaining >= sizeof (clock))
   {
     memcpy (&clock, buffer, sizeof (clock));
     clock = madara::utility::endian_swap (clock);
@@ -63,7 +63,7 @@ const char *
   buffer_remaining -= sizeof (clock);
   
   // Remove timestamp field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (timestamp))
+  if ((size_t)buffer_remaining >= sizeof (timestamp))
   {
     memcpy (&timestamp, buffer, sizeof (timestamp));
     timestamp = madara::utility::endian_swap (timestamp);
@@ -87,7 +87,7 @@ char *
   int64_t & buffer_remaining)
 {
   // Write size field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (size))
+  if ((size_t)buffer_remaining >= sizeof (size))
   {
     *(uint64_t *) buffer = madara::utility::endian_swap (size);
     buffer += sizeof (size);
@@ -95,7 +95,7 @@ char *
   buffer_remaining -= sizeof (size);
 
   // Write madara_id field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (char) * MADARA_IDENTIFIER_LENGTH)
+  if ((size_t)buffer_remaining >= sizeof (char) * MADARA_IDENTIFIER_LENGTH)
   {
     strncpy (buffer, madara_id, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof (char) * MADARA_IDENTIFIER_LENGTH;
@@ -103,7 +103,7 @@ char *
   buffer_remaining -= sizeof (char) * MADARA_IDENTIFIER_LENGTH;
 
   // Write updates field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (updates))
+  if ((size_t)buffer_remaining >= sizeof (updates))
   {
     *(uint32_t *) buffer = madara::utility::endian_swap (updates);
     buffer += sizeof (updates);
@@ -111,7 +111,7 @@ char *
   buffer_remaining -= sizeof (updates);
 
   // Write clock field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (clock))
+  if ((size_t)buffer_remaining >= sizeof (clock))
   {
     *(uint64_t *) buffer = madara::utility::endian_swap (clock);
     buffer += sizeof (clock);
@@ -119,7 +119,7 @@ char *
   buffer_remaining -= sizeof (clock);
   
   // Write timestamp field from the buffer and update accordingly
-  if (buffer_remaining >= sizeof (timestamp))
+  if ((size_t)buffer_remaining >= sizeof (timestamp))
   {
     *(uint64_t *) buffer = madara::utility::endian_swap (timestamp);
     buffer += sizeof (timestamp);
