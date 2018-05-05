@@ -560,6 +560,8 @@ void test_checkpoints_diff (void)
   knowledge::KnowledgeBase saver, loader;
   knowledge::KnowledgeUpdateSettings track_changes;
   track_changes.track_local_changes = true;
+  knowledge::KnowledgeUpdateSettings untrack_changes;
+  untrack_changes.track_local_changes = false;
 
   // make sure all checkpoint containers use checkpoint tracking
   containers::Integer
@@ -569,7 +571,7 @@ void test_checkpoints_diff (void)
     varglob1 ("var1", saver, track_changes),
     varglob2 ("var2", saver, track_changes),
     varglob3 ("var3", saver, track_changes),
-    untracked ("var4", saver);
+    untracked ("var4", saver, untrack_changes);
 
   // reset the checkpoint on save and on load, clear knowledge
   checkpoint_settings.clear_knowledge = true;
