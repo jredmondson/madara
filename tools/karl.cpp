@@ -629,6 +629,8 @@ int main (int argc, char ** argv)
         (Integer)load_checkpoint_settings.last_lamport_clock, silent);
       knowledge.set (meta_prefix + ".initial_lamport_clock",
         (Integer)load_checkpoint_settings.initial_lamport_clock, silent);
+      knowledge.set (meta_prefix + ".states",
+        (Integer)load_checkpoint_settings.states, silent);
       knowledge.set (meta_prefix + ".current_timestamp",
         (Integer)time (NULL), silent);
     }
