@@ -30,6 +30,19 @@ namespace madara
     class ThreadSafeContext;
 
     /**
+     * Tags to specify what type to construct in KnowledgeRecord forwarding
+     * constructors. If you give one of the values defined in this namespace
+     * as the first argument to the KnowledgeRecord constructor, the remaining
+     * arguments will be forwarded to construct the underlying type in-place.
+     **/
+    namespace tags {
+      static constexpr struct integers_t {} integers;
+      static constexpr struct doubles_t {} doubles;
+      static constexpr struct string_t {} string;
+      static constexpr struct binary_t {} binary;
+    }
+
+    /**
      * @class KnowledgeRecord
      * @brief This class encapsulates an entry in a KnowledgeBase
      **/
@@ -274,9 +287,54 @@ namespace madara
                 std::forward<Args>(args)...);
       }
 
+      /**
+       * Forwarding constructor for integer arrays
+       * Each argument past the first will be forwarded to construct a
+       * std::vector<Integer> in-place within the new record.
+       **/
+      template<typename... Args>
+      KnowledgeRecord(tags::integers_t, Args&&... args)
+        : int_array_ (std::make_shared<std::vector<Integer>> (
+              std::forward<Args>(args)...)),
+          type_ (INTEGER_ARRAY) {}
+
+      /**
+       * Forwarding constructor for double arrays
+       * Each argument past the first will be forwarded to construct a
+       * std::vector<double> in-place within the new record.
+       **/
+      template<typename... Args>
+      KnowledgeRecord(tags::doubles_t, Args&&... args)
+        : double_array_ (std::make_shared<std::vector<double>> (
+              std::forward<Args>(args)...)),
+          type_ (DOUBLE_ARRAY) {}
+
+      /**
+       * Forwarding constructor for strings
+       * Each argument past the first will be forwarded to construct a
+       * std::string in-place within the new record.
+       **/
+      template<typename... Args>
+      KnowledgeRecord(tags::string_t, Args&&... args)
+        : str_value_ (std::make_shared<std::string> (
+              std::forward<Args>(args)...)),
+          type_ (STRING) {}
+
+      /**
+       * Forwarding constructor for binary files (blobs)
+       * Each argument past the first will be forwarded to construct a
+       * std::vector<unsigned char> in-place within the new record.
+       **/
+      template<typename... Args>
+      KnowledgeRecord(tags::binary_t, Args&&... args)
+        : file_value_ (std::make_shared<std::vector<unsigned char>> (
+              std::forward<Args>(args)...)),
+          type_ (UNKNOWN_FILE_TYPE) {}
+
       /* default constructor */
-      explicit KnowledgeRecord (
-        logger::Logger & logger = *logger::global_logger.get ());
+      KnowledgeRecord () : KnowledgeRecord (*logger::global_logger.get()) {}
+
+      explicit KnowledgeRecord (logger::Logger & logger);
 
       /* Integer constructor */
       template<typename T,
@@ -366,7 +424,10 @@ namespace madara
        * @param    index   index of the value to set
        * @param    value   the value to set at the specified index
        **/
-      void set_index (size_t index, Integer value);
+      template<typename T,
+        typename std::enable_if<std::is_integral<T>::value,
+        void*>::type = nullptr>
+      void set_index (size_t index, T value);
 
       /**
        * sets the value at the index to the specified value. If the
@@ -375,7 +436,10 @@ namespace madara
        * @param    index   index of the value to set
        * @param    value   the value to set at the specified index
        **/
-      void set_index (size_t index, double value);
+      template<typename T,
+        typename std::enable_if<std::is_floating_point<T>::value,
+        void*>::type = nullptr>
+      void set_index (size_t index, T value);
 
       /**
        * converts the value to a string.

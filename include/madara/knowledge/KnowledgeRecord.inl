@@ -1276,6 +1276,71 @@ KnowledgeRecord::set_value (std::shared_ptr<std::vector <double>> new_value)
   emplace_shared_doubles (std::move(new_value));
 }
 
+/**
+  * sets the value at the index to the specified value. If the
+  * record was previously not an array or if the array is not
+  * large enough, a new array is created.
+  **/
+template<typename T,
+  typename std::enable_if<std::is_integral<T>::value, void*>::type>
+inline void
+KnowledgeRecord::set_index (size_t index, T value)
+{
+  if (type_ == DOUBLE_ARRAY)
+  {
+    // let the set_index for doubles take care of this
+    set_index (index, double (value));
+    return;
+  }
+  else if (type_ == INTEGER_ARRAY)
+  {
+    unshare();
+
+    if (index >= int_array_->size ())
+    {
+      int_array_->resize(index + 1);
+    }
+  }
+  else
+  {
+    emplace_integers (index + 1);
+  }
+
+  int_array_->at (index) = value;
+}
+
+/**
+  * sets the value at the index to the specified value. If the
+  * record was previously not an array or if the array is not
+  * large enough, a new array is created.
+  **/
+template<typename T,
+  typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
+inline void
+KnowledgeRecord::set_index (size_t index, T value)
+{
+  if (type_ == INTEGER_ARRAY)
+  {
+    std::vector<double> tmp (int_array_->begin (), int_array_->end ());
+    emplace_doubles (std::move(tmp));
+  }
+  else if (type_ != DOUBLE_ARRAY)
+  {
+    emplace_doubles (index + 1);
+  }
+  else
+  {
+    unshare();
+
+    if (index >= double_array_->size ())
+    {
+      double_array_->resize (index + 1);
+    }
+  }
+
+  double_array_->at (index) = value;
+}
+
 inline std::shared_ptr<std::string>
 KnowledgeRecord::share_string() const
 {

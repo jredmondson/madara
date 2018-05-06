@@ -1054,66 +1054,6 @@ KnowledgeRecord::inc_index (size_t index)
   return knowledge::KnowledgeRecord(++int_array_->at (index));
 }
 
-/**
-  * sets the value at the index to the specified value. If the
-  * record was previously not an array or if the array is not
-  * large enough, a new array is created.
-  **/
-void
-KnowledgeRecord::set_index (size_t index, Integer value)
-{
-  if (type_ == DOUBLE_ARRAY)
-  {
-    // let the set_index for doubles take care of this
-    set_index (index, double (value));
-    return;
-  }
-  else if (type_ == INTEGER_ARRAY)
-  {
-    unshare();
-
-    if (index >= int_array_->size ())
-    {
-      int_array_->resize(index + 1);
-    }
-  }
-  else
-  {
-    emplace_integers (index + 1);
-  }
-
-  int_array_->at (index) = value;
-}
-
-/**
-  * sets the value at the index to the specified value. If the
-  * record was previously not an array or if the array is not
-  * large enough, a new array is created.
-  **/
-void
-KnowledgeRecord::set_index (size_t index, double value)
-{
-  if (type_ == INTEGER_ARRAY)
-  {
-    emplace_doubles (int_array_->begin (), int_array_->end ());
-  }
-  else if (type_ != DOUBLE_ARRAY)
-  {
-    emplace_doubles (index + 1);
-  }
-  else
-  {
-    unshare();
-
-    if (index >= double_array_->size ())
-    {
-      double_array_->resize (index + 1);
-    }
-  }
-
-  double_array_->at (index) = value;
-}
-
 void
 KnowledgeRecord::resize (size_t new_size)
 {
