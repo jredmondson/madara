@@ -3199,7 +3199,7 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
     const char * meta_reader = current;
   
     // read the meta data at the front
-    fseeko (file, 0, SEEK_SET);
+    fseek (file, 0, SEEK_SET);
     fread (current, meta.encoded_size (), 1, file);
 
     meta_reader = meta.read (meta_reader, buffer_remaining);
@@ -3258,7 +3258,7 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
          (int)(checkpoint_start));
 
       // set the file pointer to the checkpoint header start
-      fseeko (file, checkpoint_start, SEEK_SET);
+      fseek (file, checkpoint_start, SEEK_SET);
 
       // start updates just past the checkpoint header's buffer location
       current = checkpoint_header.write (buffer.get_ptr (), buffer_remaining);
@@ -3379,7 +3379,7 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
         (int)checkpoint_header.size, (int)checkpoint_header.updates);
 
       buffer_remaining = max_buffer;
-      fseeko (file, checkpoint_start, SEEK_SET);
+      fseek (file, checkpoint_start, SEEK_SET);
       current = checkpoint_header.write (buffer.get_ptr (), buffer_remaining);
       fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
 
