@@ -92,3 +92,6 @@ ssl                       = 0
 /// Enable this feature if you want ZeroMQ support
 zmq                       = 0
 
+/// @feature simtime
+/// Enable this feature if you want SimTime interface support
+simtime                   = 0

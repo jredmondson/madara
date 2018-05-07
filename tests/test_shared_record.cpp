@@ -5,56 +5,12 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/utility/Utility.h"
 
+#include "test.h"
+
 using namespace madara::knowledge;
 namespace logger = madara::logger;
 
 typedef  KnowledgeRecord::Integer  Integer;
-
-template<typename... Args>
-inline void log(Args&&... args) {
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-    std::forward<Args>(args)...);
-}
-
-#define LOG(exp) \
-  ({ \
-   decltype((exp)) e = (exp); \
-   std::ostringstream msg; \
-   msg << #exp " == " << e; \
-   log("INFO    : %s\n", msg.str().c_str()); \
-   e; \
-  })
-
-#define LOG_AS(exp, type) \
-  ({ \
-   decltype(exp) e = (exp); \
-   std::ostringstream msg; \
-   msg << #exp " == " << ((type)e); \
-   log("INFO    : %s\n", msg.str().c_str()); \
-   e; \
-  })
-
-#define TEST_OP(lhs, op, rhs) \
-  do { \
-    decltype(lhs) l = (lhs); \
-    decltype(rhs) r = (rhs); \
-    std::ostringstream msg; \
-    msg << #lhs " [" << l << "] " #op " " #rhs " [" << r <<"] "; \
-    std::string smsg = msg.str(); \
-    const char *cmsg = smsg.c_str(); \
-    if (l op r) { \
-      log("SUCCESS : %s\n", cmsg); \
-    } else { \
-      log("FAIL    : %s\n", cmsg); \
-    } \
-  } while(0)
-
-#define TEST_EQ(lhs, rhs) TEST_OP(lhs, ==, rhs)
-#define TEST_NE(lhs, rhs) TEST_OP(lhs, !=, rhs)
-#define TEST_LT(lhs, rhs) TEST_OP(lhs, <,  rhs)
-#define TEST_LE(lhs, rhs) TEST_OP(lhs, <=, rhs)
-#define TEST_GT(lhs, rhs) TEST_OP(lhs, >,  rhs)
-#define TEST_GE(lhs, rhs) TEST_OP(lhs, >=, rhs)
 
 void test_unshared_record (void)
 {

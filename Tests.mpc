@@ -2528,7 +2528,7 @@ project (Test_Shared_Record) : using_ace, using_madara, no_karl, no_xml, null_lo
   exename = test_shared_record
   
   verbatim (gnuace, local) {
-    CPPFLAGS += -std=c++11 -O0 -Wall
+    CPPFLAGS += -std=c++11 -Wall
   }
   
   Documentation_Files {
@@ -2543,5 +2543,30 @@ project (Test_Shared_Record) : using_ace, using_madara, no_karl, no_xml, null_lo
 
   Source_Files {
     tests/test_shared_record.cpp
+  }
+}
+
+project (Test_Simtime) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+  requires += tests simtime
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_simtime
+  
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11 -O0 -Wall
+  }
+  
+  Documentation_Files {
+  }
+
+  Build_Files {
+    Tests.mpc
+  }
+                                                                
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_simtime.cpp
   }
 }

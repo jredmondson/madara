@@ -1,5 +1,5 @@
 
-project (Madara) : install, using_ace, using_splice, splice_transport, using_ndds, using_boost, madara_zmq, using_ssl, ssl_filters, ndds_transport, cid, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, stl_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk {
+project (Madara) : install, using_ace, using_splice, splice_transport, using_ndds, using_boost, madara_zmq, using_ssl, ssl_filters, ndds_transport, cid, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, stl_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, using_simtime {
 
   sharedname = MADARA
   dynamicflags += MADARA_BUILD_DLL MADARA_LOGGER_BUILD_DLL
@@ -101,6 +101,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/transport/TransportContext.cpp
     include/madara/transport/Transport.cpp
     include/madara/utility/Utility.cpp
+    include/madara/utility/SimTime.cpp
     include/madara/utility/Refcounter.cpp
     include/pugi
   }
