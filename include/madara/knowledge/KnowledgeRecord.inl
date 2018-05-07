@@ -45,6 +45,14 @@ inline KnowledgeRecord::KnowledgeRecord (
   set_value (std::move(value));
 }
 
+inline KnowledgeRecord::KnowledgeRecord (
+    std::shared_ptr<std::vector<Integer>> value,
+    logger::Logger & logger)
+: logger_ (&logger)
+{
+  set_value (std::move(value));
+}
+
 template<typename T,
   typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
 inline KnowledgeRecord::KnowledgeRecord (T value,
@@ -69,6 +77,14 @@ inline KnowledgeRecord::KnowledgeRecord (
   set_value (std::move(value));
 }
 
+inline KnowledgeRecord::KnowledgeRecord (
+    std::shared_ptr<std::vector<double>> value,
+    logger::Logger & logger)
+: logger_ (&logger)
+{
+  set_value (std::move(value));
+}
+
 inline KnowledgeRecord::KnowledgeRecord (const std::string & value,
   logger::Logger & logger)
 : logger_ (&logger)
@@ -83,11 +99,27 @@ inline KnowledgeRecord::KnowledgeRecord (std::string && value,
   set_value (std::move(value));
 }
 
+inline KnowledgeRecord::KnowledgeRecord (
+    std::shared_ptr<std::string> value,
+    logger::Logger & logger)
+: logger_ (&logger)
+{
+  set_value (std::move(value));
+}
+
 inline KnowledgeRecord::KnowledgeRecord (const char * value,
   logger::Logger & logger)
 : logger_ (&logger)
 {
   set_value (std::string (value));
+}
+
+inline KnowledgeRecord::KnowledgeRecord (
+    std::shared_ptr<std::vector<unsigned char>> value,
+    logger::Logger & logger)
+: logger_ (&logger)
+{
+  set_file (std::move(value));
 }
 
 inline KnowledgeRecord::KnowledgeRecord (

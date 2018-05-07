@@ -40,6 +40,16 @@ namespace madara
       static constexpr struct doubles_t {} doubles;
       static constexpr struct string_t {} string;
       static constexpr struct binary_t {} binary;
+
+      template<typename T>
+      struct shared_t {};
+
+      /// Used to signal in-place shared_ptr construction in KnowledgeRecord
+      /// Example: tags::shared(tags::integers)
+      template<typename T>
+      constexpr inline shared_t<T> shared(T) {
+        return shared_t<T>{};
+      }
     }
 
     /**
@@ -94,7 +104,7 @@ namespace madara
 
     private:
       /// the logger used for any internal debugging information
-      logger::Logger * logger_;
+      logger::Logger * logger_ = logger::global_logger.get ();
 
     public:
       /**
@@ -139,6 +149,81 @@ namespace madara
        **/
       mutable bool shared_ = OWNED;
 
+    public:
+      /* default constructor */
+      KnowledgeRecord () : KnowledgeRecord (*logger::global_logger.get()) {}
+
+      explicit KnowledgeRecord (logger::Logger & logger);
+
+      /* Integer constructor */
+      template<typename T,
+        typename std::enable_if<std::is_integral<T>::value,
+        void*>::type = nullptr>
+      explicit KnowledgeRecord (T value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Floating point constructor */
+      template<typename T,
+        typename std::enable_if<std::is_floating_point<T>::value,
+        void*>::type = nullptr>
+      explicit KnowledgeRecord (T value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Integer array constructor */
+      explicit KnowledgeRecord (const std::vector <Integer> & value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Integer array move constructor */
+      explicit KnowledgeRecord (std::vector <Integer> && value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Integer array shared_ptr constructor */
+      explicit KnowledgeRecord (std::shared_ptr<std::vector <Integer>> value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Double array constructor */
+      explicit KnowledgeRecord (const std::vector <double> & value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Double array move constructor */
+      explicit KnowledgeRecord (std::vector <double> && value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Double array shared_ptr constructor */
+      explicit KnowledgeRecord (std::shared_ptr<std::vector <double>> value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* String constructor */
+      explicit KnowledgeRecord (const std::string & value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* String move constructor */
+      explicit KnowledgeRecord (std::string && value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Double array shared_ptr constructor */
+      explicit KnowledgeRecord (std::shared_ptr<std::string> value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Char pointer constructor for g++ */
+      explicit KnowledgeRecord (const char * value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Binary file shared_ptr constructor */
+      explicit KnowledgeRecord (
+        std::shared_ptr<std::vector<unsigned char>> value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* copy constructor */
+      KnowledgeRecord (const KnowledgeRecord & rhs) noexcept;
+
+      /* move constructor */
+      KnowledgeRecord (KnowledgeRecord && rhs) noexcept;
+
+      /* destructor */
+      ~KnowledgeRecord () noexcept;
+
+    private:
       template<typename T>
       using MemberType = std::shared_ptr<T> KnowledgeRecord::*;
 
@@ -299,6 +384,16 @@ namespace madara
           type_ (INTEGER_ARRAY) {}
 
       /**
+       * Forwarding constructor for integer arrays shared_ptr
+       * Each argument past the first will be forwarded to construct a
+       * std::shared_ptr<std::vector<Integer>> in-place within the new record.
+       **/
+      template<typename... Args>
+      KnowledgeRecord(tags::shared_t<tags::integers_t>, Args&&... args)
+        : int_array_ {std::forward<Args>(args)...},
+          type_ (INTEGER_ARRAY), shared_ (SHARED) {}
+
+      /**
        * Forwarding constructor for double arrays
        * Each argument past the first will be forwarded to construct a
        * std::vector<double> in-place within the new record.
@@ -310,15 +405,42 @@ namespace madara
           type_ (DOUBLE_ARRAY) {}
 
       /**
+       * Forwarding constructor for double arrays shared_ptr
+       * Each argument past the first will be forwarded to construct a
+       * std::shared_ptr<std::vector<double>> in-place within the new record.
+       **/
+      template<typename... Args>
+      KnowledgeRecord(tags::shared_t<tags::doubles_t>, Args&&... args)
+        : double_array_ {std::forward<Args>(args)...},
+          type_ (DOUBLE_ARRAY), shared_ (SHARED) {}
+
+      /**
        * Forwarding constructor for strings
        * Each argument past the first will be forwarded to construct a
        * std::string in-place within the new record.
+       *
+       * For example:
+       * KnowledgeRecord rec (tags::string, "Hello World");
        **/
       template<typename... Args>
       KnowledgeRecord(tags::string_t, Args&&... args)
         : str_value_ (std::make_shared<std::string> (
               std::forward<Args>(args)...)),
           type_ (STRING) {}
+
+      /**
+       * Forwarding constructor for double arrays shared_ptr
+       * Each argument past the first will be forwarded to construct a
+       * std::shared_ptr<std::string> in-place within the new record.
+       *
+       * For example:
+       * KnowledgeRecord rec (tags::shared(tags::string),
+       *   new std::string("Hello World"));
+       **/
+      template<typename... Args>
+      KnowledgeRecord(tags::shared_t<tags::string_t>, Args&&... args)
+        : str_value_ {std::forward<Args>(args)...},
+          type_ (STRING), shared_ (SHARED) {}
 
       /**
        * Forwarding constructor for binary files (blobs)
@@ -331,61 +453,16 @@ namespace madara
               std::forward<Args>(args)...)),
           type_ (UNKNOWN_FILE_TYPE) {}
 
-      /* default constructor */
-      KnowledgeRecord () : KnowledgeRecord (*logger::global_logger.get()) {}
-
-      explicit KnowledgeRecord (logger::Logger & logger);
-
-      /* Integer constructor */
-      template<typename T,
-        typename std::enable_if<std::is_integral<T>::value,
-        void*>::type = nullptr>
-      explicit KnowledgeRecord (T value,
-        logger::Logger & logger = *logger::global_logger.get ());
-
-      /* Floating point constructor */
-      template<typename T,
-        typename std::enable_if<std::is_floating_point<T>::value,
-        void*>::type = nullptr>
-      explicit KnowledgeRecord (T value,
-        logger::Logger & logger = *logger::global_logger.get ());
-
-      /* Integer array constructor */
-      explicit KnowledgeRecord (const std::vector <Integer> & value,
-        logger::Logger & logger = *logger::global_logger.get ());
-
-      /* Integer array move constructor */
-      explicit KnowledgeRecord (std::vector <Integer> && value,
-        logger::Logger & logger = *logger::global_logger.get ());
-
-      /* Double array constructor */
-      explicit KnowledgeRecord (const std::vector <double> & value,
-        logger::Logger & logger = *logger::global_logger.get ());
-
-      /* Double array move constructor */
-      explicit KnowledgeRecord (std::vector <double> && value,
-        logger::Logger & logger = *logger::global_logger.get ());
-
-      /* String constructor */
-      explicit KnowledgeRecord (const std::string & value,
-        logger::Logger & logger = *logger::global_logger.get ());
-
-      /* String move constructor */
-      explicit KnowledgeRecord (std::string && value,
-        logger::Logger & logger = *logger::global_logger.get ());
-
-      /* Char pointer constructor for g++ */
-      explicit KnowledgeRecord (const char * value,
-        logger::Logger & logger = *logger::global_logger.get ());
-
-      /* copy constructor */
-      KnowledgeRecord (const KnowledgeRecord & rhs) noexcept;
-
-      /* move constructor */
-      KnowledgeRecord (KnowledgeRecord && rhs) noexcept;
-
-      /* destructor */
-      ~KnowledgeRecord () noexcept;
+      /**
+       * Forwarding constructor for binary file (blob) shared_ptr
+       * Each argument past the first will be forwarded to construct a
+       * std::shared_ptr<std::vector<unsigned char>> in-place within the
+       * new record.
+       **/
+      template<typename... Args>
+      KnowledgeRecord(tags::shared_t<tags::binary_t>, Args&&... args)
+        : file_value_ {std::forward<Args>(args)...},
+          type_ (UNKNOWN_FILE_TYPE), shared_ (SHARED) {}
 
       /**
        * Checks if record exists (i.e., is not uncreated)
