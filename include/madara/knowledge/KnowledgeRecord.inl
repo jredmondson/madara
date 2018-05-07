@@ -662,7 +662,7 @@ KnowledgeRecord::type (void) const
 inline bool
 KnowledgeRecord::set_type (int32_t type)
 {
-  if (type == type_ ||
+  if ((uint32_t)type == type_ ||
       (is_string_type() && is_string_type(type)) ||
       (is_binary_file_type() && is_binary_file_type(type))
   ) {
