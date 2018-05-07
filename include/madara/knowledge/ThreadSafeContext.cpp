@@ -2852,9 +2852,16 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
     const char * meta_reader = current;
 
     // read the meta data at the front
-    fseeko (file, 0, SEEK_SET);
-    int ret = fread (current, meta.encoded_size (), 1, file);
-    (void)ret;
+    fseek (file, 0, SEEK_SET);
+    size_t ret = fread (current, meta.encoded_size (), 1, file);
+    if (ret == 0) {
+      madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+        "ThreadSafeContext::save_checkpoint:" \
+        " failed to read existing file header: size=%d\n",
+        (int)meta.encoded_size ());
+
+      return -1;
+    }
 
     meta_reader = meta.read (meta_reader, buffer_remaining);
 
@@ -2912,7 +2919,7 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
          (int)(checkpoint_start));
 
       // set the file pointer to the checkpoint header start
-      fseeko (file, checkpoint_start, SEEK_SET);
+      fseek (file, checkpoint_start, SEEK_SET);
 
       // start updates just past the checkpoint header's buffer location
       current = checkpoint_header.write (buffer.get_ptr (), buffer_remaining);
@@ -3033,7 +3040,7 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
         (int)checkpoint_header.size, (int)checkpoint_header.updates);
 
       buffer_remaining = max_buffer;
-      fseeko (file, checkpoint_start, SEEK_SET);
+      fseek (file, checkpoint_start, SEEK_SET);
       current = checkpoint_header.write (buffer.get_ptr (), buffer_remaining);
       fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
 
@@ -3242,8 +3249,15 @@ madara::knowledge::ThreadSafeContext::save_checkpoint (
 
     // read the meta data at the front
     fseek (file, 0, SEEK_SET);
-    int ret = fread (current, meta.encoded_size (), 1, file);
-    (void)ret;
+    size_t ret = fread (current, meta.encoded_size (), 1, file);
+    if (ret == 0) {
+      madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+        "ThreadSafeContext::save_checkpoint:" \
+        " failed to read existing file header: size=%d\n",
+        (int)meta.encoded_size ());
+
+      return -1;
+    }
 
     meta_reader = meta.read (meta_reader, buffer_remaining);
 
