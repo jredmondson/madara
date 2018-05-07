@@ -1504,7 +1504,7 @@ KnowledgeRecord::write (char * buffer,
       // strings do not have to be converted
       if (buffer_remaining >= int64_t (size))
       {
-        memcpy (buffer, &file_value_->at (0), size);
+        memcpy (buffer, &(*str_value_)[0], size);
       }
     }
     else if (type_ == INTEGER)

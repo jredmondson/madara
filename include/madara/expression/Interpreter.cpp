@@ -1963,13 +1963,13 @@ madara::expression::Negate::build ()
   unsigned int i;
 
   for (i = 1; next;
-    ++i, right = next->right_, next = dynamic_cast <Negate *> (next->right_));
+    ++i, right = next->right_, next = dynamic_cast <Negate *> (next->right_)) {}
 
-    if (i % 2 == 1)
-      return new CompositeNegateNode (*(this->logger_), right->build ());
-    else
-      return new CompositeNegateNode (*(this->logger_),
-      new CompositeNegateNode (*(this->logger_), right->build ()));
+  if (i % 2 == 1)
+    return new CompositeNegateNode (*(this->logger_), right->build ());
+  else
+    return new CompositeNegateNode (*(this->logger_),
+    new CompositeNegateNode (*(this->logger_), right->build ()));
 }
 
 // constructor
@@ -3170,13 +3170,13 @@ madara::expression::Not::build ()
   unsigned int i;
 
   for (i = 1; next;
-    ++i, right = next->right_, next = dynamic_cast <Not *> (next->right_));
+    ++i, right = next->right_, next = dynamic_cast <Not *> (next->right_)) {}
 
-    if (i % 2 == 1)
-      return new CompositeNotNode (*(this->logger_), right->build ());
-    else
-      return new CompositeNotNode (*(this->logger_),
-      new CompositeNotNode (*(this->logger_), right->build ()));
+  if (i % 2 == 1)
+    return new CompositeNotNode (*(this->logger_), right->build ());
+  else
+    return new CompositeNotNode (*(this->logger_),
+    new CompositeNotNode (*(this->logger_), right->build ()));
 }
 
 // constructor
@@ -3430,8 +3430,8 @@ madara::expression::VariableCompare::build (void)
 // constructor
 madara::expression::List::List (
   madara::knowledge::ThreadSafeContext & context)
-  : Symbol (context_.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
-  context_ (context)
+  : Symbol (context.get_logger (), 0, 0, VARIABLE_PRECEDENCE),
+    context_ (context)
 {
 }
 

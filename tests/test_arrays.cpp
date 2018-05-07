@@ -122,7 +122,7 @@ void create_arrays (madara::knowledge::KnowledgeBase & knowledge)
   knowledge.print ("integers_vector = [{integers_vector}]\n");
   knowledge.print ("var_array = [{var_array}]\n");
 
-  delete integer_array;
+  delete [] integer_array;
 }
 
 

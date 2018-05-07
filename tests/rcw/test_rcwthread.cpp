@@ -160,7 +160,6 @@ public:
     pvec.push_back((int)y * 10);
     strvec.push_back("FOOBAR");
     int foo = 2;
-    rcw::Tracked<char> bar(y);
     uvec.push_back(rcw::track(y * foo));
     std::cout << std::endl;
     s += "x";
