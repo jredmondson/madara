@@ -151,23 +151,24 @@ namespace madara
 
     public:
       /* default constructor */
-      KnowledgeRecord () : KnowledgeRecord (*logger::global_logger.get()) {}
+      KnowledgeRecord () noexcept :
+        KnowledgeRecord (*logger::global_logger.get()) {}
 
-      explicit KnowledgeRecord (logger::Logger & logger);
+      explicit KnowledgeRecord (logger::Logger & logger) noexcept;
 
       /* Integer constructor */
       template<typename T,
         typename std::enable_if<std::is_integral<T>::value,
         void*>::type = nullptr>
       explicit KnowledgeRecord (T value,
-        logger::Logger & logger = *logger::global_logger.get ());
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* Floating point constructor */
       template<typename T,
         typename std::enable_if<std::is_floating_point<T>::value,
         void*>::type = nullptr>
       explicit KnowledgeRecord (T value,
-        logger::Logger & logger = *logger::global_logger.get ());
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* Integer array constructor */
       explicit KnowledgeRecord (const std::vector <Integer> & value,
@@ -175,11 +176,11 @@ namespace madara
 
       /* Integer array move constructor */
       explicit KnowledgeRecord (std::vector <Integer> && value,
-        logger::Logger & logger = *logger::global_logger.get ());
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* Integer array shared_ptr constructor */
       explicit KnowledgeRecord (std::shared_ptr<std::vector <Integer>> value,
-        logger::Logger & logger = *logger::global_logger.get ());
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* Double array constructor */
       explicit KnowledgeRecord (const std::vector <double> & value,
@@ -187,11 +188,11 @@ namespace madara
 
       /* Double array move constructor */
       explicit KnowledgeRecord (std::vector <double> && value,
-        logger::Logger & logger = *logger::global_logger.get ());
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* Double array shared_ptr constructor */
       explicit KnowledgeRecord (std::shared_ptr<std::vector <double>> value,
-        logger::Logger & logger = *logger::global_logger.get ());
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* String constructor */
       explicit KnowledgeRecord (const std::string & value,
@@ -199,11 +200,11 @@ namespace madara
 
       /* String move constructor */
       explicit KnowledgeRecord (std::string && value,
-        logger::Logger & logger = *logger::global_logger.get ());
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* Double array shared_ptr constructor */
       explicit KnowledgeRecord (std::shared_ptr<std::string> value,
-        logger::Logger & logger = *logger::global_logger.get ());
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* Char pointer constructor for g++ */
       explicit KnowledgeRecord (const char * value,
@@ -212,10 +213,10 @@ namespace madara
       /* Binary file shared_ptr constructor */
       explicit KnowledgeRecord (
         std::shared_ptr<std::vector<unsigned char>> value,
-        logger::Logger & logger = *logger::global_logger.get ());
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* copy constructor */
-      KnowledgeRecord (const KnowledgeRecord & rhs) noexcept;
+      KnowledgeRecord (const KnowledgeRecord & rhs);
 
       /* move constructor */
       KnowledgeRecord (KnowledgeRecord && rhs) noexcept;
@@ -829,7 +830,7 @@ namespace madara
       void set_jpeg (const unsigned char * new_value, size_t size);
 
       /**
-       * sets the value to a jpeg
+       * sets the value to a jpeg, without copying
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_jpeg (std::vector <unsigned char> && new_value);
@@ -854,7 +855,7 @@ namespace madara
       void set_file (const unsigned char * new_value, size_t size);
 
       /**
-       * sets the value to an unknown file type
+       * sets the value to an unknown file type, without copying
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_file (std::vector <unsigned char> && new_value);
@@ -941,6 +942,19 @@ namespace madara
        * returns the size of the value
        **/
       int32_t type (void) const;
+
+      /**
+       * Modify the type, but only if it's compatible with current type without
+       * changing any actual data stored. I.e.,
+       * STRING, TEXT_FILE, and XML can be converted between each other, and
+       * UKNOWN_BINARY_FILE, IMAGE_JPEG can be converted between each other.
+       *
+       * @param type the new type
+       *
+       * @return true if conversion successfully applied, or was already type,
+       *         false if not
+       **/
+      bool set_type (int32_t type);
 
       /**
        * returns if the record has a reference-counted type
@@ -1127,7 +1141,7 @@ namespace madara
       /**
        * Assignment
        **/
-      KnowledgeRecord & operator= (const KnowledgeRecord & rhs) noexcept;
+      KnowledgeRecord & operator= (const KnowledgeRecord & rhs);
 
       /**
        * Move Assignment

@@ -18,7 +18,7 @@
 namespace madara { namespace knowledge {
 
 inline
-KnowledgeRecord::KnowledgeRecord (logger::Logger & logger)
+KnowledgeRecord::KnowledgeRecord (logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
 }
@@ -26,7 +26,7 @@ KnowledgeRecord::KnowledgeRecord (logger::Logger & logger)
 template<typename T,
   typename std::enable_if<std::is_integral<T>::value, void*>::type>
 inline KnowledgeRecord::KnowledgeRecord (T value,
-  logger::Logger & logger)
+  logger::Logger & logger) noexcept
 : logger_ (&logger), int_value_ ((Integer)value), type_ (INTEGER)
 {
 }
@@ -39,7 +39,7 @@ inline KnowledgeRecord::KnowledgeRecord (
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
-  std::vector <Integer> && value, logger::Logger & logger)
+  std::vector <Integer> && value, logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
   set_value (std::move(value));
@@ -47,7 +47,7 @@ inline KnowledgeRecord::KnowledgeRecord (
 
 inline KnowledgeRecord::KnowledgeRecord (
     std::shared_ptr<std::vector<Integer>> value,
-    logger::Logger & logger)
+    logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
   set_value (std::move(value));
@@ -56,7 +56,7 @@ inline KnowledgeRecord::KnowledgeRecord (
 template<typename T,
   typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
 inline KnowledgeRecord::KnowledgeRecord (T value,
-  logger::Logger & logger)
+  logger::Logger & logger) noexcept
 : logger_ (&logger), double_value_ ((double)value), type_ (DOUBLE)
 {
 }
@@ -71,7 +71,7 @@ inline KnowledgeRecord::KnowledgeRecord (
 
 inline KnowledgeRecord::KnowledgeRecord (
   std::vector <double> && value,
-  logger::Logger & logger)
+  logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
   set_value (std::move(value));
@@ -79,7 +79,7 @@ inline KnowledgeRecord::KnowledgeRecord (
 
 inline KnowledgeRecord::KnowledgeRecord (
     std::shared_ptr<std::vector<double>> value,
-    logger::Logger & logger)
+    logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
   set_value (std::move(value));
@@ -93,7 +93,7 @@ inline KnowledgeRecord::KnowledgeRecord (const std::string & value,
 }
 
 inline KnowledgeRecord::KnowledgeRecord (std::string && value,
-  logger::Logger & logger)
+  logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
   set_value (std::move(value));
@@ -101,7 +101,7 @@ inline KnowledgeRecord::KnowledgeRecord (std::string && value,
 
 inline KnowledgeRecord::KnowledgeRecord (
     std::shared_ptr<std::string> value,
-    logger::Logger & logger)
+    logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
   set_value (std::move(value));
@@ -116,14 +116,14 @@ inline KnowledgeRecord::KnowledgeRecord (const char * value,
 
 inline KnowledgeRecord::KnowledgeRecord (
     std::shared_ptr<std::vector<unsigned char>> value,
-    logger::Logger & logger)
+    logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
   set_file (std::move(value));
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
-    const knowledge::KnowledgeRecord & rhs) noexcept
+    const knowledge::KnowledgeRecord & rhs)
 : logger_ (rhs.logger_),
   clock (rhs.clock),
   quality (rhs.quality),
@@ -180,7 +180,7 @@ inline KnowledgeRecord::~KnowledgeRecord () noexcept
 }
 
 inline KnowledgeRecord &
-KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs) noexcept
+KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs)
 {
   if (this == &rhs)
     return *this;
@@ -657,6 +657,19 @@ inline int32_t
 KnowledgeRecord::type (void) const
 {
   return type_;
+}
+
+inline bool
+KnowledgeRecord::set_type (int32_t type)
+{
+  if (type == type_ ||
+      (is_string_type() && is_string_type(type)) ||
+      (is_binary_file_type() && is_binary_file_type(type))
+  ) {
+    type_ = type;
+    return true;
+  }
+  return false;
 }
 
 inline int64_t
