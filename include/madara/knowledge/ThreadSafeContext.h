@@ -124,7 +124,7 @@ namespace madara
        * Atomically returns a reference to the variable
        * @param   key       unique identifier of the variable
        * @param   settings  the settings for referring to variables
-       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
+       * @return  pointer to record, nullptr if none exists
        **/
       madara::knowledge::KnowledgeRecord *
         with (const std::string & key,
@@ -135,7 +135,7 @@ namespace madara
        * Atomically returns the value of a variable.
        * @param   variable  reference to a variable (@see get_ref)
        * @param   settings  the settings for referring to variables
-       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
+       * @return  pointer to record, nullptr if none exists
        **/
       madara::knowledge::KnowledgeRecord *
         with (const VariableReference & variable,
@@ -424,7 +424,7 @@ namespace madara
        * @param settings         settings for referring to knowledge variables
        * @return                 value at knowledge location
        **/
-      madara::knowledge::KnowledgeRecord retrieve_index (const std::string & key,
+      KnowledgeRecord retrieve_index (const std::string & key,
              size_t index,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
@@ -436,7 +436,7 @@ namespace madara
        * @param   settings   settings for referring to knowledge variables
        * @return             value at knowledge location
        **/
-      madara::knowledge::KnowledgeRecord retrieve_index (
+      KnowledgeRecord retrieve_index (
              const VariableReference & variable,
              size_t index,
              const KnowledgeReferenceSettings & settings =
@@ -451,7 +451,7 @@ namespace madara
        * @param  settings  the settings for referring to variables
        * @return         the knowledge record for the variable
        **/
-      madara::knowledge::KnowledgeRecord * get_record (const std::string & key,
+      KnowledgeRecord * get_record (const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ());
 

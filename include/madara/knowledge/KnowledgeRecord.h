@@ -276,6 +276,20 @@ namespace madara
       }
 
       /**
+       * Construct a shared_ptr to vector of integers within this
+       * KnowledgeRecord.
+       *
+       * If the KnowledgeRecord would modify the resulting shared_ptr,
+       * a private copy will be made, and modified.
+       *
+       * @param args arguments forwarded to the shared_ptr constructor
+       **/
+      template<typename... Args>
+      void emplace(tags::shared_t<tags::integers_t>, Args&&... args) {
+        emplace_shared_integers(std::forward<Args>(args)...);
+      }
+
+      /**
        * Construct a vector of integers within this KnowledgeRecord.
        *
        * @param args All arguments are forwarded to the vector constructor
@@ -285,6 +299,16 @@ namespace madara
         emplace_vec<Integer, INTEGER_ARRAY,
                &KnowledgeRecord::int_array_> (
                   std::forward<Args>(args)...);
+      }
+
+      /**
+       * Construct a vector of integers within this KnowledgeRecord.
+       *
+       * @param args arguments forwarded to the vector constructor
+       **/
+      template<typename... Args>
+      void emplace(tags::integers_t, Args&&... args) {
+        emplace_integers(std::forward<Args>(args)...);
       }
 
       /**
@@ -305,6 +329,20 @@ namespace madara
       }
 
       /**
+       * Construct a shared_ptr to vector of doubles within this
+       * KnowledgeRecord.
+       *
+       * If the KnowledgeRecord would modify the resulting shared_ptr,
+       * a private copy will be made, and modified.
+       *
+       * @param args arguments forwarded to the shared_ptr constructor
+       **/
+      template<typename... Args>
+      void emplace(tags::shared_t<tags::doubles_t>, Args&&... args) {
+        emplace_shared_doubles(std::forward<Args>(args)...);
+      }
+
+      /**
        * Construct a vector of doubles within this KnowledgeRecord.
        *
        * @param args All arguments are forwarded to the vector constructor
@@ -314,6 +352,16 @@ namespace madara
         emplace_vec<double, DOUBLE_ARRAY,
                &KnowledgeRecord::double_array_> (
                   std::forward<Args>(args)...);
+      }
+
+      /**
+       * Construct a vector of doubles within this KnowledgeRecord.
+       *
+       * @param args arguments forwarded to the vector constructor
+       **/
+      template<typename... Args>
+      void emplace(tags::doubles_t, Args&&... args) {
+        emplace_doubles(std::forward<Args>(args)...);
       }
 
       /**
@@ -333,6 +381,19 @@ namespace madara
       }
 
       /**
+       * Construct a shared_ptr to string within this KnowledgeRecord.
+       *
+       * If the KnowledgeRecord would modify the resulting shared_ptr,
+       * a private copy will be made, and modified.
+       *
+       * @param args arguments forwarded to the shared_ptr constructor
+       **/
+      template<typename... Args>
+      void emplace(tags::shared_t<tags::string_t>, Args&&... args) {
+        emplace_shared_string(std::forward<Args>(args)...);
+      }
+
+      /**
        * Construct a string within this KnowledgeRecord.
        *
        * @param args All arguments are forwarded to the string constructor
@@ -342,6 +403,16 @@ namespace madara
         emplace_val<std::string, STRING,
                &KnowledgeRecord::str_value_> (
                   std::forward<Args>(args)...);
+      }
+
+      /**
+       * Construct a string within this KnowledgeRecord.
+       *
+       * @param args arguments forwarded to the string constructor
+       **/
+      template<typename... Args>
+      void emplace(tags::string_t, Args&&... args) {
+        emplace_string(std::forward<Args>(args)...);
       }
 
       /**
@@ -362,6 +433,20 @@ namespace madara
       }
 
       /**
+       * Construct a shared_ptr to binary (vector of unsigned char) within
+       * this KnowledgeRecord.
+       *
+       * If the KnowledgeRecord would modify the resulting shared_ptr,
+       * a private copy will be made, and modified.
+       *
+       * @param args arguments forwarded to the shared_ptr constructor
+       **/
+      template<typename... Args>
+      void emplace(tags::shared_t<tags::binary_t>, Args&&... args) {
+        emplace_shared_binary(std::forward<Args>(args)...);
+      }
+
+      /**
        * Construct a file (vector of unsigned char) within this KnowledgeRecord.
        *
        * @param args All arguments are forwarded to the vector constructor
@@ -371,6 +456,16 @@ namespace madara
         emplace_vec<unsigned char, UNKNOWN_FILE_TYPE,
                &KnowledgeRecord::file_value_> (
                 std::forward<Args>(args)...);
+      }
+
+      /**
+       * Construct a binary (vector of unsigned char) within this KnowledgeRecord.
+       *
+       * @param args arguments forwarded to the vector constructor
+       **/
+      template<typename... Args>
+      void emplace(tags::binary_t, Args&&... args) {
+        emplace_binary(std::forward<Args>(args)...);
       }
 
       /**

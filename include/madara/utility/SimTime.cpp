@@ -27,11 +27,11 @@ uint64_t SimTime::time() {
   uint64_t prt;
   uint64_t pst;
   double pr;
-  uint64_t now = realtime();
   uint64_t st;
   double r;
   sim_time_callback_fn callback;
 
+  uint64_t now = realtime();
   {
     std::lock_guard<std::mutex> guard{mutex_};
     callback = callback_;
@@ -50,7 +50,7 @@ uint64_t SimTime::time() {
 
   if (!callback) {
     if (pr == 0) {
-      return prt;
+      return pst;
     }
 
     int64_t offset = now - prt;
