@@ -32,9 +32,6 @@ namespace madara
       VariableNode (const std::string &key, 
         madara::knowledge::ThreadSafeContext & context);
 
-      /// Dtor.
-      virtual ~VariableNode (void);
-
       /// Return the item stored in the node.
       virtual madara::knowledge::KnowledgeRecord item (void) const;
 
@@ -97,8 +94,8 @@ namespace madara
       inline
       madara::knowledge::KnowledgeRecord * get_record (void)
       {
-        if (record_)
-          return record_;
+        if (ref_.is_valid())
+          return ref_.get_record_unsafe();
         else
           return context_.get_record (expand_key ());
       }
@@ -109,7 +106,7 @@ namespace madara
 
       /// Key for retrieving value of this variable.
       const std::string key_;
-      madara::knowledge::KnowledgeRecord * record_;
+      madara::knowledge::VariableReference ref_;
 
       madara::knowledge::ThreadSafeContext & context_;
 

@@ -431,7 +431,7 @@ KnowledgeBaseImpl::send_modifieds (
 
   if (transports_.size () > 0 && !settings.delay_sending_modifieds)
   {
-    const KnowledgeRecords & modified = map_.get_modifieds ();
+    const VariableReferenceMap & modified = map_.get_modifieds ();
 
     if (modified.size () > 0)
     {
@@ -440,8 +440,8 @@ KnowledgeBaseImpl::send_modifieds (
       {
         transports_.lock ();
         // send across each transport
-        for (unsigned int i = 0; i < transports_.size (); ++i, ++result)
-          transports_[i]->send_data (modified);
+        for (auto transport : transports_)
+          transport->send_data (modified);
 
         transports_.unlock ();
 
@@ -451,14 +451,15 @@ KnowledgeBaseImpl::send_modifieds (
       // if there is a send_list
       else
       {
-        KnowledgeRecords allowed_modifieds;
+        VariableReferenceMap allowed_modifieds;
         // otherwise, we are only allowed to send a subset of modifieds
         for (KnowledgeRecords::const_iterator i = modified.begin ();
              i != modified.end (); ++i)
+        for (const auto &entry : modified)
         {
-          if (settings.send_list.find (i->first) != settings.send_list.end ())
+          if (settings.send_list.find (entry.first) != settings.send_list.end ())
           {
-            allowed_modifieds[i->first] = i->second;
+            allowed_modifieds.emplace_hint(allowed_modifieds.end(), entry);
           }
         }
 
@@ -468,16 +469,15 @@ KnowledgeBaseImpl::send_modifieds (
           transports_.lock ();
 
           // send across each transport
-          for (unsigned int i = 0; i < transports_.size (); ++i, ++result)
-            transports_[i]->send_data (allowed_modifieds);
+          for (auto transport : transports_)
+            transport->send_data (allowed_modifieds);
 
           transports_.unlock ();
 
           // reset modified list for the allowed modifications
-          for (KnowledgeRecords::const_iterator i = allowed_modifieds.begin ();
-               i != allowed_modifieds.end (); ++i)
+          for (const auto &entry : allowed_modified)
           {
-            map_.reset_modified (i->first);
+            map_.reset_modified (entry.first);
           }
         }
       }

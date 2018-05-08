@@ -849,7 +849,7 @@ namespace madara
        * disseminatable knowledge update.
        * @return  the modified knowledge records
        **/
-      const knowledge::KnowledgeRecords & get_modifieds (void) const;
+      const VariableReferenceMap & get_modifieds (void) const;
 
       /**
       * Adds a list of VariableReferences to the current modified list.
@@ -879,7 +879,7 @@ namespace madara
        * comprehensive checkpoint.
        * @return  the modified knowledge records
        **/
-      const knowledge::KnowledgeRecords & get_local_modified (void) const;
+      const VariableReferenceMap & get_local_modified (void) const;
 
       /**
        * Reset all variables to be unmodified. This will clear all global
@@ -1630,8 +1630,7 @@ namespace madara
        * @param  record  record of the key in the context (should exist)
        * @param  settings  the settings for referring to variables
        **/
-      void mark_to_send_unsafe (const std::string & key,
-        madara::knowledge::KnowledgeRecord & record,
+      void mark_to_send_unsafe (VariableReference ref,
         const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings ());
 
       /**
@@ -1641,8 +1640,7 @@ namespace madara
        * @param  record  record of the key in the context (should exist)
        * @param  settings  the settings for referring to variables
        **/
-      void mark_to_checkpoint_unsafe (const std::string & key,
-        madara::knowledge::KnowledgeRecord & record,
+      void mark_to_checkpoint_unsafe (VariableReference ref,
         const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings ());
 
       /**
@@ -1651,8 +1649,7 @@ namespace madara
        * @param   record   record to place in the changed_map
        * @param   settings settings for applying modification and signalling
        **/
-      void mark_and_signal (const char * name,
-        knowledge::KnowledgeRecord * record,
+      void mark_and_signal (VariableReference ref,
         const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
 
       template<typename... Args>
@@ -1678,8 +1675,8 @@ namespace madara
       mutable MADARA_CONDITION_TYPE changed_;
       std::vector< std::string> expansion_splitters_;
       mutable uint64_t clock_;
-      mutable knowledge::KnowledgeRecords changed_map_;
-      mutable knowledge::KnowledgeRecords local_changed_map_;
+      mutable VariableReferenceMap changed_map_;
+      mutable VariableReferenceMap local_changed_map_;
 
       /// map of function names to functions
       FunctionMap functions_;

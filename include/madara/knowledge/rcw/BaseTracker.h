@@ -97,13 +97,13 @@ namespace madara { namespace knowledge { namespace rcw
     /// Get record @ref points to. No locking, so be careful!
     static const KnowledgeRecord &get(const VariableReference &ref)
     {
-      return *ref.record_;
+      return *ref.get_record_unsafe();
     }
 
     /// Get record @ref points to. No locking, so be careful!
     static KnowledgeRecord &get_mut(const VariableReference &ref)
     {
-      return *ref.record_;
+      return *ref.get_record_unsafe();
     }
 
     /// Set record @ref_ points to. No locking, so be careful!
@@ -145,7 +145,7 @@ namespace madara { namespace knowledge { namespace rcw
     /// Call after setting to perform any necessary after-setting logic
     void post_set(KnowledgeBase &kb, const VariableReference &ref)
     {
-      kb.get_context().mark_and_signal(ref.name_.get_ptr (), ref.record_, EvalSettings());
+      kb.get_context().mark_and_signal(ref, EvalSettings());
     }
 
     friend class Transaction;

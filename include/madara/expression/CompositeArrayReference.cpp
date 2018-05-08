@@ -13,8 +13,9 @@ madara::expression::CompositeArrayReference::CompositeArrayReference (
   const std::string & key, ComponentNode * index,
   madara::knowledge::ThreadSafeContext &context)
 : CompositeUnaryNode (context.get_logger (), index),
-  key_ (key), record_ (0),
-  context_ (context), key_expansion_necessary_ (false)
+  context_ (context),
+  key_ (key),
+  key_expansion_necessary_ (false)
 {
   // this key requires expansion. We do the compilation and error checking here
   // as the key shouldn't change, and this allows us to only have to do this
@@ -39,7 +40,7 @@ madara::expression::CompositeArrayReference::CompositeArrayReference (
 
       exit (-1);
     }
-    
+
     // check for braces that are not properly closed
     std::vector<std::string>::const_iterator pivot = pivot_list_.begin ();
     unsigned int num_opens = 0;
@@ -81,13 +82,8 @@ madara::expression::CompositeArrayReference::CompositeArrayReference (
   // mutation.
   else
   {
-    record_ = context_.get_record (key);
+    ref_ = context_.get_ref (key);
   }
-}
-
-madara::expression::CompositeArrayReference::~CompositeArrayReference ()
-{
-  // do not clean up record_. Let the context clean that up.
 }
 
 std::string
@@ -143,10 +139,10 @@ madara::knowledge::KnowledgeRecord
 madara::expression::CompositeArrayReference::item () const
 {
   size_t index = right_->item ().to_integer ();
-  
-  if (record_)
+
+  if (ref_.is_valid())
   {
-    return record_->retrieve_index (index);
+    return ref_.get_record_unsafe()->retrieve_index (index);
   }
   else
     return context_.get (expand_key ()).retrieve_index (index);
@@ -164,8 +160,8 @@ madara::expression::CompositeArrayReference::prune (bool & can_change)
 
   // we could call item(), but since it is virtual, it incurs unnecessary
   // overhead.
-  if (record_)
-    return *record_;
+  if (ref_.is_valid())
+    return *ref_.get_record_unsafe();
   else
     return context_.get (expand_key ());
 }
@@ -178,9 +174,9 @@ madara::expression::CompositeArrayReference::evaluate (
 {
   size_t index = right_->evaluate (settings).to_integer ();
 
-  if (record_)
+  if (ref_.is_valid())
   {
-    return record_->retrieve_index (index);
+    return ref_.get_record_unsafe()->retrieve_index (index);
   }
   else
     return context_.get (expand_key ()).retrieve_index (index);
@@ -200,21 +196,23 @@ madara::expression::CompositeArrayReference::dec (
 {
   size_t index = size_t (right_->evaluate (settings).to_integer ());
 
-  if (record_)
+  if (ref_.is_valid())
   {
+    auto record = ref_.get_record_unsafe();
+
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record_->write_quality < record_->quality)
+    if (!settings.always_overwrite && record->write_quality < record->quality)
       return context_.retrieve_index (expand_key (), index, settings);
 
     // cheaper to read than write, so check to see if
     // we actually need to update quality and status
-    if (record_->write_quality != record_->quality)
-      record_->quality = record_->write_quality;
+    if (record->write_quality != record->quality)
+      record->quality = record->write_quality;
 
-    knowledge::KnowledgeRecord result (record_->dec_index (index));
+    knowledge::KnowledgeRecord result (record->dec_index (index));
 
-    context_.mark_and_signal (key_.c_str(), record_);
+    context_.mark_and_signal (ref_);
 
     return result;
   }
@@ -239,21 +237,23 @@ madara::expression::CompositeArrayReference::inc (
 {
   size_t index = size_t (right_->evaluate (settings).to_integer ());
 
-  if (record_)
+  if (ref_.is_valid())
   {
+    auto record = ref_.get_record_unsafe();
+
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record_->write_quality < record_->quality)
+    if (!settings.always_overwrite && record->write_quality < record->quality)
       return context_.retrieve_index (expand_key (), index, settings);
 
     // cheaper to read than write, so check to see if
     // we actually need to update quality and status
-    if (record_->write_quality != record_->quality)
-      record_->quality = record_->write_quality;
+    if (record->write_quality != record->quality)
+      record->quality = record->write_quality;
 
-    knowledge::KnowledgeRecord result (record_->inc_index (index));
+    knowledge::KnowledgeRecord result (record->inc_index (index));
 
-    context_.mark_and_signal (key_.c_str(), record_);
+    context_.mark_and_signal (ref_);
 
     return result;
   }
@@ -293,22 +293,24 @@ madara::expression::CompositeArrayReference::set (const madara::knowledge::Knowl
 {
   size_t index = size_t (right_->evaluate (settings).to_integer ());
 
-  if (record_)
+  if (ref_.is_valid())
   {
+    auto record = ref_.get_record_unsafe();
+
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record_->write_quality < record_->quality)
+    if (!settings.always_overwrite && record->write_quality < record->quality)
       return -2;
 
     // cheaper to read than write, so check to see if
     // we actually need to update quality and status
-    if (record_->write_quality != record_->quality)
-      record_->quality = record_->write_quality;
+    if (record->write_quality != record->quality)
+      record->quality = record->write_quality;
 
-    record_->set_index (index, value);
+    record->set_index (index, value);
 
-    context_.mark_and_signal (key_.c_str(), record_);
-  
+    context_.mark_and_signal (ref_);
+
     return 0;
   }
   else
@@ -321,21 +323,23 @@ madara::expression::CompositeArrayReference::set (double value,
 {
   size_t index = size_t (right_->evaluate (settings).to_integer ());
 
-  if (record_)
+  if (ref_.is_valid())
   {
+    auto record = ref_.get_record_unsafe();
+
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record_->write_quality < record_->quality)
+    if (!settings.always_overwrite && record->write_quality < record->quality)
       return -2;
 
     // cheaper to read than write, so check to see if
     // we actually need to update quality and status
-    if (record_->write_quality != record_->quality)
-      record_->quality = record_->write_quality;
+    if (record->write_quality != record->quality)
+      record->quality = record->write_quality;
     
-    record_->set_index (index, value);
+    record->set_index (index, value);
 
-    context_.mark_and_signal (key_.c_str(), record_);
+    context_.mark_and_signal (ref_);
   
     return 0;
   }
