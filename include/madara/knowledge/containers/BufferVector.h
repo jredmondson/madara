@@ -49,14 +49,14 @@ namespace madara
          * @param  settings   settings for evaluating the vector
          * @param  delimiter  the delimiter for variables in the vector
          **/
-        BufferVector (const std::string & name, 
+        BufferVector (const std::string & name,
                 KnowledgeBase & knowledge,
                 int size = -1,
                 bool delete_vars = true,
                 const KnowledgeUpdateSettings & settings =
                   KnowledgeUpdateSettings (),
                 const std::string & delimiter = ".");
-      
+
         /**
          * Constructor
          * @param  name       name of the vector in the knowledge base
@@ -73,7 +73,7 @@ namespace madara
                 const KnowledgeUpdateSettings & settings =
                   KnowledgeUpdateSettings (),
                 const std::string & delimiter = ".");
-      
+
         /**
          * Copy constructor
          **/
@@ -83,7 +83,7 @@ namespace madara
          * Destructor
          **/
         virtual ~BufferVector ();
-    
+
         /**
          * Mark the vector as modified. The vector retains the same values
          * but will resend values as if they had been modified.
@@ -96,7 +96,7 @@ namespace madara
          * @param  index  the index to modify
          **/
         void modify (size_t index);
-    
+
         /**
          * Assignment operator
          * @param  rhs    value to copy
@@ -118,7 +118,7 @@ namespace madara
          * @param  delete_vars delete indices outside of the specified range
          **/
         void resize (int size = -1, bool delete_vars = true);
-      
+
         /**
          * Exchanges the vector at this location with the vector at another
          * location.
@@ -135,19 +135,19 @@ namespace madara
          * @param  other  the other vector to transfer to
          **/
         void transfer_to (BufferVector & other);
-        
+
         /**
          * Copies the vector elements to an STL vector of Knowledge Records
          * @param  target   record values at this instance
          **/
         void copy_to (KnowledgeVector & target) const;
-        
+
         /**
          * Returns the size of the vector
          * @return size of the vector
          **/
         size_t size (void) const;
-      
+
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
@@ -156,7 +156,7 @@ namespace madara
          **/
         void set_name (const std::string & var_name,
           KnowledgeBase & knowledge, int size = -1);
-        
+
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
@@ -165,7 +165,7 @@ namespace madara
          **/
         void set_name (const std::string & var_name,
           Variables & knowledge, int size = -1);
-        
+
         /**
          * Sets the variable name that this refers to
          * @param var_name  the name of the variable in the knowledge base
@@ -200,7 +200,7 @@ namespace madara
          *         not be reflected in the context. This is a local copy.
          **/
         knowledge::KnowledgeRecord operator[] (size_t index) const;
-      
+
         /**
          * Retrieves a copy of the record from the map. Same functionality
          * as operator[]. This is provided for convenience to match other
@@ -210,7 +210,7 @@ namespace madara
          *         not be reflected in the context. This is a local copy.
          **/
         knowledge::KnowledgeRecord to_record (size_t index) const;
-      
+
         /**
          * Checks to see if the index has ever been assigned a value
          * @param  index  the index of the variable entry
@@ -218,25 +218,25 @@ namespace madara
          *         uninitialized
          **/
         bool exists (size_t index) const;
-      
+
         /**
          * Read a file into the index using stored settings
          * @param filename           file to read
          * @param index              index within vector
          */
-        int read_file (size_t index, 
+        int read_file (size_t index,
                        const std::string & filename);
-      
+
         /**
          * Read a file into the index using temporary settings
          * @param filename           file to read
          * @param index              index within vector
          * @param settings           settings to use when evaluating/updating
          */
-        int read_file (size_t index, 
-                       const std::string & filename, 
+        int read_file (size_t index,
+                       const std::string & filename,
           const KnowledgeUpdateSettings & settings);
-      
+
         /**
          * Atomically sets the value of an index to a provided record
          * @param   index     index within vector
@@ -244,7 +244,7 @@ namespace madara
          * @return   0 if the value was set. -1 if null key
          **/
         int set (size_t index, const knowledge::KnowledgeRecord & value);
-      
+
         /**
          * Atomically sets the value of an index to an arbitrary string
          * using stored settings
@@ -255,7 +255,7 @@ namespace madara
          **/
         int set_file (size_t index,
           const unsigned char * value, size_t size);
-      
+
         /**
          * Atomically sets the value of an index to an arbitrary string
          * using temporary settings
@@ -266,9 +266,9 @@ namespace madara
          * @return   0 if the value was set. -1 if null key
          **/
         int set_file (size_t index,
-          const unsigned char * value, size_t size, 
+          const unsigned char * value, size_t size,
           const KnowledgeUpdateSettings & settings);
-      
+
         /**
          * Atomically sets the value of an index to a JPEG image
          * @param   index     index of the variable to set
@@ -278,7 +278,7 @@ namespace madara
          **/
         int set_jpeg (size_t index,
           const unsigned char * value, size_t size);
-      
+
         /**
          * Atomically sets the value of an index to a JPEG image
          * @param   index     index of the variable to set
@@ -288,9 +288,9 @@ namespace madara
          * @return   0 if the value was set. -1 if null key
          **/
         int set_jpeg (size_t index,
-          const unsigned char * value, size_t size, 
+          const unsigned char * value, size_t size,
           const KnowledgeUpdateSettings & settings);
-      
+
         /**
          * Sets the quality of writing to a certain variable from this entity
          *
@@ -301,12 +301,12 @@ namespace madara
         void set_quality (size_t index, uint32_t quality,
                const KnowledgeReferenceSettings & settings =
                        KnowledgeReferenceSettings (false));
-      
+
         /**
          * Returns a reference to the size field of the current name
          * @return reference to the size field
          **/
-        VariableReference get_size_ref (void);
+        VariableReference get_size_ref (void) const;
 
         /**
         * Returns the type of the container along with name and any other
@@ -386,7 +386,7 @@ namespace madara
         /**
          * Reference to the size field of the vector space
          **/
-        VariableReference size_;
+        mutable VariableReference size_;
 
         /**
         * Delimiter for the prefix to subvars

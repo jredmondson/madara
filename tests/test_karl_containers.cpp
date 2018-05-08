@@ -1638,7 +1638,7 @@ void test_collection (void)
 
   std::cerr << "  Testing modifieds.size == 3 after container creation... ";
 
-  if (context.get_modifieds ().size () != 2)
+  if (context.get_modifieds ().size () != 3)
   {
     std::cerr << "FAIL\n";
     std::cerr << "    Printing modified elements in context\n\n";

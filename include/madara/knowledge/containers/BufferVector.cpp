@@ -1,15 +1,16 @@
 #include "BufferVector.h"
 #include "madara/knowledge/ContextGuard.h"
 
+namespace madara { namespace knowledge { namespace containers {
 
-madara::knowledge::containers::BufferVector::BufferVector (
+BufferVector::BufferVector (
   const KnowledgeUpdateSettings & settings,
   const std::string & delimiter)
   : BaseContainer ("", settings), context_ (0), delimiter_ (delimiter)
 {
 }
-   
-madara::knowledge::containers::BufferVector::BufferVector (
+
+BufferVector::BufferVector (
   const std::string & name,
   KnowledgeBase & knowledge,
   int size,
@@ -22,8 +23,8 @@ madara::knowledge::containers::BufferVector::BufferVector (
   size_ = get_size_ref ();
   resize (size, delete_vars);
 }
-  
-madara::knowledge::containers::BufferVector::BufferVector (
+
+BufferVector::BufferVector (
   const std::string & name,
   Variables & knowledge,
   int size,
@@ -37,7 +38,7 @@ madara::knowledge::containers::BufferVector::BufferVector (
   resize (size, delete_vars);
 }
 
-madara::knowledge::containers::BufferVector::BufferVector (const BufferVector & rhs)
+BufferVector::BufferVector (const BufferVector & rhs)
 : BaseContainer (rhs), context_ (rhs.context_),
   vector_ (rhs.vector_),
   size_ (rhs.size_),
@@ -47,13 +48,13 @@ madara::knowledge::containers::BufferVector::BufferVector (const BufferVector & 
 }
 
 
-madara::knowledge::containers::BufferVector::~BufferVector ()
+BufferVector::~BufferVector ()
 {
 
 }
-  
+
 void
-madara::knowledge::containers::BufferVector::modify (void)
+BufferVector::modify (void)
 {
   if (context_ && name_ != "")
   {
@@ -66,7 +67,7 @@ madara::knowledge::containers::BufferVector::modify (void)
 }
 
 std::string
-madara::knowledge::containers::BufferVector::get_debug_info (void)
+BufferVector::get_debug_info (void)
 {
   std::stringstream result;
 
@@ -100,25 +101,25 @@ madara::knowledge::containers::BufferVector::get_debug_info (void)
 
 
 void
-madara::knowledge::containers::BufferVector::modify_ (void)
+BufferVector::modify_ (void)
 {
   modify ();
 }
 
 std::string
-madara::knowledge::containers::BufferVector::get_debug_info_ (void)
+BufferVector::get_debug_info_ (void)
 {
   return get_debug_info ();
 }
 
-madara::knowledge::containers::BaseContainer *
-madara::knowledge::containers::BufferVector::clone (void) const
+BaseContainer *
+BufferVector::clone (void) const
 {
   return new BufferVector (*this);
 }
 
 void
-madara::knowledge::containers::BufferVector::modify (size_t index)
+BufferVector::modify (size_t index)
 {
   if (context_ && name_ != "" && index < vector_.size ())
   {
@@ -128,7 +129,7 @@ madara::knowledge::containers::BufferVector::modify (size_t index)
 }
 
 void
-madara::knowledge::containers::BufferVector::operator= (
+BufferVector::operator= (
   const BufferVector & rhs)
 {
   if (this != &rhs)
@@ -145,7 +146,7 @@ madara::knowledge::containers::BufferVector::operator= (
 }
 
 void
-madara::knowledge::containers::BufferVector::push_back (
+BufferVector::push_back (
   const unsigned char * value, size_t size)
 {
   if (context_ && name_ != "")
@@ -166,10 +167,10 @@ madara::knowledge::containers::BufferVector::push_back (
 
 
 madara::knowledge::VariableReference
-madara::knowledge::containers::BufferVector::get_size_ref (void)
+BufferVector::get_size_ref (void) const
 {
   VariableReference ref;
-  
+
   if (context_ && name_ != "")
   {
     KnowledgeUpdateSettings keep_local (true);
@@ -189,7 +190,7 @@ madara::knowledge::containers::BufferVector::get_size_ref (void)
 }
 
 void
-madara::knowledge::containers::BufferVector::resize (
+BufferVector::resize (
   int size, bool delete_vars)
 {
   if (context_ && name_ != "")
@@ -209,7 +210,7 @@ madara::knowledge::containers::BufferVector::resize (
       if (old_size != (size_t)size)
       {
         vector_.resize (size);
-        
+
         context_->set (size_, knowledge::KnowledgeRecord::Integer (size), settings_);
 
         if ((size_t)size > old_size)
@@ -278,14 +279,23 @@ madara::knowledge::containers::BufferVector::resize (
 }
 
 size_t
-madara::knowledge::containers::BufferVector::size (void) const
+BufferVector::size (void) const
 {
-  MADARA_GUARD_TYPE guard (mutex_);
-  return vector_.size ();
+  if (context_ && name_ != "")
+  {
+    ContextGuard context_guard (*context_);
+    MADARA_GUARD_TYPE guard (mutex_);
+    if (!size_.is_valid ())
+    {
+      size_ = get_size_ref ();
+    }
+    return context_->get (size_).to_integer ();
+  }
+  return 0;
 }
 
 void
-madara::knowledge::containers::BufferVector::set_name (
+BufferVector::set_name (
   const std::string & var_name,
   KnowledgeBase & knowledge, int size)
 {
@@ -301,13 +311,13 @@ madara::knowledge::containers::BufferVector::set_name (
     vector_.clear ();
 
     size_ = get_size_ref ();
-    
+
     resize (size);
   }
 }
 
 void
-madara::knowledge::containers::BufferVector::set_name (
+BufferVector::set_name (
   const std::string & var_name,
   Variables & knowledge, int size)
 {
@@ -326,7 +336,7 @@ madara::knowledge::containers::BufferVector::set_name (
 }
 
 void
-madara::knowledge::containers::BufferVector::set_name (
+BufferVector::set_name (
   const std::string & var_name,
   ThreadSafeContext & knowledge, int size)
 {
@@ -345,7 +355,7 @@ madara::knowledge::containers::BufferVector::set_name (
 }
 
 void
-madara::knowledge::containers::BufferVector::set_delimiter (
+BufferVector::set_delimiter (
 const std::string & delimiter)
 {
   delimiter_ = delimiter;
@@ -361,13 +371,13 @@ const std::string & delimiter)
 
 
 std::string
-madara::knowledge::containers::BufferVector::get_delimiter (void)
+BufferVector::get_delimiter (void)
 {
   return delimiter_;
 }
 
 void
-madara::knowledge::containers::BufferVector::exchange (
+BufferVector::exchange (
   BufferVector & other, bool refresh_keys, bool delete_keys)
 {
   if (context_ && other.context_)
@@ -389,7 +399,7 @@ madara::knowledge::containers::BufferVector::exchange (
     {
       // temp = this[i];
       knowledge::KnowledgeRecord temp = context_->get (this->vector_[i], settings_);
-    
+
       if (i < other_size)
       {
         // this[i] = other[i];
@@ -455,7 +465,7 @@ madara::knowledge::containers::BufferVector::exchange (
 }
 
 void
-madara::knowledge::containers::BufferVector::transfer_to (BufferVector & other)
+BufferVector::transfer_to (BufferVector & other)
 {
   if (context_ && other.context_)
   {
@@ -480,7 +490,7 @@ madara::knowledge::containers::BufferVector::transfer_to (BufferVector & other)
 }
 
 void
-madara::knowledge::containers::BufferVector::copy_to (
+BufferVector::copy_to (
   KnowledgeVector & target) const
 {
   if (context_)
@@ -488,24 +498,29 @@ madara::knowledge::containers::BufferVector::copy_to (
     ContextGuard context_guard (*context_);
     MADARA_GUARD_TYPE guard (mutex_);
 
-    target.resize (vector_.size ());
-    
-    for (size_t i = 0; i < vector_.size (); ++i)
+    target.clear ();
+    target.reserve (vector_.size());
+
+    for (const auto &cur : vector_)
     {
-      target[i].deep_copy ((*this)[i]);
+      if (cur.is_valid()) {
+        target.emplace_back (context_->get (cur));
+      } else {
+        target.emplace_back ();
+      }
     }
   }
 }
 
 madara::knowledge::KnowledgeRecord
-madara::knowledge::containers::BufferVector::operator[] (
+BufferVector::operator[] (
   size_t index) const
 {
   return to_record (index);
 }
 
 madara::knowledge::KnowledgeRecord
-madara::knowledge::containers::BufferVector::to_record (
+BufferVector::to_record (
   size_t index) const
 {
   knowledge::KnowledgeRecord result;
@@ -521,7 +536,7 @@ madara::knowledge::containers::BufferVector::to_record (
 }
 
 bool
-madara::knowledge::containers::BufferVector::exists (
+BufferVector::exists (
   size_t index) const
 {
   bool result (false);
@@ -536,9 +551,9 @@ madara::knowledge::containers::BufferVector::exists (
   return result;
 }
 
- 
+
 int
-madara::knowledge::containers::BufferVector::read_file (
+BufferVector::read_file (
   size_t index,
   const std::string & filename)
 {
@@ -553,12 +568,12 @@ madara::knowledge::containers::BufferVector::read_file (
 
   return result;
 }
-       
+
 
 int
-madara::knowledge::containers::BufferVector::read_file (
+BufferVector::read_file (
   size_t index,
-  const std::string & filename, 
+  const std::string & filename,
   const KnowledgeUpdateSettings & settings)
 {
   int result = -1;
@@ -572,15 +587,15 @@ madara::knowledge::containers::BufferVector::read_file (
 
   return result;
 }
-      
+
 
 int
-madara::knowledge::containers::BufferVector::set_file (
+BufferVector::set_file (
   size_t index,
   const unsigned char * value, size_t size)
 {
   int result = -1;
-  
+
   if (index < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
@@ -590,13 +605,13 @@ madara::knowledge::containers::BufferVector::set_file (
 
   return result;
 }
- 
+
 int
-madara::knowledge::containers::BufferVector::set (
+BufferVector::set (
   size_t index, const knowledge::KnowledgeRecord & value)
 {
   int result = -1;
-  
+
   if (index < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
@@ -607,63 +622,63 @@ madara::knowledge::containers::BufferVector::set (
 
   return result;
 }
- 
+
 int
-madara::knowledge::containers::BufferVector::set_file (
+BufferVector::set_file (
   size_t index,
-  const unsigned char * value, size_t size, 
+  const unsigned char * value, size_t size,
   const KnowledgeUpdateSettings & settings)
 {
   int result = -1;
-  
+
   if (index < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
     MADARA_GUARD_TYPE guard (mutex_);
     result = context_->set_file (vector_[index], value, size, settings);
   }
-  
+
   return result;
 }
-      
+
 
 int
-madara::knowledge::containers::BufferVector::set_jpeg (
+BufferVector::set_jpeg (
   size_t index,
   const unsigned char * value, size_t size)
 {
   int result = -1;
-  
+
   if (index < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
     MADARA_GUARD_TYPE guard (mutex_);
     result = context_->set_jpeg (vector_[index], value, size, settings_);
   }
-  
+
   return result;
 }
 
 int
-madara::knowledge::containers::BufferVector::set_jpeg (
+BufferVector::set_jpeg (
   size_t index,
-  const unsigned char * value, size_t size, 
+  const unsigned char * value, size_t size,
   const KnowledgeUpdateSettings & settings)
 {
   int result = -1;
-  
+
   if (index < vector_.size () && context_)
   {
     ContextGuard context_guard (*context_);
     MADARA_GUARD_TYPE guard (mutex_);
     result = context_->set_jpeg (vector_[index], value, size, settings);
   }
-  
+
   return result;
 }
 
 void
-madara::knowledge::containers::BufferVector::set_quality (
+BufferVector::set_quality (
   size_t index,
   uint32_t quality,
   const KnowledgeReferenceSettings & settings)
@@ -679,7 +694,7 @@ madara::knowledge::containers::BufferVector::set_quality (
 }
 
 bool
-madara::knowledge::containers::BufferVector::is_true (void) const
+BufferVector::is_true (void) const
 {
   bool result (false);
 
@@ -725,20 +740,22 @@ madara::knowledge::containers::BufferVector::is_true (void) const
 }
 
 bool
-madara::knowledge::containers::BufferVector::is_false (void) const
+BufferVector::is_false (void) const
 {
   return !is_true ();
 }
 
 
 bool
-madara::knowledge::containers::BufferVector::is_true_ (void) const
+BufferVector::is_true_ (void) const
 {
   return is_true ();
 }
 
 bool
-madara::knowledge::containers::BufferVector::is_false_ (void) const
+BufferVector::is_false_ (void) const
 {
   return is_false ();
 }
+
+} } }
