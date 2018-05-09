@@ -281,17 +281,8 @@ BufferVector::resize (
 size_t
 BufferVector::size (void) const
 {
-  if (context_ && name_ != "")
-  {
-    ContextGuard context_guard (*context_);
-    MADARA_GUARD_TYPE guard (mutex_);
-    if (!size_.is_valid ())
-    {
-      size_ = get_size_ref ();
-    }
-    return context_->get (size_).to_integer ();
-  }
-  return 0;
+  MADARA_GUARD_TYPE guard (mutex_);
+  return vector_size();
 }
 
 void
