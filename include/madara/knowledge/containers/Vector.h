@@ -145,7 +145,8 @@ namespace madara
         void transfer_to (Vector & other);
 
         /**
-         * Returns the size of the vector
+         * Returns the size of the local vector. Call resize() first without
+         * arguments to ensure local vector matches data in KnowledgeBase.
          * @return size of the vector
          **/
         size_t size (void) const;

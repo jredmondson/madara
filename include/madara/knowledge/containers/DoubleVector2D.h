@@ -131,7 +131,8 @@ namespace madara
         void resize (const Dimensions & dimensions, bool delete_vars = true);
       
         /**
-         * Returns the size of the vector
+         * Returns the size of the local vector. Call resize() first without
+         * arguments to ensure local vector matches data in KnowledgeBase.
          * @return MxN size of the vector
          **/
         Dimensions size (void) const;
