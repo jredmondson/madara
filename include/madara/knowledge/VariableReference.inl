@@ -9,30 +9,70 @@
  * This file contains the inlined functions for the VariableReference class
  */
 
-inline const char *
-madara::knowledge::VariableReference::get_name (void) const
-{
-  return name_.get_ptr ();
-}
+namespace madara { namespace knowledge {
 
-inline void
-madara::knowledge::VariableReference::set_name (
-const std::string & name)
+inline VariableReference::VariableReference (pair_ptr entry)
+  : entry_ (entry) {}
+
+inline bool
+VariableReference::operator== (const VariableReference & rhs) const
 {
-  // create a new char array and copy over the string
-  uint32_t size = uint32_t (name.length () + 1);
-  char * temp = new char[size];
-  strncpy (temp, name.c_str (), size - 1);
-  temp[size - 1] = 0;
-  name_ = temp;
+  return this->entry_ == rhs.entry_;
 }
 
 inline bool
-madara::knowledge::VariableReference::is_valid (void) const
+VariableReference::operator!= (const VariableReference & rhs) const
 {
-  return record_ != 0;
+  return !(*this == rhs);
 }
 
+inline const char *
+VariableReference::get_name (void) const
+{
+  if (!is_valid()) {
+    return nullptr;
+  }
+  return entry_->first.c_str();
+}
 
+inline bool
+VariableReference::is_valid (void) const
+{
+  return entry_ != nullptr;
+}
+
+inline KnowledgeRecord *
+VariableReference::get_record_unsafe (void) const
+{
+  if (!is_valid()) {
+    return nullptr;
+  }
+  return &entry_->second;
+}
+
+inline void
+VariableReference::assign (pair_ptr entry)
+{
+  entry_ = entry;
+}
+
+inline uint32_t
+max_quality (const knowledge::VariableReferenceMap & records)
+{
+  uint32_t max = 0;
+
+  // iterate over the list and return the max
+  for (const auto &pair : records)
+  {
+    KnowledgeRecord *rec = pair.second.get_record_unsafe();
+    if (!rec) {
+      continue;
+    }
+    max = std::max <uint32_t> (rec->quality, max);
+  }
+  return max;
+}
+
+} }
 
 #endif   // _MADARA_VARIABLE_REFERENCE_INL_

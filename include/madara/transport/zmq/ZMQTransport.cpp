@@ -215,7 +215,7 @@ madara::transport::ZMQTransport::setup (void)
 
 long
 madara::transport::ZMQTransport::send_data (
-  const madara::knowledge::KnowledgeRecords & orig_updates)
+  const madara::knowledge::VariableReferenceMap & orig_updates)
 {
   long result (0);
   const char * print_prefix = "ZMQTransport::send_data";

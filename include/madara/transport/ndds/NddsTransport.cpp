@@ -292,7 +292,7 @@ madara::transport::NddsTransport::setup (void)
 
 long
 madara::transport::NddsTransport::send_data (
-  const knowledge::KnowledgeRecords & updates)
+  const knowledge::VariableReferenceMap & updates)
 {
   long result =
     prep_send (updates, "NddsTransport::send_data:");

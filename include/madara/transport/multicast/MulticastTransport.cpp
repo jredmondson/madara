@@ -240,7 +240,7 @@ madara::transport::MulticastTransport::setup (void)
 
 long
 madara::transport::MulticastTransport::send_data (
-  const madara::knowledge::KnowledgeRecords & orig_updates)
+  const madara::knowledge::VariableReferenceMap & orig_updates)
 {
   long result (0);
   const char * print_prefix = "MulticastTransport::send_data";

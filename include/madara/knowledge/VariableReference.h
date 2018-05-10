@@ -11,6 +11,7 @@
  */
 
 #include <string>
+#include <cstring>
 #include "madara/MADARA_export.h"
 #include "madara/expression/ExpressionTree.h"
 #include "madara/utility/ScopedArray.h"
@@ -40,21 +41,17 @@ namespace madara
       friend class Variables;
       friend class rcw::BaseTracker;
 
+      using pair_ptr = KnowledgeMap::value_type *;
+
       /**
        * Default constructor
        **/
-      VariableReference ();
-      
-      /**
-       * Copy Constructor
-       * @param   rhs      variable reference to copy from
-       **/
-      VariableReference (const VariableReference & rhs);
+      VariableReference () = default;
 
       /**
-       * Destructor
+       * Construct from a pointer to entry in a KnowledgeMap
        **/
-      ~VariableReference ();
+      VariableReference (pair_ptr entry);
 
       /**
        * Checks to see if the variable reference has been initialized
@@ -63,17 +60,11 @@ namespace madara
       bool is_valid (void) const;
 
       /**
-       * Assignment operator
-       * @param   input      variable reference to copy from
-       **/
-      void operator= (const VariableReference & input);
-      
-      /**
        * Equality operator
        * @param   rhs      variable reference to compare to
        **/
       bool operator== (const VariableReference & rhs) const;
-      
+
       /**
        * Inequality operator
        * @param   rhs      variable reference to compare to
@@ -81,32 +72,44 @@ namespace madara
       bool operator!= (const VariableReference & rhs) const;
 
       /**
-       * Returns the name of the variable
+       * Returns the name of the variable.
+       * Returns nullptr if is_valid() is false.
+       *
        * @return    the name of the referenced variable
        **/
       const char * get_name (void) const;
 
-    private:
-      
       /**
-       * Sets the name of the variable
-       * @param    name    the name of the variable
+       * Returns a pointer to the variable's KnowledgeRecord
+       * Do not use this pointer unless you've locked the ThreadSafeContext
+       * it belongs to. Returns nullptr if is_valid() is false.
+       *
+       * @return    the pointer to the KnowledgeRecord
        **/
-      void set_name (const std::string & name);
-      
-      /**
-       * potential string value of the node (size int)
-       **/
-      utility::ScopedArray <const char> name_;
+      KnowledgeRecord *get_record_unsafe (void) const;
 
       /**
-       * Reference to knowledge record
+       * Refer to a different variable
        **/
-      knowledge::KnowledgeRecord * record_;
+      void assign (pair_ptr entry);
+
+    private:
+      pair_ptr entry_ = nullptr;
     };
 
     /// a vector of variable references
     typedef std::vector <VariableReference>  VariableReferences;
+
+    struct VariableReferenceMapCompare
+    {
+      bool operator()(const char *l, const char *r) {
+        return std::strcmp(l, r) < 0;
+      }
+    };
+
+    /// a map of variable references
+    typedef std::map <const char *, VariableReference,
+            VariableReferenceMapCompare> VariableReferenceMap;
   }
 }
 

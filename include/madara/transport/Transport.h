@@ -79,7 +79,7 @@ namespace madara
       /**
        * Destructor
        **/
-      virtual ~Base ();
+      virtual ~Base () = 0;
 
       /**
        * Validates a transport to indicate it is not shutting down
@@ -144,26 +144,59 @@ namespace madara
 
 #endif //_USE_CID_
       
-    /**
-     * Preps a message for sending
-     * @param  orig_updates     updates before send filtering is applied
-     * @param  print_prefix     prefix to include before every log message,
-     *                          e.g., "MyTransport::svc"
-     * @return       -1   Transport is shutting down<br />
-     *               -2   Transport is invalid<br />
-     *               -3   Unable to allocate send buffer<br />
-     *                0   No message to send
-     *               > 0  size of buffered message
-     **/
-      long prep_send (const madara::knowledge::KnowledgeRecords & orig_updates,
+      /**
+       * Preps a message for sending
+       * @param  orig_updates     updates before send filtering is applied
+       * @param  print_prefix     prefix to include before every log message,
+       *                          e.g., "MyTransport::svc"
+       * @return       -1   Transport is shutting down<br />
+       *               -2   Transport is invalid<br />
+       *               -3   Unable to allocate send buffer<br />
+       *                0   No message to send
+       *               > 0  size of buffered message
+       **/
+      long prep_send (const knowledge::VariableReferenceMap & orig_updates,
+        const char * print_prefix);
+
+      /**
+       * DEPRECATED use the VariableReferenceMap overload instead. This version
+       * forwards to that, but does expensive copying first.
+       *
+       * Preps a message for sending
+       * @param  orig_updates     updates before send filtering is applied
+       * @param  print_prefix     prefix to include before every log message,
+       *                          e.g., "MyTransport::svc"
+       * @return       -1   Transport is shutting down<br />
+       *               -2   Transport is invalid<br />
+       *               -3   Unable to allocate send buffer<br />
+       *                0   No message to send
+       *               > 0  size of buffered message
+       **/
+      long prep_send (const knowledge::KnowledgeRecords & orig_updates,
         const char * print_prefix);
 
       /**
        * Sends a list of updates to the domain. This function must be
        * implemented by your transport
+       *
+       * DEPRECATED: implemented the version taking VariableReferenceMap
+       *
        * @return  result of operation or -1 if we are shutting down
        **/
-      virtual long send_data (const madara::knowledge::KnowledgeRecords &) = 0;
+      virtual long send_data (const knowledge::KnowledgeRecords &);
+
+      /**
+       * Sends a list of updates to the domain. This function must be
+       * implemented by your transport
+       *
+       * Default implementation constructs a KnowledgeRecords object and
+       * calls the deprecated version of send_data. This is expensive,
+       * so override this version instead.
+       *
+       * @return  result of operation or -1 if we are shutting down
+       **/
+      virtual long send_data (const knowledge::VariableReferenceMap &);
+
 
       /**
        * Invalidates a transport to indicate it is shutting down

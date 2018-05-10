@@ -11,7 +11,7 @@
 madara::expression::VariableNode::VariableNode (
   const std::string &key,
   madara::knowledge::ThreadSafeContext &context)
-: ComponentNode (context.get_logger ()), key_ (key), record_ (0),
+: ComponentNode (context.get_logger ()), key_ (key),
   context_ (context), key_expansion_necessary_ (false)
 {
   // this key requires expansion. We do the compilation and error checking here
@@ -71,18 +71,13 @@ madara::expression::VariableNode::VariableNode (
       exit (-1);
     }
   }
-  // no variable expansion necessary. Create a hard link to the record_->
+  // no variable expansion necessary. Create a hard link to the ref_->
   // this will save us lots of clock cycles each variable access or
   // mutation.
   else
   {
-    record_ = context_.get_record (key);
+    ref_ = context_.get_ref (key);
   }
-}
-
-madara::expression::VariableNode::~VariableNode ()
-{
-  // do not clean up record_. Let the context clean that up.
 }
 
 std::string madara::expression::VariableNode::expand_opener (
@@ -217,8 +212,8 @@ madara::expression::VariableNode::accept (Visitor &visitor) const
 madara::knowledge::KnowledgeRecord
 madara::expression::VariableNode::item () const
 {
-  if (record_)
-    return *record_;
+  if (ref_.is_valid())
+    return *ref_.get_record_unsafe();
   else
     return context_.get (expand_key ());
 }
@@ -235,24 +230,21 @@ madara::expression::VariableNode::prune (bool & can_change)
 
   // we could call item(), but since it is virtual, it incurs unnecessary
   // overhead.
-  if (record_)
-    return *record_;
+  if (ref_.is_valid())
+    return *ref_.get_record_unsafe();
   else
     return context_.get (expand_key ());
 }
 
-/// Evaluates the node and its children. This does not prune any of
-/// the expression tree, and is much faster than the prune function
-madara::knowledge::KnowledgeRecord 
+/// Evaluates the node and its children.
+madara::knowledge::KnowledgeRecord
 madara::expression::VariableNode::evaluate (
-  const madara::knowledge::KnowledgeUpdateSettings & /*settings*/)
+  const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  // we could call item(), but since it is virtual, it incurs unnecessary
-  // overhead.
-  if (record_)
-    return *record_;
+  if (ref_.is_valid())
+    return *ref_.get_record_unsafe();
   else
-    return context_.get (expand_key ());
+    return context_.get (expand_key (), settings);
 }
 
 const std::string &
@@ -268,20 +260,22 @@ madara::expression::VariableNode::set (
 {
   int result = 0;
 
-  knowledge::KnowledgeRecord * record = record_;
+  knowledge::VariableReference ref = ref_;
 
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
     "VariableNode::set: "
     "Attempting to set variable %s to a KnowledgeRecord parameter (%s).\n",
     key_.c_str (), value.to_string ().c_str ());
 
-  if (!record)
+  if (!ref.is_valid())
   {
-    record = context_.get_record (this->expand_key ());
+    ref = context_.get_ref (key_, settings);
   }
 
-  if (record)
+  if (ref.is_valid())
   {
+    auto record = ref.get_record_unsafe();
+
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
     if (!settings.always_overwrite && record->write_quality < record->quality)
@@ -302,8 +296,7 @@ madara::expression::VariableNode::set (
 
       *record = value;
 
-      std::string expanded_key(expand_key());
-      context_.mark_and_signal (expanded_key.c_str (), record);
+      context_.mark_and_signal (ref);
     }
   }
 
@@ -319,27 +312,7 @@ madara::expression::VariableNode::set (const madara::knowledge::KnowledgeRecord:
     "Attempting to set variable %s to an Integer parameter (%d).\n",
     key_.c_str (), (int)value);
 
-  if (record_)
-  {
-    // notice that we assume the context is locked
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record_->write_quality < record_->quality)
-      return -2;
-
-    // cheaper to read than write, so check to see if
-    // we actually need to update quality and status
-    if (record_->write_quality != record_->quality)
-      record_->quality = record_->write_quality;
-
-    record_->set_value (value);
-
-    std::string expanded_key(expand_key());
-    context_.mark_and_signal (expanded_key.c_str(), record_);
-  
-    return 0;
-  }
-  else
-    return context_.set (expand_key (), value, settings);
+  return VariableNode::set (knowledge::KnowledgeRecord (value), settings);
 }
 
 int
@@ -351,27 +324,7 @@ madara::expression::VariableNode::set (double value,
     "Attempting to set variable %s to a double parameter (%f).\n",
     key_.c_str (), value);
 
-  if (record_)
-  {
-    // notice that we assume the context is locked
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record_->write_quality < record_->quality)
-      return -2;
-
-    // cheaper to read than write, so check to see if
-    // we actually need to update quality and status
-    if (record_->write_quality != record_->quality)
-      record_->quality = record_->write_quality;
-
-    record_->set_value (value);
-
-    std::string expanded_key(expand_key());
-    context_.mark_and_signal (expanded_key.c_str(), record_);
-  
-    return 0;
-  }
-  else
-    return context_.set (expand_key (), value, settings);
+  return VariableNode::set (knowledge::KnowledgeRecord (value), settings);
 }
 
 int
@@ -383,81 +336,65 @@ madara::expression::VariableNode::set (const std::string & value,
     "Attempting to set variable %s to a string parameter (%s).\n",
     key_.c_str (), value.c_str ());
 
-  if (record_)
-  {
-    // notice that we assume the context is locked
-    // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record_->write_quality < record_->quality)
-      return -2;
-
-    // cheaper to read than write, so check to see if
-    // we actually need to update quality and status
-    if (record_->write_quality != record_->quality)
-      record_->quality = record_->write_quality;
-
-    record_->set_value (value);
-
-    std::string expanded_key(expand_key());
-    context_.mark_and_signal (expanded_key.c_str(), record_);
-  
-    return 0;
-  }
-  else
-    return context_.set (expand_key (), value, settings);
+  return VariableNode::set (knowledge::KnowledgeRecord (value), settings);
 }
 
 madara::knowledge::KnowledgeRecord 
 madara::expression::VariableNode::dec (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  if (record_)
+  if (ref_.is_valid())
   {
+    auto record = ref_.get_record_unsafe();
+
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record_->write_quality < record_->quality)
-      return *record_;
+    if (!settings.always_overwrite && record->write_quality < record->quality)
+      return *record;
 
     // cheaper to read than write, so check to see if
     // we actually need to update quality and status
-    if (record_->write_quality != record_->quality)
-      record_->quality = record_->write_quality;
+    if (record->write_quality != record->quality)
+      record->quality = record->write_quality;
 
-    --(*record_);
+    --(*record);
 
     std::string expanded_key(expand_key());
-    context_.mark_and_signal (expanded_key.c_str(), record_);
+    context_.mark_and_signal (ref_);
   
-    return *record_;
+    return *record;
   }
   else
-    return context_.dec (expand_key (), settings);
+    return context_.dec (expand_key(), settings);
 }
 
 madara::knowledge::KnowledgeRecord 
 madara::expression::VariableNode::inc (
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  if (record_)
+  if (ref_.is_valid())
   {
+    auto record = ref_.get_record_unsafe();
+
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record_->write_quality < record_->quality)
-      return *record_;
+    if (!settings.always_overwrite && record->write_quality < record->quality)
+      return *record;
 
     // cheaper to read than write, so check to see if
     // we actually need to update quality and status
-    if (record_->write_quality != record_->quality)
-      record_->quality = record_->write_quality;
+    if (record->write_quality != record->quality)
+      record->quality = record->write_quality;
 
-    ++(*record_);
+    ++(*record);
 
     std::string expanded_key(expand_key());
-    context_.mark_and_signal (expanded_key.c_str(), record_);
+    context_.mark_and_signal (ref_);
   
-    return *record_;
+    return *record;
   }
   else
-    return context_.inc (expand_key (), settings);
+    return context_.inc (expand_key(), settings);
 }
 
 #endif // _MADARA_NO_KARL_

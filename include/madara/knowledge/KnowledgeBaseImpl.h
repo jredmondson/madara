@@ -810,7 +810,10 @@ namespace madara
        * Attaches a transport to the Knowledge Engine. Note that the
        * transport should use the same ThreadSafeContext as the
        * Knowledge Engine.
-       * @param  transport   a new transport to attach tot he Knowledge Base
+       * @param  transport   a new transport to attach to the Knowledge Base
+       *                     This class takes ownership of this pointer and
+       *                     will close and delete the transport as needed.
+       *
        * @return             the number of transports now attached
        **/
       size_t attach_transport (madara::transport::Base * transport);
@@ -1113,7 +1116,7 @@ namespace madara
       transport::QoSTransportSettings   settings_;
       Files                               files_;
 
-      madara::transport::Transports transports_;
+      std::vector<std::unique_ptr<transport::Base>> transports_;
     };
   }
 }

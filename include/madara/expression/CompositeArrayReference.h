@@ -38,9 +38,6 @@ namespace madara
         const std::string &key, ComponentNode * index,
         madara::knowledge::ThreadSafeContext & context);
       
-      /// Dtor.
-      virtual ~CompositeArrayReference (void);
-      
       /// Sets the value stored in the node.
       knowledge::KnowledgeRecord dec (
         const madara::knowledge::KnowledgeUpdateSettings & settings =
@@ -98,18 +95,19 @@ namespace madara
       inline
       madara::knowledge::KnowledgeRecord * get_record (void)
       {
-        if (record_)
-          return record_;
+        if (ref_.is_valid())
+          return ref_.get_record_unsafe();
         else
           return context_.get_record (expand_key ());
       }
 
     private:
-      /// Key for retrieving value of this variable.
-      const std::string key_;
-      madara::knowledge::KnowledgeRecord * record_;
-
       madara::knowledge::ThreadSafeContext & context_;
+
+      /// Key for retrieving value of this variable.
+      std::string key_;
+
+      madara::knowledge::VariableReference ref_;
 
       /// Expansion necessary
       bool key_expansion_necessary_;
