@@ -282,7 +282,7 @@ size_t
 BufferVector::size (void) const
 {
   MADARA_GUARD_TYPE guard (mutex_);
-  return vector_size();
+  return vector_.size();
 }
 
 void
