@@ -258,7 +258,7 @@ int
 
 long
   madara::transport::UdpRegistryServer::send_data (
-  const madara::knowledge::KnowledgeRecords & orig_updates)
+  const madara::knowledge::VariableReferenceMap & orig_updates)
 {
   const char * print_prefix = "UdpRegistryServer::send_data";
   

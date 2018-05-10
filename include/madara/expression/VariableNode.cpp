@@ -237,12 +237,14 @@ madara::expression::VariableNode::prune (bool & can_change)
 }
 
 /// Evaluates the node and its children.
-madara::knowledge::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord
 madara::expression::VariableNode::evaluate (
-  const madara::knowledge::KnowledgeUpdateSettings & /*settings*/)
+  const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  bool dummy;
-  return VariableNode::prune (dummy);
+  if (ref_.is_valid())
+    return *ref_.get_record_unsafe();
+  else
+    return context_.get (expand_key (), settings);
 }
 
 const std::string &
@@ -267,12 +269,12 @@ madara::expression::VariableNode::set (
 
   if (!ref.is_valid())
   {
-    ref = context_.get_ref (key_);
+    ref = context_.get_ref (key_, settings);
   }
 
   if (ref.is_valid())
   {
-    auto record = ref_.get_record_unsafe();
+    auto record = ref.get_record_unsafe();
 
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
@@ -294,7 +296,7 @@ madara::expression::VariableNode::set (
 
       *record = value;
 
-      context_.mark_and_signal (ref_);
+      context_.mark_and_signal (ref);
     }
   }
 
@@ -363,7 +365,7 @@ madara::expression::VariableNode::dec (
     return *record;
   }
   else
-    return context_.dec (ref_);
+    return context_.dec (expand_key(), settings);
 }
 
 madara::knowledge::KnowledgeRecord 
@@ -392,7 +394,7 @@ madara::expression::VariableNode::inc (
     return *record;
   }
   else
-    return context_.inc (ref_);
+    return context_.inc (expand_key(), settings);
 }
 
 #endif // _MADARA_NO_KARL_

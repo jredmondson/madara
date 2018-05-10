@@ -6,7 +6,9 @@
 
 #include <algorithm>
 
-madara::transport::Base::Base (const std::string & id,
+namespace madara { namespace transport {
+
+Base::Base (const std::string & id,
   TransportSettings & new_settings,
   knowledge::ThreadSafeContext & context) 
   : is_valid_ (false), shutting_down_ (false),
@@ -25,12 +27,12 @@ madara::transport::Base::Base (const std::string & id,
 #endif // _USE_CID_
 }
 
-madara::transport::Base::~Base ()
+Base::~Base ()
 {
 }
 
 int
-madara::transport::Base::setup (void) 
+Base::setup (void) 
 {
   // check for an on_data_received ruleset
   if (settings_.on_data_received_logic.length () != 0)
@@ -41,7 +43,7 @@ madara::transport::Base::setup (void)
       settings_.on_data_received_logic.c_str ());
     
 #ifndef _MADARA_NO_KARL_
-    madara::expression::Interpreter interpreter;
+    expression::Interpreter interpreter;
     on_data_received_ = interpreter.interpret (context_,
       settings_.on_data_received_logic);
 #endif // _MADARA_NO_KARL_
@@ -103,13 +105,13 @@ madara::transport::Base::setup (void)
 }
 
 void
-madara::transport::Base::close (void)
+Base::close (void)
 {
   invalidate_transport ();
 }
 
 int
-madara::transport::process_received_update (
+process_received_update (
   const char * buffer,
   uint32_t bytes_read,
   const std::string & id,
@@ -737,7 +739,7 @@ madara::transport::process_received_update (
 
 
 int
-madara::transport::prep_rebroadcast (
+prep_rebroadcast (
   knowledge::ThreadSafeContext & context,
   char * buffer,
   int64_t & buffer_remaining,
@@ -770,7 +772,7 @@ madara::transport::prep_rebroadcast (
     if (buffer_remaining > 0)
     {
       int size = (int)(settings.queue_length - buffer_remaining);
-      *message_size = madara::utility::endian_swap ((uint64_t)size);
+      *message_size = utility::endian_swap ((uint64_t)size);
 
       madara_logger_log (context.get_logger (), logger::LOG_MINOR,
         "%s:" \
@@ -812,8 +814,8 @@ madara::transport::prep_rebroadcast (
   return result;
 }
 
-long madara::transport::Base::prep_send (
-  const madara::knowledge::KnowledgeRecords & orig_updates,
+long Base::prep_send (
+  const knowledge::VariableReferenceMap & orig_updates,
   const char * print_prefix)
 {
   // check to see if we are shutting down
@@ -834,7 +836,7 @@ long madara::transport::Base::prep_send (
 
     return ret;
   }
- 
+
   // get the maximum quality from the updates
   uint32_t quality = knowledge::max_quality (orig_updates);
   bool reduced = false;
@@ -845,7 +847,7 @@ long madara::transport::Base::prep_send (
     "%s:" \
     " Applying filters before sending...\n",
     print_prefix);
-  
+
   TransportContext transport_context (TransportContext::SENDING_OPERATION,
       receive_monitor_.get_bytes_per_second (),
       send_monitor_.get_bytes_per_second (),
@@ -880,16 +882,15 @@ long madara::transport::Base::prep_send (
      * filter the updates according to the filters specified by
      * the user in QoSTransportSettings (if applicable)
      **/
-    for (knowledge::KnowledgeRecords::const_iterator i = orig_updates.begin ();
-          i != orig_updates.end (); ++i)
+    for (const auto &e : orig_updates)
     {
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "%s:" \
         " Calling filter chain.\n", print_prefix);
 
       // filter the record according to the send filter chain
-      knowledge::KnowledgeRecord result = settings_.filter_send (*i->second, i->first,
-        transport_context);
+      knowledge::KnowledgeRecord result = settings_.filter_send (
+          *e.second.get_record_unsafe (), e.first, transport_context);
 
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "%s:" \
@@ -901,7 +902,7 @@ long madara::transport::Base::prep_send (
           "%s:" \
           " Adding record to update list.\n", print_prefix);
 
-        filtered_updates[i->first] = result;
+        filtered_updates[e.first] = result;
       }
       else
       {
@@ -1026,7 +1027,7 @@ long madara::transport::Base::prep_send (
     // send data is generally an assign type. However, MessageHeader is
     // flexible enough to support both, and this will simply our read thread
     // handling
-    header->type = madara::transport::MULTIASSIGN;
+    header->type = MULTIASSIGN;
 
   }
 
@@ -1062,7 +1063,7 @@ long madara::transport::Base::prep_send (
   **/
 
   // zero out the memory
-  //memset(buffer, 0, madara::transport::MAX_PACKET_SIZE);
+  //memset(buffer, 0, MAX_PACKET_SIZE);
 
   // Message update format
   // [key|value]
@@ -1097,7 +1098,7 @@ long madara::transport::Base::prep_send (
   if (buffer_remaining > 0)
   {
     size = (long)(settings_.queue_length - buffer_remaining);
-    *message_size = madara::utility::endian_swap ((uint64_t)size);
+    *message_size = utility::endian_swap ((uint64_t)size);
     
     // before we send to others, we first execute rules
     if (settings_.on_data_received_logic.length () != 0)
@@ -1147,3 +1148,46 @@ long madara::transport::Base::prep_send (
 
   return size;
 }
+
+long
+Base::prep_send (const knowledge::KnowledgeRecords & orig_updates,
+                 const char * print_prefix)
+{
+  knowledge::VariableReferenceMap vrmap;
+  knowledge::KnowledgeMap kmap;
+
+  for (const auto &cur : orig_updates) {
+    auto iter = kmap.emplace_hint (kmap.end(),
+        std::make_pair(cur.first, *cur.second));
+    vrmap.emplace_hint (vrmap.end(),
+        std::make_pair(iter->first.c_str(), &*iter));
+  }
+
+  return prep_send (vrmap, print_prefix);
+}
+
+long
+Base::send_data (const knowledge::KnowledgeRecords &/*map*/)
+{
+  madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
+    "transport::Base: send_data(KnowledgeRecords) not implemented, "
+    "but was called\n");
+  exit (-1);
+}
+
+long
+Base::send_data (const knowledge::VariableReferenceMap &map)
+{
+  knowledge::KnowledgeRecords records;
+
+  for (const auto &e : map)
+  {
+    records.emplace_hint(records.end(), std::piecewise_construct,
+        std::forward_as_tuple(e.first),
+        std::forward_as_tuple(e.second.get_record_unsafe()));
+  }
+
+  return send_data (records);
+}
+
+} }

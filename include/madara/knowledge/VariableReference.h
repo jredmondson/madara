@@ -46,7 +46,7 @@ namespace madara
       /**
        * Default constructor
        **/
-      VariableReference ();
+      VariableReference () = default;
 
       /**
        * Construct from a pointer to entry in a KnowledgeMap

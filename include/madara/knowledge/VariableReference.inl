@@ -56,6 +56,23 @@ VariableReference::assign (pair_ptr entry)
   entry_ = entry;
 }
 
+inline uint32_t
+max_quality (const knowledge::VariableReferenceMap & records)
+{
+  uint32_t max = 0;
+
+  // iterate over the list and return the max
+  for (const auto &pair : records)
+  {
+    KnowledgeRecord *rec = pair.second.get_record_unsafe();
+    if (!rec) {
+      continue;
+    }
+    max = std::max <uint32_t> (rec->quality, max);
+  }
+  return max;
+}
+
 } }
 
 #endif   // _MADARA_VARIABLE_REFERENCE_INL_

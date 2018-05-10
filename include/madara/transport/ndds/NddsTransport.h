@@ -44,7 +44,7 @@ namespace madara
        * @param   updates listing of all updates that must be sent
        * @return  result of write operation or -1 if we are shutting down
        **/
-      long send_data (const knowledge::KnowledgeRecords & updates);
+      long send_data (const knowledge::VariableReferenceMap & updates) override;
 	  
       /**
        * Accesses reliability setting

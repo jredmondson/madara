@@ -440,8 +440,9 @@ KnowledgeBaseImpl::send_modifieds (
       {
         transports_.lock ();
         // send across each transport
-        for (auto transport : transports_)
-          transport->send_data (modified);
+        size_t size = transports_.size();
+        for (size_t i = 0; i < size; ++i)
+          transports_[i]->send_data (modified);
 
         transports_.unlock ();
 
@@ -453,8 +454,6 @@ KnowledgeBaseImpl::send_modifieds (
       {
         VariableReferenceMap allowed_modifieds;
         // otherwise, we are only allowed to send a subset of modifieds
-        for (KnowledgeRecords::const_iterator i = modified.begin ();
-             i != modified.end (); ++i)
         for (const auto &entry : modified)
         {
           if (settings.send_list.find (entry.first) != settings.send_list.end ())
@@ -469,13 +468,14 @@ KnowledgeBaseImpl::send_modifieds (
           transports_.lock ();
 
           // send across each transport
-          for (auto transport : transports_)
-            transport->send_data (allowed_modifieds);
+          size_t size = transports_.size();
+          for (size_t i = 0; i < size; ++i)
+            transports_[i]->send_data (allowed_modifieds);
 
           transports_.unlock ();
 
           // reset modified list for the allowed modifications
-          for (const auto &entry : allowed_modified)
+          for (const auto &entry : allowed_modifieds)
           {
             map_.reset_modified (entry.first);
           }

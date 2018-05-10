@@ -99,11 +99,12 @@ ThreadSafeContext::get_ref (
   }
 
   auto iter = map_.lower_bound(*key_ptr);
-  if (ret == map_.end() || ret->first != *key_ptr) {
-    iter = map_.emplace_hint(ret);
+  if (iter == map_.end() || iter->first != *key_ptr) {
+    iter = map_.emplace_hint(iter, std::piecewise_construct,
+        std::forward_as_tuple(*key_ptr), std::forward_as_tuple());
   }
 
-  return {&*iter};
+  return &*iter;
 }
 
 
@@ -132,7 +133,7 @@ ThreadSafeContext::get_ref (
   }
 
   KnowledgeMap::const_iterator found = map_.find (*key_ptr);
-  return {const_cast<VariableReference::pair_ptr>(&found->second)};
+  return {const_cast<VariableReference::pair_ptr>(&*found)};
 }
 
 // set the value of a variable
@@ -459,9 +460,10 @@ ThreadSafeContext::set_if_unequal (
     else if (found->second == rhs)
       result = 0;
   } else {
-    found = map_.emplace(std::piecewise_construct,
+    auto ret = map_.emplace(std::piecewise_construct,
                          std::forward_as_tuple(*key_ptr),
                          std::make_tuple());
+    found = ret.first;
   }
 
   KnowledgeRecord & record = found->second;
@@ -483,7 +485,7 @@ ThreadSafeContext::set_if_unequal (
     // we have a situation where the value needs to be changed
     record.set_value (value);
 
-    mark_and_signal ({*found}, settings);
+    mark_and_signal (&*found, settings);
   }
 
   // value was changed
@@ -544,9 +546,10 @@ ThreadSafeContext::set_if_unequal (
     else if (found->second == rhs)
       result = 0;
   } else {
-    found = map_.emplace(std::piecewise_construct,
+    auto ret = map_.emplace(std::piecewise_construct,
                          std::forward_as_tuple(*key_ptr),
                          std::make_tuple());
+    found = ret.first;
   }
 
   KnowledgeRecord & record = found->second;
@@ -568,7 +571,7 @@ ThreadSafeContext::set_if_unequal (
     // we have a situation where the value needs to be changed
     record.set_value (value);
 
-    mark_and_signal ({&*found}, &record, settings);
+    mark_and_signal (&*found, settings);
   }
 
   // value was changed
@@ -629,9 +632,10 @@ ThreadSafeContext::set_if_unequal (
     else if (found->second == rhs)
       result = 0;
   } else {
-    found = map_.emplace(std::piecewise_construct,
+    auto ret = map_.emplace(std::piecewise_construct,
                          std::forward_as_tuple(*key_ptr),
                          std::make_tuple());
+    found = ret.first;
   }
 
   KnowledgeRecord & record = found->second;
@@ -654,7 +658,7 @@ ThreadSafeContext::set_if_unequal (
     record.set_value (value);
 
     // otherwise set the value
-    mark_and_signal ({&*found}, settings);
+    mark_and_signal (&*found, settings);
   }
   // value was changed
   return result;
@@ -709,20 +713,20 @@ ThreadSafeContext::update_record_from_external (
     // if we reach this point, then the record is safe to copy
     found->second.set_value (rhs);
 
-    knowledge::KnowledgeRecord & current_value = found->second;
-
-    mark_and_signal ({&*found}, settings);
+    mark_and_signal (&*found, settings);
   }
   else
   {
     // if we reach this point, then we have to create the record
-    found = map_.emplace(std::piecewise_construct,
+    auto ret = map_.emplace(std::piecewise_construct,
                          std::forward_as_tuple(*key_ptr),
                          std::make_tuple());
+    found = ret.first;
+
     knowledge::KnowledgeRecord & current_value = found->second;
     current_value.set_value (rhs);
 
-    mark_and_signal ({&*found}, settings);
+    mark_and_signal (&*found, settings);
   }
 
   // if we need to update the global clock, then update it
@@ -1378,17 +1382,17 @@ const KnowledgeReferenceSettings &)
 
   {
     // check the changed map
-    std::pair<KnowledgeRecords::iterator, KnowledgeRecords::iterator>
+    std::pair<VariableReferenceMap::iterator, VariableReferenceMap::iterator>
       changed (changed_map_.lower_bound (prefix.c_str()), changed_map_.end ());
 
     // does our lower bound actually contain the prefix?
-    if (prefix.compare (changed.first->first, prefix.size()) == 0)
+    if (prefix.compare (0, prefix.size(), changed.first->first, prefix.size()) == 0)
     {
       changed.second = changed.first;
 
       // until we find an entry that does not begin with prefix, loop
       for (++changed.second;
-        (prefix.compare (changed.second->first, prefix.size()) == 0) &&
+        (prefix.compare (0, prefix.size(), changed.second->first, prefix.size()) == 0) &&
         changed.second != changed_map_.end ();
         ++changed.second) {}
 
@@ -1398,19 +1402,19 @@ const KnowledgeReferenceSettings &)
 
   {
     // check the local changed map
-    std::pair<KnowledgeRecords::iterator, KnowledgeRecords::iterator>
+    std::pair<VariableReferenceMap::iterator, VariableReferenceMap::iterator>
       local_changed (local_changed_map_.lower_bound (prefix.c_str()),
       local_changed_map_.end ());
 
 
     // does our lower bound actually contain the prefix?
-    if (prefix.compare (local_changed.first->first, prefix.size()) == 0)
+    if (prefix.compare (0, prefix.size(), local_changed.first->first, prefix.size()) == 0)
     {
       local_changed.second = local_changed.first;
 
       // until we find an entry that does not begin with prefix, loop
       for (++local_changed.second;
-        (prefix.compare (local_changed.second->first, prefix.size()) == 0) &&
+        (prefix.compare (0, prefix.size(), local_changed.second->first, prefix.size()) == 0) &&
         local_changed.second != local_changed_map_.end ();
         ++local_changed.second) {}
 
@@ -2926,7 +2930,7 @@ ThreadSafeContext::save_checkpoint (
       checkpoint_header.clock = clock_;
     }
 
-    const knowledge::KnowledgeRecords & local_records = this->get_local_modified ();
+    const knowledge::VariableReferenceMap & local_records = this->get_local_modified ();
 
     if (local_records.size () != 0)
     {
@@ -2953,10 +2957,11 @@ ThreadSafeContext::save_checkpoint (
         // lock the context
         MADARA_GUARD_TYPE guard (mutex_);
 
-        for (KnowledgeRecords::const_iterator i = local_records.begin ();
-             i != local_records.end (); ++i)
+        for (const auto &e : local_records)
         {
-          if (i->second->exists ())
+          auto record = e.second.get_record_unsafe();
+
+          if (record->exists ())
           {
             // check if the prefix is allowed
             if (settings.prefixes.size () > 0)
@@ -2966,7 +2971,7 @@ ThreadSafeContext::save_checkpoint (
                    j < settings.prefixes.size () && !prefix_found; ++j)
               {
                 if (madara::utility::begins_with (
-                  i->second->to_string (), settings.prefixes[j]))
+                  record->to_string (), settings.prefixes[j]))
                 {
                   prefix_found = true;
                 }
@@ -2977,7 +2982,7 @@ ThreadSafeContext::save_checkpoint (
             } // end if prefixes exists
 
             // get the encoded size of the record for checking buffer boundaries
-            int64_t encoded_size = i->second->get_encoded_size (i->first);
+            int64_t encoded_size = record->get_encoded_size (e.first);
 
             madara_logger_ptr_log (logger_, logger::LOG_MINOR,
               "ThreadSafeContext::save_checkpoint:" \
@@ -3012,7 +3017,7 @@ ThreadSafeContext::save_checkpoint (
               } // end if larger than buffer
             } // end if larger than buffer remaining
 
-            current = i->second->write (current, i->first, buffer_remaining);
+            current = record->write (current, e.first, buffer_remaining);
 
             checkpoint_header.size += (uint64_t)encoded_size;
             ++checkpoint_header.updates;
@@ -3142,12 +3147,13 @@ ThreadSafeContext::save_checkpoint (
       // lock the context
       MADARA_GUARD_TYPE guard (mutex_);
 
-      const knowledge::KnowledgeRecords & local_records = this->get_local_modified ();
+      const knowledge::VariableReferenceMap & local_records = this->get_local_modified ();
 
-      for (KnowledgeRecords::const_iterator i = local_records.begin ();
-           i != local_records.end (); ++i)
+      for (const auto &e : local_records)
       {
-        if (i->second->exists ())
+        auto record = e.second.get_record_unsafe();
+
+        if (record->exists ())
         {
           // check if the prefix is allowed
           if (settings.prefixes.size () > 0)
@@ -3164,11 +3170,11 @@ ThreadSafeContext::save_checkpoint (
               madara_logger_ptr_log (logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_checkpoint:" \
                 " checking record %s against prefix %s.\n",
-                i->first.c_str (),
+                e.first,
                 settings.prefixes[j].c_str ());
 
               if (madara::utility::begins_with (
-                    i->first, settings.prefixes[j]))
+                    e.first, settings.prefixes[j]))
               {
                 madara_logger_ptr_log (logger_, logger::LOG_MINOR,
                   "ThreadSafeContext::save_checkpoint:" \
@@ -3189,7 +3195,7 @@ ThreadSafeContext::save_checkpoint (
           }
 
           // get the encoded size of the record for checking buffer boundaries
-          int64_t encoded_size = i->second->get_encoded_size (i->first);
+          int64_t encoded_size = record->get_encoded_size (e.first);
 
           madara_logger_ptr_log (logger_, logger::LOG_MINOR,
             "ThreadSafeContext::save_checkpoint:" \
@@ -3200,7 +3206,7 @@ ThreadSafeContext::save_checkpoint (
           meta.size += encoded_size;
           checkpoint_header.size += encoded_size;
 
-          current = i->second->write (current, i->first, buffer_remaining);
+          current = record->write (current, e.first, buffer_remaining);
 
           madara_logger_ptr_log (logger_, logger::LOG_MINOR,
             "ThreadSafeContext::save_checkpoint:" \
@@ -3305,8 +3311,8 @@ ThreadSafeContext::save_checkpoint (
     // lock the context
     MADARA_GUARD_TYPE guard (mutex_);
 
-    const knowledge::KnowledgeRecords & records = this->get_modifieds ();
-    const knowledge::KnowledgeRecords & local_records = this->get_local_modified ();
+    const knowledge::VariableReferenceMap & records = this->get_modifieds ();
+    const knowledge::VariableReferenceMap & local_records = this->get_local_modified ();
 
     if (records.size () + local_records.size () != 0)
     {
@@ -3320,13 +3326,14 @@ ThreadSafeContext::save_checkpoint (
         "ThreadSafeContext::save_checkpoint:" \
         " writing records\n");
 
-      for (KnowledgeRecords::const_iterator i = records.begin ();
-           i != records.end (); ++i)
+      for (const auto &e : records)
       {
-        if (i->second->exists ())
+        auto record = e.second.get_record_unsafe();
+
+        if (record->exists ())
         {
           // get the encoded size of the record for checking buffer boundaries
-          int64_t encoded_size = i->second->get_encoded_size (i->first);
+          int64_t encoded_size = record->get_encoded_size (e.first);
           ++checkpoint_header.updates;
           meta.size += encoded_size;
           checkpoint_header.size += encoded_size;
@@ -3364,17 +3371,18 @@ ThreadSafeContext::save_checkpoint (
             } // end if larger than buffer
           } // end if larger than buffer remaining
 
-          current = i->second->write (current, i->first, buffer_remaining);
+          current = record->write (current, e.first, buffer_remaining);
         }
       } // end records loop
 
-      for (KnowledgeRecords::const_iterator i = local_records.begin ();
-           i != local_records.end (); ++i)
+      for (const auto &e : local_records)
       {
-        if (i->second->exists ())
+        auto record = e.second.get_record_unsafe();
+
+        if (record->exists ())
         {
           // get the encoded size of the record for checking buffer boundaries
-          int64_t encoded_size = i->second->get_encoded_size (i->first);
+          int64_t encoded_size = record->get_encoded_size (e.first);
           ++checkpoint_header.updates;
           meta.size += encoded_size;
           checkpoint_header.size += encoded_size;
@@ -3412,7 +3420,7 @@ ThreadSafeContext::save_checkpoint (
             } // end if larger than buffer
           } // end if larger than buffer remaining
 
-          current = i->second->write (current, i->first, buffer_remaining);
+          current = record->write (current, e.first, buffer_remaining);
         }
       }
 

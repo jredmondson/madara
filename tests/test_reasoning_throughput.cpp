@@ -1296,6 +1296,7 @@ uint64_t test_get_ref (
   {
     madara::knowledge::VariableReference variable =
       knowledge.get_ref ("var1");
+    (void)variable;
   }
 
   timer.stop ();
@@ -1324,6 +1325,7 @@ uint64_t test_get_expand_ref (
     madara::knowledge::VariableReference variable =
       knowledge.get_ref ("var1",
       madara::knowledge::KnowledgeReferenceSettings (true));
+    (void)variable;
   }
 
   timer.stop ();
