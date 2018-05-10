@@ -1,6 +1,6 @@
 #include "SimTime.h"
 
-#if defined(MADARA_FEATURE_SIMTIME) && MADARA_FEATURE_SIMTIME==1
+#ifdef MADARA_FEATURE_SIMTIME
 
 #include <chrono>
 

@@ -12,7 +12,7 @@ namespace madara { namespace utility {
 #define MADARA_EXTERN_C
 #endif
 
-#if defined(MADARA_FEATURE_SIMTIME) && MADARA_FEATURE_SIMTIME==1
+#ifdef MADARA_FEATURE_SIMTIME
 
 typedef void (*sim_time_callback_fn)(uint64_t*, double*);
 
