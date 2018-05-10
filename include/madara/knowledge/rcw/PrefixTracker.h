@@ -28,7 +28,7 @@
 
 namespace madara { namespace knowledge { namespace rcw
 {
-  /// Tracker that puts values into a multiple prefixed KnowledgeRecords.
+  /// Tracker that puts values into a multiple prefixed KnowledgeRecord.
   /// Used internally by Transaction. Not visible to normal users.
   /// Default implementation gives error if type isn't std::vector<Tracked<...>
   template<class T, class R, bool RD = true, bool WR = true, class dummy = void>
@@ -46,7 +46,7 @@ namespace madara { namespace knowledge { namespace rcw
     static_assert(sizeof(T) < 0, "Cannot create prefix tracker that can neither read nor write");
   };
 
-  /// Tracker that puts values into a multiple prefixed KnowledgeRecords.
+  /// Tracker that puts values into a multiple prefixed KnowledgeRecord.
   /// Used internally by Transaction. Not visible to normal users.
   /// Specialization of PrefixTracker for std::vector<Tracked<...>>
   template<class T, bool RD, bool WR>

@@ -163,14 +163,13 @@ const EvalSettings & settings)
 {
   // lock the context and apply modified flags and current clock to
   // all global variables
-  map_.lock ();
+  MADARA_GUARD_TYPE guard (map_.mutex_);
+
   map_.apply_modified ();
 
   int ret = 0;
 
   send_modifieds ("KnowledgeBaseImpl:apply_modified", settings);
-
-  map_.unlock ();
 
   return ret;
 }
@@ -252,6 +251,8 @@ const EvalSettings & settings)
 inline void
 KnowledgeBaseImpl::activate_transport (void)
 {
+  MADARA_GUARD_TYPE guard (map_.mutex_);
+
   if (transports_.size () == 0)
   {
     attach_transport (id_, settings_);
@@ -529,22 +530,43 @@ KnowledgeBaseImpl::evaluate (
 
 inline size_t
 KnowledgeBaseImpl::attach_transport (
-  madara::transport::Base * transport)
+  transport::Base * transport)
 {
-  transports_.push_back (transport);
+  MADARA_GUARD_TYPE guard (map_.mutex_);
+
+  transports_.emplace_back (transport);
   return transports_.size ();
 }
 
 inline size_t
 KnowledgeBaseImpl::get_num_transports (void)
 {
+  MADARA_GUARD_TYPE guard (map_.mutex_);
+
   return transports_.size ();
 }
 
 inline size_t
 KnowledgeBaseImpl::remove_transport (size_t index)
 {
-  return transports_.erase (index);
+  std::unique_ptr<transport::Base> transport;
+  size_t size = 0;
+  {
+    MADARA_GUARD_TYPE guard (map_.mutex_);
+    size = transports_.size ();
+    if (index < size) {
+      using std::swap;
+      swap (transport, transports_[index]);
+      transports_.erase (transports_.begin() + index);
+      size = transports_.size ();
+    }
+  }
+
+  if (transport) {
+    transport->close ();
+  }
+
+  return size;
 }
 
 /**

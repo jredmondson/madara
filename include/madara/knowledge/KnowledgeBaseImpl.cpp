@@ -185,10 +185,12 @@ transport::TransportSettings & settings)
       " no transport was specified. Setting transport to null.\n");
   }
 
+  MADARA_GUARD_TYPE guard (map_.mutex_);
+
   // if we have a valid transport, add it to the transports vector
   if (transport != 0)
   {
-    transports_.push_back (transport);
+    transports_.emplace_back (transport);
   }
 
   return transports_.size ();
@@ -197,19 +199,20 @@ transport::TransportSettings & settings)
 void
 KnowledgeBaseImpl::close_transport (void)
 {
-  if (transports_.size () > 0)
+  decltype(transports_) old_transports;
   {
-    for (unsigned int i = 0; i < transports_.size (); ++i)
-    {
-      transports_[i]->close ();
-      delete transports_[i];
+    MADARA_GUARD_TYPE guard (map_.mutex_);
+    using std::swap;
+    swap(old_transports, transports_);
+  }
 
-      madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
-        "KnowledgeBaseImpl::close_transport:" \
-        " transport has been closed\n");
-    }
+  for (auto &transport : old_transports)
+  {
+    transport->close ();
 
-    transports_.clear ();
+    madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
+      "KnowledgeBaseImpl::close_transport:" \
+      " transport has been closed\n");
   }
 }
 
@@ -259,22 +262,24 @@ const WaitSettings & settings)
     map_.print (settings.pre_print_statement, logger::LOG_EMERGENCY);
 
   // lock the context
-  map_.lock ();
 
-  madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
-    "KnowledgeBaseImpl::wait:" \
-    " waiting on %s\n", ce.logic.c_str ());
+  KnowledgeRecord last_value;
+  {
+    MADARA_GUARD_TYPE guard (map_.mutex_);
 
-  KnowledgeRecord last_value = ce.expression.evaluate (settings);
+    madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
+      "KnowledgeBaseImpl::wait:" \
+      " waiting on %s\n", ce.logic.c_str ());
 
-  madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
-    "KnowledgeBaseImpl::wait:" \
-    " completed first eval to get %s\n",
-    last_value.to_string ().c_str ());
+    last_value = ce.expression.evaluate (settings);
 
-  send_modifieds ("KnowledgeBaseImpl:wait", settings);
+    madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
+      "KnowledgeBaseImpl::wait:" \
+      " completed first eval to get %s\n",
+      last_value.to_string ().c_str ());
 
-  map_.unlock ();
+    send_modifieds ("KnowledgeBaseImpl:wait", settings);
+  }
 
   current = ACE_High_Res_Timer::gettimeofday ();
 
@@ -310,23 +315,23 @@ const WaitSettings & settings)
     // relock - basically we need to evaluate the tree again, and
     // we can't have a bunch of people changing the variables as
     // while we're evaluating the tree.
-    map_.lock ();
+    {
+      MADARA_GUARD_TYPE guard (map_.mutex_);
 
+      madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
+        "KnowledgeBaseImpl::wait:" \
+        " waiting on %s\n", ce.logic.c_str ());
 
-    madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
-      "KnowledgeBaseImpl::wait:" \
-      " waiting on %s\n", ce.logic.c_str ());
+      last_value = ce.expression.evaluate (settings);
 
-    last_value = ce.expression.evaluate (settings);
+      madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
+        "KnowledgeBaseImpl::wait:" \
+        " completed eval to get %s\n",
+        last_value.to_string ().c_str ());
 
-    madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
-      "KnowledgeBaseImpl::wait:" \
-      " completed eval to get %s\n",
-      last_value.to_string ().c_str ());
+      send_modifieds ("KnowledgeBaseImpl:wait", settings);
 
-    send_modifieds ("KnowledgeBaseImpl:wait", settings);
-
-    map_.unlock ();
+    }
     map_.signal ();
 
     // get current time
@@ -367,19 +372,19 @@ const EvalSettings & settings)
     map_.print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
   // lock the context from being updated by any ongoing threads
-  map_.lock ();
+  {
+    MADARA_GUARD_TYPE guard (map_.mutex_);
 
-  // interpret the current expression and then evaluate it
-  //tree = interpreter_.interpret (map_, expression);
-  last_value = ce.expression.evaluate (settings);
+    // interpret the current expression and then evaluate it
+    //tree = interpreter_.interpret (map_, expression);
+    last_value = ce.expression.evaluate (settings);
 
-  send_modifieds ("KnowledgeBaseImpl:evaluate", settings);
+    send_modifieds ("KnowledgeBaseImpl:evaluate", settings);
 
-  // print the post statement at highest log level (cannot be masked)
-  if (settings.post_print_statement != "")
-    map_.print (settings.post_print_statement, logger::LOG_ALWAYS);
-
-  map_.unlock ();
+    // print the post statement at highest log level (cannot be masked)
+    if (settings.post_print_statement != "")
+      map_.print (settings.post_print_statement, logger::LOG_ALWAYS);
+  }
 
   return last_value;
 }
@@ -403,19 +408,19 @@ const EvalSettings & settings)
     map_.print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
   // lock the context from being updated by any ongoing threads
-  map_.lock ();
+  {
+    MADARA_GUARD_TYPE guard (map_.mutex_);
 
-  // interpret the current expression and then evaluate it
-  //tree = interpreter_.interpret (map_, expression);
-  last_value = map_.evaluate (root, settings);
+    // interpret the current expression and then evaluate it
+    //tree = interpreter_.interpret (map_, expression);
+    last_value = map_.evaluate (root, settings);
 
-  send_modifieds ("KnowledgeBaseImpl:evaluate", settings);
+    send_modifieds ("KnowledgeBaseImpl:evaluate", settings);
 
-  // print the post statement at highest log level (cannot be masked)
-  if (settings.post_print_statement != "")
-    map_.print (settings.post_print_statement, logger::LOG_ALWAYS);
-
-  map_.unlock ();
+    // print the post statement at highest log level (cannot be masked)
+    if (settings.post_print_statement != "")
+      map_.print (settings.post_print_statement, logger::LOG_ALWAYS);
+  }
 
   return last_value;
 }
@@ -438,13 +443,11 @@ KnowledgeBaseImpl::send_modifieds (
       // if there is not an allowed send_list list
       if (settings.send_list.size () == 0)
       {
-        transports_.lock ();
         // send across each transport
-        size_t size = transports_.size();
-        for (size_t i = 0; i < size; ++i)
-          transports_[i]->send_data (modified);
+        for (auto &transport : transports_) {
+          transport->send_data (modified);
+        }
 
-        transports_.unlock ();
 
         // reset the modified map
         map_.reset_modified ();
@@ -465,14 +468,10 @@ KnowledgeBaseImpl::send_modifieds (
         // if the subset was greater than zero, we send the subset
         if (allowed_modifieds.size () > 0)
         {
-          transports_.lock ();
-
           // send across each transport
-          size_t size = transports_.size();
-          for (size_t i = 0; i < size; ++i)
-            transports_[i]->send_data (allowed_modifieds);
-
-          transports_.unlock ();
+          for (auto &transport : transports_) {
+            transport->send_data (allowed_modifieds);
+          }
 
           // reset modified list for the allowed modifications
           for (const auto &entry : allowed_modifieds)
