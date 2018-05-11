@@ -21,8 +21,10 @@
 
 #include "madara/knowledge/KnowledgeBase.h"
 
+namespace madara { namespace utility {
+
 std::string
-madara::utility::get_version (void)
+get_version (void)
 {
 #include "madara/Version.h"
 
@@ -32,7 +34,7 @@ madara::utility::get_version (void)
 
 
 uint32_t
-madara::utility::get_uint_version (void)
+get_uint_version (void)
 {
   std::string str_version = get_version ();
   unsigned char version_buffer[4] = {0,0,0,0};
@@ -68,7 +70,7 @@ madara::utility::get_uint_version (void)
 }
 
 std::string
-madara::utility::to_string_version (uint32_t version)
+to_string_version (uint32_t version)
 {
   std::stringstream new_version;
   unsigned char * version_ptr = (unsigned char *)&version;
@@ -87,56 +89,10 @@ madara::utility::to_string_version (uint32_t version)
   return new_version.str ();
 }
 
-/// Convert string to uppercase
-std::string
-madara::utility::strip_prefix (
-const std::string & input, const std::string & prefix)
-{
-  return input.substr (prefix.size ());
-}
-
-
-/// Convert string to uppercase
-std::string &
-madara::utility::upper (std::string &input)
-{
-  for (std::string::iterator cur = input.begin ();
-       cur != input.end (); ++cur)
-    *cur = toupper (*cur);
-
-  return input;
-}
-
-/// Convert string to lowercase 
-std::string & 
-madara::utility::dds_topicify (std::string & input)
-{
-  for (std::string::iterator cur = input.begin ();
-       cur != input.end (); ++cur)
-  {
-    // change periods to _
-    if (*cur == '.')
-      *cur = '_';
-  }
-
-  return input;
-}
-
-/// Convert string to lowercase 
-std::string &
-madara::utility::lower (std::string &input)
-{
-  for (std::string::iterator cur = input.begin ();
-       cur != input.end (); ++cur)
-    *cur = tolower (*cur);
-
-  return input;
-}
-
 /// Strip whitespace from front and end of string and also
 /// condense multiple whitespace into a single space
 std::string &
-madara::utility::strip_extra_white_space (std::string & input)
+strip_extra_white_space (std::string & input)
 {
   std::string::iterator cur = input.begin ();
   char prev = 0;
@@ -178,7 +134,7 @@ madara::utility::strip_extra_white_space (std::string & input)
 
 /// Strip all whitespace
 std::string &
-madara::utility::strip_white_space (std::string & input)
+strip_white_space (std::string & input)
 {
   std::string::iterator cur = input.begin ();
 
@@ -206,7 +162,7 @@ madara::utility::strip_white_space (std::string & input)
   * modify and return the input, so make a copy if needed.
   **/
 std::string &
-madara::utility::string_remove (std::string & input, char unwanted)
+string_remove (std::string & input, char unwanted)
 {
   std::string::iterator cur = input.begin ();
 
@@ -229,7 +185,7 @@ madara::utility::string_remove (std::string & input, char unwanted)
 }
 
 size_t
-madara::utility::string_replace (std::string & source,
+string_replace (std::string & source,
   const std::string & old_phrase,
   const std::string & new_phrase,
   bool replace_all)
@@ -256,7 +212,7 @@ madara::utility::string_replace (std::string & source,
 }
 
 std::string &
-madara::utility::strip_comments (std::string & input)
+strip_comments (std::string & input)
 {
   std::stringstream source, dest;
   std::string cur;
@@ -288,7 +244,7 @@ madara::utility::strip_comments (std::string & input)
 
 /// Split a string into tokens 
 void 
-madara::utility::tokenizer (const std::string & input, 
+tokenizer (const std::string & input, 
     const ::std::vector< std::string> & splitters,
     ::std::vector< std::string> & tokens,
     ::std::vector< std::string> & pivots)
@@ -344,7 +300,7 @@ madara::utility::tokenizer (const std::string & input,
 
 // split a key into a corresponding host and port
 int 
-madara::utility::split_hostport_identifier (const std::string & key, 
+split_hostport_identifier (const std::string & key, 
     std::string & host, std::string & port)
 {
   // delimiter is either a : or an @
@@ -369,7 +325,7 @@ madara::utility::split_hostport_identifier (const std::string & key,
 
 // merge a host and port into a key
 int 
-madara::utility::merge_hostport_identifier (std::string & key, 
+merge_hostport_identifier (std::string & key, 
   const std::string & host, const std::string & port)
 {
   if ((const std::string *)&key != &host)
@@ -383,7 +339,7 @@ madara::utility::merge_hostport_identifier (std::string & key,
 
 // merge a host and ushort port into a key
 int 
-madara::utility::merge_hostport_identifier (std::string & key, 
+merge_hostport_identifier (std::string & key, 
   const std::string & host, unsigned short u_port)
 {
   std::stringstream port_stream;
@@ -394,7 +350,7 @@ madara::utility::merge_hostport_identifier (std::string & key,
 
 /// Bind to an ephemeral port
 int 
-madara::utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
+bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
    std::string & host, unsigned short & port, bool increase_until_bound)
 {
   // start with the initial port provided
@@ -447,7 +403,7 @@ madara::utility::bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
 }
 
 std::string
-madara::utility::file_to_string (const std::string & filename)
+file_to_string (const std::string & filename)
 {
   std::string line;
   std::stringstream buffer;
@@ -480,7 +436,7 @@ madara::utility::file_to_string (const std::string & filename)
 
 
 std::string
-madara::utility::extract_path (const std::string & name)
+extract_path (const std::string & name)
 {
   std::string::size_type start = 0;
   for (std::string::size_type i = 0; i < name.size (); ++i)
@@ -500,7 +456,7 @@ madara::utility::extract_path (const std::string & name)
 }
 
 std::string
-madara::utility::extract_filename (const std::string & name)
+extract_filename (const std::string & name)
 {
   std::string::size_type start = 0;
   for (std::string::size_type i = 0; i < name.size (); ++i)
@@ -521,7 +477,7 @@ madara::utility::extract_filename (const std::string & name)
 
 /// Expand any environment variables in a string
 std::string
-madara::utility::expand_envs (const std::string & source)
+expand_envs (const std::string & source)
 {
   std::stringstream buffer;
 
@@ -542,7 +498,7 @@ madara::utility::expand_envs (const std::string & source)
 
 /// grab an environment variable value (@see expand_envs)
 char * 
-madara::utility::get_var (const std::string & source, 
+get_var (const std::string & source, 
                           size_t cur, size_t & end)
 {
   for (end = cur; end < source.size (); ++end)
@@ -557,7 +513,7 @@ madara::utility::get_var (const std::string & source,
 }
 
 std::string
-madara::utility::clean_dir_name (const std::string & source)
+clean_dir_name (const std::string & source)
 {
   // define the characters we'll want to replace
 #ifdef ACE_WIN32
@@ -579,172 +535,8 @@ madara::utility::clean_dir_name (const std::string & source)
   return target;
 }
 
-
-/**
- * <b>INTERNAL USE</b>: Checks for and converting to network long (htonl)
- **/
-class EndiannessChecker
-{
-public:
-  /**
-  * Constructor
-  **/
-  EndiannessChecker ()
-  {
-    x.us = 1;
-
-    if (x.c[sizeof (unsigned short) - 1] == 1)
-      is_little = false;
-    else
-      is_little = true;
-  }
-
-  /**
-  * indicates whether this is little endian (modified by constructor)
-  **/
-  bool is_little;
-
-private:
-  /// by using a union, we can reference the bytes of the short
-  union {
-        /// unsigned short value
-        unsigned short us;
-
-        /// unsigned char array value
-        unsigned char c[sizeof (unsigned short)];
-    } x;
-};
-
-/// checks for endianness of architecture on library load
-EndiannessChecker endianness;
-
-/**
-  * Converts a host format uint64_t into big endian
-  **/
-uint64_t
-madara::utility::endian_swap (uint64_t value)
-{
-  // if host is little endian, then we have work to do
-  if (::endianness.is_little)
-  {
-    value = ((value << 8) & 0xFF00FF00FF00FF00ULL )
-          | ((value >> 8) & 0x00FF00FF00FF00FFULL );
-    value = ((value << 16) & 0xFFFF0000FFFF0000ULL )
-          | ((value >> 16) & 0x0000FFFF0000FFFFULL );
-    return (value << 32) | (value >> 32);
-  }
-
-  return value;
-}
-
-/**
-* Converts a host format signed madara::knowledge::KnowledgeRecord::Integer into big endian
-**/
-int64_t
-madara::utility::endian_swap (int64_t value)
-{
-  // if host is little endian, then we have work to do
-  if (::endianness.is_little)
-  {
-    value = ((value << 8) & 0xFF00FF00FF00FF00ULL )
-          | ((value >> 8) & 0x00FF00FF00FF00FFULL );
-    value = ((value << 16) & 0xFFFF0000FFFF0000ULL )
-          | ((value >> 16) & 0x0000FFFF0000FFFFULL );
-    return (value << 32) | ((value >> 32) & 0xFFFFFFFFULL);
-  }
-
-  return value;
-}
-
-
-/**
-  * Converts a host format uint64_t into big endian
-  **/
-uint32_t
-madara::utility::endian_swap (uint32_t value)
-{
-  // if host is little endian, then we have work to do
-  if (::endianness.is_little)
-  {
-    value = ((value << 8) & 0xFF00FF00 ) |
-            ((value >> 8) & 0xFF00FF ); 
-    return (value << 16) | (value >> 16);
-  }
-
-  return value;
-}
-
-/**
-* Converts a host format signed madara::knowledge::KnowledgeRecord::Integer into big endian
-**/
-int32_t
-madara::utility::endian_swap (int32_t value)
-{
-  // if host is little endian, then we have work to do
-  if (::endianness.is_little)
-  {
-    value = ((value << 8) & 0xFF00FF00) |
-            ((value >> 8) & 0xFF00FF ); 
-    return (value << 16) | ((value >> 16) & 0xFFFF);
-  }
-
-  return value;
-}
-
-/**
-* Converts a host format signed madara::knowledge::KnowledgeRecord::Integer into big endian
-**/
-uint16_t
-madara::utility::endian_swap (uint16_t value)
-{
-  // if host is little endian, then we have work to do
-  if (::endianness.is_little)
-  {
-    return ((value << 8) & 0xFFFF) | (value >> 8);
-  }
-
-  return value;
-}
-
-/**
-* Converts a host format signed madara::knowledge::KnowledgeRecord::Integer into big endian
-**/
-int16_t
-madara::utility::endian_swap (int16_t value)
-{
-  // if host is little endian, then we have work to do
-  if (::endianness.is_little)
-  {
-    return ((value << 8) & 0xFFFF) | (value >> 8);
-  }
-
-  return value;
-}
-
-/**
-  * Converts a host format double into big endian
-  **/
-double
-madara::utility::endian_swap (double orig)
-{
-  // if host is little endian, then we have work to do
-  if (::endianness.is_little)
-  {
-    uint64_t value;
-    memcpy(&value, &orig, sizeof(value));
-
-    value = endian_swap(value);
-
-    double result;
-    memcpy (&result, &value, sizeof(result));
-    return result;
-  }
-
-  return orig;
-}
-
 int
-  madara::utility::read_file (const std::string & filename,
+  read_file (const std::string & filename,
   void *& buffer, size_t & size, bool add_zero_char)
 {
   int ret_value = 0;
@@ -776,7 +568,7 @@ int
 }
 
 ssize_t
-  madara::utility::write_file (const std::string & filename,
+  write_file (const std::string & filename,
   void * buffer, size_t size)
 {
   // error is -1
@@ -801,19 +593,8 @@ ssize_t
   return actual;
 }
 
-int64_t
-madara::utility::get_time (void)
-{
-  ACE_Time_Value tv = ACE_High_Res_Timer::gettimeofday ();
-  int64_t timeofday (tv.sec () * 1000000000);
-  timeofday += tv.usec () * 1000;
-
-  return timeofday;
-}
-
 double
-madara::utility::rand_double (double floor, double ceiling,
-                              bool set_seed_to_time)
+rand_double (double floor, double ceiling, bool set_seed_to_time)
 {
   // check if the user has specified setting through srand
   if (set_seed_to_time)
@@ -832,7 +613,7 @@ madara::utility::rand_double (double floor, double ceiling,
 }
 
 int64_t
-madara::utility::rand_int (int64_t floor, int64_t ceiling,
+rand_int (int64_t floor, int64_t ceiling,
                            bool set_seed_to_time)
 {
   double random = rand_double (floor, ceiling, set_seed_to_time);
@@ -840,7 +621,7 @@ madara::utility::rand_int (int64_t floor, int64_t ceiling,
 }
 
 int64_t
-madara::utility::nearest_int (double input)
+nearest_int (double input)
 {
   int change = input >= 0 ? 1 : -1;
   int64_t left = input;
@@ -853,79 +634,54 @@ madara::utility::nearest_int (double input)
 }
 
 
-double madara::utility::sleep (double sleep_time)
+double sleep (double sleep_time)
 {
-  ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday (); 
   ACE_Time_Value actual_time;
   actual_time.set (sleep_time);
 
-  sleep (actual_time);
+  ACE_Time_Value duration = sleep (actual_time);
 
-  ACE_Time_Value end = ACE_High_Res_Timer::gettimeofday ();
-  end = end - current;
-  double time_taken = (double) end.sec ();
-  time_taken += (double) end.usec () / 1000000;
+  double time_taken = (double) duration.sec ();
+  time_taken += ((double) duration.usec ()) / micro_per;
 
   return time_taken;
 }
-    
 
-ACE_Time_Value madara::utility::sleep (const ACE_Time_Value & sleep_time)
+ACE_Time_Value sleep (const ACE_Time_Value & sleep_time)
 {
-  ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday (); 
+  ACE_Time_Value start = get_ace_time ();
+  ACE_Time_Value current = start;
   ACE_Time_Value earliest = current + sleep_time;
 
   while (current < earliest)
   {
-    ACE_OS::sleep (earliest - current);
-    current = ACE_High_Res_Timer::gettimeofday ();
+    ACE_Time_Value duration = earliest - current;
+#ifdef MADARA_FEATURE_SIMTIME
+    double rate = SimTime::rate ();
+    duration *= (1 / rate);
+    static const int64_t min_sec = simtime_min_sleep / nano_per;
+    static const int64_t min_usec = (simtime_min_sleep % nano_per) /
+                                    (nano_per / micro_per);
+    if (duration.sec () < min_sec ||
+        (duration.sec() == min_sec && duration.usec () < min_usec)) {
+      duration = ACE_Time_Value (min_sec, min_usec);
+    }
+#endif
+    ACE_OS::sleep (duration);
+    current = get_ace_time ();
   }
 
-  return ACE_High_Res_Timer::gettimeofday () - current;
-}
-
-bool madara::utility::approx_equal (
-  double value1, double value2, double epsilon)
-{
-  return std::abs (value1 - value2) < epsilon;
+  return get_ace_time () - start;
 }
 
 bool
-madara::utility::file_exists (const std::string & filename)
-{
-  if (FILE * file = fopen (filename.c_str(), "r"))
-  {
-    fclose(file);
-    return true;
-  }
-  else
-  {
-    return false;
-  }   
-}
-
-unsigned int
-madara::utility::file_size (const std::string & filename)
-{
-  unsigned int size = 0;
-  if (FILE * file = fopen (filename.c_str(), "r"))
-  {
-    fseek (file, 0L, SEEK_END);
-    size = ftell (file);
-    fclose (file);
-  }
-
-  return size;
-}
-
-bool
-madara::utility::wait_true (
+wait_true (
   knowledge::KnowledgeBase & knowledge,
   const std::string & variable,
   const knowledge::WaitSettings & settings)
 {  
   // get current time of day
-  ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();  
+  ACE_Time_Value current = get_ace_time ();  
   ACE_Time_Value max_wait, sleep_time, next_epoch;
   ACE_Time_Value poll_frequency, last = current;
 
@@ -944,14 +700,14 @@ madara::utility::wait_true (
   if (settings.pre_print_statement != "")
     knowledge.print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
-  madara::knowledge::KnowledgeRecord last_value = knowledge.get (ref, settings);
+  knowledge::KnowledgeRecord last_value = knowledge.get (ref, settings);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
     "utility::wait_true:" \
     " variable returned %s\n",
     last_value.to_string ().c_str ());
   
-  current = ACE_High_Res_Timer::gettimeofday ();
+  current = get_ace_time ();
 
   // wait for expression to be true
   while (!last_value.to_integer () &&
@@ -974,7 +730,7 @@ madara::utility::wait_true (
       if (current < next_epoch)
       {
         sleep_time = next_epoch - current;
-        madara::utility::sleep (sleep_time);
+        sleep (sleep_time);
       }
 
       next_epoch = next_epoch + poll_frequency;
@@ -994,7 +750,7 @@ madara::utility::wait_true (
       last_value.to_string ().c_str ());
   
     // get current time
-    current = ACE_High_Res_Timer::gettimeofday ();
+    current = get_ace_time ();
 
   } // end while (!last)
   
@@ -1013,13 +769,13 @@ madara::utility::wait_true (
   return last_value.is_true ();
 }
 
-bool madara::utility::wait_false (
+bool wait_false (
   knowledge::KnowledgeBase & knowledge,
   const std::string & variable,
   const knowledge::WaitSettings & settings)
 {
   // get current time of day
-  ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();  
+  ACE_Time_Value current = get_ace_time ();  
   ACE_Time_Value max_wait, sleep_time, next_epoch;
   ACE_Time_Value poll_frequency, last = current;
 
@@ -1045,7 +801,7 @@ bool madara::utility::wait_false (
     " variable returned %s\n",
     last_value.to_string ().c_str ());
   
-  current = ACE_High_Res_Timer::gettimeofday ();
+  current = get_ace_time ();
 
   // wait for expression to be true
   while (!last_value.to_integer () &&
@@ -1068,7 +824,7 @@ bool madara::utility::wait_false (
       if (current < next_epoch)
       {
         sleep_time = next_epoch - current;
-        madara::utility::sleep (sleep_time);
+        sleep (sleep_time);
       }
 
       next_epoch = next_epoch + poll_frequency;
@@ -1088,7 +844,7 @@ bool madara::utility::wait_false (
       last_value.to_string ().c_str ());
   
     // get current time
-    current = ACE_High_Res_Timer::gettimeofday ();
+    current = get_ace_time ();
 
   } // end while (!last)
   
@@ -1106,3 +862,5 @@ bool madara::utility::wait_false (
 
   return last_value.is_true ();
 }
+
+} }

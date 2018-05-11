@@ -3,6 +3,7 @@
 #ifdef MADARA_FEATURE_SIMTIME
 
 #include <chrono>
+#include <cmath>
 
 namespace madara { namespace utility {
 
@@ -13,7 +14,7 @@ std::mutex SimTime::mutex_{};
 sim_time_callback_fn SimTime::callback_ = nullptr;
 
 uint64_t SimTime::last_realtime_ = SimTime::realtime();
-uint64_t SimTime::last_simtime_ = 0;
+uint64_t SimTime::last_simtime_ = -1;
 double SimTime::last_rate_ = 1.0;
 
 uint64_t SimTime::realtime() {
@@ -49,6 +50,9 @@ uint64_t SimTime::time() {
   }
 
   if (!callback) {
+    if (pst == (uint64_t)-1) {
+      return now;
+    }
     if (pr == 0) {
       return pst;
     }
@@ -98,7 +102,7 @@ uint64_t SimTime::future(uint64_t sim_offset) {
   uint64_t now = realtime();
   uint64_t offset = duration(sim_offset);
 
-  if (offset == -1) {
+  if (offset == (uint64_t)-1) {
     return -1;
   }
 
@@ -107,19 +111,33 @@ uint64_t SimTime::future(uint64_t sim_offset) {
 
 sim_time_callback_fn set_sim_time_callback(sim_time_callback_fn fn) {
   std::lock_guard<std::mutex> guard{SimTime::mutex_};
-  sim_time_callback_fn ret = SimTime::callback_;
-  SimTime::callback_ = fn;
-  return ret;
+  using std::swap;
+  swap (fn, SimTime::callback_);
+  return fn;
 }
 
 void sim_time_notify(uint64_t time, double rate) {
-  uint64_t now = SimTime::realtime();
+  bool update_time = time != (uint64_t)-1;
+  bool update_rate = !std::isnan(rate);
 
+  if (!update_time && !update_rate) {
+    return;
+  }
+
+  uint64_t now = SimTime::realtime();
   std::lock_guard<std::mutex> guard{SimTime::mutex_};
 
-  SimTime::last_realtime_ = now;
-  SimTime::last_simtime_ = time;
-  SimTime::last_rate_ = rate;
+  if (update_time) {
+    SimTime::last_realtime_ = now;
+    SimTime::last_simtime_ = time;
+  } else if (SimTime::last_simtime_ == (uint64_t)-1) {
+    SimTime::last_realtime_ = now;
+    SimTime::last_simtime_ = now;
+  }
+
+  if (update_rate) {
+    SimTime::last_rate_ = rate;
+  }
 }
 
 } }

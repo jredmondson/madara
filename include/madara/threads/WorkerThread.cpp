@@ -136,7 +136,7 @@ madara::threads::WorkerThread::svc (void)
     thread_->init (*data_);
 
     {
-      ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();
+      ACE_Time_Value current = utility::get_ace_time ();
       ACE_Time_Value next_epoch, frequency;
       
       bool one_shot = true;
@@ -179,7 +179,7 @@ madara::threads::WorkerThread::svc (void)
 
         if (!blaster)
         {
-          current = ACE_High_Res_Timer::gettimeofday ();
+          current = utility::get_ace_time ();
 
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
             "WorkerThread(%s)::svc:" \

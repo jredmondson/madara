@@ -139,7 +139,7 @@ project (Madara_Version) : using_madara, using_ace {
   exename = madara_version
 
   verbatim (gnuace, local) {
-    CPPFLAGS += -w
+    CPPFLAGS += -w -std=c++11
   }
   
   Documentation_Files {

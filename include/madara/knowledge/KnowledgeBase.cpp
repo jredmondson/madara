@@ -34,7 +34,7 @@ KnowledgeBase::wait (
      * context.
      **/
 
-    ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();
+    ACE_Time_Value current = utility::get_ace_time ();
     ACE_Time_Value max_wait, sleep_time, next_epoch;
     ACE_Time_Value poll_frequency, last = current;
 
@@ -69,7 +69,7 @@ KnowledgeBase::wait (
 
     context_->unlock ();
 
-    current = ACE_High_Res_Timer::gettimeofday ();
+    current = utility::get_ace_time ();
 
     // wait for expression to be true
     while (!last_value.to_integer () &&
@@ -126,7 +126,7 @@ KnowledgeBase::wait (
       context_->signal ();
 
       // get current time
-      current = ACE_High_Res_Timer::gettimeofday ();
+      current = utility::get_ace_time ();
 
     } // end while (!last)
 

@@ -22,10 +22,19 @@ typedef void (*sim_time_callback_fn)(uint64_t*, double*);
 MADARA_EXTERN_C sim_time_callback_fn set_sim_time_callback(
     sim_time_callback_fn fn);
 
-/// Tell Madara that simulation time has changed. If callbacks are
-/// used, should only be necessary for rate changes.
-/// At startup, the equivalent of sim_time_notify(0, 1.0) is used.
-MADARA_EXTERN_C void sim_time_notify(uint64_t, double);
+/**
+ * Tell Madara that simulation time has changed. If callbacks are
+ * used, should only be necessary for rate changes.
+ *
+ * If `time` is -1, the value will be ignored.
+ * If `rate` is NAN, the value will be ignored.
+ *
+ * If this and sim_time_callback have not been called, sim-time
+ * equals real time. If rate is set, but not sim-time, sim-time
+ * will start counting from the current real-time at the given
+ * rate.
+ **/
+MADARA_EXTERN_C void sim_time_notify(uint64_t time, double rate);
 
 /// Minimum non-zero rate, to avoid floating point aberations
 MADARA_EXTERN_C const double minrate;

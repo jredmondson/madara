@@ -7,6 +7,7 @@
 #include <math.h>
 #include <iomanip>
 #include <algorithm>
+#include <chrono>
 
 #include "madara/utility/Utility.h"
 
@@ -15,6 +16,7 @@
 #include "ace/Sched_Params.h"
 
 namespace utility = madara::utility;
+namespace sc = std::chrono;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -345,6 +347,42 @@ void test_sleep (void)
   {
     std::cerr << "... FAIL\n";
   }
+
+#ifdef MADARA_FEATURE_SIMTIME
+  std::cerr << "\n********* Testing sim time sleep *************\n\n";
+
+  std::cerr << std::setprecision (2);
+  std::cerr << std::fixed;
+
+  auto sim_time_test = [](double sleep_time, double rate) {
+    madara::utility::sim_time_notify (-1, rate);
+    std::cerr << "  Testing sleep time of " << sleep_time <<
+                 "s at rate " << rate << "... ";
+    auto start_actual = sc::system_clock::now();
+    double dur = madara::utility::sleep (sleep_time);
+    auto end_actual = sc::system_clock::now();
+    auto dur_actual = sc::duration_cast<sc::milliseconds>(
+                          end_actual - start_actual);
+
+    std::cerr << "result=" << dur <<
+      " [" << (dur_actual.count () / 1000.0) << "]";
+
+    if (dur >= sleep_time)
+    {
+      std::cerr << "... SUCCESS\n";
+    }
+    else
+    {
+      std::cerr << "... FAIL\n";
+    }
+  };
+
+  sim_time_test (1.5, 0.25);
+  sim_time_test (2.5, 0.5);
+  sim_time_test (2.25, 4);
+
+  madara::utility::sim_time_notify (-1, 1);
+#endif
 }
 
 void test_replace (void)

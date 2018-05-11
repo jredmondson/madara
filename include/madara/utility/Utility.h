@@ -59,7 +59,7 @@ namespace madara
      * @param     input         the string to change
      * @return    a reference to the modified input
      **/
-    MADARA_Export std::string & upper (std::string & input);
+    std::string & upper (std::string & input);
     
     /**
      * Converts the string to lower. This function will modify and return the
@@ -67,7 +67,7 @@ namespace madara
      * @param     input         the string to change
      * @return    a reference to the modified input
      **/
-    MADARA_Export std::string & lower (std::string & input);
+    std::string & lower (std::string & input);
     
     /**
      * Changes periods to underscores in compliance with OpenSplice needs.
@@ -76,7 +76,7 @@ namespace madara
      * @param     input         the string to change
      * @return    a reference to the modified input
      **/
-    MADARA_Export std::string & dds_topicify (std::string & input);
+    std::string & dds_topicify (std::string & input);
     
     /**
      * Strips all whitespace characters from a string. This function will
@@ -84,7 +84,7 @@ namespace madara
      * @param     input         the string to change
      * @return    a reference to the modified input
      **/
-    MADARA_Export std::string & strip_white_space (std::string & input);
+    std::string & strip_white_space (std::string & input);
     
     /**
      * Strips all comments (single-line and multi-line). This function will
@@ -123,7 +123,7 @@ namespace madara
     * @param     prefix        the start of the string
     * @return    a reference to the modified input
     **/
-    MADARA_Export std::string strip_prefix (
+    std::string strip_prefix (
       const std::string & input, const std::string & prefix);
 
     /**
@@ -235,7 +235,7 @@ namespace madara
      * @param     value      the value to convert
      * @return    the converted value
      **/
-    MADARA_Export uint64_t endian_swap (uint64_t value);
+    uint64_t endian_swap (uint64_t value);
     
     /**
      * Converts a host format signed madara::knowledge::KnowledgeRecord::Integer
@@ -243,7 +243,7 @@ namespace madara
      * @param     value      the value to convert
      * @return    the converted value
      **/
-    MADARA_Export int64_t endian_swap (int64_t value);
+    int64_t endian_swap (int64_t value);
     
     /**
      * Converts a host format uint64_t into big endian. Can
@@ -251,7 +251,7 @@ namespace madara
      * @param     value      the value to convert
      * @return    the converted value
      **/
-    MADARA_Export uint32_t endian_swap (uint32_t value);
+    uint32_t endian_swap (uint32_t value);
     
     /**
      * Converts a host format signed madara::knowledge::KnowledgeRecord::Integer
@@ -259,7 +259,7 @@ namespace madara
      * @param     value      the value to convert
      * @return    the converted value
      **/
-    MADARA_Export int32_t endian_swap (int32_t value);
+    int32_t endian_swap (int32_t value);
     
     /**
      * Converts a host format signed madara::knowledge::KnowledgeRecord::Integer
@@ -267,7 +267,7 @@ namespace madara
      * @param     value      the value to convert
      * @return    the converted value
      **/
-    MADARA_Export uint16_t endian_swap (uint16_t value);
+    uint16_t endian_swap (uint16_t value);
     
     /**
      * Converts a host format signed madara::knowledge::KnowledgeRecord::Integer
@@ -275,7 +275,7 @@ namespace madara
      * @param     value      the value to convert
      * @return    the converted value
      **/
-    MADARA_Export int16_t endian_swap (int16_t value);
+    int16_t endian_swap (int16_t value);
     
     /**
      * Converts a host format double precision into big endian. Can
@@ -283,7 +283,7 @@ namespace madara
      * @param     value      the value to convert
      * @return    the converted value
      **/
-    MADARA_Export double endian_swap (double value);
+    double endian_swap (double value);
     
     /**
      * Reads a file into a provided void pointer. The void pointer will point
@@ -311,7 +311,13 @@ namespace madara
      * Returns a time of day in nanoseconds
      * @return  time of day in nanoseconds
      **/
-    MADARA_Export int64_t get_time (void);
+    int64_t get_time (void);
+
+    /**
+     * Returns a time of day as ACE_Time_Value
+     * @return  time of day as ACE_Time_Value
+     **/
+    ACE_Time_Value get_ace_time (void);
 
     /**
      * Returns a random double between floor and ceiling
@@ -383,7 +389,7 @@ namespace madara
     * @param  epsilon  the minimum difference between two values before
     *                  equality does not hold.
     **/
-    MADARA_Export bool approx_equal (
+    bool approx_equal (
       double value1, double value2, double epsilon = 0.0001);
 
     /**
@@ -391,14 +397,14 @@ namespace madara
      * @param filename   path and name of the file to open
      * @return true if file exists. false otherwise.
      **/
-    MADARA_Export bool file_exists (const std::string & filename);
+    bool file_exists (const std::string & filename);
 
     /**
      * Returns the size of a file
      * @param filename   path and name of the file to open
      * @return size of the file
      **/
-    MADARA_Export unsigned int file_size (const std::string & filename);
+    unsigned int file_size (const std::string & filename);
     
     /**
      * Waits on a knowledge record to be true without needing KaRL language

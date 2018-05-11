@@ -244,7 +244,7 @@ CompiledExpression & ce,
 const WaitSettings & settings)
 {
   // get current time of day
-  ACE_Time_Value current = ACE_High_Res_Timer::gettimeofday ();
+  ACE_Time_Value current = utility::get_ace_time ();
   ACE_Time_Value max_wait, sleep_time, next_epoch;
   ACE_Time_Value poll_frequency, last = current;
 
@@ -281,7 +281,7 @@ const WaitSettings & settings)
     send_modifieds ("KnowledgeBaseImpl:wait", settings);
   }
 
-  current = ACE_High_Res_Timer::gettimeofday ();
+  current = utility::get_ace_time ();
 
   // wait for expression to be true
   while (!last_value.to_integer () &&
@@ -335,7 +335,7 @@ const WaitSettings & settings)
     map_.signal ();
 
     // get current time
-    current = ACE_High_Res_Timer::gettimeofday ();
+    current = utility::get_ace_time ();
 
   } // end while (!last)
 
