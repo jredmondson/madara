@@ -715,14 +715,20 @@ ThreadSafeContext::get_clock (
 inline void
 ThreadSafeContext::lock (void) const
 {
-  mutex_.MADARA_LOCK_LOCK ();
+  mutex_.lock ();
+}
+
+inline bool
+ThreadSafeContext::try_lock (void) const
+{
+  return mutex_.try_lock ();
 }
 
 /// Unlock the mutex on this context.
 inline void
 ThreadSafeContext::unlock (void) const
 {
-  mutex_.MADARA_LOCK_UNLOCK ();
+  mutex_.unlock ();
 }
 
 /// Print a statement, similar to printf (variable expressions allowed)

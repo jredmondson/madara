@@ -1096,8 +1096,19 @@ namespace madara
       /**
        * Locks the mutex on this context. Warning: this will cause
        * all operations to block until the unlock call is made.
+       *
+       * Use ContextGuard instead of calling this directly.
        **/
       void lock (void) const;
+
+      /**
+       * Locks the mutex on this context. Warning: this will cause
+       * all operations to block until the unlock call is made.
+       *
+       * Returns immediately without blocking. Returns true if lock
+       * was successful, false otherwise.
+       **/
+      bool try_lock (void) const;
 
       /**
        * Unlocks the mutex on this context.

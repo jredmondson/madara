@@ -369,9 +369,13 @@ madara::knowledge::containers::IntegerVectorVector::exchange (
 {
   if (context_ && other.context_)
   {
-    ContextGuard context_guard (*context_);
-    ContextGuard other_context_guard (*other.context_);
-    MADARA_GUARD_TYPE guard (mutex_), guard2 (other.mutex_);
+    std::lock(*context_, *other.context_, mutex_, other.mutex_);
+
+    ContextGuard context_guard (*context_, std::adopt_lock);
+    ContextGuard other_context_guard (*other.context_, std::adopt_lock);
+    MADARA_GUARD_TYPE guard (mutex_, std::adopt_lock),
+                      guard2 (other.mutex_, std::adopt_lock);
+
 
     if (refresh_keys)
     {
@@ -458,10 +462,13 @@ madara::knowledge::containers::IntegerVectorVector::transfer_to (
 {
   if (context_ && other.context_)
   {
-    ContextGuard context_guard (*context_);
-    ContextGuard other_context_guard (*other.context_);
-    MADARA_GUARD_TYPE guard (mutex_);
-    MADARA_GUARD_TYPE guard2 (other.mutex_);
+    std::lock(*context_, *other.context_, mutex_, other.mutex_);
+
+    ContextGuard context_guard (*context_, std::adopt_lock);
+    ContextGuard other_context_guard (*other.context_, std::adopt_lock);
+    MADARA_GUARD_TYPE guard (mutex_, std::adopt_lock),
+                      guard2 (other.mutex_, std::adopt_lock);
+
 
     size_t other_size = other.vector_.size ();
     size_t this_size = this->vector_.size ();

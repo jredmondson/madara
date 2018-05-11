@@ -25,29 +25,32 @@ namespace madara
     public:
       /**
        * Constructor
+       *
+       * Arguments past first forwarded to underlying guard type
        **/
-      ContextGuard (KnowledgeBase & knowledge);
-      
+      template<typename... Args>
+      ContextGuard (KnowledgeBase & knowledge, Args&&... args);
+
       /**
        * Constructor
+       *
+       * Arguments past first forwarded to underlying guard type
        **/
-      ContextGuard (ThreadSafeContext & context);
-      
-      /**
-       * Destructor
-       **/
-      ~ContextGuard ();
+      template<typename... Args>
+      ContextGuard (ThreadSafeContext & context, Args&&... args);
 
     private:
-      
       /**
        * The context that will be locked
        **/
       ThreadSafeContext & context_;
+
+      std::lock_guard<ThreadSafeContext> guard_;
     };
 
   }
 }
 
+#include "ContextGuard.inl"
 
 #endif // _MADARA_CONTEXT_GUARD_H_

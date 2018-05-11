@@ -1,5 +1,5 @@
 
-project (Test_Multicast_Mutex) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Multicast_Mutex) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_mutex
   
@@ -25,7 +25,7 @@ project (Test_Multicast_Mutex) : using_madara, using_ace, no_karl, no_xml, null_
   }
 }
 
-project (Test_Pugi) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Pugi) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_pugi
   
@@ -51,7 +51,7 @@ project (Test_Pugi) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_l
   }
 }
 
-project (TestMulticastCloseAndAtta.h) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (TestMulticastCloseAndAtta.h) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_close_and_attach
   
@@ -77,7 +77,7 @@ project (TestMulticastCloseAndAtta.h) : using_madara, using_ace, no_karl, no_xml
   }
 }
 
-project (Test_Multicast_Peer_Discovery) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Multicast_Peer_Discovery) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_peer_discovery
   
@@ -103,7 +103,7 @@ project (Test_Multicast_Peer_Discovery) : using_madara, using_ace, no_karl, no_x
   }
 }
 
-project (Test_Rebroadcast_Ring) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Rebroadcast_Ring) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_rebroadcast_ring
   
@@ -128,7 +128,7 @@ project (Test_Rebroadcast_Ring) : using_madara, using_ace, no_karl, no_xml, null
   }
 }
 
-project (Test_Barrier) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Barrier) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_barrier
   
@@ -153,7 +153,7 @@ project (Test_Barrier) : using_madara, using_ace, no_karl, no_xml, null_lock, st
   }
 }
 
-project (Test_Kb_Destructions) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Kb_Destructions) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_kb_destructions
   
@@ -179,7 +179,7 @@ project (Test_Kb_Destructions) : using_madara, using_ace, no_karl, no_xml, null_
   }
 }
 
-project (Test_Counter) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Counter) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_counter
   
@@ -205,7 +205,7 @@ project (Test_Counter) : using_madara, using_ace, no_karl, no_xml, null_lock, st
   }
 }
 
-project (Test_Threader_Queue_Perf) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Threader_Queue_Perf) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_queue_perf
   
@@ -231,7 +231,7 @@ project (Test_Threader_Queue_Perf) : using_madara, using_ace, no_karl, no_xml, n
   }
 }
 
-project (Test_Threader_Counter) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Threader_Counter) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_counter
   
@@ -257,7 +257,7 @@ project (Test_Threader_Counter) : using_madara, using_ace, no_karl, no_xml, null
   }
 }
 
-project (Test_Threader_Producer_Consumer) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Threader_Producer_Consumer) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_producer_consumer
   
@@ -283,7 +283,7 @@ project (Test_Threader_Producer_Consumer) : using_madara, using_ace, no_karl, no
   }
 }
 
-project (Test_Threader_Hello_World) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Threader_Hello_World) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_hello_world
   
@@ -309,7 +309,7 @@ project (Test_Threader_Hello_World) : using_madara, using_ace, no_karl, no_xml, 
   }
 }
 
-project (Test_Threader_Periodic_Counter) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Threader_Periodic_Counter) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_periodic_counter
   
@@ -334,7 +334,7 @@ project (Test_Threader_Periodic_Counter) : using_madara, using_ace, no_karl, no_
   }
 }
 
-project (Test_Threader_Change_Hertz) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Threader_Change_Hertz) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_change_hertz
   
@@ -360,7 +360,7 @@ project (Test_Threader_Change_Hertz) : using_madara, using_ace, no_karl, no_xml,
   }
 }
 
-project (Test_Context_Copy) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Context_Copy) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_context_copy
   
@@ -386,7 +386,7 @@ project (Test_Context_Copy) : using_madara, using_ace, no_karl, no_xml, null_loc
   }
 }
 
-project (Test_Prefix_To_Map) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Prefix_To_Map) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_prefix_to_map
   
@@ -412,7 +412,7 @@ project (Test_Prefix_To_Map) : using_madara, using_ace, no_karl, no_xml, null_lo
   }
 }
 
-project (Test_Timed_Executor) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Timed_Executor) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_timed_executor
   
@@ -438,7 +438,7 @@ project (Test_Timed_Executor) : using_madara, using_ace, no_karl, no_xml, null_l
   }
 }
 
-project (Test_KaRL_Containers) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_KaRL_Containers) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_karl_containers
   
@@ -464,7 +464,7 @@ project (Test_KaRL_Containers) : using_madara, using_ace, no_karl, no_xml, null_
   }
 }
 
-project (Test_File_Rebroadcasts) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_File_Rebroadcasts) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_file_rebroadcasts
   
@@ -490,7 +490,7 @@ project (Test_File_Rebroadcasts) : using_madara, using_ace, no_karl, no_xml, nul
   }
 }
 
-project (Test_Multicast_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Multicast_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_aggregate_filters
   
@@ -515,7 +515,7 @@ project (Test_Multicast_Aggregate_Filters) : using_madara, using_ace, no_karl, n
   }
 }
 
-project (Test_Multicast_Send_List) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Multicast_Send_List) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_send_list
   
@@ -540,7 +540,7 @@ project (Test_Multicast_Send_List) : using_madara, using_ace, no_karl, no_xml, n
   }
 }
 
-project (Test_Broadcast_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Broadcast_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_broadcast_aggregate_filters
   
@@ -565,7 +565,7 @@ project (Test_Broadcast_Aggregate_Filters) : using_madara, using_ace, no_karl, n
   }
 }
 
-project (Test_UDP_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_UDP_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_udp_aggregate_filters
   
@@ -590,7 +590,7 @@ project (Test_UDP_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml,
   }
 }
 
-project (Test_Arrays) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Arrays) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_arrays
   
@@ -616,7 +616,7 @@ project (Test_Arrays) : using_madara, using_ace, no_karl, no_xml, null_lock, stl
   }
 }
 
-project (Network_Counter_Filter) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Network_Counter_Filter) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = network_counter_filter
   
@@ -641,7 +641,7 @@ project (Network_Counter_Filter) : using_madara, using_ace, no_karl, no_xml, nul
   }
 }
 
-project (Network_Throughput) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Network_Throughput) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = network_throughput
   
@@ -666,7 +666,7 @@ project (Network_Throughput) : using_madara, using_ace, no_karl, no_xml, null_lo
   }
 }
 
-project (Network_Profiler) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Network_Profiler) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = network_profiler
   
@@ -692,7 +692,7 @@ project (Network_Profiler) : using_madara, using_ace, no_karl, no_xml, null_lock
   }
 }
 
-project (Test_Modifieds) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Modifieds) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_modifieds
   
@@ -717,7 +717,7 @@ project (Test_Modifieds) : using_madara, using_ace, no_karl, no_xml, null_lock, 
   }
 }
 
-project (Test_Checkpointing) : using_madara, using_ace, using_ssl, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Checkpointing) : using_madara, using_ace, using_ssl, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_checkpointing
   
@@ -743,7 +743,7 @@ project (Test_Checkpointing) : using_madara, using_ace, using_ssl, no_karl, no_x
   }
 }
 
-project (Test_Bandwidth_Monitor) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Bandwidth_Monitor) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_bandwidth_monitor
   
@@ -769,7 +769,7 @@ project (Test_Bandwidth_Monitor) : using_madara, using_ace, no_karl, no_xml, nul
   }
 }
 
-project (Test_Packet_Scheduler) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Packet_Scheduler) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_packet_scheduler
   
@@ -795,7 +795,7 @@ project (Test_Packet_Scheduler) : using_madara, using_ace, no_karl, no_xml, null
   }
 }
 
-project (Test_Encoding) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Encoding) : using_madara, using_ace, no_karl, no_xml, null_lock, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_encoding
   
@@ -821,7 +821,7 @@ project (Test_Encoding) : using_madara, using_ace, no_karl, no_xml, null_lock, s
   }
 }
 
-project (Test_QoS_Transport_Settings) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_QoS_Transport_Settings) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_qos_transport_settings
   
@@ -847,7 +847,7 @@ project (Test_QoS_Transport_Settings) : using_madara, using_ace, using_splice, n
   }
 }
 
-project (Test_Evaluate) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Evaluate) : using_madara, using_ace, no_karl, no_xml, null_lock, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_evaluate
   
@@ -873,7 +873,7 @@ project (Test_Evaluate) : using_madara, using_ace, no_karl, no_xml, null_lock, s
   }
 }
 
-project (Test_Multicast_Rules) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Multicast_Rules) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_rules
   
@@ -899,7 +899,7 @@ project (Test_Multicast_Rules) : using_madara, using_ace, no_karl, no_xml, null_
   }
 }
 
-project (Test_Multicast_Rebroadcast) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Multicast_Rebroadcast) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_rebroadcast
   
@@ -925,7 +925,7 @@ project (Test_Multicast_Rebroadcast) : using_madara, using_ace, no_karl, no_xml,
   }
 }
 
-project (Test_Multicast_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Multicast_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_filters
   
@@ -951,7 +951,7 @@ project (Test_Multicast_Filters) : using_madara, using_ace, no_karl, no_xml, nul
   }
 }
 
-project (Test_UDP_Rules) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_UDP_Rules) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_udp_rules
   
@@ -977,7 +977,7 @@ project (Test_UDP_Rules) : using_madara, using_ace, using_splice, no_karl, no_xm
   }
 }
 
-project (Test_UDP_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_UDP_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_udp_filters
   
@@ -1003,7 +1003,7 @@ project (Test_UDP_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock
   }
 }
 
-project (Test_UDP_Rebroadcast) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_UDP_Rebroadcast) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_udp_rebroadcast
   
@@ -1029,7 +1029,7 @@ project (Test_UDP_Rebroadcast) : using_madara, using_ace, no_karl, no_xml, null_
   }
 }
 
-project (Test_Swarm_Drone) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Swarm_Drone) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_swarm_drone
   
@@ -1055,7 +1055,7 @@ project (Test_Swarm_Drone) : using_madara, using_ace, using_splice, no_karl, no_
   }
 }
 
-project (Test_Swarm_Area_Coverage) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Swarm_Area_Coverage) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_swarm_area_coverage
   
@@ -1081,7 +1081,7 @@ project (Test_Swarm_Area_Coverage) : using_madara, using_ace, using_splice, no_k
   }
 }
 
-project (Test_Swarm_Terminal) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Swarm_Terminal) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_swarm_terminal
   
@@ -1107,7 +1107,7 @@ project (Test_Swarm_Terminal) : using_madara, using_ace, using_splice, no_karl, 
   }
 }
 
-project (Test_System_Calls) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_System_Calls) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_system_calls
   
@@ -1133,7 +1133,7 @@ project (Test_System_Calls) : using_madara, using_ace, using_splice, no_karl, no
   }
 }
 
-project (Test_Broadcast_Rules) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Broadcast_Rules) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_broadcast_rules
   
@@ -1159,7 +1159,7 @@ project (Test_Broadcast_Rules) : using_madara, using_ace, using_splice, no_karl,
   }
 }
 
-project (Test_Broadcast_Filters) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Broadcast_Filters) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_broadcast_filters
   
@@ -1185,7 +1185,7 @@ project (Test_Broadcast_Filters) : using_madara, using_ace, using_splice, no_kar
   }
 }
 
-project (Test_Broadcast_Rebroadcast) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Broadcast_Rebroadcast) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_broadcast_rebroadcast
   
@@ -1212,7 +1212,7 @@ project (Test_Broadcast_Rebroadcast) : using_madara, using_ace, using_splice, no
 }
 
 
-project (Test_Basic_Reasoning) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Basic_Reasoning) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_basic_reasoning
   
@@ -1238,7 +1238,7 @@ project (Test_Basic_Reasoning) : using_madara, using_ace, using_splice, no_karl,
   }
 }
 
-project (Test_Latency) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Latency) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_latency
 
@@ -1263,7 +1263,7 @@ project (Test_Latency) : using_madara, using_ace, using_splice, no_karl, no_xml,
   }
 }
 
-project (Test_Latency_Rounds) : using_madara, using_ace, using_splice, using_cid, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Latency_Rounds) : using_madara, using_ace, using_splice, using_cid, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_latency_rounds
 
@@ -1288,7 +1288,7 @@ project (Test_Latency_Rounds) : using_madara, using_ace, using_splice, using_cid
   }
 }
 
-project (Test_Consistency) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Consistency) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_consistency
 
@@ -1313,7 +1313,7 @@ project (Test_Consistency) : using_madara, using_ace, using_splice, no_karl, no_
   }
 }
 
-project (Test_Dissemination) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Dissemination) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_dissemination
 
@@ -1338,7 +1338,7 @@ project (Test_Dissemination) : using_madara, using_ace, using_splice, no_karl, n
   }
 }
 
-project (Test_Reasoning_Throughput) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Reasoning_Throughput) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_reasoning_throughput
  
@@ -1369,7 +1369,7 @@ project (Test_Reasoning_Throughput) : using_madara, using_ace, using_splice, no_
   }
 }
 
-project (Test_Files) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Files) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_files
   
@@ -1397,7 +1397,7 @@ project (Test_Files) : using_madara, using_ace, using_splice, no_karl, no_xml, n
   }
 }
 
-project (Test_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_filters
   
@@ -1422,7 +1422,7 @@ project (Test_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, st
   }
 }
 
-project (Test_Key_Expansion) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Key_Expansion) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_key_expansion
   
@@ -1450,7 +1450,7 @@ project (Test_Key_Expansion) : using_madara, using_ace, using_splice, no_karl, n
   }
 }
 
-project (Test_Print_Statement) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Print_Statement) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_print_statement
   
@@ -1478,7 +1478,7 @@ project (Test_Print_Statement) : using_madara, using_ace, using_splice, no_karl,
   }
 }
 
-project (Test_Timed_Wait) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Timed_Wait) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_timed_wait
   
@@ -1506,7 +1506,7 @@ project (Test_Timed_Wait) : using_madara, using_ace, using_splice, no_karl, no_x
   }
 }
 
-project (Test_AES_256) : using_madara, using_ace, using_ssl, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_AES_256) : using_madara, using_ace, using_ssl, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_aes_256
   
@@ -1534,7 +1534,7 @@ project (Test_AES_256) : using_madara, using_ace, using_ssl, no_karl, no_xml, nu
   }
 }
 
-project (Test_Wait_With_ACE) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Wait_With_ACE) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_wait_with_ace
   
@@ -1563,7 +1563,7 @@ project (Test_Wait_With_ACE) : using_madara, using_ace, using_splice, no_karl, n
 }
 
 
-project (Test_Distributed_Finisher) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Distributed_Finisher) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_distributed_finisher
   
@@ -1591,7 +1591,7 @@ project (Test_Distributed_Finisher) : using_madara, using_ace, using_splice, no_
   }
 }
 
-project (Test_Knowledge_Domains) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Knowledge_Domains) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_knowledge_domains
   
@@ -1619,7 +1619,7 @@ project (Test_Knowledge_Domains) : using_madara, using_ace, using_splice, no_kar
   }
 }
 
-project (Test_Synchronization) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Synchronization) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_synchronization
   
@@ -1647,7 +1647,7 @@ project (Test_Synchronization) : using_madara, using_ace, using_splice, no_karl,
   }
 }
 
-project (Test_Synchronization_Three_State) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Synchronization_Three_State) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_synchronization_three_state
   
@@ -1675,7 +1675,7 @@ project (Test_Synchronization_Three_State) : using_madara, using_ace, using_spli
   }
 }
 
-project (Test_Quality) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Quality) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_quality
   
@@ -1703,7 +1703,7 @@ project (Test_Quality) : using_madara, using_ace, using_splice, no_karl, no_xml,
   }
 }
 
-project (Test_Distributed_Finisher_With_Set) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Distributed_Finisher_With_Set) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_distributed_finisher_with_set
   
@@ -1730,7 +1730,7 @@ project (Test_Distributed_Finisher_With_Set) : using_madara, using_ace, using_sp
 }
 
 
-project (Test_Splice) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Splice) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_splice
   
@@ -1756,7 +1756,7 @@ project (Test_Splice) : using_madara, using_ace, using_splice, no_karl, no_xml, 
   }
 }
 
-project (Test_Splice_Rules) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Splice_Rules) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_splice_rules
   
@@ -1782,7 +1782,7 @@ project (Test_Splice_Rules) : using_madara, using_ace, using_splice, no_karl, no
   }
 }
 
-project (Test_Splice_Rebroadcast) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Splice_Rebroadcast) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_splice_rebroadcast
   
@@ -1808,7 +1808,7 @@ project (Test_Splice_Rebroadcast) : using_madara, using_ace, using_splice, no_ka
   }
 }
 
-project (Test_Splice_Filters) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Splice_Filters) : using_madara, using_ace, using_splice, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_splice_filters
   
@@ -1835,7 +1835,7 @@ project (Test_Splice_Filters) : using_madara, using_ace, using_splice, no_karl, 
 }
 
 
-project (Test_KATS_barriers) : using_madara, using_kats, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_KATS_barriers) : using_madara, using_kats, using_ace, no_karl, no_xml, null_lock, using_simtime {
   requires += tests deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1860,7 +1860,7 @@ project (Test_KATS_barriers) : using_madara, using_kats, using_ace, no_karl, no_
   }
 }
 
-project (Test_KATS_syncs) : using_madara, using_kats, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_KATS_syncs) : using_madara, using_kats, using_ace, no_karl, no_xml, null_lock, using_simtime {
   requires += tests deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1885,7 +1885,7 @@ project (Test_KATS_syncs) : using_madara, using_kats, using_ace, no_karl, no_xml
   }
 }
 
-project (Test_CID) : using_madara, using_ace, using_cid, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_CID) : using_madara, using_ace, using_cid, no_karl, no_xml, null_lock, using_simtime {
   requires += tests cid deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1910,7 +1910,7 @@ project (Test_CID) : using_madara, using_ace, using_cid, no_karl, no_xml, null_l
   }
 }
 
-project (Test_CID_Read_Deployment) : using_madara, using_ace, using_cid, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_CID_Read_Deployment) : using_madara, using_ace, using_cid, no_karl, no_xml, null_lock, using_simtime {
   requires += tests cid deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1935,7 +1935,7 @@ project (Test_CID_Read_Deployment) : using_madara, using_ace, using_cid, no_karl
   }
 }
 
-project (Test_CID_Disjoint) : using_madara, using_ace, using_cid, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_CID_Disjoint) : using_madara, using_ace, using_cid, no_karl, no_xml, null_lock, using_simtime {
   requires += tests cid deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1960,7 +1960,7 @@ project (Test_CID_Disjoint) : using_madara, using_ace, using_cid, no_karl, no_xm
   }
 }
 
-project (Test_CID_Linked) : using_madara, using_ace, using_cid, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_CID_Linked) : using_madara, using_ace, using_cid, no_karl, no_xml, null_lock, using_simtime {
   requires += tests cid deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -1986,7 +1986,7 @@ project (Test_CID_Linked) : using_madara, using_ace, using_cid, no_karl, no_xml,
 }
 
 
-project (Test_UDP) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_UDP) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2011,7 +2011,7 @@ project (Test_UDP) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lo
   }
 }
 
-project (Test_Registry) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Registry) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2036,7 +2036,7 @@ project (Test_Registry) : using_madara, using_ace, no_karl, no_xml, null_lock, s
   }
 }
 
-project (Test_Multicast) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Multicast) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2062,7 +2062,7 @@ project (Test_Multicast) : using_madara, using_ace, no_karl, no_xml, null_lock, 
 }
 
 
-project (Test_TestZMQ) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_zmq {
+project (Test_TestZMQ) : using_madara, using_ace, no_karl, no_xml, null_lock, using_zmq {
   requires += tests zmq
   
   exeout = $(MADARA_ROOT)/bin
@@ -2088,7 +2088,7 @@ project (Test_TestZMQ) : using_madara, using_ace, no_karl, no_xml, null_lock, st
 }
 
 
-project (Test_Basic_ZMQ) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_zmq {
+project (Test_Basic_ZMQ) : using_madara, using_ace, no_karl, no_xml, null_lock, using_zmq {
   requires += tests zmq
   
   exeout = $(MADARA_ROOT)/bin
@@ -2114,7 +2114,7 @@ project (Test_Basic_ZMQ) : using_madara, using_ace, no_karl, no_xml, null_lock, 
 }
 
 
-project (Test_Multicast_SSL) : using_madara, using_ssl, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Multicast_SSL) : using_madara, using_ssl, using_ace, no_karl, no_xml, null_lock, using_simtime {
   requires += tests ssl
   
   exeout = $(MADARA_ROOT)/bin
@@ -2139,7 +2139,7 @@ project (Test_Multicast_SSL) : using_madara, using_ssl, using_ace, no_karl, no_x
   }
 }
 
-project (Test_Broadcast) : using_madara, using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Broadcast) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2165,7 +2165,7 @@ project (Test_Broadcast) : using_madara, using_ace, no_karl, no_xml, null_lock, 
 }
 
 
-project (Test_ACE_Broadcast) : using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_ACE_Broadcast) : using_ace, no_karl, no_xml, null_lock, using_simtime {
   requires += tests deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -2191,7 +2191,7 @@ project (Test_ACE_Broadcast) : using_ace, no_karl, no_xml, null_lock, stl_lock, 
 }
 
 
-project (Test_ACE_Multicast) : using_ace, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_ACE_Multicast) : using_ace, no_karl, no_xml, null_lock, using_simtime {
   requires += tests deprecated
   
   exeout = $(MADARA_ROOT)/bin
@@ -2216,7 +2216,7 @@ project (Test_ACE_Multicast) : using_ace, no_karl, no_xml, null_lock, stl_lock, 
   }
 }
 
-project (Profile_Architecture) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Profile_Architecture) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2242,7 +2242,7 @@ project (Profile_Architecture) : using_ace, using_madara, no_karl, no_xml, null_
   }
 }
 
-project (Test_Utility) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Utility) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2267,7 +2267,7 @@ project (Test_Utility) : using_ace, using_madara, no_karl, no_xml, null_lock, st
   }
 }
 
-project (Test_Peroidic_Wait) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Peroidic_Wait) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2292,7 +2292,7 @@ project (Test_Peroidic_Wait) : using_ace, using_madara, no_karl, no_xml, null_lo
   }
 }
 
-project (Test_Primitive_Types) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Primitive_Types) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2317,7 +2317,7 @@ project (Test_Primitive_Types) : using_ace, using_madara, no_karl, no_xml, null_
   }
 }
 
-project (Test_Safe_Bool) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Safe_Bool) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2342,7 +2342,7 @@ project (Test_Safe_Bool) : using_ace, using_madara, no_karl, no_xml, null_lock, 
   }
 }
 
-project (Test_Logging) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Logging) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2367,7 +2367,7 @@ project (Test_Logging) : using_ace, using_madara, no_karl, no_xml, null_lock, st
   }
 }
 
-project (Test_RCWThread) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_RCWThread) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2392,7 +2392,7 @@ project (Test_RCWThread) : using_ace, using_madara, no_karl, no_xml, null_lock, 
   }
 }
 
-project (Test_RCW_Transaction) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_RCW_Transaction) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2418,7 +2418,7 @@ project (Test_RCW_Transaction) : using_ace, using_madara, no_karl, no_xml, null_
   }
 }
 
-project (Test_RCW_Tracked) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_RCW_Tracked) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2444,7 +2444,7 @@ project (Test_RCW_Tracked) : using_ace, using_madara, no_karl, no_xml, null_lock
   }
 }
 
-project (Test_RCW_Custom) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_RCW_Custom) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2470,7 +2470,7 @@ project (Test_RCW_Custom) : using_ace, using_madara, no_karl, no_xml, null_lock,
   }
 }
 
-project (Test_RCW_ProdCon) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_RCW_ProdCon) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2496,7 +2496,7 @@ project (Test_RCW_ProdCon) : using_ace, using_madara, no_karl, no_xml, null_lock
   }
 }
 
-project (Test_Save_Modifieds) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Save_Modifieds) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2521,7 +2521,7 @@ project (Test_Save_Modifieds) : using_ace, using_madara, no_karl, no_xml, null_l
   }
 }
 
-project (Test_Shared_Record) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Shared_Record) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
@@ -2546,7 +2546,7 @@ project (Test_Shared_Record) : using_ace, using_madara, no_karl, no_xml, null_lo
   }
 }
 
-project (Test_Simtime) : using_ace, using_madara, no_karl, no_xml, null_lock, stl_lock, using_simtime {
+project (Test_Simtime) : using_ace, using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests simtime
   
   exeout = $(MADARA_ROOT)/bin

@@ -518,9 +518,13 @@ madara::knowledge::containers::FlexMap::exchange (
 {
   if (context_ && other.context_)
   {
-    ContextGuard context_guard (*context_);
-    ContextGuard other_context_guard (*other.context_);
-    MADARA_GUARD_TYPE guard (mutex_), guard2 (other.mutex_);
+    std::lock(*context_, *other.context_, mutex_, other.mutex_);
+
+    ContextGuard context_guard (*context_, std::adopt_lock);
+    ContextGuard other_context_guard (*other.context_, std::adopt_lock);
+    MADARA_GUARD_TYPE guard (mutex_, std::adopt_lock),
+                      guard2 (other.mutex_, std::adopt_lock);
+
 
     // use the Map container, which already has exchange implemented
     KnowledgeBase knowledge;
