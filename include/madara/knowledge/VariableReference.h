@@ -102,7 +102,7 @@ namespace madara
 
     struct VariableReferenceMapCompare
     {
-      bool operator()(const char *l, const char *r) {
+      bool operator()(const char *l, const char *r) const {
         return std::strcmp(l, r) < 0;
       }
     };

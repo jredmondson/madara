@@ -1,5 +1,4 @@
 #include <ctype.h>
-#include <cmath>
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
@@ -20,6 +19,8 @@
 #include "ace/High_Res_Timer.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
+
+#include "Utility.h"
 
 namespace madara { namespace utility {
 

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <cmath>
 #include "ace/SOCK_Dgram.h"
 #include "ace/High_Res_Timer.h"
 #include "madara/MADARA_export.h"
