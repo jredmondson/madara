@@ -11,7 +11,7 @@
 
 madara::expression::ListNode::ListNode (
   madara::knowledge::ThreadSafeContext & context)
-: ComponentNode (context.get_logger ()), context_ (context), list_ ()
+: ComponentNode (context.get_logger ()), list_ ()
 {
 
 }

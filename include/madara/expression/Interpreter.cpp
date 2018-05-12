@@ -4528,9 +4528,6 @@ Symbol *& returnableInput)
       " has been specified on the for loop.\n");
   }
 
-  // if at all possible, don't touch i
-  std::string::size_type end = i;
-
   // get the precondition, postcondition and condition ready
   precondition = new Assignment (context.get_logger ());
   precondition->left_ = new Variable (variable, context);

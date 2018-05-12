@@ -40,11 +40,6 @@ namespace madara
       ContextGuard (ThreadSafeContext & context, Args&&... args);
 
     private:
-      /**
-       * The context that will be locked
-       **/
-      ThreadSafeContext & context_;
-
       std::lock_guard<ThreadSafeContext> guard_;
     };
 

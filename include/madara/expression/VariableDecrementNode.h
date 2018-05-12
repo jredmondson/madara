@@ -66,7 +66,7 @@ namespace madara
       /// holds a right hand side argument if it is not value_
       ComponentNode * rhs_;
 
-      madara::knowledge::ThreadSafeContext & context_;
+      //madara::knowledge::ThreadSafeContext & context_;
     };
   }
 }

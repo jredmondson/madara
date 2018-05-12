@@ -15,7 +15,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
   libpaths += $(MADARA_ROOT)/lib 
 
   verbatim (gnuace, local) {
-    CPPFLAGS += -g -Og -std=c++11
+    CPPFLAGS += -g -Og -std=c++11 -Wall
   }
   
   Documentation_Files {
@@ -139,7 +139,7 @@ project (Madara_Version) : using_madara, using_ace {
   exename = madara_version
 
   verbatim (gnuace, local) {
-    CPPFLAGS += -w -std=c++11
+    CPPFLAGS += -std=c++11 -Wall
   }
   
   Documentation_Files {
@@ -191,7 +191,7 @@ project (KaRL) : using_ace, using_madara, no_karl {
   exename = karl
   
   verbatim (gnuace, local) {
-    CPPFLAGS += -w -std=c++11
+    CPPFLAGS += -std=c++11 -Wall
   }
   
   Documentation_Files {
@@ -214,7 +214,7 @@ project (Madara_Registry) : using_ace, using_madara, no_karl {
   exename = madara_registry
   
   verbatim (gnuace, local) {
-    CPPFLAGS += -w -std=c++11
+    CPPFLAGS += -std=c++11 -Wall
   }
   
   Documentation_Files {
@@ -238,7 +238,7 @@ project (MPGen) : using_ace, using_madara {
   exename = mpgen
   
   verbatim (gnuace, local) {
-    CPPFLAGS += -w -std=c++11
+    CPPFLAGS += -std=c++11 -Wall
   }
   
   Documentation_Files {

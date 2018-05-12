@@ -1497,7 +1497,6 @@ ThreadSafeContext::to_map_stripped (
 
   // NRVO should avoid copying this map
   KnowledgeMap ret;
-  KnowledgeMap::iterator hint = ret.begin();
   for(;iters.first != iters.second; ++iters.first)
   {
     ret.emplace_hint(ret.end(), iters.first->first.substr(prefix.size()),

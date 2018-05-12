@@ -82,8 +82,8 @@ namespace madara
        **/
       int reliability (const int & setting);
       long read (void);
-      void close (void);
-      int setup (void);
+      void close (void) override;
+      int setup (void) override;
     protected:
     private:
       /// knowledge base for threads to use

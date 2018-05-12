@@ -14,7 +14,7 @@ madara::expression::VariableDecrementNode::VariableDecrementNode (
   ComponentNode * rhs,
   madara::knowledge::ThreadSafeContext &context)
 : ComponentNode (context.get_logger ()), var_ (0), array_ (0),
-  value_ (value), rhs_ (rhs), context_ (context)
+  value_ (value), rhs_ (rhs)
 {
   var_ = dynamic_cast <VariableNode *> (lhs);
 

@@ -51,7 +51,7 @@ namespace madara
 
     private:
       // variables context
-      madara::knowledge::ThreadSafeContext & context_;
+      //madara::knowledge::ThreadSafeContext & context_;
       
       /// list of trees in a parameter list
       ::std::list<ComponentNode *> list_;

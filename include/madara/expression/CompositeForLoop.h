@@ -73,7 +73,7 @@ namespace madara
     private:
       
       // variables context
-      madara::knowledge::ThreadSafeContext & context_;
+      //madara::knowledge::ThreadSafeContext & context_;
 
       // the loop precondition (what happens before the loop)
       ComponentNode * precondition_;
@@ -88,7 +88,7 @@ namespace madara
       ComponentNode * body_;
 
       // function pointer
-      madara::knowledge::Function * function_;
+      //madara::knowledge::Function * function_;
     };
   }
 }
