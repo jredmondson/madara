@@ -23,7 +23,7 @@ madara::expression::CompositeForLoop::CompositeForLoop (
         ComponentNode * postcondition,
         ComponentNode * body,
         madara::knowledge::ThreadSafeContext & context)
-: ComponentNode (context.get_logger ()), context_(context),
+: ComponentNode (context.get_logger ()),
     precondition_ (precondition), condition_ (condition), 
     postcondition_ (postcondition), body_ (body)
 {
