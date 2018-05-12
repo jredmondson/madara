@@ -36,13 +36,13 @@ namespace madara
      * arguments will be forwarded to construct the underlying type in-place.
      **/
     namespace tags {
-      static constexpr struct integers_t {} integers;
-      static constexpr struct doubles_t {} doubles;
-      static constexpr struct string_t {} string;
-      static constexpr struct binary_t {} binary;
+      static constexpr struct integers_t { constexpr integers_t(){} } integers;
+      static constexpr struct doubles_t { constexpr doubles_t(){} } doubles;
+      static constexpr struct string_t { constexpr string_t(){} } string;
+      static constexpr struct binary_t { constexpr binary_t(){} } binary;
 
       template<typename T>
-      struct shared_t {};
+      struct shared_t { constexpr shared_t(){} };
 
       /// Used to signal in-place shared_ptr construction in KnowledgeRecord
       /// Example: tags::shared(tags::integers)
