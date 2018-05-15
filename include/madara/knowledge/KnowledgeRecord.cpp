@@ -296,7 +296,7 @@ std::string
 KnowledgeRecord::to_string (const std::string & delimiter) const
 {
   if (type_ == EMPTY) {
-    return "0";
+    return "";
   }
 
   if (!is_string_type ())
