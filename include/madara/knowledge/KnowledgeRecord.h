@@ -652,12 +652,22 @@ namespace madara
       KnowledgeRecord * clone (void) const;
 
       /**
-       * converts the value to an integer
+       * converts the value to an integer. This operation tries to convert
+       * as best as it can using reasonable conversions. For doubles and
+       * integers, it uses the scalar conversion to integer (e.g., floor
+       * for double). For int/double arrays, it will use the same scalar conversion
+       * of the first element. For strings, it will try to convert with
+       * a stringstream.
        **/
       Integer to_integer (void) const;
 
       /**
-       * converts the value to a float/double
+       * converts the value to a float/double. This operation tries to convert
+       * as best as it can using reasonable conversions. For doubles and
+       * integers, it uses the scalar conversion to double.
+       * For int/double arrays, it will use the same scalar conversion
+       * of the first element. For strings, it will try to convert with
+       * a stringstream.
        **/
       double to_double (void) const;
 
