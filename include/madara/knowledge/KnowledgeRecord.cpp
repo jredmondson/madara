@@ -199,7 +199,6 @@ KnowledgeRecord::to_integers (void) const
   std::vector <Integer> integers;
 
   if (type_ == EMPTY) {
-    integers.push_back(0);
     return integers;
   }
 
@@ -250,7 +249,6 @@ KnowledgeRecord::to_doubles (void) const
   std::vector <double> doubles;
 
   if (type_ == EMPTY) {
-    doubles.push_back(0);
     return doubles;
   }
 
