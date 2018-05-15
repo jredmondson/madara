@@ -147,7 +147,7 @@ KnowledgeRecord::to_double (void) const
   if (type_ == DOUBLE)
     value = double_value_;
   else if (type_ == DOUBLE_ARRAY)
-    value = double_array_->at(0);
+    value = double_array_->size () == 0 ? 0 : double_array_->at(0);
   else if (type_ != EMPTY)
   {
     std::stringstream buffer;
@@ -156,7 +156,7 @@ KnowledgeRecord::to_double (void) const
     if (type_ == INTEGER)
       buffer << int_value_;
     else if (type_ == INTEGER_ARRAY)
-      buffer << int_array_->at(0);
+      buffer << (int_array_->size () == 0 ? 0 : int_array_->at(0));
     else if (is_string_type ())
       buffer << str_value_->c_str ();
 
@@ -174,7 +174,7 @@ KnowledgeRecord::to_integer (void) const
   if (type_ == INTEGER)
     value = int_value_;
   else if (type_ == INTEGER_ARRAY)
-    value = int_array_->at(0);
+    value = int_array_->size () == 0 ? 0 : int_array_->at(0);
   else if (type_ != EMPTY)
   {
     std::stringstream buffer;
@@ -183,7 +183,7 @@ KnowledgeRecord::to_integer (void) const
     if (type_ == DOUBLE)
       buffer << double_value_;
     else if (type_ == DOUBLE_ARRAY)
-      buffer << double_array_->at(0);
+      buffer << (double_array_->size () == 0 ? 0 : double_array_->at(0));
     else if (is_string_type ())
       buffer << str_value_->c_str();
 

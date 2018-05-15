@@ -95,7 +95,7 @@ namespace madara
     template<>
     inline bool knowledge_cast<bool>(const KnowledgeRecord &in)
     {
-      return in.to_integer() ? true : false;
+      return in.is_true();
     }
 
     template<>
