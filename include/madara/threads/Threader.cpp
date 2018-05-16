@@ -8,14 +8,13 @@
 #endif  // MADARA_JAVA
 
 madara::threads::Threader::Threader ()
-  : data_ (0), control_(new knowledge::KnowledgeBase ())
 {
 
 }
 
 madara::threads::Threader::Threader (
-  knowledge::KnowledgeBase & data_plane)
-  : data_ (&data_plane), control_(new knowledge::KnowledgeBase ())
+  knowledge::KnowledgeBase data_plane)
+  : data_ (std::move(data_plane))
 {
 }
 
@@ -23,8 +22,6 @@ madara::threads::Threader::~Threader ()
 {
   terminate ();
   wait ();
-
-  delete control_;
 }
 
 void
@@ -34,7 +31,7 @@ madara::threads::Threader::pause (const std::string name)
 
   if (found != threads_.end ())
   {
-    control_->set (name + ".paused", knowledge::KnowledgeRecord::Integer (1));
+    control_.set (name + ".paused", knowledge::KnowledgeRecord::Integer (1));
   }
 }
 
@@ -44,7 +41,7 @@ madara::threads::Threader::pause (void)
   for (NamedWorkerThreads::iterator i = threads_.begin ();
     i != threads_.end (); ++i)
   {
-    control_->set (i->first + ".paused", knowledge::KnowledgeRecord::Integer (1));
+    control_.set (i->first + ".paused", knowledge::KnowledgeRecord::Integer (1));
   }
 }
 
@@ -55,7 +52,7 @@ madara::threads::Threader::resume (const std::string name)
 
   if (found != threads_.end ())
   {
-    control_->set (name + ".paused", knowledge::KnowledgeRecord::Integer (0));
+    control_.set (name + ".paused", knowledge::KnowledgeRecord::Integer (0));
   }
 }
 
@@ -65,7 +62,7 @@ madara::threads::Threader::resume (void)
   for (NamedWorkerThreads::iterator i = threads_.begin ();
     i != threads_.end (); ++i)
   {
-    control_->set (i->first + ".paused", knowledge::KnowledgeRecord::Integer (0));
+    control_.set (i->first + ".paused", knowledge::KnowledgeRecord::Integer (0));
   }
 }
 
@@ -75,20 +72,18 @@ madara::threads::Threader::run (
 {
   if (name != "" && thread != 0)
   {
-    WorkerThread * worker = new WorkerThread (name, thread,
-      control_, data_);
+    std::unique_ptr<WorkerThread> worker (new WorkerThread (name, thread,
+      control_, data_));
 
     if (paused)
       thread->paused = 1;
 
-    threads_[name] = worker;
-
-    worker->run ();
+    (threads_[name] = std::move (worker))->run ();
   }
 }
 
 #ifdef _MADARA_JAVA_
-      
+
 void
 madara::threads::Threader::run (
   const std::string name, jobject thread, bool paused)
@@ -103,7 +98,7 @@ madara::threads::Threader::run (
       run (name, new_thread, paused);
   }
 }
-      
+
 
 void
 madara::threads::Threader::run (
@@ -128,22 +123,20 @@ madara::threads::Threader::run (double hertz,
 {
   if (name != "" && thread != 0)
   {
-    WorkerThread * worker = new WorkerThread (name, thread,
-      control_, data_, hertz);
+    std::unique_ptr<WorkerThread> worker (new WorkerThread (name, thread,
+      control_, data_, hertz));
 
     if (paused)
       thread->paused = 1;
 
-    threads_[name] = worker;
-
-    worker->run ();
+    (threads_[name] = std::move (worker))->run ();
   }
 }
 
 void madara::threads::Threader::set_data_plane (
-  knowledge::KnowledgeBase & data_plane)
+  knowledge::KnowledgeBase data_plane)
 {
-  data_ = &data_plane;
+  data_ = std::move(data_plane);
 }
 
 void
@@ -153,7 +146,7 @@ madara::threads::Threader::terminate (const std::string name)
 
   if (found != threads_.end ())
   {
-    control_->set (name + ".terminated", knowledge::KnowledgeRecord::Integer (1));
+    control_.set (name + ".terminated", knowledge::KnowledgeRecord::Integer (1));
   }
 }
 
@@ -163,7 +156,7 @@ madara::threads::Threader::terminate (void)
   for (NamedWorkerThreads::iterator i = threads_.begin ();
     i != threads_.end (); ++i)
   {
-    control_->set (i->first + ".terminated", knowledge::KnowledgeRecord::Integer (1));
+    control_.set (i->first + ".terminated", knowledge::KnowledgeRecord::Integer (1));
   }
 }
 
@@ -180,12 +173,10 @@ madara::threads::Threader::wait (const std::string name,
   {
     std::string condition = found->second->finished_.get_name ();
 
-    result = this->control_->wait (condition, ws).is_true ();
+    result = this->control_.wait (condition, ws).is_true ();
 
     if (result)
     {
-      delete found->second;
-
       threads_.erase (found);
     }
   }
@@ -220,16 +211,11 @@ madara::threads::Threader::wait (const knowledge::WaitSettings & ws)
 
   if (threads_.size () > 0)
   {
-    result = this->control_->wait (condition.str (), ws).is_true ();
+    result = this->control_.wait (condition.str (), ws).is_true ();
   }
 
   if (result)
   {
-    for (i = threads_.begin (); i != threads_.end (); ++i)
-    {
-      delete i->second;
-    }
-
     threads_.clear ();
   }
 #endif // _MADARA_NO_KARL_

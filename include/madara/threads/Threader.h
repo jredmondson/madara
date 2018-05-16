@@ -44,7 +44,7 @@ namespace madara
        * Constructor
        * @param  data_plane   The data plane for threads to use
        **/
-      Threader (knowledge::KnowledgeBase & data_plane);
+      Threader (knowledge::KnowledgeBase data_plane);
 
       /**
        * Destructor
@@ -182,7 +182,7 @@ namespace madara
       * Sets the data plane for new threads
       * @param  data_plane   The data plane for threads to use
       **/
-      void set_data_plane (knowledge::KnowledgeBase & data_plane);
+      void set_data_plane (knowledge::KnowledgeBase data_plane);
 
       /**
       * Requests a specific thread to terminate
@@ -217,14 +217,14 @@ namespace madara
       /**
        * The data plane used by threads
        **/
-      knowledge::KnowledgeBase * data_;
+      knowledge::KnowledgeBase data_;
 
       /**
        * The control plane used by threads for termination
        * and pause information. This has to be on the heap, because
        * each thread gets its own stack!
        **/
-      knowledge::KnowledgeBase * control_;
+      knowledge::KnowledgeBase control_;
 
       /**
        * the threads that are still active
