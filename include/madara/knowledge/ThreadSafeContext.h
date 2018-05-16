@@ -1231,6 +1231,7 @@ namespace madara
        *
        * @param expression         expression to compile
        * @return                   compiled, optimized expression tree
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       CompiledExpression
         compile (const std::string & expression);
@@ -1321,6 +1322,7 @@ namespace madara
        * @param   expression  A compiled expressio to run.
        * @param   settings    settings for applying the update
        * @return              result of the evaluation
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       knowledge::KnowledgeRecord evaluate (CompiledExpression expression,
         const KnowledgeUpdateSettings & settings =
@@ -1333,6 +1335,7 @@ namespace madara
        * @param   root        Root of an expression tree
        * @param   settings    settings for applying the update
        * @return              result of the evaluation
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       knowledge::KnowledgeRecord evaluate (
         expression::ComponentNode * root,

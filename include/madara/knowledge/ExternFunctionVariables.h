@@ -489,6 +489,7 @@ namespace madara
        *
        * @param expression         expression to compile
        * @return                   compiled, optimized expression tree
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       CompiledExpression
         compile (const std::string & expression);
@@ -506,6 +507,7 @@ namespace madara
        * @param expression      KaRL expression to evaluate
        * @param settings        Settings for evaluating and printing
        * @return                value of expression
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord evaluate (
         const std::string & expression,
@@ -518,9 +520,10 @@ namespace madara
        * function call and use a reference to this CompiledExpression from
        * within the external function that you create.
        *
-       * @param expression      KaRL expression to wait on (result of compile)
+       * @param expression      KaRL expression to evaluate (result of compile)
        * @param settings        Settings for updating knowledge
        * @return                value of expression
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord evaluate (
         CompiledExpression & expression,
