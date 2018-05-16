@@ -881,14 +881,6 @@ namespace madara
                       const std::string & filename);
 
       /**
-       * Read a policy into the knowledge base
-       * @param policy_key          key to read the policy into
-       * @param policy_file         file to read the policy from
-       */
-      int read_policy (const std::string & policy_key,
-                       const std::string & policy_file);
-
-      /**
        * Expands a statement using variable expansion. For example, if the
        * statement were MyKnowledge.{.id}, and .id==1, then the statement
        * would be expanded to MyKnowledge.1

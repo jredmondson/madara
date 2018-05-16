@@ -18,7 +18,7 @@
 namespace madara { namespace knowledge {
 
 inline KnowledgeBaseImpl::KnowledgeBaseImpl ()
-  : settings_ (), files_ (map_)
+  : settings_ ()
 {
   //activate_transport ();
   // no hope of transporting, so don't setup uniquehostport
@@ -26,7 +26,7 @@ inline KnowledgeBaseImpl::KnowledgeBaseImpl ()
 
 inline KnowledgeBaseImpl::KnowledgeBaseImpl (
   const std::string & host, int transport)
-  : settings_ (), files_ (map_)
+  : settings_ ()
 {
   // override default settings for the arguments
   settings_.type = transport;
@@ -38,7 +38,7 @@ inline KnowledgeBaseImpl::KnowledgeBaseImpl (
 inline KnowledgeBaseImpl::KnowledgeBaseImpl (
   const std::string & host, int transport,
   const std::string & knowledge_domain)
-  : settings_ (), files_ (map_)
+  : settings_ ()
 {
   // override default settings for the arguments
   settings_.type = transport;
@@ -50,7 +50,7 @@ inline KnowledgeBaseImpl::KnowledgeBaseImpl (
 
 inline KnowledgeBaseImpl::KnowledgeBaseImpl (
   const std::string & host, const madara::transport::TransportSettings & config)
-  : settings_ (config), files_ (map_)
+  : settings_ (config)
 {
   id_ = setup_unique_hostport (host);
   if (!settings_.delay_launch)
@@ -301,14 +301,6 @@ KnowledgeBaseImpl::expand_statement (
   const std::string & statement) const
 {
   return map_.expand_statement (statement);
-}
-
-/// Read a policy into the knowledge base
-inline int
-KnowledgeBaseImpl::read_policy (
-  const std::string & knowledge_key, const std::string & filename)
-{
-  return files_.read_policy (knowledge_key, filename);
 }
 
 /// Write file from the knowledge base to a specified file

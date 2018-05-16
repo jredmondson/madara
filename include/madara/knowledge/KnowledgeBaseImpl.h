@@ -22,7 +22,6 @@
 #include "madara/knowledge/VariableReference.h"
 #include "madara/MADARA_export.h"
 #include "madara/knowledge/ThreadSafeContext.h"
-#include "madara/knowledge/Files.h"
 #include "madara/transport/Transport.h"
 #include "madara/expression/Interpreter.h"
 #include "ace/SOCK_Dgram.h"
@@ -519,13 +518,6 @@ namespace madara
       ssize_t write_file (const std::string & knowledge_key,
                       const std::string & filename);
 
-      /**
-       * Read a policy into the knowledge base
-       * @param policy_key          key to read the policy into
-       * @param policy_file         file to read the policy from
-       */
-      int read_policy (const std::string & policy_key,
-                       const std::string & policy_file);
 #ifdef _USE_CID_
 
       /**
@@ -1122,7 +1114,6 @@ namespace madara
       ACE_SOCK_Dgram                      unique_bind_;
       std::string                         id_;
       transport::QoSTransportSettings   settings_;
-      Files                               files_;
 
       std::vector<std::unique_ptr<transport::Base>> transports_;
     };

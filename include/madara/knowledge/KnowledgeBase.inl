@@ -515,21 +515,6 @@ KnowledgeBase::set_jpeg (
   return result;
 }
 
-inline int
-KnowledgeBase::read_policy (
-  const std::string & knowledge_key,
-  const std::string & filename)
-{
-  int result = 0;
-
-  if (impl_.get ())
-  {
-    result = impl_->read_policy (knowledge_key, filename);
-  }
-
-  return result;
-}
-
 inline ssize_t
 KnowledgeBase::write_file (const std::string & knowledge_key,
                      const std::string & filename)
