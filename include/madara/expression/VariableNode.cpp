@@ -3,6 +3,7 @@
 #include "madara/expression/Visitor.h"
 #include "madara/expression/VariableNode.h"
 #include "madara/utility/Utility.h"
+#include "VariableExpander.h"
 
 
 #include <string>
@@ -20,6 +21,7 @@ madara::expression::VariableNode::VariableNode (
   if (key.find ("{") != key.npos)
   {
     madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+      "madara::expression::VariableNode: "
       "Variable %s requires variable expansion.\n",
       key.c_str ());
 
@@ -42,33 +44,39 @@ madara::expression::VariableNode::VariableNode (
         }
         else
         {
+          std::stringstream buffer;
+          buffer << "madara::expression::VariableNode";
+          buffer << ": KARL COMPILE ERROR: matching braces not found in ";
+          buffer << key << "@" << i << "\n";
           madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-            "KARL COMPILE ERROR: " \
-            "Expanded variable name has a leading closing brace "
-            "instead of opening closing brace at %d\n",
-            (int)i);
+            buffer.str ().c_str ());
 
-          exit (-1);
+          throw KarlException (buffer.str ()); 
         }
       }
     }
 
     if (num_opens > 0)
     {
+      std::stringstream buffer;
+      buffer << "madara::expression::VariableNode: ";
+      buffer << "KARL COMPILE ERROR: more opening braces than closers in ";
+      buffer << key << "\n";
       madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-        "KARL COMPILE ERROR: " \
-        "Variable name has more opening braces than closing in %s\n",
-        key.c_str ());
+        buffer.str ().c_str ());
 
-      exit (-1);
+      throw KarlException (buffer.str ()); 
     }
     else if (num_opens < 0)
     {
+      std::stringstream buffer;
+      buffer << "madara::expression::VariableNode: ";
+      buffer << "KARL COMPILE ERROR: more closing braces than openers in ";
+      buffer << key << "\n";
       madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-        "KARL COMPILE ERROR: " \
-        "Variable name has more closing braces than opening in %s\n",
-        key.c_str ());
-      exit (-1);
+        buffer.str ().c_str ());
+
+      throw KarlException (buffer.str ()); 
     }
   }
   // no variable expansion necessary. Create a hard link to the ref_->

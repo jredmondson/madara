@@ -50,10 +50,13 @@ madara::expression::CompositeNegateNode::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+      "madara::expression::CompositeNegateNode: "
       "KARL COMPILE ERROR: "
       "Negate has no right expression\n");
 
-    exit (-1); 
+    throw KarlException ("madara::expression::CompositeNegateNode: "
+      "KARL COMPILE ERROR: "
+      "Negate has no right expression\n"); 
   }
 
   can_change = right_child_can_change;
@@ -70,8 +73,8 @@ madara::expression::CompositeNegateNode::evaluate (
   madara::knowledge::KnowledgeRecord value = right_->evaluate (settings);
 
   madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-    "KARL COMPILE ERROR: "
-    "Negating %s.\n", value.to_string ().c_str ());
+    "madara::expression::CompositeNegateNode:: Negating %s.\n",
+    value.to_string ().c_str ());
 
   return -value;
 }

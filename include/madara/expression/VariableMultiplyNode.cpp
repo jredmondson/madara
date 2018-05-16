@@ -62,9 +62,12 @@ madara::expression::VariableMultiplyNode::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL COMPILE ERROR : Variable Multiply Node has no variable");
+      "madara::expression::VariableMultiplyNode: "
+      "KARL COMPILE ERROR: Variable assignment has no variable\n");
 
-    exit (-1);    
+    throw KarlException ("madara::expression::VariableMultiplyNode: "
+      "KARL COMPILE ERROR: "
+      "Node has no variable left-hand side\n");   
   }
 
   if (this->rhs_)
@@ -79,10 +82,12 @@ madara::expression::VariableMultiplyNode::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL COMPILE ERROR : Variable multiply assignment "
-      "has no right expression");
+      "madara::expression::VariableMultiplyNode: "
+      "KARL COMPILE ERROR: Variable assignment has no right expression\n");
 
-    exit (-1);
+    throw KarlException ("madara::expression::VariableMultiplyNode: "
+      "KARL COMPILE ERROR: "
+      "Node has no right expression\n"); 
   }
 
   can_change = left_child_can_change || right_child_can_change;

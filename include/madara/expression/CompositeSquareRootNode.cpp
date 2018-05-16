@@ -54,7 +54,10 @@ madara::expression::CompositeSquareRootNode::prune (bool & can_change)
       "KARL COMPILE ERROR: "
 
       "Sqrt (alt 251) has no right expression\n");
-    exit (-1); 
+
+    throw KarlException ("madara::expression::CompositeSquareRootNode: "
+      "KARL COMPILE ERROR: "
+      "Node has no right expression\n"); 
   }
 
   can_change = right_child_can_change;

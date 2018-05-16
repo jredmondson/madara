@@ -147,7 +147,7 @@ madara::transport::SpliceDDSTransport::setup (void)
       "\nSpliceDDSTransport::setup:" \
       " splice daemon not running. Try 'ospl start'...\n");
 
-    exit (-2);
+    return -2;
   }
 
   domain_participant_->get_default_topic_qos(topic_qos_);
@@ -249,7 +249,7 @@ madara::transport::SpliceDDSTransport::setup (void)
       "SpliceDDSTransport::setup:" \
       " pub or sub could not be created. Try 'ospl stop; ospl start'...\n");
 
-    exit (-2);
+    return -2;
   }
 
   // Create datawriter
@@ -434,7 +434,7 @@ madara::transport::SpliceDDSTransport::check_handle (void * handle,
       "SpliceDDSTransport::check_handle:" \
       " error in %s: Creation failed: invalid handle\n", info);
 
-    exit (-2);
+    return -2;
   }
 }
 
@@ -451,7 +451,7 @@ madara::transport::SpliceDDSTransport::check_status (DDS::ReturnCode_t status,
     " error in %s: Creation failed: %s\n",
     info, get_error_name (status));
 
-  exit (-2);
+  return -2;
 }
 
 const char *

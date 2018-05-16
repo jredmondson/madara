@@ -58,8 +58,12 @@ madara::expression::CompositeDivideNode::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+      "madara::expression::CompositeDivideNode: "
       "KARL COMPILE ERROR: Division has no left expression\n");
-    exit (-1);  
+
+    throw KarlException ("madara::expression::CompositeDivideNode: "
+      "KARL COMPILE ERROR: "
+      "Division has no left expression\n"); 
   }
 
   if (this->right_)
@@ -74,7 +78,9 @@ madara::expression::CompositeDivideNode::prune (bool & can_change)
         madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
           "KARL COMPILE ERROR: Division results in permanent divide by zero\n");
 
-        exit (-1);
+        throw KarlException ("madara::expression::CompositeDivideNode: "
+          "KARL COMPILE ERROR: "
+          "Division has zero denominator\n"); 
       }
       // the only time we should delete right is if we have a clean division
       if (!left_child_can_change && 
@@ -96,7 +102,10 @@ madara::expression::CompositeDivideNode::prune (bool & can_change)
   {
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Division has no right expression (divide by zero)\n");
-    exit (-1);
+
+    throw KarlException ("madara::expression::CompositeDivideNode: "
+      "KARL COMPILE ERROR: "
+      "Division has no right expression\n"); 
   }
 
   can_change = left_child_can_change || right_child_can_change;

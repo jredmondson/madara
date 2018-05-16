@@ -4,6 +4,7 @@
 #include "madara/expression/Visitor.h"
 #include "madara/expression/CompositeArrayReference.h"
 #include "madara/utility/Utility.h"
+#include "VariableExpander.h"
 
 
 #include <string>
@@ -17,73 +18,9 @@ madara::expression::CompositeArrayReference::CompositeArrayReference (
   key_ (key),
   key_expansion_necessary_ (false)
 {
-  // this key requires expansion. We do the compilation and error checking here
-  // as the key shouldn't change, and this allows us to only have to do this
-  // once
-  if (key.find ("{") != key.npos)
-  {
-    madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-      "Variable %s requires variable expansion.\n",
-      key.c_str ());
-
-    key_expansion_necessary_ = true;
-    splitters_.push_back ("{");
-    splitters_.push_back ("}");
-
-    utility::tokenizer (key, splitters_, tokens_, pivot_list_);
-
-    if (pivot_list_.size () % 2 != 0)
-    {
-      madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-        "KARL COMPILE ERROR: matching braces not found in %s\n",
-         key.c_str ());
-
-      exit (-1);
-    }
-
-    // check for braces that are not properly closed
-    std::vector<std::string>::const_iterator pivot = pivot_list_.begin ();
-    unsigned int num_opens = 0;
-    unsigned int num_closes = 0;
-
-    for (; pivot != pivot_list_.end (); ++pivot)
-    {
-      if (*pivot == "{")
-      {
-        ++num_opens;
-      }
-      else if (*pivot == "}")
-      {
-        ++num_closes;
-      }
-    }
-
-    if (num_opens > num_closes)
-    {
-      madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-        "KARL COMPILE ERROR: Array name has "
-        "more opening braces than closing in %s\n",
-        key.c_str ());
-
-      exit (-1);
-    }
-    else if (num_closes > num_opens)
-    {
-      madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-        "KARL COMPILE ERROR: Array name has "
-        "more closing braces than opening in %s\n",
-        key.c_str ());
-
-      exit (-1);
-    }
-  }
-  // no variable expansion necessary. Create a hard link to the record_->
-  // this will save us lots of clock cycles each variable access or
-  // mutation.
-  else
-  {
-    ref_ = context_.get_ref (key);
-  }
+  VariableExpander expander;
+  ref_ = expander.expand (key, "CompositeArrayReference", context, logger_,
+    key_expansion_necessary_, splitters_, tokens_, pivot_list_);
 }
 
 std::string

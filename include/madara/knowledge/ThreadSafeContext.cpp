@@ -921,8 +921,6 @@ ThreadSafeContext::expand_statement (
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR : Improperly matched braces in %s\n",
       statement.c_str ());
-
-    exit (-1);
   }
 
   return builder.str ();

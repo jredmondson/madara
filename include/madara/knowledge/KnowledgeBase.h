@@ -912,6 +912,7 @@ namespace madara
        *
        * @param expression         expression to compile
        * @return                   compiled, optimized expression tree
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       CompiledExpression
         compile (const std::string & expression);
@@ -922,6 +923,7 @@ namespace madara
        * @param expression      KaRL expression to evaluate
        * @param settings        Settings for evaluating and printing
        * @return                value of expression
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord evaluate (
         const std::string & expression,
@@ -934,6 +936,7 @@ namespace madara
        * @param expression      KaRL expression to evaluate (result of compile)
        * @param settings        Settings for evaluating and printing
        * @return                value of expression
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord evaluate (
         CompiledExpression & expression,
@@ -946,6 +949,7 @@ namespace madara
        * @param root            root-based tree
        * @param settings        Settings for evaluating and printing
        * @return                value of expression
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord evaluate (
         expression::ComponentNode * root,
@@ -960,6 +964,7 @@ namespace madara
        * @param settings        Settings for the underlying expression
        *                        evaluation and printing
        * @return                value of expression
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord wait (
         const std::string & expression,
@@ -974,6 +979,7 @@ namespace madara
        * @param settings        Settings for the underlying expression
        *                        evaluation and printing
        * @return                value of expression
+       * @throw expression::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord wait (
         CompiledExpression & expression,

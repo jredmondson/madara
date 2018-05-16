@@ -57,9 +57,12 @@ madara::expression::CompositePredecrementNode::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+      "madara::expression::CompositePredecrementNode: "
       "KARL COMPILE ERROR: Predecrement has no right expression\n");
 
-    exit (-1);
+    throw KarlException ("madara::expression::CompositePredecrementNode: "
+      "KARL COMPILE ERROR: "
+      "Node has no right expression\n"); 
   }
 
   can_change = right_child_can_change;

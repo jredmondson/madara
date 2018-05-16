@@ -55,9 +55,12 @@ madara::expression::CompositeModulusNode::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+      "madara::expression::CompositeModulusNode: "
       "KARL COMPILE ERROR: Modulus has no left expression\n");
 
-    exit (-1); 
+    throw KarlException ("madara::expression::CompositeModulusNode: "
+      "KARL COMPILE ERROR: "
+      "Node has no left expression\n"); 
   }
 
   if (this->right_)
@@ -73,17 +76,22 @@ madara::expression::CompositeModulusNode::prune (bool & can_change)
         madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
           "KARL COMPILE ERROR: Modulus results in permanent divide by zero\n");
 
-        exit (-1);
+        throw KarlException ("madara::expression::CompositeModulusNode: "
+          "KARL COMPILE ERROR: "
+          "Permanent divide by zero error\n"); 
       }
     }
   }
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+      "madara::expression::CompositeModulusNode: "
       "KARL COMPILE ERROR: "
       "Modulus has no right expression (divide by zero)\n");
 
-    exit (-1);
+    throw KarlException ("madara::expression::CompositeModulusNode: "
+      "KARL COMPILE ERROR: "
+      "Node has no right expression\n"); 
   }
 
   can_change = left_child_can_change || right_child_can_change;

@@ -5400,7 +5400,9 @@ madara::expression::Symbol *op,
         madara_logger_log (context.get_logger (), logger::LOG_EMERGENCY,
           "KARL COMPILE ERROR: Unary operation shouldn't have a left child\n");
 
-        exit (-1);
+        throw KarlException ("madara::expression::Interpreter: "
+          "KARL COMPILE ERROR: "
+          "Parent unary node has a left child, shouldn't be possible\n"); 
       }
 
       // if we've gotten to this point, then we need to
@@ -5415,7 +5417,9 @@ madara::expression::Symbol *op,
           madara_logger_log (context.get_logger (), logger::LOG_EMERGENCY,
             "KARL COMPILE ERROR: unary operation shouldn't have a left child\n");
 
-          exit (-1);
+          throw KarlException ("madara::expression::Interpreter: "
+            "KARL COMPILE ERROR: "
+            "Unary node has a left child, shouldn't be possible\n"); 
         }
         else
           op->left_ = child;

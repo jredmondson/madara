@@ -55,7 +55,9 @@ madara::expression::CompositeGreaterThanNode::prune (bool & can_change)
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Greater-than has no left expression\n");
 
-    exit (-1);
+    throw KarlException ("madara::expression::CompositeGreaterThanNode: "
+      "KARL COMPILE ERROR: "
+      "GreaterThan has no left expression\n"); 
   }
 
   if (this->right_)
@@ -72,7 +74,9 @@ madara::expression::CompositeGreaterThanNode::prune (bool & can_change)
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
       "KARL COMPILE ERROR: Greater-than has no right expression\n");
 
-    exit (-1);   
+    throw KarlException ("madara::expression::CompositeGreaterThanNode: "
+      "KARL COMPILE ERROR: "
+      "GreaterThan has no right expression\n"); 
   }
 
   can_change = left_child_can_change || right_child_can_change;

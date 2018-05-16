@@ -1172,7 +1172,6 @@ Base::send_data (const knowledge::KnowledgeRecords &/*map*/)
   madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
     "transport::Base: send_data(KnowledgeRecords) not implemented, "
     "but was called\n");
-  exit (-1);
 }
 
 long

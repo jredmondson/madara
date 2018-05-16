@@ -61,9 +61,12 @@ madara::expression::VariableIncrementNode::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+      "madara::expression::VariableIncrementNode: "
       "KARL COMPILE ERROR: Variable assignment has no variable\n");
 
-    exit (-1);    
+    throw KarlException ("madara::expression::VariableIncrementNode: "
+      "KARL COMPILE ERROR: "
+      "Node has no variable left-hand side\n");   
   }
 
   if (this->rhs_)
@@ -78,9 +81,12 @@ madara::expression::VariableIncrementNode::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL COMPILE ERROR: Assignment has no right expression\n");
+      "madara::expression::VariableIncrementNode: "
+      "KARL COMPILE ERROR: Variable assignment has no right expression\n");
 
-    exit (-1);
+    throw KarlException ("madara::expression::VariableIncrementNode: "
+      "KARL COMPILE ERROR: "
+      "Node has no right expression\n"); 
   }
 
   can_change = left_child_can_change || right_child_can_change;

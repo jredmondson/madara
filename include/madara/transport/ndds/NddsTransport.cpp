@@ -127,7 +127,7 @@ madara::transport::NddsTransport::setup (void)
       "NddsTransport::setup:" \
       " Unable to start the NDDS transport. Exiting...\n");
 
-    exit (-2);
+    return -2;
   }
 
   DDS_TopicQos topic_qos;
@@ -157,7 +157,7 @@ madara::transport::NddsTransport::setup (void)
       "NddsTransport::setup:" \
       " Unable to register the knowledge update data type. Exiting...\n");
 
-    exit (-2);
+    return -2;
   }
 
   // create the knowledge topic
@@ -173,7 +173,7 @@ madara::transport::NddsTransport::setup (void)
       "NddsTransport::setup:" \
       " Unable to create topic. Exiting...\n");
 
-    exit (-2);
+    return -2;
   }
 
   DDS_PublisherQos pub_qos;
@@ -197,7 +197,7 @@ madara::transport::NddsTransport::setup (void)
     context_.get_logger ().log (logger::LOG_ERROR,
       "NddsTransport::setup:" \
       " Unable to create publisher_. Exiting...\n");
-    exit (-2);
+    return -2;
   }
 
   DDS_DataWriterQos datawriter_qos;
@@ -216,7 +216,7 @@ madara::transport::NddsTransport::setup (void)
       "NddsTransport::setup:" \
       " Unable to create topic data writer. Exiting...\n");
 
-    exit (-2);
+    return -2;
   }
 
   // create the specialized data writer for our data type
@@ -227,7 +227,7 @@ madara::transport::NddsTransport::setup (void)
       "NddsTransport::setup:" \
       " Unable to create narrowed data writer. Exiting...\n");
 
-    exit (-2);
+    return -2;
   }
 
   DDS_SubscriberQos sub_qos;
@@ -250,7 +250,7 @@ madara::transport::NddsTransport::setup (void)
       "NddsTransport::setup:" \
       " Unable to create subscriber_. Exiting...\n");
 
-    exit (-2);
+    return -2;
   }
 
   

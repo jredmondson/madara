@@ -11,6 +11,7 @@
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
 #include "madara/utility/stdint.h"
 #include "madara/logger/Logger.h"
+#include "KarlException.h"
 
 namespace madara
 {
