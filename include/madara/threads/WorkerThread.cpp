@@ -15,8 +15,8 @@
 
 unsigned __stdcall worker_thread_windows_glue (void * param)
 {
-  madara::threads::WorkerThread * caller = 
-    static_cast < madara::threads::WorkerThread *> (
+  WorkerThread * caller =
+    static_cast < WorkerThread *> (
       param);
   if (caller)
   {
@@ -34,35 +34,31 @@ unsigned __stdcall worker_thread_windows_glue (void * param)
 #include <iostream>
 #include <algorithm>
 
-madara::threads::WorkerThread::WorkerThread ()
-  : thread_ (0), control_ (0), data_ (0), hertz_ (-1.0)
-{
-}
+namespace madara { namespace threads {
 
-
-madara::threads::WorkerThread::WorkerThread (
+WorkerThread::WorkerThread (
   const std::string & name,
   BaseThread * thread,
-  knowledge::KnowledgeBase * control,
-  knowledge::KnowledgeBase * data,
+  knowledge::KnowledgeBase control,
+  knowledge::KnowledgeBase data,
   double hertz)
   : name_ (name), thread_ (thread), control_ (control), data_ (data),
     hertz_ (hertz)
 {
-  if (thread && control)
+  if (thread)
   {
     std::stringstream base_string;
     base_string << name;
-    
+
     thread->name = name;
-    thread->init_control_vars (*control);
+    thread->init_control_vars (control);
 
     finished_.set_name (
-      base_string.str () + ".finished", *control);
+      base_string.str () + ".finished", control);
     started_.set_name (
-      base_string.str () + ".started", *control);
+      base_string.str () + ".started", control);
     new_hertz_.set_name (
-      base_string.str () + ".hertz", *control);
+      base_string.str () + ".hertz", control);
 
     finished_ = 0;
     started_ = 0;
@@ -70,12 +66,19 @@ madara::threads::WorkerThread::WorkerThread (
   }
 }
 
-madara::threads::WorkerThread::~WorkerThread ()
+WorkerThread::~WorkerThread ()
 {
+  if (me_.joinable()) {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
+      "WorkerThread::~WorkerThread(%s):" \
+      " thread wasn't joined before destruction\n", name_.c_str ());
+    me_.detach();
+  }
 }
 
+/*
 void
-madara::threads::WorkerThread::operator= (const WorkerThread & input)
+WorkerThread::operator= (const WorkerThread & input)
 {
   if (this != &input)
   {
@@ -88,37 +91,38 @@ madara::threads::WorkerThread::operator= (const WorkerThread & input)
     this->new_hertz_ = input.new_hertz_;
     this->hertz_ = input.hertz_;
   }
-}
+}*/
 
 void
-madara::threads::WorkerThread::run (void)
+WorkerThread::run (void)
 {
-  int result;
-
 #ifndef WIN32
-  result = this->activate ();
 #else
-  result = 0;
-  _beginthreadex(NULL, 0, worker_thread_windows_glue, (void*)this, 0, 0);
-    
-#endif
+  //result = 0;
+  //_beginthreadex(NULL, 0, worker_thread_windows_glue, (void*)this, 0, 0);
 
-  if (result != -1)
-  {
+#endif
+  try {
+    me_ = std::thread(&WorkerThread::svc, this);
+
+    std::ostringstream os;
+    os << std::this_thread::get_id() << " spawned " << me_.get_id() << std::endl;
+
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
       "WorkerThread::WorkerThread(%s):" \
-      " thread started (result = %d)\n", name_.c_str (), result);
+      " thread started %s\n", name_.c_str (), os.str().c_str());
   }
-  else
+  catch (const std::exception &e)
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
       "WorkerThread::WorkerThread(%s):" \
-      " failed to create thread\n", name_.c_str ());
+      " failed to create thread: %s\n", name_.c_str (), e.what ());
+    throw;
   }
 }
 
 int
-madara::threads::WorkerThread::svc (void)
+WorkerThread::svc (void)
 {
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
     "WorkerThread(%s)::svc:" \
@@ -127,44 +131,50 @@ madara::threads::WorkerThread::svc (void)
   if (thread_)
   {
     started_ = 1;
-    
+
 #ifdef _MADARA_JAVA_
     // try detaching one more time, just to make sure.
-    madara::utility::java::Acquire_VM jvm (false);
+    utility::java::Acquire_VM jvm (false);
 #endif
 
-    thread_->init (*data_);
+    thread_->init (data_);
 
     {
       ACE_Time_Value current = utility::get_ace_time ();
       ACE_Time_Value next_epoch, frequency;
-      
+
       bool one_shot = true;
       bool blaster = false;
 
       knowledge::VariableReference terminated;
       knowledge::VariableReference paused;
 
-      terminated = control_->get_ref (name_ + ".terminated");
-      paused = control_->get_ref (name_ + ".paused");
+      terminated = control_.get_ref (name_ + ".terminated");
+      paused = control_.get_ref (name_ + ".paused");
 
       // change thread frequency
       change_frequency (hertz_, current, frequency, next_epoch,
         one_shot, blaster);
 
-      while (control_->get (terminated).is_false ())
+      while (control_.get (terminated).is_false ())
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
           "WorkerThread(%s)::svc:" \
           " thread checking for pause\n", name_.c_str ());
 
-        if (control_->get (paused).is_false ())
+        if (control_.get (paused).is_false ())
         {
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
             "WorkerThread(%s)::svc:" \
             " thread calling run function\n", name_.c_str ());
 
-          thread_->run ();
+          try {
+            thread_->run ();
+          } catch (const std::exception &e) {
+            madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
+              "WorkerThread(%s)::svc:" \
+              " exception thrown: %s\n", name_.c_str (), e.what());
+          }
         }
 
         if (one_shot)
@@ -186,7 +196,7 @@ madara::threads::WorkerThread::svc (void)
             " thread checking for next hertz epoch\n", name_.c_str ());
 
           if (current < next_epoch)
-            madara::utility::sleep (next_epoch - current);  
+            utility::sleep (next_epoch - current);
 
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
             "WorkerThread(%s)::svc:" \
@@ -212,8 +222,6 @@ madara::threads::WorkerThread::svc (void)
       "WorkerThread(%s)::svc:" \
       " deleting thread\n", name_.c_str ());
 
-    delete thread_;
-
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
       "WorkerThread(%s)::svc:" \
       " setting finished to 1\n", finished_.get_name ().c_str ());
@@ -229,3 +237,5 @@ madara::threads::WorkerThread::svc (void)
 
   return 0;
 }
+
+} }

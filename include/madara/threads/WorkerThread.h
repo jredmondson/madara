@@ -16,8 +16,9 @@
 #include "BaseThread.h"
 #include "madara/knowledge/containers/Double.h"
 
-#include "ace/Task.h"
- 
+#include <thread>
+
+
 namespace madara
 {
   namespace threads
@@ -26,9 +27,9 @@ namespace madara
 
     /**
      * @class WorkerThread
-     * @brief A thread that executes BaseThread logic. Users should 
+     * @brief A thread that executes BaseThread logic. Users should
      **/
-    class WorkerThread : public ACE_Task<ACE_NULL_SYNCH>
+    class WorkerThread
     {
     public:
       /// give access to our status flags to the Threader class
@@ -37,10 +38,12 @@ namespace madara
       /**
        * Default constructor
        **/
-      WorkerThread ();
-      
+      WorkerThread () {}
+
       /**
        * Constructor
+       * deprecated: use version that takes control and data by value
+       *
        * @param    name     the name of the user thread
        * @param    thread   the user thread
        * @param    control  the knowledge base that provides a control plane
@@ -53,35 +56,49 @@ namespace madara
         BaseThread * thread,
         knowledge::KnowledgeBase * control,
         knowledge::KnowledgeBase * data,
-        double hertz = -1.0);
-      
+        double hertz = -1.0)
+      : WorkerThread(name, thread, *control, *data, hertz) {}
+
       /**
-       * Copy constructor deleted, because ACE_Task doesn't support it
+       * Constructor
+       *
+       * @param    name     the name of the user thread
+       * @param    thread   the user thread
+       * @param    control  the knowledge base that provides a control plane
+       *                    between the data knowledge base and threads
+       * @param    data     the knowledge base that provides user data access
+       * @param    hertz    the hertz rate to run the thread
        **/
-      WorkerThread (const WorkerThread & input) = delete;
+      WorkerThread (
+        const std::string & name,
+        BaseThread * thread,
+        knowledge::KnowledgeBase control,
+        knowledge::KnowledgeBase data,
+        double hertz = -1.0);
 
       /**
       * Destructor
       **/
       ~WorkerThread ();
-      
+
       /**
        * Assignment operator
        * @param input  thread information to copy
        **/
-      void operator= (const WorkerThread & input);
+      //void operator= (const WorkerThread & input);
+
+    protected:
+      std::thread me_;
 
       /**
-      * Reads messages from a socket
+      * Task loop
       **/
       int svc (void);
-      
+
       /**
-       * Runs the thread once
+       * Starts the thread, with entry point svc()
        **/
       void run (void);
-      
-    protected:
 
       /**
        * Changes the frequency given a hertz rate
@@ -102,20 +119,20 @@ namespace madara
       std::string name_;
 
       /// the contained thread
-      BaseThread * thread_;
+      std::unique_ptr<BaseThread> thread_ = nullptr;
 
       /// the control plane to the knowledge base
-      knowledge::KnowledgeBase * control_;
+      knowledge::KnowledgeBase control_;
 
       /// the data plane (the knowledge base)
-      knowledge::KnowledgeBase * data_;
+      knowledge::KnowledgeBase data_;
 
       /**
        * thread safe finished flag that will be sent to the knowledge
        * base on completion of the thread
        **/
       knowledge::containers::Integer finished_;
-      
+
       /**
        * thread safe start flag that will be sent to the knowledge
        * base on launch of the thread
@@ -126,17 +143,17 @@ namespace madara
        * thread safe hertz reference
        **/
       knowledge::containers::Double new_hertz_;
-      
+
       /**
        * hertz rate for worker thread executions
        **/
-      double hertz_;
+      double hertz_ = -1;
     };
 
     /**
      * Collection of named threads
      **/
-    typedef std::map <std::string, WorkerThread *>  NamedWorkerThreads;
+    typedef std::map <std::string, std::unique_ptr<WorkerThread>>  NamedWorkerThreads;
   }
 }
 

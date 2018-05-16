@@ -16,13 +16,13 @@
 inline void
 madara::threads::Threader::change_hertz (const std::string name, double hertz)
 {
-  control_->set (name + ".hertz", hertz);
+  control_.set (name + ".hertz", hertz);
 }
 
 inline madara::knowledge::KnowledgeBase
 madara::threads::Threader::get_data_plane (void)
 {
-  return *data_;
+  return data_;
 }
 
 /**
@@ -32,7 +32,7 @@ madara::threads::Threader::get_data_plane (void)
 inline madara::knowledge::KnowledgeBase
 madara::threads::Threader::get_control_plane (void)
 {
-  return *control_;
+  return control_;
 }
 
 

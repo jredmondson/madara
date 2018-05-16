@@ -9,10 +9,11 @@
  **/
 
 #include "WorkerThread.h"
- 
+
+namespace madara { namespace threads {
 
 inline void
-madara::threads::WorkerThread::change_frequency (
+WorkerThread::change_frequency (
   double hertz,
   ACE_Time_Value & current, ACE_Time_Value & frequency,
   ACE_Time_Value & next_epoch,
@@ -47,5 +48,7 @@ madara::threads::WorkerThread::change_frequency (
       " thread running once\n", name_.c_str ());
   }
 }
+
+} }
 
 #endif // _MADARA_THREADS_WORKER_THREAD_H_
