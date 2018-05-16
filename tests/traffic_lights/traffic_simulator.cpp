@@ -952,7 +952,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     ACE_DEBUG ((LM_DEBUG, "(%P|%t) Knowledge at time=%d\n", 
       knowledge.get ("simulation_time")));
     knowledge.print_knowledge ();
-    ACE_OS::sleep (1);
+    madara::utility::sleep (1);
   }
 
   ACE_DEBUG ((LM_DEBUG, "(%P|%t) Final Knowledge\n"));

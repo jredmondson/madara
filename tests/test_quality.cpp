@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <assert.h>
+#include "madara/utility/Utility.h"
 
 
 // Because Microsoft decided to not support stdint.h
@@ -100,7 +101,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
     ACE_DEBUG ((LM_DEBUG, "(%P|%t) Also, result is %d\n", result));
 
-    ACE_OS::sleep (1);
+    madara::utility::sleep (1);
   }
 
   ACE_DEBUG ((LM_DEBUG, "(%P|%t) Final Knowledge\n"));

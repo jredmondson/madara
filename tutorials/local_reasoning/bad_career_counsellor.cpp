@@ -13,7 +13,7 @@
 
 namespace knowledge = madara::knowledge;
 
-int main (int argc, char * argv[])
+int main (int, char **)
 {
   knowledge::KnowledgeBase knowledge;
   

@@ -238,7 +238,10 @@ int main (int argc, char ** argv)
 
     mkdir += output_dir;
 
-    system (mkdir.c_str ());
+    if (system (mkdir.c_str ()) != 0)
+    {
+      std::cerr << "ERROR: Issue with command " << mkdir << "\n";
+    }
   }
 
   copy_mpbs ();

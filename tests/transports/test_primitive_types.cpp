@@ -14,6 +14,7 @@
 #include "ace/Signal.h"
 #include "ace/Sched_Params.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/utility/Utility.h"
 
 namespace logger = madara::logger;
 
@@ -146,7 +147,7 @@ int ACE_TMAIN (int argc, char ** argv)
   {
     knowledge.wait (compiled, wait_settings);
 
-    ACE_OS::sleep (1);
+    madara::utility::sleep (1);
   }
 
   knowledge.print ();

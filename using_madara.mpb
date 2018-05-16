@@ -3,4 +3,9 @@ project {
   libpaths += $(MADARA_ROOT)/lib
   after += Madara  
   libs += MADARA
+
+  verbatim (gnuace, local) {
+    CPPFLAGS += -std=c++11
+  }
+  
 }

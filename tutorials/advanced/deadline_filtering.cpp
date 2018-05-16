@@ -30,6 +30,7 @@
 #include "ace/OS_NS_Thread.h"
 #include "madara/transport/TransportContext.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/utility/Utility.h"
 
 /**
 * Define helpful shortened namespaces that we can refer to later
@@ -148,7 +149,7 @@ filter_deadlines (
       {
         vars.print (
           "Inducing a 10 seconds sleep to force deadline infractions.\n", 0);
-        ACE_OS::sleep (10);
+        madara::utility::sleep (10);
       }
     }
     else
@@ -220,7 +221,7 @@ int main (int argc, char * argv[])
     * Update the knowledge base to include our .id. All variables are zero
     * by default in the knowledge base.
     **/
-  knowledge.set (".id", madara::knowledge::KnowledgeRecord::Integer (settings.id));
+  knowledge.set (".id", settings.id);
 
   /**
    * In order for our receive filter to work, we have to first initialize

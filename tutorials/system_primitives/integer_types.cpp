@@ -12,7 +12,7 @@
 #include <iostream>
 #include <string>
 
-int main (int argc, char * argv[])
+int main (int, char **)
 {
   // Create a knowledge base
   madara::knowledge::KnowledgeBase knowledge;

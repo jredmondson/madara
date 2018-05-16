@@ -32,6 +32,7 @@
 #include <sstream>
 #include <time.h>
 #include "madara/knowledge/KnowledgeBase.h"
+#include "madara/utility/Utility.h"
 #include "ace/Signal.h"
 #include "ace/OS_NS_Thread.h"
 
@@ -119,7 +120,7 @@ madara::knowledge::KnowledgeRecord
 
   variables.evaluate (expression);
 
-  return madara::knowledge::KnowledgeRecord::Integer (1);
+  return madara::knowledge::KnowledgeRecord (1);
 }
 
 /**
@@ -217,7 +218,7 @@ madara::knowledge::KnowledgeRecord
 
   variables.evaluate (expression);
 
-  return madara::knowledge::KnowledgeRecord::Integer (1);
+  return madara::knowledge::KnowledgeRecord (1);
 }
 
 /**
@@ -227,17 +228,17 @@ madara::knowledge::KnowledgeRecord
  **/
 madara::knowledge::KnowledgeRecord
   rand_int (madara::knowledge::FunctionArguments & args,
-             madara::knowledge::Variables & variables)
+             madara::knowledge::Variables &)
 {
   // if the args list is greater than zero, is an integer, and is not 0
   if (args.size () > 0 && 
     args[0].type () == madara::knowledge::KnowledgeRecord::INTEGER &&
     args[0].to_integer () != 0)
     // then call rand () with a modulus up to that integer argument
-    return madara::knowledge::KnowledgeRecord::Integer (rand () % (int)args[0].to_integer ());
+    return madara::knowledge::KnowledgeRecord (rand () % (int)args[0].to_integer ());
   // otherwise, just return rand ()
   else
-    return madara::knowledge::KnowledgeRecord::Integer (rand ());
+    return madara::knowledge::KnowledgeRecord (rand ());
 }
 
 
@@ -370,7 +371,7 @@ int main (int argc, char * argv[])
     );
 
     // Sleep for a second so we limit the number of printouts and movements
-    ACE_OS::sleep (1);
+    madara::utility::sleep (1);
 
     // Move our position around the grid according to our x/y deltas
     knowledge.evaluate (

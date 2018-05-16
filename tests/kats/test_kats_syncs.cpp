@@ -18,6 +18,7 @@
 #include "ace/Sched_Params.h"
 
 #include "madara/kats/TestFramework.h"
+#include "madara/utility/Utility.h"
 
 Madara::KATS::Settings settings;
 
@@ -65,7 +66,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       "", "", false, true);
 
     // sleep for 10 seconds without a transport
-    ACE_OS::sleep (10);
+    madara::utility::sleep (10);
 
     testing.sync ();
 

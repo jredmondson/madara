@@ -68,7 +68,7 @@ int main(int, char **)
   threader.run(10, "producer", prod);
   threader.run(10, "consumer", cons);
 
-  ACE_OS::sleep(20);
+  madara::utility::sleep(20);
 
   tests_finalize();
 }

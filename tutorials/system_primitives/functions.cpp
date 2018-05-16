@@ -21,7 +21,7 @@
  **/
 madara::knowledge::KnowledgeRecord
   rand_int (madara::knowledge::FunctionArguments & args,
-             madara::knowledge::Variables & variables)
+             madara::knowledge::Variables &)
 {
   // if the args list is greater than zero, is an integer, and is not 0
   if (args.size () > 0 && 
@@ -29,20 +29,20 @@ madara::knowledge::KnowledgeRecord
     args[0].to_integer () != 0)
   {
     // then call rand () with a modulus up to that integer argument
-    return madara::knowledge::KnowledgeRecord::Integer (
+    return madara::knowledge::KnowledgeRecord (
       rand () % (int)args[0].to_integer ());
   }
 
   // otherwise, just return rand ()
   else
-    return madara::knowledge::KnowledgeRecord::Integer (rand ());
+    return madara::knowledge::KnowledgeRecord (rand ());
 }
   
 /**
  * Madara function that returns a random fraction between 0 and 1
  **/
 madara::knowledge::KnowledgeRecord
-  rand_double (madara::knowledge::FunctionArguments & args,
+  rand_double (madara::knowledge::FunctionArguments &,
              madara::knowledge::Variables & variables)
 {
   // empty arguments list to pass to rand_int (the function above)
@@ -55,10 +55,8 @@ madara::knowledge::KnowledgeRecord
   madara::knowledge::KnowledgeRecord numerator (
     rand_int (rand_args, variables));
 
-  madara::knowledge::KnowledgeRecord result = numerator.to_double () /
-    denominator;
-
-  return result;
+  return madara::knowledge::KnowledgeRecord (numerator.to_double () /
+    denominator);
 }
 
 
@@ -67,15 +65,15 @@ madara::knowledge::KnowledgeRecord
  **/
 madara::knowledge::KnowledgeRecord
   is_true (madara::knowledge::FunctionArguments & args,
-             madara::knowledge::Variables & variables)
+             madara::knowledge::Variables &)
 {
+  madara::knowledge::KnowledgeRecord result;
+
   // if we've been provided with an argument, check if it is true
   if (args.size () == 1)
-    return madara::knowledge::KnowledgeRecord::Integer (
-      args[0].to_double () >= 0.5 && args[0].to_double () <= 1);
-  // if the user didn't provide an argument, return false
-  else
-    return madara::knowledge::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord (args[0].is_true ());
+
+  return result;
 }
 
 /**
@@ -83,20 +81,20 @@ madara::knowledge::KnowledgeRecord
  **/
 madara::knowledge::KnowledgeRecord
   is_false (madara::knowledge::FunctionArguments & args,
-             madara::knowledge::Variables & variables)
+             madara::knowledge::Variables &)
 {
   // if we've been provided with an argument, check if it is true
   if (args.size () == 1)
-    return madara::knowledge::KnowledgeRecord::Integer (
+    return madara::knowledge::KnowledgeRecord (
       args[0].to_double () < 0.5 && args[0].to_double () >= 0);
   // if the user didn't provide an argument, return false
   else
-    return madara::knowledge::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord (0);
 }
 
 
 
-int main (int argc, char * argv[])
+int main (int, char **)
 {
   // Create a knowledge base
   madara::knowledge::KnowledgeBase knowledge;

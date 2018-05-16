@@ -45,6 +45,7 @@
 #include <string>
 #include <sstream>
 #include "madara/knowledge/KnowledgeBase.h"
+#include "madara/utility/Utility.h"
 #include "ace/Signal.h"
 #include "ace/OS_NS_Thread.h"
 
@@ -147,7 +148,7 @@ int main (int argc, char * argv[])
     );
 
     // Sleep for a second so we limit the number of printouts
-    ACE_OS::sleep (1);
+    madara::utility::sleep (1);
   }
   
  

@@ -8,6 +8,7 @@
  **/
 
 #include "madara/knowledge/KnowledgeBase.h"
+#include "madara/utility/Utility.h"
 #include "CustomTransport.h"
 #include <iostream>
 #include <string>
@@ -33,7 +34,7 @@ extern "C" void terminate (int)
   terminated = true;
 }
 
-int main (int argc, char * argv[])
+int main (int , char *[])
 {
   // Register a signal handler for Control+C
   ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
@@ -57,7 +58,7 @@ int main (int argc, char * argv[])
     knowledge.print ();
 
     // Sleep for a second so we limit the number of printouts
-    ACE_OS::sleep (1);
+    madara::utility::sleep (1);
   }
 
   return 0;

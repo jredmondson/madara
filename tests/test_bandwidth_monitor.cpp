@@ -1,5 +1,6 @@
 
 #include "madara/transport/BandwidthMonitor.h"
+#include "madara/utility/Utility.h"
 
 #include "ace/High_Res_Timer.h"
 #include "ace/OS.h"
@@ -27,7 +28,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   for (int i = 0; i < 10; ++i)
   {
     monitor.add (150);
-    ACE_OS::sleep (1);
+    madara::utility::sleep (1);
   }
   
   std::cerr << "Initial bandwidth utilization...\n";
@@ -40,7 +41,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   
   std::cerr << "Sleeping for 5 seconds...\n";
-  ACE_OS::sleep (5);
+  madara::utility::sleep (5);
   
   std::cerr << "New bandwidth utilization...\n";
   monitor.print_utilization ();
@@ -50,7 +51,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     std::cerr << "Bandwidth check results in FAIL\n\n";
   
   std::cerr << "Sleeping for 3 seconds...\n";
-  ACE_OS::sleep (3);
+  madara::utility::sleep (3);
   
   std::cerr << "New bandwidth utilization...\n";
   monitor.print_utilization ();
@@ -74,7 +75,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     monitor.add (1000);
   }
   
-  ACE_OS::sleep (10);
+  madara::utility::sleep (10);
 
   
   std::cerr << "New bandwidth utilization...\n";

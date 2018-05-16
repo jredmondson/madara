@@ -28,6 +28,7 @@
 #include "ace/OS_NS_Thread.h"
 #include "madara/transport/TransportContext.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/utility/Utility.h"
 
 /**
 * Define helpful shortened namespaces that we can refer to later
@@ -258,7 +259,7 @@ int main (int argc, char * argv[])
       else
       {
         knowledge.print ("Bandwidth limit hit. Stopping publisher for 10s.\n");
-        ACE_OS::sleep (10);
+        madara::utility::sleep (10);
         knowledge.set (slow_publisher, madara::knowledge::KnowledgeRecord::Integer (0));
       }
       knowledge.print (
@@ -271,7 +272,7 @@ int main (int argc, char * argv[])
       knowledge.evaluate (logic);
 
       // Sleep for a second so we limit the number of printouts
-      ACE_OS::sleep (1);
+      madara::utility::sleep (1);
       /**
        * Print the payloads sent versus the ones received. Because this
        * is a very bursty publisher, we should see a very small proportion

@@ -24,10 +24,6 @@ CustomTransportReadThread::CustomTransportReadThread (
     barrier_ (2), terminated_ (false), 
     mutex_ (), is_not_ready_ (mutex_), is_ready_ (false), address_ (address)
 {
-  // Subscribe
-  int port = address_.get_port_number ();
-  const char * host = address_.get_host_addr ();
-
   socket_.join (address_, 1);
 
   this->activate (THR_NEW_LWP | THR_DETACHED, 1);
@@ -124,7 +120,7 @@ CustomTransportReadThread::svc (void)
           break;
         }
 
-        int result = record.apply (context_, key, header.quality,
+        record.apply (context_, key, header.quality,
           header.clock, false);
       }
       

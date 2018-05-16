@@ -17,6 +17,7 @@
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/utility/Utility.h"
 
 namespace logger = madara::logger;
 
@@ -160,7 +161,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   {
     knowledge.wait (compiled, wait_settings);
 
-    ACE_OS::sleep (1);
+    madara::utility::sleep (1);
     
     knowledge.evaluate (self_state_broadcast, default_eval);
   }

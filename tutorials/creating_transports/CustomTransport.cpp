@@ -86,9 +86,6 @@ CustomTransport::setup (void)
         (int)addresses_[i].get_port_number ());
     }
     
-    int port = addresses_[0].get_port_number ();
-    const char * host = addresses_[0].get_host_addr ();
-
     // start thread with the addresses (only looks at the first one for now)
     thread_ = new CustomTransportReadThread (
                     settings_, id_, context_, addresses_[0]);
@@ -194,7 +191,7 @@ CustomTransport::send_data (
   
     if (addresses_.size () > 0)
     {
-      int bytes_sent = socket_.send(
+      socket_.send(
         buffer, size, addresses_[0]);
     }
   }

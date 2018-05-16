@@ -14,6 +14,7 @@
 #include "madara/transport/Transport.h"
 #include "madara/utility/Utility.h"
 #include "madara/cid/CIDSettings.h"
+#include "madara/utility/Utility.h"
 
 int left = 0;
 int stop = 10;
@@ -101,7 +102,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
       if (input[0] == 'b' || input[0] == 'B')
       {
         knowledge.start_latency ();
-        ACE_OS::sleep (2);
+        madara::utility::sleep (2);
         knowledge.print_all_latencies (std::cout);
         knowledge.print_all_summations (std::cout);
         knowledge.run_all ();

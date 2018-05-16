@@ -11,6 +11,7 @@
 #include "ace/Signal.h"
 #include "ace/High_Res_Timer.h"
 #include "ace/OS_NS_Thread.h"
+#include "madara/utility/Utility.h"
 
 // Ideally set with compiler flags according to drone platform
 //#define  USING_PARROT_ARDRONE_2
@@ -602,7 +603,7 @@ int main (int argc, char ** argv)
   while (!terminated)
   {
     knowledge.evaluate (expressions[MAIN_LOGIC], eval_settings);
-    ACE_OS::sleep (1);
+    madara::utility::sleep (1);
   }
 
   knowledge.print ();

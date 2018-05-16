@@ -20,7 +20,7 @@
 namespace knowledge = madara::knowledge;
 namespace logger = madara::logger;
 
-int main (int argc, char * argv[])
+int main (int, char **)
 {
   /**
    * Create a knowledge base with no transport. All changes made to the
