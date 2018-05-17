@@ -347,7 +347,7 @@ madara::knowledge::KnowledgeRecord default_madara_return_function
 
   if (ret == 0)
   {
-    return madara::knowledge::KnowledgeRecord::Integer (0);
+    return madara::knowledge::KnowledgeRecord (0);
   }
   else
   {
@@ -924,7 +924,7 @@ Java_com_madara_KnowledgeBase_jni_1sendModifieds__JJ
 
   if (knowledge && settings)
   {
-    knowledge->send_modifieds ("KnowledgeBase::send_modifieds", evalSettings);
+    knowledge->send_modifieds ("KnowledgeBase::send_modifieds", *settings);
   }
 }
 

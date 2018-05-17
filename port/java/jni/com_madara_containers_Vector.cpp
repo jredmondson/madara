@@ -220,7 +220,7 @@ Java_com_madara_containers_Vector_jni_1pushbackLong
 
   if (current)
   {
-    current->push_back ((Integer)value);
+    current->push_back (madara::knowledge::KnowledgeRecord (value));
   }
 }
 
@@ -232,7 +232,7 @@ Java_com_madara_containers_Vector_jni_1pushbackDouble
 
   if (current)
   {
-    current->push_back ((double)value);
+    current->push_back (madara::knowledge::KnowledgeRecord ((double)value));
   }
 }
 
@@ -254,7 +254,7 @@ Java_com_madara_containers_Vector_jni_1pushbackDoubleArray
     for (int x = 0; x < len; x++)
       dblVector[x] = dblArray[x];
 
-    current->push_back (dblVector);
+    current->push_back (madara::knowledge::KnowledgeRecord (dblVector));
 
     if (isCopy)
       env->ReleaseDoubleArrayElements (data, dblArray, JNI_ABORT);
@@ -284,7 +284,7 @@ Java_com_madara_containers_Vector_jni_1pushbackLongArray
     for (int x = 0; x < len; x++)
       dblVector[x] = longArray[x];
 
-    current->push_back (dblVector);
+    current->push_back (madara::knowledge::KnowledgeRecord (dblVector));
 
     if (isCopy)
       env->ReleaseLongArrayElements (data, longArray, JNI_ABORT);
@@ -305,7 +305,7 @@ Java_com_madara_containers_Vector_jni_1pushbackString
   if (current)
   {
     const char *nativeData = env->GetStringUTFChars (data, 0);
-    current->push_back (nativeData);
+    current->push_back (madara::knowledge::KnowledgeRecord (nativeData));
     env->ReleaseStringUTFChars (data, nativeData);
   }
 }

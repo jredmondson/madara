@@ -1,3 +1,7 @@
+
+#ifndef _MADARA_CONTAINERS_QUEUE_INL_
+#define _MADARA_CONTAINERS_QUEUE_INL_
+
 #include <sstream>
 
 #include "Queue.h"
@@ -148,7 +152,7 @@ madara::knowledge::containers::Queue::inspect (size_t position)
   return result;
 }
 
-std::string
+inline std::string
 madara::knowledge::containers::Queue::get_name (void) const
 {
   MADARA_GUARD_TYPE guard (mutex_);
@@ -167,7 +171,7 @@ madara::knowledge::containers::Queue::count (void)
   return (size_t)(*count_);
 }
 
-void
+inline void
 madara::knowledge::containers::Queue::resize (int size)
 {
   if (context_)
@@ -184,7 +188,7 @@ madara::knowledge::containers::Queue::resize (int size)
   }
 }
 
-madara::knowledge::KnowledgeUpdateSettings
+inline madara::knowledge::KnowledgeUpdateSettings
 madara::knowledge::containers::Queue::set_settings (
   const KnowledgeUpdateSettings & settings)
 {
@@ -197,7 +201,7 @@ madara::knowledge::containers::Queue::set_settings (
   return old_settings;
 }
 
-void
+inline void
 madara::knowledge::containers::Queue::set_quality (
   uint32_t quality,
   const KnowledgeReferenceSettings & settings)
@@ -209,3 +213,5 @@ madara::knowledge::containers::Queue::set_quality (
     context_->set_quality (name_, quality, true, settings);
   }
 }
+
+#endif //  _MADARA_CONTAINERS_QUEUE_INL_
