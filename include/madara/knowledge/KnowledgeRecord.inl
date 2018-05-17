@@ -249,6 +249,7 @@ KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
   return *this;
 }
 
+#if 0
 template<typename T,
   typename std::enable_if<std::is_integral<T>::value, void*>::type>
 inline bool
@@ -299,6 +300,7 @@ KnowledgeRecord::operator== (const char * value) const
 {
   return to_string ().compare (value) == 0;
 }
+#endif
 
 inline bool
 KnowledgeRecord::operator!= (const knowledge::KnowledgeRecord & rhs) const

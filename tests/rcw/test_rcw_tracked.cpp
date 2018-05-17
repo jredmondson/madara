@@ -41,16 +41,16 @@ int main(int, char **)
   test(!kb.exists("x"));
   test(kb.exists("y"));
   test(kb.exists("z"));
-  test_eq(kb.get("x").to_integer(), 0);
-  test_eq(kb.get("y").to_integer(), 2);
-  test_eq(kb.get("z").to_integer(), 3);
+  test_eq(kb.get("x"), 0);
+  test_eq(kb.get("y"), 2);
+  test_eq(kb.get("z"), 3);
 
   test(!kb.exists("a"));
   test(kb.exists("b"));
   test(kb.exists("c"));
-  test_eq(kb.get("a").to_string(), "");
-  test_eq(kb.get("b").to_string(), "bar");
-  test_eq(kb.get("c").to_string(), "baz");
+  test_eq(kb.get("a"), "");
+  test_eq(kb.get("b"), "bar");
+  test_eq(kb.get("c"), "baz");
 
   test(!kb.exists("u"));
   test(kb.exists("v"));
@@ -62,15 +62,15 @@ int main(int, char **)
   test(!kb.exists("pu.size"));
   test(kb.exists("pv.size"));
   test(kb.exists("pw.size"));
-  test_eq(kb.get("pu.size").to_integer(), 0);
-  test_eq(kb.get("pv.size").to_integer(), 3);
-  test_eq(kb.get("pv.0").to_integer(), 14L);
-  test_eq(kb.get("pv.1").to_integer(), 15L);
-  test_eq(kb.get("pv.2").to_integer(), 16L);
-  test_eq(kb.get("pw.size").to_integer(), 3);
-  test_eq(kb.get("pw.0").to_integer(), 17L);
-  test_eq(kb.get("pw.1").to_integer(), 18L);
-  test_eq(kb.get("pw.2").to_integer(), 19L);
+  test_eq(kb.get("pu.size"), 0);
+  test_eq(kb.get("pv.size"), 3);
+  test_eq(kb.get("pv.0"), 14L);
+  test_eq(kb.get("pv.1"), 15L);
+  test_eq(kb.get("pv.2"), 16L);
+  test_eq(kb.get("pw.size"), 3);
+  test_eq(kb.get("pw.0"), 17L);
+  test_eq(kb.get("pw.1"), 18L);
+  test_eq(kb.get("pw.2"), 19L);
 
   x = -1; y = 0; z = 0;
   a = ""; b = ""; c = "";
@@ -101,13 +101,13 @@ int main(int, char **)
   pv.clear();
   pw.set(1, 13);
 
-  test_eq(kb.get("x").to_integer(), 0);
-  test_eq(kb.get("y").to_integer(), 2);
-  test_eq(kb.get("z").to_integer(), 3);
+  test_eq(kb.get("x"), 0);
+  test_eq(kb.get("y"), 2);
+  test_eq(kb.get("z"), 3);
 
-  test_eq(kb.get("a").to_string(), "");
-  test_eq(kb.get("b").to_string(), "bar");
-  test_eq(kb.get("c").to_string(), "baz");
+  test_eq(kb.get("a"), "");
+  test_eq(kb.get("b"), "bar");
+  test_eq(kb.get("c"), "baz");
 
   test_eq(kb.get("u").to_integers(), std::vector<int64_t>());
   test_eq(kb.get("v").to_integers(), std::vector<int64_t>({4, 5, 6}));
@@ -118,35 +118,35 @@ int main(int, char **)
 
   kb.set("pw.0", (int64_t)27);
 
-  test_eq(kb.get("pw.size").to_integer(), 3);
-  test_eq(kb.get("pw.0").to_integer(), 27);
-  test_eq(kb.get("pw.1").to_integer(), 18);
-  test_eq(kb.get("pw.2").to_integer(), 19);
+  test_eq(kb.get("pw.size"), 3);
+  test_eq(kb.get("pw.0"), 27);
+  test_eq(kb.get("pw.1"), 18);
+  test_eq(kb.get("pw.2"), 19);
 
   tx.push();
 
-  test_eq(kb.get("x").to_integer(), 42);
-  test_eq(kb.get("y").to_integer(), 3);
-  test_eq(kb.get("z").to_integer(), 2);
+  test_eq(kb.get("x"), 42);
+  test_eq(kb.get("y"), 3);
+  test_eq(kb.get("z"), 2);
 
-  test_eq(kb.get("a").to_string(), "X");
-  test_eq(kb.get("b").to_string(), "barbar");
-  test_eq(kb.get("c").to_string(), "bqz");
+  test_eq(kb.get("a"), "X");
+  test_eq(kb.get("b"), "barbar");
+  test_eq(kb.get("c"), "bqz");
 
   test_eq(kb.get("u").to_integers(), std::vector<int64_t>{42});
   test_eq(kb.get("v").to_integers(), std::vector<int64_t>({}));
   test_eq(kb.get("w").to_integers(), std::vector<int64_t>({17, 13, 9}));
 
-  test_eq(kb.get("pu.size").to_integer(), 1);
-  test_eq(kb.get("pu.0").to_integer(), 42);
-  test_eq(kb.get("pv.size").to_integer(), 0);
+  test_eq(kb.get("pu.size"), 1);
+  test_eq(kb.get("pu.0"), 42);
+  test_eq(kb.get("pv.size"), 0);
   test(!kb.exists("pv.0"));
   test(!kb.exists("pv.1"));
   test(!kb.exists("pv.2"));
-  test_eq(kb.get("pw.size").to_integer(), 3);
-  test_eq(kb.get("pw.0").to_integer(), (int64_t)27);
-  test_eq(kb.get("pw.1").to_integer(), (int64_t)13);
-  test_eq(kb.get("pw.2").to_integer(), (int64_t)19);
+  test_eq(kb.get("pw.size"), 3);
+  test_eq(kb.get("pw.0"), 27);
+  test_eq(kb.get("pw.1"), 13);
+  test_eq(kb.get("pw.2"), 19);
 
   class Inconvertible
   {
@@ -154,7 +154,7 @@ int main(int, char **)
 
   test(!supports_knowledge_cast<Inconvertible>::value);
 
-  test_eq(knowledge_cast(123).to_integer(), 123L);
+  test_eq(knowledge_cast(123), 123L);
   test(supports_knowledge_cast<int>::value);
 
   class Convertible 
@@ -165,7 +165,7 @@ int main(int, char **)
 
   test(!supports_knowledge_cast<Convertible>::value);
 
-  test_eq(knowledge_cast(123).to_integer(), 123L);
+  test_eq(knowledge_cast(123), 123L);
   test_eq(knowledge_cast(123.25).to_double(), 123.25L);
   test_eq(knowledge_cast<int>(KnowledgeRecord(123)), 123L);
   test_eq(knowledge_cast<float>(KnowledgeRecord(123.5)), 123.5);
@@ -177,8 +177,8 @@ int main(int, char **)
   test(knowledge_cast<bool>(KnowledgeRecord("foo")));
   test_eq(KnowledgeRecord("0").type(), KnowledgeRecord::STRING);
   test(knowledge_cast<bool>(KnowledgeRecord("0")));
-  test_eq(knowledge_cast(true).to_integer(), 1);
-  test_eq(knowledge_cast(false).to_integer(), 0);
+  test_eq(knowledge_cast(true), 1);
+  test_eq(knowledge_cast(false), 0);
 
   int64_t iarray[] = {1, 2, 3, 4, 5};
   test_eq(knowledge_cast(iarray).share_integers()->at(3), 4L);

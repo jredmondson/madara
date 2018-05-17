@@ -57,152 +57,257 @@
 #define INCL_KNOWLEDGE_CAST_HPP
 
 #include <string>
+#include <cstring>
 #include <type_traits>
 #include <stdbool.h>
 #include <madara/knowledge/KnowledgeRecord.h>
 
-namespace madara
+namespace madara { namespace knowledge {
+
+template<class T>
+class type {};
+
+/// By default, call constructor of target class;
+/// for other semantics, define specializations
+template<class O>
+inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
+  typename std::enable_if<std::is_constructible<O,
+           const KnowledgeRecord &>::value, O>::type
 {
-
-  namespace knowledge
-  {
-    template<class T>
-    class type {};
-
-    /// By default, call constructor of target class;
-    /// for other semantics, define specializations
-    template<class O>
-    inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
-      typename std::enable_if<std::is_constructible<O,
-               const KnowledgeRecord &>::value, O>::type
-    {
-      return O{in};
-    }
-
-    template<class O>
-    inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
-      typename std::enable_if<std::is_floating_point<O>::value, O>::type
-    {
-      return static_cast<O>(in.to_double());
-    }
-
-    template<class O>
-    inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
-      typename std::enable_if<std::is_integral<O>::value, O>::type
-    {
-      return static_cast<O>(in.to_integer());
-    }
-
-    inline bool knowledge_cast(type<bool>, const KnowledgeRecord &in)
-    {
-      return in.is_true();
-    }
-
-    inline std::string knowledge_cast(type<std::string>, const KnowledgeRecord &in)
-    {
-      return in.to_string();
-    }
-
-    inline std::vector<int64_t> knowledge_cast(type<std::vector<int64_t>>, const KnowledgeRecord &in)
-    {
-      return in.to_integers();
-    }
-
-    template<typename T>
-    inline auto knowledge_cast(type<std::vector<T>>, const KnowledgeRecord &in) ->
-      typename std::enable_if<std::is_integral<T>::value, std::vector<T>>::type
-    {
-      auto vec = in.to_integers();
-      return {std::begin(vec), std::end(vec)};
-    }
-
-    inline std::vector<double> knowledge_cast(type<std::vector<double>>, const KnowledgeRecord &in)
-    {
-      return in.to_doubles();
-    }
-
-    template<typename T>
-    inline auto knowledge_cast(type<std::vector<T>>, const KnowledgeRecord &in) ->
-      typename std::enable_if<std::is_floating_point<T>::value, std::vector<T>>::type
-    {
-      auto vec = in.to_doubles();
-      return {std::begin(vec), std::end(vec)};
-    }
-
-    inline KnowledgeRecord knowledge_cast(type<KnowledgeRecord>, const KnowledgeRecord &in)
-    {
-      return in;
-    }
-
-    template<typename T>
-    inline auto knowledge_cast(const KnowledgeRecord &in) ->
-        decltype(knowledge_cast(type<T>{}, in)) {
-      return knowledge_cast(type<T>{}, in);
-    }
-
-    template<class O>
-    inline auto knowledge_cast(O &&in) ->
-      typename std::decay<decltype(KnowledgeRecord{std::forward<O>(in)})>::type
-    {
-      return KnowledgeRecord{std::forward<O>(in)};
-    }
-
-    template<typename T>
-    inline auto knowledge_cast(const T &in) ->
-      typename std::enable_if<
-      std::is_integral<typename std::decay<decltype(in[0])>::type>::value &&
-      !std::is_same<typename std::decay<decltype(in[0])>::type, char>::value &&
-      !std::is_same<typename std::decay<decltype(in[0])>::type, unsigned char>::value &&
-      !std::is_same<T, std::vector<int64_t>>::value,
-      typename std::decay<decltype(KnowledgeRecord{
-          tags::integers, std::begin(in), std::end(in)})>::type>::type
-    {
-      return KnowledgeRecord{tags::integers, std::begin(in), std::end(in)};
-    }
-
-    template<typename T>
-    inline auto knowledge_cast(const T &in) ->
-      typename std::enable_if<
-      std::is_floating_point<typename std::decay<decltype(in[0])>::type>::value &&
-      !std::is_same<T, std::vector<double>>::value,
-      typename std::decay<decltype(KnowledgeRecord{
-          tags::doubles, std::begin(in), std::end(in)})>::type>::type
-    {
-      return KnowledgeRecord{tags::doubles, std::begin(in), std::end(in)};
-    }
-
-    template<typename T>
-    inline auto knowledge_cast(const T &in) ->
-      typename std::enable_if<
-      std::is_same<typename std::decay<decltype(in[0])>::type, char>::value &&
-      !std::is_same<T, std::string>::value,
-      typename std::decay<decltype(KnowledgeRecord{
-          tags::string, std::begin(in), std::end(in)})>::type>::type
-    {
-      return KnowledgeRecord{tags::string, std::begin(in), std::end(in)};
-    }
-
-    template<typename T>
-    inline auto knowledge_cast(const T &in) ->
-      typename std::enable_if<
-      std::is_same<typename std::decay<decltype(in[0])>::type, unsigned char>::value &&
-      !std::is_same<T, std::vector<unsigned char>>::value,
-      typename std::decay<decltype(KnowledgeRecord{
-          tags::binary, std::begin(in), std::end(in)})>::type>::type
-    {
-      return KnowledgeRecord{tags::binary, std::begin(in), std::end(in)};
-    }
-
-    inline KnowledgeRecord &knowledge_cast(KnowledgeRecord &in)
-    {
-      return in;
-    }
-
-    inline const KnowledgeRecord &knowledge_cast(const KnowledgeRecord &in)
-    {
-      return in;
-    }
-  }
+  return O{in};
 }
+
+template<class O>
+inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
+  typename std::enable_if<std::is_floating_point<O>::value, O>::type
+{
+  return static_cast<O>(in.to_double());
+}
+
+template<class O>
+inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
+  typename std::enable_if<std::is_integral<O>::value, O>::type
+{
+  return static_cast<O>(in.to_integer());
+}
+
+inline bool knowledge_cast(type<bool>, const KnowledgeRecord &in)
+{
+  return in.is_true();
+}
+
+inline std::string knowledge_cast(type<std::string>, const KnowledgeRecord &in)
+{
+  return in.to_string();
+}
+
+inline std::vector<int64_t> knowledge_cast(type<std::vector<int64_t>>, const KnowledgeRecord &in)
+{
+  return in.to_integers();
+}
+
+template<typename T>
+inline auto knowledge_cast(type<std::vector<T>>, const KnowledgeRecord &in) ->
+  typename std::enable_if<std::is_integral<T>::value, std::vector<T>>::type
+{
+  auto vec = in.to_integers();
+  return {std::begin(vec), std::end(vec)};
+}
+
+inline std::vector<double> knowledge_cast(type<std::vector<double>>, const KnowledgeRecord &in)
+{
+  return in.to_doubles();
+}
+
+template<typename T>
+inline auto knowledge_cast(type<std::vector<T>>, const KnowledgeRecord &in) ->
+  typename std::enable_if<std::is_floating_point<T>::value, std::vector<T>>::type
+{
+  auto vec = in.to_doubles();
+  return {std::begin(vec), std::end(vec)};
+}
+
+inline KnowledgeRecord knowledge_cast(type<KnowledgeRecord>, const KnowledgeRecord &in)
+{
+  return in;
+}
+
+template<typename T>
+inline auto knowledge_cast(const KnowledgeRecord &in) ->
+    decltype(knowledge_cast(type<T>{}, in)) {
+  return knowledge_cast(type<T>{}, in);
+}
+
+template<class O>
+inline auto knowledge_cast(O &&in) ->
+  typename std::decay<decltype(KnowledgeRecord{std::forward<O>(in)})>::type
+{
+  return KnowledgeRecord{std::forward<O>(in)};
+}
+
+template<typename T>
+inline auto knowledge_cast(const T &in) ->
+  typename std::enable_if<
+  std::is_integral<typename std::decay<decltype(in[0])>::type>::value &&
+  !std::is_same<typename std::decay<decltype(in[0])>::type, char>::value &&
+  !std::is_same<typename std::decay<decltype(in[0])>::type, unsigned char>::value &&
+  !std::is_same<T, std::vector<int64_t>>::value,
+  typename std::decay<decltype(KnowledgeRecord{
+      tags::integers, std::begin(in), std::end(in)})>::type>::type
+{
+  return KnowledgeRecord{tags::integers, std::begin(in), std::end(in)};
+}
+
+template<typename T>
+inline auto knowledge_cast(const T &in) ->
+  typename std::enable_if<
+  std::is_floating_point<typename std::decay<decltype(in[0])>::type>::value &&
+  !std::is_same<T, std::vector<double>>::value,
+  typename std::decay<decltype(KnowledgeRecord{
+      tags::doubles, std::begin(in), std::end(in)})>::type>::type
+{
+  return KnowledgeRecord{tags::doubles, std::begin(in), std::end(in)};
+}
+
+template<typename T>
+inline auto knowledge_cast(const T &in) ->
+  typename std::enable_if<
+  std::is_same<typename std::decay<decltype(in[0])>::type, char>::value &&
+  !std::is_same<T, std::string>::value,
+  typename std::decay<decltype(KnowledgeRecord{
+      tags::string, std::begin(in), std::end(in)})>::type>::type
+{
+  return KnowledgeRecord{tags::string, std::begin(in), std::end(in)};
+}
+
+template<typename T>
+inline auto knowledge_cast(const T &in) ->
+  typename std::enable_if<
+  std::is_same<typename std::decay<decltype(in[0])>::type, unsigned char>::value &&
+  !std::is_same<T, std::vector<unsigned char>>::value,
+  typename std::decay<decltype(KnowledgeRecord{
+      tags::binary, std::begin(in), std::end(in)})>::type>::type
+{
+  return KnowledgeRecord{tags::binary, std::begin(in), std::end(in)};
+}
+
+inline KnowledgeRecord &knowledge_cast(KnowledgeRecord &in)
+{
+  return in;
+}
+
+inline const KnowledgeRecord &knowledge_cast(const KnowledgeRecord &in)
+{
+  return in;
+}
+
+#define MADARA_KNOWLEDGE_COMPARE_OP(op) \
+  template<typename T, \
+    typename std::enable_if<!std::is_convertible<T, KnowledgeRecord>::value && \
+      std::is_fundamental<T>::value, void *>::type = nullptr> \
+  inline auto operator op (const KnowledgeRecord &l, const T &r) -> \
+      decltype(knowledge_cast<T>(l) op r) \
+  { \
+    return knowledge_cast<T>(l) op r; \
+  } \
+ \
+  template<typename T, \
+    typename std::enable_if<!std::is_convertible<T, KnowledgeRecord>::value && \
+      std::is_fundamental<T>::value, void *>::type = nullptr> \
+  inline auto operator op (const T &l, const KnowledgeRecord &r) -> \
+      decltype(l op knowledge_cast<T>(r)) \
+  { \
+    return l op knowledge_cast<T>(r); \
+  } \
+ \
+  inline bool operator op (const KnowledgeRecord &l, const char *r) \
+  { \
+    auto s = l.share_string(); \
+    if (s) { \
+      return s->compare(r) op 0; \
+    } else { \
+      return l.to_string().compare(r) op 0; \
+    } \
+  } \
+ \
+  inline bool operator op (const char *l, const KnowledgeRecord &r) \
+  { \
+    auto s = r.share_string(); \
+    if (s) { \
+      return std::strcmp(l, s->c_str()) op 0; \
+    } else { \
+      return std::strcmp(l, r.to_string().c_str()) op 0; \
+    } \
+  } \
+ \
+  inline bool operator op (const KnowledgeRecord &l, const std::string &r) \
+  { \
+    auto s = l.share_string(); \
+    if (s) { \
+      return s->compare(r) op 0; \
+    } else { \
+      return l.to_string().compare(r) op 0; \
+    } \
+  } \
+ \
+  inline bool operator op (const std::string &l, const KnowledgeRecord &r) \
+  { \
+    auto s = r.share_string(); \
+    if (s) { \
+      return l.compare(*s) op 0; \
+    } else { \
+      return l.compare(r.to_string()) op 0; \
+    } \
+  }
+
+MADARA_KNOWLEDGE_COMPARE_OP(==)
+MADARA_KNOWLEDGE_COMPARE_OP(!=)
+MADARA_KNOWLEDGE_COMPARE_OP(<=)
+MADARA_KNOWLEDGE_COMPARE_OP(>=)
+MADARA_KNOWLEDGE_COMPARE_OP(<)
+MADARA_KNOWLEDGE_COMPARE_OP(>)
+
+#define MADARA_KNOWLEDGE_BINARY_OP(op) \
+  template<typename T, \
+    typename std::enable_if<!std::is_convertible<T, KnowledgeRecord>::value && \
+      std::is_fundamental<T>::value, void *>::type = nullptr> \
+  inline auto operator op (const KnowledgeRecord &l, const T &r) -> \
+      decltype(l op knowledge_cast(r)) \
+  { \
+    return l op knowledge_cast(r); \
+  } \
+ \
+  template<typename T, \
+    typename std::enable_if<!std::is_convertible<T, KnowledgeRecord>::value && \
+      std::is_fundamental<T>::value, void *>::type = nullptr> \
+  inline auto operator op (const T &l, const KnowledgeRecord &r) -> \
+      decltype(knowledge_cast(l) op r) \
+  { \
+    return knowledge_cast(l) op r; \
+  }
+
+MADARA_KNOWLEDGE_BINARY_OP(+)
+MADARA_KNOWLEDGE_BINARY_OP(-)
+MADARA_KNOWLEDGE_BINARY_OP(/)
+MADARA_KNOWLEDGE_BINARY_OP(*)
+MADARA_KNOWLEDGE_BINARY_OP(%)
+
+#define MADARA_KNOWLEDGE_COMPOSITE_OP(op) \
+  template<typename T, \
+    typename std::enable_if<!std::is_convertible<T, KnowledgeRecord>::value && \
+      std::is_fundamental<T>::value, void *>::type = nullptr> \
+  inline auto operator op (KnowledgeRecord &l, const T &r) -> \
+      decltype(l op knowledge_cast(r)) \
+  { \
+    return l op knowledge_cast(r); \
+  }
+
+MADARA_KNOWLEDGE_COMPOSITE_OP(+=)
+MADARA_KNOWLEDGE_COMPOSITE_OP(-=)
+MADARA_KNOWLEDGE_COMPOSITE_OP(/=)
+MADARA_KNOWLEDGE_COMPOSITE_OP(*=)
+MADARA_KNOWLEDGE_COMPOSITE_OP(%=)
+
+} }
 
 #endif

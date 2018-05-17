@@ -852,6 +852,15 @@ namespace madara
        **/
       void set_value (std::shared_ptr<std::vector <double>> new_value);
 
+      template<typename T>
+      auto operator=(T &&t) ->
+        typename std::enable_if<!std::is_convertible<T, KnowledgeRecord>::value,
+          decltype(this->set_value(std::forward<T>(t)), *this)>::type
+      {
+        this->set_value(std::forward<T>(t));
+        return *this;
+      }
+
       /**
        * sets the value to an xml string
        * @param    new_value   new value of the Knowledge Record
@@ -1192,6 +1201,7 @@ namespace madara
        **/
       bool operator== (const KnowledgeRecord & rhs) const;
 
+#if 0
       /**
        * Equal to
        **/
@@ -1217,6 +1227,7 @@ namespace madara
        * Equal to
        **/
       bool operator== (const char * value) const;
+#endif
 
       /**
        * Unequal to
@@ -1489,7 +1500,6 @@ namespace madara
   }
 }
 
-
 /**
   * output stream buffering
   **/
@@ -1500,3 +1510,5 @@ namespace madara
 
 
 #endif  // _MADARA_KNOWLEDGE_RECORD_H_
+
+#include "knowledge_cast.h"

@@ -45,7 +45,7 @@ static const char *success_str = "[SUCCESS]";
     auto l = (lhs); \
     auto r = (rhs); \
     ++test_count; \
-    if ((l) != (r)) { \
+    if (!((l) == (r))) { \
       std::cerr << fail_str << " "; \
       ++fail_count; \
     } else { \

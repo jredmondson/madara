@@ -119,6 +119,26 @@ madara::knowledge::KnowledgeRecord
     records["map7"].to_string () == "4" &&
     records["map8"].to_string () == "3");
 
+  assert (variables.to_map ("map*", records) == 8 &&
+    records["map1"] == "10" &&
+    records["map2"] == "9" &&
+    records["map3"] == "8" &&
+    records["map4"] == "7" &&
+    records["map5"] == "6" &&
+    records["map6"] == "5" &&
+    records["map7"] == "4" &&
+    records["map8"] == "3");
+
+  assert (variables.to_map ("map*", records) == 8 &&
+    records["map1"] != "X10" &&
+    records["map2"] != "X9" &&
+    records["map3"] != "X8" &&
+    records["map4"] != "X7" &&
+    records["map5"] != "X6" &&
+    records["map6"] != "X5" &&
+    records["map7"] != "X4" &&
+    records["map8"] != "X3");
+
   return madara::knowledge::KnowledgeRecord (records.size ());
 }
 
@@ -141,6 +161,16 @@ madara::knowledge::Variables & variables)
     variables.get (matches[6]).to_string () == "4" &&
     variables.get (matches[7]).to_string () == "3");
 
+  assert (matches.size () == 8 &&
+    variables.get (matches[0]) == "10" &&
+    variables.get (matches[1]) == "9" &&
+    variables.get (matches[2]) == "8" &&
+    variables.get (matches[3]) == "7" &&
+    variables.get (matches[4]) == "6" &&
+    variables.get (matches[5]) == "5" &&
+    variables.get (matches[6]) == "4" &&
+    variables.get (matches[7]) == "3");
+
   return madara::knowledge::KnowledgeRecord (matches.size ());
 }
 
@@ -148,6 +178,7 @@ madara::knowledge::Variables & variables)
 
 // test functions
 void test_arrays (void);
+void test_record_math (void);
 void test_array_math (madara::knowledge::KnowledgeBase &  knowledge);
 void test_to_vector (madara::knowledge::KnowledgeBase &  knowledge);
 void test_to_map (madara::knowledge::KnowledgeBase &  knowledge);
@@ -209,6 +240,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   test_dijkstra_sync (knowledge);
   test_to_string ();
   test_get_matches (knowledge);
+  test_record_math ();
 
   knowledge.print ();
   
@@ -1584,4 +1616,72 @@ void test_arrays (void)
     result.retrieve_index (0).to_integer () == 1 &&
     result.retrieve_index (1).to_integer () == 6 &&
     result.retrieve_index (2).to_integer () == 2);
+}
+
+#define MADARA_TEST_TRIOP(lhs, op, rhs, method, cmp, target) \
+  do { \
+    assert ((Rec(lhs) op Rec(rhs))          cmp Rec(target)); \
+    assert ((Rec(lhs) op Rec(rhs)).method() cmp Rec(target)); \
+    assert ((    lhs  op Rec(rhs))          cmp Rec(target)); \
+    assert ((    lhs  op Rec(rhs)).method() cmp Rec(target)); \
+    assert ((Rec(lhs) op     rhs )          cmp Rec(target)); \
+    assert ((Rec(lhs) op     rhs ).method() cmp Rec(target)); \
+    assert ((    lhs  op     rhs )          cmp Rec(target)); \
+    assert ((Rec(lhs) op Rec(rhs))          cmp     target ); \
+    assert ((Rec(lhs) op Rec(rhs)).method() cmp     target ); \
+    assert ((    lhs  op Rec(rhs))          cmp     target ); \
+    assert ((    lhs  op Rec(rhs)).method() cmp     target ); \
+    assert ((Rec(lhs) op     rhs )          cmp     target ); \
+    assert ((Rec(lhs) op     rhs ).method() cmp     target ); \
+    assert ((    lhs  op     rhs )          cmp     target ); \
+  }while(0)
+
+void test_record_math (void)
+{
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Testing KnowledgeRecord operator overloads\n");
+
+  using Rec = knowledge::KnowledgeRecord;
+  Rec r0{0}, r1{1}, r2{2}, r3{3}, r4{4}, r5{5}, r6{6};
+
+  assert (r0 == r0);
+  assert (r0 == 0);
+  assert (0 == r0);
+  assert (r0 != r1);
+  assert (r0 != 1);
+  assert (1 != r0);
+  assert (r0 < r1);
+  assert (r0 < 1);
+  assert (-1 < r0);
+  assert (r1 > r0);
+  assert (r0 > -1);
+  assert (1 > r0);
+
+  MADARA_TEST_TRIOP(2, +, 3, to_integer, ==, 5);
+  MADARA_TEST_TRIOP(5, -, 2, to_integer, ==, 3);
+  MADARA_TEST_TRIOP(2, *, 3, to_integer, ==, 6);
+  MADARA_TEST_TRIOP(6, /, 2, to_integer, ==, 3);
+  MADARA_TEST_TRIOP(4, %, 3, to_integer, ==, 1);
+
+  MADARA_TEST_TRIOP(2.5, +, 3.25, to_double, ==, 5.75);
+  MADARA_TEST_TRIOP(5.75, -, 2.25, to_double, ==, 3.5);
+  MADARA_TEST_TRIOP(2.25, *, 3.0, to_double, ==, 6.75);
+  MADARA_TEST_TRIOP(6.5, /, 2.0, to_double, ==, 3.25);
+
+  r0 += 4;
+  assert (r0 == 4);
+  r0 += 0.5;
+  assert (r0 == 4.5);
+
+  r5 -= 2;
+  assert (r5 == 3);
+
+  r2 *= 11;
+  assert (r2 == 22);
+
+  r6 /= 3;
+  assert (r6 == 2);
+
+  r4 %= 3;
+  assert (r4 == 1);
 }
