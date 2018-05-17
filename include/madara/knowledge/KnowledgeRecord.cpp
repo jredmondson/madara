@@ -1174,7 +1174,7 @@ KnowledgeRecord::is_true (void) const
   }
   else if (is_string_type ())
   {
-    return str_value_->size () > 1;
+    return str_value_->size () >= 1;
   }
   else if (is_binary_file_type ())
   {

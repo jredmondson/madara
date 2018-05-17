@@ -198,7 +198,7 @@ namespace madara { namespace knowledge { namespace rcw
   /// Trait to test if type supports knowledge_cast (both to and from)
   MADARA_MAKE_SUPPORT_TEST(knowledge_cast, p, (
         knowledge_cast(get_value(*p)),
-        knowledge_cast<decltype(get_value(*p))>(
+        knowledge_cast<typename std::decay<decltype(get_value(*p))>::type>(
           std::declval<KnowledgeRecord>())));
 
   /// Trait to test if type supports equality testing (values of same type)

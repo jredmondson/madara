@@ -57,6 +57,7 @@
 #define INCL_KNOWLEDGE_CAST_HPP
 
 #include <string>
+#include <type_traits>
 #include <stdbool.h>
 #include <madara/knowledge/KnowledgeRecord.h>
 
@@ -65,218 +66,127 @@ namespace madara
 
   namespace knowledge
   {
+    template<class T>
+    class type {};
 
     /// By default, call constructor of target class;
     /// for other semantics, define specializations
     template<class O>
-    inline O knowledge_cast(const KnowledgeRecord &in)
+    inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
+      typename std::enable_if<std::is_constructible<O,
+               const KnowledgeRecord &>::value, O>::type
     {
-      return O(in);
+      return O{in};
     }
 
-    template<>
-    inline float knowledge_cast<float>(const KnowledgeRecord &in)
+    template<class O>
+    inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
+      typename std::enable_if<std::is_floating_point<O>::value, O>::type
     {
-      return static_cast<float>(in.to_double());
+      return static_cast<O>(in.to_double());
     }
 
-    template<>
-    inline double knowledge_cast<double>(const KnowledgeRecord &in)
+    template<class O>
+    inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
+      typename std::enable_if<std::is_integral<O>::value, O>::type
     {
-      return static_cast<double>(in.to_double());
+      return static_cast<O>(in.to_integer());
     }
 
-    template<>
-    inline long double knowledge_cast<long double>(const KnowledgeRecord &in)
-    {
-      return static_cast<long double>(in.to_double());
-    }
-
-    template<>
-    inline bool knowledge_cast<bool>(const KnowledgeRecord &in)
+    inline bool knowledge_cast(type<bool>, const KnowledgeRecord &in)
     {
       return in.is_true();
     }
 
-    template<>
-    inline char knowledge_cast<char>(const KnowledgeRecord &in)
-    {
-      return static_cast<char>(in.to_integer());
-    }
-
-    template<>
-    inline unsigned char knowledge_cast<unsigned char>(const KnowledgeRecord &in)
-    {
-      return static_cast<unsigned char>(in.to_integer());
-    }
-
-    template<>
-    inline short knowledge_cast<short>(const KnowledgeRecord &in)
-    {
-      return static_cast<short>(in.to_integer());
-    }
-
-    template<>
-    inline unsigned short knowledge_cast<unsigned short>(const KnowledgeRecord &in)
-    {
-      return static_cast<unsigned short>(in.to_integer());
-    }
-
-    template<>
-    inline int knowledge_cast<int>(const KnowledgeRecord &in)
-    {
-      return static_cast<int>(in.to_integer());
-    }
-
-    template<>
-    inline unsigned int knowledge_cast<unsigned int>(const KnowledgeRecord &in)
-    {
-      return static_cast<unsigned int>(in.to_integer());
-    }
-
-    template<>
-    inline long int knowledge_cast<long int>(const KnowledgeRecord &in)
-    {
-      return static_cast<long int>(in.to_integer());
-    }
-
-    template<>
-    inline unsigned long int knowledge_cast<unsigned long int>(const KnowledgeRecord &in)
-    {
-      return static_cast<unsigned long int>(in.to_integer());
-    }
-
-    template<>
-    inline long long int knowledge_cast<long long int>(const KnowledgeRecord &in)
-    {
-      return static_cast<long long int>(in.to_integer());
-    }
-
-    template<>
-    inline unsigned long long int knowledge_cast<unsigned long long int>(const KnowledgeRecord &in)
-    {
-      return static_cast<unsigned long long int>(in.to_integer());
-    }
-
-    template<>
-    inline std::string knowledge_cast<std::string>(const KnowledgeRecord &in)
+    inline std::string knowledge_cast(type<std::string>, const KnowledgeRecord &in)
     {
       return in.to_string();
     }
 
-    template<>
-    inline std::vector<int64_t> knowledge_cast<std::vector<int64_t>>(const KnowledgeRecord &in)
+    inline std::vector<int64_t> knowledge_cast(type<std::vector<int64_t>>, const KnowledgeRecord &in)
     {
       return in.to_integers();
     }
 
-    template<>
-    inline std::vector<double> knowledge_cast<std::vector<double>>(const KnowledgeRecord &in)
+    inline std::vector<double> knowledge_cast(type<std::vector<double>>, const KnowledgeRecord &in)
     {
       return in.to_doubles();
     }
 
-    template<>
-    inline KnowledgeRecord knowledge_cast<KnowledgeRecord>(const KnowledgeRecord &in)
+    inline KnowledgeRecord knowledge_cast(type<KnowledgeRecord>, const KnowledgeRecord &in)
     {
       return in;
     }
 
-    inline KnowledgeRecord knowledge_cast(const int &in)
-    {
-      return KnowledgeRecord(KnowledgeRecord::Integer(in));
+    template<typename T>
+    inline auto knowledge_cast(const KnowledgeRecord &in) ->
+        decltype(knowledge_cast(type<T>{}, in)) {
+      return knowledge_cast(type<T>{}, in);
     }
 
-    inline KnowledgeRecord knowledge_cast(const unsigned int &in)
+    template<class O>
+    inline auto knowledge_cast(O &&in) ->
+      typename std::decay<decltype(KnowledgeRecord{std::forward<O>(in)})>::type
     {
-      return KnowledgeRecord(KnowledgeRecord::Integer(in));
+      return KnowledgeRecord{std::forward<O>(in)};
     }
 
-    inline KnowledgeRecord knowledge_cast(const long int &in)
+    template<typename T>
+    inline auto knowledge_cast(const std::vector<T> &in) ->
+      typename std::enable_if<
+      std::is_integral<T>::value &&
+      !std::is_same<T, char>::value &&
+      !std::is_same<T, unsigned char>::value &&
+      !std::is_same<T, int64_t>::value,
+      typename std::decay<decltype(KnowledgeRecord{
+          tags::integers, in.begin(), in.end()})>::type>::type
     {
-      return KnowledgeRecord(KnowledgeRecord::Integer(in));
+      return KnowledgeRecord{tags::integers, in.begin(), in.end()};
     }
 
-    inline KnowledgeRecord knowledge_cast(const unsigned long int &in)
+    template<typename T>
+    inline auto knowledge_cast(const std::vector<T> &in) ->
+      typename std::enable_if<
+      std::is_floating_point<T>::value &&
+      !std::is_same<T, double>::value,
+      typename std::decay<decltype(KnowledgeRecord{
+          tags::doubles, in.begin(), in.end()})>::type>::type
     {
-      return KnowledgeRecord(KnowledgeRecord::Integer(in));
+      return KnowledgeRecord{tags::doubles, in.begin(), in.end()};
     }
 
-    inline KnowledgeRecord knowledge_cast(const long long int &in)
+    template<typename T, size_t N>
+    inline auto knowledge_cast(const T (&in)[N]) ->
+      typename std::enable_if<
+      std::is_integral<T>::value &&
+      !std::is_same<T, char>::value &&
+      !std::is_same<T, unsigned char>::value,
+      typename std::decay<decltype(KnowledgeRecord{
+          tags::integers, &in[0], &in[N]})>::type>::type
     {
-      return KnowledgeRecord(KnowledgeRecord::Integer(in));
+      return KnowledgeRecord{tags::integers, &in[0], &in[N]};
     }
 
-    inline KnowledgeRecord knowledge_cast(const unsigned long long int &in)
+    template<typename T, size_t N>
+    inline auto knowledge_cast(const T (&in)[N]) ->
+      typename std::enable_if<
+      std::is_floating_point<T>::value,
+      typename std::decay<decltype(KnowledgeRecord{
+          tags::doubles, &in[0], &in[N]})>::type>::type
     {
-      return KnowledgeRecord(KnowledgeRecord::Integer(in));
-    }
-
-    inline KnowledgeRecord knowledge_cast(const short &in)
-    {
-      return KnowledgeRecord(KnowledgeRecord::Integer(in));
-    }
-
-    inline KnowledgeRecord knowledge_cast(const unsigned short &in)
-    {
-      return KnowledgeRecord(KnowledgeRecord::Integer(in));
-    }
-
-    inline KnowledgeRecord knowledge_cast(const char &in)
-    {
-      return KnowledgeRecord(KnowledgeRecord::Integer(in));
-    }
-
-    inline KnowledgeRecord knowledge_cast(const unsigned char &in)
-    {
-      return KnowledgeRecord(KnowledgeRecord::Integer(in));
-    }
-
-    inline KnowledgeRecord knowledge_cast(const bool &in)
-    {
-      return KnowledgeRecord(KnowledgeRecord::Integer(in ? 1 : 0));
-    }
-
-    inline KnowledgeRecord knowledge_cast(const float &in)
-    {
-      return KnowledgeRecord(static_cast<double>(in));
-    }
-
-    inline KnowledgeRecord knowledge_cast(const double &in)
-    {
-      return KnowledgeRecord(in);
-    }
-
-    inline KnowledgeRecord knowledge_cast(const long double &in)
-    {
-      return KnowledgeRecord(static_cast<double>(in));
-    }
-
-    inline KnowledgeRecord knowledge_cast(const std::string &in)
-    {
-      return KnowledgeRecord(in);
-    }
-
-    inline KnowledgeRecord knowledge_cast(const std::vector<int64_t> &in)
-    {
-      return KnowledgeRecord(in);
-    }
-
-    inline KnowledgeRecord knowledge_cast(const std::vector<double> &in)
-    {
-      return KnowledgeRecord(in);
+      return KnowledgeRecord(tags::doubles, &in[0], &in[N]);
     }
 
     template<size_t N>
-    inline KnowledgeRecord knowledge_cast(const uint64_t (&in)[N])
+    inline KnowledgeRecord knowledge_cast(const char (&in)[N])
     {
-      return KnowledgeRecord(&in, in + N);
+      return KnowledgeRecord(tags::string, &in[0], &in[N]);
     }
 
     template<size_t N>
-    inline KnowledgeRecord knowledge_cast(const double (&in)[N])
+    inline KnowledgeRecord knowledge_cast(const unsigned char (&in)[N])
     {
-      return KnowledgeRecord(&in, in + N);
+      return KnowledgeRecord(tags::binary, &in[0], &in[N]);
     }
 
     inline KnowledgeRecord &knowledge_cast(KnowledgeRecord &in)

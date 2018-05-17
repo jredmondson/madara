@@ -48,7 +48,7 @@ int main(int, char **)
   test(!kb.exists("a"));
   test(kb.exists("b"));
   test(kb.exists("c"));
-  test_eq(kb.get("a").to_string(), "0");
+  test_eq(kb.get("a").to_string(), "");
   test_eq(kb.get("b").to_string(), "bar");
   test_eq(kb.get("c").to_string(), "baz");
 
@@ -83,7 +83,7 @@ int main(int, char **)
   test_eq(y, 2);
   test_eq(z, 3);
 
-  test_eq(a, "0");
+  test_eq(a, "");
   test_eq(b, "bar");
   test_eq(c, "baz");
 
@@ -105,7 +105,7 @@ int main(int, char **)
   test_eq(kb.get("y").to_integer(), 2);
   test_eq(kb.get("z").to_integer(), 3);
 
-  test_eq(kb.get("a").to_string(), "0");
+  test_eq(kb.get("a").to_string(), "");
   test_eq(kb.get("b").to_string(), "bar");
   test_eq(kb.get("c").to_string(), "baz");
 
@@ -129,7 +129,7 @@ int main(int, char **)
   test_eq(kb.get("y").to_integer(), 3);
   test_eq(kb.get("z").to_integer(), 2);
 
-  test_eq(kb.get("a").to_string(), "0X");
+  test_eq(kb.get("a").to_string(), "X");
   test_eq(kb.get("b").to_string(), "barbar");
   test_eq(kb.get("c").to_string(), "bqz");
 
@@ -147,6 +147,64 @@ int main(int, char **)
   test_eq(kb.get("pw.0").to_integer(), (int64_t)27);
   test_eq(kb.get("pw.1").to_integer(), (int64_t)13);
   test_eq(kb.get("pw.2").to_integer(), (int64_t)19);
+
+  class Inconvertible
+  {
+  };
+
+  test(!supports_knowledge_cast<Inconvertible>::value);
+
+  test_eq(knowledge_cast(123).to_integer(), 123L);
+  test(supports_knowledge_cast<int>::value);
+
+  class Convertible 
+  {
+  public:
+    operator int() const { return 42; }
+  };
+
+  test(!supports_knowledge_cast<Convertible>::value);
+
+  test_eq(knowledge_cast(123).to_integer(), 123L);
+  test_eq(knowledge_cast(123.25).to_double(), 123.25L);
+  test_eq(knowledge_cast<int>(KnowledgeRecord(123)), 123L);
+  test_eq(knowledge_cast<float>(KnowledgeRecord(123.5)), 123.5);
+
+  test(!knowledge_cast<bool>(KnowledgeRecord()));
+  test(!knowledge_cast<bool>(KnowledgeRecord(0)));
+  test(!knowledge_cast<bool>(KnowledgeRecord("")));
+  test(knowledge_cast<bool>(KnowledgeRecord(1)));
+  test(knowledge_cast<bool>(KnowledgeRecord("foo")));
+  test_eq(KnowledgeRecord("0").type(), KnowledgeRecord::STRING);
+  test(knowledge_cast<bool>(KnowledgeRecord("0")));
+  test_eq(knowledge_cast(true).to_integer(), 1);
+  test_eq(knowledge_cast(false).to_integer(), 0);
+
+  int64_t iarray[] = {1, 2, 3, 4, 5};
+  test_eq(knowledge_cast(iarray).share_integers()->at(3), 4L);
+
+  uint16_t uiarray[] = {1, 2, 3, 4, 5};
+  test_eq(knowledge_cast(uiarray).share_integers()->at(3), 4L);
+
+  float farray[] = {1.1, 2.2, 3.3, 4.4, 5.5};
+  test_eq(knowledge_cast(farray).share_doubles()->at(4), 5.5L);
+
+  unsigned char ucarray[] = {1, 2, 3, 4, 5};
+  test_eq(knowledge_cast(ucarray).share_binary()->at(3), 4L);
+
+  char sarray[] = "asdf";
+  test_eq(knowledge_cast(sarray).share_string()->at(3), 'f');
+
+  std::vector<int> ivector = {2, 4, 6, 8};
+  test_eq(knowledge_cast(ivector).share_integers()->at(1), 4L);
+
+  std::vector<int64_t> i64vector = {2, 4, 6, 8};
+  void *i64vector_orig = &i64vector[0];
+  test_eq((void*)&knowledge_cast(std::move(i64vector)).share_integers()->at(0), i64vector_orig);
+
+  auto shr_farray = std::make_shared<std::vector<double>>(&farray[0], &farray[5]);
+  test_eq(knowledge_cast(shr_farray).share_doubles()->at(4), 5.5L);
+  test_eq((void*)knowledge_cast(shr_farray).share_doubles().get(), (void*)shr_farray.get());
 
   tests_finalize();
 }
