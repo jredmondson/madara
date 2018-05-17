@@ -662,8 +662,8 @@ madara::knowledge::KnowledgeRecordFilters::filter (
         madara::utility::java::Acquire_VM jvm;
 
         // JVMs appear to do strange things with the stack on jni_attach
-        std::auto_ptr <KnowledgeMap> heap_records (new KnowledgeMap (records));
-        std::auto_ptr <transport::TransportContext> heap_context (
+        std::unique_ptr <KnowledgeMap> heap_records (new KnowledgeMap (records));
+        std::unique_ptr <transport::TransportContext> heap_context (
           new transport::TransportContext (transport_context));
 
         /**

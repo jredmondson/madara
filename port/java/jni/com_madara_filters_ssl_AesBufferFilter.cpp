@@ -88,6 +88,8 @@ Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__J
   {
     result = (jlong) new AESBufferFilter (*input);
   }
+#else
+  (void)cptr;
 #endif
 
   return result;
@@ -105,6 +107,8 @@ Java_com_madara_filters_ssl_AesBufferFilter_jni_1freeAesBufferFilter
 #ifdef _USE_SSL_
   AESBufferFilter * current = (AESBufferFilter *)cptr;
   delete current;
+#else
+  (void)cptr;
 #endif
 }
 
@@ -132,6 +136,8 @@ Java_com_madara_filters_ssl_AesBufferFilter_jni_1encode
     env->ReleaseByteArrayElements (buffer, (jbyte *)elements, 0);
   }
 
+#else
+  (void)env; (void)cptr; (void)buffer; (void)size; (void)max_size;
 #endif
 
   return result;
@@ -161,6 +167,9 @@ Java_com_madara_filters_ssl_AesBufferFilter_jni_1decode
     env->ReleaseByteArrayElements (buffer, (jbyte *)elements, 0);
   }
 
+
+#else
+  (void)env; (void)cptr; (void)buffer; (void)size; (void)max_size;
 #endif
 
   return result;
@@ -188,6 +197,9 @@ Java_com_madara_filters_ssl_AesBufferFilter_jni_1generateKey
 
     env->ReleaseStringUTFChars (password, nativePassword);
   }
+
+#else
+  (void)env; (void)cptr; (void)password;
 #endif
 
   return result;

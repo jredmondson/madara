@@ -100,7 +100,7 @@ madara::expression::CompositeFunctionNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::knowledge::KnowledgeRecord 
+madara::knowledge::KnowledgeRecord
 madara::expression::CompositeFunctionNode::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
@@ -125,7 +125,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
     "Function %s is being called with %d args.\n",
     this->name_.c_str (), args.size ());
-  
+
   // if the user has defined a named function, return that
   if (function_->is_extern_named ())
     result = function_->extern_named (name_.c_str (), args, variables);
@@ -148,16 +148,16 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       env, "com/madara/Variables");
     jclass jlistClass = madara::utility::java::find_class (
       env, "com/madara/KnowledgeList");
-        
+
     jmethodID fromPointerCall = env->GetStaticMethodID (jvarClass,
       "fromPointer", "(J)Lcom/madara/Variables;");
     jobject jvariables = env->CallStaticObjectMethod (jvarClass,
       fromPointerCall, (jlong) &variables);
-        
+
     // prep to create the KnowledgeList
     jmethodID listConstructor = env->GetMethodID(jlistClass,
       "<init>", "([J)V");
-        
+
     jlongArray ret = env->NewLongArray((jsize)args.size());
     jlong * tmp = new jlong [(jsize)args.size()];
 
@@ -168,18 +168,18 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 
     env->SetLongArrayRegion(ret, 0, (jsize)args.size(), tmp);
     delete [] tmp;
-        
+
     // create the KnowledgeList
     jobject jlist = env->NewObject (jlistClass, listConstructor, ret);
 
     // get the filter's class
     jclass filterClass = env->GetObjectClass(function_->java_object);
-        
+
     // get the filter method
     jmethodID filterMethod = env->GetMethodID (filterClass,
       "filter",
       "(Lcom/madara/KnowledgeList;Lcom/madara/Variables;)Lcom/madara/KnowledgeRecord;");
-        
+
     // call the filter and hold the result
     jobject jresult = env->CallObjectMethod (function_->java_object,
       filterMethod, jlist, jvariables);
@@ -187,7 +187,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     jmethodID getPtrMethod = env->GetMethodID (
       env->GetObjectClass(jresult), "getCPtr", "()J");
     jlong cptr = env->CallLongMethod (jresult, getPtrMethod);
-    
+
     bool do_delete = true;
     //We need to see if they returned an arg we sent them, or a new value     
     for (unsigned int x = 0; x < args.size(); x++)
