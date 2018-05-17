@@ -237,7 +237,7 @@ jstring JNICALL
 Java_com_madara_containers_Queue_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   containers::Queue * current = (containers::Queue *) cptr;
 
   if (current)

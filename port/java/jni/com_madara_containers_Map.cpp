@@ -60,7 +60,7 @@ typedef KnowledgeRecord::Integer Integer;
  */
 jlong JNICALL
 Java_com_madara_containers_Map_jni_1Map__
-  (JNIEnv * env, jobject)
+  (JNIEnv *, jobject)
 {
   return (jlong) new containers::Map ();
 }
@@ -72,7 +72,7 @@ Java_com_madara_containers_Map_jni_1Map__
  */
 jlong JNICALL
 Java_com_madara_containers_Map_jni_1Map__J
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   containers::Map * result (0);
   containers::Map * source = (containers::Map *) cptr;
@@ -92,7 +92,7 @@ Java_com_madara_containers_Map_jni_1Map__J
  */
 void JNICALL
 Java_com_madara_containers_Map_jni_1freeMap
-  (JNIEnv * env, jclass, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   delete (containers::Map *) cptr;
 }

@@ -13,7 +13,7 @@ static JavaVM * madara_JVM = NULL;
 
 static jobject madara_class_loader;
 
-jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
+jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
 {
   madara_logger_ptr_log (logger::global_logger.get (),
     logger::LOG_MAJOR,
@@ -136,7 +136,7 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
   return env->GetVersion();
 }
 
-void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
+void JNICALL JNI_OnUnload(JavaVM* vm, void*)
 {
   madara_logger_ptr_log (logger::global_logger.get (),
     logger::LOG_MAJOR,

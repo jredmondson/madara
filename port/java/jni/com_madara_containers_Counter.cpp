@@ -205,7 +205,7 @@ Java_com_madara_containers_Counter_jni_1toString
  */
 jdouble JNICALL
 Java_com_madara_containers_Counter_jni_1toDouble
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   jdouble result (0.0);
   Counter * current = (Counter *) cptr;
@@ -226,7 +226,7 @@ Java_com_madara_containers_Counter_jni_1toDouble
  */
 jlong JNICALL
 Java_com_madara_containers_Counter_jni_1toLong
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   jlong result (0);
   Counter * current = (Counter *) cptr;

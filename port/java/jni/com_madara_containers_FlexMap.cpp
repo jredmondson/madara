@@ -237,7 +237,7 @@ Java_com_madara_containers_FlexMap_jni_1getIndex
 
 jlong JNICALL
 Java_com_madara_containers_FlexMap_jni_1toRecord
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   KnowledgeRecord * result (0);
   containers::FlexMap * current = (containers::FlexMap *) cptr;

@@ -58,7 +58,7 @@ typedef containers::String    String;
  */
 jlong JNICALL
 Java_com_madara_containers_String_jni_1String__
-  (JNIEnv * env, jobject)
+  (JNIEnv *, jobject)
 {
   return (jlong) new String ();
 }
@@ -70,7 +70,7 @@ Java_com_madara_containers_String_jni_1String__
  */
 jlong JNICALL
 Java_com_madara_containers_String_jni_1String__J
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   String * result (0);
   String * source = (String *) cptr;
@@ -90,7 +90,7 @@ Java_com_madara_containers_String_jni_1String__J
  */
 void JNICALL
 Java_com_madara_containers_String_jni_1freeString
-  (JNIEnv * env, jclass, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   delete (String *) cptr;
 }
@@ -200,7 +200,7 @@ Java_com_madara_containers_String_jni_1toString
  */
 jdouble JNICALL
 Java_com_madara_containers_String_jni_1toDouble
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   jdouble result (0.0);
   String * current = (String *) cptr;
@@ -220,7 +220,7 @@ Java_com_madara_containers_String_jni_1toDouble
  */
 jlong JNICALL
 Java_com_madara_containers_String_jni_1toLong
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   jlong result (0);
   String * current = (String *) cptr;

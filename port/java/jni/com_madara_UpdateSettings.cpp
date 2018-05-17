@@ -15,7 +15,7 @@ typedef knowledge::KnowledgeUpdateSettings UpdateSettings;
 * Signature: ()J
 */
 jlong JNICALL
-Java_com_madara_UpdateSettings_jni_1updateSettings__ (JNIEnv *env, jclass clazz)
+Java_com_madara_UpdateSettings_jni_1updateSettings__ (JNIEnv *, jclass)
 {
   return (jlong)(new UpdateSettings ());
 }
@@ -27,7 +27,7 @@ Java_com_madara_UpdateSettings_jni_1updateSettings__ (JNIEnv *env, jclass clazz)
 */
 jlong JNICALL
 Java_com_madara_UpdateSettings_jni_1updateSettings__J
-(JNIEnv *env, jclass clazz, jlong original)
+(JNIEnv *, jclass, jlong original)
 {
   jlong result (0);
   UpdateSettings * source = (UpdateSettings *)original;
@@ -48,7 +48,7 @@ Java_com_madara_UpdateSettings_jni_1updateSettings__J
 */
 void JNICALL
 Java_com_madara_UpdateSettings_jni_1setAlwaysOverwrite
-(JNIEnv * env, jclass clazz, jlong cptr, jboolean alwaysOverwrite)
+(JNIEnv *, jclass, jlong cptr, jboolean alwaysOverwrite)
 {
   UpdateSettings * current = (UpdateSettings *)cptr;
 
@@ -65,7 +65,7 @@ Java_com_madara_UpdateSettings_jni_1setAlwaysOverwrite
 */
 jboolean JNICALL
 Java_com_madara_UpdateSettings_jni_1getAlwaysOverwrite
-(JNIEnv * env, jclass clazz, jlong cptr)
+(JNIEnv *, jclass, jlong cptr)
 {
   jboolean result (0);
   UpdateSettings * current = (UpdateSettings *)cptr;
@@ -85,7 +85,7 @@ Java_com_madara_UpdateSettings_jni_1getAlwaysOverwrite
 */
 void JNICALL
 Java_com_madara_UpdateSettings_jni_1setTreatGlobalsAsLocals
-(JNIEnv *env, jclass clazz, jlong cptr, jboolean treatGlobalsAsLocals)
+(JNIEnv *, jclass, jlong cptr, jboolean treatGlobalsAsLocals)
 {
   UpdateSettings * current = (UpdateSettings *)cptr;
 
@@ -102,7 +102,7 @@ Java_com_madara_UpdateSettings_jni_1setTreatGlobalsAsLocals
 */
 jboolean JNICALL
 Java_com_madara_UpdateSettings_jni_1getTreatGlobalsAsLocals
-(JNIEnv * env, jclass clazz, jlong cptr)
+(JNIEnv *, jclass, jlong cptr)
 {
   jboolean result (0);
   UpdateSettings * current = (UpdateSettings *)cptr;
@@ -122,7 +122,7 @@ Java_com_madara_UpdateSettings_jni_1getTreatGlobalsAsLocals
 */
 void JNICALL
 Java_com_madara_UpdateSettings_jni_1setClockIncrement
-(JNIEnv *env, jclass clazz, jlong cptr, jlong defaultClockIncrement)
+(JNIEnv *, jclass, jlong cptr, jlong defaultClockIncrement)
 {
   UpdateSettings * current = (UpdateSettings *)cptr;
 
@@ -139,7 +139,7 @@ Java_com_madara_UpdateSettings_jni_1setClockIncrement
 */
 jlong JNICALL
 Java_com_madara_UpdateSettings_jni_1getClockIncrement
-(JNIEnv *env, jclass clazz, jlong cptr)
+(JNIEnv *, jclass, jlong cptr)
 {
   jlong result (0);
   UpdateSettings * current = (UpdateSettings *)cptr;
@@ -159,7 +159,7 @@ Java_com_madara_UpdateSettings_jni_1getClockIncrement
 */
 void JNICALL
 Java_com_madara_UpdateSettings_jni_1freeUpdateSettings
-(JNIEnv * env, jclass cls, jlong cptr)
+(JNIEnv *, jclass, jlong cptr)
 {
   UpdateSettings * current = (UpdateSettings *)cptr;
 

@@ -61,7 +61,7 @@ typedef madara::knowledge::KnowledgeRecord::Integer    Integer;
  */
 jlong JNICALL
 Java_com_madara_containers_Vector_jni_1Vector__
-  (JNIEnv * env, jobject)
+  (JNIEnv *, jobject)
 {
   return (jlong) new Vector ();
 }
@@ -73,7 +73,7 @@ Java_com_madara_containers_Vector_jni_1Vector__
  */
 jlong JNICALL
 Java_com_madara_containers_Vector_jni_1Vector__J
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   Vector * result (0);
   Vector * source = (Vector *) cptr;
@@ -93,7 +93,7 @@ Java_com_madara_containers_Vector_jni_1Vector__J
  */
 void JNICALL
 Java_com_madara_containers_Vector_jni_1freeVector
-  (JNIEnv * env, jclass, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   delete (Vector *) cptr;
 }
@@ -126,7 +126,7 @@ Java_com_madara_containers_Vector_jni_1setString__JILjava_lang_String_2
  */
 void JNICALL
 Java_com_madara_containers_Vector_jni_1setDouble__JID
-  (JNIEnv * env, jobject, jlong cptr, jint index, jdouble value)
+  (JNIEnv *, jobject, jlong cptr, jint index, jdouble value)
 {
   Vector * current = (Vector *) cptr;
 
@@ -143,7 +143,7 @@ Java_com_madara_containers_Vector_jni_1setDouble__JID
  */
 void JNICALL
 Java_com_madara_containers_Vector_jni_1set__JIJJ
-  (JNIEnv * env, jobject, jlong cptr, jint index, jlong type, jlong value)
+  (JNIEnv *, jobject, jlong cptr, jint index, jlong type, jlong value)
 {
   Vector * current = (Vector *) cptr;
 
@@ -372,7 +372,7 @@ Java_com_madara_containers_Vector_jni_1setName
  */
 jlong JNICALL
 Java_com_madara_containers_Vector_jni_1get
-  (JNIEnv * env, jobject, jlong cptr, jint index)
+  (JNIEnv *, jobject, jlong cptr, jint index)
 {
   madara::knowledge::KnowledgeRecord * result (0);
   Vector * current = (Vector *) cptr;
@@ -392,7 +392,7 @@ Java_com_madara_containers_Vector_jni_1get
  */
 void JNICALL
 Java_com_madara_containers_Vector_jni_1resize
-  (JNIEnv * env, jobject, jlong cptr, jlong length)
+  (JNIEnv *, jobject, jlong cptr, jlong length)
 {
   Vector * current = (Vector *) cptr;
 
@@ -409,7 +409,7 @@ Java_com_madara_containers_Vector_jni_1resize
  */
 jlong JNICALL
 Java_com_madara_containers_Vector_jni_1size
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   jlong result (0);
   Vector * current = (Vector *) cptr;
@@ -429,7 +429,7 @@ Java_com_madara_containers_Vector_jni_1size
  */
 jlong JNICALL
 Java_com_madara_containers_Vector_jni_1toRecord
-  (JNIEnv * env, jobject, jlong cptr, jint index)
+  (JNIEnv *, jobject, jlong cptr, jint index)
 {
   madara::knowledge::KnowledgeRecord * result (0);
   Vector * current = (Vector *) cptr;
@@ -453,7 +453,7 @@ Java_com_madara_containers_Vector_jni_1toArray
 {
   jclass kr_class = madara::utility::java::find_class (
     env, "com/madara/KnowledgeRecord");
-  jobjectArray list;
+  jobjectArray list = 0;
 
   if (kr_class && cptr != 0)
   {

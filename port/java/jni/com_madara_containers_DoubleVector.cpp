@@ -59,7 +59,7 @@ typedef containers::DoubleVector    DoubleVector;
  */
 jlong JNICALL
 Java_com_madara_containers_DoubleVector_jni_1DoubleVector__
-  (JNIEnv * env, jobject)
+  (JNIEnv *, jobject)
 {
   return (jlong) new DoubleVector ();
 }
@@ -71,7 +71,7 @@ Java_com_madara_containers_DoubleVector_jni_1DoubleVector__
  */
 jlong JNICALL
 Java_com_madara_containers_DoubleVector_jni_1DoubleVector__J
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   DoubleVector * result (0);
   DoubleVector * source = (DoubleVector *) cptr;
@@ -91,7 +91,7 @@ Java_com_madara_containers_DoubleVector_jni_1DoubleVector__J
  */
 void JNICALL
 Java_com_madara_containers_DoubleVector_jni_1freeDoubleVector
-  (JNIEnv * env, jclass, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   delete (DoubleVector *) cptr;
 }
@@ -103,7 +103,7 @@ Java_com_madara_containers_DoubleVector_jni_1freeDoubleVector
  */
 void JNICALL
 Java_com_madara_containers_DoubleVector_jni_1set
-  (JNIEnv * env, jobject, jlong cptr, jint index, jdouble value)
+  (JNIEnv *, jobject, jlong cptr, jint index, jdouble value)
 {
   DoubleVector * current = (DoubleVector *) cptr;
 
@@ -186,7 +186,7 @@ Java_com_madara_containers_DoubleVector_jni_1setName
  */
 jdouble JNICALL
 Java_com_madara_containers_DoubleVector_jni_1get
-  (JNIEnv * env, jobject, jlong cptr, jint index)
+  (JNIEnv *, jobject, jlong cptr, jint index)
 {
   jdouble result (0);
   DoubleVector * current = (DoubleVector *) cptr;
@@ -206,7 +206,7 @@ Java_com_madara_containers_DoubleVector_jni_1get
  */
 jlong JNICALL
 Java_com_madara_containers_DoubleVector_jni_1toRecord__JI
-  (JNIEnv * env, jobject, jlong cptr, jint index)
+  (JNIEnv *, jobject, jlong cptr, jint index)
 {
   madara::knowledge::KnowledgeRecord * result (0);
   DoubleVector * current = (DoubleVector *) cptr;
@@ -226,7 +226,7 @@ Java_com_madara_containers_DoubleVector_jni_1toRecord__JI
  */
 jlong JNICALL
 Java_com_madara_containers_DoubleVector_jni_1toRecord__J
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   madara::knowledge::KnowledgeRecord * result (0);
   DoubleVector * current = (DoubleVector *) cptr;
@@ -251,7 +251,7 @@ Java_com_madara_containers_DoubleVector_jni_1toArray
 {
   jclass kr_class = madara::utility::java::find_class (
     env, "com/madara/KnowledgeRecord");
-  jobjectArray list;
+  jobjectArray list = 0;
 
   if (kr_class && cptr != 0)
   {
@@ -291,7 +291,7 @@ Java_com_madara_containers_DoubleVector_jni_1toArray
  */
 jlong JNICALL
 Java_com_madara_containers_DoubleVector_jni_1size
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   jlong result (0);
   DoubleVector * current = (DoubleVector *) cptr;
@@ -311,7 +311,7 @@ Java_com_madara_containers_DoubleVector_jni_1size
  */
 void JNICALL
 Java_com_madara_containers_DoubleVector_jni_1resize
-  (JNIEnv * env, jobject, jlong cptr, jlong length)
+  (JNIEnv *, jobject, jlong cptr, jlong length)
 {
   DoubleVector * current = (DoubleVector *) cptr;
 

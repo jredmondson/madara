@@ -26,7 +26,7 @@ typedef transport::TransportContext TransportContext;
  */
 void JNICALL
 Java_com_madara_transport_TransportContext_jni_1addRecord
-  (JNIEnv * env, jclass cls, jlong cptr, jstring name, jlong record)
+  (JNIEnv * env, jclass, jlong cptr, jstring name, jlong record)
 {
   TransportContext * context = (TransportContext *) cptr;
   KnowledgeRecord * rec = (KnowledgeRecord *) record;
@@ -47,7 +47,7 @@ Java_com_madara_transport_TransportContext_jni_1addRecord
  */
 void JNICALL
 Java_com_madara_transport_TransportContext_jni_1clearRecords
-  (JNIEnv * env, jclass cls, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   TransportContext * context = (TransportContext *) cptr;
 
@@ -62,7 +62,7 @@ Java_com_madara_transport_TransportContext_jni_1clearRecords
  */
 jlong JNICALL
 Java_com_madara_transport_TransportContext_jni_1getCurrentTime
-  (JNIEnv * env, jclass cls, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   jlong result (0);
   TransportContext * context = (TransportContext *) cptr;
@@ -80,7 +80,7 @@ Java_com_madara_transport_TransportContext_jni_1getCurrentTime
  */
 jstring JNICALL
 Java_com_madara_transport_TransportContext_jni_1getDomain
-  (JNIEnv * env, jclass cls, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   jstring result;
   TransportContext * context = (TransportContext *) cptr;
@@ -104,7 +104,7 @@ Java_com_madara_transport_TransportContext_jni_1getDomain
  */
 jlong JNICALL
 Java_com_madara_transport_TransportContext_jni_1getMessageTime
-  (JNIEnv * env, jclass cls, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   jlong result (0);
   TransportContext * context = (TransportContext *) cptr;
@@ -124,7 +124,7 @@ Java_com_madara_transport_TransportContext_jni_1getMessageTime
  */
 jlong JNICALL
 Java_com_madara_transport_TransportContext_jni_1getOperation
-  (JNIEnv * env, jclass cls, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   jlong result (0);
   TransportContext * context = (TransportContext *) cptr;
@@ -144,7 +144,7 @@ Java_com_madara_transport_TransportContext_jni_1getOperation
  */
 jstring JNICALL
 Java_com_madara_transport_TransportContext_jni_1getOriginator
-  (JNIEnv * env, jclass cls, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   jstring result;
   TransportContext * context = (TransportContext *) cptr;
@@ -168,7 +168,7 @@ Java_com_madara_transport_TransportContext_jni_1getOriginator
  */
 jlong JNICALL
 Java_com_madara_transport_TransportContext_jni_1getReceiveBandwidth
-  (JNIEnv * env, jclass cls, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   jlong result (0);
   TransportContext * context = (TransportContext *) cptr;
@@ -188,7 +188,7 @@ Java_com_madara_transport_TransportContext_jni_1getReceiveBandwidth
  */
 void JNICALL
 Java_com_madara_transport_TransportContext_jni_1getRecords
-  (JNIEnv * env, jclass cls, jlong cptr, jobject jniRet)
+  (JNIEnv *, jclass, jlong, jobject)
 {
   //Stub for future use
 }
@@ -200,7 +200,7 @@ Java_com_madara_transport_TransportContext_jni_1getRecords
  */
 jlong JNICALL
 Java_com_madara_transport_TransportContext_jni_1getSendBandwidth
-  (JNIEnv * env, jclass cls, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   jlong result (0);
   TransportContext * context = (TransportContext *) cptr;

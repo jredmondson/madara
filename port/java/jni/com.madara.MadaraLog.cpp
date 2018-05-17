@@ -13,8 +13,8 @@ namespace logger = madara::logger;
 
 
 void JNICALL
-Java_com_madara_MadaraLog_jni_1setLogLevel (JNIEnv *env,
-  jclass clazz, jint debugLevel)
+Java_com_madara_MadaraLog_jni_1setLogLevel (JNIEnv *,
+  jclass, jint debugLevel)
 {
   logger::global_logger->set_level (debugLevel);
 }

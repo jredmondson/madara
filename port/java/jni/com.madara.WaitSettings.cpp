@@ -18,7 +18,7 @@ typedef knowledge::WaitSettings         WaitSettings;
 * Signature: ()J
 */
 jlong JNICALL
-Java_com_madara_WaitSettings_jni_1waitSettings__(JNIEnv * env, jclass clazz)
+Java_com_madara_WaitSettings_jni_1waitSettings__(JNIEnv *, jclass)
 {
   return (jlong) new WaitSettings();
 }
@@ -29,7 +29,7 @@ Java_com_madara_WaitSettings_jni_1waitSettings__(JNIEnv * env, jclass clazz)
 * Signature: (J)J
 */
 jlong JNICALL
-Java_com_madara_WaitSettings_jni_1waitSettings__J (JNIEnv * env, jclass clazz, jlong original)
+Java_com_madara_WaitSettings_jni_1waitSettings__J (JNIEnv *, jclass, jlong original)
 {
   jlong result (0);
   WaitSettings * source = (WaitSettings *) original;
@@ -48,7 +48,7 @@ Java_com_madara_WaitSettings_jni_1waitSettings__J (JNIEnv * env, jclass clazz, j
 * Signature: (JD)V
 */
 void JNICALL
-Java_com_madara_WaitSettings_jni_1setPollFrequency (JNIEnv *env, jclass clazz, jlong cptr, jdouble pollFreq)
+Java_com_madara_WaitSettings_jni_1setPollFrequency (JNIEnv *, jclass, jlong cptr, jdouble pollFreq)
 {
   WaitSettings * current = (WaitSettings *) cptr;
 
@@ -64,7 +64,7 @@ Java_com_madara_WaitSettings_jni_1setPollFrequency (JNIEnv *env, jclass clazz, j
 * Signature: (J)D
 */
 jdouble JNICALL
-Java_com_madara_WaitSettings_jni_1getPollFrequency (JNIEnv *env, jclass clazz, jlong cptr)
+Java_com_madara_WaitSettings_jni_1getPollFrequency (JNIEnv *, jclass, jlong cptr)
 {
   jdouble result (0);
   WaitSettings * current = (WaitSettings *) cptr;
@@ -83,7 +83,7 @@ Java_com_madara_WaitSettings_jni_1getPollFrequency (JNIEnv *env, jclass clazz, j
 * Signature: (JD)V
 */
 void JNICALL
-Java_com_madara_WaitSettings_jni_1setMaxWaitTime (JNIEnv *env, jclass clazz, jlong cptr, jdouble maxWaitTime)
+Java_com_madara_WaitSettings_jni_1setMaxWaitTime (JNIEnv *, jclass, jlong cptr, jdouble maxWaitTime)
 {
   WaitSettings * current = (WaitSettings *) cptr;
 
@@ -99,7 +99,7 @@ Java_com_madara_WaitSettings_jni_1setMaxWaitTime (JNIEnv *env, jclass clazz, jlo
 * Signature: (J)D
 */
 jdouble JNICALL
-Java_com_madara_WaitSettings_jni_1getMaxWaitTime (JNIEnv *env, jclass clazz, jlong cptr)
+Java_com_madara_WaitSettings_jni_1getMaxWaitTime (JNIEnv *, jclass, jlong cptr)
 {
   jdouble result (0);
   WaitSettings * current = (WaitSettings *) cptr;
@@ -118,7 +118,7 @@ Java_com_madara_WaitSettings_jni_1getMaxWaitTime (JNIEnv *env, jclass clazz, jlo
 * Signature: (J)V
 */
 void JNICALL
-Java_com_madara_WaitSettings_jni_1freeWaitSettings (JNIEnv * env, jclass cls, jlong cptr)
+Java_com_madara_WaitSettings_jni_1freeWaitSettings (JNIEnv *, jclass, jlong cptr)
 {
   WaitSettings * current = (WaitSettings *) cptr;
 

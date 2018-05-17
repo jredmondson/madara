@@ -59,7 +59,7 @@ typedef containers::StringVector    StringVector;
  */
 jlong JNICALL
 Java_com_madara_containers_StringVector_jni_1StringVector__
-  (JNIEnv * env, jobject)
+  (JNIEnv *, jobject)
 {
   return (jlong) new StringVector ();
 }
@@ -71,7 +71,7 @@ Java_com_madara_containers_StringVector_jni_1StringVector__
  */
 jlong JNICALL
 Java_com_madara_containers_StringVector_jni_1StringVector__J
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   StringVector * result (0);
   StringVector * source = (StringVector *) cptr;
@@ -91,7 +91,7 @@ Java_com_madara_containers_StringVector_jni_1StringVector__J
  */
 void JNICALL
 Java_com_madara_containers_StringVector_jni_1freeStringVector
-  (JNIEnv * env, jclass, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   delete (StringVector *) cptr;
 }
@@ -218,7 +218,7 @@ Java_com_madara_containers_StringVector_jni_1get
  */
 jlong JNICALL
 Java_com_madara_containers_StringVector_jni_1toRecord__JI
-  (JNIEnv * env, jobject, jlong cptr, jint index)
+  (JNIEnv *, jobject, jlong cptr, jint index)
 {
   madara::knowledge::KnowledgeRecord * result (0);
   StringVector * current = (StringVector *) cptr;
@@ -243,7 +243,7 @@ Java_com_madara_containers_StringVector_jni_1toArray
 {
   jclass kr_class = madara::utility::java::find_class (
     env, "com/madara/KnowledgeRecord");
-  jobjectArray list;
+  jobjectArray list = 0;
 
   if (kr_class && cptr != 0)
   {
@@ -283,7 +283,7 @@ Java_com_madara_containers_StringVector_jni_1toArray
  */
 jlong JNICALL
 Java_com_madara_containers_StringVector_jni_1size
-  (JNIEnv * env, jobject, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   jlong result (0);
   StringVector * current = (StringVector *) cptr;
@@ -303,7 +303,7 @@ Java_com_madara_containers_StringVector_jni_1size
  */
 void JNICALL
 Java_com_madara_containers_StringVector_jni_1resize
-  (JNIEnv * env, jobject, jlong cptr, jlong length)
+  (JNIEnv *, jobject, jlong cptr, jlong length)
 {
   StringVector * current = (StringVector *) cptr;
 

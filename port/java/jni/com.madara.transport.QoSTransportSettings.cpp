@@ -103,7 +103,7 @@ Java_com_madara_transport_QoSTransportSettings_jni_1QoSTransportSettings__J
  */
 void JNICALL
 Java_com_madara_transport_QoSTransportSettings_jni_1freeQoSTransportSettings
-  (JNIEnv * env, jclass cls, jlong cptr)
+  (JNIEnv *, jclass, jlong cptr)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -385,7 +385,7 @@ Java_com_madara_transport_QoSTransportSettings_jni_1addReceiveAggregateFilter__J
 */
 void JNICALL
 Java_com_madara_transport_QoSTransportSettings_jni_1setRebroadcastTtl
-  (JNIEnv * env, jobject obj, jlong cptr, jint ttl)
+  (JNIEnv *, jobject, jlong cptr, jint ttl)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -408,7 +408,7 @@ Java_com_madara_transport_QoSTransportSettings_jni_1setRebroadcastTtl
 */
 jint JNICALL
 Java_com_madara_transport_QoSTransportSettings_jni_1getRebroadcastTtl
-  (JNIEnv * env, jobject obj, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   jint result (0);
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
@@ -434,7 +434,7 @@ Java_com_madara_transport_QoSTransportSettings_jni_1getRebroadcastTtl
 */
 void JNICALL
 Java_com_madara_transport_QoSTransportSettings_jni_1enableParticipantTtl
-  (JNIEnv * env, jobject obj, jlong cptr, jint ttl)
+  (JNIEnv *, jobject, jlong cptr, jint ttl)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -456,7 +456,7 @@ Java_com_madara_transport_QoSTransportSettings_jni_1enableParticipantTtl
 * Signature: (J)I
 */
 jint JNICALL
-Java_com_madara_transport_QoSTransportSettings_jni_1gettParticpantTtl (JNIEnv * env, jobject obj, jlong cptr)
+Java_com_madara_transport_QoSTransportSettings_jni_1gettParticpantTtl (JNIEnv *, jobject, jlong cptr)
 {
   jint result (0);
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
@@ -483,7 +483,7 @@ Java_com_madara_transport_QoSTransportSettings_jni_1gettParticpantTtl (JNIEnv * 
 */
 void JNICALL
 Java_com_madara_transport_QoSTransportSettings_jni_1setSendBandwidthLimit (
-  JNIEnv * env, jobject obj, jlong cptr, jint limit)
+  JNIEnv *, jobject, jlong cptr, jint limit)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -505,7 +505,7 @@ Java_com_madara_transport_QoSTransportSettings_jni_1setSendBandwidthLimit (
 * Signature: (J)I
 */
 jint JNICALL
-Java_com_madara_transport_QoSTransportSettings_jni_1getSendBandwidthLimit (JNIEnv * env, jobject obj, jlong cptr)
+Java_com_madara_transport_QoSTransportSettings_jni_1getSendBandwidthLimit (JNIEnv *, jobject, jlong cptr)
 {
   jint result (0);
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
@@ -531,7 +531,7 @@ Java_com_madara_transport_QoSTransportSettings_jni_1getSendBandwidthLimit (JNIEn
 */
 void JNICALL
 Java_com_madara_transport_QoSTransportSettings_jni_1setTotalBandwidthLimit
-  (JNIEnv * env, jobject obj, jlong cptr, jint limit)
+  (JNIEnv *, jobject, jlong cptr, jint limit)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -548,7 +548,7 @@ Java_com_madara_transport_QoSTransportSettings_jni_1setTotalBandwidthLimit
 */
 jint JNICALL
 Java_com_madara_transport_QoSTransportSettings_jni_1getTotalBandwidthLimit
-  (JNIEnv * env, jobject obj, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   jint result (0);
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
@@ -568,7 +568,7 @@ Java_com_madara_transport_QoSTransportSettings_jni_1getTotalBandwidthLimit
 */
 void JNICALL
 Java_com_madara_transport_QoSTransportSettings_jni_1setDeadline
-  (JNIEnv * env, jobject obj, jlong cptr, jint limit)
+  (JNIEnv *, jobject, jlong cptr, jint limit)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -585,7 +585,7 @@ Java_com_madara_transport_QoSTransportSettings_jni_1setDeadline
 */
 jint JNICALL
 Java_com_madara_transport_QoSTransportSettings_jni_1getDeadline
-  (JNIEnv * env, jobject obj, jlong cptr)
+  (JNIEnv *, jobject, jlong cptr)
 {
   jint result (0);
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
