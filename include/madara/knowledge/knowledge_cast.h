@@ -108,9 +108,25 @@ namespace madara
       return in.to_integers();
     }
 
+    template<typename T>
+    inline auto knowledge_cast(type<std::vector<T>>, const KnowledgeRecord &in) ->
+      typename std::enable_if<std::is_integral<T>::value, std::vector<T>>::type
+    {
+      auto vec = in.to_integers();
+      return {std::begin(vec), std::end(vec)};
+    }
+
     inline std::vector<double> knowledge_cast(type<std::vector<double>>, const KnowledgeRecord &in)
     {
       return in.to_doubles();
+    }
+
+    template<typename T>
+    inline auto knowledge_cast(type<std::vector<T>>, const KnowledgeRecord &in) ->
+      typename std::enable_if<std::is_floating_point<T>::value, std::vector<T>>::type
+    {
+      auto vec = in.to_doubles();
+      return {std::begin(vec), std::end(vec)};
     }
 
     inline KnowledgeRecord knowledge_cast(type<KnowledgeRecord>, const KnowledgeRecord &in)
@@ -132,61 +148,49 @@ namespace madara
     }
 
     template<typename T>
-    inline auto knowledge_cast(const std::vector<T> &in) ->
+    inline auto knowledge_cast(const T &in) ->
       typename std::enable_if<
-      std::is_integral<T>::value &&
-      !std::is_same<T, char>::value &&
-      !std::is_same<T, unsigned char>::value &&
-      !std::is_same<T, int64_t>::value,
+      std::is_integral<typename std::decay<decltype(in[0])>::type>::value &&
+      !std::is_same<typename std::decay<decltype(in[0])>::type, char>::value &&
+      !std::is_same<typename std::decay<decltype(in[0])>::type, unsigned char>::value &&
+      !std::is_same<T, std::vector<int64_t>>::value,
       typename std::decay<decltype(KnowledgeRecord{
-          tags::integers, in.begin(), in.end()})>::type>::type
+          tags::integers, std::begin(in), std::end(in)})>::type>::type
     {
-      return KnowledgeRecord{tags::integers, in.begin(), in.end()};
+      return KnowledgeRecord{tags::integers, std::begin(in), std::end(in)};
     }
 
     template<typename T>
-    inline auto knowledge_cast(const std::vector<T> &in) ->
+    inline auto knowledge_cast(const T &in) ->
       typename std::enable_if<
-      std::is_floating_point<T>::value &&
-      !std::is_same<T, double>::value,
+      std::is_floating_point<typename std::decay<decltype(in[0])>::type>::value &&
+      !std::is_same<T, std::vector<double>>::value,
       typename std::decay<decltype(KnowledgeRecord{
-          tags::doubles, in.begin(), in.end()})>::type>::type
+          tags::doubles, std::begin(in), std::end(in)})>::type>::type
     {
-      return KnowledgeRecord{tags::doubles, in.begin(), in.end()};
+      return KnowledgeRecord{tags::doubles, std::begin(in), std::end(in)};
     }
 
-    template<typename T, size_t N>
-    inline auto knowledge_cast(const T (&in)[N]) ->
+    template<typename T>
+    inline auto knowledge_cast(const T &in) ->
       typename std::enable_if<
-      std::is_integral<T>::value &&
-      !std::is_same<T, char>::value &&
-      !std::is_same<T, unsigned char>::value,
+      std::is_same<typename std::decay<decltype(in[0])>::type, char>::value &&
+      !std::is_same<T, std::string>::value,
       typename std::decay<decltype(KnowledgeRecord{
-          tags::integers, &in[0], &in[N]})>::type>::type
+          tags::string, std::begin(in), std::end(in)})>::type>::type
     {
-      return KnowledgeRecord{tags::integers, &in[0], &in[N]};
+      return KnowledgeRecord{tags::string, std::begin(in), std::end(in)};
     }
 
-    template<typename T, size_t N>
-    inline auto knowledge_cast(const T (&in)[N]) ->
+    template<typename T>
+    inline auto knowledge_cast(const T &in) ->
       typename std::enable_if<
-      std::is_floating_point<T>::value,
+      std::is_same<typename std::decay<decltype(in[0])>::type, unsigned char>::value &&
+      !std::is_same<T, std::vector<unsigned char>>::value,
       typename std::decay<decltype(KnowledgeRecord{
-          tags::doubles, &in[0], &in[N]})>::type>::type
+          tags::binary, std::begin(in), std::end(in)})>::type>::type
     {
-      return KnowledgeRecord(tags::doubles, &in[0], &in[N]);
-    }
-
-    template<size_t N>
-    inline KnowledgeRecord knowledge_cast(const char (&in)[N])
-    {
-      return KnowledgeRecord(tags::string, &in[0], &in[N]);
-    }
-
-    template<size_t N>
-    inline KnowledgeRecord knowledge_cast(const unsigned char (&in)[N])
-    {
-      return KnowledgeRecord(tags::binary, &in[0], &in[N]);
+      return KnowledgeRecord{tags::binary, std::begin(in), std::end(in)};
     }
 
     inline KnowledgeRecord &knowledge_cast(KnowledgeRecord &in)

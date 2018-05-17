@@ -206,5 +206,9 @@ int main(int, char **)
   test_eq(knowledge_cast(shr_farray).share_doubles()->at(4), 5.5L);
   test_eq((void*)knowledge_cast(shr_farray).share_doubles().get(), (void*)shr_farray.get());
 
+  KnowledgeRecord shr_fkr(shr_farray);
+  auto shr_fout = knowledge_cast<std::vector<float>>(shr_fkr);
+  test_eq(shr_fout[4], 5.5L);
+
   tests_finalize();
 }
