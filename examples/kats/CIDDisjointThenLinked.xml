@@ -4,18 +4,4 @@
         <timing />
         <transport file="transports/NoTransport.xml" />
     </setup>
-    <process>
-        <realtime />
-        <timing />
-        <transport file="transports/NoTransport.xml" />
-        <executable>test_cid_disjoint</executable>
-        <commandline>-b 1000 -e 10000 -i 1000 --csv -m 0 -x 8 -t 5 -o $(MADARA_ROOT)/test_cid_disjoint_results</commandline>
-    </process>
-    <process>
-        <realtime />
-        <timing />
-        <transport file="transports/NoTransport.xml" />
-        <executable>test_cid_linked</executable>
-        <commandline>-b 1000 -e 10000 -i 1000 --csv -m 0 -x 9 -t 5 -o $(MADARA_ROOT)/test_cid_linked_results</commandline>
-    </process>
 </group>

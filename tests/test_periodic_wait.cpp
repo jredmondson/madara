@@ -1,8 +1,3 @@
-//
-//#define MADARA_NTRACE    0
-//#define ACE_NTRACE    0
-////#define ACE_NLOGGING  0
-//#define ACE_NDEBUG    0
 
 #include <string>
 #include <vector>
@@ -79,7 +74,7 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
-int ACE_TMAIN (int argc, char * argv[])
+int main (int argc, char * argv[])
 {
   // defaults are to poll every 0.5s for 5s
   wait_settings.poll_frequency = 0.50;

@@ -8,11 +8,6 @@
 ///
 ///============================================================================
 
-
-/// @feature old
-/// Enable this feature if you would like to generate the CID heuristic
-cid                     = 0
-
 /// @feature deprecated
 /// Enable this feature if you want to generate deprecated test applications
 deprecated              = 0

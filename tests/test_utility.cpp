@@ -13,7 +13,6 @@
 
 #include "ace/High_Res_Timer.h"
 #include "ace/OS_NS_Thread.h"
-#include "ace/Sched_Params.h"
 
 namespace utility = madara::utility;
 namespace sc = std::chrono;

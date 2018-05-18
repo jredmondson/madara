@@ -232,12 +232,8 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
   
 #ifndef _MADARA_NO_KARL_
-  // use ACE real time scheduling class
-  int prio  = ACE_Sched_Params::next_priority
-    (ACE_SCHED_FIFO,
-     ACE_Sched_Params::priority_max (ACE_SCHED_FIFO),
-     ACE_SCOPE_THREAD);
-  ACE_OS::thr_setprio (prio);
+  // set thread priority to high
+  madara::utility::set_thread_priority ();
 
   madara::knowledge::KnowledgeBase knowledge;
   

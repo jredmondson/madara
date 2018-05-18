@@ -3,9 +3,6 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
 
-#include "ace/High_Res_Timer.h"
-#include "ace/OS.h"
-
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -13,7 +10,7 @@
 namespace logger = madara::logger;
 
 // command line arguments
-int parse_args (int argc, ACE_TCHAR * argv[]);
+int parse_args (int argc, char * argv[]);
 
 void test_probablistic (void)
 {
@@ -455,7 +452,7 @@ void test_deterministic (void)
 
 }
 
-int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
+int main (int argc, char * argv[])
 {
   parse_args (argc, argv);
 
@@ -466,7 +463,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 }
 
 
-int parse_args (int argc, ACE_TCHAR * argv[])
+int parse_args (int argc, char * argv[])
 {
   for (int i = 1; i < argc; ++i)
   {

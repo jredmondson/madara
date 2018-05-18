@@ -32,22 +32,6 @@ project (Documentation_MADARA) : doxygen_help_gen, build_files {
   }
 }
 
-project (Documentation_CID) : doxygen_help_gen, build_files {
-
-  requires += docs cid
-
-  custom_only = 1
-  
-  Build_Files {
-    Documentation.mpc
-    doxygen_help_gen.mpb
-  }
-
-  DoxygenTypeSupport_Files {
-    Doxyfile_CID.dxy >> cid
-  }
-}
-
 project (Documentation_KATS) : doxygen_help_gen, build_files {
 
   requires += docs kats

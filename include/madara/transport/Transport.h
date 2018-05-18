@@ -31,16 +31,6 @@
 #include "madara/transport/BandwidthMonitor.h"
 #include "madara/transport/PacketScheduler.h"
 
-#ifdef _USE_CID_
-
-#include "madara/cid/CIDSettings.h"
-#include "madara/cid/CIDConvenience.h"
-#include "madara/cid/CIDHeuristic.h"
-#include "madara/cid/CIDGenetic.h"
-#include "madara/utility/Utility.h"
-
-#endif // _USE_CID_
-
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/expression/ExpressionTree.h"
@@ -101,48 +91,6 @@ namespace madara
        * @return   the current transport settings
        **/
       TransportSettings & settings (void);
-
-#ifdef _USE_CID_
-
-      /**
-       * Start latency
-       * @return  result of operation or -1 if we are shutting down
-       **/
-      virtual long start_latency (void)
-      {
-        if (!settings_.latency_enabled)
-        {
-          madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
-              DLINFO "SpliceDDSTransport::start_latency:" \
-              " Latency enabled is not set in your"
-              " madara::transport::TransportSettings instance. Update your"
-              " program's code and set settings.latency_enabled = true.\n"));
-
-          return -2;
-        }
-        return check_transport ();
-      }
-
-      /**
-       * Vote for an algorithm result
-       * @return  result of operation or -1 if we are shutting down
-       **/
-      virtual long vote (void)
-      {
-        if (!settings_.latency_enabled)
-        {
-          madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
-              DLINFO "SpliceDDSTransport::vote:" \
-              " Latency enabled is not set in your"
-              " madara::transport::TransportSettings instance. Update your"
-              " program's code and set settings.latency_enabled = true.\n"));
-
-          return -2;
-        }
-        return check_transport ();
-      }
-
-#endif //_USE_CID_
       
       /**
        * Preps a message for sending

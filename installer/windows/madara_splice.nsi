@@ -77,11 +77,7 @@ Section "docs" SEC03
   File "..\..\docs\Doxyfile_KATS.dxy"
   File "..\..\docs\Doxyfile_MAML.dxy"
   File "..\..\docs\Doxyfile_MAAL.dxy"
-  File "..\..\docs\Doxyfile_CID.dxy"
   File "..\..\docs\README.txt"
-
-  SetOutPath "$INSTDIR\docs\cid"
-  File /r ..\..\docs\cid\html\*.*
 
   SetOutPath "$INSTDIR\docs\kats"
   File /r ..\..\docs\kats\html\*.*
@@ -136,16 +132,6 @@ Section "gme" SEC05
 SectionEnd
 
 Section "configs" SEC06
-  SetOutPath "$INSTDIR\configs\cid\deployments\test_cid"
-  File "..\..\configs\cid\deployments\test_cid\1_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\2_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\3_deep_tree.template"
-  File "..\..\configs\cid\deployments\test_cid\3_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\3waytree.template"
-  File "..\..\configs\cid\deployments\test_cid\3waytree_strict.template"
-  File "..\..\configs\cid\deployments\test_cid\4_even_fans_disjoint.template"
-  File "..\..\configs\cid\deployments\test_cid\mwaytree.template"
-  File "..\..\configs\cid\deployments\test_cid\specialized.template"
   SetOutPath "$INSTDIR\configs\kats"
   File "..\..\configs\kats\FourSleeps.xml"
   File "..\..\configs\kats\Generics.xml"
@@ -260,7 +246,7 @@ Section "-vcredist" SEC11
 
   sp164_not_exists:
     # From http://blogs.msdn.com/astebner/archive/2007/02/07/update-regarding-silent-install-of-the-vc-8-0-runtime-vcredist-packages.aspx
-    # “qb!” for progress with no cancel, “qb” for progress and cancel, “qn” for no interaction
+    # ï¿½qb!ï¿½ for progress with no cancel, ï¿½qbï¿½ for progress and cancel, ï¿½qnï¿½ for no interaction
 
     DetailPrint "Installing VC 12 64-bit Redistributable."  
 
@@ -282,7 +268,7 @@ Section "-vcredist" SEC11
 
   sp1_not_exists:
     # From http://blogs.msdn.com/astebner/archive/2007/02/07/update-regarding-silent-install-of-the-vc-8-0-runtime-vcredist-packages.aspx
-    # “qb!” for progress with no cancel, “qb” for progress and cancel, “qn” for no interaction
+    # ï¿½qb!ï¿½ for progress with no cancel, ï¿½qbï¿½ for progress and cancel, ï¿½qnï¿½ for no interaction
     DetailPrint "Installing VC 12 32-bit Redistributable."  
     ExecWait '$INSTDIR\vcredist\vcredist_x86.exe /q' $0 # Only progress bar
     DetailPrint "vcredist_x86 SP1 Update returned $0"
@@ -447,15 +433,6 @@ Section Uninstall
   Delete "$INSTDIR\configs\xml\ospl_start.xml"
   Delete "$INSTDIR\configs\xml\Generics.xml"
   Delete "$INSTDIR\configs\xml\FourSleeps.xml"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\specialized.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\mwaytree.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\4_even_fans_disjoint.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\3waytree_strict.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\3waytree.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\3_even_fans_disjoint.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\3_deep_tree.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\2_even_fans_disjoint.template"
-  Delete "$INSTDIR\configs\cid\deployments\test_cid\1_even_fans_disjoint.template"
   Delete "$INSTDIR\gme\Icons\sources.txt"
   Delete "$INSTDIR\gme\Icons\XMLGenerator.png"
   Delete "$INSTDIR\gme\Icons\sleep.jpg"
@@ -487,10 +464,6 @@ Section Uninstall
   Delete "$INSTDIR\bin\test_distributed_finisher_with_set.exe"
   Delete "$INSTDIR\bin\test_distributed_finisher.exe"
   Delete "$INSTDIR\bin\test_dissemination.exe"
-  Delete "$INSTDIR\bin\test_cid_read_deployment.exe"
-  Delete "$INSTDIR\bin\test_cid_linked.exe"
-  Delete "$INSTDIR\bin\test_cid_disjoint.exe"
-  Delete "$INSTDIR\bin\test_cid.exe"
   Delete "$INSTDIR\bin\test_basic_reasoning.exe"
   Delete "$INSTDIR\bin\kats_sleep.exe"
   Delete "$INSTDIR\bin\kats_process.exe"

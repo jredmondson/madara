@@ -230,29 +230,6 @@ project (Tutorial_Controlling_Types) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_Creating_Transports) : using_madara, using_ace {
-  exeout = $(MADARA_ROOT)/bin
-  exename = tutorial_custom_transport
-  
-  requires += tutorials
-
-  Documentation_Files {
-    tutorials
-  }
-  
-  Build_Files {
-    Tutorials.mpc
-  }
-
-  Header_Files {
-    tutorials/creating_transports
-  }
-
-  Source_Files {
-    tutorials/creating_transports
-  }
-}
-
 project (Tutorial_Send_Limit_Bandwidth_Filtering) : using_madara, using_ace {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_bandwidth_filtering_send_limit

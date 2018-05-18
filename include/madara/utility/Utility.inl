@@ -1,10 +1,49 @@
 #ifndef   _MADARA_UTILITY_INL_
 #define   _MADARA_UTILITY_INL_
 
+#include <pthread.h>
 #include "Utility.h"
 #include "SimTime.h"
 
+#ifdef _WIN32
+  #include <windows.h>
+#endif
+
 namespace madara { namespace utility {
+
+inline bool
+set_thread_priority (int priority)
+{
+  bool result = false;
+
+  #ifdef _WIN32
+    
+    if (SetPriorityClass (GetCurrentProcess (), HIGH_PRIORITY_CLASS))
+    {
+      // in Windows, normalize for highest priority
+      if (priority > THREAD_PRIORITY_HIGHEST)
+        priority = THREAD_PRIORITY_HIGHEST;
+
+      if (SetThreadPriority (GetCurrentThread (), priority))
+      {
+        result = true;
+      }
+    }
+      
+  #else
+    // assume POSIX
+    sched_param sch;
+    int policy; 
+    pthread_getschedparam (pthread_self (), &policy, &sch);
+    sch.sched_priority = priority;
+    if (0 == pthread_setschedparam (pthread_self (), SCHED_FIFO, &sch))
+    {
+      result = true;
+    }
+  #endif
+
+  return result;
+}
 
 /// Convert string to uppercase
 inline std::string

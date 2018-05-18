@@ -15,8 +15,6 @@
 #include <map>
 #include <list>
 
-#include "ace/High_Res_Timer.h"
-
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/Functions.h"
 #include "madara/utility/stdint.h"

@@ -46,8 +46,6 @@
 #include <sstream>
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/utility/Utility.h"
-#include "ace/Signal.h"
-#include "ace/OS_NS_Thread.h"
 
 /**
  * Default settings for our Network Transport. We put them
@@ -58,21 +56,8 @@ std::string host ("");
 const std::string multicast_address ("239.255.0.1:4150");
 madara::transport::TransportSettings settings;
 
-/**
- * To terminate an agent, the user needs to press Control+C. The following
- * function is the signal handler, which we will pass to the OS via ACE
- **/
-volatile bool terminated = 0;
-extern "C" void terminate (int)
-{
-  terminated = true;
-}
-
 int main (int argc, char * argv[])
 {
-  // Register a signal handler for Control+C
-  ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
-
   // Setup a multicast transport with the settings mentioned above.
   settings.type = madara::transport::MULTICAST;
   settings.hosts.resize (1);
@@ -104,7 +89,7 @@ int main (int argc, char * argv[])
   }
   
   
-  while (!terminated)
+  while (1)
   {
     knowledge.evaluate (
       /**

@@ -1,8 +1,3 @@
-//
-//#define MADARA_NTRACE    0
-//#define ACE_NTRACE    0
-////#define ACE_NLOGGING  0
-//#define ACE_NDEBUG    0
 
 #include <string>
 #include <vector>
@@ -14,7 +9,7 @@
 
 namespace logger = madara::logger;
 
-int ACE_TMAIN (int, char **)
+int main (int, char **)
 {
 #ifndef _MADARA_NO_KARL_
   // debug level for logging

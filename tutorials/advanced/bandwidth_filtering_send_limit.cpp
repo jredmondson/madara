@@ -24,8 +24,6 @@
 #include <string>
 #include <sstream>
 #include "madara/knowledge/KnowledgeBase.h"
-#include "ace/Signal.h"
-#include "ace/OS_NS_Thread.h"
 #include "madara/transport/TransportContext.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/Utility.h"
@@ -71,16 +69,6 @@ knowledge::VariableReference  payloads_received;
  **/
 knowledge::VariableReference  slow_publisher;
 
-/**
- * To terminate an agent, the user needs to press Control+C. The following
- * function is the signal handler, which we will pass to the OS via ACE
- **/
-volatile bool terminated = 0;
-extern "C" void terminate (int)
-{
-  terminated = true;
-}
-
 madara::knowledge::KnowledgeRecord
 update_payloads_received (
   knowledge::FunctionArguments & args,
@@ -119,9 +107,6 @@ update_payloads_received (
 
 int main (int argc, char * argv[])
 {
-  // Register a signal handler for Control+C
-  ACE_Sig_Action sa ((ACE_SignalHandler) terminate, SIGINT);
-
   // Setup a multicast transport with the settings mentioned above.
   settings.type = transport::MULTICAST;
   settings.hosts.push_back (multicast_address);
@@ -225,7 +210,7 @@ int main (int argc, char * argv[])
   knowledge::CompiledExpression ce =
     knowledge.compile (logic);
 
-  while (!terminated)
+  while (1)
   {
     if (knowledge.get (".id").to_integer () == 0)
     {

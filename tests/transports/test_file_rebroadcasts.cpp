@@ -6,12 +6,6 @@
 #include <sstream>
 #include <assert.h>
 
-#include "ace/High_Res_Timer.h"
-#include "ace/OS_NS_Thread.h"
-#include "ace/Sched_Params.h"
-#include "ace/Guard_T.h"
-#include "ace/Recursive_Thread_Mutex.h"
-
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
 
@@ -42,10 +36,6 @@ madara::knowledge::VariableReference ack;
 #ifndef _MADARA_NO_KARL_
 madara::knowledge::CompiledExpression id0_wait;
 #endif // _MADARA_NO_KARL_
-
-// keep track of time
-ACE_hrtime_t elapsed_time, maximum_time;
-ACE_High_Res_Timer timer;
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)

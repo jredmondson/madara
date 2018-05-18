@@ -24,6 +24,7 @@
 #include "madara/knowledge/containers/Integer.h"
 #include "madara/knowledge/containers/IntegerStaged.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/utility/Utility.h"
 
 #include <mutex>
 #include <atomic>
@@ -347,12 +348,8 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   if (retcode < 0)
     return retcode;
 
-  // use ACE real time scheduling class
-  int prio  = ACE_Sched_Params::next_priority
-    (ACE_SCHED_FIFO,
-     ACE_Sched_Params::priority_max (ACE_SCHED_FIFO),
-     ACE_SCOPE_THREAD);
-  ACE_OS::thr_setprio (prio);
+  // set thread priority to max
+  madara::utility::set_thread_priority ();
 
   madara::knowledge::KnowledgeBase knowledge;
   

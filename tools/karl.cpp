@@ -6,12 +6,6 @@
 #include <sstream>
 #include <assert.h>
 
-#include "ace/High_Res_Timer.h"
-#include "ace/OS_NS_Thread.h"
-#include "ace/Sched_Params.h"
-#include "ace/Guard_T.h"
-#include "ace/Recursive_Thread_Mutex.h"
-
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/threads/Threader.h"
 

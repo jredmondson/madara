@@ -320,62 +320,6 @@ KnowledgeBaseImpl::set_quality (
   map_.set_write_quality (t_key, quality, settings);
 }
 
-#ifdef _USE_CID_
-
-inline void
-KnowledgeBaseImpl::print_all_redeployment_results (
-  std::ostream & output)
-{
-  settings_.print_all_results (output);
-}
-
-inline void
-KnowledgeBaseImpl::run_all (void)
-{
-  settings_.run_all ();
-}
-
-inline void
-KnowledgeBaseImpl::print_my_latencies (
-  std::ostream & output)
-{
-  settings_.print_my_latencies (output);
-}
-
-inline void
-KnowledgeBaseImpl::print_all_latencies (
-  std::ostream & output)
-{
-  settings_.print_all_latencies (output);
-}
-
-inline void
-KnowledgeBaseImpl::print_all_summations (
-  std::ostream & output)
-{
-  settings_.print_all_summations (output);
-}
-
-inline long
-KnowledgeBaseImpl::start_latency (void)
-{
-  if (transport_)
-    return transport_->start_latency ();
-  else
-    return -1;
-}
-
-inline long
-KnowledgeBaseImpl::vote (void)
-{
-  if (transport_)
-    return transport_->vote ();
-  else
-    return -1;
-}
-
-#endif // _USE_CID_
-
 inline madara::transport::TransportSettings &
 KnowledgeBaseImpl::transport_settings (void)
 {

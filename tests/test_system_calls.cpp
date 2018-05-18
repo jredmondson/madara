@@ -1,16 +1,8 @@
 
-//#define MADARA_NTRACE    0
-//#define ACE_NTRACE    0
-////#define ACE_NLOGGING  0
-//#define ACE_NDEBUG    0
-
 #include <string>
 #include <vector>
 #include <iostream>
 #include <assert.h>
-
-#include "ace/Log_Msg.h"
-#include "ace/Get_Opt.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
@@ -20,19 +12,17 @@ namespace knowledge = madara::knowledge;
 typedef  knowledge::KnowledgeRecord  KnowledgeRecord;
 
 // command line arguments
-int parse_args (int argc, ACE_TCHAR * argv[]);
+int parse_args (int argc, char * argv[]);
 
 // test functions
 void test_system_calls (madara::knowledge::KnowledgeBase & knowledge);
 
-int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
+int main (int argc, char * argv[])
 {
   int retcode = parse_args (argc, argv);
 
   if (retcode < 0)
     return retcode;
-
-  ACE_LOG_MSG->priority_mask (LM_INFO | LM_DEBUG, ACE_Log_Msg::PROCESS);
 
   madara::knowledge::KnowledgeBase knowledge;
   
@@ -202,7 +192,7 @@ void test_system_calls (
 #endif
 }
 
-int parse_args (int argc, ACE_TCHAR * argv[])
+int parse_args (int argc, char * argv[])
 {
   for (int i = 1; i < argc; ++i)
   {

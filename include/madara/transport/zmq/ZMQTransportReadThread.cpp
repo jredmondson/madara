@@ -2,7 +2,6 @@
 
 #include "madara/transport/ReducedMessageHeader.h"
 #include "madara/transport/Fragmentation.h"
-#include "ace/Time_Value.h"
 #include "madara/utility/Utility.h"
 #include "ZMQContext.h"
 

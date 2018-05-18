@@ -6,7 +6,7 @@
 namespace logger = madara::logger;
 namespace utility = madara::utility;
 
-int ACE_TMAIN (int, ACE_TCHAR **)
+int main (int, char **)
 {
   madara::knowledge::KnowledgeBase knowledge;
   

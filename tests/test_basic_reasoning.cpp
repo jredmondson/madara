@@ -1,16 +1,8 @@
 
-//#define MADARA_NTRACE    0
-//#define ACE_NTRACE    0
-////#define ACE_NLOGGING  0
-//#define ACE_NDEBUG    0
-
 #include <string>
 #include <vector>
 #include <iostream>
 #include <assert.h>
-
-#include "ace/Log_Msg.h"
-#include "ace/Get_Opt.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
@@ -21,7 +13,7 @@ namespace knowledge = madara::knowledge;
 typedef madara::knowledge::KnowledgeRecord  KnowledgeRecord;
 
 // command line arguments
-int parse_args (int argc, ACE_TCHAR * argv[]);
+int parse_args (int argc, char * argv[]);
 
 #ifndef _MADARA_NO_KARL_
 madara::knowledge::KnowledgeRecord
@@ -205,7 +197,7 @@ void test_to_string (void);
 
 #endif // _MADARA_NO_KARL_
 
-int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
+int main (int argc, char * argv[])
 {
   int retcode = parse_args (argc, argv);
 
@@ -1575,7 +1567,7 @@ void test_simplification_operators (
 
 #endif // _MADARA_NO_KARL_
 
-int parse_args (int argc, ACE_TCHAR * argv[])
+int parse_args (int argc, char * argv[])
 {
   for (int i = 1; i < argc; ++i)
   {

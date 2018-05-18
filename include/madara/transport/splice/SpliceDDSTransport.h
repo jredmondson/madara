@@ -53,21 +53,6 @@ namespace madara
        * @return  result of write operation or -1 if we are shutting down
        **/
       long send_data (const knowledge::VariableReferenceMap & updates) override;
-	  
-#ifdef _USE_CID_
-
-      /**
-       * Starts a three phase latency round with all other participants
-       * @return  result of dds write operation or -1 if we are shutting down
-       **/
-      long start_latency (void);
-
-      /**
-       * Submits our best AlgorithmResult to the other participants
-       * @return  result of dds write operation or -1 if we are shutting down
-       **/
-      long vote (void);
-#endif // #ifdef _USE_CID_
 
       /**
        * Accesses reliability setting

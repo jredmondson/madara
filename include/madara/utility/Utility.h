@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <limits.h>
 #include "ace/SOCK_Dgram.h"
 #include "ace/High_Res_Timer.h"
 #include "madara/MADARA_export.h"
@@ -21,6 +22,13 @@ namespace madara
 
   namespace utility
   {
+    /**
+     * Sets the thread priority in a FIFO scheme
+     * @param     priority     the priority to attempt to set
+     * @return    true if set call was successful
+     **/
+    MADARA_Export bool set_thread_priority (int priority = 20);
+    
     /**
      * Gets the MADARA version number
      * @return    the MADARA version number

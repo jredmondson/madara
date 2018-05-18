@@ -24,18 +24,6 @@ madara::transport::TransportSettings::TransportSettings () :
   send_reduced_message_header (false),
   slack_time (0),
   read_thread_hertz (0.0),
-
-#ifdef _USE_CID_
-        latency_enabled (DEFAULT_LATENCY_ENABLED),
-        latency_timeout (DEFAULT_LATENCY_TIMEOUT),
-        latency_default (DEFAULT_LATENCY),
-        num_responses (0),
-        num_summations (0),
-        num_voters (0),
-        num_votes_received (0),
-        redeployment_percentage_allowed (DEFAULT_REDEPLOYMENT_PERCENTAGE),
-#endif // _USE_CID_
-
   hosts (),
   no_sending (false),
   no_receiving (false)
@@ -60,20 +48,6 @@ madara::transport::TransportSettings::TransportSettings (
   send_reduced_message_header (settings.send_reduced_message_header),
   slack_time (settings.slack_time),
   read_thread_hertz (settings.read_thread_hertz),
-
-#ifdef _USE_CID_
-
-        latency_enabled (settings.latency_enabled),
-        latency_timeout (settings.latency_timeout),
-        latency_default (settings.latency_default),
-        latencies (settings.latencies),
-        num_responses (0),
-        num_summations (0),
-        num_voters (settings.num_voters),
-        num_votes_received (0),
-        redeployment_percentage_allowed (
-         settings.redeployment_percentage_allowed),
-#endif // _USE_CID_
   hosts (),
   no_sending (settings.no_sending),
   no_receiving (settings.no_receiving),
@@ -107,19 +81,6 @@ madara::transport::TransportSettings::operator= (
   send_reduced_message_header = settings.send_reduced_message_header;
   slack_time = settings.slack_time;
   read_thread_hertz = settings.read_thread_hertz;
-
-#ifdef _USE_CID_
-  latency_enabled = settings.latency_enabled;
-  latency_timeout = settings.latency_timeout;
-  latency_default = settings.latency_default;
-  latencies = settings.latencies;
-  num_responses = 0;
-  num_summations = 0;
-  num_voters = settings.num_voters;
-  num_votes_received = 0;
-  redeployment_percentage_allowed = 
-    settings.redeployment_percentage_allowed;
-#endif // _USE_CID_
 
   hosts.resize (settings.hosts.size ());
   for (unsigned int i = 0; i < settings.hosts.size (); ++i)

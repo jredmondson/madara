@@ -20,16 +20,8 @@
 #include "madara/transport/MessageHeader.h"
 #include "madara/threads/BaseThread.h"
 
-#include "ace/Task.h"
-#include "ace/Mutex.h"
-#include "ace/Barrier.h"
-#include "ace/Atomic_Op_T.h"
-#include "ace/Thread_Mutex.h"
-
 #include <zmq.h>
 
-#include "ace/Synch.h"
- 
 namespace madara
 {
   namespace transport

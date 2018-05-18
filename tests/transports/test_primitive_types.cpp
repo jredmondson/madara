@@ -9,10 +9,6 @@
 
 
 #include <signal.h>
-#include "ace/Log_Msg.h"
-#include "ace/Get_Opt.h"
-#include "ace/Signal.h"
-#include "ace/Sched_Params.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/Utility.h"
 

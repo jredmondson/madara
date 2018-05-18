@@ -1,16 +1,8 @@
 
-//#define MADARA_NTRACE    0
-//#define ACE_NTRACE    0
-////#define ACE_NLOGGING  0
-//#define ACE_NDEBUG    0
-
 #include <string>
 #include <vector>
 #include <iostream>
 #include <assert.h>
-
-#include "ace/Log_Msg.h"
-#include "ace/Get_Opt.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/utility/Utility.h"
@@ -23,13 +15,13 @@ const std::string default_multicast ("239.255.0.1:4150");
 madara::transport::TransportSettings settings;
 
 // command line arguments
-int parse_args (int argc, ACE_TCHAR * argv[]);
+int parse_args (int argc, char * argv[]);
 
 // test functions
 void read_and_create_files (madara::knowledge::KnowledgeBase & knowledge);
 void write_transported_files (madara::knowledge::KnowledgeBase & knowledge);
 
-int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
+int main (int argc, char * argv[])
 {
   settings.hosts.resize (1);
   settings.hosts[0] = default_multicast;
@@ -50,10 +42,6 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 
   if (retcode < 0)
     return retcode;
-
-  ACE_LOG_MSG->priority_mask (LM_INFO | LM_DEBUG, ACE_Log_Msg::PROCESS);
-
-  ACE_TRACE (ACE_TEXT ("main"));
 
   madara::knowledge::KnowledgeBase knowledge ("", settings);
   
@@ -78,8 +66,6 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 /// Tests logicals operators (&&, ||)
 void read_and_create_files (madara::knowledge::KnowledgeBase & knowledge)
 {
-  ACE_TRACE (ACE_TEXT ("test_assignments"));
-
   knowledge.clear ();
 
   knowledge.read_file ("sample", "/files/sample.jpg");
@@ -123,7 +109,7 @@ void write_transported_files (
   knowledge.write_file ("sample", "/files/sample_transported.jpg");
 }
 
-int parse_args (int argc, ACE_TCHAR * argv[])
+int parse_args (int argc, char * argv[])
 {
   for (int i = 1; i < argc; ++i)
   {

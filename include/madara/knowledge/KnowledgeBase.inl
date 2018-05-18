@@ -1078,55 +1078,6 @@ KnowledgeBase::exists (
   return result;
 }
 
-#ifdef _USE_CID_
-
-inline void
-KnowledgeBase::print_all_redeployment_results (
-  std::ostream & output)
-{
-  return impl_->print_all_redeployment_results (output);
-}
-
-inline void
-KnowledgeBase::run_all (void)
-{
-  return impl_->run_all ();
-}
-
-inline long
-KnowledgeBase::start_latency (void)
-{
-  return impl_->start_latency ();
-}
-
-inline void
-KnowledgeBase::print_my_latencies (
-  std::ostream & output)
-{
-  impl_->print_my_latencies (output);
-}
-
-inline void
-KnowledgeBase::print_all_latencies (
-  std::ostream & output)
-{
-  impl_->print_all_latencies (output);
-}
-
-inline void
-KnowledgeBase::print_all_summations (
-  std::ostream & output)
-{
-  impl_->print_all_summations (output);
-}
-
-inline long
-KnowledgeBase::vote (void)
-{
-  return impl_->vote ();
-}
-
-#endif // _USE_CID_
 inline madara::transport::TransportSettings &
 KnowledgeBase::transport_settings (void)
 {

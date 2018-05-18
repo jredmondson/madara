@@ -1,19 +1,9 @@
 
-//#define MADARA_NTRACE    0
-//#define ACE_NTRACE    0
-////#define ACE_NLOGGING  0
-//#define ACE_NDEBUG    0
-
 #include <string>
 #include <vector>
 #include <iostream>
 #include <sstream>
 #include <assert.h>
-
-#include "ace/Log_Msg.h"
-#include "ace/Get_Opt.h"
-#include <signal.h>
-#include "ace/Sched_Params.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
@@ -31,15 +21,6 @@ std::string domain ("n_state");
 std::string multicast ("239.255.0.1:4150");
 
 volatile bool terminated = 0;
-
-// command line arguments
-int parse_args (int argc, ACE_TCHAR * argv[]);
-
-// signal handler for someone hitting control+c
-void shutdown (int)
-{
-  terminated = true;
-}
 
 std::string build_wait ()
 {
@@ -64,20 +45,9 @@ std::string build_state_print ()
   return buffer.str ();
 }
 
-int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
+int main (int, char **)
 {
-  int retcode = parse_args (argc, argv);
-
-  if (retcode < 0)
-    return retcode;
-  
 #ifndef _MADARA_NO_KARL_
-  // use ACE real time scheduling class
-  int prio  = ACE_Sched_Params::next_priority
-    (ACE_SCHED_FIFO,
-     ACE_Sched_Params::priority_max (ACE_SCHED_FIFO),
-     ACE_SCOPE_THREAD);
-  ACE_OS::thr_setprio (prio);
 
   // transport settings
   madara::transport::TransportSettings ts;
@@ -89,9 +59,6 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   // start the knowledge engine
   madara::knowledge::KnowledgeBase knowledge (
     host, ts);
-
-  // signal handler for clean exit
-  signal (SIGINT, shutdown);
 
   madara::knowledge::CompiledExpression compiled;
   madara::knowledge::CompiledExpression self_state_broadcast;
@@ -171,102 +138,5 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
 #else
   std::cout << "This test is disabled due to karl feature being disabled.\n";
 #endif
-  return 0;
-}
-
-
-
-int parse_args (int argc, ACE_TCHAR * argv[])
-{
-  // options string which defines all short args
-  ACE_TCHAR options [] = ACE_TEXT ("d:i:s:p:o:v:h");
-
-  // create an instance of the command line args
-  ACE_Get_Opt cmd_opts (argc, argv, options);
-
-  // set up an alias for '-n' to be '--name'
-  cmd_opts.long_option (ACE_TEXT ("domain"), 'd', ACE_Get_Opt::ARG_REQUIRED);
-  cmd_opts.long_option (ACE_TEXT ("multicast"), 'm', ACE_Get_Opt::ARG_REQUIRED);
-  cmd_opts.long_option (ACE_TEXT ("id"), 'i', ACE_Get_Opt::ARG_REQUIRED);
-  cmd_opts.long_option (ACE_TEXT ("stop"), 's', ACE_Get_Opt::ARG_REQUIRED);
-  cmd_opts.long_option (ACE_TEXT ("processes"), 'p', ACE_Get_Opt::ARG_REQUIRED);
-  cmd_opts.long_option (ACE_TEXT ("help"), 'h', ACE_Get_Opt::ARG_REQUIRED);
-  cmd_opts.long_option (ACE_TEXT ("host"), 'o', ACE_Get_Opt::ARG_REQUIRED);
-  cmd_opts.long_option (ACE_TEXT ("value"), 'v', ACE_Get_Opt::ARG_REQUIRED);
- 
-  // temp for current switched option
-  int option;
-//  ACE_TCHAR * arg;
-
-  // iterate through the options until done
-  while ((option = cmd_opts ()) != EOF)
-  {
-    //arg = cmd_opts.opt_arg ();
-    switch (option)
-    {
-    case 'd':
-      domain = cmd_opts.opt_arg ();
-      break;
-    case 'i':
-      {
-        std::stringstream buffer;
-        buffer << cmd_opts.opt_arg ();
-        buffer >> id;
-      }
-      break;
-    case 'm':
-      multicast = cmd_opts.opt_arg ();
-      break;
-    case 'o':
-      host = cmd_opts.opt_arg ();
-      break;
-    case 'p':
-      {
-        std::stringstream buffer;
-        buffer << cmd_opts.opt_arg ();
-        buffer >> processes;
-      }
-      break;
-    case 's':
-      {
-        std::stringstream buffer;
-        buffer << cmd_opts.opt_arg ();
-        buffer >> stop;
-      }
-      break;
-    case 'v':
-      {
-        std::stringstream buffer;
-        buffer << cmd_opts.opt_arg ();
-        buffer >> value;
-      }
-      break;
-    case ':':
-      ACE_ERROR_RETURN ((LM_ERROR, 
-        ACE_TEXT ("ERROR: -%c requires an argument"), 
-           cmd_opts.opt_opt ()), -2); 
-    case 'h':
-    default:
-      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-        "Program Summary for %s:\n\n\
-      This distributed application uses n-state Dijkstra synchronization\n\
-      to form a self-healing ring of legitimate state machines. To execute\n\
-      the logic requires 2+ processes with ids set from 0 to n-1. Control+C\n\
-      ends the application.\n\n\
-      -d (--domain)    domain to separate all traffic into\n\
-      -i (--id)        set process id (0 default)  \n\
-      -o (--host)      this host ip/name (\"\" default) \n\
-      -m (--multicast) the multicast ip to send and listen to \n\
-                       (239.255.0.1:4150 default)\n\
-      -p (--processes) number of processes that will be running (2 default)\n\
-      -s (--stop)      stop condition (10 default) \n\
-      -v (--value)     start process with a certain value (0 default) \n\
-      -h (--help)      print this menu             \n\n", argv[0]);
-      ACE_ERROR_RETURN ((LM_ERROR, 
-        ACE_TEXT ("Returning from Help Menu\n")), -1); 
-      break;
-    }
-  }
-
   return 0;
 }

@@ -176,8 +176,8 @@ int ACE_TMAIN (int argc, char * argv[])
   2. HOW FAST CAN KARL RUN ON MY COMPUTER?
 
     We include several tests in the $MADARA_ROOT/bin directory that you
-    can use to test KaRL, KATS, and CID on your system. To run the throughput
-    tests for KaRL on your system, try the following:
+    can use to test KaRL on your system. To run the throughput tests for
+    KaRL on your system, try the following:
 
       test_reasoning_throughput
 

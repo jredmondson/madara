@@ -21,10 +21,6 @@ Base::Base (const std::string & id,
 {
   settings_.attach (&context_);
   packet_scheduler_.attach (&settings_);
-
-#ifdef _USE_CID_
-  settings_.setup ();
-#endif // _USE_CID_
 }
 
 Base::~Base ()

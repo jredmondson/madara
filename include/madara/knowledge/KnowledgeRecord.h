@@ -18,7 +18,6 @@
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
 #include "madara/utility/Refcounter.h"
-#include "ace/os_include/sys/os_types.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/inttypes.h"
 

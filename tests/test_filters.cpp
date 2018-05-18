@@ -25,7 +25,7 @@ madara::knowledge::KnowledgeRecord
   return result;
 }
 
-int ACE_TMAIN (int, ACE_TCHAR **)
+int main (int, char **)
 {
   madara::knowledge::KnowledgeRecordFilters filters;
 
