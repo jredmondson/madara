@@ -11,8 +11,7 @@
 
 #include "madara/utility/Utility.h"
 
-#include "ace/High_Res_Timer.h"
-#include "ace/OS_NS_Thread.h"
+#include "madara/utility/Timer.h"
 
 namespace utility = madara::utility;
 namespace sc = std::chrono;
@@ -273,9 +272,7 @@ void test_time (void)
 void test_sqrt (void)
 {
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
-  int64_t elapsed_ns;
+  madara::utility::Timer <std::chrono::steady_clock> timer;
   
   std::cout << "\n********* Testing sqrt timing *************\n\n";
 
@@ -288,13 +285,11 @@ void test_sqrt (void)
   }
 
   timer.stop ();
-
-  timer.elapsed_time (measured);
-
-  elapsed_ns = measured / 1000000000;
+  int measured = timer.duration_ns ();
+  int average = measured / 1000000000;
 
   std::cerr << "sqrt: 1,000,000,000 iterations in " << measured <<
-    " ns. avg=" << elapsed_ns << "ns.\n";
+    " ns. avg=" << average << "ns.\n";
 }
 
 void test_sleep (void)

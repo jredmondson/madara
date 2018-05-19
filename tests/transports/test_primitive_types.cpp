@@ -95,7 +95,7 @@ void shutdown (int)
 
 
 
-int ACE_TMAIN (int argc, char ** argv)
+int main (int argc, char ** argv)
 {
   settings.hosts.resize (1);
   settings.hosts[0] = default_multicast;

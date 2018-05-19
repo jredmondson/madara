@@ -11,8 +11,7 @@
 #include "madara/logger/GlobalLogger.h"
 
 #include "madara/utility/Utility.h"
-#include "ace/High_Res_Timer.h"
-#include "ace/Sched_Params.h"
+#include "madara/utility/Timer.h"
 
 namespace logger = madara::logger;
 
@@ -131,16 +130,16 @@ void compile_expressions (madara::knowledge::KnowledgeBase & knowledge)
   for (unsigned int i = 0; i < tests.size (); ++i)
   {
     // keep track of time
-    ACE_hrtime_t measured;
-    ACE_High_Res_Timer timer;
+    uint64_t measured (0);
+    madara::utility::Timer <std::chrono::steady_clock> timer;
     
     timer.start ();
     compiled_expressions[i] = knowledge.compile (tests[i]);
     timer.stop ();
 
-    timer.elapsed_time (measured);
+    measured = timer.duration_ns ();
 
-    compile_times[i] = (uint64_t) (measured);
+    compile_times[i] = measured;
 
     if (tests[i].size () > 18)
       tests[i].resize (18);
@@ -157,10 +156,9 @@ void evaluate_expressions (madara::knowledge::KnowledgeBase & knowledge)
     // set the max time to 0
     max_times[i] = 0;
 
-    ACE_hrtime_t overall_time;
-    ACE_High_Res_Timer overall_timer;
+    madara::utility::Timer <std::chrono::steady_clock> overall_timer;
     madara::knowledge::EvalSettings defaults;
-    uint64_t evaluate_time;
+    uint64_t evaluate_time (0);
 
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "  [%d] Evaluating %s\n", i, tests[i].c_str ());
@@ -168,15 +166,13 @@ void evaluate_expressions (madara::knowledge::KnowledgeBase & knowledge)
     // try to establish min/max times with 10 runs
     for (unsigned int j = 0; j < 100; ++j)
     {
-      ACE_hrtime_t measured;
-      ACE_High_Res_Timer timer;
+      madara::utility::Timer <std::chrono::steady_clock> timer;
 
       timer.start ();
       knowledge.evaluate (compiled_expressions[i], defaults);
       timer.stop ();
 
-      timer.elapsed_time (measured);
-      evaluate_time = (uint64_t) measured;
+      evaluate_time = timer.duration_ns ();
 
       // update min and max times
       min_times[i] = std::min <uint64_t> (min_times[i], evaluate_time);
@@ -192,8 +188,7 @@ void evaluate_expressions (madara::knowledge::KnowledgeBase & knowledge)
     overall_timer.stop ();
 
     // compute the average time
-    overall_timer.elapsed_time (overall_time);
-    evaluate_time = (uint64_t) overall_time;
+    evaluate_time = overall_timer.duration_ns ();
     average_times[i] = evaluate_time / 10000;
   }
 }

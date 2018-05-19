@@ -18,12 +18,6 @@
 #include <vector>
 #include <map>
 #include <ostream>
-#include "ace/Thread_Mutex.h"
-#include "ace/Recursive_Thread_Mutex.h"
-#include "ace/Condition_T.h"
-#include "ace/Guard_T.h"
-
-#include "ace/High_Res_Timer.h"
 
 #include "madara/LockType.h"
 #include "madara/knowledge/KnowledgeRecord.h"
@@ -39,9 +33,6 @@ namespace madara
   {
     // forward declare for friending
     class Base;
-
-    typedef   ACE_High_Res_Timer                   Timer;
-    typedef   std::vector<Timer>                   Timers;
 
     enum Types {
       NO_TRANSPORT = 0,
@@ -82,7 +73,7 @@ namespace madara
       friend class Base;
 
       // for ease-of-use, typedef the templated guard
-      typedef ACE_Guard <MADARA_LOCK_TYPE> ContextGuard;
+      typedef MADARA_GUARD_TYPE ContextGuard;
 
       /// Default knowledge domain
       #define DEFAULT_DOMAIN      "KaRL"

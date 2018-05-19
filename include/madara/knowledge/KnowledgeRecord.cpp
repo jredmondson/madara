@@ -87,7 +87,7 @@ KnowledgeRecord::read_file (
            || extension == ".txt" || extension == ".xml")
     {
       // change the string value and size to appropriate values
-      str_value_ = std::make_shared<std::string> ((char *)buffer, size);
+      str_value_ = std::make_shared<std::string> ((char *)buffer, size-1);
 
       if (is_string_type (read_as_type))
         type_ = read_as_type;

@@ -2,15 +2,10 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <sstream>
 #include <assert.h>
-
-#include "ace/High_Res_Timer.h"
-#include "ace/OS_NS_Thread.h"
-#include "ace/Sched_Params.h"
-#include "ace/Guard_T.h"
-#include "ace/Recursive_Thread_Mutex.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
 
@@ -290,12 +285,8 @@ int main (int argc, char ** argv)
   settings.read_thread_hertz = 0.0;
   settings.read_threads = 1;
 
-  // use ACE real time scheduling class
-  int prio  = ACE_Sched_Params::next_priority
-    (ACE_SCHED_FIFO,
-     ACE_Sched_Params::priority_max (ACE_SCHED_FIFO),
-     ACE_SCOPE_THREAD);
-  ACE_OS::thr_setprio (prio);
+  // set thread priority to default high level
+  madara::utility::set_thread_priority ();
 
   // handle all user arguments
   handle_arguments (argc, argv);

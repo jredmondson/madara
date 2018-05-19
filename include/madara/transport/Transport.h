@@ -17,14 +17,9 @@
 #include <sstream>
 #include <vector>
 #include <ostream>
-#include "ace/Thread_Mutex.h"
-#include "ace/Recursive_Thread_Mutex.h"
-#include "ace/Condition_T.h"
-#include "ace/Guard_T.h"
 
 #include "madara/utility/ThreadSafeVector.h"
 #include "madara/MADARA_export.h"
-#include "ace/High_Res_Timer.h"
 #include "madara/transport/QoSTransportSettings.h"
 
 #include "ReducedMessageHeader.h"
@@ -40,8 +35,6 @@ namespace madara
 {
   namespace transport
   {
-    typedef    ACE_Condition <ACE_Thread_Mutex>    Condition;
-
     /**
      * Base class from which all transports must be derived.
      * To support knowledge updates, only the send_multiassignment method
@@ -160,8 +153,8 @@ namespace madara
       volatile bool is_valid_;
       volatile bool shutting_down_;
       HostsVector hosts;
-      ACE_Thread_Mutex mutex_;
-      Condition valid_setup_;
+      MADARA_LOCK_TYPE mutex_;
+      MADARA_CONDITION_TYPE valid_setup_;
 
       /// host:port identifier of this process
       const std::string                               id_;

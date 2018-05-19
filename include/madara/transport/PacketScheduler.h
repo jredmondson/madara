@@ -17,8 +17,6 @@
 
 #include "madara/LockType.h"
 #include "madara/utility/stdint.h"
-#include "ace/Guard_T.h"
-#include "ace/Recursive_Thread_Mutex.h"
 #include "madara/MADARA_export.h"
 #include "madara/transport/QoSTransportSettings.h"
 

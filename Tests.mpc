@@ -358,29 +358,6 @@ project (Test_Prefix_To_Map) : using_madara, using_ace, no_karl, no_xml, null_lo
   }
 }
 
-project (Test_Timed_Executor) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_timed_executor
-  
-  
-  requires += tests
-
-
-  Documentation_Files {
-  }
-  
-  Build_Files {
-    Tests.mpc
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tests/test_timed_executor.cpp
-  }
-}
-
 project (Test_KaRL_Containers) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_karl_containers

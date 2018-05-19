@@ -3,7 +3,6 @@
 
 #include "madara/MADARA_export.h"
 #include "madara/LockType.h"
-#include <ace/Guard_T.h>
 #include <vector>
 #include <string>
 #include <stdio.h>

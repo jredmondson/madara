@@ -131,14 +131,6 @@ to stop bursty clients from overwhelming the agent network. In this tutorial,
 we examine the QoS_Transport_Settings class and use send and receive filters
 enforce deadlines.
 
-15.) timed_executor/adding_events.cpp
-
-With version 1.5.3, the KaRL engine includes support for timed event processing.
-Timed events are KaRL logics that can be queued into the system and executed by
-time-sensitive threads with a certain delay, period, and cancellation semantics.
-In this tutorial, we create a simple program that queues two timed events,
-cancel one of them and runs until a certain condition is met.
-
 ======== Additional example programs ==========
 
 Inside of $MADARA_ROOT/tests, there are several interesting applications that
@@ -163,16 +155,7 @@ of the system calls before release to make sure they are working. This is
 a good reference for MADARA user applications to see if you are using a
 system call in the manner it was intended.
 
-3.) $MADARA_ROOT/tests/test_swarm_area_coverage.cpp
-
-This monolithic file contains everything you need to get started with your
-own self-interested agent. This particular one contains functions and
-scaffold code for an agent solving an area coverage problem and may be
-copied and tweaked to your liking (according to the BSD license we have
-provided with this code repository, which can be found in the root
-directory).
-
-4.) $MADARA_ROOT/tests/transports/test_synchronization.cpp
+3.) $MADARA_ROOT/tests/transports/test_synchronization.cpp
 
 This distributed test showcases how to use MADARA to establish a
 Dijkstra self-stabilizing ring of K-state machines. This is useful for
@@ -181,7 +164,7 @@ systems. In the same directory is an implementation of Dijkstra's
 3-state self-stabilizing machine which is also uses a distributed KaRL
 logic.
 
-5.) $MADARA_ROOT/tests/test_files.cpp
+4.) $MADARA_ROOT/tests/test_files.cpp
 
 This application creates a file sharing server with KaRL. The agent
 that starts with id 0 shares his collection of XML, Text, and image

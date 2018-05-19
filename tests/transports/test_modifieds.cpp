@@ -2,13 +2,12 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <sstream>
 #include <assert.h>
 
 #include "madara/knowledge/KnowledgeBase.h"
-
-
 #include "madara/knowledge/containers/Integer.h"
 #include "madara/utility/Utility.h"
 #include "madara/logger/GlobalLogger.h"

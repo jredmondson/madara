@@ -8,16 +8,8 @@
  * This file contains a thread safe context for state information
  */
 
-#include "ace/Guard_T.h"
-#include "ace/Recursive_Thread_Mutex.h"
-#include "ace/Condition_Recursive_Thread_Mutex.h"
-#include "ace/Synch.h"
 #include "madara/knowledge/FileHeader.h"
 #include "madara/logger/Logger.h"
-
-#ifndef ACE_LACKS_PRAGMA_ONCE
-# pragma once
-#endif /* ACE_LACKS_PRAGMA_ONCE */
 
 #include <string>
 #include <map>

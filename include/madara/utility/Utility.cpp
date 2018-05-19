@@ -4,9 +4,11 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <thread>
 
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/Utility.h"
+#include "madara/utility/EpochEnforcer.h"
 #include "ace/INET_Addr.h"
 
 #include "ace/Default_Constants.h"
@@ -14,13 +16,11 @@
 #include "ace/OS_NS_fcntl.h"
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_sys_socket.h"
-#include "ace/OS_NS_Thread.h"
-#include "ace/OS_NS_sys_time.h"
-#include "ace/High_Res_Timer.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
 
 #include "Utility.h"
+#include "Timer.h"
 
 namespace madara { namespace utility {
 
@@ -517,7 +517,7 @@ std::string
 clean_dir_name (const std::string & source)
 {
   // define the characters we'll want to replace
-#ifdef ACE_WIN32
+#ifdef _WIN32
   #define REPLACE_THIS    '/'
   #define REPLACE_WITH    '\\'
 #else
@@ -637,42 +637,35 @@ nearest_int (double input)
 
 double sleep (double sleep_time)
 {
-  ACE_Time_Value actual_time;
-  actual_time.set (sleep_time);
+  SecondsDuration period = seconds_to_seconds_duration (sleep_time);
+  period = sleep (period);
 
-  ACE_Time_Value duration = sleep (actual_time);
-
-  double time_taken = (double) duration.sec ();
-  time_taken += ((double) duration.usec ()) / micro_per;
-
-  return time_taken;
+  return period.count ();
 }
 
-ACE_Time_Value sleep (const ACE_Time_Value & sleep_time)
+SecondsDuration sleep (const SecondsDuration & sleep_time)
 {
-  ACE_Time_Value start = get_ace_time ();
-  ACE_Time_Value current = start;
-  ACE_Time_Value earliest = current + sleep_time;
+  TimeValue start = get_time_value ();
+  TimeValue current = start;
+  TimeValue target = current;
 
-  while (current < earliest)
-  {
-    ACE_Time_Value duration = earliest - current;
 #ifdef MADARA_FEATURE_SIMTIME
+  // @David feel free to change this as SimTime is implemented
     double rate = SimTime::rate ();
-    duration *= (1 / rate);
-    static const int64_t min_sec = simtime_min_sleep / nano_per;
-    static const int64_t min_usec = (simtime_min_sleep % nano_per) /
-                                    (nano_per / micro_per);
-    if (duration.sec () < min_sec ||
-        (duration.sec() == min_sec && duration.usec () < min_usec)) {
-      duration = ACE_Time_Value (min_sec, min_usec);
-    }
+  SecondsDuration dilated_time = sleep_time;
+  dilated_time /= rate;
+  target += std::chrono::duration_cast <Duration> (dilated_time);
+#else
+  target += std::chrono::duration_cast <Duration> (sleep_time);
 #endif
-    ACE_OS::sleep (duration);
-    current = get_ace_time ();
+
+  while (current < target)
+  {
+    std::this_thread::sleep_until(target);
+    current = get_time_value ();
   }
 
-  return get_ace_time () - start;
+  return current - start;
 }
 
 bool
@@ -681,21 +674,11 @@ wait_true (
   const std::string & variable,
   const knowledge::WaitSettings & settings)
 {  
-  // get current time of day
-  ACE_Time_Value current = get_ace_time ();  
-  ACE_Time_Value max_wait, sleep_time, next_epoch;
-  ACE_Time_Value poll_frequency, last = current;
+  // use the EpochEnforcer utility to keep track of sleeps
+  EpochEnforcer<std::chrono::steady_clock> enforcer (
+    settings.poll_frequency, settings.max_wait_time);
 
   knowledge::VariableReference ref = knowledge.get_ref (variable);
-
-  if (settings.poll_frequency >= 0)
-  {
-    max_wait.set (settings.max_wait_time);
-    max_wait = current + max_wait;
-    
-    poll_frequency.set (settings.poll_frequency);
-    next_epoch = current + poll_frequency;
-  }
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")
@@ -708,18 +691,10 @@ wait_true (
     " variable returned %s\n",
     last_value.to_string ().c_str ());
   
-  current = get_ace_time ();
-
   // wait for expression to be true
-  while (!last_value.to_integer () &&
-    (settings.max_wait_time < 0 || current < max_wait))
+  while (!last_value.is_true () &&
+    (settings.max_wait_time < 0 || !enforcer.is_done ()))
   {
-    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
-      "utility::wait_true:" \
-      " current is %" PRIu64 ".%" PRIu64 " and max is %" PRIu64 ".%" PRIu64 " (poll freq is %f)\n",
-      current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
-      settings.poll_frequency);
-
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
       "utility::wait_true:" \
       " last value didn't result in success\n");
@@ -728,16 +703,12 @@ wait_true (
     // To do this, we allow a user to specify a 
     if (settings.poll_frequency > 0)
     {
-      if (current < next_epoch)
-      {
-        sleep_time = next_epoch - current;
-        sleep (sleep_time);
-      }
-
-      next_epoch = next_epoch + poll_frequency;
+      enforcer.sleep_until_next ();
     }
     else
+    {
       knowledge.wait_for_change ();
+    }
 
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
       "utility::wait_true:" \
@@ -749,13 +720,9 @@ wait_true (
       "utility::wait_true:" \
       " completed eval to get %s\n",
       last_value.to_string ().c_str ());
-  
-    // get current time
-    current = get_ace_time ();
-
   } // end while (!last)
   
-  if (current >= max_wait)
+  if (enforcer.is_done ())
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
       "utility::wait_true:" \
@@ -775,21 +742,11 @@ bool wait_false (
   const std::string & variable,
   const knowledge::WaitSettings & settings)
 {
-  // get current time of day
-  ACE_Time_Value current = get_ace_time ();  
-  ACE_Time_Value max_wait, sleep_time, next_epoch;
-  ACE_Time_Value poll_frequency, last = current;
+  // use the EpochEnforcer utility to keep track of sleeps
+  EpochEnforcer<std::chrono::steady_clock> enforcer (
+    settings.poll_frequency, settings.max_wait_time);
 
   knowledge::VariableReference ref = knowledge.get_ref (variable);
-
-  if (settings.poll_frequency >= 0)
-  {
-    max_wait.set (settings.max_wait_time);
-    max_wait = current + max_wait;
-    
-    poll_frequency.set (settings.poll_frequency);
-    next_epoch = current + poll_frequency;
-  }
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")
@@ -802,18 +759,10 @@ bool wait_false (
     " variable returned %s\n",
     last_value.to_string ().c_str ());
   
-  current = get_ace_time ();
-
   // wait for expression to be true
-  while (!last_value.to_integer () &&
-    (settings.max_wait_time < 0 || current < max_wait))
+  while (last_value.is_true () &&
+    (settings.max_wait_time < 0 || !enforcer.is_done ()))
   {
-    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
-      "utility::wait_false:" \
-      " current is %d.%d and max is %d.%d (poll freq is %f)\n",
-      current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
-      settings.poll_frequency);
-
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
       "utility::wait_false:"
       " last value didn't result in success\n");
@@ -822,16 +771,12 @@ bool wait_false (
     // To do this, we allow a user to specify a 
     if (settings.poll_frequency > 0)
     {
-      if (current < next_epoch)
-      {
-        sleep_time = next_epoch - current;
-        sleep (sleep_time);
-      }
-
-      next_epoch = next_epoch + poll_frequency;
+      enforcer.sleep_until_next ();
     }
     else
+    {
       knowledge.wait_for_change ();
+    }
 
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
       "utility::wait_false:"
@@ -843,13 +788,9 @@ bool wait_false (
       "utility::wait_false:"
       " completed eval to get %s\n",
       last_value.to_string ().c_str ());
-  
-    // get current time
-    current = get_ace_time ();
-
   } // end while (!last)
   
-  if (current >= max_wait)
+  if (enforcer.is_done ())
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
       "utility::wait_false:"

@@ -12,7 +12,7 @@ Base::Base (const std::string & id,
   TransportSettings & new_settings,
   knowledge::ThreadSafeContext & context) 
   : is_valid_ (false), shutting_down_ (false),
-  valid_setup_ (mutex_), id_ (id),
+  id_ (id),
   settings_ (new_settings), context_ (context)
 
 #ifndef _MADARA_NO_KARL_

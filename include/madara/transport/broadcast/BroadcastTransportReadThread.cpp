@@ -1,8 +1,8 @@
 #include "madara/transport/broadcast/BroadcastTransportReadThread.h"
 
+#include "ace/Time_Value.h"
 #include "madara/utility/Utility.h"
 #include "madara/transport/ReducedMessageHeader.h"
-#include "ace/Time_Value.h"
 #include "madara/logger/GlobalLogger.h"
 
 #include <iostream>

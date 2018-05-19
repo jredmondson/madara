@@ -188,17 +188,6 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       env->GetObjectClass(jresult), "getCPtr", "()J");
     jlong cptr = env->CallLongMethod (jresult, getPtrMethod);
 
-    bool do_delete = true;
-    //We need to see if they returned an arg we sent them, or a new value     
-    for (unsigned int x = 0; x < args.size(); x++)
-    {
-      if (cptr == (jlong)&(args[x]))
-      {
-        do_delete = false;
-        break;
-      }
-    }
-
     result.deep_copy(*(madara::knowledge::KnowledgeRecord *)cptr);
 
     jvm.env->DeleteLocalRef (jresult);
@@ -208,9 +197,6 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     jvm.env->DeleteLocalRef (jvariables);
     jvm.env->DeleteWeakGlobalRef (jlistClass);
     jvm.env->DeleteWeakGlobalRef (jvarClass);
-
-    //if (do_delete)
-    //  delete (KnowledgeRecord*)cptr;
   }
 #endif
   

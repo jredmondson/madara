@@ -15,6 +15,7 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "BaseThread.h"
 #include "madara/knowledge/containers/Double.h"
+#include "madara/utility/Utility.h"
 
 #include <thread>
 
@@ -111,8 +112,8 @@ namespace madara
        * @param  blaster    if hertz rate is 0, true. Otherwise, false.
        **/
       void change_frequency (double hertz,
-        ACE_Time_Value & current, ACE_Time_Value & frequency,
-        ACE_Time_Value & next_epoch,
+        utility::TimeValue & current, utility::Duration & frequency,
+        utility::TimeValue & next_epoch,
         bool & one_shot, bool & blaster);
 
       /// the name of the contained thread

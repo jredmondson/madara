@@ -83,7 +83,6 @@ Section "docs" SEC03
 ;  File "..\..\docs\Doxyfile_KATS"
   File "..\..\docs\Doxyfile_MAML.dxy"
   File "..\..\docs\Doxyfile_MAAL.dxy"
-  File "..\..\docs\Doxyfile_CID.dxy"
   File "..\..\docs\README.txt"
 
 ;  SetOutPath "$INSTDIR\docs\kats"
@@ -177,7 +176,7 @@ Section "-vcredist" SEC11
 
   sp164_not_exists:
     # From http://blogs.msdn.com/astebner/archive/2007/02/07/update-regarding-silent-install-of-the-vc-8-0-runtime-vcredist-packages.aspx
-    # “qb!” for progress with no cancel, “qb” for progress and cancel, “qn” for no interaction
+    # ï¿½qb!ï¿½ for progress with no cancel, ï¿½qbï¿½ for progress and cancel, ï¿½qnï¿½ for no interaction
 
     DetailPrint "Installing VC 12 64-bit Redistributable."  
 
@@ -199,7 +198,7 @@ Section "-vcredist" SEC11
 
   sp1_not_exists:
     # From http://blogs.msdn.com/astebner/archive/2007/02/07/update-regarding-silent-install-of-the-vc-8-0-runtime-vcredist-packages.aspx
-    # “qb!” for progress with no cancel, “qb” for progress and cancel, “qn” for no interaction
+    # ï¿½qb!ï¿½ for progress with no cancel, ï¿½qbï¿½ for progress and cancel, ï¿½qnï¿½ for no interaction
     DetailPrint "Installing VC 12 32-bit Redistributable."  
     ExecWait '$INSTDIR\vcredist\vcredist_x86.exe /q' $0 # Only progress bar
     DetailPrint "vcredist_x86 SP1 Update returned $0"
