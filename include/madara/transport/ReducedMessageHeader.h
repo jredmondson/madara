@@ -9,6 +9,7 @@
 * network transports (e.g. IP multicast and broadcast)
 **/
 
+#include <string.h>
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
 #include "madara/transport/MessageHeader.h"

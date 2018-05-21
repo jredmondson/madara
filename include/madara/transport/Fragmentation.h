@@ -12,6 +12,7 @@
 
 #include <map>
 #include <string>
+#include <string.h>
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
 #include "madara/transport/MessageHeader.h"
