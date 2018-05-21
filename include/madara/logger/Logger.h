@@ -4,6 +4,7 @@
 #include "madara/MADARA_export.h"
 #include "madara/LockType.h"
 #include <vector>
+#include <atomic>
 #include <string>
 #include <stdio.h>
 #include "madara/utility/inttypes.h"
@@ -174,7 +175,7 @@ namespace madara
       FileVectors files_;
 
       /// the maximum detail level for logging
-      int level_;
+      std::atomic<int> level_;
 
       /// tracks whether terminal output has been added
       bool term_added_;

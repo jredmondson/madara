@@ -43,8 +43,6 @@ madara::logger::Logger::add_file (const std::string & filename)
 inline void
 madara::logger::Logger::set_level (int level)
 {
-  MADARA_GUARD_TYPE guard (mutex_);
-
   level_ = level;
 }
 
@@ -67,8 +65,6 @@ madara::logger::Logger::set_tag (const std::string & tag)
 inline int
 madara::logger::Logger::get_level (void)
 {
-  MADARA_GUARD_TYPE guard (mutex_);
-
   return level_;
 }
 
