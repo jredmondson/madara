@@ -8,7 +8,7 @@
 #include "madara/utility/java/Acquire_VM.h"
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 
 #include <process.h>
 
@@ -95,7 +95,7 @@ WorkerThread::operator= (const WorkerThread & input)
 void
 WorkerThread::run (void)
 {
-#ifndef WIN32
+#ifndef _WIN32
 #else
   //result = 0;
   //_beginthreadex(NULL, 0, worker_thread_windows_glue, (void*)this, 0, 0);

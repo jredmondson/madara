@@ -232,7 +232,7 @@ int main (int argc, char ** argv)
     // create the mkdir command for the output directory
     std::string mkdir ("mkdir ");
 
-#ifndef WIN32
+#ifndef _WIN32
     mkdir += "-p ";
 #endif
 
