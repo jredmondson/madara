@@ -11,10 +11,9 @@
 #include "madara/utility/EpochEnforcer.h"
 #include "ace/INET_Addr.h"
 
-#include "ace/Default_Constants.h"
-#include "ace/Mem_Map.h"
-#include "ace/OS_NS_fcntl.h"
-#include "ace/OS_NS_unistd.h"
+//#include "ace/Default_Constants.h"
+//#include "ace/OS_NS_fcntl.h"
+//#include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_sys_socket.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
@@ -543,24 +542,59 @@ int
   int ret_value = 0;
   if (filename != "")
   {
-    // load the source file into a mapped file of the OS's 
-    // virtual memory system
-    ACE_Mem_Map mapped_file;
-    void * temp_buffer;
-    ret_value = mapped_file.map (filename.c_str ());
-    temp_buffer = mapped_file.addr ();
-    size = mapped_file.size ();
-
-    if (add_zero_char)
-      ++size;
-
-    buffer = new unsigned char [size];
-    memcpy (buffer, temp_buffer, size);
-
-    if (add_zero_char)
+    try
     {
-      unsigned char * zeroed = (unsigned char *)buffer;
-      zeroed[size - 1] = 0;
+      std::ifstream file (filename, std::ifstream::binary);
+      
+      if (file)
+      {
+        file.seekg (0, file.end);
+        size = (size_t) file.tellg ();
+        file.seekg (0, file.beg);
+
+        madara_logger_ptr_log (logger::global_logger.get(),
+          logger::LOG_MAJOR,
+          "utility::read_file:"
+          " reading %d bytes from %s\n",
+          (int)size, filename.c_str ());
+
+        if (add_zero_char)
+        {
+          ++size;
+        }
+
+        buffer = new unsigned char [size];
+
+        if (size > 0)
+        {
+          file.read ((char *)buffer, size);
+
+          madara_logger_ptr_log (logger::global_logger.get(),
+            logger::LOG_MAJOR,
+            "utility::read_file:"
+            " successfully read %d bytes from %s\n",
+            (int)size, filename.c_str ());
+
+          if (add_zero_char)
+          {
+            unsigned char * zeroed = (unsigned char *)buffer;
+            zeroed[size - 1] = 0;
+          } // end if adding a zero char
+
+          ret_value = 0;
+        }
+
+        file.close ();
+      } // end if file is open
+      else ret_value = -1;
+    } // end try
+    catch (const std::exception& e)
+    {
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+        "utility::read_file:"
+        " exception: %s\n", e.what());
+
+      ret_value = -1;
     }
   }
   else ret_value = -1;
@@ -575,21 +609,28 @@ ssize_t
   // error is -1
   ssize_t actual = -1;
 
-  // using ACE for writing to the destination file
-  ACE_HANDLE file_handle = ACE_OS::open (filename.c_str (),
-    O_RDWR | O_CREAT | O_TRUNC,
-    ACE_DEFAULT_FILE_PERMS);
+  std::ofstream file;
 
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-    "Files::write_file : beginning write of %" PRIu64 " bytes\n", size);
-
-  if (file_handle  != ACE_INVALID_HANDLE)
+  try
   {
-    // write to the file, save actual bytes read, and close the file handle
-    actual = ACE_OS::write (file_handle, buffer, size);
-    ACE_OS::close (file_handle);
-  }
+    file.open (filename, ios::out | ios::binary);
+    if (file.write ((char *)buffer, size))
+    {
+      actual = size;
+    }
+    file.close ();
 
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
+      "utility::write_file:"
+      " wrote %d bytes to %s\n", (int)actual, filename.c_str ());
+  }
+  catch(const std::exception& e)
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      "utility::write_file:"
+      " exception: %s\n", e.what());
+  }
+  
   // return the actual bytes written. -1 if error
   return actual;
 }
