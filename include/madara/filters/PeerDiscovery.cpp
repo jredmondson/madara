@@ -8,7 +8,7 @@ madara::filters::PeerDiscovery::PeerDiscovery (
   const std::string & prefix,
   knowledge::KnowledgeRecord::Integer heart_beat)
   : initialized_ (false), prefix_ (prefix),
-    heart_beat_ (heart_beat), last_clear_ (0)
+    heart_beat_ (heart_beat * 1000000000), last_clear_ (0)
 {
 }
 

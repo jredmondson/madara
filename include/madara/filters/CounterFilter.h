@@ -63,8 +63,8 @@ namespace madara
 
       /**
       * Returns the duration of filtering from first to
-      * last message in seconds
-      * @return test duration in seconds
+      * last message in nanoseconds
+      * @return test duration in nanoseconds
       **/
       inline knowledge::KnowledgeRecord::Integer get_elapsed ();
 

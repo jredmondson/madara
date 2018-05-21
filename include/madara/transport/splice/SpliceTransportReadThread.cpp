@@ -102,7 +102,7 @@ madara::transport::SpliceReadThread::rebroadcast (
     data.originator = DDS::string_dup(id_.c_str ());
     data.type = madara::transport::MULTIASSIGN;
     data.ttl = settings_.get_rebroadcast_ttl ();
-    data.timestamp = time (NULL);
+    data.timestamp = utility::get_time ();
     data.madara_id = DDS::string_dup(MADARA_IDENTIFIER);
     
     handle = update_writer_->register_instance (data);

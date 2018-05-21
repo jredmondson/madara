@@ -415,7 +415,7 @@ process_received_update (
   }
 
   int actual_updates = 0;
-  uint64_t current_time = time (NULL);
+  uint64_t current_time = utility::get_time ();
   double deadline = settings.get_deadline ();
   TransportContext transport_context (
     TransportContext::RECEIVING_OPERATION,
@@ -847,7 +847,7 @@ long Base::prep_send (
   TransportContext transport_context (TransportContext::SENDING_OPERATION,
       receive_monitor_.get_bytes_per_second (),
       send_monitor_.get_bytes_per_second (),
-      (uint64_t) time (NULL), (uint64_t) time (NULL),
+      (uint64_t) utility::get_time (), (uint64_t) utility::get_time (),
       settings_.write_domain,
       id_);
 

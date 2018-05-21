@@ -97,7 +97,7 @@ knowledge::VariableReference  slow_publisher;
  * args[3] : Bandwidth used while sending through this transport
  * args[4] : Bandwidth used while receiving from this transport
  * args[5] : Message timestamp (when the message was originally sent)
- * args[6] : Current timestamp (the result of time (NULL))
+ * args[6] : Current timestamp (the result of utility::get_time ())
  * args[7] : domain (partition of knowledge updates)
  * 
  * These args are modifiable in the understanding that future arguments may be

@@ -5,8 +5,8 @@
 
 madara::knowledge::FileHeader::FileHeader ()
 : size (encoded_size ()),
-  states (0), initial_timestamp (time (NULL)),
-  last_timestamp (0),
+  states (0), initial_timestamp (utility::get_time ()),
+  last_timestamp (utility::get_time ()),
   karl_version (madara::utility::get_uint_version ())
 {
   memcpy (file_type, "KaRL", 4);
