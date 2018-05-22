@@ -156,8 +156,6 @@ madara::transport::SpliceReadThread::run (void)
     DDS::ConditionSeq_var conditionList = new DDS::ConditionSeq();
     result = waitset_.wait (conditionList.inout (), wait_time);
 
-    //ACE_DEBUG ((LM_DEBUG, "(%P|%t) Read thread take.\n"));
-
     madara_logger_log (context_->get_logger (), logger::LOG_DETAILED,
       "%s: entering a take on the DDS reader.\n", print_prefix);
 

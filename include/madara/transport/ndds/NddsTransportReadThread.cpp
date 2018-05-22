@@ -1,5 +1,5 @@
 #include "madara/transport/ndds/NDDSTransportReadThread.h"
-#include "madara/utility/LogMacros.h"
+#include "madara/utility/Logger.h"
 #include "madara/knowledge/UpdateTypes.h"
 #include "madara/utility/Utility.h"
 
@@ -22,9 +22,9 @@ madara::transport::NDDSReadThread::NDDSReadThread (
 
   this->activate (THR_NEW_LWP | THR_DETACHED, 1);
   
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "NDDSReadThread::NDDSReadThread:" \
-    " read thread started\n"));
+  madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+    "NDDSReadThread::NDDSReadThread:" \
+    " read thread started\n");
 }
 
 madara::transport::NDDSReadThread::~NDDSReadThread ()
@@ -50,9 +50,9 @@ madara::transport::NDDSReadThread::wait_for_ready (void)
 
 int madara::transport::NDDSReadThread::enter_barrier (void)
 { 
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "NDDSReadThread::enter_barrier:" \
-    " beginning thread barrier for shut down of read thread\n"));
+  madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+    "NDDSReadThread::enter_barrier:" \
+    " beginning thread barrier for shut down of read thread\n");
 
   barrier_.wait ();
   return 0;
@@ -68,9 +68,9 @@ void madara::transport::NDDSReadThread::handle_assignment (
     long long value = data.value;
     int result = 0;
 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_DEBUG_INFO, (LM_DEBUG, 
-        DLINFO "NDDSReadThread::handle_assignment:" \
-        " waiting to process assignment\n"));
+    madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+      "NDDSReadThread::handle_assignment:" \
+      " waiting to process assignment\n");
 
     context_.lock ();
     unsigned long long cur_clock = context_.get_clock (key);
@@ -93,38 +93,38 @@ void madara::transport::NDDSReadThread::handle_assignment (
     // if we actually updated the value
     if (result == 1)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "NDDSReadThread::handle_assignment:" \
+      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+        "NDDSReadThread::handle_assignment:" \
         " received data[%s]=%q from %s.\n", 
-        key.c_str (), value, data.originator));
+        key.c_str (), value, data.originator);
     }
     // if the data was already current
     else if (result == 0)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "NDDSReadThread::handle_assignment:" \
-          " discarded data[%s]=%q from %s as the value was already set.\n",
-          key.c_str (), value, data.originator));
+      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+        "NDDSReadThread::handle_assignment:" \
+        " discarded data[%s]=%q from %s as the value was already set.\n", 
+        key.c_str (), value, data.originator);
     }
     else if (result == -1)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "NDDSReadThread::handle_assignment:" \
-        " discarded data due to null key.\n"));
+      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+        "NDDSReadThread::handle_assignment:" \
+        " discarded data due to null key.\n");
     }
     else if (result == -2)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "NDDSReadThread::handle_assignment:" \
+      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+        "NDDSReadThread::handle_assignment:" \
         " discarded data[%s]=%q due to lower quality (%u vs %u).\n",
-        key.c_str (), value, cur_quality, data.quality));
+        key.c_str (), value, cur_quality, data.quality);
     }
     else if (result == -3)
     {
-      MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "NDDSReadThread::handle_assignment:" \
+      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+        "NDDSReadThread::handle_assignment:" \
         " discarded data[%s]=%q due to older timestamp (%Q vs %Q).\n",
-        key.c_str (), value, cur_clock, data.clock));
+        key.c_str (), value, cur_clock, data.clock);
     }
   }
 }
@@ -139,16 +139,16 @@ void madara::transport::NDDSReadThread::handle_multiassignment (
     long long value;
     std::stringstream stream (data.key);
 
-    MADARA_DEBUG (MADARA_LOG_MAJOR_DEBUG_INFO, (LM_DEBUG, 
-        DLINFO "NDDSReadThread::multiassignment:" \
-        " waiting to process multiassignment\n"));
+    madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+      "NDDSReadThread::handle_multiassignment:" \
+      " waiting to process multiassignment.\n");
 
     context_.lock ();
     
-    MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-        DLINFO "NDDSReadThread::multiassignment:" \
+    madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+      "NDDSReadThread::handle_multiassignment:" \
         " processing multiassignment (%s).\n",
-          data.key));
+          data.key);
 
     while (!stream.eof ())
     {
@@ -168,38 +168,38 @@ void madara::transport::NDDSReadThread::handle_multiassignment (
       // if we actually updated the value
       if (result == 1)
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "NDDSReadThread::handle_multiassignment:" \
-          " received data[%s]=%q from %s.\n",
-          key.c_str (), value, data.originator));
+        madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+          "NDDSReadThread::handle_multiassignment:" \
+            " received data[%s]=%q from %s.\n",
+            key.c_str (), value, data.originator);
       }
       // if the data was already current
       else if (result == 0)
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "NDDSReadThread::handle_multiassignment:" \
-          " discarded data[%s]=%q from %s as the value was already set.\n",
-          key.c_str (), value, data.originator));
+        madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+          "NDDSReadThread::handle_multiassignment:" \
+            " discarded data[%s]=%q from %s as the value was already set.\n",
+          key.c_str (), value, data.originator);
       }
       else if (result == -1)
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "NDDSReadThread::handle_multiassignment:" \
-          " discarded data due to null key.\n"));
+        madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+          "NDDSReadThread::handle_multiassignment:" \
+            " discarded data due to null key.\n");
       }
       else if (result == -2)
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "NDDSReadThread::handle_multiassignment:" \
+        madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+          "NDDSReadThread::handle_multiassignment:" \
           " discarded data[%s]=%q due to lower quality (%u vs %u).\n",
-          key.c_str (), value, cur_quality, data.quality));
+          key.c_str (), value, cur_quality, data.quality);
       }
       else if (result == -3)
       {
-        MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-          DLINFO "NDDSReadThread::handle_multiassignment:" \
+        madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+          "NDDSReadThread::handle_multiassignment:" \
           " discarded data[%s]=%q due to older timestamp (%Q vs %Q).\n",
-          key.c_str (), value, cur_clock, data.clock));
+          key.c_str (), value, cur_clock, data.clock);
       }
     }
     
@@ -212,9 +212,9 @@ madara::transport::NDDSReadThread::svc (void)
 {
   // if we don't check originator for null, we get phantom sends
   // when the program exits.
-  MADARA_DEBUG (MADARA_LOG_MAJOR_EVENT, (LM_DEBUG, 
-    DLINFO "NDDSReadThread::svc:" \
-    " entering processing loop.\n"));
+  madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+    "NDDSReadThread::svc:" \
+    " entering processing loop.\n");
 
   NDDSKnowledgeUpdateSeq update_data_list;
   DDSSampleInfoSeq info_seq;
@@ -237,22 +237,22 @@ madara::transport::NDDSReadThread::svc (void)
       {
         if (madara::knowledge::ASSIGNMENT == update_data_list[i].type)
         {
-          MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-            DLINFO "NDDSReadThread::svc:" \
+          madara_logger_log (context_->get_logger (), logger::LOG_MINOR,
+            "NDDSReadThread::svc:" \
             " processing %s=%q from %s with time %Q and quality %u.\n", 
             update_data_list[i].key, update_data_list[i].value, 
             update_data_list[i].originator,
-            update_data_list[i].clock, update_data_list[i].quality));
+            update_data_list[i].clock, update_data_list[i].quality);
 
           handle_assignment (update_data_list[i]);
         }
         else if (madara::knowledge::MULTIPLE_ASSIGNMENT == update_data_list[i].type)
         {
-          MADARA_DEBUG (MADARA_LOG_MINOR_EVENT, (LM_DEBUG, 
-            DLINFO "NDDSReadThread::svc:" \
+          madara_logger_log (context_->get_logger (), logger::LOG_MINOR,
+            "NDDSReadThread::svc:" \
             " processing multassignment from %s with time %Q and quality %u.\n",
             update_data_list[i].originator,
-            update_data_list[i].clock, update_data_list[i].quality));
+            update_data_list[i].clock, update_data_list[i].quality);
 
           handle_multiassignment (update_data_list[i]);
         }
