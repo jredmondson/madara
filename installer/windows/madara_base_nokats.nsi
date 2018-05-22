@@ -129,25 +129,6 @@ Section "gme" SEC05
   File "..\..\modeling\Icons\sources.txt"
 SectionEnd
 
-Section "ace" SEC10
-
-  SetOutPath "$INSTDIR"
-  
-  File /oname=$INSTDIR\ACE-LICENSE.txt "$%ACE_ROOT%\COPYING"
-  CreateShortCut "$SMPROGRAMS\MADARA\ACE-LICENSE.lnk" "$INSTDIR\ACE-LICENSE.txt"
-
-  SetOutPath "$INSTDIR\lib"
-  File "$%ACE_ROOT%\lib\ACE.dll"
-  File "$%ACE_ROOT%\lib\ACEd.dll"
-  File "$%ACE_ROOT%\lib\ACE.lib"
-  File "$%ACE_ROOT%\lib\ACEd.lib"
-  
-  SetOutPath "$INSTDIR\include"
-
-  File /r /x *.obj /x *.sln /x *.sdf /x *.vcxproj /x *.filters /x *.user /x *.log /x *.tlog /x *.pdb /x Static_Debug /x Static_Release /x Debug /x Release $%ACE_ROOT%\ace
-
-SectionEnd
-
 Section "-include" SEC07
   SetOutPath "$INSTDIR\include"
   

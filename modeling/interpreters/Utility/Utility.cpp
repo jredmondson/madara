@@ -390,7 +390,7 @@ std::string
 KATS::Utility::clean_dir_name (const std::string & source)
 {
   // define the characters we'll want to replace
-#ifdef ACE_WIN32
+#ifdef _WIN32
   #define REPLACE_THIS    '/'
   #define REPLACE_WITH    '\\'
 #else
