@@ -25,6 +25,7 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/knowledge_cast.h"
 #include "madara/knowledge/ContextGuard.h"
+#include "madara/utility/SupportTest.h"
 
 namespace madara { namespace knowledge { namespace rcw
 {
@@ -156,20 +157,6 @@ namespace madara { namespace knowledge { namespace rcw
     template<class, class, bool, bool, class>
     friend class PrefixTracker;
   };
-
-  /**
-   * Macro which generates feature testing traits, to allow enabling features
-   * based on what a given type supports. The tests provide ::value member
-   * which is true if the given expr can compile correctly with the given
-   * type; false otherwise
-   */
-  #define MADARA_MAKE_SUPPORT_TEST(name, var, expr) template <typename T> \
-  struct supports_##name##_impl { \
-      template<typename U> static auto test(U *var) -> decltype((expr), std::true_type()); \
-      template<typename U> static auto test(...) -> std::false_type; \
-      using type = decltype(test<T>(0)); \
-  }; \
-  template <typename T> struct supports_##name : supports_##name##_impl<T>::type {}
 
   /// Trait to test for an is_dirty overload for a given type
   MADARA_MAKE_SUPPORT_TEST(is_dirty, p, (is_dirty(*p), clear_dirty(*p)));

@@ -61,6 +61,7 @@
 #include <type_traits>
 #include <stdbool.h>
 #include <madara/knowledge/KnowledgeRecord.h>
+#include <madara/utility/SupportTest.h>
 
 namespace madara { namespace knowledge {
 
@@ -125,6 +126,141 @@ inline auto knowledge_cast(type<std::vector<T>>, const KnowledgeRecord &in) ->
 {
   auto vec = in.to_doubles();
   return {std::begin(vec), std::end(vec)};
+}
+
+namespace impl {
+  template<typename T>
+  inline auto size(const T &c) -> decltype(c.size()) {
+    return c.size();
+  }
+
+  template<typename T, size_t N>
+  inline size_t size(const T (&arr)[N]) {
+    (void)arr;
+    return N;
+  }
+
+  MADARA_MAKE_VAL_SUPPORT_TEST(resize, x, x.resize(size_t{}));
+
+  template<typename T>
+  inline auto resize_or_clear(T &c, size_t n) ->
+    typename std::enable_if<!supports_resize<T&>::value,
+    decltype(c[0], size(c), size_t{})>::type
+  {
+    using elem_type = typename std::decay<decltype(c[0])>::type;
+    size_t curn = size(c);
+    for (; n < curn; ++n) {
+      c[n] = elem_type{};
+    }
+    return curn;
+  }
+
+  template<typename T>
+  inline auto resize_or_clear(T &c, size_t n) ->
+    typename std::enable_if<supports_resize<T&>::value, size_t>::type
+  {
+    c.resize(n);
+    return n;
+  }
+
+  template<typename T>
+  inline auto share_array(const KnowledgeRecord &in) ->
+    typename std::enable_if<std::is_integral<
+       typename std::decay<decltype(*std::begin(std::declval<T&>()))>::type>::value,
+         decltype(in.share_integers())>::type
+  {
+    return in.share_integers();
+  }
+
+  template<typename T>
+  inline auto to_array(const KnowledgeRecord &in) ->
+    typename std::enable_if<std::is_integral<
+       typename std::decay<decltype(*std::begin(std::declval<T&>()))>::type>::value,
+         decltype(in.to_integers())>::type
+  {
+    return in.to_integers();
+  }
+
+  template<typename T>
+  inline auto share_array(const KnowledgeRecord &in) ->
+    typename std::enable_if<std::is_floating_point<
+       typename std::decay<decltype(*std::begin(std::declval<T&>()))>::type>::value,
+         decltype(in.share_doubles())>::type
+  {
+    return in.share_doubles();
+  }
+
+  template<typename T>
+  inline auto to_array(const KnowledgeRecord &in) ->
+    typename std::enable_if<std::is_floating_point<
+       typename std::decay<decltype(*std::begin(std::declval<T&>()))>::type>::value,
+         decltype(in.to_doubles())>::type
+  {
+    return in.to_doubles();
+  }
+
+  template<typename T>
+  struct simple_span
+  {
+    T *ptr;
+    size_t len;
+
+    T *begin() const { return ptr; }
+    const T *cbegin() const { return ptr; }
+    T *end() const { return ptr + len; }
+    const T *cend() const { return ptr + len; }
+
+    T &operator[](size_t i) const { return ptr[i]; }
+
+    size_t size() const { return len; }
+  };
+
+  template<typename T>
+  simple_span<T> make_span(T* ptr, size_t size) {
+    return {ptr, size};
+  }
+
+  MADARA_MAKE_VAL_SUPPORT_TEST(target_container, x,
+      (std::is_arithmetic<typename std::decay<
+        decltype(*std::begin(x))>::type>::value,
+       impl::size(x)));
+}
+
+template<typename T>
+inline auto knowledge_cast(const KnowledgeRecord &in, T &out) ->
+  typename std::enable_if<!impl::supports_target_container<T&>::value,
+    decltype(out = knowledge_cast(type<T>{}, in))>::type
+{
+  return (out = knowledge_cast(type<T>{}, in));
+}
+
+template<typename T>
+inline auto knowledge_cast(const KnowledgeRecord &in, T &out) ->
+  typename std::enable_if<impl::supports_target_container<T&>::value,
+    decltype(out)>::type
+{
+  auto ints = impl::share_array<T>(in);
+  if (ints) {
+    size_t count = ints->size();
+    count = std::min(impl::resize_or_clear(out, count), count);
+    std::copy_n (std::begin(*ints), count, std::begin(out));
+  } else {
+    auto ints = impl::to_array<T>(in);
+    size_t count = ints.size();
+    count = std::min(impl::resize_or_clear(out, count), count);
+    std::copy_n (std::begin(ints), count, std::begin(out));
+  }
+  return out;
+}
+
+template<typename T>
+inline auto knowledge_cast(const KnowledgeRecord &in, T *out, size_t size)
+  -> decltype(knowledge_cast(in, std::declval<impl::simple_span<T>&>()),
+              (T*)nullptr)
+{
+  auto span = impl::make_span(out, size);
+  knowledge_cast(in, span);
+  return out;
 }
 
 inline KnowledgeRecord knowledge_cast(type<KnowledgeRecord>, const KnowledgeRecord &in)

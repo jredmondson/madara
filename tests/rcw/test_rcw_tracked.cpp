@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <array>
 #include <vector>
 
 #include "test.h"
@@ -209,6 +210,43 @@ int main(int, char **)
   KnowledgeRecord shr_fkr(shr_farray);
   auto shr_fout = knowledge_cast<std::vector<float>>(shr_fkr);
   test_eq(shr_fout[4], 5.5L);
+
+  uint16_t iarray_in[] = {4, 8, 12, 16};
+  int iarray_out[] = {0, 0, 0, 0, 1, 1, 1};
+  knowledge_cast(knowledge_cast(iarray_in), iarray_out);
+  test_eq(iarray_out[2], 12);
+  test_eq(iarray_out[6], 0);
+
+  std::array<int32_t, 7> istdarray_out{{0, 0, 0, 0, 1, 1, 1}};
+  knowledge_cast(knowledge_cast(iarray_in), istdarray_out);
+  test_eq(istdarray_out[3], 16);
+  test_eq(istdarray_out[5], 0);
+
+  float farray_in[] = {4.5, 8.5, 12.5, 16.5};
+  float farray_out[] = {0, 0, 0, 0, 1, 1, 1};
+  knowledge_cast(knowledge_cast(farray_in), farray_out);
+  test_eq(farray_out[2], 12.5);
+  test_eq(farray_out[6], 0);
+
+  farray_out[2] = 0;
+  farray_out[3] = 0;
+  knowledge_cast(knowledge_cast(farray_in), farray_out, 3);
+  test_eq(farray_out[2], 12.5);
+  test_eq(farray_out[3], 0);
+
+  std::array<float, 7> fstdarray_out{{0, 0, 0, 0, 1, 1, 1}};
+  knowledge_cast(knowledge_cast(farray_in), fstdarray_out);
+  test_eq(fstdarray_out[3], 16.5);
+  test_eq(fstdarray_out[5], 0);
+
+  std::vector<float> fstdvector_out = {1, 2, 3};
+  knowledge_cast(knowledge_cast(farray_in), fstdvector_out);
+  test_eq(fstdvector_out.size(), 4UL);
+  test_eq(fstdvector_out[2], 12.5);
+
+  int int_out;
+  knowledge_cast(knowledge_cast(13), int_out);
+  test_eq(int_out, 13);
 
   tests_finalize();
 }
