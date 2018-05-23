@@ -10,22 +10,18 @@
 #include "madara/expression/ExpressionTree.h"
 #include "madara/transport/Transport.h"
 #include "madara/transport/MessageHeader.h"
+#include "madara/transport/udp/UdpTransport.h"
 #include "madara/threads/BaseThread.h"
-
-#include "ace/Task.h"
-#include "ace/Mutex.h"
-#include "ace/Barrier.h"
-#include "ace/Atomic_Op_T.h"
-#include "ace/Thread_Mutex.h"
-
-#include "ace/Synch.h"
-#include "ace/INET_Addr.h"
-#include "ace/SOCK_Dgram.h"
+#include "madara/boost.h"
 
 namespace madara
 {
   namespace transport
   {
+    namespace asio = boost::asio;
+    namespace ip = boost::asio::ip;
+    using udp = boost::asio::ip::udp;
+
     /**
      * @class UdpTransportReadThread
      * @brief Thread for reading knowledge updates through a UDP socket
@@ -33,47 +29,26 @@ namespace madara
     class UdpTransportReadThread : public threads::BaseThread
     {
     public:
-      /**
-       * Constructor
-       * @param    settings   Transport settings
-       * @param    id      host:port identifier of this process, to allow for 
-       *                   rejection of duplicates
-       * @param    addresses    the ACE socket addresses to communicate with 
-       * @param    write_socket    socket for sending
-       * @param    read_socket    socket for receiving
-       * @param    send_monitor    bandwidth monitor for enforcing send limits
-       * @param    receive_monitor    bandwidth monitor for enforcing
-       *                              receive limits
-       * @param    packet_scheduler scheduler for mimicking network conditions
-       **/
-      UdpTransportReadThread (
-        const TransportSettings & settings,
-        const std::string & id,
-        std::map <std::string, ACE_INET_Addr> & addresses,
-        ACE_SOCK_Dgram & write_socket,
-        ACE_SOCK_Dgram & read_socket,
-        BandwidthMonitor & send_monitor,
-        BandwidthMonitor & receive_monitor,
-        PacketScheduler & packet_scheduler);
-      
+      UdpTransportReadThread (UdpTransport &transport);
+
       /**
        * Initializes MADARA context-related items
        * @param   knowledge   context for querying current program state
        **/
-      void init (knowledge::KnowledgeBase & knowledge);
+      void init (knowledge::KnowledgeBase & knowledge) override;
 
       /**
        * Cleanup function called by thread manager
        **/
-      void cleanup (void);
+      void cleanup (void) override;
 
       /**
        * The main loop internals for the read thread
        **/
-      void run (void);
+      void run (void) override;
 
       /**
-       * Sends a rebroadcast packet to all peers.
+       * Sends a rebroadcast packet.
        * @param  print_prefix     prefix to include before every log message,
        *                          e.g., "MyTransport::svc"
        * @param   header   header for the rebroadcasted packet
@@ -85,41 +60,18 @@ namespace madara
         MessageHeader * header,
         const knowledge::KnowledgeMap & records);
 
-    private:
-      /// Transport settings
-      const QoSTransportSettings settings_;
+    protected:
+      UdpTransport &transport_;
 
-      /// host:port identifier of this process
-      const std::string                                 id_;
-      
-      /// knowledge context
-      knowledge::ThreadSafeContext * context_;
-      
-      /// internet addresses of our peers
-      std::map <std::string, ACE_INET_Addr> & addresses_;
-      
-      /// The socket we are writing to
-      ACE_SOCK_Dgram       &             write_socket_;
-      
-      /// The socket we are reading from
-      ACE_SOCK_Dgram       &             read_socket_;
-      
+      knowledge::ThreadSafeContext * context_ = nullptr;
+
 #ifndef _MADARA_NO_KARL_
       /// data received rules, defined in Transport settings
-      madara::knowledge::CompiledExpression  on_data_received_;
+      madara::knowledge::CompiledExpression on_data_received_;
 #endif // _MADARA_NO_KARL_
-      
-      /// buffer for sending
-      madara::utility::ScopedArray <char>      buffer_;
 
-      /// monitor for sending bandwidth usage
-      BandwidthMonitor   &   send_monitor_;
-      
-      /// monitor for receiving bandwidth usage
-      BandwidthMonitor   &   receive_monitor_;
-
-      /// scheduler for mimicking target network conditions
-      PacketScheduler    &   packet_scheduler_;
+      /// buffer for receiving
+      madara::utility::ScopedArray<char> buffer_;
     };
   }
 }

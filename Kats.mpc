@@ -7,11 +7,6 @@ project (Kats) : using_madara, using_ace, using_splice {
   dynamicflags += KATS_BUILD_DLL
   libout = $(MADARA_ROOT)/lib
 
-  Build_Files {
-    Kats.mpc
-    using_kats.mpb
-  }
-
   Inline_Files {
     include/madara/kats
   }
@@ -33,10 +28,6 @@ project (Kats_Process) : using_kats, using_madara, using_ace {
   
   macros += TIXML_USE_STL
   
-  Build_Files {
-    Kats.mpc
-  }
-
   Header_Files {
   }
 
@@ -52,10 +43,6 @@ project (Kats_Batch) : using_kats, using_madara, using_ace {
   
   macros += TIXML_USE_STL
   
-  Build_Files {
-    Kats.mpc
-  }
-
   Header_Files {
     include/madara/kats/Redeployment.h
   }
@@ -73,10 +60,6 @@ project (Kats_Sleep) : using_kats, using_madara, using_ace {
   
   macros += TIXML_USE_STL
   
-  Build_Files {
-    Kats.mpc
-  }
-
   Header_Files {
   }
 
@@ -93,10 +76,6 @@ project (Kats_Observer) : using_kats, using_madara, using_ace {
   
   macros += TIXML_USE_STL
   
-  Build_Files {
-    Kats.mpc
-  }
-
   Header_Files {
   }
 

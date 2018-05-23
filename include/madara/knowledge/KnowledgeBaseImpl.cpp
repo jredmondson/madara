@@ -5,7 +5,6 @@
 #include "madara/transport/udp/UdpTransport.h"
 #include "madara/transport/udp/UdpRegistryServer.h"
 #include "madara/transport/udp/UdpRegistryClient.h"
-#include "madara/transport/tcp/TcpTransport.h"
 #include "madara/transport/multicast/MulticastTransport.h"
 #include "madara/transport/broadcast/BroadcastTransport.h"
 
@@ -167,15 +166,6 @@ transport::TransportSettings & settings)
       " creating UDP Registry Client transport.\n");
 
     transport = new madara::transport::UdpRegistryClient (originator, map_,
-      settings, true);
-  }
-  else if (settings.type == madara::transport::TCP)
-  {
-    madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
-      "KnowledgeBaseImpl::activate_transport:" \
-      " creating TCP transport.\n");
-
-    transport = new madara::transport::TcpTransport (originator, map_,
       settings, true);
   }
   else

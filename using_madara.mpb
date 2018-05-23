@@ -1,11 +1,22 @@
-project {
+project : debug_build {
   includes += $(MADARA_ROOT)/include
   libpaths += $(MADARA_ROOT)/lib
-  after += Madara  
+
+  after += Madara
+
   libs += MADARA
 
-  verbatim (gnuace, local) {
-    CPPFLAGS += -std=c++11
+  //includes += /home/dskyle/boost_1_62_0/
+  //libpaths += /home/dskyle/boost_1_62_0/stage/lib
+  //libpaths += /usr/lib/x86_64-linux-gnu
+  libs += boost_system
+
+  verbatim (make, local, true) {
+    CPPFLAGS := -std=c++11 -Wall $(CPPFLAGS)
+   // -isystem /home/dskyle/boost_1_62_0
   }
-  
+
+  Source_Files {
+    buildflags += -isystem /home/dskyle/boost_1_62_0
+  }
 }

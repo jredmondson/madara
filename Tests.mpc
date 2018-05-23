@@ -9,10 +9,6 @@ project (Test_Multicast_Mutex) : using_madara, using_ace, no_karl, no_xml, null_
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -31,10 +27,6 @@ project (Test_Pugi) : using_madara, using_ace, no_karl, no_xml, null_lock, using
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -53,10 +45,6 @@ project (TestMulticastCloseAndAtta.h) : using_madara, using_ace, no_karl, no_xml
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -76,10 +64,6 @@ project (Test_Multicast_Peer_Discovery) : using_madara, using_ace, no_karl, no_x
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -97,10 +81,6 @@ project (Test_Rebroadcast_Ring) : using_madara, using_ace, no_karl, no_xml, null
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -118,10 +98,6 @@ project (Test_Barrier) : using_madara, using_ace, no_karl, no_xml, null_lock, us
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -140,10 +116,6 @@ project (Test_Kb_Destructions) : using_madara, using_ace, no_karl, no_xml, null_
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -163,10 +135,6 @@ project (Test_Counter) : using_madara, using_ace, no_karl, no_xml, null_lock, us
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -186,10 +154,6 @@ project (Test_Threader_Queue_Perf) : using_madara, using_ace, no_karl, no_xml, n
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -209,10 +173,6 @@ project (Test_Threader_Counter) : using_madara, using_ace, no_karl, no_xml, null
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -232,10 +192,6 @@ project (Test_Threader_Producer_Consumer) : using_madara, using_ace, no_karl, no
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -255,10 +211,6 @@ project (Test_Threader_Hello_World) : using_madara, using_ace, no_karl, no_xml, 
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -277,10 +229,6 @@ project (Test_Threader_Periodic_Counter) : using_madara, using_ace, no_karl, no_
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -300,10 +248,6 @@ project (Test_Threader_Change_Hertz) : using_madara, using_ace, no_karl, no_xml,
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -323,10 +267,6 @@ project (Test_Context_Copy) : using_madara, using_ace, no_karl, no_xml, null_loc
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -346,10 +286,6 @@ project (Test_Prefix_To_Map) : using_madara, using_ace, no_karl, no_xml, null_lo
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -369,10 +305,6 @@ project (Test_Timed_Executor) : using_madara, using_ace, no_karl, no_xml, null_l
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -392,10 +324,6 @@ project (Test_KaRL_Containers) : using_madara, using_ace, no_karl, no_xml, null_
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -415,10 +343,6 @@ project (Test_File_Rebroadcasts) : using_madara, using_ace, no_karl, no_xml, nul
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -437,10 +361,6 @@ project (Test_Multicast_Aggregate_Filters) : using_madara, using_ace, no_karl, n
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -458,10 +378,6 @@ project (Test_Multicast_Send_List) : using_madara, using_ace, no_karl, no_xml, n
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -479,10 +395,6 @@ project (Test_Broadcast_Aggregate_Filters) : using_madara, using_ace, no_karl, n
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -500,10 +412,6 @@ project (Test_UDP_Aggregate_Filters) : using_madara, using_ace, no_karl, no_xml,
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -521,10 +429,6 @@ project (Test_Arrays) : using_madara, using_ace, no_karl, no_xml, null_lock, usi
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -542,10 +446,6 @@ project (Network_Counter_Filter) : using_madara, using_ace, no_karl, no_xml, nul
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -563,10 +463,6 @@ project (Network_Throughput) : using_madara, using_ace, no_karl, no_xml, null_lo
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -584,10 +480,6 @@ project (Network_Profiler) : using_madara, using_ace, no_karl, no_xml, null_lock
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -605,10 +497,6 @@ project (Test_Modifieds) : using_madara, using_ace, no_karl, no_xml, null_lock, 
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -626,10 +514,6 @@ project (Test_Checkpointing) : using_madara, using_ace, using_ssl, no_karl, no_x
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -647,10 +531,6 @@ project (Test_Bandwidth_Monitor) : using_madara, using_ace, no_karl, no_xml, nul
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -668,10 +548,6 @@ project (Test_Packet_Scheduler) : using_madara, using_ace, no_karl, no_xml, null
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -689,10 +565,6 @@ project (Test_Encoding) : using_madara, using_ace, no_karl, no_xml, null_lock, u
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -710,10 +582,6 @@ project (Test_QoS_Transport_Settings) : using_madara, using_ace, using_splice, n
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -731,10 +599,6 @@ project (Test_Evaluate) : using_madara, using_ace, no_karl, no_xml, null_lock, u
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -752,10 +616,6 @@ project (Test_Multicast_Rules) : using_madara, using_ace, no_karl, no_xml, null_
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -773,10 +633,6 @@ project (Test_Multicast_Rebroadcast) : using_madara, using_ace, no_karl, no_xml,
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -794,10 +650,6 @@ project (Test_Multicast_Filters) : using_madara, using_ace, no_karl, no_xml, nul
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -815,10 +667,6 @@ project (Test_UDP_Rules) : using_madara, using_ace, using_splice, no_karl, no_xm
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -836,10 +684,6 @@ project (Test_UDP_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -857,10 +701,6 @@ project (Test_UDP_Rebroadcast) : using_madara, using_ace, no_karl, no_xml, null_
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -878,10 +718,6 @@ project (Test_System_Calls) : using_madara, using_ace, using_splice, no_karl, no
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -899,10 +735,6 @@ project (Test_Broadcast_Rules) : using_madara, using_ace, using_splice, no_karl,
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -920,10 +752,6 @@ project (Test_Broadcast_Filters) : using_madara, using_ace, using_splice, no_kar
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -941,10 +769,6 @@ project (Test_Broadcast_Rebroadcast) : using_madara, using_ace, using_splice, no
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -963,10 +787,6 @@ project (Test_Basic_Reasoning) : using_madara, using_ace, using_splice, no_karl,
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -984,10 +804,6 @@ project (Test_Reasoning_Throughput) : using_madara, using_ace, using_splice, no_
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1007,10 +823,6 @@ project (Test_Files) : using_madara, using_ace, using_splice, no_karl, no_xml, n
   }
   
 
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1026,10 +838,6 @@ project (Test_Filters) : using_madara, using_ace, no_karl, no_xml, null_lock, us
   requires += tests
 
   Documentation_Files {
-  }
-
-  Build_Files {
-    Tests.mpc
   }
 
   Header_Files {
@@ -1051,10 +859,6 @@ project (Test_Key_Expansion) : using_madara, using_ace, using_splice, no_karl, n
   }
   
 
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1073,10 +877,6 @@ project (Test_Print_Statement) : using_madara, using_ace, using_splice, no_karl,
   Documentation_Files {
   }
   
-
-  Build_Files {
-    Tests.mpc
-  }
 
   Header_Files {
   }
@@ -1097,10 +897,6 @@ project (Test_Timed_Wait) : using_madara, using_ace, using_splice, no_karl, no_x
   }
   
 
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1119,10 +915,6 @@ project (Test_AES_256) : using_madara, using_ace, using_ssl, no_karl, no_xml, nu
   Documentation_Files {
   }
   
-
-  Build_Files {
-    Tests.mpc
-  }
 
   Header_Files {
   }
@@ -1145,10 +937,6 @@ project (Test_Synchronization) : using_madara, using_ace, using_splice, no_karl,
   }
   
 
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1169,10 +957,6 @@ project (Test_Synchronization_Three_State) : using_madara, using_ace, using_spli
   }
 
 
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1192,10 +976,6 @@ project (Test_Splice) : using_madara, using_ace, using_splice, no_karl, no_xml, 
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1214,10 +994,6 @@ project (Test_Splice_Rules) : using_madara, using_ace, using_splice, no_karl, no
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1236,10 +1012,6 @@ project (Test_Splice_Rebroadcast) : using_madara, using_ace, using_splice, no_ka
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1258,10 +1030,6 @@ project (Test_Splice_Filters) : using_madara, using_ace, using_splice, no_karl, 
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1278,10 +1046,6 @@ project (Test_UDP) : using_madara, using_ace, no_karl, no_xml, null_lock, using_
   exename = test_udp
   
   Documentation_Files {
-  }
-
-  Build_Files {
-    Tests.mpc
   }
 
   Header_Files {
@@ -1301,10 +1065,6 @@ project (Test_Registry) : using_madara, using_ace, no_karl, no_xml, null_lock, u
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1320,10 +1080,6 @@ project (Test_Multicast) : using_madara, using_ace, no_karl, no_xml, null_lock, 
   exename = test_multicast
   
   Documentation_Files {
-  }
-
-  Build_Files {
-    Tests.mpc
   }
 
   Header_Files {
@@ -1344,10 +1100,6 @@ project (Test_TestZMQ) : using_madara, using_ace, no_karl, no_xml, null_lock, us
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1364,10 +1116,6 @@ project (Test_Basic_ZMQ) : using_madara, using_ace, no_karl, no_xml, null_lock, 
   exename = test_basic_zmq
   
   Documentation_Files {
-  }
-
-  Build_Files {
-    Tests.mpc
   }
 
   Header_Files {
@@ -1388,10 +1136,6 @@ project (Test_Multicast_SSL) : using_madara, using_ssl, using_ace, no_karl, no_x
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
@@ -1409,10 +1153,6 @@ project (Test_Broadcast) : using_madara, using_ace, no_karl, no_xml, null_lock, 
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -1431,10 +1171,6 @@ project (Profile_Architecture) : using_ace, using_madara, no_karl, no_xml, null_
     tests/settings
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -1452,10 +1188,6 @@ project (Test_Utility) : using_ace, using_madara, no_karl, no_xml, null_lock, us
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -1473,10 +1205,6 @@ project (Test_Peroidic_Wait) : using_ace, using_madara, no_karl, no_xml, null_lo
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -1494,10 +1222,6 @@ project (Test_Primitive_Types) : using_ace, using_madara, no_karl, no_xml, null_
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -1515,10 +1239,6 @@ project (Test_Safe_Bool) : using_ace, using_madara, no_karl, no_xml, null_lock, 
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -1536,10 +1256,6 @@ project (Test_Logging) : using_ace, using_madara, no_karl, no_xml, null_lock, us
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -1557,10 +1273,6 @@ project (Test_RCWThread) : using_ace, using_madara, no_karl, no_xml, null_lock, 
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -1578,10 +1290,6 @@ project (Test_RCW_Transaction) : using_ace, using_madara, no_karl, no_xml, null_
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
     tests/rcw/test.h
   }
@@ -1600,10 +1308,6 @@ project (Test_RCW_Tracked) : using_ace, using_madara, no_karl, no_xml, null_lock
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
     tests/rcw/test.h
   }
@@ -1622,10 +1326,6 @@ project (Test_RCW_Custom) : using_ace, using_madara, no_karl, no_xml, null_lock,
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
     tests/rcw/test.h
   }
@@ -1644,10 +1344,6 @@ project (Test_RCW_ProdCon) : using_ace, using_madara, no_karl, no_xml, null_lock
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
     tests/rcw/test.h
   }
@@ -1666,10 +1362,6 @@ project (Test_Save_Modifieds) : using_ace, using_madara, no_karl, no_xml, null_l
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -1687,10 +1379,6 @@ project (Test_Shared_Record) : using_ace, using_madara, no_karl, no_xml, null_lo
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -1708,10 +1396,6 @@ project (Test_Simtime) : using_ace, using_madara, no_karl, no_xml, null_lock, us
   Documentation_Files {
   }
 
-  Build_Files {
-    Tests.mpc
-  }
-                                                                
   Header_Files {
   }
 

@@ -864,4 +864,16 @@ bool wait_false (
   return last_value.is_true ();
 }
 
+std::pair<std::string, uint16_t> parse_address (std::string addr)
+{
+  size_t colon_pos = addr.find(':');
+  if (colon_pos == std::string::npos || colon_pos >= addr.size() - 1) {
+    return {addr, 0};
+  }
+
+  int16_t port = std::atoi(addr.c_str() + colon_pos + 1);
+  addr.resize(colon_pos);
+  return {std::move(addr), port};
+}
+
 } }

@@ -18,11 +18,6 @@ project (MADARA_Python) : using_madara, using_ace, port/python/using_python {
     port/python
   }
 
-  Build_Files {
-    Madara_Python.mpc
-    port/python/using_python.mpb
-  }
-
   Header_Files {
     port/python/src
   }

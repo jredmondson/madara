@@ -1,59 +1,40 @@
 
-project (Madara) : install, using_ace, using_splice, splice_transport, using_ndds, using_boost, madara_zmq, using_ssl, ssl_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, using_simtime {
+project (Madara) : using_ace, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, using_simtime, debug_build, boost_system {
 
   sharedname = MADARA
   dynamicflags += MADARA_BUILD_DLL MADARA_LOGGER_BUILD_DLL
   libout = $(MADARA_ROOT)/lib
-  
+
+  //libpaths += /home/dskyle/boost_1_62_0/stage/lib
+  //includes += /home/dskyle/boost_1_62_0
+  //libpaths += /usr/lib/x86_64-linux-gnu
+  libs += boost_system
+
   prebuild = perl $(MADARA_ROOT)/bin/generate_version_include.pl
-  
+
+  macros += _MADARA_USING_BOOST_
+
   specific(prop:microsoft) {
     DisableSpecificWarnings += 4005
   }
- 
-  includes += $(MADARA_ROOT)/include
-  libpaths += $(MADARA_ROOT)/lib 
 
-  verbatim (gnuace, local) {
-    CPPFLAGS += -g -Og -std=c++11 -Wall
+  specific(prop:make) {
+    postbuild += ln -sf $(MADARA_ROOT)/lib/libMADARA.so $(MADARA_ROOT)/.
   }
-  
+
+  includes += $(MADARA_ROOT)/include
+  libpaths += $(MADARA_ROOT)/lib
+
+  verbatim (make, local, true) {
+    CPPFLAGS := -std=c++11 -Wall -Wextra -pedantic -O3 $(CPPFLAGS)
+   // -isystem /home/dskyle/boost_1_62_0
+  }
+
   Documentation_Files {
     INSTALL.txt
     LICENSE.txt
     README.txt
     VERSION.txt
-  }
-
-  Build_Files {
-    $(MADARA_ROOT)/Madara.mwc
-    $(MADARA_ROOT)/default.features
-    doxygen_help_gen.mpb
-    Madara.mpc
-    Splice_DDS_Transport.mpc
-    NDDS_Transport.mpc
-    splice_transport.mpb
-    ndds_transport.mpb
-    python_callbacks.mpb
-    madara_zmq.mpb
-    null_lock.mpb
-    stl_lock.mpb
-    using_ace.mpb
-    using_boost.mpb
-    using_ssl.mpb
-    ssl_filters.mpb
-    using_madara.mpb
-    no_karl.mpb
-    no_xml.mpb
-    port/python/using_python.mpb
-    using_splice.mpb
-    using_splice_idl.mpb
-    using_ndds.mpb
-    using_ndds_idl.mpb
-    using_zmq.mpb
-    port/java/using_java.mpb
-    port/java/using_android.mpb
-    port/java/using_openjdk.mpb
   }
 
   Inline_Files {
@@ -86,7 +67,6 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/knowledge/containers
     include/madara/logger
     include/madara/threads
-    include/madara/transport/tcp
     include/madara/transport/udp
     include/madara/transport/multicast
     include/madara/transport/broadcast
@@ -99,6 +79,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/transport/TransportSettings.cpp
     include/madara/transport/TransportContext.cpp
     include/madara/transport/Transport.cpp
+    include/madara/transport/BasicASIOTransport.cpp
     include/madara/utility/Utility.cpp
     include/madara/utility/SimTime.cpp
     include/madara/utility/Refcounter.cpp
@@ -112,7 +93,6 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/knowledge/containers
     include/madara/logger
     include/madara/threads
-    include/madara/transport/tcp
     include/madara/transport/udp
     include/madara/transport/multicast
     include/madara/transport/broadcast
@@ -125,6 +105,7 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
     include/madara/transport/QoSTransportSettings.h
     include/madara/transport/TransportSettings.h
     include/madara/transport/TransportContext.h
+    include/madara/transport/BasicASIOTransport.h
     include/madara/utility
     include/madara/MADARA_export.h
     include/madara/LockType.h
@@ -136,18 +117,10 @@ project (Madara) : install, using_ace, using_splice, splice_transport, using_ndd
 project (Madara_Version) : using_madara, using_ace {
   exeout = $(MADARA_ROOT)/bin
   exename = madara_version
-
-  verbatim (gnuace, local) {
-    CPPFLAGS += -std=c++11 -Wall
-  }
   
   Documentation_Files {
   }
   
-  Build_Files {
-    Madara.mpc
-  }
-
   Header_Files {
   }
 
@@ -173,10 +146,6 @@ project (Madara_Jar) : using_madara, using_ace {
     port/java/src/com/madara/containers/*.java
   }
   
-  Build_Files {
-    Madara.mpc
-  }
-
   Header_Files {
   }
 
@@ -188,18 +157,12 @@ project (Madara_Jar) : using_madara, using_ace {
 project (KaRL) : using_ace, using_madara, no_karl {
   exeout = $(MADARA_ROOT)/bin
   exename = karl
-  
-  verbatim (gnuace, local) {
-    CPPFLAGS += -std=c++11 -Wall
-  }
+
+  after = Madara
   
   Documentation_Files {
   }
 
-  Build_Files {
-    Madara.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -212,17 +175,9 @@ project (Madara_Registry) : using_ace, using_madara, no_karl {
   exeout = $(MADARA_ROOT)/bin
   exename = madara_registry
   
-  verbatim (gnuace, local) {
-    CPPFLAGS += -std=c++11 -Wall
-  }
-  
   Documentation_Files {
   }
 
-  Build_Files {
-    Madara.mpc
-  }
-                                                                
   Header_Files {
   }
 
@@ -236,17 +191,9 @@ project (MPGen) : using_ace, using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = mpgen
   
-  verbatim (gnuace, local) {
-    CPPFLAGS += -std=c++11 -Wall
-  }
-  
   Documentation_Files {
   }
 
-  Build_Files {
-    Madara.mpc
-  }
-                                                                
   Header_Files {
   }
 

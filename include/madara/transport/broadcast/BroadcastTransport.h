@@ -13,7 +13,7 @@
 
 #include "madara/MADARA_export.h"
 #include "madara/utility/ScopedArray.h"
-#include "madara/transport/broadcast/BroadcastTransportReadThread.h"
+#include "madara/transport/udp/UdpTransport.h"
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/transport/BandwidthMonitor.h"
 #include "ace/SOCK_Dgram_Bcast.h"
@@ -28,7 +28,7 @@ namespace madara
   {
     /**
      * @class BroadcastTransport
-     * @brief Multicast-based transport for knowledge. This transport currently
+     * @brief Broadcast-based transport for knowledge. This transport currently
      * supports the following transport settings:<br />
      *        1) a single host:port pairing<br />
      *        2) the reduced message header<br />
@@ -38,71 +38,13 @@ namespace madara
      *        6) multi-assignment of records<br />
      *        7) rebroadcasting<br />
      **/
-    class MADARA_Export BroadcastTransport : public Base
+    class MADARA_Export BroadcastTransport : public UdpTransport
     {
     public:
-      /**
-       * Constructor
-       * @param   id   unique identifer - usually a combination of host:port
-       * @param   context  knowledge context
-       * @param   config   transport configuration settings
-       * @param   launch_transport  whether or not to launch this transport
-       **/
-      BroadcastTransport (const std::string & id, 
-        madara::knowledge::ThreadSafeContext & context, 
-        TransportSettings & config, bool launch_transport);
+      using UdpTransport::UdpTransport;
 
-      /**
-       * Destructor
-       **/
-      virtual ~BroadcastTransport ();
-
-      /**
-       * Sends a list of knowledge updates to listeners
-       * @param   updates listing of all updates that must be sent
-       * @return  result of write operation or -1 if we are shutting down
-       **/
-      long send_data (const madara::knowledge::VariableReferenceMap & updates) override;
-      
-      /**
-       * Closes the transport
-       **/
-      void close (void) override;
-      
-      /**
-       * Accesses reliability setting
-       * @return  whether we are using reliable dissemination or not
-       **/
-      int reliability (void) const;
-      
-      /**
-       * Sets the reliability setting
-       * @return  the changed setting
-       **/
-      int reliability (const int & setting);
-
-      /**
-       * Initializes the transport
-       * @return  0 if success
-       **/
-      int setup (void) override;
-
-    private:
-      
-      /// knowledge base for threads to use
-      knowledge::KnowledgeBase         knowledge_;
-      
-      /// threads for reading knowledge updates
-      threads::Threader                        read_threads_;
-
-      /// holds all multicast addresses we are sending to
-      std::vector <ACE_INET_Addr>               addresses_;
-
-      /// holds splitters for knowledge multiassignment expression for speed
-      std::vector <std::string>                 splitters_;
-
-      /// underlying socket for sending
-      ACE_SOCK_Dgram_Bcast                      socket_;
+    protected:
+      bool pre_send_buffer (size_t addr_index) override { return addr_index == 0; }
     };
   }
 }

@@ -6,7 +6,7 @@ feature (opensplice) {
     DisableSpecificWarnings += 4146
   }
  
-  verbatim(gnuace,macros) {
+  verbatim(make,macros) {
     override no_hidden_visibility=1
   }
  

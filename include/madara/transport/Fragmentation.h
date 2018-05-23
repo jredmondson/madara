@@ -179,7 +179,7 @@ namespace madara
      * @param  map      map containing resulting fragments
      **/
     MADARA_Export void frag (
-      char * source, uint32_t fragment_size, FragmentMap & map);
+      const char * source, uint32_t fragment_size, FragmentMap & map);
     
     /**
      * Breaks a large packet into smaller packets

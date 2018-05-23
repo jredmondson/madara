@@ -513,6 +513,7 @@ namespace madara
     template <typename T>
     T bitmask_remove (T mask, T values);
 
+    std::pair<std::string, uint16_t> parse_address (std::string addr);
   }
 }
 

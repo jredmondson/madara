@@ -18,116 +18,32 @@
 #include "madara/expression/ExpressionTree.h"
 #include "madara/transport/Transport.h"
 #include "madara/transport/MessageHeader.h"
+#include "madara/transport/udp/UdpTransport.h"
 #include "madara/threads/BaseThread.h"
-
-#include "ace/Task.h"
-#include "ace/Mutex.h"
-#include "ace/Barrier.h"
-#include "ace/Atomic_Op_T.h"
-#include "ace/Thread_Mutex.h"
-#include "ace/SOCK_Dgram_Mcast.h"
-
-#include "ace/Synch.h"
+#include "madara/boost.h"
  
 namespace madara
 {
   namespace transport
   {
+    namespace asio = boost::asio;
+    namespace ip = boost::asio::ip;
+    using udp = boost::asio::ip::udp;
+
     /**
      * @class MulticastTransportReadThread
      * @brief Thread for reading knowledge updates through a Multicast
      *        datagram socket
      **/
-    class MulticastTransportReadThread : public threads::BaseThread
+    class MulticastTransportReadThread : public UdpTransportReadThread
     {
     public:
-      /**
-       * Constructor
-       * @param    settings   Transport settings
-       * @param    id      host:port identifier of this process, to allow for 
-       *                   rejection of duplicates
-       * @param    address    the multicast address we will read from
-       * @param    write_socket    socket for sending
-       * @param    read_socket    socket for receiving
-       * @param    send_monitor    bandwidth monitor for enforcing send limits
-       * @param    receive_monitor    bandwidth monitor for enforcing
-       *                              receive limits
-       * @param    packet_scheduler scheduler for mimicking network conditions
-       **/
-      MulticastTransportReadThread (
-        const TransportSettings & settings,
-        const std::string & id,
-        const ACE_INET_Addr & address,
-        ACE_SOCK_Dgram & write_socket,
-        ACE_SOCK_Dgram_Mcast & read_socket,
-        BandwidthMonitor & send_monitor,
-        BandwidthMonitor & receive_monitor,
-        PacketScheduler & packet_scheduler);
-     
-      /**
-       * Initializes MADARA context-related items
-       * @param   knowledge   context for querying current program state
-       **/
-      void init (knowledge::KnowledgeBase & knowledge);
+      using UdpTransportReadThread::UdpTransportReadThread;
 
       /**
        * Cleanup function called by thread manager
        **/
-      void cleanup (void);
-
-      /**
-       * The main loop internals for the read thread
-       **/
-      void run (void);
-
-      /**
-       * Sends a rebroadcast packet.
-       * @param  print_prefix     prefix to include before every log message,
-       *                          e.g., "MyTransport::svc"
-       * @param   header   header for the rebroadcasted packet
-       * @param   records  records to rebroadcast (already filtered for
-       *                   rebroadcast)
-       **/
-      void rebroadcast (
-        const char * print_prefix,
-        MessageHeader * header,
-        const knowledge::KnowledgeMap& records);
-
-    private:
-      /// quality-of-service transport settings
-      const QoSTransportSettings  settings_;
-
-      /// host:port identifier of this process
-      const std::string          id_;
-
-      /// knowledge context
-      knowledge::ThreadSafeContext * context_;
-      
-      /// The multicast address we are subscribing to
-      ACE_INET_Addr                      address_;
-
-      /// The multicast socket we are reading from
-      ACE_SOCK_Dgram_Mcast  &            read_socket_;
-      
-      /// underlying socket for sending
-      ACE_SOCK_Dgram      &              write_socket_;
-      
-#ifndef _MADARA_NO_KARL_
-      /// data received rules, defined in Transport settings
-      madara::knowledge::CompiledExpression  on_data_received_;
-#endif // _MADARA_NO_KARL_
-
-      /// buffer for receiving
-      madara::utility::ScopedArray <char>      buffer_;
-      
-      /// monitor for sending bandwidth usage
-      BandwidthMonitor   &   send_monitor_;
-      
-      /// monitor for receiving bandwidth usage
-      BandwidthMonitor   &   receive_monitor_;
-
-      /// scheduler for mimicking target network conditions
-      PacketScheduler    &   packet_scheduler_;
+      void cleanup (void) override;
     };
   }
 }

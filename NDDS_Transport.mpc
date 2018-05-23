@@ -4,12 +4,4 @@ project (NDDS_Transport_IDL) : using_ndds_idl, build_files {
   requires += ndds
 
   custom_only = 1
-  
-  Build_Files {
-    $(MADARA_ROOT)/default.features
-    NDDS_Transport.mpc
-    using_ndds.mpb
-    using_ndds_idl.mpb
-  }
-  
 }

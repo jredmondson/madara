@@ -553,7 +553,7 @@ madara::transport::FragmentMessageHeader::operator= (
 
 
 void
-madara::transport::frag (char * source,
+madara::transport::frag (const char * source,
   uint32_t fragment_size, FragmentMap & map)
 {
   if (fragment_size > 0)

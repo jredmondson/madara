@@ -40,8 +40,6 @@ namespace madara
 {
   namespace transport
   {
-    typedef    ACE_Condition <ACE_Thread_Mutex>    Condition;
-
     /**
      * Base class from which all transports must be derived.
      * To support knowledge updates, only the send_multiassignment method
@@ -160,11 +158,9 @@ namespace madara
       volatile bool is_valid_;
       volatile bool shutting_down_;
       HostsVector hosts;
-      ACE_Thread_Mutex mutex_;
-      Condition valid_setup_;
 
       /// host:port identifier of this process
-      const std::string                               id_;
+      const std::string id_;
 
       QoSTransportSettings settings_;
 
@@ -178,16 +174,16 @@ namespace madara
 #endif // _MADARA_NO_KARL_
 
       /// monitor for sending bandwidth usage
-      BandwidthMonitor       send_monitor_;
+      BandwidthMonitor send_monitor_;
       
       /// monitor for receiving bandwidth usage
-      BandwidthMonitor       receive_monitor_;
+      BandwidthMonitor receive_monitor_;
 
       /// scheduler for dropping packets to simulate network issues
-      PacketScheduler        packet_scheduler_;
+      PacketScheduler packet_scheduler_;
 
       /// buffer for sending
-      madara::utility::ScopedArray <char>      buffer_;
+      madara::utility::ScopedArray<char> buffer_;
     };
 
     /**

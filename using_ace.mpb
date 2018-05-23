@@ -1,4 +1,9 @@
-project : acelib {
+project {
+  includes += $(ACE_ROOT)
+  libpaths += $(ACE_ROOT)/lib
+
+  libs += ACE
+
   specific(prop:microsoft) {
     DisableSpecificWarnings += 4244 4996
   }

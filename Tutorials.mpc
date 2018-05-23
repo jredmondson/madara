@@ -10,10 +10,6 @@ project (Tutorial_Hello_World) : using_madara, using_ace {
     tutorials
   }
 
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Header_Files {
   }
 
@@ -31,10 +27,6 @@ project (Tutorial_Bad_Career_Counsellor) : using_madara, using_ace {
   
   Documentation_Files {
     tutorials
-  }
-
-  Build_Files {
-    Tutorials.mpc
   }
 
   Header_Files {
@@ -56,10 +48,6 @@ project (Tutorial_System_Calls) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Header_Files {
   }
 
@@ -79,10 +67,6 @@ project (Tutorial_Counting_Agents) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Header_Files {
   }
 
@@ -102,10 +86,6 @@ project (Tutorial_Packet_Aggregation) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Header_Files {
   }
 
@@ -126,10 +106,6 @@ project (Tutorial_Files) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Header_Files {
   }
 
@@ -149,10 +125,6 @@ project (Tutorial_Integer_Types) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Header_Files {
   }
 
@@ -172,10 +144,6 @@ project (Tutorial_Fractions) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Header_Files {
   }
 
@@ -195,10 +163,6 @@ project (Tutorial_Functions) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Header_Files {
   }
 
@@ -218,10 +182,6 @@ project (Tutorial_Controlling_Types) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Header_Files {
   }
 
@@ -240,10 +200,6 @@ project (Tutorial_Send_Limit_Bandwidth_Filtering) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Source_Files {
     tutorials/advanced/bandwidth_filtering_send_limit.cpp
   }
@@ -259,10 +215,6 @@ project (Tutorial_Total_Limit_Bandwidth_Filtering) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Source_Files {
     tutorials/advanced/bandwidth_filtering_total_limit.cpp
   }
@@ -278,10 +230,6 @@ project (Tutorial_Bandwidth_Filtering) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Source_Files {
     tutorials/advanced/bandwidth_filtering.cpp
   }
@@ -298,10 +246,6 @@ project (Tutorial_Deadline_Filtering) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Source_Files {
     tutorials/advanced/deadline_filtering.cpp
   }
@@ -317,10 +261,6 @@ project (Tutorial_Adding_Events) : using_madara, using_ace {
     tutorials
   }
   
-  Build_Files {
-    Tutorials.mpc
-  }
-
   Source_Files {
     tutorials/timed_executor/adding_events.cpp
   }

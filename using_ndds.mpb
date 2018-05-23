@@ -9,7 +9,7 @@ feature (ndds) : ndds_ts_defaults {
     macros += RTI_UNIX
   }
 
-  verbatim(gnuace, circuit) {
+  verbatim(make, circuit) {
     ifeq ($(buildbits),64)
     FLAGS_C_CC += -DRTI_64BIT
     endif

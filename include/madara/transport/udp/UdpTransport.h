@@ -4,21 +4,24 @@
 #include <string>
 
 #include "madara/MADARA_export.h"
-#include "madara/transport/udp/UdpTransportReadThread.h"
+#include "madara/transport/BasicASIOTransport.h"
 #include "madara/transport/Transport.h"
 #include "madara/threads/Threader.h"
 
 #include <string>
 #include <map>
 
-#include "ace/INET_Addr.h"
-#include "ace/SOCK_Dgram.h"
+#include "madara/boost.h"
 
 
 namespace madara
 {
   namespace transport
   {
+    namespace asio = boost::asio;
+    namespace ip = boost::asio::ip;
+    using udp = boost::asio::ip::udp;
+
     /**
      * @class UdpTransport
      * @brief UDP-based transport for knowledge. This transport currently
@@ -31,35 +34,24 @@ namespace madara
      *        6) multi-assignment of records<br />
      *        7) rebroadcasting<br />
      **/
-    class MADARA_Export UdpTransport : public Base
+    class MADARA_Export UdpTransport : public BasicASIOTransport
     {
     public:
-  
-      enum {
-        RELIABLE = 0
-      };
-
-      enum {
-        ERROR_UDP_NOT_STARTED = -1,
-      };
-
-      static const int PROFILES = 1;
-
-      /**
-       * Constructor
-       * @param   id   unique identifer - usually a combination of host:port
-       * @param   context  knowledge context
-       * @param   config   transport configuration settings
-       * @param   launch_transport  whether or not to launch this transport
-       **/
-      UdpTransport (const std::string & id, 
-        madara::knowledge::ThreadSafeContext & context, 
+      UdpTransport (const std::string & id,
+        madara::knowledge::ThreadSafeContext & context,
         TransportSettings & config, bool launch_transport);
 
       /**
-       * Destructor
+       * Accesses reliability setting
+       * @return  whether we are using reliable dissemination or not
        **/
-      virtual ~UdpTransport ();
+      int reliability (void) const;
+
+      /**
+       * Sets the reliability setting
+       * @return  the changed setting
+       **/
+      int reliability (const int & setting);
 
       /**
        * Sends a list of knowledge updates to listeners
@@ -67,40 +59,21 @@ namespace madara
        * @return  result of write operation or -1 if we are shutting down
        **/
       long send_data (const madara::knowledge::VariableReferenceMap & updates) override;
-    
-      /**
-       * Accesses reliability setting. If this returns zero, it doesn't
-       * make much sense.
-       * @return  whether we are using reliable dissemination or not
-       **/
-      int reliability (void) const;
 
-      /**
-       * Accesses reliability setting. If this returns zero, it doesn't
-       * make much sense.
-       * @return  whether we are using reliable dissemination or not
-       **/
-      int reliability (const int & setting);
-      long read (void);
-      void close (void) override;
-      int setup (void) override;
     protected:
-    private:
-      /// knowledge base for threads to use
-      knowledge::KnowledgeBase          knowledge_;
-      
-      /// threads for reading knowledge updates
-      threads::Threader                         read_threads_;
-      
-      std::map <std::string, ACE_INET_Addr>     addresses_;
-      
-      /// underlying socket for sending
-      ACE_SOCK_Dgram                            write_socket_;
+      int setup_read_socket () override;
+      int setup_write_socket () override;
+      int setup_read_thread (double hertz, const std::string &name) override;
 
-      /// The socket we are reading from
-      ACE_SOCK_Dgram                            read_socket_;
+      long send_message (const char *buf, size_t size);
+      long send_buffer (const udp::endpoint &target, const char *buf, size_t size);
+      virtual bool pre_send_buffer (size_t addr_index) { return addr_index != 0; }
+
+      friend class UdpTransportReadThread;
     };
   }
 }
+
+#include "madara/transport/udp/UdpTransportReadThread.h"
 
 #endif // _MADARA_UDP_TRANSPORT_H_
