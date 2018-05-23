@@ -267,7 +267,7 @@ madara::transport::NddsTransport::setup (void)
       DDS_BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS;
   }
 
-  listener_ = new NDDSListener (settings_, id_, context_,
+  listener_ = new NddsListener (settings_, id_, context_,
     send_monitor_, receive_monitor_, packet_scheduler_);
 
   // create a reader for the topic

@@ -17,10 +17,10 @@ namespace madara
   namespace transport
   {
     /**
-     * @class NDDSListener
+     * @class NddsListener
      * @brief Container for NDDS callbacks
      **/
-    class NDDSListener: public DDSDataReaderListener
+    class NddsListener: public DDSDataReaderListener
     {
     public:
       /**
@@ -33,7 +33,7 @@ namespace madara
        *                              receive limits
        * @param    packet_scheduler scheduler for mimicking network conditions
        **/
-      NDDSListener(
+      NddsListener(
         const TransportSettings & settings, const std::string & id,
         knowledge::ThreadSafeContext & context,
         BandwidthMonitor & send_monitor,
@@ -43,12 +43,12 @@ namespace madara
       /**
        * Copy constructor
        **/
-      NDDSListener(const NDDSListener &ref);
+      NddsListener(const NddsListener &ref);
 
       /**
        * Destructor
        **/
-      ~NDDSListener();
+      ~NddsListener();
 
       /**
        * Handles the case where a subscription has been matched
@@ -101,7 +101,7 @@ namespace madara
 
       /// scheduler for mimicking target network conditions
       PacketScheduler    &   packet_scheduler_;
-    };  // End of class NDDSListener
+    };  // End of class NddsListener
   }
 }
 

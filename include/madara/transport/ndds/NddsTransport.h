@@ -83,7 +83,7 @@ namespace madara
       DDSDataReader *   data_reader_;
       DDSDataWriter *   data_writer_;
       Ndds_Knowledge_UpdateDataWriter * update_writer_;
-      NDDSListener * listener_;
+      NddsListener * listener_;
 
     };
   }
