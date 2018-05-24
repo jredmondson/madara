@@ -54,7 +54,7 @@ madara::expression::SystemCallFragment::prune (bool & can_change)
 
   if (nodes_.size () != 3)
   {
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call fragment"
       " requires three arguments, e.g."
       " #fragment ('hello world', 0, 4) will return 'hello'\n");

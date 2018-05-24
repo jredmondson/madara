@@ -53,7 +53,7 @@ madara::expression::SystemCallLogLevel::prune (bool & can_change)
   
   if (nodes_.size () > 1)
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call log_level requires 0 or 1 arguments,"
       " e.g., log_level (10) or log_level ()--which returns the log level\n");
   }

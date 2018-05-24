@@ -56,7 +56,7 @@ madara::expression::SystemCallSetClock::prune (bool & can_change)
 
   if (nodes_.size () > 2 || nodes_.size () == 0)
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call set_clock requires 1-2 arguments, "
       "e.g., set_clock (5) or set_clock (var, 5)\n");
   }

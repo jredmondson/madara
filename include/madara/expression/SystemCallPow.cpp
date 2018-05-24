@@ -61,7 +61,7 @@ madara::expression::SystemCallPow::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call pow requires 2 arguments,"
       "e.g., #pow (4,2), which would return 16.\n");
   }

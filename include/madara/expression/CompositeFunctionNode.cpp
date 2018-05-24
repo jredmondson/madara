@@ -16,6 +16,7 @@
 
 #include "madara/knowledge/Functions.h"
 #include "madara/knowledge/ExternFunctionVariables.h"
+#include "madara/expression/KarlException.h"
 
 #ifdef _MADARA_PYTHON_CALLBACKS_
 
@@ -207,6 +208,17 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
           boost::ref (args), boost::ref (variables));
 #endif
 
+  else if (function_->is_uninitialized ())
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "CompositeFunctionNode:"
+      "KARL RUNTIME EXCEPTION: "
+      "Attempt at calling an undefined function\n");
+
+    throw KarlException ("CompositeFunctionNode:"
+      "KARL RUNTIME EXCEPTION: "
+      "Attempt at calling an undefined function");
+  }
   // otherwise, assume it is a MADARA function
   else
   {

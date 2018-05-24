@@ -53,7 +53,7 @@ madara::expression::SystemCallExpandStatement::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call expand_statement requires 1 argument,"
       "e.g., #expand_statement ('var{.i}')\n");
   }
@@ -82,7 +82,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call expand_statement requires 1 argument,"
       "e.g., #expand_statement ('var{.i}').\n");
   }

@@ -54,7 +54,7 @@ madara::expression::CompositeModulusNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::CompositeModulusNode: "
       "KARL COMPILE ERROR: Modulus has no left expression\n");
 
@@ -73,7 +73,7 @@ madara::expression::CompositeModulusNode::prune (bool & can_change)
 
       if (right_value == madara::knowledge::KnowledgeRecord::Integer (0))
       {
-        madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+        madara_logger_ptr_log (logger_, logger::LOG_ERROR,
           "KARL COMPILE ERROR: Modulus results in permanent divide by zero\n");
 
         throw KarlException ("madara::expression::CompositeModulusNode: "
@@ -84,7 +84,7 @@ madara::expression::CompositeModulusNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::CompositeModulusNode: "
       "KARL COMPILE ERROR: "
       "Modulus has no right expression (divide by zero)\n");

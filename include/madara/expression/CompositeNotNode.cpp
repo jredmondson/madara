@@ -52,7 +52,7 @@ madara::expression::CompositeNotNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::CompositeNotNode: "
       "KARL COMPILE ERROR: "
       "Logical-not has no right expression\n");
