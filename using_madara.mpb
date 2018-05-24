@@ -6,17 +6,10 @@ project : debug_build {
 
   libs += MADARA
 
-  //includes += /home/dskyle/boost_1_62_0/
-  //libpaths += /home/dskyle/boost_1_62_0/stage/lib
-  //libpaths += /usr/lib/x86_64-linux-gnu
   libs += boost_system
 
   verbatim (make, local, true) {
-    CPPFLAGS := -std=c++11 -Wall $(CPPFLAGS)
-   // -isystem /home/dskyle/boost_1_62_0
-  }
-
-  Source_Files {
-    buildflags += -isystem /home/dskyle/boost_1_62_0
+    CPPFLAGS := -std=c++11 -Wall -Wextra -Wnon-virtual-dtor \
+      -Woverloaded-virtual -O3 $(CPPFLAGS)
   }
 }

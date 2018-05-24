@@ -5,7 +5,6 @@
 
 #include "madara/MADARA_export.h"
 #include "madara/transport/udp/UdpTransport.h"
-#include "madara/transport/udp/UdpRegistryClientReadThread.h"
 #include "madara/transport/Transport.h"
 #include "madara/threads/Threader.h"
 #include "madara/knowledge/containers/Map.h"

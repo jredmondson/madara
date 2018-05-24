@@ -1,3 +1,4 @@
+#if 0
 
 #include <string>
 #include <vector>
@@ -534,4 +535,13 @@ int main (int argc, char ** argv)
   delete receiver;
 
   return 0;
+}
+
+#endif
+
+#include <iostream>
+
+int main () {
+  std::cerr << "This test not currently supported" << std::endl;
+  return -1;
 }

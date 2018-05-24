@@ -1,5 +1,5 @@
 
-project (Tutorial_Hello_World) : using_madara, using_ace {
+project (Tutorial_Hello_World) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_hello_world
   
@@ -18,7 +18,7 @@ project (Tutorial_Hello_World) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_Bad_Career_Counsellor) : using_madara, using_ace {
+project (Tutorial_Bad_Career_Counsellor) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_bad_career_counsellor
   
@@ -37,7 +37,7 @@ project (Tutorial_Bad_Career_Counsellor) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_System_Calls) : using_madara, using_ace {
+project (Tutorial_System_Calls) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = system_calls
   
@@ -56,7 +56,7 @@ project (Tutorial_System_Calls) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_Counting_Agents) : using_madara, using_ace {
+project (Tutorial_Counting_Agents) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_counting_agents
   
@@ -75,7 +75,7 @@ project (Tutorial_Counting_Agents) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_Packet_Aggregation) : using_madara, using_ace {
+project (Tutorial_Packet_Aggregation) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_packet_aggregation
   
@@ -95,7 +95,7 @@ project (Tutorial_Packet_Aggregation) : using_madara, using_ace {
 }
 
 
-project (Tutorial_Files) : using_madara, using_ace {
+project (Tutorial_Files) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_files
   
@@ -114,7 +114,7 @@ project (Tutorial_Files) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_Integer_Types) : using_madara, using_ace {
+project (Tutorial_Integer_Types) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_integer_types
   
@@ -133,7 +133,7 @@ project (Tutorial_Integer_Types) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_Fractions) : using_madara, using_ace {
+project (Tutorial_Fractions) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_fractions
   
@@ -152,7 +152,7 @@ project (Tutorial_Fractions) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_Functions) : using_madara, using_ace {
+project (Tutorial_Functions) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_functions
   
@@ -171,7 +171,7 @@ project (Tutorial_Functions) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_Controlling_Types) : using_madara, using_ace {
+project (Tutorial_Controlling_Types) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_controlling_types
   
@@ -190,7 +190,7 @@ project (Tutorial_Controlling_Types) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_Send_Limit_Bandwidth_Filtering) : using_madara, using_ace {
+project (Tutorial_Send_Limit_Bandwidth_Filtering) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_bandwidth_filtering_send_limit
   
@@ -205,7 +205,7 @@ project (Tutorial_Send_Limit_Bandwidth_Filtering) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_Total_Limit_Bandwidth_Filtering) : using_madara, using_ace {
+project (Tutorial_Total_Limit_Bandwidth_Filtering) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_bandwidth_filtering_total_limit
   
@@ -220,7 +220,7 @@ project (Tutorial_Total_Limit_Bandwidth_Filtering) : using_madara, using_ace {
   }
 }
 
-project (Tutorial_Bandwidth_Filtering) : using_madara, using_ace {
+project (Tutorial_Bandwidth_Filtering) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_bandwidth_filtering
   
@@ -236,7 +236,7 @@ project (Tutorial_Bandwidth_Filtering) : using_madara, using_ace {
 }
 
 
-project (Tutorial_Deadline_Filtering) : using_madara, using_ace {
+project (Tutorial_Deadline_Filtering) : using_madara {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_deadline_filtering
   

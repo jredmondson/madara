@@ -1144,46 +1144,4 @@ long Base::prep_send (
   return size;
 }
 
-long
-Base::prep_send (const knowledge::KnowledgeRecords & orig_updates,
-                 const char * print_prefix)
-{
-  knowledge::VariableReferenceMap vrmap;
-  knowledge::KnowledgeMap kmap;
-
-  for (const auto &cur : orig_updates) {
-    auto iter = kmap.emplace_hint (kmap.end(),
-        std::make_pair(cur.first, *cur.second));
-    vrmap.emplace_hint (vrmap.end(),
-        std::make_pair(iter->first.c_str(), &*iter));
-  }
-
-  return prep_send (vrmap, print_prefix);
-}
-
-long
-Base::send_data (const knowledge::KnowledgeRecords &/*map*/)
-{
-  madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
-    "transport::Base: send_data(KnowledgeRecords) not implemented, "
-    "but was called\n");
-
-  return 0;
-}
-
-long
-Base::send_data (const knowledge::VariableReferenceMap &map)
-{
-  knowledge::KnowledgeRecords records;
-
-  for (const auto &e : map)
-  {
-    records.emplace_hint(records.end(), std::piecewise_construct,
-        std::forward_as_tuple(e.first),
-        std::forward_as_tuple(e.second.get_record_unsafe()));
-  }
-
-  return send_data (records);
-}
-
 } }

@@ -1,4 +1,4 @@
-project : using_splice, using_ace {
+project : using_splice {
   // other base projects take care of everything else
   includes += $(MADARA_ROOT)
   libpaths += $(MADARA_ROOT)/lib

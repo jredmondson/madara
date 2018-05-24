@@ -1,5 +1,4 @@
 #include "madara/transport/udp/UdpRegistryClient.h"
-#include "madara/transport/udp/UdpRegistryClientReadThread.h"
 #include "madara/transport/TransportContext.h"
 
 #include "madara/knowledge/KnowledgeRecord.h"

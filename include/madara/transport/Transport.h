@@ -84,7 +84,7 @@ namespace madara
        * @return   the current transport settings
        **/
       TransportSettings & settings (void);
-      
+
       /**
        * Preps a message for sending
        * @param  orig_updates     updates before send filtering is applied
@@ -100,33 +100,6 @@ namespace madara
         const char * print_prefix);
 
       /**
-       * DEPRECATED use the VariableReferenceMap overload instead. This version
-       * forwards to that, but does expensive copying first.
-       *
-       * Preps a message for sending
-       * @param  orig_updates     updates before send filtering is applied
-       * @param  print_prefix     prefix to include before every log message,
-       *                          e.g., "MyTransport::svc"
-       * @return       -1   Transport is shutting down<br />
-       *               -2   Transport is invalid<br />
-       *               -3   Unable to allocate send buffer<br />
-       *                0   No message to send
-       *               > 0  size of buffered message
-       **/
-      long prep_send (const knowledge::KnowledgeRecords & orig_updates,
-        const char * print_prefix);
-
-      /**
-       * Sends a list of updates to the domain. This function must be
-       * implemented by your transport
-       *
-       * DEPRECATED: implemented the version taking VariableReferenceMap
-       *
-       * @return  result of operation or -1 if we are shutting down
-       **/
-      virtual long send_data (const knowledge::KnowledgeRecords &);
-
-      /**
        * Sends a list of updates to the domain. This function must be
        * implemented by your transport
        *
@@ -136,7 +109,7 @@ namespace madara
        *
        * @return  result of operation or -1 if we are shutting down
        **/
-      virtual long send_data (const knowledge::VariableReferenceMap &);
+      virtual long send_data (const knowledge::VariableReferenceMap &) = 0;
 
 
       /**
@@ -148,7 +121,7 @@ namespace madara
        * Closes this transport
        **/
       virtual void close (void);
-      
+
     protected:
       volatile bool is_valid_;
       volatile bool shutting_down_;
