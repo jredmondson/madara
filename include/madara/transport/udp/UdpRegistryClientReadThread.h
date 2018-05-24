@@ -1,4 +1,4 @@
-#ifndef _MADARA_UDP_REGISTRY_CLIENT_READ_THREAD_H_
+#if 0 //ndef _MADARA_UDP_REGISTRY_CLIENT_READ_THREAD_H_
 #define _MADARA_UDP_REGISTRY_CLIENT_READ_THREAD_H_
 
 #include <string>
@@ -11,16 +11,6 @@
 #include "madara/transport/Transport.h"
 #include "madara/transport/MessageHeader.h"
 #include "madara/threads/BaseThread.h"
-
-#include "ace/Task.h"
-#include "ace/Mutex.h"
-#include "ace/Barrier.h"
-#include "ace/Atomic_Op_T.h"
-#include "ace/Thread_Mutex.h"
-
-#include "ace/Synch.h"
-#include "ace/INET_Addr.h"
-#include "ace/SOCK_Dgram.h"
 
 namespace madara
 {
@@ -39,7 +29,7 @@ namespace madara
        * @param    settings   Transport settings
        * @param    id      host:port identifier of this process, to allow for 
        *                   rejection of duplicates
-       * @param    addresses    the ACE socket addresses to communicate with 
+       * @param    addresses    the socket addresses to communicate with 
        * @param    socket       socket for sending and receiving
        * @param    send_monitor    bandwidth monitor for enforcing send limits
        * @param    receive_monitor    bandwidth monitor for enforcing

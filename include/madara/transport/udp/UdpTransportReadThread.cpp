@@ -2,7 +2,6 @@
 
 #include "madara/utility/Utility.h"
 #include "madara/transport/ReducedMessageHeader.h"
-#include "ace/Time_Value.h"
 
 #include <iostream>
 

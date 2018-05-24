@@ -24,10 +24,6 @@
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/transport/Transport.h"
 #include "madara/expression/Interpreter.h"
-#include "ace/SOCK_Dgram.h"
-
-// declare ACE class so MADARA user will not have to directly link to ACE
-class ACE_SOCK_Acceptor;
 
 namespace madara
 {
@@ -1052,19 +1048,17 @@ namespace madara
       void wait_for_change (void);
 
       /**
-       * Binds to an ephemeral port for unique tie breakers in global ordering.
+       * Creates a random UUID for unique tie breakers in global ordering.
        * Call this function if you want to generate a unique id for a
        * custom transport to use (or a built-in transport if you are creating
        * one outside of the KnowledgeBase.
-       * @param  host   unique host identifier string ("" if requesting a
-       *                generated id.
-       * @return        unique host id (same as host param if host is not "")
+       * @param  host   host identifier string (defaults to local hostname if "")
+       * @return        unique host id
        **/
-      std::string setup_unique_hostport (const std::string & host = "");
+      std::string setup_unique_hostport (std::string host = "");
 
     private:
       ThreadSafeContext                 map_;
-      ACE_SOCK_Dgram                      unique_bind_;
       std::string                         id_;
       transport::QoSTransportSettings   settings_;
 

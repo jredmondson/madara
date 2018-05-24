@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ios>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -9,12 +10,6 @@
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/Utility.h"
 #include "madara/utility/EpochEnforcer.h"
-#include "ace/INET_Addr.h"
-
-//#include "ace/Default_Constants.h"
-//#include "ace/OS_NS_fcntl.h"
-//#include "ace/OS_NS_unistd.h"
-#include "ace/OS_NS_sys_socket.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
 
@@ -348,60 +343,6 @@ merge_hostport_identifier (std::string & key,
   return merge_hostport_identifier (key, host, port_stream.str ());
 }
 
-/// Bind to an ephemeral port
-int 
-bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
-   std::string & host, unsigned short & port, bool increase_until_bound)
-{
-  // start with the initial port provided
-  // increase port each time we don't properly bind
-
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
-    "utility::bind_to_ephemeral_port:" \
-    " creating ACE_INET_Addr\n");
-
-  ACE_INET_Addr addr (port);
-  char hostname[HOST_NAME_MAX + 1] = "";
-
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-    "utility::bind_to_ephemeral_port:" \
-    " getting hostname from ACE_INET_Addr\n");
-
-  addr.get_host_name (hostname, HOST_NAME_MAX);
-  host = hostname;
-
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
-    "utility::bind_to_ephemeral_port:" \
-    " hostname equals %s\n", hostname);
-
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
-    "utility::bind_to_ephemeral_port:" \
-    " calling ACE_OS::socket_init\n");
-
-  ACE_OS::socket_init (2, 2);
-
-  for ( ; port < 65535; ++port, addr.set (port))
-  {
-
-    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
-      "utility::bind_to_ephemeral_port:" \
-      " attempting open on socket %d\n", port);
-
-    if (socket.open (addr, 2, 0, 0) != -1)
-      return 0;
-
-    // failed to get port
-    if (!increase_until_bound)
-      break;
-  }
-
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
-    "utility::bind_to_ephemeral_port:" \
-    " unable to bind to any ephemeral port. Check firewall\n");
-
-  return -1;
-}
-
 std::string
 file_to_string (const std::string & filename)
 {
@@ -613,7 +554,7 @@ ssize_t
 
   try
   {
-    file.open (filename, ios::out | ios::binary);
+    file.open (filename, std::ios::out | std::ios::binary);
     if (file.write ((char *)buffer, size))
     {
       actual = size;

@@ -22,14 +22,6 @@
 #include "ccpp_dds_dcps.h"
 #include "madara/transport/splice/ccpp_SpliceKnowledgeUpdate.h"
 
-#include "ace/Task.h"
-#include "ace/Mutex.h"
-#include "ace/Barrier.h"
-#include "ace/Atomic_Op_T.h"
-#include "ace/Thread_Mutex.h"
-
-#include "ace/Synch.h"
-
 namespace madara
 {
   namespace transport

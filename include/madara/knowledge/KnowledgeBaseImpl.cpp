@@ -8,7 +8,7 @@
 #include "madara/transport/multicast/MulticastTransport.h"
 #include "madara/transport/broadcast/BroadcastTransport.h"
 #include "madara/utility/EpochEnforcer.h"
-
+#include "madara/boost.h"
 
 #include <sstream>
 
@@ -33,37 +33,31 @@ typedef  utility::EpochEnforcer<std::chrono::steady_clock> EpochEnforcer;
 namespace madara { namespace knowledge {
 
 std::string
-KnowledgeBaseImpl::setup_unique_hostport (
-const std::string & host)
+KnowledgeBaseImpl::setup_unique_hostport (std::string host)
 {
   // placeholder for our ip address
-  std::string actual_host (host);
+  std::string actual_host (std::move(host));
 
-  if (host == "")
+  if (actual_host == "")
   {
-    // start from 50k, which is just above the bottom of the user
-    // definable port range (hopefully avoid conflicts with 49152-49999
-    unsigned short port = 50000;
-
-    if (madara::utility::bind_to_ephemeral_port (
-      unique_bind_, actual_host, port)
-      == -1)
-    {
-      madara_logger_log (map_.get_logger (), logger::LOG_ERROR,
-        "KnowledgeBaseImpl::setup_unique_hostport:" \
-        " unable to bind to any ephemeral port\n");
-
-      if (!settings_.never_exit)
-        exit (-1);
+    try {
+      actual_host = boost::asio::ip::host_name();
+    } catch (const std::exception &e) {
+      actual_host = "localhost";
     }
-
-    // we were able to bind to an ephemeral port
-    madara::utility::merge_hostport_identifier (actual_host, actual_host, port);
-
-    madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
-      "KnowledgeBaseImpl::setup_unique_hostport:" \
-      " unique bind to %s\n", actual_host.c_str ());
   }
+
+  if (actual_host.size () > 30) {
+    actual_host.resize (30);
+  }
+
+  actual_host += ":";
+
+  auto uuid = boost::uuids::random_generator{}();
+  auto uuid_str = boost::uuids::to_string(uuid);
+  uuid_str.erase(std::remove(uuid_str.begin(), uuid_str.end(), '-'), uuid_str.end());
+
+  actual_host += uuid_str;
 
   return actual_host;
 }

@@ -21,7 +21,6 @@ inline KnowledgeBaseImpl::KnowledgeBaseImpl ()
   : settings_ ()
 {
   //activate_transport ();
-  // no hope of transporting, so don't setup uniquehostport
 }
 
 inline KnowledgeBaseImpl::KnowledgeBaseImpl (
@@ -60,7 +59,6 @@ inline KnowledgeBaseImpl::KnowledgeBaseImpl (
 inline KnowledgeBaseImpl::~KnowledgeBaseImpl ()
 {
   close_transport ();
-  unique_bind_.close ();
 }
 inline KnowledgeRecord
 KnowledgeBaseImpl::get (

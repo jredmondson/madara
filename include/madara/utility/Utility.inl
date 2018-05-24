@@ -243,7 +243,6 @@ get_time_value (void)
 #ifndef MADARA_FEATURE_SIMTIME
   return Clock::now ();
 #else
-  // @David  I'm assuming all the previous code was just to construct ACE time
   return TimeValue (std::chrono::nanoseconds (SimTime::time ()))
 #endif
 }

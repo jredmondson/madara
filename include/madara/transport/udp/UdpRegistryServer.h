@@ -13,10 +13,6 @@
 #include <string>
 #include <map>
 
-#include "ace/INET_Addr.h"
-#include "ace/SOCK_Dgram.h"
-
-
 namespace madara
 {
   namespace transport

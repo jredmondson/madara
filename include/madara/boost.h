@@ -10,6 +10,9 @@
 
 #define BOOST_SYSTEM_NO_DEPRECATED 1
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/random_generator.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <boost/asio.hpp>
 #include <boost/asio/use_future.hpp>
 

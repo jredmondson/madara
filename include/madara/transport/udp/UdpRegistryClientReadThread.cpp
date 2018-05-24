@@ -1,3 +1,4 @@
+#if 0
 #include "madara/transport/udp/UdpRegistryClientReadThread.h"
 
 #include "madara/utility/Utility.h"
@@ -422,3 +423,4 @@ madara::transport::UdpRegistryClientReadThread::run (void)
     }
   }
 }
+#endif

@@ -2189,7 +2189,6 @@ ThreadSafeContext::load_context (
     "ThreadSafeContext::load_context:" \
     " opening file %s\n", checkpoint_settings.filename.c_str ());
 
-  // using ACE for writing to the destination file
   FILE * file = fopen (checkpoint_settings.filename.c_str (), "rb");
 
   int64_t total_read (0);

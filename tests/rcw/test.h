@@ -79,7 +79,7 @@ static const char *success_str = "[SUCCESS]";
   } while(0)
 
 template<typename T>
-inline ostream &operator<<(ostream &o, const std::vector<T> &v)
+inline std::ostream &operator<<(std::ostream &o, const std::vector<T> &v)
 {
   int count = 0;
   o << "{";

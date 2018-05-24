@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <assert.h>
+#include <signal.h>
 
 #include "madara/knowledge/CompiledExpression.h"
 #include "madara/knowledge/KnowledgeBase.h"

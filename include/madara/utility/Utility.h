@@ -5,7 +5,9 @@
 #include <string>
 #include <cmath>
 #include <limits.h>
-#include "ace/SOCK_Dgram.h"
+#include <cstdlib>
+#include <cstring>
+#include <chrono>
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
 #include "madara/knowledge/WaitSettings.h"
@@ -188,19 +190,7 @@ namespace madara
       const ::std::vector< std::string> & splitters,
       ::std::vector< std::string> & tokens,
       ::std::vector< std::string> & pivot_list);
-    
-    /**
-     * Binds to an ephemeral port
-     * @param     socket      socket to bind to unique ephemeral
-     * @param     host        the host name of this device or computer
-     * @param     port        starting port to try to bind to
-     * @param     increase_until_bound   if true, increment port until success
-     * @return    0 if successful bind. -1 if unsuccessful bind.
-     **/
-    MADARA_Export int bind_to_ephemeral_port (ACE_SOCK_Dgram & socket,
-      std::string & host, unsigned short & port,
-      bool increase_until_bound = true);
-    
+
     /**
      * Reads a file into a string
      * @param     filename    name of the file to read
