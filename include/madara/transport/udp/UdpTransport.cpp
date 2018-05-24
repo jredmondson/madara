@@ -52,9 +52,9 @@ UdpTransport::setup_read_socket (void)
   }
 
   try {
-    read_socket_.non_blocking(true);
+    socket_.non_blocking(true);
 
-    read_socket_.bind(udp::endpoint (ip::address_v4::any (),
+    socket_.bind(udp::endpoint (ip::address_v4::any (),
           addresses_[0].port ()));
 
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -98,7 +98,7 @@ UdpTransport::send_buffer (
 
     // send the fragment
     try {
-      actual_sent = write_socket_.send_to (
+      actual_sent = socket_.send_to (
           asio::buffer(buf, size), target);
     } catch (const boost::system::system_error &e) {
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,

@@ -40,7 +40,7 @@ MulticastTransport::setup_read_socket (void)
 {
   try {
     asio::socket_base::reuse_address reuse_option(true);
-    read_socket_.set_option(reuse_option);
+    socket_.set_option(reuse_option);
   } catch (const boost::system::system_error &e) {
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "MulticastTransport::setup:" \
@@ -55,7 +55,7 @@ MulticastTransport::setup_read_socket (void)
   }
 
   try {
-    read_socket_.set_option (mcast::join_group (addresses_[0].address ()));
+    socket_.set_option (mcast::join_group (addresses_[0].address ()));
   } catch (const boost::system::system_error &e) {
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "MulticastTransport::setup_read_socket:" \
@@ -76,7 +76,7 @@ MulticastTransport::setup_write_socket (void)
   }
 
   try {
-    write_socket_.set_option (mcast::hops (1));
+    socket_.set_option (mcast::hops (1));
   } catch (const boost::system::system_error &e) {
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "MulticastTransport::setup_write_socket:" \

@@ -20,7 +20,7 @@ MulticastTransportReadThread::cleanup (void)
   }
 
   try {
-    transport_.read_socket_.set_option (mcast::leave_group (
+    transport_.socket_.set_option (mcast::leave_group (
           transport_.addresses_[0].address ()));
   } catch (const boost::system::system_error &e) {
     madara_logger_log (this->context_->get_logger (), logger::LOG_MAJOR,

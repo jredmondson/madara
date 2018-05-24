@@ -58,11 +58,8 @@ namespace madara
       /// holds all multicast addresses we are sending to
       std::vector<udp::endpoint> addresses_;
 
-      /// underlying socket for sending
-      udp::socket write_socket_{io_service_};
-
-      /// The multicast socket we are reading from
-      udp::socket read_socket_{io_service_};
+      /// underlying socket
+      udp::socket socket_{io_service_};
 
       friend class UdpTransportReadThread;
       friend class MulticastTransportReadThread;

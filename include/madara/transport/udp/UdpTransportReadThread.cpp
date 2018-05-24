@@ -59,17 +59,6 @@ UdpTransportReadThread::init (
 void
 UdpTransportReadThread::cleanup (void)
 {
-  if (transport_.addresses_.size () == 0) {
-    return;
-  }
-
-  try {
-    transport_.read_socket_.close ();
-  } catch (const boost::system::system_error &e) {
-    madara_logger_log (this->context_->get_logger (), logger::LOG_MAJOR,
-      "UdpTransportReadThread::close:" \
-      " Error closing read socket: %s\n", e.what ());
-  }
 }
 
 void
@@ -138,7 +127,7 @@ UdpTransportReadThread::run (void)
 
   udp::endpoint remote;
   boost::system::error_code err;
-  size_t bytes_read = transport_.read_socket_.receive_from (
+  size_t bytes_read = transport_.socket_.receive_from (
       asio::buffer((void *)buffer, settings_.queue_length), remote,
       udp::socket::message_flags{}, err);
 

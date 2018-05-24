@@ -4,6 +4,7 @@
 #include <string>
 
 #include "madara/MADARA_export.h"
+#include "madara/transport/udp/UdpTransport.h"
 #include "madara/transport/udp/UdpRegistryClientReadThread.h"
 #include "madara/transport/Transport.h"
 #include "madara/threads/Threader.h"
@@ -32,14 +33,9 @@ namespace madara
      *        6) multi-assignment of records<br />
      *        7) rebroadcasting<br />
      **/
-    class MADARA_Export UdpRegistryClient : public Base
+    class MADARA_Export UdpRegistryClient : public UdpTransport
     {
     public:
-  
-      enum {
-        RELIABLE = 0
-      };
-
       enum {
         ERROR_UDP_NOT_STARTED = -1,
       };
@@ -53,15 +49,9 @@ namespace madara
        * @param   config   transport configuration settings
        * @param   launch_transport  whether or not to launch this transport
        **/
-      UdpRegistryClient (const std::string & id, 
-        madara::knowledge::ThreadSafeContext & context, 
+      UdpRegistryClient (const std::string & id,
+        madara::knowledge::ThreadSafeContext & context,
         TransportSettings & config, bool launch_transport);
-
-      /**
-       * Destructor
-       **/
-      virtual ~UdpRegistryClient ();
-
 
       /**
       * Sends register messages to all servers
@@ -74,41 +64,14 @@ namespace madara
        * @return  result of write operation or -1 if we are shutting down
        **/
       long send_data (const madara::knowledge::VariableReferenceMap & updates) override;
-    
-      /**
-       * Accesses reliability setting. If this returns zero, it doesn't
-       * make much sense.
-       * @return  whether we are using reliable dissemination or not
-       **/
-      int reliability (void) const;
 
-      /**
-       * Accesses reliability setting. If this returns zero, it doesn't
-       * make much sense.
-       * @return  whether we are using reliable dissemination or not
-       **/
-      int reliability (const int & setting);
-      long read (void);
-      void close (void) override;
       int setup (void) override;
-    protected:
-    private:
-      /// knowledge base for threads to use
-      knowledge::KnowledgeBase          knowledge_;
-      
-      /// threads for reading knowledge updates
-      threads::Threader                         read_threads_;
-      
-      /// registry servers
-      std::map <std::string, ACE_INET_Addr>     servers_;
 
-      /// registry clients
-      std::map <std::string, ACE_INET_Addr>     clients_;
+    protected:
+      /// registry servers
+      std::vector <udp::endpoint>     servers_;
 
       knowledge::containers::Map   endpoints_;
-
-      /// underlying socket for sending and receiving
-      ACE_SOCK_Dgram                            socket_;
     };
   }
 }

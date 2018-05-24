@@ -4,6 +4,7 @@
 #include <string>
 
 #include "madara/MADARA_export.h"
+#include "madara/transport/udp/UdpTransport.h"
 #include "madara/transport/udp/UdpRegistryServerReadThread.h"
 #include "madara/transport/Transport.h"
 #include "madara/threads/Threader.h"
@@ -25,14 +26,9 @@ namespace madara
      * @brief UDP-based server that handles a registry of UDP endpoints,
      *        which makes it ideal for any NAT-protected agents
      **/
-    class MADARA_Export UdpRegistryServer : public Base
+    class MADARA_Export UdpRegistryServer : public UdpTransport
     {
     public:
-  
-      enum {
-        RELIABLE = 0
-      };
-
       enum {
         ERROR_UDP_NOT_STARTED = -1,
       };
@@ -47,13 +43,8 @@ namespace madara
        * @param   launch_transport  whether or not to launch this transport
        **/
       UdpRegistryServer (const std::string & id,
-        madara::knowledge::ThreadSafeContext & context, 
+        madara::knowledge::ThreadSafeContext & context,
         TransportSettings & config, bool launch_transport);
-
-      /**
-       * Destructor
-       **/
-      virtual ~UdpRegistryServer ();
 
       /**
        * Sends a list of knowledge updates to listeners
@@ -61,44 +52,13 @@ namespace madara
        * @return  result of write operation or -1 if we are shutting down
        **/
       long send_data (const madara::knowledge::VariableReferenceMap & updates) override;
-    
-      /**
-       * Accesses reliability setting. If this returns zero, it doesn't
-       * make much sense.
-       * @return  whether we are using reliable dissemination or not
-       **/
-      int reliability (void) const;
 
-      /**
-       * Accesses reliability setting. If this returns zero, it doesn't
-       * make much sense.
-       * @return  whether we are using reliable dissemination or not
-       **/
-      int reliability (const int & setting);
-      long read (void);
-      void close (void) override;
       int setup (void) override;
+
     protected:
-    private:
-      /// knowledge base for threads to use
-      knowledge::KnowledgeBase          knowledge_;
-      
-      /// threads for reading knowledge updates
-      threads::Threader                         read_threads_;
-
-      /// registry servers
-      std::map <std::string, ACE_INET_Addr>     servers_;
-
-      /// registry clients
-      std::map <std::string, ACE_INET_Addr>     clients_;
+      size_t server_count_;
 
       knowledge::containers::Map   endpoints_;
-
-      /// underlying socket for sending
-      ACE_SOCK_Dgram                            write_socket_;
-
-      /// The socket we are reading from
-      ACE_SOCK_Dgram                            read_socket_;
     };
   }
 }

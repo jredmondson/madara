@@ -43,7 +43,7 @@ BasicASIOTransport::close (void)
 
   read_threads_.wait ();
 
-  write_socket_.close ();
+  socket_.close ();
 }
 
 int
@@ -96,8 +96,7 @@ BasicASIOTransport::setup (void)
   }
 
   try {
-    write_socket_.open(addresses_[0].protocol ());
-    read_socket_.open(addresses_[0].protocol ());
+    socket_.open(addresses_[0].protocol ());
   } catch (const boost::system::system_error &e) {
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "BasicASIOTransport::setup:" \
@@ -192,13 +191,14 @@ BasicASIOTransport::setup_socket (udp::socket &socket)
 int
 BasicASIOTransport::setup_read_socket (void)
 {
-  return setup_socket (read_socket_);
+  return setup_socket (socket_);
 }
 
 int
 BasicASIOTransport::setup_write_socket (void)
 {
-  return setup_socket (write_socket_);
+  //return setup_socket (write_socket_);
+  return 0;
 }
 
 int
