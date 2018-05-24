@@ -1028,6 +1028,46 @@ namespace madara
                      KnowledgeReferenceSettings ());
 
       /**
+       * Deletes the variable. Note that this is extremely unsafe. You
+       * can cause illegal operations in the knowledge base by using
+       * this method and trying to access this variable again with
+       * 1) a VariableReference, 2) a @see saved_modifieds listing,
+       * 3) a compiled expression in KaRL that uses the variable.
+       * There are very, very few reasons to ever use this function.
+       * Actually, there is one: you will never, ever, ever use this
+       * variable again. That's it. Otherwise, use @see clear with
+       * the default argument
+       * @param   var            VariableReference to variable. Do not use
+       *                         object this after calling this method!
+       *
+       * @param   settings       settings for referring to variables
+       * @return                 true if variable exists
+       **/
+      bool delete_variable (const VariableReference & var,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ());
+
+      /**
+       * Deletes variables. Note that this is extremely unsafe. You
+       * can cause illegal operations in the knowledge base by using
+       * this method and trying to access this variable again with
+       * 1) a VariableReference, 2) a @see saved_modifieds listing,
+       * 3) a compiled expression in KaRL that uses the variable.
+       * There are very, very few reasons to ever use this function.
+       * Actually, there is one: you will never, ever, ever use this
+       * variable again. That's it. Otherwise, use @see clear with
+       * the default argument
+       * @param   begin          iterator to variables inside the map
+       * @param   end            iterator to variables inside the map
+       * @param   settings       settings for referring to variables
+       * @return                 true if variable exists
+       **/
+      void delete_variables(KnowledgeMap::iterator begin,
+             KnowledgeMap::iterator end,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ());
+
+      /**
        * Deletes keys starting with the given prefix
        * @param   prefix         string which starts all variables to delete
        * @param   settings       settings for referring to variables
