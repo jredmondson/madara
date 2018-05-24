@@ -125,7 +125,7 @@ project (Madara_Version) : using_madara {
 }
 
 
-project (Madara_Jar) : using_madara {
+project (Madara_Jar) : using_madara, port/java/using_java {
   requires += java
 
   prebuild += "$(JAVA_HOME)/bin/javac" -sourcepath port/java/src port/java/src/com/madara/tests/*.java port/java/src/com/madara/*.java port/java/src/com/madara/util/*.java port/java/src/com/madara/transport/*.java port/java/src/com/madara/threads/*.java port/java/src/com/madara/transport/filters/*.java port/java/src/com/madara/containers/*.java

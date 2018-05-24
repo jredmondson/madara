@@ -11,5 +11,6 @@ project : debug_build, using_clang, using_android {
   verbatim (make, local, true) {
     CPPFLAGS := -std=c++11 -Wall -Wextra -Wnon-virtual-dtor \
       -Woverloaded-virtual -O3 $(CPPFLAGS)
+    LDLIBS := $(LDLIBS) -lMADARA
   }
 }

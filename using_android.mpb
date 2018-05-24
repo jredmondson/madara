@@ -1,9 +1,11 @@
 feature (android) {
-  includes += /home/dskyle/boost_android/build/out/armeabi/include/boost-1_65_1
-  libpaths += /home/dskyle/boost_android/build/out/armeabi/lib
+  includes += $(BOOST_ANDROID_ROOT)/include/boost-1_65_1
+  libpaths += $(BOOST_ANDROID_ROOT)/lib
+
 
   verbatim (make, local, true) {
     SYSROOT = $(NDK_TOOLS)/sysroot
+    LDLIBS = -l:libboost_system-clang-mt-1_65_1.a -llog
     ifeq ($(ANDROID_ARCH),arm)
       CROSS_COMPILE=arm-linux-androideabi-
     else
