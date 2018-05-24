@@ -324,10 +324,6 @@ project (Test_KaRL_Exceptions) : using_madara, no_karl, no_xml, null_lock, using
   Documentation_Files {
   }
   
-  Build_Files {
-    Tests.mpc
-  }
-
   Header_Files {
   }
 
