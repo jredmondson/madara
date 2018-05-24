@@ -15,8 +15,8 @@ namespace madara { namespace threads {
 inline void
 WorkerThread::change_frequency (
   double hertz,
-  ACE_Time_Value & current, ACE_Time_Value & frequency,
-  ACE_Time_Value & next_epoch,
+  utility::TimeValue & current, utility::Duration & frequency,
+  utility::TimeValue & next_epoch,
   bool & one_shot, bool & blaster)
 {
   hertz_ = hertz;
@@ -27,8 +27,11 @@ WorkerThread::change_frequency (
       " thread repeating at %f hz\n", name_.c_str (), hertz_);
 
     one_shot = false;
-    frequency.set (1.0 / hertz_);
-    next_epoch = current + frequency;
+    
+    frequency = utility::seconds_to_duration (1.0/hertz_);
+
+    next_epoch = current;
+    next_epoch += frequency;
   }
   else if (hertz_ == 0.0)
   {

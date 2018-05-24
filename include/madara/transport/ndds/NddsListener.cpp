@@ -1,4 +1,4 @@
-#include "madara/transport/ndds/NDDSListener.h"
+#include "NddsListener.h"
 #include "madara/knowledge/UpdateTypes.h"
 #include "madara/utility/Utility.h"
 #include "madara/logger/GlobalLogger.h"
@@ -7,7 +7,7 @@ namespace logger = madara::logger;
 
 #include <sstream>
 
-madara::transport::NDDSListener::NDDSListener(
+madara::transport::NddsListener::NddsListener(
   const TransportSettings & settings, const std::string & id,
   knowledge::ThreadSafeContext & context,
   BandwidthMonitor & send_monitor,
@@ -25,7 +25,7 @@ madara::transport::NDDSListener::NDDSListener(
   if (settings_.on_data_received_logic.length () != 0)
   {
     madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
-      "NDDSListener::NDDSListener:" \
+      "NddsListener::NddsListener:" \
       " setting rules to %s\n",
       settings_.on_data_received_logic.c_str ());
 
@@ -34,31 +34,31 @@ madara::transport::NDDSListener::NDDSListener(
   else
   {
     madara_logger_log (context_->get_logger (), logger::LOG_MINOR,
-      "NDDSListener::NDDSListener:" \
+      "NddsListener::NddsListener:" \
       " no permanent rules were set\n");
   }
   
 }
 
-madara::transport::NDDSListener::NDDSListener(const NDDSListener &ref)
+madara::transport::NddsListener::NddsListener(const NddsListener &ref)
 : settings_ (ref.settings_), id_ (ref.id_), context_ (ref.context_), 
   send_monitor_ (ref.send_monitor_), receive_monitor_ (ref.receive_monitor_),
   packet_scheduler_ (ref.packet_scheduler_)
 {
 }
 
-madara::transport::NDDSListener::~NDDSListener()
+madara::transport::NddsListener::~NddsListener()
 {}
 
 void
-madara::transport::NDDSListener::on_subscription_matched (
+madara::transport::NddsListener::on_subscription_matched (
   DDSDataReader* reader, const DDS_SubscriptionMatchedStatus& status)
 {
   context_->set_changed ();
 }
 
 void
-madara::transport::NDDSListener::rebroadcast (
+madara::transport::NddsListener::rebroadcast (
   const char * print_prefix,
   MessageHeader * header,
   const knowledge::KnowledgeMap & records)
@@ -91,13 +91,13 @@ madara::transport::NDDSListener::rebroadcast (
 }
 
 void 
-madara::transport::NDDSListener::on_data_available(DDSDataReader * reader)
+madara::transport::NddsListener::on_data_available(DDSDataReader * reader)
 {
   Ndds_Knowledge_UpdateSeq update_data_list;
   DDS_SampleInfoSeq info_seq;
   DDS_ReturnCode_t rc;
   
-  const char * print_prefix = "NDDSListener::svc";
+  const char * print_prefix = "NddsListener::svc";
 
   Ndds_Knowledge_UpdateDataReader * update_reader = 
     Ndds_Knowledge_UpdateDataReader::narrow(reader);

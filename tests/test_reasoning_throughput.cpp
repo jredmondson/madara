@@ -6,18 +6,6 @@
 #include <assert.h>
 #include <iomanip>
 
-#include "ace/Log_Msg.h"
-#include "ace/Get_Opt.h"
-#include "ace/High_Res_Timer.h"
-#include "ace/OS_NS_Thread.h"
-#include "ace/Sched_Params.h"
-
-
-#include "ace/Guard_T.h"
-#include "ace/Recursive_Thread_Mutex.h"
-#include "ace/Condition_Recursive_Thread_Mutex.h"
-#include "ace/Synch.h"
-
 #include "madara/knowledge/CompiledExpression.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
@@ -25,6 +13,7 @@
 #include "madara/knowledge/containers/IntegerStaged.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/Utility.h"
+#include "madara/utility/Timer.h"
 
 #include <mutex>
 #include <atomic>
@@ -32,9 +21,10 @@
 namespace logger = madara::logger;
 
 typedef  madara::knowledge::KnowledgeRecord::Integer Integer;
+typedef  std::chrono::steady_clock  Clock;
 
 // command line arguments
-int parse_args (int argc, ACE_TCHAR * argv[]);
+void handle_arguments (int argc, char * argv[]);
 
 // test functions
 uint64_t test_virtual_reinforcement (
@@ -150,12 +140,6 @@ uint64_t test_stl_inc_recursive (
   madara::knowledge::KnowledgeBase & knowledge,
   uint32_t iterations);
 uint64_t test_stl_inc_mutex (
-  madara::knowledge::KnowledgeBase & knowledge,
-  uint32_t iterations);
-uint64_t test_ace_inc_recursive (
-  madara::knowledge::KnowledgeBase & knowledge,
-  uint32_t iterations);
-uint64_t test_ace_inc_mutex (
   madara::knowledge::KnowledgeBase & knowledge,
   uint32_t iterations);
 
@@ -341,12 +325,9 @@ to_legible_hertz (uint64_t hertz)
   return buffer.str ().c_str ();
 }
 
-int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
+int main (int argc, char * argv[])
 {
-  int retcode = parse_args (argc, argv);
-
-  if (retcode < 0)
-    return retcode;
+  handle_arguments (argc, argv);
 
   // set thread priority to max
   madara::utility::set_thread_priority ();
@@ -368,7 +349,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     exit (-1);
   }
 
-  const int num_test_types = 38;
+  const int num_test_types = 36;
 
   // make everything all pretty and for-loopy
   uint64_t results[num_test_types];
@@ -411,9 +392,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     "C++: Volatile Ternary Increments  ",
     "C++: STL Atomic Increments        ",
     "C++: STL Recursive Increments     ",
-    "C++: STL Mutex Increments         ",
-    "ACE: Recursive Increments         ",
-    "ACE: Mutex Increments             "
+    "C++: STL Mutex Increments         "
   };
 
   // enums for referencing 
@@ -453,9 +432,7 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
     VolatileInference,
     StlAtomicIncrement,
     StlRecursiveIncrement,
-    StlMutexIncrement,
-    AceRecursiveIncrement,
-    AceMutexIncrement
+    StlMutexIncrement
   };
 
   // start from zero
@@ -505,9 +482,6 @@ int ACE_TMAIN (int argc, ACE_TCHAR * argv[])
   test_functions[StlAtomicIncrement] = test_stl_inc_atomic;
   test_functions[StlRecursiveIncrement] = test_stl_inc_recursive;
   test_functions[StlMutexIncrement] = test_stl_inc_mutex;
-
-  test_functions[AceRecursiveIncrement] = test_ace_inc_recursive;
-  test_functions[AceMutexIncrement] = test_ace_inc_mutex;
 
 #ifndef _MADARA_NO_KARL_
   knowledge.define_function ("inc", increment_var1);
@@ -653,8 +627,8 @@ uint64_t test_simple_reinforcement (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  madara::utility::Timer <Clock> timer;
+  uint64_t measured (0);
 
   timer.start ();
 
@@ -668,7 +642,7 @@ uint64_t test_simple_reinforcement (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Simple Reinforcement: ");
@@ -687,8 +661,8 @@ uint64_t test_container_assignment (
     madara::knowledge::EvalSettings (false, false, false));
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -698,7 +672,7 @@ uint64_t test_container_assignment (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Container assignment: ");
@@ -717,8 +691,8 @@ uint64_t test_container_increment (
     madara::knowledge::EvalSettings (false, false, false));
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -728,7 +702,7 @@ uint64_t test_container_increment (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Container increment: ");
@@ -747,8 +721,8 @@ uint64_t test_staged_container_assignment (
     madara::knowledge::EvalSettings (false, false, false));
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -762,7 +736,7 @@ uint64_t test_staged_container_assignment (
   var1.write ();
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Staged Container assignment: ");
@@ -781,8 +755,8 @@ uint64_t test_staged_container_increment (
     madara::knowledge::EvalSettings (false, false, false));
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -796,7 +770,7 @@ uint64_t test_staged_container_increment (
   var1.write ();
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Staged Container increment: ");
@@ -815,8 +789,8 @@ uint64_t test_compiled_sr (
   ce = knowledge.compile ("++.var1");
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -828,7 +802,7 @@ uint64_t test_compiled_sr (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled Simple Increment: ");
 
@@ -850,8 +824,8 @@ uint64_t test_compiled_sa (
   ce = knowledge.compile (".var1=1");
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -863,7 +837,7 @@ uint64_t test_compiled_sa (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled Single Assignments: ");
@@ -886,8 +860,8 @@ uint64_t test_compiled_sfi (
   ce = knowledge.compile ("inc ()");
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -899,7 +873,7 @@ uint64_t test_compiled_sfi (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled Extern Increment Function: ");
@@ -921,8 +895,8 @@ uint64_t test_extern_call (
   ce = knowledge.compile ("no_op ()");
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -934,7 +908,7 @@ uint64_t test_extern_call (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Extern function call: ");
@@ -955,8 +929,8 @@ uint64_t test_looped_sr (
   
 #ifndef _MADARA_NO_KARL_
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   // build a large chain of simple reinforcements
    std::string buffer;
@@ -979,7 +953,7 @@ uint64_t test_looped_sr (
     madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled Looped LR: ");
@@ -999,8 +973,8 @@ uint64_t test_large_reinforcement (
   
 #ifndef _MADARA_NO_KARL_
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   // build a large chain of simple reinforcements
    std::stringstream buffer;
@@ -1021,7 +995,7 @@ uint64_t test_large_reinforcement (
       madara::knowledge::EvalSettings (false, false, false));
   
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Large Reinforcement: ");
@@ -1041,8 +1015,8 @@ uint64_t test_compiled_lr (
 #ifndef _MADARA_NO_KARL_
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   // build a large chain of simple reinforcements
    std::stringstream buffer;
@@ -1067,7 +1041,7 @@ uint64_t test_compiled_lr (
       madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled Multiple Increments: ");
@@ -1088,8 +1062,8 @@ uint64_t test_compiled_la (
 #ifndef _MADARA_NO_KARL_
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   // build a large chain of simple reinforcements
    std::stringstream buffer;
@@ -1116,7 +1090,7 @@ uint64_t test_compiled_la (
       madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled Multiple Assignments: ");
@@ -1137,8 +1111,8 @@ uint64_t test_compiled_lfi (
   
 #ifndef _MADARA_NO_KARL_
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   // build a large chain of simple reinforcements
    std::stringstream buffer;
@@ -1163,7 +1137,7 @@ uint64_t test_compiled_lfi (
       madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled Extern Multi Calls: ");
@@ -1184,8 +1158,8 @@ uint64_t test_optimal_loop (
   
 #ifndef _MADARA_NO_KARL_
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   // build a large chain of simple reinforcements
    std::string buffer;
@@ -1208,7 +1182,7 @@ uint64_t test_optimal_loop (
       madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Optimal Loop: ");
@@ -1227,8 +1201,8 @@ uint64_t test_simple_inference (
   
 #ifndef _MADARA_NO_KARL_
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -1240,7 +1214,7 @@ uint64_t test_simple_inference (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Simple Inference: ");
@@ -1258,8 +1232,8 @@ uint64_t test_normal_set (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -1269,7 +1243,7 @@ uint64_t test_normal_set (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Normal Set Operation: ");
@@ -1284,8 +1258,8 @@ uint64_t test_get_ref (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -1297,7 +1271,7 @@ uint64_t test_get_ref (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Get Reference Operation: ");
@@ -1312,8 +1286,8 @@ uint64_t test_get_expand_ref (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -1326,7 +1300,7 @@ uint64_t test_get_expand_ref (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Get Expanded Ref: ");
@@ -1341,8 +1315,8 @@ uint64_t test_var_ref_set (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   timer.start ();
 
@@ -1355,7 +1329,7 @@ uint64_t test_var_ref_set (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Variable Reference Set: ");
@@ -1371,8 +1345,8 @@ uint64_t test_variables_inc_var_ref (
   
 #ifndef _MADARA_NO_KARL_
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   madara::knowledge::CompiledExpression ce;
 
@@ -1386,7 +1360,7 @@ uint64_t test_variables_inc_var_ref (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Variables Inc Var Ref: ");
@@ -1404,8 +1378,8 @@ uint64_t test_stl_inc_atomic (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   madara::knowledge::CompiledExpression ce;
 
@@ -1419,7 +1393,7 @@ uint64_t test_stl_inc_atomic (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured,
     madara::knowledge::KnowledgeRecord (counter.load()), iterations,
@@ -1435,8 +1409,8 @@ uint64_t test_stl_inc_recursive (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   madara::knowledge::CompiledExpression ce;
 
@@ -1453,7 +1427,7 @@ uint64_t test_stl_inc_recursive (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured,
     madara::knowledge::KnowledgeRecord (counter), iterations,
@@ -1469,8 +1443,8 @@ uint64_t test_stl_inc_mutex (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   madara::knowledge::CompiledExpression ce;
 
@@ -1487,79 +1461,11 @@ uint64_t test_stl_inc_mutex (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured,
     madara::knowledge::KnowledgeRecord (counter), iterations,
     "STL Mutex Increment: ");
-
-  return measured;
-}
-
-uint64_t test_ace_inc_recursive (
-  madara::knowledge::KnowledgeBase & knowledge,
-  uint32_t iterations)
-{
-  knowledge.clear ();
-
-  // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
-
-  madara::knowledge::CompiledExpression ce;
-
-  long counter = 0;
-  ACE_Recursive_Thread_Mutex critical_section;
-
-  timer.start ();
-
-  for (uint32_t i = 0; i < iterations; ++i)
-  {
-    critical_section.acquire ();
-    ++counter;
-    critical_section.release ();
-  }
-
-  timer.stop ();
-  timer.elapsed_time (measured);
-
-  print (measured,
-    madara::knowledge::KnowledgeRecord (counter), iterations,
-    "ACE Recursive Increment: ");
-
-  return measured;
-}
-
-uint64_t test_ace_inc_mutex (
-  madara::knowledge::KnowledgeBase & knowledge,
-  uint32_t iterations)
-{
-  knowledge.clear ();
-
-  // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
-
-  madara::knowledge::CompiledExpression ce;
-
-  long counter = 0;
-  ACE_Thread_Mutex critical_section;
-
-  timer.start ();
-
-  for (uint32_t i = 0; i < iterations; ++i)
-  {
-    critical_section.acquire ();
-    ++counter;
-    critical_section.release ();
-  }
-
-  timer.stop ();
-  timer.elapsed_time (measured);
-
-  print (measured,
-    madara::knowledge::KnowledgeRecord (counter), iterations,
-    "ACE Mutex Increment: ");
 
   return measured;
 }
@@ -1572,8 +1478,8 @@ uint64_t test_compiled_si (
   
 #ifndef _MADARA_NO_KARL_
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   madara::knowledge::CompiledExpression ce;
 
@@ -1589,7 +1495,7 @@ uint64_t test_compiled_si (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled Simple Ternary Increment: ");
@@ -1609,8 +1515,8 @@ uint64_t test_looped_si (
   
 #ifndef _MADARA_NO_KARL_
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   // build a large chain of simple reinforcements
    std::string buffer;
@@ -1630,7 +1536,7 @@ uint64_t test_looped_si (
       madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled Looped LR: ");
@@ -1649,8 +1555,8 @@ uint64_t test_large_inference (
   
 #ifndef _MADARA_NO_KARL_
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   // build a large chain of simple reinforcements
    std::stringstream buffer;
@@ -1671,7 +1577,7 @@ uint64_t test_large_inference (
       madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Large Inference: ");
@@ -1690,8 +1596,8 @@ uint64_t test_compiled_li (
   
 #ifndef _MADARA_NO_KARL_
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   // build a large chain of simple reinforcements
    std::stringstream buffer;
@@ -1716,7 +1622,7 @@ uint64_t test_compiled_li (
       madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled Multiple Ternary Increments: ");
@@ -1736,8 +1642,8 @@ uint64_t test_looped_li (
   
 #ifndef _MADARA_NO_KARL_
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   // build a large chain of simple reinforcements
    std::string buffer;
@@ -1760,7 +1666,7 @@ uint64_t test_looped_li (
       madara::knowledge::EvalSettings (false, false, false));
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, knowledge.get (".var1"), iterations,
     "Compiled Looped LR: ");
@@ -1779,8 +1685,8 @@ uint64_t test_optimal_inference (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   madara::knowledge::KnowledgeRecord::Integer var1 = 0;
 
@@ -1796,7 +1702,7 @@ uint64_t test_optimal_inference (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, madara::knowledge::KnowledgeRecord (var1), iterations,
     "Optimal Inference: ");
@@ -1812,8 +1718,8 @@ uint64_t test_optimal_assignment (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured = 0;
-  ACE_High_Res_Timer timer;
+  uint64_t measured = 0;
+  madara::utility::Timer <Clock> timer;
 
   long var1 = 0;
 
@@ -1848,7 +1754,7 @@ uint64_t test_optimal_assignment (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, madara::knowledge::KnowledgeRecord (var1), iterations,
     "Optimal Reinforcement: ");
@@ -1864,8 +1770,8 @@ uint64_t test_optimal_reinforcement (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured = 0;
-  ACE_High_Res_Timer timer;
+  uint64_t measured = 0;
+  madara::utility::Timer <Clock> timer;
 
   madara::knowledge::KnowledgeRecord::Integer var1 = 0;
 
@@ -1900,7 +1806,7 @@ uint64_t test_optimal_reinforcement (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, madara::knowledge::KnowledgeRecord (var1), iterations,
     "Optimal Reinforcement: ");
@@ -1916,8 +1822,8 @@ uint64_t test_volatile_inference (
   knowledge.clear ();
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   volatile madara::knowledge::KnowledgeRecord::Integer var1 = 0;
 
@@ -1931,7 +1837,7 @@ uint64_t test_volatile_inference (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, madara::knowledge::KnowledgeRecord (var1), iterations,
     "Volatile Inference: ");
@@ -1948,8 +1854,8 @@ uint64_t test_volatile_reinforcement (
   Incrementer accumulator;
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   volatile madara::knowledge::KnowledgeRecord::Integer var1 = 0;
 
@@ -1962,7 +1868,7 @@ uint64_t test_volatile_reinforcement (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, madara::knowledge::KnowledgeRecord (var1), iterations,
     "Volatile Reinforcement: ");
@@ -1979,8 +1885,8 @@ uint64_t test_virtual_reinforcement (
   Incrementer accumulator;
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   BaseOperation * var1 = new IncrementOperation ();
 
@@ -1993,7 +1899,7 @@ uint64_t test_virtual_reinforcement (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
   
   print (measured, madara::knowledge::KnowledgeRecord (var1->get_value ()), iterations,
     "Virtual Reinforcement: ");
@@ -2012,8 +1918,8 @@ uint64_t test_volatile_assignment (
   Incrementer accumulator;
 
   // keep track of time
-  ACE_hrtime_t measured;
-  ACE_High_Res_Timer timer;
+  uint64_t measured (0);
+  madara::utility::Timer <Clock> timer;
 
   volatile madara::knowledge::KnowledgeRecord::Integer var1 = 0;
 
@@ -2026,7 +1932,7 @@ uint64_t test_volatile_assignment (
   }
 
   timer.stop ();
-  timer.elapsed_time (measured);
+  measured = timer.duration_ns ();
 
   print (measured, madara::knowledge::KnowledgeRecord (var1), iterations,
     "Volatile Assignment: ");
@@ -2035,94 +1941,98 @@ uint64_t test_volatile_assignment (
 }
 
 
-int parse_args (int argc, ACE_TCHAR * argv[])
+// handle command line arguments
+void handle_arguments (int argc, char * argv[])
 {
-  // options string which defines all short args
-  ACE_TCHAR options [] = ACE_TEXT ("n:r:f:c:s:h");
-
-  // create an instance of the command line args
-  ACE_Get_Opt cmd_opts (argc, argv, options);
-
-  // set up an alias for '-n' to be '--name'
-  cmd_opts.long_option (ACE_TEXT ("help"), 'h', ACE_Get_Opt::NO_ARG);
-  cmd_opts.long_option (ACE_TEXT ("iterations"), 'n', ACE_Get_Opt::ARG_REQUIRED);
-  cmd_opts.long_option (ACE_TEXT ("logfile"), 'f', ACE_Get_Opt::ARG_REQUIRED);
-  cmd_opts.long_option (ACE_TEXT ("runs"), 'r', ACE_Get_Opt::ARG_REQUIRED);
-  cmd_opts.long_option (ACE_TEXT ("step"), 'i', ACE_Get_Opt::ARG_REQUIRED);
-  cmd_opts.long_option (ACE_TEXT ("conditional"), 'r', ACE_Get_Opt::ARG_REQUIRED);
- 
-  std::stringstream buffer;
-
-  // temp for current switched option
-  int option;
-//  ACE_TCHAR * arg;
-
-  // iterate through the options until done
-  while ((option = cmd_opts ()) != EOF)
+  for (int i = 1; i < argc; ++i)
   {
-    //arg = cmd_opts.opt_arg ();
-    switch (option)
+    std::string arg1 (argv[i]);
+
+    if (arg1 == "-c" || arg1 == "--conditional")
     {
-    case 'n':
-      // thread number
-      buffer.str ("");
-      buffer << cmd_opts.opt_arg ();
-      buffer >> num_iterations;
-      break;
-    case 'f':
-      // log file
-      logger::global_logger->add_file (cmd_opts.opt_arg ());
-      break;
-    case 'r':
-      // thread number
-      buffer.str ("");
-      buffer << cmd_opts.opt_arg ();
-      buffer >> num_runs;
-      break;
-    case 'c':
-      // thread number
-      buffer.str ("");
-      buffer << cmd_opts.opt_arg ();
+      if (i + 1 < argc)
+      {
+        std::string arg2 (argv[i + 1]);
 
-      if (buffer.str () == "false")
-        conditional = false;
+        if (arg2 == "false")
+        {
+          conditional = false;
+        }
+        else
+        {
+          conditional = true;
+        }
+      }
 
-      break;
-    case 's':
-      // step of the optimized function
-      // we have to do this because the C++ compiler
-      // will try to compile away the loop otherwise...
-      // Very frustrating
-      buffer.str ("");
-      buffer << cmd_opts.opt_arg ();
-      buffer >> step;
-      break;
-    case ':':
-      ACE_ERROR_RETURN ((LM_ERROR, 
-        ACE_TEXT ("ERROR: -%c requires an argument"), 
-           cmd_opts.opt_opt ()), -2); 
-    case 'h':
-    default:
+      ++i;
+    }
+    else if (arg1 == "-f" || arg1 == "--logfile")
+    {
+      if (i + 1 < argc)
+      {
+        logger::global_logger->add_file (argv[i + 1]);
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
+        int level;
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> level;
+        logger::global_logger->set_level (level);
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-n" || arg1 == "--iterations")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> num_iterations;
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-r" || arg1 == "--runs")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> num_runs;
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-s" || arg1 == "--step")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> step;
+      }
+
+      ++i;
+    }
+    else
+    {
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
         "Program Summary for %s:\n\n\
-      This stand-alone application runs a variety of tests to determine\n\
-      performance on a host system. For a more comprehensive and\n\
-      customizeable tests, see profile_architecture\n\n\
-      -n (--iterations)  number of iterations      \n\
-      -r (--runs)        number of runs            \n\
-      -s (--step)        number of iterations      \n\
-      -c (--conditional) false if guard==false     \n\
-      -- author's note. The last two are only necessary \n\
-      -- because C++ compilers are trying to opimize \n\
-      -- away the loops we are trying to test \n\
-      -h (--help)        print this menu           \n\n", argv[0]
-      );
-      ACE_ERROR_RETURN ((LM_ERROR, 
-        ACE_TEXT ("Returning from Help Menu\n")), -1); 
-      break;
+This stand-alone application runs a variety of tests to determine\n\
+performance on a host system. For a more comprehensive and\n\
+customizeable tests, see profile_architecture\n\n\
+-n (--iterations)  number of iterations      \n\
+-r (--runs)        number of runs            \n\
+-s (--step)        number of iterations      \n\
+-c (--conditional) false if guard==false     \n\
+-- author's note. The last two are only necessary \n\
+-- because C++ compilers are trying to opimize \n\
+-- away the loops we are trying to test \n\
+-h (--help)        print this menu           \n\n", argv[0]);
+      exit (0);
     }
   }
-
-  return 0;
 }
-

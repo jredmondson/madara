@@ -4959,16 +4959,8 @@ madara::expression::Interpreter::system_call_insert (
 
   i += j;
 
-  //MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, DLINFO
-  //    "Checking %s, before is_whitespace. i=%d, j=%" PRIu64 "\n",
-  //    name.c_str (), i, j));
-
   // eat up whitespace so we can check for a parenthesis (function)
   for (; i < input.length () && is_whitespace (input[i]); ++i);
-
-  //MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_ERROR, DLINFO
-  //    "Checking %s, after is_whitespace. i=%d, j=%" PRIu64 "\n",
-  //    name.c_str (), i, j));
 
   if (i < input.length () && input[i] == '(')
   {

@@ -1229,53 +1229,6 @@ namespace madara
        **/
       std::string setup_unique_hostport (const std::string & host = "");
 
-#ifdef _USE_CID_
-
-      /**
-       * Print all redeployment algorithm results
-       **/
-      void print_all_redeployment_results (std::ostream & output);
-
-      /**
-       * Run all redeployment algorithms specified in Transport Settings,
-       * within the latencies.algorithm_configs variable.
-       **/
-      void run_all (void);
-
-      /**
-       * Starts a latency round
-       * @return  result of operation or -1 if we are shutting down
-       **/
-      long start_latency (void);
-
-      /**
-       * Prints latencies associated with this process id
-       * @param   output    stream to print latencies to
-       **/
-      void print_my_latencies (std::ostream & output);
-
-      /**
-       * Prints all latencies in the context for all processes
-       * @param   output    stream to print latencies to
-       **/
-      void print_all_latencies (std::ostream & output);
-
-      /**
-       * Prints all summations in the context for all processes
-       * @param   output    stream to print summations to
-       **/
-      void print_all_summations (std::ostream & output);
-
-      /**
-       * Votes with the lowest algorithm results current in the Transport settings.
-       * This is only useful if latency collection is enabled and run_all has been
-       * populated with useful redeployment algorithms before being ran. See the
-       * madara::transport::TransportSettings class for all voting parameters.
-       **/
-      long vote (void);
-
-#endif // _USE_CID_
-
       /**
        * Returns a non-const reference to the Transport Settings
        * @return  settings reference

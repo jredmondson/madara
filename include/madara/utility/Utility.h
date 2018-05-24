@@ -6,7 +6,6 @@
 #include <cmath>
 #include <limits.h>
 #include "ace/SOCK_Dgram.h"
-#include "ace/High_Res_Timer.h"
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
 #include "madara/knowledge/WaitSettings.h"
@@ -22,6 +21,18 @@ namespace madara
 
   namespace utility
   {
+    /// default clock type
+    typedef  std::chrono::steady_clock      Clock;
+
+    /// default clock duration
+    typedef  std::chrono::nanoseconds       Duration;
+
+    /// default clock duration
+    typedef  std::chrono::duration<double>  SecondsDuration;
+
+    /// time point
+    typedef std::chrono::time_point<Clock>  TimeValue;
+
     /**
      * Sets the thread priority in a FIFO scheme
      * @param     priority     the priority to attempt to set
@@ -323,10 +334,34 @@ namespace madara
     int64_t get_time (void);
 
     /**
-     * Returns a time of day as ACE_Time_Value
-     * @return  time of day as ACE_Time_Value
+     * Returns a time of day as a chrono time value
+     * @return  time of day as a chrono time value
      **/
-    ACE_Time_Value get_ace_time (void);
+    TimeValue get_time_value (void);
+
+    /**
+     * Returns an offset of a time by seconds in double format
+     * @return  new time of day as a chrono time value
+     **/
+    TimeValue add_seconds (const TimeValue & start, double seconds);
+
+    /**
+     * Returns seconds in double format as nanosecond duration
+     * @return  duration for usage with TimeValues
+     **/
+    Duration seconds_to_duration (double seconds);
+
+    /**
+     * Returns seconds in double format as seconds duration
+     * @return  duration for usage with TimeValues
+     **/
+    SecondsDuration seconds_to_seconds_duration (double seconds);
+
+    /**
+     * Returns seconds in double format as nanosecond since epoch
+     * @return  converted time
+     **/
+    TimeValue seconds_to_time (double seconds);
 
     /**
      * Returns a random double between floor and ceiling
@@ -385,7 +420,7 @@ namespace madara
      * this will sleep for the amount of time regardless of OS interrupts
      * @param  sleep_time  time to sleep for
      **/
-    MADARA_Export ACE_Time_Value sleep (const ACE_Time_Value & sleep_time);
+    MADARA_Export SecondsDuration sleep (const SecondsDuration & sleep_time);
 
     /**
     * Checks two doubles for approximate equality. Doubles, unlike integers,

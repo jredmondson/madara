@@ -50,8 +50,8 @@ namespace madara
        *                      args[2] is the type of operation 
        *                      args[3] is the send bandwidth usage in B/s
        *                      args[4] is the total bandwidth usage in B/s
-       *                      args[5] is the send timestamp in seconds
-       *                      args[6] is the receive timestamp in seconds
+       *                      args[5] is the send timestamp in nanoseconds
+       *                      args[6] is the receive timestamp in nanoseconds
        *                      args[7] is the knowledge domain
        *                      args[8] is the originator id
        * @param   vars        variable context for querying current state

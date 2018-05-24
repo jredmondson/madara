@@ -72,7 +72,7 @@ namespace madara
        * @param  t_prefixes          the prefixes to save or load (empty = all)
        * @param  t_states            number of states in checkpoint
        **/
-      CheckpointSettings (bool t_buffer_size,
+      CheckpointSettings (size_t t_buffer_size,
         bool t_clear_knowledge,
         std::string t_filename = "",
         uint64_t t_initial_timestamp = 0,

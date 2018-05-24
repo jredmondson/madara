@@ -7,13 +7,10 @@
 #include "madara/transport/udp/UdpRegistryClient.h"
 #include "madara/transport/multicast/MulticastTransport.h"
 #include "madara/transport/broadcast/BroadcastTransport.h"
+#include "madara/utility/EpochEnforcer.h"
 
 
 #include <sstream>
-
-#include "ace/OS_NS_Thread.h"
-#include "ace/High_Res_Timer.h"
-#include "ace/OS_NS_sys_socket.h"
 
 #ifdef _MADARA_USING_ZMQ_
 #include "madara/transport/zmq/ZMQTransport.h"
@@ -28,6 +25,10 @@
 #endif // _USE_NDDS_
 
 #include <iostream>
+
+namespace utility = madara::utility;
+
+typedef  utility::EpochEnforcer<std::chrono::steady_clock> EpochEnforcer;
 
 namespace madara { namespace knowledge {
 
@@ -233,19 +234,8 @@ KnowledgeBaseImpl::wait (
 CompiledExpression & ce,
 const WaitSettings & settings)
 {
-  // get current time of day
-  ACE_Time_Value current = utility::get_ace_time ();
-  ACE_Time_Value max_wait, sleep_time, next_epoch;
-  ACE_Time_Value poll_frequency, last = current;
-
-  if (settings.poll_frequency >= 0)
-  {
-    max_wait.set (settings.max_wait_time);
-    max_wait = current + max_wait;
-
-    poll_frequency.set (settings.poll_frequency);
-    next_epoch = current + poll_frequency;
-  }
+  // use the EpochEnforcer utility to keep track of sleeps
+  EpochEnforcer enforcer (settings.poll_frequency, settings.max_wait_time);
 
   // print the post statement at highest log level (cannot be masked)
   if (settings.pre_print_statement != "")
@@ -271,18 +261,10 @@ const WaitSettings & settings)
     send_modifieds ("KnowledgeBaseImpl:wait", settings);
   }
 
-  current = utility::get_ace_time ();
-
   // wait for expression to be true
   while (!last_value.to_integer () &&
-    (settings.max_wait_time < 0 || current < max_wait))
+    (settings.max_wait_time < 0 || !enforcer.is_done ()))
   {
-    madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
-      "KnowledgeBaseImpl::wait:" \
-      " current is %" PRIu64 ".%" PRIu64 " and max is %" PRIu64 ".%" PRIu64 " (poll freq is %f)\n",
-      current.sec (), current.usec (), max_wait.sec (), max_wait.usec (),
-      settings.poll_frequency);
-
     madara_logger_log (map_.get_logger (), logger::LOG_DETAILED,
       "KnowledgeBaseImpl::wait:" \
       " last value didn't result in success\n");
@@ -291,16 +273,12 @@ const WaitSettings & settings)
     // To do this, we allow a user to specify a
     if (settings.poll_frequency > 0)
     {
-      if (current < next_epoch)
-      {
-        sleep_time = next_epoch - current;
-        madara::utility::sleep (sleep_time);
-      }
-
-      next_epoch = next_epoch + poll_frequency;
+      enforcer.sleep_until_next ();
     }
     else
+    {
       map_.wait_for_change (true);
+    }
 
     // relock - basically we need to evaluate the tree again, and
     // we can't have a bunch of people changing the variables as
@@ -324,12 +302,9 @@ const WaitSettings & settings)
     }
     map_.signal ();
 
-    // get current time
-    current = utility::get_ace_time ();
-
   } // end while (!last)
 
-  if (current >= max_wait)
+  if (enforcer.is_done ())
   {
     madara_logger_log (map_.get_logger (), logger::LOG_MAJOR,
       "KnowledgeBaseImpl::wait:" \

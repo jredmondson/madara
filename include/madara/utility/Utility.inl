@@ -237,28 +237,45 @@ static const uint64_t nano_per = micro_per * 1000;
 
 static const uint64_t simtime_min_sleep = 100 * (nano_per / milli_per);
 
-inline ACE_Time_Value
-get_ace_time (void)
+inline TimeValue
+get_time_value (void)
 {
 #ifndef MADARA_FEATURE_SIMTIME
-  return ACE_High_Res_Timer::gettimeofday ();
+  return Clock::now ();
 #else
-  uint64_t time = SimTime::time ();
-  uint64_t secs = time / nano_per;
-  uint64_t nanos = time % nano_per;
-  uint64_t micros = nanos / (nano_per / micro_per);
-  return ACE_Time_Value (secs, micros);
+  // @David  I'm assuming all the previous code was just to construct ACE time
+  return TimeValue (std::chrono::nanoseconds (SimTime::time ()))
 #endif
 }
 
 inline int64_t
 get_time (void)
 {
-  ACE_Time_Value tv = get_ace_time ();
-  int64_t timeofday (tv.sec () * micro_per);
-  timeofday += tv.usec () * (nano_per / micro_per);
+  auto current_time = Clock::now ();
+  auto epoch = current_time.time_since_epoch ();
+  return std::chrono::duration_cast<Duration> (epoch).count ();
+}
 
-  return timeofday;
+inline TimeValue
+add_seconds (const TimeValue & start, double seconds)
+{
+  return start + seconds_to_duration (seconds);
+}
+
+inline Duration seconds_to_duration (double seconds)
+{
+  return std::chrono::duration_cast<Duration> (
+    seconds_to_seconds_duration (seconds));
+}
+
+inline SecondsDuration seconds_to_seconds_duration (double seconds)
+{
+  return std::chrono::duration<double> (seconds);
+}
+
+inline TimeValue seconds_to_time (double seconds)
+{
+  return TimeValue (seconds_to_duration (seconds));
 }
 
 inline bool approx_equal (

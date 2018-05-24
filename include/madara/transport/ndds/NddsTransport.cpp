@@ -267,7 +267,7 @@ madara::transport::NddsTransport::setup (void)
       DDS_BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS;
   }
 
-  listener_ = new NDDSListener (settings_, id_, context_,
+  listener_ = new NddsListener (settings_, id_, context_,
     send_monitor_, receive_monitor_, packet_scheduler_);
 
   // create a reader for the topic
@@ -322,7 +322,7 @@ madara::transport::NddsTransport::send_data (
   strncpy (data.originator, id_.c_str (), id_.size () + 1);
   data.type = madara::transport::MULTIASSIGN;
   data.ttl = settings_.get_rebroadcast_ttl ();
-  data.timestamp = time (NULL);
+  data.timestamp = utility::get_time ();
   data.madara_id = new char [strlen (MADARA_IDENTIFIER) + 1];
   strncpy (data.madara_id, MADARA_IDENTIFIER, strlen (MADARA_IDENTIFIER) + 1);
 

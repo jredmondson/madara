@@ -188,7 +188,7 @@ namespace madara
        * args[3] : Bandwidth used while sending through this transport<br />
        * args[4] : Bandwidth used while receiving from this transport<br />
        * args[5] : Message timestamp (when the message was originally sent)<br />
-       * args[6] : Current timestamp (the result of time (NULL))<br />
+       * args[6] : Current timestamp (the result of utility::get_time ()<br />
        * args[7] : Network domain (partition of the network knowledge)<br />
        * args[8] : Knowledge originator (where this update comes fromm)<br />
        * 

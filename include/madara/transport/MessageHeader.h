@@ -12,6 +12,7 @@
 #include "madara/utility/stdint.h"
 #include "madara/MADARA_export.h"
 #include <string>
+#include <string.h>
 
 namespace madara
 {

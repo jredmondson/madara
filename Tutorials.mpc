@@ -251,6 +251,7 @@ project (Tutorial_Deadline_Filtering) : using_madara, using_ace {
   }
 }
 
+<<<<<<< HEAD
 project (Tutorial_Adding_Events) : using_madara, using_ace {
   exeout = $(MADARA_ROOT)/bin
   exename = tutorial_adding_events
@@ -266,3 +267,5 @@ project (Tutorial_Adding_Events) : using_madara, using_ace {
   }
 }
 
+=======
+>>>>>>> 850a0ed693df8f894fb03c2654c042b0230cd1ba

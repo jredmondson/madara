@@ -17,14 +17,9 @@
 #include <sstream>
 #include <vector>
 #include <ostream>
-#include "ace/Thread_Mutex.h"
-#include "ace/Recursive_Thread_Mutex.h"
-#include "ace/Condition_T.h"
-#include "ace/Guard_T.h"
 
 #include "madara/utility/ThreadSafeVector.h"
 #include "madara/MADARA_export.h"
-#include "ace/High_Res_Timer.h"
 #include "madara/transport/QoSTransportSettings.h"
 
 #include "ReducedMessageHeader.h"

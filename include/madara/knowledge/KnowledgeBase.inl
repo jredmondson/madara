@@ -3,8 +3,6 @@
 
 #include <fstream>
 
-#include "ace/streams.h"
-
 namespace madara { namespace knowledge {
 
 /**

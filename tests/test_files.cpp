@@ -68,29 +68,29 @@ void read_and_create_files (madara::knowledge::KnowledgeBase & knowledge)
 {
   knowledge.clear ();
 
-  knowledge.read_file ("sample", "/files/sample.jpg");
-  knowledge.write_file ("sample", "/files/sample_copy.jpg");
+  knowledge.read_file ("sample", madara::utility::expand_envs ("$(MADARA_ROOT)/tests/images/manaus_hotel_100x100.jpg"));
+  knowledge.write_file ("sample", "sample_copy.jpg");
 
   knowledge.set (".a_string", "Hello world!");
-  knowledge.write_file (".a_string", "/files/hello_world.txt");
-  knowledge.read_file ("hello_world", "/files/hello_world.txt");
-  knowledge.write_file ("hello_world", "/files/hello_world_copy.txt");
+  knowledge.write_file (".a_string", "hello_world.txt");
+  knowledge.read_file ("hello_world", "hello_world.txt");
+  knowledge.write_file ("hello_world", "hello_world_copy.txt");
   
   knowledge.set (".an_integer", madara::knowledge::KnowledgeRecord::Integer (10));
-  knowledge.write_file (".an_integer", "/files/ten.txt");
-  knowledge.read_file ("ten", "/files/ten.txt");
-  knowledge.write_file ("ten", "/files/ten_copy.txt");
+  knowledge.write_file (".an_integer", "ten.txt");
+  knowledge.read_file ("ten", "ten.txt");
+  knowledge.write_file ("ten", "ten_copy.txt");
   
   knowledge.set (".a_double", 12.5);
-  knowledge.write_file (".a_double", "/files/twelve.txt");
-  knowledge.read_file ("double", "/files/twelve.txt");
-  knowledge.write_file ("double", "/files/twelve_copy.txt");
+  knowledge.write_file (".a_double", "twelve.txt");
+  knowledge.read_file ("double", "twelve.txt");
+  knowledge.write_file ("double", "twelve_copy.txt");
 
   knowledge.set (".an_xml",
     "<tree><leaf>15</leaf><leaf>This leaf is empty.</leaf></tree>");
-  knowledge.write_file (".an_xml", "/files/an_xml_file.xml");
-  knowledge.read_file ("a_tree", "/files/an_xml_file.xml");
-  knowledge.write_file ("a_tree", "/files/an_xml_file_copy.xml");
+  knowledge.write_file (".an_xml", "an_xml_file.xml");
+  knowledge.read_file ("a_tree", "an_xml_file.xml");
+  knowledge.write_file ("a_tree", "an_xml_file_copy.xml");
 
   
   knowledge.set ("finished_transmitting");

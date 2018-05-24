@@ -1,7 +1,6 @@
 #include "WorkerThread.h"
-#include "ace/High_Res_Timer.h"
-#include "ace/OS_NS_sys_time.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/utility/Utility.h"
 
 #ifdef _MADARA_JAVA_
 #include <jni.h>
@@ -9,7 +8,7 @@
 #include "madara/utility/java/Acquire_VM.h"
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 
 #include <process.h>
 
@@ -96,7 +95,7 @@ WorkerThread::operator= (const WorkerThread & input)
 void
 WorkerThread::run (void)
 {
-#ifndef WIN32
+#ifndef _WIN32
 #else
   //result = 0;
   //_beginthreadex(NULL, 0, worker_thread_windows_glue, (void*)this, 0, 0);
@@ -140,8 +139,9 @@ WorkerThread::svc (void)
     thread_->init (data_);
 
     {
-      ACE_Time_Value current = utility::get_ace_time ();
-      ACE_Time_Value next_epoch, frequency;
+      utility::TimeValue current = utility::get_time_value ();
+      utility::TimeValue next_epoch;
+      utility::Duration frequency;
 
       bool one_shot = true;
       bool blaster = false;
@@ -189,7 +189,7 @@ WorkerThread::svc (void)
 
         if (!blaster)
         {
-          current = utility::get_ace_time ();
+          current = utility::get_time_value ();
 
           madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
             "WorkerThread(%s)::svc:" \

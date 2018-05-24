@@ -1,58 +1,37 @@
 
-// -*- C++ -*-
-// $Id$
-// Definition for Win32 Export directives.
-// This file is generated automatically by generate_export_file.pl NddsTransport
-// ------------------------------
-#ifndef NDDS_TRANSPORT_EXPORT_H
-#define NDDS_TRANSPORT_EXPORT_H
+#ifndef NDDS_EXPORT_H
+#define NDDS_EXPORT_H
 
-#include "ace/config-all.h"
+#if defined (MADARA_AS_STATIC_LIBS) && !defined (NDDS_HAS_DLL)
+#  define NDDS_HAS_DLL 0
+#endif /* NDDS_AS_STATIC_LIBS && NDDS_HAS_DLL */
 
-#if defined (ACE_AS_STATIC_LIBS) && !defined (NDDS_TRANSPORT_HAS_DLL)
-#  define NDDS_TRANSPORT_HAS_DLL 0
-#endif /* ACE_AS_STATIC_LIBS && NDDS_TRANSPORT_HAS_DLL */
+#if !defined (NDDS_HAS_DLL)
+#  define NDDS_HAS_DLL 1
+#endif /* ! NDDS_HAS_DLL */
 
-#if !defined (NDDS_TRANSPORT_HAS_DLL)
-#  define NDDS_TRANSPORT_HAS_DLL 1
-#endif /* ! NDDS_TRANSPORT_HAS_DLL */
+#if defined  (_WIN32)
+#  if !defined (NDDS_Proper_Export_Flag)
+#    define NDDS_Proper_Export_Flag __declspec (dllexport)
+#    define NDDS_Proper_Import_Flag __declspec (dllimport)
+#  endif
+#else
+#  if !defined (NDDS_Proper_Export_Flag)
+#    define NDDS_Proper_Export_Flag
+#    define NDDS_Proper_Import_Flag
+#  endif
+#endif
 
-#if defined (NDDS_TRANSPORT_HAS_DLL) && (NDDS_TRANSPORT_HAS_DLL == 1)
-#  if defined (NDDS_TRANSPORT_BUILD_DLL)
-#    define NddsTransportExport ACE_Proper_Export_Flag
-#    define NDDS_TRANSPORT_SINGLETON_DECLARATION(T) ACE_EXPORT_SINGLETON_DECLARATION (T)
-#    define NDDS_TRANSPORT_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK) ACE_EXPORT_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK)
-#  else /* NDDS_TRANSPORT_BUILD_DLL */
-#    define NddsTransportExport ACE_Proper_Import_Flag
-#    define NDDS_TRANSPORT_SINGLETON_DECLARATION(T) ACE_IMPORT_SINGLETON_DECLARATION (T)
-#    define NDDS_TRANSPORT_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK) ACE_IMPORT_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK)
-#  endif /* NDDS_TRANSPORT_BUILD_DLL */
-#else /* NDDS_TRANSPORT_HAS_DLL == 1 */
-#  define NddsTransportExport
-#  define NDDS_TRANSPORT_SINGLETON_DECLARATION(T)
-#  define NDDS_TRANSPORT_SINGLETON_DECLARE(SINGLETON_TYPE, CLASS, LOCK)
-#endif /* NDDS_TRANSPORT_HAS_DLL == 1 */
+#if defined (NDDS_HAS_DLL) && (NDDS_HAS_DLL == 1)
+#  if defined (NDDS_BUILD_DLL)
+#    define NDDS_Export NDDS_Proper_Export_Flag
+#  else /* NDDS_BUILD_DLL */
+#    define NDDS_Export NDDS_Proper_Import_Flag
+#  endif /* NDDS_BUILD_DLL */
+#else /* NDDS_HAS_DLL == 1 */
+#  define NDDS_Export
+#endif /* NDDS_HAS_DLL == 1 */
 
-// Set NDDS_TRANSPORT_NTRACE = 0 to turn on library specific tracing even if
-// tracing is turned off for ACE.
-#if !defined (NDDS_TRANSPORT_NTRACE)
-#  if (ACE_NTRACE == 1)
-#    define NDDS_TRANSPORT_NTRACE 1
-#  else /* (ACE_NTRACE == 1) */
-#    define NDDS_TRANSPORT_NTRACE 0
-#  endif /* (ACE_NTRACE == 1) */
-#endif /* !NDDS_TRANSPORT_NTRACE */
-
-#if (NDDS_TRANSPORT_NTRACE == 1)
-#  define NDDS_TRANSPORT_TRACE(X)
-#else /* (NDDS_TRANSPORT_NTRACE == 1) */
-#  if !defined (ACE_HAS_TRACE)
-#    define ACE_HAS_TRACE
-#  endif /* ACE_HAS_TRACE */
-#  define NDDS_TRANSPORT_TRACE(X) ACE_TRACE_IMPL(X)
-#  include "ace/Trace.h"
-#endif /* (NDDS_TRANSPORT_NTRACE == 1) */
-
-#endif /* NDDS_TRANSPORT_EXPORT_H */
+#endif /* NDDS_EXPORT_H */
 
 // End of auto generated file.

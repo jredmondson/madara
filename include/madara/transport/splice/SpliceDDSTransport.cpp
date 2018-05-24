@@ -407,7 +407,7 @@ madara::transport::SpliceDDSTransport::send_data (
     data.originator = DDS::string_dup (id_.c_str ());
     data.type = madara::transport::MULTIASSIGN;
     data.ttl = settings_.get_rebroadcast_ttl ();
-    data.timestamp = time (NULL);
+    data.timestamp = utility::get_time ();
     data.madara_id = DDS::string_dup (MADARA_IDENTIFIER);
 
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,

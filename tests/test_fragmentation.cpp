@@ -1,9 +1,8 @@
 
 #include "madara/transport/Fragmentation.h"
 #include "madara/transport/MessageHeader.h"
-#include "madara/knowledge_engine/KnowledgeRecord.h"
+#include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/utility/Utility.h"
-#include "madara/utility/LogMacros.h"
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -12,7 +11,8 @@
 #define BUFFER_SIZE    1000
 #define LARGE_BUFFER_SIZE 500000
 
-namespace transport = Madara::Transport;
+namespace transport = madara::transport;
+namespace logger = madara::logger;
 
 char chars[10] = {
   '0', '1', '2', '3', '4',
@@ -28,20 +28,24 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
+        int level;
         std::stringstream buffer (argv[i + 1]);
-        buffer >> MADARA_debug_level;
+        buffer >> level;
+
+        logger::global_logger->set_level (level);
       }
 
       ++i;
     }
     else
     {
-      MADARA_DEBUG (MADARA_LOG_EMERGENCY, (LM_DEBUG, 
+      madara_logger_ptr_log (logger::global_logger->get (),
+        logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
         "  Tests the fragment library\n\n" \
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "\n",
-        argv[0]));
+        argv[0]);
       exit (0);
     }
   }
@@ -267,10 +271,10 @@ void test_records_frag (void)
   transport::MessageHeader header;
   header.size = size;
 
-  Madara::KnowledgeMap knowledge, copied_knowledge;
-  knowledge ["str_var"] = Madara::KnowledgeRecord (std::string (254000, ' '));
-  knowledge ["int_var"] = Madara::KnowledgeRecord::Integer (254LL);
-  knowledge ["double_var"] = Madara::KnowledgeRecord (5.235);
+  madara::knowledge::KnowledgeMap knowledge, copied_knowledge;
+  knowledge ["str_var"] = madara::knowledge::KnowledgeRecord (std::string (254000, ' '));
+  knowledge ["int_var"] = madara::knowledge::KnowledgeRecord::Integer (254LL);
+  knowledge ["double_var"] = madara::knowledge::KnowledgeRecord (5.235);
 
   header.updates = (uint32_t)knowledge.size ();
   header.clock = 10;
@@ -279,7 +283,7 @@ void test_records_frag (void)
   
   buffer = header.write (buffer, buffer_remaining);
 
-  for (Madara::KnowledgeMap::iterator i = knowledge.begin ();
+  for (madara::knowledge::KnowledgeMap::iterator i = knowledge.begin ();
        i != knowledge.end (); ++i)
   {
     buffer = i->second.write (buffer, i->first, buffer_remaining);
@@ -315,7 +319,7 @@ void test_records_frag (void)
 
     for (uint32_t i = 0; i < copied_header.updates; ++i)
     {
-      Madara::KnowledgeRecord temp;
+      madara::knowledge::KnowledgeRecord temp;
       std::string key;
       result = temp.read (result, key, buffer_remaining);
       copied_knowledge [key] = temp;

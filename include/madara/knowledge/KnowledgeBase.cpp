@@ -2,14 +2,17 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/KnowledgeBaseImpl.h"
 #include "madara/logger/Logger.h"
+#include "madara/utility/Utility.h"
+#include "ContextGuard.h"
+#include "madara/utility/EpochEnforcer.h"
 
 
 #include <sstream>
 #include <iostream>
 
-#include "ace/OS_NS_Thread.h"
-#include "ace/High_Res_Timer.h"
-#include "ace/OS_NS_sys_socket.h"
+namespace utility = madara::utility;
+
+typedef  utility::EpochEnforcer<std::chrono::steady_clock> EpochEnforcer;
 
 namespace madara { namespace knowledge {
 
@@ -34,80 +37,16 @@ KnowledgeBase::wait (
      * context.
      **/
 
-    ACE_Time_Value current = utility::get_ace_time ();
-    ACE_Time_Value max_wait, sleep_time, next_epoch;
-    ACE_Time_Value poll_frequency, last = current;
+    EpochEnforcer enforcer (settings.poll_frequency, settings.max_wait_time);
 
-    if (settings.poll_frequency >= 0)
-    {
-      max_wait.set (settings.max_wait_time);
-      max_wait = current + max_wait;
-
-      poll_frequency.set (settings.poll_frequency);
-      next_epoch = current + poll_frequency;
-    }
+    KnowledgeRecord last_value;
 
     // print the post statement at highest log level (cannot be masked)
     if (settings.pre_print_statement != "")
       context_->print (settings.pre_print_statement, logger::LOG_ALWAYS);
 
-    // lock the context
-    context_->lock ();
-
-    madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
-      "KnowledgeBase::wait:" \
-      " waiting on %s\n", expression.logic.c_str ());
-
-    KnowledgeRecord last_value = expression.expression.evaluate (settings);
-
-    madara_logger_log (context_->get_logger (), logger::LOG_DETAILED,
-      "KnowledgeBase::wait:" \
-      " completed first eval to get %s\n",
-      last_value.to_string ().c_str ());
-
-    send_modifieds ("KnowledgeBase:wait", settings);
-
-    context_->unlock ();
-
-    current = utility::get_ace_time ();
-
-    // wait for expression to be true
-    while (!last_value.to_integer () &&
-      (settings.max_wait_time < 0 || current < max_wait))
     {
-      madara_logger_log (context_->get_logger (), logger::LOG_DETAILED,
-        "KnowledgeBase::wait:" \
-        " current is %llu.%llu and max is %llu.%llu (poll freq is %f)\n",
-        (unsigned long long)current.sec (),
-        (unsigned long long)current.usec (),
-        (unsigned long long)max_wait.sec (),
-        (unsigned long long)max_wait.usec (),
-        settings.poll_frequency);
-
-      madara_logger_log (context_->get_logger (), logger::LOG_DETAILED,
-        "KnowledgeBase::wait:" \
-        " last value didn't result in success\n");
-
-      // Unlike the other wait statements, we allow for a time based wait.
-      // To do this, we allow a user to specify a
-      if (settings.poll_frequency > 0)
-      {
-        if (current < next_epoch)
-        {
-          sleep_time = next_epoch - current;
-          madara::utility::sleep (sleep_time);
-        }
-
-        next_epoch = next_epoch + poll_frequency;
-      }
-      else
-        context_->wait_for_change (true);
-
-      // relock - basically we need to evaluate the tree again, and
-      // we can't have a bunch of people changing the variables as
-      // while we're evaluating the tree.
-      context_->lock ();
-
+      ContextGuard context_guard (*context_);
 
       madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
         "KnowledgeBase::wait:" \
@@ -117,20 +56,53 @@ KnowledgeBase::wait (
 
       madara_logger_log (context_->get_logger (), logger::LOG_DETAILED,
         "KnowledgeBase::wait:" \
-        " completed eval to get %s\n",
+        " completed first eval to get %s\n",
         last_value.to_string ().c_str ());
 
       send_modifieds ("KnowledgeBase:wait", settings);
+    }
 
-      context_->unlock ();
+    // wait for expression to be true
+    while (!last_value.to_integer () &&
+      (settings.max_wait_time < 0 || !enforcer.is_done ()))
+    {
+      madara_logger_log (context_->get_logger (), logger::LOG_DETAILED,
+        "KnowledgeBase::wait:" \
+        " last value didn't result in success\n");
+
+      // Unlike the other wait statements, we allow for a time based wait.
+      // To do this, we allow a user to specify a
+      if (settings.poll_frequency > 0)
+      {
+        enforcer.sleep_until_next ();
+      }
+      else
+        context_->wait_for_change (true);
+
+      // relock - basically we need to evaluate the tree again, and
+      // we can't have a bunch of people changing the variables as
+      // while we're evaluating the tree.
+      {
+        ContextGuard context_guard (*context_);
+
+        madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+          "KnowledgeBase::wait:" \
+          " waiting on %s\n", expression.logic.c_str ());
+
+        last_value = expression.expression.evaluate (settings);
+
+        madara_logger_log (context_->get_logger (), logger::LOG_DETAILED,
+          "KnowledgeBase::wait:" \
+          " completed eval to get %s\n",
+          last_value.to_string ().c_str ());
+
+        send_modifieds ("KnowledgeBase:wait", settings);
+      }
+
       context_->signal ();
-
-      // get current time
-      current = utility::get_ace_time ();
-
     } // end while (!last)
 
-    if (current >= max_wait)
+    if (enforcer.is_done ())
     {
       madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
         "KnowledgeBase::wait:" \

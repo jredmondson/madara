@@ -102,7 +102,7 @@ madara::transport::SpliceReadThread::rebroadcast (
     data.originator = DDS::string_dup(id_.c_str ());
     data.type = madara::transport::MULTIASSIGN;
     data.ttl = settings_.get_rebroadcast_ttl ();
-    data.timestamp = time (NULL);
+    data.timestamp = utility::get_time ();
     data.madara_id = DDS::string_dup(MADARA_IDENTIFIER);
     
     handle = update_writer_->register_instance (data);
@@ -155,8 +155,6 @@ madara::transport::SpliceReadThread::run (void)
     // since we've only set up the wait
     DDS::ConditionSeq_var conditionList = new DDS::ConditionSeq();
     result = waitset_.wait (conditionList.inout (), wait_time);
-
-    //ACE_DEBUG ((LM_DEBUG, "(%P|%t) Read thread take.\n"));
 
     madara_logger_log (context_->get_logger (), logger::LOG_DETAILED,
       "%s: entering a take on the DDS reader.\n", print_prefix);

@@ -3,6 +3,7 @@
 #define _BANDWIDTH_MONITOR_INL_
 
 #include "BandwidthMonitor.h"
+#include "madara/utility/Utility.h"
 
 inline time_t
 madara::transport::BandwidthMonitor::update_utilization (void)

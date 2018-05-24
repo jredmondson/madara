@@ -3,8 +3,6 @@
 #define _MADARA_UTILITY_THREADSAFE_VECTOR_H_
 
 #include <vector>
-#include "ace/Guard_T.h"
-#include "ace/Recursive_Thread_Mutex.h"
 #include "madara/LockType.h"
 
 namespace madara

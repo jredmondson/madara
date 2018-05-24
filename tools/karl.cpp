@@ -626,7 +626,7 @@ int main (int argc, char ** argv)
       knowledge.set (meta_prefix + ".states",
         (Integer)load_checkpoint_settings.states, silent);
       knowledge.set (meta_prefix + ".current_timestamp",
-        (Integer)time (NULL), silent);
+        (Integer)utility::get_time (), silent);
     }
   }
 

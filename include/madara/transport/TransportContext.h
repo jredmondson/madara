@@ -32,7 +32,7 @@ namespace madara
        **/
       TransportContext (int64_t operation = IDLE_OPERATION,
         uint64_t receive_bandwidth = 0, uint64_t send_bandwidth = 0,
-        uint64_t message_time = 0, uint64_t current_time = time (NULL),
+        uint64_t message_time = 0, uint64_t current_time = utility::get_time (),
         const std::string & domain = "",
         const std::string & originator = "",
         const std::string & endpoint = "");
@@ -108,7 +108,7 @@ namespace madara
 
       /**
        * Gets the current timestamp.
-       * @return   current time in seconds
+       * @return   current time in nanoseconds
        **/
       uint64_t  get_current_time (void) const;
 
@@ -122,8 +122,8 @@ namespace madara
       void set_message_time (uint64_t message_time);
 
       /**
-       * Sets the current time. This should be time (NULL).
-       * @param current_time the current time in seconds
+       * Sets the current time. This should be utility::get_time ().
+       * @param current_time the current time in nanoseconds
        **/
       void set_current_time (uint64_t current_time);
 

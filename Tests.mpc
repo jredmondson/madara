@@ -294,6 +294,7 @@ project (Test_Prefix_To_Map) : using_madara, using_ace, no_karl, no_xml, null_lo
   }
 }
 
+<<<<<<< HEAD
 project (Test_Timed_Executor) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_timed_executor
@@ -313,6 +314,8 @@ project (Test_Timed_Executor) : using_madara, using_ace, no_karl, no_xml, null_l
   }
 }
 
+=======
+>>>>>>> 850a0ed693df8f894fb03c2654c042b0230cd1ba
 project (Test_KaRL_Containers) : using_madara, using_ace, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_karl_containers

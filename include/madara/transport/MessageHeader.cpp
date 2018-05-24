@@ -7,7 +7,7 @@
 madara::transport::MessageHeader::MessageHeader ()
 : size (encoded_size ()),
   type (0), updates (0), quality (0), clock (0), 
-  timestamp (time (NULL)), ttl (0)
+  timestamp (utility::get_time ()), ttl (0)
 {
   memcpy (madara_id, MADARA_IDENTIFIER, 7);
   madara_id[7] = 0;

@@ -1657,111 +1657,11 @@ ThreadSafeContext::save_context (
   const std::string & filename,
   const std::string & id) const
 {
-  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
-    "ThreadSafeContext::save_context:" \
-    " opening file %s\n", filename.c_str ());
+  CheckpointSettings settings;
+  settings.filename = filename;
+  settings.originator = id;
 
-  int64_t total_written (0);
-  FILE * file = fopen (filename.c_str (), "wb");
-
-  FileHeader meta;
-  meta.states = 1;
-  strncpy (meta.originator, id.c_str (),
-    sizeof (meta.originator) < id.size () + 1 ?
-    sizeof (meta.originator) : id.size () + 1);
-
-  transport::MessageHeader checkpoint_header;
-
-  if (file)
-  {
-    int64_t max_buffer (102800);
-    int64_t buffer_remaining (max_buffer);
-    utility::ScopedArray <char> buffer = new char [max_buffer];
-
-    char * current = buffer.get_ptr ();
-
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "ThreadSafeContext::save_context:" \
-      " generating file meta\n");
-
-    meta.size += checkpoint_header.encoded_size ();
-    checkpoint_header.size = checkpoint_header.encoded_size ();
-
-    current = meta.write (current, buffer_remaining);
-
-    checkpoint_header.clock = clock_;
-
-    current = checkpoint_header.write (current, buffer_remaining);
-
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "ThreadSafeContext::save_context:" \
-      " writing records\n");
-
-    // lock the context
-    MADARA_GUARD_TYPE guard (mutex_);
-
-    for (KnowledgeMap::const_iterator i = map_.begin ();
-         i != map_.end (); ++i)
-    {
-      if (i->second.exists ())
-      {
-        // get the encoded size of the record for checking buffer boundaries
-        int64_t encoded_size = i->second.get_encoded_size (i->first);
-        ++checkpoint_header.updates;
-        meta.size += encoded_size;
-        checkpoint_header.size += encoded_size;
-
-        if (encoded_size > buffer_remaining)
-        {
-          /**
-           * if the record is larger than the buffer we have remaining, then
-           * write the buffer to the file
-           **/
-          current = buffer.get_ptr ();
-          fwrite (current,
-            (size_t)(max_buffer - buffer_remaining), 1, file);
-          total_written += (int64_t)(max_buffer - buffer_remaining);
-          buffer_remaining = max_buffer;
-
-          if (encoded_size > max_buffer)
-          {
-            /**
-             * If the record is larger than the buffer, then we must allocate a
-             * buffer large enough to write to it.
-             **/
-            buffer = new char[encoded_size];
-            max_buffer = encoded_size;
-            buffer_remaining = max_buffer;
-            current = buffer.get_ptr ();
-          } // end if larger than buffer
-        } // end if larger than buffer remaining
-
-        current = i->second.write (current, i->first, buffer_remaining);
-      }
-    }
-
-    if (buffer_remaining != max_buffer)
-    {
-      fwrite (buffer.get_ptr (),
-        (size_t) (max_buffer - buffer_remaining), 1, file);
-      total_written += (int64_t) (max_buffer - buffer_remaining);
-    }
-
-    // update the meta data at the front
-    fseek (file, 0, SEEK_SET);
-
-    current = buffer.get_ptr ();
-    buffer_remaining = max_buffer;
-
-    current = meta.write (current, buffer_remaining);
-    current = checkpoint_header.write (current, buffer_remaining);
-
-    fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
-
-    fclose (file);
-  }
-
-  return meta.size;
+  return save_context (settings);
 }
 
 int64_t
@@ -1908,98 +1808,10 @@ int64_t
 ThreadSafeContext::save_as_karl (
 const std::string & filename) const
 {
-  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-    "ThreadSafeContext::save_as_karl:" \
-    " opening file %s\n", filename.c_str ());
+  CheckpointSettings settings;
+  settings.filename = filename;
 
-  int64_t bytes_written (0);
-  std::stringstream buffer;
-  std::ofstream file;
-  file.open (filename.c_str ());
-
-  if (file.is_open ())
-  {
-    // lock the context
-    MADARA_GUARD_TYPE guard (mutex_);
-
-    for (KnowledgeMap::const_iterator i = map_.begin ();
-      i != map_.end (); ++i)
-    {
-      if (i->second.exists ())
-      {
-        buffer << i->first;
-        buffer << "=";
-
-        if (!i->second.is_binary_file_type ())
-        {
-          // record is a non binary file type
-          if (i->second.is_string_type ())
-          {
-            // strings require quotation marks
-            buffer << "\"";
-          }
-          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
-            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
-          {
-            // arrays require brackets
-            buffer << "[";
-          }
-
-          buffer << i->second;
-          if (i->second.is_string_type ())
-          {
-            // strings require quotation marks
-            buffer << "\"";
-          }
-          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
-            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
-          {
-            // arrays require brackets
-            buffer << "]";
-          }
-        }
-        else
-        {
-          buffer << "#read_file ('";
-
-          std::string path = utility::extract_path (filename);
-
-          if (path == "")
-            path = ".";
-
-          path += "/";
-          path += i->first;
-
-          if (i->second.type () == knowledge::KnowledgeRecord::IMAGE_JPEG)
-          {
-            path += ".jpg";
-          }
-          else
-          {
-            path += ".dat";
-          }
-
-          utility::write_file (path,
-            (void *)&(*i->second.file_value_)[0], i->second.size ());
-          buffer << path;
-
-
-          buffer << "')";
-        }
-
-        buffer << ";\n";
-      }
-    }
-
-    std::string result = buffer.str ();
-    file << result;
-
-    bytes_written = (int64_t) result.size ();
-
-    file.close ();
-  }
-
-  return bytes_written;
+  return save_as_karl (settings);
 }
 
 
@@ -2145,107 +1957,10 @@ int64_t
 ThreadSafeContext::save_as_json (
 const std::string & filename) const
 {
-  madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-    "ThreadSafeContext::save_as_json:" \
-    " opening file %s\n", filename.c_str ());
+  CheckpointSettings settings;
+  settings.filename = filename;
 
-  int64_t bytes_written (0);
-
-  std::stringstream buffer;
-  std::ofstream file;
-  file.open (filename.c_str ());
-
-  if (file.is_open ())
-  {
-    // lock the context
-    MADARA_GUARD_TYPE guard (mutex_);
-
-    buffer << "{\n";
-
-    for (KnowledgeMap::const_iterator i = map_.begin ();
-      i != map_.end (); ++i)
-    {
-      if (i->second.exists ())
-      {
-        buffer << "  \"";
-        buffer << i->first;
-        buffer << "\" : ";
-
-        if (!i->second.is_binary_file_type ())
-        {
-          // record is a non binary file type
-          if (i->second.is_string_type ())
-          {
-            // strings require quotation marks
-            buffer << "\"";
-          }
-          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
-            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
-          {
-            // arrays require brackets
-            buffer << "[";
-          }
-
-          buffer << i->second;
-          if (i->second.is_string_type ())
-          {
-            // strings require quotation marks
-            buffer << "\"";
-          }
-          else if (i->second.type () == knowledge::KnowledgeRecord::INTEGER_ARRAY ||
-            i->second.type () == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
-          {
-            // arrays require brackets
-            buffer << "]";
-          }
-        }
-        else
-        {
-          buffer << "#read_file ('";
-
-          std::string path = utility::extract_path (filename);
-
-          if (path == "")
-            path = ".";
-
-          path += "/";
-          path += i->first;
-
-          if (i->second.type () == knowledge::KnowledgeRecord::IMAGE_JPEG)
-          {
-            path += ".jpg";
-          }
-          else
-          {
-            path += ".dat";
-          }
-
-          utility::write_file (path,
-            (void *)&(*i->second.file_value_)[0], i->second.size ());
-          buffer << path;
-
-
-          buffer << "')";
-        }
-
-        KnowledgeMap::const_iterator j (i);
-
-        if (++j != map_.end ())
-          buffer << ",\n";
-      }
-    }
-
-    buffer << "\n}\n";
-
-    std::string result = buffer.str ();
-    file << result;
-
-    bytes_written = (int64_t) result.size ();
-
-    file.close ();
-  }
-
-  return bytes_written;
+  return save_as_json (settings);
 }
 
 
@@ -2402,117 +2117,11 @@ ThreadSafeContext::load_context (
   const std::string & filename, std::string & id,
   const KnowledgeUpdateSettings & settings)
 {
-  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
-    "ThreadSafeContext::load_context:" \
-    " opening file %s\n", filename.c_str ());
+  CheckpointSettings checkpoint_settings;
+  checkpoint_settings.filename = filename;
+  checkpoint_settings.originator = id;
 
-  // using ACE for writing to the destination file
-  FILE * file = fopen (filename.c_str (), "rb");
-
-  int64_t total_read (0);
-
-  if (file)
-  {
-    int64_t max_buffer (102800);
-    int64_t buffer_remaining (max_buffer);
-    FileHeader meta;
-
-    utility::ScopedArray <char> buffer = new char [max_buffer];
-    const char * current = buffer.get_ptr ();
-
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "ThreadSafeContext::load_context:" \
-      " reading file meta data\n");
-
-    total_read = fread (buffer.get_ptr (),
-      1, max_buffer, file);
-    buffer_remaining = (int64_t)total_read;
-
-    if (total_read > FileHeader::encoded_size () &&
-        FileHeader::file_header_test (current))
-    {
-      // if there was something in the file, and it was the right header
-
-      current = meta.read (current, buffer_remaining);
-      id = meta.originator;
-
-      /**
-       * check that there is more than one state and that the rest of
-       * the file is sufficient to at least be a message header (what
-       * we use as a checkpoint header
-       **/
-      if (meta.states > 0)
-      {
-        for (uint64_t state = 0; state < meta.states; ++state)
-        {
-          if (buffer_remaining > (int64_t)
-             transport::MessageHeader::static_encoded_size ())
-          {
-            transport::MessageHeader checkpoint_header;
-
-            current = checkpoint_header.read (current, buffer_remaining);
-
-            /**
-             * What we read into the checkpoint_header will dictate our
-             * max_buffer. We want to make this checkpoint_header size into
-             * something reasonable.
-             **/
-            if (checkpoint_header.size > (uint64_t) buffer_remaining)
-            {
-              /**
-               * create a new array and copy the remaining elements
-               * from buffer_remaining
-               **/
-              utility::ScopedArray <char> new_buffer =
-                new char [checkpoint_header.size];
-              memcpy (new_buffer.get_ptr (), current,
-                (size_t)buffer_remaining);
-
-              // read the rest of checkpoint into new buffer
-              total_read += fread (new_buffer.get_ptr () + buffer_remaining, 1,
-                checkpoint_header.size
-                  - (uint64_t)buffer_remaining
-                  - checkpoint_header.encoded_size (), file);
-
-              // update other variables
-              max_buffer = checkpoint_header.size;
-              buffer_remaining = checkpoint_header.size
-                - checkpoint_header.encoded_size ();
-              current = new_buffer.get_ptr ();
-              buffer = new_buffer;
-            } // end if allocation is needed
-
-            for (uint32_t update = 0;
-                 update < checkpoint_header.updates; ++update)
-            {
-              std::string key;
-              knowledge::KnowledgeRecord record;
-              current = record.read (current, key, buffer_remaining);
-              update_record_from_external (key, record, settings);
-            }
-
-          } // end if enough buffer for reading a message header
-
-          if (buffer_remaining == 0  && (uint64_t) total_read < meta.size)
-          {
-            buffer_remaining = max_buffer;
-            current = buffer.get_ptr ();
-            total_read += fread (buffer.get_ptr (), 1, buffer_remaining, file);
-          }
-        } // end for loop of states
-      }
-    } // end if total_read > 0
-    else
-    {
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-        "ThreadSafeContext::load_context:" \
-        " invalid file. No contextual change.\n");
-    }
-
-    fclose (file);
-  }
-
-  return total_read;
+  return load_context (checkpoint_settings, settings);
 }
 
 int64_t
@@ -2523,9 +2132,9 @@ ThreadSafeContext::load_context (
 {
   madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
     "ThreadSafeContext::load_context:" \
-    " opening file %s\n", filename.c_str ());
+    " opening file %s for just header info\n", filename.c_str ());
 
-  // using ACE for writing to the destination file
+  // read the initial FileHeader in
   FILE * file = fopen (filename.c_str (), "rb");
 
   int64_t total_read (0);
@@ -2553,71 +2162,6 @@ ThreadSafeContext::load_context (
 
       current = meta.read (current, buffer_remaining);
 
-      /**
-      * check that there is more than one state and that the rest of
-      * the file is sufficient to at least be a message header (what
-      * we use as a checkpoint header
-      **/
-      if (meta.states > 0)
-      {
-        for (uint64_t state = 0; state < meta.states; ++state)
-        {
-          if (buffer_remaining > (int64_t)
-            transport::MessageHeader::static_encoded_size ())
-          {
-            transport::MessageHeader checkpoint_header;
-
-            current = checkpoint_header.read (current, buffer_remaining);
-
-            /**
-            * What we read into the checkpoint_header will dictate our
-            * max_buffer. We want to make this checkpoint_header size into
-            * something reasonable.
-            **/
-            if (checkpoint_header.size > (uint64_t)buffer_remaining)
-            {
-              /**
-              * create a new array and copy the remaining elements
-              * from buffer_remaining
-              **/
-              utility::ScopedArray <char> new_buffer =
-                new char[checkpoint_header.size];
-              memcpy (new_buffer.get_ptr (), current,
-                (size_t)buffer_remaining);
-
-              // read the rest of checkpoint into new buffer
-              total_read += fread (new_buffer.get_ptr () + buffer_remaining, 1,
-                checkpoint_header.size
-                - (uint64_t)buffer_remaining
-                - checkpoint_header.encoded_size (), file);
-
-              // update other variables
-              max_buffer = checkpoint_header.size;
-              buffer_remaining = checkpoint_header.size
-                - checkpoint_header.encoded_size ();
-              current = new_buffer.get_ptr ();
-              buffer = new_buffer;
-            } // end if allocation is needed
-
-            for (uint32_t update = 0;
-              update < checkpoint_header.updates; ++update)
-            {
-              std::string key;
-              knowledge::KnowledgeRecord record;
-              current = record.read (current, key, buffer_remaining);
-              update_record_from_external (key, record, settings);
-            }
-
-          } // end if enough buffer for reading a message header
-
-          if (buffer_remaining == 0 && (uint64_t)total_read < meta.size)
-          {
-            buffer_remaining = max_buffer;
-            current = buffer.get_ptr ();
-            total_read += fread (buffer.get_ptr (), 1, buffer_remaining, file);
-          }
-        } // end for loop of states
-      }
     } // end if total_read > 0
     else
     {
@@ -2629,7 +2173,10 @@ ThreadSafeContext::load_context (
     fclose (file);
   }
 
-  return total_read;
+  CheckpointSettings checkpoint_settings;
+  checkpoint_settings.filename = filename;
+
+  return load_context (checkpoint_settings, settings);
 }
 
 
@@ -3250,218 +2797,11 @@ ThreadSafeContext::save_checkpoint (
   const std::string & filename,
   const std::string & id) const
 {
-  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
-    "ThreadSafeContext::save_checkpoint:" \
-    " opening file %s\n", filename.c_str ());
+  CheckpointSettings settings;
+  settings.filename = filename;
+  settings.originator = id;
 
-  int64_t total_written (0);
-  FILE * file = fopen (filename.c_str (), "rb+");
-
-  FileHeader meta;
-  transport::MessageHeader checkpoint_header;
-
-  if (file)
-  {
-    int64_t max_buffer (102800);
-    int64_t buffer_remaining (max_buffer);
-    utility::ScopedArray <char> buffer = new char [max_buffer];
-
-    char * current = buffer.get_ptr ();
-    const char * meta_reader = current;
-
-    // read the meta data at the front
-    fseek (file, 0, SEEK_SET);
-    size_t ret = fread (current, meta.encoded_size (), 1, file);
-    if (ret == 0) {
-      madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-        "ThreadSafeContext::save_checkpoint:" \
-        " failed to read existing file header: size=%d\n",
-        (int)meta.encoded_size ());
-
-      return -1;
-    }
-
-    meta_reader = meta.read (meta_reader, buffer_remaining);
-
-    if (id != "")
-    {
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-        "ThreadSafeContext::save_checkpoint:" \
-        " setting file meta id to %s\n",
-        id.c_str ());
-
-      strncpy (meta.originator, id.c_str (),
-        sizeof (meta.originator) < id.size () + 1 ?
-        sizeof (meta.originator) : id.size () + 1);
-    }
-
-    // save the spot where the file ends
-    uint64_t checkpoint_start = meta.size;
-
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "ThreadSafeContext::save_checkpoint:" \
-      " generating file meta\n");
-
-    meta.size += checkpoint_header.encoded_size ();
-    checkpoint_header.size = 0;
-
-    // lock the context
-    MADARA_GUARD_TYPE guard (mutex_);
-
-    const knowledge::VariableReferenceMap & records = this->get_modifieds ();
-    const knowledge::VariableReferenceMap & local_records = this->get_local_modified ();
-
-    if (records.size () + local_records.size () != 0)
-    {
-      checkpoint_header.size = checkpoint_header.encoded_size ();
-
-      // set the file pointer to the end of the file
-      fseek (file, checkpoint_start, SEEK_SET);
-      current = checkpoint_header.write (current, buffer_remaining);
-
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-        "ThreadSafeContext::save_checkpoint:" \
-        " writing records\n");
-
-      for (const auto &e : records)
-      {
-        auto record = e.second.get_record_unsafe();
-
-        if (record->exists ())
-        {
-          // get the encoded size of the record for checking buffer boundaries
-          int64_t encoded_size = record->get_encoded_size (e.first);
-          ++checkpoint_header.updates;
-          meta.size += encoded_size;
-          checkpoint_header.size += encoded_size;
-
-          if (encoded_size > buffer_remaining)
-          {
-            /**
-             * if the record is larger than the buffer we have remaining, then
-             * write the buffer to the file
-             **/
-            current = buffer.get_ptr ();
-            fwrite (current,
-              (size_t)(max_buffer - buffer_remaining), 1, file);
-            total_written += (int64_t)(max_buffer - buffer_remaining);
-            buffer_remaining = max_buffer;
-
-            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-              "ThreadSafeContext::save_checkpoint:" \
-              " encoded_size larger than remaining buffer. Flushing\n");
-
-            if (encoded_size > max_buffer)
-            {
-              /**
-               * If the record is larger than the buffer, then we must allocate a
-               * buffer large enough to write to it.
-               **/
-              buffer = new char[encoded_size];
-              max_buffer = encoded_size;
-              buffer_remaining = max_buffer;
-              current = buffer.get_ptr ();
-
-              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-                "ThreadSafeContext::save_checkpoint:" \
-                " encoded_size larger than entire buffer. Reallocating\n");
-            } // end if larger than buffer
-          } // end if larger than buffer remaining
-
-          current = record->write (current, e.first, buffer_remaining);
-        }
-      } // end records loop
-
-      for (const auto &e : local_records)
-      {
-        auto record = e.second.get_record_unsafe();
-
-        if (record->exists ())
-        {
-          // get the encoded size of the record for checking buffer boundaries
-          int64_t encoded_size = record->get_encoded_size (e.first);
-          ++checkpoint_header.updates;
-          meta.size += encoded_size;
-          checkpoint_header.size += encoded_size;
-
-          if (encoded_size > buffer_remaining)
-          {
-            /**
-             * if the record is larger than the buffer we have remaining, then
-             * write the buffer to the file
-             **/
-            current = buffer.get_ptr ();
-            fwrite (current,
-              (size_t)(max_buffer - buffer_remaining), 1, file);
-            total_written += (int64_t)(max_buffer - buffer_remaining);
-            buffer_remaining = max_buffer;
-
-            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-              "ThreadSafeContext::save_checkpoint:" \
-              " encoded_size larger than remaining buffer. Flushing\n");
-
-            if (encoded_size > max_buffer)
-            {
-              /**
-               * If the record is larger than the buffer, then we must allocate a
-               * buffer large enough to write to it.
-               **/
-              buffer = new char[encoded_size];
-              max_buffer = encoded_size;
-              buffer_remaining = max_buffer;
-              current = buffer.get_ptr ();
-
-              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-                "ThreadSafeContext::save_checkpoint:" \
-                " encoded_size larger than entire buffer. Reallocating\n");
-            } // end if larger than buffer
-          } // end if larger than buffer remaining
-
-          current = record->write (current, e.first, buffer_remaining);
-        }
-      }
-
-      if (buffer_remaining != max_buffer)
-      {
-        fwrite (buffer.get_ptr (),
-          (size_t) (max_buffer - buffer_remaining), 1, file);
-        total_written += (size_t) (max_buffer - buffer_remaining);
-      }
-
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-        "ThreadSafeContext::save_checkpoint:" \
-        " updating file meta data\n");
-
-      // update the meta data at the front
-      fseek (file, 0, SEEK_SET);
-
-      current = buffer.get_ptr ();
-      buffer_remaining = max_buffer;
-      ++meta.states;
-
-      current = meta.write (current, buffer_remaining);
-
-      fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
-
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-        "ThreadSafeContext::save_checkpoint:" \
-        " updating checkpoint meta data\n");
-
-      // update the checkpoint meta data
-      fseek (file, checkpoint_start, SEEK_SET);
-
-      current = buffer.get_ptr ();
-      buffer_remaining = max_buffer;
-
-      current = checkpoint_header.write (current, buffer_remaining);
-
-      fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
-    }
-
-    fclose (file);
-  }
-
-  return checkpoint_header.size;
+  return save_checkpoint (settings);
 }
 
 } }
