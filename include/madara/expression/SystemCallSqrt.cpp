@@ -52,7 +52,7 @@ madara::expression::SystemCallSqrt::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call sqrt requires 1 argument,"
       "e.g., #sqrt (4), which would return 2.\n");
   }
@@ -79,7 +79,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL RUNTIME ERROR: System call sqrt requires 1 argument,"
       "e.g., #sqrt (4), which would return 2.\n");
   }

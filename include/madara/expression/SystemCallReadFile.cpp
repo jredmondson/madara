@@ -54,7 +54,7 @@ madara::expression::SystemCallReadFile::prune (bool & can_change)
 
   if (nodes_.size () == 0 || nodes_.size () > 2)
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call read_file"
       " requires at least a filename to read, e.g."
       " #read_file (filename), #read_file (filename, 'text')."

@@ -4,6 +4,7 @@
 
 #ifndef _MADARA_NO_KARL_
 
+#include <math.h>
 #include <iostream>
 
 #include "madara/expression/CompositeBinaryNode.h"
@@ -44,7 +45,6 @@ madara::expression::CompositeDivideNode::prune (bool & can_change)
   bool right_child_can_change = false;
   madara::knowledge::KnowledgeRecord left_value;
   madara::knowledge::KnowledgeRecord right_value;
-  madara::knowledge::KnowledgeRecord zero;
 
   if (this->left_)
   {
@@ -57,7 +57,7 @@ madara::expression::CompositeDivideNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::CompositeDivideNode: "
       "KARL COMPILE ERROR: Division has no left expression\n");
 
@@ -73,26 +73,11 @@ madara::expression::CompositeDivideNode::prune (bool & can_change)
     if (!right_child_can_change && dynamic_cast <LeafNode *> (right_) == 0)
     {
       // leave this check which is important
-      if (right_value.is_false ())
+      if (right_value.is_true ())
       {
-        madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-          "KARL COMPILE ERROR: Division results in permanent divide by zero\n");
-
-        throw KarlException ("madara::expression::CompositeDivideNode: "
-          "KARL COMPILE ERROR: "
-          "Division has zero denominator\n"); 
+        delete right_;
+        right_ = new LeafNode (*(this->logger_), right_value);
       }
-      // the only time we should delete right is if we have a clean division
-      if (!left_child_can_change && 
-          left_value % right_value == zero)
-      {
-        // don't worry about allocating anything. This is about to be
-        // reclaimed anyway since !right_can_change and !left_can_change
-        delete this->right_;
-        this->right_ = 0;
-      }
-      else
-        right_child_can_change = true;
     }
 
     //if (!right_child_can_change)
@@ -100,7 +85,7 @@ madara::expression::CompositeDivideNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: Division has no right expression (divide by zero)\n");
 
     throw KarlException ("madara::expression::CompositeDivideNode: "
@@ -119,18 +104,7 @@ madara::knowledge::KnowledgeRecord
 madara::expression::CompositeDivideNode::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  // only evaluate right if left evaluates to non-zero (0/{any_number} = 0)
-  madara::knowledge::KnowledgeRecord lvalue (left_->evaluate (settings));
-  madara::knowledge::KnowledgeRecord zero;
-  if (lvalue.is_true ())
-    return lvalue / right_->evaluate (settings);
-
-  // note that we are not handling divide by zero. Still unsure whether I
-  // want to use exceptions throughout evaluation or not. This should be as
-  // quick as possible. We should probably only try to catch exception like
-  // things in prune
-
-  return zero;
+  return left_->evaluate (settings) / right_->evaluate (settings);
 }
 
 // accept a visitor

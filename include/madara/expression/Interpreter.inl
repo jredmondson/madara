@@ -40,6 +40,12 @@ madara::expression::Interpreter::is_exponential (char input)
         (input >= '0' && input <= '9');
 }
 
+inline bool
+madara::expression::Interpreter::is_reserved_word (const std::string & input)
+{
+  return input == "nan";  
+}
+
 // method for checking if a character is a number
 inline bool
 madara::expression::Interpreter::is_string_literal (char input)

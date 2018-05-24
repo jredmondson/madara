@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <math.h>
 
 #include "madara/utility/Utility.h"
 
@@ -436,7 +437,7 @@ KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
     {
       Integer denom = rhs.to_integer ();
       if (denom == 0)
-        set_value ("Division by Zero");
+        set_value (NAN);
       else
         set_value (to_integer () / denom);
     }
@@ -445,7 +446,7 @@ KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
       double denom = rhs.to_double ();
 
       if (denom == 0)
-        set_value ("Division by Zero");
+        set_value (NAN);
       else
         set_value (to_integer () / denom);
     }
@@ -455,7 +456,7 @@ KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
     double denom = rhs.to_double ();
 
     if (denom == 0)
-      set_value ("Division by Zero");
+      set_value (NAN);
     else
       set_value (to_double () / denom);
   }
@@ -475,7 +476,7 @@ KnowledgeRecord::operator%= (const knowledge::KnowledgeRecord & rhs)
     {
       Integer denom = rhs.to_integer ();
       if (denom == 0)
-        set_value ("Division by Zero");
+        set_value (NAN);
       else
         set_value (to_integer () % denom);
     }

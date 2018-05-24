@@ -5,7 +5,7 @@
 #include "madara/expression/VariableDivideNode.h"
 #include "madara/utility/Utility.h"
 
-
+#include <math.h>
 #include <string>
 #include <sstream>
 
@@ -60,7 +60,7 @@ madara::expression::VariableDivideNode::prune (bool & can_change)
     left_child_can_change = true;
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::VariableDivideNode: "
       "KARL COMPILE ERROR: Variable assignment has no variable\n");
 
@@ -80,7 +80,7 @@ madara::expression::VariableDivideNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::VariableDivideNode: "
       "KARL COMPILE ERROR: Variable assignment has no right expression\n");
 
@@ -106,6 +106,11 @@ madara::expression::VariableDivideNode::evaluate (
     rhs = rhs_->evaluate (settings);
   else
     rhs = value_;
+
+  // if (rhs.is_false ())
+  // {
+  //   rhs = NAN; 
+  // }
 
   if (var_)
   {

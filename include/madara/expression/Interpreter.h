@@ -106,6 +106,13 @@ namespace madara
       static inline bool is_exponential (char input);
 
       /**
+       * Checks a given input for a reserved word literal
+       * @param    input      string to check
+       * @return   true if the input is an operator
+       **/
+      static inline bool is_reserved_word (const std::string & input);
+
+      /**
        * Attempts to delete an expression from cache
        * @param    expression      expression to erase from cache
        * @return   true if the expression was deleted

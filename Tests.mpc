@@ -313,6 +313,29 @@ project (Test_KaRL_Containers) : using_madara, no_karl, no_xml, null_lock, using
   }
 }
 
+project (Test_KaRL_Exceptions) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_karl_exceptions
+  
+  
+  requires += tests
+
+
+  Documentation_Files {
+  }
+  
+  Build_Files {
+    Tests.mpc
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_karl_exceptions.cpp
+  }
+}
+
 project (Test_File_Rebroadcasts) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_file_rebroadcasts

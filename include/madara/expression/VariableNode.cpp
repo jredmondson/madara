@@ -48,7 +48,7 @@ madara::expression::VariableNode::VariableNode (
           buffer << "madara::expression::VariableNode";
           buffer << ": KARL COMPILE ERROR: matching braces not found in ";
           buffer << key << "@" << i << "\n";
-          madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+          madara_logger_ptr_log (logger_, logger::LOG_ERROR,
             buffer.str ().c_str ());
 
           throw KarlException (buffer.str ()); 
@@ -62,7 +62,7 @@ madara::expression::VariableNode::VariableNode (
       buffer << "madara::expression::VariableNode: ";
       buffer << "KARL COMPILE ERROR: more opening braces than closers in ";
       buffer << key << "\n";
-      madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+      madara_logger_ptr_log (logger_, logger::LOG_ERROR,
         buffer.str ().c_str ());
 
       throw KarlException (buffer.str ()); 
@@ -73,7 +73,7 @@ madara::expression::VariableNode::VariableNode (
       buffer << "madara::expression::VariableNode: ";
       buffer << "KARL COMPILE ERROR: more closing braces than openers in ";
       buffer << key << "\n";
-      madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+      madara_logger_ptr_log (logger_, logger::LOG_ERROR,
         buffer.str ().c_str ());
 
       throw KarlException (buffer.str ()); 

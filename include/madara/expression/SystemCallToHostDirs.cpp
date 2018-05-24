@@ -54,7 +54,7 @@ madara::expression::SystemCallToHostDirs::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
       " on Windows\n");
@@ -85,7 +85,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
       " on Windows\n");

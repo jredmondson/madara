@@ -918,7 +918,7 @@ ThreadSafeContext::expand_statement (
   // check to see if all brace counts are appropriate
   if (subcount != 0)
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR : Improperly matched braces in %s\n",
       statement.c_str ());
   }

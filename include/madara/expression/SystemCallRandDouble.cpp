@@ -53,7 +53,7 @@ madara::expression::SystemCallRandDouble::prune (bool & can_change)
 
   if (nodes_.size () > 3)
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call rand_double"
       " can have up to three arguments, 1) floor, "
       "2) ceiling and 3) whether to set the random seed\n");

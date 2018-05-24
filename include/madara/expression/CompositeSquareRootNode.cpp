@@ -50,7 +50,7 @@ madara::expression::CompositeSquareRootNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: "
 
       "Sqrt (alt 251) has no right expression\n");
@@ -74,8 +74,8 @@ madara::expression::CompositeSquareRootNode::evaluate (
   madara::knowledge::KnowledgeRecord value = right_->evaluate (settings);
 
   madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-    "KARL COMPILE ERROR: "
-    "Negating %s.\n", value.to_string ().c_str ());
+    "CompositeSquareRootNode: "
+    "taking square root of %s.\n", value.to_string ().c_str ());
 
   return knowledge::KnowledgeRecord (sqrt (value.to_double ()));
 }

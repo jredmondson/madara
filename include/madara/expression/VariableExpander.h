@@ -60,7 +60,7 @@ namespace madara
             buffer << print_prefix;
             buffer << ": KARL COMPILE ERROR: matching braces not found in ";
             buffer << key << "\n";
-            madara_logger_ptr_log (cur_logger, logger::LOG_EMERGENCY,
+            madara_logger_ptr_log (cur_logger, logger::LOG_ERROR,
               buffer.str ().c_str ());
 
             throw KarlException (buffer.str ());
@@ -89,7 +89,7 @@ namespace madara
             buffer << print_prefix;
             buffer << ": KARL COMPILE ERROR: more opening braces than closing in ";
             buffer << key << "\n";
-            madara_logger_ptr_log (cur_logger, logger::LOG_EMERGENCY,
+            madara_logger_ptr_log (cur_logger, logger::LOG_ERROR,
               buffer.str ().c_str ());
 
             throw KarlException (buffer.str ());
@@ -100,7 +100,7 @@ namespace madara
             buffer << print_prefix;
             buffer << ": KARL COMPILE ERROR: more closing braces than opening in ";
             buffer << key << "\n";
-            madara_logger_ptr_log (cur_logger, logger::LOG_EMERGENCY,
+            madara_logger_ptr_log (cur_logger, logger::LOG_ERROR,
               buffer.str ().c_str ());
 
             throw KarlException (buffer.str ());

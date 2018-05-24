@@ -52,7 +52,7 @@ madara::expression::CompositeGreaterThanEqualNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::CompositeGreaterThanEqualNode: "
       "KARL COMPILE ERROR: Greater-than-equal-to has no left expression\n");
 
@@ -72,7 +72,7 @@ madara::expression::CompositeGreaterThanEqualNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::CompositeGreaterThanEqualNode: "
       "KARL COMPILE ERROR: Greater-than-equal-to has no right expression\n");
 

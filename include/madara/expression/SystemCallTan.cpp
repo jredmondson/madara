@@ -72,7 +72,7 @@ madara::expression::SystemCallTan::prune (bool & can_change)
       }
     }
 
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call tan requires 1 argument,"
       "e.g., #tan (1.5), where 1.5 is radians. Args currently are: %s\n",
       args.str ().c_str ());

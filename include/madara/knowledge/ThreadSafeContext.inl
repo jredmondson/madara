@@ -496,6 +496,35 @@ const KnowledgeReferenceSettings & settings)
 
 // return whether or not the key exists
 inline bool
+ThreadSafeContext::delete_variable (
+const VariableReference & var,
+const KnowledgeReferenceSettings &)
+{
+  // enter the mutex
+  MADARA_GUARD_TYPE guard (mutex_);
+
+  // erase any changed or local changed map entries
+  changed_map_.erase (var.entry_->first.c_str ());
+  local_changed_map_.erase (var.entry_->first.c_str ());
+
+  // erase the map
+  return map_.erase (var.entry_->first.c_str ()) == 1;
+}
+
+inline void
+ThreadSafeContext::delete_variables(KnowledgeMap::iterator begin,
+   KnowledgeMap::iterator end,
+   const KnowledgeReferenceSettings &)
+{
+  for (auto cur = begin; cur != end; ++cur) {
+    changed_map_.erase (begin->first.c_str ());
+    local_changed_map_.erase (begin->first.c_str ());
+  }
+  map_.erase (begin, end);
+}
+
+// return whether or not the key exists
+inline bool
 ThreadSafeContext::exists (
   const std::string & key,
   const KnowledgeReferenceSettings & settings) const

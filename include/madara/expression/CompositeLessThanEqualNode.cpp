@@ -53,7 +53,7 @@ madara::expression::CompositeLessThanEqualNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::CompositeLessThanEqualNode: "
       "KARL COMPILE ERROR: Less-than-equal-to has no left expression\n");
 
@@ -73,7 +73,7 @@ madara::expression::CompositeLessThanEqualNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::CompositeLessThanEqualNode: "
       "KARL COMPILE ERROR: Less-than-equal-to has no right expression\n");
 

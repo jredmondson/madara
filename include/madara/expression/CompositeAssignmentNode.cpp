@@ -44,15 +44,14 @@ madara::expression::CompositeAssignmentNode::prune (bool & can_change)
     left_child_can_change = true;
   else
   {
-    // shouldn't be possible, but we'll throw an exception just in case
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "CompositeAssignmentNode: "
+      "KARL COMPILE ERROR (=): "
+      "Assignments must have a variable left hand side.\n");
 
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "CompositeAssignmentNode: KARL COMPILE ERROR: "
-      "Variable assignment has no variable\n");
-
-    throw KarlException (
-      "CompositeAssignmentNode: KARL COMPILE ERROR: "
-      "Variable assignment has no variable\n"); 
+    throw KarlException ("CompositeAssignmentNode: "
+      "KARL COMPILE ERROR (=): "
+      "Assignments must have a variable left hand side");
   }
 
   if (this->right_)
@@ -67,7 +66,7 @@ madara::expression::CompositeAssignmentNode::prune (bool & can_change)
   else
   {
     // we should never be able to get here but whatever
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "CompositeAssignmentNode: KARL COMPILE ERROR: "
       "Assignment has no right expression\n");
 

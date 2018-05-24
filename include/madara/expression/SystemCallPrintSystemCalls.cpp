@@ -56,7 +56,7 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
   }
   else if (nodes_.size () != 0)
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call print_system_calls takes either 0"
       " or 1 arguments.\n");
   }

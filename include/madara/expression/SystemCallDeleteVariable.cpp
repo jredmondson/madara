@@ -53,7 +53,7 @@ madara::expression::SystemCallDeleteVariable::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: "
       "System call delete_variable requires 1 argument,"
       "e.g., #delete_variable ('var').\n");
@@ -83,7 +83,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: System call delete_variable requires 1 argument,"
       "e.g., #delete_variable ('var')\n");
   }

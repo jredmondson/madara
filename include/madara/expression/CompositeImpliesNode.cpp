@@ -53,7 +53,7 @@ madara::expression::CompositeImpliesNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::CompositeImpliesNode: "
       "KARL COMPILE ERROR: Implies has no condition\n");
 
@@ -73,7 +73,7 @@ madara::expression::CompositeImpliesNode::prune (bool & can_change)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::CompositeImpliesNode: "
       "KARL COMPILE ERROR: Implies has no expression to "
       "evaluate if conditional is true\n");
