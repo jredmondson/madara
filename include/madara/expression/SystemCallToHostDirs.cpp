@@ -55,7 +55,15 @@ madara::expression::SystemCallToHostDirs::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call to_host_dirs requires 1 argument,"
+      "madara::expression::SystemCallToHostDirs: "
+      "KARL COMPILE ERROR:"
+      "System call to_host_dirs requires 1 argument,"
+      "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
+      " on Windows\n");
+
+    throw KarlException ("madara::expression::SystemCallToHostDirs: "
+      "KARL COMPILE ERROR: "
+      "System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
       " on Windows\n");
   }
@@ -77,6 +85,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     std::string statement (nodes_[0]->evaluate (settings).to_string ());
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallToHostDirs: "
       "System call to_host_dirs is returning the proper directory structure "
       "of %s.\n", statement.c_str ());
 
@@ -86,7 +95,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call to_host_dirs requires 1 argument,"
+      "madara::expression::SystemCallToHostDirs: "
+      "KARL RUNTIME ERROR:"
+      "System call to_host_dirs requires 1 argument,"
+      "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
+      " on Windows\n");
+
+    throw KarlException ("madara::expression::SystemCallToHostDirs: "
+      "KARL RUNTIME ERROR: "
+      "System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
       " on Windows\n");
   }

@@ -35,6 +35,102 @@ void test_functions (void)
   }
 }
 
+void test_bad_operators (void)
+{
+  std::cerr << "#####################\n";
+  std::cerr << "TESTING BAD OPERATORS\n";
+  std::cerr << "#####################\n";
+  knowledge::KnowledgeBase knowledge;
+
+  std::cerr << "Testing b=--: ";
+  try
+  {
+    knowledge.evaluate ("b=--");
+    std::cerr << "FAIL\n";
+  }
+  catch (expression::KarlException & e)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  std::cerr << "Testing b=+: ";
+  try
+  {
+    knowledge.evaluate ("b=+");
+    std::cerr << "FAIL\n";
+  }
+  catch (expression::KarlException & e)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  std::cerr << "Testing b=*: ";
+  try
+  {
+    knowledge.evaluate ("b=*");
+    std::cerr << "FAIL\n";
+  }
+  catch (expression::KarlException & e)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  std::cerr << "Testing b=%: ";
+  try
+  {
+    knowledge.evaluate ("b=%");
+    std::cerr << "FAIL\n";
+  }
+  catch (expression::KarlException & e)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  std::cerr << "Testing b=-: ";
+  try
+  {
+    knowledge.evaluate ("b=-");
+    std::cerr << "FAIL\n";
+  }
+  catch (expression::KarlException & e)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  std::cerr << "Testing b-=: ";
+  try
+  {
+    knowledge.evaluate ("b-=");
+    std::cerr << "FAIL\n";
+  }
+  catch (expression::KarlException & e)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  std::cerr << "Testing b*=: ";
+  try
+  {
+    knowledge.evaluate ("b*=");
+    std::cerr << "FAIL\n";
+  }
+  catch (expression::KarlException & e)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  std::cerr << "Testing b=0/: ";
+  try
+  {
+    knowledge.evaluate ("b=/");
+    std::cerr << "FAIL\n";
+  }
+  catch (expression::KarlException & e)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+}
+
 void test_nan (void)
 {
   std::cerr << "#####################\n";
@@ -193,6 +289,7 @@ int main (int, char **)
   test_functions ();
   test_nan ();
   test_empty_assignment ();
+  test_bad_operators ();
 
   return 0;
 }

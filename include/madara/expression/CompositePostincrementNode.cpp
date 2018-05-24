@@ -54,15 +54,16 @@ madara::expression::CompositePostincrementNode::prune (bool & can_change)
       this->right_ = new LeafNode (*(this->logger_), right_value);
     }
   }
-  else
+  else if (!var_ && !array_)
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "madara::expression::CompositePostincrementNode: "
-      "KARL COMPILE ERROR: Preincrement has no right expression\n");
+      "madara::expression::CompositePostdecrementNode: "
+      "KARL COMPILE ERROR:"
+      "Postincrement has no var, array, or expression\n");
 
     throw KarlException ("madara::expression::CompositePostincrementNode: "
       "KARL COMPILE ERROR: "
-      "Node has no right expression\n"); 
+      "Postincrement has no var, array, or expression\n"); 
   }
 
   can_change = right_child_can_change;
@@ -88,9 +89,20 @@ madara::expression::CompositePostincrementNode::evaluate (
     return_value = array_->evaluate (settings);
     array_->inc (settings);
   }
-  else
+  else if (right_)
   {
     return_value = ++(this->right_->evaluate (settings));
+  }
+  else
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::CompositePostincrementNode: "
+      "KARL RUNTIME ERROR: "
+      "Preincrement has no var, array, or expression\n");
+
+    throw KarlException ("madara::expression::CompositePostincrementNode: "
+      "KARL RUNTIME ERROR: "
+      "Preincrement has no var, array, or expression\n"); 
   }
 
   return return_value;

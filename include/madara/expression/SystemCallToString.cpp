@@ -75,14 +75,23 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 
       if (nodes_.size () > 2)
       {
-        madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-          "KARL RUNTIME ERROR: System call to_string"
+        madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+          "madara::expression::SystemCallToString: "
+          "KARL RUNTIME ERROR:"
+          "System call to_string"
+          " may have up to 2 arguments. First is a value to change to string."
+          " An optional second is a delimiter for array stringification\n");
+
+        throw KarlException ("madara::expression::SystemCallToString: "
+          "KARL RUNTIME ERROR: "
+          "System call to_string"
           " may have up to 2 arguments. First is a value to change to string."
           " An optional second is a delimiter for array stringification\n");
       }
     }
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallToString: "
       "System call to_string is converting an argument\n");
 
     result = knowledge::KnowledgeRecord (
@@ -90,10 +99,16 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "System call to_string is converting 0\n");
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallToString: "
+      "KARL RUNTIME ERROR:"
+      "System call to_string requires an argument\n");
 
-    result.set_value ("0");
+    throw KarlException ("madara::expression::SystemCallToString: "
+      "KARL RUNTIME ERROR: "
+      "System call to_string requires an argument\n");
+
+    result.set_value ("");
   }
 
   return result;

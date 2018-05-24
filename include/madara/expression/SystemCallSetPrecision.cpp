@@ -67,6 +67,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   {
     int64_t new_precision = nodes_[0]->evaluate (settings).to_integer ();
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallSetPrecision: "
       "System call precision is setting the precision to %" PRId64 ".\n",
       new_precision);
 
@@ -77,6 +78,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallSetPrecision: "
       "System call precision is returning the double precision.\n");
 
     return knowledge::KnowledgeRecord (

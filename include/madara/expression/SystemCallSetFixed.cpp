@@ -42,6 +42,7 @@ madara::expression::SystemCallSetFixed::prune (bool & can_change)
   if (nodes_.size () > 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallSetFixed: "
       "SystemCallSetFixed:prune: no arguments should be supplied to "
       "#set_fixed(). Deleting arguments to reclaim memory.\n");
 
@@ -68,6 +69,7 @@ const madara::knowledge::KnowledgeUpdateSettings & /*settings*/)
   knowledge::KnowledgeRecord return_value;
 
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "madara::expression::SystemCallSetFixed: "
     "System call set_fixed is setting double output format to std::fixed.\n");
 
   knowledge::KnowledgeRecord::set_fixed ();

@@ -67,15 +67,24 @@ madara::expression::SystemCallTan::prune (bool & can_change)
       else
       {
         madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+          "madara::expression::SystemCallTan: "
           "KARL COMPILE ERROR: System call tan encountered a null arg at %d\n",
           i);
       }
     }
 
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call tan requires 1 argument,"
-      "e.g., #tan (1.5), where 1.5 is radians. Args currently are: %s\n",
+      "madara::expression::SystemCallTan: "
+      "KARL COMPILE ERROR:"
+      "System call tan requires 1 argument,"
+      " e.g., #tan (1.5), where 1.5 is radians. Args currently are: %s\n",
       args.str ().c_str ());
+
+    throw KarlException ("madara::expression::SystemCallTan: "
+      "KARL COMPILE ERROR: "
+      "System call tan requires 1 argument,"
+      " e.g., #tan (1.5), where 1.5 is radians. Args currently are: " + 
+      args.str ());
   }
 
   return result;
@@ -92,6 +101,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () == 1)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallTan: "
       "System call tan is returning the tangent "
       "of its first argument\n");
 
@@ -100,8 +110,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL RUNTIME ERROR: System call tan requires 1 argument,"
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallTan: "
+      "KARL RUNTIME ERROR:"
+      "System call tan requires 1 argument,"
+      " e.g., #tan (1.5), where 1.5 is radians\n");
+
+    throw KarlException ("madara::expression::SystemCallTan: "
+      "KARL RUNTIME ERROR: "
+      "System call tan requires 1 argument,"
       " e.g., #tan (1.5), where 1.5 is radians\n");
   }
 

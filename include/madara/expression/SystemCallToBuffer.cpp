@@ -66,6 +66,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () > 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallToBuffer: "
       "System call to_buffer is converting an argument to an "
       "unmanaged buffer\n");
 
@@ -77,14 +78,14 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "System call to_buffer is converting 0 to a buffer\n");
-    
-    size_t size;
-    unsigned char * buffer =
-      return_value.to_unmanaged_buffer (size);
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallToBuffer: "
+      "KARL RUNTIME ERROR:"
+      "System call to_buffer requires an argument\n");
 
-    return_value.set_file (buffer, size);
+    throw KarlException ("madara::expression::SystemCallToBuffer: "
+      "KARL RUNTIME ERROR: "
+      "System call to_buffer requires an argument\n");
   }
 
   return return_value;

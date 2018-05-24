@@ -111,7 +111,7 @@ madara::expression::VariableMultiplyNode::evaluate (
   if (var_)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "VariableMultiplyNode::evaluate: "
+      "madara::expression::VariableMultiplyNode::evaluate: "
       "Attempting to set variable %s to %s.\n",
       var_->expand_key ().c_str (),
       rhs.to_string ().c_str ());
@@ -123,7 +123,7 @@ madara::expression::VariableMultiplyNode::evaluate (
   else if (array_)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "VariableMultiplyNode::evaluate: "
+      "madara::expression::VariableMultiplyNode::evaluate: "
       "Attempting to set index of var %s to %s.\n",
       array_->expand_key ().c_str (),
       rhs.to_string ().c_str ());
@@ -135,7 +135,7 @@ madara::expression::VariableMultiplyNode::evaluate (
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "VariableMultiplyNode::evaluate: "
+      "madara::expression::VariableMultiplyNode::evaluate: "
       "left hand side was neither a variable nor an array reference. "
       "Check your expression for errors.\n",
       array_->expand_key ().c_str (),

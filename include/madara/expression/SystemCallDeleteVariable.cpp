@@ -54,9 +54,15 @@ madara::expression::SystemCallDeleteVariable::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallDeleteVariable: "
+      "KARL COMPILE ERROR:"
+      "System call delete_variable requires 1 argument,"
+      "e.g., #delete_variable ('var')\n");
+
+    throw KarlException ("madara::expression::SystemCallDeleteVariable: "
       "KARL COMPILE ERROR: "
       "System call delete_variable requires 1 argument,"
-      "e.g., #delete_variable ('var').\n");
+      "e.g., #delete_variable ('var')\n"); 
   }
 
 
@@ -74,6 +80,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () == 1)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallDeleteVariable: "
       "System call delete_variable is returning the clock "
       "of its first argument\n");
 
@@ -84,8 +91,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call delete_variable requires 1 argument,"
+      "madara::expression::SystemCallDeleteVariable: "
+      "KARL RUNTIME ERROR:"
+      "System call delete_variable requires 1 argument,"
       "e.g., #delete_variable ('var')\n");
+
+    throw KarlException ("madara::expression::SystemCallDeleteVariable: "
+      "KARL RUNTIME ERROR: "
+      "System call delete_variable requires 1 argument,"
+      "e.g., #delete_variable ('var')\n"); 
   }
 
   return return_value;

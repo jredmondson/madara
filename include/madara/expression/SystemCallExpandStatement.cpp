@@ -54,7 +54,14 @@ madara::expression::SystemCallExpandStatement::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call expand_statement requires 1 argument,"
+      "madara::expression::SystemCallExpandStatement: "
+      "KARL COMPILE ERROR:"
+      "System call expand_var requires 1 argument,"
+      "e.g., #expand_statement ('var{.i}')\n");
+
+    throw KarlException ("madara::expression::SystemCallExpandStatement: "
+      "KARL COMPILE ERROR: "
+      "System call expand_var requires 1 argument,"
       "e.g., #expand_statement ('var{.i}')\n");
   }
 
@@ -75,6 +82,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     std::string statement (nodes_[0]->evaluate (settings).to_string ());
 
     madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
+      "madara::expression::SystemCallExpandStatement: "
       "System call expand_statement is returning the expansion "
       "of %s.\n", statement.c_str ());
 
@@ -83,8 +91,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call expand_statement requires 1 argument,"
-      "e.g., #expand_statement ('var{.i}').\n");
+      "madara::expression::SystemCallExpandStatement: "
+      "KARL RUNTIME ERROR:"
+      "System call expand_var requires 1 argument,"
+      "e.g., #expand_statement ('var{.i}')\n");
+
+    throw KarlException ("madara::expression::SystemCallExpandStatement: "
+      "KARL RUNTIME ERROR: "
+      "System call expand_var requires 1 argument,"
+      "e.g., #expand_statement ('var{.i}')\n");
   }
 
   return return_value;

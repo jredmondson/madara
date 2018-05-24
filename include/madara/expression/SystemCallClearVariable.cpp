@@ -54,9 +54,15 @@ madara::expression::SystemCallClearVariable::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallClearVariable: "
+      "KARL COMPILE ERROR:"
+      "System call delete_variable requires 1 argument,"
+      "e.g., #delete_variable ('var')\n");
+
+    throw KarlException ("madara::expression::SystemCallClearVariable: "
       "KARL COMPILE ERROR: "
       "System call delete_variable requires 1 argument,"
-      "e.g., #delete_variable ('var').\n");
+      "e.g., #delete_variable ('var')\n"); 
   }
 
 
@@ -76,7 +82,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     std::string name = nodes_[0]->evaluate (settings).to_string ();
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "System call clear is clearing variable "
+       "madara::expression::SystemCallClearVariable: "
+       "System call clear is clearing variable "
       "%s\n", name.c_str ());
 
     return knowledge::KnowledgeRecord (context_.clear (name));
@@ -84,8 +91,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call delete_variable requires 1 argument,"
+      "madara::expression::SystemCallClearVariable: "
+      "KARL RUNTIME ERROR:"
+      "System call delete_variable requires 1 argument,"
       "e.g., #delete_variable ('var')\n");
+
+    throw KarlException ("madara::expression::SystemCallClearVariable: "
+      "KARL RUNTIME ERROR: "
+      "System call delete_variable requires 1 argument,"
+      "e.g., #delete_variable ('var')\n"); 
   }
 
   return return_value;

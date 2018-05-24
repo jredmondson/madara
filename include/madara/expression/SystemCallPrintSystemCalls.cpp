@@ -57,8 +57,15 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
   else if (nodes_.size () != 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call print_system_calls takes either 0"
-      " or 1 arguments.\n");
+      "madara::expression::SystemCallPrintSystemCalls: "
+      "KARL COMPILE ERROR:"
+      "System call print_system_calls takes either 0"
+      " or 1 arguments\n");
+
+    throw KarlException ("madara::expression::SystemCallPrintSystemCalls: "
+      "KARL COMPILE ERROR: "
+      "System call print_system_calls takes either 0"
+      " or 1 arguments\n");
   }
 
   // if calls hasn't been initialized yet, fill the list of system calls
@@ -288,6 +295,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () == 1)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallPrintSystemCalls: "
       "System call print_system_calls is printing help\n");
 
     context_.print (
@@ -298,6 +306,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   else if (nodes_.size () == 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallPrintSystemCalls: "
       "System call print_system_calls is printing help\n");
 
     for (SystemCallsHelp::const_iterator i = calls_.begin ();
@@ -310,8 +319,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL RUNTIME ERROR: System call print_system_calls takes either 0"
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallPrintSystemCalls: "
+      "KARL RUNTIME ERROR:"
+      "System call print_system_calls takes either 0"
+      " or 1 arguments\n");
+
+    throw KarlException ("madara::expression::SystemCallPrintSystemCalls: "
+      "KARL RUNTIME ERROR: "
+      "System call print_system_calls takes either 0"
       " or 1 arguments\n");
   }
 

@@ -55,11 +55,18 @@ madara::expression::SystemCallSleep::prune (bool & can_change)
     }
   }
 
-  if (nodes_.size () > 2 || nodes_.size () == 0)
+  if (nodes_.size () > 1 || nodes_.size () == 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call set_clock requires 1-2 arguments, "
-      "e.g., set_clock (5) or set_clock (var, 5)\n");
+      "madara::expression::SystemCallSleep: "
+      "KARL COMPILE ERROR:"
+      "System call sleep requires 1 argument in seconds format, "
+      "e.g., set_clock (5)\n");
+
+    throw KarlException ("madara::expression::SystemCallSleep: "
+      "KARL COMPILE ERROR: "
+      "System call sleep requires 1 argument in seconds format, "
+      "e.g., sleep (5)\n");
   }
 
 
@@ -78,6 +85,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   {
     double sleep_time = nodes_[0]->evaluate (settings).to_double ();
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallSleep: "
       "System call sleep is sleeping for %f.\n", sleep_time);
 
     return_value = knowledge::KnowledgeRecord (
@@ -85,9 +93,16 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL RUNTIME ERROR: System call set_clock requires 1-2 arguments, "
-      "e.g., set_clock (5) or set_clock (var, 5).\n");
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallSleep: "
+      "KARL RUNTIME ERROR:"
+      "System call sleep requires 1 argument in seconds format, "
+      "e.g., set_clock (5)\n");
+
+    throw KarlException ("madara::expression::SystemCallSleep: "
+      "KARL RUNTIME ERROR: "
+      "System call sleep requires 1 argument in seconds format, "
+      "e.g., sleep (5)\n");
   }
 
   return return_value;

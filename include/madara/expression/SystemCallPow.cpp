@@ -62,7 +62,14 @@ madara::expression::SystemCallPow::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call pow requires 2 arguments,"
+      "madara::expression::SystemCallPow: "
+      "KARL COMPILE ERROR:"
+      "System call pow requires 2 arguments,"
+      "e.g., #pow (4,2), which would return 16.\n");
+
+    throw KarlException ("madara::expression::SystemCallPow: "
+      "KARL COMPILE ERROR: "
+      "System call pow requires 2 arguments,"
       "e.g., #pow (4,2), which would return 16.\n");
   }
 
@@ -80,6 +87,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () == 2)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallPow: "
       "System call pow is returning the base taken to the power\n");
 
     return_value = knowledge::KnowledgeRecord(
@@ -88,8 +96,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL RUNTIME ERROR: System call pow requires 2 arguments,"
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallPow: "
+      "KARL RUNTIME ERROR:"
+      "System call pow requires 2 arguments,"
+      "e.g., #pow (4,2), which would return 16.\n");
+
+    throw KarlException ("madara::expression::SystemCallPow: "
+      "KARL RUNTIME ERROR: "
+      "System call pow requires 2 arguments,"
       "e.g., #pow (4,2), which would return 16.\n");
   }
 

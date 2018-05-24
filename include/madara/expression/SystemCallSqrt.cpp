@@ -53,8 +53,15 @@ madara::expression::SystemCallSqrt::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call sqrt requires 1 argument,"
-      "e.g., #sqrt (4), which would return 2.\n");
+      "madara::expression::SystemCallSleep: "
+      "KARL COMPILE ERROR:"
+      "System call sqrt requires 1 argument,"
+      "e.g., #sqrt (4), which would return 2\n");
+
+    throw KarlException ("madara::expression::SystemCallSleep: "
+      "KARL COMPILE ERROR: "
+      "System call sqrt requires 1 argument,"
+      "e.g., #sqrt (4), which would return 2\n");
   }
 
   return result;
@@ -71,6 +78,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () == 1)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallSqrt: "
       "System call sqrt is returning the square root "
       "of its first argument\n");
 
@@ -80,8 +88,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL RUNTIME ERROR: System call sqrt requires 1 argument,"
-      "e.g., #sqrt (4), which would return 2.\n");
+      "madara::expression::SystemCallSqrt: "
+      "KARL RUNTIME ERROR:"
+      "System call sqrt requires 1 argument,"
+      "e.g., #sqrt (4), which would return 2\n");
+
+    throw KarlException ("madara::expression::SystemCallSqrt: "
+      "KARL RUNTIME ERROR: "
+      "System call sqrt requires 1 argument,"
+      "e.g., #sqrt (4), which would return 2\n");
   }
 
   return return_value;
