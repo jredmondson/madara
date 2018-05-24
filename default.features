@@ -14,6 +14,10 @@ boost = 1
 /// Enable this feature if you want to generate debug build
 debug                   = 0
 
+/// @feature debug
+/// Enable this feature if you want to compile with clang++ and libc++
+clang                   = 0
+
 /// @feature deprecated
 /// Enable this feature if you want to generate deprecated test applications
 deprecated              = 0
