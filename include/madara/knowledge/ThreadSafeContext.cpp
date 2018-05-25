@@ -1798,6 +1798,15 @@ ThreadSafeContext::save_context (
 
     fclose (file);
   }
+  else
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::save_context:" \
+      " couldn't open context file: %s.\n",
+      settings.filename.c_str ());
+
+    return -1;
+  }
 
   return meta.size;
 }
@@ -1947,6 +1956,15 @@ const CheckpointSettings & settings) const
     bytes_written = (int64_t) result.size ();
 
     file.close ();
+  }
+  else
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::save_as_karl:" \
+      " couldn't open karl file: %s.\n",
+      settings.filename.c_str ());
+
+    return -1;
   }
 
   return bytes_written;
@@ -2105,6 +2123,15 @@ const CheckpointSettings & settings) const
     bytes_written = (int64_t) result.size ();
 
     file.close ();
+  }
+  else
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::save_as_json:" \
+      " couldn't open json file: %s.\n",
+      settings.filename.c_str ());
+
+    return -1;
   }
 
   return bytes_written;
