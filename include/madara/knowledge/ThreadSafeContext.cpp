@@ -2786,6 +2786,15 @@ ThreadSafeContext::save_checkpoint (
       }
 
     } // if the new file creation for wb was successful
+    else
+    {
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "ThreadSafeContext::save_checkpoint:" \
+        " couldn't create checkpoint file: %s.\n",
+        settings.filename.c_str ());
+
+      return -1;
+    }
   } // end if we need to create a new file
 
   return checkpoint_header.size;
