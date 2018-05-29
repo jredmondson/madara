@@ -5328,6 +5328,11 @@ madara::expression::Interpreter::system_call_insert (
       }
       break;
     default:
+      break;
+    }
+
+    if (!call)
+    {
       madara_logger_log (context.get_logger (), logger::LOG_ERROR,
         "madara::expression::Interpreter: "
         "System call %s is unsupported in this version of MADARA, "
@@ -5336,8 +5341,10 @@ madara::expression::Interpreter::system_call_insert (
       throw KarlException ("madara::expression::Interpreter: "
         "System call %s does not exist.");
     }
-
-    call->add_precedence (accumulated_precedence);
+    else
+    {
+      call->add_precedence (accumulated_precedence);
+    }
 
     bool handled = false;
 
