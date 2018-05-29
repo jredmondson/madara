@@ -56,6 +56,7 @@
 #include "madara/expression/SystemCallGetClock.h"
 #include "madara/expression/SystemCallGetTime.h"
 #include "madara/expression/SystemCallGetTimeSeconds.h"
+#include "madara/expression/SystemCallIsinf.h"
 #include "madara/expression/SystemCallLogLevel.h"
 #include "madara/expression/SystemCallPow.h"
 #include "madara/expression/SystemCallPrint.h"
@@ -807,6 +808,26 @@ namespace madara
 
       /// destructor
       virtual ~Type (void);
+    };
+
+    /**
+    * @class Isinf
+    * @brief Returns whether the first argument is an infinite number
+    */
+    class Isinf : public SystemCall
+    {
+    public:
+      /// constructor
+      Isinf (madara::knowledge::ThreadSafeContext & context_);
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+
+      /// destructor
+      virtual ~Isinf (void);
     };
 
     /**
@@ -3006,6 +3027,33 @@ madara::expression::Type::build ()
 }
 
 
+// constructor
+madara::expression::Isinf::Isinf (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
+{
+}
+
+// destructor
+madara::expression::Isinf::~Isinf (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::Isinf::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::Isinf::build ()
+{
+  return new SystemCallIsinf (context_, nodes_);
+}
+
+
 
 // constructor
 madara::expression::ForLoop::ForLoop (Symbol * precondition,
@@ -3282,6 +3330,10 @@ madara::expression::Variable::build (void)
   if (key_ == "nan")
   {
     return new LeafNode (context_.get_logger (), NAN);
+  }
+  else if (key_ == "inf")
+  {
+    return new LeafNode (context_.get_logger (), INFINITY);
   }
   else
   {
@@ -4978,6 +5030,18 @@ Symbol *& lastValidInput)
 
       precedence_insert (context, number, list);
     }
+    else if (name == "inf")
+    {
+      madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
+        "madara::expression::Interpreter: "
+        "Inserting INFINITY into expression tree.\n");
+
+      Number * number = new Number (context.get_logger (), INFINITY);
+      number->add_precedence (accumulated_precedence);
+      lastValidInput = number;
+
+      precedence_insert (context, number, list);
+    }
   }
 
   if (i < input.length () && input[i] == '(')
@@ -5201,6 +5265,10 @@ madara::expression::Interpreter::system_call_insert (
       else if (name == "#integers")
       {
         call = new ToIntegers (context);
+      }
+      else if (name == "#isinf")
+      {
+        call = new Isinf (context);
       }
       break;
     case 'l':

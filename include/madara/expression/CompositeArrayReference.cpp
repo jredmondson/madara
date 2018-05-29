@@ -95,7 +95,9 @@ madara::expression::CompositeArrayReference::prune (bool & can_change)
   // cannot be pruned
   can_change = true;
 
-  if (expand_key () == "nan")
+  std::string key = expand_key ();
+
+  if (key == "nan")
   {
     madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
       "CompositeArrayReference::prune: "
@@ -107,6 +109,19 @@ madara::expression::CompositeArrayReference::prune (bool & can_change)
     throw KarlException ("madara::expression::ComponentNode: "
       "KARL COMPILE ERROR: "
       "Reserved word 'nan' used as an array reference.");
+  }
+  else if (key == "inf")
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+      "CompositeArrayReference::prune: "
+      "KARL COMPILE ERROR:"
+      "Reserved word 'inf' used as an array reference.\n",
+      key_.c_str ());
+
+    //return new LeafNode (context_.get_logger (), NAN);
+    throw KarlException ("madara::expression::ComponentNode: "
+      "KARL COMPILE ERROR: "
+      "Reserved word 'inf' used as an array reference.");
   }
 
   // we could call item(), but since it is virtual, it incurs unnecessary
