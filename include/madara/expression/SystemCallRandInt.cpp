@@ -54,9 +54,17 @@ madara::expression::SystemCallRandInt::prune (bool & can_change)
   if (nodes_.size () > 3)
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call rand_int"
+      "madara::expression::SystemCallRandInt: "
+      "KARL COMPILE ERROR:"
+      "System call rand_int"
       " can have up to three arguments, 1) floor, "
-      "2) ceiling and 3) whether to set the random seed");
+      "2) ceiling and 3) whether to set the random seed\n");
+
+    throw KarlException ("madara::expression::SystemCallRandInt: "
+      "KARL COMPILE ERROR: "
+      "System call rand_int"
+      " can have up to three arguments, 1) floor, "
+      "2) ceiling and 3) whether to set the random seed\n");
   }
 
   return result;
@@ -87,6 +95,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
 
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "madara::expression::SystemCallRandInt: "
     "System call rand_int called with %" PRId64 ", %" PRId64 ", %d.\n",
     floor, ceiling, update_srand);
 

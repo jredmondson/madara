@@ -54,8 +54,15 @@ madara::expression::SystemCallWriteFile::prune (bool & can_change)
 
   if (nodes_.size () != 2)
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL ERROR: System call write_file requires 2 arguments: "
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallWriteFile: "
+      "KARL COMPILE ERROR:"
+      "System call write_file requires 2 arguments: "
+      "a knowledge record and a file name\n");
+
+    throw KarlException ("madara::expression::SystemCallWriteFile: "
+      "KARL COMPILE ERROR: "
+      "System call write_file requires 2 arguments: "
       "a knowledge record and a file name\n");
   }
 
@@ -81,6 +88,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     knowledge::KnowledgeRecord * contents = &arg2;
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallWriteFile: "
       "System call write_file is attempting to open %s.\n",
       filename->to_string ().c_str ());
 
@@ -89,6 +97,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     if (bytes_written <= 0)
     {
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "madara::expression::SystemCallWriteFile: "
         "KARL ERROR: System call write_file could not write to %s\n",
         filename->to_string ().c_str ());
 
@@ -97,14 +106,22 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     else
     {
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "madara::expression::SystemCallWriteFile: "
         "System call write_file wrote %zd bytes to %s\n",
         bytes_written, filename->to_string ().c_str ());
     }
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL ERROR: System call write_file requires 2 arguments: "
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallWriteFile: "
+      "KARL RUNTIME ERROR:"
+      "System call write_file requires 2 arguments: "
+      "a knowledge record and a file name\n");
+
+    throw KarlException ("madara::expression::SystemCallWriteFile: "
+      "KARL RUNTIME ERROR: "
+      "System call write_file requires 2 arguments: "
       "a knowledge record and a file name\n");
   }
 

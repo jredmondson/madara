@@ -1,5 +1,5 @@
 
-#clear_variable (var):
+#clear_var (var) or #clear_variable (var):
   Clears the variable var in the knowledge base. This is
   the preferred way to delete variables. It masks the variable
   from printouts and save_modifieds but leaves a phantom record
@@ -26,7 +26,7 @@
   env_var=VAR CONTENTS, assuming VAR has been set in the OS.
 
 #expand (statement) or #expand_statement (statement):
-  Expands a statement such as 'var0' into 'var0', assuming .i=0
+  Expands a statement such as 'var' into 'var0', assuming .i=0
 
 #fragment (arg, first, last):
   Returns a fragment of the arg, startin at first byte and extending
@@ -41,6 +41,9 @@
 
 #get_time_seconds () or #get_time_s ():
   Returns wall clock time on the local machine in seconds.
+
+#isinf (value):
+  Returns std::isinf of a value to check for infinity/-infinity.
 
 #log_level () or #log_level (value):
   Returns the logging level or sets the logging level. The logging
@@ -60,7 +63,7 @@
 #print (statement):
   Prints a statement that can contain MADARA KaRL variables.
   Variables are expanding to include their values where applicable.
-  For instance, 'var0' would result in printing 'var0' if .id
+  For instance, 'var' would result in printing 'var0' if .id
   was set to 0. The same statement would print 'variable' if .id
   was set to 'iable'.
 

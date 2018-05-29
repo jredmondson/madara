@@ -517,8 +517,8 @@ ThreadSafeContext::delete_variables(KnowledgeMap::iterator begin,
    const KnowledgeReferenceSettings &)
 {
   for (auto cur = begin; cur != end; ++cur) {
-    changed_map_.erase (begin->first.c_str ());
-    local_changed_map_.erase (begin->first.c_str ());
+    changed_map_.erase (cur->first.c_str ());
+    local_changed_map_.erase (cur->first.c_str ());
   }
   map_.erase (begin, end);
 }

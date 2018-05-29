@@ -97,7 +97,8 @@ std::string madara::expression::VariableNode::expand_opener (
   std::stringstream builder;
 
   madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-    "VariableNode:expand_opener: key=%s, opener_index=%d, start=%d.\n",
+    "madara::expression::VariableNode:expand_opener: "
+    "key=%s, opener_index=%d, start=%d.\n",
     key_.c_str (), (int)opener);
 
   for (; i < markers_.size (); ++i)
@@ -109,14 +110,16 @@ std::string madara::expression::VariableNode::expand_opener (
       {
         builder << key_.substr (start, markers_[i] - start);
         madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-          "VariableNode:expand_opener: %d-%d{: added %d chars.\n",
+          "madara::expression::VariableNode:expand_opener: "
+          "%d-%d{: added %d chars.\n",
            (int)start, (int)markers_[i], (int)(markers_[i] - start));
       }
 
       size_t sub_opener = i;
       builder << expand_opener (i, i);
       madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-          "VariableNode:expand_opener: get_record(expand_opener()) "
+          "madara::expression::VariableNode:expand_opener: "
+          "get_record(expand_opener()) "
           "expand_opener(%d, %d).\n",
            (int)sub_opener, (int)i);
 
@@ -132,7 +135,8 @@ std::string madara::expression::VariableNode::expand_opener (
 
       builder << *context_.get_record (key_.substr (start, end - start));
       madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-        "VariableNode:expand_opener(%d,%d): {%d-%d}: added %d chars.\n",
+        "madara::expression::VariableNode:expand_opener(%d,%d): "
+        "{%d-%d}: added %d chars.\n",
          (int)opener, (int)closer, (int)start, (int)end, (int)(end-start));
       break;
     }
@@ -141,7 +145,8 @@ std::string madara::expression::VariableNode::expand_opener (
   std::string result = builder.str ();
 
   madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-    "VariableNode:expand_opener(%d,%d): return %s\n",
+    "madara::expression::VariableNode:expand_opener(%d,%d): "
+    "return %s\n",
     (int)opener, (int)closer, result.c_str ());
 
   return result;
@@ -153,7 +158,8 @@ madara::expression::VariableNode::expand_key (void) const
   if (key_expansion_necessary_)
   {
     madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-      "VariableNode:expand_key: Variable %s requires variable expansion"
+      "madara::expression::VariableNode:expand_key: "
+      "Variable %s requires variable expansion"
       " (%d markers).\n",
       key_.c_str (), (int)markers_.size ());
 
@@ -172,15 +178,16 @@ madara::expression::VariableNode::expand_key (void) const
         {
           builder << key_.substr (start, markers_[i] - start);
           madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-            "VariableNode:expand_key: %d-%d{: added %d chars.\n",
+            "madara::expression::VariableNode:expand_key: "
+            "%d-%d{: added %d chars.\n",
              (int)start, (int)markers_[i], (int)(markers_[i] - start));
         }
 
         size_t opener = i;
         builder << expand_opener (i, i);
         madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-          "VariableNode:expand_key: adding results of "
-          "expand_opener(%d, %d).\n",
+          "madara::expression::VariableNode:expand_key: "
+          "adding results of expand_opener(%d, %d).\n",
            (int)opener, (int)i);
 
         start = markers_[i] + 1;
@@ -191,7 +198,8 @@ madara::expression::VariableNode::expand_key (void) const
     if (start < key_.size () && key_.size () - start > 0)
     {
       madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-        "VariableNode:expand_key: substr add from index %d, %d chars.\n",
+        "madara::expression::VariableNode:expand_key: "
+        "substr add from index %d, %d chars.\n",
          (int)start, (int)key_.size () - start);
       builder << key_.substr (start, key_.size () - start);
     }
@@ -199,7 +207,8 @@ madara::expression::VariableNode::expand_key (void) const
     std::string result = builder.str ();
 
     madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-      "VariableNode:expand_key: return %s\n",
+      "madara::expression::VariableNode:expand_key: "
+      "return %s\n",
       result.c_str ());
 
     return result;
@@ -271,7 +280,7 @@ madara::expression::VariableNode::set (
   knowledge::VariableReference ref = ref_;
 
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-    "VariableNode::set: "
+    "madara::expression::VariableNode::set: "
     "Attempting to set variable %s to a KnowledgeRecord parameter (%s).\n",
     key_.c_str (), value.to_string ().c_str ());
 
@@ -298,7 +307,7 @@ madara::expression::VariableNode::set (
         record->quality = record->write_quality;
 
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-        "VariableNode::set: "
+        "madara::expression::VariableNode::set: "
         "Setting variable %s with KnowledgeRecord assignment operator.\n",
         key_.c_str ());
 
@@ -316,7 +325,7 @@ madara::expression::VariableNode::set (const madara::knowledge::KnowledgeRecord:
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-    "VariableNode::set: "
+    "madara::expression::VariableNode::set: "
     "Attempting to set variable %s to an Integer parameter (%d).\n",
     key_.c_str (), (int)value);
 
@@ -328,7 +337,7 @@ madara::expression::VariableNode::set (double value,
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-    "VariableNode::set: "
+    "madara::expression::VariableNode::set: "
     "Attempting to set variable %s to a double parameter (%f).\n",
     key_.c_str (), value);
 
@@ -340,7 +349,7 @@ madara::expression::VariableNode::set (const std::string & value,
   const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-    "VariableNode::set: "
+    "madara::expression::VariableNode::set: "
     "Attempting to set variable %s to a string parameter (%s).\n",
     key_.c_str (), value.c_str ());
 

@@ -64,6 +64,7 @@ const madara::knowledge::KnowledgeUpdateSettings & /*settings*/)
   knowledge::KnowledgeRecord return_value;
 
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "madara::expression::SystemCallSetScientific: "
     "System call set_fixed is setting double output format to "
     "std::scientific.\n");
 

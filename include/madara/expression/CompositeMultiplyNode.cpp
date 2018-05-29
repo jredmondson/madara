@@ -38,25 +38,39 @@ madara::expression::CompositeMultiplyNode::prune (bool & can_change)
 {
   madara::knowledge::KnowledgeRecord return_value;
 
-  int j = 0;
-  for (ComponentNodes::iterator i = nodes_.begin ();
-       i != nodes_.end (); ++i, ++j)
+  if (nodes_.size () >= 2)
   {
-    bool value_changes = false;
-    madara::knowledge::KnowledgeRecord value;
-    value = (*i)->prune (value_changes);
-    if (!value_changes && dynamic_cast <LeafNode *> (*i) == 0)
+    int j = 0;
+    for (ComponentNodes::iterator i = nodes_.begin ();
+        i != nodes_.end (); ++i, ++j)
     {
-      delete *i;
-      *i = new LeafNode (*(this->logger_), value);
+      bool value_changes = false;
+      madara::knowledge::KnowledgeRecord value;
+      value = (*i)->prune (value_changes);
+      if (!value_changes && dynamic_cast <LeafNode *> (*i) == 0)
+      {
+        delete *i;
+        *i = new LeafNode (*(this->logger_), value);
+      }
+
+      if (j == 0)
+        return_value = value;
+      else
+        return_value *= value;
+
+      can_change = can_change || value_changes;
     }
+  }
+  else
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallLogLevel: "
+      "KARL COMPILE ERROR:"
+      "Multiplication is impossible without at least two values\n");
 
-    if (j == 0)
-      return_value = value;
-    else
-      return_value *= value;
-
-    can_change = can_change || value_changes;
+    throw KarlException ("madara::expression::SystemCallLogLevel: "
+      "KARL COMPILE ERROR: "
+      "Multiplication is impossible without at least two values\n");
   }
 
   return return_value;

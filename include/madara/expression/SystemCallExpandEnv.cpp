@@ -55,8 +55,15 @@ madara::expression::SystemCallExpandEnv::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call expand_var requires 1 argument,"
-      "e.g., #expand_statement ('var{.i}').\n");
+      "madara::expression::SystemCallExpandEnv: "
+      "KARL COMPILE ERROR:"
+      "System call expand_env requires 1 argument,"
+      "e.g., #expand_env ('path=$(MADARA_ROOT')\n");
+
+    throw KarlException ("madara::expression::SystemCallExpandEnv: "
+      "KARL COMPILE ERROR: "
+      "System call expand_env requires 1 argument,"
+      "e.g., #expand_env ('path=$(MADARA_ROOT')\n");
   }
 
 
@@ -76,6 +83,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     std::string statement (nodes_[0]->evaluate (settings).to_string ());
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallExpandEnv: "
       "System call expand_var is returning the expansion "
       "of %s.\n", statement.c_str ());
 
@@ -84,8 +92,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call expand_var requires 1 argument,"
-      "e.g., #expand_statement ('var{.i}')");
+      "madara::expression::SystemCallExpandEnv: "
+      "KARL RUNTIME ERROR:"
+      "System call expand_env requires 1 argument,"
+      "e.g., #expand_env ('path=$(MADARA_ROOT')\n");
+
+    throw KarlException ("madara::expression::SystemCallExpandEnv: "
+      "KARL RUNTIME ERROR: "
+      "System call expand_env requires 1 argument,"
+      "e.g., #expand_env ('path=$(MADARA_ROOT')\n");
   }
 
   return return_value;

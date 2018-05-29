@@ -54,15 +54,16 @@ madara::expression::CompositePostdecrementNode::prune (bool & can_change)
       this->right_ = new LeafNode (*(this->logger_), right_value);
     }
   }
-  else
+  else if (!var_ && !array_)
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "madara::expression::CompositePostdecrementNode: "
-      "KARL COMPILE ERROR: Predecrement has no right expression\n");
+      "KARL COMPILE ERROR:"
+      "Postdecrement has no var, array, or expression\n");
 
     throw KarlException ("madara::expression::CompositePostdecrementNode: "
       "KARL COMPILE ERROR: "
-      "Node has no right expression\n"); 
+      "Postdecrement has no var, array, or expression\n"); 
   }
 
   can_change = right_child_can_change;
@@ -88,9 +89,20 @@ madara::expression::CompositePostdecrementNode::evaluate (
     return_value = array_->evaluate (settings);
     array_->dec (settings);
   }
-  else
+  else if (right_)
   {
     return_value = --(this->right_->evaluate (settings));
+  }
+  else
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::CompositePostdecrementNode: "
+      "KARL RUNTIME ERROR: "
+      "Postdecrement has var, array, or expression\n");
+
+    throw KarlException ("madara::expression::CompositePostdecrementNode: "
+      "KARL RUNTIME ERROR: "
+      "Postdecrement has var, array, or expression\n"); 
   }
 
   return return_value;

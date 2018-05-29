@@ -53,7 +53,13 @@ madara::expression::SystemCallSize::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call size requires an argument\n");
+      "madara::expression::SystemCallSize: "
+      "KARL COMPILE ERROR:"
+      "System call size requires an argument\n");
+
+    throw KarlException ("madara::expression::SystemCallSize: "
+      "KARL COMPILE ERROR: "
+      "System call size requires an argument\n");
   }
 
   return result;
@@ -70,6 +76,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () > 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallSize: "
       "System call size is returning the size of its first argument\n");
     
     return madara::knowledge::KnowledgeRecord (
@@ -77,8 +84,14 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL RUNTIME ERROR: System call size requires an argument\n");
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallSize: "
+      "KARL RUNTIME ERROR:"
+      "System call size requires an argument\n");
+
+    throw KarlException ("madara::expression::SystemCallSize: "
+      "KARL RUNTIME ERROR: "
+      "System call size requires an argument\n");
   }
 
   return return_value;

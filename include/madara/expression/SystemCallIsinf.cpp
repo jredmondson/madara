@@ -3,12 +3,12 @@
 
 
 #include "madara/expression/LeafNode.h"
-#include "madara/expression/SystemCallToIntegers.h"
-#include "madara/knowledge/ThreadSafeContext.h"
+#include "madara/expression/SystemCallIsinf.h"
 #include "madara/expression/Visitor.h"
+#include <math.h>
 
 
-madara::expression::SystemCallToIntegers::SystemCallToIntegers (
+madara::expression::SystemCallIsinf::SystemCallIsinf (
   madara::knowledge::ThreadSafeContext & context,
   const ComponentNodes & nodes)
   : SystemCallNode (context, nodes)
@@ -17,12 +17,12 @@ madara::expression::SystemCallToIntegers::SystemCallToIntegers (
 }
 
 // Dtor
-madara::expression::SystemCallToIntegers::~SystemCallToIntegers (void)
+madara::expression::SystemCallIsinf::~SystemCallIsinf (void)
 {
 }
 
 madara::knowledge::KnowledgeRecord
-madara::expression::SystemCallToIntegers::item (void) const
+madara::expression::SystemCallIsinf::item (void) const
 {
   return madara::knowledge::KnowledgeRecord (nodes_.size ());
 }
@@ -31,7 +31,7 @@ madara::expression::SystemCallToIntegers::item (void) const
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
 madara::knowledge::KnowledgeRecord
-madara::expression::SystemCallToIntegers::prune (bool & can_change)
+madara::expression::SystemCallIsinf::prune (bool & can_change)
 {
   // user can always change a function, and we have no control over
   // what it does. Consequently, a function node cannot be pruned out
@@ -40,7 +40,7 @@ madara::expression::SystemCallToIntegers::prune (bool & can_change)
   
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size () > 0)
+  if (nodes_.size () == 1)
   {
     bool arg_can_change = false;
     result = nodes_[0]->prune (arg_can_change);
@@ -51,6 +51,17 @@ madara::expression::SystemCallToIntegers::prune (bool & can_change)
       nodes_[0] = new LeafNode (*(this->logger_), result);
     }
   }
+  else
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallIsinf: "
+      "KARL COMPILE ERROR:"
+      "System call isinf requires 1 argument\n");
+
+    throw KarlException ("madara::expression::SystemCallIsinf: "
+      "KARL COMPILE ERROR: "
+      "System call isinf requires 1 argument\n");
+  }
 
   return result;
 }
@@ -58,36 +69,38 @@ madara::expression::SystemCallToIntegers::prune (bool & can_change)
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
 madara::knowledge::KnowledgeRecord 
-madara::expression::SystemCallToIntegers::evaluate (
+madara::expression::SystemCallIsinf::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & settings)
 {
-  if (nodes_.size () > 0)
+  knowledge::KnowledgeRecord return_value;
+
+  if (nodes_.size () == 1)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "madara::expression::SystemCallToIntegers: "
-      "System call to_integers is converting an argument\n");
+      "madara::expression::SystemCallIsinf: "
+      "System call isinf is returning isinf of its first argument\n");
 
-    return knowledge::KnowledgeRecord (
-        nodes_[0]->evaluate (settings).to_integers ());
+    return madara::knowledge::KnowledgeRecord (std::isinf(
+      nodes_[0]->evaluate (settings).to_double ()));
   }
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "madara::expression::SystemCallToIntegers: "
+      "madara::expression::SystemCallIsinf: "
       "KARL RUNTIME ERROR:"
-      "System call to_integers requires an argument\n");
+      "System call isinf requires 1 argument\n");
 
-    throw KarlException ("madara::expression::SystemCallToIntegers: "
+    throw KarlException ("madara::expression::SystemCallIsinf: "
       "KARL RUNTIME ERROR: "
-      "System call to_integers requires an argument\n");
+      "System call isinf requires 1 argument\n");
   }
 
-  return knowledge::KnowledgeRecord ();
+  return return_value;
 }
 
 // accept a visitor
 void 
-madara::expression::SystemCallToIntegers::accept (
+madara::expression::SystemCallIsinf::accept (
   madara::expression::Visitor &visitor) const
 {
   visitor.visit (*this);

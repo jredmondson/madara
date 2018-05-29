@@ -57,6 +57,7 @@ madara::expression::SystemCallSetClock::prune (bool & can_change)
   if (nodes_.size () > 2 || nodes_.size () == 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallSetClock: "
       "KARL COMPILE ERROR: System call set_clock requires 1-2 arguments, "
       "e.g., set_clock (5) or set_clock (var, 5)\n");
   }
@@ -76,6 +77,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () == 1)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallSetClock: "
       "System call set_clock is setting the system clock\n");
 
     context_.set_clock (nodes_[0]->evaluate (settings).to_integer ());
@@ -85,6 +87,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   else if (nodes_.size () == 2)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallSetClock: "
       "System call set_clock is setting a variable clock\n");
 
     VariableNode * variable = dynamic_cast <VariableNode *> (nodes_[0]);
@@ -98,16 +101,30 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     }
     else
     {
-      madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-        "KARL RUNTIME ERROR: System call set_clock with 2 arguments "
-        "requires the first argument to be a variable.\n");
+      madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+        "madara::expression::SystemCallSetClock: "
+        "KARL RUNTIME ERROR:"
+        "System call set_clock with 2 arguments "
+        "requires the first argument to be a variable\n");
+
+      throw KarlException ("madara::expression::SystemCallSetClock: "
+        "KARL RUNTIME ERROR: "
+        "System call set_clock with 2 arguments "
+        "requires the first argument to be a variable\n");
     }
 
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL RUNTIME ERROR: System call set_clock requires 1-2 arguments, "
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallSetClock: "
+      "KARL RUNTIME ERROR:"
+      "System call set_clock requires 1-2 arguments, "
+      "e.g., set_clock (5) or set_clock (var, 5)\n");
+
+    throw KarlException ("madara::expression::SystemCallSetClock: "
+      "KARL RUNTIME ERROR: "
+      "System call set_clock requires 1-2 arguments, "
       "e.g., set_clock (5) or set_clock (var, 5)\n");
   }
 

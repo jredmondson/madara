@@ -64,6 +64,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () > 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallToInteger: "
       "System call to_integer is converting an argument\n");
 
     return knowledge::KnowledgeRecord (
@@ -71,13 +72,17 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    knowledge::KnowledgeRecord return_value;
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallToInteger: "
+      "KARL RUNTIME ERROR:"
+      "System call to_integer requires an argument\n");
 
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "System call to_integer is converting 0\n");
-    
-    return knowledge::KnowledgeRecord (return_value.to_integer ());
+    throw KarlException ("madara::expression::SystemCallToInteger: "
+      "KARL RUNTIME ERROR: "
+      "System call to_integer requires an argument\n");
   }
+  
+  return knowledge::KnowledgeRecord ();
 }
 
 // accept a visitor

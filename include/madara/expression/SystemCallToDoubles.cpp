@@ -71,13 +71,17 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    knowledge::KnowledgeRecord return_value;
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallToDoubles: "
+      "KARL RUNTIME ERROR:"
+      "System call to_doubles requires an argument\n");
 
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "System call to_doubles is converting 0\n");
-    
-    return knowledge::KnowledgeRecord (return_value.to_doubles ());
+    throw KarlException ("madara::expression::SystemCallToDoubles: "
+      "KARL RUNTIME ERROR: "
+      "System call to_doubles requires an argument\n");
   }
+
+  return knowledge::KnowledgeRecord ();
 }
 
 // accept a visitor

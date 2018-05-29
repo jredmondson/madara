@@ -53,7 +53,14 @@ madara::expression::SystemCallSin::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call sin requires 1 argument,"
+      "madara::expression::SystemCallSin: "
+      "KARL COMPILE ERROR:"
+      "System call sin requires 1 argument,"
+      " e.g., #sin (1.5), where 1.5 is radians\n");
+
+    throw KarlException ("madara::expression::SystemCallSin: "
+      "KARL COMPILE ERROR: "
+      "System call sin requires 1 argument,"
       " e.g., #sin (1.5), where 1.5 is radians\n");
   }
 
@@ -71,6 +78,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () == 1)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallSin: "
       "System call sin is returning the sin "
       "of its first argument\n");
 
@@ -79,8 +87,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL RUNTIME ERROR: System call cos requires 1 argument,"
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallSin: "
+      "KARL RUNTIME ERROR:"
+      "System call sin requires 1 argument,"
+      " e.g., #sin (1.5), where 1.5 is radians\n");
+
+    throw KarlException ("madara::expression::SystemCallSin: "
+      "KARL RUNTIME ERROR: "
+      "System call sin requires 1 argument,"
       " e.g., #sin (1.5), where 1.5 is radians\n");
   }
 

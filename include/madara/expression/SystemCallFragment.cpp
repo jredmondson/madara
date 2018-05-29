@@ -55,7 +55,15 @@ madara::expression::SystemCallFragment::prune (bool & can_change)
   if (nodes_.size () != 3)
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call fragment"
+      "madara::expression::SystemCallFragment: "
+      "KARL COMPILE ERROR:"
+      "System call fragment"
+      " requires three arguments, e.g."
+      " #fragment ('hello world', 0, 4) will return 'hello'\n");
+
+    throw KarlException ("madara::expression::SystemCallFragment: "
+      "KARL COMPILE ERROR: "
+      "System call fragment"
       " requires three arguments, e.g."
       " #fragment ('hello world', 0, 4) will return 'hello'\n");
   }
@@ -80,6 +88,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       (unsigned int) nodes_[2]->evaluate (settings).to_integer ();
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallFragment: "
       "System call fragment is returning segment [%d-%d].\n",
       first, last);
     
@@ -88,8 +97,16 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL RUNTIME ERROR: System call fragment"
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallFragment: "
+      "KARL RUNTIME ERROR:"
+      "System call fragment"
+      " requires three arguments, e.g."
+      " #fragment ('hello world', 0, 4) will return 'hello'\n");
+
+    throw KarlException ("madara::expression::SystemCallFragment: "
+      "KARL RUNTIME ERROR: "
+      "System call fragment"
       " requires three arguments, e.g."
       " #fragment ('hello world', 0, 4) will return 'hello'\n");
   }

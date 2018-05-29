@@ -6,6 +6,7 @@
 #include <math.h>
 #include <iostream>
 #include <sstream>
+#include <memory>
 
 #include "madara/expression/ComponentNode.h"
 #include "madara/expression/LeafNode.h"
@@ -55,6 +56,7 @@
 #include "madara/expression/SystemCallGetClock.h"
 #include "madara/expression/SystemCallGetTime.h"
 #include "madara/expression/SystemCallGetTimeSeconds.h"
+#include "madara/expression/SystemCallIsinf.h"
 #include "madara/expression/SystemCallLogLevel.h"
 #include "madara/expression/SystemCallPow.h"
 #include "madara/expression/SystemCallPrint.h"
@@ -806,6 +808,26 @@ namespace madara
 
       /// destructor
       virtual ~Type (void);
+    };
+
+    /**
+    * @class Isinf
+    * @brief Returns whether the first argument is an infinite number
+    */
+    class Isinf : public SystemCall
+    {
+    public:
+      /// constructor
+      Isinf (madara::knowledge::ThreadSafeContext & context_);
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence);
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void);
+
+      /// destructor
+      virtual ~Isinf (void);
     };
 
     /**
@@ -1963,14 +1985,21 @@ madara::expression::Negate::build ()
   Symbol * right = right_;
   unsigned int i;
 
-  for (i = 1; next;
-    ++i, right = next->right_, next = dynamic_cast <Negate *> (next->right_)) {}
+  if (right_)
+  {
+    for (i = 1; next;
+      ++i, right = next->right_, next = dynamic_cast <Negate *> (next->right_)) {}
 
-  if (i % 2 == 1)
-    return new CompositeNegateNode (*(this->logger_), right->build ());
+    if (i % 2 == 1)
+      return new CompositeNegateNode (*(this->logger_), right->build ());
+    else
+      return new CompositeNegateNode (*(this->logger_),
+      new CompositeNegateNode (*(this->logger_), right->build ()));
+  }
   else
-    return new CompositeNegateNode (*(this->logger_),
-    new CompositeNegateNode (*(this->logger_), right->build ()));
+  {
+    return new CompositeNegateNode (*(this->logger_), 0);
+  }
 }
 
 // constructor
@@ -2998,6 +3027,33 @@ madara::expression::Type::build ()
 }
 
 
+// constructor
+madara::expression::Isinf::Isinf (
+  madara::knowledge::ThreadSafeContext & context)
+  : SystemCall (context)
+{
+}
+
+// destructor
+madara::expression::Isinf::~Isinf (void)
+{
+}
+
+// returns the precedence level
+int
+madara::expression::Isinf::add_precedence (int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode *
+madara::expression::Isinf::build ()
+{
+  return new SystemCallIsinf (context_, nodes_);
+}
+
+
 
 // constructor
 madara::expression::ForLoop::ForLoop (Symbol * precondition,
@@ -3035,9 +3091,18 @@ madara::expression::ForLoop::build ()
       precondition_->build (), condition_->build (),
       postcondition_->build (), body_->build (), context_);
   else
+  {
+    ComponentNode * left (0), * right (0);
+
+    if (left_)
+      left = precondition_->left_->build ();
+
+    if (right_)
+      right = condition_->right_->build ();
+
     return new CompositeAssignmentNode (
-      context_.get_logger (), precondition_->left_->build (),
-      condition_->right_->build ());
+      context_.get_logger (), left, right);
+  }
 }
 
 // constructor
@@ -3063,8 +3128,13 @@ madara::expression::Postdecrement::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Postdecrement::build ()
 {
+  ComponentNode * right (0);
+
+  if (right_)
+    right = right_->build ();
+
   return new CompositePostdecrementNode (
-    *(this->logger_), right_->build ());
+    *(this->logger_), right);
 }
 
 // constructor
@@ -3089,8 +3159,13 @@ madara::expression::Postincrement::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Postincrement::build ()
 {
+  ComponentNode * right (0);
+
+  if (right_)
+    right = right_->build ();
+
   return new CompositePostincrementNode (
-    *(this->logger_), right_->build ());
+    *(this->logger_), right);
 }
 
 // constructor
@@ -3115,7 +3190,12 @@ madara::expression::Predecrement::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Predecrement::build ()
 {
-  return new CompositePredecrementNode (*(this->logger_), right_->build ());
+  ComponentNode * right (0);
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositePredecrementNode (*(this->logger_), right);
 }
 
 // constructor
@@ -3140,7 +3220,12 @@ madara::expression::Preincrement::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Preincrement::build ()
 {
-  return new CompositePreincrementNode (*(this->logger_), right_->build ());
+  ComponentNode * right (0);
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositePreincrementNode (*(this->logger_), right);
 }
 
 // constructor
@@ -3170,14 +3255,21 @@ madara::expression::Not::build ()
   Symbol * right = right_;
   unsigned int i;
 
-  for (i = 1; next;
-    ++i, right = next->right_, next = dynamic_cast <Not *> (next->right_)) {}
+  if (right_)
+  {
+    for (i = 1; next;
+      ++i, right = next->right_, next = dynamic_cast <Not *> (next->right_)) {}
 
-  if (i % 2 == 1)
-    return new CompositeNotNode (*(this->logger_), right->build ());
+    if (i % 2 == 1)
+      return new CompositeNotNode (*(this->logger_), right->build ());
+    else
+      return new CompositeNotNode (*(this->logger_),
+      new CompositeNotNode (*(this->logger_), right->build ()));
+  }
   else
-    return new CompositeNotNode (*(this->logger_),
-    new CompositeNotNode (*(this->logger_), right->build ()));
+  {
+    return new CompositeNotNode (*(this->logger_), 0);
+  }
 }
 
 // constructor
@@ -3202,7 +3294,12 @@ madara::expression::SquareRootUnary::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::SquareRootUnary::build ()
 {
-  return new CompositeSquareRootNode (*(this->logger_), right_->build ());
+  ComponentNode * right (0);
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositeSquareRootNode (*(this->logger_), right);
 }
 
 // constructor
@@ -3233,6 +3330,10 @@ madara::expression::Variable::build (void)
   if (key_ == "nan")
   {
     return new LeafNode (context_.get_logger (), NAN);
+  }
+  else if (key_ == "inf")
+  {
+    return new LeafNode (context_.get_logger (), INFINITY);
   }
   else
   {
@@ -3266,18 +3367,7 @@ madara::expression::ArrayRef::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ArrayRef::build (void)
 {
-  // is reserved?
-  if (key_ == "nan")
-  {
-    //return new LeafNode (context_.get_logger (), NAN);
-    throw KarlException ("madara::expression::ComponentNode: "
-      "KARL COMPILE ERROR: "
-      "Reserved word 'nan' used as an array reference.");
-  }
-  else
-  {
-    return new CompositeArrayReference (key_, index_->build (), context_);
-  }
+  return new CompositeArrayReference (key_, index_->build (), context_);
 }
 
 
@@ -3536,11 +3626,11 @@ madara::expression::Add::build (void)
   }
   else if (left_)
     // all we have is a valid left child, so there is no reason to build
-    // a Both operator
+    // an Add operator
     return left_->build ();
   else if (right_)
     // all we have is a valid right child, so there is no reason to build
-    // a Both operator
+    // a Add operator
     return right_->build ();
   else
     // we've got nothing. This node should eventually be pruned out of the
@@ -3612,11 +3702,11 @@ madara::expression::And::build (void)
   }
   else if (left_)
     // all we have is a valid left child, so there is no reason to build
-    // a Both operator
+    // an And operator
     return left_->build ();
   else if (right_)
     // all we have is a valid right child, so there is no reason to build
-    // a Both operator
+    // an And operator
     return right_->build ();
   else
     // we've got nothing. This node should eventually be pruned out of the
@@ -4046,8 +4136,15 @@ madara::expression::Implies::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Implies::build (void)
 {
-  return new CompositeImpliesNode (
-    *(this->logger_), left_->build (), right_->build ());
+  ComponentNode * left (0), * right (0);
+
+  if (left_)
+    left = left_->build ();
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositeImpliesNode (*(this->logger_), left, right);
 }
 
 
@@ -4073,13 +4170,15 @@ madara::expression::Assignment::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Assignment::build (void)
 {
-  // because of the way post order is evaluated and the fact that we want
-  // to support statements like a = b = c, we reverse the order of the arguments
-  // so the left side is built first. This looks very, very odd when printing
-  // but it is the only way I know of to make this work with the order that
-  // the Evaluation Visitor will visit the tree.
-  return new CompositeAssignmentNode (*(this->logger_),
-    left_->build (), right_->build ());
+  ComponentNode * left (0), * right (0);
+
+  if (left_)
+    left = left_->build ();
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositeAssignmentNode (*(this->logger_), left, right);
 }
 
 
@@ -4105,8 +4204,15 @@ madara::expression::Equality::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Equality::build (void)
 {
-  return new CompositeEqualityNode (*(this->logger_),
-    left_->build (), right_->build ());
+  ComponentNode * left (0), * right (0);
+
+  if (left_)
+    left = left_->build ();
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositeEqualityNode (*(this->logger_), left, right);
 }
 
 // constructor
@@ -4131,8 +4237,15 @@ madara::expression::Inequality::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Inequality::build (void)
 {
-  return new CompositeInequalityNode (*(this->logger_),
-    left_->build (), right_->build ());
+  ComponentNode * left (0), * right (0);
+
+  if (left_)
+    left = left_->build ();
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositeInequalityNode (*(this->logger_), left, right);
 }
 
 // constructor
@@ -4158,8 +4271,16 @@ madara::expression::GreaterThanEqual::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::GreaterThanEqual::build (void)
 {
+  ComponentNode * left (0), * right (0);
+
+  if (left_)
+    left = left_->build ();
+
+  if (right_)
+    right = right_->build ();
+
   return new CompositeGreaterThanEqualNode (
-    *(this->logger_), left_->build (), right_->build ());
+    *(this->logger_), left, right);
 }
 
 // constructor
@@ -4184,8 +4305,15 @@ madara::expression::GreaterThan::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::GreaterThan::build (void)
 {
-  return new CompositeGreaterThanNode (*(this->logger_),
-    left_->build (), right_->build ());
+  ComponentNode * left (0), * right (0);
+
+  if (left_)
+    left = left_->build ();
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositeGreaterThanNode (*(this->logger_), left, right);
 }
 
 // constructor
@@ -4211,8 +4339,15 @@ madara::expression::LessThanEqual::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::LessThanEqual::build (void)
 {
-  return new CompositeLessThanEqualNode (*(this->logger_),
-    left_->build (), right_->build ());
+  ComponentNode * left (0), * right (0);
+
+  if (left_)
+    left = left_->build ();
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositeLessThanEqualNode (*(this->logger_), left, right);
 }
 
 // constructor
@@ -4237,8 +4372,15 @@ madara::expression::LessThan::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::LessThan::build (void)
 {
-  return new CompositeLessThanNode (*(this->logger_),
-    left_->build (), right_->build ());
+  ComponentNode * left (0), * right (0);
+
+  if (left_)
+    left = left_->build ();
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositeLessThanNode (*(this->logger_), left, right);
 }
 
 
@@ -4264,8 +4406,15 @@ madara::expression::Subtract::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Subtract::build (void)
 {
-  return new CompositeSubtractNode (*(this->logger_),
-    left_->build (), right_->build ());
+  ComponentNode * left (0), * right (0);
+
+  if (left_)
+    left = left_->build ();
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositeSubtractNode (*(this->logger_), left, right);
 }
 
 // constructor
@@ -4307,19 +4456,10 @@ madara::expression::Multiply::build (void)
     }
     return new CompositeMultiplyNode (*(this->logger_), nodes_);
   }
-  else if (left_)
-    // all we have is a valid left child, so there is no reason to build
-    // a Both operator
-    return left_->build ();
-  else if (right_)
-    // all we have is a valid right child, so there is no reason to build
-    // a Both operator
-    return right_->build ();
   else
-    // we've got nothing. This node should eventually be pruned out of the
-    // picture if at all possible.
-    return new LeafNode (*(this->logger_),
-    (madara::knowledge::KnowledgeRecord::Integer)0);
+  {
+    return new CompositeMultiplyNode (*(this->logger_), nodes_);
+  }
 }
 
 // constructor
@@ -4344,8 +4484,16 @@ madara::expression::Modulus::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Modulus::build (void)
 {
+  ComponentNode * left (0), * right (0);
+
+  if (left_)
+    left = left_->build ();
+
+  if (right_)
+    right = right_->build ();
+
   return new CompositeModulusNode (*(this->logger_),
-    left_->build (), right_->build ());
+    left, right);
 }
 
 // constructor
@@ -4370,8 +4518,15 @@ madara::expression::Divide::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Divide::build (void)
 {
-  return new CompositeDivideNode (*(this->logger_),
-    left_->build (), right_->build ());
+  ComponentNode * left (0), * right (0);
+
+  if (left_)
+    left = left_->build ();
+
+  if (right_)
+    right = right_->build ();
+
+  return new CompositeDivideNode (*(this->logger_), left, right);
 }
 
 // constructor
@@ -4875,6 +5030,18 @@ Symbol *& lastValidInput)
 
       precedence_insert (context, number, list);
     }
+    else if (name == "inf")
+    {
+      madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
+        "madara::expression::Interpreter: "
+        "Inserting INFINITY into expression tree.\n");
+
+      Number * number = new Number (context.get_logger (), INFINITY);
+      number->add_precedence (accumulated_precedence);
+      lastValidInput = number;
+
+      precedence_insert (context, number, list);
+    }
   }
 
   if (i < input.length () && input[i] == '(')
@@ -5099,6 +5266,10 @@ madara::expression::Interpreter::system_call_insert (
       {
         call = new ToIntegers (context);
       }
+      else if (name == "#isinf")
+      {
+        call = new Isinf (context);
+      }
       break;
     case 'l':
       if (name == "#log_level")
@@ -5225,6 +5396,11 @@ madara::expression::Interpreter::system_call_insert (
       }
       break;
     default:
+      break;
+    }
+
+    if (!call)
+    {
       madara_logger_log (context.get_logger (), logger::LOG_ERROR,
         "madara::expression::Interpreter: "
         "System call %s is unsupported in this version of MADARA, "
@@ -5233,8 +5409,10 @@ madara::expression::Interpreter::system_call_insert (
       throw KarlException ("madara::expression::Interpreter: "
         "System call %s does not exist.");
     }
-
-    call->add_precedence (accumulated_precedence);
+    else
+    {
+      call->add_precedence (accumulated_precedence);
+    }
 
     bool handled = false;
 

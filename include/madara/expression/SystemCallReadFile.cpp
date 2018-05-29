@@ -55,7 +55,18 @@ madara::expression::SystemCallReadFile::prune (bool & can_change)
   if (nodes_.size () == 0 || nodes_.size () > 2)
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call read_file"
+      "madara::expression::SystemCallRandInt: "
+      "KARL COMPILE ERROR:"
+      "System call read_file"
+      " requires at least a filename to read, e.g."
+      " #read_file (filename), #read_file (filename, 'text')."
+      " Second argument is to force a file type when the filename"
+      " does not end with .txt, .xml, .jpg, etc. Can be 'text',"
+      " 'jpeg', 'xml'\n");
+
+    throw KarlException ("madara::expression::SystemCallRandInt: "
+      "KARL COMPILE ERROR: "
+      "System call read_file"
       " requires at least a filename to read, e.g."
       " #read_file (filename), #read_file (filename, 'text')."
       " Second argument is to force a file type when the filename"
@@ -83,6 +94,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     (void)read_as_type_uint;
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallReadFile: "
       "System call read_file is attempting to open %s.\n",
       filename_eval.to_string ().c_str ());
 
@@ -113,20 +125,32 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 
     if (0 != return_value.read_file (filename_eval.to_string ()))
     {
-      madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-        "KARL RUNTIME ERROR: System call read_file could not open %s.\n",
+      madara_logger_ptr_log (logger_, logger::LOG_WARNING,
+        "madara::expression::SystemCallReadFile: "
+        "KARL RUNTIME WARNING: System call read_file could not open %s.\n",
         filename_eval.to_string ().c_str ());
     }
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL RUNTIME ERROR: System call read_file"
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallReadFile: "
+      "KARL COMPILE ERROR:"
+      "System call read_file"
       " requires at least a filename to read, e.g."
       " #read_file (filename), #read_file (filename, 'text')."
       " Second argument is to force a file type when the filename"
       " does not end with .txt, .xml, .jpg, etc. Can be 'text',"
-      " 'jpeg', 'xml'");
+      " 'jpeg', 'xml'\n");
+
+    throw KarlException ("madara::expression::SystemCallReadFile: "
+      "KARL COMPILE ERROR: "
+      "System call read_file"
+      " requires at least a filename to read, e.g."
+      " #read_file (filename), #read_file (filename, 'text')."
+      " Second argument is to force a file type when the filename"
+      " does not end with .txt, .xml, .jpg, etc. Can be 'text',"
+      " 'jpeg', 'xml'\n");
   }
 
   return return_value;

@@ -57,8 +57,15 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
   else if (nodes_.size () != 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call print_system_calls takes either 0"
-      " or 1 arguments.\n");
+      "madara::expression::SystemCallPrintSystemCalls: "
+      "KARL COMPILE ERROR:"
+      "System call print_system_calls takes either 0"
+      " or 1 arguments\n");
+
+    throw KarlException ("madara::expression::SystemCallPrintSystemCalls: "
+      "KARL COMPILE ERROR: "
+      "System call print_system_calls takes either 0"
+      " or 1 arguments\n");
   }
 
   // if calls hasn't been initialized yet, fill the list of system calls
@@ -131,6 +138,10 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
     calls_["#get_time_seconds"] =
       "\n#get_time_seconds () or #get_time_s ():\n"
       "  Returns wall clock time on the local machine in seconds.\n";
+
+    calls_["#isinf"] =
+      "\n#isinf (value):\n"
+      "  Returns std::isinf of a value to check for infinity/-infinity.\n";
 
     calls_["#log_level"] =
       "\n#log_level () or #log_level (value):\n"
@@ -288,6 +299,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () == 1)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallPrintSystemCalls: "
       "System call print_system_calls is printing help\n");
 
     context_.print (
@@ -298,6 +310,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   else if (nodes_.size () == 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallPrintSystemCalls: "
       "System call print_system_calls is printing help\n");
 
     for (SystemCallsHelp::const_iterator i = calls_.begin ();
@@ -310,8 +323,15 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL RUNTIME ERROR: System call print_system_calls takes either 0"
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallPrintSystemCalls: "
+      "KARL RUNTIME ERROR:"
+      "System call print_system_calls takes either 0"
+      " or 1 arguments\n");
+
+    throw KarlException ("madara::expression::SystemCallPrintSystemCalls: "
+      "KARL RUNTIME ERROR: "
+      "System call print_system_calls takes either 0"
       " or 1 arguments\n");
   }
 

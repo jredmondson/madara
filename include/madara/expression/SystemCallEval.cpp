@@ -55,7 +55,13 @@ madara::expression::SystemCallEval::prune (bool & can_change)
   else
   {
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "KARL COMPILE ERROR: System call eval requires an argument\n");
+      "madara::expression::SystemCallEval: "
+      "KARL COMPILE ERROR:"
+      "System call eval requires an argument\n");
+
+    throw KarlException ("madara::expression::SystemCallEval: "
+      "KARL COMPILE ERROR: "
+      "System call eval requires an argument\n"); 
   }
 
   return result;
@@ -72,6 +78,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   if (nodes_.size () > 0)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "madara::expression::SystemCallEval: "
       "System call type is returning the eval of its first argument\n");
     
     madara::knowledge::CompiledExpression expression = context_.compile (
@@ -81,8 +88,14 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_EMERGENCY,
-      "KARL RUNTIME ERROR: System call eval requires an argument\n");
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "madara::expression::SystemCallEval: "
+      "KARL RUNTIME ERROR:"
+      "System call eval requires an argument\n");
+
+    throw KarlException ("madara::expression::SystemCallEval: "
+      "KARL RUNTIME ERROR: "
+      "System call eval requires an argument\n"); 
   }
 
   return return_value;

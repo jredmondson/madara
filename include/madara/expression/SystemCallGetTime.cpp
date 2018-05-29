@@ -63,6 +63,7 @@ madara::expression::SystemCallGetTime::evaluate (
 const madara::knowledge::KnowledgeUpdateSettings & /*settings*/)
 {
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+    "madara::expression::SystemCallGetTime:"
     "System call get_time is returning the system clock\n");
 
   return madara::knowledge::KnowledgeRecord (

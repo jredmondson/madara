@@ -43,7 +43,7 @@ madara::expression::Interpreter::is_exponential (char input)
 inline bool
 madara::expression::Interpreter::is_reserved_word (const std::string & input)
 {
-  return input == "nan";  
+  return input == "nan" || input == "inf";  
 }
 
 // method for checking if a character is a number
