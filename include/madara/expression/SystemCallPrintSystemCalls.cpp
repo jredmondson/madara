@@ -139,6 +139,10 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
       "\n#get_time_seconds () or #get_time_s ():\n"
       "  Returns wall clock time on the local machine in seconds.\n";
 
+    calls_["#isinf"] =
+      "\n#isinf (value):\n"
+      "  Returns std::isinf of a value to check for infinity/-infinity.\n";
+
     calls_["#log_level"] =
       "\n#log_level () or #log_level (value):\n"
       "  Returns the logging level or sets the logging level. The logging\n"
