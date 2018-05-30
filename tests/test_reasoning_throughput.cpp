@@ -486,6 +486,7 @@ int main (int argc, char * argv[])
 #ifndef _MADARA_NO_KARL_
   knowledge.define_function ("inc", increment_var1);
   knowledge.define_function ("no_op", no_op);
+  knowledge.define_function ("inc_var_ref", increment_var1_through_variables);
 #endif
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
