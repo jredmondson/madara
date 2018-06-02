@@ -104,7 +104,7 @@ project (Madara) : using_splice, splice_transport, using_ndds, madara_zmq, using
     include/madara/transport/TransportContext.h
     include/madara/transport/BasicASIOTransport.h
     include/madara/utility
-    include/madara/boost.h
+    include/madara/Boost.h
     include/madara/MADARA_export.h
     include/madara/LockType.h
     include/madara/Namespaces.h
