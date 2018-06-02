@@ -8,7 +8,7 @@
 #include "madara/transport/multicast/MulticastTransport.h"
 #include "madara/transport/broadcast/BroadcastTransport.h"
 #include "madara/utility/EpochEnforcer.h"
-#include "madara/boost.h"
+#include "madara/Boost.h"
 
 #include <sstream>
 
@@ -42,7 +42,7 @@ KnowledgeBaseImpl::setup_unique_hostport (std::string host)
   {
     try {
       actual_host = boost::asio::ip::host_name();
-    } catch (const std::exception &e) {
+    } catch (const std::exception &) {
       actual_host = "localhost";
     }
   }

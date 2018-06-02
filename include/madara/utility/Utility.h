@@ -11,7 +11,7 @@
 #include "madara/MADARA_export.h"
 #include "madara/utility/stdint.h"
 #include "madara/knowledge/WaitSettings.h"
-
+#include "madara/utility/inttypes.h"
 
 namespace madara
 {

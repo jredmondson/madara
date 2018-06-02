@@ -582,8 +582,7 @@ rand_double (double floor, double ceiling, bool set_seed_to_time)
   // check if the user has specified setting through srand
   if (set_seed_to_time)
   {
-    unsigned int new_seed (get_time ());
-    srand (new_seed);
+    srand ((unsigned int)get_time ());
   }
 
   // Get a double number between 0 and 1.
@@ -599,7 +598,7 @@ int64_t
 rand_int (int64_t floor, int64_t ceiling,
                            bool set_seed_to_time)
 {
-  double random = rand_double (floor, ceiling, set_seed_to_time);
+  double random = rand_double ((double)floor, (double)ceiling, set_seed_to_time);
   return nearest_int (random);
 }
 
@@ -607,8 +606,8 @@ int64_t
 nearest_int (double input)
 {
   int change = input >= 0 ? 1 : -1;
-  int64_t left = input;
-  int64_t right = input + change;
+  int64_t left = (int64_t)input;
+  int64_t right = (int64_t)input + change;
 
   if (input - left < -input + right)
     return left;

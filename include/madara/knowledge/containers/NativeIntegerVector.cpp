@@ -312,7 +312,7 @@ madara::knowledge::containers::NativeIntegerVector::operator[] (
       result = result.retrieve_index (index);
   }
 
-  return result.to_double ();
+  return result.to_integer ();
 }
 
 int

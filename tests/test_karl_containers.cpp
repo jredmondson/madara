@@ -353,12 +353,12 @@ void test_vector2D (void)
   // retrieve the indexes
 
   std::cerr << "  Retrieving indices\n";
-  double iarray1_0 = int_vector[{1,0}];
-  double iarray1_1 = int_vector[{1,1}];
-  double iarray1_2 = int_vector[{1,2}];
-  double iarray7_0 = int_vector[{7,0}];
-  double iarray7_1 = int_vector[{7,1}];
-  double iarray7_2 = int_vector[{7,2}];
+  int64_t iarray1_0 = int_vector[{1,0}];
+  int64_t iarray1_1 = int_vector[{1,1}];
+  int64_t iarray1_2 = int_vector[{1,2}];
+  int64_t iarray7_0 = int_vector[{7,0}];
+  int64_t iarray7_1 = int_vector[{7,1}];
+  int64_t iarray7_2 = int_vector[{7,2}];
 
   // check the iarray size
 
@@ -617,12 +617,12 @@ void test_vector3D (void)
   // retrieve the indexes
 
   std::cerr << "  Retrieving indices\n";
-  double iarray1_0 = int_vector[{1,0,0}];
-  double iarray1_1 = int_vector[{1,1,1}];
-  double iarray1_2 = int_vector[{1,2,2}];
-  double iarray7_0 = int_vector[{7,0,0}];
-  double iarray7_1 = int_vector[{7,1,1}];
-  double iarray7_2 = int_vector[{7,2,2}];
+  int64_t iarray1_0 = int_vector[{1,0,0}];
+  int64_t iarray1_1 = int_vector[{1,1,1}];
+  int64_t iarray1_2 = int_vector[{1,2,2}];
+  int64_t iarray7_0 = int_vector[{7,0,0}];
+  int64_t iarray7_1 = int_vector[{7,1,1}];
+  int64_t iarray7_2 = int_vector[{7,2,2}];
 
   // check the iarray size
 

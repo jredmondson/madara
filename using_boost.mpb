@@ -1,5 +1,5 @@
-feature (boost) {
-  includes += $(BOOST_ROOT)
-  
-  macros += _MADARA_USING_BOOST_
+project: boost_system {
+  specific(prop:windows) {
+    macros += _WINSOCK_DEPRECATED_NO_WARNINGS
+  }
 }

@@ -298,7 +298,7 @@ int main (int argc, char ** argv)
   
   Integer end_time = utility::get_time ();
   Integer total_time = end_time - start_time;
-  double total_time_in_secs = total_time;
+  double total_time_in_secs = (double)total_time;
   total_time_in_secs /= 1000000000;
 
   knowledge.set (".total_time_in_seconds", total_time_in_secs);

@@ -1,4 +1,4 @@
-project : debug_build, using_clang, using_android, boost_system {
+project : debug_build, using_clang, using_android, using_boost {
   includes += $(MADARA_ROOT)/include
   libpaths += $(MADARA_ROOT)/lib
 
@@ -7,6 +7,11 @@ project : debug_build, using_clang, using_android, boost_system {
   libs += MADARA
 
   libs += boost_system
+
+  specific(prop:microsoft) {
+    DisableSpecificWarnings += 4005 4251 4275
+	macros += _CRT_SECURE_NO_WARNINGS
+  }
 
   verbatim (make, local, true) {
     CPPFLAGS := -std=c++11 -Wall -Wextra -Wnon-virtual-dtor \

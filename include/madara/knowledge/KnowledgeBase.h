@@ -28,6 +28,7 @@
 
 
 #ifdef _MADARA_PYTHON_CALLBACKS_
+#include "madara/Boost.h"
 #include "boost/python/object.hpp"
 #endif
 

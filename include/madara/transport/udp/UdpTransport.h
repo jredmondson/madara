@@ -11,7 +11,7 @@
 #include <string>
 #include <map>
 
-#include "madara/boost.h"
+#include "madara/Boost.h"
 
 
 namespace madara

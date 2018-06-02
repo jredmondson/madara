@@ -12,7 +12,7 @@
 #include "madara/expression/ExpressionTree.h"
 #include "madara/transport/BandwidthMonitor.h"
 #include "madara/threads/Threader.h"
-#include "madara/boost.h"
+#include "madara/Boost.h"
 
 namespace madara
 {

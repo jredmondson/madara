@@ -273,7 +273,7 @@ inline void
 madara::knowledge::containers::StringStaged::read (void)
 {
   has_changed_ = false;
-  value_ = context_->get (variable_).to_integer ();
+  value_ = context_->get (variable_).to_string ();
 }
 
 inline void

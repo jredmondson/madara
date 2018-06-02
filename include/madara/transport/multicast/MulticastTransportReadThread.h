@@ -20,7 +20,7 @@
 #include "madara/transport/MessageHeader.h"
 #include "madara/transport/udp/UdpTransport.h"
 #include "madara/threads/BaseThread.h"
-#include "madara/boost.h"
+#include "madara/Boost.h"
  
 namespace madara
 {

@@ -6,7 +6,11 @@
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#endif
+#elif _WIN32
+  #ifndef _WIN32_WINNT
+    #define _WIN32_WINNT _WIN32_WINNT_WIN7  
+  #endif // _WIN32_WINNT
+#endif // _WIN32
 
 #define BOOST_SYSTEM_NO_DEPRECATED 1
 
@@ -18,6 +22,6 @@
 
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
-#endif
+#endif // __GNUC__
 
-#endif
+#endif // MADARA_BOOST_H_

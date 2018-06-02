@@ -71,7 +71,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call precision is setting the precision to %" PRId64 ".\n",
       new_precision);
 
-    knowledge::KnowledgeRecord::set_precision (new_precision);
+    knowledge::KnowledgeRecord::set_precision ((int)new_precision);
 
     return knowledge::KnowledgeRecord (new_precision);
   }

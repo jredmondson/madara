@@ -1,12 +1,14 @@
 #ifndef   _MADARA_UTILITY_INL_
 #define   _MADARA_UTILITY_INL_
 
-#include <pthread.h>
 #include "Utility.h"
 #include "SimTime.h"
 
 #ifdef _WIN32
-  #include <windows.h>
+  #include "madara/Boost.h"
+  #include "boost/asio.hpp"
+#else
+  #include <pthread.h>
 #endif
 
 namespace madara { namespace utility {

@@ -2512,7 +2512,7 @@ ThreadSafeContext::save_checkpoint (
          (int)(checkpoint_start));
 
       // set the file pointer to the checkpoint header start
-      fseek (file, checkpoint_start, SEEK_SET);
+      fseek (file, (long)checkpoint_start, SEEK_SET);
 
       // start updates just past the checkpoint header's buffer location
       current = checkpoint_header.write (buffer.get_ptr (), buffer_remaining);
@@ -2634,7 +2634,7 @@ ThreadSafeContext::save_checkpoint (
         (int)checkpoint_header.size, (int)checkpoint_header.updates);
 
       buffer_remaining = max_buffer;
-      fseek (file, checkpoint_start, SEEK_SET);
+      fseek (file, (long)checkpoint_start, SEEK_SET);
       current = checkpoint_header.write (buffer.get_ptr (), buffer_remaining);
       fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
 

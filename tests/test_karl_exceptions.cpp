@@ -48,7 +48,7 @@ void test_bad_operators (void)
     knowledge.evaluate ("b=--");
     std::cerr << "FAIL\n";
   }
-  catch (expression::KarlException & e)
+  catch (expression::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -59,7 +59,7 @@ void test_bad_operators (void)
     knowledge.evaluate ("b=+");
     std::cerr << "FAIL\n";
   }
-  catch (expression::KarlException & e)
+  catch (expression::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -70,7 +70,7 @@ void test_bad_operators (void)
     knowledge.evaluate ("b=*");
     std::cerr << "FAIL\n";
   }
-  catch (expression::KarlException & e)
+  catch (expression::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -81,7 +81,7 @@ void test_bad_operators (void)
     knowledge.evaluate ("b=%");
     std::cerr << "FAIL\n";
   }
-  catch (expression::KarlException & e)
+  catch (expression::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -92,7 +92,7 @@ void test_bad_operators (void)
     knowledge.evaluate ("b=-");
     std::cerr << "FAIL\n";
   }
-  catch (expression::KarlException & e)
+  catch (expression::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -103,7 +103,7 @@ void test_bad_operators (void)
     knowledge.evaluate ("b-=");
     std::cerr << "FAIL\n";
   }
-  catch (expression::KarlException & e)
+  catch (expression::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -114,7 +114,7 @@ void test_bad_operators (void)
     knowledge.evaluate ("b*=");
     std::cerr << "FAIL\n";
   }
-  catch (expression::KarlException & e)
+  catch (expression::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -125,7 +125,7 @@ void test_bad_operators (void)
     knowledge.evaluate ("b=/");
     std::cerr << "FAIL\n";
   }
-  catch (expression::KarlException & e)
+  catch (expression::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }

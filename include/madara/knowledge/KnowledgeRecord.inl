@@ -645,13 +645,13 @@ KnowledgeRecord::size (void) const
   if (type_ == INTEGER || type_ == DOUBLE) {
     return 1;
   } else if (is_string_type()) {
-    return str_value_->size () + 1;
+    return (uint32_t)str_value_->size () + 1;
   } else if (is_binary_file_type()) {
-    return file_value_->size ();
+    return (uint32_t)file_value_->size ();
   } else if (type_ == INTEGER_ARRAY) {
-    return int_array_->size ();
+    return (uint32_t)int_array_->size ();
   } else if (type_ == DOUBLE_ARRAY) {
-    return double_array_->size ();
+    return (uint32_t)double_array_->size ();
   }
   return 1;
 }
@@ -1064,8 +1064,8 @@ inline void
 KnowledgeRecord::set_value (const KnowledgeRecord &new_value)
 {
   uint64_t clock = this->clock;
-  uint64_t quality = this->write_quality;
-  uint64_t write_quality = this->write_quality;
+  uint32_t quality = this->write_quality;
+  uint32_t write_quality = this->write_quality;
   *this = new_value;
   this->clock = clock;
   this->quality = quality;
@@ -1076,8 +1076,8 @@ inline void
 KnowledgeRecord::set_value (KnowledgeRecord &&new_value)
 {
   uint64_t clock = this->clock;
-  uint64_t quality = this->write_quality;
-  uint64_t write_quality = this->write_quality;
+  uint32_t quality = this->write_quality;
+  uint32_t write_quality = this->write_quality;
   *this = std::move(new_value);
   this->clock = clock;
   this->quality = quality;

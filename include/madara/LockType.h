@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include <condition_variable>
+#include "madara/MADARA_export.h"
 
 #ifndef MADARA_LOCK_TYPE
 

@@ -56,7 +56,7 @@ public:
   **/
   void set_rate (double rate)
   {
-    tickets = 1000000 * rate;
+    tickets = (uint64_t)(1000000 * rate);
 
     if (tickets > 0)
       stride = max_stride / tickets;

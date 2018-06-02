@@ -20,7 +20,7 @@
 #include "madara/expression/ExpressionTree.h"
 #include "madara/transport/BandwidthMonitor.h"
 #include "madara/threads/Threader.h"
-#include "madara/boost.h"
+#include "madara/Boost.h"
 #include "madara/transport/BasicASIOTransport.h"
 #include "madara/transport/udp/UdpTransport.h"
 

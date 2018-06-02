@@ -465,7 +465,7 @@ KnowledgeRecord::fragment (unsigned int first, unsigned int last)
 
   if (is_string_type ())
   {
-    size_t size = str_value_->size ();
+    unsigned int size = (unsigned int)str_value_->size ();
 
     // make sure last is accessible in the data type
     last = std::min <unsigned int> (last, size - 1);
@@ -480,10 +480,10 @@ KnowledgeRecord::fragment (unsigned int first, unsigned int last)
   }
   else if (is_binary_file_type ())
   {
-    size_t size = file_value_->size ();
+    unsigned int size = (unsigned int)file_value_->size ();
 
     // make sure last is accessible in the data type
-    last = std::min <unsigned int> (last, size - 1);
+    last = std::min <unsigned int> (last, (unsigned int)size - 1);
 
     // Unlike string types, file buffers are not ended with a null delimiter
     uint32_t bufsize = last - first + 1;
@@ -496,7 +496,7 @@ KnowledgeRecord::fragment (unsigned int first, unsigned int last)
   }
   else if (type_ == INTEGER_ARRAY)
   {
-    size_t size = int_array_->size ();
+    unsigned int size = (unsigned int)int_array_->size ();
 
     // make sure last is accessible in the data type
     last = std::min <unsigned int> (last, size - 1);
@@ -513,7 +513,7 @@ KnowledgeRecord::fragment (unsigned int first, unsigned int last)
   }
   else if (type_ == DOUBLE_ARRAY)
   {
-    size_t size = double_array_->size ();
+    unsigned int size = (unsigned int) double_array_->size ();
 
     // make sure last is accessible in the data type
     last = std::min <unsigned int> (last, size - 1);

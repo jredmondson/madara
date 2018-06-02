@@ -30,7 +30,7 @@ madara::transport::QoSTransportSettings::QoSTransportSettings (
     receive_filters_ (settings.receive_filters_),
     send_filters_ (settings.send_filters_),
     buffer_filters_ (settings.buffer_filters_),
-    packet_drop_rate_ (settings.packet_drop_burst_),
+    packet_drop_rate_ (settings.packet_drop_rate_),
     packet_drop_type_ (settings.packet_drop_type_),
     packet_drop_burst_ (settings.packet_drop_burst_),
     max_send_bandwidth_ (settings.max_send_bandwidth_),

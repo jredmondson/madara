@@ -285,7 +285,7 @@ void test_sqrt (void)
   }
 
   timer.stop ();
-  int measured = timer.duration_ns ();
+  int measured = (int)timer.duration_ns ();
   int average = measured / 1000000000;
 
   std::cerr << "sqrt: 1,000,000,000 iterations in " << measured <<

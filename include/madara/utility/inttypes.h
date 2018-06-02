@@ -9,7 +9,7 @@
 
 #ifdef _MSC_VER
 
-  #if (MSC_VER <= 1600)
+  #if (_MSC_VER <= 1600)
 
     #ifndef PRIu64
 
@@ -26,20 +26,29 @@
       #define PRIu64       "I64u"
       #define PRIx64       "I64x"
       #define PRIX64       "I64X"
+      #include <BaseTsd.h>
+      #if !defined (ssize_t)
+        typedef SSIZE_T ssize_t;
+      #endif
 
     #endif // ! ifndef PRIu64
 
   #else // (MSC_VER > 1600)
 
-      // otherwise, we do something more logical
-      #include <inttypes.h>
-
+    // otherwise, we do something more logical
+    #include <inttypes.h>
+    #include <stddef.h>
+    #include <BaseTsd.h>
+#   if !defined (ssize_t)
+      typedef SSIZE_T ssize_t;
+#   endif
   #endif // (MSC_VER <= 1600)
 
 #else   // !_MSC_VER
 
   // otherwise, we do something more logical
   #include <inttypes.h>
+  #include <stddef.h>
 
 #endif  // _MSC_VER
 

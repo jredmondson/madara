@@ -313,7 +313,7 @@ char * madara::transport::defrag (FragmentMap & map)
       result = new char [size];
       char * lhs = result;
       
-      uint32_t actual_size = header.size - header.encoded_size ();
+      uint32_t actual_size = (uint32_t)header.size - header.encoded_size ();
       buffer_remaining = actual_size;
 
       if (size >= 0)
@@ -335,7 +335,7 @@ char * madara::transport::defrag (FragmentMap & map)
 
         buffer_remaining  = header.encoded_size ();
         buffer = header.read (i->second, buffer_remaining);
-        actual_size = header.size - header.encoded_size ();
+        actual_size = (uint32_t)header.size - header.encoded_size ();
         buffer_remaining = actual_size;
         
         if (size >= 0)
@@ -498,7 +498,7 @@ madara::transport::add_fragment (const char * originator, uint64_t clock,
         " %s:%d is being added to queue after a deletion\n",
         originator, update_number);
 
-      uint32_t oldest = clock_map.begin ()->first;
+      uint32_t oldest = (uint32_t)clock_map.begin ()->first;
 
       if (oldest < clock)
       {
@@ -594,7 +594,7 @@ madara::transport::frag (const char * source,
     }
 
     total_size = header.size;
-    header.updates = header.size / data_per_packet;
+    header.updates = (uint32_t)header.size / data_per_packet;
 
     if (header.size % data_per_packet != 0)
       ++header.updates;

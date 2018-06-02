@@ -539,7 +539,7 @@ namespace madara
       template <typename K, typename V>
       int set (K&& key, const V * arr, size_t size,
                const EvalSettings & settings) {
-        int result = map_.set (std::forward<K>(key), arr, size, settings);
+        int result = map_.set (std::forward<K>(key), arr, (uint32_t)size, settings);
 
         send_modifieds ("KnowledgeBaseImpl:set", settings);
 

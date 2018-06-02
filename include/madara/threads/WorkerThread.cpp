@@ -8,27 +8,6 @@
 #include "madara/utility/java/Acquire_VM.h"
 #endif
 
-#ifdef _WIN32
-
-#include <process.h>
-
-unsigned __stdcall worker_thread_windows_glue (void * param)
-{
-  WorkerThread * caller =
-    static_cast < WorkerThread *> (
-      param);
-  if (caller)
-  {
-    return (unsigned) caller->svc ();
-  }
-  else
-  {
-    return 0;
-  }
-}
-
-#endif
-
 
 #include <iostream>
 #include <algorithm>

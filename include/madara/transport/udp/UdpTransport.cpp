@@ -122,7 +122,7 @@ UdpTransport::send_buffer (
     }
   }
 
-  return bytes_sent;
+  return (long)bytes_sent;
 }
 
 long

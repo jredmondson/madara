@@ -173,7 +173,7 @@ UdpTransportReadThread::run (void)
 
   knowledge::KnowledgeMap rebroadcast_records;
 
-  process_received_update (buffer, bytes_read, transport_.id_, *context_,
+  process_received_update (buffer, (uint32_t)bytes_read, transport_.id_, *context_,
     settings_, transport_.send_monitor_, transport_.receive_monitor_,
     rebroadcast_records,
 #ifndef _MADARA_NO_KARL_
