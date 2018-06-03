@@ -156,11 +156,7 @@ namespace madara
     /**
      * Collection of named threads
      **/
-#ifndef _MSC_VER
     typedef std::map <std::string, std::unique_ptr<WorkerThread>>  NamedWorkerThreads;
-#else
-    typedef std::map <std::string, std::shared_ptr<WorkerThread>>  NamedWorkerThreads;
-#endif
   }
 }
 
