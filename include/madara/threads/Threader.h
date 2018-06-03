@@ -51,6 +51,11 @@ namespace madara
        **/
       ~Threader ();
 
+      Threader(const Threader &) = delete;
+      Threader(Threader &&) = default;
+      Threader &operator=(const Threader &) = delete;
+      Threader &operator=(Threader &&) = default;
+
       /**
       * Modify hertz rate of a thread. This is only useful
       * for periodic threads that are operating at infinite
