@@ -6,8 +6,6 @@ project (Madara) : using_splice, splice_transport, using_ndds, madara_zmq, using
   staticflags += MADARA_BUILD_STATIC MADARA_LOGGER_BUILD_STATIC
   libout = $(MADARA_ROOT)/lib
 
-  libs += boost_system
-
   prebuild = perl $(MADARA_ROOT)/bin/generate_version_include.pl
 
   specific(prop:microsoft) {

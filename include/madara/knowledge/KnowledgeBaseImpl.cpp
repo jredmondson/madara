@@ -384,6 +384,8 @@ const EvalSettings & settings)
   return last_value;
 }
 
+#endif // _MADARA_NO_KARL_
+
 int
 KnowledgeBaseImpl::send_modifieds (
   const std::string & prefix,
@@ -473,7 +475,5 @@ KnowledgeBaseImpl::send_modifieds (
 
   return result;
 }
-
-#endif // _MADARA_NO_KARL_
 
 } }
