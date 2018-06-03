@@ -1037,7 +1037,7 @@ namespace madara
        * @param   settings    settings for sending modifications
        * @return  number of transports the modifications were sent to
        **/
-      int send_modifieds (
+      MADARA_Export int send_modifieds (
         const std::string & prefix,
         const EvalSettings & settings =
           EvalSettings ());
