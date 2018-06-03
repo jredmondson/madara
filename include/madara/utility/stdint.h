@@ -9,7 +9,7 @@
 
 #ifdef _MSC_VER
 
-  #if (MSC_VER < 1600)
+  #if (_MSC_VER < 1600)
 
     #ifndef int32_t
 

@@ -59,7 +59,7 @@ namespace madara
        **/
       KnowledgeRequirements (bool t_clear_knowledge,
         uint64_t t_clock_threshold = 0,
-        uint64_t t_predicates = {},
+        std::vector<MatchPredicate> t_predicates = {},
         uint64_t t_quality_threshold = 0,
         bool t_use_source_clock = false)
         : clear_knowledge (t_clear_knowledge), 

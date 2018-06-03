@@ -77,10 +77,12 @@ namespace madara
         knowledge::KnowledgeBase data,
         double hertz = -1.0);
 
+      WorkerThread(
+        WorkerThread &&other) = default;
       /**
       * Destructor
       **/
-      ~WorkerThread ();
+      ~WorkerThread () noexcept;
 
       /**
        * Assignment operator
@@ -154,7 +156,11 @@ namespace madara
     /**
      * Collection of named threads
      **/
+#ifndef _MSC_VER
     typedef std::map <std::string, std::unique_ptr<WorkerThread>>  NamedWorkerThreads;
+#else
+    typedef std::map <std::string, std::shared_ptr<WorkerThread>>  NamedWorkerThreads;
+#endif
   }
 }
 

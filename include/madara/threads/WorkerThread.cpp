@@ -46,11 +46,18 @@ WorkerThread::WorkerThread (
 
 WorkerThread::~WorkerThread ()
 {
-  if (me_.joinable()) {
-    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
+  try {
+    if (me_.joinable()) {
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
+        "WorkerThread::~WorkerThread(%s):" \
+        " thread wasn't joined before destruction\n", name_.c_str());
+      me_.detach();
+    }
+  }
+  catch (const std::system_error &e) {
+    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
       "WorkerThread::~WorkerThread(%s):" \
-      " thread wasn't joined before destruction\n", name_.c_str ());
-    me_.detach();
+      " error trying to detach: %s\n", name_.c_str(), e.what());
   }
 }
 

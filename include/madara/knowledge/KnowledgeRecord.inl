@@ -778,7 +778,7 @@ KnowledgeRecord::is_array_type (void) const
 inline bool
 KnowledgeRecord::is_array_type (uint32_t type)
 {
-  return type & ALL_ARRAYS;
+  return (type & ALL_ARRAYS) != 0;
 }
 
 inline bool
