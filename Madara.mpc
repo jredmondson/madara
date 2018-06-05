@@ -2,15 +2,15 @@
 project (Madara) : build_files, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, using_simtime, debug_build, using_boost, using_clang, using_android {
 
   sharedname = MADARA
-  dynamicflags += MADARA_BUILD_DLL MADARA_LOGGER_BUILD_DLL
-  staticflags += MADARA_BUILD_STATIC MADARA_LOGGER_BUILD_STATIC
+  dynamicflags += MADARA_BUILD_DLL
+  staticflags += MADARA_BUILD_STATIC
   libout = $(MADARA_ROOT)/lib
 
   prebuild = perl $(MADARA_ROOT)/bin/generate_version_include.pl
 
   specific(prop:microsoft) {
     DisableSpecificWarnings += 4005 4251 4275
-	macros += _CRT_SECURE_NO_WARNINGS
+    macros += _CRT_SECURE_NO_WARNINGS
   }
 
   specific(prop:make) {
