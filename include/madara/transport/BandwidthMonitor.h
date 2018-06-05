@@ -15,8 +15,8 @@
 #include <time.h>
 
 #include "madara/LockType.h"
-#include "madara/utility/stdint.h"
-#include "madara/MADARA_export.h"
+#include "madara/utility/StdInt.h"
+#include "madara/MadaraExport.h"
 
 namespace madara
 {
@@ -30,7 +30,7 @@ namespace madara
      * @brief Provides monitoring capability of a transport's bandwidth
      **/
 
-    class MADARA_Export BandwidthMonitor
+    class MADARA_EXPORT BandwidthMonitor
     {
     public:
       /**

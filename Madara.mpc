@@ -1,5 +1,5 @@
 
-project (Madara) : using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, using_simtime, debug_build, using_boost, using_clang, using_android {
+project (Madara) : build_files, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, using_simtime, debug_build, using_boost, using_clang, using_android {
 
   sharedname = MADARA
   dynamicflags += MADARA_BUILD_DLL MADARA_LOGGER_BUILD_DLL
@@ -25,6 +25,13 @@ project (Madara) : using_splice, splice_transport, using_ndds, madara_zmq, using
       -Woverloaded-virtual -pedantic -O3 $(CPPFLAGS)
   }
 
+  Build_Files {
+    .
+    docs
+	port/java
+	port/python
+  }
+
   Documentation_Files {
     INSTALL.txt
     LICENSE.txt
@@ -35,6 +42,7 @@ project (Madara) : using_splice, splice_transport, using_ndds, madara_zmq, using
   Inline_Files {
     include/madara/knowledge
     include/madara/knowledge/containers
+    include/madara/knowledge/rcw
     include/madara/filters
     include/madara/logger/Logger.inl
     include/madara/utility
@@ -60,6 +68,7 @@ project (Madara) : using_splice, splice_transport, using_ndds, madara_zmq, using
     include/madara/filters
     include/madara/knowledge
     include/madara/knowledge/containers
+    include/madara/knowledge/rcw
     include/madara/logger
     include/madara/threads
     include/madara/transport/udp
@@ -86,6 +95,7 @@ project (Madara) : using_splice, splice_transport, using_ndds, madara_zmq, using
     include/madara/filters
     include/madara/knowledge
     include/madara/knowledge/containers
+    include/madara/knowledge/rcw
     include/madara/logger
     include/madara/threads
     include/madara/transport/udp

@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <iomanip>
 #include <iostream>
-#include "madara/utility/inttypes.h"
+#include "madara/utility/IntTypes.h"
 
 namespace {
   int madara_double_precision (-1);

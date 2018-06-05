@@ -29,7 +29,7 @@ namespace madara
        * @brief This class stores a vector of NativeDoubleVectors. Essentially,
        *        this is a Vector of double[].
        */
-      class MADARA_Export DoubleVectorVector : public BaseContainer
+      class MADARA_EXPORT DoubleVectorVector : public BaseContainer
       {
       public:
         /// trait that describes the value type

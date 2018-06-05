@@ -18,7 +18,7 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "BaseThread.h"
 #include "WorkerThread.h"
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 
 #ifdef _MADARA_JAVA_
 #include <jni.h>
@@ -32,7 +32,7 @@ namespace madara
     /**
      * Starts threads with first class support of MADARA contexts
      **/
-    class MADARA_Export Threader
+    class MADARA_EXPORT Threader
     {
     public:
       /**

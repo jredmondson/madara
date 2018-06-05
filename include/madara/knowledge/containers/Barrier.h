@@ -30,7 +30,7 @@ namespace madara
        * @class Barrier
        * @brief This class stores an integer within a variable context
        */
-      class MADARA_Export Barrier : public BaseContainer
+      class MADARA_EXPORT Barrier : public BaseContainer
       {
       public:
         /// trait that describes the value type

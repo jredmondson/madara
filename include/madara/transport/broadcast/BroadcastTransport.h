@@ -11,12 +11,12 @@
 
 #include <string>
 
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/utility/ScopedArray.h"
 #include "madara/transport/udp/UdpTransport.h"
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/transport/BandwidthMonitor.h"
-#include "madara/utility/stdint.h"
+#include "madara/utility/StdInt.h"
 #include "madara/expression/ExpressionTree.h"
 #include "madara/threads/Threader.h"
 
@@ -37,7 +37,7 @@ namespace madara
      *        6) multi-assignment of records<br />
      *        7) rebroadcasting<br />
      **/
-    class MADARA_Export BroadcastTransport : public UdpTransport
+    class MADARA_EXPORT BroadcastTransport : public UdpTransport
     {
     public:
       using UdpTransport::UdpTransport;

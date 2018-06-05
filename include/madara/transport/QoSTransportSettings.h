@@ -14,8 +14,8 @@
 #include "madara/transport/TransportSettings.h"
 #include "madara/transport/TransportContext.h"
 #include "madara/knowledge/ThreadSafeContext.h"
-#include "madara/utility/stdint.h"
-#include "madara/MADARA_export.h"
+#include "madara/utility/StdInt.h"
+#include "madara/MadaraExport.h"
 #include "madara/filters/AggregateFilter.h"
 #include "madara/filters/RecordFilter.h"
 #include "madara/filters/BufferFilter.h"
@@ -46,7 +46,7 @@ namespace madara
      * @class QoSTransportSettings
      * @brief Container for quality-of-service settings
      **/
-    class MADARA_Export QoSTransportSettings : public TransportSettings
+    class MADARA_EXPORT QoSTransportSettings : public TransportSettings
     {
     public:
       /**

@@ -3,7 +3,7 @@
 #define _MADARA_EXTERNAL_FUNCTION_VARIABLES_H_
 
 #include <string>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
 #include "madara/expression/ExpressionTree.h"
@@ -49,7 +49,7 @@ namespace madara
      * @brief Provides an interface for external functions into the MADARA
      *        KaRL variable settings
      */
-    class MADARA_Export Variables
+    class MADARA_EXPORT Variables
     {
     public:
       friend class madara::expression::CompositeFunctionNode;

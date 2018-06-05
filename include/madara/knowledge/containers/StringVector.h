@@ -28,7 +28,7 @@ namespace madara
        * @class StringVector
        * @brief This class stores a vector of strings inside of KaRL
        */
-      class MADARA_Export StringVector : public BaseContainer
+      class MADARA_EXPORT StringVector : public BaseContainer
       {
       public:
         /// trait that describes the value type

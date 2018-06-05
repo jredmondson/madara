@@ -18,11 +18,11 @@
 #include <initializer_list>
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/Functions.h"
-#include "madara/utility/stdint.h"
-#include "madara/MADARA_export.h"
+#include "madara/utility/StdInt.h"
+#include "madara/MadaraExport.h"
 #include "madara/knowledge/VariableReference.h"
 #include "madara/knowledge/KnowledgeBase.h"
-#include "madara/knowledge/knowledge_cast.h"
+#include "madara/knowledge/KnowledgeCast.h"
 #include "madara/knowledge/ContextGuard.h"
 #include "madara/threads/BaseThread.h"
 #include "madara/knowledge/rcw/Transaction.h"
@@ -37,7 +37,7 @@ namespace madara
      * Users should override setup, compute, and finalize, but should
      * not override the init, run, and cleanup functions from BaseThread
      **/
-    class MADARA_Export RCWThread : public BaseThread
+    class MADARA_EXPORT RCWThread : public BaseThread
     {
     public:
       /**

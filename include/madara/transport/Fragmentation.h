@@ -13,8 +13,8 @@
 #include <map>
 #include <string>
 #include <string.h>
-#include "madara/utility/stdint.h"
-#include "madara/MADARA_export.h"
+#include "madara/utility/StdInt.h"
+#include "madara/MadaraExport.h"
 #include "madara/transport/MessageHeader.h"
 
 namespace madara
@@ -45,7 +45,7 @@ namespace madara
     *        [145] [knowledge updates start here in the buffer]
     */
     
-    class MADARA_Export FragmentMessageHeader : public MessageHeader
+    class MADARA_EXPORT FragmentMessageHeader : public MessageHeader
     {
     public:
 
@@ -154,7 +154,7 @@ namespace madara
      * @return   unmanaged buffer that contains completed message.
      *           If not zero, you must clean this up with delete []
      **/
-    MADARA_Export char * add_fragment (const char * originator, uint64_t clock,
+    MADARA_EXPORT char * add_fragment (const char * originator, uint64_t clock,
       uint32_t update_number, const char * fragment,
       uint32_t queue_length,
       OriginatorFragmentMap & map, bool clear = true);
@@ -165,13 +165,13 @@ namespace madara
      * @return   unmanaged buffer that contains completed message.
      *           If not zero, you must clean this up with delete []
      **/
-    MADARA_Export char * defrag (FragmentMap & map);
+    MADARA_EXPORT char * defrag (FragmentMap & map);
     
     /**
      * Deletes fragments within a fragment map and clears the map
      * @param  map     map containing fragments
      **/
-    MADARA_Export void delete_fragments (FragmentMap & map);
+    MADARA_EXPORT void delete_fragments (FragmentMap & map);
 
     /**
      * Breaks a large packet into smaller packets
@@ -179,7 +179,7 @@ namespace madara
      * @param  fragment_size  maximum fragment size
      * @param  map      map containing resulting fragments
      **/
-    MADARA_Export void frag (
+    MADARA_EXPORT void frag (
       const char * source, uint32_t fragment_size, FragmentMap & map);
     
     /**
@@ -189,7 +189,7 @@ namespace madara
      * @param   map          a map of existing message fragments
      * @return  true if the clock entry has all fragments received
      **/
-    MADARA_Export bool is_complete (const char * originator, uint64_t clock,
+    MADARA_EXPORT bool is_complete (const char * originator, uint64_t clock,
       OriginatorFragmentMap & map);
 
     /**
@@ -200,7 +200,7 @@ namespace madara
      * @param map          a map of existing message fragments
      * @return   true if 
      **/
-    MADARA_Export bool exists (const char * originator, uint64_t clock,
+    MADARA_EXPORT bool exists (const char * originator, uint64_t clock,
       uint32_t update_number, OriginatorFragmentMap & map);
   }
 }

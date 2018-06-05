@@ -53,8 +53,8 @@
  * DM-0002494
 **/
 
-#ifndef INCL_KNOWLEDGE_CAST_HPP
-#define INCL_KNOWLEDGE_CAST_HPP
+#ifndef _MADARA_KNOWLEDGE_KNOWLEDGE_CAST_H_
+#define _MADARA_KNOWLEDGE_KNOWLEDGE_CAST_H_
 
 #include <string>
 #include <cstring>

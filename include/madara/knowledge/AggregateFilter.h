@@ -4,7 +4,7 @@
 
 #include <list>
 #include <string>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/ExternFunctionVariables.h"
 #include "madara/transport/TransportContext.h"
@@ -35,7 +35,7 @@ namespace madara
      * @class AggregateFilter
      * @brief This class stores a function definition
      */
-    class MADARA_Export AggregateFilter
+    class MADARA_EXPORT AggregateFilter
     {
     public:
       /**

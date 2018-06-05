@@ -28,7 +28,7 @@ namespace madara
        * @class Integer
        * @brief This class stores an integer within a variable context
        */
-      class MADARA_Export Integer : public BaseContainer
+      class MADARA_EXPORT Integer : public BaseContainer
       {
       public:
         /// trait that describes the value type

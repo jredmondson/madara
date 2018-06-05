@@ -28,7 +28,7 @@ namespace madara
        * @class NativeIntegerVector
        * @brief This class stores a vector of doubles inside of KaRL
        */
-      class MADARA_Export NativeIntegerVector : public BaseContainer
+      class MADARA_EXPORT NativeIntegerVector : public BaseContainer
       {
       public:
         /// trait that describes the value type

@@ -28,7 +28,7 @@ namespace madara
        * @class IntegerVector
        * @brief This class stores a vector of integers inside of KaRL
        */
-      class MADARA_Export IntegerVector : public BaseContainer
+      class MADARA_EXPORT IntegerVector : public BaseContainer
       {
       public:
         /// trait that describes the value type

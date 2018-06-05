@@ -8,10 +8,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <chrono>
-#include "madara/MADARA_export.h"
-#include "madara/utility/stdint.h"
+#include "madara/MadaraExport.h"
+#include "madara/utility/StdInt.h"
 #include "madara/knowledge/WaitSettings.h"
-#include "madara/utility/inttypes.h"
+#include "madara/utility/IntTypes.h"
 
 namespace madara
 {
@@ -40,26 +40,26 @@ namespace madara
      * @param     priority     the priority to attempt to set
      * @return    true if set call was successful
      **/
-    MADARA_Export bool set_thread_priority (int priority = 20);
+    MADARA_EXPORT bool set_thread_priority (int priority = 20);
     
     /**
      * Gets the MADARA version number
      * @return    the MADARA version number
      **/
-    MADARA_Export std::string get_version (void);
+    MADARA_EXPORT std::string get_version (void);
     
     /**
      * Gets the MADARA version number
      * @return    the MADARA 4 byte version number
      **/
-    MADARA_Export uint32_t get_uint_version (void);
+    MADARA_EXPORT uint32_t get_uint_version (void);
     
     /**
      * Converts a MADARA uint32_t version number to human-readable
      * @param   version     the 4 byte version number
      * @return              the stringified version number
      **/
-    MADARA_Export std::string to_string_version (uint32_t version);
+    MADARA_EXPORT std::string to_string_version (uint32_t version);
     
     /**
      * Replaces an old phrase with a new phrase within a string
@@ -70,7 +70,7 @@ namespace madara
      *                      if false, replace first instance of old phrase.
      * @return  the number of replacements made
      **/
-    MADARA_Export size_t string_replace (std::string & source,
+    MADARA_EXPORT size_t string_replace (std::string & source,
       const std::string & old_phrase,
       const std::string & new_phrase,
       bool replace_all = true);
@@ -114,7 +114,7 @@ namespace madara
      * @param     input         the string to change
      * @return    a reference to the modified input
      **/
-    MADARA_Export std::string & strip_comments (std::string & input);
+    MADARA_EXPORT std::string & strip_comments (std::string & input);
     
     /**
      * Strips an unwanted character. This function will
@@ -123,7 +123,7 @@ namespace madara
      * @param     unwanted      the character value to remove from input
      * @return    a reference to the modified input
      **/
-    MADARA_Export std::string & string_remove (std::string & input,
+    MADARA_EXPORT std::string & string_remove (std::string & input,
       char unwanted);
 
     /**
@@ -133,7 +133,7 @@ namespace madara
      * @param     input         the string to change
      * @return    a reference to the modified input
      **/
-    MADARA_Export std::string & strip_extra_white_space (
+    MADARA_EXPORT std::string & strip_extra_white_space (
       std::string & input);
 
     /**
@@ -155,7 +155,7 @@ namespace madara
      * @param     port        the port in the key
      * @return    1 if there was no ":". 0 if both host and port are set.
      **/
-    MADARA_Export int split_hostport_identifier (const std::string & key, 
+    MADARA_EXPORT int split_hostport_identifier (const std::string & key, 
       std::string & host, std::string & port);
     
     /**
@@ -165,7 +165,7 @@ namespace madara
      * @param     port        the port in the key
      * @return    0 if successful (always successful right now)
      **/
-    MADARA_Export int merge_hostport_identifier (std::string & key, 
+    MADARA_EXPORT int merge_hostport_identifier (std::string & key, 
       const std::string & host, const std::string & port);
     
     /**
@@ -175,7 +175,7 @@ namespace madara
      * @param     u_port      the port in the key
      * @return    0 if successful (always successful right now)
      **/
-    MADARA_Export int merge_hostport_identifier (std::string & key, 
+    MADARA_EXPORT int merge_hostport_identifier (std::string & key, 
       const std::string & host, unsigned short u_port);
     
     /**
@@ -186,7 +186,7 @@ namespace madara
      * @param     pivot_list  the actual splitters that were found between
      *                        the tokens
      **/
-    MADARA_Export void tokenizer (const std::string & input, 
+    MADARA_EXPORT void tokenizer (const std::string & input, 
       const ::std::vector< std::string> & splitters,
       ::std::vector< std::string> & tokens,
       ::std::vector< std::string> & pivot_list);
@@ -196,21 +196,21 @@ namespace madara
      * @param     filename    name of the file to read
      * @return    contents of the file. Null string if unsuccessful.
      **/
-    MADARA_Export std::string file_to_string (const std::string & filename);
+    MADARA_EXPORT std::string file_to_string (const std::string & filename);
 
     /**
      * Extracts the path of a filename
      * @param     name        name of the file to extract path of
      * @return    the directory path of the file
      **/
-    MADARA_Export std::string extract_path (const std::string & name);
+    MADARA_EXPORT std::string extract_path (const std::string & name);
     
     /**
      * Extracts the file name of an absolute or relative path
      * @param     name        name of the file to extract path of
      * @return    the file name
      **/
-    MADARA_Export std::string extract_filename (const std::string & name);
+    MADARA_EXPORT std::string extract_filename (const std::string & name);
 
     /**
      * Expands environment variables referenced in the string. The environment
@@ -218,7 +218,7 @@ namespace madara
      * @param     source      the string to expand
      * @return    a string with environment variables expanded
      **/
-    MADARA_Export std::string expand_envs (
+    MADARA_EXPORT std::string expand_envs (
       const std::string & source);
 
     /**
@@ -237,7 +237,7 @@ namespace madara
      * @param     target      the string to modify
      * @return    a more compliant directory path string
      **/
-    MADARA_Export std::string clean_dir_name (const std::string & target);
+    MADARA_EXPORT std::string clean_dir_name (const std::string & target);
     
     /**
      * Converts a host format uint64_t into big endian. Can
@@ -304,7 +304,7 @@ namespace madara
      * @param    add_zero_char  add a zero char to the end of the buffer
      * @return              zero if successful
      **/
-    MADARA_Export int  read_file (const std::string & filename,
+    MADARA_EXPORT int  read_file (const std::string & filename,
       void *& buffer, size_t & size, bool add_zero_char = false);
     
     /**
@@ -314,7 +314,7 @@ namespace madara
      * @param    size       the size of the allocated buffer
      * @return              amount of bytes written (-1 if unsuccessful)
      **/
-    MADARA_Export ssize_t write_file (const std::string & filename,
+    MADARA_EXPORT ssize_t write_file (const std::string & filename,
       void * buffer, size_t size);
 
     /**
@@ -360,7 +360,7 @@ namespace madara
      * @param  set_seed_to_time  if true, seed the random generator with time
      * @return a double between floor and ceiling (inclusive)
      **/
-    MADARA_Export double rand_double (double floor = 0.0,
+    MADARA_EXPORT double rand_double (double floor = 0.0,
       double ceiling = 1.0, bool set_seed_to_time = true);
      
     /**
@@ -370,7 +370,7 @@ namespace madara
      * @param  set_seed_to_time  if true, seed the random generator with time
      * @return a integer between floor and ceiling (inclusive)
      **/
-    MADARA_Export int64_t rand_int (int64_t floor = 0,
+    MADARA_EXPORT int64_t rand_int (int64_t floor = 0,
       int64_t ceiling = RAND_MAX, bool set_seed_to_time = true);
 
     /**
@@ -378,7 +378,7 @@ namespace madara
      * @param  input      real number to round to integer
      * @return the nearest integer to the input
      **/
-    MADARA_Export int64_t nearest_int (double input);
+    MADARA_EXPORT int64_t nearest_int (double input);
 
     /**
      * Check if input contains prefix at the beginning
@@ -386,7 +386,7 @@ namespace madara
      * @param  prefix    string to match
      * @return true if input begins with prefix. False otherwise.
      **/
-    MADARA_Export bool begins_with (const std::string & input,
+    MADARA_EXPORT bool begins_with (const std::string & input,
       const std::string & prefix);
     
     /**
@@ -395,7 +395,7 @@ namespace madara
      * @param  ending    string to match
      * @return true if input ends with ending. False otherwise.
      **/
-    MADARA_Export bool ends_with (const std::string & input,
+    MADARA_EXPORT bool ends_with (const std::string & input,
       const std::string & ending);
     
     /**
@@ -403,14 +403,14 @@ namespace madara
      * this will sleep for the amount of time regardless of OS interrupts
      * @param  sleep_time  time in seconds to sleep for
      **/
-    MADARA_Export double sleep (double sleep_time);
+    MADARA_EXPORT double sleep (double sleep_time);
     
     /**
      * Sleeps for a certain amount of time. Unlike other sleep timers
      * this will sleep for the amount of time regardless of OS interrupts
      * @param  sleep_time  time to sleep for
      **/
-    MADARA_Export SecondsDuration sleep (const SecondsDuration & sleep_time);
+    MADARA_EXPORT SecondsDuration sleep (const SecondsDuration & sleep_time);
 
     /**
     * Checks two doubles for approximate equality. Doubles, unlike integers,
@@ -447,7 +447,7 @@ namespace madara
      * @param  settings   the Wait Settings. Only uses poll_frequency and
      *                    max_wait.
      **/
-    MADARA_Export bool wait_true (knowledge::KnowledgeBase & knowledge,
+    MADARA_EXPORT bool wait_true (knowledge::KnowledgeBase & knowledge,
       const std::string & variable,
       const knowledge::WaitSettings & settings =
         knowledge::WaitSettings ());
@@ -461,7 +461,7 @@ namespace madara
      * @param  settings   the Wait Settings. Only uses poll_frequency and
      *                    max_wait.
      **/
-    MADARA_Export bool wait_false (knowledge::KnowledgeBase & knowledge,
+    MADARA_EXPORT bool wait_false (knowledge::KnowledgeBase & knowledge,
       const std::string & variable,
       const knowledge::WaitSettings & settings =
         knowledge::WaitSettings ());

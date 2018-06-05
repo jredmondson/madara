@@ -24,7 +24,7 @@
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/expression/ExpressionTree.h"
 #include "madara/expression/Interpreter.h"
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/transport/Fragmentation.h"
 
 namespace madara
@@ -66,7 +66,7 @@ namespace madara
     /**
      * Holds basic transport settings
      */
-    class MADARA_Export TransportSettings
+    class MADARA_EXPORT TransportSettings
     {
     public:
       // allow transport::Base to alter private/protected members

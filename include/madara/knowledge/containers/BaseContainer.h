@@ -30,7 +30,7 @@ namespace madara
        * @class BaseContainer
        * @brief This class is an abstract base class for all containers
        */
-      class MADARA_Export BaseContainer
+      class MADARA_EXPORT BaseContainer
       {
       public:
         /// Allow Collection class to access protected/private areas

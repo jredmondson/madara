@@ -10,7 +10,7 @@
 #include "madara/transport/Fragmentation.h"
 
 #include <iostream>
-#include "madara/utility/inttypes.h"
+#include "madara/utility/IntTypes.h"
 
 namespace madara { namespace transport {
 

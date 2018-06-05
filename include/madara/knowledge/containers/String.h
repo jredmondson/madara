@@ -28,7 +28,7 @@ namespace madara
        * @class String
        * @brief This class stores a string within a variable context
        */
-      class MADARA_Export String : public BaseContainer
+      class MADARA_EXPORT String : public BaseContainer
       {
       public:
         /// trait that describes the value type

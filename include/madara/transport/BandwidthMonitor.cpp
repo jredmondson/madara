@@ -1,7 +1,7 @@
 #include "BandwidthMonitor.h"
 #include "madara/utility/Utility.h"
 #include "madara/logger/GlobalLogger.h"
-#include "madara/utility/inttypes.h"
+#include "madara/utility/IntTypes.h"
 
 
 madara::transport::BandwidthMonitor::BandwidthMonitor (

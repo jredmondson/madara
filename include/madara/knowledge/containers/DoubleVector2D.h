@@ -29,7 +29,7 @@ namespace madara
        * @brief Manages a 2D array of doubles as a virtual overlay in the
        *        KnowledgeBase
        */
-      class MADARA_Export DoubleVector2D : public BaseContainer
+      class MADARA_EXPORT DoubleVector2D : public BaseContainer
       {
       public:
         /// two dimensional indexing

@@ -19,7 +19,7 @@
 #include <ostream>
 
 #include "madara/utility/ThreadSafeVector.h"
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/transport/QoSTransportSettings.h"
 
 #include "ReducedMessageHeader.h"
@@ -42,7 +42,7 @@ namespace madara
      * methods all call send_multiassignment. For example transport, @see
      * madara::transport::MulticastTransport.
      **/
-    class MADARA_Export Base
+    class MADARA_EXPORT Base
     {
     public:
       /**
@@ -185,7 +185,7 @@ namespace madara
      *               -5   Rejected: Wrong domain<br />
      *               >=   Number of accepted updates
      **/
-    int MADARA_Export process_received_update (
+    int MADARA_EXPORT process_received_update (
         const char * buffer,
         uint32_t bytes_read,
         const std::string & id,
@@ -218,7 +218,7 @@ namespace madara
      * @param  records          a map of variables to records to send
      * @param  packet_scheduler scheduler for mimicking network conditions
      **/
-    int MADARA_Export prep_rebroadcast (
+    int MADARA_EXPORT prep_rebroadcast (
       knowledge::ThreadSafeContext & context,
       char * buffer,
       int64_t & buffer_remaining,

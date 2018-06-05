@@ -20,7 +20,7 @@ namespace madara
      * @class ContextGuard
      * @brief A thread-safe guard for a context or knowledge base
      */
-    class MADARA_Export ContextGuard
+    class MADARA_EXPORT ContextGuard
     {
     public:
       /**

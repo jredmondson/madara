@@ -29,7 +29,7 @@ namespace madara
        * @class Double
        * @brief This class stores a double within a variable context
        */
-      class MADARA_Export Double : public BaseContainer
+      class MADARA_EXPORT Double : public BaseContainer
       {
       public:
         /// trait that describes the value type

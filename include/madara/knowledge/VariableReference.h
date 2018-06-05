@@ -12,7 +12,7 @@
 
 #include <string>
 #include <cstring>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/expression/ExpressionTree.h"
 #include "madara/utility/ScopedArray.h"
 
@@ -33,7 +33,7 @@ namespace madara
      * @class VariableReference
      * @brief Optimized reference to a variable within the knowledge base
      **/
-    class MADARA_Export VariableReference
+    class MADARA_EXPORT VariableReference
     {
     public:
       friend class ThreadSafeContext;

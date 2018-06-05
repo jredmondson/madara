@@ -8,8 +8,8 @@
  * This file contains the filer header used by default in KaRL checkpointing
  **/
 
-#include "madara/utility/stdint.h"
-#include "madara/MADARA_export.h"
+#include "madara/utility/StdInt.h"
+#include "madara/MadaraExport.h"
 #include <string.h>
 
 namespace madara
@@ -33,7 +33,7 @@ namespace madara
     *       [108] [Updates]
     */
 
-    class MADARA_Export FileHeader
+    class MADARA_EXPORT FileHeader
     {
     public:
       

@@ -18,8 +18,8 @@
 #include <list>
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/Functions.h"
-#include "madara/utility/stdint.h"
-#include "madara/MADARA_export.h"
+#include "madara/utility/StdInt.h"
+#include "madara/MadaraExport.h"
 #include "madara/transport/TransportContext.h"
 #include "madara/knowledge/ExternFunctionVariables.h"
 #include "madara/knowledge/containers/Map.h"
@@ -33,7 +33,7 @@ namespace madara
     /**
      * Filter for clearing records from a filter
      **/
-    class MADARA_Export ClearRecords : public AggregateFilter
+    class MADARA_EXPORT ClearRecords : public AggregateFilter
     {
     public:
       /**

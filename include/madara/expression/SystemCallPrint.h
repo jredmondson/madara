@@ -14,7 +14,7 @@
 
 #include <string>
 #include <stdexcept>
-#include "madara/utility/stdint.h"
+#include "madara/utility/StdInt.h"
 #include "madara/expression/SystemCallNode.h"
 
 

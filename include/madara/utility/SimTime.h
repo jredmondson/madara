@@ -3,9 +3,9 @@
 
 #ifdef __cplusplus
 #include <mutex>
-#include <madara/MADARA_export.h>
+#include <madara/MadaraExport.h>
 
-#define MADARA_EXTERN_C extern "C" MADARA_Export
+#define MADARA_EXTERN_C extern "C" MADARA_EXPORT
 
 namespace madara { namespace utility {
 #else

@@ -1,6 +1,11 @@
 feature(debug) {
   macros += MADARA_BUILD_DEBUG
 
+  // just a note for future reference:
+  // in MPC, you can specify Release: and Debug: scope prefixes for
+  // targeted compilers like Visual Studio, e.g.:
+  // Debug::lit_libs -= boost_systemd
+  // Release::lit_libs -= boost_system
   verbatim (make, local) {
     CPPFLAGS += -g -Og
   }

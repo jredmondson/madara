@@ -19,7 +19,7 @@ namespace madara
     /**
      * A convenience class for 
      **/
-    class MADARA_Export VariableExpander
+    class MADARA_EXPORT VariableExpander
     {
     public:
       /**

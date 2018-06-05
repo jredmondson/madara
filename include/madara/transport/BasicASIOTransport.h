@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/utility/ScopedArray.h"
 #include "madara/transport/QoSTransportSettings.h"
 #include "madara/transport/Transport.h"
@@ -22,7 +22,7 @@ namespace madara
     namespace ip = boost::asio::ip;
     using udp = boost::asio::ip::udp;
 
-    class MADARA_Export BasicASIOTransport : public Base
+    class MADARA_EXPORT BasicASIOTransport : public Base
     {
     public:
       BasicASIOTransport (const std::string & id,

@@ -3,7 +3,7 @@
 #define _MADARA_EXTERNAL_FUNCTIONS_H_
 
 #include <string>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/knowledge/FunctionArguments.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
@@ -41,7 +41,7 @@ namespace madara
      * @class Function
      * @brief This class stores a function definition
      */
-    class MADARA_Export Function
+    class MADARA_EXPORT Function
     {
     public:
 

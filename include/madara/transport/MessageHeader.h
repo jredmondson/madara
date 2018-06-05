@@ -9,8 +9,8 @@
  * network transports (e.g. IP multicast and broadcast)
  **/
 
-#include "madara/utility/stdint.h"
-#include "madara/MADARA_export.h"
+#include "madara/utility/StdInt.h"
+#include "madara/MadaraExport.h"
 #include <string>
 #include <string.h>
 
@@ -54,7 +54,7 @@ namespace madara
     *        [141] [knowledge updates start here in the buffer]
     */
 
-    class MADARA_Export MessageHeader
+    class MADARA_EXPORT MessageHeader
     {
     public:
       

@@ -40,7 +40,7 @@ namespace madara
        * @brief A collection of MADARA containers that can be used for
        *        aggregate operations on all containers in the collection
        */
-      class MADARA_Export Collection : public BaseContainer
+      class MADARA_EXPORT Collection : public BaseContainer
       {
       public:
         /**

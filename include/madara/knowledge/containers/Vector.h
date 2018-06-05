@@ -32,7 +32,7 @@ namespace madara
        * @class Vector
        * @brief This class stores a vector of KaRL variables
        */
-      class MADARA_Export Vector : public BaseContainer
+      class MADARA_EXPORT Vector : public BaseContainer
       {
       public:
         /// Allow the Queue class to manipulate variables

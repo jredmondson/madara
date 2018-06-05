@@ -19,8 +19,8 @@
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/knowledge/AggregateFilter.h"
 #include "madara/transport/TransportContext.h"
-#include "madara/utility/stdint.h"
-#include "madara/MADARA_export.h"
+#include "madara/utility/StdInt.h"
+#include "madara/MadaraExport.h"
 #include "madara/filters/RecordFilter.h"
 #include "madara/filters/AggregateFilter.h"
 #include "madara/filters/BufferFilter.h"
@@ -47,7 +47,7 @@ namespace madara
      * @class KnowledgeRecordFilters
      * @brief Provides map of data types to a filter chain to apply to the data
      */
-    class MADARA_Export KnowledgeRecordFilters
+    class MADARA_EXPORT KnowledgeRecordFilters
     {
     public:
       /**

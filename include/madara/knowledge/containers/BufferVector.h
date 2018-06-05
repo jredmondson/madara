@@ -28,7 +28,7 @@ namespace madara
        * @class BufferVector
        * @brief This class stores a vector of character buffers
        */
-      class MADARA_Export BufferVector : public BaseContainer
+      class MADARA_EXPORT BufferVector : public BaseContainer
       {
       public:
         /**

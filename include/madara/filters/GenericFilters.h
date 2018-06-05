@@ -17,8 +17,8 @@
 #include <list>
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/Functions.h"
-#include "madara/utility/stdint.h"
-#include "madara/MADARA_export.h"
+#include "madara/utility/StdInt.h"
+#include "madara/MadaraExport.h"
 #include "madara/transport/TransportContext.h"
 
 namespace madara
@@ -32,7 +32,7 @@ namespace madara
      * @param   vars        variable context (unused)
      * @return  record with status set to UNCREATED
      **/
-    MADARA_Export knowledge::KnowledgeRecord
+    MADARA_EXPORT knowledge::KnowledgeRecord
     discard     (knowledge::FunctionArguments & args,
                  knowledge::Variables & vars);
 
@@ -44,7 +44,7 @@ namespace madara
      * @param   vars        variable context (unused)
      * @return  record with status set to UNCREATED if arg is non-primitive
      **/
-    MADARA_Export knowledge::KnowledgeRecord
+    MADARA_EXPORT knowledge::KnowledgeRecord
     discard_nonprimitives (knowledge::FunctionArguments & args,
                            knowledge::Variables & vars);
 
@@ -56,7 +56,7 @@ namespace madara
      * @param   vars        variable context
      * @return  record with status set to UNCREATED if arg is non-file
      **/
-    MADARA_Export knowledge::KnowledgeRecord
+    MADARA_EXPORT knowledge::KnowledgeRecord
     discard_nonfiles      (knowledge::FunctionArguments & args,
                            knowledge::Variables & vars);
 
@@ -66,7 +66,7 @@ namespace madara
      * @param   vars        variable context
      * @return  record with status set to UNCREATED if arg is non-file
      **/
-    MADARA_Export knowledge::KnowledgeRecord
+    MADARA_EXPORT knowledge::KnowledgeRecord
     log_args              (knowledge::FunctionArguments & args,
                            knowledge::Variables & vars);
     
@@ -76,7 +76,7 @@ namespace madara
      * @param   transport_context the transport context
      * @param   vars              variable context
      **/
-    MADARA_Export void
+    MADARA_EXPORT void
     log_aggregate         (
      knowledge::KnowledgeMap& records,
       const transport::TransportContext & transport_context,

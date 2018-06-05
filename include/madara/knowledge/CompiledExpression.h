@@ -12,7 +12,7 @@
  */
 
 #include <string>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/expression/ExpressionTree.h"
 
 namespace madara
@@ -32,7 +32,7 @@ namespace madara
      * @class CompiledExpression
      * @brief Compiled, optimized KaRL logic
      **/
-    class MADARA_Export CompiledExpression
+    class MADARA_EXPORT CompiledExpression
     {
     public:
       //class KnowledgeBaseImpl;

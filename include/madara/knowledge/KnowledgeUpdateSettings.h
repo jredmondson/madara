@@ -9,8 +9,8 @@
  * provides settings for applying knowledge updates
  */
 
-#include "madara/MADARA_export.h"
-#include "madara/utility/stdint.h"
+#include "madara/MadaraExport.h"
+#include "madara/utility/StdInt.h"
 #include "madara/knowledge/KnowledgeReferenceSettings.h"
 
 namespace madara
@@ -20,7 +20,7 @@ namespace madara
     /**
      * Settings for applying knowledge updates
      **/
-    class MADARA_Export KnowledgeUpdateSettings
+    class MADARA_EXPORT KnowledgeUpdateSettings
           : public KnowledgeReferenceSettings
     {
     public:

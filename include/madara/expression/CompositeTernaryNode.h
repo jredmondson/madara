@@ -7,7 +7,7 @@
 #include <string>
 #include <stdexcept>
 #include "madara/knowledge/KnowledgeRecord.h"
-#include "madara/utility/stdint.h"
+#include "madara/utility/StdInt.h"
 #include "madara/expression/ComponentNode.h"
 
 

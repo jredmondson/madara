@@ -13,9 +13,9 @@
 
 #include <string>
 #include <map>
-#include "madara/utility/inttypes.h"
+#include "madara/utility/IntTypes.h"
 
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/LockType.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeRequirements.h"
@@ -72,7 +72,7 @@ namespace madara
      * @brief This class stores variables and their values for use by any entity
      *        needing state information in a thread safe way
      */
-    class MADARA_Export ThreadSafeContext
+    class MADARA_EXPORT ThreadSafeContext
     {
     public:
       friend class KnowledgeBaseImpl;

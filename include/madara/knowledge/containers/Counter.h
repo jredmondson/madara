@@ -30,7 +30,7 @@ namespace madara
        * @class Counter
        * @brief This class stores an integer within a variable context
        */
-      class MADARA_Export Counter : public BaseContainer
+      class MADARA_EXPORT Counter : public BaseContainer
       {
       public:
         /// trait that describes the value type

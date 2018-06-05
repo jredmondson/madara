@@ -29,7 +29,7 @@ namespace madara
        * @class Map
        * @brief This class stores a map of strings to KaRL variables
        */
-      class MADARA_Export Map : public BaseContainer
+      class MADARA_EXPORT Map : public BaseContainer
       {
       public:
         /**

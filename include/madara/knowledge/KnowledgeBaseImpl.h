@@ -20,7 +20,7 @@
 #include "madara/knowledge/CheckpointSettings.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/VariableReference.h"
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/transport/Transport.h"
 #include "madara/expression/Interpreter.h"
@@ -1037,7 +1037,7 @@ namespace madara
        * @param   settings    settings for sending modifications
        * @return  number of transports the modifications were sent to
        **/
-      MADARA_Export int send_modifieds (
+      MADARA_EXPORT int send_modifieds (
         const std::string & prefix,
         const EvalSettings & settings =
           EvalSettings ());

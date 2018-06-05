@@ -17,7 +17,7 @@
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
 #include "madara/knowledge/Functions.h"
 #include "madara/filters/Arguments.h"
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/transport/Transport.h"
 #include "madara/expression/Interpreter.h"
@@ -42,7 +42,7 @@ namespace madara
      * @class KnowledgeBase
      * @brief This class provides a distributed knowledge base to users
      */
-    class MADARA_Export KnowledgeBase
+    class MADARA_EXPORT KnowledgeBase
     {
     public:
       /**

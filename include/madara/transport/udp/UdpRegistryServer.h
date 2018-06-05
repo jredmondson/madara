@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/transport/udp/UdpTransport.h"
 #include "madara/transport/Transport.h"
 #include "madara/threads/Threader.h"
@@ -21,7 +21,7 @@ namespace madara
      * @brief UDP-based server that handles a registry of UDP endpoints,
      *        which makes it ideal for any NAT-protected agents
      **/
-    class MADARA_Export UdpRegistryServer : public UdpTransport
+    class MADARA_EXPORT UdpRegistryServer : public UdpTransport
     {
     public:
       enum {

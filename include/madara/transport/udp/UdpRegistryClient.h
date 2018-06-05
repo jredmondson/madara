@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/transport/udp/UdpTransport.h"
 #include "madara/transport/Transport.h"
 #include "madara/threads/Threader.h"
@@ -28,7 +28,7 @@ namespace madara
      *        6) multi-assignment of records<br />
      *        7) rebroadcasting<br />
      **/
-    class MADARA_Export UdpRegistryClient : public UdpTransport
+    class MADARA_EXPORT UdpRegistryClient : public UdpTransport
     {
     public:
       enum {

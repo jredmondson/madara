@@ -1,13 +1,13 @@
 #ifndef _MADARA_LOGGER_LOGGER_H_
 #define _MADARA_LOGGER_LOGGER_H_
 
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/LockType.h"
 #include <vector>
 #include <atomic>
 #include <string>
 #include <stdio.h>
-#include "madara/utility/inttypes.h"
+#include "madara/utility/IntTypes.h"
 
 /**
  * Fast version of the madara::logger::log method. This macro
@@ -85,7 +85,7 @@ namespace madara
      * A default logger is provided via madara::logger::global_logger in
      * GlobalLogger.h
      **/
-    class MADARA_Export Logger
+    class MADARA_EXPORT Logger
     {
     public:
       /**

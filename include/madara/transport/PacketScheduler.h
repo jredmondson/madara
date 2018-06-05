@@ -16,8 +16,8 @@
 #include <time.h>
 
 #include "madara/LockType.h"
-#include "madara/utility/stdint.h"
-#include "madara/MADARA_export.h"
+#include "madara/utility/StdInt.h"
+#include "madara/MadaraExport.h"
 #include "madara/transport/QoSTransportSettings.h"
 
 class StrideTask;
@@ -31,7 +31,7 @@ namespace madara
      * @brief Provides scheduler for dropping packets
      **/
 
-    class MADARA_Export PacketScheduler
+    class MADARA_EXPORT PacketScheduler
     {
     public:
       /**

@@ -10,8 +10,8 @@
 **/
 
 #include <string.h>
-#include "madara/utility/stdint.h"
-#include "madara/MADARA_export.h"
+#include "madara/utility/StdInt.h"
+#include "madara/MadaraExport.h"
 #include "madara/transport/MessageHeader.h"
 
 namespace madara
@@ -36,7 +36,7 @@ namespace madara
     *        [29] [knowledge updates start here]
     */
 
-    class MADARA_Export ReducedMessageHeader : public MessageHeader
+    class MADARA_EXPORT ReducedMessageHeader : public MessageHeader
     {
     public:
 

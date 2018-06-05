@@ -29,7 +29,7 @@ namespace madara
        * @brief This class stores a vector of NativeIntegerVectors. This
        * is a Vector of int64_t[].
        */
-      class MADARA_Export IntegerVectorVector : public BaseContainer
+      class MADARA_EXPORT IntegerVectorVector : public BaseContainer
       {
       public:
         /// trait that describes the value type

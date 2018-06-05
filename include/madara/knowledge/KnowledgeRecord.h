@@ -15,11 +15,11 @@
 #include <map>
 #include <memory>
 #include <type_traits>
-#include "madara/MADARA_export.h"
-#include "madara/utility/stdint.h"
+#include "madara/MadaraExport.h"
+#include "madara/utility/StdInt.h"
 #include "madara/utility/Refcounter.h"
 #include "madara/logger/GlobalLogger.h"
-#include "madara/utility/inttypes.h"
+#include "madara/utility/IntTypes.h"
 
 namespace madara
 {
@@ -56,7 +56,7 @@ namespace madara
      * @brief This class encapsulates an entry in a KnowledgeBase
      **/
 
-    class MADARA_Export KnowledgeRecord
+    class MADARA_EXPORT KnowledgeRecord
     {
     public:
       // allow ThreadSafeContext to modify private members
@@ -1510,4 +1510,4 @@ namespace madara
 
 #endif  // _MADARA_KNOWLEDGE_RECORD_H_
 
-#include "knowledge_cast.h"
+#include "KnowledgeCast.h"

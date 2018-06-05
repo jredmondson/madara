@@ -31,7 +31,7 @@ namespace madara
        *        inspection of arbitrary elements and features asynchronous and
        *        synchronous dequeues.
        */
-      class MADARA_Export Queue
+      class MADARA_EXPORT Queue
       {
       public:
         /**

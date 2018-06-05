@@ -35,7 +35,7 @@ namespace madara
        *        from the knowledge base on construction and when read is
        *        called.
        */
-      class MADARA_Export StringStaged : public BaseContainer
+      class MADARA_EXPORT StringStaged : public BaseContainer
       {
       public:
         /// trait that describes the value type

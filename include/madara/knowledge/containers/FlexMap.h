@@ -50,7 +50,7 @@ namespace madara
        * micromanagement of the variable names, it is slower than Map in
        * almost all operations on variables within the map.
        */
-      class MADARA_Export FlexMap : public BaseContainer
+      class MADARA_EXPORT FlexMap : public BaseContainer
       {
       public:
         /**

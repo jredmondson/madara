@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
-#include "madara/utility/stdint.h"
+#include "madara/utility/StdInt.h"
 #include "madara/logger/Logger.h"
 #include "KarlException.h"
 

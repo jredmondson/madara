@@ -1,8 +1,8 @@
 #ifndef   _MADARA_TRANSPORT_CONTEXT_H_
 #define   _MADARA_TRANSPORT_CONTEXT_H_
 
-#include "madara/MADARA_export.h"
-#include "madara/utility/stdint.h"
+#include "madara/MadaraExport.h"
+#include "madara/utility/StdInt.h"
 #include <time.h>
 #include <string>
 #include "madara/knowledge/KnowledgeRecord.h"
@@ -16,7 +16,7 @@ namespace madara
      * @brief Provides context about the transport
      **/
     
-    class MADARA_Export TransportContext
+    class MADARA_EXPORT TransportContext
     {
     public:
 
