@@ -28,8 +28,8 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
   Build_Files {
     .
     docs
-	port/java
-	port/python
+    port/java
+    port/python
   }
 
   Documentation_Files {
