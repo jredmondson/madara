@@ -50,7 +50,7 @@
 #define _Included_com_madara_KnowledgeBaseImpl
 
 #include <jni.h>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,7 +65,7 @@ extern "C" {
  * Method:    jni_KnowledgeBase
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__
   (JNIEnv *, jobject);
 
@@ -74,7 +74,7 @@ Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__
  * Method:    jni_KnowledgeBase
  * Signature: (Ljava/lang/String;ILjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_String_2ILjava_lang_String_2
   (JNIEnv *, jobject, jstring, jint, jstring);
 
@@ -83,7 +83,7 @@ Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_String_2ILjava_lang
  * Method:    jni_KnowledgeBase
  * Signature: (Ljava/lang/String;J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_String_2J
   (JNIEnv *, jobject, jstring, jlong);
 
@@ -92,7 +92,7 @@ Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_String_2J
  * Method:    jni_KnowledgeBase
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__J
   (JNIEnv *, jobject, jlong);
 
@@ -101,7 +101,7 @@ Java_com_madara_KnowledgeBase_jni_1KnowledgeBase__J
  * Method:    jni_getID
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_KnowledgeBase_jni_1getID
   (JNIEnv *, jobject, jlong);
 
@@ -110,7 +110,7 @@ Java_com_madara_KnowledgeBase_jni_1getID
 * Method:    jni_attachLogger
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1attachLogger
 (JNIEnv *, jobject, jlong, jlong);
 
@@ -119,7 +119,7 @@ Java_com_madara_KnowledgeBase_jni_1attachLogger
  * Method:    jni_attachTransport
  * Signature: (JLjava/lang/String;J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1attachTransport
   (JNIEnv *, jobject, jlong, jstring, jlong);
 
@@ -128,7 +128,7 @@ Java_com_madara_KnowledgeBase_jni_1attachTransport
 * Method:    jni_debugModifieds
 * Signature: (J)Ljava/lang/String;
 */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_KnowledgeBase_jni_1debugModifieds
 (JNIEnv *, jobject, jlong);
 
@@ -137,7 +137,7 @@ Java_com_madara_KnowledgeBase_jni_1debugModifieds
 * Method:    jni_closeTransports
 * Signature: (J)V
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1closeTransports
 (JNIEnv *, jobject, jlong);
 
@@ -146,7 +146,7 @@ Java_com_madara_KnowledgeBase_jni_1closeTransports
 * Method:    jni_getLogger
 * Signature: (J)J
 */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1getLogger
 (JNIEnv *, jobject, jlong);
 
@@ -155,7 +155,7 @@ Java_com_madara_KnowledgeBase_jni_1getLogger
  * Method:    jni_evaluate
  * Signature: (JLjava/lang/String;J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1evaluate__JLjava_lang_String_2J
   (JNIEnv *, jobject, jlong, jstring, jlong);
 
@@ -164,7 +164,7 @@ Java_com_madara_KnowledgeBase_jni_1evaluate__JLjava_lang_String_2J
  * Method:    jni_evaluate
  * Signature: (JJJ)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1evaluate__JJJ
   (JNIEnv *, jobject, jlong, jlong, jlong);
 
@@ -173,7 +173,7 @@ Java_com_madara_KnowledgeBase_jni_1evaluate__JJJ
  * Method:    jni_evaluateNoReturn
  * Signature: (JLjava/lang/String;J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__JLjava_lang_String_2J
   (JNIEnv *, jobject, jlong, jstring, jlong);
 
@@ -182,7 +182,7 @@ Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__JLjava_lang_String_2J
  * Method:    jni_evaluateNoReturn
  * Signature: (JJJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__JJJ
   (JNIEnv *, jobject, jlong, jlong, jlong);
 
@@ -191,7 +191,7 @@ Java_com_madara_KnowledgeBase_jni_1evaluateNoReturn__JJJ
 * Method:    jni_toString
 * Signature: (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_KnowledgeBase_jni_1toString
 (JNIEnv *, jobject, jlong, jstring, jstring, jstring);
 
@@ -200,7 +200,7 @@ Java_com_madara_KnowledgeBase_jni_1toString
  * Method:    jni_compile
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1compile
   (JNIEnv *, jobject, jlong, jstring);
 
@@ -209,7 +209,7 @@ Java_com_madara_KnowledgeBase_jni_1compile
  * Method:    jni_defineFunction
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2
   (JNIEnv *, jobject, jlong, jstring);
 
@@ -218,7 +218,7 @@ Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2
  * Method:    jni_defineFunction
  * Signature: (JLjava/lang/String;Ljava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2Ljava_lang_String_2
   (JNIEnv *, jobject, jlong, jstring, jstring);
 
@@ -227,7 +227,7 @@ Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2Ljava_lan
  * Method:    jni_defineFunction
  * Signature: (JLjava/lang/String;J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2J
   (JNIEnv *, jobject, jlong, jstring, jlong);
 
@@ -236,7 +236,7 @@ Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2J
  * Method:    jni_defineFunction
  * Signature: (JLjava/lang/String;Lcom/madara/MadaraFunction;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2Lcom_madara_MadaraFunction_2
   (JNIEnv *, jobject, jlong, jstring, jobject);
 
@@ -245,7 +245,7 @@ Java_com_madara_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2Lcom_mada
  * Method:    jni_clear
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1clear
   (JNIEnv *, jobject, jlong);
 
@@ -254,7 +254,7 @@ Java_com_madara_KnowledgeBase_jni_1clear
  * Method:    jni_exists
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export jboolean JNICALL
+MADARA_EXPORT jboolean JNICALL
 Java_com_madara_KnowledgeBase_jni_1exists
   (JNIEnv *, jobject, jlong, jstring);
 
@@ -263,7 +263,7 @@ Java_com_madara_KnowledgeBase_jni_1exists
  * Method:    jni_get
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1get
   (JNIEnv *, jobject, jlong, jstring);
   
@@ -272,7 +272,7 @@ Java_com_madara_KnowledgeBase_jni_1get
  * Method:    jni_setInteger
  * Signature: (JLjava/lang/String;J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setInteger
   (JNIEnv *, jclass, jlong, jstring, jlong);
     
@@ -281,7 +281,7 @@ Java_com_madara_KnowledgeBase_jni_1setInteger
  * Method:    jni_setDouble
  * Signature: (JLjava/lang/String;D)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setDouble
   (JNIEnv *, jclass, jlong, jstring, jdouble);
     
@@ -290,7 +290,7 @@ Java_com_madara_KnowledgeBase_jni_1setDouble
  * Method:    jni_setString
  * Signature: (JLjava/lang/String;Ljava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setString
   (JNIEnv *, jclass, jlong, jstring, jstring);
     
@@ -299,7 +299,7 @@ Java_com_madara_KnowledgeBase_jni_1setString
  * Method:    jni_setIntegerArray
  * Signature: (JLjava/lang/String;[J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setIntegerArray
   (JNIEnv *, jclass, jlong, jstring, jlongArray);
     
@@ -308,7 +308,7 @@ Java_com_madara_KnowledgeBase_jni_1setIntegerArray
  * Method:    jni_setDoubleArray
  * Signature: (JLjava/lang/String;[D)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setDoubleArray
   (JNIEnv *, jclass, jlong, jstring, jdoubleArray);
 
@@ -317,7 +317,7 @@ Java_com_madara_KnowledgeBase_jni_1setDoubleArray
  * Method:    jni_setFile
  * Signature: (JLjava/lang/String;[B)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setFile
   (JNIEnv *, jclass, jlong, jstring, jbyteArray);
 
@@ -326,7 +326,7 @@ Java_com_madara_KnowledgeBase_jni_1setFile
  * Method:    jni_setImage
  * Signature: (JLjava/lang/String;[B)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setImage
   (JNIEnv *, jclass, jlong, jstring, jbyteArray);
 
@@ -336,7 +336,7 @@ Java_com_madara_KnowledgeBase_jni_1setImage
  * Method:    jni_setIntegerSettings
  * Signature: (JLjava/lang/String;JJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setIntegerSettings
   (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
 
@@ -345,7 +345,7 @@ Java_com_madara_KnowledgeBase_jni_1setIntegerSettings
  * Method:    jni_setDoubleSettings
  * Signature: (JLjava/lang/String;DJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setDoubleSettings
   (JNIEnv *, jclass, jlong, jstring, jdouble, jlong);
 
@@ -354,7 +354,7 @@ Java_com_madara_KnowledgeBase_jni_1setDoubleSettings
  * Method:    jni_setStringSettings
  * Signature: (JLjava/lang/String;Ljava/lang/String;J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setStringSettings
   (JNIEnv *, jclass, jlong, jstring, jstring, jlong);
 
@@ -363,7 +363,7 @@ Java_com_madara_KnowledgeBase_jni_1setStringSettings
  * Method:    jni_setIntegerArraySettings
  * Signature: (JLjava/lang/String;[JJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setIntegerArraySettings
   (JNIEnv *, jclass, jlong, jstring, jlongArray, jlong);
 
@@ -372,7 +372,7 @@ Java_com_madara_KnowledgeBase_jni_1setIntegerArraySettings
  * Method:    jni_setDoubleArraySettings
  * Signature: (JLjava/lang/String;[DJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setDoubleArraySettings
   (JNIEnv *, jclass, jlong, jstring, jdoubleArray, jlong);
 
@@ -381,7 +381,7 @@ Java_com_madara_KnowledgeBase_jni_1setDoubleArraySettings
  * Method:    jni_setFileSettings
  * Signature: (JLjava/lang/String;[BJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setFileSettings
   (JNIEnv *, jclass, jlong, jstring, jbyteArray, jlong);
 
@@ -390,7 +390,7 @@ Java_com_madara_KnowledgeBase_jni_1setFileSettings
  * Method:    jni_setImageSettings
  * Signature: (JLjava/lang/String;[BJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1setImageSettings
   (JNIEnv *, jclass, jlong, jstring, jbyteArray, jlong);
 
@@ -399,7 +399,7 @@ Java_com_madara_KnowledgeBase_jni_1setImageSettings
  * Method:    jni_sendModifieds
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1sendModifieds__J
   (JNIEnv *, jobject, jlong);
 
@@ -408,7 +408,7 @@ Java_com_madara_KnowledgeBase_jni_1sendModifieds__J
  * Method:    jni_sendModifieds
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1sendModifieds__JJ
   (JNIEnv *, jobject, jlong, jlong);
 
@@ -417,7 +417,7 @@ Java_com_madara_KnowledgeBase_jni_1sendModifieds__JJ
 * Method:    jni_clearModifieds
 * Signature: (J)V
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1clearModifieds
 (JNIEnv *, jobject, jlong);
 
@@ -426,7 +426,7 @@ Java_com_madara_KnowledgeBase_jni_1clearModifieds
  * Method:    jni_print
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1print__JLjava_lang_String_2
   (JNIEnv *, jobject, jlong, jstring);
 
@@ -435,7 +435,7 @@ Java_com_madara_KnowledgeBase_jni_1print__JLjava_lang_String_2
  * Method:    jni_print
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1print__J
   (JNIEnv *, jobject, jlong);
 
@@ -444,7 +444,7 @@ Java_com_madara_KnowledgeBase_jni_1print__J
  * Method:    jni_wait
  * Signature: (JLjava/lang/String;J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1wait__JLjava_lang_String_2J
   (JNIEnv *, jobject, jlong, jstring, jlong);
 
@@ -453,7 +453,7 @@ Java_com_madara_KnowledgeBase_jni_1wait__JLjava_lang_String_2J
  * Method:    jni_wait
  * Signature: (JJJ)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1wait__JJJ
   (JNIEnv *, jobject, jlong, jlong, jlong);
 
@@ -462,7 +462,7 @@ Java_com_madara_KnowledgeBase_jni_1wait__JJJ
  * Method:    jni_waitNoReturn
  * Signature: (JLjava/lang/String;J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1waitNoReturn__JLjava_lang_String_2J
   (JNIEnv *, jobject, jlong, jstring, jlong);
 
@@ -471,7 +471,7 @@ Java_com_madara_KnowledgeBase_jni_1waitNoReturn__JLjava_lang_String_2J
  * Method:    jni_waitNoReturn
  * Signature: (JJJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1waitNoReturn__JJJ
   (JNIEnv *, jobject, jlong, jlong, jlong);  
 
@@ -480,7 +480,7 @@ Java_com_madara_KnowledgeBase_jni_1waitNoReturn__JJJ
  * Method:    jni_freeKnowledgeBase
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1freeKnowledgeBase
   (JNIEnv *, jobject, jlong);
   
@@ -489,7 +489,7 @@ Java_com_madara_KnowledgeBase_jni_1freeKnowledgeBase
  * Method:    jni_toKnowledgeList
  * Signature: (JLjava/lang/String;II)[J
  */
-MADARA_Export jlongArray JNICALL
+MADARA_EXPORT jlongArray JNICALL
 Java_com_madara_KnowledgeBase_jni_1toKnowledgeList
   (JNIEnv *, jobject, jlong, jstring, jint, jint);
   
@@ -498,7 +498,7 @@ Java_com_madara_KnowledgeBase_jni_1toKnowledgeList
  * Method:    jni_saveContext
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1saveContext
   (JNIEnv *, jobject, jlong, jstring);
 
@@ -507,7 +507,7 @@ Java_com_madara_KnowledgeBase_jni_1saveContext
 * Method:    jni_saveAsKarl
 * Signature: (JLjava/lang/String;)J
 */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1saveAsKarl
 (JNIEnv *, jobject, jlong, jstring);
 
@@ -516,7 +516,7 @@ Java_com_madara_KnowledgeBase_jni_1saveAsKarl
  * Method:    jni_saveCheckpoint
  * Signature: (JLjava/lang/String;Z)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1saveCheckpoint
   (JNIEnv *, jobject, jlong, jstring, jboolean);
 
@@ -525,7 +525,7 @@ Java_com_madara_KnowledgeBase_jni_1saveCheckpoint
  * Method:    jni_loadContext
  * Signature: (JLjava/lang/String;ZJ)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1loadContext
   (JNIEnv *, jobject, jlong, jstring, jboolean, jlong);
 
@@ -534,7 +534,7 @@ Java_com_madara_KnowledgeBase_jni_1loadContext
  * Method:    jni_toKnowledgeMap
  * Signature: (JLjava/lang/String;Lcom/madara/KnowledgeBase/MapReturn;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
   (JNIEnv *, jobject, jlong, jstring, jobject);
 
@@ -543,7 +543,7 @@ Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
 * Method:    jni_toMap
 * Signature: (JLjava/lang/String;Ljava/lang/String;Lcom/madara/KnowledgeBase/MapReturn;)V
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1toMap
 (JNIEnv *, jobject, jlong, jstring, jstring, jobject);
 
@@ -557,7 +557,7 @@ Java_com_madara_KnowledgeBase_jni_1toMap
  * Method:    jni_freeCompiledExpression
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_00024CompiledExpression_jni_1freeCompiledExpression
   (JNIEnv *, jobject, jlong);  
 //===================================================================================

@@ -17,7 +17,7 @@
 #include <string>
 
 #include "madara/logger/Logger.h"
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/utility/ScopedArray.h"
 #include "../BufferFilter.h"
 
@@ -29,7 +29,7 @@ namespace madara
      * @class JavaBufferFilter
      * @brief Filters a buffer in Java
      */
-    class MADARA_Export JavaBufferFilter : public BufferFilter
+    class MADARA_EXPORT JavaBufferFilter : public BufferFilter
     {
     public:
       /**

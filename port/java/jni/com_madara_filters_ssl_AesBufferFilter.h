@@ -45,7 +45,7 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include <jni.h>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 /* Header for class com_madara_filters_ssl_AesBufferFilter */
 
 #ifndef _Included_com_madara_filters_ssl_AesBufferFilter
@@ -58,7 +58,7 @@ extern "C" {
  * Method:    jni_AesBufferFilter
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__
   (JNIEnv *, jobject);
 
@@ -67,7 +67,7 @@ Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__
  * Method:    jni_AesBufferFilter
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__J
   (JNIEnv *, jobject, jlong);
 
@@ -76,7 +76,7 @@ Java_com_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__J
  * Method:    jni_freeAesBufferFilter
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_filters_ssl_AesBufferFilter_jni_1freeAesBufferFilter
   (JNIEnv *, jclass, jlong);
 
@@ -85,7 +85,7 @@ Java_com_madara_filters_ssl_AesBufferFilter_jni_1freeAesBufferFilter
  * Method:    jni_encode
  * Signature: (J[BJJ)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_filters_ssl_AesBufferFilter_jni_1encode
   (JNIEnv *, jobject, jlong, jbyteArray, jlong, jlong);
 
@@ -94,7 +94,7 @@ Java_com_madara_filters_ssl_AesBufferFilter_jni_1encode
  * Method:    jni_decode
  * Signature: (J[BJJ)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_filters_ssl_AesBufferFilter_jni_1decode
   (JNIEnv *, jobject, jlong, jbyteArray, jlong, jlong);
 
@@ -103,7 +103,7 @@ Java_com_madara_filters_ssl_AesBufferFilter_jni_1decode
  * Method:    jni_generateKey
  * Signature: (JLjava/lang/String;)I
  */
-MADARA_Export jint JNICALL
+MADARA_EXPORT jint JNICALL
 Java_com_madara_filters_ssl_AesBufferFilter_jni_1generateKey
   (JNIEnv *, jobject, jlong, jstring);
 

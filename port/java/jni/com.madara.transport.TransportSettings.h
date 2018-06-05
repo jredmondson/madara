@@ -50,7 +50,7 @@
 #define _Included_com_madara_transport_TransportSettings
 
 #include <jni.h>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,7 +65,7 @@ extern "C" {
  * Method:    jni_Settings
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_transport_TransportSettings_jni_1Settings__
   (JNIEnv *, jobject);
 
@@ -74,7 +74,7 @@ Java_com_madara_transport_TransportSettings_jni_1Settings__
  * Method:    jni_Settings
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_transport_TransportSettings_jni_1Settings__J
   (JNIEnv *, jobject, jlong);
 
@@ -83,7 +83,7 @@ Java_com_madara_transport_TransportSettings_jni_1Settings__J
 * Method:    jni_save
 * Signature: (JLjava/lang/String;)J
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1save
 (JNIEnv *, jobject, jlong, jstring);
 
@@ -92,7 +92,7 @@ Java_com_madara_transport_TransportSettings_jni_1save
 * Method:    jni_load
 * Signature: (JLjava/lang/String;)V
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1load
 (JNIEnv *, jobject, jlong, jstring);
 
@@ -101,7 +101,7 @@ Java_com_madara_transport_TransportSettings_jni_1load
  * Method:    jni_setDomains
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1setWriteDomain
   (JNIEnv *, jobject, jlong, jstring);
 
@@ -110,7 +110,7 @@ Java_com_madara_transport_TransportSettings_jni_1setWriteDomain
  * Method:    jni_getDomains
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_transport_TransportSettings_jni_1getWriteDomain
   (JNIEnv *, jobject, jlong);
 
@@ -119,7 +119,7 @@ Java_com_madara_transport_TransportSettings_jni_1getWriteDomain
  * Method:    jni_setQueueLength
  * Signature: (JI)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1setQueueLength
   (JNIEnv *, jobject, jlong, jint);
 
@@ -128,7 +128,7 @@ Java_com_madara_transport_TransportSettings_jni_1setQueueLength
  * Method:    jni_getQueueLength
  * Signature: (J)I
  */
-MADARA_Export jint JNICALL
+MADARA_EXPORT jint JNICALL
 Java_com_madara_transport_TransportSettings_jni_1getQueueLength
   (JNIEnv *, jobject, jlong);
 
@@ -137,7 +137,7 @@ Java_com_madara_transport_TransportSettings_jni_1getQueueLength
 * Method:    jni_setResendAttempts
 * Signature: (JI)V
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1setResendAttempts
 (JNIEnv *, jobject, jlong, jint);
 
@@ -146,7 +146,7 @@ Java_com_madara_transport_TransportSettings_jni_1setResendAttempts
 * Method:    jni_getResendAttempts
 * Signature: (J)I
 */
-MADARA_Export jint JNICALL
+MADARA_EXPORT jint JNICALL
 Java_com_madara_transport_TransportSettings_jni_1getResendAttempts
 (JNIEnv *, jobject, jlong);
 
@@ -155,7 +155,7 @@ Java_com_madara_transport_TransportSettings_jni_1getResendAttempts
  * Method:    jni_setType
  * Signature: (JI)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1setType
   (JNIEnv *, jobject, jlong, jint);
 
@@ -164,7 +164,7 @@ Java_com_madara_transport_TransportSettings_jni_1setType
  * Method:    jni_getType
  * Signature: (J)I
  */
-MADARA_Export jint JNICALL
+MADARA_EXPORT jint JNICALL
 Java_com_madara_transport_TransportSettings_jni_1getType
   (JNIEnv *, jobject, jlong);
 
@@ -173,7 +173,7 @@ Java_com_madara_transport_TransportSettings_jni_1getType
  * Method:    jni_setReliability
  * Signature: (JI)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1setReliability
   (JNIEnv *, jobject, jlong, jint);
 
@@ -182,7 +182,7 @@ Java_com_madara_transport_TransportSettings_jni_1setReliability
  * Method:    jni_getReliability
  * Signature: (J)I
  */
-MADARA_Export jint JNICALL
+MADARA_EXPORT jint JNICALL
 Java_com_madara_transport_TransportSettings_jni_1getReliability
   (JNIEnv *, jobject, jlong);
 
@@ -191,7 +191,7 @@ Java_com_madara_transport_TransportSettings_jni_1getReliability
  * Method:    jni_setId
  * Signature: (JI)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1setId
   (JNIEnv *, jobject, jlong, jint);
 
@@ -200,7 +200,7 @@ Java_com_madara_transport_TransportSettings_jni_1setId
  * Method:    jni_getId
  * Signature: (J)I
  */
-MADARA_Export jint JNICALL
+MADARA_EXPORT jint JNICALL
 Java_com_madara_transport_TransportSettings_jni_1getId
   (JNIEnv *, jobject, jlong);
 
@@ -209,7 +209,7 @@ Java_com_madara_transport_TransportSettings_jni_1getId
  * Method:    jni_setProcesses
  * Signature: (JI)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1setProcesses
   (JNIEnv *, jobject, jlong, jint);
 
@@ -218,7 +218,7 @@ Java_com_madara_transport_TransportSettings_jni_1setProcesses
  * Method:    jni_getProcesses
  * Signature: (J)I
  */
-MADARA_Export jint JNICALL
+MADARA_EXPORT jint JNICALL
 Java_com_madara_transport_TransportSettings_jni_1getProcesses
   (JNIEnv *, jobject, jlong);
 
@@ -227,7 +227,7 @@ Java_com_madara_transport_TransportSettings_jni_1getProcesses
  * Method:    jni_setOnDataReceivedLogic
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1setOnDataReceivedLogic
   (JNIEnv *, jobject, jlong, jstring);
 
@@ -236,7 +236,7 @@ Java_com_madara_transport_TransportSettings_jni_1setOnDataReceivedLogic
  * Method:    jni_getOnDataReceivedLogic
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_transport_TransportSettings_jni_1getOnDataReceivedLogic
   (JNIEnv *, jobject, jlong);
 
@@ -245,7 +245,7 @@ Java_com_madara_transport_TransportSettings_jni_1getOnDataReceivedLogic
  * Method:    jni_setHosts
  * Signature: (J[Ljava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1setHosts
   (JNIEnv *, jobject, jlong, jobjectArray);
 
@@ -254,7 +254,7 @@ Java_com_madara_transport_TransportSettings_jni_1setHosts
  * Method:    jni_getHosts
  * Signature: (J)[Ljava/lang/String;
  */
-MADARA_Export jobjectArray JNICALL
+MADARA_EXPORT jobjectArray JNICALL
 Java_com_madara_transport_TransportSettings_jni_1getHosts
   (JNIEnv *, jobject, jlong);
     
@@ -263,7 +263,7 @@ Java_com_madara_transport_TransportSettings_jni_1getHosts
  * Method:    jni_getHosts
  * Signature: (J)[Ljava/lang/String;
  */
-MADARA_Export jobjectArray JNICALL
+MADARA_EXPORT jobjectArray JNICALL
 Java_com_madara_transport_TransportSettings_jni_1getHosts
   (JNIEnv *, jobject, jlong);
     
@@ -272,7 +272,7 @@ Java_com_madara_transport_TransportSettings_jni_1getHosts
  * Method:    jni_freeSettings
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportSettings_jni_1freeSettings
   (JNIEnv *, jclass, jlong);
     

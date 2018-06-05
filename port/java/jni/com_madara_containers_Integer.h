@@ -45,7 +45,7 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include <jni.h>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 /* Header for class com_madara_containers_Integer */
 
 #ifndef _Included_com_madara_containers_Integer
@@ -58,7 +58,7 @@ extern "C" {
  * Method:    jni_Integer
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Integer_jni_1Integer__
   (JNIEnv *, jobject);
 
@@ -67,7 +67,7 @@ Java_com_madara_containers_Integer_jni_1Integer__
  * Method:    jni_Integer
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Integer_jni_1Integer__J
   (JNIEnv *, jobject, jlong);
 
@@ -76,7 +76,7 @@ Java_com_madara_containers_Integer_jni_1Integer__J
  * Method:    jni_freeInteger
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_Integer_jni_1freeInteger
   (JNIEnv *, jclass, jlong);
 
@@ -85,7 +85,7 @@ Java_com_madara_containers_Integer_jni_1freeInteger
  * Method:    jni_set
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_Integer_jni_1set
   (JNIEnv *, jobject, jlong, jlong);
 
@@ -94,7 +94,7 @@ Java_com_madara_containers_Integer_jni_1set
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_containers_Integer_jni_1getName
   (JNIEnv *, jobject, jlong);
 
@@ -103,7 +103,7 @@ Java_com_madara_containers_Integer_jni_1getName
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_Integer_jni_1setName
   (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
 
@@ -112,7 +112,7 @@ Java_com_madara_containers_Integer_jni_1setName
  * Method:    jni_toString
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_containers_Integer_jni_1toString
   (JNIEnv *, jobject, jlong);
 
@@ -121,7 +121,7 @@ Java_com_madara_containers_Integer_jni_1toString
  * Method:    jni_toDouble
  * Signature: (J)D
  */
-MADARA_Export jdouble JNICALL
+MADARA_EXPORT jdouble JNICALL
 Java_com_madara_containers_Integer_jni_1toDouble
   (JNIEnv *, jobject, jlong);
 
@@ -130,7 +130,7 @@ Java_com_madara_containers_Integer_jni_1toDouble
  * Method:    jni_toLong
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Integer_jni_1toLong
   (JNIEnv *, jobject, jlong);
 
@@ -139,7 +139,7 @@ Java_com_madara_containers_Integer_jni_1toLong
  * Method:    jni_inc
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Integer_jni_1inc
   (JNIEnv *, jobject, jlong);
 
@@ -148,7 +148,7 @@ Java_com_madara_containers_Integer_jni_1inc
  * Method:    jni_dec
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Integer_jni_1dec
   (JNIEnv *, jobject, jlong);
 
@@ -157,7 +157,7 @@ Java_com_madara_containers_Integer_jni_1dec
  * Method:    jni_incValue
  * Signature: (JJ)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Integer_jni_1incValue
   (JNIEnv *, jobject, jlong, jlong);
 
@@ -166,7 +166,7 @@ Java_com_madara_containers_Integer_jni_1incValue
  * Method:    jni_decValue
  * Signature: (JJ)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Integer_jni_1decValue
   (JNIEnv *, jobject, jlong, jlong);
 
@@ -175,7 +175,7 @@ Java_com_madara_containers_Integer_jni_1decValue
  * Method:    jni_modify
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_Integer_jni_1modify
   (JNIEnv *, jobject, jlong);
 
@@ -184,7 +184,7 @@ Java_com_madara_containers_Integer_jni_1modify
 * Method:    jni_setSettings
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_Integer_jni_1setSettings
 (JNIEnv *, jobject, jlong, jlong);
 
@@ -193,7 +193,7 @@ Java_com_madara_containers_Integer_jni_1setSettings
 * Method:    jni_isTrue
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL
+MADARA_EXPORT jboolean JNICALL
 Java_com_madara_containers_Integer_jni_1isTrue
 (JNIEnv *, jobject, jlong);
 
@@ -202,7 +202,7 @@ Java_com_madara_containers_Integer_jni_1isTrue
 * Method:    jni_isFalse
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL
+MADARA_EXPORT jboolean JNICALL
 Java_com_madara_containers_Integer_jni_1isFalse
 (JNIEnv *, jobject, jlong);
 

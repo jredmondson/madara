@@ -45,7 +45,7 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include <jni.h>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 /* Header for class com_madara_util_Utility */
 
 #ifndef _Included_com_madara_util_Utility
@@ -58,7 +58,7 @@ extern "C" {
  * Method:    jni_getVersion
  * Signature: ()Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_util_Utility_jni_1getVersion
   (JNIEnv *, jclass);
 
@@ -67,7 +67,7 @@ Java_com_madara_util_Utility_jni_1getVersion
 * Method:    jni_getTime
 * Signature: ()J
 */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_util_Utility_jni_1getTime
   (JNIEnv *, jclass);
 
@@ -76,7 +76,7 @@ Java_com_madara_util_Utility_jni_1getTime
 * Method:    jni_sleep
 * Signature: (D)V
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_util_Utility_jni_1sleep
 (JNIEnv *, jclass, jdouble);
 

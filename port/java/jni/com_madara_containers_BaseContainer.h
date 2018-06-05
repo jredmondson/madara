@@ -46,7 +46,7 @@
 *********************************************************************/
 
 #include <jni.h>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 /* Header for class com_madara_containers_BaseContainer */
 
 #ifndef _Included_com_madara_containers_BaseContainer
@@ -59,7 +59,7 @@ extern "C" {
  * Method:    jni_modifyIfTrue
  * Signature: (JJ)Z
  */
-MADARA_Export jboolean JNICALL
+MADARA_EXPORT jboolean JNICALL
 Java_com_madara_containers_BaseContainer_jni_1modifyIfTrue
   (JNIEnv *, jobject, jlong, jlong);
 
@@ -68,7 +68,7 @@ Java_com_madara_containers_BaseContainer_jni_1modifyIfTrue
  * Method:    jni_modifyIfFalse
  * Signature: (JJ)Z
  */
-MADARA_Export jboolean JNICALL
+MADARA_EXPORT jboolean JNICALL
 Java_com_madara_containers_BaseContainer_jni_1modifyIfFalse
   (JNIEnv *, jobject, jlong, jlong);
 

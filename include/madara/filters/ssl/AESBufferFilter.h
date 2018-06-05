@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/utility/ScopedArray.h"
 #include "../BufferFilter.h"
 
@@ -26,7 +26,7 @@ namespace madara
      * @class AESBufferFilter
      * @brief Encrypts a buffer with 256 bit AES via OpenSSL
      */
-    class MADARA_Export AESBufferFilter : public BufferFilter
+    class MADARA_EXPORT AESBufferFilter : public BufferFilter
     {
     public:
       /**

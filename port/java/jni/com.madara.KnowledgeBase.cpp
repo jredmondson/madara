@@ -899,7 +899,7 @@ Java_com_madara_KnowledgeBase_jni_1setImageSettings
  * Method:  jni_sendModifieds
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1sendModifieds__J
   (JNIEnv *, jobject, jlong cptr)
 {
@@ -916,7 +916,7 @@ Java_com_madara_KnowledgeBase_jni_1sendModifieds__J
  * Method:  jni_sendModifieds
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1sendModifieds__JJ
   (JNIEnv *, jobject, jlong cptr, jlong evalSettings)
 {
@@ -929,7 +929,7 @@ Java_com_madara_KnowledgeBase_jni_1sendModifieds__JJ
   }
 }
 
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1clearModifieds
 (JNIEnv *, jobject, jlong cptr)
 {
@@ -946,7 +946,7 @@ Java_com_madara_KnowledgeBase_jni_1clearModifieds
  * Method:  jni_print
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1print__JLjava_lang_String_2
   (JNIEnv * env, jobject, jlong cptr, jstring statement)
 {
@@ -967,7 +967,7 @@ Java_com_madara_KnowledgeBase_jni_1print__JLjava_lang_String_2
  * Method:  jni_print
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1print__J
   (JNIEnv *, jobject, jlong cptr)
 {
@@ -1180,7 +1180,7 @@ Java_com_madara_KnowledgeBase_jni_1toKnowledgeMap
   env->DeleteWeakGlobalRef (classStrArray);
 }
 
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_KnowledgeBase_jni_1toMap
 (JNIEnv * env, jobject, jlong cptr, jstring prefix, jstring suffix, jobject jniRet)
 {
@@ -1282,7 +1282,7 @@ Java_com_madara_KnowledgeBase_jni_1saveAsKarl
  * Method:    jni_saveContext
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1saveContext
   (JNIEnv * env, jobject, jlong cptr, jstring filename)
 {
@@ -1306,7 +1306,7 @@ Java_com_madara_KnowledgeBase_jni_1saveContext
  * Method:    jni_saveCheckpoint
  * Signature: (JLjava/lang/String;Z)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1saveCheckpoint
   (JNIEnv * env, jobject, jlong cptr, jstring filename, jboolean resetModifieds)
 {
@@ -1332,7 +1332,7 @@ Java_com_madara_KnowledgeBase_jni_1saveCheckpoint
  * Method:    jni_loadContext
  * Signature: (JLjava/lang/String;ZJ)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_KnowledgeBase_jni_1loadContext
   (JNIEnv * env, jobject, jlong cptr, jstring filename, jboolean useId, jlong settings_ptr)
 {

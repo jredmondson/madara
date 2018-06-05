@@ -11,7 +11,7 @@
 * instance for a global ZMQ context
 **/
 
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include <atomic>
 
 namespace madara
@@ -22,7 +22,7 @@ namespace madara
     * @class ZMQContext
     * @brief A class that manages a ZMQ context
     **/
-    class MADARA_Export ZMQContext
+    class MADARA_EXPORT ZMQContext
     {
     public:
       /**
@@ -80,7 +80,7 @@ namespace madara
       std::atomic<int> references_;
     };
 
-    extern MADARA_Export ZMQContext zmq_context;
+    extern MADARA_EXPORT ZMQContext zmq_context;
   }
 }
 

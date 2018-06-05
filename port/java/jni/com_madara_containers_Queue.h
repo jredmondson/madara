@@ -45,7 +45,7 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include <jni.h>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 /* Header for class com_madara_containers_Queue */
 
 #ifndef _Included_com_madara_containers_Queue
@@ -58,7 +58,7 @@ extern "C" {
  * Method:    jni_Queue
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Queue_jni_1Queue__
   (JNIEnv *, jobject);
 
@@ -67,7 +67,7 @@ Java_com_madara_containers_Queue_jni_1Queue__
  * Method:    jni_Queue
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Queue_jni_1Queue__J
   (JNIEnv *, jobject, jlong);
 
@@ -76,7 +76,7 @@ Java_com_madara_containers_Queue_jni_1Queue__J
  * Method:    jni_freeQueue
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_Queue_jni_1freeQueue
   (JNIEnv *, jclass, jlong);
 
@@ -85,7 +85,7 @@ Java_com_madara_containers_Queue_jni_1freeQueue
  * Method:    jni_enqueue
  * Signature: (JJ)Z
  */
-MADARA_Export jboolean JNICALL
+MADARA_EXPORT jboolean JNICALL
 Java_com_madara_containers_Queue_jni_1enqueue
   (JNIEnv *, jobject, jlong, jlong);
 
@@ -94,7 +94,7 @@ Java_com_madara_containers_Queue_jni_1enqueue
  * Method:    jni_enqueueDouble
  * Signature: (JD)Z
  */
-MADARA_Export jboolean JNICALL
+MADARA_EXPORT jboolean JNICALL
 Java_com_madara_containers_Queue_jni_1enqueueDouble
   (JNIEnv *, jobject, jlong, jdouble);
 
@@ -103,7 +103,7 @@ Java_com_madara_containers_Queue_jni_1enqueueDouble
  * Method:    jni_enqueueLong
  * Signature: (JJ)Z
  */
-MADARA_Export jboolean JNICALL
+MADARA_EXPORT jboolean JNICALL
 Java_com_madara_containers_Queue_jni_1enqueueLong
   (JNIEnv *, jobject, jlong, jlong);
 
@@ -112,7 +112,7 @@ Java_com_madara_containers_Queue_jni_1enqueueLong
  * Method:    jni_enqueueString
  * Signature: (JLcom/madara/containers/String;)Z
  */
-MADARA_Export jboolean JNICALL
+MADARA_EXPORT jboolean JNICALL
 Java_com_madara_containers_Queue_jni_1enqueueString
   (JNIEnv *, jobject, jlong, jstring);
 
@@ -121,7 +121,7 @@ Java_com_madara_containers_Queue_jni_1enqueueString
  * Method:    jni_dequeue
  * Signature: (JZ)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Queue_jni_1dequeue
   (JNIEnv *, jobject, jlong, jboolean);
 
@@ -130,7 +130,7 @@ Java_com_madara_containers_Queue_jni_1dequeue
  * Method:    jni_inspect
  * Signature: (JI)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Queue_jni_1inspect
   (JNIEnv *, jobject, jlong, jint);
 
@@ -139,7 +139,7 @@ Java_com_madara_containers_Queue_jni_1inspect
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_containers_Queue_jni_1getName
   (JNIEnv *, jobject, jlong);
 
@@ -148,7 +148,7 @@ Java_com_madara_containers_Queue_jni_1getName
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_Queue_jni_1setName
   (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
 
@@ -157,7 +157,7 @@ Java_com_madara_containers_Queue_jni_1setName
  * Method:    jni_size
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Queue_jni_1size
   (JNIEnv *, jobject, jlong);
 
@@ -166,7 +166,7 @@ Java_com_madara_containers_Queue_jni_1size
  * Method:    jni_count
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_Queue_jni_1count
   (JNIEnv *, jobject, jlong);
 
@@ -175,7 +175,7 @@ Java_com_madara_containers_Queue_jni_1count
  * Method:    jni_resize
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_Queue_jni_1resize
   (JNIEnv *, jobject, jlong, jlong);
 
@@ -184,7 +184,7 @@ Java_com_madara_containers_Queue_jni_1resize
  * Method:    jni_clear
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_Queue_jni_1clear
   (JNIEnv *, jobject, jlong);
 
@@ -193,7 +193,7 @@ Java_com_madara_containers_Queue_jni_1clear
 * Method:    jni_setSettings
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_Queue_jni_1setSettings
 (JNIEnv *, jobject, jlong, jlong);
 

@@ -45,7 +45,7 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include <jni.h>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 /* Header for class com_madara_containers_DoubleVector */
 
 #ifndef _Included_com_madara_containers_DoubleVector
@@ -58,7 +58,7 @@ extern "C" {
  * Method:    jni_DoubleVector
  * Signature: ()J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_DoubleVector_jni_1DoubleVector__
   (JNIEnv *, jobject);
 
@@ -67,7 +67,7 @@ Java_com_madara_containers_DoubleVector_jni_1DoubleVector__
  * Method:    jni_DoubleVector
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_DoubleVector_jni_1DoubleVector__J
   (JNIEnv *, jobject, jlong);
 
@@ -76,7 +76,7 @@ Java_com_madara_containers_DoubleVector_jni_1DoubleVector__J
  * Method:    jni_freeDoubleVector
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_DoubleVector_jni_1freeDoubleVector
   (JNIEnv *, jclass, jlong);
 
@@ -85,7 +85,7 @@ Java_com_madara_containers_DoubleVector_jni_1freeDoubleVector
  * Method:    jni_set
  * Signature: (JID)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_DoubleVector_jni_1set
   (JNIEnv *, jobject, jlong, jint, jdouble);
 
@@ -94,7 +94,7 @@ Java_com_madara_containers_DoubleVector_jni_1set
 * Method:    jni_pushback
 * Signature: (JD)V
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_DoubleVector_jni_1pushback
 (JNIEnv *, jobject, jlong, jdouble);
 
@@ -103,7 +103,7 @@ Java_com_madara_containers_DoubleVector_jni_1pushback
  * Method:    jni_getName
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_containers_DoubleVector_jni_1getName
   (JNIEnv *, jobject, jlong);
 
@@ -112,7 +112,7 @@ Java_com_madara_containers_DoubleVector_jni_1getName
  * Method:    jni_setName
  * Signature: (JJJLjava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_DoubleVector_jni_1setName
   (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
 
@@ -121,7 +121,7 @@ Java_com_madara_containers_DoubleVector_jni_1setName
  * Method:    jni_get
  * Signature: (JI)D
  */
-MADARA_Export jdouble JNICALL
+MADARA_EXPORT jdouble JNICALL
 Java_com_madara_containers_DoubleVector_jni_1get
   (JNIEnv *, jobject, jlong, jint);
 
@@ -130,7 +130,7 @@ Java_com_madara_containers_DoubleVector_jni_1get
  * Method:    jni_toRecord
  * Signature: (JI)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_DoubleVector_jni_1toRecord__JI
   (JNIEnv *, jobject, jlong, jint);
 
@@ -139,7 +139,7 @@ Java_com_madara_containers_DoubleVector_jni_1toRecord__JI
  * Method:    jni_toRecord
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_DoubleVector_jni_1toRecord__J
   (JNIEnv *, jobject, jlong);
 
@@ -148,7 +148,7 @@ Java_com_madara_containers_DoubleVector_jni_1toRecord__J
  * Method:    jni_toArray
  * Signature: (J)[Ljava/lang/Object;
  */
-MADARA_Export jobjectArray JNICALL
+MADARA_EXPORT jobjectArray JNICALL
 Java_com_madara_containers_DoubleVector_jni_1toArray
   (JNIEnv *, jobject, jlong);
 
@@ -157,7 +157,7 @@ Java_com_madara_containers_DoubleVector_jni_1toArray
  * Method:    jni_size
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_containers_DoubleVector_jni_1size
   (JNIEnv *, jobject, jlong);
 
@@ -166,7 +166,7 @@ Java_com_madara_containers_DoubleVector_jni_1size
  * Method:    jni_resize
  * Signature: (JJ)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_DoubleVector_jni_1resize
   (JNIEnv *, jobject, jlong, jlong);
 
@@ -175,7 +175,7 @@ Java_com_madara_containers_DoubleVector_jni_1resize
  * Method:    modify
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_DoubleVector_jni_1modify
   (JNIEnv *, jobject, jlong);
 
@@ -184,7 +184,7 @@ Java_com_madara_containers_DoubleVector_jni_1modify
  * Method:    modifyIndex
  * Signature: (JI)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_DoubleVector_jni_1modifyIndex
   (JNIEnv *, jobject, jlong, jint);
 
@@ -193,7 +193,7 @@ Java_com_madara_containers_DoubleVector_jni_1modifyIndex
 * Method:    jni_setSettings
 * Signature: (JJ)V
 */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_containers_DoubleVector_jni_1setSettings
 (JNIEnv *, jobject, jlong, jlong);
 
@@ -202,7 +202,7 @@ Java_com_madara_containers_DoubleVector_jni_1setSettings
 * Method:    jni_isTrue
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL
+MADARA_EXPORT jboolean JNICALL
 Java_com_madara_containers_DoubleVector_jni_1isTrue
 (JNIEnv *, jobject, jlong);
 
@@ -211,7 +211,7 @@ Java_com_madara_containers_DoubleVector_jni_1isTrue
 * Method:    jni_isFalse
 * Signature: (J)Z
 */
-MADARA_Export jboolean JNICALL
+MADARA_EXPORT jboolean JNICALL
 Java_com_madara_containers_DoubleVector_jni_1isFalse
 (JNIEnv *, jobject, jlong);
 

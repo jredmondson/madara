@@ -45,7 +45,7 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include <jni.h>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 /* Header for class com_madara_transport_filters_Packet */
 
 #ifndef _Included_com_madara_transport_filters_Packet
@@ -58,7 +58,7 @@ extern "C" {
  * Method:    jni_get
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export  jlong JNICALL
+MADARA_EXPORT  jlong JNICALL
 Java_com_madara_transport_filters_Packet_jni_1get
   (JNIEnv *, jobject, jlong, jstring);
 
@@ -67,7 +67,7 @@ Java_com_madara_transport_filters_Packet_jni_1get
  * Method:    jni_set
  * Signature: (JLjava/lang/String;J)V
  */
-MADARA_Export  void JNICALL
+MADARA_EXPORT  void JNICALL
 Java_com_madara_transport_filters_Packet_jni_1set
   (JNIEnv *, jobject, jlong, jstring, jlong);
 
@@ -76,7 +76,7 @@ Java_com_madara_transport_filters_Packet_jni_1set
  * Method:    jni_get_keys
  * Signature: (J)[Ljava/lang/String;
  */
-MADARA_Export  jobjectArray JNICALL
+MADARA_EXPORT  jobjectArray JNICALL
 Java_com_madara_transport_filters_Packet_jni_1get_1keys
   (JNIEnv *, jobject, jlong);
 
@@ -85,7 +85,7 @@ Java_com_madara_transport_filters_Packet_jni_1get_1keys
  * Method:    jni_exists
  * Signature: (JLjava/lang/String;)Z
  */
-MADARA_Export  jboolean JNICALL
+MADARA_EXPORT  jboolean JNICALL
 Java_com_madara_transport_filters_Packet_jni_1exists
   (JNIEnv *, jobject, jlong, jstring);
 
@@ -94,7 +94,7 @@ Java_com_madara_transport_filters_Packet_jni_1exists
  * Method:    jni_clear
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_filters_Packet_jni_1clear
   (JNIEnv *, jobject, jlong);
 
@@ -103,7 +103,7 @@ Java_com_madara_transport_filters_Packet_jni_1clear
  * Method:    jni_erase
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_filters_Packet_jni_1erase
   (JNIEnv *, jobject, jlong, jstring);
 

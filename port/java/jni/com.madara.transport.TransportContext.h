@@ -49,7 +49,7 @@
 #ifndef _Included_com_madara_transport_TransportContext
 #define _Included_com_madara_transport_TransportContext
 
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include <jni.h>
 
 #ifdef __cplusplus
@@ -60,7 +60,7 @@ extern "C" {
  * Method:    jni_addRecord
  * Signature: (JLjava/lang/String;J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportContext_jni_1addRecord
   (JNIEnv *, jclass, jlong, jstring, jlong);
 
@@ -69,7 +69,7 @@ Java_com_madara_transport_TransportContext_jni_1addRecord
  * Method:    jni_clearRecords
  * Signature: (J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportContext_jni_1clearRecords
   (JNIEnv *, jclass, jlong);
 
@@ -78,7 +78,7 @@ Java_com_madara_transport_TransportContext_jni_1clearRecords
  * Method:    jni_getCurrentTime
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_transport_TransportContext_jni_1getCurrentTime
   (JNIEnv *, jclass, jlong);
 
@@ -87,7 +87,7 @@ Java_com_madara_transport_TransportContext_jni_1getCurrentTime
  * Method:    jni_getDomain
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_transport_TransportContext_jni_1getDomain
   (JNIEnv *, jclass, jlong);
 
@@ -96,7 +96,7 @@ Java_com_madara_transport_TransportContext_jni_1getDomain
  * Method:    jni_getMessageTime
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_transport_TransportContext_jni_1getMessageTime
   (JNIEnv *, jclass, jlong);
 
@@ -105,7 +105,7 @@ Java_com_madara_transport_TransportContext_jni_1getMessageTime
  * Method:    jni_getOperation
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_transport_TransportContext_jni_1getOperation
   (JNIEnv *, jclass, jlong);
 
@@ -114,7 +114,7 @@ Java_com_madara_transport_TransportContext_jni_1getOperation
  * Method:    jni_getOriginator
  * Signature: (J)Ljava/lang/String;
  */
-MADARA_Export jstring JNICALL
+MADARA_EXPORT jstring JNICALL
 Java_com_madara_transport_TransportContext_jni_1getOriginator
   (JNIEnv *, jclass, jlong);
 
@@ -123,7 +123,7 @@ Java_com_madara_transport_TransportContext_jni_1getOriginator
  * Method:    jni_getReceiveBandwidth
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_transport_TransportContext_jni_1getReceiveBandwidth
   (JNIEnv *, jclass, jlong);
 
@@ -132,7 +132,7 @@ Java_com_madara_transport_TransportContext_jni_1getReceiveBandwidth
  * Method:    jni_getRecords
  * Signature: (JLcom/madara/transport/TransportContext/MapReturn;)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_transport_TransportContext_jni_1getRecords
   (JNIEnv *, jclass, jlong, jobject);
 
@@ -141,7 +141,7 @@ Java_com_madara_transport_TransportContext_jni_1getRecords
  * Method:    jni_getSendBandwidth
  * Signature: (J)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_transport_TransportContext_jni_1getSendBandwidth
   (JNIEnv *, jclass, jlong);
 

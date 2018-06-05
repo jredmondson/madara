@@ -11,7 +11,7 @@
 
 #include <string>
 
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 #include "madara/utility/ScopedArray.h"
 #include "madara/transport/QoSTransportSettings.h"
 #include "madara/transport/Transport.h"
@@ -40,7 +40,7 @@ namespace madara
      *        6) multi-assignment of records<br />
      *        7) rebroadcasting<br />
      **/
-    class MADARA_Export ZMQTransport : public Base
+    class MADARA_EXPORT ZMQTransport : public Base
     {
     public:
       /**

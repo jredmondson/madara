@@ -50,7 +50,7 @@
 #define _Included_com_madara_Variables
 
 #include <jni.h>
-#include "madara/MADARA_export.h"
+#include "madara/MadaraExport.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,7 +61,7 @@ extern "C" {
  * Method:    jni_evaluate
  * Signature: (JJJ)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_Variables_jni_1evaluate__JJJ
   (JNIEnv *, jobject, jlong, jlong, jlong);
 
@@ -70,7 +70,7 @@ Java_com_madara_Variables_jni_1evaluate__JJJ
  * Method:    jni_compile
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_Variables_jni_1compile
   (JNIEnv *, jobject, jlong, jstring);
   
@@ -79,7 +79,7 @@ Java_com_madara_Variables_jni_1compile
  * Method:    jni_get
  * Signature: (JLjava/lang/String;)J
  */
-MADARA_Export jlong JNICALL
+MADARA_EXPORT jlong JNICALL
 Java_com_madara_Variables_jni_1get
   (JNIEnv *, jobject, jlong, jstring);
 
@@ -88,7 +88,7 @@ Java_com_madara_Variables_jni_1get
  * Method:    jni_set
  * Signature: (JLjava/lang/String;J)V
  */
-MADARA_Export void JNICALL
+MADARA_EXPORT void JNICALL
 Java_com_madara_Variables_jni_1set
   (JNIEnv *, jobject, jlong, jstring, jlong);
 
