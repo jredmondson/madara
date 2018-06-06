@@ -234,6 +234,18 @@ inline auto knowledge_cast(const KnowledgeRecord &in, T &out) ->
   return (out = knowledge_cast(type<T>{}, in));
 }
 
+template<typename CharT, typename Traits, typename Allocator>
+inline std::basic_string<CharT, Traits, Allocator> &knowledge_cast(
+    const KnowledgeRecord &in,
+    std::basic_string<CharT, Traits, Allocator> & out)
+{
+  static_assert(std::is_same<std::string,
+      std::basic_string<CharT, Traits, Allocator>>::value,
+      "knowledge_cast only supports std::string, "
+      "not other std::basic_string types");
+  return (out = knowledge_cast(type<std::string>{}, in));
+}
+
 template<typename T>
 inline auto knowledge_cast(const KnowledgeRecord &in, T &out) ->
   typename std::enable_if<impl::supports_target_container<T&>::value,
