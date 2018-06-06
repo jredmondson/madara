@@ -248,5 +248,18 @@ int main(int, char **)
   knowledge_cast(knowledge_cast(13), int_out);
   test_eq(int_out, 13);
 
+  std::string hello = "hello world!";
+  std::string hello_out;
+  test_eq(hello, knowledge_cast(knowledge_cast(hello)));
+  test_eq(hello, knowledge_cast(knowledge_cast(hello), hello_out));
+
+  // wide-char strings not supported
+#if 0
+  std::u32string hello32 = U"hello world!";
+  std::u32string hello32_out;
+  test_eq(hello32, knowledge_cast(knowledge_cast(hello32)));
+  test_eq(hello, knowledge_cast(knowledge_cast(hello32), hello32_out));
+#endif
+
   tests_finalize();
 }
