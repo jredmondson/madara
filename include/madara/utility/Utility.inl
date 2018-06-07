@@ -245,7 +245,7 @@ get_time_value (void)
 #ifndef MADARA_FEATURE_SIMTIME
   return Clock::now ();
 #else
-  return TimeValue (std::chrono::nanoseconds (SimTime::time ()))
+  return TimeValue (std::chrono::nanoseconds (SimTime::time ()));
 #endif
 }
 
