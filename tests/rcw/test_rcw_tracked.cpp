@@ -250,8 +250,13 @@ int main(int, char **)
 
   std::string hello = "hello world!";
   std::string hello_out;
-  test_eq(hello, knowledge_cast(knowledge_cast(hello)));
+  test_eq(hello, knowledge_cast<std::string>(knowledge_cast(hello)));
   test_eq(hello, knowledge_cast(knowledge_cast(hello), hello_out));
+
+  hello_out = "";
+
+  // Two-param version should not have explicit type given
+  //test_eq(hello, knowledge_cast<std::string>(knowledge_cast(hello), hello_out));
 
   // wide-char strings not supported
 #if 0
