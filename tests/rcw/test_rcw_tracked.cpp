@@ -255,6 +255,12 @@ int main(int, char **)
 
   hello_out = "";
 
+  KnowledgeRecord empty_record;
+  test_eq(empty_record == NULL, true);
+  test_eq(knowledge_cast(1) == NULL, false);
+  test_eq(knowledge_cast(0) == NULL, true);
+  test_eq(knowledge_cast(0) == nullptr, true);
+
   // Two-param version should not have explicit type given
   //test_eq(hello, knowledge_cast<std::string>(knowledge_cast(hello), hello_out));
 

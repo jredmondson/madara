@@ -381,6 +381,11 @@ inline const KnowledgeRecord &knowledge_cast(const KnowledgeRecord &in)
     return l op knowledge_cast<T>(r); \
   } \
  \
+  inline bool operator op (const KnowledgeRecord &l, nullptr_t) \
+  { \
+    return l op 0; \
+  } \
+ \
   inline bool operator op (const KnowledgeRecord &l, const char *r) \
   { \
     auto s = l.share_string(); \
