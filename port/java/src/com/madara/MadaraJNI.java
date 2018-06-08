@@ -58,13 +58,13 @@ public abstract class MadaraJNI
 {
   static
   {
-    if (System.getProperty ("java.vm.specification.vendor") ==
-          "The Android Project")
-    {
-      System.loadLibrary("gnustl_shared");
-    }
+   // if (System.getProperty ("java.vm.specification.vendor") ==
+   //       "The Android Project")
+   // {
+   //   System.loadLibrary("gnustl_shared");
+   // }
     
-    System.loadLibrary("ACE");
+   // System.loadLibrary("ACE");
     System.loadLibrary("MADARA");
   }
 
