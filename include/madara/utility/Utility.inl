@@ -252,7 +252,7 @@ get_time_value (void)
 inline int64_t
 get_time (void)
 {
-  auto current_time = Clock::now ();
+  auto current_time = get_time_value ();
   auto epoch = current_time.time_since_epoch ();
   return std::chrono::duration_cast<Duration> (epoch).count ();
 }
