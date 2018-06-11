@@ -19,7 +19,7 @@ double SimTime::last_rate_ = 1.0;
 
 uint64_t SimTime::realtime() {
   namespace sc = std::chrono;
-  auto now = sc::system_clock::now();
+  auto now = sc::steady_clock::now();
   auto dur = now.time_since_epoch();
   return sc::duration_cast<sc::nanoseconds>(dur).count();
 }
