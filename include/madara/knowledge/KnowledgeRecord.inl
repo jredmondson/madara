@@ -326,10 +326,14 @@ inline KnowledgeRecord
 {
   KnowledgeRecord record (*this);
 
-  if (is_integer_type ())
-    record.set_value (-to_integer ());
-  else if (is_double_type ())
-    record.set_value (-to_double ());
+  if (type_ == INTEGER)
+  {
+    record.set_value (int_value_);
+  }
+  else if (type_ == DOUBLE)
+  {
+    record.set_value (double_value_);
+  }
 
   return record;
 }

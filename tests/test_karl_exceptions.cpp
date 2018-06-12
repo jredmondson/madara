@@ -1,8 +1,14 @@
-#include "madara/knowledge/KnowledgeBase.h"
+
 #include <iostream>
+#include <stdint.h>
+
+#include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/containers/String.h"
 
 namespace knowledge = madara::knowledge;
 namespace expression = madara::expression;
+
+int num_fails (0);
 
 void test_functions (void)
 {
@@ -16,6 +22,7 @@ void test_functions (void)
   {
     knowledge.evaluate ("not_defined ()");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -28,6 +35,7 @@ void test_functions (void)
   {
     knowledge.evaluate ("#not_defined ()");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -47,6 +55,7 @@ void test_bad_operators (void)
   {
     knowledge.evaluate ("b=--");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -58,6 +67,31 @@ void test_bad_operators (void)
   {
     knowledge.evaluate ("b=+");
     std::cerr << "FAIL\n";
+    ++num_fails;
+  }
+  catch (expression::KarlException &)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  std::cerr << "Testing b=&&: ";
+  try
+  {
+    knowledge.evaluate ("b=&&");
+    std::cerr << "FAIL\n";
+    ++num_fails;
+  }
+  catch (expression::KarlException &)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  std::cerr << "Testing b=||: ";
+  try
+  {
+    knowledge.evaluate ("b=||");
+    std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -69,6 +103,7 @@ void test_bad_operators (void)
   {
     knowledge.evaluate ("b=*");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -80,6 +115,7 @@ void test_bad_operators (void)
   {
     knowledge.evaluate ("b=%");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -91,6 +127,7 @@ void test_bad_operators (void)
   {
     knowledge.evaluate ("b=-");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -102,6 +139,7 @@ void test_bad_operators (void)
   {
     knowledge.evaluate ("b-=");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -113,6 +151,7 @@ void test_bad_operators (void)
   {
     knowledge.evaluate ("b*=");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -124,6 +163,7 @@ void test_bad_operators (void)
   {
     knowledge.evaluate ("b=/");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -153,6 +193,7 @@ void test_nan (void)
   else
   {
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
 
   std::cerr << "Testing variable divide by zero: ";
@@ -163,6 +204,7 @@ void test_nan (void)
   else
   {
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
 
   std::cerr << "Testing divide by variable zero: ";
@@ -173,6 +215,7 @@ void test_nan (void)
   else
   {
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
 
   std::cerr << "Testing sqrt(-1): ";
@@ -183,6 +226,7 @@ void test_nan (void)
   else
   {
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
 
   std::cerr << "Testing assignment of nan: ";
@@ -193,6 +237,7 @@ void test_nan (void)
   else
   {
     std::cerr << "FAIL\n";
+    ++num_fails;
     std::cerr << "var5 = " << knowledge.get ("var5") << "\n";
   }
 
@@ -204,6 +249,7 @@ void test_nan (void)
   else
   {
     std::cerr << "FAIL\n";
+    ++num_fails;
     std::cerr << "var6 = " << knowledge.get ("var6") << "\n";
   }
 
@@ -212,6 +258,7 @@ void test_nan (void)
     std::cerr << "Testing array creation with nan var name: ";
     knowledge.evaluate ("nan[3]");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -233,6 +280,7 @@ void test_empty_assignment (void)
     std::cerr << "Testing assignment (-=): ";
     knowledge.evaluate ("-= 5");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -244,6 +292,7 @@ void test_empty_assignment (void)
     std::cerr << "Testing assignment (+=): ";
     knowledge.evaluate ("+= 5");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -255,6 +304,7 @@ void test_empty_assignment (void)
     std::cerr << "Testing assignment (*=): ";
     knowledge.evaluate ("*= 5");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -266,6 +316,7 @@ void test_empty_assignment (void)
     std::cerr << "Testing assignment (/=): ";
     knowledge.evaluate ("/= 5");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -277,6 +328,7 @@ void test_empty_assignment (void)
     std::cerr << "Testing assignment (=): ";
     knowledge.evaluate ("= 5");
     std::cerr << "FAIL\n";
+    ++num_fails;
   }
   catch (expression::KarlException &)
   {
@@ -284,13 +336,71 @@ void test_empty_assignment (void)
   }
 }
 
+void test_min (void)
+{
+  knowledge::KnowledgeBase knowledge;
+
+  std::cerr << "#####################\n";
+  std::cerr << "TESTING MIN/MAX INTEGERS\n";
+  std::cerr << "#####################\n";
+
+  knowledge.set (".min_int", INT64_MIN);
+  knowledge.set (".max_int", INT64_MAX);
+
+  std::string karl_min = knowledge.expand_statement ("min_int = {.min_int}");
+  std::string karl_max = knowledge.expand_statement ("max_int = {.max_int}");
+
+  knowledge.evaluate (karl_min);
+  knowledge.evaluate (karl_max);
+
+  int64_t local_min = knowledge.get (".min_int").to_integer ();
+  int64_t local_max = knowledge.get (".max_int").to_integer ();
+  int64_t global_min = knowledge.get ("min_int").to_integer ();
+  int64_t global_max = knowledge.get ("max_int").to_integer ();
+
+  std::cerr << "Testing " << karl_min << " evaluation: ";
+  
+  if (local_min == global_min)
+    std::cerr << "SUCCESS\n";
+  else
+  {
+    std::cerr << "FAIL.";
+    ++num_fails;
+    std::cerr << " .min_int=" << local_min << ", " <<
+      "min_int=" << global_min << "\n";
+  }
+
+  std::cerr << "Testing " << karl_max << " evaluation: ";
+
+  if (local_max == global_max)
+    std::cerr << "SUCCESS\n";
+  else
+  {
+    std::cerr << "FAIL.";
+    ++num_fails;
+    std::cerr << " .max_int=" << local_max << ", " <<
+      "max_int=" << global_max << "\n";
+  }
+
+}
+
 int main (int, char **)
 {
   test_functions ();
   test_nan ();
+  test_min ();
   test_empty_assignment ();
   test_bad_operators ();
 
-  return 0;
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }
 

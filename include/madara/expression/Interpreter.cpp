@@ -3633,10 +3633,11 @@ madara::expression::Add::build (void)
     // a Add operator
     return right_->build ();
   else
+  {
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
-    return new LeafNode (*(this->logger_),
-    (madara::knowledge::KnowledgeRecord::Integer)0);
+    return new CompositeAddNode (*(this->logger_), nodes_);
+  }
 }
 
 
@@ -3709,9 +3710,11 @@ madara::expression::And::build (void)
     // an And operator
     return right_->build ();
   else
+  {
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
-    return new LeafNode (*(this->logger_), (madara::knowledge::KnowledgeRecord::Integer)0);
+    return new CompositeAndNode (*(this->logger_), nodes_);
+  }
 }
 
 // constructor
@@ -3785,10 +3788,11 @@ madara::expression::Or::build (void)
     // a Both operator
     return right_->build ();
   else
+  {
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
-    return new LeafNode (*(this->logger_),
-    (madara::knowledge::KnowledgeRecord::Integer)0);
+    return new CompositeOrNode (*(this->logger_), nodes_);
+  }
 }
 
 

@@ -58,6 +58,18 @@ madara::expression::CompositeAndNode::prune (bool & can_change)
     can_change = can_change || value_changes;
   }
 
+  if (nodes_.size () < 2)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "CompositeAndNode: "
+      "KARL COMPILE ERROR (&&): "
+      "And should have a left and right-hand side argument.\n");
+
+    throw KarlException ("CompositeAndNode: "
+      "KARL COMPILE ERROR (&&): "
+      "And should have a left and right-hand side argument.\n");
+  }
+
   return return_value;
 }
 
