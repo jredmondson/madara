@@ -89,7 +89,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
 
       if (nodes_.size () > 2)
       {
-        update_srand = bool (nodes_[2]->evaluate (settings).to_integer ());
+        update_srand = nodes_[2]->evaluate (settings).to_integer () != 0;
       }
     }
   }

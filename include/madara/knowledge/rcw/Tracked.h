@@ -161,7 +161,7 @@ namespace madara { namespace knowledge { namespace rcw
     /// @returns true if object has been modified; false if not
     bool is_dirty() const
     {
-      return dirty_;
+      return dirty_ != 0;
     }
 
     /// Resets modification status
@@ -743,7 +743,7 @@ namespace madara { namespace knowledge { namespace rcw
       std::pair<size_t, uint64_t> x = to_dirty_bit(i);
       if (x.first >= dirty_.size())
         return false;
-      return dirty_.at(x.first) & x.second;
+      return (dirty_.at(x.first) & x.second) != 0;
     }
 
     /// Pass through resize method to underlying vector

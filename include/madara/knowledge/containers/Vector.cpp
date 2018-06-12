@@ -207,7 +207,7 @@ void madara::knowledge::containers::Vector::push_back (
     {
       size_t size;
       unsigned char * unmanaged = value.to_unmanaged_buffer (size);
-      set (i, (char *)unmanaged, size);
+      set_file (i, unmanaged, size);
       delete [] unmanaged;
     }
     else

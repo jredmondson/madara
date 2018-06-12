@@ -9,7 +9,7 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
   prebuild = perl $(MADARA_ROOT)/bin/generate_version_include.pl
 
   specific(prop:microsoft) {
-    DisableSpecificWarnings += 4005 4251 4275
+    DisableSpecificWarnings += 4005 4251 4275 4244
     macros += _CRT_SECURE_NO_WARNINGS
   }
 

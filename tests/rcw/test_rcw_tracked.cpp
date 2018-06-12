@@ -187,7 +187,7 @@ int main(int, char **)
   uint16_t uiarray[] = {1, 2, 3, 4, 5};
   test_eq(knowledge_cast(uiarray).share_integers()->at(3), 4L);
 
-  float farray[] = {1.1, 2.2, 3.3, 4.4, 5.5};
+  float farray[] = {1.1F, 2.2F, 3.3F, 4.4F, 5.5F};
   test_eq(knowledge_cast(farray).share_doubles()->at(4), 5.5L);
 
   unsigned char ucarray[] = {1, 2, 3, 4, 5};
@@ -217,7 +217,9 @@ int main(int, char **)
   test_eq(iarray_out[2], 12);
   test_eq(iarray_out[6], 0);
 
+  static_assert(!madara::knowledge::impl::supports_resize<std::array<int, 7>&>::value, "");
   std::array<int32_t, 7> istdarray_out{{0, 0, 0, 0, 1, 1, 1}};
+
   knowledge_cast(knowledge_cast(iarray_in), istdarray_out);
   test_eq(istdarray_out[3], 16);
   test_eq(istdarray_out[5], 0);

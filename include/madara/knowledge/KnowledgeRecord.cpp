@@ -615,7 +615,7 @@ KnowledgeRecord::operator< (
     }
   }
 
-  return result;
+  return result != 0;
 }
 
 bool
@@ -701,7 +701,7 @@ KnowledgeRecord::operator<= (
     }
   }
 
-  return result;
+  return result != 0;
 }
 
 bool
@@ -803,7 +803,7 @@ KnowledgeRecord::operator== (
     }
   }
 
-  return result;
+  return result != 0;
 }
 
 bool
@@ -890,7 +890,7 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
     }
   }
 
-  return result;
+  return result != 0;
 }
 
 bool
@@ -977,7 +977,7 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
     }
   }
 
-  return result;
+  return result != 0;
 }
 
 

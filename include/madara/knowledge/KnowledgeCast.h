@@ -132,12 +132,12 @@ inline auto knowledge_cast(type<std::vector<T>>, const KnowledgeRecord &in) ->
 /// the contents of this namespace.
 namespace impl {
   template<typename T>
-  inline auto size(const T &c) -> decltype(c.size()) {
+  inline auto get_size(const T &c) -> decltype(c.size()) {
     return c.size();
   }
 
   template<typename T, size_t N>
-  inline size_t size(const T (&arr)[N]) {
+  inline size_t get_size(const T (&arr)[N]) {
     (void)arr;
     return N;
   }
@@ -147,10 +147,10 @@ namespace impl {
   template<typename T>
   inline auto resize_or_clear(T &c, size_t n) ->
     typename std::enable_if<!supports_resize<T&>::value,
-    decltype(c[0], size(c), size_t{})>::type
+    decltype(c[0], get_size(c), size_t{})>::type
   {
     using elem_type = typename std::decay<decltype(c[0])>::type;
-    size_t curn = size(c);
+    size_t curn = get_size(c);
     for (; n < curn; ++n) {
       c[n] = elem_type{};
     }
@@ -225,7 +225,7 @@ namespace impl {
   MADARA_MAKE_VAL_SUPPORT_TEST(target_container, x,
       (std::is_arithmetic<typename std::decay<
         decltype(*std::begin(x))>::type>::value,
-       impl::size(x)));
+       impl::get_size(x)));
 }
 
 template<typename T>
