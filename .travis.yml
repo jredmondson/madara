@@ -48,6 +48,12 @@ matrix:
       os: osx
       osx_image: xcode9.3
 
+      # clang, osx, zeromq
+    - compiler: clang
+      env: NAME="OSX 10.13 clang simtime" CLANG="clang" SIMTIME="simtime"
+      os: osx
+      osx_image: xcode9.3
+
       ################LINUX#####################
 
       # clang, linux, no ssl
@@ -101,6 +107,17 @@ matrix:
             - libssl-dev
       env: NAME="Ubuntu 14.04 g++ zmq" ZMQ="zmq"
 
+      # g++, linux, zmq
+    - compiler: gcc
+      os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - libssl-dev
+      env: NAME="Ubuntu 14.04 g++ simtime" SIMTIME="simtime"
+
 addons:
   apt:
     sources:
@@ -121,7 +138,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export OS=mac; export CLANG_SUFFIX=; export JAVA_HOME=$(/usr/libexec/java_home) ; fi
 
 script:
-  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ
-  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ
+  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ $SIMTIME
+  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ $SIMTIME
 
 
