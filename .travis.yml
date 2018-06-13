@@ -18,11 +18,27 @@ env:
 
 matrix:
   include:
+      ################MAC#####################
+
       # clang, osx, no ssl
     - compiler: clang
       env: NAME="OSX 10.13 clang" CLANG="clang"
       os: osx
       osx_image: xcode9.3
+
+      # clang, osx, ssl
+    - compiler: clang
+      env: NAME="OSX 10.13 clang ssl" CLANG="clang" SSL="ssl"
+      os: osx
+      osx_image: xcode9.3
+
+      # clang, osx, java
+    - compiler: clang
+      env: NAME="OSX 10.13 clang java" CLANG="clang" SSL="java"
+      os: osx
+      osx_image: xcode9.3
+
+      ################LINUX#####################
 
       # clang, linux, no ssl
     - compiler: clang
@@ -64,6 +80,17 @@ matrix:
             - libssl-dev
       env: NAME="Ubuntu 14.04 g++ java" JAVA="java"
 
+      # g++, linux, zmq
+    - compiler: gcc
+      os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - libssl-dev
+      env: NAME="Ubuntu 14.04 g++ zmq" ZMQ="zmq"
+
 addons:
   apt:
     sources:
@@ -84,7 +111,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export OS=mac; export CLANG_SUFFIX=; fi
 
 script:
-  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA
-  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA
+  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ
+  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ
 
 

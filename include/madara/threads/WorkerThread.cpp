@@ -44,7 +44,7 @@ WorkerThread::WorkerThread (
   }
 }
 
-WorkerThread::~WorkerThread ()
+WorkerThread::~WorkerThread () noexcept
 {
   try {
     if (me_.joinable()) {

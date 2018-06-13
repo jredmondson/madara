@@ -10,7 +10,7 @@
 #include "madara/transport/Fragmentation.h"
 
 #include <iostream>
-#include "madara/utility/inttypes.h"
+#include "madara/utility/IntTypes.h"
 #include "ZMQContext.h"
 
 madara::transport::ZMQTransport::ZMQTransport (const std::string & id,

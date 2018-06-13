@@ -3,7 +3,7 @@
 
 #include <thread>
 #include <chrono>
-#include "inttypes.h"
+#include "IntTypes.h"
 
 namespace madara
 {

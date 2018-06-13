@@ -281,7 +281,7 @@ void test_sqrt (void)
   double input = 1000000000;
   for (int i = 0; i < 1000000000; ++i)
   {
-    sqrt (input);
+    input = sqrt (input);
   }
 
   timer.stop ();
