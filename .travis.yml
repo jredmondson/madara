@@ -1,0 +1,97 @@
+sudo: required
+group: travis_latest
+language: cpp
+os:
+  - linux
+
+compiler:
+  - gcc
+
+env:
+  matrix:
+  global:
+    - MADARA_ROOT=$TRAVIS_BUILD_DIR/madara
+    - GAMS_ROOT=$TRAVIS_BUILD_DIR/gams
+    - MPC_ROOT=$TRAVIS_BUILD_DIR/MPC
+    - LD_LIBRARY_PATH=$MADARA_ROOT/lib:$GAMS_ROOT/lib:$LD_LIBRARY_PATH
+    - CORES=6
+
+matrix:
+  include:
+      # clang, osx, no ssl
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - libssl-dev
+            - clang-5.0
+      env: TESTNAME="OSX Clang" CLANG="clang"
+      os: osx
+
+      # clang, linux, no ssl
+    - compiler: clang
+      env: TESTNAME="Ubuntu 14.04 clang" CLANG="clang"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - libssl-dev
+            - clang-5.0
+      os: linux
+
+      # g++, linux, no ssl
+    - compiler: gcc
+      os: linux
+      env: TESTNAME="Ubuntu 14.04 g++" CLANG=""
+
+      # g++, linux, ssl
+    - compiler: gcc
+      os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - libssl-dev
+      env: TESTNAME="Ubuntu 14.04 g++ ssl" CLANG="" SSL="ssl"
+
+      # g++, linux, java
+    - compiler: gcc
+      os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - libssl-dev
+      env: TESTNAME="Ubuntu 14.04 g++ java" JAVA="java"
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - git-core
+
+before_install:
+  - git clone -b master --single-branch https://github.com/jredmondson/gams $GAMS_ROOT
+
+branches:
+  only:
+    - master
+
+before_script:
+  - export
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export OS=linux; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export OS=mac; fi
+
+script:
+  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA
+  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA
+
+
