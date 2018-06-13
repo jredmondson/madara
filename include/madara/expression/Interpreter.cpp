@@ -5824,6 +5824,14 @@ bool build_argument_list)
       }
       ++i;
     }
+    // is this a number literal? Handling this way allows for INT64_MIN
+    else if (i + 1 < input.size () && is_number (input[i + 1]))
+    {
+      handled = true;
+      // leaf node
+      number_insert (context, input, i, accumulated_precedence,
+        list, lastValidInput);
+    }
     // Negate
     else if (!lastValidInput)
       op = new Negate (context.get_logger ());
@@ -5831,11 +5839,14 @@ bool build_argument_list)
     else
       op = new Subtract (context.get_logger ());
 
-    // insert the op according to left-to-right relationships
-    lastValidInput = 0;
-    op->add_precedence (accumulated_precedence);
-    precedence_insert (context, op, list);
-    ++i;
+    if (op)
+    {
+      // insert the op according to left-to-right relationships
+      lastValidInput = 0;
+      op->add_precedence (accumulated_precedence);
+      precedence_insert (context, op, list);
+      ++i;
+    }
   }
   else if (input[i] == '*')
   {

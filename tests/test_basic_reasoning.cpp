@@ -1196,8 +1196,10 @@ void test_mathops (madara::knowledge::KnowledgeBase & knowledge)
   knowledge.evaluate (".var3 = .var1 - .var2");
   assert (knowledge.get (".var3").to_integer () == 5);
 
-  knowledge.evaluate (".var3 = .var1 -(- .var2)");
+  knowledge.evaluate (".var3 = .var1 -(-.var2)");
   assert (knowledge.get (".var3").to_integer () == 11);
+
+  knowledge.print ();
 
   knowledge.evaluate (".var3 = .var1 * .var2");
   assert (knowledge.get (".var3").to_integer () == 24);

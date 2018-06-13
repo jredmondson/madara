@@ -140,5 +140,8 @@ before_script:
 script:
   - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ $SIMTIME
   - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ $SIMTIME
-
+  # now run a couple of tests
+  - $MADARA_ROOT/bin/test_basic_reasoning
+  - $MADARA_ROOT/bin/test_karl_exceptions
+  
 
