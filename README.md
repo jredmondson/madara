@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jredmondson/madara.svg?branch=master)](https://travis-ci.org/jredmondson/madara)
+
 0. ABOUT MADARA
 
   The Multi-Agent Distributed Adaptive Research Allocation (MADARA) suite is a
