@@ -33,7 +33,7 @@ madara::transport::ZMQTransportReadThread::init (
 
   if (!settings_.no_receiving)
   {
-    int send_buff_size = 0;
+    //int send_buff_size = 0;
     int rcv_buff_size = 0;
     int timeout = 1000;
     int buff_size = settings_.queue_length;
@@ -62,7 +62,7 @@ madara::transport::ZMQTransportReadThread::init (
 
     if (result == 0)
     {
-      int result = zmq_getsockopt (
+      result = zmq_getsockopt (
         read_socket_, ZMQ_RCVBUF, (void *)&rcv_buff_size, &opt_len);
 
       madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
@@ -84,7 +84,7 @@ madara::transport::ZMQTransportReadThread::init (
 
     if (result == 0)
     {
-      int result = zmq_getsockopt (
+      result = zmq_getsockopt (
         read_socket_, ZMQ_RCVTIMEO, (void *)&timeout, &opt_len);
 
       madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
