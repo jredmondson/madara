@@ -136,6 +136,7 @@ before_script:
   - export
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export OS=linux; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export OS=mac; export CLANG_SUFFIX=; export JAVA_HOME=$(/usr/libexec/java_home) ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$MADARA_ROOT/lib:$GAMS_ROOT/lib:$VREP_ROOT ; fi
 
 script:
   - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ $SIMTIME
@@ -143,5 +144,5 @@ script:
   # now run a couple of tests
   - $MADARA_ROOT/bin/test_basic_reasoning
   - $MADARA_ROOT/bin/test_karl_exceptions
-  
+
 
