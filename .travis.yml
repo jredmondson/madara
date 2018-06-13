@@ -88,7 +88,7 @@ branches:
 before_script:
   - export
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export OS=linux; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export OS=mac; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export OS=mac; export CLANG_SUFFIX=; fi
 
 script:
   - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA
