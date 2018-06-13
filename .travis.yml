@@ -48,7 +48,7 @@ matrix:
       os: osx
       osx_image: xcode9.3
 
-      # clang, osx, zeromq
+      # clang, osx, simtime
     - compiler: clang
       env: NAME="OSX 10.13 clang simtime" CLANG="clang" SIMTIME="simtime"
       os: osx
@@ -107,7 +107,7 @@ matrix:
             - libssl-dev
       env: NAME="Ubuntu 14.04 g++ zmq" ZMQ="zmq"
 
-      # g++, linux, zmq
+      # g++, linux, simtime
     - compiler: gcc
       os: linux
       addons:
