@@ -34,7 +34,7 @@ matrix:
 
       # clang, osx, java
     - compiler: clang
-      env: NAME="OSX 10.13 clang java" CLANG="clang" SSL="java"
+      env: NAME="OSX 10.13 clang java" CLANG="clang" JAVA="java"
       os: osx
       osx_image: xcode9.3
 
