@@ -8,7 +8,6 @@
 #include "AESBufferFilter.h"
 
 #include "madara/utility/Utility.h"
-#include "madara/utility/LogMacros.h"
 
 #include "madara/logger/GlobalLogger.h"
 
