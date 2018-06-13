@@ -161,12 +161,12 @@ int main (int argc, char ** argv)
     void * buffer (0);
     size_t buffer_size (0);
 
-    int result = utility::read_file (ssl_key_file, buffer, buffer_size);
+    utility::read_file (ssl_key_file, buffer, buffer_size);
 
     encryption = new AESBufferFilter (
       (unsigned char *)buffer, (int)buffer_size);
 
-    delete[] buffer;
+    delete[] (unsigned char *)buffer;
   }
   else
   {
