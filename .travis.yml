@@ -100,6 +100,8 @@ addons:
 
 before_install:
   - git clone -b master --single-branch https://github.com/jredmondson/gams $GAMS_ROOT
+  - brew update && brew bundle
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew bundle; brew install openssl; fi
 
 branches:
   only:
@@ -108,7 +110,7 @@ branches:
 before_script:
   - export
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export OS=linux; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export OS=mac; export CLANG_SUFFIX=; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export OS=mac; export CLANG_SUFFIX=; export JAVA_HOME=$(/usr/libexec/java_home) ; fi
 
 script:
   - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ
