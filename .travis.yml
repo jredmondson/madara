@@ -20,20 +20,13 @@ matrix:
   include:
       # clang, osx, no ssl
     - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-5.0
-          packages:
-            - libssl-dev
-            - clang-5.0
-      env: TESTNAME="OSX Clang" CLANG="clang"
+      env: NAME="OSX 10.13 clang" CLANG="clang"
       os: osx
+      osx_image: xcode9.3
 
       # clang, linux, no ssl
     - compiler: clang
-      env: TESTNAME="Ubuntu 14.04 clang" CLANG="clang"
+      env: NAME="Ubuntu 14.04 clang" CLANG="clang"
       addons:
         apt:
           sources:
@@ -47,7 +40,7 @@ matrix:
       # g++, linux, no ssl
     - compiler: gcc
       os: linux
-      env: TESTNAME="Ubuntu 14.04 g++" CLANG=""
+      env: NAME="Ubuntu 14.04 g++" CLANG=""
 
       # g++, linux, ssl
     - compiler: gcc
@@ -58,7 +51,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - libssl-dev
-      env: TESTNAME="Ubuntu 14.04 g++ ssl" CLANG="" SSL="ssl"
+      env: NAME="Ubuntu 14.04 g++ ssl" CLANG="" SSL="ssl"
 
       # g++, linux, java
     - compiler: gcc
@@ -69,7 +62,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - libssl-dev
-      env: TESTNAME="Ubuntu 14.04 g++ java" JAVA="java"
+      env: NAME="Ubuntu 14.04 g++ java" JAVA="java"
 
 addons:
   apt:
