@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jredmondson/madara.svg?branch=master)](https://travis-ci.org/jredmondson/madara)
+[![Build Status](https://travis-ci.org/jredmondson/madara.svg?branch=master)](https://travis-ci.org/jredmondson/madara) [![Documentation Status](https://readthedocs.org/projects/madara/badge/?version=latest)](https://madara.readthedocs.io/en/latest/?badge=latest)
 
 # About MADARA
 
