@@ -28,7 +28,7 @@ version = u''
 # The full version, including alpha/beta/rc tags
 release = u'3.1.10'
 
-subprocess.call('doxygen Doxyfile_MADARA.dxy', shell=True)
+subprocess.call('perl get_version.pl; doxygen Doxyfile_MADARA.dxy', shell=True)
 
 # -- General configuration ---------------------------------------------------
 
