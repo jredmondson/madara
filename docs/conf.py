@@ -28,10 +28,8 @@ version = u''
 # The full version, including alpha/beta/rc tags
 release = u'3.1.10'
 
-subprocess.call('perl get_version.pl; doxygen Doxyfile_MADARA.dxy', shell=True)
-subprocess.call('javadoc -version -d java -sourcepath ../port/java/src -subpackages com.madara', shell=True)
+subprocess.call('perl get_version.pl; doxygen Doxyfile_MADARA_NoGraphviz.dxy', shell=True)
 subprocess.call('mv madara/html madara/cpp', shell=True)
-subprocess.call('mv java madara/java', shell=True)
 
 
 # -- General configuration ---------------------------------------------------
@@ -46,8 +44,14 @@ subprocess.call('mv java madara/java', shell=True)
 extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.coverage',
-    'sphinx.ext.imgmath',
+    'sphinx.ext.imgmath'#,
+    #'javasphinx'
 ]
+
+# apparently, readthedocs.io doesn't actually support the javasphinx module
+#javadoc_url_map = {
+#    'com.madara' : ('../port/java/src', 'javadoc8')
+#}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
