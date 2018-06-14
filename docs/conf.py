@@ -29,6 +29,10 @@ version = u''
 release = u'3.1.10'
 
 subprocess.call('perl get_version.pl; doxygen Doxyfile_MADARA.dxy', shell=True)
+subprocess.call('javadoc -version -d java -sourcepath ../port/java/src -subpackages com.madara', shell=True)
+subprocess.call('mv madara/html madara/cpp', shell=True)
+subprocess.call('mv java madara/java', shell=True)
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -68,7 +72,7 @@ language = None
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
 exclude_patterns = [u'_build', 'Thumbs.db', '.DS_Store']
-html_extra_path = ['madara/html']
+html_extra_path = ['madara']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
