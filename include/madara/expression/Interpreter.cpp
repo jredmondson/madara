@@ -6398,21 +6398,17 @@ madara::expression::Interpreter::interpret (
 
     if (i == last_i)
     {
-      if (input[i] == ')')
+      size_t start = i > 10 ? i - 10 : 0;
+      size_t end = input.size () - i > 10 ? i + 10 : input.size ();
+
+      std::string snippet = input.substr (start, end - start);
+
       {
-        madara_logger_log (context.get_logger (), logger::LOG_ERROR,
+        madara_logger_log (context.get_logger (), logger::LOG_MINOR,
           "madara::expression::Interpreter: "
-          "KARL COMPILE ERROR: "
-          "You have included too many closing parentheses in %s \n",
-          input.c_str ());
-      }
-      else
-      {
-        madara_logger_log (context.get_logger (), logger::LOG_ERROR,
-          "madara::expression::Interpreter: "
-          "KARL COMPILE ERROR: "
-          "Compilation is spinning at %d in %s. Char is %c\n",
-          i, input.c_str (), input[i]);
+          "KARL: "
+          "Compilation is spinning at %d in %s. Char is %c. Breaking out.\n",
+          (int)i, snippet.c_str (), input[i]);
       }
       break;
     }
