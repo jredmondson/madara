@@ -148,7 +148,16 @@ script:
   - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ $SIMTIME
   - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ $SIMTIME
   # now run a couple of tests
+  - echo "Testing basic functionality..."
   - $MADARA_ROOT/bin/test_basic_reasoning
   - $MADARA_ROOT/bin/test_karl_exceptions
+  # performance test (useful to see if we've regressed in performance)
+  - echo "Testing reasoning throughput..."
+  - $MADARA_ROOT/bin/test_reasoning_throughput
+  # test UDP Multicast networking performance and connectivity for 60s
+  - echo "Testing multicast performance..."
+  - $MADARA_ROOT/bin/network_profiler -i 0 -s 1024 & $MADARA_ROOT/bin/network_profiler -i 0
+  # test UDP Unicast networking performance and connectivity for 60s
+  - $MADARA_ROOT/bin/network_profiler -i 0 -s 1024 -u 127.0.0.1:30000 -u 127.0.0.1:30001 & $MADARA_ROOT/bin/network_profiler -i 0 -u 127.0.0.1:30001
 
 

@@ -1,228 +1,22 @@
-#if 0
-
-#include <string>
-#include <vector>
-#include <iostream>
-#include <algorithm>
-#include <sstream>
-#include <assert.h>
-
-#include "ace/High_Res_Timer.h"
-#include "ace/OS_NS_Thread.h"
-#include "ace/Sched_Params.h"
+#include <atomic>
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/filters/AggregateFilter.h"
 
 #include "madara/utility/Utility.h"
 
 namespace utility = madara::utility;
 namespace logger = madara::logger;
-typedef  madara::knowledge::KnowledgeRecord::Integer Integer;
+namespace knowledge = madara::knowledge;
+namespace transport = madara::transport;
 
 // default transport settings
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
 madara::transport::QoSTransportSettings settings;
-
-// keep track of time
-ACE_hrtime_t elapsed_time, maximum_time;
-ACE_High_Res_Timer timer;
-
-// publisher array for keeping track of ack latencies
-class Timers
-{
-public:
-  /**
-   * Constructor
-   * @param  quantity  number of timers to track
-   **/
-  Timers (unsigned int quantity)
-    : timers_ (quantity),
-      timers_stopped_ (quantity, 0), timers_started_ (quantity, 0)
-  {
-
-  }
-
-  /**
-   * Starts the timer at the indexed location
-   * @param  index     timer identifier
-   **/
-  void start (unsigned int index)
-  {
-    // lock the mutex
-    MADARA_GUARD_TYPE guard (mutex_);
-
-    if (index < timers_.size ())
-    {
-      timers_[index].start ();
-      timers_started_[index] = 1;
-    }
-  }
-
-  /**
-   * Stops the timer at the indexed location
-   * @param  index     timer identifier
-   **/
-  void stop (unsigned int index)
-  {
-    // lock the mutex
-    MADARA_GUARD_TYPE guard (mutex_);
-    
-    if (index < timers_.size ())
-    {
-      timers_[index].stop ();
-      timers_stopped_[index] = 1;
-      //if (timers_started_[index])
-      //{
-      //  std::cerr << index << ": stopped timer had a start timer\n";
-      //}
-      //else
-      //{
-      //  std::cerr << index << ": BAD NEWS: stopped timer was never started\n";
-      //}
-    }
-  }
-
-  /**
-   * Returns the time that elapsed between start and stop at index
-   * @param  index     timer identifier
-   * @return the time that has elapsed
-   **/
-  madara::knowledge::KnowledgeRecord::Integer elapsed (unsigned int index)
-  {
-    // lock the mutex
-    MADARA_GUARD_TYPE guard (mutex_);
-
-    ACE_hrtime_t elapsed_time (0);
-    madara::knowledge::KnowledgeRecord::Integer result (0);
-    
-    if (index < timers_.size () && timers_stopped_[index] == 1)
-    {
-      timers_[index].elapsed_time (elapsed_time);
-      result = madara::knowledge::KnowledgeRecord::Integer (elapsed_time);
-    }
-
-    return result;
-  }
-
-  /**
-   * Calculates minimum, maximum, and average latencies
-   **/
-  void calculate (void)
-  {
-    // lock the mutex
-    MADARA_GUARD_TYPE guard (mutex_);
-
-    ACE_hrtime_t elapsed_time (0);
-    madara::knowledge::KnowledgeRecord::Integer cur_latency (0), received (0);
-    min_latency_ = 2000000000;
-    max_latency_ = 0;
-    avg_latency_ = 0;
-
-    for (unsigned int i = 0; i < timers_.size (); ++i)
-    {
-      if (timers_stopped_[i] != 0)
-      {
-        received++;
-        timers_[i].elapsed_time (elapsed_time);
-        cur_latency = madara::knowledge::KnowledgeRecord::Integer (elapsed_time);
-
-        avg_latency_ += cur_latency;
-        min_latency_ = (std::min) (min_latency_, cur_latency);
-        max_latency_ = (std::max) (max_latency_, cur_latency);
-      }
-    }
-
-    if (received > 0)
-      avg_latency_ = avg_latency_ / received;
-  }
-
-  /**
-   * Returns the average latency in the list
-   * @return average latency
-   **/
-  madara::knowledge::KnowledgeRecord::Integer average (void)
-  {
-    // lock the mutex
-    MADARA_GUARD_TYPE guard (mutex_);
-    return avg_latency_;
-  }
-
-  /**
-   * Returns the minimum latency in the list
-   * @return the minimum latency
-   **/
-  madara::knowledge::KnowledgeRecord::Integer minimum (void)
-  {
-    // lock the mutex
-    MADARA_GUARD_TYPE guard (mutex_);
-    return min_latency_;
-  }
-  
-  /**
-   * Returns the maximum latency in the list
-   * @return the maximum latency
-   **/
-  madara::knowledge::KnowledgeRecord::Integer maximum (void)
-  {
-    // lock the mutex
-    MADARA_GUARD_TYPE guard (mutex_);
-    return max_latency_;
-  }
-
-  /**
-   * Returns the number of timers
-   * @return the number of timers
-   **/
-  unsigned int size (void)
-  {
-    // size cannot change after initialization, so no need
-    // for mutex
-
-    return (unsigned int)timers_.size ();
-  }
-
-private:
-
-  // mutex for protecting accesses
-  mutable MADARA_LOCK_TYPE mutex_;
-
-  // vector of timers
-  std::vector<ACE_High_Res_Timer> timers_;
-
-  // vector that tracks stopped latencies
-  std::vector<int> timers_stopped_;
-  
-  // vector that tracks started latencies
-  std::vector<int> timers_started_;
-
-  // maximum latency in the timer list
-  madara::knowledge::KnowledgeRecord::Integer max_latency_;
-
-  // minimum latency in the timer list
-  madara::knowledge::KnowledgeRecord::Integer min_latency_;
-
-  // average latency in the timer list
-  madara::knowledge::KnowledgeRecord::Integer avg_latency_;
-
-};
-
-Timers latencies (20);
-
-// number of sent and received messages
-madara::knowledge::VariableReference  num_sent;
-madara::knowledge::VariableReference  num_received;
-madara::knowledge::VariableReference  ack;
-
-// to stop sending acks, flip to false
-bool send_acks = true;
-
-// amount of time in seconds to burst payloads
-double publish_time = 10.0;
-
-// payload size to burst
-unsigned int data_size = 1000;
+double test_time (60);
+size_t data_size (128);
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
@@ -257,10 +51,6 @@ void handle_arguments (int argc, char ** argv)
         settings.type = madara::transport::UDP;
       }
       ++i;
-    }
-    else if (arg1 == "-a" || arg1 == "--no-latency")
-    {
-      send_acks = false;
     }
     else if (arg1 == "-o" || arg1 == "--host")
     {
@@ -361,7 +151,7 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         std::stringstream buffer (argv[i + 1]);
-        buffer >> publish_time;
+        buffer >> test_time;
       }
 
       ++i;
@@ -406,423 +196,145 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
-
-// filter for counting received packets and removing payload
-madara::knowledge::KnowledgeRecord
-latency_receiver (
-  madara::knowledge::FunctionArguments & args,
-  madara::knowledge::Variables & vars)
+class Profiler : public madara::filters::AggregateFilter
 {
-  madara::knowledge::KnowledgeRecord result;
-  
-  if (args.size () > 0)
-  {
-    if (args[0].is_binary_file_type ())
+  public:
+    Profiler ()
+    : total_latency (0), received (0), min_latency (0), max_latency (0)
     {
-      // this is a safe way to add variables to a rebroadcast
-      // without modifying the local context
-      args.emplace_back ("ack");
-      args.emplace_back (vars.inc (ack));
     }
+
+  void filter (knowledge::KnowledgeMap &,
+    const transport::TransportContext &transport_context,
+    knowledge::Variables &)
+  {
+    uint64_t current =
+      transport_context.get_current_time () - transport_context.get_message_time ();
+    total_latency += current;
+
+    // there are race conditions here with multiple read threads but meh
+    if (received == 0)
+    {
+      min_latency = current;
+      max_latency = current;
+    }
+    else
+    {
+      uint64_t cur_min = min_latency;
+      uint64_t cur_max = max_latency;
+
+      min_latency = current < cur_min ? current : cur_min;
+      max_latency = current > cur_max ? current : cur_max;
+    }
+
+    ++received;
   }
 
-  return result;
-}
-
-
-// filter for counting received packets and removing payload
-madara::knowledge::KnowledgeRecord
-count_received (
-  madara::knowledge::FunctionArguments & args,
-  madara::knowledge::Variables & vars)
-{
-  madara::knowledge::KnowledgeRecord result;
-  
-  if (args.size () > 0)
-  {
-    if (args[0].is_binary_file_type ())
-    {
-      // if this is the first message we have received, start
-      // the timer.
-      if (vars.get (num_received).is_false ())
-        timer.start ();
-
-      timer.stop ();
-
-      vars.inc (num_received);
-    }
-  }
-
-  return result;
-}
-
-
-// filter for counting received acks, stopping timer and removing payload
-madara::knowledge::KnowledgeRecord
-handle_acks (
-  madara::knowledge::FunctionArguments & args,
-  madara::knowledge::Variables & vars)
-{
-  madara::knowledge::KnowledgeRecord result;
-  
-  if (args.size () > 0)
-  {
-    if (args[0].is_integer_type ())
-    {
-      madara::knowledge::KnowledgeRecord::Integer handled =
-        args[0].to_integer ();
-      
-      if (handled >= 0 && handled < latencies.size ())
-      {
-        latencies.stop (handled);
-      }
-
-      vars.inc (num_received);
-    }
-    result = args[0];
-  }
-
-  return result;
-}
-
-// filter for counting received acks, stopping timer and removing payload
-madara::knowledge::KnowledgeRecord
-init_ack (
-  madara::knowledge::FunctionArguments & args,
-  madara::knowledge::Variables & vars)
-{
-  madara::knowledge::KnowledgeRecord result;
-  
-  if (args.size () > 0)
-  {
-    if (args[0].is_binary_file_type ())
-    {
-      madara::knowledge::KnowledgeRecord::Integer current_send =
-        vars.get (num_sent).to_integer ();
-
-      if (current_send >= 0 && current_send < latencies.size ())
-        latencies.start (current_send);
-
-      vars.inc (num_sent);
-    }
-    result = args[0];
-  }
-
-  return result;
-}
-
-// filter for counting received acks, stopping timer and removing payload
-madara::knowledge::KnowledgeRecord
-count_sent (
-  madara::knowledge::FunctionArguments & args,
-  madara::knowledge::Variables & vars)
-{
-  madara::knowledge::KnowledgeRecord result;
-  
-  if (args.size () > 0)
-  {
-    if (args[0].is_binary_file_type ())
-    {
-      vars.inc (num_sent);
-    }
-    result = args[0];
-  }
-
-  return result;
-}
+  std::atomic <uint64_t> total_latency;
+  std::atomic <uint64_t> received;
+  std::atomic <uint64_t> min_latency;
+  std::atomic <uint64_t> max_latency;
+};
 
 int main (int argc, char ** argv)
 {
-  settings.type = madara::transport::MULTICAST;
-  settings.queue_length = data_size * 1000;
+  // initialize settings
+  settings.type = transport::MULTICAST;
+  settings.queue_length = 1000000;
 
-  // unlimited hertz
-  settings.read_thread_hertz = 0.0;
-  settings.read_threads = 1;
-
-  // use ACE real time scheduling class
-  int prio  = ACE_Sched_Params::next_priority
-    (ACE_SCHED_FIFO,
-     ACE_Sched_Params::priority_max (ACE_SCHED_FIFO),
-     ACE_SCOPE_THREAD);
-  ACE_OS::thr_setprio (prio);
-
-  // handle all user arguments
+  // parse the user command line arguments
   handle_arguments (argc, argv);
 
+  // setup default transport as multicast
   if (settings.hosts.size () == 0)
   {
-    // setup default transport as multicast
-    settings.hosts.resize (1);
-    settings.hosts[0] = default_multicast;
-  }
-  
-  if (settings.id != 0)
-  {
-    // latency test requires client to generate acks
-    settings.add_receive_filter (
-      madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES,
-      latency_receiver);
-    settings.enable_participant_ttl ();
-  }
-  else
-  {
-    // latency test requires publisher to init and handle acks
-    settings.add_receive_filter (
-      madara::knowledge::KnowledgeRecord::INTEGER,
-      handle_acks);
-    settings.add_send_filter (
-      madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES,
-      init_ack);
+    settings.hosts.push_back (default_multicast);
   }
 
-  // create a knowledge base and setup our id
-  madara::knowledge::KnowledgeBase knowledge (host, settings);
-  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
-  
-  // setup wait settings to wait for 2 * publish_time seconds
-  madara::knowledge::WaitSettings wait_settings;
-  wait_settings.max_wait_time = publish_time * 2;
-  
-  // set poll frequency to every 10us
-  //wait_settings.poll_frequency = 0.00001;
-
-  // get variable references for real-time, constant-time operations
-  num_received = knowledge.get_ref (".num_received");
-  num_sent = knowledge.get_ref (".num_sent");
-  ack = knowledge.get_ref (".ack");
-
+  // id == 0 ? "publisher" : "subscriber"
   if (settings.id == 0)
   {
-    // publisher
+    // setup a knowledge base
+    knowledge::KnowledgeBase kb (host, settings);
 
-    // set up the payload
-    unsigned char * ref_file = new unsigned char[data_size];
-    knowledge.set_file (".ref_file", ref_file, data_size);
-    madara::knowledge::VariableReference file =
-      knowledge.get_ref (".ref_file");
-    
-    // begin latency test
-    knowledge.print ("\nRunning latency test...");
+    // get a handle to the data
+    knowledge::VariableReference var = kb.get_ref ("data");
 
-    for (int i = 0; i < 10; ++i)
+    unsigned char * data = new unsigned char [data_size]; 
+    kb.set_file (var, data, data_size, knowledge::EvalSettings::DELAY_NO_EXPAND);
+
+    std::cerr << "Publishing " << data_size << " B packets for "
+      << test_time << " s on " << transport::types_to_string (settings.type)
+      << " transport\n";
+
+    // keep track of test time
+    utility::TimeValue current = madara::utility::Clock::now ();
+    madara::utility::TimeValue end_time = current +
+      madara::utility::seconds_to_duration (test_time);
+
+    // spin and modify
+    while (utility::Clock::now () < end_time)
     {
-      knowledge.mark_modified (file);
-    
-      ACE_OS::sleep (1);
+      kb.mark_modified (var);
+      kb.send_modifieds ();
     }
-    
-    knowledge.print (" done.\n");
 
-    knowledge.set ("latency_finished");
-    
-    // close the transport so we can use different filters
-    knowledge.close_transport ();
+    delete [] data;
 
-    settings.clear_receive_filters (madara::knowledge::KnowledgeRecord::ALL_TYPES);
-    settings.clear_send_filters (madara::knowledge::KnowledgeRecord::ALL_TYPES);
-    
-    // add a simple filter for counting the sent packets
-    settings.add_send_filter (
-      madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES,
-      count_sent);
-
-    // attach the new transport
-    knowledge.attach_transport (knowledge.get_id (), settings);
-    
-    // reannounce latency finished and wait for client before throughput test
-
-    knowledge.set ("latency_finished");
-    
-    
-
-#ifndef _MADARA_NO_KARL_
-
-    knowledge.wait ("ready_for_throughput", wait_settings);
-    
-#else
-    utility::wait_true (knowledge, "ready_for_throughput", wait_settings);
-#endif // _MADARA_NO_KARL_
-
-    knowledge.print ("Running throughput test...");
-
-    // reset timer
-    elapsed_time = 0;
-    timer.start ();
-    timer.stop ();
-    timer.elapsed_time (elapsed_time);
-    
-    ACE_Time_Value max_tv;
-    max_tv.set (publish_time);
-    maximum_time = max_tv.sec () * 1000000000;
-    maximum_time += max_tv.usec () * 1000;
-    
-    // publish the payload repeatedly until max time has passed
-    while (maximum_time > elapsed_time)
-    {
-      knowledge.mark_modified (file);
-      timer.stop ();
-      timer.elapsed_time (elapsed_time);
-    }
-    
-    // throughput test over
-    knowledge.print (" done.\n");
-    knowledge.set ("finished");
-    
-
-    // calculate latencies
-    latencies.calculate ();
-
-    madara::knowledge::EvalSettings delay (true);
-
-    knowledge.set ("min_latency", latencies.minimum () / 2, delay);
-    knowledge.set ("max_latency", latencies.maximum () / 2, delay);
-    knowledge.set ("avg_latency", latencies.average () / 2, delay);
-
-    // rebroadcast that the throughput test is finished
-    knowledge.set ("finished");
-    
-    // only client knows real message throughput. Wait for it.
-    knowledge.print ("Waiting for throughput results from client...");
-    wait_settings.max_wait_time = 5.0;
-
-#ifndef _MADARA_NO_KARL_
-
-    knowledge.wait ("throughput > 0.0", wait_settings);
-    
-#else
-    utility::wait_true (knowledge, "throughput", wait_settings);
-
-#endif // _MADARA_NO_KARL_
-
-    knowledge.print (" done.\n");
-
-    // send the bytes per second in the throughput test
-    knowledge.print ("Sending final information to client...");
-
-#ifndef _MADARA_NO_KARL_
-
-    knowledge.evaluate (
-      "bytes_per_sec = #size (.ref_file) * #integer (throughput)");
-#else
-    knowledge.set ("bytes_per_sec",
-      knowledge.get ("throughput").to_integer () *
-      knowledge.get (".ref_file").size ());
-#endif // _MADARA_NO_KARL_
-
-    knowledge.print (" done.\n");
-  }
+    std::cerr << "Publisher is done. Check results on subscriber.\n";
+  } // end publisher
   else
   {
-    // client should always be started first
-    knowledge.print ("\nReady for latency test.\n");
+    // add a receive filter to keep track of latency
+    Profiler profiler;
+    settings.add_receive_filter (&profiler);
 
-    knowledge.set (ack, madara::knowledge::KnowledgeRecord::Integer (-1),
-      madara::knowledge::EvalSettings (false, true, false));
-    
-#ifndef _MADARA_NO_KARL_
+    // setup a knowledge base
+    knowledge::KnowledgeBase kb (host, settings);
 
-    // other processes wait for the publisher to send the goods
-    knowledge.wait ("latency_finished", wait_settings);
-    
-#else
-    utility::wait_true (knowledge, "latency_finished", wait_settings);
+    std::cerr << "Receiving for " << test_time << " s on " <<
+      transport::types_to_string (settings.type) << " transport\n";
 
-#endif // _MADARA_NO_KARL_
+    // subscriber lives the hard life (TM)
+    utility::sleep (test_time);
 
-    send_acks = false;
-    
-    // close transport so we add filters appropriate for throughput
-    knowledge.close_transport ();
-    settings.clear_receive_filters (madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES);
+    // stop the knowledge base from receiving anything else
+    kb.close_transport ();
 
-    settings.add_receive_filter (
-      madara::knowledge::KnowledgeRecord::ALL_FILE_TYPES,
-      count_received);
-    knowledge.attach_transport (knowledge.get_id (), settings);
-    
-    // signal that the client is ready for the throughput test
-    knowledge.print ("Ready for throughput test.\n");
-    knowledge.set ("ready_for_throughput");
-
-    // reset num_received and re-signal ready for throughput
-    knowledge.set (num_received, madara::knowledge::KnowledgeRecord::Integer (0));
-    knowledge.set ("ready_for_throughput");
-    
-#ifndef _MADARA_NO_KARL_
-
-    // other processes wait for the publisher to send the goods
-    knowledge.wait ("finished", wait_settings);
-    
-#else
-    utility::wait_true (knowledge, "finished", wait_settings);
-
-#endif // _MADARA_NO_KARL_
-
-    knowledge.print ("Finished latency and throughput tests.\n");
-
-    timer.elapsed_time (elapsed_time);
-
-    // set the elapsed nanoseconds
-    knowledge.set ("elapsed_time",
-      madara::knowledge::KnowledgeRecord::Integer (elapsed_time));
-    
-    // convert elapsed time from ns -> s and compute throughput
-    knowledge.print ("Calculating throughput...");
-    
-#ifndef _MADARA_NO_KARL_
-
-    knowledge.evaluate (
-      "elapsed_time *= 0.000000001 ;"
-      "elapsed_time > 0 => throughput = .num_received / elapsed_time");
-    
-#else
-    double elapsed_time = knowledge.get ("elapsed_time").to_double ();
-    elapsed_time *= 0.000000001;
-
-    if (elapsed_time > 0)
+    // print stats
+    if (profiler.received > 0)
     {
-      Integer num_received = knowledge.get (".num_received").to_integer ();
-      num_received /= elapsed_time;
-      knowledge.set ("throughput", num_received);
+      uint64_t received = profiler.received;
+      uint64_t avg_latency = profiler.total_latency / received;
+      uint64_t min_latency = profiler.min_latency;
+      uint64_t max_latency = profiler.max_latency;
+      data_size = (size_t) kb.get ("data").size ();
+      uint64_t data_transfered = (uint64_t) data_size * received;
+      double data_rate = (double)data_transfered / test_time;
+      double msg_rate = (double)received / test_time;
+
+      std::cerr << "Test: SUCCESS\n";
+      std::cerr << "Settings:\n";
+      std::cerr << "  Transport type: " <<
+        transport::types_to_string (settings.type) << "\n";
+      std::cerr << "  Data size: " << data_size << " B\n";
+      std::cerr << "  Test time: " << test_time << " s\n";
+      std::cerr << "Latency:\n";
+      std::cerr << "  Min: " << min_latency << " ns\n";
+      std::cerr << "  Avg: " << avg_latency << " ns\n";
+      std::cerr << "  Max: " << max_latency << " ns\n";
+      std::cerr << "Throughput:\n";
+      std::cerr << "  Messages received: " << received << "\n";
+      std::cerr << "  Message rate: " << msg_rate << " packets/s\n";
+      std::cerr << "  Data received: " << data_transfered << " B\n";
+      std::cerr << "  Data rate: " << data_rate << " B/s\n";
     }
-
-#endif // _MADARA_NO_KARL_
-
-    knowledge.print (" done.\n");
-    
-    // Wait for bytes per second from publisher
-    knowledge.print ("Awaiting final data from publisher...");
-
-#ifndef _MADARA_NO_KARL_
-
-    knowledge.wait ("bytes_per_sec", wait_settings);
-    
-#else
-    utility::wait_true (knowledge, "bytes_per_sec", wait_settings);
-
-#endif // _MADARA_NO_KARL_
-
-    knowledge.print (" done.\n");
+    else
+    {
+      std::cerr << "Subscriber received no data.\nTest: FAIL.\n";
+      return -1;
+    }
   }
 
-  knowledge.print ("\nNetwork profile for transport\n");
-  knowledge.print ("Latency (10 message test)\n");
-  knowledge.print ("  Minimum:   {min_latency} ns\n");
-  knowledge.print ("  Maximum:   {max_latency} ns\n");
-  knowledge.print ("  Average:   {avg_latency} ns\n");
-  knowledge.print ("Throughput ({elapsed_time}s blast test)\n");
-  knowledge.print ("  Messages:  {throughput} payloads/s\n");
-  knowledge.print ("  Data rate: {bytes_per_sec} B/s\n");
-
   return 0;
-}
-
-#endif
-
-#include <iostream>
-
-int main () {
-  std::cerr << "This test not currently supported" << std::endl;
-  return -1;
 }
