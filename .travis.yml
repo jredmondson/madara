@@ -156,8 +156,8 @@ script:
   - $MADARA_ROOT/bin/test_reasoning_throughput
   # test UDP Multicast networking performance and connectivity for 60s
   - echo "Testing multicast performance..."
-  - $MADARA_ROOT/bin/network_profiler -i 0 -s 1024 & $MADARA_ROOT/bin/network_profiler -i 0
+  - $MADARA_ROOT/bin/network_profiler -i 0 -s 1024 & $MADARA_ROOT/bin/network_profiler -i 1
   # test UDP Unicast networking performance and connectivity for 60s
-  - $MADARA_ROOT/bin/network_profiler -i 0 -s 1024 -u 127.0.0.1:30000 -u 127.0.0.1:30001 & $MADARA_ROOT/bin/network_profiler -i 0 -u 127.0.0.1:30001
+  - $MADARA_ROOT/bin/network_profiler -i 0 -s 1024 -u 127.0.0.1:30000 -u 127.0.0.1:30001 & $MADARA_ROOT/bin/network_profiler -i 1 -u 127.0.0.1:30001
 
 
