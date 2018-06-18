@@ -468,14 +468,14 @@ namespace madara { namespace knowledge { namespace rcw
 
     /// Check dirty status for given index, which is same as overall dirty
     /// status, since we don't track per character
-    bool is_dirty(size_t i) const
+    bool is_dirty(size_t) const
     {
       return impl().is_dirty();
     }
 
     /// Clear dirty status for given index, which is same as overall dirty
     /// status, since we don't track per character
-    bool clear_dirty(size_t i) const
+    bool clear_dirty(size_t) const
     {
       return impl().clear_dirty();
     }

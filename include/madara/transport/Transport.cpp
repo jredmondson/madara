@@ -665,7 +665,7 @@ process_received_update (
           i->first.c_str ());
       }
     }
-  
+
     const knowledge::KnowledgeMap & additionals = transport_context.get_records ();
 
     for (knowledge::KnowledgeMap::const_iterator i = additionals.begin ();
@@ -678,7 +678,7 @@ process_received_update (
       "%s:" \
       " Applying aggregate rebroadcast filters to %d records.\n",
       print_prefix, rebroadcast_records.size ());
-    
+
     // apply aggregate filters to the rebroadcast records
     if (settings.get_number_of_rebroadcast_aggregate_filters () > 0
       && rebroadcast_records.size () > 0)
@@ -697,7 +697,7 @@ process_received_update (
       "%s:" \
       " Returning to caller with %d rebroadcast records.\n",
       print_prefix, rebroadcast_records.size ());
-    
+
   }
   else
   {

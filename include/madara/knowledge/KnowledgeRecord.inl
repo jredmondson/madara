@@ -1067,25 +1067,25 @@ KnowledgeRecord::reset_value (void) noexcept
 inline void
 KnowledgeRecord::set_value (const KnowledgeRecord &new_value)
 {
-  uint64_t clock = this->clock;
-  uint32_t quality = this->write_quality;
-  uint32_t write_quality = this->write_quality;
+  uint64_t cur_clock = this->clock;
+  uint32_t cur_quality = this->write_quality;
+  uint32_t cur_write_quality = this->write_quality;
   *this = new_value;
-  this->clock = clock;
-  this->quality = quality;
-  this->write_quality = write_quality;
+  this->clock = cur_clock;
+  this->quality = cur_quality;
+  this->write_quality = cur_write_quality;
 }
 
 inline void
 KnowledgeRecord::set_value (KnowledgeRecord &&new_value)
 {
-  uint64_t clock = this->clock;
-  uint32_t quality = this->write_quality;
-  uint32_t write_quality = this->write_quality;
+  uint64_t cur_clock = this->clock;
+  uint32_t cur_quality = this->write_quality;
+  uint32_t cur_write_quality = this->write_quality;
   *this = std::move(new_value);
-  this->clock = clock;
-  this->quality = quality;
-  this->write_quality = write_quality;
+  this->clock = cur_clock;
+  this->quality = cur_quality;
+  this->write_quality = cur_write_quality;
 }
 
 // set the value_ to a string

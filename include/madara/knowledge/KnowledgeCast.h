@@ -270,10 +270,10 @@ inline auto knowledge_cast(const KnowledgeRecord &in, T &out) ->
     count = std::min(impl::resize_or_clear(out, count), count);
     std::copy_n (std::begin(*ints), count, std::begin(out));
   } else {
-    auto ints = impl::to_array<T>(in);
-    size_t count = ints.size();
+    auto ints_arr = impl::to_array<T>(in);
+    size_t count = ints_arr.size();
     count = std::min(impl::resize_or_clear(out, count), count);
-    std::copy_n (std::begin(ints), count, std::begin(out));
+    std::copy_n (std::begin(ints_arr), count, std::begin(out));
   }
   return out;
 }
