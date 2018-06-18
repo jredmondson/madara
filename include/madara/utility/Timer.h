@@ -2,7 +2,7 @@
 #define _MADARA_UTILITY_TIMER_H_
 
 #include <chrono>
-#include "inttypes.h"
+#include "IntTypes.h"
 
 namespace madara
 {

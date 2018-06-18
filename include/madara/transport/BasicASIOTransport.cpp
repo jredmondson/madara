@@ -15,7 +15,7 @@ namespace madara { namespace transport {
 
 namespace mcast = ip::multicast;
 
-const double BasicASIOTransport::default_read_hertz = 10.0;
+//const double BasicASIOTransport::default_read_hertz = 10.0;
 
 BasicASIOTransport::BasicASIOTransport (const std::string & id,
         knowledge::ThreadSafeContext & context,
@@ -222,9 +222,11 @@ BasicASIOTransport::setup_read_threads ()
   if (!settings_.no_receiving)
   {
     double hertz = settings_.read_thread_hertz;
-    if (hertz <= 0.0)
+    if (hertz < 0.0)
     {
-      hertz = default_read_hertz;
+      // we need to maintain backwards compatibility
+      // people should be capable of bursting reads especially
+      hertz = 0.0;
     }
 
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,

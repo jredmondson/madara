@@ -5824,6 +5824,14 @@ bool build_argument_list)
       }
       ++i;
     }
+    // is this a number literal? Handling this way allows for INT64_MIN
+    else if (i + 1 < input.size () && is_number (input[i + 1]))
+    {
+      handled = true;
+      // leaf node
+      number_insert (context, input, i, accumulated_precedence,
+        list, lastValidInput);
+    }
     // Negate
     else if (!lastValidInput)
       op = new Negate (context.get_logger ());
@@ -5831,11 +5839,14 @@ bool build_argument_list)
     else
       op = new Subtract (context.get_logger ());
 
-    // insert the op according to left-to-right relationships
-    lastValidInput = 0;
-    op->add_precedence (accumulated_precedence);
-    precedence_insert (context, op, list);
-    ++i;
+    if (op)
+    {
+      // insert the op according to left-to-right relationships
+      lastValidInput = 0;
+      op->add_precedence (accumulated_precedence);
+      precedence_insert (context, op, list);
+      ++i;
+    }
   }
   else if (input[i] == '*')
   {
@@ -6387,21 +6398,17 @@ madara::expression::Interpreter::interpret (
 
     if (i == last_i)
     {
-      if (input[i] == ')')
+      size_t start = i > 10 ? i - 10 : 0;
+      size_t end = input.size () - i > 10 ? i + 10 : input.size ();
+
+      std::string snippet = input.substr (start, end - start);
+
       {
-        madara_logger_log (context.get_logger (), logger::LOG_ERROR,
+        madara_logger_log (context.get_logger (), logger::LOG_MINOR,
           "madara::expression::Interpreter: "
-          "KARL COMPILE ERROR: "
-          "You have included too many closing parentheses in %s \n",
-          input.c_str ());
-      }
-      else
-      {
-        madara_logger_log (context.get_logger (), logger::LOG_ERROR,
-          "madara::expression::Interpreter: "
-          "KARL COMPILE ERROR: "
-          "Compilation is spinning at %d in %s. Char is %c\n",
-          i, input.c_str (), input[i]);
+          "KARL: "
+          "Compilation is spinning at %d in %s. Char is %c. Breaking out.\n",
+          (int)i, snippet.c_str (), input[i]);
       }
       break;
     }

@@ -26,14 +26,14 @@ int main (int, char **)
   std::cout << "Testing encode/decode from single buffer filter\n";
   for (size_t i = 0; i < messages.size (); ++i)
   {
-    int encode_length (0), decode_length (0);
+    int encode_length (0);
 
     // copy current message into the buffer
     strncpy ((char *)buffer, messages[i].c_str (), messages[i].size () + 1);
 
     // encode and then decode the buffer
     encode_length = filter.encode (buffer, (int)messages[i].size () + 1, 256);
-    decode_length = filter.decode (buffer, encode_length, 256);
+    filter.decode (buffer, encode_length, 256);
 
     // add decoded message to results
     results.push_back ((char *)buffer);
@@ -62,14 +62,14 @@ int main (int, char **)
   std::cout << "Testing encode/decode from paired buffer filter\n";
   for (size_t i = 0; i < messages.size (); ++i)
   {
-    int encode_length (0), decode_length (0);
+    int encode_length (0);
 
     // copy current message into the buffer
     strncpy ((char *)buffer, messages[i].c_str (), messages[i].size () + 1);
 
     // encode and then decode the buffer
     encode_length = filter.encode (buffer, (int)messages[i].size () + 1, 256);
-    decode_length = filter2.decode (buffer, encode_length, 256);
+    filter2.decode (buffer, encode_length, 256);
 
     // add decoded message to results
     results.push_back ((char *)buffer);

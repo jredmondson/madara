@@ -64,6 +64,13 @@ namespace madara
     };
 
     /**
+     * Converts a transport type enum to a string equivalent
+     * @param id  the id of the type to retrieve
+     * @return  the name of the registered transport
+     **/
+    MADARA_EXPORT std::string types_to_string (int id);
+
+    /**
      * Holds basic transport settings
      */
     class MADARA_EXPORT TransportSettings

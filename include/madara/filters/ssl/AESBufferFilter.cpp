@@ -8,7 +8,6 @@
 #include "AESBufferFilter.h"
 
 #include "madara/utility/Utility.h"
-#include "madara/utility/LogMacros.h"
 
 #include "madara/logger/GlobalLogger.h"
 
@@ -31,7 +30,7 @@ madara::filters::AESBufferFilter::AESBufferFilter (
   unsigned char * key, int key_length)
 : key_ (new unsigned char[32]), iv_ (new unsigned char[16])
 {
-  memcpy (key_.get_ptr (), key, 32);
+  memcpy (key_.get_ptr (), key, std::min (32, key_length));
   memset ((void *)iv_.get_ptr (), 0, 16);
 }
 

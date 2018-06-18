@@ -7,6 +7,54 @@
 namespace containers = madara::knowledge::containers;
 typedef madara::knowledge::KnowledgeRecord::Integer  Integer;
 
+std::string
+madara::transport::types_to_string (int id)
+{
+  if (NO_TRANSPORT == id)
+  {
+    return "None";
+  }
+  if (SPLICE == id)
+  {
+    return "Splice DDS";
+  }
+  if (NDDS == id)
+  {
+    return "RTI DDS";
+  }
+  if (UDP == id)
+  {
+    return "UDP";
+  }
+  if (TCP == id)
+  {
+    return "TCP (unsupported)";
+  }
+  if (MULTICAST == id)
+  {
+    return "UDP Multicast";
+  }
+  if (BROADCAST == id)
+  {
+    return "UDP Broadcast";
+  }
+  if (REGISTRY_SERVER == id)
+  {
+    return "UDP Registry Server";
+  }
+  if (REGISTRY_CLIENT == id)
+  {
+    return "UDP Registry Client";
+  }
+  if (ZMQ == id)
+  {
+    return "0MQ";
+  }
+
+  // otherwise, it's a custom transport
+  return "Custom";
+}
+
 madara::transport::TransportSettings::TransportSettings () : 
   write_domain (DEFAULT_DOMAIN), 
   read_threads (1),

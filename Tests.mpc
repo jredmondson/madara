@@ -454,23 +454,6 @@ project (Network_Counter_Filter) : using_madara, no_karl, no_xml, null_lock, usi
   }
 }
 
-project (Network_Throughput) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  exeout = $(MADARA_ROOT)/bin
-  exename = network_throughput
-  
-  requires += tests
-
-  Documentation_Files {
-  }
-  
-  Header_Files {
-  }
-
-  Source_Files {
-    tests/transports/network_throughput.cpp
-  }
-}
-
 project (Network_Profiler) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = network_profiler

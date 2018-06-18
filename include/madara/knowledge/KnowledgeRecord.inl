@@ -328,11 +328,11 @@ inline KnowledgeRecord
 
   if (type_ == INTEGER)
   {
-    record.set_value (int_value_);
+    record.set_value (-int_value_);
   }
   else if (type_ == DOUBLE)
   {
-    record.set_value (double_value_);
+    record.set_value (-double_value_);
   }
 
   return record;

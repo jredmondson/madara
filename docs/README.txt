@@ -30,17 +30,20 @@ MADARA HELP DOCUMENTATION INFORMATION
 
 2. GENERATING DEVELOPER DOCUMENTATION
 
-  2.1. KaRL
+  2.1. MADARA C++
 
-       The (K)nowledge (a)nd (R)easoning (L)anguage is a module of MADARA that
-       supports distributed knowledge and reasoning for real-time and
-       continuous systems. Generating documentation is as easy as typing the
-       following from the $MADARA_ROOT/docs directory in a terminal
-       ('cmd' in Windows):
+       The main documentation generation can be done with the following:
 
-         doxygen Doxyfile_KaRL
+         perl get_version.pl
+         doxygen Doxyfile_MADARA
 
-  2.2. KATS
+  2.2. MADARA Java 
+
+       The documentation for the Java port can be generated with the following:
+
+         javadoc -version -d java -sourcepath ../port/java/src -subpackages com.madara
+
+  2.3. KATS
 
        The (K)aRL (A)utomated (T)esting (S)uite is a module of MADARA that
        provides a distributed automated testing framework for blackbox or
@@ -61,7 +64,7 @@ MADARA HELP DOCUMENTATION INFORMATION
          $MADARA_ROOT/bin/kats_observer --help
          $MADARA_ROOT/bin/kats_sleep --help
 
-  2.3. MAML
+  2.4. MAML
 
        The (M)adara (A)ndroid (M)onkeyrunner (L)ibrary is a Python library for
        automating Android smart phone testing. The library provides an

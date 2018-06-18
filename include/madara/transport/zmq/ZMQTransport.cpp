@@ -10,7 +10,7 @@
 #include "madara/transport/Fragmentation.h"
 
 #include <iostream>
-#include "madara/utility/inttypes.h"
+#include "madara/utility/IntTypes.h"
 #include "ZMQContext.h"
 
 madara::transport::ZMQTransport::ZMQTransport (const std::string & id,
@@ -130,7 +130,7 @@ madara::transport::ZMQTransport::setup (void)
 
 
     int send_buff_size = 0;
-    int rcv_buff_size = 0;
+    //int rcv_buff_size = 0;
     int buff_size = settings_.queue_length;
     int timeout = 300;
     size_t opt_len = sizeof (int);
@@ -145,7 +145,7 @@ madara::transport::ZMQTransport::setup (void)
 
     if (result == 0)
     {
-      int result = zmq_getsockopt (
+      result = zmq_getsockopt (
         write_socket_, ZMQ_SNDBUF, (void *)&send_buff_size, &opt_len);
 
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -167,7 +167,7 @@ madara::transport::ZMQTransport::setup (void)
 
     if (result == 0)
     {
-      int result = zmq_getsockopt (
+      result = zmq_getsockopt (
         write_socket_, ZMQ_SNDTIMEO, (void *)&timeout, &opt_len);
 
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,

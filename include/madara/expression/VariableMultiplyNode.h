@@ -65,8 +65,6 @@ namespace madara
       
       /// holds a right hand side argument if it is not value_
       ComponentNode * rhs_;
-
-      /// Reference to context for variable retrieval
     };
   }
 }
