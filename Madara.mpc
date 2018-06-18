@@ -139,17 +139,17 @@ project (Madara_Version) : using_madara {
 project (Madara_Jar) : using_madara, port/java/using_java {
   requires += java
 
-  prebuild += "$(JAVA_HOME)/bin/javac" -sourcepath port/java/src port/java/src/com/madara/tests/*.java port/java/src/com/madara/*.java port/java/src/com/madara/util/*.java port/java/src/com/madara/transport/*.java port/java/src/com/madara/threads/*.java port/java/src/com/madara/transport/filters/*.java port/java/src/com/madara/containers/*.java
+  prebuild += "$(JAVA_HOME)/bin/javac" -sourcepath port/java/src port/java/src/ai/madara/tests/*.java port/java/src/ai/madara/*.java port/java/src/ai/madara/knowledge/*.java port/java/src/ai/madara/util/*.java port/java/src/ai/madara/transport/*.java port/java/src/ai/madara/threads/*.java port/java/src/ai/madara/transport/filters/*.java port/java/src/ai/madara/knowledge/containers/*.java
   postbuild += "$(JAVA_HOME)/bin/jar" cf lib/madara.jar -C port/java/src .
 
   Documentation_Files {
     port/java/src/*.java
-    port/java/src/com/madara/*.java
-    port/java/src/com/madara/util/*.java
-    port/java/src/com/madara/transport/*.java
-    port/java/src/com/madara/threads/*.java
-    port/java/src/com/madara/transport/filters/*.java
-    port/java/src/com/madara/containers/*.java
+    port/java/src/ai/madara/*.java
+    port/java/src/ai/madara/util/*.java
+    port/java/src/ai/madara/transport/*.java
+    port/java/src/ai/madara/threads/*.java
+    port/java/src/ai/madara/transport/filters/*.java
+    port/java/src/ai/madara/containers/*.java
   }
   
   Header_Files {

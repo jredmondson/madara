@@ -2,7 +2,7 @@ project (Documentation_MADARA_Java) : build_files {
 
   requires += docs java
 
-  prebuild = "$(JAVA_HOME)/bin/javadoc" -version -d java -sourcepath $(MADARA_ROOT)/port/java/src -subpackages com.madara
+  prebuild = "$(JAVA_HOME)/bin/javadoc" -version -d java -sourcepath $(MADARA_ROOT)/port/java/src -subpackages ai.madara
   
   custom_only = 1
   

@@ -239,7 +239,7 @@ threads::JavaThread::init_control_vars (knowledge::KnowledgeBase & control)
     "threads::JavaThread(%s)::init_control_vars:" \
     " Populating user control plane variables\n", name.c_str ());
 
-  // obtain fromPointer method for com.madara.containers.Integer
+  // obtain fromPointer method for ai.madara.knowledge.containers.Integer
   jclass i_class = madara::utility::java::find_class (env,
     "com/madara/containers/Integer");
   jmethodID fromPointerCall = env->GetStaticMethodID (i_class,

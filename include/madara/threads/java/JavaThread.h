@@ -56,14 +56,14 @@ namespace madara
       /**
        * Creates a JavaThread. The obj is checked for compliance before
        * returning a JavaThread.
-       * @param obj  a user-defined com.madara.threads.BaseThread object
+       * @param obj  a user-defined ai.madara.threads.BaseThread object
        **/
       static JavaThread * create (jobject obj);
 
       /**
        * Checks a Java object for compliance with
-       * com.madara.threads.BaseThread. Fills in class members if compliant.
-       * @param obj  a user-defined com.madara.threads.BaseThread object
+       * ai.madara.threads.BaseThread. Fills in class members if compliant.
+       * @param obj  a user-defined ai.madara.threads.BaseThread object
        **/
       bool check_compliance (jobject obj);
 
@@ -81,7 +81,7 @@ namespace madara
       virtual void init_control_vars (
         knowledge::KnowledgeBase & control);
 
-      /// the Java thread implementation of com.madara.threads.BaseThread
+      /// the Java thread implementation of ai.madara.threads.BaseThread
       jobject obj_;
       
       /// the class of the Java object obj_

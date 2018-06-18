@@ -41,7 +41,7 @@ MADARA HELP DOCUMENTATION INFORMATION
 
        The documentation for the Java port can be generated with the following:
 
-         javadoc -version -d java -sourcepath ../port/java/src -subpackages com.madara
+         javadoc -version -d java -sourcepath ../port/java/src -subpackages ai.madara
 
   2.3. KATS
 

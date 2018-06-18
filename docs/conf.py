@@ -49,7 +49,7 @@ extensions = [
 
 # apparently, readthedocs.io doesn't actually support the javasphinx module
 #javadoc_url_map = {
-#    'com.madara' : ('../port/java/src', 'javadoc8')
+#    'ai.madara' : ('../port/java/src', 'javadoc8')
 #}
 
 # Add any paths that contain templates here, relative to this directory.

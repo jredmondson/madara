@@ -1,6 +1,6 @@
 
-#ifndef _Included_com_madara_JNI
-#define _Included_com_madara_JNI
+#ifndef _Included_ai_madara_JNI
+#define _Included_ai_madara_JNI
 
 #include <jni.h>
 #include "madara/MadaraExport.h"
