@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ai.madara</groupId>
 	<artifactId>madara</artifactId>
-	<version>1.0.0</version>
-	<description>James to provide a fantastic description.</description>
+	<version>3.2.0</version>
+	<description>Provides distributed knowledge sharing services for multi-agent systems.</description>
 
 	<build>
 		<plugins>
