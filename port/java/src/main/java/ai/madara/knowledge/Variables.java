@@ -60,7 +60,7 @@ public class Variables extends MadaraJNI
   private native void jni_set(long cptr, String name, long record);
 
   /**
-   * {@link ai.madara.Variables Variables} should only be created from a pointer
+   * {@link ai.madara.knowledge.Variables Variables} should only be created from a pointer
    */
   private Variables()
   {
@@ -68,10 +68,10 @@ public class Variables extends MadaraJNI
   }
 
   /**
-   * Creates a {@link ai.madara.Variables Variables} from a pointer
+   * Creates a {@link ai.madara.knowledge.Variables Variables} from a pointer
    *
    * @param cptr C pointer to a Variables object
-   * @return new {@link ai.madara.Variables Variables}
+   * @return new {@link ai.madara.knowledge.Variables Variables}
    */
   public static Variables fromPointer(long cptr)
   {

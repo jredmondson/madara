@@ -71,10 +71,10 @@ public class Packet extends MadaraJNI
   }
 
   /**
-   * Creates a {@link ai.madara.Variables Variables} from a pointer
+   * Creates a {@link ai.madara.knowledge.Variables Variables} from a pointer
    *
    * @param cptr C pointer to a Variables object
-   * @return new {@link ai.madara.Variables Variables}
+   * @return new {@link ai.madara.knowledge.Variables Variables}
    */
   public static Packet fromPointer(long cptr)
   {
