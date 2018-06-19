@@ -92,10 +92,10 @@ madara::expression::CompositeSubtractNode::evaluate (
   knowledge::KnowledgeRecord left = left_->evaluate (settings);
   knowledge::KnowledgeRecord right = right_->evaluate (settings);
   
-    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "madara::expression::CompositeSubtractNode:evaluate: "
-      "%s - %s\n", left.to_string ().c_str (),
-      right.to_string ().c_str ());
+  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
+    "madara::expression::CompositeSubtractNode:evaluate: "
+    "%s - %s\n", left.to_string ().c_str (),
+    right.to_string ().c_str ());
 
   // note we do not check if left or right are null. This should be checked
   // during prune or an earlier phase. Evaluate is all about speed.
