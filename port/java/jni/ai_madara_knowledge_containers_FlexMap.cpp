@@ -17,7 +17,7 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1FlexMap__
 
 jlong JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1FlexMap__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   containers::FlexMap * result (0);
   containers::FlexMap * source = (containers::FlexMap *) cptr;
@@ -25,6 +25,14 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1FlexMap__J
   if (source)
   {
     result = new containers::FlexMap (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::toArray: "
+      "FlexMap object is released already");
   }
 
   return (jlong)result;
@@ -41,13 +49,21 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1freeFlexMap
 
 void JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1clear
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
     current->clear ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::clear: "
+      "FlexMap object is released already");
   }
 }
 
@@ -66,6 +82,14 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1erase
 
     env->ReleaseStringUTFChars (key, str_key);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::erase: "
+      "FlexMap object is released already");
+  }
 }
 
 void JNICALL
@@ -81,11 +105,19 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1setString
 
     env->ReleaseStringUTFChars (value, str_value);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::set: "
+      "FlexMap object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1setDouble
-  (JNIEnv *, jobject, jlong cptr, jdouble value)
+  (JNIEnv * env, jobject, jlong cptr, jdouble value)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
 
@@ -93,12 +125,20 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1setDouble
   {
     current->set ((double)value);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::setDouble: "
+      "FlexMap object is released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1set
-  (JNIEnv *, jobject, jlong cptr, jlong type, jlong value)
+  (JNIEnv * env, jobject, jlong cptr, jlong type, jlong value)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
 
@@ -151,6 +191,14 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1set
       }
     }
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::set: "
+      "FlexMap object is released already");
+  }
 }
 
 
@@ -158,7 +206,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
@@ -167,7 +215,11 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1getName
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::getName: "
+      "FlexMap object is released already");
   }
 
   return result;
@@ -196,6 +248,14 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1setName
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::setName: "
+      "FlexMap object is released already");
+  }
 }
 
 
@@ -214,22 +274,36 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1get
 
     env->ReleaseStringUTFChars (key, str_key);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::get: "
+      "FlexMap object is released already");
+  }
 
   return (jlong)result;
 }
 
 jlong JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1getIndex
-(JNIEnv *, jobject, jlong cptr, jint index)
+(JNIEnv * env, jobject, jlong cptr, jint index)
 {
   containers::FlexMap * result (0);
   containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
   {
-
     result = new containers::FlexMap ((*current)[index]);
-
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::getIndex: "
+      "FlexMap object is released already");
   }
 
   return (jlong)result;
@@ -237,7 +311,7 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1getIndex
 
 jlong JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1toRecord
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeRecord * result (0);
   containers::FlexMap * current = (containers::FlexMap *) cptr;
@@ -246,6 +320,14 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1toRecord
   {
     result = new KnowledgeRecord (current->to_record ());
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::toRecord: "
+      "FlexMap object is released already");
+  }
 
   return (jlong)result;
 }
@@ -253,7 +335,7 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1toRecord
 
 void JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1modify
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
 
@@ -261,11 +343,19 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1modify
   {
     current->modify ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::modify: "
+      "FlexMap object is released already");
+  }
 }
 
 jlong JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1toMapContainer
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   containers::FlexMap * current = (containers::FlexMap *) cptr;
   containers::Map * result = new containers::Map ();
@@ -273,6 +363,14 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1toMapContainer
   if (current)
   {
     current->to_container (*result);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::toContainer: "
+      "FlexMap object is released already");
   }
 
   return (jlong) result;
@@ -282,7 +380,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1getDelimiter
 (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   containers::FlexMap * current = (containers::FlexMap *) cptr;
 
   if (current)
@@ -291,7 +389,11 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1getDelimiter
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::getDelimiter: "
+      "FlexMap object is released already");
   }
 
   return result;
@@ -310,6 +412,14 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1setDelimiter
     current->set_delimiter (str_delimiter);
 
     env->ReleaseStringUTFChars (delimiter, str_delimiter);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::setDelimiter: "
+      "FlexMap object is released already");
   }
 }
 
@@ -348,13 +458,21 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1keys
     env->DeleteLocalRef (empty_string);
     env->DeleteWeakGlobalRef (string_class);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::keys: "
+      "FlexMap object is released already");
+  }
 
   return result;
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1setSettings
-(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::FlexMap * current = (containers::FlexMap *)cptr;
   knowledge::KnowledgeUpdateSettings * settings =
@@ -364,11 +482,19 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1setSettings
   {
     current->set_settings (*settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::setSettings: "
+      "FlexMap or settings objects are released already");
+  }
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1isTrue
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   containers::FlexMap * current = (containers::FlexMap *)cptr;
   bool result (true);
@@ -377,6 +503,14 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1isTrue
   {
     result = current->is_true ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::isTrue: "
+      "FlexMap object is released already");
+  }
 
   return result;
 }
@@ -384,7 +518,7 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1isTrue
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_FlexMap_jni_1isFalse
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   containers::FlexMap * current = (containers::FlexMap *)cptr;
   bool result (true);
@@ -392,6 +526,14 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1isFalse
   if (current)
   {
     result = current->is_false ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "FlexMap::isFalse: "
+      "FlexMap object is released already");
   }
 
   return result;

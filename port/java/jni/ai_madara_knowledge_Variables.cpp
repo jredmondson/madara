@@ -21,7 +21,8 @@ typedef knowledge::KnowledgeRecord      KnowledgeRecord;
 * Signature: (JJJ)J
 */
 jlong JNICALL
-Java_ai_madara_knowledge_Variables_jni_1evaluate__JJJ (JNIEnv *, jobject, jlong cptr, jlong expression, jlong evalSettings)
+Java_ai_madara_knowledge_Variables_jni_1evaluate__JJJ (
+  JNIEnv * env, jobject, jlong cptr, jlong expression, jlong evalSettings)
 {
   KnowledgeRecord * result (0);
   Variables * vars = (Variables *) cptr;
@@ -31,6 +32,15 @@ Java_ai_madara_knowledge_Variables_jni_1evaluate__JJJ (JNIEnv *, jobject, jlong 
   if (vars && compiled && settings)
   {
     result = new KnowledgeRecord (vars->evaluate (*compiled, *settings));
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Variables::evaluate: "
+      "Variables, CompiledExpression, or EvalSettings objects"
+      " are released already");
   }
 
   return (jlong) result;
@@ -42,7 +52,8 @@ Java_ai_madara_knowledge_Variables_jni_1evaluate__JJJ (JNIEnv *, jobject, jlong 
 * Signature: (JLjava/lang/String;)J
 */
 jlong JNICALL
-Java_ai_madara_knowledge_Variables_jni_1compile (JNIEnv *env, jobject, jlong cptr, jstring expression)
+Java_ai_madara_knowledge_Variables_jni_1compile (
+  JNIEnv *env, jobject, jlong cptr, jstring expression)
 {
   const char *nativeExpression = env->GetStringUTFChars (expression, 0);
 
@@ -55,6 +66,14 @@ Java_ai_madara_knowledge_Variables_jni_1compile (JNIEnv *env, jobject, jlong cpt
 
     env->ReleaseStringUTFChars (expression, nativeExpression);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Variables::compile: "
+      "Variables objects are released already");
+  }
 
   return (jlong) result;
 }
@@ -65,7 +84,8 @@ Java_ai_madara_knowledge_Variables_jni_1compile (JNIEnv *env, jobject, jlong cpt
 * Signature: (JLjava/lang/String;)J
 */
 jlong JNICALL
-Java_ai_madara_knowledge_Variables_jni_1get (JNIEnv * env, jobject, jlong cptr, jstring var)
+Java_ai_madara_knowledge_Variables_jni_1get (
+  JNIEnv * env, jobject, jlong cptr, jstring var)
 {
   const char * nativeVar = env->GetStringUTFChars (var, 0);
 
@@ -75,6 +95,14 @@ Java_ai_madara_knowledge_Variables_jni_1get (JNIEnv * env, jobject, jlong cptr, 
   if (vars)
   {
     result = new KnowledgeRecord (vars->get (nativeVar));
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Variables::get: "
+      "Variables objects are released already");
   }
 
   env->ReleaseStringUTFChars (var, nativeVar);
@@ -87,7 +115,8 @@ Java_ai_madara_knowledge_Variables_jni_1get (JNIEnv * env, jobject, jlong cptr, 
 * Signature: (JLjava/lang/String;J)V
 */
 void JNICALL
-Java_ai_madara_knowledge_Variables_jni_1set (JNIEnv *env, jobject, jlong cptr, jstring var, jlong recordPtr)
+Java_ai_madara_knowledge_Variables_jni_1set (
+  JNIEnv * env, jobject, jlong cptr, jstring var, jlong recordPtr)
 {
   const char *nativeVar = env->GetStringUTFChars (var, 0);
 
@@ -97,6 +126,14 @@ Java_ai_madara_knowledge_Variables_jni_1set (JNIEnv *env, jobject, jlong cptr, j
   if (vars)
   {
     vars->set (nativeVar, *record);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Variables::set: "
+      "Variables objects are released already");
   }
 
   env->ReleaseStringUTFChars (var, nativeVar);

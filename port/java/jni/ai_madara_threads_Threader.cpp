@@ -71,7 +71,7 @@ Java_ai_madara_threads_Threader_jni_1Threader__
  */
 jlong JNICALL
 Java_ai_madara_threads_Threader_jni_1Threader__J
-  (JNIEnv *, jobject, jlong kb)
+  (JNIEnv * env, jobject, jlong kb)
 {
   Threader * result (0);
   KnowledgeBase * knowledge = (KnowledgeBase *) kb;
@@ -79,6 +79,14 @@ Java_ai_madara_threads_Threader_jni_1Threader__J
   if (knowledge)
   {
     result = new Threader (*knowledge);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Threader::copyConstructor: "
+      "Threader object is released already");
   }
 
   return (jlong) result;
@@ -116,6 +124,14 @@ Java_ai_madara_threads_Threader_jni_1run
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Threader::run: "
+      "Threader object is released already");
+  }
 }
 
 /*
@@ -138,6 +154,14 @@ Java_ai_madara_threads_Threader_jni_1runhz
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Threader::runhz: "
+      "Threader object is released already");
+  }
 }
 
 /*
@@ -159,6 +183,14 @@ Java_ai_madara_threads_Threader_jni_1pauseThread
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Threader::pauseThread: "
+      "Threader object is released already");
+  }
 }
 
 /*
@@ -168,13 +200,21 @@ Java_ai_madara_threads_Threader_jni_1pauseThread
  */
 void JNICALL
 Java_ai_madara_threads_Threader_jni_1pause
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Threader * current = (Threader *)cptr;
 
   if (current)
   {
     current->pause ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Threader::pause: "
+      "Threader object is released already");
   }
 }
 
@@ -197,6 +237,14 @@ Java_ai_madara_threads_Threader_jni_1waitThread
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Threader::waitThread: "
+      "Threader object is released already");
+  }
 }
 
 /*
@@ -206,13 +254,21 @@ Java_ai_madara_threads_Threader_jni_1waitThread
  */
 void JNICALL
 Java_ai_madara_threads_Threader_jni_1wait
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Threader * current = (Threader *)cptr;
 
   if (current)
   {
     current->wait ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Threader::wait: "
+      "Threader object is released already");
   }
 }
 
@@ -235,6 +291,14 @@ Java_ai_madara_threads_Threader_jni_1terminateThread
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Threader::terminateThread: "
+      "Threader object is released already");
+  }
 }
 
 /*
@@ -244,13 +308,21 @@ Java_ai_madara_threads_Threader_jni_1terminateThread
  */
 void JNICALL
 Java_ai_madara_threads_Threader_jni_1terminate
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Threader * current = (Threader *)cptr;
 
   if (current)
   {
     current->terminate ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Threader::terminate: "
+      "Threader object is released already");
   }
 }
 
@@ -273,6 +345,14 @@ Java_ai_madara_threads_Threader_jni_1resumeThread
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Threader::resumeThread: "
+      "Threader object is released already");
+  }
 }
 
 /*
@@ -282,12 +362,20 @@ Java_ai_madara_threads_Threader_jni_1resumeThread
  */
 void JNICALL
 Java_ai_madara_threads_Threader_jni_1resume
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Threader * current = (Threader *)cptr;
 
   if (current)
   {
     current->resume ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Threader::resume: "
+      "Threader object is released already");
   }
 }

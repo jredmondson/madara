@@ -73,7 +73,7 @@ Java_ai_madara_knowledge_containers_Vector_jni_1Vector__
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1Vector__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Vector * result (0);
   Vector * source = (Vector *) cptr;
@@ -81,6 +81,14 @@ Java_ai_madara_knowledge_containers_Vector_jni_1Vector__J
   if (source)
   {
     result = new Vector (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::copyConstructor: "
+      "Vector object is released already");
   }
 
   return (jlong) result;
@@ -117,6 +125,14 @@ Java_ai_madara_knowledge_containers_Vector_jni_1setString__JILjava_lang_String_2
 
     env->ReleaseStringUTFChars (value, str_value);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::setString: "
+      "Vector object is released already");
+  }
 }
 
 /*
@@ -126,13 +142,21 @@ Java_ai_madara_knowledge_containers_Vector_jni_1setString__JILjava_lang_String_2
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1setDouble__JID
-  (JNIEnv *, jobject, jlong cptr, jint index, jdouble value)
+  (JNIEnv * env, jobject, jlong cptr, jint index, jdouble value)
 {
   Vector * current = (Vector *) cptr;
 
   if (current)
   {
     current->set (index, value);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::setDouble: "
+      "Vector object is released already");
   }
 }
 
@@ -143,7 +167,7 @@ Java_ai_madara_knowledge_containers_Vector_jni_1setDouble__JID
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1set__JIJJ
-  (JNIEnv *, jobject, jlong cptr, jint index, jlong type, jlong value)
+  (JNIEnv * env, jobject, jlong cptr, jint index, jlong type, jlong value)
 {
   Vector * current = (Vector *) cptr;
 
@@ -195,11 +219,19 @@ Java_ai_madara_knowledge_containers_Vector_jni_1set__JIJJ
       }
     }
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::set: "
+      "Vector object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1pushbackRecord
-(JNIEnv *, jobject, jlong cptr, jlong value_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong value_ptr)
 {
   Vector * current = (Vector *)cptr;
 
@@ -209,12 +241,20 @@ Java_ai_madara_knowledge_containers_Vector_jni_1pushbackRecord
 
     current->push_back (*record);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::pushbackRecord: "
+      "Vector object is released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1pushbackLong
-(JNIEnv *, jobject, jlong cptr, jlong value)
+(JNIEnv * env, jobject, jlong cptr, jlong value)
 {
   Vector * current = (Vector *)cptr;
 
@@ -222,17 +262,33 @@ Java_ai_madara_knowledge_containers_Vector_jni_1pushbackLong
   {
     current->push_back (madara::knowledge::KnowledgeRecord (value));
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::pushbackLong: "
+      "Vector object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1pushbackDouble
-(JNIEnv *, jobject, jlong cptr, jdouble value)
+(JNIEnv * env, jobject, jlong cptr, jdouble value)
 {
   Vector * current = (Vector *)cptr;
 
   if (current)
   {
     current->push_back (madara::knowledge::KnowledgeRecord ((double)value));
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::pushbackDouble: "
+      "Vector object is released already");
   }
 }
 
@@ -258,6 +314,14 @@ Java_ai_madara_knowledge_containers_Vector_jni_1pushbackDoubleArray
 
     if (isCopy)
       env->ReleaseDoubleArrayElements (data, dblArray, JNI_ABORT);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::pushbackDoubleArray: "
+      "Vector object is released already");
   }
 }
 
@@ -289,6 +353,14 @@ Java_ai_madara_knowledge_containers_Vector_jni_1pushbackLongArray
     if (isCopy)
       env->ReleaseLongArrayElements (data, longArray, JNI_ABORT);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::pushbackLongArray: "
+      "Vector object is released already");
+  }
 }
 
 /*
@@ -308,6 +380,14 @@ Java_ai_madara_knowledge_containers_Vector_jni_1pushbackString
     current->push_back (madara::knowledge::KnowledgeRecord (nativeData));
     env->ReleaseStringUTFChars (data, nativeData);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::pushbackString: "
+      "Vector object is released already");
+  }
 }
 
 
@@ -320,7 +400,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   Vector * current = (Vector *) cptr;
 
   if (current)
@@ -329,7 +409,11 @@ Java_ai_madara_knowledge_containers_Vector_jni_1getName
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::getName: "
+      "Vector object is released already");
   }
 
   return result;
@@ -363,6 +447,14 @@ Java_ai_madara_knowledge_containers_Vector_jni_1setName
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::setName: "
+      "Vector object is released already");
+  }
 }
 
 /*
@@ -372,7 +464,7 @@ Java_ai_madara_knowledge_containers_Vector_jni_1setName
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1get
-  (JNIEnv *, jobject, jlong cptr, jint index)
+  (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   madara::knowledge::KnowledgeRecord * result (0);
   Vector * current = (Vector *) cptr;
@@ -380,6 +472,14 @@ Java_ai_madara_knowledge_containers_Vector_jni_1get
   if (current)
   {
     result = new madara::knowledge::KnowledgeRecord (current->to_record (index));
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::get: "
+      "Vector object is released already");
   }
 
   return (jlong) result;
@@ -392,13 +492,21 @@ Java_ai_madara_knowledge_containers_Vector_jni_1get
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1resize
-  (JNIEnv *, jobject, jlong cptr, jlong length)
+  (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
   Vector * current = (Vector *) cptr;
 
   if (current)
   {
     current->resize (length, true);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::resize: "
+      "Vector object is released already");
   }
 }
 
@@ -409,7 +517,7 @@ Java_ai_madara_knowledge_containers_Vector_jni_1resize
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1size
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
   Vector * current = (Vector *) cptr;
@@ -417,6 +525,14 @@ Java_ai_madara_knowledge_containers_Vector_jni_1size
   if (current)
   {
     result = (jlong) current->size ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::size: "
+      "Vector object is released already");
   }
 
   return (jlong) result;
@@ -429,7 +545,7 @@ Java_ai_madara_knowledge_containers_Vector_jni_1size
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1toRecord
-  (JNIEnv *, jobject, jlong cptr, jint index)
+  (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   madara::knowledge::KnowledgeRecord * result (0);
   Vector * current = (Vector *) cptr;
@@ -437,6 +553,14 @@ Java_ai_madara_knowledge_containers_Vector_jni_1toRecord
   if (current)
   {
     result = new madara::knowledge::KnowledgeRecord (current->to_record (index));
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::toRecord: "
+      "Vector object is released already");
   }
 
   return (jlong) result;
@@ -480,6 +604,15 @@ Java_ai_madara_knowledge_containers_Vector_jni_1toArray
       }
     }
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->DeleteWeakGlobalRef (kr_class);
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::toArray: "
+      "Vector object is released already");
+  }
 
   env->DeleteWeakGlobalRef (kr_class);
 
@@ -488,13 +621,13 @@ Java_ai_madara_knowledge_containers_Vector_jni_1toArray
 
 
 /*
- * Class:     ai_madara_knowledge_containers_StringVector
+ * Class:     ai_madara_knowledge_containers_Vector
  * Method:    modify
  * Signature: (J)V
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1modify
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Vector * current = (Vector *) cptr;
 
@@ -502,16 +635,24 @@ Java_ai_madara_knowledge_containers_Vector_jni_1modify
   {
     current->modify ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::modify: "
+      "Vector object is released already");
+  }
 }
 
 /*
- * Class:     ai_madara_knowledge_containers_StringVector
+ * Class:     ai_madara_knowledge_containers_Vector
  * Method:    modifyIndex
  * Signature: (JI)V
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1modifyIndex
-  (JNIEnv *, jobject, jlong cptr, jint index)
+  (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   Vector * current = (Vector *) cptr;
 
@@ -519,11 +660,19 @@ Java_ai_madara_knowledge_containers_Vector_jni_1modifyIndex
   {
     current->modify ( (size_t)index);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::modifyIndex: "
+      "Vector object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1setSettings
-(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::Vector * current = (containers::Vector *)cptr;
   knowledge::KnowledgeUpdateSettings * settings =
@@ -533,11 +682,19 @@ Java_ai_madara_knowledge_containers_Vector_jni_1setSettings
   {
     current->set_settings (*settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::setSettings: "
+      "Vector or settings objects are released already");
+  }
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1isTrue
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   containers::Vector * current = (containers::Vector *)cptr;
   bool result (true);
@@ -546,13 +703,21 @@ Java_ai_madara_knowledge_containers_Vector_jni_1isTrue
   {
     result = current->is_true ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::isTrue: "
+      "Vector object is released already");
+  }
 
   return result;
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Vector_jni_1isFalse
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   containers::Vector * current = (containers::Vector *)cptr;
   bool result (true);
@@ -560,6 +725,14 @@ Java_ai_madara_knowledge_containers_Vector_jni_1isFalse
   if (current)
   {
     result = current->is_false ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Vector::isFalse: "
+      "Vector object is released already");
   }
 
   return result;

@@ -19,7 +19,7 @@ Java_ai_madara_filters_CounterFilter_jni_1CounterFilter__
 
 jdouble JNICALL
 Java_ai_madara_filters_CounterFilter_jni_1getThroughput
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   CounterFilter * current = (CounterFilter *) cptr;
   jdouble result (0);
@@ -28,6 +28,14 @@ Java_ai_madara_filters_CounterFilter_jni_1getThroughput
   {
     result = current->get_throughput ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "CounterFilter::getThroughput: "
+      "CounterFilter object is released already");
+  }
 
   return result;
 }
@@ -35,7 +43,7 @@ Java_ai_madara_filters_CounterFilter_jni_1getThroughput
 
 void JNICALL
 Java_ai_madara_filters_CounterFilter_jni_1addReceiveFilterTo
-  (JNIEnv *, jobject, jlong cptr, jlong qosCptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong qosCptr)
 {
   CounterFilter * current = (CounterFilter *) cptr;
   QoSTransportSettings * settings = (QoSTransportSettings *) qosCptr;
@@ -44,11 +52,19 @@ Java_ai_madara_filters_CounterFilter_jni_1addReceiveFilterTo
   {
     settings->add_receive_filter (current);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "CounterFilter::addReceiveFilterTo: "
+      "CounterFilter or settings objects are released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_filters_CounterFilter_jni_1addSendFilterTo
-  (JNIEnv *, jobject, jlong cptr, jlong qosCptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong qosCptr)
 {
   CounterFilter * current = (CounterFilter *)cptr;
   QoSTransportSettings * settings = (QoSTransportSettings *)qosCptr;
@@ -57,12 +73,20 @@ Java_ai_madara_filters_CounterFilter_jni_1addSendFilterTo
   {
     settings->add_send_filter (current);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "CounterFilter::addSendFilterTo: "
+      "CounterFilter or settings objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_filters_CounterFilter_jni_1addRebroadcastFilterTo
-(JNIEnv *, jobject, jlong cptr, jlong qosCptr)
+(JNIEnv * env, jobject, jlong cptr, jlong qosCptr)
 {
   CounterFilter * current = (CounterFilter *)cptr;
   QoSTransportSettings * settings = (QoSTransportSettings *)qosCptr;
@@ -71,12 +95,20 @@ Java_ai_madara_filters_CounterFilter_jni_1addRebroadcastFilterTo
   {
     settings->add_rebroadcast_filter (current);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "CounterFilter::addRebroadcastFilterTo: "
+      "CounterFilter or settings objects are released already");
+  }
 }
 
 
 jlong JNICALL
 Java_ai_madara_filters_CounterFilter_jni_1getCount
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   CounterFilter * current = (CounterFilter *)cptr;
   Integer result (0);
@@ -85,6 +117,14 @@ Java_ai_madara_filters_CounterFilter_jni_1getCount
   {
     result = current->get_count ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "CounterFilter::getCount: "
+      "CounterFilter object is released already");
+  }
 
   return result;
 }
@@ -92,7 +132,7 @@ Java_ai_madara_filters_CounterFilter_jni_1getCount
 
 jlong JNICALL
 Java_ai_madara_filters_CounterFilter_jni_1getElapsed
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   CounterFilter * current = (CounterFilter *)cptr;
   Integer result (0);
@@ -100,6 +140,14 @@ Java_ai_madara_filters_CounterFilter_jni_1getElapsed
   if (current)
   {
     result = current->get_elapsed ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "CounterFilter::getElapsed: "
+      "CounterFilter object is released already");
   }
 
   return result;

@@ -69,7 +69,7 @@ Java_ai_madara_knowledge_containers_Integer_jni_1Integer__
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1Integer__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   containers::Integer * result (0);
   containers::Integer * source = (containers::Integer *) cptr;
@@ -77,6 +77,14 @@ Java_ai_madara_knowledge_containers_Integer_jni_1Integer__J
   if (source)
   {
     result = new containers::Integer (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::copyConstructor: "
+      "Integer object is released already");
   }
 
   return (jlong) result;
@@ -101,13 +109,21 @@ Java_ai_madara_knowledge_containers_Integer_jni_1freeInteger
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1set
-  (JNIEnv *, jobject, jlong cptr, jlong value)
+  (JNIEnv * env, jobject, jlong cptr, jlong value)
 {
   containers::Integer * current = (containers::Integer *) cptr;
 
   if (current)
   {
     *current = value;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::set: "
+      "Integer object is released already");
   }
 }
 
@@ -118,7 +134,7 @@ Java_ai_madara_knowledge_containers_Integer_jni_1set
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1inc
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
   containers::Integer * current = (containers::Integer *) cptr;
@@ -126,6 +142,14 @@ Java_ai_madara_knowledge_containers_Integer_jni_1inc
   if (current)
   {
     result = ++ (*current);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::inc: "
+      "Integer object is released already");
   }
 
   return result;
@@ -138,7 +162,7 @@ Java_ai_madara_knowledge_containers_Integer_jni_1inc
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1dec
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
   containers::Integer * current = (containers::Integer *) cptr;
@@ -146,6 +170,14 @@ Java_ai_madara_knowledge_containers_Integer_jni_1dec
   if (current)
   {
     result = -- (*current);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::dec: "
+      "Integer object is released already");
   }
 
   return result;
@@ -158,7 +190,7 @@ Java_ai_madara_knowledge_containers_Integer_jni_1dec
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1incValue
-  (JNIEnv *, jobject, jlong cptr, jlong value)
+  (JNIEnv * env, jobject, jlong cptr, jlong value)
 {
   jlong result (0);
   containers::Integer * current = (containers::Integer *) cptr;
@@ -166,6 +198,14 @@ Java_ai_madara_knowledge_containers_Integer_jni_1incValue
   if (current)
   {
     result = ( (*current) += value);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::incValue: "
+      "Integer object is released already");
   }
 
   return result;
@@ -178,7 +218,7 @@ Java_ai_madara_knowledge_containers_Integer_jni_1incValue
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1decValue
-  (JNIEnv *, jobject, jlong cptr, jlong value)
+  (JNIEnv * env, jobject, jlong cptr, jlong value)
 {
   jlong result (0);
   containers::Integer * current = (containers::Integer *) cptr;
@@ -186,6 +226,14 @@ Java_ai_madara_knowledge_containers_Integer_jni_1decValue
   if (current)
   {
     result = ( (*current) -= value);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::decValue: "
+      "Integer object is released already");
   }
 
   return result;
@@ -200,7 +248,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   containers::Integer * current = (containers::Integer *) cptr;
 
   if (current)
@@ -209,7 +257,11 @@ Java_ai_madara_knowledge_containers_Integer_jni_1getName
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::getName: "
+      "Integer object is released already");
   }
 
   return result;
@@ -244,6 +296,14 @@ Java_ai_madara_knowledge_containers_Integer_jni_1setName
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::setName: "
+      "Integer object is released already");
+  }
 }
 
 
@@ -256,7 +316,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   containers::Integer * current = (containers::Integer *) cptr;
 
   if (current)
@@ -265,7 +325,11 @@ Java_ai_madara_knowledge_containers_Integer_jni_1toString
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::toString: "
+      "Integer object is released already");
   }
 
   return result;
@@ -279,14 +343,22 @@ Java_ai_madara_knowledge_containers_Integer_jni_1toString
  */
 jdouble JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1toInteger
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0.0);
   containers::Integer * current = (containers::Integer *) cptr;
 
   if (current)
   {
-    result = current->to_double ();
+    result = current->to_integer ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::toInteger: "
+      "Integer object is released already");
   }
 
   return result;
@@ -300,7 +372,7 @@ Java_ai_madara_knowledge_containers_Integer_jni_1toInteger
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1toLong
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
   containers::Integer * current = (containers::Integer *) cptr;
@@ -309,13 +381,21 @@ Java_ai_madara_knowledge_containers_Integer_jni_1toLong
   {
     result = current->to_integer ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::toLong: "
+      "Integer object is released already");
+  }
 
   return result;
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1modify
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   containers::Integer * current = (containers::Integer *) cptr;
 
@@ -323,11 +403,19 @@ Java_ai_madara_knowledge_containers_Integer_jni_1modify
   {
     current->modify ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::modify: "
+      "Integer object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1setSettings
-(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::Integer * current = (containers::Integer *)cptr;
   knowledge::KnowledgeUpdateSettings * settings =
@@ -337,11 +425,19 @@ Java_ai_madara_knowledge_containers_Integer_jni_1setSettings
   {
     current->set_settings (*settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::setSettings: "
+      "Integer or settings objects are released already");
+  }
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1isTrue
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   containers::Integer * current = (containers::Integer *)cptr;
   bool result (true);
@@ -350,6 +446,14 @@ Java_ai_madara_knowledge_containers_Integer_jni_1isTrue
   {
     result = current->is_true ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::isTrue: "
+      "Integer object is released already");
+  }
 
   return result;
 }
@@ -357,7 +461,7 @@ Java_ai_madara_knowledge_containers_Integer_jni_1isTrue
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Integer_jni_1isFalse
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   containers::Integer * current = (containers::Integer *)cptr;
   bool result (true);
@@ -365,6 +469,14 @@ Java_ai_madara_knowledge_containers_Integer_jni_1isFalse
   if (current)
   {
     result = current->is_false ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Integer::isFalse: "
+      "Integer object is released already");
   }
 
   return result;

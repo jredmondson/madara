@@ -7,6 +7,7 @@
 
 #include "ai_madara_transport_TransportContext.h"
 #include "madara/transport/TransportContext.h"
+#include "madara_jni.h"
 
 #include <string>
 
@@ -36,6 +37,14 @@ Java_ai_madara_transport_TransportContext_jni_1addRecord
   {
     context->add_record (nativeName, *rec);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "TransportContext::addRecord: "
+      "TransportContext or record objects are released already");
+  }
 
   env->ReleaseStringUTFChars (name, nativeName);
 }
@@ -47,12 +56,20 @@ Java_ai_madara_transport_TransportContext_jni_1addRecord
  */
 void JNICALL
 Java_ai_madara_transport_TransportContext_jni_1clearRecords
-  (JNIEnv *, jclass, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   TransportContext * context = (TransportContext *) cptr;
 
   if (context)
     context->clear_records ();
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "TransportContext::clearRecords: "
+      "TransportContext object is released already");
+  }
 }
 
 /*
@@ -62,13 +79,21 @@ Java_ai_madara_transport_TransportContext_jni_1clearRecords
  */
 jlong JNICALL
 Java_ai_madara_transport_TransportContext_jni_1getCurrentTime
-  (JNIEnv *, jclass, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   jlong result (0);
   TransportContext * context = (TransportContext *) cptr;
 
   if (context)
     result = context->get_current_time ();
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "TransportContext::getCurrentTime: "
+      "TransportContext object is released already");
+  }
 
   return result;
 }
@@ -82,7 +107,7 @@ jstring JNICALL
 Java_ai_madara_transport_TransportContext_jni_1getDomain
   (JNIEnv * env, jclass, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   TransportContext * context = (TransportContext *) cptr;
 
   if (context)
@@ -91,7 +116,11 @@ Java_ai_madara_transport_TransportContext_jni_1getDomain
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "TransportContext::getDomain: "
+      "TransportContext object is released already");
   }
 
   return result;
@@ -104,7 +133,7 @@ Java_ai_madara_transport_TransportContext_jni_1getDomain
  */
 jlong JNICALL
 Java_ai_madara_transport_TransportContext_jni_1getMessageTime
-  (JNIEnv *, jclass, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   jlong result (0);
   TransportContext * context = (TransportContext *) cptr;
@@ -112,6 +141,14 @@ Java_ai_madara_transport_TransportContext_jni_1getMessageTime
   if (context)
   {
     result = context->get_message_time ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "TransportContext::getMessageTime: "
+      "TransportContext object is released already");
   }
 
   return result;
@@ -124,7 +161,7 @@ Java_ai_madara_transport_TransportContext_jni_1getMessageTime
  */
 jlong JNICALL
 Java_ai_madara_transport_TransportContext_jni_1getOperation
-  (JNIEnv *, jclass, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   jlong result (0);
   TransportContext * context = (TransportContext *) cptr;
@@ -132,6 +169,14 @@ Java_ai_madara_transport_TransportContext_jni_1getOperation
   if (context)
   {
     result = context->get_operation ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "TransportContext::getOperation: "
+      "TransportContext object is released already");
   }
 
   return result;
@@ -146,7 +191,7 @@ jstring JNICALL
 Java_ai_madara_transport_TransportContext_jni_1getOriginator
   (JNIEnv * env, jclass, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   TransportContext * context = (TransportContext *) cptr;
 
   if (context)
@@ -155,7 +200,11 @@ Java_ai_madara_transport_TransportContext_jni_1getOriginator
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "TransportContext::getOriginator: "
+      "TransportContext object is released already");
   }
 
   return result;
@@ -168,7 +217,7 @@ Java_ai_madara_transport_TransportContext_jni_1getOriginator
  */
 jlong JNICALL
 Java_ai_madara_transport_TransportContext_jni_1getReceiveBandwidth
-  (JNIEnv *, jclass, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   jlong result (0);
   TransportContext * context = (TransportContext *) cptr;
@@ -176,6 +225,14 @@ Java_ai_madara_transport_TransportContext_jni_1getReceiveBandwidth
   if (context)
   {
     result = context->get_receive_bandwidth ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "TransportContext::getReceiveBandwidth: "
+      "TransportContext object is released already");
   }
 
   return result;
@@ -200,7 +257,7 @@ Java_ai_madara_transport_TransportContext_jni_1getRecords
  */
 jlong JNICALL
 Java_ai_madara_transport_TransportContext_jni_1getSendBandwidth
-  (JNIEnv *, jclass, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   jlong result (0);
   TransportContext * context = (TransportContext *) cptr;
@@ -208,6 +265,14 @@ Java_ai_madara_transport_TransportContext_jni_1getSendBandwidth
   if (context)
   {
     result = context->get_send_bandwidth ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "TransportContext::getSendBandwidth: "
+      "TransportContext object is released already");
   }
 
   return result;

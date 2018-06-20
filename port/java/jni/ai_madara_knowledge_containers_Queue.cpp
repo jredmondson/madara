@@ -71,7 +71,7 @@ Java_ai_madara_knowledge_containers_Queue_jni_1Queue__
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1Queue__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   containers::Queue * result (0);
   containers::Queue * source = (containers::Queue *) cptr;
@@ -79,6 +79,14 @@ Java_ai_madara_knowledge_containers_Queue_jni_1Queue__J
   if (source)
   {
     result = new containers::Queue (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::copyConstructor: "
+      "Queue object is released already");
   }
 
   return (jlong) result;
@@ -103,7 +111,7 @@ Java_ai_madara_knowledge_containers_Queue_jni_1freeQueue
  */
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1enqueue
-  (JNIEnv *, jobject, jlong cptr, jlong record_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong record_ptr)
 {
   jboolean result (false);
   containers::Queue * current = (containers::Queue *)cptr;
@@ -118,6 +126,14 @@ Java_ai_madara_knowledge_containers_Queue_jni_1enqueue
       result = current->enqueue (*record);
     }
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::enqueue: "
+      "Queue object is released already");
+  }
 
   return result;
 }
@@ -129,7 +145,7 @@ Java_ai_madara_knowledge_containers_Queue_jni_1enqueue
  */
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1enqueueDouble
-  (JNIEnv *, jobject, jlong cptr, jdouble value)
+  (JNIEnv * env, jobject, jlong cptr, jdouble value)
 {
   jboolean result (false);
   containers::Queue * current = (containers::Queue *)cptr;
@@ -137,6 +153,14 @@ Java_ai_madara_knowledge_containers_Queue_jni_1enqueueDouble
   if (current)
   {
     result = current->enqueue (KnowledgeRecord (value));
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::enqueuDouble: "
+      "Queue object is released already");
   }
 
   return result;
@@ -149,7 +173,7 @@ Java_ai_madara_knowledge_containers_Queue_jni_1enqueueDouble
  */
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1enqueueLong
-  (JNIEnv *, jobject, jlong cptr, jlong value)
+  (JNIEnv * env, jobject, jlong cptr, jlong value)
 {
   jboolean result (false);
   containers::Queue * current = (containers::Queue *)cptr;
@@ -157,6 +181,14 @@ Java_ai_madara_knowledge_containers_Queue_jni_1enqueueLong
   if (current)
   {
     result = current->enqueue (KnowledgeRecord (Integer (value)));
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::enqueueLong: "
+      "Queue object is released already");
   }
 
   return result;
@@ -182,6 +214,14 @@ Java_ai_madara_knowledge_containers_Queue_jni_1enqueueString
 
     env->ReleaseStringUTFChars (value, str_value);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::enqueueString: "
+      "Queue object is released already");
+  }
 
   return result;
 }
@@ -193,7 +233,7 @@ Java_ai_madara_knowledge_containers_Queue_jni_1enqueueString
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1dequeue
-  (JNIEnv *, jobject, jlong cptr, jboolean wait)
+  (JNIEnv * env, jobject, jlong cptr, jboolean wait)
 {
   jlong result (0);
   containers::Queue * current = (containers::Queue *)cptr;
@@ -201,6 +241,14 @@ Java_ai_madara_knowledge_containers_Queue_jni_1dequeue
   if (current)
   {
     result = (jlong) new KnowledgeRecord (current->dequeue (wait));
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::dequeue: "
+      "Queue object is released already");
   }
 
   return result;
@@ -213,7 +261,7 @@ Java_ai_madara_knowledge_containers_Queue_jni_1dequeue
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1inspect
-  (JNIEnv *, jobject, jlong cptr, jint position)
+  (JNIEnv * env, jobject, jlong cptr, jint position)
 {
   jlong result (0);
   containers::Queue * current = (containers::Queue *)cptr;
@@ -221,6 +269,14 @@ Java_ai_madara_knowledge_containers_Queue_jni_1inspect
   if (current)
   {
     result = (jlong) new KnowledgeRecord (current->inspect (position));
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::inspect: "
+      "Queue object is released already");
   }
 
   return result;
@@ -243,6 +299,14 @@ Java_ai_madara_knowledge_containers_Queue_jni_1getName
   if (current)
   {
     result = env->NewStringUTF (current->get_name ().c_str ());
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::getName: "
+      "Queue object is released already");
   }
 
   return result;
@@ -278,6 +342,14 @@ Java_ai_madara_knowledge_containers_Queue_jni_1setName
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::setName: "
+      "Queue object is released already");
+  }
 }
 
 /*
@@ -287,7 +359,7 @@ Java_ai_madara_knowledge_containers_Queue_jni_1setName
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1size
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
   containers::Queue * current = (containers::Queue *)cptr;
@@ -295,6 +367,14 @@ Java_ai_madara_knowledge_containers_Queue_jni_1size
   if (current)
   {
     result = (jlong) current->size ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::size: "
+      "Queue object is released already");
   }
 
   return result;
@@ -307,7 +387,7 @@ Java_ai_madara_knowledge_containers_Queue_jni_1size
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1count
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
   containers::Queue * current = (containers::Queue *)cptr;
@@ -315,6 +395,14 @@ Java_ai_madara_knowledge_containers_Queue_jni_1count
   if (current)
   {
     result = (jlong) current->count ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::count: "
+      "Queue object is released already");
   }
 
   return result;
@@ -327,13 +415,21 @@ Java_ai_madara_knowledge_containers_Queue_jni_1count
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1resize
-  (JNIEnv *, jobject, jlong cptr, jlong new_size)
+  (JNIEnv * env, jobject, jlong cptr, jlong new_size)
 {
   containers::Queue * current = (containers::Queue *)cptr;
 
   if (current)
   {
     current->resize (new_size);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::resize: "
+      "Queue object is released already");
   }
 }
 
@@ -344,7 +440,7 @@ Java_ai_madara_knowledge_containers_Queue_jni_1resize
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1clear
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   containers::Queue * current = (containers::Queue *)cptr;
 
@@ -352,11 +448,19 @@ Java_ai_madara_knowledge_containers_Queue_jni_1clear
   {
     current->clear ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::clear: "
+      "Queue object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1setSettings
-(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::Queue * current = (containers::Queue *)cptr;
   knowledge::KnowledgeUpdateSettings * settings =
@@ -365,5 +469,13 @@ Java_ai_madara_knowledge_containers_Queue_jni_1setSettings
   if (current && settings)
   {
     current->set_settings (*settings);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Queue::setSettings: "
+      "Queue or settings objects are released already");
   }
 }

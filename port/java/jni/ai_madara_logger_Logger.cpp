@@ -1,5 +1,6 @@
 #include "ai_madara_logger_Logger.h"
 #include "madara/logger/Logger.h"
+#include "madara_jni.h"
 
 namespace logger = madara::logger;
 typedef logger::Logger  Logger;
@@ -21,7 +22,7 @@ Java_ai_madara_logger_Logger_jni_1freeLogger
 
 void JNICALL
 Java_ai_madara_logger_Logger_jni_1setLevel
-  (JNIEnv *, jobject, jlong cptr, jint level)
+  (JNIEnv * env, jobject, jlong cptr, jint level)
 {
   Logger * current = (Logger *)cptr;
 
@@ -29,12 +30,20 @@ Java_ai_madara_logger_Logger_jni_1setLevel
   {
     current->set_level ((int)level);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Logger::setLevel: "
+      "Logger object is released already");
+  }
 }
 
 
 jint JNICALL
 Java_ai_madara_logger_Logger_jni_1getLevel
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jint result (0);
   Logger * current = (Logger *)cptr;
@@ -42,6 +51,14 @@ Java_ai_madara_logger_Logger_jni_1getLevel
   if (current)
   {
     result = (jint)current->get_level ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Logger::getLevel: "
+      "Logger object is released already");
   }
 
   return result;
@@ -52,7 +69,7 @@ jstring JNICALL
 Java_ai_madara_logger_Logger_jni_1getTag
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   Logger * current = (Logger *)cptr;
 
   if (current)
@@ -61,7 +78,11 @@ Java_ai_madara_logger_Logger_jni_1getTag
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Logger::getTag: "
+      "Logger object is released already");
   }
 
   return result;
@@ -82,12 +103,20 @@ Java_ai_madara_logger_Logger_jni_1setTag
 
     env->ReleaseStringUTFChars (tag, str_tag);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Logger::setTag: "
+      "Logger object is released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_logger_Logger_jni_1addTerm
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Logger * current = (Logger *)cptr;
 
@@ -95,12 +124,20 @@ Java_ai_madara_logger_Logger_jni_1addTerm
   {
     current->add_term ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Logger::addTerm: "
+      "Logger object is released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_logger_Logger_jni_1addSyslog
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Logger * current = (Logger *)cptr;
 
@@ -108,18 +145,34 @@ Java_ai_madara_logger_Logger_jni_1addSyslog
   {
     current->add_syslog ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Logger::addSysLog: "
+      "Logger object is released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_logger_Logger_jni_1clear
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Logger * current = (Logger *)cptr;
 
   if (current)
   {
     current->clear ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Logger::clear: "
+      "Logger object is released already");
   }
 }
 
@@ -138,6 +191,14 @@ Java_ai_madara_logger_Logger_jni_1addFile
 
     env->ReleaseStringUTFChars (filename, str_filename);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Logger::addFile: "
+      "Logger object is released already");
+  }
 }
 
 void JNICALL
@@ -153,6 +214,14 @@ Java_ai_madara_logger_Logger_jni_1log
     current->log ((jint)level, str_message);
 
     env->ReleaseStringUTFChars (message, str_message);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Logger::log: "
+      "Logger object is released already");
   }
 }
 
@@ -173,5 +242,13 @@ Java_ai_madara_logger_Logger_jni_1setTimestampFormat
     current->set_timestamp_format (str_format);
 
     env->ReleaseStringUTFChars (format, str_format);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Logger::setTimestampFormat: "
+      "Logger or timestamp format objects are released already");
   }
 }

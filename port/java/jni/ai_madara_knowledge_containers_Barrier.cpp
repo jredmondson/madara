@@ -72,7 +72,7 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1Barrier__
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1Barrier__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Barrier * result (0);
   Barrier * source = (Barrier *) cptr;
@@ -80,6 +80,14 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1Barrier__J
   if (source)
   {
     result = new Barrier (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::copyConstructor: "
+      "Barrier object is released already");
   }
 
   return (jlong) result;
@@ -106,12 +114,20 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1freeBarrier
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1set
-  (JNIEnv *, jobject, jlong cptr, jlong value)
+  (JNIEnv * env, jobject, jlong cptr, jlong value)
 {
   Barrier * current = (Barrier *) cptr;
 
   if (current)
     *current = value;
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::set: "
+      "Barrier object is released already");
+  }
 }
 
 
@@ -124,7 +140,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   Barrier * current = (Barrier *) cptr;
 
   if (current)
@@ -133,7 +149,11 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1getName
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::getName: "
+      "Barrier object is released already");
   }
 
   return result;
@@ -168,6 +188,14 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1setName
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::setName: "
+      "Barrier object is released already");
+  }
 }
 
 
@@ -180,7 +208,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   Barrier * current = (Barrier *) cptr;
 
   if (current)
@@ -189,7 +217,11 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1toString
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::toString: "
+      "Barrier object is released already");
   }
 
   return result;
@@ -202,7 +234,7 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1toString
  */
 jdouble JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1toDouble
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0.0);
 
@@ -210,6 +242,14 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1toDouble
   if (current)
   {
     result = current->to_double ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::toDouble: "
+      "Barrier object is released already");
   }
 
   return result;
@@ -223,7 +263,7 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1toDouble
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1toLong
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
 
@@ -231,6 +271,14 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1toLong
   if (current)
   {
     result = current->to_integer ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::toLong: "
+      "Barrier object is released already");
   }
 
   return result;
@@ -244,13 +292,21 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1toLong
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1next
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Barrier * current = (Barrier *) cptr;
 
   if (current)
   {
     current->next ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::next: "
+      "Barrier object is released already");
   }
 }
 
@@ -262,7 +318,7 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1next
  */
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1isDone
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jboolean result (0);
   Barrier * current = (Barrier *) cptr;
@@ -270,6 +326,14 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1isDone
   if (current)
   {
     result = current->is_done ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::isDone: "
+      "Barrier object is released already");
   }
 
   return result;
@@ -283,13 +347,21 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1isDone
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1modify
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Barrier * current = (Barrier *) cptr;
 
   if (current)
   {
     current->modify ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::modify: "
+      "Barrier object is released already");
   }
 }
 
@@ -301,7 +373,7 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1modify
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1resize
-  (JNIEnv *, jobject, jlong cptr, jint id, jint participants)
+  (JNIEnv * env, jobject, jlong cptr, jint id, jint participants)
 {
   Barrier * current = (Barrier *) cptr;
 
@@ -309,11 +381,19 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1resize
   {
     current->resize (id, participants);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::resize: "
+      "Barrier object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1setSettings
-(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   Barrier * current = (Barrier *)cptr;
   knowledge::KnowledgeUpdateSettings * settings =
@@ -323,11 +403,19 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1setSettings
   {
     current->set_settings (*settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::setSettings: "
+      "Barrier or settings objects are released already");
+  }
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1isTrue
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   Barrier * current = (Barrier *)cptr;
   bool result (true);
@@ -336,6 +424,14 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1isTrue
   {
     result = current->is_true ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::isTrue: "
+      "Barrier object is released already");
+  }
 
   return result;
 }
@@ -343,7 +439,7 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1isTrue
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Barrier_jni_1isFalse
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   Barrier * current = (Barrier *)cptr;
   bool result (true);
@@ -351,6 +447,14 @@ Java_ai_madara_knowledge_containers_Barrier_jni_1isFalse
   if (current)
   {
     result = current->is_false ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Barrier::isFalse: "
+      "Barrier object is released already");
   }
 
   return result;

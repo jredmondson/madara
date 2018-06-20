@@ -83,7 +83,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1QoSTransportSettings__
  */
 jlong JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1QoSTransportSettings__J
-  (JNIEnv *, jobject, jlong old)
+  (JNIEnv * env, jobject, jlong old)
 {
   jlong result (0);
   QoSTransportSettings * source = (QoSTransportSettings *) old;
@@ -91,6 +91,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1QoSTransportSettings__J
   if (source)
   {
     result = (jlong) new QoSTransportSettings (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::copyConstructor: "
+      "QoSTransportSettings object is released already");
   }
 
   return result;
@@ -118,7 +126,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1freeQoSTransportSettings
 */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1addBufferFilter
-(JNIEnv *, jobject, jlong cptr, jlong filter)
+(JNIEnv * env, jobject, jlong cptr, jlong filter)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
   BufferFilter * buffer_filter = (BufferFilter *)filter;
@@ -126,6 +134,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addBufferFilter
   if (settings && buffer_filter)
   {
     settings->add_filter (buffer_filter);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::addBufferFilter: "
+      "QoSTransportSettings or BufferFilter objects are released already");
   }
 }
 
@@ -136,7 +152,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addBufferFilter
 */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1addBufferFilterObj
-(JNIEnv *, jobject, jlong cptr, jobject filter)
+(JNIEnv * env, jobject, jlong cptr, jobject filter)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
   JavaBufferFilter * buffer_filter = new JavaBufferFilter (
@@ -145,6 +161,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addBufferFilterObj
   if (settings && buffer_filter)
   {
     settings->add_filter (buffer_filter);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::addBufferFilter: "
+      "QoSTransportSettings or BufferFilter objects are released already");
   }
 }
 
@@ -155,7 +179,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addBufferFilterObj
 */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1clearBufferFilters
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -169,6 +193,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1clearBufferFilters
   {
     settings->clear_buffer_filters ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::clearBufferFilters: "
+      "QoSTransportSettings object is released already");
+  }
 }
 
 /*
@@ -178,7 +210,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1clearBufferFilters
 */
 jint JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1getNumberOfBufferFilters
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
   jint result (0);
@@ -192,6 +224,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getNumberOfBufferFilters
   if (settings)
   {
     result = (jint)settings->get_number_of_buffer_filters ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::getNumberOfBufferFilters: "
+      "QoSTransportSettings object is released already");
   }
 
   return result;
@@ -217,6 +257,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1saveQoS
 
     env->ReleaseStringUTFChars (filename, nativeFilename);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::saveQoS: "
+      "QoSTransportSettings or filename object is released already");
+  }
 }
 
 void JNICALL
@@ -238,6 +286,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1loadQoS
 
     env->ReleaseStringUTFChars (filename, nativeFilename);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::loadQoS: "
+      "QoSTransportSettings object is released already");
+  }
 }
 
 /*
@@ -247,7 +303,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1loadQoS
  */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1addRebroadcastRecordFilter__JILai_madara_transport_filters_RecordFilter_2
-  (JNIEnv *, jobject, jlong cptr, jint type, jobject filter)
+  (JNIEnv * env, jobject, jlong cptr, jint type, jobject filter)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -261,6 +317,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addRebroadcastRecordFilter__J
   {
     settings->add_rebroadcast_filter ( (uint32_t)type, filter);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::addRebroadcastFilter: "
+      "QoSTransportSettings or filter objects are released already");
+  }
 }
 
 /*
@@ -270,7 +334,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addRebroadcastRecordFilter__J
  */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1addRebroadcastAggregateFilter__JLai_madara_transport_filters_AggregateFilter_2
-  (JNIEnv *, jobject, jlong cptr, jobject filter)
+  (JNIEnv * env, jobject, jlong cptr, jobject filter)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -284,6 +348,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addRebroadcastAggregateFilter
   {
     settings->add_rebroadcast_filter (filter);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::addRebroadcastAggregateFilter: "
+      "QoSTransportSettings or filter objects are released already");
+  }
 }
 
 /*
@@ -293,7 +365,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addRebroadcastAggregateFilter
  */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1addSendRecordFilter__JILai_madara_transport_filters_RecordFilter_2
-  (JNIEnv *, jobject, jlong cptr, jint type, jobject filter)
+  (JNIEnv * env, jobject, jlong cptr, jint type, jobject filter)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -307,6 +379,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addSendRecordFilter__JILai_ma
   {
     settings->add_send_filter ( (uint32_t)type, filter);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::addSendRecordFilter: "
+      "QoSTransportSettings or filter objects are released already");
+  }
 }
 
 /*
@@ -316,7 +396,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addSendRecordFilter__JILai_ma
  */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1addSendAggregateFilter__JLai_madara_transport_filters_AggregateFilter_2
-  (JNIEnv *, jobject, jlong cptr, jobject filter)
+  (JNIEnv * env, jobject, jlong cptr, jobject filter)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -330,6 +410,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addSendAggregateFilter__JLai_
   {
     settings->add_send_filter (filter);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::addSendAggregateRecordFilter: "
+      "QoSTransportSettings or filter objects are released already");
+  }
 }
 
 /*
@@ -339,7 +427,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addSendAggregateFilter__JLai_
  */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1addReceiveRecordFilter__JILai_madara_transport_filters_RecordFilter_2
-  (JNIEnv *, jobject, jlong cptr, jint type, jobject filter)
+  (JNIEnv * env, jobject, jlong cptr, jint type, jobject filter)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -353,6 +441,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addReceiveRecordFilter__JILai
   {
     settings->add_receive_filter ( (uint32_t)type, filter);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::addReceiveRecordFilter: "
+      "QoSTransportSettings or filter objects are released already");
+  }
 }
 
 /*
@@ -362,7 +458,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addReceiveRecordFilter__JILai
  */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1addReceiveAggregateFilter__JLai_madara_transport_filters_AggregateFilter_2
-  (JNIEnv *, jobject, jlong cptr, jobject filter)
+  (JNIEnv * env, jobject, jlong cptr, jobject filter)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -376,6 +472,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addReceiveAggregateFilter__JL
   {
     settings->add_receive_filter (filter);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::addReceiveAggregateFilter: "
+      "QoSTransportSettings or filter objects are released already");
+  }
 }
 
 /*
@@ -385,7 +489,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addReceiveAggregateFilter__JL
 */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1setRebroadcastTtl
-  (JNIEnv *, jobject, jlong cptr, jint ttl)
+  (JNIEnv * env, jobject, jlong cptr, jint ttl)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -399,6 +503,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1setRebroadcastTtl
   {
     settings->set_rebroadcast_ttl ( (unsigned char)ttl);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::addReceiveAggregateFilter: "
+      "QoSTransportSettings object is released already");
+  }
 }
 
 /*
@@ -408,7 +520,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1setRebroadcastTtl
 */
 jint JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1getRebroadcastTtl
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jint result (0);
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
@@ -423,6 +535,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getRebroadcastTtl
   {
     result = (jint) settings->get_rebroadcast_ttl ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::getRebroadcastTtl: "
+      "QoSTransportSettings object is released already");
+  }
 
   return result;
 }
@@ -434,7 +554,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getRebroadcastTtl
 */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1enableParticipantTtl
-  (JNIEnv *, jobject, jlong cptr, jint ttl)
+  (JNIEnv * env, jobject, jlong cptr, jint ttl)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -448,6 +568,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1enableParticipantTtl
   {
     settings->enable_participant_ttl ( (unsigned char)ttl);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::enableParticipantTtl: "
+      "QoSTransportSettings object is released already");
+  }
 }
 
 /*
@@ -456,7 +584,8 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1enableParticipantTtl
 * Signature: (J)I
 */
 jint JNICALL
-Java_ai_madara_transport_QoSTransportSettings_jni_1gettParticpantTtl (JNIEnv *, jobject, jlong cptr)
+Java_ai_madara_transport_QoSTransportSettings_jni_1gettParticpantTtl (
+  JNIEnv * env, jobject, jlong cptr)
 {
   jint result (0);
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
@@ -471,6 +600,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1gettParticpantTtl (JNIEnv *, 
   {
     result = (jint) settings->get_participant_ttl ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::getParticipantTtl: "
+      "QoSTransportSettings object is released already");
+  }
 
   return result;
 }
@@ -483,7 +620,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1gettParticpantTtl (JNIEnv *, 
 */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1setSendBandwidthLimit (
-  JNIEnv *, jobject, jlong cptr, jint limit)
+  JNIEnv * env, jobject, jlong cptr, jint limit)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
@@ -497,6 +634,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1setSendBandwidthLimit (
   {
     settings->set_send_bandwidth_limit (limit);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::setSendBandwidthLimit: "
+      "QoSTransportSettings object is released already");
+  }
 }
 
 /*
@@ -505,7 +650,8 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1setSendBandwidthLimit (
 * Signature: (J)I
 */
 jint JNICALL
-Java_ai_madara_transport_QoSTransportSettings_jni_1getSendBandwidthLimit (JNIEnv *, jobject, jlong cptr)
+Java_ai_madara_transport_QoSTransportSettings_jni_1getSendBandwidthLimit (
+  JNIEnv * env, jobject, jlong cptr)
 {
   jint result (0);
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
@@ -520,6 +666,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getSendBandwidthLimit (JNIEnv
   {
     result = (jint) settings->get_send_bandwidth_limit ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::getSendBandwidthLimit: "
+      "QoSTransportSettings object is released already");
+  }
 
   return result;
 }
@@ -531,13 +685,21 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getSendBandwidthLimit (JNIEnv
 */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1setTotalBandwidthLimit
-  (JNIEnv *, jobject, jlong cptr, jint limit)
+  (JNIEnv * env, jobject, jlong cptr, jint limit)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
   if (settings)
   {
     settings->set_total_bandwidth_limit (limit);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::setTotalBandwidthLimit: "
+      "QoSTransportSettings object is released already");
   }
 }
 
@@ -548,7 +710,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1setTotalBandwidthLimit
 */
 jint JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1getTotalBandwidthLimit
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jint result (0);
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
@@ -556,6 +718,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getTotalBandwidthLimit
   if (settings)
   {
     result = (jint) settings->get_total_bandwidth_limit ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::getTotalBandwidthLimit: "
+      "QoSTransportSettings object is released already");
   }
 
   return result;
@@ -568,13 +738,21 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getTotalBandwidthLimit
 */
 void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1setDeadline
-  (JNIEnv *, jobject, jlong cptr, jint limit)
+  (JNIEnv * env, jobject, jlong cptr, jint limit)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
 
   if (settings)
   {
     settings->set_deadline (limit);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::setDeadline: "
+      "QoSTransportSettings object is released already");
   }
 }
 
@@ -585,7 +763,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1setDeadline
 */
 jint JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1getDeadline
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jint result (0);
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
@@ -593,6 +771,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getDeadline
   if (settings)
   {
     result = (jint) settings->get_deadline ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::getDeadline: "
+      "QoSTransportSettings object is released already");
   }
 
   return result;
@@ -614,6 +800,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addTrustedPeer
   {
     settings->add_trusted_peer (host);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::addTrustedPeer: "
+      "QoSTransportSettings object is released already");
+  }
 
   env->ReleaseStringUTFChars (jhost, host);
 }
@@ -634,6 +828,14 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addBannedPeer
   {
     settings->add_banned_peer (host);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::addBannedPeer: "
+      "QoSTransportSettings object is released already");
+  }
 
   env->ReleaseStringUTFChars (jhost, host);
 }
@@ -645,7 +847,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addBannedPeer
  */
  void JNICALL
 Java_ai_madara_transport_QoSTransportSettings_jni_1updateDropRate
-  (JNIEnv *, jobject, jlong cptr,
+  (JNIEnv * env, jobject, jlong cptr,
    jdouble drop_rate, jint drop_type, jint burstamount)
 {
   QoSTransportSettings * settings = (QoSTransportSettings *)cptr;
@@ -654,5 +856,13 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1updateDropRate
   {
     settings->update_drop_rate (drop_rate, (int)drop_type,
       (uint64_t)burstamount);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "QoSTransportSettings::updateDropRate: "
+      "QoSTransportSettings object is released already");
   }
 }

@@ -72,7 +72,7 @@ Java_ai_madara_knowledge_containers_Map_jni_1Map__
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Map_jni_1Map__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   containers::Map * result (0);
   containers::Map * source = (containers::Map *) cptr;
@@ -81,6 +81,15 @@ Java_ai_madara_knowledge_containers_Map_jni_1Map__J
   {
     result = new containers::Map (*source);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::copyConstructor: "
+      "Map object is released already");
+  }
+
 
   return (jlong) result;
 }
@@ -104,13 +113,21 @@ Java_ai_madara_knowledge_containers_Map_jni_1freeMap
 */
 void JNICALL
 Java_ai_madara_knowledge_containers_Map_jni_1clear
-(JNIEnv *, jobject, jlong cptr, jboolean clear_variables)
+(JNIEnv * env, jobject, jlong cptr, jboolean clear_variables)
 {
   containers::Map * current = (containers::Map *) cptr;
 
   if (current)
   {
     current->clear (clear_variables);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::clear: "
+      "Map object is released already");
   }
 }
 
@@ -132,6 +149,14 @@ Java_ai_madara_knowledge_containers_Map_jni_1erase
     current->erase (str_key);
 
     env->ReleaseStringUTFChars (key, str_key);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::erase: "
+      "Map object is released already");
   }
 }
 
@@ -155,6 +180,14 @@ Java_ai_madara_knowledge_containers_Map_jni_1setString__JLjava_lang_String_2Ljav
     env->ReleaseStringUTFChars (key, str_key);
     env->ReleaseStringUTFChars (value, str_value);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::setString: "
+      "Map object is released already");
+  }
 }
 
 /*
@@ -175,6 +208,14 @@ Java_ai_madara_knowledge_containers_Map_jni_1setDouble__JLjava_lang_String_2D
     current->set (str_key, (double) value);
 
     env->ReleaseStringUTFChars (key, str_key);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::setDouble: "
+      "Map object is released already");
   }
 }
 
@@ -242,6 +283,14 @@ Java_ai_madara_knowledge_containers_Map_jni_1set__JLjava_lang_String_2JJ
 
     env->ReleaseStringUTFChars (key, str_key);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::set: "
+      "Map object is released already");
+  }
 }
 
 /*
@@ -253,7 +302,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Map_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   containers::Map * current = (containers::Map *) cptr;
 
   if (current)
@@ -262,7 +311,11 @@ Java_ai_madara_knowledge_containers_Map_jni_1getName
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::getName: "
+      "Map object is released already");
   }
 
   return result;
@@ -296,6 +349,14 @@ Java_ai_madara_knowledge_containers_Map_jni_1setName
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::setName: "
+      "Map object is released already");
+  }
 }
 
 /*
@@ -317,6 +378,14 @@ Java_ai_madara_knowledge_containers_Map_jni_1get
     result = new knowledge::KnowledgeRecord ( (*current) [str_key]);
 
     env->ReleaseStringUTFChars (key, str_key);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::get: "
+      "Map object is released already");
   }
 
   return (jlong) result;
@@ -342,19 +411,35 @@ Java_ai_madara_knowledge_containers_Map_jni_1toRecord
 
     env->ReleaseStringUTFChars (key, str_key);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::toRecord: "
+      "Map object is released already");
+  }
 
   return (jlong) result;
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Map_jni_1modify
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   containers::Map * current = (containers::Map *) cptr;
 
   if (current)
   {
     current->modify ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::modify: "
+      "Map object is released already");
   }
 }
 
@@ -377,6 +462,14 @@ Java_ai_madara_knowledge_containers_Map_jni_1modifyIndex
 
     env->ReleaseStringUTFChars (key, str_key);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::modifyIndex: "
+      "Map object is released already");
+  }
 }
 
 
@@ -384,7 +477,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Map_jni_1getDelimiter
 (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   containers::Map * current = (containers::Map *) cptr;
 
   if (current)
@@ -393,7 +486,11 @@ Java_ai_madara_knowledge_containers_Map_jni_1getDelimiter
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::getDelimiter: "
+      "Map object is released already");
   }
 
   return result;
@@ -413,6 +510,14 @@ Java_ai_madara_knowledge_containers_Map_jni_1setDelimiter
     current->set_delimiter (str_delimiter);
 
     env->ReleaseStringUTFChars (delimiter, str_delimiter);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::setDelimiter: "
+      "Map object is released already");
   }
 }
 
@@ -451,6 +556,14 @@ Java_ai_madara_knowledge_containers_Map_jni_1keys
     env->DeleteLocalRef (empty_string);
     env->DeleteWeakGlobalRef (string_class);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::keys: "
+      "Map object is released already");
+  }
 
   return result;
 }
@@ -459,7 +572,7 @@ Java_ai_madara_knowledge_containers_Map_jni_1keys
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Map_jni_1sync
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   containers::Map * current = (containers::Map *) cptr;
 
@@ -467,11 +580,19 @@ Java_ai_madara_knowledge_containers_Map_jni_1sync
   {
     current->sync_keys ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::sync: "
+      "Map object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Map_jni_1setSettings
-(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::Map * current = (containers::Map *)cptr;
   knowledge::KnowledgeUpdateSettings * settings =
@@ -481,11 +602,19 @@ Java_ai_madara_knowledge_containers_Map_jni_1setSettings
   {
     current->set_settings (*settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::setSettings: "
+      "Map or settings objects are released already");
+  }
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Map_jni_1isTrue
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   containers::Map * current = (containers::Map *)cptr;
   bool result (true);
@@ -494,6 +623,14 @@ Java_ai_madara_knowledge_containers_Map_jni_1isTrue
   {
     result = current->is_true ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::isTrue: "
+      "Map object is released already");
+  }
 
   return result;
 }
@@ -501,7 +638,7 @@ Java_ai_madara_knowledge_containers_Map_jni_1isTrue
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Map_jni_1isFalse
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   containers::Map * current = (containers::Map *)cptr;
   bool result (true);
@@ -509,6 +646,14 @@ Java_ai_madara_knowledge_containers_Map_jni_1isFalse
   if (current)
   {
     result = current->is_false ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Map::isFalse: "
+      "Map object is released already");
   }
 
   return result;

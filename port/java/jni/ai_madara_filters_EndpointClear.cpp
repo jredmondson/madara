@@ -18,7 +18,7 @@ Java_ai_madara_filters_EndpointClear_jni_1EndpointClear
 
 void JNICALL
 Java_ai_madara_filters_EndpointClear_jni_1addReceiveFilterTo
-(JNIEnv *, jobject, jlong cptr, jlong qosCptr)
+(JNIEnv * env, jobject, jlong cptr, jlong qosCptr)
 {
   EndpointClear * current = (EndpointClear *)cptr;
   QoSTransportSettings * settings = (QoSTransportSettings *)qosCptr;
@@ -27,11 +27,19 @@ Java_ai_madara_filters_EndpointClear_jni_1addReceiveFilterTo
   {
     settings->add_receive_filter (current);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EndpointClear::addReceiveFilterTo: "
+      "EndpointClear or settings objects are released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_filters_EndpointClear_jni_1addSendFilterTo
-(JNIEnv *, jobject, jlong cptr, jlong qosCptr)
+(JNIEnv * env, jobject, jlong cptr, jlong qosCptr)
 {
   EndpointClear * current = (EndpointClear *)cptr;
   QoSTransportSettings * settings = (QoSTransportSettings *)qosCptr;
@@ -40,11 +48,19 @@ Java_ai_madara_filters_EndpointClear_jni_1addSendFilterTo
   {
     settings->add_send_filter (current);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EndpointClear::addSendFilterto: "
+      "EndpointClear or settings objects are released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_filters_EndpointClear_jni_1addRebroadcastFilterTo
-(JNIEnv *, jobject, jlong cptr, jlong qosCptr)
+(JNIEnv * env, jobject, jlong cptr, jlong qosCptr)
 {
   EndpointClear * current = (EndpointClear *)cptr;
   QoSTransportSettings * settings = (QoSTransportSettings *)qosCptr;
@@ -52,6 +68,14 @@ Java_ai_madara_filters_EndpointClear_jni_1addRebroadcastFilterTo
   if (current && settings)
   {
     settings->add_rebroadcast_filter (current);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EndpointClear::addRebroadcastFilter: "
+      "EndpointClear or settings objects are released already");
   }
 }
 
@@ -73,6 +97,14 @@ Java_ai_madara_filters_EndpointClear_jni_1setPrefix
     current->set_prefix (str_prefix);
 
     env->ReleaseStringUTFChars (prefix, str_prefix);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EndpointClear::setPrefix: "
+      "EndpointClear object is released already");
   }
 }
 

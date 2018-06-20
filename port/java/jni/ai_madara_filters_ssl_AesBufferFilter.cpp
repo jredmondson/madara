@@ -88,6 +88,14 @@ Java_ai_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__J
   {
     result = (jlong) new AESBufferFilter (*input);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "AesBufferFilter::copyConstructor: "
+      "AesBufferFilter object is released already");
+  }
 #else
   (void)cptr;
 #endif
@@ -135,6 +143,14 @@ Java_ai_madara_filters_ssl_AesBufferFilter_jni_1encode
 
     env->ReleaseByteArrayElements (buffer, (jbyte *)elements, 0);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "AesBufferFilter::encode: "
+      "AesBufferFilter object is released already");
+  }
 
 #else
   (void)env; (void)cptr; (void)buffer; (void)size; (void)max_size;
@@ -166,6 +182,14 @@ Java_ai_madara_filters_ssl_AesBufferFilter_jni_1decode
 
     env->ReleaseByteArrayElements (buffer, (jbyte *)elements, 0);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "AesBufferFilter::decode: "
+      "AesBufferFilter object is released already");
+  }
 
 
 #else
@@ -196,6 +220,14 @@ Java_ai_madara_filters_ssl_AesBufferFilter_jni_1generateKey
     result = current->generate_key (nativePassword);
 
     env->ReleaseStringUTFChars (password, nativePassword);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "AesBufferFilter::generateKey: "
+      "AesBufferFilter or password objects are released already");
   }
 
 #else

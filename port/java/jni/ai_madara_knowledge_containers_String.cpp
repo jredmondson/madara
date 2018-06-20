@@ -70,7 +70,7 @@ Java_ai_madara_knowledge_containers_String_jni_1String__
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_String_jni_1String__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   String * result (0);
   String * source = (String *) cptr;
@@ -78,6 +78,14 @@ Java_ai_madara_knowledge_containers_String_jni_1String__J
   if (source)
   {
     result = new String (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "String::copyConstructor: "
+      "String object is released already");
   }
 
   return (jlong) result;
@@ -113,6 +121,14 @@ Java_ai_madara_knowledge_containers_String_jni_1set
 
     env->ReleaseStringUTFChars (value, str_value);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "String::set: "
+      "String object is released already");
+  }
 }
 
 /*
@@ -124,7 +140,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_String_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   String * current = (String *) cptr;
 
   if (current)
@@ -133,7 +149,11 @@ Java_ai_madara_knowledge_containers_String_jni_1getName
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "String::getName: "
+      "String object is released already");
   }
 
   return result;
@@ -167,6 +187,14 @@ Java_ai_madara_knowledge_containers_String_jni_1setName
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "String::setName: "
+      "String object is released already");
+  }
 }
 
 /*
@@ -178,7 +206,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_String_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   String * current = (String *) cptr;
 
   if (current)
@@ -187,7 +215,11 @@ Java_ai_madara_knowledge_containers_String_jni_1toString
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "String::toString: "
+      "String object is released already");
   }
 
   return result;
@@ -200,7 +232,7 @@ Java_ai_madara_knowledge_containers_String_jni_1toString
  */
 jdouble JNICALL
 Java_ai_madara_knowledge_containers_String_jni_1toDouble
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0.0);
   String * current = (String *) cptr;
@@ -208,6 +240,14 @@ Java_ai_madara_knowledge_containers_String_jni_1toDouble
   if (current)
   {
     result = current->to_double ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "String::toDouble: "
+      "String object is released already");
   }
 
   return result;
@@ -220,7 +260,7 @@ Java_ai_madara_knowledge_containers_String_jni_1toDouble
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_String_jni_1toLong
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
   String * current = (String *) cptr;
@@ -229,13 +269,21 @@ Java_ai_madara_knowledge_containers_String_jni_1toLong
   {
     result = current->to_integer ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "String::toLong: "
+      "String object is released already");
+  }
 
   return result;
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_String_jni_1modify
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   String * current = (String *) cptr;
 
@@ -243,11 +291,19 @@ Java_ai_madara_knowledge_containers_String_jni_1modify
   {
     current->modify ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "String::modify: "
+      "String object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_String_jni_1setSettings
-(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::String * current = (containers::String *)cptr;
   knowledge::KnowledgeUpdateSettings * settings =
@@ -257,11 +313,19 @@ Java_ai_madara_knowledge_containers_String_jni_1setSettings
   {
     current->set_settings (*settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "String::setSettings: "
+      "String or settings objects are released already");
+  }
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_String_jni_1isTrue
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   containers::String * current = (containers::String *)cptr;
   bool result (true);
@@ -270,6 +334,14 @@ Java_ai_madara_knowledge_containers_String_jni_1isTrue
   {
     result = current->is_true ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "String::isTrue: "
+      "String object is released already");
+  }
 
   return result;
 }
@@ -277,7 +349,7 @@ Java_ai_madara_knowledge_containers_String_jni_1isTrue
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_String_jni_1isFalse
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   containers::String * current = (containers::String *)cptr;
   bool result (true);
@@ -285,6 +357,14 @@ Java_ai_madara_knowledge_containers_String_jni_1isFalse
   if (current)
   {
     result = current->is_false ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "String::isFalse: "
+      "String object is released already");
   }
 
   return result;

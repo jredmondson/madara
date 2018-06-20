@@ -71,7 +71,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1NativeDoubleVector__
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1NativeDoubleVector__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   NativeDoubleVector * result (0);
   NativeDoubleVector * source = (NativeDoubleVector *) cptr;
@@ -79,6 +79,14 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1NativeDoubleVector__
   if (source)
   {
     result = new NativeDoubleVector (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::copyConstructor: "
+      "NativeDoubleVector object is released already");
   }
 
   return (jlong) result;
@@ -103,7 +111,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1freeNativeDoubleVect
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1set
-  (JNIEnv *, jobject, jlong cptr, jint index, jdouble value)
+  (JNIEnv * env, jobject, jlong cptr, jint index, jdouble value)
 {
   NativeDoubleVector * current = (NativeDoubleVector *) cptr;
 
@@ -111,17 +119,33 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1set
   {
     current->set (index, value);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::set: "
+      "NativeDoubleVector object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1pushback
-(JNIEnv *, jobject, jlong cptr, jdouble value)
+(JNIEnv * env, jobject, jlong cptr, jdouble value)
 {
   NativeDoubleVector * current = (NativeDoubleVector *)cptr;
 
   if (current)
   {
     current->push_back (value);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::pushback: "
+      "NativeDoubleVector object is released already");
   }
 }
 
@@ -134,7 +158,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   NativeDoubleVector * current = (NativeDoubleVector *) cptr;
 
   if (current)
@@ -143,7 +167,11 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1getName
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::getName: "
+      "NativeDoubleVector object is released already");
   }
 
   return result;
@@ -177,6 +205,14 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1setName
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::setName: "
+      "NativeDoubleVector object is released already");
+  }
 }
 
 /*
@@ -186,13 +222,22 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1setName
  */
 jdouble JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1get
-  (JNIEnv *, jobject, jlong cptr, jint index)
+  (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   jdouble result (0);
 
   NativeDoubleVector * current = (NativeDoubleVector *) cptr;
+
   if (current)
     result = (*current) [index];
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::get: "
+      "NativeDoubleVector object is released already");
+  }
 
   return result;
 }
@@ -204,13 +249,22 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1get
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1toRecord__JI
-  (JNIEnv *, jobject, jlong cptr, jint index)
+  (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   madara::knowledge::KnowledgeRecord * result (0);
 
   NativeDoubleVector * current = (NativeDoubleVector *) cptr;
+
   if (current)
     result = new madara::knowledge::KnowledgeRecord (current->to_record (index));
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::toRecord: "
+      "NativeDoubleVector object is released already");
+  }
 
   return (jlong) result;
 }
@@ -222,14 +276,23 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1toRecord__JI
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1toRecord__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   madara::knowledge::KnowledgeRecord * result (0);
 
   NativeDoubleVector * current =
     (NativeDoubleVector *) cptr;
+
   if (current)
     result = new madara::knowledge::KnowledgeRecord (current->to_record ());
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::toRecord: "
+      "NativeDoubleVector object is released already");
+  }
 
   return (jlong) result;
 }
@@ -272,6 +335,15 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1toArray
       }
     }
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->DeleteWeakGlobalRef (kr_class);
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::toArray: "
+      "NativeDoubleVector object is released already");
+  }
 
   env->DeleteWeakGlobalRef (kr_class);
 
@@ -285,14 +357,23 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1toArray
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1size
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
 
   NativeDoubleVector * current =
     (NativeDoubleVector *) cptr;
+
   if (current)
     result = (jlong) current->size ();
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::size: "
+      "NativeDoubleVector object is released already");
+  }
 
   return (jlong) result;
 }
@@ -304,13 +385,21 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1size
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1resize
-  (JNIEnv *, jobject, jlong cptr, jlong length)
+  (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
   NativeDoubleVector * current =
     (NativeDoubleVector *) cptr;
 
   if (current)
     current->resize (length);
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::resize: "
+      "NativeDoubleVector object is released already");
+  }
 }
 
 /*
@@ -320,18 +409,26 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1resize
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1modify
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   NativeDoubleVector * current =
     (NativeDoubleVector *) cptr;
 
   if (current)
     current->modify ();
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::modify: "
+      "NativeDoubleVector object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1setSettings
-(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::NativeDoubleVector * current =
     (containers::NativeDoubleVector *)cptr;
@@ -342,11 +439,19 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1setSettings
   {
     current->set_settings (*settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::setSettings: "
+      "NativeDoubleVector or settings objects are released already");
+  }
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1isTrue
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   NativeDoubleVector * current = (NativeDoubleVector *)cptr;
   bool result (true);
@@ -355,6 +460,14 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1isTrue
   {
     result = current->is_true ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::isTrue: "
+      "NativeDoubleVector object is released already");
+  }
 
   return result;
 }
@@ -362,7 +475,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1isTrue
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1isFalse
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   NativeDoubleVector * current = (NativeDoubleVector *)cptr;
   bool result (true);
@@ -370,6 +483,14 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1isFalse
   if (current)
   {
     result = current->is_false ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeDoubleVector::isFalse: "
+      "NativeDoubleVector object is released already");
   }
 
   return result;

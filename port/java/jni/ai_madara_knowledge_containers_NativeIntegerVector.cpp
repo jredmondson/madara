@@ -71,7 +71,7 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1NativeIntegerVector
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1NativeIntegerVector__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   NativeIntegerVector * result (0);
   NativeIntegerVector * source = (NativeIntegerVector *) cptr;
@@ -79,6 +79,14 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1NativeIntegerVector
   if (source)
   {
     result = new NativeIntegerVector (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::copyConstructor: "
+      "NativeIntegerVector object is released already");
   }
 
   return (jlong) result;
@@ -103,7 +111,7 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1freeNativeIntegerVe
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1set
-  (JNIEnv *, jobject, jlong cptr, jint index, jlong value)
+  (JNIEnv * env, jobject, jlong cptr, jint index, jlong value)
 {
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
 
@@ -111,17 +119,33 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1set
   {
     current->set (index, value);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::set: "
+      "NativeIntegerVector object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1pushback
-(JNIEnv *, jobject, jlong cptr, jlong value)
+(JNIEnv * env, jobject, jlong cptr, jlong value)
 {
   NativeIntegerVector * current = (NativeIntegerVector *)cptr;
 
   if (current)
   {
     current->push_back (value);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::pushback: "
+      "NativeIntegerVector object is released already");
   }
 }
 
@@ -134,7 +158,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
 
   if (current)
@@ -143,7 +167,11 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1getName
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::getName: "
+      "NativeIntegerVector object is released already");
   }
 
   return result;
@@ -177,6 +205,14 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1setName
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::setName: "
+      "NativeIntegerVector object is released already");
+  }
 }
 
 /*
@@ -186,7 +222,7 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1setName
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1get
-  (JNIEnv *, jobject, jlong cptr, jint index)
+  (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   jlong result (0);
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
@@ -194,6 +230,14 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1get
   if (current)
   {
     result = (*current) [index];
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::get: "
+      "NativeIntegerVector object is released already");
   }
 
   return result;
@@ -206,7 +250,7 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1get
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1toRecord__JI
-  (JNIEnv *, jobject, jlong cptr, jint index)
+  (JNIEnv * env, jobject, jlong cptr, jint index)
 {
   madara::knowledge::KnowledgeRecord * result (0);
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
@@ -214,6 +258,14 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1toRecord__JI
   if (current)
   {
     result = new madara::knowledge::KnowledgeRecord (current->to_record (index));
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::toRecord: "
+      "NativeIntegerVector object is released already");
   }
 
   return (jlong) result;
@@ -226,7 +278,7 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1toRecord__JI
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1toRecord__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   madara::knowledge::KnowledgeRecord * result (0);
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
@@ -234,6 +286,14 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1toRecord__J
   if (current)
   {
     result = new madara::knowledge::KnowledgeRecord (current->to_record ());
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::toRecord: "
+      "NativeIntegerVector object is released already");
   }
 
   return (jlong) result;
@@ -277,6 +337,15 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1toArray
       }
     }
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->DeleteWeakGlobalRef (kr_class);
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::toArray: "
+      "NativeIntegerVector object is released already");
+  }
 
   env->DeleteWeakGlobalRef (kr_class);
 
@@ -290,7 +359,7 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1toArray
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1size
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
@@ -298,6 +367,14 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1size
   if (current)
   {
     result = (jlong) current->size ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::size: "
+      "NativeIntegerVector object is released already");
   }
 
   return (jlong) result;
@@ -310,7 +387,7 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1size
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1resize
-  (JNIEnv *, jobject, jlong cptr, jlong length)
+  (JNIEnv * env, jobject, jlong cptr, jlong length)
 {
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
 
@@ -318,11 +395,19 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1resize
   {
     current->resize (length);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::resize: "
+      "NativeIntegerVector object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1modify
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   NativeIntegerVector * current = (NativeIntegerVector *) cptr;
 
@@ -330,11 +415,19 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1modify
   {
     current->modify ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::modify: "
+      "NativeIntegerVector object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1setSettings
-(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   containers::NativeIntegerVector * current =
     (containers::NativeIntegerVector *)cptr;
@@ -345,11 +438,19 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1setSettings
   {
     current->set_settings (*settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::setSettings: "
+      "NativeIntegerVector or settings objects are released already");
+  }
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1isTrue
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   NativeIntegerVector * current = (NativeIntegerVector *)cptr;
   bool result (true);
@@ -358,6 +459,14 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1isTrue
   {
     result = current->is_true ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::isTrue: "
+      "NativeIntegerVector object is released already");
+  }
 
   return result;
 }
@@ -365,7 +474,7 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1isTrue
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1isFalse
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   NativeIntegerVector * current = (NativeIntegerVector *)cptr;
   bool result (true);
@@ -373,6 +482,14 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1isFalse
   if (current)
   {
     result = current->is_false ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "NativeIntegerVector::isFalse: "
+      "NativeIntegerVector object is released already");
   }
 
   return result;

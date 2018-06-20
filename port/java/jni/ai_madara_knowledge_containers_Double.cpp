@@ -70,7 +70,7 @@ Java_ai_madara_knowledge_containers_Double_jni_1Double__
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1Double__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Double * result (0);
   Double * source = (Double *) cptr;
@@ -78,6 +78,14 @@ Java_ai_madara_knowledge_containers_Double_jni_1Double__J
   if (source)
   {
     result = new Double (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Double::copyConstructor: "
+      "Double object is released already");
   }
 
   return (jlong) result;
@@ -102,13 +110,21 @@ Java_ai_madara_knowledge_containers_Double_jni_1freeDouble
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1set
-  (JNIEnv *, jobject, jlong cptr, jdouble value)
+  (JNIEnv * env, jobject, jlong cptr, jdouble value)
 {
   Double * current = (Double *) cptr;
 
   if (current)
   {
     *current = value;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Double::set: "
+      "Double object is released already");
   }
 }
 
@@ -121,7 +137,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   Double * current = (Double *) cptr;
 
   if (current)
@@ -130,7 +146,11 @@ Java_ai_madara_knowledge_containers_Double_jni_1getName
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Double::getName: "
+      "Double object is released already");
   }
 
   return result;
@@ -164,6 +184,14 @@ Java_ai_madara_knowledge_containers_Double_jni_1setName
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Double::setName: "
+      "Double object is released already");
+  }
 }
 
 /*
@@ -175,7 +203,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   Double * current = (Double *) cptr;
 
   if (current)
@@ -184,7 +212,11 @@ Java_ai_madara_knowledge_containers_Double_jni_1toString
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Double::toString: "
+      "Double object is released already");
   }
 
   return result;
@@ -197,7 +229,7 @@ Java_ai_madara_knowledge_containers_Double_jni_1toString
  */
 jdouble JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1toDouble
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0.0);
   Double * current = (Double *) cptr;
@@ -205,6 +237,14 @@ Java_ai_madara_knowledge_containers_Double_jni_1toDouble
   if (current)
   {
     result = current->to_double ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Double::toDouble: "
+      "Double object is released already");
   }
 
   return result;
@@ -217,7 +257,7 @@ Java_ai_madara_knowledge_containers_Double_jni_1toDouble
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1toLong
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
   Double * current = (Double *) cptr;
@@ -226,13 +266,21 @@ Java_ai_madara_knowledge_containers_Double_jni_1toLong
   {
     result = current->to_integer ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Double::toLong: "
+      "Double object is released already");
+  }
 
   return result;
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1modify
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Double * current = (Double *) cptr;
 
@@ -240,11 +288,19 @@ Java_ai_madara_knowledge_containers_Double_jni_1modify
   {
     current->modify ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Double::modify: "
+      "Double object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1setSettings
-(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   Double * current = (Double *)cptr;
   knowledge::KnowledgeUpdateSettings * settings =
@@ -254,11 +310,19 @@ Java_ai_madara_knowledge_containers_Double_jni_1setSettings
   {
     current->set_settings (*settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Double::isFalse: "
+      "Double or settings objects are released already");
+  }
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1isTrue
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   Double * current = (Double *)cptr;
   bool result (true);
@@ -267,6 +331,14 @@ Java_ai_madara_knowledge_containers_Double_jni_1isTrue
   {
     result = current->is_true ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Double::isTrue: "
+      "Double object is released already");
+  }
 
   return result;
 }
@@ -274,7 +346,7 @@ Java_ai_madara_knowledge_containers_Double_jni_1isTrue
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1isFalse
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   Double * current = (Double *)cptr;
   bool result (true);
@@ -282,6 +354,14 @@ Java_ai_madara_knowledge_containers_Double_jni_1isFalse
   if (current)
   {
     result = current->is_false ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Double::isFalse: "
+      "Double object is released already");
   }
 
   return result;

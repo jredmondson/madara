@@ -7,6 +7,7 @@
 
 #include "ai_madara_knowledge_WaitSettings.h"
 #include "madara/knowledge/WaitSettings.h"
+#include "madara_jni.h"
 
 // define useful shorthands
 namespace knowledge = madara::knowledge;
@@ -29,7 +30,8 @@ Java_ai_madara_knowledge_WaitSettings_jni_1waitSettings__(JNIEnv *, jclass)
 * Signature: (J)J
 */
 jlong JNICALL
-Java_ai_madara_knowledge_WaitSettings_jni_1waitSettings__J (JNIEnv *, jclass, jlong original)
+Java_ai_madara_knowledge_WaitSettings_jni_1waitSettings__J (
+  JNIEnv * env, jclass, jlong original)
 {
   jlong result (0);
   WaitSettings * source = (WaitSettings *) original;
@@ -37,6 +39,14 @@ Java_ai_madara_knowledge_WaitSettings_jni_1waitSettings__J (JNIEnv *, jclass, jl
   if (source)
   {
     result = (jlong) new WaitSettings(*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "WaitSettings::copyConstructor: "
+      "WaitSettings objects are released already");
   }
 
   return result;
@@ -48,13 +58,22 @@ Java_ai_madara_knowledge_WaitSettings_jni_1waitSettings__J (JNIEnv *, jclass, jl
 * Signature: (JD)V
 */
 void JNICALL
-Java_ai_madara_knowledge_WaitSettings_jni_1setPollFrequency (JNIEnv *, jclass, jlong cptr, jdouble pollFreq)
+Java_ai_madara_knowledge_WaitSettings_jni_1setPollFrequency (
+  JNIEnv * env, jclass, jlong cptr, jdouble pollFreq)
 {
   WaitSettings * current = (WaitSettings *) cptr;
 
   if (current)
   {
     current->poll_frequency = pollFreq;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "WaitSettings::setPollFrequency: "
+      "WaitSettings objects are released already");
   }
 }
 
@@ -64,7 +83,8 @@ Java_ai_madara_knowledge_WaitSettings_jni_1setPollFrequency (JNIEnv *, jclass, j
 * Signature: (J)D
 */
 jdouble JNICALL
-Java_ai_madara_knowledge_WaitSettings_jni_1getPollFrequency (JNIEnv *, jclass, jlong cptr)
+Java_ai_madara_knowledge_WaitSettings_jni_1getPollFrequency (
+  JNIEnv * env, jclass, jlong cptr)
 {
   jdouble result (0);
   WaitSettings * current = (WaitSettings *) cptr;
@@ -72,6 +92,14 @@ Java_ai_madara_knowledge_WaitSettings_jni_1getPollFrequency (JNIEnv *, jclass, j
   if (current)
   {
     result = (jdouble) current->poll_frequency;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "WaitSettings::getPollFrequency: "
+      "WaitSettings objects are released already");
   }
 
   return result;
@@ -83,13 +111,22 @@ Java_ai_madara_knowledge_WaitSettings_jni_1getPollFrequency (JNIEnv *, jclass, j
 * Signature: (JD)V
 */
 void JNICALL
-Java_ai_madara_knowledge_WaitSettings_jni_1setMaxWaitTime (JNIEnv *, jclass, jlong cptr, jdouble maxWaitTime)
+Java_ai_madara_knowledge_WaitSettings_jni_1setMaxWaitTime (
+  JNIEnv * env, jclass, jlong cptr, jdouble maxWaitTime)
 {
   WaitSettings * current = (WaitSettings *) cptr;
 
   if (current)
   {
     current->max_wait_time = maxWaitTime;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "WaitSettings::setMaxWaitTime: "
+      "WaitSettings objects are released already");
   }
 }
 
@@ -99,7 +136,8 @@ Java_ai_madara_knowledge_WaitSettings_jni_1setMaxWaitTime (JNIEnv *, jclass, jlo
 * Signature: (J)D
 */
 jdouble JNICALL
-Java_ai_madara_knowledge_WaitSettings_jni_1getMaxWaitTime (JNIEnv *, jclass, jlong cptr)
+Java_ai_madara_knowledge_WaitSettings_jni_1getMaxWaitTime (
+  JNIEnv * env, jclass, jlong cptr)
 {
   jdouble result (0);
   WaitSettings * current = (WaitSettings *) cptr;
@@ -107,6 +145,14 @@ Java_ai_madara_knowledge_WaitSettings_jni_1getMaxWaitTime (JNIEnv *, jclass, jlo
   if (current)
   {
     result = (jdouble) current->max_wait_time;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "WaitSettings::getMaxWaitTime: "
+      "WaitSettings objects are released already");
   }
 
   return result;
@@ -118,7 +164,8 @@ Java_ai_madara_knowledge_WaitSettings_jni_1getMaxWaitTime (JNIEnv *, jclass, jlo
 * Signature: (J)V
 */
 void JNICALL
-Java_ai_madara_knowledge_WaitSettings_jni_1freeWaitSettings (JNIEnv *, jclass, jlong cptr)
+Java_ai_madara_knowledge_WaitSettings_jni_1freeWaitSettings (
+  JNIEnv *, jclass, jlong cptr)
 {
   WaitSettings * current = (WaitSettings *) cptr;
 

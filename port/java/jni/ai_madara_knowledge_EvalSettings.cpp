@@ -7,6 +7,7 @@
 
 #include "ai_madara_knowledge_EvalSettings.h"
 #include "madara/knowledge/EvalSettings.h"
+#include "madara_jni.h"
 
 #include <stdio.h>
 #include <string>
@@ -21,7 +22,8 @@ typedef knowledge::EvalSettings EvalSettings;
  * Signature: (I)J
  */
 jlong JNICALL
-Java_ai_madara_knowledge_EvalSettings_jni_1getDefaultEvalSettings (JNIEnv *, jclass , jint)
+Java_ai_madara_knowledge_EvalSettings_jni_1getDefaultEvalSettings (
+  JNIEnv *, jclass , jint)
 {
   return (jlong) (new EvalSettings ());
 }
@@ -44,7 +46,7 @@ Java_ai_madara_knowledge_EvalSettings_jni_1evalSettings__ (JNIEnv *, jclass )
  */
 jlong JNICALL
 Java_ai_madara_knowledge_EvalSettings_jni_1evalSettings__J
-  (JNIEnv *, jclass, jlong original)
+  (JNIEnv * env, jclass, jlong original)
 {
   jlong result (0);
   EvalSettings * source = (EvalSettings *) original;
@@ -52,6 +54,14 @@ Java_ai_madara_knowledge_EvalSettings_jni_1evalSettings__J
   if (source)
   {
     result = (jlong) new EvalSettings (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::copyConstructor: "
+      "EvalSettings object is released already");
   }
 
   return result;
@@ -64,13 +74,21 @@ Java_ai_madara_knowledge_EvalSettings_jni_1evalSettings__J
  */
 void JNICALL
 Java_ai_madara_knowledge_EvalSettings_jni_1setDelaySendingModifieds
-  (JNIEnv *, jclass, jlong cptr, jboolean delaySendingModifieds)
+  (JNIEnv * env, jclass, jlong cptr, jboolean delaySendingModifieds)
 {
   EvalSettings * current = (EvalSettings *) cptr;
 
   if (current)
   {
     current->delay_sending_modifieds = delaySendingModifieds;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::setDelaySendingModifieds: "
+      "EvalSettings object is released already");
   }
 }
 
@@ -81,7 +99,7 @@ Java_ai_madara_knowledge_EvalSettings_jni_1setDelaySendingModifieds
  */
 jboolean JNICALL
 Java_ai_madara_knowledge_EvalSettings_jni_1getDelaySendingModifieds
-  (JNIEnv *, jclass, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   jboolean result (0);
   EvalSettings * current = (EvalSettings *) cptr;
@@ -89,6 +107,14 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getDelaySendingModifieds
   if (current)
   {
     result = (jboolean) current->delay_sending_modifieds;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::getDelaySendingModifieds: "
+      "EvalSettings object is released already");
   }
 
   return result;
@@ -111,6 +137,14 @@ Java_ai_madara_knowledge_EvalSettings_jni_1setPrePrintStatement
   {
     current->pre_print_statement = nativePrePrint;
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::setPrePrintStatement: "
+      "EvalSettings object is released already");
+  }
 
   env->ReleaseStringUTFChars (prePrintStatement, nativePrePrint);
 }
@@ -124,7 +158,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_EvalSettings_jni_1getPrePrintStatement
   (JNIEnv * env, jclass, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   EvalSettings * current = (EvalSettings *) cptr;
 
   if (current)
@@ -133,7 +167,11 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getPrePrintStatement
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::getPrePrintStatement: "
+      "EvalSettings object is released already");
   }
 
   return result;
@@ -156,6 +194,15 @@ Java_ai_madara_knowledge_EvalSettings_jni_1setPostPrintStatement
   {
     current->post_print_statement = std::string (nativePostPrint);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (postPrintStatement, nativePostPrint);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::setPostPrintStatement: "
+      "EvalSettings object is released already");
+  }
 
   env->ReleaseStringUTFChars (postPrintStatement, nativePostPrint);
 }
@@ -169,7 +216,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_EvalSettings_jni_1getPostPrintStatement
   (JNIEnv * env, jclass, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   EvalSettings * current = (EvalSettings *) cptr;
 
   if (current)
@@ -178,7 +225,11 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getPostPrintStatement
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::getPostPrintStatement: "
+      "EvalSettings object is released already");
   }
 
   return result;
@@ -191,13 +242,21 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getPostPrintStatement
  */
 void JNICALL
 Java_ai_madara_knowledge_EvalSettings_jni_1setAlwaysOverwrite
-  (JNIEnv *, jclass, jlong cptr, jboolean alwaysOverwrite)
+  (JNIEnv * env, jclass, jlong cptr, jboolean alwaysOverwrite)
 {
   EvalSettings * current = (EvalSettings *) cptr;
 
   if (current)
   {
     current->always_overwrite = alwaysOverwrite;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::setAlwaysOverwrite: "
+      "EvalSettings object is released already");
   }
 }
 
@@ -208,7 +267,7 @@ Java_ai_madara_knowledge_EvalSettings_jni_1setAlwaysOverwrite
  */
 jboolean JNICALL
 Java_ai_madara_knowledge_EvalSettings_jni_1getAlwaysOverwrite
-  (JNIEnv *, jclass, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   jboolean result (0);
   EvalSettings * current = (EvalSettings *) cptr;
@@ -216,6 +275,14 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getAlwaysOverwrite
   if (current)
   {
     result = (jboolean) current->always_overwrite;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::getAlwaysOverwrite: "
+      "EvalSettings object is released already");
   }
 
   return result;
@@ -228,13 +295,21 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getAlwaysOverwrite
  */
 void JNICALL
 Java_ai_madara_knowledge_EvalSettings_jni_1setTreatGlobalsAsLocals
-  (JNIEnv *, jclass, jlong cptr, jboolean treatGlobalsAsLocals)
+  (JNIEnv * env, jclass, jlong cptr, jboolean treatGlobalsAsLocals)
 {
   EvalSettings * current = (EvalSettings *) cptr;
 
   if (current)
   {
     current->treat_globals_as_locals = treatGlobalsAsLocals;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::setTreatGlobalsAsLocals: "
+      "EvalSettings object is released already");
   }
 }
 
@@ -245,7 +320,7 @@ Java_ai_madara_knowledge_EvalSettings_jni_1setTreatGlobalsAsLocals
  */
 jboolean JNICALL
 Java_ai_madara_knowledge_EvalSettings_jni_1getTreatGlobalsAsLocals
-  (JNIEnv *, jclass, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   jboolean result (0);
   EvalSettings * current = (EvalSettings *) cptr;
@@ -253,6 +328,14 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getTreatGlobalsAsLocals
   if (current)
   {
     result = (jboolean) current->treat_globals_as_locals;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::getTreatGlobalsAsLocals: "
+      "EvalSettings object is released already");
   }
 
   return result;
@@ -265,13 +348,21 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getTreatGlobalsAsLocals
  */
 void JNICALL
 Java_ai_madara_knowledge_EvalSettings_jni_1setClockIncrement
-  (JNIEnv *, jclass, jlong cptr, jlong defaultClockIncrement)
+  (JNIEnv * env, jclass, jlong cptr, jlong defaultClockIncrement)
 {
   EvalSettings * current = (EvalSettings *) cptr;
 
   if (current)
   {
     current->clock_increment = defaultClockIncrement;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::setClockIncrement: "
+      "EvalSettings object is released already");
   }
 }
 
@@ -282,7 +373,7 @@ Java_ai_madara_knowledge_EvalSettings_jni_1setClockIncrement
  */
 jlong JNICALL
 Java_ai_madara_knowledge_EvalSettings_jni_1getClockIncrement
-  (JNIEnv *, jclass, jlong cptr)
+  (JNIEnv * env, jclass, jlong cptr)
 {
   jlong result (0);
   EvalSettings * current = (EvalSettings *) cptr;
@@ -290,6 +381,14 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getClockIncrement
   if (current)
   {
    result = (jlong) current->clock_increment;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "EvalSettings::getClockIncrement: "
+      "EvalSettings object is released already");
   }
 
   return result;

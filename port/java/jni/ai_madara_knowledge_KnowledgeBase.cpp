@@ -8,6 +8,7 @@
 #include "ai_madara_knowledge_KnowledgeBase.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/transport/QoSTransportSettings.h"
+#include "madara_jni.h"
 
 #include <string>
 #include <string.h>
@@ -93,7 +94,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_String_2J
 
 jlong JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1KnowledgeBase__J
-  (JNIEnv *, jobject, jlong original)
+  (JNIEnv * env, jobject, jlong original)
 {
   KnowledgeBase * result (0);
   KnowledgeBase * source = (KnowledgeBase *) original;
@@ -101,6 +102,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1KnowledgeBase__J
   if (source)
   {
     result = new KnowledgeBase (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::copyConstructor: "
+      "original KB object is released already");
   }
 
   return (jlong) result;
@@ -111,7 +119,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1getID
   (JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *)cptr;
-  jstring result;
+  jstring result = 0;
 
   if (knowledge)
   {
@@ -120,7 +128,10 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1getID
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::getID: "
+      "KB object is released already");
   }
 
   return result;
@@ -128,7 +139,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1getID
 
 void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1attachLogger
-(JNIEnv *, jobject, jlong cptr, jlong logger_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong logger_ptr)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *)cptr;
   Logger * logger = (Logger *)logger_ptr;
@@ -136,6 +147,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1attachLogger
   if (knowledge && logger)
   {
     knowledge->attach_logger (*logger);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::attachLogger: "
+      "KB or logger objects are released already");
   }
 }
 
@@ -151,6 +169,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1attachTransport
   {
     knowledge->attach_transport (native_id, *settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::debugModifieds: "
+      "KB, id, or settings objects are released already");
+  }
 }
 
 jstring JNICALL
@@ -158,7 +183,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1debugModifieds
 (JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *)cptr;
-  jstring result;
+  jstring result = 0;
 
   if (knowledge)
   {
@@ -166,7 +191,10 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1debugModifieds
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::debugModifieds: "
+      "KB object is released already");
   }
 
   return result;
@@ -175,7 +203,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1debugModifieds
 
 void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1closeTransports
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *)cptr;
 
@@ -183,11 +211,18 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1closeTransports
   {
     knowledge->close_transport ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::closeTransports: "
+      "KB object is released already");
+  }
 }
 
 jlong JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1getLogger
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   Logger * result (0);
   KnowledgeBase * knowledge = (KnowledgeBase *)cptr;
@@ -195,6 +230,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1getLogger
   if (knowledge)
   {
     result = &(knowledge->get_logger ());
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::getLogger: "
+      "KB object is released already");
   }
 
   return (jlong) result;
@@ -219,6 +261,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluate__JLjava_lang_String_2J
     result = knowledge->evaluate (
       std::string (nativeExpression), *settings).clone ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (expression, nativeExpression);
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::evaluate: "
+      "KB or EvalSettings objects are released already");
+  }
 
   env->ReleaseStringUTFChars (expression, nativeExpression);
 
@@ -232,7 +282,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluate__JLjava_lang_String_2J
 */
 jlong JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluate__JJJ
-  (JNIEnv *, jobject, jlong cptr, jlong expression, jlong evalSettings)
+  (JNIEnv * env, jobject, jlong cptr, jlong expression, jlong evalSettings)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
   CompiledExpression * compiled =
@@ -244,6 +294,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluate__JJJ
   if (knowledge && compiled && settings)
   {
     result = (jlong) knowledge->evaluate (*compiled, *settings).clone ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::evaluate: "
+      "KB, CompiledExpression or EvalSettings objects are released already");
   }
 
   return result;
@@ -267,6 +324,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluateNoReturn__JLjava_lang_String
   {
     knowledge->evaluate (std::string (nativeExpression), *settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (expression, nativeExpression);
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::evaluateNoReturn: "
+      "KB or EvalSettings objects are released already");
+  }
 
   env->ReleaseStringUTFChars (expression, nativeExpression);
 }
@@ -278,7 +343,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluateNoReturn__JLjava_lang_String
 */
 void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluateNoReturn__JJJ
-  (JNIEnv *, jobject, jlong cptr, jlong expression, jlong evalSettings)
+  (JNIEnv * env, jobject, jlong cptr, jlong expression, jlong evalSettings)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
   CompiledExpression * compiled =
@@ -288,6 +353,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluateNoReturn__JJJ
   if (knowledge && compiled && settings)
   {
     knowledge->evaluate (*compiled, *settings);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::evaluateNoReturn: "
+      "KB, CompiledExpression or EvalSettings objects are released already");
   }
 }
 
@@ -310,6 +382,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1compile
   {
     result = new CompiledExpression (
       knowledge->compile (std::string (nativeExpression)));
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (expression, nativeExpression);
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::compile: KB object is released already");
   }
 
   env->ReleaseStringUTFChars (expression, nativeExpression);
@@ -431,6 +510,12 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2
   {
     knowledge->define_function (std::string (nativeName), func);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::MadaraFunction: KB object is released already");
+  }
 
   env->ReleaseStringUTFChars (name, nativeName);
 }
@@ -442,13 +527,19 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2
 */
 void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1clear (
-  JNIEnv *, jobject, jlong cptr)
+  JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
 
   if (knowledge)
   {
     knowledge->clear ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::clear: KB object is released already");
   }
 }
 
@@ -466,6 +557,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1exists
   {
     result = (jboolean) knowledge->exists (nativeName);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (name, nativeName);
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::exists: KB object is released already");
+  }
 
   env->ReleaseStringUTFChars (name, nativeName);
 
@@ -477,7 +575,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1toString
 (JNIEnv * env, jobject, jlong cptr, jstring arrayDelimiter,
   jstring recordDelimiter, jstring keyvalDelimiter)
 {
-  jstring result;
+  jstring result = 0;
 
   KnowledgeBase * knowledge = (KnowledgeBase *)cptr;
 
@@ -495,7 +593,12 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1toString
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (arrayDelimiter, nativeArrayDelimiter);
+    env->ReleaseStringUTFChars (recordDelimiter, nativeRecordDelimiter);
+    env->ReleaseStringUTFChars (keyvalDelimiter, nativeKeyvalDelimiter);
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::toString: KB object is released already");
   }
 
   env->ReleaseStringUTFChars (arrayDelimiter, nativeArrayDelimiter);
@@ -523,6 +626,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1get
   {
     result = knowledge->get (nativeVar).clone ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (var, nativeVar);
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::get: KB object is released already");
+  }
 
   env->ReleaseStringUTFChars (var, nativeVar);
 
@@ -549,7 +659,8 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setInteger
   {
     // user has tried to use a deleted object. Clean up and throw
     env->ReleaseStringUTFChars (var, nativeVar);
-    madara::utility::java::throw_dead_obj_exception(env, "Knowledge Base object is released already");
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setInteger: KB object is released already");
   }
 
   env->ReleaseStringUTFChars (var, nativeVar);
@@ -571,6 +682,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setDouble
   {
     knowledge->set (nativeVar, (double) value);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (var, nativeVar);
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setDouble: KB object is released already");
+  }
 
   env->ReleaseStringUTFChars (var, nativeVar);
 }
@@ -591,6 +709,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setString
   if (knowledge)
   {
     knowledge->set (nativeVar, nativeValue);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (var, nativeVar);
+    env->ReleaseStringUTFChars (value, nativeValue);
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setString: KB object is released already");
   }
 
   env->ReleaseStringUTFChars (var, nativeVar);
@@ -621,6 +747,15 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setIntegerArray
   if (knowledge)
   {
     knowledge->set (nativeVar, intVector);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    if (isCopy)
+      env->ReleaseLongArrayElements (value, intArray, JNI_ABORT);
+    env->ReleaseStringUTFChars (var, nativeVar);
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setIntegerArray: KB object is released already");
   }
 
   if (isCopy)
@@ -653,10 +788,19 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setDoubleArray
   {
     knowledge->set (std::string (nativeVar), dblVector);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    if (isCopy)
+      env->ReleaseDoubleArrayElements (value, dblArray, JNI_ABORT);
+    env->ReleaseStringUTFChars (var, nativeVar);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setDoubleArray: KB object is released already");
+  }
 
   if (isCopy)
     env->ReleaseDoubleArrayElements (value, dblArray, JNI_ABORT);
-
   env->ReleaseStringUTFChars (var, nativeVar);
 }
 
@@ -678,6 +822,18 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setFile
   if (knowledge)
   {
     knowledge->set_file (std::string (nativeVar), dest, (size_t)len);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+
+    delete [] dest;
+    if (isCopy)
+      env->ReleaseByteArrayElements (value, source, JNI_ABORT);
+    env->ReleaseStringUTFChars (var, nativeVar);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setFile: KB object is released already");
   }
 
   delete [] dest;
@@ -708,6 +864,18 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setImage
   {
     knowledge->set_jpeg (std::string (nativeVar), dest, (size_t)len);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+
+    delete [] dest;
+    if (isCopy)
+      env->ReleaseByteArrayElements (value, source, JNI_ABORT);
+    env->ReleaseStringUTFChars (var, nativeVar);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setImage: KB object is released already");
+  }
 
   delete [] dest;
 
@@ -730,6 +898,15 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setIntegerSettings
   {
     knowledge->set (nativeVar, Integer (value), *settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (var, nativeVar);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setIntegerSettings: "
+      "KB or settings objects are released already");
+  }
 
   env->ReleaseStringUTFChars (var, nativeVar);
 }
@@ -750,6 +927,15 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setDoubleSettings
   if (knowledge && settings)
   {
     knowledge->set (nativeVar, value, *settings);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (var, nativeVar);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setDoubleSettings: "
+      "KB or settings objects are released already");
   }
 
   env->ReleaseStringUTFChars (var, nativeVar);
@@ -772,6 +958,16 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setStringSettings
   if (knowledge && settings)
   {
     knowledge->set (nativeVar, nativeValue, *settings);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (var, nativeVar);
+    env->ReleaseStringUTFChars (value, nativeValue);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setStringSettings: "
+      "KB or settings objects are released already");
   }
 
   env->ReleaseStringUTFChars (var, nativeVar);
@@ -803,6 +999,17 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setIntegerArraySettings
   if (knowledge && settings)
   {
     knowledge->set (std::string (nativeVar), intVector, *settings);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    if (isCopy)
+      env->ReleaseLongArrayElements (value, intArray, JNI_ABORT);
+    env->ReleaseStringUTFChars (var, nativeVar);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setIntegerArraySettings: "
+      "KB or settings objects are released already");
   }
 
   if (isCopy)
@@ -836,6 +1043,17 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setDoubleArraySettings
   {
     knowledge->set (std::string (nativeVar), dblVector, *settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    if (isCopy)
+      env->ReleaseDoubleArrayElements (value, dblArray, JNI_ABORT);
+    env->ReleaseStringUTFChars (var, nativeVar);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setDoubleArraySettings: "
+      "KB or settings objects are released already");
+  }
 
   if (isCopy)
     env->ReleaseDoubleArrayElements (value, dblArray, JNI_ABORT);
@@ -860,6 +1078,18 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setFileSettings
   if (knowledge && settings)
   {
     knowledge->set_file (nativeVar, dest, (size_t)len, *settings);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    delete [] dest;
+    if (isCopy)
+      env->ReleaseByteArrayElements (value, source, JNI_ABORT);
+    env->ReleaseStringUTFChars (var, nativeVar);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setFileSettings: "
+      "KB or settings objects are released already");
   }
 
   delete [] dest;
@@ -890,6 +1120,17 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setImageSettings
   {
     knowledge->set_jpeg (std::string (nativeVar), dest, (size_t)len, *settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    delete [] dest;
+    if (isCopy)
+      env->ReleaseByteArrayElements (value, source, JNI_ABORT);
+    env->ReleaseStringUTFChars (var, nativeVar);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::setImageSettings: KB or settings objects are released already");
+  }
 
   delete [] dest;
 
@@ -907,13 +1148,20 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setImageSettings
  */
 MADARA_EXPORT void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1sendModifieds__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
 
   if (knowledge)
   {
     knowledge->send_modifieds ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::sendModifieds: KB object is released already");
   }
 }
 
@@ -924,7 +1172,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1sendModifieds__J
  */
 MADARA_EXPORT void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1sendModifieds__JJ
-  (JNIEnv *, jobject, jlong cptr, jlong evalSettings)
+  (JNIEnv * env, jobject, jlong cptr, jlong evalSettings)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
   knowledge::EvalSettings * settings = (knowledge::EvalSettings*) evalSettings;
@@ -933,17 +1181,32 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1sendModifieds__JJ
   {
     knowledge->send_modifieds ("KnowledgeBase::send_modifieds", *settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::sendModifieds: "
+      "KB or settings objects are released already");
+  }
 }
 
 MADARA_EXPORT void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1clearModifieds
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *)cptr;
 
   if (knowledge)
   {
     knowledge->clear_modifieds ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::clearModifieds: KB object is released already");
   }
 }
 
@@ -963,6 +1226,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1print__JLjava_lang_String_2
   {
     knowledge->print (printable);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (statement, printable);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::print: KB object is released already");
+  }
 
   env->ReleaseStringUTFChars (statement, printable);
 }
@@ -975,13 +1246,20 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1print__JLjava_lang_String_2
  */
 MADARA_EXPORT void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1print__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
 
   if (knowledge)
   {
     knowledge->print ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::print: KB object is released already");
   }
 }
 
@@ -1004,6 +1282,15 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1wait__JLjava_lang_String_2J
   {
     result = knowledge->wait (nativeExpression, *settings).clone ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (expression, nativeExpression);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::wait: "
+      "KB or settings objects are released already");
+  }
 
   env->ReleaseStringUTFChars (expression, nativeExpression);
 
@@ -1017,7 +1304,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1wait__JLjava_lang_String_2J
 */
 jlong JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1wait__JJJ
-  (JNIEnv *, jobject, jlong cptr, jlong cexpression, jlong waitSettings)
+  (JNIEnv * env, jobject, jlong cptr, jlong cexpression, jlong waitSettings)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
   CompiledExpression * compiled = (CompiledExpression *) cexpression;
@@ -1027,6 +1314,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1wait__JJJ
   if (knowledge && compiled && settings)
   {
     result = knowledge->wait (*compiled, *settings).clone ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::wait: "
+      "KB, CompiledExpression or settings objects are released already");
   }
 
   return (jlong) result;
@@ -1050,6 +1345,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1waitNoReturn__JLjava_lang_String_2J
   {
     knowledge->wait (nativeExpression, *settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (expression, nativeExpression);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::waitNoReturn: KB object is released already");
+  }
 
   env->ReleaseStringUTFChars (expression, nativeExpression);
 }
@@ -1061,7 +1364,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1waitNoReturn__JLjava_lang_String_2J
 */
 void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1waitNoReturn__JJJ
-  (JNIEnv *, jobject, jlong cptr, jlong expression, jlong waitSettings)
+  (JNIEnv * env, jobject, jlong cptr, jlong expression, jlong waitSettings)
 {
   KnowledgeBase * knowledge = (KnowledgeBase *) cptr;
   CompiledExpression * compiled = (CompiledExpression *) expression;
@@ -1070,6 +1373,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1waitNoReturn__JJJ
   if (knowledge && compiled && settings)
   {
     knowledge->wait (*compiled, *settings);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::evaluateNoReturn: "
+      "KB, CompiledExpression or EvalSettings objects are released already");
   }
 }
 
@@ -1120,6 +1430,13 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1toKnowledgeList
     env->SetLongArrayRegion (ret, 0, (jsize)returnVector.size (), tmp);
 
     delete [] tmp;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::toKnowledgeList: "
+      "KB object is released already");
   }
 
   return ret;
@@ -1181,6 +1498,16 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1toKnowledgeMap
     env->SetObjectField (jniRet, valsID, recordsArray);
     env->SetObjectField (jniRet, keysID, keysArray);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->DeleteLocalRef (jniRetClass);
+    env->DeleteWeakGlobalRef (classStrArray);
+
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::toKnowledgeMap: "
+      "KB object is released already");
+  }
 
   env->DeleteLocalRef (jniRetClass);
   env->DeleteWeakGlobalRef (classStrArray);
@@ -1238,6 +1565,16 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1toMap
     env->SetObjectField (jniRet, valsID, recordsArray);
     env->SetObjectField (jniRet, keysID, keysArray);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->DeleteLocalRef (jniRetClass);
+    env->DeleteWeakGlobalRef (classStrArray);
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::toKnowledgeMap: "
+      "KB object is released already");
+  }
 
   env->DeleteLocalRef (jniRetClass);
   env->DeleteWeakGlobalRef (classStrArray);
@@ -1279,6 +1616,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1saveAsKarl
 
     env->ReleaseStringUTFChars (filename, nativeFilename);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::saveAsKarl: "
+      "KB or filename objects are released already");
+  }
 
   return result;
 }
@@ -1302,6 +1647,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1saveContext
     result = knowledge->save_context (nativeFilename);
 
     env->ReleaseStringUTFChars (filename, nativeFilename);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::saveContext: "
+      "KB or filename objects are released already");
   }
 
   return result;
@@ -1328,6 +1681,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1saveCheckpoint
     result = knowledge->save_checkpoint (nativeFilename, flag);
 
     env->ReleaseStringUTFChars (filename, nativeFilename);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::saveCheckpoint: "
+      "KB or filename objects are released already");
   }
 
   return result;
@@ -1356,6 +1717,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1loadContext
     result = knowledge->load_context (nativeFilename, flag, *settings);
 
     env->ReleaseStringUTFChars (filename, nativeFilename);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeBase::loadContext: "
+      "KB or filename objects are released already");
   }
 
   return result;

@@ -72,7 +72,7 @@ Java_ai_madara_knowledge_containers_Counter_jni_1Counter__
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1Counter__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Counter * result (0);
   Counter * source = (Counter *) cptr;
@@ -80,6 +80,14 @@ Java_ai_madara_knowledge_containers_Counter_jni_1Counter__J
   if (source)
   {
     result = new Counter (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::copyConstructor: "
+      "source object is released already");
   }
 
   return (jlong) result;
@@ -106,13 +114,21 @@ Java_ai_madara_knowledge_containers_Counter_jni_1freeCounter
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1set
-  (JNIEnv *, jobject, jlong cptr, jlong value)
+  (JNIEnv * env, jobject, jlong cptr, jlong value)
 {
   Counter * current = (Counter *) cptr;
 
   if (current)
   {
     *current = value;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::set: "
+      "Counter object is released already");
   }
 }
 
@@ -126,7 +142,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1getName
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   Counter * current = (Counter *) cptr;
 
   if (current)
@@ -135,7 +151,11 @@ Java_ai_madara_knowledge_containers_Counter_jni_1getName
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::getName: "
+      "Counter object is released already");
   }
 
   return result;
@@ -170,6 +190,14 @@ Java_ai_madara_knowledge_containers_Counter_jni_1setName
 
     env->ReleaseStringUTFChars (name, str_name);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::setName: "
+      "Counter object is released already");
+  }
 }
 
 
@@ -182,7 +210,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1toString
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   Counter * current = (Counter *) cptr;
 
   if (current)
@@ -191,7 +219,11 @@ Java_ai_madara_knowledge_containers_Counter_jni_1toString
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::toString: "
+      "Counter object is released already");
   }
 
   return result;
@@ -205,7 +237,7 @@ Java_ai_madara_knowledge_containers_Counter_jni_1toString
  */
 jdouble JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1toDouble
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0.0);
   Counter * current = (Counter *) cptr;
@@ -213,6 +245,14 @@ Java_ai_madara_knowledge_containers_Counter_jni_1toDouble
   if (current)
   {
     result = current->to_double ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::toDouble: "
+      "Counter object is released already");
   }
 
   return result;
@@ -226,7 +266,7 @@ Java_ai_madara_knowledge_containers_Counter_jni_1toDouble
  */
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1toLong
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
   Counter * current = (Counter *) cptr;
@@ -234,6 +274,14 @@ Java_ai_madara_knowledge_containers_Counter_jni_1toLong
   if (current)
   {
     result = current->to_integer ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::toLong: "
+      "Counter object is released already");
   }
 
   return result;
@@ -247,10 +295,22 @@ Java_ai_madara_knowledge_containers_Counter_jni_1toLong
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1inc
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Counter * current = (Counter *) cptr;
-  ++ (*current);
+
+  if (current)
+  {
+    ++(*current);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::inc: "
+      "Counter object is released already");
+  }
 }
 
 
@@ -261,10 +321,21 @@ Java_ai_madara_knowledge_containers_Counter_jni_1inc
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1dec
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Counter * current = (Counter *) cptr;
-  -- (*current);
+  if (current)
+  {
+    --(*current);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::dec: "
+      "Counter object is released already");
+  }
 }
 
 
@@ -275,10 +346,21 @@ Java_ai_madara_knowledge_containers_Counter_jni_1dec
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1incValue
-  (JNIEnv *, jobject, jlong cptr, jlong value)
+  (JNIEnv * env, jobject, jlong cptr, jlong value)
 {
   Counter * current = (Counter *) cptr;
-  *current += value;
+  if (current)
+  {
+    *current += value;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::incValue: "
+      "Counter object is released already");
+  }
 }
 
 
@@ -289,10 +371,21 @@ Java_ai_madara_knowledge_containers_Counter_jni_1incValue
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1decValue
-  (JNIEnv *, jobject, jlong cptr, jlong value)
+  (JNIEnv * env, jobject, jlong cptr, jlong value)
 {
   Counter * current = (Counter *) cptr;
-  *current -= value;
+  if (current)
+  {
+    *current -= value;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::decValue: "
+      "Counter object is released already");
+  }
 }
 
 
@@ -303,10 +396,21 @@ Java_ai_madara_knowledge_containers_Counter_jni_1decValue
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1modify
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Counter * current = (Counter *) cptr;
-  current->modify ();
+  if (current)
+  {
+    current->modify ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::inc: "
+      "Counter object is released already");
+  }
 }
 
 
@@ -317,15 +421,26 @@ Java_ai_madara_knowledge_containers_Counter_jni_1modify
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1resize
-  (JNIEnv *, jobject, jlong cptr, jint id, jint counters)
+  (JNIEnv * env, jobject, jlong cptr, jint id, jint counters)
 {
   Counter * current = (Counter *) cptr;
-  current->resize (id, counters);
+  if (current)
+  {
+    current->resize (id, counters);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::resize: "
+      "Counter object is released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1setSettings
-(JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+(JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   Counter * current = (Counter *)cptr;
   knowledge::KnowledgeUpdateSettings * settings =
@@ -335,11 +450,19 @@ Java_ai_madara_knowledge_containers_Counter_jni_1setSettings
   {
     current->set_settings (*settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::setSettings: "
+      "Counter or settings objects are released already");
+  }
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1isTrue
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   Counter * current = (Counter *)cptr;
   bool result (true);
@@ -348,6 +471,14 @@ Java_ai_madara_knowledge_containers_Counter_jni_1isTrue
   {
     result = current->is_true ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::isTrue: "
+      "Counter object is released already");
+  }
 
   return result;
 }
@@ -355,7 +486,7 @@ Java_ai_madara_knowledge_containers_Counter_jni_1isTrue
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Counter_jni_1isFalse
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   Counter * current = (Counter *)cptr;
   bool result (true);
@@ -363,6 +494,14 @@ Java_ai_madara_knowledge_containers_Counter_jni_1isFalse
   if (current)
   {
     result = current->is_false ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Counter::isFalse: "
+      "Counter object is released already");
   }
 
   return result;

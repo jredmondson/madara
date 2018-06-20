@@ -16,7 +16,7 @@ Java_ai_madara_knowledge_containers_Collection_jni_1Collection__
 
 jlong JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1Collection__J
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Collection * result (0);
   Collection * source = (Collection *)cptr;
@@ -24,6 +24,14 @@ Java_ai_madara_knowledge_containers_Collection_jni_1Collection__J
   if (source)
   {
     result = new Collection (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::constConstructor: "
+      "Collection object is released already");
   }
 
   return (jlong)result;
@@ -42,7 +50,7 @@ jstring JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1getDebugInfo
   (JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   Collection * current = (Collection *)cptr;
 
   if (current)
@@ -51,7 +59,11 @@ Java_ai_madara_knowledge_containers_Collection_jni_1getDebugInfo
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::getDebugInfo: "
+      "Collection object is released already");
   }
 
   return result;
@@ -60,7 +72,7 @@ Java_ai_madara_knowledge_containers_Collection_jni_1getDebugInfo
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1modify
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   Collection * current = (Collection *)cptr;
 
@@ -68,12 +80,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1modify
   {
     current->modify ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::modify: "
+      "Collection object is released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1setSettings
-  (JNIEnv *, jobject, jlong cptr, jlong settings_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong settings_ptr)
 {
   Collection * current = (Collection *)cptr;
   knowledge::KnowledgeUpdateSettings * settings =
@@ -83,12 +103,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1setSettings
   {
     current->set_settings (*settings);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::setSettings: "
+      "Collection or settings objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addBarrier
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::Barrier * container = (containers::Barrier *)container_ptr;
@@ -97,12 +125,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addBarrier
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addBarrier: "
+      "Collection or added objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addCounter
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::Counter * container = (containers::Counter *)container_ptr;
@@ -111,12 +147,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addCounter
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addCounter: "
+      "Collection or added objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addDouble
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::Double * container = (containers::Double *)container_ptr;
@@ -125,12 +169,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addDouble
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addDouble: "
+      "Collection or added objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addDoubleVector
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::DoubleVector * container =
@@ -140,12 +192,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addDoubleVector
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addDoubleVector: "
+      "Collection or added objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addFlexMap
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::FlexMap * container =
@@ -155,12 +215,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addFlexMap
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addFlexMap: "
+      "Collection or added objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addInteger
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::Integer * container =
@@ -170,11 +238,19 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addInteger
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addInteger: "
+      "Collection or added objects are released already");
+  }
 }
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addIntegerVector
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::IntegerVector * container =
@@ -184,12 +260,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addIntegerVector
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addIntegerVector: "
+      "Collection or added objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addMap
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::Map * container =
@@ -199,12 +283,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addMap
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addMap: "
+      "Collection or added objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addNativeDoubleVector
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::NativeDoubleVector * container =
@@ -214,12 +306,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addNativeDoubleVector
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addNativeDoubleVector: "
+      "Collection or added objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addNativeIntegerVector
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::NativeIntegerVector * container =
@@ -229,12 +329,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addNativeIntegerVector
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addNativeIntegerVector: "
+      "Collection or added objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addString
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::String * container =
@@ -244,12 +352,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addString
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addString: "
+      "Collection or added objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addStringVector
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::StringVector * container =
@@ -259,12 +375,20 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addStringVector
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addStringVector: "
+      "Collection or added objects are released already");
+  }
 }
 
 
 void JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1addVector
-  (JNIEnv *, jobject, jlong cptr, jlong container_ptr)
+  (JNIEnv * env, jobject, jlong cptr, jlong container_ptr)
 {
   Collection * current = (Collection *)cptr;
   containers::Vector * container =
@@ -274,11 +398,19 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addVector
   {
     current->add (*container);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::addVector: "
+      "Collection or added objects are released already");
+  }
 }
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1isTrue
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   Collection * current = (Collection *)cptr;
   bool result (true);
@@ -287,6 +419,14 @@ Java_ai_madara_knowledge_containers_Collection_jni_1isTrue
   {
     result = current->is_true ();
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::isTrue: "
+      "Collection object is released already");
+  }
 
   return result;
 }
@@ -294,7 +434,7 @@ Java_ai_madara_knowledge_containers_Collection_jni_1isTrue
 
 jboolean JNICALL
 Java_ai_madara_knowledge_containers_Collection_jni_1isFalse
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   Collection * current = (Collection *)cptr;
   bool result (true);
@@ -302,6 +442,14 @@ Java_ai_madara_knowledge_containers_Collection_jni_1isFalse
   if (current)
   {
     result = current->is_false ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+  
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Collection::isFalse: "
+      "Collection object is released already");
   }
 
   return result;

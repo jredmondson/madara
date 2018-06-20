@@ -7,6 +7,7 @@
 
 #include "ai_madara_knowledge_KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeRecord.h"
+#include "madara_jni.h"
 
 #include <stdio.h>
 
@@ -29,7 +30,8 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord__
  * Signature: (J)J
  */
 jlong JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecordDeep (JNIEnv *, jobject, jlong cptr)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecordDeep (
+  JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeRecord * result (0);
   KnowledgeRecord * source = (KnowledgeRecord *) cptr;
@@ -37,6 +39,14 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecordDeep (JNIEnv *, job
   if (source)
   {
     result = new KnowledgeRecord (*source);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeRecord::copyConstructor: "
+      "KnowledgeRecord object is released already");
   }
 
   return (jlong) result;
@@ -48,7 +58,8 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecordDeep (JNIEnv *, job
 * Signature: (Ljava/lang/String;)J
 */
 jlong JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord__Ljava_lang_String_2 (JNIEnv * env, jobject, jstring data)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord__Ljava_lang_String_2 (
+  JNIEnv * env, jobject, jstring data)
 {
   const char *nativeData = env->GetStringUTFChars (data, 0);
 
@@ -65,7 +76,8 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord__Ljava_lang_String
 * Signature: (D)J
 */
 jlong JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord__D (JNIEnv *, jobject, jdouble data)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord__D (
+  JNIEnv *, jobject, jdouble data)
 {
   return (jlong) (new KnowledgeRecord (data));
 }
@@ -76,7 +88,8 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord__D (JNIEnv *, jobj
 * Signature: (J)J
 */
 jlong JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord__J (JNIEnv *, jobject, jlong data)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord__J (
+  JNIEnv *, jobject, jlong data)
 {
   return (jlong) (new KnowledgeRecord (Integer (data)));
 }
@@ -87,7 +100,8 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord__J (JNIEnv *, jobj
 * Signature: ([D)J
 */
 jlong JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord___3D (JNIEnv * env, jclass, jdoubleArray data)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord___3D (
+  JNIEnv * env, jclass, jdoubleArray data)
 {
   jsize len = env->GetArrayLength (data);
   jboolean isCopy;
@@ -112,7 +126,8 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord___3D (JNIEnv * env
 * Signature: ([J)J
 */
 jlong JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord___3J (JNIEnv * env, jclass, jlongArray data)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord___3J (
+  JNIEnv * env, jclass, jlongArray data)
 {
   jsize len = env->GetArrayLength (data);
   jboolean isCopy;
@@ -137,7 +152,7 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord___3J (JNIEnv * env
  */
 jboolean JNICALL
 Java_ai_madara_knowledge_KnowledgeRecord_jni_1isValid
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   jboolean result (false);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
@@ -145,6 +160,14 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1isValid
   if (record)
   {
     result = record->is_valid ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeRecord::isValid: "
+      "KnowledgeRecord object is released already");
   }
 
   return result;
@@ -156,13 +179,22 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1isValid
 * Signature: (J)J
 */
 jlong JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1toLongValue (JNIEnv *, jobject, jlong cptr)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1toLongValue (
+  JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
 
   if (record)
     result = record->to_integer ();
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeRecord::toLongValue: "
+      "KnowledgeRecord object is released already");
+  }
 
   return result;
 }
@@ -173,9 +205,10 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1toLongValue (JNIEnv *, jobject, jl
 * Signature: (J)Ljava/lang/String;
 */
 jstring JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1toStringValue (JNIEnv * env, jobject, jlong cptr)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1toStringValue (
+  JNIEnv * env, jobject, jlong cptr)
 {
-  jstring result;
+  jstring result = 0;
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
 
   if (record)
@@ -184,7 +217,11 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1toStringValue (JNIEnv * env, jobje
   }
   else
   {
-    result = env->NewStringUTF ("");
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeRecord::toStringValue: "
+      "KnowledgeRecord object is released already");
   }
 
   return result;
@@ -196,13 +233,22 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1toStringValue (JNIEnv * env, jobje
 * Signature: (J)D
 */
 jdouble JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1toDoubleValue (JNIEnv *, jobject, jlong cptr)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1toDoubleValue (
+  JNIEnv * env, jobject, jlong cptr)
 {
   jdouble result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
 
   if (record)
     result = record->to_double ();
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeRecord::toDoubleValue: "
+      "KnowledgeRecord object is released already");
+  }
 
   return result;
 }
@@ -213,13 +259,22 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1toDoubleValue (JNIEnv *, jobject, 
 * Signature: (J)I
 */
 jint JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1getType (JNIEnv *, jobject, jlong cptr)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1getType (
+  JNIEnv * env, jobject, jlong cptr)
 {
   jint result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
 
   if (record)
     result = record->type ();
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeRecord::getType: "
+      "KnowledgeRecord object is released already");
+  }
 
   return result;
 }
@@ -230,7 +285,8 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1getType (JNIEnv *, jobject, jlong 
 * Signature: (J)V
 */
 void JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1freeKnowledgeRecord (JNIEnv *, jobject, jlong cptr)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1freeKnowledgeRecord (
+  JNIEnv *, jobject, jlong cptr)
 {
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
 
@@ -244,7 +300,8 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1freeKnowledgeRecord (JNIEnv *, job
 * Signature: (J)[D
 */
 jdoubleArray JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1toDoubleArray (JNIEnv * env, jclass, jlong cptr)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1toDoubleArray (
+  JNIEnv * env, jclass, jlong cptr)
 {
   jdoubleArray result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
@@ -265,6 +322,14 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1toDoubleArray (JNIEnv * env, jclas
 
     delete [] tmp;
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeRecord::toDoubleArray: "
+      "KnowledgeRecord object is released already");
+  }
 
   return result;
 }
@@ -275,7 +340,8 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1toDoubleArray (JNIEnv * env, jclas
 * Signature: (J)[J
 */
 jlongArray JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1toLongArray (JNIEnv * env, jclass, jlong cptr)
+Java_ai_madara_knowledge_KnowledgeRecord_jni_1toLongArray (
+  JNIEnv * env, jclass, jlong cptr)
 {
   jlongArray result (0);
   KnowledgeRecord * record = (KnowledgeRecord *) cptr;
@@ -296,6 +362,14 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1toLongArray (JNIEnv * env, jclass,
 
     delete [] tmp;
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "KnowledgeRecord::toLongArray: "
+      "KnowledgeRecord object is released already");
+  }
 
   return result;
 }
@@ -306,7 +380,8 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1toLongArray (JNIEnv * env, jclass,
 * Signature: ([JI)V
 */
 void JNICALL
-Java_ai_madara_knowledge_KnowledgeList_jni_1freeKnowledgeList (JNIEnv *env, jobject obj, jlongArray records, jint length)
+Java_ai_madara_knowledge_KnowledgeList_jni_1freeKnowledgeList (
+  JNIEnv *env, jobject obj, jlongArray records, jint length)
 {
   jboolean jniNoCopy = JNI_FALSE;
   jlong * nativeRecords = env->GetLongArrayElements (records, &jniNoCopy);
@@ -314,7 +389,8 @@ Java_ai_madara_knowledge_KnowledgeList_jni_1freeKnowledgeList (JNIEnv *env, jobj
   // iterate over list and free each record
   for (int x = 0; x < length; x++)
   {
-    Java_ai_madara_knowledge_KnowledgeRecord_jni_1freeKnowledgeRecord (env, obj, nativeRecords[x]);
+    Java_ai_madara_knowledge_KnowledgeRecord_jni_1freeKnowledgeRecord (
+      env, obj, nativeRecords[x]);
   }
 }
 
@@ -324,10 +400,12 @@ Java_ai_madara_knowledge_KnowledgeList_jni_1freeKnowledgeList (JNIEnv *env, jobj
 * Signature: ([JI)V
 */
 void JNICALL
-Java_ai_madara_knowledge_KnowledgeMap_jni_1freeKnowledgeMap (JNIEnv * env, jobject obj, jlongArray records, jint length)
+Java_ai_madara_knowledge_KnowledgeMap_jni_1freeKnowledgeMap (
+  JNIEnv * env, jobject obj, jlongArray records, jint length)
 {
-  //KnowledgeMap#free is exactly the same as KnowledgeList#free, no reason to re-implement
-  Java_ai_madara_knowledge_KnowledgeList_jni_1freeKnowledgeList (env, obj, records, length);
+  //KnowledgeMap#free is exactly the same as KnowledgeList#free
+  Java_ai_madara_knowledge_KnowledgeList_jni_1freeKnowledgeList (
+    env, obj, records, length);
 }
 
 

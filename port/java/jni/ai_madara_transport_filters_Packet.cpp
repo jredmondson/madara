@@ -71,6 +71,14 @@ Java_ai_madara_transport_filters_Packet_jni_1get
     // get the record and return the string index
     result = new KnowledgeRecord ((*packet)[key]);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Packet::get: "
+      "Packet object is released already");
+  }
 
   env->ReleaseStringUTFChars (index, key);
 
@@ -94,6 +102,14 @@ Java_ai_madara_transport_filters_Packet_jni_1set
   if (packet && result)
   {
     (*packet)[key] = *result;
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Packet::set: "
+      "Packet object is released already");
   }
 
   // get the record and return the string index
@@ -139,6 +155,14 @@ Java_ai_madara_transport_filters_Packet_jni_1get_1keys
     env->DeleteLocalRef (empty_string);
     env->DeleteWeakGlobalRef (string_class);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Packet::keys: "
+      "Packet object is released already");
+  }
 
   return result;
 }
@@ -163,19 +187,35 @@ Java_ai_madara_transport_filters_Packet_jni_1exists
     result = packet->find (key) != packet->end (); 
     env->ReleaseStringUTFChars (index, key);
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Packet::exists: "
+      "Packet object is released already");
+  }
 
   return result;
 }
 
 void JNICALL
 Java_ai_madara_transport_filters_Packet_jni_1clear
-  (JNIEnv *, jobject, jlong cptr)
+  (JNIEnv * env, jobject, jlong cptr)
 {
   KnowledgeMap * packet = (KnowledgeMap *)cptr;
 
   if (packet)
   {
     packet->clear ();
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Packet::clear: "
+      "Packet object is released already");
   }
 }
 
@@ -190,6 +230,14 @@ Java_ai_madara_transport_filters_Packet_jni_1erase
   {
     // erase the record
     packet->erase (key);
+  }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    
+    madara::utility::java::throw_dead_obj_exception(env,
+      "Packet::erase: "
+      "Packet object is released already");
   }
 
   env->ReleaseStringUTFChars (index, key);
