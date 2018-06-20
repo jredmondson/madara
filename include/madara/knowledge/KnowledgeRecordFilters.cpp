@@ -563,19 +563,19 @@ madara::knowledge::KnowledgeRecordFilters::filter (
       // did the filter add records to be sent?
       if (arguments.size () > madara::filters::TOTAL_ARGUMENTS)
       {
-        for (unsigned int i = madara::filters::TOTAL_ARGUMENTS;
-          i + 1 < arguments.size (); i += 2)
+        for (unsigned int j = madara::filters::TOTAL_ARGUMENTS;
+          j + 1 < arguments.size (); j += 2)
         {
-          if (arguments[i].is_string_type ())
+          if (arguments[j].is_string_type ())
           {
             madara_logger_cond_log (context_,
               context_->get_logger (), logger::global_logger.get (),
               logger::LOG_MAJOR,
               "KnowledgeRecordFilters::filter: Adding %s "
-              "to transport context.\n", arguments[i].to_string ().c_str ());
+              "to transport context.\n", arguments[j].to_string ().c_str ());
 
             transport_context.add_record (
-              arguments[i].to_string (), arguments[i + 1]);
+              arguments[j].to_string (), arguments[j + 1]);
           }
           else
           {
@@ -584,7 +584,7 @@ madara::knowledge::KnowledgeRecordFilters::filter (
               logger::LOG_ALWAYS,
               "KnowledgeRecordFilters::filter: ERROR. Filter attempted to"
               " add records to transport context, but args[%d] was not"
-              " a string value.\n", i);
+              " a string value.\n", j);
 
             break;
           }

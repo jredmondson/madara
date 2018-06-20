@@ -6282,7 +6282,7 @@ bool build_argument_list)
     ConstArray * object = new ConstArray (context);
     object->add_precedence (accumulated_precedence);
 
-    bool handled = false;
+    handled = false;
 
     ::std::list<Symbol *> param_list;
 

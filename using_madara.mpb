@@ -8,7 +8,7 @@ project : debug_build, using_clang, using_android, using_boost {
 
   specific(prop:microsoft) {
     DisableSpecificWarnings += 4005 4251 4275
-	macros += _CRT_SECURE_NO_WARNINGS
+    macros += _CRT_SECURE_NO_WARNINGS
   }
 
   verbatim (make, local, true) {

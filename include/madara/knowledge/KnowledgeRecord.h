@@ -223,39 +223,6 @@ namespace madara
       /* destructor */
       ~KnowledgeRecord () noexcept;
 
-    private:
-      template<typename T>
-      using MemberType = std::shared_ptr<T> KnowledgeRecord::*;
-
-      template<typename T, uint32_t Type, MemberType<T> Member, typename... Args>
-      std::shared_ptr<T> &emplace_shared_val(Args&&... args) {
-        clear_union();
-        type_ = Type;
-        return *new(&(this->*Member)) std::shared_ptr<T>(
-              std::forward<Args>(args)...);
-      }
-
-      template<typename T, uint32_t Type, MemberType<T> Member, typename... Args>
-      std::shared_ptr<T> &emplace_val(Args&&... args) {
-        return emplace_shared_val<T, Type, Member> (std::move(
-            std::make_shared<T> (
-              std::forward<Args>(args)...)));
-      }
-
-      template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
-               typename... Args>
-      std::shared_ptr<std::vector<T>> &emplace_shared_vec(Args&&... args) {
-        return emplace_shared_val<std::vector<T>, Type, Member> (
-              std::forward<Args>(args)...);
-      }
-
-      template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
-               typename... Args>
-      std::shared_ptr<std::vector<T>> &emplace_vec(Args&&... args) {
-        return emplace_val<std::vector<T>, Type, Member> (
-              std::forward<Args>(args)...);
-      }
-
     public:
       /**
        * Construct a shared_ptr to vector of integers within this
@@ -622,14 +589,15 @@ namespace madara
       std::string to_string (const std::string & delimiter = ", ") const;
 
       /**
-       * Returns a shared_ptr, sharing with the internal one.
+       * @return a shared_ptr, sharing with the internal one.
        * If this record is not a string, returns NULL shared_ptr
        **/
       std::shared_ptr<std::string> share_string() const;
 
       /**
-       * Returns a shared_ptr, while resetting this record to empty.
+       * @return a shared_ptr, while resetting this record to empty.
        * If this record is not a string, returns NULL shared_ptr
+       * and this record is unmodified.
        **/
       std::shared_ptr<std::string> take_string();
 
@@ -677,14 +645,15 @@ namespace madara
       std::vector <Integer> to_integers (void) const;
 
       /**
-       * Returns a shared_ptr, sharing with the internal one.
+       * @return a shared_ptr, sharing with the internal one.
        * If this record is not an int array, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<Integer>> share_integers() const;
 
       /**
-       * Returns a shared_ptr, while resetting this record to empty.
+       * @return a shared_ptr, while resetting this record to empty.
        * If this record is not an int array, returns NULL shared_ptr
+       * and this record is unmodified.
        **/
       std::shared_ptr<std::vector<Integer>> take_integers();
 
@@ -695,26 +664,28 @@ namespace madara
       std::vector <double> to_doubles (void) const;
 
       /**
-       * Returns a shared_ptr, sharing with the internal one.
+       * @return a shared_ptr, sharing with the internal one.
        * If this record is not a doubles array, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<double>> share_doubles() const;
 
       /**
-       * Returns a shared_ptr, while resetting this record to empty.
+       * @return a shared_ptr, while resetting this record to empty.
        * If this record is not doubles array, returns NULL shared_ptr
+       * and this record is unmodified.
        **/
       std::shared_ptr<std::vector<double>> take_doubles();
 
       /**
-       * Returns a shared_ptr, sharing with the internal one.
+       * @return a shared_ptr, sharing with the internal one.
        * If this record is not a binary file value, returns NULL shared_ptr
        **/
       std::shared_ptr<std::vector<unsigned char>> share_binary() const;
 
       /**
-       * Returns a shared_ptr, while resetting this record to empty.
+       * @return a shared_ptr, while resetting this record to empty.
        * If this record is not a binary file value, returns NULL shared_ptr
+       * and this record is unmodified.
        **/
       std::shared_ptr<std::vector<unsigned char>> take_binary();
 
@@ -1472,6 +1443,39 @@ namespace madara
       * information in the read () and write () methods.
       **/
       int64_t get_encoded_size (void) const;
+
+    private:
+      template<typename T>
+      using MemberType = std::shared_ptr<T> KnowledgeRecord::*;
+
+      template<typename T, uint32_t Type, MemberType<T> Member, typename... Args>
+      std::shared_ptr<T> &emplace_shared_val(Args&&... args) {
+        clear_union();
+        type_ = Type;
+        return *new(&(this->*Member)) std::shared_ptr<T>(
+              std::forward<Args>(args)...);
+      }
+
+      template<typename T, uint32_t Type, MemberType<T> Member, typename... Args>
+      std::shared_ptr<T> &emplace_val(Args&&... args) {
+        return emplace_shared_val<T, Type, Member> (std::move(
+            std::make_shared<T> (
+              std::forward<Args>(args)...)));
+      }
+
+      template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
+               typename... Args>
+      std::shared_ptr<std::vector<T>> &emplace_shared_vec(Args&&... args) {
+        return emplace_shared_val<std::vector<T>, Type, Member> (
+              std::forward<Args>(args)...);
+      }
+
+      template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
+               typename... Args>
+      std::shared_ptr<std::vector<T>> &emplace_vec(Args&&... args) {
+        return emplace_val<std::vector<T>, Type, Member> (
+              std::forward<Args>(args)...);
+      }
     };
 
     typedef ::std::map < std::string, KnowledgeRecord>   KnowledgeMap;

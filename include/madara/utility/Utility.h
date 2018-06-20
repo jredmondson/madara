@@ -319,12 +319,18 @@ namespace madara
 
     /**
      * Returns a time of day in nanoseconds
+     * If simtime feature is enabled, this may be simulation time instead of
+     * real rtime.
+     *
      * @return  time of day in nanoseconds
      **/
     int64_t get_time (void);
 
     /**
      * Returns a time of day as a chrono time value
+     * If simtime feature is enabled, this may be simulation time instead of
+     * real rtime.
+     *
      * @return  time of day as a chrono time value
      **/
     TimeValue get_time_value (void);
