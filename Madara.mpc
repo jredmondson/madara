@@ -139,24 +139,8 @@ project (Madara_Version) : using_madara {
 project (Madara_Jar) : using_madara, port/java/using_java {
   requires += java
 
-  prebuild += "$(JAVA_HOME)/bin/javac" -sourcepath port/java/src/main/java port/java/src/main/java/ai/madara/tests/*.java port/java/src/main/java/ai/madara/*.java port/java/src/main/java/ai/madara/knowledge/*.java port/java/src/main/java/ai/madara/util/*.java port/java/src/main/java/ai/madara/transport/*.java port/java/src/main/java/ai/madara/threads/*.java port/java/src/main/java/ai/madara/transport/filters/*.java port/java/src/main/java/ai/madara/knowledge/containers/*.java port/java/src/main/java/ai/madara/exceptions/*.java
-  postbuild += "$(JAVA_HOME)/bin/jar" cf lib/madara.jar -C port/java/src/main/java .
-
-  Documentation_Files {
-    port/java/src/main/java/*.java
-    port/java/src/main/java/ai/madara/*.java
-    port/java/src/main/java/ai/madara/util/*.java
-    port/java/src/main/java/ai/madara/transport/*.java
-    port/java/src/main/java/ai/madara/threads/*.java
-    port/java/src/main/java/ai/madara/transport/filters/*.java
-    port/java/src/main/java/ai/madara/containers/*.java
-  }
-  
-  Header_Files {
-  }
-
-  Source_Files {
-  }
+  prebuild += mvn -f port/java clean package install deploy
+  postbuild += cp "port/java/target/madara-`cat VERSION.txt`.jar" lib/
 }
 
 
