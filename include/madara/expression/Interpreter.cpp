@@ -1955,6 +1955,19 @@ madara::expression::Number::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Number::build (void)
 {
+  if (left_ || right_)
+  {
+    std::string message = 
+      "Number::build: KARL COMPILE ERROR: "
+      "Number ";
+    message += item_.to_string ();
+    message += " has a left or right child. Likely missing a semi-colon\n";
+
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR, message.c_str ());
+
+    throw KarlException (message);
+  }
+
   return new LeafNode (*(this->logger_), item_);
 }
 
@@ -1985,6 +1998,16 @@ madara::expression::Negate::build ()
   Symbol * right = right_;
   unsigned int i;
 
+  if (left_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "Negate::build: KARL COMPILE ERROR: "
+      "Negate(-) has a left child. Likely missing a semi-colon\n");
+
+    throw KarlException ("Negate::build: KARL COMPILE ERROR: "
+      "Negate(-) has a left child. Likely missing a semi-colon\n");
+  }
+  
   if (right_)
   {
     for (i = 1; next;
@@ -2055,6 +2078,17 @@ madara::expression::ConstArray::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ConstArray::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "array[]::build: KARL COMPILE ERROR: "
+      "array[] has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "array[]::build: KARL COMPILE ERROR: "
+      "array[] has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new CompositeConstArray (*(this->logger_), nodes_);
 }
 
@@ -2099,6 +2133,17 @@ madara::expression::ClearVariable::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ClearVariable::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#clear_var::build: KARL COMPILE ERROR: "
+      "#clear_var has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#clear_var::build: KARL COMPILE ERROR: "
+      "#clear_var has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallClearVariable (context_, nodes_);
 }
 
@@ -2126,6 +2171,17 @@ madara::expression::DeleteVariable::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::DeleteVariable::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#delete_var::build: KARL COMPILE ERROR: "
+      "#delete_var has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#delete_var::build: KARL COMPILE ERROR: "
+      "#delete_var has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallDeleteVariable (context_, nodes_);
 }
 
@@ -2154,6 +2210,17 @@ madara::expression::Eval::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Eval::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#evaluate::build: KARL COMPILE ERROR: "
+      "#evaluate has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#evaluate::build: KARL COMPILE ERROR: "
+      "#evaluate has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallEval (context_, nodes_);
 }
 
@@ -2182,6 +2249,17 @@ madara::expression::ExpandEnv::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ExpandEnv::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#expand_env::build: KARL COMPILE ERROR: "
+      "#expand_env has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#expand_env::build: KARL COMPILE ERROR: "
+      "#expand_env has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallExpandEnv (context_, nodes_);
 }
 
@@ -2210,6 +2288,17 @@ madara::expression::ExpandStatement::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ExpandStatement::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#expand::build: KARL COMPILE ERROR: "
+      "#expand has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#expand::build: KARL COMPILE ERROR: "
+      "#expand has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallExpandStatement (context_, nodes_);
 }
 
@@ -2239,6 +2328,17 @@ madara::expression::Fragment::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Fragment::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#fragment::build: KARL COMPILE ERROR: "
+      "#fragment has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#fragment::build: KARL COMPILE ERROR: "
+      "#fragment has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallFragment (context_, nodes_);
 }
 
@@ -2267,6 +2367,17 @@ madara::expression::LogLevel::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::LogLevel::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#log_level::build: KARL COMPILE ERROR: "
+      "#log_level has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#log_level::build: KARL COMPILE ERROR: "
+      "#log_level has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallLogLevel (context_, nodes_);
 }
 
@@ -2296,6 +2407,17 @@ madara::expression::GetClock::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::GetClock::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#get_clock::build: KARL COMPILE ERROR: "
+      "#get_clock has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#get_clock::build: KARL COMPILE ERROR: "
+      "#get_clock has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallGetClock (context_, nodes_);
 }
 
@@ -2323,6 +2445,17 @@ madara::expression::GetTime::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::GetTime::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#get_time::build: KARL COMPILE ERROR: "
+      "#get_time has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#get_time::build: KARL COMPILE ERROR: "
+      "#get_time has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallGetTime (context_, nodes_);
 }
 
@@ -2350,6 +2483,17 @@ madara::expression::GetTimeSeconds::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::GetTimeSeconds::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#get_time_s::build: KARL COMPILE ERROR: "
+      "#get_time_s has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#get_time_s::build: KARL COMPILE ERROR: "
+      "#get_time_s has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallGetTimeSeconds (context_, nodes_);
 }
 
@@ -2377,6 +2521,17 @@ madara::expression::SetClock::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::SetClock::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#set_clock::build: KARL COMPILE ERROR: "
+      "#set_clock has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#set_clock::build: KARL COMPILE ERROR: "
+      "#set_clock has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallSetClock (context_, nodes_);
 }
 
@@ -2403,6 +2558,17 @@ madara::expression::SetFixed::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::SetFixed::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#set_fixed::build: KARL COMPILE ERROR: "
+      "#set_fixed has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#set_fixed::build: KARL COMPILE ERROR: "
+      "#set_fixed has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallSetFixed (context_, nodes_);
 }
 
@@ -2430,6 +2596,17 @@ madara::expression::SetPrecision::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::SetPrecision::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#set_precision::build: KARL COMPILE ERROR: "
+      "#set_precision has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#set_precision::build: KARL COMPILE ERROR: "
+      "#set_precision has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallSetPrecision (context_, nodes_);
 }
 
@@ -2457,6 +2634,17 @@ madara::expression::SetScientific::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::SetScientific::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#scientific::build: KARL COMPILE ERROR: "
+      "#scientific has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#scientific::build: KARL COMPILE ERROR: "
+      "#scientific has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallSetScientific (context_, nodes_);
 }
 
@@ -2485,6 +2673,17 @@ madara::expression::Print::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Print::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#print::build: KARL COMPILE ERROR: "
+      "#print has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#print::build: KARL COMPILE ERROR: "
+      "#print has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallPrint (context_, nodes_);
 }
 
@@ -2511,6 +2710,17 @@ madara::expression::Cos::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Cos::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#cos::build: KARL COMPILE ERROR: "
+      "#cos has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#cos::build: KARL COMPILE ERROR: "
+      "#cos has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallCos (context_, nodes_);
 }
 
@@ -2538,6 +2748,17 @@ madara::expression::Sin::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Sin::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#sin::build: KARL COMPILE ERROR: "
+      "#sin has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#sin::build: KARL COMPILE ERROR: "
+      "#sin has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallSin (context_, nodes_);
 }
 
@@ -2564,6 +2785,17 @@ madara::expression::Tan::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Tan::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#tan::build: KARL COMPILE ERROR: "
+      "#tan has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#tan::build: KARL COMPILE ERROR: "
+      "#tan has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallTan (context_, nodes_);
 }
 
@@ -2590,6 +2822,17 @@ madara::expression::Power::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Power::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#pow::build: KARL COMPILE ERROR: "
+      "#pow has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#pow::build: KARL COMPILE ERROR: "
+      "#pow has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallPow (context_, nodes_);
 }
 
@@ -2616,6 +2859,17 @@ madara::expression::SquareRoot::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::SquareRoot::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#sqrt::build: KARL COMPILE ERROR: "
+      "#sqrt has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#sqrt::build: KARL COMPILE ERROR: "
+      "#sqrt has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallSqrt (context_, nodes_);
 }
 
@@ -2644,6 +2898,17 @@ madara::expression::PrintSystemCalls::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::PrintSystemCalls::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#print_system_calls::build: KARL COMPILE ERROR: "
+      "#print_system_calls has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#print_system_calls::build: KARL COMPILE ERROR: "
+      "#print_system_calls has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallPrintSystemCalls (context_, nodes_);
 }
 
@@ -2671,6 +2936,17 @@ madara::expression::RandDouble::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::RandDouble::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#rand_double::build: KARL COMPILE ERROR: "
+      "#rand_double has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#rand_double::build: KARL COMPILE ERROR: "
+      "#rand_double has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallRandDouble (context_, nodes_);
 }
 
@@ -2698,6 +2974,17 @@ madara::expression::RandInt::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::RandInt::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#rand_int::build: KARL COMPILE ERROR: "
+      "#rand_int has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#rand_int::build: KARL COMPILE ERROR: "
+      "#rand_int has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallRandInt (context_, nodes_);
 }
 
@@ -2725,6 +3012,17 @@ madara::expression::ReadFile::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ReadFile::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#read_file::build: KARL COMPILE ERROR: "
+      "#read_file has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#read_file::build: KARL COMPILE ERROR: "
+      "#read_file has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallReadFile (context_, nodes_);
 }
 
@@ -2752,6 +3050,17 @@ madara::expression::WriteFile::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::WriteFile::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#write_file::build: KARL COMPILE ERROR: "
+      "#write_file has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#write_file::build: KARL COMPILE ERROR: "
+      "#write_file has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallWriteFile (context_, nodes_);
 }
 
@@ -2780,6 +3089,17 @@ madara::expression::Size::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Size::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#size::build: KARL COMPILE ERROR: "
+      "#size has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#size::build: KARL COMPILE ERROR: "
+      "#size has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallSize (context_, nodes_);
 }
 
@@ -2807,6 +3127,17 @@ madara::expression::Sleep::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Sleep::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#sleep::build: KARL COMPILE ERROR: "
+      "#sleep has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#sleep::build: KARL COMPILE ERROR: "
+      "#sleep has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallSleep (context_, nodes_);
 }
 
@@ -2834,6 +3165,17 @@ madara::expression::ToBuffer::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ToBuffer::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#to_buffer::build: KARL COMPILE ERROR: "
+      "#to_buffer has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#to_buffer::build: KARL COMPILE ERROR: "
+      "#to_buffer has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallToBuffer (context_, nodes_);
 }
 
@@ -2861,6 +3203,17 @@ madara::expression::ToDouble::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ToDouble::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#to_double::build: KARL COMPILE ERROR: "
+      "#to_double has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#to_double::build: KARL COMPILE ERROR: "
+      "#to_double has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallToDouble (context_, nodes_);
 }
 
@@ -2888,6 +3241,17 @@ madara::expression::ToDoubles::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ToDoubles::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#to_doubles::build: KARL COMPILE ERROR: "
+      "#to_doubles has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#to_doubles::build: KARL COMPILE ERROR: "
+      "#to_doubles has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallToDoubles (context_, nodes_);
 }
 
@@ -2915,6 +3279,17 @@ madara::expression::ToHostDirs::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ToHostDirs::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#to_host_dirs::build: KARL COMPILE ERROR: "
+      "#to_host_dirs has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#to_host_dirs::build: KARL COMPILE ERROR: "
+      "#to_host_dirs has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallToHostDirs (context_, nodes_);
 }
 
@@ -2942,6 +3317,17 @@ madara::expression::ToInteger::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ToInteger::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#to_integer::build: KARL COMPILE ERROR: "
+      "#to_integer has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#to_integer::build: KARL COMPILE ERROR: "
+      "#to_integer has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallToInteger (context_, nodes_);
 }
 
@@ -2969,6 +3355,17 @@ madara::expression::ToIntegers::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ToIntegers::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#to_integers::build: KARL COMPILE ERROR: "
+      "#to_integers has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#to_integers::build: KARL COMPILE ERROR: "
+      "#to_integers has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallToIntegers (context_, nodes_);
 }
 
@@ -2996,6 +3393,17 @@ madara::expression::ToString::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ToString::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#to_string::build: KARL COMPILE ERROR: "
+      "#to_string has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#to_string::build: KARL COMPILE ERROR: "
+      "#to_string has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallToString (context_, nodes_);
 }
 
@@ -3023,6 +3431,17 @@ madara::expression::Type::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Type::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#type::build: KARL COMPILE ERROR: "
+      "#type has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#type::build: KARL COMPILE ERROR: "
+      "#type has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallType (context_, nodes_);
 }
 
@@ -3050,6 +3469,17 @@ madara::expression::Isinf::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Isinf::build ()
 {
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "#is_inf::build: KARL COMPILE ERROR: "
+      "#is_inf has a left or right child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#is_inf::build: KARL COMPILE ERROR: "
+      "#is_inf has a left or right child. Likely missing a semi-colon\n");
+  }
+  
   return new SystemCallIsinf (context_, nodes_);
 }
 
@@ -3130,6 +3560,17 @@ madara::expression::Postdecrement::build ()
 {
   ComponentNode * right (0);
 
+  if (left_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "var--::build: KARL COMPILE ERROR: "
+      "var-- has a left child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#var--::build: KARL COMPILE ERROR: "
+      "#var-- has a left child. Likely missing a semi-colon\n");
+  }
+  
   if (right_)
     right = right_->build ();
 
@@ -3161,6 +3602,17 @@ madara::expression::Postincrement::build ()
 {
   ComponentNode * right (0);
 
+  if (left_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "var++::build: KARL COMPILE ERROR: "
+      "var++ has a left child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "#var++::build: KARL COMPILE ERROR: "
+      "#var++ has a left child. Likely missing a semi-colon\n");
+  }
+  
   if (right_)
     right = right_->build ();
 
@@ -3192,6 +3644,17 @@ madara::expression::Predecrement::build ()
 {
   ComponentNode * right (0);
 
+  if (left_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "--var::build: KARL COMPILE ERROR: "
+      "--var has a left child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "--var::build: KARL COMPILE ERROR: "
+      "--var has a left child. Likely missing a semi-colon\n");
+  }
+  
   if (right_)
     right = right_->build ();
 
@@ -3222,6 +3685,17 @@ madara::expression::Preincrement::build ()
 {
   ComponentNode * right (0);
 
+  if (left_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "++var::build: KARL COMPILE ERROR: "
+      "++var has a left child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "++var::build: KARL COMPILE ERROR: "
+      "++var has a left child. Likely missing a semi-colon\n");
+  }
+  
   if (right_)
     right = right_->build ();
 
@@ -3255,6 +3729,17 @@ madara::expression::Not::build ()
   Symbol * right = right_;
   unsigned int i;
 
+  if (left_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "Not(!)::build: KARL COMPILE ERROR: "
+      "Logical Not(!) has a left child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "Not(!)::build: KARL COMPILE ERROR: "
+      "Logical Not(!) has a left child. Likely missing a semi-colon\n");
+  }
+  
   if (right_)
   {
     for (i = 1; next;
@@ -3296,6 +3781,17 @@ madara::expression::SquareRootUnary::build ()
 {
   ComponentNode * right (0);
 
+  if (left_)
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      "sqrt::build: KARL COMPILE ERROR: "
+      "sqrt has a left child. Likely missing a semi-colon\n");
+
+    throw KarlException (
+      "sqrt::build: KARL COMPILE ERROR: "
+      "sqrt has a left child. Likely missing a semi-colon\n");
+  }
+  
   if (right_)
     right = right_->build ();
 
@@ -3326,6 +3822,20 @@ madara::expression::Variable::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::Variable::build (void)
 {
+  if (left_ || right_)
+  {
+    std::string message = 
+      "Variable::build: KARL COMPILE ERROR: "
+      "Variable (";
+    message += key_;
+    message += ") has a left or right child. Likely missing a semi-colon\n";
+
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      message.c_str ());
+
+    throw KarlException (message);
+  }
+  
   // is reserved?
   if (key_ == "nan")
   {
@@ -3367,6 +3877,19 @@ madara::expression::ArrayRef::add_precedence (int precedence)
 madara::expression::ComponentNode *
 madara::expression::ArrayRef::build (void)
 {
+  if (left_ || right_)
+  {
+    std::string message = 
+      "ArrayRef::build: KARL COMPILE ERROR: ";
+    message += key_;
+    message += "[] has a left or right child. Likely missing a semi-colon\n";
+
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      message.c_str ());
+
+    throw KarlException (message);
+  }
+  
   return new CompositeArrayReference (key_, index_->build (), context_);
 }
 
@@ -4710,6 +5233,10 @@ Symbol *& returnableInput)
       "madara::expression::Interpreter: "
       "KARL COMPILE ERROR:: No closing delimiter (']' or ')')"
       " has been specified on the for loop.\n");
+
+    throw KarlException ("madara::expression::Interpreter: "
+      "KARL COMPILE ERROR:: No closing delimiter (']' or ')')"
+      " has been specified on the for loop.\n");
   }
 
   // get the precondition, postcondition and condition ready
@@ -5442,8 +5969,16 @@ madara::expression::Interpreter::system_call_insert (
   }
   else
   {
-    madara_logger_log (context.get_logger (), logger::LOG_EMERGENCY,
-      "System call %s does not have appropriate parentheses\n", name.c_str ());
+    std::string message = 
+      "madara::expression::Interpreter: "
+      "KARL COMPILE ERROR: System call ";
+    message += name;
+    message += " does not have appropriate parentheses\n";
+    
+    madara_logger_log (context.get_logger (), logger::LOG_ERROR,
+      message.c_str ());
+
+    throw KarlException (message.c_str ()); 
   }
 }
 
@@ -5555,6 +6090,17 @@ madara::expression::Symbol *op,
       parent = child;
     }
 
+    // child casts
+    Operator * child_operator = dynamic_cast <Operator *> (child);
+    Operator * child_ternary = dynamic_cast <TernaryOperator *> (child);
+
+    if (child && (child_operator == 0 && child_ternary == 0))
+    {
+      madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
+          "Interpreter::precedence_insert: "
+          "Level 1: child is neither an operator or ternary\n");
+    }
+
     // parent->precedence is < op->precedence at this point
 
     if (op_assignment || op_implies || op_unary)
@@ -5573,6 +6119,17 @@ madara::expression::Symbol *op,
       {
         grandparent = parent;
         parent = child;
+      }
+
+      // child casts
+      child_operator = dynamic_cast <Operator *> (child);
+      child_ternary = dynamic_cast <TernaryOperator *> (child);
+
+      if (child && (child_operator == 0 && child_ternary == 0))
+      {
+        madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
+          "Interpreter::precedence_insert: "
+          "Level 2: child is neither an operator or ternary\n");
       }
     }
 
@@ -5600,7 +6157,7 @@ madara::expression::Symbol *op,
         if (parent_both)
         {
           madara_logger_log (context.get_logger (), logger::LOG_WARNING,
-            "KARL COMPILE ERROR: Empty statements between ';' may"
+            "KARL COMPILE WARNING: Empty statements between ';' may"
             " cause slower execution, attempting to prune away the extra "
             "statement\n");
         }
@@ -5608,7 +6165,7 @@ madara::expression::Symbol *op,
         {
           madara_logger_log (context.get_logger (), logger::LOG_WARNING,
             "madara::expression::Interpreter: "
-            "KARL COMPILE ERROR: Binary operation has no left child. "
+            "KARL COMPILE WARNING: Binary operation has no left child. "
             "Inserting a zero\n");
 
           parent->left_ = new Number (context.get_logger (),
@@ -5648,8 +6205,18 @@ madara::expression::Symbol *op,
             "Unary node has a left child, shouldn't be possible\n"); 
         }
         else
+        {
+          madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
+            "Interpreter::precedence_insert: "
+            "Level 3: op is setting its left to the existing child\n");
+
           op->left_ = child;
+        }
       }
+
+      madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
+        "Interpreter::precedence_insert: "
+        "Level 3: parent->right is being set to current operator\n");
 
       parent->right_ = op;
     }
