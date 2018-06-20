@@ -545,10 +545,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setInteger
   {
     knowledge->set (nativeVar, Integer (value));
   }
+  else
+  {
+    // user has tried to use a deleted object. Clean up and throw
+    env->ReleaseStringUTFChars (var, nativeVar);
+    madara::utility::java::throw_dead_obj_exception(env, "Knowledge Base object is released already");
+  }
 
   env->ReleaseStringUTFChars (var, nativeVar);
-
-   madara::utility::java::throw_dead_obj_exception(env, "Knowledge Base object is released already");
 }
 
 /*
