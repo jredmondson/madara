@@ -5575,7 +5575,7 @@ Symbol *& lastValidInput)
     }
   }
 
-  if (i < input.length () && input[i] == '(')
+  else if (i < input.length () && input[i] == '(')
   {
     // save the function name and update i
     Function * function = new Function (name, context);

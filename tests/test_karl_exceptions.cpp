@@ -178,11 +178,22 @@ void test_nan (void)
   std::cerr << "#####################\n";
   knowledge::KnowledgeBase knowledge;
 
+  std::cerr << "Evaluating var1 = 1/0...\n";
   knowledge.evaluate ("var1 = 1/0");
+
+  std::cerr << "Evaluating var2 = var1/0...\n";
   knowledge.evaluate ("var2 = var1/0");
+
+  std::cerr << "Evaluating var3 = 1/var0...\n";
   knowledge.evaluate ("var3 = 1/var0");
+
+  std::cerr << "Evaluating var4 = #sqrt (-1)...\n";
   knowledge.evaluate ("var4 = #sqrt (-1)");
+
+  std::cerr << "Evaluating var5 = nan...\n";
   knowledge.evaluate ("var5 = nan");
+
+  std::cerr << "Evaluating var6 = var5 != var5...\n";
   knowledge.evaluate ("var6 = var5 != var5");
 
   std::cerr << "Testing divide by zero: ";
