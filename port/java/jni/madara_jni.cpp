@@ -13,6 +13,7 @@ static JavaVM * madara_JVM = NULL;
 
 static jobject madara_class_loader;
 
+
 jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
 {
   madara_logger_ptr_log (logger::global_logger.get (),
@@ -65,6 +66,8 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
       "SUCCESS: Class loader found. Storing reference.\n");
 
     madara_class_loader = env->NewGlobalRef (class_loader);
+    
+  
   }
   else
   {
@@ -303,4 +306,12 @@ jclass madara::utility::java::find_class (JNIEnv * env, const char * name)
   }
 
   return result;
+}
+
+
+void madara::utility::java::throw_dead_obj_exception (JNIEnv * env, const char * message)
+{
+  jclass excp_cls = madara::utility::java::find_class (env,
+    "ai/madara/exceptions/MadaraDeadObjectException");
+  	env->ThrowNew(excp_cls, message);
 }

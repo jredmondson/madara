@@ -31,6 +31,7 @@ namespace madara
        * @param  name  name of the class to find
        **/
       jclass MADARA_EXPORT find_class (JNIEnv * env, const char * name);
+      void MADARA_EXPORT throw_dead_obj_exception (JNIEnv * env, const char * name);
     }
   }
 }

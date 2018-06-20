@@ -547,6 +547,8 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setInteger
   }
 
   env->ReleaseStringUTFChars (var, nativeVar);
+
+   madara::utility::java::throw_dead_obj_exception(env, "Knowledge Base object is released already");
 }
 
 /*
