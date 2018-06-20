@@ -141,6 +141,7 @@ project (Madara_Jar) : using_madara, port/java/using_java {
 
   prebuild += mvn -f port/java clean package install deploy
   postbuild += cp "port/java/target/madara-`cat VERSION.txt`.jar" lib/
+  postbuild += cp "lib/madara-`cat VERSION.txt`.jar" lib/madara.jar
 }
 
 
