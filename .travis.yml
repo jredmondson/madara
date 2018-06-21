@@ -147,11 +147,29 @@ script:
   - ls $TRAVIS_BUILD_DIR
   - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ $SIMTIME
   - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ $SIMTIME
-  # now run a couple of tests
+  # now run functionality unit tests 
   - echo "Testing basic functionality..."
+  - $MADARA_ROOT/bin/test_bandwidth_monitor
   - $MADARA_ROOT/bin/test_basic_reasoning
+  - $MADARA_ROOT/bin/test_checkpointing
+  - $MADARA_ROOT/bin/test_context_copy
+  - $MADARA_ROOT/bin/test_encoding
+  - $MADARA_ROOT/bin/test_filters
+  - $MADARA_ROOT/bin/test_fragmentation
   - $MADARA_ROOT/bin/test_karl_containers
   - $MADARA_ROOT/bin/test_karl_exceptions
+  - $MADARA_ROOT/bin/test_kb_destructions
+  - $MADARA_ROOT/bin/test_kb_expansion
+  - $MADARA_ROOT/bin/test_packet_scheduler
+  - $MADARA_ROOT/bin/test_periodic_wait
+  - $MADARA_ROOT/bin/test_prefix_to_map
+  - $MADARA_ROOT/bin/test_print_statement
+  - $MADARA_ROOT/bin/test_save_modifieds
+  - $MADARA_ROOT/bin/test_shared_record
+  - if [[ "$SIMTIME" == "simtime" ]]; then $MADARA_ROOT/bin/test_simtime ; fi
+  - $MADARA_ROOT/bin/test_system_calls
+  - $MADARA_ROOT/bin/test_timed_wait
+  - $MADARA_ROOT/bin/test_utility
   # performance test (useful to see if we've regressed in performance)
   - echo "Testing reasoning throughput..."
   - $MADARA_ROOT/bin/test_reasoning_throughput

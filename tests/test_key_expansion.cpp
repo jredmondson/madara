@@ -19,10 +19,13 @@ int main (int, char **)
 
   knowledge.print ();
 
+  // asserts will show failures
+  std::cerr << "OVERALL: SUCCESS.\n";
+
   return 0;
 }
 
-/// Tests logicals operators (&&, ||)
+/// tests key expansion
 void test_expansion (madara::knowledge::KnowledgeBase & knowledge)
 {
   madara::knowledge::KnowledgeRecord result;

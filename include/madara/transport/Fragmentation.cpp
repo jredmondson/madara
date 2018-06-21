@@ -649,26 +649,78 @@ madara::transport::is_complete (const char * originator, uint64_t clock,
 
   if (orig_map != map.end ())
   {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
+      "transport::is_complete:" \
+      " %s was found.\n",
+     originator);
+     
     ClockFragmentMap & clock_map (orig_map->second);
     ClockFragmentMap::iterator clock_found = clock_map.find (clock);
 
     if (clock_found != clock_map.end ())
     {
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
+        "transport::is_complete:" \
+        " %s:%" PRIu64 " was found.\n",
+        originator, clock);
+     
       uint64_t size = clock_found->second.size ();
       FragmentMap::iterator i = clock_found->second.find (0);
 
       if (i != clock_found->second.end ())
       {
+        madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
+          "transport::is_complete:" \
+          " %s:%" PRIu64 ": 0 == fragmap.end.\n",
+          originator, clock);
+
         if (FragmentMessageHeader::get_updates (i->second) == size)
         {
+          madara_logger_ptr_log (
+            logger::global_logger.get(), logger::LOG_MAJOR,
+            "transport::is_complete:" \
+            " %s:%" PRIu64 ": size == %" PRIu64 
+            ", updates == %" PRIu32 ". COMPLETE\n",
+            originator, clock, size,
+            FragmentMessageHeader::get_updates (i->second));
+
           result = true;
+        }
+        else
+        {
+          madara_logger_ptr_log (
+            logger::global_logger.get(), logger::LOG_MAJOR,
+            "transport::is_complete:" \
+            " %s:%" PRIu64 ": size == %" PRIu64 
+            ", updates == %" PRIu32 ". INCOMPLETE\n",
+            originator, clock, size,
+            FragmentMessageHeader::get_updates (i->second));
         }
       }
       else if (size == 0)
       {
+        madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
+          "transport::is_complete:" \
+          " %s:%" PRIu64 ": size == 0  and i == 0. COMPLETE\n",
+          originator, clock);
+
         result = true;
       }
     }
+    else
+    {
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
+        "transport::is_complete:" \
+        " %s:%" PRIu64 " was not found.\n",
+        originator, clock);
+    }
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
+      "transport::is_complete:" \
+      " %s was not found.\n",
+     originator);
   }
 
   return result;

@@ -10,6 +10,8 @@
 
 namespace logger = madara::logger;
 
+int num_fails = 0;
+
 // command line arguments
 int parse_args (int argc, char * argv[]);
 
@@ -33,7 +35,10 @@ int main (int argc, char * argv[])
   if (monitor.get_bytes_per_second () >= 100)
     std::cerr << "Bandwidth check results in SUCCESS\n\n";
   else
+  {
     std::cerr << "Bandwidth check results in FAIL\n\n";
+    ++num_fails;
+  }
 
 
   
@@ -45,7 +50,10 @@ int main (int argc, char * argv[])
   if (monitor.get_bytes_per_second () >= 60)
     std::cerr << "Bandwidth check results in SUCCESS\n\n";
   else
+  {
     std::cerr << "Bandwidth check results in FAIL\n\n";
+    ++num_fails;
+  }
   
   std::cerr << "Sleeping for 3 seconds...\n";
   madara::utility::sleep (3);
@@ -55,7 +63,10 @@ int main (int argc, char * argv[])
   if (monitor.get_bytes_per_second () >= 15)
     std::cerr << "Bandwidth check results in SUCCESS\n\n";
   else
+  {
     std::cerr << "Bandwidth check results in FAIL\n\n";
+    ++num_fails;
+  }
   
   monitor.clear ();
   
@@ -80,10 +91,21 @@ int main (int argc, char * argv[])
   if (monitor.get_bytes_per_second () >= 3000)
     std::cerr << "Bandwidth check results in SUCCESS\n\n";
   else
+  {
     std::cerr << "Bandwidth check results in FAIL\n\n";
-  
+    ++num_fails;
+  }
 
-  return 0;
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }
 
 

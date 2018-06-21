@@ -9,11 +9,13 @@
 
 namespace logger = madara::logger;
 
+int num_fails = 0;
+
 int main (int, char **)
 {
 #ifndef _MADARA_NO_KARL_
   // debug level for logging
-  logger::global_logger->set_level (7);
+  //logger::global_logger->set_level (7);
 
   // don't use a transport for this test.
   madara::transport::TransportSettings transport_settings;
@@ -46,6 +48,16 @@ int main (int, char **)
   // start waiting
   knowledge.wait (expression, wait_settings);
 
+  knowledge.print ("Test 1: count >= 1000, actual = {.count}. ");
+  if (knowledge.get (".count") > 1000)
+  {
+    knowledge.print ("SUCCESS\n");
+  }
+  else
+  {
+    knowledge.print ("FAIL\n"); ++num_fails;
+  }
+
   // **********************************************
   // * Test 2: Waiting and evaluating only once
   // **********************************************
@@ -62,6 +74,16 @@ int main (int, char **)
   // start waiting
   knowledge.wait (expression, wait_settings);
 
+  knowledge.print ("Test 2: count == 1, actual = {.count}. ");
+  if (knowledge.get (".count") == 1)
+  {
+    knowledge.print ("SUCCESS\n");
+  }
+  else
+  {
+    knowledge.print ("FAIL\n"); ++num_fails;
+  }
+
   // **********************************************
   // * Test 3: Waiting and evaluating twice
   // **********************************************
@@ -74,12 +96,21 @@ int main (int, char **)
     "WAIT STARTED: .count == {.count}. Waiting for .count == 2.\n";
   expression = knowledge.compile (logic);
 
-
   // start waiting
   knowledge.wait (expression, wait_settings);
 
+  knowledge.print ("Test 3: count == 2, actual = {.count}. ");
+  if (knowledge.get (".count") == 2)
+  {
+    knowledge.print ("SUCCESS\n");
+  }
+  else
+  {
+    knowledge.print ("FAIL\n"); ++num_fails;
+  }
+
   // **********************************************
-  // * Test 3: Waiting and evaluating ten times
+  // * Test 4: Waiting and evaluating ten times
   // **********************************************
 
   // clear any existing knowledge
@@ -93,10 +124,30 @@ int main (int, char **)
   // start waiting
   knowledge.wait (expression, wait_settings);
   
+  knowledge.print ("Test 4: count == 10, actual = {.count}. ");
+  if (knowledge.get (".count") == 10)
+  {
+    knowledge.print ("SUCCESS\n");
+  }
+  else
+  {
+    knowledge.print ("FAIL\n"); ++num_fails;
+  }
+
 #else
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "This test is disabled due to karl feature being disabled.\n");
 #endif
-  return 0;
+
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }
 
