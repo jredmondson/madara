@@ -3,33 +3,50 @@ package ai.madara.exceptions;
 public class MadaraDeadObjectException extends Exception {
 
 	/**
-	 * 
+	 * version
 	 */
 	private static final long serialVersionUID = 1L;
 
+    /**
+     * Constructor
+     */
 	public MadaraDeadObjectException() {
-		// TODO Auto-generated constructor stub
 	}
 
+    /**
+     * Constructor with message
+     * @param  message information to embed in the exception
+     */
 	public MadaraDeadObjectException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
+    /**
+     * Constructor with cause
+     * @param  cause  source of the exception
+     */
 	public MadaraDeadObjectException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
 
+    /**
+     * Constructor with cause and message
+     * @param  message information to embed in the exception
+     * @param  cause  source of the exception
+     */
 	public MadaraDeadObjectException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
 	}
 
+    /**
+     * Constructor with cause and message and suppression
+     * @param  message information to embed in the exception
+     * @param  cause  source of the exception
+     * @param  enableSuppression  if true, suppress the throw
+     */
 	public MadaraDeadObjectException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
-		// TODO Auto-generated constructor stub
 	}
 
 }
