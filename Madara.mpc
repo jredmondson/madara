@@ -141,7 +141,7 @@ project (Madara_Jar) : using_madara, port/java/using_java {
 
   prebuild += mvn -f port/java versions:set -DnewVersion=`cat VERSION.txt`
   prebuild += mvn -f port/java versions:commit
-  prebuild += mvn -f port/java clean package install deploy
+  prebuild += mvn -f port/java clean package install
 }
 
 
