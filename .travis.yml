@@ -159,7 +159,7 @@ script:
   - $MADARA_ROOT/bin/test_karl_containers
   - $MADARA_ROOT/bin/test_karl_exceptions
   - $MADARA_ROOT/bin/test_kb_destructions
-  - $MADARA_ROOT/bin/test_kb_expansion
+  - $MADARA_ROOT/bin/test_key_expansion
   - $MADARA_ROOT/bin/test_packet_scheduler
   - $MADARA_ROOT/bin/test_periodic_wait
   - $MADARA_ROOT/bin/test_prefix_to_map
