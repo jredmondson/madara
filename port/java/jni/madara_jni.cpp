@@ -309,7 +309,8 @@ jclass madara::utility::java::find_class (JNIEnv * env, const char * name)
 }
 
 
-void madara::utility::java::throw_dead_obj_exception (JNIEnv * env, const char * message)
+void madara::utility::java::throw_dead_obj_exception (
+  JNIEnv * env, const char * message)
 {
   jclass excp_cls = madara::utility::java::find_class (env,
     "ai/madara/exceptions/MadaraDeadObjectException");
