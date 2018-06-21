@@ -24,6 +24,8 @@ namespace containers = knowledge::containers;
 typedef knowledge::KnowledgeRecord   KnowledgeRecord;
 typedef knowledge::KnowledgeVector   KnowledgeVector;
 
+int num_fails (0);
+
 void test_flex_map (void)
 {
   std::cerr << "************* FLEX MAP: CREATING FLEX MAP*************\n";
@@ -51,7 +53,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
 
   std::cerr << "  Checking elements of normal map...\n";
@@ -63,7 +65,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
 
   std::cerr << "    Retrieving age...";
@@ -73,7 +75,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
 
   std::cerr << "    Retrieving salary...";
@@ -83,7 +85,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
 
   std::cerr << "Adding names to the flex map\n";
@@ -104,7 +106,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
 
   std::vector<std::string> sub_keys;
@@ -119,7 +121,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
 
   std::cerr << "  Checking context.to_map vs flex_map.keys: ";
@@ -129,7 +131,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
 
   std::cerr << "Adding mixes of string and index keys to a flex map\n";
@@ -153,7 +155,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
 
   std::cerr << "  Checking existence of subkeys in flex map: ";
@@ -167,7 +169,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
 
   std::cerr << "Changing delimiter of top level map: \n";
@@ -182,7 +184,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
 
 
@@ -198,7 +200,48 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
+
+
+  std::cerr << "  Checking to_integer defaults: ";
+  if (map["unknown"]["int"].to_integer (5) == 5)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
+
+  std::cerr << "  Checking to_string defaults: ";
+  if (map["unknown"]["string"].to_string ("nope") == "nope")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
+
+  std::cerr << "  Checking to_double defaults: ";
+  if (map["unknown"]["double"].to_double (3.25) == 3.25)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
+
+  std::cerr << "  Checking to_record defaults: ";
+  if (map["unknown"]["record"].to_record (knowledge::KnowledgeRecord (1)) == 1)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
   }
 }
 
@@ -246,7 +289,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -277,7 +320,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -321,7 +364,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -375,7 +418,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -407,7 +450,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -451,7 +494,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -507,7 +550,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -539,7 +582,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -586,7 +629,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -640,7 +683,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -672,7 +715,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -719,7 +762,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -767,7 +810,7 @@ void test_vector_vectors (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -812,7 +855,7 @@ void test_vector_vectors (void)
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "array1_1 = " << int_array1_0 << "\n";
     std::cerr << "array1_2 = " << int_array1_1 << "\n";
     std::cerr << "array1_3 = " << int_array1_2 << "\n";
@@ -1640,7 +1683,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 3)
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "    Printing modified elements in context\n\n";
     std::cerr << context.debug_modifieds () << "\n";
   }
@@ -1755,7 +1798,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 0)
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "    Printing modified elements in context\n\n";
     std::cerr << context.debug_modifieds () << "\n";
   }
@@ -1771,7 +1814,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 55)
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
   else
   {
@@ -1825,7 +1868,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 3)
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
   else
   {
@@ -1846,7 +1889,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 0)
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
   }
   else
   {
@@ -1863,7 +1906,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 4)
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL\n"; ++num_fails;
     std::cerr << "    Printing modified elements in context\n\n";
     std::cerr << context.debug_modifieds () << "\n";
   }
@@ -1897,5 +1940,14 @@ int main (int , char **)
   test_vector2D ();
   test_vector3D ();
 
-  return 0;
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }

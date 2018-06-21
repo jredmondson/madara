@@ -137,10 +137,13 @@ namespace madara
 
         /**
         * Retrieves a copy of the record from the current location
+        * @param   default_value if map location does not exist in KB,
+        *                        return this value instead
         * @return the value of the entry. Modifications to this will
         *         not be reflected in the context. This is a local copy.
         **/
-        knowledge::KnowledgeRecord to_record (void) const;
+        knowledge::KnowledgeRecord to_record (
+          const KnowledgeRecord & default_value = KnowledgeRecord(0)) const;
 
         /**
         * Fills a BufferVector container with all subkeys
@@ -204,21 +207,28 @@ namespace madara
 
         /**
         * Returns the value at the location as an integer
+        * @param   default_value if map location does not exist in KB,
+        *                        return this value instead
         * @return  the value at the location
         **/
-        knowledge::KnowledgeRecord::Integer to_integer (void) const;
+        knowledge::KnowledgeRecord::Integer to_integer (
+          KnowledgeRecord::Integer default_value = 0) const;
 
         /**
         * Returns the value at the location as a double
+        * @param   default_value if map location does not exist in KB,
+        *                        return this value instead
         * @return  the value at the location
         **/
-        double to_double (void) const;
+        double to_double (double default_value = 0.0) const;
 
         /**
         * Returns the value at the location as a string
+        * @param   default_value if map location does not exist in KB,
+        *                        return this value instead
         * @return  the value at the location
         **/
-        std::string to_string (void) const;
+        std::string to_string (const std::string & default_value = "") const;
 
         /**
          * Returns the size of the map

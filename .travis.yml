@@ -150,6 +150,7 @@ script:
   # now run a couple of tests
   - echo "Testing basic functionality..."
   - $MADARA_ROOT/bin/test_basic_reasoning
+  - $MADARA_ROOT/bin/test_karl_containers
   - $MADARA_ROOT/bin/test_karl_exceptions
   # performance test (useful to see if we've regressed in performance)
   - echo "Testing reasoning throughput..."
