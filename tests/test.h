@@ -27,6 +27,15 @@ inline void log(Args&&... args) {
     return e; \
   }())
 
+/// Test failure count, local to each translation unit (i.e., .cpp file)
+static int madara_tests_fail_count = 0;
+
+/// Reset this translation unit's failure count
+static inline void madara_tests_reset_count()
+{
+  madara_tests_fail_count = 0;
+}
+
 #define TEST_OP(lhs, op, rhs) \
   do { \
     decltype(lhs) l = (lhs); \
@@ -39,6 +48,7 @@ inline void log(Args&&... args) {
       log("SUCCESS : %s\n", cmsg); \
     } else { \
       log("FAIL    : %s\n", cmsg); \
+      ++madara_tests_fail_count; \
     } \
   } while(0)
 

@@ -13,8 +13,6 @@ namespace logger = madara::logger;
 
 typedef  KnowledgeRecord::Integer  Integer;
 
-int num_fails = 0;
-
 void test_unshared_record (void)
 {
   KnowledgeRecord rec;
@@ -25,16 +23,14 @@ void test_unshared_record (void)
 
   std::string str_out = rec.to_string();
 
-  TEST_NE(orig_ptr, str_out.c_str());
-
 #if defined(__GNUC__) && (__GNUC__ < 5)
   std::cout << "This test ignored in old versions of g++ with COW strings\n";
 #else
-  if (orig_ptr == str_out.c_str ())
-    ++num_fails;
+  TEST_NE(orig_ptr, str_out.c_str());
 #endif
 
-  std::cerr << "test_unshared_record: num_fails: " << num_fails << "\n";
+  std::cerr << "test_unshared_record: num_fails: " <<
+    madara_tests_fail_count << "\n";
 }
 
 void test_shared_record (void)
@@ -50,8 +46,6 @@ void test_shared_record (void)
   std::shared_ptr<std::string> str_out = rec.share_string();
 
   TEST_EQ(orig_ptr, str_out->c_str());
-  if (orig_ptr != str_out->c_str ())
-    ++num_fails;
 
   std::string big_str =
     "This is a string that might be much longer and be expensive to copy.";
@@ -62,8 +56,6 @@ void test_shared_record (void)
 
   std::shared_ptr<std::vector<int64_t>> iptr = ints.share_integers();
   TEST_NE(iptr.get(), (void*)0);
-  if (iptr.get() == (void*)0)
-    ++num_fails;
 
   int64_t *orig_iptr = &(*iptr)[0];
 
@@ -84,8 +76,6 @@ void test_shared_record (void)
   kb.set(".my_doubles", std::move(dbls)); 
 
   TEST_EQ(kb.get(".my_array").retrieve_index(0).to_integer(), 42);
-  if (kb.get(".my_array").retrieve_index(0).to_integer() != 42)
-    ++num_fails;
 
   // leaves .my_string empty
   std::shared_ptr<std::string> big_str_out = kb.take_string(".my_string");
@@ -101,52 +91,38 @@ void test_shared_record (void)
   double *out_dptr = &(*dbls_out)[0];
 
   TEST_EQ((void*)orig_sptr, (void*)out_sptr);
-  if ((void*)orig_sptr != (void*)out_sptr)
-    ++num_fails;
   TEST_EQ((void*)orig_iptr, (void*)out_iptr);
-  if ((void*)orig_iptr != (void*)out_iptr)
-    ++num_fails;
   TEST_EQ((void*)orig_dptr, (void*)out_dptr);
-  if ((void*)orig_dptr != (void*)out_dptr)
-    ++num_fails;
 
   TEST_EQ(ints_out->at(0), 42);
-  if (ints_out->at(0) != 42)
-    ++num_fails;
   TEST_EQ(dbls_out->at(0), 42.5);
-  if (dbls_out->at(0) != 42.5)
-    ++num_fails;
 
   // Causes a copy to be made, so we can modify without changing ints_out
   kb.set_index(".my_array", 0, 47);
 
   TEST_EQ(kb.get(".my_array").retrieve_index(0).to_integer(), 47);
-  if (kb.get(".my_array").retrieve_index(0).to_integer() != 47)
-    ++num_fails;
   TEST_EQ(ints_out->at(0), 42);
-  if (ints_out->at(0) != 42)
-    ++num_fails;
 
-  std::cerr << "test_shared_record: num_fails: " << num_fails << "\n";
+  std::cerr << "test_shared_record: num_fails: " <<
+    madara_tests_fail_count << "\n";
 }
 
 int main (int, char **)
 {
   TEST_EQ(sizeof(KnowledgeRecord), 48UL);
-  if (sizeof(KnowledgeRecord) != 48UL)
-    ++num_fails;
 
   test_unshared_record ();
   test_shared_record ();
 
-  if (num_fails > 0)
+  if (madara_tests_fail_count > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count <<
+      " tests failed.\n";
   }
   else
   {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
-  return num_fails;
+  return madara_tests_fail_count;
 }
