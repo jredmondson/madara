@@ -425,13 +425,14 @@ madara::knowledge::containers::Vector::exchange (
     
       if (i < other_size)
       {
+        auto val = other.context_->get (other.vector_[i], other.settings_);
         // this[i] = other[i];
-        context_->set (this->vector_[i],
-          context_->get (other.vector_[i], other.settings_),
+        context_->set (this->vector_[i], std::move(val),
           settings_);
 
         // other[i] = temp;
-        other.context_->set (other.vector_[i], temp, other.settings_);
+        other.context_->set (other.vector_[i], std::move(temp),
+                             other.settings_);
       }
       else
       {
@@ -439,14 +440,15 @@ madara::knowledge::containers::Vector::exchange (
         {
           std::stringstream buffer;
           buffer << this->name_;
+          
           buffer << delimiter_;
           buffer << i;
           this->context_->delete_variable (buffer.str (), other.settings_);
         }
         else
         {
-          knowledge::KnowledgeRecord zero;
-          this->context_->set (this->vector_[i], zero, this->settings_);
+          knowledge::KnowledgeRecord empty;
+          this->context_->set (this->vector_[i], empty, this->settings_);
         }
 
         {
@@ -456,7 +458,7 @@ madara::knowledge::containers::Vector::exchange (
           buffer << i;
 
           // other[i] = temp;
-          other.context_->set (buffer.str (), temp, other.settings_);
+          other.context_->set (buffer.str (), std::move(temp), other.settings_);
         }
       }
 
@@ -470,14 +472,13 @@ madara::knowledge::containers::Vector::exchange (
       buffer << delimiter_;
       buffer << i;
       context_->set (buffer.str (),
-        other.context_->get (other.vector_[i], other.settings_), this->settings_);
+        other.context_->get (other.vector_[i], other.settings_),
+        this->settings_);
     }
 
     // set the size appropriately
-    this->context_->set (this->size_,
-      knowledge::KnowledgeRecord::Integer (other_size), this->settings_);
-    other.context_->set (other.size_,
-      knowledge::KnowledgeRecord::Integer (this_size), other.settings_);
+    this->context_->set (this->size_, other_size, this->settings_);
+    other.context_->set (other.size_, this_size, other.settings_);
 
     if (refresh_keys)
     {

@@ -1156,6 +1156,7 @@ void test_vector_exchanges (void)
   vector2.set (2, "vector2.2 value");
   vector2.set (3, "vector2.3 value");
   
+  knowledge.print ();
   std::cerr << "Exchanging...\n";
   vector.exchange (vector2);
   
