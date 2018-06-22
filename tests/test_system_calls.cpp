@@ -11,6 +11,8 @@ namespace logger = madara::logger;
 namespace knowledge = madara::knowledge;
 typedef  knowledge::KnowledgeRecord  KnowledgeRecord;
 
+int num_fails = 0;
+
 // command line arguments
 int parse_args (int argc, char * argv[]);
 
@@ -50,9 +52,19 @@ int main (int argc, char * argv[])
   else
   {
     knowledge.print ("TEST FAILED\n");
+    ++num_fails;
   }
 
-  return 0;
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }
 
 /// Tests logicals operators (&&, ||)
@@ -145,32 +157,37 @@ void test_system_calls (
 
   if (two_to_4th != 16)
   {
-    std::cerr << "ERROR: pow(2,4) returned " << two_to_4th <<
+    std::cerr << "FAIL: pow(2,4) returned " << two_to_4th <<
       " instead of 16.\n";
+    ++num_fails;
   }
 
   if (square_of_16 != 4)
   {
-    std::cerr << "ERROR: sqrt(16) returned " << square_of_16 << 
+    std::cerr << "FAIL: sqrt(16) returned " << square_of_16 << 
       " instead of 4.\n";
+    ++num_fails;
   }
 
   if (square_two_to_4th != 4)
   {
-    std::cout << "ERROR: sqrt(pow(2,4)) returned " << square_two_to_4th <<
+    std::cout << "FAIL: sqrt(pow(2,4)) returned " << square_two_to_4th <<
       " instead of 4. [1]\n";
+    ++num_fails;
   }
 
   if (diff_s != 3 && diff_s != 4)
   {
-    std::cout << "ERROR: #get_time_seconds returned diff of " << diff_s <<
+    std::cout << "FAIL: #get_time_seconds returned diff of " << diff_s <<
       " instead of 3 (.\n";
+    ++num_fails;
   }
 
   if (diff_ns < 3000000000 || diff_ns > 4000000000)
   {
-    std::cout << "ERROR: #get_time_ns returned diff of " << diff_ns <<
+    std::cout << "FAIL: #get_time_ns returned diff of " << diff_ns <<
       " instead of ~3000000000 (.\n";
+    ++num_fails;
   }
 
   std::cerr << "Testing #set_scientific...\n";

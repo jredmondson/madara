@@ -14,6 +14,8 @@
 namespace transport = madara::transport;
 namespace logger = madara::logger;
 
+int num_fails = 0;
+
 char chars[10] = {
   '0', '1', '2', '3', '4',
   '5', '6', '7', '8', '9'};
@@ -39,7 +41,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      madara_logger_ptr_log (logger::global_logger->get (),
+      madara_logger_ptr_log (logger::global_logger.get (),
         logger::LOG_ALWAYS, 
         "\nProgram summary for %s:\n\n" \
         "  Tests the fragment library\n\n" \
@@ -76,15 +78,17 @@ void test_frag (void)
   transport::frag (payload, 50000, map);
 
   char * result = transport::defrag (map);
-  const char * offset = result;
 
   if (header.message_header_test (result))
   {
     buffer_remaining = header.encoded_size ();
-    offset = header.read (result, buffer_remaining);
+    header.read (result, buffer_remaining);
     buffer_remaining = header.size - header.encoded_size ();
     if (buffer_remaining != 300000)
+    {
       std::cerr << "FAIL. defrag: Size is incorrect after defrag.\n";
+      ++num_fails;
+    }
     else
     {
       bool failed = false;
@@ -96,7 +100,10 @@ void test_frag (void)
       }
 
       if (failed)
+      {
         std::cerr << "FAIL. defrag: Size is incorrect after defrag.\n";
+        ++num_fails;
+      }
       else
         std::cerr << "SUCCESS. defrag: Message was defragged correctly.\n";
     }
@@ -104,6 +111,7 @@ void test_frag (void)
   else
   {
     std::cerr << "FAIL. defrag: Fragments reassembled to bad data.\n";
+    ++num_fails;
   }
 
   delete [] payload;
@@ -141,10 +149,16 @@ void test_add_frag (void)
   if (transport::exists ("testmachine", 1, 0, frag_map))
     std::cerr << "SUCCESS. exists found testmachine:1:0 in frag_map.\n";
   else
+  {
     std::cerr << "FAIL. exists did not find testmachine:1:0 in frag_map.\n";
-  
+    ++num_fails;
+  }
+
   if (transport::exists ("testmachine", 1, 1, frag_map))
+  {
     std::cerr << "FAIL. exists found testmachine:1:1 in frag_map.\n";
+    ++num_fails;
+  }
   else
     std::cerr << "SUCCESS. exists did not find testmachine:1:1 in frag_map.\n";
 
@@ -153,35 +167,48 @@ void test_add_frag (void)
   transport::add_fragment ("testmachine", 1, 1, map[1], 5, frag_map, true);
 
   if (transport::is_complete ("testmachine", 1, frag_map))
+  {
     std::cerr <<
     "FAIL. is_complete is returning true from incomplete packets.\n";
+    ++num_fails;
+  }
 
   transport::add_fragment ("testmachine", 1, 3, map[3], 5, frag_map, true);
   transport::add_fragment ("testmachine", 1, 5, map[5], 5, frag_map, true);
+
   char * result = transport::add_fragment (
     "testmachine", 1, 4, map[4], 5, frag_map, true);
   
   if (transport::is_complete ("testmachine", 1, frag_map))
+  {
     std::cerr <<
-      "SUCCESS. is_complete is returning true on cleared defragged entry.\n";
+      "FAIL. is_complete is returning true, even though packet was removed.\n";
+    ++num_fails;
+  }
   else
+  {
     std::cerr <<
-      "FAIL. is_complete is returning false on cleared defragged entry.\n";
-  
+      "SUCCESS. is_complete is returning false on cleared defragged entry.\n";
+  }
+
   if (transport::exists ("testmachine", 1, 1, frag_map))
+  {
     std::cerr << "FAIL. exists found testmachine:1:1 in frag_map.\n";
+    ++num_fails;
+  }
   else
     std::cerr << "SUCCESS. exists did not find testmachine:1:1 in frag_map.\n";
-
-  const char * offset = result;
 
   if (header.message_header_test (result))
   {
     buffer_remaining = header.encoded_size ();
-    offset = header.read (result, buffer_remaining);
+    header.read (result, buffer_remaining);
     buffer_remaining = header.size - header.encoded_size ();
     if (buffer_remaining != 300000)
+    {
       std::cerr << "FAIL. add_fragment: Size is incorrect after defrag.\n";
+      ++num_fails;
+    }
     else
     {
       bool failed = false;
@@ -193,7 +220,10 @@ void test_add_frag (void)
       }
 
       if (failed)
+      {
         std::cerr << "FAIL. add_fragment: Size is incorrect after defrag.\n";
+        ++num_fails;
+      }
       else
         std::cerr <<
           "SUCCESS. add_fragment: Message was defragged correctly.\n";
@@ -202,6 +232,7 @@ void test_add_frag (void)
   else
   {
     std::cerr << "FAIL. add_fragment: Fragments reassembled to bad data.\n";
+    ++num_fails;
   }
 
   
@@ -212,7 +243,10 @@ void test_add_frag (void)
   transport::add_fragment ("testmachine", 2, 1, map[1], 5, frag_map, true);
 
   if (transport::is_complete ("testmachine", 2, frag_map))
+  {
     std::cerr << "FAIL. is_complete is returning true from incomplete packets.\n";
+    ++num_fails;
+  }
 
   transport::add_fragment ("testmachine", 2, 3, map[3], 5, frag_map, true);
   transport::add_fragment ("testmachine", 2, 5, map[5], 5, frag_map, true);
@@ -221,16 +255,21 @@ void test_add_frag (void)
   
   if (transport::is_complete ("testmachine", 2, frag_map))
     std::cerr << "SUCCESS. is_complete is returning true on complete packet.\n";
-
-  offset = result;
+  else
+  {
+    ++num_fails;
+  }
 
   if (result && header.message_header_test (result))
   {
     buffer_remaining = header.encoded_size ();
-    offset = header.read (result, buffer_remaining);
+    header.read (result, buffer_remaining);
     buffer_remaining = header.size - header.encoded_size ();
     if (buffer_remaining != 300000)
+    {
       std::cerr << "FAIL. add_fragment: Size is incorrect after defrag.\n";
+      ++num_fails;
+    }
     else
     {
       bool failed = false;
@@ -242,7 +281,10 @@ void test_add_frag (void)
       }
 
       if (failed)
+      {
         std::cerr << "FAIL. add_fragment: Size is incorrect after defrag.\n";
+        ++num_fails;
+      }
       else
         std::cerr <<
           "SUCCESS. add_fragment: Message was defragged correctly.\n";
@@ -251,6 +293,7 @@ void test_add_frag (void)
   else
   {
     std::cerr << "FAIL. add_fragment: Fragments reassembled to bad data.\n";
+    ++num_fails;
   }
 
   delete [] result;
@@ -266,7 +309,6 @@ void test_records_frag (void)
   int64_t buffer_remaining = size;
   transport::FragmentMap map;
   transport::OriginatorFragmentMap frag_map;
-  uint64_t * message_size = (uint64_t *)buffer;
 
   transport::MessageHeader header;
   header.size = size;
@@ -315,6 +357,7 @@ void test_records_frag (void)
     else 
     {
       std::cerr << "FAIL: header was not decoded properly\n";
+      ++num_fails;
     }
 
     for (uint32_t i = 0; i < copied_header.updates; ++i)
@@ -328,12 +371,17 @@ void test_records_frag (void)
       {
         knowledge_mismatch = 1;
         std::cerr << "FAIL: Knowledge mismatch on key " << key << "\n";
+        ++num_fails;
       }
     }
 
     if (!knowledge_mismatch)
     {
       std::cerr << "SUCCESS: All copied knowledge records match the originals\n";
+    }
+    else
+    {
+      ++num_fails;
     }
 
     delete [] buffer;
@@ -349,5 +397,14 @@ int main (int argc, char * argv[])
   test_add_frag ();
   test_records_frag ();
 
-  return 0;
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }

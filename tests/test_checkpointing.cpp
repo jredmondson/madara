@@ -22,6 +22,8 @@ namespace containers = knowledge::containers;
 
 #define BUFFER_SIZE    1000
 
+int num_fails = 0;
+
 void test_checkpoint_settings (void)
 {
 
@@ -76,6 +78,7 @@ void test_checkpoint_settings (void)
   else
   {
     std::cerr << "FAIL. Knowledge was:\n";
+    ++num_fails;
     loader.print ();
   }
 
@@ -88,6 +91,7 @@ void test_checkpoint_settings (void)
   else
   {
     std::cerr << "FAIL\n";
+    ++num_fails;
     std::cerr << "  Expected clocks (2001:2001) but got (" <<
       settings.initial_lamport_clock << ":" << settings.last_lamport_clock <<
       ")\n";
@@ -126,6 +130,7 @@ void test_checkpoint_settings (void)
   else
   {
     std::cerr << "FAIL. Knowledge was:\n";
+    ++num_fails;
     loader.print ();
   }
 
@@ -140,6 +145,7 @@ void test_checkpoint_settings (void)
   else
   {
     std::cerr << "FAIL\n";
+    ++num_fails;
     std::cerr << "  Expected clocks (7:7) but got (" <<
       settings.initial_lamport_clock << ":" << settings.last_lamport_clock <<
       ")\n";
@@ -174,6 +180,7 @@ void test_checkpoint_settings (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Should be garbled but is the same. " << buffer << "\n";
   }
 
@@ -189,6 +196,7 @@ void test_checkpoint_settings (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Should be same but is garbled. " << buffer << "\n";
   }
 
@@ -231,6 +239,7 @@ void test_checkpoint_settings (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
@@ -258,6 +267,7 @@ void test_checkpoint_settings (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL Knowledge was:\n";
     loader.print ();
   }
@@ -288,6 +298,7 @@ void test_checkpoint_settings (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
@@ -347,6 +358,7 @@ void test_checkpoints_diff (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
@@ -368,6 +380,7 @@ void test_checkpoints_diff (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
@@ -401,6 +414,7 @@ void test_checkpoints_diff (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
@@ -447,6 +461,7 @@ void test_checkpoints_diff (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
@@ -466,6 +481,7 @@ void test_checkpoints_diff (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
@@ -485,6 +501,7 @@ void test_checkpoints_diff (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
@@ -504,6 +521,7 @@ void test_checkpoints_diff (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
@@ -523,6 +541,7 @@ void test_checkpoints_diff (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
@@ -611,13 +630,29 @@ int main (int argc, char * argv[])
   std::cerr << "Test 4: decoded dest_header is equal to source_header? " <<
     (header_decoded ? "true" : "false") << std::endl;
   
-  std::cerr << "\nEncoding results were " << 
-    (header_decoded ?
-    "SUCCESS\n" : "FAIL\n");
+  std::cerr << "\nEncoding results were ";
+  if (header_decoded)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+  }
   
   test_checkpoint_settings ();
 
   test_checkpoints_diff ();
 
-  return 0;
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }

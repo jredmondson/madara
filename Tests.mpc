@@ -143,6 +143,25 @@ project (Test_Counter) : using_madara, no_karl, no_xml, null_lock, using_simtime
   }
 }
 
+project (Test_Fragmentation) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_fragmentation
+  
+  
+  requires += tests
+
+
+  Documentation_Files {
+  }
+  
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_fragmentation.cpp
+  }
+}
+
 project (Test_Threader_Queue_Perf) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_queue_perf

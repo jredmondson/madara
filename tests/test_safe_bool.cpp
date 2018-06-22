@@ -12,6 +12,8 @@
 
 namespace mk = madara::knowledge;
 
+int num_fails = 0;
+
 void handle_arguments (int argc, char ** argv)
 {
   for (int i = 1; i < argc; ++i)
@@ -45,12 +47,14 @@ int main (int argc, char ** argv)
   }
   else
   {
-    std::cout << "ERROR    truthy is false" << std::endl;
+    std::cout << "FAIL    truthy is false" << std::endl;
+    ++num_fails;
   }
 
   if(falsey)
   {
-    std::cout << "ERROR    falsey is true" << std::endl;
+    std::cout << "FAIL    falsey is true" << std::endl;
+    ++num_fails;
   }
   else
   {
@@ -63,12 +67,14 @@ int main (int argc, char ** argv)
   }
   else
   {
-    std::cout << "ERROR    truthy && struthy is false" << std::endl;
+    std::cout << "FAIL    truthy && struthy is false" << std::endl;
+    ++num_fails;
   }
 
   if(truthy && sfalsey)
   {
-    std::cout << "ERROR    truthy && sfalsey is true" << std::endl;
+    std::cout << "FAIL    truthy && sfalsey is true" << std::endl;
+    ++num_fails;
   }
   else
   {
@@ -81,7 +87,8 @@ int main (int argc, char ** argv)
   }
   else
   {
-    std::cout << "ERROR    truthy || sfalsey is false" << std::endl;
+    std::cout << "FAIL    truthy || sfalsey is false" << std::endl;
+    ++num_fails;
   }
 
   // These lines compile OK, and work as expected:
@@ -94,12 +101,14 @@ int main (int argc, char ** argv)
   }
   else
   {
-    std::cout << "ERROR    bool_true is false" << std::endl;
+    std::cout << "FAIL    bool_true is false" << std::endl;
+    ++num_fails;
   }
 
   if(bool_false)
   {
-    std::cout << "ERROR    bool_false is true" << std::endl;
+    std::cout << "FAIL    bool_false is true" << std::endl;
+    ++num_fails;
   }
   else
   {
@@ -115,5 +124,14 @@ int main (int argc, char ** argv)
   // naive Safe Bool returning void* would compile the following:
   //delete truthy;
 
-  return 0;
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }

@@ -6,10 +6,14 @@
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/utility/Utility.h"
+#include "madara/utility/Timer.h"
 
 namespace logger = madara::logger;
+namespace utility = madara::utility;
 
 madara::knowledge::WaitSettings wait_settings;
+int num_fails = 0;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -89,16 +93,42 @@ int main (int argc, char * argv[])
   knowledge.set ("max_wait", wait_settings.max_wait_time);
   knowledge.set ("poll_frequency", wait_settings.poll_frequency);
 
+  utility::Timer <utility::Clock> timer;
+  timer.start ();
+
   // "," returns a minimum, so this wait will timeout
   knowledge.wait ("++count, 0", wait_settings);
 
+  timer.stop ();
+
   knowledge.evaluate ("hertz = #to_double (count) / max_wait");
+  knowledge.set ("actual_wait_time_ns", timer.duration_ns ());
 
   knowledge.print ();
   
+
+  std::cerr << "Checking if wait time was greater than 5 s...";
+  if (timer.duration_s () >= 5 && timer.duration_s () < 7)
+  {
+    std::cerr << "SUCCESS\n"; 
+  }
+  else
+  {
+    std::cerr << "SUCCESS\n"; ++num_fails;
+  }
+
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
 #else
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "This test is disabled due to karl feature being disabled.\n");
 #endif
-  return 0;
+  return num_fails;
 }

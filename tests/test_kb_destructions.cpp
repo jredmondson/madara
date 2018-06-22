@@ -54,5 +54,11 @@ int main (int , char ** )
   kb_ref_level_1 ();
   kb_ref_level_1 ();
 
+  // this test is really checking for memory errors on KB operations
+  // so if this fails, there will be an exception or out-of-bounds
+  // which means there's no need for a num_fails here
+
+  std::cerr << "OVERALL: SUCCESS.\n";
+
   return 0;
 }

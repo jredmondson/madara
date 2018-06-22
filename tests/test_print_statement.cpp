@@ -8,6 +8,8 @@
 
 typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 
+int num_fails = 0;
+
 // test functions
 void test_print_statement (madara::knowledge::KnowledgeBase & knowledge);
 
@@ -53,18 +55,39 @@ void test_print_statement (madara::knowledge::KnowledgeBase & knowledge)
   statement = "Hello kitty {.var1}\n";
 
   exp_statement = knowledge.expand_statement (statement);
+  std::cerr << "Test 1: ";
   if (statement == "Hello kitty 1")
-    std::cerr << "Test 1: SUCCESS\n";
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
   
   statement = "Hello kitty {.var{.var2}is{.var22}}\n";
 
   exp_statement = knowledge.expand_statement (statement);
+  std::cerr << "Test 2: ";
   if (statement == "Hello kitty 1")
-    std::cerr << "Test 2: SUCCESS\n";
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
 
   statement = "MyState.{.var1}.{.var2} = {MyState.{.var1}.{.var2}}\n";
 
   exp_statement = knowledge.expand_statement (statement);
+  std::cerr << "Test 3: ";
   if (statement == "MyState.1.2 = 10")
-    std::cerr << "Test 3: SUCCESS\n";
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
 }

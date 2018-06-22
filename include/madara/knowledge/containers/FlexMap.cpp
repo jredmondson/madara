@@ -214,44 +214,94 @@ const std::vector <double> & value)
 
 
 madara::knowledge::KnowledgeRecord
-madara::knowledge::containers::FlexMap::to_record (void) const
+madara::knowledge::containers::FlexMap::to_record (
+  const KnowledgeRecord & default_value) const
 {
-  knowledge::KnowledgeRecord result;
-
   if (context_)
   {
     ContextGuard context_guard (*context_);
     MADARA_GUARD_TYPE guard (mutex_);
-
-    KnowledgeUpdateSettings keep_local (true);
 
     if (!variable_.is_valid ())
     {
       this->update_variable ();
     }
 
-    result = context_->get (variable_, settings_);
+    if (context_->exists (variable_))
+    {
+      return context_->get (variable_, settings_);
+    }
   }
 
-  return result;
+  return default_value;
 }
 
 madara::knowledge::KnowledgeRecord::Integer
-madara::knowledge::containers::FlexMap::to_integer (void) const
+madara::knowledge::containers::FlexMap::to_integer (
+  KnowledgeRecord::Integer default_value) const
 {
-  return to_record ().to_integer ();
+  if (context_)
+  {
+    ContextGuard context_guard (*context_);
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    if (!variable_.is_valid ())
+    {
+      this->update_variable ();
+    }
+
+    if (context_->exists (variable_))
+    {
+      return context_->get (variable_, settings_).to_integer ();
+    }
+  }
+
+  return default_value;
 }
 
 double
-madara::knowledge::containers::FlexMap::to_double (void) const
+madara::knowledge::containers::FlexMap::to_double (double default_value) const
 {
-  return to_record ().to_double ();
+  if (context_)
+  {
+    ContextGuard context_guard (*context_);
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    if (!variable_.is_valid ())
+    {
+      this->update_variable ();
+    }
+
+    if (context_->exists (variable_))
+    {
+      return context_->get (variable_, settings_).to_double ();
+    }
+  }
+
+  return default_value;
 }
 
 std::string
-madara::knowledge::containers::FlexMap::to_string (void) const
+madara::knowledge::containers::FlexMap::to_string (
+  const std::string & default_value) const
 {
-  return to_record ().to_string ();
+  if (context_)
+  {
+    ContextGuard context_guard (*context_);
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    if (!variable_.is_valid ())
+    {
+      this->update_variable ();
+    }
+
+    if (context_->exists (variable_))
+    {
+      return context_->get (variable_, settings_).to_string ();
+    }
+  }
+
+  return default_value;
 }
 
 

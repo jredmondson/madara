@@ -11,6 +11,8 @@
 #define BUFFER_SIZE    1000
 #define LARGE_BUFFER_SIZE 500000
 
+int num_fails = 0;
+
 void test_primitive_encoding (void)
 {
   std::cerr << "\n*************TEST PRIMITIVE ENCODING*****************\n\n";
@@ -145,9 +147,16 @@ void test_primitive_encoding (void)
     std::endl;
   
 
-  std::cerr << "\nRESULT: " << 
-    (header_decoded && string_decoded && int_decoded && double_decoded ?
-    "SUCCESS\n" : "FAIL\n");
+  std::cerr << "\nRESULT: ";
+  if (header_decoded && string_decoded && int_decoded && double_decoded)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+  }
 }
 
 void test_image_encoding (void)
@@ -207,8 +216,11 @@ void test_image_encoding (void)
   if (dest_header.encoded_size () == buffer_written)
     std::cerr << "SUCCESS\n";
   else
+  {
     std::cerr << "FAIL\n";
-  
+    ++num_fails;
+  }
+
   // Test 2: decode source header from buffer
   
   std::cerr << "Test 2: decoding from buffer to dest_header.\n";
@@ -224,7 +236,10 @@ void test_image_encoding (void)
   if (buffer_written == buffer_read)
     std::cerr << "SUCCESS\n";
   else
+  {
     std::cerr << "FAIL\n";
+    ++num_fails;
+  }
   
   std::cerr << "Test 3: encoding string, image, int, double.\n";
 
@@ -246,7 +261,10 @@ void test_image_encoding (void)
       double_source.get_encoded_size ("double") == buffer_written)
     std::cerr << "SUCCESS\n";
   else
+  {
     std::cerr << "FAIL\n";
+    ++num_fails;
+  }
   
   std::cerr << "Test 4: decoding string, image, int, double.\n";
 
@@ -268,7 +286,10 @@ void test_image_encoding (void)
       double_source.get_encoded_size ("double") == buffer_read)
     std::cerr << "SUCCESS\n";
   else
+  {
     std::cerr << "FAIL\n";
+    ++num_fails;
+  }
   
   std::cerr << "  Checking keys read... ";
   
@@ -278,7 +299,10 @@ void test_image_encoding (void)
       double_key_read == "double")
     std::cerr << "SUCCESS\n";
   else
+  {
     std::cerr << "FAIL\n";
+    ++num_fails;
+  }
   
   
 }
@@ -339,6 +363,7 @@ void test_key_id_encoding (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL\n";
     std::cerr << "    id: " << temp_id << "\n";
     std::cerr << "    type: " << dest.type () << "\n";
@@ -357,6 +382,7 @@ void test_key_id_encoding (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL\n";
     std::cerr << "    id: " << temp_id << "\n";
     std::cerr << "    type: " << dest.type () << "\n";
@@ -375,6 +401,7 @@ void test_key_id_encoding (void)
   }
   else
   {
+    ++num_fails;
     std::cerr << "FAIL.\n";
     std::cerr << "    id: " << temp_id << "\n";
     std::cerr << "    type: " << dest.type () << "\n";
@@ -388,5 +415,15 @@ int main (int, char **)
   test_image_encoding ();
   test_primitive_encoding ();
   test_key_id_encoding ();
-  return 0;
+
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }
