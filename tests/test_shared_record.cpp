@@ -26,8 +26,13 @@ void test_unshared_record (void)
   std::string str_out = rec.to_string();
 
   TEST_NE(orig_ptr, str_out.c_str());
+
+#if defined(__GNUC__) && (__GNUC__ < 5)
+  std::cout << "This test ignored in old versions of g++ with COW strings\n";
+#else
   if (orig_ptr == str_out.c_str ())
     ++num_fails;
+#endif
 
   std::cerr << "test_unshared_record: num_fails: " << num_fails << "\n";
 }
