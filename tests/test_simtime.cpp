@@ -1,8 +1,11 @@
 #include <madara/utility/SimTime.h>
+#include <iostream>
 
 #include "test.h"
 
 using SimTime = madara::utility::SimTime;
+
+int num_fails = 0;
 
 int main()
 {
@@ -22,4 +25,17 @@ int main()
     VAL(SimTime::time());
     madara::utility::sleep(1);
   }
+
+  // test doesn't really check anything for success or failure
+
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }

@@ -3,6 +3,8 @@
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeRecordFilters.h"
 
+int num_fails = 0;
+
 /**
  * Function that decrements integers or doubles and returns the results
  * and strips any other value entirely (returns 0)
@@ -102,19 +104,25 @@ int main (int, char **)
   if (integer_result == madara::knowledge::KnowledgeRecord::Integer (12))
     std::cerr << "SUCCESS)\n";
   else
-    std::cerr << "FAILURE)\n";
-  
+  {
+    std::cerr << "FAILURE)\n"; ++num_fails;
+  }
+
   std::cerr << "  double result = " << double_result << " (";
   if (double_result == 15.0)
     std::cerr << "SUCCESS)\n";
   else
-    std::cerr << "FAILURE)\n";
+  {
+    std::cerr << "FAILURE)\n"; ++num_fails;
+  }
   
   std::cerr << "  string result = " << string_result << " (";
   if (string_result == "This string should not change.")
     std::cerr << "SUCCESS)\n";
   else
-    std::cerr << "FAILURE)\n";
+  {
+    std::cerr << "FAILURE)\n"; ++num_fails;
+  }
   
   std::cerr << 
     "Adding a decrement_primitives to string type (deletes string)\n";
@@ -134,7 +142,18 @@ int main (int, char **)
   if (string_result == madara::knowledge::KnowledgeRecord::Integer (0))
     std::cerr << "SUCCESS)\n";
   else
-    std::cerr << "FAILURE)\n";
+  {
+    std::cerr << "FAILURE)\n"; ++num_fails;
+  }
   
-  return 0;
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }

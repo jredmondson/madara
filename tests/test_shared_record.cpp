@@ -1,5 +1,6 @@
 #include <string>
 #include <atomic>
+#include <iostream>
 
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/knowledge/KnowledgeBase.h"
@@ -22,7 +23,14 @@ void test_unshared_record (void)
 
   std::string str_out = rec.to_string();
 
+#if defined(__GNUC__) && (__GNUC__ < 5)
+  std::cout << "This test ignored in old versions of g++ with COW strings\n";
+#else
   TEST_NE(orig_ptr, str_out.c_str());
+#endif
+
+  std::cerr << "test_unshared_record: num_fails: " <<
+    madara_tests_fail_count << "\n";
 }
 
 void test_shared_record (void)
@@ -39,7 +47,8 @@ void test_shared_record (void)
 
   TEST_EQ(orig_ptr, str_out->c_str());
 
-  std::string big_str = "This is a string that might be much longer and be expensive to copy.";
+  std::string big_str =
+    "This is a string that might be much longer and be expensive to copy.";
   const char * orig_sptr = big_str.c_str();
 
   // Creates a vector with 4000 entries, all 42, without any copying
@@ -47,6 +56,7 @@ void test_shared_record (void)
 
   std::shared_ptr<std::vector<int64_t>> iptr = ints.share_integers();
   TEST_NE(iptr.get(), (void*)0);
+
   int64_t *orig_iptr = &(*iptr)[0];
 
   std::unique_ptr<std::vector<double>> unique_dptr (
@@ -55,20 +65,29 @@ void test_shared_record (void)
   *orig_dptr += 0.5;
   KnowledgeRecord dbls(tags::shared(tags::doubles), std::move(unique_dptr));
 
-  kb.set(".my_string", std::move(big_str)); // std::move avoids copying the string data
-  kb.set(".my_array", ints);   // std::move not needed here to avoid copying the integer data,
-  kb.set(".my_doubles", std::move(dbls)); // but would be slightly more efficient as it would
-                                          // avoid touching ref counts
+  // std::move avoids copying the string data
+  kb.set(".my_string", std::move(big_str));
+
+  // std::move not needed here to avoid copying the integer data,
+  kb.set(".my_array", ints);
+
+  // but would be slightly more efficient as it would
+  // avoid touching ref counts
+  kb.set(".my_doubles", std::move(dbls)); 
 
   TEST_EQ(kb.get(".my_array").retrieve_index(0).to_integer(), 42);
 
-  std::shared_ptr<std::string> big_str_out = kb.take_string(".my_string"); // leaves .my_string empty
+  // leaves .my_string empty
+  std::shared_ptr<std::string> big_str_out = kb.take_string(".my_string");
   const char *out_sptr = big_str_out->c_str();
 
-  std::shared_ptr<std::vector<int64_t>> ints_out = kb.share_integers(".my_array"); // shared with .my_array still in kb
+   // shared with .my_array still in kb
+  std::shared_ptr<std::vector<int64_t>> ints_out =
+    kb.share_integers(".my_array");
   int64_t *out_iptr = &(*ints_out)[0];
 
-  std::shared_ptr<std::vector<double>> dbls_out = kb.share_doubles(".my_doubles");
+  std::shared_ptr<std::vector<double>> dbls_out = 
+    kb.share_doubles(".my_doubles");
   double *out_dptr = &(*dbls_out)[0];
 
   TEST_EQ((void*)orig_sptr, (void*)out_sptr);
@@ -78,17 +97,32 @@ void test_shared_record (void)
   TEST_EQ(ints_out->at(0), 42);
   TEST_EQ(dbls_out->at(0), 42.5);
 
-  kb.set_index(".my_array", 0, 47); // Causes a copy to be made, so we can modify without changing ints_out
+  // Causes a copy to be made, so we can modify without changing ints_out
+  kb.set_index(".my_array", 0, 47);
 
   TEST_EQ(kb.get(".my_array").retrieve_index(0).to_integer(), 47);
   TEST_EQ(ints_out->at(0), 42);
+
+  std::cerr << "test_shared_record: num_fails: " <<
+    madara_tests_fail_count << "\n";
 }
 
 int main (int, char **)
 {
   TEST_EQ(sizeof(KnowledgeRecord), 48UL);
+
   test_unshared_record ();
   test_shared_record ();
 
-  return 0;
+  if (madara_tests_fail_count > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count <<
+      " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return madara_tests_fail_count;
 }

@@ -17,6 +17,8 @@ namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
 namespace logger = madara::logger;
 
+int num_fails = 0;
+
 typedef  madara::knowledge::KnowledgeRecord::Integer  Integer;
 
 void test_copy (void)
@@ -47,6 +49,7 @@ void test_copy (void)
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "TEST 1: Full copy is FAIL.\n");
+    ++num_fails;
     dest.print ();
   }
 
@@ -68,6 +71,7 @@ void test_copy (void)
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "TEST 2: Lone name copy is FAIL.\n");
+    ++num_fails;
     dest.print ();
   }
 
@@ -148,6 +152,7 @@ void test_copy_knowledgereqs (void)
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL.\n");
+    ++num_fails;
     dest.print ();
   }
 
@@ -175,6 +180,7 @@ void test_copy_knowledgereqs (void)
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL.\n");
+    ++num_fails;
     dest.print ();
   }
 
@@ -201,6 +207,7 @@ void test_copy_knowledgereqs (void)
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL.\n");
+    ++num_fails;
     dest.print ();
   }
 
@@ -229,6 +236,7 @@ void test_copy_knowledgereqs (void)
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL.\n");
+    ++num_fails;
     dest.print ();
   }
 
@@ -267,6 +275,7 @@ void test_copy_knowledgereqs (void)
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL.\n");
+    ++num_fails;
     dest.print ();
   }
 
@@ -306,6 +315,7 @@ void test_copy_knowledgereqs (void)
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
       "FAIL.\n");
+    ++num_fails;
     dest.print ();
   }
 
@@ -316,5 +326,14 @@ int main (int, char **)
   test_copy ();
   test_copy_knowledgereqs ();
 
-  return 0;
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }

@@ -16,6 +16,8 @@
 namespace utility = madara::utility;
 namespace sc = std::chrono;
 
+int num_fails = 0;
+
 void handle_arguments (int argc, char ** argv)
 {
   for (int i = 1; i < argc; ++i)
@@ -132,7 +134,9 @@ test_version (void)
   if (version == converted_version)
     std::cout << "Current version conversion is a SUCCESS.\n";
   else
-    std::cout << "Current version conversion is a FAIL.\n";
+  {
+    std::cout << "Current version conversion is a FAIL.\n"; ++num_fails;
+  }
 }
 
 void test_heaps (void)
@@ -159,8 +163,10 @@ void test_heaps (void)
       input[6] == 1)
     std::cerr << "SUCCESS\n";
   else
-    std::cerr << "FAIL\n";
-  
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
+
   madara::utility::heap_sort (input, 7);
 
   std::cerr << "Testing heap_sort... ";
@@ -176,7 +182,9 @@ void test_heaps (void)
       input[6] == 10)
     std::cerr << "SUCCESS\n";
   else
-    std::cerr << "FAIL\n";
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
   
 }
 
@@ -187,28 +195,36 @@ void test_ints (void)
   if (madara::utility::nearest_int (2.25) == 2)
     std::cerr << "SUCCESS\n";
   else
-    std::cerr << "FAIL\n";
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
   
   std::cerr << "Testing nearest int to 2.8... ";
 
   if (madara::utility::nearest_int (2.8) == 3)
     std::cerr << "SUCCESS\n";
   else
-    std::cerr << "FAIL\n";
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
   
   std::cerr << "Testing nearest int to 16.1... ";
 
   if (madara::utility::nearest_int (16.1) == 16)
     std::cerr << "SUCCESS\n";
   else
-    std::cerr << "FAIL\n";
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
   
   std::cerr << "Testing nearest int to 9.9575... ";
 
   if (madara::utility::nearest_int (9.9575) == 10)
     std::cerr << "SUCCESS\n";
   else
-    std::cerr << "FAIL\n";
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
   
   std::cerr << "Testing rand_int... ";
 
@@ -227,7 +243,9 @@ void test_ints (void)
   if (num_zeroes > 30000 && num_ones > 30000)
     std::cerr << "SUCCESS\n";
   else
-    std::cerr << "FAIL\n";
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
   
   std::cerr << "Testing rand_int... ";
 
@@ -246,7 +264,9 @@ void test_ints (void)
   if (num_zeroes > 30000 && num_ones > 30000)
     std::cerr << "SUCCESS\n";
   else
-    std::cerr << "FAIL\n";
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
 }
 
 void test_time (void)
@@ -266,7 +286,9 @@ void test_time (void)
   if (end - start > 0)
     std::cerr << " SUCCESS\n";
   else
-    std::cerr << " FAIL\n";
+  {
+    std::cerr << "FAIL\n"; ++num_fails;
+  }
 }
 
 void test_sqrt (void)
@@ -311,7 +333,7 @@ void test_sleep (void)
   }
   else
   {
-    std::cerr << "... FAIL\n";
+    std::cerr << "... FAIL\n"; ++num_fails;
   }
   
   std::cerr << "  Testing sleep time of 2.5s... ";
@@ -325,7 +347,7 @@ void test_sleep (void)
   }
   else
   {
-    std::cerr << "... FAIL\n";
+    std::cerr << "... FAIL\n"; ++num_fails;
   }
   
   std::cerr << "  Testing sleep time of 2.25s... ";
@@ -339,7 +361,7 @@ void test_sleep (void)
   }
   else
   {
-    std::cerr << "... FAIL\n";
+    std::cerr << "... FAIL\n"; ++num_fails;
   }
 
 #ifdef MADARA_FEATURE_SIMTIME
@@ -367,7 +389,7 @@ void test_sleep (void)
     }
     else
     {
-      std::cerr << "... FAIL\n";
+      std::cerr << "... FAIL\n"; ++num_fails;
     }
   };
 
@@ -395,7 +417,7 @@ void test_replace (void)
   }
   else
   {
-    std::cerr << "FAIL";
+    std::cerr << "FAIL"; ++num_fails;
   }
 
   std::cerr << "\n";
@@ -412,7 +434,7 @@ void test_replace (void)
   }
   else
   {
-    std::cerr << "FAIL";
+    std::cerr << "FAIL"; ++num_fails;
   }
   std::cerr << "\n";
 
@@ -432,7 +454,7 @@ void test_replace (void)
   }
   else
   {
-    std::cerr << "FAIL";
+    std::cerr << "FAIL"; ++num_fails;
   }
 
   std::cerr << "\n";
@@ -451,7 +473,7 @@ void test_replace (void)
   }
   else
   {
-    std::cerr << "FAIL";
+    std::cerr << "FAIL"; ++num_fails;
   }
 
   std::cerr << "\n";
@@ -471,5 +493,14 @@ int main (int argc, char ** argv)
   test_ints ();
   test_sleep ();
 
-  return 0;
+  if (num_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return num_fails;
 }

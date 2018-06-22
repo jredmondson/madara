@@ -173,6 +173,8 @@ inline KnowledgeRecord::KnowledgeRecord (
     new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
   else if (rhs.is_binary_file_type ())
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
+
+  rhs.type_ = EMPTY;
 }
 
 inline KnowledgeRecord::~KnowledgeRecord () noexcept
@@ -222,7 +224,7 @@ KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
     return *this;
 
   // clear any dynamic memory being used on the left hand side
-  clear_union();
+  clear_value();
 
   if (rhs.type_ == EMPTY)
     return *this;
@@ -246,6 +248,8 @@ KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
     new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
   else if (rhs.is_binary_file_type ())
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
+
+  rhs.type_ = EMPTY;
 
   return *this;
 }
