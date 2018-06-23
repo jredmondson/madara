@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <assert.h>
+#include <math.h>
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
@@ -171,6 +172,7 @@ madara::knowledge::Variables & variables)
 // test functions
 void test_arrays (void);
 void test_record_math (void);
+void test_reserved_words (void);
 void test_array_math (madara::knowledge::KnowledgeBase &  knowledge);
 void test_to_vector (madara::knowledge::KnowledgeBase &  knowledge);
 void test_to_map (madara::knowledge::KnowledgeBase &  knowledge);
@@ -457,6 +459,7 @@ void test_comparisons (madara::knowledge::KnowledgeBase & knowledge)
   knowledge.evaluate (".var1 = '9.0' < 10; .var2 = '5.0' > 3.0;" \
     ".var3 = '2.0' <= 4; .var4= '5.0' >= 3; .var5 = '5.0' == 5; .var6 = '9' < 9.5;" \
     ".var7 = '3' > 2.9; .var8 = '4' <= 4.1; .var9 = '4' >= 4.0; .var10 = '5' == 5.0");
+
   assert (knowledge.get (".var1").to_integer () == 1 && 
     knowledge.get (".var2").to_integer () == 1 &&
     knowledge.get (".var3").to_integer () == 1 &&
@@ -1678,4 +1681,19 @@ void test_record_math (void)
 
   r4 %= 3;
   assert (r4 == 1);
+}
+
+void test_reserved_words (void)
+{
+  madara::knowledge::KnowledgeBase kb;
+
+  kb.evaluate ("var_inf = inf");
+  kb.evaluate ("var_nan = nan");
+  kb.evaluate ("var_true = true");
+  kb.evaluate ("var_false = false");
+
+  assert (kb.get ("var_nan") == NAN &&
+    kb.get ("var_inf") == INFINITY &&
+    kb.get ("var_true") == 1 &&
+    kb.get ("var_false") == 0);
 }

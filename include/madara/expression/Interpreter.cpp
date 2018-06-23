@@ -84,6 +84,7 @@
 #include "madara/expression/SystemCallWriteFile.h"
 #include "madara/expression/Interpreter.h"
 
+typedef   madara::knowledge::KnowledgeRecord::Integer Integer;
 
 namespace madara
 {
@@ -3837,7 +3838,15 @@ madara::expression::Variable::build (void)
   }
   
   // is reserved?
-  if (key_ == "nan")
+  if (key_ == "true")
+  {
+    return new LeafNode (context_.get_logger (), (Integer)1);
+  }
+  else if (key_ == "false")
+  {
+    return new LeafNode (context_.get_logger (), (Integer)0);
+  }
+  else if (key_ == "nan")
   {
     return new LeafNode (context_.get_logger (), NAN);
   }
@@ -5549,7 +5558,31 @@ Symbol *& lastValidInput)
   // if this is a reserved word, then treat it as a Leaf
   if (is_reserved_word (name))
   {
-    if (name == "nan")
+    if (name == "true")
+    {
+      madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
+        "madara::expression::Interpreter: "
+        "Inserting true(1) into expression tree.\n");
+
+      Number * number = new Number (context.get_logger (), (Integer)1);
+      number->add_precedence (accumulated_precedence);
+      lastValidInput = number;
+
+      precedence_insert (context, number, list);
+    }
+    else if (name == "false")
+    {
+      madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
+        "madara::expression::Interpreter: "
+        "Inserting false(0) into expression tree.\n");
+
+      Number * number = new Number (context.get_logger (), (Integer)0);
+      number->add_precedence (accumulated_precedence);
+      lastValidInput = number;
+
+      precedence_insert (context, number, list);
+    }
+    else if (name == "nan")
     {
       madara_logger_log (context.get_logger (), logger::LOG_DETAILED,
         "madara::expression::Interpreter: "

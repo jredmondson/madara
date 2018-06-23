@@ -722,19 +722,22 @@ KnowledgeRecord::operator== (
   // if the left hand side is an integer
   else if (is_integer_type ())
   {
-    Integer lhs = this->to_integer ();
-
-    if (rhs.is_double_type () || rhs.is_string_type ())
+    if (rhs.is_double_type ())
     {
-      double other = rhs.to_double ();
-
-      result = lhs == other;
+      result = to_double () == rhs.to_double ();
     }
     else if (rhs.is_integer_type ())
     {
-      Integer other = rhs.to_integer ();
-
-      result = lhs == other;
+      result = to_integer () == rhs.to_integer ();
+    }
+    else if (rhs.is_string_type ())
+    {
+      if (rhs.size () > 0 && rhs.str_value_->at (0) >= '0' &&
+        rhs.str_value_->at (0) <= '9')
+      {
+        result = to_double () == rhs.to_double ();
+      }
+      else result = 0;
     }
   }
 
@@ -754,10 +757,7 @@ KnowledgeRecord::operator== (
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
-      double temp = to_double ();
-      double other = rhs.to_double ();
-
-      result = temp == other;
+      result = to_double () == rhs.to_double ();
     }
 
     // check if right hand side is uncreated
@@ -769,12 +769,15 @@ KnowledgeRecord::operator== (
     // default is string to integer comparison
     else if (rhs.is_integer_type ())
     {
-      // when comparing strings to anything else, convert the
-      // value into a double for maximum precision
-      Integer temp = to_integer ();
-      Integer other = rhs.to_integer ();
-
-      result = temp == other;
+      if (size () > 0 && this->str_value_->at (0) >= '0' &&
+        this->str_value_->at (0) <= '9')
+      {
+        result = to_double () == rhs.to_double ();
+      }
+      else
+      {
+        result = 0;
+      }
     }
   }
 
