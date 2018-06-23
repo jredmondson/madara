@@ -6,33 +6,23 @@
 	<version>3.2.0</version>
 	<description>Provides distributed knowledge sharing services for multi-agent systems.</description>
 
+	<developers>
+		<developer>
+			<name>James Edmondson</name>
+			<email></email>
+			<organization>MADARA</organization>
+			<organizationUrl>http://madara.ai</organizationUrl>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>MADARA License</name>
+			<url>https://github.com/jredmondson/madara/blob/master/LICENSE.txt</url>
+		</license>
+	</licenses>
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -56,26 +46,92 @@
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
-
-
 	</build>
 
 
-	<!-- Location for storing token & password - https://maven.apache.org/settings.html#Servers -->
-	<distributionManagement>
-		<snapshotRepository>
-			<id>madara.snapshot</id>
-			<name>Snapshot repository</name>
-			<url>file:///${user.home}/.m2/repository</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-		<repository>
-			<id>madara.release</id>
-			<name>Release repository for Madara</name>
-			<url>file:///${user.home}/.m2/repository</url>
-			<layout>default</layout>
-			<uniqueVersion>false</uniqueVersion>
-		</repository>
-	</distributionManagement>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<properties>
+				<madara.version>3.2.0</madara.version>
+			</properties>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<!-- Location for storing token & password - https://maven.apache.org/settings.html#Servers -->
+			<distributionManagement>
+				<snapshotRepository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				</snapshotRepository>
+				<repository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+
+
+		<profile>
+			<id>development</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<madara.version>3.2.0-DEV</madara.version>
+			</properties>
+		</profile>
+	</profiles>
+
+
+
+	<scm>
+		<connection>scm:git:git://github.com:jredmondson/madara.git</connection>
+		<developerConnection>scm:git:ssh://github.com:jredmondson/madara.git</developerConnection>
+		<url>http://github.com:jredmondson/madara/tree/master</url>
+	</scm>
 </project>
