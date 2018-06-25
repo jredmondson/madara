@@ -139,7 +139,8 @@ project (Madara_Version) : using_madara {
 project (Madara_Jar) : using_madara, port/java/using_java {
   requires += java
 
-  prebuild += mvn -f port/java -Dmadara-version=`cat VERSION.txt` -P development clean package install
+  prebuild += mvn -f port/java versions:set -DnewVersion=`cat VERSION.txt`
+  prebuild += mvn -f port/java -P development clean package install
 }
 
 

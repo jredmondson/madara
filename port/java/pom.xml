@@ -21,6 +21,12 @@
       <url>https://github.com/jredmondson/madara/blob/master/LICENSE.txt</url>
     </license>
   </licenses>
+
+ <properties>
+        <madara.version>3.2.0</madara.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      </properties>
+
   <build>
     <plugins>
 
@@ -55,12 +61,7 @@
   <profiles>
     <profile>
       <id>release</id>
-      <properties>
-        <madara.version>3.2.0</madara.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      </properties>
-
-      <build>
+       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -123,10 +124,6 @@
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
-      <properties>
-        <madara.version>3.2.0-DEV</madara.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      </properties>
     </profile>
   </profiles>
 
