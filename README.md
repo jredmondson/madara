@@ -22,5 +22,5 @@ Most of the Wiki pages have not been moved from their hosting on [SourceForge](h
 
 [Youtube Guide to Multi-Agent Autonomy](https://www.youtube.com/watch?v=Qvl3YriLMYI&list=PLSNlEg26NNpwi4ggcPYU8JvS1aVtV60_z)
 
-[C++ API Docs](http://madara.readthedocs.io/) | [C++ Tutorial](https://sourceforge.net/p/madara/wiki/MadaraArchitecture/)
+[C++ API Docs](http://madara.readthedocs.io/) | [C++ Tutorial](https://sourceforge.net/p/madara/wiki/MadaraArchitecture/)\
 [Java Docs](http://madara.sourceforge.net/docs/java) | [Java Tutorial](https://sourceforge.net/p/madara/wiki/JavaMadaraArchitecture/)
