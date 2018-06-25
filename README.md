@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jredmondson/madara.svg?branch=master)](https://travis-ci.org/jredmondson/madara) [![Documentation Status](https://readthedocs.org/projects/madara/badge/?version=latest)](https://madara.readthedocs.io/en/latest/?badge=latest)
+[![Build Status](https://travis-ci.org/jredmondson/madara.svg?branch=master)](https://travis-ci.org/jredmondson/madara) [![Documentation Status](https://readthedocs.org/projects/madara/badge/?version=latest)](https://madara.readthedocs.io/en/latest/?badge=latest) [![Javadocs](https://www.javadoc.io/badge/ai.madara/madara.svg)](https://www.javadoc.io/doc/ai.madara/madara)
 
 # About MADARA
 
@@ -23,4 +23,4 @@ Most of the Wiki pages have not been moved from their hosting on [SourceForge](h
 [Youtube Guide to Multi-Agent Autonomy](https://www.youtube.com/watch?v=Qvl3YriLMYI&list=PLSNlEg26NNpwi4ggcPYU8JvS1aVtV60_z)
 
 [C++ API Docs](http://madara.readthedocs.io/) | [C++ Tutorial](https://sourceforge.net/p/madara/wiki/MadaraArchitecture/)\
-[Java Docs](http://madara.sourceforge.net/docs/java) | [Java Tutorial](https://sourceforge.net/p/madara/wiki/JavaMadaraArchitecture/)
+[Java Docs](https://www.javadoc.io/doc/ai.madara/madara) | [Java Tutorial](https://sourceforge.net/p/madara/wiki/JavaMadaraArchitecture/)
