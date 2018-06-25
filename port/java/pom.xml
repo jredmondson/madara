@@ -5,7 +5,8 @@
   <artifactId>madara</artifactId>
   <version>3.2.0</version>
   <description>Provides distributed knowledge sharing services for multi-agent systems.</description>
-
+  <name>Multi-Agent Distributed Adaptive Resource Allocation</name>
+  <url>http://madara.ai</url>
   <developers>
     <developer>
       <name>James Edmondson</name>
