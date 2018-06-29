@@ -131,7 +131,7 @@ Java_ai_madara_knowledge_containers_Double_jni_1set
 /*
  * Class:     ai_madara_knowledge_containers_Double
  * Method:    jni_getName
- * Signature: (J)Lcom/madara/containers/String;
+ * Signature: (J)Lai/madara/containers/String;
  */
 jstring JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1getName
@@ -159,7 +159,7 @@ Java_ai_madara_knowledge_containers_Double_jni_1getName
 /*
  * Class:     ai_madara_knowledge_containers_Double
  * Method:    jni_setName
- * Signature: (JJJLcom/madara/containers/String;)V
+ * Signature: (JJJLai/madara/containers/String;)V
  */
 void JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1setName
@@ -197,7 +197,7 @@ Java_ai_madara_knowledge_containers_Double_jni_1setName
 /*
  * Class:     ai_madara_knowledge_containers_Double
  * Method:    jni_toString
- * Signature: (J)Lcom/madara/containers/String;
+ * Signature: (J)Lai/madara/containers/String;
  */
 jstring JNICALL
 Java_ai_madara_knowledge_containers_Double_jni_1toString

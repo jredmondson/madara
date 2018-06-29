@@ -424,12 +424,12 @@ madara::knowledge::KnowledgeRecordFilters::filter (
         **/
 
         jclass jvarClass = madara::utility::java::find_class (
-          jvm.env, "com/madara/Variables");
+          jvm.env, "ai/madara/knowledge/Variables");
         jclass jlistClass = madara::utility::java::find_class (
-          jvm.env, "com/madara/KnowledgeList");
+          jvm.env, "ai/madara/knowledge/KnowledgeList");
 
         jmethodID fromPointerCall = jvm.env->GetStaticMethodID (jvarClass,
-          "fromPointer", "(J)Lcom/madara/Variables;");
+          "fromPointer", "(J)Lai/madara/knowledge/Variables;");
         jobject jvariables = jvm.env->CallStaticObjectMethod (jvarClass,
           fromPointerCall, (jlong)heap_variables.get ());
 
@@ -457,7 +457,8 @@ madara::knowledge::KnowledgeRecordFilters::filter (
         // get the filter method
         jmethodID filterMethod = jvm.env->GetMethodID (filterClass,
           "filter",
-          "(Lcom/madara/KnowledgeList;Lcom/madara/Variables;)Lcom/madara/KnowledgeRecord;");
+          "(Lai/madara/knowledge/KnowledgeList;"
+          "Lai/madara/knowledge/Variables;)Lai/madara/knowledge/KnowledgeRecord;");
 
         madara_logger_cond_log (context_,
           context_->get_logger (), logger::global_logger.get (),
@@ -670,28 +671,28 @@ madara::knowledge::KnowledgeRecordFilters::filter (
         * Create the variables java object
         **/
         jclass jvarClass = madara::utility::java::find_class (jvm.env,
-          "com/madara/Variables");
+          "ai/madara/knowledge/Variables");
         jclass jpacketClass = madara::utility::java::find_class (jvm.env,
-          "com/madara/transport/filters/Packet");
+          "ai/madara/transport/filters/Packet");
         jclass jcontextClass = madara::utility::java::find_class (jvm.env,
-          "com/madara/transport/TransportContext");
+          "ai/madara/transport/TransportContext");
 
         jmethodID varfromPointerCall = jvm.env->GetStaticMethodID (
           jvarClass,
-          "fromPointer", "(J)Lcom/madara/Variables;");
+          "fromPointer", "(J)Lai/madara/knowledge/Variables;");
         jobject jvariables = jvm.env->CallStaticObjectMethod (
           jvarClass,
           varfromPointerCall, (jlong)heap_variables.get ());
 
         jmethodID packetfromPointerCall = jvm.env->GetStaticMethodID (
           jpacketClass,
-          "fromPointer", "(J)Lcom/madara/transport/filters/Packet;");
+          "fromPointer", "(J)Lai/madara/transport/filters/Packet;");
         jobject jpacket = jvm.env->CallStaticObjectMethod (jpacketClass,
           packetfromPointerCall, (jlong)heap_records.get ());
 
         jmethodID contextfromPointerCall = jvm.env->GetStaticMethodID (
           jcontextClass,
-          "fromPointer", "(J)Lcom/madara/transport/TransportContext;");
+          "fromPointer", "(J)Lai/madara/transport/TransportContext;");
         jobject jcontext = jvm.env->CallStaticObjectMethod (jcontextClass,
           contextfromPointerCall, (jlong)heap_context.get ());
 
@@ -699,8 +700,8 @@ madara::knowledge::KnowledgeRecordFilters::filter (
         jclass filterClass = jvm.env->GetObjectClass (i->java_object);
         jmethodID filterMethod = jvm.env->GetMethodID (filterClass,
           "filter",
-          "(Lcom/madara/transport/filters/Packet;"
-          "Lcom/madara/transport/TransportContext;Lcom/madara/Variables;)V");
+          "(Lai/madara/transport/filters/Packet;"
+          "Lai/madara/transport/TransportContext;Lai/madara/knowledge/Variables;)V");
 
 
         madara_logger_cond_log (context_,

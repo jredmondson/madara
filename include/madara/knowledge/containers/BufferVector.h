@@ -180,7 +180,7 @@ namespace madara
         * Sets the delimiter for adding and detecting subvariables. By default,
         * MADARA uses a '.' delimiter for names like "ai.madara.Var1". Other
         * conventions can include '/' for ROS-like topic directory structures,
-        * e.g., com/madara/Var1.
+        * e.g., ai/madara/Var1.
         * @param delimiter  the delimiter to use for variable demarcation
         **/
         void set_delimiter (const std::string & delimiter);
@@ -189,7 +189,7 @@ namespace madara
         * Gets the delimiter for adding and detecting subvariables. By default,
         * MADARA uses a '.' delimiter for names like "ai.madara.Var1". Other
         * conventions can include '/' for ROS-like topic directory structures,
-        * e.g., com/madara/Var1.
+        * e.g., ai/madara/Var1.
         * @return   the delimiter to use for variable demarcation
         **/
         std::string get_delimiter (void);

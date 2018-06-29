@@ -110,7 +110,7 @@ Java_ai_madara_knowledge_containers_Queue_jni_1enqueueLong
 /*
  * Class:     ai_madara_knowledge_containers_Queue
  * Method:    jni_enqueueString
- * Signature: (JLcom/madara/containers/String;)Z
+ * Signature: (JLai/madara/containers/String;)Z
  */
 MADARA_EXPORT jboolean JNICALL
 Java_ai_madara_knowledge_containers_Queue_jni_1enqueueString

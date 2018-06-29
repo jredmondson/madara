@@ -309,13 +309,13 @@ Java_ai_madara_knowledge_containers_NativeIntegerVector_jni_1toArray
   (JNIEnv * env, jobject, jlong cptr)
 {
   jclass kr_class = madara::utility::java::find_class (
-    env, "com/madara/KnowledgeRecord");
+    env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
 
   if (kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID (kr_class,
-      "fromPointer", " (J)Lcom/madara/KnowledgeRecord;");
+      "fromPointer", " (J)Lai/madara/knowledge/KnowledgeRecord;");
     madara::knowledge::KnowledgeVector records;
     NativeIntegerVector * current =
       (NativeIntegerVector *)cptr;

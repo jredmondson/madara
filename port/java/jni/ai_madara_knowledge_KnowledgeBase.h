@@ -234,7 +234,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2
 /*
  * Class:     ai_madara_knowledge_KnowledgeBase
  * Method:    jni_defineFunction
- * Signature: (JLjava/lang/String;Lcom/madara/MadaraFunction;)V
+ * Signature: (JLjava/lang/String;Lai/madara/MadaraFunction;)V
  */
 MADARA_EXPORT void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2Lai_madara_MadaraFunction_2
@@ -532,7 +532,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1loadContext
 /*
  * Class:     ai_madara_knowledge_KnowledgeBase
  * Method:    jni_toKnowledgeMap
- * Signature: (JLjava/lang/String;Lcom/madara/KnowledgeBase/MapReturn;)V
+ * Signature: (JLjava/lang/String;Lai/madara/knowledge/KnowledgeBase/MapReturn;)V
  */
 MADARA_EXPORT void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1toKnowledgeMap
@@ -541,7 +541,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1toKnowledgeMap
 /*
 * Class:     ai_madara_knowledge_KnowledgeBase
 * Method:    jni_toMap
-* Signature: (JLjava/lang/String;Ljava/lang/String;Lcom/madara/KnowledgeBase/MapReturn;)V
+* Signature: (JLjava/lang/String;Ljava/lang/String;Lai/madara/knowledge/KnowledgeBase/MapReturn;)V
 */
 MADARA_EXPORT void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1toMap

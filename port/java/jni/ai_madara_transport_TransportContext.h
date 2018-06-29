@@ -130,7 +130,7 @@ Java_ai_madara_transport_TransportContext_jni_1getReceiveBandwidth
 /*
  * Class:     ai_madara_transport_TransportContext
  * Method:    jni_getRecords
- * Signature: (JLcom/madara/transport/TransportContext/MapReturn;)V
+ * Signature: (JLai/madara/transport/TransportContext/MapReturn;)V
  */
 MADARA_EXPORT void JNICALL
 Java_ai_madara_transport_TransportContext_jni_1getRecords

@@ -146,12 +146,12 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       **/
 
     jclass jvarClass = madara::utility::java::find_class (
-      env, "com/madara/Variables");
+      env, "ai/madara/knowledge/Variables");
     jclass jlistClass = madara::utility::java::find_class (
-      env, "com/madara/KnowledgeList");
+      env, "ai/madara/knowledge/KnowledgeList");
 
     jmethodID fromPointerCall = env->GetStaticMethodID (jvarClass,
-      "fromPointer", "(J)Lcom/madara/Variables;");
+      "fromPointer", "(J)Lai/madara/knowledge/Variables;");
     jobject jvariables = env->CallStaticObjectMethod (jvarClass,
       fromPointerCall, (jlong) &variables);
 
@@ -179,7 +179,8 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
     // get the filter method
     jmethodID filterMethod = env->GetMethodID (filterClass,
       "filter",
-      "(Lcom/madara/KnowledgeList;Lcom/madara/Variables;)Lcom/madara/KnowledgeRecord;");
+      "(Lai/madara/knowledge/KnowledgeList;"
+      "Lai/madara/knowledge/Variables;)Lai/madara/knowledge/KnowledgeRecord;");
 
     // call the filter and hold the result
     jobject jresult = env->CallObjectMethod (function_->java_object,

@@ -96,10 +96,10 @@ threads::JavaThread::init (knowledge::KnowledgeBase & context)
     " Creating Java KnowledgeBase from data plane\n", name.c_str ());
 
   jclass kb_class = madara::utility::java::find_class (env,
-    "com/madara/KnowledgeBase");
+    "ai/madara/knowledge/KnowledgeBase");
     
   jmethodID fromPointerCall = env->GetStaticMethodID (kb_class,
-    "fromPointer", "(JZ)Lcom/madara/KnowledgeBase;");
+    "fromPointer", "(JZ)Lai/madara/knowledge/KnowledgeBase;");
     
   jboolean manage (false);
 
@@ -164,7 +164,7 @@ threads::JavaThread::check_compliance (jobject obj)
         run_method_ = env->GetMethodID(class_,
           "run", "()V" );
         init_method_ = env->GetMethodID(class_,
-          "init", "(Lcom/madara/KnowledgeBase;)V" );
+          "init", "(Lai/madara/knowledge/KnowledgeBase;)V" );
         cleanup_method_ = env->GetMethodID(class_,
           "cleanup", "()V" );
 
@@ -241,9 +241,9 @@ threads::JavaThread::init_control_vars (knowledge::KnowledgeBase & control)
 
   // obtain fromPointer method for ai.madara.knowledge.containers.Integer
   jclass i_class = madara::utility::java::find_class (env,
-    "com/madara/containers/Integer");
+    "ai/madara/containers/Integer");
   jmethodID fromPointerCall = env->GetStaticMethodID (i_class,
-    "fromPointer", "(JZ)Lcom/madara/containers/Integer;");
+    "fromPointer", "(JZ)Lai/madara/containers/Integer;");
 
   // the user thread should not manage C++ memory. We'll do that.
   jboolean manage (false);
@@ -256,11 +256,11 @@ threads::JavaThread::init_control_vars (knowledge::KnowledgeBase & control)
 
   // set the user-defined threads's containers to these new containers
   jfieldID fieldId = env->GetFieldID(class_,
-    "terminated","Lcom/madara/containers/Integer;");
+    "terminated","Lai/madara/containers/Integer;");
   env->SetObjectField (obj_, fieldId, jterminate);
   
   fieldId = env->GetFieldID(class_,
-    "paused","Lcom/madara/containers/Integer;");
+    "paused","Lai/madara/containers/Integer;");
   env->SetObjectField (obj_, fieldId, jpaused);
 
   jvm.env->DeleteWeakGlobalRef (i_class);
