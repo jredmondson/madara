@@ -6036,9 +6036,11 @@ madara::expression::Interpreter::number_insert (
     continue;
 
   // do we have a float?
-  if (i + j <= input.length () && input[i + j] == '.')
+  if ((i + j <= input.length () && input[i + j] == '.') || input[i] == '.')
   {
-    ++j;
+    if (input[i] != '.')
+      ++j;
+      
     for (; i + j <= input.length () && is_number (input[i + j]); ++j)
       continue;
 
@@ -6286,7 +6288,8 @@ bool & handled, int & accumulated_precedence,
 bool build_argument_list)
 {
   handled = false;
-  if (is_number (input[i]))
+  if (is_number (input[i]) || 
+    (i + 1 < input.size () && input[i] == '.' && is_number (input[i+1])))
   {
     handled = true;
     // leaf node
