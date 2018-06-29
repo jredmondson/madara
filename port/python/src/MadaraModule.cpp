@@ -1,10 +1,11 @@
+
+#include <boost/python/detail/wrap_python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <boost/python/suite/indexing/map_indexing_suite.hpp>
+
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/filters/GenericFilters.h"
 #include "FunctionDefaults.h"
-
-#include <boost/python.hpp>
-#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-#include <boost/python/suite/indexing/map_indexing_suite.hpp>
 
 /**
  * @file MadaraModule.cpp
