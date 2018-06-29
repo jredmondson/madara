@@ -641,6 +641,13 @@ int main (int argc, char ** argv)
     {
       expressions.push_back (knowledge.compile (utility::file_to_string (*i)));
     }
+    else
+    {
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
+        "\nUnable to load file %s. "
+        "Check if file exists or if you have permission to read.\n",
+        i->c_str ());
+    }
   }
 
   // use no harm settings for initialization (faster, doesn't send data)
@@ -657,6 +664,13 @@ int main (int argc, char ** argv)
       if (utility::file_exists (*i))
       {
         knowledge.evaluate (utility::file_to_string (*i), noharm);
+      }
+      else
+      {
+        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
+          "\nUnable to load file %s. "
+          "Check if file exists or if you have permission to read.\n",
+          i->c_str ());
       }
     }
   }

@@ -2199,6 +2199,14 @@ ThreadSafeContext::load_context (
 
     fclose (file);
   }
+  else
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ALWAYS,
+      "ThreadSafeContext::load_context:" \
+      " could not open file %s for reading. "
+      "Check that file exists and that permissions are appropriate.\n",
+      filename.c_str ());
+  }
 
   CheckpointSettings checkpoint_settings;
   checkpoint_settings.filename = filename;
@@ -2415,6 +2423,14 @@ ThreadSafeContext::load_context (
     }
 
     fclose (file);
+  }
+  else
+  {
+    madara_logger_ptr_log (logger_, logger::LOG_ALWAYS,
+      "ThreadSafeContext::load_context:" \
+      " could not open file %s for reading. "
+      "Check that file exists and that permissions are appropriate.\n",
+      checkpoint_settings.filename.c_str ());
   }
 
   return total_read;
