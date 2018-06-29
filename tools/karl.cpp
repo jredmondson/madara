@@ -645,7 +645,7 @@ int main (int argc, char ** argv)
     {
       madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
         "\nUnable to load file %s. "
-        "Check if file exists or if you have permission to read.\n",
+        "Check that file exists and that you have permission to read.\n",
         i->c_str ());
     }
   }
@@ -669,7 +669,7 @@ int main (int argc, char ** argv)
       {
         madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
           "\nUnable to load file %s. "
-          "Check if file exists or if you have permission to read.\n",
+          "Check that file exists and that you have permission to read.\n",
           i->c_str ());
       }
     }
