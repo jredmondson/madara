@@ -116,12 +116,12 @@ namespace madara
       /**
        * Splice handle checker
        **/
-      void check_handle (void * handle, const char *info);
+      int check_handle (void * handle, const char *info);
 
       /**
        * Splice status checker
        **/
-      void check_status (DDS::ReturnCode_t status, const char * info);
+      int check_status (DDS::ReturnCode_t status, const char * info);
       
       /**
        * Returns error name of the specific status
