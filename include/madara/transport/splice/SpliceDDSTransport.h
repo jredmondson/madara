@@ -1,5 +1,5 @@
 #ifndef _MADARA_SPLICE_DDS_TRANSPORT_H__
-#define _MADARA_SPLICE_DDS_TRANSPORT_H_
+#define _MADARA_SPLICE_DDS_TRANSPORT_H__
 
 #include <string>
 
@@ -116,12 +116,12 @@ namespace madara
       /**
        * Splice handle checker
        **/
-      void check_handle (void * handle, const char *info);
+      int check_handle (void * handle, const char *info);
 
       /**
        * Splice status checker
        **/
-      void check_status (DDS::ReturnCode_t status, const char * info);
+      int check_status (DDS::ReturnCode_t status, const char * info);
       
       /**
        * Returns error name of the specific status

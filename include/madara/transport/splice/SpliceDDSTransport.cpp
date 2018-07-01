@@ -174,7 +174,8 @@ madara::transport::SpliceDDSTransport::setup (void)
   //  Register Update type
   status = this->update_type_support_.register_type (
     domain_participant_, "Knowledge::Update");
-  check_status(status, "Knowledge::UpdateTypeSupport::register_type");
+  if (int ret = check_status(status, "Knowledge::UpdateTypeSupport::register_type") < 0)
+      return ret;
 
   //  Register Mutex type
   //status = this->mutex_type_support_.register_type (
@@ -191,12 +192,16 @@ madara::transport::SpliceDDSTransport::setup (void)
     madara::utility::dds_topicify (settings_.write_domain).c_str (), 
     "Knowledge::Update", 
     topic_qos_, NULL, DDS::STATUS_MASK_NONE);
-  check_handle(update_topic_, 
-    "DDS::DomainParticipant::create_topic (KnowledgeUpdate)");
+
+  if (int ret = check_handle(update_topic_,
+    "DDS::DomainParticipant::create_topic (KnowledgeUpdate)") < 0)
+      return ret;
+
 
   // Get default qos for publisher
   status = domain_participant_->get_default_publisher_qos (pub_qos_);
-  check_status(status, "DDS::DomainParticipant::get_default_publisher_qos");
+  if (int ret = check_status(status, "DDS::DomainParticipant::get_default_publisher_qos") < 0)
+      return ret;
 
 
   if (madara::transport::RELIABLE == this->settings_.reliability)
@@ -217,11 +222,13 @@ madara::transport::SpliceDDSTransport::setup (void)
   pub_qos_.partition.name[0] = DDS::string_dup (partition_);
   publisher_ = domain_participant_->create_publisher (
     pub_qos_, NULL, DDS::STATUS_MASK_NONE);
-  check_handle(publisher_, "DDS::DomainParticipant::create_publisher");
+  if (int ret = check_handle(publisher_, "DDS::DomainParticipant::create_publisher") < 0)
+      return ret;
 
   // Create subscriber
   status = domain_participant_->get_default_subscriber_qos (sub_qos_);
-  check_status(status, "DDS::DomainParticipant::get_default_subscriber_qos");
+  if (int ret = check_status(status, "DDS::DomainParticipant::get_default_subscriber_qos") < 0)
+      return ret;
 
 
   if (madara::transport::RELIABLE == this->settings_.reliability)
@@ -241,7 +248,8 @@ madara::transport::SpliceDDSTransport::setup (void)
   subscriber_ = domain_participant_->create_subscriber (
 //    sub_qos_, &sub_listener_, DDS::DATA_AVAILABLE_STATUS | DDS::DATA_ON_READERS_STATUS);
     sub_qos_, NULL, DDS::STATUS_MASK_NONE);
-  check_handle(subscriber_, "DDS::DomainParticipant::create_subscriber");
+  if (int ret = check_handle(subscriber_, "DDS::DomainParticipant::create_subscriber") < 0)
+      return ret;
 
   if (!subscriber_ || !publisher_)
   {
@@ -287,23 +295,28 @@ madara::transport::SpliceDDSTransport::setup (void)
   // Create Update writer
   datawriter_ = publisher_->create_datawriter (update_topic_, 
     datawriter_qos_, NULL, DDS::STATUS_MASK_NONE);
-  check_handle(datawriter_, "DDS::Publisher::create_datawriter (Update)");
+  if (int ret = check_handle(datawriter_, "DDS::Publisher::create_datawriter (Update)") < 0)
+      return ret;
   update_writer_ = dynamic_cast<Knowledge::UpdateDataWriter_ptr> (datawriter_.in ());
-  check_handle(update_writer_, "Knowledge::UpdateDataWriter_ptr::narrow");
+  if (int ret = check_handle(update_writer_, "Knowledge::UpdateDataWriter_ptr::narrow") < 0)
+      return ret;
 
   // Create Latency Update writer for Read Thread
   latencywriter_ = publisher_->create_datawriter (update_topic_, 
     datawriter_qos_, NULL, DDS::STATUS_MASK_NONE);
-  check_handle(latencywriter_, "DDS::Publisher::create_datawriter (Update)");
+  if (int ret = check_handle(latencywriter_, "DDS::Publisher::create_datawriter (Update)") < 0)
+      return ret;
   latency_update_writer_ = dynamic_cast<Knowledge::UpdateDataWriter_ptr> (latencywriter_.in ());
-  check_handle(latency_update_writer_, "Knowledge::UpdateDataWriter_ptr::narrow");
+  if (int ret = check_handle(latency_update_writer_, "Knowledge::UpdateDataWriter_ptr::narrow") < 0)
+      return ret;
 
 
   // Create datareader
   status = subscriber_->get_default_datareader_qos (datareader_qos_);
   subscriber_->copy_from_topic_qos (datareader_qos_, topic_qos_);
   //publisher_->copy_from_topic_qos(datawriter_qos_, topic_qos_);
-  check_status(status, "DDS::Subscriber::get_default_datareader_qos");
+  if (int ret = check_status(status, "DDS::Subscriber::get_default_datareader_qos") < 0)
+      return ret;
 
   datareader_qos_.reader_data_lifecycle.enable_invalid_samples = FALSE;
 
@@ -346,9 +359,11 @@ madara::transport::SpliceDDSTransport::setup (void)
   // way of doing this, since we require subscription information and they
   // have so far not implemented on_subscription_matched.
 
-  check_handle(datareader_, "DDS::Subscriber::create_datareader (Update)");
+  if (int ret = check_handle(datareader_, "DDS::Subscriber::create_datareader (Update)") < 0)
+      return ret;
   update_reader_ = dynamic_cast<Knowledge::UpdateDataReader_ptr>(datareader_.in ());
-  check_handle(update_reader_, "Knowledge::UpdateDataReader_ptr::narrow");
+  if (int ret = check_handle(update_reader_, "Knowledge::UpdateDataReader_ptr::narrow") < 0)
+      return ret;
 
   if (!settings_.no_receiving)
   {
@@ -424,7 +439,7 @@ madara::transport::SpliceDDSTransport::send_data (
   return result;
 }
 
-void
+int
 madara::transport::SpliceDDSTransport::check_handle (void * handle, 
                                                       const char * info)
 {
@@ -436,15 +451,17 @@ madara::transport::SpliceDDSTransport::check_handle (void * handle,
 
     return -2;
   }
+
+  return 0;
 }
 
-void
+int
 madara::transport::SpliceDDSTransport::check_status (DDS::ReturnCode_t status,
                                                        const char * info)
 {
   // if the status is okay, then return without issue
   if ((status == DDS::RETCODE_OK) || (status == DDS::RETCODE_NO_DATA)) 
-    return;
+    return 0;
 
   madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
     "SpliceDDSTransport::check_status:" \
