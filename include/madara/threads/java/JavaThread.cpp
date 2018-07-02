@@ -241,9 +241,9 @@ threads::JavaThread::init_control_vars (knowledge::KnowledgeBase & control)
 
   // obtain fromPointer method for ai.madara.knowledge.containers.Integer
   jclass i_class = madara::utility::java::find_class (env,
-    "ai/madara/containers/Integer");
+    "ai/madara/knowledge/containers/Integer");
   jmethodID fromPointerCall = env->GetStaticMethodID (i_class,
-    "fromPointer", "(JZ)Lai/madara/containers/Integer;");
+    "fromPointer", "(JZ)Lai/madara/knowledge/containers/Integer;");
 
   // the user thread should not manage C++ memory. We'll do that.
   jboolean manage (false);
@@ -256,11 +256,11 @@ threads::JavaThread::init_control_vars (knowledge::KnowledgeBase & control)
 
   // set the user-defined threads's containers to these new containers
   jfieldID fieldId = env->GetFieldID(class_,
-    "terminated","Lai/madara/containers/Integer;");
+    "terminated","Lai/madara/knowledge/containers/Integer;");
   env->SetObjectField (obj_, fieldId, jterminate);
   
   fieldId = env->GetFieldID(class_,
-    "paused","Lai/madara/containers/Integer;");
+    "paused","Lai/madara/knowledge/containers/Integer;");
   env->SetObjectField (obj_, fieldId, jpaused);
 
   jvm.env->DeleteWeakGlobalRef (i_class);
