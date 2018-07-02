@@ -136,13 +136,6 @@ project (Madara_Version) : using_madara {
 }
 
 
-project (Madara_Jar) : using_madara, port/java/using_java {
-  requires += java
-  libout = $(MADARA_ROOT)/lib
-  sharedname = MADARA_JNI
-}
-
-
 project (KaRL) : using_madara, no_karl {
   exeout = $(MADARA_ROOT)/bin
   exename = karl
