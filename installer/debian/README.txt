@@ -9,6 +9,4 @@ NOTES
 
 * You will need sudo access to use these scripts. Packages are required to be
   installed for Debian package building.
-* Please see the help (-h) for information on how to define the ACE version you
-  are using. This version number dictates the shared object version number that
-  is generated.
+* Please see the help (-h) for information on usage

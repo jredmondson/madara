@@ -45,6 +45,7 @@
 * @author James Edmondson <jedmondson@gmail.com>
 *********************************************************************/
 #include "ai_madara_filters_ssl_AesBufferFilter.h"
+#include "madara_jni.h"
 
 #include "madara/filters/ssl/AESBufferFilter.h"
 
@@ -78,7 +79,7 @@ Java_ai_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__
  */
 jlong JNICALL
 Java_ai_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__J
-(JNIEnv *, jobject, jlong cptr)
+(JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
 

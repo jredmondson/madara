@@ -69,7 +69,7 @@ namespace madara
       /**
        * Closes the transport
        **/
-      virtual void close (void);
+      virtual void close (void) override;
       
       /**
        * Accesses reliability setting
@@ -87,7 +87,7 @@ namespace madara
        * Initializes the transport
        * @return  0 if success
        **/
-      virtual int setup (void);
+      virtual int setup (void) override;
 
     private:
       
