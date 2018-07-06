@@ -42,7 +42,7 @@ int main(int, char **)
   test(!kb.exists("a"));
   test(kb.exists("b"));
   test(kb.exists("c"));
-  test_eq(kb.get("a").to_string(), "0");
+  test_eq(kb.get("a").to_string(), "");
   test_eq(kb.get("b").to_string(), "bar");
   test_eq(kb.get("c").to_string(), "baz");
 
@@ -63,7 +63,7 @@ int main(int, char **)
   test_eq(y, 2);
   test_eq(z, 3);
 
-  test_eq(a, "0");
+  test_eq(a, "");
   test_eq(b, "bar");
   test_eq(c, "baz");
 
@@ -81,7 +81,7 @@ int main(int, char **)
   test_eq(kb.get("y").to_integer(), 2);
   test_eq(kb.get("z").to_integer(), 3);
 
-  test_eq(kb.get("a").to_string(), "0");
+  test_eq(kb.get("a").to_string(), "");
   test_eq(kb.get("b").to_string(), "bar");
   test_eq(kb.get("c").to_string(), "baz");
 
@@ -98,7 +98,7 @@ int main(int, char **)
   test_eq(kb.get("y").to_integer(), 3);
   test_eq(kb.get("z").to_integer(), 2);
 
-  test_eq(kb.get("a").to_string(), "0X");
+  test_eq(kb.get("a").to_string(), "X");
   test_eq(kb.get("b").to_string(), "barbar");
   test_eq(kb.get("c").to_string(), "bqz");
 

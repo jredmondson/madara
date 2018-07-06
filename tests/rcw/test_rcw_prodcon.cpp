@@ -65,10 +65,10 @@ int main(int, char **)
 
   Threader threader(kb);
 
-  threader.run(10, "producer", prod);
-  threader.run(10, "consumer", cons);
+  threader.run(100, "producer", prod);
+  threader.run(100, "consumer", cons);
 
-  madara::utility::sleep(20);
+  madara::utility::sleep(5);
 
   tests_finalize();
 }

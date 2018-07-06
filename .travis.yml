@@ -170,6 +170,10 @@ script:
   - $MADARA_ROOT/bin/test_system_calls
   - $MADARA_ROOT/bin/test_timed_wait
   - $MADARA_ROOT/bin/test_utility
+  - $MADARA_ROOT/bin/test_rcw_tracked
+  - $MADARA_ROOT/bin/test_rcw_transaction
+  - $MADARA_ROOT/bin/test_rcw_prodcon
+  - $MADARA_ROOT/bin/test_rcw_custom
   # performance test (useful to see if we've regressed in performance)
   - echo "Testing reasoning throughput..."
   - $MADARA_ROOT/bin/test_reasoning_throughput
