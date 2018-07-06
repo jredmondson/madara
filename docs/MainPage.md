@@ -25,7 +25,7 @@ and basic usage.
 
 ___
 \section new_users New Users
-*C++ Guide Series*: [Architecture](https://sourceforge.net/p/madara/wiki/MadaraArchitecture) | [Knowledge Base](https://sourceforge.net/p/madara/wiki/InteractingWithTheKnowledgeBase) | [Networking](https://sourceforge.net/p/madara/wiki/InteractingWithTheTransport) | [Containers](https://sourceforge.net/p/madara/wiki/KnowledgeContainers) | [Threads](https://sourceforge.net/p/madara/wiki/WorkingWithThreads) | [Optimizations](https://sourceforge.net/p/madara/wiki/OptimizingKaRL) | [KaRL](https://sourceforge.net/p/madara/wiki/KarlLanguage/)
+*C++ Guide Series*: [Architecture](http://www.github.com/jredmondson/madara/wiki/MadaraArchitecture) | [Knowledge Base](http://www.github.com/jredmondson/madara/wiki/InteractingWithTheKnowledgeBase) | [Networking](http://www.github.com/jredmondson/madara/wiki/InteractingWithTheTransport) | [Containers](http://www.github.com/jredmondson/madara/wiki/KnowledgeContainers) | [Threads](http://www.github.com/jredmondson/madara/wiki/WorkingWithThreads) | [Optimizations](http://www.github.com/jredmondson/madara/wiki/OptimizingKaRL) | [KaRL](http://www.github.com/jredmondson/madara/wiki/KarlLanguage/)
 ___
 \section advanced_users Advanced Users
 
