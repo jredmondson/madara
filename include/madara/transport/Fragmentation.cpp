@@ -272,7 +272,7 @@ char * madara::transport::defrag (FragmentMap & map)
     "transport::defrag:" \
     " defragging fragment map\n");
 
-  FragmentMap::iterator i = map.find (0);
+  FragmentMap::iterator i = map.begin ();
   if (i != map.end ())
   {
     FragmentMessageHeader header;
@@ -327,8 +327,11 @@ char * madara::transport::defrag (FragmentMap & map)
         size -= actual_size;
       }
 
+      if (i != map.end ())
+        ++i;
+
       // if so, iterate over the fragments and copy the contents
-      for (++i ;i != map.end (); ++i)
+      for (;i != map.end (); ++i)
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_DETAILED,
           "transport::defrag: reading header of new fragment\n");
