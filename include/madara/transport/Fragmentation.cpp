@@ -272,7 +272,7 @@ char * madara::transport::defrag (FragmentMap & map)
     "transport::defrag:" \
     " defragging fragment map\n");
 
-  FragmentMap::iterator i = map.begin ();
+  FragmentMap::iterator i = map.find (0);
   if (i != map.end ())
   {
     FragmentMessageHeader header;
