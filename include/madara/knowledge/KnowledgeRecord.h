@@ -713,7 +713,6 @@ namespace madara
        * this records quality will be set to new_value.write_quality.
        *
        * @param    new_value   new value of the Knowledge Record
-       * @param    size        num elements in the array
        **/
       void set_value (const KnowledgeRecord &new_value);
 
@@ -725,7 +724,6 @@ namespace madara
        * this records quality will be set to new_value.write_quality.
        *
        * @param    new_value   new value of the Knowledge Record
-       * @param    size        num elements in the array
        **/
       void set_value (KnowledgeRecord &&new_value);
 

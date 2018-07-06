@@ -635,7 +635,7 @@ namespace madara
 
       /**
        * Atomically sets the value of a variable to a KnowledgeRecord
-       * @param   variable  reference to a variable (@see get_ref)
+       * @param   key       the variable name
        * @param   value     new value of the variable
        * @param   settings  settings for applying the update
        * @return   0 if the value was set. -1 if null key
@@ -647,7 +647,7 @@ namespace madara
 
       /**
        * Atomically sets the value of a variable to a KnowledgeRecord
-       * @param   variable  reference to a variable (@see get_ref)
+       * @param   key       the variable name
        * @param   value     new value of the variable
        * @param   settings  settings for applying the update
        * @return   0 if the value was set. -1 if null key
@@ -660,7 +660,6 @@ namespace madara
       /**
        * Atomically sets the value of a variable to an integer 1
        * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     new value of the variable
        * @param   settings  settings for applying the update
        * @return   0 if the value was set. -1 if null key
        **/
@@ -1119,8 +1118,7 @@ namespace madara
 
       /**
        * Atomically sets the value of a variable to an integer 1
-       * @param   variable  reference to a variable (@see get_ref)
-       * @param   value     new value of the variable
+       * @param   key       the name of the variable
        * @param   settings  settings for applying the update
        * @return   0 if the value was set. -1 if null key
        **/
@@ -1590,7 +1588,6 @@ namespace madara
       /**
        * Saves a checkpoint of a list of changes to a file
        * @param   settings    checkpoint settings to load
-       * @param   id          unique identifier of the context holder
        * @return              -1 if file open failed<br />
        *                      -2 if file write failed<br />
        *                      >0 if successful (number of bytes written)

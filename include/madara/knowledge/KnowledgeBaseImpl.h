@@ -946,7 +946,6 @@ namespace madara
       /**
        * Saves a checkpoint of a list of changes to a file
        * @param   settings    checkpoint settings to load
-       * @param   id          unique identifier of the context holder
        * @return              -1 if file open failed<br />
        *                      -2 if file write failed<br />
        *                      >0 if successful (number of bytes written)

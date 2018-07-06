@@ -1,8 +1,6 @@
 #ifndef _MADARA_ZEROMQ_CONTEXT_H_
 #define _MADARA_ZEROMQ_CONTEXT_H_
 
-#ifdef _MADARA_USING_ZMQ_
-
 /**
 * @file ZMQContext.h
 * @author James Edmondson <jedmondson@gmail.com>
@@ -38,7 +36,6 @@ namespace madara
 
       /**
       * Destroys the underlying context
-      * @return current ZMQ context
       **/
       void destroy_context (void);
 
@@ -53,7 +50,7 @@ namespace madara
 
       /**
       * Retrieves the underlying ZMQ context
-      * @return current ZMQ context
+      * @param   context   the context to manage
       **/
       void set_context (void * context);
 
@@ -83,7 +80,5 @@ namespace madara
     extern MADARA_EXPORT ZMQContext zmq_context;
   }
 }
-
-#endif // _MADARA_USING_ZMQ_
 
 #endif // _MADARA_ZEROMQ_CONTEXT_H_

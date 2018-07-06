@@ -71,6 +71,13 @@ namespace madara
        * @param  t_last_lamport_clock the clock when checkpoint ended
        * @param  t_prefixes          the prefixes to save or load (empty = all)
        * @param  t_states            number of states in checkpoint
+       * @param  t_version           the version of the checkpoint
+       * @param  t_override_timestamp  override the timestamps
+       * @param  t_override_lamport  override the lamport clocks
+       * @param  t_keep_open         attempt to keep the file open for later
+       * @param  t_initial_state     the initial state to query/save
+       * @param  t_last_state        the last state to query/save
+       * @param  t_reset_checkpoint  reset the checkpoint modifieds
        **/
       CheckpointSettings (size_t t_buffer_size,
         bool t_clear_knowledge,

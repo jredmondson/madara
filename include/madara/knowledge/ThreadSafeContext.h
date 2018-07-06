@@ -1639,7 +1639,6 @@ namespace madara
       /**
        * Saves a checkpoint of a list of changes to a file
        * @param   settings    checkpoint settings to load
-       * @param   id          unique identifier of the context holder
        * @return              -1 if file open failed<br />
        *                      -2 if file write failed<br />
        *                      >0 if successful (number of bytes written)
@@ -1681,8 +1680,7 @@ namespace madara
        * Changes variable to modified at current clock, and queues it to send,
        * even if it is a local that would not ordinarily be sent. Skips all
        * safety checks and variable expansions.
-       * @param  key     the key of the record you are marking
-       * @param  record  record of the key in the context (should exist)
+       * @param  ref       a reference to a variable in the knowledge base
        * @param  settings  the settings for referring to variables
        **/
       void mark_to_send_unsafe (VariableReference ref,
@@ -1691,8 +1689,7 @@ namespace madara
       /**
        * Changes variable to modified at current clock for the purposes of
        * checkpointing. Skips all safety checks and variable expansions.
-       * @param  key     the key of the record you are marking
-       * @param  record  record of the key in the context (should exist)
+       * @param  ref       a reference to a variable in the knowledge base
        * @param  settings  the settings for referring to variables
        **/
       void mark_to_checkpoint_unsafe (VariableReference ref,
@@ -1700,9 +1697,8 @@ namespace madara
 
       /**
        * method for marking a record modified and signaling changes
-       * @param   name     variable name
-       * @param   record   record to place in the changed_map
-       * @param   settings settings for applying modification and signalling
+       * @param  ref       a reference to a variable in the knowledge base
+       * @param  settings  settings for applying modification and signalling
        **/
       void mark_and_signal (VariableReference ref,
         const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings());
