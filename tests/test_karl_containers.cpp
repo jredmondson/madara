@@ -1474,21 +1474,25 @@ void test_native_vectors (void)
   
   std::cerr << "\n";
 
-  if (size != 10)
-    std::cerr << "FAIL. Vector.size != 10\n";
-  else
+  if (size != 10) {
+    std::cerr << "FAIL. Vector.size != 10\n"; ++num_fails;
+  } else
     std::cerr << "SUCCESS. Vector.size == 10\n";
 
   if (vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 7.7)
     std::cerr << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
-  else
+  else {
     std::cerr << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
+    ++num_fails;
+  }
   
   if (vector.get_name () == "test_vector")
     std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
-  else
+  else {
     std::cerr << "FAIL. vector.name () did not return test_vector.\n";
+    ++num_fails;
+  }
 
   std::cerr << "Resizing to 7 elements.\n";
 
@@ -1498,8 +1502,10 @@ void test_native_vectors (void)
   if (vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 0)
     std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
-  else
+  else {
     std::cerr << "FAIL. Vector [7] still exists after resize.\n";
+    ++num_fails;
+  }
   
   vector.resize (12);
   
@@ -1510,8 +1516,22 @@ void test_native_vectors (void)
       vector[8] == 8.8 && vector[10] == 0 &&
       vector[9] == 9.9 && vector.size () == 12)
     std::cerr << "SUCCESS. Resize to 12 was successful.\n";
-  else
+  else {
     std::cerr << "FAIL. Resize to 12 was unsuccessful.\n";
+    ++num_fails;
+  }
+
+  std::vector<double> vals = {4, 8, 15, 16, 23, 42};
+  vector.set (vals.data(), vals.size());
+
+  if (vector.size () == 6 && vector[0] == 4 &&
+      vector[1] == 8 && vector[2] == 15 &&
+      vector[3] == 16 && vector[4] == 23 && vector[5] == 42)
+    std::cerr << "SUCCESS. Set from C array succeeded.\n";
+  else {
+    std::cerr << "FAIL. Set from C array failed.\n";
+    ++num_fails;
+  }
 
   knowledge.print ();
 }

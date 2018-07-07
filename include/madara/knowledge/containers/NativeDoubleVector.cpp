@@ -502,6 +502,52 @@ madara::knowledge::containers::NativeDoubleVector::set (
   }
   
   return result;
+}
+
+int
+madara::knowledge::containers::NativeDoubleVector::set (
+  const double * values, uint32_t size)
+{
+  int result = -1;
+  
+  if (context_)
+  {
+    ContextGuard context_guard (*context_);
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_MAJOR,
+      "NativeDoubleVector::set: %s: setting all elements\n",
+      this->name_.c_str ());
+
+    context_->set (vector_, values, size, settings_);
+  }
+  
+  return result;
+}
+ 
+int
+madara::knowledge::containers::NativeDoubleVector::set (
+  const double * values, uint32_t size,
+  const KnowledgeUpdateSettings & settings)
+{
+  int result = -1;
+  
+  if (context_)
+  {
+    ContextGuard context_guard (*context_);
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_MAJOR,
+      "NativeDoubleVector::set: %s: setting all elements "
+      "with custom settings\n",
+      this->name_.c_str ());
+
+    context_->set (vector_, values, size, settings);
+  }
+  
+  return result;
 }     
 
 void

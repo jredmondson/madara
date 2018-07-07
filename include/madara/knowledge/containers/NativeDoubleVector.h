@@ -207,6 +207,32 @@ namespace madara
         int set (
           const std::vector <type> & value,
           const KnowledgeUpdateSettings & settings);
+
+        /**
+         * Reads values from a pointer to doubles, and size
+         *
+         * @param values          pointer to doubles to set at the location
+         * @param size            number of doubles values points to
+         * @return                0 if successful, -1 if key is null, and
+         *                        -2 if quality isn't high enough
+         **/
+        int set (
+          const type * values,
+          uint32_t size);
+
+        /**
+         * Reads values from a pointer to doubles, and size
+         *
+         * @param values          pointer to doubles to set at the location
+         * @param size            number of doubles values points to
+         * @param settings        settings for applying the update
+         * @return                0 if successful, -1 if key is null, and
+         *                        -2 if quality isn't high enough
+         **/
+        int set (
+          const type * values,
+          uint32_t size,
+          const KnowledgeUpdateSettings & settings);
        
         /**
          * Sets the quality of writing to a certain variable from this entity
