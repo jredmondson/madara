@@ -46,8 +46,6 @@
  *********************************************************************/
 package ai.madara.knowledge;
 
-import ai.madara.MadaraJNI;
-
 /**
  * Type of {@link ai.madara.knowledge.KnowledgeRecord KnowledgeRecord}
  */

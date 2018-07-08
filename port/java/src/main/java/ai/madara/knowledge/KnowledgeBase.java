@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,20 +38,21 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 package ai.madara.knowledge;
 
-import ai.madara.transport.TransportSettings;
-import ai.madara.transport.TransportType;
+import ai.madara.MadaraJNI;
+import ai.madara.exceptions.MadaraDeadObjectException;
+import ai.madara.logger.GlobalLogger;
 import ai.madara.logger.LogLevels;
 import ai.madara.logger.Logger;
-import ai.madara.logger.GlobalLogger;
-import ai.madara.MadaraJNI;
+import ai.madara.transport.TransportSettings;
+import ai.madara.transport.TransportType;
 
 /**
  * This class provides a distributed knowledge base to users
@@ -189,7 +190,7 @@ public class KnowledgeBase extends MadaraJNI
    *
    * @return KnowledgeBase ID
    **/
-  public String getID ()
+  public String getID () throws MadaraDeadObjectException
   {
     return jni_getID (getCPtr ());
   }
@@ -203,7 +204,7 @@ public class KnowledgeBase extends MadaraJNI
    * @return value of expression
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public KnowledgeRecord evaluate(String expression)
+  public KnowledgeRecord evaluate(String expression) throws MadaraDeadObjectException
   {
     return evaluate(expression, EvalSettings.DEFAULT_EVAL_SETTINGS);
   }
@@ -214,7 +215,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param expression KaRL expression to evaluate
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void evaluateNoReturn(String expression)
+  public void evaluateNoReturn(String expression) throws MadaraDeadObjectException
   {
     evaluateNoReturn(expression, EvalSettings.DEFAULT_EVAL_SETTINGS);
   }
@@ -229,7 +230,7 @@ public class KnowledgeBase extends MadaraJNI
    * @return value of expression
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public KnowledgeRecord evaluate(String expression, EvalSettings evalSettings)
+  public KnowledgeRecord evaluate(String expression, EvalSettings evalSettings) throws MadaraDeadObjectException
   {
     return KnowledgeRecord.fromPointer(jni_evaluate(getCPtr(), expression, evalSettings.getCPtr()));
   }
@@ -241,7 +242,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param evalSettings evalSettings Settings for evaluating and printing
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void evaluateNoReturn(String expression, EvalSettings evalSettings)
+  public void evaluateNoReturn(String expression, EvalSettings evalSettings) throws MadaraDeadObjectException
   {
     jni_evaluateNoReturn(getCPtr(), expression, evalSettings.getCPtr());
   }
@@ -255,7 +256,7 @@ public class KnowledgeBase extends MadaraJNI
    * @return value of expression
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public KnowledgeRecord evaluate(CompiledExpression expression)
+  public KnowledgeRecord evaluate(CompiledExpression expression) throws MadaraDeadObjectException
   {
     return evaluate(expression, EvalSettings.DEFAULT_EVAL_SETTINGS);
   }
@@ -266,7 +267,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param expression KaRL expression to evaluate  (result of {@link #compile (String)})
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void evaluateNoReturn(CompiledExpression expression)
+  public void evaluateNoReturn(CompiledExpression expression) throws MadaraDeadObjectException
   {
     evaluateNoReturn(expression, EvalSettings.DEFAULT_EVAL_SETTINGS);
   }
@@ -281,7 +282,7 @@ public class KnowledgeBase extends MadaraJNI
    * @return value of expression
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public KnowledgeRecord evaluate(CompiledExpression expression, EvalSettings evalSettings)
+  public KnowledgeRecord evaluate(CompiledExpression expression, EvalSettings evalSettings) throws MadaraDeadObjectException
   {
     return KnowledgeRecord.fromPointer(jni_evaluate(getCPtr(), expression.getCPtr(), evalSettings.getCPtr()));
   }
@@ -293,7 +294,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param evalSettings Settings for evaluating and printing
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void evaluateNoReturn(CompiledExpression expression, EvalSettings evalSettings)
+  public void evaluateNoReturn(CompiledExpression expression, EvalSettings evalSettings) throws MadaraDeadObjectException
   {
     jni_evaluateNoReturn(getCPtr(), expression.getCPtr(), evalSettings.getCPtr());
   }
@@ -305,7 +306,7 @@ public class KnowledgeBase extends MadaraJNI
    * @return {@link ai.madara.knowledge.KnowledgeBase.CompiledExpression CompiledExpression}: compiled, optimized expression tree
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public CompiledExpression compile(String expression)
+  public CompiledExpression compile(String expression) throws MadaraDeadObjectException
   {
     return new CompiledExpression(jni_compile(getCPtr(), expression));
   }
@@ -318,7 +319,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param function Implementation of MadaraFunction
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void defineFunction(String name, MadaraFunction function)
+  public void defineFunction(String name, MadaraFunction function) throws MadaraDeadObjectException
   {
     jni_defineFunction(getCPtr(), name, function);
   }
@@ -328,7 +329,7 @@ public class KnowledgeBase extends MadaraJNI
    *
    * @param logger  a logger to use for managing information and debugging
    **/
-  public void attachLogger(Logger logger)
+  public void attachLogger(Logger logger) throws MadaraDeadObjectException
   {
     jni_attachLogger(getCPtr(), logger.getCPtr());
   }
@@ -339,7 +340,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param id        unique identifier for this agent
    * @param settings  settings for the new transport
    **/
-  public void attachTransport(String id, ai.madara.transport.TransportSettings settings)
+  public void attachTransport(String id, ai.madara.transport.TransportSettings settings) throws MadaraDeadObjectException
   {
     jni_attachTransport(getCPtr(), id, settings.getCPtr());
   }
@@ -349,7 +350,7 @@ public class KnowledgeBase extends MadaraJNI
    *
    * @return the logger being used for managing information and debugging
    **/
-  public Logger getLogger()
+  public Logger getLogger() throws MadaraDeadObjectException
   {
     return Logger.fromPointer(jni_getLogger(getCPtr()), false);
   }
@@ -357,22 +358,22 @@ public class KnowledgeBase extends MadaraJNI
   /**
    * Retrieves a stringified list of all modified variables that are ready
    * to send over transport on next send_modifieds call
-   * 
+   *
    * @return  stringified list of the modified knowledge records
    */
-  public String debugModifieds()
+  public String debugModifieds() throws MadaraDeadObjectException
   {
     return jni_debugModifieds(getCPtr());
   }
-  
+
   /**
    * Closes any transports attached to the Knowledge Base
    */
-  public void closeTransports()
+  public void closeTransports() throws MadaraDeadObjectException
   {
     jni_closeTransports(getCPtr());
   }
-  
+
   /**
    * Defines a MADARA KaRL function.
    *
@@ -380,7 +381,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param expression KaRL function body
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void defineFunction(String name, String expression)
+  public void defineFunction(String name, String expression) throws MadaraDeadObjectException
   {
     jni_defineFunction(getCPtr(), name, expression);
   }
@@ -390,7 +391,7 @@ public class KnowledgeBase extends MadaraJNI
    *
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void clear()
+  public void clear() throws MadaraDeadObjectException
   {
     jni_clear(getCPtr());
   }
@@ -400,7 +401,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param name name of record to check
    * @return true if the record exists, false otherwise
    **/
-  public boolean exists(String name)
+  public boolean exists(String name) throws MadaraDeadObjectException
   {
     return jni_exists(getCPtr(), name);
   }
@@ -412,7 +413,7 @@ public class KnowledgeBase extends MadaraJNI
    * @return value of knowledge
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public KnowledgeRecord get(String name)
+  public KnowledgeRecord get(String name) throws MadaraDeadObjectException
   {
     return KnowledgeRecord.fromPointer(jni_get(getCPtr(), name));
   }
@@ -424,7 +425,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param value value to set
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void set(String name, long value)
+  public void set(String name, long value) throws MadaraDeadObjectException
   {
     jni_setInteger(getCPtr(), name, value);
   }
@@ -436,7 +437,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param value value to set
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void set(String name, double value)
+  public void set(String name, double value) throws MadaraDeadObjectException
   {
     jni_setDouble(getCPtr(), name, value);
   }
@@ -448,7 +449,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param value value to set
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void set(String name, String value)
+  public void set(String name, String value) throws MadaraDeadObjectException
   {
     jni_setString(getCPtr(), name, value);
   }
@@ -460,7 +461,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param value value to set
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void set(String name, double[] value)
+  public void set(String name, double[] value) throws MadaraDeadObjectException
   {
     jni_setDoubleArray(getCPtr(), name, value);
   }
@@ -472,7 +473,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param value value to set
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void set(String name, long[] value)
+  public void set(String name, long[] value) throws MadaraDeadObjectException
   {
     jni_setIntegerArray(getCPtr(), name, value);
   }
@@ -484,7 +485,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param value value to set
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void setFile(String name, byte[] value)
+  public void setFile(String name, byte[] value) throws MadaraDeadObjectException
   {
     jni_setFile(getCPtr(), name, value);
   }
@@ -496,13 +497,13 @@ public class KnowledgeBase extends MadaraJNI
    * @param value value to set
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void setImage(String name, byte[] value)
+  public void setImage(String name, byte[] value) throws MadaraDeadObjectException
   {
     jni_setImage(getCPtr(), name, value);
   }
 
-  
-  
+
+
   /**
    * Sets a knowledge value to a specified value.
    *
@@ -511,7 +512,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param settings settings for evaluating the set command
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void set(String name, long value, EvalSettings settings)
+  public void set(String name, long value, EvalSettings settings) throws MadaraDeadObjectException
   {
     jni_setIntegerSettings(getCPtr(), name, value, settings.getCPtr());
   }
@@ -524,7 +525,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param settings settings for evaluating the set command
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void set(String name, double value, EvalSettings settings)
+  public void set(String name, double value, EvalSettings settings) throws MadaraDeadObjectException
   {
     jni_setDoubleSettings(getCPtr(), name, value, settings.getCPtr());
   }
@@ -537,7 +538,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param settings settings for evaluating the set command
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void set(String name, String value, EvalSettings settings)
+  public void set(String name, String value, EvalSettings settings) throws MadaraDeadObjectException
   {
     jni_setStringSettings(getCPtr(), name, value, settings.getCPtr());
   }
@@ -550,7 +551,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param settings settings for evaluating the set command
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void set(String name, double[] value, EvalSettings settings)
+  public void set(String name, double[] value, EvalSettings settings) throws MadaraDeadObjectException
   {
     jni_setDoubleArraySettings(getCPtr(), name, value, settings.getCPtr());
   }
@@ -563,12 +564,12 @@ public class KnowledgeBase extends MadaraJNI
    * @param settings settings for evaluating the set command
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void set(String name, long[] value, EvalSettings settings)
+  public void set(String name, long[] value, EvalSettings settings) throws MadaraDeadObjectException
   {
     jni_setIntegerArraySettings(getCPtr(), name, value, settings.getCPtr());
   }
 
-  
+
   /**
    * Sets a knowledge variable to a specified file byte array.
    *
@@ -577,7 +578,7 @@ public class KnowledgeBase extends MadaraJNI
    * @param settings settings for evaluating the set command
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void setFile(String name, byte[] value, EvalSettings settings)
+  public void setFile(String name, byte[] value, EvalSettings settings) throws MadaraDeadObjectException
   {
     jni_setFileSettings(getCPtr(), name, value, settings.getCPtr());
   }
@@ -590,36 +591,36 @@ public class KnowledgeBase extends MadaraJNI
    * @param settings settings for evaluating the set command
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public void setImage(String name, byte[] value, EvalSettings settings)
+  public void setImage(String name, byte[] value, EvalSettings settings) throws MadaraDeadObjectException
   {
     jni_setImageSettings(getCPtr(), name, value, settings.getCPtr());
   }
 
-  
+
   /**
    * Sends all modifications to global variables since last send modifieds,
    * eval, wait, or set statement.
    **/
-  public void sendModifieds ()
+  public void sendModifieds () throws MadaraDeadObjectException
   {
     jni_sendModifieds(getCPtr());
   }
-  
+
   /**
    * Clears all modified variables that were going to be sent with next call
    * to sendModifieds (also a part of eval, set, wait and similar functions)
    **/
-  public void clearModifieds ()
+  public void clearModifieds () throws MadaraDeadObjectException
   {
     jni_clearModifieds(getCPtr());
   }
-  
+
   /**
    * Sends all modifications to global variables since last send modifieds,
    * eval, wait, or set statement.
    * @param settings   settings to use for considering records to send
    **/
-  public void sendModifieds (EvalSettings settings)
+  public void sendModifieds (EvalSettings settings) throws MadaraDeadObjectException
   {
     jni_sendModifieds(getCPtr(), settings.getCPtr());
   }
@@ -629,19 +630,19 @@ public class KnowledgeBase extends MadaraJNI
    *
    * @param statement The statement to print
    **/
-  public void print(String statement)
+  public void print(String statement) throws MadaraDeadObjectException
   {
     jni_print(getCPtr(), statement);
   }
-  
+
   /**
    * Prints all knowledge in knowledge base
    **/
-  public void print()
+  public void print() throws MadaraDeadObjectException
   {
     jni_print(getCPtr());
   }
-  
+
   /**
    * Deletes the C++ instantiation. To prevent memory leaks, this <b>must</b> be called
    * before an instance of KnowledgeBase gets garbage collected
@@ -672,7 +673,7 @@ public class KnowledgeBase extends MadaraJNI
       super.finalize();
     }
   }
-  
+
   /**
    * Waits for an expression to be non-zero.
    * <br><br>The returned KnowledgeRecord <b>must</b> be freed  ({@link ai.madara.knowledge.KnowledgeRecord#free () KnowledgeRecord.free ()})
@@ -694,9 +695,10 @@ public class KnowledgeBase extends MadaraJNI
    *
    * @param expression KaRL expression to evaluate  (result of {@link #compile (String)})
    * @return value of expression
+   * @throws MadaraDeadObjectException
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public KnowledgeRecord wait(CompiledExpression expression)
+  public KnowledgeRecord wait(CompiledExpression expression) throws MadaraDeadObjectException
   {
     return wait(expression, WaitSettings.DEFAULT_WAIT_SETTINGS);
   }
@@ -726,9 +728,10 @@ public class KnowledgeBase extends MadaraJNI
    * @param expression KaRL expression to evaluate  (result of {@link #compile (String)})
    * @param settings   Settings for waiting
    * @return value of expression
+   * @throws MadaraDeadObjectException
    * @throws KnowledgeBaseLockedException If called from a MadaraFunction
    **/
-  public KnowledgeRecord wait(CompiledExpression expression, WaitSettings settings)
+  public KnowledgeRecord wait(CompiledExpression expression, WaitSettings settings) throws MadaraDeadObjectException
   {
     return new KnowledgeRecord(jni_wait(getCPtr(), expression.getCPtr(), settings.getCPtr()));
   }
@@ -808,9 +811,9 @@ public class KnowledgeBase extends MadaraJNI
    **/
    public long saveContext(String filename)
    {
-    return jni_saveContext(getCPtr(), filename); 
+    return jni_saveContext(getCPtr(), filename);
    }
-  
+
   /**
    * Saves the knowledge base to a file in a human-readable format
    * that can be read in with evaluate or wait statements.
@@ -819,9 +822,9 @@ public class KnowledgeBase extends MadaraJNI
    **/
    public long saveAsKarl(String filename)
    {
-    return jni_saveAsKarl(getCPtr(), filename); 
+    return jni_saveAsKarl(getCPtr(), filename);
    }
-  
+
   /**
    * Loads the knowledge base from a file
    * @param filename the file to load the knowledge base from
@@ -832,9 +835,9 @@ public class KnowledgeBase extends MadaraJNI
    **/
    public long loadContext(String filename, boolean useId, EvalSettings settings)
    {
-    return jni_loadContext(getCPtr(), filename, useId, settings.getCPtr()); 
+    return jni_loadContext(getCPtr(), filename, useId, settings.getCPtr());
    }
-  
+
   /**
    * Saves a snapshot of changes to the context since the last saveContext,
    * saveCheckpoint, or sendModifieds. This is an incremental snapshot from
@@ -848,9 +851,9 @@ public class KnowledgeBase extends MadaraJNI
    **/
   public long saveCheckpoint(String filename, boolean resetModifieds)
   {
-    return jni_saveCheckpoint(getCPtr(), filename, resetModifieds); 
+    return jni_saveCheckpoint(getCPtr(), filename, resetModifieds);
   }
-  
+
   /**
    * Fills a {@link ai.madara.knowledge.KnowledgeMap KnowledgeMap} with
    * {@link ai.madara.knowledge.KnowledgeRecord KnowledgeRecords} that match an expression.
@@ -958,7 +961,7 @@ public class KnowledgeBase extends MadaraJNI
       jni_freeCompiledExpression(getCPtr());
       setCPtr(0);
     }
-    
+
     /**
      * Cleans up underlying C resources
      * @throws Throwable necessary for override but unused

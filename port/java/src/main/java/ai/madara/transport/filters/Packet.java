@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,21 +38,17 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 package ai.madara.transport.filters;
 
 import ai.madara.MadaraJNI;
+import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.KnowledgeRecord;
-
-import java.util.AbstractMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class Packet extends MadaraJNI
 {
@@ -82,59 +78,59 @@ public class Packet extends MadaraJNI
     ret.setCPtr(cptr);
     return ret;
   }
-  
+
   /**
    * Gets the record at the specified index
    * @param  index   the index of the record
    * @return the record at the index
    **/
-  public KnowledgeRecord get(java.lang.String index)
+  public KnowledgeRecord get(java.lang.String index) throws MadaraDeadObjectException
   {
     return KnowledgeRecord.fromPointer(jni_get(getCPtr(),index));
   }
-     
+
   /**
    * Clears all records from the packet
    **/
-  public void clear()
+  public void clear() throws MadaraDeadObjectException
   {
     jni_clear(getCPtr());
   }
-  
+
   /**
    * Erases the record at the specified index
    * @param  index   the index of the record
    **/
-  public void erase(java.lang.String index)
+  public void erase(java.lang.String index) throws MadaraDeadObjectException
   {
     jni_erase(getCPtr(),index);
   }
-  
+
   /**
    * Checks if there is a record at the specified index
    * @param  index   the index of the record
    * @return true if the index exists in the packet
    **/
-  public boolean exists(java.lang.String index)
+  public boolean exists(java.lang.String index) throws MadaraDeadObjectException
   {
     return jni_exists(getCPtr(),index);
   }
-  
+
   /**
    * Sets the record at the specified index
    * @param  index   the index of the record
    * @param  record  the record to set at the index
    **/
-  public void set(java.lang.String index, KnowledgeRecord record)
+  public void set(java.lang.String index, KnowledgeRecord record) throws MadaraDeadObjectException
   {
     jni_set(getCPtr(), index, record.getCPtr());
   }
-   
+
   /**
    * Gets all keys in the packet
    * @return the array of all keys in the packet
    **/
-  public String[] getKeys()
+  public String[] getKeys() throws MadaraDeadObjectException
   {
     return jni_get_keys(getCPtr());
   }

@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,20 +38,20 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 package ai.madara.transport;
 
 import ai.madara.MadaraJNI;
+import ai.madara.exceptions.MadaraDeadObjectException;
+import ai.madara.filters.BufferFilter;
 import ai.madara.knowledge.KnowledgeType;
-import ai.madara.knowledge.MadaraFunction;
 import ai.madara.transport.filters.AggregateFilter;
 import ai.madara.transport.filters.RecordFilter;
-import ai.madara.filters.BufferFilter;
 
 public class QoSTransportSettings extends TransportSettings {
 
@@ -62,13 +62,13 @@ public class QoSTransportSettings extends TransportSettings {
   private static native void jni_freeQoSTransportSettings(long cptr);
 
   private native void jni_addBufferFilter(long cptr, long filter);
-  
+
   private native void jni_addBufferFilterObj(long cptr, BufferFilter filter);
-  
+
   private native void jni_clearBufferFilters(long cptr);
-  
+
   private native int jni_getNumberOfBufferFilters(long cptr);
-  
+
   private native void jni_addRebroadcastRecordFilter(long cptr, int type, RecordFilter filter);
 
   private native void jni_addRebroadcastAggregateFilter(long cptr, AggregateFilter filter);
@@ -116,7 +116,7 @@ public class QoSTransportSettings extends TransportSettings {
     setCPtr(jni_QoSTransportSettings());
   }
 
-  public QoSTransportSettings(QoSTransportSettings transportSettings)
+  public QoSTransportSettings(QoSTransportSettings transportSettings) throws MadaraDeadObjectException
   {
     setCPtr(jni_QoSTransportSettings(transportSettings.getCPtr()));
   }
@@ -127,7 +127,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param filter a filter to encode and decode buffers
    */
-  public void addFilter(BufferFilter filter)
+  public void addFilter(BufferFilter filter) throws MadaraDeadObjectException
   {
     if (filter instanceof MadaraJNI)
     {
@@ -143,7 +143,7 @@ public class QoSTransportSettings extends TransportSettings {
   /**
    * Clears the list of buffer filters
    */
-  public void clearBufferFilters()
+  public void clearBufferFilters() throws MadaraDeadObjectException
   {
     jni_clearBufferFilters(getCPtr());
   }
@@ -155,7 +155,7 @@ public class QoSTransportSettings extends TransportSettings {
    * @param type the types to add the filter to
    * @param filter Madara callback function
    */
-  public void addRebroadcastFilter(KnowledgeType type, RecordFilter filter)
+  public void addRebroadcastFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException
   {
     jni_addRebroadcastRecordFilter(getCPtr(), type.value(), filter);
   }
@@ -166,7 +166,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param filter Madara callback function
    */
-  public void addRebroadcastFilter(AggregateFilter filter)
+  public void addRebroadcastFilter(AggregateFilter filter) throws MadaraDeadObjectException
   {
     jni_addRebroadcastAggregateFilter(getCPtr(), filter);
   }
@@ -177,7 +177,7 @@ public class QoSTransportSettings extends TransportSettings {
    * @param type the types to add the filter to
    * @param filter Madara callback function
    */
-  public void addSendFilter(KnowledgeType type, RecordFilter filter)
+  public void addSendFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException
   {
     jni_addSendRecordFilter(getCPtr(), type.value(), filter);
   }
@@ -188,7 +188,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param filter Madara callback function
    */
-  public void addSendFilter(AggregateFilter filter)
+  public void addSendFilter(AggregateFilter filter) throws MadaraDeadObjectException
   {
     jni_addSendAggregateFilter(getCPtr(), filter);
   }
@@ -200,7 +200,7 @@ public class QoSTransportSettings extends TransportSettings {
    * @param type the types to add the filter to
    * @param filter Madara callback function
    */
-  public void addReceiveFilter(KnowledgeType type, RecordFilter filter)
+  public void addReceiveFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException
   {
     jni_addReceiveRecordFilter(getCPtr(), type.value(), filter);
   }
@@ -211,7 +211,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param filter Madara callback function
    */
-  public void addReceiveFilter(AggregateFilter filter)
+  public void addReceiveFilter(AggregateFilter filter) throws MadaraDeadObjectException
   {
     jni_addReceiveAggregateFilter(getCPtr(), filter);
   }
@@ -221,7 +221,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param ttl the time-to-live
    */
-  public void setRebroadcastTtl(int ttl)
+  public void setRebroadcastTtl(int ttl) throws MadaraDeadObjectException
   {
     jni_setRebroadcastTtl(getCPtr(), ttl);
   }
@@ -231,7 +231,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @return the rebroadcast time-to-live
    */
-  public int getRebroadcastTtl()
+  public int getRebroadcastTtl() throws MadaraDeadObjectException
   {
     return jni_getRebroadcastTtl(getCPtr());
   }
@@ -241,7 +241,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param ttl the time-to-live
    */
-  public void enableParticipantTtl(int ttl)
+  public void enableParticipantTtl(int ttl) throws MadaraDeadObjectException
   {
     jni_enableParticipantTtl(getCPtr(), ttl);
   }
@@ -251,7 +251,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @return the rebroadcast time-to-live
    */
-  public int getParticipantTtl()
+  public int getParticipantTtl() throws MadaraDeadObjectException
   {
     return jni_getParticipantTtl(getCPtr());
   }
@@ -261,7 +261,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param limit the bandwidth limit for sending packets
    */
-  public void setSendBandwidthLimit(int limit)
+  public void setSendBandwidthLimit(int limit) throws MadaraDeadObjectException
   {
     jni_setSendBandwidthLimit(getCPtr(), limit);
   }
@@ -271,7 +271,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @return the bandwidth limit for sending packets
    */
-  public int getSendBandwidthLimit()
+  public int getSendBandwidthLimit() throws MadaraDeadObjectException
   {
     return jni_getSendBandwidthLimit(getCPtr());
   }
@@ -281,7 +281,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param limit the bandwidth limit for all packets
    */
-  public void setTotalBandwidthLimit(int limit)
+  public void setTotalBandwidthLimit(int limit) throws MadaraDeadObjectException
   {
     jni_setTotalBandwidthLimit(getCPtr(), limit);
   }
@@ -291,7 +291,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @return the bandwidth limit for all packets
    */
-  public int getTotalBandwidthLimit()
+  public int getTotalBandwidthLimit() throws MadaraDeadObjectException
   {
     return jni_getTotalBandwidthLimit(getCPtr());
   }
@@ -301,7 +301,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param deadline the maximum lifetime for all packets in seconds
    */
-  public void setDeadline(int deadline)
+  public void setDeadline(int deadline) throws MadaraDeadObjectException
   {
     jni_setDeadline(getCPtr(), deadline);
   }
@@ -311,7 +311,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @return the maximum lifetime for all packets in seconds
    */
-  public int getDeadline()
+  public int getDeadline() throws MadaraDeadObjectException
   {
     return jni_getDeadline(getCPtr());
   }
@@ -322,7 +322,7 @@ public class QoSTransportSettings extends TransportSettings {
    * @param host the peer to add to the trusted list
    *
    */
-  void addTrustedPeer(java.lang.String host)
+  void addTrustedPeer(java.lang.String host) throws MadaraDeadObjectException
   {
     jni_addTrustedPeer(getCPtr(), host);
   }
@@ -333,7 +333,7 @@ public class QoSTransportSettings extends TransportSettings {
    * @param host the peer to add to the banned list
    *
    */
-  void addBannedPeer(java.lang.String host)
+  void addBannedPeer(java.lang.String host) throws MadaraDeadObjectException
   {
     jni_addBannedPeer(getCPtr(), host);
   }
@@ -346,7 +346,7 @@ public class QoSTransportSettings extends TransportSettings {
    * @param burstamount the amount of bursts of drops to enforce
    *
    */
-  void updateDropRate(double percentage, DropType type, int burstamount)
+  void updateDropRate(double percentage, DropType type, int burstamount) throws MadaraDeadObjectException
   {
     jni_updateDropRate(getCPtr(), percentage, type.value(), burstamount);
   }
@@ -358,7 +358,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    **/
   @Override
-  public void save(String filename)
+  public void save(String filename) throws MadaraDeadObjectException
   {
     jni_saveQoS(getCPtr(), filename);
   }
@@ -370,7 +370,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    **/
   @Override
-  public void load(String filename)
+  public void load(String filename) throws MadaraDeadObjectException
   {
     jni_loadQoS(getCPtr(), filename);
   }
@@ -384,7 +384,7 @@ public class QoSTransportSettings extends TransportSettings {
     jni_freeQoSTransportSettings(getCPtr());
     setCPtr(0);
   }
-  
+
   /**
    * Cleans up underlying C resources
    * @throws Throwable necessary for override but unused

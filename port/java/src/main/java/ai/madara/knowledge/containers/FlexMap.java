@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,25 +38,26 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 package ai.madara.knowledge.containers;
 
+import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.KnowledgeBase;
-import ai.madara.knowledge.Variables;
 import ai.madara.knowledge.KnowledgeRecord;
 import ai.madara.knowledge.UpdateSettings;
+import ai.madara.knowledge.Variables;
 
 /**
  * A facade for a map of variable names to values within a knowledge base
  **/
 
 public class FlexMap extends BaseContainer
-{	
+{
   private native long jni_FlexMap();
   private native long jni_FlexMap(long cptr);
   private static native void jni_freeFlexMap(long cptr);
@@ -134,7 +135,7 @@ public class FlexMap extends BaseContainer
    *
    * @return  all keys in the map
    */
-  public java.lang.String[] keys()
+  public java.lang.String[] keys() throws MadaraDeadObjectException
   {
     return jni_keys(getCPtr(),false);
   }
@@ -146,7 +147,7 @@ public class FlexMap extends BaseContainer
    *                     full key names
    * @return  the keys in the map
    */
-  public java.lang.String[] keys(boolean firstLevel)
+  public java.lang.String[] keys(boolean firstLevel) throws MadaraDeadObjectException
   {
     return jni_keys(getCPtr(),firstLevel);
   }
@@ -157,7 +158,7 @@ public class FlexMap extends BaseContainer
    * @param  key  the next level of the FlexMap
    * @return   FlexMap pointing to the keyed location
    */
-  public FlexMap get(java.lang.String key)
+  public FlexMap get(java.lang.String key) throws MadaraDeadObjectException
   {
     return FlexMap.fromPointer(jni_get(getCPtr(), key));
   }
@@ -168,7 +169,7 @@ public class FlexMap extends BaseContainer
    * @param  index  an index into the FlexMap
    * @return   FlexMap pointing to the indexed location
    */
-  public FlexMap get(int index)
+  public FlexMap get(int index) throws MadaraDeadObjectException
   {
     return FlexMap.fromPointer(jni_getIndex(getCPtr(), index));
   }
@@ -178,7 +179,7 @@ public class FlexMap extends BaseContainer
    *
    * @return  name of the variable within the context
    */
-  public java.lang.String getName()
+  public java.lang.String getName() throws MadaraDeadObjectException
   {
     return jni_getName(getCPtr());
   }
@@ -188,7 +189,7 @@ public class FlexMap extends BaseContainer
    *
    * @return  the delimiter that separates map name with elements
    */
-  public java.lang.String getDelimiter()
+  public java.lang.String getDelimiter() throws MadaraDeadObjectException
   {
     return jni_getDelimiter(getCPtr());
   }
@@ -196,9 +197,9 @@ public class FlexMap extends BaseContainer
   /**
    * Sets the delimiter that separates the name of the map with its elements
    *
-   * @param delimiter  the separator between the map and elements 
+   * @param delimiter  the separator between the map and elements
    */
-  public void setDelimiter(java.lang.String delimiter)
+  public void setDelimiter(java.lang.String delimiter) throws MadaraDeadObjectException
   {
     jni_setDelimiter(getCPtr(), delimiter);
   }
@@ -207,7 +208,7 @@ public class FlexMap extends BaseContainer
    * Mark the map as modified. The maps retains the same values
    * but will resend all values as if they had been modified.
    **/
-  public void modify()
+  public void modify() throws MadaraDeadObjectException
   {
     jni_modify(getCPtr());
   }
@@ -216,44 +217,44 @@ public class FlexMap extends BaseContainer
    * Returns true if the container evaluates to true
    * @return true if container has all true values
    **/
-  public boolean isTrue()
+  public boolean isTrue() throws MadaraDeadObjectException
   {
     return jni_isTrue(getCPtr());
   }
-  
+
   /**
    * Returns true if the container evaluates to false
    * @return true if container has any false values or is uninitialized
    **/
-  public boolean isFalse()
+  public boolean isFalse() throws MadaraDeadObjectException
   {
     return jni_isFalse(getCPtr());
   }
-  
+
   /**
    * Clears the variables in the map
    **/
-  public void clear()
+  public void clear() throws MadaraDeadObjectException
   {
     jni_clear(getCPtr());
   }
-  
+
   /**
    * Erases a variable located at key in the map. This also deletes the variable
    * from the knowledge base.
    * @param key  the element key
    **/
-  public void erase(java.lang.String key)
+  public void erase(java.lang.String key) throws MadaraDeadObjectException
   {
     jni_erase(getCPtr(), key);
   }
-  
+
   /**
    * Sets the location to a string
    *
    * @param  value   new value
    */
-  public void set(java.lang.String value)
+  public void set(java.lang.String value) throws MadaraDeadObjectException
   {
     jni_setString(getCPtr(), value);
   }
@@ -263,7 +264,7 @@ public class FlexMap extends BaseContainer
    *
    * @param  value   new value
    */
-  public void set(double value)
+  public void set(double value) throws MadaraDeadObjectException
   {
     jni_setDouble(getCPtr(), value);
   }
@@ -273,7 +274,7 @@ public class FlexMap extends BaseContainer
    *
    * @param  value   new value
    */
-  public void set(long value)
+  public void set(long value) throws MadaraDeadObjectException
   {
     jni_set(getCPtr(), 0, value);
   }
@@ -284,7 +285,7 @@ public class FlexMap extends BaseContainer
    * @param  key     the location within the virtual map
    * @param  value   new value
    */
-  public void set(java.lang.String key, KnowledgeRecord value)
+  public void set(java.lang.String key, KnowledgeRecord value) throws MadaraDeadObjectException
   {
     jni_set(getCPtr(), 1, value.getCPtr ());
   }
@@ -295,7 +296,7 @@ public class FlexMap extends BaseContainer
    * @param  kb      the knowledge base that contains the name
    * @param  name    the variable name
    */
-  public void setName(KnowledgeBase kb, java.lang.String name)
+  public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException
   {
     jni_setName(getCPtr(), 0, kb.getCPtr (), name);
   }
@@ -306,7 +307,7 @@ public class FlexMap extends BaseContainer
    * @param  vars    the variables facade that contains the name
    * @param  name    the variable name
    */
-  public void setName(Variables vars, java.lang.String name)
+  public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException
   {
     jni_setName(getCPtr(), 1, vars.getCPtr (), name);
   }
@@ -316,7 +317,7 @@ public class FlexMap extends BaseContainer
    *
    * @param  settings  the settings to use for updating the Knowledge Base
    */
-  public void setSettings(UpdateSettings settings)
+  public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
   {
     jni_setSettings(getCPtr(), settings.getCPtr());
   }
@@ -326,7 +327,7 @@ public class FlexMap extends BaseContainer
    *
    * @return the value at the index as a knowledge record
    */
-  public KnowledgeRecord toRecord()
+  public KnowledgeRecord toRecord() throws MadaraDeadObjectException
   {
     return KnowledgeRecord.fromPointer(jni_toRecord(getCPtr()));
   }
@@ -338,7 +339,7 @@ public class FlexMap extends BaseContainer
    *
    * @return the value at the index as a knowledge record
    */
-  public Map toMapContainer()
+  public Map toMapContainer() throws MadaraDeadObjectException
   {
     return Map.fromPointer(jni_toMapContainer(getCPtr()));
   }
@@ -355,7 +356,7 @@ public class FlexMap extends BaseContainer
       setCPtr(0);
     }
   }
-  
+
   /**
    * Cleans up underlying C resources
    * @throws Throwable necessary for override but unused

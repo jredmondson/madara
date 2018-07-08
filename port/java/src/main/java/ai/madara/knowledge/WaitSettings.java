@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,15 +38,15 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 package ai.madara.knowledge;
 
-import ai.madara.MadaraJNI;
+import ai.madara.exceptions.MadaraDeadObjectException;
 
 /**
  * Encapsulates settings for a wait statement.
@@ -99,7 +99,7 @@ public class WaitSettings extends EvalSettings
   /**
    * @param freq Frequency to poll an expression for truth.
    */
-  public void setPollFrequency(double freq)
+  public void setPollFrequency(double freq) throws MadaraDeadObjectException
   {
     jni_setPollFrequency(getCPtr(), freq);
   }
@@ -108,7 +108,7 @@ public class WaitSettings extends EvalSettings
   /**
    * @return current poll frequency
    */
-  public double getPollFrequency()
+  public double getPollFrequency() throws MadaraDeadObjectException
   {
     return jni_getPollFrequency(getCPtr());
   }
@@ -117,7 +117,7 @@ public class WaitSettings extends EvalSettings
   /**
    * @param maxWaitTime Maximum time to wait for an expression to become true.
    */
-  public void setMaxWaitTime(double maxWaitTime)
+  public void setMaxWaitTime(double maxWaitTime) throws MadaraDeadObjectException
   {
     jni_setMaxWaitTime(getCPtr(), maxWaitTime);
   }
@@ -125,7 +125,7 @@ public class WaitSettings extends EvalSettings
   /**
    * @return current max wait time
    */
-  public double getMaxWaitTime()
+  public double getMaxWaitTime() throws MadaraDeadObjectException
   {
     return jni_getMaxWaitTime(getCPtr());
   }
@@ -139,7 +139,7 @@ public class WaitSettings extends EvalSettings
     jni_freeWaitSettings(getCPtr());
     setCPtr(0);
   }
-  
+
   /**
    * Cleans up underlying C resources
    * @throws Throwable necessary for override but unused

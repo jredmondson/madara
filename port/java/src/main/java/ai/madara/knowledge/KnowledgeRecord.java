@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,15 +38,16 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 package ai.madara.knowledge;
 
 import ai.madara.MadaraJNI;
+import ai.madara.exceptions.MadaraDeadObjectException;
 
 /**
  * This class encapsulates an entry in a KnowledgeBase.
@@ -72,7 +73,7 @@ public class KnowledgeRecord extends MadaraJNI
 
   //Checks
   private native boolean jni_isValid(long cptr);
-  
+
   //Free
   private native void jni_freeKnowledgeRecord(long cptr);
 
@@ -94,13 +95,13 @@ public class KnowledgeRecord extends MadaraJNI
     isNew = true;
     setCPtr(jni_KnowledgeRecord());
   }
-  
+
   /**
    * Constructor for long/integer values
    *
    * @param lng value to set
    */
-  public KnowledgeRecord(long lng)
+  public KnowledgeRecord(long lng) throws MadaraDeadObjectException
   {
     isNew = true;
     setCPtr(jni_KnowledgeRecord(lng));
@@ -112,7 +113,7 @@ public class KnowledgeRecord extends MadaraJNI
    *
    * @param str value to set
    */
-  public KnowledgeRecord(String str)
+  public KnowledgeRecord(String str) throws MadaraDeadObjectException
   {
     isNew = true;
     setCPtr(jni_KnowledgeRecord(str));
@@ -124,7 +125,7 @@ public class KnowledgeRecord extends MadaraJNI
    *
    * @param dbl value to set
    */
-  public KnowledgeRecord(double dbl)
+  public KnowledgeRecord(double dbl) throws MadaraDeadObjectException
   {
     isNew = true;
     setCPtr(jni_KnowledgeRecord(dbl));
@@ -135,7 +136,7 @@ public class KnowledgeRecord extends MadaraJNI
    *
    * @param dbls value to set
    */
-  public KnowledgeRecord(double[] dbls)
+  public KnowledgeRecord(double[] dbls) throws MadaraDeadObjectException
   {
     isNew = true;
     setCPtr(jni_KnowledgeRecord(dbls));
@@ -146,7 +147,7 @@ public class KnowledgeRecord extends MadaraJNI
    *
    * @param longs value to set
    */
-  public KnowledgeRecord(long[] longs)
+  public KnowledgeRecord(long[] longs) throws MadaraDeadObjectException
   {
     isNew = true;
     setCPtr(jni_KnowledgeRecord(longs));
@@ -158,7 +159,7 @@ public class KnowledgeRecord extends MadaraJNI
    *
    * @return true if record has a value, false otherwise.
    */
-  public boolean isValid()
+  public boolean isValid() throws MadaraDeadObjectException
   {
     return jni_isValid(getCPtr());
   }
@@ -168,7 +169,7 @@ public class KnowledgeRecord extends MadaraJNI
    *
    * @return current long value
    */
-  public long toLong()
+  public long toLong() throws MadaraDeadObjectException
   {
     return jni_toLongValue(getCPtr());
   }
@@ -179,7 +180,7 @@ public class KnowledgeRecord extends MadaraJNI
    *
    * @return current double value
    */
-  public double toDouble()
+  public double toDouble() throws MadaraDeadObjectException
   {
     return jni_toDoubleValue(getCPtr());
   }
@@ -189,7 +190,7 @@ public class KnowledgeRecord extends MadaraJNI
    *
    * @return current array values
    */
-  public double[] toDoubleArray()
+  public double[] toDoubleArray() throws MadaraDeadObjectException
   {
     return jni_toDoubleArray(getCPtr());
   }
@@ -199,7 +200,7 @@ public class KnowledgeRecord extends MadaraJNI
    *
    * @return current array values
    */
-  public long[] toLongArray()
+  public long[] toLongArray() throws MadaraDeadObjectException
   {
     return jni_toLongArray(getCPtr());
   }
@@ -219,7 +220,7 @@ public class KnowledgeRecord extends MadaraJNI
   /**
    * @return the {@link ai.madara.knowledge.KnowledgeType KnowledgeType} of the value
    */
-  public KnowledgeType getType()
+  public KnowledgeType getType() throws MadaraDeadObjectException
   {
     return KnowledgeType.getType(jni_getType(getCPtr()));
   }
@@ -228,7 +229,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be called
    * before an instance of KnowledgeRecord gets garbage collected
    */
-  public void free()
+  public void free() throws MadaraDeadObjectException
   {
     jni_freeKnowledgeRecord(getCPtr());
     setCPtr(0);
@@ -249,7 +250,7 @@ public class KnowledgeRecord extends MadaraJNI
       super.finalize();
     }
   }
-  
+
   /**
    * Creates a {@link ai.madara.knowledge.KnowledgeRecord KnowledgeRecord} from a pointer
    *
