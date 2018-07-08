@@ -48,15 +48,11 @@
 package ai.madara.tests;
 
 import ai.madara.knowledge.KnowledgeBase;
-import ai.madara.knowledge.KnowledgeRecord;
 import ai.madara.knowledge.KnowledgeType;
-import ai.madara.knowledge.EvalSettings;
-import ai.madara.knowledge.containers.Vector;
-import ai.madara.transport.filters.LogAggregate;
-import ai.madara.transport.filters.LogRecord;
 import ai.madara.transport.QoSTransportSettings;
 import ai.madara.transport.TransportType;
-import ai.madara.logger.GlobalLogger;
+import ai.madara.transport.filters.LogAggregate;
+import ai.madara.transport.filters.LogRecord;
 
 /**
  * This class is a tester for the LogRecord filter classes

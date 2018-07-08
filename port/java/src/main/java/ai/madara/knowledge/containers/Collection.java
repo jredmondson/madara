@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,14 +38,15 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 package ai.madara.knowledge.containers;
 
+import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.UpdateSettings;
 
 /**
@@ -53,7 +54,7 @@ import ai.madara.knowledge.UpdateSettings;
  **/
 
 public class Collection extends BaseContainer
-{	
+{
   private native long jni_Collection();
   private native long jni_Collection(long cptr);
   private static native void jni_freeCollection(long cptr);
@@ -129,7 +130,7 @@ public class Collection extends BaseContainer
    *
    * @param  settings  the settings to use for updating the Knowledge Base
    */
-  public void setSettings(UpdateSettings settings)
+  public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
   {
     jni_setSettings(getCPtr(), settings.getCPtr());
   }
@@ -138,7 +139,7 @@ public class Collection extends BaseContainer
    * Mark the value as modified. The Collection retains the same value
    * but will resend its value as if it had been modified.
    **/
-  public void modify()
+  public void modify() throws MadaraDeadObjectException
   {
     jni_modify(getCPtr());
   }
@@ -147,20 +148,20 @@ public class Collection extends BaseContainer
    * Returns true if the container evaluates to true
    * @return true if container has all true values
    **/
-  public boolean isTrue()
+  public boolean isTrue() throws MadaraDeadObjectException
   {
     return jni_isTrue(getCPtr());
   }
-  
+
   /**
    * Returns true if the container evaluates to false
    * @return true if container has any false values or is uninitialized
    **/
-  public boolean isFalse()
+  public boolean isFalse() throws MadaraDeadObjectException
   {
     return jni_isFalse(getCPtr());
   }
-  
+
   /**
    * Reads all debug info for the collection into a string
    *
@@ -176,125 +177,125 @@ public class Collection extends BaseContainer
    * Adds a Barrier container to the collection
    * @param container the container to add to the collection
    */
-  public void add(Barrier container)
+  public void add(Barrier container) throws MadaraDeadObjectException
   {
     jni_addBarrier(getCPtr(), container.getCPtr());
   }
-  
+
   /**
    * Adds a Counter container to the collection
    * @param container the container to add to the collection
    */
-  public void add(Counter container)
+  public void add(Counter container) throws MadaraDeadObjectException
   {
     jni_addCounter(getCPtr(), container.getCPtr());
   }
-  
+
   /**
    * Adds a Double container to the collection
    * @param container the container to add to the collection
    */
-  public void add(Double container)
+  public void add(Double container) throws MadaraDeadObjectException
   {
     jni_addDouble(getCPtr(), container.getCPtr());
   }
-  
+
   /**
    * Adds a DoubleVector container to the collection
    * @param container the container to add to the collection
    */
-  public void add(DoubleVector container)
+  public void add(DoubleVector container) throws MadaraDeadObjectException
   {
     jni_addDoubleVector(getCPtr(), container.getCPtr());
   }
-  
+
   /**
    * Adds a FlexMap container to the collection
    * @param container the container to add to the collection
    */
-  public void add(FlexMap container)
+  public void add(FlexMap container) throws MadaraDeadObjectException
   {
     jni_addFlexMap(getCPtr(), container.getCPtr());
   }
-  
+
   /**
    * Adds a Integer container to the collection
    * @param container the container to add to the collection
    */
-  public void add(Integer container)
+  public void add(Integer container) throws MadaraDeadObjectException
   {
     jni_addInteger(getCPtr(), container.getCPtr());
   }
-    
+
   /**
    * Adds a IntegerVector container to the collection
    * @param container the container to add to the collection
    */
-  public void add(IntegerVector container)
+  public void add(IntegerVector container) throws MadaraDeadObjectException
   {
     jni_addIntegerVector(getCPtr(), container.getCPtr());
   }
-    
+
   /**
    * Adds a Map container to the collection
    * @param container the container to add to the collection
    */
-  public void add(Map container)
+  public void add(Map container) throws MadaraDeadObjectException
   {
     jni_addMap(getCPtr(), container.getCPtr());
   }
-    
+
   /**
    * Adds a NativeDoubleVector container to the collection
    * @param container the container to add to the collection
    */
-  public void add(NativeDoubleVector container)
+  public void add(NativeDoubleVector container) throws MadaraDeadObjectException
   {
     jni_addNativeDoubleVector(getCPtr(), container.getCPtr());
   }
-    
+
   /**
    * Adds a NativeIntegerVector container to the collection
    * @param container the container to add to the collection
    */
-  public void add(NativeIntegerVector container)
+  public void add(NativeIntegerVector container) throws MadaraDeadObjectException
   {
     jni_addNativeIntegerVector(getCPtr(), container.getCPtr());
   }
-    
+
   /**
    * Adds a String container to the collection
    * @param container the container to add to the collection
    */
-  public void add(String container)
+  public void add(String container) throws MadaraDeadObjectException
   {
     jni_addString(getCPtr(), container.getCPtr());
   }
-    
+
   /**
    * Adds a StringVector container to the collection
    * @param container the container to add to the collection
    */
-  public void add(StringVector container)
+  public void add(StringVector container) throws MadaraDeadObjectException
   {
     jni_addStringVector(getCPtr(), container.getCPtr());
   }
-    
+
   /**
    * Adds a Vector container to the collection
    * @param container the container to add to the collection
    */
-  public void add(Vector container)
+  public void add(Vector container) throws MadaraDeadObjectException
   {
     jni_addVector(getCPtr(), container.getCPtr());
   }
-  
+
   /**
    * Reads all debug info for the collection into a string
    *
    * @return aggregate debug information for the collection
    */
-  public java.lang.String getDebugInfo()
+  public java.lang.String getDebugInfo() throws MadaraDeadObjectException
   {
     return jni_getDebugInfo(getCPtr());
   }
@@ -311,7 +312,7 @@ public class Collection extends BaseContainer
       setCPtr(0);
     }
   }
-  
+
   /**
    * Cleans up underlying C resources
    * @throws Throwable necessary for override but unused

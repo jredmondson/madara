@@ -46,14 +46,12 @@
  *********************************************************************/
 package ai.madara.transport.filters;
 
-import ai.madara.knowledge.KnowledgeRecord;
-import ai.madara.knowledge.Variables;
-import ai.madara.knowledge.KnowledgeList;
 import ai.madara.knowledge.EvalSettings;
 import ai.madara.knowledge.KnowledgeBase;
+import ai.madara.knowledge.KnowledgeList;
+import ai.madara.knowledge.KnowledgeRecord;
 import ai.madara.knowledge.KnowledgeType;
-import ai.madara.transport.filters.LogAggregate;
-import ai.madara.transport.filters.LogRecord;
+import ai.madara.knowledge.Variables;
 import ai.madara.transport.QoSTransportSettings;
 import ai.madara.transport.TransportType;
 

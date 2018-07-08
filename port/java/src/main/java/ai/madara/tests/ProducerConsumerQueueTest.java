@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,24 +38,24 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 
 package ai.madara.tests;
 
+import java.util.Random;
+
+import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.KnowledgeBase;
 import ai.madara.knowledge.KnowledgeRecord;
+import ai.madara.knowledge.containers.Integer;
+import ai.madara.knowledge.containers.Queue;
 import ai.madara.threads.BaseThread;
 import ai.madara.threads.Threader;
-import ai.madara.knowledge.containers.Queue;
-import ai.madara.knowledge.containers.Integer;
-
-import java.util.Random;
-import java.lang.System;
 
 // a counter thread that works with other counters
 public class ProducerConsumerQueueTest
@@ -63,29 +63,29 @@ public class ProducerConsumerQueueTest
   static class Producer extends BaseThread
   {
     // Producer's initialization method
-    public void init(KnowledgeBase context)
+    public void init(KnowledgeBase context) throws MadaraDeadObjectException
     {
       generator = new Random(System.currentTimeMillis());
-      
+
       queue = new Queue();
       queue.setName(context, ".jobs");
       queue.resize(-1);
     }
 
     // Producer's run method.
-    public void run()
+    public void run() throws MadaraDeadObjectException
     {
       // generate a new job until terminated
       long job = (long)generator.nextInt(4);
       queue.enqueue(job);
     }
-    
+
     // Producer's cleanup method
     public void cleanup()
     {
       queue.free();
     }
-    
+
     Random generator;
     Queue queue;
   }
@@ -93,25 +93,25 @@ public class ProducerConsumerQueueTest
   static class Consumer extends BaseThread
   {
     // Consumer's initialization method
-    public void init(KnowledgeBase context)
+    public void init(KnowledgeBase context) throws MadaraDeadObjectException
     {
       queue = new Queue();
       queue.setName(context, ".jobs");
       queue.resize(-1);
-      
+
       jobsCompleted = new Integer();
       jobsCompleted.setName(context, ".jobsCompleted");
     }
 
     // Consumer's run method.
-    public void run()
+    public void run() throws MadaraDeadObjectException
     {
       KnowledgeRecord job = queue.dequeue(false);
-      
+
       if(job.isValid())
       {
         long value = job.toLong();
-      
+
         if(value == 0)
         {
           System.out.println(jobsCompleted.get() + ": Checking News");
@@ -132,14 +132,14 @@ public class ProducerConsumerQueueTest
         {
           System.out.println(jobsCompleted.get() + ": Unknown Job Type");
         }
-        
+
         jobsCompleted.inc();
       }
-      
+
       // clean up the removed job
       job.free();
     }
-    
+
     // Consumer's cleanup method
     public void cleanup()
     {
@@ -147,24 +147,24 @@ public class ProducerConsumerQueueTest
       queue.free();
       jobsCompleted.free();
     }
-    
+
     Queue queue;
     Integer jobsCompleted;
   }
 
-  
+
   public static void main(String...args) throws InterruptedException, Exception
   {
     KnowledgeBase knowledge = new KnowledgeBase();
-    
+
     Threader threader = new Threader(knowledge);
     Integer jobsCompleted = new Integer();
     jobsCompleted.setName(knowledge, ".jobsCompleted");
-    
+
     Queue jobs = new Queue();
     jobs.setName(knowledge, ".jobs");
     jobs.resize(100);
-    
+
     // run the two counter threads, one at 20hz and one at 40hz
     threader.run(20.0, "producer", new Producer());
     threader.run(40.0, "consumer", new Consumer());
@@ -173,13 +173,13 @@ public class ProducerConsumerQueueTest
     {
       java.lang.Thread.sleep(1000);
     }
-    
+
     // terminate all threads
     threader.terminate();
-    
+
     // wait for all threads to finish
     threader.waitForThreads();
-    
+
     threader.free();
     knowledge.free();
   }

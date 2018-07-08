@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,27 +38,27 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 package ai.madara.knowledge.containers;
 
-import java.util.Arrays;
 import ai.madara.MadaraJNI;
+import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.KnowledgeBase;
-import ai.madara.knowledge.Variables;
 import ai.madara.knowledge.KnowledgeRecord;
 import ai.madara.knowledge.UpdateSettings;
+import ai.madara.knowledge.Variables;
 
 /**
  * A facade for a dynamically typed vector within a knowledge base.
  **/
 
 public class Queue extends MadaraJNI
-{	
+{
   private native long jni_Queue();
   private native long jni_Queue(long cptr);
   private static native void jni_freeQueue(long cptr);
@@ -77,7 +77,7 @@ public class Queue extends MadaraJNI
   private native void jni_setSettings(long cptr, long settings);
 
   private boolean manageMemory = true;
-  
+
   /**
    * Default constructor
    **/
@@ -130,7 +130,7 @@ public class Queue extends MadaraJNI
    * @param  position   position in the queue to inspect
    * @return   the record at the position (uncreated record if position is inaccessible)
    */
-  public KnowledgeRecord inspect(int position)
+  public KnowledgeRecord inspect(int position) throws MadaraDeadObjectException
   {
     return KnowledgeRecord.fromPointer(jni_inspect(getCPtr(), position));
   }
@@ -141,7 +141,7 @@ public class Queue extends MadaraJNI
    * @return  next record in the queue. An uncreated record if empty and
    * waitForRecord is false.
    */
-  public KnowledgeRecord dequeue(boolean waitForRecord)
+  public KnowledgeRecord dequeue(boolean waitForRecord) throws MadaraDeadObjectException
   {
     return KnowledgeRecord.fromPointer(jni_dequeue(getCPtr(), waitForRecord));
   }
@@ -151,7 +151,7 @@ public class Queue extends MadaraJNI
    *
    * @return  name of the variable within the context
    */
-  public java.lang.String getName()
+  public java.lang.String getName() throws MadaraDeadObjectException
   {
     return jni_getName(getCPtr());
   }
@@ -161,59 +161,59 @@ public class Queue extends MadaraJNI
    *
    * @param  length   new number of elements of the vector
    */
-  public void resize (long length)
+  public void resize (long length) throws MadaraDeadObjectException
   {
     jni_resize(getCPtr(), length);
   }
-  
+
   /**
    * Attempts to enqueue a record
    *
    * @param  record  the new record to place on the queue
    * @return true if the queue now contains the record. False is returned if
    *         there was not enough room in the queue.
-   * 
+   *
    */
-  public boolean enqueue(KnowledgeRecord record)
+  public boolean enqueue(KnowledgeRecord record) throws MadaraDeadObjectException
   {
     return jni_enqueue(getCPtr(), record.getCPtr());
   }
-  
+
   /**
    * Attempts to enqueue a double
    *
    * @param  value  the new value to place on the queue
    * @return true if the queue now contains the record. False is returned if
    *         there was not enough room in the queue.
-   * 
+   *
    */
-  public boolean enqueue(double value)
+  public boolean enqueue(double value) throws MadaraDeadObjectException
   {
     return jni_enqueueDouble(getCPtr(), value);
   }
-  
+
   /**
    * Attempts to enqueue a long
    *
    * @param  value  the new value to place on the queue
    * @return true if the queue now contains the record. False is returned if
    *         there was not enough room in the queue.
-   * 
+   *
    */
-  public boolean enqueue(long value)
+  public boolean enqueue(long value) throws MadaraDeadObjectException
   {
     return jni_enqueueLong(getCPtr(), value);
   }
-  
+
   /**
    * Attempts to enqueue a string
    *
    * @param  value  the new value to place on the queue
    * @return true if the queue now contains the record. False is returned if
    *         there was not enough room in the queue.
-   * 
+   *
    */
-  public boolean enqueue(java.lang.String value)
+  public boolean enqueue(java.lang.String value) throws MadaraDeadObjectException
   {
     return jni_enqueueString(getCPtr(), value);
   }
@@ -224,7 +224,7 @@ public class Queue extends MadaraJNI
    * @param  kb      the knowledge base that contains the name
    * @param  name    the variable name
    */
-  public void setName(KnowledgeBase kb, java.lang.String name)
+  public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException
   {
     jni_setName(getCPtr(), 0, kb.getCPtr (), name);
   }
@@ -235,7 +235,7 @@ public class Queue extends MadaraJNI
    * @param  vars    the variables facade that contains the name
    * @param  name    the variable name
    */
-  public void setName(Variables vars, java.lang.String name)
+  public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException
   {
     jni_setName(getCPtr(), 1, vars.getCPtr (), name);
   }
@@ -245,7 +245,7 @@ public class Queue extends MadaraJNI
    *
    * @param  settings  the settings to use for updating the Knowledge Base
    */
-  public void setSettings(UpdateSettings settings)
+  public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
   {
     jni_setSettings(getCPtr(), settings.getCPtr());
   }
@@ -255,17 +255,17 @@ public class Queue extends MadaraJNI
    *
    * @return  the maximum number of records in the queue
    */
-  public long size()
+  public long size() throws MadaraDeadObjectException
   {
     return jni_size(getCPtr());
   }
-  
+
   /**
    * Returns the number of records currently in the queue
    *
    * @return  the number of elements in the queue
    */
-  public long count()
+  public long count() throws MadaraDeadObjectException
   {
     return jni_count(getCPtr());
   }
@@ -282,7 +282,7 @@ public class Queue extends MadaraJNI
       setCPtr(0);
     }
   }
-  
+
   /**
    * Cleans up underlying C resources
    * @throws Throwable necessary for override but unused

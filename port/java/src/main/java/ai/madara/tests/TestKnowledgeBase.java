@@ -49,10 +49,8 @@ package ai.madara.tests;
 
 import ai.madara.knowledge.KnowledgeBase;
 import ai.madara.knowledge.KnowledgeMap;
-import ai.madara.knowledge.KnowledgeRecord;
 import ai.madara.knowledge.containers.Integer;
 import ai.madara.knowledge.containers.String;
-import java.util.Map;
 
 /**
  * This class is a tester for basic KnowledgeBase functionality

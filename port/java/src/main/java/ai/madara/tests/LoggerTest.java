@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,83 +38,84 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 
 package ai.madara.tests;
 
+import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.KnowledgeBase;
-import ai.madara.logger.Logger;
 import ai.madara.logger.GlobalLogger;
+import ai.madara.logger.Logger;
 
 /**
  * This class is a tester for the ai.madara.logger package
  */
 public class LoggerTest
 {
-  public static void testLogger()
+  public static void testLogger() throws MadaraDeadObjectException
   {
     KnowledgeBase knowledge = new KnowledgeBase();
     Logger logger = new Logger();
-    
+
     logger.setLevel(5);
-    
+
     logger.setTimestampFormat("%Y-%m-%d %H:%M:%S: ");
-    
+
     knowledge.attachLogger(logger);
-    
+
     System.out.println("***TESTING LOGGER***");
     System.out.println("  Testing defaults");
-    
+
     logger.log(0, "  This is being printed directly to logger.\n");
-    
+
     knowledge.print("    This should be printed to terminal\n");
-    
+
     logger.clear();
     System.out.println("  Disabling terminal output");
     knowledge.print("    This should not be printed to terminal\n");
-    
+
     System.out.println("  Enabling file output");
     logger.addFile("LoggerTest_Logger.txt");
     knowledge.print("    This should be printed to terminal and file\n");
-    
+
     logger.log(0, "    This should be printed to terminal and file\n");
   }
-  
-  public static void testGlobalLogger()
+
+  public static void testGlobalLogger() throws MadaraDeadObjectException
   {
     KnowledgeBase knowledge = new KnowledgeBase();
-    
+
     System.out.println("***TESTING GLOBALLOGGER***");
     System.out.println("  Testing defaults");
     knowledge.print("    This should be printed to terminal\n");
-    
+
     GlobalLogger.clear();
     System.out.println("  Disabling terminal output");
     knowledge.print("    This should not be printed to terminal\n");
-    
+
     System.out.println("  Enabling terminal output");
     GlobalLogger.addTerm();
     knowledge.print("    This should be printed to terminal\n");
-    
+
     System.out.println("  Attaching GlobalLogger via toLogger()");
     Logger logger = GlobalLogger.toLogger();
     knowledge.attachLogger(logger);
-    
+
     logger.setTimestampFormat("%Y-%m-%d %H:%M:%S: ");
-    
+
     System.out.println("  Adding file LoggerTest_GlobalLogger.txt");
     GlobalLogger.addFile("LoggerTest_GlobalLogger.txt");
     knowledge.print("    This should be printed to terminal and file\n");
-    
+
     logger.log(0, "    This should be printed to terminal and file\n");
-    
+
   }
-  
+
   public static void main(String...args) throws Exception
   {
     testLogger();
