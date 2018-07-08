@@ -268,7 +268,7 @@ char * madara::transport::defrag (FragmentMap & map)
 {
   char * result = 0;
 
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
     "transport::defrag:" \
     " defragging fragment map\n");
 
