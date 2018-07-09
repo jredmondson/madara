@@ -40,7 +40,7 @@ bool waiting (false);
 double wait_time (0.0);
 
 // deadline for re-registering
-knowledge::KnowledgeRecord::Integer deadline (2.0);
+knowledge::KnowledgeRecord::Integer deadline (2);
 double publish_hertz (1.0);
 threads::Threader * manager (0);
 

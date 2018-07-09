@@ -1522,7 +1522,7 @@ void test_native_vectors (void)
   }
 
   std::vector<double> vals = {4, 8, 15, 16, 23, 42};
-  vector.set (vals.data(), vals.size());
+  vector.set (vals.data(), (uint32_t) vals.size());
 
   if (vector.size () == 6 && vector[0] == 4 &&
       vector[1] == 8 && vector[2] == 15 &&

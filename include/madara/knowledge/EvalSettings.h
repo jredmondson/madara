@@ -12,6 +12,7 @@
 #include <string>
 #include <map>
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
+#include "madara/MadaraExport.h"
 
 namespace madara
 {
@@ -23,7 +24,7 @@ namespace madara
      * @class EvalSettings
      * @brief Encapsulates settings for an evaluation statement
      **/
-    struct EvalSettings : public KnowledgeUpdateSettings
+    struct MADARA_EXPORT EvalSettings : public KnowledgeUpdateSettings
     {
       /* Convenient pre-defined settings objects */
 

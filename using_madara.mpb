@@ -7,7 +7,7 @@ project : debug_build, using_clang, using_android, using_boost {
   libs += MADARA
 
   specific(prop:microsoft) {
-    DisableSpecificWarnings += 4005 4251 4275
+    DisableSpecificWarnings += 4005 4251 4275 4244
     macros += _CRT_SECURE_NO_WARNINGS
   }
 
