@@ -1650,7 +1650,7 @@ KnowledgeRecord::write (char * buffer,
     std::stringstream buffer;
     buffer << "KnowledgeRecord::write: ";
     buffer << encoded_size << " byte encoding cannot fit in ";
-    buffer << buffer_remaining << " buffer\n";
+    buffer << buffer_remaining << " byte buffer\n";
     
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       buffer.str ().c_str ());
@@ -1705,7 +1705,7 @@ int64_t & buffer_remaining) const
     std::stringstream buffer;
     buffer << "KnowledgeRecord::write: ";
     buffer << encoded_size << " byte encoding cannot fit in ";
-    buffer << buffer_remaining << " buffer\n";
+    buffer << buffer_remaining << " byte buffer\n";
     
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       buffer.str ().c_str ());
@@ -1747,7 +1747,7 @@ KnowledgeRecord::write (char * buffer, uint32_t key_id,
     std::stringstream buffer;
     buffer << "KnowledgeRecord::write: ";
     buffer << encoded_size << " byte encoding cannot fit in ";
-    buffer << buffer_remaining << " buffer\n";
+    buffer << buffer_remaining << " byte buffer\n";
     
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       buffer.str ().c_str ());
