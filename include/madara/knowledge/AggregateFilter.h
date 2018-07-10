@@ -109,8 +109,6 @@ namespace madara
       AggregateFilter (boost::python::object & func)
         : python_function (func), type (PYTHON_CALLABLE)
       {
-        bool invalid_callable = false;
-   
         // Check to make sure its a callable object
         if (0 == PyObject_HasAttrString (func.ptr (), "__call__"))
         {

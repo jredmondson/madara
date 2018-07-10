@@ -44,7 +44,12 @@ feature (python) {
     $BOOST_PYTHON_RELEASE
     $(BOOST_STATIC_LIB_PREFIX)boost_python-$(BOOST_TOOLSET)-mt-$(BOOST_ARCH)-$(BOOST_VERSION)
   }
-  	  	  
+
+  macros += _MADARA_PYTHON_CALLBACKS_
+
+  libpaths += $(PYTHON_ROOT)/lib/python$(PYTHON_VERSION)
+  lit_libs += python$(PYTHON_VERSION)
+
   specific(prop:windows) {
 
     macros += _WINSOCK_DEPRECATED_NO_WARNINGS BOOST_ALL_NO_LIB
@@ -52,6 +57,7 @@ feature (python) {
 
     Debug::lit_libs += $(BOOST_PYTHON_DEBUG)
     Release::lit_libs += $(BOOST_PYTHON_RELEASE)
+    lit_libs += $(BOOST_STATIC_LIB_PREFIX)python$(PYTHON_VERSION)
     // end if windows build
   } else {
     includes += $(PYTHON_ROOT)/include/python$(PYTHON_VERSION)

@@ -2,6 +2,9 @@
 #include <boost/python/detail/wrap_python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/import.hpp>
+#include <boost/python/enum.hpp>
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/filters/GenericFilters.h"
@@ -20,10 +23,6 @@ using namespace boost::python;
 class Filters_NS {};
 class knowledge_NS {};
 class Transport_NS {};
-
-void define_knowledge_record (void)
-{
-}
 
 /********************************************************
   * Filters namespace definitions
@@ -106,6 +105,12 @@ void define_transport (void)
       madara::transport::MULTICAST)
     .value("BROADCAST",
       madara::transport::BROADCAST)
+    .value("REGISTRY_SERVER",
+      madara::transport::REGISTRY_SERVER)
+    .value("REGISTRY_CLIENT",
+      madara::transport::REGISTRY_CLIENT)
+    .value("ZMQ",
+      madara::transport::ZMQ)
   ;
     
   {
@@ -440,13 +445,13 @@ void define_transport (void)
   ;
 }
   
-void define_knowledge_engine (void)
+void define_knowledge (void)
 {
   object ke = object (handle<> (
     PyModule_New ("madara.knowledge")));
 
    ke.attr("__file__")="<synthetic>";
-   scope().attr ("knowledge_engine") = ke;
+   scope().attr ("knowledge") = ke;
    ke.attr ("__doc__") = "Provides access to the knowledge engine";
 
    // this was the missing piece: sys.modules['modA.modB']=modB
@@ -722,8 +727,8 @@ void define_knowledge_engine (void)
 
      // the types of values supported in KnowledgeRecord
      enum_<madara::knowledge::KnowledgeRecord::ValueTypes> ("ValueTypes")
-     .value ("UNINITIALIZED",
-     madara::knowledge::KnowledgeRecord::UNINITIALIZED)
+     .value ("EMPTY",
+     madara::knowledge::KnowledgeRecord::EMPTY)
      .value ("INTEGER",
      madara::knowledge::KnowledgeRecord::INTEGER)
      .value ("STRING",
@@ -760,6 +765,9 @@ void define_knowledge_engine (void)
      madara::knowledge::KnowledgeRecord::ALL_TEXT_FORMATS)
      .value ("ALL_TYPES",
      madara::knowledge::KnowledgeRecord::ALL_TYPES)
+     .value ("ALL_CLEARABLES",
+     madara::knowledge::KnowledgeRecord::ALL_CLEARABLES)
+     
    ; // end of ValueTypes
 
    // Boost.python does not appear to support this type of function
@@ -1233,8 +1241,7 @@ BOOST_PYTHON_MODULE (madara)
     .def(map_indexing_suite<std::map <
       std::string, madara::knowledge::KnowledgeRecord> >());
 
-  define_knowledge_record ();
   define_filters ();
   define_transport ();
-  define_knowledge_engine ();
+  define_knowledge ();
 }
