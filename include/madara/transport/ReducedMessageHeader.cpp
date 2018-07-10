@@ -1,8 +1,11 @@
-#include "ReducedMessageHeader.h"
-#include "madara/utility/Utility.h"
+
 #include <algorithm>
 #include <string.h>
 #include <sstream>
+
+#include "madara/exceptions/MemoryException.h"
+#include "ReducedMessageHeader.h"
+#include "madara/utility/Utility.h"
 
 madara::transport::ReducedMessageHeader::ReducedMessageHeader ()
 : MessageHeader ()
@@ -34,6 +37,16 @@ const char *
     size = madara::utility::endian_swap (size);
     buffer += sizeof (size);
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "ReducedMessageHeader::read: ";
+    buffer << sizeof (size) << " byte size encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (size);
 
   // Remove madara_id field from the buffer and update accordingly
@@ -41,6 +54,16 @@ const char *
   {
     strncpy (madara_id, buffer, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof (char) * MADARA_IDENTIFIER_LENGTH;
+  }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "ReducedMessageHeader::read: ";
+    buffer << MADARA_IDENTIFIER_LENGTH << " byte id encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
   }
   buffer_remaining -= sizeof (char) * MADARA_IDENTIFIER_LENGTH;
 
@@ -51,6 +74,16 @@ const char *
     updates = madara::utility::endian_swap (updates);
     buffer += sizeof (updates);
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "ReducedMessageHeader::read: ";
+    buffer << sizeof (updates) << " byte updates encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (updates);
 
   // Remove clock field from the buffer and update accordingly
@@ -60,6 +93,16 @@ const char *
     clock = madara::utility::endian_swap (clock);
     buffer += sizeof (clock);
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "ReducedMessageHeader::read: ";
+    buffer << sizeof (clock) << " byte clock encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (clock);
   
   // Remove timestamp field from the buffer and update accordingly
@@ -68,6 +111,16 @@ const char *
     memcpy (&timestamp, buffer, sizeof (timestamp));
     timestamp = madara::utility::endian_swap (timestamp);
     buffer += sizeof (timestamp);
+  }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "ReducedMessageHeader::read: ";
+    buffer << sizeof (timestamp) << " byte timestamp encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
   }
   buffer_remaining -= sizeof (timestamp);
 
@@ -92,6 +145,16 @@ char *
     *(uint64_t *) buffer = madara::utility::endian_swap (size);
     buffer += sizeof (size);
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "ReducedMessageHeader::write: ";
+    buffer << sizeof (size) << " byte size encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (size);
 
   // Write madara_id field from the buffer and update accordingly
@@ -99,6 +162,16 @@ char *
   {
     strncpy (buffer, madara_id, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof (char) * MADARA_IDENTIFIER_LENGTH;
+  }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "ReducedMessageHeader::write: ";
+    buffer << MADARA_IDENTIFIER_LENGTH << " byte id encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
   }
   buffer_remaining -= sizeof (char) * MADARA_IDENTIFIER_LENGTH;
 
@@ -108,6 +181,16 @@ char *
     *(uint32_t *) buffer = madara::utility::endian_swap (updates);
     buffer += sizeof (updates);
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "ReducedMessageHeader::write: ";
+    buffer << sizeof (updates) << " byte updates encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (updates);
 
   // Write clock field from the buffer and update accordingly
@@ -116,6 +199,16 @@ char *
     *(uint64_t *) buffer = madara::utility::endian_swap (clock);
     buffer += sizeof (clock);
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "ReducedMessageHeader::write: ";
+    buffer << sizeof (clock) << " byte clock encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (clock);
   
   // Write timestamp field from the buffer and update accordingly
@@ -123,6 +216,16 @@ char *
   {
     *(uint64_t *) buffer = madara::utility::endian_swap (timestamp);
     buffer += sizeof (timestamp);
+  }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "ReducedMessageHeader::write: ";
+    buffer << sizeof (timestamp) << " byte timestamp encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
   }
   buffer_remaining -= sizeof (timestamp);
 

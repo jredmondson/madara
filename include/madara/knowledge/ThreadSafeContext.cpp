@@ -1687,6 +1687,12 @@ ThreadSafeContext::save_context (
   {
     int64_t max_buffer (settings.buffer_size);
     int64_t buffer_remaining (max_buffer);
+
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::save_context:" \
+      " allocating %d byte buffer\n",
+      (int)max_buffer);
+
     utility::ScopedArray <char> buffer = new char [max_buffer];
 
     char * current = buffer.get_ptr ();
