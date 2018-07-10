@@ -172,7 +172,7 @@ void handle_arguments (int argc, char ** argv)
         "                           no messages will ever be sent to them.\n" \
         "                           Similarly, all agents will have to have\n" \
         "                           this endpoint added to their list or\n" \
-        "                           this karl agent will not see them.s\n" \
+        "                           this karl agent will not see them.\n" \
         "  [-0|--init-logic logic]  logic containing initial variables (only ran once)\n" \
         "  [-0f|--init-file file]   file containing initial variables (only ran once)\n" \
         "  [-0b|--init-bin file]    file containing binary knowledge base, the result\n" \

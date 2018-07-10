@@ -166,6 +166,15 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "--zmq" || arg1 == "--0mq")
+    {
+      if (i + 1 < argc)
+      {
+        settings.hosts.push_back (argv[i + 1]);
+        settings.type = transport::ZMQ;
+      }
+      ++i;
+    }
     else
     {
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -182,12 +191,23 @@ void handle_arguments (int argc, char ** argv)
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         " [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
         " [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
-        " [-q|--queue-length len   the queue size to use for the test\n" \
+        " [-q|--queue-length len   the buffer size to use for the test\n" \
         " [-r|--reduced]           use the reduced message header\n" \
         " [-s|--size size]         size of data packet to send in bytes\n" \
         " [-t|--time time]         time to burst messages for throughput test\n" \
         " [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         " [-z|--read-hertz hertz]  read thread hertz speed\n" \
+        " [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n" \
+        "                          examples include tcp://127.0.0.1:30000\n" \
+        "                          or any of the other endpoint types like\n" \
+        "                          pgm://. For tcp, remember that the first\n" \
+        "                          endpoint defined must be your own, the\n" \
+        "                          one you are binding to, and all other\n" \
+        "                          agent endpoints must also be defined or\n" \
+        "                          no messages will ever be sent to them.\n" \
+        "                          Similarly, all agents will have to have\n" \
+        "                          this endpoint added to their list or\n" \
+        "                          this karl agent will not see them.\n" \
         "\n",
         argv[0]);
 
@@ -317,6 +337,15 @@ int main (int argc, char ** argv)
       std::cerr << "Settings:\n";
       std::cerr << "  Transport type: " <<
         transport::types_to_string (settings.type) << "\n";
+      std::cerr << "  Buffer size: " << settings.queue_length << " B\n";
+
+      std::cerr << "  Hosts: \n";
+
+      for (auto host : settings.hosts)
+      {
+        std::cerr << "    " << host << "\n";
+      }
+
       std::cerr << "  Data size: " << data_size << " B\n";
       std::cerr << "  Test time: " << test_time << " s\n";
       std::cerr << "Latency:\n";

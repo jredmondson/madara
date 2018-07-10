@@ -195,7 +195,15 @@ namespace madara
       /// the number of read threads to start
       uint32_t read_threads;
 
-      /// Length of the buffer used to store history of events
+      /**
+       * Length of the buffer used to store history of events. For almost
+       * all transports, this is the buffer size used by the operating
+       * system and transport layer. You should set this to essentially
+       * be enough to hold at least 1 second-worth of data. So, if you
+       * sending 1KB of data at 1khz, you need at least 1MB and possibly
+       * 5MB to have smooth delivery that can handle operating system
+       * busy periods without losing too much data.
+       **/
       uint32_t queue_length;
 
       /// Type of transport. See madara::transport::Types for options
