@@ -65,12 +65,6 @@
 
 namespace madara { namespace knowledge {
 
-/// helper type for specifying template type parameters using a function
-/// argument instead of inside explicit "<...>". This interacts more flexibly
-/// with overloading and ADL.
-template<class T>
-class type {};
-
 #ifdef DOXYGEN
 
 /**

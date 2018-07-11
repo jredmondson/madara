@@ -43,4 +43,47 @@ struct supports_##name##_impl { \
 }; \
 template <typename T> struct supports_##name : supports_##name##_impl<T>::type {}
 
+namespace madara {
+
+/// helper type for specifying template type parameters using a function
+/// argument instead of inside explicit "<...>". This interacts more flexibly
+/// with overloading and ADL.
+template<class T>
+class type {};
+
+template<bool Pred, typename T = void>
+using enable_if_ = typename std::enable_if<Pred, T>::type;
+
+template<typename T>
+using decay_ = typename std::decay<T>::type;
+
+template<typename T>
+using remove_reference_ = typename std::remove_reference<T>::type;
+
+template<typename T, typename U>
+constexpr bool is_same() { return std::is_same<T, U>::value; }
+
+template<typename T, typename U>
+constexpr bool is_same_decayed() { return is_same<decay_<T>, decay_<U>>(); }
+
+template<typename Base, typename Derived>
+constexpr bool is_base_of() { return std::is_base_of<Base, Derived>::value; }
+
+template<typename Base, typename Derived>
+constexpr bool is_base_of_decayed() {
+  return is_base_of<decay_<Base>, decay_<Derived>>();
+}
+
+template<typename From, typename To>
+constexpr bool is_convertible() {
+  return std::is_convertible<From, To>::value;
+}
+
+template<class T>
+constexpr std::initializer_list<T> mk_init(std::initializer_list<T> i) {
+  return i;
+}
+
+}
+
 #endif

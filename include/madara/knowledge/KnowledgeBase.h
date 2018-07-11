@@ -532,6 +532,89 @@ namespace madara
 
         return nullptr;
       }
+
+      /**
+       * @return a shared_ptr, sharing with the internal one.
+       * If this record is not an Any, returns NULL shared_ptr
+       **/
+      std::shared_ptr<Any> share_any(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        if (impl_)
+        {
+          return impl_->share_any (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->share_any (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * @return a shared_ptr, sharing with the internal one.
+       * If this record is not an Any, returns NULL shared_ptr
+       **/
+      std::shared_ptr<Any> share_any(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        if (impl_)
+        {
+          return impl_->share_any (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->share_any (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * @return a shared_ptr, while resetting this record to empty.
+       * If this record is not an Any, returns NULL shared_ptr
+       * and this record is unmodified.
+       **/
+      std::shared_ptr<Any> take_any(const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        if (impl_)
+        {
+          return impl_->take_any (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->take_any (key, settings);
+        }
+
+        return nullptr;
+      }
+
+      /**
+       * @return a shared_ptr, while resetting this record to empty.
+       * If this record is not an Any, returns NULL shared_ptr
+       * and this record is unmodified.
+       **/
+      std::shared_ptr<Any> take_any(const VariableReference & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        if (impl_)
+        {
+          return impl_->take_any (key, settings);
+        }
+        else if (context_)
+        {
+          return context_->take_any (key, settings);
+        }
+
+        return nullptr;
+      }
+
       /**
        * Marks the variable reference as updated
        * @param   variable  reference to a variable (@see get_ref)
@@ -866,6 +949,117 @@ namespace madara
         const char * value, size_t size,
         const EvalSettings & settings =
           EvalSettings (false, false, true, false, false));
+
+      /**
+       * Atomically sets the record to the value specified, as an Any value.
+       *
+       * Note, this does not copy meta information (e.g. quality, clock).
+       * @param   key       unique identifier of the variable
+       * @param   value     new value of the variable
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename T>
+      int set_any (const std::string & key,
+        T && value,
+        const EvalSettings & settings =
+              EvalSettings ());
+
+      /**
+       * Atomically sets the record to the value specified, as an Any value.
+       *
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   value     new value of the variable
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename T>
+      int set_any (const VariableReference & variable,
+        T && value,
+        const EvalSettings & settings =
+              EvalSettings ());
+
+      /**
+       * Atomically emplaces an Any value within the given variable.
+       *
+       * @param   key       unique identifier of the variable
+       * @param   args      arguments to emplace_any of KnowledgeRecord
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename... Args>
+      int emplace_any (const std::string & key,
+        const EvalSettings & settings,
+        Args&&... args);
+
+      /**
+       * Atomically emplaces an Any value within the given variable.
+       *
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   args      arguments to emplace_any of KnowledgeRecord
+       * @param   settings  settings for applying the update
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename... Args>
+      int emplace_any (const VariableReference & variable,
+        const EvalSettings & settings,
+        Args&&... args);
+
+      /**
+       * Atomically emplaces an Any value within the given variable.
+       *
+       * @param   key       unique identifier of the variable
+       * @param   args      arguments to emplace_any of KnowledgeRecord
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename Arg, typename... Args,
+        enable_if_<!is_convertible<
+          Arg, const KnowledgeReferenceSettings &>(), int> = 0>
+      int emplace_any (const std::string & key,
+        Arg&& arg, Args&&... args)
+      {
+        return emplace_any(key, EvalSettings{},
+            std::forward<Arg>(arg), std::forward<Args>(args)...);
+      }
+
+      /**
+       * Atomically emplaces an Any value within the given variable.
+       *
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   args      arguments to emplace_any of KnowledgeRecord
+       * @return   0 if the value was set. -1 if null key
+       **/
+      template<typename Arg, typename... Args,
+        enable_if_<!is_convertible<
+          Arg, const KnowledgeReferenceSettings &>(), int> = 0>
+      int emplace_any (const VariableReference & variable,
+        Arg&& arg, Args&&... args)
+      {
+        return emplace_any(variable, EvalSettings{},
+            std::forward<Arg>(arg), std::forward<Args>(args)...);
+      }
+
+      /**
+       * Atomically emplaces an empty Any value within the given variable.
+       *
+       * @param   key       unique identifier of the variable
+       * @return   0 if the value was set. -1 if null key
+       **/
+      int emplace_any (const std::string & key)
+      {
+        return emplace_any(key, EvalSettings{});
+      }
+
+      /**
+       * Atomically emplaces an empty Any value within the given variable.
+       *
+       * @param   variable  reference to a variable (@see get_ref)
+       * @return   0 if the value was set. -1 if null key
+       **/
+      int emplace_any (const VariableReference & variable)
+      {
+        return emplace_any(variable, EvalSettings{});
+      }
 
       /**
        * Retrieves a value at a specified index within a knowledge array

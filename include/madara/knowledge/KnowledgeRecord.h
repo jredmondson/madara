@@ -15,11 +15,20 @@
 #include <map>
 #include <memory>
 #include <type_traits>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/type_index.hpp>
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/device/array.hpp>
 #include "madara/MadaraExport.h"
 #include "madara/utility/StdInt.h"
 #include "madara/utility/Refcounter.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/IntTypes.h"
+#include "madara/utility/SupportTest.h"
+#include "Any.h"
 
 namespace madara
 {
@@ -41,6 +50,9 @@ namespace madara
       static struct binary_t { binary_t(){} } binary;
 
       template<typename T>
+      struct any { any(){} };
+
+      template<typename T>
       struct shared_t { shared_t(){} };
 
       /// Used to signal in-place shared_ptr construction in KnowledgeRecord
@@ -49,6 +61,8 @@ namespace madara
       inline shared_t<T> shared(T) {
         return shared_t<T>{};
       }
+
+      using madara::type;
     }
 
     /**
@@ -87,6 +101,7 @@ namespace madara
         INTEGER_ARRAY = 64,
         DOUBLE_ARRAY = 128,
         IMAGE_JPEG = 256,
+        ANY = 512,
         ALL_ARRAYS = INTEGER_ARRAY | DOUBLE_ARRAY,
         ALL_INTEGERS = INTEGER | INTEGER_ARRAY,
         ALL_DOUBLES = DOUBLE | DOUBLE_ARRAY,
@@ -96,7 +111,7 @@ namespace madara
         ALL_IMAGES = IMAGE_JPEG,
         ALL_TEXT_FORMATS = XML | TEXT_FILE | STRING,
         ALL_TYPES = ALL_PRIMITIVE_TYPES | ALL_FILE_TYPES,
-        ALL_CLEARABLES = ALL_ARRAYS | ALL_TEXT_FORMATS | ALL_FILE_TYPES
+        ALL_CLEARABLES = ALL_ARRAYS | ALL_TEXT_FORMATS | ALL_FILE_TYPES | ANY
       };
 
       typedef  int64_t     Integer;
@@ -135,6 +150,7 @@ namespace madara
         std::shared_ptr<std::vector<double>> double_array_;
         std::shared_ptr<std::string> str_value_;
         std::shared_ptr<std::vector<unsigned char>> file_value_;
+        std::shared_ptr<Any> any_value_;
       };
 
       /**
@@ -212,6 +228,14 @@ namespace madara
       /* Binary file shared_ptr constructor */
       explicit KnowledgeRecord (
         std::shared_ptr<std::vector<unsigned char>> value,
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
+
+      /* Any type constructor */
+      explicit KnowledgeRecord (const Any & value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Any type move constructor */
+      explicit KnowledgeRecord (Any && value,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* copy constructor */
@@ -434,6 +458,17 @@ namespace madara
         emplace_binary(std::forward<Args>(args)...);
       }
 
+      template<typename... Args>
+      void emplace_any(Args&&... args) {
+        emplace_val<Any, ANY, &KnowledgeRecord::any_value_> (
+            std::forward<Args>(args)...);
+      }
+
+      template<typename T, typename... Args>
+      void emplace(tags::any<T>, Args&&... args) {
+        emplace_any(tags::type<T>{}, std::forward<Args>(args)...);
+      }
+
       /**
        * Forwarding constructor for integer arrays
        * Each argument past the first will be forwarded to construct a
@@ -525,6 +560,18 @@ namespace madara
       KnowledgeRecord(tags::shared_t<tags::binary_t>, Args&&... args)
         : file_value_ {std::forward<Args>(args)...},
           type_ (UNKNOWN_FILE_TYPE), shared_ (SHARED) {}
+
+      template<typename T, typename... Args>
+      KnowledgeRecord(tags::any<T>, Args&&... args)
+        : any_value_ (std::make_shared<Any> (
+              tags::type<T>{}, std::forward<Args>(args)...)),
+          type_ (ANY) {}
+
+      template<typename T, typename I>
+      KnowledgeRecord(tags::any<T>, std::initializer_list<I> init)
+        : any_value_ (std::make_shared<Any> (
+              tags::type<T>{}, init)),
+          type_ (ANY) {}
 
       /**
        * Checks if record exists (i.e., is not uncreated)
@@ -954,6 +1001,115 @@ namespace madara
        **/
       void set_file (std::shared_ptr<std::vector <unsigned char>> new_value);
 
+      template<typename T, typename U>
+      void set_any(tags::type<T>, U &&u)
+      {
+        return emplace(tags::any<T>{}, std::forward<U>(u));
+      }
+
+      template<typename T, typename U>
+      void set_any(U &&u)
+      {
+        return set_any(tags::type<T>{}, std::forward<U>(u));
+      }
+
+      template<typename T>
+      void set_any(T &&t)
+      {
+        return set_any(tags::type<decay_<T>>{},
+               std::forward<T>(t));
+      }
+
+      /// Store serialized data, for lazy deserialization by get_any() later
+      void set_raw_any(const char *data, size_t size)
+      {
+        return emplace_any(raw_data, data, size);
+      }
+
+      /// Store serialized data, for lazy deserialization by get_any() later
+      void set_raw_any(raw_data_t, const char *data, size_t size)
+      {
+        set_raw_any(data, size);
+      }
+
+      Any &get_any()
+      {
+        if (type_ == ANY) {
+          return *any_value_;
+        } else {
+          throw BadAnyType("Called get_any on KnowledgeRecord not containing "
+              "an Any type");
+        }
+      }
+
+      const Any &get_any() const
+      {
+        if (type_ == ANY) {
+          return *any_value_;
+        } else {
+          throw BadAnyType("Called get_any on KnowledgeRecord not containing "
+              "an Any type");
+        }
+      }
+
+      template<typename T>
+      T &get_any(tags::type<T> t)
+      {
+        return get_any().get(t);
+      }
+
+      template<typename T>
+      T &get_any()
+      {
+        return get_any(tags::type<T>{});
+      }
+
+      template<typename T>
+      const T &get_any(tags::type<T> t) const
+      {
+        return get_any().cget(t);
+      }
+
+      template<typename T>
+      const T &get_any() const
+      {
+        return get_any(tags::type<T>{});
+      }
+
+      Any to_any() const
+      {
+        if (type_ == ANY) {
+          return *any_value_;
+        } else if (type_ == INTEGER) {
+          return Any(int_value_);
+        } else if (type_ == DOUBLE) {
+          return Any(double_value_);
+        } else if (type_ == INTEGER_ARRAY) {
+          return Any(*int_array_);
+        } else if (type_ == DOUBLE_ARRAY) {
+          return Any(*double_array_);
+        } else if (is_string_type()) {
+          return Any(*str_value_);
+        } else if (is_binary_file_type()) {
+          return Any(*file_value_);
+        } else {
+          return {};
+        }
+      }
+
+      /**
+       * @return a shared_ptr, sharing with the internal one.
+       * If this record is not an Any type, returns NULL shared_ptr
+       **/
+      std::shared_ptr<Any> share_any() const;
+
+      /**
+       * @return a shared_ptr, while resetting this record to empty.
+       * If this record is not an Any type, returns NULL shared_ptr
+       * and this record is unmodified.
+       **/
+      std::shared_ptr<Any> take_any();
+
       /**
        * Creates a deep copy of the knowledge record. Because each
        * Knowledge Record may contain non-thread-safe ref counted values,
@@ -1103,6 +1259,19 @@ namespace madara
        * @return   true if the record is an integer
        **/
       static bool is_array_type (uint32_t type);
+
+      /**
+       * returns if the record is Any type
+       * @return   true if the record is ALL type
+       **/
+      bool is_any_type (void) const;
+
+      /**
+       * returns if the record type is Any type
+       * @param   type the type to check
+       * @return   true if the record is ALL type
+       **/
+      static bool is_any_type (uint32_t type);
 
       /**
        * returns a record containing a fragment of the character buffer.

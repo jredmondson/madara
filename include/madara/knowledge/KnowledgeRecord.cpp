@@ -299,6 +299,10 @@ KnowledgeRecord::to_string (const std::string & delimiter) const
     return "";
   }
 
+  if (type_ == ANY) {
+    return "<Any type>";
+  }
+
   if (!is_string_type ())
   {
     madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
@@ -1182,6 +1186,10 @@ KnowledgeRecord::is_true (void) const
   else if (is_binary_file_type ())
   {
     return file_value_->size () >= 1;
+  }
+  else if (is_any_type ())
+  {
+    return !any_value_->empty ();
   }
   else
   {

@@ -189,7 +189,7 @@ namespace madara
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ())
       {
-        return map_.share_string(std::forward<K>(key), settings);
+        return map_.take_string(std::forward<K>(key), settings);
       }
 
       /**
@@ -213,7 +213,7 @@ namespace madara
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ())
       {
-        return map_.share_integers(std::forward<K>(key), settings);
+        return map_.take_integers(std::forward<K>(key), settings);
       }
 
       /**
@@ -237,7 +237,7 @@ namespace madara
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ())
       {
-        return map_.share_doubles(std::forward<K>(key), settings);
+        return map_.take_doubles(std::forward<K>(key), settings);
       }
 
       /**
@@ -261,7 +261,31 @@ namespace madara
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ())
       {
-        return map_.share_binary(std::forward<K>(key), settings);
+        return map_.take_binary(std::forward<K>(key), settings);
+      }
+
+      /**
+       * Returns a shared_ptr, sharing with the internal one.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      template<typename K>
+      std::shared_ptr<Any> share_any(K && key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const
+      {
+        return map_.share_any(std::forward<K>(key), settings);
+      }
+
+      /**
+       * Returns a shared_ptr, while resetting this record to empty.
+       * If this record is not a string, returns NULL shared_ptr
+       **/
+      template<typename K>
+      std::shared_ptr<Any> take_any(K && key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ())
+      {
+        return map_.take_any(std::forward<K>(key), settings);
       }
 
       /**
@@ -521,6 +545,26 @@ namespace madara
 
         send_modifieds ("KnowledgeBaseImpl:set", settings);
 
+        return result;
+      }
+
+      template<typename K, typename V>
+      int set_any (K&& key, V&& val, const EvalSettings & settings)
+      {
+        int result = map_.set_any (
+            std::forward<K>(key),
+            std::forward<V>(val), settings);
+        send_modifieds ("KnowledgeBaseImpl:set_any", settings);
+        return result;
+      }
+
+      template<typename K, typename... Args>
+      int emplace_any (K&& key, const EvalSettings & settings, Args&&... args)
+      {
+        int result = map_.emplace_any (
+            std::forward<K>(key), settings,
+            std::forward<Args>(args)...);
+        send_modifieds ("KnowledgeBaseImpl:emplace_any", settings);
         return result;
       }
 
