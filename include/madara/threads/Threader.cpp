@@ -1,5 +1,6 @@
 #include "Threader.h"
 #include "madara/utility/Utility.h"
+#include "madara/exceptions/ThreadException.h"
 
 #ifdef _MADARA_JAVA_
       
@@ -80,6 +81,24 @@ madara::threads::Threader::run (
 
     (threads_[name] = std::move (worker))->run ();
   }
+  else if (thread != 0 && name == "")
+  {
+    delete thread;
+
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+      "Threader::run: named thread has an empty name. Deleting new thread.");
+
+    throw exceptions::ThreadException (
+      "Threader::run: named thread has an empty name. Deleting new thread.");
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+      "Threader::run: named thread has an empty name.");
+
+    throw exceptions::ThreadException (
+      "Threader::run: named thread has an empty name.");
+  }
 }
 
 #ifdef _MADARA_JAVA_
@@ -130,6 +149,24 @@ madara::threads::Threader::run (double hertz,
       thread->paused = 1;
 
     (threads_[name] = std::move (worker))->run ();
+  }
+  else if (thread != 0 && name == "")
+  {
+    delete thread;
+
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+      "Threader::run: named thread has an empty name. Deleting new thread.");
+
+    throw exceptions::ThreadException (
+      "Threader::run: named thread has an empty name. Deleting new thread.");
+  }
+  else
+  {
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+      "Threader::run: named thread has an empty name.");
+
+    throw exceptions::ThreadException (
+      "Threader::run: named thread has an empty name.");
   }
 }
 
