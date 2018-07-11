@@ -5,9 +5,11 @@
 
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 #include <math.h>
 
 #include "madara/utility/Utility.h"
+#include "madara/exceptions/MemoryException.h"
 
 /**
 * @file KnowledgeRecord.inl
@@ -1677,9 +1679,15 @@ KnowledgeRecord::write (char * buffer,
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR, "KnowledgeRecord::write:" \
-      " %" PRId64 " byte buffer cannot contain %" PRId64 " byte message\n",
-      buffer_remaining, encoded_size);
+    std::stringstream buffer;
+    buffer << "KnowledgeRecord::write: ";
+    buffer << encoded_size << " byte encoding cannot fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      buffer.str ().c_str ());
+
+    throw exceptions::MemoryException (buffer.str ());
   }
   return buffer;
 }
@@ -1726,9 +1734,15 @@ int64_t & buffer_remaining) const
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR, "KnowledgeRecord::write:" \
-      " %" PRId64 " byte buffer cannot contain %" PRId64 " byte message\n",
-      buffer_remaining, encoded_size);
+    std::stringstream buffer;
+    buffer << "KnowledgeRecord::write: ";
+    buffer << encoded_size << " byte encoding cannot fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      buffer.str ().c_str ());
+
+    throw exceptions::MemoryException (buffer.str ());
   }
   return buffer;
 }
@@ -1762,9 +1776,15 @@ KnowledgeRecord::write (char * buffer, uint32_t key_id,
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR, "KnowledgeRecord::write:" \
-      " %" PRId64 " byte buffer cannot contain %" PRId64 " byte message\n",
-      buffer_remaining, encoded_size);
+    std::stringstream buffer;
+    buffer << "KnowledgeRecord::write: ";
+    buffer << encoded_size << " byte encoding cannot fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+      buffer.str ().c_str ());
+
+    throw exceptions::MemoryException (buffer.str ());
   }
   return buffer;
 }

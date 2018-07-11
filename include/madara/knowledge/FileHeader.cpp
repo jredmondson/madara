@@ -1,7 +1,10 @@
+#include <algorithm>
+#include <sstream>
+#include <time.h>
+
+#include "madara/exceptions/MemoryException.h"
 #include "FileHeader.h"
 #include "madara/utility/Utility.h"
-#include <algorithm>
-#include <time.h>
 
 madara::knowledge::FileHeader::FileHeader ()
 : size (encoded_size ()),
@@ -43,6 +46,16 @@ madara::knowledge::FileHeader::read (const char * buffer,
     size = madara::utility::endian_swap (*(uint64_t *)buffer);
     buffer += sizeof (size);
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (size) << " byte size encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (size);
   
   // Remove states field from the buffer and update accordingly
@@ -50,6 +63,16 @@ madara::knowledge::FileHeader::read (const char * buffer,
   {
     states = madara::utility::endian_swap (*(uint64_t *)buffer);
     buffer += sizeof (states);
+  }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (states) << " byte states encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
   }
   buffer_remaining -= sizeof (states);
   
@@ -59,6 +82,17 @@ madara::knowledge::FileHeader::read (const char * buffer,
     initial_timestamp = madara::utility::endian_swap (*(uint64_t *)buffer);
     buffer += sizeof (initial_timestamp);
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (initial_timestamp) <<
+      " byte initial_timestamp encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (initial_timestamp);
   
   // Remove initial_timestamp field from the buffer and update accordingly
@@ -66,6 +100,17 @@ madara::knowledge::FileHeader::read (const char * buffer,
   {
     last_timestamp = madara::utility::endian_swap (*(uint64_t *)buffer);
     buffer += sizeof (last_timestamp);
+  }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (last_timestamp) <<
+      " byte last_timestamp encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
   }
   buffer_remaining -= sizeof (last_timestamp);
   
@@ -75,6 +120,17 @@ madara::knowledge::FileHeader::read (const char * buffer,
     strncpy (file_type, buffer, 8);
     buffer += sizeof (char) * 8;
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << 8 <<
+      " byte file_type encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (char) * 8;
   
   // Remove karl_version field from the buffer and update accordingly
@@ -83,6 +139,17 @@ madara::knowledge::FileHeader::read (const char * buffer,
     karl_version = madara::utility::endian_swap (*(uint32_t *)buffer);
     buffer += sizeof (karl_version);
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (karl_version) <<
+      " byte version encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (karl_version);
   
   // Remove originator from the buffer and update accordingly
@@ -90,6 +157,17 @@ madara::knowledge::FileHeader::read (const char * buffer,
   {
     strncpy (originator, buffer, 64);
     buffer += sizeof (char) * 64;
+  }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (originator) <<
+      " byte originator encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
   }
   buffer_remaining -= sizeof (char) * 64;
 
@@ -106,6 +184,17 @@ madara::knowledge::FileHeader::write (char * buffer,
     *(uint64_t *) buffer = madara::utility::endian_swap (size);
     buffer += sizeof (size);
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (size) <<
+      " byte size encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (size);
   
   // Write states field to the buffer and update accordingly
@@ -113,6 +202,17 @@ madara::knowledge::FileHeader::write (char * buffer,
   {
     *(uint64_t *) buffer = madara::utility::endian_swap (states);
     buffer += sizeof (states);
+  }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (states) <<
+      " byte states encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
   }
   buffer_remaining -= sizeof (states);
   
@@ -122,6 +222,17 @@ madara::knowledge::FileHeader::write (char * buffer,
     *(uint64_t *) buffer = madara::utility::endian_swap (initial_timestamp);
     buffer += sizeof (initial_timestamp);
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (initial_timestamp) <<
+      " byte initial_timestamp encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (initial_timestamp);
   
   // Write last_timestamp field to the buffer and update accordingly
@@ -129,6 +240,17 @@ madara::knowledge::FileHeader::write (char * buffer,
   {
     *(uint64_t *) buffer = madara::utility::endian_swap (last_timestamp);
     buffer += sizeof (last_timestamp);
+  }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (last_timestamp) <<
+      " byte last_timestamp encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
   }
   buffer_remaining -= sizeof (last_timestamp);
   
@@ -138,6 +260,17 @@ madara::knowledge::FileHeader::write (char * buffer,
     strncpy (buffer, file_type, 8);
     buffer += sizeof (char) * 8;
   }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << 8 <<
+      " byte last_timestamp encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
+  }
   buffer_remaining -= sizeof (char) * 8;
   
   // Write karl_version field to the buffer and update accordingly
@@ -145,6 +278,17 @@ madara::knowledge::FileHeader::write (char * buffer,
   {
     *(uint32_t *) buffer = madara::utility::endian_swap (karl_version);
     buffer += sizeof (karl_version);
+  }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (karl_version) <<
+      " byte version encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
   }
   buffer_remaining -= sizeof (karl_version);
 
@@ -154,6 +298,17 @@ madara::knowledge::FileHeader::write (char * buffer,
   {
     strncpy (buffer, originator, 64);
     buffer += sizeof (char) * 64;
+  }
+  else
+  {
+    std::stringstream buffer;
+    buffer << "FileHeader::read: ";
+    buffer << sizeof (originator) <<
+      " byte originator encoding cannot";
+    buffer << " fit in ";
+    buffer << buffer_remaining << " byte buffer\n";
+    
+    throw exceptions::MemoryException (buffer.str ());
   }
   buffer_remaining -= sizeof (char) * 64;
   

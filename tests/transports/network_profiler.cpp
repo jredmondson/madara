@@ -5,6 +5,7 @@
 #include "madara/filters/AggregateFilter.h"
 
 #include "madara/utility/Utility.h"
+#include "madara/utility/EpochEnforcer.h"
 
 namespace utility = madara::utility;
 namespace logger = madara::logger;
@@ -17,6 +18,8 @@ const std::string default_multicast ("239.255.0.1:4150");
 madara::transport::QoSTransportSettings settings;
 double test_time (60);
 size_t data_size (128);
+double send_hertz (-1);
+size_t num_vars (1);
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
@@ -76,6 +79,15 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-f" || arg1 == "--logfile")
+    {
+      if (i + 1 < argc)
+      {
+        logger::global_logger->add_file (argv[i + 1]);
+      }
+
+      ++i;
+    }
     else if (arg1 == "-i" || arg1 == "--id")
     {
       if (i + 1 < argc)
@@ -99,6 +111,16 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "--num-vars")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> num_vars;
+      }
+
+      ++i;
+    }
     else if (arg1 == "-p" || arg1 == "--drop-rate")
     {
       if (i + 1 < argc)
@@ -109,15 +131,6 @@ void handle_arguments (int argc, char ** argv)
         
         settings.update_drop_rate (drop_rate,
           madara::transport::PACKET_DROP_DETERMINISTIC);
-      }
-
-      ++i;
-    }
-    else if (arg1 == "-f" || arg1 == "--logfile")
-    {
-      if (i + 1 < argc)
-      {
-        logger::global_logger->add_file (argv[i + 1]);
       }
 
       ++i;
@@ -146,6 +159,16 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "--send-hz")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> send_hertz;
+      }
+
+      ++i;
+    }
     else if (arg1 == "-t" || arg1 == "--time")
     {
       if (i + 1 < argc)
@@ -166,6 +189,15 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "--zmq" || arg1 == "--0mq")
+    {
+      if (i + 1 < argc)
+      {
+        settings.hosts.push_back (argv[i + 1]);
+        settings.type = transport::ZMQ;
+      }
+      ++i;
+    }
     else
     {
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -181,13 +213,26 @@ void handle_arguments (int argc, char ** argv)
         " [-i|--id id]             the id of this agent (should be non-negative)\n" \
         " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         " [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
+        " [--num-vars vars]        the number of vars to split size up into\n" \
         " [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
-        " [-q|--queue-length len   the queue size to use for the test\n" \
+        " [-q|--queue-length len   the buffer size to use for the test\n" \
         " [-r|--reduced]           use the reduced message header\n" \
         " [-s|--size size]         size of data packet to send in bytes\n" \
+        " [--send-hz hertz]        hertz to send at\n" \
         " [-t|--time time]         time to burst messages for throughput test\n" \
         " [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         " [-z|--read-hertz hertz]  read thread hertz speed\n" \
+        " [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n" \
+        "                          examples include tcp://127.0.0.1:30000\n" \
+        "                          or any of the other endpoint types like\n" \
+        "                          pgm://. For tcp, remember that the first\n" \
+        "                          endpoint defined must be your own, the\n" \
+        "                          one you are binding to, and all other\n" \
+        "                          agent endpoints must also be defined or\n" \
+        "                          no messages will ever be sent to them.\n" \
+        "                          Similarly, all agents will have to have\n" \
+        "                          this endpoint added to their list or\n" \
+        "                          this karl agent will not see them.\n" \
         "\n",
         argv[0]);
 
@@ -254,30 +299,63 @@ int main (int argc, char ** argv)
   // id == 0 ? "publisher" : "subscriber"
   if (settings.id == 0)
   {
+    if (num_vars > 1)
+    {
+      data_size = data_size / num_vars;
+    }
+    else
+    {
+      num_vars = 1;
+    }
+
     // setup a knowledge base
     knowledge::KnowledgeBase kb (host, settings);
+    unsigned char * data = new unsigned char [data_size]; 
+    std::vector <knowledge::VariableReference> vars;
+    knowledge::VariableReference num_vars_ref = kb.get_ref ("num_vars");
 
     // get a handle to the data
-    knowledge::VariableReference var = kb.get_ref ("data");
 
-    unsigned char * data = new unsigned char [data_size]; 
-    kb.set_file (var, data, data_size, knowledge::EvalSettings::DELAY_NO_EXPAND);
+    for (size_t i = 0; i < num_vars; ++i)
+    {
+      std::stringstream buffer;
+      buffer << "data";
+      buffer << i;
+      vars.push_back (kb.get_ref (buffer.str ()));
+      kb.set_file (vars[i], data, data_size, knowledge::EvalSettings::DELAY_NO_EXPAND);
+    }
 
-    std::cerr << "Publishing " << data_size << " B packets for "
+    kb.set (num_vars_ref, num_vars, knowledge::EvalSettings::DELAY_NO_EXPAND);
+
+
+    std::cerr << "Publishing " << data_size << " B packets in " << num_vars
+      << " variables @" << send_hertz << " hz for "
       << test_time << " s on " << transport::types_to_string (settings.type)
       << " transport\n";
 
-    // keep track of test time
-    utility::TimeValue current = madara::utility::Clock::now ();
-    madara::utility::TimeValue end_time = current +
-      madara::utility::seconds_to_duration (test_time);
+    // use epoch enforcer"
 
-    // spin and modify
-    while (utility::Clock::now () < end_time)
+    utility::EpochEnforcer<utility::Clock> enforcer (1/send_hertz, test_time);
+
+    while (!enforcer.is_done ())
     {
-      kb.mark_modified (var);
+      for (auto var : vars)
+      {
+        kb.mark_modified (var);
+      }
+
+      kb.mark_modified (num_vars_ref);
       kb.send_modifieds ();
+
+      if (send_hertz > 0.0)
+      {
+        enforcer.sleep_until_next ();
+      }
     }
+
+    kb.set ("num_vars", num_vars, knowledge::EvalSettings::DELAY_NO_EXPAND);
+
+    kb.set ("num_vars", num_vars, knowledge::EvalSettings::DELAY_NO_EXPAND);
 
     delete [] data;
 
@@ -308,8 +386,9 @@ int main (int argc, char ** argv)
       uint64_t avg_latency = profiler.total_latency / received;
       uint64_t min_latency = profiler.min_latency;
       uint64_t max_latency = profiler.max_latency;
-      data_size = (size_t) kb.get ("data").size ();
-      uint64_t data_transfered = (uint64_t) data_size * received;
+      data_size = (size_t) kb.get ("data0").size ();
+      num_vars = (size_t)kb.get ("num_vars").to_integer ();
+      uint64_t data_transfered = (uint64_t) data_size * received * (uint64_t)num_vars;
       double data_rate = (double)data_transfered / test_time;
       double msg_rate = (double)received / test_time;
 
@@ -317,8 +396,18 @@ int main (int argc, char ** argv)
       std::cerr << "Settings:\n";
       std::cerr << "  Transport type: " <<
         transport::types_to_string (settings.type) << "\n";
+      std::cerr << "  Buffer size: " << settings.queue_length << " B\n";
+
+      std::cerr << "  Hosts: \n";
+
+      for (auto host : settings.hosts)
+      {
+        std::cerr << "    " << host << "\n";
+      }
+
       std::cerr << "  Data size: " << data_size << " B\n";
       std::cerr << "  Test time: " << test_time << " s\n";
+      std::cerr << "  Num vars: " << num_vars << "\n";
       std::cerr << "Latency:\n";
       std::cerr << "  Min: " << min_latency << " ns\n";
       std::cerr << "  Avg: " << avg_latency << " ns\n";
@@ -326,7 +415,7 @@ int main (int argc, char ** argv)
       std::cerr << "Throughput:\n";
       std::cerr << "  Messages received: " << received << "\n";
       std::cerr << "  Message rate: " << msg_rate << " packets/s\n";
-      std::cerr << "  Data received: " << data_transfered << " B\n";
+      std::cerr << "  Data received: " << (data_transfered * (uint64_t)num_vars) << " B\n";
       std::cerr << "  Data rate: " << data_rate << " B/s\n";
     }
     else

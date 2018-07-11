@@ -9,6 +9,7 @@
 
 #include "madara/filters/ssl/AESBufferFilter.h"
 #include "madara/knowledge/containers/Integer.h"
+#include "madara/exceptions/MemoryException.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -578,6 +579,80 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
+void test_buffer_size (void)
+{
+  std::cerr <<
+    "\n*********** TESTING BUFFER SIZE *************.\n";
+
+  knowledge::KnowledgeBase kb;
+  knowledge::CheckpointSettings settings;
+
+  // create 2MB variable to push limits of context settings
+  size_t data_size = 2000000;
+  unsigned char * data = new unsigned char [data_size]; 
+  kb.set_file ("data", data, data_size);
+
+  // configure initial settings
+  settings.filename = "buffer_size_test_1.kb";
+
+  std::cerr << "Saving 2MB record with " << settings.buffer_size
+    << "B buffer size...\n";
+
+  // Test 1
+  std::cerr << "Test 1: save_context: ";
+  
+  try
+  {
+    kb.save_context (settings);
+    std::cerr << "FAIL\n";
+    num_fails++;
+  }
+  catch(const madara::exceptions::MemoryException &)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  // Test 2
+  std::cerr << "Test 2: save_checkpoint: ";
+  settings.filename = "buffer_size_test_2.kb";
+
+  kb.mark_modified ("data");
+
+  try
+  {
+    kb.save_checkpoint (settings);
+    std::cerr << "FAIL\n";
+    num_fails++;
+  }
+  catch(const madara::exceptions::MemoryException &)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  // Test 3
+
+  settings.buffer_size = 4000000;
+  std::cerr << "Saving 2MB record with " << settings.buffer_size
+    << "B buffer size...\n";
+
+  std::cerr << "Test 3: save_context: ";
+  settings.filename = "buffer_size_test_3.kb";
+
+  kb.save_context (settings);
+
+  std::cerr << "SUCCESS\n";
+
+  // Test 4
+  std::cerr << "Test 4: save_checkpoint: ";
+
+  kb.mark_modified ("data");
+
+  kb.save_checkpoint (settings);
+
+  std::cerr << "SUCCESS\n";
+
+}
+
 int main (int argc, char * argv[])
 {
   handle_arguments (argc, argv);
@@ -644,6 +719,8 @@ int main (int argc, char * argv[])
   test_checkpoint_settings ();
 
   test_checkpoints_diff ();
+
+  test_buffer_size ();
 
   if (num_fails > 0)
   {

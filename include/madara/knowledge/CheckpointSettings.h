@@ -46,7 +46,9 @@ namespace madara
        **/
       CheckpointSettings ()
         : buffer_size (1024000),
-          clear_knowledge (false), initial_timestamp (0), last_timestamp (0),
+          clear_knowledge (false),
+          filename (""),
+          initial_timestamp (0), last_timestamp (0),
           initial_lamport_clock (0), last_lamport_clock (0), states (0),
           version (utility::get_version ()),
           override_timestamp (false), override_lamport (false),

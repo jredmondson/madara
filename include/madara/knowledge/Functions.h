@@ -199,10 +199,8 @@ namespace madara
        **/
       Function (boost::python::object & func)
       : function_contents (*logger::global_logger.get ()),
-        python_function (func), type (PYTHON_CALLABLE)
-      {
-        bool invalid_callable = false;
-   
+      type (PYTHON_CALLABLE), python_function (func)
+      {   
         // Check to make sure its a callable object
         if (0 == PyObject_HasAttrString (func.ptr (), "__call__"))
         {

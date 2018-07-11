@@ -18,9 +18,12 @@ The MADARA project works closely with the Group Autonomy for Mobile Systems (GAM
 
 # Help
 
-Most of the Wiki pages have not been moved from their hosting on [SourceForge](https://sourceforge.net/p/madara/wiki/Home/). This is the best place to currently find visualizations, examples, and answers.
+We have an extensive Wiki on this site that covers common usage patterns, performance considerations, and guides
+for C++, Java and Python. Below, you'll find starting points. A more extensive list of Wiki pages can be found
+on the [Wiki](https://github.com/jredmondson/madara/wiki) tab.
 
 [Youtube Guide to Multi-Agent Autonomy](https://www.youtube.com/watch?v=Qvl3YriLMYI&list=PLSNlEg26NNpwi4ggcPYU8JvS1aVtV60_z)
 
-[C++ API Docs](http://madara.readthedocs.io/) | [C++ Tutorial](https://sourceforge.net/p/madara/wiki/MadaraArchitecture/)\
-[Java Docs](https://www.javadoc.io/doc/ai.madara/madara) | [Java Tutorial](https://sourceforge.net/p/madara/wiki/JavaMadaraArchitecture/)
+[C++ API Docs](http://madara.readthedocs.io/) | [C++ Tutorial](https://github.com/jredmondson/madara/wiki/MadaraArchitecture/)\
+[Java Docs](https://www.javadoc.io/doc/ai.madara/madara) | [Java Tutorial](https://github.com/jredmondson/madara/wiki/JavaMadaraArchitecture/)\
+[Python Tutorial](https://github.com/jredmondson/madara/wiki/PythonMadaraArchitecture/)

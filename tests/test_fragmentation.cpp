@@ -299,9 +299,10 @@ void test_add_frag (void)
   delete [] result;
   delete [] payload;
 }
+
 void test_records_frag (void)
 {
-  uint32_t size = 254000 + sizeof (int64_t) + sizeof (double) +
+  uint32_t size = 300000 + sizeof (int64_t) + sizeof (double) +
     transport::MessageHeader::static_encoded_size ();
 
   char * payload = new char [size];
@@ -323,6 +324,7 @@ void test_records_frag (void)
   header.ttl = 2;
   memcpy (header.originator, "test_source", strlen ("test_source"));
   
+  std::cerr << "Constructing record aggregation...\n";
   buffer = header.write (buffer, buffer_remaining);
 
   for (madara::knowledge::KnowledgeMap::iterator i = knowledge.begin ();
@@ -330,6 +332,8 @@ void test_records_frag (void)
   {
     buffer = i->second.write (buffer, i->first, buffer_remaining);
   }
+
+  std::cerr << "Fragmenting the 254KB+ record into 60K packets...\n";
 
   transport::frag (payload, 60000, map);
 
@@ -348,6 +352,9 @@ void test_records_frag (void)
   {
     buffer_remaining = transport::MessageHeader::get_size (result);
     transport::MessageHeader copied_header;
+
+    std::cerr << "Reading result into a copied header...\n";
+
     result = copied_header.read (result, buffer_remaining);
 
     if (copied_header.equals (header))

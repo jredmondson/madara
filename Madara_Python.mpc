@@ -5,13 +5,8 @@ project (MADARA_Python) : using_madara, port/python/using_python {
   
   after    += MADARA
 
-  specific(prop:windows) {
-    sharedname = madara.pyd
-    postbuild = python port/python/rename_lib.py
-  } else {
-    sharedname = madara
-  }
-
+  sharedname = madara.pyd
+  postbuild = python port/python/rename_lib.py
   libout = $(MADARA_ROOT)/lib
   
   Documentation_Files {

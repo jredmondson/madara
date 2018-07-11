@@ -775,7 +775,7 @@ namespace madara
       void set_value (KnowledgeRecord &&new_value);
 
       /**
-       * sets the value to a double
+       * sets the value to an integer
        * @param    new_value   new value of the Knowledge Record
        **/
       template<typename T,

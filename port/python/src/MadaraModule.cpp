@@ -2,6 +2,9 @@
 #include <boost/python/detail/wrap_python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/import.hpp>
+#include <boost/python/enum.hpp>
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/filters/GenericFilters.h"
@@ -20,10 +23,6 @@ using namespace boost::python;
 class Filters_NS {};
 class knowledge_NS {};
 class Transport_NS {};
-
-void define_knowledge_record (void)
-{
-}
 
 /********************************************************
   * Filters namespace definitions
@@ -106,6 +105,12 @@ void define_transport (void)
       madara::transport::MULTICAST)
     .value("BROADCAST",
       madara::transport::BROADCAST)
+    .value("REGISTRY_SERVER",
+      madara::transport::REGISTRY_SERVER)
+    .value("REGISTRY_CLIENT",
+      madara::transport::REGISTRY_CLIENT)
+    .value("ZMQ",
+      madara::transport::ZMQ)
   ;
     
   {
@@ -440,13 +445,13 @@ void define_transport (void)
   ;
 }
   
-void define_knowledge_engine (void)
+void define_knowledge (void)
 {
   object ke = object (handle<> (
     PyModule_New ("madara.knowledge")));
 
    ke.attr("__file__")="<synthetic>";
-   scope().attr ("knowledge_engine") = ke;
+   scope().attr ("knowledge") = ke;
    ke.attr ("__doc__") = "Provides access to the knowledge engine";
 
    // this was the missing piece: sys.modules['modA.modB']=modB
@@ -513,18 +518,28 @@ void define_knowledge_engine (void)
      "Resets the record to an UNCREATED status (faster than clear_value)")
 
      // sets the contents of the record to a jpeg
-     .def ("set_jpeg", &madara::knowledge::KnowledgeRecord::set_jpeg,
+     .def ("set_jpeg",
+     static_cast<
+     void (madara::knowledge::KnowledgeRecord::*)(
+     const unsigned char * new_value, size_t size
+     )
+     > (&madara::knowledge::KnowledgeRecord::set_jpeg),
      "Sets the value to a jpeg")
 
      // sets the contents of the record to a file
-     .def ("set_file", &madara::knowledge::KnowledgeRecord::set_file,
+     .def ("set_file", 
+     static_cast<
+     void (madara::knowledge::KnowledgeRecord::*)(
+     const unsigned char * new_value, size_t size
+     )
+     > (&madara::knowledge::KnowledgeRecord::set_file),
      "Sets the value to a file's contents")
 
      // sets a knowledge record to a double
      .def ("set",
      static_cast<
      void (madara::knowledge::KnowledgeRecord::*)(
-     const double &
+     double
      )
      > (&madara::knowledge::KnowledgeRecord::set_value),
      "Sets the value to a double")
@@ -542,7 +557,7 @@ void define_knowledge_engine (void)
      .def ("set",
      static_cast<
      void (madara::knowledge::KnowledgeRecord::*)(
-     const madara::knowledge::KnowledgeRecord::Integer &
+       int
      )
      > (&madara::knowledge::KnowledgeRecord::set_value),
      "Sets the value to an integer")
@@ -691,20 +706,20 @@ void define_knowledge_engine (void)
   .def (self + self)
   .def (self - self)
 
-  .def ("operator=", &madara::knowledge::KnowledgeRecord::operator=,
-  "Assigns the value of one record to another",
-  return_value_policy<reference_existing_object> ())
+  // because of the templated nature of KnowledgeRecord::operator=, I could not
+  // figure this out
+  // .def ("operator=", 
+  // static_cast<madara::knowledge::KnowledgeRecord (
+  // madara::knowledge::KnowledgeRecord::*)(
+  // int &&)> (
+  // &madara::knowledge::KnowledgeRecord::operator=),
+  // "Assigns an int to the record",
+  // return_value_policy<reference_existing_object> ())
 
   .def ("operator==",
   static_cast<bool (
   madara::knowledge::KnowledgeRecord::*)(
   const madara::knowledge::KnowledgeRecord &) const> (
-  &madara::knowledge::KnowledgeRecord::operator==),
-  "Compares two records for equality")
-
-  .def ("operator==",
-  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(
-  madara::knowledge::KnowledgeRecord::Integer) const> (
   &madara::knowledge::KnowledgeRecord::operator==),
   "Compares two records for equality")
 
@@ -722,8 +737,8 @@ void define_knowledge_engine (void)
 
      // the types of values supported in KnowledgeRecord
      enum_<madara::knowledge::KnowledgeRecord::ValueTypes> ("ValueTypes")
-     .value ("UNINITIALIZED",
-     madara::knowledge::KnowledgeRecord::UNINITIALIZED)
+     .value ("EMPTY",
+     madara::knowledge::KnowledgeRecord::EMPTY)
      .value ("INTEGER",
      madara::knowledge::KnowledgeRecord::INTEGER)
      .value ("STRING",
@@ -760,6 +775,9 @@ void define_knowledge_engine (void)
      madara::knowledge::KnowledgeRecord::ALL_TEXT_FORMATS)
      .value ("ALL_TYPES",
      madara::knowledge::KnowledgeRecord::ALL_TYPES)
+     .value ("ALL_CLEARABLES",
+     madara::knowledge::KnowledgeRecord::ALL_CLEARABLES)
+     
    ; // end of ValueTypes
 
    // Boost.python does not appear to support this type of function
@@ -1096,7 +1114,10 @@ void define_knowledge_engine (void)
           
     // expands and prints a statement
     .def ("save_context",
-      &madara::knowledge::KnowledgeBase::save_context,
+      static_cast<int64_t
+        (madara::knowledge::KnowledgeBase::*)(
+          const std::string &) const
+      > (&madara::knowledge::KnowledgeBase::save_context),
         "Saves the context to a file")
           
     // Sends all modified variables through the attached transports
@@ -1171,30 +1192,30 @@ void define_knowledge_engine (void)
         "Sets a knowledge record to a string"))
         
     // sets an array index to an integer
-    .def( "set_index",
-      static_cast<
-        int (madara::knowledge::KnowledgeBase::*)(
-          const std::string &,
-          size_t,
-          madara::knowledge::KnowledgeRecord::Integer,
-          const madara::knowledge::EvalSettings &)
-      > (&madara::knowledge::KnowledgeBase::set_index),
-      m_set_index_2_of_3 (
-        args("key", "value", "settings"),
-        "Sets an array index to an integer"))
+    // .def( "set_index",
+    //   static_cast<
+    //     int (madara::knowledge::KnowledgeBase::*)(
+    //       const std::string &,
+    //       size_t,
+    //       madara::knowledge::KnowledgeRecord::Integer,
+    //       const madara::knowledge::EvalSettings &)
+    //   > (&madara::knowledge::KnowledgeBase::set_index),
+    //   m_set_index_2_of_3 (
+    //     args("key", "value", "settings"),
+    //     "Sets an array index to an integer"))
         
     // sets an array index to a double
-    .def( "set_index",
-      static_cast<
-        int (madara::knowledge::KnowledgeBase::*)(
-          const std::string &,
-          size_t,
-          double,
-          const madara::knowledge::EvalSettings &)
-      > (&madara::knowledge::KnowledgeBase::set_index),
-      m_set_index_2_of_3 (
-        args("key", "value", "settings"),
-        "Sets an array index to a double"))
+    // .def( "set_index",
+    //   static_cast<
+    //     int (madara::knowledge::KnowledgeBase::*)(
+    //       const std::string &,
+    //       size_t,
+    //       double,
+    //       const madara::knowledge::EvalSettings &)
+    //   > (&madara::knowledge::KnowledgeBase::set_index),
+    //   m_set_index_2_of_3 (
+    //     args("key", "value", "settings"),
+    //     "Sets an array index to a double"))
             
     // unlocks the knowledge base
     .def ("unlock",
@@ -1233,8 +1254,7 @@ BOOST_PYTHON_MODULE (madara)
     .def(map_indexing_suite<std::map <
       std::string, madara::knowledge::KnowledgeRecord> >());
 
-  define_knowledge_record ();
   define_filters ();
   define_transport ();
-  define_knowledge_engine ();
+  define_knowledge ();
 }
