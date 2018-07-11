@@ -84,6 +84,27 @@ constexpr std::initializer_list<T> mk_init(std::initializer_list<T> i) {
   return i;
 }
 
+template<class Ret = void>
+struct ignore_all
+{
+  template<typename... Args>
+  constexpr Ret operator()(Args&&...) const { return Ret{}; }
+};
+
+template<int N>
+struct overload_priority_t : overload_priority_t<N + 1> {};
+
+template<>
+struct overload_priority_t<16> {};
+
+template<int N>
+using overload_priority = overload_priority_t<N>*;
+
+using overload_priority_weakest = overload_priority<16>;
+using overload_priority_strongest = overload_priority<0>;
+
+inline overload_priority_strongest select_overload() { return {}; }
+
 }
 
 #endif

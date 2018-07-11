@@ -1032,7 +1032,7 @@ namespace madara
         set_raw_any(data, size);
       }
 
-      Any &get_any()
+      Any &get_any_ref()
       {
         if (type_ == ANY) {
           return *any_value_;
@@ -1043,7 +1043,7 @@ namespace madara
         }
       }
 
-      const Any &get_any() const
+      const Any &get_any_ref() const
       {
         if (type_ == ANY) {
           return *any_value_;
@@ -1054,28 +1054,45 @@ namespace madara
         }
       }
 
-      template<typename T>
-      T &get_any(tags::type<T> t)
+      const Any &get_any_cref() const
       {
-        return get_any().get(t);
+        return get_any_ref();
       }
 
       template<typename T>
-      T &get_any()
+      T &get_any_ref(tags::type<T> t)
       {
-        return get_any(tags::type<T>{});
+        return get_any_ref().ref(t);
       }
 
       template<typename T>
-      const T &get_any(tags::type<T> t) const
+      T &get_any_ref()
       {
-        return get_any().cget(t);
+        return get_any_ref(tags::type<T>{});
       }
 
       template<typename T>
-      const T &get_any() const
+      const T &get_any_ref(tags::type<T> t) const
       {
-        return get_any(tags::type<T>{});
+        return get_any_cref().cref(t);
+      }
+
+      template<typename T>
+      const T &get_any_ref() const
+      {
+        return get_any_cref(tags::type<T>{});
+      }
+
+      template<typename T>
+      const T &get_any_cref(tags::type<T> t) const
+      {
+        return get_any_ref(t);
+      }
+
+      template<typename T>
+      const T &get_any_cref() const
+      {
+        return get_any_ref(tags::type<T>{});
       }
 
       /**

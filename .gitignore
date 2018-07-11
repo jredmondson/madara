@@ -13,6 +13,7 @@ lib*
 .*.swp
 *.class
 *.log
+.vimrc
 
 
 network_*

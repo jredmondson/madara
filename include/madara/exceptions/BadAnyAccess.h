@@ -14,20 +14,7 @@ namespace madara
 {
   namespace exceptions
   {
-    /**
-     * An exception for misuse of the Any class
-     **/
-    class BadAnyAccess : public MadaraException
-    {
-    public:
-      using MadaraException::MadaraException;
-
-      template<typename Got>
-      BadAnyAccess(type<Got>, boost::typeindex::type_index expected)
-        : BadAnyAccess(std::string("Bad Any access: expected ") +
-            expected.pretty_name() + ", got " +
-            boost::typeindex::type_id<Got>().pretty_name()) {}
-    };
+    class BadAnyAccess;
   }
 }
 

@@ -4,7 +4,7 @@
 #include "madara/knowledge/Any.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeBase.h"
-
+#include "madara/utility/SupportTest.h"
 #include "test.h"
 
 namespace logger = madara::logger;
@@ -25,18 +25,31 @@ struct A
   }
 };
 
-struct B
+namespace ns
 {
-  double d;
-  double e;
-  double f;
-
-  template<typename Archive>
-  void serialize(Archive &ar, unsigned int)
+  struct B
   {
-    ar & d & e & f;
+    double d;
+    double e;
+    double f;
+  };
+
+  template<typename Fun>
+  void forEachField(Fun fun, B &val)
+  {
+    fun("d", val.d);
+    fun("e", val.e);
+    fun("f", val.f);
   }
-};
+
+  template<typename Fun>
+  void forEachField(Fun fun, const B &val)
+  {
+    fun("d", val.d);
+    fun("e", val.e);
+    fun("f", val.f);
+  }
+}
 
 struct Tracker
 {
@@ -61,50 +74,51 @@ struct Tracker
 
 void test_any()
 {
+  //static_assert(supports_forEachField<ns::B>::value, "B must support forEachField");
   Any a0(123);
   Any a1(type<int>{}, 456);
 
-  TEST_EQ(a0.get<int>(), 123);
-  TEST_EQ(a1.get<int>(), 456);
+  TEST_EQ(a0.ref<int>(), 123);
+  TEST_EQ(a1.ref<int>(), 456);
 
   std::vector<char> buf;
 
   a0.serialize(buf);
   a0.store(0);
-  TEST_EQ(a0.get<int>(), 0);
+  TEST_EQ(a0.ref<int>(), 0);
 
   a0.unserialize<int>(buf.data(), buf.size());
-  TEST_EQ(a0.get<int>(), 123);
+  TEST_EQ(a0.ref<int>(), 123);
 
   a1.unserialize<short>(buf.data(), buf.size());
-  TEST_EQ(a1.get<short>(), 123);
+  TEST_EQ(a1.ref<short>(), 123);
 
   a0.store(A{2, 5, 9});
   a0.serialize(buf);
   a0.unserialize<A>(buf.data(), buf.size());
-  TEST_EQ(a0.get<A>().b, 5);
+  TEST_EQ(a0.ref<A>().b, 5);
 
-  a0.unserialize<B>(buf.data(), buf.size());
-  TEST_EQ(a0.get<B>().f, 9);
+  a0.unserialize<ns::B>(buf.data(), buf.size());
+  TEST_EQ(a0.ref<ns::B>().f, 9);
 
   a0.store(std::string("asdf"));
   a1.store<std::string>("zxcv");
 
-  TEST_EQ(a0.get<std::string>(), "asdf");
-  TEST_EQ(a1.get<std::string>(), "zxcv");
+  TEST_EQ(a0.ref<std::string>(), "asdf");
+  TEST_EQ(a1.ref<std::string>(), "zxcv");
 
   a0.serialize(buf);
   VAL(buf.size());
   Any a2(raw_data, buf.data(), buf.size());
-  TEST_EQ(a2.get<std::string>(), "asdf");
+  TEST_EQ(a2.ref<std::string>(), "asdf");
 
   Any a3(std::move(a1));
   TEST_EQ(a1.empty(), true);
-  TEST_EQ(a3.get(type<std::string>{}), "zxcv");
+  TEST_EQ(a3.ref(type<std::string>{}), "zxcv");
 
   Any acopy(a3);
-  TEST_EQ(a3.get(type<std::string>{}), "zxcv");
-  TEST_EQ(a3.get(type<std::string>{}), "zxcv");
+  TEST_EQ(a3.ref(type<std::string>{}), "zxcv");
+  TEST_EQ(a3.ref(type<std::string>{}), "zxcv");
 
   Any at(type<Tracker>{});
   Tracker t(at.take<Tracker>());
@@ -115,34 +129,44 @@ void test_any()
 void test_record()
 {
   KnowledgeRecord k0(tags::any<std::vector<std::string>>{}, {"a", "b", "c"});
-  TEST_EQ(k0.get_any<std::vector<std::string>>()[1], "b");
-  k0.get_any<std::vector<std::string>>()[1] = "d";
-  TEST_EQ(k0.get_any<std::vector<std::string>>()[1], "d");
+  TEST_EQ(k0.get_any_cref<std::vector<std::string>>()[1], "b");
+  k0.get_any_ref<std::vector<std::string>>()[1] = "d";
+  TEST_EQ(k0.get_any_cref<std::vector<std::string>>()[1], "d");
 
   Any a0(type<std::string>{}, "hello");
   KnowledgeRecord k1(std::move(a0));
-  TEST_EQ(k1.get_any<std::string>(), "hello");
+  TEST_EQ(k1.get_any_cref<std::string>(), "hello");
   TEST_EQ(a0.empty(), true);
 
   k1.set_any(std::array<double, 3>{5, 10, 15});
-  TEST_EQ((k1.get_any<std::array<double, 3>>()[1]), 10);
+  TEST_EQ((k1.get_any_cref<std::array<double, 3>>()[1]), 10);
 }
 
 template<typename T>
 void test_map(T &kb)
 {
+  //kb.set ("hello", "world");
   kb.set_any("hello", std::string("world"));
-  TEST_EQ(kb.get("hello").template get_any<std::string>(), "world");
+  TEST_EQ(kb.get("hello").template get_any_cref<std::string>(), "world");
 
   kb.emplace_any("asdf", type<std::vector<std::string>>{}, mk_init({"a","b","c"}));
-  TEST_EQ(kb.get("asdf").template get_any<std::vector<std::string>>()[1], "b");
+  TEST_EQ(kb.get("asdf").template get_any_cref<std::vector<std::string>>()[1], "b");
 
   auto a0 = kb.share_any("asdf");
-  TEST_EQ(a0->template get<std::vector<std::string>>()[2], "c");
+  TEST_EQ(a0->template ref<std::vector<std::string>>()[2], "c");
+
+  //kb.save_context("/tmp/madara_test_map.kb");
 
   auto a1 = kb.take_any("asdf");
-  TEST_EQ(a1->template get<std::vector<std::string>>()[0], "a");
+  TEST_EQ(a1->template ref<std::vector<std::string>>()[0], "a");
   TEST_EQ(kb.exists("asdf"), false);
+
+  kb.clear();
+
+  //std::string id;
+  //kb.load_context("/tmp/madara_test_map.kb", id);
+  //TEST_EQ(kb.get("hello").template get_any_ref<std::string>(), "world");
+  //TEST_EQ(kb.get("asdf").template get_any_ref<std::vector<std::string>>()[1], "b");
 }
 
 int main (int, char **)
@@ -155,8 +179,8 @@ int main (int, char **)
     test_map(kb.get_context());
   }
   {
-    KnowledgeBase kb;
-    test_map(kb);
+    //KnowledgeBase kb;
+    //test_map(kb);
   }
 
   if (madara_tests_fail_count > 0)

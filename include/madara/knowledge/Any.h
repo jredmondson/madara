@@ -36,7 +36,17 @@
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/base_object.hpp>
 
+#include <boost/version.hpp>
+#if BOOST_VERSION > 105600 && !defined(MADARA_NO_BOOST_TYPE_INDEX)
+#define MADARA_USE_BOOST_TYPE_INDEX
+#endif
+
+#ifdef MADARA_USE_BOOST_TYPE_INDEX
 #include <boost/type_index.hpp>
+#else
+#include <typeindex>
+#endif
+
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/device/back_inserter.hpp>
@@ -56,8 +66,18 @@ using madara_iarchive = boost::archive::binary_iarchive;
 using boost::archive::polymorphic_oarchive;
 using boost::archive::polymorphic_iarchive;
 
+#ifdef MADARA_USE_BOOST_TYPE_INDEX
 using type_index = boost::typeindex::type_index;
 using boost::typeindex::type_id;
+#else
+using type_index = std::type_index;
+
+template<typename T>
+constexpr type_index type_id()
+{
+  return type_index(typeid(T));
+}
+#endif
 
 struct TypeHandlers
 {
@@ -83,7 +103,8 @@ struct TypeHandlers
 };
 
 template<typename T>
-constexpr auto get_type_handler_destruct(type<T>) ->
+constexpr auto get_type_handler_destruct(type<T>,
+    overload_priority_weakest) ->
   typename std::enable_if<std::is_nothrow_destructible<T>::value,
     TypeHandlers::destruct_fn_type>::type
 {
@@ -94,7 +115,8 @@ constexpr auto get_type_handler_destruct(type<T>) ->
 }
 
 template<typename T>
-constexpr TypeHandlers::clone_fn_type get_type_handler_clone(type<T>)
+constexpr TypeHandlers::clone_fn_type get_type_handler_clone(type<T>,
+    overload_priority_weakest)
 {
   return [](void *ptr) -> void * {
       T *t_ptr = static_cast<T *>(ptr);
@@ -103,7 +125,8 @@ constexpr TypeHandlers::clone_fn_type get_type_handler_clone(type<T>)
 }
 
 template<typename T>
-constexpr TypeHandlers::save_fn_type get_type_handler_save(type<T>)
+constexpr TypeHandlers::save_fn_type get_type_handler_save(type<T>,
+    overload_priority_weakest)
 {
   return [](madara_oarchive &archive, const void *ptr) {
       const T &val = *static_cast<const T *>(ptr);
@@ -112,7 +135,8 @@ constexpr TypeHandlers::save_fn_type get_type_handler_save(type<T>)
 }
 
 template<typename T>
-constexpr TypeHandlers::load_fn_type get_type_handler_load(type<T>)
+constexpr TypeHandlers::load_fn_type get_type_handler_load(type<T>,
+    overload_priority_weakest)
 {
   return [](madara_iarchive &archive, void *ptr) {
       T &val = *static_cast<T *>(ptr);
@@ -122,7 +146,7 @@ constexpr TypeHandlers::load_fn_type get_type_handler_load(type<T>)
 
 template<typename T>
 constexpr TypeHandlers::save_polymorphic_fn_type
-  get_type_handler_save_polymorphic(type<T>)
+  get_type_handler_save_polymorphic(type<T>, overload_priority_weakest)
 {
   return [](polymorphic_oarchive &archive, const void *ptr) {
       const T &val = *static_cast<const T *>(ptr);
@@ -132,7 +156,7 @@ constexpr TypeHandlers::save_polymorphic_fn_type
 
 template<typename T>
 constexpr TypeHandlers::load_polymorphic_fn_type
-  get_type_handler_load_polymorphic(type<T>)
+  get_type_handler_load_polymorphic(type<T>, overload_priority_weakest)
 {
   return [](polymorphic_iarchive &archive, void *ptr) {
       T &val = *static_cast<T *>(ptr);
@@ -140,17 +164,113 @@ constexpr TypeHandlers::load_polymorphic_fn_type
     };
 }
 
+} // namespace knowledge
+
+MADARA_MAKE_VAL_SUPPORT_TEST(forEachField, x,
+    forEachField(::madara::ignore_all<>{}, x));
+
+template<typename Archive>
+struct do_serialize
+{
+  Archive *ar;
+
+  template<typename T>
+  void operator()(const char *, T &val)
+  {
+    *ar & val;
+  }
+};
+
+template<typename T>
+struct for_each_serialization_wrapper_type
+{
+  T *ptr;
+};
+
+template<typename T,
+  enable_if_<supports_forEachField<T>::value, int> = 0>
+constexpr knowledge::TypeHandlers::save_fn_type get_type_handler_save(type<T>,
+    overload_priority<8>)
+{
+  return [](knowledge::madara_oarchive &archive, const void *ptr) {
+      const T &val = *static_cast<const T *>(ptr);
+      for_each_serialization_wrapper_type<T> wrapper{const_cast<T *>(&val)};
+      archive << wrapper;
+    };
+}
+
+template<typename T,
+  enable_if_<supports_forEachField<T>::value, int> = 0>
+constexpr knowledge::TypeHandlers::load_fn_type get_type_handler_load(type<T>,
+    overload_priority<8>)
+{
+  return [](knowledge::madara_iarchive &archive, void *ptr) {
+      T &val = *static_cast<T *>(ptr);
+      for_each_serialization_wrapper_type<T> wrapper{&val};
+      archive >> wrapper;
+    };
+}
+
+template<typename T,
+  enable_if_<supports_forEachField<T>::value, int> = 0>
+constexpr knowledge::TypeHandlers::save_polymorphic_fn_type
+  get_type_handler_save_polymorphic(type<T>, overload_priority<8>)
+{
+  return [](knowledge::polymorphic_oarchive &archive, const void *ptr) {
+      const T &val = *static_cast<const T *>(ptr);
+      for_each_serialization_wrapper_type<T> wrapper{const_cast<T *>(&val)};
+      archive << wrapper;
+    };
+}
+
+template<typename T,
+  enable_if_<supports_forEachField<T>::value, int> = 0>
+constexpr knowledge::TypeHandlers::load_polymorphic_fn_type
+  get_type_handler_load_polymorphic(type<T>, overload_priority<8>)
+{
+  return [](knowledge::polymorphic_iarchive &archive, void *ptr) {
+      T &val = *static_cast<T *>(ptr);
+      for_each_serialization_wrapper_type<T> wrapper{&val};
+      archive >> wrapper;
+    };
+}
+
+namespace exceptions {
+  /**
+   * An exception for misuse of the Any class
+   **/
+  class BadAnyAccess : public MadaraException
+  {
+  public:
+    using MadaraException::MadaraException;
+
+    template<typename Got>
+    BadAnyAccess(type<Got>, knowledge::type_index expected)
+      : BadAnyAccess(std::string("Bad Any access: expected ") +
+#ifdef MADARA_USE_BOOST_TYPE_INDEX
+          expected.pretty_name() + ", got " +
+          knowledge::type_id<Got>().pretty_name()
+#else
+          expected.name() + ", got " +
+          knowledge::type_id<Got>().name()
+#endif
+          ) {}
+  };
+}
+
+namespace knowledge {
+
 template<typename T>
 inline const TypeHandlers &get_type_handler(type<T> t)
 {
   static const TypeHandlers handler = {
       type_id<T>(),
-      get_type_handler_destruct(t),
-      get_type_handler_clone(t),
-      get_type_handler_save(t),
-      get_type_handler_load(t),
-      get_type_handler_save_polymorphic(t),
-      get_type_handler_load_polymorphic(t),
+      get_type_handler_destruct(t, select_overload()),
+      get_type_handler_clone(t, select_overload()),
+      get_type_handler_save(type<T>{}, select_overload()),
+      get_type_handler_load(type<T>{}, select_overload()),
+      get_type_handler_save_polymorphic(t, select_overload()),
+      get_type_handler_load_polymorphic(t, select_overload()),
     };
   return handler;
 }
@@ -238,7 +358,7 @@ public:
   explicit Any(type<T> t, std::initializer_list<I> init)
     : Any(t, init.begin(), init.end()) {}
 
-  /// Store serialized data, for lazy deserialization by get() later
+  /// Store serialized data, for lazy deserialization by ref() later
   explicit Any(raw_data_t, const char *data, size_t size)
     : data_(raw_data_storage::make(data, size)) {}
 
@@ -370,7 +490,7 @@ public:
     const TypeHandlers &handler = get_type_handler(t);
     std::unique_ptr<T> ptr(new T{});
 
-    handler.load_polymorphic(archive, (void*)ptr.get());
+    handler.load_polymorphic(archive, (void*)ptr.ref());
 
     clear();
     data_ = reinterpret_cast<void*>(ptr.release());
@@ -403,10 +523,10 @@ public:
   /// Otherwise, check type_id<T> matches handler_->tindex; if so,
   /// return *data_ as T&, else throw exception
   template<typename T>
-  T &get(type<T> t)
+  T &ref(type<T> t)
   {
     if (!data_) {
-      throw exceptions::BadAnyAccess("get() called on empty Any");
+      throw exceptions::BadAnyAccess("ref() called on empty Any");
     } else if (!handler_) {
       raw_data_storage *sto = (raw_data_storage *)data_;
       unserialize(t, sto->data, sto->size);
@@ -417,15 +537,15 @@ public:
   }
 
   template<typename T>
-  T &get()
+  T &ref()
   {
-    return get(type<T>{});
+    return ref(type<T>{});
   }
 
   template<typename T>
   T take(type<T> t)
   {
-    T ret(std::move(get(t)));
+    T ret(std::move(ref(t)));
     clear();
     return ret;
   }
@@ -437,12 +557,12 @@ public:
   }
 
   template<typename T>
-  const T &get(type<T> t) const
+  const T &ref(type<T> t) const
   {
     if (!data_) {
-      throw exceptions::BadAnyAccess("get() called on empty Any");
+      throw exceptions::BadAnyAccess("ref() called on empty Any");
     } else if (!handler_) {
-      throw exceptions::BadAnyAccess("get() called on const Any with raw data");
+      throw exceptions::BadAnyAccess("ref() called on const Any with raw data");
     } else if (type_id<T>() != handler_->tindex) {
       throw exceptions::BadAnyAccess(t, handler_->tindex);
     }
@@ -450,21 +570,21 @@ public:
   }
 
   template<typename T>
-  const T &get() const
+  const T &ref() const
   {
-    return get(type<T>{});
+    return ref(type<T>{});
   }
 
   template<typename T>
-  const T &cget(type<T> t) const
+  const T &cref(type<T> t) const
   {
-    return get(t);
+    return ref(t);
   }
 
   template<typename T>
-  const T &cget() const
+  const T &cref() const
   {
-    return get(type<T>{});
+    return ref(type<T>{});
   }
 
   template<typename T, typename... Args>
@@ -518,14 +638,14 @@ public:
            std::forward<T>(t));
   }
 
-  /// Store serialized data, for lazy deserialization by get() later
+  /// Store serialized data, for lazy deserialization by ref() later
   void store_raw(const char *data, size_t size)
   {
     clear();
     data_ = raw_data_storage::make(data, size);
   }
 
-  /// Store serialized data, for lazy deserialization by get() later
+  /// Store serialized data, for lazy deserialization by ref() later
   void store(raw_data_t, const char *data, size_t size)
   {
     store_raw(data, size);
@@ -557,7 +677,7 @@ private:
   };
 
   template<typename T>
-  T *take_ptr(T *&in)
+  static T *take_ptr(T *&in)
   {
     T *ret = in;
     in = nullptr;
@@ -565,7 +685,7 @@ private:
   }
 
   template<typename T>
-  const T *take_ptr(const T *&in)
+  static const T *take_ptr(const T *&in)
   {
     const T *ret = in;
     in = nullptr;
@@ -574,4 +694,15 @@ private:
 };
 
 } } // namespace madara::knowledge
+
+namespace boost { namespace serialization {
+
+  template<typename Archive, typename T>
+  void serialize(Archive &ar,
+      ::madara::for_each_serialization_wrapper_type<T> &t, const unsigned int)
+  {
+    forEachField(::madara::do_serialize<Archive>{&ar}, *t.ptr);
+  }
+
+}}
 #endif  // MADARA_KNOWLEDGE_ANY_H_
