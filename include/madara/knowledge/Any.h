@@ -46,6 +46,7 @@
 #include "madara/utility/StdInt.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/IntTypes.h"
+#include "madara/exceptions/BadAnyAccess.h"
 
 namespace madara { namespace knowledge {
 
@@ -161,18 +162,6 @@ inline const TypeHandlers &get_type_handler()
 }
 
 constexpr struct raw_data_t {} raw_data;
-
-class BadAnyType : public std::runtime_error
-{
-public:
-  using std::runtime_error::runtime_error;
-
-  template<typename Got>
-  BadAnyType(type<Got>, type_index expected)
-    : std::runtime_error(std::string("Bad Any access: expected ") +
-        expected.pretty_name() + ", got " +
-        type_id<Got>().pretty_name()) {}
-};
 
 class Any
 {
@@ -417,12 +406,12 @@ public:
   T &get(type<T> t)
   {
     if (!data_) {
-      throw BadAnyType("get() called on empty Any");
+      throw exceptions::BadAnyAccess("get() called on empty Any");
     } else if (!handler_) {
       raw_data_storage *sto = (raw_data_storage *)data_;
       unserialize(t, sto->data, sto->size);
     } else if (type_id<T>() != handler_->tindex) {
-      throw BadAnyType(t, handler_->tindex);
+      throw exceptions::BadAnyAccess(t, handler_->tindex);
     }
     return get_unsafe(t);
   }
@@ -434,14 +423,28 @@ public:
   }
 
   template<typename T>
+  T take(type<T> t)
+  {
+    T ret(std::move(get(t)));
+    clear();
+    return ret;
+  }
+
+  template<typename T>
+  T take()
+  {
+    return take(type<T>{});
+  }
+
+  template<typename T>
   const T &get(type<T> t) const
   {
     if (!data_) {
-      throw BadAnyType("get() called on empty Any");
+      throw exceptions::BadAnyAccess("get() called on empty Any");
     } else if (!handler_) {
-      throw BadAnyType("get() called on const Any with raw data");
+      throw exceptions::BadAnyAccess("get() called on const Any with raw data");
     } else if (type_id<T>() != handler_->tindex) {
-      throw BadAnyType(t, handler_->tindex);
+      throw exceptions::BadAnyAccess(t, handler_->tindex);
     }
     return get_unsafe(t);
   }

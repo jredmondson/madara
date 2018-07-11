@@ -38,6 +38,27 @@ struct B
   }
 };
 
+struct Tracker
+{
+  int copied = 0;
+  int moved = 0;
+
+  Tracker() = default;
+  Tracker(const Tracker &t)
+    : copied(t.copied + 1), moved(t.moved) {}
+  Tracker(Tracker &&t)
+    : copied(t.copied), moved(t.moved + 1) {}
+
+  Tracker &operator=(const Tracker &) = delete;
+  Tracker &operator=(Tracker &&) = delete;
+
+  template<typename Archive>
+  void serialize(Archive &ar, unsigned int)
+  {
+    ar & copied & moved;
+  }
+};
+
 void test_any()
 {
   Any a0(123);
@@ -84,6 +105,11 @@ void test_any()
   Any acopy(a3);
   TEST_EQ(a3.get(type<std::string>{}), "zxcv");
   TEST_EQ(a3.get(type<std::string>{}), "zxcv");
+
+  Any at(type<Tracker>{});
+  Tracker t(at.take<Tracker>());
+  TEST_EQ(t.copied, 0);
+  TEST_LE(t.moved, 2);
 }
 
 void test_record()

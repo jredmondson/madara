@@ -1037,7 +1037,8 @@ namespace madara
         if (type_ == ANY) {
           return *any_value_;
         } else {
-          throw BadAnyType("Called get_any on KnowledgeRecord not containing "
+          throw exceptions::BadAnyAccess(
+              "Called get_any on KnowledgeRecord not containing "
               "an Any type");
         }
       }
@@ -1047,7 +1048,8 @@ namespace madara
         if (type_ == ANY) {
           return *any_value_;
         } else {
-          throw BadAnyType("Called get_any on KnowledgeRecord not containing "
+          throw exceptions::BadAnyAccess(
+              "Called get_any on KnowledgeRecord not containing "
               "an Any type");
         }
       }
@@ -1076,6 +1078,13 @@ namespace madara
         return get_any(tags::type<T>{});
       }
 
+      /**
+       * Gets a copy of the record's value as an Any type. If this record
+       * holds an Any, a direct copy is returned. Otherwise, the record's
+       * value will be copied into a new Any, and returned.
+       *
+       * @return the new Any
+       **/
       Any to_any() const
       {
         if (type_ == ANY) {
@@ -1095,6 +1104,36 @@ namespace madara
         } else {
           return {};
         }
+      }
+
+      /**
+       * Gets a copy of the record's value, as the type given. The record's
+       * value will be put into an Any if not already, then accessed and 
+       * returned with Any::get.
+       *
+       * Will throw BadAnyAccess if type given doesn't match record's value.
+       *
+       * @return a value of the type requested.
+       **/
+      template<typename T>
+      T to_any(tags::type<T> t) const
+      {
+        return to_any().take(t);
+      }
+
+      /**
+       * Gets a copy of the record's value, as the type given. The record's
+       * value will be put into an Any if not already, then accessed and 
+       * returned with Any::get.
+       *
+       * Will throw BadAnyAccess if type given doesn't match record's value.
+       *
+       * @return a value of the type requested.
+       **/
+      template<typename T>
+      T to_any() const
+      {
+        return to_any(tags::type<T>{});
       }
 
       /**

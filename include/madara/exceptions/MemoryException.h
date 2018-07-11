@@ -5,6 +5,8 @@
 #include <string>
 #include <stdexcept>
 
+#include "MadaraException.h"
+
 namespace madara
 {
   namespace exceptions
@@ -12,17 +14,10 @@ namespace madara
     /**
      * An exception for general memory errors like out-of-memory
      **/
-    class MemoryException : public std::runtime_error
+    class MemoryException : public MadaraException
     {
     public:
-      /**
-       * Constructor
-       **/
-      explicit MemoryException (const std::string & what)
-      : std::runtime_error (what)
-      {
-
-      }
+      using MadaraException::MadaraException;
     };
   }
 }

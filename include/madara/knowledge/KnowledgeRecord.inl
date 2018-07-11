@@ -1662,9 +1662,16 @@ KnowledgeRecord::write (char * buffer,
         size_intermediate = any_value_->serialize(buffer, buffer_remaining);
       } catch (const std::exception &e) {
         // TODO catch more specific exception for this
-        madara_logger_ptr_log (logger_, logger::LOG_ERROR, "KnowledgeRecord::write:" \
-          " insufficient buffer for Any type\n");
-        throw std::runtime_error("TODO replace with madara exception");
+
+        std::stringstream buffer;
+        buffer << "KnowledgeRecord::write: ";
+        buffer << "Any encoding cannot fit in ";
+        buffer << buffer_remaining << " byte buffer\n";
+
+        madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+          buffer.str ().c_str ());
+
+        throw exceptions::MemoryException (buffer.str ());
       }
     }
 
