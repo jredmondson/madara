@@ -66,6 +66,7 @@ namespace madara
       * @param     buffer_remaining  the count of bytes remaining in the
       *                              buffer to read
       * @return    current buffer position for next read
+       * @throw exceptions::MemoryException  not enough buffer to encode
       **/
       virtual const char * read (const char * buffer,
         int64_t & buffer_remaining);
@@ -77,6 +78,7 @@ namespace madara
       * @param     buffer_remaining  the count of bytes remaining in the
       *                              buffer to read
       * @return    current buffer position for next write
+       * @throw exceptions::MemoryException  not enough buffer to encode
       **/
       virtual char * write (char * buffer, int64_t & buffer_remaining);
 
