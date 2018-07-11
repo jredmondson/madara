@@ -518,18 +518,28 @@ void define_knowledge (void)
      "Resets the record to an UNCREATED status (faster than clear_value)")
 
      // sets the contents of the record to a jpeg
-     .def ("set_jpeg", &madara::knowledge::KnowledgeRecord::set_jpeg,
+     .def ("set_jpeg",
+     static_cast<
+     void (madara::knowledge::KnowledgeRecord::*)(
+     const unsigned char * new_value, size_t size
+     )
+     > (&madara::knowledge::KnowledgeRecord::set_jpeg),
      "Sets the value to a jpeg")
 
      // sets the contents of the record to a file
-     .def ("set_file", &madara::knowledge::KnowledgeRecord::set_file,
+     .def ("set_file", 
+     static_cast<
+     void (madara::knowledge::KnowledgeRecord::*)(
+     const unsigned char * new_value, size_t size
+     )
+     > (&madara::knowledge::KnowledgeRecord::set_file),
      "Sets the value to a file's contents")
 
      // sets a knowledge record to a double
      .def ("set",
      static_cast<
      void (madara::knowledge::KnowledgeRecord::*)(
-     const double &
+     double
      )
      > (&madara::knowledge::KnowledgeRecord::set_value),
      "Sets the value to a double")
@@ -547,7 +557,7 @@ void define_knowledge (void)
      .def ("set",
      static_cast<
      void (madara::knowledge::KnowledgeRecord::*)(
-     const madara::knowledge::KnowledgeRecord::Integer &
+       int
      )
      > (&madara::knowledge::KnowledgeRecord::set_value),
      "Sets the value to an integer")
@@ -696,20 +706,20 @@ void define_knowledge (void)
   .def (self + self)
   .def (self - self)
 
-  .def ("operator=", &madara::knowledge::KnowledgeRecord::operator=,
-  "Assigns the value of one record to another",
-  return_value_policy<reference_existing_object> ())
+  // because of the templated nature of KnowledgeRecord::operator=, I could not
+  // figure this out
+  // .def ("operator=", 
+  // static_cast<madara::knowledge::KnowledgeRecord (
+  // madara::knowledge::KnowledgeRecord::*)(
+  // int &&)> (
+  // &madara::knowledge::KnowledgeRecord::operator=),
+  // "Assigns an int to the record",
+  // return_value_policy<reference_existing_object> ())
 
   .def ("operator==",
   static_cast<bool (
   madara::knowledge::KnowledgeRecord::*)(
   const madara::knowledge::KnowledgeRecord &) const> (
-  &madara::knowledge::KnowledgeRecord::operator==),
-  "Compares two records for equality")
-
-  .def ("operator==",
-  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(
-  madara::knowledge::KnowledgeRecord::Integer) const> (
   &madara::knowledge::KnowledgeRecord::operator==),
   "Compares two records for equality")
 
@@ -1104,7 +1114,10 @@ void define_knowledge (void)
           
     // expands and prints a statement
     .def ("save_context",
-      &madara::knowledge::KnowledgeBase::save_context,
+      static_cast<int64_t
+        (madara::knowledge::KnowledgeBase::*)(
+          const std::string &) const
+      > (&madara::knowledge::KnowledgeBase::save_context),
         "Saves the context to a file")
           
     // Sends all modified variables through the attached transports
@@ -1179,30 +1192,30 @@ void define_knowledge (void)
         "Sets a knowledge record to a string"))
         
     // sets an array index to an integer
-    .def( "set_index",
-      static_cast<
-        int (madara::knowledge::KnowledgeBase::*)(
-          const std::string &,
-          size_t,
-          madara::knowledge::KnowledgeRecord::Integer,
-          const madara::knowledge::EvalSettings &)
-      > (&madara::knowledge::KnowledgeBase::set_index),
-      m_set_index_2_of_3 (
-        args("key", "value", "settings"),
-        "Sets an array index to an integer"))
+    // .def( "set_index",
+    //   static_cast<
+    //     int (madara::knowledge::KnowledgeBase::*)(
+    //       const std::string &,
+    //       size_t,
+    //       madara::knowledge::KnowledgeRecord::Integer,
+    //       const madara::knowledge::EvalSettings &)
+    //   > (&madara::knowledge::KnowledgeBase::set_index),
+    //   m_set_index_2_of_3 (
+    //     args("key", "value", "settings"),
+    //     "Sets an array index to an integer"))
         
     // sets an array index to a double
-    .def( "set_index",
-      static_cast<
-        int (madara::knowledge::KnowledgeBase::*)(
-          const std::string &,
-          size_t,
-          double,
-          const madara::knowledge::EvalSettings &)
-      > (&madara::knowledge::KnowledgeBase::set_index),
-      m_set_index_2_of_3 (
-        args("key", "value", "settings"),
-        "Sets an array index to a double"))
+    // .def( "set_index",
+    //   static_cast<
+    //     int (madara::knowledge::KnowledgeBase::*)(
+    //       const std::string &,
+    //       size_t,
+    //       double,
+    //       const madara::knowledge::EvalSettings &)
+    //   > (&madara::knowledge::KnowledgeBase::set_index),
+    //   m_set_index_2_of_3 (
+    //     args("key", "value", "settings"),
+    //     "Sets an array index to a double"))
             
     // unlocks the knowledge base
     .def ("unlock",
