@@ -9,8 +9,12 @@
  **/
 
 #include <memory>
+#include <sstream>
 #include <type_traits>
 
+#define MADARA_USE_CEREAL
+
+#ifndef MADARA_USE_CEREAL
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/polymorphic_oarchive.hpp>
@@ -35,6 +39,30 @@
 #include <boost/serialization/unordered_set.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/base_object.hpp>
+#else
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wexceptions"
+#pragma GCC diagnostic ignored "-Wunused-private-field"
+#endif
+#include "cereal/archives/portable_binary.hpp"
+#include "cereal/archives/json.hpp"
+#include "cereal/types/array.hpp"
+#include "cereal/types/vector.hpp"
+#include "cereal/types/stack.hpp"
+#include "cereal/types/queue.hpp"
+#include "cereal/types/deque.hpp"
+#include "cereal/types/list.hpp"
+#include "cereal/types/map.hpp"
+#include "cereal/types/set.hpp"
+#include "cereal/types/bitset.hpp"
+#include "cereal/types/unordered_map.hpp"
+#include "cereal/types/unordered_set.hpp"
+#include "cereal/types/string.hpp"
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif // __GNUC__
+#endif
 
 #include <boost/version.hpp>
 #if BOOST_VERSION > 105600 && !defined(MADARA_NO_BOOST_TYPE_INDEX)
@@ -60,11 +88,19 @@
 
 namespace madara { namespace knowledge {
 
+#ifndef MADARA_USE_CEREAL
 using madara_oarchive = boost::archive::binary_oarchive;
 using madara_iarchive = boost::archive::binary_iarchive;
 
 using boost::archive::polymorphic_oarchive;
 using boost::archive::polymorphic_iarchive;
+#else
+using madara_oarchive = cereal::PortableBinaryOutputArchive;
+using madara_iarchive = cereal::PortableBinaryInputArchive;
+
+using polymorphic_oarchive = cereal::JSONOutputArchive;
+using polymorphic_iarchive = cereal::JSONInputArchive;
+#endif
 
 #ifdef MADARA_USE_BOOST_TYPE_INDEX
 using type_index = boost::typeindex::type_index;
@@ -193,9 +229,14 @@ struct do_serialize
   Archive *ar;
 
   template<typename T>
-  void operator()(const char *, T &val)
+  void operator()(const char *name, T &val)
   {
+#ifndef MADARA_USE_CEREAL
     *ar & val;
+    (void)name;
+#else
+    (*ar)(cereal::make_nvp(name, val));
+#endif
   }
 };
 
@@ -778,7 +819,7 @@ public:
   template<typename T>
   T &set(T &&t)
   {
-    return set(type<decay_<T>>{},
+    return emplace(type<decay_<T>>{},
            std::forward<T>(t));
   }
 
@@ -873,7 +914,11 @@ public:
     bio::array_sink output_sink(data, size);
     bio::stream<bio::array_sink> output_stream(output_sink);
 
-    return serialize(output_stream);
+    auto pos = output_stream.tellp();
+    serialize(output_stream);
+    auto len = output_stream.tellp() - pos;
+
+    return len;
   }
 
   /**
@@ -891,24 +936,21 @@ public:
     auto output_sink = bio::back_inserter(vec);
     bio::stream<decltype(output_sink)> output_stream(output_sink);
 
-    return serialize(output_stream);
+    serialize(output_stream);
+
+    return vec.size();
   }
 
   /**
    * Serialize this Any to the given output stream.
    *
    * @param stream the output stream to serialize to
-   * @return the actual number of bytes used during serialization
    **/
-  size_t serialize(std::ostream &stream) const
+  void serialize(std::ostream &stream) const
   {
     madara_oarchive archive(stream);
 
-    auto pos = stream.tellp();
     serialize(archive);
-    auto len = stream.tellp() - pos;
-
-    return len;
   }
 
   /**
@@ -922,7 +964,11 @@ public:
       handler_->save(archive, data_);
     } else {
       raw_data_storage *sto = (raw_data_storage *)data_;
+#ifndef MADARA_USE_CEREAL
       archive.save_binary(sto->data, sto->size);
+#else
+      archive.saveBinary<1>(sto->data, sto->size);
+#endif
     }
   }
 
@@ -938,8 +984,20 @@ public:
       handler_->save_polymorphic(archive, data_);
     } else {
       raw_data_storage *sto = (raw_data_storage *)data_;
+#ifndef MADARA_USE_CEREAL
       archive.save_binary(sto->data, sto->size);
+#else
+      archive.saveBinaryValue(sto->data, sto->size);
+#endif
     }
+  }
+
+  std::string to_json() const
+  {
+    std::ostringstream stream;
+    cereal::JSONOutputArchive json(stream);
+    serialize(json);
+    return stream.str();
   }
 
   /**
@@ -955,7 +1013,11 @@ public:
     bio::array_source input_source(data, size);
     bio::stream<bio::array_source> input_stream(input_source);
 
-    return unserialize(t, input_stream);
+    auto pos = input_stream.tellg();
+    unserialize(t, input_stream);
+    auto len = input_stream.tellg() - pos;
+
+    return len;
   }
 
   /**
@@ -975,15 +1037,11 @@ public:
    * exception is throw during unserialization, this Any will not be modified.
    **/
   template<typename T>
-  size_t unserialize(type<T> t, std::istream &stream)
+  void unserialize(type<T> t, std::istream &stream)
   {
     madara_iarchive archive(stream);
 
-    auto pos = stream.tellg();
     unserialize(t, archive);
-    auto len = stream.tellg() - pos;
-
-    return len;
   }
 
   /**
@@ -992,9 +1050,9 @@ public:
    * exception is throw during unserialization, this Any will not be modified.
    **/
   template<typename T>
-  size_t unserialize(std::istream &stream)
+  void unserialize(std::istream &stream)
   {
-    return unserialize(type<T>{}, stream);
+    unserialize(type<T>{}, stream);
   }
 
   /**

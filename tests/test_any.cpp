@@ -84,7 +84,7 @@ void test_any()
   std::vector<char> buf;
 
   a0.serialize(buf);
-  a0.store(0);
+  a0.set(0);
   TEST_EQ(a0.ref<int>(), 0);
 
   a0.unserialize<int>(buf.data(), buf.size());
@@ -93,7 +93,7 @@ void test_any()
   a1.unserialize<short>(buf.data(), buf.size());
   TEST_EQ(a1.ref<short>(), 123);
 
-  a0.store(A{2, 5, 9});
+  a0.set(A{2, 5, 9});
   a0.serialize(buf);
   a0.unserialize<A>(buf.data(), buf.size());
   TEST_EQ(a0.ref<A>().b, 5);
@@ -101,8 +101,10 @@ void test_any()
   a0.unserialize<ns::B>(buf.data(), buf.size());
   TEST_EQ(a0.ref<ns::B>().f, 9);
 
-  a0.store(std::string("asdf"));
-  a1.store<std::string>("zxcv");
+  VAL(a0.to_json());
+
+  a0.set(std::string("asdf"));
+  a1.set<std::string>("zxcv");
 
   TEST_EQ(a0.ref<std::string>(), "asdf");
   TEST_EQ(a1.ref<std::string>(), "zxcv");
@@ -138,7 +140,7 @@ void test_record()
   TEST_EQ(k1.get_any_cref<std::string>(), "hello");
   TEST_EQ(a0.empty(), true);
 
-  k1.set_any(std::array<double, 3>{5, 10, 15});
+  k1.set_any(std::array<double, 3>{{5, 10, 15}});
   TEST_EQ((k1.get_any_cref<std::array<double, 3>>()[1]), 10);
 }
 
@@ -159,6 +161,9 @@ void test_map(T &kb)
 
   auto a1 = kb.take_any("asdf");
   TEST_EQ(a1->template ref<std::vector<std::string>>()[0], "a");
+
+  VAL(a1->to_json());
+
   TEST_EQ(kb.exists("asdf"), false);
 
   kb.clear();

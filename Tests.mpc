@@ -1405,3 +1405,20 @@ project (Test_Simtime) : using_madara, no_karl, no_xml, null_lock, using_simtime
     tests/test_simtime.cpp
   }
 }
+
+project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_any
+  
+  Documentation_Files {
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_any.cpp
+  }
+}

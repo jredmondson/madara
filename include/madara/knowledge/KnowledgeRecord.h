@@ -458,12 +458,23 @@ namespace madara
         emplace_binary(std::forward<Args>(args)...);
       }
 
+      /**
+       * Construct an Any within this KnowledgeRecord
+       *
+       * @params args arguments forwarded to the Any constructor
+       **/
       template<typename... Args>
       void emplace_any(Args&&... args) {
         emplace_val<Any, ANY, &KnowledgeRecord::any_value_> (
             std::forward<Args>(args)...);
       }
 
+      /**
+       * Construct an Any within this KnowledgeRecord.
+       *
+       * @params args arguments forwarded to the Any constructor. The type
+       *           given will be forwarded as tags::type<T> automatically.
+       **/
       template<typename T, typename... Args>
       void emplace(tags::any<T>, Args&&... args) {
         emplace_any(tags::type<T>{}, std::forward<Args>(args)...);
@@ -1001,18 +1012,11 @@ namespace madara
        **/
       void set_file (std::shared_ptr<std::vector <unsigned char>> new_value);
 
-      template<typename T, typename U>
-      void set_any(tags::type<T>, U &&u)
-      {
-        return emplace(tags::any<T>{}, std::forward<U>(u));
-      }
-
-      template<typename T, typename U>
-      void set_any(U &&u)
-      {
-        return set_any(tags::type<T>{}, std::forward<U>(u));
-      }
-
+      /**
+       * Set to Any from any compatible type. The argument will be moved into
+       * this Any if it supports it, and the argument is an rvalue reference.
+       * Otherwise, it will be copied.
+       **/
       template<typename T>
       void set_any(T &&t)
       {
@@ -1020,18 +1024,27 @@ namespace madara
                std::forward<T>(t));
       }
 
-      /// Store serialized data, for lazy deserialization by get_any() later
+      /**
+       * Set to Any with raw data, for lazy deserialization when first needed.
+       *
+       * Note that this lazy deserialization is not fully type-safe, and might
+       * not throw an exception if the wrong type is used. The result may be
+       * garbled data, but shouldn't segfault or trample other data.
+       *
+       * @param data a pointer to the serialized data to copy into this Any
+       * @param size the amount of data to copy
+       **/
       void set_raw_any(const char *data, size_t size)
       {
         return emplace_any(raw_data, data, size);
       }
 
-      /// Store serialized data, for lazy deserialization by get_any() later
-      void set_raw_any(raw_data_t, const char *data, size_t size)
-      {
-        set_raw_any(data, size);
-      }
-
+      /**
+       * Get a reference to the stored Any.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       *
+       * @return a reference to the stored Any
+       **/
       Any &get_any_ref()
       {
         if (type_ == ANY) {
@@ -1043,6 +1056,12 @@ namespace madara
         }
       }
 
+      /**
+       * Get a const reference to the stored Any.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       *
+       * @return a const reference to the stored Any
+       **/
       const Any &get_any_ref() const
       {
         if (type_ == ANY) {
@@ -1054,41 +1073,123 @@ namespace madara
         }
       }
 
+      /**
+       * Get a const reference to the stored Any.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       *
+       * @return a const reference to the stored Any
+       **/
       const Any &get_any_cref() const
       {
         return get_any_ref();
       }
 
+      /**
+       * Access an Any value's stored value by reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() is true, throw BadAnyAccess exception; else,
+       * If raw() is true, try to deserialize using T, and store deserialized
+       * data if successful, else throw BadAnyAccess exception.
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return *data_ as T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
       template<typename T>
       T &get_any_ref(tags::type<T> t)
       {
         return get_any_ref().ref(t);
       }
 
+      /**
+       * Access an Any value's stored value by reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() is true, throw BadAnyAccess exception; else,
+       * If raw() is true, try to deserialize using T, and store deserialized
+       * data if successful, else throw BadAnyAccess exception.
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return *data_ as T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
       template<typename T>
       T &get_any_ref()
       {
         return get_any_ref(tags::type<T>{});
       }
 
+      /**
+       * Access the Any's stored value by const reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() or raw() is true, throw BadAnyAccess exception; else,
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return the stored data as const T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
       template<typename T>
       const T &get_any_ref(tags::type<T> t) const
       {
         return get_any_cref().cref(t);
       }
 
+      /**
+       * Access the Any's stored value by const reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() or raw() is true, throw BadAnyAccess exception; else,
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return the stored data as const T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
       template<typename T>
       const T &get_any_ref() const
       {
         return get_any_cref(tags::type<T>{});
       }
 
+      /**
+       * Access the Any's stored value by const reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() or raw() is true, throw BadAnyAccess exception; else,
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return the stored data as const T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
       template<typename T>
       const T &get_any_cref(tags::type<T> t) const
       {
         return get_any_ref(t);
       }
 
+      /**
+       * Access the Any's stored value by const reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() or raw() is true, throw BadAnyAccess exception; else,
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return the stored data as const T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
       template<typename T>
       const T &get_any_cref() const
       {
