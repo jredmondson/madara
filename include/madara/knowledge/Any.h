@@ -258,6 +258,9 @@ struct for_each_serialization_wrapper_type
 
 } // namespace knowledge
 
+namespace utility { inline namespace core {
+// Must define below in same namespace as type<> struct for ADL
+
 /// Specialization of get_type_handler_save to support types which provide
 /// an ADL-visible forEachField
 template<typename T,
@@ -313,6 +316,8 @@ constexpr knowledge::TypeHandlers::load_polymorphic_fn_type
       archive >> wrapper;
     };
 }
+
+} } // namespace utility::core
 
 namespace exceptions {
   /**

@@ -43,7 +43,9 @@ struct supports_##name##_impl { \
 }; \
 template <typename T> struct supports_##name : supports_##name##_impl<T>::type {}
 
-namespace madara {
+namespace madara { namespace utility {
+
+inline namespace core {
 
 /// helper type for specifying template type parameters using a function
 /// argument instead of inside explicit "<...>". This interacts more flexibly
@@ -104,6 +106,12 @@ using overload_priority_weakest = overload_priority<16>;
 using overload_priority_strongest = overload_priority<0>;
 
 inline overload_priority_strongest select_overload() { return {}; }
+
+}
+
+}
+
+using namespace utility::core;
 
 }
 

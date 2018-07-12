@@ -1020,7 +1020,7 @@ namespace madara
       template<typename T>
       void set_any(T &&t)
       {
-        return set_any(tags::type<decay_<T>>{},
+        return emplace_any(tags::type<decay_<T>>{},
                std::forward<T>(t));
       }
 
