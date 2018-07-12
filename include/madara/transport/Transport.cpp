@@ -521,7 +521,8 @@ process_received_update (
     {
       madara_logger_log (context.get_logger (), logger::LOG_MINOR,
         "%s:" \
-        " Applying receive filter to %s\n", print_prefix, key.c_str ());
+        " Applying receive filter to %s = %s\n", print_prefix, key.c_str (),
+          record.to_string().c_str());
 
       record = settings.filter_receive (record, key, transport_context);
 

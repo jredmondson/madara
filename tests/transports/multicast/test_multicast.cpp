@@ -118,6 +118,7 @@ int main (int argc, char ** argv)
 {
   settings.hosts.resize (1);
   settings.hosts[0] = default_multicast;
+  settings.read_thread_hertz = 1;
   handle_arguments (argc, argv);
   
 #ifndef _MADARA_NO_KARL_
@@ -127,7 +128,9 @@ int main (int argc, char ** argv)
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id", settings.id);
+
+  using strvec = std::vector<std::string>;
 
   if (settings.id == 0)
   {
@@ -135,15 +138,34 @@ int main (int argc, char ** argv)
       knowledge.compile (
         "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3"
       );
+    do {
+      knowledge.set_any ("test_any_0", strvec{"e", "f", "g"},
+          madara::knowledge::EvalSettings::DELAY);
 
-    knowledge.wait (compiled, wait_settings);
+      //knowledge.wait (compiled, wait_settings);
+      madara::utility::sleep(1);
+    } while (!knowledge.evaluate (compiled, wait_settings));
+    size_t asize = knowledge.get("test_any").get_any_ref<strvec>().size();
+    if (asize != 4) {
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ERROR,
+        "Expected 4 long test_any_0, got %d.\n", asize);
+    }
   }
   else
   {
     madara::knowledge::CompiledExpression compiled = 
       knowledge.compile ("!var1 && var2 => var3 = 1");
-
-    knowledge.wait (compiled, wait_settings);
+    do {
+      knowledge.set_any ("test_any", strvec{"a", "b", "c", "d"},
+          madara::knowledge::EvalSettings::DELAY);
+      madara::utility::sleep(1);
+    } while (!knowledge.evaluate (compiled, wait_settings));
+    //knowledge.wait (compiled, wait_settings);
+    size_t asize = knowledge.get("test_any_0").get_any_ref<strvec>().size();
+    if (asize != 3) {
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ERROR,
+        "Expected 3 long test_any_0, got %d.\n", asize);
+    }
   }
 
   knowledge.evaluate (".updates_required = #get_clock ()");

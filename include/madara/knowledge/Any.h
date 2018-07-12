@@ -12,34 +12,6 @@
 #include <sstream>
 #include <type_traits>
 
-#define MADARA_USE_CEREAL
-
-#ifndef MADARA_USE_CEREAL
-#include <boost/archive/binary_oarchive.hpp>
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/polymorphic_oarchive.hpp>
-#include <boost/archive/polymorphic_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-
-#include <boost/serialization/serialization.hpp>
-#include <boost/serialization/array.hpp>
-#include <boost/serialization/shared_ptr.hpp>
-#include <boost/serialization/weak_ptr.hpp>
-#include <boost/serialization/unique_ptr.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/stack.hpp>
-#include <boost/serialization/queue.hpp>
-#include <boost/serialization/deque.hpp>
-#include <boost/serialization/list.hpp>
-#include <boost/serialization/map.hpp>
-#include <boost/serialization/set.hpp>
-#include <boost/serialization/bitset.hpp>
-#include <boost/serialization/unordered_map.hpp>
-#include <boost/serialization/unordered_set.hpp>
-#include <boost/serialization/string.hpp>
-#include <boost/serialization/base_object.hpp>
-#else
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wexceptions"
@@ -62,7 +34,6 @@
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif // __GNUC__
-#endif
 
 #include <boost/version.hpp>
 #if BOOST_VERSION > 105600 && !defined(MADARA_NO_BOOST_TYPE_INDEX)
@@ -88,19 +59,11 @@
 
 namespace madara { namespace knowledge {
 
-#ifndef MADARA_USE_CEREAL
-using madara_oarchive = boost::archive::binary_oarchive;
-using madara_iarchive = boost::archive::binary_iarchive;
-
-using boost::archive::polymorphic_oarchive;
-using boost::archive::polymorphic_iarchive;
-#else
 using madara_oarchive = cereal::PortableBinaryOutputArchive;
 using madara_iarchive = cereal::PortableBinaryInputArchive;
 
-using polymorphic_oarchive = cereal::JSONOutputArchive;
-using polymorphic_iarchive = cereal::JSONInputArchive;
-#endif
+using json_oarchive = cereal::JSONOutputArchive;
+using json_iarchive = cereal::JSONInputArchive;
 
 #ifdef MADARA_USE_BOOST_TYPE_INDEX
 using type_index = boost::typeindex::type_index;
@@ -132,11 +95,11 @@ struct TypeHandlers
   typedef void (*load_fn_type)(madara_iarchive &, void *);
   load_fn_type load;
 
-  typedef void (*save_polymorphic_fn_type)(polymorphic_oarchive &, const void *);
-  save_polymorphic_fn_type save_polymorphic;
+  typedef void (*save_json_fn_type)(json_oarchive &, const void *);
+  save_json_fn_type save_json;
 
-  typedef void (*load_polymorphic_fn_type)(polymorphic_iarchive &, void *);
-  load_polymorphic_fn_type load_polymorphic;
+  typedef void (*load_json_fn_type)(json_iarchive &, void *);
+  load_json_fn_type load_json;
 };
 
 /// Creates a function for deleting the given type. By default, simply call
@@ -191,27 +154,27 @@ constexpr TypeHandlers::load_fn_type get_type_handler_load(type<T>,
     };
 }
 
-/// Creates a function for serializing the given type to a polymorphic_oarchive.
+/// Creates a function for serializing the given type to a json_oarchive.
 /// By default, simply use the Boost.Serialization << operator.
 /// Specialize this function to customize otherwise.
 template<typename T>
-constexpr TypeHandlers::save_polymorphic_fn_type
-  get_type_handler_save_polymorphic(type<T>, overload_priority_weakest)
+constexpr TypeHandlers::save_json_fn_type
+  get_type_handler_save_json(type<T>, overload_priority_weakest)
 {
-  return [](polymorphic_oarchive &archive, const void *ptr) {
+  return [](json_oarchive &archive, const void *ptr) {
       const T &val = *static_cast<const T *>(ptr);
       archive << val;
     };
 }
 
-/// Creates a function for unserializing the given type to a polymorphic_iarchive.
+/// Creates a function for unserializing the given type to a json_iarchive.
 /// By default, simply use the Boost.Serialization >> operator.
 /// Specialize this function to customize otherwise.
 template<typename T>
-constexpr TypeHandlers::load_polymorphic_fn_type
-  get_type_handler_load_polymorphic(type<T>, overload_priority_weakest)
+constexpr TypeHandlers::load_json_fn_type
+  get_type_handler_load_json(type<T>, overload_priority_weakest)
 {
-  return [](polymorphic_iarchive &archive, void *ptr) {
+  return [](json_iarchive &archive, void *ptr) {
       T &val = *static_cast<T *>(ptr);
       archive >> val;
     };
@@ -231,12 +194,7 @@ struct do_serialize
   template<typename T>
   void operator()(const char *name, T &val)
   {
-#ifndef MADARA_USE_CEREAL
-    *ar & val;
-    (void)name;
-#else
     (*ar)(cereal::make_nvp(name, val));
-#endif
   }
 };
 
@@ -289,28 +247,28 @@ constexpr knowledge::TypeHandlers::load_fn_type get_type_handler_load(type<T>,
     };
 }
 
-/// Specialization of get_type_handler_save_polymorphic to support types which
+/// Specialization of get_type_handler_save_json to support types which
 /// provide an ADL-visible forEachField
 template<typename T,
   enable_if_<knowledge::supports_forEachField<T>::value, int> = 0>
-constexpr knowledge::TypeHandlers::save_polymorphic_fn_type
-  get_type_handler_save_polymorphic(type<T>, overload_priority<8>)
+constexpr knowledge::TypeHandlers::save_json_fn_type
+  get_type_handler_save_json(type<T>, overload_priority<8>)
 {
-  return [](knowledge::polymorphic_oarchive &archive, const void *ptr) {
+  return [](knowledge::json_oarchive &archive, const void *ptr) {
       const T &val = *static_cast<const T *>(ptr);
       knowledge::for_each_serialization_wrapper_type<T> wrapper{const_cast<T *>(&val)};
       archive << wrapper;
     };
 }
 
-/// Specialization of get_type_handler_load_polymorphic to support types which
+/// Specialization of get_type_handler_load_json to support types which
 /// provide an ADL-visible forEachField
 template<typename T,
   enable_if_<knowledge::supports_forEachField<T>::value, int> = 0>
-constexpr knowledge::TypeHandlers::load_polymorphic_fn_type
-  get_type_handler_load_polymorphic(type<T>, overload_priority<8>)
+constexpr knowledge::TypeHandlers::load_json_fn_type
+  get_type_handler_load_json(type<T>, overload_priority<8>)
 {
-  return [](knowledge::polymorphic_iarchive &archive, void *ptr) {
+  return [](knowledge::json_iarchive &archive, void *ptr) {
       T &val = *static_cast<T *>(ptr);
       knowledge::for_each_serialization_wrapper_type<T> wrapper{&val};
       archive >> wrapper;
@@ -354,8 +312,8 @@ inline const TypeHandlers &get_type_handler(type<T> t)
       get_type_handler_clone(t, select_overload()),
       get_type_handler_save(type<T>{}, select_overload()),
       get_type_handler_load(type<T>{}, select_overload()),
-      get_type_handler_save_polymorphic(t, select_overload()),
-      get_type_handler_load_polymorphic(t, select_overload()),
+      get_type_handler_save_json(t, select_overload()),
+      get_type_handler_load_json(t, select_overload()),
     };
   return handler;
 }
@@ -969,11 +927,7 @@ public:
       handler_->save(archive, data_);
     } else {
       raw_data_storage *sto = (raw_data_storage *)data_;
-#ifndef MADARA_USE_CEREAL
-      archive.save_binary(sto->data, sto->size);
-#else
       archive.saveBinary<1>(sto->data, sto->size);
-#endif
     }
   }
 
@@ -983,25 +937,24 @@ public:
    *
    * @param stream the output archive to serialize to
    **/
-  void serialize(polymorphic_oarchive &archive) const
+  void serialize(json_oarchive &archive) const
   {
     if (handler_) {
-      handler_->save_polymorphic(archive, data_);
+      handler_->save_json(archive, data_);
     } else {
       raw_data_storage *sto = (raw_data_storage *)data_;
-#ifndef MADARA_USE_CEREAL
-      archive.save_binary(sto->data, sto->size);
-#else
       archive.saveBinaryValue(sto->data, sto->size);
-#endif
     }
   }
 
   std::string to_json() const
   {
     std::ostringstream stream;
-    cereal::JSONOutputArchive json(stream);
-    serialize(json);
+    {
+      cereal::JSONOutputArchive json(stream);
+      json.makeArray();
+      serialize(json);
+    }
     return stream.str();
   }
 
@@ -1095,12 +1048,12 @@ public:
    * exception is throw during unserialization, this Any will not be modified.
    **/
   template<typename T>
-  void unserialize(type<T> t, polymorphic_iarchive &archive)
+  void unserialize(type<T> t, json_iarchive &archive)
   {
     const TypeHandlers &handler = get_type_handler(t);
     std::unique_ptr<T> ptr(new T{});
 
-    handler.load_polymorphic(archive, (void*)ptr.get());
+    handler.load_json(archive, (void*)ptr.get());
 
     clear();
     data_ = reinterpret_cast<void*>(ptr.release());
@@ -1113,7 +1066,7 @@ public:
    * exception is throw during unserialization, this Any will not be modified.
    **/
   template<typename T>
-  void unserialize(polymorphic_iarchive &archive)
+  void unserialize(json_iarchive &archive)
   {
     unserialize(type<T>{}, archive);
   }

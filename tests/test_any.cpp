@@ -34,16 +34,8 @@ namespace ns
     double f;
   };
 
-  template<typename Fun>
-  void forEachField(Fun fun, B &val)
-  {
-    fun("d", val.d);
-    fun("e", val.e);
-    fun("f", val.f);
-  }
-
-  template<typename Fun>
-  void forEachField(Fun fun, const B &val)
+  template<typename Fun, typename T>
+  auto forEachField(Fun fun, T&& val) -> enable_if_same_decayed<T, B>
   {
     fun("d", val.d);
     fun("e", val.e);
@@ -74,7 +66,7 @@ struct Tracker
 
 void test_any()
 {
-  //static_assert(supports_forEachField<ns::B>::value, "B must support forEachField");
+  static_assert(supports_forEachField<ns::B>::value, "B must support forEachField");
   Any a0(123);
   Any a1(type<int>{}, 456);
 
@@ -147,7 +139,7 @@ void test_record()
 template<typename T>
 void test_map(T &kb)
 {
-  //kb.set ("hello", "world");
+  kb.set ("hello_str", "world");
   kb.set_any("hello", std::string("world"));
   TEST_EQ(kb.get("hello").template get_any_cref<std::string>(), "world");
 
@@ -157,7 +149,12 @@ void test_map(T &kb)
   auto a0 = kb.share_any("asdf");
   TEST_EQ(a0->template ref<std::vector<std::string>>()[2], "c");
 
-  //kb.save_context("/tmp/madara_test_map.kb");
+  kb.set_any("B", ns::B{3, 3.5, 4.25});
+
+  std::string kb_dump;
+  kb.to_string(kb_dump);
+  VAL(kb_dump);
+  kb.save_context("/tmp/madara_test_map.kb");
 
   auto a1 = kb.take_any("asdf");
   TEST_EQ(a1->template ref<std::vector<std::string>>()[0], "a");
@@ -168,14 +165,16 @@ void test_map(T &kb)
 
   kb.clear();
 
-  //std::string id;
-  //kb.load_context("/tmp/madara_test_map.kb", id);
-  //TEST_EQ(kb.get("hello").template get_any_ref<std::string>(), "world");
-  //TEST_EQ(kb.get("asdf").template get_any_ref<std::vector<std::string>>()[1], "b");
+  std::string id;
+  kb.load_context("/tmp/madara_test_map.kb", id);
+  TEST_EQ(kb.get("hello").template get_any_ref<std::string>(), "world");
+  TEST_EQ(kb.get("asdf").template get_any_ref<std::vector<std::string>>()[1], "b");
 }
 
 int main (int, char **)
 {
+  madara::logger::global_logger->set_level(9);
+
   test_any();
   test_record();
 

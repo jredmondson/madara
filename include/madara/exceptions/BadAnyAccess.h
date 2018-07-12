@@ -5,8 +5,6 @@
 #include <string>
 #include <stdexcept>
 
-#include <boost/type_index.hpp>
-
 #include "MadaraException.h"
 #include "madara/utility/SupportTest.h"
 

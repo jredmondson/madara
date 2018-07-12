@@ -915,9 +915,16 @@ KnowledgeRecord::read (const char * buffer,
   }
   buffer_remaining -= sizeof (buff_value_size);
 
+  //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
+    //"KnowledgeRecord::read: reading type code %d\n", type);
+  //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
+    //"KnowledgeRecord::read: reading type size %d (buf size %d)\n", size,
+    //buff_value_size);
+
   // Remove the value from the buffer
   if (buffer_remaining >= int64_t (buff_value_size))
   {
+
     if (is_string_type (type))
     {
       if (buff_value_size >= 1) {
@@ -979,6 +986,8 @@ KnowledgeRecord::read (const char * buffer,
 
     else if (is_any_type (type))
     {
+      //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
+        //"KnowledgeRecord::read: reading Any type of size %d\n", size);
       emplace_any (raw_data, buffer, size);
     }
 
@@ -1658,8 +1667,16 @@ KnowledgeRecord::write (char * buffer,
     }
     else if (is_any_type ())
     {
+      //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
+        //"KnowledgeRecord::write: encoding an Any type\n");
+
       try {
         size_intermediate = any_value_->serialize(buffer, buffer_remaining);
+        size = size_intermediate;
+
+        //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
+            //"KnowledgeRecord::write: encoded an Any type of size %d\n",
+            //size_intermediate);
       } catch (const std::exception &e) {
         // TODO catch more specific exception for this
 
@@ -1680,7 +1697,7 @@ KnowledgeRecord::write (char * buffer,
       buffer_remaining -= size_intermediate;
       buffer += size_intermediate;
 
-      uint32_temp = madara::utility::endian_swap (size_intermediate);
+      uint32_temp = madara::utility::endian_swap (size);
       memcpy (size_location, &uint32_temp, sizeof (uint32_temp));
     }
   }

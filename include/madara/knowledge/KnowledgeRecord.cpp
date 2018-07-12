@@ -300,7 +300,7 @@ KnowledgeRecord::to_string (const std::string & delimiter) const
   }
 
   if (type_ == ANY) {
-    return "<Any type>";
+    return any_value_->to_json();
   }
 
   if (!is_string_type ())
