@@ -15,13 +15,6 @@
 #include <map>
 #include <memory>
 #include <type_traits>
-#include <boost/archive/binary_oarchive.hpp>
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/type_index.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/iostreams/device/array.hpp>
 #include "madara/MadaraExport.h"
 #include "madara/utility/StdInt.h"
 #include "madara/utility/Refcounter.h"
