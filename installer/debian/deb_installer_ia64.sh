@@ -153,7 +153,7 @@ mkdir -p $ROOT_DIR/doc/madara
 # we want to add the new LD_LIBRARY_PATH
 echo "Updating ld.so.conf.d"
 mkdir -p etc/ld.so.conf.d
-echo $ROOT_DIR/lib >> etc/ld.so.conf.d/madara.conf
+echo /$ROOT_DIR/lib >> etc/ld.so.conf.d/madara.conf
 
 if [ $DEPENDS_ZEROMQ -eq 1 ] ; then
   cp /usr/local/lib/libzmq.so* $ROOT_DIR/lib/

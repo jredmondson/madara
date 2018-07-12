@@ -48,12 +48,6 @@ matrix:
       os: osx
       osx_image: xcode9.3
 
-      # clang, osx, python
-    - compiler: clang
-      env: NAME="OSX 10.13 clang python" CLANG="clang" PYTHON="python"
-      os: osx
-      osx_image: xcode9.3
-
       # clang, osx, simtime
     - compiler: clang
       env: NAME="OSX 10.13 clang simtime" CLANG="clang" SIMTIME="simtime"
