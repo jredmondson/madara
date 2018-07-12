@@ -57,7 +57,7 @@ public enum TransportType
   BROADCAST_TRANSPORT(6),
   REGISTRY_SERVER(7),
   REGISTRY_CLIENT(8),
-  ZMQ(9),
+  ZMQ_TRANSPORT(9),
   INCONSISTENT_TRANSPORT(100);
 
   private int num;
