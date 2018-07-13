@@ -115,6 +115,7 @@ namespace madara
        *                words separated by underscores (_)
        * @param thread  user-created thread implementation
        * @param paused  create thread in a paused state.
+       * @throw exceptions::ThreadException  bad name (null)
        **/
       void run (const std::string name, BaseThread * thread,
         bool paused = false);
@@ -137,6 +138,7 @@ namespace madara
        *                words separated by underscores (_)
        * @param thread  user-created thread implementation
        * @param paused  create thread in a paused state.
+       * @throw exceptions::ThreadException  bad name (null)
        **/
       void run (double hertz, const std::string name, BaseThread * thread,
         bool paused = false);

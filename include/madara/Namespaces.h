@@ -16,6 +16,14 @@
 namespace madara
 {
   /**
+  * @namespace madara::exceptions
+  * Provides exception classes for MADARA
+  **/
+  namespace exceptions
+  {
+  }
+
+  /**
   * @namespace madara::expression
   * Contains the KaRL expression tree interpreter and related classes
   **/
@@ -29,23 +37,6 @@ namespace madara
   **/
   namespace filters
   {
-
-    /**
-    * @namespace madara::filters::java
-    * Provides java filters
-    **/
-    namespace java
-    {
-    }
-
-    /**
-    * @namespace madara::filters::ssl
-    * Provides ssl filters
-    **/
-    namespace ssl
-    {
-    }
-
   }
 
   /**
