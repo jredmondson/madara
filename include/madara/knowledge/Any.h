@@ -335,15 +335,6 @@ inline const TypeHandlers &get_type_handler()
  **/
 constexpr struct raw_data_t {} raw_data;
 
-template<typename T, typename = void>
-struct is_type_tag_impl : std::false_type {};
-
-template<typename T>
-struct is_type_tag_impl<type<T>> : std::true_type {};
-
-template<typename T>
-constexpr bool is_type_tag() { return is_type_tag_impl<decay_<T>>::value; }
-
 /**
  * A general purpose type which can store any type which is:
  *

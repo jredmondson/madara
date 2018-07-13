@@ -137,6 +137,18 @@ using overload_priority_strongest = overload_priority<0>;
 /// Call this to pass into the overload_priority argument of a function.
 inline overload_priority_strongest select_overload() { return {}; }
 
+/// Internal use. Implementation helper for is_type_tag.
+template<typename T, typename = void>
+struct is_type_tag_impl : std::false_type {};
+
+/// Internal use. Implementation helper for is_type_tag.
+template<typename T>
+struct is_type_tag_impl<type<T>> : std::true_type {};
+
+/// Test if T is a madara::utility::type<> instantiation
+template<typename T>
+constexpr bool is_type_tag() { return is_type_tag_impl<decay_<T>>::value; }
+
 }
 
 }
