@@ -46,7 +46,7 @@ int main (int argc, char ** argv)
   void * context = zmq_ctx_new ();
   //void * context = zmq_init (1);
   void * socket;
-  char update[20];
+  char update[40];
 
   std::cerr << "id is " << id << std::endl;
 
@@ -71,7 +71,7 @@ int main (int argc, char ** argv)
       std::cerr << "->Successfully bound to " << address << "\n";
       strcpy (update, "this is an update.");
 
-      int length = zmq_send (socket, (void *)update, 20, 0);
+      int length = zmq_send (socket, (void *)update, 40, 0);
       std::cerr << "->Sent update of " << length << " bytes\n";
       std::this_thread::sleep_for (std::chrono::seconds (1));
 
@@ -129,7 +129,7 @@ int main (int argc, char ** argv)
     if (rc == 0)
     {
       std::cerr << "->Successfully connected to " << address << "\n";
-      int length = zmq_recv (socket, (void *)update, 20, 0);
+      int length = zmq_recv (socket, (void *)update, 40, 0);
       std::cerr << "->Received update of " << length << " bytes\n";
     }
     else

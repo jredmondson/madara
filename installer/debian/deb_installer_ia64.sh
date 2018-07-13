@@ -15,6 +15,7 @@ DEPENDS_CLANG=0
 DEPENDS_JAVA=0
 DEPENDS_SSL=0
 DEPENDS_ZEROMQ=0
+DEPENDS_PYTHON=0
 PRINT_USAGE=0
 
 until [ -z "$1" ] ;
@@ -31,6 +32,7 @@ do
     echo "  --java               package depends on java"
     echo "  --ssl                package depends on ssl"
     echo "  --zmq                package depends on zeromq"
+    echo "  --python             package depends on python"
     exit 1
   elif [ "$1" = "--lib-version" ] ;
   then
@@ -84,6 +86,12 @@ do
     echo "Marking zeromq dependencies"
     DEPENDS_ZEROMQ=1
     shift
+  elif [ "$1" = "--python" ] ;
+  then
+    echo "Marking python dependencies"
+    DEPENDS="$DEPENDS, python (>= 2.7.12-1~16.04), python2.7 (>= 2.7.12-1ubuntu0~16.04.3)"
+    DEPENDS_PYTHON=1
+    shift
   else
     PRINT_USAGE=1
     shift;
@@ -108,6 +116,10 @@ fi
 
 if [ $DEPENDS_JAVA -eq 1 ] ; then
   PACKAGE_NAME="${PACKAGE_NAME}-java"
+fi
+
+if [ $DEPENDS_PYTHON -eq 1 ] ; then
+  PACKAGE_NAME="${PACKAGE_NAME}-python"
 fi
 
 if [ $DEPENDS_SSL -eq 1 ] ; then
@@ -141,7 +153,7 @@ mkdir -p $ROOT_DIR/doc/madara
 # we want to add the new LD_LIBRARY_PATH
 echo "Updating ld.so.conf.d"
 mkdir -p etc/ld.so.conf.d
-echo $ROOT_DIR/lib >> etc/ld.so.conf.d/madara.conf
+echo /$ROOT_DIR/lib >> etc/ld.so.conf.d/madara.conf
 
 if [ $DEPENDS_ZEROMQ -eq 1 ] ; then
   cp /usr/local/lib/libzmq.so* $ROOT_DIR/lib/
@@ -172,9 +184,16 @@ dos2unix $ROOT_DIR/doc/madara/copyright
 
 # we recently stopped using named sos, so we only need to copy over libMADARA
 #cp $MADARA_ROOT/libMADARA.so.$LIB_VERSION $ROOT_DIR/lib
+echo "Copying libMADARA.so to $ROOT_DIR/lib"
 cp $MADARA_ROOT/libMADARA.so $ROOT_DIR/lib
 
+if [ $DEPENDS_PYTHON -eq 1 ] ; then
+  echo "Copying Python madara.so to $ROOT_DIR/lib"
+  cp $MADARA_ROOT/lib/madara.so $ROOT_DIR/lib
+fi
+
 # 
+echo "Copying binaries to $ROOT_DIR/bin"
 if [ $INCLUDE_ALL_BIN -eq 0 ] ; then
   cp $MADARA_ROOT/bin/madara_version $ROOT_DIR/bin/madara_version
   cp $MADARA_ROOT/bin/karl $ROOT_DIR/bin/karl

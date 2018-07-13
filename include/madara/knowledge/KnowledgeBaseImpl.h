@@ -937,6 +937,7 @@ namespace madara
        * Saves the context to a file
        * @param   filename    name of the file to open
        * @return  total bytes written
+       * @throw exceptions::MemoryException  not enough buffer to encode
        **/
       int64_t save_context (const std::string & filename) const;
 
@@ -946,6 +947,7 @@ namespace madara
        * @return              -1 if file open failed<br />
        *                      -2 if file write failed<br />
        *                      >0 if successful (number of bytes written)
+       * @throw exceptions::MemoryException  not enough buffer to encode
        **/
       int64_t save_context (CheckpointSettings & settings) const;
 
@@ -982,6 +984,7 @@ namespace madara
        * @param   filename    name of the file to open
        * @param   reset_modifieds  if true, resets the modified list to empty.
        * @return  total bytes written
+       * @throw exceptions::MemoryException  not enough buffer to encode
        **/
 
       int64_t save_checkpoint (const std::string & filename,
@@ -993,6 +996,7 @@ namespace madara
        * @return              -1 if file open failed<br />
        *                      -2 if file write failed<br />
        *                      >0 if successful (number of bytes written)
+       * @throw exceptions::MemoryException  not enough buffer to encode
        **/
 
       int64_t save_checkpoint (
@@ -1005,6 +1009,7 @@ namespace madara
        *                      one found in the saved context. If false,
        *                      keeps the default identifier.
        * @param   settings    settings for modifying context
+       * @throw exceptions::MemoryException  not enough buffer to encode
        * @return  total bytes read
        **/
       int64_t load_context (const std::string & filename,
@@ -1024,6 +1029,7 @@ namespace madara
       * @return              -1 if file open failed<br />
       *                      -2 if file read failed<br />
       *                      >0 if successful (number of bytes written)
+       * @throw exceptions::MemoryException  not enough buffer to encode
       **/
       int64_t load_context (const std::string & filename,
         FileHeader & meta,
@@ -1038,6 +1044,7 @@ namespace madara
       * @return              -1 if file open failed<br />
       *                      -2 if file read failed<br />
       *                      >0 if successful (number of bytes written)
+       * @throw exceptions::MemoryException  not enough buffer to encode
       **/
       int64_t load_context (CheckpointSettings & checkpoint_settings,
         const KnowledgeUpdateSettings & update_settings =
