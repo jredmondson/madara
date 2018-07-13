@@ -14,6 +14,7 @@
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpragmas"
 #pragma GCC diagnostic ignored "-Wexceptions"
 #pragma GCC diagnostic ignored "-Wunused-private-field"
 #endif
