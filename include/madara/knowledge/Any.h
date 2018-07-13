@@ -181,12 +181,12 @@ constexpr TypeHandlers::load_json_fn_type
     };
 }
 
-/// Type trait for checking whether a type as an ADL-visible forEachField
+/// Type trait for checking whether a type as an ADL-visible for_each_field
 /// available.
-MADARA_MAKE_VAL_SUPPORT_TEST(forEachField, x,
-    forEachField(::madara::ignore_all<>{}, x));
+MADARA_MAKE_VAL_SUPPORT_TEST(for_each_field, x,
+    for_each_field(::madara::ignore_all<>{}, x));
 
-/// Functor to pass to forEachField to serialize a type
+/// Functor to pass to for_each_field to serialize a type
 template<typename Archive>
 struct do_serialize
 {
@@ -201,7 +201,7 @@ struct do_serialize
 
 /**
  * For internal use. Helper struct to forward Boost.Serialization to
- * forEachField-based serialization.
+ * for_each_field-based serialization.
  **/
 template<typename T>
 struct for_each_serialization_wrapper_type
@@ -211,7 +211,7 @@ struct for_each_serialization_wrapper_type
   template<typename Archive>
   void serialize(Archive &ar, const unsigned int)
   {
-    forEachField(do_serialize<Archive>{&ar}, *ptr);
+    for_each_field(do_serialize<Archive>{&ar}, *ptr);
   }
 };
 
@@ -221,9 +221,9 @@ namespace utility { inline namespace core {
 // Must define below in same namespace as type<> struct for ADL
 
 /// Specialization of get_type_handler_save to support types which provide
-/// an ADL-visible forEachField
+/// an ADL-visible for_each_field
 template<typename T,
-  enable_if_<knowledge::supports_forEachField<T>::value, int> = 0>
+  enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::save_fn_type get_type_handler_save(type<T>,
     overload_priority<8>)
 {
@@ -235,9 +235,9 @@ constexpr knowledge::TypeHandlers::save_fn_type get_type_handler_save(type<T>,
 }
 
 /// Specialization of get_type_handler_load to support types which provide
-/// an ADL-visible forEachField
+/// an ADL-visible for_each_field
 template<typename T,
-  enable_if_<knowledge::supports_forEachField<T>::value, int> = 0>
+  enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::load_fn_type get_type_handler_load(type<T>,
     overload_priority<8>)
 {
@@ -249,9 +249,9 @@ constexpr knowledge::TypeHandlers::load_fn_type get_type_handler_load(type<T>,
 }
 
 /// Specialization of get_type_handler_save_json to support types which
-/// provide an ADL-visible forEachField
+/// provide an ADL-visible for_each_field
 template<typename T,
-  enable_if_<knowledge::supports_forEachField<T>::value, int> = 0>
+  enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::save_json_fn_type
   get_type_handler_save_json(type<T>, overload_priority<8>)
 {
@@ -263,9 +263,9 @@ constexpr knowledge::TypeHandlers::save_json_fn_type
 }
 
 /// Specialization of get_type_handler_load_json to support types which
-/// provide an ADL-visible forEachField
+/// provide an ADL-visible for_each_field
 template<typename T,
-  enable_if_<knowledge::supports_forEachField<T>::value, int> = 0>
+  enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::load_json_fn_type
   get_type_handler_load_json(type<T>, overload_priority<8>)
 {
@@ -341,7 +341,7 @@ constexpr struct raw_data_t {} raw_data;
  *
  *  * Default constructible
  *  * Copy constructible
- *  * Serializable by Boost.Serialization, or implements the forEachField
+ *  * Serializable by Boost.Serialization, or implements the for_each_field
  *    free function.
  *
  * This class is used by KnowledgeRecord and KnowledgeBase to store (nearly)
