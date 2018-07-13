@@ -1198,10 +1198,14 @@ namespace madara
        **/
       Any to_any() const
       {
+        static_assert(!is_type_tag<double>(), "");
+        static_assert(is_type_tag<tags::type<double>>(), "");
+        static_assert(is_same_decayed<Any, Any>(), "");
+        static_assert(!is_same_decayed<double, Any>(), "");
         if (type_ == ANY) {
           return *any_value_;
         } else if (type_ == INTEGER) {
-          return Any(int_value_);
+          return Any(tags::type<int64_t>{}, int_value_);
         } else if (type_ == DOUBLE) {
           return Any(double_value_);
         } else if (type_ == INTEGER_ARRAY) {

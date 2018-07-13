@@ -55,7 +55,7 @@ KnowledgeBaseImpl::setup_unique_hostport (std::string host)
   actual_host += ":";
 
   boost::mt19937 ran(std::random_device{}());
-  auto uuid = boost::uuids::random_generator{ran}();
+  auto uuid = boost::uuids::basic_random_generator<boost::mt19937>(ran)();
   auto uuid_str = boost::uuids::to_string(uuid);
   uuid_str.erase(std::remove(uuid_str.begin(), uuid_str.end(), '-'), uuid_str.end());
 

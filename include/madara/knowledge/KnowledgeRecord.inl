@@ -1671,13 +1671,13 @@ KnowledgeRecord::write (char * buffer,
         //"KnowledgeRecord::write: encoding an Any type\n");
 
       try {
-        size_intermediate = any_value_->serialize(buffer, buffer_remaining);
+        size_intermediate = (uint32_t)any_value_->serialize(buffer, buffer_remaining);
         size = size_intermediate;
 
         //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
             //"KnowledgeRecord::write: encoded an Any type of size %d\n",
             //size_intermediate);
-      } catch (const std::exception &e) {
+      } catch (const std::exception &) {
         // TODO catch more specific exception for this
 
         std::stringstream buffer;

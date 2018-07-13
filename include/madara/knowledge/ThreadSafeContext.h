@@ -738,11 +738,11 @@ namespace madara
        * @param   args      arguments to emplace_any of KnowledgeRecord
        * @return   0 if the value was set. -1 if null key
        **/
-      template<typename Arg, typename... Args,
-        enable_if_<!is_convertible<
-          Arg, const KnowledgeUpdateSettings &>(), int> = 0>
-      int emplace_any (const std::string & key,
-        Arg&& arg, Args&&... args)
+      template<typename Arg, typename... Args>
+      auto emplace_any (const std::string & key,
+        Arg&& arg, Args&&... args) ->
+          enable_if_<!is_convertible<
+            Arg, const KnowledgeUpdateSettings &>(), int>
       {
         return emplace_any(key, KnowledgeUpdateSettings{},
             std::forward<Arg>(arg), std::forward<Args>(args)...);
@@ -755,11 +755,11 @@ namespace madara
        * @param   args      arguments to emplace_any of KnowledgeRecord
        * @return   0 if the value was set. -1 if null key
        **/
-      template<typename Arg, typename... Args,
-        enable_if_<!is_convertible<
-          Arg, const KnowledgeUpdateSettings &>(), int> = 0>
-      int emplace_any (const VariableReference & variable,
-        Arg&& arg, Args&&... args)
+      template<typename Arg, typename... Args>
+      auto emplace_any (const VariableReference & variable,
+        Arg&& arg, Args&&... args) ->
+          enable_if_<!is_convertible<
+            Arg, const KnowledgeUpdateSettings &>(), int>
       {
         return emplace_any(variable, KnowledgeUpdateSettings{},
             std::forward<Arg>(arg), std::forward<Args>(args)...);

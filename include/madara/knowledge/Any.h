@@ -72,7 +72,7 @@ using boost::typeindex::type_id;
 using type_index = std::type_index;
 
 template<typename T>
-constexpr type_index type_id()
+inline type_index type_id()
 {
   return type_index(typeid(T));
 }
@@ -335,6 +335,15 @@ inline const TypeHandlers &get_type_handler()
  **/
 constexpr struct raw_data_t {} raw_data;
 
+template<typename T, typename = void>
+struct is_type_tag_impl : std::false_type {};
+
+template<typename T>
+struct is_type_tag_impl<type<T>> : std::true_type {};
+
+template<typename T>
+constexpr bool is_type_tag() { return is_type_tag_impl<decay_<T>>::value; }
+
 /**
  * A general purpose type which can store any type which is:
  *
@@ -434,8 +443,10 @@ public:
    * the new Any if it supports it, and the argument is an rvalue reference.
    * Otherwise, it will be copied.
    **/
-  template<typename T, enable_if_<!is_same_decayed<T, Any>(), int> = 0>
-  explicit Any(T &&t)
+  template<typename T>
+  explicit Any(T &&t, enable_if_<
+    !is_type_tag<T>() &&
+    !is_same_decayed<T, Any>(), int> = 0)
     : handler_(&get_type_handler(type<decay_<T>>{})),
       data_(reinterpret_cast<void*>(
             new decay_<T>(std::forward<T>(t))))
