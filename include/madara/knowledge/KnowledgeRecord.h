@@ -37,10 +37,25 @@ namespace madara
      * arguments will be forwarded to construct the underlying type in-place.
      **/
     namespace tags {
-      static struct integers_t { integers_t(){} } integers;
-      static struct doubles_t { doubles_t(){} } doubles;
-      static struct string_t { string_t(){} } string;
-      static struct binary_t { binary_t(){} } binary;
+      using madara::type;
+
+      using integer_t = type<int64_t>;
+      static const integer_t integer;
+      static const integer_t int_;
+      using double_t = type<double>;
+      static const double_t double_;
+      static const double_t dbl;
+      using integers_t = type<std::vector<int64_t>>;
+      static const integers_t integers;
+      static const integers_t ints;
+      using doubles_t = type<std::vector<double>>;
+      static const doubles_t doubles;
+      static const doubles_t dbls;
+      using string_t = type<std::string>;
+      static const string_t string;
+      static const string_t str;
+      using binary_t = type<std::vector<unsigned char>>;
+      static const binary_t binary;
 
       template<typename T>
       struct any { any(){} };
@@ -54,8 +69,6 @@ namespace madara
       inline shared_t<T> shared(T) {
         return shared_t<T>{};
       }
-
-      using madara::type;
     }
 
     /**
@@ -1029,7 +1042,7 @@ namespace madara
        **/
       void set_raw_any(const char *data, size_t size)
       {
-        return emplace_any(raw_data, data, size);
+        return emplace_any(tags::raw_data, data, size);
       }
 
       /**

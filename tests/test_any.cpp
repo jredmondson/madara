@@ -41,6 +41,27 @@ namespace ns
     fun("e", val.e);
     fun("f", val.f);
   }
+
+  struct C
+  {
+    int g;
+    double h;
+    std::string i;
+    std::vector<int> iv;
+    std::vector<B> v;
+    B b;
+  };
+
+  template<typename Fun, typename T>
+  auto forEachField(Fun fun, T&& val) -> enable_if_same_decayed<T, C>
+  {
+    fun("g", val.g);
+    fun("h", val.h);
+    fun("i", val.i);
+    fun("iv", val.iv);
+    fun("v", val.v);
+    fun("b", val.b);
+  }
 }
 
 struct Tracker
@@ -67,6 +88,7 @@ struct Tracker
 void test_any()
 {
   static_assert(supports_forEachField<ns::B>::value, "B must support forEachField");
+  static_assert(supports_forEachField<ns::C>::value, "C must support forEachField");
   Any a0(123);
   Any a1(type<int>{}, 456);
 
@@ -90,10 +112,47 @@ void test_any()
   a0.unserialize<A>(buf.data(), buf.size());
   TEST_EQ(a0.ref<A>().b, 5);
 
+  a0.set(ns::B{2, 5, 9});
+  a0.serialize(buf);
   a0.unserialize<ns::B>(buf.data(), buf.size());
   TEST_EQ(a0.ref<ns::B>().f, 9);
 
   VAL(a0.to_json());
+
+  a0("d") = a0("e") = a0("f") = 42.0;
+  TEST_EQ(a0("d")->ref<double>(), 42);
+  TEST_EQ(a0("e")->ref<double>(), 42);
+  TEST_EQ(a0("f")->ref<double>(), 42);
+
+  Any aC(ns::C{1, 2.5, "asdf", {10, 20, 30}, {}, {4, 7, 9}});
+  auto fields = aC.list_fields();
+  for (const auto &cur : fields)
+  {
+    std::cerr << "Field " << cur.name() << " " <<
+      (void*)&cur.handler() << " " <<
+      cur.type_name() << " " <<
+      cur.data() << " " <<
+      aC.ref(cur).to_json() << std::endl;
+  }
+
+  TEST_EQ(aC.ref<std::string>("i"), "asdf");
+  TEST_EQ(aC("i")(tags::str), "asdf");
+  TEST_EQ(aC("iv")->size(), 3UL);
+  TEST_EQ(aC("iv")[1](type<int>{}), 20);
+
+  VAL(aC.ref(aC.find_field("g")).to_json());
+  auto field = aC.find_field("i");
+  aC.set_field(field, Any(std::string("zxcv")));
+  VAL(aC.ref(field).to_json());
+  aC(field) = std::string("qwerty");
+  VAL(aC(field)->to_json());
+  aC.set_field("h", 4.5);
+  VAL(aC.ref("h")(tags::json));
+  TEST_EQ(aC("b")("f")(tags::dbl), 9);
+  aC("b")("f")(tags::dbl) = 10;
+
+  const Any aConst = aC;
+  TEST_EQ(aConst("b")("f")(tags::dbl), 10);
 
   a0.set(std::string("asdf"));
   a1.set<std::string>("zxcv");
@@ -103,7 +162,7 @@ void test_any()
 
   a0.serialize(buf);
   VAL(buf.size());
-  Any a2(raw_data, buf.data(), buf.size());
+  Any a2(tags::raw_data, buf.data(), buf.size());
   TEST_EQ(a2.ref<std::string>(), "asdf");
 
   Any a3(std::move(a1));

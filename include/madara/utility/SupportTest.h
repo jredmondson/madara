@@ -51,7 +51,7 @@ inline namespace core {
 /// argument instead of inside explicit "<...>". This interacts more flexibly
 /// with overloading and ADL.
 template<class T>
-class type {};
+struct type { using self = T; };
 
 /// Less verbose synonym for std::enable_if
 template<bool Pred, typename T = void>
