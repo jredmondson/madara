@@ -1834,6 +1834,114 @@ namespace madara
      * @return   the maximum quality within the list of records
      **/
     uint32_t max_quality (const KnowledgeMap & records);
+
+    template<typename Impl, typename ValImpl, typename RefImpl>
+    inline KnowledgeRecord
+    BasicConstAny<Impl, ValImpl, RefImpl>::to_record() const
+    {
+      if (!supports_to_record()) {
+        return KnowledgeRecord(std::move(clone()));
+      }
+
+      return handler_->to_record(data_);
+    }
+
+    template<typename Impl, typename ValImpl, typename RefImpl>
+    inline int64_t
+    BasicConstAny<Impl, ValImpl, RefImpl>::to_integer() const
+    {
+      if (!supports_to_record()) {
+        return {};
+      }
+
+      if (handler_->tindex == type_id<int64_t>()) {
+        return ref_unsafe<int64_t>();
+      }
+
+      return handler_->to_record(data_).to_integer();
+    }
+
+    template<typename Impl, typename ValImpl, typename RefImpl>
+    inline double
+    BasicConstAny<Impl, ValImpl, RefImpl>::to_double() const
+    {
+      if (!supports_to_record()) {
+        return {};
+      }
+
+      if (handler_->tindex == type_id<double>()) {
+        return ref_unsafe<double>();
+      }
+
+      return handler_->to_record(data_).to_double();
+    }
+
+    template<typename Impl, typename ValImpl, typename RefImpl>
+    inline std::vector<int64_t>
+    BasicConstAny<Impl, ValImpl, RefImpl>::to_integers() const
+    {
+      if (!supports_to_record()) {
+        return {};
+      }
+
+      if (handler_->tindex == type_id<std::vector<int64_t>>()) {
+        return ref_unsafe<std::vector<int64_t>>();
+      }
+
+      return handler_->to_record(data_).to_integers();
+    }
+
+    template<typename Impl, typename ValImpl, typename RefImpl>
+    inline std::vector<double>
+    BasicConstAny<Impl, ValImpl, RefImpl>::to_doubles() const
+    {
+      if (!supports_to_record()) {
+        return {};
+      }
+
+      if (handler_->tindex == type_id<std::vector<double>>()) {
+        return ref_unsafe<std::vector<double>>();
+      }
+
+      return handler_->to_record(data_).to_doubles();
+    }
+
+    template<typename Impl, typename ValImpl, typename RefImpl>
+    inline std::string
+    BasicConstAny<Impl, ValImpl, RefImpl>::to_string() const
+    {
+      if (!supports_to_record()) {
+        return {};
+      }
+
+      if (handler_->tindex == type_id<std::string>()) {
+        return to_json();
+      }
+
+      return handler_->to_record(data_).to_string();
+    }
+
+    template<typename Impl, typename ValImpl, typename RefImpl>
+    inline std::vector<unsigned char>
+    BasicConstAny<Impl, ValImpl, RefImpl>::to_file() const
+    {
+      if (!supports_to_record()) {
+        return {};
+      }
+
+      if (handler_->tindex == type_id<std::vector<unsigned char>>()) {
+        return ref_unsafe<std::vector<unsigned char>>();
+      }
+
+      return handler_->to_record(data_).to_file();
+    }
+
+    template<typename Impl, typename ValImpl, typename RefImpl>
+    inline KnowledgeRecord
+    BasicConstAny<Impl, ValImpl, RefImpl>::operator()(tags::record_t)
+    {
+      return to_record();
+    }
   }
 }
 
@@ -1844,7 +1952,6 @@ namespace madara
   //const madara::knowledge::KnowledgeRecord & rhs);
 
 #include "KnowledgeRecord.inl"
-
 
 #endif  // _MADARA_KNOWLEDGE_RECORD_H_
 

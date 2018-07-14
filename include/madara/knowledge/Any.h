@@ -14,6 +14,7 @@
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpragmas"
 #pragma GCC diagnostic ignored "-Wexceptions"
 #pragma GCC diagnostic ignored "-Wunused-private-field"
 #endif
@@ -82,6 +83,7 @@ struct TypeHandlers;
 class Any;
 class RefAny;
 class CRefAny;
+class KnowledgeRecord;
 
 class AnyField
 {
@@ -98,7 +100,6 @@ public:
 
   const TypeHandlers &parent() const;
   const TypeHandlers &handler() const;
-  const type_index &type_index() const;
   std::string type_name() const;
 private:
   const char *name_ = nullptr;
@@ -160,12 +161,19 @@ struct TypeHandlers
       const TypeHandlers *&out_handler, void *&out_ptr, void *);
   get_field_fn_type get_field;
 
+  typedef void (*size_fn_type)(size_t &out, void *);
+  size_fn_type size;
+
   typedef void (*index_int_fn_type)(size_t index,
       const TypeHandlers *&out_handler, void *&out_ptr, void *);
   index_int_fn_type index_int;
 
-  typedef void (*size_fn_type)(size_t &out, void *);
-  size_fn_type size;
+  typedef void (*index_str_fn_type)(const char *index,
+      const TypeHandlers *&out_handler, void *&out_ptr, void *);
+  index_str_fn_type index_str;
+
+  typedef KnowledgeRecord (*to_record_fn_type)(void *);
+  to_record_fn_type to_record;
 };
 
 inline const TypeHandlers &AnyField::parent() const
@@ -176,11 +184,6 @@ inline const TypeHandlers &AnyField::parent() const
 inline const TypeHandlers &AnyField::handler() const
 {
   return *handler_;
-}
-
-inline const type_index &AnyField::type_index() const
-{
-  return handler_->tindex;
 }
 
 #ifdef MADARA_USE_BOOST_TYPE_INDEX
@@ -295,8 +298,22 @@ constexpr TypeHandlers::index_int_fn_type
 }
 
 template<typename T>
+constexpr TypeHandlers::index_str_fn_type
+  get_type_handler_index_str(type<T>, overload_priority_weakest)
+{
+  return nullptr;
+}
+
+template<typename T>
 constexpr TypeHandlers::size_fn_type
   get_type_handler_size(type<T>, overload_priority_weakest)
+{
+  return nullptr;
+}
+
+template<typename T>
+constexpr TypeHandlers::to_record_fn_type
+  get_type_handler_to_record(type<T>, overload_priority_weakest)
 {
   return nullptr;
 }
@@ -313,12 +330,12 @@ inline const TypeHandlers &get_type_handler(type<T> t)
       get_type_handler_load(type<T>{}, select_overload()),
       get_type_handler_save_json(t, select_overload()),
       get_type_handler_load_json(t, select_overload()),
-      //get_type_handler_find_field(t, select_overload()),
       get_type_handler_list_fields(t, select_overload()),
       get_type_handler_get_field(t, select_overload()),
-      get_type_handler_index_int(t, select_overload()),
       get_type_handler_size(t, select_overload()),
-      //get_type_handler_set_field(t, select_overload()),
+      get_type_handler_index_int(t, select_overload()),
+      get_type_handler_index_str(t, select_overload()),
+      get_type_handler_to_record(t, select_overload()),
     };
   return handler;
 }
@@ -335,10 +352,10 @@ inline const TypeHandlers &get_type_handler()
 MADARA_MAKE_VAL_SUPPORT_TEST(for_each_field, x,
     for_each_field(::madara::ignore_all<>{}, x));
 
-MADARA_MAKE_VAL_SUPPORT_TEST(size_member, x, (0UL == x.size()));
-MADARA_MAKE_VAL_SUPPORT_TEST(int_index, x, (x[0UL] = x[0UL]));
+MADARA_MAKE_VAL_SUPPORT_TEST(size_member, x, (1UL == x.size()));
+MADARA_MAKE_VAL_SUPPORT_TEST(int_index, x, (x[1UL] = x[1UL]));
 MADARA_MAKE_VAL_SUPPORT_TEST(str_index, x, (x[""] = x[""]));
-MADARA_MAKE_VAL_SUPPORT_TEST(int_at_index, x, (x.at(0UL) = x.at(0UL)));
+MADARA_MAKE_VAL_SUPPORT_TEST(int_at_index, x, (x.at(1UL) = x.at(1UL)));
 MADARA_MAKE_VAL_SUPPORT_TEST(str_at_index, x, (x.at("") = x.at("")));
 
 /// Functor to pass to for_each_field to serialize a type
@@ -394,6 +411,7 @@ namespace tags {
 constexpr struct raw_data_t {} raw_data;
 
 constexpr struct json_t {} json;
+constexpr struct record_t {} record;
 
 }
 
@@ -406,7 +424,7 @@ struct is_type_tag_impl<type<T>> : std::true_type {};
 template<typename T>
 constexpr bool is_type_tag() { return is_type_tag_impl<decay_<T>>::value; }
 
-template<typename Impl, typename RefImpl>
+template<typename Impl, typename ValImpl, typename RefImpl>
 class BasicConstAny
 {
 protected:
@@ -419,12 +437,13 @@ protected:
   const Impl &impl() const { return *static_cast<const Impl*>(this); }
 
   friend Impl;
+  friend ValImpl;
   friend RefImpl;
 
-  template<typename Impl2, typename RefImpl2>
+  template<typename Impl2, typename ValImpl2, typename RefImpl2>
   friend class BasicConstAny;
 
-  template<typename Impl2, typename RefImpl2, typename CRefImpl2>
+  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
   friend class BasicAny;
 
 public:
@@ -558,6 +577,20 @@ public:
   const T &ref_unsafe(type<T>) const
   {
     return *reinterpret_cast<const T *>(data_);
+  }
+
+  /**
+   * Reference the stored data as type T, WITHOUT any type checking. Do not
+   * call this unless you are certain what type the Any contains. This does not
+   * unserialize if the Any contains unserialized raw data.
+   *
+   * @tparam T the type to treat the stored data as
+   * @return a const reference of type T to the stored data
+   **/
+  template<typename T>
+  const T &ref_unsafe() const
+  {
+    return ref_unsafe(type<T>{});
   }
 
   /**
@@ -806,12 +839,14 @@ public:
     return cref(find_field(name)).template cref<T>();
   }
 
-  Any clone() const;
+  ValImpl clone() const;
 
   std::string operator()(tags::json_t)
   {
     return to_json();
   }
+
+  KnowledgeRecord operator()(tags::record_t);
 
   class proxy
   {
@@ -841,7 +876,7 @@ public:
       return target[std::forward<T>(t)];
     }
 
-    template<typename Impl2, typename RefImpl2>
+    template<typename Impl2, typename ValImpl2, typename RefImpl2>
     friend class BasicConstAny;
   };
 
@@ -879,6 +914,29 @@ public:
     return {handler, data};
   }
 
+  bool supports_string_index() const
+  {
+    return handler_ && handler_->index_str;
+  }
+
+  RefImpl operator[](const char *i) const
+  {
+    using exceptions::BadAnyAccess;
+
+    if (!supports_string_index()) {
+      throw BadAnyAccess("Type in Any does not support indexing by string");
+    }
+    const TypeHandlers *handler = nullptr;
+    void *data = nullptr;
+    handler_->index_str(i, handler, data, data_);
+    return {handler, data};
+  }
+
+  RefImpl operator[](const std::string &i) const
+  {
+    return operator[](i.c_str());
+  }
+
   bool supports_size() const
   {
     return handler_ && handler_->size;
@@ -895,6 +953,19 @@ public:
     handler_->size(ret, data_);
     return ret;
   }
+
+  bool supports_to_record() const
+  {
+    return handler_ && handler_->to_record;
+  }
+
+  KnowledgeRecord to_record() const;
+  int64_t to_integer() const;
+  double to_double() const;
+  std::vector<int64_t> to_integers() const;
+  std::vector<double> to_doubles() const;
+  std::string to_string() const;
+  std::vector<unsigned char> to_file() const;
 
 protected:
   const TypeHandlers *handler_ = nullptr;
@@ -936,10 +1007,10 @@ protected:
  * It is similar in principle to Boost.Any (and C++17 std::any), but
  * incorporates serialization support, and a different interface.
  **/
-template<typename Impl, typename RefImpl, typename CRefImpl>
-class BasicAny : public BasicConstAny<Impl, CRefImpl>
+template<typename Impl, typename ValImpl, typename RefImpl, typename CRefImpl>
+class BasicAny : public BasicConstAny<Impl, ValImpl, CRefImpl>
 {
-  using Base = BasicConstAny<Impl, CRefImpl>;
+  using Base = BasicConstAny<Impl, ValImpl, CRefImpl>;
 protected:
   using Base::Base;
 
@@ -949,13 +1020,14 @@ protected:
   using Base::check_type;
 
   friend Impl;
+  friend ValImpl;
   friend RefImpl;
   friend CRefImpl;
 
-  template<typename Impl2, typename RefImpl2>
+  template<typename Impl2, typename ValImpl2, typename RefImpl2>
   friend class BasicConstAny;
 
-  template<typename Impl2, typename RefImpl2, typename CRefImpl2>
+  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
   friend class BasicAny;
 
 public:
@@ -964,8 +1036,41 @@ public:
     return {this->handler_, this->data_};
   }
 
-  using Base::ref;
   using Base::cref;
+
+  /**
+   * Access the Any's stored value by const reference.
+   * If empty() or raw() is true, throw BadAnyAccess exception; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as const T&, else throw BadAnyAccess exception
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return a reference to the contained value
+   **/
+  template<typename T>
+  const T &ref(type<T> t) const
+  {
+    return Base::ref(t);
+  }
+
+  /**
+   * Access the Any's stored value by const reference.
+   * If empty() or raw() is true, throw BadAnyAccess exception; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as const T&, else throw BadAnyAccess exception
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return a reference to the contained value
+   **/
+  template<typename T>
+  const T &ref() const
+  {
+    return Base::template ref<T>();
+  }
 
   /**
    * Access the Any's stored value by reference.
@@ -1078,28 +1183,28 @@ public:
     return ref(find_field(name)).template ref<T>();
   }
 
-  void set_field(const AnyField &field, Impl any)
+  void set_field(const AnyField &field, ValImpl any)
   {
     ref(field) = std::move(any);
   }
 
-  void set_field(const char *name, Impl any)
+  void set_field(const char *name, ValImpl any)
   {
     return set_field(find_field(name), std::move(any));
   }
 
-  void set_field(const std::string &name, Impl any)
+  void set_field(const std::string &name, ValImpl any)
   {
     return set_field(find_field(name), std::move(any));
   }
 
-  template<typename N, typename T>
+  template<typename N, typename T,
+    enable_if_<!is_convertible<decay_<T>, ValImpl>(), int> = 0>
   auto set_field(N &&name, T &&val) ->
-    enable_if_<!is_convertible<T, Impl>(),
       decltype(set_field(find_field(std::forward<N>(name)),
-              Impl(std::forward<T>(val))), void())>
+              std::declval<ValImpl>()), void())
   {
-    set_field(find_field(std::forward<N>(name)), Impl(std::forward<T>(val)));
+    set_field(find_field(std::forward<N>(name)), ValImpl(std::forward<T>(val)));
   }
 
   class proxy
@@ -1136,7 +1241,7 @@ public:
       return target[std::forward<T>(t)];
     }
 
-    template<typename Impl2, typename RefImpl2, typename CRefImpl2>
+    template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
     friend class BasicAny;
   };
 
@@ -1162,16 +1267,35 @@ public:
     return {r.handler_, r.data_};
   }
 
+  RefImpl operator[](const char *i) const
+  {
+    auto r = Base::operator[](i);
+    return {r.handler_, r.data_};
+  }
+
+  RefImpl operator[](const std::string &i) const
+  {
+    return operator[](i.c_str());
+  }
+
   using Base::operator();
 };
 
-class CRefAny : public BasicConstAny<CRefAny, CRefAny>
+class CRefAny : public BasicConstAny<CRefAny, Any, CRefAny>
 {
-  using Base = BasicConstAny<CRefAny, CRefAny>;
+  using Base = BasicConstAny<CRefAny, Any, CRefAny>;
+
+  template<typename Impl2, typename ValImpl2, typename RefImpl2>
+  friend class ::madara::knowledge::BasicConstAny;
+
+  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
+  friend class ::madara::knowledge::BasicAny;
 protected:
   using Base::Base;
 
 public:
+  CRefAny() = default;
+
   CRefAny(const RefAny &other);
 
   CRefAny(const Any &other);
@@ -1186,13 +1310,21 @@ public:
   friend class Any;
 };
 
-class RefAny : public BasicAny<RefAny, RefAny, CRefAny>
+class RefAny : public BasicAny<RefAny, Any, RefAny, CRefAny>
 {
-  using Base = BasicAny<RefAny, RefAny, CRefAny>;
+  using Base = BasicAny<RefAny, Any, RefAny, CRefAny>;
+
+  template<typename Impl2, typename ValImpl2, typename RefImpl2>
+  friend class ::madara::knowledge::BasicConstAny;
+
+  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
+  friend class ::madara::knowledge::BasicAny;
 protected:
   using Base::Base;
 
 public:
+  RefAny() = default;
+
   RefAny(const Any &other);
 
   template<typename T>
@@ -1208,9 +1340,9 @@ public:
 inline CRefAny::CRefAny(const RefAny &other)
   : Base(other.handler_, other.data_) {}
 
-class Any : public BasicAny<Any, RefAny, CRefAny>
+class Any : public BasicAny<Any, Any, RefAny, CRefAny>
 {
-  using Base = BasicAny<Any, RefAny, CRefAny>;
+  using Base = BasicAny<Any, Any, RefAny, CRefAny>;
 public:
   /**
    * Default constructor. Creates an empty Any.
@@ -1706,10 +1838,10 @@ private:
   }
 };
 
-template<typename Impl, typename RefImpl>
-inline Any BasicConstAny<Impl, RefImpl>::clone() const
+template<typename Impl, typename ValImpl, typename RefImpl>
+inline ValImpl BasicConstAny<Impl, ValImpl, RefImpl>::clone() const
 {
-  return *this;
+  return this->impl();
 }
 
 inline CRefAny::CRefAny(const Any &other)
@@ -1813,6 +1945,38 @@ constexpr knowledge::TypeHandlers::index_int_fn_type
   get_type_handler_index_int(type<T>, overload_priority<4>)
 {
   return [](size_t index,
+      const knowledge::TypeHandlers *&handler,
+      void *&out_ptr,
+      void *ptr) {
+      T &val = *static_cast<T *>(ptr);
+      using I = decltype(val.at(index));
+      handler = &knowledge::get_type_handler<decay_<I>>();
+      out_ptr = &val.at(index);
+    };
+}
+
+template<typename T,
+  enable_if_<knowledge::supports_str_index<T>::value, int> = 0>
+constexpr knowledge::TypeHandlers::index_str_fn_type
+  get_type_handler_index_str(type<T>, overload_priority<8>)
+{
+  return [](const char *index,
+      const knowledge::TypeHandlers *&handler,
+      void *&out_ptr,
+      void *ptr) {
+      T &val = *static_cast<T *>(ptr);
+      using I = decltype(val[index]);
+      handler = &knowledge::get_type_handler<decay_<I>>();
+      out_ptr = &val[index];
+    };
+}
+
+template<typename T,
+  enable_if_<knowledge::supports_str_at_index<T>::value, int> = 0>
+constexpr knowledge::TypeHandlers::index_str_fn_type
+  get_type_handler_index_str(type<T>, overload_priority<4>)
+{
+  return [](const char *index,
       const knowledge::TypeHandlers *&handler,
       void *&out_ptr,
       void *ptr) {

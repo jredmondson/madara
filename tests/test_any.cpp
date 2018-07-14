@@ -50,6 +50,7 @@ namespace ns
     std::vector<int> iv;
     std::vector<B> v;
     B b;
+    std::map<std::string, int> m;
   };
 
   template<typename Fun, typename T>
@@ -61,6 +62,7 @@ namespace ns
     fun("iv", val.iv);
     fun("v", val.v);
     fun("b", val.b);
+    fun("m", val.m);
   }
 }
 
@@ -89,6 +91,12 @@ void test_any()
 {
   static_assert(supports_for_each_field<ns::B>::value, "B must support for_each_field");
   static_assert(supports_for_each_field<ns::C>::value, "C must support for_each_field");
+
+  static_assert(supports_str_index<decltype(ns::C::m)>::value, "C::m must support str_index");
+  static_assert(supports_cast_to_record<decltype(ns::C::i)>::value, "C::i must support to_record");
+
+  std::string test;
+  auto testkr = knowledge_cast(test);
 
   Any a0(123);
   Any a1(type<int>{}, 456);
@@ -125,7 +133,9 @@ void test_any()
   TEST_EQ(a0("e")->ref<double>(), 42);
   TEST_EQ(a0("f")->ref<double>(), 42);
 
-  Any aC(ns::C{1, 2.5, "asdf", {10, 20, 30}, {}, {4, 7, 9}});
+  Any aC(ns::C{1, 2.5, "asdf",
+      {10, 20, 30}, {}, {4, 7, 9},
+      {{"x", 13}, {"y", 14}}});
   auto fields = aC.list_fields();
   for (const auto &cur : fields)
   {
@@ -140,13 +150,18 @@ void test_any()
   TEST_EQ(aC("i")(tags::str), "asdf");
   TEST_EQ(aC("iv")->size(), 3UL);
   TEST_EQ(aC("iv")[1](type<int>{}), 20);
+  VAL(aC("iv")->to_string());
+  TEST_EQ(aC("m")->size(), 2UL);
+  TEST_EQ(aC("m")["x"](type<int>{}), 13);
+  aC("m")["x"](type<int>{}) = 23;
+  TEST_EQ(aC("m")["x"](type<int>{}), 23);
 
   VAL(aC.ref(aC.find_field("g")).to_json());
   auto field = aC.find_field("i");
   aC.set_field(field, Any(std::string("zxcv")));
   VAL(aC.ref(field).to_json());
   aC(field) = std::string("qwerty");
-  VAL(aC(field)->to_json());
+  VAL(aC(field)(tags::record));
   aC.set_field("h", 4.5);
   VAL(aC.ref("h")(tags::json));
   TEST_EQ(aC("b")("f")(tags::dbl), 9);

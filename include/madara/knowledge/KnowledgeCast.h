@@ -588,6 +588,21 @@ MADARA_KNOWLEDGE_COMPOSITE_OP(/=)
 MADARA_KNOWLEDGE_COMPOSITE_OP(*=)
 MADARA_KNOWLEDGE_COMPOSITE_OP(%=)
 
-} }
+MADARA_MAKE_VAL_SUPPORT_TEST(cast_to_record, x, (knowledge_cast(x)));
+
+}
+
+namespace utility { inline namespace core {
+  template<typename T,
+    enable_if_<knowledge::supports_cast_to_record<T>::value, int> = 0>
+  constexpr knowledge::TypeHandlers::to_record_fn_type
+    get_type_handler_to_record(type<T>, overload_priority<8>)
+  {
+    return [](void *ptr) -> knowledge::KnowledgeRecord {
+        T &val = *static_cast<T *>(ptr);
+        return knowledge::knowledge_cast(val);
+      };
+  }
+} } }
 
 #endif
