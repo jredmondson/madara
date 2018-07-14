@@ -22,38 +22,6 @@ env:
 
 matrix:
   include:
-      ################MAC#####################
-
-      # clang, osx, no ssl
-    - compiler: clang
-      env: NAME="OSX 10.13 clang" CLANG="clang"
-      os: osx
-      osx_image: xcode9.3
-
-      # clang, osx, ssl
-    - compiler: clang
-      env: NAME="OSX 10.13 clang ssl" CLANG="clang" SSL="ssl" SSL_ROOT=/usr/local/opt/openssl
-      os: osx
-      osx_image: xcode9.3
-
-      # clang, osx, java
-    - compiler: clang
-      env: NAME="OSX 10.13 clang java" CLANG="clang" JAVA="java"
-      os: osx
-      osx_image: xcode9.3
-
-      # clang, osx, zeromq
-    - compiler: clang
-      env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
-      os: osx
-      osx_image: xcode9.3
-
-      # clang, osx, simtime
-    - compiler: clang
-      env: NAME="OSX 10.13 clang simtime" CLANG="clang" SIMTIME="simtime"
-      os: osx
-      osx_image: xcode9.3
-
       ################LINUX#####################
 
       # clang, linux, no ssl
@@ -105,6 +73,38 @@ matrix:
       os: linux
       env: NAME="Ubuntu 14.04 g++ simtime" SIMTIME="simtime"
 
+      ################MAC#####################
+
+      # clang, osx, no ssl
+    - compiler: clang
+      env: NAME="OSX 10.13 clang" CLANG="clang"
+      os: osx
+      osx_image: xcode9.3
+
+      # clang, osx, ssl
+    - compiler: clang
+      env: NAME="OSX 10.13 clang ssl" CLANG="clang" SSL="ssl" SSL_ROOT=/usr/local/opt/openssl
+      os: osx
+      osx_image: xcode9.3
+
+      # clang, osx, java
+    - compiler: clang
+      env: NAME="OSX 10.13 clang java" CLANG="clang" JAVA="java"
+      os: osx
+      osx_image: xcode9.3
+
+      # clang, osx, zeromq
+    - compiler: clang
+      env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
+      os: osx
+      osx_image: xcode9.3
+
+      # clang, osx, simtime
+    - compiler: clang
+      env: NAME="OSX 10.13 clang simtime" CLANG="clang" SIMTIME="simtime"
+      os: osx
+      osx_image: xcode9.3
+
 addons:
   apt:
     sources:
@@ -118,9 +118,9 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install openssl; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install zeromq; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link openssl --force; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository ppa:ubuntu-toolchain-r/test; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install gcc-5 g++-5; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get -y update; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get -y install gcc-5 g++-5; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5; fi
 
 before_script:
