@@ -330,10 +330,10 @@ inline const TypeHandlers &get_type_handler()
   return get_type_handler(type<T>{});
 }
 
-/// Type trait for checking whether a type as an ADL-visible forEachField
+/// Type trait for checking whether a type as an ADL-visible for_each_field
 /// available.
-MADARA_MAKE_VAL_SUPPORT_TEST(forEachField, x,
-    forEachField(::madara::ignore_all<>{}, x));
+MADARA_MAKE_VAL_SUPPORT_TEST(for_each_field, x,
+    for_each_field(::madara::ignore_all<>{}, x));
 
 MADARA_MAKE_VAL_SUPPORT_TEST(size_member, x, (0UL == x.size()));
 MADARA_MAKE_VAL_SUPPORT_TEST(int_index, x, (x[0UL] = x[0UL]));
@@ -341,7 +341,7 @@ MADARA_MAKE_VAL_SUPPORT_TEST(str_index, x, (x[""] = x[""]));
 MADARA_MAKE_VAL_SUPPORT_TEST(int_at_index, x, (x.at(0UL) = x.at(0UL)));
 MADARA_MAKE_VAL_SUPPORT_TEST(str_at_index, x, (x.at("") = x.at("")));
 
-/// Functor to pass to forEachField to serialize a type
+/// Functor to pass to for_each_field to serialize a type
 template<typename Archive>
 struct do_serialize
 {
@@ -351,22 +351,6 @@ struct do_serialize
   void operator()(const char *name, T &val)
   {
     (*ar)(cereal::make_nvp(name, val));
-  }
-};
-
-/**
- * For internal use. Helper struct to forward Boost.Serialization to
- * forEachField-based serialization.
- **/
-template<typename T>
-struct for_each_serialization_wrapper_type
-{
-  T *ptr;
-
-  template<typename Archive>
-  void serialize(Archive &ar, const unsigned int)
-  {
-    forEachField(do_serialize<Archive>{&ar}, *ptr);
   }
 };
 
@@ -943,7 +927,7 @@ protected:
  *
  *  * Default constructible
  *  * Copy constructible
- *  * Serializable by Boost.Serialization, or implements the forEachField
+ *  * Serializable by Boost.Serialization, or implements the for_each_field
  *    free function.
  *
  * This class is used by KnowledgeRecord and KnowledgeBase to store (nearly)
@@ -1757,14 +1741,14 @@ template<typename T>
 inline std::vector<knowledge::AnyField> get_fields(T &val)
 {
   std::vector<knowledge::AnyField> ret;
-  forEachField(do_list_fields{&knowledge::get_type_handler<T>(),
+  for_each_field(do_list_fields{&knowledge::get_type_handler<T>(),
       &ret, 0}, val);
   std::sort(ret.begin(), ret.end(), knowledge::compare_any_fields_by_name());
   return ret;
 }
 
 template<typename T,
-  enable_if_<knowledge::supports_forEachField<T>::value, int> = 0>
+  enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::list_fields_fn_type
   get_type_handler_list_fields(type<T>, overload_priority<8>)
 {
@@ -1794,7 +1778,7 @@ struct do_get_field
 };
 
 template<typename T,
-  enable_if_<knowledge::supports_forEachField<T>::value, int> = 0>
+  enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::get_field_fn_type
   get_type_handler_get_field(type<T>, overload_priority<8>)
 {
@@ -1803,7 +1787,7 @@ constexpr knowledge::TypeHandlers::get_field_fn_type
       void *&out_ptr,
       void *ptr) {
       T &val = *static_cast<T *>(ptr);
-      forEachField(do_get_field{&field, &handler, &out_ptr, 0}, val);
+      for_each_field(do_get_field{&field, &handler, &out_ptr, 0}, val);
     };
 }
 
@@ -1859,9 +1843,9 @@ namespace cereal
 
 template<typename Archive, typename T>
 auto serialize(Archive &ar, T &&val) ->
-  ::madara::enable_if_<::madara::knowledge::supports_forEachField<T>::value>
+  ::madara::enable_if_<::madara::knowledge::supports_for_each_field<T>::value>
 {
-  forEachField(::madara::knowledge::do_serialize<Archive>{&ar},
+  for_each_field(::madara::knowledge::do_serialize<Archive>{&ar},
       std::forward<T>(val));
 }
 

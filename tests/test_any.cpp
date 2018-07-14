@@ -35,7 +35,7 @@ namespace ns
   };
 
   template<typename Fun, typename T>
-  auto forEachField(Fun fun, T&& val) -> enable_if_same_decayed<T, B>
+  auto for_each_field(Fun fun, T&& val) -> enable_if_same_decayed<T, B>
   {
     fun("d", val.d);
     fun("e", val.e);
@@ -53,7 +53,7 @@ namespace ns
   };
 
   template<typename Fun, typename T>
-  auto forEachField(Fun fun, T&& val) -> enable_if_same_decayed<T, C>
+  auto for_each_field(Fun fun, T&& val) -> enable_if_same_decayed<T, C>
   {
     fun("g", val.g);
     fun("h", val.h);
@@ -87,8 +87,9 @@ struct Tracker
 
 void test_any()
 {
-  static_assert(supports_forEachField<ns::B>::value, "B must support forEachField");
-  static_assert(supports_forEachField<ns::C>::value, "C must support forEachField");
+  static_assert(supports_for_each_field<ns::B>::value, "B must support for_each_field");
+  static_assert(supports_for_each_field<ns::C>::value, "C must support for_each_field");
+
   Any a0(123);
   Any a1(type<int>{}, 456);
 
