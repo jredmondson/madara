@@ -107,9 +107,11 @@ namespace madara
        *
        * @param  source    the source context to copy from
        * @param  reqs      requirements that must be met
+       * @param  settings  settings for appplying updates to context
        **/
       void copy (const KnowledgeBaseImpl & source,
-        const KnowledgeRequirements & reqs);
+        const KnowledgeRequirements & reqs,
+        const EvalSettings & settings = EvalSettings ());
 
       /**
        * Copies variables and values from source to this context. PERFORMANCE
@@ -129,10 +131,12 @@ namespace madara
        *                   only the supplied variables will be copied.
        * @param  clean_copy  if true, clear the destination context (this)
        *                     before copying.
+       * @param  settings  settings for appplying updates to context
        **/
       void copy (const KnowledgeBaseImpl & source,
         const CopySet & copy_set = CopySet (),
-        bool clean_copy = false);
+        bool clean_copy = false,
+        const EvalSettings & settings = EvalSettings ());
 
       /**
        * Retrieves a knowledge value

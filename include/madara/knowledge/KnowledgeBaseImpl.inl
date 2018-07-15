@@ -266,19 +266,23 @@ KnowledgeBaseImpl::activate_transport (void)
 
 inline void
 KnowledgeBaseImpl::copy (
-const KnowledgeBaseImpl & source,
-const KnowledgeRequirements & reqs)
+  const KnowledgeBaseImpl & source,
+  const KnowledgeRequirements & reqs,
+  const EvalSettings & settings)
 {
-  map_.copy (source.map_, reqs);
+  map_.copy (source.map_, reqs, settings);
+  send_modifieds ("KnowledgeBaseImpl::copy:", settings);
 }
 
 inline void
 KnowledgeBaseImpl::copy (
-const KnowledgeBaseImpl & source,
-const CopySet & copy_set,
-bool clean_copy)
+  const KnowledgeBaseImpl & source,
+  const CopySet & copy_set,
+  bool clean_copy,
+  const EvalSettings & settings)
 {
-  map_.copy (source.map_, copy_set, clean_copy);
+  map_.copy (source.map_, copy_set, clean_copy, settings);
+  send_modifieds ("KnowledgeBaseImpl::copy:", settings);
 }
 
 inline void

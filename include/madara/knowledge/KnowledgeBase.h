@@ -98,10 +98,12 @@ namespace madara
        * force O(n) copy cost since all records could fit requirements
        *
        * @param  source    the source context to copy from
-       * @param  settings  requirements that must be met
+       * @param  reqs  requirements that must be met
+       * @param  settings  settings for appplying updates to context
        **/
       void copy (const KnowledgeBase & source,
-        const KnowledgeRequirements & settings);
+        const KnowledgeRequirements & reqs,
+        const EvalSettings & settings = EvalSettings ());
 
       /**
        * Copies variables and values from source to this context. PERFORMANCE
@@ -121,10 +123,12 @@ namespace madara
        *                   only the supplied variables will be copied.
        * @param  clean_copy  if true, clear the destination context (this)
        *                     before copying.
+       * @param  settings  settings for appplying updates to context
        **/
       void copy (const KnowledgeBase & source,
         const CopySet & copy_set = CopySet (),
-        bool clean_copy = false);
+        bool clean_copy = false,
+        const EvalSettings & settings = EvalSettings ());
 
       /**
        * Assigns another instance's knowledge and settings to this instance
