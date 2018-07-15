@@ -98,7 +98,7 @@ Java_ai_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__J
       "AesBufferFilter object is released already");
   }
 #else
-  (void)cptr;
+  (void)env; (void)cptr;
 #endif
 
   return result;

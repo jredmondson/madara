@@ -88,34 +88,21 @@ matrix:
       # g++, linux, java
     - compiler: gcc
       os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - libssl-dev
       env: NAME="Ubuntu 14.04 g++ java" JAVA="java"
 
       # g++, linux, zmq
     - compiler: gcc
       os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - libssl-dev
       env: NAME="Ubuntu 14.04 g++ zmq" ZMQ="zmq"
+
+      # g++, linux, zmq
+    - compiler: gcc
+      os: linux
+      env: NAME="Ubuntu 14.04 g++ python" PYTHON="python"
 
       # g++, linux, simtime
     - compiler: gcc
       os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - libssl-dev
       env: NAME="Ubuntu 14.04 g++ simtime" SIMTIME="simtime"
 
 addons:
@@ -145,10 +132,11 @@ script:
   - echo "TRAVIS_BUILD_DIR=$TRAVIS_BUILD_DIR"
   - echo ls $TRAVIS_BUILD_DIR
   - ls $TRAVIS_BUILD_DIR
-  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ $SIMTIME
-  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $ZMQ $SIMTIME
+  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $PYTHON $ZMQ $SIMTIME
+  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $PYTHON $ZMQ $SIMTIME
   # now run functionality unit tests 
   - echo "Testing basic functionality..."
+  - $MADARA_ROOT/bin/test_any
   - $MADARA_ROOT/bin/test_bandwidth_monitor
   - $MADARA_ROOT/bin/test_basic_reasoning
   - $MADARA_ROOT/bin/test_checkpointing

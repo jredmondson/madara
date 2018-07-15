@@ -13,6 +13,12 @@ lib*
 .*.swp
 *.class
 *.log
+.vimrc
+*.vcxproj
+*.vcxproj.filters
+MADARA.VC.VC.opendb
+MADARA.VC.db
+MADARA.sln
 
 
 network_*
@@ -28,6 +34,10 @@ docs/madara/*
 docs/maal/*
 docs/maml/*
 docs/VERSION.txt
+
+Debug/*
+Release/*
+.vs/*
 
 #Ignore maven project files
 target/

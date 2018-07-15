@@ -20,6 +20,8 @@
 #include "madara/utility/Refcounter.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/IntTypes.h"
+#include "madara/utility/SupportTest.h"
+#include "Any.h"
 
 namespace madara
 {
@@ -41,6 +43,9 @@ namespace madara
       static struct binary_t { binary_t(){} } binary;
 
       template<typename T>
+      struct any { any(){} };
+
+      template<typename T>
       struct shared_t { shared_t(){} };
 
       /// Used to signal in-place shared_ptr construction in KnowledgeRecord
@@ -49,6 +54,8 @@ namespace madara
       inline shared_t<T> shared(T) {
         return shared_t<T>{};
       }
+
+      using madara::type;
     }
 
     /**
@@ -87,6 +94,7 @@ namespace madara
         INTEGER_ARRAY = 64,
         DOUBLE_ARRAY = 128,
         IMAGE_JPEG = 256,
+        ANY = 512,
         ALL_ARRAYS = INTEGER_ARRAY | DOUBLE_ARRAY,
         ALL_INTEGERS = INTEGER | INTEGER_ARRAY,
         ALL_DOUBLES = DOUBLE | DOUBLE_ARRAY,
@@ -96,7 +104,7 @@ namespace madara
         ALL_IMAGES = IMAGE_JPEG,
         ALL_TEXT_FORMATS = XML | TEXT_FILE | STRING,
         ALL_TYPES = ALL_PRIMITIVE_TYPES | ALL_FILE_TYPES,
-        ALL_CLEARABLES = ALL_ARRAYS | ALL_TEXT_FORMATS | ALL_FILE_TYPES
+        ALL_CLEARABLES = ALL_ARRAYS | ALL_TEXT_FORMATS | ALL_FILE_TYPES | ANY
       };
 
       typedef  int64_t     Integer;
@@ -135,6 +143,7 @@ namespace madara
         std::shared_ptr<std::vector<double>> double_array_;
         std::shared_ptr<std::string> str_value_;
         std::shared_ptr<std::vector<unsigned char>> file_value_;
+        std::shared_ptr<Any> any_value_;
       };
 
       /**
@@ -212,6 +221,14 @@ namespace madara
       /* Binary file shared_ptr constructor */
       explicit KnowledgeRecord (
         std::shared_ptr<std::vector<unsigned char>> value,
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
+
+      /* Any type constructor */
+      explicit KnowledgeRecord (const Any & value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Any type move constructor */
+      explicit KnowledgeRecord (Any && value,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* copy constructor */
@@ -435,6 +452,28 @@ namespace madara
       }
 
       /**
+       * Construct an Any within this KnowledgeRecord
+       *
+       * @params args arguments forwarded to the Any constructor
+       **/
+      template<typename... Args>
+      void emplace_any(Args&&... args) {
+        emplace_val<Any, ANY, &KnowledgeRecord::any_value_> (
+            std::forward<Args>(args)...);
+      }
+
+      /**
+       * Construct an Any within this KnowledgeRecord.
+       *
+       * @params args arguments forwarded to the Any constructor. The type
+       *           given will be forwarded as tags::type<T> automatically.
+       **/
+      template<typename T, typename... Args>
+      void emplace(tags::any<T>, Args&&... args) {
+        emplace_any(tags::type<T>{}, std::forward<Args>(args)...);
+      }
+
+      /**
        * Forwarding constructor for integer arrays
        * Each argument past the first will be forwarded to construct a
        * std::vector<Integer> in-place within the new record.
@@ -525,6 +564,18 @@ namespace madara
       KnowledgeRecord(tags::shared_t<tags::binary_t>, Args&&... args)
         : file_value_ {std::forward<Args>(args)...},
           type_ (UNKNOWN_FILE_TYPE), shared_ (SHARED) {}
+
+      template<typename T, typename... Args>
+      KnowledgeRecord(tags::any<T>, Args&&... args)
+        : any_value_ (std::make_shared<Any> (
+              tags::type<T>{}, std::forward<Args>(args)...)),
+          type_ (ANY) {}
+
+      template<typename T, typename I>
+      KnowledgeRecord(tags::any<T>, std::initializer_list<I> init)
+        : any_value_ (std::make_shared<Any> (
+              tags::type<T>{}, init)),
+          type_ (ANY) {}
 
       /**
        * Checks if record exists (i.e., is not uncreated)
@@ -955,6 +1006,265 @@ namespace madara
       void set_file (std::shared_ptr<std::vector <unsigned char>> new_value);
 
       /**
+       * Set to Any from any compatible type. The argument will be moved into
+       * this Any if it supports it, and the argument is an rvalue reference.
+       * Otherwise, it will be copied.
+       **/
+      template<typename T>
+      void set_any(T &&t)
+      {
+        return emplace_any(tags::type<decay_<T>>{},
+               std::forward<T>(t));
+      }
+
+      /**
+       * Set to Any with raw data, for lazy deserialization when first needed.
+       *
+       * Note that this lazy deserialization is not fully type-safe, and might
+       * not throw an exception if the wrong type is used. The result may be
+       * garbled data, but shouldn't segfault or trample other data.
+       *
+       * @param data a pointer to the serialized data to copy into this Any
+       * @param size the amount of data to copy
+       **/
+      void set_raw_any(const char *data, size_t size)
+      {
+        return emplace_any(raw_data, data, size);
+      }
+
+      /**
+       * Get a reference to the stored Any.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       *
+       * @return a reference to the stored Any
+       **/
+      Any &get_any_ref()
+      {
+        if (type_ == ANY) {
+          return *any_value_;
+        } else {
+          throw exceptions::BadAnyAccess(
+              "Called get_any on KnowledgeRecord not containing "
+              "an Any type");
+        }
+      }
+
+      /**
+       * Get a const reference to the stored Any.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       *
+       * @return a const reference to the stored Any
+       **/
+      const Any &get_any_ref() const
+      {
+        if (type_ == ANY) {
+          return *any_value_;
+        } else {
+          throw exceptions::BadAnyAccess(
+              "Called get_any on KnowledgeRecord not containing "
+              "an Any type");
+        }
+      }
+
+      /**
+       * Get a const reference to the stored Any.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       *
+       * @return a const reference to the stored Any
+       **/
+      const Any &get_any_cref() const
+      {
+        return get_any_ref();
+      }
+
+      /**
+       * Access an Any value's stored value by reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() is true, throw BadAnyAccess exception; else,
+       * If raw() is true, try to deserialize using T, and store deserialized
+       * data if successful, else throw BadAnyAccess exception.
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return *data_ as T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
+      template<typename T>
+      T &get_any_ref(tags::type<T> t)
+      {
+        return get_any_ref().ref(t);
+      }
+
+      /**
+       * Access an Any value's stored value by reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() is true, throw BadAnyAccess exception; else,
+       * If raw() is true, try to deserialize using T, and store deserialized
+       * data if successful, else throw BadAnyAccess exception.
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return *data_ as T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
+      template<typename T>
+      T &get_any_ref()
+      {
+        return get_any_ref(tags::type<T>{});
+      }
+
+      /**
+       * Access the Any's stored value by const reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() or raw() is true, throw BadAnyAccess exception; else,
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return the stored data as const T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
+      template<typename T>
+      const T &get_any_ref(tags::type<T> t) const
+      {
+        return get_any_cref().cref(t);
+      }
+
+      /**
+       * Access the Any's stored value by const reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() or raw() is true, throw BadAnyAccess exception; else,
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return the stored data as const T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
+      template<typename T>
+      const T &get_any_ref() const
+      {
+        return get_any_cref(tags::type<T>{});
+      }
+
+      /**
+       * Access the Any's stored value by const reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() or raw() is true, throw BadAnyAccess exception; else,
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return the stored data as const T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
+      template<typename T>
+      const T &get_any_cref(tags::type<T> t) const
+      {
+        return get_any_ref(t);
+      }
+
+      /**
+       * Access the Any's stored value by const reference.
+       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
+       * If empty() or raw() is true, throw BadAnyAccess exception; else,
+       * Otherwise, check type_id<T> matches handler_->tindex; if so,
+       * return the stored data as const T&, else throw BadAnyAccess exception
+       *
+       * Note that T must match the type of the stored value exactly. It cannot
+       * be a parent or convertible type, including primitive types.
+       *
+       * @return a reference to the contained value
+       **/
+      template<typename T>
+      const T &get_any_cref() const
+      {
+        return get_any_ref(tags::type<T>{});
+      }
+
+      /**
+       * Gets a copy of the record's value as an Any type. If this record
+       * holds an Any, a direct copy is returned. Otherwise, the record's
+       * value will be copied into a new Any, and returned.
+       *
+       * @return the new Any
+       **/
+      Any to_any() const
+      {
+        static_assert(!is_type_tag<double>(), "");
+        static_assert(is_type_tag<tags::type<double>>(), "");
+        static_assert(is_same_decayed<Any, Any>(), "");
+        static_assert(!is_same_decayed<double, Any>(), "");
+        if (type_ == ANY) {
+          return *any_value_;
+        } else if (type_ == INTEGER) {
+          return Any(tags::type<int64_t>{}, int_value_);
+        } else if (type_ == DOUBLE) {
+          return Any(double_value_);
+        } else if (type_ == INTEGER_ARRAY) {
+          return Any(*int_array_);
+        } else if (type_ == DOUBLE_ARRAY) {
+          return Any(*double_array_);
+        } else if (is_string_type()) {
+          return Any(*str_value_);
+        } else if (is_binary_file_type()) {
+          return Any(*file_value_);
+        } else {
+          return {};
+        }
+      }
+
+      /**
+       * Gets a copy of the record's value, as the type given. The record's
+       * value will be put into an Any if not already, then accessed and 
+       * returned with Any::get.
+       *
+       * Will throw BadAnyAccess if type given doesn't match record's value.
+       *
+       * @return a value of the type requested.
+       **/
+      template<typename T>
+      T to_any(tags::type<T> t) const
+      {
+        return to_any().take(t);
+      }
+
+      /**
+       * Gets a copy of the record's value, as the type given. The record's
+       * value will be put into an Any if not already, then accessed and 
+       * returned with Any::get.
+       *
+       * Will throw BadAnyAccess if type given doesn't match record's value.
+       *
+       * @return a value of the type requested.
+       **/
+      template<typename T>
+      T to_any() const
+      {
+        return to_any(tags::type<T>{});
+      }
+
+      /**
+       * @return a shared_ptr, sharing with the internal one.
+       * If this record is not an Any type, returns NULL shared_ptr
+       **/
+      std::shared_ptr<Any> share_any() const;
+
+      /**
+       * @return a shared_ptr, while resetting this record to empty.
+       * If this record is not an Any type, returns NULL shared_ptr
+       * and this record is unmodified.
+       **/
+      std::shared_ptr<Any> take_any();
+
+      /**
        * Creates a deep copy of the knowledge record. Because each
        * Knowledge Record may contain non-thread-safe ref counted values,
        * user threads that reference knowledge records will want to use
@@ -1103,6 +1413,19 @@ namespace madara
        * @return   true if the record is an integer
        **/
       static bool is_array_type (uint32_t type);
+
+      /**
+       * returns if the record is Any type
+       * @return   true if the record is ALL type
+       **/
+      bool is_any_type (void) const;
+
+      /**
+       * returns if the record type is Any type
+       * @param   type the type to check
+       * @return   true if the record is ALL type
+       **/
+      static bool is_any_type (uint32_t type);
 
       /**
        * returns a record containing a fragment of the character buffer.

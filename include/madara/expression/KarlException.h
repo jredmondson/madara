@@ -8,6 +8,8 @@
 #include <vector>
 #include <stdexcept>
 
+#include "madara/exceptions/MadaraException.h"
+
 namespace madara
 {
   namespace expression
@@ -15,17 +17,10 @@ namespace madara
     /**
      * An exception for unrecoverable KaRL compilation issues
      **/
-    class KarlException : public std::runtime_error
+    class KarlException : public exceptions::MadaraException
     {
     public:
-      /**
-       * Constructor
-       **/
-      explicit KarlException (const std::string & what)
-      : std::runtime_error (what)
-      {
-
-      }
+      using exceptions::MadaraException::MadaraException;
     };
   }
 }

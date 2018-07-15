@@ -838,7 +838,7 @@ ThreadSafeContext::to_string (
     // separate the key/value pairing with the key_val_delimiter
     buffer << key_val_delimiter;
 
-    if (i->second.is_string_type ())
+    if (i->second.is_string_type () || i->second.is_any_type ())
     {
       buffer << "'";
     }
@@ -851,7 +851,7 @@ ThreadSafeContext::to_string (
     // use the array_delimiter for the underlying to_string functions
     buffer << i->second.to_string (array_delimiter);
 
-    if (i->second.is_string_type ())
+    if (i->second.is_string_type () || i->second.is_any_type ())
     {
       buffer << "'";
     }
@@ -1782,13 +1782,13 @@ ThreadSafeContext::save_context (
           }
         }
 
-        // get the encoded size of the record for checking buffer boundaries
-        int64_t encoded_size = i->second.get_encoded_size (i->first);
+        auto pre_write = current;
+        current = i->second.write (current, i->first, buffer_remaining);
+        size_t encoded_size = current - pre_write;
+
         ++checkpoint_header.updates;
         meta.size += encoded_size;
         checkpoint_header.size += encoded_size;
-
-        current = i->second.write (current, i->first, buffer_remaining);
       }
     }
 
@@ -2617,7 +2617,9 @@ ThreadSafeContext::save_checkpoint (
               } // end if larger than buffer
             } // end if larger than buffer remaining
 
+            auto pre_write = current;
             current = record->write (current, e.first, buffer_remaining);
+            encoded_size = current - pre_write;
 
             checkpoint_header.size += (uint64_t)encoded_size;
             ++checkpoint_header.updates;
@@ -2802,11 +2804,13 @@ ThreadSafeContext::save_checkpoint (
             " estimated encoded size of update=%d bytes\n",
             (int)encoded_size);
 
+          auto pre_write = current;
+          current = record->write (current, e.first, buffer_remaining);
+          encoded_size = current - pre_write;
+
           ++checkpoint_header.updates;
           meta.size += encoded_size;
           checkpoint_header.size += encoded_size;
-
-          current = record->write (current, e.first, buffer_remaining);
 
           madara_logger_ptr_log (logger_, logger::LOG_MINOR,
             "ThreadSafeContext::save_checkpoint:" \

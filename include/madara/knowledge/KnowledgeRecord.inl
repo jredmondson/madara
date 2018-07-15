@@ -126,6 +126,20 @@ inline KnowledgeRecord::KnowledgeRecord (
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
+  const Any & value, logger::Logger & logger)
+: logger_ (&logger)
+{
+  emplace_any (value);
+}
+
+inline KnowledgeRecord::KnowledgeRecord (
+  Any && value, logger::Logger & logger) noexcept
+: logger_ (&logger)
+{
+  emplace_any (std::move(value));
+}
+
+inline KnowledgeRecord::KnowledgeRecord (
     const knowledge::KnowledgeRecord & rhs)
 : logger_ (rhs.logger_),
   clock (rhs.clock),
@@ -149,6 +163,8 @@ inline KnowledgeRecord::KnowledgeRecord (
     new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
   else if (rhs.is_binary_file_type ())
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
+  else if (rhs.type_ == ANY)
+    new (&any_value_) std::shared_ptr<Any>(rhs.any_value_);
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
@@ -175,6 +191,8 @@ inline KnowledgeRecord::KnowledgeRecord (
     new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
   else if (rhs.is_binary_file_type ())
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
+  else if (rhs.type_ == ANY)
+    new (&any_value_) std::shared_ptr<Any>(std::move(rhs.any_value_));
 
   rhs.type_ = EMPTY;
 }
@@ -215,6 +233,8 @@ KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs)
     new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
   else if (rhs.is_binary_file_type ())
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
+  else if (rhs.type_ == ANY)
+    new (&any_value_) std::shared_ptr<Any>(rhs.any_value_);
 
   return *this;
 }
@@ -250,64 +270,13 @@ KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
     new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
   else if (rhs.is_binary_file_type ())
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
+  else if (rhs.type_ == ANY)
+    new (&any_value_) std::shared_ptr<Any>(std::move(rhs.any_value_));
 
   rhs.type_ = EMPTY;
 
   return *this;
 }
-
-#if 0
-template<typename T,
-  typename std::enable_if<std::is_integral<T>::value, void*>::type>
-inline bool
-KnowledgeRecord::operator== (T value) const
-{
-  // for this type of comparison, we can only be equal if we are the same
-  // base type
-  if (is_integer_type ())
-  {
-    return to_integer () == value;
-  }
-  else if (is_double_type () || is_string_type ())
-  {
-    return to_double () == value;
-  }
-
-  return false;
-}
-
-template<typename T,
-  typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
-inline bool
-KnowledgeRecord::operator== (T value) const
-{
-  // for this type of comparison, we can only be equal if we are the same
-  // base type
-  if (is_integer_type ())
-  {
-    return to_integer () == value;
-  }
-  else if (is_double_type () || is_string_type ())
-  {
-    return to_double () == value;
-  }
-
-  return false;
-}
-
-inline bool
-KnowledgeRecord::operator== (
-  const std::string & value) const
-{
-  return to_string () == value;
-}
-
-inline bool
-KnowledgeRecord::operator== (const char * value) const
-{
-  return to_string ().compare (value) == 0;
-}
-#endif
 
 inline bool
 KnowledgeRecord::operator!= (const knowledge::KnowledgeRecord & rhs) const
@@ -596,6 +565,8 @@ KnowledgeRecord::unshare (void)
       emplace_integers (*int_array_);
     } else if (type_ == DOUBLE_ARRAY) {
       emplace_doubles (*double_array_);
+    } else if (type_ == ANY) {
+      emplace_any (*any_value_);
     }
   }
   shared_ = OWNED;
@@ -652,7 +623,7 @@ KnowledgeRecord::set_modified (void)
 inline uint32_t
 KnowledgeRecord::size (void) const
 {
-  if (type_ == INTEGER || type_ == DOUBLE) {
+  if (type_ == INTEGER || type_ == DOUBLE || type_ == ANY) {
     return 1;
   } else if (is_string_type()) {
     return (uint32_t)str_value_->size () + 1;
@@ -712,6 +683,11 @@ KnowledgeRecord::get_encoded_size (void) const
   else if (is_binary_file_type ())
   {
     buffer_size += file_value_->size ();
+  }
+  else if (type_ == ANY)
+  {
+    //TODO calculate real size
+    buffer_size += 1024;
   }
 
   return buffer_size;
@@ -828,6 +804,18 @@ KnowledgeRecord::is_binary_file_type (uint32_t type)
   return type == IMAGE_JPEG || type == UNKNOWN_FILE_TYPE;
 }
 
+inline bool
+KnowledgeRecord::is_any_type (void) const
+{
+  return is_any_type (type_);
+}
+
+inline bool
+KnowledgeRecord::is_any_type (uint32_t type)
+{
+  return type == ANY;
+}
+
 inline uint32_t
 max_quality (const knowledge::KnowledgeRecords & records)
 {
@@ -874,6 +862,8 @@ KnowledgeRecord::clear_union (void) noexcept
       destruct(str_value_);
     else if (is_binary_file_type ())
       destruct(file_value_);
+    else if (type_ == ANY)
+      destruct(any_value_);
     shared_ = OWNED;
   }
 }
@@ -925,9 +915,16 @@ KnowledgeRecord::read (const char * buffer,
   }
   buffer_remaining -= sizeof (buff_value_size);
 
+  //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
+    //"KnowledgeRecord::read: reading type code %d\n", type);
+  //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
+    //"KnowledgeRecord::read: reading type size %d (buf size %d)\n", size,
+    //buff_value_size);
+
   // Remove the value from the buffer
   if (buffer_remaining >= int64_t (buff_value_size))
   {
+
     if (is_string_type (type))
     {
       if (buff_value_size >= 1) {
@@ -985,6 +982,13 @@ KnowledgeRecord::read (const char * buffer,
     {
       const unsigned char *b = (const unsigned char *)buffer;
       emplace_file (b, b + size);
+    }
+
+    else if (is_any_type (type))
+    {
+      //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
+        //"KnowledgeRecord::read: reading Any type of size %d\n", size);
+      emplace_any (raw_data, buffer, size);
     }
 
     else {
@@ -1503,6 +1507,32 @@ KnowledgeRecord::take_binary()
   return nullptr;
 }
 
+inline std::shared_ptr<Any>
+KnowledgeRecord::share_any() const
+{
+  if (is_any_type()) {
+    shared_ = SHARED;
+    return any_value_;
+  }
+  return nullptr;
+}
+
+inline std::shared_ptr<Any>
+KnowledgeRecord::take_any()
+{
+  if (is_any_type()) {
+    std::shared_ptr<Any> ret;
+
+    using std::swap;
+    swap(ret, any_value_);
+
+    reset_value();
+
+    return ret;
+  }
+  return nullptr;
+}
+
 inline
 KnowledgeRecord::operator bool (void) const
 {
@@ -1545,9 +1575,6 @@ KnowledgeRecord::write (char * buffer,
       // value copy (e.g. during double conversion)
       size_location = buffer;
       size_intermediate = size;
-
-      uint32_temp = madara::utility::endian_swap (size);
-      memcpy (buffer, &uint32_temp, sizeof (uint32_temp));
 
       // note that we do not encode the size yet because it may change
       // and we need the architectural-specific version for other checks
@@ -1638,11 +1665,40 @@ KnowledgeRecord::write (char * buffer,
         memcpy (buffer, &(*file_value_)[0], size);
       }
     }
+    else if (is_any_type ())
+    {
+      //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
+        //"KnowledgeRecord::write: encoding an Any type\n");
+
+      try {
+        size_intermediate = (uint32_t)any_value_->serialize(buffer, buffer_remaining);
+        size = size_intermediate;
+
+        //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
+            //"KnowledgeRecord::write: encoded an Any type of size %d\n",
+            //size_intermediate);
+      } catch (const std::exception &) {
+        // TODO catch more specific exception for this
+
+        std::stringstream buffer;
+        buffer << "KnowledgeRecord::write: ";
+        buffer << "Any encoding cannot fit in ";
+        buffer << buffer_remaining << " byte buffer\n";
+
+        madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+          buffer.str ().c_str ());
+
+        throw exceptions::MemoryException (buffer.str ());
+      }
+    }
 
     if (size_location)
     {
       buffer_remaining -= size_intermediate;
       buffer += size_intermediate;
+
+      uint32_temp = madara::utility::endian_swap (size);
+      memcpy (size_location, &uint32_temp, sizeof (uint32_temp));
     }
   }
   else
