@@ -1560,6 +1560,8 @@ ThreadSafeContext::copy (
 
             where->second = iters.first->second;
           }
+          
+          mark_modified (iters.first->first, settings);
         }
       }
       else // we need to match a suffix
