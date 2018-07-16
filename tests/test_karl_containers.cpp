@@ -17,6 +17,7 @@
 #include "madara/knowledge/containers/IntegerVector2D.h"
 #include "madara/knowledge/containers/IntegerVector3D.h"
 #include "madara/knowledge/containers/CircularBuffer.h"
+#include "madara/knowledge/containers/CircularBufferConsumer.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 
@@ -1942,7 +1943,7 @@ void test_collection (void)
 void test_circular (void)
 {
   std::cerr <<
-    "************* COLLECTION: Testing CircularBuffer*************\n";
+    "************* CIRCULARBUFFER: Testing CircularBuffer*************\n";
 
   knowledge::KnowledgeBase kb;
 
@@ -2341,8 +2342,388 @@ void test_circular (void)
       std::cerr << "    " << record << "\n";
     }
   }
+}
 
-  kb.print ();
+void test_circular_consumer (void)
+{
+  std::cerr <<
+    "************* CIRCULARBUFFER: Testing CircularBufferConsumer*************\n";
+
+  knowledge::KnowledgeBase kb;
+  containers::CircularBuffer producer ("buffer", kb, 100);
+  containers::CircularBufferConsumer consumer ("buffer", kb);
+
+  for (KnowledgeRecord::Integer i = 0; i < 100; ++i)
+  {
+    producer.add (KnowledgeRecord (i));
+  }
+
+
+  std::cerr << "  Testing get_earliest(50)...";
+
+  std::vector <KnowledgeRecord> records = consumer.get_earliest (50);
+
+  bool has_failed = records.size () != 50;
+
+  for (KnowledgeRecord::Integer i = 0;
+       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  {
+    if (records[i] != i)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 50)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
+  std::cerr << "  Testing get_earliest(25)...";
+
+  records = consumer.get_earliest (25);
+
+  has_failed = records.size () != 25;
+
+  for (KnowledgeRecord::Integer i = 0;
+       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  {
+    if (records[i] != i + 50)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 25)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
+  std::cerr << "  Testing get_earliest(25)...";
+
+  records = consumer.get_earliest (25);
+
+  has_failed = records.size () != 25;
+
+  for (KnowledgeRecord::Integer i = 0;
+       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  {
+    if (records[i] != i + 75)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
+  std::cerr << "  Testing count()...";
+
+  if (consumer.count () == 100)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      count() == " << consumer.count () << "\n";
+  }
+
+  std::cerr << "  Testing size()...";
+
+  if (consumer.size () == 100)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      size() == " << consumer.size () << "\n";
+  }
+
+  std::cerr << "  Adding 25 more elements...\n";
+
+  for (KnowledgeRecord::Integer i = 0; i < 25; ++i)
+  {
+    producer.add (KnowledgeRecord (i + 100));
+  }
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 25)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
+  std::cerr << "  Testing count()...";
+
+  if (consumer.count () == 100)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      count() == " << consumer.count () << "\n";
+  }
+
+  std::cerr << "  Testing size()...";
+
+  if (consumer.size () == 100)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      size() == " << consumer.size () << "\n";
+  }
+
+
+  std::cerr << "  Testing get_earliest(5)...";
+
+  records = consumer.get_earliest (5);
+
+  has_failed = records.size () != 5;
+
+  for (KnowledgeRecord::Integer i = 0;
+       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  {
+    if (records[i] != i + 100)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 20)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
+  std::cerr << "  Testing inspect(0)...";
+
+  if (consumer.inspect (0) == 104)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      inspect(0) == " << consumer.inspect (0) << "\n";
+  }
+
+  std::cerr << "  Testing inspect(-1)...";
+
+  if (consumer.inspect (-1) == 103)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      inspect(-1) == " << consumer.inspect (-1) << "\n";
+  }
+
+  std::cerr << "  Testing inspect(-2)...";
+
+  if (consumer.inspect (-2) == 102)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      inspect(-2) == " << consumer.inspect (-2) << "\n";
+  }
+
+  std::cerr << "  Testing inspect(1)...";
+
+  if (consumer.inspect (1) == 105)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      inspect(1) == " << consumer.inspect (-1) << "\n";
+  }
+
+  std::cerr << "  Testing inspect(2)...";
+
+  if (consumer.inspect (2) == 106)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      inspect(2) == " << consumer.inspect (2) << "\n";
+  }
+
+
+  std::cerr << "  Testing get_latest(5)...";
+
+  records = consumer.get_latest (5);
+
+  has_failed = records.size () != 5;
+
+  for (KnowledgeRecord::Integer i = 0;
+       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  {
+    if (records[i] != 124 - i)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
 }
 
 int main (int , char **)
@@ -2369,6 +2750,7 @@ int main (int , char **)
   test_vector3D ();
 
   test_circular ();
+  test_circular_consumer ();
 
   if (num_fails > 0)
   {
