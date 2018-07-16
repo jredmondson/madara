@@ -57,7 +57,7 @@ madara::expression::CompositeEqualityNode::prune (bool & can_change)
       "madara::expression::CompositeEqualityNode::"
       "KARL COMPILE ERROR: Equality has no left expression\n");
 
-    throw KarlException ("madara::expression::CompositeEqualityNode::"
+    throw exceptions::KarlException ("madara::expression::CompositeEqualityNode::"
       "KARL COMPILE ERROR: Equality has no left expression\n");
   }
 
@@ -76,7 +76,7 @@ madara::expression::CompositeEqualityNode::prune (bool & can_change)
       "madara::expression::CompositeEqualityNode::"
       "KARL COMPILE ERROR: Equality has no right expression\n");
 
-    throw KarlException ("madara::expression::CompositeEqualityNode::"
+    throw exceptions::KarlException ("madara::expression::CompositeEqualityNode::"
       "KARL COMPILE ERROR: Equality has no right expression\n");
 
   }

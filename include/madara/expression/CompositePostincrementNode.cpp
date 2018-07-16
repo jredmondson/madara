@@ -61,7 +61,7 @@ madara::expression::CompositePostincrementNode::prune (bool & can_change)
       "KARL COMPILE ERROR:"
       "Postincrement has no var, array, or expression\n");
 
-    throw KarlException ("madara::expression::CompositePostincrementNode: "
+    throw exceptions::KarlException ("madara::expression::CompositePostincrementNode: "
       "KARL COMPILE ERROR: "
       "Postincrement has no var, array, or expression\n"); 
   }
@@ -100,7 +100,7 @@ madara::expression::CompositePostincrementNode::evaluate (
       "KARL RUNTIME ERROR: "
       "Preincrement has no var, array, or expression\n");
 
-    throw KarlException ("madara::expression::CompositePostincrementNode: "
+    throw exceptions::KarlException ("madara::expression::CompositePostincrementNode: "
       "KARL RUNTIME ERROR: "
       "Preincrement has no var, array, or expression\n"); 
   }

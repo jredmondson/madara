@@ -58,7 +58,7 @@ madara::expression::SystemCallPrint::prune (bool & can_change)
       "KARL COMPILE ERROR:"
       "System call size requires an argument\n");
 
-    throw KarlException ("madara::expression::SystemCallPrint: "
+    throw exceptions::KarlException ("madara::expression::SystemCallPrint: "
       "KARL COMPILE ERROR: "
       "System call size requires an argument\n");
   }
@@ -109,7 +109,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "KARL RUNTIME ERROR:"
       "System call size requires an argument\n");
 
-    throw KarlException ("madara::expression::SystemCallPrint: "
+    throw exceptions::KarlException ("madara::expression::SystemCallPrint: "
       "KARL RUNTIME ERROR: "
       "System call size requires an argument\n");
   }

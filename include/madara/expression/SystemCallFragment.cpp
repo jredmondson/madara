@@ -61,7 +61,7 @@ madara::expression::SystemCallFragment::prune (bool & can_change)
       " requires three arguments, e.g."
       " #fragment ('hello world', 0, 4) will return 'hello'\n");
 
-    throw KarlException ("madara::expression::SystemCallFragment: "
+    throw exceptions::KarlException ("madara::expression::SystemCallFragment: "
       "KARL COMPILE ERROR: "
       "System call fragment"
       " requires three arguments, e.g."
@@ -104,7 +104,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       " requires three arguments, e.g."
       " #fragment ('hello world', 0, 4) will return 'hello'\n");
 
-    throw KarlException ("madara::expression::SystemCallFragment: "
+    throw exceptions::KarlException ("madara::expression::SystemCallFragment: "
       "KARL RUNTIME ERROR: "
       "System call fragment"
       " requires three arguments, e.g."

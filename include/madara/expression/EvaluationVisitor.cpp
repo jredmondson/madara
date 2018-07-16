@@ -118,7 +118,7 @@ madara::expression::EvaluationVisitor::visit (
       "\nKARL EVAL ERROR: Negate" \
       " requires a right expression"));
       
-    throw KarlException ("madara::expression::CompositeNegateNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeNegateNode: "
       "KARL COMPILE ERROR: "
       "Node has no right expression\n"); 
   }

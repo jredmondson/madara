@@ -82,7 +82,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
           " may have up to 2 arguments. First is a value to change to string."
           " An optional second is a delimiter for array stringification\n");
 
-        throw KarlException ("madara::expression::SystemCallToString: "
+        throw exceptions::KarlException ("madara::expression::SystemCallToString: "
           "KARL RUNTIME ERROR: "
           "System call to_string"
           " may have up to 2 arguments. First is a value to change to string."
@@ -104,7 +104,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "KARL RUNTIME ERROR:"
       "System call to_string requires an argument\n");
 
-    throw KarlException ("madara::expression::SystemCallToString: "
+    throw exceptions::KarlException ("madara::expression::SystemCallToString: "
       "KARL RUNTIME ERROR: "
       "System call to_string requires an argument\n");
 

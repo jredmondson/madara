@@ -64,7 +64,7 @@ madara::expression::SystemCallReadFile::prune (bool & can_change)
       " does not end with .txt, .xml, .jpg, etc. Can be 'text',"
       " 'jpeg', 'xml'\n");
 
-    throw KarlException ("madara::expression::SystemCallRandInt: "
+    throw exceptions::KarlException ("madara::expression::SystemCallRandInt: "
       "KARL COMPILE ERROR: "
       "System call read_file"
       " requires at least a filename to read, e.g."
@@ -143,7 +143,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       " does not end with .txt, .xml, .jpg, etc. Can be 'text',"
       " 'jpeg', 'xml'\n");
 
-    throw KarlException ("madara::expression::SystemCallReadFile: "
+    throw exceptions::KarlException ("madara::expression::SystemCallReadFile: "
       "KARL COMPILE ERROR: "
       "System call read_file"
       " requires at least a filename to read, e.g."

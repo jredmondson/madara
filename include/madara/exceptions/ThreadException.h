@@ -1,9 +1,9 @@
 /* -*- C++ -*- */
-#ifndef _MADARA_EXCEPTION_THREADEXCEPTION_H_
-#define _MADARA_EXCEPTION_THREADEXCEPTION_H_
+#ifndef _MADARA_EXCEPTIONS_THREADEXCEPTION_H_
+#define _MADARA_EXCEPTIONS_THREADEXCEPTION_H_
 
 #include <string>
-#include <stdexcept>
+#include "MadaraException.h"
 
 namespace madara
 {
@@ -12,13 +12,13 @@ namespace madara
     /**
      * An exception for general thread-related errors
      **/
-    class ThreadException : public std::runtime_error
+    class ThreadException : public MadaraException
     {
     public:
       /// inherit the base constructor
-      using std::runtime_error::runtime_error;
+      using MadaraException::MadaraException;
     };
   }
 }
 
-#endif /* _MADARA_EXCEPTION_THREADEXCEPTION_H_ */
+#endif /* _MADARA_EXCEPTIONS_THREADEXCEPTION_H_ */

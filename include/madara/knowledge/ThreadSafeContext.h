@@ -1405,10 +1405,12 @@ namespace madara
        * force O(n) copy cost since all records could fit requirements
        *
        * @param  source    the source context to copy from
-       * @param  settings  requirements that must be met
+       * @param  reqs      requirements that must be met
+       * @param  settings  settings for appplying updates to context
        **/
       void copy (const ThreadSafeContext & source,
-        const KnowledgeRequirements & settings);
+        const KnowledgeRequirements & reqs,
+        const KnowledgeUpdateSettings & settings);
 
 
       /**
@@ -1429,10 +1431,12 @@ namespace madara
        *                   only the supplied variables will be copied.
        * @param  clean_copy  if true, clear the destination context (this)
        *                     before copying.
+       * @param  settings  settings for appplying updates to context
        **/
       void copy (const ThreadSafeContext & source,
         const CopySet & copy_set = CopySet (),
-        bool clean_copy = false);
+        bool clean_copy = false,
+        const KnowledgeUpdateSettings & settings = KnowledgeUpdateSettings ());
 
 
 #ifndef _MADARA_NO_KARL_
@@ -1442,7 +1446,7 @@ namespace madara
        *
        * @param expression         expression to compile
        * @return                   compiled, optimized expression tree
-       * @throw expression::KarlException  failure during compile/evaluate
+       * @throw exceptions::KarlException  failure during compile/evaluate
        **/
       CompiledExpression
         compile (const std::string & expression);
@@ -1533,7 +1537,7 @@ namespace madara
        * @param   expression  A compiled expressio to run.
        * @param   settings    settings for applying the update
        * @return              result of the evaluation
-       * @throw expression::KarlException  failure during compile/evaluate
+       * @throw exceptions::KarlException  failure during compile/evaluate
        **/
       knowledge::KnowledgeRecord evaluate (CompiledExpression expression,
         const KnowledgeUpdateSettings & settings =
@@ -1546,7 +1550,7 @@ namespace madara
        * @param   root        Root of an expression tree
        * @param   settings    settings for applying the update
        * @return              result of the evaluation
-       * @throw expression::KarlException  failure during compile/evaluate
+       * @throw exceptions::KarlException  failure during compile/evaluate
        **/
       knowledge::KnowledgeRecord evaluate (
         expression::ComponentNode * root,

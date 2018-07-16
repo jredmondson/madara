@@ -1145,7 +1145,8 @@ public:
    *
    * Range checking is determined by stored type, and will be used if available.
    **/
-  RefImpl operator[](size_t i) const
+  template<typename T>
+  enable_if_<std::is_integral<T>::value, RefImpl> operator[](T i) const
   {
     return at(i);
   }
@@ -1701,7 +1702,8 @@ public:
    *
    * Range checking is determined by stored type, and will be used if available.
    **/
-  RefImpl operator[](size_t i) const
+  template<typename T>
+  enable_if_<std::is_integral<T>::value, RefImpl> operator[](T i) const
   {
     return at(i);
   }
@@ -2540,7 +2542,8 @@ constexpr knowledge::TypeHandlers::get_field_fn_type
   return [](const knowledge::AnyField &field,
       const knowledge::TypeHandlers *&handler,
       void *&out_ptr,
-      void *ptr) {
+      void *ptr)
+    {
       T &val = *static_cast<T *>(ptr);
       for_each_field(do_get_field{&field, &handler, &out_ptr, 0}, val);
     };
@@ -2556,7 +2559,8 @@ constexpr knowledge::TypeHandlers::index_int_fn_type
   return [](size_t index,
       const knowledge::TypeHandlers *&handler,
       void *&out_ptr,
-      void *ptr) {
+      void *ptr)
+    {
       T &val = *static_cast<T *>(ptr);
       using I = decltype(val[index]);
       handler = &knowledge::get_type_handler<decay_<I>>();
@@ -2574,7 +2578,8 @@ constexpr knowledge::TypeHandlers::index_int_fn_type
   return [](size_t index,
       const knowledge::TypeHandlers *&handler,
       void *&out_ptr,
-      void *ptr) {
+      void *ptr)
+    {
       T &val = *static_cast<T *>(ptr);
       using I = decltype(val.at(index));
       handler = &knowledge::get_type_handler<decay_<I>>();
@@ -2592,7 +2597,8 @@ constexpr knowledge::TypeHandlers::index_str_fn_type
   return [](const char *index,
       const knowledge::TypeHandlers *&handler,
       void *&out_ptr,
-      void *ptr) {
+      void *ptr)
+    {
       T &val = *static_cast<T *>(ptr);
       using I = decltype(val[index]);
       handler = &knowledge::get_type_handler<decay_<I>>();
@@ -2611,7 +2617,8 @@ constexpr knowledge::TypeHandlers::index_str_fn_type
   return [](const char *index,
       const knowledge::TypeHandlers *&handler,
       void *&out_ptr,
-      void *ptr) {
+      void *ptr)
+    {
       T &val = *static_cast<T *>(ptr);
       using I = decltype(val.at(index));
       handler = &knowledge::get_type_handler<decay_<I>>();
@@ -2626,7 +2633,8 @@ template<typename T,
 constexpr knowledge::TypeHandlers::size_fn_type
   get_type_handler_size(type<T>, overload_priority<8>)
 {
-  return [](size_t &out, void *ptr) {
+  return [](size_t &out, void *ptr)
+    {
       T &val = *static_cast<T *>(ptr);
       out = val.size();
     };
@@ -2639,7 +2647,8 @@ template<typename T,
 constexpr knowledge::TypeHandlers::to_ostream_fn_type
   get_type_handler_to_ostream(type<T>, overload_priority<8>)
 {
-  return [](std::ostream &o, void *ptr) -> std::ostream &{
+  return [](std::ostream &o, void *ptr) -> std::ostream &
+    {
       T &val = *static_cast<T *>(ptr);
       return o << val;
     };

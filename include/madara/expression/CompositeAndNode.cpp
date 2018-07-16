@@ -65,7 +65,7 @@ madara::expression::CompositeAndNode::prune (bool & can_change)
       "KARL COMPILE ERROR (&&): "
       "And should have a left and right-hand side argument.\n");
 
-    throw KarlException ("CompositeAndNode: "
+    throw exceptions::KarlException ("CompositeAndNode: "
       "KARL COMPILE ERROR (&&): "
       "And should have a left and right-hand side argument.\n");
   }

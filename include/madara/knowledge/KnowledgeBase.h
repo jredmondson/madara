@@ -98,10 +98,12 @@ namespace madara
        * force O(n) copy cost since all records could fit requirements
        *
        * @param  source    the source context to copy from
-       * @param  settings  requirements that must be met
+       * @param  reqs  requirements that must be met
+       * @param  settings  settings for appplying updates to context
        **/
       void copy (const KnowledgeBase & source,
-        const KnowledgeRequirements & settings);
+        const KnowledgeRequirements & reqs,
+        const EvalSettings & settings = EvalSettings ());
 
       /**
        * Copies variables and values from source to this context. PERFORMANCE
@@ -121,10 +123,12 @@ namespace madara
        *                   only the supplied variables will be copied.
        * @param  clean_copy  if true, clear the destination context (this)
        *                     before copying.
+       * @param  settings  settings for appplying updates to context
        **/
       void copy (const KnowledgeBase & source,
         const CopySet & copy_set = CopySet (),
-        bool clean_copy = false);
+        bool clean_copy = false,
+        const EvalSettings & settings = EvalSettings ());
 
       /**
        * Assigns another instance's knowledge and settings to this instance
@@ -1106,7 +1110,7 @@ namespace madara
        *
        * @param expression         expression to compile
        * @return                   compiled, optimized expression tree
-       * @throw expression::KarlException  failure during compile/evaluate
+       * @throw exceptions::KarlException  failure during compile/evaluate
        **/
       CompiledExpression
         compile (const std::string & expression);
@@ -1117,7 +1121,7 @@ namespace madara
        * @param expression      KaRL expression to evaluate
        * @param settings        Settings for evaluating and printing
        * @return                value of expression
-       * @throw expression::KarlException  failure during compile/evaluate
+       * @throw exceptions::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord evaluate (
         const std::string & expression,
@@ -1130,7 +1134,7 @@ namespace madara
        * @param expression      KaRL expression to evaluate (result of compile)
        * @param settings        Settings for evaluating and printing
        * @return                value of expression
-       * @throw expression::KarlException  failure during compile/evaluate
+       * @throw exceptions::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord evaluate (
         CompiledExpression & expression,
@@ -1143,7 +1147,7 @@ namespace madara
        * @param root            root-based tree
        * @param settings        Settings for evaluating and printing
        * @return                value of expression
-       * @throw expression::KarlException  failure during compile/evaluate
+       * @throw exceptions::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord evaluate (
         expression::ComponentNode * root,
@@ -1158,7 +1162,7 @@ namespace madara
        * @param settings        Settings for the underlying expression
        *                        evaluation and printing
        * @return                value of expression
-       * @throw expression::KarlException  failure during compile/evaluate
+       * @throw exceptions::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord wait (
         const std::string & expression,
@@ -1173,7 +1177,7 @@ namespace madara
        * @param settings        Settings for the underlying expression
        *                        evaluation and printing
        * @return                value of expression
-       * @throw expression::KarlException  failure during compile/evaluate
+       * @throw exceptions::KarlException  failure during compile/evaluate
        **/
       madara::knowledge::KnowledgeRecord wait (
         CompiledExpression & expression,

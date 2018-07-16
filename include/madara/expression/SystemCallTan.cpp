@@ -80,7 +80,7 @@ madara::expression::SystemCallTan::prune (bool & can_change)
       " e.g., #tan (1.5), where 1.5 is radians. Args currently are: %s\n",
       args.str ().c_str ());
 
-    throw KarlException ("madara::expression::SystemCallTan: "
+    throw exceptions::KarlException ("madara::expression::SystemCallTan: "
       "KARL COMPILE ERROR: "
       "System call tan requires 1 argument,"
       " e.g., #tan (1.5), where 1.5 is radians. Args currently are: " + 
@@ -116,7 +116,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call tan requires 1 argument,"
       " e.g., #tan (1.5), where 1.5 is radians\n");
 
-    throw KarlException ("madara::expression::SystemCallTan: "
+    throw exceptions::KarlException ("madara::expression::SystemCallTan: "
       "KARL RUNTIME ERROR: "
       "System call tan requires 1 argument,"
       " e.g., #tan (1.5), where 1.5 is radians\n");

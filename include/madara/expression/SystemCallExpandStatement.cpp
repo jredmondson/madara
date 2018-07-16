@@ -59,7 +59,7 @@ madara::expression::SystemCallExpandStatement::prune (bool & can_change)
       "System call expand_var requires 1 argument,"
       "e.g., #expand_statement ('var{.i}')\n");
 
-    throw KarlException ("madara::expression::SystemCallExpandStatement: "
+    throw exceptions::KarlException ("madara::expression::SystemCallExpandStatement: "
       "KARL COMPILE ERROR: "
       "System call expand_var requires 1 argument,"
       "e.g., #expand_statement ('var{.i}')\n");
@@ -96,7 +96,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call expand_var requires 1 argument,"
       "e.g., #expand_statement ('var{.i}')\n");
 
-    throw KarlException ("madara::expression::SystemCallExpandStatement: "
+    throw exceptions::KarlException ("madara::expression::SystemCallExpandStatement: "
       "KARL RUNTIME ERROR: "
       "System call expand_var requires 1 argument,"
       "e.g., #expand_statement ('var{.i}')\n");

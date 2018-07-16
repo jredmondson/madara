@@ -58,7 +58,7 @@ madara::expression::SystemCallSin::prune (bool & can_change)
       "System call sin requires 1 argument,"
       " e.g., #sin (1.5), where 1.5 is radians\n");
 
-    throw KarlException ("madara::expression::SystemCallSin: "
+    throw exceptions::KarlException ("madara::expression::SystemCallSin: "
       "KARL COMPILE ERROR: "
       "System call sin requires 1 argument,"
       " e.g., #sin (1.5), where 1.5 is radians\n");
@@ -93,7 +93,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call sin requires 1 argument,"
       " e.g., #sin (1.5), where 1.5 is radians\n");
 
-    throw KarlException ("madara::expression::SystemCallSin: "
+    throw exceptions::KarlException ("madara::expression::SystemCallSin: "
       "KARL RUNTIME ERROR: "
       "System call sin requires 1 argument,"
       " e.g., #sin (1.5), where 1.5 is radians\n");

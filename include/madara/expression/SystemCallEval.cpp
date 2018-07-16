@@ -59,7 +59,7 @@ madara::expression::SystemCallEval::prune (bool & can_change)
       "KARL COMPILE ERROR:"
       "System call eval requires an argument\n");
 
-    throw KarlException ("madara::expression::SystemCallEval: "
+    throw exceptions::KarlException ("madara::expression::SystemCallEval: "
       "KARL COMPILE ERROR: "
       "System call eval requires an argument\n"); 
   }
@@ -93,7 +93,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "KARL RUNTIME ERROR:"
       "System call eval requires an argument\n");
 
-    throw KarlException ("madara::expression::SystemCallEval: "
+    throw exceptions::KarlException ("madara::expression::SystemCallEval: "
       "KARL RUNTIME ERROR: "
       "System call eval requires an argument\n"); 
   }

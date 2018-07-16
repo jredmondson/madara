@@ -68,7 +68,7 @@ madara::expression::CompositeMultiplyNode::prune (bool & can_change)
       "KARL COMPILE ERROR: "
       "Multiplication is impossible without at least two values\n");
 
-    throw KarlException ("madara::expression::SystemCallLogLevel: "
+    throw exceptions::KarlException ("madara::expression::SystemCallLogLevel: "
       "KARL COMPILE ERROR: "
       "Multiplication is impossible without at least two values\n");
   }

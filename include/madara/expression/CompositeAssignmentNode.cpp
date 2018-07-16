@@ -49,7 +49,7 @@ madara::expression::CompositeAssignmentNode::prune (bool & can_change)
       "KARL COMPILE ERROR (=): "
       "Assignments must have a variable left hand side.\n");
 
-    throw KarlException ("CompositeAssignmentNode: "
+    throw exceptions::KarlException ("CompositeAssignmentNode: "
       "KARL COMPILE ERROR (=): "
       "Assignments must have a variable left hand side");
   }
@@ -70,7 +70,7 @@ madara::expression::CompositeAssignmentNode::prune (bool & can_change)
       "CompositeAssignmentNode: KARL COMPILE ERROR: "
       "Assignment has no right expression\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "CompositeAssignmentNode: KARL COMPILE ERROR: "
       "Assignment has no right expression\n"); 
   }

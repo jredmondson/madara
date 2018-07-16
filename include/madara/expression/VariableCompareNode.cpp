@@ -66,7 +66,7 @@ madara::expression::VariableCompareNode::prune (bool & can_change)
       "madara::expression::VariableCompareNode: "
       "KARL COMPILE ERROR: Compare has no variable\\n");
 
-    throw KarlException ("madara::expression::VariableCompareNode: "
+    throw exceptions::KarlException ("madara::expression::VariableCompareNode: "
       "KARL COMPILE ERROR: "
       "Node has no variable left-hand side\n");  
   }
@@ -86,7 +86,7 @@ madara::expression::VariableCompareNode::prune (bool & can_change)
       "madara::expression::VariableCompareNode: "
       "KARL COMPILE ERROR: Compare has no right expression\n");
 
-    throw KarlException ("madara::expression::VariableCompareNode: "
+    throw exceptions::KarlException ("madara::expression::VariableCompareNode: "
       "KARL COMPILE ERROR: "
       "Node has no right expression\n"); 
   }

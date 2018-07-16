@@ -58,7 +58,7 @@ madara::expression::CompositeModulusNode::prune (bool & can_change)
       "madara::expression::CompositeModulusNode: "
       "KARL COMPILE ERROR: Modulus has no left expression\n");
 
-    throw KarlException ("madara::expression::CompositeModulusNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeModulusNode: "
       "KARL COMPILE ERROR: "
       "Node has no left expression\n"); 
   }
@@ -76,7 +76,7 @@ madara::expression::CompositeModulusNode::prune (bool & can_change)
         madara_logger_ptr_log (logger_, logger::LOG_ERROR,
           "KARL COMPILE ERROR: Modulus results in permanent divide by zero\n");
 
-        throw KarlException ("madara::expression::CompositeModulusNode: "
+        throw exceptions::KarlException ("madara::expression::CompositeModulusNode: "
           "KARL COMPILE ERROR: "
           "Permanent divide by zero error\n"); 
       }
@@ -89,7 +89,7 @@ madara::expression::CompositeModulusNode::prune (bool & can_change)
       "KARL COMPILE ERROR: "
       "Modulus has no right expression (divide by zero)\n");
 
-    throw KarlException ("madara::expression::CompositeModulusNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeModulusNode: "
       "KARL COMPILE ERROR: "
       "Node has no right expression\n"); 
   }

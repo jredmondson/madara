@@ -1966,7 +1966,7 @@ madara::expression::Number::build (void)
 
     madara_logger_ptr_log (logger_, logger::LOG_ERROR, message.c_str ());
 
-    throw KarlException (message);
+    throw exceptions::KarlException (message);
   }
 
   return new LeafNode (*(this->logger_), item_);
@@ -2005,7 +2005,7 @@ madara::expression::Negate::build ()
       "Negate::build: KARL COMPILE ERROR: "
       "Negate(-) has a left child. Likely missing a semi-colon\n");
 
-    throw KarlException ("Negate::build: KARL COMPILE ERROR: "
+    throw exceptions::KarlException ("Negate::build: KARL COMPILE ERROR: "
       "Negate(-) has a left child. Likely missing a semi-colon\n");
   }
   
@@ -2085,7 +2085,7 @@ madara::expression::ConstArray::build ()
       "array[]::build: KARL COMPILE ERROR: "
       "array[] has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "array[]::build: KARL COMPILE ERROR: "
       "array[] has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2140,7 +2140,7 @@ madara::expression::ClearVariable::build ()
       "#clear_var::build: KARL COMPILE ERROR: "
       "#clear_var has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#clear_var::build: KARL COMPILE ERROR: "
       "#clear_var has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2178,7 +2178,7 @@ madara::expression::DeleteVariable::build ()
       "#delete_var::build: KARL COMPILE ERROR: "
       "#delete_var has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#delete_var::build: KARL COMPILE ERROR: "
       "#delete_var has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2217,7 +2217,7 @@ madara::expression::Eval::build ()
       "#evaluate::build: KARL COMPILE ERROR: "
       "#evaluate has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#evaluate::build: KARL COMPILE ERROR: "
       "#evaluate has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2256,7 +2256,7 @@ madara::expression::ExpandEnv::build ()
       "#expand_env::build: KARL COMPILE ERROR: "
       "#expand_env has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#expand_env::build: KARL COMPILE ERROR: "
       "#expand_env has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2295,7 +2295,7 @@ madara::expression::ExpandStatement::build ()
       "#expand::build: KARL COMPILE ERROR: "
       "#expand has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#expand::build: KARL COMPILE ERROR: "
       "#expand has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2335,7 +2335,7 @@ madara::expression::Fragment::build ()
       "#fragment::build: KARL COMPILE ERROR: "
       "#fragment has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#fragment::build: KARL COMPILE ERROR: "
       "#fragment has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2374,7 +2374,7 @@ madara::expression::LogLevel::build ()
       "#log_level::build: KARL COMPILE ERROR: "
       "#log_level has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#log_level::build: KARL COMPILE ERROR: "
       "#log_level has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2414,7 +2414,7 @@ madara::expression::GetClock::build ()
       "#get_clock::build: KARL COMPILE ERROR: "
       "#get_clock has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#get_clock::build: KARL COMPILE ERROR: "
       "#get_clock has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2452,7 +2452,7 @@ madara::expression::GetTime::build ()
       "#get_time::build: KARL COMPILE ERROR: "
       "#get_time has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#get_time::build: KARL COMPILE ERROR: "
       "#get_time has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2490,7 +2490,7 @@ madara::expression::GetTimeSeconds::build ()
       "#get_time_s::build: KARL COMPILE ERROR: "
       "#get_time_s has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#get_time_s::build: KARL COMPILE ERROR: "
       "#get_time_s has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2528,7 +2528,7 @@ madara::expression::SetClock::build ()
       "#set_clock::build: KARL COMPILE ERROR: "
       "#set_clock has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#set_clock::build: KARL COMPILE ERROR: "
       "#set_clock has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2565,7 +2565,7 @@ madara::expression::SetFixed::build ()
       "#set_fixed::build: KARL COMPILE ERROR: "
       "#set_fixed has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#set_fixed::build: KARL COMPILE ERROR: "
       "#set_fixed has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2603,7 +2603,7 @@ madara::expression::SetPrecision::build ()
       "#set_precision::build: KARL COMPILE ERROR: "
       "#set_precision has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#set_precision::build: KARL COMPILE ERROR: "
       "#set_precision has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2641,7 +2641,7 @@ madara::expression::SetScientific::build ()
       "#scientific::build: KARL COMPILE ERROR: "
       "#scientific has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#scientific::build: KARL COMPILE ERROR: "
       "#scientific has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2680,7 +2680,7 @@ madara::expression::Print::build ()
       "#print::build: KARL COMPILE ERROR: "
       "#print has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#print::build: KARL COMPILE ERROR: "
       "#print has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2717,7 +2717,7 @@ madara::expression::Cos::build ()
       "#cos::build: KARL COMPILE ERROR: "
       "#cos has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#cos::build: KARL COMPILE ERROR: "
       "#cos has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2755,7 +2755,7 @@ madara::expression::Sin::build ()
       "#sin::build: KARL COMPILE ERROR: "
       "#sin has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#sin::build: KARL COMPILE ERROR: "
       "#sin has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2792,7 +2792,7 @@ madara::expression::Tan::build ()
       "#tan::build: KARL COMPILE ERROR: "
       "#tan has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#tan::build: KARL COMPILE ERROR: "
       "#tan has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2829,7 +2829,7 @@ madara::expression::Power::build ()
       "#pow::build: KARL COMPILE ERROR: "
       "#pow has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#pow::build: KARL COMPILE ERROR: "
       "#pow has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2866,7 +2866,7 @@ madara::expression::SquareRoot::build ()
       "#sqrt::build: KARL COMPILE ERROR: "
       "#sqrt has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#sqrt::build: KARL COMPILE ERROR: "
       "#sqrt has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2905,7 +2905,7 @@ madara::expression::PrintSystemCalls::build ()
       "#print_system_calls::build: KARL COMPILE ERROR: "
       "#print_system_calls has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#print_system_calls::build: KARL COMPILE ERROR: "
       "#print_system_calls has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2943,7 +2943,7 @@ madara::expression::RandDouble::build ()
       "#rand_double::build: KARL COMPILE ERROR: "
       "#rand_double has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#rand_double::build: KARL COMPILE ERROR: "
       "#rand_double has a left or right child. Likely missing a semi-colon\n");
   }
@@ -2981,7 +2981,7 @@ madara::expression::RandInt::build ()
       "#rand_int::build: KARL COMPILE ERROR: "
       "#rand_int has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#rand_int::build: KARL COMPILE ERROR: "
       "#rand_int has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3019,7 +3019,7 @@ madara::expression::ReadFile::build ()
       "#read_file::build: KARL COMPILE ERROR: "
       "#read_file has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#read_file::build: KARL COMPILE ERROR: "
       "#read_file has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3057,7 +3057,7 @@ madara::expression::WriteFile::build ()
       "#write_file::build: KARL COMPILE ERROR: "
       "#write_file has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#write_file::build: KARL COMPILE ERROR: "
       "#write_file has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3096,7 +3096,7 @@ madara::expression::Size::build ()
       "#size::build: KARL COMPILE ERROR: "
       "#size has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#size::build: KARL COMPILE ERROR: "
       "#size has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3134,7 +3134,7 @@ madara::expression::Sleep::build ()
       "#sleep::build: KARL COMPILE ERROR: "
       "#sleep has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#sleep::build: KARL COMPILE ERROR: "
       "#sleep has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3172,7 +3172,7 @@ madara::expression::ToBuffer::build ()
       "#to_buffer::build: KARL COMPILE ERROR: "
       "#to_buffer has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#to_buffer::build: KARL COMPILE ERROR: "
       "#to_buffer has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3210,7 +3210,7 @@ madara::expression::ToDouble::build ()
       "#to_double::build: KARL COMPILE ERROR: "
       "#to_double has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#to_double::build: KARL COMPILE ERROR: "
       "#to_double has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3248,7 +3248,7 @@ madara::expression::ToDoubles::build ()
       "#to_doubles::build: KARL COMPILE ERROR: "
       "#to_doubles has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#to_doubles::build: KARL COMPILE ERROR: "
       "#to_doubles has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3286,7 +3286,7 @@ madara::expression::ToHostDirs::build ()
       "#to_host_dirs::build: KARL COMPILE ERROR: "
       "#to_host_dirs has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#to_host_dirs::build: KARL COMPILE ERROR: "
       "#to_host_dirs has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3324,7 +3324,7 @@ madara::expression::ToInteger::build ()
       "#to_integer::build: KARL COMPILE ERROR: "
       "#to_integer has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#to_integer::build: KARL COMPILE ERROR: "
       "#to_integer has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3362,7 +3362,7 @@ madara::expression::ToIntegers::build ()
       "#to_integers::build: KARL COMPILE ERROR: "
       "#to_integers has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#to_integers::build: KARL COMPILE ERROR: "
       "#to_integers has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3400,7 +3400,7 @@ madara::expression::ToString::build ()
       "#to_string::build: KARL COMPILE ERROR: "
       "#to_string has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#to_string::build: KARL COMPILE ERROR: "
       "#to_string has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3438,7 +3438,7 @@ madara::expression::Type::build ()
       "#type::build: KARL COMPILE ERROR: "
       "#type has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#type::build: KARL COMPILE ERROR: "
       "#type has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3476,7 +3476,7 @@ madara::expression::Isinf::build ()
       "#is_inf::build: KARL COMPILE ERROR: "
       "#is_inf has a left or right child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#is_inf::build: KARL COMPILE ERROR: "
       "#is_inf has a left or right child. Likely missing a semi-colon\n");
   }
@@ -3567,7 +3567,7 @@ madara::expression::Postdecrement::build ()
       "var--::build: KARL COMPILE ERROR: "
       "var-- has a left child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#var--::build: KARL COMPILE ERROR: "
       "#var-- has a left child. Likely missing a semi-colon\n");
   }
@@ -3609,7 +3609,7 @@ madara::expression::Postincrement::build ()
       "var++::build: KARL COMPILE ERROR: "
       "var++ has a left child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "#var++::build: KARL COMPILE ERROR: "
       "#var++ has a left child. Likely missing a semi-colon\n");
   }
@@ -3651,7 +3651,7 @@ madara::expression::Predecrement::build ()
       "--var::build: KARL COMPILE ERROR: "
       "--var has a left child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "--var::build: KARL COMPILE ERROR: "
       "--var has a left child. Likely missing a semi-colon\n");
   }
@@ -3692,7 +3692,7 @@ madara::expression::Preincrement::build ()
       "++var::build: KARL COMPILE ERROR: "
       "++var has a left child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "++var::build: KARL COMPILE ERROR: "
       "++var has a left child. Likely missing a semi-colon\n");
   }
@@ -3736,7 +3736,7 @@ madara::expression::Not::build ()
       "Not(!)::build: KARL COMPILE ERROR: "
       "Logical Not(!) has a left child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "Not(!)::build: KARL COMPILE ERROR: "
       "Logical Not(!) has a left child. Likely missing a semi-colon\n");
   }
@@ -3788,7 +3788,7 @@ madara::expression::SquareRootUnary::build ()
       "sqrt::build: KARL COMPILE ERROR: "
       "sqrt has a left child. Likely missing a semi-colon\n");
 
-    throw KarlException (
+    throw exceptions::KarlException (
       "sqrt::build: KARL COMPILE ERROR: "
       "sqrt has a left child. Likely missing a semi-colon\n");
   }
@@ -3834,7 +3834,7 @@ madara::expression::Variable::build (void)
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       message.c_str ());
 
-    throw KarlException (message);
+    throw exceptions::KarlException (message);
   }
   
   // is reserved?
@@ -3896,7 +3896,7 @@ madara::expression::ArrayRef::build (void)
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       message.c_str ());
 
-    throw KarlException (message);
+    throw exceptions::KarlException (message);
   }
   
   return new CompositeArrayReference (key_, index_->build (), context_);
@@ -5243,7 +5243,7 @@ Symbol *& returnableInput)
       "KARL COMPILE ERROR:: No closing delimiter (']' or ')')"
       " has been specified on the for loop.\n");
 
-    throw KarlException ("madara::expression::Interpreter: "
+    throw exceptions::KarlException ("madara::expression::Interpreter: "
       "KARL COMPILE ERROR:: No closing delimiter (']' or ')')"
       " has been specified on the for loop.\n");
   }
@@ -5970,7 +5970,7 @@ madara::expression::Interpreter::system_call_insert (
         "System call %s is unsupported in this version of MADARA, "
         "defaulting to print_system_calls help menu.\n", name.c_str ());
 
-      throw KarlException ("madara::expression::Interpreter: "
+      throw exceptions::KarlException ("madara::expression::Interpreter: "
         "System call %s does not exist.");
     }
     else
@@ -6011,7 +6011,7 @@ madara::expression::Interpreter::system_call_insert (
     madara_logger_log (context.get_logger (), logger::LOG_ERROR,
       message.c_str ());
 
-    throw KarlException (message.c_str ()); 
+    throw exceptions::KarlException (message.c_str ()); 
   }
 }
 
@@ -6217,7 +6217,7 @@ madara::expression::Symbol *op,
           "madara::expression::Interpreter: "
           "KARL COMPILE ERROR: Unary operation shouldn't have a left child\n");
 
-        throw KarlException ("madara::expression::Interpreter: "
+        throw exceptions::KarlException ("madara::expression::Interpreter: "
           "KARL COMPILE ERROR: "
           "Parent unary node has a left child, shouldn't be possible\n"); 
       }
@@ -6235,7 +6235,7 @@ madara::expression::Symbol *op,
             "madara::expression::Interpreter: "
             "KARL COMPILE ERROR: unary operation shouldn't have a left child\n");
 
-          throw KarlException ("madara::expression::Interpreter: "
+          throw exceptions::KarlException ("madara::expression::Interpreter: "
             "KARL COMPILE ERROR: "
             "Unary node has a left child, shouldn't be possible\n"); 
         }
@@ -6378,7 +6378,7 @@ bool build_argument_list)
           "KARL COMPILE ERROR (+=): "
           "Assignments must have a variable left hand side.\n");
 
-        throw KarlException ("madara::expression::Interpreter: "
+        throw exceptions::KarlException ("madara::expression::Interpreter: "
           "KARL COMPILE ERROR (+=): "
           "Assignments must have a variable left hand side");
       }
@@ -6421,7 +6421,7 @@ bool build_argument_list)
           "KARL COMPILE ERROR (-=): "
           "Assignments must have a variable left hand side.\n");
 
-        throw KarlException ("madara::expression::Interpreter: "
+        throw exceptions::KarlException ("madara::expression::Interpreter: "
           "KARL COMPILE ERROR (-=): "
           "Assignments must have a variable left hand side");
       }
@@ -6473,7 +6473,7 @@ bool build_argument_list)
           "KARL COMPILE ERROR (*=): "
           "Assignments must have a variable left hand side.\n");
 
-        throw KarlException ("madara::expression::Interpreter: "
+        throw exceptions::KarlException ("madara::expression::Interpreter: "
           "KARL COMPILE ERROR (*=): "
           "Assignments must have a variable left hand side");
       }
@@ -6548,7 +6548,7 @@ bool build_argument_list)
             "KARL COMPILE ERROR (/=): "
             "Assignments must have a variable left hand side.\n");
 
-          throw KarlException ("madara::expression::Interpreter: "
+          throw exceptions::KarlException ("madara::expression::Interpreter: "
             "KARL COMPILE ERROR (/=): "
             "Assignments must have a variable left hand side");
         }
@@ -6666,7 +6666,7 @@ bool build_argument_list)
         "Logical And (&) not available. " \
         "You may want to use && instead in %s.\n", input.c_str ());
 
-      throw KarlException ("madara::expression::Interpreter: "
+      throw exceptions::KarlException ("madara::expression::Interpreter: "
         "KARL COMPILE ERROR: "
         "Logical And (&) not available.");
     }
@@ -6694,7 +6694,7 @@ bool build_argument_list)
         "Logical Or (|) not available. " \
         "You may want to use || instead in %s.\n", input.c_str ());
 
-      throw KarlException ("madara::expression::Interpreter: "
+      throw exceptions::KarlException ("madara::expression::Interpreter: "
         "KARL COMPILE ERROR: "
         "Logical Or (|) not available.");
     }

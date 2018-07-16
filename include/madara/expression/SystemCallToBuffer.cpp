@@ -83,7 +83,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "KARL RUNTIME ERROR:"
       "System call to_buffer requires an argument\n");
 
-    throw KarlException ("madara::expression::SystemCallToBuffer: "
+    throw exceptions::KarlException ("madara::expression::SystemCallToBuffer: "
       "KARL RUNTIME ERROR: "
       "System call to_buffer requires an argument\n");
   }

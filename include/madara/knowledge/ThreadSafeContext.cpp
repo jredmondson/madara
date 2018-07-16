@@ -1506,13 +1506,14 @@ ThreadSafeContext::to_map_stripped (
 void
 ThreadSafeContext::copy (
   const ThreadSafeContext & source,
-  const KnowledgeRequirements & settings)
+  const KnowledgeRequirements & reqs,
+  const KnowledgeUpdateSettings & settings)
 {
   madara_logger_ptr_log (logger_, logger::LOG_MINOR,
     "ThreadSafeContext::copy:" \
     " copying a context\n");
 
-  if (settings.clear_knowledge)
+  if (reqs.clear_knowledge)
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::copy:" \
@@ -1521,9 +1522,9 @@ ThreadSafeContext::copy (
     map_.clear ();
   }
 
-  if (settings.predicates.size () != 0)
+  if (reqs.predicates.size () != 0)
   {
-    for (auto predicate : settings.predicates)
+    for (auto predicate : reqs.predicates)
     {
       std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
         iters(source.get_prefix_range(predicate.prefix));
@@ -1559,6 +1560,8 @@ ThreadSafeContext::copy (
 
             where->second = iters.first->second;
           }
+          
+          mark_modified (iters.first->first, settings);
         }
       }
       else // we need to match a suffix
@@ -1595,6 +1598,8 @@ ThreadSafeContext::copy (
 
               where->second = iters.first->second;
             }
+
+            mark_modified (iters.first->first, settings);
           } // end suffix match
         }
       }
@@ -1611,6 +1616,8 @@ ThreadSafeContext::copy (
     {
       map_.insert (map_.begin (), KnowledgeMap::value_type(
         iters.first->first, iters.first->second));
+
+      mark_modified (iters.first->first, settings);
     }
   }
 }
@@ -1619,7 +1626,8 @@ void
 ThreadSafeContext::copy (
   const ThreadSafeContext & source,
   const CopySet & copy_set,
-  bool clean_copy)
+  bool clean_copy,
+  const KnowledgeUpdateSettings & settings)
 {
   // if we need to clean first, clear the map
   if (clean_copy)
@@ -1632,6 +1640,7 @@ ThreadSafeContext::copy (
          i != source.map_.end (); ++i)
     {
       map_[i->first] = (i->second);
+      mark_modified (i->first, settings);
     }
   }
   else
@@ -1647,6 +1656,7 @@ ThreadSafeContext::copy (
       if (i != source.map_.end ())
       {
         map_[i->first] = (i->second);
+        mark_modified (i->first, settings);
       }
     }
   }
