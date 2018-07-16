@@ -2315,6 +2315,32 @@ void test_circular (void)
     std::cerr << "SUCCESS\n";
   }
 
+  std::cerr << "  Testing const CircularBuffer creation...";
+
+  // for testing a pure consumer of the CircularBuffer
+  const containers::CircularBuffer const_buffer1 ("buffer1", kb);
+
+  buffer1_contents = const_buffer1.get_latest (5);
+
+  if (buffer1_contents.size () == 4 &&
+    buffer1_contents[3] == 2 &&
+    buffer1_contents[2] == 1 &&
+    buffer1_contents[1] == 5 &&
+    buffer1_contents[0] == 4)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
+    for (auto record: buffer1_contents)
+    {
+      std::cerr << "    " << record << "\n";
+    }
+  }
 
   kb.print ();
 }

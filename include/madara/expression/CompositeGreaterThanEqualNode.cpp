@@ -56,7 +56,7 @@ madara::expression::CompositeGreaterThanEqualNode::prune (bool & can_change)
       "madara::expression::CompositeGreaterThanEqualNode: "
       "KARL COMPILE ERROR: Greater-than-equal-to has no left expression\n");
 
-    throw KarlException ("madara::expression::CompositeGreaterThanEqualNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeGreaterThanEqualNode: "
       "KARL COMPILE ERROR: "
       "Greater-than-equal-to has no left expression\n"); 
   }
@@ -76,7 +76,7 @@ madara::expression::CompositeGreaterThanEqualNode::prune (bool & can_change)
       "madara::expression::CompositeGreaterThanEqualNode: "
       "KARL COMPILE ERROR: Greater-than-equal-to has no right expression\n");
 
-    throw KarlException ("madara::expression::CompositeGreaterThanEqualNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeGreaterThanEqualNode: "
       "KARL COMPILE ERROR: "
       "Greater-than-equal-to has no right expression\n"); 
   }

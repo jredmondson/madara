@@ -57,7 +57,7 @@ madara::expression::SystemCallType::prune (bool & can_change)
       "KARL COMPILE ERROR:"
       "System call type requires an argument\n");
 
-    throw KarlException ("madara::expression::SystemCallType: "
+    throw exceptions::KarlException ("madara::expression::SystemCallType: "
       "KARL COMPILE ERROR: "
       "System call type requires an argument\n");
   }
@@ -89,7 +89,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "KARL RUNTIME ERROR:"
       "System call type requires an argument\n");
 
-    throw KarlException ("madara::expression::SystemCallType: "
+    throw exceptions::KarlException ("madara::expression::SystemCallType: "
       "KARL RUNTIME ERROR: "
       "System call type requires an argument\n");
   }

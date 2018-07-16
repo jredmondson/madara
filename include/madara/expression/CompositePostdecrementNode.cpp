@@ -61,7 +61,7 @@ madara::expression::CompositePostdecrementNode::prune (bool & can_change)
       "KARL COMPILE ERROR:"
       "Postdecrement has no var, array, or expression\n");
 
-    throw KarlException ("madara::expression::CompositePostdecrementNode: "
+    throw exceptions::KarlException ("madara::expression::CompositePostdecrementNode: "
       "KARL COMPILE ERROR: "
       "Postdecrement has no var, array, or expression\n"); 
   }
@@ -100,7 +100,7 @@ madara::expression::CompositePostdecrementNode::evaluate (
       "KARL RUNTIME ERROR: "
       "Postdecrement has var, array, or expression\n");
 
-    throw KarlException ("madara::expression::CompositePostdecrementNode: "
+    throw exceptions::KarlException ("madara::expression::CompositePostdecrementNode: "
       "KARL RUNTIME ERROR: "
       "Postdecrement has var, array, or expression\n"); 
   }

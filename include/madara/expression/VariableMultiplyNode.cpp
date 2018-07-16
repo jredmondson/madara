@@ -65,7 +65,7 @@ madara::expression::VariableMultiplyNode::prune (bool & can_change)
       "madara::expression::VariableMultiplyNode: "
       "KARL COMPILE ERROR: Variable assignment has no variable\n");
 
-    throw KarlException ("madara::expression::VariableMultiplyNode: "
+    throw exceptions::KarlException ("madara::expression::VariableMultiplyNode: "
       "KARL COMPILE ERROR: "
       "Node has no variable left-hand side\n");   
   }
@@ -85,7 +85,7 @@ madara::expression::VariableMultiplyNode::prune (bool & can_change)
       "madara::expression::VariableMultiplyNode: "
       "KARL COMPILE ERROR: Variable assignment has no right expression\n");
 
-    throw KarlException ("madara::expression::VariableMultiplyNode: "
+    throw exceptions::KarlException ("madara::expression::VariableMultiplyNode: "
       "KARL COMPILE ERROR: "
       "Node has no right expression\n"); 
   }

@@ -57,7 +57,7 @@ madara::expression::CompositeNotNode::prune (bool & can_change)
       "KARL COMPILE ERROR: "
       "Logical-not has no right expression\n");
 
-    throw KarlException ("madara::expression::CompositeNotNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeNotNode: "
       "KARL COMPILE ERROR: "
       "Node has no right expression\n"); 
   }

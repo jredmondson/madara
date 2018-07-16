@@ -61,7 +61,7 @@ madara::expression::CompositeOrNode::prune (bool & can_change)
       "KARL COMPILE ERROR (||): "
       "Or should have a left and right-hand side argument.\n");
 
-    throw KarlException ("CompositeOrNode: "
+    throw exceptions::KarlException ("CompositeOrNode: "
       "KARL COMPILE ERROR (||): "
       "Or should have a left and right-hand side argument.\n");
   }

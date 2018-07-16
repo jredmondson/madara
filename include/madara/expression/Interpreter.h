@@ -57,7 +57,7 @@ namespace madara
        * @param    context    interpreter context
        * @param    input      expression to compile
        * @return   expression tree to evaluate
-       * @throw KarlException failure during interpret
+       * @throw exceptions::KarlException failure during interpret
        **/
       ExpressionTree interpret (
         madara::knowledge::ThreadSafeContext &context, 

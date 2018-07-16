@@ -7,6 +7,7 @@
 
 namespace knowledge = madara::knowledge;
 namespace expression = madara::expression;
+namespace exceptions = madara::exceptions;
 
 int num_fails (0);
 
@@ -24,7 +25,7 @@ void test_functions (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -37,7 +38,7 @@ void test_functions (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -57,7 +58,7 @@ void test_bad_operators (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -69,7 +70,7 @@ void test_bad_operators (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -81,7 +82,7 @@ void test_bad_operators (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -93,7 +94,7 @@ void test_bad_operators (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -105,7 +106,7 @@ void test_bad_operators (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -117,7 +118,7 @@ void test_bad_operators (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -129,7 +130,7 @@ void test_bad_operators (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -141,7 +142,7 @@ void test_bad_operators (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -153,7 +154,7 @@ void test_bad_operators (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -165,7 +166,7 @@ void test_bad_operators (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -271,7 +272,7 @@ void test_nan (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -293,7 +294,7 @@ void test_empty_assignment (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -305,7 +306,7 @@ void test_empty_assignment (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -317,7 +318,7 @@ void test_empty_assignment (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -329,7 +330,7 @@ void test_empty_assignment (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -341,7 +342,7 @@ void test_empty_assignment (void)
     std::cerr << "FAIL\n";
     ++num_fails;
   }
-  catch (expression::KarlException &)
+  catch (exceptions::KarlException &)
   {
     std::cerr << "SUCCESS\n";
   }

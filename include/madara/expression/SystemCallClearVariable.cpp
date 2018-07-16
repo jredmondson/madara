@@ -59,7 +59,7 @@ madara::expression::SystemCallClearVariable::prune (bool & can_change)
       "System call delete_variable requires 1 argument,"
       "e.g., #delete_variable ('var')\n");
 
-    throw KarlException ("madara::expression::SystemCallClearVariable: "
+    throw exceptions::KarlException ("madara::expression::SystemCallClearVariable: "
       "KARL COMPILE ERROR: "
       "System call delete_variable requires 1 argument,"
       "e.g., #delete_variable ('var')\n"); 
@@ -96,7 +96,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call delete_variable requires 1 argument,"
       "e.g., #delete_variable ('var')\n");
 
-    throw KarlException ("madara::expression::SystemCallClearVariable: "
+    throw exceptions::KarlException ("madara::expression::SystemCallClearVariable: "
       "KARL RUNTIME ERROR: "
       "System call delete_variable requires 1 argument,"
       "e.g., #delete_variable ('var')\n"); 

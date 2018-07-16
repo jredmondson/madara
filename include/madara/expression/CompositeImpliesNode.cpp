@@ -57,7 +57,7 @@ madara::expression::CompositeImpliesNode::prune (bool & can_change)
       "madara::expression::CompositeImpliesNode: "
       "KARL COMPILE ERROR: Implies has no condition\n");
 
-    throw KarlException ("madara::expression::CompositeImpliesNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeImpliesNode: "
       "KARL COMPILE ERROR: "
       "Implies has no condition (left) expression\n"); 
   }
@@ -78,7 +78,7 @@ madara::expression::CompositeImpliesNode::prune (bool & can_change)
       "KARL COMPILE ERROR: Implies has no expression to "
       "evaluate if conditional is true\n");
 
-    throw KarlException ("madara::expression::CompositeImpliesNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeImpliesNode: "
       "KARL COMPILE ERROR: "
       "Implies has no right expression\n"); 
   }

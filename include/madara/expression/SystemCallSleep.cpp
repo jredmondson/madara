@@ -63,7 +63,7 @@ madara::expression::SystemCallSleep::prune (bool & can_change)
       "System call sleep requires 1 argument in seconds format, "
       "e.g., set_clock (5)\n");
 
-    throw KarlException ("madara::expression::SystemCallSleep: "
+    throw exceptions::KarlException ("madara::expression::SystemCallSleep: "
       "KARL COMPILE ERROR: "
       "System call sleep requires 1 argument in seconds format, "
       "e.g., sleep (5)\n");
@@ -99,7 +99,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call sleep requires 1 argument in seconds format, "
       "e.g., set_clock (5)\n");
 
-    throw KarlException ("madara::expression::SystemCallSleep: "
+    throw exceptions::KarlException ("madara::expression::SystemCallSleep: "
       "KARL RUNTIME ERROR: "
       "System call sleep requires 1 argument in seconds format, "
       "e.g., sleep (5)\n");

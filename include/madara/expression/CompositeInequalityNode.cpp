@@ -54,7 +54,7 @@ madara::expression::CompositeInequalityNode::prune (bool & can_change)
       "madara::expression::CompositeInequalityNode: "
       "KARL COMPILE ERROR: Inequality has no left expression\n");
 
-    throw KarlException ("madara::expression::CompositeInequalityNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeInequalityNode: "
       "KARL COMPILE ERROR: "
       "Inequality has no left expression\n"); 
   }
@@ -74,7 +74,7 @@ madara::expression::CompositeInequalityNode::prune (bool & can_change)
       "madara::expression::CompositeInequalityNode: "
       "KARL COMPILE ERROR: Inequality has no right expression\n");
 
-    throw KarlException ("madara::expression::CompositeInequalityNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeInequalityNode: "
       "KARL COMPILE ERROR: "
       "Inequality has no right expression\n"); 
   }

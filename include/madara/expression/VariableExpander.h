@@ -24,7 +24,7 @@ namespace madara
     public:
       /**
        * Expands a key into either a VariableReference or tokens
-       * @throw KarlException  occurs when variable expansion is done
+       * @throw exceptions::KarlException  occurs when variable expansion is done
        *                       improperly, e.g., when too few expander
        *                       braces ({}) are used.
        **/
@@ -63,7 +63,7 @@ namespace madara
             madara_logger_ptr_log (cur_logger, logger::LOG_ERROR,
               buffer.str ().c_str ());
 
-            throw KarlException (buffer.str ());
+            throw exceptions::KarlException (buffer.str ());
           }
 
           // check for braces that are not properly closed
@@ -92,7 +92,7 @@ namespace madara
             madara_logger_ptr_log (cur_logger, logger::LOG_ERROR,
               buffer.str ().c_str ());
 
-            throw KarlException (buffer.str ());
+            throw exceptions::KarlException (buffer.str ());
           }
           else if (num_closes > num_opens)
           {
@@ -103,7 +103,7 @@ namespace madara
             madara_logger_ptr_log (cur_logger, logger::LOG_ERROR,
               buffer.str ().c_str ());
 
-            throw KarlException (buffer.str ());
+            throw exceptions::KarlException (buffer.str ());
           }
         }
         // no variable expansion necessary. Create a hard link to the record_->

@@ -53,7 +53,7 @@ madara::expression::CompositeSubtractNode::prune (bool & can_change)
       "madara::expression::CompositeSubtractNode: "
       "KARL COMPILE ERROR: Subtraction has no left expression\n");
 
-    throw KarlException ("madara::expression::CompositeSubtractNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeSubtractNode: "
       "KARL COMPILE ERROR: "
       "Node has no left expression\n"); 
   }
@@ -73,7 +73,7 @@ madara::expression::CompositeSubtractNode::prune (bool & can_change)
       "madara::expression::CompositeSubtractNode: "
       "KARL COMPILE ERROR: Subtraction has no right expression\n");
 
-    throw KarlException ("madara::expression::CompositeSubtractNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeSubtractNode: "
       "KARL COMPILE ERROR: "
       "Node has no right expression\n"); 
   }

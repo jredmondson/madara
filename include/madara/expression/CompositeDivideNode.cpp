@@ -61,7 +61,7 @@ madara::expression::CompositeDivideNode::prune (bool & can_change)
       "madara::expression::CompositeDivideNode: "
       "KARL COMPILE ERROR: Division has no left expression\n");
 
-    throw KarlException ("madara::expression::CompositeDivideNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeDivideNode: "
       "KARL COMPILE ERROR: "
       "Division has no left expression\n"); 
   }
@@ -88,7 +88,7 @@ madara::expression::CompositeDivideNode::prune (bool & can_change)
     madara_logger_ptr_log (logger_, logger::LOG_ERROR,
       "KARL COMPILE ERROR: Division has no right expression (divide by zero)\n");
 
-    throw KarlException ("madara::expression::CompositeDivideNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeDivideNode: "
       "KARL COMPILE ERROR: "
       "Division has no right expression\n"); 
   }

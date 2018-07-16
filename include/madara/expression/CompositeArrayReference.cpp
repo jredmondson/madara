@@ -106,7 +106,7 @@ madara::expression::CompositeArrayReference::prune (bool & can_change)
       key_.c_str ());
 
     //return new LeafNode (context_.get_logger (), NAN);
-    throw KarlException ("madara::expression::ComponentNode: "
+    throw exceptions::KarlException ("madara::expression::ComponentNode: "
       "KARL COMPILE ERROR: "
       "Reserved word 'nan' used as an array reference.");
   }
@@ -119,7 +119,7 @@ madara::expression::CompositeArrayReference::prune (bool & can_change)
       key_.c_str ());
 
     //return new LeafNode (context_.get_logger (), NAN);
-    throw KarlException ("madara::expression::ComponentNode: "
+    throw exceptions::KarlException ("madara::expression::ComponentNode: "
       "KARL COMPILE ERROR: "
       "Reserved word 'inf' used as an array reference.");
   }
