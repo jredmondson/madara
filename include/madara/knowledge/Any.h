@@ -199,84 +199,7 @@ struct do_serialize
   }
 };
 
-/**
- * For internal use. Helper struct to forward Boost.Serialization to
- * for_each_field-based serialization.
- **/
-template<typename T>
-struct for_each_serialization_wrapper_type
-{
-  T *ptr;
-
-  template<typename Archive>
-  void serialize(Archive &ar, const unsigned int)
-  {
-    for_each_field(do_serialize<Archive>{&ar}, *ptr);
-  }
-};
-
 } // namespace knowledge
-
-namespace utility { inline namespace core {
-// Must define below in same namespace as type<> struct for ADL
-
-/// Specialization of get_type_handler_save to support types which provide
-/// an ADL-visible for_each_field
-template<typename T,
-  enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
-constexpr knowledge::TypeHandlers::save_fn_type get_type_handler_save(type<T>,
-    overload_priority<8>)
-{
-  return [](knowledge::madara_oarchive &archive, const void *ptr) {
-      const T &val = *static_cast<const T *>(ptr);
-      knowledge::for_each_serialization_wrapper_type<T> wrapper{const_cast<T *>(&val)};
-      archive << wrapper;
-    };
-}
-
-/// Specialization of get_type_handler_load to support types which provide
-/// an ADL-visible for_each_field
-template<typename T,
-  enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
-constexpr knowledge::TypeHandlers::load_fn_type get_type_handler_load(type<T>,
-    overload_priority<8>)
-{
-  return [](knowledge::madara_iarchive &archive, void *ptr) {
-      T &val = *static_cast<T *>(ptr);
-      knowledge::for_each_serialization_wrapper_type<T> wrapper{&val};
-      archive >> wrapper;
-    };
-}
-
-/// Specialization of get_type_handler_save_json to support types which
-/// provide an ADL-visible for_each_field
-template<typename T,
-  enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
-constexpr knowledge::TypeHandlers::save_json_fn_type
-  get_type_handler_save_json(type<T>, overload_priority<8>)
-{
-  return [](knowledge::json_oarchive &archive, const void *ptr) {
-      const T &val = *static_cast<const T *>(ptr);
-      knowledge::for_each_serialization_wrapper_type<T> wrapper{const_cast<T *>(&val)};
-      archive << wrapper;
-    };
-}
-
-/// Specialization of get_type_handler_load_json to support types which
-/// provide an ADL-visible for_each_field
-template<typename T,
-  enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
-constexpr knowledge::TypeHandlers::load_json_fn_type
-  get_type_handler_load_json(type<T>, overload_priority<8>)
-{
-  return [](knowledge::json_iarchive &archive, void *ptr) {
-      T &val = *static_cast<T *>(ptr);
-      knowledge::for_each_serialization_wrapper_type<T> wrapper{&val};
-      archive >> wrapper;
-    };
-}
-
-} } // namespace utility::core
 
 namespace exceptions {
   /**
@@ -1117,5 +1040,19 @@ private:
 };
 
 } } // namespace madara::knowledge
+
+namespace cereal
+{
+
+// Implement Cereal library serialization for types supporting for_each_field
+template<typename Archive, typename T>
+auto serialize(Archive &ar, T &&val) ->
+  ::madara::enable_if_<::madara::knowledge::supports_for_each_field<T>::value>
+{
+  for_each_field(::madara::knowledge::do_serialize<Archive>{&ar},
+      std::forward<T>(val));
+}
+
+}
 
 #endif  // MADARA_KNOWLEDGE_ANY_H_

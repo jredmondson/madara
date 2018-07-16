@@ -90,9 +90,6 @@ void test_any()
   a0.unserialize<A>(buf.data(), buf.size());
   TEST_EQ(a0.ref<A>().b, 5);
 
-  a0.unserialize<ns::B>(buf.data(), buf.size());
-  TEST_EQ(a0.ref<ns::B>().f, 9);
-
   VAL(a0.to_json());
 
   a0.set(std::string("asdf"));
