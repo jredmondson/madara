@@ -116,13 +116,27 @@ CircularBufferConsumer::increment (
 }
 
 inline madara::knowledge::KnowledgeRecord
-CircularBufferConsumer::get (void) const
+CircularBufferConsumer::consume (void) const
 {
   if (context_ && name_ != "" && buffer_.size () > 0)
   {
     ContextGuard context_guard (*context_);
 
-    return context_->get (buffer_.vector_[(size_t)(local_index_++)]);
+    KnowledgeRecord::Integer index_diff = *index_ - local_index_;
+
+    if (index_diff > (KnowledgeRecord::Integer)buffer_.size ())
+    {
+      local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size ();
+    }
+
+    KnowledgeRecord::Integer cur = increment (local_index_, 1);
+
+    if (remaining () > 0)
+    {
+      ++local_index_;
+      return context_->get (buffer_.vector_[(size_t)(cur)]);
+    }
+    else return KnowledgeRecord ();
   }
   else
   {
@@ -175,6 +189,50 @@ CircularBufferConsumer::inspect (
         local_index_, (KnowledgeRecord::Integer)position);
       
       return context_->get (buffer_.vector_[index]);
+    }
+    else
+    {
+      std::stringstream message;
+      message << "CircularBufferConsumer::inspect: ";
+      message << "Invalid access for " << position << " element when count is ";
+      message << inserted << "\n";
+      throw exceptions::IndexException (message.str ()); 
+    }
+  }
+  else
+  {
+    throw exceptions::ContextException ("CircularBufferConsumer::inspect: "
+      " context is null or name hasn't been set.");
+  }
+}
+
+inline std::vector <KnowledgeRecord>
+CircularBufferConsumer::inspect (
+  KnowledgeRecord::Integer position,
+  size_t count) const
+{
+  if (context_ && name_ != "")
+  {
+    ContextGuard context_guard (*context_);
+
+    KnowledgeRecord::Integer inserted =
+      (KnowledgeRecord::Integer)this->count ();
+
+    if ((position <= 0 && -position < inserted) ||
+        (position > 0 && inserted == (KnowledgeRecord::Integer)size () &&
+         position < inserted))
+    {
+      KnowledgeRecord::Integer index = increment (
+        local_index_, (KnowledgeRecord::Integer)position);
+      
+      std::vector <KnowledgeRecord> result;
+
+      for (size_t i = 0; i < count; ++i, index = increment (index, 1))
+      {
+        result.push_back (buffer_[(size_t)index]);
+      }
+
+      return result;
     }
     else
     {
@@ -304,7 +362,7 @@ CircularBufferConsumer::set_index (KnowledgeRecord::Integer index)
 }
 
 inline std::vector <KnowledgeRecord>
-CircularBufferConsumer::get_latest (size_t count) const
+CircularBufferConsumer::consume_latest (size_t count) const
 {
   if (context_ && name_ != "" && buffer_.size () > 0)
   {
@@ -353,25 +411,29 @@ CircularBufferConsumer::get_latest (size_t count) const
     }
 
     std::stringstream message;
-    message << "CircularBufferConsumer::get_latest: ";
+    message << "CircularBufferConsumer::consume_latest: ";
     message << "Invalid access because " << reason << "\n";
     throw exceptions::IndexException (message.str ()); 
   }
 }      
 
 inline std::vector <KnowledgeRecord>
-CircularBufferConsumer::get_earliest (size_t count) const
+CircularBufferConsumer::consume_earliest (size_t count) const
 {
   if (context_ && name_ != "" && buffer_.size () > 0)
   {
     ContextGuard context_guard (*context_);
     std::vector <KnowledgeRecord> result;
 
-    count = std::min (count, (size_t)(*index_ - local_index_));
+    KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
+
+    count = std::min (count, (size_t)index_diff);
 
     // start is either 0 or index_ + 1
-    KnowledgeRecord::Integer cur = this->count () < buffer_.size () ? 
-      0 : increment (local_index_, 1);
+    KnowledgeRecord::Integer cur =
+      index_diff < (KnowledgeRecord::Integer)buffer_.size () ? 
+      increment (local_index_, 1) :
+      increment (*index_, -(KnowledgeRecord::Integer)(buffer_.size ()) + 1);
 
     for (size_t i = 0; i < count; ++i, cur = increment (cur, 1))
     {
@@ -409,11 +471,114 @@ CircularBufferConsumer::get_earliest (size_t count) const
     }
 
     std::stringstream message;
-    message << "CircularBufferConsumer::get_earliest: ";
+    message << "CircularBufferConsumer::consume_earliest: ";
     message << "Invalid access because " << reason << "\n";
     throw exceptions::IndexException (message.str ()); 
   }
 }
+
+
+inline std::vector <KnowledgeRecord>
+CircularBufferConsumer::peak_latest (size_t count) const
+{
+  if (context_ && name_ != "")
+  {
+    ContextGuard context_guard (*context_);
+
+    count = std::min (count, this->count ());
+
+    std::vector <KnowledgeRecord> result;
+
+    KnowledgeRecord::Integer cur = *index_ % buffer_.size ();
+
+    for (size_t i = 0; i < count; ++i, cur = increment (cur, -1))
+    {
+      result.push_back (buffer_[(size_t)cur]);
+    }
+
+    return result;
+  }
+  else
+  {
+    std::string reason = "";
+    if (context_ == 0)
+    {
+      reason = "context has not been set";
+    }
+
+    if (name_ == "")
+    {
+      if (reason.size () > 0)
+      {
+        reason += " and ";
+      }
+      reason = "name has not been set";
+    }
+
+    if (buffer_.size () == 0)
+    {
+      if (reason.size () > 0)
+      {
+        reason += " and ";
+      }
+      reason = "size == 0";
+    }
+
+    std::stringstream message;
+    message << "CircularBuffer::get_latest: ";
+    message << "Invalid access because " << reason << "\n";
+    throw exceptions::IndexException (message.str ()); 
+  }
+}      
+
+inline madara::knowledge::KnowledgeRecord
+CircularBufferConsumer::peak_latest (void) const
+{
+  if (context_ && name_ != "" && buffer_.size () > 0)
+  {
+    ContextGuard context_guard (*context_);
+
+    KnowledgeRecord::Integer index = *index_;
+    index = increment (index, 0);
+
+    if (count () > 0)
+      return context_->get (buffer_.vector_[(size_t)index]);
+    else
+      return KnowledgeRecord ();
+  }
+  else
+  {
+    std::string reason = "";
+    if (context_ == 0)
+    {
+      reason = "context has not been set";
+    }
+
+    if (name_ == "")
+    {
+      if (reason.size () > 0)
+      {
+        reason += " and ";
+      }
+      reason = "name has not been set";
+    }
+
+    if (buffer_.size () == 0)
+    {
+      if (reason.size () > 0)
+      {
+        reason += " and ";
+      }
+      reason = "size == 0";
+    }
+
+    std::stringstream message;
+    message << "CircularBuffer::get: ";
+    message << "Invalid access because " << reason << "\n";
+    throw exceptions::IndexException (message.str ()); 
+  }
+}
+
 
 } // end containers namespace
 } // end knowledge namespace

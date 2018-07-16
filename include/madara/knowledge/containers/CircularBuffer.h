@@ -174,7 +174,7 @@ namespace madara
         std::vector <KnowledgeRecord> get_latest (size_t count) const;
         
         /**
-         * Gets the most recently added records up to a specified count
+         * Gets the oldest added records up to a specified count
          * @param  count   the maximum number of records to return
          * @return the last added records
          * @throw exceptions::IndexException  if index is unreachable

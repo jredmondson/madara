@@ -2361,7 +2361,7 @@ void test_circular_consumer (void)
 
   std::cerr << "  Testing get_earliest(50)...";
 
-  std::vector <KnowledgeRecord> records = consumer.get_earliest (50);
+  std::vector <KnowledgeRecord> records = consumer.consume_earliest (50);
 
   bool has_failed = records.size () != 50;
 
@@ -2407,7 +2407,7 @@ void test_circular_consumer (void)
 
   std::cerr << "  Testing get_earliest(25)...";
 
-  records = consumer.get_earliest (25);
+  records = consumer.consume_earliest (25);
 
   has_failed = records.size () != 25;
 
@@ -2452,7 +2452,7 @@ void test_circular_consumer (void)
 
   std::cerr << "  Testing get_earliest(25)...";
 
-  records = consumer.get_earliest (25);
+  records = consumer.consume_earliest (25);
 
   has_failed = records.size () != 25;
 
@@ -2570,7 +2570,7 @@ void test_circular_consumer (void)
 
   std::cerr << "  Testing get_earliest(5)...";
 
-  records = consumer.get_earliest (5);
+  records = consumer.consume_earliest (5);
 
   has_failed = records.size () != 5;
 
@@ -2678,10 +2678,34 @@ void test_circular_consumer (void)
     std::cerr << "      inspect(2) == " << consumer.inspect (2) << "\n";
   }
 
+  std::cerr << "  Testing inspect(2,5)...";
+
+  records = consumer.inspect (-2, 5);
+
+  if (records.size () == 5 &&
+      records[0] == 102 &&
+      records[1] == 103 &&
+      records[2] == 104 &&
+      records[3] == 105 &&
+      records[4] == 106)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
 
   std::cerr << "  Testing get_latest(5)...";
 
-  records = consumer.get_latest (5);
+  records = consumer.consume_latest (5);
 
   has_failed = records.size () != 5;
 
@@ -2724,6 +2748,175 @@ void test_circular_consumer (void)
     std::cerr << "      remaining() == " << consumer.remaining () << "\n";
   }
 
+  std::cerr << "  producer.resize(41), consumer.resize()...\n";
+
+  producer.resize (41);
+  consumer.resize ();
+
+  std::cerr << "  Testing producer.size()...";
+
+  if (producer.size () == 41)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      size() == " << producer.size () << "\n";
+  }
+
+  std::cerr << "  Testing consumer.size()...";
+
+  if (consumer.size () == 41)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      size() == " << consumer.size () << "\n";
+  }
+
+  std::cerr << "  producer.add() x 95 times...\n";
+
+  for (KnowledgeRecord::Integer i = 0; i < 95; ++i)
+  {
+    producer.add (KnowledgeRecord (i));
+  }
+
+  std::cerr << "  consumer.get() x 5...\n";
+
+  std::cerr << "  Testing get()...";
+
+  KnowledgeRecord result = consumer.consume ();
+
+  if (result == 54)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing get()...";
+
+  result = consumer.consume ();
+
+  if (result == 55)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing get()...";
+
+  result = consumer.consume ();
+
+  if (result == 56)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing get()...";
+
+  result = consumer.consume ();
+
+  if (result == 57)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing get()...";
+
+  result = consumer.consume ();
+
+  if (result == 58)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing get()...";
+
+  result = consumer.consume ();
+
+  if (result == 59)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing peak_latest()...";
+
+  result = consumer.peak_latest ();
+
+  if (result == 94)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+    std::cerr << "      peak_latest() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing peak_latest(5)...";
+
+  records = consumer.peak_latest (5);
+
+  if (records.size () == 5 &&
+      records[0] == 94 &&
+      records[1] == 93 &&
+      records[2] == 92 &&
+      records[3] == 91 &&
+      records[4] == 90)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
 }
 
 int main (int , char **)

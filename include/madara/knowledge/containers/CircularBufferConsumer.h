@@ -115,10 +115,11 @@ namespace madara
         
         /**
          * Gets the most recently added record
-         * @return the last added record
+         * @return the last added record. exists() will return false if the
+         *         record is invalid
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
-        knowledge::KnowledgeRecord get (void) const;
+        KnowledgeRecord consume (void) const;
         
         /**
          * Gets the most recently added records up to a specified count
@@ -126,18 +127,18 @@ namespace madara
          * @return the last added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
-        std::vector <KnowledgeRecord> get_latest (size_t count) const;
+        std::vector <KnowledgeRecord> consume_latest (size_t count) const;
         
         /**
-         * Gets the most recently added records up to a specified count
+         * Gets the oldest added records up to a specified count
          * @param  count   the maximum number of records to return
          * @return the last added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
-        std::vector <KnowledgeRecord> get_earliest (size_t count) const;
+        std::vector <KnowledgeRecord> consume_earliest (size_t count) const;
         
         /**
-         * Retrieves a record at a position relative to last added
+         * Retrieves a record at a position relative to local index
          * @param  position  the relative position of the requested record
          *                   from the latest added record. Can be negative
          * @return  the record at the position in the CircularBufferConsumer
@@ -147,6 +148,38 @@ namespace madara
          **/
         knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
 
+        /**
+         * Retrieves a vector of records at a position relative to local index
+         * @param  position  the relative position of the requested record
+         *                   from the latest added record. Can be negative
+         * @param  count   the maximum number of records to return
+         * @return  the record at the position in the CircularBufferConsumer
+         * @throw exceptions::ContextException if name or context haven't
+         *                      been set appropriately
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,
+          size_t count) const;
+
+        /**
+         * Peaks at the most recently added record. This does not use or modify
+         * the local index. It instead references what the producer most recently
+         * added.
+         * @return the last added record. exists() will return false if the
+         *         record is invalid
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        knowledge::KnowledgeRecord peak_latest (void) const;
+        
+        /**
+         * Peaks at the most recently added records. This does not use or modify
+         * the local index. It instead references what the producer most recently
+         * added.
+         * @return the last added records up to a certain count
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        std::vector <KnowledgeRecord> peak_latest (size_t count) const;
+        
         /**
          * Returns the number of records remaining that have not been consumed
          * with get_latest, get, or get_earliest

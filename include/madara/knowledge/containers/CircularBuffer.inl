@@ -292,8 +292,12 @@ CircularBuffer::get (void) const
     ContextGuard context_guard (*context_);
 
     KnowledgeRecord::Integer index = *index_;
+    index = increment (index, 0);
 
-    return context_->get (buffer_.vector_[(size_t)index], settings_);
+    if (count () > 0)
+      return context_->get (buffer_.vector_[(size_t)index], settings_);
+    else
+      return KnowledgeRecord ();
   }
   else
   {
