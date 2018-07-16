@@ -34,8 +34,8 @@ namespace ns
     double f;
   };
 
-  template<typename Fun, typename T>
-  auto for_each_field(Fun fun, T&& val) -> enable_if_same_decayed<T, B>
+  template<typename Fun>
+  void for_each_field(Fun fun, B& val)
   {
     fun("d", val.d);
     fun("e", val.e);
@@ -54,8 +54,8 @@ namespace ns
     std::map<std::string, int> m;
   };
 
-  template<typename Fun, typename T>
-  auto for_each_field(Fun fun, T&& val) -> enable_if_same_decayed<T, C>
+  template<typename Fun>
+  void for_each_field(Fun fun, C& val)
   {
     fun("g", val.g);
     fun("h", val.h);
@@ -269,8 +269,8 @@ namespace geo
     Point(double x, double y, double z = 0) : x(x), y(y), z(z) {}
   };
 
-  template<typename Fun, typename T>
-  auto for_each_field(Fun fun, T&& val) -> enable_if_same_decayed<T, Point>
+  template<typename Fun>
+  void for_each_field(Fun fun, Point& val)
   {
     fun("x", val.x);
     fun("y", val.y);
@@ -286,8 +286,8 @@ namespace geo
       : w(w), i(i), j(j), k(k) {}
   };
 
-  template<typename Fun, typename T>
-  auto for_each_field(Fun fun, T&& val) -> enable_if_same_decayed<T, Quaternion>
+  template<typename Fun>
+  void for_each_field(Fun fun, Quaternion& val)
   {
     fun("w", val.w);
     fun("i", val.i);
@@ -303,11 +303,11 @@ namespace geo
       : Point(x, y, z), Quaternion(w, i, j, k) {}
   };
 
-  template<typename Fun, typename T>
-  auto for_each_field(Fun fun, T&& val) -> enable_if_same_decayed<T, Pose>
+  template<typename Fun>
+  void for_each_field(Fun fun, Pose& val)
   {
-    for_each_field(fun, forward_as<T, Point>(val));
-    for_each_field(fun, forward_as<T, Quaternion>(val));
+    for_each_field(fun, static_cast<Point&>(val));
+    for_each_field(fun, static_cast<Quaternion&>(val));
   };
 
   struct Stamp
@@ -316,9 +316,8 @@ namespace geo
     std::string frame;
   };
 
-  template<typename Fun, typename T>
-  auto for_each_field(Fun fun, T&& val) ->
-    enable_if_same_decayed<T, Stamp>
+  template<typename Fun>
+  void for_each_field(Fun fun, Stamp& val)
   {
     fun("time", val.time);
     fun("frame", val.frame);
@@ -340,12 +339,11 @@ namespace geo
       : Pose(x, y, z, w, i, j, k), stamp{time, frame} {}
   };
 
-  template<typename Fun, typename T>
-  auto for_each_field(Fun fun, T&& val) ->
-    enable_if_same_decayed<T, StampedPose>
+  template<typename Fun>
+  void for_each_field(Fun fun, StampedPose& val)
   {
     fun("stamp", val.stamp);
-    for_each_field(fun, forward_as<T, Pose>(val));
+    for_each_field(fun, static_cast<Pose&>(val));
   };
 }
 

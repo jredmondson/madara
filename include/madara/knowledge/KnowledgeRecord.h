@@ -1218,7 +1218,7 @@ namespace madara
         if (type_ == ANY) {
           return *any_value_;
         } else if (type_ == INTEGER) {
-          return Any(tags::type<int64_t>{}, int_value_);
+          return Any(int_value_);
         } else if (type_ == DOUBLE) {
           return Any(double_value_);
         } else if (type_ == INTEGER_ARRAY) {

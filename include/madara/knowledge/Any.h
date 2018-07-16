@@ -1869,9 +1869,10 @@ inline ConstAnyRef::ConstAnyRef(const AnyRef &other)
  * Class which defines methods common to ConstAny and Any. Use those classes
  * instead of this class directly.
  **/
-template<typename Impl, typename Base>
-class BasicOwningAny : public Base
+template<typename Impl, typename BaseImpl>
+class BasicOwningAny : public BaseImpl
 {
+  using Base = BaseImpl;
 public:
   /**
    * Default constructor. Creates an empty Any.
@@ -1971,10 +1972,11 @@ public:
    * the new Any if it supports it, and the argument is an rvalue reference.
    * Otherwise, it will be copied.
    **/
-  template<typename T>
-  explicit BasicOwningAny(T &&t, enable_if_<
-    !is_type_tag<T>() &&
-    !is_convertible<T, ConstAnyRef>(), int> = 0)
+  template<typename T,
+    typename std::enable_if<
+	  !is_type_tag<T>() &&
+	  !is_convertible<T, ConstAnyRef>(), int>::type = 0>
+  explicit BasicOwningAny(T &&t)
     : Base(&get_type_handler(type<decay_<T>>{}),
         reinterpret_cast<void*>(
             new decay_<T>(std::forward<T>(t))))
