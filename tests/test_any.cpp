@@ -368,7 +368,7 @@ void test_geo()
   TEST_EQ(kb.get("s0").share_any()->ref("stamp")("time").to_string(), "1234");
   TEST_EQ(kb.get("s0").share_any()->ref("stamp")("frame").to_string(), "default");
 
-  Any s0 = kb.get("s0").to_any();
+  Any s0 = std::move(*kb.get("s0").take_any());
   s0("stamp")(&Stamp::time) = 4321;
   kb.emplace_any("s0", std::move(s0));
   TEST_EQ(kb.get("s0").share_any()->ref("stamp")("time").to_integer(), 4321);
@@ -389,6 +389,49 @@ void test_geo()
   TEST_EQ(kb.get("vs0").get_any_cref()[1]("stamp")("frame").to_string(), "frame1");
 }
 
+struct Example {
+    int i;
+    double d;
+    std::vector<double> dv;
+    std::vector<Example> ev;
+};
+
+template<typename Fun, typename T>
+auto for_each_field(Fun fun, T&& val) ->
+  enable_if_same_decayed<T, Example>
+{
+  fun("i", val.i);
+  fun("d", val.d);
+  fun("dv", val.dv);
+  fun("ev", val.ev);
+};
+
+void test_example()
+{
+  KnowledgeBase kb;
+  kb.set_any("example", Example{3, 5.5,
+    {1.1, 2.2, 3.3}, {
+      {4, 6.6, {4.4, 5.5, 6.6}, {}},
+      {5, 7.7, {7.7, 8.8, 9.9}, {}}}});
+
+  Any any = kb.get("example").to_any(); // When given no type, to_any() returns a copy of stored Any
+
+  TEST_EQ(any("i").to_integer(), 3L);
+  TEST_EQ(any("dv")[1].to_double(), 2.2);
+  TEST_EQ(any("ev")[0]("dv")[2].to_integer(), 6);
+
+  // Iterate over each field, and print. Note that printing Anys always works, as it falls back
+  // to serializing to JSON if no other printing support is available.
+  for (const AnyField &field : any.list_fields()) {
+    std::cerr << field.name() << ": " << any(field) << std::endl;
+  }
+
+  any("ev")[1]("i").ref<int>() = 42; // assign through direct reference
+  any("ev")[1]("i") = 47; // will assign directly, as the literal is an int and matches the stored value
+  any("ev")[1]("i") = 52.1; // will convert to a KnowledgeRecord, then call `from_record`, since the types don't match
+  any("ev")[1]("i") = "57"; // will also convert to a KnowledgeRecord
+}
+
 int main (int, char **)
 {
   madara::logger::global_logger->set_level(3);
@@ -406,6 +449,8 @@ int main (int, char **)
   }
 
   test_geo();
+
+  test_example();
 
   if (madara_tests_fail_count > 0)
   {
