@@ -308,8 +308,8 @@ namespace impl {
   }
 
   MADARA_MAKE_VAL_SUPPORT_TEST(target_container, x,
-      (std::is_arithmetic<typename std::decay<
-        decltype(*std::begin(x))>::type>::value,
+      (enable_if_<std::is_arithmetic<typename std::decay<
+        decltype(*std::begin(x))>::type>::value>(),
        impl::get_size(x)));
 }
 
@@ -588,7 +588,107 @@ MADARA_KNOWLEDGE_COMPOSITE_OP(/=)
 MADARA_KNOWLEDGE_COMPOSITE_OP(*=)
 MADARA_KNOWLEDGE_COMPOSITE_OP(%=)
 
-MADARA_MAKE_VAL_SUPPORT_TEST(cast_to_record, x, (knowledge_cast(x)));
+MADARA_MAKE_VAL_SUPPORT_TEST(cast_to_record, x, knowledge_cast(x));
+MADARA_MAKE_VAL_SUPPORT_TEST(cast_from_record, x,
+    knowledge_cast(KnowledgeRecord{}, x));
+
+template<typename T>
+inline auto try_knowledge_cast(T &&in) ->
+  enable_if_<supports_cast_to_record<T>::value, KnowledgeRecord>
+{
+  return knowledge_cast(std::forward<T>(in));
+}
+
+template<typename T>
+inline auto try_knowledge_cast(T &&) ->
+  enable_if_<!supports_cast_to_record<T>::value, KnowledgeRecord>
+{
+  return {};
+}
+
+template<typename T>
+inline auto try_knowledge_cast(const KnowledgeRecord &rec, T &out) ->
+  enable_if_<supports_cast_from_record<T>::value, bool>
+{
+  knowledge_cast(rec, out);
+  return true;
+}
+
+template<typename T>
+inline auto try_knowledge_cast(const KnowledgeRecord &, T &) ->
+  enable_if_<!supports_cast_from_record<T>::value, bool>
+{
+  return false;
+}
+
+template<typename Impl, typename ValImpl, typename RefImpl>
+template<typename T>
+inline T
+BasicConstAny<Impl, ValImpl, RefImpl>::to(type<T>) const
+{
+  if (!handler_ && data_) {
+    return impl().template ref<T>();
+  }
+
+  if (handler_->tindex == type_id<T>()) {
+    return impl().template ref_unsafe<T>();
+  }
+
+  if (supports_cast_from_record<T>::value) {
+    if (!supports_to_record()) {
+      throw exceptions::BadAnyAccess("Type stored in Any doesn't "
+          "support to_record");
+    }
+
+    T ret;
+    try_knowledge_cast(handler_->to_record(data_), ret);
+    return ret;
+  } else {
+    throw exceptions::BadAnyAccess("Type stored doesn't match type "
+        "requested, and doesn't support knowledge_cast from record");
+  }
+}
+
+template<typename Impl, typename ValImpl, typename RefImpl, typename CRefImpl>
+template<typename T>
+inline void
+BasicAny<Impl, ValImpl, RefImpl, CRefImpl>::assign(T &&t) const
+{
+  if (!this->handler_ && this->data_) {
+    impl().template ref<decay_<T>>() = std::forward<T>(t);
+    return;
+  }
+
+  if (this->handler_->tindex == type_id<T>()) {
+    ref<decay_<T>>() = std::forward<T>(t);
+    return;
+  }
+
+  if (supports_cast_to_record<T>::value) {
+    if (!supports_from_record()) {
+      throw exceptions::BadAnyAccess("Type stored in Any doesn't "
+          "support to_record");
+    }
+
+    KnowledgeRecord rec(try_knowledge_cast(std::forward<T>(t)));
+    this->handler_->from_record(rec, this->data_);
+  } else {
+    throw exceptions::BadAnyAccess("Type stored doesn't match type "
+        "assigning, and doesn't support knowledge_cast to record");
+  }
+}
+
+template<typename Impl, typename ValImpl, typename RefImpl, typename CRefImpl>
+inline void
+BasicAny<Impl, ValImpl, RefImpl, CRefImpl>::from_record(
+    const knowledge::KnowledgeRecord &rec) const
+{
+  if (!supports_from_record()) {
+    throw exceptions::BadAnyAccess("Type stored in Any doesn't "
+        "support to_record");
+  }
+  this->handler_->from_record(rec, this->data_);
+}
 
 }
 
@@ -601,6 +701,17 @@ namespace utility { inline namespace core {
     return [](void *ptr) -> knowledge::KnowledgeRecord {
         T &val = *static_cast<T *>(ptr);
         return knowledge::knowledge_cast(val);
+      };
+  }
+
+  template<typename T,
+    enable_if_<knowledge::supports_cast_from_record<T>::value, int> = 0>
+  constexpr knowledge::TypeHandlers::from_record_fn_type
+    get_type_handler_from_record(type<T>, overload_priority<8>)
+  {
+    return [](const knowledge::KnowledgeRecord &rec, void *ptr) {
+        T &val = *static_cast<T *>(ptr);
+        knowledge::knowledge_cast(rec, val);
       };
   }
 } } }

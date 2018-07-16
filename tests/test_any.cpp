@@ -48,6 +48,7 @@ namespace ns
     double h;
     std::string i;
     std::vector<int> iv;
+    std::vector<double> dv;
     std::vector<B> v;
     B b;
     std::map<std::string, int> m;
@@ -60,6 +61,7 @@ namespace ns
     fun("h", val.h);
     fun("i", val.i);
     fun("iv", val.iv);
+    fun("dv", val.dv);
     fun("v", val.v);
     fun("b", val.b);
     fun("m", val.m);
@@ -128,13 +130,16 @@ void test_any()
 
   VAL(a0.to_json());
 
-  a0("d") = a0("e") = a0("f") = 42.0;
-  TEST_EQ(a0("d")->ref<double>(), 42);
-  TEST_EQ(a0("e")->ref<double>(), 42);
-  TEST_EQ(a0("f")->ref<double>(), 42);
+  a0("d") = 42;
+  a0("e") = "42";
+  a0("f") = 42.0;
+  TEST_EQ(a0("d").ref<double>(), 42);
+  TEST_EQ(a0("e").ref<double>(), 42);
+  TEST_EQ(a0("f").ref<double>(), 42);
 
   Any aC(ns::C{1, 2.5, "asdf",
-      {10, 20, 30}, {}, {4, 7, 9},
+      {10, 20, 30}, {1.1, 2.2, 3.3},
+      {}, {4, 7, 9},
       {{"x", 13}, {"y", 14}}});
   auto fields = aC.list_fields();
   for (const auto &cur : fields)
@@ -143,29 +148,37 @@ void test_any()
       (void*)&cur.handler() << " " <<
       cur.type_name() << " " <<
       cur.data() << " " <<
-      aC.ref(cur).to_json() << std::endl;
+      aC(cur) << std::endl;
   }
 
   TEST_EQ(aC.ref<std::string>("i"), "asdf");
   TEST_EQ(aC("i")(tags::str), "asdf");
-  TEST_EQ(aC("iv")->size(), 3UL);
+  TEST_EQ(aC("iv").size(), 3UL);
   TEST_EQ(aC("iv")[1](type<int>{}), 20);
-  VAL(aC("iv")->to_string());
-  TEST_EQ(aC("m")->size(), 2UL);
+  VAL(aC("iv").to_string());
+  TEST_EQ(aC("m").size(), 2UL);
   TEST_EQ(aC("m")["x"](type<int>{}), 13);
   aC("m")["x"](type<int>{}) = 23;
   TEST_EQ(aC("m")["x"](type<int>{}), 23);
+  aC("m")["x"] = 26;
+  TEST_EQ(aC("m")["x"](type<int>{}), 26);
+  aC("m")["x"] = "29";
+  TEST_EQ(aC("m")["x"](type<int>{}), 29);
 
-  VAL(aC.ref(aC.find_field("g")).to_json());
+  VAL(aC.ref(aC.find_field("g")));
   auto field = aC.find_field("i");
-  aC.set_field(field, Any(std::string("zxcv")));
-  VAL(aC.ref(field).to_json());
+  aC(field) = std::string("zxcv");
+  VAL(aC.ref(field));
   aC(field) = std::string("qwerty");
-  VAL(aC(field)(tags::record));
-  aC.set_field("h", 4.5);
-  VAL(aC.ref("h")(tags::json));
+  VAL(aC(field).to_record());
+  aC("h") = 4.5;
+  VAL(aC.ref("h"));
   TEST_EQ(aC("b")("f")(tags::dbl), 9);
+  TEST_EQ(aC("b")("f").to_string(), "9");
   aC("b")("f")(tags::dbl) = 10;
+  TEST_EQ(aC("dv")(tags::dbls)[1], 2.2);
+  aC("dv")(tags::dbls)[1] = 2.4;
+  TEST_EQ(aC("dv")(tags::dbls)[1], 2.4);
 
   const Any aConst = aC;
   TEST_EQ(aConst("b")("f")(tags::dbl), 10);
@@ -248,7 +261,7 @@ void test_map(T &kb)
 
 int main (int, char **)
 {
-  madara::logger::global_logger->set_level(9);
+  madara::logger::global_logger->set_level(3);
 
   test_any();
   test_record();

@@ -15,9 +15,6 @@ typedef  KnowledgeRecord::Integer  Integer;
 
 void test_unshared_record (void)
 {
-#if defined(__GNUC__) && (__GNUC__ < 5)
-  std::cout << "This test ignored in old versions of g++ with COW strings\n";
-#else
   KnowledgeRecord rec;
 
   std::string str = "Hello World";
@@ -26,8 +23,7 @@ void test_unshared_record (void)
 
   std::string str_out = rec.to_string();
 
-  TEST_NE(orig_ptr, str_out.c_str());
-#endif
+  VAL(orig_ptr != str_out.c_str());
 
   std::cerr << "test_unshared_record: num_fails: " <<
     madara_tests_fail_count << "\n";

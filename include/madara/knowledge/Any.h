@@ -81,10 +81,17 @@ inline type_index type_id()
 
 struct TypeHandlers;
 class Any;
-class RefAny;
-class CRefAny;
+class AnyRef;
+class ConstAnyRef;
 class KnowledgeRecord;
 
+/**
+ * Represents a field of a type which supports field-access via `Any` types.
+ *
+ * Created by the `list_fields()` and `find_fields()` methods of `Any` types.
+ *
+ * These objects are freely and cheaply copyable.
+ **/
 class AnyField
 {
 public:
@@ -174,6 +181,13 @@ struct TypeHandlers
 
   typedef KnowledgeRecord (*to_record_fn_type)(void *);
   to_record_fn_type to_record;
+
+  typedef void (*from_record_fn_type)(
+      const KnowledgeRecord &rec, void *);
+  from_record_fn_type from_record;
+
+  typedef std::ostream &(*to_ostream_fn_type)(std::ostream &, void *);
+  to_ostream_fn_type to_ostream;
 };
 
 inline const TypeHandlers &AnyField::parent() const
@@ -318,6 +332,20 @@ constexpr TypeHandlers::to_record_fn_type
   return nullptr;
 }
 
+template<typename T>
+constexpr TypeHandlers::from_record_fn_type
+  get_type_handler_from_record(type<T>, overload_priority_weakest)
+{
+  return nullptr;
+}
+
+template<typename T>
+constexpr TypeHandlers::to_ostream_fn_type
+  get_type_handler_to_ostream(type<T>, overload_priority_weakest)
+{
+  return nullptr;
+}
+
 /// For internal use. Constructs a TypeHandlers containing functions used by Any
 template<typename T>
 inline const TypeHandlers &get_type_handler(type<T> t)
@@ -336,6 +364,8 @@ inline const TypeHandlers &get_type_handler(type<T> t)
       get_type_handler_index_int(t, select_overload()),
       get_type_handler_index_str(t, select_overload()),
       get_type_handler_to_record(t, select_overload()),
+      get_type_handler_from_record(t, select_overload()),
+      get_type_handler_to_ostream(t, select_overload()),
     };
   return handler;
 }
@@ -357,6 +387,9 @@ MADARA_MAKE_VAL_SUPPORT_TEST(int_index, x, (x[1UL] = x[1UL]));
 MADARA_MAKE_VAL_SUPPORT_TEST(str_index, x, (x[""] = x[""]));
 MADARA_MAKE_VAL_SUPPORT_TEST(int_at_index, x, (x.at(1UL) = x.at(1UL)));
 MADARA_MAKE_VAL_SUPPORT_TEST(str_at_index, x, (x.at("") = x.at("")));
+
+MADARA_MAKE_VAL_SUPPORT_TEST(to_ostream, x, (std::cout << x));
+MADARA_MAKE_VAL_SUPPORT_TEST(from_istream, x, (std::cin >> x));
 
 /// Functor to pass to for_each_field to serialize a type
 template<typename Archive>
@@ -410,9 +443,6 @@ namespace tags {
  **/
 constexpr struct raw_data_t {} raw_data;
 
-constexpr struct json_t {} json;
-constexpr struct record_t {} record;
-
 }
 
 template<typename T, typename = void>
@@ -424,6 +454,10 @@ struct is_type_tag_impl<type<T>> : std::true_type {};
 template<typename T>
 constexpr bool is_type_tag() { return is_type_tag_impl<decay_<T>>::value; }
 
+/**
+ * Provides methods common to Any, ConstAny, AnyRef, ConstAnyRef. Use those
+ * classes, not this one directly.
+ **/
 template<typename Impl, typename ValImpl, typename RefImpl>
 class BasicConstAny
 {
@@ -486,11 +520,17 @@ protected:
   }
 
 public:
+  /**
+   * Create a const reference type from this Any type
+   **/
   const RefImpl cref() const
   {
-    return RefAny(handler_, data_);
+    return AnyRef(handler_, data_);
   }
 
+  /**
+   * Create a const reference type from this Any type
+   **/
   const RefImpl ref() const
   {
     return cref();
@@ -689,11 +729,24 @@ public:
     return stream.str();
   }
 
+  /**
+   * Returns true if the stored type supports list_fields(), and the ref()
+   * overloads that retrieve fields. False otherwise.
+   **/
   bool supports_fields() const
   {
     return handler_ && handler_->list_fields && handler_->get_field;
   }
 
+  /**
+   * Get a list of fields the stored object has. This operation is O(n log n)
+   * for n fields the first time it is called for a type, but O(1)
+   * subsequently, as it returns the same cached list.
+   *
+   * Use the returned list to access fields using ref(AnyField)
+   *
+   * Returns empty fields list if type doesn't support fields.
+   **/
   const std::vector<AnyField> &list_fields() const
   {
     if (!supports_fields()) {
@@ -703,6 +756,12 @@ public:
     return handler_->list_fields(data_);
   }
 
+  /**
+   * Return the AnyField for the given name. Uses list_fields() internally.
+   * O(log n) string comparisons for n fields, excluding time for lsit_fields().
+   *
+   * throws BadAnyAccess if stored type doesn't have the named field.
+   **/
   AnyField find_field(const char *name) const
   {
     using exceptions::BadAnyAccess;
@@ -711,18 +770,6 @@ public:
       throw BadAnyAccess("Null name pointer passed to find_field");
     }
 
-    /*
-    auto func = handler_->find_field;
-    if (!func) {
-      throw BadAnyAccess("Type in Any does not support find_field");
-    }
-
-    AnyField ret;
-    func(name, ret, data_);
-    if (ret.name() == nullptr) {
-      throw BadAnyAccess(std::string("Type in Any does not contain field \"") +
-          name + "\"");
-    }*/
     const auto &fields = list_fields();
     auto found = std::equal_range(fields.begin(), fields.end(), name,
         compare_any_fields_by_name());
@@ -730,15 +777,15 @@ public:
       throw BadAnyAccess(std::string("Type in Any does not contain field \"") +
           name + "\"");
     }
-    /*
-    if (found.first + 1 != found.second) {
-      throw BadAnyAccess(std::string("Type in Any contains multiple "
-          "fields named \"") + name + "\"");
-    }*/
+
     return *found.first;
   }
 
-  AnyField find_field(AnyField field) const
+  /**
+   * Verifies that the given field belongs to the stored type. Throws
+   * BadAnyAccess if not. If it does belong, simply returns the given field.
+   **/
+  AnyField find_field(const AnyField &field) const
   {
     using exceptions::BadAnyAccess;
 
@@ -749,11 +796,22 @@ public:
     return field;
   }
 
+  /**
+   * Return the AnyField for the given name. Uses list_fields() internally.
+   * O(log n) string comparisons for n fields, excluding time for lsit_fields().
+   *
+   * throws BadAnyAccess if stored type doesn't have the named field.
+   **/
   AnyField find_field(const std::string &name) const
   {
     return find_field(name.c_str());
   }
 
+  /**
+   * Access a field by const reference, using an AnyField object.
+   *
+   * Get the AnyField objects for a given type by calling list_fields()
+   **/
   RefImpl ref(const AnyField &field) const
   {
     using exceptions::BadAnyAccess;
@@ -778,130 +836,174 @@ public:
     return {handler, data};
   }
 
+  /**
+   * Acess a field by const reference, by name.
+   *
+   * Use the ref(AnyField) overload for better efficiency.
+   **/
   RefImpl ref(const char *name) const
   {
     return ref(find_field(name));
   }
 
+  /**
+   * Acess a field by const reference, by name.
+   *
+   * Use the ref(AnyField) overload for better efficiency.
+   **/
   RefImpl ref(const std::string &name) const
   {
     return ref(find_field(name));
   }
 
+  /**
+   * Access a field by const reference, using an AnyField object.
+   *
+   * Get the AnyField objects for a given type by calling list_fields()
+   **/
   RefImpl cref(const AnyField &field) const
   {
     return ref(field);
   }
 
+  /**
+   * Acess a field by const reference, by name.
+   *
+   * Use the cref(AnyField) overload for better efficiency.
+   **/
   RefImpl cref(const char *name) const
   {
     return ref(find_field(name));
   }
 
+  /**
+   * Acess a field by const reference, by name.
+   *
+   * Use the cref(AnyField) overload for better efficiency.
+   **/
   RefImpl cref(const std::string &name) const
   {
     return ref(find_field(name));
   }
 
+  /**
+   * Access a field by const reference, using an AnyField object, with a given
+   * type. Throws BadAnyAccess if the type doesn't match the field's type
+   * exactly, as described for ref(type<T>).
+   *
+   * Get the AnyField objects for a given type by calling list_fields()
+   **/
   template<typename T>
   const T &ref(const AnyField &field) const
   {
     return ref(field).template ref<T>();
   }
 
+  /**
+   * Access a field by const reference, by name, with a given type.
+   * Throws BadAnyAccess if the type doesn't match the field's type exactly,
+   * as described for ref<T>().
+   *
+   * Use the ref<T>(AnyField) overload for better efficiency.
+   **/
   template<typename T>
   const T &ref(const char *name) const
   {
     return ref(find_field(name)).template ref<T>();
   }
 
+  /**
+   * Access a field by const reference, by name, with a given type.
+   * Throws BadAnyAccess if the type doesn't match the field's type exactly,
+   * as described for ref<T>().
+   *
+   * Use the ref<T>(AnyField) overload for better efficiency.
+   **/
   template<typename T>
   const T& ref(const std::string &name) const
   {
     return ref(find_field(name)).template ref<T>();
   }
 
+  /**
+   * Access a field by const reference, using an AnyField object, with a given
+   * type. Throws BadAnyAccess if the type doesn't match the field's type
+   * exactly, as described for ref(type<T>).
+   *
+   * Get the AnyField objects for a given type by calling list_fields()
+   **/
   template<typename T>
   const T &cref(const AnyField &field) const
   {
     return cref(field).template cref<T>();
   }
 
+  /**
+   * Access a field by const reference, by name, with a given type.
+   * Throws BadAnyAccess if the type doesn't match the field's type exactly,
+   * as described for ref<T>().
+   *
+   * Use the cref<T>(AnyField) overload for better efficiency.
+   **/
   template<typename T>
   const T &cref(const char *name) const
   {
     return cref(find_field(name)).template cref<T>();
   }
 
+  /**
+   * Access a field by const reference, by name, with a given type.
+   * Throws BadAnyAccess if the type doesn't match the field's type exactly,
+   * as described for ref<T>().
+   *
+   * Use the cref<T>(AnyField) overload for better efficiency.
+   **/
   template<typename T>
   const T& cref(const std::string &name) const
   {
     return cref(find_field(name)).template cref<T>();
   }
 
+  /**
+   * Copy the stored value, and return it in a new Any
+   **/
   ValImpl clone() const;
 
-  std::string operator()(tags::json_t)
-  {
-    return to_json();
-  }
-
-  KnowledgeRecord operator()(tags::record_t);
-
-  class proxy
-  {
-    RefImpl target;
-
-    proxy(RefImpl t) : target(t) {}
-    proxy(const proxy &t) = delete;
-    proxy(proxy &&t) = default;
-
-  public:
-    RefImpl *operator->()
-    {
-      return &target;
-    }
-
-    template<typename T>
-    auto operator()(T &&t) ->
-      decltype(target(std::forward<T>(t)))
-    {
-      return target(std::forward<T>(t));
-    }
-
-    template<typename T>
-    auto operator[](T &&t) ->
-      decltype(target[std::forward<T>(t)])
-    {
-      return target[std::forward<T>(t)];
-    }
-
-    template<typename Impl2, typename ValImpl2, typename RefImpl2>
-    friend class BasicConstAny;
-  };
-
-  Impl *operator->() const { return &this->impl(); }
-
-  template<typename T,
-    enable_if_<!is_type_tag<T>() &&
-      !is_same_decayed<T, tags::json_t>(), int> = 0>
-  proxy operator()(T &&t) const
-  {
-    return proxy(ref(std::forward<T>(t)));
-  }
-
+  /**
+   * Forwards to cref(t). Use to access fields, and access the stored value by
+   * typed reference (see tags namespace)
+   **/
   template<typename T>
-  const T &operator()(type<T> t) const
+  auto operator()(T &&t) const ->
+    decltype(cref(std::forward<T>(t)))
   {
-    return cref(t);
+    return cref(std::forward<T>(t));
   }
 
+  /**
+   * Synonym for cref(). Creates a ConstAnyRef for this object.
+   **/
+  RefImpl operator()() const
+  {
+    return cref();
+  }
+
+  /**
+   * Returns true if the stored value supports indexing by integer. Else, false.
+   **/
   bool supports_int_index() const
   {
     return handler_ && handler_->index_int;
   }
 
-  RefImpl operator[](size_t i) const
+  /**
+   * Access an element of the stored value, by numeric index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
+  RefImpl at(size_t i) const
   {
     using exceptions::BadAnyAccess;
 
@@ -914,12 +1016,22 @@ public:
     return {handler, data};
   }
 
+  /**
+   * Returns true if the stored value supports indexing by string. Else, false.
+   **/
   bool supports_string_index() const
   {
     return handler_ && handler_->index_str;
   }
 
-  RefImpl operator[](const char *i) const
+  /**
+   * Access an element of the stored value, by string index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
+  RefImpl at(const char *i) const
   {
     using exceptions::BadAnyAccess;
 
@@ -932,16 +1044,67 @@ public:
     return {handler, data};
   }
 
-  RefImpl operator[](const std::string &i) const
+  /**
+   * Access an element of the stored value, by string index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
+  RefImpl at(const std::string &i) const
   {
-    return operator[](i.c_str());
+    return at(i.c_str());
   }
 
+  /**
+   * Access an element of the stored value, by string index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
+  RefImpl operator[](size_t i) const
+  {
+    return at(i);
+  }
+
+  /**
+   * Access an element of the stored value, by string index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
+  RefImpl operator[](const char *i) const
+  {
+    return at(i);
+  }
+
+  /**
+   * Access an element of the stored value, by numeric index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
+  RefImpl operator[](const std::string &i) const
+  {
+    return at(i);
+  }
+
+  /**
+   * Returns true if stored type supports size() as a method
+   **/
   bool supports_size() const
   {
     return handler_ && handler_->size;
   }
 
+  /**
+   * Calls size() on stored type, and returns value.
+   *
+   * Throws BadAnyAccess if !supports_size()
+   **/
   size_t size() const
   {
     using exceptions::BadAnyAccess;
@@ -954,18 +1117,166 @@ public:
     return ret;
   }
 
+  /**
+   * Returns true if stored type can be converted to a KnowledgeRecord by
+   * knowledge_cast.
+   **/
   bool supports_to_record() const
   {
     return handler_ && handler_->to_record;
   }
 
+  /**
+   * Convert stored value to KnowledgeRecord using knoweldge_cast.
+   *
+   * Throws BadAnyAccess if !to_record()
+   **/
   KnowledgeRecord to_record() const;
-  int64_t to_integer() const;
-  double to_double() const;
-  std::vector<int64_t> to_integers() const;
-  std::vector<double> to_doubles() const;
-  std::string to_string() const;
-  std::vector<unsigned char> to_file() const;
+
+  /**
+   * Access stored value, and return as value of given type.
+   *
+   * If T matches stored type exactly, will return a copy of the stored value
+   * directly. Otherwise, if the type given supports conversion using
+   * knowledge_cast from a KnowledgeRecord, and the stored type supports
+   * to_record(), will return knowledge_cast<T>(to_record())
+   **/
+  template<typename T>
+  T to(type<T>) const;
+
+  /**
+   * Access stored value, and return as value of given type.
+   *
+   * If T matches stored type exactly, will return a copy of the stored value
+   * directly. Otherwise, if the type given supports conversion using
+   * knowledge_cast from a KnowledgeRecord, and the stored type supports
+   * `to_record()`, will return `knowledge_cast<T>(to_record())`
+   **/
+  template<typename T>
+  T to() const { return to(type<T>{}); }
+
+  /**
+   * Access stored value, and return as integer (int64_t) value.
+   *
+   * If stored type is an int64_t, returns it directly. Otherwise, if stored
+   * value supports `to_record()`, return `knowledge_cast<int64_t>(to_record())`
+   **/
+  int64_t to_integer() const { return impl().template to<int64_t>(); }
+
+  /**
+   * Access stored value, and return as double value.
+   *
+   * If stored type is an double, returns it directly. Otherwise, if stored
+   * value supports `to_record()`, return `knowledge_cast<double>(to_record())`
+   **/
+  double to_double() const { return impl().template to<double>(); }
+
+  /**
+   * Access stored value, and return as std::vector<int64_t> value.
+   *
+   * If stored type is an a std::vector<int64_t>, returns it directly.
+   * Otherwise, if stored value supports `to_record()`, return
+   * `knowledge_cast<std::vector<int64_t>>(to_record())`
+   **/
+  std::vector<int64_t> to_integers() const
+  {
+    return impl().template to<std::vector<int64_t>>();
+  }
+
+  /**
+   * Access stored value, and return as std::vector<double> value.
+   *
+   * If stored type is an a std::vector<double>, returns it directly.
+   * Otherwise, if stored value supports `to_record()`, return
+   * `knowledge_cast<std::vector<double>>(to_record())`
+   **/
+  std::vector<double> to_doubles() const
+  {
+    return impl().template to<std::vector<double>>();
+  }
+
+  /**
+   * Access stored value, and return as std::string value.
+   *
+   * If stored type is an std::string, returns it directly. Otherwise, if stored
+   * value supports `stream(std::ostream&)`, calls that with a
+   * `std::stringstream`. Otherwise, if stored value supports `to_record()`,
+   * return `knowledge_cast<std::string>(to_record())`
+   **/
+  std::string to_string() const {
+    if (!handler_ && data_) {
+      return impl().template ref<std::string>();
+    }
+
+    if (handler_->tindex == type_id<std::string>()) {
+      return impl().template ref_unsafe<std::string>();
+    }
+
+    if (supports_ostream()) {
+      std::stringstream s;
+      stream(s);
+      return s.str();
+    }
+
+    if (!supports_to_record()) {
+      throw exceptions::BadAnyAccess("Type stored in Any doesn't "
+          "support to_record or stream");
+    }
+
+    std::string ret;
+    try_knowledge_cast(handler_->to_record(data_), ret);
+    return ret;
+  }
+
+  /**
+   * Access stored value, and return as std::vector<unsigned char> value.
+   *
+   * If stored type is an a std::vector<unsigned char>, returns it directly.
+   * Otherwise, if stored value supports `to_record()`, return
+   * `knowledge_cast<std::vector<unsigned char>>(to_record())`
+   **/
+  std::vector<unsigned char> to_file() const
+  {
+    return impl().template to<std::vector<unsigned char>>();
+  }
+
+  /**
+   * Return true if stored type supports `stream(std::ostream&)` directly.
+   * If not, falls back to calling `to_record()`, and writing that, and if not
+   * that, calls `to_json()` and writes that.
+   **/
+  bool supports_ostream() const
+  {
+    return handler_ && handler_->to_ostream;
+  }
+
+  /**
+   * If `supports_ostream()` is true, stream stored type to `o` using its
+   * operator<< implementation.
+   * If not, falls back to calling `to_record()`, and writing that, and if not
+   * that, calls `to_json()` and writes that.
+   **/
+  std::ostream &stream(std::ostream &o) const
+  {
+    if (supports_ostream()) {
+      return handler_->to_ostream(o, data_);
+    } else if (supports_to_record()) {
+      return o << to_record();
+    }
+
+    return o << to_json();
+  }
+
+  /**
+   * If `supports_ostream()` is true, stream stored type to `o` using its
+   * operator<< implementation.
+   * If not, falls back to calling `to_record()`, and writing that, and if not
+   * that, calls `to_json()` and writes that.
+   **/
+  friend std::ostream &operator<<(std::ostream &o, const BasicConstAny &self)
+  {
+    return self.stream(o);
+  }
 
 protected:
   const TypeHandlers *handler_ = nullptr;
@@ -994,18 +1305,8 @@ protected:
 };
 
 /**
- * A general purpose type which can store any type which is:
- *
- *  * Default constructible
- *  * Copy constructible
- *  * Serializable by Boost.Serialization, or implements the for_each_field
- *    free function.
- *
- * This class is used by KnowledgeRecord and KnowledgeBase to store (nearly)
- * arbitrary types.
- *
- * It is similar in principle to Boost.Any (and C++17 std::any), but
- * incorporates serialization support, and a different interface.
+ * Provides methods common to Any and AnyRef. Use those classes, not this one
+ * directly.
  **/
 template<typename Impl, typename ValImpl, typename RefImpl, typename CRefImpl>
 class BasicAny : public BasicConstAny<Impl, ValImpl, CRefImpl>
@@ -1031,7 +1332,10 @@ protected:
   friend class BasicAny;
 
 public:
-  RefImpl ref()
+  /**
+   * Create a reference type from this Any type
+   **/
+  RefImpl ref() const
   {
     return {this->handler_, this->data_};
   }
@@ -1039,44 +1343,8 @@ public:
   using Base::cref;
 
   /**
-   * Access the Any's stored value by const reference.
-   * If empty() or raw() is true, throw BadAnyAccess exception; else,
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * return the stored data as const T&, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return a reference to the contained value
-   **/
-  template<typename T>
-  const T &ref(type<T> t) const
-  {
-    return Base::ref(t);
-  }
-
-  /**
-   * Access the Any's stored value by const reference.
-   * If empty() or raw() is true, throw BadAnyAccess exception; else,
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * return the stored data as const T&, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return a reference to the contained value
-   **/
-  template<typename T>
-  const T &ref() const
-  {
-    return Base::template ref<T>();
-  }
-
-  /**
    * Access the Any's stored value by reference.
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
+   * If empty() or raw() are true, throw BadAnyAccess exception; else,
    * Otherwise, check type_id<T> matches handler_->tindex; if so,
    * return *data_ as T&, else throw BadAnyAccess exception
    *
@@ -1086,7 +1354,7 @@ public:
    * @return a reference to the contained value
    **/
   template<typename T>
-  T &ref(type<T> t)
+  T &ref(type<T> t) const
   {
     impl().check_type(t);
     return impl().ref_unsafe(t);
@@ -1094,9 +1362,7 @@ public:
 
   /**
    * Access the Any's stored value by reference.
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
+   * If empty() or raw() are true, throw BadAnyAccess exception; else,
    * Otherwise, check type_id<T> matches handler_->tindex; if so,
    * return the stored data as T&, else throw BadAnyAccess exception
    *
@@ -1106,7 +1372,7 @@ public:
    * @return a reference to the contained value
    **/
   template<typename T>
-  T &ref()
+  T &ref() const
   {
     return impl().ref(type<T>{});
   }
@@ -1120,7 +1386,7 @@ public:
    * @return a reference of type T to the stored data
    **/
   template<typename T>
-  T &ref_unsafe()
+  T &ref_unsafe() const
   {
     return impl().ref_unsafe(type<T>{});
   }
@@ -1134,156 +1400,225 @@ public:
    * @return a reference of type T to the stored data
    **/
   template<typename T>
-  T &ref_unsafe(type<T>)
+  T &ref_unsafe(type<T>) const
   {
     return *reinterpret_cast<T *>(this->data_);
   }
 
+  /**
+   * Assign to the stored object. Does not replace the stored object, it
+   * assigns to it using its operator=, and as such, cannot change the type
+   * stored by this Any.
+   *
+   * If the given type matches the type stored, it will be assigned to
+   * directly, forwarding the argument to avoid copying if possible.
+   *
+   * If not, but the type does support the from_record() operation, and the
+   * given value supports knowledge_cast(), the given value will be converted
+   * to a KnowledgeRecord, and from_record called.
+   *
+   * Otherwise, a BadAnyAccess exception is thrown.
+   **/
   template<typename T>
-  decay_<T> &assign(T &&t)
-  {
-    return ref<decay_<T>>() = std::forward<T>(t);
-  }
+  void assign(T &&t) const;
 
-  using Base::ref_unsafe;
   using Base::find_field;
   using Base::list_fields;
 
+  /**
+   * Access a field by reference, using an AnyField object.
+   *
+   * Get the AnyField objects for a given type by calling list_fields()
+   **/
   RefImpl ref(const AnyField &field) const
   {
     auto ret = Base::ref(field);
     return {ret.handler_, ret.data_};
   }
 
+  /**
+   * Acess a field by reference, by name.
+   *
+   * Use the ref(AnyField) overload for better efficiency.
+   **/
   RefImpl ref(const char *name) const
   {
     return ref(find_field(name));
   }
 
+  /**
+   * Acess a field by reference, by name.
+   *
+   * Use the ref(AnyField) overload for better efficiency.
+   **/
   RefImpl ref(const std::string &name) const
   {
     return ref(find_field(name));
   }
 
+  /**
+   * Access a field by reference, using an AnyField object, with a given type.
+   * Throws BadAnyAccess if the type doesn't match the field's type exactly,
+   * as described for ref(type<T>).
+   *
+   * Get the AnyField objects for a given type by calling list_fields()
+   **/
   template<typename T>
   T &ref(const AnyField &field) const
   {
     return ref(field).template ref<T>();
   }
 
+  /**
+   * Access a field by reference, by name, with a given type.
+   * Throws BadAnyAccess if the type doesn't match the field's type exactly,
+   * as described for ref<T>().
+   *
+   * Use the ref<T>(AnyField) overload for better efficiency.
+   **/
   template<typename T>
   T &ref(const char *name) const
   {
     return ref(find_field(name)).template ref<T>();
   }
 
+  /**
+   * Access a field by reference, by name, with a given type.
+   * Throws BadAnyAccess if the type doesn't match the field's type exactly,
+   * as described for ref<T>().
+   *
+   * Use the ref<T>(AnyField) overload for better efficiency.
+   **/
   template<typename T>
   T &ref(const std::string &name) const
   {
     return ref(find_field(name)).template ref<T>();
   }
 
-  void set_field(const AnyField &field, ValImpl any)
-  {
-    ref(field) = std::move(any);
-  }
-
-  void set_field(const char *name, ValImpl any)
-  {
-    return set_field(find_field(name), std::move(any));
-  }
-
-  void set_field(const std::string &name, ValImpl any)
-  {
-    return set_field(find_field(name), std::move(any));
-  }
-
-  template<typename N, typename T,
-    enable_if_<!is_convertible<decay_<T>, ValImpl>(), int> = 0>
-  auto set_field(N &&name, T &&val) ->
-      decltype(set_field(find_field(std::forward<N>(name)),
-              std::declval<ValImpl>()), void())
-  {
-    set_field(find_field(std::forward<N>(name)), ValImpl(std::forward<T>(val)));
-  }
-
-  class proxy
-  {
-    RefImpl target;
-
-    proxy(RefImpl t) : target(t) {}
-    proxy(const proxy &t) = delete;
-    proxy(proxy &&t) = default;
-
-  public:
-    template<typename T>
-    decay_<T> &operator=(T &&val)
-    {
-      return target.assign(std::forward<T>(val));
-    }
-
-    RefImpl *operator->()
-    {
-      return &target;
-    }
-
-    template<typename T>
-    auto operator()(T &&t) ->
-      decltype(target(std::forward<T>(t)))
-    {
-      return target(std::forward<T>(t));
-    }
-
-    template<typename T>
-    auto operator[](T &&t) ->
-      decltype(target[std::forward<T>(t)])
-    {
-      return target[std::forward<T>(t)];
-    }
-
-    template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
-    friend class BasicAny;
-  };
-
-  Impl *operator->() { return &this->impl(); }
-
-  template<typename T,
-    enable_if_<!is_type_tag<T>() &&
-      !is_same_decayed<T, tags::json_t>(), int> = 0>
-  proxy operator()(T &&t)
-  {
-    return proxy(ref(std::forward<T>(t)));
-  }
-
+  /**
+   * Forwards to ref(t). Use to access fields, and access the stored value by
+   * typed reference (see tags namespace)
+   **/
   template<typename T>
-  T &operator()(type<T> t)
+  auto operator()(T &&t) const ->
+    decltype(ref(std::forward<T>(t)))
   {
-    return ref(t);
+    return ref(std::forward<T>(t));
   }
 
+  /**
+   * Synonym for ref(). Creates an AnyRef for this object.
+   **/
+  RefImpl operator()() const
+  {
+    return ref();
+  }
+
+  /**
+   * Access an element of the stored value, by numeric index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
+  RefImpl at(size_t i) const
+  {
+    auto r = Base::at(i);
+    return {r.handler_, r.data_};
+  }
+
+  /**
+   * Access an element of the stored value, by string index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
+  RefImpl at(const char *i) const
+  {
+    auto r = Base::at(i);
+    return {r.handler_, r.data_};
+  }
+
+  /**
+   * Access an element of the stored value, by string index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
+  RefImpl at(const std::string &i) const
+  {
+    return at(i.c_str());
+  }
+
+  /**
+   * Access an element of the stored value, by numeric index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
   RefImpl operator[](size_t i) const
   {
-    auto r = Base::operator[](i);
-    return {r.handler_, r.data_};
+    return at(i);
   }
 
+  /**
+   * Access an element of the stored value, by string index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
   RefImpl operator[](const char *i) const
   {
-    auto r = Base::operator[](i);
-    return {r.handler_, r.data_};
+    return at(i);
   }
 
+  /**
+   * Access an element of the stored value, by string index.
+   *
+   * Throws BadAnyAccess if the stored type cannot be indexed this way.
+   *
+   * Range checking is determined by stored type, and will be used if available.
+   **/
   RefImpl operator[](const std::string &i) const
   {
-    return operator[](i.c_str());
+    return at(i);
   }
 
-  using Base::operator();
+  /**
+   * Returns true if the stored value supports from_record()
+   * In general, this is any type of stored_value for which this is well-formed:
+   *
+   * ```
+   * knowledge_cast(rec, stored_value)
+   * ```
+   **/
+  bool supports_from_record() const
+  {
+    return this->handler_ && this->handler_->from_record;
+  }
+
+  /**
+   * Set the stored value from the given KnowledgeRecord. This will not change
+   * the stored type; it converts the record to the stored type, if possible.
+   * Throws a BadAnyAccess if raw() or empty() are true, or if the stored type
+   * doesn't support conversion from a KnowledgeRecord
+   **/
+  void from_record(const KnowledgeRecord &rec) const;
 };
 
-class CRefAny : public BasicConstAny<CRefAny, Any, CRefAny>
+/**
+ * A general purpose type which can refer to any type which is supported by Any.
+ * The referenced object need not actually be contained within an Any. This
+ * reference can read from the object, and convert it to other types, but cannot
+ * modify it.
+ **/
+class ConstAnyRef : public BasicConstAny<ConstAnyRef, Any, ConstAnyRef>
 {
-  using Base = BasicConstAny<CRefAny, Any, CRefAny>;
+  using Base = BasicConstAny<ConstAnyRef, Any, ConstAnyRef>;
 
   template<typename Impl2, typename ValImpl2, typename RefImpl2>
   friend class ::madara::knowledge::BasicConstAny;
@@ -1294,25 +1629,48 @@ protected:
   using Base::Base;
 
 public:
-  CRefAny() = default;
+  /**
+   * Construct an empty ConstAnyRef. Call target() before calling any other
+   * method besides empty().
+   **/
+  ConstAnyRef() = default;
 
-  CRefAny(const RefAny &other);
+  /**
+   * Create a const version of the given AnyRef
+   **/
+  ConstAnyRef(const AnyRef &other);
 
-  CRefAny(const Any &other);
+  /**
+   * Construct as a reference to the given Any
+   **/
+  ConstAnyRef(const Any &other);
 
+  /**
+   * Change the object this ConstAnyRef refers to. It must be a type which could
+   * be stored in an Any, but the object need actually be stored in an Any
+   **/
   template<typename T>
-  void set(T &t)
+  void target(T &t)
   {
     handler_ = &get_type_handler<T>();
     data_ = (void*)&t;
   }
 
+  template<typename Impl2, typename Base2>
+  friend class BasicOwningAny;
+
   friend class Any;
 };
 
-class RefAny : public BasicAny<RefAny, Any, RefAny, CRefAny>
+/**
+ * A general purpose type which can refer to any type which is supported by Any.
+ * The referenced object need not actually be contained within an Any. This
+ * reference may be used to modify the referenced object, but cannot change the
+ * type of the referenced object.
+ **/
+class AnyRef : public BasicAny<AnyRef, Any, AnyRef, ConstAnyRef>
 {
-  using Base = BasicAny<RefAny, Any, RefAny, CRefAny>;
+  using Base = BasicAny<AnyRef, Any, AnyRef, ConstAnyRef>;
 
   template<typename Impl2, typename ValImpl2, typename RefImpl2>
   friend class ::madara::knowledge::BasicConstAny;
@@ -1323,84 +1681,119 @@ protected:
   using Base::Base;
 
 public:
-  RefAny() = default;
+  /**
+   * Construct an empty ConstAnyRef. Call target() before calling any other
+   * method besides empty().
+   **/
+  AnyRef() = default;
 
-  RefAny(const Any &other);
+  /**
+   * Construct as a reference to the given Any
+   **/
+  AnyRef(const Any &other);
 
+  /**
+   * Forwards to assign(T), as long as T is not an Any or AnyRef, modifying
+   * the object this refers to.
+   **/
   template<typename T>
-  void set(T &t)
+  auto operator=(T &&val) ->
+    enable_if_<!is_convertible<decay_<T>, ConstAnyRef>()>
+  {
+    return this->assign(std::forward<T>(val));
+  }
+
+  /**
+   * Change the object this ConstAnyRef refers to. It must be a type which could
+   * be stored in an Any, but the object need actually be stored in an Any
+   **/
+  template<typename T>
+  void target(T &t)
   {
     handler_ = &get_type_handler<T>();
     data_ = (void*)&t;
   }
 
+  template<typename Impl2, typename Base2>
+  friend class BasicOwningAny;
+
   friend class Any;
 };
 
-inline CRefAny::CRefAny(const RefAny &other)
+inline ConstAnyRef::ConstAnyRef(const AnyRef &other)
   : Base(other.handler_, other.data_) {}
 
-class Any : public BasicAny<Any, Any, RefAny, CRefAny>
+/**
+ * Class which defines methods common to ConstAny and Any. Use those classes
+ * instead of this class directly.
+ **/
+template<typename Impl, typename Base>
+class BasicOwningAny : public Base
 {
-  using Base = BasicAny<Any, Any, RefAny, CRefAny>;
 public:
   /**
    * Default constructor. Creates an empty Any.
    **/
-  Any() = default;
+  BasicOwningAny() = default;
 
   /**
    * Copy constructor. Will clone any data stored inside.
    **/
-  Any(const Any &other)
+  BasicOwningAny(const BasicOwningAny &other)
     : Base(other.handler_,
         other.data_ ?
         (other.handler_ ?
           other.handler_->clone(other.data_) :
-          raw_data_storage::clone(other.data_)) : nullptr) {}
+          Base::raw_data_storage::clone(other.data_)) : nullptr) {}
 
-  Any(const CRefAny &other)
+  /**
+   * Construct from a ConstAnyRef. Will clone the data it refers to.
+   **/
+  BasicOwningAny(const ConstAnyRef &other)
     : Base(other.handler_,
         other.data_ ?
         (other.handler_ ?
           other.handler_->clone(other.data_) :
-          raw_data_storage::clone(other.data_)) : nullptr) {}
+          Base::raw_data_storage::clone(other.data_)) : nullptr) {}
 
-  Any(const RefAny &other)
-    : Any(CRefAny(other)) {}
+  /**
+   * Construct from a AnyRef. Will clone the data it refers to.
+   **/
+  BasicOwningAny(const AnyRef &other)
+    : BasicOwningAny(ConstAnyRef(other)) {}
 
   /**
    * Copy assignment operator. Will clone any data stored inside.
    **/
-  Any &operator=(const Any &other)
+  BasicOwningAny &operator=(const BasicOwningAny &other)
   {
     void *data = other.data_ ?
       (other.handler_ ?
         other.handler_->clone(other.data_) :
-        raw_data_storage::clone(other.data_)) : nullptr;
+        Base::raw_data_storage::clone(other.data_)) : nullptr;
 
     clear();
-    handler_ = other.handler_;
-    data_ = data;
+    this->handler_ = other.handler_;
+    this->data_ = data;
     return *this;
   }
 
   /**
    * Move constructor. Other Any will be left empty.
    **/
-  Any(Any &&other) noexcept :
+  BasicOwningAny(BasicOwningAny &&other) noexcept :
     Base(take_ptr(other.handler_),
       take_ptr(other.data_)) {}
 
   /**
    * Move assignment operator. Other Any will be left empty.
    **/
-  Any &operator=(Any &&other) noexcept
+  BasicOwningAny &operator=(BasicOwningAny &&other) noexcept
   {
     if (this != &other) {
       using std::swap;
-      swap(data_, other.data_);
-      swap(handler_, other.handler_);
+      swap(this->data_, other.data_);
+      swap(this->handler_, other.handler_);
     }
     return *this;
   }
@@ -1408,7 +1801,7 @@ public:
   /**
    * Destructor. Deletes the stored data.
    **/
-  ~Any() noexcept
+  ~BasicOwningAny() noexcept
   {
     clear();
   }
@@ -1418,17 +1811,17 @@ public:
    **/
   void clear() noexcept
   {
-    if (!data_) {
+    if (!this->data_) {
       return;
     }
-    if (handler_)
+    if (this->handler_)
     {
-      handler_->destruct((void*)data_);
-      handler_ = nullptr;
+      this->handler_->destruct((void*)this->data_);
+      this->handler_ = nullptr;
     } else {
-      delete [] (char*)data_;
+      delete [] (char*)this->data_;
     }
-    data_ = nullptr;
+    this->data_ = nullptr;
   }
 
   /**
@@ -1437,9 +1830,9 @@ public:
    * Otherwise, it will be copied.
    **/
   template<typename T>
-  explicit Any(T &&t, enable_if_<
+  explicit BasicOwningAny(T &&t, enable_if_<
     !is_type_tag<T>() &&
-    !is_convertible<T, Any>(), int> = 0)
+    !is_convertible<T, ConstAnyRef>(), int> = 0)
     : Base(&get_type_handler(type<decay_<T>>{}),
         reinterpret_cast<void*>(
             new decay_<T>(std::forward<T>(t))))
@@ -1460,7 +1853,7 @@ public:
    * @endcode
    **/
   template<typename T, typename... Args>
-  explicit Any(type<T> t, Args&&... args)
+  explicit BasicOwningAny(type<T> t, Args&&... args)
     : Base(&get_type_handler(t),
         reinterpret_cast<void*>(new T(std::forward<Args>(args)...))) {}
 
@@ -1479,8 +1872,8 @@ public:
    * @endcode
    **/
   template<typename T, typename I>
-  explicit Any(type<T> t, std::initializer_list<I> init)
-    : Any(t, init.begin(), init.end()) {}
+  explicit BasicOwningAny(type<T> t, std::initializer_list<I> init)
+    : BasicOwningAny(t, init.begin(), init.end()) {}
 
   /**
    * Construct with serialized data, for lazy deserialization when first needed.
@@ -1495,81 +1888,8 @@ public:
    * @param data a pointer to the serialized data to copy into this Any
    * @param size the amount of data to copy
    **/
-  explicit Any(tags::raw_data_t, const char *data, size_t size)
-    : Base(nullptr, raw_data_storage::make(data, size)) {}
-
-  /**
-   * Access the Any's stored value by reference.
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * return *data_ as T&, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return a reference to the contained value
-   **/
-  template<typename T>
-  T &ref(type<T> t)
-  {
-    if (!data_) {
-      throw exceptions::BadAnyAccess("ref() called on empty Any");
-    } else if (!handler_) {
-      raw_data_storage *sto = (raw_data_storage *)data_;
-      unserialize(t, sto->data, sto->size);
-    } else if (type_id<T>() != handler_->tindex) {
-      throw exceptions::BadAnyAccess(t, handler_->tindex);
-    }
-    return impl().ref_unsafe(t);
-  }
-
-  using Base::ref;
-
-  /**
-   * Take the Any's stored value, leaving it empty. On moveable types, this
-   * will not copy the value.
-   *
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * take and return the data, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return the formerly contained value
-   **/
-  template<typename T>
-  T take(type<T> t)
-  {
-    T ret(std::move(ref(t)));
-    clear();
-    return ret;
-  }
-
-  /**
-   * Take the Any's stored value, leaving it empty. On moveable types, this
-   * will not copy the value.
-   *
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * take and return the data, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return the formerly contained value
-   **/
-  template<typename T>
-  T take()
-  {
-    return take(type<T>{});
-  }
+  explicit BasicOwningAny(tags::raw_data_t, const char *data, size_t size)
+    : Base(nullptr, Base::raw_data_storage::make(data, size)) {}
 
   /**
    * Construct any compatible type in-place. The first argument is a
@@ -1594,9 +1914,9 @@ public:
 
     clear();
 
-    handler_ = &handler;
+    this->handler_ = &handler;
     T *ret = ptr.release();
-    data_ = reinterpret_cast<void*>(ret);
+    this->data_ = reinterpret_cast<void*>(ret);
     return *ret;
   }
 
@@ -1686,7 +2006,7 @@ public:
   void set_raw(const char *data, size_t size)
   {
     clear();
-    data_ = raw_data_storage::make(data, size);
+    this->data_ = Base::raw_data_storage::make(data, size);
   }
 
   /**
@@ -1776,8 +2096,8 @@ public:
     handler.load(archive, (void*)ptr.get());
 
     clear();
-    data_ = reinterpret_cast<void*>(ptr.release());
-    handler_ = &handler;
+    this->data_ = reinterpret_cast<void*>(ptr.release());
+    this->handler_ = &handler;
   }
 
   /**
@@ -1805,8 +2125,8 @@ public:
     handler.load_json(archive, (void*)ptr.get());
 
     clear();
-    data_ = reinterpret_cast<void*>(ptr.release());
-    handler_ = &handler;
+    this->data_ = reinterpret_cast<void*>(ptr.release());
+    this->handler_ = &handler;
   }
 
   /**
@@ -1818,6 +2138,99 @@ public:
   void unserialize(json_iarchive &archive)
   {
     unserialize(type<T>{}, archive);
+  }
+
+  /**
+   * Access the Any's stored value by reference.
+   * If empty() is true, throw BadAnyAccess exception; else,
+   * If raw() is true, try to deserialize using T, and store deserialized
+   * data if successful, else throw BadAnyAccess exception.
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return *data_ as T&, else throw BadAnyAccess exception
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return a reference to the contained value
+   **/
+  template<typename T>
+  T &ref(type<T> t)
+  {
+    if (!this->data_) {
+      throw exceptions::BadAnyAccess("ref() called on empty Any");
+    } else if (!this->handler_) {
+      typename Base::raw_data_storage *sto =
+        (typename Base::raw_data_storage *)this->data_;
+      unserialize(t, sto->data, sto->size);
+    } else if (type_id<T>() != this->handler_->tindex) {
+      throw exceptions::BadAnyAccess(t, this->handler_->tindex);
+    }
+    return this->impl().ref_unsafe(t);
+  }
+
+  /**
+   * Access the Any's stored value by reference.
+   * If empty() is true, throw BadAnyAccess exception; else,
+   * If raw() is true, try to deserialize using T, and store deserialized
+   * data if successful, else throw BadAnyAccess exception.
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as T&, else throw BadAnyAccess exception
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return a reference to the contained value
+   **/
+  template<typename T>
+  T &ref()
+  {
+    return ref(type<T>{});
+  }
+
+  using Base::ref;
+
+  /**
+   * Take the Any's stored value, leaving it empty. On moveable types, this
+   * will not copy the value.
+   *
+   * If empty() is true, throw BadAnyAccess exception; else,
+   * If raw() is true, try to deserialize using T, and store deserialized
+   * data if successful, else throw BadAnyAccess exception.
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * take and return the data, else throw BadAnyAccess exception
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return the formerly contained value
+   **/
+  template<typename T>
+  T take(type<T> t)
+  {
+    T ret(std::move(ref(t)));
+    clear();
+    return ret;
+  }
+
+  /**
+   * Take the Any's stored value, leaving it empty. On moveable types, this
+   * will not copy the value.
+   *
+   * If empty() is true, throw BadAnyAccess exception; else,
+   * If raw() is true, try to deserialize using T, and store deserialized
+   * data if successful, else throw BadAnyAccess exception.
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * take and return the data, else throw BadAnyAccess exception
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return the formerly contained value
+   **/
+  template<typename T>
+  T take()
+  {
+    return take(type<T>{});
   }
 
 private:
@@ -1838,16 +2251,77 @@ private:
   }
 };
 
+/**
+ * A general purpose type which can store any type which is:
+ *
+ *  * Default constructible
+ *  * Copy constructible
+ *  * Serializable by Boost.Serialization, or implements the for_each_field
+ *    free function.
+ *
+ * This class is used by KnowledgeRecord and KnowledgeBase to store (nearly)
+ * arbitrary types. This class owns the value it stores, and will automatically
+ * destruct the object when the Any gets destructed, like std::unique_ptr.
+ *
+ * It is similar in principle to Boost.Any (and C++17 std::any), but
+ * incorporates serialization support, and a different interface.
+ *
+ * This class cannot modify the stored object, but it can replace what object
+ * is stored, which will destroy the previously stored object.
+ * A `const ConstAny` cannot change at all once constructed, until the
+ * `const ConstAny` itself is destructed.
+ **/
+class ConstAny : public BasicOwningAny<ConstAny,
+  BasicConstAny<ConstAny, Any, ConstAnyRef>>
+{
+  using Base = BasicOwningAny<ConstAny,
+    BasicConstAny<ConstAny, Any, ConstAnyRef>>;
+
+public:
+  using Base::Base;
+};
+
+/**
+ * A general purpose type which can store any type which is:
+ *
+ *  * Default constructible
+ *  * Copy constructible
+ *  * Serializable by Boost.Serialization, or implements the for_each_field
+ *    free function.
+ *
+ * This class is used by KnowledgeRecord and KnowledgeBase to store (nearly)
+ * arbitrary types. This class owns the value it stores, and will automatically
+ * destruct the object when the Any gets destructed, like std::unique_ptr.
+ *
+ * It is similar in principle to Boost.Any (and C++17 std::any), but
+ * incorporates serialization support, and a different interface.
+ *
+ * Note that, a `const Any` can modify the object constructed, it simply
+ * cannot change which object it holds. Use the ConstAny class to hold a const
+ * object which cannot be modifid, and `const ConstAny` to hold a const
+ * object that will not be destructed until the `const ConstAny` is destructed.
+ **/
+class Any : public BasicOwningAny<Any,
+  BasicAny<Any, Any, AnyRef, ConstAnyRef>>
+{
+  using Base = BasicOwningAny<Any,
+    BasicAny<Any, Any, AnyRef, ConstAnyRef>>;
+
+public:
+  using Base::Base;
+
+};
+
 template<typename Impl, typename ValImpl, typename RefImpl>
 inline ValImpl BasicConstAny<Impl, ValImpl, RefImpl>::clone() const
 {
   return this->impl();
 }
 
-inline CRefAny::CRefAny(const Any &other)
+inline ConstAnyRef::ConstAnyRef(const Any &other)
   : Base(other.handler_, other.data_) {}
 
-inline RefAny::RefAny(const Any &other)
+inline AnyRef::AnyRef(const Any &other)
   : Base(other.handler_, other.data_) {}
 
 } // namespace knowledge
@@ -1855,6 +2329,7 @@ inline RefAny::RefAny(const Any &other)
 namespace utility { inline namespace core {
 // Must define below in same namespace as type<> struct for ADL
 
+// Functor to list fields of type which supports for_each_field
 struct do_list_fields
 {
   const knowledge::TypeHandlers *parent;
@@ -1869,6 +2344,7 @@ struct do_list_fields
   }
 };
 
+// Returns a sorted vector of AnyField for a type supporting for_each_field
 template<typename T>
 inline std::vector<knowledge::AnyField> get_fields(T &val)
 {
@@ -1879,6 +2355,7 @@ inline std::vector<knowledge::AnyField> get_fields(T &val)
   return ret;
 }
 
+// Implement get_type_handler_list_fields for type supporting for_each_field
 template<typename T,
   enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::list_fields_fn_type
@@ -1891,6 +2368,7 @@ constexpr knowledge::TypeHandlers::list_fields_fn_type
     };
 }
 
+// Functor to get field of type which supports for_each_field
 struct do_get_field
 {
   const knowledge::AnyField *field;
@@ -1909,6 +2387,7 @@ struct do_get_field
   }
 };
 
+// Implement get_type_handler_get_field for type supporting for_each_field
 template<typename T,
   enable_if_<knowledge::supports_for_each_field<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::get_field_fn_type
@@ -1923,6 +2402,8 @@ constexpr knowledge::TypeHandlers::get_field_fn_type
     };
 }
 
+// Implement get_type_handler_int_index for type supporting for_each_field
+// and operator[](int)
 template<typename T,
   enable_if_<knowledge::supports_int_index<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::index_int_fn_type
@@ -1939,6 +2420,8 @@ constexpr knowledge::TypeHandlers::index_int_fn_type
     };
 }
 
+// Implement get_type_handler_int_index for type supporting for_each_field
+// and at(int). Takes precedence over operator[] version above if available.
 template<typename T,
   enable_if_<knowledge::supports_int_at_index<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::index_int_fn_type
@@ -1955,6 +2438,8 @@ constexpr knowledge::TypeHandlers::index_int_fn_type
     };
 }
 
+// Implement get_type_handler_str_index for type supporting for_each_field
+// and operator[](const char *) or operator[](const std::string &)
 template<typename T,
   enable_if_<knowledge::supports_str_index<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::index_str_fn_type
@@ -1971,6 +2456,9 @@ constexpr knowledge::TypeHandlers::index_str_fn_type
     };
 }
 
+// Implement get_type_handler_str_index for type supporting for_each_field
+// and at(const char *) or operator[](const std::string &).
+// Takes precedence over operator[] version above if available.
 template<typename T,
   enable_if_<knowledge::supports_str_at_index<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::index_str_fn_type
@@ -1987,14 +2475,29 @@ constexpr knowledge::TypeHandlers::index_str_fn_type
     };
 }
 
+// Implement get_type_handler_size for type supporting for_each_field
+// and size() method
 template<typename T,
   enable_if_<knowledge::supports_size_member<T>::value, int> = 0>
 constexpr knowledge::TypeHandlers::size_fn_type
-  get_type_handler_size(type<T>, overload_priority<4>)
+  get_type_handler_size(type<T>, overload_priority<8>)
 {
   return [](size_t &out, void *ptr) {
       T &val = *static_cast<T *>(ptr);
       out = val.size();
+    };
+}
+
+// Implement get_type_handler_to_ostream for type supporting for_each_field
+// and streaming to ostreams (i.e., std::cout << value)
+template<typename T,
+  enable_if_<knowledge::supports_to_ostream<T>::value, int> = 0>
+constexpr knowledge::TypeHandlers::to_ostream_fn_type
+  get_type_handler_to_ostream(type<T>, overload_priority<8>)
+{
+  return [](std::ostream &o, void *ptr) -> std::ostream &{
+      T &val = *static_cast<T *>(ptr);
+      return o << val;
     };
 }
 
@@ -2005,6 +2508,7 @@ constexpr knowledge::TypeHandlers::size_fn_type
 namespace cereal
 {
 
+// Implement Cereal library serialization for types supporting for_each_field
 template<typename Archive, typename T>
 auto serialize(Archive &ar, T &&val) ->
   ::madara::enable_if_<::madara::knowledge::supports_for_each_field<T>::value>
