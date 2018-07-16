@@ -1,6 +1,6 @@
 /* -*- C++ -*- */
-#ifndef _MADARA_EXCEPTION_MADARAEXCEPTION_H_
-#define _MADARA_EXCEPTION_MADARAEXCEPTION_H_
+#ifndef _MADARA_EXCEPTIONS_MADARAEXCEPTION_H_
+#define _MADARA_EXCEPTIONS_MADARAEXCEPTION_H_
 
 #include <string>
 #include <stdexcept>
@@ -20,4 +20,4 @@ namespace madara
   }
 }
 
-#endif /* _MADARA_EXCEPTION_MADARAEXCEPTION_H_ */
+#endif /* _MADARA_EXCEPTIONS_MADARAEXCEPTION_H_ */
