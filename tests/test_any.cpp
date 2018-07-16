@@ -259,6 +259,136 @@ void test_map(T &kb)
   TEST_EQ(kb.get("asdf").template get_any_ref<std::vector<std::string>>()[1], "b");
 }
 
+namespace geo
+{
+  struct Point
+  {
+    double x = 0, y = 0, z = 0;
+
+    Point() = default;
+    Point(double x, double y, double z = 0) : x(x), y(y), z(z) {}
+  };
+
+  template<typename Fun, typename T>
+  auto for_each_field(Fun fun, T&& val) -> enable_if_same_decayed<T, Point>
+  {
+    fun("x", val.x);
+    fun("y", val.y);
+    fun("z", val.z);
+  };
+
+  struct Quaternion
+  {
+    double w = 0, i = 0, j = 0, k = 0;
+
+    Quaternion() = default;
+    Quaternion(double w, double i, double j, double k)
+      : w(w), i(i), j(j), k(k) {}
+  };
+
+  template<typename Fun, typename T>
+  auto for_each_field(Fun fun, T&& val) -> enable_if_same_decayed<T, Quaternion>
+  {
+    fun("w", val.w);
+    fun("i", val.i);
+    fun("j", val.j);
+    fun("k", val.k);
+  };
+
+  struct Pose : Point, Quaternion
+  {
+    Pose() = default;
+    Pose(double x, double y, double z = 0) : Point(x, y, z) {}
+    Pose(double x, double y, double z, double w, double i, double j, double k)
+      : Point(x, y, z), Quaternion(w, i, j, k) {}
+  };
+
+  template<typename Fun, typename T>
+  auto for_each_field(Fun fun, T&& val) -> enable_if_same_decayed<T, Pose>
+  {
+    for_each_field(fun, forward_as<T, Point>(val));
+    for_each_field(fun, forward_as<T, Quaternion>(val));
+  };
+
+  struct Stamp
+  {
+    int64_t time;
+    std::string frame;
+  };
+
+  template<typename Fun, typename T>
+  auto for_each_field(Fun fun, T&& val) ->
+    enable_if_same_decayed<T, Stamp>
+  {
+    fun("time", val.time);
+    fun("frame", val.frame);
+  }
+
+  struct StampedPose : Pose
+  {
+    Stamp stamp = {0, ""};
+
+    StampedPose() = default;
+
+    using Pose::Pose;
+    StampedPose(int64_t time, std::string frame,
+        double x, double y, double z = 0)
+      : Pose(x, y, z), stamp{time, frame} {}
+    StampedPose(int64_t time, std::string frame,
+        double x, double y, double z,
+        double w, double i, double j, double k)
+      : Pose(x, y, z, w, i, j, k), stamp{time, frame} {}
+  };
+
+  template<typename Fun, typename T>
+  auto for_each_field(Fun fun, T&& val) ->
+    enable_if_same_decayed<T, StampedPose>
+  {
+    fun("stamp", val.stamp);
+    for_each_field(fun, forward_as<T, Pose>(val));
+  };
+}
+
+void test_geo()
+{
+  KnowledgeBase kb;
+  using namespace geo;
+
+  kb.set_any("l0", Point(1, 2, 3));
+  kb.set_any("q0", Quaternion(1, 2, 3, 4));
+  kb.set_any("p0", Pose(1, 2, 3, 4, 5, 6, 7));
+  kb.set_any("s0", StampedPose(1234, "default", 1, 2, 3, 4, 5, 6, 7));
+
+  VAL(kb.get("l0").to_any());
+  VAL(kb.get("q0").to_any());
+  VAL(kb.get("p0").to_any());
+  VAL(kb.get("s0").to_any());
+
+  TEST_EQ(kb.get("s0").share_any()->ref("stamp")("time").to_integer(), 1234);
+  TEST_EQ(kb.get("s0").share_any()->ref("stamp")("time").to_string(), "1234");
+  TEST_EQ(kb.get("s0").share_any()->ref("stamp")("frame").to_string(), "default");
+
+  Any s0 = kb.get("s0").to_any();
+  s0("stamp")(&Stamp::time) = 4321;
+  kb.emplace_any("s0", std::move(s0));
+  TEST_EQ(kb.get("s0").share_any()->ref("stamp")("time").to_integer(), 4321);
+  kb.get("s0").share_any()->ref("stamp")("frame")(&std::string::push_back, '!');
+  TEST_EQ(kb.get("s0").share_any()->ref("stamp")("frame").to_string(), "default!");
+  TEST_EQ(kb.get("s0").share_any()->cref("stamp")("frame")(
+    (size_t (std::string::*)(char, size_t)const)&std::string::find, 'f', 0), 2UL);
+
+  std::vector<StampedPose> vs0 = {
+    {0, "frame0", 1, 2},
+    {1, "frame1", 2, 3},
+    {2, "frame2", 3, 4},
+  };
+  kb.set_any("vs0", std::move(vs0));
+
+  VAL(kb.get("vs0").to_any());
+  TEST_EQ(kb.get("vs0").share_any()->size(), 3UL);
+  TEST_EQ(kb.get("vs0").get_any_cref()[1]("stamp")("frame").to_string(), "frame1");
+}
+
 int main (int, char **)
 {
   madara::logger::global_logger->set_level(3);
@@ -274,6 +404,8 @@ int main (int, char **)
     //KnowledgeBase kb;
     //test_map(kb);
   }
+
+  test_geo();
 
   if (madara_tests_fail_count > 0)
   {

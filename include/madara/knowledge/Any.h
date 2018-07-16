@@ -887,6 +887,96 @@ public:
   }
 
   /**
+   * Access the Any's stored value's field by const reference. First, uses
+   * ref<Class>(), where Class is the owner of the given pointer-to-member.
+   * If empty() or raw() are true, throw BadAnyAccess exception; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as T&, else throw BadAnyAccess exception
+   *
+   * Note that Class must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * Then, it applies the pointer-to-member to the reference, to get a
+   * reference to the member.
+   *
+   * @param ptm the pointer-to-member to call
+   * @return a reference to the contained value's member
+   **/
+  template<typename T, typename Class>
+  const T &ref(T Class::* ptm) const
+  {
+    return cref(ptm);
+  }
+
+  /**
+   * Access the Any's stored value's field by const reference. First, uses
+   * ref<Class>(), where Class is the owner of the given pointer-to-member.
+   * If empty() or raw() are true, throw BadAnyAccess exception; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as T&, else throw BadAnyAccess exception
+   *
+   * Note that Class must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * Then, it applies the pointer-to-member to the reference, to get a
+   * reference to the member.
+   *
+   * @param ptm the pointer-to-member to call
+   * @return a reference to the contained value's member
+   **/
+  template<typename T, typename Class>
+  const T &cref(T Class::* ptm) const
+  {
+    return (&impl().ref(type<Class>{}))->*ptm;
+  }
+
+  /**
+   * Call a const method of the Any's stored value. First, uses ref<Class>(),
+   * where Class is the owner of the given pointer-to-member-function.
+   * If empty() or raw() are true, throw BadAnyAccess exception; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as T&, else throw BadAnyAccess exception
+   *
+   * Note that Class must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * Then, it calls the pointer-to-member-function on the reference, forwarding
+   * the remaining arguments, and returns the result.
+   *
+   * @param ptmf the pointer-to-member-function to call
+   * @param args the arguments to pass to that call
+   * @return result of the method called
+   **/
+  template<typename T, typename Class, typename... Params, typename... Args>
+  T ref(T (Class::* ptmf)(Params...) const, Args&&... args) const
+  {
+    return cref(ptmf, std::forward<Args>(args)...);
+  }
+
+  /**
+   * Call a const method of the Any's stored value. First, uses ref<Class>(),
+   * where Class is the owner of the given pointer-to-member-function.
+   * If empty() or raw() are true, throw BadAnyAccess exception; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as T&, else throw BadAnyAccess exception
+   *
+   * Note that Class must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * Then, it calls the pointer-to-member-function on the reference, forwarding
+   * the remaining arguments, and returns the result.
+   *
+   * @param ptmf the pointer-to-member-function to call
+   * @param args the arguments to pass to that call
+   * @return result of the method called
+   **/
+  template<typename T, typename Class, typename... Params, typename... Args>
+  T cref(T (Class::* ptmf)(Params...) const, Args&&... args) const
+  {
+    return ((&impl().ref(type<Class>{}))->*ptmf)(std::forward<Args>(args)...);
+  }
+
+  /**
    * Access a field by const reference, using an AnyField object, with a given
    * type. Throws BadAnyAccess if the type doesn't match the field's type
    * exactly, as described for ref(type<T>).
@@ -970,22 +1060,14 @@ public:
   ValImpl clone() const;
 
   /**
-   * Forwards to cref(t). Use to access fields, and access the stored value by
-   * typed reference (see tags namespace)
+   * Forwards to cref(args...). Use to access fields, and access the stored
+   * value by typed reference (see tags namespace)
    **/
-  template<typename T>
-  auto operator()(T &&t) const ->
-    decltype(cref(std::forward<T>(t)))
+  template<typename... Args>
+  auto operator()(Args&&... args) const ->
+    decltype(ref(std::forward<Args>(args)...))
   {
-    return cref(std::forward<T>(t));
-  }
-
-  /**
-   * Synonym for cref(). Creates a ConstAnyRef for this object.
-   **/
-  RefImpl operator()() const
-  {
-    return cref();
+    return ref(std::forward<Args>(args)...);
   }
 
   /**
@@ -1378,6 +1460,74 @@ public:
   }
 
   /**
+   * Access the Any's stored value's field by reference. First, uses
+   * ref<Class>(), where Class is the owner of the given pointer-to-member.
+   * If empty() or raw() are true, throw BadAnyAccess exception; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as T&, else throw BadAnyAccess exception
+   *
+   * Note that Class must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * Then, it applies the pointer-to-member to the reference, to get a
+   * reference to the member.
+   *
+   * @param ptm the pointer-to-member to call
+   * @return a reference to the contained value's member
+   **/
+  template<typename T, typename Class>
+  T &ref(T Class::* ptm) const
+  {
+    return (&impl().ref(type<Class>{}))->*ptm;
+  }
+
+  /**
+   * Call a const method of the Any's stored value. First, uses ref<Class>(),
+   * where Class is the owner of the given pointer-to-member-function.
+   * If empty() or raw() are true, throw BadAnyAccess exception; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as T&, else throw BadAnyAccess exception
+   *
+   * Note that Class must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * Then, it calls the pointer-to-member-function on the reference, forwarding
+   * the remaining arguments, and returns the result.
+   *
+   * @param ptmf the pointer-to-member-function to call
+   * @param args the arguments to pass to that call
+   * @return result of the method called
+   **/
+  template<typename T, typename Class, typename... Params, typename... Args>
+  T ref(T (Class::* ptmf)(Params...) const, Args&&... args) const
+  {
+    return ((&impl().ref(type<Class>{}))->*ptmf)(std::forward<Args>(args)...);
+  }
+
+  /**
+   * Call a method of the Any's stored value. First, uses ref<Class>(), where
+   * Class is the owner of the given pointer-to-member-function.
+   * If empty() or raw() are true, throw BadAnyAccess exception; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as T&, else throw BadAnyAccess exception
+   *
+   * Note that Class must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * Then, it calls the pointer-to-member-function on the reference, forwarding
+   * the remaining arguments, and returns the result.
+   *
+   * @param ptmf the pointer-to-member-function to call
+   * @param args the arguments to pass to that call
+   * @return result of the method called
+   **/
+  template<typename T, typename Class, typename... Params, typename... Args>
+  T ref(T (Class::* ptmf)(Params...), Args&&... args) const
+  {
+    return ((&impl().ref(type<Class>{}))->*ptmf)(std::forward<Args>(args)...);
+  }
+
+  /**
    * Reference the stored data as type T, WITHOUT any type checking. Do not
    * call this unless you are certain what type the Any contains. This does not
    * unserialize if the Any contains unserialized raw data.
@@ -1496,22 +1646,14 @@ public:
   }
 
   /**
-   * Forwards to ref(t). Use to access fields, and access the stored value by
-   * typed reference (see tags namespace)
+   * Forwards to ref(args...). Use to access fields, and access the stored
+   * value by typed reference (see tags namespace)
    **/
-  template<typename T>
-  auto operator()(T &&t) const ->
-    decltype(ref(std::forward<T>(t)))
+  template<typename... Args>
+  auto operator()(Args&&... args) const ->
+    decltype(ref(std::forward<Args>(args)...))
   {
-    return ref(std::forward<T>(t));
-  }
-
-  /**
-   * Synonym for ref(). Creates an AnyRef for this object.
-   **/
-  RefImpl operator()() const
-  {
-    return ref();
+    return ref(std::forward<Args>(args)...);
   }
 
   /**

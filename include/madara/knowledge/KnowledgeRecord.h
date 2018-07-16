@@ -1246,7 +1246,7 @@ namespace madara
       template<typename T>
       T to_any(tags::type<T> t) const
       {
-        return to_any().take(t);
+        return to_any().to(t);
       }
 
       /**

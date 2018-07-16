@@ -22,6 +22,38 @@ env:
 
 matrix:
   include:
+      ################MAC#####################
+
+      # clang, osx, no ssl
+    - compiler: clang
+      env: NAME="OSX 10.13 clang" CLANG="clang"
+      os: osx
+      osx_image: xcode9.3
+
+      # clang, osx, ssl
+    - compiler: clang
+      env: NAME="OSX 10.13 clang ssl" CLANG="clang" SSL="ssl" SSL_ROOT=/usr/local/opt/openssl
+      os: osx
+      osx_image: xcode9.3
+
+      # clang, osx, java
+    - compiler: clang
+      env: NAME="OSX 10.13 clang java" CLANG="clang" JAVA="java"
+      os: osx
+      osx_image: xcode9.3
+
+      # clang, osx, zeromq
+    - compiler: clang
+      env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
+      os: osx
+      osx_image: xcode9.3
+
+      # clang, osx, simtime
+    - compiler: clang
+      env: NAME="OSX 10.13 clang simtime" CLANG="clang" SIMTIME="simtime"
+      os: osx
+      osx_image: xcode9.3
+
       ################LINUX#####################
 
       # clang, linux, no ssl
@@ -72,38 +104,6 @@ matrix:
     - compiler: gcc
       os: linux
       env: NAME="Ubuntu 14.04 g++ simtime" SIMTIME="simtime"
-
-      ################MAC#####################
-
-      # clang, osx, no ssl
-    - compiler: clang
-      env: NAME="OSX 10.13 clang" CLANG="clang"
-      os: osx
-      osx_image: xcode9.3
-
-      # clang, osx, ssl
-    - compiler: clang
-      env: NAME="OSX 10.13 clang ssl" CLANG="clang" SSL="ssl" SSL_ROOT=/usr/local/opt/openssl
-      os: osx
-      osx_image: xcode9.3
-
-      # clang, osx, java
-    - compiler: clang
-      env: NAME="OSX 10.13 clang java" CLANG="clang" JAVA="java"
-      os: osx
-      osx_image: xcode9.3
-
-      # clang, osx, zeromq
-    - compiler: clang
-      env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
-      os: osx
-      osx_image: xcode9.3
-
-      # clang, osx, simtime
-    - compiler: clang
-      env: NAME="OSX 10.13 clang simtime" CLANG="clang" SIMTIME="simtime"
-      os: osx
-      osx_image: xcode9.3
 
 addons:
   apt:

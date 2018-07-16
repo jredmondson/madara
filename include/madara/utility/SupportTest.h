@@ -149,6 +149,18 @@ struct is_type_tag_impl<type<T>> : std::true_type {};
 template<typename T>
 constexpr bool is_type_tag() { return is_type_tag_impl<decay_<T>>::value; }
 
+template<typename T, typename As>
+As &&forward_as(decay_<T> &&t) { return t; }
+
+template<typename T, typename As>
+As &forward_as(decay_<T> &t) { return t; }
+
+template<typename T, typename As>
+const As &&forward_as(const decay_<T> &&t) { return t; }
+
+template<typename T, typename As>
+const As &forward_as(const decay_<T> &t) { return t; }
+
 }
 
 }
