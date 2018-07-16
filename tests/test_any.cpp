@@ -345,6 +345,14 @@ namespace geo
     fun("stamp", val.stamp);
     for_each_field(fun, static_cast<Pose&>(val));
   };
+
+  void register_types()
+  {
+    Any::register_type<geo::Point>("Point");
+    MADARA_ANY_REGISTER_TYPE(Quaternion);
+    MADARA_ANY_REGISTER_TYPE(Pose);
+    MADARA_ANY_REGISTER_TYPE(StampedPose);
+  }
 }
 
 void test_geo()
@@ -385,6 +393,26 @@ void test_geo()
   VAL(kb.get("vs0").to_any());
   TEST_EQ(kb.get("vs0").share_any()->size(), 3UL);
   TEST_EQ(kb.get("vs0").get_any_cref()[1]("stamp")("frame").to_string(), "frame1");
+
+  std::vector<char> buf;
+
+  Any p0 = kb.get("p0").to_any();
+  p0.serialize(buf);
+  Any p1;
+
+  p1.unserialize<Pose>(buf.data(), buf.size());
+  VAL(p1);
+
+  p1.unserialize("Pose", buf.data(), buf.size());
+  VAL(p1);
+  VAL(p1.tag());
+  VAL((void*)s0.tag());
+
+  p1.tagged_serialize(buf);
+  Any p2;
+  p2.tagged_unserialize(buf.data(), buf.size());
+  VAL(p2);
+  VAL(p2.tag());
 }
 
 struct Example {
@@ -433,6 +461,8 @@ void test_example()
 int main (int, char **)
 {
   madara::logger::global_logger->set_level(3);
+
+  Any::register_type<geo::Pose>("Pose");
 
   test_any();
   test_record();

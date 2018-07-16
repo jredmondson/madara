@@ -10,6 +10,8 @@
 
 #include <memory>
 #include <sstream>
+#include <map>
+#include <functional>
 #include <type_traits>
 
 #ifdef __GNUC__
@@ -81,6 +83,7 @@ inline type_index type_id()
 
 struct TypeHandlers;
 class Any;
+class ConstAny;
 class AnyRef;
 class ConstAnyRef;
 class KnowledgeRecord;
@@ -138,10 +141,54 @@ struct compare_any_fields_by_name
   }
 };
 
+struct compare_const_char_ptr
+{
+  bool operator()(const char *l, const char *r) const {
+    return std::strcmp(l, r) < 0;
+  }
+};
+
+class AnyRegistry
+{
+public:
+  template<typename T>
+  static void register_type(const char *name);
+
+  template<typename T>
+  static const char * const &get_type_name()
+  {
+    return *get_type_name_ptr<T>();
+  }
+
+  static Any construct(const char *name);
+  static ConstAny construct_const(const char *name);
+
+protected:
+  static std::map<const char *, std::function<Any()>,
+                  compare_const_char_ptr> &type_builders()
+  {
+    static std::map<const char *, std::function<Any()>,
+                    compare_const_char_ptr> type_builders_;
+    return type_builders_;
+  }
+
+  template<typename T>
+  static const char **get_type_name_ptr()
+  {
+    static const char *type_name = nullptr;
+    return &type_name;
+  }
+};
+
+#define MADARA_ANY_REGISTER_TYPE(type) \
+  ::madara::knowledge::Any::register_type<type>(#type)
+
 /// For internal use. Holds type information for use by Any class.
 struct TypeHandlers
 {
   type_index tindex;
+
+  const char * const *registered_name;
 
   typedef void (*destruct_fn_type)(void *);
   destruct_fn_type destruct;
@@ -352,6 +399,7 @@ inline const TypeHandlers &get_type_handler(type<T> t)
 {
   static const TypeHandlers handler = {
       type_id<T>(),
+      &AnyRegistry::get_type_name<T>(),
       get_type_handler_destruct(t, select_overload()),
       get_type_handler_clone(t, select_overload()),
       get_type_handler_save(type<T>{}, select_overload()),
@@ -703,6 +751,88 @@ public:
   }
 
   /**
+   * Serialize this Any to the given buffer with a tag string recording the
+   * saved type, for use with tagged_unserialize. Throws an exception if the
+   * buffer size is insufficient.
+   *
+   * @param data the buffer to serialize to
+   * @param size size of the buffer
+   * @return the actual number of bytes used during serialization
+   **/
+  size_t tagged_serialize(char *data, size_t size) const
+  {
+    namespace bio = boost::iostreams;
+
+    bio::array_sink output_sink(data, size);
+    bio::stream<bio::array_sink> output_stream(output_sink);
+
+    auto pos = output_stream.tellp();
+    impl().tagged_serialize(output_stream);
+    auto len = output_stream.tellp() - pos;
+
+    return len;
+  }
+
+  /**
+   * Serialize this Any to the given vector with a tag string recording the
+   * saved type, for use with tagged_unserialize. The vector will be cleared
+   * first, and resized as needed.
+   *
+   * @param vec the vector to serialize to, which will be cleared first
+   * @return the actual number of bytes used during serialization
+   **/
+  size_t tagged_serialize(std::vector<char> &vec) const
+  {
+    namespace bio = boost::iostreams;
+
+    vec.clear();
+    auto output_sink = bio::back_inserter(vec);
+    bio::stream<decltype(output_sink)> output_stream(output_sink);
+
+    impl().tagged_serialize(output_stream);
+
+    return vec.size();
+  }
+
+  /**
+   * Serialize this Any to the given std::ostream with a tag string recording
+   * the saved type, for use with tagged_unserialize.
+   *
+   * @param stream the output archive to serialize to
+   **/
+  void tagged_serialize(std::ostream &stream) const
+  {
+    madara_oarchive archive(stream);
+
+    impl().tagged_serialize(archive);
+  }
+
+  /**
+   * Serialize this Any to the given madara_oarchive with a tag string recording
+   * the saved type, for use with tagged_unserialize.
+   *
+   * @param stream the output archive to serialize to
+   **/
+  void tagged_serialize(madara_oarchive &archive) const
+  {
+    using exceptions::BadAnyAccess;
+    if (handler_) {
+      auto t = this->tag();
+      std::string s(t ? t : "");
+
+      archive << s;
+
+      serialize(archive);
+    } else {
+      std::string s;
+      archive << s;
+
+      raw_data_storage *sto = (raw_data_storage *)data_;
+      archive.saveBinary<1>(sto->data, sto->size);
+    }
+  }
+
+  /**
    * Serialize this Any to the given archive. Use this overload for
    * Boost.Serialization archives other than madara_oarchive.
    *
@@ -718,6 +848,9 @@ public:
     }
   }
 
+  /**
+   * Serialize this Any in JSON format to a string, and return it.
+   **/
   std::string to_json() const
   {
     std::ostringstream stream;
@@ -1361,6 +1494,14 @@ public:
     return self.stream(o);
   }
 
+  const char *tag() const
+  {
+    if (!handler_ || !handler_->registered_name) {
+      return nullptr;
+    }
+    return *handler_->registered_name;
+  }
+
 protected:
   const TypeHandlers *handler_ = nullptr;
   void *data_ = nullptr;
@@ -1872,9 +2013,12 @@ inline ConstAnyRef::ConstAnyRef(const AnyRef &other)
  * instead of this class directly.
  **/
 template<typename Impl, typename BaseImpl>
-class BasicOwningAny : public BaseImpl
+class BasicOwningAny : public BaseImpl, public AnyRegistry
 {
   using Base = BaseImpl;
+
+  template<typename Impl2, typename Base2>
+  friend class ::madara::knowledge::BasicOwningAny;
 public:
   /**
    * Default constructor. Creates an empty Any.
@@ -1885,6 +2029,17 @@ public:
    * Copy constructor. Will clone any data stored inside.
    **/
   BasicOwningAny(const BasicOwningAny &other)
+    : Base(other.handler_,
+        other.data_ ?
+        (other.handler_ ?
+          other.handler_->clone(other.data_) :
+          Base::raw_data_storage::clone(other.data_)) : nullptr) {}
+
+  /**
+   * Copy constructor. Will clone any data stored inside.
+   **/
+  template<typename I, typename B>
+  BasicOwningAny(const BasicOwningAny<I, B> &other)
     : Base(other.handler_,
         other.data_ ?
         (other.handler_ ?
@@ -1927,6 +2082,14 @@ public:
    * Move constructor. Other Any will be left empty.
    **/
   BasicOwningAny(BasicOwningAny &&other) noexcept :
+    Base(take_ptr(other.handler_),
+      take_ptr(other.data_)) {}
+
+  /**
+   * Move constructor. Other Any will be left empty.
+   **/
+  template<typename I, typename B>
+  BasicOwningAny(BasicOwningAny<I, B> &&other) noexcept :
     Base(take_ptr(other.handler_),
       take_ptr(other.data_)) {}
 
@@ -1976,8 +2139,8 @@ public:
    **/
   template<typename T,
     typename std::enable_if<
-	  !is_type_tag<T>() &&
-	  !is_convertible<T, ConstAnyRef>(), int>::type = 0>
+      !is_type_tag<T>() &&
+      !is_convertible<T, ConstAnyRef>(), int>::type = 0>
   explicit BasicOwningAny(T &&t)
     : Base(&get_type_handler(type<decay_<T>>{}),
         reinterpret_cast<void*>(
@@ -2178,8 +2341,8 @@ public:
    * this Any. This operation provides the strong exception-guarantee: if an
    * exception is throw during unserialization, this Any will not be modified.
    **/
-  template<typename T>
-  size_t unserialize(type<T> t, const char *data, size_t size)
+  template<typename K>
+  size_t unserialize(K k, const char *data, size_t size)
   {
     namespace bio = boost::iostreams;
 
@@ -2187,7 +2350,7 @@ public:
     bio::stream<bio::array_source> input_stream(input_source);
 
     auto pos = input_stream.tellg();
-    unserialize(t, input_stream);
+    unserialize(k, input_stream);
     auto len = input_stream.tellg() - pos;
 
     return len;
@@ -2209,12 +2372,12 @@ public:
    * this Any. This operation provides the strong exception-guarantee: if an
    * exception is throw during unserialization, this Any will not be modified.
    **/
-  template<typename T>
-  void unserialize(type<T> t, std::istream &stream)
+  template<typename K>
+  void unserialize(K k, std::istream &stream)
   {
     madara_iarchive archive(stream);
 
-    unserialize(t, archive);
+    unserialize(k, archive);
   }
 
   /**
@@ -2244,6 +2407,69 @@ public:
     clear();
     this->data_ = reinterpret_cast<void*>(ptr.release());
     this->handler_ = &handler;
+  }
+
+  void unserialize(const char *type, madara_iarchive &archive);
+
+  /**
+   * Unserialize the given type from the given character array, and store into
+   * this Any, using saved type tag to determine type. This operation provides
+   * the strong exception-guarantee: if an exception is throw during
+   * unserialization, this Any will not be modified.
+   *
+   * Use with data serialized by tagged_serialize()
+   **/
+  size_t tagged_unserialize(const char *data, size_t size)
+  {
+    namespace bio = boost::iostreams;
+
+    bio::array_source input_source(data, size);
+    bio::stream<bio::array_source> input_stream(input_source);
+
+    auto pos = input_stream.tellg();
+    madara_iarchive archive(input_stream);
+    std::string tag;
+    archive >> tag;
+    if (tag == "") {
+      auto len = input_stream.tellg() - pos;
+      set_raw(data + len, size - len);
+      return size;
+    } else {
+      unserialize(tag.c_str(), archive);
+    }
+    auto len = input_stream.tellg() - pos;
+
+    return len;
+  }
+
+  /**
+   * Unserialize the given type from the given input stream, and store into
+   * this Any, using saved type tag to determine type. This operation provides
+   * the strong exception-guarantee: if an exception is throw during
+   * unserialization, this Any will not be modified.
+   *
+   * Use with data serialized by tagged_serialize()
+   **/
+  void tagged_unserialize(std::istream &stream)
+  {
+    madara_iarchive archive(stream);
+
+    tagged_unserialize(archive);
+  }
+
+  /**
+   * Unserialize the given type from the given madara_iarchive, and store into
+   * this Any, using saved type tag to determine type. This operation provides
+   * the strong exception-guarantee: if an exception is throw during
+   * unserialization, this Any will not be modified.
+   *
+   * Use with data serialized by tagged_serialize()
+   **/
+  void tagged_unserialize(madara_iarchive &archive)
+  {
+    std::string tag;
+    archive >> tag;
+    unserialize(tag.c_str(), archive);
   }
 
   /**
@@ -2285,6 +2511,13 @@ public:
   {
     unserialize(type<T>{}, archive);
   }
+
+  /**
+   * Unserialize the given type from the given archive, and store into
+   * this Any. This operation provides the strong exception-guarantee: if an
+   * exception is throw during unserialization, this Any will not be modified.
+   **/
+  void unserialize(const char *type, json_iarchive &archive);
 
   /**
    * Access the Any's stored value by reference.
@@ -2425,6 +2658,10 @@ class ConstAny : public BasicOwningAny<ConstAny,
 
 public:
   using Base::Base;
+
+  static ConstAny construct(const char *name) {
+    return construct_const(name);
+  }
 };
 
 /**
@@ -2455,8 +2692,61 @@ class Any : public BasicOwningAny<Any,
 
 public:
   using Base::Base;
-
 };
+
+template<typename T>
+inline void AnyRegistry::register_type(const char *name)
+{
+  (void)type_builders().emplace(std::piecewise_construct,
+      std::forward_as_tuple(name),
+      std::forward_as_tuple([](){ return Any(type<T>{}); }));
+
+  auto &ptr = *get_type_name_ptr<T>();
+  if (ptr == nullptr) {
+    ptr = name;
+  }
+}
+
+inline Any AnyRegistry::construct(const char *name)
+{
+  auto iter = type_builders().find(name);
+  if (iter == type_builders().end()) {
+    throw exceptions::BadAnyAccess(std::string("Type ") + name +
+        "is not registered");
+  }
+  return iter->second();
+}
+
+inline ConstAny AnyRegistry::construct_const(const char *name)
+{
+  return construct(name);
+}
+
+template<typename Impl, typename Base>
+inline void BasicOwningAny<Impl, Base>::unserialize(
+    const char *type, madara_iarchive &archive)
+{
+  Any any(construct(type));
+
+  any.handler_->load(archive, any.data_);
+
+  using std::swap;
+  swap(this->handler_, any.handler_);
+  swap(this->data_, any.data_);
+}
+
+template<typename Impl, typename Base>
+inline void BasicOwningAny<Impl, Base>::unserialize(
+    const char *type, json_iarchive &archive)
+{
+  Any any(construct(type));
+
+  any.handler_->load_json(archive, any.data_);
+
+  using std::swap;
+  swap(this->handler_, any.handler_);
+  swap(this->data_, any.data_);
+}
 
 template<typename Impl, typename ValImpl, typename RefImpl>
 inline ValImpl BasicConstAny<Impl, ValImpl, RefImpl>::clone() const

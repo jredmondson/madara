@@ -100,16 +100,9 @@ namespace madara
     /// a vector of variable references
     typedef std::vector <VariableReference>  VariableReferences;
 
-    struct VariableReferenceMapCompare
-    {
-      bool operator()(const char *l, const char *r) const {
-        return std::strcmp(l, r) < 0;
-      }
-    };
-
     /// a map of variable references
     typedef std::map <const char *, VariableReference,
-            VariableReferenceMapCompare> VariableReferenceMap;
+            compare_const_char_ptr> VariableReferenceMap;
   }
 }
 
