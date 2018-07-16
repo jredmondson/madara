@@ -474,7 +474,7 @@ CircularBuffer::set_name (const std::string & name,
   else
   {
     throw exceptions::NameException (
-      "CircularBuffer::constr: empty name provided.");
+      "CircularBuffer::set_name: empty name provided.");
   }
 }
 

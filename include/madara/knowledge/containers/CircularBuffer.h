@@ -45,6 +45,7 @@ namespace madara
          * @param  name       name of the integer in the knowledge base
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  settings   settings for evaluating the vector
+         * @throw exceptions::NameException  bad name ("")
          **/
         CircularBuffer (const std::string & name,
                 KnowledgeBase & knowledge,
@@ -56,6 +57,7 @@ namespace madara
          * @param  name      the name of the map within the variable context
          * @param  knowledge the variable context
          * @param  settings  settings to apply by default
+         * @throw exceptions::NameException  bad name ("")
          **/
         CircularBuffer (const std::string & name,
                 Variables & knowledge,
@@ -68,6 +70,7 @@ namespace madara
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  size       the size of the CircularBuffer
          * @param  settings   settings for evaluating the vector
+         * @throw exceptions::NameException  bad name ("")
          **/
         CircularBuffer (const std::string & name,
                KnowledgeBase & knowledge,
@@ -81,6 +84,7 @@ namespace madara
          * @param  knowledge  the knowledge base that will contain the vector
          * @param  size       the size of the CircularBuffer
          * @param  settings   settings for evaluating the vector
+         * @throw exceptions::NameException  bad name ("")
          **/
         CircularBuffer (const std::string & name,
                Variables & knowledge,
@@ -114,6 +118,7 @@ namespace madara
          * Sets the variable name that this refers to
          * @param name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
+         * @throw exceptions::NameException  bad name ("")
          **/
         void set_name (const std::string & name,
           KnowledgeBase & knowledge);
@@ -122,6 +127,7 @@ namespace madara
          * Sets the variable name that this refers to
          * @param name  the name of the variable in the knowledge base
          * @param knowledge  the knowledge base the variable is housed in
+         * @throw exceptions::NameException  bad name ("")
          **/
         void set_name (const std::string & name,
           Variables & knowledge);
@@ -143,18 +149,21 @@ namespace madara
         /**
          * Adds a record to the end of the CircularBuffer
          * @param  record  the value to add
+         * @throw exceptions::IndexException  if index is out of range/invalid
          **/
         void add (const knowledge::KnowledgeRecord & record);
 
         /**
          * Adds a list of records to the end of the CircularBuffer
          * @param  records  the values to add
+         * @throw exceptions::IndexException  if index is out of range/invalid
          **/
         void add (const std::vector <KnowledgeRecord> & records);
 
         /**
          * Gets the most recently added record
          * @return the last added record
+         * @throw exceptions::IndexException  if index is out of range/invalid
          **/
         knowledge::KnowledgeRecord get (void) const;
         
@@ -162,6 +171,7 @@ namespace madara
          * Gets the most recently added records up to a specified count
          * @param  count   the maximum number of records to return
          * @return the last added records
+         * @throw exceptions::IndexException  if index is unreachable
          **/
         std::vector <KnowledgeRecord> get_latest (size_t count) const;
         
@@ -169,6 +179,7 @@ namespace madara
          * Gets the most recently added records up to a specified count
          * @param  count   the maximum number of records to return
          * @return the last added records
+         * @throw exceptions::IndexException  if index is unreachable
          **/
         std::vector <KnowledgeRecord> get_earliest (size_t count) const;
         
@@ -177,17 +188,24 @@ namespace madara
          * @param  position  the relative position of the requested record
          *                   from the latest added record. Can be negative
          * @return  the record at the position in the CircularBuffer
+         * @throw exceptions::ContextException if name or context haven't
+         *                      been set appropriately
+         * @throw exceptions::IndexException  if index is out of range/invalid
          **/
         knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
 
         /**
          * Clears the CircularBuffer
+         * @throw exceptions::ContextException  if name or context haven't
+         *                      been set appropriately
          **/
         void clear (void);
 
         /**
          * Returns the number of records in the CircularBuffer
          * @return the number of records in the CircularBuffer
+         * @throw exceptions::ContextException  if name or context haven't
+         *                      been set appropriately
          **/
         size_t count (void) const;
 
