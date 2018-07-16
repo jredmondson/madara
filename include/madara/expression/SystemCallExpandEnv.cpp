@@ -60,7 +60,7 @@ madara::expression::SystemCallExpandEnv::prune (bool & can_change)
       "System call expand_env requires 1 argument,"
       "e.g., #expand_env ('path=$(MADARA_ROOT')\n");
 
-    throw KarlException ("madara::expression::SystemCallExpandEnv: "
+    throw exceptions::KarlException ("madara::expression::SystemCallExpandEnv: "
       "KARL COMPILE ERROR: "
       "System call expand_env requires 1 argument,"
       "e.g., #expand_env ('path=$(MADARA_ROOT')\n");
@@ -97,7 +97,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call expand_env requires 1 argument,"
       "e.g., #expand_env ('path=$(MADARA_ROOT')\n");
 
-    throw KarlException ("madara::expression::SystemCallExpandEnv: "
+    throw exceptions::KarlException ("madara::expression::SystemCallExpandEnv: "
       "KARL RUNTIME ERROR: "
       "System call expand_env requires 1 argument,"
       "e.g., #expand_env ('path=$(MADARA_ROOT')\n");

@@ -107,7 +107,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
         "System call set_clock with 2 arguments "
         "requires the first argument to be a variable\n");
 
-      throw KarlException ("madara::expression::SystemCallSetClock: "
+      throw exceptions::KarlException ("madara::expression::SystemCallSetClock: "
         "KARL RUNTIME ERROR: "
         "System call set_clock with 2 arguments "
         "requires the first argument to be a variable\n");
@@ -122,7 +122,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call set_clock requires 1-2 arguments, "
       "e.g., set_clock (5) or set_clock (var, 5)\n");
 
-    throw KarlException ("madara::expression::SystemCallSetClock: "
+    throw exceptions::KarlException ("madara::expression::SystemCallSetClock: "
       "KARL RUNTIME ERROR: "
       "System call set_clock requires 1-2 arguments, "
       "e.g., set_clock (5) or set_clock (var, 5)\n");

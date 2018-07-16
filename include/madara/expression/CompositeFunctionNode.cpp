@@ -16,7 +16,7 @@
 
 #include "madara/knowledge/Functions.h"
 #include "madara/knowledge/ExternFunctionVariables.h"
-#include "madara/expression/KarlException.h"
+#include "madara/exceptions/KarlException.h"
 
 #ifdef _MADARA_PYTHON_CALLBACKS_
 
@@ -216,7 +216,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "KARL RUNTIME EXCEPTION: "
       "Attempt at calling an undefined function\n");
 
-    throw KarlException ("CompositeFunctionNode:"
+    throw exceptions::KarlException ("CompositeFunctionNode:"
       "KARL RUNTIME EXCEPTION: "
       "Attempt at calling an undefined function");
   }

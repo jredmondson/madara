@@ -63,7 +63,7 @@ madara::expression::CompositeAddNode::prune (bool & can_change)
       "KARL COMPILE ERROR (+): "
       "Add should have a left and right-hand side argument.\n");
 
-    throw KarlException ("CompositeAddNode: "
+    throw exceptions::KarlException ("CompositeAddNode: "
       "KARL COMPILE ERROR (+): "
       "Add should have a left and right-hand side argument.\n");
   }

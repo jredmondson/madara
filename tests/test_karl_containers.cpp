@@ -16,6 +16,7 @@
 #include "madara/knowledge/containers/DoubleVector3D.h"
 #include "madara/knowledge/containers/IntegerVector2D.h"
 #include "madara/knowledge/containers/IntegerVector3D.h"
+#include "madara/knowledge/containers/CircularBuffer.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 
@@ -1938,6 +1939,412 @@ void test_collection (void)
 
 }
 
+void test_circular (void)
+{
+  std::cerr <<
+    "************* COLLECTION: Testing CircularBuffer*************\n";
+
+  knowledge::KnowledgeBase kb;
+
+  containers::CircularBuffer buffer1 ("buffer1", kb);
+  containers::CircularBuffer buffer2 ("buffer2", kb, 3);
+
+  buffer1.resize (3);
+
+  buffer1.add (KnowledgeRecord (1));
+  buffer1.add (KnowledgeRecord (2.0));
+
+  std::cerr << "  Testing count (2) vs size (3)... ";
+
+  if (buffer1.size () == 3 && buffer1.count () == 2)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "    count () == " << buffer1.count () << ", ";
+    std::cerr << "size () == " << buffer1.size () << "\n";
+  }  
+
+
+  buffer1.add (KnowledgeRecord ("value3"));
+
+  buffer2.add (KnowledgeRecord ("value1"));
+  buffer2.add (KnowledgeRecord (2));
+  buffer2.add (KnowledgeRecord (3.0));
+
+  std::vector <KnowledgeRecord> buffer1_contents = buffer1.get_latest (3);
+  std::vector <KnowledgeRecord> buffer1_earliest = buffer1.get_earliest (3);
+  std::vector <KnowledgeRecord> buffer2_contents = buffer2.get_latest (3);
+
+
+  std::cerr << "  Testing addx3 on buffer1... ";
+
+  if (buffer1_contents.size () == 3 &&
+    buffer1_contents[2] == 1 &&
+    buffer1_contents[1] == 2.0 &&
+    buffer1_contents[0] == "value3")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
+    for (auto record: buffer1_contents)
+    {
+      std::cerr << "    " << record << "\n";
+    }
+  }  
+
+  std::cerr << "  Testing addx3 on buffer2... ";
+
+  if (buffer2_contents.size () == 3 &&
+    buffer2_contents[2] == "value1" &&
+    buffer2_contents[1] == 2 &&
+    buffer2_contents[0] == 3.0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
+    for (auto record: buffer2_contents)
+    {
+      std::cerr << "    " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing get_earliest ()...";
+
+  if (buffer1_earliest.size () == 3 &&
+    buffer1_earliest[0] == 1 &&
+    buffer1_earliest[1] == 2.0 &&
+    buffer1_earliest[2] == "value3")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "Contents of earliest std::vector<KnowledgeRecord> were:\n";
+    for (auto record: buffer1_earliest)
+    {
+      std::cerr << "    " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Attempting to get more elements than exist in buffer1... ";
+
+  buffer1_contents = buffer1.get_latest (5);
+
+  if (buffer1_contents.size () == 3 &&
+    buffer1_contents[2] == 1 &&
+    buffer1_contents[1] == 2.0 &&
+    buffer1_contents[0] == "value3")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
+    for (auto record: buffer1_contents)
+    {
+      std::cerr << "    " << record << "\n";
+    }
+  }  
+
+  std::cerr << "  Testing adding past size boundary... ";
+
+  buffer1.add (KnowledgeRecord (5));
+  buffer1.add (KnowledgeRecord (5.5));
+
+  buffer1_contents = buffer1.get_latest (4);
+
+  if (buffer1_contents.size () == 3 &&
+    buffer1_contents[0] == 5.5 &&
+    buffer1_contents[1] == 5 &&
+    buffer1_contents[2] == "value3")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
+    for (auto record: buffer1_contents)
+    {
+      std::cerr << "    " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing get_earliest()... ";
+
+  buffer1_earliest = buffer1.get_earliest (2);
+
+  if (buffer1_earliest.size () == 2 &&
+    buffer1_earliest[1] == 5 &&
+    buffer1_earliest[0] == "value3")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
+    for (auto record: buffer1_earliest)
+    {
+      std::cerr << "    " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing count (3) vs size (3)... ";
+
+  if (buffer1.size () == 3 && buffer1.count () == 3)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "    count () == " << buffer1.count () << ", ";
+    std::cerr << "size () == " << buffer1.size () << "\n";
+  }
+
+  buffer1.resize (5);
+  buffer1.set_index (-1);
+
+  std::cerr << "  Testing count (0) vs size (5)... ";
+
+  if (buffer1.size () == 5 && buffer1.count () == 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "    count () == " << buffer1.count () << ", ";
+    std::cerr << "size () == " << buffer1.size () << "\n";
+  }
+
+  buffer1.add (KnowledgeRecord (1));
+  buffer1.add (KnowledgeRecord (2));
+  buffer1.add (KnowledgeRecord (3));
+  buffer1.add (KnowledgeRecord (4));
+  buffer1.add (KnowledgeRecord (5));
+
+  std::cerr << "  Testing get()... ";
+
+  if (buffer1.get () == 5)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "    get () == " << buffer1.get () << "\n";
+  }
+
+
+  buffer1.add (KnowledgeRecord (1));
+  buffer1.add (KnowledgeRecord (2));
+
+  std::cerr << "  Testing get_latest (3)... ";
+
+  buffer1_contents = buffer1.get_latest (3);
+
+  if (buffer1_contents.size () == 3 &&
+    buffer1_contents[0] == 2 &&
+    buffer1_contents[1] == 1 &&
+    buffer1_contents[2] == 5)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
+    for (auto record: buffer1_contents)
+    {
+      std::cerr << "    " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing get_latest (4)... ";
+
+  buffer1_contents = buffer1.get_latest (4);
+
+  if (buffer1_contents.size () == 4 &&
+    buffer1_contents[0] == 2 &&
+    buffer1_contents[1] == 1 &&
+    buffer1_contents[2] == 5 &&
+    buffer1_contents[3] == 4)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
+    for (auto record: buffer1_contents)
+    {
+      std::cerr << "    " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing clear ()... ";
+
+  buffer1.clear ();
+
+  if (buffer1.size () == 0 && buffer1.count () == 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "    count () == " << buffer1.count () << ", ";
+    std::cerr << "size () == " << buffer1.size () << "\n";
+  }
+
+  std::cerr << "  Testing resize(5)... ";
+  buffer1.resize (5);
+
+  std::cerr << "  Testing add(vector)... ";
+
+  // add contents back but in a reverse order of the 4 elements
+  buffer1.add (buffer1_contents);
+
+  std::cerr << "  Testing get_latest(5)... ";
+
+  buffer1_contents = buffer1.get_latest (5);
+
+  if (buffer1_contents.size () == 4 &&
+    buffer1_contents[3] == 2 &&
+    buffer1_contents[2] == 1 &&
+    buffer1_contents[1] == 5 &&
+    buffer1_contents[0] == 4)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
+    for (auto record: buffer1_contents)
+    {
+      std::cerr << "    " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing inspect... ";
+
+  if (buffer1.inspect (0) == 4 &&
+      buffer1.inspect (-1) == 5 &&
+      buffer1.inspect (-2) == 1 &&
+      buffer1.inspect (-3) == 2)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
+    for (KnowledgeRecord::Integer i = 0; i < 4; ++i)
+    {
+      std::cerr << "    " << buffer1.inspect(-i) << "\n";
+    }
+  }
+
+  std::cerr << "  Testing exception in inspect...";
+  
+  try
+  {
+    buffer1.inspect (1);
+    std::cerr << "FAIL\n";
+    ++num_fails;
+  }
+  catch (madara::exceptions::IndexException &)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  std::cerr << "  Testing exception in constructors...";
+  
+  try
+  {
+    containers::CircularBuffer buffer3 ("", kb);
+    std::cerr << "FAIL\n";
+    ++num_fails;
+  }
+  catch (madara::exceptions::NameException &)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  std::cerr << "  Testing const CircularBuffer creation...";
+
+  // for testing a pure consumer of the CircularBuffer
+  const containers::CircularBuffer const_buffer1 ("buffer1", kb);
+
+  buffer1_contents = const_buffer1.get_latest (5);
+
+  if (buffer1_contents.size () == 4 &&
+    buffer1_contents[3] == 2 &&
+    buffer1_contents[2] == 1 &&
+    buffer1_contents[1] == 5 &&
+    buffer1_contents[0] == 4)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
+    for (auto record: buffer1_contents)
+    {
+      std::cerr << "    " << record << "\n";
+    }
+  }
+
+  kb.print ();
+}
+
 int main (int , char **)
 {
   test_vector ();
@@ -1960,6 +2367,8 @@ int main (int , char **)
 
   test_vector2D ();
   test_vector3D ();
+
+  test_circular ();
 
   if (num_fails > 0)
   {

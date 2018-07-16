@@ -54,7 +54,7 @@ madara::expression::CompositeNegateNode::prune (bool & can_change)
       "KARL COMPILE ERROR: "
       "Negate has no right expression\n");
 
-    throw KarlException ("madara::expression::CompositeNegateNode: "
+    throw exceptions::KarlException ("madara::expression::CompositeNegateNode: "
       "KARL COMPILE ERROR: "
       "Negate has no right expression\n"); 
   }

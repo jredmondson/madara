@@ -67,7 +67,7 @@ madara::expression::SystemCallPow::prune (bool & can_change)
       "System call pow requires 2 arguments,"
       "e.g., #pow (4,2), which would return 16.\n");
 
-    throw KarlException ("madara::expression::SystemCallPow: "
+    throw exceptions::KarlException ("madara::expression::SystemCallPow: "
       "KARL COMPILE ERROR: "
       "System call pow requires 2 arguments,"
       "e.g., #pow (4,2), which would return 16.\n");
@@ -102,7 +102,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call pow requires 2 arguments,"
       "e.g., #pow (4,2), which would return 16.\n");
 
-    throw KarlException ("madara::expression::SystemCallPow: "
+    throw exceptions::KarlException ("madara::expression::SystemCallPow: "
       "KARL RUNTIME ERROR: "
       "System call pow requires 2 arguments,"
       "e.g., #pow (4,2), which would return 16.\n");

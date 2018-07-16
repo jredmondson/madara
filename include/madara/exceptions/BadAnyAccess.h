@@ -1,6 +1,6 @@
 /* -*- C++ -*- */
-#ifndef _MADARA_EXCEPTION_BADANYACCESS_H_
-#define _MADARA_EXCEPTION_BADANYACCESS_H_
+#ifndef _MADARA_EXCEPTIONS_BADANYACCESS_H_
+#define _MADARA_EXCEPTIONS_BADANYACCESS_H_
 
 #include <string>
 #include <stdexcept>
@@ -16,4 +16,4 @@ namespace madara
   }
 }
 
-#endif /* _MADARA_EXCEPTION_BADANYACCESS_H_ */
+#endif /* _MADARA_EXCEPTIONS_BADANYACCESS_H_ */

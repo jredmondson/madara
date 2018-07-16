@@ -77,7 +77,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "KARL RUNTIME ERROR:"
       "System call to_integers requires an argument\n");
 
-    throw KarlException ("madara::expression::SystemCallToIntegers: "
+    throw exceptions::KarlException ("madara::expression::SystemCallToIntegers: "
       "KARL RUNTIME ERROR: "
       "System call to_integers requires an argument\n");
   }

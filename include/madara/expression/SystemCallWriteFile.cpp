@@ -60,7 +60,7 @@ madara::expression::SystemCallWriteFile::prune (bool & can_change)
       "System call write_file requires 2 arguments: "
       "a knowledge record and a file name\n");
 
-    throw KarlException ("madara::expression::SystemCallWriteFile: "
+    throw exceptions::KarlException ("madara::expression::SystemCallWriteFile: "
       "KARL COMPILE ERROR: "
       "System call write_file requires 2 arguments: "
       "a knowledge record and a file name\n");
@@ -119,7 +119,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call write_file requires 2 arguments: "
       "a knowledge record and a file name\n");
 
-    throw KarlException ("madara::expression::SystemCallWriteFile: "
+    throw exceptions::KarlException ("madara::expression::SystemCallWriteFile: "
       "KARL RUNTIME ERROR: "
       "System call write_file requires 2 arguments: "
       "a knowledge record and a file name\n");

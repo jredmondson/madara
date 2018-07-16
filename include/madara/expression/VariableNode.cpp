@@ -51,7 +51,7 @@ madara::expression::VariableNode::VariableNode (
           madara_logger_ptr_log (logger_, logger::LOG_ERROR,
             buffer.str ().c_str ());
 
-          throw KarlException (buffer.str ()); 
+          throw exceptions::KarlException (buffer.str ()); 
         }
       }
     }
@@ -65,7 +65,7 @@ madara::expression::VariableNode::VariableNode (
       madara_logger_ptr_log (logger_, logger::LOG_ERROR,
         buffer.str ().c_str ());
 
-      throw KarlException (buffer.str ()); 
+      throw exceptions::KarlException (buffer.str ()); 
     }
     else if (num_opens < 0)
     {
@@ -76,7 +76,7 @@ madara::expression::VariableNode::VariableNode (
       madara_logger_ptr_log (logger_, logger::LOG_ERROR,
         buffer.str ().c_str ());
 
-      throw KarlException (buffer.str ()); 
+      throw exceptions::KarlException (buffer.str ()); 
     }
   }
   // no variable expansion necessary. Create a hard link to the ref_->

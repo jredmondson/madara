@@ -309,11 +309,12 @@ KnowledgeBase::set_log_level (int level)
 inline void
 KnowledgeBase::copy (
   const KnowledgeBase & source,
-  const KnowledgeRequirements & reqs)
+  const KnowledgeRequirements & reqs,
+  const EvalSettings & settings)
 {
   if (impl_.get () && source.impl_.get () != 0)
   {
-    impl_->copy (*source.impl_.get (), reqs);
+    impl_->copy (*source.impl_.get (), reqs, settings);
   }
   else if (context_ && source.impl_.get () != 0)
   {
@@ -321,7 +322,7 @@ KnowledgeBase::copy (
       (KnowledgeBaseImpl *)source.impl_.get ();
     ThreadSafeContext * source_context = &(source_impl->get_context ());
 
-    context_->copy (*source_context, reqs);
+    context_->copy (*source_context, reqs, settings);
   }
 }
 
@@ -329,11 +330,12 @@ inline void
 KnowledgeBase::copy (
   const KnowledgeBase & source,
   const CopySet & copy_set,
-  bool clean_copy)
+  bool clean_copy,
+  const EvalSettings & settings)
 {
   if (impl_.get () && source.impl_.get () != 0)
   {
-    impl_->copy (*source.impl_.get (), copy_set, clean_copy);
+    impl_->copy (*source.impl_.get (), copy_set, clean_copy, settings);
   }
   else if (context_ && source.impl_.get () != 0)
   {
@@ -341,7 +343,7 @@ KnowledgeBase::copy (
       (KnowledgeBaseImpl *)source.impl_.get ();
     ThreadSafeContext * source_context = &(source_impl->get_context ());
 
-    context_->copy (*source_context, copy_set, clean_copy);
+    context_->copy (*source_context, copy_set, clean_copy, settings);
   }
 }
 

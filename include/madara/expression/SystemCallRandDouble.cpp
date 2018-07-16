@@ -60,7 +60,7 @@ madara::expression::SystemCallRandDouble::prune (bool & can_change)
       " can have up to three arguments, 1) floor, "
       "2) ceiling and 3) whether to set the random seed\n");
 
-    throw KarlException ("madara::expression::SystemCallRandDouble: "
+    throw exceptions::KarlException ("madara::expression::SystemCallRandDouble: "
       "KARL COMPILE ERROR: "
       "System call rand_double"
       " can have up to three arguments, 1) floor, "

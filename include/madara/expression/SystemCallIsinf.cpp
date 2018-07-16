@@ -58,7 +58,7 @@ madara::expression::SystemCallIsinf::prune (bool & can_change)
       "KARL COMPILE ERROR:"
       "System call isinf requires 1 argument\n");
 
-    throw KarlException ("madara::expression::SystemCallIsinf: "
+    throw exceptions::KarlException ("madara::expression::SystemCallIsinf: "
       "KARL COMPILE ERROR: "
       "System call isinf requires 1 argument\n");
   }
@@ -90,7 +90,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "KARL RUNTIME ERROR:"
       "System call isinf requires 1 argument\n");
 
-    throw KarlException ("madara::expression::SystemCallIsinf: "
+    throw exceptions::KarlException ("madara::expression::SystemCallIsinf: "
       "KARL RUNTIME ERROR: "
       "System call isinf requires 1 argument\n");
   }

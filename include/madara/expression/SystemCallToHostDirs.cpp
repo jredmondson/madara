@@ -61,7 +61,7 @@ madara::expression::SystemCallToHostDirs::prune (bool & can_change)
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
       " on Windows\n");
 
-    throw KarlException ("madara::expression::SystemCallToHostDirs: "
+    throw exceptions::KarlException ("madara::expression::SystemCallToHostDirs: "
       "KARL COMPILE ERROR: "
       "System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
@@ -101,7 +101,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"
       " on Windows\n");
 
-    throw KarlException ("madara::expression::SystemCallToHostDirs: "
+    throw exceptions::KarlException ("madara::expression::SystemCallToHostDirs: "
       "KARL RUNTIME ERROR: "
       "System call to_host_dirs requires 1 argument,"
       "e.g., #to_host_dirs ('files/file.txt') will convert to files\file.txt"

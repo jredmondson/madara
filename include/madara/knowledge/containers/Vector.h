@@ -35,8 +35,9 @@ namespace madara
       class MADARA_EXPORT Vector : public BaseContainer
       {
       public:
-        /// Allow the Queue class to manipulate variables
+        /// Allow the Queue and CircularBuffer classes to manipulate variables
         friend class Queue;
+        friend class CircularBuffer;
 
         /**
          * Default constructor
@@ -628,7 +629,7 @@ namespace madara
   }
 }
 
-
+#include "Vector.inl"
 
 
 #endif // _MADARA_CONTAINERS_VECTOR_H_

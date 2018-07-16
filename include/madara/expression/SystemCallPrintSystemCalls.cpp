@@ -62,7 +62,7 @@ madara::expression::SystemCallPrintSystemCalls::prune (bool & can_change)
       "System call print_system_calls takes either 0"
       " or 1 arguments\n");
 
-    throw KarlException ("madara::expression::SystemCallPrintSystemCalls: "
+    throw exceptions::KarlException ("madara::expression::SystemCallPrintSystemCalls: "
       "KARL COMPILE ERROR: "
       "System call print_system_calls takes either 0"
       " or 1 arguments\n");
@@ -329,7 +329,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call print_system_calls takes either 0"
       " or 1 arguments\n");
 
-    throw KarlException ("madara::expression::SystemCallPrintSystemCalls: "
+    throw exceptions::KarlException ("madara::expression::SystemCallPrintSystemCalls: "
       "KARL RUNTIME ERROR: "
       "System call print_system_calls takes either 0"
       " or 1 arguments\n");

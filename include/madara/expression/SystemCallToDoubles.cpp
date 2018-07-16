@@ -76,7 +76,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "KARL RUNTIME ERROR:"
       "System call to_doubles requires an argument\n");
 
-    throw KarlException ("madara::expression::SystemCallToDoubles: "
+    throw exceptions::KarlException ("madara::expression::SystemCallToDoubles: "
       "KARL RUNTIME ERROR: "
       "System call to_doubles requires an argument\n");
   }

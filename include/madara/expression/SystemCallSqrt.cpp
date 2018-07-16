@@ -58,7 +58,7 @@ madara::expression::SystemCallSqrt::prune (bool & can_change)
       "System call sqrt requires 1 argument,"
       "e.g., #sqrt (4), which would return 2\n");
 
-    throw KarlException ("madara::expression::SystemCallSleep: "
+    throw exceptions::KarlException ("madara::expression::SystemCallSleep: "
       "KARL COMPILE ERROR: "
       "System call sqrt requires 1 argument,"
       "e.g., #sqrt (4), which would return 2\n");
@@ -93,7 +93,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call sqrt requires 1 argument,"
       "e.g., #sqrt (4), which would return 2\n");
 
-    throw KarlException ("madara::expression::SystemCallSqrt: "
+    throw exceptions::KarlException ("madara::expression::SystemCallSqrt: "
       "KARL RUNTIME ERROR: "
       "System call sqrt requires 1 argument,"
       "e.g., #sqrt (4), which would return 2\n");

@@ -59,7 +59,7 @@ madara::expression::SystemCallLogLevel::prune (bool & can_change)
       "System call log_level requires 0 or 1 arguments,"
       " e.g., log_level (10) or log_level ()--which returns the log level\n");
 
-    throw KarlException ("madara::expression::SystemCallLogLevel: "
+    throw exceptions::KarlException ("madara::expression::SystemCallLogLevel: "
       "KARL COMPILE ERROR: "
       "System call log_level requires 0 or 1 arguments,"
       " e.g., log_level (10) or log_level ()--which returns the log level\n");
@@ -109,7 +109,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call log_level requires 0 or 1 arguments,"
       " e.g., log_level (10) or log_level ()--which returns the log level\n");
 
-    throw KarlException ("madara::expression::SystemCallLogLevel: "
+    throw exceptions::KarlException ("madara::expression::SystemCallLogLevel: "
       "KARL RUNTIME ERROR: "
       "System call log_level requires 0 or 1 arguments,"
       " e.g., log_level (10) or log_level ()--which returns the log level\n");

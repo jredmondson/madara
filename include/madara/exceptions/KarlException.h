@@ -8,19 +8,19 @@
 #include <vector>
 #include <stdexcept>
 
-#include "madara/exceptions/MadaraException.h"
+#include "MadaraException.h"
 
 namespace madara
 {
-  namespace expression
+  namespace exceptions
   {
     /**
      * An exception for unrecoverable KaRL compilation issues
      **/
-    class KarlException : public exceptions::MadaraException
+    class KarlException : public MadaraException
     {
     public:
-      using exceptions::MadaraException::MadaraException;
+      using MadaraException::MadaraException;
     };
   }
 }

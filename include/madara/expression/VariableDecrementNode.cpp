@@ -65,7 +65,7 @@ madara::expression::VariableDecrementNode::prune (bool & can_change)
       "madara::expression::VariableDecrementNode: "
       "KARL COMPILE ERROR: Variable assignment has no variable\n");
 
-    throw KarlException ("madara::expression::VariableDecrementNode: "
+    throw exceptions::KarlException ("madara::expression::VariableDecrementNode: "
       "KARL COMPILE ERROR: "
       "Node has no variable left-hand side\n");   
   }
@@ -85,7 +85,7 @@ madara::expression::VariableDecrementNode::prune (bool & can_change)
       "madara::expression::VariableDecrementNode: "
       "KARL COMPILE ERROR: Variable assignment has no right expression\n");
 
-    throw KarlException ("madara::expression::VariableDecrementNode: "
+    throw exceptions::KarlException ("madara::expression::VariableDecrementNode: "
       "KARL COMPILE ERROR: "
       "Node has no right expression\n"); 
   }

@@ -58,7 +58,7 @@ madara::expression::SystemCallCos::prune (bool & can_change)
       "System call cos requires 1 argument,"
       " e.g., #cos (1.5), where 1.5 is radians\n");
 
-    throw KarlException ("madara::expression::SystemCallCos: "
+    throw exceptions::KarlException ("madara::expression::SystemCallCos: "
       "KARL COMPILE ERROR: "
       "System call cos requires 1 argument,"
       " e.g., #cos (1.5), where 1.5 is radians\n"); 
@@ -93,7 +93,7 @@ const madara::knowledge::KnowledgeUpdateSettings & settings)
       "System call cos requires 1 argument,"
       " e.g., #cos (1.5), where 1.5 is radians\n");
 
-    throw KarlException ("madara::expression::SystemCallCos: "
+    throw exceptions::KarlException ("madara::expression::SystemCallCos: "
       "KARL RUNTIME ERROR: "
       "System call cos requires 1 argument,"
       " e.g., #cos (1.5), where 1.5 is radians\n"); 

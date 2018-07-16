@@ -1,10 +1,8 @@
 /* -*- C++ -*- */
-#ifndef _MADARA_EXCEPTION_MEMORYEXCEPTION_H_
-#define _MADARA_EXCEPTION_MEMORYEXCEPTION_H_
+#ifndef _MADARA_EXCEPTIONS_MEMORYEXCEPTION_H_
+#define _MADARA_EXCEPTIONS_MEMORYEXCEPTION_H_
 
 #include <string>
-#include <stdexcept>
-
 #include "MadaraException.h"
 
 namespace madara
@@ -22,4 +20,4 @@ namespace madara
   }
 }
 
-#endif /* _MADARA_EXCEPTION_MEMORYEXCEPTION_H_ */
+#endif /* _MADARA_EXCEPTIONS_MEMORYEXCEPTION_H_ */
