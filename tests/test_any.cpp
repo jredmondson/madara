@@ -351,6 +351,7 @@ namespace geo
     Any::register_type<geo::Point>("Point");
     MADARA_ANY_REGISTER_TYPE(Quaternion);
     MADARA_ANY_REGISTER_TYPE(Pose);
+    MADARA_ANY_REGISTER_TYPE(Stamp);
     MADARA_ANY_REGISTER_TYPE(StampedPose);
   }
 }
@@ -462,7 +463,8 @@ int main (int, char **)
 {
   madara::logger::global_logger->set_level(3);
 
-  Any::register_type<geo::Pose>("Pose");
+  geo::register_types();
+  MADARA_ANY_REGISTER_TYPE(Example);
 
   test_any();
   test_record();

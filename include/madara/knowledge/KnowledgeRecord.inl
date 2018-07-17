@@ -988,7 +988,9 @@ KnowledgeRecord::read (const char * buffer,
     {
       //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
         //"KnowledgeRecord::read: reading Any type of size %d\n", size);
-      emplace_any (tags::raw_data, buffer, size);
+      Any any;
+      any.tagged_unserialize(buffer, size);
+      emplace_any (std::move(any));
     }
 
     else {
@@ -1671,7 +1673,8 @@ KnowledgeRecord::write (char * buffer,
         //"KnowledgeRecord::write: encoding an Any type\n");
 
       try {
-        size_intermediate = (uint32_t)any_value_->serialize(buffer, buffer_remaining);
+        size_intermediate = (uint32_t)
+          any_value_->tagged_serialize(buffer, buffer_remaining);
         size = size_intermediate;
 
         //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
