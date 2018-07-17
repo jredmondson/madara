@@ -37,10 +37,25 @@ namespace madara
      * arguments will be forwarded to construct the underlying type in-place.
      **/
     namespace tags {
-      static struct integers_t { integers_t(){} } integers;
-      static struct doubles_t { doubles_t(){} } doubles;
-      static struct string_t { string_t(){} } string;
-      static struct binary_t { binary_t(){} } binary;
+      using madara::type;
+
+      using integer_t = type<int64_t>;
+      static const integer_t integer;
+      static const integer_t int_;
+      using double_t = type<double>;
+      static const double_t double_;
+      static const double_t dbl;
+      using integers_t = type<std::vector<int64_t>>;
+      static const integers_t integers;
+      static const integers_t ints;
+      using doubles_t = type<std::vector<double>>;
+      static const doubles_t doubles;
+      static const doubles_t dbls;
+      using string_t = type<std::string>;
+      static const string_t string;
+      static const string_t str;
+      using binary_t = type<std::vector<unsigned char>>;
+      static const binary_t binary;
 
       template<typename T>
       struct any { any(){} };
@@ -54,8 +69,6 @@ namespace madara
       inline shared_t<T> shared(T) {
         return shared_t<T>{};
       }
-
-      using madara::type;
     }
 
     /**
@@ -1018,21 +1031,6 @@ namespace madara
       }
 
       /**
-       * Set to Any with raw data, for lazy deserialization when first needed.
-       *
-       * Note that this lazy deserialization is not fully type-safe, and might
-       * not throw an exception if the wrong type is used. The result may be
-       * garbled data, but shouldn't segfault or trample other data.
-       *
-       * @param data a pointer to the serialized data to copy into this Any
-       * @param size the amount of data to copy
-       **/
-      void set_raw_any(const char *data, size_t size)
-      {
-        return emplace_any(raw_data, data, size);
-      }
-
-      /**
        * Get a reference to the stored Any.
        * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
        *
@@ -1205,7 +1203,7 @@ namespace madara
         if (type_ == ANY) {
           return *any_value_;
         } else if (type_ == INTEGER) {
-          return Any(tags::type<int64_t>{}, int_value_);
+          return Any(int_value_);
         } else if (type_ == DOUBLE) {
           return Any(double_value_);
         } else if (type_ == INTEGER_ARRAY) {
@@ -1233,7 +1231,7 @@ namespace madara
       template<typename T>
       T to_any(tags::type<T> t) const
       {
-        return to_any().take(t);
+        return to_any().to(t);
       }
 
       /**
@@ -1821,6 +1819,17 @@ namespace madara
      * @return   the maximum quality within the list of records
      **/
     uint32_t max_quality (const KnowledgeMap & records);
+
+    template<typename Impl, typename ValImpl, typename RefImpl>
+    inline KnowledgeRecord
+    BasicConstAny<Impl, ValImpl, RefImpl>::to_record() const
+    {
+      if (!supports_to_record()) {
+        return KnowledgeRecord(std::move(clone()));
+      }
+
+      return handler_->to_record(data_);
+    }
   }
 }
 
@@ -1831,7 +1840,6 @@ namespace madara
   //const madara::knowledge::KnowledgeRecord & rhs);
 
 #include "KnowledgeRecord.inl"
-
 
 #endif  // _MADARA_KNOWLEDGE_RECORD_H_
 

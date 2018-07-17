@@ -284,7 +284,7 @@ int main (int argc, char ** argv)
     knowledge::VariableReference var_ref = kb.get_ref ("var");
 
     // use epoch enforcer"
-    while (!enforcer.is_done ())
+    while (!enforcer.is_done () && madara_fails == 0)
     {
       uint64_t cur_context_clock;
       uint64_t cur_get_kr_clock;
@@ -299,53 +299,37 @@ int main (int argc, char ** argv)
         cur_value = *var;
       }
 
-      std::cerr << "  Integer.to_integer(): " << last_value;
-      std::cerr << "->" << cur_value << ". Test: ";
-      if (cur_value >= last_value)
+      if (cur_value < last_value)
       {
-        std::cerr << "SUCCESS\n";
-      }
-      else
-      {
+        std::cerr << "  Integer.to_integer(): " << last_value;
+        std::cerr << "->" << cur_value << ". Test: ";
         std::cerr << "FAIL\n";
         ++madara_fails;
       }
       last_value = cur_value;
 
-      std::cerr << "  context.clock: " << last_context_clock;
-      std::cerr << "->" << cur_context_clock << ". Test: ";
-      if (cur_context_clock >= last_context_clock)
+      if (cur_context_clock < last_context_clock)
       {
-        std::cerr << "SUCCESS\n";
-      }
-      else
-      {
+        std::cerr << "  context.clock: " << last_context_clock;
+        std::cerr << "->" << cur_context_clock << ". Test: ";
         std::cerr << "FAIL\n";
         ++madara_fails;
       }
       last_context_clock = cur_context_clock;
 
-      std::cerr << "  get(\"var\").clock: " << last_get_kr_clock;
-      std::cerr << "->" << cur_get_kr_clock << ". Test: ";
-      if (cur_get_kr_clock >= last_get_kr_clock)
+      if (cur_get_kr_clock < last_get_kr_clock)
       {
-        std::cerr << "SUCCESS\n";
-      }
-      else
-      {
+        std::cerr << "  get(\"var\").clock: " << last_get_kr_clock;
+        std::cerr << "->" << cur_get_kr_clock << ". Test: ";
         std::cerr << "FAIL\n";
         ++madara_fails;
       }
       last_get_kr_clock = cur_get_kr_clock;
 
-      std::cerr << "  Integer.to_record().clock: " << last_container_kr_clock;
-      std::cerr << "->" << cur_container_kr_clock << ". Test: ";
-      if (cur_container_kr_clock >= last_container_kr_clock)
+      if (cur_container_kr_clock < last_container_kr_clock)
       {
-        std::cerr << "SUCCESS\n";
-      }
-      else
-      {
+        std::cerr << "  Integer.to_record().clock: " << last_container_kr_clock;
+        std::cerr << "->" << cur_container_kr_clock << ". Test: ";
         std::cerr << "FAIL\n";
         ++madara_fails;
       }

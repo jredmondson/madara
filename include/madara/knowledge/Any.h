@@ -5,47 +5,14 @@
  * @file Any.h
  * @author David Kyle <david.kyle@shield.ai>
  *
- * This file contains the Any class
+ * This file contains the Any and ConstAny classes
  **/
 
 #include <memory>
 #include <sstream>
+#include <map>
+#include <functional>
 #include <type_traits>
-
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpragmas"
-#pragma GCC diagnostic ignored "-Wexceptions"
-#pragma GCC diagnostic ignored "-Wunused-private-field"
-#endif
-#include "cereal/archives/portable_binary.hpp"
-#include "cereal/archives/json.hpp"
-#include "cereal/types/array.hpp"
-#include "cereal/types/vector.hpp"
-#include "cereal/types/stack.hpp"
-#include "cereal/types/queue.hpp"
-#include "cereal/types/deque.hpp"
-#include "cereal/types/list.hpp"
-#include "cereal/types/map.hpp"
-#include "cereal/types/set.hpp"
-#include "cereal/types/bitset.hpp"
-#include "cereal/types/unordered_map.hpp"
-#include "cereal/types/unordered_set.hpp"
-#include "cereal/types/string.hpp"
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif // __GNUC__
-
-#include <boost/version.hpp>
-#if BOOST_VERSION > 105600 && !defined(MADARA_NO_BOOST_TYPE_INDEX)
-#define MADARA_USE_BOOST_TYPE_INDEX
-#endif
-
-#ifdef MADARA_USE_BOOST_TYPE_INDEX
-#include <boost/type_index.hpp>
-#else
-#include <typeindex>
-#endif
 
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/device/array.hpp>
@@ -57,272 +24,95 @@
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/IntTypes.h"
 #include "madara/exceptions/BadAnyAccess.h"
+#include "TypeHandlers.h"
+#include "ConstAnyRef.h"
+#include "AnyRef.h"
 
 namespace madara { namespace knowledge {
 
-using madara_oarchive = cereal::PortableBinaryOutputArchive;
-using madara_iarchive = cereal::PortableBinaryInputArchive;
-
-using json_oarchive = cereal::JSONOutputArchive;
-using json_iarchive = cereal::JSONInputArchive;
-
-#ifdef MADARA_USE_BOOST_TYPE_INDEX
-using type_index = boost::typeindex::type_index;
-using boost::typeindex::type_id;
-#else
-using type_index = std::type_index;
-
-template<typename T>
-inline type_index type_id()
-{
-  return type_index(typeid(T));
-}
-#endif
-
-/// For internal use. Holds type information for use by Any class.
-struct TypeHandlers
-{
-  type_index tindex;
-
-  typedef void (*destruct_fn_type)(void *);
-  destruct_fn_type destruct;
-
-  typedef void *(*clone_fn_type)(void *);
-  clone_fn_type clone;
-
-  typedef void (*save_fn_type)(madara_oarchive &, const void *);
-  save_fn_type save;
-
-  typedef void (*load_fn_type)(madara_iarchive &, void *);
-  load_fn_type load;
-
-  typedef void (*save_json_fn_type)(json_oarchive &, const void *);
-  save_json_fn_type save_json;
-
-  typedef void (*load_json_fn_type)(json_iarchive &, void *);
-  load_json_fn_type load_json;
-};
-
-/// Creates a function for deleting the given type. By default, simply call
-/// delete. Specialize this function to customize otherwise.
-template<typename T>
-constexpr auto get_type_handler_destruct(type<T>,
-    overload_priority_weakest) ->
-  typename std::enable_if<std::is_nothrow_destructible<T>::value,
-    TypeHandlers::destruct_fn_type>::type
-{
-  return [](void *ptr) {
-      T *t_ptr = static_cast<T *>(ptr);
-      delete t_ptr;
-    };
-}
-
-/// Creates a function for deleting the given type. By default, simply call
-/// new with copy constructor. Specialize this function to customize otherwise.
-template<typename T>
-constexpr TypeHandlers::clone_fn_type get_type_handler_clone(type<T>,
-    overload_priority_weakest)
-{
-  return [](void *ptr) -> void * {
-      T *t_ptr = static_cast<T *>(ptr);
-      return new T(*t_ptr);
-    };
-}
-
-/// Creates a function for serializing the given type to a madara_oarchive.
-/// By default, simply use the Boost.Serialization << operator.
-/// Specialize this function to customize otherwise.
-template<typename T>
-constexpr TypeHandlers::save_fn_type get_type_handler_save(type<T>,
-    overload_priority_weakest)
-{
-  return [](madara_oarchive &archive, const void *ptr) {
-      const T &val = *static_cast<const T *>(ptr);
-      archive << val;
-    };
-}
-
-/// Creates a function for unserializing the given type to a madara_iarchive.
-/// By default, simply use the Boost.Serialization >> operator.
-/// Specialize this function to customize otherwise.
-template<typename T>
-constexpr TypeHandlers::load_fn_type get_type_handler_load(type<T>,
-    overload_priority_weakest)
-{
-  return [](madara_iarchive &archive, void *ptr) {
-      T &val = *static_cast<T *>(ptr);
-      archive >> val;
-    };
-}
-
-/// Creates a function for serializing the given type to a json_oarchive.
-/// By default, simply use the Boost.Serialization << operator.
-/// Specialize this function to customize otherwise.
-template<typename T>
-constexpr TypeHandlers::save_json_fn_type
-  get_type_handler_save_json(type<T>, overload_priority_weakest)
-{
-  return [](json_oarchive &archive, const void *ptr) {
-      const T &val = *static_cast<const T *>(ptr);
-      archive << val;
-    };
-}
-
-/// Creates a function for unserializing the given type to a json_iarchive.
-/// By default, simply use the Boost.Serialization >> operator.
-/// Specialize this function to customize otherwise.
-template<typename T>
-constexpr TypeHandlers::load_json_fn_type
-  get_type_handler_load_json(type<T>, overload_priority_weakest)
-{
-  return [](json_iarchive &archive, void *ptr) {
-      T &val = *static_cast<T *>(ptr);
-      archive >> val;
-    };
-}
-
-/// Type trait for checking whether a type as an ADL-visible for_each_field
-/// available.
-MADARA_MAKE_VAL_SUPPORT_TEST(for_each_field, x,
-    for_each_field(::madara::ignore_all<>{}, x));
-
-/// Functor to pass to for_each_field to serialize a type
-template<typename Archive>
-struct do_serialize
-{
-  Archive *ar;
-
-  template<typename T>
-  void operator()(const char *name, T &val)
-  {
-    (*ar)(cereal::make_nvp(name, val));
-  }
-};
-
-} // namespace knowledge
-
-namespace exceptions {
-  /**
-   * An exception for misuse of the Any class
-   **/
-  class BadAnyAccess : public MadaraException
-  {
-  public:
-    using MadaraException::MadaraException;
-
-    template<typename Got>
-    BadAnyAccess(type<Got>, knowledge::type_index expected)
-      : BadAnyAccess(std::string("Bad Any access: expected ") +
-#ifdef MADARA_USE_BOOST_TYPE_INDEX
-          expected.pretty_name() + ", got " +
-          knowledge::type_id<Got>().pretty_name()
-#else
-          expected.name() + ", got " +
-          knowledge::type_id<Got>().name()
-#endif
-          ) {}
-  };
-}
-
-namespace knowledge {
-
-/// For internal use. Constructs a TypeHandlers containing functions used by Any
-template<typename T>
-inline const TypeHandlers &get_type_handler(type<T> t)
-{
-  static const TypeHandlers handler = {
-      type_id<T>(),
-      get_type_handler_destruct(t, select_overload()),
-      get_type_handler_clone(t, select_overload()),
-      get_type_handler_save(type<T>{}, select_overload()),
-      get_type_handler_load(type<T>{}, select_overload()),
-      get_type_handler_save_json(t, select_overload()),
-      get_type_handler_load_json(t, select_overload()),
-    };
-  return handler;
-}
-
-/// For internal use. Constructs a TypeHandlers containing functions used by Any
-template<typename T>
-inline const TypeHandlers &get_type_handler()
-{
-  return get_type_handler(type<T>{});
-}
-
 /**
- * Type tag used with Any to signifiy storing raw unserialized data. The Any
- * will unserialize lazily as needed.
- *
- * Note that this lazy deserialization is not fully type-safe, and might not
- * throw an exception if the wrong type is used. The result may be garbled
- * data, but shouldn't segfault or trample other data.
+ * Class which defines methods common to ConstAny and Any. Use those classes
+ * instead of this class directly.
  **/
-constexpr struct raw_data_t {} raw_data;
-
-/**
- * A general purpose type which can store any type which is:
- *
- *  * Default constructible
- *  * Copy constructible
- *  * Serializable by Boost.Serialization, or implements the for_each_field
- *    free function.
- *
- * This class is used by KnowledgeRecord and KnowledgeBase to store (nearly)
- * arbitrary types.
- *
- * It is similar in principle to Boost.Any (and C++17 std::any), but
- * incorporates serialization support, and a different interface.
- **/
-class Any
+template<typename Impl, typename BaseImpl>
+class BasicOwningAny : public BaseImpl, public AnyRegistry
 {
+  using Base = BaseImpl;
 public:
   /**
    * Default constructor. Creates an empty Any.
    **/
-  Any() = default;
+  BasicOwningAny() = default;
 
   /**
    * Copy constructor. Will clone any data stored inside.
    **/
-  Any(const Any &other)
-    : handler_(other.handler_),
-      data_(other.data_ ?
-        (handler_ ?
-          handler_->clone(other.data_) :
-          raw_data_storage::clone(other.data_)) : nullptr) {}
+  BasicOwningAny(const BasicOwningAny &other)
+    : Base(other.handler_,
+        other.data_ && other.handler_ ?
+          other.handler_->clone(other.data_) : nullptr) {}
+
+  /**
+   * Copy constructor. Will clone any data stored inside.
+   **/
+  template<typename I, typename B>
+  BasicOwningAny(const BasicOwningAny<I, B> &other)
+    : Base(other.handler_,
+        other.data_ && other.handler_ ?
+          other.handler_->clone(other.data_) : nullptr) {}
+
+  /**
+   * Construct from a ConstAnyRef. Will clone the data it refers to.
+   **/
+  BasicOwningAny(const ConstAnyRef &other)
+    : Base(other.handler_,
+        other.data_ && other.handler_ ?
+          other.handler_->clone(other.data_) : nullptr) {}
+
+  /**
+   * Construct from a AnyRef. Will clone the data it refers to.
+   **/
+  BasicOwningAny(const AnyRef &other)
+    : BasicOwningAny(ConstAnyRef(other)) {}
 
   /**
    * Copy assignment operator. Will clone any data stored inside.
    **/
-  Any &operator=(const Any &other)
+  BasicOwningAny &operator=(const BasicOwningAny &other)
   {
-    void *data = other.data_ ?
-      (other.handler_ ?
-        other.handler_->clone(other.data_) :
-        raw_data_storage::clone(other.data_)) : nullptr;
+    void *data = other.handler_ && other.data_ ?
+        other.handler_->clone(other.data_) : nullptr;
 
     clear();
-    handler_ = other.handler_;
-    data_ = data;
+    this->handler_ = other.handler_;
+    this->data_ = data;
     return *this;
   }
 
   /**
    * Move constructor. Other Any will be left empty.
    **/
-  Any(Any &&other) noexcept :
-    handler_(take_ptr(other.handler_)),
-    data_(take_ptr(other.data_)) {}
+  BasicOwningAny(BasicOwningAny &&other) noexcept :
+    Base(take_ptr(other.handler_),
+      take_ptr(other.data_)) {}
+
+  /**
+   * Move constructor. Other Any will be left empty.
+   **/
+  template<typename I, typename B>
+  BasicOwningAny(BasicOwningAny<I, B> &&other) noexcept :
+    Base(take_ptr(other.handler_),
+      take_ptr(other.data_)) {}
 
   /**
    * Move assignment operator. Other Any will be left empty.
    **/
-  Any &operator=(Any &&other) noexcept
+  BasicOwningAny &operator=(BasicOwningAny &&other) noexcept
   {
     if (this != &other) {
       using std::swap;
-      swap(data_, other.data_);
-      swap(handler_, other.handler_);
+      swap(this->data_, other.data_);
+      swap(this->handler_, other.handler_);
     }
     return *this;
   }
@@ -330,7 +120,7 @@ public:
   /**
    * Destructor. Deletes the stored data.
    **/
-  ~Any() noexcept
+  ~BasicOwningAny() noexcept
   {
     clear();
   }
@@ -340,17 +130,17 @@ public:
    **/
   void clear() noexcept
   {
-    if (!data_) {
+    if (!this->data_) {
       return;
     }
-    if (handler_)
+    if (this->handler_)
     {
-      handler_->destruct((void*)data_);
-      handler_ = nullptr;
+      this->handler_->destruct((void*)this->data_);
+      this->handler_ = nullptr;
     } else {
-      delete [] (char*)data_;
+      delete [] (char*)this->data_;
     }
-    data_ = nullptr;
+    this->data_ = nullptr;
   }
 
   /**
@@ -358,12 +148,13 @@ public:
    * the new Any if it supports it, and the argument is an rvalue reference.
    * Otherwise, it will be copied.
    **/
-  template<typename T>
-  explicit Any(T &&t, enable_if_<
-    !is_type_tag<T>() &&
-    !is_same_decayed<T, Any>(), int> = 0)
-    : handler_(&get_type_handler(type<decay_<T>>{})),
-      data_(reinterpret_cast<void*>(
+  template<typename T,
+    typename std::enable_if<
+      !is_type_tag<T>() &&
+      !is_convertible<T, ConstAnyRef>(), int>::type = 0>
+  explicit BasicOwningAny(T &&t)
+    : Base(&get_type_handler(type<decay_<T>>{}),
+        reinterpret_cast<void*>(
             new decay_<T>(std::forward<T>(t))))
   {}
 
@@ -382,9 +173,9 @@ public:
    * @endcode
    **/
   template<typename T, typename... Args>
-  explicit Any(type<T> t, Args&&... args)
-    : handler_(&get_type_handler(t)),
-      data_(reinterpret_cast<void*>(new T(std::forward<Args>(args)...))) {}
+  explicit BasicOwningAny(type<T> t, Args&&... args)
+    : Base(&get_type_handler(t),
+        reinterpret_cast<void*>(new T(std::forward<Args>(args)...))) {}
 
   /**
    * Construct any compatible type in-place. The first argument is a
@@ -401,214 +192,8 @@ public:
    * @endcode
    **/
   template<typename T, typename I>
-  explicit Any(type<T> t, std::initializer_list<I> init)
-    : Any(t, init.begin(), init.end()) {}
-
-  /**
-   * Construct with serialized data, for lazy deserialization when first needed.
-   *
-   * Note that this lazy deserialization is not fully type-safe, and might not
-   * throw an exception if the wrong type is used. The result may be garbled
-   * data, but shouldn't segfault or trample other data.
-   *
-   * The first parameter is a type tag, which is available by-value from the
-   * global `madara::knowledge::raw_data`.
-   *
-   * @param data a pointer to the serialized data to copy into this Any
-   * @param size the amount of data to copy
-   **/
-  explicit Any(raw_data_t, const char *data, size_t size)
-    : data_(raw_data_storage::make(data, size)) {}
-
-  /**
-   * Test whether this Any holds a value. A default constructed Any is empty.
-   *
-   * @return true if this Any is empty
-   **/
-  bool empty() const
-  {
-    return data_ == nullptr;
-  }
-
-  /**
-   * Test whether this Any holds unserialized raw data, to be lazily
-   * deserialized when first needed.
-   *
-   * Note that this lazy deserialization is not fully type-safe, and might not
-   * throw an exception if the wrong type is used. The result may be garbled
-   * data, but shouldn't segfault or trample other data.
-   *
-   * @return true if this Any holds raw data
-   **/
-  bool raw() const
-  {
-    return data_ != nullptr && handler_ == nullptr;
-  }
-
-  /**
-   * Access the Any's stored value by reference.
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * return *data_ as T&, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return a reference to the contained value
-   **/
-  template<typename T>
-  T &ref(type<T> t)
-  {
-    if (!data_) {
-      throw exceptions::BadAnyAccess("ref() called on empty Any");
-    } else if (!handler_) {
-      raw_data_storage *sto = (raw_data_storage *)data_;
-      unserialize(t, sto->data, sto->size);
-    } else if (type_id<T>() != handler_->tindex) {
-      throw exceptions::BadAnyAccess(t, handler_->tindex);
-    }
-    return ref_unsafe(t);
-  }
-
-  /**
-   * Access the Any's stored value by reference.
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * return the stored data as T&, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return a reference to the contained value
-   **/
-  template<typename T>
-  T &ref()
-  {
-    return ref(type<T>{});
-  }
-
-  /**
-   * Access the Any's stored value by const reference.
-   * If empty() or raw() is true, throw BadAnyAccess exception; else,
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * return the stored data as const T&, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return a reference to the contained value
-   **/
-  template<typename T>
-  const T &ref(type<T> t) const
-  {
-    if (!data_) {
-      throw exceptions::BadAnyAccess("ref() called on empty Any");
-    } else if (!handler_) {
-      throw exceptions::BadAnyAccess("ref() called on const Any with raw data");
-    } else if (type_id<T>() != handler_->tindex) {
-      throw exceptions::BadAnyAccess(t, handler_->tindex);
-    }
-    return ref_unsafe(t);
-  }
-
-  /**
-   * Access the Any's stored value by const reference.
-   * If empty() or raw() is true, throw BadAnyAccess exception; else,
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * return the stored data as const T&, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return a reference to the contained value
-   **/
-  template<typename T>
-  const T &ref() const
-  {
-    return ref(type<T>{});
-  }
-
-  /**
-   * Access the Any's stored value by const reference.
-   * If empty() or raw() is true, throw BadAnyAccess exception; else,
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * return the stored data as const T&, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return a reference to the contained value
-   **/
-  template<typename T>
-  const T &cref(type<T> t) const
-  {
-    return ref(t);
-  }
-
-  /**
-   * Access the Any's stored value by const reference.
-   * If empty() or raw() is true, throw BadAnyAccess exception; else,
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * return the stored data as const T&, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return a reference to the contained value
-   **/
-  template<typename T>
-  const T &cref() const
-  {
-    return ref(type<T>{});
-  }
-
-  /**
-   * Take the Any's stored value, leaving it empty. On moveable types, this
-   * will not copy the value.
-   *
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * take and return the data, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return the formerly contained value
-   **/
-  template<typename T>
-  T take(type<T> t)
-  {
-    T ret(std::move(ref(t)));
-    clear();
-    return ret;
-  }
-
-  /**
-   * Take the Any's stored value, leaving it empty. On moveable types, this
-   * will not copy the value.
-   *
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * take and return the data, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return the formerly contained value
-   **/
-  template<typename T>
-  T take()
-  {
-    return take(type<T>{});
-  }
+  explicit BasicOwningAny(type<T> t, std::initializer_list<I> init)
+    : BasicOwningAny(t, init.begin(), init.end()) {}
 
   /**
    * Construct any compatible type in-place. The first argument is a
@@ -633,9 +218,9 @@ public:
 
     clear();
 
-    handler_ = &handler;
+    this->handler_ = &handler;
     T *ret = ptr.release();
-    data_ = reinterpret_cast<void*>(ret);
+    this->data_ = reinterpret_cast<void*>(ret);
     return *ret;
   }
 
@@ -713,184 +298,12 @@ public:
   }
 
   /**
-   * Store serialized data, for lazy deserialization when first needed.
-   *
-   * Note that this lazy deserialization is not fully type-safe, and might not
-   * throw an exception if the wrong type is used. The result may be garbled
-   * data, but shouldn't segfault or trample other data.
-   *
-   * @param data a pointer to the serialized data to copy into this Any
-   * @param size the amount of data to copy
-   **/
-  void set_raw(const char *data, size_t size)
-  {
-    clear();
-    data_ = raw_data_storage::make(data, size);
-  }
-
-  /**
-   * Store serialized data, for lazy deserialization when first needed.
-   *
-   * Note that this lazy deserialization is not fully type-safe, and might not
-   * throw an exception if the wrong type is used. The result may be garbled
-   * data, but shouldn't segfault or trample other data.
-   *
-   * The first parameter is a type tag, which is available by-value from the
-   * global `madara::knowledge::raw_data`.
-   *
-   * @param data a pointer to the serialized data to copy into this Any
-   * @param size the amount of data to copy
-   **/
-  void set(raw_data_t, const char *data, size_t size)
-  {
-    set_raw(data, size);
-  }
-
-  /**
-   * Reference the stored data as type T, WITHOUT any type checking. Do not
-   * call this unless you are certain what type the Any contains. This does not
-   * unserialize if the Any contains unserialized raw data.
-   *
-   * @tparam T the type to treat the stored data as
-   * @return a reference of type T to the stored data
-   **/
-  template<typename T>
-  T &ref_unsafe()
-  {
-    return ref_unsafe(type<T>{});
-  }
-
-  /**
-   * Reference the stored data as type T, WITHOUT any type checking. Do not
-   * call this unless you are certain what type the Any contains. This does not
-   * unserialize if the Any contains unserialized raw data.
-   *
-   * @tparam T the type to treat the stored data as
-   * @return a reference of type T to the stored data
-   **/
-  template<typename T>
-  T &ref_unsafe(type<T>)
-  {
-    return *reinterpret_cast<T *>(data_);
-  }
-
-  /**
-   * Reference the stored data as type T, WITHOUT any type checking. Do not
-   * call this unless you are certain what type the Any contains. This does not
-   * unserialize if the Any contains unserialized raw data.
-   *
-   * @tparam T the type to treat the stored data as
-   * @return a const reference of type T to the stored data
-   **/
-  template<typename T>
-  const T &ref_unsafe(type<T>) const
-  {
-    return *reinterpret_cast<const T *>(data_);
-  }
-
-  /**
-   * Serialize this Any to the given buffer. Throws an exception if the buffer
-   * size is insufficient.
-   *
-   * @param data the buffer to serialize to
-   * @param size size of the buffer
-   * @return the actual number of bytes used during serialization
-   **/
-  size_t serialize(char *data, size_t size) const
-  {
-    namespace bio = boost::iostreams;
-
-    bio::array_sink output_sink(data, size);
-    bio::stream<bio::array_sink> output_stream(output_sink);
-
-    auto pos = output_stream.tellp();
-    serialize(output_stream);
-    auto len = output_stream.tellp() - pos;
-
-    return len;
-  }
-
-  /**
-   * Serialize this Any to the given vector. The vector will be cleared first,
-   * and resized as needed.
-   *
-   * @param vec the vector to serialize to, which will be cleared first
-   * @return the actual number of bytes used during serialization
-   **/
-  size_t serialize(std::vector<char> &vec) const
-  {
-    namespace bio = boost::iostreams;
-
-    vec.clear();
-    auto output_sink = bio::back_inserter(vec);
-    bio::stream<decltype(output_sink)> output_stream(output_sink);
-
-    serialize(output_stream);
-
-    return vec.size();
-  }
-
-  /**
-   * Serialize this Any to the given output stream.
-   *
-   * @param stream the output stream to serialize to
-   **/
-  void serialize(std::ostream &stream) const
-  {
-    madara_oarchive archive(stream);
-
-    serialize(archive);
-  }
-
-  /**
-   * Serialize this Any to the given madara_oarchive.
-   *
-   * @param stream the output archive to serialize to
-   **/
-  void serialize(madara_oarchive &archive) const
-  {
-    if (handler_) {
-      handler_->save(archive, data_);
-    } else {
-      raw_data_storage *sto = (raw_data_storage *)data_;
-      archive.saveBinary<1>(sto->data, sto->size);
-    }
-  }
-
-  /**
-   * Serialize this Any to the given archive. Use this overload for
-   * Boost.Serialization archives other than madara_oarchive.
-   *
-   * @param stream the output archive to serialize to
-   **/
-  void serialize(json_oarchive &archive) const
-  {
-    if (handler_) {
-      handler_->save_json(archive, data_);
-    } else {
-      raw_data_storage *sto = (raw_data_storage *)data_;
-      archive.saveBinaryValue(sto->data, sto->size);
-    }
-  }
-
-  std::string to_json() const
-  {
-    std::ostringstream stream;
-    {
-      cereal::JSONOutputArchive json(stream);
-      json.makeArray();
-      serialize(json);
-    }
-    return stream.str();
-  }
-
-  /**
    * Unserialize the given type from the given character array, and store into
    * this Any. This operation provides the strong exception-guarantee: if an
    * exception is throw during unserialization, this Any will not be modified.
    **/
-  template<typename T>
-  size_t unserialize(type<T> t, const char *data, size_t size)
+  template<typename K>
+  size_t unserialize(K k, const char *data, size_t size)
   {
     namespace bio = boost::iostreams;
 
@@ -898,7 +311,7 @@ public:
     bio::stream<bio::array_source> input_stream(input_source);
 
     auto pos = input_stream.tellg();
-    unserialize(t, input_stream);
+    unserialize(k, input_stream);
     auto len = input_stream.tellg() - pos;
 
     return len;
@@ -920,12 +333,12 @@ public:
    * this Any. This operation provides the strong exception-guarantee: if an
    * exception is throw during unserialization, this Any will not be modified.
    **/
-  template<typename T>
-  void unserialize(type<T> t, std::istream &stream)
+  template<typename K>
+  void unserialize(K k, std::istream &stream)
   {
     madara_iarchive archive(stream);
 
-    unserialize(t, archive);
+    unserialize(k, archive);
   }
 
   /**
@@ -953,8 +366,65 @@ public:
     handler.load(archive, (void*)ptr.get());
 
     clear();
-    data_ = reinterpret_cast<void*>(ptr.release());
-    handler_ = &handler;
+    this->data_ = reinterpret_cast<void*>(ptr.release());
+    this->handler_ = &handler;
+  }
+
+  void unserialize(const char *type, madara_iarchive &archive);
+
+  /**
+   * Unserialize the given type from the given character array, and store into
+   * this Any, using saved type tag to determine type. This operation provides
+   * the strong exception-guarantee: if an exception is throw during
+   * unserialization, this Any will not be modified.
+   *
+   * Use with data serialized by tagged_serialize()
+   **/
+  size_t tagged_unserialize(const char *data, size_t size)
+  {
+    namespace bio = boost::iostreams;
+
+    bio::array_source input_source(data, size);
+    bio::stream<bio::array_source> input_stream(input_source);
+
+    auto pos = input_stream.tellg();
+    madara_iarchive archive(input_stream);
+    std::string tag;
+    archive >> tag;
+    unserialize(tag.c_str(), archive);
+    auto len = input_stream.tellg() - pos;
+
+    return len;
+  }
+
+  /**
+   * Unserialize the given type from the given input stream, and store into
+   * this Any, using saved type tag to determine type. This operation provides
+   * the strong exception-guarantee: if an exception is throw during
+   * unserialization, this Any will not be modified.
+   *
+   * Use with data serialized by tagged_serialize()
+   **/
+  void tagged_unserialize(std::istream &stream)
+  {
+    madara_iarchive archive(stream);
+
+    tagged_unserialize(archive);
+  }
+
+  /**
+   * Unserialize the given type from the given madara_iarchive, and store into
+   * this Any, using saved type tag to determine type. This operation provides
+   * the strong exception-guarantee: if an exception is throw during
+   * unserialization, this Any will not be modified.
+   *
+   * Use with data serialized by tagged_serialize()
+   **/
+  void tagged_unserialize(madara_iarchive &archive)
+  {
+    std::string tag;
+    archive >> tag;
+    unserialize(tag.c_str(), archive);
   }
 
   /**
@@ -982,8 +452,8 @@ public:
     handler.load_json(archive, (void*)ptr.get());
 
     clear();
-    data_ = reinterpret_cast<void*>(ptr.release());
-    handler_ = &handler;
+    this->data_ = reinterpret_cast<void*>(ptr.release());
+    this->handler_ = &handler;
   }
 
   /**
@@ -997,31 +467,14 @@ public:
     unserialize(type<T>{}, archive);
   }
 
+  /**
+   * Unserialize the given type from the given archive, and store into
+   * this Any. This operation provides the strong exception-guarantee: if an
+   * exception is throw during unserialization, this Any will not be modified.
+   **/
+  void unserialize(const char *type, json_iarchive &archive);
+
 private:
-  const TypeHandlers *handler_ = nullptr;
-  void *data_ = nullptr;
-
-  struct raw_data_storage
-  {
-    size_t size;
-    char data[1];
-
-    static void *make(const char *data, size_t size)
-    {
-      auto ret = new char[size + sizeof(size)];
-      raw_data_storage *sto = (raw_data_storage *)ret;
-      sto->size = size;
-      memcpy(&sto->data, data, size);
-      return ret;
-    }
-
-    static void *clone(const void *orig)
-    {
-      raw_data_storage *sto = (raw_data_storage *)orig;
-      return make(sto->data, sto->size);
-    }
-  };
-
   template<typename T>
   static T *take_ptr(T *&in)
   {
@@ -1037,22 +490,139 @@ private:
     in = nullptr;
     return ret;
   }
+
+  template<typename Impl2, typename Base2>
+  friend class ::madara::knowledge::BasicOwningAny;
 };
 
-} } // namespace madara::knowledge
-
-namespace cereal
+/**
+ * A general purpose type which can store any type which is:
+ *
+ *  * Default constructible
+ *  * Copy constructible
+ *  * Serializable by Boost.Serialization, or implements the for_each_field
+ *    free function.
+ *
+ * This class is used by KnowledgeRecord and KnowledgeBase to store (nearly)
+ * arbitrary types. This class owns the value it stores, and will automatically
+ * destruct the object when the Any gets destructed, like std::unique_ptr.
+ *
+ * It is similar in principle to Boost.Any (and C++17 std::any), but
+ * incorporates serialization support, and a different interface.
+ *
+ * This class cannot modify the stored object, but it can replace what object
+ * is stored, which will destroy the previously stored object.
+ * A `const ConstAny` cannot change at all once constructed, until the
+ * `const ConstAny` itself is destructed.
+ **/
+class ConstAny : public BasicOwningAny<ConstAny,
+  BasicConstAny<ConstAny, Any, ConstAnyRef>>
 {
+  using Base = BasicOwningAny<ConstAny,
+    BasicConstAny<ConstAny, Any, ConstAnyRef>>;
 
-// Implement Cereal library serialization for types supporting for_each_field
-template<typename Archive, typename T>
-auto serialize(Archive &ar, T &&val) ->
-  ::madara::enable_if_<::madara::knowledge::supports_for_each_field<T>::value>
+public:
+  using Base::Base;
+
+  static ConstAny construct(const char *name) {
+    return construct_const(name);
+  }
+};
+
+/**
+ * A general purpose type which can store any type which is:
+ *
+ *  * Default constructible
+ *  * Copy constructible
+ *  * Serializable by Boost.Serialization, or implements the for_each_field
+ *    free function.
+ *
+ * This class is used by KnowledgeRecord and KnowledgeBase to store (nearly)
+ * arbitrary types. This class owns the value it stores, and will automatically
+ * destruct the object when the Any gets destructed, like std::unique_ptr.
+ *
+ * It is similar in principle to Boost.Any (and C++17 std::any), but
+ * incorporates serialization support, and a different interface.
+ *
+ * Note that, a `const Any` can modify the object constructed, it simply
+ * cannot change which object it holds. Use the ConstAny class to hold a const
+ * object which cannot be modifid, and `const ConstAny` to hold a const
+ * object that will not be destructed until the `const ConstAny` is destructed.
+ **/
+class Any : public BasicOwningAny<Any,
+  BasicAny<Any, Any, AnyRef, ConstAnyRef>>
 {
-  for_each_field(::madara::knowledge::do_serialize<Archive>{&ar},
-      std::forward<T>(val));
+  using Base = BasicOwningAny<Any,
+    BasicAny<Any, Any, AnyRef, ConstAnyRef>>;
+
+public:
+  using Base::Base;
+};
+
+template<typename T>
+inline void AnyRegistry::register_type(const char *name)
+{
+  (void)type_builders().emplace(std::piecewise_construct,
+      std::forward_as_tuple(name),
+      std::forward_as_tuple([](){ return Any(type<T>{}); }));
+
+  auto &ptr = *get_type_name_ptr<T>();
+  if (ptr == nullptr) {
+    ptr = name;
+  }
 }
 
+inline Any AnyRegistry::construct(const char *name)
+{
+  auto iter = type_builders().find(name);
+  if (iter == type_builders().end()) {
+    throw exceptions::BadAnyAccess(std::string("Type ") + name +
+        "is not registered");
+  }
+  return iter->second();
 }
+
+inline ConstAny AnyRegistry::construct_const(const char *name)
+{
+  return construct(name);
+}
+
+template<typename Impl, typename Base>
+inline void BasicOwningAny<Impl, Base>::unserialize(
+    const char *type, madara_iarchive &archive)
+{
+  Any any(construct(type));
+
+  any.handler_->load(archive, any.data_);
+
+  using std::swap;
+  swap(this->handler_, any.handler_);
+  swap(this->data_, any.data_);
+}
+
+template<typename Impl, typename Base>
+inline void BasicOwningAny<Impl, Base>::unserialize(
+    const char *type, json_iarchive &archive)
+{
+  Any any(construct(type));
+
+  any.handler_->load_json(archive, any.data_);
+
+  using std::swap;
+  swap(this->handler_, any.handler_);
+  swap(this->data_, any.data_);
+}
+
+inline ConstAnyRef::ConstAnyRef(const Any &other)
+  : Base(other.handler_, other.data_) {}
+
+inline AnyRef::AnyRef(const Any &other)
+  : Base(other.handler_, other.data_) {}
+
+} // namespace knowledge
+
+} // namespace madara
 
 #endif  // MADARA_KNOWLEDGE_ANY_H_
+
+#include "DefaultTypeHandlers.h"
