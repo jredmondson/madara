@@ -367,6 +367,49 @@ CircularBuffer::inspect (
   }
 }
 
+inline std::vector <KnowledgeRecord>
+CircularBuffer::inspect (
+  KnowledgeRecord::Integer position, size_t count) const
+{
+  if (context_ && name_ != "")
+  {
+    ContextGuard context_guard (*context_);
+
+    KnowledgeRecord::Integer inserted =
+      (KnowledgeRecord::Integer)this->count ();
+
+    if ((position <= 0 && -position < inserted) ||
+        (position > 0 && inserted == (KnowledgeRecord::Integer)size () &&
+         position < inserted))
+    {
+      KnowledgeRecord::Integer index = increment (
+        *index_, (KnowledgeRecord::Integer)position);
+      
+      std::vector <KnowledgeRecord> result;
+
+      for (size_t i = 0; i < count; ++i, index = increment (index, 1))
+      {
+        result.push_back (buffer_[(size_t)index]);
+      }
+
+      return result;
+    }
+    else
+    {
+      std::stringstream message;
+      message << "CircularBuffer::inspect: ";
+      message << "Invalid access for " << position << " element when count is ";
+      message << inserted << "\n";
+      throw exceptions::IndexException (message.str ()); 
+    }
+  }
+  else
+  {
+    throw exceptions::ContextException ("CircularBuffer::inspect: "
+      " context is null or name hasn't been set.");
+  }
+}
+
 inline std::string
 CircularBuffer::get_name (void) const
 {

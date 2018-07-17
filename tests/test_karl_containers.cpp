@@ -2290,6 +2290,31 @@ void test_circular (void)
     }
   }
 
+
+  std::cerr << "  Testing inspect(2,5)...";
+
+  std::vector <KnowledgeRecord> records = buffer1.inspect (-3, 4);
+
+  if (records.size () == 4 &&
+      records[0] == 2 &&
+      records[1] == 1 &&
+      records[2] == 5 &&
+      records[3] == 4)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++num_fails;
+
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
   std::cerr << "  Testing exception in inspect...";
   
   try

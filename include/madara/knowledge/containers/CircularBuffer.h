@@ -193,6 +193,19 @@ namespace madara
         knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
 
         /**
+         * Retrieves a vector of records at a position relative to last added
+         * @param  position  the relative position of the requested record
+         *                   from the latest added record. Can be negative
+         * @param  count   the maximum number of records to return
+         * @return  the record at the position in the CircularBufferConsumer
+         * @throw exceptions::ContextException if name or context haven't
+         *                      been set appropriately
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,
+          size_t count) const;
+
+        /**
          * Clears the CircularBuffer
          * @throw exceptions::ContextException  if name or context haven't
          *                      been set appropriately
