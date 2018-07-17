@@ -38,9 +38,6 @@ template<typename Impl, typename BaseImpl>
 class BasicOwningAny : public BaseImpl, public AnyRegistry
 {
   using Base = BaseImpl;
-
-  template<typename Impl2, typename Base2>
-  friend class ::madara::knowledge::BasicOwningAny;
 public:
   /**
    * Default constructor. Creates an empty Any.
@@ -493,6 +490,9 @@ private:
     in = nullptr;
     return ret;
   }
+
+  template<typename Impl2, typename Base2>
+  friend class ::madara::knowledge::BasicOwningAny;
 };
 
 /**

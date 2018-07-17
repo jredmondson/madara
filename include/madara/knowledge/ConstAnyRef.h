@@ -28,6 +28,8 @@
 
 namespace madara { namespace knowledge {
 
+template<typename Impl, typename ValImpl, typename RefImpl, typename CRefImpl>
+class BasicAny;
 /**
  * Provides methods common to Any, ConstAny, AnyRef, ConstAnyRef. Use those
  * classes, not this one directly.
@@ -43,16 +45,6 @@ protected:
 
   Impl &impl() { return *static_cast<Impl*>(this); }
   const Impl &impl() const { return *static_cast<const Impl*>(this); }
-
-  friend Impl;
-  friend ValImpl;
-  friend RefImpl;
-
-  template<typename Impl2, typename ValImpl2, typename RefImpl2>
-  friend class BasicConstAny;
-
-  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
-  friend class BasicAny;
 
 public:
   /**
@@ -1016,6 +1008,16 @@ public:
 protected:
   const TypeHandlers *handler_ = nullptr;
   void *data_ = nullptr;
+
+  friend Impl;
+  friend ValImpl;
+  friend RefImpl;
+
+  template<typename Impl2, typename ValImpl2, typename RefImpl2>
+  friend class BasicConstAny;
+
+  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
+  friend class BasicAny;
 };
 
 /**
@@ -1028,11 +1030,6 @@ class ConstAnyRef : public BasicConstAny<ConstAnyRef, Any, ConstAnyRef>
 {
   using Base = BasicConstAny<ConstAnyRef, Any, ConstAnyRef>;
 
-  template<typename Impl2, typename ValImpl2, typename RefImpl2>
-  friend class ::madara::knowledge::BasicConstAny;
-
-  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
-  friend class ::madara::knowledge::BasicAny;
 protected:
   using Base::Base;
 
@@ -1068,6 +1065,12 @@ public:
   friend class BasicOwningAny;
 
   friend class Any;
+
+  template<typename Impl2, typename ValImpl2, typename RefImpl2>
+  friend class ::madara::knowledge::BasicConstAny;
+
+  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
+  friend class ::madara::knowledge::BasicAny;
 };
 
 template<typename Impl, typename ValImpl, typename RefImpl>

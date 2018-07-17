@@ -448,11 +448,6 @@ class AnyRef : public BasicAny<AnyRef, Any, AnyRef, ConstAnyRef>
 {
   using Base = BasicAny<AnyRef, Any, AnyRef, ConstAnyRef>;
 
-  template<typename Impl2, typename ValImpl2, typename RefImpl2>
-  friend class ::madara::knowledge::BasicConstAny;
-
-  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
-  friend class ::madara::knowledge::BasicAny;
 protected:
   using Base::Base;
 
@@ -494,6 +489,12 @@ public:
   friend class BasicOwningAny;
 
   friend class Any;
+
+  template<typename Impl2, typename ValImpl2, typename RefImpl2>
+  friend class ::madara::knowledge::BasicConstAny;
+
+  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
+  friend class ::madara::knowledge::BasicAny;
 };
 
 inline ConstAnyRef::ConstAnyRef(const AnyRef &other)
