@@ -2903,9 +2903,9 @@ void test_circular_consumer (void)
     std::cerr << "      get() == " << result << "\n";
   }
 
-  std::cerr << "  Testing peak_latest()...";
+  std::cerr << "  Testing peek_latest()...";
 
-  result = consumer.peak_latest ();
+  result = consumer.peek_latest ();
 
   if (result == 94)
   {
@@ -2915,12 +2915,12 @@ void test_circular_consumer (void)
   {
     std::cerr << "FAIL\n";
     ++num_fails;
-    std::cerr << "      peak_latest() == " << result << "\n";
+    std::cerr << "      peek_latest() == " << result << "\n";
   }
 
-  std::cerr << "  Testing peak_latest(5)...";
+  std::cerr << "  Testing peek_latest(5)...";
 
-  records = consumer.peak_latest (5);
+  records = consumer.peek_latest (5);
 
   if (records.size () == 5 &&
       records[0] == 94 &&
@@ -3167,9 +3167,9 @@ void test_circular_consumer_any (void)
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
 
-  std::cerr << "  Testing peak_latest()...";
+  std::cerr << "  Testing peek_latest()...";
 
-  consumer.peak_latest (class_result);
+  consumer.peek_latest (class_result);
 
   if (class_result.x == 1 && class_result.y == 2)
   {
@@ -3313,10 +3313,10 @@ void test_circular_consumer_any (void)
     }
   }
 
-  std::cerr << "  Testing peak_latest(10)...";
+  std::cerr << "  Testing peek_latest(10)...";
 
   classes.clear ();
-  consumer.peak_latest (10, classes);
+  consumer.peek_latest (10, classes);
 
   has_failed = classes.size () != 10;
 

@@ -536,11 +536,11 @@ CircularBufferConsumer::consume_earliest (size_t count) const
 }
 
 template <typename T> void
-CircularBufferConsumer::peak_latest (size_t count,
+CircularBufferConsumer::peek_latest (size_t count,
   std::vector <T> & values) const
 {
   // iterate over the returned records
-  for (auto record : peak_latest (count))
+  for (auto record : peek_latest (count))
   {
     // add them to the values
     values.push_back (record.to_any <T> ());
@@ -548,7 +548,7 @@ CircularBufferConsumer::peak_latest (size_t count,
 }
 
 inline std::vector <KnowledgeRecord>
-CircularBufferConsumer::peak_latest (size_t count) const
+CircularBufferConsumer::peek_latest (size_t count) const
 {
   if (context_ && name_ != "")
   {
@@ -594,29 +594,29 @@ CircularBufferConsumer::peak_latest (size_t count) const
     }
 
     std::stringstream message;
-    message << "CircularBuffer::peak_latest: ";
+    message << "CircularBuffer::peek_latest: ";
     message << "Invalid access because " << reason << "\n";
     throw exceptions::IndexException (message.str ()); 
   }
 }      
 
 template <typename T> void
-CircularBufferConsumer::peak_latest (T & value) const
+CircularBufferConsumer::peek_latest (T & value) const
 {
   if (context_ && name_ != "")
   {
     ContextGuard context_guard (*context_);
 
     if (count () > 0)
-      value = peak_latest ().to_any <T> ();
+      value = peek_latest ().to_any <T> ();
     else
-      throw exceptions::IndexException ("CircularBufferConsumer::peak_latest<T>: "
+      throw exceptions::IndexException ("CircularBufferConsumer::peek_latest<T>: "
         "attempted consume on empty consumer buffer");
   }
 }
 
 inline madara::knowledge::KnowledgeRecord
-CircularBufferConsumer::peak_latest (void) const
+CircularBufferConsumer::peek_latest (void) const
 {
   if (context_ && name_ != "" && buffer_.size () > 0)
   {
@@ -657,7 +657,7 @@ CircularBufferConsumer::peak_latest (void) const
     }
 
     std::stringstream message;
-    message << "CircularBuffer::peak_latest: ";
+    message << "CircularBuffer::peek_latest: ";
     message << "Invalid access because " << reason << "\n";
     throw exceptions::IndexException (message.str ()); 
   }

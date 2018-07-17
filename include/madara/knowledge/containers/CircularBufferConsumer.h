@@ -217,17 +217,17 @@ namespace madara
           size_t count, std::vector <T> & values) const;
 
         /**
-         * Peaks at the most recently added record. This does not use or modify
+         * Peeks at the most recently added record. This does not use or modify
          * the local index. It instead references what the producer most recently
          * added.
          * @return the last added record. exists() will return false if the
          *         record is invalid
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
-        knowledge::KnowledgeRecord peak_latest (void) const;
+        knowledge::KnowledgeRecord peek_latest (void) const;
         
         /**
-         * Peaks at the most recently added value. This does not use or modify
+         * Peeks at the most recently added value. This does not use or modify
          * the local index. It instead references what the producer most recently
          * added.
          * @param value the last added value. exists() will return false if the
@@ -235,20 +235,20 @@ namespace madara
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
         template <typename T>
-        void peak_latest (T & value) const;
+        void peek_latest (T & value) const;
         
         /**
-         * Peaks at the most recently added records. This does not use or modify
+         * Peeks at the most recently added records. This does not use or modify
          * the local index. It instead references what the producer most recently
          * added.
          * @param  count  the maximum number of items to look for
          * @return the last added records up to a certain count
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
-        std::vector <KnowledgeRecord> peak_latest (size_t count) const;
+        std::vector <KnowledgeRecord> peek_latest (size_t count) const;
         
         /**
-         * Peaks at the most recently added records. This does not use or modify
+         * Peeks at the most recently added records. This does not use or modify
          * the local index. It instead references what the producer most recently
          * added.
          * @param  count  the maximum number of items to look for
@@ -256,7 +256,7 @@ namespace madara
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
         template <typename T>
-        void peak_latest (size_t count,
+        void peek_latest (size_t count,
           std::vector <T> & values) const;
         
         /**
