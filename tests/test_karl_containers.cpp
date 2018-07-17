@@ -3131,7 +3131,7 @@ void test_circular_any (void)
 
 }
 
-void test_circularconsumer_any (void)
+void test_circular_consumer_any (void)
 {
   std::cerr <<
     "********** CIRCULARBUFFER: Testing CircularBufferConsumer Any**********\n";
@@ -3374,7 +3374,7 @@ int main (int , char **)
   test_circular ();
   test_circular_consumer ();
   test_circular_any ();
-  test_circularconsumer_any ();
+  test_circular_consumer_any ();
 
 
   if (num_fails > 0)
