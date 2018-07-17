@@ -711,7 +711,7 @@ ThreadSafeContext::update_record_from_external (
       result = -3;
 
     // if we reach this point, then the record is safe to copy
-    found->second.set_value (rhs);
+    found->second = rhs;
 
     mark_and_signal (&*found, settings);
   }
@@ -720,11 +720,8 @@ ThreadSafeContext::update_record_from_external (
     // if we reach this point, then we have to create the record
     auto ret = map_.emplace(std::piecewise_construct,
                          std::forward_as_tuple(*key_ptr),
-                         std::make_tuple());
+                         std::forward_as_tuple(rhs));
     found = ret.first;
-
-    knowledge::KnowledgeRecord & current_value = found->second;
-    current_value.set_value (rhs);
 
     mark_and_signal (&*found, settings);
   }
@@ -770,7 +767,7 @@ ThreadSafeContext::update_record_from_external (
       result = -3;
 
     // if we reach this point, then the record is safe to copy
-    record->set_value (rhs);
+    *record = rhs;
 
     mark_and_signal (target, settings);
   }
