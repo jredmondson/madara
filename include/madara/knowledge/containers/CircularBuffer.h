@@ -152,6 +152,14 @@ namespace madara
         void add (const knowledge::KnowledgeRecord & record);
 
         /**
+         * Adds a value to the end of the CircularBuffer
+         * @param  value  the value to add
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template <typename T>
+        void add (const T & value);
+
+        /**
          * Adds a list of records to the end of the CircularBuffer
          * @param  records  the values to add
          * @throw exceptions::IndexException  if index is out of range/invalid
@@ -159,11 +167,27 @@ namespace madara
         void add (const std::vector <KnowledgeRecord> & records);
 
         /**
+         * Adds a list of user values to the end of the CircularBuffer
+         * @param  values  the values to add
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template<typename T>
+        void add (const std::vector<T> & values);
+
+        /**
          * Gets the most recently added record
          * @return the last added record
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
         knowledge::KnowledgeRecord get (void) const;
+        
+        /**
+         * Gets the most recently added user value
+         * @return the last added user value
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template<typename T>
+        void get (T & value) const;
         
         /**
          * Gets the most recently added records up to a specified count
@@ -174,12 +198,30 @@ namespace madara
         std::vector <KnowledgeRecord> get_latest (size_t count) const;
         
         /**
+         * Gets the most recently added values up to a specified count
+         * @param  count   the maximum number of records to return
+         * @param  values  the resulting values
+         * @throw exceptions::IndexException  if index is unreachable
+         **/
+        template <typename T>
+        void get_latest (size_t count, std::vector <T> & values) const;
+        
+        /**
          * Gets the oldest added records up to a specified count
          * @param  count   the maximum number of records to return
-         * @return the last added records
+         * @return the added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
         std::vector <KnowledgeRecord> get_earliest (size_t count) const;
+        
+        /**
+         * Gets the oldest added values up to a specified count
+         * @param  count   the maximum number of records to return
+         * @param  values  the added values 
+         * @throw exceptions::IndexException  if index is unreachable
+         **/
+        template <typename T>
+        void get_earliest (size_t count, std::vector <T> & values) const;
         
         /**
          * Retrieves a record at a position relative to last added
@@ -193,6 +235,18 @@ namespace madara
         knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
 
         /**
+         * Retrieves a record at a position relative to last added
+         * @param  position  the relative position of the requested record
+         *                   from the latest added record. Can be negative
+         * @param  value     the value at the position in the CircularBuffer
+         * @throw exceptions::ContextException if name or context haven't
+         *                      been set appropriately
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template <typename T>
+        void inspect (KnowledgeRecord::Integer position, T & value) const;
+
+        /**
          * Retrieves a vector of records at a position relative to last added
          * @param  position  the relative position of the requested record
          *                   from the latest added record. Can be negative
@@ -202,8 +256,23 @@ namespace madara
          *                      been set appropriately
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
-        std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,
+        std::vector <KnowledgeRecord> inspect (
+          KnowledgeRecord::Integer position,
           size_t count) const;
+
+        /**
+         * Retrieves a vector of records at a position relative to last added
+         * @param  position  the relative position of the requested record
+         *                   from the latest added record. Can be negative
+         * @param  count   the maximum number of records to return
+         * @param  values  the values at the position in the CircularBufferConsumer
+         * @throw exceptions::ContextException if name or context haven't
+         *                      been set appropriately
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template <typename T>
+        void inspect (KnowledgeRecord::Integer position,
+          size_t count, std::vector <T> & values) const;
 
         /**
          * Clears the CircularBuffer

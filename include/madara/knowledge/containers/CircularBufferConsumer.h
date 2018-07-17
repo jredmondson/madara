@@ -122,6 +122,15 @@ namespace madara
         KnowledgeRecord consume (void) const;
         
         /**
+         * Gets the most recently added value
+         * @param value  the last added value. exists() will return false if the
+         *               record is invalid
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template <typename T>
+        void consume (T & value) const;
+        
+        /**
          * Gets the most recently added records up to a specified count
          * @param  count   the maximum number of records to return
          * @return the last added records
@@ -130,12 +139,32 @@ namespace madara
         std::vector <KnowledgeRecord> consume_latest (size_t count) const;
         
         /**
+         * Gets the most recently added values up to a specified count
+         * @param  count   the maximum number of records to return
+         * @param  values  the last added records
+         * @throw exceptions::IndexException  if index is unreachable
+         **/
+        template <typename T>
+        void consume_latest (size_t count,
+          std::vector <T> & values) const;
+        
+        /**
          * Gets the oldest added records up to a specified count
          * @param  count   the maximum number of records to return
          * @return the last added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
         std::vector <KnowledgeRecord> consume_earliest (size_t count) const;
+        
+        /**
+         * Gets the oldest added values up to a specified count
+         * @param  count   the maximum number of records to return
+         * @param  values  the last added records
+         * @throw exceptions::IndexException  if index is unreachable
+         **/
+        template <typename T>
+        void consume_earliest (size_t count,
+          std::vector <T> & values) const;
         
         /**
          * Retrieves a record at a position relative to local index
@@ -149,17 +178,43 @@ namespace madara
         knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
 
         /**
+         * Retrieves a record at a position relative to local index
+         * @param  position  the relative position of the requested record
+         *                   from the latest added record. Can be negative
+         * @param  value    the record at the position in the CircularBufferConsumer
+         * @throw exceptions::ContextException if name or context haven't
+         *                      been set appropriately
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template <typename T>
+        void inspect (KnowledgeRecord::Integer position, T & value) const;
+
+        /**
          * Retrieves a vector of records at a position relative to local index
          * @param  position  the relative position of the requested record
          *                   from the latest added record. Can be negative
          * @param  count   the maximum number of records to return
-         * @return  the record at the position in the CircularBufferConsumer
+         * @return  the values at the position in the CircularBufferConsumer
          * @throw exceptions::ContextException if name or context haven't
          *                      been set appropriately
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
         std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,
           size_t count) const;
+
+        /**
+         * Retrieves a vector of records at a position relative to local index
+         * @param  position  the relative position of the requested record
+         *                   from the latest added record. Can be negative
+         * @param  count   the maximum number of records to return
+         * @param  values  the values at the position in the CircularBufferConsumer
+         * @throw exceptions::ContextException if name or context haven't
+         *                      been set appropriately
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template <typename T>
+        void inspect (KnowledgeRecord::Integer position,
+          size_t count, std::vector <T> & values) const;
 
         /**
          * Peaks at the most recently added record. This does not use or modify
@@ -172,13 +227,37 @@ namespace madara
         knowledge::KnowledgeRecord peak_latest (void) const;
         
         /**
+         * Peaks at the most recently added value. This does not use or modify
+         * the local index. It instead references what the producer most recently
+         * added.
+         * @param value the last added value. exists() will return false if the
+         *              record is invalid
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template <typename T>
+        void peak_latest (T & value) const;
+        
+        /**
          * Peaks at the most recently added records. This does not use or modify
          * the local index. It instead references what the producer most recently
          * added.
+         * @param  count  the maximum number of items to look for
          * @return the last added records up to a certain count
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
         std::vector <KnowledgeRecord> peak_latest (size_t count) const;
+        
+        /**
+         * Peaks at the most recently added records. This does not use or modify
+         * the local index. It instead references what the producer most recently
+         * added.
+         * @param  count  the maximum number of items to look for
+         * @param  values the last added records up to a certain count
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template <typename T>
+        void peak_latest (size_t count,
+          std::vector <T> & values) const;
         
         /**
          * Returns the number of records remaining that have not been consumed

@@ -115,6 +115,21 @@ CircularBufferConsumer::increment (
   }
 }
 
+template <typename T> void
+CircularBufferConsumer::consume (T & value) const
+{
+  if (context_ && name_ != "")
+  {
+    ContextGuard context_guard (*context_);
+
+    if (remaining () > 0)
+      value = consume ().to_any <T> ();
+    else
+      throw exceptions::IndexException ("CircularBufferConsumer::consume<T>: "
+        "attempted consume on empty consumer buffer");
+  }
+}
+
 inline madara::knowledge::KnowledgeRecord
 CircularBufferConsumer::consume (void) const
 {
@@ -171,6 +186,13 @@ CircularBufferConsumer::consume (void) const
   }
 }
 
+template <typename T> void
+CircularBufferConsumer::inspect (
+  KnowledgeRecord::Integer position, T & value) const
+{
+  value = inspect (position).to_any <T> ();
+}
+
 inline madara::knowledge::KnowledgeRecord
 CircularBufferConsumer::inspect (
   KnowledgeRecord::Integer position) const
@@ -203,6 +225,18 @@ CircularBufferConsumer::inspect (
   {
     throw exceptions::ContextException ("CircularBufferConsumer::inspect: "
       " context is null or name hasn't been set.");
+  }
+}
+
+template <typename T> void
+CircularBufferConsumer::inspect (KnowledgeRecord::Integer position,
+  size_t count, std::vector <T> & values) const
+{
+  // iterate over the returned records
+  for (auto record : inspect (position, count))
+  {
+    // add them to the values
+    values.push_back (record.to_any <T> ());
   }
 }
 
@@ -361,6 +395,18 @@ CircularBufferConsumer::set_index (KnowledgeRecord::Integer index)
   }
 }
 
+template <typename T> void
+CircularBufferConsumer::consume_latest (size_t count,
+  std::vector <T> & values) const
+{
+  // iterate over the returned records
+  for (auto record : consume_latest (count))
+  {
+    // add them to the values
+    values.push_back (record.to_any <T> ());
+  }
+}
+
 inline std::vector <KnowledgeRecord>
 CircularBufferConsumer::consume_latest (size_t count) const
 {
@@ -416,6 +462,18 @@ CircularBufferConsumer::consume_latest (size_t count) const
     throw exceptions::IndexException (message.str ()); 
   }
 }      
+
+template <typename T> void
+CircularBufferConsumer::consume_earliest (size_t count,
+  std::vector <T> & values) const
+{
+  // iterate over the returned records
+  for (auto record : consume_earliest (count))
+  {
+    // add them to the values
+    values.push_back (record.to_any <T> ());
+  }
+}
 
 inline std::vector <KnowledgeRecord>
 CircularBufferConsumer::consume_earliest (size_t count) const
@@ -477,6 +535,17 @@ CircularBufferConsumer::consume_earliest (size_t count) const
   }
 }
 
+template <typename T> void
+CircularBufferConsumer::peak_latest (size_t count,
+  std::vector <T> & values) const
+{
+  // iterate over the returned records
+  for (auto record : peak_latest (count))
+  {
+    // add them to the values
+    values.push_back (record.to_any <T> ());
+  }
+}
 
 inline std::vector <KnowledgeRecord>
 CircularBufferConsumer::peak_latest (size_t count) const
@@ -525,11 +594,26 @@ CircularBufferConsumer::peak_latest (size_t count) const
     }
 
     std::stringstream message;
-    message << "CircularBuffer::get_latest: ";
+    message << "CircularBuffer::peak_latest: ";
     message << "Invalid access because " << reason << "\n";
     throw exceptions::IndexException (message.str ()); 
   }
 }      
+
+template <typename T> void
+CircularBufferConsumer::peak_latest (T & value) const
+{
+  if (context_ && name_ != "")
+  {
+    ContextGuard context_guard (*context_);
+
+    if (count () > 0)
+      value = peak_latest ().to_any <T> ();
+    else
+      throw exceptions::IndexException ("CircularBufferConsumer::peak_latest<T>: "
+        "attempted consume on empty consumer buffer");
+  }
+}
 
 inline madara::knowledge::KnowledgeRecord
 CircularBufferConsumer::peak_latest (void) const
@@ -573,7 +657,7 @@ CircularBufferConsumer::peak_latest (void) const
     }
 
     std::stringstream message;
-    message << "CircularBuffer::get: ";
+    message << "CircularBuffer::peak_latest: ";
     message << "Invalid access because " << reason << "\n";
     throw exceptions::IndexException (message.str ()); 
   }
