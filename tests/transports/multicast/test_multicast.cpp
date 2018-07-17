@@ -128,17 +128,29 @@ int main (int argc, char ** argv)
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
+  knowledge.get_context().set_clock(10);
   knowledge.set (".id", settings.id);
 
   using strvec = std::vector<std::string>;
 
+  auto print_clocks = [&]() {
+      std::cerr << "kb clock: " << knowledge.get_context().get_clock() << std::endl;
+      std::cerr << "var1 clock: " << knowledge.get("var1").clock << std::endl;
+      std::cerr << "var2 clock: " << knowledge.get("var2").clock << std::endl;
+      std::cerr << "var3 clock: " << knowledge.get("var3").clock << std::endl;
+      std::cerr << "var4 clock: " << knowledge.get("var4").clock << std::endl;
+      std::cerr << "test_any clock: " << knowledge.get("test_any").clock << std::endl;
+      std::cerr << "test_any_0 clock: " << knowledge.get("test_any_0").clock << std::endl;
+    };
+
   if (settings.id == 0)
   {
-    madara::knowledge::CompiledExpression compiled = 
+    madara::knowledge::CompiledExpression compiled =
       knowledge.compile (
         "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3"
       );
     do {
+      print_clocks();
       knowledge.set_any ("test_any_0", strvec{"e", "f", "g"},
           madara::knowledge::EvalSettings::DELAY);
 
@@ -156,6 +168,8 @@ int main (int argc, char ** argv)
     madara::knowledge::CompiledExpression compiled = 
       knowledge.compile ("!var1 && var2 => var3 = 1");
     do {
+      print_clocks();
+
       knowledge.set_any ("test_any", strvec{"a", "b", "c", "d"},
           madara::knowledge::EvalSettings::DELAY);
       madara::utility::sleep(1);
@@ -169,6 +183,8 @@ int main (int argc, char ** argv)
   }
 
   knowledge.evaluate (".updates_required = #get_clock ()");
+
+  print_clocks();
 
   knowledge.print ();
   
