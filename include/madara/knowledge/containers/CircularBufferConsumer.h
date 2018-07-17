@@ -1,6 +1,6 @@
 
-#ifndef _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFER_H_
-#define _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFER_H_
+#ifndef _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_H_
+#define _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_H_
 
 #include <vector>
 #include <string>
@@ -12,10 +12,10 @@
 #include "Integer.h"
 
 /**
- * @file CircularBuffer.h
+ * @file CircularBufferConsumer.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains a high performance thread-safe CircularBuffer
+ * This file contains a high performance thread-safe CircularBufferConsumer
  **/
 
 namespace madara
@@ -25,18 +25,19 @@ namespace madara
     namespace containers
     {
       /**
-       * @class CircularBuffer
-       * @brief This container stores a thread-safe circular buffer with O(1)
-       * access times.
+       * @class CircularBufferConsumer
+       * @brief This container stores a thread-safe, personalized consumer for
+       * CircularBuffer instances. Unlike functions in CircularBuffer, almost
+       * all operations in CircularBufferConsumer use a local index into the
+       * CircularBuffer and encourage one-time access of buffer elements.
        */
-      class MADARA_EXPORT CircularBuffer
+      class MADARA_EXPORT CircularBufferConsumer
       {
       public:
         /**
          * Default constructor
          **/
-        CircularBuffer (const KnowledgeUpdateSettings & settings =
-          KnowledgeUpdateSettings ());
+        CircularBufferConsumer ();
       
         /**
          * Constructor
@@ -45,10 +46,8 @@ namespace madara
          * @param  settings   settings for evaluating the vector
          * @throw exceptions::NameException  bad name ("")
          **/
-        CircularBuffer (const std::string & name,
-                KnowledgeBase & knowledge,
-                const KnowledgeUpdateSettings & settings =
-                  KnowledgeUpdateSettings ());
+        CircularBufferConsumer (const std::string & name,
+                KnowledgeBase & knowledge);
       
         /**
          * Constructor
@@ -57,54 +56,24 @@ namespace madara
          * @param  settings  settings to apply by default
          * @throw exceptions::NameException  bad name ("")
          **/
-        CircularBuffer (const std::string & name,
-                Variables & knowledge,
-                const KnowledgeUpdateSettings & settings =
-                  KnowledgeUpdateSettings ());
-      
-        /**
-         * Default constructor
-         * @param  name       name of the integer in the knowledge base
-         * @param  knowledge  the knowledge base that will contain the vector
-         * @param  size       the size of the CircularBuffer
-         * @param  settings   settings for evaluating the vector
-         * @throw exceptions::NameException  bad name ("")
-         **/
-        CircularBuffer (const std::string & name,
-               KnowledgeBase & knowledge,
-               int size,
-               const KnowledgeUpdateSettings & settings =
-                 KnowledgeUpdateSettings ());
-      
-        /**
-         * Default constructor
-         * @param  name       name of the integer in the knowledge base
-         * @param  knowledge  the knowledge base that will contain the vector
-         * @param  size       the size of the CircularBuffer
-         * @param  settings   settings for evaluating the vector
-         * @throw exceptions::NameException  bad name ("")
-         **/
-        CircularBuffer (const std::string & name,
-               Variables & knowledge,
-               int size,
-               const KnowledgeUpdateSettings & settings =
-                 KnowledgeUpdateSettings ());
+        CircularBufferConsumer (const std::string & name,
+                Variables & knowledge);
       
         /**
          * Copy constructor
          **/
-        CircularBuffer (const CircularBuffer & rhs);
+        CircularBufferConsumer (const CircularBufferConsumer & rhs);
 
         /**
          * Destructor
          **/
-        virtual ~CircularBuffer () = default;
+        virtual ~CircularBufferConsumer () = default;
         
         /**
          * Assignment operator
          * @param  rhs    value to copy
          **/
-        void operator= (const CircularBuffer & rhs);
+        void operator= (const CircularBufferConsumer & rhs);
 
         /**
          * Returns the name of the variable
@@ -135,59 +104,31 @@ namespace madara
          * @param  value  the value to compare to
          * @return true if equal, false otherwise
          **/
-        bool operator== (const CircularBuffer & value) const;
+        bool operator== (const CircularBufferConsumer & value) const;
         
         /**
          * Checks for inequality
          * @param  value  the value to compare to
          * @return true if inequal, false otherwise
          **/
-        bool operator!= (const CircularBuffer & value) const;
+        bool operator!= (const CircularBufferConsumer & value) const;
         
         /**
-         * Adds a record to the end of the CircularBuffer
-         * @param  record  the value to add
+         * Gets the most recently added record
+         * @return the last added record. exists() will return false if the
+         *         record is invalid
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
-        void add (const knowledge::KnowledgeRecord & record);
-
+        KnowledgeRecord consume (void) const;
+        
         /**
-         * Adds a value to the end of the CircularBuffer
-         * @param  value  the value to add
+         * Gets the most recently added value
+         * @param value  the last added value. exists() will return false if the
+         *               record is invalid
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
         template <typename T>
-        void add (const T & value);
-
-        /**
-         * Adds a list of records to the end of the CircularBuffer
-         * @param  records  the values to add
-         * @throw exceptions::IndexException  if index is out of range/invalid
-         **/
-        void add (const std::vector <KnowledgeRecord> & records);
-
-        /**
-         * Adds a list of user values to the end of the CircularBuffer
-         * @param  values  the values to add
-         * @throw exceptions::IndexException  if index is out of range/invalid
-         **/
-        template<typename T>
-        void add (const std::vector<T> & values);
-
-        /**
-         * Gets the most recently added record
-         * @return the last added record
-         * @throw exceptions::IndexException  if index is out of range/invalid
-         **/
-        knowledge::KnowledgeRecord get (void) const;
-        
-        /**
-         * Gets the most recently added user value
-         * @return the last added user value
-         * @throw exceptions::IndexException  if index is out of range/invalid
-         **/
-        template<typename T>
-        void get (T & value) const;
+        void consume (T & value) const;
         
         /**
          * Gets the most recently added records up to a specified count
@@ -195,39 +136,41 @@ namespace madara
          * @return the last added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
-        std::vector <KnowledgeRecord> get_latest (size_t count) const;
+        std::vector <KnowledgeRecord> consume_latest (size_t count) const;
         
         /**
          * Gets the most recently added values up to a specified count
          * @param  count   the maximum number of records to return
-         * @param  values  the resulting values
+         * @param  values  the last added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
         template <typename T>
-        void get_latest (size_t count, std::vector <T> & values) const;
+        void consume_latest (size_t count,
+          std::vector <T> & values) const;
         
         /**
          * Gets the oldest added records up to a specified count
          * @param  count   the maximum number of records to return
-         * @return the added records
+         * @return the last added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
-        std::vector <KnowledgeRecord> get_earliest (size_t count) const;
+        std::vector <KnowledgeRecord> consume_earliest (size_t count) const;
         
         /**
          * Gets the oldest added values up to a specified count
          * @param  count   the maximum number of records to return
-         * @param  values  the added values 
+         * @param  values  the last added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
         template <typename T>
-        void get_earliest (size_t count, std::vector <T> & values) const;
+        void consume_earliest (size_t count,
+          std::vector <T> & values) const;
         
         /**
-         * Retrieves a record at a position relative to last added
+         * Retrieves a record at a position relative to local index
          * @param  position  the relative position of the requested record
          *                   from the latest added record. Can be negative
-         * @return  the record at the position in the CircularBuffer
+         * @return  the record at the position in the CircularBufferConsumer
          * @throw exceptions::ContextException if name or context haven't
          *                      been set appropriately
          * @throw exceptions::IndexException  if index is out of range/invalid
@@ -235,10 +178,10 @@ namespace madara
         knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
 
         /**
-         * Retrieves a record at a position relative to last added
+         * Retrieves a record at a position relative to local index
          * @param  position  the relative position of the requested record
          *                   from the latest added record. Can be negative
-         * @param  value     the value at the position in the CircularBuffer
+         * @param  value    the record at the position in the CircularBufferConsumer
          * @throw exceptions::ContextException if name or context haven't
          *                      been set appropriately
          * @throw exceptions::IndexException  if index is out of range/invalid
@@ -247,21 +190,20 @@ namespace madara
         void inspect (KnowledgeRecord::Integer position, T & value) const;
 
         /**
-         * Retrieves a vector of records at a position relative to last added
+         * Retrieves a vector of records at a position relative to local index
          * @param  position  the relative position of the requested record
          *                   from the latest added record. Can be negative
          * @param  count   the maximum number of records to return
-         * @return  the record at the position in the CircularBufferConsumer
+         * @return  the values at the position in the CircularBufferConsumer
          * @throw exceptions::ContextException if name or context haven't
          *                      been set appropriately
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
-        std::vector <KnowledgeRecord> inspect (
-          KnowledgeRecord::Integer position,
+        std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,
           size_t count) const;
 
         /**
-         * Retrieves a vector of records at a position relative to last added
+         * Retrieves a vector of records at a position relative to local index
          * @param  position  the relative position of the requested record
          *                   from the latest added record. Can be negative
          * @param  count   the maximum number of records to return
@@ -275,56 +217,88 @@ namespace madara
           size_t count, std::vector <T> & values) const;
 
         /**
-         * Clears the CircularBuffer
+         * Peeks at the most recently added record. This does not use or modify
+         * the local index. It instead references what the producer most recently
+         * added.
+         * @return the last added record. exists() will return false if the
+         *         record is invalid
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        knowledge::KnowledgeRecord peek_latest (void) const;
+        
+        /**
+         * Peeks at the most recently added value. This does not use or modify
+         * the local index. It instead references what the producer most recently
+         * added.
+         * @param value the last added value. exists() will return false if the
+         *              record is invalid
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template <typename T>
+        void peek_latest (T & value) const;
+        
+        /**
+         * Peeks at the most recently added records. This does not use or modify
+         * the local index. It instead references what the producer most recently
+         * added.
+         * @param  count  the maximum number of items to look for
+         * @return the last added records up to a certain count
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        std::vector <KnowledgeRecord> peek_latest (size_t count) const;
+        
+        /**
+         * Peeks at the most recently added records. This does not use or modify
+         * the local index. It instead references what the producer most recently
+         * added.
+         * @param  count  the maximum number of items to look for
+         * @param  values the last added records up to a certain count
+         * @throw exceptions::IndexException  if index is out of range/invalid
+         **/
+        template <typename T>
+        void peek_latest (size_t count,
+          std::vector <T> & values) const;
+        
+        /**
+         * Returns the number of records remaining that have not been consumed
+         * with get_latest, get, or get_earliest
+         * @return the number of records remaining for get*
          * @throw exceptions::ContextException  if name or context haven't
          *                      been set appropriately
          **/
-        void clear (void);
+        size_t remaining (void) const;
 
         /**
-         * Returns the number of records in the CircularBuffer
-         * @return the number of records in the CircularBuffer
+         * Returns the number of records in the CircularBufferConsumer
+         * @return the number of records in the CircularBufferConsumer
          * @throw exceptions::ContextException  if name or context haven't
          *                      been set appropriately
          **/
         size_t count (void) const;
 
         /**
-         * Returns the maximum size of the CircularBuffer
-         * @return the size of the CircularBuffer
+         * Returns the maximum size of the CircularBufferConsumer
+         * @return the size of the CircularBufferConsumer
          **/
         size_t size (void) const;
 
         /**
-         * Sets the update settings for the variable
-         * @param  settings  the new settings to use
-         * @return the old update settings
-         **/
-        KnowledgeUpdateSettings set_settings (
-          const KnowledgeUpdateSettings & settings);
-
-        /**
-         * Sets the quality of writing to the counter variables
-         *
-         * @param quality         quality of writing to this location
-         * @param settings        settings for referring to knowledge variables
-         **/
-        void set_quality (uint32_t quality,
-               const KnowledgeReferenceSettings & settings =
-                       KnowledgeReferenceSettings (false));
-      
-        /**
-         * Resizes the CircularBuffer
-         * @param  size      the size of the CircularBuffer. -1 means use the size that
+         * Resizes the CircularBufferConsumer
+         * @param  size      the size of the CircularBufferConsumer. -1 means use the size that
          *                   exists in the knowledge base already.
          **/
-        void resize (int size = -1);
+        void resize (void);
 
         /**
-         * Sets the index into the circular buffer to an arbitrary position
+         * Sets the local index to an arbitrary position
          * @param  index   the new index to use
          **/
         void set_index (KnowledgeRecord::Integer index);
+
+        /**
+         * Sets the local index to the current buffer index
+         **/
+        void resync (void);
 
       private:
         /**
@@ -355,20 +329,20 @@ namespace madara
         Integer index_;
 
         /**
+         * Index for latest item read by  
+         **/
+        mutable KnowledgeRecord::Integer local_index_;
+
+        /**
          * Underlying array of records
          **/
         Vector buffer_;
-
-        /**
-         * Settings for modifications
-         **/
-        KnowledgeUpdateSettings settings_;
       };
     }
   }
 }
 
 
-#include "CircularBuffer.inl"
+#include "CircularBufferConsumer.inl"
 
-#endif // _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFER_H_
+#endif // _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_H_
