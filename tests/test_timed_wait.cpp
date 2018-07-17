@@ -9,7 +9,7 @@
 
 namespace logger = madara::logger;
 
-int num_fails = 0;
+int madara_fails = 0;
 
 int main (int, char **)
 {
@@ -55,7 +55,7 @@ int main (int, char **)
   }
   else
   {
-    knowledge.print ("FAIL\n"); ++num_fails;
+    knowledge.print ("FAIL\n"); ++madara_fails;
   }
 
   // **********************************************
@@ -81,7 +81,7 @@ int main (int, char **)
   }
   else
   {
-    knowledge.print ("FAIL\n"); ++num_fails;
+    knowledge.print ("FAIL\n"); ++madara_fails;
   }
 
   // **********************************************
@@ -106,7 +106,7 @@ int main (int, char **)
   }
   else
   {
-    knowledge.print ("FAIL\n"); ++num_fails;
+    knowledge.print ("FAIL\n"); ++madara_fails;
   }
 
   // **********************************************
@@ -131,7 +131,7 @@ int main (int, char **)
   }
   else
   {
-    knowledge.print ("FAIL\n"); ++num_fails;
+    knowledge.print ("FAIL\n"); ++madara_fails;
   }
 
 #else
@@ -139,15 +139,15 @@ int main (int, char **)
     "This test is disabled due to karl feature being disabled.\n");
 #endif
 
-  if (num_fails > 0)
+  if (madara_fails > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
   else
   {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
-  return num_fails;
+  return madara_fails;
 }
 

@@ -10,7 +10,7 @@
 
 namespace logger = madara::logger;
 
-int num_fails = 0;
+int madara_fails = 0;
 
 // command line arguments
 int parse_args (int argc, char * argv[]);
@@ -37,7 +37,7 @@ int main (int argc, char * argv[])
   else
   {
     std::cerr << "Bandwidth check results in FAIL\n\n";
-    ++num_fails;
+    ++madara_fails;
   }
 
 
@@ -52,7 +52,7 @@ int main (int argc, char * argv[])
   else
   {
     std::cerr << "Bandwidth check results in FAIL\n\n";
-    ++num_fails;
+    ++madara_fails;
   }
   
   std::cerr << "Sleeping for 3 seconds...\n";
@@ -65,7 +65,7 @@ int main (int argc, char * argv[])
   else
   {
     std::cerr << "Bandwidth check results in FAIL\n\n";
-    ++num_fails;
+    ++madara_fails;
   }
   
   monitor.clear ();
@@ -93,19 +93,19 @@ int main (int argc, char * argv[])
   else
   {
     std::cerr << "Bandwidth check results in FAIL\n\n";
-    ++num_fails;
+    ++madara_fails;
   }
 
-  if (num_fails > 0)
+  if (madara_fails > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
   else
   {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
-  return num_fails;
+  return madara_fails;
 }
 
 

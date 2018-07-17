@@ -29,7 +29,7 @@ void test_unshared_record (void)
   TEST_NE(orig_ptr, str_out.c_str());
 #endif
 
-  std::cerr << "test_unshared_record: num_fails: " <<
+  std::cerr << "test_unshared_record: madara_fails: " <<
     madara_tests_fail_count << "\n";
 }
 
@@ -103,7 +103,7 @@ void test_shared_record (void)
   TEST_EQ(kb.get(".my_array").retrieve_index(0).to_integer(), 47);
   TEST_EQ(ints_out->at(0), 42);
 
-  std::cerr << "test_shared_record: num_fails: " <<
+  std::cerr << "test_shared_record: madara_fails: " <<
     madara_tests_fail_count << "\n";
 }
 

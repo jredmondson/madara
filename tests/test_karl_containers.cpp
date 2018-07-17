@@ -26,7 +26,7 @@ namespace containers = knowledge::containers;
 typedef knowledge::KnowledgeRecord   KnowledgeRecord;
 typedef knowledge::KnowledgeVector   KnowledgeVector;
 
-int num_fails (0);
+int madara_fails (0);
 
 void test_flex_map (void)
 {
@@ -55,7 +55,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::cerr << "  Checking elements of normal map...\n";
@@ -67,7 +67,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::cerr << "    Retrieving age...";
@@ -77,7 +77,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::cerr << "    Retrieving salary...";
@@ -87,7 +87,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::cerr << "Adding names to the flex map\n";
@@ -108,7 +108,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::vector<std::string> sub_keys;
@@ -123,7 +123,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::cerr << "  Checking context.to_map vs flex_map.keys: ";
@@ -133,7 +133,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::cerr << "Adding mixes of string and index keys to a flex map\n";
@@ -157,7 +157,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::cerr << "  Checking existence of subkeys in flex map: ";
@@ -171,7 +171,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::cerr << "Changing delimiter of top level map: \n";
@@ -186,7 +186,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
 
@@ -202,7 +202,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
 
@@ -213,7 +213,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::cerr << "  Checking to_string defaults: ";
@@ -223,7 +223,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::cerr << "  Checking to_double defaults: ";
@@ -233,7 +233,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   std::cerr << "  Checking to_record defaults: ";
@@ -243,7 +243,7 @@ void test_flex_map (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 }
 
@@ -291,7 +291,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -322,7 +322,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -366,7 +366,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -420,7 +420,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -452,7 +452,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -496,7 +496,7 @@ void test_vector2D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -552,7 +552,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -584,7 +584,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -631,7 +631,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -685,7 +685,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -717,7 +717,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -764,7 +764,7 @@ void test_vector3D (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "iarray1_1 = " << iarray1_0 << "\n";
     std::cerr << "iarray1_2 = " << iarray1_1 << "\n";
     std::cerr << "iarray1_3 = " << iarray1_2 << "\n";
@@ -812,7 +812,7 @@ void test_vector_vectors (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "array1_1 = " << array1_0 << "\n";
     std::cerr << "array1_2 = " << array1_1 << "\n";
     std::cerr << "array1_3 = " << array1_2 << "\n";
@@ -857,7 +857,7 @@ void test_vector_vectors (void)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "array1_1 = " << int_array1_0 << "\n";
     std::cerr << "array1_2 = " << int_array1_1 << "\n";
     std::cerr << "array1_3 = " << int_array1_2 << "\n";
@@ -1477,7 +1477,7 @@ void test_native_vectors (void)
   std::cerr << "\n";
 
   if (size != 10) {
-    std::cerr << "FAIL. Vector.size != 10\n"; ++num_fails;
+    std::cerr << "FAIL. Vector.size != 10\n"; ++madara_fails;
   } else
     std::cerr << "SUCCESS. Vector.size == 10\n";
 
@@ -1486,14 +1486,14 @@ void test_native_vectors (void)
     std::cerr << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
   else {
     std::cerr << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
-    ++num_fails;
+    ++madara_fails;
   }
   
   if (vector.get_name () == "test_vector")
     std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
   else {
     std::cerr << "FAIL. vector.name () did not return test_vector.\n";
-    ++num_fails;
+    ++madara_fails;
   }
 
   std::cerr << "Resizing to 7 elements.\n";
@@ -1506,7 +1506,7 @@ void test_native_vectors (void)
     std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else {
     std::cerr << "FAIL. Vector [7] still exists after resize.\n";
-    ++num_fails;
+    ++madara_fails;
   }
   
   vector.resize (12);
@@ -1520,7 +1520,7 @@ void test_native_vectors (void)
     std::cerr << "SUCCESS. Resize to 12 was successful.\n";
   else {
     std::cerr << "FAIL. Resize to 12 was unsuccessful.\n";
-    ++num_fails;
+    ++madara_fails;
   }
 
   std::vector<double> vals = {4, 8, 15, 16, 23, 42};
@@ -1532,7 +1532,7 @@ void test_native_vectors (void)
     std::cerr << "SUCCESS. Set from C array succeeded.\n";
   else {
     std::cerr << "FAIL. Set from C array failed.\n";
-    ++num_fails;
+    ++madara_fails;
   }
 
   knowledge.print ();
@@ -1706,7 +1706,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 3)
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "    Printing modified elements in context\n\n";
     std::cerr << context.debug_modifieds () << "\n";
   }
@@ -1821,7 +1821,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 0)
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "    Printing modified elements in context\n\n";
     std::cerr << context.debug_modifieds () << "\n";
   }
@@ -1837,7 +1837,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 55)
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
   else
   {
@@ -1891,7 +1891,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 3)
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
   else
   {
@@ -1912,7 +1912,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 0)
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
   else
   {
@@ -1929,7 +1929,7 @@ void test_collection (void)
 
   if (context.get_modifieds ().size () != 4)
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
     std::cerr << "    Printing modified elements in context\n\n";
     std::cerr << context.debug_modifieds () << "\n";
   }
@@ -1964,7 +1964,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "    count () == " << buffer1.count () << ", ";
     std::cerr << "size () == " << buffer1.size () << "\n";
@@ -1994,7 +1994,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
     for (auto record: buffer1_contents)
@@ -2015,7 +2015,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
     for (auto record: buffer2_contents)
@@ -2036,7 +2036,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "Contents of earliest std::vector<KnowledgeRecord> were:\n";
     for (auto record: buffer1_earliest)
@@ -2059,7 +2059,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
     for (auto record: buffer1_contents)
@@ -2085,7 +2085,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
     for (auto record: buffer1_contents)
@@ -2107,7 +2107,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
     for (auto record: buffer1_earliest)
@@ -2125,7 +2125,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "    count () == " << buffer1.count () << ", ";
     std::cerr << "size () == " << buffer1.size () << "\n";
@@ -2143,7 +2143,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "    count () == " << buffer1.count () << ", ";
     std::cerr << "size () == " << buffer1.size () << "\n";
@@ -2164,7 +2164,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "    get () == " << buffer1.get () << "\n";
   }
@@ -2187,7 +2187,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
     for (auto record: buffer1_contents)
@@ -2211,7 +2211,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
     for (auto record: buffer1_contents)
@@ -2231,7 +2231,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "    count () == " << buffer1.count () << ", ";
     std::cerr << "size () == " << buffer1.size () << "\n";
@@ -2260,7 +2260,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
     for (auto record: buffer1_contents)
@@ -2281,7 +2281,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
     for (KnowledgeRecord::Integer i = 0; i < 4; ++i)
@@ -2306,7 +2306,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "    size=" << records.size () << "\n";
     for (auto record : records)
@@ -2321,7 +2321,7 @@ void test_circular (void)
   {
     buffer1.inspect (1);
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
   }
   catch (madara::exceptions::IndexException &)
   {
@@ -2334,7 +2334,7 @@ void test_circular (void)
   {
     containers::CircularBuffer buffer3 ("", kb);
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
   }
   catch (madara::exceptions::NameException &)
   {
@@ -2359,7 +2359,7 @@ void test_circular (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
     for (auto record: buffer1_contents)
@@ -2407,7 +2407,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << records.size () << "\n";
     for (auto record : records)
@@ -2426,7 +2426,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      remaining() == " << consumer.remaining () << "\n";
   }
 
@@ -2453,7 +2453,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << records.size () << "\n";
     for (auto record : records)
@@ -2471,7 +2471,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      remaining() == " << consumer.remaining () << "\n";
   }
 
@@ -2498,7 +2498,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << records.size () << "\n";
     for (auto record : records)
@@ -2516,7 +2516,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      remaining() == " << consumer.remaining () << "\n";
   }
 
@@ -2529,7 +2529,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      count() == " << consumer.count () << "\n";
   }
 
@@ -2542,7 +2542,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      size() == " << consumer.size () << "\n";
   }
 
@@ -2562,7 +2562,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      remaining() == " << consumer.remaining () << "\n";
   }
 
@@ -2575,7 +2575,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      count() == " << consumer.count () << "\n";
   }
 
@@ -2588,7 +2588,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      size() == " << consumer.size () << "\n";
   }
 
@@ -2616,7 +2616,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << records.size () << "\n";
     for (auto record : records)
@@ -2634,7 +2634,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      remaining() == " << consumer.remaining () << "\n";
   }
 
@@ -2647,7 +2647,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      inspect(0) == " << consumer.inspect (0) << "\n";
   }
 
@@ -2660,7 +2660,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      inspect(-1) == " << consumer.inspect (-1) << "\n";
   }
 
@@ -2673,7 +2673,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      inspect(-2) == " << consumer.inspect (-2) << "\n";
   }
 
@@ -2686,7 +2686,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      inspect(1) == " << consumer.inspect (-1) << "\n";
   }
 
@@ -2699,7 +2699,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      inspect(2) == " << consumer.inspect (2) << "\n";
   }
 
@@ -2719,7 +2719,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "    size=" << records.size () << "\n";
     for (auto record : records)
@@ -2751,7 +2751,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << records.size () << "\n";
     for (auto record : records)
@@ -2769,7 +2769,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      remaining() == " << consumer.remaining () << "\n";
   }
 
@@ -2787,7 +2787,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      size() == " << producer.size () << "\n";
   }
 
@@ -2800,7 +2800,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      size() == " << consumer.size () << "\n";
   }
 
@@ -2824,7 +2824,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      get() == " << result << "\n";
   }
 
@@ -2839,7 +2839,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      get() == " << result << "\n";
   }
 
@@ -2854,7 +2854,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      get() == " << result << "\n";
   }
 
@@ -2869,7 +2869,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      get() == " << result << "\n";
   }
 
@@ -2884,7 +2884,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      get() == " << result << "\n";
   }
 
@@ -2899,7 +2899,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      get() == " << result << "\n";
   }
 
@@ -2914,7 +2914,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "      peek_latest() == " << result << "\n";
   }
 
@@ -2934,7 +2934,7 @@ void test_circular_consumer (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
 
     std::cerr << "    size=" << records.size () << "\n";
     for (auto record : records)
@@ -2995,7 +2995,7 @@ void test_circular_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "    class_result.x==" << class_result.x << ", ";
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
@@ -3031,7 +3031,7 @@ void test_circular_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << classes.size () << "\n";
     for (auto record : classes)
@@ -3064,7 +3064,7 @@ void test_circular_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << classes.size () << "\n";
     for (auto record : classes)
@@ -3084,7 +3084,7 @@ void test_circular_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "    class_result.x==" << class_result.x << ", ";
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
@@ -3120,7 +3120,7 @@ void test_circular_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << classes.size () << "\n";
     for (auto record : classes)
@@ -3162,7 +3162,7 @@ void test_circular_consumer_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "    class_result.x==" << class_result.x << ", ";
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
@@ -3178,7 +3178,7 @@ void test_circular_consumer_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "    class_result.x==" << class_result.x << ", ";
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
@@ -3214,7 +3214,7 @@ void test_circular_consumer_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << classes.size () << "\n";
     for (auto record : classes)
@@ -3248,7 +3248,7 @@ void test_circular_consumer_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << classes.size () << "\n";
     for (auto record : classes)
@@ -3268,7 +3268,7 @@ void test_circular_consumer_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "    class_result.x==" << class_result.x << ", ";
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
@@ -3304,7 +3304,7 @@ void test_circular_consumer_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << classes.size () << "\n";
     for (auto record : classes)
@@ -3337,7 +3337,7 @@ void test_circular_consumer_any (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
     
     std::cerr << "    size=" << classes.size () << "\n";
     for (auto record : classes)
@@ -3377,14 +3377,14 @@ int main (int , char **)
   test_circular_consumer_any ();
 
 
-  if (num_fails > 0)
+  if (madara_fails > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
   else
   {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
-  return num_fails;
+  return madara_fails;
 }
