@@ -268,12 +268,7 @@ public:
    **/
   void serialize(madara_oarchive &archive) const
   {
-    if (handler_) {
-      handler_->save(archive, data_);
-    } else {
-      raw_data_storage *sto = (raw_data_storage *)data_;
-      archive.saveBinary<1>(sto->data, sto->size);
-    }
+    handler_->save(archive, data_);
   }
 
   /**
@@ -342,20 +337,15 @@ public:
   void tagged_serialize(madara_oarchive &archive) const
   {
     using exceptions::BadAnyAccess;
-    if (handler_) {
-      auto t = this->tag();
-      std::string s(t ? t : "");
 
-      archive << s;
-
-      serialize(archive);
-    } else {
-      std::string s;
-      archive << s;
-
-      raw_data_storage *sto = (raw_data_storage *)data_;
-      archive.saveBinary<1>(sto->data, sto->size);
+    auto t = this->tag();
+    if (t == nullptr) {
+      throw BadAnyAccess(std::string("tagged_serialize(): unregistered type: ")
+          + handler_->tindex.name());
     }
+    archive << std::string(t);
+
+    serialize(archive);
   }
 
   /**
@@ -366,12 +356,7 @@ public:
    **/
   void serialize(json_oarchive &archive) const
   {
-    if (handler_) {
-      handler_->save_json(archive, data_);
-    } else {
-      raw_data_storage *sto = (raw_data_storage *)data_;
-      archive.saveBinaryValue(sto->data, sto->size);
-    }
+    handler_->save_json(archive, data_);
   }
 
   /**
@@ -1031,27 +1016,6 @@ public:
 protected:
   const TypeHandlers *handler_ = nullptr;
   void *data_ = nullptr;
-
-  struct raw_data_storage
-  {
-    size_t size;
-    char data[1];
-
-    static void *make(const char *data, size_t size)
-    {
-      auto ret = new char[size + sizeof(size)];
-      raw_data_storage *sto = (raw_data_storage *)ret;
-      sto->size = size;
-      memcpy(&sto->data, data, size);
-      return ret;
-    }
-
-    static void *clone(const void *orig)
-    {
-      raw_data_storage *sto = (raw_data_storage *)orig;
-      return make(sto->data, sto->size);
-    }
-  };
 };
 
 /**

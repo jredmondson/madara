@@ -191,8 +191,6 @@ void test_any()
 
   a0.serialize(buf);
   VAL(buf.size());
-  Any a2(tags::raw_data, buf.data(), buf.size());
-  TEST_EQ(a2.ref<std::string>(), "asdf");
 
   Any a3(std::move(a1));
   TEST_EQ(a1.empty(), true);
@@ -348,11 +346,11 @@ namespace geo
 
   void register_types()
   {
-    Any::register_type<geo::Point>("Point");
-    MADARA_ANY_REGISTER_TYPE(Quaternion);
-    MADARA_ANY_REGISTER_TYPE(Pose);
-    MADARA_ANY_REGISTER_TYPE(Stamp);
-    MADARA_ANY_REGISTER_TYPE(StampedPose);
+    Any::register_type<Point>("Point");
+    Any::register_type<Quaternion>("Quaternion");
+    Any::register_type<Pose>("Pose");
+    Any::register_type<Stamp>("Stamp");
+    Any::register_type<StampedPose>("StampedPose");
   }
 }
 
@@ -397,6 +395,9 @@ void test_geo()
 
   std::vector<char> buf;
 
+  Any new_pose = Any::construct("StampedPose");
+  VAL(new_pose);
+
   Any p0 = kb.get("p0").to_any();
   p0.serialize(buf);
   Any p1;
@@ -433,6 +434,17 @@ auto for_each_field(Fun fun, T&& val) ->
   fun("ev", val.ev);
 };
 
+struct Derived : Example
+{
+  double x;
+};
+template<typename Fun>
+void for_each_field(Fun &&fun, Derived &val)
+{
+  for_each_field(fun, (Example &)val);
+  fun("x", val.x);
+}
+
 void test_example()
 {
   KnowledgeBase kb;
@@ -453,6 +465,13 @@ void test_example()
     std::cerr << field.name() << ": " << any(field) << std::endl;
   }
 
+  // Iterate over each elements, and print. Best to get size and AnyRef first.
+  AnyRef arr = any("ev")[0]("dv");
+  size_t n = arr.size();
+  for (size_t i = 0; i < n; ++i) {
+    std::cout << i << ": " << arr[i] << std::endl;
+  }
+
   any("ev")[1]("i").ref<int>() = 42; // assign through direct reference
   any("ev")[1]("i") = 47; // will assign directly, as the literal is an int and matches the stored value
   any("ev")[1]("i") = 52.1; // will convert to a KnowledgeRecord, then call `from_record`, since the types don't match
@@ -461,10 +480,16 @@ void test_example()
 
 int main (int, char **)
 {
-  madara::logger::global_logger->set_level(3);
+  madara::logger::global_logger->set_level(9);
 
+  Any::register_type<A>("A");
+  Any::register_type<ns::B>("B");
+  Any::register_type<ns::C>("C");
+  Any::register_type<std::string>("str");
+  Any::register_type<std::vector<std::string>>("vecstr");
   geo::register_types();
-  MADARA_ANY_REGISTER_TYPE(Example);
+  Any::register_type<Example>("Example");
+  Any::register_type<Derived>("Derived");
 
   test_any();
   test_record();

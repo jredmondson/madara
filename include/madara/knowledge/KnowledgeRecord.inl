@@ -1680,6 +1680,8 @@ KnowledgeRecord::write (char * buffer,
         //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
             //"KnowledgeRecord::write: encoded an Any type of size %d\n",
             //size_intermediate);
+      } catch (const exceptions::BadAnyAccess &) {
+        throw;
       } catch (const std::exception &) {
         // TODO catch more specific exception for this
 

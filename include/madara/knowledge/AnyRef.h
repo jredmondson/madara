@@ -29,18 +29,6 @@
 
 namespace madara { namespace knowledge {
 
-namespace tags {
-  /**
-   * Type tag used with Any to signifiy storing raw unserialized data. The Any
-   * will unserialize lazily as needed.
-   *
-   * Note that this lazy deserialization is not fully type-safe, and might not
-   * throw an exception if the wrong type is used. The result may be garbled
-   * data, but shouldn't segfault or trample other data.
-   **/
-  constexpr struct raw_data_t {} raw_data;
-}
-
 /**
  * Provides methods common to Any and AnyRef. Use those classes, not this one
  * directly.
@@ -298,6 +286,48 @@ public:
   T &ref(const std::string &name) const
   {
     return ref(find_field(name)).template ref<T>();
+  }
+
+  /**
+   * Take the Any's stored value, leaving it in its moved-from state. On
+   * moveable types, this will not copy the value.
+   *
+   * If empty() is true, throw BadAnyAccess exception; else,
+   * If raw() is true, try to deserialize using T, and store deserialized
+   * data if successful, else throw BadAnyAccess exception.
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * take and return the data, else throw BadAnyAccess exception
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return the formerly contained value
+   **/
+  template<typename T>
+  T take(type<T> t) const
+  {
+    return T(std::move(this->ref(t)));
+  }
+
+  /**
+   * Take the Any's stored value, leaving it in its moved-from state. On
+   * moveable types, this will not copy the value.
+   *
+   * If empty() is true, throw BadAnyAccess exception; else,
+   * If raw() is true, try to deserialize using T, and store deserialized
+   * data if successful, else throw BadAnyAccess exception.
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * take and return the data, else throw BadAnyAccess exception
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return the formerly contained value
+   **/
+  template<typename T>
+  T take() const
+  {
+    return take(type<T>{});
   }
 
   /**

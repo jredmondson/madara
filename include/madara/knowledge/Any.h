@@ -52,10 +52,8 @@ public:
    **/
   BasicOwningAny(const BasicOwningAny &other)
     : Base(other.handler_,
-        other.data_ ?
-        (other.handler_ ?
-          other.handler_->clone(other.data_) :
-          Base::raw_data_storage::clone(other.data_)) : nullptr) {}
+        other.data_ && other.handler_ ?
+          other.handler_->clone(other.data_) : nullptr) {}
 
   /**
    * Copy constructor. Will clone any data stored inside.
@@ -63,20 +61,16 @@ public:
   template<typename I, typename B>
   BasicOwningAny(const BasicOwningAny<I, B> &other)
     : Base(other.handler_,
-        other.data_ ?
-        (other.handler_ ?
-          other.handler_->clone(other.data_) :
-          Base::raw_data_storage::clone(other.data_)) : nullptr) {}
+        other.data_ && other.handler_ ?
+          other.handler_->clone(other.data_) : nullptr) {}
 
   /**
    * Construct from a ConstAnyRef. Will clone the data it refers to.
    **/
   BasicOwningAny(const ConstAnyRef &other)
     : Base(other.handler_,
-        other.data_ ?
-        (other.handler_ ?
-          other.handler_->clone(other.data_) :
-          Base::raw_data_storage::clone(other.data_)) : nullptr) {}
+        other.data_ && other.handler_ ?
+          other.handler_->clone(other.data_) : nullptr) {}
 
   /**
    * Construct from a AnyRef. Will clone the data it refers to.
@@ -89,10 +83,8 @@ public:
    **/
   BasicOwningAny &operator=(const BasicOwningAny &other)
   {
-    void *data = other.data_ ?
-      (other.handler_ ?
-        other.handler_->clone(other.data_) :
-        Base::raw_data_storage::clone(other.data_)) : nullptr;
+    void *data = other.handler_ && other.data_ ?
+        other.handler_->clone(other.data_) : nullptr;
 
     clear();
     this->handler_ = other.handler_;
@@ -207,22 +199,6 @@ public:
     : BasicOwningAny(t, init.begin(), init.end()) {}
 
   /**
-   * Construct with serialized data, for lazy deserialization when first needed.
-   *
-   * Note that this lazy deserialization is not fully type-safe, and might not
-   * throw an exception if the wrong type is used. The result may be garbled
-   * data, but shouldn't segfault or trample other data.
-   *
-   * The first parameter is a type tag, which is available by-value from the
-   * global `madara::knowledge::raw_data`.
-   *
-   * @param data a pointer to the serialized data to copy into this Any
-   * @param size the amount of data to copy
-   **/
-  explicit BasicOwningAny(tags::raw_data_t, const char *data, size_t size)
-    : Base(nullptr, Base::raw_data_storage::make(data, size)) {}
-
-  /**
    * Construct any compatible type in-place. The first argument is a
    * madara::type struct which provides the type as a template parameter,
    * but otherwise holds no data. The remaining arguments are forwarded to
@@ -325,40 +301,6 @@ public:
   }
 
   /**
-   * Store serialized data, for lazy deserialization when first needed.
-   *
-   * Note that this lazy deserialization is not fully type-safe, and might not
-   * throw an exception if the wrong type is used. The result may be garbled
-   * data, but shouldn't segfault or trample other data.
-   *
-   * @param data a pointer to the serialized data to copy into this Any
-   * @param size the amount of data to copy
-   **/
-  void set_raw(const char *data, size_t size)
-  {
-    clear();
-    this->data_ = Base::raw_data_storage::make(data, size);
-  }
-
-  /**
-   * Store serialized data, for lazy deserialization when first needed.
-   *
-   * Note that this lazy deserialization is not fully type-safe, and might not
-   * throw an exception if the wrong type is used. The result may be garbled
-   * data, but shouldn't segfault or trample other data.
-   *
-   * The first parameter is a type tag, which is available by-value from the
-   * global `madara::knowledge::raw_data`.
-   *
-   * @param data a pointer to the serialized data to copy into this Any
-   * @param size the amount of data to copy
-   **/
-  void set(tags::raw_data_t, const char *data, size_t size)
-  {
-    set_raw(data, size);
-  }
-
-  /**
    * Unserialize the given type from the given character array, and store into
    * this Any. This operation provides the strong exception-guarantee: if an
    * exception is throw during unserialization, this Any will not be modified.
@@ -452,13 +394,7 @@ public:
     madara_iarchive archive(input_stream);
     std::string tag;
     archive >> tag;
-    if (tag == "") {
-      auto len = input_stream.tellg() - pos;
-      set_raw(data + len, size - len);
-      return size;
-    } else {
-      unserialize(tag.c_str(), archive);
-    }
+    unserialize(tag.c_str(), archive);
     auto len = input_stream.tellg() - pos;
 
     return len;
@@ -540,99 +476,6 @@ public:
    * exception is throw during unserialization, this Any will not be modified.
    **/
   void unserialize(const char *type, json_iarchive &archive);
-
-  /**
-   * Access the Any's stored value by reference.
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * return *data_ as T&, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return a reference to the contained value
-   **/
-  template<typename T>
-  T &ref(type<T> t)
-  {
-    if (!this->data_) {
-      throw exceptions::BadAnyAccess("ref() called on empty Any");
-    } else if (!this->handler_) {
-      typename Base::raw_data_storage *sto =
-        (typename Base::raw_data_storage *)this->data_;
-      unserialize(t, sto->data, sto->size);
-    } else if (type_id<T>() != this->handler_->tindex) {
-      throw exceptions::BadAnyAccess(t, this->handler_->tindex);
-    }
-    return this->impl().ref_unsafe(t);
-  }
-
-  /**
-   * Access the Any's stored value by reference.
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * return the stored data as T&, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return a reference to the contained value
-   **/
-  template<typename T>
-  T &ref()
-  {
-    return ref(type<T>{});
-  }
-
-  using Base::ref;
-
-  /**
-   * Take the Any's stored value, leaving it empty. On moveable types, this
-   * will not copy the value.
-   *
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * take and return the data, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return the formerly contained value
-   **/
-  template<typename T>
-  T take(type<T> t)
-  {
-    T ret(std::move(ref(t)));
-    clear();
-    return ret;
-  }
-
-  /**
-   * Take the Any's stored value, leaving it empty. On moveable types, this
-   * will not copy the value.
-   *
-   * If empty() is true, throw BadAnyAccess exception; else,
-   * If raw() is true, try to deserialize using T, and store deserialized
-   * data if successful, else throw BadAnyAccess exception.
-   * Otherwise, check type_id<T> matches handler_->tindex; if so,
-   * take and return the data, else throw BadAnyAccess exception
-   *
-   * Note that T must match the type of the stored value exactly. It cannot
-   * be a parent or convertible type, including primitive types.
-   *
-   * @return the formerly contained value
-   **/
-  template<typename T>
-  T take()
-  {
-    return take(type<T>{});
-  }
 
 private:
   template<typename T>

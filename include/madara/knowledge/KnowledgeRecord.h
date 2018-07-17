@@ -1031,21 +1031,6 @@ namespace madara
       }
 
       /**
-       * Set to Any with raw data, for lazy deserialization when first needed.
-       *
-       * Note that this lazy deserialization is not fully type-safe, and might
-       * not throw an exception if the wrong type is used. The result may be
-       * garbled data, but shouldn't segfault or trample other data.
-       *
-       * @param data a pointer to the serialized data to copy into this Any
-       * @param size the amount of data to copy
-       **/
-      void set_raw_any(const char *data, size_t size)
-      {
-        return emplace_any(tags::raw_data, data, size);
-      }
-
-      /**
        * Get a reference to the stored Any.
        * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
        *
