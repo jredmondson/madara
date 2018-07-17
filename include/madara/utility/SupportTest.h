@@ -51,7 +51,7 @@ inline namespace core {
 /// argument instead of inside explicit "<...>". This interacts more flexibly
 /// with overloading and ADL.
 template<class T>
-class type {};
+struct type { using self = T; };
 
 /// Less verbose synonym for std::enable_if
 template<bool Pred, typename T = void>
@@ -148,6 +148,18 @@ struct is_type_tag_impl<type<T>> : std::true_type {};
 /// Test if T is a madara::utility::type<> instantiation
 template<typename T>
 constexpr bool is_type_tag() { return is_type_tag_impl<decay_<T>>::value; }
+
+template<typename T, typename As>
+As &&forward_as(decay_<T> &&t) { return t; }
+
+template<typename T, typename As>
+As &forward_as(decay_<T> &t) { return t; }
+
+template<typename T, typename As>
+const As &&forward_as(const decay_<T> &&t) { return t; }
+
+template<typename T, typename As>
+const As &forward_as(const decay_<T> &t) { return t; }
 
 }
 
