@@ -52,6 +52,7 @@ import ai.madara.knowledge.KnowledgeBase;
 import ai.madara.knowledge.KnowledgeRecord;
 import ai.madara.knowledge.UpdateSettings;
 import ai.madara.knowledge.containers.Collection;
+import ai.madara.knowledge.containers.CircularBuffer;
 import ai.madara.knowledge.containers.Double;
 import ai.madara.knowledge.containers.DoubleVector;
 import ai.madara.knowledge.containers.FlexMap;
@@ -339,6 +340,116 @@ public class ContainerTest
       knowledge.print();
   }
 
+  public static void testCircularBuffer() throws MadaraDeadObjectException
+  {
+    boolean error = false;
+
+    KnowledgeBase knowledge = new KnowledgeBase();
+    CircularBuffer producer = new CircularBuffer();
+    UpdateSettings settings = new UpdateSettings();
+    settings.setTreatGlobalsAsLocals(true);
+    producer.setSettings(settings);
+
+    producer.setName(knowledge, "buffer");
+    producer.resize(10);
+
+    KnowledgeRecord [] init_values = new KnowledgeRecord [10];
+    KnowledgeRecord [] records;
+
+    for (long i = 0; i < 10; ++i)
+      init_values[(int)i] = new KnowledgeRecord (i); 
+
+    producer.add (init_values[0]);
+
+    long actual_value = producer.get().toLong ();
+
+    if(actual_value == 0)
+    {
+      System.out.println("  SUCCESS: CircularBuffer.get() returned 0.");
+    }
+    else
+    {
+      System.out.println("  FAIL: CircularBuffer.get() returned " + 
+        actual_value);
+      error = true;
+    }
+
+    producer.add (init_values);
+    records = producer.get_earliest (10);
+
+    if (records.length != 10)
+    {
+      error = true;
+      System.out.println(
+        "  FAIL: CircularBuffer.get_earliest() returned " +
+        records.length + " records.");
+        error = true;
+    }
+    else
+    {
+      System.out.println(
+        "  SUCCESS: CircularBuffer.get_earliest() returned 10 records.");
+    }
+
+    for (int i = 0; i < records.length; ++i)
+    {
+      if (records[i].toLong() != (long)i)
+      {
+        System.out.println(
+          "  FAIL: CircularBuffer.get_earliest() returned records[" + i +
+          "]=" + records[i] + " instead of " + i + ".");
+          error = true;
+      }
+    }
+
+    // clean up
+    for (KnowledgeRecord record : records)
+    {
+      record.free ();
+    }
+
+    records = producer.get_latest (10);
+
+    if (records.length != 10)
+    {
+      error = true;
+      System.out.println(
+        "  FAIL: CircularBuffer.get_latest() returned " +
+        records.length + " records.");
+    }
+    else
+    {
+      System.out.println(
+        "  SUCCESS: CircularBuffer.get_latest() returned 10 records.");
+    }
+
+    for (int i = 0; i < records.length; ++i)
+    {
+      if (records[i].toLong() != (long)(9 - i))
+      {
+        System.out.println(
+          "  FAIL: CircularBuffer.get_latest() returned records[" + i +
+          "]=" + records[i] + " instead of " + i + ".");
+        error = true;
+      }
+    }
+
+    // clean up
+    for (KnowledgeRecord record : records)
+    {
+      record.free ();
+    }
+
+    // clean up
+    for (KnowledgeRecord record : init_values)
+    {
+      record.free ();
+    }
+    
+    if(error)
+      knowledge.print();
+  }
+
   public static void testQueue() throws MadaraDeadObjectException
   {
     KnowledgeBase knowledge = new KnowledgeBase();
@@ -588,5 +699,6 @@ public class ContainerTest
     testDoubleVector();
     testFlexMap();
     testCollection();
+    testCircularBuffer();
   }
 }

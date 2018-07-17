@@ -21,7 +21,7 @@ inline CircularBufferConsumer::CircularBufferConsumer ()
 inline CircularBufferConsumer::CircularBufferConsumer (
   const std::string & name,
   KnowledgeBase & knowledge)
-: context_ (&(knowledge.get_context ())), name_ (name),
+: context_ (&(knowledge.get_context ())),
   local_index_ (-1)
 {
   if (name != "")
@@ -39,7 +39,7 @@ inline CircularBufferConsumer::CircularBufferConsumer (
 inline CircularBufferConsumer::CircularBufferConsumer (
   const std::string & name,
   Variables & knowledge)
-: context_ (knowledge.get_context ()), name_ (name),
+: context_ (knowledge.get_context ()),
   local_index_ (-1)
 {
   if (name != "")
@@ -351,6 +351,8 @@ CircularBufferConsumer::set_name (
   if (name != "")
   {
     ContextGuard context_guard (knowledge);
+    name_ = name;
+    context_ = &(knowledge.get_context ());
     index_.set_name (name + ".index", knowledge);
     buffer_.set_name (name, knowledge);
     local_index_ = -1;
@@ -369,6 +371,8 @@ CircularBufferConsumer::set_name (const std::string & name,
   if (name != "")
   {
     ContextGuard context_guard (*knowledge.get_context ());
+    name_ = name;
+    context_ = knowledge.get_context ();
     index_.set_name (name + ".index", knowledge);
     buffer_.set_name (name, knowledge);
     local_index_ = -1;
