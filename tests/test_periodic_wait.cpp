@@ -13,7 +13,7 @@ namespace logger = madara::logger;
 namespace utility = madara::utility;
 
 madara::knowledge::WaitSettings wait_settings;
-int num_fails = 0;
+int madara_fails = 0;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -114,12 +114,12 @@ int main (int argc, char * argv[])
   }
   else
   {
-    std::cerr << "SUCCESS\n"; ++num_fails;
+    std::cerr << "SUCCESS\n"; ++madara_fails;
   }
 
-  if (num_fails > 0)
+  if (madara_fails > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
   else
   {
@@ -130,5 +130,5 @@ int main (int argc, char * argv[])
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "This test is disabled due to karl feature being disabled.\n");
 #endif
-  return num_fails;
+  return madara_fails;
 }

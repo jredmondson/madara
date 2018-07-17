@@ -10,7 +10,7 @@ namespace containers = knowledge::containers;
 typedef knowledge::KnowledgeRecord   KnowledgeRecord;
 typedef KnowledgeRecord::Integer     Integer;
 
-int num_fails = 0;
+int madara_fails = 0;
 
 int main (int,char **)
 {
@@ -28,7 +28,7 @@ int main (int,char **)
     references.size () == 0 ? "SUCCESS" : "FAIL");
 
   if (references.size () != 0)
-    ++num_fails;
+    ++madara_fails;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "  Testing modification of global variables with default settings...\n");
@@ -48,7 +48,7 @@ int main (int,char **)
     references.size () == 0 ? "SUCCESS" : "FAIL");
 
   if (references.size () != 0)
-    ++num_fails;
+    ++madara_fails;
 
   knowledge.clear_modifieds ();
 
@@ -61,7 +61,7 @@ int main (int,char **)
     references.size () == 1 ? "SUCCESS" : "FAIL");
 
   if (references.size () != 1)
-    ++num_fails;
+    ++madara_fails;
 
   knowledge.clear_modifieds ();
 
@@ -75,7 +75,7 @@ int main (int,char **)
     references.size () == 2 ? "SUCCESS" : "FAIL");
 
   if (references.size () != 2)
-    ++num_fails;
+    ++madara_fails;
 
   knowledge.clear_modifieds ();
 
@@ -97,7 +97,7 @@ int main (int,char **)
     references.size () == 2 ? "SUCCESS" : "FAIL");
 
   if (references.size () != 2)
-    ++num_fails;
+    ++madara_fails;
 
   knowledge.clear_modifieds ();
 
@@ -112,7 +112,7 @@ int main (int,char **)
   if (!my_local_1.get_settings ().treat_locals_as_globals ||
       !my_local_2.get_settings ().treat_locals_as_globals)
   {
-    ++num_fails;
+    ++madara_fails;
   }
 
   my_global_1 = 1;
@@ -128,7 +128,7 @@ int main (int,char **)
     (int)references.size (), references.size () == 4 ? "SUCCESS" : "FAIL");
 
   if (references.size () != 4)
-    ++num_fails;
+    ++madara_fails;
 
 
   knowledge.clear_modifieds ();
@@ -150,16 +150,16 @@ int main (int,char **)
     (int)references.size (), references.size () == 2 ? "SUCCESS" : "FAIL");
 
   if (references.size () != 2)
-    ++num_fails;
+    ++madara_fails;
 
-  if (num_fails > 0)
+  if (madara_fails > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
   else
   {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
-  return num_fails;
+  return madara_fails;
 }

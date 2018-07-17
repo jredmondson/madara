@@ -12,7 +12,7 @@
 
 namespace mk = madara::knowledge;
 
-int num_fails = 0;
+int madara_fails = 0;
 
 void handle_arguments (int argc, char ** argv)
 {
@@ -48,13 +48,13 @@ int main (int argc, char ** argv)
   else
   {
     std::cout << "FAIL    truthy is false" << std::endl;
-    ++num_fails;
+    ++madara_fails;
   }
 
   if(falsey)
   {
     std::cout << "FAIL    falsey is true" << std::endl;
-    ++num_fails;
+    ++madara_fails;
   }
   else
   {
@@ -68,13 +68,13 @@ int main (int argc, char ** argv)
   else
   {
     std::cout << "FAIL    truthy && struthy is false" << std::endl;
-    ++num_fails;
+    ++madara_fails;
   }
 
   if(truthy && sfalsey)
   {
     std::cout << "FAIL    truthy && sfalsey is true" << std::endl;
-    ++num_fails;
+    ++madara_fails;
   }
   else
   {
@@ -88,7 +88,7 @@ int main (int argc, char ** argv)
   else
   {
     std::cout << "FAIL    truthy || sfalsey is false" << std::endl;
-    ++num_fails;
+    ++madara_fails;
   }
 
   // These lines compile OK, and work as expected:
@@ -102,13 +102,13 @@ int main (int argc, char ** argv)
   else
   {
     std::cout << "FAIL    bool_true is false" << std::endl;
-    ++num_fails;
+    ++madara_fails;
   }
 
   if(bool_false)
   {
     std::cout << "FAIL    bool_false is true" << std::endl;
-    ++num_fails;
+    ++madara_fails;
   }
   else
   {
@@ -124,14 +124,14 @@ int main (int argc, char ** argv)
   // naive Safe Bool returning void* would compile the following:
   //delete truthy;
 
-  if (num_fails > 0)
+  if (madara_fails > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
   else
   {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
-  return num_fails;
+  return madara_fails;
 }

@@ -3,7 +3,7 @@
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeRecordFilters.h"
 
-int num_fails = 0;
+int madara_fails = 0;
 
 /**
  * Function that decrements integers or doubles and returns the results
@@ -105,7 +105,7 @@ int main (int, char **)
     std::cerr << "SUCCESS)\n";
   else
   {
-    std::cerr << "FAILURE)\n"; ++num_fails;
+    std::cerr << "FAILURE)\n"; ++madara_fails;
   }
 
   std::cerr << "  double result = " << double_result << " (";
@@ -113,7 +113,7 @@ int main (int, char **)
     std::cerr << "SUCCESS)\n";
   else
   {
-    std::cerr << "FAILURE)\n"; ++num_fails;
+    std::cerr << "FAILURE)\n"; ++madara_fails;
   }
   
   std::cerr << "  string result = " << string_result << " (";
@@ -121,7 +121,7 @@ int main (int, char **)
     std::cerr << "SUCCESS)\n";
   else
   {
-    std::cerr << "FAILURE)\n"; ++num_fails;
+    std::cerr << "FAILURE)\n"; ++madara_fails;
   }
   
   std::cerr << 
@@ -143,17 +143,17 @@ int main (int, char **)
     std::cerr << "SUCCESS)\n";
   else
   {
-    std::cerr << "FAILURE)\n"; ++num_fails;
+    std::cerr << "FAILURE)\n"; ++madara_fails;
   }
   
-  if (num_fails > 0)
+  if (madara_fails > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
   else
   {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
-  return num_fails;
+  return madara_fails;
 }

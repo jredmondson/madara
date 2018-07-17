@@ -175,5 +175,6 @@ script:
   # test UDP Unicast networking performance and connectivity for 60s
   - echo "Testing unicast performance..."
   - $MADARA_ROOT/bin/network_profiler -i 0 -s 1024 -u 127.0.0.1:30000 -u 127.0.0.1:30001 & $MADARA_ROOT/bin/network_profiler -i 1 -u 127.0.0.1:30001
-
+  - echo "Testing unicast lamport consistency..."
+  - $MADARA_ROOT/bin/test_lamport -i 0 -u 127.0.0.1:30000 -u 127.0.0.1:30001 & $MADARA_ROOT/bin/test_lamport -i 1 -u 127.0.0.1:30001
 

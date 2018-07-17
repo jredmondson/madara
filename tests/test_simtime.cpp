@@ -5,7 +5,7 @@
 
 using SimTime = madara::utility::SimTime;
 
-int num_fails = 0;
+int madara_fails = 0;
 
 int main()
 {
@@ -28,14 +28,14 @@ int main()
 
   // test doesn't really check anything for success or failure
 
-  if (num_fails > 0)
+  if (madara_fails > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
   else
   {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
-  return num_fails;
+  return madara_fails;
 }

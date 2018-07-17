@@ -35,7 +35,7 @@ project (Test_Pugi) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   }
 }
 
-project (TestMulticastCloseAndAtta.h) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+project (TestMulticastCloseAndAttach) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_close_and_attach
   
@@ -487,6 +487,23 @@ project (Network_Profiler) : using_madara, no_karl, no_xml, null_lock, using_sim
 
   Source_Files {
     tests/transports/network_profiler.cpp
+  }
+}
+
+project (Test_Lamport) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_lamport
+  
+  requires += tests
+
+  Documentation_Files {
+  }
+  
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_lamport.cpp
   }
 }
 

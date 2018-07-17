@@ -56,7 +56,7 @@ int main (int , char ** )
 
   // this test is really checking for memory errors on KB operations
   // so if this fails, there will be an exception or out-of-bounds
-  // which means there's no need for a num_fails here
+  // which means there's no need for a madara_fails here
 
   std::cerr << "OVERALL: SUCCESS.\n";
 

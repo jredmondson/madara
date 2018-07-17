@@ -11,7 +11,7 @@
 #define BUFFER_SIZE    1000
 #define LARGE_BUFFER_SIZE 500000
 
-int num_fails = 0;
+int madara_fails = 0;
 
 void test_primitive_encoding (void)
 {
@@ -155,7 +155,7 @@ void test_primitive_encoding (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
   }
 }
 
@@ -218,7 +218,7 @@ void test_image_encoding (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
   }
 
   // Test 2: decode source header from buffer
@@ -238,7 +238,7 @@ void test_image_encoding (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
   }
   
   std::cerr << "Test 3: encoding string, image, int, double.\n";
@@ -263,7 +263,7 @@ void test_image_encoding (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
   }
   
   std::cerr << "Test 4: decoding string, image, int, double.\n";
@@ -288,7 +288,7 @@ void test_image_encoding (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
   }
   
   std::cerr << "  Checking keys read... ";
@@ -301,7 +301,7 @@ void test_image_encoding (void)
   else
   {
     std::cerr << "FAIL\n";
-    ++num_fails;
+    ++madara_fails;
   }
   
   
@@ -363,7 +363,7 @@ void test_key_id_encoding (void)
   }
   else
   {
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "FAIL\n";
     std::cerr << "    id: " << temp_id << "\n";
     std::cerr << "    type: " << dest.type () << "\n";
@@ -382,7 +382,7 @@ void test_key_id_encoding (void)
   }
   else
   {
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "FAIL\n";
     std::cerr << "    id: " << temp_id << "\n";
     std::cerr << "    type: " << dest.type () << "\n";
@@ -401,7 +401,7 @@ void test_key_id_encoding (void)
   }
   else
   {
-    ++num_fails;
+    ++madara_fails;
     std::cerr << "FAIL.\n";
     std::cerr << "    id: " << temp_id << "\n";
     std::cerr << "    type: " << dest.type () << "\n";
@@ -416,14 +416,14 @@ int main (int, char **)
   test_primitive_encoding ();
   test_key_id_encoding ();
 
-  if (num_fails > 0)
+  if (madara_fails > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
   else
   {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
-  return num_fails;
+  return madara_fails;
 }

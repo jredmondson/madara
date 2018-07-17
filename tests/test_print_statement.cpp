@@ -8,7 +8,7 @@
 
 typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 
-int num_fails = 0;
+int madara_fails = 0;
 
 // test functions
 void test_print_statement (madara::knowledge::KnowledgeBase & knowledge);
@@ -62,7 +62,7 @@ void test_print_statement (madara::knowledge::KnowledgeBase & knowledge)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
   
   statement = "Hello kitty {.var{.var2}is{.var22}}\n";
@@ -75,7 +75,7 @@ void test_print_statement (madara::knowledge::KnowledgeBase & knowledge)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 
   statement = "MyState.{.var1}.{.var2} = {MyState.{.var1}.{.var2}}\n";
@@ -88,6 +88,6 @@ void test_print_statement (madara::knowledge::KnowledgeBase & knowledge)
   }
   else
   {
-    std::cerr << "FAIL\n"; ++num_fails;
+    std::cerr << "FAIL\n"; ++madara_fails;
   }
 }

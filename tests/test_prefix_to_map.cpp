@@ -19,7 +19,7 @@ namespace logger = madara::logger;
 
 typedef  madara::knowledge::KnowledgeRecord::Integer  Integer;
 
-int num_fails = 0;
+int madara_fails = 0;
 
 void print_map(const knowledge::KnowledgeMap &kmap)
 {
@@ -59,7 +59,7 @@ void test_prefix_to_map (void)
   else
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-      "TEST 1: extracting test. prefix copy is FAIL\n"); ++num_fails;
+      "TEST 1: extracting test. prefix copy is FAIL\n"); ++madara_fails;
   }
 
   knowledge::KnowledgeMap kmap2(kbase.to_map("astart."));
@@ -74,7 +74,7 @@ void test_prefix_to_map (void)
   else
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-      "TEST 2: extracting astart. prefix copy is FAIL\n"); ++num_fails;
+      "TEST 2: extracting astart. prefix copy is FAIL\n"); ++madara_fails;
   }
 
   knowledge::KnowledgeMap kmap3(kbase.to_map("zend."));
@@ -89,7 +89,7 @@ void test_prefix_to_map (void)
   else
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-      "TEST 3: extracting zend. prefix copy is FAIL\n"); ++num_fails;
+      "TEST 3: extracting zend. prefix copy is FAIL\n"); ++madara_fails;
   }
 
   knowledge::KnowledgeMap kmap4(kbase.to_map(""));
@@ -104,7 +104,7 @@ void test_prefix_to_map (void)
   else
   {
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-      "TEST 4: extracting empty prefix copy is FAIL\n"); ++num_fails;
+      "TEST 4: extracting empty prefix copy is FAIL\n"); ++madara_fails;
   }
 }
 
@@ -112,14 +112,14 @@ int main (int, char **)
 {
   test_prefix_to_map ();
 
-  if (num_fails > 0)
+  if (madara_fails > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << num_fails << " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
   else
   {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
-  return num_fails;
+  return madara_fails;
 }
