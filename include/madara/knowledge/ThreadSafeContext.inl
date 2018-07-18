@@ -261,6 +261,8 @@ ThreadSafeContext::set_unsafe_impl (
 
   record->set_value(std::forward<Args>(args)...);
   record->quality = record->write_quality;
+  record->clock = clock_;
+  record->toi = utility::get_time();
 
   return 0;
 }
@@ -324,6 +326,8 @@ ThreadSafeContext::emplace_any_unsafe_impl (
 
   record->emplace_any(std::forward<Args>(args)...);
   record->quality = record->write_quality;
+  record->clock = clock_;
+  record->toi = utility::get_time();
 
   return 0;
 }
@@ -442,6 +446,8 @@ ThreadSafeContext::set_index_unsafe_impl (
 
   record->set_index (index, std::forward<T>(value));
   record->quality = record->write_quality;
+  record->clock = clock_;
+  record->toi = utility::get_time();
 
   return 0;
 }
@@ -494,6 +500,8 @@ ThreadSafeContext::inc (
     {
       ++ (*record);
       record->quality = record->write_quality;
+      record->clock = clock_;
+      record->toi = utility::get_time();
       mark_and_signal (variable, settings);
     }
 
@@ -660,6 +668,8 @@ ThreadSafeContext::dec (
     {
       -- (*record);
       record->quality = record->write_quality;
+      record->clock = clock_;
+      record->toi = utility::get_time();
 
       mark_and_signal (variable, settings);
     }

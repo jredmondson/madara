@@ -240,7 +240,7 @@ void test_map(T &kb)
   std::string kb_dump;
   kb.to_string(kb_dump);
   VAL(kb_dump);
-  kb.save_context("/tmp/madara_test_map.kb");
+  kb.save_context("/tmp/madara_test_any.kb");
 
   auto a1 = kb.take_any("asdf");
   TEST_EQ(a1->template ref<std::vector<std::string>>()[0], "a");
@@ -252,11 +252,12 @@ void test_map(T &kb)
   kb.clear();
 
   std::string id;
-  kb.load_context("/tmp/madara_test_map.kb", id);
+  kb.load_context("/tmp/madara_test_any.kb", id);
   kb.to_string(kb_dump);
   VAL(kb_dump);
   TEST_EQ(kb.get("hello").template get_any_ref<std::string>(), "world");
   TEST_EQ(kb.get("asdf").template get_any_ref<std::vector<std::string>>()[1], "b");
+  kb.save_as_json("/tmp/madara_test_any.json");
 }
 
 namespace geo

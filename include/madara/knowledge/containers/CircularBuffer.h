@@ -89,22 +89,11 @@ namespace madara
                int size,
                const KnowledgeUpdateSettings & settings =
                  KnowledgeUpdateSettings ());
-      
-        /**
-         * Copy constructor
-         **/
-        CircularBuffer (const CircularBuffer & rhs);
 
         /**
          * Destructor
          **/
         virtual ~CircularBuffer () = default;
-        
-        /**
-         * Assignment operator
-         * @param  rhs    value to copy
-         **/
-        void operator= (const CircularBuffer & rhs);
 
         /**
          * Returns the name of the variable
@@ -363,6 +352,11 @@ namespace madara
          * Settings for modifications
          **/
         KnowledgeUpdateSettings settings_;
+
+        // Call to throw if preconditions aren't met
+        void check_name (const char * func) const;
+        void check_context (const char * func) const;
+        void check_all (const char * func) const;
       };
     }
   }

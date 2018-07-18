@@ -143,6 +143,7 @@ inline KnowledgeRecord::KnowledgeRecord (
     const knowledge::KnowledgeRecord & rhs)
 : logger_ (rhs.logger_),
   clock (rhs.clock),
+  toi (rhs.toi),
   quality (rhs.quality),
   write_quality (rhs.write_quality),
   type_ (rhs.type_),
@@ -171,6 +172,7 @@ inline KnowledgeRecord::KnowledgeRecord (
     knowledge::KnowledgeRecord &&rhs) noexcept
 : logger_ (std::move(rhs.logger_)),
   clock (rhs.clock),
+  toi (rhs.toi),
   quality (rhs.quality),
   write_quality (rhs.write_quality),
   type_ (rhs.type_),
@@ -202,22 +204,19 @@ inline KnowledgeRecord::~KnowledgeRecord () noexcept
   clear_union();
 }
 
-inline KnowledgeRecord &
-KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs)
+inline void
+KnowledgeRecord::set_value (const KnowledgeRecord &rhs)
 {
   if (this == &rhs)
-    return *this;
+    return;
 
   // clear any dynamic memory being used on the left hand side
   clear_value ();
 
   if (rhs.type_ == EMPTY)
-    return *this;
+    return;
 
   // set the instance properties accordingly
-  clock = rhs.clock;
-  quality = rhs.quality;
-  write_quality = rhs.write_quality;
   type_ = rhs.type_;
   shared_ = is_ref_counted() ? SHARED : OWNED;
 
@@ -235,26 +234,21 @@ KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs)
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
   else if (rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<Any>(rhs.any_value_);
-
-  return *this;
 }
 
-inline KnowledgeRecord &
-KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
+inline void
+KnowledgeRecord::set_value (KnowledgeRecord &&rhs)
 {
   if (this == &rhs)
-    return *this;
+    return;
 
   // clear any dynamic memory being used on the left hand side
   clear_value();
 
   if (rhs.type_ == EMPTY)
-    return *this;
+    return;
 
   // set the instance properties accordingly
-  clock = rhs.clock;
-  quality = rhs.quality;
-  write_quality = rhs.write_quality;
   type_ = rhs.type_;
   shared_ = rhs.shared_;
 
@@ -274,6 +268,34 @@ KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
     new (&any_value_) std::shared_ptr<Any>(std::move(rhs.any_value_));
 
   rhs.type_ = EMPTY;
+}
+
+inline KnowledgeRecord &
+KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs)
+{
+  set_value(rhs);
+
+  // copy fields not copied by set_value
+  logger_ = rhs.logger_;
+  clock = rhs.clock;
+  toi = rhs.toi;
+  quality = rhs.quality;
+  write_quality = rhs.write_quality;
+
+  return *this;
+}
+
+inline KnowledgeRecord &
+KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
+{
+  set_value(rhs);
+
+  // copy fields not copied by set_value
+  logger_ = std::move(rhs.logger_);
+  clock = rhs.clock;
+  toi = rhs.toi;
+  quality = rhs.quality;
+  write_quality = rhs.write_quality;
 
   return *this;
 }
@@ -623,7 +645,7 @@ KnowledgeRecord::set_modified (void)
 inline uint32_t
 KnowledgeRecord::size (void) const
 {
-  if (type_ == INTEGER || type_ == DOUBLE || type_ == ANY) {
+  if (type_ == INTEGER || type_ == DOUBLE) {
     return 1;
   } else if (is_string_type()) {
     return (uint32_t)str_value_->size () + 1;
@@ -633,6 +655,10 @@ KnowledgeRecord::size (void) const
     return (uint32_t)int_array_->size ();
   } else if (type_ == DOUBLE_ARRAY) {
     return (uint32_t)double_array_->size ();
+  } else if (type_ == ANY) {
+    if (any_value_->supports_size ()) {
+      return any_value_->size ();
+    }
   }
   return 1;
 }
@@ -1074,30 +1100,7 @@ KnowledgeRecord::reset_value (void) noexcept
   quality = 0;
   write_quality = 0;
   clock = 0;
-}
-
-inline void
-KnowledgeRecord::set_value (const KnowledgeRecord &new_value)
-{
-  uint64_t cur_clock = this->clock;
-  uint32_t cur_quality = this->write_quality;
-  uint32_t cur_write_quality = this->write_quality;
-  *this = new_value;
-  this->clock = cur_clock;
-  this->quality = cur_quality;
-  this->write_quality = cur_write_quality;
-}
-
-inline void
-KnowledgeRecord::set_value (KnowledgeRecord &&new_value)
-{
-  uint64_t cur_clock = this->clock;
-  uint32_t cur_quality = this->write_quality;
-  uint32_t cur_write_quality = this->write_quality;
-  *this = std::move(new_value);
-  this->clock = cur_clock;
-  this->quality = cur_quality;
-  this->write_quality = cur_write_quality;
+  toi = 0;
 }
 
 // set the value_ to a string

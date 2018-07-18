@@ -128,9 +128,14 @@ namespace madara
 
     public:
       /**
-       * last modification time
+       * last modification lamport clock time
        **/
       uint64_t clock = 0;
+
+      /**
+       * last modification system clock time
+       **/
+      uint64_t toi = 0;
 
       /**
        * priority of the update

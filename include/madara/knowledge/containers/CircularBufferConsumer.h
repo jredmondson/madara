@@ -58,22 +58,11 @@ namespace madara
          **/
         CircularBufferConsumer (const std::string & name,
                 Variables & knowledge);
-      
-        /**
-         * Copy constructor
-         **/
-        CircularBufferConsumer (const CircularBufferConsumer & rhs);
 
         /**
          * Destructor
          **/
         virtual ~CircularBufferConsumer () = default;
-        
-        /**
-         * Assignment operator
-         * @param  rhs    value to copy
-         **/
-        void operator= (const CircularBufferConsumer & rhs);
 
         /**
          * Returns the name of the variable
@@ -117,15 +106,14 @@ namespace madara
          * Gets the most recently added record
          * @return the last added record. exists() will return false if the
          *         record is invalid
-         * @throw exceptions::IndexException  if index is out of range/invalid
+         * @throw exceptions::IndexException  buffer has zero size
          **/
         KnowledgeRecord consume (void) const;
         
         /**
          * Gets the most recently added value
-         * @param value  the last added value. exists() will return false if the
-         *               record is invalid
-         * @throw exceptions::IndexException  if index is out of range/invalid
+         * @param value  the last added value.
+         * @throw exceptions::IndexException  if no data to consume
          **/
         template <typename T>
         void consume (T & value) const;
@@ -337,6 +325,11 @@ namespace madara
          * Underlying array of records
          **/
         Vector buffer_;
+
+        // Call to throw if preconditions aren't met
+        void check_name (const char * func) const;
+        void check_context (const char * func) const;
+        void check_all (const char * func) const;
       };
     }
   }
