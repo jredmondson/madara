@@ -600,12 +600,14 @@ process_received_update (
       "%s:" \
       " Applying updates to context.\n", print_prefix);
 
+    uint64_t now = utility::get_time ();
     // apply updates from the update list
     for (knowledge::KnowledgeMap::iterator i = updates.begin ();
       i != updates.end (); ++i)
     {
       int result = 0;
 
+      i->second.toi = now;
       result = i->second.apply (context, i->first, header->quality,
         header->clock, false);
       ++actual_updates;

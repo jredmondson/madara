@@ -17,23 +17,69 @@ inline CircularBufferConsumer::CircularBufferConsumer ()
 : context_ (0), local_index_ (-1)
 {
 }
-  
+
+inline void CircularBufferConsumer::check_name (const char *func) const
+{
+  if (name_ == "") {
+    throw exceptions::NameException (
+      std::string("CircularBufferConsumer::") + func + ": name is empty.");
+  }
+}
+
+inline void CircularBufferConsumer::check_context (const char *func) const
+{
+  check_name (func);
+  if (!context_)
+  {
+    throw exceptions::ContextException (
+      std::string("CircularBufferConsumer::") + func + ": context is not set.");
+  }
+}
+
+inline void CircularBufferConsumer::check_all (const char *func) const
+{
+  std::string reason = "";
+  if (context_ == 0)
+  {
+    reason = "context has not been set";
+  }
+
+  if (name_ == "")
+  {
+    if (reason.size () > 0)
+    {
+      reason += " and ";
+    }
+    reason = "name has not been set";
+  }
+
+  if (buffer_.size () == 0)
+  {
+    if (reason.size () > 0)
+    {
+      reason += " and ";
+    }
+    reason = "size == 0";
+  }
+
+  if (reason != "") {
+    std::stringstream message;
+    message << "CircularBufferConsumer::" << func << ": ";
+    message << "Invalid access because " << reason << "\n";
+    throw exceptions::IndexException (message.str ()); 
+  }
+}
+
 inline CircularBufferConsumer::CircularBufferConsumer (
   const std::string & name,
   KnowledgeBase & knowledge)
 : context_ (&(knowledge.get_context ())), name_ (name),
   local_index_ (-1)
 {
-  if (name != "")
-  {
-    ContextGuard context_guard (knowledge);
-    set_name (name, knowledge);
-  }
-  else
-  {
-    throw exceptions::NameException (
-      "CircularBufferConsumer::constr: empty name provided.");
-  }
+  check_name (__func__);
+
+  ContextGuard context_guard (knowledge);
+  set_name (name, knowledge);
 }
  
 inline CircularBufferConsumer::CircularBufferConsumer (
@@ -42,41 +88,11 @@ inline CircularBufferConsumer::CircularBufferConsumer (
 : context_ (knowledge.get_context ()), name_ (name),
   local_index_ (-1)
 {
-  if (name != "")
-  {
-    ContextGuard context_guard (*knowledge.get_context ());
-    set_name (name, knowledge);
-  }
-  else
-  {
-    throw exceptions::NameException (
-      "CircularBufferConsumer::constr: empty name provided.");
-  }
+  check_name (__func__);
+
+  ContextGuard context_guard (*knowledge.get_context ());
+  set_name (name, knowledge);
 }
-
-inline CircularBufferConsumer::CircularBufferConsumer (const CircularBufferConsumer & rhs)
-  : context_ (rhs.context_),
-    name_ (rhs.name_),
-    index_ (rhs.index_),
-    local_index_ (rhs.local_index_),
-    buffer_ (rhs.buffer_)
-{
-
-}
-
-inline void
-CircularBufferConsumer::operator= (const CircularBufferConsumer & rhs)
-{
-  if (this != &rhs)
-  {
-    this->context_ = rhs.context_;
-    this->name_ = rhs.name_;
-    this->index_ = rhs.index_;
-    this->buffer_ = rhs.buffer_;
-    this->local_index_ = rhs.local_index_;
-  }
-}
-
 
 inline bool
 CircularBufferConsumer::operator== (
@@ -84,7 +100,7 @@ CircularBufferConsumer::operator== (
 {
   return name_ == value.get_name ();
 }
-        
+
 inline bool
 CircularBufferConsumer::operator!= (
   const CircularBufferConsumer & value) const
@@ -118,72 +134,39 @@ CircularBufferConsumer::increment (
 template <typename T> void
 CircularBufferConsumer::consume (T & value) const
 {
-  if (context_ && name_ != "")
-  {
-    ContextGuard context_guard (*context_);
+  check_context (__func__);
 
-    if (remaining () > 0)
-      value = consume ().to_any <T> ();
-    else
-      throw exceptions::IndexException ("CircularBufferConsumer::consume<T>: "
-        "attempted consume on empty consumer buffer");
-  }
+  ContextGuard context_guard (*context_);
+
+  if (remaining () > 0)
+    value = consume ().to_any <T> ();
+  else
+    throw exceptions::IndexException ("CircularBufferConsumer::consume<T>: "
+      "attempted consume on empty consumer buffer");
 }
 
 inline madara::knowledge::KnowledgeRecord
 CircularBufferConsumer::consume (void) const
 {
-  if (context_ && name_ != "" && buffer_.size () > 0)
+  check_all (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  KnowledgeRecord::Integer index_diff = *index_ - local_index_;
+
+  if (index_diff > (KnowledgeRecord::Integer)buffer_.size ())
   {
-    ContextGuard context_guard (*context_);
-
-    KnowledgeRecord::Integer index_diff = *index_ - local_index_;
-
-    if (index_diff > (KnowledgeRecord::Integer)buffer_.size ())
-    {
-      local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size ();
-    }
-
-    KnowledgeRecord::Integer cur = increment (local_index_, 1);
-
-    if (remaining () > 0)
-    {
-      ++local_index_;
-      return context_->get (buffer_.vector_[(size_t)(cur)]);
-    }
-    else return KnowledgeRecord ();
+    local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size ();
   }
-  else
+
+  KnowledgeRecord::Integer cur = increment (local_index_, 1);
+
+  if (remaining () > 0)
   {
-    std::string reason = "";
-    if (context_ == 0)
-    {
-      reason = "context has not been set";
-    }
-
-    if (name_ == "")
-    {
-      if (reason.size () > 0)
-      {
-        reason += " and ";
-      }
-      reason = "name has not been set";
-    }
-
-    if (buffer_.size () == 0)
-    {
-      if (reason.size () > 0)
-      {
-        reason += " and ";
-      }
-      reason = "size == 0";
-    }
-
-    std::stringstream message;
-    message << "CircularBufferConsumer::get: ";
-    message << "Invalid access because " << reason << "\n";
-    throw exceptions::IndexException (message.str ()); 
+    ++local_index_;
+    return context_->get (buffer_.vector_[(size_t)(cur)]);
   }
+  else return KnowledgeRecord ();
 }
 
 template <typename T> void
@@ -197,34 +180,28 @@ inline madara::knowledge::KnowledgeRecord
 CircularBufferConsumer::inspect (
   KnowledgeRecord::Integer position) const
 {
-  if (context_ && name_ != "")
+  check_context (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  KnowledgeRecord::Integer inserted = (KnowledgeRecord::Integer)count ();
+
+  if ((position <= 0 && -position < inserted) ||
+      (position > 0 && inserted == (KnowledgeRecord::Integer)size () &&
+       position < inserted))
   {
-    ContextGuard context_guard (*context_);
+    size_t index = (size_t)increment (
+      local_index_, (KnowledgeRecord::Integer)position);
 
-    KnowledgeRecord::Integer inserted = (KnowledgeRecord::Integer)count ();
-
-    if ((position <= 0 && -position < inserted) ||
-        (position > 0 && inserted == (KnowledgeRecord::Integer)size () &&
-         position < inserted))
-    {
-      size_t index = (size_t)increment (
-        local_index_, (KnowledgeRecord::Integer)position);
-      
-      return context_->get (buffer_.vector_[index]);
-    }
-    else
-    {
-      std::stringstream message;
-      message << "CircularBufferConsumer::inspect: ";
-      message << "Invalid access for " << position << " element when count is ";
-      message << inserted << "\n";
-      throw exceptions::IndexException (message.str ()); 
-    }
+    return context_->get (buffer_.vector_[index]);
   }
   else
   {
-    throw exceptions::ContextException ("CircularBufferConsumer::inspect: "
-      " context is null or name hasn't been set.");
+    std::stringstream message;
+    message << "CircularBufferConsumer::inspect: ";
+    message << "Invalid access for " << position << " element when count is ";
+    message << inserted << "\n";
+    throw exceptions::IndexException (message.str ()); 
   }
 }
 
@@ -245,42 +222,36 @@ CircularBufferConsumer::inspect (
   KnowledgeRecord::Integer position,
   size_t count) const
 {
-  if (context_ && name_ != "")
+  check_context (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  KnowledgeRecord::Integer inserted =
+    (KnowledgeRecord::Integer)this->count ();
+
+  if ((position <= 0 && -position < inserted) ||
+      (position > 0 && inserted == (KnowledgeRecord::Integer)size () &&
+       position < inserted))
   {
-    ContextGuard context_guard (*context_);
+    KnowledgeRecord::Integer index = increment (
+      local_index_, (KnowledgeRecord::Integer)position);
 
-    KnowledgeRecord::Integer inserted =
-      (KnowledgeRecord::Integer)this->count ();
+    std::vector <KnowledgeRecord> result;
 
-    if ((position <= 0 && -position < inserted) ||
-        (position > 0 && inserted == (KnowledgeRecord::Integer)size () &&
-         position < inserted))
+    for (size_t i = 0; i < count; ++i, index = increment (index, 1))
     {
-      KnowledgeRecord::Integer index = increment (
-        local_index_, (KnowledgeRecord::Integer)position);
-      
-      std::vector <KnowledgeRecord> result;
-
-      for (size_t i = 0; i < count; ++i, index = increment (index, 1))
-      {
-        result.push_back (buffer_[(size_t)index]);
-      }
-
-      return result;
+      result.push_back (buffer_[(size_t)index]);
     }
-    else
-    {
-      std::stringstream message;
-      message << "CircularBufferConsumer::inspect: ";
-      message << "Invalid access for " << position << " element when count is ";
-      message << inserted << "\n";
-      throw exceptions::IndexException (message.str ()); 
-    }
+
+    return result;
   }
   else
   {
-    throw exceptions::ContextException ("CircularBufferConsumer::inspect: "
-      " context is null or name hasn't been set.");
+    std::stringstream message;
+    message << "CircularBufferConsumer::inspect: ";
+    message << "Invalid access for " << position << " element when count is ";
+    message << inserted << "\n";
+    throw exceptions::IndexException (message.str ()); 
   }
 }
 
@@ -299,49 +270,31 @@ CircularBufferConsumer::size (void) const
 inline size_t
 CircularBufferConsumer::remaining (void) const
 {
-  if (context_ && name_ != "")
-  {
-    ContextGuard context_guard (*context_);
+  check_context (__func__);
 
-    return *index_ - local_index_;
-  }
-  else
-  {
-    throw exceptions::ContextException ("CircularBufferConsumer::remaining: "
-      " context is null or name hasn't been set.");
-  }
+  ContextGuard context_guard (*context_);
+
+  return *index_ - local_index_;
 }
 
 inline size_t
 CircularBufferConsumer::count (void) const
 {
-  if (context_ && name_ != "")
-  {
-    ContextGuard context_guard (*context_);
+  check_context (__func__);
 
-    return std::min ((size_t)(*index_ + 1), buffer_.size ());
-  }
-  else
-  {
-    throw exceptions::ContextException ("CircularBufferConsumer::count: "
-      " context is null or name hasn't been set.");
-  }
+  ContextGuard context_guard (*context_);
+
+  return std::min ((size_t)(*index_ + 1), buffer_.size ());
 }
 
 inline void
 CircularBufferConsumer::resize (void)
 {
-  if (context_ && name_ != "")
-  {
-    ContextGuard context_guard (*context_);
+  check_context (__func__);
 
-    buffer_.resize (-1, false);
-  }
-  else
-  {
-    throw exceptions::ContextException ("CircularBufferConsumer::resize: "
-      " context is null or name hasn't been set.");
-  }
+  ContextGuard context_guard (*context_);
+
+  buffer_.resize (-1, false);
 }
 
 inline void
@@ -360,7 +313,7 @@ CircularBufferConsumer::set_name (
     throw exceptions::NameException (
       "CircularBufferConsumer::set_name: empty name provided.");
   }
-}      
+}
 
 inline void
 CircularBufferConsumer::set_name (const std::string & name,
@@ -384,15 +337,9 @@ CircularBufferConsumer::set_name (const std::string & name,
 inline void
 CircularBufferConsumer::set_index (KnowledgeRecord::Integer index)
 {
-  if (name_ != "" && context_ != 0)
-  {
-    local_index_ = index;
-  }
-  else
-  {
-    throw exceptions::ContextException ("CircularBufferConsumer::set_index: "
-      " context is null or name hasn't been set.");
-  }
+  check_context (__func__);
+
+  local_index_ = index;
 }
 
 template <typename T> void
@@ -410,58 +357,26 @@ CircularBufferConsumer::consume_latest (size_t count,
 inline std::vector <KnowledgeRecord>
 CircularBufferConsumer::consume_latest (size_t count) const
 {
-  if (context_ && name_ != "" && buffer_.size () > 0)
+  check_all (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  std::vector <KnowledgeRecord> result;
+
+  KnowledgeRecord::Integer cur = *index_ % buffer_.size ();
+
+  count = std::min (count, (size_t)(*index_ - local_index_));
+
+  for (size_t i = 0; i < count; ++i, cur = increment (cur, -1))
   {
-    ContextGuard context_guard (*context_);
-
-    std::vector <KnowledgeRecord> result;
-
-    KnowledgeRecord::Integer cur = *index_ % buffer_.size ();
-
-    count = std::min (count, (size_t)(*index_ - local_index_));
-
-    for (size_t i = 0; i < count; ++i, cur = increment (cur, -1))
-    {
-      result.push_back (buffer_[(size_t)cur]);
-    }
-
-    // note the difference here is that reading the latest will change index
-    local_index_ = *index_;
-
-    return result;
+    result.push_back (buffer_[(size_t)cur]);
   }
-  else
-  {
-    std::string reason = "";
-    if (context_ == 0)
-    {
-      reason = "context has not been set";
-    }
 
-    if (name_ == "")
-    {
-      if (reason.size () > 0)
-      {
-        reason += " and ";
-      }
-      reason = "name has not been set";
-    }
+  // note the difference here is that reading the latest will change index
+  local_index_ = *index_;
 
-    if (buffer_.size () == 0)
-    {
-      if (reason.size () > 0)
-      {
-        reason += " and ";
-      }
-      reason = "size == 0";
-    }
-
-    std::stringstream message;
-    message << "CircularBufferConsumer::consume_latest: ";
-    message << "Invalid access because " << reason << "\n";
-    throw exceptions::IndexException (message.str ()); 
-  }
-}      
+  return result;
+}
 
 template <typename T> void
 CircularBufferConsumer::consume_earliest (size_t count,
@@ -478,61 +393,29 @@ CircularBufferConsumer::consume_earliest (size_t count,
 inline std::vector <KnowledgeRecord>
 CircularBufferConsumer::consume_earliest (size_t count) const
 {
-  if (context_ && name_ != "" && buffer_.size () > 0)
+  check_all (__func__);
+
+  ContextGuard context_guard (*context_);
+  std::vector <KnowledgeRecord> result;
+
+  KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
+
+  count = std::min (count, (size_t)index_diff);
+
+  // start is either 0 or index_ + 1
+  KnowledgeRecord::Integer cur =
+    index_diff < (KnowledgeRecord::Integer)buffer_.size () ? 
+    increment (local_index_, 1) :
+    increment (*index_, -(KnowledgeRecord::Integer)(buffer_.size ()) + 1);
+
+  for (size_t i = 0; i < count; ++i, cur = increment (cur, 1))
   {
-    ContextGuard context_guard (*context_);
-    std::vector <KnowledgeRecord> result;
-
-    KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
-
-    count = std::min (count, (size_t)index_diff);
-
-    // start is either 0 or index_ + 1
-    KnowledgeRecord::Integer cur =
-      index_diff < (KnowledgeRecord::Integer)buffer_.size () ? 
-      increment (local_index_, 1) :
-      increment (*index_, -(KnowledgeRecord::Integer)(buffer_.size ()) + 1);
-
-    for (size_t i = 0; i < count; ++i, cur = increment (cur, 1))
-    {
-      result.push_back (buffer_[(size_t)cur]);
-    }
-
-    local_index_ += (KnowledgeRecord::Integer)result.size ();
-
-    return result;
+    result.push_back (buffer_[(size_t)cur]);
   }
-  else
-  {
-    std::string reason = "";
-    if (context_ == 0)
-    {
-      reason = "context has not been set";
-    }
 
-    if (name_ == "")
-    {
-      if (reason.size () > 0)
-      {
-        reason += " and ";
-      }
-      reason = "name has not been set";
-    }
+  local_index_ += (KnowledgeRecord::Integer)result.size ();
 
-    if (buffer_.size () == 0)
-    {
-      if (reason.size () > 0)
-      {
-        reason += " and ";
-      }
-      reason = "size == 0";
-    }
-
-    std::stringstream message;
-    message << "CircularBufferConsumer::consume_earliest: ";
-    message << "Invalid access because " << reason << "\n";
-    throw exceptions::IndexException (message.str ()); 
-  }
+  return result;
 }
 
 template <typename T> void
@@ -550,117 +433,52 @@ CircularBufferConsumer::peek_latest (size_t count,
 inline std::vector <KnowledgeRecord>
 CircularBufferConsumer::peek_latest (size_t count) const
 {
-  if (context_ && name_ != "")
+  check_name (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  count = std::min (count, this->count ());
+
+  std::vector <KnowledgeRecord> result;
+
+  KnowledgeRecord::Integer cur = *index_ % buffer_.size ();
+
+  for (size_t i = 0; i < count; ++i, cur = increment (cur, -1))
   {
-    ContextGuard context_guard (*context_);
-
-    count = std::min (count, this->count ());
-
-    std::vector <KnowledgeRecord> result;
-
-    KnowledgeRecord::Integer cur = *index_ % buffer_.size ();
-
-    for (size_t i = 0; i < count; ++i, cur = increment (cur, -1))
-    {
-      result.push_back (buffer_[(size_t)cur]);
-    }
-
-    return result;
+    result.push_back (buffer_[(size_t)cur]);
   }
-  else
-  {
-    std::string reason = "";
-    if (context_ == 0)
-    {
-      reason = "context has not been set";
-    }
 
-    if (name_ == "")
-    {
-      if (reason.size () > 0)
-      {
-        reason += " and ";
-      }
-      reason = "name has not been set";
-    }
-
-    if (buffer_.size () == 0)
-    {
-      if (reason.size () > 0)
-      {
-        reason += " and ";
-      }
-      reason = "size == 0";
-    }
-
-    std::stringstream message;
-    message << "CircularBuffer::peek_latest: ";
-    message << "Invalid access because " << reason << "\n";
-    throw exceptions::IndexException (message.str ()); 
-  }
-}      
+  return result;
+}
 
 template <typename T> void
 CircularBufferConsumer::peek_latest (T & value) const
 {
-  if (context_ && name_ != "")
-  {
-    ContextGuard context_guard (*context_);
+  check_all (__func__);
 
-    if (count () > 0)
-      value = peek_latest ().to_any <T> ();
-    else
-      throw exceptions::IndexException ("CircularBufferConsumer::peek_latest<T>: "
-        "attempted consume on empty consumer buffer");
-  }
+  ContextGuard context_guard (*context_);
+
+  if (count () > 0)
+    value = peek_latest ().to_any <T> ();
+  else
+    throw exceptions::IndexException ("CircularBufferConsumer::peek_latest<T>: "
+      "attempted consume on empty consumer buffer");
 }
 
 inline madara::knowledge::KnowledgeRecord
 CircularBufferConsumer::peek_latest (void) const
 {
-  if (context_ && name_ != "" && buffer_.size () > 0)
-  {
-    ContextGuard context_guard (*context_);
+  check_all (__func__);
 
-    KnowledgeRecord::Integer index = *index_;
-    index = increment (index, 0);
+  ContextGuard context_guard (*context_);
 
-    if (count () > 0)
-      return context_->get (buffer_.vector_[(size_t)index]);
-    else
-      return KnowledgeRecord ();
-  }
+  KnowledgeRecord::Integer index = *index_;
+  index = increment (index, 0);
+
+  if (count () > 0)
+    return context_->get (buffer_.vector_[(size_t)index]);
   else
-  {
-    std::string reason = "";
-    if (context_ == 0)
-    {
-      reason = "context has not been set";
-    }
-
-    if (name_ == "")
-    {
-      if (reason.size () > 0)
-      {
-        reason += " and ";
-      }
-      reason = "name has not been set";
-    }
-
-    if (buffer_.size () == 0)
-    {
-      if (reason.size () > 0)
-      {
-        reason += " and ";
-      }
-      reason = "size == 0";
-    }
-
-    std::stringstream message;
-    message << "CircularBuffer::peek_latest: ";
-    message << "Invalid access because " << reason << "\n";
-    throw exceptions::IndexException (message.str ()); 
-  }
+    return KnowledgeRecord ();
 }
 
 

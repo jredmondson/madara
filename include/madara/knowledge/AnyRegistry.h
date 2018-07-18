@@ -48,7 +48,7 @@ public:
   static ConstAny construct_const(const char *name);
 
 protected:
-  static std::map<const char *, std::function<Any()>,
+  MADARA_EXPORT static std::map<const char *, std::function<Any()>,
                   compare_const_char_ptr> &type_builders()
   {
     static std::map<const char *, std::function<Any()>,
