@@ -58,22 +58,11 @@ namespace madara
          **/
         CircularBufferConsumer (const std::string & name,
                 Variables & knowledge);
-      
-        /**
-         * Copy constructor
-         **/
-        CircularBufferConsumer (const CircularBufferConsumer & rhs);
 
         /**
          * Destructor
          **/
         virtual ~CircularBufferConsumer () = default;
-        
-        /**
-         * Assignment operator
-         * @param  rhs    value to copy
-         **/
-        void operator= (const CircularBufferConsumer & rhs);
 
         /**
          * Returns the name of the variable
