@@ -261,7 +261,6 @@ ThreadSafeContext::set_unsafe_impl (
 
   record->set_value(std::forward<Args>(args)...);
   record->quality = record->write_quality;
-  record->clock = clock_;
 
   return 0;
 }

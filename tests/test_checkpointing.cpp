@@ -8,6 +8,7 @@
 #include "madara/utility/Utility.h"
 
 #include "madara/filters/ssl/AESBufferFilter.h"
+#include "madara/filters/lz4/LZ4BufferFilter.h"
 #include "madara/knowledge/containers/Integer.h"
 #include "madara/exceptions/MemoryException.h"
 
@@ -549,6 +550,48 @@ void test_checkpoints_diff (void)
 
 }
 
+void test_compress (void)
+{
+#ifdef _USE_LZ4_
+
+  filters::LZ4BufferFilter lz4;
+
+  knowledge::CheckpointSettings settings;
+  settings.buffer_size = 10000000;
+  settings.filename = "buffer_size_test_3.kb";
+
+  std::cerr << "loading from buffer_size_test_3.kb\n";
+
+  knowledge::KnowledgeBase kb;
+
+  kb.load_context (settings);
+
+  std::cerr << "saving to buffer_size_test_3.kb.lz4\n";
+
+  settings.filename = "buffer_size_test_3.kb.lz4";
+  settings.buffer_filters.push_back (&lz4);
+
+  kb.save_context (settings);
+
+  std::cerr << "loading from buffer_size_test_3.kb.lz4: ";
+
+  settings.filename = "buffer_size_test_3.kb.lz4";
+  
+  kb.load_context (settings);
+
+  if (kb.get ("data").size () == 2000000)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    kb.print ();
+  }
+#endif  
+}
+
 void handle_arguments (int argc, char ** argv)
 {
   for (int i = 1; i < argc; ++i)
@@ -721,6 +764,8 @@ int main (int argc, char * argv[])
   test_checkpoints_diff ();
 
   test_buffer_size ();
+
+  test_compress ();
 
   if (madara_fails > 0)
   {

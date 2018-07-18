@@ -1,11 +1,19 @@
 feature (android) {
    includes += $(BOOST_ANDROID_ROOT)/build/$(ANDROID_ARCH)/include
    libpaths += $(BOOST_ANDROID_ROOT)/build/$(ANDROID_ARCH)/lib
-
-
+   libpaths += $(ZMQ_ROOT)/lib
+   
   verbatim (make, local, true) {
     SYSROOT = $(NDK_TOOLS)/sysroot
-    LDLIBS = -l:libboost_system.a -llog -lc++_shared
+    
+    ZMQ_LIB = ""
+
+    ifeq ($(ZMQ),1) 
+        ZMQ_LIB=-lzmq
+    endif
+
+    LDLIBS = -l:libboost_system.a -llog -lc++_shared $(ZMQ_LIB)
+  
    ifeq ($(ANDROID_ARCH),arm)
       CROSS_COMPILE=arm-linux-androideabi-
    else ($(ANDROID_ARCH),armeabi-v7a)
@@ -13,10 +21,19 @@ feature (android) {
    else ($(ANDROID_ARCH),x86)
       CROSS_COMPILE=i686-linux-android-
    else
-      CROSS_COMPILE=$(ANDROID_ARCH)-linux-android-
+      CROSS_COMPILE=$(ANDROID_ARCH)-linux-android
     endif
+
+   
 
     CXX = $(NDK_TOOLS)/bin/$(CROSS_COMPILE)clang++
     CC = $(NDK_TOOLS)/bin/$(CROSS_COMPILE)clang
   }
+
+
+  
+
+   
+  
+  
 }
