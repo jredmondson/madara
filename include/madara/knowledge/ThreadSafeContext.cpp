@@ -719,13 +719,13 @@ ThreadSafeContext::update_record_from_external (
     // if we do not have enough quality to update the variable
     // return -2
     if (rhs.quality < found->second.quality)
-      result = -2;
+      return -2;
 
     // if we have the same quality, but our clock value
     // is less than what we've already seen, then return -3
     else if (rhs.quality == found->second.quality &&
              rhs.clock < found->second.clock)
-      result = -3;
+      return -3;
 
     // if we reach this point, then the record is safe to copy
     found->second = rhs;
