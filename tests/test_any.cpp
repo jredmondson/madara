@@ -253,6 +253,8 @@ void test_map(T &kb)
 
   std::string id;
   kb.load_context("/tmp/madara_test_map.kb", id);
+  kb.to_string(kb_dump);
+  VAL(kb_dump);
   TEST_EQ(kb.get("hello").template get_any_ref<std::string>(), "world");
   TEST_EQ(kb.get("asdf").template get_any_ref<std::vector<std::string>>()[1], "b");
 }

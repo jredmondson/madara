@@ -723,6 +723,10 @@ ThreadSafeContext::update_record_from_external (
                          std::forward_as_tuple(rhs));
     found = ret.first;
 
+    if (!ret.second) {
+      ret.first->second = rhs;
+    }
+
     mark_and_signal (&*found, settings);
   }
 
