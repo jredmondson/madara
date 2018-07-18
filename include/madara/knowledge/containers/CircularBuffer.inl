@@ -75,8 +75,8 @@ inline CircularBuffer::CircularBuffer (
   const std::string & name,
   KnowledgeBase & knowledge,
   const KnowledgeUpdateSettings & settings)
-: context_ (&(knowledge.get_context ())), name_ (name),
-  settings_ (settings) 
+: context_ (&(knowledge.get_context ())), name_(name),
+  settings_ (settings)
 {
   check_name (__func__);
 
@@ -88,8 +88,8 @@ inline CircularBuffer::CircularBuffer (
   const std::string & name,
   Variables & knowledge,
   const KnowledgeUpdateSettings & settings)
-: context_ (knowledge.get_context ()), name_ (name),
-  settings_ (settings) 
+: context_ (knowledge.get_context ()), name_(name),
+  settings_ (settings)
 {
   check_name (__func__);
 
@@ -121,7 +121,7 @@ inline CircularBuffer::CircularBuffer (
   int size,
   const KnowledgeUpdateSettings & settings)
 : context_ (knowledge.get_context ()), name_ (name),
-  settings_ (settings) 
+  settings_ (settings)
 {
   check_name (__func__);
 
@@ -402,6 +402,8 @@ CircularBuffer::set_name (
   if (name != "")
   {
     ContextGuard context_guard (knowledge);
+    name_ = name;
+    context_ = &(knowledge.get_context ());
     index_.set_name (name + ".index", knowledge);
     buffer_.set_name (name, knowledge);
     if (buffer_.size () == 0 && index_ != -1)
@@ -423,6 +425,8 @@ CircularBuffer::set_name (const std::string & name,
   if (name != "")
   {
     ContextGuard context_guard (*knowledge.get_context ());
+    name_ = name;
+    context_ = knowledge.get_context ();
     index_.set_name (name + ".index", knowledge);
     buffer_.set_name (name, knowledge);
     if (buffer_.size () == 0 && index_ != -1)

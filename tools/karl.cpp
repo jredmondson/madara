@@ -138,6 +138,8 @@ void handle_arguments (int argc, char ** argv)
         "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "  [-lcp|--load-checkpoint-prefix prfx]\n" \
         "                           prefix of knowledge to load from checkpoint\n" \
+        "  [-ls|--load-size bytes]\n" \
+        "                           size of buffer needed for file load\n" \
         "  [-lt|--load-transport file] a file to load transport settings from\n" \
         "  [-ltp|--load-transport-prefix prfx] prefix of saved settings\n" \
         "  [-ltt|--load-transport-text file] a text file to load transport settings from\n" \
@@ -150,6 +152,8 @@ void handle_arguments (int argc, char ** argv)
         "                           binary checkpoint\n" \
         "  [-scp|--save-checkpoint-prefix prfx]\n" \
         "                           prefix of knowledge to save in checkpoint\n" \
+        "  [-ss|--save-size bytes]\n" \
+        "                           size of buffer needed for file saves\n" \
         "  [-sj|--save-json file]   save the resulting knowledge base as JSON\n" \
         "  [-st|--save-transport file] a file to save transport settings to\n" \
         "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
@@ -237,6 +241,16 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         load_checkpoint_settings.prefixes.push_back (argv[i + 1]);
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-ls" || arg1 == "--load-size")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> load_checkpoint_settings.buffer_size;
       }
 
       ++i;
@@ -344,6 +358,16 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         save_checkpoint_settings.prefixes.push_back (argv[i + 1]);
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-ss" || arg1 == "--save-size")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> save_checkpoint_settings.buffer_size;
       }
 
       ++i;
