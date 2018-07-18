@@ -105,7 +105,7 @@ void test_shared_record (void)
 
 int main (int, char **)
 {
-  TEST_EQ(sizeof(KnowledgeRecord), 48UL);
+  VAL(sizeof(KnowledgeRecord));
 
   test_unshared_record ();
   test_shared_record ();
