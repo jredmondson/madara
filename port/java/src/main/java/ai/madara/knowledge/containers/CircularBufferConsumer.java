@@ -57,45 +57,46 @@ import ai.madara.knowledge.Variables;
  * A facade for a dynamically typed vector within a knowledge base.
  **/
 
-public class CircularBuffer extends MadaraJNI
+public class CircularBufferConsumer extends MadaraJNI
 {
-  private native long jni_CircularBuffer();
-  private native long jni_CircularBuffer(long cptr);
-  private static native void jni_freeCircularBuffer(long cptr);
-  private native void jni_addRecord(long cptr, long record);
-  private native void jni_addRecordVector(long cptr, long[] recordVector);
-  private native long jni_getRecord(long cptr);
-  private native Object[] jni_getEarliestRecordVector(long cptr, int count);
-  private native Object[] jni_getLatestRecordVector(long cptr, int count);
+  private native long jni_CircularBufferConsumer();
+  private native long jni_CircularBufferConsumer(long cptr);
+  private static native void jni_freeCircularBufferConsumer(long cptr);
+  private native long jni_consumeRecord(long cptr);
+  private native Object[] jni_consumeEarliestRecordVector(long cptr, int count);
+  private native Object[] jni_consumeLatestRecordVector(long cptr, int count);
   private native long jni_inspectRecord(long cptr, int position);
   private native Object[] jni_inspectRecordVector(
     long cptr, int position, int count);
+  private native long jni_peekRecord(long cptr);
+  private native Object[] jni_peekRecordVector(long cptr, int count);
   private native java.lang.String jni_getName(long cptr);
   private native void jni_setName(long cptr, long type, long kb,
     java.lang.String name);
+  private native void jni_setIndex(long cptr, long index);
+  private native long jni_remaining(long cptr);
+  private native void jni_resync(long cptr);
   private native long jni_size(long cptr);
-  private native void jni_clear(long cptr);
   private native long jni_count(long cptr);
-  private native void jni_resize(long cptr, long length);
-  private native void jni_setSettings(long cptr, long settings);
+  private native void jni_resize(long cptr);
 
   private boolean manageMemory = true;
 
   /**
    * Default constructor
    **/
-  public CircularBuffer()
+  public CircularBufferConsumer()
   {
-    setCPtr(jni_CircularBuffer());
+    setCPtr(jni_CircularBufferConsumer());
   }
 
   /**
    * Copy constructor
    * @param input  instance to copy
    **/
-  public CircularBuffer(CircularBuffer input)
+  public CircularBufferConsumer(CircularBufferConsumer input)
   {
-    setCPtr(jni_CircularBuffer(input.getCPtr()));
+    setCPtr(jni_CircularBufferConsumer(input.getCPtr()));
   }
 
   /**
@@ -104,9 +105,9 @@ public class CircularBuffer extends MadaraJNI
    * @param cptr C pointer to the object
    * @return a new java instance of the underlying pointer
    */
-  public static CircularBuffer fromPointer(long cptr)
+  public static CircularBufferConsumer fromPointer(long cptr)
   {
-    CircularBuffer ret = new CircularBuffer();
+    CircularBufferConsumer ret = new CircularBufferConsumer();
     ret.manageMemory = true;
     ret.setCPtr(cptr);
     return ret;
@@ -119,20 +120,19 @@ public class CircularBuffer extends MadaraJNI
    * @param shouldManage  if true, manage the pointer
    * @return a new java instance of the underlying pointer
    */
-  public static CircularBuffer fromPointer(long cptr, boolean shouldManage)
+  public static CircularBufferConsumer fromPointer(long cptr, boolean shouldManage)
   {
-    CircularBuffer ret = new CircularBuffer();
+    CircularBufferConsumer ret = new CircularBufferConsumer();
     ret.manageMemory=shouldManage;
     ret.setCPtr(cptr);
     return ret;
   }
 
   /**
-   * Inspects the record at the specified position
+   * Inspects the record at the specified position from local index
    *
-   * @param  position   position in the queue to inspect
-   * @return   the record at the position (uncreated record
-   *           if position is inaccessible)
+   * @param  position   position from local to inspect
+   * @return   the record at the position
    */
   public KnowledgeRecord inspect(int position) throws MadaraDeadObjectException
   {
@@ -140,12 +140,11 @@ public class CircularBuffer extends MadaraJNI
   }
 
   /**
-   * Inspects the record at the specified position
+   * Inspects the record at the specified position from local index
    *
-   * @param  position   position in the queue to inspect
+   * @param  position   position from local to inspect
    * @param  count      max number of elements to return
-   * @return   the record at the position (uncreated record
-   *           if position is inaccessible)
+   * @return   the records at the position
    */
   public KnowledgeRecord [] inspect(int position, int count)
     throws MadaraDeadObjectException
@@ -160,26 +159,24 @@ public class CircularBuffer extends MadaraJNI
   }
 
   /**
-   * Attempts to dequeue a record
-   * @return  next record in the queue. An uncreated record if empty and
-   * waitForRecord is false.
+   * Attempts to consume a record from the local index
+   * @return  the record
    */
-  public KnowledgeRecord get() throws MadaraDeadObjectException
+  public KnowledgeRecord consume() throws MadaraDeadObjectException
   {
-    return KnowledgeRecord.fromPointer(jni_getRecord(getCPtr()));
+    return KnowledgeRecord.fromPointer(jni_consumeRecord(getCPtr()));
   }
 
   /**
-   * Gets earliest records in the buffer up to a certain count
+   * Consumes earliest records in the buffer up to a certain count
    *
    * @param  count      max number of elements to return
-   * @return   the record at the position (uncreated record
-   *           if position is inaccessible)
+   * @return   the records
    */
-  public KnowledgeRecord [] getEarliest(int count)
+  public KnowledgeRecord [] consumeEarliest(int count)
     throws MadaraDeadObjectException
   {
-    Object[] objs = jni_getEarliestRecordVector(getCPtr(), count);
+    Object[] objs = jni_consumeEarliestRecordVector(getCPtr(), count);
     KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
     for (int i = 0; i < objs.length; ++i)
     {
@@ -189,16 +186,43 @@ public class CircularBuffer extends MadaraJNI
   }
 
   /**
-   * Gets latest records in the buffer up to a certain count
+   * Consumes earliest records in the buffer up to a certain count.
+   * Local index will be updated to the producer's index
    *
    * @param  count      max number of elements to return
-   * @return   the record at the position (uncreated record
-   *           if position is inaccessible)
+   * @return   the records
    */
-  public KnowledgeRecord [] getLatest(int count)
+  public KnowledgeRecord [] consumeLatest(int count)
     throws MadaraDeadObjectException
   {
-    Object[] objs = jni_getLatestRecordVector(getCPtr(), count);
+    Object[] objs = jni_consumeLatestRecordVector(getCPtr(), count);
+    KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
+    for (int i = 0; i < objs.length; ++i)
+    {
+      records[i] = (KnowledgeRecord)objs[i];
+    }
+    return records;
+  }
+
+  /**
+   * Attempts to look at the most recent added record 
+   * @return  the record
+   */
+  public KnowledgeRecord peek() throws MadaraDeadObjectException
+  {
+    return KnowledgeRecord.fromPointer(jni_peekRecord(getCPtr()));
+  }
+
+  /**
+   * Attempts to look at the most recent added records up to a certain count 
+   *
+   * @param  count      max number of elements to return
+   * @return   the records
+   */
+  public KnowledgeRecord [] peekLatest(int count)
+    throws MadaraDeadObjectException
+  {
+    Object[] objs = jni_peekRecordVector(getCPtr(), count);
     KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
     for (int i = 0; i < objs.length; ++i)
     {
@@ -218,47 +242,11 @@ public class CircularBuffer extends MadaraJNI
   }
 
   /**
-   * Resizes the vector
-   *
-   * @param  length   new number of elements of the vector
+   * Resizes the buffer to match the producer buffer length 
    */
-  public void resize (long length) throws MadaraDeadObjectException
+  public void resize () throws MadaraDeadObjectException
   {
-    jni_resize(getCPtr(), length);
-  }
-
-  /**
-   * Attempts to enqueue a record
-   *
-   * @param  record  the new record to place on the queue
-   * @return true if the queue now contains the record. False is returned if
-   *         there was not enough room in the queue.
-   *
-   */
-  public void add(KnowledgeRecord record) throws MadaraDeadObjectException
-  {
-    jni_addRecord(getCPtr(), record.getCPtr());
-  }
-
-  /**
-   * Attempts to enqueue a double
-   *
-   * @param  value  the new value to place on the queue
-   * @return true if the queue now contains the record. False is returned if
-   *         there was not enough room in the queue.
-   *
-   */
-  public void add(KnowledgeRecord[] records)
-    throws MadaraDeadObjectException
-  {
-    long [] record_ptrs = new long [records.length];
-
-    for (int i = 0; i < records.length; ++i)
-    {
-      record_ptrs[i] = records[i].getCPtr();
-    }
-
-    jni_addRecordVector(getCPtr(), record_ptrs);
+    jni_resize(getCPtr());
   }
 
   /**
@@ -284,13 +272,13 @@ public class CircularBuffer extends MadaraJNI
   }
 
   /**
-   * Sets the settings for updating variables in the Knowledge Base
+   * Returns the remaining records from local index to producer index
    *
-   * @param  settings  the settings to use for updating the Knowledge Base
+   * @return  the maximum number of records in the queue
    */
-  public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
+  public long remaining() throws MadaraDeadObjectException
   {
-    jni_setSettings(getCPtr(), settings.getCPtr());
+    return jni_remaining(getCPtr());
   }
 
   /**
@@ -304,6 +292,16 @@ public class CircularBuffer extends MadaraJNI
   }
 
   /**
+   * Returns the maximum size of the queue
+   *
+   * @return  the maximum number of records in the queue
+   */
+  public void setIndex(long index) throws MadaraDeadObjectException
+  {
+    jni_setIndex(getCPtr(), index);
+  }
+
+  /**
    * Returns the number of records currently in the queue
    *
    * @return  the number of elements in the queue
@@ -314,11 +312,11 @@ public class CircularBuffer extends MadaraJNI
   }
 
   /**
-   * Clears the buffer of all records and resets index
+   * Resyncs the local index to the producer index
    */
-  public void clear()
+  public void resync()
   {
-    jni_clear(getCPtr());
+    jni_resync(getCPtr());
   }
 
   /**
@@ -329,7 +327,7 @@ public class CircularBuffer extends MadaraJNI
   {
     if (manageMemory)
     {
-      jni_freeCircularBuffer(getCPtr());
+      jni_freeCircularBufferConsumer(getCPtr());
       setCPtr(0);
     }
   }

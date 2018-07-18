@@ -345,6 +345,22 @@ CircularBufferConsumer::resize (void)
 }
 
 inline void
+CircularBufferConsumer::resync (void)
+{
+  if (context_ && name_ != "")
+  {
+    ContextGuard context_guard (*context_);
+
+    local_index_ = *index_;
+  }
+  else
+  {
+    throw exceptions::ContextException ("CircularBufferConsumer::resync: "
+      " context is null or name hasn't been set.");
+  }
+}
+
+inline void
 CircularBufferConsumer::set_name (
   const std::string & name, KnowledgeBase & knowledge)
 {

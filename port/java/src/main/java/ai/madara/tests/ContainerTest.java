@@ -51,8 +51,9 @@ import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.KnowledgeBase;
 import ai.madara.knowledge.KnowledgeRecord;
 import ai.madara.knowledge.UpdateSettings;
-import ai.madara.knowledge.containers.Collection;
 import ai.madara.knowledge.containers.CircularBuffer;
+import ai.madara.knowledge.containers.CircularBufferConsumer;
+import ai.madara.knowledge.containers.Collection;
 import ai.madara.knowledge.containers.Double;
 import ai.madara.knowledge.containers.DoubleVector;
 import ai.madara.knowledge.containers.FlexMap;
@@ -375,20 +376,20 @@ public class ContainerTest
     }
 
     producer.add (init_values);
-    records = producer.get_earliest (10);
+    records = producer.getEarliest (10);
 
     if (records.length != 10)
     {
       error = true;
       System.out.println(
-        "  FAIL: CircularBuffer.get_earliest() returned " +
+        "  FAIL: CircularBuffer.getEarliest() returned " +
         records.length + " records.");
         error = true;
     }
     else
     {
       System.out.println(
-        "  SUCCESS: CircularBuffer.get_earliest() returned 10 records.");
+        "  SUCCESS: CircularBuffer.getEarliest() returned 10 records.");
     }
 
     for (int i = 0; i < records.length; ++i)
@@ -396,7 +397,7 @@ public class ContainerTest
       if (records[i].toLong() != (long)i)
       {
         System.out.println(
-          "  FAIL: CircularBuffer.get_earliest() returned records[" + i +
+          "  FAIL: CircularBuffer.getEarliest() returned records[" + i +
           "]=" + records[i] + " instead of " + i + ".");
           error = true;
       }
@@ -408,19 +409,19 @@ public class ContainerTest
       record.free ();
     }
 
-    records = producer.get_latest (10);
+    records = producer.getLatest  (10);
 
     if (records.length != 10)
     {
       error = true;
       System.out.println(
-        "  FAIL: CircularBuffer.get_latest() returned " +
+        "  FAIL: CircularBuffer.getLatest () returned " +
         records.length + " records.");
     }
     else
     {
       System.out.println(
-        "  SUCCESS: CircularBuffer.get_latest() returned 10 records.");
+        "  SUCCESS: CircularBuffer.getLatest () returned 10 records.");
     }
 
     for (int i = 0; i < records.length; ++i)
@@ -428,7 +429,123 @@ public class ContainerTest
       if (records[i].toLong() != (long)(9 - i))
       {
         System.out.println(
-          "  FAIL: CircularBuffer.get_latest() returned records[" + i +
+          "  FAIL: CircularBuffer.getLatest () returned records[" + i +
+          "]=" + records[i] + " instead of " + i + ".");
+        error = true;
+      }
+    }
+
+    // clean up
+    for (KnowledgeRecord record : records)
+    {
+      record.free ();
+    }
+
+    // clean up
+    for (KnowledgeRecord record : init_values)
+    {
+      record.free ();
+    }
+    
+    if(error)
+      knowledge.print();
+  }
+
+  public static void testCircularBufferConsumer()
+    throws MadaraDeadObjectException
+  {
+    boolean error = false;
+
+    KnowledgeBase knowledge = new KnowledgeBase();
+    CircularBuffer producer = new CircularBuffer();
+    CircularBufferConsumer consumer = new CircularBufferConsumer();
+    UpdateSettings settings = new UpdateSettings();
+    settings.setTreatGlobalsAsLocals(true);
+    producer.setSettings(settings);
+
+    producer.setName(knowledge, "buffer");
+    consumer.setName(knowledge, "buffer");
+    producer.resize(10);
+    consumer.resize();
+
+    KnowledgeRecord [] init_values = new KnowledgeRecord [10];
+    KnowledgeRecord [] records;
+
+    for (long i = 0; i < 10; ++i)
+      init_values[(int)i] = new KnowledgeRecord (i); 
+
+    producer.add (init_values[0]);
+
+    long actual_value = consumer.consume().toLong ();
+
+    if(actual_value == 0)
+    {
+      System.out.println("  SUCCESS: CircularBufferConsumer.consume() returned 0.");
+    }
+    else
+    {
+      System.out.println("  FAIL: CircularBufferConsumer.consume() returned " + 
+        actual_value);
+      error = true;
+    }
+
+    producer.add (init_values);
+    records = consumer.consumeEarliest (10);
+
+    if (records.length != 10)
+    {
+      error = true;
+      System.out.println(
+        "  FAIL: CircularBufferConsumer.consumeEarliest() returned " +
+        records.length + " records.");
+        error = true;
+    }
+    else
+    {
+      System.out.println(
+        "  SUCCESS: CircularBufferConsumer.consumeEarliest() returned 10 records.");
+    }
+
+    for (int i = 0; i < records.length; ++i)
+    {
+      if (records[i].toLong() != (long)i)
+      {
+        System.out.println(
+          "  FAIL: CircularBufferConsumer.consumeEarliest() returned records[" + i +
+          "]=" + records[i] + " instead of " + i + ".");
+          error = true;
+      }
+    }
+
+    // clean up
+    for (KnowledgeRecord record : records)
+    {
+      record.free ();
+    }
+
+    producer.add (init_values);
+
+    records = consumer.consumeLatest (10);
+
+    if (records.length != 10)
+    {
+      error = true;
+      System.out.println(
+        "  FAIL: CircularBufferConsumer.consumeLatest() returned " +
+        records.length + " records.");
+    }
+    else
+    {
+      System.out.println(
+        "  SUCCESS: CircularBufferConsumer.consumeLatest() returned 10 records.");
+    }
+
+    for (int i = 0; i < records.length; ++i)
+    {
+      if (records[i].toLong() != (long)(9 - i))
+      {
+        System.out.println(
+          "  FAIL: CircularBufferConsumer.consumeLatest() returned records[" + i +
           "]=" + records[i] + " instead of " + i + ".");
         error = true;
       }
@@ -700,5 +817,6 @@ public class ContainerTest
     testFlexMap();
     testCollection();
     testCircularBuffer();
+    testCircularBufferConsumer();
   }
 }
