@@ -524,7 +524,7 @@ project (Test_Modifieds) : using_madara, no_karl, no_xml, null_lock, using_simti
   }
 }
 
-project (Test_Checkpointing) : using_madara, using_ssl, no_karl, no_xml, null_lock, using_simtime {
+project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_checkpointing
   

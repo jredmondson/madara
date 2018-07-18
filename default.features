@@ -31,6 +31,10 @@ docs                    = 0
 /// KaRL Automated Testing System
 kats                    = 0
 
+/// @feature lz4
+/// Enable this feature if you would like to build with lz4 support (filter)
+lz4                    = 0
+
 /// @feature ndds
 /// Enable this feature if you would like to generate NDDS Transports
 ndds                    = 0

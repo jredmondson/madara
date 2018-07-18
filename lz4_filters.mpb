@@ -1,0 +1,13 @@
+feature(lz4) {
+  macros += _USE_LZ4_
+
+  Header_Files {
+    $(LZ4_ROOT)/lib/lz4.h
+    include/madara/filters/lz4
+  }
+
+  Source_Files {
+    $(LZ4_ROOT)/lib/lz4.c
+    include/madara/filters/lz4
+  }
+}

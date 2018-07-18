@@ -1,0 +1,3 @@
+feature (lz4) {
+  macros += _USE_LZ4_
+}
