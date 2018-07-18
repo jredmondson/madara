@@ -21,9 +21,11 @@ env:
     - CORES=6
 
 matrix:
+  allow_failures:
+    - env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
   include:
-      ################MAC#####################
-
+      ##################################
+MAC###
       # clang, osx, no ssl
     - compiler: clang
       env: NAME="OSX 10.13 clang" CLANG="clang"
