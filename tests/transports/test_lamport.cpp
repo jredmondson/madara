@@ -18,7 +18,7 @@ namespace transport = madara::transport;
 std::string host ("");
 const std::string default_multicast ("239.255.0.1:4150");
 madara::transport::QoSTransportSettings settings;
-double test_time (60);
+double test_time (20);
 size_t data_size (128);
 double send_hertz (-1);
 size_t num_vars (1);
@@ -257,9 +257,20 @@ int main (int argc, char ** argv)
       << test_time << " s on " << transport::types_to_string (settings.type)
       << " transport\n";
 
+    size_t counter = 0;
+    knowledge::KnowledgeUpdateSettings decrementer;
+    decrementer.clock_increment = -5;
     // use epoch enforcer"
     while (!enforcer.is_done ())
     {
+      // Periodically rollback lamport clock to check enforcement
+      if (counter % 10 == 0) {
+        knowledge::ContextGuard guard(kb);
+        int c = kb.get_context().get_clock();
+        kb.get_context().inc_clock(decrementer);
+      }
+
+      ++counter;
       ++var;
 
       kb.send_modifieds ();
@@ -298,6 +309,9 @@ int main (int argc, char ** argv)
         cur_container_kr_clock = var.to_record ().clock;
         cur_value = *var;
       }
+
+      //std::cerr << cur_context_clock << " " <<  cur_get_kr_clock <<
+        //" " << cur_container_kr_clock << " " << cur_value << std::endl;
 
       if (cur_value < last_value)
       {
