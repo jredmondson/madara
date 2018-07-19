@@ -266,7 +266,6 @@ int main (int argc, char ** argv)
       // Periodically rollback lamport clock to check enforcement
       if (counter % 10 == 0) {
         knowledge::ContextGuard guard(kb);
-        int c = kb.get_context().get_clock();
         kb.get_context().inc_clock(decrementer);
       }
 

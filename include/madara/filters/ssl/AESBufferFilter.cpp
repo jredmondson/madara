@@ -223,4 +223,20 @@ madara::filters::AESBufferFilter::decode (
   return plaintext_len;
 }
 
+std::string
+madara::filters::AESBufferFilter::get_id (void)
+{
+  return "ssl";
+}
+
+      /**
+       * Gets the version of the filter. @see madara::utility::get_uint_version
+       * for one way to get this from a string version
+       **/
+uint32_t
+madara::filters::AESBufferFilter::get_version (void)
+{
+  return madara::utility::get_uint_version ("1.0.0");
+}
+
 #endif // _USE_SSL_

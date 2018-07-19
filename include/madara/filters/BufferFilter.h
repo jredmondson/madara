@@ -51,6 +51,17 @@ namespace madara
       **/
       virtual int decode (unsigned char * source, int size, int max_size) const = 0;
 
+      /**
+       * Gets the id of the filter. This is used in the serialization process
+       * for transports and checkpoints to identify which filter is used.
+       **/
+      virtual std::string get_id (void) = 0;
+
+      /**
+       * Gets the version of the filter. @see madara::utility::get_uint_version
+       * for one way to get this from a string version
+       **/
+      virtual uint32_t get_version (void) = 0;
     };
 
     typedef  std::list <BufferFilter *>   BufferFilters;

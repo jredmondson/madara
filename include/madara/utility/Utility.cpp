@@ -29,9 +29,8 @@ get_version (void)
 
 
 uint32_t
-get_uint_version (void)
+get_uint_version (const std::string & str_version)
 {
-  std::string str_version = get_version ();
   unsigned char version_buffer[4] = {0,0,0,0};
   uint32_t * return_value = (uint32_t *) version_buffer;
   unsigned int major, minor, revision;

@@ -696,6 +696,72 @@ void test_buffer_size (void)
 
 }
 
+void test_filter_header (void)
+{
+  std::cerr <<
+    "\n*********** TESTING ENCODING FILTER HEADER TO FILE *************.\n";
+
+  knowledge::KnowledgeBase kb;
+  knowledge::CheckpointSettings settings;
+  unsigned char * buffer = new unsigned char [1000000];
+
+  std::string story =
+    "Three blind mice accidentally walked into a cat bar.\n"
+    "The first mouse went up to the bartender and started\n"
+    "to order a drink, but before he could say anything, the\n"
+    "bartender, who was a cat, ate him. The second mouse, who\n"
+    "was also deaf, walked up to the bar and was promptly also eaten\n"
+    "by cats on nearby stools. The third mouse took off his shades,\n"
+    "looked into the camera, at the person reading this, and\n"
+    "said 'What are you expecting? A joke? This is a test for\n"
+    "checkpointing. My two friends would still be alive if you\n"
+    "would have stopped reading at the 3rd line. You're a monster!'\n"
+    "#schrodinger_mouse_2018.\n";
+
+  kb.set ("story", story);
+
+#ifdef _USE_LZ4_
+  filters::LZ4BufferFilter lz4_filter;
+  settings.buffer_filters.push_back (&lz4_filter);
+#endif
+
+#ifdef _USE_SSL_
+  filters::AESBufferFilter ssl_filter;
+  ssl_filter.generate_key ("#schrodinger_mouse_2018");
+  settings.buffer_filters.push_back (&ssl_filter);
+#endif
+
+#ifdef _USE_LZ4_
+  settings.buffer_filters.push_back (&lz4_filter);
+#endif
+
+  memcpy (buffer, story.c_str (), story.size ());
+
+  std::cerr <<
+    "  Testing encode and then decode with existing buffer filters...";
+
+  int init_size = (int)story.size ();
+  logger::global_logger->set_level (4);
+  int encoded = settings.encode (buffer, init_size, 1000000);
+  int decoded = settings.decode (buffer, encoded, 1000000);
+  logger::global_logger->set_level (1);
+
+  std::cerr << " init=" << init_size << "encoded=" << encoded 
+    << " decoded=" << decoded << ": ";
+
+  if (decoded == init_size)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+  }
+  buffer[decoded] = 0;
+
+  std::cerr << (char*)(buffer) << "\n";
+}
+
 int main (int argc, char * argv[])
 {
   handle_arguments (argc, argv);
@@ -766,6 +832,8 @@ int main (int argc, char * argv[])
   test_buffer_size ();
 
   test_compress ();
+
+  test_filter_header ();
 
   if (madara_fails > 0)
   {
