@@ -13,6 +13,14 @@
 #include "madara/filters/GenericFilters.h"
 #include "madara/logger/GlobalLogger.h"
 
+#ifdef _USE_SSL_
+  #include "madara/filters/ssl/AESBufferFilter.h"
+#endif
+
+#ifdef _USE_LZ4_
+  #include "madara/filters/lz4/LZ4BufferFilter.h"
+#endif
+
 // convenience namespaces and typedefs
 namespace knowledge = madara::knowledge;
 namespace transport = madara::transport;
@@ -74,6 +82,14 @@ bool waiting (false), waiting_for_periodic (false);
 double wait_time (0.0);
 double wait_for_periodic (0.0);
 double frequency (-1.0);
+
+#ifdef _USE_SSL_
+  std::vector<filters::AESBufferFilter> ssl_filters;
+#endif
+
+#ifdef _USE_LZ4_
+  std::vector<filters::LZ4BufferFilter> lz4_filters;
+#endif
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
@@ -138,11 +154,11 @@ void handle_arguments (int argc, char ** argv)
         "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "  [-lcp|--load-checkpoint-prefix prfx]\n" \
         "                           prefix of knowledge to load from checkpoint\n" \
-        "  [-ls|--load-size bytes]\n" \
-        "                           size of buffer needed for file load\n" \
+        "  [-ls|--load-size bytes]  size of buffer needed for file load\n" \
         "  [-lt|--load-transport file] a file to load transport settings from\n" \
         "  [-ltp|--load-transport-prefix prfx] prefix of saved settings\n" \
         "  [-ltt|--load-transport-text file] a text file to load transport settings from\n" \
+        "  [-lz4|--lz4]             add lz4 compression filter\n" \
         "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
         "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
@@ -152,10 +168,10 @@ void handle_arguments (int argc, char ** argv)
         "                           binary checkpoint\n" \
         "  [-scp|--save-checkpoint-prefix prfx]\n" \
         "                           prefix of knowledge to save in checkpoint\n" \
-        "  [-ss|--save-size bytes]\n" \
-        "                           size of buffer needed for file saves\n" \
         "  [-sj|--save-json file]   save the resulting knowledge base as JSON\n" \
-        "  [-st|--save-transport file] a file to save transport settings to\n" \
+        "  [-ss|--save-size bytes]  size of buffer needed for file saves\n" \
+        "  [-ssl|--ssl pass]        add an ssl filter with a password\n" \
+        "  [-st|--save-transsport file] a file to save transport settings to\n" 
         "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
         "  [-stt|--save-transport-text file] a text file to save transport settings to\n" \
         "  [-t|--time time]         time to wait for results. Same as -w.\n" \
@@ -288,6 +304,28 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-lz4l" || arg1 == "--lz4-load")
+    {
+#ifdef _USE_LZ4_
+      lz4_filters.resize (lz4_filters.size () + 1);
+      load_checkpoint_settings.buffer_filters.push_back (
+        &(*lz4_filters.rbegin ()));
+#else
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+        "ERROR: parameter (-lz4l|--lz4-load) requires feature lz4\n");
+#endif
+    }
+    else if (arg1 == "-lz4s" || arg1 == "--lz4-save")
+    {
+#ifdef _USE_LZ4_
+      lz4_filters.push_back (filters::LZ4BufferFilter ());
+      save_checkpoint_settings.buffer_filters.push_back (
+        &(*lz4_filters.rbegin ()));
+#else
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+        "ERROR: parameter (-lz4s|--lz4-save) requires feature lz4\n");
+#endif
+    }
     else if (arg1 == "-m" || arg1 == "--multicast")
     {
       if (i + 1 < argc)
@@ -371,6 +409,50 @@ void handle_arguments (int argc, char ** argv)
       }
 
       ++i;
+    }
+    else if (arg1 == "-ssll" || arg1 == "--ssl-load")
+    {
+#ifdef _USE_SSL_
+      if (i + 1 < argc)
+      {
+        ssl_filters.resize (ssl_filters.size () + 1);
+        ssl_filters[ssl_filters.size () - 1].generate_key (argv[i + 1]);
+        load_checkpoint_settings.buffer_filters.push_back (
+          &(*ssl_filters.rbegin ()));
+        ++i;
+      }
+      else
+      {
+        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+          "ERROR: parameter (-ssll|--ssl-load) requires password\n");
+      }
+#else
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+        "ERROR: parameter (-ssll|--ssl-load) requires feature ssl\n");
+      ++i;
+#endif
+    }
+    else if (arg1 == "-ssls" || arg1 == "--ssl-save")
+    {
+#ifdef _USE_SSL_
+      if (i + 1 < argc)
+      {
+        ssl_filters.resize (ssl_filters.size () + 1);
+        ssl_filters[ssl_filters.size () - 1].generate_key (argv[i + 1]);
+        save_checkpoint_settings.buffer_filters.push_back (
+          &(*ssl_filters.rbegin ()));
+        ++i;
+      }
+      else
+      {
+        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+          "ERROR: parameter (-ssls|--ssl-save) requires password\n");
+      }
+#else
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+        "ERROR: parameter (-ssls|--ssl-save) requires feature ssl\n");
+      ++i;
+#endif
     }
     else if (arg1 == "-st" || arg1 == "--save-transport")
     {
@@ -663,7 +745,21 @@ int main (int argc, char ** argv)
   {
     if (utility::file_exists (*i))
     {
-      expressions.push_back (knowledge.compile (utility::file_to_string (*i)));
+      // for the moment, we need to do the filter decode call ourself
+
+      std::string file_contents = utility::file_to_string (*i);
+
+      size_t size = std::max (
+        load_checkpoint_settings.buffer_size, file_contents.size ());
+
+      char * buffer_contents = new char [size];
+      strncpy (buffer_contents, file_contents.c_str (),
+        file_contents.size ());
+
+      load_checkpoint_settings.decode (buffer_contents,
+        (int)file_contents.size (), (int)size);
+      
+      expressions.push_back (knowledge.compile (buffer_contents));
     }
     else
     {

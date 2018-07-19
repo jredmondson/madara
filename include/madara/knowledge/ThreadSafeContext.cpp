@@ -1818,7 +1818,7 @@ ThreadSafeContext::save_context (
     current = checkpoint_header.write (current, max_buffer);
 
     // call decode with any buffer filters
-    int total = settings.encode ((unsigned char *)buffer.get_ptr () + 
+    int total = settings.encode (buffer.get_ptr () + 
       (int)FileHeader::encoded_size (),
       (int)meta.size - (int)FileHeader::encoded_size (), (int)max_buffer);
 
@@ -1990,18 +1990,18 @@ const CheckpointSettings & settings) const
 
     if (settings.buffer_filters.size () > 0)
     {
-      unsigned char * result_copy = new unsigned char [settings.buffer_size];
+      char * result_copy = new char [settings.buffer_size];
       memcpy (result_copy, result.c_str (), result.size () + 1);
 
       int size = settings.encode (
-        result_copy, result.size () + 1, settings.buffer_size);
+        result_copy, result.size (), settings.buffer_size);
 
-      file.write ((char *)result_copy, size);
+      file.write (result_copy, size);
       bytes_written = (int64_t)size;
     }
     else
     {
-      file.write (result.c_str (), result.size () + 1);
+      file.write (result.c_str (), result.size ());
       bytes_written = (int64_t) result.size ();
     }
 
@@ -2312,7 +2312,7 @@ ThreadSafeContext::load_context (
       (int)total_read);
 
     // call decode with any buffer filters
-    checkpoint_settings.decode ((unsigned char *)buffer.get_ptr () +
+    checkpoint_settings.decode (buffer.get_ptr () +
       (int)FileHeader::encoded_size (),
       (int)(total_read) - (int)FileHeader::encoded_size (), (int)max_buffer);
 
@@ -2875,7 +2875,7 @@ ThreadSafeContext::save_checkpoint (
       current = checkpoint_header.write (current, max_buffer);
 
       // call decode with any buffer filters
-      int total = settings.encode ((unsigned char *)buffer.get_ptr (),
+      int total = settings.encode (buffer.get_ptr (),
         (int)meta.size, (int)max_buffer);
 
       // update the meta data at the front

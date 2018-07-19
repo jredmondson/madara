@@ -507,7 +507,7 @@ madara::transport::QoSTransportSettings::filter_send (
 
 int
 madara::transport::QoSTransportSettings::filter_encode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
   // encode from front to back
   for (filters::BufferFilters::const_iterator i = buffer_filters_.begin ();
@@ -522,7 +522,7 @@ madara::transport::QoSTransportSettings::filter_encode (
 
 int
 madara::transport::QoSTransportSettings::filter_decode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
   // decode from back to front
   for (filters::BufferFilters::const_reverse_iterator i = buffer_filters_.rbegin ();

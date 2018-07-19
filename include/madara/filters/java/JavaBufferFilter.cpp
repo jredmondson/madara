@@ -75,7 +75,7 @@ madara::filters::JavaBufferFilter::~JavaBufferFilter ()
 
 int
 madara::filters::JavaBufferFilter::encode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
   madara::utility::java::Acquire_VM jvm;
   jint result (0);
@@ -132,7 +132,7 @@ madara::filters::JavaBufferFilter::encode (
 
 int
 madara::filters::JavaBufferFilter::decode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
   madara::utility::java::Acquire_VM jvm;
   jint result (0);

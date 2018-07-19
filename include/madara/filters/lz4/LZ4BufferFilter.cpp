@@ -9,7 +9,7 @@
 
 int
 madara::filters::LZ4BufferFilter::encode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
   char * source_copy = new char [buffer_size];
   memcpy (source_copy, source, size);
@@ -32,7 +32,7 @@ madara::filters::LZ4BufferFilter::encode (
 
 int
 madara::filters::LZ4BufferFilter::decode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
   char * source_copy = new char [buffer_size];
   memcpy (source_copy, source, size);

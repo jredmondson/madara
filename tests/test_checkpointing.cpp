@@ -162,7 +162,7 @@ void test_checkpoint_settings (void)
   filter.generate_key ("testPassword#tofile359");
 
   std::string test_message = "my test message";
-  unsigned char buffer[200000];
+  char buffer[200000];
   buffer[63] = 0;
 
   // copy current message into the buffer
@@ -703,7 +703,7 @@ void test_filter_header (void)
 
   knowledge::KnowledgeBase kb;
   knowledge::CheckpointSettings settings;
-  unsigned char * buffer = new unsigned char [1000000];
+  char * buffer = new char [1000000];
 
   std::string story =
     "Three blind mice accidentally walked into a cat bar.\n"

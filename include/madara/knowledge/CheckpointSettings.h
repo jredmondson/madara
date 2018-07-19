@@ -162,7 +162,7 @@ namespace madara
       * @return  the new size after encoding
       **/
       int encode (
-        unsigned char * source, int size, int max_size) const
+        char * source, int size, int max_size) const
       {
         // encode from front to back
         for (filters::BufferFilters::const_iterator i =
@@ -229,7 +229,7 @@ namespace madara
       * @return  the new size after encoding
       **/
       int decode (
-        unsigned char * source, int size, int max_size) const
+        char * source, int size, int max_size) const
       {
         // decode from back to front
         for (filters::BufferFilters::const_reverse_iterator i = 

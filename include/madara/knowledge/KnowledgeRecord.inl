@@ -1390,6 +1390,11 @@ KnowledgeRecord::set_index (size_t index, T value)
   {
     std::vector<double> tmp (int_array_->begin (), int_array_->end ());
     emplace_doubles (std::move(tmp));
+
+    if (index >= double_array_->size ())
+    {
+      double_array_->resize (index + 1);
+    }
   }
   else if (type_ != DOUBLE_ARRAY)
   {
