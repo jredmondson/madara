@@ -187,4 +187,16 @@ madara::filters::JavaBufferFilter::decode (
   return result;
 }
 
+std::string
+madara::filters::JavaBufferFilter::get_id (void)
+{
+  return "javanull";
+}
+
+uint32_t
+madara::filters::JavaBufferFilter::get_version (void)
+{
+  return madara::utility::get_uint_version ("1.0.0");
+}
+
 #endif // _MADARA_JAVA_

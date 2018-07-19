@@ -223,15 +223,62 @@ struct do_serialize
 
 } // namespace knowledge
 
+namespace utility { inline namespace core {
+
+#define MADARA_SERIALIZE_DIRECTLY(...) \
+  constexpr bool madara_serialize_directly(type<__VA_ARGS__>) { return true; }
+
+template<typename C, typename A>
+MADARA_SERIALIZE_DIRECTLY(std::basic_string<C, A>)
+
+template<typename T, typename A>
+MADARA_SERIALIZE_DIRECTLY(std::vector<T, A>)
+
+template<typename T, typename A>
+MADARA_SERIALIZE_DIRECTLY(std::list<T, A>)
+
+template<typename T, typename A>
+MADARA_SERIALIZE_DIRECTLY(std::deque<T, A>)
+
+template<typename T, typename A>
+MADARA_SERIALIZE_DIRECTLY(std::queue<T, A>)
+
+template<typename T, typename A>
+MADARA_SERIALIZE_DIRECTLY(std::stack<T, A>)
+
+template<size_t N>
+MADARA_SERIALIZE_DIRECTLY(std::bitset<N>)
+
+template<typename T, size_t N>
+MADARA_SERIALIZE_DIRECTLY(std::array<T, N>)
+
+template<typename K, typename V, typename C, typename A>
+MADARA_SERIALIZE_DIRECTLY(std::map<K, V, C, A>)
+
+template<typename K, typename V, typename H, typename A>
+MADARA_SERIALIZE_DIRECTLY(std::unordered_map<K, V, H, A>)
+
+template<typename V, typename C, typename A>
+MADARA_SERIALIZE_DIRECTLY(std::set<V, C, A>)
+
+template<typename V, typename H, typename A>
+MADARA_SERIALIZE_DIRECTLY(std::unordered_set<V, H, A>)
+
+}}
+
 } // namespace madara
 
 namespace cereal
 {
 
+constexpr bool madara_serialize_directly(...) { return false; }
+
 // Implement Cereal library serialization for types supporting for_each_field
 template<typename Archive, typename T>
 auto serialize(Archive &ar, T &&val) ->
-  ::madara::enable_if_<::madara::knowledge::supports_for_each_field<T>::value>
+  ::madara::enable_if_<::madara::knowledge::supports_for_each_field<T>::value &&
+    !madara_serialize_directly(::madara::type<::madara::decay_<T>>{})>// &&
+    //!::madara::knowledge::use_cereal_directly<::madara::decay_<T>>::value>
 {
   for_each_field(::madara::knowledge::do_serialize<Archive>{&ar},
       std::forward<T>(val));
