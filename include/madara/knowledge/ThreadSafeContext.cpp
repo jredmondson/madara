@@ -16,6 +16,7 @@
 #include <time.h>
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/DeepIterator.h"
+#include "madara/exceptions/MemoryException.h"
 
 namespace madara { namespace knowledge {
 
@@ -2515,7 +2516,8 @@ ThreadSafeContext::save_checkpoint (
         " failed to read existing file header: size=%d\n",
         (int)meta.encoded_size ());
 
-      return -1;
+      throw exceptions::MemoryException ("ThreadSafeContext::save_checkpoint:"
+        "Checkpoint file appears to have been corrupted. Bad header.");
     }
 
     meta_reader = meta.read (meta_reader, buffer_remaining);

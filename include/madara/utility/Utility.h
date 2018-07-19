@@ -49,10 +49,15 @@ namespace madara
     MADARA_EXPORT std::string get_version (void);
     
     /**
-     * Gets the MADARA version number
+     * Converts a string version to a uint32. To use this for an
+     * arbitrary version string, make sure it is in the format
+     * x[.x]*. Examples include 1, 1.2, 1.2.3, 1.2.3.4. Version
+     * components should not go above 255.
+     * @param   string_version   the string version to convert
      * @return    the MADARA 4 byte version number
      **/
-    MADARA_EXPORT uint32_t get_uint_version (void);
+    MADARA_EXPORT uint32_t get_uint_version (
+      const std::string & str_version = get_version ());
     
     /**
      * Converts a MADARA uint32_t version number to human-readable

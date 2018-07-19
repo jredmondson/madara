@@ -16,6 +16,7 @@
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/utility/Utility.h"
 #include "madara/filters/BufferFilter.h"
+#include "madara/filters/BufferFilterHeader.h"
 #include <stdio.h>
 
 namespace madara
@@ -164,10 +165,56 @@ namespace madara
         unsigned char * source, int size, int max_size) const
       {
         // encode from front to back
-        for (filters::BufferFilters::const_iterator i = buffer_filters.begin ();
-          i != buffer_filters.end (); ++i)
+        for (filters::BufferFilters::const_iterator i =
+          buffer_filters.begin (); i != buffer_filters.end (); ++i)
         {
+          madara_logger_ptr_log (logger::global_logger.get (),
+            logger::LOG_MINOR,
+            "CheckpointSettings::encode: size before encode: "
+            " %d of %d\n",
+            size, max_size);
+
           size = (*i)->encode (source, size, max_size);
+
+          madara_logger_ptr_log (logger::global_logger.get (),
+            logger::LOG_MINOR,
+            "CheckpointSettings::encode: size after encode: "
+            " %d of %d\n",
+            size, max_size);
+
+          if (max_size > size + 20 )
+          {
+            memmove (source + 20, source, size);
+
+            filters::BufferFilterHeader header;
+            header.read (*i);
+            header.size = (uint64_t)size;
+
+            int64_t buffer_remaining = 20;
+
+            header.write (
+              (char *)source, buffer_remaining);
+
+            size += (int)filters::BufferFilterHeader::encoded_size ();
+
+            madara_logger_ptr_log (logger::global_logger.get (),
+              logger::LOG_MAJOR,
+              "CheckpointSettings::encode: header: "
+              " %s:%s within size %d\n",
+              header.id,
+              utility::to_string_version (header.version).c_str (),
+              size);
+
+          }
+          else
+          {
+            std::stringstream buffer;
+            buffer << "CheckpointSettings::encode: ";
+            buffer << (size + 20) << " 20 byte size encoding cannot fit in ";
+            buffer << max_size << " byte buffer\n";
+            
+            throw exceptions::MemoryException (buffer.str ());
+          }
         }
 
         return size;
@@ -185,10 +232,71 @@ namespace madara
         unsigned char * source, int size, int max_size) const
       {
         // decode from back to front
-        for (filters::BufferFilters::const_reverse_iterator i = buffer_filters.rbegin ();
-          i != buffer_filters.rend (); ++i)
+        for (filters::BufferFilters::const_reverse_iterator i = 
+          buffer_filters.rbegin (); i != buffer_filters.rend (); ++i)
         {
-          size = (*i)->decode (source, size, max_size);
+          if (size > (int)filters::BufferFilterHeader::encoded_size ())
+          {
+            filters::BufferFilterHeader header;
+            int64_t buffer_size =
+              (int64_t)filters::BufferFilterHeader::encoded_size ();
+
+            header.read ((char *)source, buffer_size);
+
+            madara_logger_ptr_log (logger::global_logger.get (),
+              logger::LOG_MAJOR,
+              "CheckpointSettings::decode: header: "
+              " %s:%s\n",
+              header.id,
+              utility::to_string_version (header.version).c_str ());
+
+            if (header.check (*i))
+            {
+              madara_logger_ptr_log (logger::global_logger.get (),
+                logger::LOG_MAJOR,
+                "CheckpointSettings::decode: buffer filter %s is a match\n",
+                (*i)->get_id ().c_str ());
+            }
+            else
+            {
+              madara_logger_ptr_log (logger::global_logger.get (),
+                logger::LOG_MAJOR,
+                "CheckpointSettings::decode: buffer filter %s doesn't match."
+                " Could be a problem\n",
+                (*i)->get_id ().c_str ());
+            }
+            
+            madara_logger_ptr_log (logger::global_logger.get (),
+              logger::LOG_MINOR,
+              "CheckpointSettings::decode: size before decode: "
+              " %d of %d (header.size=%d)\n",
+              size, max_size, (int)header.size);
+
+            size = (*i)->decode (
+              source + filters::BufferFilterHeader::encoded_size (),
+              (int)header.size, max_size);
+
+            madara_logger_ptr_log (logger::global_logger.get (),
+              logger::LOG_MINOR,
+              "CheckpointSettings::decode: size after decode: "
+              " %d of %d (header.size=%d)\n",
+              size, max_size, (int)header.size);
+
+            if (size > 0)
+            {
+              memmove (source,
+                source + filters::BufferFilterHeader::encoded_size (), size);
+            }
+          }
+          else
+          {
+            std::stringstream buffer;
+            buffer << "CheckpointSettings::encode: ";
+            buffer << size << " byte size encoding cannot fit in ";
+            buffer << max_size << " byte buffer\n";
+            
+            throw exceptions::MemoryException (buffer.str ());
+          }
         }
 
         return size;
