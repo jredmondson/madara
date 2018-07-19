@@ -240,6 +240,7 @@ int main (int argc, char ** argv)
   containers::Integer var ("var", kb);
   utility::EpochEnforcer<utility::Clock> enforcer (1/send_hertz, test_time);
 
+  kb.get_context ().set_clock (100);
 
   // id == 0 ? "publisher" : "subscriber"
   if (settings.id == 0)
@@ -266,7 +267,7 @@ int main (int argc, char ** argv)
       // Periodically rollback lamport clock to check enforcement
       if (counter % 10 == 0) {
         knowledge::ContextGuard guard(kb);
-        int c = kb.get_context().get_clock();
+        //int c = kb.get_context().get_clock();
         kb.get_context().inc_clock(decrementer);
       }
 
