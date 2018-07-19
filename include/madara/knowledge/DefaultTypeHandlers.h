@@ -229,40 +229,40 @@ namespace utility { inline namespace core {
   constexpr bool madara_serialize_directly(type<__VA_ARGS__>) { return true; }
 
 template<typename C, typename A>
-MADARA_SERIALIZE_DIRECTLY(std::basic_string<C, A>);
+MADARA_SERIALIZE_DIRECTLY(std::basic_string<C, A>)
 
 template<typename T, typename A>
-MADARA_SERIALIZE_DIRECTLY(std::vector<T, A>);
+MADARA_SERIALIZE_DIRECTLY(std::vector<T, A>)
 
 template<typename T, typename A>
-MADARA_SERIALIZE_DIRECTLY(std::list<T, A>);
+MADARA_SERIALIZE_DIRECTLY(std::list<T, A>)
 
 template<typename T, typename A>
-MADARA_SERIALIZE_DIRECTLY(std::deque<T, A>);
+MADARA_SERIALIZE_DIRECTLY(std::deque<T, A>)
 
 template<typename T, typename A>
-MADARA_SERIALIZE_DIRECTLY(std::queue<T, A>);
+MADARA_SERIALIZE_DIRECTLY(std::queue<T, A>)
 
 template<typename T, typename A>
-MADARA_SERIALIZE_DIRECTLY(std::stack<T, A>);
+MADARA_SERIALIZE_DIRECTLY(std::stack<T, A>)
 
 template<size_t N>
-MADARA_SERIALIZE_DIRECTLY(std::bitset<N>);
+MADARA_SERIALIZE_DIRECTLY(std::bitset<N>)
 
 template<typename T, size_t N>
-MADARA_SERIALIZE_DIRECTLY(std::array<T, N>);
+MADARA_SERIALIZE_DIRECTLY(std::array<T, N>)
 
 template<typename K, typename V, typename C, typename A>
-MADARA_SERIALIZE_DIRECTLY(std::map<K, V, C, A>);
+MADARA_SERIALIZE_DIRECTLY(std::map<K, V, C, A>)
 
 template<typename K, typename V, typename H, typename A>
-MADARA_SERIALIZE_DIRECTLY(std::unordered_map<K, V, H, A>);
+MADARA_SERIALIZE_DIRECTLY(std::unordered_map<K, V, H, A>)
 
 template<typename V, typename C, typename A>
-MADARA_SERIALIZE_DIRECTLY(std::set<V, C, A>);
+MADARA_SERIALIZE_DIRECTLY(std::set<V, C, A>)
 
 template<typename V, typename H, typename A>
-MADARA_SERIALIZE_DIRECTLY(std::unordered_set<V, H, A>);
+MADARA_SERIALIZE_DIRECTLY(std::unordered_set<V, H, A>)
 
 }}
 
