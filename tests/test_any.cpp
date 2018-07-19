@@ -25,6 +25,16 @@ struct A
   }
 };
 
+namespace madara { namespace utility { inline namespace core {
+
+template<typename Fun, typename T>
+void for_each_field(Fun fun, std::vector<T> &val)
+{
+  (void)fun; (void)val;
+}
+
+}}}
+
 namespace ns
 {
   struct B
