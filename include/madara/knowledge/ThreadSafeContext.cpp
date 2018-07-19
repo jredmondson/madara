@@ -1990,13 +1990,13 @@ const CheckpointSettings & settings) const
 
     if (settings.buffer_filters.size () > 0)
     {
-      char * result_copy = new char [settings.buffer_size];
-      memcpy (buffer, result.c_str (), result.size () + 1);
+      unsigned char * result_copy = new unsigned char [settings.buffer_size];
+      memcpy (result_copy, result.c_str (), result.size () + 1);
 
       int size = settings.encode (
         result_copy, result.size () + 1, settings.buffer_size);
 
-      file.write (result_copy, size);
+      file.write ((char *)result_copy, size);
       bytes_written = (int64_t)size;
     }
     else
