@@ -169,6 +169,32 @@ CircularBufferConsumer::consume (void) const
   else return KnowledgeRecord ();
 }
 
+inline madara::knowledge::KnowledgeRecord
+CircularBufferConsumer::consume (size_t & dropped) const
+{
+  check_all (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  KnowledgeRecord::Integer index_diff = *index_ - local_index_;
+
+  dropped = get_dropped ();
+
+  if (index_diff > (KnowledgeRecord::Integer)buffer_.size ())
+  {
+    local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size ();
+  }
+
+  KnowledgeRecord::Integer cur = increment (local_index_, 1);
+
+  if (remaining () > 0)
+  {
+    ++local_index_;
+    return context_->get (buffer_.vector_[(size_t)(cur)]);
+  }
+  else return KnowledgeRecord ();
+}
+
 template <typename T> void
 CircularBufferConsumer::inspect (
   KnowledgeRecord::Integer position, T & value) const
@@ -374,6 +400,20 @@ CircularBufferConsumer::consume_latest (size_t count,
   }
 }
 
+template <typename T> void
+CircularBufferConsumer::consume_latest (size_t count,
+  std::vector <T> & values, size_t & dropped) const
+{
+  dropped = get_dropped ();
+
+  // iterate over the returned records
+  for (auto record : consume_latest (count))
+  {
+    // add them to the values
+    values.push_back (record.to_any <T> ());
+  }
+}
+
 inline std::vector <KnowledgeRecord>
 CircularBufferConsumer::consume_latest (size_t count) const
 {
@@ -398,10 +438,50 @@ CircularBufferConsumer::consume_latest (size_t count) const
   return result;
 }
 
+inline std::vector <KnowledgeRecord>
+CircularBufferConsumer::consume_latest (size_t count, size_t & dropped) const
+{
+  check_all (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  std::vector <KnowledgeRecord> result;
+
+  dropped = get_dropped ();
+
+  KnowledgeRecord::Integer cur = *index_ % buffer_.size ();
+
+  count = std::min (count, (size_t)(*index_ - local_index_));
+
+  for (size_t i = 0; i < count; ++i, cur = increment (cur, -1))
+  {
+    result.push_back (buffer_[(size_t)cur]);
+  }
+
+  // note the difference here is that reading the latest will change index
+  local_index_ = *index_;
+
+  return result;
+}
+
 template <typename T> void
 CircularBufferConsumer::consume_earliest (size_t count,
   std::vector <T> & values) const
 {
+  // iterate over the returned records
+  for (auto record : consume_earliest (count))
+  {
+    // add them to the values
+    values.push_back (record.to_any <T> ());
+  }
+}
+
+template <typename T> void
+CircularBufferConsumer::consume_earliest (size_t count,
+  std::vector <T> & values, size_t & dropped) const
+{
+  dropped = get_dropped ();
+
   // iterate over the returned records
   for (auto record : consume_earliest (count))
   {
@@ -436,6 +516,57 @@ CircularBufferConsumer::consume_earliest (size_t count) const
   local_index_ += (KnowledgeRecord::Integer)result.size ();
 
   return result;
+}
+
+inline std::vector <KnowledgeRecord>
+CircularBufferConsumer::consume_earliest (
+  size_t count, size_t & dropped) const
+{
+  check_all (__func__);
+
+  ContextGuard context_guard (*context_);
+  std::vector <KnowledgeRecord> result;
+
+  KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
+
+  dropped = get_dropped ();
+
+  count = std::min (count, (size_t)index_diff);
+
+  // start is either 0 or index_ + 1
+  KnowledgeRecord::Integer cur =
+    index_diff < (KnowledgeRecord::Integer)buffer_.size () ? 
+    increment (local_index_, 1) :
+    increment (*index_, -(KnowledgeRecord::Integer)(buffer_.size ()) + 1);
+
+  for (size_t i = 0; i < count; ++i, cur = increment (cur, 1))
+  {
+    result.push_back (buffer_[(size_t)cur]);
+  }
+
+  local_index_ += (KnowledgeRecord::Integer)result.size ();
+
+  return result;
+}
+
+inline size_t
+CircularBufferConsumer::get_dropped (void) const
+{
+  check_all (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  size_t difference = remaining ();
+  size_t buffer_size = size ();
+
+  if (difference > buffer_size)
+  {
+    return difference - buffer_size;
+  } 
+  else
+  {
+    return 0;
+  }
 }
 
 template <typename T> void
@@ -500,7 +631,6 @@ CircularBufferConsumer::peek_latest (void) const
   else
     return KnowledgeRecord ();
 }
-
 
 } // end containers namespace
 } // end knowledge namespace

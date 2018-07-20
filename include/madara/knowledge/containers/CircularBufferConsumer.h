@@ -111,6 +111,18 @@ namespace madara
         KnowledgeRecord consume (void) const;
         
         /**
+         * Gets the most recently added record
+         * @return the last added record. exists() will return false if the
+         *         record is invalid
+         * @param  dropped the number of dropped packets. Drops can
+         *                 occur when the producer produces faster than the
+         *                 consumer can consume. This value is essentially
+         *                 index_ - local_index - size ().
+         * @throw exceptions::IndexException  buffer has zero size
+         **/
+        KnowledgeRecord consume (size_t & dropped) const;
+        
+        /**
          * Gets the most recently added value
          * @param value  the last added value.
          * @throw exceptions::IndexException  if no data to consume
@@ -119,12 +131,37 @@ namespace madara
         void consume (T & value) const;
         
         /**
+         * Gets the most recently added value
+         * @param value   the last added value.
+         * @param dropped the number of dropped packets. Drops can
+         *                occur when the producer produces faster than the
+         *                consumer can consume. This value is essentially
+         *                index_ - local_index - size ().
+         * @throw exceptions::IndexException  if no data to consume
+         **/
+        template <typename T>
+        void consume (T & value, size_t & dropped) const;
+        
+        /**
          * Gets the most recently added records up to a specified count
          * @param  count   the maximum number of records to return
          * @return the last added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
         std::vector <KnowledgeRecord> consume_latest (size_t count) const;
+        
+        /**
+         * Gets the most recently added records up to a specified count
+         * @param  count   the maximum number of records to return
+         * @param  dropped the number of dropped packets. Drops can
+         *                 occur when the producer produces faster than the
+         *                 consumer can consume. This value is essentially
+         *                 index_ - local_index - size ().
+         * @return the last added records
+         * @throw exceptions::IndexException  if index is unreachable
+         **/
+        std::vector <KnowledgeRecord> consume_latest (
+          size_t count, size_t & dropped) const;
         
         /**
          * Gets the most recently added values up to a specified count
@@ -137,12 +174,39 @@ namespace madara
           std::vector <T> & values) const;
         
         /**
+         * Gets the most recently added values up to a specified count
+         * @param  count   the maximum number of records to return
+         * @param  values  the last added records
+         * @param  dropped the number of dropped packets. Drops can
+         *                 occur when the producer produces faster than the
+         *                 consumer can consume. This value is essentially
+         *                 index_ - local_index - size ().
+         * @throw exceptions::IndexException  if index is unreachable
+         **/
+        template <typename T>
+        void consume_latest (size_t count,
+          std::vector <T> & values, size_t & dropped) const;
+        
+        /**
          * Gets the oldest added records up to a specified count
          * @param  count   the maximum number of records to return
          * @return the last added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
         std::vector <KnowledgeRecord> consume_earliest (size_t count) const;
+        
+        /**
+         * Gets the oldest added records up to a specified count
+         * @param  count   the maximum number of records to return
+         * @param  dropped the number of dropped packets. Drops can
+         *                 occur when the producer produces faster than the
+         *                 consumer can consume. This value is essentially
+         *                 index_ - local_index - size ().
+         * @return the last added records
+         * @throw exceptions::IndexException  if index is unreachable
+         **/
+        std::vector <KnowledgeRecord> consume_earliest (
+          size_t count, size_t & dropped) const;
         
         /**
          * Gets the oldest added values up to a specified count
@@ -153,7 +217,27 @@ namespace madara
         template <typename T>
         void consume_earliest (size_t count,
           std::vector <T> & values) const;
-        
+       
+        /**
+         * Gets the oldest added values up to a specified count
+         * @param  count   the maximum number of records to return
+         * @param  values  the last added records
+         * @param  dropped the number of dropped packets. Drops can
+         *                 occur when the producer produces faster than the
+         *                 consumer can consume. This value is essentially
+         *                 index_ - local_index - size ().
+         * @throw exceptions::IndexException  if index is unreachable
+         **/
+        template <typename T>
+        void consume_earliest (size_t count,
+          std::vector <T> & values, size_t & dropped) const;
+         
+        /**
+         * Returns the number of known drops since last consume
+         * @return the number of drops
+         **/
+        size_t get_dropped (void) const;
+
         /**
          * Retrieves a record at a position relative to local index
          * @param  position  the relative position of the requested record

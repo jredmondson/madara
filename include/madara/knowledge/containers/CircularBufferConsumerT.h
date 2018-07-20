@@ -119,6 +119,17 @@ namespace madara
         void consume (T & value) const;
         
         /**
+         * Gets the most recently added value
+         * @param  value   the last added value.
+         * @param  dropped the number of dropped packets. Drops can
+         *                 occur when the producer produces faster than the
+         *                 consumer can consume. This value is essentially
+         *                 index_ - local_index - size ().
+         * @throw exceptions::IndexException  if no data to consume
+         **/
+        void consume (T & value, size_t & dropped) const;
+        
+        /**
          * Gets the most recently added values up to a specified count
          * @param  count   the maximum number of records to return
          * @param  values  the last added records
@@ -126,6 +137,19 @@ namespace madara
          **/
         void consume_latest (size_t count,
           std::vector <T> & values) const;
+        
+        /**
+         * Gets the most recently added values up to a specified count
+         * @param  count   the maximum number of records to return
+         * @param  values  the last added records
+         * @param  dropped the number of dropped packets. Drops can
+         *                 occur when the producer produces faster than the
+         *                 consumer can consume. This value is essentially
+         *                 index_ - local_index - size ().
+         * @throw exceptions::IndexException  if index is unreachable
+         **/
+        void consume_latest (size_t count,
+          std::vector <T> & values, size_t & dropped) const;
         
         /**
          * Gets the oldest added values up to a specified count
@@ -136,6 +160,25 @@ namespace madara
         void consume_earliest (size_t count,
           std::vector <T> & values) const;
         
+        /**
+         * Gets the oldest added values up to a specified count
+         * @param  count   the maximum number of records to return
+         * @param  values  the last added records
+         * @param  dropped the number of dropped packets. Drops can
+         *                 occur when the producer produces faster than the
+         *                 consumer can consume. This value is essentially
+         *                 index_ - local_index - size ().
+         * @throw exceptions::IndexException  if index is unreachable
+         **/
+        void consume_earliest (size_t count,
+          std::vector <T> & values, size_t & dropped) const;
+        
+        /**
+         * Returns the number of known drops since last consume
+         * @return the number of drops
+         **/
+        size_t get_dropped (void) const;
+
         /**
          * Retrieves a record at a position relative to local index
          * @param  position  the relative position of the requested record

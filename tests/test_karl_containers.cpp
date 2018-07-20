@@ -3313,6 +3313,7 @@ void test_circular_consumer_any (void)
   containers::CircularBufferConsumer consumer ("buffer", kb);
   std::vector <KnowledgeRecord> records;
   std::vector <SpecialClass> classes;
+  std::vector <SpecialClass> classes_return;
   SpecialClass class_result;
   KnowledgeRecord record_result;
   bool has_failed;
@@ -3514,6 +3515,27 @@ void test_circular_consumer_any (void)
     }
   }
 
+  std::cerr << "  Testing dropped...";
+
+  producer.resize (5);
+  consumer.resize ();
+  consumer.consume_latest (1, classes_return);
+  producer.add (classes);
+  size_t dropped = 0;
+
+  consumer.consume_earliest ((size_t)1, classes_return, dropped);
+
+  if (dropped == 5)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    dropped=" << dropped << "\n";
+  }
 }
 
 
@@ -3531,6 +3553,7 @@ void test_circular_consumert_any (void)
   containers::CircularBufferConsumerT<SpecialClass> consumer ("buffer", kb);
   std::vector <KnowledgeRecord> records;
   std::vector <SpecialClass> classes;
+  std::vector <SpecialClass> classes_return;
   SpecialClass class_result;
   bool has_failed;
 
@@ -3731,6 +3754,27 @@ void test_circular_consumert_any (void)
     }
   }
 
+  std::cerr << "  Testing dropped...";
+
+  producer.resize (5);
+  consumer.resize ();
+  consumer.consume_latest (1, classes_return);
+  producer.add (classes);
+  size_t dropped = 0;
+
+  consumer.consume_earliest ((size_t)1, classes_return, dropped);
+
+  if (dropped == 5)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    dropped=" << dropped << "\n";
+  }
 }
 
 
