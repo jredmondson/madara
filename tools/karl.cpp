@@ -753,7 +753,7 @@ int main (int argc, char ** argv)
         load_checkpoint_settings.buffer_size, file_contents.size ());
 
       char * buffer_contents = new char [size];
-      strncpy (buffer_contents, file_contents.c_str (),
+      memcpy (buffer_contents, file_contents.c_str (),
         file_contents.size ());
 
       load_checkpoint_settings.decode (buffer_contents,
