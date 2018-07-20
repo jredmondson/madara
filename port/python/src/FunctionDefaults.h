@@ -40,6 +40,9 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_get_1_of_2,
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_send_modifieds_0_of_2,
   send_modifieds, 0, 2)
   
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_load_context_1_of_2,
+  load_context, 1, 2)
+  
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_load_context_1_of_3,
   load_context, 1, 3)
   
@@ -66,6 +69,18 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_print_knowledge_0_of_1,
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_retrieve_index_2_of_3,
   retrieve_index, 2, 3)
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_save_as_json_1_of_1,
+  save_as_json, 1, 1)
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_save_as_karl_1_of_1,
+  save_as_karl, 1, 1)
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_save_context_1_of_1,
+  save_context, 1, 1)
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_save_checkpoint_1_of_1,
+  save_checkpoint, 1, 1)
 
 
 #endif

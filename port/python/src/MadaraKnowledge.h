@@ -1,3 +1,5 @@
+#ifndef _MADARA_PYTHON_PORT_MADARA_KNOWLEGE_H_
+#define _MADARA_PYTHON_PORT_MADARA_KNOWLEGE_H_
 
 #include <boost/python/detail/wrap_python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
@@ -20,431 +22,8 @@
 
 using namespace boost::python;
 
-class Filters_NS {};
 class knowledge_NS {};
-class Transport_NS {};
 
-/********************************************************
-  * Filters namespace definitions
-  ********************************************************/
-void define_filters (void)
-{
-  scope filters = class_ <Filters_NS, boost::noncopyable> (
-    "filters", no_init)
-        
-    // update the drop rate
-    .def ("discard",
-      &madara::filters::discard,
-      "Drops the current record from the filtering process")
-        
-    // update the drop rate
-    .def ("discard_nonprimitives",
-      &madara::filters::discard_nonprimitives,
-      "Drops nonprimitive records from the filtering process")
-        
-    // update the drop rate
-    .def ("discard_nonfiles",
-      &madara::filters::discard_nonfiles,
-      "Drops nonfile records from the filtering process")
-        
-    // update the drop rate
-    .def ("log_args",
-      &madara::filters::log_args,
-      "Logs all arguments passed via the filtering process")
-        
-    // update the drop rate
-    .def ("log_aggregate",
-      &madara::filters::log_aggregate,
-      "Logs aggregate updates passed via the filtering process")
-  ;
-  
-  filters.attr ("__file__") = "<synthetic>";
-  scope().attr ("filters") = filters;
-  filters.attr ("__doc__") = "Provides general purpose filters";
-
-  extract <dict> (getattr (
-    import ("sys"), "modules"))()["madara.filters"] = filters;
-}
-
-void define_transport (void)
-{
-  object transport = object (handle<> (
-    PyModule_New ("madara.transport")));
-
-   transport.attr("__file__")="<synthetic>";
-   scope().attr ("transport") = transport;
-   transport.attr ("__doc__") = "Provides access to the transport layer";
-
-   // this was the missing piece: sys.modules['modA.modB']=modB
-   extract <dict> (getattr (
-     import ("sys"), "modules"))()["madara.transport"] = transport;
-
-  scope Transport = transport;
-
-  // the types of packet drop policies for QoSTransportSettings class
-  enum_<madara::transport::PacketDropType>("DropTypes")
-    .value("PACKET_DROP_DETERMINISTIC",
-      madara::transport::PACKET_DROP_DETERMINISTIC)
-    .value("PACKET_DROP_PROBABLISTIC",
-      madara::transport::PACKET_DROP_PROBABLISTIC)
-  ;
-    
-  // the types of packet drop policies for QoSTransportSettings class
-  enum_<madara::transport::Types>("TransportTypes")
-    .value("NO_TRANSPORT",
-      madara::transport::NO_TRANSPORT)
-    .value("SPLICE",
-      madara::transport::SPLICE)
-    .value("NDDS",
-      madara::transport::NDDS)
-    .value("TCP",
-      madara::transport::TCP)
-    .value("UDP",
-      madara::transport::UDP)
-    .value("MULTICAST",
-      madara::transport::MULTICAST)
-    .value("BROADCAST",
-      madara::transport::BROADCAST)
-    .value("REGISTRY_SERVER",
-      madara::transport::REGISTRY_SERVER)
-    .value("REGISTRY_CLIENT",
-      madara::transport::REGISTRY_CLIENT)
-    .value("ZMQ",
-      madara::transport::ZMQ)
-  ;
-    
-  {
-    /********************************************************
-      * Transport Context definitions
-      ********************************************************/
-    
-    scope TransportContext = 
-      class_<madara::transport::TransportContext> ("TransportContext",
-      "Container for transport-related state information", init <> ())
-
-      // copy constructor
-      .def (init<const madara::transport::TransportContext> ())
-
-      // clear records
-      .def ("clear_records",
-        &madara::transport::TransportContext::clear_records,
-        "Clears any uncommitted records associated with the context")
-        
-      // Retrieves the operation type
-      .def ("get_operation",
-        &madara::transport::TransportContext::get_operation,
-        "Retrieves the operation type")
-        
-      // Retrieves receive bandwidth usage
-      .def ("get_receive_bandwidth",
-        &madara::transport::TransportContext::get_receive_bandwidth,
-        "Returns received bandwidth usage in B/s over past 10s")
-        
-      // Retrieves send bandwidth usage
-      .def ("get_send_bandwidth",
-        &madara::transport::TransportContext::get_send_bandwidth,
-        "Returns send bandwidth usage in B/s over past 10s")
-        
-      // Retrieves time that message was generated
-      .def ("get_message_time",
-        &madara::transport::TransportContext::get_message_time,
-        "Retrieves time that message was generated")
-        
-      // Retrieves time that message is being processed
-      .def ("get_current_time",
-        &madara::transport::TransportContext::get_current_time,
-        "Retrieves time that message is being processed")
-          
-      // Adds a record to the context for rebroadcasting or applying
-      .def ("add_record",
-        &madara::transport::TransportContext::add_record,
-        "Adds a record to the context for rebroadcasting or applying")
-          
-      // Retrieves the knowledge domain (similar to topics in pub/sub)
-      .def ("get_domain",
-        &madara::transport::TransportContext::get_domain, 
-        return_value_policy<reference_existing_object>(),
-        "Retrieves the knowledge domain (similar to topics in pub/sub)")
-          
-      // Retrieves the message originator
-      .def ("get_originator",
-        &madara::transport::TransportContext::get_originator, 
-        return_value_policy<reference_existing_object>(),
-        "Retrieves the message originator")
-          
-      // Retrieves the current uncommitted record list"
-      .def ("get_records",
-        &madara::transport::TransportContext::get_records, 
-        return_value_policy<reference_existing_object>(),
-        "Retrieves the current uncommitted record list")
-
-    ;
-
-    // the types of packet drop policies for QoSTransportSettings class
-    enum_<madara::transport::TransportContext::Operations> ("Operations")
-      .value("IDLE_OPERATION",
-        madara::transport::TransportContext::IDLE_OPERATION)
-      .value("SENDING_OPERATION",
-        madara::transport::TransportContext::SENDING_OPERATION)
-      .value("RECEIVING_OPERATION",
-        madara::transport::TransportContext::RECEIVING_OPERATION)
-      .value("REBROADCASTING_OPERATION",
-        madara::transport::TransportContext::REBROADCASTING_OPERATION)
-      ;
-  }
-      
-  /********************************************************
-    * Transport Settings definitions
-    ********************************************************/
-
-  class_<madara::transport::TransportSettings> ("TransportSettings",
-    "The main transport settings class", init <> ())
-      
-    .def (init<const madara::transport::TransportSettings &> ())
-
-    .def ("add_read_domain",
-    &madara::transport::TransportSettings::add_read_domain,
-    "Adds a read domain to subscribe to")
-
-    // define readwrite variables within the class
-    .def_readwrite ("queue_length",
-      &madara::transport::TransportSettings::queue_length,
-      "Informs the transport of the requested queue_length in bytes")
-
-    .def_readwrite ("type",
-      &madara::transport::TransportSettings::type,
-      "Indicates the type of transport (see TransportTypes)")
-
-    .def_readwrite ("reliability",
-      &madara::transport::TransportSettings::reliability,
-      "Informs the transport of the requested reliability (0==BEST_EFFORT)")
-
-    .def_readwrite ("id",
-      &madara::transport::TransportSettings::id,
-      "Informs the transport of the process id")
-
-    .def_readwrite ("processes",
-      &madara::transport::TransportSettings::processes,
-      "Informs the transport of the number of expected processes")
-
-    .def_readwrite ("on_data_received_logic",
-      &madara::transport::TransportSettings::on_data_received_logic,
-      "Provides a KaRL expression to evaluate when data is received")
-
-    .def_readwrite ("delay_launch",
-      &madara::transport::TransportSettings::delay_launch,
-      "Indicates that the transport should delay launch until activated")
-
-    .def_readwrite ("never_exit",
-      &madara::transport::TransportSettings::never_exit,
-      "Indicates that the transport should never exit, even in bad states")
-
-    .def_readwrite ("send_reduced_message_header",
-      &madara::transport::TransportSettings::send_reduced_message_header,
-      "Indicates that a reduced message header should be used for messages")
-
-    .def_readwrite ("hosts",
-      &madara::transport::TransportSettings::hosts,
-      "List of hosts for the transport layer")
-
-    .def_readwrite ("write_domain",
-      &madara::transport::TransportSettings::write_domain,
-      "Indicates the domain to write to")
-
-  ;
-    
-  /********************************************************
-    * QoSTransportSettings definitions
-    ********************************************************/
-
-  class_<madara::transport::QoSTransportSettings,
-          bases<madara::transport::TransportSettings> > (
-            "QoSTransportSettings",
-            "Transport settings with quality-of-service focus", init<> ())
-      
-    .def (init <const madara::transport::QoSTransportSettings &> ())
-      
-    .def (init <const madara::transport::TransportSettings &> ())
-      
-    // adds a python callback to the typed send filter chains
-    .def( "add_rebroadcast_filter",
-      static_cast<
-        void (madara::transport::QoSTransportSettings::*)(
-              uint32_t types, boost::python::object & object)
-      > (&madara::transport::QoSTransportSettings::add_rebroadcast_filter),
-      "Adds a python callback to the typed rebroadcst filter chains")
-        
-    // adds a python callback to the aggregate send filter chains
-    .def( "add_rebroadcast_filter",
-      static_cast<
-        void (madara::transport::QoSTransportSettings::*)(
-              boost::python::object & object)
-      > (&madara::transport::QoSTransportSettings::add_rebroadcast_filter),
-      "Adds a python callback to the aggregate rebroadcast filter chains")
-        
-    // adds a python callback to the typed receive filter chains
-    .def( "add_receive_filter",
-      static_cast<
-        void (madara::transport::QoSTransportSettings::*)(
-              uint32_t types, boost::python::object & object)
-      > (&madara::transport::QoSTransportSettings::add_receive_filter),
-      "Adds a python callback to the typed receive filter chains")
-        
-    // adds a python callback to the aggregate receive filter chains
-    .def( "add_receive_filter",
-      static_cast<
-        void (madara::transport::QoSTransportSettings::*)(
-              boost::python::object & object)
-      > (&madara::transport::QoSTransportSettings::add_receive_filter),
-      "Adds a python callback to the aggregate receive filter chains")
-        
-    // adds a python callback to the typed send filter chains
-    .def( "add_send_filter",
-      static_cast<
-        void (madara::transport::QoSTransportSettings::*)(
-              uint32_t types, boost::python::object & object)
-      > (&madara::transport::QoSTransportSettings::add_send_filter),
-      "Adds a python callback to the typed send filter chains")
-        
-    // adds a python callback to the aggregate send filter chains
-    .def( "add_send_filter",
-      static_cast<
-        void (madara::transport::QoSTransportSettings::*)(
-              boost::python::object & object)
-      > (&madara::transport::QoSTransportSettings::add_send_filter),
-      "Adds a python callback to the aggregate send filter chains")
-        
-        
-    // Clears the rebroadcast filters for a specified type
-    .def ("clear_rebroadcast_filters",
-      &madara::transport::QoSTransportSettings::clear_rebroadcast_filters,
-      "Clears the rebroadcast filters for a specified type")
-        
-    // Clears the receive filters for a specified type
-    .def ("clear_receive_filters",
-      &madara::transport::QoSTransportSettings::clear_receive_filters,
-      "Clears the receive filters for a specified type")
-        
-    // Clears the send filters for a specified type
-    .def ("clear_send_filters",
-      &madara::transport::QoSTransportSettings::clear_send_filters,
-      "Clears the send filters for a specified type")
-        
-    // Clears the rebroadcast filters for a specified type
-    .def ("clear_rebroadcast_aggregate_filters",
-      &madara::transport::QoSTransportSettings::clear_rebroadcast_aggregate_filters,
-      "Clears the rebroadcast aggregate filters")
-        
-    // Clears the receive filters for a specified type
-    .def ("clear_receive_aggregate_filters",
-      &madara::transport::QoSTransportSettings::clear_receive_aggregate_filters,
-      "Clears the receive aggregate filters")
-        
-    // Clears the send filters for a specified type
-    .def ("clear_send_aggregate_filters",
-      &madara::transport::QoSTransportSettings::clear_send_aggregate_filters,
-      "Clears the send aggregate filters")
-        
-
-    // get the drop burst rate
-    .def ("get_drop_burst",
-      &madara::transport::QoSTransportSettings::get_drop_burst,
-      "Retrieves the drop bursts")
-        
-    // update the drop rate
-    .def ("get_drop_rate",
-      &madara::transport::QoSTransportSettings::get_drop_rate,
-      "Retrieves the rate of drops (0.8 is 80%)")
-        
-    // get the drop type
-    .def ("get_drop_type",
-      &madara::transport::QoSTransportSettings::get_drop_type,
-      "Retrieves the type of drops")
-        
-    // Prints the number of rebroadcast filters for a specified type
-    .def ("print_num_filters_rebroadcast",
-      &madara::transport::QoSTransportSettings::print_num_filters_rebroadcast,
-      "Prints the number of rebroadcast filters for a specified type")
-        
-    // Prints the number of receive filters for a specified type
-    .def ("print_num_filters_receive",
-      &madara::transport::QoSTransportSettings::print_num_filters_receive,
-      "Prints the number of receive filters for a specified type")
-        
-    // Prints the number of send filters for a specified type
-    .def ("print_num_filters_send",
-      &madara::transport::QoSTransportSettings::print_num_filters_send,
-      "Prints the number of send filters for a specified type")
-        
-    // Gets the number of rebroadcast aggregate filters
-    .def ("get_number_of_rebroadcast_aggregate_filters",
-      &madara::transport::QoSTransportSettings::get_number_of_rebroadcast_aggregate_filters,
-      "Gets the number of receive aggregate filters")
-        
-    // Gets the number of receive filters for a specified type
-    .def ("get_number_of_receive_aggregate_filters",
-      &madara::transport::QoSTransportSettings::get_number_of_receive_aggregate_filters,
-      "Gets the number of receive aggregate filters")
-        
-    // Gets the number of send aggregate filters
-    .def ("get_number_of_send_aggregate_filters",
-      &madara::transport::QoSTransportSettings::get_number_of_send_aggregate_filters,
-      "Gets the number of send aggregate filters")
-        
-    // Gets the number of rebroadcast filters for a specified type
-    .def ("get_number_of_rebroadcast_filtered_types",
-      &madara::transport::QoSTransportSettings::get_number_of_rebroadcast_filtered_types,
-      "Gets the number of rebroadcast filters for a specified type")
-        
-    // Gets the number of receive filters for a specified type
-    .def ("get_number_of_receive_filtered_types",
-      &madara::transport::QoSTransportSettings::get_number_of_receive_filtered_types,
-      "Gets the number of receive filters for a specified type")
-        
-    // Gets the number of send filters for a specified type
-    .def ("get_number_of_send_filtered_types",
-      &madara::transport::QoSTransportSettings::get_number_of_send_filtered_types,
-      "Gets the number of send filters for a specified type")
-
-    // update the drop rate
-    .def ("update_drop_rate",
-      &madara::transport::QoSTransportSettings::update_drop_rate,
-      "Informs the transport of the drop rate, type, and bursts")
-        
-    // the rebroadcast time-to-live for the transport
-    .add_property("participant_ttl",
-      &madara::transport::QoSTransportSettings::get_participant_ttl,
-      &madara::transport::QoSTransportSettings::enable_participant_ttl,
-      "Informs the transport that it should participate in rebroadcasting")
-
-    // the rebroadcast time-to-live for the transport
-    .add_property("rebroadcast_ttl",
-      &madara::transport::QoSTransportSettings::get_rebroadcast_ttl,
-      &madara::transport::QoSTransportSettings::set_rebroadcast_ttl,
-      "Informs the transport of the time-to-live attached to all updates")
-
-    // the send bandwidth for the transport
-    .add_property("send_bandwidth",
-    &madara::transport::QoSTransportSettings::get_send_bandwidth_limit,
-      &madara::transport::QoSTransportSettings::set_send_bandwidth_limit,
-      "Informs the transport of the send bandwidth limit in B/s that"
-      " throttles the sending of new updates")
-
-    // the total bandwidth for the transport
-    .add_property("total_bandwidth",
-    &madara::transport::QoSTransportSettings::get_total_bandwidth_limit,
-      &madara::transport::QoSTransportSettings::set_total_bandwidth_limit,
-      "Informs the transport of the total bandwidth limit in B/s that"
-      " throttles the sending of new updates")
-
-    // the deadline for messages
-    .add_property("deadline",
-      &madara::transport::QoSTransportSettings::get_deadline,
-      &madara::transport::QoSTransportSettings::set_deadline,
-      "Informs the transport of the deadline, in seconds, for useful info")
-  ;
-}
-  
 void define_knowledge (void)
 {
   object ke = object (handle<> (
@@ -467,8 +46,92 @@ void define_knowledge (void)
    */
 
 
+  /********************************************************
+    * KnowledgeBase definitions
+    ********************************************************/
+ 
+  class_<madara::knowledge::CheckpointSettings> ("CheckpointSettings",
+    "Settings for checkpoints and file saves", init <> ())
 
-   class_<madara::knowledge::KnowledgeRecord> (
+     // class members
+    .def_readwrite("buffer_size",
+      &madara::knowledge::CheckpointSettings::buffer_size,
+      "size of the buffer needed to hold file in memory")
+
+    .def_readwrite("clear_knowledge",
+      &madara::knowledge::CheckpointSettings::clear_knowledge,
+      "If true, during loads, clear the KnowledgeBase first")
+
+    .def_readwrite("filename",
+      &madara::knowledge::CheckpointSettings::filename,
+      "the path and name of the file to load/save")
+
+    .def_readwrite("initial_lamport_clock",
+      &madara::knowledge::CheckpointSettings::initial_lamport_clock,
+      "initial lamport clock saved in the checkpoint ")
+
+    .def_readwrite("initial_state",
+      &madara::knowledge::CheckpointSettings::initial_state,
+      "initial state of interest (useful for loading ranges of checkpoints). "
+      " Thsi is an inclusive identifier, so 0 means to load from initial"
+      "context/checkpoint save")
+
+    .def_readwrite("initial_timestamp",
+      &madara::knowledge::CheckpointSettings::initial_timestamp,
+      "initial wallclock time saved in the checkpoint")
+
+    .def_readwrite("keep_open",
+      &madara::knowledge::CheckpointSettings::keep_open,
+      "attempt to keep the file open for later usage (not really recommended)")
+
+    .def_readwrite("last_lamport_clock",
+      &madara::knowledge::CheckpointSettings::last_lamport_clock,
+      "final lamport clock in the checkpoint")
+
+    .def_readwrite("last_state",
+      &madara::knowledge::CheckpointSettings::last_state,
+      "the last state of interest (useful for loading ranges of checkpoints). "
+      "This is an inclusive identifier. If last_state >= states, it will "
+      "essentially indicate the last valid state")
+
+    .def_readwrite("last_timestamp",
+      &madara::knowledge::CheckpointSettings::last_timestamp,
+      "final wallclock time saved in the checkpoint")
+
+    .def_readwrite("originator",
+      &madara::knowledge::CheckpointSettings::originator,
+      "the originator id of the checkpoint (who saved it)")
+
+    .def_readwrite("override_lamport",
+      &madara::knowledge::CheckpointSettings::override_lamport,
+      "use the lamport clocks in this class instead of the KB clock when"
+      "writing context or checkpoints")
+
+    .def_readwrite("override_timestamp",
+      &madara::knowledge::CheckpointSettings::override_timestamp,
+      "use the timestamps in this class instead of wallclock time when"
+      "writing context or checkpoints")
+
+    .def_readwrite("prefixes",
+      &madara::knowledge::CheckpointSettings::prefixes,
+      "a list of prefixes to save/load. If empty, all prefixes are valid")
+
+    .def_readwrite("reset_checkpoint",
+      &madara::knowledge::CheckpointSettings::reset_checkpoint,
+      "if true, resets the checkpoint to start a new diff from this point on")
+
+    .def_readwrite("states",
+      &madara::knowledge::CheckpointSettings::states,
+      "the number of states checkpointed in the file stream")
+
+    .def_readwrite("version",
+      &madara::knowledge::CheckpointSettings::version,
+      "the MADARA version used when the checkpoint was saved")
+
+      
+  ;
+
+  class_<madara::knowledge::KnowledgeRecord> (
      "KnowledgeRecord",
      "Basic unit of knowledge", init <> ())
 
@@ -602,6 +265,10 @@ void define_knowledge (void)
      .def ("size", &madara::knowledge::KnowledgeRecord::size,
      "Returns the size of the value")
 
+     // returns true if record exists
+     .def ("exists", &madara::knowledge::KnowledgeRecord::size,
+     "Returns whether the knowledge has been set/modified/created")
+
      // convert to a string
      .def ("status", &madara::knowledge::KnowledgeRecord::status,
      "Returns the status of the record")
@@ -628,111 +295,128 @@ void define_knowledge (void)
      .def ("to_doubles", &madara::knowledge::KnowledgeRecord::to_doubles,
      "Converts the record to an array of doubles")
 
-     // save value to a file
-  .def ("to_file", &madara::knowledge::KnowledgeRecord::to_file,
-  "Saves the value of the record to a file")
+      // save value to a file
+    .def ("to_file", &madara::knowledge::KnowledgeRecord::to_file,
+    "Saves the value of the record to a file")
 
-  // gets the type of the record
-  .def ("type", &madara::knowledge::KnowledgeRecord::type,
-  "Returns the value type")
+    // gets the type of the record
+    .def ("type", &madara::knowledge::KnowledgeRecord::type,
+    "Returns the value type")
 
-  // fragments the record
-  .def ("fragment", &madara::knowledge::KnowledgeRecord::fragment,
-  "Fragments the record into components")
+    // fragments the record
+    .def ("fragment", &madara::knowledge::KnowledgeRecord::fragment,
+    "Fragments the record into components")
 
-  // checks if the record is false
-  .def ("is_false", &madara::knowledge::KnowledgeRecord::is_false,
-  "Checks if the record is false")
+    // checks if the record is false
+    .def ("is_false", &madara::knowledge::KnowledgeRecord::is_false,
+    "Checks if the record is false")
 
-  // checks if the record is true
-  .def ("is_true", &madara::knowledge::KnowledgeRecord::is_true,
-  "Checks if the record is true")
+    // checks if the record is true
+    .def ("is_true", &madara::knowledge::KnowledgeRecord::is_true,
+    "Checks if the record is true")
 
-  // checks if record is a binary file type
-  .def ("is_binary_file_type",
-  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-  &madara::knowledge::KnowledgeRecord::is_binary_file_type),
-  "Checks if the record is a binary file type")
+    // checks if record is a binary file type
+    .def ("is_binary_file_type",
+    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+    &madara::knowledge::KnowledgeRecord::is_binary_file_type),
+    "Checks if the record is a binary file type")
 
-  // checks if record is a double type
-  .def ("is_double_type",
-  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-  &madara::knowledge::KnowledgeRecord::is_double_type),
-  "Checks if the record is a double type")
+    // checks if record is a double type
+    .def ("is_double_type",
+    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+    &madara::knowledge::KnowledgeRecord::is_double_type),
+    "Checks if the record is a double type")
 
-  // checks if record is a file type
-  .def ("is_file_type",
-  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-  &madara::knowledge::KnowledgeRecord::is_file_type),
-  "Checks if the record is a file type")
+    // checks if record is a file type
+    .def ("is_file_type",
+    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+    &madara::knowledge::KnowledgeRecord::is_file_type),
+    "Checks if the record is a file type")
 
-  // checks if the record is an image type
-  .def ("is_image_type",
-  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-  &madara::knowledge::KnowledgeRecord::is_image_type),
-  "Checks if the record is an image type")
+    // checks if the record is an image type
+    .def ("is_image_type",
+    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+    &madara::knowledge::KnowledgeRecord::is_image_type),
+    "Checks if the record is an image type")
 
-  // checks if the record is an integer type
-  .def ("is_integer_type",
-  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-  &madara::knowledge::KnowledgeRecord::is_integer_type),
-  "Checks if the record is an integer type")
+    // checks if the record is an integer type
+    .def ("is_integer_type",
+    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+    &madara::knowledge::KnowledgeRecord::is_integer_type),
+    "Checks if the record is an integer type")
 
-  // checks if the record is a string type
-  .def ("is_string_type",
-  static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
-  &madara::knowledge::KnowledgeRecord::is_string_type),
-  "Checks if the record is a string type")
+    // checks if the record is a string type
+    .def ("is_string_type",
+    static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+    &madara::knowledge::KnowledgeRecord::is_string_type),
+    "Checks if the record is a string type")
 
-  // overloaded operators
-  .def (self < self)
-  .def (self <= self)
-  .def (self == double ())
-  .def (self == std::string ())
-  .def (self == self)
-  .def (self != self)
-  .def (self > self)
-  .def (self >= self)
-  .def (!self)
-  .def (-self)
-  .def (self += self)
-  .def (self -= self)
-  .def (self *= self)
-  .def (self /= self)
-  .def (self %= self)
-  .def (self * self)
-  .def (self / self)
-  .def (self % self)
-  .def (self + self)
-  .def (self - self)
+    // overloaded operators
+    .def (self < self)
+    .def (self <= self)
+    .def (self == double ())
+    .def (self == std::string ())
+    .def (self == self)
+    .def (self != self)
+    .def (self > self)
+    .def (self >= self)
+    .def (!self)
+    .def (-self)
+    .def (self += self)
+    .def (self -= self)
+    .def (self *= self)
+    .def (self /= self)
+    .def (self %= self)
+    .def (self * self)
+    .def (self / self)
+    .def (self % self)
+    .def (self + self)
+    .def (self - self)
 
-  // because of the templated nature of KnowledgeRecord::operator=, I could not
-  // figure this out
-  // .def ("operator=", 
-  // static_cast<madara::knowledge::KnowledgeRecord (
-  // madara::knowledge::KnowledgeRecord::*)(
-  // int &&)> (
-  // &madara::knowledge::KnowledgeRecord::operator=),
-  // "Assigns an int to the record",
-  // return_value_policy<reference_existing_object> ())
+     // class members
+    .def_readwrite("clock",
+      &madara::knowledge::KnowledgeRecord::clock,
+      "last modification lamport clock")
 
-  .def ("operator==",
-  static_cast<bool (
-  madara::knowledge::KnowledgeRecord::*)(
-  const madara::knowledge::KnowledgeRecord &) const> (
-  &madara::knowledge::KnowledgeRecord::operator==),
-  "Compares two records for equality")
+    .def_readwrite("quality",
+      &madara::knowledge::KnowledgeRecord::quality,
+      "write priority for any local updates")
+    
+    .def_readwrite("toi",
+      &madara::knowledge::KnowledgeRecord::toi,
+      "last modification system clock time (time of insertion)")
+  
+    .def_readwrite("write_quality",
+      &madara::knowledge::KnowledgeRecord::write_quality,
+      "priority of the update")
+      
+    // because of the templated nature of KnowledgeRecord::operator=, I could not
+    // figure this out
+    // .def ("operator=", 
+    // static_cast<madara::knowledge::KnowledgeRecord (
+    // madara::knowledge::KnowledgeRecord::*)(
+    // int &&)> (
+    // &madara::knowledge::KnowledgeRecord::operator=),
+    // "Assigns an int to the record",
+    // return_value_policy<reference_existing_object> ())
 
-  .def ("operator++",
-  &madara::knowledge::KnowledgeRecord::operator++,
-  "Adds one to the record",
-  return_value_policy<reference_existing_object> ())
+    .def ("operator==",
+    static_cast<bool (
+    madara::knowledge::KnowledgeRecord::*)(
+    const madara::knowledge::KnowledgeRecord &) const> (
+    &madara::knowledge::KnowledgeRecord::operator==),
+    "Compares two records for equality")
 
-  .def ("operator--",
-  &madara::knowledge::KnowledgeRecord::operator--,
-  "Subtracts one from the record",
-  return_value_policy<reference_existing_object> ())
-  ; // end of KnowledgeRecord
+    .def ("operator++",
+    &madara::knowledge::KnowledgeRecord::operator++,
+    "Adds one to the record",
+    return_value_policy<reference_existing_object> ())
+
+    .def ("operator--",
+    &madara::knowledge::KnowledgeRecord::operator--,
+    "Subtracts one from the record",
+    return_value_policy<reference_existing_object> ())
+    ; // end of KnowledgeRecord
 
 
      // the types of values supported in KnowledgeRecord
@@ -1070,6 +754,17 @@ void define_knowledge (void)
         args("filename", "use_id", "settings"),
         "Loads a variable context from a file"))
           
+    // expands and prints a statement
+    .def ("load_context",
+      static_cast<int64_t (madara::knowledge::KnowledgeBase::*)(
+        madara::knowledge::CheckpointSettings &,
+        const madara::knowledge::KnowledgeUpdateSettings &)
+      > (&madara::knowledge::KnowledgeBase::load_context),
+      m_load_context_1_of_2 (
+        args("checkpoint_settings", "update_settings"),
+        "Loads a variable context from a file with settings "
+        "for checkpoint and knowledge updates"))
+          
     // locks the knowledge base from updates from other threads
     .def ("lock",
       &madara::knowledge::KnowledgeBase::lock,
@@ -1111,14 +806,46 @@ void define_knowledge (void)
       m_retrieve_index_2_of_3 (
         args("key", "index", "settings"),
         "Retrieves a knowledge record from an index"))
-          
-    // expands and prints a statement
+              
+    // saves the context as JSON
+    .def ("save_as_json",
+      static_cast<int64_t
+        (madara::knowledge::KnowledgeBase::*)(
+          const madara::knowledge::CheckpointSettings &) const
+      > (&madara::knowledge::KnowledgeBase::save_as_json),
+        m_save_as_json_1_of_1 (
+        args("settings"),
+        "Saves the context in JSON markup"))
+         
+    // saves the context as karl
+    .def ("save_as_karl",
+      static_cast<int64_t
+        (madara::knowledge::KnowledgeBase::*)(
+          const madara::knowledge::CheckpointSettings &) const
+      > (&madara::knowledge::KnowledgeBase::save_as_karl),
+        m_save_as_karl_1_of_1 (
+        args("settings"),
+        "Saves the context as a human-readable KaRL script"))
+         
+    // saves the context as binary
     .def ("save_context",
       static_cast<int64_t
         (madara::knowledge::KnowledgeBase::*)(
-          const std::string &) const
+          madara::knowledge::CheckpointSettings &) const
       > (&madara::knowledge::KnowledgeBase::save_context),
-        "Saves the context to a file")
+        m_save_context_1_of_1 (
+        args("settings"),
+        "Saves the context to a file with settings "))
+           
+    // saves a diff of the context as binary
+    .def ("save_checkpoint",
+      static_cast<int64_t
+        (madara::knowledge::KnowledgeBase::*)(
+          madara::knowledge::CheckpointSettings &) const
+      > (&madara::knowledge::KnowledgeBase::save_checkpoint),
+        m_save_checkpoint_1_of_1 (
+        args("settings"),
+        "Saves a diff of the context to a file with settings "))
           
     // Sends all modified variables through the attached transports
     .def( "send_modifieds",
@@ -1234,18 +961,6 @@ void define_knowledge (void)
 
   ;
 
-}
-
-BOOST_PYTHON_MODULE (madara)
-{
-  // Launch the appropriate thread management initialization
-  PyEval_InitThreads();
-
-  // Declare classes inside Madara namespace (top namespace of Python module)
-  
-  class_ <std::vector <std::string> > ("StringVector")
-    .def(vector_indexing_suite<std::vector<std::string> >());
-
   class_ <std::vector <madara::knowledge::KnowledgeRecord> > ("KnowledgeRecordVector")
     .def(vector_indexing_suite<std::vector<madara::knowledge::KnowledgeRecord> >());
   
@@ -1254,7 +969,7 @@ BOOST_PYTHON_MODULE (madara)
     .def(map_indexing_suite<std::map <
       std::string, madara::knowledge::KnowledgeRecord> >());
 
-  define_filters ();
-  define_transport ();
-  define_knowledge ();
 }
+
+#endif // _MADARA_PYTHON_PORT_MADARA_KNOWLEGE_H_
+
