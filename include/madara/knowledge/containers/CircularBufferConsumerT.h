@@ -102,15 +102,7 @@ namespace madara
          * @return true if inequal, false otherwise
          **/
         bool operator!= (const CircularBufferConsumerT & value) const;
-        
-        /**
-         * Gets the most recently added record
-         * @return the last added record. exists() will return false if the
-         *         record is invalid
-         * @throw exceptions::IndexException  buffer has zero size
-         **/
-        KnowledgeRecord consume (void) const;
-        
+       
         /**
          * Gets the most recently added value
          * @param value  the last added value.
