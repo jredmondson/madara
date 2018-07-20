@@ -11,6 +11,7 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/filters/GenericFilters.h"
 #include "FunctionDefaults.h"
+#include "MadaraKnowledgeContainers.h"
 
 /**
  * @file MadaraModule.cpp
@@ -968,6 +969,9 @@ void define_knowledge (void)
     "KnowledgeRecordMap")
     .def(map_indexing_suite<std::map <
       std::string, madara::knowledge::KnowledgeRecord> >());
+
+  // define madara.knowledge.containers
+  define_knowledge_containers ();
 
 }
 
