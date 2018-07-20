@@ -41,6 +41,13 @@ namespace madara
         friend class CircularBuffer;
         friend class CircularBufferConsumer;
 
+        /// Allow the templated CircularBuffer and CircularBufferConsumer
+        /// classes to manipulate variables
+        template <typename T>
+        friend class CircularBufferT;
+        template <typename T>
+        friend class CircularBufferConsumerT;
+
         /**
          * Default constructor
          * @param  settings   settings for evaluating the vector
