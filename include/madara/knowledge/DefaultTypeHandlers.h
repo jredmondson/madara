@@ -119,9 +119,32 @@ constexpr knowledge::TypeHandlers::index_int_fn_type
 }
 
 // Implement get_type_handler_int_index for type supporting for_each_field
-// and at(int). Takes precedence over operator[] version above if available.
+// and at(int). Takes precedence over operator[] version above
 template<typename T,
   enable_if_<knowledge::supports_int_at_index<T>::value, int> = 0>
+constexpr knowledge::TypeHandlers::index_int_fn_type
+  get_type_handler_index_int(type<T>, overload_priority<6>)
+{
+  return [](size_t index,
+      const knowledge::TypeHandlers *&handler,
+      void *&out_ptr,
+      void *ptr)
+    {
+      T &val = *static_cast<T *>(ptr);
+      using I = decltype(val[index]);
+      handler = &knowledge::get_type_handler<decay_<I>>();
+      out_ptr = &val.at(index);
+    };
+}
+
+// Implement get_type_handler_int_index for type supporting for_each_field
+// and resizing. Resizes on demand. Takes precedence over non-resizing versions.
+template<typename T,
+  enable_if_<
+    knowledge::supports_int_index<T>::value &&
+    knowledge::supports_size_member<T>::value &&
+    knowledge::supports_resize_member<T>::value
+  , int> = 0>
 constexpr knowledge::TypeHandlers::index_int_fn_type
   get_type_handler_index_int(type<T>, overload_priority<4>)
 {
@@ -131,9 +154,12 @@ constexpr knowledge::TypeHandlers::index_int_fn_type
       void *ptr)
     {
       T &val = *static_cast<T *>(ptr);
-      using I = decltype(val.at(index));
+      using I = decltype(val[index]);
       handler = &knowledge::get_type_handler<decay_<I>>();
-      out_ptr = &val.at(index);
+      if (val.size() < index) {
+        val.resize(index + 1);
+      }
+      out_ptr = &val[index];
     };
 }
 
@@ -153,26 +179,6 @@ constexpr knowledge::TypeHandlers::index_str_fn_type
       using I = decltype(val[index]);
       handler = &knowledge::get_type_handler<decay_<I>>();
       out_ptr = &val[index];
-    };
-}
-
-// Implement get_type_handler_str_index for type supporting for_each_field
-// and at(const char *) or operator[](const std::string &).
-// Takes precedence over operator[] version above if available.
-template<typename T,
-  enable_if_<knowledge::supports_str_at_index<T>::value, int> = 0>
-constexpr knowledge::TypeHandlers::index_str_fn_type
-  get_type_handler_index_str(type<T>, overload_priority<4>)
-{
-  return [](const char *index,
-      const knowledge::TypeHandlers *&handler,
-      void *&out_ptr,
-      void *ptr)
-    {
-      T &val = *static_cast<T *>(ptr);
-      using I = decltype(val.at(index));
-      handler = &knowledge::get_type_handler<decay_<I>>();
-      out_ptr = &val.at(index);
     };
 }
 

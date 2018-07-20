@@ -485,6 +485,12 @@ public:
     data_ = (void*)&t;
   }
 
+  static AnyRef from_pointers_unsafe(
+      const TypeHandlers *handler, void *data)
+  {
+    return {handler, data};
+  }
+
   template<typename Impl2, typename Base2>
   friend class BasicOwningAny;
 

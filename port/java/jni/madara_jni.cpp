@@ -111,11 +111,12 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
 
   if (!kr_class || env->ExceptionCheck ())
   {
-    env->ExceptionClear ();
     madara_logger_ptr_log (logger::global_logger.get (),
       logger::LOG_ERROR,
       "madara:JNI_OnLoad: "
       "Class loader call failed for ai.madara.knowledge.KnowledgeRecord\n");
+    env->ExceptionDescribe ();
+    env->ExceptionClear ();
   }
   else
   {

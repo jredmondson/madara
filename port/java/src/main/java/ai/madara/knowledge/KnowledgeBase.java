@@ -92,6 +92,7 @@ public class KnowledgeBase extends MadaraJNI
   private static native void jni_setDoubleArray(long cptr, String name, double[] value);
   private static native void jni_setFile(long cptr, String name, byte[] value);
   private static native void jni_setImage(long cptr, String name, byte[] value);
+  private static native String jni_setAny(long cptr, String name, long handler, long data);
   private static native void jni_setIntegerSettings(long cptr, String name, long value, long settings);
   private static native void jni_setDoubleSettings(long cptr, String name, double value, long settings);
   private static native void jni_setStringSettings(long cptr, String name, String value, long settings);
@@ -99,6 +100,7 @@ public class KnowledgeBase extends MadaraJNI
   private static native void jni_setDoubleArraySettings(long cptr, String name, double[] value, long settings);
   private static native void jni_setFileSettings(long cptr, String name, byte[] value, long settings);
   private static native void jni_setImageSettings(long cptr, String name, byte[] value, long settings);
+  private static native String jni_setAnySettings(long cptr, String name, long handler, long data, long settings);
   private native void jni_freeKnowledgeBase(long cptr);
   private native long jni_wait(long cptr, String expression, long waitSettings);
   private native long jni_wait(long cptr, long expression, long waitSettings);
@@ -502,6 +504,21 @@ public class KnowledgeBase extends MadaraJNI
     jni_setImage(getCPtr(), name, value);
   }
 
+  /**
+   * Sets a knowledge value to a specified Any.
+   *
+   * @param name  knowledge name
+   * @param value value to set
+   * @throws KnowledgeBaseLockedException If called from a MadaraFunction
+   **/
+  public void set(String name, Any value) throws MadaraDeadObjectException
+  {
+    String err = jni_setAny(getCPtr(), name, value.handler_, value.data_);
+    if (err != null) {
+      throw new RuntimeException("Unexpected BadAnyAccess: " + err);
+    }
+  }
+
 
 
   /**
@@ -594,6 +611,24 @@ public class KnowledgeBase extends MadaraJNI
   public void setImage(String name, byte[] value, EvalSettings settings) throws MadaraDeadObjectException
   {
     jni_setImageSettings(getCPtr(), name, value, settings.getCPtr());
+  }
+
+  /**
+   * Sets a knowledge value to a specified Any.
+   *
+   * @param name  knowledge name
+   * @param value value to set
+   * @param settings settings for evaluating the set command
+   * @throws KnowledgeBaseLockedException If called from a MadaraFunction
+   **/
+  public void set(String name, Any value, EvalSettings settings) throws MadaraDeadObjectException
+  {
+    String err = jni_setAnySettings(getCPtr(), name,
+        value.handler_, value.data_, settings.getCPtr());
+
+    if (err != null) {
+      throw new RuntimeException("Unexpected BadAnyAccess: " + err);
+    }
   }
 
 

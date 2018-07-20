@@ -386,6 +386,7 @@ MADARA_MAKE_VAL_SUPPORT_TEST(for_each_field, x,
     for_each_field(::madara::ignore_all<>{}, x));
 
 MADARA_MAKE_VAL_SUPPORT_TEST(size_member, x, (1UL == x.size()));
+MADARA_MAKE_VAL_SUPPORT_TEST(resize_member, x, (x.resize(1UL)));
 MADARA_MAKE_VAL_SUPPORT_TEST(int_index, x, (x[1UL] = x[1UL]));
 MADARA_MAKE_VAL_SUPPORT_TEST(str_index, x, (x[""] = x[""]));
 MADARA_MAKE_VAL_SUPPORT_TEST(int_at_index, x, (x.at(1UL) = x.at(1UL)));

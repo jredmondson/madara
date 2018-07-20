@@ -574,10 +574,11 @@ inline void AnyRegistry::register_type(const char *name)
 
 inline Any AnyRegistry::construct(const char *name)
 {
+  std::cerr << "Num registered: " << type_builders().size() << std::endl;
   auto iter = type_builders().find(name);
   if (iter == type_builders().end()) {
     throw exceptions::BadAnyAccess(std::string("Type ") + name +
-        "is not registered");
+        " is not registered");
   }
   return iter->second();
 }

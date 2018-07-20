@@ -57,21 +57,6 @@ public:
     return data_ == nullptr;
   }
 
-  /**
-   * Test whether this Any holds unserialized raw data, to be lazily
-   * deserialized when first needed.
-   *
-   * Note that this lazy deserialization is not fully type-safe, and might not
-   * throw an exception if the wrong type is used. The result may be garbled
-   * data, but shouldn't segfault or trample other data.
-   *
-   * @return true if this Any holds raw data
-   **/
-  bool raw() const
-  {
-    return data_ != nullptr && handler_ == nullptr;
-  }
-
 protected:
   template<typename T>
   void check_type(type<T> t) const
@@ -846,7 +831,9 @@ public:
   }
 
   /**
-   * Convert stored value to KnowledgeRecord using knoweldge_cast.
+   * Convert stored value to KnowledgeRecord using knoweldge_cast. If the type
+   * cannot be converted to any of native KnowledgeRecord types, the returned
+   * KnowledgeRecord will contain a clone of this Any.
    *
    * Throws BadAnyAccess if !to_record()
    **/
@@ -937,14 +924,13 @@ public:
       return s.str();
     }
 
-    if (!supports_to_record()) {
-      throw exceptions::BadAnyAccess("Type stored in Any doesn't "
-          "support to_record or stream");
+    if (supports_to_record()) {
+      std::string ret;
+      try_knowledge_cast(handler_->to_record(data_), ret);
+      return ret;
     }
 
-    std::string ret;
-    try_knowledge_cast(handler_->to_record(data_), ret);
-    return ret;
+    return to_json();
   }
 
   /**
@@ -1005,6 +991,11 @@ public:
     return *handler_->registered_name;
   }
 
+  std::pair<const TypeHandlers *, void *> get_pointers() const
+  {
+    return {handler_, data_};
+  }
+
 protected:
   const TypeHandlers *handler_ = nullptr;
   void *data_ = nullptr;
@@ -1059,6 +1050,12 @@ public:
   {
     handler_ = &get_type_handler<T>();
     data_ = (void*)&t;
+  }
+
+  static ConstAnyRef from_pointers_unsafe(
+      const TypeHandlers *handler, void *data)
+  {
+    return {handler, data};
   }
 
   template<typename Impl2, typename Base2>
