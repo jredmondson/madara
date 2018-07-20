@@ -54,7 +54,7 @@ namespace madara
        * @param filter  the filter to check
        * @return  true if the filter matches the header
        **/
-      bool check (filters::BufferFilter * filter);
+      bool check_filter (filters::BufferFilter * filter);
 
       /**
        * Reads relevant fields from a filter

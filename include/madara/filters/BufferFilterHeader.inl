@@ -19,7 +19,7 @@
 namespace madara { namespace filters {
 
 inline bool
-BufferFilterHeader::check (filters::BufferFilter * filter)
+BufferFilterHeader::check_filter (filters::BufferFilter * filter)
 {
   return filter->get_id () == id && version >= filter->get_version ();
 }
