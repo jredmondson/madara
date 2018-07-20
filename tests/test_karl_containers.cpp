@@ -17,7 +17,9 @@
 #include "madara/knowledge/containers/IntegerVector2D.h"
 #include "madara/knowledge/containers/IntegerVector3D.h"
 #include "madara/knowledge/containers/CircularBuffer.h"
+#include "madara/knowledge/containers/CircularBufferT.h"
 #include "madara/knowledge/containers/CircularBufferConsumer.h"
+#include "madara/knowledge/containers/CircularBufferConsumerT.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include <iostream>
 
@@ -2968,7 +2970,7 @@ auto for_each_field(Fun &&fun, T &&val) -> madara::enable_if_same_decayed<T, Spe
 void test_circular_any (void)
 {
   std::cerr <<
-    "************* CIRCULARBUFFER: Testing CircularBuffer Any*************\n";
+    "************* CB: Testing CircularBuffer Any*************\n";
 
   SpecialClass sample;
   sample.x = 1;
@@ -3131,10 +3133,176 @@ void test_circular_any (void)
 
 }
 
+void test_circulart_any (void)
+{
+  std::cerr <<
+    "************* CBT: Testing CircularBufferT Any*************\n";
+
+  SpecialClass sample;
+  sample.x = 1;
+  sample.y = 2;
+
+  knowledge::KnowledgeBase kb;
+  containers::CircularBufferT <SpecialClass> producer ("buffer", kb, 10);
+  std::vector <KnowledgeRecord> records;
+  std::vector <SpecialClass> classes;
+  SpecialClass class_result;
+  KnowledgeRecord record_result;
+  bool has_failed;
+
+  std::cerr << "  Testing add<T> and get<T>...";
+
+  producer.add (sample);
+
+  producer.get (class_result);
+
+  if (class_result.x == 1 && class_result.y == 2)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "    class_result.x==" << class_result.x << ", ";
+    std::cerr << "class_result.y==" << class_result.y << "\n";
+  }
+
+  for (int i = 0; i < 10; ++i)
+  {
+    sample.x = i;
+    sample.y = i;
+    producer.add (sample);
+  }
+
+  std::cerr << "  Testing get_earliest(10)...";
+
+  classes.clear ();
+  producer.get_earliest (10, classes);
+
+  has_failed = classes.size () != 10;
+
+  for (int i = 0;
+       !has_failed && i < (int)classes.size (); ++i)
+  {
+    if (classes[i].x != i && classes[i].y != i)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << classes.size () << "\n";
+    for (auto record : classes)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing get_latest(10)...";
+
+  classes.clear ();
+  producer.get_latest (10, classes);
+
+  has_failed = classes.size () != 10;
+
+  for (int i = 0;
+       !has_failed && i < (int)classes.size (); ++i)
+  {
+    if (classes[i].x != 9 - i && classes[i].y != 9 - i)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << classes.size () << "\n";
+    for (auto record : classes)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing inspect(1)...";
+
+  producer.inspect (1, class_result);
+
+  if (class_result.x == 0 && class_result.y == 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "    class_result.x==" << class_result.x << ", ";
+    std::cerr << "class_result.y==" << class_result.y << "\n";
+  }
+
+  for (int i = 0; i < 10; ++i)
+  {
+    sample.x = i;
+    sample.y = i;
+    producer.add (sample);
+  }
+
+  std::cerr << "  Testing inspect(10)...";
+
+  classes.clear ();
+  producer.inspect (1, 10, classes);
+
+  has_failed = classes.size () != 10;
+
+  for (int i = 0;
+       !has_failed && i < (int)classes.size (); ++i)
+  {
+    if (classes[i].x != i && classes[i].y != i)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << classes.size () << "\n";
+    for (auto record : classes)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+}
+
 void test_circular_consumer_any (void)
 {
   std::cerr <<
-    "********** CIRCULARBUFFER: Testing CircularBufferConsumer Any**********\n";
+    "********** CBC: Testing CircularBufferConsumer Any**********\n";
 
   SpecialClass sample;
   sample.x = 1;
@@ -3348,6 +3516,224 @@ void test_circular_consumer_any (void)
 
 }
 
+
+void test_circular_consumert_any (void)
+{
+  std::cerr <<
+  "********** CBCT: Testing CircularBufferConsumerT Any**********\n";
+
+  SpecialClass sample;
+  sample.x = 1;
+  sample.y = 2;
+
+  knowledge::KnowledgeBase kb;
+  containers::CircularBuffer producer ("buffer", kb, 10);
+  containers::CircularBufferConsumerT<SpecialClass> consumer ("buffer", kb);
+  std::vector <KnowledgeRecord> records;
+  std::vector <SpecialClass> classes;
+  SpecialClass class_result;
+  bool has_failed;
+
+  std::cerr << "  Testing add<T> and consume<T>...";
+
+  producer.add (sample);
+
+  consumer.consume (class_result);
+
+  if (class_result.x == 1 && class_result.y == 2)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "    class_result.x==" << class_result.x << ", ";
+    std::cerr << "class_result.y==" << class_result.y << "\n";
+  }
+
+  std::cerr << "  Testing peek_latest()...";
+
+  consumer.peek_latest (class_result);
+
+  if (class_result.x == 1 && class_result.y == 2)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "    class_result.x==" << class_result.x << ", ";
+    std::cerr << "class_result.y==" << class_result.y << "\n";
+  }
+
+  for (int i = 0; i < 10; ++i)
+  {
+    sample.x = i;
+    sample.y = i;
+    producer.add (sample);
+  }
+
+  std::cerr << "  Testing get_earliest(10)...";
+
+  classes.clear ();
+  consumer.consume_earliest (10, classes);
+
+  has_failed = classes.size () != 10;
+
+  for (int i = 0;
+       !has_failed && i < (int)classes.size (); ++i)
+  {
+    if (classes[i].x != i && classes[i].y != i)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << classes.size () << "\n";
+    for (auto record : classes)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing get_latest(10)...";
+
+  producer.add (classes);
+  classes.clear ();
+  consumer.consume_latest (10, classes);
+
+  has_failed = classes.size () != 10;
+
+  for (int i = 0;
+       !has_failed && i < (int)classes.size (); ++i)
+  {
+    if (classes[i].x != 9 - i && classes[i].y != 9 - i)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << classes.size () << "\n";
+    for (auto record : classes)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing inspect(1)...";
+
+  consumer.inspect (1, class_result);
+
+  if (class_result.x == 0 && class_result.y == 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "    class_result.x==" << class_result.x << ", ";
+    std::cerr << "class_result.y==" << class_result.y << "\n";
+  }
+
+  for (int i = 0; i < 10; ++i)
+  {
+    sample.x = i;
+    sample.y = i;
+    producer.add (sample);
+  }
+
+  std::cerr << "  Testing inspect(10)...";
+
+  classes.clear ();
+  consumer.inspect (1, 10, classes);
+
+  has_failed = classes.size () != 10;
+
+  for (int i = 0;
+       !has_failed && i < (int)classes.size (); ++i)
+  {
+    if (classes[i].x != i && classes[i].y != i)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << classes.size () << "\n";
+    for (auto record : classes)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing peek_latest(10)...";
+
+  classes.clear ();
+  consumer.peek_latest (10, classes);
+
+  has_failed = classes.size () != 10;
+
+  for (int i = 0;
+       !has_failed && i < (int)classes.size (); ++i)
+  {
+    if (classes[i].x != 9 - i && classes[i].y != 9 - i)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << classes.size () << "\n";
+    for (auto record : classes)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+}
+
+
 int main (int , char **)
 {
   test_vector ();
@@ -3374,7 +3760,9 @@ int main (int , char **)
   test_circular ();
   test_circular_consumer ();
   test_circular_any ();
+  test_circulart_any ();
   test_circular_consumer_any ();
+  test_circular_consumert_any ();
 
 
   if (madara_fails > 0)
