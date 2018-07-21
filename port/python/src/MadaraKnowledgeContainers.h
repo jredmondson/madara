@@ -318,6 +318,123 @@ void define_knowledge_containers (void)
       "Returns the size of the buffer")
 
   ;
+
+
+  class_<madara::knowledge::containers::Integer> (
+     "Integer",
+     "References an integer in the knowledge base",
+     init <> ())
+
+    // constructors
+    .def (init <const madara::knowledge::KnowledgeUpdateSettings &> ())
+
+    .def (init <const std::string &, madara::knowledge::KnowledgeBase &,
+      const madara::knowledge::KnowledgeUpdateSettings &> ())
+    
+    .def (init <const std::string &, madara::knowledge::KnowledgeBase &,
+      madara::knowledge::KnowledgeRecord::Integer,
+      const madara::knowledge::KnowledgeUpdateSettings &> ())
+    
+    // methods
+
+    // check for existence
+    .def ("exists",
+      &madara::knowledge::containers::Integer::exists,
+      "Checks if the underlying record has ever been modified/created")
+
+    // gets the underlying prefix/name
+    .def ("get_name",
+      &madara::knowledge::containers::Integer::get_name,
+      "Returns the underlying name of the container")
+
+    // gets the underlying prefix/name
+    .def ("get_settings",
+      &madara::knowledge::containers::Integer::get_settings,
+      "Returns the read/write settings of the container")
+
+    // returns the remaining records
+    .def ("modify",
+      &madara::knowledge::containers::Integer::modify,
+      "Marks the record/container as modified to send over transport")
+
+    // sets the name
+    .def ("set_name", 
+      static_cast<
+        void (madara::knowledge::containers::Integer::*)(
+          const std::string &, madara::knowledge::KnowledgeBase &
+        )
+      > (&madara::knowledge::containers::Integer::set_name),
+      "Sets the name inside of the Knowledge Base for the container to use")
+
+    // sets the name
+    .def ("set_name", 
+      static_cast<
+        void (madara::knowledge::containers::Integer::*)(
+          const std::string &, madara::knowledge::Variables &
+        )
+      > (&madara::knowledge::containers::Integer::set_name),
+      "Sets the name inside of the Knowledge Base for the container to use")
+
+    // gets the underlying prefix/name
+    .def ("set_settings",
+      &madara::knowledge::containers::Integer::set_settings,
+      "Sets the read/write settings for the container")
+
+    // returns the double
+    .def ("to_double",
+      &madara::knowledge::containers::Integer::to_double,
+      "Returns the double")
+
+    // returns the integer
+    .def ("to_integer",
+      &madara::knowledge::containers::Integer::to_integer,
+      "Returns the integer")
+
+    // returns the record
+    .def ("to_record",
+      &madara::knowledge::containers::Integer::to_record,
+      "Returns the underlying record")
+
+    // returns the container as a string
+    .def ("to_string",
+      &madara::knowledge::containers::Integer::to_string,
+      "Returns the container as a string")
+
+    // returns the container as a string
+    .def ("set",
+      static_cast<
+        madara::knowledge::KnowledgeRecord::Integer 
+        (madara::knowledge::containers::Integer::*)(
+          madara::knowledge::KnowledgeRecord::Integer
+        )
+      > (&madara::knowledge::containers::Integer::operator=),
+      "Sets the value")
+
+    .def (self += madara::knowledge::KnowledgeRecord::Integer())
+
+    .def (self -= madara::knowledge::KnowledgeRecord::Integer())
+
+    .def (self < madara::knowledge::KnowledgeRecord::Integer())
+
+    .def (self <= madara::knowledge::KnowledgeRecord::Integer())
+
+    .def (self != madara::knowledge::KnowledgeRecord::Integer())
+
+    .def (self == madara::knowledge::KnowledgeRecord::Integer())
+
+    .def (self >= madara::knowledge::KnowledgeRecord::Integer())
+
+    .def (self > madara::knowledge::KnowledgeRecord::Integer())
+
+    .def ("operator++",
+    &madara::knowledge::containers::Integer::operator++,
+    "Adds one to the integer")
+
+    .def ("operator--",
+    &madara::knowledge::containers::Integer::operator--,
+    "Subtracts one from the integer")
+
+  ;
 }
 
 
