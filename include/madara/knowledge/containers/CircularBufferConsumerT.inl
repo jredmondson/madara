@@ -168,6 +168,57 @@ CircularBufferConsumerT<T>::consume (T & value) const
 }
 
 template <typename T> void
+CircularBufferConsumerT<T>::consume (T & value, size_t & dropped) const
+{
+  check_all (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  KnowledgeRecord::Integer index_diff = *index_ - local_index_;
+
+  dropped = get_dropped ();
+
+  if (index_diff > (KnowledgeRecord::Integer)buffer_.size ())
+  {
+    local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size ();
+  }
+
+  KnowledgeRecord::Integer cur = increment (local_index_, 1);
+
+  if (remaining () > 0)
+  {
+    ++local_index_;
+    value = context_->get (
+      buffer_.vector_[(size_t)(cur)]).template to_any<T> ();
+  }
+  else throw exceptions::IndexException (
+    "CircularBufferConsumerT::consume: no remaining values in buffer"
+  );
+}
+
+template <typename T>
+inline size_t
+CircularBufferConsumerT<T>::get_dropped (void) const
+{
+  check_all (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  size_t difference = remaining ();
+  size_t buffer_size = size ();
+
+  if (difference > buffer_size)
+  {
+    return difference - buffer_size;
+  } 
+  else
+  {
+    return 0;
+  }
+}
+
+template <typename T>
+inline void
 CircularBufferConsumerT<T>::inspect (
   KnowledgeRecord::Integer position, T & value) const
 {
@@ -196,7 +247,8 @@ CircularBufferConsumerT<T>::inspect (
   }
 }
 
-template <typename T> void
+template <typename T>
+inline void
 CircularBufferConsumerT<T>::inspect (KnowledgeRecord::Integer position,
   size_t count, std::vector <T> & values) const
 {
@@ -366,6 +418,29 @@ CircularBufferConsumerT<T>::consume_latest (size_t count,
 }
 
 template <typename T> void
+CircularBufferConsumerT<T>::consume_latest (size_t count,
+  std::vector <T> & values, size_t & dropped) const
+{
+  check_all (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  dropped = get_dropped ();
+
+  KnowledgeRecord::Integer cur = *index_ % buffer_.size ();
+
+  count = std::min (count, (size_t)(*index_ - local_index_));
+
+  for (size_t i = 0; i < count; ++i, cur = increment (cur, -1))
+  {
+    values.push_back (buffer_[(size_t)cur].template to_any <T> ());
+  }
+
+  // note the difference here is that reading the latest will change index
+  local_index_ = *index_;
+}
+
+template <typename T> void
 CircularBufferConsumerT<T>::consume_earliest (size_t count,
   std::vector <T> & values) const
 {
@@ -374,6 +449,34 @@ CircularBufferConsumerT<T>::consume_earliest (size_t count,
   ContextGuard context_guard (*context_);
 
   KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
+
+  count = std::min (count, (size_t)index_diff);
+
+  // start is either 0 or index_ + 1
+  KnowledgeRecord::Integer cur =
+    index_diff < (KnowledgeRecord::Integer)buffer_.size () ? 
+    increment (local_index_, 1) :
+    increment (*index_, -(KnowledgeRecord::Integer)(buffer_.size ()) + 1);
+
+  for (size_t i = 0; i < count; ++i, cur = increment (cur, 1))
+  {
+    values.push_back (buffer_[(size_t)cur].template to_any <T> ());
+  }
+
+  local_index_ += (KnowledgeRecord::Integer)values.size ();
+}
+
+template <typename T> void
+CircularBufferConsumerT<T>::consume_earliest (size_t count,
+  std::vector <T> & values, size_t & dropped) const
+{
+  check_all (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
+
+  dropped = get_dropped ();
 
   count = std::min (count, (size_t)index_diff);
 

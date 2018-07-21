@@ -153,21 +153,21 @@ namespace madara
          * @param  value  the value to add
          * @return the new value
          **/
-        type operator+= (type value);
+        type operator+= (const type & value);
         
         /**
          * Checks for equality
          * @param  value  the value to compare to
          * @return true if equal, false otherwise
          **/
-        bool operator== (type value) const;
+        bool operator== (const type & value) const;
         
         /**
          * Checks for inequality
          * @param  value  the value to compare to
          * @return true if inequal, false otherwise
          **/
-        bool operator!= (type value) const;
+        bool operator!= (const type & value) const;
         
         /**
          * Checks for equality
@@ -188,28 +188,28 @@ namespace madara
          * @param  value  the value to compare to
          * @return true if less than
          **/
-        bool operator< (type value) const;
+        bool operator< (const type & value) const;
         
         /**
          * Checks for less than or equal to relationship
          * @param  value  the value to compare to
          * @return true if less than or equal to
          **/
-        bool operator<= (type value) const;
+        bool operator<= (const type & value) const;
         
         /**
          * Checks for greater than relationship
          * @param  value  the value to compare to
          * @return true if greater than
          **/
-        bool operator> (type value) const;
+        bool operator> (const type & value) const;
         
         /**
          * Checks for greater than or equal to relationship
          * @param  value  the value to compare to
          * @return true if greater than or equal to
          **/
-        bool operator>= (type value) const;
+        bool operator>= (const type & value) const;
         
         /**
          * Returns the value of the variable

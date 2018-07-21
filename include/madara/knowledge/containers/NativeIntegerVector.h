@@ -122,6 +122,13 @@ namespace madara
         void copy_to (KnowledgeVector & target) const;
         
         /**
+         * Checks to see if the variable has ever been assigned a value
+         * @return true if the record has been set to a value. False if
+         *         uninitialized
+         **/
+        bool exists (void) const;
+      
+        /**
          * Returns the size of the vector
          * @return size of the vector
          **/
@@ -219,6 +226,12 @@ namespace madara
                const KnowledgeReferenceSettings & settings =
                        KnowledgeReferenceSettings (false));
       
+        /**
+         * Retrieves the native integer array from inside the record 
+         * @return the vector 
+         **/
+        std::vector <KnowledgeRecord::Integer> to_integers (void) const;
+
         /**
          * Retrieves a copy of the record from the vector.
          * @param  index  the index of the variable entry
