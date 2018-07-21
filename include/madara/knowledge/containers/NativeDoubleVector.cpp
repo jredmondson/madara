@@ -570,6 +570,32 @@ madara::knowledge::containers::NativeDoubleVector::set_quality (
   }
 }
 
+bool
+madara::knowledge::containers::NativeDoubleVector::exists (void) const
+{
+  bool result (false);
+
+  if (context_)
+  {
+    ContextGuard context_guard (*context_);
+    MADARA_GUARD_TYPE guard (mutex_);
+    result = context_->exists (vector_);
+  }
+
+  return result;
+}
+
+std::vector <double>
+madara::knowledge::containers::NativeDoubleVector::to_doubles (void) const
+{
+  madara_logger_ptr_log (logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "NativeDoubleVector::to)doubles: %s: retrieving double vector\n",
+    this->name_.c_str ());
+
+  return context_->get (this->vector_, settings_).to_doubles ();
+}
+
 madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::NativeDoubleVector::to_record (
   size_t index) const

@@ -47,10 +47,10 @@ void define_knowledge (void)
    */
 
 
-  /********************************************************
-    * KnowledgeBase definitions
-    ********************************************************/
- 
+  class_<madara::knowledge::CheckpointSettings> ("Any",
+    "A class that can represent any type in a KnowledgeRecord", init <> ())
+  ;
+
   class_<madara::knowledge::CheckpointSettings> ("CheckpointSettings",
     "Settings for checkpoints and file saves", init <> ())
 

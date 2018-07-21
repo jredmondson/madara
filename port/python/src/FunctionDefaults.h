@@ -82,5 +82,11 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_save_context_1_of_1,
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_save_checkpoint_1_of_1,
   save_checkpoint, 1, 1)
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_resize_1_of_1,
+  resize, 1, 1)
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_resize_0_of_2,
+  resize, 0, 2)
+
 
 #endif

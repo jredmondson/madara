@@ -397,6 +397,27 @@ madara::knowledge::containers::NativeIntegerVector::set_quality (
   }
 }
 
+bool
+madara::knowledge::containers::NativeIntegerVector::exists (void) const
+{
+  bool result (false);
+
+  if (context_)
+  {
+    ContextGuard context_guard (*context_);
+    MADARA_GUARD_TYPE guard (mutex_);
+    result = context_->exists (vector_);
+  }
+
+  return result;
+}
+
+std::vector <madara::knowledge::KnowledgeRecord::Integer>
+madara::knowledge::containers::NativeIntegerVector::to_integers (void) const
+{
+  return context_->get (this->vector_, settings_).to_integers ();
+}
+
 madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::NativeIntegerVector::to_record (
   size_t index) const
