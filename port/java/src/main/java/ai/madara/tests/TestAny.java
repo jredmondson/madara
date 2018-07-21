@@ -58,7 +58,7 @@ import ai.madara.knowledge.KnowledgeBase;
 public class TestAny {
   public static void main (java.lang.String...args) throws InterruptedException, Exception
   {
-    System.loadLibrary("datatypes_shared");
+    System.loadLibrary("datatypes_test");
 
     KnowledgeBase kb = new KnowledgeBase();
 

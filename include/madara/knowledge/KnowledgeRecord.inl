@@ -49,7 +49,7 @@ inline KnowledgeRecord::KnowledgeRecord (
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
-    std::shared_ptr<std::vector<Integer>> value,
+    std::unique_ptr<std::vector<Integer>> value,
     logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
@@ -81,7 +81,7 @@ inline KnowledgeRecord::KnowledgeRecord (
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
-    std::shared_ptr<std::vector<double>> value,
+    std::unique_ptr<std::vector<double>> value,
     logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
@@ -103,7 +103,7 @@ inline KnowledgeRecord::KnowledgeRecord (std::string && value,
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
-    std::shared_ptr<std::string> value,
+    std::unique_ptr<std::string> value,
     logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
@@ -118,7 +118,7 @@ inline KnowledgeRecord::KnowledgeRecord (const char * value,
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
-    std::shared_ptr<std::vector<unsigned char>> value,
+    std::unique_ptr<std::vector<unsigned char>> value,
     logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
@@ -134,6 +134,20 @@ inline KnowledgeRecord::KnowledgeRecord (
 
 inline KnowledgeRecord::KnowledgeRecord (
   Any && value, logger::Logger & logger) noexcept
+: logger_ (&logger)
+{
+  emplace_any (std::move(value));
+}
+
+inline KnowledgeRecord::KnowledgeRecord (
+  const ConstAny & value, logger::Logger & logger)
+: logger_ (&logger)
+{
+  emplace_any (value);
+}
+
+inline KnowledgeRecord::KnowledgeRecord (
+  ConstAny && value, logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
   emplace_any (std::move(value));
@@ -165,7 +179,7 @@ inline KnowledgeRecord::KnowledgeRecord (
   else if (rhs.is_binary_file_type ())
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
   else if (rhs.type_ == ANY)
-    new (&any_value_) std::shared_ptr<Any>(rhs.any_value_);
+    new (&any_value_) std::shared_ptr<ConstAny>(rhs.any_value_);
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
@@ -194,7 +208,7 @@ inline KnowledgeRecord::KnowledgeRecord (
   else if (rhs.is_binary_file_type ())
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
   else if (rhs.type_ == ANY)
-    new (&any_value_) std::shared_ptr<Any>(std::move(rhs.any_value_));
+    new (&any_value_) std::shared_ptr<ConstAny>(std::move(rhs.any_value_));
 
   rhs.type_ = EMPTY;
 }
@@ -233,7 +247,7 @@ KnowledgeRecord::set_value (const KnowledgeRecord &rhs)
   else if (rhs.is_binary_file_type ())
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
   else if (rhs.type_ == ANY)
-    new (&any_value_) std::shared_ptr<Any>(rhs.any_value_);
+    new (&any_value_) std::shared_ptr<ConstAny>(rhs.any_value_);
 }
 
 inline void
@@ -265,7 +279,7 @@ KnowledgeRecord::set_value (KnowledgeRecord &&rhs)
   else if (rhs.is_binary_file_type ())
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
   else if (rhs.type_ == ANY)
-    new (&any_value_) std::shared_ptr<Any>(std::move(rhs.any_value_));
+    new (&any_value_) std::shared_ptr<ConstAny>(std::move(rhs.any_value_));
 
   rhs.type_ = EMPTY;
 }
@@ -1121,10 +1135,10 @@ KnowledgeRecord::set_value (const std::string & new_value)
 
 // set the value_ to a string
 inline void
-KnowledgeRecord::set_value (std::shared_ptr<std::string> new_value)
+KnowledgeRecord::set_value (std::unique_ptr<std::string> new_value)
 {
-  emplace_shared_string (std::move(new_value));
-  type_ = STRING;
+  emplace_shared_val<std::string, STRING, &KnowledgeRecord::str_value_>(
+      std::move(new_value));
 }
 
 // set the value_ to a string
@@ -1161,10 +1175,10 @@ KnowledgeRecord::set_xml (const std::string & new_value)
 
 // set the value_ to a string
 inline void
-KnowledgeRecord::set_xml (std::shared_ptr<std::string> new_value)
+KnowledgeRecord::set_xml (std::unique_ptr<std::string> new_value)
 {
-  emplace_shared_string (std::move(new_value));
-  type_ = XML;
+  emplace_shared_val<std::string, XML, &KnowledgeRecord::str_value_>(
+      std::move(new_value));
 }
 
 // set the value_ to a string
@@ -1193,10 +1207,10 @@ KnowledgeRecord::set_text (const std::string & new_value)
 
 // set the value_ to a string
 inline void
-KnowledgeRecord::set_text (std::shared_ptr<std::string> new_value)
+KnowledgeRecord::set_text (std::unique_ptr<std::string> new_value)
 {
-  emplace_shared_string (std::move(new_value));
-  type_ = TEXT_FILE;
+  emplace_shared_val<std::string, TEXT_FILE, &KnowledgeRecord::str_value_>(
+      std::move(new_value));
 }
 
 // set the value_ to a string
@@ -1224,10 +1238,10 @@ KnowledgeRecord::set_jpeg (const std::vector <unsigned char> & new_value)
 
 inline void
 KnowledgeRecord::set_jpeg (
-    std::shared_ptr<std::vector <unsigned char>> new_value)
+    std::unique_ptr<std::vector <unsigned char>> new_value)
 {
-  emplace_shared_file (std::move(new_value));
-  type_ = IMAGE_JPEG;
+  emplace_shared_vec<unsigned char, IMAGE_JPEG, &KnowledgeRecord::file_value_>(
+      std::move(new_value));
 }
 
 // set the value_ to a string
@@ -1255,10 +1269,10 @@ KnowledgeRecord::set_file (const std::vector <unsigned char> & new_value)
 
 inline void
 KnowledgeRecord::set_file (
-    std::shared_ptr<std::vector <unsigned char>> new_value)
+    std::unique_ptr<std::vector <unsigned char>> new_value)
 {
-  emplace_shared_file (std::move(new_value));
-  type_ = UNKNOWN_FILE_TYPE;
+  emplace_shared_vec<unsigned char, UNKNOWN_FILE_TYPE,
+    &KnowledgeRecord::file_value_>(std::move(new_value));
 }
 
 // set the value_ to an integer
@@ -1297,9 +1311,10 @@ KnowledgeRecord::set_value (const std::vector <Integer> & new_value)
 
 // set the value_ to an array of integers
 inline void
-KnowledgeRecord::set_value (std::shared_ptr<std::vector <Integer>> new_value)
+KnowledgeRecord::set_value (std::unique_ptr<std::vector <Integer>> new_value)
 {
-  emplace_shared_integers (std::move(new_value));
+  emplace_shared_vec<Integer, INTEGER_ARRAY,
+    &KnowledgeRecord::int_array_>(std::move(new_value));
 }
 
 // set the value_ to a double
@@ -1338,9 +1353,10 @@ KnowledgeRecord::set_value (const std::vector <double> & new_value)
 
 // set the value_ to an array of doubles
 inline void
-KnowledgeRecord::set_value (std::shared_ptr<std::vector <double>> new_value)
+KnowledgeRecord::set_value (std::unique_ptr<std::vector <double>> new_value)
 {
-  emplace_shared_doubles (std::move(new_value));
+  emplace_shared_vec<double, DOUBLE_ARRAY,
+    &KnowledgeRecord::double_array_>(std::move(new_value));
 }
 
 /**
@@ -1408,7 +1424,7 @@ KnowledgeRecord::set_index (size_t index, T value)
   double_array_->at (index) = value;
 }
 
-inline std::shared_ptr<std::string>
+inline std::shared_ptr<const std::string>
 KnowledgeRecord::share_string() const
 {
   if (is_string_type()) {
@@ -1418,23 +1434,7 @@ KnowledgeRecord::share_string() const
   return nullptr;
 }
 
-inline std::shared_ptr<std::string>
-KnowledgeRecord::take_string()
-{
-  if (is_string_type()) {
-    std::shared_ptr<std::string> ret;
-
-    using std::swap;
-    swap(ret, str_value_);
-
-    reset_value();
-
-    return ret;
-  }
-  return nullptr;
-}
-
-inline std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+inline std::shared_ptr<const std::vector<KnowledgeRecord::Integer>>
 KnowledgeRecord::share_integers() const
 {
   if (type_ == INTEGER_ARRAY) {
@@ -1444,23 +1444,7 @@ KnowledgeRecord::share_integers() const
   return nullptr;
 }
 
-inline std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
-KnowledgeRecord::take_integers()
-{
-  if (type_ == INTEGER_ARRAY) {
-    std::shared_ptr<std::vector<Integer>> ret;
-
-    using std::swap;
-    swap(ret, int_array_);
-
-    reset_value();
-
-    return ret;
-  }
-  return nullptr;
-}
-
-inline std::shared_ptr<std::vector<double>>
+inline std::shared_ptr<const std::vector<double>>
 KnowledgeRecord::share_doubles() const
 {
   if (type_ == DOUBLE_ARRAY) {
@@ -1470,23 +1454,7 @@ KnowledgeRecord::share_doubles() const
   return nullptr;
 }
 
-inline std::shared_ptr<std::vector<double>>
-KnowledgeRecord::take_doubles()
-{
-  if (type_ == DOUBLE_ARRAY) {
-    std::shared_ptr<std::vector<double>> ret;
-
-    using std::swap;
-    swap(ret, double_array_);
-
-    reset_value();
-
-    return ret;
-  }
-  return nullptr;
-}
-
-inline std::shared_ptr<std::vector<unsigned char>>
+inline std::shared_ptr<const std::vector<unsigned char>>
 KnowledgeRecord::share_binary() const
 {
   if (is_binary_file_type()) {
@@ -1496,44 +1464,12 @@ KnowledgeRecord::share_binary() const
   return nullptr;
 }
 
-inline std::shared_ptr<std::vector<unsigned char>>
-KnowledgeRecord::take_binary()
-{
-  if (is_binary_file_type()) {
-    std::shared_ptr<std::vector<unsigned char>> ret;
-
-    using std::swap;
-    swap(ret, file_value_);
-
-    reset_value();
-
-    return ret;
-  }
-  return nullptr;
-}
-
-inline std::shared_ptr<Any>
+inline std::shared_ptr<const ConstAny>
 KnowledgeRecord::share_any() const
 {
   if (is_any_type()) {
     shared_ = SHARED;
     return any_value_;
-  }
-  return nullptr;
-}
-
-inline std::shared_ptr<Any>
-KnowledgeRecord::take_any()
-{
-  if (is_any_type()) {
-    std::shared_ptr<Any> ret;
-
-    using std::swap;
-    swap(ret, any_value_);
-
-    reset_value();
-
-    return ret;
   }
   return nullptr;
 }

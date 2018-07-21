@@ -161,7 +161,7 @@ namespace madara
         std::shared_ptr<std::vector<double>> double_array_;
         std::shared_ptr<std::string> str_value_;
         std::shared_ptr<std::vector<unsigned char>> file_value_;
-        std::shared_ptr<Any> any_value_;
+        std::shared_ptr<ConstAny> any_value_;
       };
 
       /**
@@ -204,8 +204,8 @@ namespace madara
       explicit KnowledgeRecord (std::vector <Integer> && value,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
-      /* Integer array shared_ptr constructor */
-      explicit KnowledgeRecord (std::shared_ptr<std::vector <Integer>> value,
+      /* Integer array unique_ptr constructor */
+      explicit KnowledgeRecord (std::unique_ptr<std::vector <Integer>> value,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* Double array constructor */
@@ -216,8 +216,8 @@ namespace madara
       explicit KnowledgeRecord (std::vector <double> && value,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
-      /* Double array shared_ptr constructor */
-      explicit KnowledgeRecord (std::shared_ptr<std::vector <double>> value,
+      /* Double array unique_ptr constructor */
+      explicit KnowledgeRecord (std::unique_ptr<std::vector <double>> value,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* String constructor */
@@ -228,17 +228,17 @@ namespace madara
       explicit KnowledgeRecord (std::string && value,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
-      /* Double array shared_ptr constructor */
-      explicit KnowledgeRecord (std::shared_ptr<std::string> value,
+      /* Double array unique_ptr constructor */
+      explicit KnowledgeRecord (std::unique_ptr<std::string> value,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* Char pointer constructor for g++ */
       explicit KnowledgeRecord (const char * value,
         logger::Logger & logger = *logger::global_logger.get ());
 
-      /* Binary file shared_ptr constructor */
+      /* Binary file unique_ptr constructor */
       explicit KnowledgeRecord (
-        std::shared_ptr<std::vector<unsigned char>> value,
+        std::unique_ptr<std::vector<unsigned char>> value,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* Any type constructor */
@@ -247,6 +247,14 @@ namespace madara
 
       /* Any type move constructor */
       explicit KnowledgeRecord (Any && value,
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
+
+      /* Any type constructor */
+      explicit KnowledgeRecord (const ConstAny & value,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /* Any type move constructor */
+      explicit KnowledgeRecord (ConstAny && value,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* copy constructor */
@@ -259,37 +267,6 @@ namespace madara
       ~KnowledgeRecord () noexcept;
 
     public:
-      /**
-       * Construct a shared_ptr to vector of integers within this
-       * KnowledgeRecord.
-       *
-       * If the KnowledgeRecord would modify the resulting shared_ptr,
-       * a private copy will be made, and modified.
-       *
-       * @param args All arguments are forwarded to the shared_ptr constructor
-       **/
-      template<typename... Args>
-      void emplace_shared_integers(Args&&... args) {
-        emplace_shared_vec<Integer, INTEGER_ARRAY,
-               &KnowledgeRecord::int_array_> (
-                  std::forward<Args>(args)...);
-        shared_ = SHARED;
-      }
-
-      /**
-       * Construct a shared_ptr to vector of integers within this
-       * KnowledgeRecord.
-       *
-       * If the KnowledgeRecord would modify the resulting shared_ptr,
-       * a private copy will be made, and modified.
-       *
-       * @param args arguments forwarded to the shared_ptr constructor
-       **/
-      template<typename... Args>
-      void emplace(tags::shared_t<tags::integers_t>, Args&&... args) {
-        emplace_shared_integers(std::forward<Args>(args)...);
-      }
-
       /**
        * Construct a vector of integers within this KnowledgeRecord.
        *
@@ -310,37 +287,6 @@ namespace madara
       template<typename... Args>
       void emplace(tags::integers_t, Args&&... args) {
         emplace_integers(std::forward<Args>(args)...);
-      }
-
-      /**
-       * Construct a shared_ptr to vector of doubles within this
-       * KnowledgeRecord.
-       *
-       * If the KnowledgeRecord would modify the resulting shared_ptr,
-       * a private copy will be made, and modified.
-       *
-       * @param args All arguments are forwarded to the shared_ptr constructor
-       **/
-      template<typename... Args>
-      void emplace_shared_doubles(Args&&... args) {
-        emplace_shared_vec<double, DOUBLE_ARRAY,
-               &KnowledgeRecord::double_array_> (
-                  std::forward<Args>(args)...);
-        shared_ = SHARED;
-      }
-
-      /**
-       * Construct a shared_ptr to vector of doubles within this
-       * KnowledgeRecord.
-       *
-       * If the KnowledgeRecord would modify the resulting shared_ptr,
-       * a private copy will be made, and modified.
-       *
-       * @param args arguments forwarded to the shared_ptr constructor
-       **/
-      template<typename... Args>
-      void emplace(tags::shared_t<tags::doubles_t>, Args&&... args) {
-        emplace_shared_doubles(std::forward<Args>(args)...);
       }
 
       /**
@@ -366,35 +312,6 @@ namespace madara
       }
 
       /**
-       * Construct a shared_ptr to a string within this KnowledgeRecord.
-       *
-       * If the KnowledgeRecord would modify the resulting shared_ptr,
-       * a private copy will be made, and modified.
-       *
-       * @param args All arguments are forwarded to the shared_ptr constructor
-       **/
-      template<typename... Args>
-      void emplace_shared_string(Args&&... args) {
-        emplace_shared_val<std::string, STRING,
-               &KnowledgeRecord::str_value_> (
-                  std::forward<Args>(args)...);
-        shared_ = SHARED;
-      }
-
-      /**
-       * Construct a shared_ptr to string within this KnowledgeRecord.
-       *
-       * If the KnowledgeRecord would modify the resulting shared_ptr,
-       * a private copy will be made, and modified.
-       *
-       * @param args arguments forwarded to the shared_ptr constructor
-       **/
-      template<typename... Args>
-      void emplace(tags::shared_t<tags::string_t>, Args&&... args) {
-        emplace_shared_string(std::forward<Args>(args)...);
-      }
-
-      /**
        * Construct a string within this KnowledgeRecord.
        *
        * @param args All arguments are forwarded to the string constructor
@@ -414,37 +331,6 @@ namespace madara
       template<typename... Args>
       void emplace(tags::string_t, Args&&... args) {
         emplace_string(std::forward<Args>(args)...);
-      }
-
-      /**
-       * Construct a shared_ptr to a file (vector of unsigned char) within
-       * this KnowledgeRecord.
-       *
-       * If the KnowledgeRecord would modify the resulting shared_ptr,
-       * a private copy will be made, and modified.
-       *
-       * @param args All arguments are forwarded to the shared_ptr constructor
-       **/
-      template<typename... Args>
-      void emplace_shared_file(Args&&... args) {
-        emplace_shared_vec<unsigned char, UNKNOWN_FILE_TYPE,
-               &KnowledgeRecord::file_value_> (
-                std::forward<Args>(args)...);
-        shared_ = SHARED;
-      }
-
-      /**
-       * Construct a shared_ptr to binary (vector of unsigned char) within
-       * this KnowledgeRecord.
-       *
-       * If the KnowledgeRecord would modify the resulting shared_ptr,
-       * a private copy will be made, and modified.
-       *
-       * @param args arguments forwarded to the shared_ptr constructor
-       **/
-      template<typename... Args>
-      void emplace(tags::shared_t<tags::binary_t>, Args&&... args) {
-        emplace_shared_binary(std::forward<Args>(args)...);
       }
 
       /**
@@ -476,7 +362,7 @@ namespace madara
        **/
       template<typename... Args>
       void emplace_any(Args&&... args) {
-        emplace_val<Any, ANY, &KnowledgeRecord::any_value_> (
+        emplace_val<ConstAny, ANY, &KnowledgeRecord::any_value_> (
             std::forward<Args>(args)...);
       }
 
@@ -503,16 +389,6 @@ namespace madara
           type_ (INTEGER_ARRAY) {}
 
       /**
-       * Forwarding constructor for integer arrays shared_ptr
-       * Each argument past the first will be forwarded to construct a
-       * std::shared_ptr<std::vector<Integer>> in-place within the new record.
-       **/
-      template<typename... Args>
-      KnowledgeRecord(tags::shared_t<tags::integers_t>, Args&&... args)
-        : int_array_ {std::forward<Args>(args)...},
-          type_ (INTEGER_ARRAY), shared_ (SHARED) {}
-
-      /**
        * Forwarding constructor for double arrays
        * Each argument past the first will be forwarded to construct a
        * std::vector<double> in-place within the new record.
@@ -522,16 +398,6 @@ namespace madara
         : double_array_ (std::make_shared<std::vector<double>> (
               std::forward<Args>(args)...)),
           type_ (DOUBLE_ARRAY) {}
-
-      /**
-       * Forwarding constructor for double arrays shared_ptr
-       * Each argument past the first will be forwarded to construct a
-       * std::shared_ptr<std::vector<double>> in-place within the new record.
-       **/
-      template<typename... Args>
-      KnowledgeRecord(tags::shared_t<tags::doubles_t>, Args&&... args)
-        : double_array_ {std::forward<Args>(args)...},
-          type_ (DOUBLE_ARRAY), shared_ (SHARED) {}
 
       /**
        * Forwarding constructor for strings
@@ -548,20 +414,6 @@ namespace madara
           type_ (STRING) {}
 
       /**
-       * Forwarding constructor for double arrays shared_ptr
-       * Each argument past the first will be forwarded to construct a
-       * std::shared_ptr<std::string> in-place within the new record.
-       *
-       * For example:
-       * KnowledgeRecord rec (tags::shared(tags::string),
-       *   new std::string("Hello World"));
-       **/
-      template<typename... Args>
-      KnowledgeRecord(tags::shared_t<tags::string_t>, Args&&... args)
-        : str_value_ {std::forward<Args>(args)...},
-          type_ (STRING), shared_ (SHARED) {}
-
-      /**
        * Forwarding constructor for binary files (blobs)
        * Each argument past the first will be forwarded to construct a
        * std::vector<unsigned char> in-place within the new record.
@@ -573,25 +425,24 @@ namespace madara
           type_ (UNKNOWN_FILE_TYPE) {}
 
       /**
-       * Forwarding constructor for binary file (blob) shared_ptr
+       * Forwarding constructor for Any types
        * Each argument past the first will be forwarded to construct a
-       * std::shared_ptr<std::vector<unsigned char>> in-place within the
-       * new record.
+       * new Any in-place within the new record.
        **/
-      template<typename... Args>
-      KnowledgeRecord(tags::shared_t<tags::binary_t>, Args&&... args)
-        : file_value_ {std::forward<Args>(args)...},
-          type_ (UNKNOWN_FILE_TYPE), shared_ (SHARED) {}
-
       template<typename T, typename... Args>
       KnowledgeRecord(tags::any<T>, Args&&... args)
-        : any_value_ (std::make_shared<Any> (
+        : any_value_ (std::make_shared<ConstAny> (
               tags::type<T>{}, std::forward<Args>(args)...)),
           type_ (ANY) {}
 
+      /**
+       * Forwarding constructor for Any types
+       * The initializer list will be forwarded to construct a new Any
+       * in-place within the new record
+       **/
       template<typename T, typename I>
       KnowledgeRecord(tags::any<T>, std::initializer_list<I> init)
-        : any_value_ (std::make_shared<Any> (
+        : any_value_ (std::make_shared<ConstAny> (
               tags::type<T>{}, init)),
           type_ (ANY) {}
 
@@ -661,14 +512,7 @@ namespace madara
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not a string, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::string> share_string() const;
-
-      /**
-       * @return a shared_ptr, while resetting this record to empty.
-       * If this record is not a string, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::string> take_string();
+      std::shared_ptr<const std::string> share_string() const;
 
       /**
        * writes the value to a file
@@ -717,14 +561,7 @@ namespace madara
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not an int array, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::vector<Integer>> share_integers() const;
-
-      /**
-       * @return a shared_ptr, while resetting this record to empty.
-       * If this record is not an int array, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::vector<Integer>> take_integers();
+      std::shared_ptr<const std::vector<Integer>> share_integers() const;
 
       /**
        * converts the value to a vector of doubles
@@ -736,27 +573,13 @@ namespace madara
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not a doubles array, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::vector<double>> share_doubles() const;
-
-      /**
-       * @return a shared_ptr, while resetting this record to empty.
-       * If this record is not doubles array, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::vector<double>> take_doubles();
+      std::shared_ptr<const std::vector<double>> share_doubles() const;
 
       /**
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not a binary file value, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::vector<unsigned char>> share_binary() const;
-
-      /**
-       * @return a shared_ptr, while resetting this record to empty.
-       * If this record is not a binary file value, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::vector<unsigned char>> take_binary();
+      std::shared_ptr<const std::vector<unsigned char>> share_binary() const;
 
       /**
        * returns an unmanaged buffer that the user will have
@@ -828,7 +651,7 @@ namespace madara
        * sets the value to an array of integers, without copying
        * @param    new_value   new value of the Knowledge Record
        **/
-      void set_value (std::shared_ptr<std::vector <Integer>> new_value);
+      void set_value (std::unique_ptr<std::vector <Integer>> new_value);
 
       /**
        * sets the value to a string, from a buffer
@@ -853,7 +676,7 @@ namespace madara
        * sets the value to a string. Does not copy the string.
        * @param    new_value   new value of the Knowledge Record
        **/
-      void set_value (std::shared_ptr<std::string> new_value);
+      void set_value (std::unique_ptr<std::string> new_value);
 
       /**
        * sets the value to a floating point number
@@ -887,7 +710,7 @@ namespace madara
        * sets the value to an array of doubles, without copying
        * @param    new_value   new value of the Knowledge Record
        **/
-      void set_value (std::shared_ptr<std::vector <double>> new_value);
+      void set_value (std::unique_ptr<std::vector <double>> new_value);
 
       template<typename T>
       auto operator=(T &&t) ->
@@ -921,7 +744,7 @@ namespace madara
        * sets the value to an xml string. Does not copy the string.
        * @param    new_value   new value of the Knowledge Record
        **/
-      void set_xml (std::shared_ptr<std::string> new_value);
+      void set_xml (std::unique_ptr<std::string> new_value);
 
       /**
        * sets the value to a plaintext string
@@ -946,7 +769,7 @@ namespace madara
        * sets the value to a plaintext string. Does not copy the string.
        * @param    new_value   new value of the Knowledge Record
        **/
-      void set_text (std::shared_ptr<std::string> new_value);
+      void set_text (std::unique_ptr<std::string> new_value);
 
       /**
        * Sets the double precision of a double record when using
@@ -996,7 +819,7 @@ namespace madara
        * sets the value to a jpeg, without copying
        * @param    new_value   new value of the Knowledge Record
        **/
-      void set_jpeg (std::shared_ptr<std::vector <unsigned char>> new_value);
+      void set_jpeg (std::unique_ptr<std::vector <unsigned char>> new_value);
 
       /**
        * sets the value to an unknown file type
@@ -1021,7 +844,7 @@ namespace madara
        * sets the value to an unknown file type, without copying
        * @param    new_value   new value of the Knowledge Record
        **/
-      void set_file (std::shared_ptr<std::vector <unsigned char>> new_value);
+      void set_file (std::unique_ptr<std::vector <unsigned char>> new_value);
 
       /**
        * Set to Any from any compatible type. The argument will be moved into
@@ -1036,12 +859,12 @@ namespace madara
       }
 
       /**
-       * Get a reference to the stored Any.
+       * Get a const reference to the stored Any.
        * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
        *
-       * @return a reference to the stored Any
+       * @return a const reference to the stored Any
        **/
-      Any &get_any_ref()
+      ConstAnyRef get_any_ref() const
       {
         if (type_ == ANY) {
           return *any_value_;
@@ -1058,24 +881,7 @@ namespace madara
        *
        * @return a const reference to the stored Any
        **/
-      const Any &get_any_ref() const
-      {
-        if (type_ == ANY) {
-          return *any_value_;
-        } else {
-          throw exceptions::BadAnyAccess(
-              "Called get_any on KnowledgeRecord not containing "
-              "an Any type");
-        }
-      }
-
-      /**
-       * Get a const reference to the stored Any.
-       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
-       *
-       * @return a const reference to the stored Any
-       **/
-      const Any &get_any_cref() const
+      ConstAnyRef get_any_cref() const
       {
         return get_any_ref();
       }
@@ -1098,26 +904,6 @@ namespace madara
       T &get_any_ref(tags::type<T> t)
       {
         return get_any_ref().ref(t);
-      }
-
-      /**
-       * Access an Any value's stored value by reference.
-       * If this knowledge record doesn't hold an Any type, throw BadAnyAccess.
-       * If empty() is true, throw BadAnyAccess exception; else,
-       * If raw() is true, try to deserialize using T, and store deserialized
-       * data if successful, else throw BadAnyAccess exception.
-       * Otherwise, check type_id<T> matches handler_->tindex; if so,
-       * return *data_ as T&, else throw BadAnyAccess exception
-       *
-       * Note that T must match the type of the stored value exactly. It cannot
-       * be a parent or convertible type, including primitive types.
-       *
-       * @return a reference to the contained value
-       **/
-      template<typename T>
-      T &get_any_ref()
-      {
-        return get_any_ref(tags::type<T>{});
       }
 
       /**
@@ -1201,10 +987,6 @@ namespace madara
        **/
       Any to_any() const
       {
-        static_assert(!is_type_tag<double>(), "");
-        static_assert(is_type_tag<tags::type<double>>(), "");
-        static_assert(is_same_decayed<Any, Any>(), "");
-        static_assert(!is_same_decayed<double, Any>(), "");
         if (type_ == ANY) {
           return *any_value_;
         } else if (type_ == INTEGER) {
@@ -1258,14 +1040,7 @@ namespace madara
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not an Any type, returns NULL shared_ptr
        **/
-      std::shared_ptr<Any> share_any() const;
-
-      /**
-       * @return a shared_ptr, while resetting this record to empty.
-       * If this record is not an Any type, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<Any> take_any();
+      std::shared_ptr<const ConstAny> share_any() const;
 
       /**
        * Creates a deep copy of the knowledge record. Because each
@@ -1773,30 +1548,30 @@ namespace madara
       using MemberType = std::shared_ptr<T> KnowledgeRecord::*;
 
       template<typename T, uint32_t Type, MemberType<T> Member, typename... Args>
-      std::shared_ptr<T> &emplace_shared_val(Args&&... args) {
+      std::shared_ptr<const T> &emplace_shared_val(Args&&... args) {
         clear_union();
         type_ = Type;
-        return *new(&(this->*Member)) std::shared_ptr<T>(
+        return *new(&(this->*Member)) std::shared_ptr<const T>(
               std::forward<Args>(args)...);
       }
 
       template<typename T, uint32_t Type, MemberType<T> Member, typename... Args>
-      std::shared_ptr<T> &emplace_val(Args&&... args) {
+      std::shared_ptr<const T> &emplace_val(Args&&... args) {
         return emplace_shared_val<T, Type, Member> (std::move(
-            std::make_shared<T> (
+            std::make_shared<const T> (
               std::forward<Args>(args)...)));
       }
 
       template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
                typename... Args>
-      std::shared_ptr<std::vector<T>> &emplace_shared_vec(Args&&... args) {
+      std::shared_ptr<const std::vector<T>> &emplace_shared_vec(Args&&... args) {
         return emplace_shared_val<std::vector<T>, Type, Member> (
               std::forward<Args>(args)...);
       }
 
       template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
                typename... Args>
-      std::shared_ptr<std::vector<T>> &emplace_vec(Args&&... args) {
+      std::shared_ptr<const std::vector<T>> &emplace_vec(Args&&... args) {
         return emplace_val<std::vector<T>, Type, Member> (
               std::forward<Args>(args)...);
       }

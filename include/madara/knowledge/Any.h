@@ -38,6 +38,10 @@ template<typename Impl, typename BaseImpl>
 class BasicOwningAny : public BaseImpl, public AnyRegistry
 {
   using Base = BaseImpl;
+
+protected:
+  using Base::Base;
+
 public:
   /**
    * Default constructor. Creates an empty Any.
@@ -48,15 +52,6 @@ public:
    * Copy constructor. Will clone any data stored inside.
    **/
   BasicOwningAny(const BasicOwningAny &other)
-    : Base(other.handler_,
-        other.data_ && other.handler_ ?
-          other.handler_->clone(other.data_) : nullptr) {}
-
-  /**
-   * Copy constructor. Will clone any data stored inside.
-   **/
-  template<typename I, typename B>
-  BasicOwningAny(const BasicOwningAny<I, B> &other)
     : Base(other.handler_,
         other.data_ && other.handler_ ?
           other.handler_->clone(other.data_) : nullptr) {}
@@ -93,14 +88,6 @@ public:
    * Move constructor. Other Any will be left empty.
    **/
   BasicOwningAny(BasicOwningAny &&other) noexcept :
-    Base(take_ptr(other.handler_),
-      take_ptr(other.data_)) {}
-
-  /**
-   * Move constructor. Other Any will be left empty.
-   **/
-  template<typename I, typename B>
-  BasicOwningAny(BasicOwningAny<I, B> &&other) noexcept :
     Base(take_ptr(other.handler_),
       take_ptr(other.data_)) {}
 
@@ -474,7 +461,7 @@ public:
    **/
   void unserialize(const char *type, json_iarchive &archive);
 
-private:
+protected:
   template<typename T>
   static T *take_ptr(T *&in)
   {
@@ -527,6 +514,11 @@ public:
   static ConstAny construct(const char *name) {
     return construct_const(name);
   }
+
+  ConstAny(const Any &other);
+  ConstAny(Any &&other) noexcept;
+
+  friend class Any;
 };
 
 /**
@@ -557,6 +549,11 @@ class Any : public BasicOwningAny<Any,
 
 public:
   using Base::Base;
+
+  Any(const ConstAny &other);
+  Any(ConstAny &&other) noexcept;
+
+  friend class ConstAny;
 };
 
 template<typename T>
@@ -619,6 +616,23 @@ inline ConstAnyRef::ConstAnyRef(const Any &other)
 
 inline AnyRef::AnyRef(const Any &other)
   : Base(other.handler_, other.data_) {}
+
+inline ConstAnyRef::ConstAnyRef(const ConstAny &other)
+  : Base(other.handler_, other.data_) {}
+
+inline ConstAny::ConstAny(const Any &other)
+  : ConstAny(other.cref()) {}
+
+inline ConstAny::ConstAny(Any &&other) noexcept
+  : Base(take_ptr(other.handler_),
+         take_ptr(other.data_)) {}
+
+inline Any::Any(const ConstAny &other)
+  : Any(other.cref()) {}
+
+inline Any::Any(ConstAny &&other) noexcept
+  : Base(take_ptr(other.handler_),
+         take_ptr(other.data_)) {}
 
 } // namespace knowledge
 

@@ -220,8 +220,6 @@ void test_record()
 {
   KnowledgeRecord k0(tags::any<std::vector<std::string>>{}, {"a", "b", "c"});
   TEST_EQ(k0.get_any_cref<std::vector<std::string>>()[1], "b");
-  k0.get_any_ref<std::vector<std::string>>()[1] = "d";
-  TEST_EQ(k0.get_any_cref<std::vector<std::string>>()[1], "d");
 
   Any a0(type<std::string>{}, "hello");
   KnowledgeRecord k1(std::move(a0));
@@ -252,12 +250,12 @@ void test_map(T &kb)
   VAL(kb_dump);
   kb.save_context("/tmp/madara_test_any.kb");
 
-  auto a1 = kb.take_any("asdf");
+  auto a1 = kb.share_any("asdf");
   TEST_EQ(a1->template ref<std::vector<std::string>>()[0], "a");
 
   VAL(a1->to_json());
 
-  TEST_EQ(kb.exists("asdf"), false);
+  TEST_EQ(kb.exists("asdf"), true);
 
   kb.clear();
 
@@ -386,12 +384,10 @@ void test_geo()
   TEST_EQ(kb.get("s0").share_any()->ref("stamp")("time").to_string(), "1234");
   TEST_EQ(kb.get("s0").share_any()->ref("stamp")("frame").to_string(), "default");
 
-  Any s0 = std::move(*kb.get("s0").take_any());
+  Any s0 = *kb.get("s0").share_any();
   s0("stamp")(&Stamp::time) = 4321;
   kb.emplace_any("s0", std::move(s0));
   TEST_EQ(kb.get("s0").share_any()->ref("stamp")("time").to_integer(), 4321);
-  kb.get("s0").share_any()->ref("stamp")("frame")(&std::string::push_back, '!');
-  TEST_EQ(kb.get("s0").share_any()->ref("stamp")("frame").to_string(), "default!");
   TEST_EQ(kb.get("s0").share_any()->cref("stamp")("frame")(
     (size_t (std::string::*)(char, size_t)const)&std::string::find, 'f', 0), 2UL);
 

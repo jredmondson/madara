@@ -1042,6 +1042,11 @@ public:
   ConstAnyRef(const Any &other);
 
   /**
+   * Construct as a reference to the given Any
+   **/
+  ConstAnyRef(const ConstAny &other);
+
+  /**
    * Change the object this ConstAnyRef refers to. It must be a type which could
    * be stored in an Any, but the object need actually be stored in an Any
    **/

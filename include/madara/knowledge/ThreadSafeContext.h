@@ -189,58 +189,34 @@ namespace madara
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not a string, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::string> share_string(const std::string & key,
+      std::shared_ptr<const std::string> share_string(const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
-        return get_shared<std::string, &KnowledgeRecord::share_string>(key, settings);
+        return get_shared<const std::string, &KnowledgeRecord::share_string>(key, settings);
       }
 
       /**
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not a string, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::string> share_string(const VariableReference & key,
+      std::shared_ptr<const std::string> share_string(const VariableReference & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
-        return get_shared<std::string, &KnowledgeRecord::share_string>(key, settings);
-      }
-
-      /**
-       * @return a shared_ptr, while resetting this record to empty.
-       * If this record is not a string, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::string> take_string(const std::string & key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return get_shared<std::string, &KnowledgeRecord::take_string>(key, settings);
-      }
-
-      /**
-       * @return a shared_ptr, while resetting this record to empty.
-       * If this record is not a string, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::string> take_string(const VariableReference & key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return get_shared<std::string, &KnowledgeRecord::take_string>(key, settings);
+        return get_shared<const std::string, &KnowledgeRecord::share_string>(key, settings);
       }
 
       /**
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not an integer array, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+      std::shared_ptr<const std::vector<KnowledgeRecord::Integer>>
         share_integers(const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
-        return get_shared<std::vector<KnowledgeRecord::Integer>,
+        return get_shared<const std::vector<KnowledgeRecord::Integer>,
                  &KnowledgeRecord::share_integers>(key, settings);
       }
 
@@ -248,53 +224,25 @@ namespace madara
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not an integer array, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
+      std::shared_ptr<const std::vector<KnowledgeRecord::Integer>>
         share_integers(const VariableReference & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
-        return get_shared<std::vector<KnowledgeRecord::Integer>,
+        return get_shared<const std::vector<KnowledgeRecord::Integer>,
                  &KnowledgeRecord::share_integers>(key, settings);
       }
 
       /**
        * @return a shared_ptr, sharing with the internal one.
-       * If this record is not an integer array, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
-        take_integers(const std::string & key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return get_shared<std::vector<KnowledgeRecord::Integer>,
-                 &KnowledgeRecord::take_integers>(key, settings);
-      }
-
-      /**
-       * @return a shared_ptr, sharing with the internal one.
-       * If this record is not an integer array, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::vector<KnowledgeRecord::Integer>>
-        take_integers(const VariableReference & key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return get_shared<std::vector<KnowledgeRecord::Integer>,
-                 &KnowledgeRecord::take_integers>(key, settings);
-      }
-
-      /**
-       * @return a shared_ptr, sharing with the internal one.
        * If this record is not a doubles array, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::vector<double>>
+      std::shared_ptr<const std::vector<double>>
         share_doubles(const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
-        return get_shared<std::vector<double>,
+        return get_shared<const std::vector<double>,
                  &KnowledgeRecord::share_doubles>(key, settings);
       }
 
@@ -302,53 +250,25 @@ namespace madara
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not a doubles array, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::vector<double>>
+      std::shared_ptr<const std::vector<double>>
         share_doubles(const VariableReference & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
-        return get_shared<std::vector<double>,
+        return get_shared<const std::vector<double>,
                  &KnowledgeRecord::share_doubles>(key, settings);
       }
 
       /**
        * @return a shared_ptr, sharing with the internal one.
-       * If this record is not a doubles array, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::vector<double>>
-        take_doubles(const std::string & key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return get_shared<std::vector<double>,
-                 &KnowledgeRecord::take_doubles>(key, settings);
-      }
-
-      /**
-       * @return a shared_ptr, sharing with the internal one.
-       * If this record is not a doubles array, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::vector<double>>
-        take_doubles(const VariableReference & key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return get_shared<std::vector<double>,
-                 &KnowledgeRecord::take_doubles>(key, settings);
-      }
-
-      /**
-       * @return a shared_ptr, sharing with the internal one.
        * If this record is not a binary file, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::vector<unsigned char>>
+      std::shared_ptr<const std::vector<unsigned char>>
         share_binary(const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
-        return get_shared<std::vector<unsigned char>,
+        return get_shared<const std::vector<unsigned char>,
                  &KnowledgeRecord::share_binary>(key, settings);
       }
 
@@ -356,87 +276,37 @@ namespace madara
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not a binary file, returns NULL shared_ptr
        **/
-      std::shared_ptr<std::vector<unsigned char>>
+      std::shared_ptr<const std::vector<unsigned char>>
         share_binary(const VariableReference & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
-        return get_shared<std::vector<unsigned char>,
+        return get_shared<const std::vector<unsigned char>,
                  &KnowledgeRecord::share_binary>(key, settings);
       }
 
       /**
        * @return a shared_ptr, sharing with the internal one.
-       * If this record is not a binary file, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::vector<unsigned char>>
-        take_binary(const std::string & key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return get_shared<std::vector<unsigned char>,
-                 &KnowledgeRecord::take_binary>(key, settings);
-      }
-
-      /**
-       * @return a shared_ptr, sharing with the internal one.
-       * If this record is not a binary file, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<std::vector<unsigned char>>
-        take_binary(const VariableReference & key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return get_shared<std::vector<unsigned char>,
-                 &KnowledgeRecord::take_binary>(key, settings);
-      }
-
-      /**
-       * @return a shared_ptr, sharing with the internal one.
        * If this record is not an Any type, returns NULL shared_ptr
        **/
-      std::shared_ptr<Any> share_any(const std::string & key,
+      std::shared_ptr<const ConstAny> share_any(const std::string & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
-        return get_shared<Any, &KnowledgeRecord::share_any>(key, settings);
+        return get_shared<const ConstAny,
+                       &KnowledgeRecord::share_any>(key, settings);
       }
 
       /**
        * @return a shared_ptr, sharing with the internal one.
        * If this record is not an Any type, returns NULL shared_ptr
        **/
-      std::shared_ptr<Any> share_any(const VariableReference & key,
+      std::shared_ptr<const ConstAny> share_any(const VariableReference & key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
-        return get_shared<Any, &KnowledgeRecord::share_any>(key, settings);
-      }
-
-      /**
-       * @return a shared_ptr, while resetting this record to empty.
-       * If this record is not an Any type, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<Any> take_any(const std::string & key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return get_shared<Any, &KnowledgeRecord::take_any>(key, settings);
-      }
-
-      /**
-       * @return a shared_ptr, while resetting this record to empty.
-       * If this record is not an Any type, returns NULL shared_ptr
-       * and this record is unmodified.
-       **/
-      std::shared_ptr<Any> take_any(const VariableReference & key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return get_shared<Any, &KnowledgeRecord::take_any>(key, settings);
+        return get_shared<const ConstAny,
+                       &KnowledgeRecord::share_any>(key, settings);
       }
 
       /**
