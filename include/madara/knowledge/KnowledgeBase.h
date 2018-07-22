@@ -1847,6 +1847,24 @@ namespace madara
         KnowledgeUpdateSettings (true, true, true, false));
 
       /**
+      * Loads and evaluates a karl script from a file
+      * @param   checkpoint_settings  checkpoint settings to load
+      * @param   update_settings      settings for applying the updates
+      * @return                       result of evaluation
+      * @throw exceptions::MemoryException  not enough buffer to encode
+      **/
+      KnowledgeRecord evaluate_file (CheckpointSettings & checkpoint_settings,
+        const KnowledgeUpdateSettings & update_settings =
+        KnowledgeUpdateSettings (true, true, true, false));
+
+      /**
+      * Loads and returns a karl script from a file with encode/decode
+      * @param   checkpoint_settings  checkpoint settings to load
+      * @throw exceptions::MemoryException  not enough buffer to encode
+      **/
+      std::string file_to_string (CheckpointSettings & checkpoint_settings);
+
+      /**
       * Adds a list of VariableReferences to the current modified list.
       * @param  modifieds  a list of variables to add to modified list
       **/

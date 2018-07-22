@@ -1055,6 +1055,24 @@ namespace madara
         KnowledgeUpdateSettings (true, true, true, false));
 
       /**
+      * Loads and evaluates a karl script from a file
+      * @param   checkpoint_settings  checkpoint settings to load
+      * @param   update_settings      settings for applying the updates
+      * @return                       result of evaluation
+      * @throw exceptions::MemoryException  not enough buffer to encode
+      **/
+      KnowledgeRecord evaluate_file (CheckpointSettings & checkpoint_settings,
+        const KnowledgeUpdateSettings & update_settings =
+        KnowledgeUpdateSettings (true, true, true, false));
+
+      /**
+      * Loads and returns a karl script from a file with encode/decode
+      * @param   checkpoint_settings  checkpoint settings to load
+      * @throw exceptions::MemoryException  not enough buffer to encode
+      **/
+      std::string file_to_string (CheckpointSettings & checkpoint_settings);
+
+      /**
        * Clear all modifications to the knowledge base. This action may
        * be useful if you are wanting to keep local changes but not
        * inform other agents (possibly due to a need to further process

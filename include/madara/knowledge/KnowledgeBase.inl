@@ -2019,6 +2019,39 @@ const KnowledgeUpdateSettings & update_settings)
   return result;
 }
 
+inline madara::knowledge::KnowledgeRecord
+KnowledgeBase::evaluate_file (
+CheckpointSettings & checkpoint_settings,
+const KnowledgeUpdateSettings & update_settings)
+{
+  if (context_)
+  {
+    return context_->evaluate_file (checkpoint_settings, update_settings);
+  }
+  else if (impl_.get ())
+  {
+    return impl_->evaluate_file (checkpoint_settings, update_settings);
+  }
+
+  return KnowledgeRecord ();
+}
+
+inline std::string
+KnowledgeBase::file_to_string (
+CheckpointSettings & checkpoint_settings)
+{
+  if (context_)
+  {
+    return context_->file_to_string (checkpoint_settings);
+  }
+  else if (impl_.get ())
+  {
+    return impl_->file_to_string (checkpoint_settings);
+  }
+
+  return std::string ();
+}
+
 inline void
 KnowledgeBase::wait_for_change (void)
 {

@@ -1814,23 +1814,34 @@ ThreadSafeContext::save_context (
     }
 
     // write the final sizes
-    current = meta.write (buffer.get_ptr (), max_buffer);
-    current = checkpoint_header.write (current, max_buffer);
+    current = checkpoint_header.write (
+      buffer.get_ptr () + (int)FileHeader::encoded_size (), max_buffer);
 
     // call decode with any buffer filters
     int total = settings.encode (buffer.get_ptr () + 
       (int)FileHeader::encoded_size (),
       (int)meta.size - (int)FileHeader::encoded_size (), (int)max_buffer);
 
+    if (settings.buffer_filters.size () > 0)
+    {
+      total += (int)filters::BufferFilterHeader::encoded_size ();
+    }
+
+    meta.size = (uint64_t)total;
+
+    current = meta.write (buffer.get_ptr (), max_buffer);
+
     // update the meta data at the front
     fseek (file, 0, SEEK_SET);
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_context:" \
-      " encoding with buffer filters: %d:%d bytes written.\n",
-      (int)meta.size, (int)checkpoint_header.size);
+      " encoding with buffer filters: %d:%d bytes written to offset %d.\n",
+      (int)meta.size, (int)checkpoint_header.size,
+      (int)((int)meta.size - (int)FileHeader::encoded_size ()));
 
-    fwrite (buffer.get_ptr (), (size_t)total, 1, file);
+    fwrite (buffer.get_ptr (),
+      (size_t)total + (size_t)FileHeader::encoded_size (), 1, file);
 
     fclose (file);
   }
@@ -2274,6 +2285,81 @@ ThreadSafeContext::load_context (
   return load_context (checkpoint_settings, settings);
 }
 
+madara::knowledge::KnowledgeRecord
+ThreadSafeContext::evaluate_file (
+  CheckpointSettings & checkpoint_settings,
+  const KnowledgeUpdateSettings & update_settings)
+{
+  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
+    "ThreadSafeContext::evaluate_file:" \
+    " opening file %s\n", checkpoint_settings.filename.c_str ());
+
+  CompiledExpression expression = compile (
+    file_to_string (checkpoint_settings));
+
+  return evaluate (expression, update_settings);
+}
+
+std::string
+ThreadSafeContext::file_to_string (
+  CheckpointSettings & checkpoint_settings)
+{
+  madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
+    "ThreadSafeContext::file_to_string:" \
+    " opening file %s\n", checkpoint_settings.filename.c_str ());
+
+  FILE * file = fopen (checkpoint_settings.filename.c_str (), "rb");
+
+  int64_t total_read (0);
+
+  if (checkpoint_settings.clear_knowledge)
+  {
+    this->clear ();
+  }
+
+  if (file)
+  {
+    FileHeader meta;
+    int64_t max_buffer (checkpoint_settings.buffer_size);
+
+    utility::ScopedArray <char> buffer = new char[max_buffer];
+
+    total_read = fread (buffer.get_ptr (),
+      1, max_buffer, file);
+
+    madara_logger_ptr_log (logger_, logger::LOG_MAJOR,
+      "ThreadSafeContext::file_to_string:" \
+      " reading file: %d bytes read. Decoding...\n",
+      (int)total_read);
+
+    // call decode with any buffer filters
+    int size = checkpoint_settings.decode (buffer.get_ptr (),
+      (int)total_read, (int)max_buffer);
+
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::file_to_string:" \
+      " decoded %d bytes. Converting to string.\n",
+      size);
+
+    std::string script (buffer.get (), (size_t)size);
+
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::file_to_string:" \
+      " reading file: %d bytes read.\n",
+      (int)total_read);
+    
+    madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
+      "ThreadSafeContext::file_to_string:" \
+      " file_contents: %s.\n",
+      script.c_str ());
+    
+    fclose (file);
+
+    return script;
+  }
+
+  return std::string ();
+}
 
 int64_t
 ThreadSafeContext::load_context (
