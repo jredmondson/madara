@@ -1476,8 +1476,8 @@ project (Test_Any_So) : using_madara, no_karl, no_xml, null_lock, using_simtime 
 
   after += Test_Datatypes_Lib
 
-  libs += datatypes_shared
-  
+  libs += datatypes_test
+
   Documentation_Files {
   }
 
