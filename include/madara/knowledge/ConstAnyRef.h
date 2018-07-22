@@ -1,3 +1,5 @@
+#include "Any.h"
+
 #ifndef MADARA_KNOWLEDGE_CONST_ANY_REF_H_
 #define MADARA_KNOWLEDGE_CONST_ANY_REF_H_
 

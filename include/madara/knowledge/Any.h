@@ -515,6 +515,7 @@ public:
     return construct_const(name);
   }
 
+  ConstAny() = default;
   ConstAny(const Any &other);
   ConstAny(Any &&other) noexcept;
 
@@ -550,39 +551,23 @@ class Any : public BasicOwningAny<Any,
 public:
   using Base::Base;
 
+  Any() = default;
   Any(const ConstAny &other);
   Any(ConstAny &&other) noexcept;
 
   friend class ConstAny;
+  friend class AnyRegistry;
 };
 
 template<typename T>
 inline void AnyRegistry::register_type(const char *name)
 {
-  (void)type_builders().emplace(std::piecewise_construct,
-      std::forward_as_tuple(name),
-      std::forward_as_tuple([](){ return Any(type<T>{}); }));
-
   auto &ptr = *get_type_name_ptr<T>();
   if (ptr == nullptr) {
     ptr = name;
   }
-}
 
-inline Any AnyRegistry::construct(const char *name)
-{
-  std::cerr << "Num registered: " << type_builders().size() << std::endl;
-  auto iter = type_builders().find(name);
-  if (iter == type_builders().end()) {
-    throw exceptions::BadAnyAccess(std::string("Type ") + name +
-        " is not registered");
-  }
-  return iter->second();
-}
-
-inline ConstAny AnyRegistry::construct_const(const char *name)
-{
-  return construct(name);
+  register_type_impl(name, &get_type_handler<T>());
 }
 
 template<typename Impl, typename Base>
@@ -638,6 +623,6 @@ inline Any::Any(ConstAny &&other) noexcept
 
 } // namespace madara
 
-#endif  // MADARA_KNOWLEDGE_ANY_H_
-
 #include "DefaultTypeHandlers.h"
+
+#endif  // MADARA_KNOWLEDGE_ANY_H_

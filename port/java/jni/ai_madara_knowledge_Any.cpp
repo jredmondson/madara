@@ -256,7 +256,7 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1to__JJ_3_3J
     AnyRef a{make_anyref(handler, data)};
     std::vector<int64_t> vals = a.to_integers();
     jlongArray ret = env->NewLongArray(vals.size());
-    env->SetLongArrayRegion(ret, 0, vals.size(), vals.data());
+    env->SetLongArrayRegion(ret, 0, vals.size(), (jlong*)vals.data());
     env->SetObjectArrayElement(out, 0, ret);
   });
 }

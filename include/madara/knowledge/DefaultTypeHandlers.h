@@ -1,3 +1,5 @@
+#include "Any.h"
+
 #ifndef MADARA_KNOWLEDGE_DEFAULT_TYPE_HANDLERS_H_
 #define MADARA_KNOWLEDGE_DEFAULT_TYPE_HANDLERS_H_
 
@@ -20,7 +22,6 @@
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/IntTypes.h"
 #include "madara/exceptions/BadAnyAccess.h"
-#include "Any.h"
 
 namespace madara { namespace utility { inline namespace core {
 // Must define below in same namespace as type<> struct for ADL
