@@ -202,7 +202,7 @@ madara::knowledge::containers::String::operator= (const type & value)
 }
  
 madara::knowledge::containers::String::type
-madara::knowledge::containers::String::operator += (type value)
+madara::knowledge::containers::String::operator += (const type & value)
 {
   madara::knowledge::containers::String::type result;
 
@@ -220,7 +220,7 @@ madara::knowledge::containers::String::operator += (type value)
 }
    
 bool
-madara::knowledge::containers::String::operator== (type value) const
+madara::knowledge::containers::String::operator== (const type & value) const
 {
   if (context_)
   {
@@ -233,7 +233,7 @@ madara::knowledge::containers::String::operator== (type value) const
 }
 
 bool
-madara::knowledge::containers::String::operator != (type value) const
+madara::knowledge::containers::String::operator != (const type & value) const
 {
   if (context_)
   {
@@ -278,7 +278,7 @@ madara::knowledge::containers::String::operator != (
 }
 
 bool
-madara::knowledge::containers::String::operator< (type value) const
+madara::knowledge::containers::String::operator< (const type & value) const
 {
   if (context_)
   {
@@ -291,7 +291,7 @@ madara::knowledge::containers::String::operator< (type value) const
 }
 
 bool
-madara::knowledge::containers::String::operator<= (type value) const
+madara::knowledge::containers::String::operator<= (const type & value) const
 {
   if (context_)
   {
@@ -304,7 +304,7 @@ madara::knowledge::containers::String::operator<= (type value) const
 }
 
 bool
-madara::knowledge::containers::String::operator> (type value) const
+madara::knowledge::containers::String::operator> (const type & value) const
 {
   if (context_)
   {
@@ -317,7 +317,7 @@ madara::knowledge::containers::String::operator> (type value) const
 }
 
 bool
-madara::knowledge::containers::String::operator>= (type value) const
+madara::knowledge::containers::String::operator>= (const type & value) const
 {
   if (context_)
   {

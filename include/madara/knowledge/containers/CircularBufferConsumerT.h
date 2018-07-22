@@ -1,6 +1,6 @@
 
-#ifndef _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_H_
-#define _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_H_
+#ifndef _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMERT_H_ 
+#define _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMERT_H_ 
 
 #include <vector>
 #include <string>
@@ -12,10 +12,10 @@
 #include "Integer.h"
 
 /**
- * @file CircularBufferConsumer.h
+ * @file CircularBufferConsumerT.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains a high performance thread-safe CircularBufferConsumer
+ * This file contains a high performance thread-safe CircularBufferConsumerT
  **/
 
 namespace madara
@@ -25,19 +25,20 @@ namespace madara
     namespace containers
     {
       /**
-       * @class CircularBufferConsumer
-       * @brief This container stores a thread-safe, personalized consumer for
-       * CircularBuffer instances. Unlike functions in CircularBuffer, almost
-       * all operations in CircularBufferConsumer use a local index into the
+       * @class CircularBufferConsumerT
+       * @brief This version of CircularBufferConsumerT is templated to a class
+       * Unlike functions in CircularBuffer, almost all operations in 
+       * CircularBufferConsumerT use a local index into the
        * CircularBuffer and encourage one-time access of buffer elements.
        */
-      class MADARA_EXPORT CircularBufferConsumer
+      template <typename T>
+      class MADARA_EXPORT CircularBufferConsumerT
       {
       public:
         /**
          * Default constructor
          **/
-        CircularBufferConsumer ();
+        CircularBufferConsumerT ();
       
         /**
          * Constructor
@@ -46,7 +47,7 @@ namespace madara
          * @param  settings   settings for evaluating the vector
          * @throw exceptions::NameException  bad name ("")
          **/
-        CircularBufferConsumer (const std::string & name,
+        CircularBufferConsumerT (const std::string & name,
                 KnowledgeBase & knowledge);
       
         /**
@@ -56,13 +57,13 @@ namespace madara
          * @param  settings  settings to apply by default
          * @throw exceptions::NameException  bad name ("")
          **/
-        CircularBufferConsumer (const std::string & name,
+        CircularBufferConsumerT (const std::string & name,
                 Variables & knowledge);
 
         /**
          * Destructor
          **/
-        virtual ~CircularBufferConsumer () = default;
+        virtual ~CircularBufferConsumerT () = default;
 
         /**
          * Returns the name of the variable
@@ -93,83 +94,39 @@ namespace madara
          * @param  value  the value to compare to
          * @return true if equal, false otherwise
          **/
-        bool operator== (const CircularBufferConsumer & value) const;
+        bool operator== (const CircularBufferConsumerT & value) const;
         
         /**
          * Checks for inequality
          * @param  value  the value to compare to
          * @return true if inequal, false otherwise
          **/
-        bool operator!= (const CircularBufferConsumer & value) const;
-        
-        /**
-         * Gets the most recently added record
-         * @return the last added record. exists() will return false if the
-         *         record is invalid
-         * @throw exceptions::IndexException  buffer has zero size
-         **/
-        KnowledgeRecord consume (void) const;
-        
-        /**
-         * Gets the most recently added record
-         * @return the last added record. exists() will return false if the
-         *         record is invalid
-         * @param  dropped the number of dropped packets. Drops can
-         *                 occur when the producer produces faster than the
-         *                 consumer can consume. This value is essentially
-         *                 index_ - local_index - size ().
-         * @throw exceptions::IndexException  buffer has zero size
-         **/
-        KnowledgeRecord consume (size_t & dropped) const;
-        
+        bool operator!= (const CircularBufferConsumerT & value) const;
+       
         /**
          * Gets the most recently added value
          * @param value  the last added value.
          * @throw exceptions::IndexException  if no data to consume
          **/
-        template <typename T>
         void consume (T & value) const;
         
         /**
          * Gets the most recently added value
-         * @param value   the last added value.
-         * @param dropped the number of dropped packets. Drops can
-         *                occur when the producer produces faster than the
-         *                consumer can consume. This value is essentially
-         *                index_ - local_index - size ().
+         * @param  value   the last added value.
+         * @param  dropped the number of dropped packets. Drops can
+         *                 occur when the producer produces faster than the
+         *                 consumer can consume. This value is essentially
+         *                 index_ - local_index - size ().
          * @throw exceptions::IndexException  if no data to consume
          **/
-        template <typename T>
         void consume (T & value, size_t & dropped) const;
         
         /**
-         * Gets the most recently added records up to a specified count
-         * @param  count   the maximum number of records to return
-         * @return the last added records
-         * @throw exceptions::IndexException  if index is unreachable
-         **/
-        std::vector <KnowledgeRecord> consume_latest (size_t count) const;
-        
-        /**
-         * Gets the most recently added records up to a specified count
-         * @param  count   the maximum number of records to return
-         * @param  dropped the number of dropped packets. Drops can
-         *                 occur when the producer produces faster than the
-         *                 consumer can consume. This value is essentially
-         *                 index_ - local_index - size ().
-         * @return the last added records
-         * @throw exceptions::IndexException  if index is unreachable
-         **/
-        std::vector <KnowledgeRecord> consume_latest (
-          size_t count, size_t & dropped) const;
-        
-        /**
          * Gets the most recently added values up to a specified count
          * @param  count   the maximum number of records to return
          * @param  values  the last added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
-        template <typename T>
         void consume_latest (size_t count,
           std::vector <T> & values) const;
         
@@ -183,41 +140,18 @@ namespace madara
          *                 index_ - local_index - size ().
          * @throw exceptions::IndexException  if index is unreachable
          **/
-        template <typename T>
         void consume_latest (size_t count,
           std::vector <T> & values, size_t & dropped) const;
         
         /**
-         * Gets the oldest added records up to a specified count
-         * @param  count   the maximum number of records to return
-         * @return the last added records
-         * @throw exceptions::IndexException  if index is unreachable
-         **/
-        std::vector <KnowledgeRecord> consume_earliest (size_t count) const;
-        
-        /**
-         * Gets the oldest added records up to a specified count
-         * @param  count   the maximum number of records to return
-         * @param  dropped the number of dropped packets. Drops can
-         *                 occur when the producer produces faster than the
-         *                 consumer can consume. This value is essentially
-         *                 index_ - local_index - size ().
-         * @return the last added records
-         * @throw exceptions::IndexException  if index is unreachable
-         **/
-        std::vector <KnowledgeRecord> consume_earliest (
-          size_t count, size_t & dropped) const;
-        
-        /**
          * Gets the oldest added values up to a specified count
          * @param  count   the maximum number of records to return
          * @param  values  the last added records
          * @throw exceptions::IndexException  if index is unreachable
          **/
-        template <typename T>
         void consume_earliest (size_t count,
           std::vector <T> & values) const;
-       
+        
         /**
          * Gets the oldest added values up to a specified count
          * @param  count   the maximum number of records to return
@@ -228,10 +162,9 @@ namespace madara
          *                 index_ - local_index - size ().
          * @throw exceptions::IndexException  if index is unreachable
          **/
-        template <typename T>
         void consume_earliest (size_t count,
           std::vector <T> & values, size_t & dropped) const;
-         
+        
         /**
          * Returns the number of known drops since last consume
          * @return the number of drops
@@ -242,23 +175,11 @@ namespace madara
          * Retrieves a record at a position relative to local index
          * @param  position  the relative position of the requested record
          *                   from the latest added record. Can be negative
-         * @return  the record at the position in the CircularBufferConsumer
+         * @param  value    the record at the position in the CircularBufferConsumerT
          * @throw exceptions::ContextException if name or context haven't
          *                      been set appropriately
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
-        knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
-
-        /**
-         * Retrieves a record at a position relative to local index
-         * @param  position  the relative position of the requested record
-         *                   from the latest added record. Can be negative
-         * @param  value    the record at the position in the CircularBufferConsumer
-         * @throw exceptions::ContextException if name or context haven't
-         *                      been set appropriately
-         * @throw exceptions::IndexException  if index is out of range/invalid
-         **/
-        template <typename T>
         void inspect (KnowledgeRecord::Integer position, T & value) const;
 
         /**
@@ -266,38 +187,14 @@ namespace madara
          * @param  position  the relative position of the requested record
          *                   from the latest added record. Can be negative
          * @param  count   the maximum number of records to return
-         * @return  the values at the position in the CircularBufferConsumer
+         * @param  values  the values at the position in the CircularBufferConsumerT
          * @throw exceptions::ContextException if name or context haven't
          *                      been set appropriately
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
-        std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,
-          size_t count) const;
-
-        /**
-         * Retrieves a vector of records at a position relative to local index
-         * @param  position  the relative position of the requested record
-         *                   from the latest added record. Can be negative
-         * @param  count   the maximum number of records to return
-         * @param  values  the values at the position in the CircularBufferConsumer
-         * @throw exceptions::ContextException if name or context haven't
-         *                      been set appropriately
-         * @throw exceptions::IndexException  if index is out of range/invalid
-         **/
-        template <typename T>
         void inspect (KnowledgeRecord::Integer position,
           size_t count, std::vector <T> & values) const;
 
-        /**
-         * Peeks at the most recently added record. This does not use or modify
-         * the local index. It instead references what the producer most recently
-         * added.
-         * @return the last added record. exists() will return false if the
-         *         record is invalid
-         * @throw exceptions::IndexException  if index is out of range/invalid
-         **/
-        knowledge::KnowledgeRecord peek_latest (void) const;
-        
         /**
          * Peeks at the most recently added value. This does not use or modify
          * the local index. It instead references what the producer most recently
@@ -306,18 +203,7 @@ namespace madara
          *              record is invalid
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
-        template <typename T>
         void peek_latest (T & value) const;
-        
-        /**
-         * Peeks at the most recently added records. This does not use or modify
-         * the local index. It instead references what the producer most recently
-         * added.
-         * @param  count  the maximum number of items to look for
-         * @return the last added records up to a certain count
-         * @throw exceptions::IndexException  if index is out of range/invalid
-         **/
-        std::vector <KnowledgeRecord> peek_latest (size_t count) const;
         
         /**
          * Peeks at the most recently added records. This does not use or modify
@@ -327,7 +213,6 @@ namespace madara
          * @param  values the last added records up to a certain count
          * @throw exceptions::IndexException  if index is out of range/invalid
          **/
-        template <typename T>
         void peek_latest (size_t count,
           std::vector <T> & values) const;
         
@@ -341,22 +226,22 @@ namespace madara
         size_t remaining (void) const;
 
         /**
-         * Returns the number of records in the CircularBufferConsumer
-         * @return the number of records in the CircularBufferConsumer
+         * Returns the number of records in the CircularBufferConsumerT
+         * @return the number of records in the CircularBufferConsumerT
          * @throw exceptions::ContextException  if name or context haven't
          *                      been set appropriately
          **/
         size_t count (void) const;
 
         /**
-         * Returns the maximum size of the CircularBufferConsumer
-         * @return the size of the CircularBufferConsumer
+         * Returns the maximum size of the CircularBufferConsumerT
+         * @return the size of the CircularBufferConsumerT
          **/
         size_t size (void) const;
 
         /**
-         * Resizes the CircularBufferConsumer
-         * @param  size      the size of the CircularBufferConsumer. -1 means use the size that
+         * Resizes the CircularBufferConsumerT
+         * @param  size      the size of the CircularBufferConsumerT. -1 means use the size that
          *                   exists in the knowledge base already.
          **/
         void resize (void);
@@ -420,6 +305,6 @@ namespace madara
 }
 
 
-#include "CircularBufferConsumer.inl"
+#include "CircularBufferConsumerT.inl"
 
-#endif // _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_H_
+#endif // _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMERT_H_ 

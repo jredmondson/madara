@@ -250,7 +250,7 @@ namespace madara
               header.id,
               utility::to_string_version (header.version).c_str ());
 
-            if (header.check (*i))
+            if (header.check_filter (*i))
             {
               madara_logger_ptr_log (logger::global_logger.get (),
                 logger::LOG_MAJOR,

@@ -7,7 +7,7 @@ feature(lz4) {
   }
 
   Source_Files {
-    $(LZ4_ROOT)/lib/lz4.c
+    $(LZ4_ROOT)/lib/lz4.cpp
     include/madara/filters/lz4
   }
 }
