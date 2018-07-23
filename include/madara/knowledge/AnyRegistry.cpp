@@ -14,7 +14,6 @@ void AnyRegistry::register_type_impl(const char *name,
 
 Any AnyRegistry::construct(const char *name)
 {
-  std::cerr << "Num registered: " << type_builders.size() << std::endl;
   auto iter = type_builders.find(name);
   if (iter == type_builders.end()) {
     throw exceptions::BadAnyAccess(std::string("Type ") + name +

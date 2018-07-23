@@ -33,6 +33,11 @@ class_<T> define_basic_any(const char * name, const char *doc, I init)
 {
   using namespace madara::knowledge;
 
+#define MADARA_PYSETITEM(Key, Val) \
+    .def("__setitem__", +[](T &a, Key key, Val val) { \
+          a[key] = val; \
+        })
+
   return class_<T> (name,
     doc, init)
     .def("ref", MADARA_MEMB(AnyRef, T, ref, () const))
@@ -41,20 +46,40 @@ class_<T> define_basic_any(const char * name, const char *doc, I init)
     .def("__call__", MADARA_MEMB(AnyRef, T, ref, () const))
     .def("__call__", MADARA_MEMB(AnyRef, T, ref, (const char *) const))
     .def("__call__", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const))
-    .def("__getattribute__", MADARA_MEMB(AnyRef, T, ref, (const char *) const))
-    .def("__getattribute__", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const))
+    .def("__getattr__", MADARA_MEMB(AnyRef, T, ref, (const char *) const))
+    .def("__getattr__", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const))
     .def("at", MADARA_MEMB(AnyRef, T, at, (size_t) const))
     .def("at", MADARA_MEMB(AnyRef, T, at, (const char *) const))
     .def("at", MADARA_MEMB(AnyRef, T, at, (const std::string &) const))
     .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (size_t) const))
     .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const char *) const))
     .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const std::string &) const))
+    MADARA_PYSETITEM(const char *, Any)
+    MADARA_PYSETITEM(const char *, AnyRef)
+    MADARA_PYSETITEM(const char *, int64_t)
+    MADARA_PYSETITEM(const char *, double)
+    MADARA_PYSETITEM(const char *, std::string)
+    MADARA_PYSETITEM(const char *, std::vector<int64_t>)
+    MADARA_PYSETITEM(const char *, std::vector<double>)
+    MADARA_PYSETITEM(size_t, Any)
+    MADARA_PYSETITEM(size_t, AnyRef)
+    MADARA_PYSETITEM(size_t, int64_t)
+    MADARA_PYSETITEM(size_t, double)
+    MADARA_PYSETITEM(size_t, std::string)
+    MADARA_PYSETITEM(size_t, std::vector<int64_t>)
+    MADARA_PYSETITEM(size_t, std::vector<double>)
     .def("assign", MADARA_MEMB(void, T, assign, (const int64_t &) const))
     .def("assign", MADARA_MEMB(void, T, assign, (const double &) const))
     .def("assign", MADARA_MEMB(void, T, assign, (const char * const &) const))
     .def("assign", MADARA_MEMB(void, T, assign, (const std::string &) const))
     .def("assign", MADARA_MEMB(void, T, assign, (const std::vector<int64_t> &) const))
     .def("assign", MADARA_MEMB(void, T, assign, (const std::vector<double> &) const))
+    .def("__setattr__", +[](T &a, const char *name, Any val) {
+          a(name) = val;
+        })
+    .def("__setattr__", +[](T &a, const char *name, AnyRef val) {
+          a(name) = val;
+        })
     .def("__setattr__", +[](T &a, const char *name, int64_t val) {
           a(name) = val;
         })
@@ -126,12 +151,50 @@ void define_knowledge (void)
   define_basic_any<AnyRef>("AnyRef",
     "A class that can refer to any type in a KnowledgeRecord", no_init);
 
+#define MADARA_REGIMPL(name, ...) \
+  .def("register_" #name, +[](const char *tag){ \
+      static const std::string my_tag = tag; \
+      Any::register_type<__VA_ARGS__>(my_tag.c_str());}, \
+      "Register C++ type " #name ". If called multiple times, " \
+      "calls after first are ignored.") \
+  .staticmethod("register_" #name)
+
+#define MADARA_REGIMPL_VECTOR(name, type) \
+  MADARA_REGIMPL(name ## _vector, std::vector<type>)
+
   define_basic_any<Any>("Any",
     "A class that can store any type in a KnowledgeRecord", no_init)
     .def("__init__", make_constructor(+[](const char *tag) {return std::make_shared<Any>(Any::construct(tag));}))
     //.def("__init__", make_constructor(Any::construct))
     .def("emplace", MADARA_MEMB(void, Any, emplace, (const char *)))
     .def("emplace", MADARA_MEMB(void, Any, emplace, (const std::string &)))
+    MADARA_REGIMPL(char, char)
+    MADARA_REGIMPL(uchar, unsigned char)
+    MADARA_REGIMPL(schar, signed char)
+    MADARA_REGIMPL(int16, int16_t)
+    MADARA_REGIMPL(int32, int32_t)
+    MADARA_REGIMPL(int64, int64_t)
+    MADARA_REGIMPL(uint16, uint16_t)
+    MADARA_REGIMPL(uint32, uint32_t)
+    MADARA_REGIMPL(uint64, uint64_t)
+    MADARA_REGIMPL(float, float)
+    MADARA_REGIMPL(double, double)
+    MADARA_REGIMPL(string, std::string)
+    MADARA_REGIMPL_VECTOR(char, char)
+    MADARA_REGIMPL_VECTOR(uchar, unsigned char)
+    MADARA_REGIMPL_VECTOR(schar, signed char)
+    MADARA_REGIMPL_VECTOR(int16, int16_t)
+    MADARA_REGIMPL_VECTOR(int32, int32_t)
+    MADARA_REGIMPL_VECTOR(int64, int64_t)
+    MADARA_REGIMPL_VECTOR(uint16, uint16_t)
+    MADARA_REGIMPL_VECTOR(uint32, uint32_t)
+    MADARA_REGIMPL_VECTOR(uint64, uint64_t)
+    MADARA_REGIMPL_VECTOR(float, float)
+    MADARA_REGIMPL_VECTOR(double, double)
+    MADARA_REGIMPL_VECTOR(string, std::string)
+    MADARA_REGIMPL(string_string_map, std::map<std::string, std::string>)
+    MADARA_REGIMPL(string_int64_map, std::map<std::string, int64_t>)
+    MADARA_REGIMPL(string_double_map, std::map<std::string, double>)
   ;
 
   class_<madara::knowledge::CheckpointSettings> ("CheckpointSettings",

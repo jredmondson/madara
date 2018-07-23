@@ -187,11 +187,9 @@ public:
   explicit BasicOwningAny(type<T> t, std::initializer_list<I> init)
     : BasicOwningAny(t, init.begin(), init.end()) {}
 
-  BasicOwningAny(tags::from_tag_t, const char *tag)
-    : BasicOwningAny(construct(tag)) {}
+  BasicOwningAny(tags::from_tag_t, const char *tag);
 
-  BasicOwningAny(tags::from_tag_t, const std::string &tag)
-    : BasicOwningAny(tag.c_str()) {}
+  BasicOwningAny(tags::from_tag_t, const std::string &tag);
 
   /**
    * Construct any compatible type in-place. The first argument is a
@@ -283,15 +281,8 @@ public:
     return emplace(type<T>{}, init);
   }
 
-  void emplace(const char *tag)
-  {
-    *this = construct(tag);
-  }
-
-  void emplace(const std::string &tag)
-  {
-    emplace(tag.c_str());
-  }
+  void emplace(const char *tag);
+  void emplace(const std::string &tag);
 
   /**
    * Set from any compatible type. The argument will be moved into
@@ -639,6 +630,28 @@ inline Any::Any(const ConstAny &other)
 inline Any::Any(ConstAny &&other) noexcept
   : Base(take_ptr(other.handler_),
          take_ptr(other.data_)) {}
+
+template<typename Impl, typename Base>
+inline BasicOwningAny<Impl, Base>::BasicOwningAny(
+    tags::from_tag_t, const char *tag)
+  : BasicOwningAny(construct(tag)) {}
+
+template<typename Impl, typename Base>
+inline BasicOwningAny<Impl, Base>::BasicOwningAny(
+    tags::from_tag_t, const std::string &tag)
+  : BasicOwningAny(tag.c_str()) {}
+
+template<typename Impl, typename Base>
+inline void BasicOwningAny<Impl, Base>::emplace(const char *tag)
+{
+  *this = construct(tag);
+}
+
+template<typename Impl, typename Base>
+inline void BasicOwningAny<Impl, Base>::emplace(const std::string &tag)
+{
+  emplace(tag.c_str());
+}
 
 } // namespace knowledge
 
