@@ -36,24 +36,35 @@ class_<T> define_basic_any(const char * name, const char *doc, I init)
 #define MADARA_PYSETITEM(Key, Val) \
     .def("__setitem__", +[](T &a, Key key, Val val) { \
           a[key] = val; \
-        })
+        }, "Set an element at the given index to a C++ " #Val)
+
+#define MADARA_PYASSIGN(Type) \
+    .def("assign", MADARA_MEMB(void, T, assign, (const Type &) const), \
+        "Set the value to a C++ " #Type)
+
+#define MADARA_PYSETATTR(Type) \
+    .def("__setattr__", +[](T &a, const char *name, Type val) { \
+          a(name) = val; \
+        }, "Set a field of the given name to a C++ " #Type)
 
   return class_<T> (name,
     doc, init)
-    .def("ref", MADARA_MEMB(AnyRef, T, ref, () const))
-    .def("ref", MADARA_MEMB(AnyRef, T, ref, (const char *) const))
-    .def("ref", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const))
-    .def("__call__", MADARA_MEMB(AnyRef, T, ref, () const))
-    .def("__call__", MADARA_MEMB(AnyRef, T, ref, (const char *) const))
-    .def("__call__", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const))
-    .def("__getattr__", MADARA_MEMB(AnyRef, T, ref, (const char *) const))
-    .def("__getattr__", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const))
-    .def("at", MADARA_MEMB(AnyRef, T, at, (size_t) const))
-    .def("at", MADARA_MEMB(AnyRef, T, at, (const char *) const))
-    .def("at", MADARA_MEMB(AnyRef, T, at, (const std::string &) const))
-    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (size_t) const))
-    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const char *) const))
-    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const std::string &) const))
+    .def("ref", MADARA_MEMB(AnyRef, T, ref, () const), "Reference the object "
+        "with an AnyRef")
+    .def("ref", MADARA_MEMB(AnyRef, T, ref, (const char *) const),
+        "Get the named field as an AnyRef")
+    .def("ref", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const),
+        "Get the named field as an AnyRef")
+    .def("__getattr__", MADARA_MEMB(AnyRef, T, ref, (const char *) const),
+        "Get the named field as an AnyRef")
+    .def("__getattr__", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const),
+        "Get the named field as an AnyRef")
+    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (size_t) const),
+        "Get the indexed element as an AnyRef")
+    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const char *) const),
+        "Get the indexed element as an AnyRef")
+    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const std::string &) const),
+        "Get the indexed element as an AnyRef")
     MADARA_PYSETITEM(const char *, Any)
     MADARA_PYSETITEM(const char *, AnyRef)
     MADARA_PYSETITEM(const char *, int64_t)
@@ -68,60 +79,55 @@ class_<T> define_basic_any(const char * name, const char *doc, I init)
     MADARA_PYSETITEM(size_t, std::string)
     MADARA_PYSETITEM(size_t, std::vector<int64_t>)
     MADARA_PYSETITEM(size_t, std::vector<double>)
-    .def("assign", MADARA_MEMB(void, T, assign, (const int64_t &) const))
-    .def("assign", MADARA_MEMB(void, T, assign, (const double &) const))
-    .def("assign", MADARA_MEMB(void, T, assign, (const char * const &) const))
-    .def("assign", MADARA_MEMB(void, T, assign, (const std::string &) const))
-    .def("assign", MADARA_MEMB(void, T, assign, (const std::vector<int64_t> &) const))
-    .def("assign", MADARA_MEMB(void, T, assign, (const std::vector<double> &) const))
-    .def("__setattr__", +[](T &a, const char *name, Any val) {
-          a(name) = val;
-        })
-    .def("__setattr__", +[](T &a, const char *name, AnyRef val) {
-          a(name) = val;
-        })
-    .def("__setattr__", +[](T &a, const char *name, int64_t val) {
-          a(name) = val;
-        })
-    .def("__setattr__", +[](T &a, const char *name, double val) {
-          a(name) = val;
-        })
-    .def("__setattr__", +[](T &a, const char *name, std::string val) {
-          a(name) = val;
-        })
-    .def("__setattr__", +[](T &a, const char *name, std::vector<int64_t> val) {
-          a(name) = val;
-        })
-    .def("__setattr__", +[](T &a, const char *name, std::vector<double> val) {
-          a(name) = val;
-        })
-    .def("to_integer", &T::to_integer)
-    .def("__int__", &T::to_integer)
-    .def("to_double", &T::to_double)
-    .def("__float__", &T::to_double)
-    .def("to_integers", &T::to_integers)
-    .def("to_doubles", &T::to_doubles)
-    .def("to_string", &T::to_string)
-    .def("__str__", &T::to_string)
-    .def("to_record", &T::to_record)
+    MADARA_PYASSIGN(Any)
+    MADARA_PYASSIGN(AnyRef)
+    MADARA_PYASSIGN(int64_t)
+    MADARA_PYASSIGN(double)
+    MADARA_PYASSIGN(std::string)
+    MADARA_PYASSIGN(std::vector<int64_t>)
+    MADARA_PYASSIGN(std::vector<double>)
+    MADARA_PYSETATTR(Any)
+    MADARA_PYSETATTR(AnyRef)
+    MADARA_PYSETATTR(int64_t)
+    MADARA_PYSETATTR(double)
+    MADARA_PYSETATTR(std::string)
+    MADARA_PYSETATTR(std::vector<int64_t>)
+    MADARA_PYSETATTR(std::vector<double>)
+    .def("to_integer", &T::to_integer, "Convert to an integer. Zero by default")
+    .def("__int__", &T::to_integer, "Convert to an integer. Zero by default")
+    .def("to_double", &T::to_double, "Convert to an integer. Zero by default")
+    .def("__float__", &T::to_double, "Convert to an integer. Zero by default")
+    .def("to_integers", &T::to_integers, "Convert to a list of integers. "
+        "Empty by default.")
+    .def("to_doubles", &T::to_doubles, "Convert to a list of doubles. "
+        "Empty by default.")
+    .def("to_string", &T::to_string, "Convert to a string. "
+        "If no other conversion is available, serialize to JSON.")
+    .def("__str__", &T::to_string, "Convert to a string. "
+        "If no other conversion is available, serialize to JSON.")
+    .def("to_record", &T::to_record, "Convert to a KnowledgeRecord")
     .def("__bool__", +[](Any &a) {
         return !a.empty() && a.to<bool>();
-      })
-    .def("size", &T::size)
-    .def("__len__", &T::size)
-    .def("empty", &T::empty)
+      }, "False if empty, otherwise based on held object.")
+    .def("size", &T::size, "Call .size() on held object")
+    .def("__len__", &T::size, "Call .size() on held object")
+    .def("empty", &T::empty, "Return true if there is no held object")
     .def("list_fields", +[](const Any &a) {
           std::vector<std::string> ret;
           for (const auto &cur : a.list_fields()) {
             ret.emplace_back(cur.name());
           }
           return ret;
-        })
-    .def("tag", &T::tag)
-    .def("supports_size", &T::supports_size)
-    .def("supports_int_index", &T::supports_int_index)
-    .def("supports_string_index", &T::supports_string_index)
-    .def("supports_fields", &T::supports_fields)
+        }, "Return all registered field names as a list of strings")
+    .def("tag", &T::tag, "Gets the tag of the stored object")
+    .def("to_json", &T::to_json, "Serialize object as JSON")
+    .def("supports_size", &T::supports_size, "Check if size() is supported")
+    .def("supports_int_index", &T::supports_int_index,
+        "Check if integer indexing is supported")
+    .def("supports_string_index", &T::supports_string_index,
+        "Check if string indexing is supported")
+    .def("supports_fields", &T::supports_fields,
+        "Check if fields are supported")
   ;
 }
 
@@ -164,10 +170,15 @@ void define_knowledge (void)
 
   define_basic_any<Any>("Any",
     "A class that can store any type in a KnowledgeRecord", no_init)
-    .def("__init__", make_constructor(+[](const char *tag) {return std::make_shared<Any>(Any::construct(tag));}))
+    .def("__init__", make_constructor(+[](const char *tag) {
+          return std::make_shared<Any>(Any::construct(tag));
+        }), "Construct with a default constructed C++ object, that must "
+        "already by registered with the given tag"
+      )
     //.def("__init__", make_constructor(Any::construct))
-    .def("emplace", MADARA_MEMB(void, Any, emplace, (const char *)))
-    .def("emplace", MADARA_MEMB(void, Any, emplace, (const std::string &)))
+    .def("emplace", MADARA_MEMB(void, Any, emplace, (const char *)),
+        "Replace with a default constructed C++ object, that must "
+        "already by registered with the given tag")
     MADARA_REGIMPL(char, char)
     MADARA_REGIMPL(uchar, unsigned char)
     MADARA_REGIMPL(schar, signed char)
