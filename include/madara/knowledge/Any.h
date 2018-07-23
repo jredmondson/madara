@@ -30,6 +30,11 @@
 
 namespace madara { namespace knowledge {
 
+namespace tags {
+  struct from_tag_t {};
+  constexpr from_tag_t from_tag;
+}
+
 /**
  * Class which defines methods common to ConstAny and Any. Use those classes
  * instead of this class directly.
@@ -182,6 +187,12 @@ public:
   explicit BasicOwningAny(type<T> t, std::initializer_list<I> init)
     : BasicOwningAny(t, init.begin(), init.end()) {}
 
+  BasicOwningAny(tags::from_tag_t, const char *tag)
+    : BasicOwningAny(construct(tag)) {}
+
+  BasicOwningAny(tags::from_tag_t, const std::string &tag)
+    : BasicOwningAny(tag.c_str()) {}
+
   /**
    * Construct any compatible type in-place. The first argument is a
    * madara::type struct which provides the type as a template parameter,
@@ -270,6 +281,16 @@ public:
   T &emplace(std::initializer_list<I> init)
   {
     return emplace(type<T>{}, init);
+  }
+
+  void emplace(const char *tag)
+  {
+    *this = construct(tag);
+  }
+
+  void emplace(const std::string &tag)
+  {
+    emplace(tag.c_str());
   }
 
   /**

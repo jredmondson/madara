@@ -25,6 +25,81 @@ using namespace boost::python;
 
 class knowledge_NS {};
 
+#define MADARA_MEMB(ret, klass, name, args) \
+  static_cast<ret (klass::*) args>(&klass::name)
+
+template<typename T, typename I>
+class_<T> define_basic_any(const char * name, const char *doc, I init)
+{
+  using namespace madara::knowledge;
+
+  return class_<T> (name,
+    doc, init)
+    .def("ref", MADARA_MEMB(AnyRef, T, ref, () const))
+    .def("ref", MADARA_MEMB(AnyRef, T, ref, (const char *) const))
+    .def("ref", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const))
+    .def("__call__", MADARA_MEMB(AnyRef, T, ref, () const))
+    .def("__call__", MADARA_MEMB(AnyRef, T, ref, (const char *) const))
+    .def("__call__", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const))
+    .def("__getattribute__", MADARA_MEMB(AnyRef, T, ref, (const char *) const))
+    .def("__getattribute__", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const))
+    .def("at", MADARA_MEMB(AnyRef, T, at, (size_t) const))
+    .def("at", MADARA_MEMB(AnyRef, T, at, (const char *) const))
+    .def("at", MADARA_MEMB(AnyRef, T, at, (const std::string &) const))
+    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (size_t) const))
+    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const char *) const))
+    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const std::string &) const))
+    .def("assign", MADARA_MEMB(void, T, assign, (const int64_t &) const))
+    .def("assign", MADARA_MEMB(void, T, assign, (const double &) const))
+    .def("assign", MADARA_MEMB(void, T, assign, (const char * const &) const))
+    .def("assign", MADARA_MEMB(void, T, assign, (const std::string &) const))
+    .def("assign", MADARA_MEMB(void, T, assign, (const std::vector<int64_t> &) const))
+    .def("assign", MADARA_MEMB(void, T, assign, (const std::vector<double> &) const))
+    .def("__setattr__", +[](T &a, const char *name, int64_t val) {
+          a(name) = val;
+        })
+    .def("__setattr__", +[](T &a, const char *name, double val) {
+          a(name) = val;
+        })
+    .def("__setattr__", +[](T &a, const char *name, std::string val) {
+          a(name) = val;
+        })
+    .def("__setattr__", +[](T &a, const char *name, std::vector<int64_t> val) {
+          a(name) = val;
+        })
+    .def("__setattr__", +[](T &a, const char *name, std::vector<double> val) {
+          a(name) = val;
+        })
+    .def("to_integer", &T::to_integer)
+    .def("__int__", &T::to_integer)
+    .def("to_double", &T::to_double)
+    .def("__float__", &T::to_double)
+    .def("to_integers", &T::to_integers)
+    .def("to_doubles", &T::to_doubles)
+    .def("to_string", &T::to_string)
+    .def("__str__", &T::to_string)
+    .def("to_record", &T::to_record)
+    .def("__bool__", +[](Any &a) {
+        return !a.empty() && a.to<bool>();
+      })
+    .def("size", &T::size)
+    .def("__len__", &T::size)
+    .def("empty", &T::empty)
+    .def("list_fields", +[](const Any &a) {
+          std::vector<std::string> ret;
+          for (const auto &cur : a.list_fields()) {
+            ret.emplace_back(cur.name());
+          }
+          return ret;
+        })
+    .def("tag", &T::tag)
+    .def("supports_size", &T::supports_size)
+    .def("supports_int_index", &T::supports_int_index)
+    .def("supports_string_index", &T::supports_string_index)
+    .def("supports_fields", &T::supports_fields)
+  ;
+}
+
 void define_knowledge (void)
 {
   object ke = object (handle<> (
@@ -46,9 +121,17 @@ void define_knowledge (void)
       "knowledge_engine", no_init);
    */
 
+  using namespace madara::knowledge;
 
-  class_<madara::knowledge::CheckpointSettings> ("Any",
-    "A class that can represent any type in a KnowledgeRecord", init <> ())
+  define_basic_any<AnyRef>("AnyRef",
+    "A class that can refer to any type in a KnowledgeRecord", no_init);
+
+  define_basic_any<Any>("Any",
+    "A class that can store any type in a KnowledgeRecord", no_init)
+    .def("__init__", make_constructor(+[](const char *tag) {return std::make_shared<Any>(Any::construct(tag));}))
+    //.def("__init__", make_constructor(Any::construct))
+    .def("emplace", MADARA_MEMB(void, Any, emplace, (const char *)))
+    .def("emplace", MADARA_MEMB(void, Any, emplace, (const std::string &)))
   ;
 
   class_<madara::knowledge::CheckpointSettings> ("CheckpointSettings",
