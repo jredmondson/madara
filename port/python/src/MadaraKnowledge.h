@@ -293,6 +293,8 @@ void define_knowledge (void)
 
      .def (init <std::string> ())
 
+     .def (init <const Any &> ())
+
      .def (init <const madara::knowledge::KnowledgeRecord &> ())
 
      // clears the value to a 0 integer
@@ -389,6 +391,13 @@ void define_knowledge (void)
      )
      > (&madara::knowledge::KnowledgeRecord::set_value),
      "Sets the value to a string")
+
+     // sets a knowledge record to an Any
+     .def ("set",
+         +[](KnowledgeRecord &rec, const Any &any) {
+          rec.emplace_any(any);
+         },
+     "Sets the value to an Any")
 
      // sets an array index to an integer
      .def ("set_index",
@@ -563,6 +572,10 @@ void define_knowledge (void)
     &madara::knowledge::KnowledgeRecord::operator--,
     "Subtracts one from the record",
     return_value_policy<reference_existing_object> ())
+
+    .def ("to_any", MADARA_MEMB(Any, KnowledgeRecord, to_any, () const),
+        "Convert this record to an Any")
+
     ; // end of KnowledgeRecord
 
 
@@ -1064,6 +1077,27 @@ void define_knowledge (void)
       m_set_2_of_3 (
         args("key", "value", "settings"),
         "Sets a knowledge record to a string"))
+
+    // sets a knowledge record to an Any
+    .def( "set",
+        +[](KnowledgeBase &kb,
+            const std::string &key,
+            const Any &value,
+            const madara::knowledge::EvalSettings &settings)
+        {
+          kb.emplace_any(key, settings, value);
+        },
+        "Sets a knowledge record to an Any")
+
+    // sets a knowledge record to an Any
+    .def( "set",
+        +[](KnowledgeBase &kb,
+            const std::string &key,
+            const Any &value)
+        {
+          kb.emplace_any(key, value);
+        },
+        "Sets a knowledge record to an Any")
         
     // sets an array index to an integer
     // .def( "set_index",
