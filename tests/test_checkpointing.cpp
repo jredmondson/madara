@@ -11,6 +11,7 @@
 #include "madara/filters/lz4/LZ4BufferFilter.h"
 #include "madara/knowledge/containers/Integer.h"
 #include "madara/exceptions/MemoryException.h"
+#include "madara/exceptions/FilterException.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -253,7 +254,14 @@ void test_checkpoint_settings (void)
 
   settings.buffer_filters.clear ();
 
-  loader.load_context (settings);
+  try
+  {
+    loader.load_context (settings);
+  }
+  catch (madara::exceptions::FilterException & e)
+  {
+    std::cerr << "Caught exception\n";
+  }
 
   if (loader.get ("int_var").is_false ()
       && loader.get ("double_var").is_false ()

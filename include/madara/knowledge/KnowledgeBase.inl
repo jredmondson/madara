@@ -2065,6 +2065,19 @@ KnowledgeBase::wait_for_change (void)
   }
 }
 
+inline void
+KnowledgeBase::reset_checkpoint (void) const
+{
+  if (context_)
+  {
+    context_->reset_checkpoint ();
+  }
+  else if (impl_.get ())
+  {
+    impl_->reset_checkpoint ();
+  }
+}
+
 inline std::string
 KnowledgeBase::setup_unique_hostport (
   const std::string & host)

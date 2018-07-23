@@ -50,6 +50,9 @@ std::string save_location;
 // filename to save knowledge base as JSON to
 std::string save_json;
 
+// filename to save knowledge base changes as checkpoint
+std::string save_checkpoint;
+
 // filename to save knowledge base as binary to
 std::string save_binary;
 
@@ -134,6 +137,77 @@ void handle_arguments (int argc, char ** argv)
       }
 
       ++i;
+    }
+    else if (arg1 == "-h" || arg1 == "--help")
+    {
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+        "\nProgram summary for %s [options] [Logic]:\n\n" \
+        "Evaluates KaRL logic from command line or file.\n\noptions:\n" \
+        "  [-a|--after-wait]        Evaluate after wait, rather than before wait\n" \
+        "  [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
+        "  [-c|--check-result]      check result of eval. If not zero, then terminate\n" \
+        "  [-d|--domain domain]     the knowledge domain to send and listen to\n" \
+        "  [--debug]                print all sent, received, and final knowledge\n" \
+        "  [-f|--logfile file]      log to a file\n" \
+        "  [-h|--help]              print help menu (i.e., this menu)\n" \
+        "  [-i|--input file]        file containing MADARA logic to evaluate\n" \
+        "  [-k|--print-knowledge]   print final knowledge\n" \
+        "  [-kp]--print-prefix      filter prints by prefix. Can be multiple.\n" \
+        "  [-ky]                    print knowledge after frequent evaluations\n" \
+        "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
+        "  [-lcp|--load-checkpoint-prefix prfx]\n" \
+        "                           prefix of knowledge to load from checkpoint\n" \
+        "  [-ls|--load-size bytes]  size of buffer needed for file load\n" \
+        "  [-lt|--load-transport file] a file to load transport settings from\n" \
+        "  [-ltp|--load-transport-prefix prfx] prefix of saved settings\n" \
+        "  [-ltt|--load-transport-text file] a text file to load transport settings from\n" \
+        "  [-lz4|--lz4]             add lz4 compression filter\n" \
+        "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
+        "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
+        "  [-q|--queue-length size] size of network buffers in bytes\n" \
+        "  [-r|--reduced]           use the reduced message header\n" \
+        "  [-s|--save file]         save the resulting knowledge base as karl\n" \
+        "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
+        "                           binary checkpoint\n" \
+        "  [-sc|--save-checkpoint file] save any changes by logics since initial\n" \
+        "                           loads as a checkpoint diff to the specified\n" \
+        "                           file in an appended layer\n"
+        "  [-scp|--save-checkpoint-prefix prfx]\n" \
+        "                           prefix of knowledge to save in checkpoint\n" \
+        "  [-sj|--save-json file]   save the resulting knowledge base as JSON\n" \
+        "  [-ss|--save-size bytes]  size of buffer needed for file saves\n" \
+        "  [-ssl|--ssl pass]        add an ssl filter with a password\n" \
+        "  [-st|--save-transsport file] a file to save transport settings to\n" 
+        "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
+        "  [-stt|--save-transport-text file] a text file to save transport settings to\n" \
+        "  [-t|--time time]         time to wait for results. Same as -w.\n" \
+        "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
+        "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
+        "  [-wy|-wp|--wait-for-periodic seconds]  Wait for number of seconds\n" \
+        "                           before performing periodic evaluation\n" \
+        "  [-y|--frequency hz]      frequency to perform evaluation. If negative,\n" \
+        "                           only runs once. If zero, hertz is infinite.\n" \
+        "                           If positive, hertz is that hertz rate.\n" \
+        "  [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n" \
+        "                           examples include tcp://127.0.0.1:30000\n" \
+        "                           or any of the other endpoint types like\n" \
+        "                           pgm://. For tcp, remember that the first\n" \
+        "                           endpoint defined must be your own, the\n" \
+        "                           one you are binding to, and all other\n" \
+        "                           agent endpoints must also be defined or\n" \
+        "                           no messages will ever be sent to them.\n" \
+        "                           Similarly, all agents will have to have\n" \
+        "                           this endpoint added to their list or\n" \
+        "                           this karl agent will not see them.\n" \
+        "  [-0|--init-logic logic]  logic containing initial variables (only ran once)\n" \
+        "  [-0f|--init-file file]   file containing initial variables (only ran once)\n" \
+        "  [-0b|--init-bin file]    file containing binary knowledge base, the result\n" \
+        "                           of save_context (only ran once)\n" \
+        "  [--meta-prefix prefix]   store checkpoint meta data at knowledge prefix\n" \
+        "  [--use-id]               use the id of the checkpointed binary load\n" \
+        "\n",
+        argv[0]);
+      exit (0);
     }
     else if (arg1 == "-i" || arg1 == "--input")
     {
@@ -239,7 +313,7 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-lz4l" || arg1 == "--lz4-load")
     {
 #ifdef _USE_LZ4_
-      lz4_filters.resize (lz4_filters.size () + 1);
+      lz4_filters.push_back (filters::LZ4BufferFilter ());
       load_checkpoint_settings.buffer_filters.push_back (
         &(*lz4_filters.rbegin ()));
 #else
@@ -323,6 +397,13 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-sc" || arg1 == "--save-checkpoint")
+    {
+      if (i + 1 < argc)
+        save_checkpoint = argv[i + 1];
+
+      ++i;
+    }
     else if (arg1 == "-scp" || arg1 == "--save-checkpoint-prefix")
     {
       if (i + 1 < argc)
@@ -347,7 +428,7 @@ void handle_arguments (int argc, char ** argv)
 #ifdef _USE_SSL_
       if (i + 1 < argc)
       {
-        ssl_filters.resize (ssl_filters.size () + 1);
+        ssl_filters.push_back (filters::AESBufferFilter ());
         ssl_filters[ssl_filters.size () - 1].generate_key (argv[i + 1]);
         load_checkpoint_settings.buffer_filters.push_back (
           &(*ssl_filters.rbegin ()));
@@ -369,7 +450,7 @@ void handle_arguments (int argc, char ** argv)
 #ifdef _USE_SSL_
       if (i + 1 < argc)
       {
-        ssl_filters.resize (ssl_filters.size () + 1);
+        ssl_filters.push_back (filters::AESBufferFilter ());
         ssl_filters[ssl_filters.size () - 1].generate_key (argv[i + 1]);
         save_checkpoint_settings.buffer_filters.push_back (
           &(*ssl_filters.rbegin ()));
@@ -538,74 +619,6 @@ void handle_arguments (int argc, char ** argv)
     {
       logic = arg1;
     }
-    else
-    {
-      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-        "\nProgram summary for %s [options] [Logic]:\n\n" \
-        "Evaluates KaRL logic from command line or file.\n\noptions:\n" \
-        "  [-a|--after-wait]        Evaluate after wait, rather than before wait\n" \
-        "  [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
-        "  [-c|--check-result]      check result of eval. If not zero, then terminate\n" \
-        "  [-d|--domain domain]     the knowledge domain to send and listen to\n" \
-        "  [--debug]                print all sent, received, and final knowledge\n" \
-        "  [-f|--logfile file]      log to a file\n" \
-        "  [-h|--help]              print help menu (i.e., this menu)\n" \
-        "  [-i|--input file]        file containing MADARA logic to evaluate\n" \
-        "  [-k|--print-knowledge]   print final knowledge\n" \
-        "  [-kp]--print-prefix      filter prints by prefix. Can be multiple.\n" \
-        "  [-ky]                    print knowledge after frequent evaluations\n" \
-        "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-        "  [-lcp|--load-checkpoint-prefix prfx]\n" \
-        "                           prefix of knowledge to load from checkpoint\n" \
-        "  [-ls|--load-size bytes]  size of buffer needed for file load\n" \
-        "  [-lt|--load-transport file] a file to load transport settings from\n" \
-        "  [-ltp|--load-transport-prefix prfx] prefix of saved settings\n" \
-        "  [-ltt|--load-transport-text file] a text file to load transport settings from\n" \
-        "  [-lz4|--lz4]             add lz4 compression filter\n" \
-        "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
-        "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
-        "  [-q|--queue-length size] size of network buffers in bytes\n" \
-        "  [-r|--reduced]           use the reduced message header\n" \
-        "  [-s|--save file]         save the resulting knowledge base as karl\n" \
-        "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
-        "                           binary checkpoint\n" \
-        "  [-scp|--save-checkpoint-prefix prfx]\n" \
-        "                           prefix of knowledge to save in checkpoint\n" \
-        "  [-sj|--save-json file]   save the resulting knowledge base as JSON\n" \
-        "  [-ss|--save-size bytes]  size of buffer needed for file saves\n" \
-        "  [-ssl|--ssl pass]        add an ssl filter with a password\n" \
-        "  [-st|--save-transsport file] a file to save transport settings to\n" 
-        "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
-        "  [-stt|--save-transport-text file] a text file to save transport settings to\n" \
-        "  [-t|--time time]         time to wait for results. Same as -w.\n" \
-        "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
-        "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
-        "  [-wy|-wp|--wait-for-periodic seconds]  Wait for number of seconds\n" \
-        "                           before performing periodic evaluation\n" \
-        "  [-y|--frequency hz]      frequency to perform evaluation. If negative,\n" \
-        "                           only runs once. If zero, hertz is infinite.\n" \
-        "                           If positive, hertz is that hertz rate.\n" \
-        "  [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n" \
-        "                           examples include tcp://127.0.0.1:30000\n" \
-        "                           or any of the other endpoint types like\n" \
-        "                           pgm://. For tcp, remember that the first\n" \
-        "                           endpoint defined must be your own, the\n" \
-        "                           one you are binding to, and all other\n" \
-        "                           agent endpoints must also be defined or\n" \
-        "                           no messages will ever be sent to them.\n" \
-        "                           Similarly, all agents will have to have\n" \
-        "                           this endpoint added to their list or\n" \
-        "                           this karl agent will not see them.\n" \
-        "  [-0|--init-logic logic]  logic containing initial variables (only ran once)\n" \
-        "  [-0f|--init-file file]   file containing initial variables (only ran once)\n" \
-        "  [-0b|--init-bin file]    file containing binary knowledge base, the result\n" \
-        "                           of save_context (only ran once)\n" \
-        "  [--meta-prefix prefix]   store checkpoint meta data at knowledge prefix\n" \
-        "  [--use-id]               use the id of the checkpointed binary load\n" \
-        "\n",
-        argv[0]);
-      exit (0);
-    }
   }
 }
 
@@ -766,6 +779,7 @@ int main (int argc, char ** argv)
   knowledge::EvalSettings noharm;
   noharm.treat_globals_as_locals = true;
   noharm.signal_changes = false;
+  noharm.track_local_changes = false;
 
   // set initialization variables from files into the knowledge base
   if (initfiles.size () > 0)
@@ -796,6 +810,8 @@ int main (int argc, char ** argv)
       knowledge.evaluate (*i, noharm);
     }
   }
+
+  knowledge.reset_checkpoint ();
 
   // command line logics are evaluated last
   if (logic != "")
@@ -880,6 +896,13 @@ int main (int argc, char ** argv)
     {
       print_all_prefixes (knowledge);
     }
+  }
+
+  // save as checkpoint of changes by logics and input files
+  if (save_checkpoint.size () > 0)
+  {
+    save_checkpoint_settings.filename = save_checkpoint;
+    knowledge.save_checkpoint (save_checkpoint_settings);
   }
 
   // save as karl if requested

@@ -200,7 +200,7 @@ namespace madara
             madara_logger_ptr_log (logger::global_logger.get (),
               logger::LOG_MAJOR,
               "CheckpointSettings::encode: header: "
-              " %s:%s within size %d\n",
+              "%s:%s within size %d\n",
               header.id,
               utility::to_string_version (header.version).c_str (),
               size);
@@ -250,20 +250,37 @@ namespace madara
               header.id,
               utility::to_string_version (header.version).c_str ());
 
-            if (header.check_filter (*i))
+            madara_logger_ptr_log (logger::global_logger.get (),
+              logger::LOG_MAJOR,
+              "CheckpointSettings::decode: header: past the header print\n");
+
+            if (*i == 0)
             {
               madara_logger_ptr_log (logger::global_logger.get (),
                 logger::LOG_MAJOR,
-                "CheckpointSettings::decode: buffer filter %s is a match\n",
-                (*i)->get_id ().c_str ());
+                "CheckpointSettings::decode: filter is null somehow\n");
             }
             else
             {
               madara_logger_ptr_log (logger::global_logger.get (),
                 logger::LOG_MAJOR,
+                "CheckpointSettings::decode: filter is not null\n");
+            }
+
+            if (header.check_filter (*i))
+            {
+              madara_logger_ptr_log (logger::global_logger.get (),
+                logger::LOG_MAJOR,
+                "CheckpointSettings::decode: buffer filter %s is a match\n",
+                header.id);
+            }
+            else
+            {
+              madara_logger_ptr_log (logger::global_logger.get (),
+                logger::LOG_ERROR,
                 "CheckpointSettings::decode: buffer filter %s doesn't match."
-                " Could be a problem\n",
-                (*i)->get_id ().c_str ());
+                " Returning 0.",
+                header.id);
             }
             
             madara_logger_ptr_log (logger::global_logger.get (),

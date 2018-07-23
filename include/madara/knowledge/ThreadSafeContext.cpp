@@ -6,17 +6,19 @@
 
 #include <string.h>
 
+#include <stdio.h>
+#include <time.h>
+#include "madara/logger/GlobalLogger.h"
+#include "madara/utility/DeepIterator.h"
+#include "madara/exceptions/MemoryException.h"
+#include "madara/exceptions/FileException.h"
+#include "madara/exceptions/FilterException.h"
 #include "madara/utility/Utility.h"
 
 #include "madara/knowledge/ThreadSafeContext.h"
 
 #include "madara/expression/Interpreter.h"
 #include "madara/transport/Transport.h"
-#include <stdio.h>
-#include <time.h>
-#include "madara/logger/GlobalLogger.h"
-#include "madara/utility/DeepIterator.h"
-#include "madara/exceptions/MemoryException.h"
 
 namespace madara { namespace knowledge {
 
@@ -1808,7 +1810,7 @@ ThreadSafeContext::save_context (
         size_t encoded_size = current - pre_write;
 
         ++checkpoint_header.updates;
-        meta.size += encoded_size;
+        //meta.size += encoded_size;
         checkpoint_header.size += encoded_size;
       }
     }
@@ -1817,15 +1819,24 @@ ThreadSafeContext::save_context (
     current = checkpoint_header.write (
       buffer.get_ptr () + (int)FileHeader::encoded_size (), max_buffer);
 
+    
+
     // call decode with any buffer filters
     int total = settings.encode (buffer.get_ptr () + 
       (int)FileHeader::encoded_size (),
-      (int)meta.size - (int)FileHeader::encoded_size (), (int)max_buffer);
+      (int)checkpoint_header.size, (int)max_buffer);
 
-    if (settings.buffer_filters.size () > 0)
+    if (total < 0)
     {
-      total += (int)filters::BufferFilterHeader::encoded_size ();
+      throw exceptions::FilterException (
+        "ThreadSafeContext::save_context: "
+        "encode() returned -1 size. Cannot save a negative sized checkpoint.");
     }
+
+    // if (settings.buffer_filters.size () > 0)
+    // {
+    //   total += (int)filters::BufferFilterHeader::encoded_size ();
+    // }
 
     meta.size = (uint64_t)total;
 
@@ -1838,7 +1849,7 @@ ThreadSafeContext::save_context (
       "ThreadSafeContext::save_context:" \
       " encoding with buffer filters: %d:%d bytes written to offset %d.\n",
       (int)meta.size, (int)checkpoint_header.size,
-      (int)((int)meta.size - (int)FileHeader::encoded_size ()));
+      (int)FileHeader::encoded_size ());
 
     fwrite (buffer.get_ptr (),
       (size_t)total + (size_t)FileHeader::encoded_size (), 1, file);
@@ -2006,6 +2017,12 @@ const CheckpointSettings & settings) const
 
       int size = settings.encode (
         result_copy, result.size (), settings.buffer_size);
+
+      if (size < 0)
+      {
+        throw exceptions::FilterException ("ThreadSafeContext::save_as_karl: "
+          "encode() returned -1. Incorrect filter.");
+      }
 
       file.write (result_copy, size);
       bytes_written = (int64_t)size;
@@ -2336,6 +2353,13 @@ ThreadSafeContext::file_to_string (
     int size = checkpoint_settings.decode (buffer.get_ptr (),
       (int)total_read, (int)max_buffer);
 
+    if (size < 0)
+    {
+      throw exceptions::FilterException (
+        "ThreadSafeContext::file_to_string: "
+        "decode () returned a negative encoding size. Bad filter/encode.");
+    }
+
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::file_to_string:" \
       " decoded %d bytes. Converting to string.\n",
@@ -2370,7 +2394,10 @@ ThreadSafeContext::load_context (
     "ThreadSafeContext::load_context:" \
     " opening file %s\n", checkpoint_settings.filename.c_str ());
 
-  FILE * file = fopen (checkpoint_settings.filename.c_str (), "rb");
+//  FILE * file = fopen (checkpoint_settings.filename.c_str (), "rb");
+
+  std::ifstream file (checkpoint_settings.filename.c_str (),
+    std::ios::in | std::ios::binary);
 
   int64_t total_read (0);
 
@@ -2386,10 +2413,28 @@ ThreadSafeContext::load_context (
     int64_t buffer_remaining (max_buffer);
 
     utility::ScopedArray <char> buffer = new char[max_buffer];
-    const char * current = buffer.get_ptr ();
+    char * current = buffer.get_ptr ();
 
-    total_read = fread (buffer.get_ptr (),
-      1, max_buffer, file);
+    file.seekg (0, file.end);
+    int length = file.tellg();
+    file.seekg (0, file.beg);
+
+    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+      "ThreadSafeContext::load_context:" \
+      " file contains %d bytes.\n",
+      (int)length);
+
+    if (!file.read (buffer.get (), FileHeader::encoded_size ()))
+    {
+      std::stringstream message;
+      message << "ThreadSafeContext::load_context: ";
+      message << "file ";
+      message << checkpoint_settings.filename;
+      message << " does not have enough room for an appropriate header";
+      throw exceptions::FileException (message.str ());
+    }
+    total_read = file.tellg();
+
     buffer_remaining = (int64_t)total_read;
 
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
@@ -2397,17 +2442,14 @@ ThreadSafeContext::load_context (
       " reading file: %d bytes read.\n",
       (int)total_read);
 
-    // call decode with any buffer filters
-    checkpoint_settings.decode (buffer.get_ptr () +
-      (int)FileHeader::encoded_size (),
-      (int)(total_read) - (int)FileHeader::encoded_size (), (int)max_buffer);
+    size_t checkpoint_start = (size_t)FileHeader::encoded_size ();
 
-    if (total_read > FileHeader::encoded_size () &&
+    if (total_read >= FileHeader::encoded_size () &&
       FileHeader::file_header_test (current))
     {
       // if there was something in the file, and it was the right header
 
-      current = meta.read (current, buffer_remaining);
+      current = (char *)meta.read (current, buffer_remaining);
 
       checkpoint_settings.initial_timestamp = meta.initial_timestamp;
       checkpoint_settings.last_timestamp = meta.last_timestamp;
@@ -2430,12 +2472,116 @@ ThreadSafeContext::load_context (
         for (uint64_t state = 0; state < meta.states &&
                state <= checkpoint_settings.last_state; ++state)
         {
+          uint64_t checkpoint_size; 
+
+          madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+            "ThreadSafeContext::load_context:" \
+            " reading 64bit unsigned size at %d byte file offset\n",
+            (int)checkpoint_start);
+
+          // set the file pointer to the checkpoint header start
+          //fseek (file, (long)checkpoint_start, SEEK_SET);
+          file.seekg (checkpoint_start, file.beg);
+
+          if (!file.read ((char *)&checkpoint_size, sizeof (checkpoint_size)))
+          {
+            std::stringstream message;
+            message << "ThreadSafeContext::load_context: ";
+            message << "file ";
+            message << checkpoint_settings.filename;
+            message << " does not have enough room for a checkpoint";
+            throw exceptions::FileException (message.str ());
+          }
+
+          // total_read = fread (&checkpoint_size,
+          //   1, sizeof (checkpoint_size), file);
+
+          total_read = sizeof (checkpoint_size);
+
+          checkpoint_size = utility::endian_swap (checkpoint_size);
+
+          if (checkpoint_settings.buffer_filters.size () > 0)
+          {
+            checkpoint_size += filters::BufferFilterHeader::encoded_size ();
+          }
+
+          madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+            "ThreadSafeContext::load_context:" \
+            " %d state checkpoint size is %d\n",
+            (int)state, (int)checkpoint_size);
+
+          // set the file pointer to the checkpoint header start
+          //fseek (file, (long)checkpoint_start, SEEK_SET);
+          file.seekg (checkpoint_start, file.beg);
+
+          // set the file pointer to the checkpoint header start
+          // fseek (file, (long)checkpoint_start, SEEK_SET);
+
+          checkpoint_start += checkpoint_size;
+
+          madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+            "ThreadSafeContext::load_context:" \
+            " reading %d bytes for full checkpoint\n",
+            (int)checkpoint_size);
+
+          // total_read = fread (buffer.get_ptr (),
+          //   1, (size_t)checkpoint_size, file);
+
+          if (!file.read (buffer.get (), checkpoint_size))
+          {
+            std::stringstream message;
+            message << "ThreadSafeContext::load_context: ";
+            message << "file ";
+            message << checkpoint_settings.filename;
+            message << " does not have enough room for ";
+            message << checkpoint_size;
+            message << " bytes noted in header";
+            throw exceptions::FileException (message.str ());
+          }
+          total_read = (int64_t)checkpoint_size;
+
+          current = buffer.get_ptr ();
+
+          madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+            "ThreadSafeContext::load_context:" \
+            " read %d bytes\n",
+            (int)total_read);
+
+          buffer_remaining = (int64_t)total_read;
+
+          if (checkpoint_settings.buffer_filters.size ())
+          {
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::load_context:" \
+              " decoding with %d buffer filters with initial size of "
+              "%d bytes and total buffer of %d bytes\n",
+              (int)checkpoint_settings.buffer_filters.size (),
+              (int)total_read, (int)max_buffer);
+
+            // call decode with any buffer filters
+            buffer_remaining = (int64_t)checkpoint_settings.decode (current,
+              (int)total_read, (int)max_buffer);
+
+            if (buffer_remaining < 0)
+            {
+              throw exceptions::FilterException (
+                "ThreadSafeContext::load_context: "
+                "decode () returned a negative encoding size. Bad filter/encode.");
+            }
+
+          }
+
           if (buffer_remaining > (int64_t)
             transport::MessageHeader::static_encoded_size ())
           {
             transport::MessageHeader checkpoint_header;
 
-            current = checkpoint_header.read (current, buffer_remaining);
+            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+              "ThreadSafeContext::load_context:" \
+              " Reading a checkpoint header with %d byte buffer remaining\n",
+              (int)buffer_remaining);
+
+            current = (char *)checkpoint_header.read (current, buffer_remaining);
 
             if (state == 0)
             {
@@ -2466,23 +2612,28 @@ ThreadSafeContext::load_context (
               * create a new array and copy the remaining elements
               * from buffer_remaining
               **/
-              utility::ScopedArray <char> new_buffer =
-                new char[updates_size];
-              memcpy (new_buffer.get_ptr (), current,
-                (size_t)buffer_remaining);
+              // utility::ScopedArray <char> new_buffer =
+              //   new char[updates_size];
+              // memcpy (new_buffer.get_ptr (), current,
+              //   (size_t)buffer_remaining);
 
-              // read the rest of checkpoint into new buffer
-              total_read += fread (new_buffer.get_ptr () + buffer_remaining, 1,
-                updates_size
-                - (uint64_t)buffer_remaining
-                - checkpoint_header.encoded_size (), file);
+              // // read the rest of checkpoint into new buffer
+              // total_read += fread (new_buffer.get_ptr () + buffer_remaining, 1,
+              //   updates_size
+              //   - (uint64_t)buffer_remaining
+              //   - checkpoint_header.encoded_size (), file);
 
-              // update other variables
-              max_buffer = updates_size;
-              buffer_remaining = checkpoint_header.size
-                - checkpoint_header.encoded_size ();
-              current = new_buffer.get_ptr ();
-              buffer = new_buffer;
+              // // update other variables
+              // max_buffer = updates_size;
+              // buffer_remaining = checkpoint_header.size
+              //   - checkpoint_header.encoded_size ();
+              // current = new_buffer.get_ptr ();
+              // buffer = new_buffer;
+
+              throw exceptions::MemoryException (
+                "ThreadSafeContext::load_context: "
+                "Not enough room in buffer for checkpoint"
+              );
             } // end if allocation is needed
 
             madara_logger_ptr_log (logger_, logger::LOG_MINOR,
@@ -2501,7 +2652,7 @@ ThreadSafeContext::load_context (
                 knowledge::KnowledgeRecord record;
                 record.clock = clock_;
                 record.toi = checkpoint_settings.last_timestamp;
-                current = record.read (current, key, buffer_remaining);
+                current = (char *)record.read (current, key, buffer_remaining);
 
                 madara_logger_ptr_log (logger_, logger::LOG_MINOR,
                   "ThreadSafeContext::load_context:" \
@@ -2555,12 +2706,12 @@ ThreadSafeContext::load_context (
             }
           } // end if enough buffer for reading a message header
 
-          if (buffer_remaining == 0 && (uint64_t)total_read < meta.size)
-          {
-            buffer_remaining = max_buffer;
-            current = buffer.get_ptr ();
-            total_read += fread (buffer.get_ptr (), 1, buffer_remaining, file);
-          }
+          // if (buffer_remaining == 0 && (uint64_t)total_read < meta.size)
+          // {
+          //   buffer_remaining = max_buffer;
+          //   current = buffer.get_ptr ();
+          //   total_read += fread (buffer.get_ptr (), 1, buffer_remaining, file);
+          // }
         } // end for loop of states
       }
     } // end if total_read > 0
@@ -2571,7 +2722,7 @@ ThreadSafeContext::load_context (
         " invalid file. No contextual change.\n");
     }
 
-    fclose (file);
+    file.close ();
   }
   else
   {
@@ -2595,7 +2746,9 @@ ThreadSafeContext::save_checkpoint (
     " opening file %s\n", settings.filename.c_str ());
 
   int64_t total_written (0);
-  FILE * file = fopen (settings.filename.c_str (), "rb+");
+  // FILE * file = fopen (settings.filename.c_str (), "rb+");
+  std::fstream file (settings.filename,
+    std::ios::in | std::ios::out | std::ios::binary);
 
   FileHeader meta;
   transport::MessageHeader checkpoint_header;
@@ -2610,9 +2763,12 @@ ThreadSafeContext::save_checkpoint (
     const char * meta_reader = current;
 
     // read the meta data at the front
-    fseek (file, 0, SEEK_SET);
-    size_t ret = fread (current, meta.encoded_size (), 1, file);
-    if (ret == 0) {
+    // fseek (file, 0, SEEK_SET);
+    file.seekg (0, file.beg);
+    // size_t ret = fread (current, meta.encoded_size (), 1, file);
+
+    if (!file.read (buffer.get (), FileHeader::encoded_size ()))
+    {
       madara_logger_ptr_log (logger_, logger::LOG_ERROR,
         "ThreadSafeContext::save_checkpoint:" \
         " failed to read existing file header: size=%d\n",
@@ -2642,7 +2798,8 @@ ThreadSafeContext::save_checkpoint (
     }
 
     // save the spot where the file ends
-    uint64_t checkpoint_start = meta.size;
+    uint64_t checkpoint_start = meta.size +
+      (uint64_t)FileHeader::encoded_size ();
 
     checkpoint_header.size = checkpoint_header.encoded_size ();
 
@@ -2678,7 +2835,8 @@ ThreadSafeContext::save_checkpoint (
          (int)(checkpoint_start));
 
       // set the file pointer to the checkpoint header start
-      fseek (file, (long)checkpoint_start, SEEK_SET);
+      // fseek (file, (long)checkpoint_start, SEEK_SET);
+      file.seekp (checkpoint_start);
 
       // start updates just past the checkpoint header's buffer location
       current = checkpoint_header.write (buffer.get_ptr (), buffer_remaining);
@@ -2727,30 +2885,12 @@ ThreadSafeContext::save_checkpoint (
 
             if (encoded_size > buffer_remaining)
             {
-              fwrite (current,
-                (size_t)(max_buffer - buffer_remaining), 1, file);
-              total_written += (int64_t)(max_buffer - buffer_remaining);
-              buffer_remaining = max_buffer;
-
-              madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-                "ThreadSafeContext::save_checkpoint:" \
-                " encoded_size larger than remaining buffer. Flushing\n");
-
-              if (encoded_size > max_buffer)
-              {
-                /**
-                 * If the record is larger than the buffer, then we must allocate a
-                 * buffer large enough to write to it.
-                 **/
-                buffer = new char[encoded_size];
-                max_buffer = encoded_size;
-                buffer_remaining = max_buffer;
-                current = buffer.get_ptr ();
-
-                madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-                  "ThreadSafeContext::save_checkpoint:" \
-                  " encoded_size larger than entire buffer. Reallocating\n");
-              } // end if larger than buffer
+              throw exceptions::MemoryException (
+                "ThreadSafeContext::save_checkpoint: "
+                "%d buffer size is not big enough. Partial encoded size "
+                "already hit %d bytes. CheckpointSettings.buffer_size is "
+                "needs to be larger."
+                );
             } // end if larger than buffer remaining
 
             auto pre_write = current;
@@ -2781,53 +2921,85 @@ ThreadSafeContext::save_checkpoint (
 
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
-        " writing final data for state #%d\n",
+        " writing final data to checkpoint for state #%d\n",
         (int)meta.states);
-
-      if (buffer_remaining != max_buffer)
-      {
-        fwrite (buffer.get_ptr (),
-          (size_t)(current - buffer.get_ptr ()), 1, file);
-        total_written += (size_t)(current - buffer.get_ptr ());
-
-        madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-          "ThreadSafeContext::save_checkpoint:" \
-          " current->buffer=%d bytes, max->remaining=%d bytes\n",
-          (int)(current - buffer.get_ptr ()), (int)max_buffer - buffer_remaining);
-      }
 
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
         " chkpt.header: size=%d, updates=%d\n",
         (int)checkpoint_header.size, (int)checkpoint_header.updates);
 
-      buffer_remaining = max_buffer;
-      fseek (file, (long)checkpoint_start, SEEK_SET);
-      current = checkpoint_header.write (buffer.get_ptr (), buffer_remaining);
-      fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
+      if (buffer_remaining != max_buffer)
+      {
+        total_written = (int64_t)(current - buffer.get_ptr ());
 
-      meta.size += checkpoint_header.size;
+        madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+          "ThreadSafeContext::save_checkpoint:" \
+          " encoding %d bytes in checkpoint\n",
+          (int)total_written);
+
+        current = checkpoint_header.write (buffer.get_ptr (), buffer_remaining);
+        
+        // call decode with any buffer filters
+        int total_encoded = settings.encode (buffer.get_ptr (),
+          (int)total_written, (int)max_buffer);
+
+        if (total_encoded < 0)
+        {
+          throw exceptions::FilterException (
+            "ThreadSafeContext::save_context: "
+            "encode () returned a negative encoding size. Bad filter/encode.");
+        }
+
+        madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+          "ThreadSafeContext::save_checkpoint:" \
+          " encoded %d bytes in buffer. Writing to disk at offset %d bytes\n",
+          (int)total_encoded, (int)checkpoint_start);
+
+        if (settings.buffer_filters.size () > 0)
+        {
+          total_encoded += (int)filters::BufferFilterHeader::encoded_size ();
+        }
+
+        file.write (buffer.get_ptr (), total_encoded);
+        // fwrite (buffer.get_ptr (), (size_t)(total_encoded), 1, file);
+          
+        meta.size += (uint64_t)total_encoded;
+
+        madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+          "ThreadSafeContext::save_checkpoint:" \
+          " meta.size updated to %d bytes\n",
+          total_encoded, (int)meta.size);
+      }
+
+      buffer_remaining = max_buffer;
+      // fseek (file, (long)checkpoint_start, SEEK_SET);
+      file.seekp (0, file.beg);
 
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
-        " new file meta: size=%d, states=%d, lastchkpt.size=%d\n",
-        (int)meta.size, (int)meta.states, (int)checkpoint_header.size);
+        " new file meta: size=%d, states=%d, "
+        " lastchkpt.start=%d, lastchkpt.size=%d\n",
+        (int)meta.size, (int)meta.states,
+        (int)checkpoint_start, (int)checkpoint_header.size);
   
       // update the meta data at the front
-      fseek (file, 0, SEEK_SET);
+      // fseek (file, 0, SEEK_SET);
 
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
-        " updating file meta data in the file\n");
+        " updating file meta data at beginning in the file\n");
   
       buffer_remaining = max_buffer;
       current = meta.write (buffer.get_ptr (), buffer_remaining);
 
-      fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
+      // fwrite (buffer.get_ptr (), current - buffer.get_ptr (), 1, file);
+      file.write (buffer.get (), FileHeader::encoded_size ());
 
     } // if there are local checkpointing records
 
-    fclose (file);
+    // fclose (file);
+    file.close ();
   } // if file is opened
   else
   {
@@ -2835,9 +3007,8 @@ ThreadSafeContext::save_checkpoint (
       "ThreadSafeContext::save_checkpoint:" \
       " checkpoint doesn't exist. Creating.\n");
     
-    // someone wants to save the checkpoint diff to a new file
-    file = fopen (settings.filename.c_str (), "wb");
-    
+    file.open (settings.filename, std::ios::out | std::ios::binary);
+
     meta.states = 1;
     strncpy (meta.originator, settings.originator.c_str (),
       sizeof (meta.originator) < settings.originator.size () + 1 ?
@@ -2945,7 +3116,7 @@ ThreadSafeContext::save_checkpoint (
           encoded_size = current - pre_write;
 
           ++checkpoint_header.updates;
-          meta.size += encoded_size;
+          //meta.size += encoded_size;
           checkpoint_header.size += encoded_size;
 
           madara_logger_ptr_log (logger_, logger::LOG_MINOR,
@@ -2956,26 +3127,52 @@ ThreadSafeContext::save_checkpoint (
         }
       }
     
-      // write the final sizes
-      current = meta.write (buffer.get_ptr (), max_buffer);
-      current = checkpoint_header.write (current, max_buffer);
-
-      // call decode with any buffer filters
-      int total = settings.encode (buffer.get_ptr (),
-        (int)meta.size, (int)max_buffer);
-
-      // update the meta data at the front
-      fseek (file, 0, SEEK_SET);
+      char * final_position = current;
 
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
-        " file size: %d bytes written (file:%d, state.size:%d).\n",
-        (int)total, (int)meta.size, (int)checkpoint_header.size);
+        " final_position indicates a buffer of %d bytes," \
+        " encode buffer is %d bytes\n",
+        (int)(final_position - buffer.get_ptr ()),
+        (int)(meta.size - (int)FileHeader::encoded_size ()));
 
-      fwrite (buffer.get_ptr (), (size_t)total, 1, file);
+      // write the final sizes
+      current = checkpoint_header.write (
+        buffer.get_ptr () + (int)FileHeader::encoded_size (), max_buffer);
 
-      fclose (file);
+      // call decode with any buffer filters
+      int total = settings.encode (buffer.get_ptr () + 
+        (int)FileHeader::encoded_size (),
+        (int)(final_position - buffer.get_ptr ()), (int)max_buffer);
 
+      if (total < 0)
+      {
+        throw exceptions::FilterException (
+          "ThreadSafeContext::save_checkpoint: "
+          "encode () returned a negative encoding size. Bad filter/encode.");
+      }
+
+      meta.size = (uint64_t)total;
+
+      current = meta.write (buffer.get_ptr (), max_buffer);
+
+      // update the meta data at the front
+      // fseek (file, 0, SEEK_SET);
+      file.seekp (0, file.beg);
+
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "ThreadSafeContext::save_checkpoint:" \
+        " encoding with buffer filters: %d:%d bytes written to offset %d.\n",
+        (int)meta.size, (int)checkpoint_header.size,
+        (int)((int)FileHeader::encoded_size ()));
+
+      // fwrite (buffer.get_ptr (),
+      //   (size_t)total + (size_t)FileHeader::encoded_size (), 1, file);
+      file.write (buffer.get (),
+        (size_t)total + (size_t)FileHeader::encoded_size ());
+
+      // fclose (file);
+      file.close ();
       if (settings.reset_checkpoint)
       {
         reset_checkpoint ();
