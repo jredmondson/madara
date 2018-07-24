@@ -614,12 +614,13 @@ madara::transport::QoSTransportSettings::filter_decode (
 
       if (header.size > (uint64_t)max_size)
       {
-        std::stringstream buffer;
-        buffer << "QoSTransportSettings::filter_decode: ";
-        buffer << header.size << " byte size encoding cannot fit in ";
-        buffer << max_size << " byte buffer\n";
-              
-        throw exceptions::MemoryException (buffer.str ());
+        madara_logger_ptr_log (logger::global_logger.get (),
+          logger::LOG_ERROR,
+          "QoSTransportSettings::filter_decode: header: "
+          " %d byte size encoding cannot fit in %d byte buffer\n",
+          (int)header.size, max_size);
+
+        return 0;
       } 
 
       madara_logger_ptr_log (logger::global_logger.get (),
@@ -629,20 +630,18 @@ madara::transport::QoSTransportSettings::filter_decode (
         header.id,
         utility::to_string_version (header.version).c_str ());
 
-      madara_logger_ptr_log (logger::global_logger.get (),
-        logger::LOG_MAJOR,
-        "QoSTransportSettings::filter_decode: header: past the header print\n");
-
       if (*i == 0)
       {
         madara_logger_ptr_log (logger::global_logger.get (),
-          logger::LOG_MAJOR,
+          logger::LOG_ERROR,
           "QoSTransportSettings::filter_decode: filter is null somehow\n");
+
+        return 0;
       }
       else
       {
         madara_logger_ptr_log (logger::global_logger.get (),
-          logger::LOG_MAJOR,
+          logger::LOG_DETAILED,
           "QoSTransportSettings::filter_decode: filter is not null\n");
       }
 
@@ -660,6 +659,8 @@ madara::transport::QoSTransportSettings::filter_decode (
           "QoSTransportSettings::filter_decode: buffer filter %s doesn't match."
           " Returning 0.",
           header.id);
+
+        return 0;
       }
             
       madara_logger_ptr_log (logger::global_logger.get (),
@@ -686,12 +687,13 @@ madara::transport::QoSTransportSettings::filter_decode (
     }
     else
     {
-      std::stringstream buffer;
-      buffer << "QoSTransportSettings::filter_decode: ";
-      buffer << size << " byte size encoding cannot fit in ";
-      buffer << max_size << " byte buffer\n";
-            
-      throw exceptions::MemoryException (buffer.str ());
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_ERROR,
+        "QoSTransportSettings::filter_decode: "
+        " %d byte size encoding cannot fit in %d byte buffer\n",
+        size, max_size);
+
+      return 0;
     } // end if size is bigger than the buffer header
   } // end for loop iteration of filters
 

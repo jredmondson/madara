@@ -294,20 +294,18 @@ namespace madara
               header.id,
               utility::to_string_version (header.version).c_str ());
 
-            madara_logger_ptr_log (logger::global_logger.get (),
-              logger::LOG_MAJOR,
-              "CheckpointSettings::decode: header: past the header print\n");
-
             if (*i == 0)
             {
               madara_logger_ptr_log (logger::global_logger.get (),
-                logger::LOG_MAJOR,
+                logger::LOG_ERROR,
                 "CheckpointSettings::decode: filter is null somehow\n");
+              
+              return 0;
             }
             else
             {
               madara_logger_ptr_log (logger::global_logger.get (),
-                logger::LOG_MAJOR,
+                logger::LOG_DETAILED,
                 "CheckpointSettings::decode: filter is not null\n");
             }
 
@@ -325,6 +323,8 @@ namespace madara
                 "CheckpointSettings::decode: buffer filter %s doesn't match."
                 " Returning 0.",
                 header.id);
+                
+              return 0;
             }
             
             madara_logger_ptr_log (logger::global_logger.get (),
