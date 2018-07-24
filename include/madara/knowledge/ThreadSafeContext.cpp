@@ -2752,6 +2752,8 @@ ThreadSafeContext::save_checkpoint (
 
   FileHeader meta;
   transport::MessageHeader checkpoint_header;
+  int file_header_size = (int)FileHeader::encoded_size ();
+  int chkpt_header_size = (int)checkpoint_header.encoded_size ();
 
   if (file)
   {
@@ -2929,6 +2931,8 @@ ThreadSafeContext::save_checkpoint (
         " chkpt.header: size=%d, updates=%d\n",
         (int)checkpoint_header.size, (int)checkpoint_header.updates);
 
+      int total_encoded = 0;
+
       if (buffer_remaining != max_buffer)
       {
         total_written = (int64_t)(current - buffer.get_ptr ());
@@ -2941,7 +2945,7 @@ ThreadSafeContext::save_checkpoint (
         current = checkpoint_header.write (buffer.get_ptr (), buffer_remaining);
         
         // call decode with any buffer filters
-        int total_encoded = settings.encode (buffer.get_ptr (),
+        total_encoded = settings.encode (buffer.get_ptr (),
           (int)total_written, (int)max_buffer);
 
         if (total_encoded < 0)
@@ -2956,10 +2960,10 @@ ThreadSafeContext::save_checkpoint (
           " encoded %d bytes in buffer. Writing to disk at offset %d bytes\n",
           (int)total_encoded, (int)checkpoint_start);
 
-        if (settings.buffer_filters.size () > 0)
-        {
-          total_encoded += (int)filters::BufferFilterHeader::encoded_size ();
-        }
+        // if (settings.buffer_filters.size () > 0)
+        // {
+        //   total_encoded += (int)filters::BufferFilterHeader::encoded_size ();
+        // }
 
         file.write (buffer.get_ptr (), total_encoded);
         // fwrite (buffer.get_ptr (), (size_t)(total_encoded), 1, file);
@@ -2979,9 +2983,10 @@ ThreadSafeContext::save_checkpoint (
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
         " new file meta: size=%d, states=%d, "
-        " lastchkpt.start=%d, lastchkpt.size=%d\n",
+        " lastchkpt.start=%d, lastchkpt.size=%d, encoded=%d\n",
         (int)meta.size, (int)meta.states,
-        (int)checkpoint_start, (int)checkpoint_header.size);
+        (int)checkpoint_start, (int)checkpoint_header.size,
+        (int)total_encoded);
   
       // update the meta data at the front
       // fseek (file, 0, SEEK_SET);
@@ -3128,22 +3133,23 @@ ThreadSafeContext::save_checkpoint (
       }
     
       char * final_position = current;
+      int full_buffer = final_position - buffer.get_ptr ();
 
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
         " final_position indicates a buffer of %d bytes," \
         " encode buffer is %d bytes\n",
-        (int)(final_position - buffer.get_ptr ()),
-        (int)(meta.size - (int)FileHeader::encoded_size ()));
+        full_buffer, full_buffer - file_header_size
+      );
 
-      // write the final sizes
+      // write the final sizes for the checkpoint at [108]
       current = checkpoint_header.write (
-        buffer.get_ptr () + (int)FileHeader::encoded_size (), max_buffer);
+        buffer.get_ptr () + file_header_size, max_buffer);
 
-      // call decode with any buffer filters
+      // call decode with any buffer filters on [108]
       int total = settings.encode (buffer.get_ptr () + 
         (int)FileHeader::encoded_size (),
-        (int)(final_position - buffer.get_ptr ()), (int)max_buffer);
+        (int)(full_buffer - file_header_size), (int)max_buffer);
 
       if (total < 0)
       {
@@ -3162,14 +3168,20 @@ ThreadSafeContext::save_checkpoint (
 
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:" \
-        " encoding with buffer filters: %d:%d bytes written to offset %d.\n",
+        " encoding with buffer filters: meta.size=%d, chkpt.size=%d, "
+        "encoded=%d, chkpt.offset=%d.\n",
         (int)meta.size, (int)checkpoint_header.size,
-        (int)((int)FileHeader::encoded_size ()));
+        (int)total, file_header_size);
 
       // fwrite (buffer.get_ptr (),
       //   (size_t)total + (size_t)FileHeader::encoded_size (), 1, file);
       file.write (buffer.get (),
-        (size_t)total + (size_t)FileHeader::encoded_size ());
+        (size_t)total + (size_t)file_header_size);
+
+      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+        "ThreadSafeContext::save_checkpoint:" \
+        " wrote: %d bytes to file from beginning.\n",
+        (int)total + (int)FileHeader::encoded_size ());
 
       // fclose (file);
       file.close ();

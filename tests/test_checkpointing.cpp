@@ -354,7 +354,7 @@ void test_checkpoints_diff (void)
   varglob1 = 1;
   untracked = 4;
 
-  //logger::global_logger->set_level (logger::LOG_MINOR);
+  logger::global_logger->set_level (logger::LOG_MINOR);
 
   saver.save_checkpoint (checkpoint_settings);
 
@@ -542,6 +542,8 @@ void test_checkpoints_diff (void)
   checkpoint_settings.last_state = 5;
 
   loader.load_context (checkpoint_settings);
+
+  logger::global_logger->set_level (logger::LOG_ERROR);
 
   if (loader.get (".1").to_integer () == 6 &&
       loader.get ("var1").to_integer () == 0 &&
