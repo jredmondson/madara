@@ -21,7 +21,20 @@ namespace madara { namespace filters {
 inline bool
 BufferFilterHeader::check_filter (filters::BufferFilter * filter)
 {
-  return filter->get_id () == id && version >= filter->get_version ();
+  if (filter != 0)
+  {
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_MINOR,
+      "CheckpointSettings::check_filter: header: "
+      " %s:%s, filter: %s:%s\n",
+      id,
+      utility::to_string_version (version).c_str (),
+      filter->get_id ().c_str (),
+      utility::to_string_version (filter->get_version ()).c_str ());
+
+    return filter->get_id () == id && version >= filter->get_version ();
+  }
+  else return false;
 }
 
 inline void

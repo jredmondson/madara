@@ -766,7 +766,7 @@ madara::knowledge::KnowledgeRecordFilters::filter (
 }
 
 void madara::knowledge::KnowledgeRecordFilters::filter_decode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
   // decode from back to front
   for (filters::BufferFilters::const_reverse_iterator i = buffer_filters_.rbegin ();
@@ -777,7 +777,7 @@ void madara::knowledge::KnowledgeRecordFilters::filter_decode (
 }
 
 void madara::knowledge::KnowledgeRecordFilters::filter_encode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
   // encode from front to back
   for (filters::BufferFilters::const_iterator i = buffer_filters_.begin ();

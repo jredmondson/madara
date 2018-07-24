@@ -67,7 +67,7 @@ int madara::filters::AESBufferFilter::generate_key (
 
 int
 madara::filters::AESBufferFilter::encode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
   int result = 0;
 
@@ -101,8 +101,8 @@ madara::filters::AESBufferFilter::encode (
 
   // encrypt the buffer
   result = EVP_EncryptUpdate (ctx,
-    source, &len,
-    source, size);
+    (unsigned char *)source, &len,
+    (unsigned char *)source, size);
 
   if (result != 1)
   {
@@ -122,7 +122,7 @@ madara::filters::AESBufferFilter::encode (
 
 
   // finalize the encryption with padding
-  result = EVP_EncryptFinal_ex (ctx, source + len, &len);
+  result = EVP_EncryptFinal_ex (ctx, (unsigned char *)(source + len), &len);
 
   if (result != 1)
   {
@@ -148,7 +148,7 @@ madara::filters::AESBufferFilter::encode (
 
 int
 madara::filters::AESBufferFilter::decode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
   int result = 0;
 
@@ -181,8 +181,8 @@ madara::filters::AESBufferFilter::decode (
     "AESBufferFilter::decode:EVP_DecryptUpdate:1: len=%d, size=%d.\n",
     len, size);
 
-  result = EVP_DecryptUpdate (ctx, source, &len,
-    source, size);
+  result = EVP_DecryptUpdate (ctx, (unsigned char *)source, &len,
+    (unsigned char *)source, size);
   plaintext_len = len;
 
   if (result != 1)
@@ -199,7 +199,7 @@ madara::filters::AESBufferFilter::decode (
     "AESBufferFilter::decode:EVP_DecryptUpdate:2: len=%d, plaintext_len=%d.\n",
     len, plaintext_len);
 
-  result = EVP_DecryptFinal_ex (ctx, source + len, &len);
+  result = EVP_DecryptFinal_ex (ctx, (unsigned char *)(source + len), &len);
 
   if (result != 1)
   {

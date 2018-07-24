@@ -44,7 +44,7 @@ namespace madara
       /**
        * Returns the size of the encoded BufferFilterHeader class
        **/
-      static uint32_t encoded_size (void)
+      static uint64_t encoded_size (void)
       {
         return 20;
       }
