@@ -1,3 +1,5 @@
+#include "Any.h"
+
 #ifndef MADARA_KNOWLEDGE_ANY_REGISTRY_H_
 #define MADARA_KNOWLEDGE_ANY_REGISTRY_H_
 
@@ -24,6 +26,7 @@ namespace madara { namespace knowledge {
 
 class Any;
 class ConstAny;
+struct TypeHandlers;
 
 struct compare_const_char_ptr
 {
@@ -48,13 +51,17 @@ public:
   static ConstAny construct_const(const char *name);
 
 protected:
+  /*
   MADARA_EXPORT static std::map<const char *, std::function<Any()>,
                   compare_const_char_ptr> &type_builders()
   {
     static std::map<const char *, std::function<Any()>,
                     compare_const_char_ptr> type_builders_;
     return type_builders_;
-  }
+  }*/
+
+  static void register_type_impl(const char *name,
+      const TypeHandlers *handler);
 
   template<typename T>
   static const char **get_type_name_ptr()

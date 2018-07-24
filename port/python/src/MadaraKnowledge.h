@@ -25,6 +25,112 @@ using namespace boost::python;
 
 class knowledge_NS {};
 
+#define MADARA_MEMB(ret, klass, name, args) \
+  static_cast<ret (klass::*) args>(&klass::name)
+
+template<typename T, typename I>
+class_<T> define_basic_any(const char * name, const char *doc, I init)
+{
+  using namespace madara::knowledge;
+
+#define MADARA_PYSETITEM(Key, Val) \
+    .def("__setitem__", +[](T &a, Key key, Val val) { \
+          a[key] = val; \
+        }, "Set an element at the given index to a C++ " #Val)
+
+#define MADARA_PYASSIGN(Type) \
+    .def("assign", MADARA_MEMB(void, T, assign, (const Type &) const), \
+        "Set the value to a C++ " #Type)
+
+#define MADARA_PYSETATTR(Type) \
+    .def("__setattr__", +[](T &a, const char *name, Type val) { \
+          a(name) = val; \
+        }, "Set a field of the given name to a C++ " #Type)
+
+  return class_<T> (name,
+    doc, init)
+    .def("ref", MADARA_MEMB(AnyRef, T, ref, () const), "Reference the object "
+        "with an AnyRef")
+    .def("ref", MADARA_MEMB(AnyRef, T, ref, (const char *) const),
+        "Get the named field as an AnyRef")
+    .def("ref", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const),
+        "Get the named field as an AnyRef")
+    .def("__getattr__", MADARA_MEMB(AnyRef, T, ref, (const char *) const),
+        "Get the named field as an AnyRef")
+    .def("__getattr__", MADARA_MEMB(AnyRef, T, ref, (const std::string &) const),
+        "Get the named field as an AnyRef")
+    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (size_t) const),
+        "Get the indexed element as an AnyRef")
+    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const char *) const),
+        "Get the indexed element as an AnyRef")
+    .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const std::string &) const),
+        "Get the indexed element as an AnyRef")
+    MADARA_PYSETITEM(const char *, Any)
+    MADARA_PYSETITEM(const char *, AnyRef)
+    MADARA_PYSETITEM(const char *, int64_t)
+    MADARA_PYSETITEM(const char *, double)
+    MADARA_PYSETITEM(const char *, std::string)
+    MADARA_PYSETITEM(const char *, std::vector<int64_t>)
+    MADARA_PYSETITEM(const char *, std::vector<double>)
+    MADARA_PYSETITEM(size_t, Any)
+    MADARA_PYSETITEM(size_t, AnyRef)
+    MADARA_PYSETITEM(size_t, int64_t)
+    MADARA_PYSETITEM(size_t, double)
+    MADARA_PYSETITEM(size_t, std::string)
+    MADARA_PYSETITEM(size_t, std::vector<int64_t>)
+    MADARA_PYSETITEM(size_t, std::vector<double>)
+    MADARA_PYASSIGN(Any)
+    MADARA_PYASSIGN(AnyRef)
+    MADARA_PYASSIGN(int64_t)
+    MADARA_PYASSIGN(double)
+    MADARA_PYASSIGN(std::string)
+    MADARA_PYASSIGN(std::vector<int64_t>)
+    MADARA_PYASSIGN(std::vector<double>)
+    MADARA_PYSETATTR(Any)
+    MADARA_PYSETATTR(AnyRef)
+    MADARA_PYSETATTR(int64_t)
+    MADARA_PYSETATTR(double)
+    MADARA_PYSETATTR(std::string)
+    MADARA_PYSETATTR(std::vector<int64_t>)
+    MADARA_PYSETATTR(std::vector<double>)
+    .def("to_integer", &T::to_integer, "Convert to an integer. Zero by default")
+    .def("__int__", &T::to_integer, "Convert to an integer. Zero by default")
+    .def("to_double", &T::to_double, "Convert to an integer. Zero by default")
+    .def("__float__", &T::to_double, "Convert to an integer. Zero by default")
+    .def("to_integers", &T::to_integers, "Convert to a list of integers. "
+        "Empty by default.")
+    .def("to_doubles", &T::to_doubles, "Convert to a list of doubles. "
+        "Empty by default.")
+    .def("to_string", &T::to_string, "Convert to a string. "
+        "If no other conversion is available, serialize to JSON.")
+    .def("__str__", &T::to_string, "Convert to a string. "
+        "If no other conversion is available, serialize to JSON.")
+    .def("to_record", &T::to_record, "Convert to a KnowledgeRecord")
+    .def("__bool__", +[](Any &a) {
+        return !a.empty() && a.to<bool>();
+      }, "False if empty, otherwise based on held object.")
+    .def("size", &T::size, "Call .size() on held object")
+    .def("__len__", &T::size, "Call .size() on held object")
+    .def("empty", &T::empty, "Return true if there is no held object")
+    .def("list_fields", +[](const Any &a) {
+          std::vector<std::string> ret;
+          for (const auto &cur : a.list_fields()) {
+            ret.emplace_back(cur.name());
+          }
+          return ret;
+        }, "Return all registered field names as a list of strings")
+    .def("tag", &T::tag, "Gets the tag of the stored object")
+    .def("to_json", &T::to_json, "Serialize object as JSON")
+    .def("supports_size", &T::supports_size, "Check if size() is supported")
+    .def("supports_int_index", &T::supports_int_index,
+        "Check if integer indexing is supported")
+    .def("supports_string_index", &T::supports_string_index,
+        "Check if string indexing is supported")
+    .def("supports_fields", &T::supports_fields,
+        "Check if fields are supported")
+  ;
+}
+
 void define_knowledge (void)
 {
   object ke = object (handle<> (
@@ -46,9 +152,60 @@ void define_knowledge (void)
       "knowledge_engine", no_init);
    */
 
+  using namespace madara::knowledge;
 
-  class_<madara::knowledge::CheckpointSettings> ("Any",
-    "A class that can represent any type in a KnowledgeRecord", init <> ())
+  define_basic_any<AnyRef>("AnyRef",
+    "A class that can refer to any type in a KnowledgeRecord", no_init);
+
+#define MADARA_REGIMPL(name, ...) \
+  .def("register_" #name, +[](const char *tag){ \
+      static const std::string my_tag = tag; \
+      Any::register_type<__VA_ARGS__>(my_tag.c_str());}, \
+      "Register C++ type " #name ". If called multiple times, " \
+      "calls after first are ignored.") \
+  .staticmethod("register_" #name)
+
+#define MADARA_REGIMPL_VECTOR(name, type) \
+  MADARA_REGIMPL(name ## _vector, std::vector<type>)
+
+  define_basic_any<Any>("Any",
+    "A class that can store any type in a KnowledgeRecord", no_init)
+    .def("__init__", make_constructor(+[](const char *tag) {
+          return std::make_shared<Any>(Any::construct(tag));
+        }), "Construct with a default constructed C++ object, that must "
+        "already by registered with the given tag"
+      )
+    //.def("__init__", make_constructor(Any::construct))
+    .def("emplace", MADARA_MEMB(void, Any, emplace, (const char *)),
+        "Replace with a default constructed C++ object, that must "
+        "already by registered with the given tag")
+    MADARA_REGIMPL(char, char)
+    MADARA_REGIMPL(uchar, unsigned char)
+    MADARA_REGIMPL(schar, signed char)
+    MADARA_REGIMPL(int16, int16_t)
+    MADARA_REGIMPL(int32, int32_t)
+    MADARA_REGIMPL(int64, int64_t)
+    MADARA_REGIMPL(uint16, uint16_t)
+    MADARA_REGIMPL(uint32, uint32_t)
+    MADARA_REGIMPL(uint64, uint64_t)
+    MADARA_REGIMPL(float, float)
+    MADARA_REGIMPL(double, double)
+    MADARA_REGIMPL(string, std::string)
+    MADARA_REGIMPL_VECTOR(char, char)
+    MADARA_REGIMPL_VECTOR(uchar, unsigned char)
+    MADARA_REGIMPL_VECTOR(schar, signed char)
+    MADARA_REGIMPL_VECTOR(int16, int16_t)
+    MADARA_REGIMPL_VECTOR(int32, int32_t)
+    MADARA_REGIMPL_VECTOR(int64, int64_t)
+    MADARA_REGIMPL_VECTOR(uint16, uint16_t)
+    MADARA_REGIMPL_VECTOR(uint32, uint32_t)
+    MADARA_REGIMPL_VECTOR(uint64, uint64_t)
+    MADARA_REGIMPL_VECTOR(float, float)
+    MADARA_REGIMPL_VECTOR(double, double)
+    MADARA_REGIMPL_VECTOR(string, std::string)
+    MADARA_REGIMPL(string_string_map, std::map<std::string, std::string>)
+    MADARA_REGIMPL(string_int64_map, std::map<std::string, int64_t>)
+    MADARA_REGIMPL(string_double_map, std::map<std::string, double>)
   ;
 
   class_<madara::knowledge::CheckpointSettings> ("CheckpointSettings",
@@ -147,6 +304,8 @@ void define_knowledge (void)
 
      .def (init <std::string> ())
 
+     .def (init <const Any &> ())
+
      .def (init <const madara::knowledge::KnowledgeRecord &> ())
 
      // clears the value to a 0 integer
@@ -243,6 +402,13 @@ void define_knowledge (void)
      )
      > (&madara::knowledge::KnowledgeRecord::set_value),
      "Sets the value to a string")
+
+     // sets a knowledge record to an Any
+     .def ("set",
+         +[](KnowledgeRecord &rec, const Any &any) {
+          rec.emplace_any(any);
+         },
+     "Sets the value to an Any")
 
      // sets an array index to an integer
      .def ("set_index",
@@ -417,6 +583,10 @@ void define_knowledge (void)
     &madara::knowledge::KnowledgeRecord::operator--,
     "Subtracts one from the record",
     return_value_policy<reference_existing_object> ())
+
+    .def ("to_any", MADARA_MEMB(Any, KnowledgeRecord, to_any, () const),
+        "Convert this record to an Any")
+
     ; // end of KnowledgeRecord
 
 
@@ -918,6 +1088,27 @@ void define_knowledge (void)
       m_set_2_of_3 (
         args("key", "value", "settings"),
         "Sets a knowledge record to a string"))
+
+    // sets a knowledge record to an Any
+    .def( "set",
+        +[](KnowledgeBase &kb,
+            const std::string &key,
+            const Any &value,
+            const madara::knowledge::EvalSettings &settings)
+        {
+          kb.emplace_any(key, settings, value);
+        },
+        "Sets a knowledge record to an Any")
+
+    // sets a knowledge record to an Any
+    .def( "set",
+        +[](KnowledgeBase &kb,
+            const std::string &key,
+            const Any &value)
+        {
+          kb.emplace_any(key, value);
+        },
+        "Sets a knowledge record to an Any")
         
     // sets an array index to an integer
     // .def( "set_index",

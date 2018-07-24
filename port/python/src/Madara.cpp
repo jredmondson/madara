@@ -1,3 +1,8 @@
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpragmas"
+#pragma GCC diagnostic ignored "-Wunused-local-typedef"
+#endif
 
 #include <boost/python/detail/wrap_python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
@@ -12,6 +17,10 @@
 #include "MadaraFilters.h"
 #include "MadaraTransport.h"
 #include "MadaraKnowledge.h"
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 /**
  * @file Madara.cpp

@@ -30,6 +30,11 @@
 
 namespace madara { namespace knowledge {
 
+namespace tags {
+  struct from_tag_t {};
+  constexpr from_tag_t from_tag;
+}
+
 /**
  * Class which defines methods common to ConstAny and Any. Use those classes
  * instead of this class directly.
@@ -38,6 +43,10 @@ template<typename Impl, typename BaseImpl>
 class BasicOwningAny : public BaseImpl, public AnyRegistry
 {
   using Base = BaseImpl;
+
+protected:
+  using Base::Base;
+
 public:
   /**
    * Default constructor. Creates an empty Any.
@@ -48,15 +57,6 @@ public:
    * Copy constructor. Will clone any data stored inside.
    **/
   BasicOwningAny(const BasicOwningAny &other)
-    : Base(other.handler_,
-        other.data_ && other.handler_ ?
-          other.handler_->clone(other.data_) : nullptr) {}
-
-  /**
-   * Copy constructor. Will clone any data stored inside.
-   **/
-  template<typename I, typename B>
-  BasicOwningAny(const BasicOwningAny<I, B> &other)
     : Base(other.handler_,
         other.data_ && other.handler_ ?
           other.handler_->clone(other.data_) : nullptr) {}
@@ -93,14 +93,6 @@ public:
    * Move constructor. Other Any will be left empty.
    **/
   BasicOwningAny(BasicOwningAny &&other) noexcept :
-    Base(take_ptr(other.handler_),
-      take_ptr(other.data_)) {}
-
-  /**
-   * Move constructor. Other Any will be left empty.
-   **/
-  template<typename I, typename B>
-  BasicOwningAny(BasicOwningAny<I, B> &&other) noexcept :
     Base(take_ptr(other.handler_),
       take_ptr(other.data_)) {}
 
@@ -195,6 +187,10 @@ public:
   explicit BasicOwningAny(type<T> t, std::initializer_list<I> init)
     : BasicOwningAny(t, init.begin(), init.end()) {}
 
+  BasicOwningAny(tags::from_tag_t, const char *tag);
+
+  BasicOwningAny(tags::from_tag_t, const std::string &tag);
+
   /**
    * Construct any compatible type in-place. The first argument is a
    * madara::type struct which provides the type as a template parameter,
@@ -284,6 +280,9 @@ public:
   {
     return emplace(type<T>{}, init);
   }
+
+  void emplace(const char *tag);
+  void emplace(const std::string &tag);
 
   /**
    * Set from any compatible type. The argument will be moved into
@@ -474,7 +473,7 @@ public:
    **/
   void unserialize(const char *type, json_iarchive &archive);
 
-private:
+protected:
   template<typename T>
   static T *take_ptr(T *&in)
   {
@@ -527,6 +526,12 @@ public:
   static ConstAny construct(const char *name) {
     return construct_const(name);
   }
+
+  ConstAny() = default;
+  ConstAny(const Any &other);
+  ConstAny(Any &&other) noexcept;
+
+  friend class Any;
 };
 
 /**
@@ -557,34 +562,24 @@ class Any : public BasicOwningAny<Any,
 
 public:
   using Base::Base;
+
+  Any() = default;
+  Any(const ConstAny &other);
+  Any(ConstAny &&other) noexcept;
+
+  friend class ConstAny;
+  friend class AnyRegistry;
 };
 
 template<typename T>
 inline void AnyRegistry::register_type(const char *name)
 {
-  (void)type_builders().emplace(std::piecewise_construct,
-      std::forward_as_tuple(name),
-      std::forward_as_tuple([](){ return Any(type<T>{}); }));
-
   auto &ptr = *get_type_name_ptr<T>();
   if (ptr == nullptr) {
     ptr = name;
   }
-}
 
-inline Any AnyRegistry::construct(const char *name)
-{
-  auto iter = type_builders().find(name);
-  if (iter == type_builders().end()) {
-    throw exceptions::BadAnyAccess(std::string("Type ") + name +
-        "is not registered");
-  }
-  return iter->second();
-}
-
-inline ConstAny AnyRegistry::construct_const(const char *name)
-{
-  return construct(name);
+  register_type_impl(name, &get_type_handler<T>());
 }
 
 template<typename Impl, typename Base>
@@ -619,10 +614,49 @@ inline ConstAnyRef::ConstAnyRef(const Any &other)
 inline AnyRef::AnyRef(const Any &other)
   : Base(other.handler_, other.data_) {}
 
+inline ConstAnyRef::ConstAnyRef(const ConstAny &other)
+  : Base(other.handler_, other.data_) {}
+
+inline ConstAny::ConstAny(const Any &other)
+  : ConstAny(other.cref()) {}
+
+inline ConstAny::ConstAny(Any &&other) noexcept
+  : Base(take_ptr(other.handler_),
+         take_ptr(other.data_)) {}
+
+inline Any::Any(const ConstAny &other)
+  : Any(other.cref()) {}
+
+inline Any::Any(ConstAny &&other) noexcept
+  : Base(take_ptr(other.handler_),
+         take_ptr(other.data_)) {}
+
+template<typename Impl, typename Base>
+inline BasicOwningAny<Impl, Base>::BasicOwningAny(
+    tags::from_tag_t, const char *tag)
+  : BasicOwningAny(construct(tag)) {}
+
+template<typename Impl, typename Base>
+inline BasicOwningAny<Impl, Base>::BasicOwningAny(
+    tags::from_tag_t, const std::string &tag)
+  : BasicOwningAny(tag.c_str()) {}
+
+template<typename Impl, typename Base>
+inline void BasicOwningAny<Impl, Base>::emplace(const char *tag)
+{
+  *this = construct(tag);
+}
+
+template<typename Impl, typename Base>
+inline void BasicOwningAny<Impl, Base>::emplace(const std::string &tag)
+{
+  emplace(tag.c_str());
+}
+
 } // namespace knowledge
 
 } // namespace madara
 
-#endif  // MADARA_KNOWLEDGE_ANY_H_
-
 #include "DefaultTypeHandlers.h"
+
+#endif  // MADARA_KNOWLEDGE_ANY_H_

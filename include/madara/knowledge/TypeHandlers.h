@@ -1,3 +1,5 @@
+#include "Any.h"
+
 #ifndef MADARA_KNOWLEDGE_TYPE_HANDLERS_H_
 #define MADARA_KNOWLEDGE_TYPE_HANDLERS_H_
 
@@ -145,6 +147,9 @@ struct TypeHandlers
 
   const char * const *registered_name;
 
+  typedef void *(*construct_default_fn_type)();
+  construct_default_fn_type construct_default;
+
   typedef void (*destruct_fn_type)(void *);
   destruct_fn_type destruct;
 
@@ -213,6 +218,18 @@ inline std::string AnyField::type_name() const
   return handler_->tindex.name();
 }
 #endif
+
+/// Creates a function for default constructing the given type.
+template<typename T>
+constexpr auto get_type_handler_construct_default(type<T>,
+    overload_priority_weakest) ->
+  typename std::enable_if<std::is_constructible<T>::value,
+    TypeHandlers::construct_default_fn_type>::type
+{
+  return []() -> void * {
+      return new T{};
+    };
+}
 
 /// Creates a function for deleting the given type. By default, simply call
 /// delete. Specialize this function to customize otherwise.
@@ -355,6 +372,7 @@ inline const TypeHandlers &get_type_handler(type<T> t)
   static const TypeHandlers handler {
       type_id<T>(),
       &AnyRegistry::get_type_name<T>(),
+      get_type_handler_construct_default(t, select_overload()),
       get_type_handler_destruct(t, select_overload()),
       get_type_handler_clone(t, select_overload()),
       get_type_handler_save(type<T>{}, select_overload()),
@@ -386,6 +404,7 @@ MADARA_MAKE_VAL_SUPPORT_TEST(for_each_field, x,
     for_each_field(::madara::ignore_all<>{}, x));
 
 MADARA_MAKE_VAL_SUPPORT_TEST(size_member, x, (1UL == x.size()));
+MADARA_MAKE_VAL_SUPPORT_TEST(resize_member, x, (x.resize(1UL)));
 MADARA_MAKE_VAL_SUPPORT_TEST(int_index, x, (x[1UL] = x[1UL]));
 MADARA_MAKE_VAL_SUPPORT_TEST(str_index, x, (x[""] = x[""]));
 MADARA_MAKE_VAL_SUPPORT_TEST(int_at_index, x, (x.at(1UL) = x.at(1UL)));

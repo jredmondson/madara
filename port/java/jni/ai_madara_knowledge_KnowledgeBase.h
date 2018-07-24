@@ -330,6 +330,23 @@ MADARA_EXPORT void JNICALL
 Java_ai_madara_knowledge_KnowledgeBase_jni_1setImage
   (JNIEnv *, jclass, jlong, jstring, jbyteArray);
 
+/*
+ * Class:     ai_madara_knowledge_KnowledgeBase
+ * Method:    jni_setAny
+ * Signature: (JLjava/lang/String;JJ)Ljava/lang/String;
+ */
+MADARA_EXPORT jstring JNICALL
+Java_ai_madara_knowledge_KnowledgeBase_jni_1setAny
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+
+/*
+ * Class:     ai_madara_knowledge_KnowledgeBase
+ * Method:    jni_setAnySettings
+ * Signature: (JLjava/lang/String;JJJ)Ljava/lang/String;
+ */
+MADARA_EXPORT jstring JNICALL
+Java_ai_madara_knowledge_KnowledgeBase_jni_1setAnySettings
+  (JNIEnv *, jclass, jlong, jstring, jlong, jlong, jlong);
 
 /*
  * Class:     ai_madara_knowledge_KnowledgeBase

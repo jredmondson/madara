@@ -1,3 +1,5 @@
+#include "Any.h"
+
 #ifndef MADARA_KNOWLEDGE_ANY_REF_H_
 #define MADARA_KNOWLEDGE_ANY_REF_H_
 
@@ -483,6 +485,12 @@ public:
   {
     handler_ = &get_type_handler<T>();
     data_ = (void*)&t;
+  }
+
+  static AnyRef from_pointers_unsafe(
+      const TypeHandlers *handler, void *data)
+  {
+    return {handler, data};
   }
 
   template<typename Impl2, typename Base2>

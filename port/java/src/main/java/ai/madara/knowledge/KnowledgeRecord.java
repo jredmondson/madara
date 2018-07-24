@@ -48,6 +48,7 @@ package ai.madara.knowledge;
 
 import ai.madara.MadaraJNI;
 import ai.madara.exceptions.MadaraDeadObjectException;
+import ai.madara.knowledge.Any;
 
 /**
  * This class encapsulates an entry in a KnowledgeBase.
@@ -62,6 +63,7 @@ public class KnowledgeRecord extends MadaraJNI
   private native long jni_KnowledgeRecord(long str);
   private static native long jni_KnowledgeRecord(double[] dbls);
   private static native long jni_KnowledgeRecord(long[] longs);
+  private static native long jni_KnowledgeRecord(long handler, long data);
 
   //Getters
   private native long jni_toLongValue(long cptr);
@@ -69,6 +71,7 @@ public class KnowledgeRecord extends MadaraJNI
   private native double jni_toDoubleValue(long cptr);
   private static native double[] jni_toDoubleArray(long cptr);
   private static native long[] jni_toLongArray(long cptr);
+  private static native String jni_toAny(long cptr, long[] out);
   private native int jni_getType(long cptr);
 
   //Checks
@@ -153,6 +156,17 @@ public class KnowledgeRecord extends MadaraJNI
     setCPtr(jni_KnowledgeRecord(longs));
   }
 
+  /**
+   * Constructor for Any values
+   *
+   * @param any value to set
+   */
+  public KnowledgeRecord(Any any) throws MadaraDeadObjectException
+  {
+    isNew = true;
+    setCPtr(jni_KnowledgeRecord(any.handler_, any.data_));
+  }
+
 
   /**
    * Checks if the record is valid or uncreated
@@ -205,7 +219,6 @@ public class KnowledgeRecord extends MadaraJNI
     return jni_toLongArray(getCPtr());
   }
 
-
   /**
    * Converts the value to a String
    *
@@ -216,6 +229,20 @@ public class KnowledgeRecord extends MadaraJNI
     return jni_toStringValue(getCPtr());
   }
 
+  /**
+   * Converts the value to an Any
+   *
+   * If it is already an Any type, a copy is returned. If it is any other type,
+   * that type is put into an Any and returned.
+   *
+   * @return copy of current value
+   */
+  public Any toAny() throws MadaraDeadObjectException, BadAnyAccess
+  {
+    long[] out = new long[2];
+    AnyRef.err(jni_toAny(getCPtr(), out));
+    return new Any(out[0], out[1]);
+  }
 
   /**
    * @return the {@link ai.madara.knowledge.KnowledgeType KnowledgeType} of the value

@@ -177,7 +177,7 @@ namespace madara
        * If this record is not a string, returns NULL shared_ptr
        **/
       template<typename K>
-      std::shared_ptr<std::string> share_string(K && key,
+      std::shared_ptr<const std::string> share_string(K && key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
@@ -185,23 +185,12 @@ namespace madara
       }
 
       /**
-       * Returns a shared_ptr, while resetting this record to empty.
-       * If this record is not a string, returns NULL shared_ptr
-       **/
-      template<typename K>
-      std::shared_ptr<std::string> take_string(K && key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return map_.take_string(std::forward<K>(key), settings);
-      }
-
-      /**
        * Returns a shared_ptr, sharing with the internal one.
        * If this record is not an integer array, returns NULL shared_ptr
        **/
       template<typename K>
-      std::shared_ptr<std::vector<KnowledgeRecord::Integer>> share_integers(K && key,
+      std::shared_ptr<const std::vector<KnowledgeRecord::Integer>>
+        share_integers(K && key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
@@ -209,23 +198,11 @@ namespace madara
       }
 
       /**
-       * Returns a shared_ptr, while resetting this record to empty.
-       * If this record is not an integer array, returns NULL shared_ptr
-       **/
-      template<typename K>
-      std::shared_ptr<std::vector<KnowledgeRecord::Integer>> take_integers(K && key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return map_.take_integers(std::forward<K>(key), settings);
-      }
-
-      /**
        * Returns a shared_ptr, sharing with the internal one.
        * If this record is not a doubles array, returns NULL shared_ptr
        **/
       template<typename K>
-      std::shared_ptr<std::vector<double>> share_doubles(K && key,
+      std::shared_ptr<const std::vector<double>> share_doubles(K && key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
@@ -233,23 +210,11 @@ namespace madara
       }
 
       /**
-       * Returns a shared_ptr, while resetting this record to empty.
-       * If this record is not an integer array, returns NULL shared_ptr
-       **/
-      template<typename K>
-      std::shared_ptr<std::vector<double>> take_doubles(K && key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return map_.take_doubles(std::forward<K>(key), settings);
-      }
-
-      /**
        * Returns a shared_ptr, sharing with the internal one.
        * If this record is not a binary files, returns NULL shared_ptr
        **/
       template<typename K>
-      std::shared_ptr<std::vector<unsigned char>> share_binary(K && key,
+      std::shared_ptr<const std::vector<unsigned char>> share_binary(K && key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
@@ -257,39 +222,15 @@ namespace madara
       }
 
       /**
-       * Returns a shared_ptr, while resetting this record to empty.
-       * If this record is not a binary file, returns NULL shared_ptr
-       **/
-      template<typename K>
-      std::shared_ptr<std::vector<unsigned char>> take_binary(K && key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return map_.take_binary(std::forward<K>(key), settings);
-      }
-
-      /**
        * Returns a shared_ptr, sharing with the internal one.
        * If this record is not a string, returns NULL shared_ptr
        **/
       template<typename K>
-      std::shared_ptr<Any> share_any(K && key,
+      std::shared_ptr<const ConstAny> share_any(K && key,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const
       {
         return map_.share_any(std::forward<K>(key), settings);
-      }
-
-      /**
-       * Returns a shared_ptr, while resetting this record to empty.
-       * If this record is not a string, returns NULL shared_ptr
-       **/
-      template<typename K>
-      std::shared_ptr<Any> take_any(K && key,
-             const KnowledgeReferenceSettings & settings =
-                     KnowledgeReferenceSettings ())
-      {
-        return map_.take_any(std::forward<K>(key), settings);
       }
 
       /**

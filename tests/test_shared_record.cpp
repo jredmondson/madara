@@ -8,7 +8,8 @@
 
 #include "test.h"
 
-using namespace madara::knowledge;
+using namespace madara;
+using namespace knowledge;
 namespace logger = madara::logger;
 
 typedef  KnowledgeRecord::Integer  Integer;
@@ -35,11 +36,11 @@ void test_shared_record (void)
   KnowledgeRecord rec;
 
   std::string str = "Hello World";
-  auto s1 = std::make_shared<std::string>(std::move(str));
+  auto s1 = mk_unique<std::string>(std::move(str));
   const char *orig_ptr = s1->c_str();
-  rec.emplace_shared_string (std::move(s1));
+  rec.set_value (std::move(s1));
 
-  std::shared_ptr<std::string> str_out = rec.share_string();
+  std::shared_ptr<const std::string> str_out = rec.share_string();
 
   TEST_EQ(orig_ptr, str_out->c_str());
 
@@ -50,16 +51,16 @@ void test_shared_record (void)
   // Creates a vector with 4000 entries, all 42, without any copying
   KnowledgeRecord ints(tags::integers, 4000, 42);
 
-  std::shared_ptr<std::vector<int64_t>> iptr = ints.share_integers();
+  std::shared_ptr<const std::vector<int64_t>> iptr = ints.share_integers();
   TEST_NE(iptr.get(), (void*)0);
 
-  int64_t *orig_iptr = &(*iptr)[0];
+  const int64_t *orig_iptr = &(*iptr)[0];
 
   std::unique_ptr<std::vector<double>> unique_dptr (
     new std::vector<double> (iptr->begin(), iptr->end()));
   double *orig_dptr = &(*unique_dptr)[0];
   *orig_dptr += 0.5;
-  KnowledgeRecord dbls(tags::shared(tags::doubles), std::move(unique_dptr));
+  KnowledgeRecord dbls(std::move(unique_dptr));
 
   // std::move avoids copying the string data
   kb.set(".my_string", std::move(big_str));
@@ -73,18 +74,18 @@ void test_shared_record (void)
 
   TEST_EQ(kb.get(".my_array").retrieve_index(0).to_integer(), 42);
 
-  // leaves .my_string empty
-  std::shared_ptr<std::string> big_str_out = kb.take_string(".my_string");
+  // shared with .my_string
+  std::shared_ptr<const std::string> big_str_out = kb.share_string(".my_string");
   const char *out_sptr = big_str_out->c_str();
 
    // shared with .my_array still in kb
-  std::shared_ptr<std::vector<int64_t>> ints_out =
+  std::shared_ptr<const std::vector<int64_t>> ints_out =
     kb.share_integers(".my_array");
-  int64_t *out_iptr = &(*ints_out)[0];
+  const int64_t *out_iptr = &(*ints_out)[0];
 
-  std::shared_ptr<std::vector<double>> dbls_out = 
+  std::shared_ptr<const std::vector<double>> dbls_out = 
     kb.share_doubles(".my_doubles");
-  double *out_dptr = &(*dbls_out)[0];
+  const double *out_dptr = &(*dbls_out)[0];
 
   TEST_EQ((void*)orig_sptr, (void*)out_sptr);
   TEST_EQ((void*)orig_iptr, (void*)out_iptr);

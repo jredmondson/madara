@@ -10,7 +10,8 @@
 
 #include "test.h"
 
-using namespace madara::knowledge;
+using namespace madara;
+using namespace knowledge;
 using namespace madara::knowledge::rcw;
 
 int main(int, char **)
@@ -203,13 +204,11 @@ int main(int, char **)
   void *i64vector_orig = &i64vector[0];
   test_eq((void*)&knowledge_cast(std::move(i64vector)).share_integers()->at(0), i64vector_orig);
 
-  auto shr_farray = std::make_shared<std::vector<double>>(&farray[0], &farray[5]);
-  test_eq(knowledge_cast(shr_farray).share_doubles()->at(4), 5.5L);
-  test_eq((void*)knowledge_cast(shr_farray).share_doubles().get(), (void*)shr_farray.get());
-
-  KnowledgeRecord shr_fkr(shr_farray);
-  auto shr_fout = knowledge_cast<std::vector<float>>(shr_fkr);
-  test_eq(shr_fout[4], 5.5L);
+  auto uni_farray = mk_unique<std::vector<double>>(&farray[0], &farray[5]);
+  auto ptr_farray = uni_farray.get();
+  auto rec_farray = knowledge_cast(std::move(uni_farray));
+  test_eq(rec_farray.share_doubles()->at(4), 5.5L);
+  test_eq((void*)rec_farray.share_doubles().get(), (void*)ptr_farray);
 
   uint16_t iarray_in[] = {4, 8, 12, 16};
   int iarray_out[] = {0, 0, 0, 0, 1, 1, 1};
