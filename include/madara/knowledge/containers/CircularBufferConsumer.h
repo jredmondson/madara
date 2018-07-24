@@ -103,7 +103,7 @@ namespace madara
         bool operator!= (const CircularBufferConsumer & value) const;
         
         /**
-         * Gets the most recently added record
+         * Consumes the record at the local index (not the producer index)
          * @return the last added record. exists() will return false if the
          *         record is invalid
          * @throw exceptions::IndexException  buffer has zero size
@@ -111,7 +111,7 @@ namespace madara
         KnowledgeRecord consume (void) const;
         
         /**
-         * Gets the most recently added record
+         * Consumes the record at the local index (not the producer index)
          * @return the last added record. exists() will return false if the
          *         record is invalid
          * @param  dropped the number of dropped packets. Drops can
@@ -123,7 +123,7 @@ namespace madara
         KnowledgeRecord consume (size_t & dropped) const;
         
         /**
-         * Gets the most recently added value
+         * Consumes the record at the local index (not the producer index)
          * @param value  the last added value.
          * @throw exceptions::IndexException  if no data to consume
          **/
@@ -131,7 +131,7 @@ namespace madara
         void consume (T & value) const;
         
         /**
-         * Gets the most recently added value
+         * Consumes the record at the local index (not the producer index)
          * @param value   the last added value.
          * @param dropped the number of dropped packets. Drops can
          *                occur when the producer produces faster than the
@@ -143,7 +143,7 @@ namespace madara
         void consume (T & value, size_t & dropped) const;
         
         /**
-         * Gets the most recently added records up to a specified count
+         * Consumes the record at the local index (not the producer index)
          * @param  count   the maximum number of records to return
          * @return the last added records
          * @throw exceptions::IndexException  if index is unreachable
@@ -151,7 +151,8 @@ namespace madara
         std::vector <KnowledgeRecord> consume_latest (size_t count) const;
         
         /**
-         * Gets the most recently added records up to a specified count
+         * Consumes latest records added by the producer and updates the
+         * local index to the producer index
          * @param  count   the maximum number of records to return
          * @param  dropped the number of dropped packets. Drops can
          *                 occur when the producer produces faster than the
@@ -164,7 +165,8 @@ namespace madara
           size_t count, size_t & dropped) const;
         
         /**
-         * Gets the most recently added values up to a specified count
+         * Consumes latest records added by the producer and updates the
+         * local index to the producer index
          * @param  count   the maximum number of records to return
          * @param  values  the last added records
          * @throw exceptions::IndexException  if index is unreachable
@@ -174,7 +176,8 @@ namespace madara
           std::vector <T> & values) const;
         
         /**
-         * Gets the most recently added values up to a specified count
+         * Consumes latest records added by the producer and updates the
+         * local index to the producer index
          * @param  count   the maximum number of records to return
          * @param  values  the last added records
          * @param  dropped the number of dropped packets. Drops can
@@ -188,7 +191,7 @@ namespace madara
           std::vector <T> & values, size_t & dropped) const;
         
         /**
-         * Gets the oldest added records up to a specified count
+         * Consumes earliest records from the local index in the buffer
          * @param  count   the maximum number of records to return
          * @return the last added records
          * @throw exceptions::IndexException  if index is unreachable
@@ -196,7 +199,7 @@ namespace madara
         std::vector <KnowledgeRecord> consume_earliest (size_t count) const;
         
         /**
-         * Gets the oldest added records up to a specified count
+         * Consumes earliest records from the local index in the buffer
          * @param  count   the maximum number of records to return
          * @param  dropped the number of dropped packets. Drops can
          *                 occur when the producer produces faster than the
@@ -209,7 +212,7 @@ namespace madara
           size_t count, size_t & dropped) const;
         
         /**
-         * Gets the oldest added values up to a specified count
+         * Consumes earliest records from the local index in the buffer
          * @param  count   the maximum number of records to return
          * @param  values  the last added records
          * @throw exceptions::IndexException  if index is unreachable
@@ -219,7 +222,7 @@ namespace madara
           std::vector <T> & values) const;
        
         /**
-         * Gets the oldest added values up to a specified count
+         * Consumes earliest records from the local index in the buffer
          * @param  count   the maximum number of records to return
          * @param  values  the last added records
          * @param  dropped the number of dropped packets. Drops can
@@ -355,9 +358,7 @@ namespace madara
         size_t size (void) const;
 
         /**
-         * Resizes the CircularBufferConsumer
-         * @param  size      the size of the CircularBufferConsumer. -1 means use the size that
-         *                   exists in the knowledge base already.
+         * Resizes the buffer size to the producer's buffer size
          **/
         void resize (void);
 
