@@ -21,6 +21,7 @@
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/IntTypes.h"
 #include "madara/utility/SupportTest.h"
+#include "madara/utility/CircularBuffer.h"
 #include "Any.h"
 
 namespace madara
@@ -117,7 +118,8 @@ namespace madara
         ALL_IMAGES = IMAGE_JPEG,
         ALL_TEXT_FORMATS = XML | TEXT_FILE | STRING,
         ALL_TYPES = ALL_PRIMITIVE_TYPES | ALL_FILE_TYPES,
-        ALL_CLEARABLES = ALL_ARRAYS | ALL_TEXT_FORMATS | ALL_FILE_TYPES | ANY
+        ALL_CLEARABLES = ALL_ARRAYS | ALL_TEXT_FORMATS | ALL_FILE_TYPES | ANY,
+        BUFFER = (1 << 30),
       };
 
       typedef  int64_t     Integer;
@@ -162,6 +164,7 @@ namespace madara
         std::shared_ptr<std::string> str_value_;
         std::shared_ptr<std::vector<unsigned char>> file_value_;
         std::shared_ptr<ConstAny> any_value_;
+        std::shared_ptr<utility::CircularBuffer<KnowledgeRecord>> buf_;
       };
 
       /**
@@ -1542,6 +1545,40 @@ namespace madara
       * information in the read () and write () methods.
       **/
       int64_t get_encoded_size (void) const;
+
+      size_t history (void ) const
+      {
+        if (type_ == BUFFER) {
+          return buf_->capacity();
+        } else {
+          return 0;
+        }
+      }
+
+      void set_history (size_t size)
+      {
+        if (type_ == BUFFER) {
+          if (size == 0) {
+            if (buf_->empty()) {
+              *this = std::move(buf_->back());
+            } else {
+              reset_value();
+            }
+          } else {
+            buf_->reserve(size);
+          }
+        } else {
+          if (size > 0) {
+            KnowledgeRecord tmp = *this;
+            new (&buf_) std::shared_ptr<utility::CircularBuffer<int>>(
+                std::make_shared<utility::CircularBuffer<int>>(size));
+            type_ = BUFFER;
+            buf_->push_back(std::move(tmp));
+          }
+        }
+      }
+
+      void clear_history () { set_history(0); }
 
     private:
       template<typename T>

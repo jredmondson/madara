@@ -19,7 +19,7 @@ inline void log(Args&&... args) {
    (log("INFO    : " #expr "\n"), (expr))
 
 #define VAL(expr) \
-  ([=]() mutable -> decltype(expr) { \
+  ([&]() mutable -> decltype(expr) { \
     decltype(expr) e = (expr); \
     std::ostringstream msg; \
     msg << e; \

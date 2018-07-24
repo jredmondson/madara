@@ -1483,7 +1483,7 @@ project (Test_Any_So) : using_madara, no_karl, no_xml, null_lock, using_simtime 
 
   after += Test_Datatypes_Lib
 
-  libs += datatypes_test
+  libs += datatypes_shared
 
   Documentation_Files {
   }
@@ -1493,5 +1493,22 @@ project (Test_Any_So) : using_madara, no_karl, no_xml, null_lock, using_simtime 
 
   Source_Files {
     tests/test_any_so.cpp
+  }
+}
+
+project (Test_Circular_Buffer) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_circular_buffer
+  
+  Documentation_Files {
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_circular_buffer.cpp
   }
 }
