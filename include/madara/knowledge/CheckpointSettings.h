@@ -231,6 +231,40 @@ namespace madara
       int decode (
         char * source, int size, int max_size) const
       {
+        if (buffer_filters.size () == 0)
+        {
+          // if we don't have buffer filters, do a check to see if we should
+          filters::BufferFilterHeader header;
+          int64_t buffer_size =
+            (int64_t)filters::BufferFilterHeader::encoded_size ();
+
+          header.read ((char *)source, buffer_size);
+
+          header.id[4] = 0;
+
+          std::string header_id (header.id);
+
+          // id is either karl or KaRL. If it's anything else, then error
+          if (header_id == "karl" || header_id == "KaRL")
+          {
+            madara_logger_ptr_log (logger::global_logger.get (),
+              logger::LOG_MAJOR,
+              "CheckpointSettings::decode: header: "
+              " Detected %s\n",
+              header.id);
+          }
+          else
+          {
+            madara_logger_ptr_log (logger::global_logger.get (),
+              logger::LOG_MAJOR,
+              "CheckpointSettings::decode: header: "
+              " Detected %s, which is not a message or checkpoint header\n",
+              header.id);
+
+            return 0;
+          }
+        }
+
         // decode from back to front
         for (filters::BufferFilters::const_reverse_iterator i = 
           buffer_filters.rbegin (); i != buffer_filters.rend (); ++i)
@@ -242,6 +276,16 @@ namespace madara
               (int64_t)filters::BufferFilterHeader::encoded_size ();
 
             header.read ((char *)source, buffer_size);
+
+            if (header.size > (uint64_t)max_size)
+            {
+              std::stringstream buffer;
+              buffer << "CheckpointSettings::decode: ";
+              buffer << header.size << " byte size encoding cannot fit in ";
+              buffer << max_size << " byte buffer\n";
+              
+              throw exceptions::MemoryException (buffer.str ());
+            } 
 
             madara_logger_ptr_log (logger::global_logger.get (),
               logger::LOG_MAJOR,
@@ -308,7 +352,7 @@ namespace madara
           else
           {
             std::stringstream buffer;
-            buffer << "CheckpointSettings::encode: ";
+            buffer << "CheckpointSettings::decode: ";
             buffer << size << " byte size encoding cannot fit in ";
             buffer << max_size << " byte buffer\n";
             

@@ -2549,26 +2549,22 @@ ThreadSafeContext::load_context (
 
           buffer_remaining = (int64_t)total_read;
 
-          if (checkpoint_settings.buffer_filters.size ())
+          madara_logger_ptr_log (logger_, logger::LOG_MINOR,
+            "ThreadSafeContext::load_context:" \
+            " decoding with %d buffer filters with initial size of "
+            "%d bytes and total buffer of %d bytes\n",
+            (int)checkpoint_settings.buffer_filters.size (),
+            (int)total_read, (int)max_buffer);
+
+          // call decode with any buffer filters
+          buffer_remaining = (int64_t)checkpoint_settings.decode (current,
+            (int)total_read, (int)max_buffer);
+
+          if (buffer_remaining <= 0)
           {
-            madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-              "ThreadSafeContext::load_context:" \
-              " decoding with %d buffer filters with initial size of "
-              "%d bytes and total buffer of %d bytes\n",
-              (int)checkpoint_settings.buffer_filters.size (),
-              (int)total_read, (int)max_buffer);
-
-            // call decode with any buffer filters
-            buffer_remaining = (int64_t)checkpoint_settings.decode (current,
-              (int)total_read, (int)max_buffer);
-
-            if (buffer_remaining < 0)
-            {
-              throw exceptions::FilterException (
-                "ThreadSafeContext::load_context: "
-                "decode () returned a negative encoding size. Bad filter/encode.");
-            }
-
+            throw exceptions::FilterException (
+              "ThreadSafeContext::load_context: "
+              "decode () returned a negative encoding size. Bad filter/encode.");
           }
 
           if (buffer_remaining > (int64_t)

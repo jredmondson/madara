@@ -203,10 +203,10 @@ void test_checkpoint_settings (void)
     std::cerr << "FAIL. Should be same but is garbled. " << buffer << "\n";
   }
 
-  std::cerr << "Test 5.3: encoding README.txt: ";
+  std::cerr << "Test 5.3: encoding README.md: ";
 
   test_message = utility::file_to_string (
-    utility::expand_envs ("$(MADARA_ROOT)/README.txt"));
+    utility::expand_envs ("$(MADARA_ROOT)/README.md"));
   strncpy ((char *)buffer, test_message.c_str (), test_message.size ());
   
   encode_length = filter.encode (buffer, (int)test_message.size (), sizeof(buffer));
@@ -250,6 +250,8 @@ void test_checkpoint_settings (void)
   std::cerr << "Test 7: Loading without 256 bit AES filter: ";
   settings.filename = "test_encryption_7.kb";
   
+  logger::global_logger->set_level (6);
+
   saver.save_context (settings);
 
   settings.buffer_filters.clear ();
@@ -258,10 +260,13 @@ void test_checkpoint_settings (void)
   {
     loader.load_context (settings);
   }
-  catch (madara::exceptions::FilterException & e)
+  catch (madara::exceptions::MadaraException & e)
   {
-    std::cerr << "Caught exception\n";
+    // std::cerr << "Caught exception\n";
+    std::cerr << e.what () << "\n";
   }
+
+  logger::global_logger->set_level (1);
 
   if (loader.get ("int_var").is_false ()
       && loader.get ("double_var").is_false ()
@@ -354,7 +359,7 @@ void test_checkpoints_diff (void)
   varglob1 = 1;
   untracked = 4;
 
-  logger::global_logger->set_level (logger::LOG_MINOR);
+  // logger::global_logger->set_level (logger::LOG_MINOR);
 
   saver.save_checkpoint (checkpoint_settings);
 
@@ -602,6 +607,265 @@ void test_compress (void)
 #endif  
 }
 
+void test_diff_filter_chains (void)
+{
+  std::cerr << "\n*********** TEST CHECKPOINT DIFF CHAINS *************.\n";
+
+  knowledge::KnowledgeRecord::set_precision (1);
+  
+  knowledge::VariableReferences current_modifieds;
+  knowledge::CheckpointSettings load_settings, save_settings;
+  knowledge::KnowledgeBase saver, loader;
+  knowledge::KnowledgeUpdateSettings track_changes;
+  track_changes.track_local_changes = true;
+  knowledge::KnowledgeUpdateSettings untrack_changes;
+  untrack_changes.track_local_changes = false;
+
+#ifdef _USE_LZ4_
+  filters::LZ4BufferFilter lz4_save_filter;
+  filters::LZ4BufferFilter lz4_load_filter;
+  load_settings.buffer_filters.push_back (&lz4_load_filter);
+  save_settings.buffer_filters.push_back (&lz4_save_filter);
+#endif
+
+#ifdef _USE_SSL_
+  filters::AESBufferFilter ssl_save_filter;
+  ssl_save_filter.generate_key ("temppass");
+  filters::AESBufferFilter ssl_load_filter;
+  ssl_load_filter.generate_key ("temppass");
+  load_settings.buffer_filters.push_back (&ssl_load_filter);
+  save_settings.buffer_filters.push_back (&ssl_save_filter);
+#endif
+
+  // make sure all checkpoint containers use checkpoint tracking
+  containers::Integer
+    var1 (".1", saver, track_changes),
+    var2 (".2", saver, track_changes),
+    var3 (".3", saver, track_changes),
+    varglob1 ("var1", saver, track_changes),
+    varglob2 ("var2", saver, track_changes),
+    varglob3 ("var3", saver, track_changes),
+    untracked ("var4", saver, untrack_changes);
+
+  // reset the checkpoint on save and on load, clear knowledge
+  load_settings.clear_knowledge = true;
+  save_settings.reset_checkpoint = true;
+  load_settings.filename = save_settings.filename = "checkpoints1.stk";
+
+  std::cerr << "Test 1: Saving .1 and var1: ";
+
+  // modify the two vars with the track_changes update settings
+  var1 = 1;
+  varglob1 = 1;
+  untracked = 4;
+
+  // logger::global_logger->set_level (logger::LOG_MINOR);
+
+  saver.save_checkpoint (save_settings);
+
+  loader.load_context (load_settings);
+
+  if (loader.get ("var1").to_integer () == 1 &&
+      loader.get (".1").to_integer () == 1 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 2: Modify var1 and reload: ";
+
+  varglob1 = 2;
+  untracked = 4;
+
+  saver.save_checkpoint (save_settings);
+
+  loader.load_context (load_settings);
+
+  if (loader.get ("var1").to_integer () == 2 &&
+      loader.get (".1").to_integer () == 1 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 3: Change all values and save to new file: ";
+
+  load_settings.filename = save_settings.filename = "checkpoints2.stk";
+  var1 = 1;
+  varglob1 = 1;
+  var2 = 2;
+  varglob2 = 2;
+  var3 = 3;
+  varglob3 = 3;
+  untracked = 4;
+
+  saver.save_checkpoint (save_settings);
+
+  loader.load_context (load_settings);
+
+  current_modifieds = saver.save_modifieds ();
+
+  if (loader.get ("var1").to_integer () == 1 &&
+      loader.get (".1").to_integer () == 1 &&
+      loader.get ("var2").to_integer () == 2 &&
+      loader.get (".2").to_integer () == 2 &&
+      loader.get ("var3").to_integer () == 3 &&
+      loader.get (".3").to_integer () == 3 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 4: Increment a variable to each checkpoint: ";
+
+  load_settings.filename = save_settings.filename =
+    "checkpoints.stk";
+
+  var1 = 1;
+
+  saver.save_checkpoint (save_settings);
+
+  var1 = 2;
+
+  saver.save_checkpoint (save_settings);
+
+  var1 = 3;
+  varglob1 = 3;
+
+  saver.save_checkpoint (save_settings);
+
+  var1 = 4;
+  varglob1 = 4;
+
+  saver.save_checkpoint (save_settings);
+
+  var1 = 5;
+  varglob1 = 5;
+
+  saver.save_checkpoint (save_settings);
+
+  var1 = 6;
+  varglob1 = 0;
+
+  saver.save_checkpoint (save_settings);
+
+  loader.load_context (load_settings);
+
+  if (loader.get (".1").to_integer () == 6 &&
+      loader.get ("var1").to_integer () == 0 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 5: Loading range 0-0 from stack: ";
+
+  load_settings.initial_state = 0;
+  load_settings.last_state = 0;
+
+  loader.load_context (load_settings);
+
+  if (loader.get (".1").to_integer () == 1 &&
+      !loader.exists ("var1") &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 6: Loading range 2-2 from stack: ";
+
+  load_settings.initial_state = 2;
+  load_settings.last_state = 2;
+
+  loader.load_context (load_settings);
+
+  if (loader.get (".1").to_integer () == 3 &&
+      loader.get ("var1").to_integer () == 3 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 7: Loading range 2-4 from stack: ";
+
+  load_settings.initial_state = 2;
+  load_settings.last_state = 4;
+
+  loader.load_context (load_settings);
+
+  if (loader.get (".1").to_integer () == 5 &&
+      loader.get ("var1").to_integer () == 5 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+  std::cerr << "Test 8: Loading range 2-5 from stack: ";
+
+  load_settings.initial_state = 2;
+  load_settings.last_state = 5;
+
+  loader.load_context (load_settings);
+
+  logger::global_logger->set_level (logger::LOG_ERROR);
+
+  if (loader.get (".1").to_integer () == 6 &&
+      loader.get ("var1").to_integer () == 0 &&
+      !loader.exists ("var4"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    loader.print ();
+  }
+
+}
+
 void handle_arguments (int argc, char ** argv)
 {
   for (int i = 1; i < argc; ++i)
@@ -844,6 +1108,8 @@ int main (int argc, char * argv[])
   test_compress ();
 
   test_filter_header ();
+
+  test_diff_filter_chains ();
 
   if (madara_fails > 0)
   {
