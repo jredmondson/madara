@@ -212,6 +212,13 @@ CircularBufferConsumer::inspect (
 
   KnowledgeRecord::Integer inserted = (KnowledgeRecord::Integer)count ();
 
+  // If buffer overflowed, update local index to last valid value - 1
+  KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
+  if (index_diff > (KnowledgeRecord::Integer)buffer_.size ())
+  {
+    local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size ();
+  }
+
   if ((position <= 0 && -position < inserted) ||
       (position > 0 && inserted == (KnowledgeRecord::Integer)size () &&
        position < inserted))
@@ -251,6 +258,13 @@ CircularBufferConsumer::inspect (
   check_context (__func__);
 
   ContextGuard context_guard (*context_);
+
+  // If buffer overflowed, update local index to last valid value - 1
+  KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
+  if (index_diff > (KnowledgeRecord::Integer)buffer_.size ())
+  {
+    local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size ();
+  }
 
   KnowledgeRecord::Integer inserted =
     (KnowledgeRecord::Integer)this->count ();
@@ -499,6 +513,13 @@ CircularBufferConsumer::consume_earliest (size_t count) const
   std::vector <KnowledgeRecord> result;
 
   KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
+
+  // If buffer overflowed, update local index to last valid value - 1
+  if (index_diff > (KnowledgeRecord::Integer)buffer_.size ())
+  {
+    local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size ();
+    index_diff = (KnowledgeRecord::Integer)buffer_.size ();
+  }
 
   count = std::min (count, (size_t)index_diff);
 
