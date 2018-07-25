@@ -95,7 +95,7 @@ namespace madara
         SHARED = 1
       };
 
-      enum ValueTypes
+      enum ValueTypes : uint32_t
       {
         EMPTY = 0,
         INTEGER = 1,
@@ -119,7 +119,7 @@ namespace madara
         ALL_TEXT_FORMATS = XML | TEXT_FILE | STRING,
         ALL_TYPES = ALL_PRIMITIVE_TYPES | ALL_FILE_TYPES,
         ALL_CLEARABLES = ALL_ARRAYS | ALL_TEXT_FORMATS | ALL_FILE_TYPES | ANY,
-        BUFFER = (1 << 30),
+        BUFFER = (1UL << 31),
       };
 
       typedef  int64_t     Integer;
@@ -1112,9 +1112,9 @@ namespace madara
       uint32_t size (void) const;
 
       /**
-       * returns the size of the value
+       * returns the type of the value
        **/
-      int32_t type (void) const;
+      uint32_t type (void) const;
 
       /**
        * Modify the type, but only if it's compatible with current type without
@@ -1127,7 +1127,7 @@ namespace madara
        * @return true if conversion successfully applied, or was already type,
        *         false if not
        **/
-      bool set_type (int32_t type);
+      bool set_type (uint32_t type);
 
       /**
        * returns if the record has a reference-counted type
@@ -1546,7 +1546,12 @@ namespace madara
       **/
       int64_t get_encoded_size (void) const;
 
-      size_t history (void ) const
+      bool has_history () const
+      {
+        return type_ == BUFFER;
+      }
+
+      size_t get_history_size () const
       {
         if (type_ == BUFFER) {
           return buf_->capacity();
@@ -1555,7 +1560,7 @@ namespace madara
         }
       }
 
-      void set_history (size_t size)
+      void set_history_size (size_t size)
       {
         if (type_ == BUFFER) {
           if (size == 0) {
@@ -1578,7 +1583,174 @@ namespace madara
         }
       }
 
-      void clear_history () { set_history(0); }
+      void clear_history () { set_history_size(0); }
+
+      template<typename Func>
+      size_t for_history_range(Func&& func, size_t index, size_t count) const
+      {
+        if (type_ != BUFFER) {
+          func(*this);
+          return 1;
+        }
+        size_t front = buf_->front_index();
+        if (index < front) {
+          size_t diff = front - index;
+          if (count > diff) {
+            count -= diff;
+          } else {
+            count = 0;
+          }
+          index = front;
+        }
+        if (count > buf_->size()) {
+          count = buf_->size();
+        }
+        for (size_t i = index, end = index + count; i < end; ++i) {
+          func((*buf_)[i]);
+        }
+        return count;
+      }
+
+      template<typename OutputIterator>
+      size_t get_history_range(OutputIterator out,
+          size_t index, size_t count) const;
+
+    private:
+      size_t absolute_index(ssize_t index) const
+      {
+        if (type_ != BUFFER) {
+          return 0;
+        }
+        if (index >= 0) {
+          return buf_->front_index() + index;
+        }
+        return buf_->back_index() + index;
+      }
+
+    public:
+      template<typename OutputIterator>
+      size_t get_history(OutputIterator out, ssize_t index, size_t count) const
+      {
+        return get_history_range(out, absolute_index(index), count);
+      }
+
+      template<typename OutputIterator>
+      size_t get_history(OutputIterator out) const
+      {
+        return get_history_range(out, 0, std::numeric_limits<size_t>::max());
+      }
+      template<typename OutputIterator>
+      size_t get_oldest(OutputIterator out, size_t count) const
+      {
+        return get_history(out, 0, count);
+      }
+
+      template<typename OutputIterator, typename ConstOutputIterator>
+      auto get_oldest(OutputIterator out, ConstOutputIterator out_end) const ->
+        enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
+      {
+        return get_oldest(out, std::distance(out, out_end));
+      }
+
+      template<typename OutputIterator>
+      size_t get_oldest(OutputIterator out) const
+      {
+        return get_oldest(out, 1);
+      }
+
+      template<typename OutputIterator>
+      size_t get_newest(OutputIterator out, size_t count) const
+      {
+        return get_history(out, -(ssize_t)count, count);
+      }
+
+      template<typename OutputIterator, typename ConstOutputIterator>
+      auto get_newest(OutputIterator out, ConstOutputIterator out_end) const ->
+        enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
+      {
+        return get_newest(out, std::distance(out, out_end));
+      }
+
+      template<typename OutputIterator>
+      size_t get_newest(OutputIterator out) const
+      {
+        return get_newest(out, 1);
+      }
+
+      KnowledgeRecord get_oldest() const
+      {
+        KnowledgeRecord ret;
+        get_oldest(&ret, 1);
+        return ret;
+      }
+
+      template<typename T>
+      T get_oldest() const
+      {
+        std::vector<T> ret;
+        get_oldest(&ret, 1);
+        return ret;
+      }
+
+      KnowledgeRecord get_newest() const
+      {
+        KnowledgeRecord ret;
+        get_newest(&ret, 1);
+        return ret;
+      }
+
+      template<typename T>
+      T get_newest() const
+      {
+        T ret;
+        get_newest(&ret, 1);
+        return ret;
+      }
+
+      std::vector<KnowledgeRecord> get_oldest(size_t count) const
+      {
+        std::vector<KnowledgeRecord> ret;
+        get_oldest(std::back_inserter(ret), count);
+        return ret;
+      }
+
+      template<typename T>
+      std::vector<T> get_oldest(size_t count) const
+      {
+        std::vector<T> ret;
+        get_oldest(std::back_inserter(ret), count);
+        return ret;
+      }
+
+      std::vector<KnowledgeRecord> get_newest(size_t count) const
+      {
+        std::vector<KnowledgeRecord> ret;
+        get_newest(std::back_inserter(ret), count);
+        return ret;
+      }
+
+      template<typename T>
+      std::vector<T> get_newest(size_t count) const
+      {
+        std::vector<T> ret;
+        get_newest(std::back_inserter(ret), count);
+        return ret;
+      }
+
+      std::vector<KnowledgeRecord> get_history() const
+      {
+        std::vector<KnowledgeRecord> ret;
+        get_history(std::back_inserter(ret));
+        return ret;
+      }
+
+      template<typename T>
+      std::vector<T> get_history() const
+      {
+        std::vector<T> ret;
+        get_history(std::back_inserter(ret));
+        return ret;
+      }
 
     private:
       template<typename T>

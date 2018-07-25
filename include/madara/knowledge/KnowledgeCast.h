@@ -468,6 +468,13 @@ inline const KnowledgeRecord &knowledge_cast(const KnowledgeRecord &in)
   return in;
 }
 
+/// Identity NOP
+inline const KnowledgeRecord &knowledge_cast(
+    const KnowledgeRecord &in, KnowledgeRecord &out)
+{
+  return out = in;
+}
+
 #endif // !DOXYGEN
 
 /// Generates comparison operators for KnowledgeRecords, in combination with
@@ -688,6 +695,16 @@ BasicAny<Impl, ValImpl, RefImpl, CRefImpl>::from_record(
         "support to_record");
   }
   this->handler_->from_record(rec, this->data_);
+}
+
+template<typename OutputIterator>
+size_t KnowledgeRecord::get_history_range(
+    OutputIterator out, size_t index, size_t count) const
+{
+  return for_history_range([&out](const KnowledgeRecord &rec) {
+      *out = knowledge_cast(rec);
+      ++out;
+    }, index, count);
 }
 
 }

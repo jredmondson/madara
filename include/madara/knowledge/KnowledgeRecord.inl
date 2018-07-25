@@ -677,16 +677,16 @@ KnowledgeRecord::size (void) const
   return 1;
 }
 
-inline int32_t
+inline uint32_t
 KnowledgeRecord::type (void) const
 {
   return type_;
 }
 
 inline bool
-KnowledgeRecord::set_type (int32_t type)
+KnowledgeRecord::set_type (uint32_t type)
 {
-  if ((uint32_t)type == type_ ||
+  if (type == type_ ||
       (is_string_type() && is_string_type(type)) ||
       (is_binary_file_type() && is_binary_file_type(type))
   ) {
