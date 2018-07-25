@@ -2749,7 +2749,7 @@ ThreadSafeContext::save_checkpoint (
   FileHeader meta;
   transport::MessageHeader checkpoint_header;
   int file_header_size = (int)FileHeader::encoded_size ();
-  int chkpt_header_size = (int)checkpoint_header.encoded_size ();
+  //int chkpt_header_size = (int)checkpoint_header.encoded_size ();
 
   if (file)
   {
