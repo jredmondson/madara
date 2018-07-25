@@ -161,7 +161,6 @@ void handle_arguments (int argc, char ** argv)
         "  [-lt|--load-transport file] a file to load transport settings from\n" \
         "  [-ltp|--load-transport-prefix prfx] prefix of saved settings\n" \
         "  [-ltt|--load-transport-text file] a text file to load transport settings from\n" \
-        "  [-lz4|--lz4]             add lz4 compression filter\n" \
         "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
         "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
@@ -176,7 +175,6 @@ void handle_arguments (int argc, char ** argv)
         "                           prefix of knowledge to save in checkpoint\n" \
         "  [-sj|--save-json file]   save the resulting knowledge base as JSON\n" \
         "  [-ss|--save-size bytes]  size of buffer needed for file saves\n" \
-        "  [-ssl|--ssl pass]        add an ssl filter with a password\n" \
         "  [-st|--save-transsport file] a file to save transport settings to\n" 
         "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
         "  [-stt|--save-transport-text file] a text file to save transport settings to\n" \
