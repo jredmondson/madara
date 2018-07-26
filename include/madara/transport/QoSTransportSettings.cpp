@@ -507,13 +507,55 @@ madara::transport::QoSTransportSettings::filter_send (
 
 int
 madara::transport::QoSTransportSettings::filter_encode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
   // encode from front to back
   for (filters::BufferFilters::const_iterator i = buffer_filters_.begin ();
     i != buffer_filters_.end (); ++i)
   {
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_MINOR,
+      "QoSTransportSettings::filter_encode: size before encode: "
+      " %d of %d\n",
+      size, max_size);
+    
     size = (*i)->encode (source, size, max_size);
+
+    madara_logger_ptr_log (logger::global_logger.get (),
+      logger::LOG_MINOR,
+      "QoSTransportSettings::filter_encode: size after encode: "
+      " %d of %d\n",
+      size, max_size);
+
+    if (max_size > size + 20 )
+    {
+      memmove (source + 20, source, size);
+
+      filters::BufferFilterHeader header;
+      header.read (*i);
+      header.size = (uint64_t)size;
+
+      int64_t buffer_remaining = 20;
+
+      header.write ((char *)source, buffer_remaining);
+
+      size += (int)filters::BufferFilterHeader::encoded_size ();
+
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_MAJOR,
+        "QoSTransportSettings::filter_encode: header: "
+        "%s:%s within size %d\n",
+        header.id, utility::to_string_version (header.version).c_str (), size);
+    }
+    else
+    {
+      std::stringstream buffer;
+      buffer << "QoSTransportSettings::filter_encode: ";
+      buffer << (size + 20) << " 20 byte size encoding cannot fit in ";
+      buffer << max_size << " byte buffer\n";
+            
+      throw exceptions::MemoryException (buffer.str ());
+    }
   }
 
   return size;
@@ -522,14 +564,138 @@ madara::transport::QoSTransportSettings::filter_encode (
 
 int
 madara::transport::QoSTransportSettings::filter_decode (
-  unsigned char * source, int size, int max_size) const
+  char * source, int size, int max_size) const
 {
+  if (buffer_filters_.size () == 0)
+  {
+    // if we don't have buffer filters, do a check to see if we should
+    filters::BufferFilterHeader header;
+    int64_t buffer_size =
+      (int64_t)filters::BufferFilterHeader::encoded_size ();
+
+    header.read ((char *)source, buffer_size);
+
+    header.id[4] = 0;
+
+    std::string header_id (header.id);
+
+    // id is either karl or KaRL. If it's anything else, then error
+    if (header_id == "karl" || header_id == "KaRL")
+    {
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_MAJOR,
+        "QoSTransportSettings::filter_decode: header: "
+        " Detected %s\n",
+        header.id);
+    }
+    else
+    {
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_MAJOR,
+        "QoSTransportSettings::filter_decode: header: "
+        " Detected %s, which is not a message or checkpoint header\n",
+        header.id);
+
+      return 0;
+    }
+  }
+
   // decode from back to front
   for (filters::BufferFilters::const_reverse_iterator i = buffer_filters_.rbegin ();
     i != buffer_filters_.rend (); ++i)
   {
-    size = (*i)->decode (source, size, max_size);
-  }
+    if (size > (int)filters::BufferFilterHeader::encoded_size ())
+    {
+      filters::BufferFilterHeader header;
+      int64_t buffer_size =
+      (int64_t)filters::BufferFilterHeader::encoded_size ();
+
+      header.read ((char *)source, buffer_size);
+
+      if (header.size > (uint64_t)max_size)
+      {
+        madara_logger_ptr_log (logger::global_logger.get (),
+          logger::LOG_ERROR,
+          "QoSTransportSettings::filter_decode: header: "
+          " %d byte size encoding cannot fit in %d byte buffer\n",
+          (int)header.size, max_size);
+
+        return 0;
+      } 
+
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_MAJOR,
+        "QoSTransportSettings::filter_decode: header: "
+        " %s:%s\n",
+        header.id,
+        utility::to_string_version (header.version).c_str ());
+
+      if (*i == 0)
+      {
+        madara_logger_ptr_log (logger::global_logger.get (),
+          logger::LOG_ERROR,
+          "QoSTransportSettings::filter_decode: filter is null somehow\n");
+
+        return 0;
+      }
+      else
+      {
+        madara_logger_ptr_log (logger::global_logger.get (),
+          logger::LOG_DETAILED,
+          "QoSTransportSettings::filter_decode: filter is not null\n");
+      }
+
+      if (header.check_filter (*i))
+      {
+        madara_logger_ptr_log (logger::global_logger.get (),
+          logger::LOG_MAJOR,
+          "QoSTransportSettings::filter_decode: buffer filter %s is a match\n",
+          header.id);
+      }
+      else
+      {
+        madara_logger_ptr_log (logger::global_logger.get (),
+          logger::LOG_ERROR,
+          "QoSTransportSettings::filter_decode: buffer filter %s doesn't match."
+          " Returning 0.",
+          header.id);
+
+        return 0;
+      }
+            
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_MINOR,
+        "QoSTransportSettings::filter_decode: size before decode: "
+        " %d of %d (header.size=%d)\n",
+        size, max_size, (int)header.size);
+
+      size = (*i)->decode (
+        source + filters::BufferFilterHeader::encoded_size (),
+        (int)header.size, max_size);
+
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_MINOR,
+        "QoSTransportSettings::filter_decode: size after decode: "
+        " %d of %d (header.size=%d)\n",
+        size, max_size, (int)header.size);
+
+      if (size > 0)
+      {
+        memmove (source,
+          source + filters::BufferFilterHeader::encoded_size (), size);
+      }
+    }
+    else
+    {
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_ERROR,
+        "QoSTransportSettings::filter_decode: "
+        " %d byte size encoding cannot fit in %d byte buffer\n",
+        size, max_size);
+
+      return 0;
+    } // end if size is bigger than the buffer header
+  } // end for loop iteration of filters
 
   return size;
 }

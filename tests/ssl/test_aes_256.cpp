@@ -20,7 +20,7 @@ int main (int, char **)
   messages.push_back ("If you can read this, then the test is a SUCCESS!");
 
   std::vector <std::string> results;
-  unsigned char buffer[256];
+  char buffer[256];
   memset (buffer, 1, 256);
 
   std::cout << "Testing encode/decode from single buffer filter\n";

@@ -745,6 +745,35 @@ const KnowledgeUpdateSettings & update_settings)
   return result;
 }
 
+inline madara::knowledge::KnowledgeRecord
+KnowledgeBaseImpl::evaluate_file (
+CheckpointSettings & checkpoint_settings,
+const KnowledgeUpdateSettings & update_settings)
+{
+  KnowledgeRecord result;
+
+  if (checkpoint_settings.originator == "")
+  {
+    result = map_.evaluate_file (checkpoint_settings, update_settings);
+
+    if (checkpoint_settings.originator != "")
+      id_ = checkpoint_settings.originator;
+  }
+  else
+  {
+    result = map_.evaluate_file (checkpoint_settings, update_settings);
+  }
+
+  return result;
+}
+
+inline std::string
+KnowledgeBaseImpl::file_to_string (
+CheckpointSettings & checkpoint_settings)
+{
+  return map_.file_to_string (checkpoint_settings);
+}
+
 inline void
 KnowledgeBaseImpl::add_modifieds (
   const VariableReferences & modifieds) const

@@ -137,7 +137,7 @@ Java_ai_madara_filters_ssl_AesBufferFilter_jni_1encode
 
   if (current)
   {
-    unsigned char * elements = (unsigned char *)env->GetByteArrayElements (
+    char * elements = (char *)env->GetByteArrayElements (
       buffer, 0);
 
     result = current->encode (elements, size, max_size);
@@ -176,7 +176,7 @@ Java_ai_madara_filters_ssl_AesBufferFilter_jni_1decode
 
   if (current)
   {
-    unsigned char * elements = (unsigned char *)env->GetByteArrayElements (
+    char * elements = (char *)env->GetByteArrayElements (
       buffer, 0);
 
     result = current->decode (elements, size, max_size);

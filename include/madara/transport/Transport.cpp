@@ -146,7 +146,7 @@ process_received_update (
     print_prefix, bytes_read);
 
   // call decodes, if applicable
-  bytes_read = (uint32_t)settings.filter_decode ((unsigned char *)buffer,
+  bytes_read = (uint32_t)settings.filter_decode ((char *)buffer,
     max_buffer_size, max_buffer_size);
 
   madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
@@ -784,7 +784,7 @@ prep_rebroadcast (
         " calling encode filters\n",
         print_prefix);
 
-      settings.filter_encode ((unsigned char *)buffer,
+      settings.filter_encode (buffer,
         result, max_buffer_size);
     }
     else
@@ -1134,7 +1134,7 @@ long Base::prep_send (
     print_prefix);
 
   // buffer is ready encoding
-  size = (long)settings_.filter_encode ((unsigned char *)buffer_.get_ptr (),
+  size = (long)settings_.filter_encode (buffer_.get_ptr (),
     (int)size, max_buffer_size);
 
   madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
