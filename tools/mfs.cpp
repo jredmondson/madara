@@ -98,22 +98,25 @@ Sandbox fill_sandbox (const std::string & path,
       "  %s is a directory\n",
       path.c_str ());
 
-    for (auto & p : filesystem::directory_iterator (path))
+    filesystem::directory_iterator end, p;
+
+    for (p = filesystem::directory_iterator (path); p != end; ++p)
     {
-      std::string file = p.path().string ();
+      auto file_path = p->path ();
+      std::string file = file_path.string ();
       madara_logger_ptr_log (logger::global_logger.get (),
         logger::LOG_ALWAYS,
         "    Checking %s\n",
         file.c_str ());
 
-      if (filesystem::is_regular_file (p))
+      if (filesystem::is_regular_file (file_path))
       {
         madara_logger_ptr_log (logger::global_logger.get (),
           logger::LOG_ALWAYS,
           "    %s is a file. Adding to file list\n",
           file.c_str ());
 
-        sandbox.files.push_back (p.path().string ());
+        sandbox.files.push_back (file);
       }
     }
   }
