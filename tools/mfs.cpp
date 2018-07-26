@@ -118,8 +118,13 @@ struct Sandbox
       auto file_path = p->path ();
       if (filesystem::is_regular_file (file_path))
       {
-        std::string file = file_path.string ();
-        std::string filename = file_path.filename ().string ();
+        // grab the filename
+        std::string full_path = file_path.string ();
+
+        // remove the path (we can't just use the filename () if recursive)
+        std::string filename = full_path.erase (0, path.size () + 1);
+
+        // get the size and set this in the map
         Integer size = filesystem::file_size (file_path);
         files.set (filename, size);
       }
