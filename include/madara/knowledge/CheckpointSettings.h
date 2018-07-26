@@ -56,8 +56,8 @@ namespace madara
           keep_open (false),
           initial_state (0),
           last_state (-1),
-          reset_checkpoint (true)
-
+          reset_checkpoint (true),
+          ignore_header_check (false)
       {
       }
 
@@ -81,6 +81,7 @@ namespace madara
        * @param  t_initial_state     the initial state to query/save
        * @param  t_last_state        the last state to query/save
        * @param  t_reset_checkpoint  reset the checkpoint modifieds
+       * @param  t_ignore_header_check  if true, ignore header checks
        **/
       CheckpointSettings (size_t t_buffer_size,
         bool t_clear_knowledge,
@@ -98,7 +99,8 @@ namespace madara
         bool t_keep_open = false,
         uint64_t t_initial_state = 0,
         uint64_t t_last_state = (uint64_t)-1,
-        bool t_reset_checkpoint = true)
+        bool t_reset_checkpoint = true,
+        bool t_ignore_header_check = false)
         : buffer_size (t_buffer_size),
           clear_knowledge (t_clear_knowledge),
           filename (t_filename),
@@ -115,7 +117,8 @@ namespace madara
           keep_open (t_keep_open),
           initial_state (t_initial_state),
           last_state (t_last_state),
-          reset_checkpoint (t_reset_checkpoint)
+          reset_checkpoint (t_reset_checkpoint),
+          ignore_header_check (t_ignore_header_check)
       {
       }
        
@@ -142,6 +145,7 @@ namespace madara
           initial_state (rhs.initial_state),
           last_state (rhs.last_state),
           reset_checkpoint (rhs.reset_checkpoint),
+          ignore_header_check (rhs.ignore_header_check),
           checkpoint_file (rhs.checkpoint_file)
       {
       }
@@ -231,7 +235,7 @@ namespace madara
       int decode (
         char * source, int size, int max_size) const
       {
-        if (buffer_filters.size () == 0)
+        if (buffer_filters.size () == 0 && !ignore_header_check)
         {
           // if we don't have buffer filters, do a check to see if we should
           filters::BufferFilterHeader header;
@@ -309,7 +313,7 @@ namespace madara
                 "CheckpointSettings::decode: filter is not null\n");
             }
 
-            if (header.check_filter (*i))
+            if (ignore_header_check || header.check_filter (*i))
             {
               madara_logger_ptr_log (logger::global_logger.get (),
                 logger::LOG_MAJOR,
@@ -462,6 +466,12 @@ namespace madara
        * forward.
        **/
       bool       reset_checkpoint;
+
+      /**
+       * If true, do not perform a header check. This is useful if you are
+       * loading an arbitrary text file with no buffer filters
+       **/
+      bool       ignore_header_check;
 
     private:
       /**

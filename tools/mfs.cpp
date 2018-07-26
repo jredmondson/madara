@@ -44,15 +44,27 @@ const std::string default_multicast ("239.255.0.1:4150");
 transport::QoSTransportSettings settings;
 
 #ifdef _USE_SSL_
-  filters::AESBufferFilter ssl_filters;
+  filters::AESBufferFilter ssl_filter;
 #endif
 
 #ifdef _USE_LZ4_
-  filters::LZ4BufferFilter lz4_filters;
+  filters::LZ4BufferFilter lz4_filter;
 #endif
 
 // time to run for (-1 is forever)
 double run_time (-1);
+
+// filename to save knowledge base as KaRL to
+std::string save_location;
+
+// filename to save knowledge base as JSON to
+std::string save_json;
+
+// filename to save knowledge base changes as checkpoint
+std::string save_checkpoint;
+
+// filename to save knowledge base as binary to
+std::string save_binary;
 
 // filename to save transport settings to
 std::string save_transport;
@@ -67,71 +79,68 @@ StringVector initbinaries;
 knowledge::CheckpointSettings load_checkpoint_settings;
 knowledge::CheckpointSettings save_checkpoint_settings;
 
-// map that is accessible to all filters and threads
-containers::FlexMap sandboxes;
+// the prefix to use
+std::string prefix ("agent.0");
 
 struct Sandbox
 {
+  std::string id;
   std::string path;
-  std::string name;
-  std::string description;
+  containers::String name;
+  containers::String description;
   bool recursive;
   bool valid;
-  std::vector <std::string> files;
-};
+  containers::Map files;
 
-Sandbox fill_sandbox (const std::string & path,
-  const std::string & name,
-  const std::string & description,
-  bool recursive)
-{
-  Sandbox sandbox;
-
-  if (filesystem::is_directory (path))
+  inline void read (containers::FlexMap & map,
+    const std::string sandbox_id, knowledge::KnowledgeBase kb)
   {
-    sandbox.valid = true;
-    sandbox.recursive = recursive;
-    sandbox.path = path;
+    id = sandbox_id;
+    path = map.to_string ();
+    recursive = map["recursive"].is_true ();
+    valid = filesystem::is_directory (path);
 
-    madara_logger_ptr_log (logger::global_logger.get (),
-      logger::LOG_ALWAYS,
-      "  %s is a directory\n",
-      path.c_str ());
+    description.set_name (prefix + ".sandbox." + id + ".description", kb);
+    name.set_name (prefix + ".sandbox." + id + ".name", kb);
+    files.set_name (prefix + ".sandbox." + id + ".file", kb);
 
-    filesystem::directory_iterator end, p;
+    description = map["description"].to_string ();
+    name = map["name"].to_string ();
+  }
 
-    for (p = filesystem::directory_iterator (path); p != end; ++p)
+  template <typename T>
+  inline void refresh_iterate (void)
+  {
+    T end, p;
+
+    for (p = T (path); p != end; ++p)
     {
       auto file_path = p->path ();
-      std::string file = file_path.string ();
-      madara_logger_ptr_log (logger::global_logger.get (),
-        logger::LOG_ALWAYS,
-        "    Checking %s\n",
-        file.c_str ());
-
       if (filesystem::is_regular_file (file_path))
       {
-        madara_logger_ptr_log (logger::global_logger.get (),
-          logger::LOG_ALWAYS,
-          "    %s is a file. Adding to file list\n",
-          file.c_str ());
-
-        sandbox.files.push_back (file);
+        std::string file = file_path.string ();
+        std::string filename = file_path.filename ().string ();
+        Integer size = filesystem::file_size (file_path);
+        files.set (filename, size);
       }
     }
   }
-  else
+
+  inline void refresh_files (void)
   {
-    sandbox.valid = false;
-    sandbox.recursive = false;
+    if (valid)
+    {
+      if (recursive)
+      {
+        refresh_iterate <filesystem::recursive_directory_iterator> ();
+      }
+      else
+      {
+        refresh_iterate <filesystem::directory_iterator> ();
+      }
+    }
   }
-
-  sandbox.path = path;
-  sandbox.name = name;
-  sandbox.description = description;
-
-  return sandbox;
-}
+};
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
@@ -226,17 +235,10 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
-    else if (arg1 == "-p" || arg1 == "--drop-rate")
+    else if (arg1 == "-p" || arg1 == "--prefix")
     {
       if (i + 1 < argc)
-      {
-        double drop_rate;
-        std::stringstream buffer (argv[i + 1]);
-        buffer >> drop_rate;
-        
-        settings.update_drop_rate (drop_rate,
-          transport::PACKET_DROP_DETERMINISTIC);
-      }
+        prefix = argv[i + 1];
 
       ++i;
     }
@@ -253,6 +255,53 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-r" || arg1 == "--reduced")
     {
       settings.send_reduced_message_header = true;
+    }
+    else if (arg1 == "-s" || arg1 == "--save")
+    {
+      if (i + 1 < argc)
+        save_location = argv[i + 1];
+
+      ++i;
+    }
+    else if (arg1 == "-sj" || arg1 == "--save-json")
+    {
+      if (i + 1 < argc)
+        save_json = argv[i + 1];
+
+      ++i;
+    }
+    else if (arg1 == "-sb" || arg1 == "--save-binary")
+    {
+      if (i + 1 < argc)
+        save_binary = argv[i + 1];
+
+      ++i;
+    }
+    else if (arg1 == "-sc" || arg1 == "--save-checkpoint")
+    {
+      if (i + 1 < argc)
+        save_checkpoint = argv[i + 1];
+
+      ++i;
+    }
+    else if (arg1 == "-scp" || arg1 == "--save-checkpoint-prefix")
+    {
+      if (i + 1 < argc)
+      {
+        save_checkpoint_settings.prefixes.push_back (argv[i + 1]);
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-ss" || arg1 == "--save-size")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> save_checkpoint_settings.buffer_size;
+      }
+
+      ++i;
     }
     else if (arg1 == "-st" || arg1 == "--save-transport")
     {
@@ -349,6 +398,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-lz4|--lz4]             add lz4 compression filter\n" \
         "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
         "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
+        "  [-p|--prefix prefix]     prefix of this agent / service (e.g. agent.0)\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
         "  [-r|--reduced]           use the reduced message header\n" \
         "  [-s|--save file]         save the resulting knowledge base as karl\n" \
@@ -428,65 +478,82 @@ int main (int argc, char ** argv)
   for (auto & file : initbinaries)
   {
     madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-      "\nReading binary checkpoint from file %s:\n",
+      "Reading binary checkpoint from file %s:\n",
       file.c_str ());
 
     load_checkpoint_settings.filename = file;
+    load_checkpoint_settings.clear_knowledge = false;
     kb.load_context (load_checkpoint_settings, silent);
   }
+
+  load_checkpoint_settings.ignore_header_check = true;
 
   // allow user-readable text files to overwrite binary settings
   for (auto & file : initfiles)
   {
     madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-      "\nReading karl logic from file %s:\n",
+      "Reading karl logic from file %s:\n",
       file.c_str ());
 
     load_checkpoint_settings.filename = file;
+    load_checkpoint_settings.clear_knowledge = false;
     kb.evaluate_file (load_checkpoint_settings, silent);
   }
 
+  // map that is accessible to all filters and threads
+  containers::FlexMap sandbox_map;
+
   // construct sandbox map out of the loaded files
-  sandboxes.set_name (".sandbox", kb);
+  sandbox_map.set_name (".sandbox", kb);
   knowledge::KnowledgeRules keys;
-  sandboxes.keys (keys, true);
+  sandbox_map.keys (keys, true);
 
   if (keys.size () == 0)
   {
-    sandboxes["default"].set (filesystem::current_path ().string ());
-    sandboxes.keys (keys, true);
+    sandbox_map["default"].set (filesystem::current_path ().string ());
+    sandbox_map.keys (keys, true);
     madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-      "\nUsing default sandbox mapping of default => '.'\n");
+      "Using default sandbox mapping of default => '.'\n");
   }
 
-  for (auto & key : keys)
+  std::vector <Sandbox> sandboxes (keys.size ());
+
+  for (size_t i = 0; i < keys.size (); ++i)
   {
-    containers::FlexMap sandbox = sandboxes[key];
-    std::string path = sandbox.to_string ();
-
-    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-      "\nFound sandbox mapping %s => '%s'\n",
-      key.c_str (), path.c_str ());
-
-    if (filesystem::is_directory (path))
-    {
-      Sandbox result = fill_sandbox (
-        path,
-        sandbox["name"].to_string (),
-        sandbox["description"].to_string (),
-        false);
-
-        for (auto & file : result.files)
-        {
-          madara_logger_ptr_log (logger::global_logger.get (),
-            logger::LOG_ALWAYS,
-            "\n  %s => %d byte file\n",
-            file.c_str (), (int)filesystem::file_size (file));
-      
-        }
-    }
+    containers::FlexMap sandbox = sandbox_map[keys[i]];
+    sandboxes[i].read (sandbox, keys[i], kb);
+    sandboxes[i].refresh_files ();
   }
   
+  kb.print ();
+
+  // save as checkpoint of changes by logics and input files
+  if (save_checkpoint.size () > 0)
+  {
+    save_checkpoint_settings.filename = save_checkpoint;
+    kb.save_checkpoint (save_checkpoint_settings);
+  }
+
+  // save as karl if requested
+  if (save_location.size () > 0)
+  {
+    save_checkpoint_settings.filename = save_location;
+    kb.save_as_karl (save_checkpoint_settings);
+  }
+
+  // save as karl if requested
+  if (save_json.size () > 0)
+  {
+    save_checkpoint_settings.filename = save_json;
+    kb.save_as_json (save_checkpoint_settings);
+  }
+
+  // save as binary if requested
+  if (save_binary.size () > 0)
+  {
+    save_checkpoint_settings.filename = save_binary;
+    kb.save_context (save_checkpoint_settings);
+  }
 
   return 0;
 }
