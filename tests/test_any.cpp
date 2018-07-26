@@ -107,6 +107,9 @@ void test_any()
   static_assert(supports_str_index<decltype(ns::C::m)>::value, "C::m must support str_index");
   static_assert(supports_cast_to_record<decltype(ns::C::i)>::value, "C::i must support to_record");
 
+  static_assert(!madara_serialize_directly(type<ns::B>{}),"");
+  static_assert(!madara_serialize_directly(type<ns::C>{}),"");
+
   std::string test;
   auto testkr = knowledge_cast(test);
 
