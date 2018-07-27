@@ -126,12 +126,14 @@ int main (int argc, char ** argv)
   madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
 
+  using strvec = std::vector<std::string>;
+
+  madara::knowledge::Any::register_type<strvec>("strvec");
+
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
   knowledge.get_context().set_clock(10);
   knowledge.set (".id", settings.id);
-
-  using strvec = std::vector<std::string>;
 
   auto print_clocks = [&]() {
       std::cerr << "kb clock: " << knowledge.get_context().get_clock() << std::endl;

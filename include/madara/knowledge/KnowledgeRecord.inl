@@ -935,6 +935,15 @@ KnowledgeRecord::read (const char * buffer,
   }
   buffer_remaining -= sizeof (type);
 
+  // Remove the toi from the buffer
+  if (buffer_remaining >= (int64_t) sizeof (toi))
+  {
+    memcpy (&toi, buffer, sizeof (toi));
+    toi = madara::utility::endian_swap (toi);
+    buffer += sizeof (toi);
+  }
+  buffer_remaining -= sizeof (toi);
+
   // Remove the size of value from the buffer
   if (buffer_remaining >= (int64_t) sizeof (size))
   {
@@ -1513,6 +1522,15 @@ KnowledgeRecord::write (char * buffer,
       buffer += sizeof (tmp);
     }
     buffer_remaining -= sizeof (type_);
+
+    // Write TOI to buffer
+    if (buffer_remaining >= (int64_t) sizeof (toi))
+    {
+      decltype(toi) tmp = madara::utility::endian_swap (toi);
+      memcpy (buffer, &tmp, sizeof (tmp));
+      buffer += sizeof (tmp);
+    }
+    buffer_remaining -= sizeof (toi);
 
     // Remove the size of value from the buffer
     if (buffer_remaining >= (int64_t) sizeof (size))
