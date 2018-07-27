@@ -1,0 +1,2 @@
+agent.0.sync.sandbox.projects.file.mfs.out=0;
+agent.0.sync.sandbox.projects.file.new_file.out=0;

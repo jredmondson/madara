@@ -308,6 +308,17 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-lz4" || arg1 == "--lz4")
+    {
+#ifdef _USE_LZ4_
+      lz4_filters.push_back (filters::LZ4BufferFilter ());
+      settings.add_filter (
+        &(*lz4_filters.rbegin ()));
+#else
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+        "ERROR: parameter (-lz4l|--lz4-load) requires feature lz4\n");
+#endif
+    }
     else if (arg1 == "-lz4l" || arg1 == "--lz4-load")
     {
 #ifdef _USE_LZ4_
@@ -420,6 +431,28 @@ void handle_arguments (int argc, char ** argv)
       }
 
       ++i;
+    }
+    else if (arg1 == "-ssl" || arg1 == "--ssl")
+    {
+#ifdef _USE_SSL_
+      if (i + 1 < argc)
+      {
+        ssl_filters.push_back (filters::AESBufferFilter ());
+        ssl_filters[ssl_filters.size () - 1].generate_key (argv[i + 1]);
+        settings.add_filter (
+          &(*ssl_filters.rbegin ()));
+        ++i;
+      }
+      else
+      {
+        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+          "ERROR: parameter (-ssl|--ssl) requires password\n");
+      }
+#else
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+        "ERROR: parameter (-ssl|--ssl) requires feature ssl compiled into MADARA\n");
+      ++i;
+#endif
     }
     else if (arg1 == "-ssll" || arg1 == "--ssl-load")
     {
@@ -760,6 +793,12 @@ int main (int argc, char ** argv)
       knowledge::CheckpointSettings checkpoint_settings (
         load_checkpoint_settings);
       checkpoint_settings.filename = *i;
+      
+      // because this is text, ignore header checks if no buffer filters
+      if (checkpoint_settings.buffer_filters.size () == 0)
+      {
+        checkpoint_settings.ignore_header_check = true;
+      }
 
       expressions.push_back (
         knowledge.compile (knowledge.file_to_string (checkpoint_settings)));

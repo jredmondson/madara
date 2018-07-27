@@ -16,6 +16,9 @@
 #include "madara/logger/GlobalLogger.h"
 
 #include "madara/knowledge/containers/FlexMap.h"
+#include "madara/knowledge/containers/Queue.h"
+
+#include "madara/utility/EpochEnforcer.h"
 
 #ifdef _USE_SSL_
   #include "madara/filters/ssl/AESBufferFilter.h"
@@ -35,7 +38,8 @@ namespace logger = madara::logger;
 namespace threads = madara::threads;
 namespace filesystem = boost::filesystem;
 
-typedef knowledge::KnowledgeRecord::Integer  Integer;
+typedef knowledge::KnowledgeRecord           KnowledgeRecord;
+typedef KnowledgeRecord::Integer             Integer;
 typedef std::vector <std::string>            StringVector;
 
 // default transport settings
@@ -53,6 +57,9 @@ transport::QoSTransportSettings settings;
 
 // time to run for (-1 is forever)
 double run_time (-1);
+
+// by default send digests every 1 second
+double digest_period (1.0);
 
 // filename to save knowledge base as KaRL to
 std::string save_location;
@@ -81,6 +88,37 @@ knowledge::CheckpointSettings save_checkpoint_settings;
 
 // the prefix to use
 std::string prefix ("agent.0");
+
+// bandwidth limits
+Integer send_bandwidth (-1);
+Integer total_bandwidth (-1);
+
+// buffer size
+size_t requests_buffer_size;
+
+// monitor for shutdown requests
+containers::Integer shutdown_request;
+containers::Integer current_send_bandwidth;
+containers::Integer current_total_bandwidth;
+
+struct Request
+{
+  std::string sandbox;
+  std::string filename;
+  bool all_files;
+  Integer last_modified;
+  std::string requester;
+};
+
+template<typename Fun, typename T>
+auto for_each_field(Fun &&fun, T &&val) -> madara::enable_if_same_decayed<T, Request>
+{
+  fun("sandbox", val.sandbox);
+  fun("filename", val.filename);
+  fun("all_files", val.all_files);
+  fun("last_modified", val.last_modified);
+  fun("requester", val.requester);
+}
 
 struct Sandbox
 {
@@ -126,9 +164,44 @@ struct Sandbox
 
         // get the size and set this in the map
         Integer size = filesystem::file_size (file_path);
-        files.set (filename, size);
+        Integer last_modified = filesystem::last_write_time (file_path);
+        files.set (filename + ".size", size);
+        files.set (filename + ".last_modified", last_modified);
       }
     }
+  }
+
+  template <typename T>
+  inline void send_iterate (void)
+  {
+    T end, p;
+
+    for (p = T (path); p != end; ++p)
+    {
+      auto file_path = p->path ();
+      if (filesystem::is_regular_file (file_path))
+      {
+        // grab the filename
+        std::string full_path = file_path.string ();
+
+        // remove the path (we can't just use the filename () if recursive)
+        std::string filename = full_path.erase (0, path.size () + 1);
+
+        // get the size and set this in the map
+        Integer size = filesystem::file_size (file_path);
+        Integer last_modified = filesystem::last_write_time (file_path);
+        files.set (filename + ".size", size);
+        files.set (filename + ".last_modified", last_modified);
+        files.read_file (filename + ".contents", full_path);
+      }
+    }
+  }
+
+  inline void modify (void)
+  {
+    name.modify ();
+    description.modify ();
+    refresh_files ();
   }
 
   inline void refresh_files (void)
@@ -145,7 +218,225 @@ struct Sandbox
       }
     }
   }
+
+  inline void send_all_files (void)
+  {
+    if (valid)
+    {
+      if (recursive)
+      {
+        send_iterate <filesystem::recursive_directory_iterator> ();
+      }
+      else
+      {
+        send_iterate <filesystem::directory_iterator> ();
+      }
+    }
+  }
 };
+
+/**
+ * Filter for receiving and handling requests from remote users
+ **/
+
+class HandleRequests : public filters::AggregateFilter
+{
+  public:
+  virtual ~HandleRequests () = default;
+
+  /**
+   * Handle requests from other remote users
+   **/
+  virtual void filter (knowledge::KnowledgeMap & records,
+    const transport::TransportContext & transport_context,
+    knowledge::Variables & vars)
+  {
+    madara_logger_ptr_log (
+      logger::global_logger.get (),
+      logger::LOG_ALWAYS,
+      "HandleRequests: Processing packet with %d records\n",
+      (int)records.size ());
+
+    containers::Queue requests (".requests", vars);
+
+    current_total_bandwidth =
+      (Integer) transport_context.get_receive_bandwidth ();
+
+    std::string sync_sandbox_prefix = prefix + ".sync.sandbox.";
+
+    knowledge::KnowledgeMap::iterator record;
+      
+    Request request;
+
+    request.requester = transport_context.get_originator ();
+
+    record = records.lower_bound (sync_sandbox_prefix);
+
+    madara_logger_ptr_log (
+      logger::global_logger.get (),
+      logger::LOG_ALWAYS,
+      "HandleRequests: Iterating from record %s to %s from requester %s\n",
+      record->first.c_str (),
+      records.upper_bound (sync_sandbox_prefix)->first.c_str (),
+      request.requester.c_str ());
+
+
+    for (; record != records.end (); ++record)
+    {
+      bool bad_record = false;
+      if (utility::ends_with (record->first, "all_files"))
+      {
+        request.sandbox = record->first.substr (
+          sync_sandbox_prefix.size (),
+          record->first.size () - sync_sandbox_prefix.size () - 10);
+
+          madara_logger_ptr_log (
+            logger::global_logger.get (),
+            logger::LOG_ALWAYS,
+            "HandleRequests: Request: sandbox=%s "
+            "all_files=1\n",
+            request.sandbox.c_str ());
+
+        request.all_files = true;
+        knowledge::Any any_record (request);
+        requests.enqueue (KnowledgeRecord (any_record));
+      } // end all_files
+      else // has sandbox prefix but is not all_files
+      {
+        // try to split the sandbox name and the file name from the rest
+        size_t sandbox_end = record->first.find_first_of (
+          ".file.", sync_sandbox_prefix.size ());
+          
+        if (sandbox_end != std::string::npos)
+        {
+          request.sandbox = record->first.substr (
+            sync_sandbox_prefix.size (),
+            sandbox_end - sync_sandbox_prefix.size ());
+          request.filename = record->first.substr (sandbox_end);
+          request.all_files = false;
+          request.last_modified = record->second.to_integer ();
+
+
+          madara_logger_ptr_log (
+            logger::global_logger.get (),
+            logger::LOG_ALWAYS,
+            "HandleRequests: Request: sandbox=%s "
+            "file=%s, last_mod=%d\n",
+            request.sandbox.c_str (), request.filename.c_str (),
+            (int)request.last_modified);
+
+        } // end if sandbox .file was located
+        else
+        {
+          bad_record = true;
+
+          madara_logger_ptr_log (
+            logger::global_logger.get (),
+            logger::LOG_ERROR,
+            "HandleRequests: ERROR: parameter %s was neither all files "
+            "or a specific file. Check for malformed request.\n");
+        } // end else of sandbox end check
+
+        if (!bad_record)
+        {
+          madara_logger_ptr_log (
+            logger::global_logger.get (),
+            logger::LOG_ERROR,
+            "HandleRequests: Enqueueing request.\n");
+
+          knowledge::Any any_record (request);
+          requests.enqueue (KnowledgeRecord (any_record));
+        }
+      } // end has sandbox prefix for loop
+    } // end for loop over records with our prefix
+
+    records.clear ();
+  } // end filter method
+}; // end HandleRequests class
+
+/**
+ * Process requests from the HandleRequests filter
+ **/
+void process_requests (std::vector <Sandbox> & sandboxes,
+  knowledge::KnowledgeBase & kb, containers::Queue & requests)
+{
+  knowledge::ContextGuard guard (kb);
+
+  madara_logger_ptr_log (
+    logger::global_logger.get (),
+    logger::LOG_ERROR,
+    "process_requests: Requests queue size: %d\n",
+    (int)requests.count ())
+
+  while (requests.count () > 0)
+  {
+    // grab a request from the front of the queue
+    Request request = requests.dequeue ().to_any <Request> ();
+
+    madara_logger_ptr_log (
+      logger::global_logger.get (),
+      logger::LOG_ERROR,
+      "process_requests: Request: sandbox=%s "
+      "file=%s, last_mod=%d\n",
+      request.sandbox.c_str (), request.filename.c_str (),
+      (int)request.last_modified)
+
+    for (auto sandbox : sandboxes)
+    {
+      // if this is the sandbox
+      if (sandbox.id == request.sandbox)
+      {
+        // check for last_modified time 
+        KnowledgeRecord last_modified =
+          sandbox.files[request.filename + ".last_modified"];
+
+        std::string filename = sandbox.path + "/" + request.filename;
+
+        if (!request.all_files)
+        {
+          if (last_modified.is_valid () &&
+              last_modified > request.last_modified)
+          {
+            if (filesystem::is_regular_file (filename))
+            {
+              sandbox.files.read_file (request.filename + ".contents",
+                sandbox.path + "/" + request.filename);
+            } // end if a regular file
+            else
+            {
+              madara_logger_ptr_log (
+                logger::global_logger.get (),
+                logger::LOG_ERROR,
+                "process_requests: ERROR: "
+                "requested file %s no longer exists.\n",
+                filename.c_str ());
+            } // end not a regular file
+          } // end has newer modifications
+          else
+          {
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ERROR,
+              "process_requests: DROP: requested file %s has no "
+              "new modifications, so dropping request.\n",
+              filename.c_str ());
+          } // end does not have newer modifications
+        } // end if not request all files
+        else 
+        {
+          madara_logger_ptr_log (
+            logger::global_logger.get (),
+            logger::LOG_ERROR,
+            "process_requests: WARN: user requested sending all files in "
+            "sandbox %s for dir %s. Could be a lot of data.\n",
+            sandbox.id.c_str (), sandbox.path.c_str ());
+
+          sandbox.send_all_files ();
+        } // end send all files in sandbox
+      }
+    }
+  }
+}
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
@@ -167,6 +458,36 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
         settings.write_domain = argv[i + 1];
+
+      ++i;
+    }
+    else if (arg1 == "-dp" || arg1 == "--digest-period")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> digest_period;
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-esb" || arg1 == "--send-bandwidth")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> send_bandwidth;
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-etb" || arg1 == "--total-bandwidth")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> total_bandwidth;
+      }
 
       ++i;
     }
@@ -224,6 +545,15 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-lz4" || arg1 == "--lz4")
+    {
+#ifdef _USE_LZ4_
+      settings.add_filter (&lz4_filter);
+#else
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+        "ERROR: parameter (-lz4|--lz4) requires feature lz4 to be compiled\n");
+#endif
+    }
     else if (arg1 == "-m" || arg1 == "--multicast")
     {
       if (i + 1 < argc)
@@ -260,6 +590,16 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-r" || arg1 == "--reduced")
     {
       settings.send_reduced_message_header = true;
+    }
+    else if (arg1 == "-rq" || arg1 == "--requests")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> requests_buffer_size;
+      }
+
+      ++i;
     }
     else if (arg1 == "-s" || arg1 == "--save")
     {
@@ -307,6 +647,26 @@ void handle_arguments (int argc, char ** argv)
       }
 
       ++i;
+    }
+    else if (arg1 == "-ssl" || arg1 == "--ssl")
+    {
+#ifdef _USE_SSL_
+      if (i + 1 < argc)
+      {
+        ssl_filter.generate_key (argv[i + 1]);
+        load_checkpoint_settings.buffer_filters.push_back (&ssl_filter);
+        ++i;
+      }
+      else
+      {
+        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+          "ERROR: parameter (-ssl|--ssl) requires password\n");
+      }
+#else
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+        "ERROR: parameter (-ssl|--ssl) requires feature ssl be compiled\n");
+      ++i;
+#endif
     }
     else if (arg1 == "-st" || arg1 == "--save-transport")
     {
@@ -394,6 +754,14 @@ void handle_arguments (int argc, char ** argv)
         "Serves files up to clients within MFS-defined sandboxes.\n\noptions:\n" \
         "  [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
         "  [-d|--domain domain]     the knowledge domain to send and listen to\n" \
+        "  [-esb|--send-bandwidth limit] bandwidth limit to enforce over a 10s\n" \
+        "                           window. If the limit is violated, then the\n" \
+        "                           mfs agent will not send again until the send\n" \
+        "                           bandwidth is within an acceptable level again\n" \
+        "  [-etb|--total-bandwidth limit] bandwidth limit to enforce over a 10s\n" \
+        "                           window. If the limit is violated, then the\n" \
+        "                           mfs agent will not send again until the total\n" \
+        "                           bandwidth is within an acceptable level again\n" \
         "  [-f|--logfile file]      log to a file\n" \
         "  [-h|--help]              print help menu (i.e., this menu)\n" \
         "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
@@ -406,6 +774,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-p|--prefix prefix]     prefix of this agent / service (e.g. agent.0)\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
         "  [-r|--reduced]           use the reduced message header\n" \
+        "  [-rq|--requests size]    size of the requests queue (def 50)\n" \
         "  [-s|--save file]         save the resulting knowledge base as karl\n" \
         "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
         "                           binary checkpoint\n" \
@@ -420,12 +789,8 @@ void handle_arguments (int argc, char ** argv)
         "  [-st|--save-transsport file] a file to save transport settings to\n" 
         "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
         "  [-stt|--save-transport-text file] a text file to save transport settings to\n" \
-        "  [-t|--time time]         time to wait for results. Same as -w.\n" \
+        "  [-t|--time time]         time to run this service (-1 is forever).\n" \
         "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
-        "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
-        "  [-wy|-wp|--wait-for-periodic seconds]  Wait for number of seconds\n" \
-        "                           before performing periodic evaluation\n" \
-        "  [-y|--frequency hz]      frequency to perform evaluation. If negative,\n" \
         "                           only runs once. If zero, hertz is infinite.\n" \
         "                           If positive, hertz is that hertz rate.\n" \
         "  [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n" \
@@ -457,6 +822,17 @@ int main (int argc, char ** argv)
   // handle all user arguments
   handle_arguments (argc, argv);
 
+  // default transport is multicast
+  if (settings.hosts.size () == 0)
+  {
+    settings.type = transport::MULTICAST;
+    settings.hosts.push_back (default_multicast);
+  }
+
+  HandleRequests receive_filter;
+
+  settings.add_receive_filter (&receive_filter);
+
   // save transport always happens after all possible transport chagnes
   if (save_transport != "")
   {
@@ -478,6 +854,12 @@ int main (int argc, char ** argv)
   // create a knowledge base and setup our id
   knowledge::KnowledgeBase kb (host, settings);
   madara::knowledge::EvalSettings silent (true, true, true, true, true);
+  shutdown_request.set_name (prefix + ".shutdown", kb);
+
+  // queue for requests for sandbox files
+  containers::Queue requests (".requests", kb);
+  requests.resize (requests_buffer_size);
+
 
   // load any binary settings
   for (auto & file : initbinaries)
@@ -507,6 +889,11 @@ int main (int argc, char ** argv)
 
   // map that is accessible to all filters and threads
   containers::FlexMap sandbox_map;
+  requests.set_name (".requests", kb);
+
+  // construct bandwidth probes
+  current_send_bandwidth.set_name (".current_send_bandwidth", kb);
+  current_total_bandwidth.set_name (".current_total_bandwidth", kb);
 
   // construct sandbox map out of the loaded files
   sandbox_map.set_name (".sandbox", kb);
@@ -530,6 +917,47 @@ int main (int argc, char ** argv)
     sandboxes[i].refresh_files ();
   }
   
+  if (run_time > 0)
+  {
+    utility::EpochEnforcer <utility::Clock> enforcer (
+      digest_period, run_time);
+
+    while (shutdown_request.is_false () && !enforcer.is_done ())
+    {
+      for (auto sandbox : sandboxes)
+      {
+        sandbox.modify ();
+      }
+
+      process_requests (sandboxes, kb, requests);
+
+      kb.send_modifieds ();
+
+      kb.print ();
+      enforcer.sleep_until_next ();
+    }
+  }
+  else
+  {
+    utility::EpochEnforcer <utility::Clock> enforcer (
+      digest_period, run_time);
+
+    while (shutdown_request.is_false ())
+    {
+      for (auto sandbox : sandboxes)
+      {
+        sandbox.modify ();
+      }
+
+      process_requests (sandboxes, kb, requests);
+
+      kb.send_modifieds ();
+
+      kb.print ();
+      enforcer.sleep_until_next ();
+    }
+  }
+
   kb.print ();
 
   // save as checkpoint of changes by logics and input files
