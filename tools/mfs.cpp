@@ -15,6 +15,8 @@
 #include "madara/filters/GenericFilters.h"
 #include "madara/logger/GlobalLogger.h"
 
+#include "madara/knowledge/containers/CircularBufferT.h"
+#include "madara/knowledge/containers/CircularBufferConsumerT.h"
 #include "madara/knowledge/containers/FlexMap.h"
 #include "madara/knowledge/containers/Queue.h"
 
@@ -94,7 +96,7 @@ Integer send_bandwidth (-1);
 Integer total_bandwidth (-1);
 
 // buffer size
-size_t requests_buffer_size;
+size_t requests_buffer_size (50);
 
 // monitor for shutdown requests
 containers::Integer shutdown_request;
@@ -242,22 +244,24 @@ struct Sandbox
 class HandleRequests : public filters::AggregateFilter
 {
   public:
+
   virtual ~HandleRequests () = default;
+
+  /// requests from remote users
+  containers::CircularBufferT <Request> requests;
 
   /**
    * Handle requests from other remote users
    **/
   virtual void filter (knowledge::KnowledgeMap & records,
     const transport::TransportContext & transport_context,
-    knowledge::Variables & vars)
+    knowledge::Variables &)
   {
     madara_logger_ptr_log (
       logger::global_logger.get (),
       logger::LOG_ALWAYS,
       "HandleRequests: Processing packet with %d records\n",
       (int)records.size ());
-
-    containers::Queue requests (".requests", vars);
 
     current_total_bandwidth =
       (Integer) transport_context.get_receive_bandwidth ();
@@ -298,13 +302,13 @@ class HandleRequests : public filters::AggregateFilter
             request.sandbox.c_str ());
 
         request.all_files = true;
-        knowledge::Any any_record (request);
-        requests.enqueue (KnowledgeRecord (any_record));
+
+        requests.add (request);
       } // end all_files
       else // has sandbox prefix but is not all_files
       {
         // try to split the sandbox name and the file name from the rest
-        size_t sandbox_end = record->first.find_first_of (
+        size_t sandbox_end = record->first.find (
           ".file.", sync_sandbox_prefix.size ());
           
         if (sandbox_end != std::string::npos)
@@ -312,7 +316,7 @@ class HandleRequests : public filters::AggregateFilter
           request.sandbox = record->first.substr (
             sync_sandbox_prefix.size (),
             sandbox_end - sync_sandbox_prefix.size ());
-          request.filename = record->first.substr (sandbox_end);
+          request.filename = record->first.substr (sandbox_end + 6);
           request.all_files = false;
           request.last_modified = record->second.to_integer ();
 
@@ -344,8 +348,7 @@ class HandleRequests : public filters::AggregateFilter
             logger::LOG_ERROR,
             "HandleRequests: Enqueueing request.\n");
 
-          knowledge::Any any_record (request);
-          requests.enqueue (KnowledgeRecord (any_record));
+          requests.add (request);
         }
       } // end has sandbox prefix for loop
     } // end for loop over records with our prefix
@@ -357,8 +360,10 @@ class HandleRequests : public filters::AggregateFilter
 /**
  * Process requests from the HandleRequests filter
  **/
-void process_requests (std::vector <Sandbox> & sandboxes,
-  knowledge::KnowledgeBase & kb, containers::Queue & requests)
+void process_requests (
+  std::vector <Sandbox> & sandboxes,
+  knowledge::KnowledgeBase & kb,
+  containers::CircularBufferConsumerT <Request> & requests)
 {
   knowledge::ContextGuard guard (kb);
 
@@ -366,12 +371,13 @@ void process_requests (std::vector <Sandbox> & sandboxes,
     logger::global_logger.get (),
     logger::LOG_ERROR,
     "process_requests: Requests queue size: %d\n",
-    (int)requests.count ())
+    (int)requests.remaining ())
 
-  while (requests.count () > 0)
+  while (requests.remaining () > 0)
   {
     // grab a request from the front of the queue
-    Request request = requests.dequeue ().to_any <Request> ();
+    Request request;
+    requests.consume (request);
 
     madara_logger_ptr_log (
       logger::global_logger.get (),
@@ -852,14 +858,29 @@ int main (int argc, char ** argv)
   }
 
   // create a knowledge base and setup our id
-  knowledge::KnowledgeBase kb (host, settings);
+  knowledge::KnowledgeBase kb;
+
+  receive_filter.requests.set_name (".requests", kb);
+  receive_filter.requests.resize (requests_buffer_size);
+
   madara::knowledge::EvalSettings silent (true, true, true, true, true);
   shutdown_request.set_name (prefix + ".shutdown", kb);
 
-  // queue for requests for sandbox files
-  containers::Queue requests (".requests", kb);
-  requests.resize (requests_buffer_size);
+  // map that is accessible to all filters and threads
+  containers::FlexMap sandbox_map;
 
+  // construct bandwidth probes
+  current_send_bandwidth.set_name (".current_send_bandwidth", kb);
+  current_total_bandwidth.set_name (".current_total_bandwidth", kb);
+
+  // construct sandbox map out of the loaded files
+  sandbox_map.set_name (".sandbox", kb);
+  knowledge::KnowledgeRules keys;
+  sandbox_map.keys (keys, true);
+
+  // queue for requests for sandbox files
+  containers::CircularBufferConsumerT <Request> consumer (".requests", kb);
+  consumer.resize ();
 
   // load any binary settings
   for (auto & file : initbinaries)
@@ -887,19 +908,8 @@ int main (int argc, char ** argv)
     kb.evaluate_file (load_checkpoint_settings, silent);
   }
 
-  // map that is accessible to all filters and threads
-  containers::FlexMap sandbox_map;
-  requests.set_name (".requests", kb);
-
-  // construct bandwidth probes
-  current_send_bandwidth.set_name (".current_send_bandwidth", kb);
-  current_total_bandwidth.set_name (".current_total_bandwidth", kb);
-
-  // construct sandbox map out of the loaded files
-  sandbox_map.set_name (".sandbox", kb);
-  knowledge::KnowledgeRules keys;
-  sandbox_map.keys (keys, true);
-
+  kb.attach_transport (host, settings);
+  
   if (keys.size () == 0)
   {
     sandbox_map["default"].set (filesystem::current_path ().string ());
@@ -929,7 +939,7 @@ int main (int argc, char ** argv)
         sandbox.modify ();
       }
 
-      process_requests (sandboxes, kb, requests);
+      process_requests (sandboxes, kb, consumer);
 
       kb.send_modifieds ();
 
@@ -949,7 +959,7 @@ int main (int argc, char ** argv)
         sandbox.modify ();
       }
 
-      process_requests (sandboxes, kb, requests);
+      process_requests (sandboxes, kb, consumer);
 
       kb.send_modifieds ();
 

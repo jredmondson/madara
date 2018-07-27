@@ -87,10 +87,12 @@ double wait_for_periodic (0.0);
 double frequency (-1.0);
 
 #ifdef _USE_SSL_
+  filters::AESBufferFilter ssl_transport_filter;
   std::vector<filters::AESBufferFilter> ssl_filters;
 #endif
 
 #ifdef _USE_LZ4_
+  filters::LZ4BufferFilter lz4_transport_filter;
   std::vector<filters::LZ4BufferFilter> lz4_filters;
 #endif
 
@@ -311,12 +313,10 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-lz4" || arg1 == "--lz4")
     {
 #ifdef _USE_LZ4_
-      lz4_filters.push_back (filters::LZ4BufferFilter ());
-      settings.add_filter (
-        &(*lz4_filters.rbegin ()));
+      settings.add_filter (&lz4_transport_filter);
 #else
       madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
-        "ERROR: parameter (-lz4l|--lz4-load) requires feature lz4\n");
+        "ERROR: parameter (-lz4|--lz4) requires feature lz4\n");
 #endif
     }
     else if (arg1 == "-lz4l" || arg1 == "--lz4-load")
@@ -437,10 +437,8 @@ void handle_arguments (int argc, char ** argv)
 #ifdef _USE_SSL_
       if (i + 1 < argc)
       {
-        ssl_filters.push_back (filters::AESBufferFilter ());
-        ssl_filters[ssl_filters.size () - 1].generate_key (argv[i + 1]);
-        settings.add_filter (
-          &(*ssl_filters.rbegin ()));
+        ssl_transport_filter.generate_key (argv[i + 1]);
+        settings.add_filter (&ssl_transport_filter);
         ++i;
       }
       else
