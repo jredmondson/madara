@@ -2679,6 +2679,11 @@ void test_circular_consumer (void)
     std::cerr << "      inspect(-2) == " << consumer.inspect (-2) << "\n";
   }
 
+  for (KnowledgeRecord::Integer i = 0; i < 5; ++i)
+  {
+    producer.add (KnowledgeRecord (i + 105));
+  }
+
   std::cerr << "  Testing inspect(1)...";
 
   if (consumer.inspect (1) == 105)
@@ -2705,7 +2710,7 @@ void test_circular_consumer (void)
     std::cerr << "      inspect(2) == " << consumer.inspect (2) << "\n";
   }
 
-  std::cerr << "  Testing inspect(2,5)...";
+  std::cerr << "  Testing inspect(-2, 5)...";
 
   records = consumer.inspect (-2, 5);
 
@@ -2739,7 +2744,7 @@ void test_circular_consumer (void)
   for (KnowledgeRecord::Integer i = 0;
        !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
   {
-    if (records[i] != 124 - i)
+    if (records[i] != 109 - i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
@@ -3426,11 +3431,13 @@ void test_circular_consumer_any (void)
     }
   }
 
+  producer.add(classes);
+
   std::cerr << "  Testing inspect(1)...";
 
   consumer.inspect (1, class_result);
 
-  if (class_result.x == 0 && class_result.y == 0)
+  if (class_result.x == 9 && class_result.y == 9)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3667,9 +3674,11 @@ void test_circular_consumert_any (void)
 
   std::cerr << "  Testing inspect(1)...";
 
+  producer.add (classes);
+
   consumer.inspect (1, class_result);
 
-  if (class_result.x == 0 && class_result.y == 0)
+  if (class_result.x == 9 && class_result.y == 9)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3681,7 +3690,7 @@ void test_circular_consumert_any (void)
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
 
-  for (int i = 0; i < 10; ++i)
+  for (int i = 1; i < 10; ++i)
   {
     sample.x = i;
     sample.y = i;

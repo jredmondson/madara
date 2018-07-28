@@ -247,9 +247,9 @@ CircularBufferConsumerT<T>::inspect (
   else
   {
     std::stringstream message;
-    message << "CircularBufferConsumerT<T>::inspect: ";
-    message << "Invalid access for " << position << " element when buffer index is ";
-    message << *index_ << "\n";
+    message << "CircularBufferConsumer::inspect: ";
+    message << "Invalid access for relative position " << position << " when buffer index is ";
+    message << *index_ << " and local index is : " << local_index_ << " and size is : " << size() << "\n";
     throw exceptions::IndexException (message.str ()); 
   }
 }
@@ -287,9 +287,9 @@ CircularBufferConsumerT<T>::inspect (KnowledgeRecord::Integer position,
   else
   {
     std::stringstream message;
-    message << "CircularBufferConsumerT<T>::inspect: ";
-    message << "Invalid access for " << position << " element when buffer index is ";
-    message << *index_ << "\n";
+    message << "CircularBufferConsumer::inspect: ";
+    message << "Invalid access for relative position " << position << " when buffer index is ";
+    message << *index_ << " and local index is : " << local_index_ << " and size is : " << size() << "\n";
     throw exceptions::IndexException (message.str ()); 
   }
 }

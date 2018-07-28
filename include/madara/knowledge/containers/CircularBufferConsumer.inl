@@ -232,8 +232,8 @@ CircularBufferConsumer::inspect (
   {
     std::stringstream message;
     message << "CircularBufferConsumer::inspect: ";
-    message << "Invalid access for " << position << " element when buffer index is ";
-    message << *index_ << "\n";
+    message << "Invalid access for relative position " << position << " when buffer index is ";
+    message << *index_ << " and local index is : " << local_index_ << " and size is : " << size() << "\n";
     throw exceptions::IndexException (message.str ()); 
   }
 }
@@ -288,8 +288,8 @@ CircularBufferConsumer::inspect (
   {
     std::stringstream message;
     message << "CircularBufferConsumer::inspect: ";
-    message << "Invalid access for " << position << " element when buffer index is ";
-    message << *index_ << "\n";
+    message << "Invalid access for relative position " << position << " when buffer index is ";
+    message << *index_ << " and local index is : " << local_index_ << " and size is : " << size() << "\n";
     throw exceptions::IndexException (message.str ()); 
   }
 }
