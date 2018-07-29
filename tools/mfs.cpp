@@ -279,9 +279,8 @@ class HandleRequests : public filters::AggregateFilter
     madara_logger_ptr_log (
       logger::global_logger.get (),
       logger::LOG_ALWAYS,
-      "HandleRequests: Iterating from record %s to %s from requester %s\n",
+      "HandleRequests: Iterating from record %s from requester %s\n",
       record->first.c_str (),
-      records.upper_bound (sync_sandbox_prefix)->first.c_str (),
       request.requester.c_str ());
 
 
