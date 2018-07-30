@@ -56,8 +56,8 @@ namespace madara
           keep_open (false),
           initial_state (0),
           last_state (-1),
-          reset_checkpoint (true)
-
+          reset_checkpoint (true),
+          ignore_header_check (false)
       {
       }
 
@@ -81,6 +81,7 @@ namespace madara
        * @param  t_initial_state     the initial state to query/save
        * @param  t_last_state        the last state to query/save
        * @param  t_reset_checkpoint  reset the checkpoint modifieds
+       * @param  t_ignore_header_check  if true, ignore header checks
        **/
       CheckpointSettings (size_t t_buffer_size,
         bool t_clear_knowledge,
@@ -98,7 +99,8 @@ namespace madara
         bool t_keep_open = false,
         uint64_t t_initial_state = 0,
         uint64_t t_last_state = (uint64_t)-1,
-        bool t_reset_checkpoint = true)
+        bool t_reset_checkpoint = true,
+        bool t_ignore_header_check = false)
         : buffer_size (t_buffer_size),
           clear_knowledge (t_clear_knowledge),
           filename (t_filename),
@@ -115,7 +117,8 @@ namespace madara
           keep_open (t_keep_open),
           initial_state (t_initial_state),
           last_state (t_last_state),
-          reset_checkpoint (t_reset_checkpoint)
+          reset_checkpoint (t_reset_checkpoint),
+          ignore_header_check (t_ignore_header_check)
       {
       }
        
@@ -142,6 +145,7 @@ namespace madara
           initial_state (rhs.initial_state),
           last_state (rhs.last_state),
           reset_checkpoint (rhs.reset_checkpoint),
+          ignore_header_check (rhs.ignore_header_check),
           checkpoint_file (rhs.checkpoint_file)
       {
       }
@@ -162,7 +166,7 @@ namespace madara
       * @return  the new size after encoding
       **/
       int encode (
-        unsigned char * source, int size, int max_size) const
+        char * source, int size, int max_size) const
       {
         // encode from front to back
         for (filters::BufferFilters::const_iterator i =
@@ -200,7 +204,7 @@ namespace madara
             madara_logger_ptr_log (logger::global_logger.get (),
               logger::LOG_MAJOR,
               "CheckpointSettings::encode: header: "
-              " %s:%s within size %d\n",
+              "%s:%s within size %d\n",
               header.id,
               utility::to_string_version (header.version).c_str (),
               size);
@@ -229,8 +233,42 @@ namespace madara
       * @return  the new size after encoding
       **/
       int decode (
-        unsigned char * source, int size, int max_size) const
+        char * source, int size, int max_size) const
       {
+        if (buffer_filters.size () == 0 && !ignore_header_check)
+        {
+          // if we don't have buffer filters, do a check to see if we should
+          filters::BufferFilterHeader header;
+          int64_t buffer_size =
+            (int64_t)filters::BufferFilterHeader::encoded_size ();
+
+          header.read ((char *)source, buffer_size);
+
+          header.id[4] = 0;
+
+          std::string header_id (header.id);
+
+          // id is either karl or KaRL. If it's anything else, then error
+          if (header_id == "karl" || header_id == "KaRL")
+          {
+            madara_logger_ptr_log (logger::global_logger.get (),
+              logger::LOG_MAJOR,
+              "CheckpointSettings::decode: header: "
+              " Detected %s\n",
+              header.id);
+          }
+          else
+          {
+            madara_logger_ptr_log (logger::global_logger.get (),
+              logger::LOG_MAJOR,
+              "CheckpointSettings::decode: header: "
+              " Detected %s, which is not a message or checkpoint header\n",
+              header.id);
+
+            return 0;
+          }
+        }
+
         // decode from back to front
         for (filters::BufferFilters::const_reverse_iterator i = 
           buffer_filters.rbegin (); i != buffer_filters.rend (); ++i)
@@ -243,6 +281,16 @@ namespace madara
 
             header.read ((char *)source, buffer_size);
 
+            if (header.size > (uint64_t)max_size)
+            {
+              std::stringstream buffer;
+              buffer << "CheckpointSettings::decode: ";
+              buffer << header.size << " byte size encoding cannot fit in ";
+              buffer << max_size << " byte buffer\n";
+              
+              throw exceptions::MemoryException (buffer.str ());
+            } 
+
             madara_logger_ptr_log (logger::global_logger.get (),
               logger::LOG_MAJOR,
               "CheckpointSettings::decode: header: "
@@ -250,20 +298,37 @@ namespace madara
               header.id,
               utility::to_string_version (header.version).c_str ());
 
-            if (header.check_filter (*i))
+            if (*i == 0)
             {
               madara_logger_ptr_log (logger::global_logger.get (),
-                logger::LOG_MAJOR,
-                "CheckpointSettings::decode: buffer filter %s is a match\n",
-                (*i)->get_id ().c_str ());
+                logger::LOG_ERROR,
+                "CheckpointSettings::decode: filter is null somehow\n");
+              
+              return 0;
             }
             else
             {
               madara_logger_ptr_log (logger::global_logger.get (),
+                logger::LOG_DETAILED,
+                "CheckpointSettings::decode: filter is not null\n");
+            }
+
+            if (ignore_header_check || header.check_filter (*i))
+            {
+              madara_logger_ptr_log (logger::global_logger.get (),
                 logger::LOG_MAJOR,
+                "CheckpointSettings::decode: buffer filter %s is a match\n",
+                header.id);
+            }
+            else
+            {
+              madara_logger_ptr_log (logger::global_logger.get (),
+                logger::LOG_ERROR,
                 "CheckpointSettings::decode: buffer filter %s doesn't match."
-                " Could be a problem\n",
-                (*i)->get_id ().c_str ());
+                " Returning 0.",
+                header.id);
+                
+              return 0;
             }
             
             madara_logger_ptr_log (logger::global_logger.get (),
@@ -291,7 +356,7 @@ namespace madara
           else
           {
             std::stringstream buffer;
-            buffer << "CheckpointSettings::encode: ";
+            buffer << "CheckpointSettings::decode: ";
             buffer << size << " byte size encoding cannot fit in ";
             buffer << max_size << " byte buffer\n";
             
@@ -401,6 +466,12 @@ namespace madara
        * forward.
        **/
       bool       reset_checkpoint;
+
+      /**
+       * If true, do not perform a header check. This is useful if you are
+       * loading an arbitrary text file with no buffer filters
+       **/
+      bool       ignore_header_check;
 
     private:
       /**

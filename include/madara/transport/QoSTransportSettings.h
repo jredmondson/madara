@@ -422,8 +422,9 @@ namespace madara
       * @param   size             the amount of data in the buffer in bytes
       * @param   max_size         the amount of bytes the buffer can hold
       * @return  the new size after encoding
+      * @throw exceptions::MemoryException  if max_size is not big enough
       **/
-      int filter_encode (unsigned char * source, int size, int max_size) const;
+      int filter_encode (char * source, int size, int max_size) const;
 
       /**
       * Calls decode on the the buffer filter chain
@@ -432,7 +433,7 @@ namespace madara
       * @param   max_size         the amount of bytes the buffer can hold
       * @return  the new size after encoding
       **/
-      int filter_decode (unsigned char * source, int size, int max_size) const;
+      int filter_decode (char * source, int size, int max_size) const;
 
       /**
        * Prints the number of filters chained for each type to the

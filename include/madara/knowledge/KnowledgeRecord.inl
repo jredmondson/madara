@@ -699,7 +699,12 @@ KnowledgeRecord::set_type (int32_t type)
 inline int64_t
 KnowledgeRecord::get_encoded_size (void) const
 {
-  int64_t buffer_size (sizeof (uint32_t) * 2);
+  int64_t buffer_size (
+      sizeof (type_) +
+      sizeof (uint32_t) +
+      sizeof (toi) +
+    0);
+
   if (type_ == INTEGER)
   {
     buffer_size += sizeof (Integer);
@@ -954,6 +959,15 @@ KnowledgeRecord::read (const char * buffer,
     return buffer;
   }
   buffer_remaining -= sizeof (buff_value_size);
+
+  // Remove the toi from the buffer
+  if (buffer_remaining >= (int64_t) sizeof (toi))
+  {
+    memcpy (&toi, buffer, sizeof (toi));
+    toi = madara::utility::endian_swap (toi);
+    buffer += sizeof (toi);
+  }
+  buffer_remaining -= sizeof (toi);
 
   //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
     //"KnowledgeRecord::read: reading type code %d\n", type);
@@ -1406,6 +1420,11 @@ KnowledgeRecord::set_index (size_t index, T value)
   {
     std::vector<double> tmp (int_array_->begin (), int_array_->end ());
     emplace_doubles (std::move(tmp));
+
+    if (index >= double_array_->size ())
+    {
+      double_array_->resize (index + 1);
+    }
   }
   else if (type_ != DOUBLE_ARRAY)
   {
@@ -1523,6 +1542,15 @@ KnowledgeRecord::write (char * buffer,
       buffer += sizeof (size);
     }
     buffer_remaining -= sizeof (size);
+
+    // Write TOI to buffer
+    if (buffer_remaining >= (int64_t) sizeof (toi))
+    {
+      decltype(toi) tmp = madara::utility::endian_swap (toi);
+      memcpy (buffer, &tmp, sizeof (tmp));
+      buffer += sizeof (tmp);
+    }
+    buffer_remaining -= sizeof (toi);
 
     // Remove the value from the buffer
     if (is_string_type ())

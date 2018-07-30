@@ -39,7 +39,7 @@ namespace madara
        * @param   max_size         the amount of bytes the buffer can hold
        * @return  the new size after encoding
        **/
-      virtual int encode (unsigned char * source, int size, int max_size) const;
+      virtual int encode (char * source, int size, int max_size) const;
 
       /**
        * Decodes the buffer in place using LZ4 decompression
@@ -48,7 +48,7 @@ namespace madara
        * @param   max_size         the amount of bytes the buffer can hold
        * @return  the new size after decoding
        **/
-      virtual int decode (unsigned char * source, int size, int max_size) const;
+      virtual int decode (char * source, int size, int max_size) const;
 
       /**
        * Gets the id of the filter. This is used in the serialization process

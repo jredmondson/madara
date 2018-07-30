@@ -1,0 +1,7 @@
+.sandbox.projects=#expand_env ("$(HOME)/projects");
+.sandbox.projects.name="Projects Repo";
+.sandbox.projects.description="A collection of coding projects";
+.sandbox.files=#expand_env ("$(HOME)/files");
+.sandbox.files.recursive=true;
+.sandbox.files.name="File Repo";
+.sandbox.files.description="A collection of assorted files";

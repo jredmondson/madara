@@ -226,11 +226,18 @@ CircularBufferConsumerT<T>::inspect (
 
   ContextGuard context_guard (*context_);
 
-  KnowledgeRecord::Integer inserted = (KnowledgeRecord::Integer)count ();
+  // If buffer overflowed, update local index to last valid value - 1
+  KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
+  if (index_diff > (KnowledgeRecord::Integer)buffer_.size ())
+  {
+    local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size ();
+  }
 
-  if ((position <= 0 && -position < inserted) ||
-      (position > 0 && inserted == (KnowledgeRecord::Integer)size () &&
-       position < inserted))
+  KnowledgeRecord::Integer requested_index = local_index_ + position;
+
+  if (0 <= requested_index &&
+      (*index_ - (KnowledgeRecord::Integer)buffer_.size ()) <= requested_index &&
+      requested_index <= *index_)
   {
     size_t index = (size_t)increment (
       local_index_, (KnowledgeRecord::Integer)position);
@@ -240,9 +247,9 @@ CircularBufferConsumerT<T>::inspect (
   else
   {
     std::stringstream message;
-    message << "CircularBufferConsumerT<T>::inspect: ";
-    message << "Invalid access for " << position << " element when count is ";
-    message << inserted << "\n";
+    message << "CircularBufferConsumer::inspect: ";
+    message << "Invalid access for relative position " << position << " when buffer index is ";
+    message << *index_ << " and local index is : " << local_index_ << " and size is : " << size() << "\n";
     throw exceptions::IndexException (message.str ()); 
   }
 }
@@ -256,12 +263,18 @@ CircularBufferConsumerT<T>::inspect (KnowledgeRecord::Integer position,
 
   ContextGuard context_guard (*context_);
 
-  KnowledgeRecord::Integer inserted =
-    (KnowledgeRecord::Integer)this->count ();
+  // If buffer overflowed, update local index to last valid value - 1
+  KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
+  if (index_diff > (KnowledgeRecord::Integer)buffer_.size ())
+  {
+    local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size ();
+  }
 
-  if ((position <= 0 && -position < inserted) ||
-      (position > 0 && inserted == (KnowledgeRecord::Integer)size () &&
-       position < inserted))
+  KnowledgeRecord::Integer requested_index = local_index_ + position;
+
+  if (0 <= requested_index &&
+      (*index_ - (KnowledgeRecord::Integer)buffer_.size ()) <= requested_index &&
+      requested_index <= *index_)
   {
     KnowledgeRecord::Integer index = increment (
       local_index_, (KnowledgeRecord::Integer)position);
@@ -274,9 +287,9 @@ CircularBufferConsumerT<T>::inspect (KnowledgeRecord::Integer position,
   else
   {
     std::stringstream message;
-    message << "CircularBufferConsumerT<T>::inspect: ";
-    message << "Invalid access for " << position << " element when count is ";
-    message << inserted << "\n";
+    message << "CircularBufferConsumer::inspect: ";
+    message << "Invalid access for relative position " << position << " when buffer index is ";
+    message << *index_ << " and local index is : " << local_index_ << " and size is : " << size() << "\n";
     throw exceptions::IndexException (message.str ()); 
   }
 }
@@ -449,6 +462,13 @@ CircularBufferConsumerT<T>::consume_earliest (size_t count,
   ContextGuard context_guard (*context_);
 
   KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
+
+  // If buffer overflowed, update local index to last valid value - 1
+  if (index_diff > (KnowledgeRecord::Integer)buffer_.size ())
+  {
+    local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size ();
+    index_diff = (KnowledgeRecord::Integer)buffer_.size ();
+  }
 
   count = std::min (count, (size_t)index_diff);
 

@@ -59,7 +59,7 @@ bool madara::knowledge::containers::FlexMap::is_true (void) const
   madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
     "Vector::is_true: checking for non-zero value\n");
 
-  if (!variable_.is_valid ())
+  if (variable_.is_valid ())
   {
     result = context_->get (variable_, keep_local).is_true ();
   }
