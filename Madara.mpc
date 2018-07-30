@@ -153,6 +153,23 @@ project (KaRL) : using_madara, no_karl, using_ssl, using_lz4 {
   }
 }
 
+project (mfs) : using_madara, no_karl, using_ssl, using_lz4, using_filesystem {
+  exeout = $(MADARA_ROOT)/bin
+  exename = mfs
+
+  after = Madara
+  
+  Documentation_Files {
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tools/mfs.cpp
+  }
+}
+
 project (Madara_Registry) : using_madara, no_karl {
   exeout = $(MADARA_ROOT)/bin
   exename = madara_registry
