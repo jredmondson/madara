@@ -112,6 +112,14 @@ struct Request
   std::string requester;
 };
 
+struct DeleteRequest
+{
+  std::string sandbox;
+  std::string filename;
+  bool all_files;
+  std::string requester;
+};
+
 template<typename Fun, typename T>
 auto for_each_field(Fun &&fun, T &&val) -> madara::enable_if_same_decayed<T, Request>
 {
@@ -119,6 +127,15 @@ auto for_each_field(Fun &&fun, T &&val) -> madara::enable_if_same_decayed<T, Req
   fun("filename", val.filename);
   fun("all_files", val.all_files);
   fun("last_modified", val.last_modified);
+  fun("requester", val.requester);
+}
+
+template<typename Fun, typename T>
+auto for_each_field(Fun &&fun, T &&val) -> madara::enable_if_same_decayed<T, DeleteRequest>
+{
+  fun("sandbox", val.sandbox);
+  fun("filename", val.filename);
+  fun("all_files", val.all_files);
   fun("requester", val.requester);
 }
 
@@ -149,6 +166,38 @@ struct Sandbox
   }
 
   template <typename T>
+  inline std::vector <std::string> build_file_vector (void)
+  {
+    T end, p;
+    std::vector <std::string> result;
+
+    for (p = T (path); p != end; ++p)
+    {
+      auto file_path = p->path ();
+
+      madara_logger_ptr_log (
+        logger::global_logger.get (),
+        logger::LOG_ALWAYS,
+        "build_file_vector: checking file %s\n",
+        file_path.string ().c_str ());
+
+      if (filesystem::is_regular_file (file_path))
+      {
+        madara_logger_ptr_log (
+          logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "build_file_vector: adding file %s\n",
+          file_path.string ().c_str ());
+
+        // grab the filename
+        result.push_back (file_path.string ());
+      }
+    }
+
+    return result;
+  }
+
+  template <typename T>
   inline void refresh_iterate (void)
   {
     T end, p;
@@ -174,6 +223,68 @@ struct Sandbox
   }
 
   template <typename T>
+  inline void delete_iterate (void)
+  {
+    T end, p;
+
+    madara_logger_ptr_log (
+      logger::global_logger.get (),
+      logger::LOG_ALWAYS,
+      "delete_iterate: deleting all files in %s\n",
+      path.c_str ());
+
+    try
+    {
+      for (p = T (path); p != end; ++p)
+      {
+        auto file_path = p->path ();
+
+        madara_logger_ptr_log (
+          logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "delete_iterate: checking file %s\n",
+          file_path.string ().c_str ());
+
+        if (filesystem::is_regular_file (file_path))
+        {
+          madara_logger_ptr_log (
+            logger::global_logger.get (),
+            logger::LOG_ALWAYS,
+            "delete_iterate: removing file %s\n",
+            file_path.string ().c_str ());
+
+          try
+          {
+            filesystem::remove (file_path);
+          }
+          catch (boost::filesystem::filesystem_error & e)
+          {
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ALWAYS,
+              "delete_iterate: caught exception during remove %s: %s\n",
+              file_path.string ().c_str (),
+              e.what ());
+          }
+        }
+        madara_logger_ptr_log (
+          logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "delete_iterate: removed file %s\n",
+          file_path.string ().c_str ());
+
+      }
+    }
+    catch (...)
+    {
+      madara_logger_ptr_log (
+        logger::global_logger.get (),
+        logger::LOG_ALWAYS,
+        "delete_iterate: caught exception outside of a file remove %s\n");
+    }
+  }
+
+  template <typename T>
   inline void send_iterate (void)
   {
     T end, p;
@@ -181,8 +292,21 @@ struct Sandbox
     for (p = T (path); p != end; ++p)
     {
       auto file_path = p->path ();
+
+      madara_logger_ptr_log (
+        logger::global_logger.get (),
+        logger::LOG_ALWAYS,
+        "send_iterate: checking file %s\n",
+        file_path.string ().c_str ());
+
       if (filesystem::is_regular_file (file_path))
       {
+        madara_logger_ptr_log (
+          logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "send_iterate: sending file %s\n",
+          file_path.string ().c_str ());
+
         // grab the filename
         std::string full_path = file_path.string ();
 
@@ -235,6 +359,35 @@ struct Sandbox
       }
     }
   }
+
+  inline void delete_all_files (void)
+  {
+    if (valid)
+    {
+      std::vector <std::string> filenames;
+      if (recursive)
+      {
+        filenames =
+          build_file_vector<filesystem::recursive_directory_iterator> ();
+      }
+      else
+      {
+        filenames =
+          build_file_vector<filesystem::directory_iterator> ();
+      }
+
+      for (auto filename : filenames)
+      {
+        madara_logger_ptr_log (
+          logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "delete_all_files: deleting file %s\n",
+          filename.c_str ());
+
+        filesystem::remove (filename);
+      }
+    }
+  }
 };
 
 /**
@@ -249,6 +402,7 @@ class HandleRequests : public filters::AggregateFilter
 
   /// requests from remote users
   containers::CircularBufferT <Request> requests;
+  containers::CircularBufferT <DeleteRequest> delete_requests;
 
   /**
    * Handle requests from other remote users
@@ -267,14 +421,17 @@ class HandleRequests : public filters::AggregateFilter
       (Integer) transport_context.get_receive_bandwidth ();
 
     std::string sync_sandbox_prefix = prefix + ".sync.sandbox.";
+    std::string delete_sandbox_prefix = prefix + ".delete.sandbox.";
 
     knowledge::KnowledgeMap::iterator record;
       
     Request request;
+    DeleteRequest delete_request;
 
     request.requester = transport_context.get_originator ();
+    delete_request.requester = request.requester;
 
-    record = records.lower_bound (sync_sandbox_prefix);
+    record = records.lower_bound (prefix);
 
     madara_logger_ptr_log (
       logger::global_logger.get (),
@@ -287,69 +444,143 @@ class HandleRequests : public filters::AggregateFilter
     for (; record != records.end (); ++record)
     {
       bool bad_record = false;
-      if (utility::ends_with (record->first, "all_files"))
-      {
-        request.sandbox = record->first.substr (
-          sync_sandbox_prefix.size (),
-          record->first.size () - sync_sandbox_prefix.size () - 10);
-
-          madara_logger_ptr_log (
-            logger::global_logger.get (),
-            logger::LOG_ALWAYS,
-            "HandleRequests: Request: sandbox=%s "
-            "all_files=1\n",
-            request.sandbox.c_str ());
-
-        request.all_files = true;
-
-        requests.add (request);
-      } // end all_files
-      else // has sandbox prefix but is not all_files
-      {
-        // try to split the sandbox name and the file name from the rest
-        size_t sandbox_end = record->first.find (
-          ".file.", sync_sandbox_prefix.size ());
-          
-        if (sandbox_end != std::string::npos)
+      if (utility::begins_with (record->first, sync_sandbox_prefix))
+      { 
+        if (utility::ends_with (record->first, "all_files"))
         {
+          size_t sandbox_end = record->first.find (
+            ".all_files", sync_sandbox_prefix.size ());
+
           request.sandbox = record->first.substr (
             sync_sandbox_prefix.size (),
             sandbox_end - sync_sandbox_prefix.size ());
-          request.filename = record->first.substr (sandbox_end + 6);
-          request.all_files = false;
-          request.last_modified = record->second.to_integer ();
 
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ALWAYS,
+              "HandleRequests: Request: sandbox=%s "
+              "all_files=1\n",
+              request.sandbox.c_str ());
 
-          madara_logger_ptr_log (
-            logger::global_logger.get (),
-            logger::LOG_ALWAYS,
-            "HandleRequests: Request: sandbox=%s "
-            "file=%s, last_mod=%d\n",
-            request.sandbox.c_str (), request.filename.c_str (),
-            (int)request.last_modified);
-
-        } // end if sandbox .file was located
-        else
-        {
-          bad_record = true;
-
-          madara_logger_ptr_log (
-            logger::global_logger.get (),
-            logger::LOG_ERROR,
-            "HandleRequests: ERROR: parameter %s was neither all files "
-            "or a specific file. Check for malformed request.\n");
-        } // end else of sandbox end check
-
-        if (!bad_record)
-        {
-          madara_logger_ptr_log (
-            logger::global_logger.get (),
-            logger::LOG_ERROR,
-            "HandleRequests: Enqueueing request.\n");
+          request.all_files = true;
 
           requests.add (request);
-        }
-      } // end has sandbox prefix for loop
+        } // end all_files
+        else // has sandbox prefix but is not all_files
+        {
+          // try to split the sandbox name and the file name from the rest
+          size_t sandbox_end = record->first.find (
+            ".file.", sync_sandbox_prefix.size ());
+            
+          if (sandbox_end != std::string::npos)
+          {
+            request.sandbox = record->first.substr (
+              sync_sandbox_prefix.size (),
+              sandbox_end - sync_sandbox_prefix.size ());
+            request.filename = record->first.substr (sandbox_end + 6);
+            request.all_files = false;
+            request.last_modified = record->second.to_integer ();
+
+
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ALWAYS,
+              "HandleRequests: Request: sandbox=%s "
+              "file=%s, last_mod=%d\n",
+              request.sandbox.c_str (), request.filename.c_str (),
+              (int)request.last_modified);
+
+          } // end if sandbox .file was located
+          else
+          {
+            bad_record = true;
+
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ERROR,
+              "HandleRequests: ERROR: parameter %s was neither all files "
+              "or a specific file. Check for malformed request.\n");
+          } // end else of sandbox end check
+
+          if (!bad_record)
+          {
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ERROR,
+              "HandleRequests: Enqueueing request.\n");
+
+            requests.add (request);
+          } // end if !bad_record
+        } // end has sandbox prefix for loop
+      } // end if begins with sync prefix
+      else if (utility::begins_with (record->first, delete_sandbox_prefix))
+      {
+        if (utility::ends_with (record->first, ".all_files"))
+        {
+          size_t sandbox_end = record->first.find (
+            ".all_files", delete_sandbox_prefix.size ());
+
+          delete_request.sandbox = record->first.substr (
+            delete_sandbox_prefix.size (),
+            sandbox_end - delete_sandbox_prefix.size ());
+
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ALWAYS,
+              "HandleRequests: DeleteRequest: sandbox=%s, "
+              "all_files=1\n",
+              delete_request.sandbox.c_str (),
+              (int)delete_sandbox_prefix.size (), (int)sandbox_end);
+
+          delete_request.all_files = true;
+
+          delete_requests.add (delete_request);
+        } // end all_files
+        else // has sandbox prefix but is not all_files
+        {
+          // try to split the sandbox name and the file name from the rest
+          size_t sandbox_end = record->first.find (
+            ".file.", delete_sandbox_prefix.size ());
+            
+          if (sandbox_end != std::string::npos)
+          {
+            delete_request.sandbox = record->first.substr (
+              delete_sandbox_prefix.size (),
+              sandbox_end - delete_sandbox_prefix.size ());
+            delete_request.filename = record->first.substr (sandbox_end + 6);
+            delete_request.all_files = false;
+
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ALWAYS,
+              "HandleRequests: DeleteRequest: sandbox=%s "
+              "file=%s, last_mod=%d\n",
+              delete_request.sandbox.c_str (),
+              delete_request.filename.c_str ());
+
+          } // end if sandbox .file was located
+          else
+          {
+            bad_record = true;
+
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ERROR,
+              "HandleRequests: ERROR: parameter %s was neither all files "
+              "or a specific file. Check for malformed delete request.\n");
+          } // end else of sandbox end check
+
+          if (!bad_record)
+          {
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ERROR,
+              "HandleRequests: Enqueueing delete request.\n");
+
+            delete_requests.add (delete_request);
+          } // end if !bad_record
+        } // end has sandbox prefix for loop
+      }
     } // end for loop over records with our prefix
 
     records.clear ();
@@ -362,15 +593,17 @@ class HandleRequests : public filters::AggregateFilter
 void process_requests (
   std::vector <Sandbox> & sandboxes,
   knowledge::KnowledgeBase & kb,
-  containers::CircularBufferConsumerT <Request> & requests)
+  containers::CircularBufferConsumerT <Request> & requests,
+  containers::CircularBufferConsumerT <DeleteRequest> & delete_requests)
 {
   knowledge::ContextGuard guard (kb);
 
   madara_logger_ptr_log (
     logger::global_logger.get (),
     logger::LOG_ERROR,
-    "process_requests: Requests queue size: %d\n",
-    (int)requests.remaining ())
+    "process_requests: Requests queue size: %d, "
+    "DeleteRequests queue size: %d\n",
+    (int)requests.remaining (), (int)delete_requests.remaining ());
 
   while (requests.remaining () > 0)
   {
@@ -438,9 +671,69 @@ void process_requests (
 
           sandbox.send_all_files ();
         } // end send all files in sandbox
-      }
-    }
-  }
+      } // if sandbox is a match
+    } // foreach sandbox
+  } // while requests.remaining () > 0
+
+  while (delete_requests.remaining () > 0)
+  {
+    // grab a request from the front of the queue
+    DeleteRequest delete_request;
+    delete_requests.consume (delete_request);
+
+    madara_logger_ptr_log (
+      logger::global_logger.get (),
+      logger::LOG_ERROR,
+      "process_requests: DeleteRequest: sandbox=%s file=%s\n",
+      delete_request.sandbox.c_str (), delete_request.filename.c_str ())
+
+    for (auto sandbox : sandboxes)
+    {
+      // if this is the sandbox
+      if (sandbox.id == delete_request.sandbox)
+      {
+        std::string filename = sandbox.path + "/" + delete_request.filename;
+
+        if (!delete_request.all_files)
+        {
+          madara_logger_ptr_log (
+            logger::global_logger.get (),
+            logger::LOG_ALWAYS,
+            "process_requests: handling delete request for %s\n",
+            filename.c_str ());
+
+          if (filesystem::is_regular_file (filename))
+          {
+            filesystem::remove (sandbox.path + "/" + delete_request.filename);
+          } // end if a regular file
+          else if (filesystem::is_directory (filename))
+          {
+            filesystem::remove_all (sandbox.path + "/" + delete_request.filename);
+          } // end if a regular file
+          else
+          {
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ERROR,
+              "process_requests: ERROR: "
+              "requested file %s no longer exists.\n",
+              filename.c_str ());
+          } // end not a regular file
+        } // end if not request all files
+        else 
+        {
+          madara_logger_ptr_log (
+            logger::global_logger.get (),
+            logger::LOG_ERROR,
+            "process_requests: WARN: user requested deleting all files in "
+            "sandbox %s for dir %s.\n",
+            sandbox.id.c_str (), sandbox.path.c_str ());
+
+          sandbox.delete_all_files ();
+        } // end send all files in sandbox
+      } // if sandbox is a match
+    } // foreach sandbox
+  } // while requests.remaining () > 0
 }
 
 // handle command line arguments
@@ -862,6 +1155,9 @@ int main (int argc, char ** argv)
   receive_filter.requests.set_name (".requests", kb);
   receive_filter.requests.resize (requests_buffer_size);
 
+  receive_filter.delete_requests.set_name (".delete_requests", kb);
+  receive_filter.delete_requests.resize (requests_buffer_size);
+
   madara::knowledge::EvalSettings silent (true, true, true, true, true);
   shutdown_request.set_name (prefix + ".shutdown", kb);
 
@@ -872,14 +1168,13 @@ int main (int argc, char ** argv)
   current_send_bandwidth.set_name (".current_send_bandwidth", kb);
   current_total_bandwidth.set_name (".current_total_bandwidth", kb);
 
-  // construct sandbox map out of the loaded files
-  sandbox_map.set_name (".sandbox", kb);
-  knowledge::KnowledgeRules keys;
-  sandbox_map.keys (keys, true);
-
   // queue for requests for sandbox files
-  containers::CircularBufferConsumerT <Request> consumer (".requests", kb);
-  consumer.resize ();
+  containers::CircularBufferConsumerT <Request> request_consumer (
+    ".requests", kb);
+  containers::CircularBufferConsumerT <DeleteRequest> delete_consumer (
+    ".delete_requests", kb);
+  request_consumer.resize ();
+  delete_consumer.resize ();
 
   // load any binary settings
   for (auto & file : initbinaries)
@@ -906,6 +1201,11 @@ int main (int argc, char ** argv)
     load_checkpoint_settings.clear_knowledge = false;
     kb.evaluate_file (load_checkpoint_settings, silent);
   }
+
+  // construct sandbox map out of the loaded files
+  sandbox_map.set_name (".sandbox", kb);
+  knowledge::KnowledgeRules keys;
+  sandbox_map.keys (keys, true);
 
   kb.attach_transport (host, settings);
   
@@ -938,7 +1238,7 @@ int main (int argc, char ** argv)
         sandbox.modify ();
       }
 
-      process_requests (sandboxes, kb, consumer);
+      process_requests (sandboxes, kb, request_consumer, delete_consumer);
 
       kb.send_modifieds ();
 
@@ -958,7 +1258,7 @@ int main (int argc, char ** argv)
         sandbox.modify ();
       }
 
-      process_requests (sandboxes, kb, consumer);
+      process_requests (sandboxes, kb, request_consumer, delete_consumer);
 
       kb.send_modifieds ();
 
