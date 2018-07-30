@@ -1,0 +1,11 @@
+using Cxx = import "/capnp/c++.capnp";
+
+@0xe3c04ff389251d41;
+
+$Cxx.namespace("geo_capn");
+
+struct Point {
+  x @0 :Float64;
+  y @1 :Float64;
+  z @2 :Float64;
+}
