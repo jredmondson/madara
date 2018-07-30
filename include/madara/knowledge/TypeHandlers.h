@@ -156,16 +156,16 @@ struct TypeHandlers
   typedef void *(*clone_fn_type)(void *);
   clone_fn_type clone;
 
-  typedef void (*save_fn_type)(madara_oarchive &, const void *);
+  typedef void (*save_fn_type)(std::ostream &, const void *);
   save_fn_type save;
 
-  typedef void (*load_fn_type)(madara_iarchive &, void *);
+  typedef void (*load_fn_type)(std::istream &, void *);
   load_fn_type load;
 
-  typedef void (*save_json_fn_type)(json_oarchive &, const void *);
+  typedef void (*save_json_fn_type)(std::ostream &, const void *);
   save_json_fn_type save_json;
 
-  typedef void (*load_json_fn_type)(json_iarchive &, void *);
+  typedef void (*load_json_fn_type)(std::istream &, void *);
   load_json_fn_type load_json;
 
   typedef const std::vector<AnyField> &(*list_fields_fn_type)(void *);
@@ -264,10 +264,7 @@ template<typename T>
 constexpr TypeHandlers::save_fn_type get_type_handler_save(type<T>,
     overload_priority_weakest)
 {
-  return [](madara_oarchive &archive, const void *ptr) {
-      const T &val = *static_cast<const T *>(ptr);
-      archive << val;
-    };
+  return nullptr;
 }
 
 /// Creates a function for unserializing the given type to a madara_iarchive.
@@ -277,11 +274,22 @@ template<typename T>
 constexpr TypeHandlers::load_fn_type get_type_handler_load(type<T>,
     overload_priority_weakest)
 {
-  return [](madara_iarchive &archive, void *ptr) {
-      T &val = *static_cast<T *>(ptr);
-      archive >> val;
-    };
+  return nullptr;
 }
+
+//template<typename T>
+//constexpr TypeHandlers::save_capn_fn_type get_type_handler_save_capn(type<T>,
+    //overload_priority_weakest)
+//{
+  //return nullptr;
+//}
+
+//template<typename T>
+//constexpr TypeHandlers::load_capn_fn_type get_type_handler_load_capn(type<T>,
+    //overload_priority_weakest)
+//{
+  //return nullptr;
+//}
 
 /// Creates a function for serializing the given type to a json_oarchive.
 /// By default, simply use the Boost.Serialization << operator.
@@ -290,10 +298,7 @@ template<typename T>
 constexpr TypeHandlers::save_json_fn_type
   get_type_handler_save_json(type<T>, overload_priority_weakest)
 {
-  return [](json_oarchive &archive, const void *ptr) {
-      const T &val = *static_cast<const T *>(ptr);
-      archive << val;
-    };
+  return nullptr;
 }
 
 /// Creates a function for unserializing the given type to a json_iarchive.
@@ -303,10 +308,7 @@ template<typename T>
 constexpr TypeHandlers::load_json_fn_type
   get_type_handler_load_json(type<T>, overload_priority_weakest)
 {
-  return [](json_iarchive &archive, void *ptr) {
-      T &val = *static_cast<T *>(ptr);
-      archive >> val;
-    };
+  return nullptr;
 }
 
 template<typename T>
@@ -377,6 +379,8 @@ inline const TypeHandlers &get_type_handler(type<T> t)
       get_type_handler_clone(t, select_overload()),
       get_type_handler_save(type<T>{}, select_overload()),
       get_type_handler_load(type<T>{}, select_overload()),
+      //get_type_handler_save_capn(type<T>{}, select_overload()),
+      //get_type_handler_load_capn(type<T>{}, select_overload()),
       get_type_handler_save_json(t, select_overload()),
       get_type_handler_load_json(t, select_overload()),
       get_type_handler_list_fields(t, select_overload()),
@@ -412,6 +416,19 @@ MADARA_MAKE_VAL_SUPPORT_TEST(str_at_index, x, (x.at("") = x.at("")));
 
 MADARA_MAKE_VAL_SUPPORT_TEST(to_ostream, x, (std::cout << x));
 MADARA_MAKE_VAL_SUPPORT_TEST(from_istream, x, (std::cin >> x));
+
+MADARA_MAKE_VAL_SUPPORT_TEST(cereal_portable_binary_serialize, x,
+    (std::declval<madara_oarchive>() << x));
+MADARA_MAKE_VAL_SUPPORT_TEST(cereal_portable_binary_unserialize, x,
+    (std::declval<madara_oarchive>() >> x));
+MADARA_MAKE_VAL_SUPPORT_TEST(cereal_json_serialize, x,
+    (std::declval<json_oarchive>() << x));
+MADARA_MAKE_VAL_SUPPORT_TEST(cereal_json_unserialize, x,
+    (std::declval<json_oarchive>() >> x));
+MADARA_MAKE_VAL_SUPPORT_TEST(capn_builder, x,
+    (typename decay_<decltype(x)>::Builder(nullptr)));
+MADARA_MAKE_VAL_SUPPORT_TEST(capn_reader, x,
+    (typename decay_<decltype(x)>::Reader()));
 
 } // namespace knowledge
 

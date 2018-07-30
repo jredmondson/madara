@@ -1460,11 +1460,17 @@ project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   Documentation_Files {
   }
 
+  prebuild = capnp compile -I $(CAPNP_ROOT)/c++/src $(MADARA_ROOT)/tests/capnfiles/*.capn -oc++
+
+  libs += capnp kj
+
   Header_Files {
+    tests/capnfiles/
   }
 
   Source_Files {
     tests/test_any.cpp
+    tests/capnfiles/*.c++
   }
 }
 

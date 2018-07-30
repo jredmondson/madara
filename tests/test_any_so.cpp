@@ -15,7 +15,12 @@ using namespace knowledge;
 int main (int, char **)
 {
   Any any = Any::construct("Point");
+  std::cerr << any << std::endl;
 
+  any.emplace("Pose");
+  std::cerr << any << std::endl;
+
+  any.emplace("Trajectory");
   std::cerr << any << std::endl;
 
   if (madara_tests_fail_count > 0)

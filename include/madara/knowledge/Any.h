@@ -332,12 +332,17 @@ public:
    * this Any. This operation provides the strong exception-guarantee: if an
    * exception is throw during unserialization, this Any will not be modified.
    **/
-  template<typename K>
-  void unserialize(K k, std::istream &stream)
+  template<typename T>
+  void unserialize(type<T> t, std::istream &stream)
   {
-    madara_iarchive archive(stream);
+    const TypeHandlers &handler = get_type_handler(t);
+    std::unique_ptr<T> ptr(new T{});
 
-    unserialize(k, archive);
+    handler.load(stream, (void*)ptr.get());
+
+    clear();
+    this->data_ = reinterpret_cast<void*>(ptr.release());
+    this->handler_ = &handler;
   }
 
   /**
@@ -351,25 +356,7 @@ public:
     unserialize(type<T>{}, stream);
   }
 
-  /**
-   * Unserialize the given type from the given madara_iarchive, and store into
-   * this Any. This operation provides the strong exception-guarantee: if an
-   * exception is throw during unserialization, this Any will not be modified.
-   **/
-  template<typename T>
-  void unserialize(type<T> t, madara_iarchive &archive)
-  {
-    const TypeHandlers &handler = get_type_handler(t);
-    std::unique_ptr<T> ptr(new T{});
-
-    handler.load(archive, (void*)ptr.get());
-
-    clear();
-    this->data_ = reinterpret_cast<void*>(ptr.release());
-    this->handler_ = &handler;
-  }
-
-  void unserialize(const char *type, madara_iarchive &archive);
+  void unserialize(const char *type, std::istream &stream);
 
   /**
    * Unserialize the given type from the given character array, and store into
@@ -390,7 +377,7 @@ public:
     madara_iarchive archive(input_stream);
     std::string tag;
     archive >> tag;
-    unserialize(tag.c_str(), archive);
+    unserialize(tag.c_str(), input_stream);
     auto len = input_stream.tellg() - pos;
 
     return len;
@@ -407,48 +394,23 @@ public:
   void tagged_unserialize(std::istream &stream)
   {
     madara_iarchive archive(stream);
-
-    tagged_unserialize(archive);
-  }
-
-  /**
-   * Unserialize the given type from the given madara_iarchive, and store into
-   * this Any, using saved type tag to determine type. This operation provides
-   * the strong exception-guarantee: if an exception is throw during
-   * unserialization, this Any will not be modified.
-   *
-   * Use with data serialized by tagged_serialize()
-   **/
-  void tagged_unserialize(madara_iarchive &archive)
-  {
     std::string tag;
     archive >> tag;
-    unserialize(tag.c_str(), archive);
+    unserialize(tag.c_str(), stream);
   }
 
   /**
-   * Unserialize the given type from the given madara_iarchive, and store into
+   * Unserialize the given type from JSON from the given stream, and store into
    * this Any. This operation provides the strong exception-guarantee: if an
    * exception is throw during unserialization, this Any will not be modified.
    **/
   template<typename T>
-  void unserialize(madara_iarchive &archive)
-  {
-    unserialize(type<T>{}, archive);
-  }
-
-  /**
-   * Unserialize the given type from the given archive, and store into
-   * this Any. This operation provides the strong exception-guarantee: if an
-   * exception is throw during unserialization, this Any will not be modified.
-   **/
-  template<typename T>
-  void unserialize(type<T> t, json_iarchive &archive)
+  void unserialize_json(type<T> t, std::istream &i)
   {
     const TypeHandlers &handler = get_type_handler(t);
     std::unique_ptr<T> ptr(new T{});
 
-    handler.load_json(archive, (void*)ptr.get());
+    handler.load_json(i, (void*)ptr.get());
 
     clear();
     this->data_ = reinterpret_cast<void*>(ptr.release());
@@ -461,9 +423,9 @@ public:
    * exception is throw during unserialization, this Any will not be modified.
    **/
   template<typename T>
-  void unserialize(json_iarchive &archive)
+  void unserialize_json(std::istream &i)
   {
-    unserialize(type<T>{}, archive);
+    unserialize(type<T>{}, i);
   }
 
   /**
@@ -471,7 +433,7 @@ public:
    * this Any. This operation provides the strong exception-guarantee: if an
    * exception is throw during unserialization, this Any will not be modified.
    **/
-  void unserialize(const char *type, json_iarchive &archive);
+  void unserialize_json(const char *type, std::istream &i);
 
 protected:
   template<typename T>
@@ -584,11 +546,11 @@ inline void AnyRegistry::register_type(const char *name)
 
 template<typename Impl, typename Base>
 inline void BasicOwningAny<Impl, Base>::unserialize(
-    const char *type, madara_iarchive &archive)
+    const char *type, std::istream &stream)
 {
   Any any(construct(type));
 
-  any.handler_->load(archive, any.data_);
+  any.handler_->load(stream, any.data_);
 
   using std::swap;
   swap(this->handler_, any.handler_);
@@ -596,12 +558,12 @@ inline void BasicOwningAny<Impl, Base>::unserialize(
 }
 
 template<typename Impl, typename Base>
-inline void BasicOwningAny<Impl, Base>::unserialize(
-    const char *type, json_iarchive &archive)
+inline void BasicOwningAny<Impl, Base>::unserialize_json(
+    const char *type, std::istream &i)
 {
   Any any(construct(type));
 
-  any.handler_->load_json(archive, any.data_);
+  any.handler_->load_json(i, any.data_);
 
   using std::swap;
   swap(this->handler_, any.handler_);

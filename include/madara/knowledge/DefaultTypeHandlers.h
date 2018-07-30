@@ -67,6 +67,90 @@ MADARA_SERIALIZE_DIRECTLY(std::set<V, C, A>)
 template<typename V, typename H, typename A>
 MADARA_SERIALIZE_DIRECTLY(std::unordered_set<V, H, A>)
 
+/// Creates a function for serializing the given type to a madara_oarchive.
+/// By default, simply use the Boost.Serialization << operator.
+/// Specialize this function to customize otherwise.
+template<typename T>
+constexpr auto get_type_handler_save(type<T>, overload_priority<12>) ->
+  knowledge::TypeHandlers::save_fn_type
+{
+  return [](std::ostream &o, const void *ptr) {
+      const T &val = *static_cast<const T *>(ptr);
+      knowledge::madara_oarchive archive(o);
+      archive << val;
+    };
+}
+
+/// Creates a function for unserializing the given type to a madara_iarchive.
+/// By default, simply use the Boost.Serialization >> operator.
+/// Specialize this function to customize otherwise.
+template<typename T>
+constexpr auto get_type_handler_load(type<T>, overload_priority<12>) ->
+  knowledge::TypeHandlers::load_fn_type
+{
+  return [](std::istream &i, void *ptr) {
+      T &val = *static_cast<T *>(ptr);
+      knowledge::madara_iarchive archive(i);
+      archive >> val;
+    };
+}
+
+/// Creates a function for serializing the given type to a json_oarchive.
+/// By default, simply use the Boost.Serialization << operator.
+/// Specialize this function to customize otherwise.
+template<typename T>
+constexpr auto get_type_handler_save_json(type<T>, overload_priority<12>) ->
+  knowledge::TypeHandlers::save_json_fn_type
+{
+  return [](std::ostream &o, const void *ptr) {
+      const T &val = *static_cast<const T *>(ptr);
+      {
+        knowledge::json_oarchive archive(o);
+        const char *tag = knowledge::AnyRegistry::get_type_name<T>();
+        archive.setNextName(tag ?
+            (std::string("Any<") + tag + ">").c_str() :
+            "Any<UKNOWN_ANY_TYPE>");
+        archive << val;
+      }
+    };
+}
+
+/// Creates a function for unserializing the given type to a json_iarchive.
+/// By default, simply use the Boost.Serialization >> operator.
+/// Specialize this function to customize otherwise.
+template<typename T>
+constexpr auto get_type_handler_load_json(type<T>, overload_priority<12>) ->
+  knowledge::TypeHandlers::load_json_fn_type
+{
+  return [](std::istream &i, void *ptr) {
+      T &val = *static_cast<T *>(ptr);
+      {
+        knowledge::json_iarchive archive(i);
+        archive >> val;
+      }
+    };
+}
+
+//template<typename T>
+//constexpr auto get_type_handler_save_capn(type<T>, overload_priority<12>) ->
+  //enable_if_<knowledge::supports_capn_builder<T>::value,
+  //knowledge::TypeHandlers::save_capn_fn_type>
+//{
+  //return [](capnp::MessageBuilder &msgbuild, const void *ptr) {
+      //(void)msgbuild; (void)ptr;
+    //};
+//}
+
+//template<typename T>
+//constexpr auto get_type_handler_load_capn(type<T>, overload_priority<12>) ->
+  //enable_if_<knowledge::supports_capn_reader<T>::value,
+  //knowledge::TypeHandlers::load_capn_fn_type>
+//{
+  //return [](capnp::MessageReader &msgread, void *ptr) {
+      //(void)msgread; (void)ptr;
+    //};
+//}
+
 // Functor to list fields of type which supports for_each_field
 struct do_list_fields
 {

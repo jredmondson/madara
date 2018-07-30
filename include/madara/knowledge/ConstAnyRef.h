@@ -27,6 +27,7 @@
 #include "madara/utility/IntTypes.h"
 #include "madara/exceptions/BadAnyAccess.h"
 #include "TypeHandlers.h"
+#include "CapnObject.h"
 
 namespace madara { namespace knowledge {
 
@@ -70,6 +71,12 @@ protected:
     } else if (type_id<T>() != handler_->tindex) {
       throw exceptions::BadAnyAccess(t, handler_->tindex);
     }
+  }
+
+  template<typename T>
+  bool try_type(type<T>) const
+  {
+    return data_ && handler_ && type_id<T>() == handler_->tindex;
   }
 
 public:
@@ -186,6 +193,45 @@ public:
     return ref_unsafe(type<T>{});
   }
 
+  template<typename T>
+  const T *ptr(type<T> t) const
+  {
+    if (!impl().try_type(t)) {
+      return nullptr;
+    }
+    return &impl().ref_unsafe(t);
+  }
+
+  template<typename T>
+  const T *ptr() const
+  {
+    return ptr(type<T>{});
+  }
+
+  template<typename T>
+  const T *cptr(type<T> t) const
+  {
+    return ptr(t);
+  }
+
+  template<typename T>
+  const T *cptr() const
+  {
+    return ptr(type<T>{});
+  }
+
+  template<typename T>
+  typename T::Reader reader(type<T>) const
+  {
+    return cref<CapnObject<T>>().reader();
+  }
+
+  template<typename T>
+  typename T::Reader reader() const
+  {
+    return reader(type<T>{});
+  }
+
   /**
    * Serialize this Any to the given buffer. Throws an exception if the buffer
    * size is insufficient.
@@ -235,19 +281,7 @@ public:
    **/
   void serialize(std::ostream &stream) const
   {
-    madara_oarchive archive(stream);
-
-    impl().serialize(archive);
-  }
-
-  /**
-   * Serialize this Any to the given madara_oarchive.
-   *
-   * @param stream the output archive to serialize to
-   **/
-  void serialize(madara_oarchive &archive) const
-  {
-    handler_->save(archive, data_);
+    handler_->save(stream, data_);
   }
 
   /**
@@ -302,19 +336,6 @@ public:
    **/
   void tagged_serialize(std::ostream &stream) const
   {
-    madara_oarchive archive(stream);
-
-    impl().tagged_serialize(archive);
-  }
-
-  /**
-   * Serialize this Any to the given madara_oarchive with a tag string recording
-   * the saved type, for use with tagged_unserialize.
-   *
-   * @param stream the output archive to serialize to
-   **/
-  void tagged_serialize(madara_oarchive &archive) const
-  {
     using exceptions::BadAnyAccess;
 
     auto t = this->tag();
@@ -322,20 +343,21 @@ public:
       throw BadAnyAccess(std::string("tagged_serialize(): unregistered type: ")
           + handler_->tindex.name());
     }
+
+    madara_oarchive archive(stream);
     archive << std::string(t);
 
-    serialize(archive);
+    serialize(stream);
   }
 
   /**
-   * Serialize this Any to the given archive. Use this overload for
-   * Boost.Serialization archives other than madara_oarchive.
+   * Serialize this Any as JSON to the given std::ostream.
    *
-   * @param stream the output archive to serialize to
+   * @param o the output stream to serialize to
    **/
-  void serialize(json_oarchive &archive) const
+  void serialize_json(std::ostream &o) const
   {
-    handler_->save_json(archive, data_);
+    handler_->save_json(o, data_);
   }
 
   /**
@@ -344,11 +366,7 @@ public:
   std::string to_json() const
   {
     std::ostringstream stream;
-    {
-      cereal::JSONOutputArchive json(stream);
-      json.makeArray();
-      impl().serialize(json);
-    }
+    serialize_json(stream);
     return stream.str();
   }
 

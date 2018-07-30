@@ -2089,12 +2089,13 @@ const CheckpointSettings & settings) const
         if (i->second.is_any_type())
         {
           const Any &any = i->second.get_any_cref();
+          /*
           const char *tag = any.tag();
           json_oarchive json_out(buffer);
           json_out.setNextName(tag ?
               (std::string("Any<") + tag + ">").c_str() :
-              "Any<UKNOWN_ANY_TYPE>");
-          any.serialize(json_out);
+              "Any<UKNOWN_ANY_TYPE>");*/
+          any.serialize_json(buffer);
         }
         else if (!i->second.is_binary_file_type ())
         {

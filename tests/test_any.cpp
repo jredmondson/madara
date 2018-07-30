@@ -5,6 +5,11 @@
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/utility/SupportTest.h"
+
+#include "kj/io.h"
+#include "capnp/serialize.h"
+#include "capnfiles/Point.capn.h"
+
 #include "test.h"
 
 namespace logger = madara::logger;
@@ -106,9 +111,6 @@ void test_any()
 
   static_assert(supports_str_index<decltype(ns::C::m)>::value, "C::m must support str_index");
   static_assert(supports_cast_to_record<decltype(ns::C::i)>::value, "C::i must support to_record");
-
-  static_assert(!madara_serialize_directly(type<ns::B>{}),"");
-  static_assert(!madara_serialize_directly(type<ns::C>{}),"");
 
   std::string test;
   auto testkr = knowledge_cast(test);
@@ -271,6 +273,27 @@ void test_map(T &kb)
   kb.save_as_json("/tmp/madara_test_any.json");
 }
 
+namespace madara
+{
+  template<typename T, typename C>
+  struct CapnPrimitive {
+    using CapnType = C;
+    using FieldType = T;
+
+    T (C::Reader::* getter)() const;
+    void (C::Builder::* setter)(T val);
+  };
+
+  template<typename C, typename T>
+  CapnPrimitive<T, C> MakeCapnPrimitive(
+      T (C::Reader::* getter)() const,
+      void (C::Builder::* setter)(T val)
+    )
+  {
+    return {getter, setter};
+  }
+}
+
 namespace geo
 {
   struct Point
@@ -288,6 +311,38 @@ namespace geo
     fun("y", val.y);
     fun("z", val.z);
   };
+
+  /*
+  template<typename T>
+  auto get_capnproto_type_info_Point_X(type<T>,
+      ::madara::overload_priority_weakest) ->
+    decay_<decltype(
+        std::declval<typename T::Builder>().setX(
+          std::declval<typename T::Reader>().getX()),
+        std::declval<::madara::CapnPrimitive>())>
+  {
+    return {&T::Reader::getX(), &T::Builder::setX()};
+  }
+
+  template<typename T>
+  auto get_capnproto_type_info_Point_X(type<T>,
+      ::madara::overload_priority<12>()) ->
+    decltype(std::declval<typename T::Builder>().setX(
+          std::declval<typename T::Reader>().getX()), CapnPrimitive{0, 0})
+  {
+    return {&T::Reader::getX(), &T::Builder::setX()}
+  }*/
+
+  template<typename Fun>
+  type<geo_capn::Point> for_each_member(type<Point>, Fun&& fun)
+  {
+    fun("x",
+        &Point::x,
+        ::madara::MakeCapnPrimitive<geo_capn::Point>(&geo_capn::Point::Reader::getX, &geo_capn::Point::Builder::setX)
+       // get_capnproto_type_info_Point_X(type<geo_capn::Point>{}, ::madara::select_overload())
+        );
+    return {};
+  }
 
   struct Quaternion
   {
@@ -366,6 +421,43 @@ namespace geo
     Any::register_type<Stamp>("Stamp");
     Any::register_type<StampedPose>("StampedPose");
   }
+}
+
+void test_capn()
+{
+  capnp::MallocMessageBuilder buffer;
+  auto builder = buffer.initRoot<geo_capn::Point>();
+  builder.setX(3);
+  builder.setY(6);
+  builder.setZ(9);
+
+  kj::VectorOutputStream vec;
+  capnp::writeMessage(vec, buffer);
+
+  auto data = vec.getArray();
+  UnknownCapnObject obj("Point", data.asChars().begin(), data.size());
+
+  auto reader = obj.reader(type<geo_capn::Point>());
+  TEST_EQ(reader.getX(), 3);
+  TEST_EQ(reader.getY(), 6);
+  TEST_EQ(reader.getZ(), 9);
+
+  CapnObject<geo_capn::Point> obj2(data.asChars().begin(), data.size());
+
+  auto reader2 = obj2.reader();
+  TEST_EQ(reader2.getX(), 3);
+  TEST_EQ(reader2.getY(), 6);
+  TEST_EQ(reader2.getZ(), 9);
+
+  using CapnPoint = CapnObject<geo_capn::Point>;
+  CapnPoint def;
+  Any a(std::move(obj2));
+
+  TEST_EQ(a.reader<geo_capn::Point>().getX(), 3);
+  TEST_EQ(a.reader<geo_capn::Point>().getY(), 6);
+  TEST_EQ(a.reader<geo_capn::Point>().getZ(), 9);
+
+  VAL(a);
 }
 
 void test_geo()
@@ -518,6 +610,8 @@ int main (int, char **)
   test_geo();
 
   test_example();
+
+  test_capn();
 
   if (madara_tests_fail_count > 0)
   {

@@ -104,6 +104,21 @@ public:
     return impl().ref(type<T>{});
   }
 
+  template<typename T>
+  T *ptr(type<T> t) const
+  {
+    if (!impl().try_type(t)) {
+      return nullptr;
+    }
+    return &impl().ref_unsafe(t);
+  }
+
+  template<typename T>
+  T *ptr() const
+  {
+    return ptr(type<T>{});
+  }
+
   /**
    * Access the Any's stored value's field by reference. First, uses
    * ref<Class>(), where Class is the owner of the given pointer-to-member.
