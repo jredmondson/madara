@@ -1451,16 +1451,23 @@ project (Test_Simtime) : using_madara, no_karl, no_xml, null_lock, using_simtime
   }
 }
 
+project (Test_CapnFiles) {
+  requires += tests
+
+  prebuild = capnp compile -I $(CAPNP_ROOT)/c++/src $(MADARA_ROOT)/tests/capnfiles/*.capn -oc++
+  custom_only = 1
+}
+
 project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
+
+  after += Test_CapnFiles
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_any
   
   Documentation_Files {
   }
-
-  prebuild = capnp compile -I $(CAPNP_ROOT)/c++/src $(MADARA_ROOT)/tests/capnfiles/*.capn -oc++
 
   libs += capnp kj
 
