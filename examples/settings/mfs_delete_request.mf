@@ -1,0 +1,3 @@
+agent.0.delete.sandbox.files.all_files=1;
+//agent.0.delete.sandbox.projects.file.new_file.out=1;
+agent.0.delete.sandbox.projects.all_files=1;
