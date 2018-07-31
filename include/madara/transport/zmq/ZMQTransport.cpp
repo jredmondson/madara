@@ -50,11 +50,20 @@ madara::transport::ZMQTransport::close (void)
     int option = 2000;
 
     // if you don't do this, ZMQ waits forever for no reason. Super smart.
-    zmq_setsockopt (write_socket_, ZMQ_LINGER, (void *)&option, sizeof (int));
+    int result = zmq_setsockopt (
+      write_socket_, ZMQ_LINGER, (void *)&option, sizeof (int));
 
     madara::utility::sleep (0.100);
 
-    zmq_close (write_socket_);
+    result = zmq_close (write_socket_);
+
+    if (result != 0)
+    {
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
+        "ZMQTransport::close:" \
+        " ERROR: errno = %s\n",
+        zmq_strerror (zmq_errno ()));
+    }
   }
 
   madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -102,6 +111,17 @@ madara::transport::ZMQTransport::setup (void)
 
     write_socket_ = zmq_socket (zmq_context.get_context (), ZMQ_PUB);
 
+    if (write_socket_ == NULL)
+    {
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
+        "ZMQTransport::setup:" \
+        " ERROR: could not create PUB socket\n");
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
+        "ZMQTransport::setup:" \
+        " ERROR: errno = %s\n",
+        zmq_strerror (zmq_errno ()));
+    }
+
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "ZMQTransport::setup:" \
       " binding write to %s\n",
@@ -115,7 +135,7 @@ madara::transport::ZMQTransport::setup (void)
         "ZMQTransport::setup:" \
         " ERROR: could not bind to %s\n",
         settings_.hosts[0].c_str ());
-      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
         "ZMQTransport::setup:" \
         " ERROR: errno = %s\n",
         zmq_strerror (zmq_errno ()));
@@ -155,7 +175,7 @@ madara::transport::ZMQTransport::setup (void)
     }
     else
     {
-      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
         "ZMQTransport::setup:" \
         " ERROR: errno = %s\n",
         zmq_strerror (zmq_errno ()));
@@ -177,7 +197,7 @@ madara::transport::ZMQTransport::setup (void)
     }
     else
     {
-      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
         "ZMQTransport::setup:" \
         " ERROR: When setting timeout on send, errno = %s\n",
         zmq_strerror (zmq_errno ()));
