@@ -103,6 +103,9 @@ containers::Integer shutdown_request;
 containers::Integer current_send_bandwidth;
 containers::Integer current_total_bandwidth;
 
+// delete the kb entries
+bool delete_kb_entries (false);
+
 struct Request
 {
   std::string sandbox;
@@ -148,6 +151,7 @@ struct Sandbox
   bool recursive;
   bool valid;
   containers::Map files;
+  knowledge::KnowledgeBase kb;
 
   inline void read (containers::FlexMap & map,
     const std::string sandbox_id, knowledge::KnowledgeBase kb)
@@ -384,7 +388,42 @@ struct Sandbox
           "delete_all_files: deleting file %s\n",
           filename.c_str ());
 
+        std::string temp = prefix + ".sandbox." + this->id + ".file.";
+        temp += filename.substr (this->path.size () + 1);
         filesystem::remove (filename);
+
+        madara_logger_ptr_log (
+          logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "delete_all_files: deleting keys with %s prefix in KB\n",
+          temp.c_str ());
+
+        bool clear_result = false;
+
+        clear_result = kb.clear (temp + ".size");
+
+        madara_logger_ptr_log (
+          logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "process_requests: deleted key %s. result=%d\n",
+          (temp + ".size").c_str (), (int)clear_result);
+
+        clear_result = kb.clear (temp + ".last_modified");
+
+        madara_logger_ptr_log (
+          logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "process_requests: deleted key %s. result=%d\n",
+          (temp + ".last_modified").c_str (), (int)clear_result);
+
+        clear_result = kb.clear (temp + ".contents");
+
+        madara_logger_ptr_log (
+          logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "process_requests: deleted key %s. result=%d\n",
+          (temp + ".contents").c_str (), (int)clear_result);
+
       }
     }
   }
@@ -499,7 +538,8 @@ class HandleRequests : public filters::AggregateFilter
               logger::global_logger.get (),
               logger::LOG_ERROR,
               "HandleRequests: ERROR: parameter %s was neither all files "
-              "or a specific file. Check for malformed request.\n");
+              "or a specific file. Check for malformed request.\n",
+              record->first.c_str ());
           } // end else of sandbox end check
 
           if (!bad_record)
@@ -574,7 +614,7 @@ class HandleRequests : public filters::AggregateFilter
           {
             madara_logger_ptr_log (
               logger::global_logger.get (),
-              logger::LOG_ERROR,
+              logger::LOG_ALWAYS,
               "HandleRequests: Enqueueing delete request.\n");
 
             delete_requests.add (delete_request);
@@ -600,7 +640,7 @@ void process_requests (
 
   madara_logger_ptr_log (
     logger::global_logger.get (),
-    logger::LOG_ERROR,
+    logger::LOG_ALWAYS,
     "process_requests: Requests queue size: %d, "
     "DeleteRequests queue size: %d\n",
     (int)requests.remaining (), (int)delete_requests.remaining ());
@@ -613,7 +653,7 @@ void process_requests (
 
     madara_logger_ptr_log (
       logger::global_logger.get (),
-      logger::LOG_ERROR,
+      logger::LOG_ALWAYS,
       "process_requests: Request: sandbox=%s "
       "file=%s, last_mod=%d\n",
       request.sandbox.c_str (), request.filename.c_str (),
@@ -637,6 +677,14 @@ void process_requests (
           {
             if (filesystem::is_regular_file (filename))
             {
+              madara_logger_ptr_log (
+                logger::global_logger.get (),
+                logger::LOG_ALWAYS,
+                "process_requests: SUCCESS: "
+                "requested file %s is being read into %s.\n",
+                filename.c_str (),
+                (request.filename + ".contents").c_str ());
+
               sandbox.files.read_file (request.filename + ".contents",
                 sandbox.path + "/" + request.filename);
             } // end if a regular file
@@ -654,7 +702,7 @@ void process_requests (
           {
             madara_logger_ptr_log (
               logger::global_logger.get (),
-              logger::LOG_ERROR,
+              logger::LOG_ALWAYS,
               "process_requests: DROP: requested file %s has no "
               "new modifications, so dropping request.\n",
               filename.c_str ());
@@ -704,7 +752,40 @@ void process_requests (
 
           if (filesystem::is_regular_file (filename))
           {
+            std::string temp = prefix + ".sandbox." + sandbox.id + ".file.";
+            temp += delete_request.filename;
+
             filesystem::remove (sandbox.path + "/" + delete_request.filename);
+
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ALWAYS,
+              "process_requests: deleting keys with %s prefix in KB\n",
+              temp.c_str ());
+
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ALWAYS,
+              "process_requests: deleting key %s\n",
+              (temp + ".size").c_str ());
+
+            kb.clear (temp + ".size");
+
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ALWAYS,
+              "process_requests: deleting key %s\n",
+              (temp + ".last_modified").c_str ());
+
+            kb.clear (temp + ".last_modified");
+
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ALWAYS,
+              "process_requests: deleting key %s\n",
+              (temp + ".contents").c_str ());
+
+            kb.clear (temp + ".contents");
           } // end if a regular file
           else if (filesystem::is_directory (filename))
           {
