@@ -88,7 +88,7 @@ template<typename T>
 constexpr auto get_type_handler_load(type<T>, overload_priority<12>) ->
   knowledge::TypeHandlers::load_fn_type
 {
-  return [](std::istream &i, void *ptr) {
+  return [](std::istream &i, void *ptr, const char *) {
       T &val = *static_cast<T *>(ptr);
       knowledge::madara_iarchive archive(i);
       archive >> val;
@@ -122,7 +122,7 @@ template<typename T>
 constexpr auto get_type_handler_load_json(type<T>, overload_priority<12>) ->
   knowledge::TypeHandlers::load_json_fn_type
 {
-  return [](std::istream &i, void *ptr) {
+  return [](std::istream &i, void *ptr, const char *) {
       T &val = *static_cast<T *>(ptr);
       {
         knowledge::json_iarchive archive(i);

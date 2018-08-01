@@ -338,7 +338,7 @@ public:
     const TypeHandlers &handler = get_type_handler(t);
     std::unique_ptr<T> ptr(new T{});
 
-    handler.load(stream, (void*)ptr.get());
+    handler.load(stream, (void*)ptr.get(), AnyRegistry::get_type_name<T>());
 
     clear();
     this->data_ = reinterpret_cast<void*>(ptr.release());
@@ -410,7 +410,7 @@ public:
     const TypeHandlers &handler = get_type_handler(t);
     std::unique_ptr<T> ptr(new T{});
 
-    handler.load_json(i, (void*)ptr.get());
+    handler.load_json(i, (void*)ptr.get(), AnyRegistry::get_type_name<T>());
 
     clear();
     this->data_ = reinterpret_cast<void*>(ptr.release());
@@ -550,7 +550,7 @@ inline void BasicOwningAny<Impl, Base>::unserialize(
 {
   Any any(construct(type));
 
-  any.handler_->load(stream, any.data_);
+  any.handler_->load(stream, any.data_, type);
 
   using std::swap;
   swap(this->handler_, any.handler_);
@@ -563,7 +563,7 @@ inline void BasicOwningAny<Impl, Base>::unserialize_json(
 {
   Any any(construct(type));
 
-  any.handler_->load_json(i, any.data_);
+  any.handler_->load_json(i, any.data_, type);
 
   using std::swap;
   swap(this->handler_, any.handler_);

@@ -1005,10 +1005,10 @@ public:
 
   const char *tag() const
   {
-    if (!handler_ || !handler_->registered_name) {
+    if (!handler_) {
       return nullptr;
     }
-    return *handler_->registered_name;
+    return handler_->tag(data_);
   }
 
   std::pair<const TypeHandlers *, void *> get_pointers() const

@@ -146,7 +146,8 @@ struct TypeHandlers
 {
   type_index tindex;
 
-  const char * const *registered_name;
+  typedef const char * (*tag_fn_type)(void *);
+  tag_fn_type tag;
 
   typedef void *(*construct_default_fn_type)();
   construct_default_fn_type construct_default;
@@ -160,13 +161,13 @@ struct TypeHandlers
   typedef void (*save_fn_type)(std::ostream &, const void *);
   save_fn_type save;
 
-  typedef void (*load_fn_type)(std::istream &, void *);
+  typedef void (*load_fn_type)(std::istream &, void *, const char *);
   load_fn_type load;
 
   typedef void (*save_json_fn_type)(std::ostream &, const void *);
   save_json_fn_type save_json;
 
-  typedef void (*load_json_fn_type)(std::istream &, void *);
+  typedef void (*load_json_fn_type)(std::istream &, void *, const char *);
   load_json_fn_type load_json;
 
   typedef const std::vector<AnyField> &(*list_fields_fn_type)(void *);
@@ -219,6 +220,16 @@ inline std::string AnyField::type_name() const
   return handler_->tindex.name();
 }
 #endif
+
+/// Creates a function for getting type's tag
+template<typename T>
+constexpr auto get_type_handler_tag(type<T>,
+    overload_priority_weakest) -> TypeHandlers::tag_fn_type
+{
+  return [](void *) -> const char * {
+      return AnyRegistry::get_type_name<T>();
+    };
+}
 
 /// Creates a function for default constructing the given type.
 template<typename T>
@@ -374,7 +385,7 @@ inline const TypeHandlers &get_type_handler(type<T> t)
 {
   static const TypeHandlers handler {
       type_id<T>(),
-      &AnyRegistry::get_type_name<T>(),
+      get_type_handler_tag(t, select_overload()),
       get_type_handler_construct_default(t, select_overload()),
       get_type_handler_destruct(t, select_overload()),
       get_type_handler_clone(t, select_overload()),

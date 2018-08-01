@@ -1,5 +1,8 @@
 #include <string>
 #include <iostream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "madara/knowledge/Any.h"
 #include "madara/knowledge/KnowledgeRecord.h"
@@ -8,6 +11,7 @@
 
 #include "kj/io.h"
 #include "capnp/serialize.h"
+#include "capnp/schema-loader.h"
 #include "capnfiles/Point.capn.h"
 
 #include "test.h"
@@ -435,14 +439,22 @@ void test_capn()
   capnp::writeMessage(vec, buffer);
 
   auto data = vec.getArray();
-  UnknownCapnObject obj("Point", data.asChars().begin(), data.size());
+  GenericCapnObject obj("Point", data.asChars().begin(), data.size());
 
   auto reader = obj.reader(type<geo_capn::Point>());
   TEST_EQ(reader.getX(), 3);
   TEST_EQ(reader.getY(), 6);
   TEST_EQ(reader.getZ(), 9);
 
-  CapnObject<geo_capn::Point> obj2(data.asChars().begin(), data.size());
+  auto dynreader = obj.reader(capnp::Schema::from<geo_capn::Point>());
+  TEST_EQ(dynreader.get("x").template as<double>(), 3);
+  TEST_EQ(dynreader.get("y").template as<double>(), 6);
+  TEST_EQ(dynreader.get("z").template as<double>(), 9);
+  TEST_EQ(dynreader.get("x").template as<int>(), 3);
+  TEST_EQ(dynreader.get("y").template as<int>(), 6);
+  TEST_EQ(dynreader.get("z").template as<int>(), 9);
+
+  CapnObject<geo_capn::Point> obj2(buffer);
 
   auto reader2 = obj2.reader();
   TEST_EQ(reader2.getX(), 3);
@@ -456,6 +468,30 @@ void test_capn()
   TEST_EQ(a.reader<geo_capn::Point>().getX(), 3);
   TEST_EQ(a.reader<geo_capn::Point>().getY(), 6);
   TEST_EQ(a.reader<geo_capn::Point>().getZ(), 9);
+
+  VAL(a);
+
+  int fd = open(utility::expand_envs(
+          "$(MADARA_ROOT)/tests/capnfiles/Point.capn.bin").c_str(),
+      0, O_RDONLY);
+  TEST_GT(fd, 0);
+  capnp::StreamFdMessageReader schema_message_reader(fd);
+  auto schema_reader = schema_message_reader.getRoot<capnp::schema::CodeGeneratorRequest>();
+  LOG("Got schema node reader");
+  capnp::SchemaLoader loader;
+  auto schema = loader.load(schema_reader.getNodes()[1]).asStruct();
+  LOG("Loaded schema");
+  auto dynbuilder = buffer.initRoot<capnp::DynamicStruct>(schema);
+  dynbuilder.set("x", 4);
+  dynbuilder.set("y", 8);
+  dynbuilder.set("z", 12);
+  GenericCapnObject obj3("Point", buffer);
+  dynreader = obj3.reader(schema);
+  TEST_EQ(dynreader.get("x").template as<double>(), 4);
+  TEST_EQ(dynreader.get("y").template as<double>(), 8);
+  TEST_EQ(dynreader.get("z").template as<double>(), 12);
+
+  a.set(std::move(obj3));
 
   VAL(a);
 }

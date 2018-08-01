@@ -16,6 +16,7 @@ lib*
 .vimrc
 *.vcxproj
 *.vcxproj.filters
+*.capn.*
 MADARA.VC.VC.opendb
 MADARA.VC.db
 MADARA.sln
