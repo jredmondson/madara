@@ -689,15 +689,16 @@ void process_requests (
           {
             if (filesystem::is_regular_file (filename))
             {
+              std::string contents_key = request.filename + ".contents";
               madara_logger_ptr_log (
                 logger::global_logger.get (),
                 logger::LOG_ALWAYS,
                 "process_requests: SUCCESS: "
                 "requested file %s is being read into %s.\n",
                 filename.c_str (),
-                (request.filename + ".contents").c_str ());
+                contents_key.c_str ());
 
-              sandbox.files.read_file (request.filename + ".contents",
+              sandbox.files.read_file (contents_key,
                 sandbox.path + "/" + request.filename);
             } // end if a regular file
             else
@@ -745,7 +746,7 @@ void process_requests (
       logger::global_logger.get (),
       logger::LOG_ERROR,
       "process_requests: DeleteRequest: sandbox=%s file=%s\n",
-      delete_request.sandbox.c_str (), delete_request.filename.c_str ())
+      delete_request.sandbox.c_str (), delete_request.filename.c_str ());
 
     for (auto sandbox : sandboxes)
     {
@@ -767,6 +768,10 @@ void process_requests (
             std::string temp = prefix + ".sandbox." + sandbox.id + ".file.";
             temp += delete_request.filename;
 
+            std::string contents_key = temp + ".contents";
+            std::string size_key = temp + ".size";
+            std::string last_modified_key = temp + ".last_modified";
+
             filesystem::remove (sandbox.path + "/" + delete_request.filename);
 
             madara_logger_ptr_log (
@@ -779,25 +784,25 @@ void process_requests (
               logger::global_logger.get (),
               logger::LOG_ALWAYS,
               "process_requests: deleting key %s\n",
-              (temp + ".size").c_str ());
+              size_key.c_str ());
 
-            kb.clear (temp + ".size");
-
-            madara_logger_ptr_log (
-              logger::global_logger.get (),
-              logger::LOG_ALWAYS,
-              "process_requests: deleting key %s\n",
-              (temp + ".last_modified").c_str ());
-
-            kb.clear (temp + ".last_modified");
+            kb.clear (size_key);
 
             madara_logger_ptr_log (
               logger::global_logger.get (),
               logger::LOG_ALWAYS,
               "process_requests: deleting key %s\n",
-              (temp + ".contents").c_str ());
+              last_modified_key.c_str ());
 
-            kb.clear (temp + ".contents");
+            kb.clear (last_modified_key);
+
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ALWAYS,
+              "process_requests: deleting key %s\n",
+              contents_key.c_str ());
+
+            kb.clear (contents_key);
           } // end if a regular file
           else if (filesystem::is_directory (filename))
           {
