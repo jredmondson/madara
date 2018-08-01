@@ -12,6 +12,6 @@ feature (clang) {
   }
 
   verbatim (make, local, true) {
-    CPPFLAGS := -stdlib=libc++ $(CPPFLAGS)
+    CPPFLAGS := -Wundef -stdlib=libc++ $(CPPFLAGS)
   }
 }
