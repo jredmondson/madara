@@ -154,8 +154,9 @@ struct Sandbox
   knowledge::KnowledgeBase kb;
 
   inline void read (containers::FlexMap & map,
-    const std::string sandbox_id, knowledge::KnowledgeBase kb)
+    const std::string sandbox_id, knowledge::KnowledgeBase & actual_kb)
   {
+    kb = actual_kb;
     id = sandbox_id;
     path = map.to_string ();
     recursive = map["recursive"].is_true ();
@@ -400,29 +401,33 @@ struct Sandbox
 
         bool clear_result = false;
 
-        clear_result = kb.clear (temp + ".size");
+        std::string contents_key = temp + ".contents";
+        std::string size_key = temp + ".size";
+        std::string last_modified_key = temp + ".last_modified";
+
+        clear_result = kb.clear (size_key);
 
         madara_logger_ptr_log (
           logger::global_logger.get (),
           logger::LOG_ALWAYS,
           "process_requests: deleted key %s. result=%d\n",
-          (temp + ".size").c_str (), (int)clear_result);
+          size_key.c_str (), (int)clear_result);
 
-        clear_result = kb.clear (temp + ".last_modified");
-
-        madara_logger_ptr_log (
-          logger::global_logger.get (),
-          logger::LOG_ALWAYS,
-          "process_requests: deleted key %s. result=%d\n",
-          (temp + ".last_modified").c_str (), (int)clear_result);
-
-        clear_result = kb.clear (temp + ".contents");
+        clear_result = kb.clear (last_modified_key);
 
         madara_logger_ptr_log (
           logger::global_logger.get (),
           logger::LOG_ALWAYS,
           "process_requests: deleted key %s. result=%d\n",
-          (temp + ".contents").c_str (), (int)clear_result);
+          last_modified_key.c_str (), (int)clear_result);
+
+        clear_result = kb.clear (contents_key);
+
+        madara_logger_ptr_log (
+          logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "process_requests: deleted key %s. result=%d\n",
+          contents_key.c_str (), (int)clear_result);
 
       }
     }
@@ -555,6 +560,13 @@ class HandleRequests : public filters::AggregateFilter
       } // end if begins with sync prefix
       else if (utility::begins_with (record->first, delete_sandbox_prefix))
       {
+        madara_logger_ptr_log (
+          logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "HandleRequests: DeleteRequest: sandbox=%s, "
+          "match=%s\n",
+          record->first.c_str (), delete_sandbox_prefix.c_str ());
+
         if (utility::ends_with (record->first, ".all_files"))
         {
           size_t sandbox_end = record->first.find (
@@ -564,13 +576,12 @@ class HandleRequests : public filters::AggregateFilter
             delete_sandbox_prefix.size (),
             sandbox_end - delete_sandbox_prefix.size ());
 
-            madara_logger_ptr_log (
-              logger::global_logger.get (),
-              logger::LOG_ALWAYS,
-              "HandleRequests: DeleteRequest: sandbox=%s, "
-              "all_files=1\n",
-              delete_request.sandbox.c_str (),
-              (int)delete_sandbox_prefix.size (), (int)sandbox_end);
+          madara_logger_ptr_log (
+            logger::global_logger.get (),
+            logger::LOG_ALWAYS,
+            "HandleRequests: DeleteRequest: sandbox=%s, "
+            "all_files=1\n",
+            delete_request.sandbox.c_str ());
 
           delete_request.all_files = true;
 
@@ -594,7 +605,7 @@ class HandleRequests : public filters::AggregateFilter
               logger::global_logger.get (),
               logger::LOG_ALWAYS,
               "HandleRequests: DeleteRequest: sandbox=%s "
-              "file=%s, last_mod=%d\n",
+              "file=%s\n",
               delete_request.sandbox.c_str (),
               delete_request.filename.c_str ());
 
@@ -607,7 +618,8 @@ class HandleRequests : public filters::AggregateFilter
               logger::global_logger.get (),
               logger::LOG_ERROR,
               "HandleRequests: ERROR: parameter %s was neither all files "
-              "or a specific file. Check for malformed delete request.\n");
+              "or a specific file. Check for malformed delete request.\n",
+              record->first.c_str ());
           } // end else of sandbox end check
 
           if (!bad_record)
