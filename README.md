@@ -22,7 +22,7 @@ We have an extensive Wiki on this site that covers common usage patterns, perfor
 for C++, Java and Python. Below, you'll find starting points. A more extensive list of Wiki pages can be found
 on the [Wiki](https://github.com/jredmondson/madara/wiki) tab.
 
-[Youtube Guide to Multi-Agent Autonomy](https://www.youtube.com/watch?v=Qvl3YriLMYI&list=PLSNlEg26NNpwi4ggcPYU8JvS1aVtV60_z)
+[Youtube Guide to Multi-Agent Autonomy](https://www.youtube.com/playlist?list=PL2htjCHh_RcyqGXpHY6fSt3skqxJRiBH3)
 
 [C++ API Docs](http://madara.readthedocs.io/) | [C++ Tutorial](https://github.com/jredmondson/madara/wiki/MadaraArchitecture/)\
 [Java Docs](https://www.javadoc.io/doc/ai.madara/madara) | [Java Tutorial](https://github.com/jredmondson/madara/wiki/JavaMadaraArchitecture/)\
