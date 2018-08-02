@@ -47,15 +47,8 @@ madara::transport::ZMQTransport::close (void)
 
   if (write_socket_ != 0)
   {
-    int option = 2000;
-
-    // if you don't do this, ZMQ waits forever for no reason. Super smart.
-    int result = zmq_setsockopt (
-      write_socket_, ZMQ_LINGER, (void *)&option, sizeof (int));
-
-    madara::utility::sleep (0.100);
-
-    result = zmq_close (write_socket_);
+    int result = zmq_close (write_socket_);
+    write_socket_ = 0;
 
     if (result != 0)
     {
@@ -153,6 +146,7 @@ madara::transport::ZMQTransport::setup (void)
     //int rcv_buff_size = 0;
     int buff_size = settings_.queue_length;
     int timeout = 300;
+    int zero = 0;
     size_t opt_len = sizeof (int);
 
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -180,6 +174,10 @@ madara::transport::ZMQTransport::setup (void)
         " ERROR: errno = %s\n",
         zmq_strerror (zmq_errno ()));
     }
+
+    // if you don't do this, ZMQ waits forever for no reason. Super smart.
+    result = zmq_setsockopt (
+      write_socket_, ZMQ_LINGER, (void *)&zero, sizeof (int));
 
 
     result = zmq_setsockopt (

@@ -38,6 +38,7 @@ madara::transport::ZMQTransportReadThread::init (
     int timeout = 1000;
     int buff_size = settings_.queue_length;
     int result;
+    int zero = 0;
     size_t opt_len = sizeof (int);
 
     // setup the receive buffer
@@ -77,6 +78,10 @@ madara::transport::ZMQTransportReadThread::init (
         " ERROR: errno = %s\n",
         zmq_strerror (zmq_errno ()));
     }
+
+    // if you don't do this, ZMQ waits forever for no reason. Super smart.
+    result = zmq_setsockopt (
+      read_socket_, ZMQ_LINGER, (void *)&zero, sizeof (int));
 
     madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
       "ZMQTransportReadThread::init:" \
@@ -214,14 +219,8 @@ madara::transport::ZMQTransportReadThread::cleanup (void)
       "ZMQTransportReadThread::cleanup:" \
       " closing read socket\n");
 
-    int option = 0;
-    // if you don't do this, ZMQ waits forever for no reason. Super smart.
-    int result = zmq_setsockopt (
-      read_socket_, ZMQ_LINGER, (void *)&option, sizeof (int));
-
-    madara::utility::sleep (0.100);
-
-    result = zmq_close (read_socket_);
+    int result = zmq_close (read_socket_);
+    read_socket_ = 0;
 
     if (result != 0)
     {

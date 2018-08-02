@@ -1,5 +1,5 @@
 
-project (MADARA_Python) : using_madara, port/python/using_python {
+project (MADARA_Python) : using_madara, port/python/using_python, using_lz4, using_ssl {
 
   requires += python
   
