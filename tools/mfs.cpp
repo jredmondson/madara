@@ -475,7 +475,8 @@ class HandleRequests : public filters::AggregateFilter
     request.requester = transport_context.get_originator ();
     delete_request.requester = request.requester;
 
-    record = records.lower_bound (prefix);
+    // record = records.lower_bound (prefix);
+    record = records.begin ();
 
     madara_logger_ptr_log (
       logger::global_logger.get (),
