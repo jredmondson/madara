@@ -115,6 +115,24 @@ madara::transport::ZMQTransport::setup (void)
         zmq_strerror (zmq_errno ()));
     }
 
+    for (size_t i = 0; i < settings_.hosts.size (); ++i)
+    {
+      if (!utility::begins_with (settings_.hosts[i], "tcp://") &&
+          !utility::begins_with (settings_.hosts[i], "ipc://") &&
+          !utility::begins_with (settings_.hosts[i], "inproc://") &&
+          !utility::begins_with (settings_.hosts[i], "pgm://") &&
+          !utility::begins_with (settings_.hosts[i], "epgm://")
+          )
+      {
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+          "ZMQTransport::setup:" \
+          " converting incorrect host format to tcp://%s\n",
+          settings_.hosts[i].c_str ());
+          
+        settings_.hosts[i] = "tcp://" + settings_.hosts[i];
+      }
+    }
+
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "ZMQTransport::setup:" \
       " binding write to %s\n",
