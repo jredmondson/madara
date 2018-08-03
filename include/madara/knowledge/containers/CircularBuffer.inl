@@ -200,6 +200,8 @@ CircularBuffer::add (
 
   context_->set (buffer_.vector_[(size_t)index], record, settings_);
 
+  context_->mark_modified (size_ref_);
+
   ++index_;
 }
 
@@ -231,6 +233,8 @@ CircularBuffer::add (
 
     context_->set (buffer_.vector_[(size_t)index], record, settings_);
   }
+
+  context_->mark_modified (size_ref_);
 
   index_ += (KnowledgeRecord::Integer)records.size ();
 }
