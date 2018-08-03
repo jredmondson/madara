@@ -76,7 +76,7 @@ KnowledgeRecord::read_file (
   if (is_string_type (read_as_type) || 
     extension == ".txt" || extension == ".xml")
   {
-    add_zero_char = true;
+    add_zero_char = false;
   }
 
   // read the file into the temporary buffer
@@ -87,7 +87,7 @@ KnowledgeRecord::read_file (
            || extension == ".txt" || extension == ".xml")
     {
       // change the string value and size to appropriate values
-      str_value_ = std::make_shared<std::string> ((char *)buffer, size-1);
+      emplace_string ((char *)buffer, size);
 
       if (is_string_type (read_as_type))
         type_ = read_as_type;
