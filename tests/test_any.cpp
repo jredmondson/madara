@@ -1,3 +1,5 @@
+#define BOOST_PP_VARIADICS 1
+
 #include <string>
 #include <iostream>
 #include <sys/types.h>

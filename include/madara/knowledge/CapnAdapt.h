@@ -9,8 +9,6 @@
  * generated types
  **/
 
-#define BOOST_PP_VARIADICS 1
-
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/tuple/rem.hpp>
