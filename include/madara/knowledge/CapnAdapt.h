@@ -13,6 +13,7 @@
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/tuple/rem.hpp>
 #include <boost/preprocessor/facilities/overload.hpp>
+#include <boost/preprocessor/facilities/expand.hpp>
 
 #include "madara/utility/SupportTest.h"
 
