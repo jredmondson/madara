@@ -9,7 +9,7 @@
  * generated types
  **/
 
-#include <boost/preprocessor/seq/variadic_seq_to_seq.hpp>
+#include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/tuple/rem.hpp>
 #include <boost/preprocessor/facilities/overload.hpp>
@@ -405,6 +405,18 @@ namespace utility { inline namespace core {
 
 } } }
 
+#define MADARA_PP_VARIADIC_SEQ_TO_SEQ(vseq) \
+  BOOST_PP_CAT(MADARA_PP_VARIADIC_SEQ_TO_SEQ_A vseq, 0)
+
+#define MADARA_PP_VARIADIC_SEQ_TO_SEQ_A(...) \
+  ((__VA_ARGS__)) MADARA_PP_VARIADIC_SEQ_TO_SEQ_B
+
+#define MADARA_PP_VARIADIC_SEQ_TO_SEQ_B(...) \
+  ((__VA_ARGS__)) MADARA_PP_VARIADIC_SEQ_TO_SEQ_A
+
+#define MADARA_PP_VARIADIC_SEQ_TO_SEQ_A0
+#define MADARA_PP_VARIADIC_SEQ_TO_SEQ_B0
+
 #define MADARA_CAPNPRIM_DETECT(TYPE, FIELD) \
   MADARA_MAKE_VAL_SUPPORT_TEST(madara_capn_struct_##TYPE##_has##FIELD, \
       MADARA_x, MADARA_x.has##FIELD()); \
@@ -508,6 +520,6 @@ namespace utility { inline namespace core {
 
 #define MADARA_CAPN_MEMBERS(TYPE, CAPNTYPE, FIELDS) \
   MADARA_CAPN_MEMBERS_IMPL(TYPE, CAPNTYPE, \
-      BOOST_PP_VARIADIC_SEQ_TO_SEQ(FIELDS))
+      MADARA_PP_VARIADIC_SEQ_TO_SEQ(FIELDS))
 
 #endif // MADARA_KNOWLEDGE_CAPNADAPT_H_
