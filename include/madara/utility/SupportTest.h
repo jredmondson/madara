@@ -109,7 +109,7 @@ template<class Ret = void>
 struct ignore_all
 {
   template<typename... Args>
-  constexpr Ret operator()(Args&&...) const { return Ret{}; }
+  constexpr Ret operator()(Args&&...) const { return Ret(); }
 };
 
 /// Helper type for managing overload priority. Use overload_priority alias
@@ -166,6 +166,38 @@ std::unique_ptr<T> mk_unique(Args&&... args)
 {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
+
+template<typename Type, typename Class>
+Class class_of_pointer_to_member_impl(Type Class::*);
+
+template<typename T>
+using class_of_pointer_to_member = decltype(class_of_pointer_to_member_impl(T()));
+
+template<typename Type, typename Class>
+Type type_of_pointer_to_member_impl(Type Class::*);
+
+template<typename T>
+using type_of_pointer_to_member = decltype(type_of_pointer_to_member_impl(T()));
+
+#define MADARA_AUTORET_FUNC(NAME, ARGS, ...) \
+  inline auto NAME ARGS -> decay_<decltype(__VA_ARGS__)> { \
+    return (__VA_ARGS__); }
+
+#define MADARA_AUTORET_REF_FUNC(NAME, ARGS, ...) \
+  inline auto NAME ARGS -> decltype(__VA_ARGS__) { \
+    return (__VA_ARGS__); }
+
+template<typename Func, typename Arg0>
+MADARA_AUTORET_REF_FUNC(invoke_, (Func func, Arg0 &&arg0),
+    std::forward<Arg0>(arg0).*func)
+
+template<typename Func, typename Arg0, typename... Args>
+MADARA_AUTORET_REF_FUNC(invoke_, (Func func, Arg0 &&arg0, Args&&... args),
+    (std::forward<Arg0>(arg0).*func)(std::forward<Args>(args)...))
+
+template<typename Func, typename... Args>
+MADARA_AUTORET_REF_FUNC(invoke_, (Func func, Args&&... args),
+    func(std::forward<Args>(args)...))
 
 }
 

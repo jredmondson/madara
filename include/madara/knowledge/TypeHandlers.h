@@ -419,6 +419,9 @@ inline const TypeHandlers &get_type_handler()
 MADARA_MAKE_VAL_SUPPORT_TEST(for_each_field, x,
     for_each_field(::madara::ignore_all<>{}, x));
 
+MADARA_MAKE_VAL_SUPPORT_TEST(for_each_member, x,
+    for_each_member(type<decay_<decltype(x)>>{}, ignore_all<void>{}));
+
 MADARA_MAKE_VAL_SUPPORT_TEST(size_member, x, (1UL == x.size()));
 MADARA_MAKE_VAL_SUPPORT_TEST(resize_member, x, (x.resize(1UL)));
 MADARA_MAKE_VAL_SUPPORT_TEST(int_index, x, (x[1UL] = x[1UL]));

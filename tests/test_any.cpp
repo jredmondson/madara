@@ -8,10 +8,8 @@
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/utility/SupportTest.h"
+#include "madara/knowledge/CapnAdapt.h"
 
-#include "kj/io.h"
-#include "capnp/serialize.h"
-#include "capnp/schema-loader.h"
 #include "capnfiles/Point.capn.h"
 
 #include "test.h"
@@ -33,6 +31,8 @@ struct A
     ar & a & b & c;
   }
 };
+
+MADARA_USE_CEREAL(A);
 
 namespace madara { namespace utility { inline namespace core {
 
@@ -223,6 +223,10 @@ void test_any()
   Tracker t(at.take<Tracker>());
   TEST_EQ(t.copied, 0);
   TEST_LE(t.moved, 2);
+
+  Any a4(std::vector<ns::B>{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
+  a4.serialize(buf);
+  VAL(a4);
 }
 
 void test_record()
@@ -277,27 +281,6 @@ void test_map(T &kb)
   kb.save_as_json("/tmp/madara_test_any.json");
 }
 
-namespace madara
-{
-  template<typename T, typename C>
-  struct CapnPrimitive {
-    using CapnType = C;
-    using FieldType = T;
-
-    T (C::Reader::* getter)() const;
-    void (C::Builder::* setter)(T val);
-  };
-
-  template<typename C, typename T>
-  CapnPrimitive<T, C> MakeCapnPrimitive(
-      T (C::Reader::* getter)() const,
-      void (C::Builder::* setter)(T val)
-    )
-  {
-    return {getter, setter};
-  }
-}
-
 namespace geo
 {
   struct Point
@@ -306,47 +289,21 @@ namespace geo
 
     Point() = default;
     Point(double x, double y, double z = 0) : x(x), y(y), z(z) {}
+
+    double &getX() { return x; }
+    double &getY() { return y; }
+    double &getZ() { return z; }
   };
 
-  template<typename Fun>
-  void for_each_field(Fun fun, Point& val)
-  {
-    fun("x", val.x);
-    fun("y", val.y);
-    fun("z", val.z);
-  };
+  MADARA_CAPN_MEMBERS(Point, geo_capn::Point,
+      (x, X, [](Point &p) -> double & { return p.x; })
+      (y, Y, &Point::getY)
+      (z, Z)
+    )
 
-  /*
-  template<typename T>
-  auto get_capnproto_type_info_Point_X(type<T>,
-      ::madara::overload_priority_weakest) ->
-    decay_<decltype(
-        std::declval<typename T::Builder>().setX(
-          std::declval<typename T::Reader>().getX()),
-        std::declval<::madara::CapnPrimitive>())>
-  {
-    return {&T::Reader::getX(), &T::Builder::setX()};
-  }
-
-  template<typename T>
-  auto get_capnproto_type_info_Point_X(type<T>,
-      ::madara::overload_priority<12>()) ->
-    decltype(std::declval<typename T::Builder>().setX(
-          std::declval<typename T::Reader>().getX()), CapnPrimitive{0, 0})
-  {
-    return {&T::Reader::getX(), &T::Builder::setX()}
-  }*/
-
-  template<typename Fun>
-  type<geo_capn::Point> for_each_member(type<Point>, Fun&& fun)
-  {
-    fun("x",
-        &Point::x,
-        ::madara::MakeCapnPrimitive<geo_capn::Point>(&geo_capn::Point::Reader::getX, &geo_capn::Point::Builder::setX)
-       // get_capnproto_type_info_Point_X(type<geo_capn::Point>{}, ::madara::select_overload())
-        );
-    return {};
-  }
+  static_assert(::madara::knowledge::supports_for_each_member<Point>::value, "");
+  static_assert(!madara_use_cereal(type<Point>{}), "");
+  static_assert(!madara_use_cereal(type<std::vector<Point>>{}), "");
 
   struct Quaternion
   {
@@ -357,14 +314,12 @@ namespace geo
       : w(w), i(i), j(j), k(k) {}
   };
 
-  template<typename Fun>
-  void for_each_field(Fun fun, Quaternion& val)
-  {
-    fun("w", val.w);
-    fun("i", val.i);
-    fun("j", val.j);
-    fun("k", val.k);
-  };
+  MADARA_CAPN_MEMBERS(Quaternion, geo_capn::Quaternion,
+      (w, W)
+      (i, I)
+      (j, J)
+      (k, K)
+    )
 
   struct Pose : Point, Quaternion
   {
@@ -374,12 +329,15 @@ namespace geo
       : Point(x, y, z), Quaternion(w, i, j, k) {}
   };
 
-  template<typename Fun>
-  void for_each_field(Fun fun, Pose& val)
-  {
-    for_each_field(fun, static_cast<Point&>(val));
-    for_each_field(fun, static_cast<Quaternion&>(val));
-  };
+  MADARA_CAPN_MEMBERS(Pose, geo_capn::Pose,
+      (x, X)
+      (y, Y)
+      (z, Z)
+      (w, W)
+      (i, I)
+      (j, J)
+      (k, K)
+    )
 
   struct Stamp
   {
@@ -387,12 +345,17 @@ namespace geo
     std::string frame;
   };
 
-  template<typename Fun>
-  void for_each_field(Fun fun, Stamp& val)
-  {
-    fun("time", val.time);
-    fun("frame", val.frame);
-  }
+  MADARA_CAPN_MEMBERS(Stamp, geo_capn::Stamp,
+      (time, Time)
+      (frame, Frame)
+    )
+
+  static_assert(supports_for_each_member<Stamp>::value, "");
+  static_assert(supports_madara_capn_struct_Stamp_hasFrame<
+      typename geo_capn::Stamp::Builder>::value, "");
+
+  static_assert(!supports_madara_capn_struct_Stamp_hasTime<
+      typename geo_capn::Stamp::Builder>::value, "");
 
   struct StampedPose : Pose
   {
@@ -410,12 +373,33 @@ namespace geo
       : Pose(x, y, z, w, i, j, k), stamp{time, frame} {}
   };
 
-  template<typename Fun>
-  void for_each_field(Fun fun, StampedPose& val)
+  MADARA_CAPN_MEMBERS(StampedPose, geo_capn::StampedPose,
+      (stamp, Stamp)
+      (x, X)
+      (y, Y)
+      (z, Z)
+      (w, W)
+      (i, I)
+      (j, J)
+      (k, K)
+    )
+
+  struct StampedPoseList
   {
-    fun("stamp", val.stamp);
-    for_each_field(fun, static_cast<Pose&>(val));
+    std::vector<StampedPose> list;
+    std::vector<int> data;
+    std::array<int, 3> arr3;
   };
+
+  MADARA_CAPN_MEMBERS(StampedPoseList, geo_capn::StampedPoseList,
+      (list, List)
+      (data, Data)
+      (arr3, Arr3)
+    )
+
+  static_assert(supports_for_each_member<StampedPoseList>::value, "");
+  static_assert(supports_capn_get<StampedPoseList>::value, "");
+  static_assert(supports_capn_set<StampedPoseList>::value, "");
 
   void register_types()
   {
@@ -479,8 +463,13 @@ void test_capn()
   auto schema_reader = schema_message_reader.getRoot<capnp::schema::CodeGeneratorRequest>();
   LOG("Got schema node reader");
   capnp::SchemaLoader loader;
-  auto schema = loader.load(schema_reader.getNodes()[1]).asStruct();
-  LOG("Loaded schema");
+  std::map<std::string, capnp::Schema> schemas;
+  for (auto schema : schema_reader.getNodes()) {
+    log("INFO  Loading schema %s\n", schema.getDisplayName());
+    schemas[schema.getDisplayName()] = loader.load(schema);
+  }
+  log("INFO  Loaded %i schemas\n", schemas.size());
+  auto schema = schemas.at("tests/capnfiles/Point.capn:Point").asStruct();
   auto dynbuilder = buffer.initRoot<capnp::DynamicStruct>(schema);
   dynbuilder.set("x", 4);
   dynbuilder.set("y", 8);
@@ -522,16 +511,17 @@ void test_geo()
   TEST_EQ(kb.get("s0").share_any()->cref("stamp")("frame")(
     (size_t (std::string::*)(char, size_t)const)&std::string::find, 'f', 0), 2UL);
 
-  std::vector<StampedPose> vs0 = {
+  StampedPoseList vs0 = {{
     {0, "frame0", 1, 2},
     {1, "frame1", 2, 3},
     {2, "frame2", 3, 4},
-  };
+  }, {2, 4, 6}, {{3, 6, 9}}};
   kb.set_any("vs0", std::move(vs0));
 
   VAL(kb.get("vs0").to_any());
-  TEST_EQ(kb.get("vs0").share_any()->size(), 3UL);
-  TEST_EQ(kb.get("vs0").get_any_cref()[1]("stamp")("frame").to_string(), "frame1");
+  TEST_EQ(kb.get("vs0").share_any()->ref("list").size(), 3UL);
+  TEST_EQ(kb.get("vs0").get_any_cref()("list")[1]("stamp")("frame").to_string(), "frame1");
+  TEST_EQ(kb.get("vs0").get_any_cref()("arr3")[1].to_integer(), 6);
 
   std::vector<char> buf;
 
@@ -555,6 +545,19 @@ void test_geo()
   p2.tagged_unserialize(buf.data(), buf.size());
   VAL(p2);
   VAL(p2.tag());
+
+  Any al0 = kb.get("l0").to_any();
+  al0.tagged_serialize(buf);
+  Any al1;
+  al1.tagged_unserialize(buf.data(), buf.size());
+  VAL(al1);
+
+  al0.serialize(buf);
+  al1.unserialize<CapnObject<geo_capn::Point>>(buf.data(), buf.size());
+  auto reader = al1.reader<geo_capn::Point>();
+  TEST_EQ(reader.getX(), 1);
+  TEST_EQ(reader.getY(), 2);
+  TEST_EQ(reader.getZ(), 3);
 }
 
 struct Example {
