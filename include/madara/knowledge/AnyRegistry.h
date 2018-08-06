@@ -48,6 +48,9 @@ public:
   static void register_schema(const char *name,
       const capnp::StructSchema &schema);
 
+  static const std::pair<const char *const , capnp::StructSchema> &
+    lookup_schema(const char *tag);
+
   template<typename T>
   static const char * const &get_type_name()
   {

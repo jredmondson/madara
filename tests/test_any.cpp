@@ -413,6 +413,8 @@ namespace geo
     Any::register_type<Stamp>("Stamp");
     Any::register_type<StampedPose>("StampedPose");
 
+    Any::register_schema("Point",
+        capnp::Schema::from<geo_capn::Point>());
     Any::register_schema("StampedPoseList",
         capnp::Schema::from<geo_capn::StampedPoseList>());
   }
@@ -481,6 +483,7 @@ void test_capn()
   dynbuilder.set("x", 4);
   dynbuilder.set("y", 8);
   dynbuilder.set("z", 12);
+
   GenericCapnObject obj3("Point", buffer);
   dynreader = obj3.reader(schema);
   TEST_EQ(dynreader.get("x").template as<double>(), 4);
@@ -488,6 +491,16 @@ void test_capn()
   TEST_EQ(dynreader.get("z").template as<double>(), 12);
 
   a.set(std::move(obj3));
+
+  VAL(a);
+
+  RegCapnObject obj4("Point", buffer);
+  dynreader = obj4.reader();
+  TEST_EQ(dynreader.get("x").template as<double>(), 4);
+  TEST_EQ(dynreader.get("y").template as<double>(), 8);
+  TEST_EQ(dynreader.get("z").template as<double>(), 12);
+
+  a.set(std::move(obj4));
 
   VAL(a);
 }

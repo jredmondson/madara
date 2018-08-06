@@ -330,6 +330,52 @@ public:
     auto data = vec.getArray();
     *this = RegCapnObject(tag, schema, data.asChars().begin(), data.size());
   }
+  /**
+   * Construct with no data, but with given tag.  The tag must be registered
+   * with the Any system.
+   **/
+  RegCapnObject(const char *tag) : Base()
+  {
+    const auto &pair = AnyRegistry::lookup_schema(tag);
+    tag_ = pair.first;
+    schema_ = pair.second;
+  }
+
+  /**
+   * Construct given tag, and data copied from given char buffer.
+   * The tag must be registered with the Any system.
+   **/
+  RegCapnObject(const char *tag, const char *d, size_t s) : Base(d, s)
+  {
+    const auto &pair = AnyRegistry::lookup_schema(tag);
+    tag_ = pair.first;
+    schema_ = pair.second;
+  }
+
+  /**
+   * Construct given tag, and data copied from given input stream.
+   * The tag must be registered with the Any system.
+   **/
+  RegCapnObject(const char *tag, std::istream &i, size_t s) : Base(i, s)
+  {
+    const auto &pair = AnyRegistry::lookup_schema(tag);
+    tag_ = pair.first;
+    schema_ = pair.second;
+  }
+
+  /**
+   * Construct given tag, and data copied from given Cap'n Proto message stream.
+   * The tag must already be registered with the Any system.
+   **/
+  template<typename Msg>
+  RegCapnObject(const char *tag, Msg &&msg,
+      decltype(capnp::writeMessage(
+          std::declval<kj::VectorOutputStream&>(),
+          std::declval<decay_<Msg>&>()), 0) = 0)
+  {
+    const auto &pair = AnyRegistry::lookup_schema(tag);
+    *this = RegCapnObject(pair.first, pair.second, std::forward<Msg>(msg));
+  }
 
   /**
    * Get a reader for the held type, with the held schema
