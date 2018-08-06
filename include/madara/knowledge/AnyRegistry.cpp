@@ -1,5 +1,7 @@
 #include "Any.h"
 
+#include "capnp/schema.h"
+
 using namespace madara;
 using namespace knowledge;
 
@@ -12,15 +14,28 @@ void AnyRegistry::register_type_impl(const char *name,
   type_builders.emplace(name, handler);
 }
 
+static std::map<const char *, capnp::StructSchema,
+                compare_const_char_ptr> schemas;
+
+void AnyRegistry::register_schema(const char *name,
+    const capnp::StructSchema &schema)
+{
+  schemas.emplace(name, schema);
+}
+
 Any AnyRegistry::construct(const char *name)
 {
-  auto iter = type_builders.find(name);
-  if (iter == type_builders.end()) {
-    throw exceptions::BadAnyAccess(std::string("Type ") + name +
-        " is not registered");
+  auto biter = type_builders.find(name);
+  if (biter != type_builders.end()) {
+    auto handler = biter->second;
+    return Any(handler, handler->construct_default());
   }
-  auto handler = iter->second;
-  return Any(handler, handler->construct_default());
+  auto siter = schemas.find(name);
+  if (siter != schemas.end()) {
+    return Any(type<RegCapnObject>{}, siter->first, siter->second);
+  }
+  throw exceptions::BadAnyAccess(std::string("Type ") + name +
+      " is not registered");
 }
 
 inline ConstAny AnyRegistry::construct_const(const char *name)

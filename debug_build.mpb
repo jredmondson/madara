@@ -7,6 +7,6 @@ feature(debug) {
   // Debug::lit_libs -= boost_systemd
   // Release::lit_libs -= boost_system
   verbatim (make, local) {
-    CPPFLAGS += -g -Og
+    CPPFLAGS += -g -O0
   }
 }

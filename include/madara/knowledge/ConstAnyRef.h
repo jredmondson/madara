@@ -308,6 +308,30 @@ public:
   }
 
   /**
+   * Serialize this Any to the given buffer with a tag string recording the
+   * saved type, for use with tagged_unserialize. Throws an exception if the
+   * buffer size is insufficient.
+   *
+   * @param tag tag to use
+   * @param data the buffer to serialize to
+   * @param size size of the buffer
+   * @return the actual number of bytes used during serialization
+   **/
+  size_t tagged_serialize(const char *tag, char *data, size_t size) const
+  {
+    namespace bio = boost::iostreams;
+
+    bio::array_sink output_sink(data, size);
+    bio::stream<bio::array_sink> output_stream(output_sink);
+
+    auto pos = output_stream.tellp();
+    impl().tagged_serialize(tag, output_stream);
+    auto len = output_stream.tellp() - pos;
+
+    return len;
+  }
+
+  /**
    * Serialize this Any to the given vector with a tag string recording the
    * saved type, for use with tagged_unserialize. The vector will be cleared
    * first, and resized as needed.
@@ -329,6 +353,28 @@ public:
   }
 
   /**
+   * Serialize this Any to the given vector with a tag string recording the
+   * saved type, for use with tagged_unserialize. The vector will be cleared
+   * first, and resized as needed.
+   *
+   * @param tag tag to use
+   * @param vec the vector to serialize to, which will be cleared first
+   * @return the actual number of bytes used during serialization
+   **/
+  size_t tagged_serialize(const char *tag, std::vector<char> &vec) const
+  {
+    namespace bio = boost::iostreams;
+
+    vec.clear();
+    auto output_sink = bio::back_inserter(vec);
+    bio::stream<decltype(output_sink)> output_stream(output_sink);
+
+    impl().tagged_serialize(tag, output_stream);
+
+    return vec.size();
+  }
+
+  /**
    * Serialize this Any to the given std::ostream with a tag string recording
    * the saved type, for use with tagged_unserialize.
    *
@@ -344,8 +390,20 @@ public:
           + handler_->tindex.name());
     }
 
+    tagged_serialize(t, stream);
+  }
+
+  /**
+   * Serialize this Any to the given std::ostream with a tag string recording
+   * the saved type, for use with tagged_unserialize.
+   *
+   * @param tag tag to use
+   * @param stream the output archive to serialize to
+   **/
+  void tagged_serialize(const char *tag, std::ostream &stream) const
+  {
     madara_oarchive archive(stream);
-    archive << std::string(t);
+    archive << std::string(tag);
 
     serialize(stream);
   }

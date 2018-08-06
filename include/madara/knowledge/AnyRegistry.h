@@ -22,6 +22,10 @@
 #include "madara/utility/IntTypes.h"
 #include "madara/exceptions/BadAnyAccess.h"
 
+namespace capnp {
+  class StructSchema;
+}
+
 namespace madara { namespace knowledge {
 
 class Any;
@@ -41,6 +45,9 @@ public:
   template<typename T>
   static void register_type(const char *name);
 
+  static void register_schema(const char *name,
+      const capnp::StructSchema &schema);
+
   template<typename T>
   static const char * const &get_type_name()
   {
@@ -51,15 +58,6 @@ public:
   static ConstAny construct_const(const char *name);
 
 protected:
-  /*
-  MADARA_EXPORT static std::map<const char *, std::function<Any()>,
-                  compare_const_char_ptr> &type_builders()
-  {
-    static std::map<const char *, std::function<Any()>,
-                    compare_const_char_ptr> type_builders_;
-    return type_builders_;
-  }*/
-
   static void register_type_impl(const char *name,
       const TypeHandlers *handler);
 

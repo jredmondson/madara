@@ -24,6 +24,9 @@
 #include "capnp/serialize.h"
 #include "capnp/schema-loader.h"
 
+// Hide these implementation details from Doxygen
+#ifndef DOXYGEN
+
 namespace madara { namespace knowledge {
 
 template<typename T, typename C>
@@ -562,6 +565,37 @@ namespace utility { inline namespace core {
     return {}; \
   }
 
+#endif // DOXYGEN
+
+/**
+ * Use this macro in the same namespace as your C++ type which you want to use
+ * as a translated version of a Cap'n Proto type. The Cap'n Proto type may be
+ * in any namespace. E.g.:
+ *
+ * ```
+ * struct Point { double x, y, z; };
+ * MADARA_CAPN_MEMBERS(Point, capntypes::Point,
+ *    (x, X)
+ *    (y, Y, &Point::y)
+ *    (z, Z, [](Point &p) -> double & { return p.z; } )
+ *  )
+ * ```
+ *
+ * @param TYPE The native C++ type. Must not have any namespace qualification.
+ * @param CAPNTYPE The corresponding Cap'n Proto type.
+ * @param FIELDS A sequence of two or three element parenthesized tuples
+ *    describing the fields to translate. Note that there is no comma between
+ *    each tuple (see above example). For the three-element version, the first
+ *    element must match the name of a field as given in the Cap'n Proto schema
+ *    for CAPNTYPE. The second element must be the UpperCamelCase name that
+ *    Cap'n Proto generates for CAPNTYPE (i.e., excluding the `get`, `set`, etc.
+ *    prefixes it uses). The third element must be a pointer-to-data-member,
+ *    pointer-to-function-member which takes no parameters and returns a
+ *    reference, or any callable which accepts a reference to TYPE and returns
+ *    a reference. For the two-element version, the third element is
+ *    automatically generated as a pointer-to-member (of either kind) with the
+ *    name given in the first element.
+ **/
 #define MADARA_CAPN_MEMBERS(TYPE, CAPNTYPE, FIELDS) \
   MADARA_CAPN_MEMBERS_IMPL(TYPE, CAPNTYPE, \
       MADARA_PP_VARIADIC_SEQ_TO_SEQ(FIELDS))

@@ -391,12 +391,14 @@ namespace geo
     std::vector<StampedPose> list;
     std::vector<int> data;
     std::array<int, 3> arr3;
+    int i;
   };
 
   MADARA_CAPN_MEMBERS(StampedPoseList, geo_capn::StampedPoseList,
       (list, List)
       (data, Data)
       (arr3, Arr3)
+      (i, I)
     )
 
   static_assert(supports_for_each_member<StampedPoseList>::value, "");
@@ -410,6 +412,9 @@ namespace geo
     Any::register_type<Pose>("Pose");
     Any::register_type<Stamp>("Stamp");
     Any::register_type<StampedPose>("StampedPose");
+
+    Any::register_schema("StampedPoseList",
+        capnp::Schema::from<geo_capn::StampedPoseList>());
   }
 }
 
@@ -517,7 +522,7 @@ void test_geo()
     {0, "frame0", 1, 2},
     {1, "frame1", 2, 3},
     {2, "frame2", 3, 4},
-  }, {2, 4, 6}, {{3, 6, 9}}};
+  }, {2, 4, 6}, {{3, 6, 9}}, 42};
   kb.set_any("vs0", std::move(vs0));
 
   VAL(kb.get("vs0").to_any());
@@ -526,6 +531,22 @@ void test_geo()
   TEST_EQ(kb.get("vs0").get_any_cref()("arr3")[1].to_integer(), 6);
 
   std::vector<char> buf;
+
+  kb.get("vs0").share_any()->tagged_serialize("StampedPoseList", buf);
+
+  Any avs0;
+  avs0.tagged_unserialize(buf.data(), buf.size());
+
+  auto &avs0ref = avs0.ref<RegCapnObject>();
+  auto avs0_reader = avs0ref.reader();
+  auto avs0i = avs0_reader.get("i");
+  VAL(avs0i.template as<int>());
+
+  auto avs0data = avs0_reader.get("data");
+  auto avs0data_reader = avs0data.template as<capnp::List<int>>();
+  VAL(avs0data_reader[0]);
+
+  VAL(avs0);
 
   Any new_pose = Any::construct("StampedPose");
   VAL(new_pose);

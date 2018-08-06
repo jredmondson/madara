@@ -1,4 +1,4 @@
-using Cxx = import "/capnp/c++.capnp";
+using Cxx = import "c++.capnp";
 
 @0xe3c04ff389251d41;
 
@@ -47,4 +47,5 @@ struct StampedPoseList {
   list @0 :List(StampedPose);
   data @1 :List(Int32);
   arr3 @2 :List(Int32);
+  i @3 :Int32;
 }

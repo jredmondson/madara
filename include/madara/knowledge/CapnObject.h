@@ -24,6 +24,7 @@
 #include "capnp/message.h"
 #include "capnp/serialize.h"
 #include "capnp/dynamic.h"
+#include "capnp/schema.h"
 #include "capnp/compat/json.h"
 #include "kj/io.h"
 
@@ -38,13 +39,28 @@
 
 namespace madara { namespace knowledge {
 
-template<typename Impl>
-class BasicCapnObject
+/**
+ * Base class for various Cap'n proto types.
+ **/
+class BaseCapnObject
 {
 public:
+  /**
+   * Size of held buffer containing a Cap'n proto type.
+   **/
   size_t size() const { return size_; }
 
+  /**
+   * Pointer to buffer containing a Cap'n proto type.
+   **/
   const char *data() const { return data_.get(); }
+
+  /**
+   * Returns the tag of the this object.
+   **/
+  virtual const char *tag() const = 0;
+
+  virtual ~BaseCapnObject() = default;
 
 protected:
   char *data() { return data_.get(); }
@@ -62,35 +78,67 @@ protected:
     return ret;
   }
 
-  BasicCapnObject() = default;
+  template<typename T, typename... Args>
+  typename T::Reader reader(type<T>, Args&&... args) const
+  {
+    return reader_->template getRoot<T>(std::forward<Args>(args)...);
+  }
 
-  BasicCapnObject(const char *data, size_t size, size_t extra = 0)
-    : data_(mk_copy(data, size, extra)), size_(size) {}
+  BaseCapnObject() = default;
 
-  BasicCapnObject(std::istream &i, size_t size, size_t extra = 0)
-    : data_(read_from(i, size, extra)), size_(size) {}
+  BaseCapnObject(const char *data, size_t size, size_t extra = 0)
+    : data_(mk_copy(data, size, extra)), size_(size),
+      reader_(mk_reader()) {}
 
-  Impl &impl() { return *static_cast<Impl *>(this); }
-  const Impl &impl() const { return *static_cast<const Impl *>(this); }
+  BaseCapnObject(std::istream &i, size_t size, size_t extra = 0)
+    : data_(read_from(i, size, extra)), size_(size),
+      reader_(mk_reader()) {}
 
   std::shared_ptr<char> data_;
   size_t size_;
+  std::shared_ptr<capnp::FlatArrayMessageReader> reader_;
+
+  std::shared_ptr<capnp::FlatArrayMessageReader> mk_reader()
+  {
+    return std::make_shared<capnp::FlatArrayMessageReader>(
+        kj::ArrayPtr<const capnp::word>((const capnp::word *)data_.get(),
+          size_ / sizeof(capnp::word)));
+  }
 };
 
-class GenericCapnObject : public BasicCapnObject<GenericCapnObject>
+/**
+ * Holds a Cap'n proto object of unknown schema, and unregistered tag.
+ **/
+class GenericCapnObject : public BaseCapnObject
 {
-  using Base = BasicCapnObject<GenericCapnObject>;
+  using Base = BaseCapnObject;
 public:
+  /**
+   * Default constructor, holding no data. Object in this state cannot be used
+   * for any purpose except to be assigned to.
+   **/
   GenericCapnObject() = default;
 
+  /**
+   * Construct with given tag and char buffer. Contents of pointed to tag and
+   * buffer will be copied into this new object.
+   **/
   GenericCapnObject(const char *tag, const char *d, size_t s)
     : Base(d, s, std::strlen(tag) + 1),
       tag_((const char *)std::strcpy(data() + size(), tag)) {}
 
+  /**
+   * Construct with given tag and bytes from input stream. Contents of pointed
+   * to tag will be copied into this new object.
+   **/
   GenericCapnObject(const char *tag, std::istream &i, size_t s)
     : Base(i, s, std::strlen(tag) + 1),
       tag_((const char *)std::strcpy(data() + size(), tag)) {}
 
+  /**
+   * Construct with given tag and contents of given Cap'n Proto message builder.
+   * Pointed to tag and data of builder will be copied into this new object.
+   **/
   template<typename Builder>
   GenericCapnObject(const char * tag, Builder &&builder,
       decltype(capnp::writeMessage(
@@ -104,47 +152,75 @@ public:
     *this = GenericCapnObject(tag, data.asChars().begin(), data.size());
   }
 
+  /**
+   * Interpret held data as given Cap'n Proto type, and return the appropriate
+   * reader.
+   **/
   template<typename T>
-  typename T::Reader reader(type<T>) const
+  typename T::Reader reader(type<T> t) const
   {
-    capnp::FlatArrayMessageReader reader(
-        kj::ArrayPtr<const capnp::word>((const capnp::word *)data(),
-          size() / sizeof(capnp::word)));
-    return reader.template getRoot<T>();
+    return Base::reader(t);
   }
 
+  /**
+   * Interpret held data as given Cap'n Proto type, and return the appropriate
+   * reader.
+   **/
   template<typename T>
   typename T::Reader reader() const
   {
     return reader(type<T>{});
   }
 
+  /**
+   * Interpret held data with given Cap'n Proto schema, and return a
+   * DyanmicStruct::Reader pointing to that data.
+   **/
   capnp::DynamicStruct::Reader reader(capnp::StructSchema schema) const
   {
-    capnp::FlatArrayMessageReader reader(
-        kj::ArrayPtr<const capnp::word>((const capnp::word *)data(),
-          size() / sizeof(capnp::word)));
-    return reader.template getRoot<capnp::DynamicStruct>(schema);
+    return Base::reader(type<capnp::DynamicStruct>{}, schema);
   }
 
-  const char *tag() const { return tag_; }
+  /**
+   * Returns the tag stored in this object.
+   **/
+  const char *tag() const override { return tag_; }
 
 private:
   const char *tag_;
 };
 
+/**
+ * Stores a specific statically-known Cap'n Proto type. Type must be registered
+ * with the Any system; use `Any::register_type<CapnObject<T>>("Tag")`
+ **/
 template<typename T>
-class CapnObject : public BasicCapnObject<CapnObject<T>>
+class CapnObject : public BaseCapnObject
 {
-  using Base = BasicCapnObject<CapnObject<T>>;
+  using Base = BaseCapnObject;
 
 public:
+  /**
+   * Default constructor, holding no data. Object in this state cannot be used
+   * for any purpose except to be assigned to or to call tag().
+   **/
   CapnObject() = default;
 
+  /**
+   * Construct with given char buffer. Contents of buffer will be copied into
+   * this new object.
+   **/
   CapnObject(const char *d, size_t s) : Base(d, s) {}
 
+  /**
+   * Construct with data from given input stream.
+   **/
   CapnObject(std::istream &i, size_t s) : Base(i, s) {}
 
+  /**
+   * Construct from given Cap'n Proto message builder. Data will be copied into
+   * this new object.
+   **/
   template<typename Builder>
   CapnObject(Builder &&builder,
       decltype(capnp::writeMessage(
@@ -158,16 +234,99 @@ public:
     *this = CapnObject(data.asChars().begin(), data.size());
   }
 
+  /**
+   * Get a Cap'n Proto reader for the held data.
+   **/
   typename T::Reader reader() const
   {
-    capnp::FlatArrayMessageReader reader(
-        kj::ArrayPtr<const capnp::word>((const capnp::word *)this->data(),
-          this->size() / sizeof(capnp::word)));
-    return reader.template getRoot<T>();
+    return Base::reader(type<T>{});
   }
 
+  /**
+   * Get the registered tag for this type.
+   **/
+  const char *tag() const override { return AnyRegistry::get_type_name<T>(); }
+};
 
-  static const char *tag() { return AnyRegistry::get_type_name<T>(); }
+/**
+ * Stores a Cap'n Proto object with a given tag and schema. Typically, you
+ * should registered the tags and schemas used with this object with the Any
+ * system: `Any::register_schema("Tag", struct_schema)`
+ **/
+class RegCapnObject : public BaseCapnObject
+{
+  using Base = BaseCapnObject;
+
+public:
+  RegCapnObject() = default;
+
+  /**
+   * Construct with no data, but with given tag and schema. Warning: the tag is
+   * NOT copied, so ensure its lifetime exceeds that of this object. Typically,
+   * this will be the tag registered with the Any system.
+   **/
+  RegCapnObject(const char *tag, capnp::StructSchema schema) :
+    Base(), tag_(tag), schema_(schema) {}
+
+  /**
+   * Construct given tag and schema, and data copied from given char buffer.
+   * Warning: the tag is NOT copied, so ensure its lifetime exceeds that of
+   * this object. Typically, this will be the tag registered with the Any
+   * system.
+   **/
+  RegCapnObject(const char *tag, capnp::StructSchema schema,
+      const char *d, size_t s) :
+    Base(d, s), tag_(tag), schema_(schema) {}
+
+  /**
+   * Construct given tag and schema, and data copied from given input stream.
+   * Warning: the tag is NOT copied, so ensure its lifetime exceeds that of
+   * this object. Typically, this will be the tag registered with the Any
+   * system.
+   **/
+  RegCapnObject(const char *tag, capnp::StructSchema schema, std::istream &i,
+    size_t s) : Base(i, s), tag_(tag), schema_(schema) {}
+
+  /**
+   * Construct given tag and schema, and data copied from given Cap'n Proto
+   * message stream. Warning: the tag is NOT copied, so ensure its lifetime
+   * exceeds that of this object. Typically, this will be the tag registered
+   * with the Any system.
+   **/
+  template<typename Msg>
+  RegCapnObject(const char *tag, capnp::StructSchema schema, Msg &&msg,
+      decltype(capnp::writeMessage(
+          std::declval<kj::VectorOutputStream&>(),
+          std::declval<decay_<Msg>&>()), 0) = 0)
+  {
+    kj::VectorOutputStream vec;
+    capnp::writeMessage(vec, std::forward<Msg>(msg));
+
+    auto data = vec.getArray();
+    *this = RegCapnObject(tag, schema, data.asChars().begin(), data.size());
+  }
+
+  /**
+   * Get a reader for the held type, with the held schema
+   **/
+  typename capnp::DynamicStruct::Reader reader() const
+  {
+    return Base::reader(type<capnp::DynamicStruct>{}, schema_);
+  }
+
+  /**
+   * Get the registered tag of this object's schema
+   **/
+  const char *tag() const override { return tag_; }
+
+  /**
+   * Get the Cap'n Proto schema of this object
+   **/
+  const capnp::StructSchema &schema() const { return schema_; }
+
+private:
+  const char *tag_;
+  capnp::StructSchema schema_;
 };
 
 } // namespace knowledge
@@ -195,6 +354,19 @@ inline auto get_type_handler_save(type<knowledge::GenericCapnObject>,
   return [](std::ostream &o, const void *ptr) {
       using knowledge::GenericCapnObject;
       const GenericCapnObject &val = *static_cast<const GenericCapnObject *>(ptr);
+      knowledge::madara_oarchive archive(o);
+      archive << val.size();
+      o.write(val.data(), val.size());
+    };
+}
+
+inline auto get_type_handler_save(type<knowledge::RegCapnObject>,
+    overload_priority<8>) ->
+  knowledge::TypeHandlers::save_fn_type
+{
+  return [](std::ostream &o, const void *ptr) {
+      using knowledge::RegCapnObject;
+      const RegCapnObject &val = *static_cast<const RegCapnObject *>(ptr);
       knowledge::madara_oarchive archive(o);
       archive << val.size();
       o.write(val.data(), val.size());
@@ -230,6 +402,20 @@ inline auto get_type_handler_load(type<knowledge::GenericCapnObject>,
     };
 }
 
+inline auto get_type_handler_load(type<knowledge::RegCapnObject>,
+    overload_priority<8>) ->
+  knowledge::TypeHandlers::load_fn_type
+{
+  return [](std::istream &i, void *ptr, const char *) {
+      using knowledge::RegCapnObject;
+      RegCapnObject &val = *static_cast<RegCapnObject *>(ptr);
+      knowledge::madara_iarchive archive(i);
+      size_t size;
+      archive >> size;
+      val = {val.tag(), val.schema(), i, size};
+    };
+}
+
 template<typename T>
 inline auto get_type_handler_save_json(type<knowledge::CapnObject<T>>,
     overload_priority<8>) ->
@@ -253,6 +439,21 @@ inline auto get_type_handler_save_json(type<knowledge::GenericCapnObject>,
       using knowledge::GenericCapnObject;
       const GenericCapnObject &val = *static_cast<const GenericCapnObject *>(ptr);
       o << "\"GenericCapnObject<" << val.tag() << ">\"";
+    };
+}
+
+inline auto get_type_handler_save_json(type<knowledge::RegCapnObject>,
+    overload_priority<8>) ->
+  knowledge::TypeHandlers::save_json_fn_type
+{
+  return [](std::ostream &o, const void *ptr) {
+      using knowledge::RegCapnObject;
+      const RegCapnObject &val = *static_cast<const RegCapnObject *>(ptr);
+
+      capnp::JsonCodec json;
+      kj::String enc = json.encode(
+          capnp::DynamicValue::Reader(val.reader()), capnp::Type(val.schema()));
+      o << enc.cStr();
     };
 }
 
@@ -284,6 +485,13 @@ inline auto get_type_handler_load_json(type<knowledge::CapnObject<T>>,
 }
 
 inline auto get_type_handler_load_json(type<knowledge::GenericCapnObject>,
+    overload_priority<8>) ->
+  knowledge::TypeHandlers::load_json_fn_type
+{
+  return nullptr;
+}
+
+inline auto get_type_handler_load_json(type<knowledge::RegCapnObject>,
     overload_priority<8>) ->
   knowledge::TypeHandlers::load_json_fn_type
 {
