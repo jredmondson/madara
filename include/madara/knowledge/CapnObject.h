@@ -40,6 +40,31 @@
 namespace madara { namespace knowledge {
 
 /**
+ * Helper template to ensure given type is no-throw destructible. If an
+ * exception is thrown during destruction, it will be logged, but otherwise
+ * ignored, so use this with care.
+ **/
+template<typename T>
+struct NoThrowDestruct : T
+{
+  using T::T;
+
+  ~NoThrowDestruct() noexcept try {
+    return;
+  } catch (const std::exception &e) {
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+      "NoThrowDestruct" \
+      " unexpected exception thrown: %s\n", e.what());
+    return;
+  } catch (...) {
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+      "NoThrowDestruct" \
+      " unexpected unknown exception thrown\n");
+    return;
+  }
+};
+
+/**
  * Base class for various Cap'n proto types.
  **/
 class BaseCapnObject
@@ -96,11 +121,11 @@ protected:
 
   std::shared_ptr<char> data_;
   size_t size_;
-  std::shared_ptr<capnp::FlatArrayMessageReader> reader_;
+  std::shared_ptr<NoThrowDestruct<capnp::FlatArrayMessageReader>> reader_;
 
-  std::shared_ptr<capnp::FlatArrayMessageReader> mk_reader()
+  std::shared_ptr<NoThrowDestruct<capnp::FlatArrayMessageReader>> mk_reader()
   {
-    return std::make_shared<capnp::FlatArrayMessageReader>(
+    return std::make_shared<NoThrowDestruct<capnp::FlatArrayMessageReader>>(
         kj::ArrayPtr<const capnp::word>((const capnp::word *)data_.get(),
           size_ / sizeof(capnp::word)));
   }
@@ -496,6 +521,66 @@ inline auto get_type_handler_load_json(type<knowledge::RegCapnObject>,
   knowledge::TypeHandlers::load_json_fn_type
 {
   return nullptr;
+}
+
+template<typename T>
+inline auto get_type_handler_get_reader(type<knowledge::CapnObject<T>>,
+    overload_priority<8>) ->
+  knowledge::TypeHandlers::get_reader_fn_type
+{
+  return [](capnp::DynamicStruct::Reader *reader, capnp::StructSchema *schema,
+      const char **data, size_t *size, void *ptr)
+    {
+      using knowledge::CapnObject;
+      const CapnObject<T> &val = *static_cast<const CapnObject<T> *>(ptr);
+
+      if (reader) { *reader = val.reader(); }
+      if (schema) { *schema = capnp::Schema::from<T>(); }
+      if (data) { *data = val.data(); }
+      if (size) { *size = val.size(); }
+
+      return true;
+    };
+}
+
+template<typename T>
+inline auto get_type_handler_get_reader(type<knowledge::RegCapnObject>,
+    overload_priority<8>) ->
+  knowledge::TypeHandlers::get_reader_fn_type
+{
+  return [](capnp::DynamicStruct::Reader *reader, capnp::StructSchema *schema,
+      const char **data, size_t *size, void *ptr)
+    {
+      using knowledge::RegCapnObject;
+      const RegCapnObject &val = *static_cast<const RegCapnObject *>(ptr);
+
+      if (reader) { *reader = val.reader(); }
+      if (schema) { *schema = val.schema(); }
+      if (data) { *data = val.data(); }
+      if (size) { *size = val.size(); }
+
+      return true;
+    };
+}
+
+template<typename T>
+inline auto get_type_handler_get_reader(type<knowledge::GenericCapnObject>,
+    overload_priority<8>) ->
+  knowledge::TypeHandlers::get_reader_fn_type
+{
+  return [](capnp::DynamicStruct::Reader *reader, capnp::StructSchema *schema,
+      const char **data, size_t *size, void *ptr)
+    {
+      using knowledge::GenericCapnObject;
+      const GenericCapnObject &val =
+        *static_cast<const GenericCapnObject *>(ptr);
+
+      if (reader && !schema) { return false;}
+      if (reader && schema) { *reader = val.reader(*schema); }
+      if (data) { *data = val.data(); }
+      if (size) { *size = val.size(); }
+      return true;
+    };
 }
 
 }}

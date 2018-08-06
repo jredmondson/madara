@@ -60,6 +60,21 @@
 #include "madara/exceptions/BadAnyAccess.h"
 #include "AnyRegistry.h"
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpragmas"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wundef"
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
+#endif
+
+#include "capnp/schema.h"
+#include "capnp/dynamic.h"
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif // __GNUC__
+
 namespace madara { namespace knowledge {
 
 using madara_oarchive = cereal::PortableBinaryOutputArchive;
@@ -197,6 +212,11 @@ struct TypeHandlers
 
   typedef std::ostream &(*to_ostream_fn_type)(std::ostream &, void *);
   to_ostream_fn_type to_ostream;
+
+  typedef bool (*get_reader_fn_type)(
+      capnp::DynamicStruct::Reader *, capnp::StructSchema *,
+      const char **, size_t *, void *);
+  get_reader_fn_type get_reader;
 };
 
 inline const TypeHandlers &AnyField::parent() const
@@ -379,6 +399,13 @@ constexpr TypeHandlers::to_ostream_fn_type
   return nullptr;
 }
 
+template<typename T>
+constexpr TypeHandlers::get_reader_fn_type
+  get_type_handler_get_reader(type<T>, overload_priority_weakest)
+{
+  return nullptr;
+}
+
 /// For internal use. Constructs a TypeHandlers containing functions used by Any
 template<typename T>
 inline const TypeHandlers &get_type_handler(type<T> t)
@@ -403,6 +430,7 @@ inline const TypeHandlers &get_type_handler(type<T> t)
       get_type_handler_to_record(t, select_overload()),
       get_type_handler_from_record(t, select_overload()),
       get_type_handler_to_ostream(t, select_overload()),
+      get_type_handler_get_reader(t, select_overload()),
     };
   return handler;
 }

@@ -577,10 +577,10 @@ void test_geo()
 
   al0.serialize(buf);
   al1.unserialize<CapnObject<geo_capn::Point>>(buf.data(), buf.size());
-  auto reader = al1.reader<geo_capn::Point>();
-  TEST_EQ(reader.getX(), 1);
-  TEST_EQ(reader.getY(), 2);
-  TEST_EQ(reader.getZ(), 3);
+  auto reader = al1.reader();
+  TEST_EQ(reader.get("x").template as<double>(), 1);
+  TEST_EQ(reader.get("y").template as<double>(), 2);
+  TEST_EQ(reader.get("z").template as<double>(), 3);
 }
 
 struct Example {

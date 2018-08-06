@@ -193,6 +193,17 @@ public:
     return ref_unsafe(type<T>{});
   }
 
+  /**
+   * Access the Any's stored value by const pointer.
+   * If empty() or raw() is true, return nullptr; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as const T&, else return nullptr
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return a pointer to the contained value
+   **/
   template<typename T>
   const T *ptr(type<T> t) const
   {
@@ -202,34 +213,113 @@ public:
     return &impl().ref_unsafe(t);
   }
 
+  /**
+   * Access the Any's stored value by const pointer.
+   * If empty() or raw() is true, return nullptr; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as const T&, else return nullptr
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return a pointer to the contained value
+   **/
   template<typename T>
   const T *ptr() const
   {
     return ptr(type<T>{});
   }
 
+  /**
+   * Access the Any's stored value by const pointer.
+   * If empty() or raw() is true, return nullptr; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as const T&, else return nullptr
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return a pointer to the contained value
+   **/
   template<typename T>
   const T *cptr(type<T> t) const
   {
     return ptr(t);
   }
 
+  /**
+   * Access the Any's stored value by const pointer.
+   * If empty() or raw() is true, return nullptr; else,
+   * Otherwise, check type_id<T> matches handler_->tindex; if so,
+   * return the stored data as const T&, else return nullptr
+   *
+   * Note that T must match the type of the stored value exactly. It cannot
+   * be a parent or convertible type, including primitive types.
+   *
+   * @return a pointer to the contained value
+   **/
   template<typename T>
   const T *cptr() const
   {
     return ptr(type<T>{});
   }
 
+  /**
+   * Get a statically typed reader for a Cap'n Proto object stored inside this
+   * object. Throws BadAnyAccess if the wrong type is given.
+   **/
   template<typename T>
   typename T::Reader reader(type<T>) const
   {
     return cref<CapnObject<T>>().reader();
   }
 
+  /**
+   * Get a statically typed reader for a Cap'n Proto object stored inside this
+   * object. Throws BadAnyAccess if the wrong type is given.
+   **/
   template<typename T>
   typename T::Reader reader() const
   {
     return reader(type<T>{});
+  }
+
+  /**
+   * Get a DynamicStruct reader for a Cap'n Proto object stored inside this
+   * object. Throws BadAnyAccess if the schema isn't known (i.e., this is an
+   * unregistered type), or if this isn't a Cap'n Proto object.
+   **/
+  capnp::DynamicStruct::Reader reader() const
+  {
+    using exceptions::BadAnyAccess;
+
+    if (!handler_->get_reader) {
+      throw BadAnyAccess("Any does not contain a Cap'n Proto object");
+    }
+    capnp::DynamicStruct::Reader ret;
+    if (!handler_->get_reader(&ret, nullptr, nullptr, nullptr, data_)) {
+      throw BadAnyAccess("Unknown schema for Any type.");
+    }
+    return ret;
+  }
+
+  /**
+   * Get a DynamicStruct reader for a Cap'n Proto object stored inside this
+   * object. Uses the given schema if the schema isn't known internally (i.e.,
+   * this is an unregistered type). Otherwise, ignores the given schema.
+   **/
+  capnp::DynamicStruct::Reader reader(capnp::StructSchema schema) const
+  {
+    using exceptions::BadAnyAccess;
+
+    if (!handler_->get_reader) {
+      throw BadAnyAccess("Any does not contain a Cap'n Proto object");
+    }
+    capnp::DynamicStruct::Reader ret;
+    if (!handler_->get_reader(&ret, &schema, nullptr, nullptr, data_)) {
+      throw BadAnyAccess("Wrong schema for Cap'n Proto object");
+    }
+    return ret;
   }
 
   /**
