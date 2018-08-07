@@ -251,6 +251,12 @@ namespace madara
        **/
       void add_rebroadcast_filter (jobject & object);
       
+      /**
+      * Adds a Java buffer filter to the chain
+      * @param   filter     an instance of a buffer filter
+      **/
+      void add_filter (jobject & object);
+
 #endif
       
 #ifdef _MADARA_PYTHON_CALLBACKS_
@@ -308,6 +314,12 @@ namespace madara
        **/
       void add_rebroadcast_filter (boost::python::object & object);
       
+      /**
+      * Adds a python buffer filter to the chain
+      * @param   filter     an instance of a buffer filter
+      **/
+      void add_filter (boost::python::object & object);
+
 #endif
 
       /**

@@ -176,7 +176,7 @@ void test_system_calls (
     ++madara_fails;
   }
 
-  if (diff_s != 3 && diff_s != 4)
+  if (diff_s < 2 || diff_s > 4)
   {
     std::cout << "FAIL: #get_time_seconds returned diff of " << diff_s <<
       " instead of 3 (.\n";

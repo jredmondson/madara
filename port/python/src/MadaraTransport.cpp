@@ -11,6 +11,7 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/filters/GenericFilters.h"
 #include "FunctionDefaults.h"
+#include "MadaraFilters.h"
 #include "MadaraTransport.h"
 
 /**
@@ -271,7 +272,19 @@ void define_transport (void)
               boost::python::object & object)
       > (&madara::transport::QoSTransportSettings::add_send_filter),
       "Adds a python callback to the aggregate send filter chains")
+
+    // Clears the rebroadcast filters for a specified type
+    // .def ("add_filter",
+    //   &madara::transport::QoSTransportSettings::add_filter,
+    //   "Adds a BufferFilter to the transport")
         
+    // adds a python callback to the typed send filter chains
+    .def( "add_filter",
+      static_cast<
+        void (madara::transport::QoSTransportSettings::*)(
+              madara::filters::BufferFilter *)
+      > (&madara::transport::QoSTransportSettings::add_filter),
+      "Adds a python callback to the typed send filter chains")
         
     // Clears the rebroadcast filters for a specified type
     .def ("clear_rebroadcast_filters",
@@ -302,6 +315,11 @@ void define_transport (void)
     .def ("clear_send_aggregate_filters",
       &madara::transport::QoSTransportSettings::clear_send_aggregate_filters,
       "Clears the send aggregate filters")
+        
+    // Clears the send filters for a specified type
+    .def ("clear_buffer_filters",
+      &madara::transport::QoSTransportSettings::clear_buffer_filters,
+      "Clears the buffer filters")
         
 
     // get the drop burst rate

@@ -1,6 +1,5 @@
 #ifndef _MADARA_PYTHON_PORT_MADARA_FILTERS_H_
 #define _MADARA_PYTHON_PORT_MADARA_FILTERS_H_
-
 /**
  * @file MadaraModule.cpp
  * @author James Edmondson <jedmondson@gmail.com>

@@ -37,6 +37,8 @@ madara::transport::ZMQTransportReadThread::init (
     int rcv_buff_size = 0;
     int timeout = 1000;
     int buff_size = settings_.queue_length;
+    int result;
+    int zero = 0;
     size_t opt_len = sizeof (int);
 
     // setup the receive buffer
@@ -49,15 +51,44 @@ madara::transport::ZMQTransportReadThread::init (
 
     read_socket_ = zmq_socket (zmq_context.get_context (), ZMQ_SUB);
 
+    if (read_socket_ == NULL)
+    {
+      madara_logger_log (context_->get_logger (), logger::LOG_ERROR,
+        "ZMQTransportReadThread::init:" \
+        " ERROR: could not create SUB socket\n");
+      madara_logger_log (context_->get_logger (), logger::LOG_ERROR,
+        "ZMQTransportReadThread::init:" \
+        " ERROR: errno = %s\n",
+        zmq_strerror (zmq_errno ()));
+    }
+
     // subscribe to all messages
-    zmq_setsockopt (read_socket_, ZMQ_SUBSCRIBE, 0, 0);
+    result = zmq_setsockopt (read_socket_, ZMQ_SUBSCRIBE, 0, 0);
+
+    if (result == 0)
+    {
+      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+        "ZMQTransportReadThread::init:" \
+        " successfully set sockopt for ZMQ_SUBSCRIBE\n");
+    }
+    else
+    {
+      madara_logger_log (context_->get_logger (), logger::LOG_ERROR,
+        "ZMQTransportReadThread::init:" \
+        " ERROR: errno = %s\n",
+        zmq_strerror (zmq_errno ()));
+    }
+
+    // if you don't do this, ZMQ waits forever for no reason. Super smart.
+    result = zmq_setsockopt (
+      read_socket_, ZMQ_LINGER, (void *)&zero, sizeof (int));
 
     madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
       "ZMQTransportReadThread::init:" \
       " setting rcv buff size to settings.queue_length (%d)\n",
       buff_size);
 
-    int result = zmq_setsockopt (
+    result = zmq_setsockopt (
       read_socket_, ZMQ_RCVBUF, (void *)&buff_size, opt_len);
 
     if (result == 0)
@@ -72,7 +103,7 @@ madara::transport::ZMQTransportReadThread::init (
     }
     else
     {
-      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+      madara_logger_log (context_->get_logger (), logger::LOG_ERROR,
         "ZMQTransportReadThread::init:" \
         " ERROR: errno = %s\n",
         zmq_strerror (zmq_errno ()));
@@ -94,7 +125,7 @@ madara::transport::ZMQTransportReadThread::init (
     }
     else
     {
-      madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+      madara_logger_log (context_->get_logger (), logger::LOG_ERROR,
         "ZMQTransportReadThread::init:" \
         " ERROR: When setting timeout on rcv, errno = %s\n",
         zmq_strerror (zmq_errno ()));
@@ -142,7 +173,7 @@ madara::transport::ZMQTransportReadThread::init (
           "ZMQTransportReadThread::init:" \
           " ERROR: could not connect to %s\n",
           settings_.hosts[i].c_str ());
-        madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,
+        madara_logger_log (context_->get_logger (), logger::LOG_ERROR,
           "ZMQTransportReadThread::init:" \
           " ERROR: errno = %s\n",
           zmq_strerror (zmq_errno ()));
@@ -188,13 +219,16 @@ madara::transport::ZMQTransportReadThread::cleanup (void)
       "ZMQTransportReadThread::cleanup:" \
       " closing read socket\n");
 
-    int option = 0;
-    // if you don't do this, ZMQ waits forever for no reason. Super smart.
-    zmq_setsockopt (read_socket_, ZMQ_LINGER, (void *)&option, sizeof (int));
+    int result = zmq_close (read_socket_);
+    read_socket_ = 0;
 
-    madara::utility::sleep (0.100);
-
-    zmq_close (read_socket_);
+    if (result != 0)
+    {
+      madara_logger_log (context_->get_logger (), logger::LOG_ERROR,
+        "ZMQTransportReadThread::cleanup:" \
+        " ERROR: errno = %s\n",
+        zmq_strerror (zmq_errno ()));
+    }
   }
 
   madara_logger_log (context_->get_logger (), logger::LOG_MAJOR,

@@ -876,50 +876,86 @@ long Base::prep_send (
 
   if (!dropped && packet_scheduler_.add ())
   {
-    /**
-     * filter the updates according to the filters specified by
-     * the user in QoSTransportSettings (if applicable)
-     **/
-    for (const auto &e : orig_updates)
+    if (settings_.get_number_of_send_filtered_types () > 0)
     {
-      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
-        "%s:" \
-        " Calling filter chain.\n", print_prefix);
-
-      // filter the record according to the send filter chain
-      knowledge::KnowledgeRecord result = settings_.filter_send (
-          *e.second.get_record_unsafe (), e.first, transport_context);
-
-      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
-        "%s:" \
-        " Filter returned.\n", print_prefix);
-
-      if (result.exists ())
-      {
-        madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
-          "%s:" \
-          " Adding record to update list.\n", print_prefix);
-
-        filtered_updates[e.first] = result;
-      }
-      else
+      /**
+       * filter the updates according to the filters specified by
+       * the user in QoSTransportSettings (if applicable)
+       **/
+      for (const auto &e : orig_updates)
       {
         madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
           "%s:" \
-          " Filter removed record from update list.\n", print_prefix);
+          " Calling filter chain of %s.\n", print_prefix, e.first);
+
+        // filter the record according to the send filter chain
+        knowledge::KnowledgeRecord result = settings_.filter_send (
+            *e.second.get_record_unsafe (), e.first, transport_context);
+
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+          "%s:" \
+          " Filter returned for %s.\n", print_prefix, e.first);
+
+        if (result.exists ())
+        {
+          madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
+            "%s:" \
+            " Adding record to update list.\n", print_prefix);
+
+          filtered_updates[e.first] = result;
+        }
+        else
+        {
+          madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+            "%s:" \
+            " Filter removed record from update list.\n", print_prefix);
+        }
+      }
+
+      madara_logger_log (context_.get_logger (), logger::LOG_DETAILED,
+        "%s:" \
+        " Through individual record filters. Proceeding to add update list.\n",
+        print_prefix);
+
+
+      const knowledge::KnowledgeMap & additionals = transport_context.get_records ();
+
+      for (knowledge::KnowledgeMap::const_iterator i = additionals.begin ();
+          i != additionals.end (); ++i)
+      {
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+          "%s:" \
+          " Filter added a record %s to the update list.\n",
+          print_prefix, i->first.c_str ());
+        filtered_updates[i->first] = i->second;
       }
     }
-
-    const knowledge::KnowledgeMap & additionals = transport_context.get_records ();
-
-    for (knowledge::KnowledgeMap::const_iterator i = additionals.begin ();
-         i != additionals.end (); ++i)
+    else
     {
-      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
-        "%s:" \
-        " Filter added a record %s to the update list.\n",
-        print_prefix, i->first.c_str ());
-      filtered_updates[i->first] = i->second;
+      for (const auto &e : orig_updates)
+      {
+        knowledge::KnowledgeRecord * record = e.second.get_record_unsafe ();
+        if (record)
+        {
+          madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
+            "%s:" \
+            " Adding record %s to update list.\n", print_prefix, e.first);
+
+          filtered_updates[e.first] = *record;
+        }
+        else
+        {
+          std::stringstream message;
+          message << print_prefix;
+          message << ": record " << e.first << " produced a null record ";
+          message << "from get_record_unsafe ()\n";
+
+          madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
+            message.str ().c_str ());
+
+          throw exceptions::MemoryException (message.str ());
+        }
+      }
     }
   }
   else

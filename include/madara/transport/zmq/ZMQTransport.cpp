@@ -47,14 +47,16 @@ madara::transport::ZMQTransport::close (void)
 
   if (write_socket_ != 0)
   {
-    int option = 2000;
+    int result = zmq_close (write_socket_);
+    write_socket_ = 0;
 
-    // if you don't do this, ZMQ waits forever for no reason. Super smart.
-    zmq_setsockopt (write_socket_, ZMQ_LINGER, (void *)&option, sizeof (int));
-
-    madara::utility::sleep (0.100);
-
-    zmq_close (write_socket_);
+    if (result != 0)
+    {
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
+        "ZMQTransport::close:" \
+        " ERROR: errno = %s\n",
+        zmq_strerror (zmq_errno ()));
+    }
   }
 
   madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -102,6 +104,35 @@ madara::transport::ZMQTransport::setup (void)
 
     write_socket_ = zmq_socket (zmq_context.get_context (), ZMQ_PUB);
 
+    if (write_socket_ == NULL)
+    {
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
+        "ZMQTransport::setup:" \
+        " ERROR: could not create PUB socket\n");
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
+        "ZMQTransport::setup:" \
+        " ERROR: errno = %s\n",
+        zmq_strerror (zmq_errno ()));
+    }
+
+    for (size_t i = 0; i < settings_.hosts.size (); ++i)
+    {
+      if (!utility::begins_with (settings_.hosts[i], "tcp://") &&
+          !utility::begins_with (settings_.hosts[i], "ipc://") &&
+          !utility::begins_with (settings_.hosts[i], "inproc://") &&
+          !utility::begins_with (settings_.hosts[i], "pgm://") &&
+          !utility::begins_with (settings_.hosts[i], "epgm://")
+          )
+      {
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+          "ZMQTransport::setup:" \
+          " converting incorrect host format to tcp://%s\n",
+          settings_.hosts[i].c_str ());
+          
+        settings_.hosts[i] = "tcp://" + settings_.hosts[i];
+      }
+    }
+
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "ZMQTransport::setup:" \
       " binding write to %s\n",
@@ -115,7 +146,7 @@ madara::transport::ZMQTransport::setup (void)
         "ZMQTransport::setup:" \
         " ERROR: could not bind to %s\n",
         settings_.hosts[0].c_str ());
-      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
         "ZMQTransport::setup:" \
         " ERROR: errno = %s\n",
         zmq_strerror (zmq_errno ()));
@@ -133,6 +164,7 @@ madara::transport::ZMQTransport::setup (void)
     //int rcv_buff_size = 0;
     int buff_size = settings_.queue_length;
     int timeout = 300;
+    int zero = 0;
     size_t opt_len = sizeof (int);
 
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
@@ -155,11 +187,15 @@ madara::transport::ZMQTransport::setup (void)
     }
     else
     {
-      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
         "ZMQTransport::setup:" \
         " ERROR: errno = %s\n",
         zmq_strerror (zmq_errno ()));
     }
+
+    // if you don't do this, ZMQ waits forever for no reason. Super smart.
+    result = zmq_setsockopt (
+      write_socket_, ZMQ_LINGER, (void *)&zero, sizeof (int));
 
 
     result = zmq_setsockopt (
@@ -177,7 +213,7 @@ madara::transport::ZMQTransport::setup (void)
     }
     else
     {
-      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+      madara_logger_log (context_.get_logger (), logger::LOG_ERROR,
         "ZMQTransport::setup:" \
         " ERROR: When setting timeout on send, errno = %s\n",
         zmq_strerror (zmq_errno ()));
