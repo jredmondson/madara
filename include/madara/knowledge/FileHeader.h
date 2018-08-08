@@ -27,7 +27,7 @@ namespace madara
     *       [08] [64 bit states] <br />
     *       [16] [64 bit timestamp] <br />
     *       [24] [64 bit last_timestamp] <br />
-    *       [32] [8 byte file_type = "KaRL"] <br />
+    *       [32] [8 byte file_type = "KaRL1.4"] <br />
     *       [40] [32 bit karl_version = version (0.255.255.255)] <br />
     *       [44] [64 byte id = originator] <br />
     *       [108] [Updates]
@@ -114,7 +114,7 @@ namespace madara
       uint64_t          last_timestamp;
       
       /**
-       * file type identifier ("KaRL")
+       * file type identifier ("KaRL1.4")
        **/
       char              file_type[8];
 
