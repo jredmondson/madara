@@ -1,0 +1,44 @@
+#!/usr/bin/env python2
+
+import sys
+import os
+import capnp
+from madara.knowledge import *
+
+geo = capnp.load(os.environ["MADARA_ROOT"] + "/tests/capnfiles/Point.capn")
+
+Any.register_int32("i32");
+Any.register_class("Point", geo.Point)
+Any.register_class("Pose", geo.Pose)
+
+a = Any("i32")
+
+a.assign(10);
+
+print a.to_integer();
+
+p = geo.Point.new_message();
+p.x = 2
+p.y = 4
+p.z = 6
+
+b = Any(p)
+print b.tag()
+print b
+print b.reader()
+
+pose = geo.Pose.new_message();
+pose.x = 42
+pose.i = 3.14
+
+b.replace(pose)
+print b
+print b.reader()
+
+kb = KnowledgeBase()
+
+kb.set("asdf", b)
+
+c = kb.get("asdf")
+
+print c.to_any().reader()

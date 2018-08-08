@@ -418,8 +418,6 @@ inline const TypeHandlers &get_type_handler(type<T> t)
       get_type_handler_clone(t, select_overload()),
       get_type_handler_save(type<T>{}, select_overload()),
       get_type_handler_load(type<T>{}, select_overload()),
-      //get_type_handler_save_capn(type<T>{}, select_overload()),
-      //get_type_handler_load_capn(type<T>{}, select_overload()),
       get_type_handler_save_json(t, select_overload()),
       get_type_handler_load_json(t, select_overload()),
       get_type_handler_list_fields(t, select_overload()),

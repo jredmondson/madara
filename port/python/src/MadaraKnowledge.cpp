@@ -9,10 +9,14 @@
 #include <boost/python/enum.hpp>
 
 #include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/AnyRegistry.h"
 #include "madara/filters/GenericFilters.h"
 #include "FunctionDefaults.h"
 #include "MadaraKnowledgeContainers.h"
 #include "MadaraKnowledge.h"
+
+#include "capnp/schema-loader.h"
+#include "capnp/schema.h"
 
 /**
  * @file MadaraModule.cpp
@@ -26,7 +30,10 @@ using namespace boost::python;
 
 class knowledge_NS {};
 
+static capnp::SchemaLoader schema_loader;
 static std::map<std::string, object> registered_types;
+static std::map<uint64_t, const std::pair<const std::string, object> *>
+  registered_tags;
 
 #define MADARA_MEMB(ret, klass, name, args) \
   static_cast<ret (klass::*) args>(&klass::name)
@@ -35,6 +42,7 @@ template<typename T, typename I>
 class_<T> define_basic_any(const char * name, const char *doc, I init)
 {
   using namespace madara::knowledge;
+  using namespace madara::exceptions;
 
 #define MADARA_PYSETITEM(Key, Val) \
     .def("__setitem__", +[](T &a, Key key, Val val) { \
@@ -131,13 +139,12 @@ class_<T> define_basic_any(const char * name, const char *doc, I init)
         "Check if string indexing is supported")
     .def("supports_fields", &T::supports_fields,
         "Check if fields are supported")
-#if 0
-    .def("reader", +[](const T &a, const std::string &tag) -> object {
-        //const RegCapnObject &cobj = a.template cref<RegCapnObject>();
-        (void)a;
-        return registered_types.at(tag).attr("new_message")();
-      })
-#endif
+    .def("reader", +[](const T &a) -> object {
+        auto buf = a.get_capnp_buffer();
+        std::string sbuf(buf.asChars().begin(), buf.size());
+        return registered_types.at(a.tag()).attr("from_bytes")(sbuf);
+      }, "Get a Cap'n Proto reader for held object. Throws if held object "
+         "isn't a Cap'n Proto message.")
   ;
 }
 
@@ -163,6 +170,7 @@ void define_knowledge (void)
    */
 
   using namespace madara::knowledge;
+  using namespace madara::exceptions;
 
   define_basic_any<AnyRef>("AnyRef",
     "A class that can refer to any type in a KnowledgeRecord", no_init);
@@ -178,17 +186,46 @@ void define_knowledge (void)
 #define MADARA_REGIMPL_VECTOR(name, type) \
   MADARA_REGIMPL(name ## _vector, std::vector<type>)
 
+  static const auto load_capn = [](object obj) {
+      uint64_t id = extract<uint64_t>(
+          obj.attr("schema").attr("node").attr("id"));
+
+      std::string buf = extract<std::string>(obj.attr("to_bytes")());
+
+      auto tag_info = registered_tags.at(id);
+
+      auto tag = tag_info->first.c_str();
+
+      return RegCapnObject(tag, buf.data(), buf.size());
+   };
+
   define_basic_any<Any>("Any",
     "A class that can store any type in a KnowledgeRecord", no_init)
-    .def("__init__", make_constructor(+[](const char *tag) {
-          return std::make_shared<Any>(Any::construct(tag));
-        }), "Construct with a default constructed C++ object, that must "
-        "already by registered with the given tag"
-      )
-    //.def("__init__", make_constructor(Any::construct))
-    .def("emplace", MADARA_MEMB(void, Any, emplace, (const char *)),
-        "Replace with a default constructed C++ object, that must "
-        "already by registered with the given tag")
+    .def("__init__", make_constructor(+[](object obj) {
+          extract<const char *> exstr(obj);
+          if (exstr.check()) {
+            return std::make_shared<Any>(Any::construct(exstr()));
+          }
+
+          auto capnobj = load_capn(obj);
+
+          return std::make_shared<Any>(std::move(capnobj));
+        }), "Construct from a Cap'n Proto message object, or a string type "
+            "tag previously registered with an Any.register_* function."
+            "In the latter case, the object will be default constructed.")
+    .def("replace", +[](Any &a, object obj) {
+          extract<const char *> exstr(obj);
+          if (exstr.check()) {
+            a.emplace(exstr());
+            return;
+          }
+
+          auto capnobj = load_capn(obj);
+
+          a.set(std::move(capnobj));
+        }, "Replace using a Cap'n Proto message object, or a string type "
+           "tag previously registered with an Any.register_* function."
+           "In the latter case, the object will be default constructed.")
     MADARA_REGIMPL(char, char)
     MADARA_REGIMPL(uchar, unsigned char)
     MADARA_REGIMPL(schar, signed char)
@@ -217,7 +254,26 @@ void define_knowledge (void)
     MADARA_REGIMPL(string_int64_map, std::map<std::string, int64_t>)
     MADARA_REGIMPL(string_double_map, std::map<std::string, double>)
     .def("register_class", +[](const std::string &a, const object &klass) {
-        registered_types[a] = klass;
+        uint64_t id = extract<uint64_t>(
+            klass.attr("schema").attr("node").attr("id"));
+
+        const std::string schema_raw = extract<std::string>(
+            klass.attr("schema").attr("node")
+              .attr("as_builder")().attr("to_bytes")());
+        capnp::FlatArrayMessageReader msg(
+            {(const capnp::word *)schema_raw.data(),
+             schema_raw.size()});
+        auto reader = msg.getRoot<capnp::schema::Node>();
+        capnp::StructSchema schema = schema_loader.load(reader).asStruct();
+
+        std::unique_ptr<std::string> copy(new std::string(a));
+        if (Any::register_schema(copy->c_str(), schema)) {
+          // Schema is registered, and name will be needed for remainder of
+          // process execution. OK to leak the copy.
+          copy.release();
+        }
+
+        registered_tags[id] = &*(registered_types.emplace(a, klass).first);
       })
     .staticmethod("register_class")
   ;
