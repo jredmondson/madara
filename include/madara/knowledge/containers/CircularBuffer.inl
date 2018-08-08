@@ -200,6 +200,8 @@ CircularBuffer::add (
 
   context_->set (buffer_.vector_[(size_t)index], record, settings_);
 
+  context_->mark_modified (size_ref_);
+
   ++index_;
 }
 
@@ -231,6 +233,8 @@ CircularBuffer::add (
 
     context_->set (buffer_.vector_[(size_t)index], record, settings_);
   }
+
+  context_->mark_modified (size_ref_);
 
   index_ += (KnowledgeRecord::Integer)records.size ();
 }
@@ -370,6 +374,8 @@ CircularBuffer::resize (int size)
   ContextGuard context_guard (*context_);
 
   buffer_.resize (size, false);
+
+  context_->mark_modified (size_ref_);
 }
 
 inline madara::knowledge::KnowledgeUpdateSettings
@@ -406,6 +412,7 @@ CircularBuffer::set_name (
     context_ = &(knowledge.get_context ());
     index_.set_name (name + ".index", knowledge);
     buffer_.set_name (name, knowledge);
+    size_ref_ = buffer_.get_size_ref ();
     if (buffer_.size () == 0 && index_ != -1)
     {
       index_ = -1;
@@ -429,6 +436,7 @@ CircularBuffer::set_name (const std::string & name,
     context_ = knowledge.get_context ();
     index_.set_name (name + ".index", knowledge);
     buffer_.set_name (name, knowledge);
+    size_ref_ = buffer_.get_size_ref ();
     if (buffer_.size () == 0 && index_ != -1)
     {
       index_ = -1;
