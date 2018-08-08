@@ -2,6 +2,7 @@
 #define _LQUEUE_CPP
 
 #include <memory>
+#include <algorithm>
 #include "madara/utility/LQueue.h"
 
 #ifdef _MSC_VER

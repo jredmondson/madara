@@ -349,6 +349,11 @@ namespace madara
         Vector buffer_;
 
         /**
+         * Reference to the size field of the vector space
+         **/
+        VariableReference size_ref_;
+
+        /**
          * Settings for modifications
          **/
         KnowledgeUpdateSettings settings_;

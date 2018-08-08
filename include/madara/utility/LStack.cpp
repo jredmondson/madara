@@ -2,6 +2,7 @@
 #define _LSTACK_CPP_
 
 #include <memory>
+#include <algorithm>
 #include "madara/utility/LStack.h"
 
 #ifdef _MSC_VER

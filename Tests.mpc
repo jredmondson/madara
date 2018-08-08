@@ -1462,8 +1462,6 @@ project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   Documentation_Files {
   }
 
-  libs += capnp kj
-
   Header_Files {
     tests/capnfiles
   }
