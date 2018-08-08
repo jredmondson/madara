@@ -90,7 +90,7 @@ namespace madara
        **/
       static inline bool file_header_test (const char * buffer)
       {
-        return strncmp (&(buffer[32]), "KaRL", 4) == 0; 
+        return strncmp (&(buffer[32]), "KaRL1.4", 7) == 0; 
       }
 
       /**
