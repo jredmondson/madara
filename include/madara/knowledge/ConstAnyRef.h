@@ -271,7 +271,19 @@ public:
   template<typename T>
   typename T::Reader reader(type<T>) const
   {
-    return cref<CapnObject<T>>().reader();
+    auto capn = cptr<CapnObject<T>>();
+    if (capn) {
+      return capn->reader();
+    }
+    auto reg_capn = cptr<RegCapnObject>();
+    if (reg_capn) {
+      return reg_capn->reader().template as<T>();
+    }
+    auto gen_capn = cptr<GenericCapnObject>();
+    if (gen_capn) {
+      return gen_capn->reader(capnp::Schema::from<T>()).template as<T>();
+    }
+    throw exceptions::BadAnyAccess("reader<T>(): not a Cap'n Proto message");
   }
 
   /**
