@@ -530,6 +530,28 @@ namespace madara
           const KnowledgeUpdateSettings & settings);
         
         /**
+         * Sets a knowledge variable to a specified value
+         *
+         * @param index           index to set
+         * @param value           value to set at location
+         * @return                0 if successful, -1 if key is null, and
+         *                        -2 if quality isn't high enough
+         **/
+        int set (size_t index, const KnowledgeRecord & value);
+        
+        /**
+         * Sets a knowledge variable to a specified value
+         *
+         * @param index           index to set
+         * @param value           value to set at location
+         * @param settings        settings for applying the update
+         * @return                0 if successful, -1 if key is null, and
+         *                        -2 if quality isn't high enough
+         **/
+        int set (size_t index, const KnowledgeRecord & value, 
+          const KnowledgeUpdateSettings & settings);
+        
+        /**
          * Sets the quality of writing to a certain variable from this entity
          *
          * @param index           index to set

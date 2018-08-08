@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <assert.h>
+#include <string.h>
 #include <math.h>
 #include <iomanip>
 #include <algorithm>
@@ -12,7 +13,9 @@
 #include "madara/utility/Utility.h"
 
 #include "madara/utility/Timer.h"
+#include "madara/utility/FileFragmenter.h"
 
+namespace knowledge = madara::knowledge;
 namespace utility = madara::utility;
 namespace sc = std::chrono;
 
@@ -164,7 +167,8 @@ void test_heaps (void)
     std::cerr << "SUCCESS\n";
   else
   {
-    std::cerr << "FAIL\n"; ++madara_fails;
+    std::cerr << "FAIL\n";
+    ++madara_fails;
   }
 
   madara::utility::heap_sort (input, 7);
@@ -183,7 +187,8 @@ void test_heaps (void)
     std::cerr << "SUCCESS\n";
   else
   {
-    std::cerr << "FAIL\n"; ++madara_fails;
+    std::cerr << "FAIL\n";
+    ++madara_fails;
   }
   
 }
@@ -196,7 +201,8 @@ void test_ints (void)
     std::cerr << "SUCCESS\n";
   else
   {
-    std::cerr << "FAIL\n"; ++madara_fails;
+    std::cerr << "FAIL\n";
+    ++madara_fails;
   }
   
   std::cerr << "Testing nearest int to 2.8... ";
@@ -205,7 +211,8 @@ void test_ints (void)
     std::cerr << "SUCCESS\n";
   else
   {
-    std::cerr << "FAIL\n"; ++madara_fails;
+    std::cerr << "FAIL\n";
+    ++madara_fails;
   }
   
   std::cerr << "Testing nearest int to 16.1... ";
@@ -214,7 +221,8 @@ void test_ints (void)
     std::cerr << "SUCCESS\n";
   else
   {
-    std::cerr << "FAIL\n"; ++madara_fails;
+    std::cerr << "FAIL\n";
+    ++madara_fails;
   }
   
   std::cerr << "Testing nearest int to 9.9575... ";
@@ -223,7 +231,8 @@ void test_ints (void)
     std::cerr << "SUCCESS\n";
   else
   {
-    std::cerr << "FAIL\n"; ++madara_fails;
+    std::cerr << "FAIL\n";
+    ++madara_fails;
   }
   
   std::cerr << "Testing rand_int... ";
@@ -244,7 +253,8 @@ void test_ints (void)
     std::cerr << "SUCCESS\n";
   else
   {
-    std::cerr << "FAIL\n"; ++madara_fails;
+    std::cerr << "FAIL\n";
+    ++madara_fails;
   }
   
   std::cerr << "Testing rand_int... ";
@@ -265,7 +275,8 @@ void test_ints (void)
     std::cerr << "SUCCESS\n";
   else
   {
-    std::cerr << "FAIL\n"; ++madara_fails;
+    std::cerr << "FAIL\n";
+    ++madara_fails;
   }
 }
 
@@ -287,7 +298,8 @@ void test_time (void)
     std::cerr << " SUCCESS\n";
   else
   {
-    std::cerr << "FAIL\n"; ++madara_fails;
+    std::cerr << "FAIL\n";
+    ++madara_fails;
   }
 }
 
@@ -333,7 +345,8 @@ void test_sleep (void)
   }
   else
   {
-    std::cerr << "... FAIL\n"; ++madara_fails;
+    std::cerr << "... FAIL\n";
+    ++madara_fails;
   }
   
   std::cerr << "  Testing sleep time of 2.5s... ";
@@ -347,7 +360,8 @@ void test_sleep (void)
   }
   else
   {
-    std::cerr << "... FAIL\n"; ++madara_fails;
+    std::cerr << "... FAIL\n";
+    ++madara_fails;
   }
   
   std::cerr << "  Testing sleep time of 2.25s... ";
@@ -361,7 +375,8 @@ void test_sleep (void)
   }
   else
   {
-    std::cerr << "... FAIL\n"; ++madara_fails;
+    std::cerr << "... FAIL\n";
+    ++madara_fails;
   }
 
 #ifdef MADARA_FEATURE_SIMTIME
@@ -389,7 +404,8 @@ void test_sleep (void)
     }
     else
     {
-      std::cerr << "... FAIL\n"; ++madara_fails;
+      std::cerr << "... FAIL\n";
+      ++madara_fails;
     }
   };
 
@@ -417,7 +433,8 @@ void test_replace (void)
   }
   else
   {
-    std::cerr << "FAIL"; ++madara_fails;
+    std::cerr << "FAIL";
+    ++madara_fails;
   }
 
   std::cerr << "\n";
@@ -434,7 +451,8 @@ void test_replace (void)
   }
   else
   {
-    std::cerr << "FAIL"; ++madara_fails;
+    std::cerr << "FAIL";
+    ++madara_fails;
   }
   std::cerr << "\n";
 
@@ -454,7 +472,8 @@ void test_replace (void)
   }
   else
   {
-    std::cerr << "FAIL"; ++madara_fails;
+    std::cerr << "FAIL";
+    ++madara_fails;
   }
 
   std::cerr << "\n";
@@ -473,11 +492,145 @@ void test_replace (void)
   }
   else
   {
-    std::cerr << "FAIL"; ++madara_fails;
+    std::cerr << "FAIL";
+    ++madara_fails;
   }
 
   std::cerr << "\n";
 
+}
+
+void test_fragment (const std::string & message,
+  knowledge::KnowledgeRecord & record, const char * text_buffer, size_t size)
+{
+  std::cerr << "  " << message << "... ";
+
+  std::shared_ptr <const std::vector <unsigned char>> binary = 
+    record.share_binary ();
+
+  if (binary->size () != size)
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+  else
+  {
+    if (memcmp (binary->data (), text_buffer, size) == 0)
+    {
+      std::cerr << "SUCCESS\n";
+    }
+    else
+    {
+      std::cerr << "FAIL\n";
+      ++madara_fails;
+    }
+  }
+}
+
+void test_file_fragmenter (void)
+{
+  std::cerr << "Testing FileFragmenter...\n";
+
+  std::cerr << "  Creating 256KB buffer...\n";
+
+  size_t size = 256000;
+  size_t segment_size = 60000;
+  char * text_buffer = new char [size];
+  std::fill (text_buffer, text_buffer + segment_size, 'a');
+  std::fill (text_buffer + segment_size, text_buffer + segment_size * 2, 'b');
+  std::fill (
+    text_buffer + segment_size * 2, text_buffer + segment_size * 3, 'c');
+  std::fill (
+    text_buffer + segment_size * 3, text_buffer + segment_size * 4, 'd');
+  std::fill (text_buffer + segment_size * 4, text_buffer + size, 'e');
+
+  text_buffer[segment_size - 1] = 0;
+  text_buffer[segment_size * 2 - 1] = 0;
+  text_buffer[segment_size * 3 - 1] = 0;
+  text_buffer[segment_size * 4 - 1] = 0;
+  text_buffer[size - 1] = 0;
+
+  std::cerr << "  Splitting 256KB buffer into 5 chunks... ";
+
+  utility::FileFragmenter fragmenter (text_buffer, size, segment_size);
+  if (fragmenter.records.size () == 5)
+  {
+    std::cerr << "SUCCESS\n";
+
+    test_fragment ("Checking fragment 1 contents",
+      fragmenter.records[0], text_buffer, segment_size);
+    test_fragment ("Checking fragment 2 contents",
+      fragmenter.records[1], text_buffer + segment_size, segment_size);
+    test_fragment ("Checking fragment 3 contents",
+      fragmenter.records[2], text_buffer + segment_size * 2, segment_size);
+    test_fragment ("Checking fragment 4 contents",
+      fragmenter.records[3], text_buffer + segment_size * 3, segment_size);
+    test_fragment ("Checking fragment 5 contents",
+      fragmenter.records[4], text_buffer + segment_size * 4,
+      size - segment_size * 4);
+    
+    std::cerr << "  Creating knowledge base file fragments... ";
+
+    knowledge::KnowledgeBase kb;
+    knowledge::containers::Vector fragments = 
+      fragmenter.create_vector ("record.split", kb);
+
+    if (fragments[0].size () == segment_size && 
+        fragments[1].size () == segment_size && 
+        fragments[2].size () == segment_size && 
+        fragments[3].size () == segment_size && 
+        fragments[4].size () == size % segment_size)
+    {
+      std::cerr << "SUCCESS\n";
+
+      std::cerr << "  Rebuilding file from fragments... ";
+
+      size_t rebuilt_size = fragmenter.from_kb ("record.split", kb);
+
+      if (rebuilt_size == size && fragmenter.file_size == size)
+      {
+        std::cerr << "SUCCESS\n";
+      }
+      else
+      {
+        std::cerr << "FAIL\n";
+        ++madara_fails;
+        kb.print ();
+      }
+
+      std::cerr << "  Erasing a fragment and rebuilding... ";
+      fragments.set (2, knowledge::KnowledgeRecord ());
+
+      rebuilt_size = fragmenter.from_kb ("record.split", kb);
+
+      if (rebuilt_size != size &&
+          fragmenter.file_size == rebuilt_size)
+      {
+        std::cerr << "SUCCESS\n";
+      }
+      else
+      {
+        std::cerr << "FAIL\n";
+        ++madara_fails;
+        kb.print ();
+      }
+    }
+    else
+    {
+      std::cerr << "FAIL\n";
+      ++madara_fails;
+      kb.print ();
+    }
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+
+
+
+  delete [] text_buffer;
 }
 
 int main (int argc, char ** argv)
@@ -492,6 +645,7 @@ int main (int argc, char ** argv)
   test_time ();
   test_ints ();
   test_sleep ();
+  test_file_fragmenter ();
 
   if (madara_fails > 0)
   {
