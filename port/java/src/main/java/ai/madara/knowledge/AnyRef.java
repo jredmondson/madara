@@ -46,8 +46,16 @@
  *********************************************************************/
 package ai.madara.knowledge;
 
+import java.nio.ByteBuffer;
+
 import ai.madara.MadaraJNI;
 import ai.madara.knowledge.KnowledgeRecord;
+
+import org.capnproto.StructReader;
+import org.capnproto.SegmentBuilder;
+import org.capnproto.StructBuilder;
+import org.capnproto.StructFactory;
+import org.capnproto.MessageReader;
 
 /**
  * This class refers to a C++ object which supports Any. It does not own any
@@ -377,6 +385,45 @@ public class AnyRef
     String[][] out = new String[1][];
     err_unchecked(jni_list_fields(handler_, data_, out));
     return out[0];
+  }
+
+  protected static java.util.Map<String, StructFactory> registered_classes =
+    new java.util.HashMap<String, StructFactory>();
+  protected static java.util.Map<String, String> registered_factories =
+    new java.util.HashMap<String, String>();
+
+  protected void print_hex(byte[] data)
+  {
+    for (byte cur : data) {
+      System.err.print(String.format("%02x", cur));
+    }
+  }
+
+  public static
+    <Reader extends StructReader,
+     Builder extends StructBuilder,
+     Factory extends StructFactory<Builder, Reader>>
+    void registerClass(String tag, Factory factory)
+  {
+    registered_classes.put(tag, factory);
+    registered_factories.put(factory.getClass().getName(), tag);
+  }
+
+  protected static native String jni_reader(long handler, long data, byte[][] out);
+
+  public <T> T reader(org.capnproto.FromPointerReader<T> factory)
+    throws BadAnyAccess
+  {
+    byte[][] out = new byte[1][];
+    err(jni_reader(handler_, data_, out));
+    ByteBuffer[] msg = new ByteBuffer[1];
+    msg[0] = ByteBuffer.wrap(out[0]);
+    try {
+      MessageReader message = org.capnproto.Serialize.read(msg[0]);
+      return message.getRoot(factory);
+    } catch (java.io.IOException e) {
+      throw new BadAnyAccess("Bad IO: " + e);
+    }
   }
 
   // Registration functions for common C++ types. Other types must be registered

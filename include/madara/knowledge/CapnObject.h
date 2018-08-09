@@ -386,6 +386,26 @@ public:
   }
 
   /**
+   * Interpret held data as given Cap'n Proto type, and return the appropriate
+   * reader. Will throw if type doesn't match schema of this message.
+   **/
+  template<typename T>
+  typename T::Reader reader(type<T>) const
+  {
+    return reader().template as<T>();
+  }
+
+  /**
+   * Interpret held data as given Cap'n Proto type, and return the appropriate
+   * reader. Will throw if type doesn't match schema of this message.
+   **/
+  template<typename T>
+  typename T::Reader reader() const
+  {
+    return reader(type<T>{});
+  }
+
+  /**
    * Get the registered tag of this object's schema
    **/
   const char *tag() const override { return tag_; }

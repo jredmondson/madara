@@ -776,3 +776,43 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setAnySettings
     knowledge->emplace_any(str.chars(), *settings, a);
   });
 }
+
+/*
+ * Class:     ai_madara_knowledge_AnyRef
+ * Method:    jni_reader
+ * Signature: (JJ[[B)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1reader
+  (JNIEnv *env, jclass, jlong handler, jlong data, jobjectArray out)
+{
+  return catch_wrap(env, [&]() {
+    AnyRef a{make_anyref(handler, data)};
+    auto buf = a.get_capnp_buffer().asChars();
+
+    jbyteArray ret = env->NewByteArray(buf.size());
+    env->SetByteArrayRegion(ret, 0,
+        buf.size(), (jbyte*)buf.begin());
+    env->SetObjectArrayElement(out, 0, ret);
+  });
+}
+
+/*
+ * Class:     ai_madara_knowledge_Any
+ * Method:    jni_emplace_capnp
+ * Signature: (Ljava/lang/String;[B[J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_Any_jni_1emplace_1capnp
+  (JNIEnv *env, jclass, jstring tag, jbyteArray buf, jlongArray out)
+{
+  return catch_wrap(env, [&]() {
+    JavaUTFString tagstr(env, tag);
+    JavaByteArray arr(env, buf);
+
+    GenericCapnObject capn(tagstr.chars(), (char *)arr.data(), arr.size());
+    Any a(capn);
+
+    NoDestruct u(std::move(a));
+
+    anyref_out(env, u.a.ref(), out);
+  });
+}

@@ -12,7 +12,7 @@
 #include "madara/utility/SupportTest.h"
 #include "madara/knowledge/CapnAdapt.h"
 
-#include "capnfiles/Point.capn.h"
+#include "capnfiles/Geo.capnp.h"
 
 #include "test.h"
 

@@ -46,7 +46,15 @@
  *********************************************************************/
 package ai.madara.knowledge;
 
+import java.nio.ByteBuffer;
+
 import ai.madara.MadaraJNI;
+
+import org.capnproto.StructReader;
+import org.capnproto.StructBuilder;
+import org.capnproto.StructFactory;
+import org.capnproto.SegmentBuilder;
+import org.capnproto.MessageBuilder;
 
 /**
  * This class owns a C++ object which supports Any. Be sure to call free() on
@@ -84,6 +92,37 @@ public class Any extends AnyRef
   {
     super(0, 0);
     emplace_impl(tag);
+  }
+
+  private static native String jni_emplace_capnp(
+      String tag, byte[] data, long[] out);
+
+  public <Factory extends StructFactory> Any(Factory factory,
+      MessageBuilder msg) throws BadAnyAccess
+  {
+    super(0, 0);
+    String factory_name = factory.getClass().getName();
+    String tag = registered_factories.get(factory_name);
+    if (tag == null) {
+      throw new BadAnyAccess("Unknown type tag: " + tag);
+    }
+
+    long size = org.capnproto.Serialize.computeSerializedSizeInWords(msg) * 8;
+
+    org.capnproto.ArrayOutputStream stream =
+      new org.capnproto.ArrayOutputStream(ByteBuffer.allocate((int)size));
+
+    try {
+      org.capnproto.Serialize.write(stream, msg);
+    } catch (java.io.IOException e) {
+      // Shouldn't happen
+      throw new RuntimeException(e);
+    }
+
+    long[] out = new long[2];
+    err(jni_emplace_capnp(tag, stream.buf.array(), out));
+    handler_ = out[0];
+    data_ = out[1];
   }
 
   private static native String jni_free(long handler, long data);

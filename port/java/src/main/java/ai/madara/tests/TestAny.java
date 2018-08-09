@@ -52,6 +52,11 @@ import ai.madara.knowledge.AnyRef;
 import ai.madara.knowledge.KnowledgeRecord;
 import ai.madara.knowledge.KnowledgeBase;
 
+import org.capnproto.MessageBuilder;
+import org.capnproto.StructBuilder;
+import org.capnproto.StructReader;
+import ai.madara.tests.capnp.Geo;
+
 /**
  * This class is a tester for Any and AnyRef
  */
@@ -61,14 +66,16 @@ public class TestAny {
     System.err.println("Loading libMADARA.so");
     System.loadLibrary("MADARA");
 
-    System.err.println("Loading libdatatypes_shared.so");
-    System.loadLibrary("datatypes_shared");
+    //System.err.println("Loading libdatatypes_shared.so");
+    //System.loadLibrary("datatypes_shared");
 
     KnowledgeBase kb = new KnowledgeBase();
 
     Any.registerStringVector("strvec");
     Any.registerDoubleVector("dblvec");
     Any.registerStringToStringMap("smap");
+
+    Any.registerClass("Point", Geo.Point.factory);
 
     Any a0 = new Any("smap");
     a0.at("hello").assign("world");
@@ -84,7 +91,7 @@ public class TestAny {
       System.err.println("a1[" + i + "] = " + a1.at(i));
     }
 
-    Any p0 = new Any("Point");
+    /*Any p0 = new Any("Point");
     System.err.println("p0 = " + p0);
 
     Any p1 = new Any("Pose");
@@ -94,6 +101,19 @@ public class TestAny {
     kb.set("p1", p1);
 
     System.err.println("kb.p0 = " + kb.get("p0"));
-    System.err.println("kb.p1 = " + kb.get("p1"));
+    System.err.println("kb.p1 = " + kb.get("p1"));*/
+
+    MessageBuilder msg = new MessageBuilder();
+    Geo.Point.Builder builder = msg.initRoot(Geo.Point.factory);
+    builder.setX(12);
+    builder.setY(32);
+    builder.setZ(47);
+    Any c0 = new Any(Geo.Point.factory, msg);
+    System.err.println("c0 = " + c0);
+
+    Geo.Point.Reader reader = c0.reader(Geo.Point.factory);
+    System.err.println("c0.x = " + reader.getX());
+    System.err.println("c0.y = " + reader.getY());
+    System.err.println("c0.z = " + reader.getZ());
   }
 }

@@ -140,8 +140,8 @@ class_<T> define_basic_any(const char * name, const char *doc, I init)
     .def("supports_fields", &T::supports_fields,
         "Check if fields are supported")
     .def("reader", +[](const T &a) -> object {
-        auto buf = a.get_capnp_buffer();
-        std::string sbuf(buf.asChars().begin(), buf.size());
+        auto buf = a.get_capnp_buffer().asChars();
+        std::string sbuf(buf.begin(), buf.size());
         return registered_types.at(a.tag()).attr("from_bytes")(sbuf);
       }, "Get a Cap'n Proto reader for held object. Throws if held object "
          "isn't a Cap'n Proto message.")

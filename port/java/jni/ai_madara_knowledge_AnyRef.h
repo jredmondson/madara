@@ -153,6 +153,14 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1list_1fields
 
 /*
  * Class:     ai_madara_knowledge_AnyRef
+ * Method:    jni_reader
+ * Signature: (JJ[[B)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1reader
+  (JNIEnv *, jclass, jlong, jlong, jobjectArray);
+
+/*
+ * Class:     ai_madara_knowledge_AnyRef
  * Method:    registerInt
  * Signature: (Ljava/lang/String;)V
  */

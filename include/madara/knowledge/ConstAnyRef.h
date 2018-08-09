@@ -346,7 +346,7 @@ public:
     if (!handler_->get_reader(nullptr, nullptr, &data, &size, data_)) {
       throw BadAnyAccess("Unknown error getting Cap'n Proto object's buffer");
     }
-    return {(const capnp::word *)data, size};
+    return {(const capnp::word *)data, size / 8};
   }
 
   /**
