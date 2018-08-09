@@ -13,6 +13,26 @@ using namespace utility::java;
 
 /*
  * Class:     ai_madara_knowledge_AnyRef
+ * Method:    jni_get_tag
+ * Signature: (JJ[Ljava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1get_1tag
+  (JNIEnv *env, jclass, jlong handler, jlong data, jobjectArray out)
+{
+  return catch_wrap(env, [&]() {
+    AnyRef a{make_anyref(handler, data)};
+    auto s = a.tag();
+    if (s) {
+      jstring ret = env->NewStringUTF(s);
+      env->SetObjectArrayElement(out, 0, ret);
+    } else {
+      env->SetObjectArrayElement(out, 0, nullptr);
+    }
+  });
+}
+
+/*
+ * Class:     ai_madara_knowledge_AnyRef
  * Method:    jni_field
  * Signature: (Ljava/lang/String;JJ[J)Ljava/lang/String;
  */
@@ -814,5 +834,24 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_Any_jni_1emplace_1capnp
     NoDestruct u(std::move(a));
 
     anyref_out(env, u.a.ref(), out);
+  });
+}
+
+/*
+ * Class:     ai_madara_knowledge_AnyRef
+ * Method:    jni_register_tag
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1register_1tag
+  (JNIEnv *env, jclass, jstring tag)
+{
+  return catch_wrap(env, [&]() {
+    JavaUTFString tagstr(env, tag);
+
+    std::unique_ptr<std::string> new_tag(new std::string(tagstr.chars()));
+    if (AnyRegistry::register_type<GenericCapnObject>(new_tag->c_str())) {
+      // OK to leak this; will be needed for rest of process execution
+      new_tag.release();
+    }
   });
 }

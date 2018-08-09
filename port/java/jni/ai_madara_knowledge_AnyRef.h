@@ -153,6 +153,22 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1list_1fields
 
 /*
  * Class:     ai_madara_knowledge_AnyRef
+ * Method:    jni_get_tag
+ * Signature: (JJ[Ljava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1get_1tag
+  (JNIEnv *, jclass, jlong, jlong, jobjectArray);
+
+/*
+ * Class:     ai_madara_knowledge_AnyRef
+ * Method:    jni_register_tag
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1register_1tag
+  (JNIEnv *, jclass, jstring);
+
+/*
+ * Class:     ai_madara_knowledge_AnyRef
  * Method:    jni_reader
  * Signature: (JJ[[B)Ljava/lang/String;
  */

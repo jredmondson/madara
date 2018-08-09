@@ -387,6 +387,19 @@ public class AnyRef
     return out[0];
   }
 
+  private static native String jni_get_tag(long handler, long data, String[] out);
+
+  /**
+   * Get the registered tag of the held object. Will return null if the held
+   * type is not registered with a tag.
+   **/
+  public String getTag()
+  {
+    String[] out = new String[1];
+    err_unchecked(jni_get_tag(handler_, data_, out));
+    return out[0];
+  }
+
   protected static java.util.Map<String, StructFactory> registered_classes =
     new java.util.HashMap<String, StructFactory>();
   protected static java.util.Map<String, String> registered_factories =
@@ -399,6 +412,14 @@ public class AnyRef
     }
   }
 
+  protected static native String jni_register_tag(String tag);
+
+  /**
+   * Register a Java type with the Any system. This will allow the given
+   * factory to be used to build and read types with the given tag. This
+   * function is not thread-safe, and should be called as early as possible,
+   * before any KnowledgeBases are in use.
+   **/
   public static
     <Reader extends StructReader,
      Builder extends StructBuilder,
@@ -407,14 +428,34 @@ public class AnyRef
   {
     registered_classes.put(tag, factory);
     registered_factories.put(factory.getClass().getName(), tag);
+    err_unchecked(jni_register_tag(tag));
   }
 
   protected static native String jni_reader(long handler, long data, byte[][] out);
 
+  /**
+   * Get a Cap'n Proto reader for the held data. Will throw if the held data
+   * is not a Cap'n Proto message, or if it doesn't match the type of the
+   * given factory.
+   **/
   public <T> T reader(org.capnproto.FromPointerReader<T> factory)
     throws BadAnyAccess
   {
     byte[][] out = new byte[1][];
+
+    String factory_name = factory.getClass().getName();
+    String tag = registered_factories.get(factory_name);
+    String my_tag = getTag();
+
+    if (my_tag == null) {
+      throw new BadAnyAccess("Any is holding an unregistered type");
+    } else if (tag == null) {
+      throw new BadAnyAccess("Cap'n Proto message type not registered");
+    } else if (!tag.equals(my_tag)) {
+      throw new BadAnyAccess("Mismatched tags: expected " + my_tag +
+          " requested reader for tag " + tag);
+    }
+
     err(jni_reader(handler_, data_, out));
     ByteBuffer[] msg = new ByteBuffer[1];
     msg[0] = ByteBuffer.wrap(out[0]);

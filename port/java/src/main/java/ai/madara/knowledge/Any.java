@@ -97,10 +97,10 @@ public class Any extends AnyRef
   private static native String jni_emplace_capnp(
       String tag, byte[] data, long[] out);
 
-  public <Factory extends StructFactory> Any(Factory factory,
-      MessageBuilder msg) throws BadAnyAccess
+  private void <Factory extends StructFactory> emplace_capnp_impl(
+      Factory factory, MessageBuilder msg)
+    throws BadAnyAccess
   {
-    super(0, 0);
     String factory_name = factory.getClass().getName();
     String tag = registered_factories.get(factory_name);
     if (tag == null) {
@@ -123,6 +123,18 @@ public class Any extends AnyRef
     err(jni_emplace_capnp(tag, stream.buf.array(), out));
     handler_ = out[0];
     data_ = out[1];
+  }
+
+  /**
+   * Construct a new Any with a Cap'n Proto message.
+   * Tag must have been registered with Any.registerClass(), or with
+   * Any::register_schema() in C++
+   **/
+  public <Factory extends StructFactory> Any(Factory factory,
+      MessageBuilder msg) throws BadAnyAccess
+  {
+    super(0, 0);
+    emplace_capnp_impl(factory, msg);
   }
 
   private static native String jni_free(long handler, long data);
@@ -173,5 +185,17 @@ public class Any extends AnyRef
   {
     free();
     emplace_impl(type);
+  }
+
+  /**
+   * Replace the held object, if any, with a Cap'n Proto message.
+   * Tag must have been registered with Any.registerClass(), or with
+   * Any::register_schema() in C++
+   **/
+  public <Factory extends StructFactory> Any(Factory factory,
+      MessageBuilder msg) throws BadAnyAccess
+  {
+    free()
+    emplace_capnp_impl(factory, msg);
   }
 }
