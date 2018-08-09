@@ -494,6 +494,12 @@ void test_capn()
 
   VAL(a);
 
+  auto static_reader = a.reader<geo_capn::Point>();
+
+  TEST_EQ(static_reader.getX(), 4);
+  TEST_EQ(static_reader.getY(), 8);
+  TEST_EQ(static_reader.getZ(), 12);
+
   RegCapnObject obj4("Point", buffer);
   dynreader = obj4.reader();
   TEST_EQ(dynreader.get("x").template as<double>(), 4);
@@ -553,7 +559,10 @@ void test_geo()
   auto &avs0ref = avs0.ref<RegCapnObject>();
   auto avs0_reader = avs0ref.reader();
   auto avs0i = avs0_reader.get("i");
-  VAL(avs0i.template as<int>());
+  TEST_EQ(avs0i.template as<int>(), 42);
+
+  auto avs0_sreader = avs0.template reader<geo_capn::StampedPoseList>();
+  TEST_EQ(avs0_sreader.getI(), 42);
 
   auto avs0data = avs0_reader.get("data");
   auto avs0data_reader = avs0data.template as<capnp::List<int>>();

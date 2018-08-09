@@ -242,11 +242,17 @@ template <typename T> void
 CircularBufferConsumer::inspect (KnowledgeRecord::Integer position,
   size_t count, std::vector <T> & values) const
 {
+  uint64_t latest_toi = 0;
+
   // iterate over the returned records
   for (auto record : inspect (position, count))
   {
-    // add them to the values
-    values.push_back (record.to_any <T> ());
+    // add them to the values if valid and increasing toi
+    if (record.is_valid() && record.toi >= latest_toi)
+    {
+      latest_toi = record.toi;
+      values.push_back (record.to_any <T> ());
+    }
   }
 }
 
@@ -409,7 +415,8 @@ CircularBufferConsumer::consume_latest (size_t count,
   for (auto record : consume_latest (count))
   {
     // add them to the values
-    values.push_back (record.to_any <T> ());
+    if (record.is_valid())
+      values.push_back (record.to_any <T> ());
   }
 }
 
@@ -423,7 +430,8 @@ CircularBufferConsumer::consume_latest (size_t count,
   for (auto record : consume_latest (count))
   {
     // add them to the values
-    values.push_back (record.to_any <T> ());
+    if (record.is_valid())
+      values.push_back (record.to_any <T> ());
   }
 }
 
@@ -481,11 +489,16 @@ template <typename T> void
 CircularBufferConsumer::consume_earliest (size_t count,
   std::vector <T> & values) const
 {
+  uint64_t latest_toi = 0;
   // iterate over the returned records
   for (auto record : consume_earliest (count))
   {
-    // add them to the values
-    values.push_back (record.to_any <T> ());
+    // add them to the values if valid
+    if (record.is_valid() && record.toi >= latest_toi)
+    {
+      latest_toi = record.toi;
+      values.push_back (record.to_any <T> ());
+    }
   }
 }
 
@@ -495,11 +508,16 @@ CircularBufferConsumer::consume_earliest (size_t count,
 {
   dropped = get_dropped ();
 
+  uint64_t latest_toi = 0;
   // iterate over the returned records
   for (auto record : consume_earliest (count))
   {
-    // add them to the values
-    values.push_back (record.to_any <T> ());
+    // add them to the values if valid and increasing toi
+    if (record.is_valid() && record.toi >= latest_toi)
+    {
+      latest_toi = record.toi;
+      values.push_back (record.to_any <T> ());
+    }
   }
 }
 
@@ -597,7 +615,8 @@ CircularBufferConsumer::peek_latest (size_t count,
   for (auto record : peek_latest (count))
   {
     // add them to the values
-    values.push_back (record.to_any <T> ());
+    if (record.is_valid())
+      values.push_back (record.to_any <T> ());
   }
 }
 
