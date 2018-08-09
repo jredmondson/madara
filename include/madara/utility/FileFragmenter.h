@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "madara/knowledge/KnowledgeUpdateSettings.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/utility/Utility.h"
 #include "madara/utility/ScopedArray.h"
@@ -103,14 +104,18 @@ namespace madara
 
        /**
        * Creates a vector in a knowledge base with the current file fragments
-       * @param  key     the location in the knowledge base to save to
-       * @param  kb      the knowledge base to save to
+       * @param  key         the location in the knowledge base to save to
+       * @param  kb          the knowledge base to save to
+       * @param  settings    the knowledge update settings to use for Vector
        * @return a container that can reference the elements in the KB
        **/
       knowledge::containers::Vector create_vector (
-        const std::string & key, knowledge::KnowledgeBase & kb)
+        const std::string & key, knowledge::KnowledgeBase & kb,
+        const knowledge::KnowledgeUpdateSettings & settings =
+          knowledge::KnowledgeUpdateSettings::GLOBAL_AS_LOCAL_NO_EXPAND
+        )
       {
-        knowledge::containers::Vector result (key, kb);
+        knowledge::containers::Vector result (key, kb, -1, true, settings);
         
         for (size_t i = 0; i < records.size (); ++i)
           result.push_back (records[i]);
@@ -121,17 +126,21 @@ namespace madara
        /**
        * Creates a vector in a knowledge base with the current file fragments.
        * This method is useful to check file transfer progress through a KB.
-       * @param  key     the location in the knowledge base to load from
-       * @param  kb      the knowledge base to load from
+       * @param  key         the location in the knowledge base to load from
+       * @param  kb          the knowledge base to load from
+       * @param  settings    the knowledge update settings to use
        * @return the number of bytes currently in the KB Vector
        **/
       size_t from_kb (
-        const std::string & key, knowledge::KnowledgeBase & kb)
+        const std::string & key, knowledge::KnowledgeBase & kb,
+        const knowledge::KnowledgeUpdateSettings & settings =
+          knowledge::KnowledgeUpdateSettings::GLOBAL_AS_LOCAL_NO_EXPAND
+        )
       {
         file_size = 0;
         file_contents = 0;
         bool has_missing = false;
-        knowledge::containers::Vector fragments (key, kb);
+        knowledge::containers::Vector fragments (key, kb, -1, true, settings);
         
         fragments.copy_to (records);
 

@@ -574,6 +574,7 @@ void test_file_fragmenter (void)
     knowledge::KnowledgeBase kb;
     knowledge::containers::Vector fragments = 
       fragmenter.create_vector ("record.split", kb);
+    knowledge::VariableReferences modifieds;
 
     if (fragments[0].size () == segment_size && 
         fragments[1].size () == segment_size && 
@@ -582,6 +583,21 @@ void test_file_fragmenter (void)
         fragments[4].size () == size % segment_size)
     {
       std::cerr << "SUCCESS\n";
+
+      std::cerr << "  Checking modifieds...";
+      modifieds = kb.save_modifieds ();
+
+      if (modifieds.size () == 0)
+      {
+        std::cerr << "SUCCESS\n";
+      }
+      else
+      {
+        std::cerr << "FAIL. modifieds.size should be 0 but is " << 
+          modifieds.size () << "\n";
+        ++madara_fails;
+        kb.print ();
+      }
 
       std::cerr << "  Rebuilding file from fragments... ";
 
@@ -607,26 +623,65 @@ void test_file_fragmenter (void)
           fragmenter.file_size == rebuilt_size)
       {
         std::cerr << "SUCCESS\n";
-      }
+      } // end is still fragmented
       else
       {
         std::cerr << "FAIL\n";
         ++madara_fails;
         kb.print ();
-      }
-    }
+      } // end is complete (FAIL)
+
+      std::cerr << "  Checking modifieds with default settings... ";
+
+      fragments = fragmenter.create_vector ("record.split", kb,
+        knowledge::KnowledgeUpdateSettings::DEFAULT);
+      modifieds = kb.save_modifieds ();
+
+      if (modifieds.size () == 6)
+      {
+        std::cerr << "SUCCESS\n";
+      } // end modifieds == 6
+      else
+      {
+        std::cerr << "FAIL. modifieds.size should be 6 but is " << 
+          modifieds.size () << "\n";
+        ++madara_fails;
+        kb.print ();
+      } // end modifieds != 6 (FAIL)
+
+      std::cerr << "  Clearing modifieds...\n";
+
+      kb.clear_modifieds ();
+
+      std::cerr << "  Checking modifieds on one vector element... ";
+
+      fragments.modify (2);
+      modifieds = kb.save_modifieds ();
+
+      if (modifieds.size () == 1)
+      {
+        std::cerr << "SUCCESS\n";
+      } // end modifieds == 1
+      else
+      {
+        std::cerr << "FAIL. modifieds.size should be 1 but is " << 
+          modifieds.size () << "\n";
+        ++madara_fails;
+        kb.print ();
+      } // end modifieds != 1 (FAIL)
+    } // end has 5 fragments of appropriate size
     else
     {
       std::cerr << "FAIL\n";
       ++madara_fails;
       kb.print ();
-    }
-  }
+    } // end does not have appropriate fragments (FAIL)
+  } // end has 5 fragments
   else
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-  }
+  } // end does not have 5 fragments (FAIL)
 
 
 
