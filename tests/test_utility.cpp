@@ -13,7 +13,7 @@
 #include "madara/utility/Utility.h"
 
 #include "madara/utility/Timer.h"
-#include "madara/utility/FileFragmenter.h"
+#include "madara/knowledge/FileFragmenter.h"
 
 namespace knowledge = madara::knowledge;
 namespace utility = madara::utility;
@@ -552,7 +552,7 @@ void test_file_fragmenter (void)
 
   std::cerr << "  Splitting 256KB buffer into 5 chunks... ";
 
-  utility::FileFragmenter fragmenter (text_buffer, size, segment_size);
+  knowledge::FileFragmenter fragmenter (text_buffer, size, segment_size);
   if (fragmenter.records.size () == 5)
   {
     std::cerr << "SUCCESS\n";

@@ -1,5 +1,5 @@
-#ifndef _MADARA_UTILITY_FILEFRAGMENTER_H_
-#define _MADARA_UTILITY_FILEFRAGMENTER_H_
+#ifndef _MADARA_KNOWLEDGE_FILEFRAGMENTER_H_
+#define _MADARA_KNOWLEDGE_FILEFRAGMENTER_H_
 
 #include <string>
 #include <vector>
@@ -12,11 +12,12 @@
 
 namespace madara
 {
-  namespace utility
+  namespace knowledge
   {
     /**
      * @class FileFragmenter
-     * @brief Enforces a periodic epoch
+     * @brief Splits files into fragments that can be saved to and loaded from
+     * a knowledge base
      */
     class FileFragmenter
     {
@@ -128,13 +129,13 @@ namespace madara
        * @param  settings    the knowledge update settings to use for Vector
        * @return a container that can reference the elements in the KB
        **/
-      knowledge::containers::Vector create_vector (
-        const std::string & key, knowledge::KnowledgeBase & kb,
-        const knowledge::KnowledgeUpdateSettings & settings =
-          knowledge::KnowledgeUpdateSettings::GLOBAL_AS_LOCAL_NO_EXPAND
+      containers::Vector create_vector (
+        const std::string & key, KnowledgeBase & kb,
+        const KnowledgeUpdateSettings & settings =
+          KnowledgeUpdateSettings::GLOBAL_AS_LOCAL_NO_EXPAND
         )
       {
-        knowledge::containers::Vector result (key, kb, 0, true, settings);
+        containers::Vector result (key, kb, 0, true, settings);
         
         for (size_t i = 0; i < records.size (); ++i)
           result.push_back (records[i]);
@@ -151,15 +152,15 @@ namespace madara
        * @return the number of bytes currently in the KB Vector
        **/
       size_t from_kb (
-        const std::string & key, knowledge::KnowledgeBase & kb,
-        const knowledge::KnowledgeUpdateSettings & settings =
-          knowledge::KnowledgeUpdateSettings::GLOBAL_AS_LOCAL_NO_EXPAND
+        const std::string & key, KnowledgeBase & kb,
+        const KnowledgeUpdateSettings & settings =
+          KnowledgeUpdateSettings::GLOBAL_AS_LOCAL_NO_EXPAND
         )
       {
         file_size = 0;
         file_contents = 0;
         bool has_missing = false;
-        knowledge::containers::Vector fragments (key, kb, -1, true, settings);
+        containers::Vector fragments (key, kb, -1, true, settings);
         
         fragments.copy_to (records);
 
@@ -237,9 +238,8 @@ namespace madara
       }
 
 
-
       /// records that contain the file fragments
-      knowledge::KnowledgeVector records;
+      KnowledgeVector records;
 
       /// the size of the file contents
       size_t file_size;
@@ -250,4 +250,4 @@ namespace madara
   }
 }
 
-#endif // _MADARA_UTILITY_FILEFRAGMENTER_H_
+#endif // _MADARA_KNOWLEDGE_FILEFRAGMENTER_H_

@@ -22,7 +22,7 @@
 #include "madara/knowledge/containers/Queue.h"
 
 #include "madara/utility/EpochEnforcer.h"
-#include "madara/utility/FileFragmenter.h"
+#include "madara/knowledge/FileFragmenter.h"
 
 #ifdef _USE_SSL_
   #include "madara/filters/ssl/AESBufferFilter.h"
@@ -705,7 +705,7 @@ void process_requests (
               /// WORKING HERE
 
               // break the file into fragments
-              utility::FileFragmenter fragmenter (
+              knowledge::FileFragmenter fragmenter (
                 sandbox.path + "/" + request.filename);
 
               madara_logger_ptr_log (
