@@ -24,6 +24,14 @@ namespace madara
     public:
       /**
        * Constructor
+       **/
+      FileFragmenter ()
+      : file_size (0), file_contents (0)
+      {
+      }
+
+      /**
+       * Constructor
        * @param  buffer     the file contents
        * @param  size       the size of the buffer in bytes
        * @param  frag_size  the max size of fragments to create
