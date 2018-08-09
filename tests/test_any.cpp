@@ -465,7 +465,7 @@ void test_capn()
   VAL(a);
 
   int fd = open(utility::expand_envs(
-          "$(MADARA_ROOT)/tests/capnfiles/Point.capn.bin").c_str(),
+          "$(MADARA_ROOT)/tests/capnfiles/Geo.capnp.bin").c_str(),
       0, O_RDONLY);
   TEST_GT(fd, 0);
   capnp::StreamFdMessageReader schema_message_reader(fd);
@@ -478,7 +478,7 @@ void test_capn()
     schemas[schema.getDisplayName()] = loader.load(schema);
   }
   log("INFO  Loaded %i schemas\n", schemas.size());
-  auto schema = schemas.at("tests/capnfiles/Point.capn:Point").asStruct();
+  auto schema = schemas.at("tests/capnfiles/Geo.capnp:Point").asStruct();
   auto dynbuilder = buffer.initRoot<capnp::DynamicStruct>(schema);
   dynbuilder.set("x", 4);
   dynbuilder.set("y", 8);
