@@ -117,6 +117,11 @@ namespace madara
         void modify (size_t index);
     
         /**
+         * Mark the size as modified to resent that information
+         **/
+        void modify_size (void);
+    
+        /**
          * Assignment operator
          * @param  rhs    value to copy
          **/

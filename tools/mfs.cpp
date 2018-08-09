@@ -7,6 +7,7 @@
 #include <assert.h>
 
 #include "boost/filesystem.hpp"
+#include "boost/crc.hpp"
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/threads/Threader.h"
@@ -21,6 +22,7 @@
 #include "madara/knowledge/containers/Queue.h"
 
 #include "madara/utility/EpochEnforcer.h"
+#include "madara/utility/FileFragmenter.h"
 
 #ifdef _USE_SSL_
   #include "madara/filters/ssl/AESBufferFilter.h"
@@ -691,16 +693,99 @@ void process_requests (
             if (filesystem::is_regular_file (filename))
             {
               std::string contents_key = request.filename + ".contents";
+              std::string crc_key = request.filename + ".crc";
+
               madara_logger_ptr_log (
                 logger::global_logger.get (),
                 logger::LOG_ALWAYS,
                 "process_requests: SUCCESS: "
-                "requested file %s is being read into %s.\n",
+                "requested file %s is being read.\n",
+                filename.c_str ());
+
+              /// WORKING HERE
+
+              // break the file into fragments
+              utility::FileFragmenter fragmenter (
+                sandbox.path + "/" + request.filename);
+
+              madara_logger_ptr_log (
+                logger::global_logger.get (),
+                logger::LOG_ALWAYS,
+                "process_requests: SUCCESS: "
+                "requested file %s is being fragmented into %s.\n",
                 filename.c_str (),
                 contents_key.c_str ());
 
-              sandbox.files.read_file (contents_key,
-                sandbox.path + "/" + request.filename);
+              containers::Vector fragments = fragmenter.create_vector (
+                sandbox.files.get_name () + "." + contents_key, kb);
+              
+              madara_logger_ptr_log (
+                logger::global_logger.get (),
+                logger::LOG_ALWAYS,
+                "process_requests: SUCCESS: "
+                "generating crc32 hash for file %s with %d bytes.\n",
+                filename.c_str (),
+                (int)fragmenter.file_size);
+
+              madara_logger_ptr_log (
+                logger::global_logger.get (),
+                logger::LOG_ALWAYS,
+                "process_requests: SUCCESS: "
+                "saving hash to %s, contents is at %p.\n",
+                crc_key.c_str (), (void *)fragmenter.file_contents.get ());
+
+              // generate a 32 bit CRC hash to verify file contents
+              boost::crc_32_type crc_32_hash;
+              crc_32_hash.process_bytes (
+                fragmenter.file_contents.get (), fragmenter.file_size);
+
+              madara_logger_ptr_log (
+                logger::global_logger.get (),
+                logger::LOG_ALWAYS,
+                "process_requests: SUCCESS: "
+                "saving hash to %s.\n",
+                crc_key.c_str ());
+
+              // save a CRC
+              containers::Integer crc_var (
+                sandbox.files.get_name () + "." + crc_key, kb,
+                (KnowledgeRecord::Integer)crc_32_hash.checksum ());
+
+              madara_logger_ptr_log (
+                logger::global_logger.get (),
+                logger::LOG_ALWAYS,
+                "process_requests: SUCCESS: "
+                "sending modifieds to requesters.\n");
+
+              // send any lingering modifieds
+              kb.send_modifieds ();
+
+              madara_logger_ptr_log (
+                logger::global_logger.get (),
+                logger::LOG_ALWAYS,
+                "process_requests: SUCCESS: "
+                "sending %d fragments.\n", (int)fragments.size ());
+
+              // iterate over the fragments and send each one in its own packet
+              for (size_t i = 0; i < fragments.size (); ++i)
+                {
+                madara_logger_ptr_log (
+                  logger::global_logger.get (),
+                  logger::LOG_ALWAYS,
+                  "process_requests: SUCCESS: "
+                  "sending fragment %d of %d bytes.\n",
+                  (int)i, (int)fragments[i].size ());
+
+                // modify the fragment, the num fragments, and the CRC
+                fragments.modify (i);
+                fragments.modify_size ();
+                crc_var.modify ();
+
+                kb.send_modifieds ();
+              }
+
+              // sandbox.files.read_file (contents_key,
+              //   sandbox.path + "/" + request.filename);
             } // end if a regular file
             else
             {
@@ -772,6 +857,7 @@ void process_requests (
             std::string contents_key = temp + ".contents";
             std::string size_key = temp + ".size";
             std::string last_modified_key = temp + ".last_modified";
+            std::string crc_key = temp + ".crc";
 
             filesystem::remove (sandbox.path + "/" + delete_request.filename);
 
@@ -804,6 +890,14 @@ void process_requests (
               contents_key.c_str ());
 
             kb.clear (contents_key);
+
+            madara_logger_ptr_log (
+              logger::global_logger.get (),
+              logger::LOG_ALWAYS,
+              "process_requests: deleting key %s\n",
+              crc_key.c_str ());
+
+            kb.clear (crc_key);
           } // end if a regular file
           else if (filesystem::is_directory (filename))
           {

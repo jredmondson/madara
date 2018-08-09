@@ -27,7 +27,8 @@ namespace madara
        * @param  size       the size of the buffer in bytes
        * @param  frag_size  the max size of fragments to create
        **/
-      FileFragmenter (char * buffer, size_t size, size_t frag_size = 600000)
+      FileFragmenter (char * buffer, size_t size, size_t frag_size = 60000)
+      : file_size (0), file_contents (0)
       {
         fragment_buffer (buffer, size, frag_size);
       }
@@ -37,7 +38,8 @@ namespace madara
        * @param  filename   the file to read in and fragment
        * @param  frag_size  the max size of fragments to create
        **/
-      FileFragmenter (const std::string & filename, size_t frag_size = 600000)
+      FileFragmenter (const std::string & filename, size_t frag_size = 60000)
+      : file_size (0), file_contents (0)
       {
         fragment_file (filename, frag_size);
       }
@@ -50,14 +52,31 @@ namespace madara
        * @return the number of fragments created
        **/
       inline size_t fragment_file (
-        const std::string & filename, size_t frag_size = 600000)
+        const std::string & filename, size_t frag_size = 60000)
       {
         void * buffer;
 
-        if (utility::read_file (filename, buffer, file_size))
+        if (utility::read_file (filename, buffer, file_size) == 0)
         {
+          madara_logger_ptr_log (
+            logger::global_logger.get (),
+            logger::LOG_MAJOR,
+            "FileFragmenter::fragment_file: "
+            "read file %s, contents of size %d is at %p.\n",
+              filename.c_str (), (int)file_size, buffer);
+
           file_contents = (char *)buffer;
           return fragment_buffer (file_contents.get (), file_size, frag_size);
+        }
+        else
+        {
+          madara_logger_ptr_log (
+            logger::global_logger.get (),
+            logger::LOG_MAJOR,
+            "FileFragmenter::fragment_file: "
+            "ERROR: Could not read file %s.\n",
+              filename.c_str ());
+
         }
 
         return 0;
@@ -71,7 +90,7 @@ namespace madara
        * @return the number of fragments created
        **/
       inline size_t fragment_buffer (char * buffer, size_t size,
-        size_t frag_size = 600000)
+        size_t frag_size = 60000)
       {
         size_t num_frags = size / frag_size;
         size_t extra = size % frag_size;
@@ -115,7 +134,7 @@ namespace madara
           knowledge::KnowledgeUpdateSettings::GLOBAL_AS_LOCAL_NO_EXPAND
         )
       {
-        knowledge::containers::Vector result (key, kb, -1, true, settings);
+        knowledge::containers::Vector result (key, kb, 0, true, settings);
         
         for (size_t i = 0; i < records.size (); ++i)
           result.push_back (records[i]);

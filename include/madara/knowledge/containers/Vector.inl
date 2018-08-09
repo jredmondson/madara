@@ -127,6 +127,15 @@ namespace madara { namespace knowledge { namespace containers {
     return set (index, value, settings_);
   }
    
+  inline void
+  Vector::modify_size (void)
+  {
+    if (context_)
+    {
+      context_->mark_modified (size_);
+    }
+  }
+
 } // end containers namespace
 } // end knowledge namespace
 } // end madara namespace
