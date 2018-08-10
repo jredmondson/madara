@@ -187,9 +187,9 @@ inline KnowledgeRecord::KnowledgeRecord (
     double_value_ = rhs.double_value_;
   else if (rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_) std::shared_ptr<std::vector<double>>(rhs.double_array_);
-  else if (rhs.is_string_type (type_))
+  else if (is_string_type (rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
-  else if (rhs.is_binary_file_type (type_))
+  else if (is_binary_file_type (rhs.type_))
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
   else if (rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(rhs.any_value_);
@@ -218,9 +218,9 @@ inline KnowledgeRecord::KnowledgeRecord (
     double_value_ = rhs.double_value_;
   else if (rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_) std::shared_ptr<std::vector<double>>(std::move(rhs.double_array_));
-  else if (rhs.is_string_type (type_))
+  else if (is_string_type (rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
-  else if (rhs.is_binary_file_type (type_))
+  else if (is_binary_file_type (rhs.type_))
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
   else if (rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(std::move(rhs.any_value_));
@@ -327,9 +327,9 @@ KnowledgeRecord::overwrite (const KnowledgeRecord &rhs)
     double_value_ = rhs.double_value_;
   else if (rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_) std::shared_ptr<std::vector<double>>(rhs.double_array_);
-  else if (rhs.is_string_type (type_))
+  else if (is_string_type (rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
-  else if (rhs.is_binary_file_type (type_))
+  else if (is_binary_file_type (rhs.type_))
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
   else if (rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(rhs.any_value_);
@@ -361,9 +361,9 @@ KnowledgeRecord::overwrite (KnowledgeRecord &&rhs)
     double_value_ = rhs.double_value_;
   else if (rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_) std::shared_ptr<std::vector<double>>(std::move(rhs.double_array_));
-  else if (rhs.is_string_type (type_))
+  else if (is_string_type (rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
-  else if (rhs.is_binary_file_type (type_))
+  else if (is_binary_file_type (rhs.type_))
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
   else if (rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(std::move(rhs.any_value_));
@@ -442,7 +442,7 @@ KnowledgeRecord::operator+= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type (type_))
   {
-    if (rhs.is_integer_type (type_))
+    if (is_integer_type (rhs.type_))
       set_value (to_integer () + rhs.to_integer ());
     else
       set_value (to_integer () + rhs.to_double ());
@@ -510,7 +510,7 @@ KnowledgeRecord::operator-= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type (type_))
   {
-    if (rhs.is_integer_type (type_))
+    if (is_integer_type (rhs.type_))
       set_value (to_integer () - rhs.to_integer ());
     else
       set_value (to_integer () - rhs.to_double ());
@@ -532,7 +532,7 @@ KnowledgeRecord::operator*= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type (type_))
   {
-    if (rhs.is_integer_type (type_))
+    if (is_integer_type (rhs.type_))
       set_value (to_integer () * rhs.to_integer ());
     else
       set_value (to_integer () * rhs.to_double ());
@@ -554,7 +554,7 @@ KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type (type_))
   {
-    if (rhs.is_integer_type (type_))
+    if (is_integer_type (rhs.type_))
     {
       Integer denom = rhs.to_integer ();
       if (denom == 0)
@@ -596,7 +596,7 @@ KnowledgeRecord::operator%= (const knowledge::KnowledgeRecord & rhs)
 {
   if (is_integer_type (type_))
   {
-    if (rhs.is_integer_type (type_))
+    if (is_integer_type (rhs.type_))
     {
       Integer denom = rhs.to_integer ();
       if (denom == 0)

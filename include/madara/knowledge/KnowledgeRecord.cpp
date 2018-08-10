@@ -588,13 +588,13 @@ KnowledgeRecord::operator< (
   {
     Integer lhs = this->to_integer ();
 
-    if (rhs.is_double_type (type_) || rhs.is_string_type (type_))
+    if (is_double_type (rhs.type_) || is_string_type (rhs.type_))
     {
       double other = rhs.to_double ();
 
       result = lhs < other;
     }
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       Integer other = rhs.to_integer ();
 
@@ -606,7 +606,7 @@ KnowledgeRecord::operator< (
   else if (is_string_type (type_))
   {
     // string to string comparison
-    if      (rhs.is_string_type (type_))
+    if      (is_string_type (rhs.type_))
     {
       result =
         strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
@@ -614,7 +614,7 @@ KnowledgeRecord::operator< (
     }
 
     // string to double comparison
-    else if (rhs.is_double_type (type_))
+    else if (is_double_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -625,7 +625,7 @@ KnowledgeRecord::operator< (
     }
 
     // default is string to integer comparison
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -642,7 +642,7 @@ KnowledgeRecord::operator< (
     double lhs = to_double ();
 
     // string to string comparison
-    if      (rhs.is_string_type (type_) || rhs.is_double_type (type_))
+    if      (is_string_type (rhs.type_) || is_double_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -653,7 +653,7 @@ KnowledgeRecord::operator< (
     }
 
     // default is string to integer comparison
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       Integer other = rhs.to_integer ();
       result = lhs < other;
@@ -682,13 +682,13 @@ KnowledgeRecord::operator<= (
   {
     Integer lhs = this->to_integer ();
 
-    if (rhs.is_double_type (type_) || rhs.is_string_type (type_))
+    if (is_double_type (rhs.type_) || is_string_type (rhs.type_))
     {
       double other = rhs.to_double ();
 
       result = lhs <= other;
     }
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       Integer other = rhs.to_integer ();
 
@@ -700,7 +700,7 @@ KnowledgeRecord::operator<= (
   else if (is_string_type (type_))
   {
     // string to string comparison
-    if      (rhs.is_string_type (type_))
+    if      (is_string_type (rhs.type_))
     {
       result = 
         strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
@@ -708,7 +708,7 @@ KnowledgeRecord::operator<= (
     }
 
     // string to double comparison
-    else if (rhs.is_double_type (type_))
+    else if (is_double_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -719,7 +719,7 @@ KnowledgeRecord::operator<= (
     }
 
     // default is string to integer comparison
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -736,7 +736,7 @@ KnowledgeRecord::operator<= (
     double lhs = to_double ();
 
     // string to string comparison
-    if      (rhs.is_string_type (type_) || rhs.is_double_type (type_))
+    if      (is_string_type (rhs.type_) || is_double_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -747,7 +747,7 @@ KnowledgeRecord::operator<= (
     }
 
     // default is string to integer comparison
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       Integer other = rhs.to_integer ();
       result = lhs <= other;
@@ -783,15 +783,15 @@ KnowledgeRecord::operator== (
   // if the left hand side is an integer
   else if (is_integer_type (type_))
   {
-    if (rhs.is_double_type (type_))
+    if (is_double_type (rhs.type_))
     {
       result = to_double () == rhs.to_double ();
     }
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       result = to_integer () == rhs.to_integer ();
     }
-    else if (rhs.is_string_type (type_))
+    else if (is_string_type (rhs.type_))
     {
       if (rhs.size () > 0 && rhs.str_value_->at (0) >= '0' &&
         rhs.str_value_->at (0) <= '9')
@@ -806,7 +806,7 @@ KnowledgeRecord::operator== (
   else if (is_string_type (type_))
   {
     // string to string comparison
-    if      (rhs.is_string_type (type_))
+    if      (is_string_type (rhs.type_))
     {
       result = 
         strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
@@ -814,7 +814,7 @@ KnowledgeRecord::operator== (
     }
 
     // string to double comparison
-    else if (rhs.is_double_type (type_))
+    else if (is_double_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -828,7 +828,7 @@ KnowledgeRecord::operator== (
     }
 
     // default is string to integer comparison
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       if (size () > 0 && this->str_value_->at (0) >= '0' &&
         this->str_value_->at (0) <= '9')
@@ -848,7 +848,7 @@ KnowledgeRecord::operator== (
     double lhs = to_double ();
 
     // string to string comparison
-    if      (rhs.is_string_type (type_) || rhs.is_double_type (type_))
+    if      (is_string_type (rhs.type_) || is_double_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -859,7 +859,7 @@ KnowledgeRecord::operator== (
     }
 
     // default is string to integer comparison
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       Integer other = rhs.to_integer ();
 
@@ -888,13 +888,13 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
   {
     Integer lhs = this->to_integer ();
 
-    if (rhs.is_double_type (type_) || rhs.is_string_type (type_))
+    if (is_double_type (rhs.type_) || is_string_type (rhs.type_))
     {
       double other = rhs.to_double ();
 
       result = lhs > other;
     }
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       Integer other = rhs.to_integer ();
 
@@ -907,7 +907,7 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
   else if (is_string_type (type_))
   {
     // string to string comparison
-    if      (rhs.is_string_type (type_))
+    if      (is_string_type (rhs.type_))
     {
       result = 
         strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
@@ -915,7 +915,7 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
     }
 
     // string to double comparison
-    else if (rhs.is_double_type (type_))
+    else if (is_double_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -926,7 +926,7 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
     }
 
     // default is string to integer comparison
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -943,7 +943,7 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
     double lhs = to_double ();
 
     // string to string comparison
-    if      (rhs.is_string_type (type_) || rhs.is_double_type (type_))
+    if      (is_string_type (rhs.type_) || is_double_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -954,7 +954,7 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
     }
 
     // default is string to integer comparison
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       Integer other = rhs.to_integer ();
 
@@ -983,13 +983,13 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
   {
     Integer lhs = this->to_integer ();
 
-    if (rhs.is_double_type (type_) || rhs.is_string_type (type_))
+    if (is_double_type (rhs.type_) || is_string_type (rhs.type_))
     {
       double other = rhs.to_double ();
 
       result = lhs >= other;
     }
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       Integer other = rhs.to_integer ();
 
@@ -1002,7 +1002,7 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
   else if (is_string_type (type_))
   {
     // string to string comparison
-    if      (rhs.is_string_type (type_))
+    if      (is_string_type (rhs.type_))
     {
       result =
         strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
@@ -1010,7 +1010,7 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
     }
 
     // string to double comparison
-    else if (rhs.is_double_type (type_))
+    else if (is_double_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -1021,7 +1021,7 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
     }
 
     // default is string to integer comparison
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -1038,7 +1038,7 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
     double lhs = to_double ();
 
     // string to string comparison
-    if      (rhs.is_string_type (type_) || rhs.is_double_type (type_))
+    if      (is_string_type (rhs.type_) || is_double_type (rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
@@ -1049,7 +1049,7 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
     }
 
     // default is string to integer comparison
-    else if (rhs.is_integer_type (type_))
+    else if (is_integer_type (rhs.type_))
     {
       Integer other = rhs.to_integer ();
 
