@@ -97,7 +97,7 @@ public class Any extends AnyRef
   private static native String jni_emplace_capnp(
       String tag, byte[] data, long[] out);
 
-  private void <Factory extends StructFactory> emplace_capnp_impl(
+  private <Factory extends StructFactory> void emplace_capnp_impl(
       Factory factory, MessageBuilder msg)
     throws BadAnyAccess
   {
@@ -192,10 +192,10 @@ public class Any extends AnyRef
    * Tag must have been registered with Any.registerClass(), or with
    * Any::register_schema() in C++
    **/
-  public <Factory extends StructFactory> Any(Factory factory,
+  public <Factory extends StructFactory> void emplace(Factory factory,
       MessageBuilder msg) throws BadAnyAccess
   {
-    free()
+    free();
     emplace_capnp_impl(factory, msg);
   }
 }

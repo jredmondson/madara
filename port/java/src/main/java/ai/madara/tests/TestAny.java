@@ -115,7 +115,5 @@ public class TestAny {
     System.err.println("c0.x = " + reader.getX());
     System.err.println("c0.y = " + reader.getY());
     System.err.println("c0.z = " + reader.getZ());
-
-    Geo.Pose.Reader reader = c0.reader(Geo.Pose.factory);
   }
 }
