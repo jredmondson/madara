@@ -31,7 +31,7 @@ public:
       cap_(size) {}
 
   CircularBuffer(const CircularBuffer &other)
-    : CircularBuffer(other.size)
+    : CircularBuffer(other.size())
   {
     for (const T &cur : other) {
       emplace_back(cur);

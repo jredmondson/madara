@@ -124,6 +124,8 @@ namespace madara
 
       typedef  int64_t     Integer;
 
+      using CircBuf = utility::CircularBuffer<KnowledgeRecord>;
+
     private:
       /// the logger used for any internal debugging information
       logger::Logger * logger_ = logger::global_logger.get ();
@@ -164,7 +166,7 @@ namespace madara
         std::shared_ptr<std::string> str_value_;
         std::shared_ptr<std::vector<unsigned char>> file_value_;
         std::shared_ptr<ConstAny> any_value_;
-        std::shared_ptr<utility::CircularBuffer<KnowledgeRecord>> buf_;
+        std::shared_ptr<CircBuf> buf_;
       };
 
       /**
@@ -258,6 +260,24 @@ namespace madara
 
       /* Any type move constructor */
       explicit KnowledgeRecord (ConstAny && value,
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
+
+      /**
+       * Construct using CircularBuffer directly. This buffer will be treated
+       * as the history of this record, and used as such going forward.
+       *
+       * @params buffer buffer that will be copied into this record
+       **/
+      explicit KnowledgeRecord (const CircBuf & buffer,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /**
+       * Construct using CircularBuffer directly. This buffer will be treated
+       * as the history of this record, and used as such going forward.
+       *
+       * @params buffer buffer that will be moved into this record
+       **/
+      explicit KnowledgeRecord (CircBuf && buffer,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* copy constructor */
@@ -378,6 +398,20 @@ namespace madara
       template<typename T, typename... Args>
       void emplace(tags::any<T>, Args&&... args) {
         emplace_any(tags::type<T>{}, std::forward<Args>(args)...);
+      }
+
+      /**
+       * Construct a CircularBuffer within this KnowledgeRecord directly. This
+       * buffer will be treated as the history of this record, and used as such
+       * going forward.
+       *
+       * @params args arguments forwarded to the
+       *               madara::utility::CircularBuffer constructor
+       **/
+      template<typename... Args>
+      void emplace_circular_buffer(Args&&... args) {
+        emplace_val<CircBuf, BUFFER, &KnowledgeRecord::buf_> (
+            std::forward<Args>(args)...);
       }
 
       /**
@@ -602,10 +636,7 @@ namespace madara
 
       /**
        * Sets the value from another KnowledgeRecord,
-       * does not copy clock and write_quality.
-       * Will check that write_quality of new value is >= quality
-       * of this record, and ignore update if not. Otherwise,
-       * this records quality will be set to new_value.write_quality.
+       * does not copy toi, clock, and write_quality.
        *
        * @param    new_value   new value of the Knowledge Record
        **/
@@ -613,14 +644,25 @@ namespace madara
 
       /**
        * Sets the value from another KnowledgeRecord,
-       * does not copy clock and write_quality.
-       * Will check that write_quality of new value is >= quality
-       * of this record, and ignore update if not. Otherwise,
-       * this records quality will be set to new_value.write_quality.
+       * does not copy toi, clock, and write_quality.
        *
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_value (KnowledgeRecord &&new_value);
+
+      /**
+       * Sets the value and meta data from another KnowledgeRecord.
+       *
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_full (const KnowledgeRecord &new_value);
+
+      /**
+       * Sets the value and meta data from another KnowledgeRecord.
+       *
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_full (KnowledgeRecord &&new_value);
 
       /**
        * sets the value to an integer
@@ -1554,13 +1596,22 @@ namespace madara
       size_t get_history_size () const
       {
         if (type_ == BUFFER) {
+          return buf_->size();
+        } else {
+          return 0;
+        }
+      }
+
+      size_t get_history_capacity () const
+      {
+        if (type_ == BUFFER) {
           return buf_->capacity();
         } else {
           return 0;
         }
       }
 
-      void set_history_size (size_t size)
+      void set_history_capacity (size_t size)
       {
         if (type_ == BUFFER) {
           if (size == 0) {
@@ -1575,15 +1626,15 @@ namespace madara
         } else {
           if (size > 0) {
             KnowledgeRecord tmp = *this;
-            new (&buf_) std::shared_ptr<utility::CircularBuffer<int>>(
-                std::make_shared<utility::CircularBuffer<int>>(size));
+            new (&buf_) std::shared_ptr<CircBuf>(
+                std::make_shared<CircBuf>(size));
             type_ = BUFFER;
             buf_->push_back(std::move(tmp));
           }
         }
       }
 
-      void clear_history () { set_history_size(0); }
+      void clear_history () { set_history_capacity(0); }
 
       template<typename Func>
       size_t for_history_range(Func&& func, size_t index, size_t count) const
@@ -1699,6 +1750,18 @@ namespace madara
         return ret;
       }
 
+    private:
+      KnowledgeRecord &ref_newest()
+      {
+        return buf_->back();
+      }
+
+      const KnowledgeRecord &ref_newest() const
+      {
+        return buf_->back();
+      }
+
+    public:
       template<typename T>
       T get_newest() const
       {
@@ -1751,6 +1814,25 @@ namespace madara
         get_history(std::back_inserter(ret));
         return ret;
       }
+
+      /**
+       * Set metadata of this record equal to that of new_value, but doesn't
+       * change value. Metadata is toi, clock, quality, write_quality, and
+       * logger.
+       **/
+      void copy_metadata (const KnowledgeRecord &new_value);
+
+      /**
+       * Clears everything including history, except metadata (e.g., toi, clock)
+       * and copies value from new_value into this recod
+       **/
+      void overwrite (const KnowledgeRecord &new_value);
+
+      /**
+       * Clears everything including history, except metadata (e.g., toi, clock)
+       * and moves value from new_value into this record
+       **/
+      void overwrite (KnowledgeRecord &&new_value);
 
     private:
       template<typename T>

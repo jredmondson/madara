@@ -731,7 +731,7 @@ ThreadSafeContext::update_record_from_external (
       return -3;
 
     // if we reach this point, then the record is safe to copy
-    found->second = rhs;
+    found->second.set_full(rhs);
 
     mark_and_signal (&*found, settings);
   }
@@ -791,7 +791,7 @@ ThreadSafeContext::update_record_from_external (
       result = -3;
 
     // if we reach this point, then the record is safe to copy
-    *record = rhs;
+    record->set_full(rhs);
 
     mark_and_signal (target, settings);
   }
