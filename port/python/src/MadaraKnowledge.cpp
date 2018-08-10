@@ -395,7 +395,16 @@ void define_knowledge (void)
         "should be checked against the actual size of the file for "
         "progress information (e.g. of transfer)."))
       
+    .add_property("file_contents",
+      &madara::knowledge::FileFragmenter::get_file_contents,
+      "Returns the merged file contents (should run from_kb first)")
+
      // class members
+
+    .def_readonly("file_size",
+      &madara::knowledge::FileFragmenter::file_size,
+      "size of file contents")
+
   ;
 
 

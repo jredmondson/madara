@@ -245,6 +245,14 @@ namespace madara
         return file_size;
       }
 
+       /**
+       * Returns the file contents as a character buffer
+       * @return the bytes in the file contents
+       **/
+      inline const char * get_file_contents (void)
+      {
+        return file_contents.get ();
+      }
 
       /// records that contain the file fragments
       KnowledgeVector records;
