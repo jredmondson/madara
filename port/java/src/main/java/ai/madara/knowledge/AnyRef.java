@@ -46,8 +46,16 @@
  *********************************************************************/
 package ai.madara.knowledge;
 
+import java.nio.ByteBuffer;
+
 import ai.madara.MadaraJNI;
 import ai.madara.knowledge.KnowledgeRecord;
+
+import org.capnproto.StructReader;
+import org.capnproto.SegmentBuilder;
+import org.capnproto.StructBuilder;
+import org.capnproto.StructFactory;
+import org.capnproto.MessageReader;
 
 /**
  * This class refers to a C++ object which supports Any. It does not own any
@@ -377,6 +385,86 @@ public class AnyRef
     String[][] out = new String[1][];
     err_unchecked(jni_list_fields(handler_, data_, out));
     return out[0];
+  }
+
+  private static native String jni_get_tag(long handler, long data, String[] out);
+
+  /**
+   * Get the registered tag of the held object. Will return null if the held
+   * type is not registered with a tag.
+   **/
+  public String getTag()
+  {
+    String[] out = new String[1];
+    err_unchecked(jni_get_tag(handler_, data_, out));
+    return out[0];
+  }
+
+  protected static java.util.Map<String, StructFactory> registered_classes =
+    new java.util.HashMap<String, StructFactory>();
+  protected static java.util.Map<String, String> registered_factories =
+    new java.util.HashMap<String, String>();
+
+  protected void print_hex(byte[] data)
+  {
+    for (byte cur : data) {
+      System.err.print(String.format("%02x", cur));
+    }
+  }
+
+  protected static native String jni_register_tag(String tag);
+
+  /**
+   * Register a Java type with the Any system. This will allow the given
+   * factory to be used to build and read types with the given tag. This
+   * function is not thread-safe, and should be called as early as possible,
+   * before any KnowledgeBases are in use.
+   **/
+  public static
+    <Reader extends StructReader,
+     Builder extends StructBuilder,
+     Factory extends StructFactory<Builder, Reader>>
+    void registerClass(String tag, Factory factory)
+  {
+    registered_classes.put(tag, factory);
+    registered_factories.put(factory.getClass().getName(), tag);
+    err_unchecked(jni_register_tag(tag));
+  }
+
+  protected static native String jni_reader(long handler, long data, byte[][] out);
+
+  /**
+   * Get a Cap'n Proto reader for the held data. Will throw if the held data
+   * is not a Cap'n Proto message, or if it doesn't match the type of the
+   * given factory.
+   **/
+  public <T> T reader(org.capnproto.FromPointerReader<T> factory)
+    throws BadAnyAccess
+  {
+    byte[][] out = new byte[1][];
+
+    String factory_name = factory.getClass().getName();
+    String tag = registered_factories.get(factory_name);
+    String my_tag = getTag();
+
+    if (my_tag == null) {
+      throw new BadAnyAccess("Any is holding an unregistered type");
+    } else if (tag == null) {
+      throw new BadAnyAccess("Cap'n Proto message type not registered");
+    } else if (!tag.equals(my_tag)) {
+      throw new BadAnyAccess("Mismatched tags: expected " + my_tag +
+          " requested reader for tag " + tag);
+    }
+
+    err(jni_reader(handler_, data_, out));
+    ByteBuffer[] msg = new ByteBuffer[1];
+    msg[0] = ByteBuffer.wrap(out[0]);
+    try {
+      MessageReader message = org.capnproto.Serialize.read(msg[0]);
+      return message.getRoot(factory);
+    } catch (java.io.IOException e) {
+      throw new BadAnyAccess("Bad IO: " + e);
+    }
   }
 
   // Registration functions for common C++ types. Other types must be registered

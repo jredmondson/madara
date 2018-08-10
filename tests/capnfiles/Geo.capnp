@@ -1,8 +1,11 @@
-using Cxx = import "c++.capnp";
+using Cxx = import "c++.capnp.inc";
+using Java = import "java.capnp.inc";
 
 @0xe3c04ff389251d41;
 
 $Cxx.namespace("geo_capn");
+$Java.package("ai.madara.tests.capnp");
+$Java.outerClassname("Geo");
 
 struct Point {
   x @0 :Float64;

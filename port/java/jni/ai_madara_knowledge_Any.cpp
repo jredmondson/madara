@@ -13,6 +13,26 @@ using namespace utility::java;
 
 /*
  * Class:     ai_madara_knowledge_AnyRef
+ * Method:    jni_get_tag
+ * Signature: (JJ[Ljava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1get_1tag
+  (JNIEnv *env, jclass, jlong handler, jlong data, jobjectArray out)
+{
+  return catch_wrap(env, [&]() {
+    AnyRef a{make_anyref(handler, data)};
+    auto s = a.tag();
+    if (s) {
+      jstring ret = env->NewStringUTF(s);
+      env->SetObjectArrayElement(out, 0, ret);
+    } else {
+      env->SetObjectArrayElement(out, 0, nullptr);
+    }
+  });
+}
+
+/*
+ * Class:     ai_madara_knowledge_AnyRef
  * Method:    jni_field
  * Signature: (Ljava/lang/String;JJ[J)Ljava/lang/String;
  */
@@ -774,5 +794,64 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setAnySettings
     JavaUTFString str(env, name);
     AnyRef a{make_anyref(handler, data)};
     knowledge->emplace_any(str.chars(), *settings, a);
+  });
+}
+
+/*
+ * Class:     ai_madara_knowledge_AnyRef
+ * Method:    jni_reader
+ * Signature: (JJ[[B)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1reader
+  (JNIEnv *env, jclass, jlong handler, jlong data, jobjectArray out)
+{
+  return catch_wrap(env, [&]() {
+    AnyRef a{make_anyref(handler, data)};
+    auto buf = a.get_capnp_buffer().asChars();
+
+    jbyteArray ret = env->NewByteArray(buf.size());
+    env->SetByteArrayRegion(ret, 0,
+        buf.size(), (jbyte*)buf.begin());
+    env->SetObjectArrayElement(out, 0, ret);
+  });
+}
+
+/*
+ * Class:     ai_madara_knowledge_Any
+ * Method:    jni_emplace_capnp
+ * Signature: (Ljava/lang/String;[B[J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_Any_jni_1emplace_1capnp
+  (JNIEnv *env, jclass, jstring tag, jbyteArray buf, jlongArray out)
+{
+  return catch_wrap(env, [&]() {
+    JavaUTFString tagstr(env, tag);
+    JavaByteArray arr(env, buf);
+
+    GenericCapnObject capn(tagstr.chars(), (char *)arr.data(), arr.size());
+    Any a(capn);
+
+    NoDestruct u(std::move(a));
+
+    anyref_out(env, u.a.ref(), out);
+  });
+}
+
+/*
+ * Class:     ai_madara_knowledge_AnyRef
+ * Method:    jni_register_tag
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1register_1tag
+  (JNIEnv *env, jclass, jstring tag)
+{
+  return catch_wrap(env, [&]() {
+    JavaUTFString tagstr(env, tag);
+
+    std::unique_ptr<std::string> new_tag(new std::string(tagstr.chars()));
+    if (AnyRegistry::register_type<GenericCapnObject>(new_tag->c_str())) {
+      // OK to leak this; will be needed for rest of process execution
+      new_tag.release();
+    }
   });
 }

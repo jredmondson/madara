@@ -77,6 +77,33 @@ namespace madara
         const char *chars_;
       };
 
+      class JavaByteArray
+      {
+      public:
+        JavaByteArray(JNIEnv *env, jbyteArray array)
+          : env_(env), array_(array),
+            data_(env->GetByteArrayElements(array_, nullptr)) {}
+
+        JavaByteArray(const JavaByteArray &) = delete;
+        JavaByteArray(JavaByteArray &&) = delete;
+        JavaByteArray &operator=(const JavaByteArray &) = delete;
+        JavaByteArray &operator=(JavaByteArray &&) = delete;
+
+        ~JavaByteArray()
+        {
+          env_->ReleaseByteArrayElements(array_, (jbyte *)data_, JNI_ABORT);
+        }
+
+        const jbyte *data() const { return data_; }
+
+        size_t size() const { return env_->GetArrayLength(array_); }
+
+      private:
+        JNIEnv *env_;
+        jbyteArray array_;
+        const jbyte *data_;
+      };
+
       class JavaLongArray
       {
       public:

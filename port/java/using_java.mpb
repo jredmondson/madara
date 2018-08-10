@@ -10,6 +10,12 @@ feature (java) {
   postbuild += mvn -f port/java versions:set -DnewVersion=`<%cat%> $(MADARA_ROOT)/VERSION.txt`
   postbuild += mvn -f port/java -P development clean package install
 
+  Define_Custom (JAVA_CAPN) {
+    command = capnp compile -I $(CAPNP_ROOT)/c++/src -ojava
+    inputext = .capnp
+    generic_outputext = .java,.capnp.bin
+  }
+
   specific (prop:windows) {
     includes += $(JAVA_HOME)/include/win32
   } else {
@@ -30,4 +36,7 @@ feature (java) {
     include/madara/filters/java
   }
 
+  //JAVA_CAPN_Files {
+   // tests/capnfiles
+  //}
 }

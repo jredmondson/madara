@@ -17,6 +17,14 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_Any_jni_1construct
 
 /*
  * Class:     ai_madara_knowledge_Any
+ * Method:    jni_emplace_capnp
+ * Signature: (Ljava/lang/String;[B[J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_Any_jni_1emplace_1capnp
+  (JNIEnv *, jclass, jstring, jbyteArray, jlongArray);
+
+/*
+ * Class:     ai_madara_knowledge_Any
  * Method:    jni_free
  * Signature: (JJ)Ljava/lang/String;
  */

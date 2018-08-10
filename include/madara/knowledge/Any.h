@@ -534,14 +534,14 @@ public:
 };
 
 template<typename T>
-inline void AnyRegistry::register_type(const char *name)
+inline bool AnyRegistry::register_type(const char *name)
 {
   auto &ptr = *get_type_name_ptr<T>();
   if (ptr == nullptr) {
     ptr = name;
   }
 
-  register_type_impl(name, &get_type_handler<T>());
+  return register_type_impl(name, &get_type_handler<T>());
 }
 
 template<typename Impl, typename Base>

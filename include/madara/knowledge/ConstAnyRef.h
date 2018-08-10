@@ -306,11 +306,11 @@ public:
     using exceptions::BadAnyAccess;
 
     if (!handler_->get_reader) {
-      throw BadAnyAccess("Any does not contain a Cap'n Proto object");
+      throw BadAnyAccess("Any does not contain a Cap'n Proto message");
     }
     capnp::DynamicStruct::Reader ret;
     if (!handler_->get_reader(&ret, nullptr, nullptr, nullptr, data_)) {
-      throw BadAnyAccess("Unknown schema for Any type.");
+      throw BadAnyAccess("Unknown schema for Cap'n Proto message.");
     }
     return ret;
   }
@@ -325,13 +325,28 @@ public:
     using exceptions::BadAnyAccess;
 
     if (!handler_->get_reader) {
-      throw BadAnyAccess("Any does not contain a Cap'n Proto object");
+      throw BadAnyAccess("Any does not contain a Cap'n Proto message");
     }
     capnp::DynamicStruct::Reader ret;
     if (!handler_->get_reader(&ret, &schema, nullptr, nullptr, data_)) {
-      throw BadAnyAccess("Wrong schema for Cap'n Proto object");
+      throw BadAnyAccess("Wrong schema for Cap'n Proto message");
     }
     return ret;
+  }
+
+  kj::ArrayPtr<const capnp::word> get_capnp_buffer() const
+  {
+    using exceptions::BadAnyAccess;
+
+    if (!handler_->get_reader) {
+      throw BadAnyAccess("Any does not contain a Cap'n Proto message");
+    }
+    const char *data;
+    size_t size;
+    if (!handler_->get_reader(nullptr, nullptr, &data, &size, data_)) {
+      throw BadAnyAccess("Unknown error getting Cap'n Proto object's buffer");
+    }
+    return {(const capnp::word *)data, size / 8};
   }
 
   /**

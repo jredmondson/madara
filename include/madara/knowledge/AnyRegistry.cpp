@@ -8,19 +8,19 @@ using namespace knowledge;
 static std::map<const char *, const TypeHandlers *,
                 compare_const_char_ptr> type_builders;
 
-void AnyRegistry::register_type_impl(const char *tag,
+bool AnyRegistry::register_type_impl(const char *tag,
     const TypeHandlers *handler)
 {
-  type_builders.emplace(tag, handler);
+  return type_builders.emplace(tag, handler).second;
 }
 
 static std::map<const char *, capnp::StructSchema,
                 compare_const_char_ptr> schemas;
 
-void AnyRegistry::register_schema(const char *tag,
+bool AnyRegistry::register_schema(const char *tag,
     const capnp::StructSchema &schema)
 {
-  schemas.emplace(tag, schema);
+  return schemas.emplace(tag, schema).second;
 }
 
 const std::pair<const char * const, capnp::StructSchema> &

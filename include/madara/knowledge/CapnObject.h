@@ -386,6 +386,26 @@ public:
   }
 
   /**
+   * Interpret held data as given Cap'n Proto type, and return the appropriate
+   * reader. Will throw if type doesn't match schema of this message.
+   **/
+  template<typename T>
+  typename T::Reader reader(type<T>) const
+  {
+    return reader().template as<T>();
+  }
+
+  /**
+   * Interpret held data as given Cap'n Proto type, and return the appropriate
+   * reader. Will throw if type doesn't match schema of this message.
+   **/
+  template<typename T>
+  typename T::Reader reader() const
+  {
+    return reader(type<T>{});
+  }
+
+  /**
    * Get the registered tag of this object's schema
    **/
   const char *tag() const override { return tag_; }
@@ -589,7 +609,6 @@ inline auto get_type_handler_get_reader(type<knowledge::CapnObject<T>>,
     };
 }
 
-template<typename T>
 inline auto get_type_handler_get_reader(type<knowledge::RegCapnObject>,
     overload_priority<8>) ->
   knowledge::TypeHandlers::get_reader_fn_type
@@ -609,7 +628,6 @@ inline auto get_type_handler_get_reader(type<knowledge::RegCapnObject>,
     };
 }
 
-template<typename T>
 inline auto get_type_handler_get_reader(type<knowledge::GenericCapnObject>,
     overload_priority<8>) ->
   knowledge::TypeHandlers::get_reader_fn_type
@@ -626,6 +644,21 @@ inline auto get_type_handler_get_reader(type<knowledge::GenericCapnObject>,
       if (data) { *data = val.data(); }
       if (size) { *size = val.size(); }
       return true;
+    };
+}
+
+/// Creates a function for getting type's tag
+template<typename T>
+constexpr auto get_type_handler_tag(type<T>,
+    overload_priority<8>) ->
+  enable_if_<is_base_of<knowledge::BaseCapnObject, T>(),
+    knowledge::TypeHandlers::tag_fn_type>
+{
+  return [](void *ptr) -> const char * {
+      using knowledge::BaseCapnObject;
+
+      const BaseCapnObject &val = *static_cast<const BaseCapnObject *>(ptr);
+      return val.tag();
     };
 }
 

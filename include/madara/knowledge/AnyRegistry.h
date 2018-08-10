@@ -42,10 +42,24 @@ struct compare_const_char_ptr
 class AnyRegistry
 {
 public:
+  /**
+   * Register a type with the Any system, using a tag which will be used to
+   * portably identify this type across processes.
+   *
+   * @return true if the type is now registered, false if that tag is
+   * already taken
+   **/
   template<typename T>
-  static void register_type(const char *name);
+  static bool register_type(const char *name);
 
-  static void register_schema(const char *name,
+  /**
+   * Register a schema with the Any system, using a tag which will be used to
+   * portably identify this type across processes.
+   *
+   * @return true if the schema is now registered, false if that tag is
+   * already taken
+   **/
+  static bool register_schema(const char *name,
       const capnp::StructSchema &schema);
 
   static const std::pair<const char *const , capnp::StructSchema> &
@@ -61,7 +75,7 @@ public:
   static ConstAny construct_const(const char *name);
 
 protected:
-  static void register_type_impl(const char *name,
+  static bool register_type_impl(const char *name,
       const TypeHandlers *handler);
 
   template<typename T>
