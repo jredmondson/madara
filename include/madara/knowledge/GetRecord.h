@@ -2,7 +2,7 @@
  * @file GetRecord.h
  * @author Sam Khalandovsky <sam.khalandovsky@shield.ai>
  *
- * This file provides functions to get KnowledgeRecord data without impilicit conversions
+ * This file provides functions to get KnowledgeRecord data without implicit conversions
  **/
 
 #ifndef _MADARA_KNOWLEDGE_GET_RECORD_H_
