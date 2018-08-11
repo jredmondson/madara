@@ -12,7 +12,7 @@ feature (android) {
         ZMQ_LIB=-lzmq
     endif
 
-    LDLIBS = -l:libboost_system.a -l:libboost_filesystem.a -llog -lc++_shared -lcapnp -lcapnp-json $(ZMQ_LIB)
+    LDLIBS = -l:libboost_system.a -l:libboost_filesystem.a -llog -lc++_shared -lcapnp-0.6.1 -lcapnp-json-0.6.1 $(ZMQ_LIB)
   
    ifeq ($(ANDROID_ARCH),arm)
       CROSS_COMPILE=arm-linux-androideabi-
