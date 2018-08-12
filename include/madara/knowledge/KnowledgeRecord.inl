@@ -157,14 +157,14 @@ inline KnowledgeRecord::KnowledgeRecord (
   const CircBuf & buffer, logger::Logger & logger)
 : logger_ (&logger)
 {
-  emplace_circular_buffer (buffer);
+  overwrite_circular_buffer (buffer);
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
   CircBuf && buffer, logger::Logger & logger) noexcept
 : logger_ (&logger)
 {
-  emplace_circular_buffer (std::move(buffer));
+  overwrite_circular_buffer (std::move(buffer));
 }
 inline KnowledgeRecord::KnowledgeRecord (
     const knowledge::KnowledgeRecord & rhs)
@@ -256,7 +256,7 @@ KnowledgeRecord::set_value (const KnowledgeRecord &rhs)
       rhs.has_history() ?
         rhs.get_newest() :
         rhs;
-    buf_->emplace_back(std::move(tmp));
+    emplace_hist(std::move(tmp));
   } else if (rhs.has_history()) {
     overwrite(rhs.get_newest());
   } else {
@@ -275,7 +275,7 @@ KnowledgeRecord::set_value (KnowledgeRecord &&rhs)
       rhs.has_history() ?
         std::move(rhs.ref_newest()) :
         std::move(rhs);
-    buf_->emplace_back(std::move(tmp));
+    emplace_hist(std::move(tmp));
   } else if (rhs.has_history()) {
     overwrite(std::move(rhs.ref_newest()));
   } else {
@@ -716,7 +716,7 @@ KnowledgeRecord::unshare (void)
     } else if (type_ == ANY) {
       emplace_any (*any_value_);
     } else if (type_ == BUFFER) {
-      emplace_circular_buffer (*buf_);
+      overwrite_circular_buffer (*buf_);
     }
   }
   shared_ = OWNED;

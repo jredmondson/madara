@@ -148,6 +148,7 @@ script:
   - $MADARA_ROOT/bin/test_bandwidth_monitor
   - $MADARA_ROOT/bin/test_basic_reasoning
   - $MADARA_ROOT/bin/test_checkpointing
+  - $MADARA_ROOT/bin/test_circular_buffer
   - $MADARA_ROOT/bin/test_context_copy
   - $MADARA_ROOT/bin/test_encoding
   - $MADARA_ROOT/bin/test_filters

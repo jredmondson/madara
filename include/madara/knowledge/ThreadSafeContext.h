@@ -1742,6 +1742,86 @@ namespace madara
        **/
       const KnowledgeMap &get_map_unsafe (void) const { return map_; }
 
+      template<typename Callable>
+      auto invoke(const std::string &key,
+          Callable &&callable,
+          const KnowledgeUpdateSettings &settings = KnowledgeUpdateSettings())
+        -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        MADARA_GUARD_TYPE guard (mutex_);
+        auto ref = get_ref(key, settings);
+        return invoke_(std::forward<Callable>(callable),
+                       *ref.get_record_unsafe());
+      }
+
+      template<typename Callable>
+      auto invoke(const VariableReference &key,
+          Callable &&callable,
+          const KnowledgeUpdateSettings &settings = KnowledgeUpdateSettings())
+        -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        MADARA_GUARD_TYPE guard (mutex_);
+        (void)settings;
+        return invoke_(std::forward<Callable>(callable),
+                       *key.get_record_unsafe());
+      }
+
+      template<typename Callable>
+      auto invoke(const std::string &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        MADARA_GUARD_TYPE guard (mutex_);
+        const KnowledgeRecord *ptr = with(key, settings);
+        if (ptr) {
+          return invoke_(std::forward<Callable>(callable), *ptr);
+        }
+        const KnowledgeRecord empty;
+        return invoke_(std::forward<Callable>(callable), empty);
+      }
+
+      template<typename Callable>
+      auto invoke(const VariableReference &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        MADARA_GUARD_TYPE guard (mutex_);
+        (void)settings;
+        return invoke_(std::forward<Callable>(callable),
+                       const_cast<const KnowledgeRecord &>(
+                         *key.get_record_unsafe()));
+      }
+
+      template<typename Callable>
+      auto cinvoke(const std::string &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return invoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto cinvoke(const VariableReference &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return invoke(key, std::forward<Callable>(callable), settings);
+      }
+
     protected:
     private:
       /**

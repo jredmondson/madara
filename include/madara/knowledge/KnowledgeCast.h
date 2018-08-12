@@ -456,6 +456,15 @@ inline auto knowledge_cast(const T &in) ->
   return KnowledgeRecord{tags::binary, std::begin(in), std::end(in)};
 }
 
+template<typename T>
+inline auto knowledge_cast(const KnowledgeRecord& in, T&& out) ->
+  decltype(*out = knowledge_cast(
+        type<typename decay_<T>::container_type::value_type>{}, in))
+{
+  return (*out = knowledge_cast(
+        type<typename decay_<T>::container_type::value_type>{}, in));
+}
+
 /// Identity NOP
 inline KnowledgeRecord &knowledge_cast(KnowledgeRecord &in)
 {
@@ -702,7 +711,7 @@ size_t KnowledgeRecord::get_history_range(
     OutputIterator out, size_t index, size_t count) const
 {
   return for_history_range([&out](const KnowledgeRecord &rec) {
-      *out = knowledge_cast(rec);
+      knowledge_cast(rec, *out);
       ++out;
     }, index, count);
 }

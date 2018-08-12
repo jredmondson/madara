@@ -1071,6 +1071,83 @@ namespace madara
       std::string setup_unique_hostport (std::string host = "");
 
     private:
+      struct ModifiedsSender
+      {
+        KnowledgeBaseImpl *self;
+        const char *func;
+        const EvalSettings *settings;
+
+        ~ModifiedsSender() { self->send_modifieds(func, *settings); }
+      };
+
+    public:
+      template<typename Callable>
+      auto invoke(const std::string &key,
+          Callable &&callable,
+          const EvalSettings &settings = EvalSettings())
+        -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        ModifiedsSender sender = {this, "KnowledgeBase::invoke", &settings};
+        return map_.invoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto invoke(const VariableReference &key,
+          Callable &&callable,
+          const EvalSettings &settings = EvalSettings())
+        -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        ModifiedsSender sender = {this, "KnowledgeBase::invoke", &settings};
+        return map_.invoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto invoke(const std::string &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return map_.invoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto invoke(const VariableReference &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return map_.invoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto cinvoke(const std::string &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return map_.cinvoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto cinvoke(const VariableReference &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return map_.cinvoke(key, std::forward<Callable>(callable), settings);
+      }
+
+    private:
       ThreadSafeContext                 map_;
       std::string                         id_;
       transport::QoSTransportSettings   settings_;
