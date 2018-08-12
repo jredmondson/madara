@@ -190,25 +190,6 @@ project (Test_Fragmentation) : using_madara, no_karl, no_xml, null_lock, using_s
   }
 }
 
-project (Test_Get_Record) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_get_record
-  
-  
-  requires += tests
-
-
-  Documentation_Files {
-  }
-  
-  Header_Files {
-  }
-
-  Source_Files {
-    tests/test_get_record.cpp
-  }
-}
-
 project (Test_Threader_Queue_Perf) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_queue_perf
@@ -1472,8 +1453,6 @@ project (Test_Simtime) : using_madara, no_karl, no_xml, null_lock, using_simtime
 
 project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
-
-  after += Test_CapnFiles
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_any
@@ -1482,11 +1461,6 @@ project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   }
 
   Header_Files {
-    tests/capnfiles
-  }
-
-  CAPN_Files {
-    tests/capnfiles
   }
 
   Source_Files {
@@ -1512,5 +1486,22 @@ project (Test_Any_So) : using_madara, no_karl, no_xml, null_lock, using_simtime 
 
   Source_Files {
     tests/test_any_so.cpp
+  }
+}
+
+project (Test_KnowledgeBase) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_knowledgebase
+
+  Documentation_Files {
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_knowledgebase.cpp
   }
 }
