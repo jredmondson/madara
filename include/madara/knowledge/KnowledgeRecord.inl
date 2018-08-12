@@ -1655,6 +1655,16 @@ KnowledgeRecord::share_any() const
   return nullptr;
 }
 
+inline std::shared_ptr<KnowledgeRecord::CircBuf>
+KnowledgeRecord::share_circular_buffer() const
+{
+  if (!has_history()) {
+    return nullptr;
+  }
+  shared_ = SHARED;
+  return buf_;
+}
+
 inline
 KnowledgeRecord::operator bool (void) const
 {

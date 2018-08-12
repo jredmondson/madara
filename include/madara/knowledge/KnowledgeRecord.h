@@ -1945,6 +1945,24 @@ namespace madara
         return ret;
       }
 
+      size_t get_history_newest_index() const
+      {
+        if (!has_history()) {
+          return 0;
+        }
+        return buf_->back_index();
+      }
+
+      size_t get_history_oldest_index() const
+      {
+        if (!has_history()) {
+          return 0;
+        }
+        return buf_->front_index();
+      }
+
+      std::shared_ptr<CircBuf> share_circular_buffer() const;
+
       /**
        * Set metadata of this record equal to that of new_value, but doesn't
        * change value. Metadata is toi, clock, quality, write_quality, and

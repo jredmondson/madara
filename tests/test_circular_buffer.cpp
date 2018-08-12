@@ -5,6 +5,7 @@
 #include "madara/utility/CircularBuffer.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/containers/NativeCircularBufferConsumer.h"
 #include "test.h"
 
 namespace logger = madara::logger;
@@ -12,6 +13,7 @@ namespace logger = madara::logger;
 using namespace madara;
 using namespace knowledge;
 using namespace utility;
+using namespace containers;
 
 template<typename T>
 std::ostream &operator<<(std::ostream &o, const CircularBuffer<T> &buf)
@@ -166,9 +168,57 @@ void test_kb(KnowledgeBase &kb, Key key)
       {{0, 22}, {2, 24}});
 }
 
+void test_container()
+{
+  KnowledgeBase kb;
+  std::string key = "test";
+  NativeCircularBufferConsumer buf(key, kb);
+  kb.set_history_capacity(key, 10);
+  kb.set(key, 42);
+
+  TEST_EQ(buf.size(), 10UL);
+  TEST_EQ(buf.remaining(), 2UL);
+  TEST_EQ(buf.count(), 2UL);
+
+  TEST_EQ(buf.consume().exists(), false);
+  TEST_EQ(buf.consume(), 42);
+
+  for (int i = 1; i < 6; ++i) {
+    kb.set(key, i);
+  }
+
+  TEST_EQ(buf.remaining(), 5UL);
+  TEST_EQ(buf.count(), 7UL);
+
+  TEST_EQ(buf.consume(), 1);
+  TEST_EQ(buf.consume(), 2);
+  TEST_EQ(buf.consume(), 3);
+  TEST_EQ(buf.consume(), 4);
+  TEST_EQ(buf.consume(), 5);
+
+  TEST_EQ(buf.remaining(), 0UL);
+  TEST_EQ(buf.count(), 7UL);
+
+  for (int i = 6; i < 31; ++i) {
+    kb.set(key, i);
+  }
+
+  TEST_EQ(buf.remaining(), 25UL);
+  TEST_EQ(buf.count(), 10UL);
+
+  size_t dropped;
+  TEST_EQ(buf.consume(dropped), 21);
+  TEST_EQ(dropped, 15UL);
+  TEST_EQ(buf.consume(dropped), 22);
+  TEST_EQ(dropped, 0UL);
+
+  TEST_EQ(buf.remaining(), 8UL);
+  TEST_EQ(buf.count(), 10UL);
+}
+
 int main (int, char **)
 {
-  madara::logger::global_logger->set_level(9);
+  madara::logger::global_logger->set_level(2);
 
   std::cerr << "Test CircularBuffer directly" << std::endl;
   test_circular_int_buffer();
@@ -192,6 +242,9 @@ int main (int, char **)
 
     test_kb(kb, ref);
   }
+
+  std::cerr << "Test NativeCircularBufferConsumer" << std::endl;
+  test_container();
 
   if (madara_tests_fail_count > 0)
   {
