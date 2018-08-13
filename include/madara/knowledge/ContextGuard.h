@@ -29,7 +29,7 @@ namespace madara
        * Arguments past first forwarded to underlying guard type
        **/
       template<typename... Args>
-      ContextGuard (KnowledgeBase & knowledge, Args&&... args);
+      ContextGuard (const KnowledgeBase & knowledge, Args&&... args);
 
       /**
        * Constructor
@@ -37,10 +37,10 @@ namespace madara
        * Arguments past first forwarded to underlying guard type
        **/
       template<typename... Args>
-      ContextGuard (ThreadSafeContext & context, Args&&... args);
+      ContextGuard (const ThreadSafeContext & context, Args&&... args);
 
     private:
-      std::lock_guard<ThreadSafeContext> guard_;
+      std::lock_guard<const ThreadSafeContext> guard_;
     };
 
   }

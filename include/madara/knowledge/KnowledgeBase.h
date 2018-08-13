@@ -1395,6 +1395,14 @@ namespace madara
       ThreadSafeContext & get_context (void);
 
       /**
+       * Returns the ThreadSafeContext associated with this Knowledge
+       * Base. This is necessary for creating custom transports.
+       *
+       * @return             the context used by the knowledge base
+       **/
+      const ThreadSafeContext & get_context (void) const;
+
+      /**
       * Gets the log level
       * @return the maximum detail level to print
       **/
@@ -1582,6 +1590,27 @@ namespace madara
 
       int64_t save_checkpoint (
         CheckpointSettings & settings) const;
+
+      /**
+       * Attach a streaming provider object, inherited from BaseStreamer,
+       * such as CheckpointStreamer. Once attached, all updates to records
+       * in this ThreadSafeContext will be provided to the streamer. May
+       * pass nullptr to stop streaming.
+       *
+       * @param streamer the new streamer to attach
+       * @return the old streamer, or nullptr if there wasn't any.
+       **/
+      std::unique_ptr<BaseStreamer> attach_streamer (
+        std::unique_ptr<BaseStreamer> streamer)
+      {
+        if (impl_) {
+          return impl_->attach_streamer(std::move(streamer));
+        } else {
+          return context_->attach_streamer(std::move(streamer));
+        }
+        throw_null_context();
+      }
+
 
       /**
        * Loads the context from a file

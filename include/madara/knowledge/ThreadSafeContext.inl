@@ -1006,6 +1006,11 @@ ThreadSafeContext::mark_and_signal (
     mark_to_checkpoint_unsafe (std::move(ref));
   }
 
+  if (settings.stream_changes && streamer_ != nullptr)
+  {
+    streamer_->enqueue(ref.get_name(), *ref.get_record_unsafe());
+  }
+
   if (settings.signal_changes)
     changed_.MADARA_CONDITION_NOTIFY_ALL ();
 }

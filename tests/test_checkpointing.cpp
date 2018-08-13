@@ -12,9 +12,12 @@
 #include "madara/knowledge/containers/Integer.h"
 #include "madara/exceptions/MemoryException.h"
 #include "madara/exceptions/FilterException.h"
+#include "madara/knowledge/CheckpointStreamer.h"
 
 #include <stdio.h>
 #include <iostream>
+#include <chrono>
+#include <thread>
 #include <string.h>
 
 namespace logger = madara::logger;
@@ -1036,6 +1039,51 @@ void test_filter_header (void)
   std::cerr << (char*)(buffer) << "\n";
 }
 
+void test_streaming()
+{
+  std::cerr <<
+    "\n*********** TESTING STREAMING *************.\n";
+
+  std::cerr << "Attempting to stream to STK file and read back..." << std::endl;
+
+  knowledge::CheckpointSettings settings;
+  settings.filename = "stream_test.stk";
+
+  knowledge::KnowledgeBase kb;
+  kb.attach_streamer(utility::mk_unique<
+      knowledge::CheckpointStreamer>(settings, kb));
+
+  utility::sleep(0.5);
+
+  kb.set(".loc1", 2);
+  kb.set(".loc2", "foo");
+
+  utility::sleep(0.5);
+
+  kb.set("glob1", 4);
+  kb.set("glob2", "bar");
+
+  utility::sleep(0.5);
+
+  kb.attach_streamer(nullptr);
+
+  knowledge::KnowledgeBase kb2;
+  kb2.load_context(settings);
+
+  if (kb2.get(".loc1") == 2 && kb2.get(".loc2") == "foo" &&
+      kb2.get("glob1") == 4 && kb2.get("glob2") == "bar")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::string dump;
+    kb2.to_string(dump);
+    std::cerr << "FAIL :\n" << dump << "\n";
+    madara_fails++;
+  }
+}
+
 int main (int argc, char * argv[])
 {
   handle_arguments (argc, argv);
@@ -1110,6 +1158,8 @@ int main (int argc, char * argv[])
   test_filter_header ();
 
   test_diff_filter_chains ();
+
+  test_streaming ();
 
   if (madara_fails > 0)
   {

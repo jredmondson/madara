@@ -26,6 +26,7 @@ namespace madara
   {
 
     class ThreadSafeContext;
+    class VariablesLister;
 
     /**
      * @class CheckpointSettings
@@ -100,7 +101,8 @@ namespace madara
         uint64_t t_initial_state = 0,
         uint64_t t_last_state = (uint64_t)-1,
         bool t_reset_checkpoint = true,
-        bool t_ignore_header_check = false)
+        bool t_ignore_header_check = false,
+        VariablesLister *t_variables_lister = nullptr)
         : buffer_size (t_buffer_size),
           clear_knowledge (t_clear_knowledge),
           filename (t_filename),
@@ -118,7 +120,8 @@ namespace madara
           initial_state (t_initial_state),
           last_state (t_last_state),
           reset_checkpoint (t_reset_checkpoint),
-          ignore_header_check (t_ignore_header_check)
+          ignore_header_check (t_ignore_header_check),
+          variables_lister (t_variables_lister)
       {
       }
        
@@ -126,7 +129,8 @@ namespace madara
        * Copy constructor
        * @param   rhs   settings instance to copy
        **/
-      CheckpointSettings (const CheckpointSettings & rhs)
+      CheckpointSettings (const CheckpointSettings & rhs) = default;
+      /*
         : buffer_size (rhs.buffer_size), 
           clear_knowledge (rhs.clear_knowledge), 
           filename (rhs.filename),
@@ -148,15 +152,12 @@ namespace madara
           ignore_header_check (rhs.ignore_header_check),
           checkpoint_file (rhs.checkpoint_file)
       {
-      }
+      }*/
 
-       
       /**
        * Destructor
        **/
-      ~CheckpointSettings ()
-      {
-      }
+      ~CheckpointSettings () = default;
 
       /**
       * Calls encode on the the buffer filter chain
@@ -473,12 +474,31 @@ namespace madara
        **/
       bool       ignore_header_check;
 
+      /**
+       * Object which will be used to extract variables for checkpoint saving.
+       * By default (if left nullptr), use a default implementation which uses
+       * ThreadSaveContext::get_local_modified
+       *
+       * This object is not owned, so must exist as long as this settings
+       * obejct exists
+       **/
+      VariablesLister *variables_lister = nullptr;
+
     private:
       /**
        * a thread-safe ref-counted file handle for quick access to an open
        * checkpoint binary file
        **/
       std::shared_ptr<FILE>     checkpoint_file;
+    };
+
+    class VariablesLister
+    {
+    public:
+      virtual ~VariablesLister() = default;
+
+      virtual void start(const CheckpointSettings &settings) = 0;
+      virtual std::pair<const char *, const KnowledgeRecord *> next() = 0;
     };
   }
 }

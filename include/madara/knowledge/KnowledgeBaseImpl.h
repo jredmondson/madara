@@ -948,6 +948,21 @@ namespace madara
         CheckpointSettings & settings) const;
 
       /**
+       * Attach a streaming provider object, inherited from BaseStreamer,
+       * such as CheckpointStreamer. Once attached, all updates to records
+       * in this ThreadSafeContext will be provided to the streamer. May
+       * pass nullptr to stop streaming.
+       *
+       * @param streamer the new streamer to attach
+       * @return the old streamer, or nullptr if there wasn't any.
+       **/
+      std::unique_ptr<BaseStreamer> attach_streamer (
+        std::unique_ptr<BaseStreamer> streamer)
+      {
+        return map_.attach_streamer(std::move(streamer));
+      }
+
+      /**
        * Loads the context from a file
        * @param   filename    name of the file to open
        * @param   use_id      if true, sets the unique identifier to the

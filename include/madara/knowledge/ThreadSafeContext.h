@@ -13,6 +13,7 @@
 
 #include <string>
 #include <map>
+#include <memory>
 #include "madara/utility/IntTypes.h"
 
 #include "madara/MadaraExport.h"
@@ -25,6 +26,8 @@
 #include "madara/knowledge/KnowledgeReferenceSettings.h"
 #include "madara/knowledge/CompiledExpression.h"
 #include "madara/knowledge/CheckpointSettings.h"
+#include "madara/knowledge/BaseStreamer.h"
+#include "madara/transport/MessageHeader.h"
 
 #ifdef _MADARA_JAVA_
 #include "madara_jni.h"
@@ -1716,6 +1719,26 @@ namespace madara
         const CheckpointSettings & settings) const;
 
       /**
+       * Attach a streaming provider object, inherited from BaseStreamer,
+       * such as CheckpointStreamer. Once attached, all updates to records
+       * in this ThreadSafeContext will be provided to the streamer. May
+       * pass nullptr to stop streaming.
+       *
+       * @param streamer the new streamer to attach
+       * @return the old streamer, or nullptr if there wasn't any.
+       **/
+      std::unique_ptr<BaseStreamer> attach_streamer (
+        std::unique_ptr<BaseStreamer> streamer)
+      {
+        MADARA_GUARD_TYPE guard(mutex_);
+
+        using std::swap;
+        swap(streamer, streamer_);
+
+        return streamer;
+      }
+
+      /**
        * NOT THREAD SAFE!
        *
        * Retrieves a reference to the underlying KnowledgeMap. This is not
@@ -1890,6 +1913,9 @@ namespace madara
 
       /// Logger for printing
       mutable logger::Logger * logger_;
+
+      /// Streaming provider for saving all updates
+      std::unique_ptr<BaseStreamer> streamer_ = nullptr;
     };
   }
 }
