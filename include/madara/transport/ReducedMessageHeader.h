@@ -19,7 +19,7 @@ namespace madara
   namespace transport
   {
 
-    #define REDUCED_MADARA_ID    "karl1.3"
+    #define REDUCED_MADARA_ID    "karl1.4"
 
     /**
     * @class ReducedMessageHeader

@@ -9,6 +9,7 @@
 #include <boost/python/enum.hpp>
 
 #include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/FileFragmenter.h"
 #include "madara/knowledge/AnyRegistry.h"
 #include "madara/filters/GenericFilters.h"
 #include "FunctionDefaults.h"
@@ -358,6 +359,54 @@ void define_knowledge (void)
 
       
   ;
+
+  class_<madara::knowledge::FileFragmenter> (
+     "FileFragmenter",
+     "Splits or reforms a file from disk or knowledge base", init <> ())
+
+    // evaluate an expression
+    .def( "fragment_file",
+      &madara::knowledge::FileFragmenter::fragment_file,
+        m_fragment_file_1_of_2 (
+        args("filename", "settings"),
+        "Splits a file, given a filename and settings"))
+      
+    // evaluate an expression
+    .def( "fragment_buffer",
+      &madara::knowledge::FileFragmenter::fragment_buffer,
+        m_fragment_buffer_2_of_3 (
+        args("buffer", "size", "settings"),
+        "Splits a file, given a buffer and size with settings"))
+      
+    // evaluate an expression
+    .def( "create_vector",
+      &madara::knowledge::FileFragmenter::create_vector,
+        m_create_vector_2_of_3 (
+        args("key", "kb", "settings"),
+        "Creates a Vector in the KB using current file fragments"))
+      
+    // evaluate an expression
+    .def( "from_kb",
+      &madara::knowledge::FileFragmenter::from_kb,
+        m_from_kb_2_of_3 (
+        args("key", "kb", "settings"),
+        "Attempts to create a file from a Vector of fragments. The "
+        "result is the actual number of bytes available. The result "
+        "should be checked against the actual size of the file for "
+        "progress information (e.g. of transfer)."))
+      
+    .add_property("file_contents",
+      &madara::knowledge::FileFragmenter::get_file_contents,
+      "Returns the merged file contents (should run from_kb first)")
+
+     // class members
+
+    .def_readonly("file_size",
+      &madara::knowledge::FileFragmenter::file_size,
+      "size of file contents")
+
+  ;
+
 
   class_<madara::knowledge::KnowledgeRecord> (
      "KnowledgeRecord",
