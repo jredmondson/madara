@@ -12,10 +12,7 @@ madara::knowledge::FileHeader::FileHeader ()
   last_timestamp (utility::get_time ()),
   karl_version (madara::utility::get_uint_version ())
 {
-  memcpy (file_type, "KaRL", 4);
-  file_type[4] = 0;
-  file_type[5] = 0;
-  file_type[6] = 0;
+  memcpy (file_type, "KaRL1.4", 7);
   file_type[7] = 0;
 
   originator[0] = 0;

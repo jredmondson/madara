@@ -104,7 +104,37 @@ namespace madara { namespace knowledge { namespace containers {
   {
     return delimiter_;
   }
+     
+  inline int
+  Vector::set (size_t index, const KnowledgeRecord & value, 
+    const KnowledgeUpdateSettings & settings)
+  {
+    int result = -1;
+    
+    if (index < vector_.size () && context_)
+    {
+      ContextGuard context_guard (*context_);
+      MADARA_GUARD_TYPE guard (mutex_);
+      result = context_->set (vector_[index], value, settings);
+    }
 
+    return result;
+  }
+
+  inline int
+  Vector::set (size_t index, const KnowledgeRecord & value)
+  {
+    return set (index, value, settings_);
+  }
+   
+  inline void
+  Vector::modify_size (void)
+  {
+    if (context_)
+    {
+      context_->mark_modified (size_);
+    }
+  }
 
 } // end containers namespace
 } // end knowledge namespace
