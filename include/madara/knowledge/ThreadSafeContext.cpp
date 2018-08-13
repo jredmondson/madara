@@ -2882,7 +2882,7 @@ checkpoint_write_record(
         madara_logger_ptr_log (logger_, logger::LOG_MINOR,
           "ThreadSafeContext::save_checkpoint:" \
           " checking record %s against prefix %s.\n",
-          name,
+          name.c_str(),
           settings.prefixes[j].c_str ());
 
         if (madara::utility::begins_with (
