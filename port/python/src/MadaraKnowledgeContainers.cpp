@@ -1005,6 +1005,11 @@ void define_knowledge_containers (void)
       > (&madara::knowledge::containers::Vector::modify),
       "Marks the index as modified to send over transport")
 
+    // gets the underlying prefix/name
+    .def ("modify_size",
+      &madara::knowledge::containers::Vector::modify_size,
+      "Marks the vector size as modified so it can be sent over transport")
+
     // pushes a record onto the back of the vector
     .def ("push_back",
       &madara::knowledge::containers::Vector::push_back,
@@ -1043,6 +1048,27 @@ void define_knowledge_containers (void)
     // returns the record
     .def ("to_record", &madara::knowledge::containers::Vector::to_record,
       "Returns an underlying record")
+
+    .def ("set",
+      static_cast<
+        int
+        (madara::knowledge::containers::Vector::*)(
+          size_t index,
+          const madara::knowledge::KnowledgeRecord & value
+        )
+      > (&madara::knowledge::containers::Vector::set),
+      "Sets an index in the vector to a KnowledgeRecord")
+
+    .def ("set",
+      static_cast<
+        int
+        (madara::knowledge::containers::Vector::*)(
+          size_t index,
+          const madara::knowledge::KnowledgeRecord & value,
+          const madara::knowledge::KnowledgeUpdateSettings & settings
+        )
+      > (&madara::knowledge::containers::Vector::set),
+      "Sets an index in the vector to a KnowlegeRecord")
 
     .def ("set",
       static_cast<

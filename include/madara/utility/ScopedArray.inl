@@ -67,7 +67,7 @@ template <typename T>
 T * 
 madara::utility::ScopedArray<T>::get_ptr (void)
 {
-  return ptr_->t_;
+  return ptr_ != 0 ? ptr_->t_ : 0;
 }
 
 /// get the underlying pointer
@@ -75,7 +75,7 @@ template <typename T>
 const T *
 madara::utility::ScopedArray<T>::get_ptr (void) const
 {
-  return ptr_->t_;
+  return ptr_ != 0 ? ptr_->t_ : 0;
 }
 
 /// get the underlying pointer
@@ -83,7 +83,7 @@ template <typename T>
 T *
 madara::utility::ScopedArray<T>::get (void)
 {
-  return ptr_->t_;
+  return ptr_ != 0 ? ptr_->t_ : 0;
 }
 
 /// get the underlying pointer
@@ -91,7 +91,7 @@ template <typename T>
 const T *
 madara::utility::ScopedArray<T>::get (void) const
 {
-  return ptr_->t_;
+  return ptr_ != 0 ? ptr_->t_ : 0;
 }
 
 

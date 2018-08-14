@@ -88,5 +88,16 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_resize_1_of_1,
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_resize_0_of_2,
   resize, 0, 2)
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_fragment_file_1_of_2,
+  fragment_file, 1, 2)
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_fragment_buffer_2_of_3,
+  fragment_buffer, 2, 3)
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_create_vector_2_of_3,
+  create_vector, 2, 3)
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_from_kb_2_of_3,
+  from_kb, 2, 3)
 
 #endif
