@@ -105,6 +105,10 @@ containers::Integer shutdown_request;
 containers::Integer current_send_bandwidth;
 containers::Integer current_total_bandwidth;
 
+// bandwidth monitor to check send data usage
+
+transport::BandwidthMonitor bandwidth_monitor;
+
 // delete the kb entries
 bool delete_kb_entries (false);
 
@@ -463,6 +467,9 @@ class HandleRequests : public filters::AggregateFilter
       "HandleRequests: Processing packet with %d records\n",
       (int)records.size ());
 
+    current_send_bandwidth =
+      (Integer) transport_context.get_send_bandwidth ();
+
     current_total_bandwidth =
       (Integer) transport_context.get_receive_bandwidth ();
 
@@ -768,7 +775,7 @@ void process_requests (
 
               // iterate over the fragments and send each one in its own packet
               for (size_t i = 0; i < fragments.size (); ++i)
-                {
+              {
                 madara_logger_ptr_log (
                   logger::global_logger.get (),
                   logger::LOG_ALWAYS,
@@ -781,7 +788,25 @@ void process_requests (
                 fragments.modify_size ();
                 crc_var.modify ();
 
+                if (send_bandwidth > 0)
+                {
+                  while (bandwidth_monitor.get_bytes_per_second () >
+                         (uint64_t)send_bandwidth)
+                  {
+                    madara_logger_ptr_log (
+                      logger::global_logger.get (),
+                      logger::LOG_ALWAYS,
+                      "process_requests: SUCCESS: "
+                      "bandwidth violation: %" PRIu64 " / %" PRId64 "."
+                      " Sleeping for 1s\n",
+                      bandwidth_monitor.get_bytes_per_second (), send_bandwidth);
+
+                    utility::sleep (1.0);
+                  }
+                }
+
                 kb.send_modifieds ();
+                bandwidth_monitor.add (fragments[i].size ());
               }
 
               // sandbox.files.read_file (contents_key,
@@ -968,6 +993,11 @@ void handle_arguments (int argc, char ** argv)
       {
         std::stringstream buffer (argv[i + 1]);
         buffer >> send_bandwidth;
+
+        madara_logger_ptr_log (logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          "Setting send bandwidth to %d b/s over 10s window\n",
+          (int)send_bandwidth);
       }
 
       ++i;
@@ -978,6 +1008,11 @@ void handle_arguments (int argc, char ** argv)
       {
         std::stringstream buffer (argv[i + 1]);
         buffer >> total_bandwidth;
+
+        // madara_logger_ptr_log (logger::global_logger.get (),
+        //   logger::LOG_ALWAYS,
+        //   "Setting total bandwidth to %d b/s over 10s window\n",
+        //   (int)send_bandwidth);
       }
 
       ++i;
