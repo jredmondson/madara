@@ -14,6 +14,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <fstream>
 #include "madara/utility/IntTypes.h"
 
 #include "madara/MadaraExport.h"
