@@ -171,6 +171,7 @@ script:
   - $MADARA_ROOT/bin/test_rcw_transaction
   - $MADARA_ROOT/bin/test_rcw_prodcon
   - $MADARA_ROOT/bin/test_rcw_custom
+  - $MADARA_ROOT/bin/test_knowledge_record
   # performance test (useful to see if we've regressed in performance)
   - echo "Testing reasoning throughput..."
   - $MADARA_ROOT/bin/test_reasoning_throughput

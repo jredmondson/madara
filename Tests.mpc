@@ -1470,6 +1470,24 @@ project (Test_Simtime) : using_madara, no_karl, no_xml, null_lock, using_simtime
   }
 }
 
+
+project (Test_Knowledege_Record) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_knowledge_record
+  
+  requires += tests
+  
+  Documentation_Files {
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_knowledge_record.cpp
+  }
+}
+
 project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
 
