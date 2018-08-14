@@ -56,9 +56,21 @@ int main (int, char **)
   knowledge.print ("Testing print to stderr only\n");
 #endif // _MADARA_NO_KARL_
 
-  // Test read a file into the knowledgebase knowledge
+  // Test read a file into the knowledgebase object knowledge
   knowledge.print("Test loading a file in the KnowledgeBase\n");
   knowledge.read_file("testRecord1", "test_knowledgebase.txt");
+
+  // Test logging methods of the knowledgebase object knowledge directly
+  knowledge.print("Test logging methods in the KnowledgeBase\n");
+  knowledge.set_log_level (7);
+  int logLevel = knowledge.get_log_level();
+  if (logLevel == 7)
+     knowledge.print("Success\n");
+  else
+     knowledge.print("Fail\n");
+  logger::Logger localLogger;
+  knowledge.attach_logger (localLogger);
+  logger::Logger *localLoggerCopy = &(knowledge.get_logger());
 
   knowledge.print("Sleeping for 5 seconds\n");
 
