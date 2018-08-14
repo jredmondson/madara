@@ -1,4 +1,3 @@
-
 project (Test_Datatypes_Lib) : build_files, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, lz4_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, using_simtime, debug_build, using_boost, using_clang, using_madara {
 
   requires += tests
@@ -1512,5 +1511,22 @@ project (Test_Any_So) : using_madara, no_karl, no_xml, null_lock, using_simtime 
 
   Source_Files {
     tests/test_any_so.cpp
+  }
+}
+
+project (Test_KnowledgeBase) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_knowledgebase
+
+  Documentation_Files {
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_knowledgebase.cpp
   }
 }
