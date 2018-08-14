@@ -1,4 +1,3 @@
-
 #ifndef _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_H_
 #define _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_H_
 
@@ -13,8 +12,8 @@
 
 /**
  * @file NativeCircularBufferConsumer.h
- * @author James Edmondson <jedmondson@gmail.com>
  * @author David Kyle <david.kyle@shield.ai>
+ * @author James Edmondson <jedmondson@gmail.com>
  *
  * This file provides an interface similar to CircularBufferConsumer, which
  * uses the internal history buffer of KnowledgeRecord. This allows threads
@@ -34,6 +33,10 @@ namespace madara { namespace knowledge { namespace containers {
  *
  * This class uses a local index into the underlying circular buffer, and
  * is meant for one-time access of buffer elements.
+ *
+ * This class provides a subset of the capabilities of CircularBufferConsumer,
+ * as KnowledgeRecord itself provides equivalents of the rest. Use get_record()
+ * to access the KnowledgeRecord backing a NativeCircularBufferConsumer.
  */
 class MADARA_EXPORT NativeCircularBufferConsumer
 {

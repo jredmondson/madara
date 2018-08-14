@@ -94,7 +94,7 @@ namespace madara
       ~ThreadSafeContext (void);
 
       /**
-       * Atomically returns the value of a variable.
+       * Atomically returns the current value of a variable.
        * @param   key       unique identifier of the variable
        * @param   settings  the settings for referring to variables
        * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
@@ -105,13 +105,37 @@ namespace madara
                      KnowledgeReferenceSettings ()) const;
 
       /**
-       * Atomically returns the value of a variable.
+       * Atomically returns the current value of a variable.
        * @param   variable  reference to a variable (@see get_ref)
        * @param   settings  the settings for referring to variables
        * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
        **/
       madara::knowledge::KnowledgeRecord
         get (const VariableReference & variable,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const;
+
+      /**
+       * Atomically returns the underlying value of a variable, including
+       * history. If record has no history, equivalent to get.
+       * @param   key       unique identifier of the variable
+       * @param   settings  the settings for referring to variables
+       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
+       **/
+      madara::knowledge::KnowledgeRecord
+        get_actual (const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const;
+
+      /**
+       * Atomically returns the underlying value of a variable, including
+       * history. If record has no history, equivalent to get.
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   settings  the settings for referring to variables
+       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
+       **/
+      madara::knowledge::KnowledgeRecord
+        get_actual (const VariableReference & variable,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const;
 

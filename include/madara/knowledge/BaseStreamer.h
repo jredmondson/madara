@@ -13,11 +13,23 @@
 
 namespace madara { namespace knowledge {
 
+/**
+ * Interface for knowledge update streaming. Objects which implement this
+ * interface can be attachecd to a KnowledgeBase with the attach_streamer
+ * method to receive copies of every modification of knowledge.
+ **/
 class MADARA_EXPORT BaseStreamer
 {
 public:
   virtual ~BaseStreamer() = default;
 
+  /**
+   * When attached to a KnowledgeBase, this will be called every time a
+   * KnowledgeRecord held within is modified.
+   *
+   * @param name the variable name of the KnowledgeRecord
+   * @param record a copy of the new value
+   **/
   virtual void enqueue(std::string name, KnowledgeRecord record) = 0;
 };
 

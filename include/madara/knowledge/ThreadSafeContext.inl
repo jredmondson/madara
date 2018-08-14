@@ -31,14 +31,45 @@ ThreadSafeContext::get (
 {
   const KnowledgeRecord *ret =  with (key, settings);
   if (ret) {
+    if (ret->has_history()) {
+      return ret->get_newest();
+    } else {
+      return *ret;
+    }
+  }
+  return KnowledgeRecord();
+}
+
+inline KnowledgeRecord
+ThreadSafeContext::get (
+  const VariableReference & variable,
+  const KnowledgeReferenceSettings & settings) const
+{
+  const KnowledgeRecord *ret =  with (variable, settings);
+  if (ret) {
+    if (ret->has_history()) {
+      return ret->get_newest();
+    } else {
+      return *ret;
+    }
+  }
+  return KnowledgeRecord();
+}
+
+inline KnowledgeRecord
+ThreadSafeContext::get_actual (
+  const std::string & key,
+  const KnowledgeReferenceSettings & settings) const
+{
+  const KnowledgeRecord *ret =  with (key, settings);
+  if (ret) {
     return *ret;
   }
   return KnowledgeRecord();
 }
 
-// return the value of a variable
 inline KnowledgeRecord
-ThreadSafeContext::get (
+ThreadSafeContext::get_actual (
   const VariableReference & variable,
   const KnowledgeReferenceSettings & settings) const
 {
