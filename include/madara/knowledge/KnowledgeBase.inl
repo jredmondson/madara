@@ -1587,6 +1587,23 @@ KnowledgeBase::get_context (void)
   return *result;
 }
 
+inline const ThreadSafeContext &
+KnowledgeBase::get_context (void) const
+{
+  ThreadSafeContext * result = 0;
+
+  if (context_)
+  {
+    result = context_;
+  }
+  else if (impl_.get ())
+  {
+    result = &(impl_->get_context ());
+  }
+
+  return *result;
+}
+
 inline void
 KnowledgeBase::clear_modifieds (void)
 {

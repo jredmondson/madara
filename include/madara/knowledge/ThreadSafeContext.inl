@@ -31,14 +31,45 @@ ThreadSafeContext::get (
 {
   const KnowledgeRecord *ret =  with (key, settings);
   if (ret) {
+    if (ret->has_history()) {
+      return ret->get_newest();
+    } else {
+      return *ret;
+    }
+  }
+  return KnowledgeRecord();
+}
+
+inline KnowledgeRecord
+ThreadSafeContext::get (
+  const VariableReference & variable,
+  const KnowledgeReferenceSettings & settings) const
+{
+  const KnowledgeRecord *ret =  with (variable, settings);
+  if (ret) {
+    if (ret->has_history()) {
+      return ret->get_newest();
+    } else {
+      return *ret;
+    }
+  }
+  return KnowledgeRecord();
+}
+
+inline KnowledgeRecord
+ThreadSafeContext::get_actual (
+  const std::string & key,
+  const KnowledgeReferenceSettings & settings) const
+{
+  const KnowledgeRecord *ret =  with (key, settings);
+  if (ret) {
     return *ret;
   }
   return KnowledgeRecord();
 }
 
-// return the value of a variable
 inline KnowledgeRecord
-ThreadSafeContext::get (
+ThreadSafeContext::get_actual (
   const VariableReference & variable,
   const KnowledgeReferenceSettings & settings) const
 {
@@ -1004,6 +1035,11 @@ ThreadSafeContext::mark_and_signal (
   if (settings.track_local_changes)
   {
     mark_to_checkpoint_unsafe (std::move(ref));
+  }
+
+  if (settings.stream_changes && streamer_ != nullptr)
+  {
+    streamer_->enqueue(ref.get_name(), *ref.get_record_unsafe());
   }
 
   if (settings.signal_changes)

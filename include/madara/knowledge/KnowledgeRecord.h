@@ -21,6 +21,7 @@
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/IntTypes.h"
 #include "madara/utility/SupportTest.h"
+#include "madara/utility/CircularBuffer.h"
 #include "Any.h"
 
 namespace madara
@@ -94,7 +95,7 @@ namespace madara
         SHARED = 1
       };
 
-      enum ValueTypes
+      enum ValueTypes : uint32_t
       {
         EMPTY = 0,
         INTEGER = 1,
@@ -117,10 +118,13 @@ namespace madara
         ALL_IMAGES = IMAGE_JPEG,
         ALL_TEXT_FORMATS = XML | TEXT_FILE | STRING,
         ALL_TYPES = ALL_PRIMITIVE_TYPES | ALL_FILE_TYPES,
-        ALL_CLEARABLES = ALL_ARRAYS | ALL_TEXT_FORMATS | ALL_FILE_TYPES | ANY
+        ALL_CLEARABLES = ALL_ARRAYS | ALL_TEXT_FORMATS | ALL_FILE_TYPES | ANY,
+        BUFFER = (1UL << 31),
       };
 
       typedef  int64_t     Integer;
+
+      using CircBuf = utility::CircularBuffer<KnowledgeRecord>;
 
     private:
       /// the logger used for any internal debugging information
@@ -162,6 +166,7 @@ namespace madara
         std::shared_ptr<std::string> str_value_;
         std::shared_ptr<std::vector<unsigned char>> file_value_;
         std::shared_ptr<ConstAny> any_value_;
+        std::shared_ptr<CircBuf> buf_;
       };
 
       /**
@@ -255,6 +260,24 @@ namespace madara
 
       /* Any type move constructor */
       explicit KnowledgeRecord (ConstAny && value,
+        logger::Logger & logger = *logger::global_logger.get ()) noexcept;
+
+      /**
+       * Construct using CircularBuffer directly. This buffer will be treated
+       * as the history of this record, and used as such going forward.
+       *
+       * @params buffer buffer that will be copied into this record
+       **/
+      explicit KnowledgeRecord (const CircBuf & buffer,
+        logger::Logger & logger = *logger::global_logger.get ());
+
+      /**
+       * Construct using CircularBuffer directly. This buffer will be treated
+       * as the history of this record, and used as such going forward.
+       *
+       * @params buffer buffer that will be moved into this record
+       **/
+      explicit KnowledgeRecord (CircBuf && buffer,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
       /* copy constructor */
@@ -375,6 +398,20 @@ namespace madara
       template<typename T, typename... Args>
       void emplace(tags::any<T>, Args&&... args) {
         emplace_any(tags::type<T>{}, std::forward<Args>(args)...);
+      }
+
+      /**
+       * Construct a CircularBuffer within this KnowledgeRecord directly. This
+       * buffer will be treated as the history of this record, and used as such
+       * going forward.
+       *
+       * @params args arguments forwarded to the
+       *               madara::utility::CircularBuffer constructor
+       **/
+      template<typename... Args>
+      void overwrite_circular_buffer(Args&&... args) {
+        emplace_val<CircBuf, BUFFER, &KnowledgeRecord::buf_, true> (
+            std::forward<Args>(args)...);
       }
 
       /**
@@ -599,10 +636,7 @@ namespace madara
 
       /**
        * Sets the value from another KnowledgeRecord,
-       * does not copy clock and write_quality.
-       * Will check that write_quality of new value is >= quality
-       * of this record, and ignore update if not. Otherwise,
-       * this records quality will be set to new_value.write_quality.
+       * does not copy toi, clock, and write_quality.
        *
        * @param    new_value   new value of the Knowledge Record
        **/
@@ -610,14 +644,25 @@ namespace madara
 
       /**
        * Sets the value from another KnowledgeRecord,
-       * does not copy clock and write_quality.
-       * Will check that write_quality of new value is >= quality
-       * of this record, and ignore update if not. Otherwise,
-       * this records quality will be set to new_value.write_quality.
+       * does not copy toi, clock, and write_quality.
        *
        * @param    new_value   new value of the Knowledge Record
        **/
       void set_value (KnowledgeRecord &&new_value);
+
+      /**
+       * Sets the value and meta data from another KnowledgeRecord.
+       *
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_full (const KnowledgeRecord &new_value);
+
+      /**
+       * Sets the value and meta data from another KnowledgeRecord.
+       *
+       * @param    new_value   new value of the Knowledge Record
+       **/
+      void set_full (KnowledgeRecord &&new_value);
 
       /**
        * sets the value to an integer
@@ -1109,9 +1154,9 @@ namespace madara
       uint32_t size (void) const;
 
       /**
-       * returns the size of the value
+       * returns the type of the value
        **/
-      int32_t type (void) const;
+      uint32_t type (void) const;
 
       /**
        * Modify the type, but only if it's compatible with current type without
@@ -1124,7 +1169,7 @@ namespace madara
        * @return true if conversion successfully applied, or was already type,
        *         false if not
        **/
-      bool set_type (int32_t type);
+      bool set_type (uint32_t type);
 
       /**
        * returns if the record has a reference-counted type
@@ -1543,19 +1588,430 @@ namespace madara
       **/
       int64_t get_encoded_size (void) const;
 
+      /**
+       * Return true if this record has a circular buffer history. Use
+       * set_history_capacity to add a buffer
+       **/
+      bool has_history () const
+      {
+        return type_ == BUFFER;
+      }
+
+      /**
+       * Return the amount of history this record holds.
+       **/
+      size_t get_history_size () const
+      {
+        if (type_ == BUFFER) {
+          return buf_->size();
+        } else {
+          return 1;
+        }
+      }
+
+      /**
+       * Return the maximum amount of history this record can hold. Use
+       * set_history_capacity to adjust this.
+       **/
+      size_t get_history_capacity () const
+      {
+        if (type_ == BUFFER) {
+          return buf_->capacity();
+        } else {
+          return 1;
+        }
+      }
+
+      /**
+       * Set the capacity of this record's history circular buffer. Every
+       * modification to this record will write a new entry in this history.
+       * Once the capacity is met, the oldest entry will be discarded as new
+       * entries are added.
+       **/
+      void set_history_capacity (size_t size)
+      {
+        if (type_ == BUFFER) {
+          if (size <= 1) {
+            if (buf_->empty()) {
+              *this = std::move(buf_->back());
+            } else {
+              reset_value();
+            }
+          } else {
+            buf_->reserve(size);
+          }
+        } else {
+          if (size > 1) {
+            KnowledgeRecord tmp = *this;
+            new (&buf_) std::shared_ptr<CircBuf>(
+                std::make_shared<CircBuf>(size));
+            type_ = BUFFER;
+            buf_->push_back(std::move(tmp));
+          }
+        }
+      }
+
+      /**
+       * Clear all history for this record, keeping the current value.
+       **/
+      void clear_history () { set_history_capacity(0); }
+
     private:
+      size_t absolute_index(ssize_t index) const
+      {
+        if (type_ != BUFFER) {
+          return 0;
+        }
+        if (index >= 0) {
+          return buf_->front_index() + index;
+        }
+        return buf_->back_index() + (index + 1);
+      }
+
+    public:
+      /**
+       * Execute a callable for each history element.
+       **/
+      template<typename Func>
+      size_t for_history_range(Func&& func, size_t index, size_t count) const
+      {
+        if (type_ != BUFFER) {
+          func(*this);
+          return 1;
+        }
+        size_t front = buf_->front_index();
+        if (index < front) {
+          size_t diff = front - index;
+          if (count > diff) {
+            count -= diff;
+          } else {
+            count = 0;
+          }
+          index = front;
+        }
+        if (count > buf_->size()) {
+          count = buf_->size();
+        }
+        for (size_t i = index, end = index + count; i < end; ++i) {
+          func((*buf_)[i]);
+        }
+        return count;
+      }
+
+      /**
+       * Copy the given absolute range of history to the output iterator given.
+       * Indexing is absolute, starting with the initial value of the record,
+       * not relative to the circular buffer contents. You likely want to use
+       * get_history instead.
+       **/
+      template<typename OutputIterator>
+      size_t get_history_range(OutputIterator out,
+          size_t index, size_t count) const;
+
+      /**
+       * Copy the @a count oldest stored history entries of this record to the
+       * given output iterator, in order from oldest to newest.
+       **/
+      template<typename OutputIterator>
+      size_t get_oldest(OutputIterator out, size_t count) const
+      {
+        return get_history(out, 0, count);
+      }
+
+      /**
+       * Copy the oldest stored history entries of this record to the
+       * given output iterator, up to the given ending iterator, in order
+       * from oldest to newest.
+       **/
+      template<typename OutputIterator, typename ConstOutputIterator>
+      auto get_oldest(OutputIterator out, ConstOutputIterator out_end) const ->
+        enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
+      {
+        return get_oldest(out, std::distance(out, out_end));
+      }
+
+      /**
+       * Copy the oldest stored history entry of this record to the
+       * given output iterator
+       **/
+      template<typename OutputIterator>
+      auto get_oldest(OutputIterator out) const -> decltype(*out, size_t{})
+      {
+        return get_oldest(out, 1);
+      }
+
+      /**
+       * Copy the @a count newest stored history entries of this record to the
+       * given output iterator, in order from oldest to newest.
+       **/
+      template<typename OutputIterator>
+      size_t get_newest(OutputIterator out, size_t count) const
+      {
+        return get_history(out, -(ssize_t)count, count);
+      }
+
+      /**
+       * Copy the newest stored history entries of this record to the
+       * given output iterator, up to the given ending iterator, in order
+       * from oldest to newest.
+       **/
+      template<typename OutputIterator, typename ConstOutputIterator>
+      auto get_newest(OutputIterator out, ConstOutputIterator out_end) const ->
+        enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
+      {
+        return get_newest(out, std::distance(out, out_end));
+      }
+
+      /**
+       * Copy the newest stored history entry of this record to the
+       * given output iterator
+       **/
+      template<typename OutputIterator>
+      auto get_newest(OutputIterator out) const -> decltype(*out, size_t{})
+      {
+        return get_newest(out, 1);
+      }
+
+      /**
+       * Return the oldest stored history entry of this record
+       **/
+      KnowledgeRecord get_oldest() const
+      {
+        KnowledgeRecord ret;
+        get_oldest(&ret, 1);
+        return ret;
+      }
+
+      /**
+       * Return the oldest stored history entry of this record as the type
+       * given (which must support knowledge_cast<> from a KnowledgeRecord)
+       **/
+      template<typename T>
+      T get_oldest() const
+      {
+        std::vector<T> ret;
+        get_oldest(&ret, 1);
+        return ret;
+      }
+
+      /**
+       * Return the newest stored history entry of this record
+       **/
+      KnowledgeRecord get_newest() const
+      {
+        KnowledgeRecord ret;
+        get_newest(&ret, 1);
+        return ret;
+      }
+
+      /**
+       * Return the newest stored history entry of this record as the type
+       * given (which must support knowledge_cast<> from a KnowledgeRecord)
+       **/
+      template<typename T>
+      T get_newest() const
+      {
+        T ret;
+        get_newest(&ret, 1);
+        return ret;
+      }
+
+    private:
+      KnowledgeRecord &ref_newest()
+      {
+        return buf_->back();
+      }
+
+      const KnowledgeRecord &ref_newest() const
+      {
+        return buf_->back();
+      }
+
+    public:
+
+      /**
+       * Return the @a count oldest stored history entries of this record in
+       * a vector.
+       **/
+      std::vector<KnowledgeRecord> get_oldest(size_t count) const
+      {
+        std::vector<KnowledgeRecord> ret;
+        get_oldest(std::back_inserter(ret), count);
+        return ret;
+      }
+
+      /**
+       * Return the @a count oldest stored history entries of this record in
+       * a vector of the given element type, which must support knoweldge_cast<>
+       * from KnowledgeRecord.
+       **/
+      template<typename T>
+      std::vector<T> get_oldest(size_t count) const
+      {
+        std::vector<T> ret;
+        get_oldest(std::back_inserter(ret), count);
+        return ret;
+      }
+
+      /**
+       * Return the @a count newest stored history entries of this record in
+       * a vector.
+       **/
+      std::vector<KnowledgeRecord> get_newest(size_t count) const
+      {
+        std::vector<KnowledgeRecord> ret;
+        get_newest(std::back_inserter(ret), count);
+        return ret;
+      }
+
+      /**
+       * Return the @a count newest stored history entries of this record in
+       * a vector of the given element type, which must support knoweldge_cast<>
+       * from KnowledgeRecord.
+       **/
+      template<typename T>
+      std::vector<T> get_newest(size_t count) const
+      {
+        std::vector<T> ret;
+        get_newest(std::back_inserter(ret), count);
+        return ret;
+      }
+
+      /**
+       * Get a copy of the entire stored history of this record.
+       **/
+      std::vector<KnowledgeRecord> get_history() const
+      {
+        std::vector<KnowledgeRecord> ret;
+        get_history(std::back_inserter(ret));
+        return ret;
+      }
+
+      /**
+       * Copy the given range of history to the output iterator given. Indexing
+       * starts from oldest history entry in the buffer at index 0. Negative
+       * indices count from newest entries (-1 is newest).
+       **/
+      template<typename OutputIterator>
+      size_t get_history(OutputIterator out, ssize_t index, size_t count) const
+      {
+        return get_history_range(out, absolute_index(index), count);
+      }
+
+      /**
+       * Copy the stored history of this record to the given output iterator,
+       * in order from oldest to newest.
+       **/
+      template<typename OutputIterator>
+      auto get_history(OutputIterator out) const -> decltype(*out, size_t{})
+      {
+        return get_history_range(out, 0, std::numeric_limits<size_t>::max());
+      }
+
+      /**
+       * Get a copy of the entire stored history of this record in a vector of
+       * the given element type, which must support knoweldge_cast<>
+       * from KnowledgeRecord.
+       **/
+      template<typename T>
+      std::vector<T> get_history() const
+      {
+        std::vector<T> ret;
+        get_history(std::back_inserter(ret));
+        return ret;
+      }
+
+      /**
+       * Return a copy of the given range of history in a vector. Indexing
+       * starts from oldest history entry in the buffer at index 0. Negative
+       * indices count from newest entries (-1 is newest).
+       **/
+      std::vector<KnowledgeRecord> get_history(size_t index, size_t count) const
+      {
+        std::vector<KnowledgeRecord> ret;
+        get_history(std::back_inserter(ret), index, count);
+        return ret;
+      }
+
+      /**
+       * Return the given entry in this record's history. Indexing
+       * starts from oldest history entry in the buffer at index 0. Negative
+       * indices count from newest entries (-1 is newest).
+       **/
+      KnowledgeRecord get_history(size_t index) const
+      {
+        KnowledgeRecord ret;
+        get_history(&ret, index, 1);
+        return ret;
+      }
+
+      size_t get_history_newest_index() const
+      {
+        if (!has_history()) {
+          return 0;
+        }
+        return buf_->back_index();
+      }
+
+      size_t get_history_oldest_index() const
+      {
+        if (!has_history()) {
+          return 0;
+        }
+        return buf_->front_index();
+      }
+
+      std::shared_ptr<CircBuf> share_circular_buffer() const;
+
+      /**
+       * Set metadata of this record equal to that of new_value, but doesn't
+       * change value. Metadata is toi, clock, quality, write_quality, and
+       * logger.
+       **/
+      void copy_metadata (const KnowledgeRecord &new_value);
+
+      /**
+       * Clears everything including history, but excluding metadata
+       * (e.g., toi, clock) and copies value from new_value into this recod
+       **/
+      void overwrite (const KnowledgeRecord &new_value);
+
+      /**
+       * Clears everything including history, but excluding metadata
+       * (e.g., toi, clock) and moves value from new_value into this recod
+       **/
+      void overwrite (KnowledgeRecord &&new_value);
+
+    private:
+      template<typename... Args>
+      KnowledgeRecord &emplace_hist(Args&&... args)
+      {
+        unshare();
+        return buf_->emplace_back(std::forward<Args>(args)...);
+      }
+
       template<typename T>
       using MemberType = std::shared_ptr<T> KnowledgeRecord::*;
 
-      template<typename T, uint32_t Type, MemberType<T> Member, typename... Args>
+      template<typename T, uint32_t Type, MemberType<T> Member,
+               bool Overwrite = false, typename... Args>
       std::shared_ptr<const T> &emplace_shared_val(Args&&... args) {
+        if (has_history() && !Overwrite) {
+          KnowledgeRecord tmp;
+          tmp.copy_metadata(*this);
+          auto &ret = tmp.emplace_shared_val<T, Type, Member>(
+              std::forward<Args>(args)...);
+          emplace_hist (std::move(tmp));
+          return ret;
+        }
         clear_union();
         type_ = Type;
         return *new(&(this->*Member)) std::shared_ptr<const T>(
               std::forward<Args>(args)...);
       }
 
-      template<typename T, uint32_t Type, MemberType<T> Member, typename... Args>
+      template<typename T, uint32_t Type, MemberType<T> Member,
+               bool Overwrite = false, typename... Args>
       std::shared_ptr<const T> &emplace_val(Args&&... args) {
         return emplace_shared_val<T, Type, Member> (std::move(
             std::make_shared<const T> (
@@ -1563,6 +2019,7 @@ namespace madara
       }
 
       template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
+               bool Overwrite = false,
                typename... Args>
       std::shared_ptr<const std::vector<T>> &emplace_shared_vec(Args&&... args) {
         return emplace_shared_val<std::vector<T>, Type, Member> (
@@ -1570,6 +2027,7 @@ namespace madara
       }
 
       template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
+               bool Overwrite = false,
                typename... Args>
       std::shared_ptr<const std::vector<T>> &emplace_vec(Args&&... args) {
         return emplace_val<std::vector<T>, Type, Member> (

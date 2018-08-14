@@ -13,6 +13,8 @@
 
 #include <string>
 #include <map>
+#include <memory>
+#include <fstream>
 #include "madara/utility/IntTypes.h"
 
 #include "madara/MadaraExport.h"
@@ -25,6 +27,8 @@
 #include "madara/knowledge/KnowledgeReferenceSettings.h"
 #include "madara/knowledge/CompiledExpression.h"
 #include "madara/knowledge/CheckpointSettings.h"
+#include "madara/knowledge/BaseStreamer.h"
+#include "madara/transport/MessageHeader.h"
 
 #ifdef _MADARA_JAVA_
 #include "madara_jni.h"
@@ -91,7 +95,7 @@ namespace madara
       ~ThreadSafeContext (void);
 
       /**
-       * Atomically returns the value of a variable.
+       * Atomically returns the current value of a variable.
        * @param   key       unique identifier of the variable
        * @param   settings  the settings for referring to variables
        * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
@@ -102,13 +106,37 @@ namespace madara
                      KnowledgeReferenceSettings ()) const;
 
       /**
-       * Atomically returns the value of a variable.
+       * Atomically returns the current value of a variable.
        * @param   variable  reference to a variable (@see get_ref)
        * @param   settings  the settings for referring to variables
        * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
        **/
       madara::knowledge::KnowledgeRecord
         get (const VariableReference & variable,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const;
+
+      /**
+       * Atomically returns the underlying value of a variable, including
+       * history. If record has no history, equivalent to get.
+       * @param   key       unique identifier of the variable
+       * @param   settings  the settings for referring to variables
+       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
+       **/
+      madara::knowledge::KnowledgeRecord
+        get_actual (const std::string & key,
+             const KnowledgeReferenceSettings & settings =
+                     KnowledgeReferenceSettings ()) const;
+
+      /**
+       * Atomically returns the underlying value of a variable, including
+       * history. If record has no history, equivalent to get.
+       * @param   variable  reference to a variable (@see get_ref)
+       * @param   settings  the settings for referring to variables
+       * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable
+       **/
+      madara::knowledge::KnowledgeRecord
+        get_actual (const VariableReference & variable,
              const KnowledgeReferenceSettings & settings =
                      KnowledgeReferenceSettings ()) const;
 
@@ -1716,6 +1744,26 @@ namespace madara
         const CheckpointSettings & settings) const;
 
       /**
+       * Attach a streaming provider object, inherited from BaseStreamer,
+       * such as CheckpointStreamer. Once attached, all updates to records
+       * in this ThreadSafeContext will be provided to the streamer. May
+       * pass nullptr to stop streaming.
+       *
+       * @param streamer the new streamer to attach
+       * @return the old streamer, or nullptr if there wasn't any.
+       **/
+      std::unique_ptr<BaseStreamer> attach_streamer (
+        std::unique_ptr<BaseStreamer> streamer)
+      {
+        MADARA_GUARD_TYPE guard(mutex_);
+
+        using std::swap;
+        swap(streamer, streamer_);
+
+        return streamer;
+      }
+
+      /**
        * NOT THREAD SAFE!
        *
        * Retrieves a reference to the underlying KnowledgeMap. This is not
@@ -1741,6 +1789,86 @@ namespace madara
        * @return a reference to this context's KnowledgeMap
        **/
       const KnowledgeMap &get_map_unsafe (void) const { return map_; }
+
+      template<typename Callable>
+      auto invoke(const std::string &key,
+          Callable &&callable,
+          const KnowledgeUpdateSettings &settings = KnowledgeUpdateSettings())
+        -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        MADARA_GUARD_TYPE guard (mutex_);
+        auto ref = get_ref(key, settings);
+        return invoke_(std::forward<Callable>(callable),
+                       *ref.get_record_unsafe());
+      }
+
+      template<typename Callable>
+      auto invoke(const VariableReference &key,
+          Callable &&callable,
+          const KnowledgeUpdateSettings &settings = KnowledgeUpdateSettings())
+        -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        MADARA_GUARD_TYPE guard (mutex_);
+        (void)settings;
+        return invoke_(std::forward<Callable>(callable),
+                       *key.get_record_unsafe());
+      }
+
+      template<typename Callable>
+      auto invoke(const std::string &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        MADARA_GUARD_TYPE guard (mutex_);
+        const KnowledgeRecord *ptr = with(key, settings);
+        if (ptr) {
+          return invoke_(std::forward<Callable>(callable), *ptr);
+        }
+        const KnowledgeRecord empty;
+        return invoke_(std::forward<Callable>(callable), empty);
+      }
+
+      template<typename Callable>
+      auto invoke(const VariableReference &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        MADARA_GUARD_TYPE guard (mutex_);
+        (void)settings;
+        return invoke_(std::forward<Callable>(callable),
+                       const_cast<const KnowledgeRecord &>(
+                         *key.get_record_unsafe()));
+      }
+
+      template<typename Callable>
+      auto cinvoke(const std::string &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return invoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto cinvoke(const VariableReference &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return invoke(key, std::forward<Callable>(callable), settings);
+      }
 
     protected:
     private:
@@ -1810,6 +1938,80 @@ namespace madara
 
       /// Logger for printing
       mutable logger::Logger * logger_;
+
+      /// Streaming provider for saving all updates
+      std::unique_ptr<BaseStreamer> streamer_ = nullptr;
+    };
+
+    /**
+     * Class for iterating binary checkpoint files
+     **/
+    class CheckpointReader
+    {
+    public:
+      /**
+       * Construct using the given CheckpointSettings. Ensure that the
+       * referenced object outlives this one.
+       **/
+      CheckpointReader(CheckpointSettings &in_checkpoint_settings)
+        : checkpoint_settings(in_checkpoint_settings),
+          logger_(logger::global_logger.get()) {}
+
+      /**
+       * Begin by reading any header information. Optional. Will be called
+       * automatically by next if need be. This opens the file specified in
+       * the settings based during construction. The file will be closed
+       * when this object is destructed.
+       **/
+      void start();
+
+      /**
+       * Get the next update from the checkpoint file. Returns an empty
+       * string and record if the end is reached.
+       **/
+      std::pair<std::string, KnowledgeRecord> next();
+
+      /**
+       * Get total number of bytes read so far during iteration.
+       **/
+      int64_t get_total_read() const { return total_read; }
+
+      /**
+       * Get the file header information. Only valid after calling start(),
+       * or next(). If not valid, returns nullptr.
+       **/
+      const FileHeader *get_file_header() const
+      {
+        if (stage == 0) {
+          return nullptr;
+        }
+
+        return &meta;
+      }
+
+      /**
+       * Check if underlying file is open. This does not imply there are more
+       * records left to read.
+       **/
+      bool is_open() const { return file.is_open(); }
+
+    private:
+      CheckpointSettings &checkpoint_settings;
+
+      logger::Logger *logger_;
+      int stage = 0;
+      std::ifstream file;
+      int64_t total_read = 0;
+      FileHeader meta;
+      int64_t max_buffer;
+      int64_t buffer_remaining;
+      utility::ScopedArray <char> buffer;
+      char * current;
+      size_t checkpoint_start;
+      uint64_t state;
+      uint64_t checkpoint_size;
+      transport::MessageHeader checkpoint_header;
+      uint64_t update;
     };
   }
 }

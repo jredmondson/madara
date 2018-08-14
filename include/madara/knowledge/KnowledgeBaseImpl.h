@@ -948,6 +948,21 @@ namespace madara
         CheckpointSettings & settings) const;
 
       /**
+       * Attach a streaming provider object, inherited from BaseStreamer,
+       * such as CheckpointStreamer. Once attached, all updates to records
+       * in this ThreadSafeContext will be provided to the streamer. May
+       * pass nullptr to stop streaming.
+       *
+       * @param streamer the new streamer to attach
+       * @return the old streamer, or nullptr if there wasn't any.
+       **/
+      std::unique_ptr<BaseStreamer> attach_streamer (
+        std::unique_ptr<BaseStreamer> streamer)
+      {
+        return map_.attach_streamer(std::move(streamer));
+      }
+
+      /**
        * Loads the context from a file
        * @param   filename    name of the file to open
        * @param   use_id      if true, sets the unique identifier to the
@@ -1069,6 +1084,83 @@ namespace madara
        * @return        unique host id
        **/
       std::string setup_unique_hostport (std::string host = "");
+
+    private:
+      struct ModifiedsSender
+      {
+        KnowledgeBaseImpl *self;
+        const char *func;
+        const EvalSettings *settings;
+
+        ~ModifiedsSender() { self->send_modifieds(func, *settings); }
+      };
+
+    public:
+      template<typename Callable>
+      auto invoke(const std::string &key,
+          Callable &&callable,
+          const EvalSettings &settings = EvalSettings())
+        -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        ModifiedsSender sender = {this, "KnowledgeBase::invoke", &settings};
+        return map_.invoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto invoke(const VariableReference &key,
+          Callable &&callable,
+          const EvalSettings &settings = EvalSettings())
+        -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        ModifiedsSender sender = {this, "KnowledgeBase::invoke", &settings};
+        return map_.invoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto invoke(const std::string &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return map_.invoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto invoke(const VariableReference &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return map_.invoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto cinvoke(const std::string &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return map_.cinvoke(key, std::forward<Callable>(callable), settings);
+      }
+
+      template<typename Callable>
+      auto cinvoke(const VariableReference &key,
+          Callable &&callable,
+          const KnowledgeReferenceSettings &settings =
+            KnowledgeReferenceSettings())
+        const -> decltype(invoke_(std::forward<Callable>(callable),
+             std::declval<KnowledgeRecord &>()))
+      {
+        return map_.cinvoke(key, std::forward<Callable>(callable), settings);
+      }
 
     private:
       ThreadSafeContext                 map_;

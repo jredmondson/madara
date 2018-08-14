@@ -9,6 +9,7 @@
  **/
 
 #include <type_traits>
+#include <memory>
 #include <initializer_list>
 
 /**

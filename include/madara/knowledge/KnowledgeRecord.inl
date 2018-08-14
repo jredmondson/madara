@@ -154,6 +154,19 @@ inline KnowledgeRecord::KnowledgeRecord (
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
+  const CircBuf & buffer, logger::Logger & logger)
+: logger_ (&logger)
+{
+  overwrite_circular_buffer (buffer);
+}
+
+inline KnowledgeRecord::KnowledgeRecord (
+  CircBuf && buffer, logger::Logger & logger) noexcept
+: logger_ (&logger)
+{
+  overwrite_circular_buffer (std::move(buffer));
+}
+inline KnowledgeRecord::KnowledgeRecord (
     const knowledge::KnowledgeRecord & rhs)
 : logger_ (rhs.logger_),
   clock (rhs.clock),
@@ -174,12 +187,14 @@ inline KnowledgeRecord::KnowledgeRecord (
     double_value_ = rhs.double_value_;
   else if (rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_) std::shared_ptr<std::vector<double>>(rhs.double_array_);
-  else if (rhs.is_string_type ())
+  else if (is_string_type (rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
-  else if (rhs.is_binary_file_type ())
+  else if (is_binary_file_type (rhs.type_))
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
   else if (rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(rhs.any_value_);
+  else if (rhs.type_ == BUFFER)
+    new (&buf_) std::shared_ptr<CircBuf>(rhs.buf_);
 }
 
 inline KnowledgeRecord::KnowledgeRecord (
@@ -203,12 +218,14 @@ inline KnowledgeRecord::KnowledgeRecord (
     double_value_ = rhs.double_value_;
   else if (rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_) std::shared_ptr<std::vector<double>>(std::move(rhs.double_array_));
-  else if (rhs.is_string_type ())
+  else if (is_string_type (rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
-  else if (rhs.is_binary_file_type ())
+  else if (is_binary_file_type (rhs.type_))
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
   else if (rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(std::move(rhs.any_value_));
+  else if (rhs.type_ == BUFFER)
+    new (&buf_) std::shared_ptr<CircBuf>(std::move(rhs.buf_));
 
   rhs.type_ = EMPTY;
 }
@@ -219,7 +236,75 @@ inline KnowledgeRecord::~KnowledgeRecord () noexcept
 }
 
 inline void
+KnowledgeRecord::copy_metadata(const KnowledgeRecord &rhs)
+{
+  logger_ = rhs.logger_;
+  clock = rhs.clock;
+  toi = rhs.toi;
+  quality = rhs.quality;
+  write_quality = rhs.write_quality;
+}
+
+inline void
 KnowledgeRecord::set_value (const KnowledgeRecord &rhs)
+{
+  if (this == &rhs)
+    return;
+
+  if (has_history()) {
+    KnowledgeRecord tmp =
+      rhs.has_history() ?
+        rhs.get_newest() :
+        rhs;
+    emplace_hist(std::move(tmp));
+  } else if (rhs.has_history()) {
+    overwrite(rhs.get_newest());
+  } else {
+    overwrite(rhs);
+  }
+}
+
+inline void
+KnowledgeRecord::set_value (KnowledgeRecord &&rhs)
+{
+  if (this == &rhs)
+    return;
+
+  if (has_history()) {
+    KnowledgeRecord tmp =
+      rhs.has_history() ?
+        std::move(rhs.ref_newest()) :
+        std::move(rhs);
+    emplace_hist(std::move(tmp));
+  } else if (rhs.has_history()) {
+    overwrite(std::move(rhs.ref_newest()));
+  } else {
+    overwrite(std::move(rhs));
+  }
+}
+
+inline void
+KnowledgeRecord::set_full (const KnowledgeRecord &rhs)
+{
+  if (this == &rhs)
+    return;
+
+  copy_metadata(rhs);
+  set_value(rhs);
+}
+
+inline void
+KnowledgeRecord::set_full (KnowledgeRecord &&rhs)
+{
+  if (this == &rhs)
+    return;
+
+  copy_metadata(rhs);
+  set_value(std::move(rhs));
+}
+
+inline void
+KnowledgeRecord::overwrite (const KnowledgeRecord &rhs)
 {
   if (this == &rhs)
     return;
@@ -242,16 +327,18 @@ KnowledgeRecord::set_value (const KnowledgeRecord &rhs)
     double_value_ = rhs.double_value_;
   else if (rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_) std::shared_ptr<std::vector<double>>(rhs.double_array_);
-  else if (rhs.is_string_type ())
+  else if (is_string_type (rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
-  else if (rhs.is_binary_file_type ())
+  else if (is_binary_file_type (rhs.type_))
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
   else if (rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(rhs.any_value_);
+  else if (rhs.type_ == BUFFER)
+    new (&buf_) std::shared_ptr<CircBuf>(rhs.buf_);
 }
 
 inline void
-KnowledgeRecord::set_value (KnowledgeRecord &&rhs)
+KnowledgeRecord::overwrite (KnowledgeRecord &&rhs)
 {
   if (this == &rhs)
     return;
@@ -274,12 +361,14 @@ KnowledgeRecord::set_value (KnowledgeRecord &&rhs)
     double_value_ = rhs.double_value_;
   else if (rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_) std::shared_ptr<std::vector<double>>(std::move(rhs.double_array_));
-  else if (rhs.is_string_type ())
+  else if (is_string_type (rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
-  else if (rhs.is_binary_file_type ())
+  else if (is_binary_file_type (rhs.type_))
     new (&file_value_) std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
   else if (rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(std::move(rhs.any_value_));
+  else if (rhs.type_ == BUFFER)
+    new (&buf_) std::shared_ptr<CircBuf>(std::move(rhs.buf_));
 
   rhs.type_ = EMPTY;
 }
@@ -287,14 +376,10 @@ KnowledgeRecord::set_value (KnowledgeRecord &&rhs)
 inline KnowledgeRecord &
 KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs)
 {
-  set_value(rhs);
+  // copy fields not copied by overwrite
+  copy_metadata(rhs);
 
-  // copy fields not copied by set_value
-  logger_ = rhs.logger_;
-  clock = rhs.clock;
-  toi = rhs.toi;
-  quality = rhs.quality;
-  write_quality = rhs.write_quality;
+  overwrite(rhs);
 
   return *this;
 }
@@ -302,14 +387,10 @@ KnowledgeRecord::operator= (const knowledge::KnowledgeRecord & rhs)
 inline KnowledgeRecord &
 KnowledgeRecord::operator= (knowledge::KnowledgeRecord && rhs) noexcept
 {
-  set_value(rhs);
+  // copy fields not copied by overwrite
+  copy_metadata(rhs);
 
-  // copy fields not copied by set_value
-  logger_ = std::move(rhs.logger_);
-  clock = rhs.clock;
-  toi = rhs.toi;
-  quality = rhs.quality;
-  write_quality = rhs.write_quality;
+  overwrite(std::move(rhs));
 
   return *this;
 }
@@ -345,6 +426,10 @@ inline KnowledgeRecord
   {
     record.set_value (-double_value_);
   }
+  else if (has_history())
+  {
+    record.set_value (-get_newest());
+  }
 
   return record;
 }
@@ -355,18 +440,21 @@ inline KnowledgeRecord
 inline KnowledgeRecord &
 KnowledgeRecord::operator+= (const knowledge::KnowledgeRecord & rhs)
 {
-  if (is_integer_type ())
+  if (is_integer_type (type_))
   {
-    if (rhs.is_integer_type ())
+    if (is_integer_type (rhs.type_))
       set_value (to_integer () + rhs.to_integer ());
     else
       set_value (to_integer () + rhs.to_double ());
   }
-  else if (is_double_type ())
+  else if (is_double_type (type_))
     set_value (to_double () + rhs.to_double ());
 
-  else if (is_string_type ())
+  else if (is_string_type (type_))
     set_value (to_string () + rhs.to_string ());
+
+  else if (has_history ())
+    set_value (get_newest () + rhs);
 
   return *this;
 }
@@ -377,11 +465,17 @@ KnowledgeRecord::operator+= (const knowledge::KnowledgeRecord & rhs)
 inline KnowledgeRecord &
 KnowledgeRecord::operator-- (void)
 {
-  if (is_integer_type ())
+  if (is_integer_type (type_))
     set_value (to_integer () - 1);
 
-  else if (is_double_type ())
+  else if (is_double_type (type_))
     set_value (to_double () - 1);
+
+  else if (has_history ()) {
+    KnowledgeRecord tmp = get_newest();
+    --tmp;
+    set_value (std::move(tmp));
+  }
 
   return *this;
 }
@@ -392,11 +486,17 @@ KnowledgeRecord::operator-- (void)
 inline KnowledgeRecord &
 KnowledgeRecord::operator++ (void)
 {
-  if (is_integer_type ())
+  if (is_integer_type (type_))
     set_value (to_integer () + 1);
 
-  else if (is_double_type ())
+  else if (is_double_type (type_))
     set_value (to_double () + 1);
+
+  else if (has_history ()) {
+    KnowledgeRecord tmp = get_newest();
+    --tmp;
+    set_value (std::move(tmp));
+  }
 
 
   return *this;
@@ -408,15 +508,18 @@ KnowledgeRecord::operator++ (void)
 inline KnowledgeRecord &
 KnowledgeRecord::operator-= (const knowledge::KnowledgeRecord & rhs)
 {
-  if (is_integer_type ())
+  if (is_integer_type (type_))
   {
-    if (rhs.is_integer_type ())
+    if (is_integer_type (rhs.type_))
       set_value (to_integer () - rhs.to_integer ());
     else
       set_value (to_integer () - rhs.to_double ());
   }
-  else if (is_double_type () || is_string_type ())
+  else if (is_double_type (type_) || is_string_type (type_))
     set_value (to_double () - rhs.to_double ());
+
+  else if (has_history ())
+    set_value (get_newest () - rhs);
 
   return *this;
 }
@@ -427,15 +530,18 @@ KnowledgeRecord::operator-= (const knowledge::KnowledgeRecord & rhs)
 inline KnowledgeRecord &
 KnowledgeRecord::operator*= (const knowledge::KnowledgeRecord & rhs)
 {
-  if (is_integer_type ())
+  if (is_integer_type (type_))
   {
-    if (rhs.is_integer_type ())
+    if (is_integer_type (rhs.type_))
       set_value (to_integer () * rhs.to_integer ());
     else
       set_value (to_integer () * rhs.to_double ());
   }
-  else if (is_double_type () || is_string_type ())
+  else if (is_double_type (type_) || is_string_type (type_))
     set_value (to_double () * rhs.to_double ());
+
+  else if (has_history ())
+    set_value (get_newest () * rhs);
 
   return *this;
 }
@@ -446,9 +552,9 @@ KnowledgeRecord::operator*= (const knowledge::KnowledgeRecord & rhs)
 inline KnowledgeRecord &
 KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
 {
-  if (is_integer_type ())
+  if (is_integer_type (type_))
   {
-    if (rhs.is_integer_type ())
+    if (is_integer_type (rhs.type_))
     {
       Integer denom = rhs.to_integer ();
       if (denom == 0)
@@ -466,7 +572,7 @@ KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
         set_value (to_integer () / denom);
     }
   }
-  else if (is_double_type () || is_string_type ())
+  else if (is_double_type (type_) || is_string_type (type_))
   {
     double denom = rhs.to_double ();
 
@@ -475,6 +581,9 @@ KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
     else
       set_value (to_double () / denom);
   }
+
+  else if (has_history ())
+    set_value (get_newest () / rhs);
 
   return *this;
 }
@@ -485,9 +594,9 @@ KnowledgeRecord::operator/= (const knowledge::KnowledgeRecord & rhs)
 inline KnowledgeRecord &
 KnowledgeRecord::operator%= (const knowledge::KnowledgeRecord & rhs)
 {
-  if (is_integer_type ())
+  if (is_integer_type (type_))
   {
-    if (rhs.is_integer_type ())
+    if (is_integer_type (rhs.type_))
     {
       Integer denom = rhs.to_integer ();
       if (denom == 0)
@@ -496,6 +605,9 @@ KnowledgeRecord::operator%= (const knowledge::KnowledgeRecord & rhs)
         set_value (to_integer () % denom);
     }
   }
+
+  else if (has_history ())
+    set_value (get_newest () % rhs);
 
   return *this;
 }
@@ -593,9 +705,9 @@ KnowledgeRecord::unshare (void)
 
   if (is_ref_counted ())
   {
-    if (is_string_type()) {
+    if (is_string_type(type_)) {
       emplace_string (*str_value_);
-    } else if (is_binary_file_type()) {
+    } else if (is_binary_file_type(type_)) {
       emplace_file (*file_value_);
     } else if (type_ == INTEGER_ARRAY) {
       emplace_integers (*int_array_);
@@ -603,6 +715,8 @@ KnowledgeRecord::unshare (void)
       emplace_doubles (*double_array_);
     } else if (type_ == ANY) {
       emplace_any (*any_value_);
+    } else if (type_ == BUFFER) {
+      overwrite_circular_buffer (*buf_);
     }
   }
   shared_ = OWNED;
@@ -661,9 +775,9 @@ KnowledgeRecord::size (void) const
 {
   if (type_ == INTEGER || type_ == DOUBLE) {
     return 1;
-  } else if (is_string_type()) {
+  } else if (is_string_type(type_)) {
     return (uint32_t)str_value_->size () + 1;
-  } else if (is_binary_file_type()) {
+  } else if (is_binary_file_type(type_)) {
     return (uint32_t)file_value_->size ();
   } else if (type_ == INTEGER_ARRAY) {
     return (uint32_t)int_array_->size ();
@@ -673,25 +787,29 @@ KnowledgeRecord::size (void) const
     if (any_value_->supports_size ()) {
       return any_value_->size ();
     }
+  } else if (type_ == BUFFER) {
+    return ref_newest ().size ();
   }
   return 1;
 }
 
-inline int32_t
+inline uint32_t
 KnowledgeRecord::type (void) const
 {
-  return type_;
+  return has_history () ? ref_newest ().type_ : type_;
 }
 
 inline bool
-KnowledgeRecord::set_type (int32_t type)
+KnowledgeRecord::set_type (uint32_t type)
 {
-  if ((uint32_t)type == type_ ||
-      (is_string_type() && is_string_type(type)) ||
-      (is_binary_file_type() && is_binary_file_type(type))
+  if (type == type_ ||
+      (is_string_type(type_) && is_string_type(type)) ||
+      (is_binary_file_type(type_) && is_binary_file_type(type))
   ) {
     type_ = type;
     return true;
+  } else if (type_ == BUFFER) {
+    return ref_newest().set_type(type);
   }
   return false;
 }
@@ -721,11 +839,11 @@ KnowledgeRecord::get_encoded_size (void) const
   {
     buffer_size += sizeof (double) * double_array_->size();
   }
-  else if (is_string_type ())
+  else if (is_string_type (type_))
   {
     buffer_size += str_value_->size () + 1;
   }
-  else if (is_binary_file_type ())
+  else if (is_binary_file_type (type_))
   {
     buffer_size += file_value_->size ();
   }
@@ -733,6 +851,10 @@ KnowledgeRecord::get_encoded_size (void) const
   {
     //TODO calculate real size
     buffer_size += 1024;
+  }
+  else if (type_ == BUFFER)
+  {
+    ref_newest ().get_encoded_size ();
   }
 
   return buffer_size;
@@ -766,7 +888,7 @@ KnowledgeRecord::is_ref_counted (uint32_t type)
 inline bool
 KnowledgeRecord::is_string_type (void) const
 {
-  return is_string_type (type_);
+  return is_string_type (type ());
 }
 
 inline bool
@@ -778,7 +900,7 @@ KnowledgeRecord::is_string_type (uint32_t type)
 inline bool
 KnowledgeRecord::is_double_type (void) const
 {
-  return is_double_type (type_);
+  return is_double_type (type ());
 }
 
 inline bool
@@ -790,7 +912,7 @@ KnowledgeRecord::is_double_type (uint32_t type)
 inline bool
 KnowledgeRecord::is_integer_type (void) const
 {
-  return is_integer_type (type_);
+  return is_integer_type (type ());
 }
 
 
@@ -803,7 +925,7 @@ KnowledgeRecord::is_integer_type (uint32_t type)
 inline bool
 KnowledgeRecord::is_array_type (void) const
 {
-  return is_array_type (type_);
+  return is_array_type (type ());
 }
 
 inline bool
@@ -815,7 +937,7 @@ KnowledgeRecord::is_array_type (uint32_t type)
 inline bool
 KnowledgeRecord::is_image_type (void) const
 {
-  return is_image_type (type_);
+  return is_image_type (type ());
 }
 
 inline bool
@@ -827,7 +949,7 @@ KnowledgeRecord::is_image_type (uint32_t type)
 inline bool
 KnowledgeRecord::is_file_type (void) const
 {
-  return is_file_type (type_);
+  return is_file_type (type ());
 }
 
 inline bool
@@ -840,7 +962,7 @@ KnowledgeRecord::is_file_type (uint32_t type)
 inline bool
 KnowledgeRecord::is_binary_file_type (void) const
 {
-  return is_binary_file_type (type_);
+  return is_binary_file_type (type ());
 }
 
 inline bool
@@ -852,7 +974,7 @@ KnowledgeRecord::is_binary_file_type (uint32_t type)
 inline bool
 KnowledgeRecord::is_any_type (void) const
 {
-  return is_any_type (type_);
+  return is_any_type (type ());
 }
 
 inline bool
@@ -903,12 +1025,14 @@ KnowledgeRecord::clear_union (void) noexcept
       destruct(int_array_);
     else if (type_ == DOUBLE_ARRAY)
       destruct(double_array_);
-    else if (is_string_type ())
+    else if (is_string_type (type_))
       destruct(str_value_);
-    else if (is_binary_file_type ())
+    else if (is_binary_file_type (type_))
       destruct(file_value_);
     else if (type_ == ANY)
       destruct(any_value_);
+    else if (type_ == BUFFER)
+      destruct(buf_);
     shared_ = OWNED;
   }
 }
@@ -1119,8 +1243,8 @@ int64_t & buffer_remaining)
   return buffer;
 }
 
-// reset the value_ to an integer
-inline void  
+// reset the to empty
+inline void
 KnowledgeRecord::reset_value (void) noexcept
 {
   clear_value ();
@@ -1295,6 +1419,13 @@ template<typename T,
 inline void
 KnowledgeRecord::set_value (T new_value)
 {
+  if (has_history()) {
+    KnowledgeRecord tmp;
+    tmp.copy_metadata (*this);
+    tmp.set_value (new_value);
+    set_value (std::move (tmp));
+    return;
+  }
   if (type_ != INTEGER) {
     clear_union();
     type_ = INTEGER;
@@ -1337,6 +1468,13 @@ template<typename T,
 inline void
 KnowledgeRecord::set_value (T new_value)
 {
+  if (has_history()) {
+    KnowledgeRecord tmp;
+    tmp.copy_metadata (*this);
+    tmp.set_value (new_value);
+    set_value (std::move (tmp));
+    return;
+  }
   if (type_ != DOUBLE) {
     clear_union();
     type_ = DOUBLE;
@@ -1383,6 +1521,13 @@ template<typename T,
 inline void
 KnowledgeRecord::set_index (size_t index, T value)
 {
+  if (has_history())
+  {
+    KnowledgeRecord tmp = get_newest ();
+    tmp.set_index (index, value);
+    set_value (std::move (tmp));
+    return;
+  }
   if (type_ == DOUBLE_ARRAY)
   {
     // let the set_index for doubles take care of this
@@ -1416,6 +1561,13 @@ template<typename T,
 inline void
 KnowledgeRecord::set_index (size_t index, T value)
 {
+  if (has_history())
+  {
+    KnowledgeRecord tmp = get_newest ();
+    tmp.set_index (index, value);
+    set_value (std::move (tmp));
+    return;
+  }
   if (type_ == INTEGER_ARRAY)
   {
     std::vector<double> tmp (int_array_->begin (), int_array_->end ());
@@ -1446,9 +1598,11 @@ KnowledgeRecord::set_index (size_t index, T value)
 inline std::shared_ptr<const std::string>
 KnowledgeRecord::share_string() const
 {
-  if (is_string_type()) {
+  if (is_string_type(type_)) {
     shared_ = SHARED;
     return str_value_;
+  } else if (has_history()) {
+    return ref_newest().share_string();
   }
   return nullptr;
 }
@@ -1459,6 +1613,8 @@ KnowledgeRecord::share_integers() const
   if (type_ == INTEGER_ARRAY) {
     shared_ = SHARED;
     return int_array_;
+  } else if (has_history()) {
+    return ref_newest().share_integers();
   }
   return nullptr;
 }
@@ -1469,6 +1625,8 @@ KnowledgeRecord::share_doubles() const
   if (type_ == DOUBLE_ARRAY) {
     shared_ = SHARED;
     return double_array_;
+  } else if (has_history()) {
+    return ref_newest().share_doubles();
   }
   return nullptr;
 }
@@ -1476,9 +1634,11 @@ KnowledgeRecord::share_doubles() const
 inline std::shared_ptr<const std::vector<unsigned char>>
 KnowledgeRecord::share_binary() const
 {
-  if (is_binary_file_type()) {
+  if (is_binary_file_type(type_)) {
     shared_ = SHARED;
     return file_value_;
+  } else if (has_history()) {
+    return ref_newest().share_binary();
   }
   return nullptr;
 }
@@ -1486,11 +1646,23 @@ KnowledgeRecord::share_binary() const
 inline std::shared_ptr<const ConstAny>
 KnowledgeRecord::share_any() const
 {
-  if (is_any_type()) {
+  if (is_any_type(type_)) {
     shared_ = SHARED;
     return any_value_;
+  } else if (has_history()) {
+    return ref_newest().share_any();
   }
   return nullptr;
+}
+
+inline std::shared_ptr<KnowledgeRecord::CircBuf>
+KnowledgeRecord::share_circular_buffer() const
+{
+  if (!has_history()) {
+    return nullptr;
+  }
+  shared_ = SHARED;
+  return buf_;
 }
 
 inline
@@ -1503,6 +1675,9 @@ inline char *
 KnowledgeRecord::write (char * buffer,
   int64_t & buffer_remaining) const
 {
+  if (has_history()) {
+    return ref_newest ().write (buffer, buffer_remaining);
+  }
   // format is [type | value_size | value]
 
   char * size_location = 0;
@@ -1553,7 +1728,7 @@ KnowledgeRecord::write (char * buffer,
     buffer_remaining -= sizeof (toi);
 
     // Remove the value from the buffer
-    if (is_string_type ())
+    if (is_string_type (type_))
     {
       // strings do not have to be converted
       if (buffer_remaining >= int64_t (size))
@@ -1626,7 +1801,7 @@ KnowledgeRecord::write (char * buffer,
         **/
       }
     }
-    else if (is_binary_file_type ())
+    else if (is_binary_file_type (type_))
     {
       // strings do not have to be converted
       if (buffer_remaining >= size)
@@ -1634,7 +1809,7 @@ KnowledgeRecord::write (char * buffer,
         memcpy (buffer, &(*file_value_)[0], size);
       }
     }
-    else if (is_any_type ())
+    else if (is_any_type (type_))
     {
       //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
         //"KnowledgeRecord::write: encoding an Any type\n");
