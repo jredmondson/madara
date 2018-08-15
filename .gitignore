@@ -42,5 +42,4 @@ Release/*
 
 #Ignore maven project files
 target/
-.project
 .settings
