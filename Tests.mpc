@@ -1549,3 +1549,20 @@ project (Test_Circular_Buffer) : using_madara, no_karl, no_xml, null_lock, using
     tests/test_circular_buffer.cpp
   }
 }
+
+project (Test_KnowledgeBase) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_knowledgebase
+
+  Documentation_Files {
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/test_knowledgebase.cpp
+  }
+}
