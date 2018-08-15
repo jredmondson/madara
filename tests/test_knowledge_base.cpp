@@ -1,6 +1,8 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/Utility.h"
+#include "test.h"
+
 
 namespace logger = madara::logger;
 namespace utility = madara::utility;
@@ -18,6 +20,7 @@ int main (int, char **)
   knowledge.print("Testing KnowledgeBase set method: ");
   madara::knowledge::KnowledgeRecord testRecord1;
   retval = knowledge.set("testRecord1", testRecord1);
+  TEST_EQ(retval, 0);
   if (retval == 0)
      knowledge.print("Success\n");
   else
@@ -65,6 +68,7 @@ int main (int, char **)
   knowledge.print("Test logging methods: get_log_level(), set_log_level()\n");
   knowledge.set_log_level (7);
   int logLevel = knowledge.get_log_level();
+  TEST_EQ(logLevel, 7);
   if (logLevel == 7)
      knowledge.print("Success\n");
   else
@@ -73,6 +77,7 @@ int main (int, char **)
   logger::Logger localLogger;
   knowledge.attach_logger (localLogger);
   logger::Logger *localLoggerCopy = &(knowledge.get_logger());
+  TEST_EQ(localLoggerCopy, &localLogger);
   if (localLoggerCopy == &localLogger)
       knowledge.print("Success\n");
    else
@@ -84,5 +89,15 @@ int main (int, char **)
 
   knowledge.print("Finished sleeping. Done with test.\n");
 
-  return 0;
+  if (madara_tests_fail_count > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count <<
+      " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return madara_tests_fail_count;
 }
