@@ -107,7 +107,7 @@ containers::Integer current_total_bandwidth;
 
 // bandwidth monitor to check send data usage
 
-transport::BandwidthMonitor bandwidth_monitor;
+transport::BandwidthMonitor bandwidth_monitor (2);
 
 // delete the kb entries
 bool delete_kb_entries (false);
