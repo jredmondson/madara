@@ -60,8 +60,9 @@ void check_basic_types_records()
   TEST_EQ(int_record, 1);
 
   //test resize
+  size_t new_size = 4;
   int_record.resize(4);
-  TEST_EQ(int_record.size(), 4);
+  TEST_EQ(int_record.size(), new_size);
   TEST_EQ(int_record.retrieve_index(4), false);
 
   std::vector<KnowledgeRecord::Integer> int_vec(100, 5);
@@ -105,9 +106,9 @@ void check_basic_types_records()
   TEST_EQ(int_array_record.retrieve_index(11), 100);
 
   int_array_record.emplace_integers(std::vector<KnowledgeRecord::Integer>());
-  TEST_EQ(int_array_record.size(), 0);
+  TEST_EQ(int_array_record.size(), size_t(0));
   int_array_record.inc_index(4);
-  TEST_EQ(int_array_record.size(), 5);
+  TEST_EQ(int_array_record.size(), size_t(5));
   std::vector<KnowledgeRecord::Integer> int_vector(5);
   ++int_vector[4];
   TEST_EQ(int_array_record, KnowledgeRecord(int_vector));
@@ -116,8 +117,8 @@ void check_basic_types_records()
   //test large array
   int_vector.resize(1000000, 10);
   int_array_record.emplace_integers(std::move(int_vector));
-  TEST_EQ(int_vector.size(), 0);
-  TEST_EQ(int_array_record.size(), 1000000);
+  TEST_EQ(int_vector.size(), size_t(0));
+  TEST_EQ(int_array_record.size(), size_t(1000000));
 
   KnowledgeRecord string_record = KnowledgeRecord("test string");
   TEST_EQ(string_record.type(), KnowledgeRecord::STRING);
@@ -199,8 +200,9 @@ void check_non_basic_types_records()
   TEST_EQ(buf_size, 0);
   buf_size = cloned_rec->get_encoded_size();
 
-  cloned_rec->emplace_any(std::vector<double>(100));
-  TEST_EQ(cloned_rec->get_any_ref().to_doubles().size(), 100);
+  size_t new_vec_size = 100;
+  cloned_rec->emplace_any(std::vector<double>(new_vec_size));
+  TEST_EQ(cloned_rec->get_any_ref().to_doubles().size(), new_vec_size);
 
   cloned_rec->emplace_any(Any(nullptr));
   TEST_EQ(cloned_rec->type(), KnowledgeRecord::ANY);
@@ -214,7 +216,7 @@ void check_non_basic_types_records()
   KnowledgeRecord new_rec(0);
   new_rec.read(buf, buf_size);
 
-  TEST_EQ(new_rec.size(), 15);
+  TEST_EQ(new_rec.size(), size_t(15));
   TEST_EQ(new_rec.is_string_type(), true);
 
   delete buf;
@@ -240,7 +242,7 @@ void check_file_records()
   // to_unmanaged_buffer check
   buffer = image_rec2.to_unmanaged_buffer(size);
 
-  TEST_GT(size, 0);
+  TEST_GT(size, size_t(0));
   TEST_EQ(buffer == nullptr, false);
 
   KnowledgeRecord other_file;
@@ -250,19 +252,19 @@ void check_file_records()
 
   other_file.set_jpeg(buffer, size);
   TEST_EQ(other_file.type(), KnowledgeRecord::IMAGE_JPEG);
-  TEST_GT(other_file.size(), 0);
+  TEST_GT(other_file.size(), size_t(0));
 
   unsigned char* buffer_new = (unsigned char* )"123456789";
   other_file.set_file(buffer_new, 4);
   size_t size_new;
   unsigned char* buffer2 = other_file.to_unmanaged_buffer(size_new);
 
-  TEST_EQ(size_new, 4);
-  char* check_buf = "1234";
+  TEST_EQ(size_new, size_t(4));
+  const char* check_buf = "1234";
   TEST_EQ(std::string((char*)buffer2, 4), std::string(check_buf, 4));
 
   other_file.set_file(buffer, 0);
-  TEST_EQ(other_file.size(), 0);// shall not cause crash until size is 0
+  TEST_EQ(other_file.size(), size_t(0));// shall not cause crash until size is 0
 
   // emplace file from buffer of image
   std::vector<unsigned char> buffer_vec(buffer, buffer + size);
