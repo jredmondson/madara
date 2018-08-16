@@ -46,6 +46,10 @@ public:
    * Register a type with the Any system, using a tag which will be used to
    * portably identify this type across processes.
    *
+   * @param name the tag to use. Should be portable across all systems which
+   *   will use this type (or one with compatible marshalled format). Pointer
+   *   given is saved as-is, and the string pointed to is not copied, so ensure
+   *   the given string's lifetime lasts until process termination.
    * @return true if the type is now registered, false if that tag is
    * already taken
    **/
@@ -56,6 +60,11 @@ public:
    * Register a schema with the Any system, using a tag which will be used to
    * portably identify this type across processes.
    *
+   * @param name the tag to use. Should be portable across all systems which
+   *   will use this type (or one with compatible marshalled format). Pointer
+   *   given is saved as-is, and the string pointed to is not copied, so ensure
+   *   the given string's lifetime lasts until process termination.
+   * @param schema Cap'n Proto schema object representing type
    * @return true if the schema is now registered, false if that tag is
    * already taken
    **/
