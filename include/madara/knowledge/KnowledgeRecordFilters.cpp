@@ -731,6 +731,7 @@ madara::knowledge::KnowledgeRecordFilters::filter (
         jvm.env->DeleteLocalRef (filterClass);
         jvm.env->DeleteLocalRef (jcontext);
         jvm.env->DeleteLocalRef (jpacket);
+        jvm.env->DeleteLocalRef (jvariables);
         jvm.env->DeleteWeakGlobalRef (jvarClass);
         jvm.env->DeleteWeakGlobalRef (jpacketClass);
         jvm.env->DeleteWeakGlobalRef (jcontextClass);
