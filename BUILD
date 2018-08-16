@@ -66,6 +66,7 @@ cc_library(
     textual_hdrs = glob(["include/**/*.inl"]),
     deps = [
         "@org_boost_boost//:boost",
+        "@org_capnproto_capnproto//:capnp-lib",
         ":cereal",
     ] + select({
         "@bazel_module//bazel_rules:zmq": ["@org_zeromq_libzmq//:libzmq"],
