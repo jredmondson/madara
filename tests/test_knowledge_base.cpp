@@ -1,30 +1,70 @@
 #include "madara/knowledge/KnowledgeBase.h"
+#include "madara/transport/Transport.h"
+#include "madara/transport/TransportSettings.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/Utility.h"
+#include "test.h"
+
 
 namespace logger = madara::logger;
 namespace utility = madara::utility;
 
 int main (int, char **)
 {
-  // Create static KnowledgeBase object using the default constructor
-  madara::knowledge::KnowledgeBase knowledge;  
+  // Create static and dynamic KnowledgeBase objects
+  madara::knowledge::KnowledgeBase knowledge("", madara::transport::Types::NO_TRANSPORT);
+  madara::knowledge::KnowledgeBase* knowledge1 = new madara::knowledge::KnowledgeBase("", madara::transport::Types::NO_TRANSPORT);
+  TEST_NE((unsigned long)knowledge1, (unsigned long)NULL);
+  // Terminal failure lets get out of her..
+  if (knowledge1 == NULL)
+  {
+      std::cerr << "DYNAMIC OBJECT CREATION: FAILURE.\n";
+      return madara_tests_fail_count;
+  }
 
-  // method print tests
+  // Method print tests
   knowledge.print("Testing print method, print works!\n");
 
-  // method get/set tests
+  // Test some of the transport methods
+  madara::transport::TransportSettings tpSettings;
+  tpSettings.type = madara::transport::Types::BROADCAST;
+  tpSettings.add_read_domain("domain1");
+  size_t numTp;
+  size_t tp1r;
+  numTp = knowledge1->get_num_transports();
+  TEST_EQ((unsigned long)numTp, (unsigned long)0);
+  size_t tp1 = knowledge1->attach_transport(types_to_string(madara::transport::Types::BROADCAST), tpSettings);
+  TEST_GT((unsigned long)tp1, (unsigned long)0);
+  tpSettings.add_read_domain("domain2");
+  tpSettings.type = madara::transport::Types::UDP;
+  size_t tp2 = knowledge1->attach_transport(types_to_string(madara::transport::Types::UDP), tpSettings);
+  TEST_GT((unsigned long)tp2, (unsigned long)1);
+  numTp = knowledge.get_num_transports();
+  TEST_EQ((unsigned long)numTp, (unsigned long)0);
+  tp1r = knowledge1->remove_transport(tp1);
+  TEST_EQ((unsigned long)tp1r, (unsigned long)1);
+  numTp = knowledge1->get_num_transports();
+  TEST_EQ((unsigned long)numTp, (unsigned long)1);
+
+  // Method get/set tests
   int retval = 0;
   knowledge.print("Testing KnowledgeBase set method: ");
-  madara::knowledge::KnowledgeRecord testRecord1;
+  madara::knowledge::KnowledgeRecord testRecord1(123);
   retval = knowledge.set("testRecord1", testRecord1);
+  TEST_EQ(retval, 0);
   if (retval == 0)
      knowledge.print("Success\n");
   else
      knowledge.print("Fail\n");
-
   knowledge.print ("Testing KnowledgeBase get method: ");
   madara::knowledge::KnowledgeRecord record1 = knowledge.get("testRecord1");
+  TEST_EQ(record1, testRecord1);
+
+  //get variable refs and brethern methods tests coming soon...
+  //VariableReference
+  //  get_ref (const std::string & key,
+  //      const KnowledgeReferenceSettings & settings =
+  //              KnowledgeReferenceSettings (false));
 
   knowledge.print("Testing KnowledgeRecord status method, return value is: ");
   int record1Status = record1.status();
@@ -47,7 +87,7 @@ int main (int, char **)
   knowledge.print ("Testing print to file only\n");
 #endif // _MADARA_NO_KARL_
 
-  // print to stderr
+  // Print to stderr
   logger::global_logger->clear();
   logger::global_logger->add_term();
 #ifndef _MADARA_NO_KARL_
@@ -65,6 +105,7 @@ int main (int, char **)
   knowledge.print("Test logging methods: get_log_level(), set_log_level()\n");
   knowledge.set_log_level (7);
   int logLevel = knowledge.get_log_level();
+  TEST_EQ(logLevel, 7);
   if (logLevel == 7)
      knowledge.print("Success\n");
   else
@@ -73,6 +114,7 @@ int main (int, char **)
   logger::Logger localLogger;
   knowledge.attach_logger (localLogger);
   logger::Logger *localLoggerCopy = &(knowledge.get_logger());
+  TEST_EQ(localLoggerCopy, &localLogger);
   if (localLoggerCopy == &localLogger)
       knowledge.print("Success\n");
    else
@@ -84,5 +126,20 @@ int main (int, char **)
 
   knowledge.print("Finished sleeping. Done with test.\n");
 
-  return 0;
+  // Cleanup
+  std::cerr << "KnowledgeBase Object Cleanup Started...\n\n";
+  delete knowledge1;
+
+  std::cerr << "\nTOTAL TESTS RUN: 11\n";
+  if (madara_tests_fail_count > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count <<
+      " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return madara_tests_fail_count;
 }
