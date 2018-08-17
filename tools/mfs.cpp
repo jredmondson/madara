@@ -984,7 +984,7 @@ void process_requests (
               "file %s (last_mod=%" PRId64 ") is not newer than request "
               "(last_mod=%" PRId64 ".\n",
               operation.c_str (),
-              filename.c_str (), last_modified, request.last_modified);
+              filename.c_str (), last_modified.to_integer (), request.last_modified);
 
             break;
           }
