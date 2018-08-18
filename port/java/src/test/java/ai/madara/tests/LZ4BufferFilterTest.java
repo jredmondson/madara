@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,71 +38,61 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 
 package ai.madara.tests;
 
-import ai.madara.knowledge.KnowledgeBase;
-import ai.madara.knowledge.KnowledgeMap;
-import ai.madara.knowledge.containers.Integer;
-import ai.madara.knowledge.containers.String;
+import org.junit.Assert;
+import org.junit.Test;
+
+import ai.madara.exceptions.MadaraDeadObjectException;
+import ai.madara.filters.compression.LZ4BufferFilter;
 
 /**
- * This class is a tester for basic KnowledgeBase functionality
+ * This class is a tester for the LZ4BufferFilter class
  */
-public class TestKnowledgeBase {
-  public static void main (java.lang.String...args) throws InterruptedException, Exception
-  {
-    KnowledgeBase knowledge = new KnowledgeBase();
-    
-    Integer age = new Integer();
-    age.setName(knowledge, "age");
-    age.set(24);
-    
-    String name = new String();
-    name.setName(knowledge, "name");
-    name.set("Alfred Mooney");
-    
-    String occupation = new String();
-    occupation.setName(knowledge, "occupation");
-    occupation.set("Moonlighter");
-    
-    java.lang.String contents = knowledge.toString();
-    
-    System.out.println(contents);
-    
-    knowledge.set("device.0.test.settings", "This is a test (0)");
-    knowledge.set("device.1.test.settings", "This is a test (1)");
-    knowledge.set("device.2.test.settings", "This is a test (2)");
-    knowledge.set("device.2", "is a real device");
-    knowledge.set("device.location", "USA");
-    
-    KnowledgeMap deviceSettings = knowledge.toKnowledgeMap("device.", "settings");
-    
-    System.out.print("Testing toKnowledgeMap with suffix and prefix: ");
-    
-    if (deviceSettings.containsKey("device.0.test.settings") &&
-      deviceSettings.containsKey("device.1.test.settings") &&
-      deviceSettings.containsKey("device.2.test.settings") && 
-      !deviceSettings.containsKey("device.2") && 
-      !deviceSettings.containsKey("device.location"))
-    {
-      System.out.println("SUCCESS");
-    }
-    else
-    {
-      System.out.println("FAIL");
-    }
-    
-    
-    // print all knowledge
-    knowledge.print();
-    
-    knowledge.print("And we're done.\n");
-  }
+public class LZ4BufferFilterTest {
+	//@Test
+	public void test() throws MadaraDeadObjectException {
+		LZ4BufferFilter filter = new LZ4BufferFilter();
+
+		byte[] buffer = new byte[500];
+
+		buffer[0] = 'H';
+		buffer[1] = 'e';
+		buffer[2] = 'l';
+		buffer[3] = 'l';
+		buffer[4] = 'o';
+		buffer[5] = ' ';
+		buffer[6] = 'W';
+		buffer[7] = 'o';
+		buffer[8] = 'r';
+		buffer[9] = 'l';
+		buffer[10] = 'd';
+		buffer[11] = '!';
+		buffer[12] = 0;
+		buffer[13] = 0;
+
+		String plaintext = new String(buffer, 0, (int) 13);
+
+		// Encode
+		long size = filter.encode(buffer, 13, 500);
+		String encoded = new String(buffer, 0, (int) size);
+
+		Assert.assertNotEquals(encoded, plaintext);
+
+		// Decode
+		size = filter.decode(buffer, size, size);
+		String decoded = new String(buffer, 0, (int) size);
+
+		Assert.assertNotEquals(encoded, decoded);
+		Assert.assertEquals(decoded, plaintext);
+
+	}
+
 }

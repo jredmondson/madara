@@ -47,82 +47,56 @@
 
 package ai.madara.tests;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import ai.madara.exceptions.MadaraDeadObjectException;
-import ai.madara.filters.compression.LZ4BufferFilter;
+import ai.madara.knowledge.KnowledgeBase;
+import ai.madara.knowledge.KnowledgeMap;
+import ai.madara.knowledge.containers.Integer;
+import ai.madara.knowledge.containers.String;
 
 /**
- * This class is a tester for the LZ4BufferFilter class
+ * This class is a tester for basic KnowledgeBase functionality
  */
-public class LZ4BufferFilterTest
-{
-  public static void testLZ4BufferFilter() throws MadaraDeadObjectException
-  {
-    LZ4BufferFilter filter = new LZ4BufferFilter ();
+public class TestKnowledgeBase extends BaseTest {
 
-    byte [] buffer = new byte [500];
+	//@Test
+	public void testKb() throws MadaraDeadObjectException {
 
-    buffer[0] = 'H';
-    buffer[1] = 'e';
-    buffer[2] = 'l';
-    buffer[3] = 'l';
-    buffer[4] = 'o';
-    buffer[5] = ' ';
-    buffer[6] = 'W';
-    buffer[7] = 'o';
-    buffer[8] = 'r';
-    buffer[9] = 'l';
-    buffer[10] = 'd';
-    buffer[11] = '!';
-    buffer[12] = 0;
-    buffer[13] = 0;
+		initKB();
 
-    String plaintext = new String(buffer,0,(int)13);
+		KnowledgeBase knowledge = getKb();
 
-    long size = filter.encode(buffer, 13, 500);
+		Integer age = new Integer();
+		age.setName(knowledge, "age");
+		age.set(24);
 
-    String encoded = new String(buffer,0,(int)size);
+		String name = new String();
+		name.setName(knowledge, "name");
+		name.set("Alfred Mooney");
 
-    if (!plaintext.equals(encoded))
-    {
-      System.out.println("Plaintext was not equal to encoded. SUCCESS");
-    }
-    else
-    {
-      System.out.println("Plaintext was equal to encoded. FAIL");
-    }
+		String occupation = new String();
+		occupation.setName(knowledge, "occupation");
+		occupation.set("Moonlighter");
 
-    size = filter.decode(buffer, size, size);
+		knowledge.set("device.0.test.settings", "This is a test (0)");
+		knowledge.set("device.1.test.settings", "This is a test (1)");
+		knowledge.set("device.2.test.settings", "This is a test (2)");
+		knowledge.set("device.2", "is a real device");
+		knowledge.set("device.location", "USA");
 
-    String decoded = new String(buffer,0,(int)size);
+		KnowledgeMap deviceSettings = knowledge.toKnowledgeMap("device.", "settings");
 
-    if (!encoded.equals(decoded))
-    {
-      System.out.println("Encoded was not equal to decoded. SUCCESS");
-    }
-    else
-    {
-      System.out.println("Encoded was equal to decoded. FAIL");
-    }
+		System.out.print("Testing toKnowledgeMap with suffix and prefix: ");
 
-    if (plaintext.equals(decoded))
-    {
-      System.out.println("Plaintext was equal to decoded. SUCCESS");
-    }
-    else
-    {
-      System.out.println("Plaintext was not equal to decoded. FAIL");
-    }
+		Assert.assertEquals(deviceSettings.containsKey("device.0.test.settings"), true);
+		Assert.assertEquals(deviceSettings.containsKey("device.1.test.settings"), true);
+		Assert.assertEquals(deviceSettings.containsKey("device.2.test.settings"), true);
 
-    /**
-     * Normally we would not need to do this when passing this to a settings.
-     * However, in this case, we should clean up.
-     **/
-    filter.free();
+		Assert.assertNull(deviceSettings.get("device.2"));
 
-  }
+		Assert.assertNull(deviceSettings.get("device.location"));
 
-  public static void main(String...args) throws Exception
-  {
-    testLZ4BufferFilter();
-  }
+	}
 }
