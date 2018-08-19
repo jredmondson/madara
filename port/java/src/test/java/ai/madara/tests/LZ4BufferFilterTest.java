@@ -56,9 +56,11 @@ import ai.madara.filters.compression.LZ4BufferFilter;
 /**
  * This class is a tester for the LZ4BufferFilter class
  */
+
 public class LZ4BufferFilterTest {
-	//@Test
-	public void test() throws MadaraDeadObjectException {
+
+	@Test
+	public void testLz4BufferFilter() throws MadaraDeadObjectException {
 		LZ4BufferFilter filter = new LZ4BufferFilter();
 
 		byte[] buffer = new byte[500];

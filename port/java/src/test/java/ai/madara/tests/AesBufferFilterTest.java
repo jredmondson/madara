@@ -57,8 +57,9 @@ import ai.madara.filters.ssl.AesBufferFilter;
  * This class is a tester for the AesBufferFilter class
  */
 public class AesBufferFilterTest {
-	//@Test
-	public void test() throws MadaraDeadObjectException {
+	@Test
+	public void testAesBufferFilter() throws MadaraDeadObjectException {
+
 		AesBufferFilter filter = new AesBufferFilter();
 
 		byte[] buffer = new byte[500];

@@ -61,10 +61,8 @@ import ai.madara.knowledge.containers.String;
  */
 public class TestKnowledgeBase extends BaseTest {
 
-	//@Test
-	public void testKb() throws MadaraDeadObjectException {
-
-		initKB();
+	@Test
+	public void testKBToKnowledgeMap() throws MadaraDeadObjectException {
 
 		KnowledgeBase knowledge = getKb();
 
@@ -88,15 +86,15 @@ public class TestKnowledgeBase extends BaseTest {
 
 		KnowledgeMap deviceSettings = knowledge.toKnowledgeMap("device.", "settings");
 
-		System.out.print("Testing toKnowledgeMap with suffix and prefix: ");
-
-		Assert.assertEquals(deviceSettings.containsKey("device.0.test.settings"), true);
-		Assert.assertEquals(deviceSettings.containsKey("device.1.test.settings"), true);
-		Assert.assertEquals(deviceSettings.containsKey("device.2.test.settings"), true);
+		Assert.assertTrue(deviceSettings.containsKey("device.0.test.settings"));
+		Assert.assertTrue(deviceSettings.containsKey("device.1.test.settings"));
+		Assert.assertTrue(deviceSettings.containsKey("device.2.test.settings"));
 
 		Assert.assertNull(deviceSettings.get("device.2"));
 
 		Assert.assertNull(deviceSettings.get("device.location"));
 
 	}
+
+
 }
