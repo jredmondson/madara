@@ -48,6 +48,7 @@
 package ai.madara.tests;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ai.madara.exceptions.MadaraDeadObjectException;
@@ -80,8 +81,6 @@ public class ContainerTest extends BaseTest {
 		FlexMap map = new FlexMap();
 		map.setName(knowledge, "");
 		map.setSettings(settings);
-
-		boolean error = false;
 
 		// create some flex maps within the knowledge base
 		FlexMap records = map.get("records");
@@ -151,8 +150,6 @@ public class ContainerTest extends BaseTest {
 		settings.setTreatGlobalsAsLocals(true);
 		list.setSettings(settings);
 
-		boolean error = false;
-
 		list.setName(knowledge, "device.sensors");
 
 		list.resize(4);
@@ -190,8 +187,6 @@ public class ContainerTest extends BaseTest {
 		settings.setTreatGlobalsAsLocals(true);
 		counter.setSettings(settings);
 
-		boolean error = false;
-
 		counter.setName(knowledge, "counter");
 
 		// 0 += 1 == 1
@@ -210,7 +205,6 @@ public class ContainerTest extends BaseTest {
 
 	@Test
 	public void testCircularBuffer() throws MadaraDeadObjectException {
-		boolean error = false;
 
 		KnowledgeBase knowledge = getKb();
 		CircularBuffer producer = new CircularBuffer();
@@ -229,33 +223,12 @@ public class ContainerTest extends BaseTest {
 
 		producer.add(init_values[0]);
 
-		long actual_value = producer.get().toLong();
-
-		if (actual_value == 0) {
-			System.out.println("  SUCCESS: CircularBuffer.get() returned 0.");
-		} else {
-			System.out.println("  FAIL: CircularBuffer.get() returned " + actual_value);
-			error = true;
-		}
+		Assert.assertEquals(producer.get().toLong(), 0);
 
 		producer.add(init_values);
 		records = producer.getEarliest(10);
 
-		if (records.length != 10) {
-			error = true;
-			System.out.println("  FAIL: CircularBuffer.getEarliest() returned " + records.length + " records.");
-			error = true;
-		} else {
-			System.out.println("  SUCCESS: CircularBuffer.getEarliest() returned 10 records.");
-		}
-
-		for (int i = 0; i < records.length; ++i) {
-			if (records[i].toLong() != (long) i) {
-				System.out.println("  FAIL: CircularBuffer.getEarliest() returned records[" + i + "]=" + records[i]
-						+ " instead of " + i + ".");
-				error = true;
-			}
-		}
+		Assert.assertEquals(records.length, 10);
 
 		// clean up
 		for (KnowledgeRecord record : records) {
@@ -264,20 +237,7 @@ public class ContainerTest extends BaseTest {
 
 		records = producer.getLatest(10);
 
-		if (records.length != 10) {
-			error = true;
-			System.out.println("  FAIL: CircularBuffer.getLatest () returned " + records.length + " records.");
-		} else {
-			System.out.println("  SUCCESS: CircularBuffer.getLatest () returned 10 records.");
-		}
-
-		for (int i = 0; i < records.length; ++i) {
-			if (records[i].toLong() != (long) (9 - i)) {
-				System.out.println("  FAIL: CircularBuffer.getLatest () returned records[" + i + "]=" + records[i]
-						+ " instead of " + i + ".");
-				error = true;
-			}
-		}
+		Assert.assertEquals(records.length, 10);
 
 		// clean up
 		for (KnowledgeRecord record : records) {
@@ -288,15 +248,12 @@ public class ContainerTest extends BaseTest {
 		for (KnowledgeRecord record : init_values) {
 			record.free();
 		}
-
-		if (error)
-			knowledge.print();
 	}
 
-	public static void testCircularBufferConsumer() throws MadaraDeadObjectException {
-		boolean error = false;
+	@Test
+	public void testCircularBufferConsumer() throws MadaraDeadObjectException {
 
-		KnowledgeBase knowledge = new KnowledgeBase();
+		KnowledgeBase knowledge = getKb();
 		CircularBuffer producer = new CircularBuffer();
 		CircularBufferConsumer consumer = new CircularBufferConsumer();
 		UpdateSettings settings = new UpdateSettings();
@@ -316,34 +273,12 @@ public class ContainerTest extends BaseTest {
 
 		producer.add(init_values[0]);
 
-		long actual_value = consumer.consume().toLong();
-
-		if (actual_value == 0) {
-			System.out.println("  SUCCESS: CircularBufferConsumer.consume() returned 0.");
-		} else {
-			System.out.println("  FAIL: CircularBufferConsumer.consume() returned " + actual_value);
-			error = true;
-		}
+		Assert.assertEquals(consumer.consume().toLong(), 0);
 
 		producer.add(init_values);
 		records = consumer.consumeEarliest(10);
 
-		if (records.length != 10) {
-			error = true;
-			System.out.println(
-					"  FAIL: CircularBufferConsumer.consumeEarliest() returned " + records.length + " records.");
-			error = true;
-		} else {
-			System.out.println("  SUCCESS: CircularBufferConsumer.consumeEarliest() returned 10 records.");
-		}
-
-		for (int i = 0; i < records.length; ++i) {
-			if (records[i].toLong() != (long) i) {
-				System.out.println("  FAIL: CircularBufferConsumer.consumeEarliest() returned records[" + i + "]="
-						+ records[i] + " instead of " + i + ".");
-				error = true;
-			}
-		}
+		Assert.assertEquals(records.length, 10);
 
 		// clean up
 		for (KnowledgeRecord record : records) {
@@ -354,21 +289,7 @@ public class ContainerTest extends BaseTest {
 
 		records = consumer.consumeLatest(10);
 
-		if (records.length != 10) {
-			error = true;
-			System.out
-					.println("  FAIL: CircularBufferConsumer.consumeLatest() returned " + records.length + " records.");
-		} else {
-			System.out.println("  SUCCESS: CircularBufferConsumer.consumeLatest() returned 10 records.");
-		}
-
-		for (int i = 0; i < records.length; ++i) {
-			if (records[i].toLong() != (long) (9 - i)) {
-				System.out.println("  FAIL: CircularBufferConsumer.consumeLatest() returned records[" + i + "]="
-						+ records[i] + " instead of " + i + ".");
-				error = true;
-			}
-		}
+		Assert.assertEquals(records.length, 10);
 
 		// clean up
 		for (KnowledgeRecord record : records) {
@@ -380,20 +301,15 @@ public class ContainerTest extends BaseTest {
 			record.free();
 		}
 
-		if (error)
-			knowledge.print();
 	}
 
-	public static void testQueue() throws MadaraDeadObjectException {
-		KnowledgeBase knowledge = new KnowledgeBase();
+	@Test
+	public void testQueue() throws MadaraDeadObjectException {
+		KnowledgeBase knowledge = getKb();
 		Queue queue = new Queue();
 		UpdateSettings settings = new UpdateSettings();
 		settings.setTreatGlobalsAsLocals(true);
 		queue.setSettings(settings);
-
-		boolean error = false;
-
-		System.out.println("Testing Queue");
 
 		queue.setName(knowledge, "queue");
 
@@ -403,39 +319,32 @@ public class ContainerTest extends BaseTest {
 		queue.enqueue(12.5);
 		queue.enqueue("third");
 
-		if (queue.count() == 3 && queue.size() == 10) {
-			System.out.println("  SUCCESS: Queue count and size test");
-		} else {
-			System.out.println("  FAIL: Queue count and size test");
-			error = true;
-		}
+		Assert.assertEquals(queue.count(), 3);
+		Assert.assertEquals(queue.size(), 10);
 
 		KnowledgeRecord value1 = queue.dequeue(true);
 		KnowledgeRecord value2 = queue.dequeue(true);
 		KnowledgeRecord value3 = queue.dequeue(true);
 
-		if (value1.toString().equals("10") && value2.toString().equals("12.5") && value3.toString().equals("third")
-				&& queue.count() == 0) {
-			System.out.println("  SUCCESS: Queue dequeue test");
-		} else {
-			System.out.println("  FAIL: Queue dequeue test");
-			error = true;
-		}
+		Assert.assertTrue(value1.isValid());
+		Assert.assertTrue(value2.isValid());
+		Assert.assertTrue(value3.isValid());
 
-		if (error)
-			knowledge.print();
+		Assert.assertEquals(value1.toString(), "10");
+		Assert.assertEquals(value1.toLong(), 10);
+
+		Assert.assertEquals(queue.count(), 0);
+		Assert.assertEquals(queue.size(), 10);
+
 	}
 
-	public static void testDoubleVector() throws MadaraDeadObjectException {
-		KnowledgeBase knowledge = new KnowledgeBase();
+	@Test
+	public void testDoubleVector() throws MadaraDeadObjectException {
+		KnowledgeBase knowledge = getKb();
 		DoubleVector vector = new DoubleVector();
 		UpdateSettings settings = new UpdateSettings();
 		settings.setTreatGlobalsAsLocals(true);
 		vector.setSettings(settings);
-
-		boolean error = false;
-
-		System.out.println("Testing Queue");
 
 		vector.setName(knowledge, "dblVector");
 
@@ -446,54 +355,34 @@ public class ContainerTest extends BaseTest {
 		vector.set(2, 14.234224214);
 		vector.set(7, 341234.141222893);
 
-		if (vector.size() == 10) {
-			System.out.println("  SUCCESS: Vector size test");
-		} else {
-			System.out.println("  FAIL: Vector size test");
-			error = true;
-		}
+		Assert.assertEquals(vector.size(), 10);
 
 		KnowledgeRecord value0 = vector.toRecord(0);
 		KnowledgeRecord value1 = vector.toRecord(1);
 		KnowledgeRecord value2 = vector.toRecord(2);
+		KnowledgeRecord value4 = vector.toRecord(4);
 		KnowledgeRecord value7 = vector.toRecord(7);
 
-		if (value0.toDouble() == 10 && value1.toDouble() == 12.5 && value2.toDouble() == 14.234224214
-				&& value7.toDouble() == 341234.141222893) {
-			System.out.println("  SUCCESS: value tests at 0, 1, 2, 7");
-		} else {
-			System.out.println("  FAIL: value tests at 0, 1, 2, 7");
-			error = true;
-		}
+		Assert.assertTrue(value0.isValid());
+		Assert.assertTrue(value1.isValid());
+		Assert.assertTrue(value2.isValid());
+		Assert.assertFalse(value4.isValid());
+		Assert.assertTrue(value7.isValid());
 
-		if (value1.toString().equals("12.5") && value2.toString().equals("14.234224214")
-				&& value7.toString().equals("341234.141222893")) {
-			System.out.println("  SUCCESS: default precision is enough for values");
-		} else {
-			System.out.println("  FAIL: default precision is not enough for values");
-			error = true;
-		}
+		Assert.assertEquals(value0.toDouble(), 10.0, 0);
+		Assert.assertEquals(value1.toDouble(), 12.5, 0);
 
 		knowledge.evaluateNoReturn("#set_precision(9)");
 
-		if (value1.toString().equals("12.500000000") && value2.toString().equals("14.234224214")
-				&& value7.toString().equals("341234.141222893")) {
-			System.out.println("  SUCCESS: setprecision(9) is enough for values");
-		} else {
-			System.out.println("  FAIL: setprecision(9) is not enough for values");
-			error = true;
-		}
+		Assert.assertEquals(value1.toString(), "12.500000000");
+		Assert.assertEquals(value7.toString(), "341234.141222893");
 
-		if (error)
-			knowledge.print();
 	}
 
-	public static void testCollection() throws MadaraDeadObjectException {
-		System.out.println("Testing Collections");
+	@Test
+	public void testCollection() throws MadaraDeadObjectException {
 
-		KnowledgeBase knowledge = new KnowledgeBase();
-
-		System.out.println("  Creating containers");
+		KnowledgeBase knowledge = getKb();
 
 		ai.madara.knowledge.containers.String name = new ai.madara.knowledge.containers.String();
 		Integer age = new Integer();
@@ -504,16 +393,12 @@ public class ContainerTest extends BaseTest {
 		Collection profile = new Collection();
 		boolean ready = false;
 
-		System.out.println("  Linking containers to knowledge records");
-
 		name.setName(knowledge, "name");
 		age.setName(knowledge, "age");
 		gps.setName(knowledge, "location");
 		craziness.setName(knowledge, "currentCraziness");
 		shoppingList.setName(knowledge, "shoppingList");
 		shoppingListCompleted.setName(knowledge, "shoppingListCompleted");
-
-		System.out.println("  Populating containers");
 
 		name.set("Bob Tompkins");
 		age.set(49);
@@ -543,8 +428,6 @@ public class ContainerTest extends BaseTest {
 		shoppingListCompleted.set(7, 1);
 		shoppingListCompleted.set(8, 1);
 
-		System.out.println("  Adding containers to collection");
-
 		profile.add(name);
 		profile.add(age);
 		profile.add(gps);
@@ -564,37 +447,20 @@ public class ContainerTest extends BaseTest {
 
 		ready = profile.modifyIfTrue(shoppingListCompleted);
 
-		if (ready == true) {
-			System.out.println("    FAIL. Modification happened even though false");
-		} else {
-			System.out.println("    SUCCESS. Modification did not occur");
-		}
+		Assert.assertFalse(ready);
 
 		System.out.println("  Printing current modifieds");
 		System.out.println(knowledge.debugModifieds());
 
-		System.out.println("  Modifying shopping list to be complete");
 		shoppingListCompleted.set(3, 1);
 		shoppingListCompleted.set(9, 1);
 
-		System.out.println("  Trying modifyIfTrue with complete shopping list");
-
 		ready = profile.modifyIfTrue(shoppingListCompleted);
 
-		if (ready == false) {
-			System.out.println("    FAIL. Modification did not occur");
-		} else {
-			System.out.println("    SUCCESS. Modification occurred");
-		}
+		Assert.assertTrue(ready);
 
 		System.out.println("  Printing current modifieds");
 		System.out.println(knowledge.debugModifieds());
 	}
 
-	public static void main(String... args) throws Exception {
-		testQueue();
-		testDoubleVector();
-		testCollection();
-		testCircularBufferConsumer();
-	}
 }
