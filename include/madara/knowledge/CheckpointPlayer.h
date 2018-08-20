@@ -88,9 +88,20 @@ private:
   uint64_t update;
 };
 
+/**
+ * Plays back a checkpoint over time, based on recorded TOI
+ **/
 class CheckpointPlayer
 {
 public:
+  /**
+   * Constructor
+   *
+   * @param context the ThreadSafeContext that will be updated
+   * @param settings the CheckpointSettings that will be used to load data
+   * @param update_settings the settings that will be used when updating
+   *  @a context
+   **/
   CheckpointPlayer(ThreadSafeContext &context, CheckpointSettings settings,
       KnowledgeUpdateSettings update_settings = {})
     : context_(&context), settings_(std::move(settings)),
@@ -105,12 +116,21 @@ public:
   CheckpointPlayer &operator=(const CheckpointPlayer &) = delete;
   CheckpointPlayer &operator=(CheckpointPlayer &&) = delete;
 
+  /**
+   * Start playback. If settings.playback_simtime is set, and macro
+   * MADARA_FEATURE_SIMTIME is set, current simtime will be set to the TOI
+   * of the first record. Rate of playback is equal to the simtime rate, which
+   * can be modified during playback.
+   **/
   void start()
   {
     reader_ = mk_unique<CheckpointReader>(settings_);
     thread_ = std::thread(thread_main, this);
   }
 
+  /**
+   * Stop playback, killing the playback thread.
+   **/
   void stop()
   {
     keep_running_.clear();
