@@ -475,6 +475,12 @@ namespace madara
       bool       ignore_header_check;
 
       /**
+       * If true, update simtime during playback to match recorded TOI. Only
+       * operable if MADARA_FEATURE_SIMTIME macro is defined.
+       **/
+      bool playback_simtime = false;
+
+      /**
        * Object which will be used to extract variables for checkpoint saving.
        * By default (if left nullptr), use a default implementation which uses
        * ThreadSaveContext::get_local_modified

@@ -13,6 +13,7 @@
 #include "madara/exceptions/MemoryException.h"
 #include "madara/exceptions/FilterException.h"
 #include "madara/knowledge/CheckpointStreamer.h"
+#include "madara/knowledge/CheckpointPlayer.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -1081,6 +1082,24 @@ void test_streaming()
     kb2.to_string(dump);
     std::cerr << "FAIL :\n" << dump << "\n";
     madara_fails++;
+    return;
+  }
+
+  logger::global_logger->set_level (logger::LOG_TRACE);
+
+  knowledge::KnowledgeBase kb3;
+
+  settings.playback_simtime = true;
+
+  knowledge::CheckpointPlayer player(kb3.get_context(), settings);
+
+  player.start();
+
+  for (int i = 0; i < 10; ++i) {
+    std::string dump;
+    kb3.to_string(dump);
+    std::cerr << utility::get_time() << ": " << dump << std::endl;
+    utility::sleep(0.1);
   }
 }
 

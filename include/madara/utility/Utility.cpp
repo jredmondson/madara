@@ -627,23 +627,38 @@ SecondsDuration sleep (const SecondsDuration & sleep_time)
 {
   TimeValue start = get_time_value ();
   TimeValue current = start;
-  TimeValue target = current;
 
 #ifdef MADARA_FEATURE_SIMTIME
   // @David feel free to change this as SimTime is implemented
+  static const SecondsDuration max_sleep{0.01};
+
+  SecondsDuration slept;
+  while (slept < sleep_time) {
     double rate = SimTime::rate ();
-  SecondsDuration dilated_time = sleep_time;
-  dilated_time /= rate;
-  target += std::chrono::duration_cast <Duration> (dilated_time);
+
+    SecondsDuration sleep_now = sleep_time - slept;
+
+    if (rate == 0 || (sleep_now = sleep_now / rate) > max_sleep ) {
+      std::this_thread::sleep_for(max_sleep);
+      slept += max_sleep * rate;
+      current = get_time_value ();
+      continue;
+    }
+
+    std::this_thread::sleep_for(sleep_now);
+    current = get_time_value ();
+    break;
+  }
 #else
+  TimeValue target = current;
   target += std::chrono::duration_cast <Duration> (sleep_time);
-#endif
 
   while (current < target)
   {
     std::this_thread::sleep_until(target);
     current = get_time_value ();
   }
+#endif
 
   return current - start;
 }
