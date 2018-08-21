@@ -61,9 +61,16 @@ typedef  filters::AESBufferFilter   AESBufferFilter;
  */
 jlong JNICALL
 Java_ai_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__
-(JNIEnv *, jobject)
+(JNIEnv *env, jobject)
 {
   jlong result (0);
+
+#ifndef _USE_SSL_
+  madara::utility::java::throw_feature_not_impl_exception(env,
+       "AESBufferFilter::constructor: "
+       "MADARA library does not support SSL");
+  return result;
+#endif
 
 #ifdef _USE_SSL_
   result = (jlong) new AESBufferFilter ();
@@ -82,6 +89,13 @@ Java_ai_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__J
 (JNIEnv * env, jobject, jlong cptr)
 {
   jlong result (0);
+
+#ifndef _USE_SSL_
+  madara::utility::java::throw_feature_not_impl_exception(env,
+       "AESBufferFilter::constructor: "
+       "MADARA library does not support SSL");
+  return result;
+#endif
 
 #ifdef _USE_SSL_
   AESBufferFilter * input = (AESBufferFilter *)cptr;

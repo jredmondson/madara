@@ -47,6 +47,7 @@
 package ai.madara.filters.compression;
 
 import ai.madara.MadaraJNI;
+import ai.madara.exceptions.FeatureNotImplementedException;
 import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.filters.BufferFilter;
 
@@ -68,7 +69,7 @@ public class LZ4BufferFilter extends MadaraJNI implements BufferFilter
   /**
    * Default constructor
    **/
-  public LZ4BufferFilter()
+  public LZ4BufferFilter() throws FeatureNotImplementedException
   {
     setCPtr(jni_Lz4BufferFilter());
   }
@@ -77,7 +78,7 @@ public class LZ4BufferFilter extends MadaraJNI implements BufferFilter
    * Copy constructor
    * @param input  instance to copy
    **/
-  public LZ4BufferFilter(LZ4BufferFilter input)
+  public LZ4BufferFilter(LZ4BufferFilter input) throws FeatureNotImplementedException
   {
     setCPtr(jni_Lz4BufferFilter(input.getCPtr()));
   }
