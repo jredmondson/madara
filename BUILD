@@ -66,6 +66,7 @@ cc_library(
     textual_hdrs = glob(["include/**/*.inl"]),
     deps = [
         "@org_boost_boost//:boost",
+        "@org_capnproto_capnproto//:capnp-lib",
         ":cereal",
     ] + select({
         "@bazel_module//bazel_rules:zmq": ["@org_zeromq_libzmq//:libzmq"],
@@ -108,7 +109,13 @@ cc_library(
 # JAR java library
 java_library(
     name = "madara_java",
-    srcs = glob(["port/java/src/main/java/ai/madara/**/*.java"]),
+    srcs = glob(
+        ["port/java/src/main/java/ai/madara/**/*.java"],
+        exclude = ["port/java/src/main/java/ai/madara/tests/**/*.java"],
+    ),
+    deps = [
+        "@org_capnproto//jar",
+    ],
 )
 
 # Dependency including source files + the java support
@@ -150,6 +157,7 @@ cc_library(
         ":jni_headers",
         ":madara_jni_h",
         "@org_boost_boost//:boost",
+        "@org_capnproto_capnproto//:capnp-lib",
     ],
 )
 
