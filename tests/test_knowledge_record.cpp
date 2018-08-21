@@ -219,7 +219,7 @@ void check_non_basic_types_records()
   TEST_EQ(new_rec.size(), size_t(15));
   TEST_EQ(new_rec.is_string_type(), true);
 
-  delete buf;
+  delete [] buf;
 
 }
 
