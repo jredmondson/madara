@@ -154,7 +154,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-h|--help]              print help menu (i.e., this menu)\n" \
         "  [-i|--input file]        file containing MADARA logic to evaluate\n" \
         "  [-k|--print-knowledge]   print final knowledge\n" \
-        "  [-kp]--print-prefix      filter prints by prefix. Can be multiple.\n" \
+        "  [-kp|--print-prefix pfx] filter prints by prefix. Can be multiple.\n" \
         "  [-ky]                    print knowledge after frequent evaluations\n" \
         "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
         "  [-lcp|--load-checkpoint-prefix prfx]\n" \
