@@ -38,6 +38,14 @@ namespace madara
        * @param  name  Message to embed in exception
        **/
       void MADARA_EXPORT throw_dead_obj_exception (JNIEnv * env, const char * message);
+
+      /**
+             * Throws a runtime exception when developers use features that are not explicitly supported by MADARA
+             * @param  env   Java environment
+             * @param  name  Message to embed in exception
+             **/
+     void MADARA_EXPORT throw_feature_not_impl_exception (JNIEnv * env, const char * message);
+
     }
   }
 }

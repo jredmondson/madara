@@ -61,9 +61,16 @@ typedef  filters::LZ4BufferFilter LZ4BufferFilter;
  * Signature: ()J
  */
 jlong JNICALL Java_ai_madara_filters_compression_LZ4BufferFilter_jni_1Lz4BufferFilter__
-  (JNIEnv *, jobject){
+  (JNIEnv *env, jobject){
 
   jlong result (0);
+
+#ifndef _USE_LZ4_
+  madara::utility::java::throw_feature_not_impl_exception(env,
+       "LZ4BufferFilter::constructor: "
+       "MADARA library does not support LZ4");
+  return result;
+#endif
 
 #ifdef _USE_LZ4_
   result = (jlong) new LZ4BufferFilter ();
@@ -78,9 +85,16 @@ jlong JNICALL Java_ai_madara_filters_compression_LZ4BufferFilter_jni_1Lz4BufferF
  * Signature: (J)J
  */
 jlong JNICALL Java_ai_madara_filters_compression_LZ4BufferFilter_jni_1Lz4BufferFilter__J
-  (JNIEnv * env, jobject, jlong cptr){
+  (JNIEnv *env, jobject, jlong cptr){
 
   jlong result (0);
+
+#ifndef _USE_LZ4_
+  madara::utility::java::throw_feature_not_impl_exception(env,
+       "LZ4BufferFilter::constructor: "
+       "MADARA library does not support LZ4");
+  return result;
+#endif
 
 #ifdef _USE_LZ4_
   LZ4BufferFilter * input = (LZ4BufferFilter *)cptr;

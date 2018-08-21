@@ -47,105 +47,104 @@
 package ai.madara.filters.ssl;
 
 import ai.madara.MadaraJNI;
+import ai.madara.exceptions.FeatureNotImplementedException;
 import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.filters.BufferFilter;
 
-public class AesBufferFilter extends MadaraJNI implements BufferFilter
-{
-  private native long jni_AesBufferFilter();
-  private native long jni_AesBufferFilter(long cptr);
-  private static native void jni_freeAesBufferFilter(long cptr);
-  private native long jni_encode(long cptr, byte[] buffer, long size,
-    long maxSize);
-  private native long jni_decode(long cptr, byte[] buffer, long size,
-    long maxSize);
-  private native int jni_generateKey(long cptr, java.lang.String password);
+public class AesBufferFilter extends MadaraJNI implements BufferFilter {
+	private native long jni_AesBufferFilter();
 
-  /**
-   * Let the transport layer manage this
-   */
-  private boolean manageMemory = false;
+	private native long jni_AesBufferFilter(long cptr);
 
-  /**
-   * Default constructor
-   **/
-  public AesBufferFilter()
-  {
-    setCPtr(jni_AesBufferFilter());
-  }
+	private static native void jni_freeAesBufferFilter(long cptr);
 
-  /**
-   * Copy constructor
-   * @param input  instance to copy
-   **/
-  public AesBufferFilter(AesBufferFilter input)
-  {
-    setCPtr(jni_AesBufferFilter(input.getCPtr()));
-  }
+	private native long jni_encode(long cptr, byte[] buffer, long size, long maxSize);
 
-  /**
-   * Encodes a buffer
-   * @param buffer  a map of all variable names to values
-   * @param size    the initial size of the buffer
-   * @param maxSize the maximum size of the buffer
-   * @return the new size of the buffer contents
-   **/
-  @Override
-  public long encode(byte[] buffer, long size, long maxSize) throws MadaraDeadObjectException
-  {
-    return jni_encode(getCPtr(), buffer, size, maxSize);
-  }
+	private native long jni_decode(long cptr, byte[] buffer, long size, long maxSize);
 
-  /**
-   * Decodes a buffer
-   * @param buffer  a map of all variable names to values
-   * @param size    the initial size of the buffer
-   * @param maxSize the maximum size of the buffer
-   * @return the new size of the buffer contents
-   **/
-  @Override
-  public long decode(byte[] buffer, long size, long maxSize) throws MadaraDeadObjectException
-  {
-    return jni_decode(getCPtr(), buffer, size, maxSize);
-  }
+	private native int jni_generateKey(long cptr, java.lang.String password);
 
-  /**
-   * Generates a 256 bit AES key from a password
-   * @param password  a password to use
-   * @return 0 if successful, non zero otherwise
-   **/
-  public int generateKey(java.lang.String password) throws MadaraDeadObjectException
-  {
-    return jni_generateKey(getCPtr(), password);
-  }
+	/**
+	 * Let the transport layer manage this
+	 */
+	private boolean manageMemory = false;
 
-  /**
-   * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
-   * called before an instance gets garbage collected
-   */
-  public void free()
-  {
-    if (manageMemory)
-    {
-      jni_freeAesBufferFilter(getCPtr());
-      setCPtr(0);
-    }
-  }
+	/**
+	 * Default constructor
+	 **/
+	public AesBufferFilter() throws FeatureNotImplementedException {
+		setCPtr(jni_AesBufferFilter());
+	}
 
-  /**
-   * Cleans up underlying C resources
-   * @throws Throwable necessary for override but unused
-   */
-  @Override
-  protected void finalize() throws Throwable
-  {
-    try {
-      free();
-    } catch (Throwable t) {
-      throw t;
-    } finally {
-      super.finalize();
-    }
-  }
+	/**
+	 * Copy constructor
+	 * 
+	 * @param input instance to copy
+	 **/
+	public AesBufferFilter(AesBufferFilter input) throws FeatureNotImplementedException {
+		setCPtr(jni_AesBufferFilter(input.getCPtr()));
+	}
+
+	/**
+	 * Encodes a buffer
+	 * 
+	 * @param buffer  a map of all variable names to values
+	 * @param size    the initial size of the buffer
+	 * @param maxSize the maximum size of the buffer
+	 * @return the new size of the buffer contents
+	 **/
+	@Override
+	public long encode(byte[] buffer, long size, long maxSize) throws MadaraDeadObjectException {
+		return jni_encode(getCPtr(), buffer, size, maxSize);
+	}
+
+	/**
+	 * Decodes a buffer
+	 * 
+	 * @param buffer  a map of all variable names to values
+	 * @param size    the initial size of the buffer
+	 * @param maxSize the maximum size of the buffer
+	 * @return the new size of the buffer contents
+	 **/
+	@Override
+	public long decode(byte[] buffer, long size, long maxSize) throws MadaraDeadObjectException {
+		return jni_decode(getCPtr(), buffer, size, maxSize);
+	}
+
+	/**
+	 * Generates a 256 bit AES key from a password
+	 * 
+	 * @param password a password to use
+	 * @return 0 if successful, non zero otherwise
+	 **/
+	public int generateKey(java.lang.String password) throws MadaraDeadObjectException {
+		return jni_generateKey(getCPtr(), password);
+	}
+
+	/**
+	 * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
+	 * called before an instance gets garbage collected
+	 */
+	public void free() {
+		if (manageMemory) {
+			jni_freeAesBufferFilter(getCPtr());
+			setCPtr(0);
+		}
+	}
+
+	/**
+	 * Cleans up underlying C resources
+	 * 
+	 * @throws Throwable necessary for override but unused
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			free();
+		} catch (Throwable t) {
+			throw t;
+		} finally {
+			super.finalize();
+		}
+	}
 }
-

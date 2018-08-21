@@ -317,3 +317,11 @@ void madara::utility::java::throw_dead_obj_exception (
     "ai/madara/exceptions/MadaraDeadObjectException");
   	env->ThrowNew(excp_cls, message);
 }
+
+void madara::utility::java::throw_feature_not_impl_exception (
+  JNIEnv * env, const char * message)
+{
+  jclass excp_cls = madara::utility::java::find_class (env,
+    "ai/madara/exceptions/FeatureNotImplementedException");
+  	env->ThrowNew(excp_cls, message);
+}

@@ -1,169 +1,188 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>ai.madara</groupId>
-  <artifactId>madara</artifactId>
-  <version>3.2.4</version>
-  <description>Provides distributed knowledge sharing services for multi-agent systems.</description>
-  <name>Multi-Agent Distributed Adaptive Resource Allocation</name>
-  <url>http://madara.ai</url>
-  <developers>
-    <developer>
-      <name>James Edmondson</name>
-      <email></email>
-      <organization>MADARA</organization>
-      <organizationUrl>http://madara.ai</organizationUrl>
-    </developer>
-  </developers>
-  <licenses>
-    <license>
-      <name>MADARA License</name>
-      <url>https://github.com/jredmondson/madara/blob/master/LICENSE.txt</url>
-    </license>
-  </licenses>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ai.madara</groupId>
+	<artifactId>madara</artifactId>
+	<version>3.2.4</version>
+	<description>Provides distributed knowledge sharing services for multi-agent systems.</description>
+	<name>Multi-Agent Distributed Adaptive Resource Allocation</name>
+	<url>http://madara.ai</url>
+	<developers>
+		<developer>
+			<name>James Edmondson</name>
+			<email></email>
+			<organization>MADARA</organization>
+			<organizationUrl>http://madara.ai</organizationUrl>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>MADARA License</name>
+			<url>https://github.com/jredmondson/madara/blob/master/LICENSE.txt</url>
+		</license>
+	</licenses>
 
- <properties>
-        <madara.version>3.2.0</madara.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      </properties>
+	<properties>
+		<madara.version>3.2.0</madara.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.capnproto</groupId>
-      <artifactId>runtime</artifactId>
-      <version>0.1.3</version>
-      <scope>compile</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
+	<dependencies>
+		<dependency>
+			<groupId>org.capnproto</groupId>
+			<artifactId>runtime</artifactId>
+			<version>0.1.3</version>
+			<scope>compile</scope>
+		</dependency>
 
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.8</version>
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <configuration>
-              <target>
-                <copy file="target/${project.artifactId}-${project.version}.jar"
-                  tofile="${env.MADARA_ROOT}/lib/${project.artifactId}.jar" />
-                <copy file="target/${project.artifactId}-${project.version}.jar"
-                  tofile="${env.MADARA_ROOT}/lib/${project.artifactId}-${project.version}.jar" />
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<copy file="target/${project.artifactId}-${project.version}.jar"
+									tofile="${env.MADARA_ROOT}/lib/${project.artifactId}.jar" />
+								<copy file="target/${project.artifactId}-${project.version}.jar"
+									tofile="${env.MADARA_ROOT}/lib/${project.artifactId}-${project.version}.jar" />
 
-      <plugin>
-          <groupId>org.expretio.maven.plugins</groupId>
-          <artifactId>capnp-maven-plugin</artifactId>
-          <version>1.0</version>
-          <executions>
-              <execution>
-                  <goals>
-                      <goal>generate</goal>
-                  </goals>
-                  <configuration>
-                    <schemaDirectory>${env.MADARA_ROOT}/tests/capnfiles</schemaDirectory>
-                    <outputDirectory>${env.MADARA_ROOT}/port/java/src/main/java/ai/madara/tests/capnp</outputDirectory>
-                  </configuration>
-              </execution>
-          </executions>
-      </plugin>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-      </plugin>
+			<plugin>
+				<groupId>org.expretio.maven.plugins</groupId>
+				<artifactId>capnp-maven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<schemaDirectory>${env.MADARA_ROOT}/tests/capnfiles</schemaDirectory>
+							<outputDirectory>${env.MADARA_ROOT}/port/java/src/main/java/ai/madara/tests/capnp</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
-    </plugins>
-  </build>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+			</plugin>
 
-
-  <profiles>
-    <profile>
-      <id>release</id>
-       <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.5</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <!-- Location for storing token & password - https://maven.apache.org/settings.html#Servers -->
-      <distributionManagement>
-        <snapshotRepository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-      </distributionManagement>
-    </profile>
+		</plugins>
+	</build>
 
 
-    <profile>
-      <id>development</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-    </profile>
-  </profiles>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<!-- Location for storing token & password - https://maven.apache.org/settings.html#Servers -->
+			<distributionManagement>
+				<snapshotRepository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				</snapshotRepository>
+				<repository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+
+
+		<profile>
+			<id>development</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<forkMode>once</forkMode>
+<!-- 							<argLine>-Djava.library.path=/Users/amu/Work/Code/Free/ShieldAI/repos/binaries</argLine>
+ -->						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 
 
-  <scm>
-    <connection>scm:git:git://github.com:jredmondson/madara.git</connection>
-    <developerConnection>scm:git:ssh://github.com:jredmondson/madara.git</developerConnection>
-    <url>http://github.com:jredmondson/madara/tree/master</url>
-  </scm>
+	<scm>
+		<connection>scm:git:git://github.com:jredmondson/madara.git</connection>
+		<developerConnection>scm:git:ssh://github.com:jredmondson/madara.git</developerConnection>
+		<url>http://github.com:jredmondson/madara/tree/master</url>
+	</scm>
 </project>
