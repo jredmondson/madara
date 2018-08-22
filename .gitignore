@@ -43,3 +43,7 @@ Release/*
 #Ignore maven project files
 target/
 .settings
+
+
+#ignore generated file
+Geo.java
