@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <sstream>
 #include <assert.h>
@@ -79,6 +80,8 @@ bool print_knowledge_frequency (false);
 bool after_wait (false);
 bool check_result (false);
 bool use_id (false);
+bool print_stats (false);
+bool print_stats_periodic (false);
 
 // wait information
 bool waiting (false), waiting_for_periodic (false);
@@ -95,6 +98,176 @@ double frequency (-1.0);
   filters::LZ4BufferFilter lz4_transport_filter;
   std::vector<filters::LZ4BufferFilter> lz4_filters;
 #endif
+
+/**
+ * Class for keeping track of originator updates on a variable
+ **/
+class OriginatorStats
+{
+public:
+  OriginatorStats ()
+  : name (""), first (0), last (0), updates (0), bytes (0)
+  {
+
+  }
+
+  void print (void)
+  {
+    uint64_t total_ns = last - first;
+    uint64_t total_s = total_ns / 1000000000;
+    double hertz = (double)updates / total_s;
+    double kbs = (double)bytes / 1000 / total_s;
+
+    std::cerr << std::fixed << std::setprecision (2);
+    std::cerr << "from: " << name << ": " << updates << " updates ";
+    std::cerr << "(@" << hertz << "hz)(@" << kbs << "KB/s)\n";
+  }
+
+  std::string name;
+  uint64_t first;
+  uint64_t last;
+  uint64_t updates;
+  uint64_t bytes;
+};
+
+/// convenience typedef for originator updates
+typedef std::map <std::string, OriginatorStats> OriginatorUpdates;
+
+/**
+ * Class for keeping track of variable updates
+ **/
+class VariableStats
+{
+public:
+  /**
+   * prints variable stats including originator stats for the variable
+   **/
+  void print (void)
+  {
+    std::cerr << name << ":\n";
+    for (auto update : updates)
+    {
+      std::cerr << "  ";
+      update.second.print ();
+    }
+  }
+
+  std::string name;
+  OriginatorUpdates updates;
+};
+
+/// convenience typedef for variable name to stats mapping
+typedef std::map <std::string, VariableStats>  VariableUpdates;
+
+/// specialized debug filter for tracking originator updates
+class StatsFilter : public madara::filters::AggregateFilter
+{
+public:
+  
+  /// tracks updates to the variables by originator
+  VariableUpdates var_updates;
+  
+  /// tracks originator updates
+  OriginatorUpdates orig_updates;
+
+  /**
+   * prints the originator and variable stats
+   **/
+  void print (void)
+  {
+    std::cerr << "****Originator Stats****\n";
+    for (auto origs : orig_updates)
+    {
+      origs.second.print ();
+    }
+
+    std::cerr << "****Variable Stats****\n";
+    for (auto vars : var_updates)
+    {
+      bool prefix_match = print_prefixes.size () == 0;
+
+      if (!prefix_match)
+      {
+        for (auto prefix : print_prefixes)
+        {
+          if (utility::begins_with (vars.first, prefix))
+          {
+            prefix_match = true;
+            break;
+          }
+        }
+      }
+
+      if (prefix_match)
+      {
+        vars.second.print ();
+      }
+    }
+  }
+
+  /**
+   * filter called on receive
+   * @param  records             the updates
+   * @param  transport_context   the context of the transport
+   **/
+  virtual void filter (knowledge::KnowledgeMap & records,
+    const transport::TransportContext & transport_context,
+      knowledge::Variables &)
+  {
+    std::string originator = transport_context.get_originator ();
+    OriginatorStats & orig_stats = orig_updates[originator];
+
+    // update the high level originator stats
+    ++orig_stats.updates;
+    orig_stats.last = transport_context.get_current_time ();
+
+    if (orig_stats.first == 0)
+    {
+      orig_stats.name = originator;
+      orig_stats.first = orig_stats.last;
+    }
+
+    // iterate through each record
+    for (auto record : records)
+    {
+      VariableStats & var_stats = var_updates[record.first];
+
+      if (var_stats.name == "")
+      {
+        var_stats.name = record.first;
+      }
+
+      OriginatorStats & var_orig_stats = var_stats.updates[originator];
+
+      // update each record's originator stats
+      ++var_orig_stats.updates;
+      var_orig_stats.last = orig_stats.last;
+      if (var_orig_stats.first == 0)
+      {
+        var_orig_stats.name = originator;
+        var_orig_stats.first = var_orig_stats.last;
+      }
+
+      // calculate bytes
+      size_t bytes = record.second.size ();
+      if (record.second.is_integer_type ())
+      {
+        bytes *= sizeof(int64_t);
+      }
+      else if (record.second.is_double_type ())
+      {
+        bytes *= sizeof(double);
+      }
+
+      // update bytes sent by originator
+      var_orig_stats.bytes += record.second.size ();
+      orig_stats.bytes += record.second.size ();
+    }
+  }
+};
+
+// originator debug filter to add if requested
+StatsFilter  stats_filter;
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
@@ -165,6 +338,8 @@ void handle_arguments (int argc, char ** argv)
         "  [-ltt|--load-transport-text file] a text file to load transport settings from\n" \
         "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
         "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
+        "  [-ps|--print-stats]      print variable/originator stats at the end\n" \
+        "  [-py|--print-stats-periodic] print variable/originator stats at each period\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
         "  [-r|--reduced]           use the reduced message header\n" \
         "  [-s|--save file]         save the resulting knowledge base as karl\n" \
@@ -370,6 +545,14 @@ void handle_arguments (int argc, char ** argv)
       }
 
       ++i;
+    }
+    else if (arg1 == "-ps" || arg1 == "--print-stats")
+    {
+      print_stats = true;
+    }
+    else if (arg1 == "-py" || arg1 == "--print-stats-periodic")
+    {
+      print_stats_periodic = true;
     }
     else if (arg1 == "-q" || arg1 == "--queue-length")
     {
@@ -707,6 +890,11 @@ public:
         print_all_prefixes (*knowledge_);
       }
     }
+
+    if (print_stats_periodic)
+    {
+      stats_filter.print ();
+    }
   }
 
 private:
@@ -718,6 +906,11 @@ int main (int argc, char ** argv)
 {
   // handle all user arguments
   handle_arguments (argc, argv);
+
+  if (print_stats || print_stats_periodic)
+  {
+    settings.add_receive_filter (&stats_filter);
+  }
 
   if (debug)
   {
@@ -931,6 +1124,11 @@ int main (int argc, char ** argv)
     {
       print_all_prefixes (knowledge);
     }
+  }
+
+  if (print_stats)
+  {
+    stats_filter.print ();
   }
 
   // save as checkpoint of changes by logics and input files
