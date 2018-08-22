@@ -629,10 +629,9 @@ SecondsDuration sleep (const SecondsDuration & sleep_time)
   TimeValue current = start;
 
 #ifdef MADARA_FEATURE_SIMTIME
-  // @David feel free to change this as SimTime is implemented
   static const SecondsDuration max_sleep{0.01};
 
-  SecondsDuration slept;
+  SecondsDuration slept{0};
   while (slept < sleep_time) {
     double rate = SimTime::rate ();
 
