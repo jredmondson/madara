@@ -625,39 +625,45 @@ double sleep (double sleep_time)
 
 SecondsDuration sleep (const SecondsDuration & sleep_time)
 {
-  TimeValue start = get_time_value ();
-  TimeValue current = start;
-
 #ifdef MADARA_FEATURE_SIMTIME
   static const SecondsDuration max_sleep{0.01};
-
-  SecondsDuration slept{0};
-  while (slept < sleep_time) {
-    double rate = SimTime::rate ();
-
-    SecondsDuration sleep_now = sleep_time - slept;
-
-    if (rate == 0 || (sleep_now = sleep_now / rate) > max_sleep ) {
-      std::this_thread::sleep_for(max_sleep);
-      slept += max_sleep * rate;
-      current = get_time_value ();
-      continue;
-    }
-
-    std::this_thread::sleep_for(sleep_now);
-    current = get_time_value ();
-    break;
-  }
-#else
-  TimeValue target = current;
-  target += std::chrono::duration_cast <Duration> (sleep_time);
-
-  while (current < target)
-  {
-    std::this_thread::sleep_until(target);
-    current = get_time_value ();
-  }
 #endif
+
+  using TVal = std::chrono::time_point<Clock, SecondsDuration>;
+
+  TVal start = get_time_value ();
+  TVal target = start + sleep_time;
+  TVal current;
+
+  while ((current = get_time_value()) < target) {
+#ifndef MADARA_FEATURE_SIMTIME
+    std::this_thread::sleep_until(target);
+#else
+    double rate = utility::SimTime::rate();
+    SecondsDuration actual_dur = ((target - current) / rate);
+#if 0
+    std::cerr << (target - current).count() << " "  << rate << " " <<
+      actual_dur.count() << std::endl;
+#endif
+    TVal actual_current = Clock::now();
+    TVal actual_target = actual_current + actual_dur;
+    TVal max_target = actual_current + max_sleep;
+#if 0
+    std::cerr <<
+      start.time_since_epoch().count() << " " <<
+      target.time_since_epoch().count() << " " <<
+      current.time_since_epoch().count() << " " <<
+      SimTime::time() << " " <<
+      actual_target.time_since_epoch().count() << " " <<
+      max_target.time_since_epoch().count() << std::endl;
+#endif
+    if (actual_target < max_target) {
+      std::this_thread::sleep_until(actual_target);
+    } else {
+      std::this_thread::sleep_until(max_target);
+    }
+#endif
+  }
 
   return current - start;
 }
