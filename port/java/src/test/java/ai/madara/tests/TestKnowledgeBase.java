@@ -10,12 +10,12 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * 3. The names "Carnegie Mellon University," "SEI" and/or
  * "Software Engineering Institute" shall not be used to endorse or promote
  * products derived from this software without prior written permission. For
  * written permission, please contact permission@sei.cmu.edu.
- * 
+ *
  * 4. Products derived from this software may not be called "SEI" nor may "SEI"
  * appear in their names without prior written permission of
  * permission@sei.cmu.edu.
@@ -30,7 +30,7 @@
  * recommendations expressed in this material are those of the author(s) and
  * do not necessarily reflect the views of the United States Department of
  * Defense.
- * 
+ *
  * NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING
  * INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON
  * UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
@@ -38,15 +38,19 @@
  * PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
  * MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND
  * WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
- * 
+ *
  * This material has been approved for public release and unlimited
  * distribution.
- * 
+ *
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 
 package ai.madara.tests;
 
+import org.junit.Assert;
+import org.junit.Test;
+
+import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.KnowledgeBase;
 import ai.madara.knowledge.KnowledgeMap;
 import ai.madara.knowledge.containers.Integer;
@@ -55,54 +59,42 @@ import ai.madara.knowledge.containers.String;
 /**
  * This class is a tester for basic KnowledgeBase functionality
  */
-public class TestKnowledgeBase {
-  public static void main (java.lang.String...args) throws InterruptedException, Exception
-  {
-    KnowledgeBase knowledge = new KnowledgeBase();
-    
-    Integer age = new Integer();
-    age.setName(knowledge, "age");
-    age.set(24);
-    
-    String name = new String();
-    name.setName(knowledge, "name");
-    name.set("Alfred Mooney");
-    
-    String occupation = new String();
-    occupation.setName(knowledge, "occupation");
-    occupation.set("Moonlighter");
-    
-    java.lang.String contents = knowledge.toString();
-    
-    System.out.println(contents);
-    
-    knowledge.set("device.0.test.settings", "This is a test (0)");
-    knowledge.set("device.1.test.settings", "This is a test (1)");
-    knowledge.set("device.2.test.settings", "This is a test (2)");
-    knowledge.set("device.2", "is a real device");
-    knowledge.set("device.location", "USA");
-    
-    KnowledgeMap deviceSettings = knowledge.toKnowledgeMap("device.", "settings");
-    
-    System.out.print("Testing toKnowledgeMap with suffix and prefix: ");
-    
-    if (deviceSettings.containsKey("device.0.test.settings") &&
-      deviceSettings.containsKey("device.1.test.settings") &&
-      deviceSettings.containsKey("device.2.test.settings") && 
-      !deviceSettings.containsKey("device.2") && 
-      !deviceSettings.containsKey("device.location"))
-    {
-      System.out.println("SUCCESS");
-    }
-    else
-    {
-      System.out.println("FAIL");
-    }
-    
-    
-    // print all knowledge
-    knowledge.print();
-    
-    knowledge.print("And we're done.\n");
-  }
+public class TestKnowledgeBase extends BaseTest {
+
+	@Test
+	public void testKBToKnowledgeMap() throws MadaraDeadObjectException {
+
+		KnowledgeBase knowledge = getKb();
+
+		Integer age = new Integer();
+		age.setName(knowledge, "age");
+		age.set(24);
+
+		String name = new String();
+		name.setName(knowledge, "name");
+		name.set("Alfred Mooney");
+
+		String occupation = new String();
+		occupation.setName(knowledge, "occupation");
+		occupation.set("Moonlighter");
+
+		knowledge.set("device.0.test.settings", "This is a test (0)");
+		knowledge.set("device.1.test.settings", "This is a test (1)");
+		knowledge.set("device.2.test.settings", "This is a test (2)");
+		knowledge.set("device.2", "is a real device");
+		knowledge.set("device.location", "USA");
+
+		KnowledgeMap deviceSettings = knowledge.toKnowledgeMap("device.", "settings");
+
+		Assert.assertTrue(deviceSettings.containsKey("device.0.test.settings"));
+		Assert.assertTrue(deviceSettings.containsKey("device.1.test.settings"));
+		Assert.assertTrue(deviceSettings.containsKey("device.2.test.settings"));
+
+		Assert.assertNull(deviceSettings.get("device.2"));
+
+		Assert.assertNull(deviceSettings.get("device.location"));
+
+	}
+
+
 }

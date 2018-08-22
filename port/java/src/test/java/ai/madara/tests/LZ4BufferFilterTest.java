@@ -47,82 +47,54 @@
 
 package ai.madara.tests;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import ai.madara.exceptions.MadaraDeadObjectException;
-import ai.madara.filters.ssl.AesBufferFilter;
+import ai.madara.filters.compression.LZ4BufferFilter;
 
 /**
- * This class is a tester for the AesBufferFilter class
+ * This class is a tester for the LZ4BufferFilter class
  */
-public class AesBufferFilterTest
-{
-  public static void testAesBufferFilter() throws MadaraDeadObjectException
-  {
-    AesBufferFilter filter = new AesBufferFilter ();
 
-    byte [] buffer = new byte [500];
+public class LZ4BufferFilterTest {
 
-    buffer[0] = 'H';
-    buffer[1] = 'e';
-    buffer[2] = 'l';
-    buffer[3] = 'l';
-    buffer[4] = 'o';
-    buffer[5] = ' ';
-    buffer[6] = 'W';
-    buffer[7] = 'o';
-    buffer[8] = 'r';
-    buffer[9] = 'l';
-    buffer[10] = 'd';
-    buffer[11] = '!';
-    buffer[12] = 0;
-    buffer[13] = 0;
+	@Test
+	public void testLz4BufferFilter() throws MadaraDeadObjectException {
+		LZ4BufferFilter filter = new LZ4BufferFilter();
 
-    String plaintext = new String(buffer,0,(int)13);
+		byte[] buffer = new byte[500];
 
-    long size = filter.encode(buffer, 13, 500);
+		buffer[0] = 'H';
+		buffer[1] = 'e';
+		buffer[2] = 'l';
+		buffer[3] = 'l';
+		buffer[4] = 'o';
+		buffer[5] = ' ';
+		buffer[6] = 'W';
+		buffer[7] = 'o';
+		buffer[8] = 'r';
+		buffer[9] = 'l';
+		buffer[10] = 'd';
+		buffer[11] = '!';
+		buffer[12] = 0;
+		buffer[13] = 0;
 
-    String encoded = new String(buffer,0,(int)size);
+		String plaintext = new String(buffer, 0, (int) 13);
 
-    if (!plaintext.equals(encoded))
-    {
-      System.out.println("Plaintext was not equal to encoded. SUCCESS");
-    }
-    else
-    {
-      System.out.println("Plaintext was equal to encoded. FAIL");
-    }
+		// Encode
+		long size = filter.encode(buffer, 13, 500);
+		String encoded = new String(buffer, 0, (int) size);
 
-    size = filter.decode(buffer, size, size);
+		Assert.assertNotEquals(encoded, plaintext);
 
-    String decoded = new String(buffer,0,(int)size);
+		// Decode
+		size = filter.decode(buffer, size, size);
+		String decoded = new String(buffer, 0, (int) size);
 
-    if (!encoded.equals(decoded))
-    {
-      System.out.println("Encoded was not equal to decoded. SUCCESS");
-    }
-    else
-    {
-      System.out.println("Encoded was equal to decoded. FAIL");
-    }
+		Assert.assertNotEquals(encoded, decoded);
+		Assert.assertEquals(decoded, plaintext);
 
-    if (plaintext.equals(decoded))
-    {
-      System.out.println("Plaintext was equal to decoded. SUCCESS");
-    }
-    else
-    {
-      System.out.println("Plaintext was not equal to decoded. FAIL");
-    }
+	}
 
-    /**
-     * Normally we would not need to do this when passing this to a settings.
-     * However, in this case, we should clean up.
-     **/
-    filter.free();
-
-  }
-
-  public static void main(String...args) throws Exception
-  {
-    testAesBufferFilter();
-  }
 }
