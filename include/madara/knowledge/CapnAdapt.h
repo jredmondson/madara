@@ -15,6 +15,7 @@
 #include <boost/preprocessor/facilities/overload.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
 
+#include "madara/knowledge/TypeHandlers.h"
 #include "madara/utility/SupportTest.h"
 
 #define KJ_HEADER_WARNINGS 0
