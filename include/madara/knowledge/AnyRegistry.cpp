@@ -45,8 +45,7 @@ Any AnyRegistry::construct(const char *tag)
   if (siter != schemas.end()) {
     return Any(type<RegCapnObject>{}, siter->first, siter->second);
   }
-  throw exceptions::BadAnyAccess(std::string("Type ") + tag +
-      " is not registered");
+  return Any(type<GenericCapnObject>{});
 }
 
 inline ConstAny AnyRegistry::construct_const(const char *tag)

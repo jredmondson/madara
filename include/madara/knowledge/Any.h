@@ -408,6 +408,13 @@ public:
   void unserialize_json(type<T> t, std::istream &i)
   {
     const TypeHandlers &handler = get_type_handler(t);
+
+    using exceptions::BadAnyAccess;
+    if (!handler.load_json) {
+      throw BadAnyAccess(std::string("Type ") + AnyRegistry::get_type_name<T>()
+          + " does not support unserialize_json");
+    }
+
     std::unique_ptr<T> ptr(new T{});
 
     handler.load_json(i, (void*)ptr.get(), AnyRegistry::get_type_name<T>());
@@ -562,6 +569,12 @@ inline void BasicOwningAny<Impl, Base>::unserialize_json(
     const char *type, std::istream &i)
 {
   Any any(construct(type));
+
+  using exceptions::BadAnyAccess;
+  if (!any.handler_->load_json) {
+    throw BadAnyAccess(std::string("Type ") + type +
+        " does not support unserialize_json");
+  }
 
   any.handler_->load_json(i, any.data_, type);
 
