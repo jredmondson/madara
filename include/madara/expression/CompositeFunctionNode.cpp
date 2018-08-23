@@ -15,7 +15,7 @@
 
 
 #include "madara/knowledge/Functions.h"
-#include "madara/knowledge/ExternFunctionVariables.h"
+#include "madara/knowledge/Variables.h"
 #include "madara/exceptions/KarlException.h"
 
 #ifdef _MADARA_PYTHON_CALLBACKS_
