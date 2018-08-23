@@ -181,7 +181,7 @@ template<typename T>
 using type_of_pointer_to_member = decltype(type_of_pointer_to_member_impl(T()));
 
 #define MADARA_AUTORET_FUNC(NAME, ARGS, ...) \
-  inline auto NAME ARGS -> decay_<decltype(__VA_ARGS__)> { \
+  inline auto NAME ARGS -> ::madara::utility::core::decay_<decltype(__VA_ARGS__)> { \
     return (__VA_ARGS__); }
 
 #define MADARA_AUTORET_REF_FUNC(NAME, ARGS, ...) \

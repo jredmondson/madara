@@ -15,6 +15,7 @@
 #include <boost/preprocessor/facilities/overload.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
 
+#include "madara/knowledge/TypeHandlers.h"
 #include "madara/utility/SupportTest.h"
 
 #define KJ_HEADER_WARNINGS 0
@@ -204,7 +205,7 @@ inline auto capn_set(B &builder, const T &val) ->
   enable_if_<supports_for_each_member<T>::value>
 {
   for_each_member(type<T>{},
-      do_capn_struct_set<T, decay_<decltype(builder)>>{
+      do_capn_struct_set<T, ::madara::decay_<decltype(builder)>>{
       &val, &builder});
 }
 
@@ -212,14 +213,14 @@ template<typename R, typename T>
 inline auto capn_get(R &reader, T &val) ->
   enable_if_<supports_for_each_member<T>::value>
 {
-  for_each_member(type<T>{}, do_capn_struct_get<T, decay_<decltype(reader)>>{
+  for_each_member(type<T>{}, do_capn_struct_get<T, ::madara::decay_<decltype(reader)>>{
       &val, &reader});
 }
 
 MADARA_MAKE_VAL_SUPPORT_TEST(capn_set, x, capn_set(std::declval<int&>(), x));
 MADARA_MAKE_VAL_SUPPORT_TEST(capn_get, x, capn_get(std::declval<int&>(), x));
 MADARA_MAKE_VAL_SUPPORT_TEST(infer_capn, x,
-    infer_capn(type<decay_<decltype(x)>>()));
+    infer_capn(type<::madara::decay_<decltype(x)>>()));
 
 template<typename T,
   enable_if_<supports_infer_capn<T>::value, int> = 0>
@@ -471,7 +472,7 @@ namespace utility { inline namespace core {
     !supports_madara_capn_struct_##TYPE##_has##FIELD< \
       typename T::Builder>::value, int> = 0> \
   MADARA_AUTORET_FUNC(get_capnproto_type_info_##TYPE##_##FIELD, \
-    (type<T>, ::madara::overload_priority_weakest), \
+    (::madara::type<T>, ::madara::overload_priority_weakest), \
     ::madara::knowledge::MakeCapnPrimitive<T>( \
             &T::Reader::get##FIELD, \
             &T::Builder::set##FIELD \
@@ -480,7 +481,7 @@ namespace utility { inline namespace core {
 #define MADARA_CAPNSTRUCT_DETECT(TYPE, FIELD) \
   template<typename T> \
   MADARA_AUTORET_FUNC(get_capnproto_type_info_##TYPE##_##FIELD, \
-    (type<T>, ::madara::overload_priority<8>), \
+    (::madara::type<T>, ::madara::overload_priority<8>), \
     ::madara::knowledge::MakeCapnStruct<T>( \
             &T::Reader::get##FIELD, \
             &T::Builder::get##FIELD, \
@@ -492,7 +493,7 @@ namespace utility { inline namespace core {
 #define MADARA_CAPNSTRING_DETECT(TYPE, FIELD) \
   template<typename T> \
   MADARA_AUTORET_FUNC(get_capnproto_type_info_##TYPE##_##FIELD, \
-    (type<T>, ::madara::overload_priority<4>), \
+    (::madara::type<T>, ::madara::overload_priority<4>), \
     ::madara::knowledge::MakeCapnString<T>( \
             &T::Reader::get##FIELD, \
             &T::Builder::get##FIELD, \
@@ -504,7 +505,7 @@ namespace utility { inline namespace core {
 #define MADARA_CAPNLIST_DETECT(TYPE, FIELD) \
   template<typename T> \
   MADARA_AUTORET_FUNC(get_capnproto_type_info_##TYPE##_##FIELD, \
-    (type<T>, ::madara::overload_priority<8>), \
+    (::madara::type<T>, ::madara::overload_priority<8>), \
     ::madara::knowledge::MakeCapnList<T>( \
             &T::Reader::get##FIELD, \
             &T::Builder::get##FIELD, \
@@ -536,7 +537,7 @@ namespace utility { inline namespace core {
 
 #define MADARA_CAPN_DO_DETECT(TYPE, CAPNTYPE, FIELD) \
   get_capnproto_type_info_##TYPE##_##FIELD( \
-      type<CAPNTYPE>{}, ::madara::select_overload())
+      ::madara::type<CAPNTYPE>{}, ::madara::select_overload())
 
 #define MADARA_CAPN_MEMBER_5(FUNC, TYPE, CAPNTYPE, FIELD, CAPNFIELD) \
     FUNC(#FIELD, &TYPE::FIELD, \

@@ -37,7 +37,7 @@ constexpr bool madara_use_cereal(type<T>)
 }
 
 #define MADARA_IGNORE_FOR_EACH_FIELD(...) \
-  constexpr bool madara_ignore_for_each_field(type<__VA_ARGS__>){return true;}
+  constexpr bool madara_ignore_for_each_field(::madara::type<__VA_ARGS__>){return true;}
 
 template<typename C, typename A>
 MADARA_IGNORE_FOR_EACH_FIELD(std::basic_string<C, A>)
@@ -76,7 +76,7 @@ template<typename V, typename H, typename A>
 MADARA_IGNORE_FOR_EACH_FIELD(std::unordered_set<V, H, A>)
 
 #define MADARA_USE_CEREAL(...) \
-  constexpr bool madara_use_cereal(type<__VA_ARGS__>){return true;}
+  constexpr bool madara_use_cereal(::madara::type<__VA_ARGS__>){return true;}
 
 template<typename C, typename A>
 MADARA_USE_CEREAL(std::basic_string<C, A>)
