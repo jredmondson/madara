@@ -398,6 +398,10 @@ public:
    **/
   void serialize(std::ostream &stream) const
   {
+    if (!handler_->save) {
+      throw exceptions::BadAnyAccess(std::string("Type ") + tag() + "does not "
+          "support serialization");
+    }
     handler_->save(stream, data_);
   }
 
@@ -532,6 +536,10 @@ public:
    **/
   void serialize_json(std::ostream &o) const
   {
+    if (!handler_->save_json) {
+      throw exceptions::BadAnyAccess(std::string("Type ") + tag() + "does not "
+          "support JSON serialization");
+    }
     handler_->save_json(o, data_);
   }
 
