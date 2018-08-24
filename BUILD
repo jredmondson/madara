@@ -56,11 +56,13 @@ cc_library(
         ],
     ) + ["include/madara/Version.h"],
     copts = ["-w"],
-    defines = ["MADARA_FEATURE_SIMTIME"] +
-              select({
-                  "@bazel_module//bazel_rules:zmq": ["_MADARA_USING_ZMQ_"],
-                  "//conditions:default": [],
-              }),
+    defines = [
+        "MADARA_FEATURE_SIMTIME",
+        "_MADARA_PYTHON_CALLBACKS_",
+    ] + select({
+        "@bazel_module//bazel_rules:zmq": ["_MADARA_USING_ZMQ_"],
+        "//conditions:default": [],
+    }),
     linkopts = ["-pthread"],
     strip_include_prefix = "include",
     textual_hdrs = glob(["include/**/*.inl"]),

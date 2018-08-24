@@ -28,7 +28,7 @@ class Transport_NS {};
 void define_transport (void)
 {
   object transport = object (handle<> (
-    PyModule_New ("madara.transport")));
+    PyModule_New ("pymadara.transport")));
 
    transport.attr("__file__")="<synthetic>";
    scope().attr ("transport") = transport;
@@ -36,7 +36,7 @@ void define_transport (void)
 
    // this was the missing piece: sys.modules['modA.modB']=modB
    extract <dict> (getattr (
-     import ("sys"), "modules"))()["madara.transport"] = transport;
+     import ("sys"), "modules"))()["pymadara.transport"] = transport;
 
   scope Transport = transport;
 

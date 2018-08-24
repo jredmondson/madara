@@ -152,7 +152,7 @@ class_<T> define_basic_any(const char * name, const char *doc, I init)
 void define_knowledge (void)
 {
   object ke = object (handle<> (
-    PyModule_New ("madara.knowledge")));
+    PyModule_New ("pymadara.knowledge")));
 
    ke.attr("__file__")="<synthetic>";
    scope().attr ("knowledge") = ke;
@@ -160,7 +160,7 @@ void define_knowledge (void)
 
    // this was the missing piece: sys.modules['modA.modB']=modB
    extract <dict> (getattr (
-     import ("sys"), "modules"))()["madara.knowledge"] = ke;
+     import ("sys"), "modules"))()["pymadara.knowledge"] = ke;
 
    scope knowledge = ke;
 

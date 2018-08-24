@@ -56,7 +56,7 @@ struct BufferFilterWrap : madara::filters::BufferFilter,
 void define_filters (void)
 {
   object filters = object (handle<> (
-    PyModule_New ("madara.filters")));
+    PyModule_New ("pymadara.filters")));
 
   filters.attr("__file__")="<synthetic>";
   scope().attr ("filters") = filters;
@@ -64,7 +64,7 @@ void define_filters (void)
 
   // this was the missing piece: sys.modules['modA.modB']=modB
   extract <dict> (getattr (
-    import ("sys"), "modules"))()["madara.filters"] = filters;
+    import ("sys"), "modules"))()["pymadara.filters"] = filters;
 
   scope filters_scope = filters;
 
