@@ -7,6 +7,8 @@
 #include <sstream>
 #include <assert.h>
 
+#include "madara/knowledge/CheckpointPlayer.h"
+#include "madara/knowledge/CheckpointStreamer.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/threads/Threader.h"
 
@@ -56,6 +58,12 @@ std::string save_checkpoint;
 
 // filename to save knowledge base as binary to
 std::string save_binary;
+
+// filename to load a stream from
+std::string stream_from;
+
+// filename to save a stream to
+std::string stream_to;
 
 // knowledge base var name to save checkpoint timestamp to
 std::string  meta_prefix;
@@ -351,8 +359,10 @@ void handle_arguments (int argc, char ** argv)
         "  [-scp|--save-checkpoint-prefix prfx]\n" \
         "                           prefix of knowledge to save in checkpoint\n" \
         "  [-sj|--save-json file]   save the resulting knowledge base as JSON\n" \
+        "  [-sff|--stream-from file] stream knowledge from a file\n" \
         "  [-ss|--save-size bytes]  size of buffer needed for file saves\n" \
         "  [-st|--save-transsport file] a file to save transport settings to\n" 
+        "  [-sff|--stream-to file]  stream knowledge to a file\n" \
         "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
         "  [-stt|--save-transport-text file] a text file to save transport settings to\n" \
         "  [-t|--time time]         time to wait for results. Same as -w.\n" \
@@ -575,13 +585,6 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
-    else if (arg1 == "-sj" || arg1 == "--save-json")
-    {
-      if (i + 1 < argc)
-        save_json = argv[i + 1];
-
-      ++i;
-    }
     else if (arg1 == "-sb" || arg1 == "--save-binary")
     {
       if (i + 1 < argc)
@@ -602,6 +605,20 @@ void handle_arguments (int argc, char ** argv)
       {
         save_checkpoint_settings.prefixes.push_back (argv[i + 1]);
       }
+
+      ++i;
+    }
+    else if (arg1 == "-sff" || arg1 == "--stream-from")
+    {
+      if (i + 1 < argc)
+        stream_from = argv[i + 1];
+
+      ++i;
+    }
+    else if (arg1 == "-sj" || arg1 == "--save-json")
+    {
+      if (i + 1 < argc)
+        save_json = argv[i + 1];
 
       ++i;
     }
@@ -685,6 +702,13 @@ void handle_arguments (int argc, char ** argv)
       {
         save_transport = argv[i + 1];
       }
+
+      ++i;
+    }
+    else if (arg1 == "-stf" || arg1 == "--stream-to")
+    {
+      if (i + 1 < argc)
+        stream_to = argv[i + 1];
 
       ++i;
     }
@@ -937,7 +961,39 @@ int main (int argc, char ** argv)
   }
 
   // create a knowledge base and setup our id
-  knowledge::KnowledgeBase knowledge (host, settings);
+  knowledge::KnowledgeBase kb (host, settings);
+
+  // stream first, then allow overwrites
+  load_checkpoint_settings.filename = stream_from;
+
+  // create a CheckpointPlayer and CheckpointStreamer, just in case
+  knowledge::CheckpointPlayer player (
+    kb.get_context (), load_checkpoint_settings);
+  // knowledge::CheckpointStreamer streamer (save_checkpoint_settings, kb, 100);
+
+  // start a stream if the user asked us to
+  if (stream_to != "")
+  {
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
+      "Streaming to %s:\n",
+      stream_to.c_str ());
+      
+    save_checkpoint_settings.filename = stream_to;
+
+    auto streamer = utility::mk_unique<knowledge::CheckpointStreamer>(
+      save_checkpoint_settings, kb, 100);
+    kb.attach_streamer(std::move(streamer));
+  }
+
+  if (stream_from != "")
+  {
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
+      "Streaming from %s:\n",
+      stream_from.c_str ());
+
+    // start the player thread and update in step with STK
+    player.start();
+  }
 
   if (initbinaries != "")
   {
@@ -948,25 +1004,25 @@ int main (int argc, char ** argv)
     madara::knowledge::EvalSettings silent (true, true, true, true, true);
     //madara::knowledge::FileHeader meta;
     load_checkpoint_settings.filename = initbinaries;
-    knowledge.load_context (load_checkpoint_settings);
+    kb.load_context (load_checkpoint_settings);
 
     if (meta_prefix != "")
     {
-      knowledge.set (meta_prefix + ".originator",
+      kb.set (meta_prefix + ".originator",
         load_checkpoint_settings.originator, silent);
-      knowledge.set (meta_prefix + ".version",
+      kb.set (meta_prefix + ".version",
         load_checkpoint_settings.version, silent);
-      knowledge.set (meta_prefix + ".last_timestamp",
+      kb.set (meta_prefix + ".last_timestamp",
         (Integer)load_checkpoint_settings.last_timestamp, silent);
-      knowledge.set (meta_prefix + ".initial_timestamp",
+      kb.set (meta_prefix + ".initial_timestamp",
         (Integer)load_checkpoint_settings.initial_timestamp, silent);
-      knowledge.set (meta_prefix + ".last_lamport_clock",
+      kb.set (meta_prefix + ".last_lamport_clock",
         (Integer)load_checkpoint_settings.last_lamport_clock, silent);
-      knowledge.set (meta_prefix + ".initial_lamport_clock",
+      kb.set (meta_prefix + ".initial_lamport_clock",
         (Integer)load_checkpoint_settings.initial_lamport_clock, silent);
-      knowledge.set (meta_prefix + ".states",
+      kb.set (meta_prefix + ".states",
         (Integer)load_checkpoint_settings.states, silent);
-      knowledge.set (meta_prefix + ".current_timestamp",
+      kb.set (meta_prefix + ".current_timestamp",
         (Integer)utility::get_time (), silent);
     }
   }
@@ -992,7 +1048,7 @@ int main (int argc, char ** argv)
       }
 
       expressions.push_back (
-        knowledge.compile (knowledge.file_to_string (checkpoint_settings)));
+        kb.compile (kb.file_to_string (checkpoint_settings)));
     }
     else
     {
@@ -1017,7 +1073,7 @@ int main (int argc, char ** argv)
     {
       if (utility::file_exists (*i))
       {
-        knowledge.evaluate (utility::file_to_string (*i), noharm);
+        kb.evaluate (utility::file_to_string (*i), noharm);
       }
       else
       {
@@ -1035,16 +1091,16 @@ int main (int argc, char ** argv)
     for (StringVector::const_iterator i = initlogics.begin ();
       i != initlogics.end (); ++i)
     {
-      knowledge.evaluate (*i, noharm);
+      kb.evaluate (*i, noharm);
     }
   }
 
-  knowledge.reset_checkpoint ();
+  kb.reset_checkpoint ();
 
   // command line logics are evaluated last
   if (logic != "")
   {
-    expressions.push_back (knowledge.compile (logic));
+    expressions.push_back (kb.compile (logic));
   }
 
   // check frequency to see if we should only execute once
@@ -1055,8 +1111,7 @@ int main (int argc, char ** argv)
       for (size_t i = 0; i < expressions.size (); ++i)
       {
 #ifndef _MADARA_NO_KARL_
-        knowledge::KnowledgeRecord result =
-          knowledge.evaluate (expressions[i]);
+        knowledge::KnowledgeRecord result = kb.evaluate (expressions[i]);
 
         if (check_result && result.is_true ())
         {
@@ -1077,14 +1132,14 @@ int main (int argc, char ** argv)
       for (size_t i = 0; i < expressions.size (); ++i)
       {
 #ifndef _MADARA_NO_KARL_
-        knowledge.evaluate (expressions[i]);
+        kb.evaluate (expressions[i]);
 #endif // _MADARA_NO_KARL_
       }
     } // if (after_wait)
   } // if (frequency < 0)
   else // frequency >= 0
   {
-    threads::Threader threader (knowledge);
+    threads::Threader threader (kb);
 
     // if the user specified a wait before evaluation, sleep for the time
     if (waiting_for_periodic)
@@ -1093,7 +1148,7 @@ int main (int argc, char ** argv)
     }
 
     threader.run (frequency, "evaluator",
-      new Evaluator (knowledge, expressions), false);
+      new Evaluator (kb, expressions), false);
 
     bool terminated = false;
 
@@ -1118,11 +1173,11 @@ int main (int argc, char ** argv)
   {
     if (print_prefixes.size () == 0)
     {
-      knowledge.print ();
+      kb.print ();
     }
     else
     {
-      print_all_prefixes (knowledge);
+      print_all_prefixes (kb);
     }
   }
 
@@ -1135,28 +1190,28 @@ int main (int argc, char ** argv)
   if (save_checkpoint.size () > 0)
   {
     save_checkpoint_settings.filename = save_checkpoint;
-    knowledge.save_checkpoint (save_checkpoint_settings);
+    kb.save_checkpoint (save_checkpoint_settings);
   }
 
   // save as karl if requested
   if (save_location.size () > 0)
   {
     save_checkpoint_settings.filename = save_location;
-    knowledge.save_as_karl (save_checkpoint_settings);
+    kb.save_as_karl (save_checkpoint_settings);
   }
 
   // save as karl if requested
   if (save_json.size () > 0)
   {
     save_checkpoint_settings.filename = save_json;
-    knowledge.save_as_json (save_checkpoint_settings);
+    kb.save_as_json (save_checkpoint_settings);
   }
 
   // save as binary if requested
   if (save_binary.size () > 0)
   {
     save_checkpoint_settings.filename = save_binary;
-    knowledge.save_context (save_checkpoint_settings);
+    kb.save_context (save_checkpoint_settings);
   }
 
   return 0;

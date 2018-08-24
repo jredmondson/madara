@@ -7,6 +7,8 @@
 
 #include "madara/utility/ScopedArray.h"
 #include "madara/knowledge/CheckpointSettings.h"
+#include "madara/knowledge/FileHeader.h"
+#include "madara/transport/MessageHeader.h"
 
 /**
  * @file CheckpointPlayer.h
