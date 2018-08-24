@@ -10,7 +10,7 @@
 #include <boost/filesystem.hpp>
 
 #include "madara/knowledge/KnowledgeBase.h"
-#include "madara/knowledge/AnyRegistry.h"
+#include "madara/knowledge/KnowledgeBase.h"
 #include "madara/threads/Threader.h"
 
 #include "madara/utility/Utility.h"
@@ -28,7 +28,6 @@
 #include "capnp/schema-parser.h"
 #include "capnp/schema.h"
 #include <boost/algorithm/string.hpp>
-
 
 // convenience namespaces and typedefs
 namespace knowledge = madara::knowledge;
@@ -105,6 +104,7 @@ double frequency (-1.0);
   std::vector<filters::LZ4BufferFilter> lz4_filters;
 #endif
 
+// Capnp types and globals
 typedef boost::tokenizer< boost::char_separator<char> > t_tokenizer;
 kj::Vector<kj::StringPtr> capnpImportDirs;
 std::vector<std::string> capnpMsg;
@@ -112,7 +112,7 @@ std::vector<std::string> capnpType;
 bool capnpMsgTypeParamFlag = false;
 bool capnpImportDirsFlag = false;
 
-//prototypes
+// capnp param prototypes
 std::vector<std::string> tokenizeString(const std::string& str, const std::string& delimiters);
 
 // handle command line arguments
@@ -428,6 +428,7 @@ void handle_arguments (int argc, char ** argv)
 	  //write loggercode and continue
 	  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_TRACE,
 				 "ERROR: parameter -ni is missing or must precede -nf param\n");
+	  ++i;
 	  continue;
 	}
 	if ( ! capnpMsgTypeParamFlag )
@@ -435,6 +436,7 @@ void handle_arguments (int argc, char ** argv)
 	  //write loggercode and continue
 	  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_TRACE,
 				 "ERROR: parameter -n is missing or must precede -nf param\n");
+	  ++i;
 	  continue;
 	}
 	//displayName == "the ending file name??"
