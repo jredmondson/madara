@@ -7,9 +7,9 @@
 #include <sstream>
 #include <assert.h>
 
+
 #include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
-
 #include "madara/knowledge/CheckpointPlayer.h"
 #include "madara/knowledge/CheckpointStreamer.h"
 #include "madara/knowledge/KnowledgeBase.h"

@@ -30,7 +30,7 @@ namespace madara
       **/
       DynamicPrefixFilter (
         const std::string & string_vector_name = "prefixes.allowed")
-      : initialized_ (false), name_ (string_vector_name), prefixes_ ()
+      : initialized_ (false), name (string_vector_name), prefixes_ ()
       {
 
       }
@@ -55,7 +55,7 @@ namespace madara
         if (!initialized_)
         {
           // set the initial vector up
-          prefixes_.set_name (name_, vars);
+          prefixes_.set_name (name, vars);
         }
         else
         {
@@ -115,7 +115,9 @@ namespace madara
       /**
        * The string vector name to bind to inside the knowledge base
        **/
-      std::string name_;
+      std::string name;
+
+    protected:
 
       /**
        * A map of discovered peers
