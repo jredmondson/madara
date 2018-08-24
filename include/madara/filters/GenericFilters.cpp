@@ -1,7 +1,7 @@
 #include "Arguments.h"
 #include "GenericFilters.h"
 #include "madara/knowledge/Functions.h"
-#include "madara/knowledge/ExternFunctionVariables.h"
+#include "madara/knowledge/Variables.h"
 #include <sstream>
 
 const char * operation_types [] = {

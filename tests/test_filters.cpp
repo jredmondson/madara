@@ -2,6 +2,14 @@
 
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeRecordFilters.h"
+#include "madara/filters/DynamicPrefixFilter.h"
+
+namespace knowledge = madara::knowledge;
+namespace filters = madara::filters;
+namespace transport = madara::transport;
+namespace logger = madara::logger;
+
+typedef knowledge::KnowledgeRecord   KnowledgeRecord;
 
 int madara_fails = 0;
 
@@ -27,8 +35,51 @@ madara::knowledge::KnowledgeRecord
   return result;
 }
 
+void test_dynamic_prefix_filter (void)
+{
+  madara::knowledge::KnowledgeBase kb;
+  madara::knowledge::Variables vars (&kb.get_context ());
+
+  // create allowed prefixes for agent.0 and agent.1
+  kb.evaluate (
+    "prefixes.allowed.size=2;"
+    "prefixes.allowed.0='agent.1';"
+    "prefixes.allowed.1='agent.3'");
+
+  filters::DynamicPrefixFilter filter;
+
+  knowledge::KnowledgeMap map;
+  transport::TransportContext context;
+
+  map["agent.0.field1"] = KnowledgeRecord (1);
+  map["agent.0.field2"] = KnowledgeRecord (2);
+  map["agent.1.field1"] = KnowledgeRecord (1);
+  map["agent.1.field2"] = KnowledgeRecord (2);
+  map["agent.2.field1"] = KnowledgeRecord (1);
+  map["agent.2.field2"] = KnowledgeRecord (2);
+  map["agent.3.field1"] = KnowledgeRecord (1);
+  map["agent.3.field2"] = KnowledgeRecord (2);
+
+  std::cerr << "Testing dynamic prefix filter: ";
+
+  filter.filter (map, context, vars);
+
+  if (map.size () == 4)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+
+}
+
 int main (int, char **)
 {
+  test_dynamic_prefix_filter ();
+
   madara::knowledge::KnowledgeRecordFilters filters;
 
   std::cerr << 

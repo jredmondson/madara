@@ -6,7 +6,7 @@
 #include <string>
 #include "madara/MadaraExport.h"
 #include "madara/knowledge/KnowledgeRecord.h"
-#include "madara/knowledge/ExternFunctionVariables.h"
+#include "madara/knowledge/Variables.h"
 #include "madara/transport/TransportContext.h"
 #include "madara/filters/AggregateFilter.h"
 

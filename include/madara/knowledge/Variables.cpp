@@ -2,7 +2,7 @@
 #define _MADARA_EXTERNAL_FUNCTION_VARIABLES_CPP_
 
 #include "madara/logger/GlobalLogger.h"
-#include "madara/knowledge/ExternFunctionVariables.h"
+#include "madara/knowledge/Variables.h"
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/knowledge/KnowledgeRecordFilters.h"
 

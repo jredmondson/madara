@@ -127,6 +127,7 @@ int main (int argc, char ** argv)
   wait_settings.max_wait_time = 10;
 
   using strvec = std::vector<std::string>;
+  using strfloat = std::vector<float>;
 
   madara::knowledge::Any::register_type<strvec>("strvec");
 
@@ -147,6 +148,8 @@ int main (int argc, char ** argv)
 
   if (settings.id == 0)
   {
+    madara::knowledge::Any::register_type<strfloat>("strfloat");
+
     madara::knowledge::CompiledExpression compiled =
       knowledge.compile (
         "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3"
@@ -154,6 +157,9 @@ int main (int argc, char ** argv)
     do {
       print_clocks();
       knowledge.set_any ("test_any_0", strvec{"e", "f", "g"},
+          madara::knowledge::EvalSettings::DELAY);
+
+      knowledge.set_any ("test_unreg_any_0", strfloat{1.0, 2.0, 3.0},
           madara::knowledge::EvalSettings::DELAY);
 
       //knowledge.wait (compiled, wait_settings);
@@ -181,6 +187,17 @@ int main (int argc, char ** argv)
     if (asize != 3) {
       madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ERROR,
         "Expected 3 long test_any_0, got %d.\n", asize);
+    }
+    std::string unreg_tostr = knowledge.get("test_unreg_any_0").to_string();
+    if (unreg_tostr != "\"GenericCapnObject<strfloat>\"") {
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ERROR,
+        "Expected test_unreg_any_0 == \"GenericCapnObject<strfloat>\", "
+        "got %s.\n", unreg_tostr.c_str());
+    }
+    size_t unreg_size = knowledge.get("test_unreg_any_0").size();
+    if (unreg_size < 10) {
+      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ERROR,
+        "Expected test_unreg_any_0 size() >= 10, got %d.\n", unreg_size);
     }
   }
 

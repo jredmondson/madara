@@ -18,7 +18,7 @@
 #include "madara/utility/StdInt.h"
 #include "madara/MadaraExport.h"
 #include "madara/knowledge/FunctionArguments.h"
-#include "madara/knowledge/ExternFunctionVariables.h"
+#include "madara/knowledge/Variables.h"
 
 namespace madara
 {

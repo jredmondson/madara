@@ -58,8 +58,8 @@ namespace madara
       /**
        * Constructor
        **/
-      Variables ()
-        : context_ (0)
+      Variables (ThreadSafeContext * new_context = 0)
+        : context_ (new_context)
       {
       }
       
