@@ -33,7 +33,7 @@ constexpr bool madara_use_cereal(type<T>)
 {
   return (knowledge::supports_for_each_field<T>::value &&
           !madara_ignore_for_each_field(type<T>{})) ||
-         std::is_arithmetic<T>::value;
+         std::is_arithmetic<T>::value || std::is_enum<T>::value;
 }
 
 #define MADARA_IGNORE_FOR_EACH_FIELD(...) \
