@@ -63,6 +63,13 @@ namespace ns
     fun("f", val.f);
   }
 
+  enum E
+  {
+    X,
+    Y,
+    Z
+  };
+
   struct C
   {
     int g;
@@ -73,6 +80,7 @@ namespace ns
     std::vector<B> v;
     B b;
     std::map<std::string, int> m;
+    E e;
   };
 
   template<typename Fun>
@@ -86,6 +94,7 @@ namespace ns
     fun("v", val.v);
     fun("b", val.b);
     fun("m", val.m);
+    fun("e", val.e);
   }
 }
 
@@ -161,7 +170,7 @@ void test_any()
   Any aC(ns::C{1, 2.5, "asdf",
       {10, 20, 30}, {1.1, 2.2, 3.3},
       {}, {4, 7, 9},
-      {{"x", 13}, {"y", 14}}});
+      {{"x", 13}, {"y", 14}}, ns::Z});
   auto fields = aC.list_fields();
   for (const auto &cur : fields)
   {
@@ -185,6 +194,10 @@ void test_any()
   TEST_EQ(aC("m")["x"](type<int>{}), 26);
   aC("m")["x"] = "29";
   TEST_EQ(aC("m")["x"](type<int>{}), 29);
+  TEST_EQ(aC("e")(type<ns::E>{}), ns::Z);
+
+  Any aE(type<ns::E>{}, ns::Z);
+  TEST_EQ(aE(type<ns::E>{}), ns::Z);
 
   VAL(aC.ref(aC.find_field("g")));
   auto field = aC.find_field("i");
@@ -673,6 +686,7 @@ int main (int, char **)
   Any::register_type<A>("A");
   Any::register_type<ns::B>("B");
   Any::register_type<ns::C>("C");
+  Any::register_type<ns::E>("E");
   Any::register_type<std::string>("str");
   Any::register_type<std::vector<std::string>>("vecstr");
   geo::register_types();
