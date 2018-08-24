@@ -126,6 +126,7 @@ public:
    **/
   void start()
   {
+    keep_running_.test_and_set();
     reader_ = mk_unique<CheckpointReader>(settings_);
     thread_ = std::thread(thread_main, this);
   }
