@@ -20,9 +20,20 @@ cc_library(
     strip_include_prefix = "include",
 )
 
-NAMES = ["madara", "madara_python"]
-DEFINES = [[], ["_MADARA_PYTHON_CALLBACKS_"]]
-DEPS = [[],["@org_boost_boost//:python"]]
+NAMES = [
+    "madara",
+    "madara_python",
+]
+
+DEFINES = [
+    [],
+    ["_MADARA_PYTHON_CALLBACKS_"],
+]
+
+DEPS = [
+    [],
+    ["@org_boost_boost//:python"],
+]
 
 [cc_library(
     name = NAME,
