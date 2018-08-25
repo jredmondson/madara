@@ -20,8 +20,12 @@ cc_library(
     strip_include_prefix = "include",
 )
 
-cc_library(
-    name = "madara",
+NAMES = ["madara", "madara_python"]
+DEFINES = [[], ["_MADARA_PYTHON_CALLBACKS_"]]
+DEPS = [[],["@org_boost_boost//:python"]]
+
+[cc_library(
+    name = NAME,
     srcs = glob(
                [
                    "include/**/*.h",
@@ -58,11 +62,10 @@ cc_library(
     copts = ["-w"],
     defines = [
         "MADARA_FEATURE_SIMTIME",
-        "_MADARA_PYTHON_CALLBACKS_",
     ] + select({
         "@bazel_module//bazel_rules:zmq": ["_MADARA_USING_ZMQ_"],
         "//conditions:default": [],
-    }),
+    }) + DEFINE,
     linkopts = ["-pthread"],
     strip_include_prefix = "include",
     textual_hdrs = glob(["include/**/*.inl"]),
@@ -73,8 +76,8 @@ cc_library(
     ] + select({
         "@bazel_module//bazel_rules:zmq": ["@org_zeromq_libzmq//:libzmq"],
         "//conditions:default": [],
-    }),
-)
+    }) + DEP,
+) for NAME, DEFINE, DEP in zip(NAMES, DEFINES, DEPS)]
 
 cc_library(
     name = "madara_jni_h",

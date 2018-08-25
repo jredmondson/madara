@@ -14,8 +14,7 @@ cc_binary(
     ],
     linkshared = 1,
     deps = [
-        "@madara",
-        "@org_boost_boost//:boost",
+        "@madara//:madara_python",
     ],
 )
 
