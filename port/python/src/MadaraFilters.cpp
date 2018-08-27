@@ -13,6 +13,14 @@
 #include "FunctionDefaults.h"
 #include "MadaraFilters.h"
 
+#ifdef _USE_SSL_
+  #include "madara/filters/ssl/AESBufferFilter.h"
+#endif
+
+#ifdef _USE_LZ4_
+  #include "madara/filters/lz4/LZ4BufferFilter.h"
+#endif
+
 /**
  * @file MadaraModule.cpp
  * @author James Edmondson <jedmondson@gmail.com>
