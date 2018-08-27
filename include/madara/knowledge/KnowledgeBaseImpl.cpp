@@ -52,7 +52,6 @@ KnowledgeBaseImpl::setup_unique_hostport (std::string host)
     actual_host.resize (30);
   }
 
-  /*
   actual_host += ":";
 
   boost::mt19937 ran(std::random_device{}());
@@ -61,7 +60,6 @@ KnowledgeBaseImpl::setup_unique_hostport (std::string host)
   uuid_str.erase(std::remove(uuid_str.begin(), uuid_str.end(), '-'), uuid_str.end());
 
   actual_host += uuid_str;
-  */
 
   return actual_host;
 }
