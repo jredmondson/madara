@@ -557,22 +557,48 @@ void handle_arguments (int argc, char ** argv)
       }
       ++i;
     }
+    else if (arg1 == "-ni" )
+    {
+      if ( i+1 < argc)
+      {
+        //importPath == "this is the question"
+        std::stringstream dir_names_buffer (argv[i + 1]);
+        std::string dirnames;
+        dir_names_buffer >> dirnames;
+        boost::char_separator<char> sepdir(":");
+        t_tokenizer dirtok(dirnames, sepdir);
+        size_t idx = 0;
+
+        for (t_tokenizer::iterator dirbeg = dirtok.begin(); dirbeg != dirtok.end(); ++dirbeg,++idx)
+        {
+          capnpImportDirs.add(*dirbeg);
+        }
+        capnpImportDirsFlag = true;
+      }else
+      {
+        //print out error log
+        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_TRACE,
+                               "ERROR: parameter -ni dir1[:dir2:dir3]\n");
+     }
+
+      ++i;
+    }
     else if (arg1 == "-n")
     {
       if ( i+1 < argc)
       {
-	std::stringstream msgtype_buffer (argv[i + 1]);
-	std::string msgtypepair;
-	msgtype_buffer >> msgtypepair;
-	std::vector<std::string> v = tokenizeString(msgtypepair,std::string(":"));
-	capnpMsg.push_back(v[0]);
-	capnpType.push_back(v[1]);
-	capnpMsgTypeParamFlag = true;
+        std::stringstream msgtype_buffer (argv[i + 1]);
+        std::string msgtypepair;
+        msgtype_buffer >> msgtypepair;
+        std::vector<std::string> v = tokenizeString(msgtypepair,std::string(":"));
+        capnpMsg.push_back(v[0]);
+        capnpType.push_back(v[1]);
+        capnpMsgTypeParamFlag = true;
       }else
       {
-	//print out error log
-	madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_TRACE,
-			       "ERROR: parameter [-n|] msg:type\n");
+        //print out error log
+        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+                               "ERROR: parameter [-n|] msg:type\n");
       }
 
       ++i;
@@ -581,60 +607,63 @@ void handle_arguments (int argc, char ** argv)
     {
       if ( i + 1 < argc)
       {
-	//capnpImportDirsFlag && capnpMsgTypeParamFlag
-	if ( ! capnpImportDirsFlag )
-	{
-	  //write loggercode and continue
-	  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_TRACE,
-				 "ERROR: parameter -ni is missing or must precede -nf param\n");
-	  ++i;
-	  continue;
-	}
-	if ( ! capnpMsgTypeParamFlag )
-	{
-	  //write loggercode and continue
-	  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_TRACE,
-				 "ERROR: parameter -n is missing or must precede -nf param\n");
-	  ++i;
-	  continue;
-	}
-	//displayName == "the ending file name??"
+        //capnpImportDirsFlag && capnpMsgTypeParamFlag
+        if ( ! capnpImportDirsFlag )
+        {
+          //write loggercode and continue
+          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+                                 "ERROR: parameter -ni is missing or must precede -nf param\n");
+          ++i;
+          continue;
+        }
+        if ( ! capnpMsgTypeParamFlag )
+        {
+          //write loggercode and continue
+          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+                                 "ERROR: parameter -n is missing or must precede -nf param\n");
+          ++i;
+          continue;
+        }
+        //displayName == "the ending file name??"
         std::string tagname;
 
-	//diskPath == "the cmd line arg"
-	std::stringstream file_names_buffer (argv[i + 1]);
-	std::string filename;
+        //diskPath == "the cmd line arg"
+        std::stringstream file_names_buffer (argv[i + 1]);
+        std::string filename;
         file_names_buffer >> filename;
-	boost::filesystem::path p(filename);
+        boost::filesystem::path p(filename);
 
-	capnp::SchemaParser schparser;
-	capnp::ParsedSchema ps;
-	ps = schparser.parseDiskFile(p.filename(),filename,capnpImportDirs.asPtr());
-	boost::char_separator<char> sep(":");
-	std::string msg;
-	std::string typestr;
-	capnp::ParsedSchema ps_type;
-	size_t idx = 0;
+        static capnp::SchemaParser schparser;
+        capnp::ParsedSchema ps;
+        ps = schparser.parseDiskFile(p.filename(),filename,capnpImportDirs.asPtr());
 
-	for (idx = 0; idx < capnpMsg.size() ; ++idx)
-	{
-	  msg = capnpMsg[idx];
-	  typestr = capnpType[idx];
-	  ps_type = ps.getNested(typestr);
+        boost::char_separator<char> sep(":");
+        std::string msg;
+        std::string typestr;
+        capnp::ParsedSchema ps_type;
+        size_t idx = 0;
 
-	  if ( ! madara::knowledge::AnyRegistry::register_schema(capnpMsg[idx].c_str(), ps_type.asStruct()))
-	  {
-	    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_TRACE,
-				   "CAPNP Failed on file  %s ", p.filename().c_str());
-	  }
+        for (idx = 0; idx < capnpMsg.size() ; ++idx)
+        {
+          msg = capnpMsg[idx];
+          typestr = capnpType[idx];
+          ps_type = ps.getNested(typestr);
 
-	}
+          if ( ! madara::knowledge::AnyRegistry::register_schema(capnpMsg[idx].c_str(), ps_type.asStruct()))
+          {
+            madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+                                   "CAPNP Failed on file  %s ", p.filename().c_str());
+          } else {
+            madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_TRACE,
+                 "CAPNP Loaded file  %s ", p.filename().c_str());
+          }
 
-	++i;
+
+        }
       }else
       {
-	madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
-			       "ERROR: parameter [-nf|--capnp] filename\n");
+        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+                               "ERROR: parameter [-nf|--capnp] filename\n");
       }
 
       ++i;
@@ -994,6 +1023,7 @@ public:
 
   virtual void run (void)
   {
+    std::cerr << "Running Evaluator thread" << std::endl;
     for (size_t i = 0; i < expressions_.size (); ++i)
     {
 #ifndef _MADARA_NO_KARL_
@@ -1011,6 +1041,7 @@ public:
     {
       if (print_prefixes.size () == 0)
       {
+        std::cerr << "Printing -ky" << std::endl;
         knowledge_->print ();
       }
       else
