@@ -2,7 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 # Python binding support
 cc_binary(
-    name = "pymadara.so",
+    name = "madara.so",
     srcs = glob(
         [
             "src/*.h",
@@ -19,9 +19,9 @@ cc_binary(
 )
 
 py_library(
-    name = "pymadara",
+    name = "madara",
     data = [
-        ":pymadara.so",
+        ":madara.so",
     ],
     imports = ["."],
 )

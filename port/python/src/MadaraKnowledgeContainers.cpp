@@ -37,7 +37,7 @@ using namespace boost::python;
 void define_knowledge_containers (void)
 {
   object containers = object (handle<> (
-    PyModule_New ("pymadara.knowledge.containers")));
+    PyModule_New ("madara.knowledge.containers")));
 
   containers.attr("__file__")="<synthetic>";
   scope().attr ("containers") = containers;
@@ -45,7 +45,7 @@ void define_knowledge_containers (void)
 
   // this was the missing piece: sys.modules['modA.modB']=modB
   extract <dict> (getattr (
-    import ("sys"), "modules"))()["pymadara.knowledge.containers"] = containers;
+    import ("sys"), "modules"))()["madara.knowledge.containers"] = containers;
 
   scope containers_scope = containers;
 

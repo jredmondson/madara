@@ -32,7 +32,7 @@
 
 using namespace boost::python;
 
-BOOST_PYTHON_MODULE (pymadara)
+BOOST_PYTHON_MODULE (madara)
 {
   // Launch the appropriate thread management initialization
   PyEval_InitThreads();
