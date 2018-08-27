@@ -14,6 +14,9 @@
 #include "madara/exceptions/FilterException.h"
 #include "madara/knowledge/CheckpointStreamer.h"
 #include "madara/knowledge/CheckpointPlayer.h"
+#include "madara/knowledge/Any.h"
+
+#include "capnfiles/Geo.capnp.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -1047,6 +1050,13 @@ void test_streaming()
 
   std::cerr << "Attempting to stream to STK file and read back..." << std::endl;
 
+  using madara::knowledge::Any;
+  using madara::knowledge::CapnObject;
+
+  Any::register_type<CapnObject<geo_capn::Point>>("capn_point");
+
+  Any::construct("capn_point");
+
   knowledge::CheckpointSettings settings;
   settings.filename = "stream_test.stk";
 
@@ -1058,6 +1068,13 @@ void test_streaming()
 
   kb.set(".loc1", 2);
   kb.set(".loc2", "foo");
+
+  capnp::MallocMessageBuilder msg;
+  auto builder = msg.initRoot<geo_capn::Point>();
+  builder.setX(3);
+  builder.setY(6);
+  builder.setZ(9);
+  kb.emplace_any(".any0", madara::type<CapnObject<geo_capn::Point>>{}, msg);
 
   utility::sleep(0.5);
 
@@ -1096,10 +1113,26 @@ void test_streaming()
   player.start();
 
   for (int i = 0; i < 10; ++i) {
+    if (i < 4) {
+      if (kb3.exists("glob1"))
+      {
+        std::cerr << "FAIL : glob1 exists before it should\n";
+        madara_fails++;
+        return;
+      }
+    }
+    if (i > 6) {
+      if (kb3.get("glob1") != 4)
+      {
+        std::cerr << "FAIL : glob1 has wrong value after it should be set\n";
+        madara_fails++;
+        return;
+      }
+    }
     std::string dump;
     kb3.to_string(dump);
     std::cerr << utility::get_time() << ": " << dump << std::endl;
-    utility::sleep(0.1);
+    std::this_thread::sleep_for(std::chrono::milliseconds{100});
   }
 }
 

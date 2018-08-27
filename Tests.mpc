@@ -583,6 +583,10 @@ project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_x
   Header_Files {
   }
 
+  CAPN_Files {
+    tests/capnfiles
+  }
+
   Source_Files {
     tests/test_checkpointing.cpp
   }

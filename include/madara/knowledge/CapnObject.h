@@ -270,7 +270,9 @@ public:
   /**
    * Get the registered tag for this type.
    **/
-  const char *tag() const override { return AnyRegistry::get_type_name<T>(); }
+  const char *tag() const override {
+    return AnyRegistry::get_type_name<CapnObject<T>>();
+  }
 };
 
 /**
