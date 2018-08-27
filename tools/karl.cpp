@@ -364,9 +364,9 @@ void handle_arguments (int argc, char ** argv)
         "  [-ltp|--load-transport-prefix prfx] prefix of saved settings\n" \
         "  [-ltt|--load-transport-text file] a text file to load transport settings from\n" \
         "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
-        "  [-n|--capnp tag:msg_type] register tag with given message schema\n"\
-        "  [-nf|--capnp-file]       load capnp file\n" \
-        "  [-ni|--capnp-import ]    add directory to capnp directory imports\n" \
+        "  [-n|--capnp tag:msg_type] register tag with given message schema. See also -nf and -ni.\n"\
+        "  [-nf|--capnp-file]       load capnp file. Must appear after all -n and -ni.\n" \
+        "  [-ni|--capnp-import ]    add directory to capnp directory imports. Must appear before all -n and -nf.\n" \
         "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
         "  [-ps|--print-stats]      print variable/originator stats at the end\n" \
         "  [-py|--print-stats-periodic] print variable/originator stats at each period\n" \
