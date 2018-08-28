@@ -27,7 +27,7 @@ namespace madara
     *       [08] [64 bit states] <br />
     *       [16] [64 bit timestamp] <br />
     *       [24] [64 bit last_timestamp] <br />
-    *       [32] [8 byte file_type = "KaRL1.4"] <br />
+    *       [32] [8 byte file_type = "KaRL1.5"] <br />
     *       [40] [32 bit karl_version = version (0.255.255.255)] <br />
     *       [44] [64 byte id = originator] <br />
     *       [108] [Updates]
@@ -90,7 +90,7 @@ namespace madara
        **/
       static inline bool file_header_test (const char * buffer)
       {
-        return strncmp (&(buffer[32]), "KaRL1.4", 7) == 0; 
+        return strncmp (&(buffer[32]), "KaRL1.5", 7) == 0; 
       }
 
       /**
@@ -114,7 +114,7 @@ namespace madara
       uint64_t          last_timestamp;
       
       /**
-       * file type identifier ("KaRL1.4")
+       * file type identifier ("KaRL1.5")
        **/
       char              file_type[8];
 
