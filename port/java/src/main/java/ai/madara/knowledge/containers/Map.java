@@ -139,6 +139,7 @@ public class Map extends BaseContainer
    *
    * @param  key  the location in the map
    * @return   current value
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public KnowledgeRecord get(java.lang.String key) throws MadaraDeadObjectException
   {
@@ -149,6 +150,7 @@ public class Map extends BaseContainer
    * Gets the name of the variable
    *
    * @return  name of the variable within the context
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public java.lang.String getName() throws MadaraDeadObjectException
   {
@@ -159,6 +161,7 @@ public class Map extends BaseContainer
    * Gets the delimiter that separates the name of the map with its elements
    *
    * @return  the delimiter that separates map name with elements
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public java.lang.String getDelimiter() throws MadaraDeadObjectException
   {
@@ -169,6 +172,7 @@ public class Map extends BaseContainer
    * Sets the delimiter that separates the name of the map with its elements
    *
    * @param delimiter  the separator between the map and elements
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setDelimiter(java.lang.String delimiter) throws MadaraDeadObjectException
   {
@@ -179,6 +183,7 @@ public class Map extends BaseContainer
    * Gets the current keys in the map
    *
    * @return  name of the variable within the context
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public java.lang.String[] keys() throws MadaraDeadObjectException
   {
@@ -189,6 +194,7 @@ public class Map extends BaseContainer
   /**
    * Syncs the map to the underlying knowledge base. Call this method
    * if you believe the map's keys may have changed in the knowledge base.
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void sync() throws MadaraDeadObjectException
   {
@@ -198,6 +204,7 @@ public class Map extends BaseContainer
   /**
    * Mark the map as modified. The maps retains the same values
    * but will resend all values as if they had been modified.
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public void modify() throws MadaraDeadObjectException
   {
@@ -207,6 +214,7 @@ public class Map extends BaseContainer
   /**
    * Returns true if the container evaluates to true
    * @return true if container has all true values
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public boolean isTrue() throws MadaraDeadObjectException
   {
@@ -216,6 +224,7 @@ public class Map extends BaseContainer
   /**
    * Returns true if the container evaluates to false
    * @return true if container has any false values or is uninitialized
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public boolean isFalse() throws MadaraDeadObjectException
   {
@@ -226,6 +235,7 @@ public class Map extends BaseContainer
    * Mark an element as modified. The element retains the same value
    * but will resend the value as if it had been modified.
    * @param key  the element key
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public void modify(java.lang.String key) throws MadaraDeadObjectException
   {
@@ -236,6 +246,7 @@ public class Map extends BaseContainer
    * Clears the variables in the map
    * @param clear_variables  if true, clear the variables from the knowledge
    *                         base as well as the map
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public void clear(boolean clear_variables) throws MadaraDeadObjectException
   {
@@ -246,6 +257,7 @@ public class Map extends BaseContainer
    * Erases a variable located at key in the map. This also deletes the variable
    * from the knowledge base.
    * @param key  the element key
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public void erase(java.lang.String key) throws MadaraDeadObjectException
   {
@@ -257,6 +269,7 @@ public class Map extends BaseContainer
    *
    * @param  key  the location in the map
    * @param  value   new value
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void set(java.lang.String key, java.lang.String value) throws MadaraDeadObjectException
   {
@@ -268,6 +281,7 @@ public class Map extends BaseContainer
    *
    * @param  key  the location in the map
    * @param  value   new value
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void set(java.lang.String key, double value) throws MadaraDeadObjectException
   {
@@ -279,6 +293,7 @@ public class Map extends BaseContainer
    *
    * @param  key  the location in the map
    * @param  value   new value
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void set(java.lang.String key, long value) throws MadaraDeadObjectException
   {
@@ -290,6 +305,7 @@ public class Map extends BaseContainer
    *
    * @param  key  the location in the map
    * @param  value   new value
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void set(java.lang.String key, KnowledgeRecord value) throws MadaraDeadObjectException
   {
@@ -301,6 +317,7 @@ public class Map extends BaseContainer
    *
    * @param  kb      the knowledge base that contains the name
    * @param  name    the variable name
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException
   {
@@ -312,6 +329,7 @@ public class Map extends BaseContainer
    *
    * @param  vars    the variables facade that contains the name
    * @param  name    the variable name
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException
   {
@@ -322,6 +340,7 @@ public class Map extends BaseContainer
    * Sets the settings for updating variables in the Knowledge Base
    *
    * @param  settings  the settings to use for updating the Knowledge Base
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
   {
@@ -333,6 +352,7 @@ public class Map extends BaseContainer
    *
    * @param  key  the location in the map
    * @return the value at the index as a knowledge record
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public KnowledgeRecord toRecord(java.lang.String key) throws MadaraDeadObjectException
   {

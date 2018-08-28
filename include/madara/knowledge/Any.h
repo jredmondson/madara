@@ -301,19 +301,19 @@ public:
    * this Any. This operation provides the strong exception-guarantee: if an
    * exception is throw during unserialization, this Any will not be modified.
    **/
-  template<typename K>
-  size_t unserialize(K k, const char *data, size_t size)
+  template<typename T>
+  size_t unserialize(type<T> t, const char *data, size_t size)
   {
-    namespace bio = boost::iostreams;
+    const TypeHandlers &handler = get_type_handler(t);
+    std::unique_ptr<T> ptr(new T{});
 
-    bio::array_source input_source(data, size);
-    bio::stream<bio::array_source> input_stream(input_source);
+    handler.load(data, size, (void*)ptr.get(), AnyRegistry::get_type_name<T>());
 
-    auto pos = input_stream.tellg();
-    unserialize(k, input_stream);
-    auto len = input_stream.tellg() - pos;
+    clear();
+    this->data_ = reinterpret_cast<void*>(ptr.release());
+    this->handler_ = &handler;
 
-    return len;
+    return size;
   }
 
   /**
@@ -327,6 +327,7 @@ public:
     return unserialize(type<T>{}, data, size);
   }
 
+#if 0
   /**
    * Unserialize the given type from the given input stream, and store into
    * this Any. This operation provides the strong exception-guarantee: if an
@@ -355,8 +356,9 @@ public:
   {
     unserialize(type<T>{}, stream);
   }
+#endif
 
-  void unserialize(const char *type, std::istream &stream);
+  void unserialize(const char *type, const char *data, size_t size);
 
   /**
    * Unserialize the given type from the given character array, and store into
@@ -377,12 +379,14 @@ public:
     madara_iarchive archive(input_stream);
     std::string tag;
     archive >> tag;
-    unserialize(tag.c_str(), input_stream);
     auto len = input_stream.tellg() - pos;
+
+    unserialize(tag.c_str(), data + len, size - len);
 
     return len;
   }
 
+#if 0
   /**
    * Unserialize the given type from the given input stream, and store into
    * this Any, using saved type tag to determine type. This operation provides
@@ -398,6 +402,7 @@ public:
     archive >> tag;
     unserialize(tag.c_str(), stream);
   }
+#endif
 
   /**
    * Unserialize the given type from JSON from the given stream, and store into
@@ -553,11 +558,11 @@ inline bool AnyRegistry::register_type(const char *name)
 
 template<typename Impl, typename Base>
 inline void BasicOwningAny<Impl, Base>::unserialize(
-    const char *type, std::istream &stream)
+    const char *type, const char *data, size_t size)
 {
   Any any(construct(type));
 
-  any.handler_->load(stream, any.data_, type);
+  any.handler_->load(data, size, any.data_, type);
 
   using std::swap;
   swap(this->handler_, any.handler_);

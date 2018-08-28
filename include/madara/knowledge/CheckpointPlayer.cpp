@@ -80,7 +80,7 @@ void CheckpointReader::start()
   {
     madara_logger_ptr_log (logger_, logger::LOG_MINOR,
       "ThreadSafeContext::load_context:" \
-      " invalid file. No contextual change.\n");
+      " invalid file or wrong version. No contextual change.\n");
     stage = 9;
     return;
   }

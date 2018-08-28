@@ -66,7 +66,7 @@ public class ThreadedCounter extends BaseThread
 
   /**
    * Initialize the counter variable
- * @throws MadaraDeadObjectException
+ *  @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public void init(KnowledgeBase knowledge) throws MadaraDeadObjectException
   {
@@ -76,7 +76,7 @@ public class ThreadedCounter extends BaseThread
 
   /**
    * Executes the main thread logic.
- * @throws MadaraDeadObjectException
+ *  @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public void run() throws MadaraDeadObjectException
   {

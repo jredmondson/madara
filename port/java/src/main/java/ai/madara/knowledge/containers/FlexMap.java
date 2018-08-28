@@ -56,321 +56,358 @@ import ai.madara.knowledge.Variables;
  * A facade for a map of variable names to values within a knowledge base
  **/
 
-public class FlexMap extends BaseContainer
-{
-  private native long jni_FlexMap();
-  private native long jni_FlexMap(long cptr);
-  private static native void jni_freeFlexMap(long cptr);
-  private native void jni_clear(long cptr);
-  private native void jni_erase(long cptr,
-    java.lang.String key);
-  private native java.lang.String jni_getDelimiter(long cptr);
-  private native void jni_setDelimiter(long cptr, java.lang.String delimiter);
-  private native void jni_setString(long cptr, java.lang.String value);
-  private native void jni_setDouble(long cptr, double value);
-  private native void jni_set(long cptr, long type, long value);
-  private native java.lang.String jni_getName(long cptr);
-  private native void jni_setName(long cptr,
-    long type, long kb, java.lang.String name);
-  private native java.lang.String[] jni_keys(long cptr, boolean firstLevel);
-  private native long jni_get(long cptr, java.lang.String key);
-  private native long jni_getIndex(long cptr, int index);
-  private native long jni_toRecord(long cptr);
-  private native void jni_modify(long cptr);
-  private native long jni_toMapContainer(long cptr);
-  private native void jni_setSettings(long cptr, long settings);
-  private native boolean jni_isTrue(long cptr);
-  private native boolean jni_isFalse(long cptr);
+public class FlexMap extends BaseContainer {
+	private native long jni_FlexMap();
 
-  private boolean manageMemory = true;
+	private native long jni_FlexMap(long cptr);
 
-  /**
-   * Default constructor
-   **/
-  public FlexMap()
-  {
-    setCPtr(jni_FlexMap());
-  }
+	private static native void jni_freeFlexMap(long cptr);
 
-  /**
-   * Copy constructor
-   * @param input  instance to copy
-   **/
-  public FlexMap(FlexMap input)
-  {
-    setCPtr(jni_FlexMap(input.getCPtr()));
-  }
+	private native void jni_clear(long cptr);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @return a new java instance of the underlying pointer
-   */
-  public static FlexMap fromPointer(long cptr)
-  {
-    FlexMap ret = new FlexMap();
-    ret.setCPtr(cptr);
-    ret.manageMemory = true;
-    return ret;
-  }
+	private native void jni_erase(long cptr, java.lang.String key);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @param shouldManage  if true, manage the pointer
-   * @return a new java instance of the underlying pointer
-   */
-  public static FlexMap fromPointer(long cptr, boolean shouldManage)
-  {
-    FlexMap ret = new FlexMap();
-    ret.manageMemory=shouldManage;
-    ret.setCPtr(cptr);
-    return ret;
-  }
+	private native java.lang.String jni_getDelimiter(long cptr);
 
-  /**
-   * Gets all keys in the map
-   *
-   * @return  all keys in the map
-   */
-  public java.lang.String[] keys() throws MadaraDeadObjectException
-  {
-    return jni_keys(getCPtr(),false);
-  }
+	private native void jni_setDelimiter(long cptr, java.lang.String delimiter);
 
-  /**
-   * Gets keys in the map, with option to get only first level keys
-   *
-   * @param  firstLevel  if true, only return the immediate subkeys and not
-   *                     full key names
-   * @return  the keys in the map
-   */
-  public java.lang.String[] keys(boolean firstLevel) throws MadaraDeadObjectException
-  {
-    return jni_keys(getCPtr(),firstLevel);
-  }
+	private native void jni_setString(long cptr, java.lang.String value);
 
-  /**
-   * Creates a FlexMap at the keyed location
-   *
-   * @param  key  the next level of the FlexMap
-   * @return   FlexMap pointing to the keyed location
-   */
-  public FlexMap get(java.lang.String key) throws MadaraDeadObjectException
-  {
-    return FlexMap.fromPointer(jni_get(getCPtr(), key));
-  }
+	private native void jni_setDouble(long cptr, double value);
 
-  /**
-   * Creates a FlexMap at the indexed location
-   *
-   * @param  index  an index into the FlexMap
-   * @return   FlexMap pointing to the indexed location
-   */
-  public FlexMap get(int index) throws MadaraDeadObjectException
-  {
-    return FlexMap.fromPointer(jni_getIndex(getCPtr(), index));
-  }
+	private native void jni_set(long cptr, long type, long value);
 
-  /**
-   * Gets the name of the variable
-   *
-   * @return  name of the variable within the context
-   */
-  public java.lang.String getName() throws MadaraDeadObjectException
-  {
-    return jni_getName(getCPtr());
-  }
+	private native java.lang.String jni_getName(long cptr);
 
-  /**
-   * Gets the delimiter that separates the name of the map with its elements
-   *
-   * @return  the delimiter that separates map name with elements
-   */
-  public java.lang.String getDelimiter() throws MadaraDeadObjectException
-  {
-    return jni_getDelimiter(getCPtr());
-  }
+	private native void jni_setName(long cptr, long type, long kb, java.lang.String name);
 
-  /**
-   * Sets the delimiter that separates the name of the map with its elements
-   *
-   * @param delimiter  the separator between the map and elements
-   */
-  public void setDelimiter(java.lang.String delimiter) throws MadaraDeadObjectException
-  {
-    jni_setDelimiter(getCPtr(), delimiter);
-  }
+	private native java.lang.String[] jni_keys(long cptr, boolean firstLevel);
 
-  /**
-   * Mark the map as modified. The maps retains the same values
-   * but will resend all values as if they had been modified.
-   **/
-  public void modify() throws MadaraDeadObjectException
-  {
-    jni_modify(getCPtr());
-  }
+	private native long jni_get(long cptr, java.lang.String key);
 
-  /**
-   * Returns true if the container evaluates to true
-   * @return true if container has all true values
-   **/
-  public boolean isTrue() throws MadaraDeadObjectException
-  {
-    return jni_isTrue(getCPtr());
-  }
+	private native long jni_getIndex(long cptr, int index);
 
-  /**
-   * Returns true if the container evaluates to false
-   * @return true if container has any false values or is uninitialized
-   **/
-  public boolean isFalse() throws MadaraDeadObjectException
-  {
-    return jni_isFalse(getCPtr());
-  }
+	private native long jni_toRecord(long cptr);
 
-  /**
-   * Clears the variables in the map
-   **/
-  public void clear() throws MadaraDeadObjectException
-  {
-    jni_clear(getCPtr());
-  }
+	private native void jni_modify(long cptr);
 
-  /**
-   * Erases a variable located at key in the map. This also deletes the variable
-   * from the knowledge base.
-   * @param key  the element key
-   **/
-  public void erase(java.lang.String key) throws MadaraDeadObjectException
-  {
-    jni_erase(getCPtr(), key);
-  }
+	private native long jni_toMapContainer(long cptr);
 
-  /**
-   * Sets the location to a string
-   *
-   * @param  value   new value
-   */
-  public void set(java.lang.String value) throws MadaraDeadObjectException
-  {
-    jni_setString(getCPtr(), value);
-  }
+	private native void jni_setSettings(long cptr, long settings);
 
-  /**
-   * Sets the location to a double
-   *
-   * @param  value   new value
-   */
-  public void set(double value) throws MadaraDeadObjectException
-  {
-    jni_setDouble(getCPtr(), value);
-  }
+	private native boolean jni_isTrue(long cptr);
 
-  /**
-   * Sets the location to an integer value
-   *
-   * @param  value   new value
-   */
-  public void set(long value) throws MadaraDeadObjectException
-  {
-    jni_set(getCPtr(), 0, value);
-  }
+	private native boolean jni_isFalse(long cptr);
 
-  /**
-   * Sets the location to a KnowledgeRecord value
-   *
-   * @param  key     the location within the virtual map
-   * @param  value   new value
-   */
-  public void set(java.lang.String key, KnowledgeRecord value) throws MadaraDeadObjectException
-  {
-    jni_set(getCPtr(), 1, value.getCPtr ());
-  }
+	private boolean manageMemory = true;
 
-  /**
-   * Sets the name and knowledge base being referred to
-   *
-   * @param  kb      the knowledge base that contains the name
-   * @param  name    the variable name
-   */
-  public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException
-  {
-    jni_setName(getCPtr(), 0, kb.getCPtr (), name);
-  }
+	/**
+	 * Default constructor
+	 **/
+	public FlexMap() {
+		setCPtr(jni_FlexMap());
+	}
 
-  /**
-   * Sets the name and knowledge base being referred to
-   *
-   * @param  vars    the variables facade that contains the name
-   * @param  name    the variable name
-   */
-  public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException
-  {
-    jni_setName(getCPtr(), 1, vars.getCPtr (), name);
-  }
+	/**
+	 * Copy constructor
+	 * 
+	 * @param input instance to copy
+	 **/
+	public FlexMap(FlexMap input) {
+		setCPtr(jni_FlexMap(input.getCPtr()));
+	}
 
-  /**
-   * Sets the settings for updating variables in the Knowledge Base
-   *
-   * @param  settings  the settings to use for updating the Knowledge Base
-   */
-  public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
-  {
-    jni_setSettings(getCPtr(), settings.getCPtr());
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr C pointer to the object
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static FlexMap fromPointer(long cptr) {
+		FlexMap ret = new FlexMap();
+		ret.setCPtr(cptr);
+		ret.manageMemory = true;
+		return ret;
+	}
 
-  /**
-   * Returns a value at the specified key
-   *
-   * @return the value at the index as a knowledge record
-   */
-  public KnowledgeRecord toRecord() throws MadaraDeadObjectException
-  {
-    return KnowledgeRecord.fromPointer(jni_toRecord(getCPtr()));
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr         C pointer to the object
+	 * @param shouldManage if true, manage the pointer
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static FlexMap fromPointer(long cptr, boolean shouldManage) {
+		FlexMap ret = new FlexMap();
+		ret.manageMemory = shouldManage;
+		ret.setCPtr(cptr);
+		return ret;
+	}
 
-  /**
-   * Creates a Map container from the current location. Maps maintain lists
-   * of keys and are more appropriate for frequent accesses of sub keys (i.e.,
-   * they are better performance, while FlexMap is more flexible).
-   *
-   * @return the value at the index as a knowledge record
-   */
-  public Map toMapContainer() throws MadaraDeadObjectException
-  {
-    return Map.fromPointer(jni_toMapContainer(getCPtr()));
-  }
+	/**
+	 * Gets all keys in the map
+	 *
+	 * @return all keys in the map
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public java.lang.String[] keys() throws MadaraDeadObjectException {
+		return jni_keys(getCPtr(), false);
+	}
 
-  /**
-   * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
-   * called before an instance gets garbage collected
-   */
-  public void free()
-  {
-    if (manageMemory)
-    {
-      jni_freeFlexMap(getCPtr());
-      setCPtr(0);
-    }
-  }
+	/**
+	 * Gets keys in the map, with option to get only first level keys
+	 *
+	 * @param firstLevel if true, only return the immediate subkeys and not full key
+	 *                   names
+	 * @return the keys in the map
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public java.lang.String[] keys(boolean firstLevel) throws MadaraDeadObjectException {
+		return jni_keys(getCPtr(), firstLevel);
+	}
 
-  /**
-   * Cleans up underlying C resources
-   * @throws Throwable necessary for override but unused
-   */
-  @Override
-  protected void finalize() throws Throwable
-  {
-    try {
-      free();
-    } catch (Throwable t) {
-      throw t;
-    } finally {
-      super.finalize();
-    }
-  }
+	/**
+	 * Creates a FlexMap at the keyed location
+	 *
+	 * @param key the next level of the FlexMap
+	 * @return FlexMap pointing to the keyed location
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public FlexMap get(java.lang.String key) throws MadaraDeadObjectException {
+		return FlexMap.fromPointer(jni_get(getCPtr(), key));
+	}
+
+	/**
+	 * Creates a FlexMap at the indexed location
+	 *
+	 * @param index an index into the FlexMap
+	 * @return FlexMap pointing to the indexed location
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public FlexMap get(int index) throws MadaraDeadObjectException {
+		return FlexMap.fromPointer(jni_getIndex(getCPtr(), index));
+	}
+
+	/**
+	 * Gets the name of the variable
+	 *
+	 * @return name of the variable within the context
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public java.lang.String getName() throws MadaraDeadObjectException {
+		return jni_getName(getCPtr());
+	}
+
+	/**
+	 * Gets the delimiter that separates the name of the map with its elements
+	 *
+	 * @return the delimiter that separates map name with elements
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public java.lang.String getDelimiter() throws MadaraDeadObjectException {
+		return jni_getDelimiter(getCPtr());
+	}
+
+	/**
+	 * Sets the delimiter that separates the name of the map with its elements
+	 *
+	 * @param delimiter the separator between the map and elements
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setDelimiter(java.lang.String delimiter) throws MadaraDeadObjectException {
+		jni_setDelimiter(getCPtr(), delimiter);
+	}
+
+	/**
+	 * Mark the map as modified. The maps retains the same values but will resend
+	 * all values as if they had been modified.
+	 * 
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void modify() throws MadaraDeadObjectException {
+		jni_modify(getCPtr());
+	}
+
+	/**
+	 * Returns true if the container evaluates to true
+	 * 
+	 * @return true if container has all true values
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public boolean isTrue() throws MadaraDeadObjectException {
+		return jni_isTrue(getCPtr());
+	}
+
+	/**
+	 * Returns true if the container evaluates to false
+	 * 
+	 * @return true if container has any false values or is uninitialized
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public boolean isFalse() throws MadaraDeadObjectException {
+		return jni_isFalse(getCPtr());
+	}
+
+	/**
+	 * Clears the variables in the map
+	 * 
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void clear() throws MadaraDeadObjectException {
+		jni_clear(getCPtr());
+	}
+
+	/**
+	 * Erases a variable located at key in the map. This also deletes the variable
+	 * from the knowledge base.
+	 * 
+	 * @param key the element key
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void erase(java.lang.String key) throws MadaraDeadObjectException {
+		jni_erase(getCPtr(), key);
+	}
+
+	/**
+	 * Sets the location to a string
+	 *
+	 * @param value new value
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void set(java.lang.String value) throws MadaraDeadObjectException {
+		jni_setString(getCPtr(), value);
+	}
+
+	/**
+	 * Sets the location to a double
+	 *
+	 * @param value new value
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void set(double value) throws MadaraDeadObjectException {
+		jni_setDouble(getCPtr(), value);
+	}
+
+	/**
+	 * Sets the location to an integer value
+	 *
+	 * @param value new value
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void set(long value) throws MadaraDeadObjectException {
+		jni_set(getCPtr(), 0, value);
+	}
+
+	/**
+	 * Sets the location to a KnowledgeRecord value
+	 *
+	 * @param key   the location within the virtual map
+	 * @param value new value
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void set(java.lang.String key, KnowledgeRecord value) throws MadaraDeadObjectException {
+		jni_set(getCPtr(), 1, value.getCPtr());
+	}
+
+	/**
+	 * Sets the name and knowledge base being referred to
+	 *
+	 * @param kb   the knowledge base that contains the name
+	 * @param name the variable name
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException {
+		jni_setName(getCPtr(), 0, kb.getCPtr(), name);
+	}
+
+	/**
+	 * Sets the name and knowledge base being referred to
+	 *
+	 * @param vars the variables facade that contains the name
+	 * @param name the variable name
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException {
+		jni_setName(getCPtr(), 1, vars.getCPtr(), name);
+	}
+
+	/**
+	 * Sets the settings for updating variables in the Knowledge Base
+	 *
+	 * @param settings the settings to use for updating the Knowledge Base
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException {
+		jni_setSettings(getCPtr(), settings.getCPtr());
+	}
+
+	/**
+	 * Returns a value at the specified key
+	 *
+	 * @return the value at the index as a knowledge record
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord toRecord() throws MadaraDeadObjectException {
+		return KnowledgeRecord.fromPointer(jni_toRecord(getCPtr()));
+	}
+
+	/**
+	 * Creates a Map container from the current location. Maps maintain lists of
+	 * keys and are more appropriate for frequent accesses of sub keys (i.e., they
+	 * are better performance, while FlexMap is more flexible).
+	 *
+	 * @return the value at the index as a knowledge record
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public Map toMapContainer() throws MadaraDeadObjectException {
+		return Map.fromPointer(jni_toMapContainer(getCPtr()));
+	}
+
+	/**
+	 * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
+	 * called before an instance gets garbage collected
+	 */
+	public void free() {
+		if (manageMemory) {
+			jni_freeFlexMap(getCPtr());
+			setCPtr(0);
+		}
+	}
+
+	/**
+	 * Cleans up underlying C resources
+	 * 
+	 * @throws Throwable necessary for override but unused
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			free();
+		} catch (Throwable t) {
+			throw t;
+		} finally {
+			super.finalize();
+		}
+	}
 }
-

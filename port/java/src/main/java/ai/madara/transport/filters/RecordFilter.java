@@ -63,7 +63,7 @@ public interface RecordFilter
    *                args[7] is the knowledge domain
    * @param variables Local access to evaluate and compile methods
    * @return A {@link ai.madara.knowledge.KnowledgeRecord KnowledgeRecord} containing the result of the function
- * @throws MadaraDeadObjectException
+ *  @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord filter(KnowledgeList args, Variables variables) throws MadaraDeadObjectException;
 }

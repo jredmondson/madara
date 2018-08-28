@@ -126,6 +126,7 @@ public class QoSTransportSettings extends TransportSettings {
    * after all other filters on send and before all other filters on receive.
    *
    * @param filter a filter to encode and decode buffers
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void addFilter(BufferFilter filter) throws MadaraDeadObjectException
   {
@@ -142,6 +143,7 @@ public class QoSTransportSettings extends TransportSettings {
 
   /**
    * Clears the list of buffer filters
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void clearBufferFilters() throws MadaraDeadObjectException
   {
@@ -154,6 +156,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param type the types to add the filter to
    * @param filter Madara callback function
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void addRebroadcastFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException
   {
@@ -165,6 +168,7 @@ public class QoSTransportSettings extends TransportSettings {
    * after individual record filters.
    *
    * @param filter Madara callback function
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void addRebroadcastFilter(AggregateFilter filter) throws MadaraDeadObjectException
   {
@@ -176,6 +180,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param type the types to add the filter to
    * @param filter Madara callback function
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void addSendFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException
   {
@@ -187,6 +192,7 @@ public class QoSTransportSettings extends TransportSettings {
    * individual record filters.
    *
    * @param filter Madara callback function
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void addSendFilter(AggregateFilter filter) throws MadaraDeadObjectException
   {
@@ -199,6 +205,7 @@ public class QoSTransportSettings extends TransportSettings {
    *
    * @param type the types to add the filter to
    * @param filter Madara callback function
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void addReceiveFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException
   {
@@ -210,6 +217,7 @@ public class QoSTransportSettings extends TransportSettings {
    * individual record filters.
    *
    * @param filter Madara callback function
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void addReceiveFilter(AggregateFilter filter) throws MadaraDeadObjectException
   {
@@ -220,6 +228,7 @@ public class QoSTransportSettings extends TransportSettings {
    * Sets the rebroadcast time-to-live for all sent packets
    *
    * @param ttl the time-to-live
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setRebroadcastTtl(int ttl) throws MadaraDeadObjectException
   {
@@ -230,6 +239,7 @@ public class QoSTransportSettings extends TransportSettings {
    * Gets the rebroadcast time-to-live for all sent packets
    *
    * @return the rebroadcast time-to-live
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public int getRebroadcastTtl() throws MadaraDeadObjectException
   {
@@ -240,6 +250,7 @@ public class QoSTransportSettings extends TransportSettings {
    * Enables participation in rebroadcasts up to a certain ttl value
    *
    * @param ttl the time-to-live
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void enableParticipantTtl(int ttl) throws MadaraDeadObjectException
   {
@@ -250,6 +261,7 @@ public class QoSTransportSettings extends TransportSettings {
    * Gets the rebroadcast time-to-live for all rebroadcasted packets
    *
    * @return the rebroadcast time-to-live
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public int getParticipantTtl() throws MadaraDeadObjectException
   {
@@ -260,6 +272,7 @@ public class QoSTransportSettings extends TransportSettings {
    * Sets the send bandwidth limit
    *
    * @param limit the bandwidth limit for sending packets
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setSendBandwidthLimit(int limit) throws MadaraDeadObjectException
   {
@@ -270,6 +283,7 @@ public class QoSTransportSettings extends TransportSettings {
    * Gets the send bandwidth limit
    *
    * @return the bandwidth limit for sending packets
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public int getSendBandwidthLimit() throws MadaraDeadObjectException
   {
@@ -280,6 +294,7 @@ public class QoSTransportSettings extends TransportSettings {
    * Sets the total bandwidth limit
    *
    * @param limit the bandwidth limit for all packets
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setTotalBandwidthLimit(int limit) throws MadaraDeadObjectException
   {
@@ -290,6 +305,7 @@ public class QoSTransportSettings extends TransportSettings {
    * Gets the total bandwidth limit
    *
    * @return the bandwidth limit for all packets
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public int getTotalBandwidthLimit() throws MadaraDeadObjectException
   {

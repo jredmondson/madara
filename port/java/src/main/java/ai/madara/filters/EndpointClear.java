@@ -85,6 +85,7 @@ public class EndpointClear extends MadaraJNI
   /**
    * Adds the filter as a receive filter to transport settings
    * @param  settings the QoS Transport settings to add the filter to
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void addReceiveFilterTo(QoSTransportSettings settings) throws MadaraDeadObjectException
   {
@@ -94,6 +95,7 @@ public class EndpointClear extends MadaraJNI
   /**
    * Adds the filter as a receive filter to transport settings
    * @param  settings the QoS Transport settings to add the filter to
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void addSendFilterTo(QoSTransportSettings settings) throws MadaraDeadObjectException
   {
@@ -103,6 +105,7 @@ public class EndpointClear extends MadaraJNI
   /**
    * Adds the filter as a receive filter to transport settings
    * @param  settings the QoS Transport settings to add the filter to
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void addRebroadcastFilterTo(QoSTransportSettings settings) throws MadaraDeadObjectException
   {

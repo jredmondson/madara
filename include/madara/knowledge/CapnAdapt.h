@@ -372,11 +372,6 @@ namespace utility { inline namespace core {
 
         capn_set(builder, val);
 
-        size_t size = capnp::computeSerializedSizeInWords(msg)
-                         * sizeof(capnp::word);
-        knowledge::madara_oarchive archive(o);
-        archive << size;
-
         kj::std::StdOutputStream stream{o};
         capnp::writeMessage(stream, msg);
       };
@@ -388,18 +383,14 @@ namespace utility { inline namespace core {
     enable_if_<knowledge::supports_capn_get<T>::value,
       knowledge::TypeHandlers::load_fn_type>
   {
-    return [](std::istream &i, void *ptr, const char *) {
+    return [](const char *in, size_t size, void *ptr, const char *) {
         using namespace knowledge;
 
         T &val = *static_cast<T *>(ptr);
 
-        knowledge::madara_iarchive archive(i);
-        size_t size;
-        archive >> size;
-        (void)size;
-
-        kj::std::StdInputStream stream{i};
-        capnp::InputStreamMessageReader msg(stream);
+        capnp::FlatArrayMessageReader msg(
+            kj::ArrayPtr<const capnp::word>((const capnp::word *)in,
+              size / sizeof(capnp::word)));
 
         using CapnType = decltype(infer_capn_type(type<T>{}));
         auto reader = msg.template getRoot<CapnType>();

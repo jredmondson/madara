@@ -51,6 +51,11 @@ import ai.madara.exceptions.FeatureNotImplementedException;
 import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.filters.BufferFilter;
 
+/**
+ * 
+ * @author amit
+ *
+ */
 public class AesBufferFilter extends MadaraJNI implements BufferFilter {
 	private native long jni_AesBufferFilter();
 
@@ -116,6 +121,7 @@ public class AesBufferFilter extends MadaraJNI implements BufferFilter {
 	 * 
 	 * @param password a password to use
 	 * @return 0 if successful, non zero otherwise
+	 * @throws MadaraDeadObjectException throws exception if object is already released
 	 **/
 	public int generateKey(java.lang.String password) throws MadaraDeadObjectException {
 		return jni_generateKey(getCPtr(), password);

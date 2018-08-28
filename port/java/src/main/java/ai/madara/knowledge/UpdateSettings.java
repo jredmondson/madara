@@ -99,6 +99,7 @@ public class UpdateSettings extends MadaraJNI
   /**
    * @param treatGlobalsAsLocals Toggle whether updates to global variables are
    * treated as local variables and not marked as modified to the transport.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setTreatGlobalsAsLocals(boolean treatGlobalsAsLocals) throws MadaraDeadObjectException
   {
@@ -107,6 +108,7 @@ public class UpdateSettings extends MadaraJNI
 
   /**
    * @return current value of treatGlobalsAsLocals
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public boolean getTreatGlobalsAsLocals() throws MadaraDeadObjectException
   {
@@ -115,6 +117,7 @@ public class UpdateSettings extends MadaraJNI
 
   /**
    * @param defaultClockIncrement Default clock increment.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setDefaultClockIncrement(long defaultClockIncrement) throws MadaraDeadObjectException
   {
@@ -123,6 +126,7 @@ public class UpdateSettings extends MadaraJNI
 
   /**
    * @return get the default clock increment
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public long getDefaultClockIncrement() throws MadaraDeadObjectException
   {

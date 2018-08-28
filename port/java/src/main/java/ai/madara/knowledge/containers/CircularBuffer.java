@@ -133,6 +133,7 @@ public class CircularBuffer extends MadaraJNI
    * @param  position   position in the queue to inspect
    * @return   the record at the position (uncreated record
    *           if position is inaccessible)
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord inspect(int position) throws MadaraDeadObjectException
   {
@@ -146,6 +147,7 @@ public class CircularBuffer extends MadaraJNI
    * @param  count      max number of elements to return
    * @return   the record at the position (uncreated record
    *           if position is inaccessible)
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord [] inspect(int position, int count)
     throws MadaraDeadObjectException
@@ -163,6 +165,7 @@ public class CircularBuffer extends MadaraJNI
    * Attempts to dequeue a record
    * @return  next record in the queue. An uncreated record if empty and
    * waitForRecord is false.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord get() throws MadaraDeadObjectException
   {
@@ -175,6 +178,7 @@ public class CircularBuffer extends MadaraJNI
    * @param  count      max number of elements to return
    * @return   the record at the position (uncreated record
    *           if position is inaccessible)
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord [] getEarliest(int count)
     throws MadaraDeadObjectException
@@ -194,6 +198,7 @@ public class CircularBuffer extends MadaraJNI
    * @param  count      max number of elements to return
    * @return   the record at the position (uncreated record
    *           if position is inaccessible)
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord [] getLatest(int count)
     throws MadaraDeadObjectException
@@ -211,6 +216,7 @@ public class CircularBuffer extends MadaraJNI
    * Gets the name of the variable
    *
    * @return  name of the variable within the context
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public java.lang.String getName() throws MadaraDeadObjectException
   {
@@ -221,6 +227,7 @@ public class CircularBuffer extends MadaraJNI
    * Resizes the vector
    *
    * @param  length   new number of elements of the vector
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void resize (long length) throws MadaraDeadObjectException
   {
@@ -231,8 +238,7 @@ public class CircularBuffer extends MadaraJNI
    * Attempts to enqueue a record
    *
    * @param  record  the new record to place on the queue
-   * @return true if the queue now contains the record. False is returned if
-   *         there was not enough room in the queue.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    *
    */
   public void add(KnowledgeRecord record) throws MadaraDeadObjectException
@@ -241,12 +247,11 @@ public class CircularBuffer extends MadaraJNI
   }
 
   /**
-   * Attempts to enqueue a double
+   * Attempts to enqueue a record
    *
-   * @param  value  the new value to place on the queue
-   * @return true if the queue now contains the record. False is returned if
-   *         there was not enough room in the queue.
+   * @param  records  the new records to be placed on the queue
    *
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void add(KnowledgeRecord[] records)
     throws MadaraDeadObjectException
@@ -266,6 +271,7 @@ public class CircularBuffer extends MadaraJNI
    *
    * @param  kb      the knowledge base that contains the name
    * @param  name    the variable name
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException
   {
@@ -277,6 +283,7 @@ public class CircularBuffer extends MadaraJNI
    *
    * @param  vars    the variables facade that contains the name
    * @param  name    the variable name
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException
   {
@@ -287,6 +294,7 @@ public class CircularBuffer extends MadaraJNI
    * Sets the settings for updating variables in the Knowledge Base
    *
    * @param  settings  the settings to use for updating the Knowledge Base
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
   {
@@ -297,6 +305,7 @@ public class CircularBuffer extends MadaraJNI
    * Returns the maximum size of the queue
    *
    * @return  the maximum number of records in the queue
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public long size() throws MadaraDeadObjectException
   {
@@ -307,6 +316,7 @@ public class CircularBuffer extends MadaraJNI
    * Returns the number of records currently in the queue
    *
    * @return  the number of elements in the queue
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public long count() throws MadaraDeadObjectException
   {

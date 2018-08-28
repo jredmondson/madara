@@ -176,7 +176,7 @@ struct TypeHandlers
   typedef void (*save_fn_type)(std::ostream &, const void *);
   save_fn_type save;
 
-  typedef void (*load_fn_type)(std::istream &, void *, const char *);
+  typedef void (*load_fn_type)(const char *, size_t, void *, const char *);
   load_fn_type load;
 
   typedef void (*save_json_fn_type)(std::ostream &, const void *);

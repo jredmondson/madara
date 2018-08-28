@@ -67,7 +67,7 @@ public class LogAggregate implements AggregateFilter
    * @param packet  a collection of variable keys and values in the packet
    * @param context  information about current state of transport layer
    * @param variables facade for current knowledge base
- * @throws MadaraDeadObjectException
+ *  @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public void filter(Packet packet, TransportContext context, Variables variables) throws MadaraDeadObjectException
   {

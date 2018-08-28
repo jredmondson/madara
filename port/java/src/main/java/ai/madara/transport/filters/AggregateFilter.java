@@ -50,6 +50,10 @@ import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.Variables;
 import ai.madara.transport.TransportContext;
 
+/**
+ * @author amit
+ *
+ */
 public interface AggregateFilter
 {
   /**
@@ -58,7 +62,7 @@ public interface AggregateFilter
    * @param packet  a map of all variable names to values
    * @param context  information about current state of transport layer
    * @param variables facade for current knowledge base
- * @throws MadaraDeadObjectException
+ *  @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public void filter(Packet packet, TransportContext context, Variables variables) throws MadaraDeadObjectException;
 }

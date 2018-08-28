@@ -31,7 +31,7 @@ public class BaseTest {
 	 *
 	 * @param receiveFilter
 	 * @param sendFilter
-	 * @throws MadaraDeadObjectException
+	 *  @throws MadaraDeadObjectException throws exception if object is already released
 	 */
 	public void initKBWithMulticast(AggregateFilter receiveFilter, AggregateFilter sendFilter)
 			throws MadaraDeadObjectException {

@@ -19,7 +19,7 @@ namespace madara
   namespace transport
   {
     #define MADARA_IDENTIFIER_LENGTH    8
-    #define MADARA_IDENTIFIER           "KaRL1.4"
+    #define MADARA_IDENTIFIER           "KaRL1.5"
     #define MADARA_DOMAIN_MAX_LENGTH    32
     #define PAIR_COUNT_TYPE             uint32_t
     #define KNOWLEDGE_QUALITY_TYPE      uint32_t

@@ -34,6 +34,8 @@ namespace containers = knowledge::containers;
 
 int madara_fails = 0;
 
+int log_level = 2;
+
 void test_checkpoint_settings (void)
 {
 
@@ -273,7 +275,7 @@ void test_checkpoint_settings (void)
     std::cerr << e.what () << "\n";
   }
 
-  logger::global_logger->set_level (1);
+  logger::global_logger->set_level (log_level);
 
   if (loader.get ("int_var").is_false ()
       && loader.get ("double_var").is_false ()
@@ -569,6 +571,8 @@ void test_checkpoints_diff (void)
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print ();
   }
+
+  logger::global_logger->set_level (log_level);
 
 }
 
@@ -871,6 +875,8 @@ void test_diff_filter_chains (void)
     loader.print ();
   }
 
+  logger::global_logger->set_level (log_level);
+
 }
 
 void handle_arguments (int argc, char ** argv)
@@ -882,10 +888,9 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        int level;
         std::stringstream buffer (argv[i + 1]);
-        buffer >> level;
-        logger::global_logger->set_level (level);
+        buffer >> log_level;
+        logger::global_logger->set_level (log_level);
       }
 
       ++i;
@@ -1025,7 +1030,7 @@ void test_filter_header (void)
   logger::global_logger->set_level (4);
   int encoded = settings.encode (buffer, init_size, 1000000);
   int decoded = settings.decode (buffer, encoded, 1000000);
-  logger::global_logger->set_level (1);
+  logger::global_logger->set_level (log_level);
 
   std::cerr << " init=" << init_size << "encoded=" << encoded 
     << " decoded=" << decoded << ": ";
@@ -1101,8 +1106,6 @@ void test_streaming()
     madara_fails++;
     return;
   }
-
-  logger::global_logger->set_level (logger::LOG_TRACE);
 
   knowledge::KnowledgeBase kb3;
 
@@ -1211,6 +1214,7 @@ int main (int argc, char * argv[])
 
   test_diff_filter_chains ();
 
+  logger::global_logger->set_level (log_level);
   test_streaming ();
 
   if (madara_fails > 0)
