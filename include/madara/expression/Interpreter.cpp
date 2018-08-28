@@ -1860,6 +1860,101 @@ namespace madara
       virtual ComponentNode * build (void);
     };
 
+    class SystemCallGeneric : public SystemCallNode
+    {
+    public:
+      /**
+       * Constructor
+       **/
+      SystemCallGeneric (
+        madara::knowledge::ThreadSafeContext & context,
+        const ComponentNodes & nodes)
+          : SystemCallNode (context, nodes) {}
+
+      /**
+       * Returns the value of the node
+       * @return    value of the node
+       **/
+      virtual madara::knowledge::KnowledgeRecord item (void) const
+      {
+        return madara::knowledge::KnowledgeRecord (nodes_.size ());
+      }
+
+      /**
+       * Prunes the expression tree of unnecessary nodes.
+       * @param     can_change   set to true if variable nodes are contained
+       * @return    value of current contained expression tree
+       **/
+      virtual madara::knowledge::KnowledgeRecord prune (bool & can_change)
+      {
+        can_change = true;
+        return {};
+      }
+
+      /**
+       * Evaluates the expression tree.
+       * @return    value of current contained expression tree
+       **/
+      virtual madara::knowledge::KnowledgeRecord evaluate (
+        const madara::knowledge::KnowledgeUpdateSettings & settings)
+      {
+        std::vector<madara::knowledge::KnowledgeRecord> args;
+        args.reserve(nodes_.size());
+        for (const auto &node : nodes_) {
+          args.emplace_back(node.evaluate(settings));
+        }
+        return fn_(std::move(args));
+      }
+
+      /**
+       * Accepts a visitor subclassed from the Visitor class
+       * @param    visitor   visitor instance to use
+       **/
+      virtual void accept (Visitor &visitor) const
+      {
+        visitor.visit (*this);
+      }
+    };
+
+    class GenericSystemCall : public SystemCall
+    {
+    public:
+      using fn_signature = KnowledgeRecord(std::vector<KnowledgeRecord>);
+      using fn_type = std::function<fn_signature>;
+
+      GenericSystemCall(const char *fn_name, fn_type fn)
+        : name_(fn_name), fn_(fn) {}
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence)
+      {
+        return this->precedence_ = VARIABLE_PRECEDENCE + accumulated_precedence;
+      }
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void)
+      {
+        if (left_ || right_)
+        {
+          std::stringstream str;
+          str << name_ << "::build: KARL COMPILE ERROR: " << name_ <<
+            " has a left or right child. Likely missing a semi-colon";
+          std::string s = str.str();
+
+          madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+            "%s\n", s.c_str());
+
+          throw exceptions::KarlException (s);
+        }
+
+        return new SystemCallGeneric (context_, nodes_);
+      }
+
+    private:
+      const char *name_;
+      fn_type fn_;
+    };
+
   }
 }
 
