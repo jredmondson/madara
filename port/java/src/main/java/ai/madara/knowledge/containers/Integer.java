@@ -127,6 +127,7 @@ public class Integer extends BaseContainer
    * Gets the value
    *
    * @return   current value
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public long get() throws MadaraDeadObjectException
   {
@@ -137,6 +138,7 @@ public class Integer extends BaseContainer
    * Gets the name of the variable
    *
    * @return  name of the variable within the context
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public java.lang.String getName() throws MadaraDeadObjectException
   {
@@ -147,6 +149,7 @@ public class Integer extends BaseContainer
    * Increments the container
    *
    * @return new value of the container
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public long inc() throws MadaraDeadObjectException
   {
@@ -158,6 +161,7 @@ public class Integer extends BaseContainer
    *
    * @param  value   value to increment by
    * @return new value of the container
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public long inc(long value) throws MadaraDeadObjectException
   {
@@ -168,6 +172,7 @@ public class Integer extends BaseContainer
    * Decrements the container
    *
    * @return new value of the container
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public long dec() throws MadaraDeadObjectException
   {
@@ -179,6 +184,7 @@ public class Integer extends BaseContainer
    *
    * @param  value   value to increment by
    * @return new value of the container
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public long dec(long value) throws MadaraDeadObjectException
   {
@@ -189,6 +195,7 @@ public class Integer extends BaseContainer
    * Sets the value
    *
    * @param  value   new value
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void set(long value) throws MadaraDeadObjectException
   {
@@ -198,6 +205,7 @@ public class Integer extends BaseContainer
   /**
    * Mark the value as modified. The Integer retains the same value
    * but will resend its value as if it had been modified.
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public void modify() throws MadaraDeadObjectException
   {
@@ -207,6 +215,7 @@ public class Integer extends BaseContainer
   /**
    * Returns true if the container evaluates to true
    * @return true if container has all true values
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public boolean isTrue() throws MadaraDeadObjectException
   {
@@ -216,6 +225,7 @@ public class Integer extends BaseContainer
   /**
    * Returns true if the container evaluates to false
    * @return true if container has any false values or is uninitialized
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public boolean isFalse() throws MadaraDeadObjectException
   {
@@ -227,6 +237,7 @@ public class Integer extends BaseContainer
    *
    * @param  kb      the knowledge base that contains the name
    * @param  name    the variable name
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException
   {
@@ -238,6 +249,7 @@ public class Integer extends BaseContainer
    *
    * @param  vars    the variables facade that contains the name
    * @param  name    the variable name
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException
   {
@@ -248,6 +260,7 @@ public class Integer extends BaseContainer
    * Sets the settings for updating variables in the Knowledge Base
    *
    * @param  settings  the settings to use for updating the Knowledge Base
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
   {
@@ -258,6 +271,7 @@ public class Integer extends BaseContainer
    * Converts the value to a double
    *
    * @return current double value
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public double toDouble() throws MadaraDeadObjectException
   {
@@ -268,6 +282,7 @@ public class Integer extends BaseContainer
    * Converts the value to a long
    *
    * @return current long value
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public long toLong() throws MadaraDeadObjectException
   {

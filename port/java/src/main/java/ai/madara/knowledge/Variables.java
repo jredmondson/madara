@@ -146,7 +146,7 @@ public class Variables extends MadaraJNI
    *
    * @param name  knowledge name
    * @param value value to set
- * @throws MadaraDeadObjectException
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void set(String name, long value) throws MadaraDeadObjectException
   {
@@ -160,7 +160,7 @@ public class Variables extends MadaraJNI
    *
    * @param name  knowledge name
    * @param value value to set
- * @throws MadaraDeadObjectException
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void set(String name, double value) throws MadaraDeadObjectException
   {
@@ -174,7 +174,7 @@ public class Variables extends MadaraJNI
    *
    * @param name  knowledge name
    * @param value value to set
- * @throws MadaraDeadObjectException
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void set(String name, String value) throws MadaraDeadObjectException
   {

@@ -58,7 +58,7 @@ public abstract class BaseThread
   /**
    * Initializes thread with a data plane (a shared MADARA context)
    * @param   context   context for querying/modifying current program state
- * @throws MadaraDeadObjectException
+ *  @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public void init(KnowledgeBase context) throws MadaraDeadObjectException
   {
@@ -66,7 +66,7 @@ public abstract class BaseThread
 
   /**
    * Executes the main thread logic.
- * @throws MadaraDeadObjectException
+ *  @throws MadaraDeadObjectException throws exception if object is already released
    **/
   abstract public void run() throws MadaraDeadObjectException;
 

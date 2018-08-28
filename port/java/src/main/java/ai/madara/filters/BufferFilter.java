@@ -56,6 +56,7 @@ public interface BufferFilter
    * @param size    the initial size of the buffer
    * @param maxSize the maximum size of the buffer
    * @return the new size of the buffer contents
+ * @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public long encode(byte[] buffer, long size, long maxSize) throws MadaraDeadObjectException;
 
@@ -65,6 +66,7 @@ public interface BufferFilter
    * @param size    the initial size of the buffer
    * @param maxSize the maximum size of the buffer
    * @return the new size of the buffer contents
+ * @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public long decode(byte[] buffer, long size, long maxSize) throws MadaraDeadObjectException;
 }

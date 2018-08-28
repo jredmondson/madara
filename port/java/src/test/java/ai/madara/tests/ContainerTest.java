@@ -48,7 +48,6 @@
 package ai.madara.tests;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ai.madara.exceptions.MadaraDeadObjectException;

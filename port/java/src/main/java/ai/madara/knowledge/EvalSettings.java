@@ -105,6 +105,7 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * @param delaySendingModifieds Toggle for sending modifieds in a single update event after each evaluation.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setDelaySendingModifieds(boolean delaySendingModifieds) throws MadaraDeadObjectException
   {
@@ -113,6 +114,8 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * @return current value of delaySendingModifieds
+   * @throws MadaraDeadObjectException throws exception if object is already released
+
    */
   public boolean getDelaySendingModifieds() throws MadaraDeadObjectException
   {
@@ -121,6 +124,7 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * @param prePrintStatement Statement to print before evaluations.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setPrePrintStatement(String prePrintStatement) throws MadaraDeadObjectException
   {
@@ -129,6 +133,7 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * @return current value of prePrintStatement
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public String getPrePrintStatement() throws MadaraDeadObjectException
   {
@@ -137,6 +142,7 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * @param postPrintStatement Statement to print after evaluations.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setPostPrintStatement(String postPrintStatement) throws MadaraDeadObjectException
   {
@@ -145,6 +151,7 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * @return current value of getPostPrintStatement
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public String getPostPrintStatement() throws MadaraDeadObjectException
   {
@@ -153,6 +160,7 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * @param alwaysOverwrite Toggle for always overwriting records, regardless of quality, clock values, etc.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setAlwaysOverwrite(boolean alwaysOverwrite) throws MadaraDeadObjectException
   {
@@ -161,6 +169,7 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * @return current value of alwaysOverwrite
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public boolean getAlwaysOverwrite() throws MadaraDeadObjectException
   {
@@ -170,7 +179,8 @@ public class EvalSettings extends MadaraJNI
   /**
    * @param treatGlobalsAsLocals Toggle whether updates to global variables are
    * treated as local variables and not marked as modified to the transport.
-   */
+   * @throws MadaraDeadObjectException throws exception if object is already released
+  */
   public void setTreatGlobalsAsLocals(boolean treatGlobalsAsLocals) throws MadaraDeadObjectException
   {
     jni_setTreatGlobalsAsLocals(getCPtr(), treatGlobalsAsLocals);
@@ -178,6 +188,7 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * @return current value of treatGlobalsAsLocals
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public boolean getTreatGlobalsAsLocals() throws MadaraDeadObjectException
   {
@@ -186,6 +197,7 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * @param defaultClockIncrement Default clock increment.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setDefaultClockIncrement(long defaultClockIncrement) throws MadaraDeadObjectException
   {
@@ -194,6 +206,7 @@ public class EvalSettings extends MadaraJNI
 
   /**
    * @return get the default clock increment
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public long getDefaultClockIncrement() throws MadaraDeadObjectException
   {
