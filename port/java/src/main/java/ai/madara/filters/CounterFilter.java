@@ -54,111 +54,116 @@ import ai.madara.transport.QoSTransportSettings;
  * A facade for the C++ Counter_Filter aggregate filter
  **/
 
-public class CounterFilter extends MadaraJNI
-{
-  private native long jni_CounterFilter();
-  private native double jni_getThroughput(long cptr);
-  private native void jni_addReceiveFilterTo(long cptr, long qosCptr);
-  private native void jni_addSendFilterTo(long cptr, long qosCptr);
-  private native void jni_addRebroadcastFilterTo(long cptr, long qosCptr);
-  private native long jni_getCount(long cptr);
-  private native long jni_getElapsed(long cptr);
-  private static native void jni_freeCounterFilter(long cptr);
+public class CounterFilter extends MadaraJNI {
+	private native long jni_CounterFilter();
 
-  private boolean manageMemory = true;
+	private native double jni_getThroughput(long cptr);
 
-  /**
-   * Default constructor
-   **/
-  public CounterFilter()
-  {
-    setCPtr(jni_CounterFilter());
-  }
+	private native void jni_addReceiveFilterTo(long cptr, long qosCptr);
 
-  /**
-   * Converts the value to a double
-   *
-   * @return current double value
-   */
-  public double getThroughput() throws MadaraDeadObjectException
-  {
-    return jni_getThroughput(getCPtr());
-  }
+	private native void jni_addSendFilterTo(long cptr, long qosCptr);
 
-  /**
-   * Returns the number of packets filtered
-   *
-   * @return the number of packets filtered
-   */
-  public long getCount() throws MadaraDeadObjectException
-  {
-    return jni_getCount(getCPtr());
-  }
+	private native void jni_addRebroadcastFilterTo(long cptr, long qosCptr);
 
-  /**
-   * Returns the number of packets filtered
-   *
-   * @return the number of packets filtered
-   */
-  public long getElapsed() throws MadaraDeadObjectException
-  {
-    return jni_getElapsed(getCPtr());
-  }
+	private native long jni_getCount(long cptr);
 
-  /**
-   * Adds the filter as a receive filter to transport settings
-   * @param  settings the QoS Transport settings to add the filter to
-   */
-  public void addReceiveFilterTo(QoSTransportSettings settings) throws MadaraDeadObjectException
-  {
-    jni_addReceiveFilterTo(getCPtr(), settings.getCPtr());
-  }
+	private native long jni_getElapsed(long cptr);
 
-  /**
-   * Adds the filter as a receive filter to transport settings
-   * @param  settings the QoS Transport settings to add the filter to
-   */
-  public void addSendFilterTo(QoSTransportSettings settings) throws MadaraDeadObjectException
-  {
-    jni_addSendFilterTo(getCPtr(), settings.getCPtr());
-  }
+	private static native void jni_freeCounterFilter(long cptr);
 
-  /**
-   * Adds the filter as a receive filter to transport settings
-   * @param  settings the QoS Transport settings to add the filter to
-   */
-  public void addRebroadcastFilterTo(QoSTransportSettings settings) throws MadaraDeadObjectException
-  {
-    jni_addRebroadcastFilterTo(getCPtr(), settings.getCPtr());
-  }
+	private boolean manageMemory = true;
 
-  /**
-   * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
-   * called before an instance gets garbage collected
-   */
-  public void free()
-  {
-    if (manageMemory)
-    {
-      jni_freeCounterFilter(getCPtr());
-      setCPtr(0);
-    }
-  }
+	/**
+	 * Default constructor
+	 **/
+	public CounterFilter() {
+		setCPtr(jni_CounterFilter());
+	}
 
-  /**
-   * Cleans up underlying C resources
-   * @throws Throwable necessary for override but unused
-   */
-  @Override
-  protected void finalize() throws Throwable
-  {
-    try {
-      free();
-    } catch (Throwable t) {
-      throw t;
-    } finally {
-      super.finalize();
-    }
-  }
+	/**
+	 * Converts the value to a double
+	 *
+	 * @return current double value
+	 * @throws MadaraDeadObjectException throws exception if object is already released
+	 */
+	public double getThroughput() throws MadaraDeadObjectException {
+		return jni_getThroughput(getCPtr());
+	}
+
+	/**
+	 * Returns the number of packets filtered
+	 *
+	 * @return the number of packets filtered
+	 * @throws MadaraDeadObjectException throws exception if object is already released
+	 */
+	public long getCount() throws MadaraDeadObjectException {
+		return jni_getCount(getCPtr());
+	}
+
+	/**
+	 * Returns the number of packets filtered
+	 *
+	 * @return the number of packets filtered
+	 * @throws MadaraDeadObjectException throws exception if object is already released
+	 */
+	public long getElapsed() throws MadaraDeadObjectException {
+		return jni_getElapsed(getCPtr());
+	}
+
+	/**
+	 * Adds the filter as a receive filter to transport settings
+	 * 
+	 * @param settings the QoS Transport settings to add the filter to
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void addReceiveFilterTo(QoSTransportSettings settings) throws MadaraDeadObjectException {
+		jni_addReceiveFilterTo(getCPtr(), settings.getCPtr());
+	}
+
+	/**
+	 * Adds the filter as a receive filter to transport settings
+	 * 
+	 * @param settings the QoS Transport settings to add the filter to
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void addSendFilterTo(QoSTransportSettings settings) throws MadaraDeadObjectException {
+		jni_addSendFilterTo(getCPtr(), settings.getCPtr());
+	}
+
+	/**
+	 * Adds the filter as a receive filter to transport settings
+	 * 
+	 * @param settings the QoS Transport settings to add the filter to
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void addRebroadcastFilterTo(QoSTransportSettings settings) throws MadaraDeadObjectException {
+		jni_addRebroadcastFilterTo(getCPtr(), settings.getCPtr());
+	}
+
+	/**
+	 * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
+	 * called before an instance gets garbage collected
+	 */
+	public void free() {
+		if (manageMemory) {
+			jni_freeCounterFilter(getCPtr());
+			setCPtr(0);
+		}
+	}
+
+	/**
+	 * Cleans up underlying C resources
+	 * 
+	 * @throws Throwable necessary for override but unused
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			free();
+		} catch (Throwable t) {
+			throw t;
+		} finally {
+			super.finalize();
+		}
+	}
 }
-

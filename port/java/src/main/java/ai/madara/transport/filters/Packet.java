@@ -83,6 +83,7 @@ public class Packet extends MadaraJNI
    * Gets the record at the specified index
    * @param  index   the index of the record
    * @return the record at the index
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public KnowledgeRecord get(java.lang.String index) throws MadaraDeadObjectException
   {
@@ -91,6 +92,7 @@ public class Packet extends MadaraJNI
 
   /**
    * Clears all records from the packet
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public void clear() throws MadaraDeadObjectException
   {
@@ -100,6 +102,7 @@ public class Packet extends MadaraJNI
   /**
    * Erases the record at the specified index
    * @param  index   the index of the record
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public void erase(java.lang.String index) throws MadaraDeadObjectException
   {
@@ -110,6 +113,7 @@ public class Packet extends MadaraJNI
    * Checks if there is a record at the specified index
    * @param  index   the index of the record
    * @return true if the index exists in the packet
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public boolean exists(java.lang.String index) throws MadaraDeadObjectException
   {
@@ -120,6 +124,7 @@ public class Packet extends MadaraJNI
    * Sets the record at the specified index
    * @param  index   the index of the record
    * @param  record  the record to set at the index
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public void set(java.lang.String index, KnowledgeRecord record) throws MadaraDeadObjectException
   {
@@ -129,6 +134,7 @@ public class Packet extends MadaraJNI
   /**
    * Gets all keys in the packet
    * @return the array of all keys in the packet
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public String[] getKeys() throws MadaraDeadObjectException
   {

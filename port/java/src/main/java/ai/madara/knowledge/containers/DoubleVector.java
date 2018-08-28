@@ -134,6 +134,7 @@ public class DoubleVector extends BaseContainer
    * Gets the value at the specified index
    * @param  index  index of the record to retrieve
    * @return   current value
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public double get(int index) throws MadaraDeadObjectException
   {
@@ -144,6 +145,7 @@ public class DoubleVector extends BaseContainer
    * Gets the name of the variable
    *
    * @return  name of the variable within the context
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public java.lang.String getName() throws MadaraDeadObjectException
   {
@@ -153,6 +155,7 @@ public class DoubleVector extends BaseContainer
   /**
    * Mark the vector as modified. The vector retains the same values
    * but will resend all values as if they had been modified.
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public void modify() throws MadaraDeadObjectException
   {
@@ -162,6 +165,7 @@ public class DoubleVector extends BaseContainer
   /**
    * Returns true if the container evaluates to true
    * @return true if container has all true values
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public boolean isTrue() throws MadaraDeadObjectException
   {
@@ -171,6 +175,7 @@ public class DoubleVector extends BaseContainer
   /**
    * Returns true if the container evaluates to false
    * @return true if container has any false values or is uninitialized
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public boolean isFalse() throws MadaraDeadObjectException
   {
@@ -181,6 +186,7 @@ public class DoubleVector extends BaseContainer
    * Mark an element as modified. The element retains the same value
    * but will resend the value as if it had been modified.
    * @param index  the element index
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    **/
   public void modify(int index) throws MadaraDeadObjectException
   {
@@ -193,6 +199,7 @@ public class DoubleVector extends BaseContainer
    * size is indicated in the knowledge base.
    *
    * @param  length   new number of elements of the vector
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void resize (long length) throws MadaraDeadObjectException
   {
@@ -203,6 +210,7 @@ public class DoubleVector extends BaseContainer
    * Sets the value of an element of the vector
    * @param  index   index to set the value at
    * @param  value   new value
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void set(int index, double value) throws MadaraDeadObjectException
   {
@@ -212,6 +220,7 @@ public class DoubleVector extends BaseContainer
   /**
    * Pushes a value to the end of the vector
    * @param  value   new value to add to vector
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void pushback(double value) throws MadaraDeadObjectException
   {
@@ -223,6 +232,7 @@ public class DoubleVector extends BaseContainer
    *
    * @param  kb      the knowledge base that contains the name
    * @param  name    the variable name
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException
   {
@@ -234,6 +244,7 @@ public class DoubleVector extends BaseContainer
    *
    * @param  vars    the variables facade that contains the name
    * @param  name    the variable name
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException
   {
@@ -244,6 +255,7 @@ public class DoubleVector extends BaseContainer
    * Sets the settings for updating variables in the Knowledge Base
    *
    * @param  settings  the settings to use for updating the Knowledge Base
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
   {
@@ -254,6 +266,7 @@ public class DoubleVector extends BaseContainer
    * Returns the size of the vector
    *
    * @return  the number of elements in the vector
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public long size () throws MadaraDeadObjectException
   {
@@ -264,6 +277,7 @@ public class DoubleVector extends BaseContainer
    * Returns a value at the specified index
    *
    * @return the vector as an array of records
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public KnowledgeRecord[] toArray() throws MadaraDeadObjectException
   {
@@ -281,6 +295,7 @@ public class DoubleVector extends BaseContainer
    *
    * @param  index  the index
    * @return the value at the index as a knowledge record
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public KnowledgeRecord toRecord(int index) throws MadaraDeadObjectException
   {
@@ -291,6 +306,7 @@ public class DoubleVector extends BaseContainer
    * Returns all of the values as a knowledge record
    *
    * @return  knowledge record that contains all indices
+ * @throws MadaraDeadObjectException throws exception if object is already released 
    */
   public KnowledgeRecord toRecord() throws MadaraDeadObjectException
   {

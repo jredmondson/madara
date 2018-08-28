@@ -98,6 +98,7 @@ public class WaitSettings extends EvalSettings
 
   /**
    * @param freq Frequency to poll an expression for truth.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setPollFrequency(double freq) throws MadaraDeadObjectException
   {
@@ -107,6 +108,7 @@ public class WaitSettings extends EvalSettings
 
   /**
    * @return current poll frequency
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public double getPollFrequency() throws MadaraDeadObjectException
   {
@@ -116,6 +118,7 @@ public class WaitSettings extends EvalSettings
 
   /**
    * @param maxWaitTime Maximum time to wait for an expression to become true.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setMaxWaitTime(double maxWaitTime) throws MadaraDeadObjectException
   {
@@ -124,6 +127,7 @@ public class WaitSettings extends EvalSettings
 
   /**
    * @return current max wait time
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public double getMaxWaitTime() throws MadaraDeadObjectException
   {

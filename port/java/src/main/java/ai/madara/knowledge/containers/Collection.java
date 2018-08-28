@@ -53,280 +53,307 @@ import ai.madara.knowledge.UpdateSettings;
  * A facade for a collection of knowledge base containers
  **/
 
-public class Collection extends BaseContainer
-{
-  private native long jni_Collection();
-  private native long jni_Collection(long cptr);
-  private static native void jni_freeCollection(long cptr);
-  private native java.lang.String jni_getDebugInfo(long cptr);
-  private native void jni_modify(long cptr);
-  private native void jni_setSettings(long cptr, long settings);
-  private native void jni_addBarrier(long cptr, long container);
-  private native void jni_addCounter(long cptr, long container);
-  private native void jni_addDouble(long cptr, long container);
-  private native void jni_addDoubleVector(long cptr, long container);
-  private native void jni_addFlexMap(long cptr, long container);
-  private native void jni_addInteger(long cptr, long container);
-  private native void jni_addIntegerVector(long cptr, long container);
-  private native void jni_addMap(long cptr, long container);
-  private native void jni_addNativeDoubleVector(long cptr, long container);
-  private native void jni_addNativeIntegerVector(long cptr, long container);
-  private native void jni_addString(long cptr, long container);
-  private native void jni_addStringVector(long cptr, long container);
-  private native void jni_addVector(long cptr, long container);
-  private native boolean jni_isTrue(long cptr);
-  private native boolean jni_isFalse(long cptr);
+public class Collection extends BaseContainer {
+	private native long jni_Collection();
 
-  private boolean manageMemory = true;
+	private native long jni_Collection(long cptr);
 
-  /**
-   * Default constructor
-   **/
-  public Collection()
-  {
-    setCPtr(jni_Collection());
-  }
+	private static native void jni_freeCollection(long cptr);
 
-  /**
-   * Copy constructor
-   * @param input  instance to copy
-   **/
-  public Collection(Collection input)
-  {
-    setCPtr(jni_Collection(input.getCPtr()));
-  }
+	private native java.lang.String jni_getDebugInfo(long cptr);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @return a new java instance of the underlying pointer
-   */
-  public static Collection fromPointer(long cptr)
-  {
-    Collection ret = new Collection();
-    ret.manageMemory = true;
-    ret.setCPtr(cptr);
-    return ret;
-  }
+	private native void jni_modify(long cptr);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @param shouldManage  if true, manage the pointer
-   * @return a new java instance of the underlying pointer
-   */
-  public static Collection fromPointer(long cptr, boolean shouldManage)
-  {
-    Collection ret = new Collection();
-    ret.manageMemory=shouldManage;
-    ret.setCPtr(cptr);
-    return ret;
-  }
+	private native void jni_setSettings(long cptr, long settings);
 
-  /**
-   * Sets the settings for updating variables in the Knowledge Base
-   *
-   * @param  settings  the settings to use for updating the Knowledge Base
-   */
-  public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
-  {
-    jni_setSettings(getCPtr(), settings.getCPtr());
-  }
+	private native void jni_addBarrier(long cptr, long container);
 
-  /**
-   * Mark the value as modified. The Collection retains the same value
-   * but will resend its value as if it had been modified.
-   **/
-  public void modify() throws MadaraDeadObjectException
-  {
-    jni_modify(getCPtr());
-  }
+	private native void jni_addCounter(long cptr, long container);
 
-  /**
-   * Returns true if the container evaluates to true
-   * @return true if container has all true values
-   **/
-  public boolean isTrue() throws MadaraDeadObjectException
-  {
-    return jni_isTrue(getCPtr());
-  }
+	private native void jni_addDouble(long cptr, long container);
 
-  /**
-   * Returns true if the container evaluates to false
-   * @return true if container has any false values or is uninitialized
-   **/
-  public boolean isFalse() throws MadaraDeadObjectException
-  {
-    return jni_isFalse(getCPtr());
-  }
+	private native void jni_addDoubleVector(long cptr, long container);
 
-  /**
-   * Reads all debug info for the collection into a string
-   *
-   * @return aggregate debug information for the collection
-   */
-  @Override
-  public java.lang.String toString()
-  {
-    return jni_getDebugInfo(getCPtr());
-  }
+	private native void jni_addFlexMap(long cptr, long container);
 
-  /**
-   * Adds a Barrier container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(Barrier container) throws MadaraDeadObjectException
-  {
-    jni_addBarrier(getCPtr(), container.getCPtr());
-  }
+	private native void jni_addInteger(long cptr, long container);
 
-  /**
-   * Adds a Counter container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(Counter container) throws MadaraDeadObjectException
-  {
-    jni_addCounter(getCPtr(), container.getCPtr());
-  }
+	private native void jni_addIntegerVector(long cptr, long container);
 
-  /**
-   * Adds a Double container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(Double container) throws MadaraDeadObjectException
-  {
-    jni_addDouble(getCPtr(), container.getCPtr());
-  }
+	private native void jni_addMap(long cptr, long container);
 
-  /**
-   * Adds a DoubleVector container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(DoubleVector container) throws MadaraDeadObjectException
-  {
-    jni_addDoubleVector(getCPtr(), container.getCPtr());
-  }
+	private native void jni_addNativeDoubleVector(long cptr, long container);
 
-  /**
-   * Adds a FlexMap container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(FlexMap container) throws MadaraDeadObjectException
-  {
-    jni_addFlexMap(getCPtr(), container.getCPtr());
-  }
+	private native void jni_addNativeIntegerVector(long cptr, long container);
 
-  /**
-   * Adds a Integer container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(Integer container) throws MadaraDeadObjectException
-  {
-    jni_addInteger(getCPtr(), container.getCPtr());
-  }
+	private native void jni_addString(long cptr, long container);
 
-  /**
-   * Adds a IntegerVector container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(IntegerVector container) throws MadaraDeadObjectException
-  {
-    jni_addIntegerVector(getCPtr(), container.getCPtr());
-  }
+	private native void jni_addStringVector(long cptr, long container);
 
-  /**
-   * Adds a Map container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(Map container) throws MadaraDeadObjectException
-  {
-    jni_addMap(getCPtr(), container.getCPtr());
-  }
+	private native void jni_addVector(long cptr, long container);
 
-  /**
-   * Adds a NativeDoubleVector container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(NativeDoubleVector container) throws MadaraDeadObjectException
-  {
-    jni_addNativeDoubleVector(getCPtr(), container.getCPtr());
-  }
+	private native boolean jni_isTrue(long cptr);
 
-  /**
-   * Adds a NativeIntegerVector container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(NativeIntegerVector container) throws MadaraDeadObjectException
-  {
-    jni_addNativeIntegerVector(getCPtr(), container.getCPtr());
-  }
+	private native boolean jni_isFalse(long cptr);
 
-  /**
-   * Adds a String container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(String container) throws MadaraDeadObjectException
-  {
-    jni_addString(getCPtr(), container.getCPtr());
-  }
+	private boolean manageMemory = true;
 
-  /**
-   * Adds a StringVector container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(StringVector container) throws MadaraDeadObjectException
-  {
-    jni_addStringVector(getCPtr(), container.getCPtr());
-  }
+	/**
+	 * Default constructor
+	 **/
+	public Collection() {
+		setCPtr(jni_Collection());
+	}
 
-  /**
-   * Adds a Vector container to the collection
-   * @param container the container to add to the collection
-   */
-  public void add(Vector container) throws MadaraDeadObjectException
-  {
-    jni_addVector(getCPtr(), container.getCPtr());
-  }
+	/**
+	 * Copy constructor
+	 * 
+	 * @param input instance to copy
+	 **/
+	public Collection(Collection input) {
+		setCPtr(jni_Collection(input.getCPtr()));
+	}
 
-  /**
-   * Reads all debug info for the collection into a string
-   *
-   * @return aggregate debug information for the collection
-   */
-  public java.lang.String getDebugInfo() throws MadaraDeadObjectException
-  {
-    return jni_getDebugInfo(getCPtr());
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr C pointer to the object
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static Collection fromPointer(long cptr) {
+		Collection ret = new Collection();
+		ret.manageMemory = true;
+		ret.setCPtr(cptr);
+		return ret;
+	}
 
-  /**
-   * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
-   * called before an instance gets garbage collected
-   */
-  public void free()
-  {
-    if (manageMemory)
-    {
-      jni_freeCollection(getCPtr());
-      setCPtr(0);
-    }
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr         C pointer to the object
+	 * @param shouldManage if true, manage the pointer
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static Collection fromPointer(long cptr, boolean shouldManage) {
+		Collection ret = new Collection();
+		ret.manageMemory = shouldManage;
+		ret.setCPtr(cptr);
+		return ret;
+	}
 
-  /**
-   * Cleans up underlying C resources
-   * @throws Throwable necessary for override but unused
-   */
-  @Override
-  protected void finalize() throws Throwable
-  {
-    try {
-      free();
-    } catch (Throwable t) {
-      throw t;
-    } finally {
-      super.finalize();
-    }
-  }
+	/**
+	 * Sets the settings for updating variables in the Knowledge Base
+	 *
+	 * @param settings the settings to use for updating the Knowledge Base
+	 * @throws MadaraDeadObjectException throws exception if object is already released
+	 */
+	public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException {
+		jni_setSettings(getCPtr(), settings.getCPtr());
+	}
+
+	/**
+	 * Mark the value as modified. The Collection retains the same value but will
+	 * resend its value as if it had been modified.
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 **/
+	public void modify() throws MadaraDeadObjectException {
+		jni_modify(getCPtr());
+	}
+
+	/**
+	 * Returns true if the container evaluates to true
+	 * 
+	 * @return true if container has all true values
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 **/
+	public boolean isTrue() throws MadaraDeadObjectException {
+		return jni_isTrue(getCPtr());
+	}
+
+	/**
+	 * Returns true if the container evaluates to false
+	 * 
+	 * @return true if container has any false values or is uninitialized
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 **/
+	public boolean isFalse() throws MadaraDeadObjectException {
+		return jni_isFalse(getCPtr());
+	}
+
+	/**
+	 * Reads all debug info for the collection into a string
+	 *
+	 * @return aggregate debug information for the collection
+	 */
+	@Override
+	public java.lang.String toString() {
+		return jni_getDebugInfo(getCPtr());
+	}
+
+	/**
+	 * Adds a Barrier container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(Barrier container) throws MadaraDeadObjectException {
+		jni_addBarrier(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a Counter container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(Counter container) throws MadaraDeadObjectException {
+		jni_addCounter(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a Double container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(Double container) throws MadaraDeadObjectException {
+		jni_addDouble(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a DoubleVector container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(DoubleVector container) throws MadaraDeadObjectException {
+		jni_addDoubleVector(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a FlexMap container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(FlexMap container) throws MadaraDeadObjectException {
+		jni_addFlexMap(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a Integer container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(Integer container) throws MadaraDeadObjectException {
+		jni_addInteger(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a IntegerVector container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(IntegerVector container) throws MadaraDeadObjectException {
+		jni_addIntegerVector(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a Map container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(Map container) throws MadaraDeadObjectException {
+		jni_addMap(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a NativeDoubleVector container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(NativeDoubleVector container) throws MadaraDeadObjectException {
+		jni_addNativeDoubleVector(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a NativeIntegerVector container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(NativeIntegerVector container) throws MadaraDeadObjectException {
+		jni_addNativeIntegerVector(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a String container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(String container) throws MadaraDeadObjectException {
+		jni_addString(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a StringVector container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(StringVector container) throws MadaraDeadObjectException {
+		jni_addStringVector(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Adds a Vector container to the collection
+	 * 
+	 * @param container the container to add to the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public void add(Vector container) throws MadaraDeadObjectException {
+		jni_addVector(getCPtr(), container.getCPtr());
+	}
+
+	/**
+	 * Reads all debug info for the collection into a string
+	 *
+	 * @return aggregate debug information for the collection
+	 * @throws MadaraDeadObjectException throws exception if object is already released 
+	 */
+	public java.lang.String getDebugInfo() throws MadaraDeadObjectException {
+		return jni_getDebugInfo(getCPtr());
+	}
+
+	/**
+	 * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
+	 * called before an instance gets garbage collected
+	 */
+	public void free() {
+		if (manageMemory) {
+			jni_freeCollection(getCPtr());
+			setCPtr(0);
+		}
+	}
+
+	/**
+	 * Cleans up underlying C resources
+	 * 
+	 * @throws Throwable necessary for override but unused
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			free();
+		} catch (Throwable t) {
+			throw t;
+		} finally {
+			super.finalize();
+		}
+	}
 }
-

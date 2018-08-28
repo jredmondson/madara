@@ -50,302 +50,316 @@ import ai.madara.MadaraJNI;
 import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.KnowledgeBase;
 import ai.madara.knowledge.KnowledgeRecord;
-import ai.madara.knowledge.UpdateSettings;
 import ai.madara.knowledge.Variables;
 
 /**
  * A facade for a dynamically typed vector within a knowledge base.
  **/
 
-public class CircularBufferConsumer extends MadaraJNI
-{
-  private native long jni_CircularBufferConsumer();
-  private native long jni_CircularBufferConsumer(long cptr);
-  private static native void jni_freeCircularBufferConsumer(long cptr);
-  private native long jni_consumeRecord(long cptr);
-  private native Object[] jni_consumeEarliestRecordVector(long cptr, int count);
-  private native Object[] jni_consumeLatestRecordVector(long cptr, int count);
-  private native long jni_inspectRecord(long cptr, int position);
-  private native Object[] jni_inspectRecordVector(
-    long cptr, int position, int count);
-  private native long jni_peekRecord(long cptr);
-  private native Object[] jni_peekRecordVector(long cptr, int count);
-  private native java.lang.String jni_getName(long cptr);
-  private native void jni_setName(long cptr, long type, long kb,
-    java.lang.String name);
-  private native void jni_setIndex(long cptr, long index);
-  private native long jni_remaining(long cptr);
-  private native void jni_resync(long cptr);
-  private native long jni_size(long cptr);
-  private native long jni_count(long cptr);
-  private native void jni_resize(long cptr);
+public class CircularBufferConsumer extends MadaraJNI {
+	private native long jni_CircularBufferConsumer();
 
-  private boolean manageMemory = true;
+	private native long jni_CircularBufferConsumer(long cptr);
 
-  /**
-   * Default constructor
-   **/
-  public CircularBufferConsumer()
-  {
-    setCPtr(jni_CircularBufferConsumer());
-  }
+	private static native void jni_freeCircularBufferConsumer(long cptr);
 
-  /**
-   * Copy constructor
-   * @param input  instance to copy
-   **/
-  public CircularBufferConsumer(CircularBufferConsumer input)
-  {
-    setCPtr(jni_CircularBufferConsumer(input.getCPtr()));
-  }
+	private native long jni_consumeRecord(long cptr);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @return a new java instance of the underlying pointer
-   */
-  public static CircularBufferConsumer fromPointer(long cptr)
-  {
-    CircularBufferConsumer ret = new CircularBufferConsumer();
-    ret.manageMemory = true;
-    ret.setCPtr(cptr);
-    return ret;
-  }
+	private native Object[] jni_consumeEarliestRecordVector(long cptr, int count);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @param shouldManage  if true, manage the pointer
-   * @return a new java instance of the underlying pointer
-   */
-  public static CircularBufferConsumer fromPointer(long cptr, boolean shouldManage)
-  {
-    CircularBufferConsumer ret = new CircularBufferConsumer();
-    ret.manageMemory=shouldManage;
-    ret.setCPtr(cptr);
-    return ret;
-  }
+	private native Object[] jni_consumeLatestRecordVector(long cptr, int count);
 
-  /**
-   * Inspects the record at the specified position from local index
-   *
-   * @param  position   position from local to inspect
-   * @return   the record at the position
-   */
-  public KnowledgeRecord inspect(int position) throws MadaraDeadObjectException
-  {
-    return KnowledgeRecord.fromPointer(jni_inspectRecord(getCPtr(), position));
-  }
+	private native long jni_inspectRecord(long cptr, int position);
 
-  /**
-   * Inspects the record at the specified position from local index
-   *
-   * @param  position   position from local to inspect
-   * @param  count      max number of elements to return
-   * @return   the records at the position
-   */
-  public KnowledgeRecord [] inspect(int position, int count)
-    throws MadaraDeadObjectException
-  {
-    Object[] objs = jni_inspectRecordVector(getCPtr(), position, count);
-    KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-    for (int i = 0; i < objs.length; ++i)
-    {
-      records[i] = (KnowledgeRecord)objs[i];
-    }
-    return records;
-  }
+	private native Object[] jni_inspectRecordVector(long cptr, int position, int count);
 
-  /**
-   * Attempts to consume a record from the local index
-   * @return  the record
-   */
-  public KnowledgeRecord consume() throws MadaraDeadObjectException
-  {
-    return KnowledgeRecord.fromPointer(jni_consumeRecord(getCPtr()));
-  }
+	private native long jni_peekRecord(long cptr);
 
-  /**
-   * Consumes earliest records in the buffer up to a certain count
-   *
-   * @param  count      max number of elements to return
-   * @return   the records
-   */
-  public KnowledgeRecord [] consumeEarliest(int count)
-    throws MadaraDeadObjectException
-  {
-    Object[] objs = jni_consumeEarliestRecordVector(getCPtr(), count);
-    KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-    for (int i = 0; i < objs.length; ++i)
-    {
-      records[i] = (KnowledgeRecord)objs[i];
-    }
-    return records;
-  }
+	private native Object[] jni_peekRecordVector(long cptr, int count);
 
-  /**
-   * Consumes earliest records in the buffer up to a certain count.
-   * Local index will be updated to the producer's index
-   *
-   * @param  count      max number of elements to return
-   * @return   the records
-   */
-  public KnowledgeRecord [] consumeLatest(int count)
-    throws MadaraDeadObjectException
-  {
-    Object[] objs = jni_consumeLatestRecordVector(getCPtr(), count);
-    KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-    for (int i = 0; i < objs.length; ++i)
-    {
-      records[i] = (KnowledgeRecord)objs[i];
-    }
-    return records;
-  }
+	private native java.lang.String jni_getName(long cptr);
 
-  /**
-   * Attempts to look at the most recent added record 
-   * @return  the record
-   */
-  public KnowledgeRecord peek() throws MadaraDeadObjectException
-  {
-    return KnowledgeRecord.fromPointer(jni_peekRecord(getCPtr()));
-  }
+	private native void jni_setName(long cptr, long type, long kb, java.lang.String name);
 
-  /**
-   * Attempts to look at the most recent added records up to a certain count 
-   *
-   * @param  count      max number of elements to return
-   * @return   the records
-   */
-  public KnowledgeRecord [] peekLatest(int count)
-    throws MadaraDeadObjectException
-  {
-    Object[] objs = jni_peekRecordVector(getCPtr(), count);
-    KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-    for (int i = 0; i < objs.length; ++i)
-    {
-      records[i] = (KnowledgeRecord)objs[i];
-    }
-    return records;
-  }
+	private native void jni_setIndex(long cptr, long index);
 
-  /**
-   * Gets the name of the variable
-   *
-   * @return  name of the variable within the context
-   */
-  public java.lang.String getName() throws MadaraDeadObjectException
-  {
-    return jni_getName(getCPtr());
-  }
+	private native long jni_remaining(long cptr);
 
-  /**
-   * Resizes the buffer to match the producer buffer length 
-   */
-  public void resize () throws MadaraDeadObjectException
-  {
-    jni_resize(getCPtr());
-  }
+	private native void jni_resync(long cptr);
 
-  /**
-   * Sets the name and knowledge base being referred to
-   *
-   * @param  kb      the knowledge base that contains the name
-   * @param  name    the variable name
-   */
-  public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException
-  {
-    jni_setName(getCPtr(), 0, kb.getCPtr (), name);
-  }
+	private native long jni_size(long cptr);
 
-  /**
-   * Sets the name and knowledge base being referred to
-   *
-   * @param  vars    the variables facade that contains the name
-   * @param  name    the variable name
-   */
-  public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException
-  {
-    jni_setName(getCPtr(), 1, vars.getCPtr (), name);
-  }
+	private native long jni_count(long cptr);
 
-  /**
-   * Returns the remaining records from local index to producer index
-   *
-   * @return  the maximum number of records in the queue
-   */
-  public long remaining() throws MadaraDeadObjectException
-  {
-    return jni_remaining(getCPtr());
-  }
+	private native void jni_resize(long cptr);
 
-  /**
-   * Returns the maximum size of the queue
-   *
-   * @return  the maximum number of records in the queue
-   */
-  public long size() throws MadaraDeadObjectException
-  {
-    return jni_size(getCPtr());
-  }
+	private boolean manageMemory = true;
 
-  /**
-   * Returns the maximum size of the queue
-   *
-   * @return  the maximum number of records in the queue
-   */
-  public void setIndex(long index) throws MadaraDeadObjectException
-  {
-    jni_setIndex(getCPtr(), index);
-  }
+	/**
+	 * Default constructor
+	 **/
+	public CircularBufferConsumer() {
+		setCPtr(jni_CircularBufferConsumer());
+	}
 
-  /**
-   * Returns the number of records currently in the queue
-   *
-   * @return  the number of elements in the queue
-   */
-  public long count() throws MadaraDeadObjectException
-  {
-    return jni_count(getCPtr());
-  }
+	/**
+	 * Copy constructor
+	 * 
+	 * @param input instance to copy
+	 **/
+	public CircularBufferConsumer(CircularBufferConsumer input) {
+		setCPtr(jni_CircularBufferConsumer(input.getCPtr()));
+	}
 
-  /**
-   * Resyncs the local index to the producer index
-   */
-  public void resync()
-  {
-    jni_resync(getCPtr());
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr C pointer to the object
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static CircularBufferConsumer fromPointer(long cptr) {
+		CircularBufferConsumer ret = new CircularBufferConsumer();
+		ret.manageMemory = true;
+		ret.setCPtr(cptr);
+		return ret;
+	}
 
-  /**
-   * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
-   * called before an instance gets garbage collected
-   */
-  public void free()
-  {
-    if (manageMemory)
-    {
-      jni_freeCircularBufferConsumer(getCPtr());
-      setCPtr(0);
-    }
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr         C pointer to the object
+	 * @param shouldManage if true, manage the pointer
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static CircularBufferConsumer fromPointer(long cptr, boolean shouldManage) {
+		CircularBufferConsumer ret = new CircularBufferConsumer();
+		ret.manageMemory = shouldManage;
+		ret.setCPtr(cptr);
+		return ret;
+	}
 
-  /**
-   * Cleans up underlying C resources
-   * @throws Throwable necessary for override but unused
-   */
-  @Override
-  protected void finalize() throws Throwable
-  {
-    try {
-      free();
-    } catch (Throwable t) {
-      throw t;
-    } finally {
-      super.finalize();
-    }
-  }
+	/**
+	 * Inspects the record at the specified position from local index
+	 *
+	 * @param position position from local to inspect
+	 * @return the record at the position
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord inspect(int position) throws MadaraDeadObjectException {
+		return KnowledgeRecord.fromPointer(jni_inspectRecord(getCPtr(), position));
+	}
+
+	/**
+	 * Inspects the record at the specified position from local index
+	 *
+	 * @param position position from local to inspect
+	 * @param count    max number of elements to return
+	 * @return the records at the position
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord[] inspect(int position, int count) throws MadaraDeadObjectException {
+		Object[] objs = jni_inspectRecordVector(getCPtr(), position, count);
+		KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
+		for (int i = 0; i < objs.length; ++i) {
+			records[i] = (KnowledgeRecord) objs[i];
+		}
+		return records;
+	}
+
+	/**
+	 * Attempts to consume a record from the local index
+	 * 
+	 * @return the record
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord consume() throws MadaraDeadObjectException {
+		return KnowledgeRecord.fromPointer(jni_consumeRecord(getCPtr()));
+	}
+
+	/**
+	 * Consumes earliest records in the buffer up to a certain count
+	 *
+	 * @param count max number of elements to return
+	 * @return the records
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord[] consumeEarliest(int count) throws MadaraDeadObjectException {
+		Object[] objs = jni_consumeEarliestRecordVector(getCPtr(), count);
+		KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
+		for (int i = 0; i < objs.length; ++i) {
+			records[i] = (KnowledgeRecord) objs[i];
+		}
+		return records;
+	}
+
+	/**
+	 * Consumes earliest records in the buffer up to a certain count. Local index
+	 * will be updated to the producer's index
+	 *
+	 * @param count max number of elements to return
+	 * @return the records
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord[] consumeLatest(int count) throws MadaraDeadObjectException {
+		Object[] objs = jni_consumeLatestRecordVector(getCPtr(), count);
+		KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
+		for (int i = 0; i < objs.length; ++i) {
+			records[i] = (KnowledgeRecord) objs[i];
+		}
+		return records;
+	}
+
+	/**
+	 * Attempts to look at the most recent added record
+	 * 
+	 * @return the record
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord peek() throws MadaraDeadObjectException {
+		return KnowledgeRecord.fromPointer(jni_peekRecord(getCPtr()));
+	}
+
+	/**
+	 * Attempts to look at the most recent added records up to a certain count
+	 *
+	 * @param count max number of elements to return
+	 * @return the records
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord[] peekLatest(int count) throws MadaraDeadObjectException {
+		Object[] objs = jni_peekRecordVector(getCPtr(), count);
+		KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
+		for (int i = 0; i < objs.length; ++i) {
+			records[i] = (KnowledgeRecord) objs[i];
+		}
+		return records;
+	}
+
+	/**
+	 * Gets the name of the variable
+	 *
+	 * @return name of the variable within the context
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public java.lang.String getName() throws MadaraDeadObjectException {
+		return jni_getName(getCPtr());
+	}
+
+	/**
+	 * Resizes the buffer to match the producer buffer length
+	 * 
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void resize() throws MadaraDeadObjectException {
+		jni_resize(getCPtr());
+	}
+
+	/**
+	 * Sets the name and knowledge base being referred to
+	 *
+	 * @param kb   the knowledge base that contains the name
+	 * @param name the variable name
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException {
+		jni_setName(getCPtr(), 0, kb.getCPtr(), name);
+	}
+
+	/**
+	 * Sets the name and knowledge base being referred to
+	 *
+	 * @param vars the variables facade that contains the name
+	 * @param name the variable name
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException {
+		jni_setName(getCPtr(), 1, vars.getCPtr(), name);
+	}
+
+	/**
+	 * Returns the remaining records from local index to producer index
+	 *
+	 * @return the maximum number of records in the queue
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public long remaining() throws MadaraDeadObjectException {
+		return jni_remaining(getCPtr());
+	}
+
+	/**
+	 * Returns the maximum size of the queue
+	 *
+	 * @return the maximum number of records in the queue
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public long size() throws MadaraDeadObjectException {
+		return jni_size(getCPtr());
+	}
+
+	/**
+	 * @param index sets index
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setIndex(long index) throws MadaraDeadObjectException {
+		jni_setIndex(getCPtr(), index);
+	}
+
+	/**
+	 * Returns the number of records currently in the queue
+	 *
+	 * @return the number of elements in the queue
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public long count() throws MadaraDeadObjectException {
+		return jni_count(getCPtr());
+	}
+
+	/**
+	 * Resyncs the local index to the producer index
+	 */
+	public void resync() {
+		jni_resync(getCPtr());
+	}
+
+	/**
+	 * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
+	 * called before an instance gets garbage collected
+	 */
+	public void free() {
+		if (manageMemory) {
+			jni_freeCircularBufferConsumer(getCPtr());
+			setCPtr(0);
+		}
+	}
+
+	/**
+	 * Cleans up underlying C resources
+	 * 
+	 * @throws Throwable necessary for override but unused
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			free();
+		} catch (Throwable t) {
+			throw t;
+		} finally {
+			super.finalize();
+		}
+	}
 }
-

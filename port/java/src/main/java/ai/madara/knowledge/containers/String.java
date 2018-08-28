@@ -55,217 +55,235 @@ import ai.madara.knowledge.Variables;
  * A facade for a string value within a knowledge base
  **/
 
-public class String extends BaseContainer
-{
-  private native long jni_String();
-  private native long jni_String(long cptr);
-  private static native void jni_freeString(long cptr);
-  private native void jni_set(long cptr, java.lang.String value);
-  private native java.lang.String jni_getName(long cptr);
-  private native void jni_setName(long cptr, long type, long kb, java.lang.String name);
-  private native java.lang.String jni_toString(long cptr);
-  private native double jni_toDouble(long cptr);
-  private native long jni_toLong(long cptr);
-  private native void jni_modify(long cptr);
-  private native void jni_setSettings(long cptr, long settings);
-  private native boolean jni_isTrue(long cptr);
-  private native boolean jni_isFalse(long cptr);
+public class String extends BaseContainer {
+	private native long jni_String();
 
-  private boolean manageMemory = true;
+	private native long jni_String(long cptr);
 
-  /**
-   * Default constructor
-   **/
-  public String()
-  {
-    setCPtr(jni_String());
-  }
+	private static native void jni_freeString(long cptr);
 
-  /**
-   * Copy constructor
-   * @param input  instance to copy
-   **/
-  public String(String input)
-  {
-    setCPtr(jni_String(input.getCPtr()));
-  }
+	private native void jni_set(long cptr, java.lang.String value);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @return a new java instance of the underlying pointer
-   */
-  public static String fromPointer(long cptr)
-  {
-    String ret = new String();
-    ret.manageMemory = true;
-    ret.setCPtr(cptr);
-    return ret;
-  }
+	private native java.lang.String jni_getName(long cptr);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @param shouldManage  if true, manage the pointer
-   * @return a new java instance of the underlying pointer
-   */
-  public static String fromPointer(long cptr, boolean shouldManage)
-  {
-    String ret = new String();
-    ret.manageMemory=shouldManage;
-    ret.setCPtr(cptr);
-    return ret;
-  }
+	private native void jni_setName(long cptr, long type, long kb, java.lang.String name);
 
-  /**
-   * Gets the value
-   *
-   * @return  current value
-   */
-  public java.lang.String get() throws MadaraDeadObjectException
-  {
-    return jni_toString(getCPtr());
-  }
+	private native java.lang.String jni_toString(long cptr);
 
-  /**
-   * Gets the name of the variable
-   *
-   * @return  name of the variable within the context
-   */
-  public java.lang.String getName() throws MadaraDeadObjectException
-  {
-    return jni_getName(getCPtr());
-  }
+	private native double jni_toDouble(long cptr);
 
-  /**
-   * Mark the value as modified. The String retains the same value
-   * but will resend its value as if it had been modified.
-   **/
-  public void modify() throws MadaraDeadObjectException
-  {
-    jni_modify(getCPtr());
-  }
+	private native long jni_toLong(long cptr);
 
-  /**
-   * Returns true if the container evaluates to true
-   * @return true if container has all true values
-   **/
-  public boolean isTrue() throws MadaraDeadObjectException
-  {
-    return jni_isTrue(getCPtr());
-  }
+	private native void jni_modify(long cptr);
 
-  /**
-   * Returns true if the container evaluates to false
-   * @return true if container has any false values or is uninitialized
-   **/
-  public boolean isFalse() throws MadaraDeadObjectException
-  {
-    return jni_isFalse(getCPtr());
-  }
+	private native void jni_setSettings(long cptr, long settings);
 
-  /**
-   * Sets the value
-   *
-   * @param  value   new value
-   */
-  public void set(java.lang.String value) throws MadaraDeadObjectException
-  {
-    jni_set(getCPtr(), value);
-  }
+	private native boolean jni_isTrue(long cptr);
 
-  /**
-   * Sets the name and knowledge base being referred to
-   *
-   * @param  kb      the knowledge base that contains the name
-   * @param  name    the variable name
-   */
-  public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException
-  {
-    jni_setName(getCPtr(), 0, kb.getCPtr (), name);
-  }
+	private native boolean jni_isFalse(long cptr);
 
-  /**
-   * Sets the name and knowledge base being referred to
-   *
-   * @param  vars    the variables facade that contains the name
-   * @param  name    the variable name
-   */
-  public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException
-  {
-    jni_setName(getCPtr(), 1, vars.getCPtr (), name);
-  }
+	private boolean manageMemory = true;
 
-  /**
-   * Sets the settings for updating variables in the Knowledge Base
-   *
-   * @param  settings  the settings to use for updating the Knowledge Base
-   */
-  public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
-  {
-    jni_setSettings(getCPtr(), settings.getCPtr());
-  }
+	/**
+	 * Default constructor
+	 **/
+	public String() {
+		setCPtr(jni_String());
+	}
 
-  /**
-   * Converts the value to a double
-   *
-   * @return current double value
-   */
-  public double toDouble() throws MadaraDeadObjectException
-  {
-    return jni_toDouble(getCPtr());
-  }
+	/**
+	 * Copy constructor
+	 * 
+	 * @param input instance to copy
+	 **/
+	public String(String input) {
+		setCPtr(jni_String(input.getCPtr()));
+	}
 
-  /**
-   * Converts the value to a long
-   *
-   * @return current long value
-   */
-  public long toLong() throws MadaraDeadObjectException
-  {
-    return jni_toLong(getCPtr());
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr C pointer to the object
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static String fromPointer(long cptr) {
+		String ret = new String();
+		ret.manageMemory = true;
+		ret.setCPtr(cptr);
+		return ret;
+	}
 
-  /**
-   * Converts the value to a string
-   *
-   * @return current string value
-   */
-  @Override
-  public java.lang.String toString()
-  {
-    return jni_toString(getCPtr());
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr         C pointer to the object
+	 * @param shouldManage if true, manage the pointer
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static String fromPointer(long cptr, boolean shouldManage) {
+		String ret = new String();
+		ret.manageMemory = shouldManage;
+		ret.setCPtr(cptr);
+		return ret;
+	}
 
-  /**
-   * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
-   * called before an instance gets garbage collected
-   */
-  public void free()
-  {
-    if (manageMemory)
-    {
-      jni_freeString(getCPtr());
-      setCPtr(0);
-    }
-  }
+	/**
+	 * Gets the value
+	 *
+	 * @return current value
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public java.lang.String get() throws MadaraDeadObjectException {
+		return jni_toString(getCPtr());
+	}
 
-  /**
-   * Cleans up underlying C resources
-   * @throws Throwable necessary for override but unused
-   */
-  @Override
-  protected void finalize() throws Throwable
-  {
-    try {
-      free();
-    } catch (Throwable t) {
-      throw t;
-    } finally {
-      super.finalize();
-    }
-  }
+	/**
+	 * Gets the name of the variable
+	 *
+	 * @return name of the variable within the context
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public java.lang.String getName() throws MadaraDeadObjectException {
+		return jni_getName(getCPtr());
+	}
+
+	/**
+	 * Mark the value as modified. The String retains the same value but will resend
+	 * its value as if it had been modified.
+	 * 
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void modify() throws MadaraDeadObjectException {
+		jni_modify(getCPtr());
+	}
+
+	/**
+	 * Returns true if the container evaluates to true
+	 * 
+	 * @return true if container has all true values
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public boolean isTrue() throws MadaraDeadObjectException {
+		return jni_isTrue(getCPtr());
+	}
+
+	/**
+	 * Returns true if the container evaluates to false
+	 * 
+	 * @return true if container has any false values or is uninitialized
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public boolean isFalse() throws MadaraDeadObjectException {
+		return jni_isFalse(getCPtr());
+	}
+
+	/**
+	 * Sets the value
+	 *
+	 * @param value new value
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void set(java.lang.String value) throws MadaraDeadObjectException {
+		jni_set(getCPtr(), value);
+	}
+
+	/**
+	 * Sets the name and knowledge base being referred to
+	 *
+	 * @param kb   the knowledge base that contains the name
+	 * @param name the variable name
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException {
+		jni_setName(getCPtr(), 0, kb.getCPtr(), name);
+	}
+
+	/**
+	 * Sets the name and knowledge base being referred to
+	 *
+	 * @param vars the variables facade that contains the name
+	 * @param name the variable name
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException {
+		jni_setName(getCPtr(), 1, vars.getCPtr(), name);
+	}
+
+	/**
+	 * Sets the settings for updating variables in the Knowledge Base
+	 *
+	 * @param settings the settings to use for updating the Knowledge Base
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException {
+		jni_setSettings(getCPtr(), settings.getCPtr());
+	}
+
+	/**
+	 * Converts the value to a double
+	 *
+	 * @return current double value
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public double toDouble() throws MadaraDeadObjectException {
+		return jni_toDouble(getCPtr());
+	}
+
+	/**
+	 * Converts the value to a long
+	 *
+	 * @return current long value
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public long toLong() throws MadaraDeadObjectException {
+		return jni_toLong(getCPtr());
+	}
+
+	/**
+	 * Converts the value to a string
+	 *
+	 * @return current string value
+	 */
+	@Override
+	public java.lang.String toString() {
+		return jni_toString(getCPtr());
+	}
+
+	/**
+	 * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
+	 * called before an instance gets garbage collected
+	 */
+	public void free() {
+		if (manageMemory) {
+			jni_freeString(getCPtr());
+			setCPtr(0);
+		}
+	}
+
+	/**
+	 * Cleans up underlying C resources
+	 * 
+	 * @throws Throwable necessary for override but unused
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			free();
+		} catch (Throwable t) {
+			throw t;
+		} finally {
+			super.finalize();
+		}
+	}
 }
-

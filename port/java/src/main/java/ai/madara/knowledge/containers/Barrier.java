@@ -127,6 +127,7 @@ public class Barrier extends BaseContainer
    * Gets the value
    *
    * @return   current value
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public long get() throws MadaraDeadObjectException
   {
@@ -137,6 +138,7 @@ public class Barrier extends BaseContainer
    * Gets the name of the variable
    *
    * @return  name of the variable within the context
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public java.lang.String getName() throws MadaraDeadObjectException
   {
@@ -145,6 +147,7 @@ public class Barrier extends BaseContainer
 
   /**
    * Moves to the next barrier
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void next() throws MadaraDeadObjectException
   {
@@ -154,6 +157,7 @@ public class Barrier extends BaseContainer
   /**
    * Checks to see if the barrier round is done
    * @return new value of the container
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public boolean isDone() throws MadaraDeadObjectException
   {
@@ -163,6 +167,7 @@ public class Barrier extends BaseContainer
   /**
    * Mark the value as modified. The Barrier retains the same value
    * but will resend its value as if it had been modified.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public void modify() throws MadaraDeadObjectException
   {
@@ -173,6 +178,7 @@ public class Barrier extends BaseContainer
    * Resizes the barrier, usually when number of participants change
    * @param id        the id of this barrier in the barrier ring
    * @param participants the number of participants in barrier ring
+   * @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public void resize(int id, int participants) throws MadaraDeadObjectException
   {
@@ -186,6 +192,7 @@ public class Barrier extends BaseContainer
    * @param  name    the variable name
    * @param id         the id of the barrier in the barrier ring
    * @param participants  the number of participants in the barrier ring
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setName(KnowledgeBase kb, java.lang.String name,
     int id, int participants) throws MadaraDeadObjectException
@@ -200,6 +207,7 @@ public class Barrier extends BaseContainer
    * @param  name    the variable name
    * @param id         the id of the barrier in the barrier ring
    * @param participants  the number of participants in the barrier ring
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setName(Variables vars, java.lang.String name,
     int id, int participants) throws MadaraDeadObjectException
@@ -211,6 +219,7 @@ public class Barrier extends BaseContainer
    * Sets the settings for updating variables in the Knowledge Base
    *
    * @param  settings  the settings to use for updating the Knowledge Base
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
   {
@@ -221,6 +230,7 @@ public class Barrier extends BaseContainer
    * Converts the value to a double
    *
    * @return current double value
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public double toDouble() throws MadaraDeadObjectException
   {
@@ -231,6 +241,7 @@ public class Barrier extends BaseContainer
    * Converts the value to a long
    *
    * @return current long value
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public long toLong() throws MadaraDeadObjectException
   {
@@ -240,6 +251,7 @@ public class Barrier extends BaseContainer
   /**
    * Returns true if the container evaluates to true
    * @return true if container has all true values
+   * @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public boolean isTrue() throws MadaraDeadObjectException
   {
@@ -249,6 +261,7 @@ public class Barrier extends BaseContainer
   /**
    * Returns true if the container evaluates to false
    * @return true if container has any false values or is uninitialized
+   * @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public boolean isFalse() throws MadaraDeadObjectException
   {

@@ -53,182 +53,215 @@ import ai.madara.knowledge.KnowledgeBase;
 /**
  * A manager of user threads
  **/
-public class Threader extends MadaraJNI
-{
-  private native long jni_Threader();
-  private native long jni_Threader(long dataPlane);
-  private native void jni_freeThreader(long cptr);
-  private native void jni_run(long cptr, java.lang.String name, Object obj, boolean paused);
-  private native void jni_runhz(long cptr, double hertz, java.lang.String name, Object obj, boolean paused);
-  private native void jni_pauseThread(long cptr, java.lang.String name);
-  private native void jni_pause(long cptr);
-  private native void jni_waitThread(long cptr, java.lang.String name);
-  private native void jni_wait(long cptr);
-  private native void jni_terminateThread(long cptr, java.lang.String name);
-  private native void jni_terminate(long cptr);
-  private native void jni_resumeThread(long cptr, java.lang.String name);
-  private native void jni_resume(long cptr);
+public class Threader extends MadaraJNI {
+	private native long jni_Threader();
 
-  /**
-   * Default constructor
-   **/
-  public Threader()
-  {
-    setCPtr(jni_Threader());
-  }
+	private native long jni_Threader(long dataPlane);
 
-  /**
-   * Constructor with data plane
-   * @param  dataPlane  the knowledge base for threads to use for data
-   **/
-  public Threader(KnowledgeBase dataPlane) throws MadaraDeadObjectException
-  {
-    setCPtr(jni_Threader(dataPlane.getCPtr()));
-  }
+	private native void jni_freeThreader(long cptr);
 
-  /**
-   * Deletes the C++ instantiation. To prevent memory leaks, this <b>must</b> be called
-   * before an instance of Threader gets garbage collected
-   **/
-  public void free()
-  {
-    jni_freeThreader(getCPtr());
-    setCPtr(0);
-  }
+	private native void jni_run(long cptr, java.lang.String name, Object obj, boolean paused);
 
-  /**
-   * Cleans up underlying C resources
-   * @throws Throwable necessary for override but unused
-   */
-  @Override
-  protected void finalize() throws Throwable
-  {
-    try {
-      free();
-    } catch (Throwable t) {
-      throw t;
-    } finally {
-      super.finalize();
-    }
-  }
+	private native void jni_runhz(long cptr, double hertz, java.lang.String name, Object obj, boolean paused);
 
-  /**
-   * Runs a thread. The thread's run method will only be called once.
-   * @param  name  the unique name of the thread
-   * @param  thread  the thread to run
-   **/
-  public void run (String name, BaseThread thread) throws MadaraDeadObjectException
-  {
-    thread.name = name;
-    jni_run(getCPtr(), name, thread, false);
-  }
+	private native void jni_pauseThread(long cptr, java.lang.String name);
 
-  /**
-   * Runs a thread. The thread's run method will be called at the specified
-   * hertz (executions of run per second)
-   * @param  hertz the intended frequency of executions per second
-   * @param  name  the unique name of the thread
-   * @param  thread  the thread to run
-   **/
-  public void run(double hertz, String name, BaseThread thread) throws MadaraDeadObjectException
-  {
-    thread.name = name;
-    jni_runhz(getCPtr(), hertz, name, thread, false);
-  }
+	private native void jni_pause(long cptr);
 
-  /**
-   * Starts a thread in a paused state. Once resumed, the run method will
-   * only be called once.
-   * @param  name  the unique name of the thread
-   * @param  thread  the thread to start in a paused state
-   **/
-  public void startPaused(String name, BaseThread thread) throws MadaraDeadObjectException
-  {
-    thread.name = name;
-    jni_run(getCPtr(), name, thread, true);
-  }
+	private native void jni_waitThread(long cptr, java.lang.String name);
 
-  /**
-   * Starts a thread in a paused state. Once resumed, the run method will
-   * be called at the specified hertz.
-   * @param  hertz the intended frequency of executions per second
-   * @param  name  the unique name of the thread
-   * @param  thread  the thread to start in a paused state
-   **/
-  public void startPaused(double hertz, String name, BaseThread thread) throws MadaraDeadObjectException
-  {
-    thread.name = name;
-    jni_runhz(getCPtr(), hertz, name, thread, true);
-  }
+	private native void jni_wait(long cptr);
 
-  /**
-   * Requests for the specified thread to pause
-   * @param name the unique name of the thread requested to pause
-   **/
-  public void pause(String name) throws MadaraDeadObjectException
-  {
-   jni_pauseThread(getCPtr(), name);
-  }
+	private native void jni_terminateThread(long cptr, java.lang.String name);
 
-  /**
-   * Requests all threads to pause
-   **/
-  public void pause() throws MadaraDeadObjectException
-  {
-   jni_pause(getCPtr());
-  }
+	private native void jni_terminate(long cptr);
 
+	private native void jni_resumeThread(long cptr, java.lang.String name);
 
-  /**
-   * Waits for a specific thread to finish
-   * @param name the unique name of the thread
-   **/
-  public void waitForThread(String name) throws MadaraDeadObjectException
-  {
-   jni_waitThread(getCPtr(), name);
-  }
+	private native void jni_resume(long cptr);
 
-  /**
-   * Waits for all threads to finish
-   **/
-  public void waitForThreads() throws MadaraDeadObjectException
-  {
-   jni_wait(getCPtr());
-  }
+	/**
+	 * Default constructor
+	 **/
+	public Threader() {
+		setCPtr(jni_Threader());
+	}
 
-  /**
-   * Requests for the specified thread to terminate
-   * @param name the unique name of the thread
-   **/
-  public void terminate(String name) throws MadaraDeadObjectException
-  {
-   jni_terminateThread(getCPtr(), name);
-  }
+	/**
+	 * Constructor with data plane
+	 * 
+	 * @param dataPlane the knowledge base for threads to use for data
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public Threader(KnowledgeBase dataPlane) throws MadaraDeadObjectException {
+		setCPtr(jni_Threader(dataPlane.getCPtr()));
+	}
 
-  /**
-   * Requests all threads to terminate
-   **/
-  public void terminate() throws MadaraDeadObjectException
-  {
-   jni_terminate(getCPtr());
-  }
+	/**
+	 * Deletes the C++ instantiation. To prevent memory leaks, this <b>must</b> be
+	 * called before an instance of Threader gets garbage collected
+	 **/
+	public void free() {
+		jni_freeThreader(getCPtr());
+		setCPtr(0);
+	}
 
-  /**
-   * Requests for the specified thread to resume if paused
-   * @param name the unique name of the thread
-   **/
-  public void resume(String name) throws MadaraDeadObjectException
-  {
-   jni_resumeThread(getCPtr(), name);
-  }
+	/**
+	 * Cleans up underlying C resources
+	 * 
+	 * @throws Throwable necessary for override but unused
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			free();
+		} catch (Throwable t) {
+			throw t;
+		} finally {
+			super.finalize();
+		}
+	}
 
-  /**
-   * Requests all threads to resume if paused
-   **/
-  public void resume() throws MadaraDeadObjectException
-  {
-   jni_resume(getCPtr());
-  }
+	/**
+	 * Runs a thread. The thread's run method will only be called once.
+	 * 
+	 * @param name   the unique name of the thread
+	 * @param thread the thread to run
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void run(String name, BaseThread thread) throws MadaraDeadObjectException {
+		thread.name = name;
+		jni_run(getCPtr(), name, thread, false);
+	}
+
+	/**
+	 * Runs a thread. The thread's run method will be called at the specified hertz
+	 * (executions of run per second)
+	 * 
+	 * @param hertz  the intended frequency of executions per second
+	 * @param name   the unique name of the thread
+	 * @param thread the thread to run
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void run(double hertz, String name, BaseThread thread) throws MadaraDeadObjectException {
+		thread.name = name;
+		jni_runhz(getCPtr(), hertz, name, thread, false);
+	}
+
+	/**
+	 * Starts a thread in a paused state. Once resumed, the run method will only be
+	 * called once.
+	 * 
+	 * @param name   the unique name of the thread
+	 * @param thread the thread to start in a paused state
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void startPaused(String name, BaseThread thread) throws MadaraDeadObjectException {
+		thread.name = name;
+		jni_run(getCPtr(), name, thread, true);
+	}
+
+	/**
+	 * Starts a thread in a paused state. Once resumed, the run method will be
+	 * called at the specified hertz.
+	 * 
+	 * @param hertz  the intended frequency of executions per second
+	 * @param name   the unique name of the thread
+	 * @param thread the thread to start in a paused state
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void startPaused(double hertz, String name, BaseThread thread) throws MadaraDeadObjectException {
+		thread.name = name;
+		jni_runhz(getCPtr(), hertz, name, thread, true);
+	}
+
+	/**
+	 * Requests for the specified thread to pause
+	 * 
+	 * @param name the unique name of the thread requested to pause
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void pause(String name) throws MadaraDeadObjectException {
+		jni_pauseThread(getCPtr(), name);
+	}
+
+	/**
+	 * Requests all threads to pause
+	 * 
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void pause() throws MadaraDeadObjectException {
+		jni_pause(getCPtr());
+	}
+
+	/**
+	 * Waits for a specific thread to finish
+	 * 
+	 * @param name the unique name of the thread
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void waitForThread(String name) throws MadaraDeadObjectException {
+		jni_waitThread(getCPtr(), name);
+	}
+
+	/**
+	 * Waits for all threads to finish
+	 * 
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void waitForThreads() throws MadaraDeadObjectException {
+		jni_wait(getCPtr());
+	}
+
+	/**
+	 * Requests for the specified thread to terminate
+	 * 
+	 * @param name the unique name of the thread
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void terminate(String name) throws MadaraDeadObjectException {
+		jni_terminateThread(getCPtr(), name);
+	}
+
+	/**
+	 * Requests all threads to terminate
+	 * 
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void terminate() throws MadaraDeadObjectException {
+		jni_terminate(getCPtr());
+	}
+
+	/**
+	 * Requests for the specified thread to resume if paused
+	 * 
+	 * @param name the unique name of the thread
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void resume(String name) throws MadaraDeadObjectException {
+		jni_resumeThread(getCPtr(), name);
+	}
+
+	/**
+	 * Requests all threads to resume if paused
+	 * 
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 **/
+	public void resume() throws MadaraDeadObjectException {
+		jni_resume(getCPtr());
+	}
 
 }
-

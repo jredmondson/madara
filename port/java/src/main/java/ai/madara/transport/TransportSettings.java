@@ -117,7 +117,7 @@ public class TransportSettings extends MadaraJNI
 	 *
 	 * @param filename
 	 *            the file to save the knowledge base to
-	 * @throws MadaraDeadObjectException
+	 *  @throws MadaraDeadObjectException throws exception if object is already released
 	 *
 	 */
 	public void save(String filename) throws MadaraDeadObjectException
@@ -130,7 +130,7 @@ public class TransportSettings extends MadaraJNI
 	 *
 	 * @param filename
 	 *            the file to save the knowledge base to
-	 * @throws MadaraDeadObjectException
+	 *  @throws MadaraDeadObjectException throws exception if object is already released
 	 *
 	 */
 	public void load(String filename) throws MadaraDeadObjectException
