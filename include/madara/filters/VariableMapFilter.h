@@ -44,7 +44,7 @@ namespace madara
 
         std::vector <std::string> splitters, tokens, pivots;
 
-        splitters.push_back (" -> ");
+        splitters.push_back ("->");
         splitters.push_back ("\n");
 
         utility::tokenizer (config, splitters, tokens, pivots);
