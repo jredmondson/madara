@@ -8,6 +8,28 @@ genrule(
     cmd = "echo 'std::string version (\"'`cat $(location VERSION.txt)`' (SHA NOT SUPPORTED)\");\n' > $@",
 )
 
+config_setting(
+    name = "x86_64",
+    constraint_values = [
+        "@bazel_tools//platforms:x86_64",
+    ],
+)
+
+config_setting(
+    name = "arm",
+    constraint_values = [
+        "@bazel_tools//platforms:arm",
+    ],
+)
+
+cc_library(
+    name = "libzmq",
+    deps = select({
+        ":x86_64": ["@org_zeromq_libzmq//:libzmq"],
+        ":arm": ["@org_zeromq_libzmq_arm//:libzmq"],
+    }),
+)
+
 cc_library(
     name = "cereal",
     hdrs = glob(
@@ -85,7 +107,7 @@ DEPS = [
         "@org_capnproto_capnproto//:capnp-lib",
         ":cereal",
     ] + select({
-        "@bazel_module//bazel_rules:zmq": ["@org_zeromq_libzmq//:libzmq"],
+        "@bazel_module//bazel_rules:zmq": [":libzmq"],
         "//conditions:default": [],
     }) + DEP,
 ) for NAME, DEFINE, DEP in zip(NAMES, DEFINES, DEPS)]
