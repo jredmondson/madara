@@ -203,10 +203,6 @@ void handle_arguments (int argc, char ** argv)
         {
           contributor.title = reader.get<std::string> ("title");
         }
-        // contributor.organization = reader.get<std::string> ("organization");
-        // contributor.path = reader.get<std::string> ("path");
-        // contributor.role = reader.get<std::string> ("role");
-        // contributor.title = reader.get<std::string> ("title");
 
         manifest.contributors.push_back (contributor);
       }
