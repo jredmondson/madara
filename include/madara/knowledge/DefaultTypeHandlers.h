@@ -16,6 +16,9 @@
 #include <functional>
 #include <type_traits>
 
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/device/array.hpp>
+
 #include "madara/utility/SupportTest.h"
 #include "madara/MadaraExport.h"
 #include "madara/utility/StdInt.h"
@@ -139,9 +142,15 @@ constexpr auto get_type_handler_load(type<T>, overload_priority<12>) ->
   enable_if_<madara_use_cereal(type<T>{}),
     knowledge::TypeHandlers::load_fn_type>
 {
-  return [](std::istream &i, void *ptr, const char *) {
+  return [](const char *in, size_t size, void *ptr, const char *) {
       T &val = *static_cast<T *>(ptr);
-      knowledge::madara_iarchive archive(i);
+
+      namespace bio = boost::iostreams;
+
+      bio::array_source input_source(in, size);
+      bio::stream<bio::array_source> input_stream(input_source);
+      knowledge::madara_iarchive archive(input_stream);
+
       archive >> val;
     };
 }

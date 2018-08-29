@@ -434,8 +434,6 @@ inline auto get_type_handler_save(type<knowledge::CapnObject<T>>,
   return [](std::ostream &o, const void *ptr) {
       using knowledge::CapnObject;
       const CapnObject<T> &val = *static_cast<const CapnObject<T> *>(ptr);
-      knowledge::madara_oarchive archive(o);
-      archive << val.size();
       o.write(val.data(), val.size());
     };
 }
@@ -447,8 +445,6 @@ inline auto get_type_handler_save(type<knowledge::GenericCapnObject>,
   return [](std::ostream &o, const void *ptr) {
       using knowledge::GenericCapnObject;
       const GenericCapnObject &val = *static_cast<const GenericCapnObject *>(ptr);
-      knowledge::madara_oarchive archive(o);
-      archive << val.size();
       o.write(val.data(), val.size());
     };
 }
@@ -460,8 +456,6 @@ inline auto get_type_handler_save(type<knowledge::RegCapnObject>,
   return [](std::ostream &o, const void *ptr) {
       using knowledge::RegCapnObject;
       const RegCapnObject &val = *static_cast<const RegCapnObject *>(ptr);
-      knowledge::madara_oarchive archive(o);
-      archive << val.size();
       o.write(val.data(), val.size());
     };
 }
@@ -471,13 +465,10 @@ inline auto get_type_handler_load(type<knowledge::CapnObject<T>>,
     overload_priority<8>) ->
   knowledge::TypeHandlers::load_fn_type
 {
-  return [](std::istream &i, void *ptr, const char *) {
+  return [](const char *in, size_t size, void *ptr, const char *) {
       using knowledge::CapnObject;
       CapnObject<T> &val = *static_cast<CapnObject<T> *>(ptr);
-      knowledge::madara_iarchive archive(i);
-      size_t size;
-      archive >> size;
-      val = {i, size};
+      val = {in, size};
     };
 }
 
@@ -485,13 +476,10 @@ inline auto get_type_handler_load(type<knowledge::GenericCapnObject>,
     overload_priority<8>) ->
   knowledge::TypeHandlers::load_fn_type
 {
-  return [](std::istream &i, void *ptr, const char *tag) {
+  return [](const char *in, size_t size, void *ptr, const char *tag) {
       using knowledge::GenericCapnObject;
       GenericCapnObject &val = *static_cast<GenericCapnObject *>(ptr);
-      knowledge::madara_iarchive archive(i);
-      size_t size;
-      archive >> size;
-      val = {tag, i, size};
+      val = {tag, in, size};
     };
 }
 
@@ -499,13 +487,10 @@ inline auto get_type_handler_load(type<knowledge::RegCapnObject>,
     overload_priority<8>) ->
   knowledge::TypeHandlers::load_fn_type
 {
-  return [](std::istream &i, void *ptr, const char *) {
+  return [](const char *in, size_t size, void *ptr, const char *) {
       using knowledge::RegCapnObject;
       RegCapnObject &val = *static_cast<RegCapnObject *>(ptr);
-      knowledge::madara_iarchive archive(i);
-      size_t size;
-      archive >> size;
-      val = {val.tag(), val.schema(), i, size};
+      val = {val.tag(), val.schema(), in, size};
     };
 }
 
