@@ -57,6 +57,10 @@
   5. Trace events
   6. Detailed logging
 
+#make_any (tag, json):
+  Returns a KnowledgeRecord holding an Any of the given tag type, and
+  with contents from deserializing the JSON string given.
+
 #pow (base, power):
   Returns the base taken to a power (exponent)
 

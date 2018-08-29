@@ -50,6 +50,7 @@ namespace madara
     class SystemCallExpandEnv;
     class SystemCallExpandStatement;
     class SystemCallFragment;
+    class SystemCallGeneric;
     class SystemCallGetClock;
     class SystemCallGetTime;
     class SystemCallGetTimeSeconds;
@@ -222,6 +223,9 @@ namespace madara
       
       /// Visit a SystemCallExpandStatement.
       virtual void visit (const SystemCallFragment &node) = 0;
+      
+      /// Visit a SystemCallGetClock.
+      virtual void visit (const SystemCallGeneric &node) = 0;
       
       /// Visit a SystemCallGetClock.
       virtual void visit (const SystemCallGetClock &node) = 0;

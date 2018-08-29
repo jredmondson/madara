@@ -447,6 +447,26 @@ public:
    **/
   void unserialize_json(const char *type, std::istream &i);
 
+  void unserialize_json(const char *type, const char *json, size_t size)
+  {
+    namespace bio = boost::iostreams;
+
+    bio::array_source input_source(json, size);
+    bio::stream<bio::array_source> input_stream(input_source);
+
+    unserialize_json(type, input_stream);
+  }
+
+  void unserialize_json(const char *type, const char *json)
+  {
+    unserialize_json(type, json, std::strlen(json));
+  }
+
+  void unserialize_json(const char *type, const std::string &json)
+  {
+    unserialize_json(type, json.c_str(), json.size());
+  }
+
 protected:
   template<typename T>
   static T *take_ptr(T *&in)

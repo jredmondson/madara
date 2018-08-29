@@ -573,7 +573,27 @@ inline auto get_type_handler_load_json(type<knowledge::RegCapnObject>,
     overload_priority<8>) ->
   knowledge::TypeHandlers::load_json_fn_type
 {
-  return nullptr;
+  return [](std::istream &i, void *ptr, const char *) {
+      using knowledge::RegCapnObject;
+      RegCapnObject &val = *static_cast<RegCapnObject *>(ptr);
+
+      capnp::MallocMessageBuilder buffer;
+      auto builder = buffer.initRoot<capnp::DynamicStruct>(val.schema());
+
+      std::string s(std::istreambuf_iterator<char>(i), {});
+
+      capnp::JsonCodec json;
+      json.decode({s.data(), s.size()}, builder);
+
+      kj::VectorOutputStream vec;
+      capnp::writeMessage(vec, buffer);
+
+      auto data = vec.getArray();
+      RegCapnObject obj(val.tag(), val.schema(),
+                        data.asChars().begin(), data.size());
+
+      val = std::move(obj);
+    };
 }
 
 template<typename T>
