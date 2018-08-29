@@ -9,7 +9,6 @@
 #include <android/log.h>
 #endif
 
-
 inline void
 madara::logger::Logger::add_file (const std::string & filename)
 {
@@ -111,5 +110,6 @@ madara::logger::Logger::set_timestamp_format (const std::string & format)
 
   this->timestamp_format_ = format;
 }
+
 
 #endif // _MADARA_LOGGER_LOGGER_INL_

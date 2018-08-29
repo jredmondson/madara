@@ -137,10 +137,12 @@ WorkerThread::svc (void)
 
       terminated = control_.get_ref (name_ + ".terminated");
       paused = control_.get_ref (name_ + ".paused");
+      madara::logger::Logger::set_thread_name(name_);
 
       // change thread frequency
       change_frequency (hertz_, current, frequency, next_epoch,
         one_shot, blaster);
+      madara::logger::Logger::set_thread_hertz(hertz_);
 
       while (control_.get (terminated).is_false ())
       {

@@ -2,6 +2,13 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <time.h>
+#include <madara/utility/Utility.h>
+#include <boost/lexical_cast.hpp>
+
+
+thread_local std::atomic<int> thread_level_(madara::logger::TLS_THREAD_LEVEL_DEFAULT);
+thread_local std::string thread_name_;
+thread_local std::atomic<double> thread_hertz_(madara::logger::TLS_THREAD_HZ_DEFAULT);
 
 madara::logger::Logger::Logger (bool log_to_terminal)
 : mutex_ (), level_ (LOG_ERROR),
@@ -19,6 +26,94 @@ madara::logger::Logger::~Logger ()
   clear ();
 }
 
+
+int madara::logger::Logger::get_thread_level(void)
+{
+  return thread_level_;
+}
+
+std::string madara::logger::Logger::get_thread_name(void)
+{
+  return thread_name_;
+}
+
+double madara::logger::Logger::get_thread_hertz(void)
+{
+  return thread_hertz_;
+}
+
+void madara::logger::Logger::set_thread_level(int level)
+{
+  thread_level_ = level;
+}
+
+void madara::logger::Logger::set_thread_name(const std::string name)
+{
+  thread_name_ = name;
+}
+
+void madara::logger::Logger::set_thread_hertz(double hertz)
+{
+  thread_hertz_ = hertz;
+}
+
+std::string
+madara::logger::Logger::strip_custom_tstamp(const std::string instr,const std::string tsstr)
+{
+  std::string retstr(instr);
+  retstr.replace(retstr.find(tsstr),tsstr.length(),tsstr);
+  return retstr;
+}
+
+std::string 
+madara::logger::Logger::search_and_insert_custom_tstamp(const std::string & buf,
+                                                        const std::string & tsstr)
+{
+  bool done = false;
+  std::size_t found = 0;
+  std::size_t offset = 0;
+  std::string retstring(buf);
+  
+  while ( !done )
+  {
+    found = retstring.find(tsstr.c_str(),found+offset,tsstr.length());
+    if ( found == std::string::npos )
+    {
+      done = true;
+      break;
+    }
+
+    offset = 1;
+    if ( tsstr == MADARA_GET_TIME_MGT )
+    {
+      // insert mgt text here
+      //get_time returns nsecs. need to convert into seconds.
+      int64_t mgt_time = (madara::utility::get_time () / (int64_t)100000) / (int64_t)1000000;
+      //insert this value into the buffer
+      std::string mgtstr = boost::lexical_cast<std::string>(mgt_time);
+      retstring.replace(retstring.find(tsstr),tsstr.length(),mgtstr);
+      continue;
+    }else
+    if ( tsstr == MADARA_THREAD_NAME )
+    {
+      //insert thread name into buffer
+      retstring.replace(retstring.find(tsstr),tsstr.length(),
+                        madara::logger::Logger::get_thread_name());
+      continue;
+    }else
+    if ( tsstr == MADARA_THREAD_HERTZ )
+    {
+      // insert thread hertz value into buffer
+      std::string hzstr = boost::lexical_cast<std::string>(madara::logger::Logger::get_thread_hertz());
+      retstring.replace(retstring.find(tsstr),tsstr.length(),hzstr);
+      continue;
+    }
+  }
+  
+  return retstring;
+}
+
+
 void
 madara::logger::Logger::log (int level, const char * message, ...)
 {
@@ -34,6 +129,33 @@ madara::logger::Logger::log (int level, const char * message, ...)
 
     if (this->timestamp_format_.size () > 0)
     {
+      std::string madstr(buffer);
+      std::string tmpstr;
+
+      tmpstr = search_and_insert_custom_tstamp(madstr,MADARA_GET_TIME_MGT);
+      if ( tmpstr.length() > remaining_buffer )
+      {
+        madstr = strip_custom_tstamp(madstr,MADARA_GET_TIME_MGT);
+        madstr.copy(begin,madstr.length());
+      }else
+        madstr = tmpstr;
+
+      tmpstr = search_and_insert_custom_tstamp(madstr,MADARA_THREAD_NAME);
+      if ( tmpstr.length() > remaining_buffer )
+      {
+        madstr = strip_custom_tstamp(madstr,MADARA_THREAD_NAME);
+        madstr.copy(begin,madstr.length());
+      }else
+        madstr = tmpstr;
+
+      tmpstr = search_and_insert_custom_tstamp(madstr,MADARA_THREAD_HERTZ);
+      if ( madstr.length() > remaining_buffer )
+      {
+        madstr = strip_custom_tstamp(madstr,MADARA_THREAD_HERTZ);
+        madstr.copy(begin,madstr.length());
+      }else
+        madstr = tmpstr;
+
       time_t rawtime;
       struct tm * timeinfo;
 
