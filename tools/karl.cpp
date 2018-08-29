@@ -18,6 +18,7 @@
 
 #include "madara/utility/Utility.h"
 #include "madara/filters/GenericFilters.h"
+#include "madara/filters/PrefixPrint.h"
 #include "madara/logger/GlobalLogger.h"
 
 #ifdef _USE_SSL_
@@ -1071,10 +1072,12 @@ int main (int argc, char ** argv)
     settings.add_receive_filter (&stats_filter);
   }
 
+  filters::PrefixPrint print_filter (print_prefixes);
+
   if (debug)
   {
-    settings.add_send_filter (filters::log_aggregate);
-    settings.add_receive_filter (filters::log_aggregate);
+    settings.add_send_filter (&print_filter);
+    settings.add_receive_filter (&print_filter);
   }
 
   // save transport always happens after all possible transport chagnes

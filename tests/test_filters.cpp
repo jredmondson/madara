@@ -3,6 +3,10 @@
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeRecordFilters.h"
 #include "madara/filters/DynamicPrefixFilter.h"
+#include "madara/filters/DynamicPrefixIntConvert.h"
+#include "madara/filters/DynamicPrefixPrint.h"
+#include "madara/filters/PrefixPrint.h"
+#include "madara/filters/PrefixIntConvert.h"
 
 namespace knowledge = madara::knowledge;
 namespace filters = madara::filters;
@@ -76,9 +80,128 @@ void test_dynamic_prefix_filter (void)
 
 }
 
+void test_dynamic_prefix_int_convert (void)
+{
+  madara::knowledge::KnowledgeBase kb;
+  madara::knowledge::Variables vars (&kb.get_context ());
+
+  // create allowed prefixes for agent.0 and agent.1
+  kb.evaluate (
+    ".prefixes.size=2;"
+    ".prefixes.0='agent.1';"
+    ".prefixes.1='agent.3'");
+
+  filters::DynamicPrefixIntConvert filter;
+
+  knowledge::KnowledgeMap map;
+  transport::TransportContext context;
+
+  map["agent.0.field1"] = "field1";
+  map["agent.0.field2"] = "field2";;
+  map["agent.1.field1"] = "field1";
+  map["agent.1.field2"] = "field2";
+  map["agent.2.field1"] = "field1";
+  map["agent.2.field2"] = "field2";
+  map["agent.3.field1"] = "field1";
+  map["agent.3.field2"] = "field2";
+
+  std::cerr << "Testing dynamic prefix int convert: ";
+
+  filter.filter (map, context, vars);
+
+  if (map.size () == 8 &&
+      map["agent.0.field1"] == "field1" &&
+      map["agent.0.field2"] == "field2" &&
+      map["agent.2.field1"] == "field1" &&
+      map["agent.2.field2"] == "field2" &&
+      map["agent.1.field1"] == 0 &&
+      map["agent.1.field2"] == 0 &&
+      map["agent.3.field1"] == 0 &&
+      map["agent.3.field2"] == 0
+     )
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+
+    for (auto entry : map)
+    {
+      std::cerr << "  " << entry.first << "=" << entry.second << "\n";
+    }
+
+    ++madara_fails;
+  }
+
+}
+
+void test_prefix_int_convert (void)
+{
+  madara::knowledge::KnowledgeBase kb;
+  madara::knowledge::Variables vars (&kb.get_context ());
+
+  // create allowed prefixes for agent.0 and agent.1
+  std::vector <std::string> prefixes;
+  prefixes.push_back ("agent.1");
+  prefixes.push_back ("agent.3");
+
+  filters::PrefixIntConvert filter;
+
+  knowledge::KnowledgeMap map;
+  transport::TransportContext context;
+
+  map["agent.0.field1"] = "field1";
+  map["agent.0.field2"] = "field2";;
+  map["agent.1.field1"] = "field1";
+  map["agent.1.field2"] = "field2";
+  map["agent.2.field1"] = "field1";
+  map["agent.2.field2"] = "field2";
+  map["agent.3.field1"] = "field1";
+  map["agent.3.field2"] = "field2";
+
+  std::cerr << "Testing dynamic prefix int convert: ";
+
+  filter.filter (map, context, vars);
+
+  if (map.size () == 8 &&
+      map["agent.0.field1"] == "field1" &&
+      map["agent.0.field2"] == "field2" &&
+      map["agent.2.field1"] == "field1" &&
+      map["agent.2.field2"] == "field2" &&
+      map["agent.1.field1"] == 0 &&
+      map["agent.1.field2"] == 0 &&
+      map["agent.3.field1"] == 0 &&
+      map["agent.3.field2"] == 0
+     )
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+
+    for (auto entry : map)
+    {
+      std::cerr << "  " << entry.first << "=" << entry.second << "\n";
+    }
+
+    ++madara_fails;
+  }
+}
+
+void test_print_filter_compile (void)
+{
+  filters::PrefixPrint static_printer;
+  filters::DynamicPrefixPrint dynamic_printer;
+}
+
 int main (int, char **)
 {
   test_dynamic_prefix_filter ();
+  test_dynamic_prefix_int_convert ();
+  test_prefix_int_convert ();
+  test_print_filter_compile ();
 
   madara::knowledge::KnowledgeRecordFilters filters;
 
