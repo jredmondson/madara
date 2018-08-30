@@ -111,21 +111,27 @@ protected:
 
   BaseCapnObject() = default;
 
-  BaseCapnObject(const char *data, size_t size, size_t extra = 0)
+  BaseCapnObject(const char *data, size_t size, size_t extra = 0,
+      bool init_reader = true)
     : data_(mk_copy(data, size, extra)), size_(size),
-      reader_(mk_reader()) {}
+      reader_(init_reader ? mk_reader() : nullptr) {}
 
-  BaseCapnObject(std::istream &i, size_t size, size_t extra = 0)
+  BaseCapnObject(std::istream &i, size_t size, size_t extra = 0,
+      bool init_reader = true)
     : data_(read_from(i, size, extra)), size_(size),
-      reader_(mk_reader()) {}
+      reader_(init_reader ? mk_reader() : nullptr) {}
 
   std::shared_ptr<char> data_;
   size_t size_;
-  std::shared_ptr<NoThrowDestruct<capnp::FlatArrayMessageReader>> reader_;
 
-  std::shared_ptr<NoThrowDestruct<capnp::FlatArrayMessageReader>> mk_reader()
+  using reader_type = NoThrowDestruct<capnp::FlatArrayMessageReader>;
+  using reader_sptr = std::shared_ptr<reader_type>;
+
+  mutable reader_sptr reader_;
+
+  reader_sptr mk_reader() const
   {
-    return std::make_shared<NoThrowDestruct<capnp::FlatArrayMessageReader>>(
+    return std::make_shared<reader_type>(
         kj::ArrayPtr<const capnp::word>((const capnp::word *)data_.get(),
           size_ / sizeof(capnp::word)));
   }
@@ -149,7 +155,7 @@ public:
    * buffer will be copied into this new object.
    **/
   GenericCapnObject(const char *tag, const char *d, size_t s)
-    : Base(d, s, std::strlen(tag) + 1),
+    : Base(d, s, std::strlen(tag) + 1, false),
       tag_((const char *)std::strcpy(data() + size(), tag)) {}
 
   /**
@@ -157,7 +163,7 @@ public:
    * to tag will be copied into this new object.
    **/
   GenericCapnObject(const char *tag, std::istream &i, size_t s)
-    : Base(i, s, std::strlen(tag) + 1),
+    : Base(i, s, std::strlen(tag) + 1, false),
       tag_((const char *)std::strcpy(data() + size(), tag)) {}
 
   /**
@@ -184,6 +190,7 @@ public:
   template<typename T>
   typename T::Reader reader(type<T> t) const
   {
+    init_reader();
     return Base::reader(t);
   }
 
@@ -203,6 +210,7 @@ public:
    **/
   capnp::DynamicStruct::Reader reader(capnp::StructSchema schema) const
   {
+    init_reader();
     return Base::reader(type<capnp::DynamicStruct>{}, schema);
   }
 
@@ -212,6 +220,13 @@ public:
   const char *tag() const override { return tag_; }
 
 private:
+  void init_reader() const
+  {
+    if (!reader_) {
+      reader_ = mk_reader();
+    }
+  }
+
   const char *tag_;
 };
 
