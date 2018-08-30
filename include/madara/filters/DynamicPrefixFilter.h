@@ -27,6 +27,7 @@ namespace madara
       /**
       * Constructor
       * @param string_vector_name   the name of the string vector in the KB
+      *                             to use for prefix information
       **/
       DynamicPrefixFilter (
         const std::string & string_vector_name = "prefixes.allowed")
@@ -56,6 +57,7 @@ namespace madara
         {
           // set the initial vector up
           prefixes_.set_name (name, vars);
+          initialized_ = true;
         }
         else
         {
@@ -99,10 +101,10 @@ namespace madara
             {
               // valid prefix so keep the record and proceed to next
               ++record;
-            }
-          }
-        }
-      }
+            } // end valid prefix
+          } // end iteration over records
+        } // end if there are prefixes to enforce
+      } // end filter method
 
     private:
 

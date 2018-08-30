@@ -228,6 +228,35 @@ namespace madara
       const knowledge::KnowledgeMap& records,
       PacketScheduler & packet_scheduler);
 
+    /**
+     * Return the type of operation (usually from TransportContext)
+     * @param  type   the enum type of the message operation
+     * @return the string-based, human-readable equivalent of the type
+     **/
+    inline std::string MADARA_EXPORT get_operation_type (int type)
+    {
+      if (type == 0)
+      {
+        return "IDLE_OPERATION";
+      }
+      else if (type == 1)
+      {
+        return "SENDING_OPERATION";
+      }
+      else if (type == 2)
+      {
+        return "RECEIVING_OPERATION";
+      }
+      else if (type == 3)
+      {
+        return "REBROADCASTING_OPERATION";
+      }
+      else
+      {
+        return "UNKNOWN_OPERATION";
+      }
+    }
+
     typedef   utility::ThreadSafeVector <Base *>   Transports;
   }
 }
