@@ -53,6 +53,42 @@ madara::logger::Logger::get_tag (void)
   return tag_;
 }
 
+inline int 
+madara::logger::Logger::get_thread_level(void)
+{
+  return thread_level_;
+}
+
+inline std::string 
+madara::logger::Logger::get_thread_name(void)
+{
+  return thread_name_;
+}
+
+inline double 
+madara::logger::Logger::get_thread_hertz(void)
+{
+  return thread_hertz_;
+}
+
+inline void 
+madara::logger::Logger::set_thread_level(int level)
+{
+  thread_level_ = level;
+}
+
+inline void 
+madara::logger::Logger::set_thread_name(const std::string name)
+{
+  thread_name_ = name;
+}
+
+inline void
+madara::logger::Logger::set_thread_hertz(double hertz)
+{
+  thread_hertz_ = hertz;
+}
+
 inline void
 madara::logger::Logger::set_tag (const std::string & tag)
 {

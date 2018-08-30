@@ -176,6 +176,8 @@ int main (int argc, char ** argv)
   // handle all user arguments
   handle_arguments (argc, argv);
   
+  logger::global_logger.get()->set_timestamp_format();
+
   // create a knowledge base and setup our id
   knowledge::KnowledgeBase knowledge;
 
@@ -186,7 +188,15 @@ int main (int argc, char ** argv)
     "Target is set to %ll\n",
     hertz, second_hertz, counters, target);
 
-  // create a counter
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+                         "MGT: %MGT\n");
+
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+                           "MTN: %MTN\n");
+
+    madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+                           "MTZ: %MTZ\n");
+// create a counter
   containers::Integer counter ("counter", knowledge);
 
   // create a threader for running threads
