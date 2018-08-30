@@ -176,7 +176,7 @@ int main (int argc, char ** argv)
   // handle all user arguments
   handle_arguments (argc, argv);
   
-  logger::global_logger.get()->set_timestamp_format();
+  logger::global_logger.get()->set_timestamp_format("%x %X %MTZ %MGT (%MTN): ");
 
   // create a knowledge base and setup our id
   knowledge::KnowledgeBase knowledge;

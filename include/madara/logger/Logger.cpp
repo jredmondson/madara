@@ -102,28 +102,32 @@ madara::logger::Logger::log (int level, const char * message, ...)
 
     if (this->timestamp_format_.size () > 0)
     {
+      std::string madstr = message;
+      madstr = search_and_insert_custom_tstamp(madstr,MADARA_GET_TIME_MGT);
+      madstr = search_and_insert_custom_tstamp(madstr,MADARA_THREAD_NAME);
+      madstr = search_and_insert_custom_tstamp(madstr,MADARA_THREAD_HERTZ);
+    
+      char custom_buffer[10240];
+      std::strcpy(custom_buffer, madstr.c_str());
+
       time_t rawtime;
       struct tm * timeinfo;
 
       time (&rawtime);
       timeinfo = localtime (&rawtime);
 
+      madstr = search_and_insert_custom_tstamp(timestamp_format_,MADARA_GET_TIME_MGT);
+      madstr = search_and_insert_custom_tstamp(madstr,MADARA_THREAD_NAME);
+      madstr = search_and_insert_custom_tstamp(madstr,MADARA_THREAD_HERTZ);
+      
       size_t chars_written = strftime (
-        begin, remaining_buffer, timestamp_format_.c_str (), timeinfo);
+        begin, remaining_buffer, madstr.c_str (), timeinfo);
 
       remaining_buffer -= chars_written;
       begin += chars_written;
-    }
-
-    std::string madstr = message;
-    madstr = search_and_insert_custom_tstamp(madstr,MADARA_GET_TIME_MGT);
-    madstr = search_and_insert_custom_tstamp(madstr,MADARA_THREAD_NAME);
-    madstr = search_and_insert_custom_tstamp(madstr,MADARA_THREAD_HERTZ);
-    
-    char custom_buffer[10240];
-    std::strcpy(custom_buffer, madstr.c_str());
-
-    vsnprintf (begin, remaining_buffer, custom_buffer, argptr);
+      vsnprintf (begin, remaining_buffer, custom_buffer, argptr);
+    }else
+      vsnprintf (begin, remaining_buffer, message, argptr);
 
     va_end (argptr);
 
