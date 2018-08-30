@@ -7,11 +7,14 @@
 #include "madara/filters/DynamicPrefixPrint.h"
 #include "madara/filters/PrefixPrint.h"
 #include "madara/filters/PrefixIntConvert.h"
+#include "madara/filters/VariableMapFilter.h"
+#include "madara/utility/Utility.h"
 
 namespace knowledge = madara::knowledge;
 namespace filters = madara::filters;
 namespace transport = madara::transport;
 namespace logger = madara::logger;
+namespace utility = madara::utility;
 
 typedef knowledge::KnowledgeRecord   KnowledgeRecord;
 
@@ -196,12 +199,71 @@ void test_print_filter_compile (void)
   filters::DynamicPrefixPrint dynamic_printer;
 }
 
+void test_variable_map_filter (void)
+{
+
+  madara::knowledge::KnowledgeBase kb;
+  madara::knowledge::Variables vars (&kb.get_context ());
+
+  // create allowed prefixes for agent.0 and agent.1
+  kb.set (".var1", 1);
+  kb.set (".var2", 2);
+  kb.set (".var3", 3);
+  kb.set (".var4", 4);
+
+  filters::VariableMapFilter filter;
+  filter.process_config (
+    ".var1 -> agent.0.field1\n"
+    ".var2 -> agent.0.field2\n"
+    ".var3 -> agent.1.field1\n"
+    ".var4 -> agent.1.field2\n");
+
+  knowledge::KnowledgeMap map;
+  transport::TransportContext context;
+
+  map["agent.2.field1"] = 5;
+  map["agent.2.field2"] = 6;
+  map["agent.3.field1"] = 7;
+  map["agent.3.field2"] = 8;
+
+  std::cerr << "Testing variable map filter: ";
+
+  filter.filter (map, context, vars);
+
+  if (map.size () == 8 &&
+      map["agent.0.field1"] == 1 &&
+      map["agent.0.field2"] == 2 &&
+      map["agent.1.field1"] == 3 &&
+      map["agent.1.field2"] == 4 &&
+      map["agent.2.field1"] == 5 &&
+      map["agent.2.field2"] == 6 &&
+      map["agent.3.field1"] == 7 &&
+      map["agent.3.field2"] == 8
+     )
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+
+    for (auto entry : map)
+    {
+      std::cerr << "  " << entry.first << "=" << entry.second << "\n";
+    }
+
+    ++madara_fails;
+  }
+
+}
+
 int main (int, char **)
 {
   test_dynamic_prefix_filter ();
   test_dynamic_prefix_int_convert ();
   test_prefix_int_convert ();
   test_print_filter_compile ();
+  test_variable_map_filter ();
 
   madara::knowledge::KnowledgeRecordFilters filters;
 
