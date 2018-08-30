@@ -103,6 +103,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Constructor for long/integer values
    *
    * @param lng value to set
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord(long lng) throws MadaraDeadObjectException
   {
@@ -115,6 +116,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Constructor for string values
    *
    * @param str value to set
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord(String str) throws MadaraDeadObjectException
   {
@@ -127,6 +129,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Constructor for double values
    *
    * @param dbl value to set
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord(double dbl) throws MadaraDeadObjectException
   {
@@ -138,6 +141,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Constructor for double[] values
    *
    * @param dbls value to set
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord(double[] dbls) throws MadaraDeadObjectException
   {
@@ -149,6 +153,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Constructor for long[] values
    *
    * @param longs value to set
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord(long[] longs) throws MadaraDeadObjectException
   {
@@ -160,6 +165,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Constructor for Any values
    *
    * @param any value to set
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeRecord(Any any) throws MadaraDeadObjectException
   {
@@ -172,6 +178,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Checks if the record is valid or uncreated
    *
    * @return true if record has a value, false otherwise.
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public boolean isValid() throws MadaraDeadObjectException
   {
@@ -182,6 +189,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Converts the value to a long
    *
    * @return current long value
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public long toLong() throws MadaraDeadObjectException
   {
@@ -193,6 +201,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Converts the value to a float/double
    *
    * @return current double value
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public double toDouble() throws MadaraDeadObjectException
   {
@@ -203,6 +212,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Converts the value to a double array
    *
    * @return current array values
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public double[] toDoubleArray() throws MadaraDeadObjectException
   {
@@ -213,6 +223,7 @@ public class KnowledgeRecord extends MadaraJNI
    * Converts the value to a long array
    *
    * @return current array values
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public long[] toLongArray() throws MadaraDeadObjectException
   {
@@ -236,6 +247,8 @@ public class KnowledgeRecord extends MadaraJNI
    * that type is put into an Any and returned.
    *
    * @return copy of current value
+   * @throws MadaraDeadObjectException throws exception if object is already released
+   * @throws BadAnyAccess throws exception for bad access
    */
   public Any toAny() throws MadaraDeadObjectException, BadAnyAccess
   {
@@ -246,6 +259,7 @@ public class KnowledgeRecord extends MadaraJNI
 
   /**
    * @return the {@link ai.madara.knowledge.KnowledgeType KnowledgeType} of the value
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public KnowledgeType getType() throws MadaraDeadObjectException
   {
@@ -255,6 +269,7 @@ public class KnowledgeRecord extends MadaraJNI
   /**
    * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be called
    * before an instance of KnowledgeRecord gets garbage collected
+   * @throws MadaraDeadObjectException throws exception if object is already released
    */
   public void free() throws MadaraDeadObjectException
   {

@@ -57,246 +57,269 @@ import ai.madara.knowledge.Variables;
  * A facade for a dynamically typed vector within a knowledge base.
  **/
 
-public class Queue extends MadaraJNI
-{
-  private native long jni_Queue();
-  private native long jni_Queue(long cptr);
-  private static native void jni_freeQueue(long cptr);
-  private native boolean jni_enqueue(long cptr, long record);
-  private native boolean jni_enqueueDouble(long cptr, double value);
-  private native boolean jni_enqueueLong(long cptr, long value);
-  private native boolean jni_enqueueString(long cptr, java.lang.String value);
-  private native long jni_dequeue(long cptr, boolean waitForRecord);
-  private native long jni_inspect(long cptr, int position);
-  private native java.lang.String jni_getName(long cptr);
-  private native void jni_setName(long cptr, long type, long kb, java.lang.String name);
-  private native long jni_size(long cptr);
-  private native long jni_count(long cptr);
-  private native void jni_resize(long cptr, long length);
-  private native void jni_clear(long cptr);
-  private native void jni_setSettings(long cptr, long settings);
+public class Queue extends MadaraJNI {
+	private native long jni_Queue();
 
-  private boolean manageMemory = true;
+	private native long jni_Queue(long cptr);
 
-  /**
-   * Default constructor
-   **/
-  public Queue()
-  {
-    setCPtr(jni_Queue());
-  }
+	private static native void jni_freeQueue(long cptr);
 
-  /**
-   * Copy constructor
-   * @param input  instance to copy
-   **/
-  public Queue(Queue input)
-  {
-    setCPtr(jni_Queue(input.getCPtr()));
-  }
+	private native boolean jni_enqueue(long cptr, long record);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @return a new java instance of the underlying pointer
-   */
-  public static Queue fromPointer(long cptr)
-  {
-    Queue ret = new Queue();
-    ret.manageMemory = true;
-    ret.setCPtr(cptr);
-    return ret;
-  }
+	private native boolean jni_enqueueDouble(long cptr, double value);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @param shouldManage  if true, manage the pointer
-   * @return a new java instance of the underlying pointer
-   */
-  public static Queue fromPointer(long cptr, boolean shouldManage)
-  {
-    Queue ret = new Queue();
-    ret.manageMemory=shouldManage;
-    ret.setCPtr(cptr);
-    return ret;
-  }
+	private native boolean jni_enqueueLong(long cptr, long value);
 
-  /**
-   * Inspects the record at the specified position
-   *
-   * @param  position   position in the queue to inspect
-   * @return   the record at the position (uncreated record if position is inaccessible)
-   */
-  public KnowledgeRecord inspect(int position) throws MadaraDeadObjectException
-  {
-    return KnowledgeRecord.fromPointer(jni_inspect(getCPtr(), position));
-  }
+	private native boolean jni_enqueueString(long cptr, java.lang.String value);
 
-  /**
-   * Attempts to dequeue a record
-   * @param  waitForRecord   if true, block on a record being added to queue
-   * @return  next record in the queue. An uncreated record if empty and
-   * waitForRecord is false.
-   */
-  public KnowledgeRecord dequeue(boolean waitForRecord) throws MadaraDeadObjectException
-  {
-    return KnowledgeRecord.fromPointer(jni_dequeue(getCPtr(), waitForRecord));
-  }
+	private native long jni_dequeue(long cptr, boolean waitForRecord);
 
-  /**
-   * Gets the name of the variable
-   *
-   * @return  name of the variable within the context
-   */
-  public java.lang.String getName() throws MadaraDeadObjectException
-  {
-    return jni_getName(getCPtr());
-  }
+	private native long jni_inspect(long cptr, int position);
 
-  /**
-   * Resizes the vector
-   *
-   * @param  length   new number of elements of the vector
-   */
-  public void resize (long length) throws MadaraDeadObjectException
-  {
-    jni_resize(getCPtr(), length);
-  }
+	private native java.lang.String jni_getName(long cptr);
 
-  /**
-   * Attempts to enqueue a record
-   *
-   * @param  record  the new record to place on the queue
-   * @return true if the queue now contains the record. False is returned if
-   *         there was not enough room in the queue.
-   *
-   */
-  public boolean enqueue(KnowledgeRecord record) throws MadaraDeadObjectException
-  {
-    return jni_enqueue(getCPtr(), record.getCPtr());
-  }
+	private native void jni_setName(long cptr, long type, long kb, java.lang.String name);
 
-  /**
-   * Attempts to enqueue a double
-   *
-   * @param  value  the new value to place on the queue
-   * @return true if the queue now contains the record. False is returned if
-   *         there was not enough room in the queue.
-   *
-   */
-  public boolean enqueue(double value) throws MadaraDeadObjectException
-  {
-    return jni_enqueueDouble(getCPtr(), value);
-  }
+	private native long jni_size(long cptr);
 
-  /**
-   * Attempts to enqueue a long
-   *
-   * @param  value  the new value to place on the queue
-   * @return true if the queue now contains the record. False is returned if
-   *         there was not enough room in the queue.
-   *
-   */
-  public boolean enqueue(long value) throws MadaraDeadObjectException
-  {
-    return jni_enqueueLong(getCPtr(), value);
-  }
+	private native long jni_count(long cptr);
 
-  /**
-   * Attempts to enqueue a string
-   *
-   * @param  value  the new value to place on the queue
-   * @return true if the queue now contains the record. False is returned if
-   *         there was not enough room in the queue.
-   *
-   */
-  public boolean enqueue(java.lang.String value) throws MadaraDeadObjectException
-  {
-    return jni_enqueueString(getCPtr(), value);
-  }
+	private native void jni_resize(long cptr, long length);
 
-  /**
-   * Sets the name and knowledge base being referred to
-   *
-   * @param  kb      the knowledge base that contains the name
-   * @param  name    the variable name
-   */
-  public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException
-  {
-    jni_setName(getCPtr(), 0, kb.getCPtr (), name);
-  }
+	private native void jni_clear(long cptr);
 
-  /**
-   * Sets the name and knowledge base being referred to
-   *
-   * @param  vars    the variables facade that contains the name
-   * @param  name    the variable name
-   */
-  public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException
-  {
-    jni_setName(getCPtr(), 1, vars.getCPtr (), name);
-  }
+	private native void jni_setSettings(long cptr, long settings);
 
-  /**
-   * Sets the settings for updating variables in the Knowledge Base
-   *
-   * @param  settings  the settings to use for updating the Knowledge Base
-   */
-  public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
-  {
-    jni_setSettings(getCPtr(), settings.getCPtr());
-  }
+	private boolean manageMemory = true;
 
-  /**
-   * Returns the maximum size of the queue
-   *
-   * @return  the maximum number of records in the queue
-   */
-  public long size() throws MadaraDeadObjectException
-  {
-    return jni_size(getCPtr());
-  }
+	/**
+	 * Default constructor
+	 **/
+	public Queue() {
+		setCPtr(jni_Queue());
+	}
 
-  /**
-   * Returns the number of records currently in the queue
-   *
-   * @return  the number of elements in the queue
-   */
-  public long count() throws MadaraDeadObjectException
-  {
-    return jni_count(getCPtr());
-  }
+	/**
+	 * Copy constructor
+	 * 
+	 * @param input instance to copy
+	 **/
+	public Queue(Queue input) {
+		setCPtr(jni_Queue(input.getCPtr()));
+	}
 
-  /**
-   * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
-   * called before an instance gets garbage collected
-   */
-  public void free()
-  {
-    if (manageMemory)
-    {
-      jni_freeQueue(getCPtr());
-      setCPtr(0);
-    }
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr C pointer to the object
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static Queue fromPointer(long cptr) {
+		Queue ret = new Queue();
+		ret.manageMemory = true;
+		ret.setCPtr(cptr);
+		return ret;
+	}
 
-  /**
-   * Cleans up underlying C resources
-   * @throws Throwable necessary for override but unused
-   */
-  @Override
-  protected void finalize() throws Throwable
-  {
-    try {
-      free();
-    } catch (Throwable t) {
-      throw t;
-    } finally {
-      super.finalize();
-    }
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr         C pointer to the object
+	 * @param shouldManage if true, manage the pointer
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static Queue fromPointer(long cptr, boolean shouldManage) {
+		Queue ret = new Queue();
+		ret.manageMemory = shouldManage;
+		ret.setCPtr(cptr);
+		return ret;
+	}
+
+	/**
+	 * Inspects the record at the specified position
+	 *
+	 * @param position position in the queue to inspect
+	 * @return the record at the position (uncreated record if position is
+	 *         inaccessible)
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord inspect(int position) throws MadaraDeadObjectException {
+		return KnowledgeRecord.fromPointer(jni_inspect(getCPtr(), position));
+	}
+
+	/**
+	 * Attempts to dequeue a record
+	 * 
+	 * @param waitForRecord if true, block on a record being added to queue
+	 * @return next record in the queue. An uncreated record if empty and
+	 *         waitForRecord is false.
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord dequeue(boolean waitForRecord) throws MadaraDeadObjectException {
+		return KnowledgeRecord.fromPointer(jni_dequeue(getCPtr(), waitForRecord));
+	}
+
+	/**
+	 * Gets the name of the variable
+	 *
+	 * @return name of the variable within the context
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public java.lang.String getName() throws MadaraDeadObjectException {
+		return jni_getName(getCPtr());
+	}
+
+	/**
+	 * Resizes the vector
+	 *
+	 * @param length new number of elements of the vector
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void resize(long length) throws MadaraDeadObjectException {
+		jni_resize(getCPtr(), length);
+	}
+
+	/**
+	 * Attempts to enqueue a record
+	 *
+	 * @param record the new record to place on the queue
+	 * @return true if the queue now contains the record. False is returned if there
+	 *         was not enough room in the queue.
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 *
+	 */
+	public boolean enqueue(KnowledgeRecord record) throws MadaraDeadObjectException {
+		return jni_enqueue(getCPtr(), record.getCPtr());
+	}
+
+	/**
+	 * Attempts to enqueue a double
+	 *
+	 * @param value the new value to place on the queue
+	 * @return true if the queue now contains the record. False is returned if there
+	 *         was not enough room in the queue.
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 *
+	 */
+	public boolean enqueue(double value) throws MadaraDeadObjectException {
+		return jni_enqueueDouble(getCPtr(), value);
+	}
+
+	/**
+	 * Attempts to enqueue a long
+	 *
+	 * @param value the new value to place on the queue
+	 * @return true if the queue now contains the record. False is returned if there
+	 *         was not enough room in the queue.
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 *
+	 */
+	public boolean enqueue(long value) throws MadaraDeadObjectException {
+		return jni_enqueueLong(getCPtr(), value);
+	}
+
+	/**
+	 * Attempts to enqueue a string
+	 *
+	 * @param value the new value to place on the queue
+	 * @return true if the queue now contains the record. False is returned if there
+	 *         was not enough room in the queue.
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 *
+	 */
+	public boolean enqueue(java.lang.String value) throws MadaraDeadObjectException {
+		return jni_enqueueString(getCPtr(), value);
+	}
+
+	/**
+	 * Sets the name and knowledge base being referred to
+	 *
+	 * @param kb   the knowledge base that contains the name
+	 * @param name the variable name
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException {
+		jni_setName(getCPtr(), 0, kb.getCPtr(), name);
+	}
+
+	/**
+	 * Sets the name and knowledge base being referred to
+	 *
+	 * @param vars the variables facade that contains the name
+	 * @param name the variable name
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException {
+		jni_setName(getCPtr(), 1, vars.getCPtr(), name);
+	}
+
+	/**
+	 * Sets the settings for updating variables in the Knowledge Base
+	 *
+	 * @param settings the settings to use for updating the Knowledge Base
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException {
+		jni_setSettings(getCPtr(), settings.getCPtr());
+	}
+
+	/**
+	 * Returns the maximum size of the queue
+	 *
+	 * @return the maximum number of records in the queue
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public long size() throws MadaraDeadObjectException {
+		return jni_size(getCPtr());
+	}
+
+	/**
+	 * Returns the number of records currently in the queue
+	 *
+	 * @return the number of elements in the queue
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public long count() throws MadaraDeadObjectException {
+		return jni_count(getCPtr());
+	}
+
+	/**
+	 * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
+	 * called before an instance gets garbage collected
+	 */
+	public void free() {
+		if (manageMemory) {
+			jni_freeQueue(getCPtr());
+			setCPtr(0);
+		}
+	}
+
+	/**
+	 * Cleans up underlying C resources
+	 * 
+	 * @throws Throwable necessary for override but unused
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			free();
+		} catch (Throwable t) {
+			throw t;
+		} finally {
+			super.finalize();
+		}
+	}
 }
-

@@ -8,6 +8,28 @@ genrule(
     cmd = "echo 'std::string version (\"'`cat $(location VERSION.txt)`' (SHA NOT SUPPORTED)\");\n' > $@",
 )
 
+config_setting(
+    name = "x86_64",
+    constraint_values = [
+        "@bazel_tools//platforms:x86_64",
+    ],
+)
+
+config_setting(
+    name = "arm",
+    constraint_values = [
+        "@bazel_tools//platforms:arm",
+    ],
+)
+
+cc_library(
+    name = "libzmq",
+    deps = select({
+        ":x86_64": ["@org_zeromq_libzmq//:libzmq"],
+        ":arm": ["@org_zeromq_libzmq_arm//:libzmq"],
+    }),
+)
+
 cc_library(
     name = "cereal",
     hdrs = glob(
@@ -20,8 +42,23 @@ cc_library(
     strip_include_prefix = "include",
 )
 
-cc_library(
-    name = "madara",
+NAMES = [
+    "madara",
+    "madara_python",
+]
+
+DEFINES = [
+    [],
+    ["_MADARA_PYTHON_CALLBACKS_"],
+]
+
+DEPS = [
+    [],
+    ["@org_boost_boost//:python"],
+]
+
+[cc_library(
+    name = NAME,
     srcs = glob(
                [
                    "include/**/*.h",
@@ -56,11 +93,12 @@ cc_library(
         ],
     ) + ["include/madara/Version.h"],
     copts = ["-w"],
-    defines = ["MADARA_FEATURE_SIMTIME"] +
-              select({
-                  "@bazel_module//bazel_rules:zmq": ["_MADARA_USING_ZMQ_"],
-                  "//conditions:default": [],
-              }),
+    defines = [
+        "MADARA_FEATURE_SIMTIME",
+    ] + select({
+        "@bazel_module//bazel_rules:zmq": ["_MADARA_USING_ZMQ_"],
+        "//conditions:default": [],
+    }) + DEFINE,
     linkopts = ["-pthread"],
     strip_include_prefix = "include",
     textual_hdrs = glob(["include/**/*.inl"]),
@@ -69,10 +107,10 @@ cc_library(
         "@org_capnproto_capnproto//:capnp-lib",
         ":cereal",
     ] + select({
-        "@bazel_module//bazel_rules:zmq": ["@org_zeromq_libzmq//:libzmq"],
+        "@bazel_module//bazel_rules:zmq": [":libzmq"],
         "//conditions:default": [],
-    }),
-)
+    }) + DEP,
+) for NAME, DEFINE, DEP in zip(NAMES, DEFINES, DEPS)]
 
 cc_library(
     name = "madara_jni_h",

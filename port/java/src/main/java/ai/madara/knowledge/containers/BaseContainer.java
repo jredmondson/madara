@@ -62,6 +62,7 @@ public abstract class BaseContainer extends MadaraJNI
    * Marks the container as modified if the container ends up being true
    * @param container  the container that might evaluate to true
    * @return true if the container evaluated to true
+ * @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public boolean modifyIfTrue(BaseContainer container) throws MadaraDeadObjectException
   {
@@ -72,6 +73,7 @@ public abstract class BaseContainer extends MadaraJNI
    * Marks the container as modified if the container ends up being true
    * @param container  the container that might evaluate to true
    * @return true if the container evaluated to false
+ * @throws MadaraDeadObjectException throws exception if object is already released
    **/
   public boolean modifyIfFalse(BaseContainer container) throws MadaraDeadObjectException
   {

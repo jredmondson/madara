@@ -53,256 +53,295 @@ import ai.madara.knowledge.UpdateSettings;
 import ai.madara.knowledge.Variables;
 
 /**
- * A facade for an array of integers within a single knowledge record
- * within a knowledge base. Use this type of container if you want to
- * have an atomic array, such as position coordinates, where changing
- * one element of the array requres all array elements to be sent as
- * an update.
+ * A facade for an array of integers within a single knowledge record within a
+ * knowledge base. Use this type of container if you want to have an atomic
+ * array, such as position coordinates, where changing one element of the array
+ * requres all array elements to be sent as an update.
  **/
 
-public class NativeIntegerVector extends BaseContainer
-{
-  private native long jni_NativeIntegerVector();
-  private native long jni_NativeIntegerVector(long cptr);
-  private static native void jni_freeNativeIntegerVector(long cptr);
-  private native void jni_set(long cptr, int index, long value);
-  private native void jni_pushback(long cptr, long value);
-  private native java.lang.String jni_getName(long cptr);
-  private native void jni_setName(long cptr, long type, long kb, java.lang.String name);
-  private native long jni_get(long cptr, int index);
-  private native long jni_toRecord(long cptr, int index);
-  private native long jni_toRecord(long cptr);
-  private native Object[] jni_toArray(long cptr);
-  private native long jni_size(long cptr);
-  private native void jni_resize(long cptr, long length);
-  private native void jni_modify(long cptr);
-  private native void jni_setSettings(long cptr, long settings);
-  private native boolean jni_isTrue(long cptr);
-  private native boolean jni_isFalse(long cptr);
+public class NativeIntegerVector extends BaseContainer {
+	private native long jni_NativeIntegerVector();
 
-  private boolean manageMemory = true;
+	private native long jni_NativeIntegerVector(long cptr);
 
-  public NativeIntegerVector()
-  {
-    setCPtr(jni_NativeIntegerVector());
-  }
+	private static native void jni_freeNativeIntegerVector(long cptr);
 
-  public NativeIntegerVector(NativeIntegerVector input)
-  {
-    setCPtr(jni_NativeIntegerVector(input.getCPtr()));
-  }
+	private native void jni_set(long cptr, int index, long value);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @return a new java instance of the underlying pointer
-   */
-  public static NativeIntegerVector fromPointer(long cptr)
-  {
-    NativeIntegerVector ret = new NativeIntegerVector();
-    ret.manageMemory = true;
-    ret.setCPtr(cptr);
-    return ret;
-  }
+	private native void jni_pushback(long cptr, long value);
 
-  /**
-   * Creates a java object instance from a C/C++ pointer
-   *
-   * @param cptr C pointer to the object
-   * @param shouldManage  if true, manage the pointer
-   * @return a new java instance of the underlying pointer
-   */
-  public static NativeIntegerVector fromPointer(long cptr, boolean shouldManage)
-  {
-    NativeIntegerVector ret = new NativeIntegerVector();
-    ret.manageMemory=shouldManage;
-    ret.setCPtr(cptr);
-    return ret;
-  }
+	private native java.lang.String jni_getName(long cptr);
 
-  /**
-   * Gets the value at the index
-   * @param    index   the index of the element to retrieve
-   * @return   current value at the index
-   */
-  public long get(int index) throws MadaraDeadObjectException
-  {
-    return jni_get(getCPtr(), index);
-  }
+	private native void jni_setName(long cptr, long type, long kb, java.lang.String name);
 
-  /**
-   * Gets the name of the variable
-   *
-   * @return  name of the variable within the context
-   */
-  public java.lang.String getName() throws MadaraDeadObjectException
-  {
-    return jni_getName(getCPtr());
-  }
+	private native long jni_get(long cptr, int index);
 
-  /**
-   * Resizes the vector
-   *
-   * @param  length   new number of elements of the vector
-   */
-  public void resize (long length) throws MadaraDeadObjectException
-  {
-    jni_resize(getCPtr(), length);
-  }
+	private native long jni_toRecord(long cptr, int index);
 
-  /**
-   * Sets the value at the specified index
-   * @param  index   index of the element in the array to change
-   * @param  value   new value
-   */
-  public void set(int index, long value) throws MadaraDeadObjectException
-  {
-    jni_set(getCPtr(), index, value);
-  }
+	private native long jni_toRecord(long cptr);
 
-  /**
-   * Pushes a value to the end of the vector
-   * @param  value   new value to add to vector
-   */
-  public void pushback(long value) throws MadaraDeadObjectException
-  {
-    jni_pushback(getCPtr(), value);
-  }
+	private native Object[] jni_toArray(long cptr);
 
-  /**
-   * Mark the vector as modified. The vector retains the same values
-   * but will resend all values as if they had been modified.
-   **/
-  public void modify() throws MadaraDeadObjectException
-  {
-    jni_modify(getCPtr());
-  }
+	private native long jni_size(long cptr);
 
-  /**
-   * Returns true if the container evaluates to true
-   * @return true if container has all true values
-   **/
-  public boolean isTrue() throws MadaraDeadObjectException
-  {
-    return jni_isTrue(getCPtr());
-  }
+	private native void jni_resize(long cptr, long length);
 
-  /**
-   * Returns true if the container evaluates to false
-   * @return true if container has any false values or is uninitialized
-   **/
-  public boolean isFalse() throws MadaraDeadObjectException
-  {
-    return jni_isFalse(getCPtr());
-  }
+	private native void jni_modify(long cptr);
 
-  /**
-   * Sets the name and knowledge base being referred to
-   *
-   * @param  kb      the knowledge base that contains the name
-   * @param  name    the variable name
-   */
-  public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException
-  {
-    jni_setName(getCPtr(), 0, kb.getCPtr (), name);
-  }
+	private native void jni_setSettings(long cptr, long settings);
 
-  /**
-   * Sets the name and knowledge base being referred to
-   *
-   * @param  vars    the variables facade that contains the name
-   * @param  name    the variable name
-   */
-  public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException
-  {
-    jni_setName(getCPtr(), 1, vars.getCPtr (), name);
-  }
+	private native boolean jni_isTrue(long cptr);
 
-  /**
-   * Sets the settings for updating variables in the Knowledge Base
-   *
-   * @param  settings  the settings to use for updating the Knowledge Base
-   */
-  public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException
-  {
-    jni_setSettings(getCPtr(), settings.getCPtr());
-  }
+	private native boolean jni_isFalse(long cptr);
 
-  /**
-   * Returns the size of the vector
-   *
-   * @return  the number of elements in the vector
-   */
-  public long size () throws MadaraDeadObjectException
-  {
-    return jni_size(getCPtr());
-  }
+	private boolean manageMemory = true;
 
-  /**
-   * Returns a value at the specified index
-   *
-   * @param  index  the index
-   * @return the value at the index as a knowledge record
-   */
-  public KnowledgeRecord toRecord(int index) throws MadaraDeadObjectException
-  {
-    return KnowledgeRecord.fromPointer(jni_toRecord(getCPtr(), index));
-  }
+	public NativeIntegerVector() {
+		setCPtr(jni_NativeIntegerVector());
+	}
 
-  /**
-   * Returns a value at the specified index
-   *
-   * @return the vector as an array of records
-   */
-  public KnowledgeRecord[] toArray() throws MadaraDeadObjectException
-  {
-    Object[] objs = jni_toArray(getCPtr());
-    KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-    for (int i = 0; i < objs.length; ++i)
-    {
-      records[i] = (KnowledgeRecord)objs[i];
-    }
-    return records;
-  }
+	public NativeIntegerVector(NativeIntegerVector input) {
+		setCPtr(jni_NativeIntegerVector(input.getCPtr()));
+	}
 
-  /**
-   * Returns all of the values as a knowledge record
-   *
-   * @return  knowledge record that contains all indices
-   */
-  public KnowledgeRecord toRecord() throws MadaraDeadObjectException
-  {
-    return KnowledgeRecord.fromPointer(jni_toRecord(getCPtr()));
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr C pointer to the object
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static NativeIntegerVector fromPointer(long cptr) {
+		NativeIntegerVector ret = new NativeIntegerVector();
+		ret.manageMemory = true;
+		ret.setCPtr(cptr);
+		return ret;
+	}
 
-  /**
-   * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
-   * called before an instance gets garbage collected
-   */
-  public void free()
-  {
-    if (manageMemory)
-    {
-      jni_freeNativeIntegerVector(getCPtr());
-      setCPtr(0);
-    }
-  }
+	/**
+	 * Creates a java object instance from a C/C++ pointer
+	 *
+	 * @param cptr         C pointer to the object
+	 * @param shouldManage if true, manage the pointer
+	 * @return a new java instance of the underlying pointer
+	 */
+	public static NativeIntegerVector fromPointer(long cptr, boolean shouldManage) {
+		NativeIntegerVector ret = new NativeIntegerVector();
+		ret.manageMemory = shouldManage;
+		ret.setCPtr(cptr);
+		return ret;
+	}
 
-  /**
-   * Cleans up underlying C resources
-   * @throws Throwable necessary for override but unused
-   */
-  @Override
-  protected void finalize() throws Throwable
-  {
-    try {
-      free();
-    } catch (Throwable t) {
-      throw t;
-    } finally {
-      super.finalize();
-    }
-  }
+	/**
+	 * Gets the value at the index
+	 * 
+	 * @param index the index of the element to retrieve
+	 * @return current value at the index
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 */
+	public long get(int index) throws MadaraDeadObjectException {
+		return jni_get(getCPtr(), index);
+	}
+
+	/**
+	 * Gets the name of the variable
+	 *
+	 * @return name of the variable within the context
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 */
+	public java.lang.String getName() throws MadaraDeadObjectException {
+		return jni_getName(getCPtr());
+	}
+
+	/**
+	 * Resizes the vector
+	 *
+	 * @param length new number of elements of the vector
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 */
+	public void resize(long length) throws MadaraDeadObjectException {
+		jni_resize(getCPtr(), length);
+	}
+
+	/**
+	 * Sets the value at the specified index
+	 * 
+	 * @param index index of the element in the array to change
+	 * @param value new value
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 */
+	public void set(int index, long value) throws MadaraDeadObjectException {
+		jni_set(getCPtr(), index, value);
+	}
+
+	/**
+	 * Pushes a value to the end of the vector
+	 * 
+	 * @param value new value to add to vector
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 */
+	public void pushback(long value) throws MadaraDeadObjectException {
+		jni_pushback(getCPtr(), value);
+	}
+
+	/**
+	 * Mark the vector as modified. The vector retains the same values but will
+	 * resend all values as if they had been modified.
+	 * 
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 **/
+	public void modify() throws MadaraDeadObjectException {
+		jni_modify(getCPtr());
+	}
+
+	/**
+	 * Returns true if the container evaluates to true
+	 * 
+	 * @return true if container has all true values
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 **/
+	public boolean isTrue() throws MadaraDeadObjectException {
+		return jni_isTrue(getCPtr());
+	}
+
+	/**
+	 * Returns true if the container evaluates to false
+	 * 
+	 * @return true if container has any false values or is uninitialized
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 **/
+	public boolean isFalse() throws MadaraDeadObjectException {
+		return jni_isFalse(getCPtr());
+	}
+
+	/**
+	 * Sets the name and knowledge base being referred to
+	 *
+	 * @param kb   the knowledge base that contains the name
+	 * @param name the variable name
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 */
+	public void setName(KnowledgeBase kb, java.lang.String name) throws MadaraDeadObjectException {
+		jni_setName(getCPtr(), 0, kb.getCPtr(), name);
+	}
+
+	/**
+	 * Sets the name and knowledge base being referred to
+	 *
+	 * @param vars the variables facade that contains the name
+	 * @param name the variable name
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 */
+	public void setName(Variables vars, java.lang.String name) throws MadaraDeadObjectException {
+		jni_setName(getCPtr(), 1, vars.getCPtr(), name);
+	}
+
+	/**
+	 * Sets the settings for updating variables in the Knowledge Base
+	 *
+	 * @param settings the settings to use for updating the Knowledge Base
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 */
+	public void setSettings(UpdateSettings settings) throws MadaraDeadObjectException {
+		jni_setSettings(getCPtr(), settings.getCPtr());
+	}
+
+	/**
+	 * Returns the size of the vector
+	 *
+	 * @return the number of elements in the vector
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released throws exception if object is
+	 *                                   already released
+	 */
+	public long size() throws MadaraDeadObjectException {
+		return jni_size(getCPtr());
+	}
+
+	/**
+	 * Returns a value at the specified index
+	 *
+	 * @param index the index
+	 * @return the value at the index as a knowledge record
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord toRecord(int index) throws MadaraDeadObjectException {
+		return KnowledgeRecord.fromPointer(jni_toRecord(getCPtr(), index));
+	}
+
+	/**
+	 * Returns a value at the specified index
+	 *
+	 * @return the vector as an array of records
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord[] toArray() throws MadaraDeadObjectException {
+		Object[] objs = jni_toArray(getCPtr());
+		KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
+		for (int i = 0; i < objs.length; ++i) {
+			records[i] = (KnowledgeRecord) objs[i];
+		}
+		return records;
+	}
+
+	/**
+	 * Returns all of the values as a knowledge record
+	 *
+	 * @return knowledge record that contains all indices
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public KnowledgeRecord toRecord() throws MadaraDeadObjectException {
+		return KnowledgeRecord.fromPointer(jni_toRecord(getCPtr()));
+	}
+
+	/**
+	 * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
+	 * called before an instance gets garbage collected
+	 */
+	public void free() {
+		if (manageMemory) {
+			jni_freeNativeIntegerVector(getCPtr());
+			setCPtr(0);
+		}
+	}
+
+	/**
+	 * Cleans up underlying C resources
+	 * 
+	 * @throws Throwable necessary for override but unused
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			free();
+		} catch (Throwable t) {
+			throw t;
+		} finally {
+			super.finalize();
+		}
+	}
 }
-
