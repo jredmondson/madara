@@ -8,7 +8,6 @@
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/filters/GenericFilters.h"
-#include "madara/logger/GlobalLogger.h"
 
 #include "madara/knowledge/Any.h"
 #include "madara/knowledge/KnowledgeRecord.h"
@@ -17,8 +16,6 @@
 
 #include "capnfiles/Geo.capnp.h"
 
-
-namespace logger = madara::logger;
 
 using namespace madara;
 using namespace knowledge;
@@ -86,7 +83,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        logger::global_logger->add_file (argv[i + 1]);
+        madara::logger::global_logger->add_file (argv[i + 1]);
       }
 
       ++i;
@@ -98,7 +95,7 @@ void handle_arguments (int argc, char ** argv)
         std::stringstream buffer (argv[i + 1]);
         int level;
         buffer >> level;
-        logger::global_logger->set_level (level);
+        madara::logger::global_logger->set_level (level);
       }
 
       ++i;
@@ -183,7 +180,7 @@ capnp::MallocMessageBuilder buffer;
   knowledge.print ();
   
 #else
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+  madara_logger_ptr_log (madara::logger::global_logger.get(), logger::LOG_ALWAYS,
     "This test is disabled due to karl feature being disabled.\n");
 #endif
   return 0;
