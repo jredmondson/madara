@@ -2286,7 +2286,7 @@ ThreadSafeContext::load_context (
     {
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
         "ThreadSafeContext::load_context:" \
-        " invalid file. No contextual change.\n");
+        " invalid file or wrong version. No contextual change.\n");
     }
 
     fclose (file);

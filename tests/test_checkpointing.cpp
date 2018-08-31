@@ -1111,21 +1111,31 @@ void test_streaming()
 
   settings.playback_simtime = true;
 
-  knowledge::CheckpointPlayer player(kb3.get_context(), settings);
+  knowledge::CheckpointReader reader(settings);
+  reader.start(); // Load checkpoint metadata
+
+  // Get time of first checkpoint operation
+  uint64_t init_toi = reader.get_checkpoint_settings().initial_timestamp;
+  uint64_t final_toi = reader.get_checkpoint_settings().last_timestamp;
+  (void)init_toi;
+  (void)final_toi;
+  knowledge::CheckpointPlayer player(kb3.get_context(), std::move(reader));
+
+  player.play_until(0); // Stops after first loaded update
 
   player.start();
 
   for (int i = 0; i < 10; ++i) {
     if (i < 4) {
-      if (kb3.exists("glob1"))
+      if (kb3.exists("glob2"))
       {
         std::cerr << "FAIL : glob1 exists before it should\n";
         madara_fails++;
         return;
       }
     }
-    if (i > 6) {
-      if (kb3.get("glob1") != 4)
+    if (i > 8) {
+      if (kb3.get("glob2") != "bar")
       {
         std::cerr << "FAIL : glob1 has wrong value after it should be set\n";
         madara_fails++;

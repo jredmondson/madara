@@ -403,4 +403,22 @@ void CheckpointPlayer::thread_main(CheckpointPlayer *self)
   }
 }
 
+bool CheckpointPlayer::play_until(uint64_t target_toi)
+{
+  init_reader();
+  for(;;) {
+    auto cur = reader_->next();
+    if (cur.first.empty()) {
+      return false;
+    }
+
+    context_->update_record_from_external (cur.first, cur.second, update_settings_);
+    std::cerr << "play_until: " << cur.second.toi << "   " << target_toi << std::endl;
+
+    if (cur.second.toi >= target_toi) {
+      return true;
+    }
+  }
+}
+
 } } // namespace madara::knowledge
