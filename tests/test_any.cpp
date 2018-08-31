@@ -444,6 +444,8 @@ namespace geo
 
     Any::register_schema("Point",
         capnp::Schema::from<geo_capn::Point>());
+    Any::register_schema("PointSchema",
+        capnp::Schema::from<geo_capn::Point>());
     Any::register_schema("StampedPoseList",
         capnp::Schema::from<geo_capn::StampedPoseList>());
   }
@@ -538,6 +540,14 @@ void test_capn()
   a.set(std::move(obj4));
 
   VAL(a);
+
+  Any aj;
+  aj.unserialize_json("PointSchema", "{\"x\":1.25,\"y\":2.5,\"z\":4.75}");
+
+  auto ajr = aj.reader();
+  TEST_EQ(ajr.get("x").as<double>(), 1.25);
+  TEST_EQ(ajr.get("y").as<double>(), 2.5);
+  TEST_EQ(ajr.get("z").as<double>(), 4.75);
 }
 
 void test_geo()
