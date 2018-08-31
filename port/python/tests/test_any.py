@@ -5,7 +5,7 @@ import os
 import capnp
 from madara.knowledge import *
 
-geo = capnp.load(os.environ["MADARA_ROOT"] + "/tests/capnfiles/Point.capn")
+geo = capnp.load(os.environ["MADARA_ROOT"] + "/tests/capnfiles/Geo.capnp")
 
 Any.register_int32("i32");
 Any.register_class("Point", geo.Point)
@@ -42,3 +42,10 @@ kb.set("asdf", b)
 c = kb.get("asdf")
 
 print c.to_any().reader()
+
+kb.set("apple", 42)
+kb.set("bar", "foo")
+kb.set("jar", "baz")
+
+print list(kb.to_map("a"));
+print list(kb.to_map("", ".", "ar"));

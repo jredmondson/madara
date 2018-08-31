@@ -1269,7 +1269,32 @@ void define_knowledge (void)
         m_wait_1_of_2 (
         args("expression", "settings"),
         "Waits for an expression to evaluate to true"))
-
+    .def("to_map",
+      +[](madara::knowledge::KnowledgeBase &kb, const std::string &prefix)
+      {
+        return kb.to_map(prefix);
+      }, "Get all records starting with the given prefix and return as "
+         "KnowledgeRecordMap.")
+    .def("to_map",
+      +[](madara::knowledge::KnowledgeBase &kb, const std::string &prefix,
+          const std::string & delimiter,
+          const std::string & suffix
+        )
+      {
+        std::vector <std::string> next_keys;
+        std::map <std::string, madara::knowledge::KnowledgeRecord> result;
+        kb.to_map(prefix, delimiter, suffix, next_keys, result, false);
+        return result;
+      },
+      "Fills a variable map with list of keys according to a matching prefix,\n"
+      "suffix, and delimiter hierarchy. This is useful for understanding the\n"
+      "logical hierarchy of your variables\n"
+      "param 0 prefix: Text that must be present at the front of the key\n"
+      "param 1 delimiter: Text that signifies a logical boundary in hierarchy If\n"
+      "                     empty, no check is performed.\n"
+      "param 2 suffix: Text that must be present at the end of the key. If\n"
+      "                     empty, no check is performed.\n"
+      "returns a KnowledgeRecordMap containing the matching keys with values")
   ;
 
   class_ <std::vector <madara::knowledge::KnowledgeRecord> > ("KnowledgeRecordVector")
