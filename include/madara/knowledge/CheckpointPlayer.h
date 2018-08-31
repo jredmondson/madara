@@ -71,6 +71,14 @@ public:
    **/
   bool is_open() const { return file.is_open(); }
 
+  /**
+   * Returns CheckpointSettings this reader is using.
+   */
+  const CheckpointSettings &get_checkpoint_settings() const
+  {
+    return checkpoint_settings;
+  }
+
 private:
   CheckpointSettings &checkpoint_settings;
 
@@ -109,6 +117,20 @@ public:
     : context_(&context), settings_(std::move(settings)),
       update_settings_(update_settings) {}
 
+  /**
+   * Constructor from CheckpointReader
+   *
+   * @param context the ThreadSafeContext that will be updated
+   * @param reader the CheckpointReader that will be used to load data
+   * @param update_settings the settings that will be used when updating
+   *  @a context
+   **/
+  CheckpointPlayer(ThreadSafeContext &context, CheckpointReader reader,
+      KnowledgeUpdateSettings update_settings = {})
+    : context_(&context), settings_(reader.get_checkpoint_settings()),
+      update_settings_(update_settings),
+      reader_(mk_unique<CheckpointReader>(std::move(reader))) {}
+
   ~CheckpointPlayer() { stop(); }
 
   // This object spawns a thread which holds a pointer back to this object,
@@ -127,7 +149,7 @@ public:
   void start()
   {
     keep_running_.test_and_set();
-    reader_ = mk_unique<CheckpointReader>(settings_);
+    init_reader();
     thread_ = std::thread(thread_main, this);
   }
 
@@ -143,8 +165,24 @@ public:
     reader_.reset();
   }
 
+  /**
+   * Loads values from checkpoint until it reaches or exceeds toi given.
+   * Do not call while playback is active. Call before calling start().
+   *
+   * @return true if target_toi is reached before hitting end of checkpoint.
+   *         false otherwise.
+   **/
+  bool play_until(uint64_t target_toi);
+
 private:
   static void thread_main(CheckpointPlayer *self);
+
+  void init_reader()
+  {
+    if (!reader_) {
+      reader_ = mk_unique<CheckpointReader>(settings_);
+    }
+  }
 
   ThreadSafeContext *context_;
   CheckpointSettings settings_;
