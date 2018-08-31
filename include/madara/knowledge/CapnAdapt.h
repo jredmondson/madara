@@ -121,6 +121,31 @@ CapnList<R, B, C> MakeCapnList(
   return {get, get_builder, init, has};
 }
 
+template<typename C>
+struct CapnStrList {
+  using CapnType = C;
+  using FieldReader = capnp::List<capnp::Text>::Reader;
+  using FieldBuilder = capnp::List<capnp::Text>::Builder;
+  //using ElementReader = capnp::Text::Reader;
+  //using ElementBuilder = capnp::Text::Builder;
+
+  FieldReader (CapnType::Reader::* get)() const;
+  FieldBuilder (CapnType::Builder::* init)(unsigned int);
+  //ElementReader (CapnType::Reader::* get)(unsigned int) const;
+  //ElementBuilder (CapnType::Builder::* init)(unsigned int, unsigned int);
+  bool (CapnType::Reader::* has)() const;
+};
+
+template<typename C>
+CapnStrList<C> MakeCapnStrList(
+    capnp::List<capnp::Text>::Reader (C::Reader::* get)() const,
+    capnp::List<capnp::Text>::Builder (C::Builder::* init)(unsigned int),
+    bool (C::Reader::* has)() const
+  )
+{
+  return {get, init, has};
+}
+
 template<typename T, typename C>
 inline void capn_set(typename C::Builder &builder,
     const CapnPrimitive<T, C> &prim, const T &val)
@@ -135,6 +160,8 @@ inline void capn_get(typename C::Reader &reader,
   val = (reader.*(prim.get))();
 }
 
+auto infer_capn_type(type<std::string>) -> capnp::Text;
+
 template<typename C>
 inline void capn_set(typename C::Builder &builder,
     const CapnString<C> &prim,
@@ -148,6 +175,21 @@ inline void capn_get(typename C::Reader &reader,
     const CapnString<C> &prim, std::string &val)
 {
   val = (reader.*(prim.get))();
+}
+
+inline void capn_set(typename capnp::Text::Builder &builder,
+    const std::string &val)
+{
+  char *data = builder.begin();
+  size_t size = std::min(val.size(), builder.size());
+  memcpy(data, val.data(), size);
+  data[size] = '\0';
+}
+
+inline void capn_get(typename capnp::Text::Reader &reader,
+    std::string &val)
+{
+  val = std::string(reader.cStr(), reader.size());
 }
 
 template<typename T, typename B>
@@ -219,12 +261,39 @@ inline auto capn_get(R &reader, T &val) ->
 
 MADARA_MAKE_VAL_SUPPORT_TEST(capn_set, x, capn_set(std::declval<int&>(), x));
 MADARA_MAKE_VAL_SUPPORT_TEST(capn_get, x, capn_get(std::declval<int&>(), x));
-MADARA_MAKE_VAL_SUPPORT_TEST(infer_capn, x,
-    infer_capn(type<::madara::decay_<decltype(x)>>()));
+//MADARA_MAKE_VAL_SUPPORT_TEST(infer_capn, x,
+    //sizeof(infer_capn_type(::madara::type<decltype(x)>{})));
 
-template<typename T,
-  enable_if_<supports_infer_capn<T>::value, int> = 0>
-auto infer_capn_type(type<std::vector<T>>) -> capnp::List<T>;
+template<typename T>
+  //enable_if_<supports_infer_capn<T>::value, int> = 0>
+auto infer_capn_type(type<std::vector<T>>) ->
+  capnp::List<decltype(infer_capn_type(type<T>{}))>;
+
+template<typename T, typename C>
+inline void capn_set(typename C::Builder &builder,
+    const CapnStrList<C> &info, const std::vector<T> &val)
+{
+  auto list_builder{(builder.*(info.init))(val.size())};
+  size_t i = 0;
+  for (const auto & cur : val) {
+    auto elem_builder = list_builder.init(i, cur.size());
+    capn_set(elem_builder, cur);
+    ++i;
+  }
+}
+
+template<typename T, typename C>
+inline void capn_get(typename C::Reader &reader,
+    const CapnStrList<C> &info, std::vector<T> &val)
+{
+  auto list_reader{(reader.*(info.get))()};
+  val.resize(list_reader.size());
+  size_t i = 0;
+  for (auto cur : list_reader) {
+    capn_get(cur, val[i]);
+    ++i;
+  }
+}
 
 template<typename T, typename R, typename B, typename C>
 inline auto capn_set(typename C::Builder &builder,
@@ -504,11 +573,22 @@ namespace utility { inline namespace core {
             &T::Reader::has##FIELD \
       ))
 
+#define MADARA_CAPNSTRLIST_DETECT(TYPE, FIELD) \
+  template<typename T> \
+  MADARA_AUTORET_FUNC(get_capnproto_type_info_##TYPE##_##FIELD, \
+    (::madara::type<T>, ::madara::overload_priority<4>), \
+    ::madara::knowledge::MakeCapnStrList<T>( \
+            &T::Reader::get##FIELD, \
+            &T::Builder::init##FIELD, \
+            &T::Reader::has##FIELD \
+      ))
+
 #define MADARA_CAPN_DETECTORS(TYPE, FIELD) \
   MADARA_CAPNPRIM_DETECT(TYPE, FIELD) \
   MADARA_CAPNSTRUCT_DETECT(TYPE, FIELD) \
   MADARA_CAPNSTRING_DETECT(TYPE, FIELD) \
-  MADARA_CAPNLIST_DETECT(TYPE, FIELD)
+  MADARA_CAPNLIST_DETECT(TYPE, FIELD) \
+  MADARA_CAPNSTRLIST_DETECT(TYPE, FIELD)
 
 #define MADARA_PP_ARGS2(T0, T1) \
   (BOOST_PP_TUPLE_REM_CTOR(T0), \
