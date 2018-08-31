@@ -124,17 +124,6 @@ public:
       title = reader.get<std::string> ("title");
     }
   }
-
-  // inline ptree::ptree write (void)
-  // {
-  //   ptree::ptree root;
-    
-  //   root.put ("name", name);
-  //   root.put ("path", path);
-  //   root.put ("title", title);
-
-  //   return root;
-  // }
 };
 
 template<typename Fun, typename T>
@@ -173,17 +162,6 @@ public:
       title = reader.get<std::string> ("title");
     }
   }
-
-  // inline ptree::ptree write (void)
-  // {
-  //   ptree::ptree root;
-    
-  //   root.put ("email", email);
-  //   root.put ("path", path);
-  //   root.put ("title", title);
-
-  //   return root;
-  // }
 };
 
 template<typename Fun, typename T>
@@ -290,50 +268,6 @@ public:
       title = reader.get<std::string> ("title");
     }
   }
-
-  // inline ptree::ptree write (void)
-  // {
-  //   ptree::ptree root;
-  //   ptree::ptree licenses_tree;
-  //   ptree::ptree sources_tree;
-    
-  //   for (auto license : licenses)
-  //   {
-  //     ptree::ptree temp;
-  //     temp.put ("", license.write ());
-  //     licenses_tree.push_back (std::make_pair ("", temp));
-  //   }
-
-  //   root.add_child ("licenses", licenses_tree);
-
-  //   for (auto source : sources)
-  //   {
-  //     ptree::ptree temp;
-  //     temp.put ("", source.write ());
-  //     sources_tree.push_back (std::make_pair ("", temp));
-  //   }
-
-  //   root.add_child ("sources", sources_tree);
-
-  //   root.put ("bytes", name);
-  //   root.put ("description", description);
-  //   root.put ("encoding", encoding);
-  //   root.put ("endTime", endTime);
-  //   root.put ("flightName", flightName);
-  //   root.put ("format", format);
-  //   root.put ("hash", hash);
-  //   root.put ("location", location);
-  //   root.put ("mediatype", mediatype);
-  //   root.put ("name", name);
-  //   root.put ("notes", notes);
-  //   root.put ("path", path);
-  //   root.put ("robotName", robotName);
-  //   root.put ("schema", schema);
-  //   root.put ("startTime", startTime);
-  //   root.put ("title", title);
-
-  //   return root;
-  // }
 };
 
 template<typename Fun, typename T>
@@ -413,73 +347,6 @@ public:
       title = reader.get<std::string> ("title");
     }
   }
-
-  // inline ptree::ptree write (void)
-  // {
-  //   ptree::ptree root;
-  //   ptree::ptree contributors_tree;
-  //   ptree::ptree licenses_tree;
-  //   ptree::ptree sources_tree;
-  //   ptree::ptree resources_tree;
-  //   ptree::ptree keywords_tree;
-    
-  //   for (auto contributor : contributors)
-  //   {
-  //     ptree::ptree temp;
-  //     temp.put ("", contributor.write ());
-  //     contributors_tree.push_back (std::make_pair ("", temp));
-  //   }
-
-  //   root.add_child ("contributors", contributors_tree);
-
-  //   for (auto license : licenses)
-  //   {
-  //     ptree::ptree temp;
-  //     temp.put ("", license.write ());
-  //     licenses_tree.push_back (std::make_pair ("", temp));
-  //   }
-
-  //   root.add_child ("licenses", licenses_tree);
-
-  //   for (auto source : sources)
-  //   {
-  //     ptree::ptree temp;
-  //     temp.put ("", source.write ());
-  //     sources_tree.push_back (std::make_pair ("", temp));
-  //   }
-
-  //   root.add_child ("sources", sources_tree);
-
-  //   for (auto resource : resources)
-  //   {
-  //     ptree::ptree temp;
-  //     temp.put ("", resource.write ());
-  //     resources_tree.push_back (std::make_pair ("", temp));
-  //   }
-
-  //   root.add_child ("resources", resources_tree);
-
-  //   for (auto keyword : keywords)
-  //   {
-  //     ptree::ptree temp;
-  //     temp.put ("", keyword);
-  //     keywords_tree.push_back (std::make_pair ("", temp));
-  //   }
-
-  //   root.add_child ("keywords", keywords_tree);
-
-  //   root.put ("bytes", name);
-  //   root.put ("created", created);
-  //   root.put ("description", description);
-  //   root.put ("endTime", endTime);
-  //   root.put ("id", id);
-  //   root.put ("name", name);
-  //   root.put ("startTime", startTime);
-  //   root.put ("title", title);
-  //   root.put ("version", version);
-
-  //   return root;
-  // }
 };
 
 template<typename Fun, typename T>
@@ -822,23 +689,25 @@ int main (int argc, char ** argv)
   kb.set ("datapackage",
     knowledge::KnowledgeRecord (knowledge::Any (manifest)));
 
-  kb.print ();
-
   std::string datapackage = 
     kb.get ("datapackage").to_any ().to_json ();
+
+  datapackage.erase (0, 30);
+  datapackage.pop_back ();
+
+  utility::string_replace (datapackage, "\n    ", "\n", true);
 
   
   madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
     "datapackage.json:\n%s\n",
     datapackage.c_str ());
 
-  // ptree::ptree root = manifest.write ();
-
   madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
     "saving %s/databackage.json\n",
     dest_path.c_str ());
 
-  // ptree::write_json (dest_path + "/datapackage.json", root);
+  utility::write_file (dest_path + "/datapackage.json",
+    (void *)datapackage.c_str (), datapackage.length ());
 
   return 0;
 }
