@@ -60,7 +60,7 @@ madara::logger::Logger::search_and_insert_custom_tstamp(const std::string & buf,
     {
       // insert mgt text here
       //get_time returns nsecs. need to convert into seconds.
-      int64_t mgt_time = (madara::utility::get_time () / (int64_t)100000) / (int64_t)10000;
+      double mgt_time = madara::utility::get_time () / (double)1000000000;
 
       //insert this value into the buffer
       std::string mgtstr = boost::lexical_cast<std::string>(mgt_time);
