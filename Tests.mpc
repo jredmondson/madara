@@ -1537,6 +1537,30 @@ project (Test_Any_So) : using_madara, no_karl, no_xml, null_lock, using_simtime 
   }
 }
 
+project (Test_Any_Transport_Multicast) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  requires += tests
+
+  after += Test_CapnFiles
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_any_transport_multicast
+  
+  Documentation_Files {
+  }
+
+  Header_Files {
+    tests/capnfiles
+  }
+
+  CAPN_Files {
+    tests/capnfiles
+  }
+
+  Source_Files {
+    tests/test_any_transport_multicast.cpp
+  }
+}
+
 project (Test_Circular_Buffer) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
@@ -1570,3 +1594,4 @@ project (Test_Knowledge_Base) : using_madara, no_karl, no_xml, null_lock, using_
     tests/test_knowledge_base.cpp
   }
 }
+
