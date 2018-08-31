@@ -405,17 +405,33 @@ namespace geo
     std::vector<int> data;
     std::array<int, 3> arr3;
     int i;
+    std::vector<std::string> strs;
   };
+
+  //static_assert(supports_infer_capn<Point>::value, "");
+  static_assert(is_same<decltype(infer_capn_type(type<std::string>{})), capnp::Text>(), "");
+  //static_assert(supports_infer_capn<std::string>::value, "");
+  static_assert(is_same<decltype(infer_capn_type(type<std::vector<std::string>>{})), capnp::List<capnp::Text>>(), "");
+  static_assert(sizeof(infer_capn_type(type<std::vector<std::string>>{})) == sizeof(capnp::List<capnp::Text>), "");
+  //static_assert(supports_infer_capn<std::vector<std::string>>::value, "");
+  //static_assert(supports_infer_capn<StampedPoseList>::value, "");
 
   MADARA_CAPN_MEMBERS(StampedPoseList, geo_capn::StampedPoseList,
       (list, List)
       (data, Data)
       (arr3, Arr3)
       (i, I)
+      (strs, Strs)
     )
+
+  static_assert(is_same<
+      decltype(get_capnproto_type_info_StampedPoseList_Strs(
+          type<geo_capn::StampedPoseList>{}, select_overload())),
+        CapnStrList<geo_capn::StampedPoseList>>(), "");
 
   static_assert(supports_for_each_member<StampedPoseList>::value, "");
   static_assert(supports_capn_get<StampedPoseList>::value, "");
+  static_assert(supports_capn_set<StampedPoseList>::value, "");
   static_assert(supports_capn_set<StampedPoseList>::value, "");
 
   void register_types()
@@ -564,13 +580,14 @@ void test_geo()
     {0, "frame0", 1, 2},
     {1, "frame1", 2, 3},
     {2, "frame2", 3, 4},
-  }, {2, 4, 6}, {{3, 6, 9}}, 42};
+  }, {2, 4, 6}, {{3, 6, 9}}, 42, {"foo", "bar"}};
   kb.set_any("vs0", std::move(vs0));
 
   VAL(kb.get("vs0").to_any());
   TEST_EQ(kb.get("vs0").share_any()->ref("list").size(), 3UL);
   TEST_EQ(kb.get("vs0").get_any_cref()("list")[1]("stamp")("frame").to_string(), "frame1");
   TEST_EQ(kb.get("vs0").get_any_cref()("arr3")[1].to_integer(), 6);
+  TEST_EQ(kb.get("vs0").get_any_cref()("strs")[1].to_string(), "bar");
 
   std::vector<char> buf;
 

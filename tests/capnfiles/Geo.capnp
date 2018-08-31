@@ -51,4 +51,5 @@ struct StampedPoseList {
   data @1 :List(Int32);
   arr3 @2 :List(Int32);
   i @3 :Int32;
+  strs @4 :List(Text);
 }
