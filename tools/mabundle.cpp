@@ -6,6 +6,7 @@
 #include <sstream>
 #include <assert.h>
 #include <ctime>
+#include <random>
 
 #include "boost/filesystem.hpp"
 #include "boost/crc.hpp"
