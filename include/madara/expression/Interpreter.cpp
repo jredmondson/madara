@@ -53,6 +53,7 @@
 #include "madara/expression/SystemCallExpandEnv.h"
 #include "madara/expression/SystemCallExpandStatement.h"
 #include "madara/expression/SystemCallFragment.h"
+#include "madara/expression/SystemCallGeneric.h"
 #include "madara/expression/SystemCallGetClock.h"
 #include "madara/expression/SystemCallGetTime.h"
 #include "madara/expression/SystemCallGetTimeSeconds.h"
@@ -83,6 +84,8 @@
 #include "madara/expression/SystemCallType.h"
 #include "madara/expression/SystemCallWriteFile.h"
 #include "madara/expression/Interpreter.h"
+
+#include "madara/expression/Visitor.h"
 
 typedef   madara::knowledge::KnowledgeRecord::Integer Integer;
 
@@ -1858,6 +1861,47 @@ namespace madara
 
       /// builds an equivalent ExpressionTree node
       virtual ComponentNode * build (void);
+    };
+
+    class GenericSystemCall : public SystemCall
+    {
+    public:
+      using fn_signature = SystemCallGeneric::fn_signature;
+      using fn_type = SystemCallGeneric::fn_type;
+
+      GenericSystemCall(
+          madara::knowledge::ThreadSafeContext & context,
+          const char *fn_name, fn_type fn)
+        : SystemCall(context), name_(fn_name), fn_(fn) {}
+
+      /// returns the precedence level
+      virtual int add_precedence (int accumulated_precedence)
+      {
+        return this->precedence_ = VARIABLE_PRECEDENCE + accumulated_precedence;
+      }
+
+      /// builds an equivalent ExpressionTree node
+      virtual ComponentNode * build (void)
+      {
+        if (left_ || right_)
+        {
+          std::stringstream str;
+          str << name_ << "::build: KARL COMPILE ERROR: " << name_ <<
+            " has a left or right child. Likely missing a semi-colon";
+          std::string s = str.str();
+
+          madara_logger_ptr_log (logger_, logger::LOG_ERROR,
+            "%s\n", s.c_str());
+
+          throw exceptions::KarlException (s);
+        }
+
+        return new SystemCallGeneric (context_, nodes_, name_, fn_);
+      }
+
+    private:
+      const char *name_;
+      fn_type fn_;
     };
 
   }
@@ -5839,6 +5883,29 @@ madara::expression::Interpreter::system_call_insert (
       if (name == "#log_level")
       {
         call = new LogLevel (context);
+      }
+      break;
+    case 'm':
+      if (name == "#make_any")
+      {
+        using namespace madara::knowledge;
+
+        call = new GenericSystemCall (context, "#make_any",
+          [](std::vector<KnowledgeRecord> recs) -> KnowledgeRecord
+          {
+            if (recs.size() != 2) {
+              throw exceptions::KarlException(
+                  "#make_any: expects 2 string arguments");
+            }
+
+            std::string tag = knowledge_cast<std::string>(std::move(recs[0]));
+            std::string json = knowledge_cast<std::string>(std::move(recs[1]));
+
+            Any ret;
+            ret.unserialize_json(tag.c_str(), json);
+
+            return KnowledgeRecord(std::move(ret));
+          });
       }
       break;
     case 'p':
