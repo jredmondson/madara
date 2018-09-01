@@ -20,6 +20,7 @@ WorkerThread::change_frequency (
   bool & one_shot, bool & blaster)
 {
   hertz_ = hertz;
+  madara::logger::Logger::set_thread_hertz(hertz);
   if (hertz_ > 0.0)
   {
     madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,

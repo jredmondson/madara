@@ -17,9 +17,14 @@
  * @param  logger  the logger instance to use
  * @param  level   the logging level
  **/
-#define madara_logger_log(logger, level, ...) \
-          if (level <= logger.get_level ()) \
-            logger.log (level, __VA_ARGS__);
+#define madara_logger_log(loggering, level, ...) \
+  if (madara::logger::Logger::get_thread_level() >= 0 ) \
+ { \
+   if ( level <= madara::logger::Logger::get_thread_level() )   \
+     loggering.log (level, __VA_ARGS__);                    \
+ }else  \
+    if ( level <= loggering.get_level() )         \
+     loggering.log (level, __VA_ARGS__);
 
 /**
 * Fast version of the madara::logger::log method for Logger pointers.
@@ -29,9 +34,15 @@
 * @param  logger  the logger pointer to use
 * @param  level   the logging level
 **/
-#define madara_logger_ptr_log(logger, level, ...) \
-          if (logger && level <= logger->get_level ()) \
-            logger->log (level, __VA_ARGS__);
+#define madara_logger_ptr_log(loggering, level, ...) \
+  if (loggering && (madara::logger::Logger::get_thread_level() >= 0) )  \
+ { \
+   if ( level <= madara::logger::Logger::get_thread_level() )\
+     loggering->log (level, __VA_ARGS__);\
+ }else  \
+   if ( loggering && (level <= loggering->get_level()) )  \
+     loggering->log (level, __VA_ARGS__);
+
 
 /**
 * High-performance logger that performs conditional logging based on first arg
@@ -41,10 +52,16 @@
 * @param  level           the logging level
 **/
 #define madara_logger_cond_log_ptrs(conditional, logger_ptr, alt_logger_ptr, level, ...) \
-          if (conditional && logger_ptr && level <= logger_ptr->get_level ()) \
+  if (conditional && logger_ptr && (madara::logger::Logger::get_thread_level() >= 0)) \
+  { \
+      if ( level <= madara::logger::Logger::get_thread_level()) \
+      {   \
             logger_ptr->log (level, __VA_ARGS__); \
-          else \
-            alt_logger_ptr->log (level, __VA_ARGS__);
+      }else \
+            alt_logger_ptr->log (level, __VA_ARGS__); \
+  }else if (conditional && logger_ptr && level <= logger_ptr->get_level ()) \
+            logger_ptr->log (level, __VA_ARGS__); \
+          else  alt_logger_ptr->log (level, __VA_ARGS__);
 
 /**
 * High-performance logger that performs conditional logging based on first arg
@@ -53,11 +70,19 @@
 * @param  alt_logger_ptr  the secondary logger pointer to use (should be not null)
 * @param  level           the logging level
 **/
-#define madara_logger_cond_log(conditional, logger, alt_logger_ptr, level, ...) \
-          if (conditional && level <= logger.get_level ()) \
-            logger.log (level, __VA_ARGS__); \
-                    else \
-            alt_logger_ptr->log (level, __VA_ARGS__);
+#define madara_logger_cond_log(conditional, loggering, alt_logger_ptr, level, ...) \
+  if (conditional && (madara::logger::Logger::get_thread_level() >= 0)) \
+  { \
+      if ( level <= madara::logger::Logger::get_thread_level()) \
+      {   \
+            loggering.log (level, __VA_ARGS__); \
+      }else  alt_logger_ptr->log (level, __VA_ARGS__); \
+  }else \
+  if (conditional && level <= loggering.get_level ()) \
+    loggering.log (level, __VA_ARGS__);                         \
+  else \
+    alt_logger_ptr->log (level, __VA_ARGS__);
+
 
 namespace madara
 {
@@ -79,6 +104,10 @@ namespace madara
       LOG_DETAILED = 6,
       LOG_MADARA_MAX = 6
     };
+
+
+    const int TLS_THREAD_LEVEL_DEFAULT = -1;
+    const double TLS_THREAD_HZ_DEFAULT = 0.0;
 
     /**
      * A multi-threaded logger for logging to one or more destinations.
@@ -160,7 +189,46 @@ namespace madara
        **/
       void set_timestamp_format (const std::string & format = "%x %X: ");
 
+      /**
+       * Fetches thread local storage value for thread level
+       **/
+      static int get_thread_level(void);
+
+      /**
+       * Fetches thread local storage value for thread name
+       **/
+      static std::string get_thread_name(void);
+
+      /**
+       * Fetch thread local storage value for hertz
+       **/
+      static double get_thread_hertz(void);
+
+      /**
+       * Set thread local storage value for thread level
+       **/
+      static void set_thread_level(int level);
+
+      /**
+       * Set thread local storage value for thread name
+       **/
+      static void set_thread_name(const std::string name);
+
+      /**
+       * Set thread local storage value for hertz
+       **/
+      static void set_thread_hertz(double hertz);
+
     private:
+
+      static thread_local int thread_level_;
+      static thread_local std::string thread_name_;
+      static thread_local double thread_hertz_;
+
+      std::string search_and_insert_custom_tstamp(const std::string & buf,
+                                                  const std::string & tsstr);
+
+      std::string strip_custom_tstamp(const std::string instr,const std::string tsstr);
 
       /// guard for access and changes
       
@@ -188,9 +256,15 @@ namespace madara
 
       /// the timestamp format. Default is "" for no timestamp
       std::string timestamp_format_;
+
+      const char * MADARA_GET_TIME_MGT = "%MGT";
+      const char * MADARA_THREAD_NAME = "%MTN";
+      const char * MADARA_THREAD_HERTZ = "%MTZ";
     };
-  }
-}
+
+
+  }//end logger namespace
+}//end madara namespace
 
 #include "Logger.inl"
 
