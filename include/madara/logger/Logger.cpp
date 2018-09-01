@@ -4,7 +4,7 @@
 #include <time.h>
 #include <madara/utility/Utility.h>
 #include <boost/lexical_cast.hpp>
-
+#include <iomanip>
 
 thread_local int madara::logger::Logger::thread_level_(madara::logger::TLS_THREAD_LEVEL_DEFAULT);
 thread_local std::string madara::logger::Logger::thread_name_("");
@@ -45,7 +45,8 @@ madara::logger::Logger::search_and_insert_custom_tstamp(const std::string & buf,
   std::size_t found = 0;
   std::size_t offset = 0;
   std::string retstring = buf;
-  
+  const int MGT_DIGIT_PRECISION = 6;
+
   while ( !done )
   {
     found = retstring.find(tsstr.c_str(),found+offset,tsstr.length());
@@ -63,8 +64,10 @@ madara::logger::Logger::search_and_insert_custom_tstamp(const std::string & buf,
       double mgt_time = madara::utility::get_time () / (double)1000000000;
 
       //insert this value into the buffer
-      std::string mgtstr = boost::lexical_cast<std::string>(mgt_time);
-      retstring.replace(retstring.find(tsstr),tsstr.length(),mgtstr);
+      std::stringstream mgtstr;
+      
+      mgtstr << std::setprecision(MGT_DIGIT_PRECISION) << std::fixed << mgt_time;
+      retstring.replace(retstring.find(tsstr),tsstr.length(),mgtstr.str());
       continue;
     }else
     if ( tsstr == MADARA_THREAD_NAME )
