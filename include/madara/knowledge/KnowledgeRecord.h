@@ -188,9 +188,7 @@ namespace madara
       explicit KnowledgeRecord (logger::Logger & logger) noexcept;
 
       /* Integer constructor */
-      template<typename T,
-        typename std::enable_if<std::is_integral<T>::value,
-        void*>::type = nullptr>
+      template<typename T, enable_if_<is_int_numeric<T>(), int> = 0>
       explicit KnowledgeRecord (T value,
         logger::Logger & logger = *logger::global_logger.get ()) noexcept;
 
@@ -520,9 +518,7 @@ namespace madara
        * @param    index   index of the value to set
        * @param    value   the value to set at the specified index
        **/
-      template<typename T,
-        typename std::enable_if<std::is_integral<T>::value,
-        void*>::type = nullptr>
+      template<typename T, enable_if_<is_int_numeric<T>(), int> = 0>
       void set_index (size_t index, T value);
 
       /**
@@ -668,9 +664,7 @@ namespace madara
        * sets the value to an integer
        * @param    new_value   new value of the Knowledge Record
        **/
-      template<typename T,
-        typename std::enable_if<std::is_integral<T>::value,
-        void*>::type = nullptr>
+      template<typename T, enable_if_<is_int_numeric<T>(), int> = 0>
       void set_value (T new_value);
 
       /**
@@ -1314,34 +1308,6 @@ namespace madara
        * Equal to
        **/
       bool operator== (const KnowledgeRecord & rhs) const;
-
-#if 0
-      /**
-       * Equal to
-       **/
-      template<typename T,
-        typename std::enable_if<std::is_integral<T>::value,
-        void*>::type = nullptr>
-      bool operator== (T value) const;
-
-      /**
-       * Equal to
-       **/
-      template<typename T,
-        typename std::enable_if<std::is_floating_point<T>::value,
-        void*>::type = nullptr>
-      bool operator== (T value) const;
-
-      /**
-       * Equal to
-       **/
-      bool operator== (const std::string & value) const;
-
-      /**
-       * Equal to
-       **/
-      bool operator== (const char * value) const;
-#endif
 
       /**
        * Unequal to

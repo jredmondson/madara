@@ -90,6 +90,42 @@ constexpr bool is_convertible() {
   return std::is_convertible<From, To>::value;
 }
 
+/// Less verbose equivalent for std::is_integral
+template<typename T>
+constexpr bool is_integral() {
+  return std::is_integral<T>::value;
+}
+
+/// Less verbose equivalent for std::is_floating_point
+template<typename T>
+constexpr bool is_floating_point() {
+  return std::is_floating_point<T>::value;
+}
+
+/// Less verbose equivalent for std::is_arithmetic
+template<typename T>
+constexpr bool is_arithmetic() {
+  return std::is_arithmetic<T>::value;
+}
+
+/// Less verbose equivalent for std::is_enum
+template<typename T>
+constexpr bool is_enum() {
+  return std::is_enum<T>::value;
+}
+
+/// Is T arithmetic or an enum?
+template<typename T>
+constexpr bool is_numeric() {
+  return is_arithmetic<T>() || is_enum<T>();
+}
+
+/// Is T arithmetic or an enum?
+template<typename T>
+constexpr bool is_int_numeric() {
+  return is_integral<T>() || is_enum<T>();
+}
+
 /// Convenience trait for accepting various reference types of the same
 /// underlying type
 template<typename TParam, typename Actual, typename T = void>
