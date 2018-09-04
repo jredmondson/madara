@@ -45,7 +45,7 @@
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 
-package ai.madara.tests;
+package ai.madara.tests.ssl;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -97,6 +97,7 @@ public class AesBufferFilterTest {
 		Assert.assertNotEquals(encoded, decoded);
 		Assert.assertEquals(decoded, plaintext);
 
+		
 	}
 
 }

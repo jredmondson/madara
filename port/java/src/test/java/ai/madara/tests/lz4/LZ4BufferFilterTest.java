@@ -45,7 +45,7 @@
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 
-package ai.madara.tests;
+package ai.madara.tests.lz4;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -95,6 +95,7 @@ public class LZ4BufferFilterTest {
 		Assert.assertNotEquals(encoded, decoded);
 		Assert.assertEquals(decoded, plaintext);
 
+		
 	}
 
 }
