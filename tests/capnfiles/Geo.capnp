@@ -46,10 +46,18 @@ struct StampedPose {
   k @7 :Float64;
 }
 
+enum Test {
+  a @0;
+  b @1;
+  c @2;
+}
+
 struct StampedPoseList {
   list @0 :List(StampedPose);
   data @1 :List(Int32);
   arr3 @2 :List(Int32);
   i @3 :Int32;
   strs @4 :List(Text);
+  en @5 :Test = c;
+  i16 @6 :Int16;
 }

@@ -26,8 +26,7 @@ KnowledgeRecord::KnowledgeRecord (logger::Logger & logger) noexcept
 {
 }
 
-template<typename T,
-  typename std::enable_if<std::is_integral<T>::value, void*>::type>
+template<typename T, enable_if_<is_int_numeric<T>(), int>>
 inline KnowledgeRecord::KnowledgeRecord (T value,
   logger::Logger & logger) noexcept
 : logger_ (&logger), int_value_ ((Integer)value), type_ (INTEGER)
@@ -1414,8 +1413,7 @@ KnowledgeRecord::set_file (
 }
 
 // set the value_ to an integer
-template<typename T,
-  typename std::enable_if<std::is_integral<T>::value, void*>::type>
+template<typename T, enable_if_<is_int_numeric<T>(), int>>
 inline void
 KnowledgeRecord::set_value (T new_value)
 {
@@ -1516,8 +1514,7 @@ KnowledgeRecord::set_value (std::unique_ptr<std::vector <double>> new_value)
   * record was previously not an array or if the array is not
   * large enough, a new array is created.
   **/
-template<typename T,
-  typename std::enable_if<std::is_integral<T>::value, void*>::type>
+template<typename T, enable_if_<is_int_numeric<T>(), int>>
 inline void
 KnowledgeRecord::set_index (size_t index, T value)
 {

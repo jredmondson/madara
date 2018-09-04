@@ -146,18 +146,20 @@ CapnStrList<C> MakeCapnStrList(
   return {get, init, has};
 }
 
-template<typename T, typename C>
-inline void capn_set(typename C::Builder &builder,
-    const CapnPrimitive<T, C> &prim, const T &val)
+template<typename T, typename R, typename C>
+inline auto capn_set(typename C::Builder &builder,
+    const CapnPrimitive<T, C> &prim, const R &val) ->
+      enable_if_<is_numeric<R>()>
 {
-  (builder.*(prim.set))(val);
+  (builder.*(prim.set))(static_cast<T>(val));
 }
 
-template<typename T, typename C>
-inline void capn_get(typename C::Reader &reader,
-    const CapnPrimitive<T, C> &prim, T &val)
+template<typename T, typename R, typename C>
+inline auto capn_get(typename C::Reader &reader,
+    const CapnPrimitive<T, C> &prim, R &val) ->
+      enable_if_<is_numeric<R>()>
 {
-  val = (reader.*(prim.get))();
+  val = static_cast<R>((reader.*(prim.get))());
 }
 
 auto infer_capn_type(type<std::string>) -> capnp::Text;
