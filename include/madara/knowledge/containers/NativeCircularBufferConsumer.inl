@@ -1,6 +1,6 @@
 
-#ifndef _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_INL_
-#define _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_INL_
+#ifndef _MADARA_KNOWLEDGE_CONTAINERS_NATIVECIRCULARBUFFERCONSUMER_INL_
+#define _MADARA_KNOWLEDGE_CONTAINERS_NATIVECIRCULARBUFFERCONSUMER_INL_
 
 #include <sstream>
 #include <math.h>
@@ -140,6 +140,161 @@ NativeCircularBufferConsumer::consume (size_t & dropped) const
   return ret;
 }
 
+
+template <typename T> void
+NativeCircularBufferConsumer::consume_earliest (size_t count,
+  std::vector <T> & values) const
+{
+  uint64_t latest_toi = 0;
+  // iterate over the returned records
+  for (auto record : consume_earliest (count))
+  {
+    // add them to the values if valid
+    if (record.is_valid() && record.toi >= latest_toi)
+    {
+      latest_toi = record.toi;
+      values.push_back (record.to_any <T> ());
+    }
+  }
+}
+
+inline std::vector <KnowledgeRecord>
+NativeCircularBufferConsumer::consume_earliest (size_t count) const
+{
+  check_context (__func__);
+
+  ContextGuard context_guard (*context_);
+  KnowledgeRecord &rec = *ref_.get_record_unsafe();
+
+  KnowledgeRecord ret;
+  std::vector <KnowledgeRecord> retvec;
+  for ( uint idx=0; idx < count ; ++idx )
+  {
+    rec.get_history_range(&ret, local_index_, idx);
+    retvec.push_back(ret);
+  }
+
+  if ( count > size() )
+    local_index_ += count;
+  else
+    //Placeholder for the alternate case.
+    local_index_ = local_index_;
+
+  return retvec;
+}
+
+template <typename T> void
+NativeCircularBufferConsumer::inspect (KnowledgeRecord::Integer position, T & value) const
+{
+  value = inspect (position).to_any <T> ();
+}
+
+inline madara::knowledge::KnowledgeRecord
+NativeCircularBufferConsumer::inspect (KnowledgeRecord::Integer position) const
+{
+  check_context (__func__);
+
+  ContextGuard context_guard (*context_);
+  KnowledgeRecord &rec = *ref_.get_record_unsafe();
+  //size_t newest_index = rec.get_history_newest_index();
+  size_t oldest_index = rec.get_history_oldest_index();
+
+  // If buffer overflowed, update local index to last valid value - 1
+  KnowledgeRecord::Integer index_diff = (oldest_index - local_index_);
+  if (index_diff > (KnowledgeRecord::Integer)rec.get_history_size() )
+  {
+    local_index_ = oldest_index - rec.get_history_size();
+  }
+
+  KnowledgeRecord::Integer requested_index = local_index_ + position;
+
+  if (0 <= requested_index &&
+      (KnowledgeRecord::Integer)(oldest_index - rec.get_history_size()) <= requested_index &&
+      (size_t)requested_index <= oldest_index)
+  {
+    size_t index = (size_t) local_index_+position;
+    KnowledgeRecord ret;
+    ret = rec.get_history(index);
+  }
+  else
+  {
+    std::stringstream message;
+    message << "NativeCircularBufferConsumer::inspect: ";
+    message << "Invalid access for relative position " << position << " when buffer index is ";
+    message << oldest_index << " and local index is : " << local_index_ << " and size is : "
+      << rec.get_history_size() << "\n";
+    throw exceptions::IndexException (message.str ()); 
+  }
+
+}
+
+
+template <typename T> void
+NativeCircularBufferConsumer::inspect (KnowledgeRecord::Integer position,
+                                       size_t count, std::vector <T> & values) const
+{
+  uint64_t latest_toi = 0;
+
+  // iterate over the returned records
+  for (auto record : inspect (position, count))
+  {
+    // add them to the values if valid and increasing toi
+    if (record.is_valid() && record.toi >= latest_toi)
+    {
+      latest_toi = record.toi;
+      values.push_back (record.to_any <T> ());
+    }
+  }
+}
+
+inline std::vector <KnowledgeRecord>
+NativeCircularBufferConsumer::inspect (KnowledgeRecord::Integer position,size_t count) const
+{
+  check_context (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  // If buffer overflowed, update local index to last valid value - 1
+  KnowledgeRecord &rec = *ref_.get_record_unsafe();
+  size_t oldest_index = rec.get_history_oldest_index();
+  size_t newest_index = rec.get_history_newest_index();
+
+  KnowledgeRecord::Integer index_diff = (oldest_index - local_index_);
+  if (index_diff > (KnowledgeRecord::Integer)rec.get_history_size ())
+  {
+    local_index_ = oldest_index - rec.get_history_size ();
+  }
+
+  KnowledgeRecord::Integer requested_index = local_index_ + position;
+
+  if (0 <= requested_index &&
+    (oldest_index - (KnowledgeRecord::Integer)rec.get_history_size ()) <= requested_index &&
+    requested_index <= oldest_index)
+  {
+    std::vector <KnowledgeRecord> retvec;
+    KnowledgeRecord::Integer index = local_index_ + position;
+    for ( uint idx=0; idx < count ; ++idx )
+    {
+      KnowledgeRecord &rec = *ref_.get_record_unsafe();
+      KnowledgeRecord ret;
+      rec.get_history(&ret,local_index_,idx);
+      retvec.push_back(ret);
+    }
+
+    return retvec;
+  }
+  else
+  {
+    std::stringstream message;
+    message << "NativeCircularBufferConsumer::inspect: ";
+    message << "Invalid access for relative position " << position << " when buffer index is ";
+    message << oldest_index << " and local index is : " << local_index_ <<
+      " and size is : " << rec.get_history_size() << "\n";
+    throw exceptions::IndexException (message.str ()); 
+  }
+}
+
+
 inline std::string
 NativeCircularBufferConsumer::get_name (void) const
 {
@@ -246,8 +401,9 @@ NativeCircularBufferConsumer::get_record (void) const
   return *ref_.get_record_unsafe();
 }
 
+
 } // end containers namespace
 } // end knowledge namespace
 } // end madara namespace
 
-#endif //  _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_INL_
+#endif //  _MADARA_KNOWLEDGE_CONTAINERS_NATIVECIRCULARBUFFERCONSUMER_INL_

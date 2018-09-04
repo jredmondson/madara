@@ -1,5 +1,5 @@
-#ifndef _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_H_
-#define _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_H_
+#ifndef _MADARA_KNOWLEDGE_CONTAINERS_NATIVECIRCULARBUFFERCONSUMER_H_
+#define _MADARA_KNOWLEDGE_CONTAINERS_NATIVECIRCULARBUFFERCONSUMER_H_
 
 #include <vector>
 #include <string>
@@ -183,7 +183,7 @@ public:
 
   /**
    * Returns the maximum size of the NativeCircularBufferConsumer
-   * @return the size of the NativeCircularBufferConsumer
+    * @return the size of the NativeCircularBufferConsumer
    **/
   size_t size (void) const;
 
@@ -212,6 +212,19 @@ public:
    **/
   KnowledgeRecord get_record () const;
 
+  template <typename T> void consume_earliest (size_t count,std::vector <T> & values) const;
+
+  std::vector <KnowledgeRecord> consume_earliest (size_t count) const;
+
+  template <typename T> void inspect (KnowledgeRecord::Integer position, T & value) const;
+
+  std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,size_t count) const;
+
+  template <typename T> void inspect (KnowledgeRecord::Integer position,
+                                      size_t count, std::vector <T> & values) const;
+
+  madara::knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
+
 private:
   /**
    * Variable context that we are modifying
@@ -238,4 +251,4 @@ private:
 
 #include "NativeCircularBufferConsumer.inl"
 
-#endif // _MADARA_KNOWLEDGE_CONTAINERS_CIRCULARBUFFERCONSUMER_H_
+#endif // _MADARA_KNOWLEDGE_CONTAINERS_NATIVECIRCULARBUFFERCONSUMER_H_
