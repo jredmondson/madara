@@ -45,7 +45,7 @@
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 
-package ai.madara.tests;
+package ai.madara.tests.basic;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -55,6 +55,7 @@ import ai.madara.knowledge.KnowledgeBase;
 import ai.madara.knowledge.KnowledgeMap;
 import ai.madara.knowledge.containers.Integer;
 import ai.madara.knowledge.containers.String;
+import ai.madara.tests.BaseTest;
 
 /**
  * This class is a tester for basic KnowledgeBase functionality

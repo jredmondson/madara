@@ -45,75 +45,71 @@
  * @author David Kyle <david.kyle@shield.ai>
  *********************************************************************/
 
-package ai.madara.tests;
-
-import ai.madara.knowledge.Any;
-import ai.madara.knowledge.AnyRef;
-import ai.madara.knowledge.KnowledgeRecord;
-import ai.madara.knowledge.KnowledgeBase;
+package ai.madara.tests.basic;
 
 import org.capnproto.MessageBuilder;
-import org.capnproto.StructBuilder;
-import org.capnproto.StructReader;
+import org.junit.Assert;
+import org.junit.Test;
+
+import ai.madara.knowledge.Any;
+import ai.madara.tests.BaseTest;
 import ai.madara.tests.capnp.Geo;
 
 /**
  * This class is a tester for Any and AnyRef
  */
-public class TestAny {
-  public static void main (java.lang.String...args) throws InterruptedException, Exception
-  {
-    System.err.println("Loading libMADARA.so");
-    System.loadLibrary("MADARA");
+public class TestAny extends BaseTest {
+	@Test
+	public void testAny() throws InterruptedException, Exception {
 
-    //System.err.println("Loading libdatatypes_shared.so");
-    //System.loadLibrary("datatypes_shared");
+		// System.err.println("Loading libdatatypes_shared.so");
+		// System.loadLibrary("datatypes_shared");
 
-    KnowledgeBase kb = new KnowledgeBase();
+		Any.registerStringVector("strvec");
+		Any.registerDoubleVector("dblvec");
+		Any.registerStringToStringMap("smap");
 
-    Any.registerStringVector("strvec");
-    Any.registerDoubleVector("dblvec");
-    Any.registerStringToStringMap("smap");
+		Any.registerClass("Point", Geo.Point.factory);
 
-    Any.registerClass("Point", Geo.Point.factory);
+		Any a0 = new Any("smap");
+		a0.at("hello").assign("world");
 
-    Any a0 = new Any("smap");
-    a0.at("hello").assign("world");
+		Assert.assertEquals(a0.at("hello").toString(), "world");
 
-    System.err.println("a0[hello] = " + a0.at("hello"));
+		Any a1 = new Any("strvec");
+		a1.at(5).assign("fifth");
+		a1.at(7).assign("seventh");
+		a1.at(2).assign("second");
 
-    Any a1 = new Any("strvec");
-    a1.at(5).assign("fifth");
-    a1.at(7).assign("seventh");
-    a1.at(2).assign("second");
+		for (long i = 0, n = a1.size(); i < n; ++i) {
+			System.err.println("a1[" + i + "] = " + a1.at(i));
+		}
 
-    for (long i = 0, n = a1.size(); i < n; ++i) {
-      System.err.println("a1[" + i + "] = " + a1.at(i));
-    }
+		Assert.assertFalse(a1.at(0).empty());
+		Assert.assertNotNull(a1.at(2));
+		Assert.assertEquals(a1.at(2).toString(), "second");
+		/*
+		 * Any p0 = new Any("Point"); System.err.println("p0 = " + p0);
+		 * 
+		 * Any p1 = new Any("Pose"); System.err.println("p1 = " + p1);
+		 * 
+		 * kb.set("p0", p0); kb.set("p1", p1);
+		 * 
+		 * System.err.println("kb.p0 = " + kb.get("p0")); System.err.println("kb.p1 = "
+		 * + kb.get("p1"));
+		 */
 
-    /*Any p0 = new Any("Point");
-    System.err.println("p0 = " + p0);
+		MessageBuilder msg = new MessageBuilder();
+		Geo.Point.Builder builder = msg.initRoot(Geo.Point.factory);
+		builder.setX(12);
+		builder.setY(32);
+		builder.setZ(47);
+		Any c0 = new Any(Geo.Point.factory, msg);
 
-    Any p1 = new Any("Pose");
-    System.err.println("p1 = " + p1);
+		Geo.Point.Reader reader = c0.reader(Geo.Point.factory);
+		Assert.assertEquals(reader.getX(), 12, 0.0);
+		Assert.assertEquals(reader.getY(), 32, 0.01);
+		Assert.assertEquals(reader.getZ(), 47, 0);
 
-    kb.set("p0", p0);
-    kb.set("p1", p1);
-
-    System.err.println("kb.p0 = " + kb.get("p0"));
-    System.err.println("kb.p1 = " + kb.get("p1"));*/
-
-    MessageBuilder msg = new MessageBuilder();
-    Geo.Point.Builder builder = msg.initRoot(Geo.Point.factory);
-    builder.setX(12);
-    builder.setY(32);
-    builder.setZ(47);
-    Any c0 = new Any(Geo.Point.factory, msg);
-    System.err.println("c0 = " + c0);
-
-    Geo.Point.Reader reader = c0.reader(Geo.Point.factory);
-    System.err.println("c0.x = " + reader.getX());
-    System.err.println("c0.y = " + reader.getY());
-    System.err.println("c0.z = " + reader.getZ());
-  }
+	}
 }

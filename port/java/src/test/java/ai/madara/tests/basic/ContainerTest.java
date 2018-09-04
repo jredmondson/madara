@@ -45,7 +45,7 @@
  * @author James Edmondson <jedmondson@gmail.com>
  *********************************************************************/
 
-package ai.madara.tests;
+package ai.madara.tests.basic;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -66,6 +66,7 @@ import ai.madara.knowledge.containers.NativeDoubleVector;
 import ai.madara.knowledge.containers.Queue;
 import ai.madara.knowledge.containers.StringVector;
 import ai.madara.knowledge.containers.Vector;
+import ai.madara.tests.BaseTest;
 
 /**
  * This class is a tester for the ai.madara.knowledge.containers package

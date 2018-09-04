@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ai.madara</groupId>
 	<artifactId>madara</artifactId>
-	<version>3.2.4</version>
+	<version>3.3.0</version>
 	<description>Provides distributed knowledge sharing services for multi-agent systems.</description>
 	<name>Multi-Agent Distributed Adaptive Resource Allocation</name>
 	<url>http://madara.ai</url>
