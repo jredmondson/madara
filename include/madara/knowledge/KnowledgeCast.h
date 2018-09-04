@@ -157,7 +157,7 @@ inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
 /// Convert KnowledgeRecord to floating point
 template<class O>
 inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
-  typename std::enable_if<std::is_floating_point<O>::value, O>::type
+  enable_if_<is_floating_point<O>(), O>
 {
   return static_cast<O>(in.to_double());
 }
@@ -165,7 +165,7 @@ inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
 /// Convert KnowledgeRecord to integer
 template<class O>
 inline auto knowledge_cast(type<O>, const KnowledgeRecord &in) ->
-  typename std::enable_if<std::is_integral<O>::value, O>::type
+  enable_if_<is_integral<O>() || is_enum<O>(), O>
 {
   return static_cast<O>(in.to_integer());
 }

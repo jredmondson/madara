@@ -399,6 +399,11 @@ namespace geo
       (k, K)
     )
 
+  enum class TestEnum
+  {
+    a, b, c
+  };
+
   struct StampedPoseList
   {
     std::vector<StampedPose> list;
@@ -406,6 +411,8 @@ namespace geo
     std::array<int, 3> arr3;
     int i;
     std::vector<std::string> strs;
+    int en;
+    TestEnum i16;
   };
 
   //static_assert(supports_infer_capn<Point>::value, "");
@@ -422,6 +429,8 @@ namespace geo
       (arr3, Arr3)
       (i, I)
       (strs, Strs)
+      (en, En)
+      (i16, I16)
     )
 
   static_assert(is_same<
@@ -580,7 +589,7 @@ void test_geo()
     {0, "frame0", 1, 2},
     {1, "frame1", 2, 3},
     {2, "frame2", 3, 4},
-  }, {2, 4, 6}, {{3, 6, 9}}, 42, {"foo", "bar"}};
+  }, {2, 4, 6}, {{3, 6, 9}}, 42, {"foo", "bar"}, 2, TestEnum::b};
   kb.set_any("vs0", std::move(vs0));
 
   VAL(kb.get("vs0").to_any());
@@ -588,6 +597,8 @@ void test_geo()
   TEST_EQ(kb.get("vs0").get_any_cref()("list")[1]("stamp")("frame").to_string(), "frame1");
   TEST_EQ(kb.get("vs0").get_any_cref()("arr3")[1].to_integer(), 6);
   TEST_EQ(kb.get("vs0").get_any_cref()("strs")[1].to_string(), "bar");
+  TEST_EQ(kb.get("vs0").get_any_cref()("en").to_integer(), 2);
+  TEST_EQ(kb.get("vs0").get_any_cref()("i16").to_integer(), (int)TestEnum::b);
 
   std::vector<char> buf;
 
