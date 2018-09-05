@@ -53,6 +53,8 @@ madara::logger::Logger::get_tag (void)
   return tag_;
 }
 
+#ifndef MADARA_NO_THREAD_LOCAL
+
 inline int 
 madara::logger::Logger::get_thread_level(void)
 {
@@ -88,6 +90,16 @@ madara::logger::Logger::set_thread_hertz(double hertz)
 {
   thread_hertz_ = hertz;
 }
+
+#else
+
+inline int 
+madara::logger::Logger::get_thread_level(void)
+{
+  return -1;
+}
+
+#endif
 
 inline void
 madara::logger::Logger::set_tag (const std::string & tag)

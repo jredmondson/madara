@@ -6,9 +6,11 @@
 #include <boost/lexical_cast.hpp>
 #include <iomanip>
 
+#ifndef MADARA_NO_THREAD_LOCAL
 thread_local int madara::logger::Logger::thread_level_(madara::logger::TLS_THREAD_LEVEL_DEFAULT);
 thread_local std::string madara::logger::Logger::thread_name_("");
 thread_local double madara::logger::Logger::thread_hertz_(madara::logger::TLS_THREAD_HZ_DEFAULT);
+#endif
 
 madara::logger::Logger::Logger (bool log_to_terminal)
 : mutex_ (), level_ (LOG_ERROR),
@@ -73,15 +75,25 @@ madara::logger::Logger::search_and_insert_custom_tstamp(const std::string & buf,
     if ( tsstr == MADARA_THREAD_NAME )
     {
       //insert thread name into buffer
+#ifndef MADARA_NO_THREAD_LOCAL
       retstring.replace(retstring.find(tsstr),tsstr.length(),
                         madara::logger::Logger::get_thread_name());
+#else
+      retstring.replace(retstring.find(tsstr),tsstr.length(),
+                        "<DISABLED>");
+#endif
       continue;
     }else
     if ( tsstr == MADARA_THREAD_HERTZ )
     {
       // insert thread hertz value into buffer
+#ifndef MADARA_NO_THREAD_LOCAL
       std::string hzstr = boost::lexical_cast<std::string>(madara::logger::Logger::get_thread_hertz());
       retstring.replace(retstring.find(tsstr),tsstr.length(),hzstr);
+#else
+      retstring.replace(retstring.find(tsstr),tsstr.length(),
+                        "<DISABLED>");
+#endif
       continue;
     }
   }
