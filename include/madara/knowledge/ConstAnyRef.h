@@ -525,12 +525,13 @@ public:
   {
     madara_oarchive archive(stream);
     std::string stag(tag);
+    /*
     const size_t align = sizeof(capnp::word);
     size_t over = stag.size() % align;
     if (over > 0) {
       size_t pad = align - over;
       stag.resize(stag.size() + pad, '\0');
-    }
+    }*/
     archive << stag;
 
     serialize(stream);
