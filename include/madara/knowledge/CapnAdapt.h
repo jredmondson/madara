@@ -452,7 +452,13 @@ namespace utility { inline namespace core {
     return [](const char *in, size_t size, void *ptr, const char *) {
         using namespace knowledge;
 
+        std::vector<char> aligned_in;
         T &val = *static_cast<T *>(ptr);
+
+        if ((size_t)in % sizeof(capnp::word) != 0) {
+          aligned_in.assign(in, in + size);
+          in = aligned_in.data();
+        }
 
         capnp::FlatArrayMessageReader msg(
             kj::ArrayPtr<const capnp::word>((const capnp::word *)in,
