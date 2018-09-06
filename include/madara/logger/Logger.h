@@ -194,6 +194,7 @@ namespace madara
        **/
       static int get_thread_level(void);
 
+#ifndef MADARA_NO_THREAD_LOCAL
       /**
        * Fetches thread local storage value for thread name
        **/
@@ -218,12 +219,15 @@ namespace madara
        * Set thread local storage value for hertz
        **/
       static void set_thread_hertz(double hertz);
+#endif
 
     private:
 
+#ifndef MADARA_NO_THREAD_LOCAL
       static thread_local int thread_level_;
       static thread_local std::string thread_name_;
       static thread_local double thread_hertz_;
+#endif
 
       std::string search_and_insert_custom_tstamp(const std::string & buf,
                                                   const std::string & tsstr);
