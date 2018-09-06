@@ -183,7 +183,7 @@ public:
 
   /**
    * Returns the maximum size of the NativeCircularBufferConsumer
-   * @return the size of the NativeCircularBufferConsumer
+    * @return the size of the NativeCircularBufferConsumer
    **/
   size_t size (void) const;
 
@@ -211,6 +211,21 @@ public:
    * original inside the KnowledgeBase.
    **/
   KnowledgeRecord get_record () const;
+
+  template <typename T> void consume_earliest (size_t count,std::vector <T> & values) const;
+
+  std::vector <KnowledgeRecord> consume_earliest (size_t count) const;
+
+  std::vector <KnowledgeRecord> consume_earliest (size_t count, size_t & dropped) const;
+
+  template <typename T> void inspect (KnowledgeRecord::Integer position, T & value) const;
+
+  std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,size_t count) const;
+
+  template <typename T> void inspect (KnowledgeRecord::Integer position,
+                                      size_t count, std::vector <T> & values) const;
+
+  madara::knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
 
 private:
   /**

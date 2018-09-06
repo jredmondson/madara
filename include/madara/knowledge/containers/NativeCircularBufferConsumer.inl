@@ -140,6 +140,107 @@ NativeCircularBufferConsumer::consume (size_t & dropped) const
   return ret;
 }
 
+
+template <typename T> void
+NativeCircularBufferConsumer::consume_earliest (size_t count,
+  std::vector <T> & values) const
+{
+  for (auto record : consume_earliest (count))
+  {
+    values.push_back (record.to_any <T> ());
+  }
+}
+
+std::vector <KnowledgeRecord>
+NativeCircularBufferConsumer::consume_earliest (size_t count, size_t & dropped) const
+{
+  check_context (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  dropped = get_dropped ();
+
+  std::vector <KnowledgeRecord> retvec;
+  for ( size_t idx=0; idx < count ; ++idx )
+  {
+    KnowledgeRecord ret = consume();
+    retvec.emplace_back(std::move(ret));
+  }
+
+  return retvec;
+}
+
+inline std::vector <KnowledgeRecord>
+NativeCircularBufferConsumer::consume_earliest (size_t count) const
+{
+  check_context (__func__);
+
+  ContextGuard context_guard (*context_);
+
+  std::vector <KnowledgeRecord> retvec;
+  for ( size_t idx=0; idx < count ; ++idx )
+  {
+    KnowledgeRecord ret = consume();
+    retvec.emplace_back(std::move(ret));
+  }
+
+  return retvec;
+}
+
+template <typename T> void
+NativeCircularBufferConsumer::inspect (KnowledgeRecord::Integer position, T & value) const
+{
+  value = inspect (position).to_any <T> ();
+}
+
+inline madara::knowledge::KnowledgeRecord
+NativeCircularBufferConsumer::inspect (KnowledgeRecord::Integer position) const
+{
+  check_context (__func__);
+
+  ContextGuard context_guard (*context_);
+  KnowledgeRecord &rec = *ref_.get_record_unsafe();
+
+  KnowledgeRecord ret;
+  rec.get_history_range(&ret, local_index_+position, 1);
+  return ret;
+}
+
+
+template <typename T> void
+NativeCircularBufferConsumer::inspect (KnowledgeRecord::Integer position,
+                                       size_t count, std::vector <T> & values) const
+{
+  // iterate over the returned records
+  for (auto record : inspect (position, count))
+  {
+    values.push_back (record.to_any <T> ());
+  }
+}
+
+
+inline std::vector <KnowledgeRecord>
+NativeCircularBufferConsumer::inspect (KnowledgeRecord::Integer position,size_t count) const
+{
+  check_context (__func__);
+
+  ContextGuard context_guard (*context_);
+  KnowledgeRecord &rec = *ref_.get_record_unsafe();
+
+  KnowledgeRecord ret;
+  std::vector <KnowledgeRecord> retvec;
+  for ( size_t idx = 0; idx < count ; ++idx )
+  {
+    if ( rec.get_history_range(&ret, local_index_+position+idx,1) )
+    {
+      retvec.emplace_back(std::move(ret));
+    }
+  }
+  
+  return retvec;
+}
+
+
 inline std::string
 NativeCircularBufferConsumer::get_name (void) const
 {
@@ -245,6 +346,7 @@ NativeCircularBufferConsumer::get_record (void) const
 
   return *ref_.get_record_unsafe();
 }
+
 
 } // end containers namespace
 } // end knowledge namespace

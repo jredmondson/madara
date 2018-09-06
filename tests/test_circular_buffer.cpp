@@ -95,6 +95,15 @@ void test_history_vector(const std::vector<R> &hist,
   }
 }
 
+template<typename T, typename R>
+void test_consume_earliest(const std::vector<R> &ce,
+    std::initializer_list<std::pair<size_t, T>> vals)
+{
+  for (const auto &cur : vals) {
+    TEST_EQ(ce[cur.first], cur.second);
+  }
+}
+
 void test_record_buffer()
 {
   KnowledgeRecord rec;
@@ -214,6 +223,31 @@ void test_container()
 
   TEST_EQ(buf.remaining(), 8UL);
   TEST_EQ(buf.count(), 10UL);
+
+  KnowledgeRecord rec;
+  rec = buf.inspect(3);
+
+  std::vector<KnowledgeRecord> v;
+  v = buf.inspect(2,3);
+  test_consume_earliest<int>(v,{ {0,25},{1,26},{2,27} });
+
+  v = buf.consume_earliest(1);
+  test_consume_earliest<int>(v,{ {0,23} });
+
+  for (int i = 32; i < 45; ++i) {
+    kb.set(key, i);
+  }
+
+  size_t mydropped;
+  v = buf.consume_earliest(2,mydropped);
+
+  TEST_EQ(mydropped, 10UL);
+  test_consume_earliest<int>(v,{ {0,35}, {1,36} });
+  
+  std::vector<KnowledgeRecord> krvec;
+  buf.consume_earliest(3,krvec);
+  test_consume_earliest<int>(krvec,{ {0,37}, {1,38}, {2,39} });
+
 }
 
 int main (int, char **)
