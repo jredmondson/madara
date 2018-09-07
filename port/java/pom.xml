@@ -60,6 +60,10 @@
 									tofile="${env.MADARA_ROOT}/lib/${project.artifactId}.jar" />
 								<copy file="target/${project.artifactId}-${project.version}.jar"
 									tofile="${env.MADARA_ROOT}/lib/${project.artifactId}-${project.version}.jar" />
+							    <copy file="target/${project.artifactId}-${project.version}-tests.jar"
+									tofile="${env.MADARA_ROOT}/lib/${project.artifactId}-${project.version}-tests.jar" />
+								 <copy file="target/${project.artifactId}-${project.version}-tests.jar"
+									tofile="${env.MADARA_ROOT}/lib/${project.artifactId}-tests.jar" />
 
 							</target>
 						</configuration>
