@@ -124,7 +124,7 @@ public:
    *         record is invalid
    * @throw exceptions::IndexException  buffer has zero size
    **/
-  KnowledgeRecord consume (void) const;
+  inline madara::knowledge::KnowledgeRecord consume (void) const;
 
   /**
    * Consumes the record at the local index (not the producer index)
@@ -137,14 +137,6 @@ public:
    * @throw exceptions::IndexException  buffer has zero size
    **/
   KnowledgeRecord consume (size_t & dropped) const;
-
-  /**
-   * Consumes the record at the local index (not the producer index)
-   * @param value  the last added value.
-   * @throw exceptions::IndexException  if no data to consume
-   **/
-  template <typename T>
-  void consume (T & value) const;
 
   /**
    * Consumes the record at the local index (not the producer index)
@@ -183,7 +175,7 @@ public:
 
   /**
    * Returns the maximum size of the NativeCircularBufferConsumer
-   * @return the size of the NativeCircularBufferConsumer
+    * @return the size of the NativeCircularBufferConsumer
    **/
   size_t size (void) const;
 
@@ -211,6 +203,79 @@ public:
    * original inside the KnowledgeBase.
    **/
   KnowledgeRecord get_record () const;
+
+  /**
+   * Consumes (earliest) records from the local index
+   * @param  count   the maximum number of records to return
+   * @param  values  the last added records
+   **/
+  template <typename T> void consume_many (size_t count,std::vector <T> & values) const;
+
+  /**
+   * Consumes (earliest) records from the local index
+   * @param  count   the maximum number of records to return
+   * @return the last added records
+   * @throw exceptions::ContextException if name or context haven't
+   *                      been set appropriately
+   **/
+  std::vector <KnowledgeRecord> consume_many (size_t count) const;
+
+  /**
+   * Consumes (earliest) records from the local index
+   * @param  count   the maximum number of records to return
+   * @param  dropped the number of dropped packets. Drops can
+   *                 occur when the producer produces faster than the
+   *                 consumer can consume.
+   * @return the last added records
+   * @throw exceptions::ContextException if name or context haven't
+   *                      been set appropriately
+   **/
+  std::vector <KnowledgeRecord> consume_many (size_t count, size_t & dropped) const;
+
+  /**
+   * Retrieves a record at a position relative to local index
+   * @param  position  the relative position of the requested record
+   *                   from the latest added record. Can be negative
+   * @param  value    the record at the position in the CircularBufferConsumer
+   * @throw exceptions::ContextException if name or context haven't
+   *                      been set appropriately
+   **/
+  template <typename T> void inspect (KnowledgeRecord::Integer position, T & value) const;
+
+  /**
+   * Retrieves a vector of records at a position relative to local index
+   * @param  position  the relative position of the requested record
+   *                   from the latest added record. Can be negative
+   * @param  count   the maximum number of records to return
+   * @return  the values at the position in the CircularBufferConsumer
+   * @throw exceptions::ContextException if name or context haven't
+   *                      been set appropriately
+   **/
+  std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,size_t count) const;
+
+  /**
+   * Retrieves a vector of records at a position relative to local index
+   * @param  position  the relative position of the requested record
+   *                   from the latest added record. Can be negative
+   * @param  count   the maximum number of records to return
+   * @param  values  the values at the position in the CircularBufferConsumer
+   * @throw exceptions::ContextException if name or context haven't
+   *                      been set appropriately
+   **/
+  template <typename T> void inspect (KnowledgeRecord::Integer position,
+                                      size_t count, std::vector <T> & values) const;
+
+  /**
+   * Retrieves a record at a position relative to local index
+   * @param  position  the relative position of the requested record
+   *                   from the latest added record. Can be negative
+   * @return  the record at the position in the CircularBufferConsumer
+   * @throw exceptions::ContextException if name or context haven't
+   *                      been set appropriately
+   * @throw exceptions::ContextException if name or context haven't
+   *                      been set appropriately
+   **/
+  madara::knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
 
 private:
   /**
