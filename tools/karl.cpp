@@ -1024,7 +1024,6 @@ public:
 
   virtual void run (void)
   {
-    std::cerr << "Running Evaluator thread" << std::endl;
     for (size_t i = 0; i < expressions_.size (); ++i)
     {
 #ifndef _MADARA_NO_KARL_
@@ -1042,7 +1041,6 @@ public:
     {
       if (print_prefixes.size () == 0)
       {
-        std::cerr << "Printing -ky" << std::endl;
         knowledge_->print ();
       }
       else

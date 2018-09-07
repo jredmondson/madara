@@ -48,7 +48,7 @@ namespace madara
       virtual ~PrefixIntConvert () = default;
 
       /**
-       * Adds to the counter
+       * Converts the records into integer values
        * @param   records           the aggregate records vector
        * @param   vars              context for querying current program state
        **/

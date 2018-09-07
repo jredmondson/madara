@@ -194,6 +194,11 @@ inline void capn_get(typename capnp::Text::Reader &reader,
   val = std::string(reader.cStr(), reader.size());
 }
 
+template<typename T,
+  enable_if_<supports_for_each_member<T>::value, int> = 0>
+auto infer_capn_type(type<T>) -> typename decltype(for_each_member(type<T>{},
+                ignore_all<void>()))::self;
+
 template<typename T, typename B>
 struct do_capn_struct_set
 {
@@ -207,14 +212,13 @@ struct do_capn_struct_set
   }
 };
 
-template<typename T, typename R, typename B, typename C>
-inline void capn_set(typename C::Builder &builder,
-    const CapnStruct<R, B, C> &info, const T &val)
+template<typename B, typename T>
+inline auto capn_set(B &builder, const T &val) ->
+  enable_if_<supports_for_each_member<T>::value>
 {
-  (builder.*(info.init))();
-  auto sub_builder{(builder.*(info.get_builder))()};
-  for_each_member(type<T>{}, do_capn_struct_set<T, B>{
-      &val, &sub_builder});
+  for_each_member(type<T>{},
+      do_capn_struct_set<T, ::madara::decay_<decltype(builder)>>{
+      &val, &builder});
 }
 
 template<typename T, typename R>
@@ -230,29 +234,6 @@ struct do_capn_struct_get
   }
 };
 
-template<typename T, typename R, typename B, typename C>
-inline void capn_get(typename C::Reader &reader,
-    const CapnStruct<R, B, C> &info, T &val)
-{
-  auto sub_reader{(reader.*(info.get))()};
-  for_each_member(type<T>{}, do_capn_struct_get<T, R>{
-      &val, &sub_reader});
-}
-
-template<typename T,
-  enable_if_<supports_for_each_member<T>::value, int> = 0>
-auto infer_capn_type(type<T>) -> typename decltype(for_each_member(type<T>{},
-                ignore_all<void>()))::self;
-
-template<typename B, typename T>
-inline auto capn_set(B &builder, const T &val) ->
-  enable_if_<supports_for_each_member<T>::value>
-{
-  for_each_member(type<T>{},
-      do_capn_struct_set<T, ::madara::decay_<decltype(builder)>>{
-      &val, &builder});
-}
-
 template<typename R, typename T>
 inline auto capn_get(R &reader, T &val) ->
   enable_if_<supports_for_each_member<T>::value>
@@ -261,13 +242,27 @@ inline auto capn_get(R &reader, T &val) ->
       &val, &reader});
 }
 
+template<typename T, typename R, typename B, typename C>
+inline void capn_set(typename C::Builder &builder,
+    const CapnStruct<R, B, C> &info, const T &val)
+{
+  (builder.*(info.init))();
+  auto sub_builder{(builder.*(info.get_builder))()};
+  capn_set(sub_builder, val);
+}
+
+template<typename T, typename R, typename B, typename C>
+inline void capn_get(typename C::Reader &reader,
+    const CapnStruct<R, B, C> &info, T &val)
+{
+  auto sub_reader{(reader.*(info.get))()};
+  capn_get(sub_reader, val);
+}
+
 MADARA_MAKE_VAL_SUPPORT_TEST(capn_set, x, capn_set(std::declval<int&>(), x));
 MADARA_MAKE_VAL_SUPPORT_TEST(capn_get, x, capn_get(std::declval<int&>(), x));
-//MADARA_MAKE_VAL_SUPPORT_TEST(infer_capn, x,
-    //sizeof(infer_capn_type(::madara::type<decltype(x)>{})));
 
 template<typename T>
-  //enable_if_<supports_infer_capn<T>::value, int> = 0>
 auto infer_capn_type(type<std::vector<T>>) ->
   capnp::List<decltype(infer_capn_type(type<T>{}))>;
 
@@ -457,7 +452,13 @@ namespace utility { inline namespace core {
     return [](const char *in, size_t size, void *ptr, const char *) {
         using namespace knowledge;
 
+        std::vector<char> aligned_in;
         T &val = *static_cast<T *>(ptr);
+
+        if ((size_t)in % sizeof(capnp::word) != 0) {
+          aligned_in.assign(in, in + size);
+          in = aligned_in.data();
+        }
 
         capnp::FlatArrayMessageReader msg(
             kj::ArrayPtr<const capnp::word>((const capnp::word *)in,

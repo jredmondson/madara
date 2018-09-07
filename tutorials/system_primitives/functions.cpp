@@ -134,7 +134,7 @@ int main (int, char **)
   knowledge.define_function ("rand_double", rand_double);
 
   // set the random seed to be the number of ns since January 1st, 1970
-  srand ((unsigned int)utility::get_time ());
+  srand ((unsigned int)madara::utility::get_time ());
 
   // do a couple of rands to get the seed away from standard seconds
   rand ();

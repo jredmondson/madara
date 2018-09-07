@@ -284,7 +284,7 @@ int main (int argc, char * argv[])
   knowledge.define_function ("change_deltas", change_deltas);
   
   // set the random seed to be the number of seconds since January 1st, 1970
-  srand ((unsigned int)utility::get_time ());
+  srand ((unsigned int)madara::utility::get_time ());
 
   // do a couple of rands to get the seed away from standard seconds
   rand ();

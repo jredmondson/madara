@@ -46,7 +46,7 @@ namespace madara
       virtual ~PrefixPrint () = default;
 
       /**
-       * Adds to the counter
+       * Prints records and transport context information
        * @param   records           the aggregate records vector
        * @param   vars              context for querying current program state
        **/

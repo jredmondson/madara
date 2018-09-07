@@ -98,3 +98,7 @@ zmq                       = 0
 /// @feature simtime
 /// Enable this feature if you want SimTime interface support
 simtime                   = 0
+
+/// @feature nothreadlocal
+/// Enable this feature to disable all uses of thread_local
+nothreadlocal             = 0

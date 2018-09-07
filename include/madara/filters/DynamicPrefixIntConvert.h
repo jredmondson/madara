@@ -48,7 +48,7 @@ namespace madara
       virtual ~DynamicPrefixIntConvert () = default;
 
       /**
-       * Adds to the counter
+       * Converts records to integers
        * @param   records           the aggregate records vector
        * @param   vars              context for querying current program state
        **/
