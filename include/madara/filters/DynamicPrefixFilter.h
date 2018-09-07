@@ -42,7 +42,7 @@ namespace madara
       virtual ~DynamicPrefixFilter () = default;
 
       /**
-       * Adds to the counter
+       * Removes records not in a list of allowed prefixes
        * @param   records           the aggregate records vector
        * @param   vars              context for querying current program state
        **/
