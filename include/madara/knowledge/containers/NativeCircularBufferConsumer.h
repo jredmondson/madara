@@ -140,13 +140,6 @@ public:
 
   /**
    * Consumes the record at the local index (not the producer index)
-   * @param value  the last added value.
-   * @throw exceptions::IndexException  if no data to consume
-   **/
-  template <typename T> void consume (T & value) const;
-
-  /**
-   * Consumes the record at the local index (not the producer index)
    * @param value   the last added value.
    * @param dropped the number of dropped packets. Drops can
    *                occur when the producer produces faster than the
