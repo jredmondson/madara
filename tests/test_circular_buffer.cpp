@@ -183,14 +183,15 @@ void test_container()
   std::string key = "test";
   NativeCircularBufferConsumer buf(key, kb);
   kb.set_history_capacity(key, 10);
-  kb.set(key, 42);
+  kb.set(key, (int)42);
 
   TEST_EQ(buf.size(), 10UL);
   TEST_EQ(buf.remaining(), 2UL);
   TEST_EQ(buf.count(), 2UL);
 
-  TEST_EQ(buf.consume().exists(), false);
-  TEST_EQ(buf.consume(), 42);
+  size_t d = 0;
+  TEST_EQ(buf.consume(d).exists(),false);
+  TEST_EQ(buf.consume<int>(), (int)42);
 
   for (int i = 1; i < 6; ++i) {
     kb.set(key, i);
@@ -199,11 +200,11 @@ void test_container()
   TEST_EQ(buf.remaining(), 5UL);
   TEST_EQ(buf.count(), 7UL);
 
-  TEST_EQ(buf.consume(), 1);
-  TEST_EQ(buf.consume(), 2);
-  TEST_EQ(buf.consume(), 3);
-  TEST_EQ(buf.consume(), 4);
-  TEST_EQ(buf.consume(), 5);
+  TEST_EQ(buf.consume<int>(), 1);
+  TEST_EQ(buf.consume<int>(), 2);
+  TEST_EQ(buf.consume<int>(), 3);
+  TEST_EQ(buf.consume<int>(), 4);
+  TEST_EQ(buf.consume<int>(), 5);
 
   TEST_EQ(buf.remaining(), 0UL);
   TEST_EQ(buf.count(), 7UL);
@@ -231,7 +232,7 @@ void test_container()
   v = buf.inspect(2,3);
   test_consume_earliest<int>(v,{ {0,25},{1,26},{2,27} });
 
-  v = buf.consume_earliest(1);
+  v = buf.consume_many(1);
   test_consume_earliest<int>(v,{ {0,23} });
 
   for (int i = 32; i < 45; ++i) {
@@ -239,13 +240,13 @@ void test_container()
   }
 
   size_t mydropped;
-  v = buf.consume_earliest(2,mydropped);
+  v = buf.consume_many(2,mydropped);
 
   TEST_EQ(mydropped, 10UL);
   test_consume_earliest<int>(v,{ {0,35}, {1,36} });
   
   std::vector<KnowledgeRecord> krvec;
-  buf.consume_earliest(3,krvec);
+  buf.consume_many(3,krvec);
   test_consume_earliest<int>(krvec,{ {0,37}, {1,38}, {2,39} });
 
 }

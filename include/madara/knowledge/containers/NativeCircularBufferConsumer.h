@@ -124,7 +124,7 @@ public:
    *         record is invalid
    * @throw exceptions::IndexException  buffer has zero size
    **/
-  KnowledgeRecord consume (void) const;
+  template <typename T> T consume (void);
 
   /**
    * Consumes the record at the local index (not the producer index)
@@ -143,8 +143,7 @@ public:
    * @param value  the last added value.
    * @throw exceptions::IndexException  if no data to consume
    **/
-  template <typename T>
-  void consume (T & value) const;
+  template <typename T> void consume (T & value) const;
 
   /**
    * Consumes the record at the local index (not the producer index)
@@ -213,23 +212,23 @@ public:
   KnowledgeRecord get_record () const;
 
   /**
-   * Consumes earliest records from the local index
+   * Consumes (earliest) records from the local index
    * @param  count   the maximum number of records to return
    * @param  values  the last added records
    **/
-  template <typename T> void consume_earliest (size_t count,std::vector <T> & values) const;
+  template <typename T> void consume_many (size_t count,std::vector <T> & values) const;
 
   /**
-   * Consumes earliest records from the local index
+   * Consumes (earliest) records from the local index
    * @param  count   the maximum number of records to return
    * @return the last added records
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    **/
-  std::vector <KnowledgeRecord> consume_earliest (size_t count) const;
+  std::vector <KnowledgeRecord> consume_many (size_t count) const;
 
   /**
-   * Consumes earliest records from the local index
+   * Consumes (earliest) records from the local index
    * @param  count   the maximum number of records to return
    * @param  dropped the number of dropped packets. Drops can
    *                 occur when the producer produces faster than the
@@ -238,7 +237,7 @@ public:
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    **/
-  std::vector <KnowledgeRecord> consume_earliest (size_t count, size_t & dropped) const;
+  std::vector <KnowledgeRecord> consume_many (size_t count, size_t & dropped) const;
 
   /**
    * Retrieves a record at a position relative to local index
