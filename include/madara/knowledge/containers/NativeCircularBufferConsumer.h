@@ -124,7 +124,7 @@ public:
    *         record is invalid
    * @throw exceptions::IndexException  buffer has zero size
    **/
-  template <typename T> T consume (void);
+  inline madara::knowledge::KnowledgeRecord consume (void) const;
 
   /**
    * Consumes the record at the local index (not the producer index)

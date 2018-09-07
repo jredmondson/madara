@@ -189,9 +189,8 @@ void test_container()
   TEST_EQ(buf.remaining(), 2UL);
   TEST_EQ(buf.count(), 2UL);
 
-  size_t d = 0;
-  TEST_EQ(buf.consume(d).exists(),false);
-  TEST_EQ(buf.consume<int>(), (int)42);
+  TEST_EQ(buf.consume().exists(),false);
+  TEST_EQ(buf.consume(), 42);
 
   for (int i = 1; i < 6; ++i) {
     kb.set(key, i);
@@ -200,11 +199,11 @@ void test_container()
   TEST_EQ(buf.remaining(), 5UL);
   TEST_EQ(buf.count(), 7UL);
 
-  TEST_EQ(buf.consume<int>(), 1);
-  TEST_EQ(buf.consume<int>(), 2);
-  TEST_EQ(buf.consume<int>(), 3);
-  TEST_EQ(buf.consume<int>(), 4);
-  TEST_EQ(buf.consume<int>(), 5);
+  TEST_EQ(buf.consume(), 1);
+  TEST_EQ(buf.consume(), 2);
+  TEST_EQ(buf.consume(), 3);
+  TEST_EQ(buf.consume(), 4);
+  TEST_EQ(buf.consume(), 5);
 
   TEST_EQ(buf.remaining(), 0UL);
   TEST_EQ(buf.count(), 7UL);

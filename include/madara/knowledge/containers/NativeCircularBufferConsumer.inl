@@ -95,15 +95,15 @@ NativeCircularBufferConsumer::consume (T & value, size_t & dropped) const
 }
 
 
-template <typename T> T
-NativeCircularBufferConsumer::consume (void) 
+inline madara::knowledge::KnowledgeRecord
+NativeCircularBufferConsumer::consume (void)  const
 {
   ContextGuard context_guard (*context_);
   size_t dropped = 0;
   
   if (remaining () > 0)
   {
-    return consume(dropped).to_any <T> ();
+    return consume(dropped);
   }
 
   throw exceptions::IndexException ("NativeCircularBufferConsumer::consume<T>: "
@@ -159,11 +159,10 @@ NativeCircularBufferConsumer::consume_many (size_t count, size_t & dropped) cons
   ContextGuard context_guard (*context_);
 
   dropped = get_dropped ();
-  size_t tmpdropped = 0;
   std::vector <KnowledgeRecord> retvec;
   for ( size_t idx=0; idx < count ; ++idx )
   {
-    KnowledgeRecord rec = consume(tmpdropped);
+    KnowledgeRecord rec = consume();
     retvec.emplace_back(std::move(rec));
   }
 
@@ -178,10 +177,9 @@ NativeCircularBufferConsumer::consume_many (size_t count) const
   ContextGuard context_guard (*context_);
 
   std::vector <KnowledgeRecord> retvec;
-  size_t dropped = 0;
   for ( size_t idx=0; idx < count ; ++idx )
   {
-    KnowledgeRecord rec = consume(dropped);
+    KnowledgeRecord rec = consume();
     retvec.emplace_back(std::move(rec));
   }
 
