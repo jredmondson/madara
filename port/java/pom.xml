@@ -44,6 +44,7 @@
 		</dependency>
 	</dependencies>
 
+
 	<build>
 		<plugins>
 			<plugin>
@@ -92,6 +93,12 @@
 				<version>1.6.0</version>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.0</version>
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -117,10 +124,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-					<!-- 	 <configuration>
-							 <additionalparam>-Xdoclint:none</additionalparam>
-							 <additionalOptions>-Xdoclint:none</additionalOptions>
-						  </configuration> -->
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
@@ -174,8 +177,8 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<forkMode>once</forkMode>
-<!-- 							<argLine>-Djava.library.path=/Users/amu/Work/Code/Free/ShieldAI/repos/binaries</argLine>
- -->						</configuration>
+							<!-- <argLine>-Djava.library.path=/Users/amu/Work/Code/Free/ShieldAI/repos/binaries</argLine> -->
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
