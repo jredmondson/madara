@@ -452,6 +452,26 @@ namespace madara
     unsigned int file_size (const std::string & filename);
     
     /**
+     * Returns the size of a file stream and returns the stream
+     * in the same position as when called
+     * 
+     * @param input  the file stream to check
+     * @return size of the stream
+     **/
+    size_t file_size (std::ifstream & input);
+
+    /**
+     * Returns the crc of a file
+     * @param filename   path and name of the file to open
+     * @param max_block  maximum block size to read when processing CRC. This
+     *                   can be important with large files. We provide a
+     *                   reasonable block size by default, but you can adjust
+     *                   as appropriate
+     * @return size of the file
+     **/
+    uint32_t file_crc (const std::string & filename, size_t max_block = 1000000);
+    
+    /**
      * Waits on a knowledge record to be true without needing KaRL language
      * @param  knowledge  the knowledge base
      * @param  variable   the variable to wait on
@@ -463,7 +483,6 @@ namespace madara
       const knowledge::WaitSettings & settings =
         knowledge::WaitSettings ());
 
-    
 
     /**
      * Waits on a knowledge record to be false without needing KaRL language

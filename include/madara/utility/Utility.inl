@@ -1,8 +1,11 @@
 #ifndef   _MADARA_UTILITY_INL_
 #define   _MADARA_UTILITY_INL_
 
+#include <fstream>
 #include "Utility.h"
 #include "SimTime.h"
+
+#include "boost/crc.hpp"
 
 #ifdef _WIN32
   #include "madara/Boost.h"
@@ -311,6 +314,45 @@ file_size (const std::string & filename)
   }
 
   return size;
+}
+
+inline size_t
+file_size (std::ifstream & input)
+{
+  // save the current stream position
+  std::streampos current = input.tellg ();
+  
+  // seek to the end and 
+  input.seekg (0, std::ios::end);
+  std::size_t size = input.tellg ();
+  
+  // revert input stream to its original position
+  input.seekg (current, std::ios::beg);
+
+  return size;
+}
+
+inline uint32_t
+file_crc (const std::string & filename, size_t max_block)
+{
+  boost::crc_32_type crc;
+
+  // open the file and establish a block to read the file into
+  std::ifstream input (filename, std::ios::in | std::ios::binary);
+  std::vector<char> block (max_block);
+
+  // process the file by block rather than reading in full
+  while (input)
+  {
+    input.read (block.data (), max_block);
+    std::size_t bytes_read = input.gcount ();
+    if (bytes_read > 0)
+    {
+      crc.process_bytes (block.data (), bytes_read);
+    }
+  }
+
+  return crc.checksum ();
 }
 
 inline
