@@ -34,8 +34,8 @@ namespace madara
       *        empty, print all variables. If contains prefixes, only print
       *        variables that begin with contained prefixes
       **/
-      PrefixPrint (const std::vector <std::string> & source_prefixes = {}, bool verbose = true)
-      : prefixes (source_prefixes), verbose (verbose)
+      PrefixPrint (const std::vector <std::string> & source_prefixes = {}, bool print_verbose = true)
+      : prefixes (source_prefixes), verbose (print_verbose)
       {
 
       }
