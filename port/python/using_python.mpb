@@ -34,6 +34,11 @@ feature (python) {
     2.7
   }
 
+  expand(BOOST_PYTHON_VERSION) {
+    $BOOST_PYTHON_VERSION
+    ""
+  }
+
 
   expand(BOOST_PYTHON_DEBUG) {
     $BOOST_PYTHON_DEBUG
@@ -62,7 +67,7 @@ feature (python) {
   } else {
     includes += $(PYTHON_ROOT)/include/python$(PYTHON_VERSION)
     libpaths += $(PYTHON_ROOT)/lib/python$(PYTHON_VERSION)
-    lit_libs += $(BOOST_STATIC_LIB_PREFIX)boost_python$(BOOST_CFG)
+    lit_libs += $(BOOST_STATIC_LIB_PREFIX)boost_python$(BOOST_PYTHON_VERSION)$(BOOST_CFG)
   }
 }
 

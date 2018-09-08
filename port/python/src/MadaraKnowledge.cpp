@@ -31,9 +31,40 @@ using namespace boost::python;
 
 class knowledge_NS {};
 
+template<typename T>
+struct DontDestruct
+{
+  union {
+    T val;
+  };
+
+  DontDestruct(T val) : val(std::move(val)) {};
+  ~DontDestruct() {}
+
+  DontDestruct(const DontDestruct &o) : val(o.val) {}
+  DontDestruct(DontDestruct &&o) : val(std::move(o.val)) {}
+
+  DontDestruct &operator=(const DontDestruct &o)
+  {
+    val = o.val;
+    return *this;
+  }
+
+  DontDestruct &operator=(DontDestruct &&o)
+  {
+    val = std::move(o.val);
+    return *this;
+  }
+
+  T *operator->() { return &val; }
+  const T *operator->() const { return &val; }
+  T &operator*() { return val; }
+  const T &operator*() const { return val; }
+};
+
 static capnp::SchemaLoader schema_loader;
-static std::map<std::string, object> registered_types;
-static std::map<uint64_t, const std::pair<const std::string, object> *>
+static std::map<std::string, DontDestruct<object>> registered_types;
+static std::map<uint64_t, const std::pair<const std::string, DontDestruct<object>> *>
   registered_tags;
 
 #define MADARA_MEMB(ret, klass, name, args) \
@@ -142,8 +173,11 @@ class_<T> define_basic_any(const char * name, const char *doc, I init)
         "Check if fields are supported")
     .def("reader", +[](const T &a) -> object {
         auto buf = a.get_capnp_buffer().asChars();
-        std::string sbuf(buf.begin(), buf.size());
-        return registered_types.at(a.tag()).attr("from_bytes")(sbuf);
+        object bytes(handle<>(PyMemoryView_FromMemory(
+                (char *)buf.begin(), buf.size(), PyBUF_READ)));
+        //object bytes(handle<>(PyByteArray_FromStringAndSize(buf.begin(), buf.size())));
+        //std::vector<unsigned char> sbuf(buf.begin(), buf.begin() + buf.size());
+        return registered_types.at(a.tag())->attr("from_bytes")(bytes);
       }, "Get a Cap'n Proto reader for held object. Throws if held object "
          "isn't a Cap'n Proto message.")
   ;
@@ -274,7 +308,8 @@ void define_knowledge (void)
           copy.release();
         }
 
-        registered_tags[id] = &*(registered_types.emplace(a, klass).first);
+        registered_tags[id] = &*(registered_types.emplace(a,
+              DontDestruct<object>(std::move(klass))).first);
       })
     .staticmethod("register_class")
   ;
