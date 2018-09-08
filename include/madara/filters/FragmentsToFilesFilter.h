@@ -1,6 +1,10 @@
 #ifndef _MADARA_FILTERS_FRAGMENTS_TO_FILES_FILTER_H_
 #define _MADARA_FILTERS_FRAGMENTS_TO_FILES_FILTER_H_
 
+#ifndef BOOST_NO_CXX11_SCOPED_ENUMS
+  #define BOOST_NO_CXX11_SCOPED_ENUMS
+#endif
+
 #include <string>
 #include <vector>
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
@@ -41,75 +45,9 @@ namespace madara
        * Filters the fragments and converts them to files
        * @param   records           the aggregate records vector
        **/
-      inline virtual void filter (knowledge::KnowledgeMap & records,
+      virtual void filter (knowledge::KnowledgeMap & records,
         const transport::TransportContext &,
-        knowledge::Variables &)
-      {
-          // because of the usage of erase, don't auto inc record in for loop
-          for (auto record = records.begin (); record != records.end ();)
-          {
-            bool is_fragment = false;
-            std::string path;
-            std::string prefix;
-            std::string filename;
-
-            // try to find an appropriate mapping for the record
-            for (auto map : map_)
-            {
-              if (utility::begins_with (record->first, map.first))
-              {
-                prefix = map.first;
-                path = map.second;
-                filename = path + "/" + record->first.substr (prefix.size () + 1);
-                is_fragment = true;
-
-                madara_logger_ptr_log (
-                  madara::logger::global_logger.get (),
-                  logger::LOG_ALWAYS,
-                  "FragmentsToFilesFilter::filter: "
-                  "found fragment. Saving %s to %s\n",
-                  record->first.c_str (),
-                  filename.c_str ()
-                )
-              }
-              else
-              {
-                madara_logger_ptr_log (
-                  madara::logger::global_logger.get (),
-                  logger::LOG_ALWAYS,
-                  "FragmentsToFilesFilter::filter: "
-                  "%s is not a fragment of %s\n",
-                  record->first.c_str (),
-                  map.first.c_str ()
-                )
-              }
-            }
-
-            if (is_fragment && clear_fragments_)
-            {
-              madara_logger_ptr_log (
-                madara::logger::global_logger.get (),
-                logger::LOG_ALWAYS,
-                "FragmentsToFilesFilter::filter: "
-                "removing variable %s\n",
-                record->first.c_str ()
-              )
-
-              record = records.erase (record); 
-            }
-            else
-            {
-              madara_logger_ptr_log (
-                madara::logger::global_logger.get (),
-                logger::LOG_ALWAYS,
-                "FragmentsToFilesFilter::filter: "
-                "%s is not being deleted\n",
-                record->first.c_str ()
-              )
-              ++record;
-            }
-          }
-      }
+        knowledge::Variables &);
 
       /**
        * Sets a mapping between a variable prefix and a directory
@@ -117,7 +55,7 @@ namespace madara
        *                           filtered records
        * @param  directory         the directory to save fragments to
        **/
-      void set_dir_mapping (const std::string & variable_prefix,
+      inline void set_dir_mapping (const std::string & variable_prefix,
         const std::string & directory)
       {
         madara_logger_ptr_log (
@@ -139,7 +77,7 @@ namespace madara
        * @param  variable_prefix   the prefix that must match in a list of
        *                           filtered records
        **/
-      std::string get_dir_mapping (const std::string & variable_prefix)
+      inline std::string get_dir_mapping (const std::string & variable_prefix)
       {
         auto found = map_.find (variable_prefix);
 
@@ -157,7 +95,7 @@ namespace madara
        * Enables the clear fragments flag. Whenever a fragment is saved to
        * disk, it will not also be applied to the local knowledge base
        **/
-      void enable_clear_fragments (void)
+      inline void enable_clear_fragments (void)
       {
         clear_fragments_ = true;
       }
@@ -166,7 +104,7 @@ namespace madara
        * Disables the clear fragments flag. Fragments are saved to disk and
        * saved to the local knowledge base
        **/
-      void disable_clear_fragments (void)
+      inline void disable_clear_fragments (void)
       {
         clear_fragments_ = false;
       }

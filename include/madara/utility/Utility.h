@@ -218,6 +218,13 @@ namespace madara
     MADARA_EXPORT std::string extract_filename (const std::string & name);
 
     /**
+     * Checks the filename for abnormal redirects such as ".."
+     * @param     filename     name of the file to check
+     * @return    true if filename contains "..", "//", or "~""
+     **/
+    MADARA_EXPORT bool filename_has_redirect (const std::string & filename);
+
+    /**
      * Expands environment variables referenced in the string. The environment
      * variables must be specified as $(var) and not $var.
      * @param     source      the string to expand

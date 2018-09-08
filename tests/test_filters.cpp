@@ -57,9 +57,11 @@ void test_fragments_to_files_filter (void)
   madara::knowledge::Variables vars (&kb.get_context ());
   knowledge::FileFragmenter fragmenter (filename);
   fragmenter.create_vector ("agent.0.sandbox.files.file.images/manaus.jpg", kb);
-  knowledge.set ("agent.0.sandbox.files.file.images/manaus.jpg.crc", crc);
+  kb.set ("agent.0.sandbox.files.file.images/manaus.jpg.crc", crc);
+  kb.set ("a0", 1);
+  kb.set ("b2", 2);
 
-  knowledge::KnowledgeMap args = kb.to_map ("agent.0.sandbox.files.file.");
+  knowledge::KnowledgeMap args = kb.to_map ("");
 
   std::cerr << "  crc: " << crc << "\n";
   std::cerr << "  fragments: " << crc << "\n";

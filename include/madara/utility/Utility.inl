@@ -356,6 +356,28 @@ file_crc (const std::string & filename, size_t max_block)
 }
 
 inline
+bool filename_has_redirect (const std::string & filename)
+{
+  // if filename has special characters, return false
+  if (filename.find ("../") != std::string::npos)
+  {
+    return true;
+  }
+  else if (filename.find ("//") != std::string::npos)
+  {
+    return true;
+  }
+  else if (filename.find ("~") != std::string::npos)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+inline
 bool begins_with (const std::string & input,
       const std::string & prefix)
 {
