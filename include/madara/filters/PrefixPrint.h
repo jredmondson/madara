@@ -34,8 +34,8 @@ namespace madara
       *        empty, print all variables. If contains prefixes, only print
       *        variables that begin with contained prefixes
       **/
-      PrefixPrint (const std::vector <std::string> & source_prefixes = {})
-      : prefixes (source_prefixes)
+      PrefixPrint (const std::vector <std::string> & source_prefixes = {}, bool verbose = true)
+      : prefixes (source_prefixes), verbose (verbose)
       {
 
       }
@@ -55,46 +55,50 @@ namespace madara
         knowledge::Variables & vars)
       {
         std::stringstream buffer;
-        buffer << "PrefixFilter Arguments:\n";
-          
-        // Operation Type
-        buffer << "  Operation Type:    " ;
-        buffer << transport::get_operation_type (
-          transport_context.get_operation ());
-        buffer << "\n";
-          
-        // Send Bandwidth
-        buffer << "  Send Bandwidth:    " ;
-        buffer << transport_context.get_send_bandwidth ();
-        buffer << " B/s\n";
-          
-        // Receive Bandwidth
-        buffer << "  Receive Bandwidth: " ;
-        buffer << transport_context.get_receive_bandwidth ();
-        buffer << " B/s\n";
-          
-        // Update Time
-        buffer << "  Update Time:       " ;
-        buffer << transport_context.get_message_time ();
-        buffer << "\n";
-          
-        // Current Time
-        buffer << "  Current Time:      " ;
-        buffer << transport_context.get_current_time ();
-        buffer << "\n";
-          
-        // Knowledge Domain
-        buffer << "  Knowledge Domain:  " ;
-        buffer << transport_context.get_domain ();
-        buffer << "\n";
-          
-        // Originator
-        buffer << "  Originator:        " ;
-        buffer << transport_context.get_originator ();
-        buffer << "\n";
-        
-        buffer << "  Updates:\n" ;
-        
+
+        if (verbose)
+        {
+          buffer << "PrefixFilter Arguments:\n";
+
+          // Operation Type
+          buffer << "  Operation Type:    " ;
+          buffer << transport::get_operation_type (
+            transport_context.get_operation ());
+          buffer << "\n";
+
+          // Send Bandwidth
+          buffer << "  Send Bandwidth:    " ;
+          buffer << transport_context.get_send_bandwidth ();
+          buffer << " B/s\n";
+
+          // Receive Bandwidth
+          buffer << "  Receive Bandwidth: " ;
+          buffer << transport_context.get_receive_bandwidth ();
+          buffer << " B/s\n";
+
+          // Update Time
+          buffer << "  Update Time:       " ;
+          buffer << transport_context.get_message_time ();
+          buffer << "\n";
+
+          // Current Time
+          buffer << "  Current Time:      " ;
+          buffer << transport_context.get_current_time ();
+          buffer << "\n";
+
+          // Knowledge Domain
+          buffer << "  Knowledge Domain:  " ;
+          buffer << transport_context.get_domain ();
+          buffer << "\n";
+
+          // Originator
+          buffer << "  Originator:        " ;
+          buffer << transport_context.get_originator ();
+          buffer << "\n";
+
+          buffer << "  Updates:\n" ;
+        }
+
         // because of the usage of erase, don't auto inc record in for loop
         for (auto record : records)
         {
@@ -108,6 +112,7 @@ namespace madara
               if (utility::begins_with (record.first, prefix))
               {
                 accepted_prefix = true;
+                break;
               }
             }
           }
@@ -135,7 +140,10 @@ namespace madara
           } // end valid prefix
         } // end iteration over all filter records
 
-        vars.print (buffer.str (), 0);
+        madara_logger_ptr_log (
+          madara::logger::global_logger.get (),
+          logger::LOG_ALWAYS,
+          buffer.str ().c_str ());
       } // end filter function
 
       /**
@@ -143,6 +151,7 @@ namespace madara
        * print only variables with prefixes that exist in the vector.
        **/
       std::vector <std::string> prefixes;
+      bool verbose;
     };
   }
 }

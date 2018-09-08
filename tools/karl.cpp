@@ -94,6 +94,7 @@ std::string  initbinaries;
 bool debug (false);
 bool print_knowledge (false);
 bool print_knowledge_frequency (false);
+bool print_updates (false);
 bool after_wait (false);
 bool check_result (false);
 bool use_id (false);
@@ -370,6 +371,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-ni|--capnp-import ]    add directory to capnp directory imports. Must appear before all -n and -nf.\n" \
         "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
         "  [-ps|--print-stats]      print variable/originator stats at the end\n" \
+        "  [-pu|--print-updates]    print variables received, respects prefixes from -kp \n" \
         "  [-py|--print-stats-periodic] print variable/originator stats at each period\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
         "  [-r|--reduced]           use the reduced message header\n" \
@@ -697,6 +699,10 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-py" || arg1 == "--print-stats-periodic")
     {
       print_stats_periodic = true;
+    }
+    else if (arg1 == "-pu" || arg1 == "--print-updates")
+    {
+      print_updates = true;
     }
     else if (arg1 == "-q" || arg1 == "--queue-length")
     {
@@ -1071,11 +1077,17 @@ int main (int argc, char ** argv)
   }
 
   filters::PrefixPrint print_filter (print_prefixes);
-
   if (debug)
   {
     settings.add_send_filter (&print_filter);
     settings.add_receive_filter (&print_filter);
+  }
+
+  // A less verbose form of receiving updates
+  filters::PrefixPrint minimal_print_filter (print_prefixes, false);
+  if (print_updates)
+  {
+    settings.add_receive_filter (&minimal_print_filter);
   }
 
   // save transport always happens after all possible transport chagnes
