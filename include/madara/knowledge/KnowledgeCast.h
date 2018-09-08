@@ -642,8 +642,10 @@ template<typename T>
 inline T
 BasicConstAny<Impl, ValImpl, RefImpl>::to(type<T>) const
 {
-  if (!handler_ && data_) {
-    return impl().template ref<T>();
+  using exceptions::BadAnyAccess;
+
+  if (!handler_ || !data_) {
+    throw BadAnyAccess("Any::to<T>: Any is empty");
   }
 
   if (handler_->tindex == type_id<T>()) {
@@ -652,7 +654,7 @@ BasicConstAny<Impl, ValImpl, RefImpl>::to(type<T>) const
 
   if (supports_cast_from_record<T>::value) {
     if (!supports_to_record()) {
-      throw exceptions::BadAnyAccess("Type stored in Any doesn't "
+      throw BadAnyAccess("Any::to<T>: Type stored in Any doesn't "
           "support to_record");
     }
 
@@ -660,7 +662,7 @@ BasicConstAny<Impl, ValImpl, RefImpl>::to(type<T>) const
     try_knowledge_cast(handler_->to_record(data_), ret);
     return ret;
   } else {
-    throw exceptions::BadAnyAccess("Type stored doesn't match type "
+    throw BadAnyAccess("Any::to<T>: Type stored doesn't match type "
         "requested, and doesn't support knowledge_cast from record");
   }
 }

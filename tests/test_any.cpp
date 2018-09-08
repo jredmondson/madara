@@ -256,6 +256,14 @@ void test_record()
 
   k1.set_any(std::array<double, 3>{{5, 10, 15}});
   TEST_EQ((k1.get_any_cref<std::array<double, 3>>()[1]), 10);
+
+  KnowledgeRecord empty;
+  try {
+    VAL(empty.to_any<int>());
+    TEST_EQ("Expected exception thrown", (void*)0);
+  } catch (const exceptions::BadAnyAccess &ex) {
+    VAL(std::string("Exception: ") + ex.what());
+  }
 }
 
 template<typename T>
