@@ -44,6 +44,7 @@
 		</dependency>
 	</dependencies>
 
+
 	<build>
 		<plugins>
 			<plugin>
@@ -59,6 +60,10 @@
 									tofile="${env.MADARA_ROOT}/lib/${project.artifactId}.jar" />
 								<copy file="target/${project.artifactId}-${project.version}.jar"
 									tofile="${env.MADARA_ROOT}/lib/${project.artifactId}-${project.version}.jar" />
+							    <copy file="target/${project.artifactId}-${project.version}-tests.jar"
+									tofile="${env.MADARA_ROOT}/lib/${project.artifactId}-${project.version}-tests.jar" />
+								 <copy file="target/${project.artifactId}-${project.version}-tests.jar"
+									tofile="${env.MADARA_ROOT}/lib/${project.artifactId}-tests.jar" />
 
 							</target>
 						</configuration>
@@ -92,6 +97,12 @@
 				<version>1.6.0</version>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.0</version>
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -117,10 +128,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-					<!-- 	 <configuration>
-							 <additionalparam>-Xdoclint:none</additionalparam>
-							 <additionalOptions>-Xdoclint:none</additionalOptions>
-						  </configuration> -->
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
@@ -174,8 +181,8 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<forkMode>once</forkMode>
-<!-- 							<argLine>-Djava.library.path=/Users/amu/Work/Code/Free/ShieldAI/repos/binaries</argLine>
- -->						</configuration>
+							<!-- <argLine>-Djava.library.path=/Users/amu/Work/Code/Free/ShieldAI/repos/binaries</argLine> -->
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
