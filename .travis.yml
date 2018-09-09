@@ -155,8 +155,7 @@ script:
   - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID
 
   # now run functionality unit tests 
- # - if [ $TESTS == "tests" ]; then 
-  #  chmod ugo+x automation_tests.sh;
-  #  ./automation_tests.sh;
-  #  fi  
-  - $MADARA_ROOT/bin/test_any
+  - if [ $TESTS == "tests" ]; then 
+    chmod ugo+x automation_tests.sh;
+    ./automation_tests.sh;
+    fi  
