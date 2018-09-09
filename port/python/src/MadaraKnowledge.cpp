@@ -173,8 +173,14 @@ class_<T> define_basic_any(const char * name, const char *doc, I init)
         "Check if fields are supported")
     .def("reader", +[](const T &a) -> object {
         auto buf = a.get_capnp_buffer().asChars();
-        object bytes(handle<>(PyMemoryView_FromMemory(
-                (char *)buf.begin(), buf.size(), PyBUF_READ)));
+        Py_buffer pybuf;
+        int err = PyBuffer_FillInfo(&pybuf, 0, (char*)buf.begin(), buf.size(),
+                                    true, PyBUF_CONTIG_RO);
+        if (err == -1) {
+            PyErr_Print();
+            throw madara::exceptions::MadaraException("Bad python buffer");
+        }
+        object bytes(handle<>(PyMemoryView_FromBuffer(&pybuf)));
         //object bytes(handle<>(PyByteArray_FromStringAndSize(buf.begin(), buf.size())));
         //std::vector<unsigned char> sbuf(buf.begin(), buf.begin() + buf.size());
         return registered_types.at(a.tag())->attr("from_bytes")(bytes);

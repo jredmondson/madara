@@ -88,6 +88,8 @@ namespace madara
         visitor.visit (*this);
       }
 
+      const char *name() const { return name_; }
+
     private:
       const char *name_;
       fn_type fn_;
