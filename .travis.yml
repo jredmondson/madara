@@ -156,6 +156,6 @@ script:
 
   # now run functionality unit tests 
   - if [ $TESTS == "tests" ]; then 
-    chmod ugo+x scripts/madara_automation_tests.sh;
-    scripts/madara_automation_tests.sh;
+    chmod ugo+x automation_tests.sh;
+    ./automation_tests.sh;
     fi  
