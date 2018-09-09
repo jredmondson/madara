@@ -11,6 +11,8 @@
 #include "madara/logger/GlobalLogger.h"
 #include "madara/filters/AggregateFilter.h"
 
+namespace filesystem = boost::filesystem;
+
 namespace madara
 {
   namespace filters
@@ -22,9 +24,10 @@ namespace madara
         knowledge::Variables &)
     {
       std::string last_file;
-      std::string last_crc;
+      std::string str_crc;
+      uint32_t last_crc = 0;
       int64_t last_size = 0;
-      std::string last_path;
+      std::string last_file_path;
 
       // because of the usage of erase, don't auto inc record in for loop
       for (auto record = records.begin (); record != records.end ();)
@@ -61,30 +64,52 @@ namespace madara
             std::size_t last_period = record->first.find_last_of ('.');
 
             if (last_file == "" || 
-                last_file.compare (0, last_file.size (), record->first) != 0)
+                last_file.compare (0, last_file.size (),
+                  record->first.substr (0, last_period)) != 0)
             {
-              if (last_file != "")
+              if (last_file_path != "")
               {
-                // attempt to assemble files
-                int i = 0;
+                if (utility::file_from_fragments (last_file_path, last_crc))
+                {
+                  madara_logger_ptr_log (
+                    madara::logger::global_logger.get (),
+                    logger::LOG_ALWAYS,
+                    "FragmentsToFilesFilter::filter: "
+                    "SUCCESS: file %s is recreated\n",
+                    last_file_path.c_str ()
+                  )
+                }
+                else
+                {
+                  madara_logger_ptr_log (
+                    madara::logger::global_logger.get (),
+                    logger::LOG_ALWAYS,
+                    "FragmentsToFilesFilter::filter: "
+                    "FAIL: file %s is incomplete\n",
+                    last_file_path.c_str ()
+                  )
+                }
               }
 
               // setup the next file
-              last_path = path;
+              last_file_path = path + "/" +
+                record->first.substr (prefix.size () + 1,
+                  last_period - prefix.size () - 1);
               last_file = record->first.substr (0, last_period);
               auto crc_record = records.find (last_file + ".crc");
               auto size_record = records.find (last_file + ".size");
 
               if (crc_record != records.end ())
               {
-                last_crc = crc_record->second.to_string ();
+                last_crc = (uint32_t)crc_record->second.to_integer ();
+                str_crc = crc_record->second.to_string ();
                 last_size = size_record->second.to_integer ();
               } // end if crc record exists in the incoming records
             } // if we need to set a new crc and last record
 
-            if (last_crc != "")
+            if (str_crc != "")
             {
-              filename += "." + last_crc + ".frag";
+              filename += "." + str_crc + ".frag";
               is_fragment = true;
 
               // create directory that file needs to exist in
@@ -110,16 +135,18 @@ namespace madara
                 "FragmentsToFilesFilter::filter: "
                 "found fragment %s:\n"
                 "  last_file=%s\n"
-                "  last_crc=%s\n"
+                "  last_file_path=%s\n"
+                "  str_crc=%s\n"
                 "  last_size=%" PRId64 "\n"
                 "  saved to %s\n",
                 record->first.c_str (),
                 last_file.c_str (),
-                last_crc.c_str (),
+                last_file_path.c_str (),
+                str_crc.c_str (),
                 last_size,
                 filename.c_str ()
               )
-            } // end if last_crc is not null
+            } // end if str_crc is not null
           } // end if begins with a prefix mapping to directory
           else
           {
@@ -159,6 +186,30 @@ namespace madara
           ++record;
         } // end no clear fragments needed
       } // end iteration over incoming records
+
+      if (last_file_path != "")
+      {
+        if (utility::file_from_fragments (last_file_path, last_crc))
+        {
+          madara_logger_ptr_log (
+            madara::logger::global_logger.get (),
+            logger::LOG_ALWAYS,
+            "FragmentsToFilesFilter::filter: "
+            "SUCCESS: file %s is recreated\n",
+            last_file_path.c_str ()
+          )
+        }
+        else
+        {
+          madara_logger_ptr_log (
+            madara::logger::global_logger.get (),
+            logger::LOG_ALWAYS,
+            "FragmentsToFilesFilter::filter: "
+            "FAIL: file %s is incomplete\n",
+            last_file_path.c_str ()
+          )
+        }
+      }
     } // end filter method
 
   } // end filters namespace

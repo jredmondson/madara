@@ -225,6 +225,18 @@ namespace madara
     MADARA_EXPORT bool filename_has_redirect (const std::string & filename);
 
     /**
+     * Builds a file from fragments that have the format: filename.{}.crc.frag
+     * @param     filename          name of the file to create
+     * @param     crc               crc for completed file
+     * @param     delete_incomplete if true, delete if crc is incorrect
+     * @param     delete_fragments  if true, delete fragments if crc correct
+     * @return    true if resulting file has correct crc
+     **/
+    MADARA_EXPORT bool file_from_fragments (const std::string & filename,
+      uint32_t crc,
+      bool delete_incomplete = true, bool delete_fragments = true);
+
+    /**
      * Expands environment variables referenced in the string. The environment
      * variables must be specified as $(var) and not $var.
      * @param     source      the string to expand
