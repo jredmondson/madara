@@ -154,6 +154,6 @@ script:
   - ls $TRAVIS_BUILD_DIR
   - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $PYTHON $ZMQ $SIMTIME
   - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $PYTHON $ZMQ $SIMTIME
-  - if [ "$TESTS" == "tests"]; then chmod ugo+x scripts/automation_tests.sh; ./automation_tests.sh; fi
+  - if [ "$TESTS" == "tests"]; then chmod ugo+x scripts/automation_tests.sh; ./scripts/automation_tests.sh; fi
 
 
