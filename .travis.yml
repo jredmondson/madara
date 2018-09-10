@@ -157,6 +157,6 @@ script:
 
   # now run functionality unit tests 
   - if [ $TESTS == "tests" ]; then 
-    chmod ugo+x automation_tests.sh;
-    ./automation_tests.sh;
+    chmod ugo+x scripts/automation_tests.sh;
+    scripts/automation_tests.sh;
     fi  
