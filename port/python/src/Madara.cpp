@@ -43,6 +43,14 @@ BOOST_PYTHON_MODULE (madara)
   class_ <std::vector <std::string> > ("StringVector")
     .def(vector_indexing_suite<std::vector<std::string> >());
 
+  class_ <std::vector <madara::knowledge::KnowledgeRecord::Integer> > (
+    "IntegerVector")
+    .def(vector_indexing_suite<std::vector<
+      madara::knowledge::KnowledgeRecord::Integer> >());
+
+  class_ <std::vector <double> > ("DoubleVector")
+    .def(vector_indexing_suite<std::vector<double> >());
+
   define_filters ();
   define_transport ();
   define_knowledge ();
