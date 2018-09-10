@@ -51,115 +51,159 @@ namespace madara
           continue;
         }
 
-        // try to find an appropriate mapping for the record
-        for (auto map : map_)
+        if (record->second.is_binary_file_type ())
         {
-          if (utility::begins_with (record->first, map.first) &&
-              record->second.is_binary_file_type ())
+          // try to find an appropriate mapping for the record
+          for (auto map : map_)
           {
-            prefix = map.first;
-            path = map.second;
-            filename = path + "/" +
-              record->first.substr (prefix.size () + 1);
-            std::size_t last_period = record->first.find_last_of ('.');
-
-            if (last_file == "" || 
-                last_file.compare (0, last_file.size (),
-                  record->first.substr (0, last_period)) != 0)
+            if (utility::begins_with (record->first, map.first))
             {
-              if (last_file_path != "")
+              prefix = map.first;
+              path = map.second;
+              std::string number = record->first.substr (
+                record->first.find_last_of ('.') + 1);
+              std::string base_name = record->first.substr (
+                prefix.size () + 1);
+              base_name.erase (base_name.find_last_of ('.'));
+              base_name.erase (base_name.find_last_of ('.'));
+              std::size_t last_period = record->first.find_last_of ('.');
+
+              // 1 thing missing: we need to remove contents from filename
+              //utility::string_replace (base_name, ".contents", "");
+
+              filename = path + "/" + base_name + ".";
+              filename += number;
+              // base_name.erase (
+              //   (base_name.find_last_of ('.'),
+              //     base_name.find_last_of ('.') - 1));
+
+
+              if (last_file == "" || 
+                  last_file.compare (0, last_file.size (),
+                    record->first.substr (0, last_period)) != 0)
               {
-                if (utility::file_from_fragments (last_file_path, last_crc))
+                if (last_file_path != "")
+                {
+                  if (utility::file_from_fragments (last_file_path, last_crc))
+                  {
+                    madara_logger_ptr_log (
+                      madara::logger::global_logger.get (),
+                      logger::LOG_ALWAYS,
+                      "FragmentsToFilesFilter::filter: "
+                      "SUCCESS: file %s is recreated\n",
+                      last_file_path.c_str ()
+                    )
+                  }
+                  else
+                  {
+                    madara_logger_ptr_log (
+                      madara::logger::global_logger.get (),
+                      logger::LOG_ALWAYS,
+                      "FragmentsToFilesFilter::filter: "
+                      "FAIL: file %s is incomplete\n",
+                      last_file_path.c_str ()
+                    )
+                  }
+                }
+
+                // setup the next file
+                last_file_path = path + "/" +
+                  record->first.substr (prefix.size () + 1,
+                    last_period - prefix.size () - 1 - 9);
+                last_file = prefix + "." + base_name;
+                auto crc_record = records.find (last_file + ".crc");
+                auto size_record = records.find (last_file + ".size");
+
+                if (crc_record != records.end ())
+                {
+                  last_crc = (uint32_t)crc_record->second.to_integer ();
+                  str_crc = crc_record->second.to_string ();
+                } // end if crc record exists in the incoming records
+
+                if (size_record != records.end ())
+                {
+                  last_size = size_record->second.to_integer ();
+                } // end if size exists in the incoming records
+              } // if we need to set a new crc and last record
+
+              if (str_crc != "")
+              {
+                filename += "." + str_crc + ".frag";
+                is_fragment = true;
+
+                // create directory that file needs to exist in
+                std::string directory = utility::extract_path (filename);
+                if (!boost::filesystem::is_directory (directory))
                 {
                   madara_logger_ptr_log (
                     madara::logger::global_logger.get (),
                     logger::LOG_ALWAYS,
                     "FragmentsToFilesFilter::filter: "
-                    "SUCCESS: file %s is recreated\n",
-                    last_file_path.c_str ()
+                    "recursively creating directory %s\n",
+                    directory.c_str ()
                   )
+
+                  boost::filesystem::create_directories (directory);
                 }
-                else
-                {
-                  madara_logger_ptr_log (
-                    madara::logger::global_logger.get (),
-                    logger::LOG_ALWAYS,
-                    "FragmentsToFilesFilter::filter: "
-                    "FAIL: file %s is incomplete\n",
-                    last_file_path.c_str ()
-                  )
-                }
-              }
 
-              // setup the next file
-              last_file_path = path + "/" +
-                record->first.substr (prefix.size () + 1,
-                  last_period - prefix.size () - 1);
-              last_file = record->first.substr (0, last_period);
-              auto crc_record = records.find (last_file + ".crc");
-              auto size_record = records.find (last_file + ".size");
+                record->second.to_file (filename);
 
-              if (crc_record != records.end ())
-              {
-                last_crc = (uint32_t)crc_record->second.to_integer ();
-                str_crc = crc_record->second.to_string ();
-                last_size = size_record->second.to_integer ();
-              } // end if crc record exists in the incoming records
-            } // if we need to set a new crc and last record
-
-            if (str_crc != "")
-            {
-              filename += "." + str_crc + ".frag";
-              is_fragment = true;
-
-              // create directory that file needs to exist in
-              std::string directory = utility::extract_path (filename);
-              if (!boost::filesystem::is_directory (directory))
+                madara_logger_ptr_log (
+                  madara::logger::global_logger.get (),
+                  logger::LOG_ALWAYS,
+                  "FragmentsToFilesFilter::filter: "
+                  "found fragment %s:\n"
+                  "  base_name=%s\n"
+                  "  last_file=%s\n"
+                  "  last_file_path=%s\n"
+                  "  str_crc=%s\n"
+                  "  last_size=%" PRId64 "\n"
+                  "  saved to %s\n",
+                  record->first.c_str (),
+                  base_name.c_str (),
+                  last_file.c_str (),
+                  last_file_path.c_str (),
+                  str_crc.c_str (),
+                  last_size,
+                  filename.c_str ()
+                )
+              } // end if str_crc is not null
+              else
               {
                 madara_logger_ptr_log (
                   madara::logger::global_logger.get (),
                   logger::LOG_ALWAYS,
                   "FragmentsToFilesFilter::filter: "
-                  "recursively creating directory %s\n",
-                  directory.c_str ()
+                  "not fragment %s:\n"
+                  "  base_name=%s\n"
+                  "  last_file=%s\n"
+                  "  last_file_path=%s\n"
+                  "  str_crc=%s\n"
+                  "  last_size=%" PRId64 "\n"
+                  "  saved to %s\n",
+                  record->first.c_str (),
+                  base_name.c_str (),
+                  last_file.c_str (),
+                  last_file_path.c_str (),
+                  str_crc.c_str (),
+                  last_size,
+                  filename.c_str ()
                 )
-
-                boost::filesystem::create_directories (directory);
               }
-
-              record->second.to_file (filename);
-
+            } // end if begins with a prefix mapping to directory
+            else
+            {
               madara_logger_ptr_log (
                 madara::logger::global_logger.get (),
                 logger::LOG_ALWAYS,
                 "FragmentsToFilesFilter::filter: "
-                "found fragment %s:\n"
-                "  last_file=%s\n"
-                "  last_file_path=%s\n"
-                "  str_crc=%s\n"
-                "  last_size=%" PRId64 "\n"
-                "  saved to %s\n",
+                "%s is not a fragment of %s\n",
                 record->first.c_str (),
-                last_file.c_str (),
-                last_file_path.c_str (),
-                str_crc.c_str (),
-                last_size,
-                filename.c_str ()
+                map.first.c_str ()
               )
-            } // end if str_crc is not null
-          } // end if begins with a prefix mapping to directory
-          else
-          {
-            madara_logger_ptr_log (
-              madara::logger::global_logger.get (),
-              logger::LOG_ALWAYS,
-              "FragmentsToFilesFilter::filter: "
-              "%s is not a fragment of %s\n",
-              record->first.c_str (),
-              map.first.c_str ()
-            )
-          } // end does not begin with a known prefix
-        } // end iteration over directory mappings
+            } // end does not begin with a known prefix
+          } // end iteration over directory mappings
+        }
 
         // if this is a fragment, check for delection
         if (is_fragment && clear_fragments_)

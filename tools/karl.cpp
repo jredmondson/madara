@@ -375,6 +375,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-py|--print-stats-periodic] print variable/originator stats at each period\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
         "  [-r|--reduced]           use the reduced message header\n" \
+        "  [-rhz|--read-hz hz]      hertz rate of read threads\n" \
         "  [-s|--save file]         save the resulting knowledge base as karl\n" \
         "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
         "                           binary checkpoint\n" \
@@ -717,6 +718,16 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-r" || arg1 == "--reduced")
     {
       settings.send_reduced_message_header = true;
+    }
+    else if (arg1 == "-rhz" || arg1 == "--read-hz")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> settings.read_thread_hertz;
+      }
+
+      ++i;
     }
     else if (arg1 == "-s" || arg1 == "--save")
     {

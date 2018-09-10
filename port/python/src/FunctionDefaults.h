@@ -18,6 +18,8 @@
 #include <boost/python/overloads.hpp>
 #include <boost/python/return_internal_reference.hpp>
 
+#include "madara/utility/Utility.h"
+
 /********************************************************
  * Settings overloads
  ********************************************************/
@@ -99,5 +101,11 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_create_vector_2_of_3,
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_from_kb_2_of_3,
   from_kb, 2, 3)
+
+BOOST_PYTHON_FUNCTION_OVERLOADS (file_from_fragments_2_of_4,
+  madara::utility::file_from_fragments, 2, 4)
+
+BOOST_PYTHON_FUNCTION_OVERLOADS (file_crc_1_of_2,
+  madara::utility::file_crc, 1, 2)
 
 #endif

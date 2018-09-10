@@ -56,7 +56,9 @@ void test_fragments_to_files_filter (void)
   knowledge::KnowledgeBase kb;
   madara::knowledge::Variables vars (&kb.get_context ());
   knowledge::FileFragmenter fragmenter (filename);
-  fragmenter.create_vector ("agent.0.sandbox.files.file.images/manaus.jpg", kb);
+  fragmenter.create_vector ("agent.0.sandbox.files.file.images/manaus.jpg.contents", kb);
+  kb.set ("agent.0.sandbox.files.file.images/manaus.jpg.size",
+    utility::file_size (filename));
   kb.set ("agent.0.sandbox.files.file.images/manaus.jpg.crc", crc);
   kb.set ("a0", 1);
   kb.set ("b2", 2);

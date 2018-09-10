@@ -1262,6 +1262,16 @@ void handle_arguments (int argc, char ** argv)
     {
       settings.send_reduced_message_header = true;
     }
+    else if (arg1 == "-rhz" || arg1 == "--read-hz")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> settings.read_thread_hertz;
+      }
+
+      ++i;
+    }
     else if (arg1 == "-rq" || arg1 == "--requests")
     {
       if (i + 1 < argc)
@@ -1445,6 +1455,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-p|--prefix prefix]     prefix of this agent / service (e.g. agent.0)\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
         "  [-r|--reduced]           use the reduced message header\n" \
+        "  [-rhz|--read-hz hz]      hertz rate of read threads\n" \
         "  [-rq|--requests size]    size of the requests queue (def 50)\n" \
         "  [-s|--save file]         save the resulting knowledge base as karl\n" \
         "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
