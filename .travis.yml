@@ -12,8 +12,6 @@ compiler:
   - gcc
 
 env:
-  matrix:
-  global:
     - MADARA_ROOT=$TRAVIS_BUILD_DIR
     - GAMS_ROOT=$TRAVIS_BUILD_DIR/gams
     - MPC_ROOT=$TRAVIS_BUILD_DIR/MPC
