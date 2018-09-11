@@ -1,4 +1,4 @@
-#include "boost/filesystem.hpp"
+
 #include "FragmentsToFilesFilter.h"
 
 #include <string>
@@ -10,8 +10,6 @@
 #include "madara/knowledge/containers/Vector.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/filters/AggregateFilter.h"
-
-namespace filesystem = boost::filesystem;
 
 namespace madara
 {
@@ -42,7 +40,7 @@ namespace madara
         {
           madara_logger_ptr_log (
             madara::logger::global_logger.get (),
-            logger::LOG_ALWAYS,
+            logger::LOG_MINOR,
             "FragmentsToFilesFilter::filter: "
             "WARNING: record %s has abnormal name. Skipping.\n",
             record->first.c_str ()
@@ -88,7 +86,7 @@ namespace madara
                   {
                     madara_logger_ptr_log (
                       madara::logger::global_logger.get (),
-                      logger::LOG_ALWAYS,
+                      logger::LOG_MAJOR,
                       "FragmentsToFilesFilter::filter: "
                       "SUCCESS: file %s is recreated\n",
                       last_file_path.c_str ()
@@ -98,7 +96,7 @@ namespace madara
                   {
                     madara_logger_ptr_log (
                       madara::logger::global_logger.get (),
-                      logger::LOG_ALWAYS,
+                      logger::LOG_MAJOR,
                       "FragmentsToFilesFilter::filter: "
                       "FAIL: file %s is incomplete\n",
                       last_file_path.c_str ()
@@ -133,24 +131,14 @@ namespace madara
 
                 // create directory that file needs to exist in
                 std::string directory = utility::extract_path (filename);
-                if (!boost::filesystem::is_directory (directory))
-                {
-                  madara_logger_ptr_log (
-                    madara::logger::global_logger.get (),
-                    logger::LOG_ALWAYS,
-                    "FragmentsToFilesFilter::filter: "
-                    "recursively creating directory %s\n",
-                    directory.c_str ()
-                  )
-
-                  boost::filesystem::create_directories (directory);
-                }
+                
+                utility::recursive_mkdir (directory);
 
                 record->second.to_file (filename);
 
                 madara_logger_ptr_log (
                   madara::logger::global_logger.get (),
-                  logger::LOG_ALWAYS,
+                  logger::LOG_MAJOR,
                   "FragmentsToFilesFilter::filter: "
                   "found fragment %s:\n"
                   "  base_name=%s\n"
@@ -172,7 +160,7 @@ namespace madara
               {
                 madara_logger_ptr_log (
                   madara::logger::global_logger.get (),
-                  logger::LOG_ALWAYS,
+                  logger::LOG_MAJOR,
                   "FragmentsToFilesFilter::filter: "
                   "not fragment %s:\n"
                   "  base_name=%s\n"
@@ -195,7 +183,7 @@ namespace madara
             {
               madara_logger_ptr_log (
                 madara::logger::global_logger.get (),
-                logger::LOG_ALWAYS,
+                logger::LOG_MINOR,
                 "FragmentsToFilesFilter::filter: "
                 "%s is not a fragment of %s\n",
                 record->first.c_str (),
@@ -210,7 +198,7 @@ namespace madara
         {
           madara_logger_ptr_log (
             madara::logger::global_logger.get (),
-            logger::LOG_ALWAYS,
+            logger::LOG_MINOR,
             "FragmentsToFilesFilter::filter: "
             "removing variable %s\n",
             record->first.c_str ()
@@ -222,7 +210,7 @@ namespace madara
         {
           madara_logger_ptr_log (
             madara::logger::global_logger.get (),
-            logger::LOG_ALWAYS,
+            logger::LOG_MINOR,
             "FragmentsToFilesFilter::filter: "
             "%s is not being deleted\n",
             record->first.c_str ()
@@ -237,7 +225,7 @@ namespace madara
         {
           madara_logger_ptr_log (
             madara::logger::global_logger.get (),
-            logger::LOG_ALWAYS,
+            logger::LOG_MAJOR,
             "FragmentsToFilesFilter::filter: "
             "SUCCESS: file %s is recreated\n",
             last_file_path.c_str ()
@@ -247,7 +235,7 @@ namespace madara
         {
           madara_logger_ptr_log (
             madara::logger::global_logger.get (),
-            logger::LOG_ALWAYS,
+            logger::LOG_MAJOR,
             "FragmentsToFilesFilter::filter: "
             "FAIL: file %s is incomplete\n",
             last_file_path.c_str ()

@@ -464,6 +464,13 @@ namespace madara
     bool file_exists (const std::string & filename);
 
     /**
+     * Checks if a a path is a directory
+     * @param path       path to check for directory status
+     * @return  true if the path is a directory
+     **/
+    bool is_directory (const std::string & path);
+
+    /**
      * Returns the size of a file
      * @param filename   path and name of the file to open
      * @return size of the file

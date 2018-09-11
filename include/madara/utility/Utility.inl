@@ -2,15 +2,19 @@
 #define   _MADARA_UTILITY_INL_
 
 #include <fstream>
+#include <stdio.h>
 #include "Utility.h"
 #include "SimTime.h"
 
 #include "boost/crc.hpp"
 #include "boost/filesystem.hpp"
 
+#include <sys/stat.h>
+#include <errno.h>
 #ifdef _WIN32
   #include "madara/Boost.h"
   #include "boost/asio.hpp"
+  #include <direct.h>
 #else
   #include <pthread.h>
 #endif
@@ -303,6 +307,87 @@ file_exists (const std::string & filename)
   }   
 }
 
+inline bool
+is_directory (const std::string & path)
+{
+#if defined(_WIN32)
+  struct _stat info;
+  if (_stat(path.c_str(), &info) != 0)
+  {
+    return false;
+  }
+  return (info.st_mode & _S_IFDIR) != 0;
+#else 
+  struct stat info;
+  if (stat(path.c_str(), &info) != 0)
+  {
+    return false;
+  }
+  return (info.st_mode & S_IFDIR) != 0;
+#endif
+}
+
+inline bool
+recursive_mkdir (const std::string & path)
+{
+  if (is_directory (path))
+  {
+    return true;
+  }
+
+#ifdef _WIN32
+  int result = _mkdir (path.c_str ());
+#else
+  mode_t mode = 0755;
+  int result = mkdir (path.c_str (), mode);
+#endif
+
+  if (result == 0)
+  {
+    return true;
+  }
+
+  switch (errno)
+  {
+  case ENOENT:
+    
+    if (recursive_mkdir (utility::extract_path (path).c_str ()))
+    {
+#ifdef _WIN32
+      return 0 == _mkdir (path.c_str ());
+#else
+      return 0 == mkdir (path.c_str (), mode);
+#endif
+    }
+
+  default:
+    return false;
+  }
+}
+
+inline std::string
+extract_path (const std::string & name)
+{
+  std::size_t last = name.find_last_of ("/\\");
+
+  if (last != std::string::npos)
+    return name.substr (0, last);
+  
+  return {};
+}
+
+inline std::string
+extract_filename (const std::string & name)
+{
+  std::size_t last = name.find_last_of ("/\\");
+
+  if (last == std::string::npos)
+    return name.substr (0);
+  
+  // return the substring from start to the end of the filename
+  return name.substr (last + 1);
+}
+
 inline unsigned int
 file_size (const std::string & filename)
 {
@@ -395,7 +480,7 @@ bool file_from_fragments (
   if (output)
   {
     // for each file that exists
-    for (int i = 0; boost::filesystem::is_regular_file (frag_file); ++i,
+    for (int i = 0; file_exists (frag_file); ++i,
       frag_file = filename + "." + std::to_string (i) + frag_suffix)
     {
       // read the file
@@ -421,11 +506,10 @@ bool file_from_fragments (
         frag_file = filename + ".0" + frag_suffix;
 
         // for each file that exists
-        for (int i = 0;
-             boost::filesystem::is_regular_file (frag_file); ++i,
+        for (int i = 0; file_exists (frag_file); ++i,
              frag_file = filename + "." + std::to_string (i) + frag_suffix)
         {
-          boost::filesystem::remove (frag_file);
+          remove (frag_file.c_str ());
         }
       }
 
@@ -436,7 +520,7 @@ bool file_from_fragments (
       // crc doesn't check out
       if (delete_incomplete)
       {
-        boost::filesystem::remove (filename);
+        remove (filename.c_str ());
       }
     } // end if crc indicates incomplete file
   }

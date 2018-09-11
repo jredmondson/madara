@@ -735,15 +735,15 @@ int main (int argc, char ** argv)
 {
   handle_arguments (argc, argv);
   
-  // test_replace ();
-  // test_sqrt ();
-  // test_version ();
-  // test_endian_swap ();
-  // test_heaps ();
-  // test_time ();
-  // test_ints ();
-  // test_sleep ();
-  // test_file_fragmenter ();
+  test_replace ();
+  test_sqrt ();
+  test_version ();
+  test_endian_swap ();
+  test_heaps ();
+  test_time ();
+  test_ints ();
+  test_sleep ();
+  test_file_fragmenter ();
   test_file_crc ();
 
   if (madara_fails > 0)

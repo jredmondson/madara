@@ -79,6 +79,17 @@ void test_fragments_to_files_filter (void)
 
   filter.filter (args, context, vars);
 
+  std::cerr << "Testing FragmentsToFilesFilter::filter... ";
+
+  if (utility::file_exists ("files/images/manaus.jpg"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
 }
 
 void test_dynamic_prefix_filter (void)
