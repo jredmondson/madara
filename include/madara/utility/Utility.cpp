@@ -375,46 +375,6 @@ file_to_string (const std::string & filename)
 }
 
 
-std::string
-extract_path (const std::string & name)
-{
-  std::string::size_type start = 0;
-  for (std::string::size_type i = 0; i < name.size (); ++i)
-  {
-    // check for directory delimiters and update start
-    if (name[i] == '/' || name[i] == '\\')
-    {
-      // if they have supplied a directory with an
-      // ending slash, then use the previous start
-      if (i != name.size () - 1)
-        start = i + 1;
-    }
-  }
-
-  // return the substring from 0 with start number of elements
-  return name.substr (0, start);
-}
-
-std::string
-extract_filename (const std::string & name)
-{
-  std::string::size_type start = 0;
-  for (std::string::size_type i = 0; i < name.size (); ++i)
-  {
-    // check for directory delimiters and update start
-    if (name[i] == '/' || name[i] == '\\')
-    {
-      // if they have supplied a directory with an
-      // ending slash, then use the previous start
-      if (i != name.size () - 1)
-        start = i + 1;
-    }
-  }
-
-  // return the substring from start to the end of the filename
-  return name.substr (start, name.size () - start);
-}
-
 /// Expand any environment variables in a string
 std::string
 expand_envs (const std::string & source)

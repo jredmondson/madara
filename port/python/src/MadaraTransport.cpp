@@ -1,5 +1,5 @@
-#ifndef _MADARA_PYTHON_PORT_MADARA_TRANSPORT_H_
-#define _MADARA_PYTHON_PORT_MADARA_TRANSPORT_H_
+#ifndef _MADARA_PYTHON_PORT_MADARA_TRANSPORT_CPP_
+#define _MADARA_PYTHON_PORT_MADARA_TRANSPORT_CPP_
 
 #include <boost/python/detail/wrap_python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
@@ -198,6 +198,10 @@ void define_transport (void)
       &madara::transport::TransportSettings::never_exit,
       "Indicates that the transport should never exit, even in bad states")
 
+    .def_readwrite ("read_thread_hertz",
+      &madara::transport::TransportSettings::read_thread_hertz,
+      "Indicates the read thread hertz rate")
+
     .def_readwrite ("send_reduced_message_header",
       &madara::transport::TransportSettings::send_reduced_message_header,
       "Indicates that a reduced message header should be used for messages")
@@ -284,7 +288,23 @@ void define_transport (void)
         void (madara::transport::QoSTransportSettings::*)(
               madara::filters::BufferFilter *)
       > (&madara::transport::QoSTransportSettings::add_filter),
-      "Adds a python callback to the typed send filter chains")
+      "Adds a buffer filter to the send/receive events")
+    
+    // adds an AggregateFilter to the send chain
+    .def( "add_send_filter",
+      static_cast<
+        void (madara::transport::QoSTransportSettings::*)(
+              madara::filters::AggregateFilter *)
+      > (&madara::transport::QoSTransportSettings::add_send_filter),
+      "Adds an AggregateFilter from madara.filters to send events")
+        
+    // adds an AggregateFilter to the receive chain
+    .def( "add_receive_filter",
+      static_cast<
+        void (madara::transport::QoSTransportSettings::*)(
+              madara::filters::AggregateFilter *)
+      > (&madara::transport::QoSTransportSettings::add_receive_filter),
+      "Adds an AggregateFilter from madara.filters to receive events")
         
     // Clears the rebroadcast filters for a specified type
     .def ("clear_rebroadcast_filters",
@@ -421,5 +441,5 @@ void define_transport (void)
   ;
 }
 
-#endif // _MADARA_PYTHON_PORT_MADARA_TRANSPORT_H_
+#endif // _MADARA_PYTHON_PORT_MADARA_TRANSPORT_CPP_
 

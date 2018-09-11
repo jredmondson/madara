@@ -17,6 +17,7 @@
 #include "MadaraFilters.h"
 #include "MadaraTransport.h"
 #include "MadaraKnowledge.h"
+#include "MadaraUtility.h"
 
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
@@ -53,4 +54,5 @@ BOOST_PYTHON_MODULE (madara)
   define_filters ();
   define_transport ();
   define_knowledge ();
+  define_utility ();
 }

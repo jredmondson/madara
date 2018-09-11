@@ -48,11 +48,11 @@ namespace madara
       /**
        * Prints records and transport context information
        * @param   records           the aggregate records vector
-       * @param   vars              context for querying current program state
+       * @param   transport_context describes transport information
        **/
       inline virtual void filter (knowledge::KnowledgeMap & records,
         const transport::TransportContext & transport_context,
-        knowledge::Variables & vars)
+        knowledge::Variables &)
       {
         std::stringstream buffer;
 
