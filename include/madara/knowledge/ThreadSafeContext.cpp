@@ -2612,8 +2612,8 @@ checkpoint_write_record(
     catch (exceptions::BadAnyAccess& e)
     {
       madara_logger_ptr_log(logger_, logger::LOG_ERROR,
-      "ThreadSafeContext::write_record:" \
-      "Caught %s \n" \
+      "ThreadSafeContext::write_record: Caught\n" \
+      "%s \n" \
       "While writing %s\n",
       e.what(), name.c_str());
       throw e;
