@@ -7,9 +7,6 @@
 #include <sstream>
 #include <assert.h>
 
-
-#include <boost/tokenizer.hpp>
-#include <boost/filesystem.hpp>
 #include "madara/knowledge/CheckpointPlayer.h"
 #include "madara/knowledge/CheckpointStreamer.h"
 #include "madara/knowledge/KnowledgeBase.h"
@@ -288,15 +285,11 @@ public:
 StatsFilter  stats_filter;
 
 // Capnp types and globals
-typedef boost::tokenizer< boost::char_separator<char> > t_tokenizer;
-kj::Vector<kj::StringPtr> capnpImportDirs;
-std::vector<std::string> capnpMsg;
-std::vector<std::string> capnpType;
-bool capnpMsgTypeParamFlag = false;
-bool capnpImportDirsFlag = false;
-
-// capnp param prototypes
-std::vector<std::string> tokenizeString (const std::string& str, const std::string& delimiters);
+kj::Vector<kj::StringPtr> capnp_import_dirs;
+std::vector<std::string> capnp_msg;
+std::vector<std::string> capnp_type;
+bool capnp_msg_type_param_flag = false;
+bool capnp_import_dirs_flag = false;
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
@@ -564,27 +557,27 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-ni" )
     {
       if (i + 1 < argc)
-      {
-        //importPath == "this is the question"
-        std::stringstream dir_names_buffer (argv[i + 1]);
-        std::string dirnames;
-        dir_names_buffer >> dirnames;
-        boost::char_separator<char> sepdir (":");
-        t_tokenizer dirtok (dirnames, sepdir);
-        size_t idx = 0;
+      { 
+        std::string dirnames = argv[i + 1];
 
-        for (t_tokenizer::iterator dirbeg = dirtok.begin ();
-          dirbeg != dirtok.end (); ++dirbeg, ++idx)
+        std::vector<std::string> splitters, tokens, pivot_list;
+        splitters.push_back (":");
+      
+        utility::tokenizer (dirnames, splitters, tokens, pivot_list);
+
+        for (auto token : tokens)
         {
-          capnpImportDirs.add (*dirbeg);
+          capnp_import_dirs.add (token);
         }
-        capnpImportDirsFlag = true;
+
+        capnp_import_dirs_flag = true;
       }
       else
       {
         //print out error log
-        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_TRACE,
+        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
           "ERROR: parameter -ni dir1[:dir2:dir3]\n");
+        exit (-1);
       }
 
       ++i;
@@ -593,29 +586,45 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream msgtype_buffer (argv[i + 1]);
-        std::string msgtypepair;
-        msgtype_buffer >> msgtypepair;
-        std::vector<std::string> v = tokenizeString (msgtypepair,std::string (":"));
-        capnpMsg.push_back (v[0]);
-        capnpType.push_back (v[1]);
-        capnpMsgTypeParamFlag = true;
+        std::string msgtype_pair = argv[i + 1];
+
+        std::vector<std::string> splitters, tokens, pivot_list;
+        splitters.push_back (":");
+      
+        utility::tokenizer (msgtype_pair, splitters, tokens, pivot_list);
+
+        if (tokens.size () == 2)
+        {
+          capnp_msg.push_back (tokens[0]);
+          capnp_type.push_back (tokens[1]);
+        }
+        else
+        {
+          //print out error log
+          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+            "ERROR: parameter -n requires two tokens, "
+            "in the form 'msg:type'\n");
+          exit (-1);
+        }
+
+        capnp_msg_type_param_flag = true;
       }
       else
       {
         //print out error log
         madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
           "ERROR: parameter [-n|] msg:type\n");
+        exit (-1);
       }
 
       ++i;
     }
     else if (arg1 == "-nf" || arg1 == "--capnp")
     {
-      if ( i + 1 < argc)
+      if (i + 1 < argc)
       {
-        //capnpImportDirsFlag && capnpMsgTypeParamFlag
-        if ( ! capnpImportDirsFlag )
+        //capnp_import_dirs_flag && capnp_msg_type_param_flag
+        if (!capnp_import_dirs_flag)
         {
           //write loggercode and continue
           madara_logger_ptr_log (
@@ -624,7 +633,8 @@ void handle_arguments (int argc, char ** argv)
           ++i;
           continue;
         }
-        if ( ! capnpMsgTypeParamFlag )
+        
+        if (!capnp_msg_type_param_flag)
         {
           //write loggercode and continue
           madara_logger_ptr_log (
@@ -633,33 +643,29 @@ void handle_arguments (int argc, char ** argv)
           ++i;
           continue;
         }
-        //displayName == "the ending file name??"
+
         std::string tagname;
 
-        //diskPath == "the cmd line arg"
-        std::stringstream file_names_buffer (argv[i + 1]);
-        std::string filename;
-        file_names_buffer >> filename;
+        std::string filename = argv[i + 1];
 
         static capnp::SchemaParser schparser;
         capnp::ParsedSchema ps;
         ps = schparser.parseDiskFile (
-          filename, filename, capnpImportDirs.asPtr ());
+          filename, filename, capnp_import_dirs.asPtr ());
 
-        boost::char_separator<char> sep (":");
         std::string msg;
         std::string typestr;
         capnp::ParsedSchema ps_type;
         size_t idx = 0;
 
-        for (idx = 0; idx < capnpMsg.size () ; ++idx)
+        for (idx = 0; idx < capnp_msg.size (); ++idx)
         {
-          msg = capnpMsg[idx];
-          typestr = capnpType[idx];
+          msg = capnp_msg[idx];
+          typestr = capnp_type[idx];
           ps_type = ps.getNested (typestr);
 
-          if ( ! madara::knowledge::AnyRegistry::register_schema (
-            capnpMsg[idx].c_str (), ps_type.asStruct ()))
+          if (!madara::knowledge::AnyRegistry::register_schema (
+            capnp_msg[idx].c_str (), ps_type.asStruct ()))
           {
             madara_logger_ptr_log (
               logger::global_logger.get (), logger::LOG_ERROR,
@@ -684,7 +690,9 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-o" || arg1 == "--host")
     {
       if (i + 1 < argc)
+      {
         host = argv[i + 1];
+      }
 
       ++i;
     }
@@ -741,21 +749,27 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-s" || arg1 == "--save")
     {
       if (i + 1 < argc)
+      {
         save_location = argv[i + 1];
+      }
 
       ++i;
     }
     else if (arg1 == "-sb" || arg1 == "--save-binary")
     {
       if (i + 1 < argc)
+      {
         save_binary = argv[i + 1];
+      }
 
       ++i;
     }
     else if (arg1 == "-sc" || arg1 == "--save-checkpoint")
     {
       if (i + 1 < argc)
+      {
         save_checkpoint = argv[i + 1];
+      }
 
       ++i;
     }
@@ -771,14 +785,18 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-sff" || arg1 == "--stream-from")
     {
       if (i + 1 < argc)
+      {
         stream_from = argv[i + 1];
+      }
 
       ++i;
     }
     else if (arg1 == "-sj" || arg1 == "--save-json")
     {
       if (i + 1 < argc)
+      {
         save_json = argv[i + 1];
+      }
 
       ++i;
     }
@@ -1114,18 +1132,26 @@ int main (int argc, char ** argv)
   if (save_transport != "")
   {
     if (save_transport_prefix == "")
+    {
       settings.save (save_transport);
+    }
     else
+    {
       settings.save (save_transport, save_transport_prefix);
+    }
   }
 
   // save transport always happens after all possible transport chagnes
   if (save_transport_text != "")
   {
     if (save_transport_prefix == "")
+    {
       settings.save_text (save_transport_text);
+    }
     else
+    {
       settings.save_text (save_transport_text, save_transport_prefix);
+    }
   }
 
   // create a knowledge base and setup our id
@@ -1383,23 +1409,4 @@ int main (int argc, char ** argv)
   }
 
   return 0;
-}
-
-std::vector<std::string> tokenizeString (const std::string& str, const std::string& delimiters)
-{
-  std::vector<std::string> tokens;
-   // Skip delimiters at beginning.
-  std::string::size_type lastPos = str.find_first_not_of (delimiters, 0);
-   // Find first "non-delimiter".
-  std::string::size_type pos = str.find_first_of (delimiters, lastPos);
-
-  while (std::string::npos != pos || std::string::npos != lastPos)
-    {  // Found a token, add it to the vector.
-      tokens.push_back (str.substr (lastPos, pos - lastPos));
-      // Skip delimiters.  Note the "not_of"
-      lastPos = str.find_first_not_of (delimiters, pos);
-      // Find next "non-delimiter"
-      pos = str.find_first_of (delimiters, lastPos);
-   }
-    return tokens;
 }
