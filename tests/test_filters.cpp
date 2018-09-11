@@ -2,6 +2,7 @@
 
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeRecordFilters.h"
+#include "madara/filters/DynamicPredicateFilter.h"
 #include "madara/filters/DynamicPrefixFilter.h"
 #include "madara/filters/DynamicPrefixIntConvert.h"
 #include "madara/filters/DynamicPrefixPrint.h"
@@ -90,6 +91,53 @@ void test_fragments_to_files_filter (void)
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
+}
+
+void test_dynamic_predicate_filter (void)
+{
+  madara::knowledge::KnowledgeBase kb;
+  madara::knowledge::Variables vars (&kb.get_context ());
+
+  // create allowed predicates for agent.0 and agent.1
+  kb.evaluate (
+    "predicates.allowed.size=2;"
+    "predicates.allowed.0='agent.1';"
+    "predicates.allowed.1='agent.3*'");
+
+  filters::DynamicPredicateFilter filter;
+
+  knowledge::KnowledgeMap map;
+  transport::TransportContext context;
+
+  map["agent.0.field1"] = KnowledgeRecord (1);
+  map["agent.0.field2"] = KnowledgeRecord (2);
+  map["agent.1"] = KnowledgeRecord (1);
+  map["agent.1.field1"] = KnowledgeRecord (1);
+  map["agent.1.field2"] = KnowledgeRecord (2);
+  map["agent.2.field1"] = KnowledgeRecord (1);
+  map["agent.2.field2"] = KnowledgeRecord (2);
+  map["agent.3.field1"] = KnowledgeRecord (1);
+  map["agent.3.field2"] = KnowledgeRecord (2);
+
+  std::cerr << "Testing dynamic predicates filter: ";
+
+  filter.filter (map, context, vars);
+
+  if (map.size () == 3)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << map.size () << " elements (should be 3):\n";
+    for (auto element: map)
+    {
+      std::cerr << "  " << element.first << "\n";
+    }
+    ++madara_fails;
+  }
+
 }
 
 void test_dynamic_prefix_filter (void)
@@ -309,6 +357,7 @@ void test_variable_map_filter (void)
 
 int main (int, char **)
 {
+  test_dynamic_predicate_filter ();
   test_dynamic_prefix_filter ();
   test_dynamic_prefix_int_convert ();
   test_prefix_int_convert ();
