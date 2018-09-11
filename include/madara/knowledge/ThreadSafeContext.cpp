@@ -2605,7 +2605,19 @@ checkpoint_write_record(
     } // end if larger than buffer remaining
 
     auto pre_write = current;
-    current = record->write (current, name, buffer_remaining);
+    try
+    {
+      current = record->write (current, name, buffer_remaining);
+    }
+    catch (exceptions::BadAnyAccess& e)
+    {
+      madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+      "ThreadSafeContext::write_record: Caught\n" \
+      "%s \n" \
+      "While writing %s\n",
+      e.what(), name.c_str());
+      throw e;
+    }
     encoded_size = current - pre_write;
 
     ++checkpoint_header.updates;
