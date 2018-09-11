@@ -651,7 +651,7 @@ void handle_arguments (int argc, char ** argv)
         static capnp::SchemaParser schparser;
         capnp::ParsedSchema ps;
         ps = schparser.parseDiskFile (
-          filename, filename, capnp_import_dirs.asPtr ());
+          utility::extract_filename (filename), filename, capnp_import_dirs.asPtr ());
 
         std::string msg;
         std::string typestr;
@@ -669,13 +669,15 @@ void handle_arguments (int argc, char ** argv)
           {
             madara_logger_ptr_log (
               logger::global_logger.get (), logger::LOG_ERROR,
-              "CAPNP Failed on file  %s ", filename.c_str ());
+              "CAPNP Failed on file  %s ",
+                utility::extract_filename (filename).c_str ());
           }
           else
           {
             madara_logger_ptr_log (
               logger::global_logger.get (), logger::LOG_TRACE,
-                 "CAPNP Loaded file  %s ", filename.c_str ());
+                 "CAPNP Loaded file  %s ",
+                 utility::extract_filename (filename).c_str ());
           }
         }
       }
