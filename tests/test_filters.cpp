@@ -2,13 +2,16 @@
 
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeRecordFilters.h"
+#include "madara/filters/DynamicPredicateFilter.h"
 #include "madara/filters/DynamicPrefixFilter.h"
 #include "madara/filters/DynamicPrefixIntConvert.h"
 #include "madara/filters/DynamicPrefixPrint.h"
 #include "madara/filters/PrefixPrint.h"
 #include "madara/filters/PrefixIntConvert.h"
+#include "madara/filters/FragmentsToFilesFilter.h"
 #include "madara/filters/VariableMapFilter.h"
 #include "madara/utility/Utility.h"
+#include "madara/knowledge/FileFragmenter.h"
 
 namespace knowledge = madara::knowledge;
 namespace filters = madara::filters;
@@ -40,6 +43,101 @@ madara::knowledge::KnowledgeRecord
   }
 
   return result;
+}
+
+void test_fragments_to_files_filter (void)
+{
+  std::cerr << "Testing fragments to files filter...\n";
+
+  std::string filename = "$(MADARA_ROOT)/tests/images/manaus_hotel_900x1500.jpg";
+  filename = utility::expand_envs (filename);
+
+  uint32_t crc = utility::file_crc (filename);
+
+  knowledge::KnowledgeBase kb;
+  madara::knowledge::Variables vars (&kb.get_context ());
+  knowledge::FileFragmenter fragmenter (filename);
+  fragmenter.create_vector ("agent.0.sandbox.files.file.images/manaus.jpg.contents", kb);
+  kb.set ("agent.0.sandbox.files.file.images/manaus.jpg.size",
+    utility::file_size (filename));
+  kb.set ("agent.0.sandbox.files.file.images/manaus.jpg.crc", crc);
+  kb.set ("a0", 1);
+  kb.set ("b2", 2);
+
+  knowledge::KnowledgeMap args = kb.to_map ("");
+
+  std::cerr << "  crc: " << crc << "\n";
+  std::cerr << "  fragments: " << crc << "\n";
+  for (auto entry : args)
+  {
+    std::cerr << "    " << entry.first << "=" << entry.second << "\n";
+  }
+
+  filters::FragmentsToFilesFilter filter;
+  transport::TransportContext context;
+
+  filter.set_dir_mapping ("agent.0.sandbox.files.file", "files");
+
+  filter.filter (args, context, vars);
+
+  std::cerr << "Testing FragmentsToFilesFilter::filter... ";
+
+  if (utility::file_exists ("files/images/manaus.jpg"))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+}
+
+void test_dynamic_predicate_filter (void)
+{
+  madara::knowledge::KnowledgeBase kb;
+  madara::knowledge::Variables vars (&kb.get_context ());
+
+  // create allowed predicates for agent.0 and agent.1
+  kb.evaluate (
+    "predicates.allowed.size=2;"
+    "predicates.allowed.0='agent.1';"
+    "predicates.allowed.1='agent.3*'");
+
+  filters::DynamicPredicateFilter filter;
+
+  knowledge::KnowledgeMap map;
+  transport::TransportContext context;
+
+  map["agent.0.field1"] = KnowledgeRecord (1);
+  map["agent.0.field2"] = KnowledgeRecord (2);
+  map["agent.1"] = KnowledgeRecord (1);
+  map["agent.1.field1"] = KnowledgeRecord (1);
+  map["agent.1.field2"] = KnowledgeRecord (2);
+  map["agent.2.field1"] = KnowledgeRecord (1);
+  map["agent.2.field2"] = KnowledgeRecord (2);
+  map["agent.3.field1"] = KnowledgeRecord (1);
+  map["agent.3.field2"] = KnowledgeRecord (2);
+
+  std::cerr << "Testing dynamic predicates filter: ";
+
+  filter.filter (map, context, vars);
+
+  if (map.size () == 3)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    std::cerr << map.size () << " elements (should be 3):\n";
+    for (auto element: map)
+    {
+      std::cerr << "  " << element.first << "\n";
+    }
+    ++madara_fails;
+  }
+
 }
 
 void test_dynamic_prefix_filter (void)
@@ -259,11 +357,13 @@ void test_variable_map_filter (void)
 
 int main (int, char **)
 {
+  test_dynamic_predicate_filter ();
   test_dynamic_prefix_filter ();
   test_dynamic_prefix_int_convert ();
   test_prefix_int_convert ();
   test_print_filter_compile ();
   test_variable_map_filter ();
+  test_fragments_to_files_filter ();
 
   madara::knowledge::KnowledgeRecordFilters filters;
 

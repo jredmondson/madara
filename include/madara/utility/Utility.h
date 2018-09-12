@@ -218,6 +218,25 @@ namespace madara
     MADARA_EXPORT std::string extract_filename (const std::string & name);
 
     /**
+     * Checks the filename for abnormal redirects such as ".."
+     * @param     filename     name of the file to check
+     * @return    true if filename contains "..", "//", or "~""
+     **/
+    MADARA_EXPORT bool filename_has_redirect (const std::string & filename);
+
+    /**
+     * Builds a file from fragments that have the format: filename.{}.crc.frag
+     * @param     filename          name of the file to create
+     * @param     crc               crc for completed file
+     * @param     delete_incomplete if true, delete if crc is incorrect
+     * @param     delete_fragments  if true, delete fragments if crc correct
+     * @return    true if resulting file has correct crc
+     **/
+    MADARA_EXPORT bool file_from_fragments (const std::string & filename,
+      uint32_t crc,
+      bool delete_incomplete = true, bool delete_fragments = true);
+
+    /**
      * Expands environment variables referenced in the string. The environment
      * variables must be specified as $(var) and not $var.
      * @param     source      the string to expand
@@ -445,11 +464,38 @@ namespace madara
     bool file_exists (const std::string & filename);
 
     /**
+     * Checks if a a path is a directory
+     * @param path       path to check for directory status
+     * @return  true if the path is a directory
+     **/
+    bool is_directory (const std::string & path);
+
+    /**
      * Returns the size of a file
      * @param filename   path and name of the file to open
      * @return size of the file
      **/
     unsigned int file_size (const std::string & filename);
+    
+    /**
+     * Returns the size of a file stream and returns the stream
+     * in the same position as when called
+     * 
+     * @param input  the file stream to check
+     * @return size of the stream
+     **/
+    size_t file_size (std::ifstream & input);
+
+    /**
+     * Returns the crc of a file
+     * @param filename   path and name of the file to open
+     * @param max_block  maximum block size to read when processing CRC. This
+     *                   can be important with large files. We provide a
+     *                   reasonable block size by default, but you can adjust
+     *                   as appropriate
+     * @return size of the file
+     **/
+    uint32_t file_crc (const std::string & filename, size_t max_block = 1000000);
     
     /**
      * Waits on a knowledge record to be true without needing KaRL language
@@ -463,7 +509,6 @@ namespace madara
       const knowledge::WaitSettings & settings =
         knowledge::WaitSettings ());
 
-    
 
     /**
      * Waits on a knowledge record to be false without needing KaRL language

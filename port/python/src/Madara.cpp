@@ -17,6 +17,7 @@
 #include "MadaraFilters.h"
 #include "MadaraTransport.h"
 #include "MadaraKnowledge.h"
+#include "MadaraUtility.h"
 
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
@@ -32,6 +33,30 @@
 
 using namespace boost::python;
 
+template <typename Container>
+list stl_to_python (const Container & input)
+{
+  typedef typename Container::value_type T;
+
+  list lst;
+  std::for_each(
+    input.begin (), input.end (), [&] (const T & t) { lst.append (t); });
+
+  return lst;
+}
+
+template <typename Container>
+Container python_to_stl (const list & input)
+{
+  typedef typename Container::value_type T;
+
+  Container vec;
+  stl_input_iterator<T> beg (input), end;
+  std::for_each (beg, end, [&] (const T & t) { vec.push_back (t); });
+
+  return vec;
+}
+
 BOOST_PYTHON_MODULE (madara)
 {
   // Launch the appropriate thread management initialization
@@ -42,7 +67,23 @@ BOOST_PYTHON_MODULE (madara)
   class_ <std::vector <std::string> > ("StringVector")
     .def(vector_indexing_suite<std::vector<std::string> >());
 
+  class_ <std::vector <madara::knowledge::KnowledgeRecord::Integer> > (
+    "IntegerVector")
+    .def(vector_indexing_suite<std::vector<int64_t> >());
+
+  class_ <std::vector <double> > ("DoubleVector")
+    .def(vector_indexing_suite<std::vector<double> >());
+
+  def("to_pydoubles", &stl_to_python<std::vector<double>>);
+
+  def("to_pylongs", &stl_to_python<std::vector<int64_t>>);
+
+  def("from_pydoubles", &python_to_stl<std::vector<double>>);
+
+  def("from_pylongs", &python_to_stl<std::vector<int64_t>>);
+
   define_filters ();
   define_transport ();
   define_knowledge ();
+  define_utility ();
 }

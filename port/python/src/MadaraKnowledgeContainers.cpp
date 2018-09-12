@@ -1,5 +1,5 @@
-#ifndef _MADARA_PYTHON_PORT_MADARA_KNOWLEDGE_CONTAINERS_H_
-#define _MADARA_PYTHON_PORT_MADARA_KNOWLEDGE_CONTAINERS_H_
+#ifndef _MADARA_PYTHON_PORT_MADARA_KNOWLEDGE_CONTAINERS_CPP_
+#define _MADARA_PYTHON_PORT_MADARA_KNOWLEDGE_CONTAINERS_CPP_
 
 #include <boost/python/detail/wrap_python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
@@ -25,8 +25,8 @@
  * @file MadaraKnowledgeContainers.cpp
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains Boost.Python mappings for the C++ MADARA library
- * to a Python module called Madara.
+ * This file contains Boost.Python mappings for madara.knowledge.containers
+ * module
  **/
 
 using namespace boost::python;
@@ -1119,5 +1119,5 @@ void define_knowledge_containers (void)
 }
 
 
-#endif // _MADARA_PYTHON_PORT_MADARA_KNOWLEDGE_CONTAINERS_H_
+#endif // _MADARA_PYTHON_PORT_MADARA_KNOWLEDGE_CONTAINERS_CPP_
 

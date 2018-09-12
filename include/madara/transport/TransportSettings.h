@@ -229,12 +229,10 @@ namespace madara
       /// See madara::transport::Reliabilities for options
       uint32_t reliability;
 
-      /// the id of this process. May be useful for latency gathering
-      /// or testing purposes
+      /// the id of this process (DEPRECATED). You do not need to set this
       uint32_t id;
 
-      /// number of processes expected in the network (best to overestimate
-      /// if building latency tables
+      /// number of processes (DEPRECATED). You do not need to set this
       uint32_t processes;
 
       /// logic to be evaluated after every successful update

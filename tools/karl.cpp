@@ -7,9 +7,6 @@
 #include <sstream>
 #include <assert.h>
 
-
-#include <boost/tokenizer.hpp>
-#include <boost/filesystem.hpp>
 #include "madara/knowledge/CheckpointPlayer.h"
 #include "madara/knowledge/CheckpointStreamer.h"
 #include "madara/knowledge/KnowledgeBase.h"
@@ -138,7 +135,7 @@ public:
 
     std::cerr << std::fixed << std::setprecision (2);
     std::cerr << "from: " << name << ": " << updates << " updates ";
-    std::cerr << "(@" << hertz << "hz)(@" << kbs << "KB/s)\n";
+    std::cerr << " (@" << hertz << "hz) (@" << kbs << "KB/s)\n";
   }
 
   std::string name;
@@ -270,11 +267,11 @@ public:
       size_t bytes = record.second.size ();
       if (record.second.is_integer_type ())
       {
-        bytes *= sizeof(int64_t);
+        bytes *= sizeof (int64_t);
       }
       else if (record.second.is_double_type ())
       {
-        bytes *= sizeof(double);
+        bytes *= sizeof (double);
       }
 
       // update bytes sent by originator
@@ -288,15 +285,11 @@ public:
 StatsFilter  stats_filter;
 
 // Capnp types and globals
-typedef boost::tokenizer< boost::char_separator<char> > t_tokenizer;
-kj::Vector<kj::StringPtr> capnpImportDirs;
-std::vector<std::string> capnpMsg;
-std::vector<std::string> capnpType;
-bool capnpMsgTypeParamFlag = false;
-bool capnpImportDirsFlag = false;
-
-// capnp param prototypes
-std::vector<std::string> tokenizeString(const std::string& str, const std::string& delimiters);
+kj::Vector<kj::StringPtr> capnp_import_dirs;
+std::vector<std::string> capnp_msg;
+std::vector<std::string> capnp_type;
+bool capnp_msg_type_param_flag = false;
+bool capnp_import_dirs_flag = false;
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
@@ -344,7 +337,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else if (arg1 == "-h" || arg1 == "--help")
     {
-      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
         "\nProgram summary for %s [options] [Logic]:\n\n" \
         "Evaluates KaRL logic from command line or file.\n\noptions:\n" \
         "  [-a|--after-wait]        Evaluate after wait, rather than before wait\n" \
@@ -375,6 +368,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-py|--print-stats-periodic] print variable/originator stats at each period\n" \
         "  [-q|--queue-length size] size of network buffers in bytes\n" \
         "  [-r|--reduced]           use the reduced message header\n" \
+        "  [-rhz|--read-hz hz]      hertz rate of read threads\n" \
         "  [-s|--save file]         save the resulting knowledge base as karl\n" \
         "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
         "                           binary checkpoint\n" \
@@ -429,7 +423,7 @@ void handle_arguments (int argc, char ** argv)
 
         if (debug)
         {
-          madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
             "\nReading logic from file %s:\n",
             filename.c_str ());
         }
@@ -534,7 +528,7 @@ void handle_arguments (int argc, char ** argv)
 #ifdef _USE_LZ4_
       lz4_filters.push_back (filters::LZ4BufferFilter ());
       load_checkpoint_settings.buffer_filters.push_back (
-        &(*lz4_filters.rbegin ()));
+        & (*lz4_filters.rbegin ()));
 #else
       madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
         "ERROR: parameter (-lz4l|--lz4-load) requires feature lz4\n");
@@ -545,7 +539,7 @@ void handle_arguments (int argc, char ** argv)
 #ifdef _USE_LZ4_
       lz4_filters.push_back (filters::LZ4BufferFilter ());
       save_checkpoint_settings.buffer_filters.push_back (
-        &(*lz4_filters.rbegin ()));
+        & (*lz4_filters.rbegin ()));
 #else
       madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
         "ERROR: parameter (-lz4s|--lz4-save) requires feature lz4\n");
@@ -562,111 +556,135 @@ void handle_arguments (int argc, char ** argv)
     }
     else if (arg1 == "-ni" )
     {
-      if ( i+1 < argc)
-      {
-        //importPath == "this is the question"
-        std::stringstream dir_names_buffer (argv[i + 1]);
-        std::string dirnames;
-        dir_names_buffer >> dirnames;
-        boost::char_separator<char> sepdir(":");
-        t_tokenizer dirtok(dirnames, sepdir);
-        size_t idx = 0;
+      if (i + 1 < argc)
+      { 
+        std::string dirnames = argv[i + 1];
 
-        for (t_tokenizer::iterator dirbeg = dirtok.begin(); dirbeg != dirtok.end(); ++dirbeg,++idx)
+        std::vector<std::string> splitters, tokens, pivot_list;
+        splitters.push_back (":");
+      
+        utility::tokenizer (dirnames, splitters, tokens, pivot_list);
+
+        for (auto token : tokens)
         {
-          capnpImportDirs.add(*dirbeg);
+          capnp_import_dirs.add (token);
         }
-        capnpImportDirsFlag = true;
-      }else
+
+        capnp_import_dirs_flag = true;
+      }
+      else
       {
         //print out error log
-        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_TRACE,
-                               "ERROR: parameter -ni dir1[:dir2:dir3]\n");
-     }
+        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+          "ERROR: parameter -ni dir1[:dir2:dir3]\n");
+        exit (-1);
+      }
 
       ++i;
     }
     else if (arg1 == "-n")
     {
-      if ( i+1 < argc)
+      if (i + 1 < argc)
       {
-        std::stringstream msgtype_buffer (argv[i + 1]);
-        std::string msgtypepair;
-        msgtype_buffer >> msgtypepair;
-        std::vector<std::string> v = tokenizeString(msgtypepair,std::string(":"));
-        capnpMsg.push_back(v[0]);
-        capnpType.push_back(v[1]);
-        capnpMsgTypeParamFlag = true;
-      }else
+        std::string msgtype_pair = argv[i + 1];
+
+        std::vector<std::string> splitters, tokens, pivot_list;
+        splitters.push_back (":");
+      
+        utility::tokenizer (msgtype_pair, splitters, tokens, pivot_list);
+
+        if (tokens.size () == 2)
+        {
+          capnp_msg.push_back (tokens[0]);
+          capnp_type.push_back (tokens[1]);
+        }
+        else
+        {
+          //print out error log
+          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
+            "ERROR: parameter -n requires two tokens, "
+            "in the form 'msg:type'\n");
+          exit (-1);
+        }
+
+        capnp_msg_type_param_flag = true;
+      }
+      else
       {
         //print out error log
         madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
-                               "ERROR: parameter [-n|] msg:type\n");
+          "ERROR: parameter [-n|] msg:type\n");
+        exit (-1);
       }
 
       ++i;
     }
     else if (arg1 == "-nf" || arg1 == "--capnp")
     {
-      if ( i + 1 < argc)
+      if (i + 1 < argc)
       {
-        //capnpImportDirsFlag && capnpMsgTypeParamFlag
-        if ( ! capnpImportDirsFlag )
+        //capnp_import_dirs_flag && capnp_msg_type_param_flag
+        if (!capnp_import_dirs_flag)
         {
           //write loggercode and continue
-          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
-                                 "ERROR: parameter -ni is missing or must precede -nf param\n");
+          madara_logger_ptr_log (
+            logger::global_logger.get (), logger::LOG_ERROR,
+            "ERROR: parameter -ni is missing or must precede -nf param\n");
           ++i;
           continue;
         }
-        if ( ! capnpMsgTypeParamFlag )
+        
+        if (!capnp_msg_type_param_flag)
         {
           //write loggercode and continue
-          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
-                                 "ERROR: parameter -n is missing or must precede -nf param\n");
+          madara_logger_ptr_log (
+            logger::global_logger.get (), logger::LOG_ERROR,
+            "ERROR: parameter -n is missing or must precede -nf param\n");
           ++i;
           continue;
         }
-        //displayName == "the ending file name??"
+
         std::string tagname;
 
-        //diskPath == "the cmd line arg"
-        std::stringstream file_names_buffer (argv[i + 1]);
-        std::string filename;
-        file_names_buffer >> filename;
-        boost::filesystem::path p(filename);
+        std::string filename = argv[i + 1];
 
         static capnp::SchemaParser schparser;
         capnp::ParsedSchema ps;
-        ps = schparser.parseDiskFile(p.filename(),filename,capnpImportDirs.asPtr());
+        ps = schparser.parseDiskFile (
+          utility::extract_filename (filename), filename, capnp_import_dirs.asPtr ());
 
-        boost::char_separator<char> sep(":");
         std::string msg;
         std::string typestr;
         capnp::ParsedSchema ps_type;
         size_t idx = 0;
 
-        for (idx = 0; idx < capnpMsg.size() ; ++idx)
+        for (idx = 0; idx < capnp_msg.size (); ++idx)
         {
-          msg = capnpMsg[idx];
-          typestr = capnpType[idx];
-          ps_type = ps.getNested(typestr);
+          msg = capnp_msg[idx];
+          typestr = capnp_type[idx];
+          ps_type = ps.getNested (typestr);
 
-          if ( ! madara::knowledge::AnyRegistry::register_schema(capnpMsg[idx].c_str(), ps_type.asStruct()))
+          if (!madara::knowledge::AnyRegistry::register_schema (
+            capnp_msg[idx].c_str (), ps_type.asStruct ()))
           {
-            madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
-                                   "CAPNP Failed on file  %s ", p.filename().c_str());
-          } else {
-            madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_TRACE,
-                 "CAPNP Loaded file  %s ", p.filename().c_str());
+            madara_logger_ptr_log (
+              logger::global_logger.get (), logger::LOG_ERROR,
+              "CAPNP Failed on file  %s ",
+                utility::extract_filename (filename).c_str ());
           }
-
-
+          else
+          {
+            madara_logger_ptr_log (
+              logger::global_logger.get (), logger::LOG_TRACE,
+                 "CAPNP Loaded file  %s ",
+                 utility::extract_filename (filename).c_str ());
+          }
         }
-      }else
+      }
+      else
       {
         madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
-                               "ERROR: parameter [-nf|--capnp] filename\n");
+          "ERROR: parameter [-nf|--capnp] filename\n");
       }
 
       ++i;
@@ -674,7 +692,9 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-o" || arg1 == "--host")
     {
       if (i + 1 < argc)
+      {
         host = argv[i + 1];
+      }
 
       ++i;
     }
@@ -718,24 +738,40 @@ void handle_arguments (int argc, char ** argv)
     {
       settings.send_reduced_message_header = true;
     }
+    else if (arg1 == "-rhz" || arg1 == "--read-hz")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> settings.read_thread_hertz;
+      }
+
+      ++i;
+    }
     else if (arg1 == "-s" || arg1 == "--save")
     {
       if (i + 1 < argc)
+      {
         save_location = argv[i + 1];
+      }
 
       ++i;
     }
     else if (arg1 == "-sb" || arg1 == "--save-binary")
     {
       if (i + 1 < argc)
+      {
         save_binary = argv[i + 1];
+      }
 
       ++i;
     }
     else if (arg1 == "-sc" || arg1 == "--save-checkpoint")
     {
       if (i + 1 < argc)
+      {
         save_checkpoint = argv[i + 1];
+      }
 
       ++i;
     }
@@ -751,14 +787,18 @@ void handle_arguments (int argc, char ** argv)
     else if (arg1 == "-sff" || arg1 == "--stream-from")
     {
       if (i + 1 < argc)
+      {
         stream_from = argv[i + 1];
+      }
 
       ++i;
     }
     else if (arg1 == "-sj" || arg1 == "--save-json")
     {
       if (i + 1 < argc)
+      {
         save_json = argv[i + 1];
+      }
 
       ++i;
     }
@@ -800,7 +840,7 @@ void handle_arguments (int argc, char ** argv)
         ssl_filters.push_back (filters::AESBufferFilter ());
         ssl_filters[ssl_filters.size () - 1].generate_key (argv[i + 1]);
         load_checkpoint_settings.buffer_filters.push_back (
-          &(*ssl_filters.rbegin ()));
+          & (*ssl_filters.rbegin ()));
         ++i;
       }
       else
@@ -822,7 +862,7 @@ void handle_arguments (int argc, char ** argv)
         ssl_filters.push_back (filters::AESBufferFilter ());
         ssl_filters[ssl_filters.size () - 1].generate_key (argv[i + 1]);
         save_checkpoint_settings.buffer_filters.push_back (
-          &(*ssl_filters.rbegin ()));
+          & (*ssl_filters.rbegin ()));
         ++i;
       }
       else
@@ -881,7 +921,7 @@ void handle_arguments (int argc, char ** argv)
     }
     else if (arg1 == "-v" || arg1 == "--version")
     {
-      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
         "MADARA version: %s\n",
         utility::get_version ().c_str ());
     }
@@ -1094,18 +1134,26 @@ int main (int argc, char ** argv)
   if (save_transport != "")
   {
     if (save_transport_prefix == "")
+    {
       settings.save (save_transport);
+    }
     else
+    {
       settings.save (save_transport, save_transport_prefix);
+    }
   }
 
   // save transport always happens after all possible transport chagnes
   if (save_transport_text != "")
   {
     if (save_transport_prefix == "")
+    {
       settings.save_text (save_transport_text);
+    }
     else
+    {
       settings.save_text (save_transport_text, save_transport_prefix);
+    }
   }
 
   // create a knowledge base and setup our id
@@ -1128,9 +1176,9 @@ int main (int argc, char ** argv)
       
     save_checkpoint_settings.filename = stream_to;
 
-    auto streamer = utility::mk_unique<knowledge::CheckpointStreamer>(
+    auto streamer = utility::mk_unique<knowledge::CheckpointStreamer> (
       save_checkpoint_settings, kb, 100);
-    kb.attach_streamer(std::move(streamer));
+    kb.attach_streamer (std::move (streamer));
   }
 
   if (stream_from != "")
@@ -1140,7 +1188,7 @@ int main (int argc, char ** argv)
       stream_from.c_str ());
 
     // start the player thread and update in step with STK
-    player.start();
+    player.start ();
   }
 
   if (initbinaries != "")
@@ -1363,23 +1411,4 @@ int main (int argc, char ** argv)
   }
 
   return 0;
-}
-
-std::vector<std::string> tokenizeString(const std::string& str, const std::string& delimiters)
-{
-  std::vector<std::string> tokens;
-   // Skip delimiters at beginning.
-  std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
-   // Find first "non-delimiter".
-  std::string::size_type pos = str.find_first_of(delimiters, lastPos);
-
-  while (std::string::npos != pos || std::string::npos != lastPos)
-    {  // Found a token, add it to the vector.
-      tokens.push_back(str.substr(lastPos, pos - lastPos));
-      // Skip delimiters.  Note the "not_of"
-      lastPos = str.find_first_not_of(delimiters, pos);
-      // Find next "non-delimiter"
-      pos = str.find_first_of(delimiters, lastPos);
-   }
-    return tokens;
 }

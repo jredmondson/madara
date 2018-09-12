@@ -1,5 +1,5 @@
-#ifndef _MADARA_PYTHON_PORT_MADARA_KNOWLEGE_H_
-#define _MADARA_PYTHON_PORT_MADARA_KNOWLEGE_H_
+#ifndef _MADARA_PYTHON_PORT_MADARA_KNOWLEGE_CPP_
+#define _MADARA_PYTHON_PORT_MADARA_KNOWLEGE_CPP_
 
 #include <boost/python/detail/wrap_python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
@@ -23,8 +23,7 @@
  * @file MadaraModule.cpp
  * @author James Edmondson <jedmondson@gmail.com>
  *
- * This file contains Boost.Python mappings for the C++ MADARA library
- * to a Python module called Madara.
+ * This file contains Boost.Python mappings for the madara.knowledge module
  **/
 
 using namespace boost::python;
@@ -593,7 +592,7 @@ void define_knowledge (void)
      "Returns the size of the value")
 
      // returns true if record exists
-     .def ("exists", &madara::knowledge::KnowledgeRecord::size,
+     .def ("exists", &madara::knowledge::KnowledgeRecord::exists,
      "Returns whether the knowledge has been set/modified/created")
 
      // convert to a string
@@ -1351,5 +1350,5 @@ void define_knowledge (void)
 
 }
 
-#endif // _MADARA_PYTHON_PORT_MADARA_KNOWLEGE_H_
+#endif // _MADARA_PYTHON_PORT_MADARA_KNOWLEGE_CPP_
 

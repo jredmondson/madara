@@ -527,6 +527,49 @@ void test_fragment (const std::string & message,
   }
 }
 
+void test_file_crc (void)
+{
+  std::cerr << "Testing file_crc and file_size...\n";
+
+  std::string filename = "$(MADARA_ROOT)/tests/images/manaus_hotel_900x1500.jpg";
+  filename = utility::expand_envs (filename);
+
+  std::vector <uint32_t> crcs;
+
+  // check the file in 1KB blocks
+  crcs.push_back (utility::file_crc (filename, 512));
+  crcs.push_back (utility::file_crc (filename, 1024));
+  crcs.push_back (utility::file_crc (filename, 16384));
+  crcs.push_back (utility::file_crc (filename, 1000000));
+  crcs.push_back (utility::file_crc (filename));
+
+  // read the file in whole and do the crc hash for the full file buffer
+  boost::crc_32_type crc_32_hash;
+  std::ifstream input (filename, std::ios::in | std::ios::binary);
+  std::size_t file_size = utility::file_size (input);
+
+  std::vector<char> buffer (file_size);
+  input.read(buffer.data (), file_size);
+
+  crc_32_hash.process_bytes (buffer.data (), file_size);
+  crcs.push_back (crc_32_hash.checksum ());
+
+  if (crcs[0] != 0 && std::adjacent_find (crcs.begin (), crcs.end (),
+    std::not_equal_to<uint32_t>()) == crcs.end ())
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. crc32 results were:\n";
+    for (auto crc : crcs)
+    {
+      std::cerr << "  " << crc << "\n";
+    }
+    ++madara_fails;
+  }
+}
+
 void test_file_fragmenter (void)
 {
   std::cerr << "Testing FileFragmenter...\n";
@@ -701,6 +744,7 @@ int main (int argc, char ** argv)
   test_ints ();
   test_sleep ();
   test_file_fragmenter ();
+  test_file_crc ();
 
   if (madara_fails > 0)
   {

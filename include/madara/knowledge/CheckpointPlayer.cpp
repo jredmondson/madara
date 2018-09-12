@@ -382,10 +382,12 @@ void CheckpointPlayer::thread_main(CheckpointPlayer *self)
 #endif
     }
 
+    uint64_t raw_wait_time = prev_toi < cur.second.toi ?
+                                 cur.second.toi - prev_toi : 0;
 #ifdef MADARA_FEATURE_SIMTIME
-    uint64_t wait_time = utility::SimTime::duration(cur.second.toi - prev_toi);
+    uint64_t wait_time = utility::SimTime::duration(raw_wait_time);
 #else
-    uint64_t wait_time = cur.second.toi - prev_toi;
+    uint64_t wait_time = raw_wait_time;
 #endif
 
     utility::SecondsDuration sec_wait = sc::nanoseconds{wait_time};
