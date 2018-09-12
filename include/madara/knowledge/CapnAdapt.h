@@ -279,9 +279,9 @@ inline void capn_set(typename C::Builder &builder,
   }
 }
 
-template<typename T, typename C>
+template<typename T, typename C, typename A>
 inline void capn_get(typename C::Reader &reader,
-    const CapnStrList<C> &info, std::vector<T> &val)
+    const CapnStrList<C> &info, std::vector<T, A> &val)
 {
   auto list_reader{(reader.*(info.get))()};
   val.resize(list_reader.size());
@@ -292,9 +292,9 @@ inline void capn_get(typename C::Reader &reader,
   }
 }
 
-template<typename T, typename R, typename B, typename C>
+template<typename T, typename R, typename B, typename C, typename A>
 inline auto capn_set(typename C::Builder &builder,
-    const CapnList<R, B, C> &info, const std::vector<T> &val) ->
+    const CapnList<R, B, C> &info, const std::vector<T, A> &val) ->
   enable_if_<supports_capn_set<T>::value && !std::is_arithmetic<T>::value>
 {
   (builder.*(info.init))(val.size());
@@ -307,9 +307,9 @@ inline auto capn_set(typename C::Builder &builder,
   }
 }
 
-template<typename T, typename R, typename B, typename C>
+template<typename T, typename R, typename B, typename C, typename A>
 inline auto capn_get(typename C::Reader &reader,
-    const CapnList<R, B, C> &info, std::vector<T> &val) ->
+    const CapnList<R, B, C> &info, std::vector<T, A> &val) ->
   enable_if_<supports_capn_get<T>::value && !std::is_arithmetic<T>::value>
 {
   auto list_reader{(reader.*(info.get))()};
@@ -335,9 +335,9 @@ inline auto capn_set(typename C::Builder &builder,
   }
 }
 
-template<typename T, typename R, typename B, typename C>
+template<typename T, typename R, typename B, typename C, typename A>
 inline auto capn_get(typename C::Reader &reader,
-    const CapnList<R, B, C> &info, std::vector<T> &val) ->
+    const CapnList<R, B, C> &info, std::vector<T, A> &val) ->
   enable_if_<std::is_arithmetic<T>::value>
 {
   auto list_reader{(reader.*(info.get))()};
