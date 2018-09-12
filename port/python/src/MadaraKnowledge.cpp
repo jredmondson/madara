@@ -487,6 +487,14 @@ void define_knowledge (void)
      .def ("inc_index", &madara::knowledge::KnowledgeRecord::inc_index,
      "Increments an array element at a particular index")
 
+     // resize an array
+     .def ("resize", &madara::knowledge::KnowledgeRecord::resize,
+     "Resizes an array to a new size")
+
+     // apply knowledge record to a context
+     .def ("apply", &madara::knowledge::KnowledgeRecord::apply,
+     "Apply the knowledge record to a context, given some quality and clock")
+
      // retrieves an index of an array
      .def ("retrieve_index", &madara::knowledge::KnowledgeRecord::retrieve_index,
      "Retrieves an array element at a particular index")
@@ -494,6 +502,14 @@ void define_knowledge (void)
      // sets the double precision
      .def ("set_precision", &madara::knowledge::KnowledgeRecord::set_precision,
      "Sets the double precision, generally for to_string")
+
+     // sets fixed precision
+     .def ("set_fixed", &madara::knowledge::KnowledgeRecord::set_fixed,
+     "Set the output format for doubles to std::fixed for madara logging")
+
+     // sets scientific precision
+     .def ("set_scientific", &madara::knowledge::KnowledgeRecord::set_scientific,
+     "Sets the output format for doubles to std::scientific")
 
      // reset the record to UNCREATED
      .def ("reset_value", &madara::knowledge::KnowledgeRecord::reset_value,
@@ -732,6 +748,34 @@ void define_knowledge (void)
     const madara::knowledge::KnowledgeRecord &) const> (
     &madara::knowledge::KnowledgeRecord::operator==),
     "Compares two records for equality")
+
+    .def ("operator<=",
+    static_cast<bool (
+    madara::knowledge::KnowledgeRecord::*)(
+    const madara::knowledge::KnowledgeRecord &) const> (
+    &madara::knowledge::KnowledgeRecord::operator<=),
+    "Compares two records with less than or equal to")
+
+    .def ("operator>=",
+    static_cast<bool (
+    madara::knowledge::KnowledgeRecord::*)(
+    const madara::knowledge::KnowledgeRecord &) const> (
+    &madara::knowledge::KnowledgeRecord::operator>=),
+    "Compares two records with greater than or equal to")
+
+    .def ("operator>",
+    static_cast<bool (
+    madara::knowledge::KnowledgeRecord::*)(
+    const madara::knowledge::KnowledgeRecord &) const> (
+    &madara::knowledge::KnowledgeRecord::operator>),
+    "Compares two records with greater than")
+
+    .def ("operator<",
+    static_cast<bool (
+    madara::knowledge::KnowledgeRecord::*)(
+    const madara::knowledge::KnowledgeRecord &) const> (
+    &madara::knowledge::KnowledgeRecord::operator<),
+    "Compares two records with less than")
 
     .def ("operator++",
     &madara::knowledge::KnowledgeRecord::operator++,
