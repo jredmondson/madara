@@ -163,7 +163,7 @@ script:
   - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_print_statement ; fi
   - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_save_modifieds ; fi
   - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_shared_record ; fi
-  - if [[ -z "$ANDROID"]] && [[ "$SIMTIME" == "simtime" ]]; then $MADARA_ROOT/bin/test_simtime ; fi
+  - if [ -z "$ANDROID" ] && [ "$SIMTIME" == "simtime" ]; then $MADARA_ROOT/bin/test_simtime ; fi
   - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_system_calls ; fi
   - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_timed_wait ; fi
   - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_utility ; fi
