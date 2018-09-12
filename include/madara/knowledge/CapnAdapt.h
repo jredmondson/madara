@@ -262,13 +262,13 @@ inline void capn_get(typename C::Reader &reader,
 MADARA_MAKE_VAL_SUPPORT_TEST(capn_set, x, capn_set(std::declval<int&>(), x));
 MADARA_MAKE_VAL_SUPPORT_TEST(capn_get, x, capn_get(std::declval<int&>(), x));
 
-template<typename T>
-auto infer_capn_type(type<std::vector<T>>) ->
+template<typename T, typename A>
+auto infer_capn_type(type<std::vector<T, A>>) ->
   capnp::List<decltype(infer_capn_type(type<T>{}))>;
 
-template<typename T, typename C>
+template<typename T, typename C, typename A>
 inline void capn_set(typename C::Builder &builder,
-    const CapnStrList<C> &info, const std::vector<T> &val)
+    const CapnStrList<C> &info, const std::vector<T, A> &val)
 {
   auto list_builder{(builder.*(info.init))(val.size())};
   size_t i = 0;
@@ -321,9 +321,9 @@ inline auto capn_get(typename C::Reader &reader,
   }
 }
 
-template<typename T, typename R, typename B, typename C>
+template<typename T, typename R, typename B, typename C, typename A>
 inline auto capn_set(typename C::Builder &builder,
-    const CapnList<R, B, C> &info, const std::vector<T> &val) ->
+    const CapnList<R, B, C> &info, const std::vector<T, A> &val) ->
   enable_if_<std::is_arithmetic<T>::value>
 {
   (builder.*(info.init))(val.size());
