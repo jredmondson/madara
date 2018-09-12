@@ -592,7 +592,7 @@ void define_knowledge (void)
      "Returns the size of the value")
 
      // returns true if record exists
-     .def ("exists", &madara::knowledge::KnowledgeRecord::size,
+     .def ("exists", &madara::knowledge::KnowledgeRecord::exists,
      "Returns whether the knowledge has been set/modified/created")
 
      // convert to a string
