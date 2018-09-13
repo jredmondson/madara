@@ -105,6 +105,9 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_from_kb_2_of_3,
 BOOST_PYTHON_FUNCTION_OVERLOADS (file_from_fragments_2_of_4,
   madara::utility::file_from_fragments, 2, 4)
 
+BOOST_PYTHON_FUNCTION_OVERLOADS (get_file_progress_3_of_4,
+  madara::utility::get_file_progress, 3, 4)
+
 BOOST_PYTHON_FUNCTION_OVERLOADS (file_crc_1_of_2,
   madara::utility::file_crc, 1, 2)
 

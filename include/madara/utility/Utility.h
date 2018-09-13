@@ -237,6 +237,16 @@ namespace madara
       bool delete_incomplete = true, bool delete_fragments = true);
 
     /**
+     * Builds a file from fragments that have the format: filename.{}.crc.frag
+     * @param     filename          name of the file to create
+     * @param     crc               crc for completed file
+     * @param     expected_size     expected total size of the file (bytes)
+     * @return    size in bytes recieved of the fragments
+     **/
+    MADARA_EXPORT size_t get_file_progress (const std::string & filename,
+      uint32_t crc, size_t expected_size, size_t fragment_size = 60000);
+
+    /**
      * Expands environment variables referenced in the string. The environment
      * variables must be specified as $(var) and not $var.
      * @param     source      the string to expand
