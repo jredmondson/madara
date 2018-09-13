@@ -1147,17 +1147,6 @@ void test_streaming()
     std::cerr << utility::get_time() << ": " << dump << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds{100});
   }
-
-  knowledge::KnowledgeBase kb4;
-  settings.filename = "swat-new.stk";
-  knowledge::CheckpointPlayer player2(kb4.get_context(), settings);
-  player2.start();
-  for (;;) {
-    std::string dump;
-    kb4.to_string(dump);
-    std::cerr << utility::get_time() << ": " << dump << std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-  }
 }
 
 int main (int argc, char * argv[])
