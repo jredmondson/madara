@@ -152,6 +152,7 @@ int main (int, char **)
   knowledge.print (wait_settings.post_print_statement);
 
   madara::knowledge::EvalSettings default_eval;
+  default_eval.delay_sending_modifieds = false;
 
   // termination is done via signalling from the user (Control+C)
   while (!terminated)

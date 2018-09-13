@@ -154,10 +154,12 @@ int main (int argc, char ** argv)
   settings.type = madara::transport::UDP;
   madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
+  wait_settings.delay_sending_modifieds = false;
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id",
+    (madara::knowledge::KnowledgeRecord::Integer) settings.id, wait_settings);
 
   if (settings.id == 0)
   {
@@ -176,7 +178,8 @@ int main (int argc, char ** argv)
     knowledge.wait (compiled, wait_settings);
   }
   
-  knowledge.evaluate (".updates_required = #get_clock ()");
+  knowledge.evaluate (".updates_required = #get_clock ()",
+    madara::knowledge::EvalSettings::SEND);
 
   knowledge.print ();
   

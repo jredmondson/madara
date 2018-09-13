@@ -226,7 +226,8 @@ int main (int argc, char ** argv)
   containers::Counter counter ("counter", knowledge,
     settings.id, settings.processes);
 
-  knowledge.evaluate (".start_time = #get_time()");
+  knowledge.evaluate (".start_time = #get_time()",
+    madara::knowledge::EvalSettings::SEND);
 
   // increment the counter until it is at the target
   while ((total = *counter) < target)
@@ -238,7 +239,8 @@ int main (int argc, char ** argv)
   
   knowledge.evaluate (".end_time = #get_time();"
     ".total_time = .end_time - .start_time;"
-    ".total_time_in_seconds = #double(.total_time) / 1000000000");
+    ".total_time_in_seconds = #double(.total_time) / 1000000000",
+    madara::knowledge::EvalSettings::SEND);
 
   std::cerr << "The final tally of the distributed counter was " <<
     *counter << "\n";

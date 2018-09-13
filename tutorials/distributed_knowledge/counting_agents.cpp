@@ -85,7 +85,8 @@ int main (int argc, char * argv[])
      * Update the knowledge base to include our .id. All variables are zero
      * by default in the knowledge base.
      **/
-    knowledge.set (".id", new_id);
+    knowledge.set (".id", new_id,
+      madara::knowledge::EvalSettings::SEND);
   }
   
   
@@ -129,7 +130,8 @@ int main (int argc, char * argv[])
          * concatenation within the engine.
          **/
          "#print ('Cur agents online: {.cur_agents}  ' +"
-         "        'Max agents online {.max_agents}\n')"
+         "        'Max agents online {.max_agents}\n')",
+        madara::knowledge::EvalSettings::SEND
     );
 
     // Sleep for a second so we limit the number of printouts
@@ -148,6 +150,7 @@ int main (int argc, char * argv[])
   madara::knowledge::EvalSettings eval_settings;
   eval_settings.post_print_statement = 
     "Cur agents online: {.cur_agents}  Max agents online: {.max_agents}\n";
+  eval_settings.delay_sending_modifieds = false;
 
   /**
    * Evaluate the number of agents one last time before we return to the OS

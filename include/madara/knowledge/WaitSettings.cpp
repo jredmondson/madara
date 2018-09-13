@@ -17,9 +17,16 @@ namespace madara
            double t_max_wait_time
     */
 
-    const WaitSettings WaitSettings::DEFAULT        (false, false, true, false, true,  false, "", "", 0.100, -1.0);
-    const WaitSettings WaitSettings::NO_EXPAND      (false, false, true, false, false, false, "", "", 0.100, -1.0);
-    const WaitSettings WaitSettings::DELAY          (true,  false, true, false, true,  false, "", "", 0.100, -1.0);
-    const WaitSettings WaitSettings::DELAY_NO_EXPAND(true,  false, true, false, false, false, "", "", 0.100, -1.0);
+    const WaitSettings WaitSettings::CHECKPOINT       (true,  false, true, false, true,  true,  "", "", 0.100, -1.0);
+    const WaitSettings WaitSettings::DELAY            (true,  false, true, false, true,  false, "", "", 0.100, -1.0);
+    const WaitSettings WaitSettings::DELAY_CHECKPOINT (true,  false, true, false, true,  true,  "", "", 0.100, -1.0);
+    const WaitSettings WaitSettings::DELAY_EXPAND     (true,  false, true, false, true,  false, "", "", 0.100, -1.0);
+    const WaitSettings WaitSettings::DELAY_NO_EXPAND  (true,  false, true, false, false, false, "", "", 0.100, -1.0);
+    const WaitSettings WaitSettings::EXPAND           (true,  false, true, false, true,  false, "", "", 0.100, -1.0);
+    const WaitSettings WaitSettings::NO_EXPAND        (true,  false, true, false, false, false, "", "", 0.100, -1.0);
+    const WaitSettings WaitSettings::NO_EXPAND_CHECKPOINT(true,  false, true, false, true, false, "", "", 0.100, -1.0);
+    const WaitSettings WaitSettings::SEND             (false, false, true, false, true,  false, "", "", 0.100, -1.0);
+    const WaitSettings WaitSettings::SEND_EXPAND      (false, false, true, false, true,  false, "", "", 0.100, -1.0);
+    const WaitSettings WaitSettings::SEND_NO_EXPAND   (false, false, true, false, false, false, "", "", 0.100, -1.0);
   }
 }

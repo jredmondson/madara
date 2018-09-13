@@ -125,6 +125,7 @@ int main (int argc, char ** argv)
   settings.type = madara::transport::MULTICAST;
   madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
+  wait_settings.delay_sending_modifieds = false;
 
   using strvec = std::vector<std::string>;
   using strfloat = std::vector<float>;
@@ -201,7 +202,8 @@ int main (int argc, char ** argv)
     }
   }
 
-  knowledge.evaluate (".updates_required = #get_clock ()");
+  knowledge.evaluate (".updates_required = #get_clock ()",
+    madara::knowledge::EvalSettings::SEND);
 
   print_clocks();
 

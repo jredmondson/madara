@@ -15,9 +15,17 @@ namespace madara
            std::string t_post_print_statement,
     */
 
-    const EvalSettings EvalSettings::DEFAULT        (false, false, true, false, true,  false, "", "");
-    const EvalSettings EvalSettings::NO_EXPAND      (false, false, true, false, false, false, "", "");
-    const EvalSettings EvalSettings::DELAY          (true,  false, true, false, true,  false, "", "");
-    const EvalSettings EvalSettings::DELAY_NO_EXPAND(true,  false, true, false, false, false, "", "");
+    const EvalSettings EvalSettings::DEFAULT        ;
+    const EvalSettings EvalSettings::CHECKPOINT       (true,  false, true, false, true,  true,  "", "");
+    const EvalSettings EvalSettings::DELAY            (true,  false, true, false, true,  false, "", "");
+    const EvalSettings EvalSettings::DELAY_CHECKPOINT (true,  false, true, false, true,  true,  "", "");
+    const EvalSettings EvalSettings::DELAY_EXPAND     (true,  false, true, false, true,  false, "", "");
+    const EvalSettings EvalSettings::DELAY_NO_EXPAND  (true,  false, true, false, false, false, "", "");
+    const EvalSettings EvalSettings::EXPAND           (true,  false, true, false, true,  false, "", "");
+    const EvalSettings EvalSettings::NO_EXPAND        (true,  false, true, false, false, false, "", "");
+    const EvalSettings EvalSettings::NO_EXPAND_CHECKPOINT(true,  false, true, false, true, false, "", "");
+    const EvalSettings EvalSettings::SEND             (false, false, true, false, true,  false, "", "");
+    const EvalSettings EvalSettings::SEND_EXPAND      (false, false, true, false, true,  false, "", "");
+    const EvalSettings EvalSettings::SEND_NO_EXPAND   (false, false, true, false, false, false, "", "");
   }
 }
