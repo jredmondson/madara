@@ -55,29 +55,6 @@ madara::transport::types_to_string (int id)
   return "Custom";
 }
 
-madara::transport::TransportSettings::TransportSettings () : 
-  write_domain (DEFAULT_DOMAIN), 
-  read_threads (1),
-  queue_length (DEFAULT_QUEUE_LENGTH), 
-  type (DEFAULT_TRANSPORT),
-  max_fragment_size (62000),
-  resend_attempts (MAXIMUM_RESEND_ATTEMPTS),
-  fragment_queue_length (5),
-  reliability (DEFAULT_RELIABILITY),
-  id (DEFAULT_ID),
-  processes (DEFAULT_PROCESSES),
-  on_data_received_logic (),
-  delay_launch (false),
-  never_exit (false),
-  send_reduced_message_header (false),
-  slack_time (0),
-  read_thread_hertz (0.0),
-  hosts (),
-  no_sending (false),
-  no_receiving (false)
-{
-}
-
 madara::transport::TransportSettings::TransportSettings (
   const TransportSettings & settings) : 
   write_domain (settings.write_domain),
@@ -99,6 +76,7 @@ madara::transport::TransportSettings::TransportSettings (
   hosts (),
   no_sending (settings.no_sending),
   no_receiving (settings.no_receiving),
+  send_history (settings.send_history),
   read_domains_ (settings.read_domains_)
 {
   hosts.resize (settings.hosts.size ());
@@ -136,6 +114,8 @@ madara::transport::TransportSettings::operator= (
 
   no_sending = settings.no_sending;
   no_receiving = settings.no_receiving;
+
+  send_history = settings.send_history;
 }
 
 madara::transport::TransportSettings::~TransportSettings ()
