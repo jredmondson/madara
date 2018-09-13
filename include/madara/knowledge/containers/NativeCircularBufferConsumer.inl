@@ -151,7 +151,7 @@ NativeCircularBufferConsumer::consume_many (size_t count,std::vector <T> & value
   }
 }
 
-std::vector <KnowledgeRecord>
+inline std::vector <KnowledgeRecord>
 NativeCircularBufferConsumer::consume_many (size_t count, size_t & dropped) const
 {
   check_context (__func__);
