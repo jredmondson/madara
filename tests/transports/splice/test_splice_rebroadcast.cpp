@@ -151,10 +151,12 @@ int main (int argc, char ** argv)
 
   madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
+  wait_settings.delay_sending_modifieds = false;
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (Integer) settings.id);
+  knowledge.set (".id", (Integer) settings.id,
+    madara::knowledge::EvalSettings::SEND);
 
   if (settings.id == 0)
   {

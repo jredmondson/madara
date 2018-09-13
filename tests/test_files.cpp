@@ -45,7 +45,9 @@ int main (int argc, char * argv[])
 
   madara::knowledge::KnowledgeBase knowledge ("", settings);
   
-  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id",
+    (madara::knowledge::KnowledgeRecord::Integer) settings.id,
+    madara::knowledge::EvalSettings::SEND);
   
   // run tests
 //  test_tree_compilation (knowledge);
@@ -68,32 +70,43 @@ void read_and_create_files (madara::knowledge::KnowledgeBase & knowledge)
 {
   knowledge.clear ();
 
-  knowledge.read_file ("sample", madara::utility::expand_envs ("$(MADARA_ROOT)/tests/images/manaus_hotel_100x100.jpg"));
+  knowledge.read_file ("sample",
+    madara::utility::expand_envs ("$(MADARA_ROOT)/tests/images/manaus_hotel_100x100.jpg"),
+    madara::knowledge::EvalSettings::SEND);
   knowledge.write_file ("sample", "sample_copy.jpg");
 
-  knowledge.set (".a_string", "Hello world!");
+  knowledge.set (".a_string", "Hello world!",
+    madara::knowledge::EvalSettings::SEND);
   knowledge.write_file (".a_string", "hello_world.txt");
-  knowledge.read_file ("hello_world", "hello_world.txt");
+  knowledge.read_file ("hello_world", "hello_world.txt",
+    madara::knowledge::EvalSettings::SEND);
   knowledge.write_file ("hello_world", "hello_world_copy.txt");
   
-  knowledge.set (".an_integer", madara::knowledge::KnowledgeRecord::Integer (10));
+  knowledge.set (".an_integer", madara::knowledge::KnowledgeRecord::Integer (10),
+    madara::knowledge::EvalSettings::SEND);
   knowledge.write_file (".an_integer", "ten.txt");
-  knowledge.read_file ("ten", "ten.txt");
+  knowledge.read_file ("ten", "ten.txt",
+    madara::knowledge::EvalSettings::SEND);
   knowledge.write_file ("ten", "ten_copy.txt");
   
-  knowledge.set (".a_double", 12.5);
+  knowledge.set (".a_double", 12.5,
+    madara::knowledge::EvalSettings::SEND);
   knowledge.write_file (".a_double", "twelve.txt");
-  knowledge.read_file ("double", "twelve.txt");
+  knowledge.read_file ("double", "twelve.txt",
+    madara::knowledge::EvalSettings::SEND);
   knowledge.write_file ("double", "twelve_copy.txt");
 
   knowledge.set (".an_xml",
-    "<tree><leaf>15</leaf><leaf>This leaf is empty.</leaf></tree>");
+    "<tree><leaf>15</leaf><leaf>This leaf is empty.</leaf></tree>",
+    madara::knowledge::EvalSettings::SEND);
   knowledge.write_file (".an_xml", "an_xml_file.xml");
-  knowledge.read_file ("a_tree", "an_xml_file.xml");
+  knowledge.read_file ("a_tree", "an_xml_file.xml",
+    madara::knowledge::EvalSettings::SEND);
   knowledge.write_file ("a_tree", "an_xml_file_copy.xml");
 
   
-  knowledge.set ("finished_transmitting");
+  knowledge.set ("finished_transmitting", 1,
+    madara::knowledge::EvalSettings::SEND);
   
 }
 

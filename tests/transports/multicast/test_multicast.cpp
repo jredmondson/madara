@@ -135,7 +135,8 @@ int main (int argc, char ** argv)
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
   knowledge.get_context().set_clock(10);
-  knowledge.set (".id", settings.id);
+  knowledge.set (".id", settings.id,
+    madara::knowledge::EvalSettings::SEND);
 
   auto print_clocks = [&]() {
       std::cerr << "kb clock: " << knowledge.get_context().get_clock() << std::endl;

@@ -77,14 +77,18 @@ int main (int, char **)
   madara::knowledge::CompiledExpression compiled;
   madara::knowledge::CompiledExpression self_state_broadcast;
   madara::knowledge::WaitSettings wait_settings;
+  wait_settings.delay_sending_modifieds = false;
 
   // set my id
-  knowledge.set (".self", id);
-  knowledge.set (".processes", processes);
+  knowledge.set (".self", id,
+    madara::knowledge::EvalSettings::SEND);
+  knowledge.set (".processes", processes,
+    madara::knowledge::EvalSettings::SEND);
 
   // The state of the process to my left dictates my next state
   // if I am the bottom process, I look at the last process
-  knowledge.set (".left", id ? id - 1 : processes - 1);
+  knowledge.set (".left", id ? id - 1 : processes - 1,
+    madara::knowledge::EvalSettings::SEND);
 
   // The state of the process to my right can also dictate my state
   // if I am the top process (i.e. id == processes -1), then my
@@ -92,12 +96,15 @@ int main (int, char **)
   // we're basically wrapping around at both ends. See Dijkstra's third
   // synchronization algorithm defined in Self-stabilizing Systems  in 
   // Spite of Distributed Control
-  knowledge.set (".right", id == processes - 1 ? 0 : id + 1);
+  knowledge.set (".right", id == processes - 1 ? 0 : id + 1,
+    madara::knowledge::EvalSettings::SEND);
 
   // set my stop state
-  knowledge.set (".stop", stop);
+  knowledge.set (".stop", stop,
+    madara::knowledge::EvalSettings::SEND);
   // set my initial value
-  knowledge.set (".init", value);
+  knowledge.set (".init", value,
+    madara::knowledge::EvalSettings::SEND);
 
   // by default, the expression to evaluate is for a non-bottom process
   // if my state does not equal the left state, change my state to left state
@@ -116,7 +123,8 @@ int main (int, char **)
 
   // set initial value of this state to the initial value
   //knowledge.evaluate ("S{.self}=.init");
-  knowledge.set ("S{.self}", value);
+  knowledge.set ("S{.self}", value,
+    madara::knowledge::EvalSettings::SEND);
 
   if (id == 0)
   {

@@ -142,7 +142,8 @@ int main (int argc, char * argv[])
      * Update the knowledge base to include our .id. All variables are zero
      * by default in the knowledge base.
      **/
-    knowledge.set (".id", new_id);
+    knowledge.set (".id", new_id,
+      madara::knowledge::EvalSettings::SEND);
 
     // the 2nd argument is the log level
     if (argc >= 3)
