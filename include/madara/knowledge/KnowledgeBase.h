@@ -1704,7 +1704,7 @@ namespace madara
       int send_modifieds (
         const std::string & prefix = "KnowledgeBase::send_modifieds",
         const EvalSettings & settings =
-          EvalSettings ());
+          EvalSettings::SEND);
 
       /**
        * Clear all modifications to the knowledge base. This action may
