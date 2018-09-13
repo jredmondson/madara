@@ -65,6 +65,10 @@ void test_fragments_to_files_filter (void)
   kb.set ("b2", 2);
 
   knowledge::KnowledgeMap args = kb.to_map ("");
+  knowledge::KnowledgeMap args_less_1 = args;
+
+  args_less_1.erase (
+    "agent.0.sandbox.files.file.images/manaus.jpg.contents.1");
 
   std::cerr << "  crc: " << crc << "\n";
   std::cerr << "  fragments: " << crc << "\n";
@@ -89,6 +93,27 @@ void test_fragments_to_files_filter (void)
   else
   {
     std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+  
+  utility::file_from_fragments ("files/images/manaus.jpg", crc);
+
+  filter.filter (args_less_1, context, vars);
+  
+  std::cerr << "Testing get_file_progress... ";
+
+  size_t received = utility::get_file_progress ("files/images/manaus.jpg",
+    crc, fragmenter.file_size);
+
+  if (received == fragmenter.file_size - 60000)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL." << received << " bytes out of " <<
+      fragmenter.file_size << ", instead of " <<
+      (fragmenter.file_size - received) << "\n";
     ++madara_fails;
   }
 }

@@ -371,6 +371,36 @@ void define_knowledge_containers (void)
       &madara::knowledge::containers::Integer::modify,
       "Marks the record/container as modified to send over transport")
 
+    // exchange integers
+    .def ("exchange",
+      &madara::knowledge::containers::Integer::exchange,
+      "Exchanges the integer at this location with the integer at another" 
+      "location")
+
+    // sets quality
+    .def ("set_quality",
+      &madara::knowledge::containers::Integer::set_quality,
+      "Sets the quality of writing to the variable")
+
+    // gets debugging info 
+    .def ("get_debug_info",
+      &madara::knowledge::containers::Integer::get_debug_info,
+      "Returns the type of the container along with name and any other"
+      "useful information. The provided information should be useful"
+      "for developers wishing to debug container operations, especially"
+      "as it pertains to pending network operations (i.e., when used"
+      "in conjunction with modify")
+
+    // find if integer value is present
+    .def ("is_true",
+      &madara::knowledge::containers::Integer::is_true,
+      "Determines if the value is true")
+
+    // find if integer value is not present
+    .def ("is_false",
+      &madara::knowledge::containers::Integer::is_false,
+      "Determines if the value is false")
+
     // sets the name
     .def ("set_name", 
       static_cast<
@@ -385,6 +415,15 @@ void define_knowledge_containers (void)
       static_cast<
         void (madara::knowledge::containers::Integer::*)(
           const std::string &, madara::knowledge::Variables &
+        )
+      > (&madara::knowledge::containers::Integer::set_name),
+      "Sets the name inside of the Knowledge Base for the container to use")
+
+    // sets the name
+    .def ("set_name", 
+      static_cast<
+        void (madara::knowledge::containers::Integer::*)(
+          const std::string &, madara::knowledge::ThreadSafeContext &
         )
       > (&madara::knowledge::containers::Integer::set_name),
       "Sets the name inside of the Knowledge Base for the container to use")
@@ -439,15 +478,14 @@ void define_knowledge_containers (void)
     .def (self >= madara::knowledge::KnowledgeRecord::Integer())
 
     .def (self > madara::knowledge::KnowledgeRecord::Integer())
-
+    
     .def ("operator++",
     &madara::knowledge::containers::Integer::operator++,
-    "Adds one to the integer")
+    "Adds one to the double")
 
     .def ("operator--",
     &madara::knowledge::containers::Integer::operator--,
-    "Subtracts one from the integer")
-
+    "Subtracts one from the double")
   ;
 
 
@@ -492,6 +530,36 @@ void define_knowledge_containers (void)
       &madara::knowledge::containers::Double::modify,
       "Marks the record/container as modified to send over transport")
 
+    // exchange doubles
+    .def ("exchange",
+      &madara::knowledge::containers::Double::exchange,
+      "Exchanges the double at this location with the integer at another" 
+      "location")
+
+    // sets quality
+    .def ("set_quality",
+      &madara::knowledge::containers::Double::set_quality,
+      "Sets the quality of writing to the variable")
+
+    // gets debugging info 
+    .def ("get_debug_info",
+      &madara::knowledge::containers::Double::get_debug_info,
+      "Returns the type of the container along with name and any other"
+      "useful information. The provided information should be useful"
+      "for developers wishing to debug container operations, especially"
+      "as it pertains to pending network operations (i.e., when used"
+      "in conjunction with modify")
+
+    // find if double value is present
+    .def ("is_true",
+      &madara::knowledge::containers::Double::is_true,
+      "Determines if the value is true")
+
+    // find if double value is not present
+    .def ("is_false",
+      &madara::knowledge::containers::Double::is_false,
+      "Determines if the value is false")
+
     // sets the name
     .def ("set_name", 
       static_cast<
@@ -506,6 +574,15 @@ void define_knowledge_containers (void)
       static_cast<
         void (madara::knowledge::containers::Double::*)(
           const std::string &, madara::knowledge::Variables &
+        )
+      > (&madara::knowledge::containers::Double::set_name),
+      "Sets the name inside of the Knowledge Base for the container to use")
+
+    // sets the name
+    .def ("set_name", 
+      static_cast<
+        void (madara::knowledge::containers::Double::*)(
+          const std::string &, madara::knowledge::ThreadSafeContext &
         )
       > (&madara::knowledge::containers::Double::set_name),
       "Sets the name inside of the Knowledge Base for the container to use")
@@ -621,6 +698,27 @@ void define_knowledge_containers (void)
         args("size"),
         "Resizes the vector to a size"))
 
+    // exchange vectors
+    .def ("exchange",
+      &madara::knowledge::containers::NativeDoubleVector::exchange,
+      "Exchanges the vector at this location with the vector at another"
+      "location")
+
+    // transfer elements of vector to another
+    .def ("transfer_to",
+      &madara::knowledge::containers::NativeDoubleVector::transfer_to,
+      "Transfers elements from this vector to another")
+
+    // copy elements to STL vector
+    .def ("copy_to",
+      &madara::knowledge::containers::NativeDoubleVector::copy_to,
+      "Copies the vector elements to an STL vector of Knowledge Records")
+
+    // find size of a vector
+    .def ("size",
+      &madara::knowledge::containers::NativeDoubleVector::size,
+      "Returns the size of the vector")
+
     // sets the name
     .def ("set_name", 
       static_cast<
@@ -639,15 +737,53 @@ void define_knowledge_containers (void)
       > (&madara::knowledge::containers::NativeDoubleVector::set_name),
       "Sets the name inside of the Knowledge Base for the container to use")
 
+    // sets the name
+    .def ("set_name", 
+      static_cast<
+        void (madara::knowledge::containers::NativeDoubleVector::*)(
+          const std::string &, madara::knowledge::ThreadSafeContext &, int
+        )
+      > (&madara::knowledge::containers::NativeDoubleVector::set_name),
+      "Sets the name inside of the Knowledge Base for the container to use")
+
     // gets the underlying prefix/name
     .def ("set_settings",
       &madara::knowledge::containers::NativeDoubleVector::set_settings,
       "Sets the read/write settings for the container")
 
+    // get a copy of the record for the map
+    .def ("operator[]",
+      &madara::knowledge::containers::NativeDoubleVector::operator[],
+      "Retrieves a copy of the record from the map")
+
+    // set writing quality
+    .def ("set_quality",
+      &madara::knowledge::containers::NativeDoubleVector::set_quality,
+      "Sets the quality of writing to a certain variable from this entity")
+
+    // returns the double
+    .def ("get_debug_info",
+      &madara::knowledge::containers::NativeDoubleVector::get_debug_info,
+      "Returns the type of the container along with name and any other"
+      "useful information. The provided information should be useful"
+      "for developers wishing to debug container operations, especially"
+      "as it pertains to pending network operations (i.e., when used"
+      "in conjunction with modify")
+
     // returns the double
     .def ("to_doubles",
       &madara::knowledge::containers::NativeDoubleVector::to_doubles,
       "Returns the double")
+
+    // find if double value is present
+    .def ("is_true",
+      &madara::knowledge::containers::NativeDoubleVector::is_true,
+      "Determines if the value is true")
+
+    // find if double value is not present
+    .def ("is_false",
+      &madara::knowledge::containers::NativeDoubleVector::is_false,
+      "Determines if the value is false")
 
     // returns the record
     .def ("to_record",
@@ -763,6 +899,27 @@ void define_knowledge_containers (void)
         args("size"),
         "Resizes the vector to a size"))
 
+    // exchange vectors
+    .def ("exchange",
+      &madara::knowledge::containers::NativeIntegerVector::exchange,
+      "Exchanges the vector at this location with the vector at another"
+      "location")
+
+    // transfer elements of vector to another
+    .def ("transfer_to",
+      &madara::knowledge::containers::NativeIntegerVector::transfer_to,
+      "Transfers elements from this vector to another")
+
+    // copy elements to STL vector
+    .def ("copy_to",
+      &madara::knowledge::containers::NativeIntegerVector::copy_to,
+      "Copies the vector elements to an STL vector of Knowledge Records")
+
+    // find size of a vector
+    .def ("size",
+      &madara::knowledge::containers::NativeIntegerVector::size,
+      "Returns the size of the vector")
+
     // sets the name
     .def ("set_name", 
       static_cast<
@@ -781,15 +938,53 @@ void define_knowledge_containers (void)
       > (&madara::knowledge::containers::NativeIntegerVector::set_name),
       "Sets the name inside of the Knowledge Base for the container to use")
 
+    // sets the name
+    .def ("set_name", 
+      static_cast<
+        void (madara::knowledge::containers::NativeIntegerVector::*)(
+          const std::string &, madara::knowledge::ThreadSafeContext &, int
+        )
+      > (&madara::knowledge::containers::NativeIntegerVector::set_name),
+      "Sets the name inside of the Knowledge Base for the container to use")
+
     // gets the underlying prefix/name
     .def ("set_settings",
       &madara::knowledge::containers::NativeIntegerVector::set_settings,
       "Sets the read/write settings for the container")
 
+    // get a copy of the record for the map
+    .def ("operator[]",
+      &madara::knowledge::containers::NativeIntegerVector::operator[],
+      "Retrieves a copy of the record from the map")
+
+    // set writing quality
+    .def ("set_quality",
+      &madara::knowledge::containers::NativeIntegerVector::set_quality,
+      "Sets the quality of writing to a certain variable from this entity")
+
+    // returns the integer
+    .def ("get_debug_info",
+      &madara::knowledge::containers::NativeIntegerVector::get_debug_info,
+      "Returns the type of the container along with name and any other"
+      "useful information. The provided information should be useful"
+      "for developers wishing to debug container operations, especially"
+      "as it pertains to pending network operations (i.e., when used"
+      "in conjunction with modify")
+
     // returns the double
     .def ("to_integers",
       &madara::knowledge::containers::NativeIntegerVector::to_integers,
       "Returns the vector as an iterable vector of integers")
+
+    // find if integer value is present
+    .def ("is_true",
+      &madara::knowledge::containers::NativeIntegerVector::is_true,
+      "Determines if the value is true")
+
+    // find if integer value is not present
+    .def ("is_false",
+      &madara::knowledge::containers::NativeIntegerVector::is_false,
+      "Determines if the value is false")
 
     // returns the record
     .def ("to_record",
@@ -892,6 +1087,12 @@ void define_knowledge_containers (void)
       &madara::knowledge::containers::String::modify,
       "Marks the record/container as modified to send over transport")
 
+    // exchange vectors
+    .def ("exchange",
+      &madara::knowledge::containers::String::exchange,
+      "Exchanges the string at this location with the string at another"
+      "location")
+
     // sets the name
     .def ("set_name", 
       static_cast<
@@ -906,6 +1107,15 @@ void define_knowledge_containers (void)
       static_cast<
         void (madara::knowledge::containers::String::*)(
           const std::string &, madara::knowledge::Variables &
+        )
+      > (&madara::knowledge::containers::String::set_name),
+      "Sets the name inside of the Knowledge Base for the container to use")
+
+    // sets the name
+    .def ("set_name", 
+      static_cast<
+        void (madara::knowledge::containers::String::*)(
+          const std::string &, madara::knowledge::ThreadSafeContext &
         )
       > (&madara::knowledge::containers::String::set_name),
       "Sets the name inside of the Knowledge Base for the container to use")
@@ -934,6 +1144,30 @@ void define_knowledge_containers (void)
     .def ("to_string",
       &madara::knowledge::containers::String::to_string,
       "Returns the container as a string")
+
+    // set writing quality
+    .def ("set_quality",
+      &madara::knowledge::containers::String::set_quality,
+      "Sets the quality of writing to a certain variable from this entity")
+
+    // returns the integer
+    .def ("get_debug_info",
+      &madara::knowledge::containers::String::get_debug_info,
+      "Returns the type of the container along with name and any other"
+      "useful information. The provided information should be useful"
+      "for developers wishing to debug container operations, especially"
+      "as it pertains to pending network operations (i.e., when used"
+      "in conjunction with modify")
+
+    // find if  value is present
+    .def ("is_true",
+      &madara::knowledge::containers::String::is_true,
+      "Determines if the value is true")
+
+    // find if  value is not present
+    .def ("is_false",
+      &madara::knowledge::containers::String::is_false,
+      "Determines if the value is false")
 
     // returns the container as a string
     .def ("set",
