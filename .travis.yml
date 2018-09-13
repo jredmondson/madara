@@ -152,8 +152,8 @@ script:
   - echo "TRAVIS_BUILD_DIR=$TRAVIS_BUILD_DIR"
   - echo ls $TRAVIS_BUILD_DIR
   - ls $TRAVIS_BUILD_DIR
-  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $PYTHON $ZMQ $SIMTIME
-  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $PYTHON $ZMQ $SIMTIME
+  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME
+  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME
   # now run functionality unit tests 
   - echo "Testing basic functionality..."
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_any ; fi
