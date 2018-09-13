@@ -441,7 +441,7 @@ namespace madara
       int read_file (const std::string & knowledge_key,
                      const std::string & filename,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically reads a file into a variable
@@ -455,7 +455,7 @@ namespace madara
         const VariableReference & variable,
         const std::string & filename,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a string
@@ -467,7 +467,7 @@ namespace madara
       int set (const VariableReference & variable,
         const std::string & value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a string
@@ -479,7 +479,7 @@ namespace madara
       int set (const VariableReference & variable,
         std::string && value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a KnowledgeRecord
@@ -491,7 +491,7 @@ namespace madara
       int set (const VariableReference & variable,
         const KnowledgeRecord & value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a KnowledgeRecord
@@ -503,7 +503,7 @@ namespace madara
       int set (const VariableReference & variable,
         KnowledgeRecord && value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a KnowledgeRecord
@@ -515,7 +515,7 @@ namespace madara
       int set (const std::string & key,
         const KnowledgeRecord & value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a KnowledgeRecord
@@ -527,7 +527,7 @@ namespace madara
       int set (const std::string & key,
         KnowledgeRecord && value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to an integer 1
@@ -537,7 +537,7 @@ namespace madara
        **/
       int set (const VariableReference & variable,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false)) {
+          EvalSettings (true, false, true, false, false)) {
         return set (variable, 1, settings);
       }
 
@@ -551,7 +551,7 @@ namespace madara
       int set (const VariableReference & variable,
         const std::vector <double> & value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a double array.
@@ -563,7 +563,7 @@ namespace madara
       int set (const VariableReference & variable,
         std::vector <double> && value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a double array.
@@ -577,7 +577,7 @@ namespace madara
         const double * value,
         uint32_t size,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of an array index to a value.
@@ -591,7 +591,7 @@ namespace madara
       int set_index (const VariableReference & variable,
         size_t index, T&& value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a double.
@@ -606,7 +606,7 @@ namespace madara
       int set (const VariableReference & variable,
         T value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to an integer array.
@@ -618,7 +618,7 @@ namespace madara
       int set (const VariableReference & variable,
         const std::vector <KnowledgeRecord::Integer> & value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to an integer array.
@@ -630,7 +630,7 @@ namespace madara
       int set (const VariableReference & variable,
         std::vector <KnowledgeRecord::Integer> && value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to an integer array.
@@ -644,7 +644,7 @@ namespace madara
         const madara::knowledge::KnowledgeRecord::Integer * value,
         uint32_t size,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to an integer.
@@ -659,7 +659,7 @@ namespace madara
       int set (const VariableReference & variable,
         T value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a text file's contents.
@@ -672,7 +672,7 @@ namespace madara
       int set_text (const VariableReference & variable,
         const char * value, size_t size,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to an arbitrary string.
@@ -685,7 +685,7 @@ namespace madara
       int set_file (const std::string & key,
         const unsigned char * value, size_t size,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a JPEG image
@@ -698,7 +698,7 @@ namespace madara
       int set_jpeg (const std::string & key,
         const unsigned char * value, size_t size,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to an arbitrary string.
@@ -711,7 +711,7 @@ namespace madara
       int set_file (const VariableReference & variable,
         const unsigned char * value, size_t size,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to a JPEG image
@@ -724,7 +724,7 @@ namespace madara
       int set_jpeg (const VariableReference & variable,
         const unsigned char * value, size_t size,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to an XML string.
@@ -737,7 +737,7 @@ namespace madara
       int set_xml (const VariableReference & variable,
         const char * value, size_t size,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the record to the value specified, as an Any value.
@@ -861,7 +861,7 @@ namespace madara
              const VariableReference & variable,
              size_t index,
              const KnowledgeReferenceSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Write a file from the knowledge base to a specified location
@@ -1037,7 +1037,7 @@ namespace madara
       int set (const std::string & key,
         T value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Sets an index within an array to a specified value
@@ -1053,7 +1053,7 @@ namespace madara
       int set_index (const std::string & key,
         size_t index, T&& value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Sets a knowledge variable to a specified value
@@ -1069,7 +1069,7 @@ namespace madara
         const madara::knowledge::KnowledgeRecord::Integer * value,
         uint32_t size,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Sets a knowledge variable to a specified value
@@ -1083,7 +1083,7 @@ namespace madara
       int set (const std::string & key,
         const std::vector <KnowledgeRecord::Integer> & value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Sets a knowledge variable to a specified value
@@ -1097,7 +1097,7 @@ namespace madara
       int set (const std::string & key,
         std::vector <KnowledgeRecord::Integer> && value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Atomically sets the value of a variable to an integer 1
@@ -1107,7 +1107,7 @@ namespace madara
        **/
       int set (const std::string & key,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false)) {
+          EvalSettings (true, false, true, false, false)) {
         return set (key, 1, settings);
       }
 
@@ -1125,7 +1125,7 @@ namespace madara
         void*>::type = nullptr>
       int set (const std::string & key, T value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Sets a knowledge variable to a specified value
@@ -1141,7 +1141,7 @@ namespace madara
         const double * value,
         uint32_t size,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Sets a knowledge variable to a specified value
@@ -1155,7 +1155,7 @@ namespace madara
       int set (const std::string & key,
         const std::vector <double> & value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Sets a knowledge variable to a specified value
@@ -1169,7 +1169,7 @@ namespace madara
       int set (const std::string & key,
         std::vector <double> && value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Sets a knowledge variable to a specified value
@@ -1182,7 +1182,7 @@ namespace madara
        **/
       int set (const std::string & key, const std::string & value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Sets a knowledge variable to a specified value
@@ -1195,7 +1195,7 @@ namespace madara
        **/
       int set (const std::string & key, std::string && value,
         const EvalSettings & settings =
-          EvalSettings (false, false, true, false, false));
+          EvalSettings (true, false, true, false, false));
 
       /**
        * Sets the quality of writing to a certain variable from this entity
