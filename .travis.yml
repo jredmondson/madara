@@ -116,10 +116,10 @@ matrix:
       os: linux
       env: NAME="Ubuntu 14.04 android zmq" ANDROID="android" ZMQ="zmq" TESTS=""
 
-    # g++, linux, android
+    # g++, linux, android, ssl
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 14.04 android" ANDROID="android" TESTS=""
+      env: NAME="Ubuntu 14.04 android" ANDROID="android" SSL="ssl" TESTS=""
 
 addons:
   apt:
