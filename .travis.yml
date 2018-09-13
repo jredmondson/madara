@@ -174,6 +174,7 @@ script:
   - $MADARA_ROOT/bin/test_threader_change_hertz
   - $MADARA_ROOT/bin/test_knowledge_record
   - $MADARA_ROOT/bin/test_knowledge_base
+  - $MADARA_ROOT/bin/test_history
   # performance test (useful to see if we've regressed in performance)
   - echo "Testing reasoning throughput..."
   - $MADARA_ROOT/bin/test_reasoning_throughput
