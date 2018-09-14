@@ -41,12 +41,12 @@ madara::filters::AESBufferFilter::~AESBufferFilter ()
 int madara::filters::AESBufferFilter::generate_key (
   const std::string & password)
 {
-  int i, rounds = 5;
+  int i, rounds = 10000;
 
   // use a random salt and a zero'd initialization vector
-  int64_t salt = 0;
+  int64_t salt = 0x70e4ed2d19a447ef;
 
-  i = EVP_BytesToKey (EVP_aes_256_cbc (), EVP_sha1 (),
+  i = EVP_BytesToKey (EVP_aes_256_cbc (), EVP_sha256 (),
     (unsigned char *)&salt, (unsigned char *)password.c_str (),
     (int)password.length (), rounds,
     (unsigned char *)key_.get_ptr (),
