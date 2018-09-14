@@ -385,7 +385,9 @@ madara::knowledge::containers::Map::clear (bool clear_knowledge)
 
     for (size_t i = 0; i < keys.size (); ++i)
       this->erase (keys[i]);
-  }
+
+    map_.clear ();  }
+
   else if (context_)
   {
     MADARA_GUARD_TYPE guard (mutex_);
@@ -399,9 +401,10 @@ madara::knowledge::containers::Map::reset (void)
   if (context_)
   {
     ContextGuard context_guard (*context_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     for (auto entry : map_)
-      context_->clear (entry.second);
+      context_->clear (entry.first);
 
     map_.clear ();
   }
@@ -413,6 +416,7 @@ madara::knowledge::containers::Map::erase (const std::string & key)
   if (context_)
   {
     ContextGuard context_guard (*context_);
+    MADARA_GUARD_TYPE guard (mutex_);
 
     // find the key in the internal map
     InternalMap::iterator found = map_.find (key);
@@ -421,6 +425,7 @@ madara::knowledge::containers::Map::erase (const std::string & key)
     if (found != map_.end ())
     {
       context_->delete_variable (found->second.get_name ());
+      map_.erase (found);
     }
   }
 }
@@ -653,6 +658,42 @@ int
 madara::knowledge::containers::Map::set (const std::string & key,
   madara::knowledge::KnowledgeRecord::Integer value, 
   const KnowledgeUpdateSettings & settings)
+{
+  int result = -1;
+
+  if (context_ && key != "")
+  {
+    ContextGuard context_guard (*context_);
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    std::stringstream buffer;
+    buffer << name_;
+    buffer << delimiter_;
+    buffer << key;
+
+    std::string final_key = buffer.str ();
+    std::map <std::string, VariableReference>::iterator entry =
+      map_.find (final_key);
+
+    if (entry == map_.end ())
+    {
+      VariableReference ref = context_->get_ref (final_key, settings);
+      map_[key] = ref;
+      result = context_->set (ref, value, settings);
+    }
+    else
+    {
+      result = context_->set (entry->second, value, settings);
+    }
+  }
+
+  return result;
+}
+
+int
+madara::knowledge::containers::Map::set (const std::string & key,
+          const KnowledgeRecord & value, 
+          const KnowledgeUpdateSettings & settings)
 {
   int result = -1;
 

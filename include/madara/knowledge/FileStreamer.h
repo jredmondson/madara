@@ -83,13 +83,19 @@ namespace madara
           stream_.seekg ((std::streampos)index * frag_size, std::ios::beg);
 
           // read the fragment into a local buffer
-          std::vector<char> frag (frag_size);
-          stream_.read (frag.data (), frag_size);
+           std::vector<unsigned char> frag (frag_size);
+          // char * frag = new char [frag_size];
+          stream_.read ((char *)frag.data (), frag_size);
           bytes_read = stream_.gcount ();
+          frag.resize (bytes_read);
+
+          KnowledgeRecord record;
+          record.emplace_file (std::move (frag));          
 
           // set the file fragment into the KB
-          file_fragments.set_file (std::to_string ((unsigned long long)index),
-            (unsigned char *)frag.data (), bytes_read);
+           file_fragments.set (
+             std::to_string ((unsigned long long)index), record);
+          // file_fragments.emplace_file ()
         }
 
         return bytes_read;
@@ -128,7 +134,7 @@ namespace madara
       inline void clear_fragments (void)
       {
         // option 1. seg fault
-        // file_fragments.clear (true);
+        file_fragments.clear ();
 
         // option 2. seg fault
         // knowledge::KnowledgeRules keys;

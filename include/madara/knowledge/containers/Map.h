@@ -261,6 +261,20 @@ namespace madara
           const KnowledgeUpdateSettings & settings);
         
         /**
+         * Sets a value to a knowledge record in the map
+         *
+         * @param key             location within the map
+         * @param value           value to set at location
+         * @param settings        settings for applying the update
+         * @return                0 if successful, -1 if key is null, and
+         *                        -2 if quality isn't high enough
+         **/
+        int set (const std::string & key,
+          const KnowledgeRecord & value, 
+          const KnowledgeUpdateSettings & settings =
+            KnowledgeUpdateSettings ());
+        
+        /**
          * Sets an index within an array to a specified value
          *
          * @param key             location within the map

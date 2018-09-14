@@ -596,8 +596,8 @@ const VariableReference & variable)
     MADARA_GUARD_TYPE guard (mutex_);
 
     // erase any changed or local changed map entries
-    changed_map_.erase (variable.entry_->first.c_str ());
-    local_changed_map_.erase (variable.entry_->first.c_str ());
+    // changed_map_.erase (variable.entry_->first.c_str ());
+    // local_changed_map_.erase (variable.entry_->first.c_str ());
 
     variable.entry_->second.clear_value ();
 
