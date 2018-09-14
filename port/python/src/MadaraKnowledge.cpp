@@ -470,17 +470,20 @@ void define_knowledge (void)
      // clears the value to a 0 integer
      .def ("clear_value", &madara::knowledge::KnowledgeRecord::clear_value,
      "Sets the value to 0 and type to integer")
-
-     // sets the contents of the record to a jpeg
+ 
+     // sets the contents of the record as a file
      .def ("read_file", &madara::knowledge::KnowledgeRecord::read_file,
-     "Reads the contents of a file into the record")
+      m_read_file_1_of_2 (
+      args("filename", "read_as_type"),
+        "Reads the contents of a file into the record. Type "
+        "is an optional field that can force a type for reading into."))
 
      // gets the double precision
      .def ("get_precision", &madara::knowledge::KnowledgeRecord::get_precision,
      "Gets the double precision used in to_string")
 
      // decrements an index of an array
-     .def ("dec_index", &madara::knowledge::KnowledgeRecord::inc_index,
+     .def ("dec_index", &madara::knowledge::KnowledgeRecord::dec_index,
      "Decrements an array element at a particular index")
 
      // increments an index of an array
@@ -611,7 +614,7 @@ void define_knowledge (void)
      .def ("exists", &madara::knowledge::KnowledgeRecord::exists,
      "Returns whether the knowledge has been set/modified/created")
 
-     // convert to a string
+     // show record information
      .def ("status", &madara::knowledge::KnowledgeRecord::status,
      "Returns the status of the record")
 
@@ -789,6 +792,11 @@ void define_knowledge (void)
 
     .def ("to_any", MADARA_MEMB(Any, KnowledgeRecord, to_any, () const),
         "Convert this record to an Any")
+
+    .staticmethod("get_precision")
+    .staticmethod("set_fixed")
+    .staticmethod("set_precision")
+    .staticmethod("set_scientific")
 
     ; // end of KnowledgeRecord
 
