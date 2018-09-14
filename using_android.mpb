@@ -1,24 +1,24 @@
 feature (android) {
+   
    includes += $(BOOST_ANDROID_ROOT)/build/$(ANDROID_ARCH)/include
    libpaths += $(BOOST_ANDROID_ROOT)/build/$(ANDROID_ARCH)/lib
-   libpaths += $(ZMQ_ROOT)/lib
-   libpaths += $(SSL_ROOT)
    
   verbatim (make, local, true) {
     SYSROOT = $(NDK_TOOLS)/sysroot
     
-    ZMQ_LIB =
-    SSL_LIB =
+    LDLIBS = -l:libboost_system.a -l:libboost_filesystem.a -llog -lc++_shared -lcapnp-0.6.1 -lcapnpc-0.6.1 -lcapnp-json-0.6.1 -lkj-0.6.1
+   
 
     ifeq ($(ZMQ),1) 
-        ZMQ_LIB=-lzmq
+        LDLIBS +=-lzmq
+        LDFLAGS+= -L$(ZMQ_ROOT)/lib
     endif
  
     ifeq ($(SSL),1) 
-        SSL_LIB=-l:libssl.a -l:libcrypto.a
+        LDLIBS+=-l:libssl.a -l:libcrypto.a
+        LDFLAGS+= -L$(SSL_ROOT)
     endif
 
-    LDLIBS = -l:libboost_system.a -l:libboost_filesystem.a -llog -lc++_shared -lcapnp-0.6.1 -lcapnpc-0.6.1 -lcapnp-json-0.6.1 -lkj-0.6.1 $(ZMQ_LIB) $(SSL_LIB)
   
    ifeq ($(ANDROID_ARCH),arm)
       CROSS_COMPILE=arm-linux-androideabi-
