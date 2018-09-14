@@ -587,6 +587,28 @@ const KnowledgeReferenceSettings & settings)
   return found;
 }
 
+inline bool
+ThreadSafeContext::clear (
+const VariableReference & variable)
+{
+  if (variable.is_valid ())
+  {
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    // erase any changed or local changed map entries
+    // changed_map_.erase (variable.entry_->first.c_str ());
+    // local_changed_map_.erase (variable.entry_->first.c_str ());
+
+    variable.entry_->second.clear_value ();
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 // return whether or not the key exists
 inline bool
 ThreadSafeContext::delete_variable (

@@ -1087,6 +1087,15 @@ namespace madara
         KnowledgeReferenceSettings ());
 
       /**
+      * Clears a variable. This is much safer than @see delete_variable.
+      * It clears the memory used in the variable and marks it as UNCREATED,
+      * meaning that it is effectively deleted, will not show up in
+      * @see print statements or @see save_checkpoint.
+      * @param   variable       reference to a variable (@see get_ref)
+      **/
+      bool clear (const VariableReference & variable);
+
+      /**
        * Deletes the key. Note that this is extremely unsafe. You
        * can cause illegal operations in the knowledge base by using
        * this method and trying to access this variable again with
