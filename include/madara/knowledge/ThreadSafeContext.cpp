@@ -163,7 +163,7 @@ ThreadSafeContext::set_xml (
     record->set_xml (value, size);
     record->quality = record->write_quality;
     record->clock = clock_;
-    record->toi = utility::get_time();
+    record->set_toi(utility::get_time());
 
     mark_and_signal (variable, settings);
   }
@@ -193,7 +193,7 @@ ThreadSafeContext::set_text (
     record->set_text (value, size);
     record->quality = record->write_quality;
     record->clock = clock_;
-    record->toi = utility::get_time();
+    record->set_toi(utility::get_time());
 
     mark_and_signal (variable, settings);
   }
@@ -223,7 +223,7 @@ ThreadSafeContext::set_jpeg (
     record->set_jpeg (value, size);
     record->quality = record->write_quality;
     record->clock = clock_;
-    record->toi = utility::get_time();
+    record->set_toi(utility::get_time());
 
     mark_and_signal (variable, settings);
   }
@@ -253,7 +253,7 @@ ThreadSafeContext::set_file (
     record->set_file (value, size);
     record->quality = record->write_quality;
     record->clock = clock_;
-    record->toi = utility::get_time();
+    record->set_toi(utility::get_time());
 
     mark_and_signal (variable, settings);
   }
@@ -284,7 +284,7 @@ ThreadSafeContext::read_file (
     return_value = record->read_file (filename);
     record->quality = record->write_quality;
     record->clock = clock_;
-    record->toi = utility::get_time();
+    record->set_toi(utility::get_time());
 
     mark_and_signal (variable, settings);
   }
@@ -502,7 +502,7 @@ ThreadSafeContext::set_if_unequal (
     record.set_value (value);
 
     record.clock = clock_;
-    record.toi = utility::get_time();
+    record.set_toi(utility::get_time());
 
     mark_and_signal (&*found, settings);
   }
@@ -590,7 +590,7 @@ ThreadSafeContext::set_if_unequal (
     // we have a situation where the value needs to be changed
     record.set_value (value);
     record.clock = clock_;
-    record.toi = utility::get_time();
+    record.set_toi(utility::get_time());
 
     mark_and_signal (&*found, settings);
   }
@@ -678,7 +678,7 @@ ThreadSafeContext::set_if_unequal (
     // we have a situation where the value needs to be changed
     record.set_value (value);
     record.clock = clock_;
-    record.toi = utility::get_time();
+    record.set_toi(utility::get_time());
 
     // otherwise set the value
     mark_and_signal (&*found, settings);
