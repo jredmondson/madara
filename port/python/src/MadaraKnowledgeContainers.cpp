@@ -429,41 +429,6 @@ void define_knowledge_containers (void)
       &madara::knowledge::containers::NativeCircularBufferConsumer::size,
       "Returns the size of the buffer")
 
-    // // 
-    // .def ("consume_many", 
-    //   static_cast<
-    //     madara::knowledge::KnowledgeRecord
-    //     (madara::knowledge::containers::NativeCircularBufferConsumer::*)(
-    //       void
-    //     ) const
-    //   > (&madara::knowledge::containers::NativeCircularBufferConsumer::consume_many),
-    //   "Consumes earliest record in the buffer")
-
-    // // sets the name
-    // .def ("consume_many", 
-    //   static_cast<
-    //     void (madara::knowledge::containers::NativeCircularBufferConsumer::*)(
-    //       const std::string &, madara::knowledge::KnowledgeBase &
-    //     )
-    //   > (&madara::knowledge::containers::NativeCircularBufferConsumer::consume_many),
-    //   "Sets the name inside of the Knowledge Base for the container to use")
-
-    // .def ("consume_many", 
-    //   static_cast<
-    //     void (madara::knowledge::containers::NativeCircularBufferConsumer::*)(
-    //       const std::string &, madara::knowledge::Variables &
-    //     )
-    //   > (&madara::knowledge::containers::NativeCircularBufferConsumer::consume_many),
-    //   "Sets the name inside of the Knowledge Base for the container to use")
-
-    //   .def ("consume_many", 
-    //   static_cast<
-    //     void (madara::knowledge::containers::NativeCircularBufferConsumer::*)(
-    //       const std::string &, madara::knowledge::ThreadSafeContext &
-    //     )
-    //   > (&madara::knowledge::containers::NativeCircularBufferConsumer::consume_many),
-    //   "Sets the name inside of the Knowledge Base for the container to use")
-
     // .....
     .def ("get_record",
       &madara::knowledge::containers::NativeCircularBufferConsumer::get_record,
