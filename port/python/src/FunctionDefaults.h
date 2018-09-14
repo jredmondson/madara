@@ -25,16 +25,11 @@
  ********************************************************/
 
 /********************************************************
- * Knowledge Record overloads
+ * Class members (functions inside of classes)
  ********************************************************/
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_to_string_0_of_1,
   to_string, 0, 1)
-  
-
-/********************************************************
- * Knowledge Base overloads
- ********************************************************/
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_get_1_of_2,
   get, 1, 2)
@@ -101,6 +96,14 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_create_vector_2_of_3,
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_from_kb_2_of_3,
   from_kb, 2, 3)
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_read_file_1_of_2,
+  read_file, 1, 2)
+
+
+/********************************************************
+ * Static functions (standalone functions)
+ ********************************************************/
 
 BOOST_PYTHON_FUNCTION_OVERLOADS (file_from_fragments_2_of_4,
   madara::utility::file_from_fragments, 2, 4)

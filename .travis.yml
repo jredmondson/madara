@@ -156,6 +156,7 @@ script:
   - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID
   # now run functionality unit tests 
   - echo "Testing basic functionality..."
+<<<<<<< HEAD
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_any ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_bandwidth_monitor ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_basic_reasoning ; fi

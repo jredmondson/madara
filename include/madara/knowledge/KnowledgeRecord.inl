@@ -169,7 +169,7 @@ inline KnowledgeRecord::KnowledgeRecord (
     const knowledge::KnowledgeRecord & rhs)
 : logger_ (rhs.logger_),
   clock (rhs.clock),
-  toi (rhs.toi),
+  toi_ (rhs.toi_),
   quality (rhs.quality),
   write_quality (rhs.write_quality),
   type_ (rhs.type_),
@@ -200,7 +200,7 @@ inline KnowledgeRecord::KnowledgeRecord (
     knowledge::KnowledgeRecord &&rhs) noexcept
 : logger_ (std::move(rhs.logger_)),
   clock (rhs.clock),
-  toi (rhs.toi),
+  toi_ (rhs.toi_),
   quality (rhs.quality),
   write_quality (rhs.write_quality),
   type_ (rhs.type_),
@@ -239,7 +239,7 @@ KnowledgeRecord::copy_metadata(const KnowledgeRecord &rhs)
 {
   logger_ = rhs.logger_;
   clock = rhs.clock;
-  toi = rhs.toi;
+  toi_ = rhs.toi_;
   quality = rhs.quality;
   write_quality = rhs.write_quality;
 }
@@ -819,7 +819,7 @@ KnowledgeRecord::get_encoded_size (void) const
   int64_t buffer_size (
       sizeof (type_) +
       sizeof (uint32_t) +
-      sizeof (toi) +
+      sizeof (toi_) +
     0);
 
   if (type_ == INTEGER)
@@ -1084,13 +1084,13 @@ KnowledgeRecord::read (const char * buffer,
   buffer_remaining -= sizeof (buff_value_size);
 
   // Remove the toi from the buffer
-  if (buffer_remaining >= (int64_t) sizeof (toi))
+  if (buffer_remaining >= (int64_t) sizeof (toi_))
   {
-    memcpy (&toi, buffer, sizeof (toi));
-    toi = madara::utility::endian_swap (toi);
-    buffer += sizeof (toi);
+    memcpy (&toi_, buffer, sizeof (toi_));
+    toi_ = madara::utility::endian_swap (toi_);
+    buffer += sizeof (toi_);
   }
-  buffer_remaining -= sizeof (toi);
+  buffer_remaining -= sizeof (toi_);
 
   //madara_logger_ptr_log (logger_, logger::LOG_TRACE,
     //"KnowledgeRecord::read: reading type code %d\n", type);
@@ -1251,7 +1251,7 @@ KnowledgeRecord::reset_value (void) noexcept
   quality = 0;
   write_quality = 0;
   clock = 0;
-  toi = 0;
+  toi_ = 0;
 }
 
 // set the value_ to a string
@@ -1716,13 +1716,13 @@ KnowledgeRecord::write (char * buffer,
     buffer_remaining -= sizeof (size);
 
     // Write TOI to buffer
-    if (buffer_remaining >= (int64_t) sizeof (toi))
+    if (buffer_remaining >= (int64_t) sizeof (toi_))
     {
-      decltype(toi) tmp = madara::utility::endian_swap (toi);
+      decltype(toi_) tmp = madara::utility::endian_swap (toi_);
       memcpy (buffer, &tmp, sizeof (tmp));
       buffer += sizeof (tmp);
     }
-    buffer_remaining -= sizeof (toi);
+    buffer_remaining -= sizeof (toi_);
 
     // Remove the value from the buffer
     if (is_string_type (type_))

@@ -248,9 +248,9 @@ CircularBufferConsumer::inspect (KnowledgeRecord::Integer position,
   for (auto record : inspect (position, count))
   {
     // add them to the values if valid and increasing toi
-    if (record.is_valid() && record.toi >= latest_toi)
+    if (record.is_valid() && record.toi() >= latest_toi)
     {
-      latest_toi = record.toi;
+      latest_toi = record.toi();
       values.push_back (record.to_any <T> ());
     }
   }
@@ -494,9 +494,9 @@ CircularBufferConsumer::consume_earliest (size_t count,
   for (auto record : consume_earliest (count))
   {
     // add them to the values if valid
-    if (record.is_valid() && record.toi >= latest_toi)
+    if (record.is_valid() && record.toi() >= latest_toi)
     {
-      latest_toi = record.toi;
+      latest_toi = record.toi();
       values.push_back (record.to_any <T> ());
     }
   }
@@ -513,9 +513,9 @@ CircularBufferConsumer::consume_earliest (size_t count,
   for (auto record : consume_earliest (count))
   {
     // add them to the values if valid and increasing toi
-    if (record.is_valid() && record.toi >= latest_toi)
+    if (record.is_valid() && record.toi() >= latest_toi)
     {
-      latest_toi = record.toi;
+      latest_toi = record.toi();
       values.push_back (record.to_any <T> ());
     }
   }
