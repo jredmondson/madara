@@ -375,7 +375,7 @@ madara::knowledge::containers::Map::exchange (
 void
 madara::knowledge::containers::Map::clear (bool clear_knowledge)
 {
-  if (clear_knowledge)
+  if (context_ && clear_knowledge)
   {
     ContextGuard context_guard (*context_);
     MADARA_GUARD_TYPE guard (mutex_);
@@ -386,9 +386,23 @@ madara::knowledge::containers::Map::clear (bool clear_knowledge)
     for (size_t i = 0; i < keys.size (); ++i)
       this->erase (keys[i]);
   }
-  else
+  else if (context_)
   {
     MADARA_GUARD_TYPE guard (mutex_);
+    map_.clear ();
+  }
+}
+
+void
+madara::knowledge::containers::Map::reset (void)
+{
+  if (context_)
+  {
+    ContextGuard context_guard (*context_);
+
+    for (auto entry : map_)
+      context_->clear (entry.second);
+
     map_.clear ();
   }
 }

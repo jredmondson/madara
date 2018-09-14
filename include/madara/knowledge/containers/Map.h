@@ -206,6 +206,12 @@ namespace madara
         void clear (bool clear_knowledge = true);
 
         /**
+         * Resets the map. This will reset all the map variables to empty
+         * in the underlying context and also clear the containers keys
+         **/
+        void reset (void);
+
+        /**
         * Erases a variable from the map
         * @param  key  the variable to delete from the map
         **/

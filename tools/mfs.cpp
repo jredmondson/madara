@@ -23,6 +23,7 @@
 
 #include "madara/utility/EpochEnforcer.h"
 #include "madara/knowledge/FileFragmenter.h"
+#include "madara/knowledge/FileStreamer.h"
 
 #ifdef _USE_SSL_
   #include "madara/filters/ssl/AESBufferFilter.h"
@@ -208,8 +209,12 @@ void send_file (knowledge::KnowledgeBase & kb,
     filepath.c_str ());
 
   // break the file into fragments
-  knowledge::FileFragmenter fragmenter (
-    sandbox_path + "/" + filename);
+  // knowledge::FileFragmenter fragmenter (
+  //   sandbox_path + "/" + filename);
+  knowledge::FileStreamer streamer (
+    files_prefix + "." + filename, filepath, kb);
+
+  size_t num_fragments = streamer.get_size () / 60000;
 
   madara_logger_ptr_log (
     logger::global_logger.get (),
@@ -220,43 +225,6 @@ void send_file (knowledge::KnowledgeBase & kb,
     filepath.c_str (),
     contents_key.c_str ());
 
-  containers::Vector fragments = fragmenter.create_vector (
-    files_prefix + "." + contents_key, kb);
-  
-  madara_logger_ptr_log (
-    logger::global_logger.get (),
-    logger::LOG_ALWAYS,
-    "send_file: %s: "
-    "generating crc32 hash for file %s with %d bytes.\n",
-    operation.c_str (),
-    filepath.c_str (),
-    (int)fragmenter.file_size);
-
-  madara_logger_ptr_log (
-    logger::global_logger.get (),
-    logger::LOG_ALWAYS,
-    "send_file: %s: "
-    "saving hash to %s, contents is at %p.\n",
-    operation.c_str (),
-    crc_key.c_str (), (void *)fragmenter.file_contents.get ());
-
-  // generate a 32 bit CRC hash to verify file contents
-  boost::crc_32_type crc_32_hash;
-  crc_32_hash.process_bytes (
-    fragmenter.file_contents.get (), fragmenter.file_size);
-
-  // save a CRC
-  containers::Integer crc_var (
-    files_prefix + "." + crc_key, kb,
-    (KnowledgeRecord::Integer)crc_32_hash.checksum ());
-
-  madara_logger_ptr_log (
-    logger::global_logger.get (),
-    logger::LOG_ALWAYS,
-    "send_file: %s: "
-    "sending modifieds to requesters.\n",
-    operation.c_str ());
-
   // send any lingering modifieds
   kb.send_modifieds ();
 
@@ -265,16 +233,16 @@ void send_file (knowledge::KnowledgeBase & kb,
     logger::LOG_ALWAYS,
     "send_file: %s: "
     "total frags: %d, sending: %d.\n", 
-    operation.c_str (), (int)fragments.size (),
+    operation.c_str (), (int)num_fragments,
     (int)(valid_fragments.size () ?
-      valid_fragments.size () : fragments.size ()) 
+      valid_fragments.size () : num_fragments) 
   );
 
   // counter for the current request_frag
   size_t cur_frag = 0;
 
   // iterate over the fragments and send each one in its own packet
-  for (size_t i = 0; i < fragments.size (); ++i)
+  for (size_t i = 0; i < num_fragments; ++i)
   {
     if (valid_fragments.size () > 0)
     {
@@ -293,7 +261,7 @@ void send_file (knowledge::KnowledgeBase & kb,
       }
       
       if (valid_fragments[cur_frag] >= 0 && 
-          (size_t)valid_fragments[cur_frag] < fragments.size ())
+          (size_t)valid_fragments[cur_frag] < num_fragments)
       {
         i = (size_t)valid_fragments[cur_frag];
       }
@@ -318,6 +286,10 @@ void send_file (knowledge::KnowledgeBase & kb,
     // if (valid_fragments.size () == 0 ||
     //     i == (size_t)valid_fragments[cur_frag])
     {
+      // modify the fragment, the num fragments, and the CRC
+      size_t frag_size = streamer.load (i);
+      streamer.modify ();
+
       madara_logger_ptr_log (
         logger::global_logger.get (),
         logger::LOG_ALWAYS,
@@ -325,12 +297,7 @@ void send_file (knowledge::KnowledgeBase & kb,
         "sending frag %d: %d B.\n",
         operation.c_str (),
         filename.c_str (),
-        (int)i, (int)fragments[i].size ());
-
-      // modify the fragment, the num fragments, and the CRC
-      fragments.modify (i);
-      fragments.modify_size ();
-      crc_var.modify ();
+        (int)i, (int)frag_size);
 
       if (send_bandwidth > 0)
       {
@@ -352,7 +319,11 @@ void send_file (knowledge::KnowledgeBase & kb,
       } // end bandwidth handling
 
       kb.send_modifieds ();
-      bandwidth_monitor.add (fragments[i].size ());
+      bandwidth_monitor.add (frag_size);
+
+      // clear any sent fragments
+      streamer.clear_fragments ();
+
       ++cur_frag;
     }
   } // end fragment loop
