@@ -203,13 +203,14 @@ int main (int argc, char * argv[])
   }
 
   // Create the knowledge base with the transport settings set for multicast
-  knowledge::KnowledgeBase knowledge (host, settings);
+  knowledge::KnowledgeBase kb (host, settings);
   
   /**
     * Update the knowledge base to include our .id. All variables are zero
     * by default in the knowledge base.
     **/
-  knowledge.set (".id", settings.id);
+  kb.set (".id", settings.id,
+    madara::knowledge::EvalSettings::SEND);
 
   /**
    * In order for our receive filter to work, we have to first initialize
@@ -219,32 +220,32 @@ int main (int argc, char * argv[])
    * agents to gossip about what should be done (this tutorial does not
    * cover gossip/collaboration).
    **/
-  on_time_messages = knowledge.get_ref ("on_time_messages{.id}",
+  on_time_messages = kb.get_ref ("on_time_messages{.id}",
     knowledge::KnowledgeReferenceSettings (true));
 
   /**
    * Variable that the publisher uses (id==0) to trigger a sleep statement
    **/
-  invalid_messages = knowledge.get_ref ("invalid_messages{.id}");
+  invalid_messages = kb.get_ref ("invalid_messages{.id}");
 
   /**
    * The publisher (id == 0) keeps track of number of payloads sent
    **/
   knowledge::VariableReference payloads_sent =
-    knowledge.get_ref ("payloads_sent");
+    kb.get_ref ("payloads_sent");
 
   /**
    * Receiver waits until the number of on time messages is greater than 1000
    **/
 
-  std::string receiver_logic = knowledge.expand_statement (
+  std::string receiver_logic = kb.expand_statement (
     "on_time_messages{.id} > 1000");
   
   /**
    * Sender only sends enough messages for first receiver to meet quota
    **/
 
-  std::string sender_logic = knowledge.expand_statement (
+  std::string sender_logic = kb.expand_statement (
     "on_time_messages1 > 1000");
 
   /**
@@ -252,21 +253,23 @@ int main (int argc, char * argv[])
    **/
 
   knowledge::CompiledExpression compiled_sender_logic =
-    knowledge.compile (sender_logic);
+    kb.compile (sender_logic);
   
   knowledge::CompiledExpression compiled_receiver_logic =
-    knowledge.compile (receiver_logic);
+    kb.compile (receiver_logic);
 
   while (!terminated)
   {
     if (settings.id == 0)
     {
-      if (knowledge.evaluate (compiled_sender_logic).to_integer () == 0)
+      if (kb.evaluate (compiled_sender_logic,
+        madara::knowledge::EvalSettings::SEND).to_integer () == 0)
       {
         /**
          * We're including a string payload of questionable utility
          **/
-        knowledge.set ("payload", "A useless string");
+        kb.set ("payload", "A useless string",
+          madara::knowledge::EvalSettings::SEND);
 
         /**
          * Increment messages sent and send this as meta data to anyone curious
@@ -274,23 +277,25 @@ int main (int argc, char * argv[])
          * their own .payloads_received if they want to know the number of
          * drops.
          **/
-        knowledge.set (payloads_sent,
+        kb.set (payloads_sent,
 
           // increment the payloads_sent and provide it as an arg to set
-          (++knowledge.get (payloads_sent)).to_integer ());
+          (++kb.get (payloads_sent)).to_integer (),
+          madara::knowledge::EvalSettings::SEND);
       }
       else
       {
         terminated = true;
       }
-      knowledge.print (
+      kb.print (
         "payloads sent = {payloads_sent}, "
         "payloads received (on id==1) = {on_time_messages1}\n");
     }
     else
     {
       // send updates made in filters;
-      knowledge.wait (compiled_receiver_logic);
+      kb.wait (compiled_receiver_logic,
+        madara::knowledge::WaitSettings::SEND);
 
       terminated = true;
 
@@ -299,7 +304,7 @@ int main (int argc, char * argv[])
        * is a very bursty publisher, we should see a very small proportion
        * of payloads received.
        **/
-      knowledge.print (
+      kb.print (
         "payloads sent = {payloads_sent}, "
         "payloads received = {on_time_messages{.id}}\n");
     }
@@ -310,7 +315,7 @@ int main (int argc, char * argv[])
   /**
    * Print all knowledge at the end of the application run.
    **/
-  knowledge.print ();
+  kb.print ();
 
   return 0;
 }

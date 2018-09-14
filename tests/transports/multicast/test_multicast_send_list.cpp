@@ -126,10 +126,13 @@ int main (int argc, char ** argv)
   wait_settings.send_list["var1"] = true;
   wait_settings.send_list["var2"] = true;
   wait_settings.send_list["var3"] = true;
+  wait_settings.delay_sending_modifieds = false;
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id",
+    (madara::knowledge::KnowledgeRecord::Integer) settings.id,
+    madara::knowledge::EvalSettings::SEND);
 
   if (settings.id == 0)
   {

@@ -265,7 +265,8 @@ int main (int argc, char * argv[])
      * Update the knowledge base to include our .id. All variables are zero
      * by default in the knowledge base.
      **/
-    knowledge.set (".id", new_id);
+    knowledge.set (".id", new_id,
+      madara::knowledge::EvalSettings::SEND);
 
     // the 2nd argument is the log level
     if (argc >= 3)
@@ -362,13 +363,16 @@ int main (int argc, char * argv[])
         knowledge.set (payloads_sent,
 
           // increment the payloads_sent and provide it as an arg to set
-          (++knowledge.get (payloads_sent)).to_integer ());
+          (++knowledge.get (payloads_sent)).to_integer (),
+          madara::knowledge::EvalSettings::SEND);
       }
       else
       {
         knowledge.print ("Bandwidth limit hit. Stopping publisher for 10s.\n");
         madara::utility::sleep (10);
-        knowledge.set (slow_publisher, madara::knowledge::KnowledgeRecord::Integer (0));
+        knowledge.set (slow_publisher,
+          madara::knowledge::KnowledgeRecord::Integer (0),
+          madara::knowledge::EvalSettings::SEND);
       }
       knowledge.print (
         "payloads sent = {payloads_sent}, "
@@ -377,7 +381,8 @@ int main (int argc, char * argv[])
     else
     {
       // send updates made in filters;
-      knowledge.evaluate (logic);
+      knowledge.evaluate (logic,
+        madara::knowledge::EvalSettings::SEND);
 
       // Sleep for a second so we limit the number of printouts
       madara::utility::sleep (1);
