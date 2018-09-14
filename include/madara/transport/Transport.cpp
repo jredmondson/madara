@@ -597,7 +597,6 @@ process_received_update (
 
 
     settings.filter_receive (updates, transport_context);
-    throw exceptions::MadaraException("Aggregate Filters Disabled");
   }
   else
   {
@@ -718,7 +717,6 @@ process_received_update (
       && rebroadcast_records.size () > 0)
     {
       settings.filter_rebroadcast (rebroadcast_records, transport_context);
-      throw exceptions::MadaraException("Aggregate Filters Disabled");
     }
     else
     {
@@ -1022,7 +1020,6 @@ long Base::prep_send (
       filtered_updates.size () > 0)
   {
     settings_.filter_send (filtered_updates, transport_context);
-    throw exceptions::MadaraException("Aggregate Filters Disabled");
   }
   else
   {
