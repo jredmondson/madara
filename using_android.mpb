@@ -7,8 +7,8 @@ feature (android) {
   verbatim (make, local, true) {
     SYSROOT = $(NDK_TOOLS)/sysroot
     
-    ZMQ_LIB = ""
-    SSL_LIB = ""
+    ZMQ_LIB =
+    SSL_LIB =
 
     ifeq ($(ZMQ),1) 
         ZMQ_LIB=-lzmq
