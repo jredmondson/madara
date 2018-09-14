@@ -252,7 +252,8 @@ int main (int argc, char * argv[])
      * Update the knowledge base to include our .id. All variables are zero
      * by default in the knowledge base.
      **/
-    knowledge.set (".id", new_id);
+    knowledge.set (".id", new_id,
+      madara::knowledge::EvalSettings::SEND);
   }
 
   /**
@@ -306,7 +307,8 @@ int main (int argc, char * argv[])
     // set random vector information (up to 5 x or y coordinates per second)
     "change_deltas ('agent{.id}');"
 
-    "get_zone ('agent{.id}');"
+    "get_zone ('agent{.id}');",
+    madara::knowledge::EvalSettings::SEND
   );
 
   while (1)
@@ -352,7 +354,8 @@ int main (int argc, char * argv[])
 "'Agent {.id} of {.cur_agents} online ({.max_agents} max online):\n' +"
 "'  Position: {agent{.id}.x},{agent{.id}.y}\n' +"
 "'  Zone: {agent{.id}.zone}\n' +"
-"'  Vector: {agent{.id}.delta_x},{agent{.id}.delta_y}\n');"
+"'  Vector: {agent{.id}.delta_x},{agent{.id}.delta_y}\n');",
+      madara::knowledge::EvalSettings::SEND
     );
 
     // Sleep for a second so we limit the number of printouts and movements
@@ -361,7 +364,8 @@ int main (int argc, char * argv[])
     // Move our position around the grid according to our x/y deltas
     knowledge.evaluate (
       "move ();"
-      "get_zone ('agent{.id}');"
+      "get_zone ('agent{.id}');",
+      madara::knowledge::EvalSettings::SEND
     );
   }
   
@@ -380,6 +384,7 @@ int main (int argc, char * argv[])
 "  Position: {agent{.id}.x},{agent{.id}.y}\n"
 "  Zone: {agent{.id}.zone}\n"
 "  Vector: {agent{.id}.delta_x},{agent{.id}.delta_y}\n";
+  eval_settings.delay_sending_modifieds = false;
 
   /**
    * Evaluate the number of agents one last time before we return to the OS

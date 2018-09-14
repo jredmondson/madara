@@ -528,6 +528,49 @@ bool file_from_fragments (
   return false;
 }
 
+inline size_t get_file_progress (const std::string & filename,
+  uint32_t crc, size_t expected_size, size_t fragment_size)
+{
+  std::string str_crc = std::to_string ((unsigned long)crc);
+  std::string frag_suffix = "." + str_crc + ".frag";
+  std::string frag_file = filename + ".0" + frag_suffix;
+
+  std::ofstream output (filename, std::ios::out | std::ios::binary);
+
+  size_t num_fragments = expected_size / fragment_size;
+  size_t actual_size = 0;
+
+  if (expected_size % fragment_size > 0)
+  {
+    ++num_fragments;
+  }
+
+  // if we could open the file, try to read each frag into the file
+  if (output)
+  {
+    // for each file that exists
+    for (int i = 0; i < (int)num_fragments; ++i,
+      frag_file = filename + "." + std::to_string (i) + frag_suffix)
+    {
+      // read the file
+      void * buffer;
+      size_t size = 0;
+      utility::read_file (frag_file, buffer, size);
+
+      actual_size += size;
+
+      // if anything was read, write the fragment to the file
+      if (size > 0)
+      {
+        output.write ((char *)buffer, size);
+      } // end if size is greater than 0
+    } // end iteration over file fragments
+    output.close ();
+  } // if file could be opened
+
+  return actual_size;
+}
+
 inline
 bool begins_with (const std::string & input,
       const std::string & prefix)

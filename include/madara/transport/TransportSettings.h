@@ -113,7 +113,7 @@ namespace madara
       #define MAXIMUM_RESEND_ATTEMPTS   10
 
       /// Constructor for this class
-      TransportSettings ();
+      TransportSettings () = default;
 
       /// Copy constructor
       TransportSettings (const TransportSettings & settings);
@@ -190,10 +190,10 @@ namespace madara
       /**
        * We only write to one domain
        **/
-      std::string write_domain;
+      std::string write_domain = DEFAULT_DOMAIN;
 
       /// the number of read threads to start
-      uint32_t read_threads;
+      uint32_t read_threads = 1;
 
       /**
        * Length of the buffer used to store history of events. For almost
@@ -204,16 +204,16 @@ namespace madara
        * 5MB to have smooth delivery that can handle operating system
        * busy periods without losing too much data.
        **/
-      uint32_t queue_length;
+      uint32_t queue_length = DEFAULT_QUEUE_LENGTH;
 
       /// Type of transport. See madara::transport::Types for options
-      uint32_t type;
+      uint32_t type = DEFAULT_TRANSPORT;
 
       /// Maximum allowed fragment size for partitioning large messages
-      uint32_t max_fragment_size;
+      uint32_t max_fragment_size = 62000;
 
       /// Maximum number of attempts to resend if transport is busy
-      int resend_attempts;
+      int resend_attempts = MAXIMUM_RESEND_ATTEMPTS;
 
       /**
        * Indicates queue length for holding clock-keyed fragments. Note
@@ -223,43 +223,41 @@ namespace madara
        * fragmented clock values were 1=4GB, 2=4GB, 3=4GB, then you could
        * have 12GB, regardless of max_fragment_size.
        **/
-      uint32_t fragment_queue_length;
+      uint32_t fragment_queue_length = 5;
 
       /// Reliability required of the transport. 
       /// See madara::transport::Reliabilities for options
-      uint32_t reliability;
+      uint32_t reliability = DEFAULT_RELIABILITY;
 
-      /// the id of this process. May be useful for latency gathering
-      /// or testing purposes
-      uint32_t id;
+      /// the id of this process (DEPRECATED). You do not need to set this
+      uint32_t id = DEFAULT_ID;
 
-      /// number of processes expected in the network (best to overestimate
-      /// if building latency tables
-      uint32_t processes;
+      /// number of processes (DEPRECATED). You do not need to set this
+      uint32_t processes = DEFAULT_PROCESSES;
 
       /// logic to be evaluated after every successful update
       std::string on_data_received_logic;
       
       /// delay launching transports
-      bool delay_launch;
+      bool delay_launch = false;
 
       /// prevent MADARA from exiting on fatal errors and invalid state
-      bool never_exit;
+      bool never_exit = false;
 
       /// send the reduced message header (clock, size, updates, KaRL id)
-      bool send_reduced_message_header;
+      bool send_reduced_message_header = false;
 
       /// map of fragments received by originator
       mutable OriginatorFragmentMap fragment_map;
 
       /// time to sleep between sends and rebroadcasts
-      double slack_time;
+      double slack_time = 0;
 
       /**
        * number of valid messages allowed to be received per second. This
        * value can be -1 or 0.0 to go as fast as possible
        **/
-      double read_thread_hertz;
+      double read_thread_hertz = 0.0;
 
       /**
        * Host information for transports that require it. The format of these
@@ -272,12 +270,19 @@ namespace madara
       /**
        * if true, never send over transport
        **/
-      bool no_sending;
-      
+      bool no_sending = false;
+
       /**
        * if true, never receive over transport
        **/
-      bool no_receiving;
+      bool no_receiving = false;
+
+      /**
+       * if true, send all updates since last send, for records that have
+       * history enabled (if the history capacity was exceeded since last
+       * send, the oldest updates are lost).
+       **/
+      bool send_history = false;
 
     private:
 

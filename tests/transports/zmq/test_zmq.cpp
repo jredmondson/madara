@@ -129,10 +129,13 @@ int main (int argc, char ** argv)
 #ifndef _MADARA_NO_KARL_
   madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
+  wait_settings.delay_sending_modifieds = false;
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id",
+    (madara::knowledge::KnowledgeRecord::Integer) settings.id,
+    madara::knowledge::EvalSettings::SEND);
 
   if (settings.id == 0)
   {

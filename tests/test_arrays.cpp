@@ -35,6 +35,7 @@ int main (int argc, char * argv[])
   madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
   wait_settings.poll_frequency = 1.0;
+  wait_settings.delay_sending_modifieds = false;
 
   if (settings.id == 1)
   {
@@ -47,7 +48,9 @@ int main (int argc, char * argv[])
 
   madara::knowledge::KnowledgeBase knowledge ("", settings);
   
-  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id",
+    (madara::knowledge::KnowledgeRecord::Integer) settings.id,
+    madara::knowledge::EvalSettings::SEND);
   
   // run tests
 //  test_tree_compilation (knowledge);
@@ -77,7 +80,8 @@ void create_arrays (madara::knowledge::KnowledgeBase & knowledge)
   doubles_vector[3] = 42.0;
   doubles_vector[4] = 3000.5238;
   
-  knowledge.set ("doubles_vector", doubles_vector);
+  knowledge.set ("doubles_vector", doubles_vector,
+    madara::knowledge::EvalSettings::SEND);
 
   madara::knowledge::KnowledgeRecord::Integer * integer_array =
     new madara::knowledge::KnowledgeRecord::Integer [3];
@@ -85,17 +89,23 @@ void create_arrays (madara::knowledge::KnowledgeBase & knowledge)
   integer_array[1] = 1;
   integer_array[2] = 2;
 
-  knowledge.set ("integers_vector", integer_array, 3);
+  knowledge.set ("integers_vector", integer_array, 3,
+    madara::knowledge::EvalSettings::SEND);
   
 #ifndef _MADARA_NO_KARL_
-  knowledge.evaluate ("var_array[1] = 3.0");
-  knowledge.evaluate ("var_array[3] = 20");
+  knowledge.evaluate ("var_array[1] = 3.0",
+    madara::knowledge::EvalSettings::SEND);
+  knowledge.evaluate ("var_array[3] = 20",
+    madara::knowledge::EvalSettings::SEND);
 #else
-  knowledge.set_index ("var_array", 1, 3.0);
-  knowledge.set_index ("var_array", 3, Integer(3.0));
+  knowledge.set_index ("var_array", 1, 3.0,
+    madara::knowledge::EvalSettings::SEND);
+  knowledge.set_index ("var_array", 3, Integer(3.0),
+    madara::knowledge::EvalSettings::SEND);
 #endif // _MADARA_NO_KARL_
 
-  knowledge.set ("finished_transmitting");
+  knowledge.set ("finished_transmitting", 1,
+    madara::knowledge::EvalSettings::SEND);
   knowledge.print ("Sending the following data sets to id 1\n");
   knowledge.print ("doubles_vector = [{doubles_vector}]\n");
   knowledge.print ("integers_vector = [{integers_vector}]\n");
@@ -153,13 +163,19 @@ void write_transported_arrays (
   std::cerr << "copying elements of var_array to var_array\n";
     
 #ifndef _MADARA_NO_KARL_
-  knowledge.evaluate ("var_array[0] = var_array[3]");
-  knowledge.evaluate ("var_array[2] = var_array[1]");
-  knowledge.evaluate ("var_array[8] = 100.012");
+  knowledge.evaluate ("var_array[0] = var_array[3]",
+    madara::knowledge::EvalSettings::SEND);
+  knowledge.evaluate ("var_array[2] = var_array[1]",
+    madara::knowledge::EvalSettings::SEND);
+  knowledge.evaluate ("var_array[8] = 100.012",
+    madara::knowledge::EvalSettings::SEND);
 #else
-  knowledge.set_index ("var_array", 0, knowledge.retrieve_index ("var_array", 3).to_double ());
-  knowledge.set_index ("var_array", 2, knowledge.retrieve_index ("var_array", 1).to_double ());
-  knowledge.set_index ("var_array", 8, 100.012);
+  knowledge.set_index ("var_array", 0, knowledge.retrieve_index ("var_array", 3).to_double (),
+    madara::knowledge::EvalSettings::SEND);
+  knowledge.set_index ("var_array", 2, knowledge.retrieve_index ("var_array", 1).to_double (),
+    madara::knowledge::EvalSettings::SEND);
+  knowledge.set_index ("var_array", 8, 100.012,
+    madara::knowledge::EvalSettings::SEND);
 #endif // _MADARA_NO_KARL_
 
   knowledge.print ("var_array = [{var_array}]\n\n");

@@ -1578,6 +1578,23 @@ project (Test_Circular_Buffer) : using_madara, no_karl, no_xml, null_lock, using
   }
 }
 
+project (Test_History) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  requires += tests
+  
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_history
+  
+  Documentation_Files {
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_history.cpp
+  }
+}
+
 project (Test_Knowledge_Base) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   

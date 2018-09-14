@@ -307,7 +307,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
       std::string key;
       knowledge::KnowledgeRecord record;
       record.clock = checkpoint_header.clock;
-      record.toi = checkpoint_settings.last_timestamp;
+      record.set_toi(checkpoint_settings.last_timestamp);
       current = (char *)record.read (current, key, buffer_remaining);
 
       madara_logger_ptr_log (logger_, logger::LOG_MINOR,
@@ -369,11 +369,11 @@ void CheckpointPlayer::thread_main(CheckpointPlayer *self)
     madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
       "CheckpointPlayer:" \
       " record has toi %lu. prev: %lu. first: %lu\n",
-      cur.second.toi, prev_toi, first_toi);
+      cur.second.toi(), prev_toi, first_toi);
 
     if (first_toi == -1UL)
     {
-      first_toi = cur.second.toi;
+      first_toi = cur.second.toi();
       prev_toi = first_toi;
 #ifdef MADARA_FEATURE_SIMTIME
       if (self->settings_.playback_simtime) {
@@ -382,10 +382,12 @@ void CheckpointPlayer::thread_main(CheckpointPlayer *self)
 #endif
     }
 
+    uint64_t raw_wait_time = prev_toi < cur.second.toi() ?
+                                 cur.second.toi() - prev_toi : 0;
 #ifdef MADARA_FEATURE_SIMTIME
-    uint64_t wait_time = utility::SimTime::duration(cur.second.toi - prev_toi);
+    uint64_t wait_time = utility::SimTime::duration(raw_wait_time);
 #else
-    uint64_t wait_time = cur.second.toi - prev_toi;
+    uint64_t wait_time = raw_wait_time;
 #endif
 
     utility::SecondsDuration sec_wait = sc::nanoseconds{wait_time};
@@ -396,7 +398,7 @@ void CheckpointPlayer::thread_main(CheckpointPlayer *self)
 
     utility::sleep(sec_wait);
 
-    prev_toi = cur.second.toi;
+    prev_toi = cur.second.toi();
 
     self->context_->update_record_from_external (cur.first, cur.second, self->update_settings_);
 
@@ -413,9 +415,9 @@ bool CheckpointPlayer::play_until(uint64_t target_toi)
     }
 
     context_->update_record_from_external (cur.first, cur.second, update_settings_);
-    std::cerr << "play_until: " << cur.second.toi << "   " << target_toi << std::endl;
+    std::cerr << "play_until: " << cur.second.toi() << "   " << target_toi << std::endl;
 
-    if (cur.second.toi >= target_toi) {
+    if (cur.second.toi() >= target_toi) {
       return true;
     }
   }

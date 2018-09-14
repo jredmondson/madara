@@ -136,10 +136,21 @@ namespace madara
        **/
       uint64_t clock = 0;
 
+    private:
       /**
        * last modification system clock time
        **/
-      uint64_t toi = 0;
+      uint64_t toi_ = 0;
+
+    public:
+      uint64_t toi() const { return toi_; }
+      void set_toi(uint64_t new_toi)
+      {
+        toi_ = new_toi;
+        if (has_history()) {
+          buf_->back().set_toi(new_toi);
+        }
+      }
 
       /**
        * priority of the update
@@ -1927,6 +1938,24 @@ namespace madara
         return buf_->front_index();
       }
 
+      CircBuf::const_iterator begin_history() const
+      {
+        if (!has_history()) {
+          throw exceptions::MadaraException(
+              "begin_history() called on record without history");
+        }
+        return buf_->cbegin();
+      }
+
+      CircBuf::const_iterator end_history() const
+      {
+        if (!has_history()) {
+          throw exceptions::MadaraException(
+              "end_history() called on record without history");
+        }
+        return buf_->cend();
+      }
+
       std::shared_ptr<CircBuf> share_circular_buffer() const;
 
       /**
@@ -2002,6 +2031,7 @@ namespace madara
     };
 
     typedef ::std::map < std::string, KnowledgeRecord>   KnowledgeMap;
+    typedef ::std::multimap < std::string, KnowledgeRecord>   KnowledgeMultiMap;
     typedef ::std::vector < KnowledgeRecord>             KnowledgeVector;
     typedef ::std::vector < std::string>                  KnowledgeRules;
     typedef ::std::vector < std::string>                  StringVector;

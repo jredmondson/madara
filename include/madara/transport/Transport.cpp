@@ -163,6 +163,9 @@ process_received_update (
   // receive records will be what we pass to the aggregate filter
   knowledge::KnowledgeMap updates;
 
+  // if a key appears multiple times, keep to add to buffer history
+  std::map<std::string, std::vector<knowledge::KnowledgeRecord>> past_updates;
+
   // check the buffer for a reduced message header
   if (bytes_read >= ReducedMessageHeader::static_encoded_size () &&
       ReducedMessageHeader::reduced_message_header_test (buffer))
@@ -500,6 +503,20 @@ process_received_update (
     "%s:" \
     " Applying %" PRIu32 " updates\n", print_prefix, header->updates);
 
+  const auto add_record =
+    [&](const std::string &key, knowledge::KnowledgeRecord rec) {
+      auto &entry = updates[key];
+      if (entry.exists()) {
+        using std::swap;
+
+        swap(rec, entry);
+
+        past_updates[key].emplace_back(std::move(rec));
+      } else {
+        entry = std::move(rec);
+      }
+    };
+
   // iterate over the updates
   for (uint32_t i = 0; i < header->updates; ++i)
   {
@@ -533,7 +550,7 @@ process_received_update (
           " Filter results for %s were %s\n", print_prefix,
           key.c_str (), record.to_string ().c_str ());
 
-        updates[key] = record;
+        add_record(key, record);
       }
       else
       {
@@ -556,7 +573,7 @@ process_received_update (
     for (knowledge::KnowledgeMap::const_iterator i = additionals.begin ();
           i != additionals.end (); ++i)
     {
-      updates[i->first] = i->second;
+      add_record(i->first, i->second);
     }
 
     transport_context.clear_records ();
@@ -605,29 +622,42 @@ process_received_update (
     for (knowledge::KnowledgeMap::iterator i = updates.begin ();
       i != updates.end (); ++i)
     {
-      int result = 0;
+      const auto apply = [&](knowledge::KnowledgeRecord &record) {
+        int result = 0;
 
-      i->second.toi = now;
-      result = i->second.apply (context, i->first, header->quality,
-        header->clock, false);
-      ++actual_updates;
+        record.set_toi(now);
+        result = record.apply (context, i->first, header->quality,
+          header->clock, false);
+        ++actual_updates;
 
-      if (result != 1)
-      {
-        madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
-          "%s:" \
-          " update %s=%s was rejected\n",
-          print_prefix,
-          key.c_str (), record.to_string ().c_str ());
+        if (result != 1)
+        {
+          madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
+            "%s:" \
+            " update %s=%s was rejected\n",
+            print_prefix,
+            key.c_str (), record.to_string ().c_str ());
+        }
+        else
+        {
+          madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
+            "%s:" \
+            " update %s=%s was accepted\n",
+            print_prefix,
+            key.c_str (), record.to_string ().c_str ());
+        }
+      };
+
+      auto iter = past_updates.find(i->first);
+      if (iter != past_updates.end()) {
+        for (auto &cur : iter->second) {
+          if (cur.exists()) {
+            apply(cur);
+          }
+        }
       }
-      else
-      {
-        madara_logger_log (context.get_logger (), logger::LOG_MAJOR,
-          "%s:" \
-          " update %s=%s was accepted\n",
-          print_prefix,
-          key.c_str (), record.to_string ().c_str ());
-      }
+
+      apply(i->second);
     }
   }
 
@@ -837,6 +867,7 @@ long Base::prep_send (
 
   // get the maximum quality from the updates
   uint32_t quality = knowledge::max_quality (orig_updates);
+  uint64_t latest_toi = 0;
   bool reduced = false;
 
   knowledge::KnowledgeMap filtered_updates;
@@ -882,15 +913,21 @@ long Base::prep_send (
        * filter the updates according to the filters specified by
        * the user in QoSTransportSettings (if applicable)
        **/
-      for (const auto &e : orig_updates)
+      for (auto e : orig_updates)
       {
         madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
           "%s:" \
           " Calling filter chain of %s.\n", print_prefix, e.first);
 
+        const auto * record = e.second.get_record_unsafe();
+
+        if (record->toi() > latest_toi) {
+          latest_toi = record->toi();
+        }
+
         // filter the record according to the send filter chain
         knowledge::KnowledgeRecord result = settings_.filter_send (
-            *e.second.get_record_unsafe (), e.first, transport_context);
+            *record, e.first, transport_context);
 
         madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
           "%s:" \
@@ -902,7 +939,7 @@ long Base::prep_send (
             "%s:" \
             " Adding record to update list.\n", print_prefix);
 
-          filtered_updates[e.first] = result;
+          filtered_updates.emplace(std::make_pair(e.first, result));
         }
         else
         {
@@ -927,21 +964,26 @@ long Base::prep_send (
           "%s:" \
           " Filter added a record %s to the update list.\n",
           print_prefix, i->first.c_str ());
-        filtered_updates[i->first] = i->second;
+        filtered_updates.emplace(std::make_pair(i->first, i->second));
       }
     }
     else
     {
-      for (const auto &e : orig_updates)
+      for (auto e : orig_updates)
       {
-        knowledge::KnowledgeRecord * record = e.second.get_record_unsafe ();
+        const auto * record = e.second.get_record_unsafe();
+
+        if (record->toi() > latest_toi) {
+          latest_toi = record->toi();
+        }
+
         if (record)
         {
           madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
             "%s:" \
             " Adding record %s to update list.\n", print_prefix, e.first);
 
-          filtered_updates[e.first] = *record;
+          filtered_updates.emplace(std::make_pair(e.first, *record));
         }
         else
         {
@@ -1079,6 +1121,7 @@ long Base::prep_send (
   // set the update to the end of the header
   char * update = header->write (buffer, buffer_remaining);
   uint64_t * message_size = (uint64_t *)buffer;
+  uint32_t * message_updates = (uint32_t *)(buffer + 116);
   
   // Message header format
   // [size|id|domain|originator|type|updates|quality|clock|list of updates]
@@ -1103,27 +1146,62 @@ long Base::prep_send (
   // [key|value]
   
   int j = 0;
+  uint32_t actual_updates = 0;
   for (knowledge::KnowledgeMap::const_iterator i = filtered_updates.begin ();
-    i != filtered_updates.end (); ++i, ++j)
+    i != filtered_updates.end (); ++i)
   {
-    update = i->second.write (update, i->first, buffer_remaining);
-    
-    if (buffer_remaining > 0)
-    {
-      madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
-        "%s:" \
-        " update[%d] => encoding %s of type %" PRId32 " and size %" PRIu32 "\n",
-        print_prefix,
-        j, i->first.c_str (), i->second.type (), i->second.size ());
-    }
-    else
-    {
-      madara_logger_log (context_.get_logger (), logger::LOG_EMERGENCY,
-        "%s:" \
-        " unable to encode update[%d] => %s of type %"
-        PRId32 " and size %" PRIu32 "\n",
-        print_prefix,
-        j, i->first.c_str (), i->second.type (), i->second.size ());
+    const auto &key = i->first;
+    const auto &rec = i->second;
+    const auto do_write = [&](const knowledge::KnowledgeRecord &rec) {
+      if (!rec.exists()) {
+        madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
+          "%s:" \
+          " update[%d] => value is empty\n",
+          print_prefix,
+          j, key.c_str ());
+        return;
+      }
+
+      update = rec.write (update, key, buffer_remaining);
+
+      if (buffer_remaining > 0)
+      {
+        madara_logger_log (context_.get_logger (), logger::LOG_MINOR,
+          "%s:" \
+          " update[%d] => encoding %s of type %" PRId32 " and size %" PRIu32
+          " @%" PRIu64 "\n",
+          print_prefix,
+          j, key.c_str (), rec.type (), rec.size (), rec.toi());
+        ++actual_updates;
+        ++j;
+      }
+      else
+      {
+        madara_logger_log (context_.get_logger (), logger::LOG_EMERGENCY,
+          "%s:" \
+          " unable to encode update[%d] => %s of type %"
+          PRId32 " and size %" PRIu32 "\n",
+          print_prefix,
+          j, key.c_str (), rec.type (), rec.size ());
+      }
+    };
+
+    if (!settings_.send_history || !rec.has_history()) {
+      do_write(rec);
+    } else {
+      auto buf = rec.share_circular_buffer();
+      auto end = buf->end();
+      auto cur = buf->begin();
+
+      if (last_toi_sent_ > 0) {
+        cur = std::upper_bound(cur, end, last_toi_sent_,
+          [](uint64_t lhs, const knowledge::KnowledgeRecord &rhs) {
+            return lhs < rhs.toi();
+          });
+      }
+      for (;cur != end; ++cur) {
+        do_write(*cur);
+      }
     }
   }
   
@@ -1132,7 +1210,10 @@ long Base::prep_send (
   if (buffer_remaining > 0)
   {
     size = (long)(settings_.queue_length - buffer_remaining);
+    header->size = size;
     *message_size = utility::endian_swap ((uint64_t)size);
+    header->updates = actual_updates;
+    *message_updates = utility::endian_swap (actual_updates);
     
     // before we send to others, we first execute rules
     if (settings_.on_data_received_logic.length () != 0)
@@ -1179,6 +1260,8 @@ long Base::prep_send (
     print_prefix, header->to_string ().c_str ());
 
   delete header;
+
+  last_toi_sent_ = latest_toi;
 
   return size;
 }

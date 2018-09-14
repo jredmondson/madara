@@ -470,22 +470,33 @@ void define_knowledge (void)
      // clears the value to a 0 integer
      .def ("clear_value", &madara::knowledge::KnowledgeRecord::clear_value,
      "Sets the value to 0 and type to integer")
-
-     // sets the contents of the record to a jpeg
+ 
+     // sets the contents of the record as a file
      .def ("read_file", &madara::knowledge::KnowledgeRecord::read_file,
-     "Reads the contents of a file into the record")
+      m_read_file_1_of_2 (
+      args("filename", "read_as_type"),
+        "Reads the contents of a file into the record. Type "
+        "is an optional field that can force a type for reading into."))
 
      // gets the double precision
      .def ("get_precision", &madara::knowledge::KnowledgeRecord::get_precision,
      "Gets the double precision used in to_string")
 
      // decrements an index of an array
-     .def ("dec_index", &madara::knowledge::KnowledgeRecord::inc_index,
+     .def ("dec_index", &madara::knowledge::KnowledgeRecord::dec_index,
      "Decrements an array element at a particular index")
 
      // increments an index of an array
      .def ("inc_index", &madara::knowledge::KnowledgeRecord::inc_index,
      "Increments an array element at a particular index")
+
+     // resize an array
+     .def ("resize", &madara::knowledge::KnowledgeRecord::resize,
+     "Resizes an array to a new size")
+
+     // apply knowledge record to a context
+     .def ("apply", &madara::knowledge::KnowledgeRecord::apply,
+     "Apply the knowledge record to a context, given some quality and clock")
 
      // retrieves an index of an array
      .def ("retrieve_index", &madara::knowledge::KnowledgeRecord::retrieve_index,
@@ -494,6 +505,14 @@ void define_knowledge (void)
      // sets the double precision
      .def ("set_precision", &madara::knowledge::KnowledgeRecord::set_precision,
      "Sets the double precision, generally for to_string")
+
+     // sets fixed precision
+     .def ("set_fixed", &madara::knowledge::KnowledgeRecord::set_fixed,
+     "Set the output format for doubles to std::fixed for madara logging")
+
+     // sets scientific precision
+     .def ("set_scientific", &madara::knowledge::KnowledgeRecord::set_scientific,
+     "Sets the output format for doubles to std::scientific")
 
      // reset the record to UNCREATED
      .def ("reset_value", &madara::knowledge::KnowledgeRecord::reset_value,
@@ -592,10 +611,10 @@ void define_knowledge (void)
      "Returns the size of the value")
 
      // returns true if record exists
-     .def ("exists", &madara::knowledge::KnowledgeRecord::size,
+     .def ("exists", &madara::knowledge::KnowledgeRecord::exists,
      "Returns whether the knowledge has been set/modified/created")
 
-     // convert to a string
+     // show record information
      .def ("status", &madara::knowledge::KnowledgeRecord::status,
      "Returns the status of the record")
 
@@ -733,6 +752,34 @@ void define_knowledge (void)
     &madara::knowledge::KnowledgeRecord::operator==),
     "Compares two records for equality")
 
+    .def ("operator<=",
+    static_cast<bool (
+    madara::knowledge::KnowledgeRecord::*)(
+    const madara::knowledge::KnowledgeRecord &) const> (
+    &madara::knowledge::KnowledgeRecord::operator<=),
+    "Compares two records with less than or equal to")
+
+    .def ("operator>=",
+    static_cast<bool (
+    madara::knowledge::KnowledgeRecord::*)(
+    const madara::knowledge::KnowledgeRecord &) const> (
+    &madara::knowledge::KnowledgeRecord::operator>=),
+    "Compares two records with greater than or equal to")
+
+    .def ("operator>",
+    static_cast<bool (
+    madara::knowledge::KnowledgeRecord::*)(
+    const madara::knowledge::KnowledgeRecord &) const> (
+    &madara::knowledge::KnowledgeRecord::operator>),
+    "Compares two records with greater than")
+
+    .def ("operator<",
+    static_cast<bool (
+    madara::knowledge::KnowledgeRecord::*)(
+    const madara::knowledge::KnowledgeRecord &) const> (
+    &madara::knowledge::KnowledgeRecord::operator<),
+    "Compares two records with less than")
+
     .def ("operator++",
     &madara::knowledge::KnowledgeRecord::operator++,
     "Adds one to the record",
@@ -745,6 +792,11 @@ void define_knowledge (void)
 
     .def ("to_any", MADARA_MEMB(Any, KnowledgeRecord, to_any, () const),
         "Convert this record to an Any")
+
+    .staticmethod("get_precision")
+    .staticmethod("set_fixed")
+    .staticmethod("set_precision")
+    .staticmethod("set_scientific")
 
     ; // end of KnowledgeRecord
 
