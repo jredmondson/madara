@@ -104,6 +104,7 @@ int main (int argc, char ** argv)
 #ifndef _MADARA_NO_KARL_
   settings.type = madara::transport::MULTICAST;
   madara::knowledge::WaitSettings wait_settings;
+  wait_settings.delay_sending_modifieds = false;
   wait_settings.max_wait_time = 10.0;
   wait_settings.post_print_statement =
     "{update}: name == {name}, " \
@@ -117,7 +118,9 @@ int main (int argc, char ** argv)
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 
-  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id",
+    (madara::knowledge::KnowledgeRecord::Integer) settings.id,
+    madara::knowledge::EvalSettings::SEND);
   
   madara::knowledge::CompiledExpression compiled;
 

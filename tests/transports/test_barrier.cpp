@@ -238,8 +238,10 @@ int main (int argc, char ** argv)
   containers::Barrier barrier ("my_barrier", knowledge,
     settings.id, settings.processes);
 
-  knowledge.evaluate (".start_time = #get_time()");
-  knowledge.set (".target", target);
+  knowledge.evaluate (".start_time = #get_time()",
+    madara::knowledge::EvalSettings::SEND);
+  knowledge.set (".target", target,
+    madara::knowledge::EvalSettings::SEND);
 
   // increment the counter until it is at the target
   while (barrier.get_round () < target)
@@ -255,7 +257,8 @@ int main (int argc, char ** argv)
 
   knowledge.evaluate (".end_time = #get_time();"
     ".total_time = .end_time - .start_time;"
-    ".total_time_in_seconds = #double(.total_time) / 1000000000");
+    ".total_time_in_seconds = #double(.total_time) / 1000000000",
+    madara::knowledge::EvalSettings::SEND);
 
   knowledge.print ("Distributed barriers to {.target} took {.total_time_in_seconds}s\n");
 

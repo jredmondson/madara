@@ -1068,7 +1068,7 @@ namespace madara
       MADARA_EXPORT int send_modifieds (
         const std::string & prefix,
         const EvalSettings & settings =
-          EvalSettings ());
+          EvalSettings::SEND);
 
       /**
        * Wait for a change to happen to the context (e.g., from transports)

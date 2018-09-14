@@ -177,9 +177,11 @@ int main (int argc, char ** argv)
   settings.type = madara::transport::MULTICAST;
   madara::knowledge::WaitSettings wait_settings;
   wait_settings.max_wait_time = 10;
+  wait_settings.delay_sending_modifieds = false;
 
   madara::knowledge::EvalSettings eval_settings;
   eval_settings.treat_globals_as_locals = true;
+  eval_settings.delay_sending_modifieds = false;
 
   madara::knowledge::KnowledgeBase knowledge (host, settings);
 

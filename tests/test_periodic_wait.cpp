@@ -83,7 +83,7 @@ int main (int argc, char * argv[])
   // defaults are to poll every 0.5s for 5s
   wait_settings.poll_frequency = 0.50;
   wait_settings.max_wait_time = 5;
-
+  
   handle_arguments (argc, argv);
   
 #ifndef _MADARA_NO_KARL_

@@ -82,7 +82,8 @@ namespace madara
               {
                 if (last_file_path != "")
                 {
-                  if (utility::file_from_fragments (last_file_path, last_crc))
+                  if (utility::file_from_fragments (
+                    last_file_path, last_crc, true, false))
                   {
                     madara_logger_ptr_log (
                       madara::logger::global_logger.get (),
@@ -221,7 +222,8 @@ namespace madara
 
       if (last_file_path != "")
       {
-        if (utility::file_from_fragments (last_file_path, last_crc))
+        if (utility::file_from_fragments (
+          last_file_path, last_crc, true, false))
         {
           madara_logger_ptr_log (
             madara::logger::global_logger.get (),

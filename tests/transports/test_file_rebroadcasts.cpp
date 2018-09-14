@@ -10,6 +10,7 @@
 #include "madara/logger/GlobalLogger.h"
 
 namespace logger = madara::logger;
+namespace knowledge = madara::knowledge;
 
 // default transport settings
 std::string host ("");
@@ -22,7 +23,7 @@ std::string filename =
 
 std::string target_location;
 
-madara::knowledge::KnowledgeRecord::Integer target_id (1);
+knowledge::KnowledgeRecord::Integer target_id (1);
 
 // payload size to burst
 unsigned int data_size = 0;
@@ -32,9 +33,9 @@ double max_wait = 20.0;
 bool is_terminator = false;
 
 
-madara::knowledge::VariableReference ack;
+knowledge::VariableReference ack;
 #ifndef _MADARA_NO_KARL_
-madara::knowledge::CompiledExpression id0_wait;
+knowledge::CompiledExpression id0_wait;
 #endif // _MADARA_NO_KARL_
 
 // handle command line arguments
@@ -259,11 +260,11 @@ void handle_arguments (int argc, char ** argv)
 }
 
 void
-write_file (madara::knowledge::KnowledgeMap & records,
+write_file (knowledge::KnowledgeMap & records,
   const madara::transport::TransportContext &,
-  madara::knowledge::Variables & vars)
+  knowledge::Variables & vars)
 {
-  madara::knowledge::KnowledgeMap::iterator file = records.find ("file");
+  knowledge::KnowledgeMap::iterator file = records.find ("file");
   if (file != records.end ())
   {
     std::stringstream filename;
@@ -294,7 +295,7 @@ write_file (madara::knowledge::KnowledgeMap & records,
       vars.print ("File already exists in folder. Not saving.\n");
     }
 
-    vars.set (ack, madara::knowledge::KnowledgeRecord::Integer (file->second.size ()));
+    vars.set (ack, knowledge::KnowledgeRecord::Integer (file->second.size ()));
     vars.print (
       "Received file. Sending file ack {file.{.id}.ack} for id {.id}.\n");
   }
@@ -323,27 +324,32 @@ int main (int argc, char ** argv)
   }
 
   // settings for delaying the sending of modifications
-  madara::knowledge::EvalSettings delay_sending;
+  knowledge::EvalSettings delay_sending;
   delay_sending.delay_sending_modifieds = true;
 
-  madara::knowledge::EvalSettings suppress_globals;
+  knowledge::EvalSettings suppress_globals;
   suppress_globals.treat_globals_as_locals = true;
+  suppress_globals.delay_sending_modifieds = false;
   
 
-  madara::knowledge::WaitSettings wait_settings;
+  knowledge::WaitSettings wait_settings;
   wait_settings.poll_frequency = 4.0;
   wait_settings.max_wait_time = max_wait;
+  wait_settings.delay_sending_modifieds = false;
 
   // create a knowledge base and setup our id
-  madara::knowledge::KnowledgeBase knowledge (host, settings);
-  knowledge.set (".id", madara::knowledge::KnowledgeRecord::Integer (settings.id));
-  knowledge.set (".target", target_id);
+  knowledge::KnowledgeBase knowledge (host, settings);
+  knowledge.set (".id", knowledge::KnowledgeRecord::Integer (settings.id),
+    knowledge::EvalSettings::SEND);
+  knowledge.set (".target", target_id,
+    knowledge::EvalSettings::SEND);
 
   ack = knowledge.get_ref (knowledge.expand_statement (
     "file.{.id}.ack"));
 
   if (is_terminator)
-    knowledge.set ("terminated", 1.0);
+    knowledge.set ("terminated", 1.0,
+      knowledge::EvalSettings::SEND);
 
   if (settings.id == 0)
   {
@@ -425,7 +431,8 @@ int main (int argc, char ** argv)
         text[3] = 't';
       }
 
-      knowledge.set (".size", madara::knowledge::KnowledgeRecord::Integer (data_size));
+      knowledge.set (".size", knowledge::KnowledgeRecord::Integer (data_size),
+        knowledge::EvalSettings::SEND);
       knowledge.set ("file", text, delay_sending);
       knowledge.set ("file_name", new_name.str (), delay_sending);
       
@@ -436,7 +443,8 @@ int main (int argc, char ** argv)
       knowledge.wait (id0_wait, wait_settings);
     }
 
-    knowledge.evaluate ("terminated = 1");
+    knowledge.evaluate ("terminated = 1",
+      knowledge::EvalSettings::SEND);
 
     knowledge.print (
       "Finished waiting."
@@ -444,7 +452,8 @@ int main (int argc, char ** argv)
 
     madara::utility::sleep (4.0);
 
-    knowledge.evaluate ("terminated = 1");
+    knowledge.evaluate ("terminated = 1",
+      knowledge::EvalSettings::SEND);
   }
   else
   {
