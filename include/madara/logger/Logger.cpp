@@ -59,6 +59,17 @@ madara::logger::Logger::search_and_insert_custom_tstamp(
 
   while ( !done )
   {
+    /**
+     * Take the ts_str (key string) and repeatedly search the incoming
+     * message buf. 
+     *
+     * If not found, npos is returned and exit the loop gracefully. 
+     *
+     * If found, compare via the series of if-else-if statements. Swap
+     * out the computed value with the key string using the copied message
+     * buffer
+     * 
+     **/
     found = ret_string.find(ts_str.c_str(), found + offset, ts_str.length());
     if ( found == std::string::npos )
     {
@@ -69,13 +80,15 @@ madara::logger::Logger::search_and_insert_custom_tstamp(
     offset = 1;
     if ( ts_str == MADARA_GET_TIME_MGT_ )
     {
-      // insert mgt text here
-      //get_time returns nsecs. need to convert into seconds.
+      /// insert mgt text here
+      /// get_time returns nsecs. need to convert into seconds.
       double mgt_time = madara::utility::get_time () / (double)1000000000;
 
-      //insert this value into the buffer
+      /// insert this value into the buffer
       std::stringstream mgt_str;
       
+      /// convert the double into string format that can easily be written
+      /// into the copy of the message buffer.
       mgt_str << std::setprecision(MGT_DIGIT_PRECISION) <<
         std::fixed << mgt_time;
       ret_string.replace(ret_string.find(ts_str), ts_str.length(),
@@ -84,7 +97,7 @@ madara::logger::Logger::search_and_insert_custom_tstamp(
     }
     else if ( ts_str == MADARA_THREAD_NAME_ )
     {
-      //insert thread name into buffer
+      //insert thread name into message buffer copy
 #ifndef MADARA_NO_THREAD_LOCAL
       ret_string.replace(ret_string.find(ts_str), ts_str.length(),
                         madara::logger::Logger::get_thread_name());
@@ -96,7 +109,7 @@ madara::logger::Logger::search_and_insert_custom_tstamp(
     }
     else if ( ts_str == MADARA_THREAD_HERTZ_ )
     {
-      // insert thread hertz value into buffer
+      // insert thread hertz value into message buffer copy
 #ifndef MADARA_NO_THREAD_LOCAL
       std::string hzstr =
         boost::lexical_cast<std::string>(
@@ -124,13 +137,21 @@ madara::logger::Logger::log (
     va_list argptr;
     va_start (argptr, message);
 
-    // Android seems to not handle printf arguments correctly as best I can tell
+    /// Android seems to not handle printf arguments correctly as
+    /// best I can tell
     char buffer[10240];
     char * begin = (char *)buffer;
     size_t remaining_buffer = sizeof (buffer);
 
     if (this->timestamp_format_.size () > 0)
     {
+      /**
+       * Prepare string to log for the timestamp prefix.
+       *
+       * First, search and replace the custom key string for local thread.
+       * The return value is a copy of the potential prefix with the custom
+       * key string data embedded the number of times it was used.
+      **/
       std::string mad_str = message;
       mad_str = search_and_insert_custom_tstamp(mad_str, MADARA_GET_TIME_MGT_);
       mad_str = search_and_insert_custom_tstamp(mad_str, MADARA_THREAD_NAME_);
@@ -139,6 +160,13 @@ madara::logger::Logger::log (
       char custom_buffer[10240];
       std::strcpy(custom_buffer, mad_str.c_str());
 
+      /**
+       * Prepare string to write into copy of the message buffer.
+       *
+       * Search and insert corresponding data for each of the custom key 
+       * string.
+       *
+      **/
       time_t raw_time;
       struct tm * time_info;
 
@@ -150,6 +178,10 @@ madara::logger::Logger::log (
       mad_str = search_and_insert_custom_tstamp(mad_str, MADARA_THREAD_NAME_);
       mad_str = search_and_insert_custom_tstamp(mad_str, MADARA_THREAD_HERTZ_);
       
+      /**
+       * Process the normal message buffer and write into final copy to
+       * return.
+      **/
       size_t chars_written = strftime (
         begin, remaining_buffer, mad_str.c_str (), time_info);
 

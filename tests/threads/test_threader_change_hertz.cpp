@@ -166,6 +166,8 @@ public:
     int rnd = std::rand() % 19 + (-9);
     int logger_rnd = std::rand() % 3 + (-1);
     
+    /// Test thread local key string in normal logger and log level
+    /// overrides in macro madara_logger_ptr_log
     madara::logger::Logger::set_thread_level(logger_rnd);
     madara_logger_ptr_log (logger::global_logger.get(), rnd,
       "CounterThread::Run MGT: %MGT  rnd=%d lrnd=%d\n",rnd,logger_rnd);
@@ -200,7 +202,7 @@ int main (int argc, char ** argv)
     "Counters is set to %ll\n"
     "Target is set to %ll\n",
     hertz, second_hertz, counters, target);
-
+  
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "MGT: %MGT\n");
 

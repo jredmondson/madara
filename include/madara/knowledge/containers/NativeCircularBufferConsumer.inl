@@ -25,7 +25,8 @@ inline void NativeCircularBufferConsumer::check_name (
   if (name == nullptr || name[0] == '\0')
   {
     throw exceptions::NameException (
-      std::string("NativeCircularBufferConsumer::") + func + ": name is empty.");
+      std::string("NativeCircularBufferConsumer::") + func
+        + ": name is empty.");
   }
 }
 
@@ -96,7 +97,8 @@ NativeCircularBufferConsumer::consume (
     return;
   }
 
-  throw exceptions::IndexException ("NativeCircularBufferConsumer::consume<T>: "
+  throw exceptions::IndexException (
+    "NativeCircularBufferConsumer::consume<T>: "
     "attempted consume on empty consumer buffer");
 }
 
@@ -112,7 +114,8 @@ NativeCircularBufferConsumer::consume (void)  const
     return consume(dropped);
   }
 
-  throw exceptions::IndexException ("NativeCircularBufferConsumer::consume<T>: "
+  throw exceptions::IndexException (
+    "NativeCircularBufferConsumer::consume<T>: "
     "attempted consume on empty consumer buffer");
 }
 

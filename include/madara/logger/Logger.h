@@ -57,7 +57,8 @@
 * High-performance logger that performs conditional logging based on first arg
 * @param  conditional     the primary logger pointer to use (if not null)
 * @param  logger_ptr      the logger that will be used if conditional is true
-* @param  alt_logger_ptr  the secondary logger pointer to use (should be not null)
+* @param  alt_logger_ptr  the secondary logger pointer to use (should be 
+*                         not null)
 * @param  level           the logging level
 **/
 #define madara_logger_cond_log_ptrs(conditional, logger_ptr,      \
@@ -90,7 +91,8 @@
 * High-performance logger that performs conditional logging based on first arg
 * @param  conditional     the primary logger pointer to use (if not null)
 * @param  logger          the logger that will be used if conditional is true
-* @param  alt_logger_ptr  the secondary logger pointer to use (should be not null)
+* @param  alt_logger_ptr  the secondary logger pointer to use (should be 
+*                         not null)
 * @param  level           the logging level
 **/
 #define madara_logger_cond_log(conditional, loggering,          \
@@ -225,32 +227,38 @@ namespace madara
 
       /**
        * Fetches thread local storage value for thread level
+       * @return the log level of the local thread 
        **/
       static int get_thread_level(void);
 
 #ifndef MADARA_NO_THREAD_LOCAL
       /**
        * Fetches thread local storage value for thread name
+       * @return the thread name of the local thread 
        **/
       static std::string get_thread_name(void);
 
       /**
-       * Fetch thread local storage value for hertz
+       * Fetches thread local storage value for hertz
+       * @return the hertz value of the local thread 
        **/
       static double get_thread_hertz(void);
 
       /**
        * Set thread local storage value for thread level
+       * @param level - log level value to store in thread local
        **/
       static void set_thread_level(int level);
 
       /**
        * Set thread local storage value for thread name
+       * @param name - thread name to store in thread local
        **/
       static void set_thread_name(const std::string name);
 
       /**
        * Set thread local storage value for hertz
+       * @param hertz - hertz value to store in thread local
        **/
       static void set_thread_hertz(double hertz);
 #endif
@@ -263,13 +271,26 @@ namespace madara
       static thread_local double thread_hertz_;
 #endif
 
-      std::string search_and_insert_custom_tstamp(
-        const std::string & buf,
-        const std::string & tsstr);
+      /**
+       * Set thread local storage value for hertz
+       * @param buf - message buffer that holds the proprietary key
+       *              key string.
+       * @param ts_str - The key string to identify which values to replace
+       * @return the string containing the message data with key string data
+       *         minus the actual key string
+       **/
+      std::string search_and_insert_custom_tstamp(const std::string & buf,
+        const std::string & ts_str);
 
-      std::string strip_custom_tstamp(
-        const std::string instr,
-        const std::string tsstr);
+      /**
+       * Set thread local storage value for hertz
+       * @param  in_str - input string to find potentially multiple
+       *                  instances of the key string
+       * @param  ts_str - actual key string to find.
+       * @return the string containing the message data with key string data
+       **/
+      std::string strip_custom_tstamp(const std::string in_str,
+        const std::string ts_str);
 
       /// guard for access and changes
       
@@ -295,11 +316,18 @@ namespace madara
       /// the tag used for logging to system logs
       std::string tag_;
 
-      /// the timestamp format. Default is "" for no timestamp
+      /// the timestamp format. 
       std::string timestamp_format_;
 
+      /// constants for the thread local keystrings
+
+      /// key string constant for clock seconds for local thread
       const char * MADARA_GET_TIME_MGT_ = "%MGT";
+
+      /// key string constant for thread name for local thread
       const char * MADARA_THREAD_NAME_ = "%MTN";
+
+      /// key string cosntant for hertz value for local thread
       const char * MADARA_THREAD_HERTZ_ = "%MTZ";
     };
 
