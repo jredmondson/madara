@@ -175,14 +175,9 @@ public:
 
   /**
    * Returns the maximum size of the NativeCircularBufferConsumer
-    * @return the size of the NativeCircularBufferConsumer
+   * @return the size of the NativeCircularBufferConsumer
    **/
   size_t size (void) const;
-
-  /**
-   * Resizes the buffer size to the producer's buffer size
-   **/
-  void resize (void);
 
   /**
    * Gets the local index.
