@@ -166,15 +166,17 @@ public:
     int rnd = std::rand() % 19 + (-9);
     int logger_rnd = std::rand() % 3 + (-1);
     
+    /// Test thread local key string in normal logger and log level
+    /// overrides in macro madara_logger_ptr_log
     madara::logger::Logger::set_thread_level(logger_rnd);
-    madara_logger_ptr_log (logger::global_logger.get(), rnd,//logger::LOG_ALWAYS,
-                           "CounterThread::Run MGT: %MGT  rnd=%d lrnd=%d\n",rnd,logger_rnd);
+    madara_logger_ptr_log (logger::global_logger.get(), rnd,
+      "CounterThread::Run MGT: %MGT  rnd=%d lrnd=%d\n",rnd,logger_rnd);
 
-    madara_logger_ptr_log (logger::global_logger.get(), rnd,//logger::LOG_ALWAYS,
-                           "CounterThread::Run MTN: %MTN rnd=%d lrnd=%d\n",rnd,logger_rnd);
+    madara_logger_ptr_log (logger::global_logger.get(), rnd,
+      "CounterThread::Run MTN: %MTN rnd=%d lrnd=%d\n",rnd,logger_rnd);
 
-    madara_logger_ptr_log (logger::global_logger.get(), rnd,//logger::LOG_ALWAYS,
-                           "CounterThread::Run MTZ: %MTZ rnd=%d lrnd=%d\n",rnd,logger_rnd);
+    madara_logger_ptr_log (logger::global_logger.get(), rnd,
+      "CounterThread::Run MTZ: %MTZ rnd=%d lrnd=%d\n",rnd,logger_rnd);
   }
 
 private:
@@ -188,7 +190,8 @@ int main (int argc, char ** argv)
   // handle all user arguments
   handle_arguments (argc, argv);
   
-  logger::global_logger.get()->set_timestamp_format("%x %X %MTZ %MGT (%MTN): ");
+  logger::global_logger.get()->set_timestamp_format(
+    "%x %X %MTZ %MGT (%MTN): ");
 
   // create a knowledge base and setup our id
   knowledge::KnowledgeBase knowledge;
@@ -199,15 +202,15 @@ int main (int argc, char ** argv)
     "Counters is set to %ll\n"
     "Target is set to %ll\n",
     hertz, second_hertz, counters, target);
+  
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "MGT: %MGT\n");
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-                         "MGT: %MGT\n");
+    "MTN: %MTN\n");
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-                         "MTN: %MTN\n");
-
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-                         "MTZ: %MTZ\n");
+    "MTZ: %MTZ\n");
 // create a counter
   containers::Integer counter ("counter", knowledge);
 
