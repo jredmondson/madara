@@ -371,10 +371,22 @@ void define_knowledge (void)
       &madara::knowledge::CheckpointSettings::originator,
       "the originator id of the checkpoint (who saved it)")
 
+    .def_readwrite("prefixes",
+      &madara::knowledge::CheckpointSettings::prefixes,
+      "A list of prefixes to save/load. If empty, all prefixes are valid")
+
     .def_readwrite("override_lamport",
       &madara::knowledge::CheckpointSettings::override_lamport,
       "use the lamport clocks in this class instead of the KB clock when"
       "writing context or checkpoints")
+
+    .def_readwrite("buffer_filters",
+      &madara::knowledge::CheckpointSettings::buffer_filters,
+      "buffer filters. Note that the user must clean up memory of all filters")
+
+    .def_readwrite("initial_lamport_clock",
+    &madara::knowledge::CheckpointSettings::initial_lamport_clock,
+    "initial lamport clock saved in the checkpoint")
 
     .def_readwrite("override_timestamp",
       &madara::knowledge::CheckpointSettings::override_timestamp,
@@ -388,6 +400,22 @@ void define_knowledge (void)
     .def_readwrite("reset_checkpoint",
       &madara::knowledge::CheckpointSettings::reset_checkpoint,
       "if true, resets the checkpoint to start a new diff from this point on")
+
+    .def_readwrite("ignore_header_check",
+      &madara::knowledge::CheckpointSettings::ignore_header_check,
+      "If true, do not perform a header check. This is useful if you are"
+       "loading an arbitrary text file with no buffer filters")
+
+    .def_readwrite("playback_simtime",
+      &madara::knowledge::CheckpointSettings::playback_simtime,
+      "If true, update simtime during playback to match recorded TOI. Only"
+       "operable if MADARA_FEATURE_SIMTIME macro is defined")
+
+    .def_readwrite("variables_lister",
+      &madara::knowledge::CheckpointSettings::variables_lister,
+      "Object which will be used to extract variables for checkpoint saving."
+       "By default (if left nullptr), use a default implementation which uses"
+       "ThreadSaveContext::get_local_modified")
 
     .def_readwrite("states",
       &madara::knowledge::CheckpointSettings::states,
@@ -904,6 +932,20 @@ void define_knowledge (void)
     .def_readwrite ("clock_increment",
       	&madara::knowledge::KnowledgeUpdateSettings::clock_increment,
         "Integer increment for updates to Lamport clocks")
+    .def_readwrite ("treat_locals_as_globals",
+      	&madara::knowledge::KnowledgeUpdateSettings::treat_locals_as_globals,
+        "Toggle whether updates to local variables are treated as"
+        "global variables that should be sent over the transport. It"
+        "should be stressed that this is dangerous and should only"
+        "be used for debugging. If you toggle this to true, all local"
+        "variables will be sent over the network where they will"
+        "overwrite local variables in remote systems, unless the"
+        "remote system filters out the local variable changes with"
+        "an on-receive filter")
+    .def_readwrite ("stream_changes",
+      	&madara::knowledge::KnowledgeUpdateSettings::stream_changes,
+        "Toggle for streaming support. If this is true, all changes"
+        "will be streamed to the attached streamer, if any")
   ; // end class KnowledgeUpdateSettings
           
   /********************************************************
@@ -961,7 +1003,17 @@ void define_knowledge (void)
     ********************************************************/
     
   class_<madara::knowledge::Variables> ("Variables", init <> ())
-      
+
+    // converts to a string
+    .def ("to_string",
+      &madara::knowledge::Variables::to_string,
+      "Converts to string")
+
+    // modifies all global variables
+    .def ("apply_modified",
+      &madara::knowledge::Variables::apply_modified,
+      "Applies modified to all global variables")
+
     // prints all knowledge variables
     .def ("expand_statement",
       &madara::knowledge::Variables::expand_statement,
@@ -982,6 +1034,22 @@ void define_knowledge (void)
           const std::string &, unsigned int) const
       > (&madara::knowledge::Variables::print),
       "Prints a statement") 
+
+    // // evaluate an expression
+    // .def( "exists",
+    //   static_cast<
+    //     bool (madara::knowledge::Variables::*)(
+    //       std::string &) const
+    //   > (&madara::knowledge::Variables::exists),
+    //   "Checks if a knowledge location exists in the context") 
+        
+    // // evaluate an expression
+    // .def( "exists",
+    //   static_cast<
+    //     bool (madara::knowledge::Variables::*)(
+    //       VariableReference &) const
+    //   > (&madara::knowledge::Variables::exists),
+    //   "Checks if a knowledge variable exists in the context") 
 
     // evaluate an expression
     .def( "evaluate",
@@ -1004,12 +1072,36 @@ void define_knowledge (void)
       m_get_1_of_2 (
         args("key", "settings"),
         "Retrieves a knowledge record"))
+
+    // get a knowledge record
+    .def( "get",
+      static_cast<
+        madara::knowledge::KnowledgeRecord (madara::knowledge::Variables::*)(
+          const std::string &,
+          const madara::knowledge::KnowledgeReferenceSettings &)
+      > (&madara::knowledge::Variables::get),
+      m_get_1_of_2 (
+        args("key", "settings"),
+        "Retrieves a knowledge record"))
+          
           
     // get a knowledge record at an index
     .def( "retrieve_index",
       static_cast<
         madara::knowledge::KnowledgeRecord (madara::knowledge::Variables::*)(
           const std::string &,
+            size_t,
+            const madara::knowledge::KnowledgeReferenceSettings &)
+      > (&madara::knowledge::Variables::retrieve_index),
+      m_retrieve_index_2_of_3 (
+        args("key", "index", "settings"),
+        "Retrieves a knowledge record from an index"))
+
+    // get a knowledge record at an index
+    .def( "retrieve_index",
+      static_cast<
+        madara::knowledge::KnowledgeRecord (madara::knowledge::Variables::*)(
+          const VariableReference &,
             size_t,
             const madara::knowledge::KnowledgeReferenceSettings &)
       > (&madara::knowledge::Variables::retrieve_index),
@@ -1089,6 +1181,30 @@ void define_knowledge (void)
     
     // define constructors
     .def (init <const madara::knowledge::KnowledgeBase &> ())
+
+    // evaluate an expression
+    .def( "read_file",
+      static_cast<
+        int (madara::knowledge::KnowledgeBase::*)(
+          const std::string &,
+          const std::string &,
+          const madara::knowledge::EvalSettings & ) 
+      > (&madara::knowledge::KnowledgeBase::read_file),
+      m_read_file_2_of_3 (
+        args("knowledge_key", "filename", "settings"), 
+        "Read a file into the knowledge base"))
+        
+    // evaluate an expression
+    .def( "read_file",
+      static_cast<
+        int (madara::knowledge::KnowledgeBase::*)(
+          const madara::knowledge::VariableReference &,
+          const std::string &,
+          const madara::knowledge::EvalSettings & ) 
+      > (&madara::knowledge::KnowledgeBase::read_file),
+      m_read_file_2_of_3 (
+        args("variable","filename", "settings"), 
+        "Read a file into the knowledge base"))
 
     // defines a python function
     .def( "define_function",
