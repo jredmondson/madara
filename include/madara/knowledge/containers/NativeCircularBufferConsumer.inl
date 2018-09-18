@@ -178,7 +178,7 @@ NativeCircularBufferConsumer::consume_many (
   for ( size_t consume_counter=0; consume_counter < count ;
     ++consume_counter )
   {
-    ret_vec.emplace_back(std::move(consume()));
+    ret_vec.emplace_back(consume());
   }
 
   return ret_vec;
@@ -196,7 +196,7 @@ NativeCircularBufferConsumer::consume_many (
   for ( size_t consume_counter=0; consume_counter < count ;
     ++consume_counter )
   {
-    ret_vec.emplace_back( std::move(consume()) );
+    ret_vec.emplace_back(consume());
   }
 
   return ret_vec;
@@ -248,6 +248,13 @@ NativeCircularBufferConsumer::inspect (
 
   ContextGuard context_guard (*context_);
   KnowledgeRecord &rec = *ref_.get_record_unsafe();
+
+  size_t oldest_index = rec.get_history_oldest_index();
+  if (local_index_ < oldest_index)
+  {
+    // Messages were dropped
+    local_index_ = oldest_index;
+  }
 
   KnowledgeRecord ret;
   std::vector <KnowledgeRecord> ret_vec;
