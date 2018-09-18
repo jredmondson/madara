@@ -32,6 +32,10 @@ std::string dest_path (".");
 
 std::vector <std::string> sources_json;
 
+knowledge::CheckpointSettings checkpoint_settings;
+
+bool debug = false;
+
 class Contributor
 {
 public:
@@ -470,6 +474,10 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "--debug")
+    {
+      debug = true;
+    }
     else if (arg1 == "-e" || arg1 == "--description")
     {
       if (i + 1 < argc)
@@ -496,6 +504,16 @@ void handle_arguments (int argc, char ** argv)
         license.read (argv[i + 1]);
         
         manifest.licenses.push_back (license);
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-ls" || arg1 == "--load-size")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> checkpoint_settings.buffer_size;
       }
 
       ++i;
@@ -539,6 +557,7 @@ void handle_arguments (int argc, char ** argv)
     else
     {
       madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
+        "\nInvalid arg %s...\n" \
         "\nProgram summary for %s [options] [Logic]:\n\n" \
         "Creates digests for MADARA bundles.\n\noptions:\n" \
         "  [-ac|--contributor json] json of contributor info\n" \
@@ -548,11 +567,13 @@ void handle_arguments (int argc, char ** argv)
         "  [-h|--help]              print help menu (i.e., this menu)\n" \
         "  [-k|--keyword word]      a keyword to associate with the bundle\n" \
         "  [-l|--license json]      json of a license\n" \
+        "  [-ls|--load-size bytes]  size of buffer needed for file load\n" \
         "  [-s|--source-path path]  directory to read files from\n" \
+        "  [--debug]                print datapackage.json\n" \
         "  [-t|--title title]       the manifest title\n" \
         "  [-v|--version MAJ.MIN.REV] sets version to MAJOR.MINOR.REV\n" \
         "\n",
-        argv[0]);
+        arg1.c_str (), argv[0]);
       exit (0);
     }
   }
@@ -611,7 +632,6 @@ void read_resources (const std::string & path)
               "%s is a knowledge base. Attempting to read timestamps.\n",
               only_filename.c_str ());
 
-            knowledge::CheckpointSettings checkpoint_settings;
             checkpoint_settings.filename = full_path;
 
             knowledge::KnowledgeBase kb;
@@ -697,10 +717,12 @@ int main (int argc, char ** argv)
 
   utility::string_replace (datapackage, "\n    ", "\n", true);
 
-  
-  madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-    "datapackage.json:\n%s\n",
-    datapackage.c_str ());
+  if (debug)
+  {
+    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
+      "datapackage.json:\n%s\n",
+      datapackage.c_str ());
+  }
 
   madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
     "saving %s/databackage.json\n",
