@@ -28,23 +28,47 @@ namespace madara
     {
       /* Convenient pre-defined settings objects */
 
-      /** Settings to immediately send modifieds, but do expand variables */
+      /** Settings to use whatever defaults there are */
       static const EvalSettings DEFAULT;
 
-      /** Settings to immediately send modifieds, and not expand variables */
-      static const EvalSettings NO_EXPAND;
+      /** Settings to enable checkpoints */
+      static const EvalSettings CHECKPOINT;
 
-      /** Settings to delay sending modifieds, but do expand variables */
+      /** Settings to delay sending modifieds and expand variables */
       static const EvalSettings DELAY;
 
-      /** Settings to delay sending modifieds, and not expand variables */
+      /** Settings to delay sending modifieds and enable checkpoints */
+      static const EvalSettings DELAY_CHECKPOINT;
+
+      /** Settings to delay sending modifieds and expand variables */
+      static const EvalSettings EXPAND;
+
+      /** Settings to delay sending modifieds and expand variables */
+      static const EvalSettings DELAY_EXPAND;
+
+      /** Settings to delay send modifieds and not expand variables */
       static const EvalSettings DELAY_NO_EXPAND;
+
+      /** Settings to delay sending modifieds and expand variables */
+      static const EvalSettings NO_EXPAND;
+
+      /** Settings to not expand odifieds and enable checkpoints */
+      static const EvalSettings NO_EXPAND_CHECKPOINT;
+
+      /** Settings to immediately send modifieds and expand variables */
+      static const EvalSettings SEND;
+
+      /** Settings to immediately send modifieds and expand variables */
+      static const EvalSettings SEND_EXPAND;
+
+      /** Settings to immediately send modifieds and not expand variables */
+      static const EvalSettings SEND_NO_EXPAND;
 
        /**
         * Constructor
         **/
        EvalSettings ()
-         : KnowledgeUpdateSettings (), delay_sending_modifieds (false),
+         : KnowledgeUpdateSettings (), delay_sending_modifieds (true),
            pre_print_statement (""), post_print_statement ("")
        {
        }

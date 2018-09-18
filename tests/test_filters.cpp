@@ -65,6 +65,10 @@ void test_fragments_to_files_filter (void)
   kb.set ("b2", 2);
 
   knowledge::KnowledgeMap args = kb.to_map ("");
+  knowledge::KnowledgeMap args_less_1 = args;
+
+  args_less_1.erase (
+    "agent.0.sandbox.files.file.images/manaus.jpg.contents.1");
 
   std::cerr << "  crc: " << crc << "\n";
   std::cerr << "  fragments: " << crc << "\n";
@@ -92,7 +96,6 @@ void test_fragments_to_files_filter (void)
     ++madara_fails;
   }
 }
-
 void test_dynamic_predicate_filter (void)
 {
   madara::knowledge::KnowledgeBase kb;

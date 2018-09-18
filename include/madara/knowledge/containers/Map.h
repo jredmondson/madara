@@ -206,6 +206,12 @@ namespace madara
         void clear (bool clear_knowledge = true);
 
         /**
+         * Resets the map. This will reset all the map variables to empty
+         * in the underlying context and also clear the containers keys
+         **/
+        void reset (void);
+
+        /**
         * Erases a variable from the map
         * @param  key  the variable to delete from the map
         **/
@@ -253,6 +259,20 @@ namespace madara
         int set (const std::string & key,
           madara::knowledge::KnowledgeRecord::Integer value, 
           const KnowledgeUpdateSettings & settings);
+        
+        /**
+         * Sets a value to a knowledge record in the map
+         *
+         * @param key             location within the map
+         * @param value           value to set at location
+         * @param settings        settings for applying the update
+         * @return                0 if successful, -1 if key is null, and
+         *                        -2 if quality isn't high enough
+         **/
+        int set (const std::string & key,
+          const KnowledgeRecord & value, 
+          const KnowledgeUpdateSettings & settings =
+            KnowledgeUpdateSettings ());
         
         /**
          * Sets an index within an array to a specified value

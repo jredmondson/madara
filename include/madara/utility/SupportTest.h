@@ -204,6 +204,13 @@ std::unique_ptr<T> mk_unique(Args&&... args)
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
+template<typename T>
+std::unique_ptr<decay_<T>> into_unique(T &&val)
+{
+  using V = decay_<T>;
+  return mk_unique<V>(std::forward<T>(val));
+}
+
 template<typename Type, typename Class>
 Class class_of_pointer_to_member_impl(Type Class::*);
 

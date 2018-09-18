@@ -1073,7 +1073,8 @@ public:
     for (size_t i = 0; i < expressions_.size (); ++i)
     {
 #ifndef _MADARA_NO_KARL_
-      knowledge::KnowledgeRecord result = knowledge_->evaluate (expressions_[i]);
+      knowledge::KnowledgeRecord result = knowledge_->evaluate (
+        expressions_[i], knowledge::EvalSettings::SEND);
 
       if (check_result && result.is_true ())
       {
@@ -1307,7 +1308,8 @@ int main (int argc, char ** argv)
       for (size_t i = 0; i < expressions.size (); ++i)
       {
 #ifndef _MADARA_NO_KARL_
-        knowledge::KnowledgeRecord result = kb.evaluate (expressions[i]);
+        knowledge::KnowledgeRecord result = kb.evaluate (expressions[i],
+          knowledge::EvalSettings::SEND);
 
         if (check_result && result.is_true ())
         {
@@ -1328,7 +1330,8 @@ int main (int argc, char ** argv)
       for (size_t i = 0; i < expressions.size (); ++i)
       {
 #ifndef _MADARA_NO_KARL_
-        kb.evaluate (expressions[i]);
+        kb.evaluate (expressions[i],
+          madara::knowledge::EvalSettings::SEND);
 #endif // _MADARA_NO_KARL_
       }
     } // if (after_wait)

@@ -24,17 +24,41 @@ namespace madara
     {
       /* Convenient pre-defined settings objects for common use cases */
 
-      /** Settings to immediately send modifieds, but do expand variables */
+      /** Settings to use whatever defaults there are */
       static const WaitSettings DEFAULT;
 
-      /** Settings to immediately send modifieds, and not expand variables */
-      static const WaitSettings NO_EXPAND;
+      /** Settings to enable checkpoints */
+      static const WaitSettings CHECKPOINT;
 
-      /** Settings to delay sending modifieds, but do expand variables */
+      /** Settings to delay sending modifieds and expand variables */
       static const WaitSettings DELAY;
 
-      /** Settings to delay sending modifieds, and not expand variables */
+      /** Settings to delay sending modifieds and enable checkpoints */
+      static const WaitSettings DELAY_CHECKPOINT;
+
+      /** Settings to delay sending modifieds and expand variables */
+      static const WaitSettings EXPAND;
+
+      /** Settings to delay sending modifieds and expand variables */
+      static const WaitSettings DELAY_EXPAND;
+
+      /** Settings to delay send modifieds and not expand variables */
       static const WaitSettings DELAY_NO_EXPAND;
+
+      /** Settings to delay sending modifieds and expand variables */
+      static const WaitSettings NO_EXPAND;
+
+      /** Settings to not expand odifieds and enable checkpoints */
+      static const WaitSettings NO_EXPAND_CHECKPOINT;
+
+      /** Settings to immediately send modifieds and expand variables */
+      static const WaitSettings SEND;
+
+      /** Settings to immediately send modifieds and expand variables */
+      static const WaitSettings SEND_EXPAND;
+
+      /** Settings to immediately send modifieds and not expand variables */
+      static const WaitSettings SEND_NO_EXPAND;
 
        /**
         * Constructor

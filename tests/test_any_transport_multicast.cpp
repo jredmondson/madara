@@ -165,7 +165,9 @@ int main (int argc, char ** argv)
 #ifndef _MADARA_NO_KARL_
   settings.type = madara::transport::MULTICAST;
   madara::knowledge::KnowledgeBase knowledge (host, settings);
-  knowledge.set (".id", (madara::knowledge::KnowledgeRecord::Integer) settings.id);
+  knowledge.set (".id",
+    (madara::knowledge::KnowledgeRecord::Integer) settings.id,
+    madara::knowledge::EvalSettings::SEND);
 
 capnp::MallocMessageBuilder buffer;
   auto builder = buffer.initRoot<geo_capn::Point>();
@@ -175,7 +177,8 @@ capnp::MallocMessageBuilder buffer;
 
   GenericCapnObject point("Point", buffer);
 
-  knowledge.set_any("pointOverNetwork", point);
+  knowledge.set_any("pointOverNetwork", point,
+    madara::knowledge::EvalSettings::SEND);
 
   knowledge.print ();
   

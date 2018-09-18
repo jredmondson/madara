@@ -152,6 +152,9 @@ namespace madara
 
       /// buffer for sending
       madara::utility::ScopedArray<char> buffer_;
+
+      /// Latest TOI the previous send operation included
+      uint64_t last_toi_sent_ = 0;
     };
 
     /**

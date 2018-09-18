@@ -175,14 +175,9 @@ public:
 
   /**
    * Returns the maximum size of the NativeCircularBufferConsumer
-    * @return the size of the NativeCircularBufferConsumer
+   * @return the size of the NativeCircularBufferConsumer
    **/
   size_t size (void) const;
-
-  /**
-   * Resizes the buffer size to the producer's buffer size
-   **/
-  void resize (void);
 
   /**
    * Gets the local index.
@@ -209,13 +204,14 @@ public:
    * @param  count   the maximum number of records to return
    * @param  values  the last added records
    **/
-  template <typename T> void consume_many (size_t count,std::vector <T> & values) const;
+  template <typename T>
+  void consume_many (size_t count,std::vector <T> & values) const;
 
   /**
    * Consumes (earliest) records from the local index
    * @param  count   the maximum number of records to return
    * @return the last added records
-   * @throw exceptions::ContextException if name or context haven't
+   * @throw exceptions::ContextException if name or context have not
    *                      been set appropriately
    **/
   std::vector <KnowledgeRecord> consume_many (size_t count) const;
@@ -227,55 +223,62 @@ public:
    *                 occur when the producer produces faster than the
    *                 consumer can consume.
    * @return the last added records
-   * @throw exceptions::ContextException if name or context haven't
+   * @throw exceptions::ContextException if name or context have not
    *                      been set appropriately
    **/
-  std::vector <KnowledgeRecord> consume_many (size_t count, size_t & dropped) const;
+  std::vector <KnowledgeRecord> consume_many (size_t count,
+    size_t & dropped) const;
 
   /**
    * Retrieves a record at a position relative to local index
    * @param  position  the relative position of the requested record
    *                   from the latest added record. Can be negative
-   * @param  value    the record at the position in the CircularBufferConsumer
+   * @param  value    the record at the position in the 
+   *                  NativeCircularBufferConsumer
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    **/
-  template <typename T> void inspect (KnowledgeRecord::Integer position, T & value) const;
+  template <typename T>
+  void inspect (KnowledgeRecord::Integer position, T & value) const;
 
   /**
    * Retrieves a vector of records at a position relative to local index
    * @param  position  the relative position of the requested record
    *                   from the latest added record. Can be negative
    * @param  count   the maximum number of records to return
-   * @return  the values at the position in the CircularBufferConsumer
+   * @return  the values at the position in the NativeCircularBufferConsumer
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    **/
-  std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,size_t count) const;
+  std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,
+    size_t count) const;
 
   /**
    * Retrieves a vector of records at a position relative to local index
    * @param  position  the relative position of the requested record
    *                   from the latest added record. Can be negative
    * @param  count   the maximum number of records to return
-   * @param  values  the values at the position in the CircularBufferConsumer
+   * @param  values  the values at the position in the 
+   *                 NativeCircularBufferConsumer
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    **/
-  template <typename T> void inspect (KnowledgeRecord::Integer position,
-                                      size_t count, std::vector <T> & values) const;
+  template <typename T>
+  void inspect (KnowledgeRecord::Integer position,
+    size_t count, std::vector <T> & values) const;
 
   /**
    * Retrieves a record at a position relative to local index
    * @param  position  the relative position of the requested record
    *                   from the latest added record. Can be negative
-   * @return  the record at the position in the CircularBufferConsumer
+   * @return  the record at the position in the NativeCircularBufferConsumer
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    **/
-  madara::knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
+  madara::knowledge::KnowledgeRecord inspect (
+    KnowledgeRecord::Integer position) const;
 
 private:
   /**

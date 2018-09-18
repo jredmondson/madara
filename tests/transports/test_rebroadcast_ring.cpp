@@ -354,21 +354,28 @@ int main (int argc, char ** argv)
 
   madara::knowledge::EvalSettings suppress_globals;
   suppress_globals.treat_globals_as_locals = true;
+  suppress_globals.delay_sending_modifieds = false;
   
   madara::knowledge::WaitSettings wait_settings;
   wait_settings.poll_frequency = 4;
   wait_settings.max_wait_time = max_wait;
+  wait_settings.delay_sending_modifieds = false;
 
   // create a knowledge base and setup our id
   madara::knowledge::KnowledgeBase knowledge (host, settings);
-  knowledge.set (".id", madara::knowledge::KnowledgeRecord (settings.id));
-  knowledge.set (".target", target_id);
+  knowledge.set (".id", madara::knowledge::KnowledgeRecord (settings.id),
+    madara::knowledge::EvalSettings::SEND);
+  knowledge.set (".target", target_id,
+    madara::knowledge::EvalSettings::SEND);
 
   ack = knowledge.get_ref (knowledge.expand_statement (
     "file.{.id}.ack"));
 
   if (is_terminator)
-    knowledge.set ("terminated", 1.0);
+  {
+    knowledge.set ("terminated", 1.0,
+      madara::knowledge::EvalSettings::SEND);
+  }
 
   if (settings.id == 0)
   {
@@ -452,7 +459,8 @@ int main (int argc, char ** argv)
         text[3] = 't';
       }
 
-      knowledge.set (".size", madara::knowledge::KnowledgeRecord (data_size));
+      knowledge.set (".size", madara::knowledge::KnowledgeRecord (data_size),
+        madara::knowledge::EvalSettings::SEND);
       knowledge.set ("file", text, delay_sending);
       knowledge.set ("file_name", new_name.str (), delay_sending);
       
@@ -463,7 +471,8 @@ int main (int argc, char ** argv)
       knowledge.wait (id0_wait, wait_settings);
     }
 
-    knowledge.evaluate ("terminated = 1");
+    knowledge.evaluate ("terminated = 1",
+      madara::knowledge::EvalSettings::SEND);
 
     knowledge.print (
       "Finished waiting."
@@ -471,7 +480,8 @@ int main (int argc, char ** argv)
 
     madara::utility::sleep (4.0);
 
-    knowledge.evaluate ("terminated = 1");
+    knowledge.evaluate ("terminated = 1",
+      madara::knowledge::EvalSettings::SEND);
   }
   else
   {

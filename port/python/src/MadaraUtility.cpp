@@ -45,26 +45,22 @@ void define_utility (void)
    * Utility function Definitions
    ********************************************************/
 
-  // def("file_from_fragments", &madara::utility::file_from_fragments,
-  //   file_from_fragments_2_of_4(),
-  //   "Constructs a file from fragments sent by the MADARA File Service");
-
-  // def("file_from_fragments", &madara::utility::file_from_fragments,
-  //   "Constructs a file from fragments sent by the MADARA File Service");
-
   def("file_from_fragments", &madara::utility::file_from_fragments,
     file_from_fragments_2_of_4 (
       args("filename", "crc", "delete_incomplete", "delete_fragments"),
         "Constructs a file from fragments sent by the MADARA File Service"));
 
-  // def("file_crc", &madara::utility::file_crc,
-  //   file_crc_1_of_2(),
-  //   "Returns the 32-bit crc of a file");
-
   def("file_crc", &madara::utility::file_crc,
     file_crc_1_of_2 (
       args("filename", "max_block"),
       "Returns the 32-bit crc of a file"));
+
+  def("get_file_progress", &madara::utility::get_file_progress,
+    get_file_progress_3_of_4 (
+      args("filename", "crc", "expected_size", "fragment_size"),
+        "Checks the filesystem for file completion and returns the"
+        " current received file size in the directory for the crc"));
+
 }
 
 

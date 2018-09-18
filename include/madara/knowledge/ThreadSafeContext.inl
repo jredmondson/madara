@@ -293,7 +293,7 @@ ThreadSafeContext::set_unsafe_impl (
   record->set_value(std::forward<Args>(args)...);
   record->quality = record->write_quality;
   record->clock = clock_;
-  record->toi = utility::get_time();
+  record->set_toi(utility::get_time());
 
   return 0;
 }
@@ -358,7 +358,7 @@ ThreadSafeContext::emplace_any_unsafe_impl (
   record->emplace_any(std::forward<Args>(args)...);
   record->quality = record->write_quality;
   record->clock = clock_;
-  record->toi = utility::get_time();
+  record->set_toi(utility::get_time());
 
   return 0;
 }
@@ -478,7 +478,7 @@ ThreadSafeContext::set_index_unsafe_impl (
   record->set_index (index, std::forward<T>(value));
   record->quality = record->write_quality;
   record->clock = clock_;
-  record->toi = utility::get_time();
+  record->set_toi(utility::get_time());
 
   return 0;
 }
@@ -532,7 +532,7 @@ ThreadSafeContext::inc (
       ++ (*record);
       record->quality = record->write_quality;
       record->clock = clock_;
-      record->toi = utility::get_time();
+      record->set_toi(utility::get_time());
       mark_and_signal (variable, settings);
     }
 
@@ -585,6 +585,28 @@ const KnowledgeReferenceSettings & settings)
   }
 
   return found;
+}
+
+inline bool
+ThreadSafeContext::clear (
+const VariableReference & variable)
+{
+  if (variable.is_valid ())
+  {
+    MADARA_GUARD_TYPE guard (mutex_);
+
+    // erase any changed or local changed map entries
+    // changed_map_.erase (variable.entry_->first.c_str ());
+    // local_changed_map_.erase (variable.entry_->first.c_str ());
+
+    variable.entry_->second.clear_value ();
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 // return whether or not the key exists
@@ -700,7 +722,7 @@ ThreadSafeContext::dec (
       -- (*record);
       record->quality = record->write_quality;
       record->clock = clock_;
-      record->toi = utility::get_time();
+      record->set_toi(utility::get_time());
 
       mark_and_signal (variable, settings);
     }

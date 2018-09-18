@@ -440,6 +440,8 @@ int
   void *& buffer, size_t & size, bool add_zero_char)
 {
   int ret_value = 0;
+  size = 0;
+  
   if (filename != "")
   {
     try
