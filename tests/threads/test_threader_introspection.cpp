@@ -192,6 +192,8 @@ int main (int argc, char ** argv)
   // create a threader for running threads
   threads::Threader threader (knowledge);
 
+  threader.enable_debug ();
+
   utility::Timer <utility::Clock> timer;
   timer.start ();
 
@@ -251,6 +253,23 @@ int main (int argc, char ** argv)
   // print the aggregate counter to the screen
   control.print ();
 
+  threader.wait ();
+
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Starting new thread without debugging and running for 5s\n",
+    timer.duration_s ());
+  
+  threader.disable_debug ();
+  threader.run (hertz, "no_debug", new EmptyThread (), true);
+
+  // sleep for 5 seconds before printing and stopping
+  utility::sleep (5.0);
+
+  // print the aggregate counter to the screen
+  control.print ();
+
+  threader.terminate ();
+  
   threader.wait ();
 
   return 0;
