@@ -80,6 +80,9 @@ madara::threads::Threader::run (
 
     if (paused)
       thread->paused = 1;
+    
+    if (debug_)
+      worker->debug_ = 1;
 
     (threads_[name] = std::move (worker))->run ();
   }
@@ -116,7 +119,9 @@ madara::threads::Threader::run (
 
     // if successful, run the thread
     if (new_thread)
+    {
       run (name, new_thread, paused);
+    }
   }
 }
 
@@ -149,6 +154,9 @@ madara::threads::Threader::run (double hertz,
 
     if (paused)
       thread->paused = 1;
+
+    if (debug_)
+      worker->debug_ = 1;
 
     (threads_[name] = std::move (worker))->run ();
   }

@@ -169,6 +169,26 @@ namespace madara
       knowledge::containers::Integer end_time_;
 
       /**
+       * duration of last run
+       **/
+      knowledge::containers::Integer last_duration_;
+
+      /**
+       * minimum duration of all runs
+       **/
+      knowledge::containers::Integer min_duration_;
+
+      /**
+       * maximum duration of all runs
+       **/
+      knowledge::containers::Integer max_duration_;
+
+      /**
+       * flag for whether or not to save debug information in control
+       **/
+      knowledge::containers::Integer debug_;
+
+      /**
        * hertz rate for worker thread executions
        **/
       double hertz_ = -1;

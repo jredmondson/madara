@@ -198,6 +198,38 @@ namespace madara
       void terminate (const std::string name);
 
       /**
+      * Requests a specific thread to disable debug mode. Debug mode
+      * prints thread performance information such as durations
+      * and executions.
+      * @param name    unique thread name for the thread.
+      **/
+      void disable_debug (const std::string name);
+
+      /**
+      * Requests that all new threads disable debug mode. Debug mode
+      * prints thread performance information such as durations
+      * and executions. Disabled is the default mode.
+      * @param name    unique thread name for the thread.
+      **/
+      void disable_debug (void);
+
+      /**
+      * Requests a specific thread to enter debug mode. Debug mode
+      * prints thread performance information such as durations
+      * and executions.
+      * @param name    unique thread name for the thread.
+      **/
+      void enable_debug (const std::string name);
+
+      /**
+      * Requests that all new threads to enter debug mode. Debug mode
+      * prints thread performance information such as durations
+      * and executions. Disabled is the default mode.
+      * @param name    unique thread name for the thread.
+      **/
+      void enable_debug (void);
+
+      /**
       * Requests all threads to terminate
       **/
       void terminate (void);
@@ -237,6 +269,11 @@ namespace madara
        * the threads that are still active
        **/
       NamedWorkerThreads threads_;
+
+      /**
+       * indicates if threads should be started in debug mode
+       **/
+      bool debug_;
     };
   }
 }

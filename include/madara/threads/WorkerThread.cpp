@@ -47,6 +47,16 @@ WorkerThread::WorkerThread (
     end_time_.set_name (
       base_string.str () + ".end_time", control);
 
+    last_duration_.set_name (
+      base_string.str () + ".last_duration", control);
+    min_duration_.set_name (
+      base_string.str () + ".min_duration", control);
+    max_duration_.set_name (
+      base_string.str () + ".max_duration", control);
+
+    debug_.set_name (
+      base_string.str () + ".debug", control);
+
     finished_ = 0;
     started_ = 0;
     new_hertz_ = hertz_;
@@ -138,8 +148,17 @@ WorkerThread::svc (void)
       utility::TimeValue next_epoch;
       utility::Duration frequency;
 
+      // only allow one-way communication of durations. We never read control
+      int64_t min_duration = -1;
+      int64_t max_duration = 0;
+      int64_t last_duration = 0;
+      bool max_duration_changed = true;
+      bool min_duration_changed = true;
+
       bool one_shot = true;
       bool blaster = false;
+
+      bool debug = debug_.is_true ();
 
       knowledge::VariableReference terminated;
       knowledge::VariableReference paused;
@@ -157,7 +176,10 @@ WorkerThread::svc (void)
       madara::logger::Logger::set_thread_hertz(hertz_);
 #endif
 
-      start_time_ = utility::get_time ();
+      if (debug)
+      {
+        start_time_ = utility::get_time ();
+      }
 
       while (control_.get (terminated).is_false ())
       {
@@ -173,13 +195,53 @@ WorkerThread::svc (void)
 
           try
           {
-            last_start_time_ = utility::get_time ();
-            ++executions_;
+            int64_t start_time = 0, end_time = 0;
+            debug = debug_.is_true ();
+            
+            if (debug)
+            {
+              start_time = utility::get_time ();
+              ++executions_;
+            }
 
             thread_->run ();
 
-            end_time_ = utility::get_time ();
-          }
+            if (debug)
+            {
+              end_time = utility::get_time ();
+
+              // update duration information
+              last_duration = end_time - start_time;
+              if (min_duration == -1 || last_duration < min_duration)
+              {
+                min_duration = last_duration;
+                min_duration_changed = true;
+              }
+              if (last_duration > max_duration)
+              {
+                max_duration = last_duration;
+                max_duration_changed = true;
+              }
+
+              // lock control plane and update
+              {
+                // write updates to control
+                knowledge::ContextGuard guard (control_);
+                last_start_time_ = start_time;
+                end_time_ = end_time;
+
+                last_duration_ = last_duration;
+                if (max_duration_changed)
+                {
+                  max_duration_ = max_duration;
+                }
+                if (min_duration_changed)
+                {
+                  min_duration_ = min_duration;
+                }
+              } // end lock of control plane
+            } // end if debug
+          } // end try of the run
           catch (const std::exception &e)
           {
             madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
