@@ -4,7 +4,7 @@ FILE="bundle"
 TAR=1
 GZIP=1
 UNKNOWN_ARG=0
-BUNDLE_ARGS=
+BUNDLE_ARGS=()
 DEST_DIR=""
 SOURCE_DIR=""
 UNZIP=0
@@ -61,11 +61,14 @@ do
       echo "  -s|--source-path path  directory to read files from";
       echo "  -u|--unzip             unzip the files from the bundle";
       echo "  -z|--gz|--gunzip       gunzip the files into the bundle";
+      echo ""
+      echo "  All other arguments pass through to mabundle. See its ";
+      echo "  help menu for details. '\$MADARA_ROOT/bin/mabundle -h'";
       exit 0;
       ;;
 
     *)
-      BUNDLE_ARGS="${BUNDLE_ARGS} '$1'";
+      BUNDLE_ARGS+=("$1");
       # echo "Passing arg $1 on to mabundle tool";;
   esac
 
@@ -74,6 +77,16 @@ done
 
 IFS=" "
 TAR_ARGS="cvf"
+
+if [ $GZIP -eq 1 ]; then
+  if [ "$FILE" = "bundle" ]; then
+    FILE="$FILE.tgz"
+  fi
+else
+  if [ "$FILE" = "bundle" ]; then
+    FILE="$FILE.tar"
+  fi
+fi
 
 if [ $UNZIP -eq 1 ]; then
 
@@ -133,7 +146,7 @@ else
     COMPRESS_LIST="${COMPRESS_LIST} ${SOURCE_DIR}/lib"
   fi
 
-  if [ -d ${SOURCE_DIR}/src ]; then
+  if [ -d ${SOURCE_DIR}/scripts ]; then
     COMPRESS_LIST="${COMPRESS_LIST} ${SOURCE_DIR}/scripts"
   fi
 
@@ -141,23 +154,17 @@ else
     COMPRESS_LIST="${COMPRESS_LIST} ${SOURCE_DIR}/src"
   fi
 
-  echo "mabundle -d ${DEST_DIR} -s ${SOURCE_DIR} ${BUNDLE_ARGS}"
-  mabundle -d ${DEST_DIR} -s ${SOURCE_DIR} ${BUNDLE_ARGS} > /dev/null 2>&1
+  IFS=" "
+
+  echo "mabundle -d ${DEST_DIR} -s ${SOURCE_DIR} ${BUNDLE_ARGS[@]}"
+  mabundle -d ${DEST_DIR} -s ${SOURCE_DIR} "${BUNDLE_ARGS[@]}"
 
   if [ $TAR -eq 1 ]; then
 
     if [ $GZIP -eq 1 ]; then
       TAR_ARGS="-cvzf"
-
-      if [ "$FILE" = "bundle" ]; then
-        FILE="$FILE.tgz"
-      fi
     else
       TAR_ARGS="-cvf"
-
-      if [ "$FILE" = "bundle" ]; then
-        FILE="$FILE.tar"
-      fi
     fi
 
 

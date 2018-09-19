@@ -1177,6 +1177,30 @@ void define_knowledge (void)
         args("level"),
         "Alias of print(level). Prints all variables in the knowledge base"))
 
+    // reading a file
+    .def( "read_file",
+      static_cast<
+        int (madara::knowledge::KnowledgeBase::*)(
+          const std::string &,
+          const std::string &,
+          const madara::knowledge::EvalSettings & ) 
+      > (&madara::knowledge::KnowledgeBase::read_file),
+      m_read_file_2_of_3 (
+        args("knowledge_key", "filename", "settings"), 
+        "Read a file into the knowledge base"))
+        
+    // reading a file
+    .def( "read_file",
+      static_cast<
+        int (madara::knowledge::KnowledgeBase::*)(
+          const madara::knowledge::VariableReference &,
+          const std::string &,
+          const madara::knowledge::EvalSettings & ) 
+      > (&madara::knowledge::KnowledgeBase::read_file),
+      m_read_file_2_of_3 (
+        args("variable","filename", "settings"), 
+        "Read a file into the knowledge base"))
+
     // get a knowledge record at an index
     .def( "retrieve_index",
       static_cast<
