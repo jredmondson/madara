@@ -1,6 +1,7 @@
 feature (android) {
    
    includes += $(BOOST_ANDROID_ROOT)/build/$(ANDROID_ARCH)/include
+   includes += $(LZ4_ROOT)/lib
    libpaths += $(BOOST_ANDROID_ROOT)/build/$(ANDROID_ARCH)/lib
    
   verbatim (make, local, true) {
@@ -8,6 +9,10 @@ feature (android) {
     
     LDLIBS = -l:libboost_system.a -l:libboost_filesystem.a -llog -lc++_shared -lcapnp-0.6.1 -lcapnpc-0.6.1 -lcapnp-json-0.6.1 -lkj-0.6.1
    
+    ifeq ($(LZ4),1) 
+        LDLIBS +=-llz4
+        LDFLAGS+= -L$(LZ4_ROOT)/lib
+    endif
 
     ifeq ($(ZMQ),1) 
         LDLIBS +=-lzmq
@@ -35,11 +40,5 @@ feature (android) {
     CXX = $(NDK_TOOLS)/bin/$(CROSS_COMPILE)clang++
     CC = $(NDK_TOOLS)/bin/$(CROSS_COMPILE)clang
   }
-
-
-  
-
-   
-  
   
 }
