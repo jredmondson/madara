@@ -38,6 +38,15 @@ WorkerThread::WorkerThread (
     new_hertz_.set_name (
       base_string.str () + ".hertz", control);
 
+    executions_.set_name (
+      base_string.str () + ".executions", control);
+    start_time_.set_name (
+      base_string.str () + ".start_time", control);
+    last_start_time_.set_name (
+      base_string.str () + ".last_start_time", control);
+    end_time_.set_name (
+      base_string.str () + ".end_time", control);
+
     finished_ = 0;
     started_ = 0;
     new_hertz_ = hertz_;
@@ -148,6 +157,8 @@ WorkerThread::svc (void)
       madara::logger::Logger::set_thread_hertz(hertz_);
 #endif
 
+      start_time_ = utility::get_time ();
+
       while (control_.get (terminated).is_false ())
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
@@ -160,9 +171,17 @@ WorkerThread::svc (void)
             "WorkerThread(%s)::svc:" \
             " thread calling run function\n", name_.c_str ());
 
-          try {
+          try
+          {
+            last_start_time_ = utility::get_time ();
+            ++executions_;
+
             thread_->run ();
-          } catch (const std::exception &e) {
+
+            end_time_ = utility::get_time ();
+          }
+          catch (const std::exception &e)
+          {
             madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
               "WorkerThread(%s)::svc:" \
               " exception thrown: %s\n", name_.c_str (), e.what());
