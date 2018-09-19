@@ -41,15 +41,17 @@ public:
    * be held at once. If more than that many elements are added to the back of
    * the buffer, elements from the front will silently be removed.
    **/
-  explicit CircularBuffer(size_t capacity)
-    : data_((T *)operator new(sizeof(T) * capacity)),
+  explicit CircularBuffer(size_t capacity, size_t initial_index = 0)
+    : front_(initial_index),
+      back_(initial_index),
+      data_((T *)operator new(sizeof(T) * capacity)),
       cap_(capacity) {}
 
   /**
    * Copy constructor. Abides by typical semantics.
    **/
   CircularBuffer(const CircularBuffer &other)
-    : CircularBuffer(other.size())
+    : CircularBuffer(other.size(), other.front_)
   {
     for (const T &cur : other) {
       emplace_back(cur);
@@ -111,7 +113,7 @@ public:
    **/
   void reserve(size_t size)
   {
-    CircularBuffer tmp(size);
+    CircularBuffer tmp(size, front_);
     while (!empty()) {
       tmp.emplace_back(std::move(pop_front()));
     }
