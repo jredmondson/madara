@@ -139,6 +139,16 @@ void test_record_buffer()
       {{0, 20}, {2, 22}});
   test_history_vector<int>(rec.get_history(-5, 4),
       {{0, 22}, {2, 24}});
+
+  LOG("Resized buffer to 6");
+  rec.set_history_capacity(6);
+  test_history_vector<int>(rec.get_history(),
+      {{3, 24}, {0, 21}, {1, 22}});
+
+  LOG("Resized buffer to 10");
+  rec.set_history_capacity(10);
+  test_history_vector<int>(rec.get_history(),
+      {{3, 24}, {0, 21}, {1, 22}});
 }
 
 template<typename Key>
@@ -231,8 +241,15 @@ void test_container()
   v = buf.inspect(2,3);
   test_consume_earliest<int>(v,{ {0,25},{1,26},{2,27} });
 
+  kb.set_history_capacity(key, 5);
+
+  v = buf.inspect(2,3);
+  test_consume_earliest<int>(v,{ {0,28},{1,29},{2,30} });
+
+  kb.set_history_capacity(key, 10);
+
   v = buf.consume_many(1);
-  test_consume_earliest<int>(v,{ {0,23} });
+  test_consume_earliest<int>(v,{ {0,26} });
 
   for (int i = 32; i < 45; ++i) {
     kb.set(key, i);
@@ -241,7 +258,7 @@ void test_container()
   size_t mydropped;
   v = buf.consume_many(2,mydropped);
 
-  TEST_EQ(mydropped, 10UL);
+  TEST_EQ(mydropped, 7UL);
   test_consume_earliest<int>(v,{ {0,35}, {1,36} });
   
   std::vector<KnowledgeRecord> krvec;
