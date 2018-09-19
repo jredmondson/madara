@@ -8,6 +8,9 @@
 #include "madara/utility/java/Acquire_VM.h"
 #endif
 
+#ifndef _WIN32
+#include <pthread.h>
+#endif
 
 #include <iostream>
 #include <algorithm>
@@ -108,6 +111,10 @@ WorkerThread::run (void)
 #endif
   try {
     me_ = std::thread(&WorkerThread::svc, this);
+
+#ifndef _WIN32
+    pthread_setname_np(me_.native_handle(), name_.substr(0, 15).c_str());
+#endif
 
     std::ostringstream os;
     os << std::this_thread::get_id() << " spawned " << me_.get_id() << std::endl;
