@@ -216,6 +216,11 @@ void send_file (knowledge::KnowledgeBase & kb,
 
   size_t num_fragments = streamer.get_size () / 60000;
 
+  if (streamer.get_size () % 60000 > 0)
+  {
+    num_fragments++;
+  }
+
   madara_logger_ptr_log (
     logger::global_logger.get (),
     logger::LOG_ALWAYS,
