@@ -87,8 +87,6 @@ template <typename T> void
 NativeCircularBufferConsumer::consume (
   T & value, size_t & dropped) const
 {
-  check_context (__func__);
-
   ContextGuard context_guard (*context_);
 
   if (remaining () > 0)
@@ -96,10 +94,102 @@ NativeCircularBufferConsumer::consume (
     value = consume (dropped).to_any <T> ();
     return;
   }
+}
 
-  throw exceptions::IndexException (
-    "NativeCircularBufferConsumer::consume<T>: "
-    "attempted consume on empty consumer buffer");
+template <typename T> void
+NativeCircularBufferConsumer::peek_latest (size_t count,
+  std::vector <T> & values) const
+{
+  // iterate over the returned records
+  for (auto record : peek_latest (count))
+  {
+    // add them to the values
+    if (record.is_valid())
+      values.push_back (record.to_any <T> ());
+  }
+}
+
+inline std::vector <KnowledgeRecord>
+NativeCircularBufferConsumer::peek_latest (size_t count) const
+{
+  ContextGuard context_guard (*context_);
+
+  KnowledgeRecord &rec = *ref_.get_record_unsafe();
+  size_t newest_index = rec.get_history_newest_index();
+
+  if ( (local_index_ + count ) > newest_index)
+  {
+    count = newest_index - local_index_;
+  }
+
+  return rec.get_newest(count);
+}
+
+template <typename T> void
+NativeCircularBufferConsumer::consume_latest (size_t count,
+  std::vector <T> & values) const
+{
+  // iterate over the returned records
+  for (auto record : consume_latest (count))
+  {
+    // add them to the values
+    if (record.is_valid())
+      values.push_back (record.to_any <T> ());
+  }
+}
+
+template <typename T> void
+NativeCircularBufferConsumer::consume_latest (size_t count,
+  std::vector <T> & values, size_t & dropped) const
+{
+  dropped = get_dropped ();
+
+  // iterate over the returned records
+  for (auto record : consume_latest (count))
+  {
+    // add them to the values
+    if (record.is_valid())
+      values.push_back (record.to_any <T> ());
+  }
+}
+
+inline std::vector <KnowledgeRecord>
+NativeCircularBufferConsumer::consume_latest (size_t count) const
+{
+  ContextGuard context_guard (*context_);
+
+  KnowledgeRecord &rec = *ref_.get_record_unsafe();
+  size_t newest_index = rec.get_history_newest_index();
+  std::vector <KnowledgeRecord> result;
+
+  if ( (local_index_ + count ) > newest_index)
+  {
+    count = newest_index - local_index_;
+  }
+
+  local_index_ = newest_index + 1;
+
+  return rec.get_newest(count);
+}
+
+inline std::vector <KnowledgeRecord>
+NativeCircularBufferConsumer::consume_latest (size_t count, size_t & dropped) const
+{
+  ContextGuard context_guard (*context_);
+
+  KnowledgeRecord &rec = *ref_.get_record_unsafe();
+  size_t newest_index = rec.get_history_newest_index();
+
+  dropped = get_dropped ();
+
+  if ( (local_index_ + count ) > newest_index)
+  {
+    count = newest_index - local_index_;
+  }
+
+  local_index_ = newest_index + 1;
+
+  return rec.get_newest(count);
 }
 
 
@@ -113,18 +203,13 @@ NativeCircularBufferConsumer::consume (void)  const
   {
     return consume(dropped);
   }
-
-  throw exceptions::IndexException (
-    "NativeCircularBufferConsumer::consume<T>: "
-    "attempted consume on empty consumer buffer");
 }
+
 
 inline madara::knowledge::KnowledgeRecord
 NativeCircularBufferConsumer::consume (
   size_t & dropped) const
 {
-  check_context (__func__);
-
   ContextGuard context_guard (*context_);
 
   KnowledgeRecord &rec = *ref_.get_record_unsafe();
