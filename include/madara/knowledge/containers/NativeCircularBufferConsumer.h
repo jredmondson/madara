@@ -160,21 +160,40 @@ public:
    * Peeks, but does not consume, the latest the record at the local 
    * index (not the producer index).
    * @param  count   the maximum number of records to return
+   * @return the latest peeked (not consumed) count elements 
    **/
   inline std::vector <KnowledgeRecord> peek_latest (size_t count) const;
+
+  /**
+   * Peeks, but does not consume, the latest the record at the local 
+   * index (not the producer index).
+   * @return the latest element
+   **/
+  inline madara::knowledge::KnowledgeRecord
+    NativeCircularBufferConsumer::peek_latest (void) const;
 
   /**
    * Consumes the latest the record at the local index 
    * (not the producer index).
    * @param  count   the maximum number of records to return
+   * @return the latest count consumed elements 
    **/
   inline std::vector <KnowledgeRecord> consume_latest (size_t count) const;
 
   /**
    * Consumes the latest the record at the local index 
    * (not the producer index).
+   * @return the latest element (singular)
+   **/
+  inline std::vector <KnowledgeRecord>
+    NativeCircularBufferConsumer::consume_latest (void) const;
+
+  /**
+   * Consumes the latest the record at the local index 
+   * (not the producer index).
    * @param  count   the maximum number of records to return
    * @param  dropped  the number of dropped records
+   * @return the latest count elements and number of elements dropped.
    **/
   std::vector <KnowledgeRecord>
   consume_latest (size_t count, size_t & dropped) const;
