@@ -138,8 +138,7 @@ NativeCircularBufferConsumer::peek_latest (void) const
     return KnowledgeRecord();
   }
 
-  KnowledgeRecord ret;
-  return rec.get_newest()
+  return rec.get_newest();
 }
 
 
@@ -190,14 +189,13 @@ NativeCircularBufferConsumer::consume_latest (size_t count) const
   return rec.get_newest(count);
 }
 
-inline std::vector <KnowledgeRecord>
+inline madara::knowledge::KnowledgeRecord
 NativeCircularBufferConsumer::consume_latest (void) const
 {
   ContextGuard context_guard (*context_);
 
   KnowledgeRecord &rec = *ref_.get_record_unsafe();
   size_t newest_index = rec.get_history_newest_index();
-  std::vector <KnowledgeRecord> result;
 
   if ( local_index_ > newest_index)
   {
@@ -205,7 +203,7 @@ NativeCircularBufferConsumer::consume_latest (void) const
     return KnowledgeRecord();
   }
 
-  ret = rec.get_newest();
+  KnowledgeRecord ret = rec.get_newest();
   ++local_index_;
   return ret;
 }

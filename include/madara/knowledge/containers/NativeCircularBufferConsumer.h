@@ -170,7 +170,7 @@ public:
    * @return the latest element
    **/
   inline madara::knowledge::KnowledgeRecord
-    NativeCircularBufferConsumer::peek_latest (void) const;
+    peek_latest (void) const;
 
   /**
    * Consumes the latest the record at the local index 
@@ -185,8 +185,7 @@ public:
    * (not the producer index).
    * @return the latest element (singular)
    **/
-  inline std::vector <KnowledgeRecord>
-    NativeCircularBufferConsumer::consume_latest (void) const;
+  inline madara::knowledge::KnowledgeRecord consume_latest (void) const;
 
   /**
    * Consumes the latest the record at the local index 
