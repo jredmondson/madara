@@ -227,7 +227,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
           "decode () returned a negative encoding size. Bad filter/encode.");
       }
 
-      if (buffer_remaining <= (int64_t)
+      if (buffer_remaining < (int64_t)
         transport::MessageHeader::static_encoded_size ())
       {
         stage = 9;
