@@ -239,6 +239,8 @@ NativeCircularBufferConsumer::consume (void)  const
   {
     return consume(dropped);
   }
+
+  return KnowledgeRecord();
 }
 
 
