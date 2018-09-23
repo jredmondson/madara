@@ -18,6 +18,7 @@
 #include "madara/knowledge/containers/IntegerVector3D.h"
 #include "madara/knowledge/containers/CircularBuffer.h"
 #include "madara/knowledge/containers/CircularBufferT.h"
+#include "madara/knowledge/containers/NativeCircularBufferConsumer.h"
 #include "madara/knowledge/containers/CircularBufferConsumer.h"
 #include "madara/knowledge/containers/CircularBufferConsumerT.h"
 #include "madara/knowledge/KnowledgeBase.h"
@@ -2949,6 +2950,568 @@ void test_circular_consumer (void)
       std::cerr << "      " << record << "\n";
     }
   }
+}
+
+void test_native_circular_consumer (void)
+{
+  std::cerr <<
+    "************* CIRCULARBUFFER: Testing NativeCircularBufferConsumer*************\n";
+
+  knowledge::KnowledgeBase kb;
+  containers::CircularBuffer producer ("buffer", kb, 100);
+  containers::NativeCircularBufferConsumer consumer ("buffer", kb);
+
+  for (KnowledgeRecord::Integer i = 0; i < 100; ++i)
+  {
+    producer.add (KnowledgeRecord (i));
+  }
+
+
+  std::cerr << "  Testing get_earliest(50)...";
+
+  std::vector <KnowledgeRecord> records = consumer.consume_many (50);
+
+  bool has_failed = records.size () != 50;
+
+  for (KnowledgeRecord::Integer i = 0;
+       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  {
+    if (records[i] != i)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 50)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
+  std::cerr << "  Testing get_earliest(25)...";
+
+  records = consumer.consume_many (25);
+
+  has_failed = records.size () != 25;
+
+  for (KnowledgeRecord::Integer i = 0;
+       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  {
+    if (records[i] != i + 50)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 25)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
+  std::cerr << "  Testing get_earliest(25)...";
+
+  records = consumer.consume_many (25);
+
+  has_failed = records.size () != 25;
+
+  for (KnowledgeRecord::Integer i = 0;
+       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  {
+    if (records[i] != i + 75)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
+  std::cerr << "  Testing count()...";
+
+  if (consumer.count () == 100)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      count() == " << consumer.count () << "\n";
+  }
+
+  std::cerr << "  Testing size()...";
+
+  if (consumer.size () == 100)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      size() == " << consumer.size () << "\n";
+  }
+
+  std::cerr << "  Adding 25 more elements...\n";
+
+  for (KnowledgeRecord::Integer i = 0; i < 25; ++i)
+  {
+    producer.add (KnowledgeRecord (i + 100));
+  }
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 25)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
+  std::cerr << "  Testing count()...";
+
+  if (consumer.count () == 100)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      count() == " << consumer.count () << "\n";
+  }
+
+  std::cerr << "  Testing size()...";
+
+  if (consumer.size () == 100)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      size() == " << consumer.size () << "\n";
+  }
+
+
+  std::cerr << "  Testing get_earliest(5)...";
+
+  records = consumer.consume_many (5);
+
+  has_failed = records.size () != 5;
+
+  for (KnowledgeRecord::Integer i = 0;
+       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  {
+    if (records[i] != i + 100)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 20)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
+  std::cerr << "  Testing inspect(0)...";
+
+  if (consumer.inspect (0) == 104)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      inspect(0) == " << consumer.inspect (0) << "\n";
+  }
+
+  std::cerr << "  Testing inspect(-1)...";
+
+  if (consumer.inspect (-1) == 103)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      inspect(-1) == " << consumer.inspect (-1) << "\n";
+  }
+
+  std::cerr << "  Testing inspect(-2)...";
+
+  if (consumer.inspect (-2) == 102)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      inspect(-2) == " << consumer.inspect (-2) << "\n";
+  }
+
+  for (KnowledgeRecord::Integer i = 0; i < 5; ++i)
+  {
+    producer.add (KnowledgeRecord (i + 105));
+  }
+
+  std::cerr << "  Testing inspect(1)...";
+
+  if (consumer.inspect (1) == 105)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      inspect(1) == " << consumer.inspect (-1) << "\n";
+  }
+
+  std::cerr << "  Testing inspect(2)...";
+
+  if (consumer.inspect (2) == 106)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      inspect(2) == " << consumer.inspect (2) << "\n";
+  }
+
+  std::cerr << "  Testing inspect(-2, 5)...";
+
+  records = consumer.inspect (-2, 5);
+
+  if (records.size () == 5 &&
+      records[0] == 102 &&
+      records[1] == 103 &&
+      records[2] == 104 &&
+      records[3] == 105 &&
+      records[4] == 106)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing get_latest(5)...";
+
+  records = consumer.consume_latest (5);
+
+  has_failed = records.size () != 5;
+
+  for (KnowledgeRecord::Integer i = 0;
+       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  {
+    if (records[i] != 109 - i)
+    {
+      has_failed = true;
+      std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
+    }
+  }
+
+  if (!has_failed)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  std::cerr << "  Testing remaining()...";
+
+  if (consumer.remaining () == 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      remaining() == " << consumer.remaining () << "\n";
+  }
+
+  std::cerr << "  producer.add() x 95 times...\n";
+
+  for (KnowledgeRecord::Integer i = 0; i < 95; ++i)
+  {
+    producer.add (KnowledgeRecord (i));
+  }
+
+  std::cerr << "  consumer.get() x 5...\n";
+
+  std::cerr << "  Testing get()...";
+
+  KnowledgeRecord result = consumer.consume ();
+
+  if (result == 54)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing get()...";
+
+  result = consumer.consume ();
+
+  if (result == 55)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing get()...";
+
+  result = consumer.consume ();
+
+  if (result == 56)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing get()...";
+
+  result = consumer.consume ();
+
+  if (result == 57)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing get()...";
+
+  result = consumer.consume ();
+
+  if (result == 58)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing get()...";
+
+  result = consumer.consume ();
+
+  if (result == 59)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      get() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing peek_latest()...";
+
+  result = consumer.peek_latest ();
+
+  if (result == 94)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      peek_latest() == " << result << "\n";
+  }
+
+  std::cerr << "  Testing peek_latest(5)...";
+
+  records = consumer.peek_latest (5);
+
+  if (records.size () == 5 &&
+      records[0] == 94 &&
+      records[1] == 93 &&
+      records[2] == 92 &&
+      records[3] == 91 &&
+      records[4] == 90)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+
+    std::cerr << "    size=" << records.size () << "\n";
+    for (auto record : records)
+    {
+      std::cerr << "      " << record << "\n";
+    }
+  }
+
+  result = consumer.consume_latest ();
+  if ( result == 94 )
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+    std::cerr << "      consume_latest() == " << result << "\n";
+  }
+
 }
 
 class SpecialClass
