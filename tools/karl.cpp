@@ -409,6 +409,7 @@ void handle_arguments (int argc, char ** argv)
         "                           of save_context (only ran once)\n" \
         "  [--meta-prefix prefix]   store checkpoint meta data at knowledge prefix\n" \
         "  [--use-id]               use the id of the checkpointed binary load\n" \
+        "  [-v|--version]           print current MADARA version\n" \
         "\n",
         argv[0]);
       exit (0);
