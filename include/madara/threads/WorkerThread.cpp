@@ -26,10 +26,20 @@ WorkerThread::WorkerThread (
   if (thread)
   {
     std::stringstream base_string;
+
+    knowledge::KnowledgeBase * kb = &control;
+    knowledge::KnowledgeRecord debug_to_kb = control_.get (".debug_to_kb");
+    if (debug_to_kb.exists ())
+    {
+      base_string << debug_to_kb.to_string () << ".";
+      kb = &data;
+    }
     base_string << name;
 
     thread->name = name;
     thread->init_control_vars (control);
+
+    control_.get (".debug_to_kb").to_string ();
 
     finished_.set_name (
       base_string.str () + ".finished", control);
@@ -39,20 +49,20 @@ WorkerThread::WorkerThread (
       base_string.str () + ".hertz", control);
 
     executions_.set_name (
-      base_string.str () + ".executions", control);
+      base_string.str () + ".executions", *kb);
     start_time_.set_name (
-      base_string.str () + ".start_time", control);
+      base_string.str () + ".start_time", *kb);
     last_start_time_.set_name (
-      base_string.str () + ".last_start_time", control);
+      base_string.str () + ".last_start_time", *kb);
     end_time_.set_name (
-      base_string.str () + ".end_time", control);
+      base_string.str () + ".end_time", *kb);
 
     last_duration_.set_name (
-      base_string.str () + ".last_duration", control);
+      base_string.str () + ".last_duration", *kb);
     min_duration_.set_name (
-      base_string.str () + ".min_duration", control);
+      base_string.str () + ".min_duration", *kb);
     max_duration_.set_name (
-      base_string.str () + ".max_duration", control);
+      base_string.str () + ".max_duration", *kb);
 
     debug_.set_name (
       base_string.str () + ".debug", control);
