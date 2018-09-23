@@ -13,7 +13,8 @@ namespace madara { namespace transport {
 UdpTransport::UdpTransport (const std::string & id,
         knowledge::ThreadSafeContext & context,
         TransportSettings & config, bool launch_transport)
-: BasicASIOTransport (id, context, config)
+: BasicASIOTransport (id, context, config),
+  enforcer_ (1 / config.max_send_hertz)
 {
   if (launch_transport)
     setup ();
@@ -95,6 +96,11 @@ UdpTransport::send_buffer (
     (settings_.resend_attempts < 0 ||
      send_attempts < settings_.resend_attempts))
   {
+
+    if (settings_.max_send_hertz > 0)
+    {
+      enforcer_.sleep_until_next ();
+    }
 
     // send the fragment
     try {

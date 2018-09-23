@@ -73,6 +73,7 @@ madara::transport::TransportSettings::TransportSettings (
   send_reduced_message_header (settings.send_reduced_message_header),
   slack_time (settings.slack_time),
   read_thread_hertz (settings.read_thread_hertz),
+  max_send_hertz (settings.max_send_hertz),
   hosts (),
   no_sending (settings.no_sending),
   no_receiving (settings.no_receiving),
@@ -107,6 +108,7 @@ madara::transport::TransportSettings::operator= (
   send_reduced_message_header = settings.send_reduced_message_header;
   slack_time = settings.slack_time;
   read_thread_hertz = settings.read_thread_hertz;
+  max_send_hertz = settings.max_send_hertz;
 
   hosts.resize (settings.hosts.size ());
   for (unsigned int i = 0; i < settings.hosts.size (); ++i)
@@ -156,6 +158,7 @@ madara::transport::TransportSettings::load (const std::string & filename,
   send_reduced_message_header = knowledge.get (prefix + ".send_reduced_message_header").is_true ();
   slack_time = knowledge.get (prefix + ".slack_time").to_double ();
   read_thread_hertz = knowledge.get (prefix + ".read_thread_hertz").to_double ();
+  max_send_hertz = knowledge.get (prefix + ".max_send_hertz").to_double ();
 
   containers::StringVector kb_hosts (prefix + ".hosts", knowledge);
 
@@ -203,6 +206,7 @@ madara::transport::TransportSettings::load_text (const std::string & filename,
   send_reduced_message_header = knowledge.get (prefix + ".send_reduced_message_header").is_true ();
   slack_time = knowledge.get (prefix + ".slack_time").to_double ();
   read_thread_hertz = knowledge.get (prefix + ".read_thread_hertz").to_double ();
+  max_send_hertz = knowledge.get (prefix + ".max_send_hertz").to_double ();
 
   containers::StringVector kb_hosts (prefix + ".hosts", knowledge);
 
@@ -257,6 +261,7 @@ madara::transport::TransportSettings::save (const std::string & filename,
     Integer (send_reduced_message_header));
   knowledge.set (prefix + ".slack_time", slack_time);
   knowledge.set (prefix + ".read_thread_hertz", read_thread_hertz);
+  knowledge.set (prefix + ".max_send_hertz", max_send_hertz);
 
   for (size_t i = 0; i < hosts.size (); ++i)
     kb_hosts.set (i, hosts[i]);
@@ -307,6 +312,7 @@ madara::transport::TransportSettings::save_text (const std::string & filename,
     Integer (send_reduced_message_header));
   knowledge.set (prefix + ".slack_time", slack_time);
   knowledge.set (prefix + ".read_thread_hertz", read_thread_hertz);
+  knowledge.set (prefix + ".max_send_hertz", max_send_hertz);
 
   for (size_t i = 0; i < hosts.size (); ++i)
     kb_hosts.set (i, hosts[i]);
