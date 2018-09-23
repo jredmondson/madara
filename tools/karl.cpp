@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <sstream>
 #include <assert.h>
+#include <fstream>
 
 #include "madara/knowledge/CheckpointPlayer.h"
 #include "madara/knowledge/CheckpointStreamer.h"
@@ -343,6 +344,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-a|--after-wait]        Evaluate after wait, rather than before wait\n" \
         "  [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
         "  [-c|--check-result]      check result of eval. If not zero, then terminate\n" \
+        "  [-cf|--config-file]      Config file full path, file contains karl cmd line flags, also uses default config file\n" \
         "  [-d|--domain domain]     the knowledge domain to send and listen to\n" \
         "  [--debug]                print all sent, received, and final knowledge\n" \
         "  [-f|--logfile file]      log to a file\n" \
@@ -1106,10 +1108,241 @@ private:
   std::vector <knowledge::CompiledExpression> & expressions_;
 };
 
+
+// some statics needed for config action.
+std::vector<std::string> argv_new_combined;
+int argc_new_combined;
+// 2500/2 ~ cmd flag storage ~= 10 config files with 150 flags each.
+char * argv_newsize[2500];
+
+
+// recursively loads a config file(s) into a pased in string vector.
+// current file recurse limit is adjustable.
+bool load_config_file(std::vector<std::string>& argv_config_files, 
+                      std::string full_path, int file_cnt, 
+                      bool debug_output=false)
+{
+  std::string flag;
+  std::string param;
+  std::string flag_param;
+  std::string config_file;
+  
+  // load the a karl config file
+  std::ifstream file(full_path.c_str()); 
+  if (!file) 
+  {
+      if (debug_output) 
+      {
+        std::cout << "Unable to open karl config file." << std::endl;
+      }
+      return false;      
+  }
+  else
+  {
+    if (debug_output) 
+    {
+      std::cout << "Found karl config file." << std::endl;
+    }
+    std::string line = "";
+    while (std::getline(file, flag_param))
+    {
+      if (debug_output) 
+      {
+        std::cout << line << std::endl;
+      }
+      flag = flag_param.substr(0, flag_param.find_first_of(" "));
+      param = flag_param.substr(flag_param.find_first_of(" ") + 1,
+              flag_param.length() - (flag_param.find_first_of(" ") + 1)); 
+      if (debug_output) 
+      {
+        std::cout << "Flag: " << flag << ", Param: " << param << std::endl;
+      }
+      if ((flag == "-cf" || flag == "--config-file") && file_cnt >= 0)
+      {
+        config_file = param;
+        
+        if (debug_output) 
+        {
+          std::cout << "Found user karl config file flag, param: " 
+                    << config_file << std::endl;
+          std::cout << "Config file: " << config_file << std::endl;
+        }
+        file_cnt--;
+        return (load_config_file(argv_config_files, config_file, file_cnt));
+      }    
+      else 
+      {
+        if (file_cnt >= 0)
+        {
+          argv_config_files.push_back(flag_param);
+        }      
+      }
+    }
+    file.close();
+    
+  }    
+
+  return true;
+}
+
+
+// handles both the default config and any cmdline supplied one
+// after resolving conflicts add to the rest of the argv's
+void handle_config_files(int argc, char ** argv)
+{
+  // retrieve user home dir in a crossplatform way
+  std::string full_path = madara::utility::expand_envs("$(HOME)/.karl/karl.cfg");
+
+  // storage for the default and user config files
+  std::vector<std::string> default_config;
+  std::vector<std::string> user_config;
+  std::vector<std::string> full_config;
+
+  bool debug_output = false;
+
+  // scan cmd flags for user config and debug options
+  int num_args = 1;
+  std::string user_config_file = "";
+  std::string arg_flag = "";
+  std::string arg_param = "";
+  while(num_args < argc-1)
+  {
+    arg_flag = argv[num_args];
+   
+    if (debug_output) 
+    {
+      std::cout << "Flag: " << arg_flag << ", Param: " << argv[num_args + 1] 
+                << std::endl;
+    }
+    if (arg_flag == "-cf" || arg_flag == "--config-file")
+    {
+      user_config_file = argv[num_args + 1];
+      if (debug_output) 
+      {
+        std::cout << "Found user karl config file flag, param: " 
+                  << user_config_file << std::endl;
+      }      
+    }
+    if (arg_flag == "--debug")
+    {
+      debug_output = true;
+    }
+    num_args += 1;    
+  }
+
+  // Call the recursive load config file to get the vectors filled up
+  // current file recurse limit is 10
+  bool default_config_present = load_config_file(default_config, full_path,
+                                                 10, debug_output);
+  bool user_config_present = false;
+  if (user_config_file != "")
+  { 
+    user_config_present = load_config_file(user_config, user_config_file, 10);
+  }
+
+  if (default_config_present)
+  {
+    full_config = default_config;
+  }
+  if (user_config_present)
+  {
+    if (debug_output) 
+    {
+      std::cout << "Combining all karl config files." << std::endl;
+    }
+    full_config.insert(full_config.end(), user_config.begin(), 
+                       user_config.end());
+  }
+    
+  // combine cmd line flags with config file flags
+  if (debug_output) 
+  {
+    std::cout << "Combining cmd line flags with config file flags." << std::endl;
+  }
+  std::vector<std::string> argv_new;
+  argv_new.assign(argv, argv + argc);
+  argv_new_combined = argv_new;
+  argc_new_combined = argc;
+  std::string user_flag;
+  std::string user_param; 
+  std::string user_flag_param; 
+    
+  for (std::vector<std::string>::iterator u_flag_param = full_config.begin();
+        u_flag_param != full_config.end(); u_flag_param++)
+  {
+    user_flag_param = *u_flag_param;
+    user_flag = user_flag_param.substr(0, user_flag_param.find_first_of(" "));
+    user_param = user_flag_param.substr(user_flag_param.find_first_of(" ") + 1,
+                 user_flag_param.length() - (user_flag_param.find_first_of(" ")
+                  + 1)); 
+    std::string flag;
+    std::string param;
+    if (debug_output) 
+    {
+      std::cout << "Combined added to passed in." << std::endl;
+    }
+    argv_new_combined.push_back(user_flag);
+    if (user_param != "")
+    {
+      argv_new_combined.push_back(user_param);
+      argc_new_combined += 2;         
+    } 
+    else
+    {
+      argc_new_combined++;
+    }        
+               
+  }
+
+  // remove the user config file flag and update argv and argc
+  if (debug_output) 
+  {
+    std::cout << "Remove -cf | --config-file flags and params." << std::endl;
+  }
+  for (std::vector<std::string>::iterator arg_flag = argv_new_combined.begin() + 1;
+       arg_flag != argv_new_combined.end(); arg_flag++)
+  {
+    user_flag = *arg_flag;
+    if (user_flag == "-cf" || user_flag == "--config-file")
+    {
+      argv_new_combined.erase(arg_flag);
+      argv_new_combined.erase((arg_flag));
+      argc_new_combined -= 2;
+      arg_flag++;
+    }
+  }
+
+  // copy the data into the new argv array and test print out the overall
+  // new cmd flag list
+  if (debug_output) 
+  {
+    std::cout << "Updated cmd flag list size: " 
+              << (int)((argv_new_combined.size() - 1 ) / 2) << std::endl;
+  }
+  argv = (char**)argv_new_combined.data();
+  argc = argc_new_combined; 
+  for (int index = 0; index < argc; index += 1)
+  {
+    if (index > 2499) break; // protect from GPF argv_newsize is 2500 items
+    argv_newsize[index] = (char*)argv_new_combined[index].data();    
+    if (debug_output) 
+    {  
+      std::cout << "argv_new_combined, Item: " << argv_new_combined[index] 
+                << std::endl;
+      std::cout << "argv_newsize, Item: " << argv_newsize[index] << std::endl;
+    }   
+  }  
+}
+
+
 int main (int argc, char ** argv)
 {
+  // handles both the default config and any cmdline supplied one
+  // combines all with the passed in cmd line args
+  handle_config_files(argc, argv);
+
   // handle all user arguments
-  handle_arguments (argc, argv);
+  handle_arguments(argc_new_combined, argv_newsize);
 
   if (print_stats || print_stats_periodic)
   {
