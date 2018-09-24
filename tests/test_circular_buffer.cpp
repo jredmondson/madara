@@ -114,7 +114,7 @@ void test_record_buffer()
   }
 
   TEST_EQ(rec.get_newest(), 4);
-  TEST_EQ(rec.get_oldest().exists(), false);
+  TEST_EQ(rec.get_oldest().exists(), true);
 
   for (int i = 7; i < 27; ++i) {
     rec.set_value(i);
@@ -160,7 +160,7 @@ void test_kb(KnowledgeBase &kb, Key key)
   }
 
   TEST_EQ(kb.get_newest(key), 4);
-  TEST_EQ(kb.get_oldest(key).exists(), false);
+  TEST_EQ(kb.get_oldest(key).exists(), true);
 
   for (int i = 7; i < 27; ++i) {
     kb.set(key, i);
@@ -194,13 +194,14 @@ void test_container()
   NativeCircularBufferConsumer buf(key, kb);
   kb.set_history_capacity(key, 10);
   kb.set(key, (int)42);
+  kb.set(key, (int)53);
 
   TEST_EQ(buf.size(), 10UL);
   TEST_EQ(buf.remaining(), 2UL);
   TEST_EQ(buf.count(), 2UL);
 
-  TEST_EQ(buf.consume().exists(),false);
   TEST_EQ(buf.consume(), 42);
+  TEST_EQ(buf.consume(), 53);
 
   for (int i = 1; i < 6; ++i) {
     kb.set(key, i);
@@ -260,7 +261,7 @@ void test_container()
 
   TEST_EQ(mydropped, 7UL);
   test_consume_earliest<int>(v,{ {0,35}, {1,36} });
-  
+
   std::vector<KnowledgeRecord> krvec;
   buf.consume_many(3,krvec);
   test_consume_earliest<int>(krvec,{ {0,37}, {1,38}, {2,39} });

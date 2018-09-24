@@ -171,7 +171,9 @@ namespace madara
         {
           if (biter_) {
             ++*biter_;
-            if (*biter_ != miter_->second.get_record_unsafe()->end_history()) {
+            auto rec = miter_->second.get_record_unsafe();
+            auto cbuf = rec->share_circular_buffer();
+            if (cbuf && *biter_ != cbuf->cend()) {
               return *this;
             }
           }
@@ -220,17 +222,18 @@ namespace madara
               return nullptr;
             }
 
-            auto ret = rec->begin_history();
+            auto cbuf = rec->share_circular_buffer();
+            auto ret = cbuf->cbegin();
 
             if (reader_->min_toi_ > 0) {
-              ret = std::upper_bound(ret, rec->end_history(),
+              ret = std::upper_bound(ret, cbuf->cend(),
                   reader_->min_toi_,
                   [](const uint64_t &lhs, const KnowledgeRecord &rhs) {
                     return lhs < rhs.toi();
                   });
             }
 
-            if (ret == rec->end_history()) {
+            if (ret == cbuf->cend()) {
               ++miter_;
               continue;
             }

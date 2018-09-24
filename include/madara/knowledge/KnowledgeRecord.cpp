@@ -138,6 +138,10 @@ KnowledgeRecord::to_file (const std::string & filename) const
   }
   else if (has_history ())
   {
+    if (buf_->empty ())
+    {
+      buf_->emplace_back ();
+    }
     return ref_newest ().to_file (filename);
   }
   else
@@ -155,13 +159,17 @@ KnowledgeRecord::to_double (void) const
 {
   double value = 0;
 
+  if (!exists ()) {
+    return value;
+  }
+
   if (type_ == DOUBLE)
     value = double_value_;
   else if (type_ == DOUBLE_ARRAY)
     value = double_array_->size () == 0 ? 0 : double_array_->at(0);
-  else if (has_history())
-    return ref_newest ().to_double ();
-  else if (type_ != EMPTY)
+  else if (has_history ())
+    value = ref_newest ().to_double ();
+  else
   {
     std::stringstream buffer;
 
@@ -184,13 +192,17 @@ KnowledgeRecord::to_integer (void) const
 {
   Integer value (0);
 
+  if (!exists ()) {
+    return value;
+  }
+
   if (type_ == INTEGER)
     value = int_value_;
   else if (type_ == INTEGER_ARRAY)
     value = int_array_->size () == 0 ? 0 : int_array_->at(0);
-  else if (has_history())
-    return ref_newest ().to_integer ();
-  else if (type_ != EMPTY)
+  else if (has_history ())
+    value = ref_newest ().to_integer ();
+  else
   {
     std::stringstream buffer;
 
@@ -213,11 +225,11 @@ KnowledgeRecord::to_integers (void) const
 {
   std::vector <Integer> integers;
 
-  if (type_ == EMPTY) {
+  if (!exists ()) {
     return integers;
   }
 
-  if (has_history()) {
+  if (has_history ()) {
     return ref_newest ().to_integers ();
   }
 
@@ -267,11 +279,11 @@ KnowledgeRecord::to_doubles (void) const
 {
   std::vector <double> doubles;
 
-  if (type_ == EMPTY) {
+  if (!exists ()) {
     return doubles;
   }
 
-  if (has_history()) {
+  if (has_history ()) {
     return ref_newest ().to_doubles ();
   }
 
@@ -318,11 +330,11 @@ KnowledgeRecord::to_doubles (void) const
 std::string
 KnowledgeRecord::to_string (const std::string & delimiter) const
 {
-  if (type_ == EMPTY) {
+  if (!exists ()) {
     return "";
   }
 
-  if (has_history()) {
+  if (has_history ()) {
     return ref_newest ().to_string ();
   }
 
@@ -480,7 +492,7 @@ KnowledgeRecord::to_unmanaged_buffer (size_t & size) const
     size = sizeof(double) * double_array_->size () ;
     buffer = new char [size];
     memcpy (buffer, &(*double_array_)[0], size);
-  } else if (has_history ()) {
+  } else if (has_history () && !buf_->empty()) {
     return ref_newest ().to_unmanaged_buffer (size);
   } else {
     buffer = nullptr;
@@ -494,11 +506,15 @@ KnowledgeRecord::to_unmanaged_buffer (size_t & size) const
 KnowledgeRecord
 KnowledgeRecord::fragment (unsigned int first, unsigned int last)
 {
+  knowledge::KnowledgeRecord ret;
+
+  if (!exists ()) {
+    return ret;
+  }
+
   if (has_history ()) {
     return fragment (first, last);
   }
-
-  knowledge::KnowledgeRecord ret;
 
   if (is_string_type (type_))
   {
@@ -574,11 +590,13 @@ KnowledgeRecord::operator< (
   const knowledge::KnowledgeRecord & rhs) const
 {
   if (has_history ()) {
-    return ref_newest ().operator< (rhs);
+    return (rhs.buf_->empty () ? KnowledgeRecord{} : ref_newest ()).
+      operator< (rhs);
   }
 
   if (rhs.has_history ()) {
-    return operator< (rhs.ref_newest ());
+    return operator< (rhs.buf_->empty () ?
+        KnowledgeRecord{} : rhs.ref_newest ());
   }
 
   Integer result (0);
@@ -668,11 +686,13 @@ KnowledgeRecord::operator<= (
   const knowledge::KnowledgeRecord & rhs) const
 {
   if (has_history ()) {
-    return ref_newest ().operator<= (rhs);
+    return (rhs.buf_->empty () ? KnowledgeRecord{} : ref_newest ()).
+      operator<= (rhs);
   }
 
   if (rhs.has_history ()) {
-    return operator<= (rhs.ref_newest ());
+    return operator<= (rhs.buf_->empty () ?
+        KnowledgeRecord{} : rhs.ref_newest ());
   }
 
   Integer result (0);
@@ -762,11 +782,13 @@ KnowledgeRecord::operator== (
   const knowledge::KnowledgeRecord & rhs) const
 {
   if (has_history ()) {
-    return ref_newest ().operator== (rhs);
+    return (rhs.buf_->empty () ? KnowledgeRecord{} : ref_newest ()).
+      operator== (rhs);
   }
 
   if (rhs.has_history ()) {
-    return operator== (rhs.ref_newest ());
+    return operator== (rhs.buf_->empty () ?
+        KnowledgeRecord{} : rhs.ref_newest ());
   }
 
   Integer result (0);
@@ -874,11 +896,13 @@ bool
 KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
 {
   if (has_history ()) {
-    return ref_newest ().operator> (rhs);
+    return (rhs.buf_->empty () ? KnowledgeRecord{} : ref_newest ()).
+      operator> (rhs);
   }
 
   if (rhs.has_history ()) {
-    return operator> (rhs.ref_newest ());
+    return operator> (rhs.buf_->empty () ?
+        KnowledgeRecord{} : rhs.ref_newest ());
   }
 
   Integer result (0);
@@ -969,11 +993,13 @@ bool
 KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
 {
   if (has_history ()) {
-    return ref_newest ().operator>= (rhs);
+    return (rhs.buf_->empty () ? KnowledgeRecord{} : ref_newest ()).
+      operator>= (rhs);
   }
 
   if (rhs.has_history ()) {
-    return operator>= (rhs.ref_newest ());
+    return operator>= (rhs.buf_->empty () ?
+        KnowledgeRecord{} : rhs.ref_newest ());
   }
 
   Integer result (0);
@@ -1076,7 +1102,7 @@ KnowledgeRecord::retrieve_index (size_t index) const
     if (index < size_t (double_array_-> size ()))
       ret_value.set_value (double_array_->at (index));
   }
-  else if (has_history ())
+  else if (has_history () && !buf_->empty ())
   {
     return ref_newest ().retrieve_index (index);
   }
@@ -1170,7 +1196,7 @@ KnowledgeRecord::resize (size_t new_size)
 
   if (new_size > cur_size)
   {
-    if (type_ == EMPTY ||
+    if (!exists () ||
         type_ == INTEGER)
     {
       Integer zero (0);
@@ -1291,7 +1317,7 @@ KnowledgeRecord::is_true (void) const
   }
   else if (has_history ())
   {
-    return ref_newest ().is_true();
+    return !buf_->empty () && ref_newest ().is_true ();
   }
   else
   {
