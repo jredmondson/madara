@@ -99,6 +99,22 @@ namespace madara
 
       /// underlying socket for sending
       void * write_socket_;
+      
+      /// sent packets
+      knowledge::containers::Integer sent_packets_;
+
+      /// failed sends
+      knowledge::containers::Integer failed_sends_;
+
+      /// sent data
+      knowledge::containers::Integer sent_data_;
+
+      /// max data sent
+      knowledge::containers::Integer sent_data_max_;
+
+      /// min data sent
+      knowledge::containers::Integer sent_data_min_;
+
     };
   }
 }

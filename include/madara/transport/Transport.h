@@ -25,7 +25,6 @@
 #include "ReducedMessageHeader.h"
 #include "madara/transport/BandwidthMonitor.h"
 #include "madara/transport/PacketScheduler.h"
-#include "madara/transport/TransportDebug.h"
 
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/ThreadSafeContext.h"
