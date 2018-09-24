@@ -104,6 +104,8 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         load_checkpoint_settings.filename = argv[i + 1];
+
+        std::cout << "  Loading file " << argv[i + 1] << "\n";
       }
 
       ++i;
@@ -118,7 +120,10 @@ void handle_arguments (int argc, char ** argv)
       {
         for (int j = i + 1;
              j < argc && strlen (argv[j]) > 0 && argv[j][0] != '-'; ++i, ++j)
+        {
+          std::cout << "  Limiting results to prefix " << argv[j] << "\n";
           print_prefixes.push_back (argv[j]);
+        }
       }
     }
     else if (arg1 == "-l" || arg1 == "--level")
@@ -129,6 +134,7 @@ void handle_arguments (int argc, char ** argv)
         std::stringstream buffer (argv[i + 1]);
         buffer >> level;
         logger::global_logger->set_level (level);
+        std::cout << "  Setting log level to " << level << "\n";
       }
 
       ++i;
@@ -138,6 +144,7 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         load_checkpoint_settings.prefixes.push_back (argv[i + 1]);
+        std::cout << "  Limiting load to prefix " << argv[i + 1] << "\n";
       }
 
       ++i;
@@ -148,6 +155,7 @@ void handle_arguments (int argc, char ** argv)
       {
         std::stringstream buffer (argv[i + 1]);
         buffer >> load_checkpoint_settings.buffer_size;
+        std::cout << "  Setting load size to " << argv[i + 1] << "\n";
       }
 
       ++i;
@@ -292,6 +300,7 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         save_file = argv[i + 1];
+        std::cout << "  Saving results to " << argv[i + 1] << "\n";
       }
 
       ++i;
@@ -333,16 +342,21 @@ void handle_arguments (int argc, char ** argv)
 
 int main (int argc, char ** argv)
 {
+  std::cout << "Inspection settings:\n" << std::flush;
+
   // handle all user arguments
   handle_arguments (argc, argv);
 
   knowledge::KnowledgeBase kb;
+  std::cout << "Creating CheckpointReader with file contents... " <<
+    std::flush;
   knowledge::CheckpointReader reader (load_checkpoint_settings);
+  std::cout << "done\n";
 
   VariableUpdates variables;
 
-  std::cout << "Iterating through updates... ";
-  for(;;)
+  std::cout << "Iterating through updates... " << std::flush;
+  while (true)
   {
     auto cur = reader.next ();
     if (cur.first == "")
@@ -388,14 +402,31 @@ int main (int argc, char ** argv)
 
   if (save_file != "")
   {
-    std::cout << "Saving results to " << save_file << "...";
+    std::cout << "Saving results to " << save_file << "..." << std::flush;
     std::ofstream output (save_file);
 
     if (output)
     {
       for (auto variable : variables)
       {
-        variable.second.print (output);
+        bool prefix_match = print_prefixes.size () == 0;
+
+        if (!prefix_match)
+        {
+          for (auto prefix : print_prefixes)
+          {
+            if (utility::begins_with (variable.first, prefix))
+            {
+              prefix_match = true;
+              break;
+            }
+          }
+        }
+
+        if (prefix_match)
+        {
+          variable.second.print (output);
+        }
       }
     }
 
@@ -404,10 +435,27 @@ int main (int argc, char ** argv)
   }
   else
   {
-    std::cout << "Printing results to stdout...\n";
+    std::cout << "Printing results to stdout...\n" << std::flush;
     for (auto variable : variables)
     {
-      variable.second.print (std::cout);
+      bool prefix_match = print_prefixes.size () == 0;
+
+      if (!prefix_match)
+      {
+        for (auto prefix : print_prefixes)
+        {
+          if (utility::begins_with (variable.first, prefix))
+          {
+            prefix_match = true;
+            break;
+          }
+        }
+      }
+
+      if (prefix_match)
+      {
+        variable.second.print (std::cout);
+      }
     }
   }
 
