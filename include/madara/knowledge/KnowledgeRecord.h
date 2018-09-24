@@ -1581,9 +1581,13 @@ namespace madara
       {
         if (type_ == BUFFER) {
           return buf_->size();
-        } else {
+        }
+
+        if (exists()) {
           return 1;
         }
+
+        return 0;
       }
 
       /**
@@ -1609,7 +1613,7 @@ namespace madara
       {
         if (type_ == BUFFER) {
           if (size <= 1) {
-            if (buf_->empty()) {
+            if (!buf_->empty()) {
               *this = std::move(buf_->back());
             } else {
               reset_value();
@@ -1620,10 +1624,14 @@ namespace madara
         } else {
           if (size > 1) {
             KnowledgeRecord tmp = *this;
+
             new (&buf_) std::shared_ptr<CircBuf>(
                 std::make_shared<CircBuf>(size));
             type_ = BUFFER;
-            buf_->push_back(std::move(tmp));
+
+            if (tmp.exists()) {
+              buf_->push_back(std::move(tmp));
+            }
           }
         }
       }
@@ -1922,6 +1930,10 @@ namespace madara
         return ret;
       }
 
+      /**
+       * Gets the absolute index of the newest element in stored history.
+       * If this record doesn't have history capacity, returns 0.
+       **/
       size_t get_history_newest_index() const
       {
         if (!has_history()) {
@@ -1930,6 +1942,10 @@ namespace madara
         return buf_->back_index();
       }
 
+      /**
+       * Gets the absolute index of the oldest element in stored history.
+       * If this record doesn't have history capacity, returns 0.
+       **/
       size_t get_history_oldest_index() const
       {
         if (!has_history()) {
@@ -1938,24 +1954,10 @@ namespace madara
         return buf_->front_index();
       }
 
-      CircBuf::const_iterator begin_history() const
-      {
-        if (!has_history()) {
-          throw exceptions::MadaraException(
-              "begin_history() called on record without history");
-        }
-        return buf_->cbegin();
-      }
-
-      CircBuf::const_iterator end_history() const
-      {
-        if (!has_history()) {
-          throw exceptions::MadaraException(
-              "end_history() called on record without history");
-        }
-        return buf_->cend();
-      }
-
+      /**
+       * Get a shared_ptr to the history buffer inside this record. Returns
+       * nullptr if this record has no history capacity.
+       **/
       std::shared_ptr<CircBuf> share_circular_buffer() const;
 
       /**
