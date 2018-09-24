@@ -115,16 +115,10 @@ WorkerThread::operator= (const WorkerThread & input)
 void
 WorkerThread::run (void)
 {
-#ifndef _WIN32
-#else
-  //result = 0;
-  //_beginthreadex(NULL, 0, worker_thread_windows_glue, (void*)this, 0, 0);
-
-#endif
   try {
     me_ = std::thread(&WorkerThread::svc, this);
 
-#ifndef _WIN32
+#if !defined(_WIN32) && !defined(__OSX__)
     pthread_setname_np(me_.native_handle(), name_.substr(0, 15).c_str());
 #endif
 
