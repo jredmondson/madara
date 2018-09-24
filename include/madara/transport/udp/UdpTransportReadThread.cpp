@@ -52,6 +52,22 @@ UdpTransportReadThread::init (
         "UdpTransportReadThread::init:" \
         " no permanent rules were set\n");
     }
+
+    if (settings_.debug_to_kb_prefix != "")
+    {
+      knowledge::KnowledgeBase kb;
+      kb.use (*context_);
+      received_packets_.set_name (
+        settings_.debug_to_kb_prefix + ".received_packets", kb);
+      failed_receives_.set_name (
+        settings_.debug_to_kb_prefix + ".failed_receives", kb);
+      received_data_max_.set_name (
+        settings_.debug_to_kb_prefix + ".received_data_max", kb);
+      received_data_min_.set_name (
+        settings_.debug_to_kb_prefix + ".received_data_min", kb);
+      received_data_.set_name (
+        settings_.debug_to_kb_prefix + ".received_data", kb);
+    }
   }
 }
 
@@ -82,6 +98,31 @@ UdpTransportReadThread::rebroadcast (
     if (result > 0)
     {
       result = transport_.send_message(buffer, result);
+
+      if (result > 0)
+      {
+        transport_.send_monitor_.add (result);
+        if (settings_.debug_to_kb_prefix != "")
+        {
+          transport_.sent_data += result;
+          ++transport_.sent_packets;
+          if (transport_.sent_data_max < result)
+          {
+            transport_.sent_data_max = result;
+          }
+          if (transport_.sent_data_min > result || transport_.sent_data_min == 0)
+          {
+            transport_.sent_data_min = result;
+          }
+        }
+      }
+      else
+      {
+        if (settings_.debug_to_kb_prefix != "")
+        {
+          ++transport_.failed_sends;
+        }
+      }
 
       madara_logger_log (this->context_->get_logger (), logger::LOG_MAJOR,
         "%s:" \
@@ -135,13 +176,40 @@ UdpTransportReadThread::run (void)
     madara_logger_log (this->context_->get_logger (), logger::LOG_MINOR,
       "%s: no bytes to read. Proceeding to next wait\n", print_prefix);
 
+    if (settings_.debug_to_kb_prefix != "")
+    {
+      ++failed_receives_;
+    }
+
     return;
-  } else if (err) {
+  }
+  else if (err)
+  {
     madara_logger_log (this->context_->get_logger (), logger::LOG_MINOR,
       "%s: unexpected error: %s. Proceeding to next wait\n", print_prefix,
       err.message ().c_str ());
 
+    if (settings_.debug_to_kb_prefix != "")
+    {
+      ++failed_receives_;
+    }
+
     return;
+  }
+
+  if (settings_.debug_to_kb_prefix != "")
+  {
+    received_data_ += bytes_read;
+    ++received_packets_;
+
+    if (received_data_max_ < bytes_read)
+    {
+      received_data_max_ = bytes_read;
+    }
+    if (received_data_min_ > bytes_read || received_data_min_ == 0)
+    {
+      received_data_min_ = bytes_read;
+    }
   }
 
   if (remote.address ().to_string () != "")

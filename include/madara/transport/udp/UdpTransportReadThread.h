@@ -72,6 +72,21 @@ namespace madara
 
       /// buffer for receiving
       madara::utility::ScopedArray<char> buffer_;
+
+      /// received packets
+      knowledge::containers::Integer received_packets_;
+
+      /// bad receives
+      knowledge::containers::Integer failed_receives_;
+
+      /// received data
+      knowledge::containers::Integer received_data_;
+
+      /// max data received
+      knowledge::containers::Integer received_data_max_;
+
+      /// min data received
+      knowledge::containers::Integer received_data_min_;
     };
   }
 }

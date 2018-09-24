@@ -18,6 +18,20 @@ UdpTransport::UdpTransport (const std::string & id,
 {
   if (launch_transport)
     setup ();
+
+  if (config.debug_to_kb_prefix != "")
+  {
+    knowledge::KnowledgeBase kb;
+    kb.use (context);
+
+    sent_packets.set_name (config.debug_to_kb_prefix + ".sent_packets", kb);
+    failed_sends.set_name (config.debug_to_kb_prefix + ".failed_sends", kb);
+    sent_data_max.set_name (
+      config.debug_to_kb_prefix + ".sent_data_max", kb);
+    sent_data_min.set_name (
+      config.debug_to_kb_prefix + ".sent_data_min", kb);
+    sent_data.set_name (config.debug_to_kb_prefix + ".sent_data", kb);
+  }
 }
 
 int
@@ -48,11 +62,13 @@ UdpTransport::setup_read_thread (
 int
 UdpTransport::setup_read_socket (void)
 {
-  if (BasicASIOTransport::setup_read_socket () < 0) {
+  if (BasicASIOTransport::setup_read_socket () < 0)
+  {
     return -1;
   }
 
-  try {
+  try
+  {
     socket_.non_blocking(true);
 
     socket_.bind(udp::endpoint (ip::address_v4::any (),
@@ -61,7 +77,9 @@ UdpTransport::setup_read_socket (void)
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "UdpTransport::setup_read_socket:" \
       " Bound to port: %d\n", (int)addresses_[0].port ());
-  } catch (const boost::system::system_error &e) {
+  }
+  catch (const boost::system::system_error &e)
+  {
     madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
       "UdpTransport::setup:" \
       " Error setting up read socket: %s\n", e.what ());
@@ -76,7 +94,8 @@ UdpTransport::setup_read_socket (void)
 int
 UdpTransport::setup_write_socket (void)
 {
-  if (BasicASIOTransport::setup_write_socket () < 0) {
+  if (BasicASIOTransport::setup_write_socket () < 0)
+  {
     return -1;
   }
 
@@ -103,18 +122,28 @@ UdpTransport::send_buffer (
     }
 
     // send the fragment
-    try {
+    try
+    {
       actual_sent = socket_.send_to (
           asio::buffer(buf, size), target);
-    } catch (const boost::system::system_error &e) {
+    }
+    catch (const boost::system::system_error &e)
+    {
       madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
         "UdpTransport::send_buffer:" \
         " Error sending packet to %s:%d: %s\n",
         target.address ().to_string ().c_str (), (int)target.port (),
         e.what ());
+
+      // ensure erroneous data is not being used
+      actual_sent = -1;
     }
 
     ++send_attempts;
+    if (settings_.debug_to_kb_prefix != "")
+    {
+      ++sent_packets;
+    }
 
     if (actual_sent > 0)
     {
@@ -125,6 +154,26 @@ UdpTransport::send_buffer (
         (int)target.port ());
 
       bytes_sent += actual_sent;
+
+      if (settings_.debug_to_kb_prefix != "")
+      {
+        sent_data += actual_sent;
+        if (sent_data_max < actual_sent)
+        {
+          sent_data_max = actual_sent;
+        }
+        if (sent_data_min > actual_sent || sent_data_min == 0)
+        {
+          sent_data_min = actual_sent;
+        }
+      }
+    }
+    else
+    {
+      if (settings_.debug_to_kb_prefix != "")
+      {
+        ++failed_sends;
+      }
     }
   }
 
@@ -160,7 +209,8 @@ UdpTransport::send_message (const char *buf, size_t packet_size)
 
       for (const auto &address : addresses_)
       {
-        if (pre_send_buffer (&address - &*addresses_.begin ())) {
+        if (pre_send_buffer (&address - &*addresses_.begin ()))
+        {
           bytes_sent += send_buffer(address, i->second,
                 (size_t)MessageHeader::get_size (i->second));
         }

@@ -1386,6 +1386,15 @@ void handle_arguments (int argc, char ** argv)
       }
       ++i;
     }
+    else if (arg1 == "-tdp" || arg1 == "--transport-debug-prefix")
+    {
+      if (i + 1 < argc)
+      {
+        settings.debug_to_kb (argv[i + 1]);
+      }
+
+      ++i;
+    }
     else if (arg1 == "--zmq" || arg1 == "--0mq")
     {
       if (i + 1 < argc)
@@ -1459,6 +1468,8 @@ void handle_arguments (int argc, char ** argv)
 "  [-stt|--save-transport-text file] text file to save settings to\n" \
 "  [-sz|--send-hz hz]       maximum messages per second (inf by default)\n" \
 "  [-t|--time time]         time to run this service (-1 is forever).\n" \
+"  [-tdp|--transport-debug-prefix pfx] prefix in the knowledge base\n" \
+"                           to save transport debug info\n" \
 "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind\n" \
 "                           to) only runs once. If zero, hertz is infinite.\n"\
 "                           If positive, hertz is that hertz rate.\n" \

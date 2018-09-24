@@ -78,6 +78,7 @@ madara::transport::TransportSettings::TransportSettings (
   no_sending (settings.no_sending),
   no_receiving (settings.no_receiving),
   send_history (settings.send_history),
+  debug_to_kb_prefix (settings.debug_to_kb_prefix),
   read_domains_ (settings.read_domains_)
 {
   hosts.resize (settings.hosts.size ());
@@ -118,6 +119,8 @@ madara::transport::TransportSettings::operator= (
   no_receiving = settings.no_receiving;
 
   send_history = settings.send_history;
+
+  debug_to_kb_prefix = settings.debug_to_kb_prefix;
 }
 
 madara::transport::TransportSettings::~TransportSettings ()
@@ -179,6 +182,8 @@ madara::transport::TransportSettings::load (const std::string & filename,
 
   no_sending = knowledge.get (prefix + ".no_sending").is_true ();
   no_receiving = knowledge.get (prefix + ".no_receiving").is_true ();
+  debug_to_kb_prefix = knowledge.get (
+    prefix + ".debug_to_kb_prefix").to_string ();
 }
 
 void
@@ -227,6 +232,8 @@ madara::transport::TransportSettings::load_text (const std::string & filename,
 
   no_sending = knowledge.get (prefix + ".no_sending").is_true ();
   no_receiving = knowledge.get (prefix + ".no_receiving").is_true ();
+  debug_to_kb_prefix = knowledge.get (
+    prefix + ".debug_to_kb_prefix").to_string ();
 }
 
 void
@@ -268,6 +275,7 @@ madara::transport::TransportSettings::save (const std::string & filename,
 
   knowledge.set (prefix + ".no_sending", Integer (no_sending));
   knowledge.set (prefix + ".no_receiving", Integer (no_receiving));
+  knowledge.set (prefix + ".debug_to_kb_prefix", debug_to_kb_prefix);
 
   knowledge::containers::Map kb_read_domains (prefix + ".read_domains", knowledge);
   for (std::map <std::string, int>::const_iterator i = read_domains_.begin ();
@@ -319,6 +327,7 @@ madara::transport::TransportSettings::save_text (const std::string & filename,
 
   knowledge.set (prefix + ".no_sending", Integer (no_sending));
   knowledge.set (prefix + ".no_receiving", Integer (no_receiving));
+  knowledge.set (prefix + ".debug_to_kb_prefix", debug_to_kb_prefix);
 
   knowledge::containers::Map kb_read_domains (prefix + ".read_domains", knowledge);
   for (std::map <std::string, int>::const_iterator i = read_domains_.begin ();

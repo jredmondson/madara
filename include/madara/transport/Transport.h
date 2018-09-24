@@ -25,6 +25,7 @@
 #include "ReducedMessageHeader.h"
 #include "madara/transport/BandwidthMonitor.h"
 #include "madara/transport/PacketScheduler.h"
+#include "madara/transport/TransportDebug.h"
 
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/ThreadSafeContext.h"
@@ -110,7 +111,6 @@ namespace madara
        * @return  result of operation or -1 if we are shutting down
        **/
       virtual long send_data (const knowledge::VariableReferenceMap &) = 0;
-
 
       /**
        * Invalidates a transport to indicate it is shutting down

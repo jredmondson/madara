@@ -153,6 +153,15 @@ namespace madara
       **/
       size_t num_read_domains (void) const;
 
+      /**
+      * Requests all debugging for threads go into the data plane
+      * KB instead of the control plane. This will impact performance
+      * of your main knowledge base, so you should use it sparingly,
+      * if possible.
+      * @param prefix    prefix to save debug info into data plane KB
+      **/
+      void debug_to_kb (const std::string & prefix = ".transport");
+
        /**
        * Loads the settings from a binary file
        * @param  filename    the file to load from
@@ -293,12 +302,18 @@ namespace madara
        **/
       bool send_history = false;
 
+      /**
+       * if not empty, save debug information to knowledge base at prefix
+       **/
+      std::string debug_to_kb_prefix = "";
+      
     private:
 
       /**
       * Any acceptable read domain is added here
       **/
       std::map <std::string, int> read_domains_;
+
     };
 
     inline std::string

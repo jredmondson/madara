@@ -8,6 +8,7 @@
 #include "madara/transport/Transport.h"
 #include "madara/threads/Threader.h"
 #include "madara/utility/EpochEnforcer.h"
+#include "madara/knowledge/containers/Integer.h"
 
 #include <string>
 #include <map>
@@ -62,6 +63,21 @@ namespace madara
       long send_data (
         const madara::knowledge::VariableReferenceMap & updates) override;
 
+      /// sent packets
+      knowledge::containers::Integer sent_packets;
+
+      /// failed sends
+      knowledge::containers::Integer failed_sends;
+
+      /// sent data
+      knowledge::containers::Integer sent_data;
+
+      /// max data sent
+      knowledge::containers::Integer sent_data_max;
+
+      /// min data sent
+      knowledge::containers::Integer sent_data_min;
+
     protected:
       int setup_read_socket () override;
       int setup_write_socket () override;
@@ -74,7 +90,9 @@ namespace madara
         return addr_index != 0;
       }
 
+      /// enforces epochs when user specifies a max_send_hertz
       utility::EpochEnforcer <utility::Clock> enforcer_;
+
       friend class UdpTransportReadThread;
     };
   }

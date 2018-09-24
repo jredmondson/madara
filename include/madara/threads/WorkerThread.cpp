@@ -33,6 +33,8 @@ WorkerThread::WorkerThread (
     {
       base_string << debug_to_kb.to_string () << ".";
       kb = &data;
+      data.set (debug_to_kb.to_string () + ".hertz", hertz,
+        knowledge::EvalSettings::DELAY_NO_EXPAND);
     }
     base_string << name;
 
