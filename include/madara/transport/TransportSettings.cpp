@@ -73,10 +73,12 @@ madara::transport::TransportSettings::TransportSettings (
   send_reduced_message_header (settings.send_reduced_message_header),
   slack_time (settings.slack_time),
   read_thread_hertz (settings.read_thread_hertz),
+  max_send_hertz (settings.max_send_hertz),
   hosts (),
   no_sending (settings.no_sending),
   no_receiving (settings.no_receiving),
   send_history (settings.send_history),
+  debug_to_kb_prefix (settings.debug_to_kb_prefix),
   read_domains_ (settings.read_domains_)
 {
   hosts.resize (settings.hosts.size ());
@@ -107,6 +109,7 @@ madara::transport::TransportSettings::operator= (
   send_reduced_message_header = settings.send_reduced_message_header;
   slack_time = settings.slack_time;
   read_thread_hertz = settings.read_thread_hertz;
+  max_send_hertz = settings.max_send_hertz;
 
   hosts.resize (settings.hosts.size ());
   for (unsigned int i = 0; i < settings.hosts.size (); ++i)
@@ -116,6 +119,8 @@ madara::transport::TransportSettings::operator= (
   no_receiving = settings.no_receiving;
 
   send_history = settings.send_history;
+
+  debug_to_kb_prefix = settings.debug_to_kb_prefix;
 }
 
 madara::transport::TransportSettings::~TransportSettings ()
@@ -156,6 +161,7 @@ madara::transport::TransportSettings::load (const std::string & filename,
   send_reduced_message_header = knowledge.get (prefix + ".send_reduced_message_header").is_true ();
   slack_time = knowledge.get (prefix + ".slack_time").to_double ();
   read_thread_hertz = knowledge.get (prefix + ".read_thread_hertz").to_double ();
+  max_send_hertz = knowledge.get (prefix + ".max_send_hertz").to_double ();
 
   containers::StringVector kb_hosts (prefix + ".hosts", knowledge);
 
@@ -176,6 +182,8 @@ madara::transport::TransportSettings::load (const std::string & filename,
 
   no_sending = knowledge.get (prefix + ".no_sending").is_true ();
   no_receiving = knowledge.get (prefix + ".no_receiving").is_true ();
+  debug_to_kb_prefix = knowledge.get (
+    prefix + ".debug_to_kb_prefix").to_string ();
 }
 
 void
@@ -203,6 +211,7 @@ madara::transport::TransportSettings::load_text (const std::string & filename,
   send_reduced_message_header = knowledge.get (prefix + ".send_reduced_message_header").is_true ();
   slack_time = knowledge.get (prefix + ".slack_time").to_double ();
   read_thread_hertz = knowledge.get (prefix + ".read_thread_hertz").to_double ();
+  max_send_hertz = knowledge.get (prefix + ".max_send_hertz").to_double ();
 
   containers::StringVector kb_hosts (prefix + ".hosts", knowledge);
 
@@ -223,6 +232,8 @@ madara::transport::TransportSettings::load_text (const std::string & filename,
 
   no_sending = knowledge.get (prefix + ".no_sending").is_true ();
   no_receiving = knowledge.get (prefix + ".no_receiving").is_true ();
+  debug_to_kb_prefix = knowledge.get (
+    prefix + ".debug_to_kb_prefix").to_string ();
 }
 
 void
@@ -257,12 +268,14 @@ madara::transport::TransportSettings::save (const std::string & filename,
     Integer (send_reduced_message_header));
   knowledge.set (prefix + ".slack_time", slack_time);
   knowledge.set (prefix + ".read_thread_hertz", read_thread_hertz);
+  knowledge.set (prefix + ".max_send_hertz", max_send_hertz);
 
   for (size_t i = 0; i < hosts.size (); ++i)
     kb_hosts.set (i, hosts[i]);
 
   knowledge.set (prefix + ".no_sending", Integer (no_sending));
   knowledge.set (prefix + ".no_receiving", Integer (no_receiving));
+  knowledge.set (prefix + ".debug_to_kb_prefix", debug_to_kb_prefix);
 
   knowledge::containers::Map kb_read_domains (prefix + ".read_domains", knowledge);
   for (std::map <std::string, int>::const_iterator i = read_domains_.begin ();
@@ -307,12 +320,14 @@ madara::transport::TransportSettings::save_text (const std::string & filename,
     Integer (send_reduced_message_header));
   knowledge.set (prefix + ".slack_time", slack_time);
   knowledge.set (prefix + ".read_thread_hertz", read_thread_hertz);
+  knowledge.set (prefix + ".max_send_hertz", max_send_hertz);
 
   for (size_t i = 0; i < hosts.size (); ++i)
     kb_hosts.set (i, hosts[i]);
 
   knowledge.set (prefix + ".no_sending", Integer (no_sending));
   knowledge.set (prefix + ".no_receiving", Integer (no_receiving));
+  knowledge.set (prefix + ".debug_to_kb_prefix", debug_to_kb_prefix);
 
   knowledge::containers::Map kb_read_domains (prefix + ".read_domains", knowledge);
   for (std::map <std::string, int>::const_iterator i = read_domains_.begin ();

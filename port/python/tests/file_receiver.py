@@ -17,11 +17,12 @@ import madara.filters as filters
 
 # create transport settings for a multicast transport
 settings = transport.QoSTransportSettings()
-settings.hosts.append("239.255.0.1:4150")
-settings.type = transport.TransportTypes.MULTICAST
-#settings.hosts.append("127.0.0.1:40002")
-#settings.hosts.append("127.0.0.1:40001")
-#settings.hosts.append("127.0.0.1:40000")
+#settings.hosts.append("239.255.0.1:4150")
+#settings.type = transport.TransportTypes.MULTICAST
+settings.type = transport.TransportTypes.UDP
+settings.hosts.append("127.0.0.1:40002")
+settings.hosts.append("127.0.0.1:40001")
+settings.hosts.append("127.0.0.1:40000")
 #settings.type = transport.TransportTypes.ZMQ
 settings.queue_length = 12000000
 
@@ -32,13 +33,31 @@ filter.set_dir_mapping("agent.0.sandbox.files.file", "files")
 settings.add_receive_filter(filter)
 
 # create a knowledge base with the multicast transport settings
-knowledge = engine.KnowledgeBase("agent1", settings)
+kb = engine.KnowledgeBase("agent1", settings)
 
 sleep_time = 180
+filename = "samples/chapter16.mp3"
+
+if len(sys.argv) > 1:
+  filename = sys.argv[1]
+  print ("Changing file name to ", filename)
 
 if len(sys.argv) > 2:
-  print ("Changing sleep time to ", sys.argv[1])
-  sleep_time = int (sys.argv[1])
+  sleep_time = float (sys.argv[2])
+  print ("Changing sleep time to ", sleep_time)
 
-time.sleep(sleep_time)
+print ("keys will be read from ", "agent.0.sandbox.files.file.", filename)
+
+for i in range (18):
+  crc = kb.get ("agent.0.sandbox.files.file." + filename + ".crc").to_integer ()
+  file_size = kb.get ("agent.0.sandbox.files.file." + filename + ".size").to_integer ()
+  percentage = 0
+  print ("CRC is ", crc, " and file size is ", file_size)
+
+  if (crc):
+    received_bytes = madara.utility.get_file_progress ("files/" + filename, crc, file_size)
+    percentage = float (received_bytes / file_size)
+
+  print ("Percentage is ", percentage)
+  time.sleep(sleep_time)
 

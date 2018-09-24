@@ -33,6 +33,7 @@ Integer target (50);
 
 Integer counters (1);
 Integer readers (0);
+int madara_fails = 0;
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
@@ -166,13 +167,51 @@ private:
   std::string message;
 };
 
-int main (int argc, char ** argv)
+void test_debug_to_kb_introspection (void)
 {
-  // handle all user arguments
-  handle_arguments (argc, argv);
-  
+  knowledge::KnowledgeBase kb;
+  threads::Threader threader (kb);
+  threader.debug_to_kb (".threader");
+
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Testing debugging to kb for 5 seconds...\n");
+    
+  for (Integer i = 0; i < counters; ++i)
+  {
+    std::stringstream buffer;
+    buffer << "thread";
+    buffer << i;
+
+    threader.run (hertz, buffer.str (), new EmptyThread (), true);
+  }
+
+  int64_t estimated_count = hertz * 4;
+
+  threader.resume ();
+
+  // sleep for 5 seconds before starting second hertz rate
+  utility::sleep (5.0);
+
+  kb.print ();
+
+  std::cerr << "Result of test was: ";
+
+  if (kb.get (".threader.thread0.executions") >= estimated_count)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    kb.print ();
+  }
+}
+
+void test_debug_to_control (void)
+{
   // create a knowledge base and setup our id
-  knowledge::KnowledgeBase knowledge;
+  knowledge::KnowledgeBase kb;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Hertz rate set to %f\n"
@@ -190,7 +229,7 @@ int main (int argc, char ** argv)
     estimated_time);
     
   // create a threader for running threads
-  threads::Threader threader (knowledge);
+  threads::Threader threader (kb);
 
   threader.enable_debug ();
 
@@ -272,5 +311,36 @@ int main (int argc, char ** argv)
   
   threader.wait ();
 
-  return 0;
+  std::cerr << "Result of test was: ";
+
+  if (control.get ("thread0.executions") >= 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    kb.print ();
+  }
+}
+
+int main (int argc, char ** argv)
+{
+  // handle all user arguments
+  handle_arguments (argc, argv);
+  
+  test_debug_to_kb_introspection ();
+  test_debug_to_control ();
+
+  if (madara_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return madara_fails;
 }

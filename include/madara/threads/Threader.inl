@@ -32,6 +32,13 @@ madara::threads::Threader::disable_debug (const std::string name)
 }
 
 inline void
+madara::threads::Threader::debug_to_kb (const std::string prefix)
+{
+  debug_ = true;
+  control_.set (".debug_to_kb", prefix);
+}
+
+inline void
 madara::threads::Threader::enable_debug (void)
 {
   debug_ = true;

@@ -41,6 +41,20 @@ madara::transport::ZMQTransportReadThread::init (
     int zero = 0;
     size_t opt_len = sizeof (int);
 
+    if (settings_.debug_to_kb_prefix != "")
+    {
+      received_packets_.set_name (
+        settings_.debug_to_kb_prefix + ".received_packets", knowledge);
+      failed_receives_.set_name (
+        settings_.debug_to_kb_prefix + ".failed_receives", knowledge);
+      received_data_max_.set_name (
+        settings_.debug_to_kb_prefix + ".received_data_max", knowledge);
+      received_data_min_.set_name (
+        settings_.debug_to_kb_prefix + ".received_data_min", knowledge);
+      received_data_.set_name (
+        settings_.debug_to_kb_prefix + ".received_data", knowledge);
+    }
+
     // setup the receive buffer
     if (settings_.queue_length > 0)
       buffer_ = new char[settings_.queue_length];
@@ -319,6 +333,21 @@ madara::transport::ZMQTransportReadThread::run (void)
 
     if (buffer_remaining > 0)
     {
+      if (settings_.debug_to_kb_prefix != "")
+      {
+        received_data_ += buffer_remaining;
+        ++received_packets_;
+
+        if (received_data_max_ < buffer_remaining)
+        {
+          received_data_max_ = buffer_remaining;
+        }
+        if (received_data_min_ > buffer_remaining || received_data_min_ == 0)
+        {
+          received_data_min_ = buffer_remaining;
+        }
+      }
+
       MessageHeader * header = (MessageHeader *)buffer;
 
       madara_logger_log (context_->get_logger (), logger::LOG_MINOR,
@@ -351,6 +380,11 @@ madara::transport::ZMQTransportReadThread::run (void)
         "%s:" \
         " wait timeout on new messages. Proceeding to next wait\n",
         print_prefix);
+
+      if (settings_.debug_to_kb_prefix != "")
+      {
+        ++failed_receives_;
+      }
     }
   }
 }
