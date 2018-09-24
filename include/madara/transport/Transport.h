@@ -111,7 +111,6 @@ namespace madara
        **/
       virtual long send_data (const knowledge::VariableReferenceMap &) = 0;
 
-
       /**
        * Invalidates a transport to indicate it is shutting down
        **/

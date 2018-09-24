@@ -153,6 +153,15 @@ namespace madara
       **/
       size_t num_read_domains (void) const;
 
+      /**
+      * Requests all debugging for threads go into the data plane
+      * KB instead of the control plane. This will impact performance
+      * of your main knowledge base, so you should use it sparingly,
+      * if possible.
+      * @param prefix    prefix to save debug info into data plane KB
+      **/
+      void debug_to_kb (const std::string & prefix = ".transport");
+
        /**
        * Loads the settings from a binary file
        * @param  filename    the file to load from
@@ -229,35 +238,44 @@ namespace madara
       /// See madara::transport::Reliabilities for options
       uint32_t reliability = DEFAULT_RELIABILITY;
 
-      /// the id of this process (DEPRECATED). You do not need to set this
+      /// The id of this process (DEPRECATED). You do not need to set this
       uint32_t id = DEFAULT_ID;
 
-      /// number of processes (DEPRECATED). You do not need to set this
+      /// Number of processes (DEPRECATED). You do not need to set this
       uint32_t processes = DEFAULT_PROCESSES;
 
-      /// logic to be evaluated after every successful update
+      /// Logic to be evaluated after every successful update
       std::string on_data_received_logic;
       
-      /// delay launching transports
+      /// Delay launching transports until explicit activate call
       bool delay_launch = false;
 
-      /// prevent MADARA from exiting on fatal errors and invalid state
+      /// Prevent MADARA from exiting on fatal errors and invalid state
       bool never_exit = false;
 
-      /// send the reduced message header (clock, size, updates, KaRL id)
+      /// Send a reduced message header (clock, size, updates, KaRL id)
       bool send_reduced_message_header = false;
 
-      /// map of fragments received by originator
+      /// Map of fragments received by originator
       mutable OriginatorFragmentMap fragment_map;
 
-      /// time to sleep between sends and rebroadcasts
+      /// Time to sleep between sends and rebroadcasts
       double slack_time = 0;
 
       /**
-       * number of valid messages allowed to be received per second. This
+       * Number of valid messages allowed to be received per second. This
        * value can be -1 or 0.0 to go as fast as possible
        **/
       double read_thread_hertz = 0.0;
+
+      /**
+       * Maximum rate of sending messages. This is not a bandwidth limit.
+       * This specifically limits the number of times the transport can
+       * send in a second. Under the hood, it is causing the transport to
+       * enforce sleeps between sends to provide time for the OS or transport
+       * to recover. May be especially useful to UDP transports.
+       **/
+      double max_send_hertz = 0.0;
 
       /**
        * Host information for transports that require it. The format of these
@@ -284,12 +302,18 @@ namespace madara
        **/
       bool send_history = false;
 
+      /**
+       * if not empty, save debug information to knowledge base at prefix
+       **/
+      std::string debug_to_kb_prefix = "";
+      
     private:
 
       /**
       * Any acceptable read domain is added here
       **/
       std::map <std::string, int> read_domains_;
+
     };
 
     inline std::string
