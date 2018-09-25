@@ -269,6 +269,11 @@ KnowledgeRecord::set_value (KnowledgeRecord &&rhs)
   if (this == &rhs)
     return;
 
+  if (!rhs.exists ()) {
+    clear_value ();
+    return;
+  }
+
   if (has_history()) {
     KnowledgeRecord tmp =
       rhs.has_history() ?
@@ -749,7 +754,7 @@ KnowledgeRecord::deep_copy () const
 inline bool
 KnowledgeRecord::exists (void) const
 {
-  return type_ != EMPTY;
+  return !(type_ == EMPTY || (type_ == BUFFER && buf_->empty()));
 }
 
 inline int
@@ -787,7 +792,7 @@ KnowledgeRecord::size (void) const
       return any_value_->size ();
     }
   } else if (type_ == BUFFER) {
-    return ref_newest ().size ();
+    return buf_->empty () ? 1 : ref_newest ().size ();
   }
   return 1;
 }
@@ -795,7 +800,9 @@ KnowledgeRecord::size (void) const
 inline uint32_t
 KnowledgeRecord::type (void) const
 {
-  return has_history () ? ref_newest ().type_ : type_;
+  return has_history () ?
+    (buf_->empty () ? EMPTY : ref_newest ().type_)
+    : type_;
 }
 
 inline bool
@@ -808,7 +815,11 @@ KnowledgeRecord::set_type (uint32_t type)
     type_ = type;
     return true;
   } else if (type_ == BUFFER) {
-    return ref_newest().set_type(type);
+    if (buf_->empty ()) {
+      buf_->emplace_back();
+    }
+
+    return ref_newest ().set_type(type);
   }
   return false;
 }
@@ -851,9 +862,9 @@ KnowledgeRecord::get_encoded_size (void) const
     //TODO calculate real size
     buffer_size += 1024;
   }
-  else if (type_ == BUFFER)
+  else if (type_ == BUFFER && !buf_->empty ())
   {
-    ref_newest ().get_encoded_size ();
+    return ref_newest ().get_encoded_size ();
   }
 
   return buffer_size;
@@ -1598,7 +1609,7 @@ KnowledgeRecord::share_string() const
   if (is_string_type(type_)) {
     shared_ = SHARED;
     return str_value_;
-  } else if (has_history()) {
+  } else if (has_history() && !buf_->empty()) {
     return ref_newest().share_string();
   }
   return nullptr;
@@ -1610,7 +1621,7 @@ KnowledgeRecord::share_integers() const
   if (type_ == INTEGER_ARRAY) {
     shared_ = SHARED;
     return int_array_;
-  } else if (has_history()) {
+  } else if (has_history() && !buf_->empty()) {
     return ref_newest().share_integers();
   }
   return nullptr;
@@ -1622,7 +1633,7 @@ KnowledgeRecord::share_doubles() const
   if (type_ == DOUBLE_ARRAY) {
     shared_ = SHARED;
     return double_array_;
-  } else if (has_history()) {
+  } else if (has_history() && !buf_->empty()) {
     return ref_newest().share_doubles();
   }
   return nullptr;
@@ -1634,7 +1645,7 @@ KnowledgeRecord::share_binary() const
   if (is_binary_file_type(type_)) {
     shared_ = SHARED;
     return file_value_;
-  } else if (has_history()) {
+  } else if (has_history() && !buf_->empty()) {
     return ref_newest().share_binary();
   }
   return nullptr;
@@ -1646,7 +1657,7 @@ KnowledgeRecord::share_any() const
   if (is_any_type(type_)) {
     shared_ = SHARED;
     return any_value_;
-  } else if (has_history()) {
+  } else if (has_history() && !buf_->empty()) {
     return ref_newest().share_any();
   }
   return nullptr;
@@ -1672,7 +1683,7 @@ inline char *
 KnowledgeRecord::write (char * buffer,
   int64_t & buffer_remaining) const
 {
-  if (has_history()) {
+  if (has_history() && !buf_->empty()) {
     return ref_newest ().write (buffer, buffer_remaining);
   }
   // format is [type | value_size | value]

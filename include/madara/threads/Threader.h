@@ -282,7 +282,7 @@ namespace madara
       /**
        * indicates if threads should be started in debug mode
        **/
-      bool debug_;
+      bool debug_ = false;
 
       /**
        * if not empty, user has specified debug information should
