@@ -319,7 +319,6 @@ void handle_arguments (int argc, char ** argv)
         "Inspects STK for summary info on knowledge updates.\n\noptions:\n" \
         "  [-f|--stk-file file]     STK file to load and analyze\n" \
         "  [-h|--help]              print help menu (i.e., this menu)\n" \
-        "  [-i|--input file]        file containing MADARA logic to evaluate\n" \
         "  [-k|--print-knowledge]   print final knowledge\n" \
         "  [-kp|--print-prefix pfx] filter prints by prefix. Can be multiple.\n" \
         "  [-ky]                    print knowledge after frequent evaluations\n" \
