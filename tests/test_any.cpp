@@ -441,14 +441,15 @@ namespace geo
       (i16, I16)
     )
 
-  std::unique_ptr<StampedPoseList> capn_preprocess(const StampedPoseList &list)
+  std::unique_ptr<StampedPoseList> capn_preprocess(
+      const StampedPoseList &list, overload_priority<8>)
   {
     auto ret = list;
     ret.i += 10;
     return into_unique(std::move(ret));
   }
 
-  void capn_postprocess(StampedPoseList &list)
+  void capn_postprocess(StampedPoseList &list, overload_priority<8>)
   {
     list.i -= 5;
   }

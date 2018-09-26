@@ -42,16 +42,26 @@ namespace madara { namespace knowledge {
  * std::unique_ptr if the object should be deleted afterwards, raw pointer
  * otherwise. In the latter case, the pointed to object must outlive the
  * serialization operation. It is up to you to ensure this.
+ *
+ * The overload_priority parameter type is used to manage overload ambiguity. In
+ * general, use overload_priority<8> in custom overload of tris function, and
+ * adjust to resolve ambiguity.
  **/
-void *capn_preprocess(...) { return nullptr; }
+template<typename T>
+void *capn_preprocess(const T&, overload_priority_weakest) { return nullptr; }
 
 /**
  * Default implementation of capn_postprocess. Overload to provide custom
  * postprocessing following CapnProto deserialization. Argument should be a
  * non-const reference to your custom type (not CapnProto type). You may
  * modify the object in-place via this reference.
+ *
+ * The overload_priority parameter type is used to manage overload ambiguity. In
+ * general, use overload_priority<8> in custom overload of tris function, and
+ * adjust to resolve ambiguity.
  **/
-void capn_postprocess(...) {}
+template<typename T>
+void capn_postprocess(T&, overload_priority_weakest) {}
 
 template<typename T, typename C>
 struct CapnPrimitive {
@@ -170,14 +180,14 @@ CapnStrList<C> MakeCapnStrList(
 }
 
 template<typename P, typename T>
-auto resolve_preprocess(const P& ptr, const T& val, int /*overload select*/) ->
+auto resolve_preprocess(const P& ptr, const T& val, overload_priority<8>) ->
   decltype(ptr ? *ptr : val)
 {
   return ptr ? *ptr : val;
 }
 
 template<typename P, typename T>
-const T& resolve_preprocess(const P&, const T& val, ... /*overload select*/)
+const T& resolve_preprocess(const P&, const T& val, overload_priority_weakest)
 {
   return val;
 }
@@ -187,8 +197,8 @@ inline auto capn_set(typename C::Builder &builder,
     const CapnPrimitive<T, C> &prim, const R &val) ->
       enable_if_<is_numeric<R>()>
 {
-  auto p = capn_preprocess(val);
-  const auto &ref = resolve_preprocess(p, val, 0);
+  auto p = capn_preprocess(val, select_overload());
+  const auto &ref = resolve_preprocess(p, val, select_overload());
 
   (builder.*(prim.set))(static_cast<T>(ref));
 }
@@ -199,7 +209,7 @@ inline auto capn_get(typename C::Reader &reader,
       enable_if_<is_numeric<R>()>
 {
   val = static_cast<R>((reader.*(prim.get))());
-  capn_postprocess(val);
+  capn_postprocess(val, select_overload());
 }
 
 auto infer_capn_type(type<std::string>) -> capnp::Text;
@@ -209,8 +219,8 @@ inline void capn_set(typename C::Builder &builder,
     const CapnString<C> &prim,
     const std::string &val)
 {
-  auto p = capn_preprocess(val);
-  const auto &ref = resolve_preprocess(p, val, 0);
+  auto p = capn_preprocess(val, select_overload());
+  const auto &ref = resolve_preprocess(p, val, select_overload());
 
   (builder.*(prim.set))(ref);
 }
@@ -220,14 +230,14 @@ inline void capn_get(typename C::Reader &reader,
     const CapnString<C> &prim, std::string &val)
 {
   val = (reader.*(prim.get))();
-  capn_postprocess(val);
+  capn_postprocess(val, select_overload());
 }
 
 inline void capn_set(typename capnp::Text::Builder &builder,
     const std::string &val)
 {
-  auto p = capn_preprocess(val);
-  const auto &ref = resolve_preprocess(p, val, 0);
+  auto p = capn_preprocess(val, select_overload());
+  const auto &ref = resolve_preprocess(p, val, select_overload());
 
   char *data = builder.begin();
   size_t size = std::min(ref.size(), builder.size());
@@ -239,7 +249,7 @@ inline void capn_get(typename capnp::Text::Reader &reader,
     std::string &val)
 {
   val = std::string(reader.cStr(), reader.size());
-  capn_postprocess(val);
+  capn_postprocess(val, select_overload());
 }
 
 template<typename T,
@@ -264,8 +274,8 @@ template<typename B, typename T>
 inline auto capn_set(B &builder, const T &val) ->
   enable_if_<supports_for_each_member<T>::value>
 {
-  auto p = capn_preprocess(val);
-  const auto &ref = resolve_preprocess(p, val, 0);
+  auto p = capn_preprocess(val, select_overload());
+  const auto &ref = resolve_preprocess(p, val, select_overload());
 
   for_each_member(type<T>{},
       do_capn_struct_set<T, ::madara::decay_<decltype(builder)>>{
@@ -292,7 +302,7 @@ inline auto capn_get(R &reader, T &val) ->
   for_each_member(type<T>{},
       do_capn_struct_get<T, ::madara::decay_<decltype(reader)>>{
         &val, &reader});
-  capn_postprocess(val);
+  capn_postprocess(val, select_overload());
 }
 
 template<typename T, typename R, typename B, typename C>
@@ -323,8 +333,8 @@ template<typename T, typename C, typename A>
 inline void capn_set(typename C::Builder &builder,
     const CapnStrList<C> &info, const std::vector<T, A> &val)
 {
-  auto p = capn_preprocess(val);
-  const auto &ref = resolve_preprocess(p, val, 0);
+  auto p = capn_preprocess(val, select_overload());
+  const auto &ref = resolve_preprocess(p, val, select_overload());
 
   auto list_builder{(builder.*(info.init))(ref.size())};
 
@@ -349,7 +359,7 @@ inline void capn_get(typename C::Reader &reader,
     ++i;
   }
 
-  capn_postprocess(val);
+  capn_postprocess(val, select_overload());
 }
 
 template<typename T, typename R, typename B, typename C, typename A>
@@ -357,8 +367,8 @@ inline auto capn_set(typename C::Builder &builder,
     const CapnList<R, B, C> &info, const std::vector<T, A> &val) ->
   enable_if_<supports_capn_set<T>::value && !std::is_arithmetic<T>::value>
 {
-  auto p = capn_preprocess(val);
-  const auto &ref = resolve_preprocess(p, val, 0);
+  auto p = capn_preprocess(val, select_overload());
+  const auto &ref = resolve_preprocess(p, val, select_overload());
 
   (builder.*(info.init))(ref.size());
   auto list_builder{(builder.*(info.get_builder))()};
@@ -385,7 +395,7 @@ inline auto capn_get(typename C::Reader &reader,
     ++i;
   }
 
-  capn_postprocess(val);
+  capn_postprocess(val, select_overload());
 }
 
 template<typename T, typename R, typename B, typename C, typename A>
@@ -393,8 +403,8 @@ inline auto capn_set(typename C::Builder &builder,
     const CapnList<R, B, C> &info, const std::vector<T, A> &val) ->
   enable_if_<std::is_arithmetic<T>::value>
 {
-  auto p = capn_preprocess(val);
-  const auto &ref = resolve_preprocess(p, val, 0);
+  auto p = capn_preprocess(val, select_overload());
+  const auto &ref = resolve_preprocess(p, val, select_overload());
 
   (builder.*(info.init))(ref.size());
   auto list_builder{(builder.*(info.get_builder))()};
@@ -420,7 +430,7 @@ inline auto capn_get(typename C::Reader &reader,
     ++i;
   }
 
-  capn_postprocess(val);
+  capn_postprocess(val, select_overload());
 }
 
 template<typename T, typename R, typename B, typename C, size_t N>
@@ -428,8 +438,8 @@ inline auto capn_set(typename C::Builder &builder,
     const CapnList<R, B, C> &info, const std::array<T, N> &val) ->
   enable_if_<supports_capn_set<T>::value && !std::is_arithmetic<T>::value>
 {
-  auto p = capn_preprocess(val);
-  const auto &ref = resolve_preprocess(p, val, 0);
+  auto p = capn_preprocess(val, select_overload());
+  const auto &ref = resolve_preprocess(p, val, select_overload());
 
   (builder.*(info.init))(ref.size());
   auto list_builder{(builder.*(info.get_builder))()};
@@ -462,7 +472,7 @@ inline auto capn_get(typename C::Reader &reader,
     val[i] = T();
   }
 
-  capn_postprocess(val);
+  capn_postprocess(val, select_overload());
 }
 
 template<typename T, typename R, typename B, typename C, size_t N>
@@ -470,8 +480,8 @@ inline auto capn_set(typename C::Builder &builder,
     const CapnList<R, B, C> &info, const std::array<T, N> &val) ->
   enable_if_<std::is_arithmetic<T>::value>
 {
-  auto p = capn_preprocess(val);
-  const auto &ref = resolve_preprocess(p, val, 0);
+  auto p = capn_preprocess(val, select_overload());
+  const auto &ref = resolve_preprocess(p, val, select_overload());
 
   (builder.*(info.init))(ref.size());
   auto list_builder{(builder.*(info.get_builder))()};
@@ -503,7 +513,7 @@ inline auto capn_get(typename C::Reader &reader,
     val[i] = T();
   }
 
-  capn_postprocess(val);
+  capn_postprocess(val, select_overload());
 }
 
 } // namespace knowledge
