@@ -10,6 +10,7 @@
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/FileFragmenter.h"
+#include "madara/knowledge/CheckpointPlayer.h"
 #include "madara/knowledge/AnyRegistry.h"
 #include "madara/filters/GenericFilters.h"
 #include "FunctionDefaults.h"
@@ -416,6 +417,42 @@ void define_knowledge (void)
     .def_readwrite("version",
       &madara::knowledge::CheckpointSettings::version,
       "the MADARA version used when the checkpoint was saved") 
+  ;
+
+  // Holds a settings object along with a reader referencing it.
+  struct PyCheckpointReader
+  {
+    PyCheckpointReader(CheckpointSettings settings)
+      : settings_(std::make_shared<CheckpointSettings>(std::move(settings))),
+        reader_(std::make_shared<CheckpointReader>(*settings_)) {}
+
+    std::shared_ptr<CheckpointSettings> settings_;
+    std::shared_ptr<CheckpointReader> reader_;
+  };
+
+  class_<PyCheckpointReader> ("CheckpointReader",
+      "Utility class for iterating checkpoint files",
+      init <CheckpointSettings> ())
+    .def("start", +[](PyCheckpointReader &r) { r.reader_->start(); },
+        "Begin by reading any header information. Optional. Will be called "
+        "automatically by next if need be. This opens the file specified in "
+        "the settings based during construction. The file will be closed "
+        "when this object is destructed. This object is usable as an iterator.")
+    .def("__iter__", +[](PyCheckpointReader &r) { return r; })
+    .def("next", +[](PyCheckpointReader &r) {
+          auto pair = r.reader_->next();
+          if (pair.first.empty()) {
+            PyErr_SetNone(PyExc_StopIteration);
+            throw_error_already_set();
+            return boost::python::make_tuple();
+          }
+          return boost::python::make_tuple(pair.first, pair.second);
+        },
+        "Get the next update from the checkpoint file. Throws StopIteration "
+        "if the end is reached.")
+    .def("settings", +[](PyCheckpointReader &r) -> CheckpointSettings {
+          return *r.settings_;
+        }, "Get the CheckpointSettings object this reader is using.")
   ;
 
   class_<madara::knowledge::FileFragmenter> (
