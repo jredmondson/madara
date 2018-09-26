@@ -502,7 +502,6 @@ void define_knowledge (void)
 
   ;
 
-
   class_<madara::knowledge::KnowledgeRecord> (
      "KnowledgeRecord",
      "Basic unit of knowledge", init <> ())
@@ -775,7 +774,7 @@ void define_knowledge (void)
       &madara::knowledge::KnowledgeRecord::quality,
       "write priority for any local updates")
     
-    .def_readwrite("toi",
+    .def("toi",
       &madara::knowledge::KnowledgeRecord::toi,
       "last modification system clock time (time of insertion)")
   
