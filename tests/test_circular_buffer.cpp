@@ -238,8 +238,16 @@ void test_container()
   TEST_EQ(buf.remaining(), 8UL);
   TEST_EQ(buf.count(), 10UL);
 
+  int c = buf.get_record().get_history_oldest_index();
+  for (const auto &cur : buf.get_record().get_history()) {
+    std::cerr << c << ": " << cur << std::endl;
+    ++c;
+  }
+  VAL(buf.get_index());
+
   KnowledgeRecord rec;
-  rec = buf.inspect(3);
+  TEST_EQ(rec = buf.inspect(0), 23);
+  TEST_EQ(rec = buf.inspect(3), 26);
 
   std::vector<KnowledgeRecord> v;
   v = buf.inspect(2,3);

@@ -353,7 +353,7 @@ NativeCircularBufferConsumer::inspect (
   KnowledgeRecord &rec = *ref_.get_record_unsafe ();
 
   KnowledgeRecord ret;
-  rec.get_history_range (&ret, local_index_ + position-1, 1);
+  rec.get_history_range (&ret, local_index_ + position, 1);
 
   return ret;
 }
@@ -398,7 +398,7 @@ NativeCircularBufferConsumer::inspect (
     ++inspect_counter )
   {
     if (rec.get_history_range (&ret,
-      local_index_ + position + inspect_counter-1, 1))
+      local_index_ + position + inspect_counter, 1))
     {
       ret_vec.emplace_back (std::move(ret));
     }

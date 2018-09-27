@@ -3222,7 +3222,7 @@ void test_native_circular_consumer (void)
 
   std::cerr << "  Testing inspect(0)...";
 
-  if (consumer.inspect (0) == 104)
+  if (consumer.inspect (0) == 105)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3235,7 +3235,7 @@ void test_native_circular_consumer (void)
 
   std::cerr << "  Testing inspect(-1)...";
 
-  if (consumer.inspect (-1) == 103)
+  if (consumer.inspect (-1) == 104)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3248,7 +3248,7 @@ void test_native_circular_consumer (void)
 
   std::cerr << "  Testing inspect(-2)...";
 
-  if (consumer.inspect (-2) == 102)
+  if (consumer.inspect (-2) == 103)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3266,7 +3266,7 @@ void test_native_circular_consumer (void)
 
   std::cerr << "  Testing inspect(1)...";
 
-  if (consumer.inspect (1) == 105)
+  if (consumer.inspect (1) == 106)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3274,12 +3274,12 @@ void test_native_circular_consumer (void)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-    std::cerr << "      inspect(1) == " << consumer.inspect (-1) << "\n";
+    std::cerr << "      inspect(1) == " << consumer.inspect (1) << "\n";
   }
 
   std::cerr << "  Testing inspect(2)...";
 
-  if (consumer.inspect (2) == 106)
+  if (consumer.inspect (2) == 107)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3295,11 +3295,11 @@ void test_native_circular_consumer (void)
   records = consumer.inspect (-2, 5);
 
   if (records.size () == 5 &&
-      records[0] == 102 &&
-      records[1] == 103 &&
-      records[2] == 104 &&
-      records[3] == 105 &&
-      records[4] == 106)
+      records[0] == 103 &&
+      records[1] == 104 &&
+      records[2] == 105 &&
+      records[3] == 106 &&
+      records[4] == 107)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3358,6 +3358,10 @@ void test_native_circular_consumer (void)
     ++madara_fails;
     std::cerr << "      remaining() == " << consumer.remaining () << "\n";
   }
+
+  std::cerr << "  Change buffer capacity to 41...\n";
+
+  kb.set_history_capacity("buffer", 41);
 
   std::cerr << "  producer.add() x 95 times...\n";
 
