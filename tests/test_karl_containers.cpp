@@ -3323,7 +3323,7 @@ void test_native_circular_consumer (void)
 
   for (int i = 0; !has_failed && i < (int)records.size (); ++i)
   {
-    if (records[i] != 105 + i)
+    if (records[i] != 109 - i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
@@ -3482,11 +3482,11 @@ void test_native_circular_consumer (void)
   records = consumer.peek_latest (5);
 
   if (records.size () == 5 &&
-      records[0] == 90 &&
-      records[1] == 91 &&
+      records[0] == 94 &&
+      records[1] == 93 &&
       records[2] == 92 &&
-      records[3] == 93 &&
-      records[4] == 94)
+      records[3] == 91 &&
+      records[4] == 90)
   {
     std::cerr << "SUCCESS\n";
   }
