@@ -8,6 +8,10 @@
 #include "madara/utility/java/Acquire_VM.h"
 #endif
 
+#ifndef _WIN32
+#include <pthread.h>
+#endif
+
 
 #include <iostream>
 #include <algorithm>
@@ -109,17 +113,28 @@ WorkerThread::operator= (const WorkerThread & input)
   }
 }*/
 
+#ifndef _WIN32
+// Call pthread_setname_np if it exists ...
+template<typename... Args>
+auto try_pthread_setname_np(Args&&... args) ->
+  decltype(pthread_setname_np(std::forward<Args>(args)...))
+{
+  return pthread_setname_np(std::forward<Args>(args)...);
+}
+
+// Otherwise, do nothing
+void try_pthread_setname_np(...) {}
+#endif
+
 void
 WorkerThread::run (void)
 {
-#ifndef _WIN32
-#else
-  //result = 0;
-  //_beginthreadex(NULL, 0, worker_thread_windows_glue, (void*)this, 0, 0);
-
-#endif
   try {
     me_ = std::thread(&WorkerThread::svc, this);
+
+#ifndef _WIN32
+    try_pthread_setname_np(me_.native_handle(), name_.substr(0, 15).c_str());
+#endif
 
     std::ostringstream os;
     os << std::this_thread::get_id() << " spawned " << me_.get_id() << std::endl;

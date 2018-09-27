@@ -441,6 +441,19 @@ namespace geo
       (i16, I16)
     )
 
+  std::unique_ptr<StampedPoseList> capn_preprocess(
+      const StampedPoseList &list, overload_priority<8>)
+  {
+    auto ret = list;
+    ret.i += 10;
+    return into_unique(std::move(ret));
+  }
+
+  void capn_postprocess(StampedPoseList &list, overload_priority<8>)
+  {
+    list.i -= 5;
+  }
+
   static_assert(is_same<
       decltype(get_capnproto_type_info_StampedPoseList_Strs(
           type<geo_capn::StampedPoseList>{}, select_overload())),
@@ -604,6 +617,7 @@ void test_geo()
   TEST_EQ(kb.get("vs0").share_any()->ref("list").size(), 3UL);
   TEST_EQ(kb.get("vs0").get_any_cref()("list")[1]("stamp")("frame").to_string(), "frame1");
   TEST_EQ(kb.get("vs0").get_any_cref()("arr3")[1].to_integer(), 6);
+  TEST_EQ(kb.get("vs0").get_any_cref()("i").to_integer(), 42);
   TEST_EQ(kb.get("vs0").get_any_cref()("strs")[1].to_string(), "bar");
   TEST_EQ(kb.get("vs0").get_any_cref()("en").to_integer(), 2);
   TEST_EQ(kb.get("vs0").get_any_cref()("i16").to_integer(), (int)TestEnum::b);
@@ -618,16 +632,21 @@ void test_geo()
   auto &avs0ref = avs0.ref<RegCapnObject>();
   auto avs0_reader = avs0ref.reader();
   auto avs0i = avs0_reader.get("i");
-  TEST_EQ(avs0i.template as<int>(), 42);
+  TEST_EQ(avs0i.template as<int>(), 52);
 
   auto avs0_sreader = avs0.template reader<geo_capn::StampedPoseList>();
-  TEST_EQ(avs0_sreader.getI(), 42);
+  TEST_EQ(avs0_sreader.getI(), 52);
 
   auto avs0data = avs0_reader.get("data");
   auto avs0data_reader = avs0data.template as<capnp::List<int>>();
   VAL(avs0data_reader[0]);
 
   VAL(avs0);
+
+  Any::register_type<StampedPoseList>("StampedPoseList");
+  Any l2;
+  l2.tagged_unserialize(buf.data(), buf.size());
+  TEST_EQ(l2("i").to_integer(), 47);
 
   Any new_pose = Any::construct("StampedPose");
   VAL(new_pose);
