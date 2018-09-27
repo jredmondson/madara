@@ -125,6 +125,9 @@ void test_record_buffer()
   TEST_EQ(rec.get_history(-2), 25);
   TEST_EQ(rec.get_history(2), 19);
 
+  auto hist = rec.get_history();
+  TEST_EQ(hist.size(), 10UL);
+
   test_history_vector<int>(rec.get_history(),
       {{7, 24}, {2, 19}, {4, 21}, {5, 22}});
   test_history_vector<int>(rec.get_newest(4),
@@ -266,6 +269,20 @@ void test_container()
   buf.consume_many(3,krvec);
   test_consume_earliest<int>(krvec,{ {0,37}, {1,38}, {2,39} });
 
+  auto all = kb.to_map("");
+  TEST_EQ(all.size(), 1UL);
+
+  auto deep = kb.get_context().get_actual("test").deep_copy();
+  TEST_EQ(deep.to_integer(), 44);
+
+  key = "foo";
+  NativeCircularBufferConsumer buf2(key, kb);
+  kb.set_history_capacity(key, 10);
+
+  TEST_EQ(buf2.consume(dropped).exists(), false);
+
+  kb.set(key, 123);
+  TEST_EQ(buf2.consume(), 123);
 }
 
 int main (int, char **)

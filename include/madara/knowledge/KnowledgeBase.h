@@ -165,7 +165,7 @@ namespace madara
       void unlock (void);
 
       /**
-       * Retrieves a knowledge value
+       * Atomically gets the current value of a variable (without any history).
        * @param key              knowledge location
        * @param settings         settings for referring to knowledge variables
        * @return                 value at knowledge location
@@ -175,7 +175,7 @@ namespace madara
                      KnowledgeReferenceSettings (false));
 
       /**
-       * Atomically returns the value of a variable.
+       * Atomically gets the current value of a variable (without any history).
        * @param   variable  reference to a variable (@see get_ref)
        * @param   settings  the settings for referring to variables
        * @return         the madara::knowledge::KnowledgeRecord::Integer value for the variable

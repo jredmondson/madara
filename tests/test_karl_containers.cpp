@@ -2958,12 +2958,13 @@ void test_native_circular_consumer (void)
     "************* CIRCULARBUFFER: Testing NativeCircularBufferConsumer*************\n";
 
   knowledge::KnowledgeBase kb;
-  containers::CircularBuffer producer ("buffer", kb, 100);
+  kb.set_history_capacity("buffer", 100);
+  containers::Integer producer ("buffer", kb);
   containers::NativeCircularBufferConsumer consumer ("buffer", kb);
 
-  for (KnowledgeRecord::Integer i = 0; i < 100; ++i)
+  for (int i = 0; i < 100; ++i)
   {
-    producer.add (KnowledgeRecord (i));
+    producer = i;
   }
 
 
@@ -2973,8 +2974,7 @@ void test_native_circular_consumer (void)
 
   bool has_failed = records.size () != 50;
 
-  for (KnowledgeRecord::Integer i = 0;
-       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  for (int i = 0; !has_failed && i < (int)records.size (); ++i)
   {
     if (records[i] != i)
     {
@@ -3131,9 +3131,9 @@ void test_native_circular_consumer (void)
 
   std::cerr << "  Adding 25 more elements...\n";
 
-  for (KnowledgeRecord::Integer i = 0; i < 25; ++i)
+  for (int i = 0; i < 25; ++i)
   {
-    producer.add (KnowledgeRecord (i + 100));
+    producer = i + 100;
   }
 
   std::cerr << "  Testing remaining()...";
@@ -3182,8 +3182,7 @@ void test_native_circular_consumer (void)
 
   has_failed = records.size () != 5;
 
-  for (KnowledgeRecord::Integer i = 0;
-       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  for (int i = 0; !has_failed && i < (int)records.size (); ++i)
   {
     if (records[i] != i + 100)
     {
@@ -3260,9 +3259,9 @@ void test_native_circular_consumer (void)
     std::cerr << "      inspect(-2) == " << consumer.inspect (-2) << "\n";
   }
 
-  for (KnowledgeRecord::Integer i = 0; i < 5; ++i)
+  for (int i = 0; i < 5; ++i)
   {
-    producer.add (KnowledgeRecord (i + 105));
+    producer = i + 105;
   }
 
   std::cerr << "  Testing inspect(1)...";
@@ -3322,8 +3321,7 @@ void test_native_circular_consumer (void)
 
   has_failed = records.size () != 5;
 
-  for (KnowledgeRecord::Integer i = 0;
-       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  for (int i = 0; !has_failed && i < (int)records.size (); ++i)
   {
     if (records[i] != 109 - i)
     {
@@ -3365,7 +3363,7 @@ void test_native_circular_consumer (void)
 
   for (KnowledgeRecord::Integer i = 0; i < 95; ++i)
   {
-    producer.add (KnowledgeRecord (i));
+    producer = i;
   }
 
   std::cerr << "  consumer.get() x 5...\n";
@@ -4379,6 +4377,7 @@ int main (int , char **)
   test_circulart_any ();
   test_circular_consumer_any ();
   test_circular_consumert_any ();
+  //test_native_circular_consumer (); // TODO needs to be fixed
 
 
   if (madara_fails > 0)
