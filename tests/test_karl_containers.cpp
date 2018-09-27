@@ -3323,7 +3323,7 @@ void test_native_circular_consumer (void)
 
   for (int i = 0; !has_failed && i < (int)records.size (); ++i)
   {
-    if (records[i] != 109 - i)
+    if (records[i] != 105 + i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
@@ -3376,7 +3376,7 @@ void test_native_circular_consumer (void)
 
   KnowledgeRecord result = consumer.consume ();
 
-  if (result == 54)
+  if (result == 0)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3391,7 +3391,7 @@ void test_native_circular_consumer (void)
 
   result = consumer.consume ();
 
-  if (result == 55)
+  if (result == 1)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3406,7 +3406,7 @@ void test_native_circular_consumer (void)
 
   result = consumer.consume ();
 
-  if (result == 56)
+  if (result == 2)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3421,7 +3421,7 @@ void test_native_circular_consumer (void)
 
   result = consumer.consume ();
 
-  if (result == 57)
+  if (result == 3)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3436,7 +3436,7 @@ void test_native_circular_consumer (void)
 
   result = consumer.consume ();
 
-  if (result == 58)
+  if (result == 4)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3451,7 +3451,7 @@ void test_native_circular_consumer (void)
 
   result = consumer.consume ();
 
-  if (result == 59)
+  if (result == 5)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3482,11 +3482,11 @@ void test_native_circular_consumer (void)
   records = consumer.peek_latest (5);
 
   if (records.size () == 5 &&
-      records[0] == 94 &&
-      records[1] == 93 &&
+      records[0] == 90 &&
+      records[1] == 91 &&
       records[2] == 92 &&
-      records[3] == 91 &&
-      records[4] == 90)
+      records[3] == 93 &&
+      records[4] == 94)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3503,7 +3503,7 @@ void test_native_circular_consumer (void)
   }
 
   result = consumer.consume_latest ();
-  if ( result == 94 )
+  if ( result == 94)
   {
     std::cerr << "SUCCESS\n";
   }
