@@ -4377,7 +4377,7 @@ int main (int , char **)
   test_circulart_any ();
   test_circular_consumer_any ();
   test_circular_consumert_any ();
-  //test_native_circular_consumer (); // TODO needs to be fixed
+  test_native_circular_consumer (); // TODO needs to be fixed
 
 
   if (madara_fails > 0)
