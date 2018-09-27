@@ -25,6 +25,12 @@ madara::transport::TransportSettings::clear_read_domains (void)
 }
 
 inline void
+madara::transport::TransportSettings::debug_to_kb (const std::string & prefix)
+{
+  debug_to_kb_prefix = prefix;
+}
+
+inline void
 madara::transport::TransportSettings::get_read_domains (
   std::vector<std::string> & domains) const
 {

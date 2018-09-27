@@ -7,6 +7,8 @@
 #include "madara/transport/BasicASIOTransport.h"
 #include "madara/transport/Transport.h"
 #include "madara/threads/Threader.h"
+#include "madara/utility/EpochEnforcer.h"
+#include "madara/knowledge/containers/Integer.h"
 
 #include <string>
 #include <map>
@@ -58,7 +60,23 @@ namespace madara
        * @param   updates listing of all updates that must be sent
        * @return  result of write operation or -1 if we are shutting down
        **/
-      long send_data (const madara::knowledge::VariableReferenceMap & updates) override;
+      long send_data (
+        const madara::knowledge::VariableReferenceMap & updates) override;
+
+      /// sent packets
+      knowledge::containers::Integer sent_packets;
+
+      /// failed sends
+      knowledge::containers::Integer failed_sends;
+
+      /// sent data
+      knowledge::containers::Integer sent_data;
+
+      /// max data sent
+      knowledge::containers::Integer sent_data_max;
+
+      /// min data sent
+      knowledge::containers::Integer sent_data_min;
 
     protected:
       int setup_read_socket () override;
@@ -67,7 +85,13 @@ namespace madara
 
       long send_message (const char *buf, size_t size);
       long send_buffer (const udp::endpoint &target, const char *buf, size_t size);
-      virtual bool pre_send_buffer (size_t addr_index) { return addr_index != 0; }
+      virtual bool pre_send_buffer (size_t addr_index)
+      {
+        return addr_index != 0;
+      }
+
+      /// enforces epochs when user specifies a max_send_hertz
+      utility::EpochEnforcer <utility::Clock> enforcer_;
 
       friend class UdpTransportReadThread;
     };

@@ -11,6 +11,9 @@
 #include "madara/knowledge/containers/Integer.h"
 #include "madara/logger/GlobalLogger.h"
 
+#include "madara/utility/Timer.h"
+
+
 // shortcuts
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
@@ -30,6 +33,7 @@ Integer target (50);
 
 Integer counters (1);
 Integer readers (0);
+int madara_fails = 0;
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
@@ -140,20 +144,14 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
-class CounterThread : public threads::BaseThread
+class EmptyThread : public threads::BaseThread
 {
 public:
   /**
     * Initializes thread with MADARA context
-    * @param   context   context for querying current program state
     **/
-  virtual void init (knowledge::KnowledgeBase & context)
+  virtual void init (knowledge::KnowledgeBase &)
   {
-    counter.set_name ("counter", context);
-
-    data = context;
-
-    message = "Counter set to {counter} by thread " + name + "\n";
   }
 
   /**
@@ -161,22 +159,6 @@ public:
     **/
   virtual void run (void)
   {
-    ++counter;
-    data.print (message);
-    int rnd = std::rand() % 19 + (-9);
-    int logger_rnd = std::rand() % 3 + (-1);
-    
-    /// Test thread local key string in normal logger and log level
-    /// overrides in macro madara_logger_ptr_log
-    madara::logger::Logger::set_thread_level(logger_rnd);
-    madara_logger_ptr_log (logger::global_logger.get(), rnd,
-      "CounterThread::Run MGT: %MGT  rnd=%d lrnd=%d\n",rnd,logger_rnd);
-
-    madara_logger_ptr_log (logger::global_logger.get(), rnd,
-      "CounterThread::Run MTN: %MTN rnd=%d lrnd=%d\n",rnd,logger_rnd);
-
-    madara_logger_ptr_log (logger::global_logger.get(), rnd,
-      "CounterThread::Run MTZ: %MTZ rnd=%d lrnd=%d\n",rnd,logger_rnd);
   }
 
 private:
@@ -185,37 +167,74 @@ private:
   std::string message;
 };
 
-int main (int argc, char ** argv)
+void test_debug_to_kb_introspection (void)
 {
-  // handle all user arguments
-  handle_arguments (argc, argv);
-  
-  logger::global_logger.get()->set_timestamp_format(
-    "%x %X %MTZ %MGT (%MTN): ");
+  knowledge::KnowledgeBase kb;
+  threads::Threader threader (kb);
+  threader.debug_to_kb (".threader");
 
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Testing debugging to kb for 5 seconds...\n");
+    
+  for (Integer i = 0; i < counters; ++i)
+  {
+    std::stringstream buffer;
+    buffer << "thread";
+    buffer << i;
+
+    threader.run (hertz, buffer.str (), new EmptyThread (), true);
+  }
+
+  int64_t estimated_count = hertz * 4;
+
+  threader.resume ();
+
+  // sleep for 5 seconds before starting second hertz rate
+  utility::sleep (5.0);
+
+  kb.print ();
+
+  std::cerr << "Result of test was: ";
+
+  if (kb.get (".threader.thread0.executions") >= estimated_count)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    kb.print ();
+  }
+}
+
+void test_debug_to_control (void)
+{
   // create a knowledge base and setup our id
-  knowledge::KnowledgeBase knowledge;
+  knowledge::KnowledgeBase kb;
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
     "Hertz rate set to %f\n"
     "Second hertz rate set to %f\n"
-    "Counters is set to %ll\n"
-    "Target is set to %ll\n",
+    "Counters is set to %" PRId64 "\n"
+    "Target is set to %" PRId64 "\n",
     hertz, second_hertz, counters, target);
-  
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-    "MGT: %MGT\n");
+
+  int64_t estimated_count = target - counters * hertz * 5;
+  uint64_t estimated_time =
+    (uint64_t)(estimated_count / (counters * hertz) + 5);
 
   madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-    "MTN: %MTN\n");
-
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-    "MTZ: %MTZ\n");
-// create a counter
-  containers::Integer counter ("counter", knowledge);
-
+    "Testing. Estimated completion in %" PRIu64 " seconds...\n",
+    estimated_time);
+    
   // create a threader for running threads
-  threads::Threader threader (knowledge);
+  threads::Threader threader (kb);
+
+  threader.enable_debug ();
+
+  utility::Timer <utility::Clock> timer;
+  timer.start ();
 
   for (Integer i = 0; i < counters; ++i)
   {
@@ -223,18 +242,17 @@ int main (int argc, char ** argv)
     buffer << "thread";
     buffer << i;
 
-    threader.run (hertz, buffer.str (), new CounterThread (), true);
+    threader.run (hertz, buffer.str (), new EmptyThread (), true);
   }
 
-  Integer start_time = utility::get_time ();
+  std::vector <knowledge::containers::Integer> executions (10);
 
   threader.resume ();
 
   // sleep for 5 seconds before starting second hertz rate
   utility::sleep (5.0);
 
-  knowledge.print ("After 5s, count is {counter}.\n");
-  knowledge.print ("Changing hertz to second hertz.\n");
+  knowledge::KnowledgeBase control = threader.get_control_plane ();
 
   for (Integer i = 0; i < counters; ++i)
   {
@@ -243,33 +261,86 @@ int main (int argc, char ** argv)
     buffer << i;
 
     threader.change_hertz (buffer.str (), second_hertz);
+    
+    buffer << ".executions";
+
+    executions[i].set_name (buffer.str (), control);
   }
 
+  int64_t counter = 0;
+
   // wait for the counter to reach the target number
-  while (*counter < target)
+  while (counter < target)
   {
+    counter = 0;
+    for (auto value : executions)
+    {
+      counter += *value;
+    }
     // sleep for half a second and try again
     utility::sleep (0.5);
   }
 
+  timer.stop ();
+
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Test took %" PRIu64 " seconds\n",
+    timer.duration_s ());
+  
   threader.terminate ();
   
-  Integer end_time = utility::get_time ();
-  Integer total_time = end_time - start_time;
-  double total_time_in_secs = (double)total_time;
-  total_time_in_secs /= 1000000000;
-
-  knowledge.set (".total_time_in_seconds", total_time_in_secs);
-
-  std::cerr << "The final tally of the distributed counter was " <<
-    *counter << "\n";
-  knowledge.print ("Distributed count took {.total_time_in_seconds}s\n");
-
-
   // print the aggregate counter to the screen
-  knowledge.print ();
+  control.print ();
 
   threader.wait ();
 
-  return 0;
+  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
+    "Starting new thread without debugging and running for 5s\n",
+    timer.duration_s ());
+  
+  threader.disable_debug ();
+  threader.run (hertz, "no_debug", new EmptyThread (), true);
+
+  // sleep for 5 seconds before printing and stopping
+  utility::sleep (5.0);
+
+  // print the aggregate counter to the screen
+  control.print ();
+
+  threader.terminate ();
+  
+  threader.wait ();
+
+  std::cerr << "Result of test was: ";
+
+  if (control.get ("thread0.executions") >= 0)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    ++madara_fails;
+    std::cerr << "FAIL. Knowledge was:\n";
+    kb.print ();
+  }
+}
+
+int main (int argc, char ** argv)
+{
+  // handle all user arguments
+  handle_arguments (argc, argv);
+  
+  test_debug_to_kb_introspection ();
+  test_debug_to_control ();
+
+  if (madara_fails > 0)
+  {
+    std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
+  }
+  else
+  {
+    std::cerr << "OVERALL: SUCCESS.\n";
+  }
+
+  return madara_fails;
 }

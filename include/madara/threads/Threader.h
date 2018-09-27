@@ -198,6 +198,47 @@ namespace madara
       void terminate (const std::string name);
 
       /**
+      * Requests all debugging for threads go into the data plane
+      * KB instead of the control plane. This will impact performance
+      * of your main knowledge base, so you should use it sparingly,
+      * if possible.
+      * @param prefix    prefix to save debug info into data plane KB
+      **/
+      void debug_to_kb (const std::string prefix = ".threader");
+
+      /**
+      * Requests a specific thread to disable debug mode. Debug mode
+      * prints thread performance information such as durations
+      * and executions.
+      * @param name    unique thread name for the thread.
+      **/
+      void disable_debug (const std::string name);
+
+      /**
+      * Requests that all new threads disable debug mode. Debug mode
+      * prints thread performance information such as durations
+      * and executions. Disabled is the default mode.
+      * @param name    unique thread name for the thread.
+      **/
+      void disable_debug (void);
+
+      /**
+      * Requests a specific thread to enter debug mode. Debug mode
+      * prints thread performance information such as durations
+      * and executions.
+      * @param name    unique thread name for the thread.
+      **/
+      void enable_debug (const std::string name);
+
+      /**
+      * Requests that all new threads to enter debug mode. Debug mode
+      * prints thread performance information such as durations
+      * and executions. Disabled is the default mode.
+      * @param name    unique thread name for the thread.
+      **/
+      void enable_debug (void);
+
+      /**
       * Requests all threads to terminate
       **/
       void terminate (void);
@@ -237,6 +278,17 @@ namespace madara
        * the threads that are still active
        **/
       NamedWorkerThreads threads_;
+
+      /**
+       * indicates if threads should be started in debug mode
+       **/
+      bool debug_ = false;
+
+      /**
+       * if not empty, user has specified debug information should
+       * go to the data plane at this prefix
+       **/
+      std::string debug_to_kb_prefix_;
     };
   }
 }

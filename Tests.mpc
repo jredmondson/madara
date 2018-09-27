@@ -322,6 +322,25 @@ project (Test_Threader_Change_Hertz) : using_madara, no_karl, no_xml, null_lock,
   }
 }
 
+project (Test_Threader_Introspection) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_threader_introspection
+  
+  
+  requires += tests
+
+
+  Documentation_Files {
+  }
+  
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/threads/test_threader_introspection.cpp
+  }
+}
+
 project (Test_Context_Copy) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_context_copy

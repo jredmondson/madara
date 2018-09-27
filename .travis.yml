@@ -21,10 +21,13 @@ env:
     - LD_LIBRARY_PATH=$CAPNP_ROOT/c++/.libs:$MADARA_ROOT/lib:$GAMS_ROOT/lib:$LD_LIBRARY_PATH
     - PATH=$CAPNP_ROOT/c++:$PATH
     - CORES=6
+    - TESTS="tests"
+    - DYLD_LIBRARY_PATH=$CAPNP_ROOT/c++/.libs:$DYLD_LIBRARY_PATH:$MADARA_ROOT/lib:$GAMS_ROOT/lib:$VREP_ROOT
 
 matrix:
   allow_failures:
-    - env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
+    #- env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
+    - env: NAME="Ubuntu 14.04 android" ANDROID="android" SSL="ssl" TESTS=""
   include:
       ################MAC#####################
 
@@ -46,11 +49,11 @@ matrix:
       os: osx
       osx_image: xcode9.3
 
-      # clang, osx, zeromq
-    - compiler: clang
-      env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
-      os: osx
-      osx_image: xcode9.3
+    # ICEBOXED: clang, osx, zeromq
+    #- compiler: clang
+    #  env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
+    #  os: osx
+    #  osx_image: xcode9.3
 
       # clang, osx, simtime
     - compiler: clang
@@ -109,6 +112,16 @@ matrix:
       os: linux
       env: NAME="Ubuntu 14.04 g++ simtime" SIMTIME="simtime"
 
+    # g++, linux, android, zmq
+    - compiler: gcc
+      os: linux
+      env: NAME="Ubuntu 14.04 android zmq" ANDROID="android" ZMQ="zmq" TESTS=""
+
+    # g++, linux, android, ssl
+    - compiler: gcc
+      os: linux
+      env: NAME="Ubuntu 14.04 android" ANDROID="android" SSL="ssl" TESTS=""
+
 addons:
   apt:
     sources:
@@ -140,50 +153,49 @@ script:
   - echo "TRAVIS_BUILD_DIR=$TRAVIS_BUILD_DIR"
   - echo ls $TRAVIS_BUILD_DIR
   - ls $TRAVIS_BUILD_DIR
-  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $PYTHON $ZMQ $SIMTIME
-  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara tests $SSL $JAVA $PYTHON $ZMQ $SIMTIME
+  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID
+  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID
   # now run functionality unit tests 
   - echo "Testing basic functionality..."
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_any ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_bandwidth_monitor ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_basic_reasoning ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_checkpointing ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_circular_buffer ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_context_copy ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_encoding ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_filters ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_fragmentation ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_karl_containers ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_karl_exceptions ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_kb_destructions ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_key_expansion ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_packet_scheduler ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_periodic_wait ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_prefix_to_map ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_print_statement ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_save_modifieds ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_shared_record ; fi
-  - if [ -z "$ANDROID" ] && [ "$SIMTIME" == "simtime" ]; then $MADARA_ROOT/bin/test_simtime ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_system_calls ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_timed_wait ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_utility ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_rcw_tracked ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_rcw_transaction ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_rcw_prodcon ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_rcw_custom ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_threader_change_hertz ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_knowledge_record ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_knowledge_base ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_any ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_any ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_bandwidth_monitor ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_basic_reasoning ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_checkpointing ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_circular_buffer ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_context_copy ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_encoding ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_filters ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_fragmentation ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_karl_containers ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_karl_exceptions ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_kb_destructions ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_key_expansion ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_packet_scheduler ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_periodic_wait ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_prefix_to_map ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_print_statement ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_save_modifieds ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_shared_record ; fi
+  - if [ ! -z $TESTS ] && [ "$SIMTIME" == "simtime" ]; then $MADARA_ROOT/bin/test_simtime ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_system_calls ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_timed_wait ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_utility ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_rcw_tracked ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_rcw_transaction ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_rcw_prodcon ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_rcw_custom ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_threader_change_hertz ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_knowledge_record ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_knowledge_base ; fi
   # performance test (useful to see if we've regressed in performance)
-  - if [ -z "$ANDROID" ]; then echo "Testing reasoning throughput..." ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_reasoning_throughput ; fi
+  - if [ ! -z $TESTS ]; then echo "Testing reasoning throughput..." ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_reasoning_throughput ; fi
   # test UDP Multicast networking performance and connectivity for 60s
-  - if [ -z "$ANDROID" ]; then echo "Testing multicast performance..." ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/network_profiler -i 0 -s 1024 & $MADARA_ROOT/bin/network_profiler -i 1 ; fi
+  - if [ ! -z $TESTS ]; then echo "Testing multicast performance..." ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/network_profiler -i 0 -s 1024 & $MADARA_ROOT/bin/network_profiler -i 1 ; fi
   # test UDP Unicast networking performance and connectivity for 60s
-  - if [ -z "$ANDROID" ]; then echo "Testing unicast performance..." ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/network_profiler -i 0 -s 1024 -u 127.0.0.1:30000 -u 127.0.0.1:30001 & $MADARA_ROOT/bin/network_profiler -i 1 -u 127.0.0.1:30001 ; fi
-  - if [ -z "$ANDROID" ]; then echo "Testing unicast lamport consistency..." ; fi
-  - if [ -z "$ANDROID" ]; then $MADARA_ROOT/bin/test_lamport -i 0 -u 127.0.0.1:30000 -u 127.0.0.1:30001 & $MADARA_ROOT/bin/test_lamport -i 1 -u 127.0.0.1:30001 ; fi
+  - if [ ! -z $TESTS ]; then echo "Testing unicast performance..." ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/network_profiler -i 0 -s 1024 -u 127.0.0.1:30000 -u 127.0.0.1:30001 & $MADARA_ROOT/bin/network_profiler -i 1 -u 127.0.0.1:30001 ; fi
+  - if [ ! -z $TESTS ]; then echo "Testing unicast lamport consistency..." ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_lamport -i 0 -u 127.0.0.1:30000 -u 127.0.0.1:30001 & $MADARA_ROOT/bin/test_lamport -i 1 -u 127.0.0.1:30001 ; fi
 

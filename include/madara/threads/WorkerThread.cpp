@@ -8,6 +8,10 @@
 #include "madara/utility/java/Acquire_VM.h"
 #endif
 
+#ifndef _WIN32
+#include <pthread.h>
+#endif
+
 
 #include <iostream>
 #include <algorithm>
@@ -26,10 +30,22 @@ WorkerThread::WorkerThread (
   if (thread)
   {
     std::stringstream base_string;
+
+    knowledge::KnowledgeBase * kb = &control;
+    knowledge::KnowledgeRecord debug_to_kb = control_.get (".debug_to_kb");
+    if (debug_to_kb.exists ())
+    {
+      base_string << debug_to_kb.to_string () << ".";
+      kb = &data;
+      data.set (debug_to_kb.to_string () + ".hertz", hertz,
+        knowledge::EvalSettings::DELAY_NO_EXPAND);
+    }
     base_string << name;
 
     thread->name = name;
     thread->init_control_vars (control);
+
+    control_.get (".debug_to_kb").to_string ();
 
     finished_.set_name (
       base_string.str () + ".finished", control);
@@ -37,6 +53,25 @@ WorkerThread::WorkerThread (
       base_string.str () + ".started", control);
     new_hertz_.set_name (
       base_string.str () + ".hertz", control);
+
+    executions_.set_name (
+      base_string.str () + ".executions", *kb);
+    start_time_.set_name (
+      base_string.str () + ".start_time", *kb);
+    last_start_time_.set_name (
+      base_string.str () + ".last_start_time", *kb);
+    end_time_.set_name (
+      base_string.str () + ".end_time", *kb);
+
+    last_duration_.set_name (
+      base_string.str () + ".last_duration", *kb);
+    min_duration_.set_name (
+      base_string.str () + ".min_duration", *kb);
+    max_duration_.set_name (
+      base_string.str () + ".max_duration", *kb);
+
+    debug_.set_name (
+      base_string.str () + ".debug", control);
 
     finished_ = 0;
     started_ = 0;
@@ -78,17 +113,28 @@ WorkerThread::operator= (const WorkerThread & input)
   }
 }*/
 
+#ifndef _WIN32
+// Call pthread_setname_np if it exists ...
+template<typename... Args>
+auto try_pthread_setname_np(Args&&... args) ->
+  decltype(pthread_setname_np(std::forward<Args>(args)...))
+{
+  return pthread_setname_np(std::forward<Args>(args)...);
+}
+
+// Otherwise, do nothing
+void try_pthread_setname_np(...) {}
+#endif
+
 void
 WorkerThread::run (void)
 {
-#ifndef _WIN32
-#else
-  //result = 0;
-  //_beginthreadex(NULL, 0, worker_thread_windows_glue, (void*)this, 0, 0);
-
-#endif
   try {
     me_ = std::thread(&WorkerThread::svc, this);
+
+#ifndef _WIN32
+    try_pthread_setname_np(me_.native_handle(), name_.substr(0, 15).c_str());
+#endif
 
     std::ostringstream os;
     os << std::this_thread::get_id() << " spawned " << me_.get_id() << std::endl;
@@ -129,8 +175,17 @@ WorkerThread::svc (void)
       utility::TimeValue next_epoch;
       utility::Duration frequency;
 
+      // only allow one-way communication of durations. We never read control
+      int64_t min_duration = -1;
+      int64_t max_duration = 0;
+      int64_t last_duration = 0;
+      bool max_duration_changed = true;
+      bool min_duration_changed = true;
+
       bool one_shot = true;
       bool blaster = false;
+
+      bool debug = debug_.is_true ();
 
       knowledge::VariableReference terminated;
       knowledge::VariableReference paused;
@@ -148,6 +203,11 @@ WorkerThread::svc (void)
       madara::logger::Logger::set_thread_hertz(hertz_);
 #endif
 
+      if (debug)
+      {
+        start_time_ = utility::get_time ();
+      }
+
       while (control_.get (terminated).is_false ())
       {
         madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MAJOR,
@@ -160,9 +220,57 @@ WorkerThread::svc (void)
             "WorkerThread(%s)::svc:" \
             " thread calling run function\n", name_.c_str ());
 
-          try {
+          try
+          {
+            int64_t start_time = 0, end_time = 0;
+            debug = debug_.is_true ();
+            
+            if (debug)
+            {
+              start_time = utility::get_time ();
+              ++executions_;
+            }
+
             thread_->run ();
-          } catch (const std::exception &e) {
+
+            if (debug)
+            {
+              end_time = utility::get_time ();
+
+              // update duration information
+              last_duration = end_time - start_time;
+              if (min_duration == -1 || last_duration < min_duration)
+              {
+                min_duration = last_duration;
+                min_duration_changed = true;
+              }
+              if (last_duration > max_duration)
+              {
+                max_duration = last_duration;
+                max_duration_changed = true;
+              }
+
+              // lock control plane and update
+              {
+                // write updates to control
+                knowledge::ContextGuard guard (control_);
+                last_start_time_ = start_time;
+                end_time_ = end_time;
+
+                last_duration_ = last_duration;
+                if (max_duration_changed)
+                {
+                  max_duration_ = max_duration;
+                }
+                if (min_duration_changed)
+                {
+                  min_duration_ = min_duration;
+                }
+              } // end lock of control plane
+            } // end if debug
+          } // end try of the run
+          catch (const std::exception &e)
+          {
             madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_EMERGENCY,
               "WorkerThread(%s)::svc:" \
               " exception thrown: %s\n", name_.c_str (), e.what());

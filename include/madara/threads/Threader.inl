@@ -19,16 +19,43 @@ madara::threads::Threader::change_hertz (const std::string name, double hertz)
   control_.set (name + ".hertz", hertz);
 }
 
+inline void
+madara::threads::Threader::enable_debug (const std::string name)
+{
+  control_.set (name + ".debug", true);
+}
+
+inline void
+madara::threads::Threader::disable_debug (const std::string name)
+{
+  control_.set (name + ".debug", false);
+}
+
+inline void
+madara::threads::Threader::debug_to_kb (const std::string prefix)
+{
+  debug_ = true;
+  control_.set (".debug_to_kb", prefix);
+}
+
+inline void
+madara::threads::Threader::enable_debug (void)
+{
+  debug_ = true;
+}
+
+inline void
+madara::threads::Threader::disable_debug (void)
+{
+  debug_ = false;
+}
+
 inline madara::knowledge::KnowledgeBase
 madara::threads::Threader::get_data_plane (void)
 {
   return data_;
 }
 
-/**
-* Gets the control plane used by threads
-* @return  the knowledge base used by threader for control of threads
-**/
 inline madara::knowledge::KnowledgeBase
 madara::threads::Threader::get_control_plane (void)
 {

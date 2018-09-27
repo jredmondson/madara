@@ -385,6 +385,8 @@ void handle_arguments (int argc, char ** argv)
         "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
         "  [-stt|--save-transport-text file] a text file to save transport settings to\n" \
         "  [-t|--time time]         time to wait for results. Same as -w.\n" \
+        "  [-tdp|--transport-debug-prefix pfx] prefix in the knowledge base\n" \
+        "                           to save transport debug info\n" \
         "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
         "  [-wy|-wp|--wait-for-periodic seconds]  Wait for number of seconds\n" \
@@ -409,6 +411,7 @@ void handle_arguments (int argc, char ** argv)
         "                           of save_context (only ran once)\n" \
         "  [--meta-prefix prefix]   store checkpoint meta data at knowledge prefix\n" \
         "  [--use-id]               use the id of the checkpointed binary load\n" \
+        "  [-v|--version]           print current MADARA version\n" \
         "\n",
         argv[0]);
       exit (0);
@@ -906,6 +909,15 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         save_transport_text = argv[i + 1];
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-tdp" || arg1 == "--transport-debug-prefix")
+    {
+      if (i + 1 < argc)
+      {
+        settings.debug_to_kb (argv[i + 1]);
       }
 
       ++i;

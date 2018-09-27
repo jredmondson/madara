@@ -156,6 +156,25 @@ project (KaRL) : using_madara, no_karl, using_ssl, using_lz4 {
   }
 }
 
+project (Stk_Inspect) : using_madara, no_karl, using_ssl, using_lz4 {
+  exeout = $(MADARA_ROOT)/bin
+  exename = stk_inspect
+
+  libs += capnpc 
+  
+  after = Madara
+  
+  Documentation_Files {
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
+    tools/stk_inspect.cpp
+  }
+}
+
 project (mabundle) : using_madara, no_karl, using_ssl, using_lz4, using_filesystem {
   exeout = $(MADARA_ROOT)/bin
   exename = mabundle

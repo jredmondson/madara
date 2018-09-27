@@ -1,18 +1,29 @@
 feature (android) {
+   
    includes += $(BOOST_ANDROID_ROOT)/build/$(ANDROID_ARCH)/include
+   includes += $(LZ4_ROOT)/lib
    libpaths += $(BOOST_ANDROID_ROOT)/build/$(ANDROID_ARCH)/lib
-   libpaths += $(ZMQ_ROOT)/lib
    
   verbatim (make, local, true) {
     SYSROOT = $(NDK_TOOLS)/sysroot
     
-    ZMQ_LIB = ""
-
-    ifeq ($(ZMQ),1) 
-        ZMQ_LIB=-lzmq
+    LDLIBS = -l:libboost_system.a -l:libboost_filesystem.a -llog -lc++_shared -lcapnp-0.6.1 -lcapnpc-0.6.1 -lcapnp-json-0.6.1 -lkj-0.6.1
+   
+    ifeq ($(LZ4),1) 
+        LDLIBS +=-llz4
+        LDFLAGS+= -L$(LZ4_ROOT)/lib
     endif
 
-    LDLIBS = -l:libboost_system.a -l:libboost_filesystem.a -llog -lc++_shared -lcapnp-0.6.1 -lcapnpc-0.6.1 -lcapnp-json-0.6.1 -lkj-0.6.1 $(ZMQ_LIB)
+    ifeq ($(ZMQ),1) 
+        LDLIBS +=-lzmq
+        LDFLAGS+= -L$(ZMQ_ROOT)/lib
+    endif
+ 
+    ifeq ($(SSL),1) 
+        LDLIBS+=-l:libssl.a -l:libcrypto.a
+        LDFLAGS+= -L$(SSL_ROOT)
+    endif
+
   
    ifeq ($(ANDROID_ARCH),arm)
       CROSS_COMPILE=arm-linux-androideabi-
@@ -29,11 +40,5 @@ feature (android) {
     CXX = $(NDK_TOOLS)/bin/$(CROSS_COMPILE)clang++
     CC = $(NDK_TOOLS)/bin/$(CROSS_COMPILE)clang
   }
-
-
-  
-
-   
-  
   
 }

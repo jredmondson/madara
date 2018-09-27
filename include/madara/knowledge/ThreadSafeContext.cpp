@@ -2570,7 +2570,7 @@ checkpoint_write_record(
           settings.prefixes[j].c_str ());
 
         if (madara::utility::begins_with (
-          record->to_string (), settings.prefixes[j]))
+          name, settings.prefixes[j]))
         {
           prefix_found = true;
         }

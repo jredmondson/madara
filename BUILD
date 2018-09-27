@@ -73,8 +73,9 @@ DEPS = [
                    "include/madara/kats/*",
                    "include/pugi/*",
                    "include/**/java/*",
+                   "include/madara/Version.h",
                ],
-           ) + ["include/madara/Version.h"] +
+           ) + [":generate_version"] +
            select({
                "@bazel_module//bazel_rules:zmq": glob([
                    "include/madara/transport/zmq/*.cpp",
@@ -90,8 +91,9 @@ DEPS = [
         ],
         exclude = [
             "include/cereal/**/*",
+            "include/madara/Version.h",
         ],
-    ) + ["include/madara/Version.h"],
+    ) + [":generate_version"],
     copts = ["-w"],
     defines = [
         "MADARA_FEATURE_SIMTIME",
@@ -174,13 +176,19 @@ cc_library(
             "include/madara/cid/*",
             "include/madara/kats/*",
             "include/pugi/*",
+            "include/madara/Version.h",
         ],
-    ) + ["include/madara/Version.h"],
-    hdrs = glob([
-        "include/**/*.h",
-        "include/**/*.inl",
-        "include/**/*.cpp",
-    ]) + ["include/madara/Version.h"],
+    ) + [":generate_version"],
+    hdrs = glob(
+        [
+            "include/**/*.h",
+            "include/**/*.inl",
+            "include/**/*.cpp",
+        ],
+        exclude = [
+            "include/madara/Version.h",
+        ],
+    ) + [":generate_version"],
     copts = [
         "-I external/local_jdk/include",
         "-I external/local_jdk/include/linux",

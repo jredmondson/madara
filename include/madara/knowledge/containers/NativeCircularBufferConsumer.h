@@ -122,7 +122,6 @@ public:
    * Consumes the record at the local index (not the producer index)
    * @return the last added record. exists() will return false if the
    *         record is invalid
-   * @throw exceptions::IndexException  buffer has zero size
    **/
   inline madara::knowledge::KnowledgeRecord consume (void) const;
 
@@ -134,7 +133,6 @@ public:
    *                 occur when the producer produces faster than the
    *                 consumer can consume. This value is essentially
    *                 index_ - local_index - size ().
-   * @throw exceptions::IndexException  buffer has zero size
    **/
   KnowledgeRecord consume (size_t & dropped) const;
 
@@ -145,10 +143,78 @@ public:
    *                occur when the producer produces faster than the
    *                consumer can consume. This value is essentially
    *                index_ - local_index - size ().
-   * @throw exceptions::IndexException  if no data to consume
    **/
   template <typename T>
   void consume (T & value, size_t & dropped) const;
+
+  /**
+   * Peeks, but does not consume, the latest the record at the local 
+   * index (not the producer index).
+   * @param  count   the maximum number of records to return
+   * @param  values  the latest records
+   **/
+  template <typename T> void
+  peek_latest (size_t count, std::vector <T> & values) const;
+
+  /**
+   * Peeks, but does not consume, the latest the record at the local 
+   * index (not the producer index).
+   * @param  count   the maximum number of records to return
+   * @return the latest peeked (not consumed) count elements 
+   **/
+  inline std::vector <KnowledgeRecord> peek_latest (size_t count) const;
+
+  /**
+   * Peeks, but does not consume, the latest the record at the local 
+   * index (not the producer index).
+   * @return the latest element
+   **/
+  inline madara::knowledge::KnowledgeRecord
+    peek_latest (void) const;
+
+  /**
+   * Consumes the latest the record at the local index 
+   * (not the producer index).
+   * @param  count   the maximum number of records to return
+   * @return the latest count consumed elements 
+   **/
+  inline std::vector <KnowledgeRecord> consume_latest (size_t count) const;
+
+  /**
+   * Consumes the latest the record at the local index 
+   * (not the producer index).
+   * @return the latest element (singular)
+   **/
+  inline madara::knowledge::KnowledgeRecord consume_latest (void) const;
+
+  /**
+   * Consumes the latest the record at the local index 
+   * (not the producer index).
+   * @param  count   the maximum number of records to return
+   * @param  dropped  the number of dropped records
+   * @return the latest count elements and number of elements dropped.
+   **/
+  std::vector <KnowledgeRecord>
+  consume_latest (size_t count, size_t & dropped) const;
+
+  /**
+   * Consumes the latest the record at the local index 
+   * (not the producer index).
+   * @param  count   the maximum number of records to return
+   * @param  values  the latest records
+   **/
+  template <typename T> void
+  consume_latest (size_t count, std::vector <T> & values) const;
+
+  /**
+   * Consumes the latest the record at the local index 
+   * (not the producer index).
+   * @param  count   the maximum number of records to return
+   * @param  values  the latest records
+   * @param  dropped  the number of dropped records
+   **/
+  template <typename T> void
+  consume_latest (size_t count, std::vector <T> & values, size_t & dropped) const;
 
   /**
    * Returns the number of known drops since last consume
@@ -204,13 +270,14 @@ public:
    * @param  count   the maximum number of records to return
    * @param  values  the last added records
    **/
-  template <typename T> void consume_many (size_t count,std::vector <T> & values) const;
+  template <typename T>
+  void consume_many (size_t count,std::vector <T> & values) const;
 
   /**
    * Consumes (earliest) records from the local index
    * @param  count   the maximum number of records to return
    * @return the last added records
-   * @throw exceptions::ContextException if name or context haven't
+   * @throw exceptions::ContextException if name or context have not
    *                      been set appropriately
    **/
   std::vector <KnowledgeRecord> consume_many (size_t count) const;
@@ -222,55 +289,62 @@ public:
    *                 occur when the producer produces faster than the
    *                 consumer can consume.
    * @return the last added records
-   * @throw exceptions::ContextException if name or context haven't
+   * @throw exceptions::ContextException if name or context have not
    *                      been set appropriately
    **/
-  std::vector <KnowledgeRecord> consume_many (size_t count, size_t & dropped) const;
+  std::vector <KnowledgeRecord> consume_many (size_t count,
+    size_t & dropped) const;
 
   /**
    * Retrieves a record at a position relative to local index
    * @param  position  the relative position of the requested record
    *                   from the latest added record. Can be negative
-   * @param  value    the record at the position in the CircularBufferConsumer
+   * @param  value    the record at the position in the 
+   *                  NativeCircularBufferConsumer
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    **/
-  template <typename T> void inspect (KnowledgeRecord::Integer position, T & value) const;
+  template <typename T>
+  void inspect (KnowledgeRecord::Integer position, T & value) const;
 
   /**
    * Retrieves a vector of records at a position relative to local index
    * @param  position  the relative position of the requested record
    *                   from the latest added record. Can be negative
    * @param  count   the maximum number of records to return
-   * @return  the values at the position in the CircularBufferConsumer
+   * @return  the values at the position in the NativeCircularBufferConsumer
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    **/
-  std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,size_t count) const;
+  std::vector <KnowledgeRecord> inspect (KnowledgeRecord::Integer position,
+    size_t count) const;
 
   /**
    * Retrieves a vector of records at a position relative to local index
    * @param  position  the relative position of the requested record
    *                   from the latest added record. Can be negative
    * @param  count   the maximum number of records to return
-   * @param  values  the values at the position in the CircularBufferConsumer
+   * @param  values  the values at the position in the 
+   *                 NativeCircularBufferConsumer
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    **/
-  template <typename T> void inspect (KnowledgeRecord::Integer position,
-                                      size_t count, std::vector <T> & values) const;
+  template <typename T>
+  void inspect (KnowledgeRecord::Integer position,
+    size_t count, std::vector <T> & values) const;
 
   /**
    * Retrieves a record at a position relative to local index
    * @param  position  the relative position of the requested record
    *                   from the latest added record. Can be negative
-   * @return  the record at the position in the CircularBufferConsumer
+   * @return  the record at the position in the NativeCircularBufferConsumer
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
    **/
-  madara::knowledge::KnowledgeRecord inspect (KnowledgeRecord::Integer position) const;
+  madara::knowledge::KnowledgeRecord inspect (
+    KnowledgeRecord::Integer position) const;
 
 private:
   /**

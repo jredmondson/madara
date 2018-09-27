@@ -22,7 +22,7 @@ namespace madara
        * @param  period       the period between epochs in seconds
        * @param  max_duration  the maximum duration in seconds
        **/
-      EpochEnforcer (double period, double max_duration)
+      EpochEnforcer (double period, double max_duration = -1)
       {
         start ();
         set_period (period);

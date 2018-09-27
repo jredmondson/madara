@@ -216,6 +216,11 @@ void send_file (knowledge::KnowledgeBase & kb,
 
   size_t num_fragments = streamer.get_size () / 60000;
 
+  if (streamer.get_size () % 60000 > 0)
+  {
+    num_fragments++;
+  }
+
   madara_logger_ptr_log (
     logger::global_logger.get (),
     logger::LOG_ALWAYS,
@@ -1347,6 +1352,16 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-sz" || arg1 == "--send-hz")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer (argv[i + 1]);
+        buffer >> settings.max_send_hertz;
+      }
+
+      ++i;
+    }
     else if (arg1 == "-u" || arg1 == "--udp")
     {
       if (i + 1 < argc)
@@ -1369,6 +1384,15 @@ void handle_arguments (int argc, char ** argv)
         std::stringstream buffer (argv[i + 1]);
         buffer >> run_time;
       }
+      ++i;
+    }
+    else if (arg1 == "-tdp" || arg1 == "--transport-debug-prefix")
+    {
+      if (i + 1 < argc)
+      {
+        settings.debug_to_kb (argv[i + 1]);
+      }
+
       ++i;
     }
     else if (arg1 == "--zmq" || arg1 == "--0mq")
@@ -1402,67 +1426,70 @@ void handle_arguments (int argc, char ** argv)
     else
     {
       madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-        "\nProgram summary for %s [options] [Logic]:\n\n" \
-        "Serves files up to clients within MFS-defined sandboxes.\n\noptions:\n" \
-        "  [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
-        "  [-d|--domain domain]     the knowledge domain to send and listen to\n" \
-        "  [-esb|--send-bandwidth limit] bandwidth limit to enforce over a 10s\n" \
-        "                           window. If the limit is violated, then the\n" \
-        "                           mfs agent will not send again until the send\n" \
-        "                           bandwidth is within an acceptable level again\n" \
-        "  [-etb|--total-bandwidth limit] bandwidth limit to enforce over a 10s\n" \
-        "                           window. If the limit is violated, then the\n" \
-        "                           mfs agent will not send again until the total\n" \
-        "                           bandwidth is within an acceptable level again\n" \
-        "  [-f|--logfile file]      log to a file\n" \
-        "  [-h|--help]              print help menu (i.e., this menu)\n" \
-        "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-        "  [-lt|--load-transport file] a file to load transport settings from\n" \
-        "  [-ltp|--load-transport-prefix prfx] prefix of saved settings\n" \
-        "  [-ltt|--load-transport-text file] a text file to load transport settings from\n" \
-        "  [-lz4|--lz4]             add lz4 compression filter\n" \
-        "  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
-        "  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
-        "  [-p|--prefix prefix]     prefix of this agent / service (e.g. agent.0)\n" \
-        "  [-q|--queue-length size] size of network buffers in bytes\n" \
-        "  [-r|--reduced]           use the reduced message header\n" \
-        "  [-rhz|--read-hz hz]      hertz rate of read threads\n" \
-        "  [-rq|--requests size]    size of the requests queue (def 50)\n" \
-        "  [-s|--save file]         save the resulting knowledge base as karl\n" \
-        "  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
-        "                           binary checkpoint\n" \
-        "  [-sc|--save-checkpoint file] save any changes by logics since initial\n" \
-        "                           loads as a checkpoint diff to the specified\n" \
-        "                           file in an appended layer\n"
-        "  [-scp|--save-checkpoint-prefix prfx]\n" \
-        "                           prefix of knowledge to save in checkpoint\n" \
-        "  [-sj|--save-json file]   save the resulting knowledge base as JSON\n" \
-        "  [-ss|--save-size bytes]  size of buffer needed for file saves\n" \
-        "  [-ssl|--ssl pass]        add an ssl filter with a password\n" \
-        "  [-st|--save-transsport file] a file to save transport settings to\n" 
-        "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
-        "  [-stt|--save-transport-text file] a text file to save transport settings to\n" \
-        "  [-t|--time time]         time to run this service (-1 is forever).\n" \
-        "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
-        "                           only runs once. If zero, hertz is infinite.\n" \
-        "                           If positive, hertz is that hertz rate.\n" \
-        "  [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n" \
-        "                           examples include tcp://127.0.0.1:30000\n" \
-        "                           or any of the other endpoint types like\n" \
-        "                           pgm://. For tcp, remember that the first\n" \
-        "                           endpoint defined must be your own, the\n" \
-        "                           one you are binding to, and all other\n" \
-        "                           agent endpoints must also be defined or\n" \
-        "                           no messages will ever be sent to them.\n" \
-        "                           Similarly, all agents will have to have\n" \
-        "                           this endpoint added to their list or\n" \
-        "                           this karl agent will not see them.\n" \
-        "  [-0|--init-logic logic]  logic containing initial variables (only ran once)\n" \
-        "  [-0f|--init-file file]   file containing initial variables (only ran once)\n" \
-        "  [-0b|--init-bin file]    file containing binary knowledge base, the result\n" \
-        "                           of save_context (only ran once)\n" \
-        "  [--meta-prefix prefix]   store checkpoint meta data at knowledge prefix\n" \
-        "  [--use-id]               use the id of the checkpointed binary load\n" \
+"\nProgram summary for %s [options] [Logic]:\n\n" \
+"Serves files up to clients within MFS-defined sandboxes.\n\noptions:\n" \
+"  [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
+"  [-d|--domain domain]     the knowledge domain to send and listen to\n" \
+"  [-esb|--send-bandwidth limit] bandwidth limit to enforce over a 10s\n" \
+"                           window. If the limit is violated, then the\n" \
+"                           mfs agent will not send again until the send\n" \
+"                           bandwidth is within an acceptable level again\n" \
+"  [-etb|--total-bandwidth limit] bandwidth limit to enforce over a 10s\n" \
+"                           window. If the limit is violated, then the\n" \
+"                           mfs agent will not send again until the total\n" \
+"                           bandwidth is within an acceptable level again\n" \
+"  [-f|--logfile file]      log to a file\n" \
+"  [-h|--help]              print help menu (i.e., this menu)\n" \
+"  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
+"  [-lt|--load-transport file] a file to load transport settings from\n" \
+"  [-ltp|--load-transport-prefix prfx] prefix of saved settings\n" \
+"  [-ltt|--load-transport-text file] text file to load transport settings\n" \
+"  [-lz4|--lz4]             add lz4 compression filter\n" \
+"  [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
+"  [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
+"  [-p|--prefix prefix]     prefix of this agent / service (e.g. agent.0)\n" \
+"  [-q|--queue-length size] size of network buffers in bytes\n" \
+"  [-r|--reduced]           use the reduced message header\n" \
+"  [-rhz|--read-hz hz]      hertz rate of read threads\n" \
+"  [-rq|--requests size]    size of the requests queue (def 50)\n" \
+"  [-s|--save file]         save the resulting knowledge base as karl\n" \
+"  [-sb|--save-binary file] save the resulting knowledge base as a\n" \
+"                           binary checkpoint\n" \
+"  [-sc|--save-checkpoint file] save any changes by logics since initial\n" \
+"                           loads as a checkpoint diff to the specified\n" \
+"                           file in an appended layer\n"
+"  [-scp|--save-checkpoint-prefix prfx]\n" \
+"                           prefix of knowledge to save in checkpoint\n" \
+"  [-sj|--save-json file]   save the resulting knowledge base as JSON\n" \
+"  [-ss|--save-size bytes]  size of buffer needed for file saves\n" \
+"  [-ssl|--ssl pass]        add an ssl filter with a password\n" \
+"  [-st|--save-transsport file] a file to save transport settings to\n" 
+"  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
+"  [-stt|--save-transport-text file] text file to save settings to\n" \
+"  [-sz|--send-hz hz]       maximum messages per second (inf by default)\n" \
+"  [-t|--time time]         time to run this service (-1 is forever).\n" \
+"  [-tdp|--transport-debug-prefix pfx] prefix in the knowledge base\n" \
+"                           to save transport debug info\n" \
+"  [-u|--udp ip:port]       the udp ips to send to (first is self to bind\n" \
+"                           to) only runs once. If zero, hertz is infinite.\n"\
+"                           If positive, hertz is that hertz rate.\n" \
+"  [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n" \
+"                           examples include tcp://127.0.0.1:30000\n" \
+"                           or any of the other endpoint types like\n" \
+"                           pgm://. For tcp, remember that the first\n" \
+"                           endpoint defined must be your own, the\n" \
+"                           one you are binding to, and all other\n" \
+"                           agent endpoints must also be defined or\n" \
+"                           no messages will ever be sent to them.\n" \
+"                           Similarly, all agents will have to have\n" \
+"                           this endpoint added to their list or\n" \
+"                           this karl agent will not see them.\n" \
+"  [-0|--init-logic logic]  logic with initial variables (only ran once)\n" \
+"  [-0f|--init-file file]   file with initial variables (only ran once)\n" \
+"  [-0b|--init-bin file]    file with binary knowledge base, the result\n" \
+"                           of save_context (only ran once)\n" \
+"  [--meta-prefix prefix]   store checkpoint meta data at knowledge prefix\n" \
+"  [--use-id]               use the id of the checkpointed binary load\n" \
         "\n",
         argv[0]);
       exit (0);

@@ -30,6 +30,19 @@ madara::transport::ZMQTransport::ZMQTransport (const std::string & id,
   if (launch_transport)
     setup ();
 
+  if (config.debug_to_kb_prefix != "")
+  {
+    knowledge::KnowledgeBase kb;
+    kb.use (context);
+
+    sent_packets_.set_name (config.debug_to_kb_prefix + ".sent_packets", kb);
+    failed_sends_.set_name (config.debug_to_kb_prefix + ".failed_sends", kb);
+    sent_data_max_.set_name (
+      config.debug_to_kb_prefix + ".sent_data_max", kb);
+    sent_data_min_.set_name (
+      config.debug_to_kb_prefix + ".sent_data_min", kb);
+    sent_data_.set_name (config.debug_to_kb_prefix + ".sent_data", kb);
+  }
 }
 
 madara::transport::ZMQTransport::~ZMQTransport ()
@@ -270,9 +283,32 @@ madara::transport::ZMQTransport::send_data (
       result = (long) zmq_send (
         write_socket_, (void *)buffer_.get_ptr (), (size_t)result, 0);
 
-      madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
-        "ZMQTransport::send:" \
-        " sent %d bytes on socket\n", (int)result);
+      if (result > 0)
+      {
+        if (settings_.debug_to_kb_prefix != "")
+        {
+          sent_data_ += result;
+          ++sent_packets_;
+          if (sent_data_max_ < result)
+          {
+            sent_data_max_ = result;
+          }
+          if (sent_data_min_ > result || sent_data_min_ == 0)
+          {
+            sent_data_min_ = result;
+          }
+        }
+
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+          "ZMQTransport::send:" \
+          " sent %d bytes on socket\n", (int)result);
+      }
+      else
+      {
+        madara_logger_log (context_.get_logger (), logger::LOG_MAJOR,
+          "ZMQTransport::send:" \
+          " failed to send message. Error code %d\n", (int)result);
+      }
     }
   }
 

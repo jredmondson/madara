@@ -148,6 +148,47 @@ namespace madara
       knowledge::containers::Double new_hertz_;
 
       /**
+       * thread safe start flag that will be sent to the knowledge
+       * base on launch of the thread
+       **/
+      knowledge::containers::Integer executions_;
+
+      /**
+       * timestamp of the initial svc start
+       **/
+      knowledge::containers::Integer start_time_;
+
+      /**
+       * timestamp of the last svc start
+       **/
+      knowledge::containers::Integer last_start_time_;
+
+      /**
+       * timestamp of the last svc end
+       **/
+      knowledge::containers::Integer end_time_;
+
+      /**
+       * duration of last run
+       **/
+      knowledge::containers::Integer last_duration_;
+
+      /**
+       * minimum duration of all runs
+       **/
+      knowledge::containers::Integer min_duration_;
+
+      /**
+       * maximum duration of all runs
+       **/
+      knowledge::containers::Integer max_duration_;
+
+      /**
+       * flag for whether or not to save debug information in control
+       **/
+      knowledge::containers::Integer debug_;
+
+      /**
        * hertz rate for worker thread executions
        **/
       double hertz_ = -1;
