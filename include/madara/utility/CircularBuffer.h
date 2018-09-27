@@ -91,7 +91,7 @@ public:
   ~CircularBuffer() noexcept
   {
     clear();
-    delete data_;
+    operator delete(data_);
   }
 
   /**
