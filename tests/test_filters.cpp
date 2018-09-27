@@ -12,6 +12,7 @@
 #include "madara/filters/VariableMapFilter.h"
 #include "madara/utility/Utility.h"
 #include "madara/knowledge/FileFragmenter.h"
+#include "madara/knowledge/FileRequester.h"
 
 namespace knowledge = madara::knowledge;
 namespace filters = madara::filters;
@@ -95,6 +96,53 @@ void test_fragments_to_files_filter (void)
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
+
+  utility::file_from_fragments ("files/images/manaus.jpg", crc, false, true);
+
+  remove ("files/images/manaus.jpg");
+
+  filter.filter (args_less_1, context, vars);
+
+  std::cerr << "Testing FileRequester with 1 less fragment... ";
+
+  knowledge::FileRequester requester;
+  requester.init (
+    "agent.0.sandbox.files.file.images/manaus.jpg",
+    "agent.0.sync.sandbox.files.file.images/manaus.jpg",
+    "files/images/manaus.jpg", kb);
+  
+  if (requester.needs_request ())
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Fragments should be size 1 but is " <<
+      requester.build_fragment_request ().size () << "\n";
+
+    ++madara_fails;
+  }
+
+  filter.filter (args, context, vars);
+
+  std::cerr << "Testing FileRequester with all fragments... ";
+
+  if (!requester.needs_request ())
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Fragments should be size 0 but is " <<
+      requester.build_fragment_request ().size () << "\n";
+
+    ++madara_fails;
+  }
+
+  requester.clear_fragments ();
+
+  remove ("files/images/manaus.jpg");
+
 }
 void test_dynamic_predicate_filter (void)
 {

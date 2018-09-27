@@ -247,6 +247,18 @@ namespace madara
       uint32_t crc, size_t expected_size, size_t fragment_size = 60000);
 
     /**
+     * Attempts to builds a file from fragments that have the format:
+     * filename.{}.crc.frag and returns any missing fragments
+     * @param     filename          name of the file to create
+     * @param     crc               crc for completed file
+     * @param     expected_size     expected total size of the file (bytes)
+     * @return    the fragments that are missing
+     **/
+    MADARA_EXPORT std::vector<int64_t> get_file_missing_fragments (
+      const std::string & filename,
+      uint32_t crc, size_t expected_size, size_t fragment_size = 60000);
+
+    /**
      * Expands environment variables referenced in the string. The environment
      * variables must be specified as $(var) and not $var.
      * @param     source      the string to expand
