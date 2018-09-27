@@ -84,6 +84,10 @@ void test_circular_int_buffer()
     std::cout << *iter << std::endl;
   }
   std::cout << std::endl;
+
+  {
+    CircularBuffer<KnowledgeRecord> empty(10);
+  }
 }
 
 template<typename T, typename R>
