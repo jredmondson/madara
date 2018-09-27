@@ -753,22 +753,6 @@ void define_knowledge (void)
       > (&madara::knowledge::KnowledgeRecord::set_value),
       "Sets the value to a string")
 
-    // sets value to double array
-    .def ("set_value",
-      static_cast<
-      void (madara::knowledge::KnowledgeRecord::*)(
-      const double * new_value, 
-      uint32_t)
-      > (&madara::knowledge::KnowledgeRecord::set_value),
-      "sets the value to an array of doubles")   
-
-    // sets value to double array
-    .def ("set_value",
-      static_cast<
-      void (madara::knowledge::KnowledgeRecord::*)(
-      const std::vector <double> &)
-      > (&madara::knowledge::KnowledgeRecord::set_value),
-      "sets the value to an array of doubles,without copying")  
 
     // sets value from another knowledge record
     .def ("set_value",
