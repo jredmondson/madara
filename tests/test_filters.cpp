@@ -48,7 +48,7 @@ madara::knowledge::KnowledgeRecord
 
 void test_fragments_to_files_filter (void)
 {
-  std::cerr << "Testing fragments to files filter...\n";
+  std::cerr << "Testing fragments to files filter and reconstruction...\n";
 
   std::string filename = "$(MADARA_ROOT)/tests/images/manaus_hotel_900x1500.jpg";
   filename = utility::expand_envs (filename);
@@ -66,17 +66,20 @@ void test_fragments_to_files_filter (void)
   kb.set ("b2", 2);
 
   knowledge::KnowledgeMap args = kb.to_map ("");
+  knowledge::KnowledgeMap args_copy = args;
   knowledge::KnowledgeMap args_less_1 = args;
 
   args_less_1.erase (
     "agent.0.sandbox.files.file.images/manaus.jpg.contents.1");
 
-  std::cerr << "  crc: " << crc << "\n";
-  std::cerr << "  fragments: " << crc << "\n";
-  for (auto entry : args)
-  {
-    std::cerr << "    " << entry.first << "=" << entry.second << "\n";
-  }
+  knowledge::KnowledgeMap args_less_1_copy = args_less_1;
+
+  // std::cerr << "  crc: " << crc << "\n";
+  // std::cerr << "  fragments: " << crc << "\n";
+  // for (auto entry : args)
+  // {
+  //   std::cerr << "    " << entry.first << "=" << entry.second << "\n";
+  // }
 
   filters::FragmentsToFilesFilter filter;
   transport::TransportContext context;
@@ -85,7 +88,7 @@ void test_fragments_to_files_filter (void)
 
   filter.filter (args, context, vars);
 
-  std::cerr << "Testing FragmentsToFilesFilter::filter... ";
+  std::cerr << "  Testing FragmentsToFilesFilter::filter... ";
 
   if (utility::file_exists ("files/images/manaus.jpg"))
   {
@@ -97,20 +100,20 @@ void test_fragments_to_files_filter (void)
     ++madara_fails;
   }
 
-  utility::file_from_fragments ("files/images/manaus.jpg", crc, false, true);
-
-  remove ("files/images/manaus.jpg");
-
-  filter.filter (args_less_1, context, vars);
-
-  std::cerr << "Testing FileRequester with 1 less fragment... ";
-
   knowledge::FileRequester requester;
   requester.init (
     "agent.0.sandbox.files.file.images/manaus.jpg",
     "agent.0.sync.sandbox.files.file.images/manaus.jpg",
     "files/images/manaus.jpg", kb);
   
+  requester.clear_fragments ();
+
+  remove ("files/images/manaus.jpg");
+
+  filter.filter (args_less_1, context, vars);
+
+  std::cerr << "  Testing FileRequester with 1 less fragment... ";
+
   if (requester.needs_request ())
   {
     std::cerr << "SUCCESS\n";
@@ -123,9 +126,13 @@ void test_fragments_to_files_filter (void)
     ++madara_fails;
   }
 
+  requester.clear_fragments ();
+
+  args = args_copy;
+
   filter.filter (args, context, vars);
 
-  std::cerr << "Testing FileRequester with all fragments... ";
+  std::cerr << "  Testing FileRequester with all fragments... ";
 
   if (!requester.needs_request ())
   {
@@ -142,6 +149,64 @@ void test_fragments_to_files_filter (void)
   requester.clear_fragments ();
 
   remove ("files/images/manaus.jpg");
+
+  std::cerr << "  Testing build_fragment_request with 0 fragments... ";
+
+  if (requester.build_fragment_request ().size () == 9)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Fragments should be size 9 but is " <<
+      requester.build_fragment_request ().size () << "\n";
+
+    ++madara_fails;
+  }
+
+  std::cerr << "  Testing needs_request with 0 fragments... ";
+
+  if (requester.needs_request ())
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Fragments should be size 9 but is " <<
+      requester.build_fragment_request ().size () << "\n";
+
+    ++madara_fails;
+  }
+
+  requester.max_fragments = 4;
+
+  std::cerr << "  Testing build_fragment_request with max_fragments... ";
+
+  if (requester.build_fragment_request ().size () == 4)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Fragments should be size 4 but is " <<
+      requester.build_fragment_request ().size () << "\n";
+
+    ++madara_fails;
+  }
+
+  std::cerr << "  Testing needs_request with max_fragments... ";
+
+  if (requester.needs_request ())
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL. Fragments should be size 4 but is " <<
+      requester.build_fragment_request ().size () << "\n";
+
+    ++madara_fails;
+  }
 
 }
 void test_dynamic_predicate_filter (void)

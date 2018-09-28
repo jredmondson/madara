@@ -18,8 +18,8 @@ namespace madara
   {
     /**
      * @class FileRequester
-     * @brief Splits files into fragments that can be saved to and loaded from
-     * a knowledge base
+     * @brief A helper class that can reconstruct files or request files
+     * be transferred in fragments from a Madara File Service (MFS)
      */
     class FileRequester
     {
@@ -39,37 +39,52 @@ namespace madara
        *                   sync requests (e.g. to MFS)
        * @param filename   the file that should be recreated from fragments
        * @param kb         the knowledge base where the sync key is located at
+       * @param max_request_fragments  the most fragments that can be requested
+       *                   in a single send_modifieds
        **/
       FileRequester (
         const std::string & prefix,
         const std::string & sync_key,
         const std::string & filename,
-        KnowledgeBase kb)
+        KnowledgeBase kb, int max_request_fragments = -1)
       {
-        init (prefix, sync_key, filename, kb);
+        init (prefix, sync_key, filename, kb, max_request_fragments);
       }
 
       /**
-       * Initializes the 
+       * Initializes the requester
        * @param prefix     the prefix in the knowledge base that precedes .crc
        *                   and .size keys (e.g. from MFS)
        * @param sync_key   the key in the knowledge base that is used to send
        *                   sync requests (e.g. to MFS)
        * @param filename   the file to open and read from
        * @param kb         the knowledge base to stream to
+       * @param max_request_fragments  the most fragments that can be requested
+       *                   in a single send_modifieds
        **/
       inline void init (
         const std::string & prefix,
         const std::string & sync_key, const std::string & filename,
-        KnowledgeBase kb)
+        KnowledgeBase kb, int max_request_fragments = -1)
       {
-        /// records that contain the file fragments
+        // set the sync key
+        sync_.set_name (sync_key, kb);
+
+        // records that contain the file fragments
         containers::FlexMap file_space;
 
         // setup containers
         file_space.set_name (prefix, kb);
         file_space["size"].to_container (file_size_);
         file_space["crc"].to_container (file_crc_);
+
+        // set the filename
+        filename_ = filename;
+
+        // set the max fragments
+        max_fragments = max_request_fragments;
+
+        kb_ = kb;
       }
 
       /**
@@ -100,13 +115,41 @@ namespace madara
       }
 
       /**
+       * Returns the percentage of transfer that is completed
+       * @return the transfer completion percentage
+       **/
+      inline double get_percent_complete (void)
+      {
+        double result = 0;
+
+        size_t expected_size = get_size ();
+        size_t num_fragments = expected_size / 60000;
+
+        if (expected_size % 60000 > 0)
+        {
+          ++num_fragments;
+        }
+
+        if (num_fragments > 0)
+        {
+          result = (double)utility::get_file_progress (
+            filename_, get_crc (), get_size (), max_fragments)
+            / (double)get_size ();
+
+          result *= 100;
+        }
+
+        return result;
+      }
+
+      /**
        * Builds fragment request to send 
        * @return the list of missing fragments for the file
        **/
       inline std::vector<int64_t> build_fragment_request (void)
       {
         return utility::get_file_missing_fragments (
-          filename_, get_crc (), get_size ());
+          filename_, get_crc (), get_size (), max_fragments);
       }
 
       /**
@@ -116,10 +159,31 @@ namespace madara
        **/
       inline bool needs_request (void)
       {
-        std::vector<int64_t> fragments = build_fragment_request ();
-        sync_.set (fragments);
+        if (get_crc () != 0 && get_size () != 0)
+        {
+          std::vector<int64_t> fragments = build_fragment_request ();
+          sync_.set (fragments);
 
-        return fragments.size () != 0;
+          return fragments.size () != 0;
+        }
+        else
+        {
+          std::vector<int64_t> fragments;
+
+          if(max_fragments > 0)
+          {
+            fragments.resize (max_fragments);
+
+            for (size_t i = 0; i < fragments.size (); ++i)
+            {
+              fragments[i] = i;
+            }
+          }
+
+          sync_.set (fragments);
+  
+          return true;
+        }
       }
 
        /**
@@ -133,7 +197,6 @@ namespace madara
 
         size_t expected_size = get_size ();
         size_t num_fragments = expected_size / 60000;
-        size_t actual_size = 0;
 
         if (expected_size % 60000 > 0)
         {
@@ -143,7 +206,15 @@ namespace madara
         for (int i = 0; i < (int)num_fragments; ++i,
           frag_file = filename_ + "." + std::to_string (i) + frag_suffix)
         {
-          remove (frag_file.c_str ());
+          if (utility::file_exists (frag_file))
+          {
+            madara_logger_ptr_log (logger::global_logger.get (),
+              logger::LOG_MAJOR,
+              "FileRequester::clear_fragments: removing %s\n",
+              frag_file.c_str ());
+
+            remove (frag_file.c_str ());
+          }
         }
       }
 
@@ -154,6 +225,9 @@ namespace madara
       {
         sync_.modify ();
       }
+
+      /// the maximum fragments allowed in a resend request
+      int max_fragments;
 
     private:
 
@@ -168,7 +242,11 @@ namespace madara
       /// the crc of the file
       containers::Integer file_crc_;
 
+      /// the name of the file on the hard drive being reconstructed
       std::string filename_;
+
+      /// saves the kb for general usage
+      knowledge::KnowledgeBase kb_;
     };
   }
 }

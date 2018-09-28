@@ -226,11 +226,11 @@ namespace madara
 
     /**
      * Builds a file from fragments that have the format: filename.{}.crc.frag
-     * @param     filename          name of the file to create
-     * @param     crc               crc for completed file
-     * @param     delete_incomplete if true, delete if crc is incorrect
-     * @param     delete_fragments  if true, delete fragments if crc correct
-     * @return    true if resulting file has correct crc
+     * @param   filename          name of the file to create
+     * @param   crc               crc for completed file
+     * @param   delete_incomplete if true, delete if crc is incorrect
+     * @param   delete_fragments  if true, delete fragments if crc correct
+     * @return  true if resulting file has correct crc
      **/
     MADARA_EXPORT bool file_from_fragments (const std::string & filename,
       uint32_t crc,
@@ -238,9 +238,10 @@ namespace madara
 
     /**
      * Builds a file from fragments that have the format: filename.{}.crc.frag
-     * @param     filename          name of the file to create
-     * @param     crc               crc for completed file
-     * @param     expected_size     expected total size of the file (bytes)
+     * @param   filename          name of the file to create
+     * @param   crc               crc for completed file
+     * @param   expected_size     expected total size of the file (bytes)
+     * @param   fragment_size     max fragment size for sending
      * @return    size in bytes recieved of the fragments
      **/
     MADARA_EXPORT size_t get_file_progress (const std::string & filename,
@@ -249,14 +250,17 @@ namespace madara
     /**
      * Attempts to builds a file from fragments that have the format:
      * filename.{}.crc.frag and returns any missing fragments
-     * @param     filename          name of the file to create
-     * @param     crc               crc for completed file
-     * @param     expected_size     expected total size of the file (bytes)
-     * @return    the fragments that are missing
+     * @param   filename          name of the file to create
+     * @param   crc               crc for completed file
+     * @param   expected_size     expected total size of the file (bytes)
+     * @param   max_fragments     maximum fragments to request (-1 means all)
+     * @param   fragment_size     max fragment size for sending
+     * @return  the fragments that are missing
      **/
     MADARA_EXPORT std::vector<int64_t> get_file_missing_fragments (
       const std::string & filename,
-      uint32_t crc, size_t expected_size, size_t fragment_size = 60000);
+      uint32_t crc, size_t expected_size, int max_fragments = -1,
+      size_t fragment_size = 60000);
 
     /**
      * Expands environment variables referenced in the string. The environment
