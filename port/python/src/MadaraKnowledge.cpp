@@ -10,6 +10,7 @@
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/FileFragmenter.h"
+#include "madara/knowledge/FileRequester.h"
 #include "madara/knowledge/CheckpointPlayer.h"
 #include "madara/knowledge/AnyRegistry.h"
 #include "madara/filters/GenericFilters.h"
@@ -1415,6 +1416,78 @@ void define_knowledge (void)
         "FunctionArguments", "List of arguments to a function")
   ;
     
+  class_<madara::knowledge::FileRequester> ("FileRequester",
+    "Reconstructs files and requests fragments if incomplete",
+    init <> ())
+      
+    // builds a fragment request vector
+    .def ("build_fragment_request",
+      &madara::knowledge::FileRequester::build_fragment_request,
+      "Builds an arry of the request that is necessary under "
+      "the current max_fragments")
+
+    // clears the fragments on the file system
+    .def ("clear_fragments",
+      &madara::knowledge::FileRequester::clear_fragments,
+      "Clears any lingering fragments on the file system.")
+
+    // gets the crc
+    .def ("get_crc",
+      &madara::knowledge::FileRequester::get_crc,
+      "Retrieves the file CRC from the KB")
+
+    // gets the filename
+    .def ("get_filename",
+      &madara::knowledge::FileRequester::get_filename,
+      "Returns the name of the file being reconstructed")
+
+    // gets the percentage of completion
+    .def ("get_percent_complete",
+      &madara::knowledge::FileRequester::get_percent_complete,
+      "Returns the percentage of completion")
+
+    // gets the size
+    .def ("get_size",
+      &madara::knowledge::FileRequester::get_size,
+      "Retrieves the file size from the KB")
+
+    // initializes the object
+    // .def ("init",
+    //   &madara::knowledge::FileRequester::init,
+    //   m_init_4_of_5 (
+    //     args("prefix", "sync_key", "filename", "kb", "max_fragment_requests"), 
+    //     "Initialize the requester object"))
+
+    .def( "init",
+      static_cast<
+        void (madara::knowledge::FileRequester::*)(
+          const std::string &,
+          const std::string &,
+          const std::string &,
+          madara::knowledge::KnowledgeBase,
+          int) 
+      > (&madara::knowledge::FileRequester::init),
+      m_init_4_of_5 (
+        args("prefix", "sync_key", "filename", "kb", "max_fragment_requests"), 
+        "Initialize the requester object"))
+
+    // modifies the file sync key
+    .def ("modify",
+      &madara::knowledge::FileRequester::modify,
+      "Modifies the current sync key to mark the request ready to resend")
+
+    // checks if a request is needed and builds the request
+    .def ("needs_request",
+      &madara::knowledge::FileRequester::needs_request,
+      "Checks if a new request is necessary and builds the sync request. "
+      "Note that the caller must call kb.send_modifieds to send the request.")
+
+    .def_readwrite("max_fragments",
+      &madara::knowledge::FileRequester::max_fragments,
+      "the maximum fragments to attempt in a resend request")
+
+  ;
+
   class_<madara::knowledge::KnowledgeBase> ("KnowledgeBase",
     "Network-enabled, thread-safe knowledge context", init <> ())
       

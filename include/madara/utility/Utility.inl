@@ -8,6 +8,7 @@
 
 #include "boost/crc.hpp"
 #include "boost/filesystem.hpp"
+#include "madara/logger/GlobalLogger.h"
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -492,6 +493,7 @@ bool file_from_fragments (
       if (size > 0)
       {
         output.write ((char *)buffer, size);
+        delete [] (char*) buffer;
       } // end if size is greater than 0
     } // end iteration over file fragments
     output.close ();
@@ -563,12 +565,86 @@ inline size_t get_file_progress (const std::string & filename,
       if (size > 0)
       {
         output.write ((char *)buffer, size);
+        delete [] (char*) buffer;
       } // end if size is greater than 0
     } // end iteration over file fragments
     output.close ();
   } // if file could be opened
 
   return actual_size;
+}
+
+inline
+std::vector<int64_t> get_file_missing_fragments (
+      const std::string & filename,
+      uint32_t crc, size_t expected_size, int max_fragments,
+      size_t fragment_size)
+{
+  std::vector<int64_t> result;
+  std::string str_crc = std::to_string ((unsigned long)crc);
+  std::string frag_suffix = "." + str_crc + ".frag";
+  std::string frag_file = filename + ".0" + frag_suffix;
+
+  std::ofstream output (filename, std::ios::out | std::ios::binary);
+
+  size_t num_fragments = expected_size / fragment_size;
+  size_t actual_size = 0;
+
+  if (expected_size % fragment_size > 0)
+  {
+    ++num_fragments;
+  }
+
+  madara_logger_ptr_log (logger::global_logger.get (),
+    logger::LOG_MAJOR,
+    "utility::get_file_missing_fragments: looking at file %s\n",
+    filename.c_str ());
+
+  // if we could open the file, try to read each frag into the file
+  if (output)
+  {
+    // for each file that exists
+    for (int i = 0; i < (int)num_fragments; ++i,
+      frag_file = filename + "." + std::to_string (i) + frag_suffix)
+    {
+      // do we already have enough fragments?
+      if (max_fragments >= 0 && result.size () >= (size_t)max_fragments)
+      {
+        break;
+      }
+
+      // read the file
+      void * buffer;
+      size_t size = 0;
+      utility::read_file (frag_file, buffer, size);
+
+      actual_size += size;
+
+      madara_logger_ptr_log (logger::global_logger.get (),
+        logger::LOG_TRACE,
+        "utility::get_file_missing_fragments: checking fragment %d\n",
+        i);
+
+      // if anything was read, write the fragment to the file
+      if (size > 0)
+      {
+        output.write ((char *)buffer, size);
+        delete [] (char*) buffer;
+      } // end if size is greater than 0
+      else
+      {
+        madara_logger_ptr_log (logger::global_logger.get (),
+          logger::LOG_MINOR,
+          "utility::get_file_missing_fragments: missing fragment %d\n",
+          i);
+
+        result.push_back ((int64_t)i);
+      }
+    } // end iteration over file fragments
+    output.close ();
+  } // if file could be opened
+
+  return result;
 }
 
 inline

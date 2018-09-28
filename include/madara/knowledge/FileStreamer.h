@@ -133,22 +133,7 @@ namespace madara
        **/
       inline void clear_fragments (void)
       {
-        // option 1. seg fault
         file_fragments.clear ();
-
-        // option 2. seg fault
-        // knowledge::KnowledgeRules keys;
-        // file_fragments.keys (keys);
-
-        // for (auto key : keys)
-        // {
-        //   file_fragments.erase (key);
-        // }
-
-        // option 3. seg fault
-        //file_fragments.reset ();
-
-        // option 4. nothing doesn't segfault
       }
 
        /**

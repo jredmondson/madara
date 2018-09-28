@@ -650,7 +650,7 @@ void read_resources (const std::string & path)
               manifest.endTime = resource.endTime;
             }
           }
-        
+          delete [] (char*) temp_buffer;
         } // end if read file is successful
 
         manifest.resources.push_back (resource);
