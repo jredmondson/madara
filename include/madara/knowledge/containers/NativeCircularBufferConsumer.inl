@@ -90,13 +90,7 @@ template <typename T> void
 NativeCircularBufferConsumer::consume (
   T & value, size_t & dropped) const
 {
-  ContextGuard context_guard (*context_);
-
-  if (remaining () > 0)
-  {
-    value = consume (dropped).to_any <T> ();
-    return;
-  }
+  value = consume (dropped).to_any <T> ();
 }
 
 template <typename T> void
@@ -121,12 +115,16 @@ NativeCircularBufferConsumer::peek_latest (size_t count) const
 
   size_t newest_index = rec.get_history_newest_index ();
 
-  if (local_index_ + count > newest_index)
+  if (local_index_ + count > newest_index + 1)
   {
-    count = newest_index - local_index_;
+    count = (newest_index + 1) - local_index_;
   }
 
-  return rec.get_newest (count);
+  std::vector<KnowledgeRecord> ret_vec = rec.get_newest(count);
+
+  std::reverse(ret_vec.begin(),ret_vec.end());
+
+  return ret_vec;
 }
 
 inline madara::knowledge::KnowledgeRecord
@@ -138,7 +136,7 @@ NativeCircularBufferConsumer::peek_latest (void) const
 
   size_t newest_index = rec.get_history_newest_index ();
 
-  if (local_index_ > newest_index)
+  if (local_index_ >= newest_index + 1)
   {
     return KnowledgeRecord ();
   }
@@ -186,14 +184,18 @@ NativeCircularBufferConsumer::consume_latest (size_t count) const
 
   std::vector <KnowledgeRecord> result;
 
-  if (local_index_ + count > newest_index)
+  if (local_index_ + count > newest_index + 1)
   {
-    count = newest_index - local_index_;
+    count = (newest_index + 1) - local_index_;
   }
 
   local_index_ = newest_index + 1;
 
-  return rec.get_newest (count);
+  std::vector<KnowledgeRecord> ret_vec = rec.get_newest(count);
+
+  std::reverse(ret_vec.begin(),ret_vec.end());
+
+  return ret_vec;
 }
 
 inline madara::knowledge::KnowledgeRecord
@@ -205,14 +207,14 @@ NativeCircularBufferConsumer::consume_latest (void) const
 
   size_t newest_index = rec.get_history_newest_index ();
 
-  if (local_index_ > newest_index)
+  KnowledgeRecord ret;
+
+  if (local_index_ < newest_index + 1)
   {
-    ++local_index_;
-    return KnowledgeRecord ();
+    ret = rec.get_newest ();
   }
 
-  KnowledgeRecord ret = rec.get_newest ();
-  ++local_index_;
+  local_index_ = newest_index + 1;
 
   return ret;
 }
@@ -228,30 +230,23 @@ NativeCircularBufferConsumer::consume_latest (size_t count, size_t & dropped) co
 
   dropped = get_dropped ();
 
-  if (local_index_ + count > newest_index)
+  if (local_index_ + count > newest_index )
   {
     count = newest_index - local_index_;
   }
 
-  local_index_ = newest_index + 1;
+  local_index_ = newest_index;
 
-  return rec.get_newest (count);
+  return rec.get_newest(count);
 }
 
 
 inline madara::knowledge::KnowledgeRecord
 NativeCircularBufferConsumer::consume (void)  const
 {
-  ContextGuard context_guard (*context_);
-
   size_t dropped = 0;
-  
-  if (remaining () > 0)
-  {
-    return consume(dropped);
-  }
 
-  return KnowledgeRecord ();
+  return consume(dropped);
 }
 
 
@@ -263,11 +258,9 @@ NativeCircularBufferConsumer::consume (
 
   KnowledgeRecord &rec = *ref_.get_record_unsafe ();
 
-  size_t newest_index = rec.get_history_newest_index ();
-
   size_t oldest_index = rec.get_history_oldest_index ();
 
-  if (local_index_ > newest_index)
+  if (remaining () == 0)
   {
     return KnowledgeRecord ();
   }
@@ -410,7 +403,7 @@ NativeCircularBufferConsumer::inspect (
       ret_vec.emplace_back (std::move(ret));
     }
   }
-  
+
   return ret_vec;
 }
 

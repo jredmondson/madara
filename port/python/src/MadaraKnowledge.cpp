@@ -548,7 +548,13 @@ void define_knowledge (void)
 
     // increments an index of an array
     .def ("inc_index", &madara::knowledge::KnowledgeRecord::inc_index,
-      "Increments an array element at a particular index")        
+      "Increments an array element at a particular index")  
+
+    // checks if record is any type
+    .def ("is_any_type",
+      static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+      &madara::knowledge::KnowledgeRecord::is_any_type),
+      "returns if the record is Any type")     
 
     // checks if record is a binary file type
     .def ("is_binary_file_type",
@@ -706,6 +712,112 @@ void define_knowledge (void)
     .def ("set_scientific", &madara::knowledge::KnowledgeRecord::set_scientific,
       "Sets the output format for doubles to std::scientific")
 
+    // sets the value and meta data from another knowledge record
+    .def ("set_full",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const madara::knowledge::KnowledgeRecord &)
+      > (&madara::knowledge::KnowledgeRecord::set_full),
+      "Sets the value and meta data from another KnowledgeRecord")
+
+    // sets value to an array of ints
+    .def ("set_value",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const madara::knowledge::KnowledgeRecord::Integer * new_value,
+      uint32_t)
+      > (&madara::knowledge::KnowledgeRecord::set_value),
+      "Sets the value to an array of integers")
+
+    // sets value to an array of ints, no copying
+    .def ("set_value",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const std::vector <madara::knowledge::KnowledgeRecord::Integer> & )
+      > (&madara::knowledge::KnowledgeRecord::set_value),
+      "Sets the value to an array of integers, without copying")
+
+    // sets value to a string
+    .def ("set_value",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const char * new_value, 
+      uint32_t)
+      > (&madara::knowledge::KnowledgeRecord::set_value),
+      "Sets the value to a string, from a buffer")  
+
+    // sets value to a string
+    .def ("set_value",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const std::string &)
+      > (&madara::knowledge::KnowledgeRecord::set_value),
+      "Sets the value to a string")
+
+
+    // sets value from another knowledge record
+    .def ("set_value",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const madara::knowledge::KnowledgeRecord &)
+      > (&madara::knowledge::KnowledgeRecord::set_value),
+      "Sets the value from another KnowledgeRecord,"
+      "does not copy toi, clock, and write_quality")
+
+    // sets value to xml string
+    .def ("set_xml",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const char * new_value, 
+      size_t)
+      > (&madara::knowledge::KnowledgeRecord::set_xml),
+      "sets the value to an xml string")  
+
+    // sets value to xml string
+    .def ("set_xml",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const std::string &)
+      > (&madara::knowledge::KnowledgeRecord::set_xml),
+      "sets the value to an xml string") 
+
+    // sets the value to a plaintext string
+    .def ("set_text",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const char * new_value, 
+      size_t)
+      > (&madara::knowledge::KnowledgeRecord::set_text),
+      "sets the value to a plaintext string")  
+
+    // sets the value to a plaintext string
+    .def ("set_text",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const std::string &)
+      > (&madara::knowledge::KnowledgeRecord::set_text),
+      "sets the value to a plaintext string") 
+
+    // share binary
+    .def ("share_binary", &madara::knowledge::KnowledgeRecord::share_binary,
+      "@return a shared_ptr, sharing with the internal one."
+      "If this record is not a binary file value, returns NULL shared_ptr")
+
+    // share doubles
+    .def ("share_doubles", &madara::knowledge::KnowledgeRecord::share_doubles,
+      "@return a shared_ptr, sharing with the internal one."
+      "If this record is not a doubles array, returns NULL shared_ptr")
+
+    // share strings
+    .def ("share_string", &madara::knowledge::KnowledgeRecord::share_string,
+      "@return a shared_ptr, sharing with the internal one."
+      "If this record is not a string, returns NULL shared_ptr")
+
+    // share integers
+    .def ("share_integers", &madara::knowledge::KnowledgeRecord::share_integers,
+      "@return a shared_ptr, sharing with the internal one."
+      "If this record is not an int array, returns NULL shared_ptr")
+
     // sets the contents of the record to a jpeg
     .def ("size", &madara::knowledge::KnowledgeRecord::size,
       "Returns the size of the value")
@@ -743,6 +855,11 @@ void define_knowledge (void)
     // gets the type of the record
     .def ("type", &madara::knowledge::KnowledgeRecord::type,
       "Returns the value type")
+
+    // unshare knowledge record pointer
+    .def ("unshare", &madara::knowledge::KnowledgeRecord::unshare,
+      "If this record holds a shared_ptr, make a copy of the underlying"
+      "value so it has an exclusive copy")
 
     // overloaded operators
     .def (self < self)
