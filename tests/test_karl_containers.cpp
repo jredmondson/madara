@@ -2958,23 +2958,23 @@ void test_native_circular_consumer (void)
     "************* CIRCULARBUFFER: Testing NativeCircularBufferConsumer*************\n";
 
   knowledge::KnowledgeBase kb;
-  containers::CircularBuffer producer ("buffer", kb, 100);
+  kb.set_history_capacity("buffer", 100);
+  containers::Integer producer ("buffer", kb);
   containers::NativeCircularBufferConsumer consumer ("buffer", kb);
 
-  for (KnowledgeRecord::Integer i = 0; i < 100; ++i)
+  for (int i = 0; i < 100; ++i)
   {
-    producer.add (KnowledgeRecord (i));
+    producer = i;
   }
 
 
-  std::cerr << "  Testing get_earliest(50)...";
+  std::cerr << "  Testing consume_many(50)...";
 
   std::vector <KnowledgeRecord> records = consumer.consume_many (50);
 
   bool has_failed = records.size () != 50;
 
-  for (KnowledgeRecord::Integer i = 0;
-       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  for (int i = 0; !has_failed && i < (int)records.size (); ++i)
   {
     if (records[i] != i)
     {
@@ -3013,7 +3013,7 @@ void test_native_circular_consumer (void)
     std::cerr << "      remaining() == " << consumer.remaining () << "\n";
   }
 
-  std::cerr << "  Testing get_earliest(25)...";
+  std::cerr << "  Testing consume_many(25)...";
 
   records = consumer.consume_many (25);
 
@@ -3058,7 +3058,7 @@ void test_native_circular_consumer (void)
     std::cerr << "      remaining() == " << consumer.remaining () << "\n";
   }
 
-  std::cerr << "  Testing get_earliest(25)...";
+  std::cerr << "  Testing consume_many(25)...";
 
   records = consumer.consume_many (25);
 
@@ -3131,9 +3131,9 @@ void test_native_circular_consumer (void)
 
   std::cerr << "  Adding 25 more elements...\n";
 
-  for (KnowledgeRecord::Integer i = 0; i < 25; ++i)
+  for (int i = 0; i < 25; ++i)
   {
-    producer.add (KnowledgeRecord (i + 100));
+    producer = i + 100;
   }
 
   std::cerr << "  Testing remaining()...";
@@ -3176,14 +3176,13 @@ void test_native_circular_consumer (void)
   }
 
 
-  std::cerr << "  Testing get_earliest(5)...";
+  std::cerr << "  Testing consume_many(5)...";
 
   records = consumer.consume_many (5);
 
   has_failed = records.size () != 5;
 
-  for (KnowledgeRecord::Integer i = 0;
-       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  for (int i = 0; !has_failed && i < (int)records.size (); ++i)
   {
     if (records[i] != i + 100)
     {
@@ -3223,7 +3222,7 @@ void test_native_circular_consumer (void)
 
   std::cerr << "  Testing inspect(0)...";
 
-  if (consumer.inspect (0) == 104)
+  if (consumer.inspect (0) == 105)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3236,7 +3235,7 @@ void test_native_circular_consumer (void)
 
   std::cerr << "  Testing inspect(-1)...";
 
-  if (consumer.inspect (-1) == 103)
+  if (consumer.inspect (-1) == 104)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3249,7 +3248,7 @@ void test_native_circular_consumer (void)
 
   std::cerr << "  Testing inspect(-2)...";
 
-  if (consumer.inspect (-2) == 102)
+  if (consumer.inspect (-2) == 103)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3260,14 +3259,14 @@ void test_native_circular_consumer (void)
     std::cerr << "      inspect(-2) == " << consumer.inspect (-2) << "\n";
   }
 
-  for (KnowledgeRecord::Integer i = 0; i < 5; ++i)
+  for (int i = 0; i < 5; ++i)
   {
-    producer.add (KnowledgeRecord (i + 105));
+    producer = i + 105;
   }
 
   std::cerr << "  Testing inspect(1)...";
 
-  if (consumer.inspect (1) == 105)
+  if (consumer.inspect (1) == 106)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3275,12 +3274,12 @@ void test_native_circular_consumer (void)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-    std::cerr << "      inspect(1) == " << consumer.inspect (-1) << "\n";
+    std::cerr << "      inspect(1) == " << consumer.inspect (1) << "\n";
   }
 
   std::cerr << "  Testing inspect(2)...";
 
-  if (consumer.inspect (2) == 106)
+  if (consumer.inspect (2) == 107)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3296,11 +3295,11 @@ void test_native_circular_consumer (void)
   records = consumer.inspect (-2, 5);
 
   if (records.size () == 5 &&
-      records[0] == 102 &&
-      records[1] == 103 &&
-      records[2] == 104 &&
-      records[3] == 105 &&
-      records[4] == 106)
+      records[0] == 103 &&
+      records[1] == 104 &&
+      records[2] == 105 &&
+      records[3] == 106 &&
+      records[4] == 107)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3316,14 +3315,13 @@ void test_native_circular_consumer (void)
     }
   }
 
-  std::cerr << "  Testing get_latest(5)...";
+  std::cerr << "  Testing consume_latest(5)...";
 
   records = consumer.consume_latest (5);
 
   has_failed = records.size () != 5;
 
-  for (KnowledgeRecord::Integer i = 0;
-       !has_failed && i < (KnowledgeRecord::Integer)records.size (); ++i)
+  for (int i = 0; !has_failed && i < (int)records.size (); ++i)
   {
     if (records[i] != 109 - i)
     {
@@ -3361,16 +3359,20 @@ void test_native_circular_consumer (void)
     std::cerr << "      remaining() == " << consumer.remaining () << "\n";
   }
 
+  std::cerr << "  Change buffer capacity to 41...\n";
+
+  kb.set_history_capacity("buffer", 41);
+
   std::cerr << "  producer.add() x 95 times...\n";
 
   for (KnowledgeRecord::Integer i = 0; i < 95; ++i)
   {
-    producer.add (KnowledgeRecord (i));
+    producer = i;
   }
 
-  std::cerr << "  consumer.get() x 5...\n";
+  std::cerr << "  consumer.consume() x 5...\n";
 
-  std::cerr << "  Testing get()...";
+  std::cerr << "  Testing consume()...";
 
   KnowledgeRecord result = consumer.consume ();
 
@@ -3382,10 +3384,10 @@ void test_native_circular_consumer (void)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-    std::cerr << "      get() == " << result << "\n";
+    std::cerr << "      consume() == " << result << "\n";
   }
 
-  std::cerr << "  Testing get()...";
+  std::cerr << "  Testing consume()...";
 
   result = consumer.consume ();
 
@@ -3397,10 +3399,10 @@ void test_native_circular_consumer (void)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-    std::cerr << "      get() == " << result << "\n";
+    std::cerr << "      consume() == " << result << "\n";
   }
 
-  std::cerr << "  Testing get()...";
+  std::cerr << "  Testing consume()...";
 
   result = consumer.consume ();
 
@@ -3412,10 +3414,10 @@ void test_native_circular_consumer (void)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-    std::cerr << "      get() == " << result << "\n";
+    std::cerr << "      consume() == " << result << "\n";
   }
 
-  std::cerr << "  Testing get()...";
+  std::cerr << "  Testing consume()...";
 
   result = consumer.consume ();
 
@@ -3427,10 +3429,10 @@ void test_native_circular_consumer (void)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-    std::cerr << "      get() == " << result << "\n";
+    std::cerr << "      consume() == " << result << "\n";
   }
 
-  std::cerr << "  Testing get()...";
+  std::cerr << "  Testing consume()...";
 
   result = consumer.consume ();
 
@@ -3442,10 +3444,10 @@ void test_native_circular_consumer (void)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-    std::cerr << "      get() == " << result << "\n";
+    std::cerr << "      consume() == " << result << "\n";
   }
 
-  std::cerr << "  Testing get()...";
+  std::cerr << "  Testing consume()...";
 
   result = consumer.consume ();
 
@@ -3457,7 +3459,7 @@ void test_native_circular_consumer (void)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-    std::cerr << "      get() == " << result << "\n";
+    std::cerr << "      consume() == " << result << "\n";
   }
 
   std::cerr << "  Testing peek_latest()...";
@@ -3500,8 +3502,11 @@ void test_native_circular_consumer (void)
     }
   }
 
+  std::cerr << "  Testing consume_latest()...";
+
   result = consumer.consume_latest ();
-  if ( result == 94 )
+
+  if ( result == 94)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -4379,6 +4384,7 @@ int main (int , char **)
   test_circulart_any ();
   test_circular_consumer_any ();
   test_circular_consumert_any ();
+  test_native_circular_consumer (); // TODO needs to be fixed
 
 
   if (madara_fails > 0)
