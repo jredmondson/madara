@@ -420,10 +420,8 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::string filename;
-        std::stringstream buffer (argv[i + 1]);
-        buffer >> filename;
-
+        std::string filename = argv[i + 1];
+        
         if (debug)
         {
           madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,

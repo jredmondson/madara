@@ -43,6 +43,7 @@ knowledge::CheckpointSettings load_checkpoint_settings;
 
 // options for analysis
 bool print_knowledge = false;
+bool print_stats = false;
 std::vector <std::string> print_prefixes;
 std::string save_file;
 
@@ -52,6 +53,10 @@ std::vector<std::string> capnp_msg;
 std::vector<std::string> capnp_type;
 bool capnp_msg_type_param_flag = false;
 bool capnp_import_dirs_flag = false;
+
+// check for stats
+std::string checkfile;
+std::string check;
 
 /**
  * Class for keeping track of updates on a variable
@@ -80,6 +85,24 @@ public:
     return output;
   }
 
+  void save (knowledge::KnowledgeBase kb)
+  {
+    uint64_t total_ns = last - first;
+    uint64_t total_s = total_ns / 1000000000;
+    double hertz = (double)updates / total_s;
+    double kbs = (double)bytes / 1000 / total_s;
+
+    kb.set (name + ".first", (int64_t)first);
+    kb.set (name + ".last", (int64_t)last);
+    kb.set (name + ".updates", (int64_t)updates);
+    kb.set (name + ".bytes", (int64_t)bytes);
+    kb.set (name + ".max_size", (int64_t)max_size);
+    kb.set (name + ".min_size", (int64_t)min_size);
+    kb.set (name + ".duration", (int64_t)total_ns);
+    kb.set (name + ".hz", hertz);
+    kb.set (name + ".kbs", kbs);
+  }
+
   std::string name;
   uint64_t first;
   uint64_t last;
@@ -99,7 +122,28 @@ void handle_arguments (int argc, char ** argv)
   {
     std::string arg1 (argv[i]);
 
-    if (arg1 == "-f" || arg1 == "--logfile")
+    if (arg1 == "-c" || arg1 == "--check")
+    {
+      if (i + 1 < argc)
+      {
+        check = argv[i + 1];
+        std::cout <<
+          "  Loading stats check from command line " << check << "\n";
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-cf" || arg1 == "--check-file")
+    {
+      if (i + 1 < argc)
+      {
+        checkfile = argv[i + 1];
+        std::cout << "  Loading stats check from file " << checkfile << "\n";
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-f" || arg1 == "--logfile")
     {
       if (i + 1 < argc)
       {
@@ -125,6 +169,10 @@ void handle_arguments (int argc, char ** argv)
           print_prefixes.push_back (argv[j]);
         }
       }
+    }
+    else if (arg1 == "-ks" || arg1 == "--print-stats")
+    {
+      print_stats = true;
     }
     else if (arg1 == "-l" || arg1 == "--level")
     {
@@ -314,25 +362,40 @@ void handle_arguments (int argc, char ** argv)
     else
     {
       madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-        "\nOption %s:\n" \
-        "\nProgram summary for %s [options] [Logic]:\n\n" \
-        "Inspects STK for summary info on knowledge updates.\n\noptions:\n" \
-        "  [-f|--stk-file file]     STK file to load and analyze\n" \
-        "  [-h|--help]              print help menu (i.e., this menu)\n" \
-        "  [-k|--print-knowledge]   print final knowledge\n" \
-        "  [-kp|--print-prefix pfx] filter prints by prefix. Can be multiple.\n" \
-        "  [-ky]                    print knowledge after frequent evaluations\n" \
-        "  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-        "  [-lcp|--load-checkpoint-prefix prfx]\n" \
-        "                           prefix of knowledge to load from checkpoint\n" \
-        "  [-ls|--load-size bytes]  size of buffer needed for file load\n" \
-        "  [-n|--capnp tag:msg_type] register tag with given message schema.\n" \
-        "                            See also -nf and -ni.\n"\
-        "  [-nf|--capnp-file]       load capnp file. Must appear after all -n and -ni.\n" \
-        "  [-ni|--capnp-import ]    add directory to capnp directory imports. "\
-        "                           Must appear before all -n and -nf.\n" \
-        "  [-s|--save file]         save the results to a file\n" \
-        "\n",
+"\nOption %s:\n" \
+"\nProgram summary for %s [options] [Logic]:\n\n" \
+"Inspects STK for summary info on knowledge updates.\n\noptions:\n" \
+"  [-f|--stk-file file]     STK file to load and analyze\n" \
+"  [-h|--help]              print help menu (i.e., this menu)\n" \
+"  [-c|--check logic]       logic to evaluate to check contents.\n" \
+"                           a check is a KaRL expression that can\n" \
+"                           be a combination of variable stats.\n" \
+"                           Each variable has the following stats:.\n" \
+"                             {var}.bytes: total bytes\n" \
+"                             {var}.duration: ns between first and last\n" \
+"                             {var}.first: ns timestamp of first update\n" \
+"                             {var}.hz: frequency of updates in duration\n" \
+"                             {var}.kbs: KB/s of updates within duration\n" \
+"                             {var}.last: ns timestamp of first update\n" \
+"                             {var}.max_size: max size of update\n" \
+"                             {var}.min_size: min size of update\n" \
+"                             {var}.updates: total num updates\n" \
+"  [-cf|--check-file file]  KaRL file with check. See -c for options\n" \
+"  [-k|--print-knowledge]   print final knowledge\n" \
+"  [-kp|--print-prefix pfx] filter prints by prefix. Can be multiple.\n" \
+"  [-ks|--print-stats]      print stats knowledge base contents\n" \
+"  [-ky]                    print knowledge after frequent evaluations\n" \
+"  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
+"  [-lcp|--load-checkpoint-prefix prfx]\n" \
+"                           prefix of knowledge to load from checkpoint\n" \
+"  [-ls|--load-size bytes]  size of buffer needed for file load\n" \
+"  [-n|--capnp tag:msg_type] register tag with given message schema.\n" \
+"                            See also -nf and -ni.\n"\
+"  [-nf|--capnp-file]       load capnp file. Must appear after -n and -ni.\n" \
+"  [-ni|--capnp-import ]    add directory to capnp directory imports. "\
+"                           Must appear before all -n and -nf.\n" \
+"  [-s|--save file]         save the results to a file\n" \
+"\n",
         arg1.c_str (), argv[0]);
       exit (0);
     }
@@ -347,6 +410,7 @@ int main (int argc, char ** argv)
   handle_arguments (argc, argv);
 
   knowledge::KnowledgeBase kb;
+  knowledge::KnowledgeBase stats;
   std::cout << "Creating CheckpointReader with file contents... " <<
     std::flush;
   knowledge::CheckpointReader reader (load_checkpoint_settings);
@@ -425,6 +489,7 @@ int main (int argc, char ** argv)
         if (prefix_match)
         {
           variable.second.print (output);
+          variable.second.save (stats);
         }
       }
     }
@@ -454,14 +519,47 @@ int main (int argc, char ** argv)
       if (prefix_match)
       {
         variable.second.print (std::cout);
+        variable.second.save (stats);
       }
     }
   }
 
+  // see if the user wants to check for variable stats
+  if (checkfile != "")
+  {
+    if (check == "")
+    {
+      check = utility::file_to_string (checkfile);
+    }
+    else
+    {
+      check += "&& (";
+      check += utility::file_to_string (checkfile);
+      check += ")";
+    }
+  }
+
+  if (print_stats)
+  {
+    std::cout << "Printing stats:\n";
+    stats.print ();
+  }
+
   if (print_knowledge)
   {
+    std::cout << "Printing final KB:\n";
     kb.print ();
   }
 
-  return 0;
+  // return value is always 0 unless check is specified
+  if (check != "" || stats.evaluate (check).is_true ())
+  {
+    std::cout << "Result: SUCCESS\n";
+    return 0;
+  }
+  else
+  {
+    std::cout << "Result: FAIL\n";
+    return 1;
+  }
 }
