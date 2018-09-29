@@ -53,6 +53,7 @@ std::vector<std::string> capnp_msg;
 std::vector<std::string> capnp_type;
 bool capnp_msg_type_param_flag = false;
 bool capnp_import_dirs_flag = false;
+bool summary = true;
 
 // check for stats
 std::string checkfile;
@@ -343,6 +344,10 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-ns" || arg1 == "--no-summary")
+    {
+      summary = false;
+    }
     else if (arg1 == "-s" || arg1 == "--save")
     {
       if (i + 1 < argc)
@@ -393,6 +398,8 @@ void handle_arguments (int argc, char ** argv)
 "                            See also -nf and -ni.\n"\
 "  [-nf|--capnp-file]       load capnp file. Must appear after -n and -ni.\n" \
 "  [-ni|--capnp-import ]    add directory to capnp directory imports. "\
+"                           Must appear before all -n and -nf.\n" \
+"  [-ns|--no-summary ]      do not print or save summary stats per var" \
 "                           Must appear before all -n and -nf.\n" \
 "  [-s|--save file]         save the results to a file\n" \
 "\n",
@@ -463,13 +470,63 @@ int main (int argc, char ** argv)
   }
   std::cout << "done\n";
 
-  if (save_file != "")
+  if (print_stats || summary || checkfile != "" || check != "")
   {
-    std::cout << "Saving results to " << save_file << "..." << std::flush;
-    std::ofstream output (save_file);
-
-    if (output)
+    if (save_file != "")
     {
+      std::cout << "Saving results to " << save_file << "..." << std::flush;
+      std::ofstream output (save_file);
+
+      if (output)
+      {
+        for (auto variable : variables)
+        {
+          bool prefix_match = print_prefixes.size () == 0;
+
+          if (!prefix_match)
+          {
+            for (auto prefix : print_prefixes)
+            {
+              if (utility::begins_with (variable.first, prefix))
+              {
+                prefix_match = true;
+                break;
+              }
+            }
+          }
+
+          if (prefix_match)
+          {
+            if (summary)
+            {
+              variable.second.print (output);
+            }
+
+            if (print_stats || check != "" || checkfile != "")
+            {
+              variable.second.save (stats);
+            }
+          }
+        }
+      }
+
+      output.close ();
+      std::cout << " done\n";
+    }
+    else
+    {
+      // user has specified prefixes that must be matched
+      if (summary)
+      {
+        std::cout << "Printing results to stdout...\n" << std::flush;
+      }
+      
+      if (print_stats || check != "" || checkfile != "")
+      {
+        std::cout << "Calculating stats...\n" << std::flush;
+      }
+
+      // iterate through all variables and check prefixes
       for (auto variable : variables)
       {
         bool prefix_match = print_prefixes.size () == 0;
@@ -488,38 +545,18 @@ int main (int argc, char ** argv)
 
         if (prefix_match)
         {
-          variable.second.print (output);
-          variable.second.save (stats);
-        }
-      }
-    }
-
-    output.close ();
-    std::cout << " done\n";
-  }
-  else
-  {
-    std::cout << "Printing results to stdout...\n" << std::flush;
-    for (auto variable : variables)
-    {
-      bool prefix_match = print_prefixes.size () == 0;
-
-      if (!prefix_match)
-      {
-        for (auto prefix : print_prefixes)
-        {
-          if (utility::begins_with (variable.first, prefix))
+          // if user wants a summary, print it
+          if (summary)
           {
-            prefix_match = true;
-            break;
+            variable.second.print (std::cout);
+          }
+
+          // if we have a stats logic check, then save the stats
+          if (print_stats || check != "" || checkfile != "")
+          {
+            variable.second.save (stats);
           }
         }
-      }
-
-      if (prefix_match)
-      {
-        variable.second.print (std::cout);
-        variable.second.save (stats);
       }
     }
   }
@@ -552,14 +589,19 @@ int main (int argc, char ** argv)
   }
 
   // return value is always 0 unless check is specified
-  if (check != "" || stats.evaluate (check).is_true ())
+  if (check == "" || stats.evaluate (check).is_true ())
   {
-    std::cout << "Result: SUCCESS\n";
+    if (check != "")
+    {
+      std::cout << "Result: SUCCESS\n";
+    }
+
     return 0;
   }
   else
   {
     std::cout << "Result: FAIL\n";
+    
     return 1;
   }
 }
