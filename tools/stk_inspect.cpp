@@ -584,6 +584,7 @@ int main (int argc, char ** argv)
 
   if (print_knowledge)
   {
+    kb.load_context (load_checkpoint_settings);
     std::cout << "Printing final KB:\n";
     kb.print ();
   }
@@ -601,7 +602,7 @@ int main (int argc, char ** argv)
   else
   {
     std::cout << "Result: FAIL\n";
-    
+
     return 1;
   }
 }
