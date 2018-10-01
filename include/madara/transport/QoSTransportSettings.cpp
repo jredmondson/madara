@@ -520,7 +520,7 @@ int madara::transport::QoSTransportSettings::filter_decode(
     std::string header_id(header.id);
 
     // id is either karl or KaRL. If it's anything else, then error
-    if (header_id == "karl" || header_id == "KaRL")
+    if (header_id == "karl" || header_id == "KaRL" || header_id == "KFRG")
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
           "QoSTransportSettings::filter_decode: header: "

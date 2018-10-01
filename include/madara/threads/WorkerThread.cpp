@@ -162,6 +162,10 @@ int WorkerThread::svc(void)
     utility::java::Acquire_VM jvm(false);
 #endif
 
+#ifndef MADARA_NO_THREAD_LOCAL
+    madara::logger::Logger::set_thread_name(name_);
+#endif
+
     thread_->init(data_);
 
     {
@@ -186,9 +190,6 @@ int WorkerThread::svc(void)
 
       terminated = control_.get_ref(name_ + ".terminated");
       paused = control_.get_ref(name_ + ".paused");
-#ifndef MADARA_NO_THREAD_LOCAL
-      madara::logger::Logger::set_thread_name(name_);
-#endif
 
       // change thread frequency
       change_frequency(

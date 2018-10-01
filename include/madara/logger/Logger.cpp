@@ -122,7 +122,7 @@ std::string madara::logger::Logger::search_and_insert_custom_tstamp(
 
 void madara::logger::Logger::log(int level, const char* message, ...)
 {
-  if (level <= level_)
+  if (level <= get_thread_level() || level <= level_)
   {
     va_list argptr;
     va_start(argptr, message);
