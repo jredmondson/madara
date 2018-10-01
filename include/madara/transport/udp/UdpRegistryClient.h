@@ -31,7 +31,8 @@ namespace transport
 class MADARA_EXPORT UdpRegistryClient : public UdpTransport
 {
 public:
-  enum {
+  enum
+  {
     ERROR_UDP_NOT_STARTED = -1,
   };
 

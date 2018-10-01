@@ -101,7 +101,8 @@ public:
   void push(void)
   {
     ContextGuard guard(kb_);
-    for (auto& t : trackers_) {
+    for (auto& t : trackers_)
+    {
       t->push(kb_);
     }
   }
@@ -110,7 +111,8 @@ public:
   void pull(void)
   {
     ContextGuard guard(kb_);
-    for (auto& t : trackers_) {
+    for (auto& t : trackers_)
+    {
       t->pull();
     }
   }
@@ -261,7 +263,8 @@ public:
     std::unique_ptr<PrefixTracker<T, VariableReference, RD, WR> > p(
         new PrefixTracker<T, VariableReference, RD, WR>(
             b.tracked_, b.key_, kb_));
-    if (b.init_) {
+    if (b.init_)
+    {
       p->PrefixTracker<T, VariableReference, RD, WR>::force_push(kb_);
     }
     add_tracker(tracker_ptr(p.release()));
@@ -273,7 +276,8 @@ public:
     VariableReference ref = kb_.get_ref(b.key_);
     std::unique_ptr<Tracker<T, VariableReference, RD, WR> > p(
         new Tracker<T, VariableReference, RD, WR>(b.tracked_, ref));
-    if (b.init_) {
+    if (b.init_)
+    {
       p->Tracker<T, VariableReference, RD, WR>::force_push(kb_);
     }
     add_tracker(tracker_ptr(p.release()));
@@ -351,10 +355,13 @@ public:
         trackers_.begin(), trackers_.end(), [name](const tracker_ptr& cur) {
           return strcmp(name, cur->get_name()) == 0;
         });
-    if (i != trackers_.end()) {
+    if (i != trackers_.end())
+    {
       swap_remove(i);
       return 1;
-    } else {
+    }
+    else
+    {
       return 0;
     }
   }
@@ -381,10 +388,13 @@ public:
         trackers_.begin(), trackers_.end(), [&var](const tracker_ptr& cur) {
           return (void*)var == cur->get_tracked();
         });
-    if (i != trackers_.end()) {
+    if (i != trackers_.end())
+    {
       swap_remove(i);
       return 1;
-    } else {
+    }
+    else
+    {
       return 0;
     }
   }

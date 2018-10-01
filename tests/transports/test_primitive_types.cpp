@@ -20,33 +20,45 @@ volatile bool terminated = 0;
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-m" || arg1 == "--multicast") {
+    if (arg1 == "-m" || arg1 == "--multicast")
+    {
       if (i + 1 < argc)
         settings.hosts[0] = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-o" || arg1 == "--host") {
+    }
+    else if (arg1 == "-o" || arg1 == "--host")
+    {
       if (i + 1 < argc)
         host = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-d" || arg1 == "--domain") {
+    }
+    else if (arg1 == "-d" || arg1 == "--domain")
+    {
       if (i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-i" || arg1 == "--id") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-i" || arg1 == "--id")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
       ++i;
-    } else if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         int level;
         buffer >> level;
@@ -54,7 +66,9 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Test strings, integers, and doubles over a multicast transport.\n"
@@ -111,12 +125,14 @@ int main(int argc, char** argv)
 
   madara::knowledge::CompiledExpression compiled;
 
-  if (settings.id == 0) {
+  if (settings.id == 0)
+  {
     compiled = knowledge.compile(
         "++update; name='Jeff Stoley'; position='Operator'; "
         "++priority; department='IT'; training.completion+=0.1");
-
-  } else {
+  }
+  else
+  {
     compiled =
         knowledge.compile("name == 'Jeff Stoley' && position == 'Operator' "
                           "&& priority >= 1 && department == 'IT' "
@@ -124,7 +140,8 @@ int main(int argc, char** argv)
   }
 
   // termination is done via signalling from the user (Control+C)
-  while (!terminated) {
+  while (!terminated)
+  {
     knowledge.wait(compiled, wait_settings);
 
     madara::utility::sleep(1);

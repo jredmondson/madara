@@ -36,10 +36,13 @@ int MulticastTransport::setup_read_thread(double hertz, const std::string& name)
 
 int MulticastTransport::setup_read_socket(void)
 {
-  try {
+  try
+  {
     asio::socket_base::reuse_address reuse_option(true);
     socket_.set_option(reuse_option);
-  } catch (const boost::system::system_error& e) {
+  }
+  catch (const boost::system::system_error& e)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "MulticastTransport::setup:"
         " Error setting up read socket: %s\n",
@@ -49,13 +52,17 @@ int MulticastTransport::setup_read_socket(void)
     return -1;
   }
 
-  if (UdpTransport::setup_read_socket() < 0) {
+  if (UdpTransport::setup_read_socket() < 0)
+  {
     return -1;
   }
 
-  try {
+  try
+  {
     socket_.set_option(mcast::join_group(addresses_[0].address()));
-  } catch (const boost::system::system_error& e) {
+  }
+  catch (const boost::system::system_error& e)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "MulticastTransport::setup_read_socket:"
         " Error subscribing: %s\n",
@@ -70,13 +77,17 @@ int MulticastTransport::setup_read_socket(void)
 
 int MulticastTransport::setup_write_socket(void)
 {
-  if (UdpTransport::setup_write_socket() < 0) {
+  if (UdpTransport::setup_write_socket() < 0)
+  {
     return -1;
   }
 
-  try {
+  try
+  {
     socket_.set_option(mcast::hops(1));
-  } catch (const boost::system::system_error& e) {
+  }
+  catch (const boost::system::system_error& e)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "MulticastTransport::setup_write_socket:"
         " Error setting TTL: %s\n",

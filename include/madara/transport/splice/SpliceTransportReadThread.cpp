@@ -36,9 +36,11 @@ void madara::transport::SpliceReadThread::init(
   if (settings_.queue_length > 0)
     buffer_ = new char[settings_.queue_length];
 
-  if (context_) {
+  if (context_)
+  {
     // check for an on_data_received ruleset
-    if (settings_.on_data_received_logic.length() != 0) {
+    if (settings_.on_data_received_logic.length() != 0)
+    {
 #ifndef _MADARA_NO_KARL_
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "UdpTransportReadThread::init:"
@@ -48,7 +50,9 @@ void madara::transport::SpliceReadThread::init(
       madara::expression::Interpreter interpreter;
       on_data_received_ = context_->compile(settings_.on_data_received_logic);
 #endif  // _MADARA_NO_KARL_
-    } else {
+    }
+    else
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MINOR,
           "UdpTransportReadThread::init:"
           " no permanent rules were set\n");
@@ -66,7 +70,8 @@ void madara::transport::SpliceReadThread::rebroadcast(const char* print_prefix,
   unsigned long result = prep_rebroadcast(*context_, buffer, buffer_remaining,
       settings_, print_prefix, header, records, packet_scheduler_);
 
-  if (result > 0) {
+  if (result > 0)
+  {
     ssize_t bytes_sent(result + sizeof(Knowledge::Update));
     DDS::ReturnCode_t dds_result;
     DDS::InstanceHandle_t handle;
@@ -146,12 +151,15 @@ void madara::transport::SpliceReadThread::run(void)
 
   amount = update_data_list_->length();
 
-  if (amount != 0) {
-    for (int i = 0; i < amount; ++i) {
+  if (amount != 0)
+  {
+    for (int i = 0; i < amount; ++i)
+    {
       // if we are evaluating a message from ourselves, just continue
       // to the next one. It's also possible to receive null originators
       // from what I can only guess is the ospl daemon messing up
-      if (!update_data_list_[i].originator.val()) {
+      if (!update_data_list_[i].originator.val())
+      {
         // if we don't check originator for null, we get phantom sends
         // when the program exits.
         madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
@@ -160,7 +168,8 @@ void madara::transport::SpliceReadThread::run(void)
         continue;
       }
 
-      if (update_data_list_[i].type != madara::transport::MULTIASSIGN) {
+      if (update_data_list_[i].type != madara::transport::MULTIASSIGN)
+      {
         madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
             "%s: discarding non-assignment event.\n", print_prefix);
         // we do not allow any other type than multiassign
@@ -176,9 +185,11 @@ void madara::transport::SpliceReadThread::run(void)
           send_monitor_, receive_monitor_, rebroadcast_records,
           on_data_received_, print_prefix, "", header);
 
-      if (header) {
+      if (header)
+      {
         if (header->ttl > 0 && rebroadcast_records.size() > 0 &&
-            settings_.get_participant_ttl() > 0) {
+            settings_.get_participant_ttl() > 0)
+        {
           --header->ttl;
           header->ttl = std::min(settings_.get_participant_ttl(), header->ttl);
 

@@ -20,7 +20,8 @@ namespace knowledge
  * @class WaitSettings
  * @brief Encapsulates settings for a wait statement
  **/
-struct WaitSettings : public EvalSettings {
+struct WaitSettings : public EvalSettings
+{
   /* Convenient pre-defined settings objects for common use cases */
 
   /** Settings to use whatever defaults there are */

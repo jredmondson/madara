@@ -120,11 +120,13 @@ public:
     size_t expected_size = get_size();
     size_t num_fragments = expected_size / 60000;
 
-    if (expected_size % 60000 > 0) {
+    if (expected_size % 60000 > 0)
+    {
       ++num_fragments;
     }
 
-    if (num_fragments > 0) {
+    if (num_fragments > 0)
+    {
       result = (double)utility::get_file_progress(
                    filename_, get_crc(), get_size(), max_fragments) /
                (double)get_size();
@@ -152,18 +154,23 @@ public:
    **/
   inline bool needs_request(void)
   {
-    if (get_crc() != 0 && get_size() != 0) {
+    if (get_crc() != 0 && get_size() != 0)
+    {
       std::vector<int64_t> fragments = build_fragment_request();
       sync_.set(fragments);
 
       return fragments.size() != 0;
-    } else {
+    }
+    else
+    {
       std::vector<int64_t> fragments;
 
-      if (max_fragments > 0) {
+      if (max_fragments > 0)
+      {
         fragments.resize(max_fragments);
 
-        for (size_t i = 0; i < fragments.size(); ++i) {
+        for (size_t i = 0; i < fragments.size(); ++i)
+        {
           fragments[i] = i;
         }
       }
@@ -186,13 +193,16 @@ public:
     size_t expected_size = get_size();
     size_t num_fragments = expected_size / 60000;
 
-    if (expected_size % 60000 > 0) {
+    if (expected_size % 60000 > 0)
+    {
       ++num_fragments;
     }
 
     for (int i = 0; i < (int)num_fragments;
-         ++i, frag_file = filename_ + "." + std::to_string(i) + frag_suffix) {
-      if (utility::file_exists(frag_file)) {
+         ++i, frag_file = filename_ + "." + std::to_string(i) + frag_suffix)
+    {
+      if (utility::file_exists(frag_file))
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
             "FileRequester::clear_fragments: removing %s\n", frag_file.c_str());
 

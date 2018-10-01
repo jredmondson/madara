@@ -25,7 +25,8 @@ inline NativeCircularBufferConsumer::NativeCircularBufferConsumer()
 inline void NativeCircularBufferConsumer::check_name(
     const char* func, const char* name)
 {
-  if (name == nullptr || name[0] == '\0') {
+  if (name == nullptr || name[0] == '\0')
+  {
     throw exceptions::NameException(
         std::string("NativeCircularBufferConsumer::") + func +
         ": name is empty.");
@@ -34,13 +35,15 @@ inline void NativeCircularBufferConsumer::check_name(
 
 inline void NativeCircularBufferConsumer::check_context(const char* func) const
 {
-  if (!context_) {
+  if (!context_)
+  {
     throw exceptions::ContextException(
         std::string("NativeCircularBufferConsumer::") + func +
         ": context is not set.");
   }
 
-  if (!ref_.is_valid()) {
+  if (!ref_.is_valid())
+  {
     throw exceptions::ContextException(
         std::string("NativeCircularBufferConsumer::") + func +
         ": underlying record is not set.");
@@ -92,7 +95,8 @@ void NativeCircularBufferConsumer::peek_latest(
     size_t count, std::vector<T>& values) const
 {
   // iterate over the returned records
-  for (auto record : peek_latest(count)) {
+  for (auto record : peek_latest(count))
+  {
     // add them to the values
     if (record.is_valid())
       values.push_back(record.to_any<T>());
@@ -108,7 +112,8 @@ inline std::vector<KnowledgeRecord> NativeCircularBufferConsumer::peek_latest(
 
   size_t newest_index = rec.get_history_newest_index();
 
-  if (local_index_ + count > newest_index + 1) {
+  if (local_index_ + count > newest_index + 1)
+  {
     count = (newest_index + 1) - local_index_;
   }
 
@@ -128,7 +133,8 @@ NativeCircularBufferConsumer::peek_latest(void) const
 
   size_t newest_index = rec.get_history_newest_index();
 
-  if (local_index_ >= newest_index + 1) {
+  if (local_index_ >= newest_index + 1)
+  {
     return KnowledgeRecord();
   }
 
@@ -140,7 +146,8 @@ void NativeCircularBufferConsumer::consume_latest(
     size_t count, std::vector<T>& values) const
 {
   // iterate over the returned records
-  for (auto record : consume_latest(count)) {
+  for (auto record : consume_latest(count))
+  {
     // add them to the values
     if (record.is_valid())
       values.push_back(record.to_any<T>());
@@ -154,7 +161,8 @@ void NativeCircularBufferConsumer::consume_latest(
   dropped = get_dropped();
 
   // iterate over the returned records
-  for (auto record : consume_latest(count)) {
+  for (auto record : consume_latest(count))
+  {
     // add them to the values
     if (record.is_valid())
       values.push_back(record.to_any<T>());
@@ -172,7 +180,8 @@ NativeCircularBufferConsumer::consume_latest(size_t count) const
 
   std::vector<KnowledgeRecord> result;
 
-  if (local_index_ + count > newest_index + 1) {
+  if (local_index_ + count > newest_index + 1)
+  {
     count = (newest_index + 1) - local_index_;
   }
 
@@ -196,7 +205,8 @@ NativeCircularBufferConsumer::consume_latest(void) const
 
   KnowledgeRecord ret;
 
-  if (local_index_ < newest_index + 1) {
+  if (local_index_ < newest_index + 1)
+  {
     ret = rec.get_newest();
   }
 
@@ -217,7 +227,8 @@ NativeCircularBufferConsumer::consume_latest(
 
   dropped = get_dropped();
 
-  if (local_index_ + count > newest_index) {
+  if (local_index_ + count > newest_index)
+  {
     count = newest_index - local_index_;
   }
 
@@ -243,14 +254,18 @@ inline madara::knowledge::KnowledgeRecord NativeCircularBufferConsumer::consume(
 
   size_t oldest_index = rec.get_history_oldest_index();
 
-  if (remaining() == 0) {
+  if (remaining() == 0)
+  {
     return KnowledgeRecord();
   }
 
-  if (local_index_ < oldest_index) {
+  if (local_index_ < oldest_index)
+  {
     dropped = oldest_index - local_index_;
     local_index_ = oldest_index;
-  } else {
+  }
+  else
+  {
     dropped = 0;
   }
 
@@ -266,7 +281,8 @@ template<typename T>
 void NativeCircularBufferConsumer::consume_many(
     size_t count, std::vector<T>& values) const
 {
-  for (auto record : consume_many(count)) {
+  for (auto record : consume_many(count))
+  {
     values.push_back(record.to_any<T>());
   }
 }
@@ -281,7 +297,8 @@ inline std::vector<KnowledgeRecord> NativeCircularBufferConsumer::consume_many(
   dropped = get_dropped();
 
   std::vector<KnowledgeRecord> ret_vec;
-  for (size_t consume_counter = 0; consume_counter < count; ++consume_counter) {
+  for (size_t consume_counter = 0; consume_counter < count; ++consume_counter)
+  {
     ret_vec.emplace_back(consume());
   }
 
@@ -296,7 +313,8 @@ inline std::vector<KnowledgeRecord> NativeCircularBufferConsumer::consume_many(
   ContextGuard context_guard(*context_);
 
   std::vector<KnowledgeRecord> ret_vec;
-  for (size_t consume_counter = 0; consume_counter < count; ++consume_counter) {
+  for (size_t consume_counter = 0; consume_counter < count; ++consume_counter)
+  {
     ret_vec.emplace_back(consume());
   }
 
@@ -330,7 +348,8 @@ void NativeCircularBufferConsumer::inspect(KnowledgeRecord::Integer position,
     size_t count, std::vector<T>& values) const
 {
   // iterate over the returned records
-  for (auto record : inspect(position, count)) {
+  for (auto record : inspect(position, count))
+  {
     values.push_back(record.to_any<T>());
   }
 }
@@ -346,16 +365,19 @@ inline std::vector<KnowledgeRecord> NativeCircularBufferConsumer::inspect(
 
   size_t oldest_index = rec.get_history_oldest_index();
 
-  if (local_index_ < oldest_index) {
+  if (local_index_ < oldest_index)
+  {
     // Messages were dropped
     local_index_ = oldest_index;
   }
 
   KnowledgeRecord ret;
   std::vector<KnowledgeRecord> ret_vec;
-  for (size_t inspect_counter = 0; inspect_counter < count; ++inspect_counter) {
+  for (size_t inspect_counter = 0; inspect_counter < count; ++inspect_counter)
+  {
     if (rec.get_history_range(
-            &ret, local_index_ + position + inspect_counter, 1)) {
+            &ret, local_index_ + position + inspect_counter, 1))
+    {
       ret_vec.emplace_back(std::move(ret));
     }
   }
@@ -389,7 +411,8 @@ inline size_t NativeCircularBufferConsumer::remaining(void) const
 
   size_t newest_index = rec.get_history_newest_index();
 
-  if (local_index_ > newest_index) {
+  if (local_index_ > newest_index)
+  {
     return 0;
   }
 
@@ -449,7 +472,8 @@ inline size_t NativeCircularBufferConsumer::get_dropped(void) const
 
   size_t oldest_index = rec.get_history_oldest_index();
 
-  if (local_index_ < oldest_index) {
+  if (local_index_ < oldest_index)
+  {
     return oldest_index - local_index_;
   }
 

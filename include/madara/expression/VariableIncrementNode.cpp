@@ -59,7 +59,8 @@ madara::expression::VariableIncrementNode::prune(bool& can_change)
 
   if (this->var_ != 0 || this->array_ != 0)
     left_child_can_change = true;
-  else {
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::VariableIncrementNode: "
         "KARL COMPILE ERROR: Variable assignment has no variable\n");
@@ -70,13 +71,17 @@ madara::expression::VariableIncrementNode::prune(bool& can_change)
         "Node has no variable left-hand side\n");
   }
 
-  if (this->rhs_) {
+  if (this->rhs_)
+  {
     right_value = this->rhs_->prune(right_child_can_change);
-    if (!right_child_can_change && dynamic_cast<LeafNode*>(rhs_) == 0) {
+    if (!right_child_can_change && dynamic_cast<LeafNode*>(rhs_) == 0)
+    {
       delete this->rhs_;
       this->rhs_ = new LeafNode(*(this->logger_), right_value);
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::VariableIncrementNode: "
         "KARL COMPILE ERROR: Variable assignment has no right expression\n");
@@ -105,7 +110,8 @@ madara::expression::VariableIncrementNode::evaluate(
   else
     rhs = value_;
 
-  if (var_) {
+  if (var_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::CompositeAssignmentNode::evaluate: "
         "Attempting to set variable %s to %s.\n",
@@ -114,7 +120,9 @@ madara::expression::VariableIncrementNode::evaluate(
     knowledge::KnowledgeRecord result(var_->evaluate(settings) + rhs);
     var_->set(result, settings);
     return result;
-  } else if (array_) {
+  }
+  else if (array_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::CompositeAssignmentNode::evaluate: "
         "Attempting to set index of var %s to %s.\n",
@@ -123,7 +131,9 @@ madara::expression::VariableIncrementNode::evaluate(
     knowledge::KnowledgeRecord result(array_->evaluate(settings) + rhs);
     array_->set(result, settings);
     return result;
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::CompositeAssignmentNode::evaluate: "
         "left hand side was neither a variable nor an array reference. "

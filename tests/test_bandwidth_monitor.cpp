@@ -24,7 +24,8 @@ int main(int argc, char* argv[])
   std::cerr << "Adding ten 150 byte messages to bandwidth monitor...\n";
   std::cerr << "And sleeping for 10s...\n\n";
 
-  for (int i = 0; i < 10; ++i) {
+  for (int i = 0; i < 10; ++i)
+  {
     monitor.add(150);
     madara::utility::sleep(1);
   }
@@ -33,7 +34,8 @@ int main(int argc, char* argv[])
   monitor.print_utilization();
   if (monitor.get_bytes_per_second() >= 100)
     std::cerr << "Bandwidth check results in SUCCESS\n\n";
-  else {
+  else
+  {
     std::cerr << "Bandwidth check results in FAIL\n\n";
     ++madara_fails;
   }
@@ -45,7 +47,8 @@ int main(int argc, char* argv[])
   monitor.print_utilization();
   if (monitor.get_bytes_per_second() >= 60)
     std::cerr << "Bandwidth check results in SUCCESS\n\n";
-  else {
+  else
+  {
     std::cerr << "Bandwidth check results in FAIL\n\n";
     ++madara_fails;
   }
@@ -57,7 +60,8 @@ int main(int argc, char* argv[])
   monitor.print_utilization();
   if (monitor.get_bytes_per_second() >= 15)
     std::cerr << "Bandwidth check results in SUCCESS\n\n";
-  else {
+  else
+  {
     std::cerr << "Bandwidth check results in FAIL\n\n";
     ++madara_fails;
   }
@@ -71,7 +75,8 @@ int main(int argc, char* argv[])
   std::cerr << "Adding 100 1000 byte messages to bandwidth monitor...\n";
   std::cerr << "And sleeping for 10s...\n\n";
 
-  for (int i = 0; i < 100; ++i) {
+  for (int i = 0; i < 100; ++i)
+  {
     monitor.add(1000);
   }
 
@@ -81,14 +86,18 @@ int main(int argc, char* argv[])
   monitor.print_utilization();
   if (monitor.get_bytes_per_second() >= 3000)
     std::cerr << "Bandwidth check results in SUCCESS\n\n";
-  else {
+  else
+  {
     std::cerr << "Bandwidth check results in FAIL\n\n";
     ++madara_fails;
   }
 
-  if (madara_fails > 0) {
+  if (madara_fails > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
@@ -97,11 +106,14 @@ int main(int argc, char* argv[])
 
 int parse_args(int argc, char* argv[])
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         int level;
         std::stringstream buffer(argv[i + 1]);
         buffer >> level;
@@ -110,7 +122,9 @@ int parse_args(int argc, char* argv[])
       }
 
       ++i;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "This test checks the functionality of the Bandwidth Monitoring "

@@ -13,7 +13,8 @@ namespace madara
 {
 namespace filters
 {
-enum {
+enum
+{
   RECORD = 0,
   RECORD_NAME = 1,
   OPERATION_TYPE = 2,

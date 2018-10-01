@@ -27,7 +27,8 @@ inline CircularBufferT<T>::CircularBufferT(
 template<typename T>
 inline void CircularBufferT<T>::check_name(const char* func) const
 {
-  if (name_ == "") {
+  if (name_ == "")
+  {
     throw exceptions::NameException(
         std::string("CircularBufferT<T>::") + func + ": name is empty.");
   }
@@ -37,7 +38,8 @@ template<typename T>
 inline void CircularBufferT<T>::check_context(const char* func) const
 {
   check_name(func);
-  if (!context_) {
+  if (!context_)
+  {
     throw exceptions::ContextException(
         std::string("CircularBufferT<T>::") + func + ": context is not set.");
   }
@@ -47,25 +49,31 @@ template<typename T>
 inline void CircularBufferT<T>::check_all(const char* func) const
 {
   std::string reason = "";
-  if (context_ == 0) {
+  if (context_ == 0)
+  {
     reason = "context has not been set";
   }
 
-  if (name_ == "") {
-    if (reason.size() > 0) {
+  if (name_ == "")
+  {
+    if (reason.size() > 0)
+    {
       reason += " and ";
     }
     reason = "name has not been set";
   }
 
-  if (buffer_.size() == 0) {
-    if (reason.size() > 0) {
+  if (buffer_.size() == 0)
+  {
+    if (reason.size() > 0)
+    {
       reason += " and ";
     }
     reason = "size == 0";
   }
 
-  if (reason != "") {
+  if (reason != "")
+  {
     std::stringstream message;
     message << "CircularBufferT<T>::" << func << ": ";
     message << "Invalid access because " << reason << "\n";
@@ -104,7 +112,8 @@ inline CircularBufferT<T>::CircularBufferT(const std::string& name,
 
   ContextGuard context_guard(knowledge);
   set_name(name, knowledge);
-  if (size >= 0) {
+  if (size >= 0)
+  {
     buffer_.resize(size);
   }
 }
@@ -118,7 +127,8 @@ inline CircularBufferT<T>::CircularBufferT(const std::string& name,
 
   ContextGuard context_guard(*knowledge.get_context());
   set_name(name, knowledge);
-  if (size >= 0) {
+  if (size >= 0)
+  {
     buffer_.resize(size);
   }
 }
@@ -152,11 +162,16 @@ CircularBufferT<T>::increment(
     KnowledgeRecord::Integer base, KnowledgeRecord::Integer value) const
 {
   KnowledgeRecord::Integer result = base + value;
-  if (buffer_.size() > 0 && base + value >= 0) {
+  if (buffer_.size() > 0 && base + value >= 0)
+  {
     return (result) % (KnowledgeRecord::Integer)buffer_.size();
-  } else if (buffer_.size() > 0) {
+  }
+  else if (buffer_.size() > 0)
+  {
     return (KnowledgeRecord::Integer)buffer_.size() + result;
-  } else {
+  }
+  else
+  {
     std::stringstream message;
     message << "CircularBufferT<T>::increment: ";
     message << "Result of " << base << "+" << value << " is " << result;
@@ -189,7 +204,8 @@ inline void CircularBufferT<T>::add(const knowledge::KnowledgeRecord& record)
 template<typename T>
 inline void CircularBufferT<T>::add(const std::vector<T>& records)
 {
-  for (auto record : records) {
+  for (auto record : records)
+  {
     add(record);
   }
 }
@@ -203,7 +219,8 @@ inline void CircularBufferT<T>::add(const std::vector<KnowledgeRecord>& records)
 
   KnowledgeRecord::Integer index = *index_;
 
-  for (auto record : records) {
+  for (auto record : records)
+  {
     index = increment(index, 1);
 
     context_->set(buffer_.vector_[(size_t)index], record, settings_);
@@ -245,12 +262,15 @@ inline madara::knowledge::KnowledgeRecord CircularBufferT<T>::inspect(
 
   if ((position <= 0 && -position < inserted) ||
       (position > 0 && inserted == (KnowledgeRecord::Integer)size() &&
-          position < inserted)) {
+          position < inserted))
+  {
     size_t index =
         (size_t)increment(*index_, (KnowledgeRecord::Integer)position);
 
     return context_->get(buffer_.vector_[index], settings_);
-  } else {
+  }
+  else
+  {
     std::stringstream message;
     message << "CircularBufferT<T>::inspect: ";
     message << "Invalid access for " << position << " element when count is ";
@@ -278,18 +298,22 @@ inline std::vector<KnowledgeRecord> CircularBufferT<T>::inspect(
 
   if ((position <= 0 && -position < inserted) ||
       (position > 0 && inserted == (KnowledgeRecord::Integer)size() &&
-          position < inserted)) {
+          position < inserted))
+  {
     KnowledgeRecord::Integer index =
         increment(*index_, (KnowledgeRecord::Integer)position);
 
     std::vector<KnowledgeRecord> result;
 
-    for (size_t i = 0; i < count; ++i, index = increment(index, 1)) {
+    for (size_t i = 0; i < count; ++i, index = increment(index, 1))
+    {
       result.push_back(buffer_[(size_t)index]);
     }
 
     return result;
-  } else {
+  }
+  else
+  {
     std::stringstream message;
     message << "CircularBufferT<T>::inspect: ";
     message << "Invalid access for " << position << " element when count is ";
@@ -303,7 +327,8 @@ inline void CircularBufferT<T>::inspect(KnowledgeRecord::Integer position,
     size_t count, std::vector<T>& values) const
 {
   // iterate over the returned records
-  for (auto record : inspect(position, count)) {
+  for (auto record : inspect(position, count))
+  {
     // add them to the values
     values.push_back(record.template to_any<T>());
   }
@@ -366,16 +391,20 @@ template<typename T>
 inline void CircularBufferT<T>::set_name(
     const std::string& name, KnowledgeBase& knowledge)
 {
-  if (name != "") {
+  if (name != "")
+  {
     ContextGuard context_guard(knowledge);
     name_ = name;
     context_ = &(knowledge.get_context());
     index_.set_name(name + ".index", knowledge);
     buffer_.set_name(name, knowledge);
-    if (buffer_.size() == 0 && index_ != -1) {
+    if (buffer_.size() == 0 && index_ != -1)
+    {
       index_ = -1;
     }
-  } else {
+  }
+  else
+  {
     throw exceptions::NameException(
         "CircularBufferT<T>::set_name: empty name provided.");
   }
@@ -385,16 +414,20 @@ template<typename T>
 inline void CircularBufferT<T>::set_name(
     const std::string& name, Variables& knowledge)
 {
-  if (name != "") {
+  if (name != "")
+  {
     ContextGuard context_guard(*knowledge.get_context());
     name_ = name;
     context_ = knowledge.get_context();
     index_.set_name(name + ".index", knowledge);
     buffer_.set_name(name, knowledge);
-    if (buffer_.size() == 0 && index_ != -1) {
+    if (buffer_.size() == 0 && index_ != -1)
+    {
       index_ = -1;
     }
-  } else {
+  }
+  else
+  {
     throw exceptions::NameException(
         "CircularBufferT<T>::set_name: empty name provided.");
   }
@@ -421,7 +454,8 @@ inline std::vector<KnowledgeRecord> CircularBufferT<T>::get_latest(
 
   KnowledgeRecord::Integer cur = *index_ % buffer_.size();
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, -1)) {
+  for (size_t i = 0; i < count; ++i, cur = increment(cur, -1))
+  {
     result.push_back(buffer_[(size_t)cur]);
   }
 
@@ -433,7 +467,8 @@ inline void CircularBufferT<T>::get_latest(
     size_t count, std::vector<T>& values) const
 {
   // iterate over the returned records
-  for (auto record : get_latest(count)) {
+  for (auto record : get_latest(count))
+  {
     // add them to the values
     values.push_back(record.template to_any<T>());
   }
@@ -454,7 +489,8 @@ inline std::vector<KnowledgeRecord> CircularBufferT<T>::get_earliest(
   KnowledgeRecord::Integer cur =
       this->count() < buffer_.size() ? 0 : increment(*index_, 1);
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, 1)) {
+  for (size_t i = 0; i < count; ++i, cur = increment(cur, 1))
+  {
     result.push_back(buffer_[(size_t)cur]);
   }
 
@@ -466,7 +502,8 @@ inline void CircularBufferT<T>::get_earliest(
     size_t count, std::vector<T>& values) const
 {
   // iterate over the returned records
-  for (auto record : get_earliest(count)) {
+  for (auto record : get_earliest(count))
+  {
     // add them to the values
     values.push_back(record.template to_any<T>());
   }

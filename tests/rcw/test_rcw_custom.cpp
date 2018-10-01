@@ -12,7 +12,8 @@
 using namespace madara::knowledge;
 using namespace madara::knowledge::rcw;
 
-struct my_type {
+struct my_type
+{
   int a;
   int b;
   int c;
@@ -29,7 +30,8 @@ void set_value(my_type& v, std::vector<int64_t> n)
   v.c = n[2];
 }
 
-struct my_tracked_type {
+struct my_tracked_type
+{
   int a;
   int b;
   int c;

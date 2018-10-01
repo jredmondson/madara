@@ -243,7 +243,8 @@ inline auto resize_or_clear(T& c, size_t n) ->
 {
   using elem_type = typename std::decay<decltype(c[0])>::type;
   size_t curn = get_size(c);
-  for (; n < curn; ++n) {
+  for (; n < curn; ++n)
+  {
     c[n] = elem_type{};
   }
   return curn;
@@ -294,7 +295,8 @@ inline auto to_array(const KnowledgeRecord& in) ->
 }
 
 template<typename T>
-struct simple_span {
+struct simple_span
+{
   T* ptr;
   size_t len;
 
@@ -351,12 +353,14 @@ inline auto knowledge_cast(const KnowledgeRecord& in, T& out) ->
 namespace impl
 {
 template<typename T>
-struct is_basic_string : std::false_type {
+struct is_basic_string : std::false_type
+{
 };
 
 template<typename CharT, typename Traits, typename Allocator>
 struct is_basic_string<std::basic_string<CharT, Traits, Allocator>>
-  : std::true_type {
+  : std::true_type
+{
 };
 }
 
@@ -381,11 +385,14 @@ inline auto knowledge_cast(const KnowledgeRecord& in, T& out) ->
         decltype(out)>::type
 {
   auto ints = impl::share_array<T>(in);
-  if (ints) {
+  if (ints)
+  {
     size_t count = ints->size();
     count = std::min(impl::resize_or_clear(out, count), count);
     std::copy_n(std::begin(*ints), count, std::begin(out));
-  } else {
+  }
+  else
+  {
     auto ints_arr = impl::to_array<T>(in);
     size_t count = ints_arr.size();
     count = std::min(impl::resize_or_clear(out, count), count);
@@ -542,9 +549,12 @@ inline const KnowledgeRecord& knowledge_cast(
   inline bool operator op(const KnowledgeRecord& l, const char* r)            \
   {                                                                           \
     auto s = l.share_string();                                                \
-    if (s) {                                                                  \
+    if (s)                                                                    \
+    {                                                                         \
       return s->compare(r) op 0;                                              \
-    } else {                                                                  \
+    }                                                                         \
+    else                                                                      \
+    {                                                                         \
       return l.to_string().compare(r) op 0;                                   \
     }                                                                         \
   }                                                                           \
@@ -552,9 +562,12 @@ inline const KnowledgeRecord& knowledge_cast(
   inline bool operator op(const char* l, const KnowledgeRecord& r)            \
   {                                                                           \
     auto s = r.share_string();                                                \
-    if (s) {                                                                  \
+    if (s)                                                                    \
+    {                                                                         \
       return std::strcmp(l, s->c_str()) op 0;                                 \
-    } else {                                                                  \
+    }                                                                         \
+    else                                                                      \
+    {                                                                         \
       return std::strcmp(l, r.to_string().c_str()) op 0;                      \
     }                                                                         \
   }                                                                           \
@@ -562,9 +575,12 @@ inline const KnowledgeRecord& knowledge_cast(
   inline bool operator op(const KnowledgeRecord& l, const std::string& r)     \
   {                                                                           \
     auto s = l.share_string();                                                \
-    if (s) {                                                                  \
+    if (s)                                                                    \
+    {                                                                         \
       return s->compare(r) op 0;                                              \
-    } else {                                                                  \
+    }                                                                         \
+    else                                                                      \
+    {                                                                         \
       return l.to_string().compare(r) op 0;                                   \
     }                                                                         \
   }                                                                           \
@@ -572,9 +588,12 @@ inline const KnowledgeRecord& knowledge_cast(
   inline bool operator op(const std::string& l, const KnowledgeRecord& r)     \
   {                                                                           \
     auto s = r.share_string();                                                \
-    if (s) {                                                                  \
+    if (s)                                                                    \
+    {                                                                         \
       return l.compare(*s) op 0;                                              \
-    } else {                                                                  \
+    }                                                                         \
+    else                                                                      \
+    {                                                                         \
       return l.compare(r.to_string()) op 0;                                   \
     }                                                                         \
   }
@@ -673,16 +692,20 @@ inline T BasicConstAny<Impl, ValImpl, RefImpl>::to(type<T>) const
 {
   using exceptions::BadAnyAccess;
 
-  if (!handler_ || !data_) {
+  if (!handler_ || !data_)
+  {
     throw BadAnyAccess("Any::to<T>: Any is empty");
   }
 
-  if (handler_->tindex == type_id<T>()) {
+  if (handler_->tindex == type_id<T>())
+  {
     return impl().template ref_unsafe<T>();
   }
 
-  if (supports_cast_from_record<T>::value) {
-    if (!supports_to_record()) {
+  if (supports_cast_from_record<T>::value)
+  {
+    if (!supports_to_record())
+    {
       throw BadAnyAccess("Any::to<T>: Type stored in Any doesn't "
                          "support to_record");
     }
@@ -690,7 +713,9 @@ inline T BasicConstAny<Impl, ValImpl, RefImpl>::to(type<T>) const
     T ret;
     try_knowledge_cast(handler_->to_record(data_), ret);
     return ret;
-  } else {
+  }
+  else
+  {
     throw BadAnyAccess(
         "Any::to<T>: Type stored doesn't match type "
         "requested, and doesn't support knowledge_cast from record");
@@ -701,25 +726,31 @@ template<typename Impl, typename ValImpl, typename RefImpl, typename CRefImpl>
 template<typename T>
 inline void BasicAny<Impl, ValImpl, RefImpl, CRefImpl>::assign(T&& t) const
 {
-  if (!this->handler_ && this->data_) {
+  if (!this->handler_ && this->data_)
+  {
     impl().template ref<decay_<T>>() = std::forward<T>(t);
     return;
   }
 
-  if (this->handler_->tindex == type_id<T>()) {
+  if (this->handler_->tindex == type_id<T>())
+  {
     ref<decay_<T>>() = std::forward<T>(t);
     return;
   }
 
-  if (supports_cast_to_record<T>::value) {
-    if (!supports_from_record()) {
+  if (supports_cast_to_record<T>::value)
+  {
+    if (!supports_from_record())
+    {
       throw exceptions::BadAnyAccess("Type stored in Any doesn't "
                                      "support to_record");
     }
 
     KnowledgeRecord rec(try_knowledge_cast(std::forward<T>(t)));
     this->handler_->from_record(rec, this->data_);
-  } else {
+  }
+  else
+  {
     throw exceptions::BadAnyAccess(
         "Type stored doesn't match type "
         "assigning, and doesn't support knowledge_cast to record");
@@ -730,7 +761,8 @@ template<typename Impl, typename ValImpl, typename RefImpl, typename CRefImpl>
 inline void BasicAny<Impl, ValImpl, RefImpl, CRefImpl>::from_record(
     const knowledge::KnowledgeRecord& rec) const
 {
-  if (!supports_from_record()) {
+  if (!supports_from_record())
+  {
     throw exceptions::BadAnyAccess("Type stored in Any doesn't "
                                    "support to_record");
   }

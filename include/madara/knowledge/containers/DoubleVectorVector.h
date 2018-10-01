@@ -36,7 +36,8 @@ public:
   typedef std::vector<double> type;
 
   /// two dimensional indexing
-  struct Indices {
+  struct Indices
+  {
     std::size_t x, y;
   };
 

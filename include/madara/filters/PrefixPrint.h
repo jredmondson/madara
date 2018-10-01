@@ -56,7 +56,8 @@ public:
   {
     std::stringstream buffer;
 
-    if (verbose) {
+    if (verbose)
+    {
       buffer << "PrefixFilter Arguments:\n";
 
       // Operation Type
@@ -99,30 +100,38 @@ public:
     }
 
     // because of the usage of erase, don't auto inc record in for loop
-    for (auto record : records) {
+    for (auto record : records)
+    {
       // check for valid prefix
       bool accepted_prefix = false;
 
-      if (prefixes.size() > 0) {
-        for (auto prefix : prefixes) {
-          if (utility::begins_with(record.first, prefix)) {
+      if (prefixes.size() > 0)
+      {
+        for (auto prefix : prefixes)
+        {
+          if (utility::begins_with(record.first, prefix))
+          {
             accepted_prefix = true;
             break;
           }
         }
-      } else {
+      }
+      else
+      {
         accepted_prefix = true;
       }
 
       // if not valid, remove the record and update iterator
-      if (!accepted_prefix) {
+      if (!accepted_prefix)
+      {
         madara_logger_ptr_log(madara::logger::global_logger.get(),
             logger::LOG_MAJOR,
             "PrefixPrint::filter: "
             "not printing variable %s\n",
             record.first.c_str())
       }  // end not valid prefix
-      else {
+      else
+      {
         // valid prefix so keep the record and proceed to next
         buffer << "    " << record.first << " = ";
         buffer << record.second.to_string() << "\n";

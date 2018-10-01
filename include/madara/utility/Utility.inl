@@ -30,12 +30,14 @@ inline bool set_thread_priority(int priority)
 
 #ifdef _WIN32
 
-  if (SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS)) {
+  if (SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS))
+  {
     // in Windows, normalize for highest priority
     if (priority > THREAD_PRIORITY_HIGHEST)
       priority = THREAD_PRIORITY_HIGHEST;
 
-    if (SetThreadPriority(GetCurrentThread(), priority)) {
+    if (SetThreadPriority(GetCurrentThread(), priority))
+    {
       result = true;
     }
   }
@@ -46,7 +48,8 @@ inline bool set_thread_priority(int priority)
   int policy;
   pthread_getschedparam(pthread_self(), &policy, &sch);
   sch.sched_priority = priority;
-  if (0 == pthread_setschedparam(pthread_self(), SCHED_FIFO, &sch)) {
+  if (0 == pthread_setschedparam(pthread_self(), SCHED_FIFO, &sch))
+  {
     result = true;
   }
 #endif
@@ -73,7 +76,8 @@ inline std::string& upper(std::string& input)
 /// Convert string to lowercase
 inline std::string& dds_topicify(std::string& input)
 {
-  for (std::string::iterator cur = input.begin(); cur != input.end(); ++cur) {
+  for (std::string::iterator cur = input.begin(); cur != input.end(); ++cur)
+  {
     // change periods to _
     if (*cur == '.')
       *cur = '_';
@@ -111,7 +115,8 @@ inline bool endian_is_little()
 inline uint64_t endian_swap(uint64_t value)
 {
   // if host is little endian, then we have work to do
-  if (endian_is_little()) {
+  if (endian_is_little())
+  {
     value = ((value << 8) & 0xFF00FF00FF00FF00ULL) |
             ((value >> 8) & 0x00FF00FF00FF00FFULL);
     value = ((value << 16) & 0xFFFF0000FFFF0000ULL) |
@@ -129,7 +134,8 @@ inline uint64_t endian_swap(uint64_t value)
 inline int64_t endian_swap(int64_t value)
 {
   // if host is little endian, then we have work to do
-  if (endian_is_little()) {
+  if (endian_is_little())
+  {
     value = ((value << 8) & 0xFF00FF00FF00FF00ULL) |
             ((value >> 8) & 0x00FF00FF00FF00FFULL);
     value = ((value << 16) & 0xFFFF0000FFFF0000ULL) |
@@ -146,7 +152,8 @@ inline int64_t endian_swap(int64_t value)
 inline uint32_t endian_swap(uint32_t value)
 {
   // if host is little endian, then we have work to do
-  if (endian_is_little()) {
+  if (endian_is_little())
+  {
     value = ((value << 8) & 0xFF00FF00) | ((value >> 8) & 0xFF00FF);
     return (value << 16) | (value >> 16);
   }
@@ -161,7 +168,8 @@ inline uint32_t endian_swap(uint32_t value)
 inline int32_t endian_swap(int32_t value)
 {
   // if host is little endian, then we have work to do
-  if (endian_is_little()) {
+  if (endian_is_little())
+  {
     value = ((value << 8) & 0xFF00FF00) | ((value >> 8) & 0xFF00FF);
     return (value << 16) | ((value >> 16) & 0xFFFF);
   }
@@ -176,7 +184,8 @@ inline int32_t endian_swap(int32_t value)
 inline uint16_t endian_swap(uint16_t value)
 {
   // if host is little endian, then we have work to do
-  if (endian_is_little()) {
+  if (endian_is_little())
+  {
     return ((value << 8) & 0xFFFF) | (value >> 8);
   }
 
@@ -190,7 +199,8 @@ inline uint16_t endian_swap(uint16_t value)
 inline int16_t endian_swap(int16_t value)
 {
   // if host is little endian, then we have work to do
-  if (endian_is_little()) {
+  if (endian_is_little())
+  {
     return ((value << 8) & 0xFFFF) | (value >> 8);
   }
 
@@ -203,7 +213,8 @@ inline int16_t endian_swap(int16_t value)
 inline double endian_swap(double orig)
 {
   // if host is little endian, then we have work to do
-  if (endian_is_little()) {
+  if (endian_is_little())
+  {
     uint64_t value;
     memcpy(&value, &orig, sizeof(value));
 
@@ -267,10 +278,13 @@ inline bool approx_equal(double value1, double value2, double epsilon)
 
 inline bool file_exists(const std::string& filename)
 {
-  if (FILE* file = fopen(filename.c_str(), "r")) {
+  if (FILE* file = fopen(filename.c_str(), "r"))
+  {
     fclose(file);
     return true;
-  } else {
+  }
+  else
+  {
     return false;
   }
 }
@@ -279,13 +293,15 @@ inline bool is_directory(const std::string& path)
 {
 #if defined(_WIN32)
   struct _stat info;
-  if (_stat(path.c_str(), &info) != 0) {
+  if (_stat(path.c_str(), &info) != 0)
+  {
     return false;
   }
   return (info.st_mode & _S_IFDIR) != 0;
 #else
   struct stat info;
-  if (stat(path.c_str(), &info) != 0) {
+  if (stat(path.c_str(), &info) != 0)
+  {
     return false;
   }
   return (info.st_mode & S_IFDIR) != 0;
@@ -294,7 +310,8 @@ inline bool is_directory(const std::string& path)
 
 inline bool recursive_mkdir(const std::string& path)
 {
-  if (is_directory(path)) {
+  if (is_directory(path))
+  {
     return true;
   }
 
@@ -305,14 +322,17 @@ inline bool recursive_mkdir(const std::string& path)
   int result = mkdir(path.c_str(), mode);
 #endif
 
-  if (result == 0) {
+  if (result == 0)
+  {
     return true;
   }
 
-  switch (errno) {
+  switch (errno)
+  {
     case ENOENT:
 
-      if (recursive_mkdir(utility::extract_path(path).c_str())) {
+      if (recursive_mkdir(utility::extract_path(path).c_str()))
+      {
 #ifdef _WIN32
         return 0 == _mkdir(path.c_str());
 #else
@@ -349,7 +369,8 @@ inline std::string extract_filename(const std::string& name)
 inline unsigned int file_size(const std::string& filename)
 {
   unsigned int size = 0;
-  if (FILE* file = fopen(filename.c_str(), "r")) {
+  if (FILE* file = fopen(filename.c_str(), "r"))
+  {
     fseek(file, 0L, SEEK_END);
     size = ftell(file);
     fclose(file);
@@ -382,10 +403,12 @@ inline uint32_t file_crc(const std::string& filename, size_t max_block)
   std::vector<char> block(max_block);
 
   // process the file by block rather than reading in full
-  while (input) {
+  while (input)
+  {
     input.read(block.data(), max_block);
     std::size_t bytes_read = input.gcount();
-    if (bytes_read > 0) {
+    if (bytes_read > 0)
+    {
       crc.process_bytes(block.data(), bytes_read);
     }
   }
@@ -396,13 +419,20 @@ inline uint32_t file_crc(const std::string& filename, size_t max_block)
 inline bool filename_has_redirect(const std::string& filename)
 {
   // if filename has special characters, return false
-  if (filename.find("../") != std::string::npos) {
+  if (filename.find("../") != std::string::npos)
+  {
     return true;
-  } else if (filename.find("//") != std::string::npos) {
+  }
+  else if (filename.find("//") != std::string::npos)
+  {
     return true;
-  } else if (filename.find("~") != std::string::npos) {
+  }
+  else if (filename.find("~") != std::string::npos)
+  {
     return true;
-  } else {
+  }
+  else
+  {
     return false;
   }
 }
@@ -417,17 +447,20 @@ inline bool file_from_fragments(const std::string& filename, uint32_t crc,
   std::ofstream output(filename, std::ios::out | std::ios::binary);
 
   // if we could open the file, try to read each frag into the file
-  if (output) {
+  if (output)
+  {
     // for each file that exists
     for (int i = 0; file_exists(frag_file);
-         ++i, frag_file = filename + "." + std::to_string(i) + frag_suffix) {
+         ++i, frag_file = filename + "." + std::to_string(i) + frag_suffix)
+    {
       // read the file
       void* buffer;
       size_t size = 0;
       utility::read_file(frag_file, buffer, size);
 
       // if anything was read, write the fragment to the file
-      if (size > 0) {
+      if (size > 0)
+      {
         output.write((char*)buffer, size);
         delete[](char*) buffer;
       }  // end if size is greater than 0
@@ -437,21 +470,27 @@ inline bool file_from_fragments(const std::string& filename, uint32_t crc,
     uint32_t new_crc = utility::file_crc(filename);
 
     // if crc indicates file is complete
-    if (new_crc == crc) {
-      if (delete_fragments) {
+    if (new_crc == crc)
+    {
+      if (delete_fragments)
+      {
         frag_file = filename + ".0" + frag_suffix;
 
         // for each file that exists
-        for (int i = 0; file_exists(frag_file); ++i,
-                 frag_file = filename + "." + std::to_string(i) + frag_suffix) {
+        for (int i = 0; file_exists(frag_file);
+             ++i, frag_file = filename + "." + std::to_string(i) + frag_suffix)
+        {
           remove(frag_file.c_str());
         }
       }
 
       return true;
-    } else {
+    }
+    else
+    {
       // crc doesn't check out
-      if (delete_incomplete) {
+      if (delete_incomplete)
+      {
         remove(filename.c_str());
       }
     }  // end if crc indicates incomplete file
@@ -472,15 +511,18 @@ inline size_t get_file_progress(const std::string& filename, uint32_t crc,
   size_t num_fragments = expected_size / fragment_size;
   size_t actual_size = 0;
 
-  if (expected_size % fragment_size > 0) {
+  if (expected_size % fragment_size > 0)
+  {
     ++num_fragments;
   }
 
   // if we could open the file, try to read each frag into the file
-  if (output) {
+  if (output)
+  {
     // for each file that exists
     for (int i = 0; i < (int)num_fragments;
-         ++i, frag_file = filename + "." + std::to_string(i) + frag_suffix) {
+         ++i, frag_file = filename + "." + std::to_string(i) + frag_suffix)
+    {
       // read the file
       void* buffer;
       size_t size = 0;
@@ -489,7 +531,8 @@ inline size_t get_file_progress(const std::string& filename, uint32_t crc,
       actual_size += size;
 
       // if anything was read, write the fragment to the file
-      if (size > 0) {
+      if (size > 0)
+      {
         output.write((char*)buffer, size);
         delete[](char*) buffer;
       }  // end if size is greater than 0
@@ -514,7 +557,8 @@ inline std::vector<int64_t> get_file_missing_fragments(
   size_t num_fragments = expected_size / fragment_size;
   size_t actual_size = 0;
 
-  if (expected_size % fragment_size > 0) {
+  if (expected_size % fragment_size > 0)
+  {
     ++num_fragments;
   }
 
@@ -523,12 +567,15 @@ inline std::vector<int64_t> get_file_missing_fragments(
       filename.c_str());
 
   // if we could open the file, try to read each frag into the file
-  if (output) {
+  if (output)
+  {
     // for each file that exists
     for (int i = 0; i < (int)num_fragments;
-         ++i, frag_file = filename + "." + std::to_string(i) + frag_suffix) {
+         ++i, frag_file = filename + "." + std::to_string(i) + frag_suffix)
+    {
       // do we already have enough fragments?
-      if (max_fragments >= 0 && result.size() >= (size_t)max_fragments) {
+      if (max_fragments >= 0 && result.size() >= (size_t)max_fragments)
+      {
         break;
       }
 
@@ -543,11 +590,13 @@ inline std::vector<int64_t> get_file_missing_fragments(
           "utility::get_file_missing_fragments: checking fragment %d\n", i);
 
       // if anything was read, write the fragment to the file
-      if (size > 0) {
+      if (size > 0)
+      {
         output.write((char*)buffer, size);
         delete[](char*) buffer;
       }  // end if size is greater than 0
-      else {
+      else
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
             "utility::get_file_missing_fragments: missing fragment %d\n", i);
 
@@ -564,7 +613,8 @@ inline bool begins_with(const std::string& input, const std::string& prefix)
 {
   bool result = false;
 
-  if (prefix.length() <= input.length()) {
+  if (prefix.length() <= input.length())
+  {
     result = input.substr(0, prefix.length()) == prefix;
   }
 
@@ -575,7 +625,8 @@ inline bool ends_with(const std::string& input, const std::string& match)
 {
   bool result = false;
 
-  if (match.length() <= input.length()) {
+  if (match.length() <= input.length())
+  {
     result =
         input.substr(input.size() - match.length(), match.length()) == match;
   }
@@ -624,7 +675,8 @@ void sift_down(T* input, int start, int end,
     bool (*comparator)(const T& left, const T& right))
 {
   int root = start;
-  for (int child = root * 2 + 1; child <= end; child = root * 2 + 1) {
+  for (int child = root * 2 + 1; child <= end; child = root * 2 + 1)
+  {
     int swap = root;
 
     // check left child
@@ -636,10 +688,12 @@ void sift_down(T* input, int start, int end,
     if (child <= end && comparator(input[child], input[swap]))
       swap = child;
 
-    if (swap != root) {
+    if (swap != root)
+    {
       std::swap(input[root], input[swap]);
       root = swap;
-    } else
+    }
+    else
       break;
   }
 }
@@ -649,7 +703,8 @@ void heapify(
     T* input, int size, bool (*comparator)(const T& left, const T& right))
 {
   // start at lowest parent node and work our way back
-  for (int start = (size - 2) / 2; start >= 0; --start) {
+  for (int start = (size - 2) / 2; start >= 0; --start)
+  {
     sift_down(input, start, size - 1, comparator);
   }
 }
@@ -660,7 +715,8 @@ void heap_sort(
 {
   heapify(input, size, comparator);
 
-  for (int end = size - 1; end > 0; --end) {
+  for (int end = size - 1; end > 0; --end)
+  {
     std::swap(input[end], input[0]);
     sift_down(input, 0, end - 1);
   }

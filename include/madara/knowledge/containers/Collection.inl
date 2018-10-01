@@ -15,7 +15,8 @@ inline void madara::knowledge::containers::Collection::clear(void)
 {
   MADARA_GUARD_TYPE guard(mutex_);
 
-  for (size_t i = 0; i < vector_.size(); ++i) {
+  for (size_t i = 0; i < vector_.size(); ++i)
+  {
     delete vector_[i];
   }
 
@@ -27,7 +28,8 @@ inline void madara::knowledge::containers::Collection::set_settings(
 {
   MADARA_GUARD_TYPE guard(mutex_);
 
-  for (size_t i = 0; i < vector_.size(); ++i) {
+  for (size_t i = 0; i < vector_.size(); ++i)
+  {
     vector_[i]->set_settings(settings);
   }
 }

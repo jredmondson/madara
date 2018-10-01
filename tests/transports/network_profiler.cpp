@@ -24,59 +24,84 @@ size_t num_vars(1);
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-m" || arg1 == "--multicast") {
-      if (i + 1 < argc) {
+    if (arg1 == "-m" || arg1 == "--multicast")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::MULTICAST;
       }
       ++i;
-    } else if (arg1 == "-b" || arg1 == "--broadcast") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-b" || arg1 == "--broadcast")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::BROADCAST;
       }
       ++i;
-    } else if (arg1 == "-u" || arg1 == "--udp") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-u" || arg1 == "--udp")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::UDP;
       }
       ++i;
-    } else if (arg1 == "-o" || arg1 == "--host") {
+    }
+    else if (arg1 == "-o" || arg1 == "--host")
+    {
       if (i + 1 < argc)
         host = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-d" || arg1 == "--domain") {
+    }
+    else if (arg1 == "-d" || arg1 == "--domain")
+    {
       if (i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-e" || arg1 == "--threads") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-e" || arg1 == "--threads")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_threads;
       }
 
       ++i;
-    } else if (arg1 == "-f" || arg1 == "--logfile") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-f" || arg1 == "--logfile")
+    {
+      if (i + 1 < argc)
+      {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-i" || arg1 == "--id") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-i" || arg1 == "--id")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
       ++i;
-    } else if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         int level;
         std::stringstream buffer(argv[i + 1]);
         buffer >> level;
@@ -85,15 +110,21 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "--num-vars") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "--num-vars")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> num_vars;
       }
 
       ++i;
-    } else if (arg1 == "-p" || arg1 == "--drop-rate") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-p" || arg1 == "--drop-rate")
+    {
+      if (i + 1 < argc)
+      {
         double drop_rate;
         std::stringstream buffer(argv[i + 1]);
         buffer >> drop_rate;
@@ -103,50 +134,72 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-q" || arg1 == "--queue-length") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-q" || arg1 == "--queue-length")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.queue_length;
       }
 
       ++i;
-    } else if (arg1 == "-r" || arg1 == "--reduced") {
+    }
+    else if (arg1 == "-r" || arg1 == "--reduced")
+    {
       settings.send_reduced_message_header = true;
-    } else if (arg1 == "-s" || arg1 == "--size") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-s" || arg1 == "--size")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> data_size;
       }
 
       ++i;
-    } else if (arg1 == "--send-hz") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "--send-hz")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> send_hertz;
       }
 
       ++i;
-    } else if (arg1 == "-t" || arg1 == "--time") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-t" || arg1 == "--time")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> test_time;
       }
 
       ++i;
-    } else if (arg1 == "-z" || arg1 == "--read-hertz") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-z" || arg1 == "--read-hertz")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_thread_hertz;
       }
 
       ++i;
-    } else if (arg1 == "--zmq" || arg1 == "--0mq") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "--zmq" || arg1 == "--0mq")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::ZMQ;
       }
       ++i;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Profiles a network transport. Requires 2 processes. The result "
@@ -210,10 +263,13 @@ public:
     total_latency += current;
 
     // there are race conditions here with multiple read threads but meh
-    if (received == 0) {
+    if (received == 0)
+    {
       min_latency = current;
       max_latency = current;
-    } else {
+    }
+    else
+    {
       uint64_t cur_min = min_latency;
       uint64_t cur_max = max_latency;
 
@@ -240,15 +296,20 @@ int main(int argc, char** argv)
   handle_arguments(argc, argv);
 
   // setup default transport as multicast
-  if (settings.hosts.size() == 0) {
+  if (settings.hosts.size() == 0)
+  {
     settings.hosts.push_back(default_multicast);
   }
 
   // id == 0 ? "publisher" : "subscriber"
-  if (settings.id == 0) {
-    if (num_vars > 1) {
+  if (settings.id == 0)
+  {
+    if (num_vars > 1)
+    {
       data_size = data_size / num_vars;
-    } else {
+    }
+    else
+    {
       num_vars = 1;
     }
 
@@ -260,7 +321,8 @@ int main(int argc, char** argv)
 
     // get a handle to the data
 
-    for (size_t i = 0; i < num_vars; ++i) {
+    for (size_t i = 0; i < num_vars; ++i)
+    {
       std::stringstream buffer;
       buffer << "data";
       buffer << i;
@@ -280,15 +342,18 @@ int main(int argc, char** argv)
 
     utility::EpochEnforcer<utility::Clock> enforcer(1 / send_hertz, test_time);
 
-    while (!enforcer.is_done()) {
-      for (auto var : vars) {
+    while (!enforcer.is_done())
+    {
+      for (auto var : vars)
+      {
         kb.mark_modified(var);
       }
 
       kb.mark_modified(num_vars_ref);
       kb.send_modifieds();
 
-      if (send_hertz > 0.0) {
+      if (send_hertz > 0.0)
+      {
         enforcer.sleep_until_next();
       }
     }
@@ -301,7 +366,8 @@ int main(int argc, char** argv)
 
     std::cerr << "Publisher is done. Check results on subscriber.\n";
   }  // end publisher
-  else {
+  else
+  {
     // add a receive filter to keep track of latency
     Profiler profiler;
     settings.add_receive_filter(&profiler);
@@ -319,7 +385,8 @@ int main(int argc, char** argv)
     kb.close_transport();
 
     // print stats
-    if (profiler.received > 0) {
+    if (profiler.received > 0)
+    {
       uint64_t received = profiler.received;
       uint64_t avg_latency = profiler.total_latency / received;
       uint64_t min_latency = profiler.min_latency;
@@ -339,7 +406,8 @@ int main(int argc, char** argv)
 
       std::cerr << "  Hosts: \n";
 
-      for (auto host : settings.hosts) {
+      for (auto host : settings.hosts)
+      {
         std::cerr << "    " << host << "\n";
       }
 
@@ -356,7 +424,9 @@ int main(int argc, char** argv)
       std::cerr << "  Data received: " << (data_transfered * (uint64_t)num_vars)
                 << " B\n";
       std::cerr << "  Data rate: " << data_rate << " B/s\n";
-    } else {
+    }
+    else
+    {
       std::cerr << "Subscriber received no data.\nTest: FAIL.\n";
       return -1;
     }

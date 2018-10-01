@@ -39,10 +39,13 @@ void test_copy(void)
   if (dest.get("name") == "John Smith" && dest.get("age") == Integer(20) &&
       dest.get("occupation") == "Explorer" &&
       dest.get("spouse") == "Pocahontas" &&
-      dest.get("kids.0") == "Thomas Rolfe") {
+      dest.get("kids.0") == "Thomas Rolfe")
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "TEST 1: Full copy is SUCCESS.\n");
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "TEST 1: Full copy is FAIL.\n");
     ++madara_fails;
@@ -56,10 +59,13 @@ void test_copy(void)
   dest.copy(source, copy_set, true);
   if (dest.get("name") == "John Smith" && !dest.exists("age") &&
       !dest.exists("occupation") && !dest.exists("spouse") &&
-      !dest.exists("kids.0")) {
+      !dest.exists("kids.0"))
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "TEST 2: Lone name copy is SUCCESS.\n");
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "TEST 2: Lone name copy is FAIL.\n");
     ++madara_fails;
@@ -73,10 +79,13 @@ void test_copy(void)
   dest.copy(source, copy_set, false);
   if (dest.get("name") == "John Smith" && dest.get("age") == Integer(20) &&
       !dest.exists("occupation") && !dest.exists("spouse") &&
-      !dest.exists("kids.0")) {
+      !dest.exists("kids.0"))
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "TEST 3: Add age to copy is SUCCESS.\n");
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "TEST 3: Add age to copy is FAIL.\n");
     dest.print();
@@ -130,10 +139,13 @@ void test_copy_knowledgereqs(void)
       dest.get("agent.name") == "James Bond" &&
       dest.get("agent.age") == Integer(45) &&
       dest.get("agent.drink") == "Martini" &&
-      dest.get("agent.all.drink") == "Water") {
+      dest.get("agent.all.drink") == "Water")
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS.\n");
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "FAIL.\n");
     ++madara_fails;
@@ -155,10 +167,13 @@ void test_copy_knowledgereqs(void)
       dest.get("agent.name") == "James Bond" &&
       dest.get("agent.age") == Integer(45) &&
       dest.get("agent.drink") == "Martini" &&
-      dest.get("agent.all.drink") == "Water") {
+      dest.get("agent.all.drink") == "Water")
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS.\n");
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "FAIL.\n");
     ++madara_fails;
@@ -178,10 +193,13 @@ void test_copy_knowledgereqs(void)
       dest.get("agent.0.spouse") == "Pocahontas" &&
       dest.get("agent.name").is_false() && dest.get("agent.age").is_false() &&
       dest.get("agent.drink").is_false() &&
-      dest.get("agent.all.drink").is_false()) {
+      dest.get("agent.all.drink").is_false())
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS.\n");
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "FAIL.\n");
     ++madara_fails;
@@ -202,10 +220,13 @@ void test_copy_knowledgereqs(void)
       dest.get("agent.0.spouse").is_false() &&
       dest.get("agent.name").is_false() && dest.get("agent.age").is_false() &&
       dest.get("agent.drink") == "Martini" &&
-      dest.get("agent.all.drink") == "Water") {
+      dest.get("agent.all.drink") == "Water")
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS.\n");
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "FAIL.\n");
     ++madara_fails;
@@ -235,10 +256,13 @@ void test_copy_knowledgereqs(void)
       dest.get("agent.drink") == "Martini" &&
       dest.get("agent.all.drink") == "Water" && dest.get("a") == "test value" &&
       dest.get("ab") == "test value 2" && dest.get("ahhah") == "extra values" &&
-      dest.get("azender") == "values after insert") {
+      dest.get("azender") == "values after insert")
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS.\n");
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "FAIL.\n");
     ++madara_fails;
@@ -269,10 +293,13 @@ void test_copy_knowledgereqs(void)
       dest.get("agent.drink") == "Martini" &&
       dest.get("agent.all.drink") == "Water" && dest.get("a") == "test value" &&
       dest.get("ab") == "test value 2" && dest.get("ahhah") == "extra values" &&
-      dest.get("azender") == "values after insert") {
+      dest.get("azender") == "values after insert")
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS.\n");
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "FAIL.\n");
     ++madara_fails;
@@ -285,9 +312,12 @@ int main(int, char**)
   test_copy();
   test_copy_knowledgereqs();
 
-  if (madara_fails > 0) {
+  if (madara_fails > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

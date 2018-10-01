@@ -60,7 +60,8 @@ KnowledgeRecord madara::expression::VariableCompareNode::prune(bool& can_change)
 
   if (this->var_ != 0 || this->array_ != 0)
     left_child_can_change = true;
-  else {
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::VariableCompareNode: "
         "KARL COMPILE ERROR: Compare has no variable\\n");
@@ -70,13 +71,17 @@ KnowledgeRecord madara::expression::VariableCompareNode::prune(bool& can_change)
                                     "Node has no variable left-hand side\n");
   }
 
-  if (this->rhs_) {
+  if (this->rhs_)
+  {
     right_value = this->rhs_->prune(right_child_can_change);
-    if (!right_child_can_change && dynamic_cast<LeafNode*>(rhs_) == 0) {
+    if (!right_child_can_change && dynamic_cast<LeafNode*>(rhs_) == 0)
+    {
       delete this->rhs_;
       this->rhs_ = new LeafNode(*(this->logger_), right_value);
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::VariableCompareNode: "
         "KARL COMPILE ERROR: Compare has no right expression\n");
@@ -104,28 +109,49 @@ KnowledgeRecord madara::expression::VariableCompareNode::evaluate(
   else if (array_)
     lhs = array_->evaluate(settings);
 
-  if (rhs_) {
-    if (compare_type_ == LESS_THAN) {
+  if (rhs_)
+  {
+    if (compare_type_ == LESS_THAN)
+    {
       result = lhs < rhs_->evaluate(settings);
-    } else if (compare_type_ == LESS_THAN_EQUAL) {
+    }
+    else if (compare_type_ == LESS_THAN_EQUAL)
+    {
       result = lhs <= rhs_->evaluate(settings);
-    } else if (compare_type_ == EQUAL) {
+    }
+    else if (compare_type_ == EQUAL)
+    {
       result = lhs == rhs_->evaluate(settings);
-    } else if (compare_type_ == GREATER_THAN_EQUAL) {
+    }
+    else if (compare_type_ == GREATER_THAN_EQUAL)
+    {
       result = lhs >= rhs_->evaluate(settings);
-    } else {
+    }
+    else
+    {
       result = lhs > rhs_->evaluate(settings);
     }
-  } else {
-    if (compare_type_ == LESS_THAN) {
+  }
+  else
+  {
+    if (compare_type_ == LESS_THAN)
+    {
       result = lhs < value_;
-    } else if (compare_type_ == LESS_THAN_EQUAL) {
+    }
+    else if (compare_type_ == LESS_THAN_EQUAL)
+    {
       result = lhs <= value_;
-    } else if (compare_type_ == EQUAL) {
+    }
+    else if (compare_type_ == EQUAL)
+    {
       result = lhs == value_;
-    } else if (compare_type_ == GREATER_THAN_EQUAL) {
+    }
+    else if (compare_type_ == GREATER_THAN_EQUAL)
+    {
       result = lhs >= value_;
-    } else {
+    }
+    else
+    {
       result = lhs > value_;
     }
   }

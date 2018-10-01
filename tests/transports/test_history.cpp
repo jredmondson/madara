@@ -22,16 +22,21 @@ int log_level = 2;
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
-    if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> log_level;
       }
 
       ++i;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Test the checkpointing functionality.\n\n"

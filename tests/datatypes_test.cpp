@@ -13,7 +13,8 @@ using namespace knowledge;
 
 namespace geo
 {
-struct Point {
+struct Point
+{
   double x = 0, y = 0, z = 0;
 
   Point() = default;
@@ -28,7 +29,8 @@ void for_each_field(Fun fun, Point& val)
   fun("z", val.z);
 };
 
-struct Quaternion {
+struct Quaternion
+{
   double w = 0, i = 0, j = 0, k = 0;
 
   Quaternion() = default;
@@ -44,7 +46,8 @@ void for_each_field(Fun fun, Quaternion& val)
   fun("k", val.k);
 };
 
-struct Pose : Point, Quaternion {
+struct Pose : Point, Quaternion
+{
   Pose() = default;
   Pose(double x, double y, double z = 0) : Point(x, y, z) {}
   Pose(double x, double y, double z, double w, double i, double j, double k)
@@ -60,7 +63,8 @@ void for_each_field(Fun fun, Pose& val)
   for_each_field(fun, static_cast<Quaternion&>(val));
 };
 
-struct Stamp {
+struct Stamp
+{
   int64_t time;
   std::string frame;
 };
@@ -72,7 +76,8 @@ void for_each_field(Fun fun, Stamp& val)
   fun("frame", val.frame);
 }
 
-struct StampedPose : Pose {
+struct StampedPose : Pose
+{
   Stamp stamp = {0, ""};
 
   StampedPose() = default;

@@ -53,19 +53,24 @@ public:
 
     ptree::json_parser::read_json(buffer, reader);
 
-    if (reader.count("email") == 1) {
+    if (reader.count("email") == 1)
+    {
       email = reader.get<std::string>("email");
     }
-    if (reader.count("organization") == 1) {
+    if (reader.count("organization") == 1)
+    {
       organization = reader.get<std::string>("organization");
     }
-    if (reader.count("path") == 1) {
+    if (reader.count("path") == 1)
+    {
       path = reader.get<std::string>("path");
     }
-    if (reader.count("role") == 1) {
+    if (reader.count("role") == 1)
+    {
       role = reader.get<std::string>("role");
     }
-    if (reader.count("title") == 1) {
+    if (reader.count("title") == 1)
+    {
       title = reader.get<std::string>("title");
     }
   }
@@ -110,13 +115,16 @@ public:
 
     ptree::json_parser::read_json(buffer, reader);
 
-    if (reader.count("name") == 1) {
+    if (reader.count("name") == 1)
+    {
       name = reader.get<std::string>("name");
     }
-    if (reader.count("path") == 1) {
+    if (reader.count("path") == 1)
+    {
       path = reader.get<std::string>("path");
     }
-    if (reader.count("title") == 1) {
+    if (reader.count("title") == 1)
+    {
       title = reader.get<std::string>("title");
     }
   }
@@ -146,13 +154,16 @@ public:
 
     ptree::json_parser::read_json(buffer, reader);
 
-    if (reader.count("email") == 1) {
+    if (reader.count("email") == 1)
+    {
       email = reader.get<std::string>("email");
     }
-    if (reader.count("path") == 1) {
+    if (reader.count("path") == 1)
+    {
       path = reader.get<std::string>("path");
     }
-    if (reader.count("title") == 1) {
+    if (reader.count("title") == 1)
+    {
       title = reader.get<std::string>("title");
     }
   }
@@ -197,52 +208,68 @@ public:
 
     ptree::json_parser::read_json(buffer, reader);
 
-    if (reader.count("bytes") == 1) {
+    if (reader.count("bytes") == 1)
+    {
       bytes = reader.get<long>("bytes");
     }
-    if (reader.count("description") == 1) {
+    if (reader.count("description") == 1)
+    {
       description = reader.get<std::string>("description");
     }
-    if (reader.count("encoding") == 1) {
+    if (reader.count("encoding") == 1)
+    {
       encoding = reader.get<std::string>("encoding");
     }
-    if (reader.count("endTime") == 1) {
+    if (reader.count("endTime") == 1)
+    {
       endTime = reader.get<long>("endTime");
     }
-    if (reader.count("flightName") == 1) {
+    if (reader.count("flightName") == 1)
+    {
       flightName = reader.get<std::string>("flightName");
     }
-    if (reader.count("format") == 1) {
+    if (reader.count("format") == 1)
+    {
       format = reader.get<std::string>("format");
     }
-    if (reader.count("hash") == 1) {
+    if (reader.count("hash") == 1)
+    {
       hash = reader.get<std::string>("hash");
     }
-    if (reader.count("location") == 1) {
+    if (reader.count("location") == 1)
+    {
       location = reader.get<std::string>("location");
     }
-    if (reader.count("mediatype") == 1) {
+    if (reader.count("mediatype") == 1)
+    {
       mediatype = reader.get<std::string>("mediatype");
     }
-    if (reader.count("name") == 1) {
+    if (reader.count("name") == 1)
+    {
       name = reader.get<std::string>("name");
     }
-    if (reader.count("notes") == 1) {
+    if (reader.count("notes") == 1)
+    {
       notes = reader.get<std::string>("notes");
     }
-    if (reader.count("path") == 1) {
+    if (reader.count("path") == 1)
+    {
       path = reader.get<std::string>("path");
     }
-    if (reader.count("robotName") == 1) {
+    if (reader.count("robotName") == 1)
+    {
       robotName = reader.get<std::string>("robotName");
     }
-    if (reader.count("schema") == 1) {
+    if (reader.count("schema") == 1)
+    {
       schema = reader.get<std::string>("schema");
     }
-    if (reader.count("startTime") == 1) {
+    if (reader.count("startTime") == 1)
+    {
       startTime = reader.get<long>("startTime");
     }
-    if (reader.count("title") == 1) {
+    if (reader.count("title") == 1)
+    {
       title = reader.get<std::string>("title");
     }
   }
@@ -297,25 +324,32 @@ public:
 
     ptree::json_parser::read_json(buffer, reader);
 
-    if (reader.count("created") == 1) {
+    if (reader.count("created") == 1)
+    {
       created = reader.get<std::string>("created");
     }
-    if (reader.count("description") == 1) {
+    if (reader.count("description") == 1)
+    {
       description = reader.get<std::string>("description");
     }
-    if (reader.count("endTime") == 1) {
+    if (reader.count("endTime") == 1)
+    {
       endTime = reader.get<long>("endTime");
     }
-    if (reader.count("id") == 1) {
+    if (reader.count("id") == 1)
+    {
       id = reader.get<std::string>("id");
     }
-    if (reader.count("name") == 1) {
+    if (reader.count("name") == 1)
+    {
       name = reader.get<std::string>("name");
     }
-    if (reader.count("startTime") == 1) {
+    if (reader.count("startTime") == 1)
+    {
       startTime = reader.get<long>("startTime");
     }
-    if (reader.count("title") == 1) {
+    if (reader.count("title") == 1)
+    {
       title = reader.get<std::string>("title");
     }
   }
@@ -346,29 +380,52 @@ std::vector<Source> sources;
 
 std::string get_mediatype(const std::string& format)
 {
-  if (format == "csv") {
+  if (format == "csv")
+  {
     return "text/csv";
-  } else if (format == "gif") {
+  }
+  else if (format == "gif")
+  {
     return "image/gif";
-  } else if (format == "html") {
+  }
+  else if (format == "html")
+  {
     return "text/html";
-  } else if (format == "jpeg") {
+  }
+  else if (format == "jpeg")
+  {
     return "image/jpeg";
-  } else if (format == "mp4") {
+  }
+  else if (format == "mp4")
+  {
     return "application/mp4";
-  } else if (format == "ogg") {
+  }
+  else if (format == "ogg")
+  {
     return "audio/ogg";
-  } else if (format == "pdf") {
+  }
+  else if (format == "pdf")
+  {
     return "application/pdf";
-  } else if (format == "png") {
+  }
+  else if (format == "png")
+  {
     return "image/png";
-  } else if (format == "rtf") {
+  }
+  else if (format == "rtf")
+  {
     return "doc/rtf";
-  } else if (format == "xml") {
+  }
+  else if (format == "xml")
+  {
     return "application/xml";
-  } else if (format == "zip") {
+  }
+  else if (format == "zip")
+  {
     return "application/zip";
-  } else {
+  }
+  else
+  {
     return "application/octet-stream";
   }
 }
@@ -376,11 +433,14 @@ std::string get_mediatype(const std::string& format)
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-ac" || arg1 == "--contributor") {
-      if (i + 1 < argc) {
+    if (arg1 == "-ac" || arg1 == "--contributor")
+    {
+      if (i + 1 < argc)
+      {
         // we add contributor to sources and contributors
         Contributor contributor;
         Source new_source;
@@ -393,8 +453,11 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-as" || arg1 == "--source") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-as" || arg1 == "--source")
+    {
+      if (i + 1 < argc)
+      {
         Source new_source;
         new_source.read(argv[i + 1]);
 
@@ -402,28 +465,42 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-d" || arg1 == "--dest-path") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-d" || arg1 == "--dest-path")
+    {
+      if (i + 1 < argc)
+      {
         dest_path = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "--debug") {
+    }
+    else if (arg1 == "--debug")
+    {
       debug = true;
-    } else if (arg1 == "-e" || arg1 == "--description") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-e" || arg1 == "--description")
+    {
+      if (i + 1 < argc)
+      {
         manifest.description = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-k" || arg1 == "--keyword") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-k" || arg1 == "--keyword")
+    {
+      if (i + 1 < argc)
+      {
         manifest.keywords.push_back(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-l" || arg1 == "--license") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-l" || arg1 == "--license")
+    {
+      if (i + 1 < argc)
+      {
         License license;
         license.read(argv[i + 1]);
 
@@ -431,38 +508,55 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-ls" || arg1 == "--load-size") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-ls" || arg1 == "--load-size")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> checkpoint_settings.buffer_size;
       }
 
       ++i;
-    } else if (arg1 == "-n" || arg1 == "--name") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-n" || arg1 == "--name")
+    {
+      if (i + 1 < argc)
+      {
         manifest.name = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-s" || arg1 == "--source-path") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-s" || arg1 == "--source-path")
+    {
+      if (i + 1 < argc)
+      {
         source_path = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-t" || arg1 == "--title") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-t" || arg1 == "--title")
+    {
+      if (i + 1 < argc)
+      {
         manifest.title = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-v" || arg1 == "--version") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-v" || arg1 == "--version")
+    {
+      if (i + 1 < argc)
+      {
         manifest.version = argv[i + 1];
       }
 
       ++i;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nInvalid arg %s...\n"
           "\nProgram summary for %s [options] [Logic]:\n\n"
@@ -491,11 +585,14 @@ void read_resources(const std::string& path)
 {
   T end, p;
 
-  if (filesystem::is_directory(path)) {
-    for (p = T(path); p != end; ++p) {
+  if (filesystem::is_directory(path))
+  {
+    for (p = T(path); p != end; ++p)
+    {
       auto file_path = p->path();
       if (filesystem::is_regular_file(file_path) &&
-          !filesystem::is_directory(file_path)) {
+          !filesystem::is_directory(file_path))
+      {
         Resource resource;
 
         // grab the filename
@@ -513,7 +610,8 @@ void read_resources(const std::string& path)
         resource.name = file_path.stem().string();
         resource.format = file_path.extension().string();
 
-        if (utility::read_file(filename, temp_buffer, file_size) == 0) {
+        if (utility::read_file(filename, temp_buffer, file_size) == 0)
+        {
           utility::ScopedArray<char> file_contents = (char*)temp_buffer;
           std::stringstream buffer;
 
@@ -527,7 +625,8 @@ void read_resources(const std::string& path)
           buffer << crc_32_hash.checksum();
           buffer >> resource.hash;
 
-          if (resource.format == ".stk" || resource.format == ".kb") {
+          if (resource.format == ".stk" || resource.format == ".kb")
+          {
             madara_logger_ptr_log(logger::global_logger.get(),
                 logger::LOG_ALWAYS,
                 "%s is a knowledge base. Attempting to read timestamps.\n",
@@ -542,11 +641,13 @@ void read_resources(const std::string& path)
             resource.endTime = (long)checkpoint_settings.last_timestamp;
 
             if (manifest.startTime == 0 ||
-                resource.startTime < manifest.startTime) {
+                resource.startTime < manifest.startTime)
+            {
               manifest.startTime = resource.startTime;
             }
 
-            if (resource.endTime > manifest.endTime) {
+            if (resource.endTime > manifest.endTime)
+            {
               manifest.endTime = resource.endTime;
             }
           }
@@ -557,7 +658,8 @@ void read_resources(const std::string& path)
       }  // end if is regular file
     }    // end iterate through directory
   }      // end if is directory
-  else {
+  else
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "directory check: %s doesn't exist\n", path.c_str());
   }
@@ -612,7 +714,8 @@ int main(int argc, char** argv)
 
   utility::string_replace(datapackage, "\n    ", "\n", true);
 
-  if (debug) {
+  if (debug)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "datapackage.json:\n%s\n", datapackage.c_str());
   }

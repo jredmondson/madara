@@ -27,59 +27,84 @@ int madara_fails(0);
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-m" || arg1 == "--multicast") {
-      if (i + 1 < argc) {
+    if (arg1 == "-m" || arg1 == "--multicast")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::MULTICAST;
       }
       ++i;
-    } else if (arg1 == "-b" || arg1 == "--broadcast") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-b" || arg1 == "--broadcast")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::BROADCAST;
       }
       ++i;
-    } else if (arg1 == "-u" || arg1 == "--udp") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-u" || arg1 == "--udp")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::UDP;
       }
       ++i;
-    } else if (arg1 == "-o" || arg1 == "--host") {
+    }
+    else if (arg1 == "-o" || arg1 == "--host")
+    {
       if (i + 1 < argc)
         host = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-d" || arg1 == "--domain") {
+    }
+    else if (arg1 == "-d" || arg1 == "--domain")
+    {
       if (i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-e" || arg1 == "--threads") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-e" || arg1 == "--threads")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_threads;
       }
 
       ++i;
-    } else if (arg1 == "-f" || arg1 == "--logfile") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-f" || arg1 == "--logfile")
+    {
+      if (i + 1 < argc)
+      {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-i" || arg1 == "--id") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-i" || arg1 == "--id")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
       ++i;
-    } else if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         int level;
         std::stringstream buffer(argv[i + 1]);
         buffer >> level;
@@ -88,8 +113,11 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-p" || arg1 == "--drop-rate") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-p" || arg1 == "--drop-rate")
+    {
+      if (i + 1 < argc)
+      {
         double drop_rate;
         std::stringstream buffer(argv[i + 1]);
         buffer >> drop_rate;
@@ -99,43 +127,62 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-q" || arg1 == "--queue-length") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-q" || arg1 == "--queue-length")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.queue_length;
       }
 
       ++i;
-    } else if (arg1 == "-r" || arg1 == "--reduced") {
+    }
+    else if (arg1 == "-r" || arg1 == "--reduced")
+    {
       settings.send_reduced_message_header = true;
-    } else if (arg1 == "--send-hz") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "--send-hz")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> send_hertz;
       }
 
       ++i;
-    } else if (arg1 == "-t" || arg1 == "--time") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-t" || arg1 == "--time")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> test_time;
       }
 
       ++i;
-    } else if (arg1 == "-z" || arg1 == "--read-hertz") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-z" || arg1 == "--read-hertz")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_thread_hertz;
       }
 
       ++i;
-    } else if (arg1 == "--zmq" || arg1 == "--0mq") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "--zmq" || arg1 == "--0mq")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::ZMQ;
       }
       ++i;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Publishes variable updates to try to induce lamport clock "
@@ -191,7 +238,8 @@ int main(int argc, char** argv)
   handle_arguments(argc, argv);
 
   // setup default transport as multicast
-  if (settings.hosts.size() == 0) {
+  if (settings.hosts.size() == 0)
+  {
     settings.hosts.push_back(default_multicast);
   }
 
@@ -203,10 +251,14 @@ int main(int argc, char** argv)
   kb.get_context().set_clock(100);
 
   // id == 0 ? "publisher" : "subscriber"
-  if (settings.id == 0) {
-    if (num_vars > 1) {
+  if (settings.id == 0)
+  {
+    if (num_vars > 1)
+    {
       data_size = data_size / num_vars;
-    } else {
+    }
+    else
+    {
       num_vars = 1;
     }
 
@@ -217,9 +269,11 @@ int main(int argc, char** argv)
     knowledge::KnowledgeUpdateSettings decrementer;
     decrementer.clock_increment = -5;
     // use epoch enforcer"
-    while (!enforcer.is_done()) {
+    while (!enforcer.is_done())
+    {
       // Periodically rollback lamport clock to check enforcement
-      if (counter % 10 == 0) {
+      if (counter % 10 == 0)
+      {
         knowledge::ContextGuard guard(kb);
         kb.get_context().inc_clock(decrementer);
       }
@@ -229,14 +283,16 @@ int main(int argc, char** argv)
 
       kb.send_modifieds();
 
-      if (send_hertz > 0.0) {
+      if (send_hertz > 0.0)
+      {
         enforcer.sleep_until_next();
       }
     }
 
     std::cerr << "Publisher is done. Check results on subscriber.\n";
   }  // end publisher
-  else {
+  else
+  {
     std::cerr << "Receiving for " << test_time << " s on "
               << transport::types_to_string(settings.type) << " transport\n";
 
@@ -247,7 +303,8 @@ int main(int argc, char** argv)
     knowledge::VariableReference var_ref = kb.get_ref("var");
 
     // use epoch enforcer"
-    while (!enforcer.is_done() && madara_fails == 0) {
+    while (!enforcer.is_done() && madara_fails == 0)
+    {
       uint64_t cur_context_clock;
       uint64_t cur_get_kr_clock;
       uint64_t cur_container_kr_clock;
@@ -264,7 +321,8 @@ int main(int argc, char** argv)
       // std::cerr << cur_context_clock << " " <<  cur_get_kr_clock <<
       //" " << cur_container_kr_clock << " " << cur_value << std::endl;
 
-      if (cur_value < last_value) {
+      if (cur_value < last_value)
+      {
         std::cerr << "  Integer.to_integer(): " << last_value;
         std::cerr << "->" << cur_value << ". Test: ";
         std::cerr << "FAIL\n";
@@ -272,7 +330,8 @@ int main(int argc, char** argv)
       }
       last_value = cur_value;
 
-      if (cur_context_clock < last_context_clock) {
+      if (cur_context_clock < last_context_clock)
+      {
         std::cerr << "  context.clock: " << last_context_clock;
         std::cerr << "->" << cur_context_clock << ". Test: ";
         std::cerr << "FAIL\n";
@@ -280,7 +339,8 @@ int main(int argc, char** argv)
       }
       last_context_clock = cur_context_clock;
 
-      if (cur_get_kr_clock < last_get_kr_clock) {
+      if (cur_get_kr_clock < last_get_kr_clock)
+      {
         std::cerr << "  get(\"var\").clock: " << last_get_kr_clock;
         std::cerr << "->" << cur_get_kr_clock << ". Test: ";
         std::cerr << "FAIL\n";
@@ -288,7 +348,8 @@ int main(int argc, char** argv)
       }
       last_get_kr_clock = cur_get_kr_clock;
 
-      if (cur_container_kr_clock < last_container_kr_clock) {
+      if (cur_container_kr_clock < last_container_kr_clock)
+      {
         std::cerr << "  Integer.to_record().clock: " << last_container_kr_clock;
         std::cerr << "->" << cur_container_kr_clock << ". Test: ";
         std::cerr << "FAIL\n";
@@ -298,9 +359,12 @@ int main(int argc, char** argv)
     }
   }
 
-  if (madara_fails > 0) {
+  if (madara_fails > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

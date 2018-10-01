@@ -158,7 +158,8 @@ public:
      **/
     value_type operator*() const
     {
-      if (biter_) {
+      if (biter_)
+      {
         return {miter_->first, &**biter_};
       }
       return {miter_->first, miter_->second.get_record_unsafe()};
@@ -169,11 +170,13 @@ public:
      **/
     const_iterator& operator++()
     {
-      if (biter_) {
+      if (biter_)
+      {
         ++*biter_;
         auto rec = miter_->second.get_record_unsafe();
         auto cbuf = rec->share_circular_buffer();
-        if (cbuf && *biter_ != cbuf->cend()) {
+        if (cbuf && *biter_ != cbuf->cend())
+        {
           return *this;
         }
       }
@@ -213,28 +216,33 @@ public:
 
     biter_uptr begin_biter()
     {
-      for (;;) {
-        if (!reader_->history_ || miter_ == reader_->map_.end()) {
+      for (;;)
+      {
+        if (!reader_->history_ || miter_ == reader_->map_.end())
+        {
           return nullptr;
         }
 
         const KnowledgeRecord* rec = miter_->second.get_record_unsafe();
 
-        if (!rec->has_history()) {
+        if (!rec->has_history())
+        {
           return nullptr;
         }
 
         auto cbuf = rec->share_circular_buffer();
         auto ret = cbuf->cbegin();
 
-        if (reader_->min_toi_ > 0) {
+        if (reader_->min_toi_ > 0)
+        {
           ret = std::upper_bound(ret, cbuf->cend(), reader_->min_toi_,
               [](const uint64_t& lhs, const KnowledgeRecord& rhs) {
                 return lhs < rhs.toi();
               });
         }
 
-        if (ret == cbuf->cend()) {
+        if (ret == cbuf->cend())
+        {
           ++miter_;
           continue;
         }

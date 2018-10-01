@@ -19,7 +19,8 @@ namespace transport
 class MADARA_EXPORT TransportContext
 {
 public:
-  enum Operations {
+  enum Operations
+  {
     IDLE_OPERATION = 0,
     SENDING_OPERATION = 1,
     RECEIVING_OPERATION = 2,

@@ -93,7 +93,8 @@ namespace madara
 {
 namespace expression
 {
-enum {
+enum
+{
   BOTH_PRECEDENCE = 1,
   IMPLIES_PRECEDENCE = 2,
   ASSIGNMENT_PRECEDENCE = 3,
@@ -1858,7 +1859,8 @@ public:
   /// builds an equivalent ExpressionTree node
   virtual ComponentNode* build(void)
   {
-    if (left_ || right_) {
+    if (left_ || right_)
+    {
       std::stringstream str;
       str << name_ << "::build: KARL COMPILE ERROR: " << name_
           << " has a left or right child. Likely missing a semi-colon";
@@ -1958,7 +1960,8 @@ int madara::expression::Number::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Number::build(void)
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     std::string message = "Number::build: KARL COMPILE ERROR: "
                           "Number ";
     message += item_.to_string();
@@ -1995,7 +1998,8 @@ madara::expression::ComponentNode* madara::expression::Negate::build()
   Symbol* right = right_;
   unsigned int i;
 
-  if (left_) {
+  if (left_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "Negate::build: KARL COMPILE ERROR: "
         "Negate(-) has a left child. Likely missing a semi-colon\n");
@@ -2005,9 +2009,11 @@ madara::expression::ComponentNode* madara::expression::Negate::build()
         "Negate(-) has a left child. Likely missing a semi-colon\n");
   }
 
-  if (right_) {
-    for (i = 1; next; ++i, right = next->right_,
-        next = dynamic_cast<Negate*>(next->right_)) {
+  if (right_)
+  {
+    for (i = 1; next;
+         ++i, right = next->right_, next = dynamic_cast<Negate*>(next->right_))
+    {
     }
 
     if (i % 2 == 1)
@@ -2015,7 +2021,9 @@ madara::expression::ComponentNode* madara::expression::Negate::build()
     else
       return new CompositeNegateNode(*(this->logger_),
           new CompositeNegateNode(*(this->logger_), right->build()));
-  } else {
+  }
+  else
+  {
     return new CompositeNegateNode(*(this->logger_), 0);
   }
 }
@@ -2064,7 +2072,8 @@ int madara::expression::ConstArray::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ConstArray::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "array[]::build: KARL COMPILE ERROR: "
         "array[] has a left or right child. Likely missing a semi-colon\n");
@@ -2107,7 +2116,8 @@ int madara::expression::ClearVariable::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ClearVariable::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#clear_var::build: KARL COMPILE ERROR: "
         "#clear_var has a left or right child. Likely missing a semi-colon\n");
@@ -2139,7 +2149,8 @@ int madara::expression::DeleteVariable::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::DeleteVariable::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#delete_var::build: KARL COMPILE ERROR: "
         "#delete_var has a left or right child. Likely missing a semi-colon\n");
@@ -2170,7 +2181,8 @@ int madara::expression::Eval::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Eval::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#evaluate::build: KARL COMPILE ERROR: "
         "#evaluate has a left or right child. Likely missing a semi-colon\n");
@@ -2202,7 +2214,8 @@ int madara::expression::ExpandEnv::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ExpandEnv::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#expand_env::build: KARL COMPILE ERROR: "
         "#expand_env has a left or right child. Likely missing a semi-colon\n");
@@ -2234,7 +2247,8 @@ int madara::expression::ExpandStatement::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ExpandStatement::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#expand::build: KARL COMPILE ERROR: "
         "#expand has a left or right child. Likely missing a semi-colon\n");
@@ -2266,7 +2280,8 @@ int madara::expression::Fragment::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Fragment::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#fragment::build: KARL COMPILE ERROR: "
         "#fragment has a left or right child. Likely missing a semi-colon\n");
@@ -2298,7 +2313,8 @@ int madara::expression::LogLevel::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::LogLevel::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#log_level::build: KARL COMPILE ERROR: "
         "#log_level has a left or right child. Likely missing a semi-colon\n");
@@ -2330,7 +2346,8 @@ int madara::expression::GetClock::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::GetClock::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#get_clock::build: KARL COMPILE ERROR: "
         "#get_clock has a left or right child. Likely missing a semi-colon\n");
@@ -2362,7 +2379,8 @@ int madara::expression::GetTime::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::GetTime::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#get_time::build: KARL COMPILE ERROR: "
         "#get_time has a left or right child. Likely missing a semi-colon\n");
@@ -2394,7 +2412,8 @@ int madara::expression::GetTimeSeconds::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::GetTimeSeconds::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#get_time_s::build: KARL COMPILE ERROR: "
         "#get_time_s has a left or right child. Likely missing a semi-colon\n");
@@ -2426,7 +2445,8 @@ int madara::expression::SetClock::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::SetClock::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#set_clock::build: KARL COMPILE ERROR: "
         "#set_clock has a left or right child. Likely missing a semi-colon\n");
@@ -2458,7 +2478,8 @@ int madara::expression::SetFixed::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::SetFixed::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#set_fixed::build: KARL COMPILE ERROR: "
         "#set_fixed has a left or right child. Likely missing a semi-colon\n");
@@ -2490,7 +2511,8 @@ int madara::expression::SetPrecision::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::SetPrecision::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#set_precision::build: KARL COMPILE ERROR: "
         "#set_precision has a left or right child. Likely missing a "
@@ -2524,7 +2546,8 @@ int madara::expression::SetScientific::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::SetScientific::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#scientific::build: KARL COMPILE ERROR: "
         "#scientific has a left or right child. Likely missing a semi-colon\n");
@@ -2555,7 +2578,8 @@ int madara::expression::Print::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Print::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#print::build: KARL COMPILE ERROR: "
         "#print has a left or right child. Likely missing a semi-colon\n");
@@ -2586,7 +2610,8 @@ int madara::expression::Cos::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Cos::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#cos::build: KARL COMPILE ERROR: "
         "#cos has a left or right child. Likely missing a semi-colon\n");
@@ -2617,7 +2642,8 @@ int madara::expression::Sin::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Sin::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#sin::build: KARL COMPILE ERROR: "
         "#sin has a left or right child. Likely missing a semi-colon\n");
@@ -2648,7 +2674,8 @@ int madara::expression::Tan::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Tan::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#tan::build: KARL COMPILE ERROR: "
         "#tan has a left or right child. Likely missing a semi-colon\n");
@@ -2679,7 +2706,8 @@ int madara::expression::Power::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Power::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#pow::build: KARL COMPILE ERROR: "
         "#pow has a left or right child. Likely missing a semi-colon\n");
@@ -2711,7 +2739,8 @@ int madara::expression::SquareRoot::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::SquareRoot::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#sqrt::build: KARL COMPILE ERROR: "
         "#sqrt has a left or right child. Likely missing a semi-colon\n");
@@ -2743,7 +2772,8 @@ int madara::expression::PrintSystemCalls::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::PrintSystemCalls::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#print_system_calls::build: KARL COMPILE ERROR: "
         "#print_system_calls has a left or right child. Likely missing a "
@@ -2777,7 +2807,8 @@ int madara::expression::RandDouble::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::RandDouble::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#rand_double::build: KARL COMPILE ERROR: "
         "#rand_double has a left or right child. Likely missing a "
@@ -2810,7 +2841,8 @@ int madara::expression::RandInt::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::RandInt::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#rand_int::build: KARL COMPILE ERROR: "
         "#rand_int has a left or right child. Likely missing a semi-colon\n");
@@ -2842,7 +2874,8 @@ int madara::expression::ReadFile::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ReadFile::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#read_file::build: KARL COMPILE ERROR: "
         "#read_file has a left or right child. Likely missing a semi-colon\n");
@@ -2874,7 +2907,8 @@ int madara::expression::WriteFile::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::WriteFile::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#write_file::build: KARL COMPILE ERROR: "
         "#write_file has a left or right child. Likely missing a semi-colon\n");
@@ -2905,7 +2939,8 @@ int madara::expression::Size::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Size::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#size::build: KARL COMPILE ERROR: "
         "#size has a left or right child. Likely missing a semi-colon\n");
@@ -2936,7 +2971,8 @@ int madara::expression::Sleep::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Sleep::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#sleep::build: KARL COMPILE ERROR: "
         "#sleep has a left or right child. Likely missing a semi-colon\n");
@@ -2968,7 +3004,8 @@ int madara::expression::ToBuffer::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ToBuffer::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#to_buffer::build: KARL COMPILE ERROR: "
         "#to_buffer has a left or right child. Likely missing a semi-colon\n");
@@ -3000,7 +3037,8 @@ int madara::expression::ToDouble::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ToDouble::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#to_double::build: KARL COMPILE ERROR: "
         "#to_double has a left or right child. Likely missing a semi-colon\n");
@@ -3032,7 +3070,8 @@ int madara::expression::ToDoubles::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ToDoubles::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#to_doubles::build: KARL COMPILE ERROR: "
         "#to_doubles has a left or right child. Likely missing a semi-colon\n");
@@ -3064,7 +3103,8 @@ int madara::expression::ToHostDirs::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ToHostDirs::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#to_host_dirs::build: KARL COMPILE ERROR: "
         "#to_host_dirs has a left or right child. Likely missing a "
@@ -3097,7 +3137,8 @@ int madara::expression::ToInteger::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ToInteger::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#to_integer::build: KARL COMPILE ERROR: "
         "#to_integer has a left or right child. Likely missing a semi-colon\n");
@@ -3129,7 +3170,8 @@ int madara::expression::ToIntegers::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ToIntegers::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#to_integers::build: KARL COMPILE ERROR: "
         "#to_integers has a left or right child. Likely missing a "
@@ -3162,7 +3204,8 @@ int madara::expression::ToString::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ToString::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#to_string::build: KARL COMPILE ERROR: "
         "#to_string has a left or right child. Likely missing a semi-colon\n");
@@ -3193,7 +3236,8 @@ int madara::expression::Type::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Type::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#type::build: KARL COMPILE ERROR: "
         "#type has a left or right child. Likely missing a semi-colon\n");
@@ -3224,7 +3268,8 @@ int madara::expression::Isinf::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Isinf::build()
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "#is_inf::build: KARL COMPILE ERROR: "
         "#is_inf has a left or right child. Likely missing a semi-colon\n");
@@ -3271,7 +3316,8 @@ madara::expression::ComponentNode* madara::expression::ForLoop::build()
   if (body_)
     return new CompositeForLoop(precondition_->build(), condition_->build(),
         postcondition_->build(), body_->build(), context_);
-  else {
+  else
+  {
     ComponentNode *left(0), *right(0);
 
     if (left_)
@@ -3304,7 +3350,8 @@ madara::expression::ComponentNode* madara::expression::Postdecrement::build()
 {
   ComponentNode* right(0);
 
-  if (left_) {
+  if (left_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "var--::build: KARL COMPILE ERROR: "
         "var-- has a left child. Likely missing a semi-colon\n");
@@ -3340,7 +3387,8 @@ madara::expression::ComponentNode* madara::expression::Postincrement::build()
 {
   ComponentNode* right(0);
 
-  if (left_) {
+  if (left_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "var++::build: KARL COMPILE ERROR: "
         "var++ has a left child. Likely missing a semi-colon\n");
@@ -3376,7 +3424,8 @@ madara::expression::ComponentNode* madara::expression::Predecrement::build()
 {
   ComponentNode* right(0);
 
-  if (left_) {
+  if (left_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "--var::build: KARL COMPILE ERROR: "
         "--var has a left child. Likely missing a semi-colon\n");
@@ -3412,7 +3461,8 @@ madara::expression::ComponentNode* madara::expression::Preincrement::build()
 {
   ComponentNode* right(0);
 
-  if (left_) {
+  if (left_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "++var::build: KARL COMPILE ERROR: "
         "++var has a left child. Likely missing a semi-colon\n");
@@ -3451,7 +3501,8 @@ madara::expression::ComponentNode* madara::expression::Not::build()
   Symbol* right = right_;
   unsigned int i;
 
-  if (left_) {
+  if (left_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "Not(!)::build: KARL COMPILE ERROR: "
         "Logical Not(!) has a left child. Likely missing a semi-colon\n");
@@ -3461,9 +3512,11 @@ madara::expression::ComponentNode* madara::expression::Not::build()
         "Logical Not(!) has a left child. Likely missing a semi-colon\n");
   }
 
-  if (right_) {
+  if (right_)
+  {
     for (i = 1; next;
-         ++i, right = next->right_, next = dynamic_cast<Not*>(next->right_)) {
+         ++i, right = next->right_, next = dynamic_cast<Not*>(next->right_))
+    {
     }
 
     if (i % 2 == 1)
@@ -3471,7 +3524,9 @@ madara::expression::ComponentNode* madara::expression::Not::build()
     else
       return new CompositeNotNode(*(this->logger_),
           new CompositeNotNode(*(this->logger_), right->build()));
-  } else {
+  }
+  else
+  {
     return new CompositeNotNode(*(this->logger_), 0);
   }
 }
@@ -3496,7 +3551,8 @@ madara::expression::ComponentNode* madara::expression::SquareRootUnary::build()
 {
   ComponentNode* right(0);
 
-  if (left_) {
+  if (left_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "sqrt::build: KARL COMPILE ERROR: "
         "sqrt has a left child. Likely missing a semi-colon\n");
@@ -3533,7 +3589,8 @@ int madara::expression::Variable::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Variable::build(void)
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     std::string message = "Variable::build: KARL COMPILE ERROR: "
                           "Variable (";
     message += key_;
@@ -3545,15 +3602,24 @@ madara::expression::ComponentNode* madara::expression::Variable::build(void)
   }
 
   // is reserved?
-  if (key_ == "true") {
+  if (key_ == "true")
+  {
     return new LeafNode(context_.get_logger(), (Integer)1);
-  } else if (key_ == "false") {
+  }
+  else if (key_ == "false")
+  {
     return new LeafNode(context_.get_logger(), (Integer)0);
-  } else if (key_ == "nan") {
+  }
+  else if (key_ == "nan")
+  {
     return new LeafNode(context_.get_logger(), NAN);
-  } else if (key_ == "inf") {
+  }
+  else if (key_ == "inf")
+  {
     return new LeafNode(context_.get_logger(), INFINITY);
-  } else {
+  }
+  else
+  {
     return new VariableNode(key_, context_);
   }
 }
@@ -3580,7 +3646,8 @@ int madara::expression::ArrayRef::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::ArrayRef::build(void)
 {
-  if (left_ || right_) {
+  if (left_ || right_)
+  {
     std::string message = "ArrayRef::build: KARL COMPILE ERROR: ";
     message += key_;
     message += "[] has a left or right child. Likely missing a semi-colon\n";
@@ -3790,7 +3857,8 @@ int madara::expression::Add::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Add::build(void)
 {
-  if (left_ && right_) {
+  if (left_ && right_)
+  {
     // check for cascading max
     Add* next = dynamic_cast<Add*>(left_);
     Symbol* left = left_;
@@ -3800,9 +3868,11 @@ madara::expression::ComponentNode* madara::expression::Add::build(void)
     delete right_;
     right_ = 0;
 
-    for (; next; next = dynamic_cast<Add*>(left)) {
+    for (; next; next = dynamic_cast<Add*>(left))
+    {
       // we have a chained max node. Move the left into our nodes list
-      if (next->right_) {
+      if (next->right_)
+      {
         nodes_.push_front(next->right_->build());
         delete next->right_;
         next->right_ = 0;
@@ -3816,14 +3886,16 @@ madara::expression::ComponentNode* madara::expression::Add::build(void)
 
     // push the rightmost build from the compressed node and delete it.
     // then reset our right_, since we've already taken care of deletion
-    if (left) {
+    if (left)
+    {
       nodes_.push_front(left->build());
       delete left;
     }
     left_ = 0;
 
     return new CompositeAddNode(*(this->logger_), nodes_);
-  } else if (left_)
+  }
+  else if (left_)
     // all we have is a valid left child, so there is no reason to build
     // an Add operator
     return left_->build();
@@ -3831,7 +3903,8 @@ madara::expression::ComponentNode* madara::expression::Add::build(void)
     // all we have is a valid right child, so there is no reason to build
     // a Add operator
     return right_->build();
-  else {
+  else
+  {
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
     return new CompositeAddNode(*(this->logger_), nodes_);
@@ -3856,7 +3929,8 @@ int madara::expression::And::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::And::build(void)
 {
-  if (left_ && right_) {
+  if (left_ && right_)
+  {
     // check for cascading max
     And* next = dynamic_cast<And*>(left_);
     Symbol* left = left_;
@@ -3866,9 +3940,11 @@ madara::expression::ComponentNode* madara::expression::And::build(void)
     delete right_;
     right_ = 0;
 
-    for (; next; next = dynamic_cast<And*>(left)) {
+    for (; next; next = dynamic_cast<And*>(left))
+    {
       // we have a chained max node. Move the left into our nodes list
-      if (next->right_) {
+      if (next->right_)
+      {
         nodes_.push_front(next->right_->build());
         delete next->right_;
         next->right_ = 0;
@@ -3882,14 +3958,16 @@ madara::expression::ComponentNode* madara::expression::And::build(void)
 
     // push the rightmost build from the compressed node and delete it.
     // then reset our right_, since we've already taken care of deletion
-    if (left) {
+    if (left)
+    {
       nodes_.push_front(left->build());
       delete left;
     }
     left_ = 0;
 
     return new CompositeAndNode(*(this->logger_), nodes_);
-  } else if (left_)
+  }
+  else if (left_)
     // all we have is a valid left child, so there is no reason to build
     // an And operator
     return left_->build();
@@ -3897,7 +3975,8 @@ madara::expression::ComponentNode* madara::expression::And::build(void)
     // all we have is a valid right child, so there is no reason to build
     // an And operator
     return right_->build();
-  else {
+  else
+  {
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
     return new CompositeAndNode(*(this->logger_), nodes_);
@@ -3922,7 +4001,8 @@ int madara::expression::Or::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Or::build(void)
 {
-  if (left_ && right_) {
+  if (left_ && right_)
+  {
     // check for cascading max
     Or* next = dynamic_cast<Or*>(left_);
     Symbol* left = left_;
@@ -3932,9 +4012,11 @@ madara::expression::ComponentNode* madara::expression::Or::build(void)
     delete right_;
     right_ = 0;
 
-    for (; next; next = dynamic_cast<Or*>(left)) {
+    for (; next; next = dynamic_cast<Or*>(left))
+    {
       // we have a chained max node. Move the left into our nodes list
-      if (next->right_) {
+      if (next->right_)
+      {
         nodes_.push_front(next->right_->build());
         delete next->right_;
         next->right_ = 0;
@@ -3948,14 +4030,16 @@ madara::expression::ComponentNode* madara::expression::Or::build(void)
 
     // push the rightmost build from the compressed node and delete it.
     // then reset our right_, since we've already taken care of deletion
-    if (left) {
+    if (left)
+    {
       nodes_.push_front(left->build());
       delete left;
     }
     left_ = 0;
 
     return new CompositeOrNode(*(this->logger_), nodes_);
-  } else if (left_)
+  }
+  else if (left_)
     // all we have is a valid left child, so there is no reason to build
     // a Both operator
     return left_->build();
@@ -3963,7 +4047,8 @@ madara::expression::ComponentNode* madara::expression::Or::build(void)
     // all we have is a valid right child, so there is no reason to build
     // a Both operator
     return right_->build();
-  else {
+  else
+  {
     // we've got nothing. This node should eventually be pruned out of the
     // picture if at all possible.
     return new CompositeOrNode(*(this->logger_), nodes_);
@@ -3991,7 +4076,8 @@ madara::expression::ComponentNode* madara::expression::Both::build(void)
   // Since users can say something like ";;;;;;;;", it is very possible
   // that a both operation contains no valid children. So, we need
   // to check whether or not we have a valid child.
-  if (left_ && right_) {
+  if (left_ && right_)
+  {
     // check for cascading max
     Both* next = dynamic_cast<Both*>(left_);
     Symbol* left = left_;
@@ -4001,9 +4087,11 @@ madara::expression::ComponentNode* madara::expression::Both::build(void)
     // delete right_;
     // right_ = 0;
 
-    for (; next; next = dynamic_cast<Both*>(left)) {
+    for (; next; next = dynamic_cast<Both*>(left))
+    {
       // we have a chained max node. Move the left into our nodes list
-      if (next->right_) {
+      if (next->right_)
+      {
         nodes_.push_front(next->right_->build());
         delete next->right_;
         next->right_ = 0;
@@ -4017,7 +4105,8 @@ madara::expression::ComponentNode* madara::expression::Both::build(void)
 
     // push the rightmost build from the compressed node and delete it.
     // then reset our right_, since we've already taken care of deletion
-    if (left) {
+    if (left)
+    {
       nodes_.push_front(left->build());
       delete left;
     }
@@ -4026,9 +4115,11 @@ madara::expression::ComponentNode* madara::expression::Both::build(void)
     next = dynamic_cast<Both*>(right_);
     Symbol* right = right_;
 
-    for (; next; next = dynamic_cast<Both*>(right)) {
+    for (; next; next = dynamic_cast<Both*>(right))
+    {
       // we have a chained max node. Move the left into our nodes list
-      if (next->left_) {
+      if (next->left_)
+      {
         nodes_.push_back(next->left_->build());
         delete next->left_;
         next->left_ = 0;
@@ -4042,14 +4133,16 @@ madara::expression::ComponentNode* madara::expression::Both::build(void)
 
     // push the rightmost build from the compressed node and delete it.
     // then reset our right_, since we've already taken care of deletion
-    if (right) {
+    if (right)
+    {
       nodes_.push_back(right->build());
       delete right;
     }
     right_ = 0;
 
     return new CompositeBothNode(*(this->logger_), nodes_);
-  } else if (left_)
+  }
+  else if (left_)
     // all we have is a valid left child, so there is no reason to build
     // a Both operator
     return left_->build();
@@ -4085,7 +4178,8 @@ madara::expression::ComponentNode* madara::expression::ReturnRight::build(void)
   // Since users can say something like ";;;;;;;;", it is very possible
   // that a both operation contains no valid children. So, we need
   // to check whether or not we have a valid child.
-  if (left_ && right_) {
+  if (left_ && right_)
+  {
     // check for cascading max
     ReturnRight* next = dynamic_cast<ReturnRight*>(left_);
     Symbol* left = left_;
@@ -4095,9 +4189,11 @@ madara::expression::ComponentNode* madara::expression::ReturnRight::build(void)
     // delete right_;
     // right_ = 0;
 
-    for (; next; next = dynamic_cast<ReturnRight*>(left)) {
+    for (; next; next = dynamic_cast<ReturnRight*>(left))
+    {
       // we have a chained max node. Move the left into our nodes list
-      if (next->right_) {
+      if (next->right_)
+      {
         nodes_.push_front(next->right_->build());
         delete next->right_;
         next->right_ = 0;
@@ -4111,7 +4207,8 @@ madara::expression::ComponentNode* madara::expression::ReturnRight::build(void)
 
     // push the rightmost build from the compressed node and delete it.
     // then reset our right_, since we've already taken care of deletion
-    if (left) {
+    if (left)
+    {
       nodes_.push_front(left->build());
       delete left;
     }
@@ -4120,9 +4217,11 @@ madara::expression::ComponentNode* madara::expression::ReturnRight::build(void)
     next = dynamic_cast<ReturnRight*>(right_);
     Symbol* right = right_;
 
-    for (; next; next = dynamic_cast<ReturnRight*>(right)) {
+    for (; next; next = dynamic_cast<ReturnRight*>(right))
+    {
       // we have a chained max node. Move the left into our nodes list
-      if (next->left_) {
+      if (next->left_)
+      {
         nodes_.push_back(next->left_->build());
         delete next->left_;
         next->left_ = 0;
@@ -4136,14 +4235,16 @@ madara::expression::ComponentNode* madara::expression::ReturnRight::build(void)
 
     // push the rightmost build from the compressed node and delete it.
     // then reset our right_, since we've already taken care of deletion
-    if (right) {
+    if (right)
+    {
       nodes_.push_back(right->build());
       delete right;
     }
     right_ = 0;
 
     return new CompositeReturnRightNode(*(this->logger_), nodes_);
-  } else if (left_)
+  }
+  else if (left_)
     // all we have is a valid left child, so there is no reason to build
     // a Both operator
     return left_->build();
@@ -4179,7 +4280,8 @@ madara::expression::ComponentNode* madara::expression::Sequence::build(void)
   // Since users can say something like ";;;;;;;;", it is very possible
   // that a both operation contains no valid children. So, we need
   // to check whether or not we have a valid child.
-  if (left_ && right_) {
+  if (left_ && right_)
+  {
     // check for cascading max
     Sequence* next = dynamic_cast<Sequence*>(left_);
     Symbol* left = left_;
@@ -4189,9 +4291,11 @@ madara::expression::ComponentNode* madara::expression::Sequence::build(void)
     // delete right_;
     // right_ = 0;
 
-    for (; next; next = dynamic_cast<Sequence*>(left)) {
+    for (; next; next = dynamic_cast<Sequence*>(left))
+    {
       // we have a chained max node. Move the left into our nodes list
-      if (next->right_) {
+      if (next->right_)
+      {
         nodes_.push_front(next->right_->build());
         delete next->right_;
         next->right_ = 0;
@@ -4205,7 +4309,8 @@ madara::expression::ComponentNode* madara::expression::Sequence::build(void)
 
     // push the rightmost build from the compressed node and delete it.
     // then reset our right_, since we've already taken care of deletion
-    if (left) {
+    if (left)
+    {
       nodes_.push_front(left->build());
       delete left;
     }
@@ -4214,9 +4319,11 @@ madara::expression::ComponentNode* madara::expression::Sequence::build(void)
     next = dynamic_cast<Sequence*>(right_);
     Symbol* right = right_;
 
-    for (; next; next = dynamic_cast<Sequence*>(right)) {
+    for (; next; next = dynamic_cast<Sequence*>(right))
+    {
       // we have a chained max node. Move the left into our nodes list
-      if (next->left_) {
+      if (next->left_)
+      {
         nodes_.push_back(next->left_->build());
         delete next->left_;
         next->left_ = 0;
@@ -4230,14 +4337,16 @@ madara::expression::ComponentNode* madara::expression::Sequence::build(void)
 
     // push the rightmost build from the compressed node and delete it.
     // then reset our right_, since we've already taken care of deletion
-    if (right) {
+    if (right)
+    {
       nodes_.push_back(right->build());
       delete right;
     }
     right_ = 0;
 
     return new CompositeSequentialNode(*(this->logger_), nodes_);
-  } else if (left_)
+  }
+  else if (left_)
     // all we have is a valid left child, so there is no reason to build
     // a Both operator
     return left_->build();
@@ -4533,19 +4642,25 @@ int madara::expression::Multiply::add_precedence(int precedence)
 // builds an equivalent ExpressionTree node
 madara::expression::ComponentNode* madara::expression::Multiply::build(void)
 {
-  if (left_ && right_) {
+  if (left_ && right_)
+  {
     Multiply* rhs = dynamic_cast<Multiply*>(right_);
 
     nodes_.push_back(left_->build());
 
-    if (rhs) {
+    if (rhs)
+    {
       nodes_.insert(nodes_.end(), rhs->nodes_.begin(), rhs->nodes_.end());
       rhs->nodes_.clear();
-    } else {
+    }
+    else
+    {
       nodes_.push_back(right_->build());
     }
     return new CompositeMultiplyNode(*(this->logger_), nodes_);
-  } else {
+  }
+  else
+  {
     return new CompositeMultiplyNode(*(this->logger_), nodes_);
   }
 }
@@ -4631,7 +4746,8 @@ void madara::expression::Interpreter::handle_for_loop(
   std::string::size_type count(0);
   std::string substr;
 
-  if (variable == "") {
+  if (variable == "")
+  {
     variable = ".MADARA_I";
   }
 
@@ -4642,28 +4758,46 @@ void madara::expression::Interpreter::handle_for_loop(
   int index_depth = 0;
 
   // search for end of for_loop conditions. Be on lookout for delimiter.
-  for (; i < input.length(); ++i) {
+  for (; i < input.length(); ++i)
+  {
     if (index_depth == 0 && paren_depth == 0 && input[i] == '-' &&
-        !delimiter_found) {
+        !delimiter_found)
+    {
       delimiter_found = true;
       delimiter_begin = i;
-    } else if (index_depth == 0 && paren_depth == 0 && delimiter_found &&
-               input[i] == '>') {
+    }
+    else if (index_depth == 0 && paren_depth == 0 && delimiter_found &&
+             input[i] == '>')
+    {
       delimiter_end = i;
-    } else if (input[i] == ']') {
-      if (index_depth == 0 && paren_depth == 0) {
+    }
+    else if (input[i] == ']')
+    {
+      if (index_depth == 0 && paren_depth == 0)
+      {
         break;
-      } else {
+      }
+      else
+      {
         --index_depth;
       }
-    } else if (input[i] == '(') {
+    }
+    else if (input[i] == '(')
+    {
       ++paren_depth;
-    } else if (input[i] == '[') {
+    }
+    else if (input[i] == '[')
+    {
       ++index_depth;
-    } else if (input[i] == ')') {
-      if (paren_depth == 0) {
+    }
+    else if (input[i] == ')')
+    {
+      if (paren_depth == 0)
+      {
         break;
-      } else {
+      }
+      else
+      {
         --paren_depth;
       }
     }
@@ -4673,19 +4807,22 @@ void madara::expression::Interpreter::handle_for_loop(
    * if we manage to find a delimiter but not its end, we're seeing an
    * array reference with subtraction in it
    **/
-  if (delimiter_found && delimiter_end == 0) {
+  if (delimiter_found && delimiter_end == 0)
+  {
     delimiter_found = false;
   }
 
   // this is actually an array index
-  if (!delimiter_found) {
+  if (!delimiter_found)
+  {
     // variable
     // begin to end--the index
     substr = input.substr(begin, i - begin);
 
     Symbol* index = nullptr;
 
-    for (count = 0; count < substr.length();) {
+    for (count = 0; count < substr.length();)
+    {
       main_loop(context, substr, count, lastValidInput, handled,
           accumulated_precedence, substr_list);
     }
@@ -4696,7 +4833,8 @@ void madara::expression::Interpreter::handle_for_loop(
         substr.c_str());
 
     // we have a precondition
-    if (!substr_list.empty()) {
+    if (!substr_list.empty())
+    {
       index = substr_list.back();
       substr_list.clear();
     }
@@ -4705,14 +4843,18 @@ void madara::expression::Interpreter::handle_for_loop(
     op->add_precedence(accumulated_precedence);
 
     // check for post increments and decrements
-    if (i + 2 < input.size()) {
-      if (input[i + 1] == '+' && input[i + 2] == '+') {
+    if (i + 2 < input.size())
+    {
+      if (input[i + 1] == '+' && input[i + 2] == '+')
+      {
         Symbol* array_ref = op;
         op = new Postincrement(context.get_logger());
         op->add_precedence(accumulated_precedence);
         op->right_ = array_ref;
         i += 2;
-      } else if (input[i + 1] == '-' && input[i + 2] == '-') {
+      }
+      else if (input[i + 1] == '-' && input[i + 2] == '-')
+      {
         Symbol* array_ref = op;
         op = new Postdecrement(context.get_logger());
         op->add_precedence(accumulated_precedence);
@@ -4740,7 +4882,8 @@ void madara::expression::Interpreter::handle_for_loop(
   // What did we end with? Less than? Greater than?
   if (input[i] == ']')
     equal_to = true;
-  else if (input[i] != ')') {
+  else if (input[i] != ')')
+  {
     // this is an error. Essentially, it means the user did not close the
     // for loop.
     madara_logger_log(context.get_logger(), logger::LOG_ERROR,
@@ -4759,13 +4902,16 @@ void madara::expression::Interpreter::handle_for_loop(
   precondition->left_ = new Variable(variable, context);
 
   // this is the non-short-hand way of specifying, e.g., var[0,30] {}
-  if (delimiter_found) {
+  if (delimiter_found)
+  {
     // setup precondition
-    if (delimiter_begin - begin > 0) {
+    if (delimiter_begin - begin > 0)
+    {
       // run main_loop on the precondition substring
       substr = input.substr(begin, delimiter_begin - begin);
 
-      for (count = 0; count < substr.length();) {
+      for (count = 0; count < substr.length();)
+      {
         main_loop(context, substr, count, lastValidInput, handled,
             accumulated_precedence, substr_list);
       }
@@ -4776,24 +4922,29 @@ void madara::expression::Interpreter::handle_for_loop(
           substr.c_str());
 
       // we have a precondition
-      if (!substr_list.empty()) {
+      if (!substr_list.empty())
+      {
         user_pre = substr_list.back();
         substr_list.clear();
       }
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
           "madara::expression::Interpreter: "
           "KaRL: For loop: No loop precondition was specified\n");
     }
 
     // check for special increment
-    if (delimiter_end - delimiter_begin > 1) {
+    if (delimiter_end - delimiter_begin > 1)
+    {
       count = 0;
       lastValidInput = 0;
       substr = input.substr(
           delimiter_begin + 1, delimiter_end - (delimiter_begin + 1));
 
-      for (count = 0; count < substr.length();) {
+      for (count = 0; count < substr.length();)
+      {
         main_loop(context, substr, count, lastValidInput, handled,
             accumulated_precedence, substr_list);
       }
@@ -4804,48 +4955,60 @@ void madara::expression::Interpreter::handle_for_loop(
           substr.c_str());
 
       // we have a postcondition
-      if (!substr_list.empty()) {
+      if (!substr_list.empty())
+      {
         user_post = substr_list.back();
 
         substr_list.clear();
       }
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
           "KaRL: For loop: No loop special increment was specified\n");
     }
 
     // set condition
-    if (i - delimiter_end >= 2) {
+    if (i - delimiter_end >= 2)
+    {
       lastValidInput = 0;
       substr = input.substr(delimiter_end + 1, i - (delimiter_end + 1));
 
-      for (count = 0; count < substr.length();) {
+      for (count = 0; count < substr.length();)
+      {
         main_loop(context, substr, count, lastValidInput, handled,
             accumulated_precedence, substr_list);
       }
 
       // we have a condition
-      if (!substr_list.empty()) {
+      if (!substr_list.empty())
+      {
         madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
             "KaRL: For loop: Condition is set to %s\n", substr.c_str());
 
         user_cond = substr_list.back();
         substr_list.clear();
-      } else {
+      }
+      else
+      {
         madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
             "KaRL: For loop: Condition was not set to %s\n", substr.c_str());
       }
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
           "KaRL: For loop: No loop condition was specified\n");
     }
   }
   // if no delimiter found, this is the shorthand
-  else {
+  else
+  {
     lastValidInput = 0;
     substr = input.substr(begin, i - begin);
 
-    for (count = 0; count < substr.length();) {
+    for (count = 0; count < substr.length();)
+    {
       main_loop(context, substr, count, lastValidInput, handled,
           accumulated_precedence, substr_list);
     }
@@ -4854,26 +5017,30 @@ void madara::expression::Interpreter::handle_for_loop(
         "KaRL: For loop: Condition only is set to %s\n", substr.c_str());
 
     // we have a condition
-    if (!substr_list.empty()) {
+    if (!substr_list.empty())
+    {
       user_cond = substr_list.back();
       substr_list.clear();
     }
   }
 
   // if precondition not set, set to default
-  if (!user_pre) {
+  if (!user_pre)
+  {
     user_pre = new Number(
         context.get_logger(), (madara::knowledge::KnowledgeRecord::Integer)0);
   }
 
   // set condition to default if not yet set
-  if (!user_cond) {
+  if (!user_cond)
+  {
     user_cond = new Number(
         context.get_logger(), (madara::knowledge::KnowledgeRecord::Integer)-1);
   }
 
   // set postcondition to default if not yet set
-  if (!user_post) {
+  if (!user_post)
+  {
     user_post = new Number(
         context.get_logger(), (madara::knowledge::KnowledgeRecord::Integer)1);
     madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
@@ -4885,7 +5052,8 @@ void madara::expression::Interpreter::handle_for_loop(
     ;
 
   // can't have a body without a parenthesis or brace
-  if (i < input.length() && input[i] == '(') {
+  if (i < input.length() && input[i] == '(')
+  {
     ++i;
     lastValidInput = 0;
 
@@ -4897,25 +5065,31 @@ void madara::expression::Interpreter::handle_for_loop(
     handle_parenthesis(context, input, i, lastValidInput, handled,
         accumulated_precedence, substr_list);
 
-    if (!substr_list.empty()) {
+    if (!substr_list.empty())
+    {
       body = substr_list.back();
       substr_list.clear();
     }
   }
 
   // now, see if we can locate a body for the for loop
-  if (body) {
+  if (body)
+  {
     Assignment* assignment = dynamic_cast<Assignment*>(body);
-    if (assignment) {
+    if (assignment)
+    {
       Variable* variable_node = dynamic_cast<Variable*>(assignment->left_);
       Number* number = dynamic_cast<Number*>(assignment->right_);
 
-      if (variable_node && number) {
+      if (variable_node && number)
+      {
         madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
             "KaRL: For loop: Body is a simple assignment of variable %s to "
             "%s\n",
             variable_node->key_.c_str(), number->item_.to_string().c_str());
-      } else {
+      }
+      else
+      {
         madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
             "KaRL: For loop: For loop has a complex body\n");
       }
@@ -4927,7 +5101,8 @@ void madara::expression::Interpreter::handle_for_loop(
 
     // optimize postcondition
     Number* number = dynamic_cast<Number*>(user_post);
-    if (number) {
+    if (number)
+    {
       post_val = number->item_;
       delete number;
       user_post = 0;
@@ -4935,7 +5110,8 @@ void madara::expression::Interpreter::handle_for_loop(
 
     // optimize condition
     number = dynamic_cast<Number*>(user_cond);
-    if (number) {
+    if (number)
+    {
       cond_val = number->item_;
       delete number;
       user_cond = 0;
@@ -4963,7 +5139,9 @@ void madara::expression::Interpreter::handle_for_loop(
     precedence_insert(context, op, list);
 
     lastValidInput = 0;
-  } else {
+  }
+  else
+  {
     // user forgot to specify a for loop body, so they apparently just want us
     // to loop the variable from the precondition to the condition. Since we
     // assume the user doesn't want a busy loop, which this is, we instead
@@ -4972,12 +5150,14 @@ void madara::expression::Interpreter::handle_for_loop(
 
     // if they specified a ']', they actually want something 1 greater than the
     // condition
-    if (equal_to) {
+    if (equal_to)
+    {
       Number* number = dynamic_cast<Number*>(user_cond);
 
       if (number)
         ++number->item_;
-      else {
+      else
+      {
         // if it wasn't already a number, then it must be something more
         // complex. We'll just add one to it and see if the prune () method can
         // optimize it a bit.
@@ -5023,8 +5203,10 @@ void madara::expression::Interpreter::variable_insert(
     ;
 
   // if this is a reserved word, then treat it as a Leaf
-  if (is_reserved_word(name)) {
-    if (name == "true") {
+  if (is_reserved_word(name))
+  {
+    if (name == "true")
+    {
       madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
           "madara::expression::Interpreter: "
           "Inserting true(1) into expression tree.\n");
@@ -5034,7 +5216,9 @@ void madara::expression::Interpreter::variable_insert(
       lastValidInput = number;
 
       precedence_insert(context, number, list);
-    } else if (name == "false") {
+    }
+    else if (name == "false")
+    {
       madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
           "madara::expression::Interpreter: "
           "Inserting false(0) into expression tree.\n");
@@ -5044,7 +5228,9 @@ void madara::expression::Interpreter::variable_insert(
       lastValidInput = number;
 
       precedence_insert(context, number, list);
-    } else if (name == "nan") {
+    }
+    else if (name == "nan")
+    {
       madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
           "madara::expression::Interpreter: "
           "Inserting NAN into expression tree.\n");
@@ -5054,7 +5240,9 @@ void madara::expression::Interpreter::variable_insert(
       lastValidInput = number;
 
       precedence_insert(context, number, list);
-    } else if (name == "inf") {
+    }
+    else if (name == "inf")
+    {
       madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
           "madara::expression::Interpreter: "
           "Inserting INFINITY into expression tree.\n");
@@ -5067,7 +5255,8 @@ void madara::expression::Interpreter::variable_insert(
     }
   }
 
-  else if (i < input.length() && input[i] == '(') {
+  else if (i < input.length() && input[i] == '(')
+  {
     // save the function name and update i
     Function* function = new Function(name, context);
     function->add_precedence(accumulated_precedence);
@@ -5092,7 +5281,8 @@ void madara::expression::Interpreter::variable_insert(
     int cur = 0;
 
     for (::std::list<Symbol*>::iterator arg = param_list.begin();
-         arg != param_list.end(); ++arg, ++cur) {
+         arg != param_list.end(); ++arg, ++cur)
+    {
       function->nodes_[cur] = (*arg)->build();
     }
 
@@ -5100,23 +5290,31 @@ void madara::expression::Interpreter::variable_insert(
 
     precedence_insert(context, function, list);
     lastValidInput = 0;
-  } else if (i < input.length() && input[i] == '[') {
+  }
+  else if (i < input.length() && input[i] == '[')
+  {
     ++i;
     handle_for_loop(
         context, name, input, i, accumulated_precedence, list, lastValidInput);
-  } else {
+  }
+  else
+  {
     Symbol* op = new Variable(name, context);
     op->add_precedence(accumulated_precedence);
 
     // check for post increments and decrements
-    if (i + 1 < input.size()) {
-      if (input[i] == '+' && input[i + 1] == '+') {
+    if (i + 1 < input.size())
+    {
+      if (input[i] == '+' && input[i + 1] == '+')
+      {
         Symbol* variable = op;
         op = new Postincrement(context.get_logger());
         op->add_precedence(accumulated_precedence);
         op->right_ = variable;
         i += 2;
-      } else if (input[i] == '-' && input[i + 1] == '-') {
+      }
+      else if (input[i] == '-' && input[i + 1] == '-')
+      {
         Symbol* variable = op;
         op = new Postdecrement(context.get_logger());
         op->add_precedence(accumulated_precedence);
@@ -5141,7 +5339,8 @@ void madara::expression::Interpreter::string_insert(char opener,
   std::string::size_type j = 0;
   Number* number = 0;
 
-  for (; i + j < input.length(); ++j) {
+  for (; i + j < input.length(); ++j)
+  {
     if (input[i + j] == opener && input[i + j - 1] != '\\')
       break;
   }
@@ -5182,84 +5381,117 @@ void madara::expression::Interpreter::system_call_insert(
   for (; i < input.length() && is_whitespace(input[i]); ++i)
     ;
 
-  if (i < input.length() && input[i] == '(') {
+  if (i < input.length() && input[i] == '(')
+  {
     // save the function name and update i
     SystemCall* call = 0;
     char first_char = 0;
 
-    if (name.size() > 1) {
+    if (name.size() > 1)
+    {
       first_char = name[1];
     }
 
-    switch (first_char) {
+    switch (first_char)
+    {
       case 'b':
-        if (name == "#buffer") {
+        if (name == "#buffer")
+        {
           call = new ToBuffer(context);
         }
         break;
       case 'c':
-        if (name == "#clear_var" || name == "#clear_variable") {
+        if (name == "#clear_var" || name == "#clear_variable")
+        {
           call = new ClearVariable(context);
-        } else if (name == "#cos") {
+        }
+        else if (name == "#cos")
+        {
           call = new Cos(context);
         }
         break;
       case 'd':
-        if (name == "#delete_var" || name == "#delete_variable") {
+        if (name == "#delete_var" || name == "#delete_variable")
+        {
           call = new DeleteVariable(context);
-        } else if (name == "#double") {
+        }
+        else if (name == "#double")
+        {
           call = new ToDouble(context);
-        } else if (name == "#doubles") {
+        }
+        else if (name == "#doubles")
+        {
           call = new ToDoubles(context);
         }
         break;
       case 'e':
-        if (name == "#eval" || name == "#evaluate") {
+        if (name == "#eval" || name == "#evaluate")
+        {
           call = new Eval(context);
-        } else if (name == "#expand" || name == "#expand_statement") {
+        }
+        else if (name == "#expand" || name == "#expand_statement")
+        {
           call = new ExpandStatement(context);
-        } else if (name == "#expand_env" || name == "#expand_envs") {
+        }
+        else if (name == "#expand_env" || name == "#expand_envs")
+        {
           call = new ExpandEnv(context);
         }
         break;
       case 'f':
-        if (name == "#fragment") {
+        if (name == "#fragment")
+        {
           call = new Fragment(context);
-        } else if (name == "#fixed") {
+        }
+        else if (name == "#fixed")
+        {
           call = new SetFixed(context);
         }
         break;
       case 'g':
-        if (name == "#get_clock") {
+        if (name == "#get_clock")
+        {
           call = new GetClock(context);
-        } else if (name == "#get_time" || name == "#get_time_ns" ||
-                   name == "#get_time_nano") {
+        }
+        else if (name == "#get_time" || name == "#get_time_ns" ||
+                 name == "#get_time_nano")
+        {
           call = new GetTime(context);
-        } else if (name == "#get_time_seconds" || name == "#get_time_s") {
+        }
+        else if (name == "#get_time_seconds" || name == "#get_time_s")
+        {
           call = new GetTimeSeconds(context);
         }
         break;
       case 'i':
-        if (name == "#integer") {
+        if (name == "#integer")
+        {
           call = new ToInteger(context);
-        } else if (name == "#integers") {
+        }
+        else if (name == "#integers")
+        {
           call = new ToIntegers(context);
-        } else if (name == "#isinf") {
+        }
+        else if (name == "#isinf")
+        {
           call = new Isinf(context);
         }
         break;
       case 'l':
-        if (name == "#log_level") {
+        if (name == "#log_level")
+        {
           call = new LogLevel(context);
         }
         break;
       case 'm':
-        if (name == "#make_any") {
+        if (name == "#make_any")
+        {
           using namespace madara::knowledge;
 
           call = new GenericSystemCall(context, "#make_any",
               [](std::vector<KnowledgeRecord> recs) -> KnowledgeRecord {
-                if (recs.size() != 2) {
+                if (recs.size() != 2)
+                {
                   throw exceptions::KarlException(
                       "#make_any: expects 2 string arguments");
                 }
@@ -5277,72 +5509,120 @@ void madara::expression::Interpreter::system_call_insert(
         }
         break;
       case 'p':
-        if (name == "#pow") {
+        if (name == "#pow")
+        {
           call = new Power(context);
-        } else if (name == "#print") {
+        }
+        else if (name == "#print")
+        {
           call = new Print(context);
-        } else if (name == "#print_system_calls" ||
-                   name == "#print_system_call") {
+        }
+        else if (name == "#print_system_calls" || name == "#print_system_call")
+        {
           call = new PrintSystemCalls(context);
-        } else if (name == "#precision") {
+        }
+        else if (name == "#precision")
+        {
           call = new SetPrecision(context);
         }
         break;
       case 'r':
-        if (name == "#rand_double") {
+        if (name == "#rand_double")
+        {
           call = new RandDouble(context);
-        } else if (name == "#rand_int" || name == "#rand_integer") {
+        }
+        else if (name == "#rand_int" || name == "#rand_integer")
+        {
           call = new RandInt(context);
-        } else if (name == "#read_file") {
+        }
+        else if (name == "#read_file")
+        {
           call = new ReadFile(context);
         }
         break;
       case 's':
-        if (name == "#scientific") {
+        if (name == "#scientific")
+        {
           call = new SetScientific(context);
-        } else if (name == "#set_clock") {
+        }
+        else if (name == "#set_clock")
+        {
           call = new SetClock(context);
-        } else if (name == "#set_fixed") {
+        }
+        else if (name == "#set_fixed")
+        {
           call = new SetFixed(context);
-        } else if (name == "#set_precision") {
+        }
+        else if (name == "#set_precision")
+        {
           call = new SetPrecision(context);
-        } else if (name == "#set_scientific") {
+        }
+        else if (name == "#set_scientific")
+        {
           call = new SetScientific(context);
-        } else if (name == "#sin") {
+        }
+        else if (name == "#sin")
+        {
           call = new Sin(context);
-        } else if (name == "#size") {
+        }
+        else if (name == "#size")
+        {
           call = new Size(context);
-        } else if (name == "#sleep") {
+        }
+        else if (name == "#sleep")
+        {
           call = new Sleep(context);
-        } else if (name == "#sqrt") {
+        }
+        else if (name == "#sqrt")
+        {
           call = new SquareRoot(context);
-        } else if (name == "#string") {
+        }
+        else if (name == "#string")
+        {
           call = new ToString(context);
         }
         break;
       case 't':
-        if (name == "#tan") {
+        if (name == "#tan")
+        {
           call = new Tan(context);
-        } else if (name == "#to_buffer") {
+        }
+        else if (name == "#to_buffer")
+        {
           call = new ToBuffer(context);
-        } else if (name == "#to_double") {
+        }
+        else if (name == "#to_double")
+        {
           call = new ToDouble(context);
-        } else if (name == "#to_doubles") {
+        }
+        else if (name == "#to_doubles")
+        {
           call = new ToDoubles(context);
-        } else if (name == "#to_host_dirs") {
+        }
+        else if (name == "#to_host_dirs")
+        {
           call = new ToHostDirs(context);
-        } else if (name == "#to_integer") {
+        }
+        else if (name == "#to_integer")
+        {
           call = new ToInteger(context);
-        } else if (name == "#to_integers") {
+        }
+        else if (name == "#to_integers")
+        {
           call = new ToIntegers(context);
-        } else if (name == "#to_string") {
+        }
+        else if (name == "#to_string")
+        {
           call = new ToString(context);
-        } else if (name == "#type") {
+        }
+        else if (name == "#type")
+        {
           call = new Type(context);
         }
         break;
       case 'w':
-        if (name == "#write_file") {
+        if (name == "#write_file")
+        {
           call = new WriteFile(context);
         }
         break;
@@ -5350,7 +5630,8 @@ void madara::expression::Interpreter::system_call_insert(
         break;
     }
 
-    if (!call) {
+    if (!call)
+    {
       madara_logger_log(context.get_logger(), logger::LOG_ERROR,
           "madara::expression::Interpreter: "
           "System call %s is unsupported in this version of MADARA, "
@@ -5359,7 +5640,9 @@ void madara::expression::Interpreter::system_call_insert(
 
       throw exceptions::KarlException("madara::expression::Interpreter: "
                                       "System call %s does not exist.");
-    } else {
+    }
+    else
+    {
       call->add_precedence(accumulated_precedence);
     }
 
@@ -5377,13 +5660,16 @@ void madara::expression::Interpreter::system_call_insert(
     int cur = 0;
 
     for (::std::list<Symbol*>::iterator arg = param_list.begin();
-         arg != param_list.end(); ++arg, ++cur) {
+         arg != param_list.end(); ++arg, ++cur)
+    {
       call->nodes_[cur] = (*arg)->build();
     }
 
     precedence_insert(context, call, list);
     lastValidInput = 0;
-  } else {
+  }
+  else
+  {
     std::string message = "madara::expression::Interpreter: "
                           "KARL COMPILE ERROR: System call ";
     message += name;
@@ -5413,7 +5699,8 @@ void madara::expression::Interpreter::number_insert(
     continue;
 
   // do we have a float?
-  if ((i + j <= input.length() && input[i + j] == '.') || input[i] == '.') {
+  if ((i + j <= input.length() && input[i + j] == '.') || input[i] == '.')
+  {
     if (input[i] != '.')
       ++j;
 
@@ -5421,11 +5708,12 @@ void madara::expression::Interpreter::number_insert(
       continue;
 
     // scientific notation
-    if (i + j <= input.length() &&
-        (input[i + j] == 'e' || input[i + j] == 'E')) {
+    if (i + j <= input.length() && (input[i + j] == 'e' || input[i + j] == 'E'))
+    {
       ++j;
       if (i + j <= input.length() &&
-          (input[i + j] == '+' || input[i + j] == '-')) {
+          (input[i + j] == '+' || input[i + j] == '-'))
+      {
         ++j;
       }
 
@@ -5440,7 +5728,9 @@ void madara::expression::Interpreter::number_insert(
     buffer >> new_number;
 
     number = new Number(context.get_logger(), new_number);
-  } else {
+  }
+  else
+  {
     // we have an integer
 
     madara::knowledge::KnowledgeRecord::Integer new_number;
@@ -5468,7 +5758,8 @@ void madara::expression::Interpreter::precedence_insert(
     knowledge::ThreadSafeContext& context, madara::expression::Symbol* op,
     ::std::list<madara::expression::Symbol*>& list)
 {
-  if (!list.empty()) {
+  if (!list.empty())
+  {
     // if last element was a number, then make that our left_
 
     Symbol* parent = list.back();
@@ -5486,8 +5777,8 @@ void madara::expression::Interpreter::precedence_insert(
     // in the situation that we know our op should be performed after child
     // or child should be null (assignment or implication not withstanding)
     for (child = parent->right_;
-         child && child->precedence() < op->precedence();
-         child = child->right_) {
+         child && child->precedence() < op->precedence(); child = child->right_)
+    {
       grandparent = parent;
       parent = child;
     }
@@ -5496,7 +5787,8 @@ void madara::expression::Interpreter::precedence_insert(
     Operator* child_operator = dynamic_cast<Operator*>(child);
     Operator* child_ternary = dynamic_cast<TernaryOperator*>(child);
 
-    if (child && (child_operator == 0 && child_ternary == 0)) {
+    if (child && (child_operator == 0 && child_ternary == 0))
+    {
       madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
           "Interpreter::precedence_insert: "
           "Level 1: child is neither an operator or ternary\n");
@@ -5504,7 +5796,8 @@ void madara::expression::Interpreter::precedence_insert(
 
     // parent->precedence is < op->precedence at this point
 
-    if (op_assignment || op_implies || op_unary) {
+    if (op_assignment || op_implies || op_unary)
+    {
       // if we are an assignment, implies, or unary op, we actually
       // need this op to have slightly higher precedence (it needs to be
       // evaluated first). This situation is signified by something like this
@@ -5514,7 +5807,8 @@ void madara::expression::Interpreter::precedence_insert(
 
       for (child = parent->right_;
            child && child->precedence() <= op->precedence();
-           child = child->right_) {
+           child = child->right_)
+      {
         grandparent = parent;
         parent = child;
       }
@@ -5523,7 +5817,8 @@ void madara::expression::Interpreter::precedence_insert(
       child_operator = dynamic_cast<Operator*>(child);
       child_ternary = dynamic_cast<TernaryOperator*>(child);
 
-      if (child && (child_operator == 0 && child_ternary == 0)) {
+      if (child && (child_operator == 0 && child_ternary == 0))
+      {
         madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
             "Interpreter::precedence_insert: "
             "Level 2: child is neither an operator or ternary\n");
@@ -5536,7 +5831,8 @@ void madara::expression::Interpreter::precedence_insert(
 
     if (parent->precedence() < op->precedence() ||
         (parent->precedence() == op->precedence() &&
-            (op_assignment || op_implies || op_unary))) {
+            (op_assignment || op_implies || op_unary)))
+    {
       // this op needs to be evaluated before the parent
 
       // first let's do some error checking, so we can give helpful compile
@@ -5547,15 +5843,19 @@ void madara::expression::Interpreter::precedence_insert(
       // if the parent is a binary (like addition or &&), then it needs a left
       // hand side if it doesn't have this, let's report a warning and insert a
       // Leaf Node with a value of zero
-      if (parent_binary && !parent->left_) {
+      if (parent_binary && !parent->left_)
+      {
         // try to give as specific message as possible
         Both* parent_both = dynamic_cast<Both*>(parent);
-        if (parent_both) {
+        if (parent_both)
+        {
           madara_logger_log(context.get_logger(), logger::LOG_WARNING,
               "KARL COMPILE WARNING: Empty statements between ';' may"
               " cause slower execution, attempting to prune away the extra "
               "statement\n");
-        } else {
+        }
+        else
+        {
           madara_logger_log(context.get_logger(), logger::LOG_WARNING,
               "madara::expression::Interpreter: "
               "KARL COMPILE WARNING: Binary operation has no left child. "
@@ -5569,7 +5869,8 @@ void madara::expression::Interpreter::precedence_insert(
       // if the parent is a unary operator (like negate or not), then it should
       // NOT have a left child. This would only happen if someone input
       // something like 5 ! 3, which has no meaning. This is a compile error.
-      if (parent_unary && parent->left_) {
+      if (parent_unary && parent->left_)
+      {
         madara_logger_log(context.get_logger(), logger::LOG_ERROR,
             "madara::expression::Interpreter: "
             "KARL COMPILE ERROR: Unary operation shouldn't have a left "
@@ -5583,8 +5884,10 @@ void madara::expression::Interpreter::precedence_insert(
 
       // if we've gotten to this point, then we need to
       // replace the child with ourself in the tree
-      if (child) {
-        if (op_unary) {
+      if (child)
+      {
+        if (op_unary)
+        {
           // This is a compile error. Unary cannot have a left
           // child, and that is the only way that being at this
           // point would make sense.
@@ -5597,7 +5900,9 @@ void madara::expression::Interpreter::precedence_insert(
               "madara::expression::Interpreter: "
               "KARL COMPILE ERROR: "
               "Unary node has a left child, shouldn't be possible\n");
-        } else {
+        }
+        else
+        {
           madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
               "Interpreter::precedence_insert: "
               "Level 3: op is setting its left to the existing child\n");
@@ -5611,7 +5916,9 @@ void madara::expression::Interpreter::precedence_insert(
           "Level 3: parent->right is being set to current operator\n");
 
       parent->right_ = op;
-    } else {
+    }
+    else
+    {
       // we are a lower precedence than our parent, so we need to replace
       // the tree in the list. This typically happens with assignment, implies,
       // logical operations (&&, ||) and equality checks
@@ -5620,12 +5927,15 @@ void madara::expression::Interpreter::precedence_insert(
 
       if (grandparent)
         grandparent->right_ = op;
-      else {
+      else
+      {
         list.pop_back();
         list.push_back(op);
       }
     }
-  } else {
+  }
+  else
+  {
     list.push_back(op);
   }
 }
@@ -5638,24 +5948,31 @@ void madara::expression::Interpreter::main_loop(
 {
   handled = false;
   if (is_number(input[i]) ||
-      (i + 1 < input.size() && input[i] == '.' && is_number(input[i + 1]))) {
+      (i + 1 < input.size() && input[i] == '.' && is_number(input[i + 1])))
+  {
     handled = true;
     // leaf node
     number_insert(
         context, input, i, accumulated_precedence, list, lastValidInput);
-  } else if (is_alphanumeric(input[i])) {
+  }
+  else if (is_alphanumeric(input[i]))
+  {
     handled = true;
     // variable leaf node
     variable_insert(
         context, input, i, accumulated_precedence, list, lastValidInput);
-  } else if (is_string_literal(input[i])) {
+  }
+  else if (is_string_literal(input[i]))
+  {
     char opener = input[i];
     ++i;
     handled = true;
     // string
     string_insert(opener, context, input, i, accumulated_precedence, list,
         lastValidInput);
-  } else if (i < input.length() && input[i] == '[') {
+  }
+  else if (i < input.length() && input[i] == '[')
+  {
     // save the function name and update i
     ConstArray* object = new ConstArray(context);
     object->add_precedence(accumulated_precedence);
@@ -5677,34 +5994,44 @@ void madara::expression::Interpreter::main_loop(
     int cur = 0;
 
     for (::std::list<Symbol*>::iterator arg = param_list.begin();
-         arg != param_list.end(); ++arg, ++cur) {
+         arg != param_list.end(); ++arg, ++cur)
+    {
       object->nodes_[cur] = (*arg)->build();
     }
 
     precedence_insert(context, object, list);
     lastValidInput = 0;
-  } else if (input[i] == '#') {
+  }
+  else if (input[i] == '#')
+  {
     handled = true;
     // variable leaf node
     system_call_insert(
         context, input, i, accumulated_precedence, list, lastValidInput);
-  } else if (input[i] == '+') {
+  }
+  else if (input[i] == '+')
+  {
     handled = true;
     Symbol* op = 0;
 
     // is this a predecrement?
-    if (i + 1 < input.size() && input[i + 1] == '+') {
+    if (i + 1 < input.size() && input[i + 1] == '+')
+    {
       op = new Preincrement(context.get_logger());
       ++i;
     }
     // is this an atomic increment?
-    else if (i + 1 < input.size() && input[i + 1] == '=') {
+    else if (i + 1 < input.size() && input[i + 1] == '=')
+    {
       Variable* var = dynamic_cast<Variable*>(lastValidInput);
       ArrayRef* array_ref = dynamic_cast<ArrayRef*>(lastValidInput);
-      if (var || array_ref) {
+      if (var || array_ref)
+      {
         op = new VariableIncrement(
             lastValidInput, madara::knowledge::KnowledgeRecord(), 0, context);
-      } else {
+      }
+      else
+      {
         madara_logger_log(context.get_logger(), logger::LOG_ERROR,
             "madara::expression::Interpreter: "
             "KARL COMPILE ERROR (+=): "
@@ -5716,7 +6043,8 @@ void madara::expression::Interpreter::main_loop(
             "Assignments must have a variable left hand side");
       }
       ++i;
-    } else
+    }
+    else
       op = new Add(context.get_logger());
 
     // insert the op according to left-to-right relationships
@@ -5724,23 +6052,30 @@ void madara::expression::Interpreter::main_loop(
     lastValidInput = 0;
     precedence_insert(context, op, list);
     ++i;
-  } else if (input[i] == '-') {
+  }
+  else if (input[i] == '-')
+  {
     handled = true;
     Symbol* op = 0;
 
     // is this a predecrement?
-    if (i + 1 < input.size() && input[i + 1] == '-') {
+    if (i + 1 < input.size() && input[i + 1] == '-')
+    {
       op = new Predecrement(context.get_logger());
       ++i;
     }
     // is this an atomic decrement?
-    else if (i + 1 < input.size() && input[i + 1] == '=') {
+    else if (i + 1 < input.size() && input[i + 1] == '=')
+    {
       Variable* var = dynamic_cast<Variable*>(lastValidInput);
       ArrayRef* array_ref = dynamic_cast<ArrayRef*>(lastValidInput);
-      if (var || array_ref) {
+      if (var || array_ref)
+      {
         op = new VariableDecrement(
             lastValidInput, madara::knowledge::KnowledgeRecord(), 0, context);
-      } else {
+      }
+      else
+      {
         madara_logger_log(context.get_logger(), logger::LOG_ERROR,
             "madara::expression::Interpreter: "
             "KARL COMPILE ERROR (-=): "
@@ -5754,7 +6089,8 @@ void madara::expression::Interpreter::main_loop(
       ++i;
     }
     // is this a number literal? Handling this way allows for INT64_MIN
-    else if (i + 1 < input.size() && is_number(input[i + 1])) {
+    else if (i + 1 < input.size() && is_number(input[i + 1]))
+    {
       handled = true;
       // leaf node
       number_insert(
@@ -5767,25 +6103,32 @@ void madara::expression::Interpreter::main_loop(
     else
       op = new Subtract(context.get_logger());
 
-    if (op) {
+    if (op)
+    {
       // insert the op according to left-to-right relationships
       lastValidInput = 0;
       op->add_precedence(accumulated_precedence);
       precedence_insert(context, op, list);
       ++i;
     }
-  } else if (input[i] == '*') {
+  }
+  else if (input[i] == '*')
+  {
     handled = true;
     Symbol* op = 0;
 
     // is this an atomic multiply?
-    if (i + 1 < input.size() && input[i + 1] == '=') {
+    if (i + 1 < input.size() && input[i + 1] == '=')
+    {
       Variable* var = dynamic_cast<Variable*>(lastValidInput);
       ArrayRef* array_ref = dynamic_cast<ArrayRef*>(lastValidInput);
-      if (var || array_ref) {
+      if (var || array_ref)
+      {
         op = new VariableMultiply(
             lastValidInput, madara::knowledge::KnowledgeRecord(), 0, context);
-      } else {
+      }
+      else
+      {
         madara_logger_log(context.get_logger(), logger::LOG_ERROR,
             "madara::expression::Interpreter: "
             "KARL COMPILE ERROR (*=): "
@@ -5807,7 +6150,9 @@ void madara::expression::Interpreter::main_loop(
     lastValidInput = 0;
     precedence_insert(context, op, list);
     ++i;
-  } else if (input[i] == '%') {
+  }
+  else if (input[i] == '%')
+  {
     // multiplication operation
     handled = true;
     Modulus* op = new Modulus(context.get_logger());
@@ -5817,15 +6162,19 @@ void madara::expression::Interpreter::main_loop(
     lastValidInput = 0;
     precedence_insert(context, op, list);
     ++i;
-  } else if (input[i] == '/') {
+  }
+  else if (input[i] == '/')
+  {
     // is this a one line comment?
-    if (i + 1 < input.size() && input[i + 1] == '/') {
+    if (i + 1 < input.size() && input[i + 1] == '/')
+    {
       // we have a one line comment
       for (; i < input.size() && input[i] != '\n'; ++i)
         ;
     }
     // is this a multi-line comment?
-    else if (i + 1 < input.size() && input[i + 1] == '*') {
+    else if (i + 1 < input.size() && input[i + 1] == '*')
+    {
       // find the matching close
       std::string::size_type found = input.find("*/", i + 1);
 
@@ -5840,19 +6189,24 @@ void madara::expression::Interpreter::main_loop(
         i = input.size();
     }
     // is this an atomic decrement?
-    else {
+    else
+    {
       handled = true;
       // division operation
       Symbol* op = 0;
 
       // atomic division?
-      if (i + 1 < input.size() && input[i + 1] == '=') {
+      if (i + 1 < input.size() && input[i + 1] == '=')
+      {
         Variable* var = dynamic_cast<Variable*>(lastValidInput);
         ArrayRef* array_ref = dynamic_cast<ArrayRef*>(lastValidInput);
-        if (var || array_ref) {
+        if (var || array_ref)
+        {
           op = new VariableDivide(
               lastValidInput, madara::knowledge::KnowledgeRecord(), 0, context);
-        } else {
+        }
+        else
+        {
           madara_logger_log(context.get_logger(), logger::LOG_WARNING,
               "madara::expression::Interpreter: "
               "KARL COMPILE ERROR (/=): "
@@ -5864,7 +6218,8 @@ void madara::expression::Interpreter::main_loop(
               "Assignments must have a variable left hand side");
         }
         ++i;
-      } else
+      }
+      else
         op = new Divide(context.get_logger());
 
       op->add_precedence(accumulated_precedence);
@@ -5872,12 +6227,15 @@ void madara::expression::Interpreter::main_loop(
       precedence_insert(context, op, list);
     }
     ++i;
-  } else if (input[i] == '=') {
+  }
+  else if (input[i] == '=')
+  {
     handled = true;
     Symbol* op = 0;
 
     // is this an equality?
-    if (i + 1 < input.size() && input[i + 1] == '=') {
+    if (i + 1 < input.size() && input[i + 1] == '=')
+    {
       op = new Equality(context.get_logger());
       op->add_precedence(accumulated_precedence);
 
@@ -5888,7 +6246,8 @@ void madara::expression::Interpreter::main_loop(
       precedence_insert(context, op, list);
     }
     // is this an implication?
-    else if (i + 1 < input.size() && input[i + 1] == '>') {
+    else if (i + 1 < input.size() && input[i + 1] == '>')
+    {
       op = new Implies(context.get_logger());
       op->add_precedence(accumulated_precedence);
 
@@ -5899,7 +6258,8 @@ void madara::expression::Interpreter::main_loop(
       precedence_insert(context, op, list);
     }
     // must be an assignment then
-    else {
+    else
+    {
       op = new Assignment(context.get_logger());
       op->add_precedence(accumulated_precedence);
 
@@ -5910,17 +6270,21 @@ void madara::expression::Interpreter::main_loop(
       precedence_insert(context, op, list);
     }
     ++i;
-  } else if (input[i] == '!') {
+  }
+  else if (input[i] == '!')
+  {
     handled = true;
     Symbol* op = 0;
 
     // is this an inequality?
-    if (i + 1 < input.size() && input[i + 1] == '=') {
+    if (i + 1 < input.size() && input[i + 1] == '=')
+    {
       op = new Inequality(context.get_logger());
       ++i;
     }
     // must be a logical not then
-    else {
+    else
+    {
       op = new Not(context.get_logger());
     }
 
@@ -5931,7 +6295,8 @@ void madara::expression::Interpreter::main_loop(
     ++i;
   }
   // square root is ASCII 251 (UTF 8 format)
-  else if ((uint8_t)input[i] == 251) {
+  else if ((uint8_t)input[i] == 251)
+  {
     handled = true;
     Symbol* op = 0;
 
@@ -5942,9 +6307,12 @@ void madara::expression::Interpreter::main_loop(
     lastValidInput = 0;
     precedence_insert(context, op, list);
     ++i;
-  } else if (input[i] == '&') {
+  }
+  else if (input[i] == '&')
+  {
     // is this a logical and?
-    if (i + 1 < input.size() && input[i + 1] == '&') {
+    if (i + 1 < input.size() && input[i + 1] == '&')
+    {
       handled = true;
       Symbol* op = new And(context.get_logger());
       ++i;
@@ -5953,7 +6321,9 @@ void madara::expression::Interpreter::main_loop(
       op->add_precedence(accumulated_precedence);
       lastValidInput = 0;
       precedence_insert(context, op, list);
-    } else {
+    }
+    else
+    {
       // error. We currently don't allow logical and (A & B)
       madara_logger_log(context.get_logger(), logger::LOG_ERROR,
           "madara::expression::Interpreter: "
@@ -5967,9 +6337,12 @@ void madara::expression::Interpreter::main_loop(
                                       "Logical And (&) not available.");
     }
     ++i;
-  } else if (input[i] == '|') {
+  }
+  else if (input[i] == '|')
+  {
     // is this a logical and?
-    if (i + 1 < input.size() && input[i + 1] == '|') {
+    if (i + 1 < input.size() && input[i + 1] == '|')
+    {
       handled = true;
       Symbol* op = new Or(context.get_logger());
       ++i;
@@ -5978,7 +6351,9 @@ void madara::expression::Interpreter::main_loop(
       op->add_precedence(accumulated_precedence);
       lastValidInput = 0;
       precedence_insert(context, op, list);
-    } else {
+    }
+    else
+    {
       // error. We don't currently support logical or
       madara_logger_log(context.get_logger(), logger::LOG_ERROR,
           "KARL COMPILE ERROR: "
@@ -5991,15 +6366,20 @@ void madara::expression::Interpreter::main_loop(
                                       "Logical Or (|) not available.");
     }
     ++i;
-  } else if (input[i] == ';') {
+  }
+  else if (input[i] == ';')
+  {
     handled = true;
     Symbol* op = 0;
 
     // is this a logical and?
-    if (i + 1 < input.size() && input[i + 1] == '>') {
+    if (i + 1 < input.size() && input[i + 1] == '>')
+    {
       op = new ReturnRight(context.get_logger());
       ++i;
-    } else {
+    }
+    else
+    {
       op = new Both(context.get_logger());
     }
 
@@ -6008,7 +6388,9 @@ void madara::expression::Interpreter::main_loop(
     lastValidInput = 0;
     precedence_insert(context, op, list);
     ++i;
-  } else if (input[i] == ',') {
+  }
+  else if (input[i] == ',')
+  {
     if (build_argument_list)
       return;
 
@@ -6020,12 +6402,15 @@ void madara::expression::Interpreter::main_loop(
     lastValidInput = 0;
     precedence_insert(context, op, list);
     ++i;
-  } else if (input[i] == '<') {
+  }
+  else if (input[i] == '<')
+  {
     handled = true;
     Symbol* op = 0;
 
     // is this a less than or equal to operator?
-    if (i + 1 < input.size() && input[i + 1] == '=') {
+    if (i + 1 < input.size() && input[i + 1] == '=')
+    {
       op = new LessThanEqual(context.get_logger());
       ++i;
     }
@@ -6038,12 +6423,15 @@ void madara::expression::Interpreter::main_loop(
     lastValidInput = 0;
     precedence_insert(context, op, list);
     ++i;
-  } else if (input[i] == '>') {
+  }
+  else if (input[i] == '>')
+  {
     handled = true;
     Symbol* op = 0;
 
     // is this a less than or equal to operator?
-    if (i + 1 < input.size() && input[i + 1] == '=') {
+    if (i + 1 < input.size() && input[i + 1] == '=')
+    {
       op = new GreaterThanEqual(context.get_logger());
       ++i;
     }
@@ -6056,13 +6444,17 @@ void madara::expression::Interpreter::main_loop(
     lastValidInput = 0;
     precedence_insert(context, op, list);
     ++i;
-  } else if (input[i] == '(') {
+  }
+  else if (input[i] == '(')
+  {
     handled = true;
     ++i;
     handle_parenthesis(context, input, i, lastValidInput, handled,
         accumulated_precedence, list);
-  } else if (input[i] == '\t' || input[i] == ' ' || input[i] == '\r' ||
-             input[i] == '\n') {
+  }
+  else if (input[i] == '\t' || input[i] == ' ' || input[i] == '\r' ||
+           input[i] == '\n')
+  {
     handled = true;
     ++i;
     // skip whitespace
@@ -6086,29 +6478,37 @@ void madara::expression::Interpreter::handle_array(
 
   handled = false;
   bool closed = false;
-  while (i < input.length()) {
+  while (i < input.length())
+  {
     main_loop(context, input, i, lastValidInput, handled,
         accumulated_precedence, list, true);
 
-    if (input[i] == ']') {
+    if (input[i] == ']')
+    {
       handled = true;
       closed = true;
       ++i;
       accumulated_precedence -= PARENTHESIS_PRECEDENCE;
       break;
-    } else if (input[i] == ',') {
+    }
+    else if (input[i] == ',')
+    {
       ++i;
-      while (list.size()) {
+      while (list.size())
+      {
         master_list.push_back(list.back());
         list.pop_back();
       }
       accumulated_precedence = initial_precedence;
-    } else if (i == input.length() - 1) {
+    }
+    else if (i == input.length() - 1)
+    {
       break;
     }
   }
 
-  if (!closed) {
+  if (!closed)
+  {
     madara_logger_log(context.get_logger(), logger::LOG_ERROR,
         "madara::expression::Interpreter: "
         "KARL COMPILE ERROR: "
@@ -6116,8 +6516,10 @@ void madara::expression::Interpreter::handle_array(
         input.c_str());
   }
 
-  if (list.size() > 0) {
-    if (list.size() > 1) {
+  if (list.size() > 0)
+  {
+    if (list.size() > 1)
+    {
       madara_logger_log(context.get_logger(), logger::LOG_ERROR,
           "madara::expression::Interpreter: "
           "KARL COMPILE ERROR: "
@@ -6126,7 +6528,8 @@ void madara::expression::Interpreter::handle_array(
           input.c_str());
     }
 
-    while (list.size()) {
+    while (list.size())
+    {
       master_list.push_back(list.back());
       list.pop_back();
     }
@@ -6153,29 +6556,37 @@ void madara::expression::Interpreter::handle_parenthesis(
 
   handled = false;
   bool closed = false;
-  while (i < input.length()) {
+  while (i < input.length())
+  {
     main_loop(context, input, i, lastValidInput, handled,
         accumulated_precedence, list, build_argument_list);
 
-    if (input[i] == ')') {
+    if (input[i] == ')')
+    {
       handled = true;
       closed = true;
       ++i;
       accumulated_precedence -= PARENTHESIS_PRECEDENCE;
       break;
-    } else if (build_argument_list && input[i] == ',') {
+    }
+    else if (build_argument_list && input[i] == ',')
+    {
       ++i;
-      while (list.size()) {
+      while (list.size())
+      {
         master_list.push_back(list.back());
         list.pop_back();
       }
       accumulated_precedence = initial_precedence;
-    } else if (i == input.length() - 1) {
+    }
+    else if (i == input.length() - 1)
+    {
       break;
     }
   }
 
-  if (!build_argument_list && !closed) {
+  if (!build_argument_list && !closed)
+  {
     madara_logger_log(context.get_logger(), logger::LOG_ERROR,
         "madara::expression::Interpreter: "
         "KARL COMPILE ERROR: "
@@ -6183,20 +6594,27 @@ void madara::expression::Interpreter::handle_parenthesis(
         input.c_str());
   }
 
-  if (!build_argument_list && master_list.size() > 0 && list.size() > 0) {
+  if (!build_argument_list && master_list.size() > 0 && list.size() > 0)
+  {
     Symbol* lastSymbol = master_list.back();
     Operator* op = dynamic_cast<Operator*>(lastSymbol);
     UnaryOperator* unary = dynamic_cast<UnaryOperator*>(lastSymbol);
 
     // is it a node with 2 children?
-    if (op || unary) {
+    if (op || unary)
+    {
       precedence_insert(context, list.back(), master_list);
-    } else {
+    }
+    else
+    {
       // is it a terminal node (Number)
       // error
     }
-  } else if (list.size() > 0) {
-    if (list.size() > 1) {
+  }
+  else if (list.size() > 0)
+  {
+    if (list.size() > 1)
+    {
       madara_logger_log(context.get_logger(), logger::LOG_ERROR,
           "madara::expression::Interpreter: "
           "KARL COMPILE ERROR: "
@@ -6205,7 +6623,8 @@ void madara::expression::Interpreter::handle_parenthesis(
           input.c_str());
     }
 
-    while (list.size()) {
+    while (list.size())
+    {
       master_list.push_back(list.back());
       list.pop_back();
     }
@@ -6231,14 +6650,16 @@ madara::expression::ExpressionTree madara::expression::Interpreter::interpret(
   int accumulated_precedence = 0;
   std::string::size_type last_i = 0;
 
-  for (std::string::size_type i = 0; i < input.length();) {
+  for (std::string::size_type i = 0; i < input.length();)
+  {
     // we took out the loop update from the for loop
     // and the main_loop or handle_parenthesis call
     // should now take care of this.
     main_loop(context, input, i, lastValidInput, handled,
         accumulated_precedence, list);
 
-    if (i == last_i) {
+    if (i == last_i)
+    {
       size_t start = i > 10 ? i - 10 : 0;
       size_t end = input.size() - i > 10 ? i + 10 : input.size();
 
@@ -6252,7 +6673,8 @@ madara::expression::ExpressionTree madara::expression::Interpreter::interpret(
             (int)i, snippet.c_str(), input[i]);
       }
       break;
-    } else
+    }
+    else
       last_i = i;
 
     // store last valid input symbol. this is useful to the '-' operator
@@ -6262,7 +6684,8 @@ madara::expression::ExpressionTree madara::expression::Interpreter::interpret(
   }
 
   // if the list has an element in it, then return the back of the list.
-  if (!list.empty()) {
+  if (!list.empty())
+  {
     // Invoke a recursive ExpressionTree build starting with the root
     // symbol. This is an example of the builder pattern. See pg 97
     // in GoF book.

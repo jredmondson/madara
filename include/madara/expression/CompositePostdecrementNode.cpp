@@ -46,13 +46,17 @@ madara::expression::CompositePostdecrementNode::prune(bool& can_change)
   bool right_child_can_change = false;
   madara::knowledge::KnowledgeRecord right_value;
 
-  if (this->right_) {
+  if (this->right_)
+  {
     right_value = this->right_->prune(right_child_can_change);
-    if (!right_child_can_change && dynamic_cast<LeafNode*>(right_) == 0) {
+    if (!right_child_can_change && dynamic_cast<LeafNode*>(right_) == 0)
+    {
       delete this->right_;
       this->right_ = new LeafNode(*(this->logger_), right_value);
     }
-  } else if (!var_ && !array_) {
+  }
+  else if (!var_ && !array_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::CompositePostdecrementNode: "
         "KARL COMPILE ERROR:"
@@ -77,15 +81,22 @@ madara::expression::CompositePostdecrementNode::evaluate(
 {
   madara::knowledge::KnowledgeRecord return_value;
 
-  if (var_) {
+  if (var_)
+  {
     return_value = var_->evaluate(settings);
     var_->dec(settings);
-  } else if (array_) {
+  }
+  else if (array_)
+  {
     return_value = array_->evaluate(settings);
     array_->dec(settings);
-  } else if (right_) {
+  }
+  else if (right_)
+  {
     return_value = --(this->right_->evaluate(settings));
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::CompositePostdecrementNode: "
         "KARL RUNTIME ERROR: "

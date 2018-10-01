@@ -41,7 +41,8 @@ bool madara::knowledge::containers::BaseContainer::modify_if_true(
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
       "BaseContainer::is_true: calling condition.is_true()\n");
 
-  if (conditional.is_true_()) {
+  if (conditional.is_true_())
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
         "BaseContainer::is_true: condition.is_true() returned true\n");
 
@@ -60,7 +61,8 @@ bool madara::knowledge::containers::BaseContainer::modify_if_false(
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
       "BaseContainer::is_false: calling !condition.is_true()\n");
 
-  if (!conditional.is_true_()) {
+  if (!conditional.is_true_())
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
         "BaseContainer::is_false: !condition.is_true() returned true\n");
     this->modify_();

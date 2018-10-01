@@ -66,7 +66,8 @@ madara::knowledge::KnowledgeRecord set_var1_to_arg2(
     madara::knowledge::FunctionArguments& args,
     madara::knowledge::Variables& variables)
 {
-  if (args.size() > 1) {
+  if (args.size() > 1)
+  {
     variables.set(".var1", args[1]);
   }
   return variables.get(".var1");
@@ -1515,7 +1516,8 @@ void test_simplification_operators(madara::knowledge::KnowledgeBase& knowledge)
 
 int parse_args(int argc, char* argv[])
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "Program Summary for %s:\n\n"
         "Test all operators and basic functions of the knowledge engine.\n"
@@ -1555,7 +1557,8 @@ void test_arrays(void)
 }
 
 #define MADARA_TEST_TRIOP(lhs, op, rhs, method, cmp, target) \
-  do {                                                       \
+  do                                                         \
+  {                                                          \
     assert((Rec(lhs) op Rec(rhs))cmp Rec(target));           \
     assert((Rec(lhs) op Rec(rhs)).method() cmp Rec(target)); \
     assert((lhs op Rec(rhs))cmp Rec(target));                \

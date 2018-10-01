@@ -71,7 +71,8 @@ void capn_postprocess(T&, overload_priority_weakest)
 }
 
 template<typename T, typename C>
-struct CapnPrimitive {
+struct CapnPrimitive
+{
   using CapnType = C;
   using FieldType = T;
 
@@ -87,7 +88,8 @@ CapnPrimitive<T, C> MakeCapnPrimitive(
 }
 
 template<typename R, typename B, typename C>
-struct CapnStruct {
+struct CapnStruct
+{
   using CapnType = C;
   using FieldReader = R;
   using FieldBuilder = B;
@@ -108,7 +110,8 @@ CapnStruct<R, B, C> MakeCapnStruct(R (C::Reader::*get)() const,
 }
 
 template<typename C>
-struct CapnString {
+struct CapnString
+{
   using CapnType = C;
   using FieldReader = typename capnp::Text::Reader;
   using FieldBuilder = typename capnp::Text::Builder;
@@ -132,7 +135,8 @@ CapnString<C> MakeCapnString(typename capnp::Text::Reader (C::Reader::*get)()
 }
 
 template<typename R, typename B, typename C>
-struct CapnList {
+struct CapnList
+{
   using CapnType = C;
   using FieldReader = R;
   using FieldBuilder = B;
@@ -152,7 +156,8 @@ CapnList<R, B, C> MakeCapnList(R (C::Reader::*get)() const,
 }
 
 template<typename C>
-struct CapnStrList {
+struct CapnStrList
+{
   using CapnType = C;
   using FieldReader = capnp::List<capnp::Text>::Reader;
   using FieldBuilder = capnp::List<capnp::Text>::Builder;
@@ -250,7 +255,8 @@ auto infer_capn_type(type<T>) ->
     typename decltype(for_each_member(type<T>{}, ignore_all<void>()))::self;
 
 template<typename T, typename B>
-struct do_capn_struct_set {
+struct do_capn_struct_set
+{
   const T* val;
   B* builder;
 
@@ -274,7 +280,8 @@ inline auto capn_set(B& builder, const T& val)
 }
 
 template<typename T, typename R>
-struct do_capn_struct_get {
+struct do_capn_struct_get
+{
   T* val;
   R* reader;
 
@@ -328,7 +335,8 @@ inline void capn_set(typename C::Builder& builder, const CapnStrList<C>& info,
   auto list_builder{(builder.*(info.init))(ref.size())};
 
   size_t i = 0;
-  for (const auto& cur : ref) {
+  for (const auto& cur : ref)
+  {
     auto elem_builder = list_builder.init(i, cur.size());
     capn_set(elem_builder, cur);
     ++i;
@@ -343,7 +351,8 @@ inline void capn_get(typename C::Reader& reader, const CapnStrList<C>& info,
   val.resize(list_reader.size());
 
   size_t i = 0;
-  for (auto cur : list_reader) {
+  for (auto cur : list_reader)
+  {
     capn_get(cur, val[i]);
     ++i;
   }
@@ -363,7 +372,8 @@ inline auto capn_set(typename C::Builder& builder,
   auto list_builder{(builder.*(info.get_builder))()};
 
   size_t i = 0;
-  for (const auto& cur : ref) {
+  for (const auto& cur : ref)
+  {
     auto elem_builder = list_builder[i];
     capn_set(elem_builder, cur);
     ++i;
@@ -379,7 +389,8 @@ inline auto capn_get(typename C::Reader& reader, const CapnList<R, B, C>& info,
   val.resize(list_reader.size());
 
   size_t i = 0;
-  for (auto cur : list_reader) {
+  for (auto cur : list_reader)
+  {
     capn_get(cur, val[i]);
     ++i;
   }
@@ -399,7 +410,8 @@ inline auto capn_set(typename C::Builder& builder,
   auto list_builder{(builder.*(info.get_builder))()};
 
   size_t i = 0;
-  for (const auto& cur : ref) {
+  for (const auto& cur : ref)
+  {
     list_builder.set(i, cur);
     ++i;
   }
@@ -413,7 +425,8 @@ inline auto capn_get(typename C::Reader& reader, const CapnList<R, B, C>& info,
   val.resize(list_reader.size());
 
   size_t i = 0;
-  for (auto cur : list_reader) {
+  for (auto cur : list_reader)
+  {
     val[i] = cur;
     ++i;
   }
@@ -433,7 +446,8 @@ inline auto capn_set(typename C::Builder& builder,
   auto list_builder{(builder.*(info.get_builder))()};
 
   size_t i = 0;
-  for (const auto& cur : ref) {
+  for (const auto& cur : ref)
+  {
     auto elem_builder = list_builder[i];
     capn_set(elem_builder, cur);
     ++i;
@@ -448,15 +462,18 @@ inline auto capn_get(typename C::Reader& reader, const CapnList<R, B, C>& info,
   auto list_reader{(reader.*(info.get))()};
 
   size_t i = 0;
-  for (auto cur : list_reader) {
+  for (auto cur : list_reader)
+  {
     capn_get(cur, val[i]);
     ++i;
-    if (i >= N) {
+    if (i >= N)
+    {
       break;
     }
   }
 
-  for (; i < N; ++i) {
+  for (; i < N; ++i)
+  {
     val[i] = T();
   }
 
@@ -475,7 +492,8 @@ inline auto capn_set(typename C::Builder& builder,
   auto list_builder{(builder.*(info.get_builder))()};
 
   size_t i = 0;
-  for (const auto& cur : ref) {
+  for (const auto& cur : ref)
+  {
     list_builder.set(i, cur);
     ++i;
   }
@@ -488,15 +506,18 @@ inline auto capn_get(typename C::Reader& reader, const CapnList<R, B, C>& info,
   auto list_reader{(reader.*(info.get))()};
 
   size_t i = 0;
-  for (auto cur : list_reader) {
+  for (auto cur : list_reader)
+  {
     val[i] = cur;
     ++i;
-    if (i >= N) {
+    if (i >= N)
+    {
       break;
     }
   }
 
-  for (; i < N; ++i) {
+  for (; i < N; ++i)
+  {
     val[i] = T();
   }
 
@@ -542,7 +563,8 @@ inline auto get_type_handler_load(type<T>, overload_priority<8>)
     std::vector<char> aligned_in;
     T& val = *static_cast<T*>(ptr);
 
-    if ((size_t)in % sizeof(capnp::word) != 0) {
+    if ((size_t)in % sizeof(capnp::word) != 0)
+    {
       aligned_in.assign(in, in + size);
       in = aligned_in.data();
     }

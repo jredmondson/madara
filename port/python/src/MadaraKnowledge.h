@@ -11,7 +11,6 @@
  * to a Python module called Madara.
  **/
 
-void define_knowledge (void);
+void define_knowledge(void);
 
-#endif // _MADARA_PYTHON_PORT_MADARA_KNOWLEGE_H_
-
+#endif  // _MADARA_PYTHON_PORT_MADARA_KNOWLEGE_H_

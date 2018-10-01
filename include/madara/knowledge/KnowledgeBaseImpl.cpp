@@ -40,15 +40,20 @@ std::string KnowledgeBaseImpl::setup_unique_hostport(std::string host)
   // placeholder for our ip address
   std::string actual_host(std::move(host));
 
-  if (actual_host == "") {
-    try {
+  if (actual_host == "")
+  {
+    try
+    {
       actual_host = boost::asio::ip::host_name();
-    } catch (const std::exception&) {
+    }
+    catch (const std::exception&)
+    {
       actual_host = "localhost";
     }
   }
 
-  if (actual_host.size() > 30) {
+  if (actual_host.size() > 30)
+  {
     actual_host.resize(30);
   }
 
@@ -71,7 +76,8 @@ size_t KnowledgeBaseImpl::attach_transport(
   madara::transport::Base* transport(0);
   std::string originator(id);
 
-  if (originator == "") {
+  if (originator == "")
+  {
     if (id_.size() > 0)
       originator = id_;
     else
@@ -83,13 +89,18 @@ size_t KnowledgeBaseImpl::attach_transport(
       " activating transport type %d\n",
       settings.type);
 
-  if (settings.type == madara::transport::BROADCAST) {
+  if (settings.type == madara::transport::BROADCAST)
+  {
     transport = new madara::transport::BroadcastTransport(
         originator, map_, settings, true);
-  } else if (settings.type == madara::transport::MULTICAST) {
+  }
+  else if (settings.type == madara::transport::MULTICAST)
+  {
     transport = new madara::transport::MulticastTransport(
         originator, map_, settings, true);
-  } else if (settings.type == madara::transport::SPLICE) {
+  }
+  else if (settings.type == madara::transport::SPLICE)
+  {
 #ifdef _USE_OPEN_SPLICE_
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::activate_transport:"
@@ -103,7 +114,9 @@ size_t KnowledgeBaseImpl::attach_transport(
         " project was not generated with opensplice=1. Transport is "
         "invalid.\n");
 #endif
-  } else if (settings.type == madara::transport::NDDS) {
+  }
+  else if (settings.type == madara::transport::NDDS)
+  {
 #ifdef _USE_NDDS_
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::activate_transport:"
@@ -116,14 +129,18 @@ size_t KnowledgeBaseImpl::attach_transport(
         "KnowledgeBaseImpl::activate_transport:"
         " project was not generated with ndds=1. Transport is invalid.\n");
 #endif
-  } else if (settings.type == madara::transport::UDP) {
+  }
+  else if (settings.type == madara::transport::UDP)
+  {
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::activate_transport:"
         " creating UDP transport.\n");
 
     transport =
         new madara::transport::UdpTransport(originator, map_, settings, true);
-  } else if (settings.type == madara::transport::ZMQ) {
+  }
+  else if (settings.type == madara::transport::ZMQ)
+  {
 #ifdef _MADARA_USING_ZMQ_
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::activate_transport:"
@@ -136,21 +153,27 @@ size_t KnowledgeBaseImpl::attach_transport(
         "KnowledgeBaseImpl::activate_transport:"
         " project was not generated with zmq=1. Transport is invalid.\n");
 #endif
-  } else if (settings.type == madara::transport::REGISTRY_SERVER) {
+  }
+  else if (settings.type == madara::transport::REGISTRY_SERVER)
+  {
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::activate_transport:"
         " creating UDP Registry Server transport.\n");
 
     transport = new madara::transport::UdpRegistryServer(
         originator, map_, settings, true);
-  } else if (settings.type == madara::transport::REGISTRY_CLIENT) {
+  }
+  else if (settings.type == madara::transport::REGISTRY_CLIENT)
+  {
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::activate_transport:"
         " creating UDP Registry Client transport.\n");
 
     transport = new madara::transport::UdpRegistryClient(
         originator, map_, settings, true);
-  } else {
+  }
+  else
+  {
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::activate_transport:"
         " no transport was specified. Setting transport to null.\n");
@@ -159,7 +182,8 @@ size_t KnowledgeBaseImpl::attach_transport(
   MADARA_GUARD_TYPE guard(map_.mutex_);
 
   // if we have a valid transport, add it to the transports vector
-  if (transport != 0) {
+  if (transport != 0)
+  {
     transports_.emplace_back(transport);
   }
 
@@ -175,7 +199,8 @@ void KnowledgeBaseImpl::close_transport(void)
     swap(old_transports, transports_);
   }
 
-  for (auto& transport : old_transports) {
+  for (auto& transport : old_transports)
+  {
     transport->close();
 
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
@@ -236,16 +261,20 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
 
   // wait for expression to be true
   while (!last_value.to_integer() &&
-         (settings.max_wait_time < 0 || !enforcer.is_done())) {
+         (settings.max_wait_time < 0 || !enforcer.is_done()))
+  {
     madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
         "KnowledgeBaseImpl::wait:"
         " last value didn't result in success\n");
 
     // Unlike the other wait statements, we allow for a time based wait.
     // To do this, we allow a user to specify a
-    if (settings.poll_frequency > 0) {
+    if (settings.poll_frequency > 0)
+    {
       enforcer.sleep_until_next();
-    } else {
+    }
+    else
+    {
       map_.wait_for_change(true);
     }
 
@@ -273,7 +302,8 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
 
   }  // end while (!last)
 
-  if (enforcer.is_done()) {
+  if (enforcer.is_done())
+  {
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::wait:"
         " Evaluate did not succeed. Timeout occurred\n");
@@ -364,14 +394,18 @@ int KnowledgeBaseImpl::send_modifieds(
 
   MADARA_GUARD_TYPE guard(map_.mutex_);
 
-  if (transports_.size() > 0 && !settings.delay_sending_modifieds) {
+  if (transports_.size() > 0 && !settings.delay_sending_modifieds)
+  {
     const VariableReferenceMap& modified = map_.get_modifieds();
 
-    if (modified.size() > 0) {
+    if (modified.size() > 0)
+    {
       // if there is not an allowed send_list list
-      if (settings.send_list.size() == 0) {
+      if (settings.send_list.size() == 0)
+      {
         // send across each transport
-        for (auto& transport : transports_) {
+        for (auto& transport : transports_)
+        {
           transport->send_data(modified);
         }
 
@@ -379,25 +413,30 @@ int KnowledgeBaseImpl::send_modifieds(
         map_.reset_modified();
       }
       // if there is a send_list
-      else {
+      else
+      {
         VariableReferenceMap allowed_modifieds;
         // otherwise, we are only allowed to send a subset of modifieds
-        for (const auto& entry : modified) {
-          if (settings.send_list.find(entry.first) !=
-              settings.send_list.end()) {
+        for (const auto& entry : modified)
+        {
+          if (settings.send_list.find(entry.first) != settings.send_list.end())
+          {
             allowed_modifieds.emplace_hint(allowed_modifieds.end(), entry);
           }
         }
 
         // if the subset was greater than zero, we send the subset
-        if (allowed_modifieds.size() > 0) {
+        if (allowed_modifieds.size() > 0)
+        {
           // send across each transport
-          for (auto& transport : transports_) {
+          for (auto& transport : transports_)
+          {
             transport->send_data(allowed_modifieds);
           }
 
           // reset modified list for the allowed modifications
-          for (const auto& entry : allowed_modifieds) {
+          for (const auto& entry : allowed_modifieds)
+          {
             map_.reset_modified(entry.first);
           }
         }
@@ -407,19 +446,26 @@ int KnowledgeBaseImpl::send_modifieds(
 
       if (settings.signal_changes)
         map_.signal(false);
-    } else {
+    }
+    else
+    {
       madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
           "%s: no modifications to send\n", prefix.c_str());
 
       result = -1;
     }
-  } else {
-    if (transports_.size() == 0) {
+  }
+  else
+  {
+    if (transports_.size() == 0)
+    {
       madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
           "%s: no transport configured\n", prefix.c_str());
 
       result = -2;
-    } else if (settings.delay_sending_modifieds) {
+    }
+    else if (settings.delay_sending_modifieds)
+    {
       madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
           "%s: user requested to not send modifieds\n", prefix.c_str());
 

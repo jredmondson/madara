@@ -168,7 +168,8 @@ public:
   void print(void)
   {
     std::cerr << name << ":\n";
-    for (auto update : updates) {
+    for (auto update : updates)
+    {
       std::cerr << "  ";
       update.second.print();
     }
@@ -197,24 +198,30 @@ public:
   void print(void)
   {
     std::cerr << "****Originator Stats****\n";
-    for (auto origs : orig_updates) {
+    for (auto origs : orig_updates)
+    {
       origs.second.print();
     }
 
     std::cerr << "****Variable Stats****\n";
-    for (auto vars : var_updates) {
+    for (auto vars : var_updates)
+    {
       bool prefix_match = print_prefixes.size() == 0;
 
-      if (!prefix_match) {
-        for (auto prefix : print_prefixes) {
-          if (utility::begins_with(vars.first, prefix)) {
+      if (!prefix_match)
+      {
+        for (auto prefix : print_prefixes)
+        {
+          if (utility::begins_with(vars.first, prefix))
+          {
             prefix_match = true;
             break;
           }
         }
       }
 
-      if (prefix_match) {
+      if (prefix_match)
+      {
         vars.second.print();
       }
     }
@@ -236,16 +243,19 @@ public:
     ++orig_stats.updates;
     orig_stats.last = transport_context.get_current_time();
 
-    if (orig_stats.first == 0) {
+    if (orig_stats.first == 0)
+    {
       orig_stats.name = originator;
       orig_stats.first = orig_stats.last;
     }
 
     // iterate through each record
-    for (auto record : records) {
+    for (auto record : records)
+    {
       VariableStats& var_stats = var_updates[record.first];
 
-      if (var_stats.name == "") {
+      if (var_stats.name == "")
+      {
         var_stats.name = record.first;
       }
 
@@ -254,16 +264,20 @@ public:
       // update each record's originator stats
       ++var_orig_stats.updates;
       var_orig_stats.last = orig_stats.last;
-      if (var_orig_stats.first == 0) {
+      if (var_orig_stats.first == 0)
+      {
         var_orig_stats.name = originator;
         var_orig_stats.first = var_orig_stats.last;
       }
 
       // calculate bytes
       size_t bytes = record.second.size();
-      if (record.second.is_integer_type()) {
+      if (record.second.is_integer_type())
+      {
         bytes *= sizeof(int64_t);
-      } else if (record.second.is_double_type()) {
+      }
+      else if (record.second.is_double_type())
+      {
         bytes *= sizeof(double);
       }
 
@@ -287,45 +301,64 @@ bool capnp_import_dirs_flag = false;
 // handle command line arguments
 void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-a" || arg1 == "--after-wait") {
+    if (arg1 == "-a" || arg1 == "--after-wait")
+    {
       after_wait = true;
-    } else if (arg1 == "-b" || arg1 == "--broadcast") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-b" || arg1 == "--broadcast")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::BROADCAST;
       }
       ++i;
     }
-    if (arg1 == "-c" || arg1 == "--check-result") {
+    if (arg1 == "-c" || arg1 == "--check-result")
+    {
       check_result = true;
-    } else if (arg1 == "-d" || arg1 == "--domain") {
+    }
+    else if (arg1 == "-d" || arg1 == "--domain")
+    {
       if (i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
     }
-    if (arg1 == "-cf" || arg1 == "--config-file") {
+    if (arg1 == "-cf" || arg1 == "--config-file")
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
           "Found user karl config file flag, param: %s\n", argv[i + 1]);
-      if (recursion_limit > 0) {
+      if (recursion_limit > 0)
+      {
         load_config_file(argv[i + 1], recursion_limit);
-      } else {
+      }
+      else
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
             "Config file recursion limit exceeded with %s\n", argv[i + 1]);
       }
       ++i;
-    } else if (arg1 == "--debug") {
+    }
+    else if (arg1 == "--debug")
+    {
       debug = true;
-    } else if (arg1 == "-f" || arg1 == "--logfile") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-f" || arg1 == "--logfile")
+    {
+      if (i + 1 < argc)
+      {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-h" || arg1 == "--help") {
+    }
+    else if (arg1 == "-h" || arg1 == "--help")
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s [options] [Logic]:\n\n"
           "Evaluates KaRL logic from command line or file.\n\noptions:\n"
@@ -442,11 +475,15 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "\n",
           argv[0]);
       exit(0);
-    } else if (arg1 == "-i" || arg1 == "--input") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-i" || arg1 == "--input")
+    {
+      if (i + 1 < argc)
+      {
         std::string filename = argv[i + 1];
 
-        if (debug) {
+        if (debug)
+        {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
               "\nReading logic from file %s:\n", filename.c_str());
         }
@@ -455,18 +492,28 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
 
       ++i;
-    } else if (arg1 == "-k" || arg1 == "--print-knowledge") {
+    }
+    else if (arg1 == "-k" || arg1 == "--print-knowledge")
+    {
       print_knowledge = true;
-    } else if (arg1 == "-kp" || arg1 == "--print-prefixes") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-kp" || arg1 == "--print-prefixes")
+    {
+      if (i + 1 < argc)
+      {
         for (int j = i + 1;
              j < argc && strlen(argv[j]) > 0 && argv[j][0] != '-'; ++i, ++j)
           print_prefixes.push_back(argv[j]);
       }
-    } else if (arg1 == "-ky") {
+    }
+    else if (arg1 == "-ky")
+    {
       print_knowledge_frequency = true;
-    } else if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         int level;
         std::stringstream buffer(argv[i + 1]);
         buffer >> level;
@@ -474,21 +521,30 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
 
       ++i;
-    } else if (arg1 == "-lcp" || arg1 == "--load-checkpoint-prefix") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-lcp" || arg1 == "--load-checkpoint-prefix")
+    {
+      if (i + 1 < argc)
+      {
         load_checkpoint_settings.prefixes.push_back(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-ls" || arg1 == "--load-size") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-ls" || arg1 == "--load-size")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> load_checkpoint_settings.buffer_size;
       }
 
       ++i;
-    } else if (arg1 == "-lt" || arg1 == "--load-transport") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-lt" || arg1 == "--load-transport")
+    {
+      if (i + 1 < argc)
+      {
         if (load_transport_prefix == "")
           settings.load(argv[i + 1]);
         else
@@ -496,14 +552,20 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
 
       ++i;
-    } else if (arg1 == "-ltp" || arg1 == "--load-transport-prefix") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-ltp" || arg1 == "--load-transport-prefix")
+    {
+      if (i + 1 < argc)
+      {
         load_transport_prefix = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-ltt" || arg1 == "--load-transport-text") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-ltt" || arg1 == "--load-transport-text")
+    {
+      if (i + 1 < argc)
+      {
         if (load_transport_prefix == "")
           settings.load_text(argv[i + 1]);
         else
@@ -511,14 +573,18 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
 
       ++i;
-    } else if (arg1 == "-lz4" || arg1 == "--lz4") {
+    }
+    else if (arg1 == "-lz4" || arg1 == "--lz4")
+    {
 #ifdef _USE_LZ4_
       settings.add_filter(&lz4_transport_filter);
 #else
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
           "ERROR: parameter (-lz4|--lz4) requires feature lz4\n");
 #endif
-    } else if (arg1 == "-lz4l" || arg1 == "--lz4-load") {
+    }
+    else if (arg1 == "-lz4l" || arg1 == "--lz4-load")
+    {
 #ifdef _USE_LZ4_
       lz4_filters.push_back(filters::LZ4BufferFilter());
       load_checkpoint_settings.buffer_filters.push_back(
@@ -527,7 +593,9 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
           "ERROR: parameter (-lz4l|--lz4-load) requires feature lz4\n");
 #endif
-    } else if (arg1 == "-lz4s" || arg1 == "--lz4-save") {
+    }
+    else if (arg1 == "-lz4s" || arg1 == "--lz4-save")
+    {
 #ifdef _USE_LZ4_
       lz4_filters.push_back(filters::LZ4BufferFilter());
       save_checkpoint_settings.buffer_filters.push_back(
@@ -536,14 +604,20 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
           "ERROR: parameter (-lz4s|--lz4-save) requires feature lz4\n");
 #endif
-    } else if (arg1 == "-m" || arg1 == "--multicast") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-m" || arg1 == "--multicast")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::MULTICAST;
       }
       ++i;
-    } else if (arg1 == "-ni") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-ni")
+    {
+      if (i + 1 < argc)
+      {
         std::string dirnames = argv[i + 1];
 
         std::vector<std::string> splitters, tokens, pivot_list;
@@ -551,12 +625,15 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
         utility::tokenizer(dirnames, splitters, tokens, pivot_list);
 
-        for (auto token : tokens) {
+        for (auto token : tokens)
+        {
           capnp_import_dirs.add(token);
         }
 
         capnp_import_dirs_flag = true;
-      } else {
+      }
+      else
+      {
         // print out error log
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
             "ERROR: parameter -ni dir1[:dir2:dir3]\n");
@@ -564,8 +641,11 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
 
       ++i;
-    } else if (arg1 == "-n") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-n")
+    {
+      if (i + 1 < argc)
+      {
         std::string msgtype_pair = argv[i + 1];
 
         std::vector<std::string> splitters, tokens, pivot_list;
@@ -573,10 +653,13 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
         utility::tokenizer(msgtype_pair, splitters, tokens, pivot_list);
 
-        if (tokens.size() == 2) {
+        if (tokens.size() == 2)
+        {
           capnp_msg.push_back(tokens[0]);
           capnp_type.push_back(tokens[1]);
-        } else {
+        }
+        else
+        {
           // print out error log
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
               "ERROR: parameter -n requires two tokens, "
@@ -585,7 +668,9 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         }
 
         capnp_msg_type_param_flag = true;
-      } else {
+      }
+      else
+      {
         // print out error log
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
             "ERROR: parameter [-n|] msg:type\n");
@@ -593,10 +678,14 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
 
       ++i;
-    } else if (arg1 == "-nf" || arg1 == "--capnp") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-nf" || arg1 == "--capnp")
+    {
+      if (i + 1 < argc)
+      {
         // capnp_import_dirs_flag && capnp_msg_type_param_flag
-        if (!capnp_import_dirs_flag) {
+        if (!capnp_import_dirs_flag)
+        {
           // write loggercode and continue
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
               "ERROR: parameter -ni is missing or must precede -nf param\n");
@@ -604,7 +693,8 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           continue;
         }
 
-        if (!capnp_msg_type_param_flag) {
+        if (!capnp_msg_type_param_flag)
+        {
           // write loggercode and continue
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
               "ERROR: parameter -n is missing or must precede -nf param\n");
@@ -626,36 +716,48 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         capnp::ParsedSchema ps_type;
         size_t idx = 0;
 
-        for (idx = 0; idx < capnp_msg.size(); ++idx) {
+        for (idx = 0; idx < capnp_msg.size(); ++idx)
+        {
           msg = capnp_msg[idx];
           typestr = capnp_type[idx];
           ps_type = ps.getNested(typestr);
 
           if (!madara::knowledge::AnyRegistry::register_schema(
-                  capnp_msg[idx].c_str(), ps_type.asStruct())) {
+                  capnp_msg[idx].c_str(), ps_type.asStruct()))
+          {
             madara_logger_ptr_log(logger::global_logger.get(),
                 logger::LOG_ERROR, "CAPNP Failed on file  %s ",
                 utility::extract_filename(filename).c_str());
-          } else {
+          }
+          else
+          {
             madara_logger_ptr_log(logger::global_logger.get(),
                 logger::LOG_TRACE, "CAPNP Loaded file  %s ",
                 utility::extract_filename(filename).c_str());
           }
         }
-      } else {
+      }
+      else
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
             "ERROR: parameter [-nf|--capnp] filename\n");
       }
 
       ++i;
-    } else if (arg1 == "-o" || arg1 == "--host") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-o" || arg1 == "--host")
+    {
+      if (i + 1 < argc)
+      {
         host = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-p" || arg1 == "--drop-rate") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-p" || arg1 == "--drop-rate")
+    {
+      if (i + 1 < argc)
+      {
         double drop_rate;
         std::stringstream buffer(argv[i + 1]);
         buffer >> drop_rate;
@@ -665,78 +767,118 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
 
       ++i;
-    } else if (arg1 == "-ps" || arg1 == "--print-stats") {
+    }
+    else if (arg1 == "-ps" || arg1 == "--print-stats")
+    {
       print_stats = true;
-    } else if (arg1 == "-py" || arg1 == "--print-stats-periodic") {
+    }
+    else if (arg1 == "-py" || arg1 == "--print-stats-periodic")
+    {
       print_stats_periodic = true;
-    } else if (arg1 == "-pu" || arg1 == "--print-updates") {
+    }
+    else if (arg1 == "-pu" || arg1 == "--print-updates")
+    {
       print_updates = true;
-    } else if (arg1 == "-q" || arg1 == "--queue-length") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-q" || arg1 == "--queue-length")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.queue_length;
       }
 
       ++i;
-    } else if (arg1 == "-r" || arg1 == "--reduced") {
+    }
+    else if (arg1 == "-r" || arg1 == "--reduced")
+    {
       settings.send_reduced_message_header = true;
-    } else if (arg1 == "-rhz" || arg1 == "--read-hz") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-rhz" || arg1 == "--read-hz")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_thread_hertz;
       }
 
       ++i;
-    } else if (arg1 == "-s" || arg1 == "--save") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-s" || arg1 == "--save")
+    {
+      if (i + 1 < argc)
+      {
         save_location = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-sb" || arg1 == "--save-binary") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-sb" || arg1 == "--save-binary")
+    {
+      if (i + 1 < argc)
+      {
         save_binary = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-sc" || arg1 == "--save-checkpoint") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-sc" || arg1 == "--save-checkpoint")
+    {
+      if (i + 1 < argc)
+      {
         save_checkpoint = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-scp" || arg1 == "--save-checkpoint-prefix") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-scp" || arg1 == "--save-checkpoint-prefix")
+    {
+      if (i + 1 < argc)
+      {
         save_checkpoint_settings.prefixes.push_back(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-sff" || arg1 == "--stream-from") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-sff" || arg1 == "--stream-from")
+    {
+      if (i + 1 < argc)
+      {
         stream_from = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-sj" || arg1 == "--save-json") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-sj" || arg1 == "--save-json")
+    {
+      if (i + 1 < argc)
+      {
         save_json = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-ss" || arg1 == "--save-size") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-ss" || arg1 == "--save-size")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> save_checkpoint_settings.buffer_size;
       }
 
       ++i;
-    } else if (arg1 == "-ssl" || arg1 == "--ssl") {
+    }
+    else if (arg1 == "-ssl" || arg1 == "--ssl")
+    {
 #ifdef _USE_SSL_
-      if (i + 1 < argc) {
+      if (i + 1 < argc)
+      {
         ssl_transport_filter.generate_key(argv[i + 1]);
         settings.add_filter(&ssl_transport_filter);
         ++i;
-      } else {
+      }
+      else
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
             "ERROR: parameter (-ssl|--ssl) requires password\n");
       }
@@ -746,15 +888,20 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "MADARA\n");
       ++i;
 #endif
-    } else if (arg1 == "-ssll" || arg1 == "--ssl-load") {
+    }
+    else if (arg1 == "-ssll" || arg1 == "--ssl-load")
+    {
 #ifdef _USE_SSL_
-      if (i + 1 < argc) {
+      if (i + 1 < argc)
+      {
         ssl_filters.push_back(filters::AESBufferFilter());
         ssl_filters[ssl_filters.size() - 1].generate_key(argv[i + 1]);
         load_checkpoint_settings.buffer_filters.push_back(
             &(*ssl_filters.rbegin()));
         ++i;
-      } else {
+      }
+      else
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
             "ERROR: parameter (-ssll|--ssl-load) requires password\n");
       }
@@ -763,15 +910,20 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "ERROR: parameter (-ssll|--ssl-load) requires feature ssl\n");
       ++i;
 #endif
-    } else if (arg1 == "-ssls" || arg1 == "--ssl-save") {
+    }
+    else if (arg1 == "-ssls" || arg1 == "--ssl-save")
+    {
 #ifdef _USE_SSL_
-      if (i + 1 < argc) {
+      if (i + 1 < argc)
+      {
         ssl_filters.push_back(filters::AESBufferFilter());
         ssl_filters[ssl_filters.size() - 1].generate_key(argv[i + 1]);
         save_checkpoint_settings.buffer_filters.push_back(
             &(*ssl_filters.rbegin()));
         ++i;
-      } else {
+      }
+      else
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
             "ERROR: parameter (-ssls|--ssl-save) requires password\n");
       }
@@ -780,86 +932,123 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "ERROR: parameter (-ssls|--ssl-save) requires feature ssl\n");
       ++i;
 #endif
-    } else if (arg1 == "-st" || arg1 == "--save-transport") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-st" || arg1 == "--save-transport")
+    {
+      if (i + 1 < argc)
+      {
         save_transport = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-stf" || arg1 == "--stream-to") {
+    }
+    else if (arg1 == "-stf" || arg1 == "--stream-to")
+    {
       if (i + 1 < argc)
         stream_to = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-stp" || arg1 == "--save-transport-prefix") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-stp" || arg1 == "--save-transport-prefix")
+    {
+      if (i + 1 < argc)
+      {
         save_transport_prefix = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-stt" || arg1 == "--save-transport-text") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-stt" || arg1 == "--save-transport-text")
+    {
+      if (i + 1 < argc)
+      {
         save_transport_text = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-tdp" || arg1 == "--transport-debug-prefix") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-tdp" || arg1 == "--transport-debug-prefix")
+    {
+      if (i + 1 < argc)
+      {
         settings.debug_to_kb(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-u" || arg1 == "--udp") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-u" || arg1 == "--udp")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::UDP;
       }
       ++i;
-    } else if (arg1 == "-v" || arg1 == "--version") {
+    }
+    else if (arg1 == "-v" || arg1 == "--version")
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "MADARA version: %s\n", utility::get_version().c_str());
-    } else if (arg1 == "-w" || arg1 == "--wait" || arg1 == "-t" ||
-               arg1 == "--time") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-w" || arg1 == "--wait" || arg1 == "-t" ||
+             arg1 == "--time")
+    {
+      if (i + 1 < argc)
+      {
         waiting = true;
         std::stringstream buffer(argv[i + 1]);
         buffer >> wait_time;
       }
       ++i;
-    } else if (arg1 == "-wy" || arg1 == "-wp" ||
-               arg1 == "--wait-for-periodic") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-wy" || arg1 == "-wp" || arg1 == "--wait-for-periodic")
+    {
+      if (i + 1 < argc)
+      {
         waiting_for_periodic = true;
         std::stringstream buffer(argv[i + 1]);
         buffer >> wait_for_periodic;
       }
       ++i;
-    } else if (arg1 == "-y" || arg1 == "--frequency") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-y" || arg1 == "--frequency")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> frequency;
       }
 
       ++i;
-    } else if (arg1 == "--zmq" || arg1 == "--0mq") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "--zmq" || arg1 == "--0mq")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::ZMQ;
       }
       ++i;
-    } else if (arg1 == "-0" || arg1 == "--init-logic") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-0" || arg1 == "--init-logic")
+    {
+      if (i + 1 < argc)
+      {
         initlogics.push_back(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-0f" || arg1 == "--init-file") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-0f" || arg1 == "--init-file")
+    {
+      if (i + 1 < argc)
+      {
         std::string filename;
         std::stringstream buffer(argv[i + 1]);
         buffer >> filename;
 
-        if (debug) {
+        if (debug)
+        {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
               "\nReading logic from file %s:\n", filename.c_str());
         }
@@ -868,11 +1057,15 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
 
       ++i;
-    } else if (arg1 == "-0b" || arg1 == "--init-bin") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-0b" || arg1 == "--init-bin")
+    {
+      if (i + 1 < argc)
+      {
         initbinaries = argv[i + 1];
 
-        if (debug) {
+        if (debug)
+        {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
               "Will be reading binary checkpoint from file %s:\n",
               initbinaries.c_str());
@@ -880,11 +1073,15 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
 
       ++i;
-    } else if (arg1 == "--meta-prefix") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "--meta-prefix")
+    {
+      if (i + 1 < argc)
+      {
         meta_prefix = argv[i + 1];
 
-        if (debug) {
+        if (debug)
+        {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
               "Will be saving checkpoint meta data to to prefix %s:\n",
               meta_prefix.c_str());
@@ -892,9 +1089,13 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
 
       ++i;
-    } else if (arg1 == "--use-id") {
+    }
+    else if (arg1 == "--use-id")
+    {
       use_id = true;
-    } else if (logic == "") {
+    }
+    else if (logic == "")
+    {
       logic = arg1;
     }
   }
@@ -915,7 +1116,8 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
 
   // load the a karl config file
   std::ifstream file(full_path.c_str());
-  if (!file) {
+  if (!file)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
         "Unable to open karl config file: %s\n", full_path.c_str());
     return false;
@@ -929,11 +1131,15 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
 
   // read each line of the text formatted file in, each line contains
   // one flag followed by a space then the param if there is a parameter
-  while (std::getline(file, flag_param)) {
+  while (std::getline(file, flag_param))
+  {
     flag = flag_param.substr(0, flag_param.find_first_of(" "));
-    if (flag_param.find_first_of(" ") == std::string::npos) {
+    if (flag_param.find_first_of(" ") == std::string::npos)
+    {
       param = "";
-    } else {
+    }
+    else
+    {
       param = flag_param.substr(flag_param.find_first_of(" ") + 1,
           flag_param.length() - (flag_param.find_first_of(" ") + 1));
     }
@@ -943,7 +1149,8 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
         "Found a flag saving now...\n");
     argv_config_files.push_back(flag);
 
-    if (param != "") {
+    if (param != "")
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
           "Found a param saving now...\n");
       argv_config_files.push_back(param);
@@ -968,11 +1175,13 @@ void print_all_prefixes(knowledge::KnowledgeBase& context)
 {
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
       "\nKnowledge in Knowledge Base (filtered by prefixes):\n");
-  for (size_t i = 0; i < print_prefixes.size(); ++i) {
+  for (size_t i = 0; i < print_prefixes.size(); ++i)
+  {
     knowledge::KnowledgeMap matches = context.to_map(print_prefixes[i]);
 
     for (knowledge::KnowledgeMap::const_iterator j = matches.begin();
-         j != matches.end(); ++j) {
+         j != matches.end(); ++j)
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "%s=%s\n", j->first.c_str(), j->second.to_string(", ").c_str());
     }
@@ -990,27 +1199,34 @@ public:
 
   virtual void run(void)
   {
-    for (size_t i = 0; i < expressions_.size(); ++i) {
+    for (size_t i = 0; i < expressions_.size(); ++i)
+    {
 #ifndef _MADARA_NO_KARL_
       knowledge::KnowledgeRecord result =
           knowledge_->evaluate(expressions_[i], knowledge::EvalSettings::SEND);
 
-      if (check_result && result.is_true()) {
+      if (check_result && result.is_true())
+      {
         this->terminated = 1;
       }
 
 #endif  // _MADARA_NO_KARL_
     }
 
-    if (print_knowledge_frequency) {
-      if (print_prefixes.size() == 0) {
+    if (print_knowledge_frequency)
+    {
+      if (print_prefixes.size() == 0)
+      {
         knowledge_->print();
-      } else {
+      }
+      else
+      {
         print_all_prefixes(*knowledge_);
       }
     }
 
-    if (print_stats_periodic) {
+    if (print_stats_periodic)
+    {
       stats_filter.print();
     }
   }
@@ -1031,36 +1247,47 @@ int main(int argc, char** argv)
   // handle all user arguments
   handle_arguments(argc, (const char**)argv);
 
-  if (print_stats || print_stats_periodic) {
+  if (print_stats || print_stats_periodic)
+  {
     settings.add_receive_filter(&stats_filter);
   }
 
   filters::PrefixPrint print_filter(print_prefixes);
-  if (debug) {
+  if (debug)
+  {
     settings.add_send_filter(&print_filter);
     settings.add_receive_filter(&print_filter);
   }
 
   // A less verbose form of receiving updates
   filters::PrefixPrint minimal_print_filter(print_prefixes, false);
-  if (print_updates) {
+  if (print_updates)
+  {
     settings.add_receive_filter(&minimal_print_filter);
   }
 
   // save transport always happens after all possible transport chagnes
-  if (save_transport != "") {
-    if (save_transport_prefix == "") {
+  if (save_transport != "")
+  {
+    if (save_transport_prefix == "")
+    {
       settings.save(save_transport);
-    } else {
+    }
+    else
+    {
       settings.save(save_transport, save_transport_prefix);
     }
   }
 
   // save transport always happens after all possible transport chagnes
-  if (save_transport_text != "") {
-    if (save_transport_prefix == "") {
+  if (save_transport_text != "")
+  {
+    if (save_transport_prefix == "")
+    {
       settings.save_text(save_transport_text);
-    } else {
+    }
+    else
+    {
       settings.save_text(save_transport_text, save_transport_prefix);
     }
   }
@@ -1077,7 +1304,8 @@ int main(int argc, char** argv)
   // knowledge::CheckpointStreamer streamer (save_checkpoint_settings, kb, 100);
 
   // start a stream if the user asked us to
-  if (stream_to != "") {
+  if (stream_to != "")
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "Streaming to %s:\n", stream_to.c_str());
 
@@ -1088,7 +1316,8 @@ int main(int argc, char** argv)
     kb.attach_streamer(std::move(streamer));
   }
 
-  if (stream_from != "") {
+  if (stream_from != "")
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "Streaming from %s:\n", stream_from.c_str());
 
@@ -1096,7 +1325,8 @@ int main(int argc, char** argv)
     player.start();
   }
 
-  if (initbinaries != "") {
+  if (initbinaries != "")
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "\nReading binary checkpoint from file %s:\n", initbinaries.c_str());
 
@@ -1105,7 +1335,8 @@ int main(int argc, char** argv)
     load_checkpoint_settings.filename = initbinaries;
     kb.load_context(load_checkpoint_settings);
 
-    if (meta_prefix != "") {
+    if (meta_prefix != "")
+    {
       kb.set(meta_prefix + ".originator", load_checkpoint_settings.originator,
           silent);
       kb.set(
@@ -1130,20 +1361,25 @@ int main(int argc, char** argv)
 
   // each file logic is evaluated first
   for (StringVector::const_iterator i = filenames.begin(); i != filenames.end();
-       ++i) {
-    if (utility::file_exists(*i)) {
+       ++i)
+  {
+    if (utility::file_exists(*i))
+    {
       // for the moment, we need to do the filter decode call ourself
       knowledge::CheckpointSettings checkpoint_settings(
           load_checkpoint_settings);
       checkpoint_settings.filename = *i;
 
       // because this is text, ignore header checks if no buffer filters
-      if (checkpoint_settings.buffer_filters.size() == 0) {
+      if (checkpoint_settings.buffer_filters.size() == 0)
+      {
         checkpoint_settings.ignore_header_check = true;
       }
 
       expressions.push_back(kb.compile(kb.file_to_string(checkpoint_settings)));
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nUnable to load file %s. "
           "Check that file exists and that you have permission to read.\n",
@@ -1158,12 +1394,17 @@ int main(int argc, char** argv)
   noharm.track_local_changes = false;
 
   // set initialization variables from files into the knowledge base
-  if (initfiles.size() > 0) {
+  if (initfiles.size() > 0)
+  {
     for (StringVector::const_iterator i = initfiles.begin();
-         i != initfiles.end(); ++i) {
-      if (utility::file_exists(*i)) {
+         i != initfiles.end(); ++i)
+    {
+      if (utility::file_exists(*i))
+      {
         kb.evaluate(utility::file_to_string(*i), noharm);
-      } else {
+      }
+      else
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
             "\nUnable to load file %s. "
             "Check that file exists and that you have permission to read.\n",
@@ -1173,9 +1414,11 @@ int main(int argc, char** argv)
   }
 
   // set initialization variables from command-line logics
-  if (initlogics.size() > 0) {
+  if (initlogics.size() > 0)
+  {
     for (StringVector::const_iterator i = initlogics.begin();
-         i != initlogics.end(); ++i) {
+         i != initlogics.end(); ++i)
+    {
       kb.evaluate(*i, noharm);
     }
   }
@@ -1183,19 +1426,24 @@ int main(int argc, char** argv)
   kb.reset_checkpoint();
 
   // command line logics are evaluated last
-  if (logic != "") {
+  if (logic != "")
+  {
     expressions.push_back(kb.compile(logic));
   }
 
   // check frequency to see if we should only execute once
-  if (frequency < 0) {
-    if (!after_wait) {
-      for (size_t i = 0; i < expressions.size(); ++i) {
+  if (frequency < 0)
+  {
+    if (!after_wait)
+    {
+      for (size_t i = 0; i < expressions.size(); ++i)
+      {
 #ifndef _MADARA_NO_KARL_
         knowledge::KnowledgeRecord result =
             kb.evaluate(expressions[i], knowledge::EvalSettings::SEND);
 
-        if (check_result && result.is_true()) {
+        if (check_result && result.is_true())
+        {
           break;
         }
 #endif  // _MADARA_NO_KARL_
@@ -1203,12 +1451,15 @@ int main(int argc, char** argv)
     }
 
     // if user requests to wait, do so before the debug print
-    if (waiting_for_periodic || waiting) {
+    if (waiting_for_periodic || waiting)
+    {
       utility::sleep(wait_time + wait_for_periodic);
     }
 
-    if (after_wait) {
-      for (size_t i = 0; i < expressions.size(); ++i) {
+    if (after_wait)
+    {
+      for (size_t i = 0; i < expressions.size(); ++i)
+      {
 #ifndef _MADARA_NO_KARL_
         kb.evaluate(expressions[i], madara::knowledge::EvalSettings::SEND);
 #endif  // _MADARA_NO_KARL_
@@ -1220,7 +1471,8 @@ int main(int argc, char** argv)
     threads::Threader threader(kb);
 
     // if the user specified a wait before evaluation, sleep for the time
-    if (waiting_for_periodic) {
+    if (waiting_for_periodic)
+    {
       utility::sleep(wait_for_periodic);
     }
 
@@ -1229,52 +1481,63 @@ int main(int argc, char** argv)
     bool terminated = false;
 
     // if user requests to wait, do so before the debug print
-    if (waiting) {
+    if (waiting)
+    {
       knowledge::WaitSettings ws;
       ws.max_wait_time = wait_time;
 
       terminated = threader.wait(ws);
     }
 
-    if (!terminated) {
+    if (!terminated)
+    {
       threader.terminate();
       threader.wait();
     }
   }
 
   // if the user requests debugging information, print final knowledge
-  if (debug || print_knowledge) {
-    if (print_prefixes.size() == 0) {
+  if (debug || print_knowledge)
+  {
+    if (print_prefixes.size() == 0)
+    {
       kb.print();
-    } else {
+    }
+    else
+    {
       print_all_prefixes(kb);
     }
   }
 
-  if (print_stats) {
+  if (print_stats)
+  {
     stats_filter.print();
   }
 
   // save as checkpoint of changes by logics and input files
-  if (save_checkpoint.size() > 0) {
+  if (save_checkpoint.size() > 0)
+  {
     save_checkpoint_settings.filename = save_checkpoint;
     kb.save_checkpoint(save_checkpoint_settings);
   }
 
   // save as karl if requested
-  if (save_location.size() > 0) {
+  if (save_location.size() > 0)
+  {
     save_checkpoint_settings.filename = save_location;
     kb.save_as_karl(save_checkpoint_settings);
   }
 
   // save as karl if requested
-  if (save_json.size() > 0) {
+  if (save_json.size() > 0)
+  {
     save_checkpoint_settings.filename = save_json;
     kb.save_as_json(save_checkpoint_settings);
   }
 
   // save as binary if requested
-  if (save_binary.size() > 0) {
+  if (save_binary.size() > 0)
+  {
     save_checkpoint_settings.filename = save_binary;
     kb.save_context(save_checkpoint_settings);
   }

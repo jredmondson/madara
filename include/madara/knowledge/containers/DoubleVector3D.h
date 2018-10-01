@@ -33,7 +33,8 @@ class MADARA_EXPORT DoubleVector3D : public BaseContainer
 {
 public:
   /// two dimensional indexing
-  struct Indices {
+  struct Indices
+  {
     std::size_t x, y, z;
   };
 

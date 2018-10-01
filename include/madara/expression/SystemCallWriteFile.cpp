@@ -33,17 +33,20 @@ madara::expression::SystemCallWriteFile::prune(bool& can_change)
 
   madara::knowledge::KnowledgeRecord result;
 
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i) {
+  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
+  {
     bool arg_can_change = false;
     result = (*i)->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0)
+    {
       delete *i;
       *i = new LeafNode(*(this->logger_), result);
     }
   }
 
-  if (nodes_.size() != 2) {
+  if (nodes_.size() != 2)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallWriteFile: "
         "KARL COMPILE ERROR:"
@@ -68,7 +71,8 @@ madara::expression::SystemCallWriteFile::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 2) {
+  if (nodes_.size() == 2)
+  {
     // copying strings wastes execution time, so we hold the
     // knowledge::KnowledgeRecord instead of the resulting string filename.
     knowledge::KnowledgeRecord arg1 = nodes_[0]->evaluate(settings);
@@ -84,20 +88,25 @@ madara::expression::SystemCallWriteFile::evaluate(
 
     ssize_t bytes_written = contents->to_file(filename->to_string());
 
-    if (bytes_written <= 0) {
+    if (bytes_written <= 0)
+    {
       madara_logger_ptr_log(logger_, logger::LOG_MINOR,
           "madara::expression::SystemCallWriteFile: "
           "KARL ERROR: System call write_file could not write to %s\n",
           filename->to_string().c_str());
 
       return madara::knowledge::KnowledgeRecord(bytes_written);
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger_, logger::LOG_MINOR,
           "madara::expression::SystemCallWriteFile: "
           "System call write_file wrote %zd bytes to %s\n",
           bytes_written, filename->to_string().c_str());
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallWriteFile: "
         "KARL RUNTIME ERROR:"

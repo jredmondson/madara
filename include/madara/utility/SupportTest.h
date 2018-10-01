@@ -22,7 +22,8 @@
  */
 #define MADARA_MAKE_SUPPORT_TEST(name, var, expr)                   \
   template<typename T>                                              \
-  struct supports_##name##_impl {                                   \
+  struct supports_##name##_impl                                     \
+  {                                                                 \
     template<typename U>                                            \
     static auto test(U* var) -> decltype((expr), std::true_type()); \
     template<typename U>                                            \
@@ -30,7 +31,8 @@
     using type = decltype(test<T>(0));                              \
   };                                                                \
   template<typename T>                                              \
-  struct supports_##name : supports_##name##_impl<T>::type {        \
+  struct supports_##name : supports_##name##_impl<T>::type          \
+  {                                                                 \
   }
 
 /**
@@ -43,7 +45,8 @@
  */
 #define MADARA_MAKE_VAL_SUPPORT_TEST(name, var, expr)              \
   template<typename T>                                             \
-  struct supports_##name##_impl {                                  \
+  struct supports_##name##_impl                                    \
+  {                                                                \
     template<typename U>                                           \
     static auto test(U var) -> decltype((expr), std::true_type()); \
     template<typename U>                                           \
@@ -51,7 +54,8 @@
     using type = decltype(test<T>(std::declval<T>()));             \
   };                                                               \
   template<typename T>                                             \
-  struct supports_##name : supports_##name##_impl<T>::type {       \
+  struct supports_##name : supports_##name##_impl<T>::type         \
+  {                                                                \
   }
 
 namespace madara
@@ -64,7 +68,8 @@ inline namespace core
 /// argument instead of inside explicit "<...>". This interacts more flexibly
 /// with overloading and ADL.
 template<class T>
-struct type {
+struct type
+{
   using self = T;
 };
 
@@ -175,7 +180,8 @@ constexpr std::initializer_list<T> mk_init(std::initializer_list<T> i)
 /// Functor which ignores all arguments when called, and always returns a
 /// default-constructed Ret
 template<class Ret = void>
-struct ignore_all {
+struct ignore_all
+{
   template<typename... Args>
   constexpr Ret operator()(Args&&...) const
   {
@@ -185,12 +191,14 @@ struct ignore_all {
 
 /// Helper type for managing overload priority. Use overload_priority alias
 template<int N>
-struct overload_priority_t : overload_priority_t<N + 1> {
+struct overload_priority_t : overload_priority_t<N + 1>
+{
 };
 
 /// Base case for overload_priority implementation
 template<>
-struct overload_priority_t<16> {
+struct overload_priority_t<16>
+{
 };
 
 /// Helper type for managing overload priority. Include an instantiation as
@@ -215,12 +223,14 @@ inline overload_priority_strongest select_overload()
 
 /// Internal use. Implementation helper for is_type_tag.
 template<typename T, typename = void>
-struct is_type_tag_impl : std::false_type {
+struct is_type_tag_impl : std::false_type
+{
 };
 
 /// Internal use. Implementation helper for is_type_tag.
 template<typename T>
-struct is_type_tag_impl<type<T>> : std::true_type {
+struct is_type_tag_impl<type<T>> : std::true_type
+{
 };
 
 /// Test if T is a madara::utility::type<> instantiation

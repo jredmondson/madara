@@ -17,25 +17,34 @@ int madara_fails = 0;
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-p" || arg1 == "--poll-frequency") {
-      if (i + 1 < argc) {
+    if (arg1 == "-p" || arg1 == "--poll-frequency")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> wait_settings.poll_frequency;
       }
 
       ++i;
-    } else if (arg1 == "-m" || arg1 == "--max") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-m" || arg1 == "--max")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> wait_settings.max_wait_time;
       }
 
       ++i;
-    } else if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         int level;
         buffer >> level;
@@ -43,13 +52,18 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-f" || arg1 == "--logfile") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-f" || arg1 == "--logfile")
+    {
+      if (i + 1 < argc)
+      {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Test periodic waits for accuracy of timers.\n\n"
@@ -94,16 +108,22 @@ int main(int argc, char* argv[])
   knowledge.print();
 
   std::cerr << "Checking if wait time was greater than 5 s...";
-  if (timer.duration_s() >= 5 && timer.duration_s() < 7) {
+  if (timer.duration_s() >= 5 && timer.duration_s() < 7)
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "SUCCESS\n";
     ++madara_fails;
   }
 
-  if (madara_fails > 0) {
+  if (madara_fails > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

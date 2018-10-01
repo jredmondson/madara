@@ -24,12 +24,14 @@ WorkerThread::WorkerThread(const std::string& name, BaseThread* thread,
     double hertz)
   : name_(name), thread_(thread), control_(control), data_(data), hertz_(hertz)
 {
-  if (thread) {
+  if (thread)
+  {
     std::stringstream base_string;
 
     knowledge::KnowledgeBase* kb = &control;
     knowledge::KnowledgeRecord debug_to_kb = control_.get(".debug_to_kb");
-    if (debug_to_kb.exists()) {
+    if (debug_to_kb.exists())
+    {
       base_string << debug_to_kb.to_string() << ".";
       kb = &data;
       data.set(debug_to_kb.to_string() + ".hertz", hertz,
@@ -65,15 +67,19 @@ WorkerThread::WorkerThread(const std::string& name, BaseThread* thread,
 
 WorkerThread::~WorkerThread() noexcept
 {
-  try {
-    if (me_.joinable()) {
+  try
+  {
+    if (me_.joinable())
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
           "WorkerThread::~WorkerThread(%s):"
           " thread wasn't joined before destruction\n",
           name_.c_str());
       me_.detach();
     }
-  } catch (const std::system_error& e) {
+  }
+  catch (const std::system_error& e)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
         "WorkerThread::~WorkerThread(%s):"
         " error trying to detach: %s\n",
@@ -113,7 +119,8 @@ void try_pthread_setname_np(...) {}
 
 void WorkerThread::run(void)
 {
-  try {
+  try
+  {
     me_ = std::thread(&WorkerThread::svc, this);
 
 #ifndef _WIN32
@@ -128,7 +135,9 @@ void WorkerThread::run(void)
         "WorkerThread::WorkerThread(%s):"
         " thread started %s\n",
         name_.c_str(), os.str().c_str());
-  } catch (const std::exception& e) {
+  }
+  catch (const std::exception& e)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "WorkerThread::WorkerThread(%s):"
         " failed to create thread: %s\n",
@@ -144,7 +153,8 @@ int WorkerThread::svc(void)
       " checking thread existence\n",
       name_.c_str());
 
-  if (thread_) {
+  if (thread_)
+  {
     started_ = 1;
 
 #ifdef _MADARA_JAVA_
@@ -187,43 +197,51 @@ int WorkerThread::svc(void)
       madara::logger::Logger::set_thread_hertz(hertz_);
 #endif
 
-      if (debug) {
+      if (debug)
+      {
         start_time_ = utility::get_time();
       }
 
-      while (control_.get(terminated).is_false()) {
+      while (control_.get(terminated).is_false())
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
             "WorkerThread(%s)::svc:"
             " thread checking for pause\n",
             name_.c_str());
 
-        if (control_.get(paused).is_false()) {
+        if (control_.get(paused).is_false())
+        {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
               "WorkerThread(%s)::svc:"
               " thread calling run function\n",
               name_.c_str());
 
-          try {
+          try
+          {
             int64_t start_time = 0, end_time = 0;
             debug = debug_.is_true();
 
-            if (debug) {
+            if (debug)
+            {
               start_time = utility::get_time();
               ++executions_;
             }
 
             thread_->run();
 
-            if (debug) {
+            if (debug)
+            {
               end_time = utility::get_time();
 
               // update duration information
               last_duration = end_time - start_time;
-              if (min_duration == -1 || last_duration < min_duration) {
+              if (min_duration == -1 || last_duration < min_duration)
+              {
                 min_duration = last_duration;
                 min_duration_changed = true;
               }
-              if (last_duration > max_duration) {
+              if (last_duration > max_duration)
+              {
                 max_duration = last_duration;
                 max_duration_changed = true;
               }
@@ -236,16 +254,19 @@ int WorkerThread::svc(void)
                 end_time_ = end_time;
 
                 last_duration_ = last_duration;
-                if (max_duration_changed) {
+                if (max_duration_changed)
+                {
                   max_duration_ = max_duration;
                 }
-                if (min_duration_changed) {
+                if (min_duration_changed)
+                {
                   min_duration_ = min_duration;
                 }
               }  // end lock of control plane
             }    // end if debug
           }      // end try of the run
-          catch (const std::exception& e) {
+          catch (const std::exception& e)
+          {
             madara_logger_ptr_log(logger::global_logger.get(),
                 logger::LOG_EMERGENCY,
                 "WorkerThread(%s)::svc:"
@@ -258,12 +279,14 @@ int WorkerThread::svc(void)
           break;
 
         // check for a change in frequency/hertz
-        if (new_hertz_ != hertz_) {
+        if (new_hertz_ != hertz_)
+        {
           change_frequency(
               *new_hertz_, current, frequency, next_epoch, one_shot, blaster);
         }
 
-        if (!blaster) {
+        if (!blaster)
+        {
           current = utility::get_time_value();
 
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
@@ -307,7 +330,9 @@ int WorkerThread::svc(void)
         finished_.get_name().c_str());
 
     finished_ = 1;
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "WorkerThread(%s)::svc:"
         " thread creation failed\n",

@@ -76,7 +76,8 @@ inline madara::knowledge::containers::Queue::Queue(const Queue& rhs)
 
 inline void madara::knowledge::containers::Queue::operator=(const Queue& rhs)
 {
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
     this->context_ = rhs.context_;
@@ -109,7 +110,8 @@ inline bool madara::knowledge::containers::Queue::emplace(Args&&... args)
 
 inline void madara::knowledge::containers::Queue::clear(void)
 {
-  if (context_ && name_ != "" && count_ > 0) {
+  if (context_ && name_ != "" && count_ > 0)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
@@ -122,7 +124,8 @@ inline madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::Queue::inspect(size_t position)
 {
   madara::knowledge::KnowledgeRecord result;
-  if (context_ && name_ != "" && (KnowledgeRecord::Integer)position < *count_) {
+  if (context_ && name_ != "" && (KnowledgeRecord::Integer)position < *count_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
@@ -152,13 +155,15 @@ inline size_t madara::knowledge::containers::Queue::count(void)
 
 inline void madara::knowledge::containers::Queue::resize(int size)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
     queue_.resize(size, false);
 
-    if (count_ > (KnowledgeRecord::Integer)queue_.size()) {
+    if (count_ > (KnowledgeRecord::Integer)queue_.size())
+    {
       count_ = (KnowledgeRecord::Integer)size;
     }
   }
@@ -180,7 +185,8 @@ madara::knowledge::containers::Queue::set_settings(
 inline void madara::knowledge::containers::Queue::set_quality(
     uint32_t quality, const KnowledgeReferenceSettings& settings)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     context_->set_quality(name_, quality, true, settings);

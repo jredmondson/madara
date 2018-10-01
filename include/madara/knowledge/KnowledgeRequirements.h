@@ -22,11 +22,13 @@ namespace knowledge
  * @class KnowledgeRequirements
  * @brief Holds settings requirements for knowledge, usually in copying
  **/
-struct KnowledgeRequirements {
+struct KnowledgeRequirements
+{
   /**
    * A helper class for matching prefixes and suffixes
    **/
-  struct MatchPredicate {
+  struct MatchPredicate
+  {
     /// a prefix to match
     std::string prefix;
 

@@ -54,9 +54,12 @@ void test_print_statement(madara::knowledge::KnowledgeBase& knowledge)
 
   exp_statement = knowledge.expand_statement(statement);
   std::cerr << "Test 1: ";
-  if (statement == "Hello kitty 1") {
+  if (statement == "Hello kitty 1")
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -65,9 +68,12 @@ void test_print_statement(madara::knowledge::KnowledgeBase& knowledge)
 
   exp_statement = knowledge.expand_statement(statement);
   std::cerr << "Test 2: ";
-  if (statement == "Hello kitty 1") {
+  if (statement == "Hello kitty 1")
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -76,9 +82,12 @@ void test_print_statement(madara::knowledge::KnowledgeBase& knowledge)
 
   exp_statement = knowledge.expand_statement(statement);
   std::cerr << "Test 3: ";
-  if (statement == "MyState.1.2 = 10") {
+  if (statement == "MyState.1.2 = 10")
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }

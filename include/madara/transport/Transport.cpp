@@ -32,7 +32,8 @@ Base::~Base() {}
 int Base::setup(void)
 {
   // check for an on_data_received ruleset
-  if (settings_.on_data_received_logic.length() != 0) {
+  if (settings_.on_data_received_logic.length() != 0)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "transport::Base::setup"
         " setting rules to %s\n",
@@ -43,7 +44,9 @@ int Base::setup(void)
     on_data_received_ =
         interpreter.interpret(context_, settings_.on_data_received_logic);
 #endif  // _MADARA_NO_KARL_
-  } else {
+  }
+  else
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "transport::Base::setup"
         " no permanent rules were set\n");
@@ -54,14 +57,17 @@ int Base::setup(void)
     buffer_ = new char[settings_.queue_length];
 
   // if read domains has not been set, then set to write domain
-  if (settings_.num_read_domains() == 0) {
+  if (settings_.num_read_domains() == 0)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "transport::Base::setup"
         " no read domains set. Adding write domain (%s)\n",
         settings_.write_domain.c_str());
 
     settings_.add_read_domain(settings_.write_domain);
-  } else {
+  }
+  else
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "transport::Base::setup"
         " settings configured with %d read domains\n",
@@ -69,16 +75,19 @@ int Base::setup(void)
   }
 
   if (settings_.num_read_domains() > 0 &&
-      context_.get_logger().get_level() >= logger::LOG_MAJOR) {
+      context_.get_logger().get_level() >= logger::LOG_MAJOR)
+  {
     std::vector<std::string> domains;
     settings_.get_read_domains(domains);
 
     std::stringstream buffer;
 
-    for (unsigned int i = 0; i < domains.size(); ++i) {
+    for (unsigned int i = 0; i < domains.size(); ++i)
+    {
       buffer << domains[i];
 
-      if (i != domains.size() - 1) {
+      if (i != domains.size() - 1)
+      {
         buffer << ", ";
       }
     }
@@ -152,7 +161,8 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
   // check the buffer for a reduced message header
   if (bytes_read >= ReducedMessageHeader::static_encoded_size() &&
-      ReducedMessageHeader::reduced_message_header_test(buffer)) {
+      ReducedMessageHeader::reduced_message_header_test(buffer))
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MINOR,
         "%s:"
         " processing reduced KaRL message from %s\n",
@@ -160,16 +170,20 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
     header = new ReducedMessageHeader();
     is_reduced = true;
-  } else if (bytes_read >= MessageHeader::static_encoded_size() &&
-             MessageHeader::message_header_test(buffer)) {
+  }
+  else if (bytes_read >= MessageHeader::static_encoded_size() &&
+           MessageHeader::message_header_test(buffer))
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MINOR,
         "%s:"
         " processing KaRL message from %s\n",
         print_prefix, remote_host);
 
     header = new MessageHeader();
-  } else if (bytes_read >= FragmentMessageHeader::static_encoded_size() &&
-             FragmentMessageHeader::fragment_message_header_test(buffer)) {
+  }
+  else if (bytes_read >= FragmentMessageHeader::static_encoded_size() &&
+           FragmentMessageHeader::fragment_message_header_test(buffer))
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MINOR,
         "%s:"
         " processing KaRL fragment message from %s\n",
@@ -177,7 +191,9 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
     header = new FragmentMessageHeader();
     is_fragment = true;
-  } else if (bytes_read >= 8 + MADARA_IDENTIFIER_LENGTH) {
+  }
+  else if (bytes_read >= 8 + MADARA_IDENTIFIER_LENGTH)
+  {
     // get the text that appears as identifier.
     char identifier[MADARA_IDENTIFIER_LENGTH];
     strncpy(identifier, buffer + 8, MADARA_IDENTIFIER_LENGTH);
@@ -189,7 +205,9 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
         print_prefix, identifier, remote_host);
 
     return -1;
-  } else {
+  }
+  else
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MINOR,
         "%s:"
         " dropping too short message from %s (length %i)\n",
@@ -205,7 +223,8 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
       " header info: %s\n",
       print_prefix, header->to_string().c_str());
 
-  if (header->size < bytes_read) {
+  if (header->size < bytes_read)
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
         "%s:"
         " Message header.size (%" PRIu64 " bytes) is less than actual"
@@ -217,7 +236,8 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
   if (is_fragment && exists(header->originator, header->clock,
                          ((FragmentMessageHeader*)header)->update_number,
-                         settings.fragment_map)) {
+                         settings.fragment_map))
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
         "%s:"
         " Fragment already exists in fragment map. Dropping.\n",
@@ -226,26 +246,33 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
     return -1;
   }
 
-  if (!is_reduced) {
+  if (!is_reduced)
+  {
     // reject the message if it is us as the originator (no update necessary)
-    if (id == header->originator) {
+    if (id == header->originator)
+    {
       madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
           "%s:"
           " dropping message from ourself\n",
           print_prefix);
 
       return -2;
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
           "%s:"
           " remote id (%s) is not our own\n",
           print_prefix, remote_host);
     }
 
-    if (settings.is_trusted(remote_host)) {
+    if (settings.is_trusted(remote_host))
+    {
       madara_logger_log(context.get_logger(), logger::LOG_DETAILED,
           "%s: remote id (%s) is trusted\n", print_prefix, remote_host);
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
           "%s:"
           " dropping message from untrusted peer (%s\n",
@@ -257,12 +284,15 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
     std::string originator(header->originator);
 
-    if (settings.is_trusted(originator)) {
+    if (settings.is_trusted(originator))
+    {
       madara_logger_log(context.get_logger(), logger::LOG_MINOR,
           "%s:"
           " originator (%s) is trusted\n",
           print_prefix, originator.c_str());
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
           "%s:"
           " dropping message from untrusted originator (%s)\n",
@@ -272,7 +302,8 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
     }
 
     // reject the message if it is from a different domain
-    if (!settings.is_reading_domain(header->domain)) {
+    if (!settings.is_reading_domain(header->domain))
+    {
       madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
           "%s:"
           " remote id (%s) has an untrusted domain (%s). Dropping message.\n",
@@ -280,7 +311,9 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
       // delete the header and continue to the svc loop
       return -5;
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_MINOR,
           "%s:"
           " remote id (%s) message is in our domain\n",
@@ -289,7 +322,8 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
   }
 
   // fragments are special cases
-  if (is_fragment) {
+  if (is_fragment)
+  {
     // grab the fragment header
     FragmentMessageHeader* frag_header =
         dynamic_cast<FragmentMessageHeader*>(header);
@@ -306,9 +340,12 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
         settings.fragment_queue_length, settings.fragment_map, true);
 
     // if we have no return message, we may have previously defragged it
-    if (!message) {
+    if (!message)
+    {
       return 0;
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
           "%s:"
           " Message has been pieced together from fragments. Processing...\n",
@@ -320,12 +357,14 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
        * so it can be processed normally.
        **/
       buffer_remaining = (int64_t)frag_header->get_size(message);
-      if (buffer_remaining <= settings.queue_length) {
+      if (buffer_remaining <= settings.queue_length)
+      {
         char* buffer_override = (char*)buffer;
         memcpy(buffer_override, message, frag_header->get_size(message));
 
         // check the buffer for a reduced message header
-        if (ReducedMessageHeader::reduced_message_header_test(buffer)) {
+        if (ReducedMessageHeader::reduced_message_header_test(buffer))
+        {
           madara_logger_log(context.get_logger(), logger::LOG_MINOR,
               "%s:"
               " processing reduced KaRL message from %s\n",
@@ -334,7 +373,9 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
           header = new ReducedMessageHeader();
           is_reduced = true;
           update = header->read(buffer, buffer_remaining);
-        } else if (MessageHeader::message_header_test(buffer)) {
+        }
+        else if (MessageHeader::message_header_test(buffer))
+        {
           madara_logger_log(context.get_logger(), logger::LOG_MINOR,
               "%s:"
               " processing KaRL message from %s\n",
@@ -359,11 +400,14 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
   uint64_t latency(0);
 
-  if (deadline >= 1.0) {
-    if (header->timestamp < current_time) {
+  if (deadline >= 1.0)
+  {
+    if (header->timestamp < current_time)
+    {
       latency = current_time - header->timestamp;
 
-      if (latency > deadline) {
+      if (latency > deadline)
+      {
         madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
             "%s:"
             " deadline violation (latency is %" PRIu64 ", deadline is %f).\n",
@@ -371,7 +415,9 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
         return -6;
       }
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_MINOR,
           "%s:"
           " Cannot compute message latency."
@@ -394,22 +440,27 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
   bool dropped = false;
 
-  if (send_monitor.is_bandwidth_violated(settings.get_send_bandwidth_limit())) {
+  if (send_monitor.is_bandwidth_violated(settings.get_send_bandwidth_limit()))
+  {
     dropped = true;
     madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
         "%s:"
         " Send monitor has detected violation of bandwidth limit."
         " Dropping packet from rebroadcast list\n",
         print_prefix);
-  } else if (receive_monitor.is_bandwidth_violated(
-                 settings.get_total_bandwidth_limit())) {
+  }
+  else if (receive_monitor.is_bandwidth_violated(
+               settings.get_total_bandwidth_limit()))
+  {
     dropped = true;
     madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
         "%s:"
         " Receive monitor has detected violation of bandwidth limit."
         " Dropping packet from rebroadcast list...\n",
         print_prefix);
-  } else if (settings.get_participant_ttl() < header->ttl) {
+  }
+  else if (settings.get_participant_ttl() < header->ttl)
+  {
     dropped = true;
     madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
         "%s:"
@@ -426,23 +477,28 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
   const auto add_record = [&](const std::string& key,
                               knowledge::KnowledgeRecord rec) {
     auto& entry = updates[key];
-    if (entry.exists()) {
+    if (entry.exists())
+    {
       using std::swap;
 
       swap(rec, entry);
 
       past_updates[key].emplace_back(std::move(rec));
-    } else {
+    }
+    else
+    {
       entry = std::move(rec);
     }
   };
 
   // iterate over the updates
-  for (uint32_t i = 0; i < header->updates; ++i) {
+  for (uint32_t i = 0; i < header->updates; ++i)
+  {
     // read converts everything into host format from the update stream
     update = record.read(update, key, buffer_remaining);
 
-    if (buffer_remaining < 0) {
+    if (buffer_remaining < 0)
+    {
       madara_logger_log(context.get_logger(), logger::LOG_EMERGENCY,
           "%s:"
           " unable to process message. Buffer remaining is negative."
@@ -451,7 +507,9 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
       // we do not delete the header as this will be cleaned up later
       break;
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_MINOR,
           "%s:"
           " Applying receive filter to %s (clk %i, qual %i) = %s\n",
@@ -460,14 +518,17 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
       record = settings.filter_receive(record, key, transport_context);
 
-      if (record.exists()) {
+      if (record.exists())
+      {
         madara_logger_log(context.get_logger(), logger::LOG_MINOR,
             "%s:"
             " Filter results for %s were %s\n",
             print_prefix, key.c_str(), record.to_string().c_str());
 
         add_record(key, record);
-      } else {
+      }
+      else
+      {
         madara_logger_log(context.get_logger(), logger::LOG_MINOR,
             "%s:"
             " Filter resulted in dropping %s\n",
@@ -478,14 +539,16 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
   const knowledge::KnowledgeMap& additionals = transport_context.get_records();
 
-  if (additionals.size() > 0) {
+  if (additionals.size() > 0)
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
         "%s:"
         " %lld additional records being handled after receive.\n",
         print_prefix, (long long)additionals.size());
 
     for (knowledge::KnowledgeMap::const_iterator i = additionals.begin();
-         i != additionals.end(); ++i) {
+         i != additionals.end(); ++i)
+    {
       add_record(i->first, i->second);
     }
 
@@ -500,14 +563,17 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
   // apply aggregate receive filters
   if (settings.get_number_of_receive_aggregate_filters() > 0 &&
-      (updates.size() > 0 || header->type == transport::REGISTER)) {
+      (updates.size() > 0 || header->type == transport::REGISTER))
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
         "%s:"
         " Applying aggregate receive filters.\n",
         print_prefix);
 
     settings.filter_receive(updates, transport_context);
-  } else {
+  }
+  else
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MINOR,
         "%s:"
         " No aggregate receive filters were applied...\n",
@@ -530,7 +596,8 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
     uint64_t now = utility::get_time();
     // apply updates from the update list
     for (knowledge::KnowledgeMap::iterator i = updates.begin();
-         i != updates.end(); ++i) {
+         i != updates.end(); ++i)
+    {
       const auto apply = [&](knowledge::KnowledgeRecord& record) {
         int result = 0;
 
@@ -539,12 +606,15 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
             context, i->first, header->quality, header->clock, false);
         ++actual_updates;
 
-        if (result != 1) {
+        if (result != 1)
+        {
           madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
               "%s:"
               " update %s=%s was rejected\n",
               print_prefix, key.c_str(), record.to_string().c_str());
-        } else {
+        }
+        else
+        {
           madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
               "%s:"
               " update %s=%s was accepted\n",
@@ -553,9 +623,12 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
       };
 
       auto iter = past_updates.find(i->first);
-      if (iter != past_updates.end()) {
-        for (auto& cur : iter->second) {
-          if (cur.exists()) {
+      if (iter != past_updates.end())
+      {
+        for (auto& cur : iter->second)
+        {
+          if (cur.exists())
+          {
             apply(cur);
           }
         }
@@ -567,7 +640,8 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
   context.set_changed();
 
-  if (!dropped) {
+  if (!dropped)
+  {
     transport_context.set_operation(TransportContext::REBROADCASTING_OPERATION);
 
     madara_logger_log(context.get_logger(), logger::LOG_MINOR,
@@ -577,19 +651,24 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
     // create a list of rebroadcast records from the updates
     for (knowledge::KnowledgeMap::iterator i = updates.begin();
-         i != updates.end(); ++i) {
+         i != updates.end(); ++i)
+    {
       i->second =
           settings.filter_rebroadcast(i->second, i->first, transport_context);
 
-      if (i->second.exists()) {
-        if (i->second.to_string() != "") {
+      if (i->second.exists())
+      {
+        if (i->second.to_string() != "")
+        {
           madara_logger_log(context.get_logger(), logger::LOG_MINOR,
               "%s:"
               " Filter results for key %s were %s\n",
               print_prefix, i->first.c_str(), i->second.to_string().c_str());
         }
         rebroadcast_records[i->first] = i->second;
-      } else {
+      }
+      else
+      {
         madara_logger_log(context.get_logger(), logger::LOG_MINOR,
             "%s:"
             " Filter resulted in dropping %s\n",
@@ -601,7 +680,8 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
         transport_context.get_records();
 
     for (knowledge::KnowledgeMap::const_iterator i = additionals.begin();
-         i != additionals.end(); ++i) {
+         i != additionals.end(); ++i)
+    {
       rebroadcast_records[i->first] = i->second;
     }
 
@@ -612,9 +692,12 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
     // apply aggregate filters to the rebroadcast records
     if (settings.get_number_of_rebroadcast_aggregate_filters() > 0 &&
-        rebroadcast_records.size() > 0) {
+        rebroadcast_records.size() > 0)
+    {
       settings.filter_rebroadcast(rebroadcast_records, transport_context);
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_MINOR,
           "%s:"
           " No aggregate rebroadcast filters were applied...\n",
@@ -625,8 +708,9 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
         "%s:"
         " Returning to caller with %d rebroadcast records.\n",
         print_prefix, rebroadcast_records.size());
-
-  } else {
+  }
+  else
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MINOR,
         "%s:"
         " Rebroadcast packet was dropped...\n",
@@ -634,7 +718,8 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
   }
 
   // before we send to others, we first execute rules
-  if (settings.on_data_received_logic.length() != 0) {
+  if (settings.on_data_received_logic.length() != 0)
+  {
 #ifndef _MADARA_NO_KARL_
     madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
         "%s:"
@@ -643,8 +728,9 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
 
     context.evaluate(on_data_received);
 #endif  // _MADARA_NO_KARL_
-
-  } else {
+  }
+  else
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MINOR,
         "%s:"
         " no permanent rules were set\n",
@@ -661,7 +747,8 @@ int prep_rebroadcast(knowledge::ThreadSafeContext& context, char* buffer,
 {
   int result = 0;
 
-  if (header->ttl > 0 && records.size() > 0 && packet_scheduler.add()) {
+  if (header->ttl > 0 && records.size() > 0 && packet_scheduler.add())
+  {
     // keep track of the message_size portion of buffer
     uint64_t* message_size = (uint64_t*)buffer;
     int max_buffer_size = (int)buffer_remaining;
@@ -673,11 +760,13 @@ int prep_rebroadcast(knowledge::ThreadSafeContext& context, char* buffer,
     char* update = header->write(buffer, buffer_remaining);
 
     for (knowledge::KnowledgeMap::const_iterator i = records.begin();
-         i != records.end(); ++i) {
+         i != records.end(); ++i)
+    {
       update = i->second.write(update, i->first, buffer_remaining);
     }
 
-    if (buffer_remaining > 0) {
+    if (buffer_remaining > 0)
+    {
       int size = (int)(settings.queue_length - buffer_remaining);
       *message_size = utility::endian_swap((uint64_t)size);
 
@@ -694,7 +783,9 @@ int prep_rebroadcast(knowledge::ThreadSafeContext& context, char* buffer,
           print_prefix);
 
       settings.filter_encode(buffer, result, max_buffer_size);
-    } else {
+    }
+    else
+    {
       madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
           "%s:"
           " Not enough buffer for rebroadcasting packet\n",
@@ -702,7 +793,9 @@ int prep_rebroadcast(knowledge::ThreadSafeContext& context, char* buffer,
 
       result = -2;
     }
-  } else {
+  }
+  else
+  {
     madara_logger_log(context.get_logger(), logger::LOG_MINOR,
         "%s:"
         " No rebroadcast necessary.\n",
@@ -721,12 +814,15 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
 {
   // check to see if we are shutting down
   long ret = this->check_transport();
-  if (-1 == ret) {
+  if (-1 == ret)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "%s: transport has been told to shutdown", print_prefix);
 
     return ret;
-  } else if (-2 == ret) {
+  }
+  else if (-2 == ret)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "%s: transport is not valid", print_prefix);
 
@@ -752,16 +848,18 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
 
   bool dropped = false;
 
-  if (send_monitor_.is_bandwidth_violated(
-          settings_.get_send_bandwidth_limit())) {
+  if (send_monitor_.is_bandwidth_violated(settings_.get_send_bandwidth_limit()))
+  {
     dropped = true;
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "%s:"
         " Send monitor has detected violation of bandwidth limit."
         " Dropping packet...\n",
         print_prefix);
-  } else if (receive_monitor_.is_bandwidth_violated(
-                 settings_.get_total_bandwidth_limit())) {
+  }
+  else if (receive_monitor_.is_bandwidth_violated(
+               settings_.get_total_bandwidth_limit()))
+  {
     dropped = true;
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "%s:"
@@ -770,13 +868,16 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
         print_prefix);
   }
 
-  if (!dropped && packet_scheduler_.add()) {
-    if (settings_.get_number_of_send_filtered_types() > 0) {
+  if (!dropped && packet_scheduler_.add())
+  {
+    if (settings_.get_number_of_send_filtered_types() > 0)
+    {
       /**
        * filter the updates according to the filters specified by
        * the user in QoSTransportSettings (if applicable)
        **/
-      for (auto e : orig_updates) {
+      for (auto e : orig_updates)
+      {
         madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
             "%s:"
             " Calling filter chain of %s.\n",
@@ -784,7 +885,8 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
 
         const auto* record = e.second.get_record_unsafe();
 
-        if (record->toi() > latest_toi) {
+        if (record->toi() > latest_toi)
+        {
           latest_toi = record->toi();
         }
 
@@ -797,14 +899,17 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
             " Filter returned for %s.\n",
             print_prefix, e.first);
 
-        if (result.exists()) {
+        if (result.exists())
+        {
           madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
               "%s:"
               " Adding record to update list.\n",
               print_prefix);
 
           filtered_updates.emplace(std::make_pair(e.first, result));
-        } else {
+        }
+        else
+        {
           madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
               "%s:"
               " Filter removed record from update list.\n",
@@ -822,29 +927,37 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
           transport_context.get_records();
 
       for (knowledge::KnowledgeMap::const_iterator i = additionals.begin();
-           i != additionals.end(); ++i) {
+           i != additionals.end(); ++i)
+      {
         madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
             "%s:"
             " Filter added a record %s to the update list.\n",
             print_prefix, i->first.c_str());
         filtered_updates.emplace(std::make_pair(i->first, i->second));
       }
-    } else {
-      for (auto e : orig_updates) {
+    }
+    else
+    {
+      for (auto e : orig_updates)
+      {
         const auto* record = e.second.get_record_unsafe();
 
-        if (record->toi() > latest_toi) {
+        if (record->toi() > latest_toi)
+        {
           latest_toi = record->toi();
         }
 
-        if (record) {
+        if (record)
+        {
           madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
               "%s:"
               " Adding record %s to update list.\n",
               print_prefix, e.first);
 
           filtered_updates.emplace(std::make_pair(e.first, *record));
-        } else {
+        }
+        else
+        {
           std::stringstream message;
           message << print_prefix;
           message << ": record " << e.first << " produced a null record ";
@@ -857,7 +970,9 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
         }
       }
     }
-  } else {
+  }
+  else
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "%s:"
         " Packet scheduler has dropped packet...\n",
@@ -874,9 +989,12 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
 
   // apply the aggregate filters
   if (settings_.get_number_of_send_aggregate_filters() > 0 &&
-      filtered_updates.size() > 0) {
+      filtered_updates.size() > 0)
+  {
     settings_.filter_send(filtered_updates, transport_context);
-  } else {
+  }
+  else
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
         "%s:"
         " No aggregate send filters were applied...\n",
@@ -890,7 +1008,8 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
       " Finished applying filters before sending...\n",
       print_prefix);
 
-  if (filtered_updates.size() == 0) {
+  if (filtered_updates.size() == 0)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
         "%s:"
         " Filters removed all data. Nothing to send.\n",
@@ -903,7 +1022,8 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
   char* buffer = buffer_.get_ptr();
   int64_t buffer_remaining = settings_.queue_length;
 
-  if (buffer == 0) {
+  if (buffer == 0)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_EMERGENCY,
         "%s:"
         " Unable to allocate buffer of size " PRIu32 ". Exiting thread.\n",
@@ -915,7 +1035,8 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
   // set the header to the beginning of the buffer
   MessageHeader* header = 0;
 
-  if (settings_.send_reduced_message_header) {
+  if (settings_.send_reduced_message_header)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
         "%s:"
         " Preparing message with reduced message header.\n",
@@ -923,7 +1044,9 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
 
     header = new ReducedMessageHeader();
     reduced = true;
-  } else {
+  }
+  else
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
         "%s:"
         " Preparing message with normal message header.\n",
@@ -935,7 +1058,8 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
   // get the clock
   header->clock = context_.get_clock();
 
-  if (!reduced) {
+  if (!reduced)
+  {
     // copy the domain from settings
     strncpy(header->domain, this->settings_.write_domain.c_str(),
         sizeof(header->domain) - 1);
@@ -993,11 +1117,13 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
   int j = 0;
   uint32_t actual_updates = 0;
   for (knowledge::KnowledgeMap::const_iterator i = filtered_updates.begin();
-       i != filtered_updates.end(); ++i) {
+       i != filtered_updates.end(); ++i)
+  {
     const auto& key = i->first;
     const auto& rec = i->second;
     const auto do_write = [&](const knowledge::KnowledgeRecord& rec) {
-      if (!rec.exists()) {
+      if (!rec.exists())
+      {
         madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
             "%s:"
             " update[%d] => value is empty\n",
@@ -1007,7 +1133,8 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
 
       update = rec.write(update, key, buffer_remaining);
 
-      if (buffer_remaining > 0) {
+      if (buffer_remaining > 0)
+      {
         madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
             "%s:"
             " update[%d] => encoding %s of type %" PRId32 " and size %" PRIu32
@@ -1015,7 +1142,9 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
             print_prefix, j, key.c_str(), rec.type(), rec.size(), rec.toi());
         ++actual_updates;
         ++j;
-      } else {
+      }
+      else
+      {
         madara_logger_log(context_.get_logger(), logger::LOG_EMERGENCY,
             "%s:"
             " unable to encode update[%d] => %s of type %" PRId32
@@ -1024,20 +1153,25 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
       }
     };
 
-    if (!settings_.send_history || !rec.has_history()) {
+    if (!settings_.send_history || !rec.has_history())
+    {
       do_write(rec);
-    } else {
+    }
+    else
+    {
       auto buf = rec.share_circular_buffer();
       auto end = buf->end();
       auto cur = buf->begin();
 
-      if (last_toi_sent_ > 0) {
+      if (last_toi_sent_ > 0)
+      {
         cur = std::upper_bound(cur, end, last_toi_sent_,
             [](uint64_t lhs, const knowledge::KnowledgeRecord& rhs) {
               return lhs < rhs.toi();
             });
       }
-      for (; cur != end; ++cur) {
+      for (; cur != end; ++cur)
+      {
         do_write(*cur);
       }
     }
@@ -1045,7 +1179,8 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
 
   long size(0);
 
-  if (buffer_remaining > 0) {
+  if (buffer_remaining > 0)
+  {
     size = (long)(settings_.queue_length - buffer_remaining);
     header->size = size;
     *message_size = utility::endian_swap((uint64_t)size);
@@ -1053,7 +1188,8 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
     *message_updates = utility::endian_swap(actual_updates);
 
     // before we send to others, we first execute rules
-    if (settings_.on_data_received_logic.length() != 0) {
+    if (settings_.on_data_received_logic.length() != 0)
+    {
 #ifndef _MADARA_NO_KARL_
 
       madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
@@ -1069,8 +1205,9 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
           print_prefix);
 
 #endif  // _MADARA_NO_KARL_
-
-    } else {
+    }
+    else
+    {
       madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
           "%s:"
           " no permanent rules were set\n",

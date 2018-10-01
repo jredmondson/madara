@@ -47,9 +47,12 @@ int main(int, char**)
   knowledge.wait(expression, wait_settings);
 
   knowledge.print("Test 1: count >= 1000, actual = {.count}. ");
-  if (knowledge.get(".count") > 1000) {
+  if (knowledge.get(".count") > 1000)
+  {
     knowledge.print("SUCCESS\n");
-  } else {
+  }
+  else
+  {
     knowledge.print("FAIL\n");
     ++madara_fails;
   }
@@ -71,9 +74,12 @@ int main(int, char**)
   knowledge.wait(expression, wait_settings);
 
   knowledge.print("Test 2: count == 1, actual = {.count}. ");
-  if (knowledge.get(".count") == 1) {
+  if (knowledge.get(".count") == 1)
+  {
     knowledge.print("SUCCESS\n");
-  } else {
+  }
+  else
+  {
     knowledge.print("FAIL\n");
     ++madara_fails;
   }
@@ -94,9 +100,12 @@ int main(int, char**)
   knowledge.wait(expression, wait_settings);
 
   knowledge.print("Test 3: count == 2, actual = {.count}. ");
-  if (knowledge.get(".count") == 2) {
+  if (knowledge.get(".count") == 2)
+  {
     knowledge.print("SUCCESS\n");
-  } else {
+  }
+  else
+  {
     knowledge.print("FAIL\n");
     ++madara_fails;
   }
@@ -117,9 +126,12 @@ int main(int, char**)
   knowledge.wait(expression, wait_settings);
 
   knowledge.print("Test 4: count == 10, actual = {.count}. ");
-  if (knowledge.get(".count") == 10) {
+  if (knowledge.get(".count") == 10)
+  {
     knowledge.print("SUCCESS\n");
-  } else {
+  }
+  else
+  {
     knowledge.print("FAIL\n");
     ++madara_fails;
   }
@@ -129,9 +141,12 @@ int main(int, char**)
       "This test is disabled due to karl feature being disabled.\n");
 #endif
 
-  if (madara_fails > 0) {
+  if (madara_fails > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

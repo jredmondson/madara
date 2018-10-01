@@ -35,7 +35,8 @@ class Any;
 class ConstAny;
 struct TypeHandlers;
 
-struct compare_const_char_ptr {
+struct compare_const_char_ptr
+{
   bool operator()(const char* l, const char* r) const
   {
     return std::strcmp(l, r) < 0;

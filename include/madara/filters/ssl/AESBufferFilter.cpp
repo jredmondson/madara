@@ -46,7 +46,8 @@ int madara::filters::AESBufferFilter::generate_key(const std::string& password)
       (unsigned char*)password.c_str(), (int)password.length(), rounds,
       (unsigned char*)key_.get_ptr(), (unsigned char*)iv_.get_ptr());
 
-  if (i != 32) {
+  if (i != 32)
+  {
     madara_logger_ptr_log(logger::global_logger.get_ptr(), logger::LOG_ERROR,
         " Unable to initialize 256 bit AES. Only received %d bytes.\n", i);
 
@@ -78,7 +79,8 @@ int madara::filters::AESBufferFilter::encode(
   result = EVP_EncryptInit_ex(
       ctx, EVP_aes_256_cbc(), NULL, key_.get_ptr(), iv_.get_ptr());
 
-  if (result != 1) {
+  if (result != 1)
+  {
     madara_logger_ptr_log(logger::global_logger.get_ptr(), logger::LOG_ERROR,
         "AESBufferFilter::encode: Cannot init key/iv. Result=%d.\n", result);
 
@@ -89,7 +91,8 @@ int madara::filters::AESBufferFilter::encode(
   result = EVP_EncryptUpdate(
       ctx, (unsigned char*)source, &len, (unsigned char*)source, size);
 
-  if (result != 1) {
+  if (result != 1)
+  {
     madara_logger_ptr_log(logger::global_logger.get_ptr(), logger::LOG_ERROR,
         "AESBufferFilter::encode: Cannot perform encrypt. Result=%d.\n",
         result);
@@ -107,7 +110,8 @@ int madara::filters::AESBufferFilter::encode(
   // finalize the encryption with padding
   result = EVP_EncryptFinal_ex(ctx, (unsigned char*)(source + len), &len);
 
-  if (result != 1) {
+  if (result != 1)
+  {
     madara_logger_ptr_log(logger::global_logger.get_ptr(), logger::LOG_ERROR,
         "AESBufferFilter::encode: Cannot finalize encrypt. Result=%d.\n",
         result);
@@ -147,7 +151,8 @@ int madara::filters::AESBufferFilter::decode(
   result = EVP_DecryptInit_ex(
       ctx, EVP_aes_256_cbc(), NULL, key_.get_ptr(), iv_.get_ptr());
 
-  if (result != 1) {
+  if (result != 1)
+  {
     madara_logger_ptr_log(logger::global_logger.get_ptr(), logger::LOG_ERROR,
         "AESBufferFilter::decode: Cannot init key/iv. Result=%d.\n", result);
 
@@ -162,7 +167,8 @@ int madara::filters::AESBufferFilter::decode(
       ctx, (unsigned char*)source, &len, (unsigned char*)source, size);
   plaintext_len = len;
 
-  if (result != 1) {
+  if (result != 1)
+  {
     madara_logger_ptr_log(logger::global_logger.get_ptr(), logger::LOG_ERROR,
         "AESBufferFilter::decode: Cannot perform decrypt. Result=%d.\n",
         result);
@@ -177,7 +183,8 @@ int madara::filters::AESBufferFilter::decode(
 
   result = EVP_DecryptFinal_ex(ctx, (unsigned char*)(source + len), &len);
 
-  if (result != 1) {
+  if (result != 1)
+  {
     madara_logger_ptr_log(logger::global_logger.get_ptr(), logger::LOG_ERROR,
         "AESBufferFilter::decode: Cannot finalize decrypt. Result=%d.\n",
         result);

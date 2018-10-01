@@ -79,7 +79,8 @@ madara::knowledge::containers::Counter::~Counter() {}
 
 void madara::knowledge::containers::Counter::operator=(const Counter& rhs)
 {
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
     this->context_ = rhs.context_;
@@ -94,18 +95,21 @@ void madara::knowledge::containers::Counter::operator=(const Counter& rhs)
 
 void madara::knowledge::containers::Counter::build_aggregate_count(void)
 {
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
     std::stringstream buffer;
-    if (counters_ > 0) {
+    if (counters_ > 0)
+    {
       // add the first counter variable
       buffer << name_;
       buffer << ".0";
 
       // add all other counter variables
-      for (int i = 1; i < counters_; ++i) {
+      for (int i = 1; i < counters_; ++i)
+      {
         buffer << "+";
         buffer << name_;
         buffer << ".";
@@ -114,16 +118,21 @@ void madara::knowledge::containers::Counter::build_aggregate_count(void)
     }
 
     aggregate_count_ = context_->compile(buffer.str());
-  } else if (name_ == "") {
+  }
+  else if (name_ == "")
+  {
     context_->print("ERROR: Container::Counter needs a name.\n", 0);
-  } else if (!context_) {
+  }
+  else if (!context_)
+  {
     context_->print("ERROR: Container::Counter needs a context.\n", 0);
   }
 }
 
 void madara::knowledge::containers::Counter::build_var(void)
 {
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
@@ -134,9 +143,13 @@ void madara::knowledge::containers::Counter::build_var(void)
     buffer << id_;
 
     variable_ = context_->get_ref(buffer.str(), no_harm);
-  } else if (name_ == "") {
+  }
+  else if (name_ == "")
+  {
     context_->print("ERROR: Container::Counter needs a name.\n", 0);
-  } else if (!context_) {
+  }
+  else if (!context_)
+  {
     context_->print("ERROR: Container::Counter needs a context.\n", 0);
   }
 }
@@ -154,7 +167,8 @@ void madara::knowledge::containers::Counter::init_noharm(void)
 void madara::knowledge::containers::Counter::modify(void)
 {
   ContextGuard context_guard(*context_);
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     context_->mark_modified(variable_);
   }
 }
@@ -165,7 +179,8 @@ std::string madara::knowledge::containers::Counter::get_debug_info(void)
 
   result << "Counter: ";
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
@@ -237,7 +252,8 @@ void madara::knowledge::containers::Counter::set_name(
 
 void madara::knowledge::containers::Counter::resize(int id, int counters)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
@@ -252,7 +268,8 @@ void madara::knowledge::containers::Counter::resize(int id, int counters)
 madara::knowledge::containers::Counter::type
 madara::knowledge::containers::Counter::operator=(type value)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     context_->set(variable_, value, settings_);
@@ -263,7 +280,8 @@ madara::knowledge::containers::Counter::operator=(type value)
 
 bool madara::knowledge::containers::Counter::operator==(type value) const
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     return get_count() == value;
@@ -274,7 +292,8 @@ bool madara::knowledge::containers::Counter::operator==(type value) const
 
 bool madara::knowledge::containers::Counter::operator!=(type value) const
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     return get_count() != value;
@@ -286,7 +305,8 @@ bool madara::knowledge::containers::Counter::operator!=(type value) const
 bool madara::knowledge::containers::Counter::operator==(
     const Counter& value) const
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     return get_count() == value.get_count();
@@ -298,7 +318,8 @@ bool madara::knowledge::containers::Counter::operator==(
 bool madara::knowledge::containers::Counter::operator!=(
     const Counter& value) const
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     return get_count() != value.get_count();
@@ -309,7 +330,8 @@ bool madara::knowledge::containers::Counter::operator!=(
 
 bool madara::knowledge::containers::Counter::operator<(type value) const
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     return get_count() < value;
@@ -320,7 +342,8 @@ bool madara::knowledge::containers::Counter::operator<(type value) const
 
 bool madara::knowledge::containers::Counter::operator<=(type value) const
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     return get_count() <= value;
@@ -331,7 +354,8 @@ bool madara::knowledge::containers::Counter::operator<=(type value) const
 
 bool madara::knowledge::containers::Counter::operator>(type value) const
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     return get_count() > value;
@@ -342,7 +366,8 @@ bool madara::knowledge::containers::Counter::operator>(type value) const
 
 bool madara::knowledge::containers::Counter::operator>=(type value) const
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     return get_count() >= value;
@@ -362,7 +387,8 @@ madara::knowledge::containers::Counter::to_record(void) const
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     result = get_count_record();
@@ -376,7 +402,8 @@ madara::knowledge::containers::Counter::to_integer(void) const
 {
   madara::knowledge::KnowledgeRecord::Integer result(0);
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     result = get_count();
@@ -387,7 +414,8 @@ madara::knowledge::containers::Counter::to_integer(void) const
 
 void madara::knowledge::containers::Counter::operator+=(type value)
 {
-  if (context_) {
+  if (context_)
+  {
     type current(0);
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -400,7 +428,8 @@ void madara::knowledge::containers::Counter::operator+=(type value)
 
 void madara::knowledge::containers::Counter::operator-=(type value)
 {
-  if (context_) {
+  if (context_)
+  {
     type current(0);
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -413,7 +442,8 @@ void madara::knowledge::containers::Counter::operator-=(type value)
 
 void madara::knowledge::containers::Counter::operator++(void)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     context_->inc(variable_, settings_);
@@ -422,7 +452,8 @@ void madara::knowledge::containers::Counter::operator++(void)
 
 void madara::knowledge::containers::Counter::operator--(void)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     context_->dec(variable_, settings_);
@@ -433,7 +464,8 @@ double madara::knowledge::containers::Counter::to_double(void) const
 {
   double result(0.0);
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     result = get_count_double();
@@ -446,7 +478,8 @@ std::string madara::knowledge::containers::Counter::to_string(void) const
 {
   std::string result;
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     result = get_count_string();
@@ -458,7 +491,8 @@ std::string madara::knowledge::containers::Counter::to_string(void) const
 void madara::knowledge::containers::Counter::set_quality(
     uint32_t quality, const KnowledgeReferenceSettings& settings)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     context_->set_quality(name_, quality, true, settings);
@@ -472,7 +506,8 @@ bool madara::knowledge::containers::Counter::is_true(void) const
   madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
       "Counter::is_true: checking local counter for non-zero\n");
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     result = context_->get(variable_, settings_).is_true();

@@ -33,17 +33,20 @@ madara::expression::SystemCallFragment::prune(bool& can_change)
 
   madara::knowledge::KnowledgeRecord result;
 
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i) {
+  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
+  {
     bool arg_can_change = false;
     result = (*i)->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0)
+    {
       delete *i;
       *i = new LeafNode(*(this->logger_), result);
     }
   }
 
-  if (nodes_.size() != 3) {
+  if (nodes_.size() != 3)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallFragment: "
         "KARL COMPILE ERROR:"
@@ -70,7 +73,8 @@ madara::expression::SystemCallFragment::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 3) {
+  if (nodes_.size() == 3)
+  {
     // grab the first and last ranges
     unsigned int first =
         (unsigned int)nodes_[1]->evaluate(settings).to_integer();
@@ -85,7 +89,8 @@ madara::expression::SystemCallFragment::evaluate(
     return nodes_[0]->evaluate(settings).fragment(first, last);
   }
 
-  else {
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallFragment: "
         "KARL RUNTIME ERROR:"

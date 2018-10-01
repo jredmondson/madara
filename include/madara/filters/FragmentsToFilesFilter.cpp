@@ -25,14 +25,16 @@ void FragmentsToFilesFilter::filter(knowledge::KnowledgeMap& records,
   std::string last_file_path;
 
   // because of the usage of erase, don't auto inc record in for loop
-  for (auto record = records.begin(); record != records.end();) {
+  for (auto record = records.begin(); record != records.end();)
+  {
     bool is_fragment = false;
     std::string path;
     std::string prefix;
     std::string filename;
 
     // if the file is malicious, pretend it doesn't exist
-    if (utility::filename_has_redirect(record->first)) {
+    if (utility::filename_has_redirect(record->first))
+    {
       madara_logger_ptr_log(madara::logger::global_logger.get(),
           logger::LOG_MINOR,
           "FragmentsToFilesFilter::filter: "
@@ -42,10 +44,13 @@ void FragmentsToFilesFilter::filter(knowledge::KnowledgeMap& records,
           continue;
     }
 
-    if (record->second.is_binary_file_type()) {
+    if (record->second.is_binary_file_type())
+    {
       // try to find an appropriate mapping for the record
-      for (auto map : map_) {
-        if (utility::begins_with(record->first, map.first)) {
+      for (auto map : map_)
+      {
+        if (utility::begins_with(record->first, map.first))
+        {
           prefix = map.first;
           path = map.second;
           std::string number =
@@ -64,18 +69,22 @@ void FragmentsToFilesFilter::filter(knowledge::KnowledgeMap& records,
           //   (base_name.find_last_of ('.'),
           //     base_name.find_last_of ('.') - 1));
 
-          if (last_file == "" ||
-              last_file.compare(0, last_file.size(),
-                  record->first.substr(0, last_period)) != 0) {
-            if (last_file_path != "") {
+          if (last_file == "" || last_file.compare(0, last_file.size(),
+                                     record->first.substr(0, last_period)) != 0)
+          {
+            if (last_file_path != "")
+            {
               if (utility::file_from_fragments(
-                      last_file_path, last_crc, true, false)) {
+                      last_file_path, last_crc, true, false))
+              {
                 madara_logger_ptr_log(madara::logger::global_logger.get(),
                     logger::LOG_MAJOR,
                     "FragmentsToFilesFilter::filter: "
                     "SUCCESS: file %s is recreated\n",
                     last_file_path.c_str())
-              } else {
+              }
+              else
+              {
                 madara_logger_ptr_log(madara::logger::global_logger.get(),
                     logger::LOG_MAJOR,
                     "FragmentsToFilesFilter::filter: "
@@ -92,17 +101,20 @@ void FragmentsToFilesFilter::filter(knowledge::KnowledgeMap& records,
             auto crc_record = records.find(last_file + ".crc");
             auto size_record = records.find(last_file + ".size");
 
-            if (crc_record != records.end()) {
+            if (crc_record != records.end())
+            {
               last_crc = (uint32_t)crc_record->second.to_integer();
               str_crc = crc_record->second.to_string();
             }  // end if crc record exists in the incoming records
 
-            if (size_record != records.end()) {
+            if (size_record != records.end())
+            {
               last_size = size_record->second.to_integer();
             }  // end if size exists in the incoming records
           }    // if we need to set a new crc and last record
 
-          if (str_crc != "") {
+          if (str_crc != "")
+          {
             filename += "." + str_crc + ".frag";
             is_fragment = true;
 
@@ -127,7 +139,8 @@ void FragmentsToFilesFilter::filter(knowledge::KnowledgeMap& records,
                 last_file_path.c_str(), str_crc.c_str(), last_size,
                 filename.c_str())
           }  // end if str_crc is not null
-          else {
+          else
+          {
             madara_logger_ptr_log(madara::logger::global_logger.get(),
                 logger::LOG_MAJOR,
                 "FragmentsToFilesFilter::filter: "
@@ -143,7 +156,8 @@ void FragmentsToFilesFilter::filter(knowledge::KnowledgeMap& records,
                 filename.c_str())
           }
         }  // end if begins with a prefix mapping to directory
-        else {
+        else
+        {
           madara_logger_ptr_log(madara::logger::global_logger.get(),
               logger::LOG_MINOR,
               "FragmentsToFilesFilter::filter: "
@@ -154,7 +168,8 @@ void FragmentsToFilesFilter::filter(knowledge::KnowledgeMap& records,
     }
 
     // if this is a fragment, check for delection
-    if (is_fragment && clear_fragments_) {
+    if (is_fragment && clear_fragments_)
+    {
       madara_logger_ptr_log(madara::logger::global_logger.get(),
           logger::LOG_MINOR,
           "FragmentsToFilesFilter::filter: "
@@ -163,7 +178,8 @@ void FragmentsToFilesFilter::filter(knowledge::KnowledgeMap& records,
 
           record = records.erase(record);
     }  // end if is fragment and clear fragments enabled
-    else {
+    else
+    {
       madara_logger_ptr_log(madara::logger::global_logger.get(),
           logger::LOG_MINOR,
           "FragmentsToFilesFilter::filter: "
@@ -172,14 +188,18 @@ void FragmentsToFilesFilter::filter(knowledge::KnowledgeMap& records,
     }  // end no clear fragments needed
   }    // end iteration over incoming records
 
-  if (last_file_path != "") {
-    if (utility::file_from_fragments(last_file_path, last_crc, true, false)) {
+  if (last_file_path != "")
+  {
+    if (utility::file_from_fragments(last_file_path, last_crc, true, false))
+    {
       madara_logger_ptr_log(madara::logger::global_logger.get(),
           logger::LOG_MAJOR,
           "FragmentsToFilesFilter::filter: "
           "SUCCESS: file %s is recreated\n",
           last_file_path.c_str())
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(madara::logger::global_logger.get(),
           logger::LOG_MAJOR,
           "FragmentsToFilesFilter::filter: "

@@ -22,7 +22,8 @@ namespace knowledge
  * @class EvalSettings
  * @brief Encapsulates settings for an evaluation statement
  **/
-struct MADARA_EXPORT EvalSettings : public KnowledgeUpdateSettings {
+struct MADARA_EXPORT EvalSettings : public KnowledgeUpdateSettings
+{
   /* Convenient pre-defined settings objects */
 
   /** Settings to use whatever defaults there are */

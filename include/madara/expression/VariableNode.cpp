@@ -18,7 +18,8 @@ madara::expression::VariableNode::VariableNode(
   // this key requires expansion. We do the compilation and error checking here
   // as the key shouldn't change, and this allows us to only have to do this
   // once
-  if (key.find("{") != key.npos) {
+  if (key.find("{") != key.npos)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
         "madara::expression::VariableNode: "
         "Variable %s requires variable expansion.\n",
@@ -27,15 +28,22 @@ madara::expression::VariableNode::VariableNode(
     key_expansion_necessary_ = true;
     int num_opens = 0;
 
-    for (size_t i = 0; i < key.size(); ++i) {
-      if (key[i] == '{') {
+    for (size_t i = 0; i < key.size(); ++i)
+    {
+      if (key[i] == '{')
+      {
         markers_.push_back(i);
         ++num_opens;
-      } else if (key[i] == '}') {
-        if (num_opens != 0) {
+      }
+      else if (key[i] == '}')
+      {
+        if (num_opens != 0)
+        {
           markers_.push_back(i);
           --num_opens;
-        } else {
+        }
+        else
+        {
           std::stringstream buffer;
           buffer << "madara::expression::VariableNode";
           buffer << ": KARL COMPILE ERROR: matching braces not found in ";
@@ -48,7 +56,8 @@ madara::expression::VariableNode::VariableNode(
       }
     }
 
-    if (num_opens > 0) {
+    if (num_opens > 0)
+    {
       std::stringstream buffer;
       buffer << "madara::expression::VariableNode: ";
       buffer << "KARL COMPILE ERROR: more opening braces than closers in ";
@@ -56,7 +65,9 @@ madara::expression::VariableNode::VariableNode(
       madara_logger_ptr_log(logger_, logger::LOG_ERROR, buffer.str().c_str());
 
       throw exceptions::KarlException(buffer.str());
-    } else if (num_opens < 0) {
+    }
+    else if (num_opens < 0)
+    {
       std::stringstream buffer;
       buffer << "madara::expression::VariableNode: ";
       buffer << "KARL COMPILE ERROR: more closing braces than openers in ";
@@ -69,7 +80,8 @@ madara::expression::VariableNode::VariableNode(
   // no variable expansion necessary. Create a hard link to the ref_->
   // this will save us lots of clock cycles each variable access or
   // mutation.
-  else {
+  else
+  {
     ref_ = context_.get_ref(key);
   }
 }
@@ -87,10 +99,13 @@ std::string madara::expression::VariableNode::expand_opener(
       "key=%s, opener_index=%d, start=%d.\n",
       key_.c_str(), (int)opener);
 
-  for (; i < markers_.size(); ++i) {
-    if (key_[markers_[i]] == '{') {
+  for (; i < markers_.size(); ++i)
+  {
+    if (key_[markers_[i]] == '{')
+    {
       // copy before opener (4)
-      if (start < markers_[i]) {
+      if (start < markers_[i])
+      {
         builder << key_.substr(start, markers_[i] - start);
         madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
             "madara::expression::VariableNode:expand_opener: "
@@ -108,7 +123,9 @@ std::string madara::expression::VariableNode::expand_opener(
 
       // set next start to after [4]{[5]}*[3]
       start = markers_[i] + 1;
-    } else if (key_[markers_[i]] == '}') {
+    }
+    else if (key_[markers_[i]] == '}')
+    {
       // main action of this function {[2]}
       closer = i;
 
@@ -135,7 +152,8 @@ std::string madara::expression::VariableNode::expand_opener(
 
 std::string madara::expression::VariableNode::expand_key(void) const
 {
-  if (key_expansion_necessary_) {
+  if (key_expansion_necessary_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
         "madara::expression::VariableNode:expand_key: "
         "Variable %s requires variable expansion"
@@ -148,10 +166,13 @@ std::string madara::expression::VariableNode::expand_key(void) const
     // add the first token into a string builder
     std::stringstream builder;
 
-    for (; i < markers_.size(); ++i) {
-      if (key_[markers_[i]] == '{') {
+    for (; i < markers_.size(); ++i)
+    {
+      if (key_[markers_[i]] == '{')
+      {
         // copy characters between expansions [1]{
-        if (start < markers_[i]) {
+        if (start < markers_[i])
+        {
           builder << key_.substr(start, markers_[i] - start);
           madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
               "madara::expression::VariableNode:expand_key: "
@@ -171,7 +192,8 @@ std::string madara::expression::VariableNode::expand_key(void) const
     }
 
     // handle characters trailing }[3]
-    if (start < key_.size() && key_.size() - start > 0) {
+    if (start < key_.size() && key_.size() - start > 0)
+    {
       madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
           "madara::expression::VariableNode:expand_key: "
           "substr add from index %d, %d chars.\n",
@@ -254,18 +276,23 @@ int madara::expression::VariableNode::set(
       "Attempting to set variable %s to a KnowledgeRecord parameter (%s).\n",
       key_.c_str(), value.to_string().c_str());
 
-  if (!ref.is_valid()) {
+  if (!ref.is_valid())
+  {
     ref = context_.get_ref(key_, settings);
   }
 
-  if (ref.is_valid()) {
+  if (ref.is_valid())
+  {
     auto record = ref.get_record_unsafe();
 
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record->write_quality < record->quality) {
+    if (!settings.always_overwrite && record->write_quality < record->quality)
+    {
       result = -2;
-    } else {
+    }
+    else
+    {
       // cheaper to read than write, so check to see if
       // we actually need to update quality and status
       if (record->write_quality != record->quality)
@@ -322,7 +349,8 @@ int madara::expression::VariableNode::set(const std::string& value,
 madara::knowledge::KnowledgeRecord madara::expression::VariableNode::dec(
     const madara::knowledge::KnowledgeUpdateSettings& settings)
 {
-  if (ref_.is_valid()) {
+  if (ref_.is_valid())
+  {
     auto record = ref_.get_record_unsafe();
 
     // notice that we assume the context is locked
@@ -341,14 +369,16 @@ madara::knowledge::KnowledgeRecord madara::expression::VariableNode::dec(
     context_.mark_and_signal(ref_);
 
     return *record;
-  } else
+  }
+  else
     return context_.dec(expand_key(), settings);
 }
 
 madara::knowledge::KnowledgeRecord madara::expression::VariableNode::inc(
     const madara::knowledge::KnowledgeUpdateSettings& settings)
 {
-  if (ref_.is_valid()) {
+  if (ref_.is_valid())
+  {
     auto record = ref_.get_record_unsafe();
 
     // notice that we assume the context is locked
@@ -367,7 +397,8 @@ madara::knowledge::KnowledgeRecord madara::expression::VariableNode::inc(
     context_.mark_and_signal(ref_);
 
     return *record;
-  } else
+  }
+  else
     return context_.inc(expand_key(), settings);
 }
 

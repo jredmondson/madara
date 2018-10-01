@@ -10,7 +10,8 @@
 #if defined _MADARA_NULL_LOCK_
 namespace madara
 {
-struct null_mutex {
+struct null_mutex
+{
   void lock() {}
   void unlock() {}
   bool try_lock()

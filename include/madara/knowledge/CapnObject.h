@@ -47,18 +47,24 @@ namespace knowledge
  * ignored, so use this with care.
  **/
 template<typename T>
-struct NoThrowDestruct : T {
+struct NoThrowDestruct : T
+{
   using T::T;
 
-  ~NoThrowDestruct() noexcept try {
+  ~NoThrowDestruct() noexcept try
+  {
     return;
-  } catch (const std::exception& e) {
+  }
+  catch (const std::exception& e)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
         "NoThrowDestruct"
         " unexpected exception thrown: %s\n",
         e.what());
     return;
-  } catch (...) {
+  }
+  catch (...)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
         "NoThrowDestruct"
         " unexpected unknown exception thrown\n");
@@ -246,7 +252,8 @@ public:
 private:
   void init_reader() const
   {
-    if (!reader_) {
+    if (!reader_)
+    {
       reader_ = mk_reader();
     }
   }
@@ -648,16 +655,20 @@ inline auto get_type_handler_get_reader(type<knowledge::CapnObject<T>>,
     using knowledge::CapnObject;
     const CapnObject<T>& val = *static_cast<const CapnObject<T>*>(ptr);
 
-    if (reader) {
+    if (reader)
+    {
       *reader = val.reader();
     }
-    if (schema) {
+    if (schema)
+    {
       *schema = capnp::Schema::from<T>();
     }
-    if (data) {
+    if (data)
+    {
       *data = val.data();
     }
-    if (size) {
+    if (size)
+    {
       *size = val.size();
     }
 
@@ -673,16 +684,20 @@ inline auto get_type_handler_get_reader(type<knowledge::RegCapnObject>,
     using knowledge::RegCapnObject;
     const RegCapnObject& val = *static_cast<const RegCapnObject*>(ptr);
 
-    if (reader) {
+    if (reader)
+    {
       *reader = val.reader();
     }
-    if (schema) {
+    if (schema)
+    {
       *schema = val.schema();
     }
-    if (data) {
+    if (data)
+    {
       *data = val.data();
     }
-    if (size) {
+    if (size)
+    {
       *size = val.size();
     }
 
@@ -698,16 +713,20 @@ inline auto get_type_handler_get_reader(type<knowledge::GenericCapnObject>,
     using knowledge::GenericCapnObject;
     const GenericCapnObject& val = *static_cast<const GenericCapnObject*>(ptr);
 
-    if (reader && !schema) {
+    if (reader && !schema)
+    {
       return false;
     }
-    if (reader && schema) {
+    if (reader && schema)
+    {
       *reader = val.reader(*schema);
     }
-    if (data) {
+    if (data)
+    {
       *data = val.data();
     }
-    if (size) {
+    if (size)
+    {
       *size = val.size();
     }
     return true;

@@ -36,7 +36,8 @@ madara::expression::InOrderIteratorImpl::InOrderIteratorImpl(
 {
   // if the caller doesn't want an end iterator, insert the root tree
   // into the queue.
-  if (!end_iter && !this->tree_.is_null()) {
+  if (!end_iter && !this->tree_.is_null())
+  {
     stack_.push(const_cast<ExpressionTree&>(tree));
 
     // start at the smallest element (left-most)
@@ -72,9 +73,11 @@ void madara::expression::InOrderIteratorImpl::operator++(void)
   // we know that at this point there is no left () of top ()
   // because we would have already visited it.
 
-  if (!stack_.is_empty()) {
+  if (!stack_.is_empty())
+  {
     // if we have nodes greater than ourselves
-    if (!stack_.top().right().is_null()) {
+    if (!stack_.top().right().is_null())
+    {
       // push the right child node onto the stack
       // and pop the old parent (it's been visited now)
       stack_.push(stack_.pop().right());
@@ -82,7 +85,8 @@ void madara::expression::InOrderIteratorImpl::operator++(void)
       // keep pushing until we get to the left most child
       while (!stack_.top().left().is_null())
         stack_.push(stack_.top().left());
-    } else
+    }
+    else
       stack_.pop();
   }
 }
@@ -98,7 +102,8 @@ bool madara::expression::InOrderIteratorImpl::operator==(
   // if the rhs was not a level_order iterator then we've already
   // discovered the relation is false.
 
-  if (in_order_rhs) {
+  if (in_order_rhs)
+  {
     // Check if the container we are iterating over has the same
     // root node and that the size of the queues are equal. The
     // latter doesn't truly determine equality. However, this is an
@@ -110,7 +115,8 @@ bool madara::expression::InOrderIteratorImpl::operator==(
     ExpressionTree& t2 = const_cast<ExpressionTree&>(in_order_rhs->tree_);
 
     if (t1.get_root() == t2.get_root() &&
-        stack_.size() == in_order_rhs->stack_.size()) {
+        stack_.size() == in_order_rhs->stack_.size())
+    {
       // Check for both being is_empty (special condition).
       if (stack_.is_empty() && in_order_rhs->stack_.is_empty())
         return true;
@@ -188,7 +194,8 @@ void madara::expression::PreOrderIteratorImpl::operator++(void)
   // we know that at this point there is no left () of top ()
   // because we would have already visited it.
 
-  if (!stack_.is_empty()) {
+  if (!stack_.is_empty())
+  {
     // we need to pop the node off the stack before pushing the
     // children, or else we'll revisit this node later
 
@@ -216,7 +223,8 @@ bool madara::expression::PreOrderIteratorImpl::operator==(
   // if the rhs was not a level_order iterator
   // then we've already discovered the relation is false
 
-  if (pre_order_rhs) {
+  if (pre_order_rhs)
+  {
     // check if the container we are iterating over has the same
     // root node and that the size of the queues are equal. The
     // latter doesn't truly determine equality. However, this is an
@@ -228,7 +236,8 @@ bool madara::expression::PreOrderIteratorImpl::operator==(
     ExpressionTree& t2 = const_cast<ExpressionTree&>(pre_order_rhs->tree_);
 
     if (t1.get_root() == t2.get_root() &&
-        stack_.size() == pre_order_rhs->stack_.size()) {
+        stack_.size() == pre_order_rhs->stack_.size())
+    {
       // check for both being is_empty (special condition)
       if (stack_.is_empty() && pre_order_rhs->stack_.is_empty())
         return true;
@@ -275,7 +284,8 @@ madara::expression::PostOrderIteratorImpl::PostOrderIteratorImpl(
 {
   // if the caller doesn't want an end iterator, insert the root tree
   // into the queue.
-  if (!end_iter && !this->tree_.is_null()) {
+  if (!end_iter && !this->tree_.is_null())
+  {
     ExpressionTree current = const_cast<ExpressionTree&>(tree);
     stack_.push(current);
 
@@ -283,15 +293,18 @@ madara::expression::PostOrderIteratorImpl::PostOrderIteratorImpl(
     // no left child, but a right child - or at least, there is a
     // certain depth that this will not go down
 
-    while (!current.is_null()) {
+    while (!current.is_null())
+    {
       if (!current.right().is_null())
         stack_.push(current.right());
-      if (!current.left().is_null()) {
+      if (!current.left().is_null())
+      {
         // if there was a left, then update current
         // this is the case for all non-negations
         stack_.push(current.left());
         current = current.left();
-      } else
+      }
+      else
         // if there was not a left, then current = current->right_
         // this handles cases of unary nodes, like negations
         current = current.right();
@@ -326,7 +339,8 @@ void madara::expression::PostOrderIteratorImpl::operator++(void)
   // we know that at this point there is no left () of top ()
   // because we would have already visited it.
 
-  if (!stack_.is_empty()) {
+  if (!stack_.is_empty())
+  {
     // we need to pop the node off the stack before pushing the
     // children, or else we'll revisit this node later
 
@@ -341,15 +355,19 @@ void madara::expression::PostOrderIteratorImpl::operator++(void)
     {
       current = stack_.top();
 
-      while (!current.is_null()) {
+      while (!current.is_null())
+      {
         if (!current.right().is_null())
           stack_.push(current.right());
-        if (!current.left().is_null()) {
+        if (!current.left().is_null())
+        {
           // if there was a left, then update current
           // this is the case for all non-negations
           stack_.push(current.left());
           current = current.left();
-        } else {
+        }
+        else
+        {
           // if there was not a left, then current = current->right_
           // this handles cases of unary nodes, like negations
           current = current.right();
@@ -370,7 +388,8 @@ bool madara::expression::PostOrderIteratorImpl::operator==(
   // if the rhs was not a level_order iterator
   // then we've already discovered the relation is false
 
-  if (post_order_rhs) {
+  if (post_order_rhs)
+  {
     // check if the container we are iterating over has the same
     // root node and that the size of the queues are equal. The
     // latter doesn't truly determine equality. However, this is an
@@ -382,7 +401,8 @@ bool madara::expression::PostOrderIteratorImpl::operator==(
     ExpressionTree& t2 = const_cast<ExpressionTree&>(post_order_rhs->tree_);
 
     if (t1.get_root() == t2.get_root() &&
-        stack_.size() == post_order_rhs->stack_.size()) {
+        stack_.size() == post_order_rhs->stack_.size())
+    {
       // check for both being is_empty (special condition)
       if (stack_.is_empty() && post_order_rhs->stack_.is_empty())
         return true;
@@ -462,11 +482,13 @@ const madara::expression::ExpressionTree
 
 void madara::expression::LevelOrderExpressionTreeIteratorImpl::operator++(void)
 {
-  if (!queue_.is_empty()) {
+  if (!queue_.is_empty())
+  {
     // If the queue is not empty, dequeue an element
     ExpressionTree root = queue_.dequeue();
 
-    if (!root.is_null()) {
+    if (!root.is_null())
+    {
       // If the element wasn't null, enqueue its children
       if (!root.left().is_null())
         queue_.enqueue(root.left());
@@ -487,7 +509,8 @@ bool madara::expression::LevelOrderExpressionTreeIteratorImpl::operator==(
   // if the rhs was not a level_order iterator then we've already
   // discovered the relation is false.
 
-  if (level_order_rhs) {
+  if (level_order_rhs)
+  {
     // check if the container we are iterating over has the same
     // root node and that the size of the queues are equal. The
     // latter doesn't truly determine equality. However, this is an
@@ -499,7 +522,8 @@ bool madara::expression::LevelOrderExpressionTreeIteratorImpl::operator==(
     ExpressionTree& t2 = const_cast<ExpressionTree&>(level_order_rhs->tree_);
 
     if (t1.get_root() == t2.get_root() &&
-        queue_.size() == level_order_rhs->queue_.size()) {
+        queue_.size() == level_order_rhs->queue_.size())
+    {
       // check for both being is_empty (special condition)
       if (queue_.is_empty() && level_order_rhs->queue_.is_empty())
         return true;

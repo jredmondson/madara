@@ -79,7 +79,8 @@ template<class T>
 void* madara::utility::LStackNode<T>::operator new(size_t)
 {
   // extract element from the free_list_ if there is one left
-  if (LStackNode<T>::free_list_ != 0) {
+  if (LStackNode<T>::free_list_ != 0)
+  {
     // get the top element of the list
     LStackNode<T>* new_node = LStackNode<T>::free_list_;
 
@@ -98,7 +99,8 @@ template<class T>
 void madara::utility::LStackNode<T>::operator delete(void* ptr)
 {
   // do nothing on a null pointer
-  if (ptr != 0) {
+  if (ptr != 0)
+  {
     // cast to a node pointer
     LStackNode<T>* node = static_cast<LStackNode<T>*>(ptr);
 
@@ -122,7 +124,8 @@ template<class T>
 void madara::utility::LStackNode<T>::free_list_release(void)
 {
   // delete free list element by element
-  while (LStackNode<T>::free_list_ != 0) {
+  while (LStackNode<T>::free_list_ != 0)
+  {
     LStackNode<T>* node = LStackNode<T>::free_list_;
     LStackNode<T>::free_list_ = node->next_;
     ::operator delete(node);
@@ -136,7 +139,8 @@ template<class T>
 void madara::utility::LStackNode<T>::free_list_allocate(size_t n)
 {
   // add a new element to the stack n times
-  for (size_t node_number = 0; node_number < n; ++node_number) {
+  for (size_t node_number = 0; node_number < n; ++node_number)
+  {
     // create a new element avoiding the overwritten new operator
     LStackNode<T>* new_node =
         reinterpret_cast<LStackNode<T>*>(::operator new(sizeof(LStackNode<T>)));
@@ -224,15 +228,19 @@ void madara::utility::LStack<T>::copy_list(
   ::std::unique_ptr<LStackNode<T> > new_node;
 
   for (typename LStack<T>::const_iterator it = rhs.begin(); it != rhs.end();
-       ++it) {
+       ++it)
+  {
     new_node.reset(new LStackNode<T>(*it));
 
-    if (it == rhs.begin()) {
+    if (it == rhs.begin())
+    {
       // special case for the first iteration: set the head element of
       // temporary stack
       temp.head_ = new_node.release();
       prev = temp.head_;
-    } else {
+    }
+    else
+    {
       // standard case: add one element to prev
       prev->next_ = new_node.release();
       prev = prev->next_;
@@ -256,7 +264,8 @@ void madara::utility::LStack<T>::delete_list()
 {
   // we do not delete the dummy node here. This will be done in the destructor
   // we pop all elements until the queue is empty again
-  while (!is_empty()) {
+  while (!is_empty())
+  {
     pop_i();
   }
 }
@@ -274,7 +283,8 @@ madara::utility::LStack<T>& madara::utility::LStack<T>::operator=(
     const madara::utility::LStack<T>& rhs)
 {
   // test for self assignment first
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     // delete old data of the rhs
     delete_list();
 
@@ -321,7 +331,8 @@ bool madara::utility::LStack<T>::operator!=(
 template<class T>
 void madara::utility::LStack<T>::push(const T& new_item)
 {
-  try {
+  try
+  {
     // create a temporary new node for exception safety reasons
     ::std::unique_ptr<LStackNode<T> > temp(new LStackNode<T>(new_item, head_));
 
@@ -330,7 +341,9 @@ void madara::utility::LStack<T>::push(const T& new_item)
 
     // increment the element count
     ++count_;
-  } catch (const ::std::bad_alloc&) {
+  }
+  catch (const ::std::bad_alloc&)
+  {
     // we transform a bad_alloc excption into an overflow exception,
     // because it basically means, that it is no longer possible
     // to push new elements
@@ -345,7 +358,8 @@ template<class T>
 T madara::utility::LStack<T>::pop(void)
 {
   // check for empty queue first
-  if (is_empty()) {
+  if (is_empty())
+  {
     throw Underflow();
   }
 
@@ -505,7 +519,8 @@ madara::utility::LStackIterator<T>::LStackIterator(
 {
   // iterator over the stack unto the right position
   // we save iterations for values > count_ by doing modulo calculations
-  for (pos = pos % (stack_.count_ - 1); pos > 0; --pos) {
+  for (pos = pos % (stack_.count_ - 1); pos > 0; --pos)
+  {
     // advance one position each time
     pos_ = pos_->next_;
   }
@@ -570,7 +585,8 @@ madara::utility::LStackConstIterator<T>::LStackConstIterator(
 {
   // iterator over the stack unto the right position
   // we save iterations for values > count_ by doing modulo calculations
-  for (pos = pos % (stack_.count_ - 1); pos > 0; --pos) {
+  for (pos = pos % (stack_.count_ - 1); pos > 0; --pos)
+  {
     // advance one position each time
     pos_ = pos_->next_;
   }

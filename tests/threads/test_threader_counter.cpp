@@ -32,18 +32,24 @@ Integer readers(0);
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-c" || arg1 == "--counters") {
-      if (i + 1 < argc) {
+    if (arg1 == "-c" || arg1 == "--counters")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> counters;
       }
 
       ++i;
-    } else if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         int level;
         buffer >> level;
@@ -51,34 +57,48 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-f" || arg1 == "--logfile") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-f" || arg1 == "--logfile")
+    {
+      if (i + 1 < argc)
+      {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-r" || arg1 == "--readers") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-r" || arg1 == "--readers")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> readers;
       }
 
       ++i;
-    } else if (arg1 == "-t" || arg1 == "--target") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-t" || arg1 == "--target")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> target;
       }
 
       ++i;
-    } else if (arg1 == "-w" || arg1 == "--max-wait") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-w" || arg1 == "--max-wait")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> max_wait;
       }
 
       ++i;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Attempts to start a number of counter and reader threads\n\n"
@@ -116,8 +136,10 @@ public:
    **/
   virtual void run(void)
   {
-    while (*counter < target) {
-      if (paused != 0) {
+    while (*counter < target)
+    {
+      if (paused != 0)
+      {
 #ifndef _MADARA_NO_KARL_
         std::string finished = "!" + paused.get_name();
         data.wait(finished);
@@ -155,7 +177,8 @@ int main(int argc, char** argv)
   // create a threader for running threads
   threads::Threader threader(knowledge);
 
-  for (Integer i = 0; i < counters; ++i) {
+  for (Integer i = 0; i < counters; ++i)
+  {
     std::stringstream buffer;
     buffer << "thread";
     buffer << i;
@@ -168,7 +191,8 @@ int main(int argc, char** argv)
   threader.resume();
 
   // wait for the counter to reach the target number
-  while (*counter < target) {
+  while (*counter < target)
+  {
     // sleep for half a second and try again
     utility::sleep(0.5);
   }

@@ -35,15 +35,19 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallEval::prune(
 
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() > 0) {
+  if (nodes_.size() > 0)
+  {
     bool arg_can_change = false;
     result = nodes_[0]->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallEval: "
         "KARL COMPILE ERROR:"
@@ -64,7 +68,8 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallEval::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() > 0) {
+  if (nodes_.size() > 0)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::SystemCallEval: "
         "System call type is returning the eval of its first argument\n");
@@ -73,7 +78,9 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallEval::evaluate(
         context_.compile(nodes_[0]->evaluate(settings).to_string());
 
     return expression.expression.evaluate(settings);
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallEval: "
         "KARL RUNTIME ERROR:"

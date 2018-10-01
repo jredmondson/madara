@@ -33,15 +33,19 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallSize::prune(
 
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() > 0) {
+  if (nodes_.size() > 0)
+  {
     bool arg_can_change = false;
     result = nodes_[0]->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallSize: "
         "KARL COMPILE ERROR:"
@@ -62,14 +66,17 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallSize::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() > 0) {
+  if (nodes_.size() > 0)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::SystemCallSize: "
         "System call size is returning the size of its first argument\n");
 
     return madara::knowledge::KnowledgeRecord(
         nodes_[0]->evaluate(settings).size());
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallSize: "
         "KARL RUNTIME ERROR:"

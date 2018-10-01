@@ -225,7 +225,8 @@ constexpr auto get_type_handler_load_json(type<T>, overload_priority<12>)
 //}
 
 // Functor to list fields of type which supports for_each_field
-struct do_list_fields {
+struct do_list_fields
+{
   const knowledge::TypeHandlers* parent;
   std::vector<knowledge::AnyField>* out;
   size_t cur;
@@ -265,7 +266,8 @@ constexpr knowledge::TypeHandlers::list_fields_fn_type
 }
 
 // Functor to get field of type which supports for_each_field
-struct do_get_field {
+struct do_get_field
+{
   const knowledge::AnyField* field;
   const knowledge::TypeHandlers** handler;
   void** ptr;
@@ -274,7 +276,8 @@ struct do_get_field {
   template<typename T>
   void operator()(const char*, T& val)
   {
-    if (cur == field->data()) {
+    if (cur == field->data())
+    {
       *handler = &knowledge::get_type_handler<T>();
       *ptr = (void*)&val;
     }
@@ -300,7 +303,8 @@ constexpr knowledge::TypeHandlers::get_field_fn_type get_type_handler_get_field(
 
 // Functor to list fields of type which supports for_each_member
 template<typename Class>
-struct do_list_members {
+struct do_list_members
+{
   const knowledge::TypeHandlers* parent;
   std::vector<knowledge::AnyField>* out;
   size_t cur;
@@ -340,7 +344,8 @@ constexpr knowledge::TypeHandlers::list_fields_fn_type
 
 // Functor to get field of type which supports for_each_member
 template<typename Class>
-struct do_get_member {
+struct do_get_member
+{
   Class* val;
   const knowledge::AnyField* field;
   const knowledge::TypeHandlers** handler;
@@ -350,7 +355,8 @@ struct do_get_member {
   template<typename Field, typename Other>
   void operator()(const char*, Field ptm, Other)
   {
-    if (cur == field->data()) {
+    if (cur == field->data())
+    {
       using T = decay_<decltype(invoke_(ptm, std::declval<Class&>()))>;
       *handler = &knowledge::get_type_handler<T>();
       *ptr = (void*)&(invoke_(ptm, *val));
@@ -419,7 +425,8 @@ constexpr knowledge::TypeHandlers::index_int_fn_type get_type_handler_index_int(
     T& val = *static_cast<T*>(ptr);
     using I = decltype(val[index]);
     handler = &knowledge::get_type_handler<decay_<I>>();
-    if (val.size() < index) {
+    if (val.size() < index)
+    {
       val.resize(index + 1);
     }
     out_ptr = &val[index];
@@ -473,7 +480,8 @@ namespace knowledge
 {
 /// Functor to pass to for_each_field to serialize a type to Cereal archives
 template<typename Archive>
-struct do_serialize {
+struct do_serialize
+{
   Archive* ar;
 
   template<typename T>
@@ -485,7 +493,8 @@ struct do_serialize {
 
 /// Functor to pass to for_each_member to serialize a type to Cereal archives
 template<typename T, typename Archive>
-struct do_serialize_member {
+struct do_serialize_member
+{
   T* val;
   Archive* ar;
 

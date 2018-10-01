@@ -9,7 +9,8 @@ inline void madara::knowledge::containers::NativeIntegerVectorStaged::modify(
     void)
 {
   ContextGuard context_guard(*context_);
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     context_->mark_modified(vector_);
   }
 }
@@ -21,7 +22,8 @@ madara::knowledge::containers::NativeIntegerVectorStaged::get_debug_info(void)
 
   result << "Native Integer Vector Staged: ";
 
-  if (context_) {
+  if (context_)
+  {
     result << this->name_;
     result << " [" << size() << "]";
     result << " = " << value_.to_string();
@@ -39,7 +41,8 @@ madara::knowledge::containers::NativeIntegerVectorStaged::get_debug_info_(void)
 inline void madara::knowledge::containers::NativeIntegerVectorStaged::operator=(
     const NativeIntegerVectorStaged& rhs)
 {
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
     this->context_ = rhs.context_;
@@ -89,7 +92,8 @@ inline size_t madara::knowledge::containers::NativeIntegerVectorStaged::size(
 inline void madara::knowledge::containers::NativeIntegerVectorStaged::set_name(
     const std::string& var_name, KnowledgeBase& knowledge, int size, bool sync)
 {
-  if (context_ != &(knowledge.get_context()) || name_ != var_name) {
+  if (context_ != &(knowledge.get_context()) || name_ != var_name)
+  {
     context_ = &(knowledge.get_context());
 
     ContextGuard context_guard(*context_);
@@ -99,9 +103,12 @@ inline void madara::knowledge::containers::NativeIntegerVectorStaged::set_name(
 
     vector_ = knowledge.get_ref(var_name, settings_);
 
-    if (size > 0) {
+    if (size > 0)
+    {
       resize(size_t(size));
-    } else if (sync) {
+    }
+    else if (sync)
+    {
       std::vector<type> values = knowledge.get(vector_).to_integers();
       value_.set_value(values);
     }
@@ -111,7 +118,8 @@ inline void madara::knowledge::containers::NativeIntegerVectorStaged::set_name(
 inline void madara::knowledge::containers::NativeIntegerVectorStaged::set_name(
     const std::string& var_name, Variables& knowledge, int size, bool sync)
 {
-  if (context_ != knowledge.get_context() || name_ != var_name) {
+  if (context_ != knowledge.get_context() || name_ != var_name)
+  {
     context_ = knowledge.get_context();
 
     ContextGuard context_guard(*context_);
@@ -121,9 +129,12 @@ inline void madara::knowledge::containers::NativeIntegerVectorStaged::set_name(
 
     vector_ = knowledge.get_ref(var_name, settings_);
 
-    if (size > 0) {
+    if (size > 0)
+    {
       resize(size_t(size));
-    } else if (sync) {
+    }
+    else if (sync)
+    {
       std::vector<type> values = knowledge.get(vector_).to_integers();
       value_.set_value(values);
     }
@@ -134,7 +145,8 @@ inline void madara::knowledge::containers::NativeIntegerVectorStaged::set_name(
     const std::string& var_name, ThreadSafeContext& knowledge, int size,
     bool sync)
 {
-  if (context_ != &knowledge || name_ != var_name) {
+  if (context_ != &knowledge || name_ != var_name)
+  {
     context_ = &knowledge;
 
     ContextGuard context_guard(*context_);
@@ -144,9 +156,12 @@ inline void madara::knowledge::containers::NativeIntegerVectorStaged::set_name(
 
     vector_ = knowledge.get_ref(var_name, settings_);
 
-    if (size > 0) {
+    if (size > 0)
+    {
       resize(size_t(size));
-    } else if (sync) {
+    }
+    else if (sync)
+    {
       std::vector<type> values = knowledge.get(vector_).to_integers();
       value_.set_value(values);
     }
@@ -175,7 +190,8 @@ madara::knowledge::containers::NativeIntegerVectorStaged::transfer_to(
   size_t other_size = other.size();
   size_t this_size = this->size();
 
-  if (this_size > 0) {
+  if (this_size > 0)
+  {
     size_t size = other_size + this_size;
     other.resize((int)size);
 
@@ -184,7 +200,8 @@ madara::knowledge::containers::NativeIntegerVectorStaged::transfer_to(
 
     rhs.set_index(size - 1, lhs.retrieve_index(this_size - 1).to_double());
 
-    for (size_t i = 0, j = other_size; i < this_size - 1; ++i, ++j) {
+    for (size_t i = 0, j = other_size; i < this_size - 1; ++i, ++j)
+    {
       rhs.set_index(j, lhs.retrieve_index(i).to_double());
     }
 
@@ -200,7 +217,8 @@ inline void madara::knowledge::containers::NativeIntegerVectorStaged::copy_to(
 {
   target.resize(size());
 
-  for (size_t i = 0; i < target.size(); ++i) {
+  for (size_t i = 0; i < target.size(); ++i)
+  {
     target[i] = value_.retrieve_index(i);
   }
 }
@@ -239,7 +257,8 @@ madara::knowledge::containers::NativeIntegerVectorStaged::set_quality(
     size_t /*index*/, uint32_t quality,
     const KnowledgeReferenceSettings& settings)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     context_->set_quality(name_, quality, true, settings);

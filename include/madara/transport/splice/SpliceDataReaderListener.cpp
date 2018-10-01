@@ -23,7 +23,8 @@ madara::transport::SpliceDataReaderListener::~SpliceDataReaderListener() {}
 void madara::transport::SpliceDataReaderListener::handle_assignment(
     Knowledge::Update& data)
 {
-  if (data.key.val()) {
+  if (data.key.val())
+  {
     // if we aren't evaluating a message from ourselves, process it
     std::string key = data.key.val();
     long long value = data.value;
@@ -52,29 +53,37 @@ void madara::transport::SpliceDataReaderListener::handle_assignment(
     context_.unlock();
 
     // if we actually updated the value
-    if (result == 1) {
+    if (result == 1)
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "SpliceDataReaderListener::handle_assignment:"
           " received data[%s]=%q from %s\n",
           key.c_str(), value, data.originator.val());
     }
     // if the data was already current
-    else if (result == 0) {
+    else if (result == 0)
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "SpliceDataReaderListener::handle_assignment:"
           " discarded data[%s]=%q from %s as the value was already set\n",
           key.c_str(), value, data.originator.val());
-    } else if (result == -1) {
+    }
+    else if (result == -1)
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "SpliceDataReaderListener::handle_assignment:"
           " discarded data due to null key\n",
           key.c_str(), value, data.originator.val());
-    } else if (result == -2) {
+    }
+    else if (result == -2)
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "SpliceDataReaderListener::handle_assignment:"
           " discarded data[%s]=%q due to lower quality (%u vs %u)\n",
           key.c_str(), value, cur_quality, data.quality);
-    } else if (result == -3) {
+    }
+    else if (result == -3)
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "SpliceDataReaderListener::handle_assignment:"
           " discarded data[%s]=%q due to older timestamp (%Q vs %Q)\n",
@@ -86,7 +95,8 @@ void madara::transport::SpliceDataReaderListener::handle_assignment(
 void madara::transport::SpliceDataReaderListener::handle_multiassignment(
     Knowledge::Update& data)
 {
-  if (data.key.val()) {
+  if (data.key.val())
+  {
     std::string key;
     char symbol;
     long long value;
@@ -103,7 +113,8 @@ void madara::transport::SpliceDataReaderListener::handle_multiassignment(
         " processing multiassignment (%s)\n",
         data.key.val());
 
-    while (!stream.eof()) {
+    while (!stream.eof())
+    {
       stream >> key >> symbol >> value >> symbol;
 
       int result = 0;
@@ -118,29 +129,37 @@ void madara::transport::SpliceDataReaderListener::handle_multiassignment(
           context_.set_if_unequal(key, value, data.quality, data.clock, false);
 
       // if we actually updated the value
-      if (result == 1) {
+      if (result == 1)
+      {
         madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
             "SpliceDataReaderListener::handle_multiassignment:"
             " received data[%s]=%q from %s\n",
             key.c_str(), value, data.originator.val());
       }
       // if the data was already current
-      else if (result == 0) {
+      else if (result == 0)
+      {
         madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
             "SpliceDataReaderListener::handle_multiassignment:"
             " discarded data[%s]=%q from %s as the value was already set\n",
             key.c_str(), value, data.originator.val());
-      } else if (result == -1) {
+      }
+      else if (result == -1)
+      {
         madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
             "SpliceDataReaderListener::handle_multiassignment:"
             " discarded data due to null key\n",
             key.c_str(), value, data.originator.val());
-      } else if (result == -2) {
+      }
+      else if (result == -2)
+      {
         madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
             "SpliceDataReaderListener::handle_multiassignment:"
             " discarded data[%s]=%q due to lower quality (%u vs %u)\n",
             key.c_str(), value, cur_quality, data.quality);
-      } else if (result == -3) {
+      }
+      else if (result == -3)
+      {
         madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
             "SpliceDataReaderListener::handle_multiassignment:"
             " discarded data[%s]=%q due to older timestamp (%Q vs %Q)\n",
@@ -196,7 +215,8 @@ void madara::transport::SpliceDataReaderListener::on_data_available(
   Knowledge::UpdateDataReader_ptr update_reader =
       dynamic_cast<Knowledge::UpdateDataReader_ptr>(reader);
 
-  if (update_reader == 0) {
+  if (update_reader == 0)
+  {
     madara_logger_log(context_->get_logger(), logger::LOG_ERROR,
         "SpliceDataReaderListener::on_data_available:"
         " Unable to create specialized reader. Leaving callback...\n");
@@ -209,13 +229,16 @@ void madara::transport::SpliceDataReaderListener::on_data_available(
 
   amount = update_data_list_->length();
 
-  if (amount != 0) {
-    for (int i = 0; i < amount; ++i) {
+  if (amount != 0)
+  {
+    for (int i = 0; i < amount; ++i)
+    {
       // if we are evaluating a message from ourselves, just continue
       // to the next one. It's also possible to receive null originators
       // from what I can only guess is the ospl daemon messing up
       if (!update_data_list_[i].originator.val() ||
-          id_ == update_data_list_[i].originator.val()) {
+          id_ == update_data_list_[i].originator.val())
+      {
         madara_logger_log(context_->get_logger(), logger::LOG_MINOR,
             "SpliceDataReaderListener::on_data_available:"
             " discarding null originator event\n");
@@ -223,7 +246,8 @@ void madara::transport::SpliceDataReaderListener::on_data_available(
         continue;
       }
 
-      if (madara::knowledge::ASSIGNMENT == update_data_list_[i].type) {
+      if (madara::knowledge::ASSIGNMENT == update_data_list_[i].type)
+      {
         madara_logger_log(context_->get_logger(), logger::LOG_MINOR,
             "SpliceDataReaderListener::on_data_available:"
             " processing %s=%q from %s with time %Q and quality %u\n",
@@ -232,8 +256,10 @@ void madara::transport::SpliceDataReaderListener::on_data_available(
             update_data_list_[i].quality);
 
         handle_assignment(update_data_list_[i]);
-      } else if (madara::knowledge::MULTIPLE_ASSIGNMENT ==
-                 update_data_list_[i].type) {
+      }
+      else if (madara::knowledge::MULTIPLE_ASSIGNMENT ==
+               update_data_list_[i].type)
+      {
         madara_logger_log(context_->get_logger(), logger::LOG_MINOR,
             "SpliceDataReaderListener::on_data_available:"
             " processing multassignment from %s with time %Q and quality %u\n",

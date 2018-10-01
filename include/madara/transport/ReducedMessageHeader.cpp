@@ -27,11 +27,14 @@ const char* madara::transport::ReducedMessageHeader::read(
     const char* buffer, int64_t& buffer_remaining)
 {
   // Remove size field from the buffer and update accordingly
-  if ((size_t)buffer_remaining >= sizeof(size)) {
+  if ((size_t)buffer_remaining >= sizeof(size))
+  {
     memcpy(&size, buffer, sizeof(size));
     size = madara::utility::endian_swap(size);
     buffer += sizeof(size);
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "ReducedMessageHeader::read: ";
     buffer << sizeof(size) << " byte size encoding cannot";
@@ -43,10 +46,13 @@ const char* madara::transport::ReducedMessageHeader::read(
   buffer_remaining -= sizeof(size);
 
   // Remove madara_id field from the buffer and update accordingly
-  if ((size_t)buffer_remaining >= sizeof(char) * MADARA_IDENTIFIER_LENGTH) {
+  if ((size_t)buffer_remaining >= sizeof(char) * MADARA_IDENTIFIER_LENGTH)
+  {
     strncpy(madara_id, buffer, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof(char) * MADARA_IDENTIFIER_LENGTH;
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "ReducedMessageHeader::read: ";
     buffer << MADARA_IDENTIFIER_LENGTH << " byte id encoding cannot";
@@ -58,11 +64,14 @@ const char* madara::transport::ReducedMessageHeader::read(
   buffer_remaining -= sizeof(char) * MADARA_IDENTIFIER_LENGTH;
 
   // Remove updates field from the buffer and update accordingly
-  if ((size_t)buffer_remaining >= sizeof(updates)) {
+  if ((size_t)buffer_remaining >= sizeof(updates))
+  {
     memcpy(&updates, buffer, sizeof(updates));
     updates = madara::utility::endian_swap(updates);
     buffer += sizeof(updates);
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "ReducedMessageHeader::read: ";
     buffer << sizeof(updates) << " byte updates encoding cannot";
@@ -74,11 +83,14 @@ const char* madara::transport::ReducedMessageHeader::read(
   buffer_remaining -= sizeof(updates);
 
   // Remove clock field from the buffer and update accordingly
-  if ((size_t)buffer_remaining >= sizeof(clock)) {
+  if ((size_t)buffer_remaining >= sizeof(clock))
+  {
     memcpy(&clock, buffer, sizeof(clock));
     clock = madara::utility::endian_swap(clock);
     buffer += sizeof(clock);
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "ReducedMessageHeader::read: ";
     buffer << sizeof(clock) << " byte clock encoding cannot";
@@ -90,11 +102,14 @@ const char* madara::transport::ReducedMessageHeader::read(
   buffer_remaining -= sizeof(clock);
 
   // Remove timestamp field from the buffer and update accordingly
-  if ((size_t)buffer_remaining >= sizeof(timestamp)) {
+  if ((size_t)buffer_remaining >= sizeof(timestamp))
+  {
     memcpy(&timestamp, buffer, sizeof(timestamp));
     timestamp = madara::utility::endian_swap(timestamp);
     buffer += sizeof(timestamp);
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "ReducedMessageHeader::read: ";
     buffer << sizeof(timestamp) << " byte timestamp encoding cannot";
@@ -106,7 +121,8 @@ const char* madara::transport::ReducedMessageHeader::read(
   buffer_remaining -= sizeof(timestamp);
 
   // Remove the time to live field from the buffer
-  if (buffer_remaining >= 1) {
+  if (buffer_remaining >= 1)
+  {
     memcpy(&ttl, buffer, 1);
     buffer += 1;
   }
@@ -119,10 +135,13 @@ char* madara::transport::ReducedMessageHeader::write(
     char* buffer, int64_t& buffer_remaining)
 {
   // Write size field from the buffer and update accordingly
-  if ((size_t)buffer_remaining >= sizeof(size)) {
+  if ((size_t)buffer_remaining >= sizeof(size))
+  {
     *(uint64_t*)buffer = madara::utility::endian_swap(size);
     buffer += sizeof(size);
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "ReducedMessageHeader::write: ";
     buffer << sizeof(size) << " byte size encoding cannot";
@@ -134,10 +153,13 @@ char* madara::transport::ReducedMessageHeader::write(
   buffer_remaining -= sizeof(size);
 
   // Write madara_id field from the buffer and update accordingly
-  if ((size_t)buffer_remaining >= sizeof(char) * MADARA_IDENTIFIER_LENGTH) {
+  if ((size_t)buffer_remaining >= sizeof(char) * MADARA_IDENTIFIER_LENGTH)
+  {
     strncpy(buffer, madara_id, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof(char) * MADARA_IDENTIFIER_LENGTH;
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "ReducedMessageHeader::write: ";
     buffer << MADARA_IDENTIFIER_LENGTH << " byte id encoding cannot";
@@ -149,10 +171,13 @@ char* madara::transport::ReducedMessageHeader::write(
   buffer_remaining -= sizeof(char) * MADARA_IDENTIFIER_LENGTH;
 
   // Write updates field from the buffer and update accordingly
-  if ((size_t)buffer_remaining >= sizeof(updates)) {
+  if ((size_t)buffer_remaining >= sizeof(updates))
+  {
     *(uint32_t*)buffer = madara::utility::endian_swap(updates);
     buffer += sizeof(updates);
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "ReducedMessageHeader::write: ";
     buffer << sizeof(updates) << " byte updates encoding cannot";
@@ -164,10 +189,13 @@ char* madara::transport::ReducedMessageHeader::write(
   buffer_remaining -= sizeof(updates);
 
   // Write clock field from the buffer and update accordingly
-  if ((size_t)buffer_remaining >= sizeof(clock)) {
+  if ((size_t)buffer_remaining >= sizeof(clock))
+  {
     *(uint64_t*)buffer = madara::utility::endian_swap(clock);
     buffer += sizeof(clock);
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "ReducedMessageHeader::write: ";
     buffer << sizeof(clock) << " byte clock encoding cannot";
@@ -179,10 +207,13 @@ char* madara::transport::ReducedMessageHeader::write(
   buffer_remaining -= sizeof(clock);
 
   // Write timestamp field from the buffer and update accordingly
-  if ((size_t)buffer_remaining >= sizeof(timestamp)) {
+  if ((size_t)buffer_remaining >= sizeof(timestamp))
+  {
     *(uint64_t*)buffer = madara::utility::endian_swap(timestamp);
     buffer += sizeof(timestamp);
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "ReducedMessageHeader::write: ";
     buffer << sizeof(timestamp) << " byte timestamp encoding cannot";
@@ -194,7 +225,8 @@ char* madara::transport::ReducedMessageHeader::write(
   buffer_remaining -= sizeof(timestamp);
 
   // Write the time to live field
-  if (buffer_remaining >= 1) {
+  if (buffer_remaining >= 1)
+  {
     memcpy(buffer, &ttl, 1);
     buffer += 1;
   }

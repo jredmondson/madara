@@ -8,7 +8,8 @@ bool madara::knowledge::containers::Queue::enqueue(
 {
   bool result(false);
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
@@ -19,7 +20,8 @@ bool madara::knowledge::containers::Queue::enqueue(
     knowledge::KnowledgeRecord::Integer count = *count_;
 
     if (context_ && name_ != "" && queue_.size() > 0 &&
-        count < (KnowledgeRecord::Integer)queue_.size()) {
+        count < (KnowledgeRecord::Integer)queue_.size())
+    {
       // there's no point in signaling inside of a locked context
       if (!settings_.signal_changes)
         settings_.signal_changes = false;
@@ -44,16 +46,19 @@ madara::knowledge::containers::Queue::dequeue(bool wait)
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (wait) {
+    if (wait)
+    {
       while (count_ <= 0)
         context_->wait_for_change(true);
     }
 
-    if (count_ > 0) {
+    if (count_ > 0)
+    {
       knowledge::KnowledgeRecord::Integer head = *head_;
 
       result = context_->get(queue_.vector_[head], settings_);

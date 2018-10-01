@@ -22,7 +22,8 @@ inline void WorkerThread::change_frequency(double hertz,
 #ifndef MADARA_NO_THREAD_LOCAL
   madara::logger::Logger::set_thread_hertz(hertz);
 #endif
-  if (hertz_ > 0.0) {
+  if (hertz_ > 0.0)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "WorkerThread(%s)::svc:"
         " thread repeating at %f hz\n",
@@ -34,7 +35,9 @@ inline void WorkerThread::change_frequency(double hertz,
 
     next_epoch = current;
     next_epoch += frequency;
-  } else if (hertz_ == 0.0) {
+  }
+  else if (hertz_ == 0.0)
+  {
     // infinite hertz until terminate
 
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
@@ -44,7 +47,9 @@ inline void WorkerThread::change_frequency(double hertz,
 
     one_shot = false;
     blaster = true;
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "WorkerThread(%s)::svc:"
         " thread running once\n",

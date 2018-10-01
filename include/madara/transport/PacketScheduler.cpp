@@ -107,7 +107,8 @@ madara::transport::PacketScheduler::~PacketScheduler() {}
 void madara::transport::PacketScheduler::operator=(const PacketScheduler& rhs)
 {
   MADARA_GUARD_TYPE guard(mutex_);
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     settings_ = rhs.settings_;
     sent_messages_ = rhs.sent_messages_;
     dropped_messages_ = rhs.dropped_messages_;
@@ -119,7 +120,8 @@ bool madara::transport::PacketScheduler::add(void)
 {
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings_) {
+  if (settings_)
+  {
     /**
      * call the accessor functions only once
      **/
@@ -130,28 +132,37 @@ bool madara::transport::PacketScheduler::add(void)
     bool result = true;
 
     // if the user has specified a positive drop rate
-    if (drop_rate > 0) {
+    if (drop_rate > 0)
+    {
       /**
        * if the drop rate is greater than 100% or
        * drop burst is greater than 1 and we do not have that many
        * consecutive drops
        **/
       if (drop_rate >= 100 || (consecutive_drops_ > 0 && drop_burst > 1 &&
-                                  consecutive_drops_ < drop_burst)) {
+                                  consecutive_drops_ < drop_burst))
+      {
         result = false;
-      } else {
-        if (drop_type == PACKET_DROP_PROBABLISTIC) {
+      }
+      else
+      {
+        if (drop_type == PACKET_DROP_PROBABLISTIC)
+        {
           // if burst is greater than 1, then divide the rate by burst
           if (drop_burst > 1)
             drop_rate = drop_rate / (drop_burst - 1);
 
           // easiest drop rate policy. Just drop messages with a probability.
-          if (utility::rand_double() <= drop_rate) {
+          if (utility::rand_double() <= drop_rate)
+          {
             result = false;
           }
-        } else {
+        }
+        else
+        {
           // Reset queue if this is the first time we have used this policy
-          if (queue_.empty()) {
+          if (queue_.empty())
+          {
             reset();
           }
 
@@ -169,17 +180,21 @@ bool madara::transport::PacketScheduler::add(void)
       }
     }
 
-    if (result) {
+    if (result)
+    {
       ++sent_messages_;
       consecutive_drops_ = 0;
-    } else {
+    }
+    else
+    {
       ++dropped_messages_;
       ++consecutive_drops_;
     }
 
     return result;
   }  // end if settings_
-  else {
+  else
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_EMERGENCY,
         "PacketScheduler::add: ERROR: Invalid settings class\n");
 
@@ -208,7 +223,8 @@ void madara::transport::PacketScheduler::reset(void)
 {
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings_) {
+  if (settings_)
+  {
     double drop_rate = settings_->get_drop_rate();
     uint64_t burst = settings_->get_drop_burst();
 
@@ -224,7 +240,9 @@ void madara::transport::PacketScheduler::reset(void)
 
     queue_.push(drop_message);
     queue_.push(send_message);
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_EMERGENCY,
         "PacketScheduler::reset: ERROR: Invalid settings class\n");
   }

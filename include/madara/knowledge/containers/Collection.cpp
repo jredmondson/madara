@@ -6,7 +6,8 @@ madara::knowledge::containers::Collection::Collection(const Collection& rhs)
   : BaseContainer()
 {
   vector_.resize(rhs.vector_.size());
-  for (size_t i = 0; i < rhs.vector_.size(); ++i) {
+  for (size_t i = 0; i < rhs.vector_.size(); ++i)
+  {
     vector_[i] = rhs.vector_[i]->clone();
   }
 }
@@ -20,7 +21,8 @@ void madara::knowledge::containers::Collection::modify(void)
 {
   MADARA_GUARD_TYPE guard(mutex_);
 
-  for (size_t i = 0; i < vector_.size(); ++i) {
+  for (size_t i = 0; i < vector_.size(); ++i)
+  {
     vector_[i]->modify_();
   }
 }
@@ -31,7 +33,8 @@ std::string madara::knowledge::containers::Collection::get_debug_info(void)
 
   std::stringstream result;
 
-  for (size_t i = 0; i < vector_.size(); ++i) {
+  for (size_t i = 0; i < vector_.size(); ++i)
+  {
     result << vector_[i]->get_debug_info_() << "\n";
   }
 
@@ -61,12 +64,15 @@ bool madara::knowledge::containers::Collection::is_true(void) const
   madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
       "Collection::is_true: checking all containers for truth\n");
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    for (size_t i = 0; i < vector_.size(); ++i) {
-      if (vector_[i]->is_false_()) {
+    for (size_t i = 0; i < vector_.size(); ++i)
+    {
+      if (vector_[i]->is_false_())
+      {
         result = false;
         break;
       }

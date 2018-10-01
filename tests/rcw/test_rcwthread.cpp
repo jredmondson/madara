@@ -17,11 +17,15 @@ namespace rcw = madara::knowledge::rcw;
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (true) {
-    } else {
+    if (true)
+    {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Test the timed executor, which executes periodic tasks.\n\n"
@@ -35,7 +39,8 @@ void handle_arguments(int argc, char** argv)
   }
 }
 
-struct my_type {
+struct my_type
+{
   int a;
   int b;
   int c;
@@ -52,7 +57,8 @@ void set_value(my_type& v, std::vector<int64_t> n)
   v.c = n[2];
 }
 
-struct my_tracked_type {
+struct my_tracked_type
+{
   int a;
   int b;
   int c;
@@ -141,28 +147,32 @@ public:
 
     std::cout << "tvec.size(): " << tvec.size() << std::endl;
     std::cout << "   ";
-    for (auto& cur : tvec) {
+    for (auto& cur : tvec)
+    {
       std::cout << cur << " ";
     }
     std::cout << std::endl;
 
     std::cout << "uvec.size(): " << uvec.size() << std::endl;
     std::cout << "   ";
-    for (auto& cur : uvec) {
+    for (auto& cur : uvec)
+    {
       std::cout << *cur << " ";
     }
     std::cout << std::endl;
 
     std::cout << "pvec.size(): " << pvec.size() << std::endl;
     std::cout << "   ";
-    for (auto& cur : pvec) {
+    for (auto& cur : pvec)
+    {
       std::cout << cur << " ";
     }
     std::cout << std::endl;
 
     std::cout << "strvec.size(): " << strvec.size() << std::endl;
     std::cout << "   ";
-    for (auto& cur : strvec) {
+    for (auto& cur : strvec)
+    {
       std::cout << cur << " ";
     }
     std::cout << std::endl;
@@ -213,7 +223,8 @@ void test_rcwthread(void)
 
   threads::BaseThread* thread = &my_thread;
   thread->init(knowledge);
-  for (int x = 0; x < 10; ++x) {
+  for (int x = 0; x < 10; ++x)
+  {
     thread->run();
 
     my_thread.pvec.clear();

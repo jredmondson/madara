@@ -16,33 +16,45 @@ madara::transport::QoSTransportSettings settings;
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-m" || arg1 == "--multicast") {
+    if (arg1 == "-m" || arg1 == "--multicast")
+    {
       if (i + 1 < argc)
         settings.hosts[0] = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-o" || arg1 == "--host") {
+    }
+    else if (arg1 == "-o" || arg1 == "--host")
+    {
       if (i + 1 < argc)
         host = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-d" || arg1 == "--domain") {
+    }
+    else if (arg1 == "-d" || arg1 == "--domain")
+    {
       if (i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-i" || arg1 == "--id") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-i" || arg1 == "--id")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
       ++i;
-    } else if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         int level;
         buffer >> level;
@@ -50,8 +62,11 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-p" || arg1 == "--drop-rate") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-p" || arg1 == "--drop-rate")
+    {
+      if (i + 1 < argc)
+      {
         double drop_rate;
         std::stringstream buffer(argv[i + 1]);
         buffer >> drop_rate;
@@ -61,15 +76,22 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-f" || arg1 == "--logfile") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-f" || arg1 == "--logfile")
+    {
+      if (i + 1 < argc)
+      {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-r" || arg1 == "--reduced") {
+    }
+    else if (arg1 == "-r" || arg1 == "--reduced")
+    {
       settings.send_reduced_message_header = true;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Test the multicast transport. Requires 2+ processes. The result "
@@ -130,12 +152,14 @@ int main(int argc, char** argv)
               << std::endl;
   };
 
-  if (settings.id == 0) {
+  if (settings.id == 0)
+  {
     madara::knowledge::Any::register_type<strfloat>("strfloat");
 
     madara::knowledge::CompiledExpression compiled = knowledge.compile(
         "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3");
-    do {
+    do
+    {
       print_clocks();
       knowledge.set_any("test_any_0", strvec{"e", "f", "g"},
           madara::knowledge::EvalSettings::DELAY);
@@ -147,14 +171,18 @@ int main(int argc, char** argv)
       madara::utility::sleep(1);
     } while (!knowledge.evaluate(compiled, wait_settings));
     size_t asize = knowledge.get("test_any").get_any_ref<strvec>().size();
-    if (asize != 4) {
+    if (asize != 4)
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
           "Expected 4 long test_any_0, got %d.\n", asize);
     }
-  } else {
+  }
+  else
+  {
     madara::knowledge::CompiledExpression compiled =
         knowledge.compile("!var1 && var2 => var3 = 1");
-    do {
+    do
+    {
       print_clocks();
 
       knowledge.set_any("test_any", strvec{"a", "b", "c", "d"},
@@ -163,19 +191,22 @@ int main(int argc, char** argv)
     } while (!knowledge.evaluate(compiled, wait_settings));
     // knowledge.wait (compiled, wait_settings);
     size_t asize = knowledge.get("test_any_0").get_any_ref<strvec>().size();
-    if (asize != 3) {
+    if (asize != 3)
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
           "Expected 3 long test_any_0, got %d.\n", asize);
     }
     std::string unreg_tostr = knowledge.get("test_unreg_any_0").to_string();
-    if (unreg_tostr != "\"GenericCapnObject<strfloat>\"") {
+    if (unreg_tostr != "\"GenericCapnObject<strfloat>\"")
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
           "Expected test_unreg_any_0 == \"GenericCapnObject<strfloat>\", "
           "got %s.\n",
           unreg_tostr.c_str());
     }
     size_t unreg_size = knowledge.get("test_unreg_any_0").size();
-    if (unreg_size < 10) {
+    if (unreg_size < 10)
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
           "Expected test_unreg_any_0 size() >= 10, got %d.\n", unreg_size);
     }

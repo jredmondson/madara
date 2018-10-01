@@ -142,7 +142,8 @@ private:
   size_t data_ = 0;
 };
 
-struct compare_any_fields_by_name {
+struct compare_any_fields_by_name
+{
   bool operator()(const char* l, const char* r) const
   {
     return std::strcmp(l, r) < 0;
@@ -165,7 +166,8 @@ struct compare_any_fields_by_name {
 };
 
 /// For internal use. Holds type information for use by Any class.
-struct TypeHandlers {
+struct TypeHandlers
+{
   type_index tindex;
 
   typedef const char* (*tag_fn_type)(void*);

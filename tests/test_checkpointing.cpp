@@ -81,9 +81,12 @@ void test_checkpoint_settings(void)
       loader.get("double_var") == 3.14159 &&
       loader.get("str_var") == "some string" &&
       loader.get("int_array").to_string(", ") == "10, 20, 30" &&
-      loader.get("double_array").to_string(", ") == "10.1, 20.2, 30.3, 40.4") {
+      loader.get("double_array").to_string(", ") == "10.1, 20.2, 30.3, 40.4")
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL. Knowledge was:\n";
     ++madara_fails;
     loader.print();
@@ -91,9 +94,12 @@ void test_checkpoint_settings(void)
 
   std::cerr << "Test 2: Checking expected settings with last load: ";
   if (settings.initial_lamport_clock == 2001 &&
-      settings.last_lamport_clock == 2001) {
+      settings.last_lamport_clock == 2001)
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
     std::cerr << "  Expected clocks (2001:2001) but got ("
@@ -124,9 +130,12 @@ void test_checkpoint_settings(void)
       loader.get("double_array").is_false() &&
       loader.get("file_var").is_false() && loader.get("extra_var").is_false() &&
       loader.get("additional_var").is_false() &&
-      loader.get(".invisible").is_false()) {
+      loader.get(".invisible").is_false())
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL. Knowledge was:\n";
     ++madara_fails;
     loader.print();
@@ -134,9 +143,12 @@ void test_checkpoint_settings(void)
 
   std::cerr << "Test 4: Checking expected settings with last load: ";
   if (settings.initial_lamport_clock == 7 && settings.last_lamport_clock == 7 &&
-      settings.initial_timestamp == 1234 && settings.last_timestamp == 4321) {
+      settings.initial_timestamp == 1234 && settings.last_timestamp == 4321)
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
     std::cerr << "  Expected clocks (7:7) but got ("
@@ -167,9 +179,12 @@ void test_checkpoint_settings(void)
 
   std::cerr << "Test 5.1: Attempting 256bit AES on simple message: ";
 
-  if (strncmp((char*)buffer, test_message.c_str(), 63) != 0) {
+  if (strncmp((char*)buffer, test_message.c_str(), 63) != 0)
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Should be garbled but is the same. " << buffer << "\n";
   }
@@ -180,9 +195,12 @@ void test_checkpoint_settings(void)
 
   std::cerr << "Test 5.2: Looking at unencoded message: ";
 
-  if (strncmp((char*)buffer, test_message.c_str(), 63) == 0) {
+  if (strncmp((char*)buffer, test_message.c_str(), 63) == 0)
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Should be same but is garbled. " << buffer << "\n";
   }
@@ -221,9 +239,12 @@ void test_checkpoint_settings(void)
       loader.get("double_var") == 3.14159 &&
       loader.get("str_var") == "some string" &&
       loader.get("int_array").to_string(", ") == "10, 20, 30" &&
-      loader.get("double_array").to_string(", ") == "10.1, 20.2, 30.3, 40.4") {
+      loader.get("double_array").to_string(", ") == "10.1, 20.2, 30.3, 40.4")
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -238,9 +259,12 @@ void test_checkpoint_settings(void)
 
   settings.buffer_filters.clear();
 
-  try {
+  try
+  {
     loader.load_context(settings);
-  } catch (madara::exceptions::MadaraException& e) {
+  }
+  catch (madara::exceptions::MadaraException& e)
+  {
     // std::cerr << "Caught exception\n";
     std::cerr << e.what() << "\n";
   }
@@ -252,9 +276,12 @@ void test_checkpoint_settings(void)
       loader.get("double_array").is_false() &&
       loader.get("file_var").is_false() && loader.get("extra_var").is_false() &&
       loader.get("additional_var").is_false() &&
-      loader.get(".invisible").is_false()) {
+      loader.get(".invisible").is_false())
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL Knowledge was:\n";
     loader.print();
@@ -277,9 +304,12 @@ void test_checkpoint_settings(void)
       loader.get("double_array").is_false() &&
       loader.get("file_var").is_false() && loader.get("extra_var").is_false() &&
       loader.get("additional_var").is_false() &&
-      loader.get(".invisible").is_false()) {
+      loader.get(".invisible").is_false())
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -329,9 +359,12 @@ void test_checkpoints_diff(void)
   loader.load_context(checkpoint_settings);
 
   if (loader.get("var1").to_integer() == 1 &&
-      loader.get(".1").to_integer() == 1 && !loader.exists("var4")) {
+      loader.get(".1").to_integer() == 1 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -347,9 +380,12 @@ void test_checkpoints_diff(void)
   loader.load_context(checkpoint_settings);
 
   if (loader.get("var1").to_integer() == 2 &&
-      loader.get(".1").to_integer() == 1 && !loader.exists("var4")) {
+      loader.get(".1").to_integer() == 1 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -377,9 +413,12 @@ void test_checkpoints_diff(void)
       loader.get("var2").to_integer() == 2 &&
       loader.get(".2").to_integer() == 2 &&
       loader.get("var3").to_integer() == 3 &&
-      loader.get(".3").to_integer() == 3 && !loader.exists("var4")) {
+      loader.get(".3").to_integer() == 3 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -420,9 +459,12 @@ void test_checkpoints_diff(void)
   loader.load_context(checkpoint_settings);
 
   if (loader.get(".1").to_integer() == 6 &&
-      loader.get("var1").to_integer() == 0 && !loader.exists("var4")) {
+      loader.get("var1").to_integer() == 0 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -436,9 +478,12 @@ void test_checkpoints_diff(void)
   loader.load_context(checkpoint_settings);
 
   if (loader.get(".1").to_integer() == 1 && !loader.exists("var1") &&
-      !loader.exists("var4")) {
+      !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -452,9 +497,12 @@ void test_checkpoints_diff(void)
   loader.load_context(checkpoint_settings);
 
   if (loader.get(".1").to_integer() == 3 &&
-      loader.get("var1").to_integer() == 3 && !loader.exists("var4")) {
+      loader.get("var1").to_integer() == 3 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -468,9 +516,12 @@ void test_checkpoints_diff(void)
   loader.load_context(checkpoint_settings);
 
   if (loader.get(".1").to_integer() == 5 &&
-      loader.get("var1").to_integer() == 5 && !loader.exists("var4")) {
+      loader.get("var1").to_integer() == 5 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -486,9 +537,12 @@ void test_checkpoints_diff(void)
   logger::global_logger->set_level(logger::LOG_ERROR);
 
   if (loader.get(".1").to_integer() == 6 &&
-      loader.get("var1").to_integer() == 0 && !loader.exists("var4")) {
+      loader.get("var1").to_integer() == 0 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -526,9 +580,12 @@ void test_compress(void)
 
   kb.load_context(settings);
 
-  if (kb.get("data").size() == 2000000) {
+  if (kb.get("data").size() == 2000000)
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     kb.print();
@@ -593,9 +650,12 @@ void test_diff_filter_chains(void)
   loader.load_context(load_settings);
 
   if (loader.get("var1").to_integer() == 1 &&
-      loader.get(".1").to_integer() == 1 && !loader.exists("var4")) {
+      loader.get(".1").to_integer() == 1 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -611,9 +671,12 @@ void test_diff_filter_chains(void)
   loader.load_context(load_settings);
 
   if (loader.get("var1").to_integer() == 2 &&
-      loader.get(".1").to_integer() == 1 && !loader.exists("var4")) {
+      loader.get(".1").to_integer() == 1 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -641,9 +704,12 @@ void test_diff_filter_chains(void)
       loader.get("var2").to_integer() == 2 &&
       loader.get(".2").to_integer() == 2 &&
       loader.get("var3").to_integer() == 3 &&
-      loader.get(".3").to_integer() == 3 && !loader.exists("var4")) {
+      loader.get(".3").to_integer() == 3 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -684,9 +750,12 @@ void test_diff_filter_chains(void)
   loader.load_context(load_settings);
 
   if (loader.get(".1").to_integer() == 6 &&
-      loader.get("var1").to_integer() == 0 && !loader.exists("var4")) {
+      loader.get("var1").to_integer() == 0 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -700,9 +769,12 @@ void test_diff_filter_chains(void)
   loader.load_context(load_settings);
 
   if (loader.get(".1").to_integer() == 1 && !loader.exists("var1") &&
-      !loader.exists("var4")) {
+      !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -716,9 +788,12 @@ void test_diff_filter_chains(void)
   loader.load_context(load_settings);
 
   if (loader.get(".1").to_integer() == 3 &&
-      loader.get("var1").to_integer() == 3 && !loader.exists("var4")) {
+      loader.get("var1").to_integer() == 3 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -732,9 +807,12 @@ void test_diff_filter_chains(void)
   loader.load_context(load_settings);
 
   if (loader.get(".1").to_integer() == 5 &&
-      loader.get("var1").to_integer() == 5 && !loader.exists("var4")) {
+      loader.get("var1").to_integer() == 5 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -750,9 +828,12 @@ void test_diff_filter_chains(void)
   logger::global_logger->set_level(logger::LOG_ERROR);
 
   if (loader.get(".1").to_integer() == 6 &&
-      loader.get("var1").to_integer() == 0 && !loader.exists("var4")) {
+      loader.get("var1").to_integer() == 0 && !loader.exists("var4"))
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL. Knowledge was:\n";
     loader.print();
@@ -763,17 +844,22 @@ void test_diff_filter_chains(void)
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
-    if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> log_level;
         logger::global_logger->set_level(log_level);
       }
 
       ++i;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Test the checkpointing functionality.\n\n"
@@ -807,11 +893,14 @@ void test_buffer_size(void)
   // Test 1
   std::cerr << "Test 1: save_context: ";
 
-  try {
+  try
+  {
     kb.save_context(settings);
     std::cerr << "FAIL\n";
     madara_fails++;
-  } catch (const madara::exceptions::MemoryException&) {
+  }
+  catch (const madara::exceptions::MemoryException&)
+  {
     std::cerr << "SUCCESS\n";
   }
 
@@ -821,11 +910,14 @@ void test_buffer_size(void)
 
   kb.mark_modified("data");
 
-  try {
+  try
+  {
     kb.save_checkpoint(settings);
     std::cerr << "FAIL\n";
     madara_fails++;
-  } catch (const madara::exceptions::MemoryException&) {
+  }
+  catch (const madara::exceptions::MemoryException&)
+  {
     std::cerr << "SUCCESS\n";
   }
 
@@ -905,9 +997,12 @@ void test_filter_header(void)
   std::cerr << " init=" << init_size << "encoded=" << encoded
             << " decoded=" << decoded << ": ";
 
-  if (decoded == init_size) {
+  if (decoded == init_size)
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL\n";
   }
   buffer[decoded] = 0;
@@ -960,9 +1055,12 @@ void test_streaming()
   kb2.load_context(settings);
 
   if (kb2.get(".loc1") == 2 && kb2.get(".loc2") == "foo" &&
-      kb2.get("glob1") == 4 && kb2.get("glob2") == "bar") {
+      kb2.get("glob1") == 4 && kb2.get("glob2") == "bar")
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::string dump;
     kb2.to_string(dump);
     std::cerr << "FAIL :\n" << dump << "\n";
@@ -988,16 +1086,21 @@ void test_streaming()
 
   player.start();
 
-  for (int i = 0; i < 10; ++i) {
-    if (i < 4) {
-      if (kb3.exists("glob2")) {
+  for (int i = 0; i < 10; ++i)
+  {
+    if (i < 4)
+    {
+      if (kb3.exists("glob2"))
+      {
         std::cerr << "FAIL : glob1 exists before it should\n";
         madara_fails++;
         return;
       }
     }
-    if (i > 8) {
-      if (kb3.get("glob2") != "bar") {
+    if (i > 8)
+    {
+      if (kb3.get("glob2") != "bar")
+      {
         std::cerr << "FAIL : glob1 has wrong value after it should be set\n";
         madara_fails++;
         return;
@@ -1062,9 +1165,12 @@ int main(int argc, char* argv[])
             << (header_decoded ? "true" : "false") << std::endl;
 
   std::cerr << "\nEncoding results were ";
-  if (header_decoded) {
+  if (header_decoded)
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -1084,9 +1190,12 @@ int main(int argc, char* argv[])
   logger::global_logger->set_level(log_level);
   test_streaming();
 
-  if (madara_fails > 0) {
+  if (madara_fails > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

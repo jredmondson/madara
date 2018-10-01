@@ -34,7 +34,8 @@ namespace transport
 // forward declare for friending
 class Base;
 
-enum Types {
+enum Types
+{
   NO_TRANSPORT = 0,
   SPLICE = 1,
   NDDS = 2,
@@ -47,9 +48,14 @@ enum Types {
   ZMQ = 9
 };
 
-enum Reliabilities { BEST_EFFORT = 0, RELIABLE = 1 };
+enum Reliabilities
+{
+  BEST_EFFORT = 0,
+  RELIABLE = 1
+};
 
-enum Messages {
+enum Messages
+{
   ASSIGN = 0,
   OPERATION = 1,
   MULTIASSIGN = 2,
@@ -315,7 +321,8 @@ inline std::string type_name(const TransportSettings& settings)
 {
   std::string name = "none";
 
-  switch (settings.type) {
+  switch (settings.type)
+  {
     case 0:
       name = "None";
       break;

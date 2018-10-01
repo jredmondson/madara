@@ -32,7 +32,8 @@ inline void madara::transport::TransportSettings::get_read_domains(
 {
   domains.clear();
   for (std::map<std::string, int>::const_iterator i = read_domains_.begin();
-       i != read_domains_.end(); ++i) {
+       i != read_domains_.end(); ++i)
+  {
     domains.push_back(i->first);
   }
 }

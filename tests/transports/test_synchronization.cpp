@@ -110,7 +110,8 @@ int main(int, char**)
   // so if the top process becomes my state, I move on to my next state
   // this allows for a ring of legitimate states that progress towards an
   // end goal (in our case the .stop condition)
-  if (id == 0) {
+  if (id == 0)
+  {
     expression = "S{.self} == S{.left} => S{.self} = (S{.self} + 1) % .stop";
   }
 
@@ -126,7 +127,8 @@ int main(int, char**)
   default_eval.delay_sending_modifieds = false;
 
   // termination is done via signalling from the user (Control+C)
-  while (!terminated) {
+  while (!terminated)
+  {
     knowledge.wait(compiled, wait_settings);
 
     madara::utility::sleep(1);

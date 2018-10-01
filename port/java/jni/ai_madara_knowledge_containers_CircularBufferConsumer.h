@@ -14,8 +14,8 @@ extern "C" {
  * Signature: ()J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferConsumer__
-  (JNIEnv *, jobject);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferConsumer__(
+    JNIEnv*, jobject);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -23,8 +23,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferCo
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferConsumer__J
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferConsumer__J(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -32,8 +32,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferCo
  * Signature: (J)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1freeCircularBufferConsumer
-  (JNIEnv *, jclass, jlong);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1freeCircularBufferConsumer(
+    JNIEnv*, jclass, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -41,8 +41,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1freeCircularBuff
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeRecord
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeRecord(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -50,8 +50,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeRecord
  * Signature: (JI)[Ljava/lang/Object;
  */
 MADARA_EXPORT jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeEarliestRecordVector
-  (JNIEnv *, jobject, jlong, jint);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeEarliestRecordVector(
+    JNIEnv*, jobject, jlong, jint);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -59,8 +59,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeEarliestR
  * Signature: (JI)[Ljava/lang/Object;
  */
 MADARA_EXPORT jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeLatestRecordVector
-  (JNIEnv *, jobject, jlong, jint);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeLatestRecordVector(
+    JNIEnv*, jobject, jlong, jint);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -68,8 +68,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeLatestRec
  * Signature: (JI)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecord
-  (JNIEnv *, jobject, jlong, jint);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecord(
+    JNIEnv*, jobject, jlong, jint);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -77,8 +77,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecord
  * Signature: (JII)[Ljava/lang/Object;
  */
 MADARA_EXPORT jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecordVector
-  (JNIEnv *, jobject, jlong, jint, jint);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecordVector(
+    JNIEnv*, jobject, jlong, jint, jint);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -86,8 +86,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecordVec
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecord
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecord(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -95,8 +95,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecord
  * Signature: (JI)[Ljava/lang/Object;
  */
 MADARA_EXPORT jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecordVector
-  (JNIEnv *, jobject, jlong, jint);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecordVector(
+    JNIEnv*, jobject, jlong, jint);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -104,8 +104,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecordVector
  * Signature: (J)Ljava/lang/String;
  */
 MADARA_EXPORT jstring JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1getName
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1getName(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -113,8 +113,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1getName
  * Signature: (JJJLjava/lang/String;)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setName
-  (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setName(
+    JNIEnv*, jobject, jlong, jlong, jlong, jstring);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -122,8 +122,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setName
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1remaining
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1remaining(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -131,8 +131,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1remaining
  * Signature: (J)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resync
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resync(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -140,8 +140,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resync
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1size
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1size(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -149,8 +149,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1size
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1count
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1count(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -158,8 +158,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1count
  * Signature: (J)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resize
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resize(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -167,8 +167,8 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resize
  * Signature: (JJ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setIndex
-  (JNIEnv * env, jobject, jlong cptr, jlong index);
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setIndex(
+    JNIEnv* env, jobject, jlong cptr, jlong index);
 
 #ifdef __cplusplus
 }

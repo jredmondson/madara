@@ -56,7 +56,8 @@ madara::transport::QoSTransportSettings::QoSTransportSettings(
 {
   const QoSTransportSettings* rhs =
       dynamic_cast<const QoSTransportSettings*>(&settings);
-  if (rhs) {
+  if (rhs)
+  {
     rebroadcast_ttl_ = rhs->rebroadcast_ttl_;
     participant_rebroadcast_ttl_ = rhs->participant_rebroadcast_ttl_;
     trusted_peers_ = rhs->trusted_peers_;
@@ -71,7 +72,9 @@ madara::transport::QoSTransportSettings::QoSTransportSettings(
     max_send_bandwidth_ = rhs->max_send_bandwidth_;
     max_total_bandwidth_ = rhs->max_total_bandwidth_;
     deadline_ = rhs->deadline_;
-  } else {
+  }
+  else
+  {
     TransportSettings* lhs = dynamic_cast<TransportSettings*>(this);
     *lhs = settings;
   }
@@ -85,7 +88,8 @@ madara::transport::QoSTransportSettings::~QoSTransportSettings()
 void madara::transport::QoSTransportSettings::operator=(
     const QoSTransportSettings& rhs)
 {
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     TransportSettings* lhs_base = (TransportSettings*)this;
     TransportSettings* rhs_base = (TransportSettings*)&rhs;
 
@@ -111,7 +115,8 @@ void madara::transport::QoSTransportSettings::operator=(
 void madara::transport::QoSTransportSettings::operator=(
     const TransportSettings& rhs)
 {
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     rebroadcast_ttl_ = 0;
     participant_rebroadcast_ttl_ = 0;
     trusted_peers_.clear();
@@ -175,7 +180,8 @@ bool madara::transport::QoSTransportSettings::remove_trusted_peer(
     const std::string& peer)
 {
   bool condition = false;
-  if (trusted_peers_.find(peer) != trusted_peers_.end()) {
+  if (trusted_peers_.find(peer) != trusted_peers_.end())
+  {
     trusted_peers_.erase(peer);
     condition = true;
   }
@@ -186,7 +192,8 @@ bool madara::transport::QoSTransportSettings::remove_banned_peer(
     const std::string& peer)
 {
   bool condition = false;
-  if (banned_peers_.find(peer) != banned_peers_.end()) {
+  if (banned_peers_.find(peer) != banned_peers_.end())
+  {
     banned_peers_.erase(peer);
     condition = true;
   }
@@ -205,10 +212,13 @@ bool madara::transport::QoSTransportSettings::is_trusted(
    * second is when trusted_peers contains the peer.
    **/
 
-  if (trusted_peers_.size() == 0) {
+  if (trusted_peers_.size() == 0)
+  {
     if (banned_peers_.find(peer) == banned_peers_.end())
       condition = true;
-  } else {
+  }
+  else
+  {
     condition = (trusted_peers_.find(peer) != trusted_peers_.end());
   }
 
@@ -447,7 +457,8 @@ int madara::transport::QoSTransportSettings::filter_encode(
 {
   // encode from front to back
   for (filters::BufferFilters::const_iterator i = buffer_filters_.begin();
-       i != buffer_filters_.end(); ++i) {
+       i != buffer_filters_.end(); ++i)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
         "QoSTransportSettings::filter_encode: size before encode: "
         " %d of %d\n",
@@ -460,7 +471,8 @@ int madara::transport::QoSTransportSettings::filter_encode(
         " %d of %d\n",
         size, max_size);
 
-    if (max_size > size + 20) {
+    if (max_size > size + 20)
+    {
       memmove(source + 20, source, size);
 
       filters::BufferFilterHeader header;
@@ -477,7 +489,9 @@ int madara::transport::QoSTransportSettings::filter_encode(
           "QoSTransportSettings::filter_encode: header: "
           "%s:%s within size %d\n",
           header.id, utility::to_string_version(header.version).c_str(), size);
-    } else {
+    }
+    else
+    {
       std::stringstream buffer;
       buffer << "QoSTransportSettings::filter_encode: ";
       buffer << (size + 20) << " 20 byte size encoding cannot fit in ";
@@ -493,7 +507,8 @@ int madara::transport::QoSTransportSettings::filter_encode(
 int madara::transport::QoSTransportSettings::filter_decode(
     char* source, int size, int max_size) const
 {
-  if (buffer_filters_.size() == 0) {
+  if (buffer_filters_.size() == 0)
+  {
     // if we don't have buffer filters, do a check to see if we should
     filters::BufferFilterHeader header;
     int64_t buffer_size = (int64_t)filters::BufferFilterHeader::encoded_size();
@@ -505,12 +520,15 @@ int madara::transport::QoSTransportSettings::filter_decode(
     std::string header_id(header.id);
 
     // id is either karl or KaRL. If it's anything else, then error
-    if (header_id == "karl" || header_id == "KaRL") {
+    if (header_id == "karl" || header_id == "KaRL")
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
           "QoSTransportSettings::filter_decode: header: "
           " Detected %s\n",
           header.id);
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
           "QoSTransportSettings::filter_decode: header: "
           " Detected %s, which is not a message or checkpoint header\n",
@@ -523,15 +541,18 @@ int madara::transport::QoSTransportSettings::filter_decode(
   // decode from back to front
   for (filters::BufferFilters::const_reverse_iterator i =
            buffer_filters_.rbegin();
-       i != buffer_filters_.rend(); ++i) {
-    if (size > (int)filters::BufferFilterHeader::encoded_size()) {
+       i != buffer_filters_.rend(); ++i)
+  {
+    if (size > (int)filters::BufferFilterHeader::encoded_size())
+    {
       filters::BufferFilterHeader header;
       int64_t buffer_size =
           (int64_t)filters::BufferFilterHeader::encoded_size();
 
       header.read((char*)source, buffer_size);
 
-      if (header.size > (uint64_t)max_size) {
+      if (header.size > (uint64_t)max_size)
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
             "QoSTransportSettings::filter_decode: header: "
             " %d byte size encoding cannot fit in %d byte buffer\n",
@@ -545,22 +566,28 @@ int madara::transport::QoSTransportSettings::filter_decode(
           " %s:%s\n",
           header.id, utility::to_string_version(header.version).c_str());
 
-      if (*i == 0) {
+      if (*i == 0)
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
             "QoSTransportSettings::filter_decode: filter is null somehow\n");
 
         return 0;
-      } else {
+      }
+      else
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_DETAILED,
             "QoSTransportSettings::filter_decode: filter is not null\n");
       }
 
-      if (header.check_filter(*i)) {
+      if (header.check_filter(*i))
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
             "QoSTransportSettings::filter_decode: buffer filter %s is a "
             "match\n",
             header.id);
-      } else {
+      }
+      else
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
             "QoSTransportSettings::filter_decode: buffer filter %s doesn't "
             "match."
@@ -583,11 +610,14 @@ int madara::transport::QoSTransportSettings::filter_decode(
           " %d of %d (header.size=%d)\n",
           size, max_size, (int)header.size);
 
-      if (size > 0) {
+      if (size > 0)
+      {
         memmove(
             source, source + filters::BufferFilterHeader::encoded_size(), size);
       }
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
           "QoSTransportSettings::filter_decode: "
           " %d byte size encoding cannot fit in %d byte buffer\n",
@@ -771,11 +801,13 @@ void madara::transport::QoSTransportSettings::load(
   trusted_peers.keys(trusted_keys);
   banned_peers.keys(banned_keys);
 
-  for (size_t i = 0; i < trusted_keys.size(); ++i) {
+  for (size_t i = 0; i < trusted_keys.size(); ++i)
+  {
     trusted_peers_[trusted_keys[i]] = 1;
   }
 
-  for (size_t i = 0; i < banned_keys.size(); ++i) {
+  for (size_t i = 0; i < banned_keys.size(); ++i)
+  {
     banned_peers_[banned_keys[i]] = 1;
   }
 
@@ -815,11 +847,13 @@ void madara::transport::QoSTransportSettings::load_text(
   trusted_peers.keys(trusted_keys);
   banned_peers.keys(banned_keys);
 
-  for (size_t i = 0; i < trusted_keys.size(); ++i) {
+  for (size_t i = 0; i < trusted_keys.size(); ++i)
+  {
     trusted_peers_[trusted_keys[i]] = 1;
   }
 
-  for (size_t i = 0; i < banned_keys.size(); ++i) {
+  for (size_t i = 0; i < banned_keys.size(); ++i)
+  {
     banned_peers_[banned_keys[i]] = 1;
   }
 
@@ -855,12 +889,14 @@ void madara::transport::QoSTransportSettings::save(
       Integer(participant_rebroadcast_ttl_));
 
   for (std::map<std::string, int>::const_iterator i = trusted_peers_.begin();
-       i != trusted_peers_.end(); ++i) {
+       i != trusted_peers_.end(); ++i)
+  {
     trusted_peers.set(i->first, Integer(1));
   }
 
   for (std::map<std::string, int>::const_iterator i = banned_peers_.begin();
-       i != banned_peers_.end(); ++i) {
+       i != banned_peers_.end(); ++i)
+  {
     banned_peers.set(i->first, Integer(1));
   }
 
@@ -893,12 +929,14 @@ void madara::transport::QoSTransportSettings::save_text(
       Integer(participant_rebroadcast_ttl_));
 
   for (std::map<std::string, int>::const_iterator i = trusted_peers_.begin();
-       i != trusted_peers_.end(); ++i) {
+       i != trusted_peers_.end(); ++i)
+  {
     trusted_peers.set(i->first, Integer(1));
   }
 
   for (std::map<std::string, int>::const_iterator i = banned_peers_.begin();
-       i != banned_peers_.end(); ++i) {
+       i != banned_peers_.end(); ++i)
+  {
     banned_peers.set(i->first, Integer(1));
   }
 

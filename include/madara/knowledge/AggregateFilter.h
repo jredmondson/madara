@@ -41,7 +41,8 @@ public:
   /**
    * Types of functions supported
    **/
-  enum Types {
+  enum Types
+  {
     UNINITIALIZED = 0,
     EXTERN_UNNAMED = 1,
     EXTERN_NAMED = 2,
@@ -105,7 +106,8 @@ public:
     : python_function(func), type(PYTHON_CALLABLE)
   {
     // Check to make sure its a callable object
-    if (0 == PyObject_HasAttrString(func.ptr(), "__call__")) {
+    if (0 == PyObject_HasAttrString(func.ptr(), "__call__"))
+    {
       // If not, lets throw an exception to warn the user
       PyErr_SetString(PyExc_TypeError, "Handler must be a callable object");
 

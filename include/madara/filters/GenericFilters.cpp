@@ -19,13 +19,15 @@ madara::knowledge::KnowledgeRecord madara::filters::discard_nonprimitives(
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (args.size() > 0) {
+  if (args.size() > 0)
+  {
     /**
      * Alternatively, we could check type () for each
      * defined type, but this will check that we are not
      * a file type
      **/
-    if (!args[0].is_file_type()) {
+    if (!args[0].is_file_type())
+    {
       result = args[0];
     }
   }
@@ -42,13 +44,15 @@ madara::knowledge::KnowledgeRecord madara::filters::discard_nonfiles(
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (args.size() > 0) {
+  if (args.size() > 0)
+  {
     /**
      * Alternatively, we could check type () for each
      * defined type, but this will check that we are
      * a file type
      **/
-    if (args[0].is_file_type()) {
+    if (args[0].is_file_type())
+    {
       result = args[0];
     }
   }
@@ -65,7 +69,8 @@ madara::knowledge::KnowledgeRecord madara::filters::log_args(
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (args.size() == madara::filters::TOTAL_ARGUMENTS) {
+  if (args.size() == madara::filters::TOTAL_ARGUMENTS)
+  {
     // return the first arg for further processing by other filters
     result = args[0];
 
@@ -166,9 +171,11 @@ void madara::filters::log_aggregate(knowledge::KnowledgeMap& records,
   buffer << "\n";
 
   buffer << "  Updates:\n";
-  if (records.size() > 0) {
+  if (records.size() > 0)
+  {
     for (knowledge::KnowledgeMap::const_iterator i = records.begin();
-         i != records.end(); ++i) {
+         i != records.end(); ++i)
+    {
       buffer << "    " << i->first << " = ";
       buffer << i->second.to_string() << "\n";
     }

@@ -35,12 +35,13 @@ madara::knowledge::KnowledgeRecord madara::expression::CompositeAndNode::prune(
   madara::knowledge::KnowledgeRecord return_value;
 
   int j = 0;
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end();
-       ++i, ++j) {
+  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
+  {
     bool value_changes = false;
     madara::knowledge::KnowledgeRecord value;
     value = (*i)->prune(value_changes);
-    if (!value_changes && dynamic_cast<LeafNode*>(*i) == 0) {
+    if (!value_changes && dynamic_cast<LeafNode*>(*i) == 0)
+    {
       delete *i;
       *i = new LeafNode(*this->logger_, value);
     }
@@ -53,7 +54,8 @@ madara::knowledge::KnowledgeRecord madara::expression::CompositeAndNode::prune(
     can_change = can_change || value_changes;
   }
 
-  if (nodes_.size() < 2) {
+  if (nodes_.size() < 2)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "CompositeAndNode: "
         "KARL COMPILE ERROR (&&): "
@@ -75,8 +77,8 @@ madara::expression::CompositeAndNode::evaluate(
     const madara::knowledge::KnowledgeUpdateSettings& settings)
 {
   int j = 0;
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end();
-       ++i, ++j) {
+  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
+  {
     // if we have a zero eval, return 0 immediately
     if ((*i)->evaluate(settings).is_false())
       return madara::knowledge::KnowledgeRecord(0);

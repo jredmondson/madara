@@ -36,7 +36,11 @@ namespace transport
 /**
  * Enumeration for packet drop policy types
  **/
-enum PacketDropType { PACKET_DROP_DETERMINISTIC, PACKET_DROP_PROBABLISTIC };
+enum PacketDropType
+{
+  PACKET_DROP_DETERMINISTIC,
+  PACKET_DROP_PROBABLISTIC
+};
 
 /**
  * @class QoSTransportSettings

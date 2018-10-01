@@ -3,9 +3,9 @@
 
 namespace knowledge = madara::knowledge;
 namespace containers = knowledge::containers;
-typedef knowledge::KnowledgeRecord    KnowledgeRecord;
-typedef KnowledgeRecord::Integer      Integer;
-typedef containers::CircularBufferConsumer    CircularBufferConsumer;
+typedef knowledge::KnowledgeRecord KnowledgeRecord;
+typedef KnowledgeRecord::Integer Integer;
+typedef containers::CircularBufferConsumer CircularBufferConsumer;
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBufferConsumer
@@ -13,10 +13,10 @@ typedef containers::CircularBufferConsumer    CircularBufferConsumer;
  * Signature: ()J
  */
 jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferConsumer__
-  (JNIEnv *, jobject)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferConsumer__(
+    JNIEnv*, jobject)
 {
-  return (jlong) new CircularBufferConsumer ();
+  return (jlong) new CircularBufferConsumer();
 }
 
 /*
@@ -25,26 +25,26 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferCo
  * Signature: (J)J
  */
 jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferConsumer__J
-  (JNIEnv * env, jobject, jlong cptr)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferConsumer__J(
+    JNIEnv* env, jobject, jlong cptr)
 {
-  CircularBufferConsumer * result (0);
-  CircularBufferConsumer * source = (CircularBufferConsumer *) cptr;
+  CircularBufferConsumer* result(0);
+  CircularBufferConsumer* source = (CircularBufferConsumer*)cptr;
 
   if (source)
   {
-    result = new CircularBufferConsumer (*source);
+    result = new CircularBufferConsumer(*source);
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::copyConstructor: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::copyConstructor: "
+        "CircularBufferConsumer object is released already");
   }
 
-  return (jlong) result;
+  return (jlong)result;
 }
 
 /*
@@ -53,10 +53,10 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferCo
  * Signature: (J)V
  */
 void JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1freeCircularBufferConsumer
-  (JNIEnv *, jclass, jlong cptr)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1freeCircularBufferConsumer(
+    JNIEnv*, jclass, jlong cptr)
 {
-  delete (CircularBufferConsumer *) cptr;
+  delete (CircularBufferConsumer*)cptr;
 }
 
 /*
@@ -65,23 +65,23 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1freeCircularBuff
  * Signature: (J)J
  */
 jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeRecord
-  (JNIEnv * env, jobject, jlong cptr)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeRecord(
+    JNIEnv* env, jobject, jlong cptr)
 {
-  jlong result (0);
+  jlong result(0);
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
   if (current)
   {
-    result = (jlong) new KnowledgeRecord (current->consume ());
+    result = (jlong) new KnowledgeRecord(current->consume());
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::consume: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::consume: "
+        "CircularBufferConsumer object is released already");
   }
 
   return result;
@@ -93,48 +93,48 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeRecord
  * Signature: (JI)[Ljava/lang/Object;
  */
 jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeEarliestRecordVector
-  (JNIEnv * env, jobject, jlong cptr, jint count)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeEarliestRecordVector(
+    JNIEnv* env, jobject, jlong cptr, jint count)
 {
-  jclass kr_class = madara::utility::java::find_class (
-    env, "ai/madara/knowledge/KnowledgeRecord");
+  jclass kr_class = madara::utility::java::find_class(
+      env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
 
   if (kr_class && cptr != 0)
   {
-    jmethodID method = env->GetStaticMethodID (kr_class,
-      "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
-    
-    CircularBufferConsumer * current = (CircularBufferConsumer *) cptr;
-    std::vector<KnowledgeRecord> records = current->consume_earliest (count);
-    jsize size = (jsize)records.size ();
+    jmethodID method = env->GetStaticMethodID(
+        kr_class, "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
 
-    list = env->NewObjectArray ((jsize)records.size (), kr_class, 0);
+    CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
+    std::vector<KnowledgeRecord> records = current->consume_earliest(count);
+    jsize size = (jsize)records.size();
+
+    list = env->NewObjectArray((jsize)records.size(), kr_class, 0);
 
     if (method)
     {
       for (jsize i = 0; i < size; ++i)
       {
-        jobject result = env->CallStaticObjectMethod (
-          kr_class, method, (jlong)records[i].clone ());
+        jobject result = env->CallStaticObjectMethod(
+            kr_class, method, (jlong)records[i].clone());
 
-        env->SetObjectArrayElement (list, i, result);
+        env->SetObjectArrayElement(list, i, result);
 
-        env->DeleteLocalRef (result);
+        env->DeleteLocalRef(result);
       }
     }
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    env->DeleteWeakGlobalRef (kr_class);
-  
+    env->DeleteWeakGlobalRef(kr_class);
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::consume_earliest: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::consume_earliest: "
+        "CircularBufferConsumer object is released already");
   }
 
-  env->DeleteWeakGlobalRef (kr_class);
+  env->DeleteWeakGlobalRef(kr_class);
 
   return list;
 }
@@ -145,48 +145,48 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeEarliestR
  * Signature: (JI)[Ljava/lang/Object;
  */
 jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeLatestRecordVector
-  (JNIEnv * env, jobject, jlong cptr, jint count)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeLatestRecordVector(
+    JNIEnv* env, jobject, jlong cptr, jint count)
 {
-  jclass kr_class = madara::utility::java::find_class (
-    env, "ai/madara/knowledge/KnowledgeRecord");
+  jclass kr_class = madara::utility::java::find_class(
+      env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
 
   if (kr_class && cptr != 0)
   {
-    jmethodID method = env->GetStaticMethodID (kr_class,
-      "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
-    
-    CircularBufferConsumer * current = (CircularBufferConsumer *) cptr;
-    std::vector<KnowledgeRecord> records = current->consume_latest (count);
-    jsize size = (jsize)records.size ();
+    jmethodID method = env->GetStaticMethodID(
+        kr_class, "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
 
-    list = env->NewObjectArray ((jsize)records.size (), kr_class, 0);
+    CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
+    std::vector<KnowledgeRecord> records = current->consume_latest(count);
+    jsize size = (jsize)records.size();
+
+    list = env->NewObjectArray((jsize)records.size(), kr_class, 0);
 
     if (method)
     {
       for (jsize i = 0; i < size; ++i)
       {
-        jobject result = env->CallStaticObjectMethod (
-          kr_class, method, (jlong)records[i].clone ());
+        jobject result = env->CallStaticObjectMethod(
+            kr_class, method, (jlong)records[i].clone());
 
-        env->SetObjectArrayElement (list, i, result);
+        env->SetObjectArrayElement(list, i, result);
 
-        env->DeleteLocalRef (result);
+        env->DeleteLocalRef(result);
       }
     }
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    env->DeleteWeakGlobalRef (kr_class);
-  
+    env->DeleteWeakGlobalRef(kr_class);
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::consume_latest: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::consume_latest: "
+        "CircularBufferConsumer object is released already");
   }
 
-  env->DeleteWeakGlobalRef (kr_class);
+  env->DeleteWeakGlobalRef(kr_class);
 
   return list;
 }
@@ -197,23 +197,23 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeLatestRec
  * Signature: (JI)J
  */
 jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecord
-  (JNIEnv * env, jobject, jlong cptr, jint position)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecord(
+    JNIEnv* env, jobject, jlong cptr, jint position)
 {
-  jlong result (0);
-  CircularBufferConsumer * current = (CircularBufferConsumer *)cptr;
+  jlong result(0);
+  CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
   if (current)
   {
-    result = (jlong) new KnowledgeRecord (current->inspect (position));
+    result = (jlong) new KnowledgeRecord(current->inspect(position));
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::inspect: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::inspect: "
+        "CircularBufferConsumer object is released already");
   }
 
   return result;
@@ -225,48 +225,49 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecord
  * Signature: (JII)[Ljava/lang/Object;
  */
 jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecordVector
-  (JNIEnv * env, jobject, long cptr, int position, int count)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecordVector(
+    JNIEnv* env, jobject, long cptr, int position, int count)
 {
-  jclass kr_class = madara::utility::java::find_class (
-    env, "ai/madara/knowledge/KnowledgeRecord");
+  jclass kr_class = madara::utility::java::find_class(
+      env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
 
   if (kr_class && cptr != 0)
   {
-    jmethodID method = env->GetStaticMethodID (kr_class,
-      "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
-    
-    CircularBufferConsumer * current = (CircularBufferConsumer *) cptr;
-    std::vector<KnowledgeRecord> records = current->inspect (position, (size_t)count);
-    jsize size = (jsize)records.size ();
+    jmethodID method = env->GetStaticMethodID(
+        kr_class, "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
 
-    list = env->NewObjectArray ((jsize)records.size (), kr_class, 0);
+    CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
+    std::vector<KnowledgeRecord> records =
+        current->inspect(position, (size_t)count);
+    jsize size = (jsize)records.size();
+
+    list = env->NewObjectArray((jsize)records.size(), kr_class, 0);
 
     if (method)
     {
       for (jsize i = 0; i < size; ++i)
       {
-        jobject result = env->CallStaticObjectMethod (
-          kr_class, method, (jlong)records[i].clone ());
+        jobject result = env->CallStaticObjectMethod(
+            kr_class, method, (jlong)records[i].clone());
 
-        env->SetObjectArrayElement (list, i, result);
+        env->SetObjectArrayElement(list, i, result);
 
-        env->DeleteLocalRef (result);
+        env->DeleteLocalRef(result);
       }
     }
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    env->DeleteWeakGlobalRef (kr_class);
-  
+    env->DeleteWeakGlobalRef(kr_class);
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::inspect: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::inspect: "
+        "CircularBufferConsumer object is released already");
   }
 
-  env->DeleteWeakGlobalRef (kr_class);
+  env->DeleteWeakGlobalRef(kr_class);
 
   return list;
 }
@@ -277,23 +278,23 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecordVec
  * Signature: (J)J
  */
 jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecord
-  (JNIEnv * env, jobject, jlong cptr)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecord(
+    JNIEnv* env, jobject, jlong cptr)
 {
-  jlong result (0);
-  CircularBufferConsumer * current = (CircularBufferConsumer *)cptr;
+  jlong result(0);
+  CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
   if (current)
   {
-    result = (jlong) new KnowledgeRecord (current->peek_latest ());
+    result = (jlong) new KnowledgeRecord(current->peek_latest());
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::peek: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::peek: "
+        "CircularBufferConsumer object is released already");
   }
 
   return result;
@@ -305,48 +306,48 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecord
  * Signature: (JI)[Ljava/lang/Object;
  */
 jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecordVector
-  (JNIEnv * env, jobject, jlong cptr, jint count)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecordVector(
+    JNIEnv* env, jobject, jlong cptr, jint count)
 {
-  jclass kr_class = madara::utility::java::find_class (
-    env, "ai/madara/knowledge/KnowledgeRecord");
+  jclass kr_class = madara::utility::java::find_class(
+      env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
 
   if (kr_class && cptr != 0)
   {
-    jmethodID method = env->GetStaticMethodID (kr_class,
-      "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
-    
-    CircularBufferConsumer * current = (CircularBufferConsumer *) cptr;
-    std::vector<KnowledgeRecord> records = current->peek_latest ((size_t)count);
-    jsize size = (jsize)records.size ();
+    jmethodID method = env->GetStaticMethodID(
+        kr_class, "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
 
-    list = env->NewObjectArray ((jsize)records.size (), kr_class, 0);
+    CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
+    std::vector<KnowledgeRecord> records = current->peek_latest((size_t)count);
+    jsize size = (jsize)records.size();
+
+    list = env->NewObjectArray((jsize)records.size(), kr_class, 0);
 
     if (method)
     {
       for (jsize i = 0; i < size; ++i)
       {
-        jobject result = env->CallStaticObjectMethod (
-          kr_class, method, (jlong)records[i].clone ());
+        jobject result = env->CallStaticObjectMethod(
+            kr_class, method, (jlong)records[i].clone());
 
-        env->SetObjectArrayElement (list, i, result);
+        env->SetObjectArrayElement(list, i, result);
 
-        env->DeleteLocalRef (result);
+        env->DeleteLocalRef(result);
       }
     }
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    env->DeleteWeakGlobalRef (kr_class);
-  
+    env->DeleteWeakGlobalRef(kr_class);
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::peek_latest: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::peek_latest: "
+        "CircularBufferConsumer object is released already");
   }
 
-  env->DeleteWeakGlobalRef (kr_class);
+  env->DeleteWeakGlobalRef(kr_class);
 
   return list;
 }
@@ -357,23 +358,23 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecordVector
  * Signature: (J)Ljava/lang/String;
  */
 jstring JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1getName
-  (JNIEnv * env, jobject, jlong cptr)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1getName(
+    JNIEnv* env, jobject, jlong cptr)
 {
   jstring result = 0;
-  CircularBufferConsumer * current = (CircularBufferConsumer *) cptr;
+  CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
   if (current)
   {
-    result = env->NewStringUTF (current->get_name ().c_str ());
+    result = env->NewStringUTF(current->get_name().c_str());
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::getName: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::getName: "
+        "CircularBufferConsumer object is released already");
   }
 
   return result;
@@ -385,37 +386,37 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1getName
  * Signature: (JJJLjava/lang/String;)V
  */
 void JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setName
-  (JNIEnv * env, jobject, jlong cptr, jlong type, jlong context, jstring name)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setName(
+    JNIEnv* env, jobject, jlong cptr, jlong type, jlong context, jstring name)
 {
-  CircularBufferConsumer * current = (CircularBufferConsumer *) cptr;
+  CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
   if (current)
   {
-    const char * str_name = env->GetStringUTFChars (name, 0);
+    const char* str_name = env->GetStringUTFChars(name, 0);
 
     if (type == 0)
     {
-      knowledge::KnowledgeBase * kb = (knowledge::KnowledgeBase *) context;
+      knowledge::KnowledgeBase* kb = (knowledge::KnowledgeBase*)context;
 
-      current->set_name (str_name, *kb);
+      current->set_name(str_name, *kb);
     }
     else if (type == 1)
     {
-      knowledge::Variables * vars = (knowledge::Variables *) context;
+      knowledge::Variables* vars = (knowledge::Variables*)context;
 
-      current->set_name (str_name, *vars);
+      current->set_name(str_name, *vars);
     }
 
-    env->ReleaseStringUTFChars (name, str_name);
+    env->ReleaseStringUTFChars(name, str_name);
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::setName: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::setName: "
+        "CircularBufferConsumer object is released already");
   }
 }
 
@@ -425,23 +426,23 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setName
  * Signature: (J)J
  */
 jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1remaining
-  (JNIEnv * env, jobject, jlong cptr)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1remaining(
+    JNIEnv* env, jobject, jlong cptr)
 {
-  jlong result (0);
-  CircularBufferConsumer * current = (CircularBufferConsumer *)cptr;
+  jlong result(0);
+  CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
   if (current)
   {
-    result = (jlong) current->remaining ();
+    result = (jlong)current->remaining();
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::remaining: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::remaining: "
+        "CircularBufferConsumer object is released already");
   }
 
   return result;
@@ -453,22 +454,22 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1remaining
  * Signature: (J)V
  */
 void JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resync
-  (JNIEnv * env, jobject, jlong cptr)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resync(
+    JNIEnv* env, jobject, jlong cptr)
 {
-  CircularBufferConsumer * current = (CircularBufferConsumer *)cptr;
+  CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
   if (current)
   {
-    current->resync ();
+    current->resync();
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::resync: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::resync: "
+        "CircularBufferConsumer object is released already");
   }
 }
 
@@ -478,22 +479,22 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resync
  * Signature: (J)V
  */
 void JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setIndex
-  (JNIEnv * env, jobject, jlong cptr, jlong index)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setIndex(
+    JNIEnv* env, jobject, jlong cptr, jlong index)
 {
-  CircularBufferConsumer * current = (CircularBufferConsumer *)cptr;
+  CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
   if (current)
   {
-    current->set_index (index);
+    current->set_index(index);
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::setIndex: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::setIndex: "
+        "CircularBufferConsumer object is released already");
   }
 }
 
@@ -503,23 +504,23 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setIndex
  * Signature: (J)J
  */
 jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1size
-  (JNIEnv * env, jobject, jlong cptr)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1size(
+    JNIEnv* env, jobject, jlong cptr)
 {
-  jlong result (0);
-  CircularBufferConsumer * current = (CircularBufferConsumer *)cptr;
+  jlong result(0);
+  CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
   if (current)
   {
-    result = (jlong) current->size ();
+    result = (jlong)current->size();
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::size: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::size: "
+        "CircularBufferConsumer object is released already");
   }
 
   return result;
@@ -531,23 +532,23 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1size
  * Signature: (J)J
  */
 jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1count
-  (JNIEnv * env, jobject, jlong cptr)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1count(
+    JNIEnv* env, jobject, jlong cptr)
 {
-  jlong result (0);
-  CircularBufferConsumer * current = (CircularBufferConsumer *)cptr;
+  jlong result(0);
+  CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
   if (current)
   {
-    result = (jlong) current->count ();
+    result = (jlong)current->count();
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::count: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::count: "
+        "CircularBufferConsumer object is released already");
   }
 
   return result;
@@ -559,21 +560,21 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1count
  * Signature: (J)V
  */
 void JNICALL
-Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resize
-  (JNIEnv * env, jobject, jlong cptr)
+Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resize(
+    JNIEnv* env, jobject, jlong cptr)
 {
-  CircularBufferConsumer * current = (CircularBufferConsumer *)cptr;
+  CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
   if (current)
   {
-    current->resize ();
+    current->resize();
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-  
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "CircularBufferConsumer::resize: "
-      "CircularBufferConsumer object is released already");
+        "CircularBufferConsumer::resize: "
+        "CircularBufferConsumer object is released already");
   }
 }

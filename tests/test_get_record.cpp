@@ -8,11 +8,14 @@ using namespace madara::knowledge;
 using namespace madara::exceptions;
 
 #define EXPECT_EXCEPTION(exception_type, expr)                      \
-  try {                                                             \
+  try                                                               \
+  {                                                                 \
     (expr);                                                         \
     log("FAIL    : %s did not throw %s\n", #expr, #exception_type); \
     madara_tests_fail_count++;                                      \
-  } catch (exception_type e) {                                      \
+  }                                                                 \
+  catch (exception_type e)                                          \
+  {                                                                 \
     log("SUCCESS : %s threw %s\n", #expr, #exception_type);         \
   }
 
@@ -53,10 +56,13 @@ int main()
       MismatchedTypeException, get<std::vector<double>>(kr_int_arr));
   EXPECT_EXCEPTION(MismatchedTypeException, get<int>(kr_int_arr));
 
-  if (madara_tests_fail_count > 0) {
+  if (madara_tests_fail_count > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count
               << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

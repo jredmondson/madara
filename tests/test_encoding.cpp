@@ -140,9 +140,12 @@ void test_primitive_encoding(void)
             << std::endl;
 
   std::cerr << "\nRESULT: ";
-  if (header_decoded && string_decoded && int_decoded && double_decoded) {
+  if (header_decoded && string_decoded && int_decoded && double_decoded)
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -203,7 +206,8 @@ void test_image_encoding(void)
 
   if (dest_header.encoded_size() == buffer_written)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -221,7 +225,8 @@ void test_image_encoding(void)
 
   if (buffer_written == buffer_read)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -245,7 +250,8 @@ void test_image_encoding(void)
           double_source.get_encoded_size("double") ==
       buffer_written)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -271,7 +277,8 @@ void test_image_encoding(void)
           double_source.get_encoded_size("double") ==
       buffer_read)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -281,7 +288,8 @@ void test_image_encoding(void)
   if (string_key_read == "string" && image_key_read == "image" &&
       int_key_read == "int" && double_key_read == "double")
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -298,7 +306,12 @@ void test_key_id_encoding(void)
   const char* reader = buffer;
   std::string key;
 
-  enum KeyIds { HELLO_WORLD, CUSTOM_SIZE, CUSTOM_DISTANCE };
+  enum KeyIds
+  {
+    HELLO_WORLD,
+    CUSTOM_SIZE,
+    CUSTOM_DISTANCE
+  };
 
   // message headers for encoding and decoding
   madara::transport::MessageHeader source_header;
@@ -332,9 +345,12 @@ void test_key_id_encoding(void)
   reader = dest.read(reader, temp_id, buffer_remaining);
 
   if (temp_id == HELLO_WORLD && dest.is_string_type() &&
-      dest.to_string() == "hello world") {
+      dest.to_string() == "hello world")
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL\n";
     std::cerr << "    id: " << temp_id << "\n";
@@ -348,9 +364,12 @@ void test_key_id_encoding(void)
   reader = dest.read(reader, temp_id, buffer_remaining);
 
   if (temp_id == CUSTOM_SIZE && dest.is_integer_type() &&
-      dest.to_integer() == 10) {
+      dest.to_integer() == 10)
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL\n";
     std::cerr << "    id: " << temp_id << "\n";
@@ -364,9 +383,12 @@ void test_key_id_encoding(void)
   reader = dest.read(reader, temp_id, buffer_remaining);
 
   if (temp_id == CUSTOM_DISTANCE && dest.is_double_type() &&
-      dest.to_double() == 5.5) {
+      dest.to_double() == 5.5)
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     ++madara_fails;
     std::cerr << "FAIL.\n";
     std::cerr << "    id: " << temp_id << "\n";
@@ -381,9 +403,12 @@ int main(int, char**)
   test_primitive_encoding();
   test_key_id_encoding();
 
-  if (madara_fails > 0) {
+  if (madara_fails > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

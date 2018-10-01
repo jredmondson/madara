@@ -199,9 +199,12 @@ public:
       const std::string& key, const KnowledgeReferenceSettings& settings =
                                   KnowledgeReferenceSettings()) const
   {
-    if (impl_) {
+    if (impl_)
+    {
       return impl_->share_string(key, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->share_string(key, settings);
     }
 
@@ -216,9 +219,12 @@ public:
       const VariableReference& key, const KnowledgeReferenceSettings& settings =
                                         KnowledgeReferenceSettings()) const
   {
-    if (impl_) {
+    if (impl_)
+    {
       return impl_->share_string(key, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->share_string(key, settings);
     }
 
@@ -233,9 +239,12 @@ public:
       const std::string& key, const KnowledgeReferenceSettings& settings =
                                   KnowledgeReferenceSettings()) const
   {
-    if (impl_) {
+    if (impl_)
+    {
       return impl_->share_integers(key, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->share_integers(key, settings);
     }
 
@@ -250,9 +259,12 @@ public:
       const VariableReference& key, const KnowledgeReferenceSettings& settings =
                                         KnowledgeReferenceSettings()) const
   {
-    if (impl_) {
+    if (impl_)
+    {
       return impl_->share_integers(key, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->share_integers(key, settings);
     }
 
@@ -267,9 +279,12 @@ public:
       const std::string& key, const KnowledgeReferenceSettings& settings =
                                   KnowledgeReferenceSettings()) const
   {
-    if (impl_) {
+    if (impl_)
+    {
       return impl_->share_doubles(key, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->share_doubles(key, settings);
     }
 
@@ -284,9 +299,12 @@ public:
       const VariableReference& key, const KnowledgeReferenceSettings& settings =
                                         KnowledgeReferenceSettings()) const
   {
-    if (impl_) {
+    if (impl_)
+    {
       return impl_->share_doubles(key, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->share_doubles(key, settings);
     }
 
@@ -301,9 +319,12 @@ public:
       const std::string& key, const KnowledgeReferenceSettings& settings =
                                   KnowledgeReferenceSettings()) const
   {
-    if (impl_) {
+    if (impl_)
+    {
       return impl_->share_binary(key, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->share_binary(key, settings);
     }
 
@@ -318,9 +339,12 @@ public:
       const VariableReference& key, const KnowledgeReferenceSettings& settings =
                                         KnowledgeReferenceSettings()) const
   {
-    if (impl_) {
+    if (impl_)
+    {
       return impl_->share_binary(key, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->share_binary(key, settings);
     }
 
@@ -335,9 +359,12 @@ public:
       const std::string& key, const KnowledgeReferenceSettings& settings =
                                   KnowledgeReferenceSettings()) const
   {
-    if (impl_) {
+    if (impl_)
+    {
       return impl_->share_any(key, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->share_any(key, settings);
     }
 
@@ -352,9 +379,12 @@ public:
       const VariableReference& key, const KnowledgeReferenceSettings& settings =
                                         KnowledgeReferenceSettings()) const
   {
-    if (impl_) {
+    if (impl_)
+    {
       return impl_->share_any(key, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->share_any(key, settings);
     }
 
@@ -1497,9 +1527,12 @@ public:
   std::unique_ptr<BaseStreamer> attach_streamer(
       std::unique_ptr<BaseStreamer> streamer)
   {
-    if (impl_) {
+    if (impl_)
+    {
       return impl_->attach_streamer(std::move(streamer));
-    } else {
+    }
+    else
+    {
       return context_->attach_streamer(std::move(streamer));
     }
     throw_null_context();
@@ -1633,9 +1666,12 @@ public:
       -> decltype(invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
-    if (impl_.get()) {
+    if (impl_.get())
+    {
       return impl_->invoke(key, std::forward<Callable>(callable), settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->invoke(key, std::forward<Callable>(callable), settings);
     }
     throw_null_context();
@@ -1647,9 +1683,12 @@ public:
       -> decltype(invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
-    if (impl_.get()) {
+    if (impl_.get())
+    {
       return impl_->invoke(key, std::forward<Callable>(callable), settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->invoke(key, std::forward<Callable>(callable), settings);
     }
     throw_null_context();
@@ -1661,9 +1700,12 @@ public:
       const -> decltype(invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
-    if (impl_.get()) {
+    if (impl_.get())
+    {
       return impl_->invoke(key, std::forward<Callable>(callable), settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->invoke(key, std::forward<Callable>(callable), settings);
     }
     throw_null_context();
@@ -1675,9 +1717,12 @@ public:
       const -> decltype(invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
-    if (impl_.get()) {
+    if (impl_.get())
+    {
       return impl_->invoke(key, std::forward<Callable>(callable), settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->invoke(key, std::forward<Callable>(callable), settings);
     }
     throw_null_context();
@@ -1689,9 +1734,12 @@ public:
       const -> decltype(invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
-    if (impl_.get()) {
+    if (impl_.get())
+    {
       return impl_->cinvoke(key, std::forward<Callable>(callable), settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->cinvoke(key, std::forward<Callable>(callable), settings);
     }
     throw_null_context();
@@ -1703,9 +1751,12 @@ public:
       const -> decltype(invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
-    if (impl_.get()) {
+    if (impl_.get())
+    {
       return impl_->cinvoke(key, std::forward<Callable>(callable), settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       return context_->cinvoke(key, std::forward<Callable>(callable), settings);
     }
     throw_null_context();

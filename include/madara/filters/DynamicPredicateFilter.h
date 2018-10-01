@@ -51,11 +51,14 @@ public:
     // local copy (fast access to predicate vector)
     std::vector<std::string> predicates;
 
-    if (!initialized_) {
+    if (!initialized_)
+    {
       // set the initial vector up
       predicates_.set_name(name, vars);
       initialized_ = true;
-    } else {
+    }
+    else
+    {
       // resize for what the current vector is indicating
       predicates_.resize();
     }
@@ -64,25 +67,33 @@ public:
     predicates_.copy_to(predicates);
 
     // by default, the vector is empty and all predicates are accepted
-    if (predicates.size() > 0) {
+    if (predicates.size() > 0)
+    {
       // because of the usage of erase, don't auto inc record in for loop
-      for (auto record = records.begin(); record != records.end();) {
+      for (auto record = records.begin(); record != records.end();)
+      {
         // check for valid predicate
         bool accepted_predicate = false;
-        for (auto predicate : predicates) {
-          if (utility::ends_with(predicate, "*")) {
+        for (auto predicate : predicates)
+        {
+          if (utility::ends_with(predicate, "*"))
+          {
             std::string prefix = predicate;
             prefix.pop_back();
-            if (utility::begins_with(record->first, prefix)) {
+            if (utility::begins_with(record->first, prefix))
+            {
               accepted_predicate = true;
             }
-          } else if (record->first == predicate) {
+          }
+          else if (record->first == predicate)
+          {
             accepted_predicate = true;
           }
         }
 
         // if not valid, remove the record and update iterator
-        if (!accepted_predicate) {
+        if (!accepted_predicate)
+        {
           madara_logger_ptr_log(madara::logger::global_logger.get(),
               logger::LOG_MAJOR,
               "DynamicPredicateFilter::filter: "
@@ -91,7 +102,8 @@ public:
 
               record = records.erase(record);
         }  // end not valid predicate
-        else {
+        else
+        {
           // valid predicate so keep the record and proceed to next
           ++record;
         }  // end valid predicate

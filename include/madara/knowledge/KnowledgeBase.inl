@@ -43,9 +43,12 @@ inline int KnowledgeBase::set(
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, (KnowledgeRecord::Integer)value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, (KnowledgeRecord::Integer)value, settings);
   }
 
@@ -59,9 +62,12 @@ inline int KnowledgeBase::set(
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, (KnowledgeRecord::Integer)value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, (KnowledgeRecord::Integer)value, settings);
   }
 
@@ -75,9 +81,12 @@ inline int KnowledgeBase::set(
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, (double)value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, (double)value, settings);
   }
 
@@ -91,9 +100,12 @@ inline int KnowledgeBase::set(
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, (double)value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, (double)value, settings);
   }
 
@@ -106,9 +118,12 @@ inline int KnowledgeBase::set_any(
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set_any(key, std::forward<T>(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set_any(key, std::forward<T>(value), settings);
   }
 
@@ -121,9 +136,12 @@ inline int KnowledgeBase::set_any(
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set_any(variable, std::forward<T>(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set_any(variable, std::forward<T>(value), settings);
   }
 
@@ -136,9 +154,12 @@ inline int KnowledgeBase::emplace_any(
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->emplace_any(key, settings, std::forward<Args>(args)...);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->emplace_any(key, settings, std::forward<Args>(args)...);
   }
 
@@ -151,10 +172,13 @@ inline int KnowledgeBase::emplace_any(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result =
         impl_->emplace_any(variable, settings, std::forward<Args>(args)...);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result =
         context_->emplace_any(variable, settings, std::forward<Args>(args)...);
   }
@@ -170,18 +194,24 @@ inline void KnowledgeBase::use(ThreadSafeContext& original)
 
 inline void KnowledgeBase::lock(void)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->lock();
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->lock();
   }
 }
 
 inline void KnowledgeBase::unlock(void)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->unlock();
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->unlock();
   }
 }
@@ -190,9 +220,12 @@ inline int KnowledgeBase::get_log_level(void)
 {
   int result(0);
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->get_log_level();
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->get_log_level();
   }
 
@@ -201,27 +234,36 @@ inline int KnowledgeBase::get_log_level(void)
 
 inline madara::logger::Logger& KnowledgeBase::get_logger(void) const
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     return impl_->get_logger();
-  } else {
+  }
+  else
+  {
     return context_->get_logger();
   }
 }
 
 inline void KnowledgeBase::attach_logger(logger::Logger& logger) const
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->attach_logger(logger);
-  } else {
+  }
+  else
+  {
     context_->attach_logger(logger);
   }
 }
 
 inline void KnowledgeBase::set_log_level(int level)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->set_log_level(level);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->set_log_level(level);
   }
 }
@@ -229,9 +271,12 @@ inline void KnowledgeBase::set_log_level(int level)
 inline void KnowledgeBase::copy(const KnowledgeBase& source,
     const KnowledgeRequirements& reqs, const EvalSettings& settings)
 {
-  if (impl_.get() && source.impl_.get() != 0) {
+  if (impl_.get() && source.impl_.get() != 0)
+  {
     impl_->copy(*source.impl_.get(), reqs, settings);
-  } else if (context_ && source.impl_.get() != 0) {
+  }
+  else if (context_ && source.impl_.get() != 0)
+  {
     KnowledgeBaseImpl* source_impl = (KnowledgeBaseImpl*)source.impl_.get();
     ThreadSafeContext* source_context = &(source_impl->get_context());
 
@@ -242,9 +287,12 @@ inline void KnowledgeBase::copy(const KnowledgeBase& source,
 inline void KnowledgeBase::copy(const KnowledgeBase& source,
     const CopySet& copy_set, bool clean_copy, const EvalSettings& settings)
 {
-  if (impl_.get() && source.impl_.get() != 0) {
+  if (impl_.get() && source.impl_.get() != 0)
+  {
     impl_->copy(*source.impl_.get(), copy_set, clean_copy, settings);
-  } else if (context_ && source.impl_.get() != 0) {
+  }
+  else if (context_ && source.impl_.get() != 0)
+  {
     KnowledgeBaseImpl* source_impl = (KnowledgeBaseImpl*)source.impl_.get();
     ThreadSafeContext* source_context = &(source_impl->get_context());
 
@@ -258,9 +306,12 @@ inline int KnowledgeBase::apply_modified(const EvalSettings& settings)
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->apply_modified(settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->apply_modified();
   }
 
@@ -269,7 +320,8 @@ inline int KnowledgeBase::apply_modified(const EvalSettings& settings)
 
 inline void KnowledgeBase::close_transport(void)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->close_transport();
   }
 }
@@ -279,9 +331,12 @@ inline KnowledgeRecord KnowledgeBase::get(
 {
   KnowledgeRecord result;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->get(key, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->get(key, settings);
   }
 
@@ -293,9 +348,12 @@ inline VariableReference KnowledgeBase::get_ref(
 {
   VariableReference var;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     var = impl_->get_ref(key, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     var = context_->get_ref(key, settings);
   }
 
@@ -307,9 +365,12 @@ inline KnowledgeRecord KnowledgeBase::get(const VariableReference& variable,
 {
   KnowledgeRecord result;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->get(variable, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->get(variable, settings);
   }
 
@@ -321,9 +382,12 @@ inline KnowledgeRecord KnowledgeBase::retrieve_index(const std::string& key,
 {
   KnowledgeRecord result;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->retrieve_index(key, index, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->retrieve_index(key, index, settings);
   }
 
@@ -336,9 +400,12 @@ inline KnowledgeRecord KnowledgeBase::retrieve_index(
 {
   KnowledgeRecord result;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->retrieve_index(variable, index, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->retrieve_index(variable, index, settings);
   }
 
@@ -350,9 +417,12 @@ inline int KnowledgeBase::read_file(const std::string& knowledge_key,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->read_file(knowledge_key, filename, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->read_file(knowledge_key, filename, settings);
   }
 
@@ -364,9 +434,12 @@ inline int KnowledgeBase::read_file(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->read_file(variable, filename, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->read_file(variable, filename, settings);
   }
 
@@ -378,11 +451,15 @@ inline int KnowledgeBase::set_file(const std::string& key,
 {
   int result = -1;
 
-  if (key != "") {
-    if (impl_.get()) {
+  if (key != "")
+  {
+    if (impl_.get())
+    {
       result =
           impl_->set_file(impl_->get_ref(key, settings), value, size, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       result = context_->set_file(
           context_->get_ref(key, settings), value, size, settings);
     }
@@ -396,9 +473,12 @@ inline int KnowledgeBase::set_file(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set_file(variable, value, size, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set_file(variable, value, size, settings);
   }
 
@@ -410,11 +490,15 @@ inline int KnowledgeBase::set_jpeg(const std::string& key,
 {
   int result = -1;
 
-  if (key != "") {
-    if (impl_.get()) {
+  if (key != "")
+  {
+    if (impl_.get())
+    {
       result =
           impl_->set_jpeg(impl_->get_ref(key, settings), value, size, settings);
-    } else if (context_) {
+    }
+    else if (context_)
+    {
       result = context_->set_jpeg(
           impl_->get_ref(key, settings), value, size, settings);
     }
@@ -428,9 +512,12 @@ inline int KnowledgeBase::set_jpeg(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set_jpeg(variable, value, size, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set_jpeg(variable, value, size, settings);
   }
 
@@ -442,7 +529,8 @@ inline ssize_t KnowledgeBase::write_file(
 {
   ssize_t result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->write_file(knowledge_key, filename);
   }
 
@@ -453,9 +541,12 @@ inline std::string KnowledgeBase::expand_statement(const std::string& statement)
 {
   std::string result;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->expand_statement(statement);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->expand_statement(statement);
   }
 
@@ -465,9 +556,12 @@ inline std::string KnowledgeBase::expand_statement(const std::string& statement)
 inline void KnowledgeBase::mark_modified(const VariableReference& variable,
     const KnowledgeUpdateSettings& /*settings*/)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->mark_modified(variable);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->mark_modified(variable);
   }
 }
@@ -475,9 +569,12 @@ inline void KnowledgeBase::mark_modified(const VariableReference& variable,
 inline void KnowledgeBase::mark_modified(
     const std::string& name, const KnowledgeUpdateSettings& settings)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->mark_modified(name, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->mark_modified(name, settings);
   }
 }
@@ -487,9 +584,12 @@ inline int KnowledgeBase::set(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, std::move(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, std::move(value), settings);
   }
 
@@ -501,9 +601,12 @@ inline int KnowledgeBase::set(const std::string& key,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, value, settings);
   }
 
@@ -515,9 +618,12 @@ inline int KnowledgeBase::set(const std::string& key, KnowledgeRecord&& value,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, std::move(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, std::move(value), settings);
   }
 
@@ -529,9 +635,12 @@ inline int KnowledgeBase::set(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, value, settings);
   }
 
@@ -544,9 +653,12 @@ inline int KnowledgeBase::set_index(const std::string& key, size_t index,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set_index(key, index, std::forward<T>(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set_index(key, index, std::forward<T>(value), settings);
   }
 
@@ -559,10 +671,13 @@ inline int KnowledgeBase::set_index(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result =
         impl_->set_index(variable, index, std::forward<T>(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result =
         context_->set_index(variable, index, std::forward<T>(value), settings);
   }
@@ -576,9 +691,12 @@ inline int KnowledgeBase::set(const std::string& key,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, value, size, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, value, size, settings);
   }
 
@@ -591,9 +709,12 @@ inline int KnowledgeBase::set(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, value, size, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, value, size, settings);
   }
 
@@ -606,9 +727,12 @@ inline int KnowledgeBase::set(const std::string& key,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, value, settings);
   }
 
@@ -621,9 +745,12 @@ inline int KnowledgeBase::set(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, value, settings);
   }
 
@@ -635,9 +762,12 @@ inline int KnowledgeBase::set(const std::string& key,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, std::move(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, std::move(value), settings);
   }
 
@@ -649,9 +779,12 @@ inline int KnowledgeBase::set(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, std::move(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, std::move(value), settings);
   }
 
@@ -663,9 +796,12 @@ inline int KnowledgeBase::set(const std::string& key, const double* value,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, value, size, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, value, size, settings);
   }
 
@@ -677,9 +813,12 @@ inline int KnowledgeBase::set(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, value, size, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, value, size, settings);
   }
 
@@ -691,9 +830,12 @@ inline int KnowledgeBase::set(const std::string& key,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, value, settings);
   }
 
@@ -705,9 +847,12 @@ inline int KnowledgeBase::set(const std::string& key,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, std::move(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, std::move(value), settings);
   }
 
@@ -719,9 +864,12 @@ inline int KnowledgeBase::set(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, value, settings);
   }
 
@@ -733,9 +881,12 @@ inline int KnowledgeBase::set(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, std::move(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, std::move(value), settings);
   }
 
@@ -747,9 +898,12 @@ inline int KnowledgeBase::set(const std::string& key, const std::string& value,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, value, settings);
   }
 
@@ -761,9 +915,12 @@ inline int KnowledgeBase::set(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, value, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, value, settings);
   }
 
@@ -775,9 +932,12 @@ inline int KnowledgeBase::set(
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(key, std::move(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(key, std::move(value), settings);
   }
 
@@ -789,9 +949,12 @@ inline int KnowledgeBase::set(const VariableReference& variable,
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->set(variable, std::move(value), settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->set(variable, std::move(value), settings);
   }
 
@@ -802,9 +965,12 @@ inline int KnowledgeBase::set(const VariableReference& variable,
 inline void KnowledgeBase::set_quality(const std::string& key, uint32_t quality,
     const KnowledgeReferenceSettings& settings)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->set_quality(key, quality, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->set_quality(key, quality, true, settings);
   }
 }
@@ -814,9 +980,12 @@ inline bool KnowledgeBase::exists(
 {
   bool result = false;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->exists(key, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->exists(key, settings);
   }
 
@@ -828,9 +997,12 @@ inline bool KnowledgeBase::exists(const VariableReference& variable,
 {
   bool result = false;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->exists(variable, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->exists(variable, settings);
   }
 
@@ -845,18 +1017,24 @@ inline madara::transport::TransportSettings& KnowledgeBase::transport_settings(
 
 inline void KnowledgeBase::print(unsigned int level) const
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->print(level);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->print(level);
   }
 }
 
 inline void KnowledgeBase::print_knowledge(unsigned int level) const
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->print(level);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->print(level);
   }
 }
@@ -865,10 +1043,13 @@ inline void KnowledgeBase::to_string(std::string& target,
     const std::string& array_delimiter, const std::string& record_delimiter,
     const std::string& key_val_delimiter) const
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->to_string(
         target, array_delimiter, record_delimiter, key_val_delimiter);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->to_string(
         target, array_delimiter, record_delimiter, key_val_delimiter);
   }
@@ -877,9 +1058,12 @@ inline void KnowledgeBase::to_string(std::string& target,
 inline void KnowledgeBase::print(
     const std::string& statement, unsigned int level) const
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->print(statement, level);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->print(level);
   }
 }
@@ -889,9 +1073,12 @@ inline bool KnowledgeBase::clear(
 {
   bool result(false);
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->clear(key, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->clear(key, settings);
   }
 
@@ -900,36 +1087,48 @@ inline bool KnowledgeBase::clear(
 
 inline void KnowledgeBase::clear(bool erase)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->clear(erase);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->clear(erase);
   }
 }
 
 inline void KnowledgeBase::clear_map(void)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->clear_map();
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->clear();
   }
 }
 
 inline void KnowledgeBase::acquire(void)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->acquire();
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->lock();
   }
 }
 
 inline void KnowledgeBase::release(void)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->release();
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->unlock();
   }
 }
@@ -940,7 +1139,8 @@ inline CompiledExpression KnowledgeBase::compile(const std::string& expression)
 {
   CompiledExpression result;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->compile(expression);
   }
 
@@ -953,9 +1153,12 @@ inline KnowledgeRecord KnowledgeBase::evaluate(
 {
   KnowledgeRecord result;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->evaluate(expression, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     CompiledExpression ce = context_->compile(expression);
     result = context_->evaluate(ce, settings);
   }
@@ -969,9 +1172,12 @@ inline KnowledgeRecord KnowledgeBase::evaluate(
 {
   KnowledgeRecord result;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->evaluate(expression, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->evaluate(expression, settings);
   }
 
@@ -984,9 +1190,12 @@ inline KnowledgeRecord KnowledgeBase::evaluate(
 {
   KnowledgeRecord result;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->evaluate(root, settings);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     result = context_->evaluate(root, settings);
   }
 
@@ -997,9 +1206,12 @@ inline KnowledgeRecord KnowledgeBase::evaluate(
 inline void KnowledgeBase::define_function(const std::string& name,
     KnowledgeRecord (*func)(const char*, FunctionArguments&, Variables&))
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->define_function(name, func);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->define_function(name, func);
   }
 }
@@ -1008,9 +1220,12 @@ inline void KnowledgeBase::define_function(const std::string& name,
 inline void KnowledgeBase::define_function(const std::string& name,
     KnowledgeRecord (*func)(FunctionArguments&, Variables&))
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->define_function(name, func);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->define_function(name, func);
   }
 }
@@ -1020,9 +1235,12 @@ inline void KnowledgeBase::define_function(const std::string& name,
 inline void KnowledgeBase::define_function(
     const std::string& name, jobject func)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->define_function(name, func);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->define_function(name, func);
   }
 }
@@ -1034,9 +1252,12 @@ inline void KnowledgeBase::define_function(
 inline void KnowledgeBase::define_function(
     const std::string& name, boost::python::object callable)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->define_function(name, callable);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->define_function(name, callable);
   }
 }
@@ -1051,9 +1272,12 @@ inline void KnowledgeBase::define_function(
 inline void KnowledgeBase::define_function(
     const std::string& name, const std::string& expression)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->define_function(name, expression);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->define_function(name, expression);
   }
 }
@@ -1066,9 +1290,12 @@ inline void KnowledgeBase::define_function(
 inline void KnowledgeBase::define_function(
     const std::string& name, const CompiledExpression& expression)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->define_function(name, expression);
-  } else if (context_) {
+  }
+  else if (context_)
+  {
     context_->define_function(name, expression);
   }
 }
@@ -1078,10 +1305,13 @@ inline KnowledgeRecord KnowledgeBase::wait(
 {
   KnowledgeRecord result;
 
-  if (context_) {
+  if (context_)
+  {
     CompiledExpression ce = context_->compile(expression);
     result = this->wait(ce, settings);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->wait(expression, settings);
   }
 
@@ -1091,7 +1321,8 @@ inline KnowledgeRecord KnowledgeBase::wait(
 #endif  // _MADARA_NO_KARL_
 inline void KnowledgeBase::activate_transport(void)
 {
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     impl_->activate_transport();
   }
 }
@@ -1101,7 +1332,8 @@ inline size_t KnowledgeBase::attach_transport(
 {
   size_t result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->attach_transport(transport);
   }
 
@@ -1112,7 +1344,8 @@ inline size_t KnowledgeBase::get_num_transports(void)
 {
   size_t result(0);
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->get_num_transports();
   }
 
@@ -1124,7 +1357,8 @@ inline size_t KnowledgeBase::attach_transport(
 {
   size_t result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->attach_transport(id, settings);
   }
 
@@ -1135,7 +1369,8 @@ inline size_t KnowledgeBase::remove_transport(size_t index)
 {
   size_t result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->remove_transport(index);
   }
 
@@ -1146,9 +1381,12 @@ inline ThreadSafeContext& KnowledgeBase::get_context(void)
 {
   ThreadSafeContext* result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_;
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = &(impl_->get_context());
   }
 
@@ -1159,9 +1397,12 @@ inline const ThreadSafeContext& KnowledgeBase::get_context(void) const
 {
   ThreadSafeContext* result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_;
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = &(impl_->get_context());
   }
 
@@ -1170,9 +1411,12 @@ inline const ThreadSafeContext& KnowledgeBase::get_context(void) const
 
 inline void KnowledgeBase::clear_modifieds(void)
 {
-  if (context_) {
+  if (context_)
+  {
     context_->reset_modified();
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     impl_->clear_modifieds();
   }
 }
@@ -1180,9 +1424,12 @@ inline void KnowledgeBase::clear_modifieds(void)
 inline void KnowledgeBase::add_modifieds(
     const VariableReferences& modifieds) const
 {
-  if (context_) {
+  if (context_)
+  {
     context_->add_modifieds(modifieds);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     impl_->add_modifieds(modifieds);
   }
 }
@@ -1191,9 +1438,12 @@ inline VariableReferences KnowledgeBase::save_modifieds(void) const
 {
   VariableReferences default_result;
 
-  if (context_) {
+  if (context_)
+  {
     return context_->save_modifieds();
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     return impl_->save_modifieds();
   }
 
@@ -1205,7 +1455,8 @@ inline int KnowledgeBase::send_modifieds(
 {
   int result = 0;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->send_modifieds(prefix, settings);
   }
 
@@ -1216,9 +1467,12 @@ inline std::string KnowledgeBase::debug_modifieds(void) const
 {
   std::string result = "";
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->debug_modifieds();
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->debug_modifieds();
   }
 
@@ -1233,7 +1487,8 @@ inline std::string KnowledgeBase::get_id(void)
 {
   std::string result;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->get_id();
   }
 
@@ -1259,9 +1514,12 @@ inline size_t KnowledgeBase::to_vector(const std::string& subject,
 {
   size_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->to_vector(subject, start, end, target);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->to_vector(subject, start, end, target);
   }
 
@@ -1271,9 +1529,12 @@ inline size_t KnowledgeBase::to_vector(const std::string& subject,
 inline void KnowledgeBase::get_matches(const std::string& prefix,
     const std::string& suffix, VariableReferences& matches)
 {
-  if (context_) {
+  if (context_)
+  {
     context_->get_matches(prefix, suffix, matches);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     impl_->get_matches(prefix, suffix, matches);
   }
 }
@@ -1289,9 +1550,12 @@ inline size_t KnowledgeBase::to_map(const std::string& expression,
 {
   size_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->to_map(expression, target);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->to_map(expression, target);
   }
 
@@ -1305,10 +1569,13 @@ inline size_t KnowledgeBase::to_map(const std::string& prefix,
 {
   size_t result_size = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result_size = context_->to_map(
         prefix, delimiter, suffix, next_keys, result, just_keys);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result_size =
         impl_->to_map(prefix, delimiter, suffix, next_keys, result, just_keys);
   }
@@ -1318,9 +1585,12 @@ inline size_t KnowledgeBase::to_map(const std::string& prefix,
 
 inline KnowledgeMap KnowledgeBase::to_map(const std::string& prefix) const
 {
-  if (context_) {
+  if (context_)
+  {
     return context_->to_map(prefix);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     return impl_->to_map(prefix);
   }
 
@@ -1330,9 +1600,12 @@ inline KnowledgeMap KnowledgeBase::to_map(const std::string& prefix) const
 inline KnowledgeMap KnowledgeBase::to_map_stripped(
     const std::string& prefix) const
 {
-  if (context_) {
+  if (context_)
+  {
     return context_->to_map_stripped(prefix);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     return impl_->to_map_stripped(prefix);
   }
 
@@ -1343,9 +1616,12 @@ inline int64_t KnowledgeBase::save_context(const std::string& filename) const
 {
   int64_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->save_context(filename);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->save_context(filename);
   }
 
@@ -1356,9 +1632,12 @@ inline int64_t KnowledgeBase::save_context(CheckpointSettings& settings) const
 {
   int64_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->save_context(settings);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->save_context(settings);
   }
 
@@ -1369,9 +1648,12 @@ inline int64_t KnowledgeBase::save_as_json(const std::string& filename) const
 {
   int64_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->save_as_json(filename);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->save_as_json(filename);
   }
 
@@ -1383,9 +1665,12 @@ inline int64_t KnowledgeBase::save_as_json(
 {
   int64_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->save_as_json(settings);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->save_as_json(settings);
   }
 
@@ -1396,9 +1681,12 @@ inline int64_t KnowledgeBase::save_as_karl(const std::string& filename) const
 {
   int64_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->save_as_karl(filename);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->save_as_karl(filename);
   }
 
@@ -1410,9 +1698,12 @@ inline int64_t KnowledgeBase::save_as_karl(
 {
   int64_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->save_as_karl(settings);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->save_as_karl(settings);
   }
 
@@ -1424,9 +1715,12 @@ inline int64_t KnowledgeBase::save_checkpoint(
 {
   int64_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->save_checkpoint(filename);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->save_checkpoint(filename, reset_modifieds);
   }
 
@@ -1438,9 +1732,12 @@ inline int64_t KnowledgeBase::save_checkpoint(
 {
   int64_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->save_checkpoint(settings);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->save_checkpoint(settings);
   }
 
@@ -1452,10 +1749,13 @@ inline int64_t KnowledgeBase::load_context(const std::string& filename,
 {
   int64_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     std::string id;
     result = context_->load_context(filename, id, settings);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->load_context(filename, use_id, settings);
   }
 
@@ -1467,9 +1767,12 @@ inline int64_t KnowledgeBase::load_context(const std::string& filename,
 {
   int64_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->load_context(filename, meta, settings);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->load_context(filename, meta, use_id, settings);
   }
 
@@ -1482,9 +1785,12 @@ inline int64_t KnowledgeBase::load_context(
 {
   int64_t result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     result = context_->load_context(checkpoint_settings, update_settings);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->load_context(checkpoint_settings, update_settings);
   }
 
@@ -1495,9 +1801,12 @@ inline madara::knowledge::KnowledgeRecord KnowledgeBase::evaluate_file(
     CheckpointSettings& checkpoint_settings,
     const KnowledgeUpdateSettings& update_settings)
 {
-  if (context_) {
+  if (context_)
+  {
     return context_->evaluate_file(checkpoint_settings, update_settings);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     return impl_->evaluate_file(checkpoint_settings, update_settings);
   }
 
@@ -1507,9 +1816,12 @@ inline madara::knowledge::KnowledgeRecord KnowledgeBase::evaluate_file(
 inline std::string KnowledgeBase::file_to_string(
     CheckpointSettings& checkpoint_settings)
 {
-  if (context_) {
+  if (context_)
+  {
     return context_->file_to_string(checkpoint_settings);
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     return impl_->file_to_string(checkpoint_settings);
   }
 
@@ -1518,18 +1830,24 @@ inline std::string KnowledgeBase::file_to_string(
 
 inline void KnowledgeBase::wait_for_change(void)
 {
-  if (context_) {
+  if (context_)
+  {
     context_->wait_for_change();
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     impl_->wait_for_change();
   }
 }
 
 inline void KnowledgeBase::reset_checkpoint(void) const
 {
-  if (context_) {
+  if (context_)
+  {
     context_->reset_checkpoint();
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     impl_->reset_checkpoint();
   }
 }
@@ -1538,7 +1856,8 @@ inline std::string KnowledgeBase::setup_unique_hostport(const std::string& host)
 {
   std::string result;
 
-  if (impl_.get()) {
+  if (impl_.get())
+  {
     result = impl_->setup_unique_hostport(host);
   }
 

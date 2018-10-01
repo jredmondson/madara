@@ -18,7 +18,8 @@ void madara::filters::CounterFilter::filter(
 {
   Integer cur_time = (Integer)transport_context.get_current_time();
 
-  if (!initialized_) {
+  if (!initialized_)
+  {
     this->initialized_ = true;
     this->first_message_ = cur_time;
   }

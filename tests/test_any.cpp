@@ -21,7 +21,8 @@ namespace logger = madara::logger;
 using namespace madara;
 using namespace knowledge;
 
-struct A {
+struct A
+{
   double a;
   double b;
   double c;
@@ -53,7 +54,8 @@ void for_each_field(Fun fun, std::vector<T>& val)
 
 namespace ns
 {
-struct B {
+struct B
+{
   double d;
   double e;
   double f;
@@ -67,9 +69,15 @@ void for_each_field(Fun fun, B& val)
   fun("f", val.f);
 }
 
-enum E { X, Y, Z };
+enum E
+{
+  X,
+  Y,
+  Z
+};
 
-struct C {
+struct C
+{
   int g;
   double h;
   std::string i;
@@ -96,7 +104,8 @@ void for_each_field(Fun fun, C& val)
 }
 }
 
-struct Tracker {
+struct Tracker
+{
   int copied = 0;
   int moved = 0;
 
@@ -169,7 +178,8 @@ void test_any()
   Any aC(ns::C{1, 2.5, "asdf", {10, 20, 30}, {1.1, 2.2, 3.3}, {}, {4, 7, 9},
       {{"x", 13}, {"y", 14}}, ns::Z});
   auto fields = aC.list_fields();
-  for (const auto& cur : fields) {
+  for (const auto& cur : fields)
+  {
     std::cerr << "Field " << cur.name() << " " << (void*)&cur.handler() << " "
               << cur.type_name() << " " << cur.data() << " " << aC(cur)
               << std::endl;
@@ -252,10 +262,13 @@ void test_record()
   TEST_EQ((k1.get_any_cref<std::array<double, 3>>()[1]), 10);
 
   KnowledgeRecord empty;
-  try {
+  try
+  {
     VAL(empty.to_any<int>());
     TEST_EQ("Expected exception thrown", (void*)0);
-  } catch (const exceptions::BadAnyAccess& ex) {
+  }
+  catch (const exceptions::BadAnyAccess& ex)
+  {
     VAL(std::string("Exception: ") + ex.what());
   }
 }
@@ -303,7 +316,8 @@ void test_map(T& kb)
 
 namespace geo
 {
-struct Point {
+struct Point
+{
   double x = 0, y = 0, z = 0;
 
   Point() = default;
@@ -330,7 +344,8 @@ static_assert(::madara::knowledge::supports_for_each_member<Point>::value, "");
 static_assert(!madara_use_cereal(type<Point>{}), "");
 static_assert(!madara_use_cereal(type<std::vector<Point>>{}), "");
 
-struct Quaternion {
+struct Quaternion
+{
   double w = 0, i = 0, j = 0, k = 0;
 
   Quaternion() = default;
@@ -339,7 +354,8 @@ struct Quaternion {
 
 MADARA_CAPN_MEMBERS(Quaternion, geo_capn::Quaternion, (w, W)(i, I)(j, J)(k, K))
 
-struct Pose : Point, Quaternion {
+struct Pose : Point, Quaternion
+{
   Pose() = default;
   Pose(double x, double y, double z = 0) : Point(x, y, z) {}
   Pose(double x, double y, double z, double w, double i, double j, double k)
@@ -351,7 +367,8 @@ struct Pose : Point, Quaternion {
 MADARA_CAPN_MEMBERS(
     Pose, geo_capn::Pose, (x, X)(y, Y)(z, Z)(w, W)(i, I)(j, J)(k, K))
 
-struct Stamp {
+struct Stamp
+{
   int64_t time;
   std::string frame;
 };
@@ -367,7 +384,8 @@ static_assert(!supports_madara_capn_struct_Stamp_hasTime<
                   typename geo_capn::Stamp::Builder>::value,
     "");
 
-struct StampedPose : Pose {
+struct StampedPose : Pose
+{
   Stamp stamp = {0, ""};
 
   StampedPose() = default;
@@ -387,9 +405,15 @@ struct StampedPose : Pose {
 MADARA_CAPN_MEMBERS(StampedPose, geo_capn::StampedPose,
     (stamp, Stamp)(x, X)(y, Y)(z, Z)(w, W)(i, I)(j, J)(k, K))
 
-enum class TestEnum { a, b, c };
+enum class TestEnum
+{
+  a,
+  b,
+  c
+};
 
-struct StampedPoseList {
+struct StampedPoseList
+{
   std::vector<StampedPose> list;
   std::vector<int> data;
   std::array<int, 3> arr3;
@@ -510,7 +534,8 @@ void test_capn()
   LOG("Got schema node reader");
   capnp::SchemaLoader loader;
   std::map<std::string, capnp::Schema> schemas;
-  for (auto schema : schema_reader.getNodes()) {
+  for (auto schema : schema_reader.getNodes())
+  {
     log("INFO  Loading schema %s\n", schema.getDisplayName());
     schemas[schema.getDisplayName()] = loader.load(schema);
   }
@@ -664,7 +689,8 @@ void test_geo()
   TEST_EQ(reader.get("z").template as<double>(), 3);
 }
 
-struct Example {
+struct Example
+{
   int i;
   double d;
   std::vector<double> dv;
@@ -680,7 +706,8 @@ auto for_each_field(Fun fun, T&& val) -> enable_if_same_decayed<T, Example>
   fun("ev", val.ev);
 };
 
-struct Derived : Example {
+struct Derived : Example
+{
   double x;
 };
 template<typename Fun>
@@ -707,14 +734,16 @@ void test_example()
   // Iterate over each field, and print. Note that printing Anys always works,
   // as it falls back to serializing to JSON if no other printing support is
   // available.
-  for (const AnyField& field : any.list_fields()) {
+  for (const AnyField& field : any.list_fields())
+  {
     std::cerr << field.name() << ": " << any(field) << std::endl;
   }
 
   // Iterate over each elements, and print. Best to get size and AnyRef first.
   AnyRef arr = any("ev")[0]("dv");
   size_t n = arr.size();
-  for (size_t i = 0; i < n; ++i) {
+  for (size_t i = 0; i < n; ++i)
+  {
     std::cout << i << ": " << arr[i] << std::endl;
   }
 
@@ -758,10 +787,13 @@ int main(int, char**)
 
   test_capn();
 
-  if (madara_tests_fail_count > 0) {
+  if (madara_tests_fail_count > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count
               << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

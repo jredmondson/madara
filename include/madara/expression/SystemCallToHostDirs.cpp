@@ -35,15 +35,19 @@ madara::expression::SystemCallToHostDirs::prune(bool& can_change)
 
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     bool arg_can_change = false;
     result = nodes_[0]->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallToHostDirs: "
         "KARL COMPILE ERROR:"
@@ -70,7 +74,8 @@ madara::expression::SystemCallToHostDirs::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     std::string statement(nodes_[0]->evaluate(settings).to_string());
 
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
@@ -81,7 +86,9 @@ madara::expression::SystemCallToHostDirs::evaluate(
 
     return knowledge::KnowledgeRecord(
         madara::utility::clean_dir_name(statement));
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallToHostDirs: "
         "KARL RUNTIME ERROR:"

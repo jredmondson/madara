@@ -33,7 +33,8 @@ class MADARA_EXPORT IntegerVector3D : public BaseContainer
 {
 public:
   /// three dimensional indexing
-  struct Indices {
+  struct Indices
+  {
     std::size_t x, y, z;
   };
 

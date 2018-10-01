@@ -34,15 +34,19 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallPrint::prune(
 
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() > 0) {
+  if (nodes_.size() > 0)
+  {
     bool arg_can_change = false;
     result = nodes_[0]->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallPrint: "
         "KARL COMPILE ERROR:"
@@ -64,7 +68,8 @@ madara::expression::SystemCallPrint::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::SystemCallPrint: "
         "System call print is printing the first argument and returning the"
@@ -75,7 +80,9 @@ madara::expression::SystemCallPrint::evaluate(
     context_.print(statement, 0);
 
     return_value = knowledge::KnowledgeRecord(0);
-  } else if (nodes_.size() == 2) {
+  }
+  else if (nodes_.size() == 2)
+  {
     std::string statement(nodes_[0]->evaluate(settings).to_string());
     unsigned int log_level =
         (unsigned int)nodes_[1]->evaluate(settings).to_integer();
@@ -88,7 +95,9 @@ madara::expression::SystemCallPrint::evaluate(
     context_.print(statement, log_level);
 
     return_value = knowledge::KnowledgeRecord(0);
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallPrint: "
         "KARL RUNTIME ERROR:"

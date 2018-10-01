@@ -71,11 +71,13 @@ madara::expression::CompositeFunctionNode::prune(bool& can_change)
   if (nodes_.size() > 0)
     compiled_args_.resize(nodes_.size());
 
-  for (ComponentNodes::size_type i = 0; i < nodes_.size(); ++i) {
+  for (ComponentNodes::size_type i = 0; i < nodes_.size(); ++i)
+  {
     bool arg_can_change = false;
     result = nodes_[i]->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[i]) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[i]) == 0)
+    {
       delete nodes_[i];
       nodes_[i] = new LeafNode(*(this->logger_), result);
     }
@@ -105,8 +107,8 @@ madara::expression::CompositeFunctionNode::evaluate(
 
   int j = 0;
 
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end();
-       ++i, ++j) {
+  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
+  {
     args[j] = (*i)->evaluate(settings);
     *(compiled_args_[j]) = args[j];
   }
@@ -127,7 +129,8 @@ madara::expression::CompositeFunctionNode::evaluate(
     result = function_->extern_unnamed(args, variables);
 
 #ifdef _MADARA_JAVA_
-  else if (function_->is_java_callable()) {
+  else if (function_->is_java_callable())
+  {
     madara::utility::java::Acquire_VM jvm;
     JNIEnv* env = jvm.env;
 
@@ -151,7 +154,8 @@ madara::expression::CompositeFunctionNode::evaluate(
     jlongArray ret = env->NewLongArray((jsize)args.size());
     jlong* tmp = new jlong[(jsize)args.size()];
 
-    for (unsigned int x = 0; x < args.size(); x++) {
+    for (unsigned int x = 0; x < args.size(); x++)
+    {
       tmp[x] = (jlong)args[x].clone();
     }
 
@@ -197,7 +201,8 @@ madara::expression::CompositeFunctionNode::evaluate(
         boost::ref(variables));
 #endif
 
-  else if (function_->is_uninitialized()) {
+  else if (function_->is_uninitialized())
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "CompositeFunctionNode:"
         "KARL RUNTIME EXCEPTION: "
@@ -208,7 +213,8 @@ madara::expression::CompositeFunctionNode::evaluate(
                                     "Attempt at calling an undefined function");
   }
   // otherwise, assume it is a MADARA function
-  else {
+  else
+  {
     result = function_->function_contents.evaluate();
   }
 

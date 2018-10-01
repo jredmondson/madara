@@ -35,14 +35,17 @@ madara::expression::CompositeMultiplyNode::prune(bool& can_change)
 {
   madara::knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() >= 2) {
+  if (nodes_.size() >= 2)
+  {
     int j = 0;
     for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end();
-         ++i, ++j) {
+         ++i, ++j)
+    {
       bool value_changes = false;
       madara::knowledge::KnowledgeRecord value;
       value = (*i)->prune(value_changes);
-      if (!value_changes && dynamic_cast<LeafNode*>(*i) == 0) {
+      if (!value_changes && dynamic_cast<LeafNode*>(*i) == 0)
+      {
         delete *i;
         *i = new LeafNode(*(this->logger_), value);
       }
@@ -54,7 +57,9 @@ madara::expression::CompositeMultiplyNode::prune(bool& can_change)
 
       can_change = can_change || value_changes;
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallLogLevel: "
         "KARL COMPILE ERROR: "
@@ -78,8 +83,8 @@ madara::expression::CompositeMultiplyNode::evaluate(
   madara::knowledge::KnowledgeRecord return_value;
 
   int j = 0;
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end();
-       ++i, ++j) {
+  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
+  {
     madara::knowledge::KnowledgeRecord value = (*i)->evaluate(settings);
 
     if (j == 0)

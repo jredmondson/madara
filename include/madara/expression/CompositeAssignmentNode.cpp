@@ -39,7 +39,8 @@ madara::expression::CompositeAssignmentNode::prune(bool& can_change)
 
   if (this->var_ != 0 || this->array_ != 0)
     left_child_can_change = true;
-  else {
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "CompositeAssignmentNode: "
         "KARL COMPILE ERROR (=): "
@@ -51,13 +52,17 @@ madara::expression::CompositeAssignmentNode::prune(bool& can_change)
         "Assignments must have a variable left hand side");
   }
 
-  if (this->right_) {
+  if (this->right_)
+  {
     right_value = this->right_->prune(right_child_can_change);
-    if (!right_child_can_change && dynamic_cast<LeafNode*>(right_) == 0) {
+    if (!right_child_can_change && dynamic_cast<LeafNode*>(right_) == 0)
+    {
       delete this->right_;
       this->right_ = new LeafNode(*(this->logger_), right_value);
     }
-  } else {
+  }
+  else
+  {
     // we should never be able to get here but whatever
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "CompositeAssignmentNode: KARL COMPILE ERROR: "
@@ -83,21 +88,26 @@ madara::expression::CompositeAssignmentNode::evaluate(
 
   // get the value from the right side and set the variable's value with it
   // madara::knowledge::KnowledgeRecord value = right_->evaluate ();
-  if (var_) {
+  if (var_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "CompositeAssignmentNode::evaluate: "
         "Attempting to set variable %s to %s.\n",
         var_->expand_key().c_str(), rhs.to_string().c_str());
 
     var_->set(rhs, settings);
-  } else if (array_) {
+  }
+  else if (array_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "CompositeAssignmentNode::evaluate: "
         "Attempting to set index of var %s to %s.\n",
         array_->expand_key().c_str(), rhs.to_string().c_str());
 
     array_->set(rhs, settings);
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "left hand side was neither a variable nor an array reference. "
         "Check your expression for errors.\n");

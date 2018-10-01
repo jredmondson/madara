@@ -14,34 +14,43 @@ madara::filters::JavaBufferFilter::JavaBufferFilter(
 {
   madara::utility::java::Acquire_VM jvm;
 
-  if (jvm.env) {
+  if (jvm.env)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "JavaBufferFilter::constructor:"
         " allocating global reference for object\n");
 
     obj_ = (jobject)jvm.env->NewGlobalRef(obj);
 
-    if (obj_) {
+    if (obj_)
+    {
       madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
           "JavaBufferFilter::constructor:"
           " allocating global reference for object's class\n");
 
       class_ = (jclass)jvm.env->NewGlobalRef(jvm.env->GetObjectClass(obj_));
-      if (class_) {
+      if (class_)
+      {
         madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
             "JavaBufferFilter::constructor:"
             " class and object obtained successfully\n");
-      } else {
+      }
+      else
+      {
         madara_logger_ptr_log(logger_, logger::LOG_ERROR,
             "JavaBufferFilter::constructor:"
             " ERROR: class object inaccessible\n");
       }
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger_, logger::LOG_ERROR,
           "JavaBufferFilter::constructor:"
           " ERROR: object is invalid\n");
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "JavaBufferFilter::constructor:"
         " ERROR: unable to acquire JAVA environment\n");
@@ -51,7 +60,8 @@ madara::filters::JavaBufferFilter::JavaBufferFilter(
 madara::filters::JavaBufferFilter::~JavaBufferFilter()
 {
   madara::utility::java::Acquire_VM jvm;
-  if (jvm.env) {
+  if (jvm.env)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
         "JavaBufferFilter::destructor:"
         " Deleting global references\n");
@@ -73,7 +83,8 @@ int madara::filters::JavaBufferFilter::encode(
 
   jmethodID call = jvm.env->GetMethodID(class_, "encode", "([BJJ)J");
 
-  if (call) {
+  if (call)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "JavaBufferFilter::encode:"
         " Creating a Java byte array and copying values\n");
@@ -105,7 +116,9 @@ int madara::filters::JavaBufferFilter::encode(
     // clean up the Java code
     jvm.env->ReleaseByteArrayElements(new_array, (jbyte*)data, JNI_ABORT);
     jvm.env->DeleteLocalRef(new_array);
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_EMERGENCY,
         "JavaBufferFilter::encode:"
         " ERROR: Unable to find user-defined encode method\n");
@@ -126,7 +139,8 @@ int madara::filters::JavaBufferFilter::decode(
 
   jmethodID call = jvm.env->GetMethodID(class_, "decode", "([BJJ)J");
 
-  if (call) {
+  if (call)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "JavaBufferFilter::decode:"
         " Creating a Java byte array and copying values\n");
@@ -158,7 +172,9 @@ int madara::filters::JavaBufferFilter::decode(
     // clean up the Java code
     jvm.env->ReleaseByteArrayElements(new_array, (jbyte*)data, JNI_ABORT);
     jvm.env->DeleteLocalRef(new_array);
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_EMERGENCY,
         "JavaBufferFilter::decode:"
         " ERROR: Unable to find user-defined decode method\n");

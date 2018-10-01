@@ -24,7 +24,8 @@ KnowledgeRecord KnowledgeBase::wait(
 {
   KnowledgeRecord result;
 
-  if (context_) {
+  if (context_)
+  {
     /**
      * The only situation this can be useful will be if the thread safe
      * context is being used as a shared memory structure between
@@ -63,16 +64,19 @@ KnowledgeRecord KnowledgeBase::wait(
 
     // wait for expression to be true
     while (!last_value.to_integer() &&
-           (settings.max_wait_time < 0 || !enforcer.is_done())) {
+           (settings.max_wait_time < 0 || !enforcer.is_done()))
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
           "KnowledgeBase::wait:"
           " last value didn't result in success\n");
 
       // Unlike the other wait statements, we allow for a time based wait.
       // To do this, we allow a user to specify a
-      if (settings.poll_frequency > 0) {
+      if (settings.poll_frequency > 0)
+      {
         enforcer.sleep_until_next();
-      } else
+      }
+      else
         context_->wait_for_change(true);
 
       // relock - basically we need to evaluate the tree again, and
@@ -99,7 +103,8 @@ KnowledgeRecord KnowledgeBase::wait(
       context_->signal();
     }  // end while (!last)
 
-    if (enforcer.is_done()) {
+    if (enforcer.is_done())
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "KnowledgeBase::wait:"
           " Evaluate did not succeed. Timeout occurred\n");
@@ -110,7 +115,9 @@ KnowledgeRecord KnowledgeBase::wait(
       context_->print(settings.post_print_statement, logger::LOG_ALWAYS);
 
     return last_value;
-  } else if (impl_.get()) {
+  }
+  else if (impl_.get())
+  {
     result = impl_->wait(expression, settings);
   }
 

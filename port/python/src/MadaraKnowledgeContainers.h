@@ -9,7 +9,6 @@
  * to a Python module called Madara.
  **/
 
-void define_knowledge_containers (void);
+void define_knowledge_containers(void);
 
-#endif // _MADARA_PYTHON_PORT_MADARA_KNOWLEDGE_CONTAINERS_H_
-
+#endif  // _MADARA_PYTHON_PORT_MADARA_KNOWLEDGE_CONTAINERS_H_

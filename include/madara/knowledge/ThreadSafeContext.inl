@@ -27,10 +27,14 @@ inline KnowledgeRecord ThreadSafeContext::get(
     const std::string& key, const KnowledgeReferenceSettings& settings) const
 {
   const KnowledgeRecord* ret = with(key, settings);
-  if (ret) {
-    if (ret->has_history()) {
+  if (ret)
+  {
+    if (ret->has_history())
+    {
       return ret->get_newest();
-    } else {
+    }
+    else
+    {
       return *ret;
     }
   }
@@ -41,10 +45,14 @@ inline KnowledgeRecord ThreadSafeContext::get(const VariableReference& variable,
     const KnowledgeReferenceSettings& settings) const
 {
   const KnowledgeRecord* ret = with(variable, settings);
-  if (ret) {
-    if (ret->has_history()) {
+  if (ret)
+  {
+    if (ret->has_history())
+    {
       return ret->get_newest();
-    } else {
+    }
+    else
+    {
       return *ret;
     }
   }
@@ -55,7 +63,8 @@ inline KnowledgeRecord ThreadSafeContext::get_actual(
     const std::string& key, const KnowledgeReferenceSettings& settings) const
 {
   const KnowledgeRecord* ret = with(key, settings);
-  if (ret) {
+  if (ret)
+  {
     return *ret;
   }
   return KnowledgeRecord();
@@ -66,7 +75,8 @@ inline KnowledgeRecord ThreadSafeContext::get_actual(
     const KnowledgeReferenceSettings& settings) const
 {
   const KnowledgeRecord* ret = with(variable, settings);
-  if (ret) {
+  if (ret)
+  {
     return *ret;
   }
   return KnowledgeRecord();
@@ -79,14 +89,18 @@ inline KnowledgeRecord* ThreadSafeContext::with(
 
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables) {
+  if (settings.expand_variables)
+  {
     std::string cur_key = expand_statement(key);
     found = map_.find(cur_key);
-  } else {
+  }
+  else
+  {
     found = map_.find(key);
   }
 
-  if (found != map_.end()) {
+  if (found != map_.end())
+  {
     return &found->second;
   }
 
@@ -109,14 +123,18 @@ inline const KnowledgeRecord* ThreadSafeContext::with(
 
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables) {
+  if (settings.expand_variables)
+  {
     std::string cur_key = expand_statement(key);
     found = map_.find(cur_key);
-  } else {
+  }
+  else
+  {
     found = map_.find(key);
   }
 
-  if (found != map_.end()) {
+  if (found != map_.end())
+  {
     return &found->second;
   }
 
@@ -218,9 +236,11 @@ inline int ThreadSafeContext::set(const VariableReference& variable,
     const T* value, uint32_t size, const KnowledgeUpdateSettings& settings)
 {
   MADARA_GUARD_TYPE guard(mutex_);
-  if (variable.is_valid()) {
+  if (variable.is_valid())
+  {
     return set_unsafe_impl(variable, settings, value, size);
-  } else
+  }
+  else
     return -1;
 }
 
@@ -426,9 +446,11 @@ inline KnowledgeRecord ThreadSafeContext::inc(
 {
   MADARA_GUARD_TYPE guard(mutex_);
   auto record = variable.get_record_unsafe();
-  if (record) {
+  if (record)
+  {
     // check if we have the appropriate write quality
-    if (settings.always_overwrite || record->write_quality >= record->quality) {
+    if (settings.always_overwrite || record->write_quality >= record->quality)
+    {
       ++(*record);
       record->quality = record->write_quality;
       record->clock = clock_;
@@ -463,17 +485,20 @@ inline bool ThreadSafeContext::clear(
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables) {
+  if (settings.expand_variables)
+  {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
-  } else
+  }
+  else
     key_ptr = &key;
 
   // find the key and update found with result of find
   KnowledgeMap::iterator record = map_.find(*key_ptr);
   found = record != map_.end();
 
-  if (found) {
+  if (found)
+  {
     record->second.clear_value();
   }
 
@@ -482,7 +507,8 @@ inline bool ThreadSafeContext::clear(
 
 inline bool ThreadSafeContext::clear(const VariableReference& variable)
 {
-  if (variable.is_valid()) {
+  if (variable.is_valid())
+  {
     MADARA_GUARD_TYPE guard(mutex_);
 
     // erase any changed or local changed map entries
@@ -492,7 +518,9 @@ inline bool ThreadSafeContext::clear(const VariableReference& variable)
     variable.entry_->second.clear_value();
 
     return true;
-  } else {
+  }
+  else
+  {
     return false;
   }
 }
@@ -508,10 +536,12 @@ inline bool ThreadSafeContext::delete_variable(
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables) {
+  if (settings.expand_variables)
+  {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
-  } else
+  }
+  else
     key_ptr = &key;
 
   // erase any changed or local changed map entries
@@ -542,7 +572,8 @@ inline bool ThreadSafeContext::delete_variable(
 inline void ThreadSafeContext::delete_variables(KnowledgeMap::iterator begin,
     KnowledgeMap::iterator end, const KnowledgeReferenceSettings&)
 {
-  for (auto cur = begin; cur != end; ++cur) {
+  for (auto cur = begin; cur != end; ++cur)
+  {
     changed_map_.erase(cur->first.c_str());
     local_changed_map_.erase(cur->first.c_str());
   }
@@ -558,14 +589,17 @@ inline bool ThreadSafeContext::exists(
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables) {
+  if (settings.expand_variables)
+  {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
-  } else
+  }
+  else
     key_ptr = &key;
 
   // if key is not null
-  if (*key_ptr != "") {
+  if (*key_ptr != "")
+  {
     // find the key in the knowledge base
     KnowledgeMap::const_iterator found = map_.find(*key_ptr);
 
@@ -586,9 +620,11 @@ inline KnowledgeRecord ThreadSafeContext::dec(
 {
   MADARA_GUARD_TYPE guard(mutex_);
   auto record = variable.get_record_unsafe();
-  if (record) {
+  if (record)
+  {
     // check if we have the appropriate write quality
-    if (settings.always_overwrite || record->write_quality >= record->quality) {
+    if (settings.always_overwrite || record->write_quality >= record->quality)
+    {
       --(*record);
       record->quality = record->write_quality;
       record->clock = clock_;
@@ -627,10 +663,12 @@ inline uint64_t ThreadSafeContext::set_clock(const std::string& key,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables) {
+  if (settings.expand_variables)
+  {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
-  } else
+  }
+  else
     key_ptr = &key;
 
   // check for null key
@@ -641,7 +679,8 @@ inline uint64_t ThreadSafeContext::set_clock(const std::string& key,
   knowledge::KnowledgeRecord& record = map_[*key_ptr];
 
   // check for value already set
-  if (record.clock < clock) {
+  if (record.clock < clock)
+  {
     record.clock = clock;
 
     // try to update the global clock as well
@@ -661,10 +700,12 @@ inline uint64_t ThreadSafeContext::inc_clock(
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables) {
+  if (settings.expand_variables)
+  {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
-  } else
+  }
+  else
     key_ptr = &key;
 
   // check for null key
@@ -714,10 +755,12 @@ inline uint64_t ThreadSafeContext::get_clock(
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables) {
+  if (settings.expand_variables)
+  {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
-  } else
+  }
+  else
     key_ptr = &key;
 
   // check for null key
@@ -728,9 +771,11 @@ inline uint64_t ThreadSafeContext::get_clock(
   KnowledgeMap::const_iterator found = map_.find(*key_ptr);
 
   // if it's found, then compare the value
-  if (found != map_.end()) {
+  if (found != map_.end())
+  {
     return found->second.clock;
-  } else
+  }
+  else
     // key does not exist
     return 0;
 }
@@ -771,10 +816,14 @@ inline void ThreadSafeContext::clear(bool erase)
   changed_map_.clear();
   local_changed_map_.clear();
 
-  if (erase) {
+  if (erase)
+  {
     map_.clear();
-  } else {
-    for (KnowledgeMap::iterator i = map_.begin(); i != map_.end(); ++i) {
+  }
+  else
+  {
+    for (KnowledgeMap::iterator i = map_.begin(); i != map_.end(); ++i)
+    {
       i->second.reset_value();
     }
   }
@@ -814,7 +863,8 @@ inline void ThreadSafeContext::mark_to_send(
     const VariableReference& ref, const KnowledgeUpdateSettings& settings)
 {
   MADARA_GUARD_TYPE guard(mutex_);
-  if (ref.is_valid()) {
+  if (ref.is_valid())
+  {
     mark_to_send_unsafe(ref, settings);
   }
 }
@@ -841,7 +891,8 @@ inline void ThreadSafeContext::mark_to_checkpoint(
     const VariableReference& ref, const KnowledgeUpdateSettings& settings)
 {
   MADARA_GUARD_TYPE guard(mutex_);
-  if (ref.is_valid()) {
+  if (ref.is_valid())
+  {
     mark_to_checkpoint_unsafe(ref, settings);
   }
 }
@@ -860,18 +911,22 @@ inline void ThreadSafeContext::mark_and_signal(
     VariableReference ref, const KnowledgeUpdateSettings& settings)
 {
   // otherwise set the value
-  if (ref.get_name()[0] != '.' || settings.treat_locals_as_globals) {
-    if (!settings.treat_globals_as_locals) {
+  if (ref.get_name()[0] != '.' || settings.treat_locals_as_globals)
+  {
+    if (!settings.treat_globals_as_locals)
+    {
       mark_to_send_unsafe(std::move(ref));
     }
   }
 
   // track local changes now checkpoints all state, not just local
-  if (settings.track_local_changes) {
+  if (settings.track_local_changes)
+  {
     mark_to_checkpoint_unsafe(std::move(ref));
   }
 
-  if (settings.stream_changes && streamer_ != nullptr) {
+  if (settings.stream_changes && streamer_ != nullptr)
+  {
     streamer_->enqueue(ref.get_name(), *ref.get_record_unsafe());
   }
 
@@ -901,21 +956,35 @@ inline std::string ThreadSafeContext::debug_modifieds(void) const
 
   result << changed_map_.size() << " modifications ready to send:\n";
 
-  for (auto& entry : changed_map_) {
+  for (auto& entry : changed_map_)
+  {
     KnowledgeRecord& record = *entry.second.get_record_unsafe();
-    if (record.is_binary_file_type()) {
+    if (record.is_binary_file_type())
+    {
       result << "File: ";
-    } else if (record.type() == knowledge::KnowledgeRecord::DOUBLE) {
+    }
+    else if (record.type() == knowledge::KnowledgeRecord::DOUBLE)
+    {
       result << "Double: ";
-    } else if (record.type() == knowledge::KnowledgeRecord::DOUBLE_ARRAY) {
+    }
+    else if (record.type() == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
+    {
       result << "Double array: ";
-    } else if (record.type() == knowledge::KnowledgeRecord::INTEGER) {
+    }
+    else if (record.type() == knowledge::KnowledgeRecord::INTEGER)
+    {
       result << "Integer: ";
-    } else if (record.type() == knowledge::KnowledgeRecord::INTEGER_ARRAY) {
+    }
+    else if (record.type() == knowledge::KnowledgeRecord::INTEGER_ARRAY)
+    {
       result << "Integer array: ";
-    } else if (record.is_string_type()) {
+    }
+    else if (record.is_string_type())
+    {
       result << "String: ";
-    } else {
+    }
+    else
+    {
       result << "Unknown: ";
     }
 
@@ -946,7 +1015,8 @@ inline VariableReferences ThreadSafeContext::save_modifieds(void) const
       " changed_map.size=%d, snapshot.size=%d\n",
       (int)changed_map_.size(), (int)snapshot.size());
 
-  for (auto& entry : changed_map_) {
+  for (auto& entry : changed_map_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_modifieds:"
         " snapshot[%d].name=%s\n",
@@ -963,7 +1033,8 @@ inline void ThreadSafeContext::add_modifieds(
 {
   MADARA_GUARD_TYPE guard(mutex_);
 
-  for (auto& entry : modifieds) {
+  for (auto& entry : modifieds)
+  {
     changed_map_.insert(std::make_pair(entry.get_name(), entry));
   }
 }
@@ -996,8 +1067,10 @@ inline void ThreadSafeContext::apply_modified(void)
   //++this->clock_;
 
   for (KnowledgeMap::iterator i = map_.begin(); i != map_.end(); ++i)
-    for (auto& entry : map_) {
-      if (entry.first.size() > 0 && entry.first[0] != '.') {
+    for (auto& entry : map_)
+    {
+      if (entry.first.size() > 0 && entry.first[0] != '.')
+      {
         // local or global doesn't matter. Clock and modification
         // aren't really a part of local variable checking anyway
         // i->second.status = KnowledgeRecord::MODIFIED;
@@ -1030,10 +1103,12 @@ inline void ThreadSafeContext::reset_checkpoint(void) const
 /// Signal the condition that it can wake up someone else on changed data.
 inline void ThreadSafeContext::signal(bool lock) const
 {
-  if (lock) {
+  if (lock)
+  {
     MADARA_GUARD_TYPE guard(mutex_);
     changed_.MADARA_CONDITION_NOTIFY_ONE();
-  } else
+  }
+  else
     changed_.MADARA_CONDITION_NOTIFY_ONE();
 }
 

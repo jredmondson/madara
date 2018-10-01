@@ -73,7 +73,8 @@ private:
 
   /// A shim class that keeps track of the reference count and a
   /// pointer to the type @a T that's reference counted.
-  struct Shim {
+  struct Shim
+  {
     /// Constructor.
     Shim(T* t);
 

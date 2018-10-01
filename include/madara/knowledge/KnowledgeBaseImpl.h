@@ -1044,7 +1044,8 @@ public:
   std::string setup_unique_hostport(std::string host = "");
 
 private:
-  struct ModifiedsSender {
+  struct ModifiedsSender
+  {
     KnowledgeBaseImpl* self;
     const char* func;
     const EvalSettings* settings;

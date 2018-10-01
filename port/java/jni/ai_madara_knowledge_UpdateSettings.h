@@ -14,8 +14,7 @@ extern "C" {
  * Signature: ()J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1updateSettings__
-  (JNIEnv *, jclass);
+Java_ai_madara_knowledge_UpdateSettings_jni_1updateSettings__(JNIEnv*, jclass);
 
 /*
  * Class:     ai_madara_knowledge_UpdateSettings
@@ -23,8 +22,8 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1updateSettings__
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1updateSettings__J
-  (JNIEnv *, jclass, jlong);
+Java_ai_madara_knowledge_UpdateSettings_jni_1updateSettings__J(
+    JNIEnv*, jclass, jlong);
 
 /*
  * Class:     ai_madara_knowledge_UpdateSettings
@@ -32,8 +31,8 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1updateSettings__J
  * Signature: (JZ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1setAlwaysOverwrite
-  (JNIEnv *, jclass, jlong, jboolean);
+Java_ai_madara_knowledge_UpdateSettings_jni_1setAlwaysOverwrite(
+    JNIEnv*, jclass, jlong, jboolean);
 
 /*
  * Class:     ai_madara_knowledge_UpdateSettings
@@ -41,8 +40,8 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1setAlwaysOverwrite
  * Signature: (J)Z
  */
 MADARA_EXPORT jboolean JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1getAlwaysOverwrite
-  (JNIEnv *, jclass, jlong);
+Java_ai_madara_knowledge_UpdateSettings_jni_1getAlwaysOverwrite(
+    JNIEnv*, jclass, jlong);
 
 /*
  * Class:     ai_madara_knowledge_UpdateSettings
@@ -50,8 +49,8 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1getAlwaysOverwrite
  * Signature: (JZ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1setTreatGlobalsAsLocals
-  (JNIEnv *, jclass, jlong, jboolean);
+Java_ai_madara_knowledge_UpdateSettings_jni_1setTreatGlobalsAsLocals(
+    JNIEnv*, jclass, jlong, jboolean);
 
 /*
  * Class:     ai_madara_knowledge_UpdateSettings
@@ -59,8 +58,8 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1setTreatGlobalsAsLocals
  * Signature: (J)Z
  */
 MADARA_EXPORT jboolean JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1getTreatGlobalsAsLocals
-  (JNIEnv *, jclass, jlong);
+Java_ai_madara_knowledge_UpdateSettings_jni_1getTreatGlobalsAsLocals(
+    JNIEnv*, jclass, jlong);
 
 /*
  * Class:     ai_madara_knowledge_UpdateSettings
@@ -68,8 +67,8 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1getTreatGlobalsAsLocals
  * Signature: (JJ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1setClockIncrement
-  (JNIEnv *, jclass, jlong, jlong);
+Java_ai_madara_knowledge_UpdateSettings_jni_1setClockIncrement(
+    JNIEnv*, jclass, jlong, jlong);
 
 /*
  * Class:     ai_madara_knowledge_UpdateSettings
@@ -77,8 +76,8 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1setClockIncrement
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1getClockIncrement
-  (JNIEnv *, jclass, jlong);
+Java_ai_madara_knowledge_UpdateSettings_jni_1getClockIncrement(
+    JNIEnv*, jclass, jlong);
 
 /*
  * Class:     ai_madara_knowledge_UpdateSettings
@@ -86,8 +85,8 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1getClockIncrement
  * Signature: (J)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1freeUpdateSettings
-  (JNIEnv *, jclass, jlong);
+Java_ai_madara_knowledge_UpdateSettings_jni_1freeUpdateSettings(
+    JNIEnv*, jclass, jlong);
 
 #ifdef __cplusplus
 }

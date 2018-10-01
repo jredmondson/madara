@@ -5,7 +5,8 @@
  * Helper class for type inference
  **/
 template<class T>
-struct TypeHelper {
+struct TypeHelper
+{
   typedef void type;
 };
 
@@ -30,8 +31,12 @@ struct IteratorTraits; /* If error here: invalid type passed to deep_iterate()
  * on the iterator
  **/
 template<class T, class V>
-struct IteratorTraits<T, typename TypeHelper<typename T::value_type>::type, V> {
-  enum { is_pair = 0 };
+struct IteratorTraits<T, typename TypeHelper<typename T::value_type>::type, V>
+{
+  enum
+  {
+    is_pair = 0
+  };
 
   typedef typename T::value_type value_type;
 
@@ -47,8 +52,12 @@ struct IteratorTraits<T, typename TypeHelper<typename T::value_type>::type, V> {
  **/
 template<class T>
 struct IteratorTraits<T, typename TypeHelper<typename T::value_type>::type,
-    typename TypeHelper<typename T::value_type::second_type>::type> {
-  enum { is_pair = 1 };
+    typename TypeHelper<typename T::value_type::second_type>::type>
+{
+  enum
+  {
+    is_pair = 1
+  };
 
   typedef std::pair<const typename T::value_type::first_type&,
       typename T::value_type::second_type>

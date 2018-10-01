@@ -45,15 +45,20 @@ madara::knowledge::containers::IntegerVector3D::~IntegerVector3D() {}
 
 void madara::knowledge::containers::IntegerVector3D::modify(void)
 {
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     ContextGuard context_guard(*context_);
 
     Indices dimensions = size();
 
-    if (dimensions.x > 0 && dimensions.y > 0 && dimensions.z > 0) {
-      for (size_t i = 0; i < dimensions.x; ++i) {
-        for (size_t j = 0; j < dimensions.y; ++j) {
-          for (size_t k = 0; k < dimensions.z; ++k) {
+    if (dimensions.x > 0 && dimensions.y > 0 && dimensions.z > 0)
+    {
+      for (size_t i = 0; i < dimensions.x; ++i)
+      {
+        for (size_t j = 0; j < dimensions.y; ++j)
+        {
+          for (size_t k = 0; k < dimensions.z; ++k)
+          {
             context_->mark_modified(vector_[i][j][k]);
           }
         }
@@ -70,7 +75,8 @@ std::string madara::knowledge::containers::IntegerVector3D::get_debug_info(void)
 
   result << "IntegerVector3D: ";
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
 
     Indices dimensions = size();
@@ -80,12 +86,16 @@ std::string madara::knowledge::containers::IntegerVector3D::get_debug_info(void)
            << "]";
     result << " = [";
 
-    if (dimensions.x > 0 && dimensions.y > 0) {
-      for (size_t i = 0; i < dimensions.x; ++i) {
-        for (size_t j = 0; j < dimensions.y; ++j) {
+    if (dimensions.x > 0 && dimensions.y > 0)
+    {
+      for (size_t i = 0; i < dimensions.x; ++i)
+      {
+        for (size_t j = 0; j < dimensions.y; ++j)
+        {
           result << context_->get(vector_[i][j][0]).to_string();
 
-          for (size_t k = 1; k < dimensions.z; ++k) {
+          for (size_t k = 1; k < dimensions.z; ++k)
+          {
             result << ", " << context_->get(vector_[i][j][k]).to_string();
           }
         }
@@ -119,7 +129,8 @@ madara::knowledge::containers::IntegerVector3D::clone(void) const
 void madara::knowledge::containers::IntegerVector3D::modify(
     const Indices& index)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     if (index.x < vector_.size() && index.y < vector_[index.x].size() &&
         index.z < vector_[index.x][index.y].size())
@@ -130,7 +141,8 @@ void madara::knowledge::containers::IntegerVector3D::modify(
 void madara::knowledge::containers::IntegerVector3D::operator=(
     const IntegerVector3D& rhs)
 {
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
     this->context_ = rhs.context_;
@@ -147,7 +159,8 @@ madara::knowledge::containers::IntegerVector3D::get_size_ref(void)
 {
   VariableReference ref;
 
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     KnowledgeUpdateSettings keep_local(true);
     std::stringstream buffer;
 
@@ -166,7 +179,8 @@ madara::knowledge::containers::IntegerVector3D::get_size_ref(void)
 void madara::knowledge::containers::IntegerVector3D::resize(
     const Dimensions& dimensions, bool delete_vars)
 {
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     ContextGuard context_guard(*context_);
 
     madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
@@ -175,7 +189,8 @@ void madara::knowledge::containers::IntegerVector3D::resize(
 
     bool is_reset = dimensions.x == 0 && dimensions.y == 0;
 
-    if (!size_.is_valid()) {
+    if (!size_.is_valid())
+    {
       size_ = get_size_ref();
     }
 
@@ -187,14 +202,17 @@ void madara::knowledge::containers::IntegerVector3D::resize(
         "IntegerVector3D::resize: old size is [%d,%d]\n", (int)old_size.x,
         (int)old_size.y);
 
-    if (is_reset) {
+    if (is_reset)
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MINOR,
           "IntegerVector3D::resize: new size is being reset to size in KB\n");
 
       new_size.x = old_size.x;
       new_size.y = old_size.y;
       new_size.z = old_size.z;
-    } else {
+    }
+    else
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "IntegerVector3D::resize: using dimensions passed in.\n");
 
@@ -210,7 +228,8 @@ void madara::knowledge::containers::IntegerVector3D::resize(
     // correct the vector for the new size
     vector_.resize(new_size.x);
 
-    for (size_t i = 0; i < new_size.x; ++i) {
+    for (size_t i = 0; i < new_size.x; ++i)
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
           "IntegerVector3D::resize: resizing vector_[%d] to %d.\n", (int)i,
           (int)new_size.y);
@@ -222,7 +241,8 @@ void madara::knowledge::containers::IntegerVector3D::resize(
       size_t start = old_size.y;
 
       // if you've gained rows and this is a new row, reset start to 0
-      if (is_reset || (old_size.x < new_size.x && i >= old_size.x)) {
+      if (is_reset || (old_size.x < new_size.x && i >= old_size.x))
+      {
         start = 0;
       }
 
@@ -231,7 +251,8 @@ void madara::knowledge::containers::IntegerVector3D::resize(
           (int)start, (int)new_size.y);
 
       // create new VariableReferences
-      for (size_t j = start; j < new_size.y; ++j) {
+      for (size_t j = start; j < new_size.y; ++j)
+      {
         vector_[i][j].resize(new_size.z);
 
         // create any new VariableReference needed, default is end of old cols
@@ -240,12 +261,14 @@ void madara::knowledge::containers::IntegerVector3D::resize(
 
         // if you've gained cols and this is a new col, reset start to 0
         if (is_reset || ((old_size.y < new_size.y && j >= old_size.y) ||
-                            (old_size.x < new_size.x && i >= old_size.x))) {
+                            (old_size.x < new_size.x && i >= old_size.x)))
+        {
           start_z = 0;
         }
 
         // create new VariableReferences
-        for (size_t k = start_z; k < new_size.z; ++k) {
+        for (size_t k = start_z; k < new_size.z; ++k)
+        {
           std::stringstream var_name;
           var_name << this->name_;
           var_name << delimiter_;
@@ -263,18 +286,21 @@ void madara::knowledge::containers::IntegerVector3D::resize(
     // delete if we need to delete
     if ((new_size.x < old_size.x || new_size.y < old_size.y ||
             new_size.z < old_size.z) &&
-        delete_vars) {
+        delete_vars)
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "IntegerVector3D::resize: deleting refs: rows: 0->%d.\n",
           (int)old_size.x);
 
       // delete within the old rows
-      for (size_t i = 0; i < old_size.x; ++i) {
+      for (size_t i = 0; i < old_size.x; ++i)
+      {
         // by default, delete from new col size to old col size
         size_t start = new_size.y;
 
         // the exception is when we are deleting the entire col
-        if (old_size.x > new_size.x && i >= new_size.x) {
+        if (old_size.x > new_size.x && i >= new_size.x)
+        {
           start = 0;
         }
 
@@ -283,17 +309,20 @@ void madara::knowledge::containers::IntegerVector3D::resize(
             (int)start, (int)old_size.x);
 
         // delete old columns
-        for (size_t j = start; j < old_size.y; ++j) {
+        for (size_t j = start; j < old_size.y; ++j)
+        {
           // by default, delete from new col size to old col size
           size_t start_k = new_size.z;
 
           // the exception is when we are deleting the entire row
-          if (old_size.y > new_size.y && j >= new_size.y) {
+          if (old_size.y > new_size.y && j >= new_size.y)
+          {
             start = 0;
           }
 
           // delete old columns
-          for (size_t k = start_k; k < old_size.z; ++k) {
+          for (size_t k = start_k; k < old_size.z; ++k)
+          {
             std::stringstream var_name;
             var_name << this->name_;
             var_name << delimiter_;
@@ -320,7 +349,8 @@ madara::knowledge::containers::IntegerVector3D::size(void) const
 {
   Indices cur_size;
 
-  if (context_) {
+  if (context_)
+  {
     KnowledgeRecord record;
     // lock the KnowledgeBase during access
     {
@@ -342,7 +372,8 @@ void madara::knowledge::containers::IntegerVector3D::set_name(
     const std::string& var_name, KnowledgeBase& knowledge,
     const Indices& dimensions)
 {
-  if (context_ != &(knowledge.get_context()) || name_ != var_name) {
+  if (context_ != &(knowledge.get_context()) || name_ != var_name)
+  {
     context_ = &(knowledge.get_context());
 
     ContextGuard context_guard(*context_);
@@ -361,7 +392,8 @@ void madara::knowledge::containers::IntegerVector3D::set_name(
     const std::string& var_name, Variables& knowledge,
     const Indices& dimensions)
 {
-  if (context_ != knowledge.get_context() || name_ != var_name) {
+  if (context_ != knowledge.get_context() || name_ != var_name)
+  {
     context_ = knowledge.get_context();
 
     ContextGuard context_guard(*context_);
@@ -377,7 +409,8 @@ void madara::knowledge::containers::IntegerVector3D::set_name(
     const std::string& var_name, ThreadSafeContext& knowledge,
     const Indices& dimensions)
 {
-  if (context_ != &knowledge || name_ != var_name) {
+  if (context_ != &knowledge || name_ != var_name)
+  {
     context_ = &knowledge;
 
     ContextGuard context_guard(*context_);
@@ -393,7 +426,8 @@ void madara::knowledge::containers::IntegerVector3D::set_delimiter(
     const std::string& delimiter)
 {
   delimiter_ = delimiter;
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
 
     vector_.clear();
@@ -411,18 +445,22 @@ void madara::knowledge::containers::IntegerVector3D::copy_to(
 {
   KnowledgeUpdateSettings keep_local(true);
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
 
     Indices dimensions = size();
 
     target.resize(dimensions.x);
 
-    for (size_t i = 0; i < dimensions.x; ++i) {
+    for (size_t i = 0; i < dimensions.x; ++i)
+    {
       target[i].resize(dimensions.y);
-      for (size_t j = 0; j < dimensions.y; ++j) {
+      for (size_t j = 0; j < dimensions.y; ++j)
+      {
         target[i][j].resize(dimensions.z);
-        for (size_t k = 0; k < dimensions.z; ++k) {
+        for (size_t k = 0; k < dimensions.z; ++k)
+        {
           target[i][j][k] =
               context_->get(vector_[i][j][k], keep_local).to_integer();
         }
@@ -443,11 +481,13 @@ madara::knowledge::containers::IntegerVector3D::type
       "IntegerVector3D::[]: retrieving [%d,%d,%d].\n", (int)index.x,
       (int)index.y, (int)index.z);
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
 
     if (index.x < vector_.size() && index.y < vector_[index.x].size() &&
-        index.z < vector_[index.x][index.y].size()) {
+        index.z < vector_[index.x][index.y].size())
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MINOR,
           "IntegerVector3D::[]: [%d][%d][%d] is within [%d,%d,%d].\n",
           (int)index.x, (int)index.y, (int)index.z, (int)vector_.size(),
@@ -458,8 +498,9 @@ madara::knowledge::containers::IntegerVector3D::type
 
       madara_logger_log(context_->get_logger(), logger::LOG_MINOR,
           "IntegerVector3D::[]: value is %d.\n", (int)result);
-
-    } else {
+    }
+    else
+    {
       madara_logger_log(context_->get_logger(), logger::LOG_MINOR,
           "IntegerVector3D::[]: [%d][%d][%d] is not within [%d,%d,%d].\n",
           (int)index.x, (int)index.y, (int)index.z, (int)vector_.size(),
@@ -475,11 +516,13 @@ bool madara::knowledge::containers::IntegerVector3D::exists(
 {
   bool result(false);
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
 
     if (index.x < vector_.size() && index.y < vector_[index.x].size() &&
-        index.z < vector_[index.x][index.y].size()) {
+        index.z < vector_[index.x][index.y].size())
+    {
       result = context_->exists(vector_[index.x][index.y][index.z]);
     }
   }
@@ -492,11 +535,13 @@ int madara::knowledge::containers::IntegerVector3D::set(
 {
   int result = -1;
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
 
     if (index.x < vector_.size() && index.y < vector_[index.x].size() &&
-        index.z < vector_[index.x][index.y].size()) {
+        index.z < vector_[index.x][index.y].size())
+    {
       result =
           context_->set(vector_[index.x][index.y][index.z], value, settings_);
     }
@@ -510,13 +555,17 @@ int madara::knowledge::containers::IntegerVector3D::set(
 {
   int result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
 
-    for (size_t i = 0; i < value.size() && i < vector_.size(); ++i) {
-      for (size_t j = 0; j < value[i].size() && j < vector_[i].size(); ++j) {
+    for (size_t i = 0; i < value.size() && i < vector_.size(); ++i)
+    {
+      for (size_t j = 0; j < value[i].size() && j < vector_[i].size(); ++j)
+      {
         for (size_t k = 0; k < value[i][j].size() && k < vector_[i][j].size();
-             ++k) {
+             ++k)
+        {
           context_->set(vector_[i][j][k], value[i][j][k], settings_);
         }
       }
@@ -531,11 +580,13 @@ int madara::knowledge::containers::IntegerVector3D::set(
 {
   int result = -1;
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
 
     if (index.x < vector_.size() && index.y < vector_[index.x].size() &&
-        index.z < vector_[index.x][index.y].size()) {
+        index.z < vector_[index.x][index.y].size())
+    {
       result =
           context_->set(vector_[index.x][index.y][index.z], value, settings);
     }
@@ -550,13 +601,17 @@ int madara::knowledge::containers::IntegerVector3D::set(
 {
   int result = 0;
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
 
-    for (size_t i = 0; i < value.size() && i < vector_.size(); ++i) {
-      for (size_t j = 0; j < value[i].size() && j < vector_[i].size(); ++j) {
+    for (size_t i = 0; i < value.size() && i < vector_.size(); ++i)
+    {
+      for (size_t j = 0; j < value[i].size() && j < vector_[i].size(); ++j)
+      {
         for (size_t k = 0; k < value[i][j].size() && k < vector_[i][j].size();
-             ++k) {
+             ++k)
+        {
           context_->set(vector_[i][j][k], value[i][j][k], settings);
         }
       }
@@ -570,7 +625,8 @@ void madara::knowledge::containers::IntegerVector3D::set_quality(
     const Indices& index, uint32_t quality,
     const KnowledgeReferenceSettings& settings)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
 
     if (index.x < vector_.size() && index.y < vector_[index.x].size() &&
@@ -587,7 +643,8 @@ bool madara::knowledge::containers::IntegerVector3D::is_true(void) const
   madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
       "IntegerVector3D::is_true: Checking for truth\n");
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
 
     result = true;
@@ -597,16 +654,20 @@ bool madara::knowledge::containers::IntegerVector3D::is_true(void) const
         "%d\n",
         (int)result);
 
-    for (size_t i = 0; i < vector_.size(); ++i) {
-      for (size_t j = 0; j < vector_[i].size(); ++i) {
-        for (size_t k = 0; k < vector_[i][j].size(); ++k) {
+    for (size_t i = 0; i < vector_.size(); ++i)
+    {
+      for (size_t j = 0; j < vector_[i].size(); ++i)
+      {
+        for (size_t k = 0; k < vector_[i][j].size(); ++k)
+        {
           madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
               "IntegerVector3D::is_true: checking [%d,%d,%d], is_false of %d. "
               "\n",
               (int)i, (int)j, (int)k,
               (int)context_->get(vector_[i][j][k]).is_false());
 
-          if (context_->get(vector_[i][j][k]).is_false()) {
+          if (context_->get(vector_[i][j][k]).is_false())
+          {
             madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
                 "IntegerVector3D::is_true: result is false, breaking\n");
 

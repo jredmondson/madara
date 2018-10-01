@@ -87,15 +87,18 @@ std::string& strip_extra_white_space(std::string& input)
   std::string::iterator cur = input.begin();
   char prev = 0;
 
-  for (std::string::iterator eval = cur; eval != input.end(); ++eval) {
+  for (std::string::iterator eval = cur; eval != input.end(); ++eval)
+  {
     // if it isn't whitespace, then copy it over immediately
-    if (*eval != ' ' && *eval != '\t' && *eval != '\n' && *eval != '\r') {
+    if (*eval != ' ' && *eval != '\t' && *eval != '\n' && *eval != '\r')
+    {
       prev = *cur = *eval;
       ++cur;
     }
     // if it is whitespace, only insert whitespace if the previous char
     // was non-whitespace
-    else if (prev) {
+    else if (prev)
+    {
       *cur = ' ';
       prev = 0;
       ++cur;
@@ -103,7 +106,8 @@ std::string& strip_extra_white_space(std::string& input)
   }
 
   // if the last char is actually whitespace, then move cur back one spot
-  if (cur != input.end()) {
+  if (cur != input.end())
+  {
     --cur;
     if (*cur != ' ' && *cur != '\t' && *cur != '\n' && *cur != '\r')
       ++cur;
@@ -121,9 +125,11 @@ std::string& strip_white_space(std::string& input)
 {
   std::string::iterator cur = input.begin();
 
-  for (std::string::iterator eval = cur; eval != input.end(); ++eval) {
+  for (std::string::iterator eval = cur; eval != input.end(); ++eval)
+  {
     // if it isn't whitespace, then copy it over immediately
-    if (*eval != ' ' && *eval != '\t' && *eval != '\n' && *eval != '\r') {
+    if (*eval != ' ' && *eval != '\t' && *eval != '\n' && *eval != '\r')
+    {
       *cur = *eval;
       ++cur;
     }
@@ -144,9 +150,11 @@ std::string& string_remove(std::string& input, char unwanted)
 {
   std::string::iterator cur = input.begin();
 
-  for (std::string::iterator eval = cur; eval != input.end(); ++eval) {
+  for (std::string::iterator eval = cur; eval != input.end(); ++eval)
+  {
     // if it isn't whitespace, then copy it over immediately
-    if (*eval != unwanted) {
+    if (*eval != unwanted)
+    {
       *cur = *eval;
       ++cur;
     }
@@ -165,9 +173,11 @@ size_t string_replace(std::string& source, const std::string& old_phrase,
   // return value
   size_t replacements = 0;
 
-  if (old_phrase != "") {
+  if (old_phrase != "")
+  {
     for (std::string::size_type i = source.find(old_phrase, 0);
-         i != source.npos; i = source.find(old_phrase, i)) {
+         i != source.npos; i = source.find(old_phrase, i))
+    {
       source.replace(i, old_phrase.size(), new_phrase);
       i += new_phrase.size();
 
@@ -193,12 +203,14 @@ std::string& strip_comments(std::string& input)
   // place the input in the string stream
   source << input;
 
-  while (std::getline(source, cur)) {
+  while (std::getline(source, cur))
+  {
     std::vector<std::string> tokens;
     std::vector<std::string> pivots;
     tokenizer(cur, splitters, tokens, pivots);
 
-    if (tokens.size()) {
+    if (tokens.size())
+    {
       dest << tokens[0];
       dest << "\n";
     }
@@ -218,12 +230,16 @@ void tokenizer(const std::string& input,
   tokens.clear();
   pivots.clear();
 
-  for (; cur < input.size(); ++cur) {
-    for (std::string::size_type i = 0; i < splitters.size(); ++i) {
+  for (; cur < input.size(); ++cur)
+  {
+    for (std::string::size_type i = 0; i < splitters.size(); ++i)
+    {
       // if the splitter string length is greater than zero
-      if (splitters[i].size() > 0) {
+      if (splitters[i].size() > 0)
+      {
         // if the first char of the splitter string is equal to the char
-        if (input[cur] == splitters[i][0]) {
+        if (input[cur] == splitters[i][0])
+        {
           std::string::size_type checker = cur;
           std::string::size_type j = 1;
           for (++checker; checker < input.size() && j < splitters[i].size() &&
@@ -232,7 +248,8 @@ void tokenizer(const std::string& input,
             ;
 
           // we have found a splitter. Tokenize from last to splitter.
-          if (j == splitters[i].size()) {
+          if (j == splitters[i].size())
+          {
             // need to update this to only have as many pivots as tokens - 1
             pivots.push_back(input.substr(cur, j));
 
@@ -251,7 +268,8 @@ void tokenizer(const std::string& input,
 
   }  // for chars
 
-  if (last != cur) {
+  if (last != cur)
+  {
     tokens.push_back(input.substr(last, cur - last));
   }
 }
@@ -265,7 +283,8 @@ int split_hostport_identifier(
   delim = delim == key.npos ? key.rfind('@') : delim;
 
   // no delimiter found
-  if (delim == key.npos) {
+  if (delim == key.npos)
+  {
     host = key;
     port = "";
 
@@ -310,7 +329,8 @@ std::string file_to_string(const std::string& filename)
   std::ifstream file(filename.c_str());
 
   // if the file was able to open
-  if (file.is_open()) {
+  if (file.is_open())
+  {
     std::getline(file, line);
 
     if (line != "")
@@ -321,7 +341,9 @@ std::string file_to_string(const std::string& filename)
     while (std::getline(file, line))
       buffer << "\n" << line;
     file.close();
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "utility::file_to_string:"
         " failed to open file: %s\n",
@@ -336,13 +358,16 @@ std::string expand_envs(const std::string& source)
 {
   std::stringstream buffer;
 
-  for (size_t i = 0; i < source.size(); ++i) {
+  for (size_t i = 0; i < source.size(); ++i)
+  {
     // environment variable must be larger than $()
-    if (source[i] == '$' && i + 3 < source.size()) {
+    if (source[i] == '$' && i + 3 < source.size())
+    {
       char* value = get_var(source, i + 2, i);
       if (value)
         buffer << value;
-    } else
+    }
+    else
       buffer << source[i];
   }
   return buffer.str();
@@ -351,8 +376,10 @@ std::string expand_envs(const std::string& source)
 /// grab an environment variable value (@see expand_envs)
 char* get_var(const std::string& source, size_t cur, size_t& end)
 {
-  for (end = cur; end < source.size(); ++end) {
-    if (source[end] == ')' || source[end] == '}') {
+  for (end = cur; end < source.size(); ++end)
+  {
+    if (source[end] == ')' || source[end] == '}')
+    {
       return getenv(source.substr(cur, end - cur).c_str());
     }
   }
@@ -373,7 +400,8 @@ std::string clean_dir_name(const std::string& source)
 
   std::string target(source);
 
-  for (std::string::iterator i = target.begin(); i != target.end(); ++i) {
+  for (std::string::iterator i = target.begin(); i != target.end(); ++i)
+  {
     if (*i == REPLACE_THIS)
       *i = REPLACE_WITH;
   }
@@ -387,11 +415,14 @@ int read_file(const std::string& filename, void*& buffer, size_t& size,
   int ret_value = 0;
   size = 0;
 
-  if (filename != "") {
-    try {
+  if (filename != "")
+  {
+    try
+    {
       std::ifstream file(filename, std::ifstream::binary);
 
-      if (file) {
+      if (file)
+      {
         file.seekg(0, file.end);
         size = (size_t)file.tellg();
         file.seekg(0, file.beg);
@@ -401,13 +432,15 @@ int read_file(const std::string& filename, void*& buffer, size_t& size,
             " reading %d bytes from %s\n",
             (int)size, filename.c_str());
 
-        if (add_zero_char) {
+        if (add_zero_char)
+        {
           ++size;
         }
 
         buffer = new unsigned char[size];
 
-        if (size > 0) {
+        if (size > 0)
+        {
           file.read((char*)buffer, size);
 
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
@@ -415,7 +448,8 @@ int read_file(const std::string& filename, void*& buffer, size_t& size,
               " successfully read %d bytes from %s\n",
               (int)size, filename.c_str());
 
-          if (add_zero_char) {
+          if (add_zero_char)
+          {
             unsigned char* zeroed = (unsigned char*)buffer;
             zeroed[size - 1] = 0;
           }  // end if adding a zero char
@@ -428,7 +462,8 @@ int read_file(const std::string& filename, void*& buffer, size_t& size,
       else
         ret_value = -1;
     }  // end try
-    catch (const std::exception& e) {
+    catch (const std::exception& e)
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "utility::read_file:"
           " exception: %s\n",
@@ -436,7 +471,8 @@ int read_file(const std::string& filename, void*& buffer, size_t& size,
 
       ret_value = -1;
     }
-  } else
+  }
+  else
     ret_value = -1;
 
   return ret_value;
@@ -449,9 +485,11 @@ ssize_t write_file(const std::string& filename, void* buffer, size_t size)
 
   std::ofstream file;
 
-  try {
+  try
+  {
     file.open(filename, std::ios::out | std::ios::binary);
-    if (file.write((char*)buffer, size)) {
+    if (file.write((char*)buffer, size))
+    {
       actual = size;
     }
     file.close();
@@ -460,7 +498,9 @@ ssize_t write_file(const std::string& filename, void* buffer, size_t size)
         "utility::write_file:"
         " wrote %d bytes to %s\n",
         (int)actual, filename.c_str());
-  } catch (const std::exception& e) {
+  }
+  catch (const std::exception& e)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "utility::write_file:"
         " exception: %s\n",
@@ -474,7 +514,8 @@ ssize_t write_file(const std::string& filename, void* buffer, size_t size)
 double rand_double(double floor, double ceiling, bool set_seed_to_time)
 {
   // check if the user has specified setting through srand
-  if (set_seed_to_time) {
+  if (set_seed_to_time)
+  {
     srand((unsigned int)get_time());
   }
 
@@ -525,7 +566,8 @@ SecondsDuration sleep(const SecondsDuration& sleep_time)
   TVal target = start + sleep_time;
   TVal current;
 
-  while ((current = get_time_value()) < target) {
+  while ((current = get_time_value()) < target)
+  {
 #ifndef MADARA_FEATURE_SIMTIME
     std::this_thread::sleep_until(target);
 #else
@@ -547,9 +589,12 @@ SecondsDuration sleep(const SecondsDuration& sleep_time)
       actual_target.time_since_epoch().count() << " " <<
       max_target.time_since_epoch().count() << std::endl;
 #endif
-    if (actual_target < max_target) {
+    if (actual_target < max_target)
+    {
       std::this_thread::sleep_until(actual_target);
-    } else {
+    }
+    else
+    {
       std::this_thread::sleep_until(max_target);
     }
 #endif
@@ -580,16 +625,20 @@ bool wait_true(knowledge::KnowledgeBase& knowledge, const std::string& variable,
 
   // wait for expression to be true
   while (!last_value.is_true() &&
-         (settings.max_wait_time < 0 || !enforcer.is_done())) {
+         (settings.max_wait_time < 0 || !enforcer.is_done()))
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_DETAILED,
         "utility::wait_true:"
         " last value didn't result in success\n");
 
     // Unlike the other wait statements, we allow for a time based wait.
     // To do this, we allow a user to specify a
-    if (settings.poll_frequency > 0) {
+    if (settings.poll_frequency > 0)
+    {
       enforcer.sleep_until_next();
-    } else {
+    }
+    else
+    {
       knowledge.wait_for_change();
     }
 
@@ -606,7 +655,8 @@ bool wait_true(knowledge::KnowledgeBase& knowledge, const std::string& variable,
         last_value.to_string().c_str());
   }  // end while (!last)
 
-  if (enforcer.is_done()) {
+  if (enforcer.is_done())
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_DETAILED,
         "utility::wait_true:"
         " Evaluate did not succeed. Timeout occurred\n",
@@ -642,16 +692,20 @@ bool wait_false(knowledge::KnowledgeBase& knowledge,
 
   // wait for expression to be true
   while (last_value.is_true() &&
-         (settings.max_wait_time < 0 || !enforcer.is_done())) {
+         (settings.max_wait_time < 0 || !enforcer.is_done()))
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_DETAILED,
         "utility::wait_false:"
         " last value didn't result in success\n");
 
     // Unlike the other wait statements, we allow for a time based wait.
     // To do this, we allow a user to specify a
-    if (settings.poll_frequency > 0) {
+    if (settings.poll_frequency > 0)
+    {
       enforcer.sleep_until_next();
-    } else {
+    }
+    else
+    {
       knowledge.wait_for_change();
     }
 
@@ -668,7 +722,8 @@ bool wait_false(knowledge::KnowledgeBase& knowledge,
         last_value.to_string().c_str());
   }  // end while (!last)
 
-  if (enforcer.is_done()) {
+  if (enforcer.is_done())
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "utility::wait_false:"
         " Evaluate did not succeed. Timeout occurred\n",
@@ -685,7 +740,8 @@ bool wait_false(knowledge::KnowledgeBase& knowledge,
 std::pair<std::string, uint16_t> parse_address(std::string addr)
 {
   size_t colon_pos = addr.find(':');
-  if (colon_pos == std::string::npos || colon_pos >= addr.size() - 1) {
+  if (colon_pos == std::string::npos || colon_pos >= addr.size() - 1)
+  {
     return {addr, 0};
   }
 

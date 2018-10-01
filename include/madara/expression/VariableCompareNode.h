@@ -34,7 +34,8 @@ public:
       madara::knowledge::KnowledgeRecord value, int type, ComponentNode* rhs,
       madara::knowledge::ThreadSafeContext& context);
 
-  enum Comparators {
+  enum Comparators
+  {
     LESS_THAN = 0,
     LESS_THAN_EQUAL = 1,
     EQUAL = 2,

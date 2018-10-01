@@ -226,15 +226,24 @@ int MADARA_EXPORT prep_rebroadcast(knowledge::ThreadSafeContext& context,
  **/
 inline std::string MADARA_EXPORT get_operation_type(int type)
 {
-  if (type == 0) {
+  if (type == 0)
+  {
     return "IDLE_OPERATION";
-  } else if (type == 1) {
+  }
+  else if (type == 1)
+  {
     return "SENDING_OPERATION";
-  } else if (type == 2) {
+  }
+  else if (type == 2)
+  {
     return "RECEIVING_OPERATION";
-  } else if (type == 3) {
+  }
+  else if (type == 3)
+  {
     return "REBROADCASTING_OPERATION";
-  } else {
+  }
+  else
+  {
     return "UNKNOWN_OPERATION";
   }
 }

@@ -113,7 +113,8 @@ int main(int, char**)
           : "FAIL");
 
   if (!my_local_1.get_settings().treat_locals_as_globals ||
-      !my_local_2.get_settings().treat_locals_as_globals) {
+      !my_local_2.get_settings().treat_locals_as_globals)
+  {
     ++madara_fails;
   }
 
@@ -153,9 +154,12 @@ int main(int, char**)
   if (references.size() != 2)
     ++madara_fails;
 
-  if (madara_fails > 0) {
+  if (madara_fails > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

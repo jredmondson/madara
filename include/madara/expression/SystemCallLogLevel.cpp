@@ -33,17 +33,20 @@ madara::expression::SystemCallLogLevel::prune(bool& can_change)
 
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() > 0) {
+  if (nodes_.size() > 0)
+  {
     bool arg_can_change = false;
     result = nodes_[0]->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
     }
   }
 
-  if (nodes_.size() > 1) {
+  if (nodes_.size() > 1)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallLogLevel: "
         "KARL COMPILE ERROR:"
@@ -68,7 +71,8 @@ madara::expression::SystemCallLogLevel::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::SystemCallLogLevel: "
         "System call log_level is setting log level\n");
@@ -83,13 +87,17 @@ madara::expression::SystemCallLogLevel::evaluate(
         level);
 
     return knowledge::KnowledgeRecord(level);
-  } else if (nodes_.size() == 0) {
+  }
+  else if (nodes_.size() == 0)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::SystemCallLogLevel: "
         "System call log_level is returning log level.\n");
 
     return knowledge::KnowledgeRecord(logger_->get_level());
-  } else if (nodes_.size() > 1) {
+  }
+  else if (nodes_.size() > 1)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallLogLevel: "
         "KARL RUNTIME ERROR:"

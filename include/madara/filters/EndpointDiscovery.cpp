@@ -21,7 +21,8 @@ void madara::filters::EndpointDiscovery::filter(
     const transport::TransportContext& transport_context,
     knowledge::Variables& vars)
 {
-  if (!initialized_) {
+  if (!initialized_)
+  {
     endpoints_.set_name(prefix_, vars);
     initialized_ = true;
   }
@@ -36,15 +37,18 @@ void madara::filters::EndpointDiscovery::filter(
 
   endpoints_.set(endpoint, cur_time);
 
-  if (heart_beat_ > 0 && last_clear_ != cur_time) {
+  if (heart_beat_ > 0 && last_clear_ != cur_time)
+  {
     std::vector<std::string> keys;
     endpoints_.sync_keys();
 
     endpoints_.keys(keys);
 
-    for (size_t i = 0; i < keys.size(); ++i) {
+    for (size_t i = 0; i < keys.size(); ++i)
+    {
       // if the current endpoint is old, erase it
-      if (cur_time - endpoints_[keys[i]].to_integer() > heart_beat_) {
+      if (cur_time - endpoints_[keys[i]].to_integer() > heart_beat_)
+      {
         madara_logger_log(vars.get_context()->get_logger(), logger::LOG_MINOR,
             "EndpointDiscovery::filter:"
             " Erasing endpoint %s\n",

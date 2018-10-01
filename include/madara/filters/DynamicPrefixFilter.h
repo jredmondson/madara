@@ -51,11 +51,14 @@ public:
     // local copy (fast access to prefix vector)
     std::vector<std::string> prefixes;
 
-    if (!initialized_) {
+    if (!initialized_)
+    {
       // set the initial vector up
       prefixes_.set_name(name, vars);
       initialized_ = true;
-    } else {
+    }
+    else
+    {
       // resize for what the current vector is indicating
       prefixes_.resize();
     }
@@ -64,19 +67,24 @@ public:
     prefixes_.copy_to(prefixes);
 
     // by default, the vector is empty and all prefixes are accepted
-    if (prefixes.size() > 0) {
+    if (prefixes.size() > 0)
+    {
       // because of the usage of erase, don't auto inc record in for loop
-      for (auto record = records.begin(); record != records.end();) {
+      for (auto record = records.begin(); record != records.end();)
+      {
         // check for valid prefix
         bool accepted_prefix = false;
-        for (auto prefix : prefixes) {
-          if (utility::begins_with(record->first, prefix)) {
+        for (auto prefix : prefixes)
+        {
+          if (utility::begins_with(record->first, prefix))
+          {
             accepted_prefix = true;
           }
         }
 
         // if not valid, remove the record and update iterator
-        if (!accepted_prefix) {
+        if (!accepted_prefix)
+        {
           madara_logger_ptr_log(madara::logger::global_logger.get(),
               logger::LOG_MAJOR,
               "DynamicPrefixFilter::filter: "
@@ -85,7 +93,8 @@ public:
 
               record = records.erase(record);
         }  // end not valid prefix
-        else {
+        else
+        {
           // valid prefix so keep the record and proceed to next
           ++record;
         }  // end valid prefix

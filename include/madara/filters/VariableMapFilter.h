@@ -48,13 +48,16 @@ public:
 
     utility::tokenizer(config, splitters, tokens, pivots);
 
-    if (tokens.size() % 2 == 0) {
+    if (tokens.size() % 2 == 0)
+    {
       // valid configuration file
-      for (size_t i = 0; i + 1 < tokens.size(); i += 2) {
+      for (size_t i = 0; i + 1 < tokens.size(); i += 2)
+      {
         utility::strip_white_space(tokens[i]);
         utility::strip_white_space(tokens[i + 1]);
 
-        if (tokens[i] == "" || tokens[i + 1] == "") {
+        if (tokens[i] == "" || tokens[i + 1] == "")
+        {
           // invalid configuration file
           madara_logger_ptr_log(madara::logger::global_logger.get(),
               logger::LOG_ERROR,
@@ -66,7 +69,9 @@ public:
                   "VariableMapFilter::process_config: ERROR: "
                   "configuration mappings has an empty map endpoint. "
                   "Unable to process config.");
-        } else {
+        }
+        else
+        {
           knowledge::VariableReference ref;
           // std::pair <std::string, knowledge::VariableReference> entry;
           // entry.first = tokens[i + 1];
@@ -75,7 +80,9 @@ public:
           map_[tokens[i]] = {tokens[i + 1], ref};
         }
       }
-    } else {
+    }
+    else
+    {
       // invalid configuration file
       madara_logger_ptr_log(madara::logger::global_logger.get(),
           logger::LOG_ERROR,
@@ -99,7 +106,8 @@ public:
    **/
   inline void read_config(const std::string& filename)
   {
-    if (filename != "") {
+    if (filename != "")
+    {
       process_config(utility::file_to_string(filename));
     }
   }
@@ -127,19 +135,22 @@ public:
       const transport::TransportContext&, knowledge::Variables& vars)
   {
     // if we haven't setup valid VariableReferences yet, do so
-    if (!initialized_) {
+    if (!initialized_)
+    {
       std::map<std::string,
           std::pair<std::string, knowledge::VariableReference>>::iterator i =
           map_.begin();
 
-      for (; i != map_.end(); ++i) {
+      for (; i != map_.end(); ++i)
+      {
         // set the ref for the kb local variable
         i->second.second = vars.get_ref(i->first);
       }
     }
 
     // iterate through the map and add the local variables to records
-    for (auto entry : map_) {
+    for (auto entry : map_)
+    {
       records[entry.second.first] = vars.get(entry.second.second);
     }
   }  // end filter function

@@ -14,8 +14,7 @@ extern "C" {
  * Signature: ()J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_filters_CounterFilter_jni_1CounterFilter__
-  (JNIEnv *, jobject);
+Java_ai_madara_filters_CounterFilter_jni_1CounterFilter__(JNIEnv*, jobject);
 
 /*
  * Class:     ai_madara_filters_CounterFilter
@@ -23,8 +22,8 @@ Java_ai_madara_filters_CounterFilter_jni_1CounterFilter__
  * Signature: (J)D
  */
 MADARA_EXPORT jdouble JNICALL
-Java_ai_madara_filters_CounterFilter_jni_1getThroughput
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_filters_CounterFilter_jni_1getThroughput(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_filters_CounterFilter
@@ -32,8 +31,8 @@ Java_ai_madara_filters_CounterFilter_jni_1getThroughput
  * Signature: (JJ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_filters_CounterFilter_jni_1addReceiveFilterTo
-  (JNIEnv *, jobject, jlong, jlong);
+Java_ai_madara_filters_CounterFilter_jni_1addReceiveFilterTo(
+    JNIEnv*, jobject, jlong, jlong);
 
 /*
  * Class:     ai_madara_filters_CounterFilter
@@ -41,8 +40,8 @@ Java_ai_madara_filters_CounterFilter_jni_1addReceiveFilterTo
  * Signature: (JJ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_filters_CounterFilter_jni_1addSendFilterTo
-  (JNIEnv *, jobject, jlong, jlong);
+Java_ai_madara_filters_CounterFilter_jni_1addSendFilterTo(
+    JNIEnv*, jobject, jlong, jlong);
 
 /*
  * Class:     ai_madara_filters_CounterFilter
@@ -50,17 +49,16 @@ Java_ai_madara_filters_CounterFilter_jni_1addSendFilterTo
  * Signature: (JJ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_filters_CounterFilter_jni_1addRebroadcastFilterTo
-  (JNIEnv *, jobject, jlong, jlong);
+Java_ai_madara_filters_CounterFilter_jni_1addRebroadcastFilterTo(
+    JNIEnv*, jobject, jlong, jlong);
 
 /*
  * Class:     ai_madara_filters_CounterFilter
  * Method:    jni_getCount
  * Signature: (J)J
  */
-MADARA_EXPORT jlong JNICALL
-Java_ai_madara_filters_CounterFilter_jni_1getCount
-  (JNIEnv *, jobject, jlong);
+MADARA_EXPORT jlong JNICALL Java_ai_madara_filters_CounterFilter_jni_1getCount(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_filters_CounterFilter
@@ -68,8 +66,7 @@ Java_ai_madara_filters_CounterFilter_jni_1getCount
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_filters_CounterFilter_jni_1getElapsed
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_filters_CounterFilter_jni_1getElapsed(JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_filters_CounterFilter
@@ -77,8 +74,8 @@ Java_ai_madara_filters_CounterFilter_jni_1getElapsed
  * Signature: (J)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_filters_CounterFilter_jni_1freeCounterFilter
-  (JNIEnv *, jclass, jlong);
+Java_ai_madara_filters_CounterFilter_jni_1freeCounterFilter(
+    JNIEnv*, jclass, jlong);
 
 #ifdef __cplusplus
 }

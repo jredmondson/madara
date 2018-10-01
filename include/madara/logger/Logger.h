@@ -17,13 +17,17 @@
  * @param  logger  the logger instance to use
  * @param  level   the logging level
  **/
-#define madara_logger_log(loggering, level, ...)               \
-  if (madara::logger::Logger::get_thread_level() >= 0) {       \
-    if (level <= madara::logger::Logger::get_thread_level()) { \
-      loggering.log(level, __VA_ARGS__);                       \
-    }                                                          \
-  } else if (level <= loggering.get_level()) {                 \
-    loggering.log(level, __VA_ARGS__);                         \
+#define madara_logger_log(loggering, level, ...)             \
+  if (madara::logger::Logger::get_thread_level() >= 0)       \
+  {                                                          \
+    if (level <= madara::logger::Logger::get_thread_level()) \
+    {                                                        \
+      loggering.log(level, __VA_ARGS__);                     \
+    }                                                        \
+  }                                                          \
+  else if (level <= loggering.get_level())                   \
+  {                                                          \
+    loggering.log(level, __VA_ARGS__);                       \
   }
 
 /**
@@ -34,13 +38,17 @@
  * @param  logger  the logger pointer to use
  * @param  level   the logging level
  **/
-#define madara_logger_ptr_log(loggering, level, ...)                    \
-  if (loggering && (madara::logger::Logger::get_thread_level() >= 0)) { \
-    if (level <= madara::logger::Logger::get_thread_level()) {          \
-      loggering->log(level, __VA_ARGS__);                               \
-    }                                                                   \
-  } else if (loggering && (level <= loggering->get_level())) {          \
-    loggering->log(level, __VA_ARGS__);                                 \
+#define madara_logger_ptr_log(loggering, level, ...)                  \
+  if (loggering && (madara::logger::Logger::get_thread_level() >= 0)) \
+  {                                                                   \
+    if (level <= madara::logger::Logger::get_thread_level())          \
+    {                                                                 \
+      loggering->log(level, __VA_ARGS__);                             \
+    }                                                                 \
+  }                                                                   \
+  else if (loggering && (level <= loggering->get_level()))            \
+  {                                                                   \
+    loggering->log(level, __VA_ARGS__);                               \
   }
 
 /**
@@ -51,19 +59,27 @@
  *                         not null)
  * @param  level           the logging level
  **/
-#define madara_logger_cond_log_ptrs(                                          \
-    conditional, logger_ptr, alt_logger_ptr, level, ...)                      \
-  if (conditional && logger_ptr &&                                            \
-      (madara::logger::Logger::get_thread_level() >= 0)) {                    \
-    if (level <= madara::logger::Logger::get_thread_level()) {                \
-      logger_ptr->log(level, __VA_ARGS__);                                    \
-    } else {                                                                  \
-      alt_logger_ptr->log(level, __VA_ARGS__);                                \
-    }                                                                         \
-  } else if (conditional && logger_ptr && level <= logger_ptr->get_level()) { \
-    logger_ptr->log(level, __VA_ARGS__);                                      \
-  } else {                                                                    \
-    alt_logger_ptr->log(level, __VA_ARGS__);                                  \
+#define madara_logger_cond_log_ptrs(                                      \
+    conditional, logger_ptr, alt_logger_ptr, level, ...)                  \
+  if (conditional && logger_ptr &&                                        \
+      (madara::logger::Logger::get_thread_level() >= 0))                  \
+  {                                                                       \
+    if (level <= madara::logger::Logger::get_thread_level())              \
+    {                                                                     \
+      logger_ptr->log(level, __VA_ARGS__);                                \
+    }                                                                     \
+    else                                                                  \
+    {                                                                     \
+      alt_logger_ptr->log(level, __VA_ARGS__);                            \
+    }                                                                     \
+  }                                                                       \
+  else if (conditional && logger_ptr && level <= logger_ptr->get_level()) \
+  {                                                                       \
+    logger_ptr->log(level, __VA_ARGS__);                                  \
+  }                                                                       \
+  else                                                                    \
+  {                                                                       \
+    alt_logger_ptr->log(level, __VA_ARGS__);                              \
   }
 
 /**
@@ -74,18 +90,26 @@
  *                         not null)
  * @param  level           the logging level
  **/
-#define madara_logger_cond_log(                                           \
-    conditional, loggering, alt_logger_ptr, level, ...)                   \
-  if (conditional && (madara::logger::Logger::get_thread_level() >= 0)) { \
-    if (level <= madara::logger::Logger::get_thread_level()) {            \
-      loggering.log(level, __VA_ARGS__);                                  \
-    } else {                                                              \
-      alt_logger_ptr->log(level, __VA_ARGS__);                            \
-    }                                                                     \
-  } else if (conditional && level <= loggering.get_level()) {             \
-    loggering.log(level, __VA_ARGS__);                                    \
-  } else {                                                                \
-    alt_logger_ptr->log(level, __VA_ARGS__);                              \
+#define madara_logger_cond_log(                                         \
+    conditional, loggering, alt_logger_ptr, level, ...)                 \
+  if (conditional && (madara::logger::Logger::get_thread_level() >= 0)) \
+  {                                                                     \
+    if (level <= madara::logger::Logger::get_thread_level())            \
+    {                                                                   \
+      loggering.log(level, __VA_ARGS__);                                \
+    }                                                                   \
+    else                                                                \
+    {                                                                   \
+      alt_logger_ptr->log(level, __VA_ARGS__);                          \
+    }                                                                   \
+  }                                                                     \
+  else if (conditional && level <= loggering.get_level())               \
+  {                                                                     \
+    loggering.log(level, __VA_ARGS__);                                  \
+  }                                                                     \
+  else                                                                  \
+  {                                                                     \
+    alt_logger_ptr->log(level, __VA_ARGS__);                            \
   }
 
 namespace madara
@@ -95,7 +119,8 @@ namespace logger
 /**
  * Logging levels available for MADARA library
  **/
-enum LogLevels {
+enum LogLevels
+{
   LOG_EMERGENCY = 0,
   LOG_ALWAYS = 0,
   LOG_ERROR = 1,

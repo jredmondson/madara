@@ -120,11 +120,13 @@ inline auto type_match(type<std::vector<T> >, const KnowledgeRecord& kr) ->
 template<typename T>
 inline T get(const KnowledgeRecord& kr)
 {
-  if (!kr.exists()) {
+  if (!kr.exists())
+  {
     throw exceptions::MissingValueException("madara::knowledge::get: "
                                             "KnowledgeRecord does not exist");
   }
-  if (!type_match(type<T>{}, kr)) {
+  if (!type_match(type<T>{}, kr))
+  {
     throw exceptions::MismatchedTypeException(
         "madara::knowledge::get: "
         "Expected type does not match the KnowledgeRecord's type (" +

@@ -7,7 +7,8 @@
 inline void madara::knowledge::containers::IntegerStaged::modify(void)
 {
   ContextGuard context_guard(*context_);
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     context_->mark_modified(variable_);
   }
 }
@@ -19,7 +20,8 @@ inline std::string madara::knowledge::containers::IntegerStaged::get_debug_info(
 
   result << "IntegerStaged: ";
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
@@ -40,7 +42,8 @@ madara::knowledge::containers::IntegerStaged::clone(void) const
 inline void madara::knowledge::containers::IntegerStaged::operator=(
     const IntegerStaged& rhs)
 {
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
     this->has_changed_ = rhs.has_changed_;
@@ -64,7 +67,8 @@ inline void madara::knowledge::containers::IntegerStaged::set_name(
   name_ = var_name;
   variable_ = context_->get_ref(name_, keep_local);
 
-  if (sync) {
+  if (sync)
+  {
     value_ = context_->get(variable_).to_integer();
     has_changed_ = false;
   }
@@ -82,7 +86,8 @@ inline void madara::knowledge::containers::IntegerStaged::set_name(
   name_ = var_name;
   variable_ = context_->get_ref(name_, keep_local);
 
-  if (sync) {
+  if (sync)
+  {
     value_ = context_->get(variable_).to_integer();
     has_changed_ = false;
   }
@@ -100,7 +105,8 @@ inline void madara::knowledge::containers::IntegerStaged::set_name(
   name_ = var_name;
   variable_ = context_->get_ref(name_, keep_local);
 
-  if (sync) {
+  if (sync)
+  {
     value_ = context_->get(variable_).to_integer();
     has_changed_ = false;
   }
@@ -171,7 +177,8 @@ inline bool madara::knowledge::containers::IntegerStaged::exists(void) const
 {
   bool result(false);
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     result = context_->exists(variable_);
@@ -254,7 +261,8 @@ inline std::string madara::knowledge::containers::IntegerStaged::to_string(
 inline void madara::knowledge::containers::IntegerStaged::set_quality(
     uint32_t quality, const KnowledgeReferenceSettings& settings)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     context_->set_quality(name_, quality, true, settings);

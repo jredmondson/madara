@@ -31,9 +31,12 @@ public:
    **/
   Acquire_VM(bool no_detach = false)
   {
-    if (!no_detach) {
+    if (!no_detach)
+    {
       needs_detach = !madara_jni_is_attached();
-    } else {
+    }
+    else
+    {
       needs_detach = false;
     }
 

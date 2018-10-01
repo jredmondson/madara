@@ -79,7 +79,8 @@ template<class T>
 void* madara::utility::LQueueNode<T>::operator new(size_t)
 {
   // extract element from the free_list_ if there is one left
-  if (LQueueNode<T>::free_list_ != 0) {
+  if (LQueueNode<T>::free_list_ != 0)
+  {
     // get the top element of the list
     LQueueNode<T>* new_node = LQueueNode<T>::free_list_;
 
@@ -98,7 +99,8 @@ template<class T>
 void madara::utility::LQueueNode<T>::operator delete(void* ptr)
 {
   // do nothing on a null pointer
-  if (ptr != 0) {
+  if (ptr != 0)
+  {
     // cast to a node pointer
     LQueueNode<T>* node = static_cast<LQueueNode<T>*>(ptr);
 
@@ -122,7 +124,8 @@ template<class T>
 void madara::utility::LQueueNode<T>::free_list_release(void)
 {
   // delete free list element by element
-  while (LQueueNode<T>::free_list_ != 0) {
+  while (LQueueNode<T>::free_list_ != 0)
+  {
     LQueueNode<T>* node = LQueueNode<T>::free_list_;
     LQueueNode<T>::free_list_ = node->next_;
     ::operator delete(node);
@@ -136,7 +139,8 @@ template<class T>
 void madara::utility::LQueueNode<T>::free_list_allocate(size_t n)
 {
   // add a new element to the stack n times
-  for (size_t node_number = 0; node_number < n; ++node_number) {
+  for (size_t node_number = 0; node_number < n; ++node_number)
+  {
     // create a new element avoiding the overwritten new operator
     LQueueNode<T>* new_node =
         reinterpret_cast<LQueueNode<T>*>(::operator new(sizeof(LQueueNode<T>)));
@@ -219,7 +223,8 @@ void madara::utility::LQueue<T>::copy_list(
 
   // enqueue the elements into the temporary list
   for (typename LQueue<T>::const_iterator it = rhs.begin(); it != rhs.end();
-       ++it) {
+       ++it)
+  {
     temp.enqueue(*it);
   }
 
@@ -237,7 +242,8 @@ void madara::utility::LQueue<T>::delete_list()
 {
   // we do not delete the dummy node here. This will be done in the destructor
   // we dequeue all elements until the queue is empty again
-  while (!is_empty()) {
+  while (!is_empty())
+  {
     dequeue_i();
   }
 }
@@ -248,7 +254,8 @@ madara::utility::LQueue<T>& madara::utility::LQueue<T>::operator=(
     const madara::utility::LQueue<T>& rhs)
 {
   // test for self assignment first
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     // delete old data of the rhs
     delete_list();
 
@@ -298,7 +305,8 @@ bool madara::utility::LQueue<T>::operator!=(
 template<class T>
 void madara::utility::LQueue<T>::enqueue(const T& new_item)
 {
-  try {
+  try
+  {
     // assign the value to the tail element before the new allocation
     // to make sure that exceptions thrown in the assignment operator
     // of T does leave the queue structure altered
@@ -310,7 +318,9 @@ void madara::utility::LQueue<T>::enqueue(const T& new_item)
 
     // increment the element count
     ++count_;
-  } catch (const ::std::bad_alloc&) {
+  }
+  catch (const ::std::bad_alloc&)
+  {
     // we transform a bad_alloc excption into an overflow exception,
     // because it basically means, that it is no longer possible
     // to enqueue new elements
@@ -325,7 +335,8 @@ template<class T>
 T madara::utility::LQueue<T>::dequeue(void)
 {
   // check for empty queue first
-  if (is_empty()) {
+  if (is_empty())
+  {
     throw Underflow();
   }
 
@@ -485,7 +496,8 @@ madara::utility::LQueueIterator<T>::LQueueIterator(
 {
   // iterator over the queue unto the right position
   // we save iterations for values > count_ by doing modulo calculations
-  for (pos = pos % (queue_.count_ - 1); pos > 0; --pos) {
+  for (pos = pos % (queue_.count_ - 1); pos > 0; --pos)
+  {
     // advance one position each time
     pos_ = pos_->next_;
   }
@@ -550,7 +562,8 @@ madara::utility::LQueueConstIterator<T>::LQueueConstIterator(
 {
   // iterator over the queue unto the right position
   // we save iterations for values > count_ by doing modulo calculations
-  for (pos = pos % (queue_.count_ - 1); pos > 0; --pos) {
+  for (pos = pos % (queue_.count_ - 1); pos > 0; --pos)
+  {
     // advance one position each time
     pos_ = pos_->next_;
   }

@@ -112,10 +112,13 @@ int main(int, char**)
   test_unshared_record();
   test_shared_record();
 
-  if (madara_tests_fail_count > 0) {
+  if (madara_tests_fail_count > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count
               << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

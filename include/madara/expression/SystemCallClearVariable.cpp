@@ -34,15 +34,19 @@ madara::expression::SystemCallClearVariable::prune(bool& can_change)
 
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     bool arg_can_change = false;
     result = nodes_[0]->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallClearVariable: "
         "KARL COMPILE ERROR:"
@@ -67,7 +71,8 @@ madara::expression::SystemCallClearVariable::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     std::string name = nodes_[0]->evaluate(settings).to_string();
 
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
@@ -77,7 +82,9 @@ madara::expression::SystemCallClearVariable::evaluate(
         name.c_str());
 
     return knowledge::KnowledgeRecord(context_.clear(name));
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallClearVariable: "
         "KARL RUNTIME ERROR:"

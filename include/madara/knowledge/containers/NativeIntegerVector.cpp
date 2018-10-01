@@ -13,7 +13,8 @@ madara::knowledge::containers::NativeIntegerVector::NativeIntegerVector(
   : BaseContainer(name, settings), context_(&(knowledge.get_context()))
 {
   vector_ = knowledge.get_ref(name, KnowledgeUpdateSettings(true));
-  if (size >= 0) {
+  if (size >= 0)
+  {
     resize(size);
   }
 }
@@ -24,7 +25,8 @@ madara::knowledge::containers::NativeIntegerVector::NativeIntegerVector(
   : BaseContainer(name, settings), context_(knowledge.get_context())
 {
   vector_ = knowledge.get_ref(name, settings);
-  if (size >= 0) {
+  if (size >= 0)
+  {
     resize(size);
   }
 }
@@ -40,7 +42,8 @@ madara::knowledge::containers::NativeIntegerVector::~NativeIntegerVector() {}
 void madara::knowledge::containers::NativeIntegerVector::modify(void)
 {
   ContextGuard context_guard(*context_);
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     context_->mark_modified(vector_);
   }
 }
@@ -52,7 +55,8 @@ std::string madara::knowledge::containers::NativeIntegerVector::get_debug_info(
 
   result << "Native Integer Vector: ";
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
@@ -84,7 +88,8 @@ madara::knowledge::containers::NativeIntegerVector::clone(void) const
 void madara::knowledge::containers::NativeIntegerVector::operator=(
     const NativeIntegerVector& rhs)
 {
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
     this->context_ = rhs.context_;
@@ -96,7 +101,8 @@ void madara::knowledge::containers::NativeIntegerVector::operator=(
 
 void madara::knowledge::containers::NativeIntegerVector::push_back(type value)
 {
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
@@ -108,7 +114,8 @@ void madara::knowledge::containers::NativeIntegerVector::push_back(type value)
 
 void madara::knowledge::containers::NativeIntegerVector::resize(size_t size)
 {
-  if (context_ && name_ != "") {
+  if (context_ && name_ != "")
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
@@ -131,7 +138,8 @@ size_t madara::knowledge::containers::NativeIntegerVector::size(void) const
 void madara::knowledge::containers::NativeIntegerVector::set_name(
     const std::string& var_name, KnowledgeBase& knowledge, int size)
 {
-  if (context_ != &(knowledge.get_context()) || name_ != var_name) {
+  if (context_ != &(knowledge.get_context()) || name_ != var_name)
+  {
     context_ = &(knowledge.get_context());
 
     ContextGuard context_guard(*context_);
@@ -149,7 +157,8 @@ void madara::knowledge::containers::NativeIntegerVector::set_name(
 void madara::knowledge::containers::NativeIntegerVector::set_name(
     const std::string& var_name, Variables& knowledge, int size)
 {
-  if (context_ != knowledge.get_context() || name_ != var_name) {
+  if (context_ != knowledge.get_context() || name_ != var_name)
+  {
     context_ = knowledge.get_context();
 
     ContextGuard context_guard(*context_);
@@ -167,7 +176,8 @@ void madara::knowledge::containers::NativeIntegerVector::set_name(
 void madara::knowledge::containers::NativeIntegerVector::set_name(
     const std::string& var_name, ThreadSafeContext& knowledge, int size)
 {
-  if (context_ != &knowledge || name_ != var_name) {
+  if (context_ != &knowledge || name_ != var_name)
+  {
     context_ = &knowledge;
 
     ContextGuard context_guard(*context_);
@@ -185,7 +195,8 @@ void madara::knowledge::containers::NativeIntegerVector::set_name(
 void madara::knowledge::containers::NativeIntegerVector::exchange(
     NativeIntegerVector& other)
 {
-  if (context_ && other.context_) {
+  if (context_ && other.context_)
+  {
     std::lock(*context_, *other.context_, mutex_, other.mutex_);
 
     ContextGuard context_guard(*context_, std::adopt_lock);
@@ -203,7 +214,8 @@ void madara::knowledge::containers::NativeIntegerVector::exchange(
 void madara::knowledge::containers::NativeIntegerVector::transfer_to(
     NativeIntegerVector& other)
 {
-  if (context_ && other.context_) {
+  if (context_ && other.context_)
+  {
     std::lock(*context_, *other.context_, mutex_, other.mutex_);
 
     ContextGuard context_guard(*context_, std::adopt_lock);
@@ -214,7 +226,8 @@ void madara::knowledge::containers::NativeIntegerVector::transfer_to(
     size_t other_size = other.size();
     size_t this_size = this->size();
 
-    if (this_size > 0) {
+    if (this_size > 0)
+    {
       size_t size = other_size + this_size;
       other.resize((int)size);
 
@@ -223,7 +236,8 @@ void madara::knowledge::containers::NativeIntegerVector::transfer_to(
 
       rhs.set_index(size - 1, lhs.retrieve_index(this_size - 1).to_double());
 
-      for (size_t i = 0, j = other_size; i < this_size - 1; ++i, ++j) {
+      for (size_t i = 0, j = other_size; i < this_size - 1; ++i, ++j)
+      {
         rhs.set_index(other_size, lhs.retrieve_index(i).to_double());
       }
 
@@ -237,13 +251,15 @@ void madara::knowledge::containers::NativeIntegerVector::transfer_to(
 void madara::knowledge::containers::NativeIntegerVector::copy_to(
     KnowledgeVector& target) const
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
     target.resize(size());
 
-    for (size_t i = 0; i < target.size(); ++i) {
+    for (size_t i = 0; i < target.size(); ++i)
+    {
       target[i] = knowledge::KnowledgeRecord((*this)[i]);
     }
   }
@@ -255,7 +271,8 @@ madara::knowledge::containers::NativeIntegerVector::type
 {
   knowledge::KnowledgeRecord result;
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     result = context_->get(vector_, settings_);
@@ -272,7 +289,8 @@ int madara::knowledge::containers::NativeIntegerVector::set(
 {
   int result = -1;
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     result = context_->set_index(vector_, index, value, settings_);
@@ -286,7 +304,8 @@ int madara::knowledge::containers::NativeIntegerVector::set(
 {
   int result = -1;
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     result = context_->set_index(vector_, index, value, settings);
@@ -300,7 +319,8 @@ int madara::knowledge::containers::NativeIntegerVector::set(
 {
   int result = -1;
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     context_->set(vector_, value, settings_);
@@ -314,7 +334,8 @@ int madara::knowledge::containers::NativeIntegerVector::set(
 {
   int result = -1;
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     context_->set(vector_, value, settings);
@@ -327,7 +348,8 @@ void madara::knowledge::containers::NativeIntegerVector::set_quality(
     size_t /*index*/, uint32_t quality,
     const KnowledgeReferenceSettings& settings)
 {
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     context_->set_quality(name_, quality, true, settings);
@@ -338,7 +360,8 @@ bool madara::knowledge::containers::NativeIntegerVector::exists(void) const
 {
   bool result(false);
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     result = context_->exists(vector_);
@@ -376,7 +399,8 @@ bool madara::knowledge::containers::NativeIntegerVector::is_true(void) const
   madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
       "NativeIntegerVector::is_true: checking for non-zero value\n");
 
-  if (context_) {
+  if (context_)
+  {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
     result = context_->get(vector_, settings_).is_true();

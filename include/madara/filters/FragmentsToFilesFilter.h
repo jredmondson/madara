@@ -75,9 +75,12 @@ public:
   {
     auto found = map_.find(variable_prefix);
 
-    if (found != map_.end()) {
+    if (found != map_.end())
+    {
       return found->second;
-    } else {
+    }
+    else
+    {
       return "";
     }
   }

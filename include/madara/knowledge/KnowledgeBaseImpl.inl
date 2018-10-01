@@ -212,9 +212,12 @@ inline void KnowledgeBaseImpl::activate_transport(void)
 {
   MADARA_GUARD_TYPE guard(map_.mutex_);
 
-  if (transports_.size() == 0) {
+  if (transports_.size() == 0)
+  {
     attach_transport(id_, settings_);
-  } else {
+  }
+  else
+  {
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::activate_transport:"
         " transport already activated. If you need"
@@ -409,7 +412,8 @@ inline size_t KnowledgeBaseImpl::remove_transport(size_t index)
   {
     MADARA_GUARD_TYPE guard(map_.mutex_);
     size = transports_.size();
-    if (index < size) {
+    if (index < size)
+    {
       using std::swap;
       swap(transport, transports_[index]);
       transports_.erase(transports_.begin() + index);
@@ -417,7 +421,8 @@ inline size_t KnowledgeBaseImpl::remove_transport(size_t index)
     }
   }
 
-  if (transport) {
+  if (transport)
+  {
     transport->close();
   }
 
@@ -441,7 +446,8 @@ inline ThreadSafeContext& KnowledgeBaseImpl::get_context(void)
  **/
 inline std::string KnowledgeBaseImpl::get_id(void)
 {
-  if (id_ == "") {
+  if (id_ == "")
+  {
     id_ = setup_unique_hostport();
   }
 
@@ -571,7 +577,8 @@ inline int64_t KnowledgeBaseImpl::load_context(const std::string& filename,
 
   if (use_id)
     result = map_.load_context(filename, id_, settings);
-  else {
+  else
+  {
     std::string id;
     result = map_.load_context(filename, id, settings);
   }
@@ -584,10 +591,13 @@ inline int64_t KnowledgeBaseImpl::load_context(const std::string& filename,
 {
   int64_t result = 0;
 
-  if (use_id) {
+  if (use_id)
+  {
     result = map_.load_context(filename, meta, settings);
     id_ = meta.originator;
-  } else {
+  }
+  else
+  {
     result = map_.load_context(filename, meta, settings);
   }
 
@@ -600,12 +610,15 @@ inline int64_t KnowledgeBaseImpl::load_context(
 {
   int64_t result = 0;
 
-  if (checkpoint_settings.originator == "") {
+  if (checkpoint_settings.originator == "")
+  {
     result = map_.load_context(checkpoint_settings, update_settings);
 
     if (checkpoint_settings.originator != "")
       id_ = checkpoint_settings.originator;
-  } else {
+  }
+  else
+  {
     result = map_.load_context(checkpoint_settings, update_settings);
   }
 
@@ -618,12 +631,15 @@ inline madara::knowledge::KnowledgeRecord KnowledgeBaseImpl::evaluate_file(
 {
   KnowledgeRecord result;
 
-  if (checkpoint_settings.originator == "") {
+  if (checkpoint_settings.originator == "")
+  {
     result = map_.evaluate_file(checkpoint_settings, update_settings);
 
     if (checkpoint_settings.originator != "")
       id_ = checkpoint_settings.originator;
-  } else {
+  }
+  else
+  {
     result = map_.evaluate_file(checkpoint_settings, update_settings);
   }
 

@@ -32,14 +32,16 @@ int madara::transport::UdpRegistryServer::setup(void)
 long madara::transport::UdpRegistryServer::send_data(
     const madara::knowledge::VariableReferenceMap& orig_updates)
 {
-  if (!settings_.no_sending) {
+  if (!settings_.no_sending)
+  {
     this->endpoints_.sync_keys();
 
     std::vector<std::string> hosts;
     this->addresses_.resize(server_count_);
     this->endpoints_.keys(hosts);
 
-    for (auto& host : hosts) {
+    for (auto& host : hosts)
+    {
       auto addr_parts = utility::parse_address(std::move(host));
       auto addr = ip::address::from_string(addr_parts.first);
       addresses_.emplace_back(addr, addr_parts.second);

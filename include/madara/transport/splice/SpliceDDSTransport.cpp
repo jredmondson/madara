@@ -131,7 +131,8 @@ int madara::transport::SpliceDDSTransport::setup(void)
       domain_, part_qos_, NULL, DDS::STATUS_MASK_NONE);
 
   // if dp == NULL, we've got an error
-  if (domain_participant_ == NULL) {
+  if (domain_participant_ == NULL)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_ERROR,
         "\nSpliceDDSTransport::setup:"
         " splice daemon not running. Try 'ospl start'...\n");
@@ -141,7 +142,8 @@ int madara::transport::SpliceDDSTransport::setup(void)
 
   domain_participant_->get_default_topic_qos(topic_qos_);
 
-  if (madara::transport::RELIABLE == this->settings_.reliability) {
+  if (madara::transport::RELIABLE == this->settings_.reliability)
+  {
     topic_qos_.reliability.kind = DDS::RELIABLE_RELIABILITY_QOS;
     topic_qos_.history.depth = this->settings_.queue_length;
     topic_qos_.resource_limits.max_samples_per_instance =
@@ -191,7 +193,8 @@ int madara::transport::SpliceDDSTransport::setup(void)
                     "DDS::DomainParticipant::get_default_publisher_qos") < 0)
     return ret;
 
-  if (madara::transport::RELIABLE == this->settings_.reliability) {
+  if (madara::transport::RELIABLE == this->settings_.reliability)
+  {
     pub_qos_.presentation.access_scope = DDS::TOPIC_PRESENTATION_QOS;
     pub_qos_.presentation.coherent_access = true;
     pub_qos_.presentation.ordered_access = false;
@@ -218,7 +221,8 @@ int madara::transport::SpliceDDSTransport::setup(void)
                     "DDS::DomainParticipant::get_default_subscriber_qos") < 0)
     return ret;
 
-  if (madara::transport::RELIABLE == this->settings_.reliability) {
+  if (madara::transport::RELIABLE == this->settings_.reliability)
+  {
     sub_qos_.presentation.access_scope = DDS::TOPIC_PRESENTATION_QOS;
     sub_qos_.presentation.coherent_access = true;
     sub_qos_.presentation.ordered_access = false;
@@ -239,7 +243,8 @@ int madara::transport::SpliceDDSTransport::setup(void)
                     "DDS::DomainParticipant::create_subscriber") < 0)
     return ret;
 
-  if (!subscriber_ || !publisher_) {
+  if (!subscriber_ || !publisher_)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_ERROR,
         "SpliceDDSTransport::setup:"
         " pub or sub could not be created. Try 'ospl stop; ospl start'...\n");
@@ -251,7 +256,8 @@ int madara::transport::SpliceDDSTransport::setup(void)
   publisher_->get_default_datawriter_qos(datawriter_qos_);
   publisher_->copy_from_topic_qos(datawriter_qos_, topic_qos_);
 
-  if (madara::transport::RELIABLE == this->settings_.reliability) {
+  if (madara::transport::RELIABLE == this->settings_.reliability)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_DETAILED,
         "SpliceDDSTransport::setup:"
         " Enabling reliable transport for (%s) datawriters\n",
@@ -264,7 +270,9 @@ int madara::transport::SpliceDDSTransport::setup(void)
         this->settings_.queue_length;
     datawriter_qos_.destination_order.kind =
         DDS::BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS;
-  } else {
+  }
+  else
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_DETAILED,
         "SpliceDDSTransport::setup:"
         " Enabling unreliable transport for (%s) datawriters\n",
@@ -310,7 +318,8 @@ int madara::transport::SpliceDDSTransport::setup(void)
 
   datareader_qos_.reader_data_lifecycle.enable_invalid_samples = FALSE;
 
-  if (madara::transport::RELIABLE == this->settings_.reliability) {
+  if (madara::transport::RELIABLE == this->settings_.reliability)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_DETAILED,
         "SpliceDDSTransport::setup:"
         " Enabling reliable transport for (%s) datareaders\n",
@@ -324,7 +333,9 @@ int madara::transport::SpliceDDSTransport::setup(void)
 
     // unlike the other qos, we do not set max_samples_per_instance here.
     // that shouldn't be as necessary, since we are using take on the reader
-  } else {
+  }
+  else
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_DETAILED,
         "SpliceDDSTransport::setup:"
         " Enabling unreliable transport for (%s) datareaders\n",
@@ -355,9 +366,11 @@ int madara::transport::SpliceDDSTransport::setup(void)
                     "Knowledge::UpdateDataReader_ptr::narrow") < 0)
     return ret;
 
-  if (!settings_.no_receiving) {
+  if (!settings_.no_receiving)
+  {
     double hertz = settings_.read_thread_hertz;
-    if (hertz < 0.0) {
+    if (hertz < 0.0)
+    {
       hertz = 0.0;
     }
 
@@ -366,7 +379,8 @@ int madara::transport::SpliceDDSTransport::setup(void)
         " starting %d threads at %f hertz\n",
         settings_.read_threads, hertz);
 
-    for (uint32_t i = 0; i < settings_.read_threads; ++i) {
+    for (uint32_t i = 0; i < settings_.read_threads; ++i)
+    {
       std::stringstream thread_name;
       thread_name << "read";
       thread_name << i;
@@ -386,7 +400,8 @@ long madara::transport::SpliceDDSTransport::send_data(
 {
   long result = 0;
 
-  if (!settings_.no_sending) {
+  if (!settings_.no_sending)
+  {
     result = prep_send(updates, "SpliceDDSTransport::send_data:");
 
     // get the maximum quality from the updates
@@ -428,7 +443,8 @@ long madara::transport::SpliceDDSTransport::send_data(
 int madara::transport::SpliceDDSTransport::check_handle(
     void* handle, const char* info)
 {
-  if (!handle) {
+  if (!handle)
+  {
     madara_logger_log(context_.get_logger(), logger::LOG_ERROR,
         "SpliceDDSTransport::check_handle:"
         " error in %s: Creation failed: invalid handle\n",

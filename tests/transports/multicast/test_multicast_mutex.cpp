@@ -17,33 +17,45 @@ madara::knowledge::KnowledgeRecord::Integer processes(2);
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-m" || arg1 == "--multicast") {
+    if (arg1 == "-m" || arg1 == "--multicast")
+    {
       if (i + 1 < argc)
         settings.hosts[0] = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-o" || arg1 == "--host") {
+    }
+    else if (arg1 == "-o" || arg1 == "--host")
+    {
       if (i + 1 < argc)
         host = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-d" || arg1 == "--domain") {
+    }
+    else if (arg1 == "-d" || arg1 == "--domain")
+    {
       if (i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-i" || arg1 == "--id") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-i" || arg1 == "--id")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
       ++i;
-    } else if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         int level;
         buffer >> level;
@@ -51,15 +63,21 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-n" || arg1 == "--processes") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-n" || arg1 == "--processes")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> processes;
       }
 
       ++i;
-    } else if (arg1 == "-p" || arg1 == "--drop-rate") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-p" || arg1 == "--drop-rate")
+    {
+      if (i + 1 < argc)
+      {
         double drop_rate;
         std::stringstream buffer(argv[i + 1]);
         buffer >> drop_rate;
@@ -69,15 +87,22 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-f" || arg1 == "--logfile") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-f" || arg1 == "--logfile")
+    {
+      if (i + 1 < argc)
+      {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-r" || arg1 == "--reduced") {
+    }
+    else if (arg1 == "-r" || arg1 == "--reduced")
+    {
       settings.send_reduced_message_header = true;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Test the multicast transport. Requires 2+ processes. The result "
@@ -106,27 +131,37 @@ void handle_arguments(int argc, char** argv)
 madara::knowledge::KnowledgeRecord maekawa_receive(
     madara::knowledge::FunctionArguments& args, madara::knowledge::Variables&)
 {
-  if (args.size() >= madara::filters::TOTAL_ARGUMENTS) {
+  if (args.size() >= madara::filters::TOTAL_ARGUMENTS)
+  {
     if (madara::utility::begins_with(
-            args[madara::filters::RECORD_NAME].to_string(), "MUTEX.")) {
+            args[madara::filters::RECORD_NAME].to_string(), "MUTEX."))
+    {
       std::vector<std::string> splitters, tokens, pivot_list;
       splitters.push_back(".");
 
       madara::utility::tokenizer(args[madara::filters::RECORD_NAME].to_string(),
           splitters, tokens, pivot_list);
 
-      if (tokens.size() == 4) {
+      if (tokens.size() == 4)
+      {
         std::string& third_arg = tokens[3];
 
-        if (third_arg == "request") {
-        } else if (third_arg == "release") {
-        } else {
+        if (third_arg == "request")
+        {
+        }
+        else if (third_arg == "release")
+        {
+        }
+        else
+        {
         }
       }
       return madara::knowledge::KnowledgeRecord();
-    } else
+    }
+    else
       return args[0];
-  } else
+  }
+  else
     return madara::knowledge::KnowledgeRecord();
 }
 

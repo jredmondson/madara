@@ -57,53 +57,75 @@ unsigned int data_size = 1000;
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-m" || arg1 == "--multicast") {
-      if (i + 1 < argc) {
+    if (arg1 == "-m" || arg1 == "--multicast")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::MULTICAST;
       }
       ++i;
-    } else if (arg1 == "-b" || arg1 == "--broadcast") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-b" || arg1 == "--broadcast")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::BROADCAST;
       }
       ++i;
-    } else if (arg1 == "-u" || arg1 == "--udp") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-u" || arg1 == "--udp")
+    {
+      if (i + 1 < argc)
+      {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::UDP;
       }
       ++i;
-    } else if (arg1 == "-o" || arg1 == "--host") {
+    }
+    else if (arg1 == "-o" || arg1 == "--host")
+    {
       if (i + 1 < argc)
         host = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-d" || arg1 == "--domain") {
+    }
+    else if (arg1 == "-d" || arg1 == "--domain")
+    {
       if (i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-e" || arg1 == "--threads") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-e" || arg1 == "--threads")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_threads;
       }
 
       ++i;
-    } else if (arg1 == "-i" || arg1 == "--id") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-i" || arg1 == "--id")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
       ++i;
-    } else if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         int level;
         buffer >> level;
@@ -111,8 +133,11 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-p" || arg1 == "--drop-rate") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-p" || arg1 == "--drop-rate")
+    {
+      if (i + 1 < argc)
+      {
         double drop_rate;
         std::stringstream buffer(argv[i + 1]);
         buffer >> drop_rate;
@@ -122,50 +147,72 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-f" || arg1 == "--logfile") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-f" || arg1 == "--logfile")
+    {
+      if (i + 1 < argc)
+      {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-q" || arg1 == "--queue-length") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-q" || arg1 == "--queue-length")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.queue_length;
       }
 
       ++i;
-    } else if (arg1 == "-r" || arg1 == "--reduced") {
+    }
+    else if (arg1 == "-r" || arg1 == "--reduced")
+    {
       settings.send_reduced_message_header = true;
-    } else if (arg1 == "-s" || arg1 == "--size") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-s" || arg1 == "--size")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> data_size;
       }
 
       ++i;
-    } else if (arg1 == "-t" || arg1 == "--time") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-t" || arg1 == "--time")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> active_time;
       }
 
       ++i;
-    } else if (arg1 == "-z" || arg1 == "--read-hertz") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-z" || arg1 == "--read-hertz")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_thread_hertz;
       }
 
       ++i;
-    } else if (arg1 == "--sz" || arg1 == "--send-hertz") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "--sz" || arg1 == "--send-hertz")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> send_hertz;
       }
 
       ++i;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Profiles a network transport. Requires 2 processes. The result "
@@ -246,16 +293,20 @@ int main(int argc, char** argv)
   // handle all user arguments
   handle_arguments(argc, argv);
 
-  if (settings.hosts.size() == 0) {
+  if (settings.hosts.size() == 0)
+  {
     // setup default transport as multicast
     settings.hosts.resize(1);
     settings.hosts[0] = default_multicast;
   }
 
-  if (settings.id == 0) {
+  if (settings.id == 0)
+  {
     // count the number of sent packets
     settings.add_send_filter(&counter);
-  } else {
+  }
+  else
+  {
     // count the number of received packets
     settings.add_receive_filter(&counter);
   }
@@ -263,13 +314,16 @@ int main(int argc, char** argv)
   // create a knowledge base and setup our id
   knowledge::KnowledgeBase knowledge(host, settings);
 
-  if (settings.id == 0) {
+  if (settings.id == 0)
+  {
     threads::Threader threader;
     threader.run(send_hertz, "sender", new Sender(knowledge));
     utility::sleep(active_time);
     threader.terminate();
     threader.wait();
-  } else {
+  }
+  else
+  {
     // Because of filters, receiver threads are active... while sleeping!
     utility::sleep(active_time);
   }

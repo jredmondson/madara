@@ -37,16 +37,20 @@ static inline void madara_tests_reset_count()
 }
 
 #define TEST_OP(lhs, op, rhs)                                     \
-  do {                                                            \
+  do                                                              \
+  {                                                               \
     decltype(lhs) l = (lhs);                                      \
     decltype(rhs) r = (rhs);                                      \
     std::ostringstream msg;                                       \
     msg << #lhs " [" << l << "] " #op " " #rhs " [" << r << "] "; \
     std::string smsg = msg.str();                                 \
     const char* cmsg = smsg.c_str();                              \
-    if (l op r) {                                                 \
+    if (l op r)                                                   \
+    {                                                             \
       log("SUCCESS : %s\n", cmsg);                                \
-    } else {                                                      \
+    }                                                             \
+    else                                                          \
+    {                                                             \
       log("FAIL    : %s\n", cmsg);                                \
       ++madara_tests_fail_count;                                  \
     }                                                             \

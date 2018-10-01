@@ -15,7 +15,8 @@ int main(int argc, char* argv[])
 {
   madara::knowledge::KnowledgeBase knowledge;
 
-  if (argc != 2) {
+  if (argc != 2)
+  {
     knowledge.print("To use this program, you must provide 1 argument.\n");
     knowledge.print("  test_evaluate 'some expression to evaluate'\n");
 

@@ -36,12 +36,13 @@ madara::knowledge::KnowledgeRecord madara::expression::CompositeBothNode::prune(
   madara::knowledge::KnowledgeRecord return_value;
 
   int j = 0;
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end();
-       ++i, ++j) {
+  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
+  {
     bool value_changes = false;
     madara::knowledge::KnowledgeRecord value;
     value = (*i)->prune(value_changes);
-    if (!value_changes && dynamic_cast<LeafNode*>(*i) == 0) {
+    if (!value_changes && dynamic_cast<LeafNode*>(*i) == 0)
+    {
       delete *i;
       *i = new LeafNode(*(this->logger_), value);
     }
@@ -65,8 +66,8 @@ madara::expression::CompositeBothNode::evaluate(
   madara::knowledge::KnowledgeRecord return_value;
 
   int j = 0;
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end();
-       ++i, ++j) {
+  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
+  {
     madara::knowledge::KnowledgeRecord value = (*i)->evaluate(settings);
 
     if (j == 0 || value > return_value)

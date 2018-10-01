@@ -31,18 +31,22 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallSin::prune(
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     bool arg_can_change = false;
     result = knowledge::KnowledgeRecord(
         sin(nodes_[0]->prune(arg_can_change).to_double()));
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
     }
 
     can_change = can_change || arg_can_change;
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallSin: "
         "KARL COMPILE ERROR:"
@@ -66,7 +70,8 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallSin::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::SystemCallSin: "
         "System call sin is returning the sin "
@@ -74,7 +79,9 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallSin::evaluate(
 
     return knowledge::KnowledgeRecord(
         sin(nodes_[0]->evaluate(settings).to_double()));
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallSin: "
         "KARL RUNTIME ERROR:"

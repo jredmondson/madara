@@ -36,7 +36,8 @@ namespace expression
  *        ExpressionTreePostOrderIteratorImpl.
  */
 
-enum {
+enum
+{
   EQUALITY_CHAR = 0 - 1,
   INEQUALITY_CHAR = 0 - 2,
   GREATER_THAN_EQUAL = 0 - 3,
@@ -132,9 +133,12 @@ madara::expression::ExpressionTreeIteratorFactory::make_tree_iterator(
     const std::string& traversal_order, bool end_iter)
 {
   TRAVERSAL_MAP::iterator iter = traversal_map_.find(traversal_order);
-  if (iter == traversal_map_.end()) {
+  if (iter == traversal_map_.end())
+  {
     return 0;
-  } else {
+  }
+  else
+  {
     ExpressionTreeIteratorFactory::TRAVERSAL_PTMF ptmf = iter->second;
     return (this->*ptmf)(tree, end_iter);
   }
@@ -173,7 +177,8 @@ void madara::expression::ExpressionTree::operator=(
 {
   // Refcounter class takes care of the internal decrements and
   // increments.
-  if (this != &t) {
+  if (this != &t)
+  {
     logger_ = t.logger_;
     root_ = t.root_;
   }
@@ -202,10 +207,11 @@ madara::knowledge::KnowledgeRecord madara::expression::ExpressionTree::prune(
   bool root_can_change = false;
   madara::knowledge::KnowledgeRecord root_value;
 
-  if (this->root_.get_ptr()) {
+  if (this->root_.get_ptr())
+  {
     root_value = this->root_->prune(root_can_change);
-    if (!root_can_change &&
-        dynamic_cast<LeafNode*>(this->root_.get_ptr()) == 0) {
+    if (!root_can_change && dynamic_cast<LeafNode*>(this->root_.get_ptr()) == 0)
+    {
       root_ = new LeafNode(*(this->logger_), root_value);
     }
   }

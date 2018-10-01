@@ -5,7 +5,11 @@ namespace madara
 {
 namespace knowledge
 {
-enum { ASSIGNMENT = 0, MULTIPLE_ASSIGNMENT = 1 };
+enum
+{
+  ASSIGNMENT = 0,
+  MULTIPLE_ASSIGNMENT = 1
+};
 }
 }
 

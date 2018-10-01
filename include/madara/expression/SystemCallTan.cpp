@@ -31,28 +31,36 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallTan::prune(
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     bool arg_can_change = false;
     result = knowledge::KnowledgeRecord(
         tan(nodes_[0]->prune(arg_can_change).to_double()));
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
     }
 
     can_change = can_change || arg_can_change;
-  } else {
+  }
+  else
+  {
     std::stringstream args;
 
-    for (unsigned int i = 0; i < nodes_.size(); ++i) {
-      if (nodes_[i]) {
+    for (unsigned int i = 0; i < nodes_.size(); ++i)
+    {
+      if (nodes_[i])
+      {
         bool unused = false;
         args << nodes_[i]->prune(unused).to_double();
 
         if (i != nodes_.size() - 1)
           args << ",";
-      } else {
+      }
+      else
+      {
         madara_logger_ptr_log(logger_, logger::LOG_ERROR,
             "madara::expression::SystemCallTan: "
             "KARL COMPILE ERROR: System call tan encountered a null arg at "
@@ -86,7 +94,8 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallTan::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::SystemCallTan: "
         "System call tan is returning the tangent "
@@ -94,7 +103,9 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallTan::evaluate(
 
     return_value = knowledge::KnowledgeRecord(
         tan(nodes_[0]->evaluate(settings).to_double()));
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallTan: "
         "KARL RUNTIME ERROR:"

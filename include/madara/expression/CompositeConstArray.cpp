@@ -62,25 +62,31 @@ madara::expression::CompositeConstArray::prune(bool& can_change)
   bool is_double(false);
   ComponentNodes::size_type i = 0;
 
-  for (; i < nodes_.size(); ++i) {
+  for (; i < nodes_.size(); ++i)
+  {
     bool arg_can_change = false;
     args[i] = nodes_[i]->prune(arg_can_change);
 
     // we cannot initialize the array until we know if there are any doubles
-    if (args[i].type() == knowledge::KnowledgeRecord::DOUBLE) {
+    if (args[i].type() == knowledge::KnowledgeRecord::DOUBLE)
+    {
       is_double = true;
     }
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[i]) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[i]) == 0)
+    {
       delete nodes_[i];
       nodes_[i] = new LeafNode(*(this->logger_), result);
-    } else if (arg_can_change) {
+    }
+    else if (arg_can_change)
+    {
       can_change = true;
     }
   }
 
   // if we are looking at a static const array, then leafize it
-  if (i > 0) {
+  if (i > 0)
+  {
     result.clear_value();
 
     if (is_double)
@@ -88,13 +94,16 @@ madara::expression::CompositeConstArray::prune(bool& can_change)
     else
       result.set_index(i - 1, args[i - 1].to_integer());
 
-    for (i = 0; i < args.size() - 1; ++i) {
+    for (i = 0; i < args.size() - 1; ++i)
+    {
       if (is_double)
         result.set_index(i, args[i].to_double());
       else
         result.set_index(i, args[i].to_integer());
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "KARL COMPILE ERROR: Array initialized with no elements\n");
   }
@@ -117,28 +126,33 @@ madara::expression::CompositeConstArray::evaluate(
 
   int j = 0;
 
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end();
-       ++i, ++j) {
+  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
+  {
     args[j] = (*i)->evaluate(settings);
 
     // we cannot initialize the array until we know if there are any doubles
-    if (args[j].type() == knowledge::KnowledgeRecord::DOUBLE) {
+    if (args[j].type() == knowledge::KnowledgeRecord::DOUBLE)
+    {
       is_double = true;
-    } else if (args[j].type() != knowledge::KnowledgeRecord::INTEGER) {
+    }
+    else if (args[j].type() != knowledge::KnowledgeRecord::INTEGER)
+    {
       args[j] =
           knowledge::KnowledgeRecord((*i)->evaluate(settings).to_integer());
     }
   }
 
   // check if we have any args or if this was a poorly done array
-  if (args.size() > 0) {
+  if (args.size() > 0)
+  {
     // set last element first so there is only one resize
     if (is_double)
       result.set_index(j - 1, args[j - 1].to_double());
     else
       result.set_index(j - 1, args[j - 1].to_integer());
 
-    for (size_t i = 0; i < args.size() - 1; ++i) {
+    for (size_t i = 0; i < args.size() - 1; ++i)
+    {
       if (is_double)
         result.set_index(i, args[i].to_double());
       else

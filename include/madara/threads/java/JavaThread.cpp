@@ -17,7 +17,8 @@ threads::JavaThread::~JavaThread()
   // manage VM attachment
   madara::utility::java::Acquire_VM jvm;
 
-  if (jvm.env != 0) {
+  if (jvm.env != 0)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "threads::JavaThread::destructor:"
         " Deleting global references.\n");
@@ -33,11 +34,13 @@ void threads::JavaThread::operator=(const JavaThread& rhs)
       "threads::JavaThread::assignment:"
       " Checking for source not being same as dest\n");
 
-  if (this != &rhs && obj_ != rhs.obj_) {
+  if (this != &rhs && obj_ != rhs.obj_)
+  {
     JNIEnv* env = ::madara_jni_get_env();
 
     // perform the assignment
-    if (env) {
+    if (env)
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
           "threads::JavaThread::assignment:"
           " Deleting global references from left hand side\n");
@@ -116,7 +119,8 @@ threads::JavaThread* threads::JavaThread::create(jobject obj)
 {
   JavaThread* result = new JavaThread();
 
-  if (!result->check_compliance(obj)) {
+  if (!result->check_compliance(obj))
+  {
     delete result;
     result = 0;
   }
@@ -131,7 +135,8 @@ bool threads::JavaThread::check_compliance(jobject obj)
 
   bool result(true);
 
-  if (env) {
+  if (env)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "threads::JavaThread(%s)::check_compliance:"
         " allocating global reference for object\n",
@@ -139,14 +144,16 @@ bool threads::JavaThread::check_compliance(jobject obj)
 
     obj_ = (jobject)env->NewGlobalRef(obj);
 
-    if (obj_) {
+    if (obj_)
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
           "threads::JavaThread(%s)::check_compliance:"
           " allocating global reference for object's class\n",
           name.c_str());
 
       class_ = (jclass)env->NewGlobalRef(env->GetObjectClass(obj_));
-      if (class_) {
+      if (class_)
+      {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
             "threads::JavaThread(%s)::check_compliance:"
             " class and object obtained successfully\n",
@@ -158,7 +165,8 @@ bool threads::JavaThread::check_compliance(jobject obj)
             class_, "init", "(Lai/madara/knowledge/KnowledgeBase;)V");
         cleanup_method_ = env->GetMethodID(class_, "cleanup", "()V");
 
-        if (!run_method_) {
+        if (!run_method_)
+        {
           madara_logger_ptr_log(logger::global_logger.get(),
               logger::LOG_EMERGENCY,
               "threads::JavaThread(%s)::check_compliance:"
@@ -168,7 +176,8 @@ bool threads::JavaThread::check_compliance(jobject obj)
           result = false;
         }
 
-        if (!init_method_) {
+        if (!init_method_)
+        {
           madara_logger_ptr_log(logger::global_logger.get(),
               logger::LOG_EMERGENCY,
               "threads::JavaThread(%s)::check_compliance:"
@@ -178,7 +187,8 @@ bool threads::JavaThread::check_compliance(jobject obj)
           result = false;
         }
 
-        if (!cleanup_method_) {
+        if (!cleanup_method_)
+        {
           madara_logger_ptr_log(logger::global_logger.get(),
               logger::LOG_EMERGENCY,
               "threads::JavaThread(%s)::check_compliance:"
@@ -187,7 +197,9 @@ bool threads::JavaThread::check_compliance(jobject obj)
 
           result = false;
         }
-      } else {
+      }
+      else
+      {
         madara_logger_ptr_log(logger::global_logger.get(),
             logger::LOG_EMERGENCY,
             "threads::JavaThread(%s)::check_compliance:"
@@ -196,7 +208,9 @@ bool threads::JavaThread::check_compliance(jobject obj)
 
         result = false;
       }
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_EMERGENCY,
           "threads::JavaThread(%s)::check_compliance:"
           " ERROR: object is invalid\n",
@@ -204,7 +218,9 @@ bool threads::JavaThread::check_compliance(jobject obj)
 
       result = false;
     }
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_EMERGENCY,
         "threads::JavaThread(%s)::check_compliance:"
         " ERROR: unable to acquire JAVA environment\n",

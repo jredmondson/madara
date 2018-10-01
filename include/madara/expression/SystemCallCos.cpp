@@ -31,18 +31,22 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallCos::prune(
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     bool arg_can_change = false;
     result = knowledge::KnowledgeRecord(
         cos(nodes_[0]->prune(arg_can_change).to_double()));
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0) {
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
     }
 
     can_change = can_change || arg_can_change;
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallCos: "
         "KARL COMPILE ERROR:"
@@ -66,7 +70,8 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallCos::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 1) {
+  if (nodes_.size() == 1)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::SystemCallCos: "
         "System call cos is returning the cosine "
@@ -74,7 +79,9 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallCos::evaluate(
 
     return_value = knowledge::KnowledgeRecord(
         cos(nodes_[0]->evaluate(settings).to_double()));
-  } else {
+  }
+  else
+  {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallCos: "
         "KARL RUNTIME ERROR:"

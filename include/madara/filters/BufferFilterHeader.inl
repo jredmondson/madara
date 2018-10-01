@@ -22,7 +22,8 @@ namespace filters
 {
 inline bool BufferFilterHeader::check_filter(filters::BufferFilter* filter)
 {
-  if (filter != 0) {
+  if (filter != 0)
+  {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
         "CheckpointSettings::check_filter: header: "
         " %s:%s, filter: %s:%s\n",
@@ -31,18 +32,22 @@ inline bool BufferFilterHeader::check_filter(filters::BufferFilter* filter)
         utility::to_string_version(filter->get_version()).c_str());
 
     return filter->get_id() == id && version >= filter->get_version();
-  } else
+  }
+  else
     return false;
 }
 
 inline void BufferFilterHeader::read(filters::BufferFilter* filter)
 {
-  if (filter != 0) {
+  if (filter != 0)
+  {
     // the only thing not filled in is size, which comes from encode/decode
     version = filter->get_version();
     std::string temp = filter->get_id();
     memcpy(id, temp.c_str(), std::min(temp.size() + 1, (size_t)8));
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "BufferFilterHeader::read: ";
     buffer << " filter was null\n";
@@ -54,7 +59,8 @@ inline void BufferFilterHeader::read(filters::BufferFilter* filter)
 inline const char* BufferFilterHeader::read(
     const char* buffer, int64_t& buffer_remaining)
 {
-  if (buffer_remaining >= 20) {
+  if (buffer_remaining >= 20)
+  {
     memcpy(&size, buffer, 8);
     strncpy(id, buffer + 8, 8);
     memcpy(&version, buffer + 16, 4);
@@ -64,7 +70,9 @@ inline const char* BufferFilterHeader::read(
 
     buffer_remaining -= 20;
     buffer += 20;
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "BufferFilterHeader::read: ";
     buffer << " 20 byte size encoding cannot fit in ";
@@ -78,7 +86,8 @@ inline const char* BufferFilterHeader::read(
 
 inline char* BufferFilterHeader::write(char* buffer, int64_t& buffer_remaining)
 {
-  if (buffer_remaining >= 20) {
+  if (buffer_remaining >= 20)
+  {
     uint64_t new_size = utility::endian_swap(size);
     uint32_t new_version = utility::endian_swap(version);
 
@@ -88,7 +97,9 @@ inline char* BufferFilterHeader::write(char* buffer, int64_t& buffer_remaining)
 
     buffer_remaining -= 20;
     buffer += 20;
-  } else {
+  }
+  else
+  {
     std::stringstream buffer;
     buffer << "BufferFilterHeader::write: ";
     buffer << " 20 byte size encoding cannot fit in ";

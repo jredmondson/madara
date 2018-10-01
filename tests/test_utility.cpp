@@ -23,10 +23,12 @@ int madara_fails = 0;
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (argc > 1) {
+    if (argc > 1)
+    {
       std::cout
           << "\nProgram Summary for " << argv[0]
           << ":\n\n"
@@ -134,7 +136,8 @@ void test_version(void)
 
   if (version == converted_version)
     std::cout << "Current version conversion is a SUCCESS.\n";
-  else {
+  else
+  {
     std::cout << "Current version conversion is a FAIL.\n";
     ++madara_fails;
   }
@@ -162,7 +165,8 @@ void test_heaps(void)
   if (input[0] == 10 && input[1] == 8 && input[2] == 5 && input[3] == 3 &&
       input[4] == 6 && input[5] == 2 && input[6] == 1)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -180,7 +184,8 @@ void test_heaps(void)
   if (input[0] == 1 && input[1] == 2 && input[2] == 3 && input[3] == 5 &&
       input[4] == 6 && input[5] == 8 && input[6] == 10)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -192,7 +197,8 @@ void test_ints(void)
 
   if (madara::utility::nearest_int(2.25) == 2)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -201,7 +207,8 @@ void test_ints(void)
 
   if (madara::utility::nearest_int(2.8) == 3)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -210,7 +217,8 @@ void test_ints(void)
 
   if (madara::utility::nearest_int(16.1) == 16)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -219,7 +227,8 @@ void test_ints(void)
 
   if (madara::utility::nearest_int(9.9575) == 10)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -228,7 +237,8 @@ void test_ints(void)
 
   int num_zeroes = 0;
   int num_ones = 0;
-  for (int i = 0; i < 100000; ++i) {
+  for (int i = 0; i < 100000; ++i)
+  {
     if (madara::utility::rand_int(0, 1, true) == 0)
       ++num_zeroes;
     else
@@ -239,7 +249,8 @@ void test_ints(void)
 
   if (num_zeroes > 30000 && num_ones > 30000)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -248,7 +259,8 @@ void test_ints(void)
 
   num_zeroes = 0;
   num_ones = 0;
-  for (int i = 0; i < 100000; ++i) {
+  for (int i = 0; i < 100000; ++i)
+  {
     if (madara::utility::rand_int(0, 1, false) == 0)
       ++num_zeroes;
     else
@@ -259,7 +271,8 @@ void test_ints(void)
 
   if (num_zeroes > 30000 && num_ones > 30000)
     std::cerr << "SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -270,7 +283,8 @@ void test_time(void)
   std::cerr << "Testing get_time... ";
   int64_t start = madara::utility::get_time();
 
-  for (int i = 0; i < 30000; ++i) {
+  for (int i = 0; i < 30000; ++i)
+  {
     madara::utility::rand_int(0, 1);
   }
 
@@ -280,7 +294,8 @@ void test_time(void)
 
   if (end - start > 0)
     std::cerr << " SUCCESS\n";
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -296,7 +311,8 @@ void test_sqrt(void)
   timer.start();
 
   double input = 1000000000;
-  for (int i = 0; i < 1000000000; ++i) {
+  for (int i = 0; i < 1000000000; ++i)
+  {
     input = sqrt(input);
   }
 
@@ -321,9 +337,12 @@ void test_sleep(void)
 
   std::cerr << "result=" << end_time;
 
-  if (end_time >= sleep_time) {
+  if (end_time >= sleep_time)
+  {
     std::cerr << "... SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "... FAIL\n";
     ++madara_fails;
   }
@@ -333,9 +352,12 @@ void test_sleep(void)
 
   std::cerr << "result=" << end_time;
 
-  if (end_time >= 2.5) {
+  if (end_time >= 2.5)
+  {
     std::cerr << "... SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "... FAIL\n";
     ++madara_fails;
   }
@@ -345,9 +367,12 @@ void test_sleep(void)
 
   std::cerr << "result=" << end_time;
 
-  if (end_time >= 2.25) {
+  if (end_time >= 2.25)
+  {
     std::cerr << "... SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "... FAIL\n";
     ++madara_fails;
   }
@@ -371,9 +396,12 @@ void test_sleep(void)
     std::cerr << "result=" << dur << " [" << (dur_actual.count() / 1000.0)
               << "]";
 
-    if (dur >= sleep_time) {
+    if (dur >= sleep_time)
+    {
       std::cerr << "... SUCCESS\n";
-    } else {
+    }
+    else
+    {
       std::cerr << "... FAIL\n";
       ++madara_fails;
     }
@@ -397,10 +425,12 @@ void test_replace(void)
   std::cerr << "  Single char replace... ";
   size_t result = utility::string_replace(source, "i", "u", true);
 
-  if (result == 2 &&
-      source == "My mulkshake brungs all the boys to the yard.") {
+  if (result == 2 && source == "My mulkshake brungs all the boys to the yard.")
+  {
     std::cerr << "SUCCESS";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL";
     ++madara_fails;
   }
@@ -413,9 +443,12 @@ void test_replace(void)
   result =
       utility::string_replace(source, "milkshake brings", "crumpets bring");
 
-  if (result == 1 && source == "My crumpets bring all the boys to the yard.") {
+  if (result == 1 && source == "My crumpets bring all the boys to the yard.")
+  {
     std::cerr << "SUCCESS";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL";
     ++madara_fails;
   }
@@ -430,9 +463,12 @@ void test_replace(void)
   result = utility::string_replace(source, "bob", "jake");
 
   if (result == 4 && source == "jake is a builder. jake is a boss. jake is the "
-                               "foreman. jake is a hoss.") {
+                               "foreman. jake is a hoss.")
+  {
     std::cerr << "SUCCESS";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL";
     ++madara_fails;
   }
@@ -445,9 +481,12 @@ void test_replace(void)
   result = utility::string_replace(source, "bob", "jake", false);
 
   if (result == 1 && source == "jake is a builder. bob is a boss. bob is the "
-                               "foreman. bob is a hoss.") {
+                               "foreman. bob is a hoss.")
+  {
     std::cerr << "SUCCESS";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL";
     ++madara_fails;
   }
@@ -463,13 +502,19 @@ void test_fragment(const std::string& message,
   std::shared_ptr<const std::vector<unsigned char>> binary =
       record.share_binary();
 
-  if (binary->size() != size) {
+  if (binary->size() != size)
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
-  } else {
-    if (memcmp(binary->data(), text_buffer, size) == 0) {
+  }
+  else
+  {
+    if (memcmp(binary->data(), text_buffer, size) == 0)
+    {
       std::cerr << "SUCCESS\n";
-    } else {
+    }
+    else
+    {
       std::cerr << "FAIL\n";
       ++madara_fails;
     }
@@ -505,11 +550,15 @@ void test_file_crc(void)
   crcs.push_back(crc_32_hash.checksum());
 
   if (crcs[0] != 0 && std::adjacent_find(crcs.begin(), crcs.end(),
-                          std::not_equal_to<uint32_t>()) == crcs.end()) {
+                          std::not_equal_to<uint32_t>()) == crcs.end())
+  {
     std::cerr << "SUCCESS\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "FAIL. crc32 results were:\n";
-    for (auto crc : crcs) {
+    for (auto crc : crcs)
+    {
       std::cerr << "  " << crc << "\n";
     }
     ++madara_fails;
@@ -542,7 +591,8 @@ void test_file_fragmenter(void)
   std::cerr << "  Splitting 256KB buffer into 5 chunks... ";
 
   knowledge::FileFragmenter fragmenter(text_buffer, size, segment_size);
-  if (fragmenter.records.size() == 5) {
+  if (fragmenter.records.size() == 5)
+  {
     std::cerr << "SUCCESS\n";
 
     test_fragment("Checking fragment 1 contents", fragmenter.records[0],
@@ -567,15 +617,19 @@ void test_file_fragmenter(void)
         fragments[1].size() == segment_size &&
         fragments[2].size() == segment_size &&
         fragments[3].size() == segment_size &&
-        fragments[4].size() == size % segment_size) {
+        fragments[4].size() == size % segment_size)
+    {
       std::cerr << "SUCCESS\n";
 
       std::cerr << "  Checking modifieds...";
       modifieds = kb.save_modifieds();
 
-      if (modifieds.size() == 0) {
+      if (modifieds.size() == 0)
+      {
         std::cerr << "SUCCESS\n";
-      } else {
+      }
+      else
+      {
         std::cerr << "FAIL. modifieds.size should be 0 but is "
                   << modifieds.size() << "\n";
         ++madara_fails;
@@ -586,9 +640,12 @@ void test_file_fragmenter(void)
 
       size_t rebuilt_size = fragmenter.from_kb("record.split", kb);
 
-      if (rebuilt_size == size && fragmenter.file_size == size) {
+      if (rebuilt_size == size && fragmenter.file_size == size)
+      {
         std::cerr << "SUCCESS\n";
-      } else {
+      }
+      else
+      {
         std::cerr << "FAIL\n";
         ++madara_fails;
         kb.print();
@@ -599,10 +656,12 @@ void test_file_fragmenter(void)
 
       rebuilt_size = fragmenter.from_kb("record.split", kb);
 
-      if (rebuilt_size != size && fragmenter.file_size == rebuilt_size) {
+      if (rebuilt_size != size && fragmenter.file_size == rebuilt_size)
+      {
         std::cerr << "SUCCESS\n";
       }  // end is still fragmented
-      else {
+      else
+      {
         std::cerr << "FAIL\n";
         ++madara_fails;
         kb.print();
@@ -614,10 +673,12 @@ void test_file_fragmenter(void)
           "record.split", kb, knowledge::KnowledgeUpdateSettings::DEFAULT);
       modifieds = kb.save_modifieds();
 
-      if (modifieds.size() == 6) {
+      if (modifieds.size() == 6)
+      {
         std::cerr << "SUCCESS\n";
       }  // end modifieds == 6
-      else {
+      else
+      {
         std::cerr << "FAIL. modifieds.size should be 6 but is "
                   << modifieds.size() << "\n";
         ++madara_fails;
@@ -633,23 +694,27 @@ void test_file_fragmenter(void)
       fragments.modify(2);
       modifieds = kb.save_modifieds();
 
-      if (modifieds.size() == 1) {
+      if (modifieds.size() == 1)
+      {
         std::cerr << "SUCCESS\n";
       }  // end modifieds == 1
-      else {
+      else
+      {
         std::cerr << "FAIL. modifieds.size should be 1 but is "
                   << modifieds.size() << "\n";
         ++madara_fails;
         kb.print();
       }  // end modifieds != 1 (FAIL)
     }    // end has 5 fragments of appropriate size
-    else {
+    else
+    {
       std::cerr << "FAIL\n";
       ++madara_fails;
       kb.print();
     }  // end does not have appropriate fragments (FAIL)
   }    // end has 5 fragments
-  else {
+  else
+  {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }  // end does not have 5 fragments (FAIL)
@@ -672,9 +737,12 @@ int main(int argc, char** argv)
   test_file_fragmenter();
   test_file_crc();
 
-  if (madara_fails > 0) {
+  if (madara_fails > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

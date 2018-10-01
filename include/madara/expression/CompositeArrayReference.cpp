@@ -24,7 +24,8 @@ madara::expression::CompositeArrayReference::CompositeArrayReference(
 
 std::string madara::expression::CompositeArrayReference::expand_key(void) const
 {
-  if (key_expansion_necessary_) {
+  if (key_expansion_necessary_)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
         "Variable %s requires variable expansion\n", key_.c_str());
 
@@ -36,12 +37,17 @@ std::string madara::expression::CompositeArrayReference::expand_key(void) const
     builder << *token;
 
     // move the token to the next in the list.
-    for (++token, ++count; token != tokens_.end(); ++token, ++count) {
-      if (*token != "") {
+    for (++token, ++count; token != tokens_.end(); ++token, ++count)
+    {
+      if (*token != "")
+      {
         // is the current token a variable to lookup?
-        if (count < pivot_list_.size() && pivot_list_[count] == "}") {
+        if (count < pivot_list_.size() && pivot_list_[count] == "}")
+        {
           builder << context_.get_record(*token)->to_string();
-        } else {
+        }
+        else
+        {
           builder << *token;
         }
       }
@@ -65,9 +71,11 @@ madara::expression::CompositeArrayReference::item() const
 {
   size_t index = right_->item().to_integer();
 
-  if (ref_.is_valid()) {
+  if (ref_.is_valid())
+  {
     return ref_.get_record_unsafe()->retrieve_index(index);
-  } else
+  }
+  else
     return context_.get(expand_key()).retrieve_index(index);
 }
 
@@ -83,7 +91,8 @@ madara::expression::CompositeArrayReference::prune(bool& can_change)
 
   std::string key = expand_key();
 
-  if (key == "nan") {
+  if (key == "nan")
+  {
     madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
         "CompositeArrayReference::prune: "
         "KARL COMPILE ERROR:"
@@ -95,7 +104,9 @@ madara::expression::CompositeArrayReference::prune(bool& can_change)
         "madara::expression::ComponentNode: "
         "KARL COMPILE ERROR: "
         "Reserved word 'nan' used as an array reference.");
-  } else if (key == "inf") {
+  }
+  else if (key == "inf")
+  {
     madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
         "CompositeArrayReference::prune: "
         "KARL COMPILE ERROR:"
@@ -125,9 +136,11 @@ madara::expression::CompositeArrayReference::evaluate(
 {
   size_t index = right_->evaluate(settings).to_integer();
 
-  if (ref_.is_valid()) {
+  if (ref_.is_valid())
+  {
     return ref_.get_record_unsafe()->retrieve_index(index);
-  } else
+  }
+  else
     return context_.get(expand_key()).retrieve_index(index);
 }
 
@@ -143,7 +156,8 @@ madara::expression::CompositeArrayReference::dec(
 {
   size_t index = size_t(right_->evaluate(settings).to_integer());
 
-  if (ref_.is_valid()) {
+  if (ref_.is_valid())
+  {
     auto record = ref_.get_record_unsafe();
 
     // notice that we assume the context is locked
@@ -161,7 +175,9 @@ madara::expression::CompositeArrayReference::dec(
     context_.mark_and_signal(ref_);
 
     return result;
-  } else {
+  }
+  else
+  {
     knowledge::KnowledgeRecord result(
         context_.retrieve_index(expand_key(), index, settings) -
         knowledge::KnowledgeRecord(1));
@@ -182,7 +198,8 @@ madara::expression::CompositeArrayReference::inc(
 {
   size_t index = size_t(right_->evaluate(settings).to_integer());
 
-  if (ref_.is_valid()) {
+  if (ref_.is_valid())
+  {
     auto record = ref_.get_record_unsafe();
 
     // notice that we assume the context is locked
@@ -200,7 +217,9 @@ madara::expression::CompositeArrayReference::inc(
     context_.mark_and_signal(ref_);
 
     return result;
-  } else {
+  }
+  else
+  {
     knowledge::KnowledgeRecord result =
         context_.retrieve_index(expand_key(), index, settings) +
         knowledge::KnowledgeRecord(1);
@@ -234,7 +253,8 @@ int madara::expression::CompositeArrayReference::set(
 {
   size_t index = size_t(right_->evaluate(settings).to_integer());
 
-  if (ref_.is_valid()) {
+  if (ref_.is_valid())
+  {
     auto record = ref_.get_record_unsafe();
 
     // notice that we assume the context is locked
@@ -252,7 +272,8 @@ int madara::expression::CompositeArrayReference::set(
     context_.mark_and_signal(ref_);
 
     return 0;
-  } else
+  }
+  else
     return context_.set_index(expand_key(), index, value, settings);
 }
 
@@ -261,7 +282,8 @@ int madara::expression::CompositeArrayReference::set(
 {
   size_t index = size_t(right_->evaluate(settings).to_integer());
 
-  if (ref_.is_valid()) {
+  if (ref_.is_valid())
+  {
     auto record = ref_.get_record_unsafe();
 
     // notice that we assume the context is locked
@@ -279,7 +301,8 @@ int madara::expression::CompositeArrayReference::set(
     context_.mark_and_signal(ref_);
 
     return 0;
-  } else
+  }
+  else
     return context_.set_index(expand_key(), index, value, settings);
 }
 

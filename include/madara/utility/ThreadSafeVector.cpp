@@ -37,7 +37,8 @@ void madara::utility::ThreadSafeVector<T>::operator=(
   MADARA_GUARD_TYPE guard(mutex_);
   MADARA_GUARD_TYPE rhs_guard(rhs.mutex_);
 
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     vector_ = rhs.vector_;
   }
 }
@@ -47,7 +48,8 @@ void madara::utility::ThreadSafeVector<T>::operator=(const std::vector<T>& rhs)
 {
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (this->vector_ != &rhs) {
+  if (this->vector_ != &rhs)
+  {
     vector_ = rhs;
   }
 }

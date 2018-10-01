@@ -43,16 +43,22 @@ int main(int argc, char* argv[])
       knowledge.get("var2").to_string() == "200" &&
       knowledge.get("var3").to_string() == "300" &&
       knowledge.get("small").to_string() == "ello" &&
-      logger::global_logger->get_level() == 5) {
+      logger::global_logger->get_level() == 5)
+  {
     knowledge.print("TEST SUCCESS\n");
-  } else {
+  }
+  else
+  {
     knowledge.print("TEST FAILED\n");
     ++madara_fails;
   }
 
-  if (madara_fails > 0) {
+  if (madara_fails > 0)
+  {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
-  } else {
+  }
+  else
+  {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 
@@ -137,31 +143,36 @@ void test_system_calls(madara::knowledge::KnowledgeBase& knowledge)
 
   KnowledgeRecord::Integer diff_ns = knowledge.get("diff_ns").to_integer();
 
-  if (two_to_4th != 16) {
+  if (two_to_4th != 16)
+  {
     std::cerr << "FAIL: pow(2,4) returned " << two_to_4th
               << " instead of 16.\n";
     ++madara_fails;
   }
 
-  if (square_of_16 != 4) {
+  if (square_of_16 != 4)
+  {
     std::cerr << "FAIL: sqrt(16) returned " << square_of_16
               << " instead of 4.\n";
     ++madara_fails;
   }
 
-  if (square_two_to_4th != 4) {
+  if (square_two_to_4th != 4)
+  {
     std::cout << "FAIL: sqrt(pow(2,4)) returned " << square_two_to_4th
               << " instead of 4. [1]\n";
     ++madara_fails;
   }
 
-  if (diff_s < 2 || diff_s > 4) {
+  if (diff_s < 2 || diff_s > 4)
+  {
     std::cout << "FAIL: #get_time_seconds returned diff of " << diff_s
               << " instead of 3 (.\n";
     ++madara_fails;
   }
 
-  if (diff_ns < 3000000000 || diff_ns > 4000000000) {
+  if (diff_ns < 3000000000 || diff_ns > 4000000000)
+  {
     std::cout << "FAIL: #get_time_ns returned diff of " << diff_ns
               << " instead of ~3000000000 (.\n";
     ++madara_fails;
@@ -184,11 +195,14 @@ void test_system_calls(madara::knowledge::KnowledgeBase& knowledge)
 
 int parse_args(int argc, char* argv[])
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         int level;
         buffer >> level;
@@ -196,7 +210,9 @@ int parse_args(int argc, char* argv[])
       }
 
       ++i;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "This test checks the functionality of invoking MADARA system "

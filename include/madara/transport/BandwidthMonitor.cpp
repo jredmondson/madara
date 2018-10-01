@@ -21,7 +21,8 @@ madara::transport::BandwidthMonitor::~BandwidthMonitor() {}
 void madara::transport::BandwidthMonitor::operator=(const BandwidthMonitor& rhs)
 {
   MADARA_GUARD_TYPE guard(mutex_);
-  if (this != &rhs) {
+  if (this != &rhs)
+  {
     messages_ = rhs.messages_;
     utilization_ = rhs.utilization_;
     window_ = rhs.window_;

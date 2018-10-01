@@ -33,14 +33,16 @@ madara::expression::SystemCallSetFixed::prune(bool& can_change)
   madara::knowledge::KnowledgeRecord result;
 
   // this node should never have arguments
-  if (nodes_.size() > 0) {
+  if (nodes_.size() > 0)
+  {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::SystemCallSetFixed: "
         "SystemCallSetFixed:prune: no arguments should be supplied to "
         "#set_fixed(). Deleting arguments to reclaim memory.\n");
 
     // delete any arguments that the user specified
-    for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i) {
+    for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
+    {
       delete *i;
     }
 

@@ -22,7 +22,8 @@ namespace transport
 class SpliceDDSTransport : public Base
 {
 public:
-  enum {
+  enum
+  {
     ERROR_OSPL_NOT_STARTED = -1,
     ERROR_SUB_BAD_CREATE = -2,
     ERROR_PUB_BAD_CREATE = -3

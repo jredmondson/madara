@@ -22,7 +22,8 @@ madara::knowledge::containers::NativeDoubleVectorStaged::
       size);
 
   vector_ = knowledge.get_ref(name, settings_);
-  if (size >= 0) {
+  if (size >= 0)
+  {
     resize(size);
   }
 }
@@ -37,7 +38,8 @@ madara::knowledge::containers::NativeDoubleVectorStaged::
       size);
 
   vector_ = knowledge.get_ref(name, settings);
-  if (size >= 0) {
+  if (size >= 0)
+  {
     resize(size);
   }
 }

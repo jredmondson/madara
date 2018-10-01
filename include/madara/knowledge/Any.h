@@ -34,7 +34,8 @@ namespace knowledge
 {
 namespace tags
 {
-struct from_tag_t {
+struct from_tag_t
+{
 };
 constexpr from_tag_t from_tag;
 }
@@ -110,7 +111,8 @@ public:
    **/
   BasicOwningAny& operator=(BasicOwningAny&& other) noexcept
   {
-    if (this != &other) {
+    if (this != &other)
+    {
       using std::swap;
       swap(this->data_, other.data_);
       swap(this->handler_, other.handler_);
@@ -131,13 +133,17 @@ public:
    **/
   void clear() noexcept
   {
-    if (!this->data_) {
+    if (!this->data_)
+    {
       return;
     }
-    if (this->handler_) {
+    if (this->handler_)
+    {
       this->handler_->destruct((void*)this->data_);
       this->handler_ = nullptr;
-    } else {
+    }
+    else
+    {
       delete[](char*) this->data_;
     }
     this->data_ = nullptr;
@@ -426,7 +432,8 @@ public:
     const TypeHandlers& handler = get_type_handler(t);
 
     using exceptions::BadAnyAccess;
-    if (!handler.load_json) {
+    if (!handler.load_json)
+    {
       throw BadAnyAccess(std::string("Type ") +
                          AnyRegistry::get_type_name<T>() +
                          " does not support unserialize_json");
@@ -580,7 +587,8 @@ template<typename T>
 inline bool AnyRegistry::register_type(const char* name)
 {
   auto& ptr = *get_type_name_ptr<T>();
-  if (ptr == nullptr) {
+  if (ptr == nullptr)
+  {
     ptr = name;
   }
 
@@ -607,7 +615,8 @@ inline void BasicOwningAny<Impl, Base>::unserialize_json(
   Any any(construct(type));
 
   using exceptions::BadAnyAccess;
-  if (!any.handler_->load_json) {
+  if (!any.handler_->load_json)
+  {
     throw BadAnyAccess(
         std::string("Type ") + type + " does not support unserialize_json");
   }

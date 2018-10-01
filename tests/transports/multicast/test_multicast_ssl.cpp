@@ -23,33 +23,45 @@ std::string ssl_key_file("");
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i)
+  {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-m" || arg1 == "--multicast") {
+    if (arg1 == "-m" || arg1 == "--multicast")
+    {
       if (i + 1 < argc)
         settings.hosts[0] = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-o" || arg1 == "--host") {
+    }
+    else if (arg1 == "-o" || arg1 == "--host")
+    {
       if (i + 1 < argc)
         host = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-d" || arg1 == "--domain") {
+    }
+    else if (arg1 == "-d" || arg1 == "--domain")
+    {
       if (i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
-    } else if (arg1 == "-i" || arg1 == "--id") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-i" || arg1 == "--id")
+    {
+      if (i + 1 < argc)
+      {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
       ++i;
-    } else if (arg1 == "-l" || arg1 == "--level") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-l" || arg1 == "--level")
+    {
+      if (i + 1 < argc)
+      {
         int level;
         std::stringstream buffer(argv[i + 1]);
         buffer >> level;
@@ -58,8 +70,11 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-p" || arg1 == "--drop-rate") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-p" || arg1 == "--drop-rate")
+    {
+      if (i + 1 < argc)
+      {
         double drop_rate;
         std::stringstream buffer(argv[i + 1]);
         buffer >> drop_rate;
@@ -69,27 +84,40 @@ void handle_arguments(int argc, char** argv)
       }
 
       ++i;
-    } else if (arg1 == "-f" || arg1 == "--logfile") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-f" || arg1 == "--logfile")
+    {
+      if (i + 1 < argc)
+      {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
-    } else if (arg1 == "-s" || arg1 == "--password") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-s" || arg1 == "--password")
+    {
+      if (i + 1 < argc)
+      {
         password = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-k" || arg1 == "--key-file") {
-      if (i + 1 < argc) {
+    }
+    else if (arg1 == "-k" || arg1 == "--key-file")
+    {
+      if (i + 1 < argc)
+      {
         ssl_key_file = argv[i + 1];
       }
 
       ++i;
-    } else if (arg1 == "-r" || arg1 == "--reduced") {
+    }
+    else if (arg1 == "-r" || arg1 == "--reduced")
+    {
       settings.send_reduced_message_header = true;
-    } else {
+    }
+    else
+    {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
           "  Test the multicast transport. Requires 2+ processes. The result "
@@ -126,10 +154,13 @@ int main(int argc, char** argv)
 
   AESBufferFilter* encryption(0);
 
-  if (password != "") {
+  if (password != "")
+  {
     encryption = new AESBufferFilter();
     encryption->generate_key(password);
-  } else if (ssl_key_file != "") {
+  }
+  else if (ssl_key_file != "")
+  {
     void* buffer(0);
     size_t buffer_size(0);
 
@@ -138,7 +169,9 @@ int main(int argc, char** argv)
     encryption = new AESBufferFilter((unsigned char*)buffer, (int)buffer_size);
 
     delete[](unsigned char*) buffer;
-  } else {
+  }
+  else
+  {
     encryption = new AESBufferFilter();
     encryption->generate_key("testingPassword*417");
   }
@@ -154,12 +187,15 @@ int main(int argc, char** argv)
   knowledge.set(".id", (madara::knowledge::KnowledgeRecord::Integer)settings.id,
       madara::knowledge::EvalSettings::SEND);
 
-  if (settings.id == 0) {
+  if (settings.id == 0)
+  {
     madara::knowledge::CompiledExpression compiled = knowledge.compile(
         "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3");
 
     knowledge.wait(compiled, wait_settings);
-  } else {
+  }
+  else
+  {
     madara::knowledge::CompiledExpression compiled =
         knowledge.compile("!var1 && var2 => var3 = 1");
 
