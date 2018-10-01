@@ -4,8 +4,6 @@
 
 #include "madara/expression/Visitor.h"
 
-madara::expression::Visitor::~Visitor (void)
-{
-}
+madara::expression::Visitor::~Visitor(void) {}
 
 #endif /* _VISITOR_CPP_ */

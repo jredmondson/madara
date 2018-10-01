@@ -32,18 +32,16 @@ void check_basic_types_records()
   TEST_NE(int_record += 10, 133);
   TEST_EQ(int_record -= 20, 123);
 
-
   // test move and copy constructors, deep_copy
   KnowledgeRecord int_record_copy(int_record);
   TEST_EQ(int_record_copy, 123);
   KnowledgeRecord int_record_move(std::move(int_record_copy));
   TEST_EQ(int_record_move, 123);
-  TEST_EQ(int_record_copy, 0);//moved
+  TEST_EQ(int_record_copy, 0);  // moved
   int_record_copy = int_record.deep_copy();
   TEST_EQ(int_record_copy, 123);
 
-
-  //test assign operators
+  // test assign operators
   int_record = KnowledgeRecord(5);
   TEST_EQ(int_record, KnowledgeRecord(5));
   int_record = 6;
@@ -59,7 +57,7 @@ void check_basic_types_records()
   TEST_EQ(int_record %= 5, 1);
   TEST_EQ(int_record, 1);
 
-  //test resize
+  // test resize
   size_t new_size = 4;
   int_record.resize(4);
   TEST_EQ(int_record.size(), new_size);
@@ -68,12 +66,12 @@ void check_basic_types_records()
   std::vector<KnowledgeRecord::Integer> int_vec(100, 5);
   // test emplace_integers
   int_record.emplace_integers(int_vec);
-  std::shared_ptr<const std::vector<KnowledgeRecord::Integer>>
-    int_vec2 = int_record.share_integers();
+  std::shared_ptr<const std::vector<KnowledgeRecord::Integer>> int_vec2 =
+      int_record.share_integers();
 
   TEST_EQ(int_vec2 == nullptr, false);
 
-  //test inc_index, dec_index methods, is_array_type
+  // test inc_index, dec_index methods, is_array_type
   int_record.inc_index(0);
   int_record.dec_index(1);
   TEST_EQ(int_record.retrieve_index(0), 6);
@@ -87,17 +85,15 @@ void check_basic_types_records()
   // should be overflow
   TEST_EQ(int_record, std::numeric_limits<int64_t>::min());
 
-
   TEST_LT(int_record, KnowledgeRecord(10));
   TEST_LT(int_record, KnowledgeRecord(10.1));
-
 
   KnowledgeRecord int_array_record = KnowledgeRecord(tags::integers, 100, 10);
 
   int_array_record.emplace_doubles(std::vector<double>(20, 5.5));
   TEST_EQ(int_array_record.share_doubles() == nullptr, false);
 
-  //check set_index method, get_precision, set_precision
+  // check set_index method, get_precision, set_precision
   int_array_record.set_index(10, 5.55);
   int_array_record.set_precision(2);
   TEST_EQ(int_array_record.get_precision(), 2);
@@ -113,8 +109,7 @@ void check_basic_types_records()
   ++int_vector[4];
   TEST_EQ(int_array_record, KnowledgeRecord(int_vector));
 
-
-  //test large array
+  // test large array
   int_vector.resize(1000000, 10);
   int_array_record.emplace_integers(std::move(int_vector));
   TEST_EQ(int_vector.size(), size_t(0));
@@ -138,10 +133,13 @@ void check_basic_types_records()
   TEST_EQ(string_record, empty_string);
   string_record.emplace_string(empty_string);
 
-  //test empty string, long string and retrive_index with no array
+  // test empty string, long string and retrive_index with no array
   TEST_EQ(string_record, empty_string);
-  string_record.emplace_string("some more test string with not very shord size to be tested in knowledge record");
-  TEST_EQ(string_record.to_string(), "some more test string with not very shord size to be tested in knowledge record");
+  string_record.emplace_string("some more test string with not very shord size "
+                               "to be tested in knowledge record");
+  TEST_EQ(string_record.to_string(), "some more test string with not very "
+                                     "shord size to be tested in knowledge "
+                                     "record");
   TEST_EQ(string_record.retrieve_index(10), false);
 
   // test assigning integer
@@ -158,10 +156,9 @@ void check_basic_types_records()
   int result = string_record.apply(context, "apply_check", 10, 100, false);
   TEST_EQ(result, 1);
 
-  //test reset_value
+  // test reset_value
   string_record.reset_value();
   TEST_EQ(string_record.type(), KnowledgeRecord::EMPTY);
-
 }
 
 void check_non_basic_types_records()
@@ -175,10 +172,9 @@ void check_non_basic_types_records()
   TEST_EQ(record.is_any_type(), true);
   TEST_EQ(ref.to_string().find("ANY") != std::string::npos, true);
 
-  //check clone
+  // check clone
   KnowledgeRecord* cloned_rec = record.clone();
   TEST_EQ(cloned_rec == nullptr, false);
-
 
   // check write and getting encoded size
   cloned_rec->emplace_string("writing string");
@@ -208,31 +204,30 @@ void check_non_basic_types_records()
   TEST_EQ(cloned_rec->type(), KnowledgeRecord::ANY);
   TEST_EQ(cloned_rec->share_any() == nullptr, false);
 
-
   delete cloned_rec;
 
-
-  //check read method and size
+  // check read method and size
   KnowledgeRecord new_rec(0);
   new_rec.read(buf, buf_size);
 
   TEST_EQ(new_rec.size(), size_t(15));
   TEST_EQ(new_rec.is_string_type(), true);
 
-  delete [] buf;
-
+  delete[] buf;
 }
 
 void check_file_records()
 {
-  //create a record and read a file into it
+  // create a record and read a file into it
   KnowledgeRecord image_rec;
-  std::string image = madara::utility::expand_envs ("$(MADARA_ROOT)/tests/images/manaus_hotel_100x100.jpg");
+  std::string image = madara::utility::expand_envs(
+      "$(MADARA_ROOT)/tests/images/manaus_hotel_100x100.jpg");
   image_rec.read_file(image);
 
   TEST_EQ(image_rec.type(), KnowledgeRecord::IMAGE_JPEG);
 
-  std::string other_image = madara::utility::expand_envs ("$(MADARA_ROOT)/tests/images/manaus_hotel_100x167.jpg");
+  std::string other_image = madara::utility::expand_envs(
+      "$(MADARA_ROOT)/tests/images/manaus_hotel_100x167.jpg");
 
   KnowledgeRecord image_rec2;
   image_rec2.read_file(other_image);
@@ -246,7 +241,8 @@ void check_file_records()
   TEST_EQ(buffer == nullptr, false);
 
   KnowledgeRecord other_file;
-  std::string cpp = madara::utility::expand_envs ("$(MADARA_ROOT)/tests/test_knowledge_record.cpp");
+  std::string cpp = madara::utility::expand_envs(
+      "$(MADARA_ROOT)/tests/test_knowledge_record.cpp");
   other_file.read_file(cpp);
   TEST_EQ(other_file.is_file_type(), true);
 
@@ -254,7 +250,7 @@ void check_file_records()
   TEST_EQ(other_file.type(), KnowledgeRecord::IMAGE_JPEG);
   TEST_GT(other_file.size(), size_t(0));
 
-  unsigned char* buffer_new = (unsigned char* )"123456789";
+  unsigned char* buffer_new = (unsigned char*)"123456789";
   other_file.set_file(buffer_new, 4);
   size_t size_new;
   unsigned char* buffer2 = other_file.to_unmanaged_buffer(size_new);
@@ -264,7 +260,8 @@ void check_file_records()
   TEST_EQ(std::string((char*)buffer2, 4), std::string(check_buf, 4));
 
   other_file.set_file(buffer, 0);
-  TEST_EQ(other_file.size(), size_t(0));// shall not cause crash until size is 0
+  TEST_EQ(
+      other_file.size(), size_t(0));  // shall not cause crash until size is 0
 
   // emplace file from buffer of image
   std::vector<unsigned char> buffer_vec(buffer, buffer + size);
@@ -279,10 +276,9 @@ void check_file_records()
 
   delete buffer;
   buffer = nullptr;
-
 }
 
-int main ()
+int main()
 {
   check_basic_types_records();
 
@@ -290,14 +286,13 @@ int main ()
 
   check_file_records();
 
-
   // this test is checking knowledge record functionaly
   // so you get FAILs this means KnowledgeRecord class is not working properly
 
   if (madara_tests_fail_count > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count <<
-      " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count
+              << " tests failed.\n";
   }
   else
   {

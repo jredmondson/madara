@@ -28,35 +28,35 @@
 
 namespace madara
 {
-  namespace filters
-  {
-    /**
-     * Filter for clearing records from a filter
-     **/
-    class MADARA_EXPORT ClearRecords : public AggregateFilter
-    {
-    public:
-      /**
-      * Constructor
-      **/
-      ClearRecords ();
+namespace filters
+{
+/**
+ * Filter for clearing records from a filter
+ **/
+class MADARA_EXPORT ClearRecords : public AggregateFilter
+{
+public:
+  /**
+   * Constructor
+   **/
+  ClearRecords();
 
-      /**
-       * Destructor
-       **/
-      virtual ~ClearRecords ();
+  /**
+   * Destructor
+   **/
+  virtual ~ClearRecords();
 
-      /**
-       * Calls the main logic of the filter
-       * @param   records           the aggregate records vector
-       * @param   transport_context context for querying transport state
-       * @param   vars              context for querying current program state
-       **/
-      virtual void filter (knowledge::KnowledgeMap & records,
-        const transport::TransportContext & transport_context,
-        knowledge::Variables & vars);
-    };
-  }
+  /**
+   * Calls the main logic of the filter
+   * @param   records           the aggregate records vector
+   * @param   transport_context context for querying transport state
+   * @param   vars              context for querying current program state
+   **/
+  virtual void filter(knowledge::KnowledgeMap& records,
+      const transport::TransportContext& transport_context,
+      knowledge::Variables& vars);
+};
+}
 }
 
 #endif  // _MADARA_FILTERS_CLEAR_RECORDS_H_

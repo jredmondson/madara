@@ -14,7 +14,7 @@ using namespace madara;
 using namespace knowledge;
 using namespace madara::knowledge::rcw;
 
-int main(int, char **)
+int main(int, char**)
 {
   KnowledgeBase kb;
   Transaction tx(kb);
@@ -74,10 +74,16 @@ int main(int, char **)
   test_eq(kb.get("pw.1"), 18L);
   test_eq(kb.get("pw.2"), 19L);
 
-  x = -1; y = 0; z = 0;
-  a = ""; b = ""; c = "";
-  v.clear(); w.clear();
-  pv.clear(); pw.clear();
+  x = -1;
+  y = 0;
+  z = 0;
+  a = "";
+  b = "";
+  c = "";
+  v.clear();
+  w.clear();
+  pv.clear();
+  pw.clear();
 
   tx.pull();
 
@@ -93,8 +99,12 @@ int main(int, char **)
   test_eq(*v, std::vector<int64_t>({4, 5, 6}));
   test_eq(*w, std::vector<int64_t>({7, 8, 9}));
 
-  x = 42; y++; --z;
-  a += "X"; b.get_mutable() += b; c.set(1, 'q');
+  x = 42;
+  y++;
+  --z;
+  a += "X";
+  b.get_mutable() += b;
+  c.set(1, 'q');
   u.push_back(*x);
   v.clear();
   w.set(1, 13);
@@ -159,10 +169,13 @@ int main(int, char **)
   test_eq(knowledge_cast(123), 123L);
   test(supports_knowledge_cast<int>::value);
 
-  class Convertible 
+  class Convertible
   {
   public:
-    operator int() const { return 42; }
+    operator int() const
+    {
+      return 42;
+    }
   };
 
   test(!supports_knowledge_cast<Convertible>::value);
@@ -201,8 +214,9 @@ int main(int, char **)
   test_eq(knowledge_cast(ivector).share_integers()->at(1), 4L);
 
   std::vector<int64_t> i64vector = {2, 4, 6, 8};
-  void *i64vector_orig = &i64vector[0];
-  test_eq((void*)&knowledge_cast(std::move(i64vector)).share_integers()->at(0), i64vector_orig);
+  void* i64vector_orig = &i64vector[0];
+  test_eq((void*)&knowledge_cast(std::move(i64vector)).share_integers()->at(0),
+      i64vector_orig);
 
   auto uni_farray = mk_unique<std::vector<double>>(&farray[0], &farray[5]);
   auto ptr_farray = uni_farray.get();
@@ -216,7 +230,9 @@ int main(int, char **)
   test_eq(iarray_out[2], 12);
   test_eq(iarray_out[6], 0);
 
-  static_assert(!madara::knowledge::impl::supports_resize<std::array<int, 7>&>::value, "");
+  static_assert(
+      !madara::knowledge::impl::supports_resize<std::array<int, 7>&>::value,
+      "");
   std::array<int32_t, 7> istdarray_out{{0, 0, 0, 0, 1, 1, 1}};
 
   knowledge_cast(knowledge_cast(iarray_in), istdarray_out);
@@ -263,7 +279,8 @@ int main(int, char **)
   test_eq(knowledge_cast(0) == nullptr, true);
 
   // Two-param version should not have explicit type given
-  //test_eq(hello, knowledge_cast<std::string>(knowledge_cast(hello), hello_out));
+  // test_eq(hello, knowledge_cast<std::string>(knowledge_cast(hello),
+  // hello_out));
 
   // wide-char strings not supported
 #if 0

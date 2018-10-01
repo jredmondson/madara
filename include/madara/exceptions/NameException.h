@@ -7,17 +7,17 @@
 
 namespace madara
 {
-  namespace exceptions
-  {
-    /**
-     * An exception for setting an invalid name in MADARA
-     **/
-    class NameException : public MadaraException
-    {
-    public:
-      using MadaraException::MadaraException;
-    };
-  }
+namespace exceptions
+{
+/**
+ * An exception for setting an invalid name in MADARA
+ **/
+class NameException : public MadaraException
+{
+public:
+  using MadaraException::MadaraException;
+};
+}
 }
 
 #endif /* _MADARA_EXCEPTIONS_INVALIDNAMEEXCEPTION_H_ */

@@ -28,69 +28,67 @@
 
 namespace madara
 {
-  namespace filters
-  {
-    /**
-     * Filter for discovering remote hosts that have sent messages
-     **/
-    class MADARA_EXPORT EndpointDiscovery : public AggregateFilter
-    {
-    public:
-      /**
-      * Constructor
-      * @param  prefix      the prefix to store discovery information into
-      *                     the knowledge base
-      * @param  heart_beat  the time, in seconds, before dropping a peer from
-      *                     discovery. Negative values indicate that peers
-      *                     should never be erased.
-      **/
-      EndpointDiscovery (
-        const std::string & prefix = ".endpoints",
-        knowledge::KnowledgeRecord::Integer heart_beat = -1);
+namespace filters
+{
+/**
+ * Filter for discovering remote hosts that have sent messages
+ **/
+class MADARA_EXPORT EndpointDiscovery : public AggregateFilter
+{
+public:
+  /**
+   * Constructor
+   * @param  prefix      the prefix to store discovery information into
+   *                     the knowledge base
+   * @param  heart_beat  the time, in seconds, before dropping a peer from
+   *                     discovery. Negative values indicate that peers
+   *                     should never be erased.
+   **/
+  EndpointDiscovery(const std::string& prefix = ".endpoints",
+      knowledge::KnowledgeRecord::Integer heart_beat = -1);
 
-      /**
-       * Destructor
-       **/
-      virtual ~EndpointDiscovery ();
+  /**
+   * Destructor
+   **/
+  virtual ~EndpointDiscovery();
 
-      /**
-       * Calls the main logic of the filter
-       * @param   records           the aggregate records vector
-       * @param   transport_context context for querying transport state
-       * @param   vars              context for querying current program state
-       **/
-      virtual void filter (knowledge::KnowledgeMap & records,
-        const transport::TransportContext & transport_context,
-        knowledge::Variables & vars);
+  /**
+   * Calls the main logic of the filter
+   * @param   records           the aggregate records vector
+   * @param   transport_context context for querying transport state
+   * @param   vars              context for querying current program state
+   **/
+  virtual void filter(knowledge::KnowledgeMap& records,
+      const transport::TransportContext& transport_context,
+      knowledge::Variables& vars);
 
-    protected:
+protected:
+  /**
+   * Tracks if the peers_ map has been initialized
+   **/
+  bool initialized_;
 
-      /**
-       * Tracks if the peers_ map has been initialized
-       **/
-      bool initialized_;
+  /**
+   * The context
+   **/
+  std::string prefix_;
 
-      /**
-      * The context
-      **/
-      std::string prefix_;
+  /**
+   * A map of discovered peers
+   **/
+  knowledge::containers::Map endpoints_;
 
-      /**
-       * A map of discovered peers
-       **/
-      knowledge::containers::Map endpoints_;
+  /**
+   * The time to keep record of a peer
+   **/
+  knowledge::KnowledgeRecord::Integer heart_beat_;
 
-      /**
-       * The time to keep record of a peer
-       **/
-      knowledge::KnowledgeRecord::Integer heart_beat_;
-
-      /**
-      * The time of the last clear of the peer_list
-      **/
-      knowledge::KnowledgeRecord::Integer last_clear_;
-    };
-  }
+  /**
+   * The time of the last clear of the peer_list
+   **/
+  knowledge::KnowledgeRecord::Integer last_clear_;
+};
+}
 }
 
 #endif  // _MADARA_FILTERS_ENDPOINT_DISCOVERY_H_

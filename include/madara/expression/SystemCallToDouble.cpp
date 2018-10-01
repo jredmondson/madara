@@ -1,54 +1,48 @@
 
 #ifndef _MADARA_NO_KARL_
 
-
 #include "madara/expression/LeafNode.h"
 #include "madara/expression/SystemCallToDouble.h"
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/expression/Visitor.h"
 
-
-madara::expression::SystemCallToDouble::SystemCallToDouble (
-  madara::knowledge::ThreadSafeContext & context,
-  const ComponentNodes & nodes)
-  : SystemCallNode (context, nodes)
+madara::expression::SystemCallToDouble::SystemCallToDouble(
+    madara::knowledge::ThreadSafeContext& context, const ComponentNodes& nodes)
+  : SystemCallNode(context, nodes)
 {
-
 }
 
 // Dtor
-madara::expression::SystemCallToDouble::~SystemCallToDouble (void)
+madara::expression::SystemCallToDouble::~SystemCallToDouble(void) {}
+
+madara::knowledge::KnowledgeRecord madara::expression::SystemCallToDouble::item(
+    void) const
 {
+  return madara::knowledge::KnowledgeRecord(nodes_.size());
 }
 
-madara::knowledge::KnowledgeRecord
-madara::expression::SystemCallToDouble::item (void) const
-{
-  return madara::knowledge::KnowledgeRecord (nodes_.size ());
-}
-
-/// Prune the tree of unnecessary nodes. 
+/// Prune the tree of unnecessary nodes.
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
 madara::knowledge::KnowledgeRecord
-madara::expression::SystemCallToDouble::prune (bool & can_change)
+madara::expression::SystemCallToDouble::prune(bool& can_change)
 {
   // user can always change a function, and we have no control over
   // what it does. Consequently, a function node cannot be pruned out
   // under any situation
   can_change = true;
-  
+
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size () > 0)
+  if (nodes_.size() > 0)
   {
     bool arg_can_change = false;
-    result = nodes_[0]->prune (arg_can_change);
-    
-    if (!arg_can_change && dynamic_cast <LeafNode *> (nodes_[0]) == 0)
+    result = nodes_[0]->prune(arg_can_change);
+
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
     {
       delete nodes_[0];
-      nodes_[0] = new LeafNode (*(this->logger_), result);
+      nodes_[0] = new LeafNode(*(this->logger_), result);
     }
   }
 
@@ -57,39 +51,39 @@ madara::expression::SystemCallToDouble::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::knowledge::KnowledgeRecord 
-madara::expression::SystemCallToDouble::evaluate (
-const madara::knowledge::KnowledgeUpdateSettings & settings)
+madara::knowledge::KnowledgeRecord
+madara::expression::SystemCallToDouble::evaluate(
+    const madara::knowledge::KnowledgeUpdateSettings& settings)
 {
-  if (nodes_.size () > 0)
+  if (nodes_.size() > 0)
   {
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "System call to_double is converting an argument\n");
+    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+        "System call to_double is converting an argument\n");
 
-    return knowledge::KnowledgeRecord (
-        nodes_[0]->evaluate (settings).to_double ());
+    return knowledge::KnowledgeRecord(
+        nodes_[0]->evaluate(settings).to_double());
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "madara::expression::SystemCallToDouble: "
-      "KARL RUNTIME ERROR:"
-      "System call to_double requires an argument\n");
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+        "madara::expression::SystemCallToDouble: "
+        "KARL RUNTIME ERROR:"
+        "System call to_double requires an argument\n");
 
-    throw exceptions::KarlException ("madara::expression::SystemCallToDouble: "
-      "KARL RUNTIME ERROR: "
-      "System call to_double requires an argument\n");
+    throw exceptions::KarlException(
+        "madara::expression::SystemCallToDouble: "
+        "KARL RUNTIME ERROR: "
+        "System call to_double requires an argument\n");
   }
 
-  return knowledge::KnowledgeRecord (0.0);
+  return knowledge::KnowledgeRecord(0.0);
 }
 
 // accept a visitor
-void 
-madara::expression::SystemCallToDouble::accept (
-  madara::expression::Visitor &visitor) const
+void madara::expression::SystemCallToDouble::accept(
+    madara::expression::Visitor& visitor) const
 {
-  visitor.visit (*this);
+  visitor.visit(*this);
 }
 
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_

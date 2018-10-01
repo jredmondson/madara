@@ -5,7 +5,8 @@
  * Helper class for type inference
  **/
 template<class T>
-struct TypeHelper {
+struct TypeHelper
+{
   typedef void type;
 };
 
@@ -22,20 +23,25 @@ struct TypeHelper {
  * types will produce a compile-time error.
  **/
 template<class T, class U = void, class V = void>
-struct IteratorTraits;/* If error here: invalid type passed to deep_iterate() */
+struct IteratorTraits; /* If error here: invalid type passed to deep_iterate()
+                        */
 
 /**
  * Specialization for plain iterators, where we can call deep_copy directly
  * on the iterator
  **/
 template<class T, class V>
-struct IteratorTraits<T,
-    typename TypeHelper<typename T::value_type>::type, V > {
-  enum { is_pair = 0 };
+struct IteratorTraits<T, typename TypeHelper<typename T::value_type>::type, V>
+{
+  enum
+  {
+    is_pair = 0
+  };
 
   typedef typename T::value_type value_type;
 
-  static value_type get_deep_copy(const T& i) {
+  static value_type get_deep_copy(const T& i)
+  {
     return value_type(i->deep_copy());
   }
 };
@@ -45,17 +51,20 @@ struct IteratorTraits<T,
  * the value, but not the key.
  **/
 template<class T>
-struct IteratorTraits<T,
-    typename TypeHelper<typename T::value_type>::type,
-    typename TypeHelper<typename T::value_type::second_type>::type
-  > {
-  enum { is_pair = 1 };
+struct IteratorTraits<T, typename TypeHelper<typename T::value_type>::type,
+    typename TypeHelper<typename T::value_type::second_type>::type>
+{
+  enum
+  {
+    is_pair = 1
+  };
 
-  typedef std::pair<const typename T::value_type::first_type &,
-                  typename T::value_type::second_type>
-        value_type;
+  typedef std::pair<const typename T::value_type::first_type&,
+      typename T::value_type::second_type>
+      value_type;
 
-  static value_type get_deep_copy(const T& i) {
+  static value_type get_deep_copy(const T& i)
+  {
     return value_type(i->first, i->second.deep_copy());
   }
 };
@@ -68,9 +77,8 @@ struct IteratorTraits<T,
  * determined by deep_iterate.
  **/
 template<class Iterator>
-class DeepIterator :
-  public std::iterator<std::input_iterator_tag,
-                       typename IteratorTraits<Iterator>::value_type>
+class DeepIterator : public std::iterator<std::input_iterator_tag,
+                         typename IteratorTraits<Iterator>::value_type>
 {
 private:
   typedef IteratorTraits<Iterator> traits;
@@ -95,7 +103,7 @@ public:
    *
    * @return pointer to the underlying iterator's value
    **/
-  underlying_value_type *operator->() const
+  underlying_value_type* operator->() const
   {
     return i_.operator->();
   }
@@ -106,7 +114,7 @@ public:
    *
    * @return *this
    **/
-  DeepIterator &operator++()
+  DeepIterator& operator++()
   {
     ++i_;
     return *this;
@@ -134,7 +142,7 @@ public:
    *
    * @return same as underlying iterator
    **/
-  bool operator==(const DeepIterator &o) const
+  bool operator==(const DeepIterator& o) const
   {
     return i_ == o.i_;
   }
@@ -144,18 +152,18 @@ public:
    *
    * @return same as underlying iterator
    **/
-  bool operator!=(const DeepIterator &o) const
+  bool operator!=(const DeepIterator& o) const
   {
     return i_ != o.i_;
   }
 
 private:
-  DeepIterator(const Iterator &i) : i_(i) {}
+  DeepIterator(const Iterator& i) : i_(i) {}
 
   Iterator i_;
 
   template<class I>
-  friend DeepIterator<I> deep_iterate(const I &i);
+  friend DeepIterator<I> deep_iterate(const I& i);
 };
 
 /**
@@ -176,7 +184,7 @@ private:
  * @return the input iterator
  **/
 template<class Iterator>
-DeepIterator<Iterator> deep_iterate(const Iterator &i)
+DeepIterator<Iterator> deep_iterate(const Iterator& i)
 {
   return DeepIterator<Iterator>(i);
 }

@@ -22,19 +22,23 @@
 #include "madara/utility/IntTypes.h"
 #include "madara/exceptions/BadAnyAccess.h"
 
-namespace capnp {
-  class StructSchema;
+namespace capnp
+{
+class StructSchema;
 }
 
-namespace madara { namespace knowledge {
-
+namespace madara
+{
+namespace knowledge
+{
 class Any;
 class ConstAny;
 struct TypeHandlers;
 
 struct compare_const_char_ptr
 {
-  bool operator()(const char *l, const char *r) const {
+  bool operator()(const char* l, const char* r) const
+  {
     return std::strcmp(l, r) < 0;
   }
 };
@@ -54,7 +58,7 @@ public:
    * already taken
    **/
   template<typename T>
-  static bool register_type(const char *name);
+  static bool register_type(const char* name);
 
   /**
    * Register a schema with the Any system, using a tag which will be used to
@@ -68,36 +72,35 @@ public:
    * @return true if the schema is now registered, false if that tag is
    * already taken
    **/
-  static bool register_schema(const char *name,
-      const capnp::StructSchema &schema);
+  static bool register_schema(
+      const char* name, const capnp::StructSchema& schema);
 
-  static const std::pair<const char *const , capnp::StructSchema> &
-    lookup_schema(const char *tag);
+  static const std::pair<const char* const, capnp::StructSchema>& lookup_schema(
+      const char* tag);
 
   template<typename T>
-  static const char * const &get_type_name()
+  static const char* const& get_type_name()
   {
     return *get_type_name_ptr<T>();
   }
 
-  static Any construct(const char *name);
-  static ConstAny construct_const(const char *name);
+  static Any construct(const char* name);
+  static ConstAny construct_const(const char* name);
 
 protected:
-  static bool register_type_impl(const char *name,
-      const TypeHandlers *handler);
+  static bool register_type_impl(const char* name, const TypeHandlers* handler);
 
   template<typename T>
-  static const char **get_type_name_ptr()
+  static const char** get_type_name_ptr()
   {
-    static const char *type_name = nullptr;
+    static const char* type_name = nullptr;
     return &type_name;
   }
 };
 
 #define MADARA_ANY_REGISTER_TYPE(type) \
   ::madara::knowledge::Any::register_type<type>(#type)
-
-} }
+}
+}
 
 #endif  // MADARA_KNOWLEDGE_ANY_REGISTRY_H_

@@ -33,46 +33,45 @@
 
 using namespace boost::python;
 
-template <typename Container>
-list stl_to_python (const Container & input)
+template<typename Container>
+list stl_to_python(const Container& input)
 {
   typedef typename Container::value_type T;
 
   list lst;
-  std::for_each(
-    input.begin (), input.end (), [&] (const T & t) { lst.append (t); });
+  std::for_each(input.begin(), input.end(), [&](const T& t) { lst.append(t); });
 
   return lst;
 }
 
-template <typename Container>
-Container python_to_stl (const list & input)
+template<typename Container>
+Container python_to_stl(const list& input)
 {
   typedef typename Container::value_type T;
 
   Container vec;
-  stl_input_iterator<T> beg (input), end;
-  std::for_each (beg, end, [&] (const T & t) { vec.push_back (t); });
+  stl_input_iterator<T> beg(input), end;
+  std::for_each(beg, end, [&](const T& t) { vec.push_back(t); });
 
   return vec;
 }
 
-BOOST_PYTHON_MODULE (madara)
+BOOST_PYTHON_MODULE(madara)
 {
   // Launch the appropriate thread management initialization
   PyEval_InitThreads();
 
   // Declare classes inside Madara namespace (top namespace of Python module)
-  
-  class_ <std::vector <std::string> > ("StringVector")
-    .def(vector_indexing_suite<std::vector<std::string> >());
 
-  class_ <std::vector <madara::knowledge::KnowledgeRecord::Integer> > (
-    "IntegerVector")
-    .def(vector_indexing_suite<std::vector<int64_t> >());
+  class_<std::vector<std::string>>("StringVector")
+      .def(vector_indexing_suite<std::vector<std::string>>());
 
-  class_ <std::vector <double> > ("DoubleVector")
-    .def(vector_indexing_suite<std::vector<double> >());
+  class_<std::vector<madara::knowledge::KnowledgeRecord::Integer>>(
+      "IntegerVector")
+      .def(vector_indexing_suite<std::vector<int64_t>>());
+
+  class_<std::vector<double>>("DoubleVector")
+      .def(vector_indexing_suite<std::vector<double>>());
 
   def("to_pydoubles", &stl_to_python<std::vector<double>>);
 
@@ -82,8 +81,8 @@ BOOST_PYTHON_MODULE (madara)
 
   def("from_pylongs", &python_to_stl<std::vector<int64_t>>);
 
-  define_filters ();
-  define_transport ();
-  define_knowledge ();
-  define_utility ();
+  define_filters();
+  define_transport();
+  define_knowledge();
+  define_utility();
 }

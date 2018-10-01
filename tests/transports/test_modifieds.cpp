@@ -29,12 +29,12 @@ namespace threads = madara::threads;
 typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 
 // default transport settings
-std::string host ("");
-const std::string default_multicast ("239.255.0.1:4150");
+std::string host("");
+const std::string default_multicast("239.255.0.1:4150");
 transport::QoSTransportSettings settings;
 
 // target seconds to be active
-double active_time (10.0);
+double active_time(10.0);
 
 double send_hertz = 0.0;
 
@@ -47,17 +47,17 @@ double publish_time = 10.0;
 unsigned int data_size = 1000;
 
 // handle command line arguments
-void handle_arguments (int argc, char ** argv)
+void handle_arguments(int argc, char** argv)
 {
   for (int i = 1; i < argc; ++i)
   {
-    std::string arg1 (argv[i]);
+    std::string arg1(argv[i]);
 
     if (arg1 == "-m" || arg1 == "--multicast")
     {
       if (i + 1 < argc)
       {
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::MULTICAST;
       }
       ++i;
@@ -66,7 +66,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::BROADCAST;
       }
       ++i;
@@ -75,7 +75,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::UDP;
       }
       ++i;
@@ -98,7 +98,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_threads;
       }
 
@@ -108,7 +108,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
@@ -118,10 +118,10 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         int level;
         buffer >> level;
-        logger::global_logger->set_level (level);
+        logger::global_logger->set_level(level);
       }
 
       ++i;
@@ -131,11 +131,11 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         double drop_rate;
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> drop_rate;
-        
-        settings.update_drop_rate (drop_rate,
-          madara::transport::PACKET_DROP_DETERMINISTIC);
+
+        settings.update_drop_rate(
+            drop_rate, madara::transport::PACKET_DROP_DETERMINISTIC);
       }
 
       ++i;
@@ -144,7 +144,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        logger::global_logger->add_file (argv[i + 1]);
+        logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
@@ -153,7 +153,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.queue_length;
       }
 
@@ -167,7 +167,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> data_size;
       }
 
@@ -177,7 +177,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> active_time;
       }
 
@@ -187,7 +187,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_thread_hertz;
       }
 
@@ -197,7 +197,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> send_hertz;
       }
 
@@ -205,28 +205,33 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
-        "\nProgram summary for %s:\n\n" \
-        "  Tests the save_modifieds and add_modifieds functions.\n\n" \
-        " [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
-        " [-d|--domain domain]     the knowledge domain to send and listen to\n" \
-        " [-e|--threads threads]   number of read threads\n" \
-        " [-f|--logfile file]      log to a file\n" \
-        " [-i|--id id]             the id of this agent (should be non-negative)\n" \
-        " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-        " [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
-        " [-t|--target target]     number of payloads to send/target\n" \
-        " [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
-        " [-q|--queue-length len   the queue size to use for the test\n" \
-        " [-r|--reduced]           use the reduced message header\n" \
-        " [-s|--size size]         size of data packet to send in bytes\n" \
-        " [--sz|--send-hertz hertz] send thread hertz for send speed\n" \
-        " [-t|--time time]         time to stay active for throughput test\n" \
-        " [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
-        " [-z|--read-hertz hertz]  read thread hertz speed\n" \
-        "\n",
-        argv[0]);
-      exit (0);
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "\nProgram summary for %s:\n\n"
+          "  Tests the save_modifieds and add_modifieds functions.\n\n"
+          " [-b|--broadcast ip:port] the broadcast ip to send and listen to\n"
+          " [-d|--domain domain]     the knowledge domain to send and listen "
+          "to\n"
+          " [-e|--threads threads]   number of read threads\n"
+          " [-f|--logfile file]      log to a file\n"
+          " [-i|--id id]             the id of this agent (should be "
+          "non-negative)\n"
+          " [-l|--level level]       the logger level (0+, higher is higher "
+          "detail)\n"
+          " [-m|--multicast ip:port] the multicast ip to send and listen to\n"
+          " [-t|--target target]     number of payloads to send/target\n"
+          " [-o|--host hostname]     the hostname of this process "
+          "(def:localhost)\n"
+          " [-q|--queue-length len   the queue size to use for the test\n"
+          " [-r|--reduced]           use the reduced message header\n"
+          " [-s|--size size]         size of data packet to send in bytes\n"
+          " [--sz|--send-hertz hertz] send thread hertz for send speed\n"
+          " [-t|--time time]         time to stay active for throughput test\n"
+          " [-u|--udp ip:port]       the udp ips to send to (first is self to "
+          "bind to)\n"
+          " [-z|--read-hertz hertz]  read thread hertz speed\n"
+          "\n",
+          argv[0]);
+      exit(0);
     }
   }
 }
@@ -235,31 +240,29 @@ class Sender : public threads::BaseThread
 {
 private:
   /// knowledge engine used for sending
-  knowledge::KnowledgeBase * knowledge_;
+  knowledge::KnowledgeBase* knowledge_;
 
   /// modified list to re-apply
-  knowledge::VariableReferences * modifieds_;
+  knowledge::VariableReferences* modifieds_;
 
 public:
-  Sender (knowledge::KnowledgeBase & knowledge,
-    knowledge::VariableReferences * modifieds)
-    : knowledge_ (&knowledge), modifieds_ (modifieds)
+  Sender(knowledge::KnowledgeBase& knowledge,
+      knowledge::VariableReferences* modifieds)
+    : knowledge_(&knowledge), modifieds_(modifieds)
   {
   }
 
-  virtual ~Sender ()
-  {
-  }
+  virtual ~Sender() {}
 
   // modify the payload and send the update
-  virtual void run (void)
+  virtual void run(void)
   {
-    knowledge_->add_modifieds (*modifieds_);
-    knowledge_->send_modifieds ();
+    knowledge_->add_modifieds(*modifieds_);
+    knowledge_->send_modifieds();
   }
 };
 
-int main (int argc, char ** argv)
+int main(int argc, char** argv)
 {
   settings.type = transport::MULTICAST;
   settings.queue_length = data_size * 1000;
@@ -271,52 +274,51 @@ int main (int argc, char ** argv)
   settings.read_threads = 1;
 
   // set thread priority to high
-  madara::utility::set_thread_priority ();
+  madara::utility::set_thread_priority();
 
   // handle all user arguments
-  handle_arguments (argc, argv);
+  handle_arguments(argc, argv);
 
-  if (settings.hosts.size () == 0)
+  if (settings.hosts.size() == 0)
   {
     // setup default transport as multicast
-    settings.hosts.resize (1);
+    settings.hosts.resize(1);
     settings.hosts[0] = default_multicast;
   }
-  
+
   // count the number of sent packets
-  settings.add_send_filter (&counter);
+  settings.add_send_filter(&counter);
 
   // create a knowledge base and setup our id
-  knowledge::KnowledgeBase knowledge (host, settings);
+  knowledge::KnowledgeBase knowledge(host, settings);
 
-  knowledge::containers::Integer data1 ("data1", knowledge, 1);
-  knowledge::containers::Integer data2 ("data2", knowledge, 2);
-  knowledge::containers::Integer data3 ("data3", knowledge, 3);
+  knowledge::containers::Integer data1("data1", knowledge, 1);
+  knowledge::containers::Integer data2("data2", knowledge, 2);
+  knowledge::containers::Integer data3("data3", knowledge, 3);
 
-  std::cerr << std::setprecision (2) << std::fixed;
+  std::cerr << std::setprecision(2) << std::fixed;
   std::cerr << "Saving modifieds after setting data...\n";
 
-  knowledge::VariableReferences modifieds = knowledge.save_modifieds ();
+  knowledge::VariableReferences modifieds = knowledge.save_modifieds();
 
-  std::cerr << "Reloading saved modifed list at " << send_hertz <<
-    "hz for " << active_time << " seconds...\n\n";
+  std::cerr << "Reloading saved modifed list at " << send_hertz << "hz for "
+            << active_time << " seconds...\n\n";
 
-  threads::Threader threader (knowledge);
-  threader.run (send_hertz, "sender", new Sender (knowledge, &modifieds));
-  utility::sleep (active_time);
-  threader.terminate ();
-  threader.wait ();
+  threads::Threader threader(knowledge);
+  threader.run(send_hertz, "sender", new Sender(knowledge, &modifieds));
+  utility::sleep(active_time);
+  threader.terminate();
+  threader.wait();
 
   std::cerr << "Test results:\n";
-  std::cerr << "  Packets: " << counter.get_count () << "\n";
-  std::cerr << "  Elapsed Time (s): " << counter.get_elapsed () << "\n";
-  std::cerr << "  Message Throughput (message/s): " <<
-    counter.get_throughput () << "\n";
-  std::cerr << "  Data Throughput (B/s): " <<
-    counter.get_throughput () * 24 << "\n";
+  std::cerr << "  Packets: " << counter.get_count() << "\n";
+  std::cerr << "  Elapsed Time (s): " << counter.get_elapsed() << "\n";
+  std::cerr << "  Message Throughput (message/s): " << counter.get_throughput()
+            << "\n";
+  std::cerr << "  Data Throughput (B/s): " << counter.get_throughput() * 24
+            << "\n";
 
-
-  knowledge.print ();
+  knowledge.print();
 
   return 0;
 }

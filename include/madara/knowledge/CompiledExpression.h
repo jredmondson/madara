@@ -17,68 +17,68 @@
 
 namespace madara
 {
-  namespace expression
-  {
-    class SystemCallEval;
-  }
-  namespace knowledge
-  {
-    class ThreadSafeContext;
-    class KnolwedgeBaseImpl;
-    class Variables;
-    class KnowledgeBase;
+namespace expression
+{
+class SystemCallEval;
+}
+namespace knowledge
+{
+class ThreadSafeContext;
+class KnolwedgeBaseImpl;
+class Variables;
+class KnowledgeBase;
 
-    /**
-     * @class CompiledExpression
-     * @brief Compiled, optimized KaRL logic
-     **/
-    class MADARA_EXPORT CompiledExpression
-    {
-    public:
-      //class KnowledgeBaseImpl;
-      friend class ThreadSafeContext;
-      friend class KnowledgeBaseImpl;
-      friend class Variables;
-      friend class KnowledgeBase;
-      friend class expression::SystemCallEval;
+/**
+ * @class CompiledExpression
+ * @brief Compiled, optimized KaRL logic
+ **/
+class MADARA_EXPORT CompiledExpression
+{
+public:
+  // class KnowledgeBaseImpl;
+  friend class ThreadSafeContext;
+  friend class KnowledgeBaseImpl;
+  friend class Variables;
+  friend class KnowledgeBase;
+  friend class expression::SystemCallEval;
 
-      /**
-       * Constructor
-       **/
-      CompiledExpression ();
+  /**
+   * Constructor
+   **/
+  CompiledExpression();
 
-      /**
-       * Copy Constructor
-       * @param   ce      Compiled expression to copy from
-       **/
-      CompiledExpression (const CompiledExpression & ce);
+  /**
+   * Copy Constructor
+   * @param   ce      Compiled expression to copy from
+   **/
+  CompiledExpression(const CompiledExpression& ce);
 
-      /**
-       * Destructor
-       **/
-      ~CompiledExpression ();
+  /**
+   * Destructor
+   **/
+  ~CompiledExpression();
 
-      /**
-       * Assignment operator
-       * @param   ce      Compiled expression to copy from
-       **/
-      void operator= (const CompiledExpression & ce);
-      
-      /**
-       * Gets the root of the compiled expression
-       **/
-      expression::ComponentNode * get_root (void);
+  /**
+   * Assignment operator
+   * @param   ce      Compiled expression to copy from
+   **/
+  void operator=(const CompiledExpression& ce);
 
-    private:
-      /// the logic that was compiled
-      std::string logic;
+  /**
+   * Gets the root of the compiled expression
+   **/
+  expression::ComponentNode* get_root(void);
 
-      /// the expression tree
-      madara::expression::ExpressionTree expression;
-    };
-  }
+private:
+  /// the logic that was compiled
+  std::string logic;
+
+  /// the expression tree
+  madara::expression::ExpressionTree expression;
+};
+}
 }
 
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_
 
-#endif // _MADARA_COMPILED_EXPRESSION_H_
+#endif  // _MADARA_COMPILED_EXPRESSION_H_

@@ -21,31 +21,31 @@
 #include "madara/transport/udp/UdpTransport.h"
 #include "madara/threads/BaseThread.h"
 #include "madara/Boost.h"
- 
+
 namespace madara
 {
-  namespace transport
-  {
-    namespace asio = boost::asio;
-    namespace ip = boost::asio::ip;
-    using udp = boost::asio::ip::udp;
+namespace transport
+{
+namespace asio = boost::asio;
+namespace ip = boost::asio::ip;
+using udp = boost::asio::ip::udp;
 
-    /**
-     * @class MulticastTransportReadThread
-     * @brief Thread for reading knowledge updates through a Multicast
-     *        datagram socket
-     **/
-    class MulticastTransportReadThread : public UdpTransportReadThread
-    {
-    public:
-      using UdpTransportReadThread::UdpTransportReadThread;
+/**
+ * @class MulticastTransportReadThread
+ * @brief Thread for reading knowledge updates through a Multicast
+ *        datagram socket
+ **/
+class MulticastTransportReadThread : public UdpTransportReadThread
+{
+public:
+  using UdpTransportReadThread::UdpTransportReadThread;
 
-      /**
-       * Cleanup function called by thread manager
-       **/
-      void cleanup (void) override;
-    };
-  }
+  /**
+   * Cleanup function called by thread manager
+   **/
+  void cleanup(void) override;
+};
+}
 }
 
-#endif // _MADARA_MULTICAST_TRANSPORT_READ_THREAD_H_
+#endif  // _MADARA_MULTICAST_TRANSPORT_READ_THREAD_H_

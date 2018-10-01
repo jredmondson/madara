@@ -8,7 +8,6 @@
  * to a Python module called Madara.
  **/
 
-void define_filters (void);
+void define_filters(void);
 
-#endif // _MADARA_PYTHON_PORT_MADARA_FILTERS_H_
-
+#endif  // _MADARA_PYTHON_PORT_MADARA_FILTERS_H_

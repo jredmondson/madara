@@ -18,17 +18,19 @@ class Producer : public RCWThread
 {
   int buf;
   bool ready;
+
 public:
-  void setup(Transaction &tx) override
+  void setup(Transaction& tx) override
   {
     tx.build("buf", buf).init(0).add();
     ready = false;
     tx.add_init("ready", ready);
   }
 
-  void compute(const Transaction &) override
+  void compute(const Transaction&) override
   {
-    if (ready) return;
+    if (ready)
+      return;
     ++buf;
     ready = true;
   }
@@ -39,29 +41,31 @@ class Consumer : public RCWThread
   int last_val = 0;
   int buf;
   bool ready;
+
 public:
-  void setup(Transaction &tx) override
+  void setup(Transaction& tx) override
   {
     tx.build("buf", buf).ro().init(0).add();
     tx.add("ready", ready);
   }
 
-  void compute(const Transaction &) override
+  void compute(const Transaction&) override
   {
-    if (!ready) return;
+    if (!ready)
+      return;
     test_eq(last_val + 1, buf);
     last_val = buf;
     ready = false;
   }
 };
 
-int main(int, char **)
+int main(int, char**)
 {
   KnowledgeBase kb;
   Transaction tx(kb);
 
-  Producer *prod = new Producer;
-  Consumer *cons = new Consumer;
+  Producer* prod = new Producer;
+  Consumer* cons = new Consumer;
 
   Threader threader(kb);
 

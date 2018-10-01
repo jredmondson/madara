@@ -20,7 +20,8 @@ int main()
   VAL(SimTime::last_simtime());
 
   madara::utility::sim_time_notify(56000000, 0.5);
-  for (int i = 0; i < 10; ++i) {
+  for (int i = 0; i < 10; ++i)
+  {
     VAL(SimTime::realtime());
     VAL(SimTime::time());
     madara::utility::sleep(1);

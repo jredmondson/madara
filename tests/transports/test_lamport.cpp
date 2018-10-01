@@ -15,27 +15,27 @@ namespace containers = knowledge::containers;
 namespace transport = madara::transport;
 
 // default transport settings
-std::string host ("");
-const std::string default_multicast ("239.255.0.1:4150");
+std::string host("");
+const std::string default_multicast("239.255.0.1:4150");
 madara::transport::QoSTransportSettings settings;
-double test_time (20);
-size_t data_size (128);
-double send_hertz (-1);
-size_t num_vars (1);
-int madara_fails (0);
+double test_time(20);
+size_t data_size(128);
+double send_hertz(-1);
+size_t num_vars(1);
+int madara_fails(0);
 
 // handle command line arguments
-void handle_arguments (int argc, char ** argv)
+void handle_arguments(int argc, char** argv)
 {
   for (int i = 1; i < argc; ++i)
   {
-    std::string arg1 (argv[i]);
+    std::string arg1(argv[i]);
 
     if (arg1 == "-m" || arg1 == "--multicast")
     {
       if (i + 1 < argc)
       {
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::MULTICAST;
       }
       ++i;
@@ -44,7 +44,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::BROADCAST;
       }
       ++i;
@@ -53,7 +53,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::UDP;
       }
       ++i;
@@ -76,7 +76,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_threads;
       }
 
@@ -86,7 +86,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        logger::global_logger->add_file (argv[i + 1]);
+        logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
@@ -95,7 +95,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
@@ -106,10 +106,10 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         int level;
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> level;
 
-        logger::global_logger->set_level (level);
+        logger::global_logger->set_level(level);
       }
 
       ++i;
@@ -119,11 +119,11 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         double drop_rate;
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> drop_rate;
-        
-        settings.update_drop_rate (drop_rate,
-          madara::transport::PACKET_DROP_DETERMINISTIC);
+
+        settings.update_drop_rate(
+            drop_rate, madara::transport::PACKET_DROP_DETERMINISTIC);
       }
 
       ++i;
@@ -132,7 +132,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.queue_length;
       }
 
@@ -146,7 +146,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> send_hertz;
       }
 
@@ -156,7 +156,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> test_time;
       }
 
@@ -166,7 +166,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_thread_hertz;
       }
 
@@ -176,71 +176,79 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::ZMQ;
       }
       ++i;
     }
     else
     {
-      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-        "\nProgram summary for %s:\n\n" \
-        "  Publishes variable updates to try to induce lamport clock failures.\n\n" \
-        " [-a|--no-latency]        do not test for latency (throughput only)\n" \
-        " [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
-        " [-d|--domain domain]     the knowledge domain to send and listen to\n" \
-        " [-e|--threads threads]   number of read threads\n" \
-        " [-f|--logfile file]      log to a file\n" \
-        " [-i|--id id]             the id of this agent (should be non-negative)\n" \
-        " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-        " [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
-        " [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
-        " [-q|--queue-length len   the buffer size to use for the test\n" \
-        " [-r|--reduced]           use the reduced message header\n" \
-        " [--send-hz hertz]        hertz to send at\n" \
-        " [-t|--time time]         time to burst messages for throughput test\n" \
-        " [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
-        " [-z|--read-hertz hertz]  read thread hertz speed\n" \
-        " [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n" \
-        "                          examples include tcp://127.0.0.1:30000\n" \
-        "                          or any of the other endpoint types like\n" \
-        "                          pgm://. For tcp, remember that the first\n" \
-        "                          endpoint defined must be your own, the\n" \
-        "                          one you are binding to, and all other\n" \
-        "                          agent endpoints must also be defined or\n" \
-        "                          no messages will ever be sent to them.\n" \
-        "                          Similarly, all agents will have to have\n" \
-        "                          this endpoint added to their list or\n" \
-        "                          this karl agent will not see them.\n" \
-        "\n",
-        argv[0]);
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "\nProgram summary for %s:\n\n"
+          "  Publishes variable updates to try to induce lamport clock "
+          "failures.\n\n"
+          " [-a|--no-latency]        do not test for latency (throughput "
+          "only)\n"
+          " [-b|--broadcast ip:port] the broadcast ip to send and listen to\n"
+          " [-d|--domain domain]     the knowledge domain to send and listen "
+          "to\n"
+          " [-e|--threads threads]   number of read threads\n"
+          " [-f|--logfile file]      log to a file\n"
+          " [-i|--id id]             the id of this agent (should be "
+          "non-negative)\n"
+          " [-l|--level level]       the logger level (0+, higher is higher "
+          "detail)\n"
+          " [-m|--multicast ip:port] the multicast ip to send and listen to\n"
+          " [-o|--host hostname]     the hostname of this process "
+          "(def:localhost)\n"
+          " [-q|--queue-length len   the buffer size to use for the test\n"
+          " [-r|--reduced]           use the reduced message header\n"
+          " [--send-hz hertz]        hertz to send at\n"
+          " [-t|--time time]         time to burst messages for throughput "
+          "test\n"
+          " [-u|--udp ip:port]       the udp ips to send to (first is self to "
+          "bind to)\n"
+          " [-z|--read-hertz hertz]  read thread hertz speed\n"
+          " [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n"
+          "                          examples include tcp://127.0.0.1:30000\n"
+          "                          or any of the other endpoint types like\n"
+          "                          pgm://. For tcp, remember that the first\n"
+          "                          endpoint defined must be your own, the\n"
+          "                          one you are binding to, and all other\n"
+          "                          agent endpoints must also be defined or\n"
+          "                          no messages will ever be sent to them.\n"
+          "                          Similarly, all agents will have to have\n"
+          "                          this endpoint added to their list or\n"
+          "                          this karl agent will not see them.\n"
+          "\n",
+          argv[0]);
 
-      exit (0);
+      exit(0);
     }
   }
 }
 
-int main (int argc, char ** argv)
+int main(int argc, char** argv)
 {
   // initialize settings
   settings.type = transport::MULTICAST;
   settings.queue_length = 1000000;
 
   // parse the user command line arguments
-  handle_arguments (argc, argv);
+  handle_arguments(argc, argv);
 
   // setup default transport as multicast
-  if (settings.hosts.size () == 0)
+  if (settings.hosts.size() == 0)
   {
-    settings.hosts.push_back (default_multicast);
+    settings.hosts.push_back(default_multicast);
   }
 
   // setup a knowledge base
-  knowledge::KnowledgeBase kb (host, settings);
-  containers::Integer var ("var", kb);
-  utility::EpochEnforcer<utility::Clock> enforcer (1/send_hertz, test_time);
+  knowledge::KnowledgeBase kb(host, settings);
+  containers::Integer var("var", kb);
+  utility::EpochEnforcer<utility::Clock> enforcer(1 / send_hertz, test_time);
 
-  kb.get_context ().set_clock (100);
+  kb.get_context().set_clock(100);
 
   // id == 0 ? "publisher" : "subscriber"
   if (settings.id == 0)
@@ -254,18 +262,18 @@ int main (int argc, char ** argv)
       num_vars = 1;
     }
 
-    std::cerr << "Publishing integer packets for "
-      << test_time << " s on " << transport::types_to_string (settings.type)
-      << " transport\n";
+    std::cerr << "Publishing integer packets for " << test_time << " s on "
+              << transport::types_to_string(settings.type) << " transport\n";
 
     size_t counter = 0;
     knowledge::KnowledgeUpdateSettings decrementer;
     decrementer.clock_increment = -5;
     // use epoch enforcer"
-    while (!enforcer.is_done ())
+    while (!enforcer.is_done())
     {
       // Periodically rollback lamport clock to check enforcement
-      if (counter % 10 == 0) {
+      if (counter % 10 == 0)
+      {
         knowledge::ContextGuard guard(kb);
         kb.get_context().inc_clock(decrementer);
       }
@@ -273,45 +281,45 @@ int main (int argc, char ** argv)
       ++counter;
       ++var;
 
-      kb.send_modifieds ();
+      kb.send_modifieds();
 
       if (send_hertz > 0.0)
       {
-        enforcer.sleep_until_next ();
+        enforcer.sleep_until_next();
       }
     }
 
     std::cerr << "Publisher is done. Check results on subscriber.\n";
-  } // end publisher
+  }  // end publisher
   else
   {
-    std::cerr << "Receiving for " << test_time << " s on " <<
-      transport::types_to_string (settings.type) << " transport\n";
+    std::cerr << "Receiving for " << test_time << " s on "
+              << transport::types_to_string(settings.type) << " transport\n";
 
     uint64_t last_context_clock = 0;
     uint64_t last_get_kr_clock = 0;
     uint64_t last_container_kr_clock = 0;
     int64_t last_value = 0;
-    knowledge::VariableReference var_ref = kb.get_ref ("var");
+    knowledge::VariableReference var_ref = kb.get_ref("var");
 
     // use epoch enforcer"
-    while (!enforcer.is_done () && madara_fails == 0)
+    while (!enforcer.is_done() && madara_fails == 0)
     {
       uint64_t cur_context_clock;
       uint64_t cur_get_kr_clock;
       uint64_t cur_container_kr_clock;
       int64_t cur_value = 0;
-      
+
       {
-        knowledge::ContextGuard guard (kb);
-        cur_context_clock = kb.get_context ().get_clock ();
-        cur_get_kr_clock = kb.get (var_ref).clock;
-        cur_container_kr_clock = var.to_record ().clock;
+        knowledge::ContextGuard guard(kb);
+        cur_context_clock = kb.get_context().get_clock();
+        cur_get_kr_clock = kb.get(var_ref).clock;
+        cur_container_kr_clock = var.to_record().clock;
         cur_value = *var;
       }
 
-      //std::cerr << cur_context_clock << " " <<  cur_get_kr_clock <<
-        //" " << cur_container_kr_clock << " " << cur_value << std::endl;
+      // std::cerr << cur_context_clock << " " <<  cur_get_kr_clock <<
+      //" " << cur_container_kr_clock << " " << cur_value << std::endl;
 
       if (cur_value < last_value)
       {

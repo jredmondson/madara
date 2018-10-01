@@ -17,8 +17,10 @@
  * This file provides checkpoint playback capabilities
  **/
 
-namespace madara { namespace knowledge {
-
+namespace madara
+{
+namespace knowledge
+{
 /**
  * Class for iterating binary checkpoint files
  **/
@@ -29,9 +31,11 @@ public:
    * Construct using the given CheckpointSettings. Ensure that the
    * referenced object outlives this one.
    **/
-  CheckpointReader(CheckpointSettings &in_checkpoint_settings)
+  CheckpointReader(CheckpointSettings& in_checkpoint_settings)
     : checkpoint_settings(in_checkpoint_settings),
-      logger_(logger::global_logger.get()) {}
+      logger_(logger::global_logger.get())
+  {
+  }
 
   /**
    * Begin by reading any header information. Optional. Will be called
@@ -50,15 +54,19 @@ public:
   /**
    * Get total number of bytes read so far during iteration.
    **/
-  int64_t get_total_read() const { return total_read; }
+  int64_t get_total_read() const
+  {
+    return total_read;
+  }
 
   /**
    * Get the file header information. Only valid after calling start(),
    * or next(). If not valid, returns nullptr.
    **/
-  const FileHeader *get_file_header() const
+  const FileHeader* get_file_header() const
   {
-    if (stage == 0) {
+    if (stage == 0)
+    {
       return nullptr;
     }
 
@@ -69,28 +77,31 @@ public:
    * Check if underlying file is open. This does not imply there are more
    * records left to read.
    **/
-  bool is_open() const { return file.is_open(); }
+  bool is_open() const
+  {
+    return file.is_open();
+  }
 
   /**
    * Returns CheckpointSettings this reader is using.
    */
-  const CheckpointSettings &get_checkpoint_settings() const
+  const CheckpointSettings& get_checkpoint_settings() const
   {
     return checkpoint_settings;
   }
 
 private:
-  CheckpointSettings &checkpoint_settings;
+  CheckpointSettings& checkpoint_settings;
 
-  logger::Logger *logger_;
+  logger::Logger* logger_;
   int stage = 0;
   std::ifstream file;
   int64_t total_read = 0;
   FileHeader meta;
   int64_t max_buffer;
   int64_t buffer_remaining;
-  utility::ScopedArray <char> buffer;
-  char * current;
+  utility::ScopedArray<char> buffer;
+  char* current;
   size_t checkpoint_start;
   uint64_t state;
   uint64_t checkpoint_size;
@@ -112,10 +123,13 @@ public:
    * @param update_settings the settings that will be used when updating
    *  @a context
    **/
-  CheckpointPlayer(ThreadSafeContext &context, CheckpointSettings settings,
+  CheckpointPlayer(ThreadSafeContext& context, CheckpointSettings settings,
       KnowledgeUpdateSettings update_settings = {})
-    : context_(&context), settings_(std::move(settings)),
-      update_settings_(update_settings) {}
+    : context_(&context),
+      settings_(std::move(settings)),
+      update_settings_(update_settings)
+  {
+  }
 
   /**
    * Constructor from CheckpointReader
@@ -125,20 +139,26 @@ public:
    * @param update_settings the settings that will be used when updating
    *  @a context
    **/
-  CheckpointPlayer(ThreadSafeContext &context, CheckpointReader reader,
+  CheckpointPlayer(ThreadSafeContext& context, CheckpointReader reader,
       KnowledgeUpdateSettings update_settings = {})
-    : context_(&context), settings_(reader.get_checkpoint_settings()),
+    : context_(&context),
+      settings_(reader.get_checkpoint_settings()),
       update_settings_(update_settings),
-      reader_(mk_unique<CheckpointReader>(std::move(reader))) {}
+      reader_(mk_unique<CheckpointReader>(std::move(reader)))
+  {
+  }
 
-  ~CheckpointPlayer() { stop(); }
+  ~CheckpointPlayer()
+  {
+    stop();
+  }
 
   // This object spawns a thread which holds a pointer back to this object,
   // so it cannot be safely copied or moved.
-  CheckpointPlayer(const CheckpointPlayer &) = delete;
-  CheckpointPlayer(CheckpointPlayer &&) = delete;
-  CheckpointPlayer &operator=(const CheckpointPlayer &) = delete;
-  CheckpointPlayer &operator=(CheckpointPlayer &&) = delete;
+  CheckpointPlayer(const CheckpointPlayer&) = delete;
+  CheckpointPlayer(CheckpointPlayer&&) = delete;
+  CheckpointPlayer& operator=(const CheckpointPlayer&) = delete;
+  CheckpointPlayer& operator=(CheckpointPlayer&&) = delete;
 
   /**
    * Start playback. If settings.playback_simtime is set, and macro
@@ -159,7 +179,8 @@ public:
   void stop()
   {
     keep_running_.clear();
-    if (thread_.joinable()) {
+    if (thread_.joinable())
+    {
       thread_.join();
     }
     reader_.reset();
@@ -175,16 +196,17 @@ public:
   bool play_until(uint64_t target_toi);
 
 private:
-  static void thread_main(CheckpointPlayer *self);
+  static void thread_main(CheckpointPlayer* self);
 
   void init_reader()
   {
-    if (!reader_) {
+    if (!reader_)
+    {
       reader_ = mk_unique<CheckpointReader>(settings_);
     }
   }
 
-  ThreadSafeContext *context_;
+  ThreadSafeContext* context_;
   CheckpointSettings settings_;
   KnowledgeUpdateSettings update_settings_;
 
@@ -192,7 +214,7 @@ private:
   std::thread thread_;
   std::unique_ptr<CheckpointReader> reader_;
 };
+}
+}  // namespace madara::knowledge
 
-}} // namespace madara::knowledge
-
-#endif // MADARA_KNOWLEDGE_CHECKPOINT_PLAYER_H
+#endif  // MADARA_KNOWLEDGE_CHECKPOINT_PLAYER_H

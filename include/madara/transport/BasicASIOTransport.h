@@ -16,55 +16,54 @@
 
 namespace madara
 {
-  namespace transport
-  {
-    namespace asio = boost::asio;
-    namespace ip = boost::asio::ip;
-    using udp = boost::asio::ip::udp;
+namespace transport
+{
+namespace asio = boost::asio;
+namespace ip = boost::asio::ip;
+using udp = boost::asio::ip::udp;
 
-    class MADARA_EXPORT BasicASIOTransport : public Base
-    {
-    public:
-      BasicASIOTransport (const std::string & id,
-        madara::knowledge::ThreadSafeContext & context,
-        TransportSettings & config);
+class MADARA_EXPORT BasicASIOTransport : public Base
+{
+public:
+  BasicASIOTransport(const std::string& id,
+      madara::knowledge::ThreadSafeContext& context, TransportSettings& config);
 
-      ~BasicASIOTransport () = 0;
+  ~BasicASIOTransport() = 0;
 
-      void close () override;
+  void close() override;
 
-      int setup () override;
+  int setup() override;
 
-      static const double default_read_hertz;
+  static const double default_read_hertz;
 
-    protected:
-      virtual int setup_socket (udp::socket &socket);
-      virtual int setup_read_socket ();
-      virtual int setup_write_socket ();
-      virtual int setup_sockets ();
+protected:
+  virtual int setup_socket(udp::socket& socket);
+  virtual int setup_read_socket();
+  virtual int setup_write_socket();
+  virtual int setup_sockets();
 
-      virtual int setup_read_threads ();
-      virtual int setup_read_thread (double hertz, const std::string &name) = 0;
+  virtual int setup_read_threads();
+  virtual int setup_read_thread(double hertz, const std::string& name) = 0;
 
-      /// knowledge base for threads to use
-      knowledge::KnowledgeBase knowledge_;
+  /// knowledge base for threads to use
+  knowledge::KnowledgeBase knowledge_;
 
-      /// Boost::ASIO IO context
-      asio::io_service io_service_;
+  /// Boost::ASIO IO context
+  asio::io_service io_service_;
 
-      /// threads for reading knowledge updates
-      threads::Threader read_threads_;
+  /// threads for reading knowledge updates
+  threads::Threader read_threads_;
 
-      /// holds all multicast addresses we are sending to
-      std::vector<udp::endpoint> addresses_;
+  /// holds all multicast addresses we are sending to
+  std::vector<udp::endpoint> addresses_;
 
-      /// underlying socket
-      udp::socket socket_{io_service_};
+  /// underlying socket
+  udp::socket socket_{io_service_};
 
-      friend class UdpTransportReadThread;
-      friend class MulticastTransportReadThread;
-    };
-  }
+  friend class UdpTransportReadThread;
+  friend class MulticastTransportReadThread;
+};
+}
 }
 
 #endif

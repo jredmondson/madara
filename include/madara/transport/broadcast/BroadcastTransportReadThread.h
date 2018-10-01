@@ -11,4 +11,4 @@
 
 #include "madara/transport/udp/UdpTransportReadThread.h"
 
-#endif // _BROADCAST_TRANSPORT_READ_THREAD_H_
+#endif  // _BROADCAST_TRANSPORT_READ_THREAD_H_
