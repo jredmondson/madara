@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <sstream>
 #include <assert.h>
+#include <fstream>
 
 #include "madara/knowledge/CheckpointPlayer.h"
 #include "madara/knowledge/CheckpointStreamer.h"
@@ -113,6 +114,10 @@ double frequency (-1.0);
   filters::LZ4BufferFilter lz4_transport_filter;
   std::vector<filters::LZ4BufferFilter> lz4_filters;
 #endif
+
+// function prototype: recursively loads a config file(s) into a pased in string vector.
+// current file recurse limit is adjustable.
+bool load_config_file(std::string config_file_path);
 
 /**
  * Class for keeping track of originator updates on a variable
@@ -293,9 +298,23 @@ bool capnp_import_dirs_flag = false;
 
 // handle command line arguments
 void handle_arguments (int argc, char ** argv)
-{
+{  
+  uint max_config_files = 10;
+  static uint config_file_cnt = 0;
+
+  // load and incorporate the defaul karl config file arguments, but only once and first
+  std::string default_config_file_path = madara::utility::expand_envs("$(HOME)/.karl/karl.cfg");
+  std::string testArg(argv[0]);
+  if (testArg != "karlconfig" && config_file_cnt < max_config_files)
+  {    
+    madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                          "Attempting to load default karl config...\n");      
+    config_file_cnt++;  
+    load_config_file(default_config_file_path);      
+  }
+  
   for (int i = 1; i < argc; ++i)
-  {
+  {              
     std::string arg1 (argv[i]);
 
     if (arg1 == "-a" || arg1 == "--after-wait")
@@ -322,6 +341,18 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    if (arg1 == "-cf" || arg1 == "--config-file") 
+    {
+      madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                            "Found user karl config file flag, param: %s\n",
+                             argv[i + 1]);
+      if (config_file_cnt < max_config_files)
+      {   
+        config_file_cnt++;
+        load_config_file(argv[i + 1]);        
+      } 
+      ++i;             
+    }    
     else if (arg1 == "--debug")
     {
       debug = true;
@@ -343,6 +374,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-a|--after-wait]        Evaluate after wait, rather than before wait\n" \
         "  [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
         "  [-c|--check-result]      check result of eval. If not zero, then terminate\n" \
+        "  [-cf|--config-file]      Config file full path, file contains karl cmd line flags, also uses default config file\n" \
         "  [-d|--domain domain]     the knowledge domain to send and listen to\n" \
         "  [--debug]                print all sent, received, and final knowledge\n" \
         "  [-f|--logfile file]      log to a file\n" \
@@ -385,8 +417,6 @@ void handle_arguments (int argc, char ** argv)
         "  [-stp|--save-transport-prefix prfx] prefix to save settings at\n" \
         "  [-stt|--save-transport-text file] a text file to save transport settings to\n" \
         "  [-t|--time time]         time to wait for results. Same as -w.\n" \
-        "  [-tdp|--transport-debug-prefix pfx] prefix in the knowledge base\n" \
-        "                           to save transport debug info\n" \
         "  [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
         "  [-w|--wait seconds]      Wait for number of seconds before exiting\n" \
         "  [-wy|-wp|--wait-for-periodic seconds]  Wait for number of seconds\n" \
@@ -411,7 +441,6 @@ void handle_arguments (int argc, char ** argv)
         "                           of save_context (only ran once)\n" \
         "  [--meta-prefix prefix]   store checkpoint meta data at knowledge prefix\n" \
         "  [--use-id]               use the id of the checkpointed binary load\n" \
-        "  [-v|--version]           print current MADARA version\n" \
         "\n",
         argv[0]);
       exit (0);
@@ -913,15 +942,6 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
-    else if (arg1 == "-tdp" || arg1 == "--transport-debug-prefix")
-    {
-      if (i + 1 < argc)
-      {
-        settings.debug_to_kb (argv[i + 1]);
-      }
-
-      ++i;
-    }
     else if (arg1 == "-u" || arg1 == "--udp")
     {
       if (i + 1 < argc)
@@ -1050,6 +1070,87 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
+
+// loads a config file into a pased in string vector.
+// and then it calls handle_arguments() for processing
+bool load_config_file(std::string config_file_path)
+{
+  std::string flag;
+  std::string param;
+  std::string flag_param;
+  std::string config_file;  
+  // storage for config file arguments
+  std::deque<std::string> argv_config_files;
+  std::vector<char *> argvp_config_files;
+  int flag_cnt = 0;
+ 
+  // load the a karl config file
+  std::ifstream file(config_file_path.c_str()); 
+  if (!file) 
+  {
+    madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_ERROR,
+                          "Unable to open karl config file: %s\n", 
+                          config_file_path.c_str());        
+    return false;      
+  }
+  else
+  {
+    // load progam path for first arg
+    argv_config_files.push_back("karlconfig");
+    argvp_config_files.push_back(nullptr);
+    flag_cnt++;     
+    madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                          "Found karl config file: %s\n", 
+                          config_file_path.c_str());                   
+       
+    // read each line of the text formatted file in, each line contains 
+    // one flag followed by a space then the param if there is a parameter
+    while (std::getline(file, flag_param))
+    {
+      flag = flag_param.substr(0, flag_param.find_first_of(" "));
+      if (flag_param.find_first_of(" ") == std::string::npos)
+      {
+        param = "";
+      }
+      else
+      {
+        param = flag_param.substr(flag_param.find_first_of(" ") + 1,
+                flag_param.length() - (flag_param.find_first_of(" ") + 1)); 
+      }      
+      madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                            "Flag: %s, Param: %s\n", 
+                            flag.c_str(), param.c_str());         
+      madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                                "Found a flag saving now...\n"); 
+      argvp_config_files.push_back(nullptr);
+      argv_config_files.push_back(flag);
+      flag_cnt++;
+
+      if (param != "")
+      {
+        madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                              "Found a param saving now...\n");     
+        argvp_config_files.push_back(nullptr);
+        argv_config_files.push_back(param);
+        flag_cnt++;
+      }
+    }   
+    file.close();
+
+    // copy over just the string pointers
+    for (uint argv_index = 0; argv_index < argv_config_files.size(); argv_index++)
+    {
+      argvp_config_files[argv_index] = const_cast<char*>
+                                       (argv_config_files[argv_index].c_str());
+    }
+
+    handle_arguments(argvp_config_files.size(), argvp_config_files.data());      
+  }  
+
+  return true;
+}
+
+
 void print_all_prefixes (knowledge::KnowledgeBase & context)
 {
   madara_logger_ptr_log (logger::global_logger.get (),
@@ -1085,8 +1186,7 @@ public:
     for (size_t i = 0; i < expressions_.size (); ++i)
     {
 #ifndef _MADARA_NO_KARL_
-      knowledge::KnowledgeRecord result = knowledge_->evaluate (
-        expressions_[i], knowledge::EvalSettings::SEND);
+      knowledge::KnowledgeRecord result = knowledge_->evaluate (expressions_[i]);
 
       if (check_result && result.is_true ())
       {
@@ -1119,10 +1219,11 @@ private:
   std::vector <knowledge::CompiledExpression> & expressions_;
 };
 
+
 int main (int argc, char ** argv)
 {
   // handle all user arguments
-  handle_arguments (argc, argv);
+  handle_arguments(argc, argv);
 
   if (print_stats || print_stats_periodic)
   {
@@ -1320,8 +1421,7 @@ int main (int argc, char ** argv)
       for (size_t i = 0; i < expressions.size (); ++i)
       {
 #ifndef _MADARA_NO_KARL_
-        knowledge::KnowledgeRecord result = kb.evaluate (expressions[i],
-          knowledge::EvalSettings::SEND);
+        knowledge::KnowledgeRecord result = kb.evaluate (expressions[i]);
 
         if (check_result && result.is_true ())
         {
@@ -1342,8 +1442,7 @@ int main (int argc, char ** argv)
       for (size_t i = 0; i < expressions.size (); ++i)
       {
 #ifndef _MADARA_NO_KARL_
-        kb.evaluate (expressions[i],
-          madara::knowledge::EvalSettings::SEND);
+        kb.evaluate (expressions[i]);
 #endif // _MADARA_NO_KARL_
       }
     } // if (after_wait)
