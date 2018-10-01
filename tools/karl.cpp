@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <sstream>
 #include <assert.h>
+#include <fstream>
 
 #include "madara/knowledge/CheckpointPlayer.h"
 #include "madara/knowledge/CheckpointStreamer.h"
@@ -40,6 +41,10 @@ namespace threads = madara::threads;
 
 typedef knowledge::KnowledgeRecord::Integer  Integer;
 typedef std::vector <std::string>            StringVector;
+
+// default KaRL config file
+std::string default_karl_config =
+    madara::utility::expand_envs("$(HOME)/.karl/karl.cfg");
 
 // default transport settings
 std::string host ("");
@@ -113,6 +118,13 @@ double frequency (-1.0);
   filters::LZ4BufferFilter lz4_transport_filter;
   std::vector<filters::LZ4BufferFilter> lz4_filters;
 #endif
+
+// config file recursion limit
+const size_t default_recursion_limit = 10;
+
+// recursively loads a config file(s) and processe with handle_arguments
+bool load_config_file(std::string full_path,
+    size_t recursion_limit = default_recursion_limit);
 
 /**
  * Class for keeping track of originator updates on a variable
@@ -292,7 +304,8 @@ bool capnp_msg_type_param_flag = false;
 bool capnp_import_dirs_flag = false;
 
 // handle command line arguments
-void handle_arguments (int argc, char ** argv)
+void handle_arguments (int argc, const char ** argv,
+    size_t recursion_limit = 10)
 {
   for (int i = 1; i < argc; ++i)
   {
@@ -322,6 +335,23 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
+    if (arg1 == "-cf" || arg1 == "--config-file") 
+    {
+      madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                            "Found user karl config file flag, param: %s\n",
+                             argv[i + 1]);
+      if (recursion_limit > 0)
+      {
+        load_config_file(argv[i + 1], recursion_limit);
+      }
+      else
+      {
+        madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_ERROR,
+                              "Config file recursion limit exceeded with %s\n",
+                               argv[i + 1]);
+      }
+      ++i;
+    }
     else if (arg1 == "--debug")
     {
       debug = true;
@@ -343,6 +373,7 @@ void handle_arguments (int argc, char ** argv)
         "  [-a|--after-wait]        Evaluate after wait, rather than before wait\n" \
         "  [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
         "  [-c|--check-result]      check result of eval. If not zero, then terminate\n" \
+        "  [-cf|--config-file]      Config file full path, file contains karl cmd line flags, also uses default config file\n" \
         "  [-d|--domain domain]     the knowledge domain to send and listen to\n" \
         "  [--debug]                print all sent, received, and final knowledge\n" \
         "  [-f|--logfile file]      log to a file\n" \
@@ -1048,6 +1079,81 @@ void handle_arguments (int argc, char ** argv)
   }
 }
 
+
+// loads a config file into a pased in string vector.
+// and then it calls handle_arguments() for processing
+bool load_config_file(std::string full_path, size_t recursion_limit)
+{
+  std::string flag;
+  std::string param;
+  std::string flag_param;
+  std::string config_file;
+
+  // storage for config file arguments
+  std::deque<std::string> argv_config_files;
+  std::vector<const char *> argvp_config_files;
+
+  // load the a karl config file
+  std::ifstream file(full_path.c_str());
+  if (!file)
+  {
+    madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_ERROR,
+                          "Unable to open karl config file: %s\n",
+                          full_path.c_str());
+    return false;
+  }
+
+  // load progam path for first arg
+  argv_config_files.push_back("");
+
+  madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                        "Found karl config file: %s\n",
+                        full_path.c_str());
+
+  // read each line of the text formatted file in, each line contains 
+  // one flag followed by a space then the param if there is a parameter
+  while (std::getline(file, flag_param))
+  {
+    flag = flag_param.substr(0, flag_param.find_first_of(" "));
+    if (flag_param.find_first_of(" ") == std::string::npos)
+    {
+      param = "";
+    }
+    else
+    {
+      param = flag_param.substr(flag_param.find_first_of(" ") + 1,
+          flag_param.length() - (flag_param.find_first_of(" ") + 1));
+    }
+    madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                          "Flag: %s, Param: %s\n", 
+                          flag.c_str(), param.c_str());
+    madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                              "Found a flag saving now...\n");
+    argv_config_files.push_back(flag);
+
+    if (param != "")
+    {
+      madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                            "Found a param saving now...\n");
+      argv_config_files.push_back(param);
+    }
+  }
+  file.close();
+
+  argvp_config_files.reserve(argv_config_files.size() + 1);
+  argvp_config_files.push_back("");
+
+  std::transform(argv_config_files.begin(), argv_config_files.end(),
+      std::back_inserter(argvp_config_files),
+      std::mem_fun_ref(&std::string::c_str));
+
+  handle_arguments(argvp_config_files.size(), argvp_config_files.data(),
+      recursion_limit - 1);
+
+  return true;
+}
+
+
 void print_all_prefixes (knowledge::KnowledgeBase & context)
 {
   madara_logger_ptr_log (logger::global_logger.get (),
@@ -1117,10 +1223,16 @@ private:
   std::vector <knowledge::CompiledExpression> & expressions_;
 };
 
+
 int main (int argc, char ** argv)
 {
+  // load and incorporate the defaul karl config file arguments, but only once and first
+  madara_logger_ptr_log(logger::global_logger.get (), logger::LOG_TRACE,
+                        "Attempting to load default karl config...\n");
+  load_config_file(default_karl_config);
+
   // handle all user arguments
-  handle_arguments (argc, argv);
+  handle_arguments(argc, (const char **)argv);
 
   if (print_stats || print_stats_periodic)
   {
